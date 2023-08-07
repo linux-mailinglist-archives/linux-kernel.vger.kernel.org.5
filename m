@@ -2,198 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 448EB771837
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8419777183B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbjHGCRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 22:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38052 "EHLO
+        id S229559AbjHGCVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 22:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjHGCRD (ORCPT
+        with ESMTP id S229558AbjHGCVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 22:17:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C2D1703
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:16:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691374618; x=1722910618;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=mlXqN/ecLzLJxVm7YZhZEcsZ8jxsF64sfBAhzLoxbPA=;
-  b=ab5+kqY4/EEyFFp6rmTI5dgWxc0ibLgqr2BVO4vNS/spnXUnLYJsq1rW
-   ITwxG6hDeTBBSkqlad9tsbwqVTrXlNDR8F6ysMt9lc/FVH7qjg0qiMPh+
-   ocJh8Yx6K6vhSYBD4iMxHkVRb9B47JYc+2KOvhqZzqYpzSqcN6pF0tGtP
-   ZdISWaqVzqm0dkc3ayqeVvSC8B4F6pcrpj0VQ2IJR07tgLYrkrpu/YOvD
-   nWIWcz+umuePyj9Tmo1UONlfz/uNkH0a+qjNRbTEM4h5fn9OHOrpg6uJI
-   2V5Se/cD7MLBM6cmQCBAyEqkXTwFVbaQQOdknETTUZCN4KBegUVfjzNAA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="373189596"
-X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
-   d="scan'208";a="373189596"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2023 19:16:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="796115928"
-X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
-   d="scan'208";a="796115928"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga008.fm.intel.com with ESMTP; 06 Aug 2023 19:16:54 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sun, 6 Aug 2023 19:16:53 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Sun, 6 Aug 2023 19:16:53 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Sun, 6 Aug 2023 19:16:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YEnKFyi51XsquQZ9lhVGx1TBuvAHAyTUMf+5dwFVZO8EByrYEt7jwlzT4kF2fVArLk8MB6vfBsHBZX9FYa1gOahO4Lw+ulDTP0MHbuxIKLssG8eQ9pa8VUxuIgujkrWgTW3MfgOZh7JqTi2S1m0GbOrivZgBpJMIH3yku0sG1y3cmTCLzV4Jw5WTITO+uNxEM4l88w+fZzv1Efbm+cSqUwDSMzB6aqvsD5hCsm7H07FEugaxDMHv2yjHpiN78MCMUsQtigfxlC2e+f7r+CQZH654t7/+lNoEGEAjhGfekltQWBiklmLg/N3wMavRfaDev/jCKpLIC7lJbLrV4zZHdg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mlXqN/ecLzLJxVm7YZhZEcsZ8jxsF64sfBAhzLoxbPA=;
- b=EEvG+Hs9WB8W4nOdQ1txEWN5jhyPxhs3Z9CY+WunS13OVkxtrx+P9XLw1k9Bkz0btoi7hoKAm89j0tdiQ8Fe02RYurchWNhdXWXUw4XUpXqwdMfr359MZGCv/eQnu3QWxzyf3saN5OkXC261KKCHig9GuPBnZ1/FHQr4p9Ls6b7R8uicCX1CMwFgGZkzWxMUTgfxB+k7ZsD4lyjfpnCD1Z4Vbvy1ODIRk7AelAMPmSu5pNR5T9tyyKdpPN5YPrWr5fNOmyMcZ8xllntgsejIRsG4XGAU+IQ2kDu8WGwRsklwSvb+ADXGp2Pe0AZWJmjn6Bo/FwRVYhUkytQDMR/zgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by DM4PR11MB8179.namprd11.prod.outlook.com (2603:10b6:8:18e::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26; Mon, 7 Aug
- 2023 02:16:50 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::980d:80cc:c006:e739]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::980d:80cc:c006:e739%4]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
- 02:16:50 +0000
-From:   "Huang, Kai" <kai.huang@intel.com>
-To:     "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-CC:     "Hansen, Dave" <dave.hansen@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "n.borisov.lkml@gmail.com" <n.borisov.lkml@gmail.com>
-Subject: Re: [PATCH v3 12/12] x86/virt/tdx: Adjust 'struct tdx_module_args' to
- use x86 "register index" layout
-Thread-Topic: [PATCH v3 12/12] x86/virt/tdx: Adjust 'struct tdx_module_args'
- to use x86 "register index" layout
-Thread-Index: AQHZv7EuDeTmYmtxiU2quJkSiZ2kg6/dOPwAgADyEQA=
-Date:   Mon, 7 Aug 2023 02:16:50 +0000
-Message-ID: <b62961e38598c771ab83a5b8b158d8fcdf6df963.camel@intel.com>
-References: <cover.1690369495.git.kai.huang@intel.com>
-         <f61daaaad871e79eabf5ae25f5c4631640ffd288.1690369495.git.kai.huang@intel.com>
-         <20230806115024.k3oc6u3yu42q7h5l@box.shutemov.name>
-In-Reply-To: <20230806115024.k3oc6u3yu42q7h5l@box.shutemov.name>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|DM4PR11MB8179:EE_
-x-ms-office365-filtering-correlation-id: d2a71d38-17b0-4fd4-7a26-08db96ec5c1c
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eEwhzs7EuurM65H2YyuPfSi6NfyPmHj44+xpYZ3Tsr0pU0wiWVK3PFqWAb2ziE43tB43/INdOXnm2YUDcnx2HdoV/PYaL0218HXA5S30G/4mQNLV1F59TwCmJgYUohEfP5PzfVls8ERmL6cl9Zg5+1mA/mXWhpl+HBOuSO96Ufaei+ZBXo/C5gPJChYaCbH66zaxKWwA6ZZYe+aYziR442XOlfxk1DD3dURhv5k8mIclvTC7FkdeKILFfDVnYkrlsjAPAgJGyzLOQho7V1d1bXPJfFmFJvJpzes1mxCRd/Z4C73QID8bYvSWfXR3tEQpNCCVNrDchpSSXrc3AeZFj0mfdJE+7vJBPVJS93Q6UZfJMdDMtssCl/yuNqYboMNj7lXST85pz6BTQC/qu8OSMYEZ8KIgGb/tZFcJGvTW8VI9oComEHJqIAgStxq/kABf4XBr4rzXwz1jmFTypGh/PDMbpxs9suZ2BluVpd8TP+OjgJAuGtgZPXQgkUVqwFY4N8utu34skLBUCuW4jp9jtg6dOKDhhMRjfrIFyMDrrYatHmQE1qQpPp8NQalH6oAc4coXSAJ6vySmiiNePW/zLKuIJMZxwaKM4yey1o+e91s=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(366004)(136003)(346002)(376002)(39860400002)(451199021)(186006)(1800799003)(2616005)(36756003)(966005)(4326008)(6512007)(316002)(6916009)(86362001)(122000001)(478600001)(82960400001)(54906003)(38100700002)(76116006)(91956017)(71200400001)(66946007)(6486002)(66556008)(66476007)(66446008)(64756008)(6506007)(41300700001)(26005)(38070700005)(8676002)(8936002)(2906002)(7416002)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ckJjc3JaN2lNTURERng1MWdLNFMxWi9ZMTZLREF6ZnpybDh1TXB5TzhvZXlB?=
- =?utf-8?B?cTlNZTFTc1VkbmFJSDZkR01WbU13WkY4Mjl5ejI2NjJEWVMxRlJ1bXBCeVVn?=
- =?utf-8?B?d1MyMEpiUTNadE1KQmFiVVlHZVI3QmRUME4wWmp1YnhUTXdSY2dXYzZONnBr?=
- =?utf-8?B?VFpiUXBkbk96c253V3JGVXpiTWlLbVlnYnp1TXo4djRSeDN6aXdnWE5DOEJM?=
- =?utf-8?B?a1dIU3c1b3NTWitSdStpNU94djlaSjAwQjVoejFsZnRiaTJacTZaT1crc2tz?=
- =?utf-8?B?Y0RaNnN6Wk4yVVY0TWR4VFhId3UzVWNNRUxDOGF4bmdkcG10eUVRNzV2eDdm?=
- =?utf-8?B?Y0lEOENkTE42STgwVzBuUE5uRXV4V0ZDM01vNjFSd3Z1VU12dWxWMDdtZVh4?=
- =?utf-8?B?OUcvREI5RlBRWTM5TDFta3djZERvQUg2cWIwSFVTVXhYRVBYQVllKzFqOHVE?=
- =?utf-8?B?dS9LcjdncWtsanFsWHVncVNlT0tQYTExek41ZlFZQ3JjTHR5M2VuUDFLYnA0?=
- =?utf-8?B?cUlYd1RFaVBGKzlZR3p1U0xMVklrVTVZOUlKWTZtMW9rTUdGUnQ4a3dJdENW?=
- =?utf-8?B?QjgrTy93cFR4eTZubjVyWm5wQ1RpNlBUNXVyMTFvWnhhd2haQmh4UkVqOWNw?=
- =?utf-8?B?MkIwSXlXUFFZNHBBSU1lVGlRdkhWU0NxMkI1c3dVWTJZakJ5TFFKNlFNb2RU?=
- =?utf-8?B?TEVNUzBmbGYra0tHVUNoZHJGS1lhcVFxa013ZlF1VVh5Y1MrRHd2dGxNWkRL?=
- =?utf-8?B?MVV2Q1B0ejIwME9jZGRBS0RYY0gwQjRONkhnN0R3Sm1SOUd4Vm9OUlNMOG1W?=
- =?utf-8?B?blQvV0xmT0ZXcmtIeEZHbVA4TkJtMTI3Z3BadHBpWUhORkprTEFLQUhGZStE?=
- =?utf-8?B?Umo5elpDOWo1TFBjdHpUY0wxVGQzTGxiandkSEpRNDkrVmtBSTBsY2JmUThq?=
- =?utf-8?B?YTUzdlF3aWEwN3dZZFkwb0NoOXlOOFMra0pXM3ZEbTY4VGxzVTNNK2huYWpS?=
- =?utf-8?B?ME9jQ1hQZDNuVDliRWpZYmR5MGdhVVdHR1dJa2VRa0REWldqRm1NT0lXQ1pR?=
- =?utf-8?B?c2FsTmIwdXRJZ2srRmNZM2RVb1ptbkRJdm1FNmxEcTc5dys3cDR3dHBxdFd0?=
- =?utf-8?B?WGtMQ2JJSmtMV01NbkZOU21OOEVjTEVnRWdWdnM3OUtMdlo5aUx1WXdxSjdW?=
- =?utf-8?B?UTNieTA2MFBHRCtSN3IxSGRUWkhZdlB2MXl0WStjQkxmcWg1eWt3NkIzcFkw?=
- =?utf-8?B?MGRHNkhza05SUFQycTJqcnNVZkFMd0JINWRoNSsyQUc0VVJ2Y1MrY0xqZTVF?=
- =?utf-8?B?WjN5VzBNMi9ORVcxWldiazdQM3kzbGlsdndxN3lVbVdQNHhZb1k1VjRuZ2VO?=
- =?utf-8?B?Q09FRElTSGZNejh1Nml5M2t5ZFdiZldpSndhaFZuRDg5U1pmRk1sa1A5Qm1J?=
- =?utf-8?B?NXdvQmpIQzZQbzNvcHF5RmphSzFCek1UWEhOV0JMRlBCWDlaZWNTWGZFOFpP?=
- =?utf-8?B?cFppYTZreEJUSDEzRlN3c2phMGlidkx6MmhyTHNSRlUrNExKTmhUR0VySHFR?=
- =?utf-8?B?bDAxYmNNdDRuV2JtZmpWNTZNb0wvYXNUTFg5cFF3Zm5JcW5wRFRXbmxKVE02?=
- =?utf-8?B?U0hnYzhWY3Ezd3VtRFc3U29PVGd5WUZCR2xpblhPcnBNblZBbnFsNThIVUpU?=
- =?utf-8?B?QVp3YlYySU4yRXlUS21tQ2d3N1IxcFg3Y3pKSVFKMWx1b0w5MU1zUGpoS2FU?=
- =?utf-8?B?eFZhOXJlcnFzbmZUNU4xem5pditvaXc1Q250OGJ6MUZPNDE5SW13VHE4MWQv?=
- =?utf-8?B?MWxlc2xnWGE2QTg3bm5rTjR5VUNkWEFXL0xxR2szbFFUcDl5dDgwQ3ZSL0lB?=
- =?utf-8?B?VUlKakZ0QUlVcUFya3FCU0xHSjBBVDhBWUZBb0trRW1Cc2VMd0pZd0dNa1Bx?=
- =?utf-8?B?SU5VSmVETGhIbHVCaFR6UXZpdnlRSW9UTXFhbEY4aVlhSUtNbEwxcmxGVlpj?=
- =?utf-8?B?dFFMaXFhWHVLL3JpNXVzakpHZTg1NWFxNmFwTjExNnRPOU1kcldUV21kU3VH?=
- =?utf-8?B?dFptcjMxQ2ZQMUV4eDNiMHRaZzJRRUFtVmx3VTdCbE1MVVRQNzN5T1JzWDhR?=
- =?utf-8?Q?obUQP9XGkUAYxj1CJ9Xzb6vps?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C174C6AAFD7B7F4BADD7A773E3B5E92E@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Sun, 6 Aug 2023 22:21:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6421703
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:21:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9373B612D4
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:21:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03CD5C433C7;
+        Mon,  7 Aug 2023 02:21:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691374868;
+        bh=D0ci+5f8lXtH4JT5SvmGnp5vBNARLvFAIUuPdyjekBU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=lEU0/0F7eWUHDw+TbGAfXPGAz8GT8RbadBlQcATZx6s/Kjfx0ymCaHoZNLK2kTX0r
+         yaY2jPQASDEFrkih/HPoX0O1+T/+zKolAAcfRwEjB/+/ONoXBTH0Q7xRrfdi22CELZ
+         wgXjTwafR3HYth10+vSB+/YUxr1DC9Fiih6V9cbVC97mhBy80k/udOsCxWMpMWXQqq
+         XSirY2wSDNM5GeUHZTqTcCS7vopZPBiJzSACiuYxYlu3qDADAQpprhmM/eOtWVRI2/
+         v7TiKUlOp0uKl7iyq/ML6Lz19/DltoIUmfwgUYy8i4lZ7JqYYWW+OuLE6OPlT7Uc+N
+         006AOdDV5mxeA==
+Message-ID: <bab7ab2f-b02c-a547-b4dc-7f26919ee019@kernel.org>
+Date:   Mon, 7 Aug 2023 10:21:05 +0800
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d2a71d38-17b0-4fd4-7a26-08db96ec5c1c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Aug 2023 02:16:50.4517
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: w9TXNcCMYkxk/kuvfo2Wh0UxjsYtGLh1hCYEuH8zzt2Hwim55RSAsqsFssdoeEjl+buOPqaB25pK87s0NIdcYQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB8179
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: do not issue small discard commands
+ during checkpoint
+Content-Language: en-US
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Daejun Park <daejun7.park@samsung.com>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <ZKP6EJ5dZ4f4wScp@google.com>
+ <65143701-4c19-ab66-1500-abd1162639cd@kernel.org>
+ <ZKWovWZDiHjMavtB@google.com>
+ <cadfb8d7-f5d0-a3ec-cafb-a0c06ad7d290@kernel.org>
+ <ZK2FT9CUjxXvQ2K5@google.com>
+ <330c96f7-fbad-dd17-6368-f1378b3b5375@kernel.org>
+ <ZK7M6EkLkV8UbqUl@google.com>
+ <87acf602-1587-0615-909d-6e60c66c3cda@kernel.org>
+ <ZLrpMAaOkmrKQFv+@google.com>
+ <5e5f830b-1b13-4893-fbb0-4c7e99ec9f32@kernel.org>
+ <ZM1lJPQcV+FjGnaI@google.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <ZM1lJPQcV+FjGnaI@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIzLTA4LTA2IGF0IDE0OjUwICswMzAwLCBraXJpbGwuc2h1dGVtb3ZAbGludXgu
-aW50ZWwuY29tIHdyb3RlOg0KPiBPbiBXZWQsIEp1bCAyNiwgMjAyMyBhdCAxMToyNToxNFBNICsx
-MjAwLCBLYWkgSHVhbmcgd3JvdGU6DQo+ID4gRm9yIFREWCBndWVzdCwgS1ZNIG5lZWRzIHRvIGNh
-bGwgX19zZWFtY2FsbF9zYXZlZF9yZXQoKSB0byBtYWtlIHRoZQ0KPiA+IFRESC5WUC5FTlRFUiBT
-RUFNQ0FMTCB0byBlbnRlciB0aGUgZ3Vlc3QsIHBvc3NpYmx5IHRha2luZyBhbGwgcmVnaXN0ZXJz
-DQo+ID4gaW4gJ3N0cnVjdCB0ZHhfbW9kdWxlX2FyZ3MnIGFzIGlucHV0L291dHB1dC4NCj4gPiAN
-Cj4gPiBLVk0gY2FjaGVzIGd1ZXN0J3MgR1BScyBpbiAna3ZtX3ZjcHVfYXJjaDo6cmVnc1tdJywg
-d2hpY2ggZm9sbG93cyB0aGUNCj4gPiAicmVnaXN0ZXIgaW5kZXgiIGhhcmR3YXJlIGxheW91dCBv
-ZiB4ODYgR1BScy4gIE9uIHRoZSBvdGhlciBoYW5kLCB0aGUNCj4gPiBfX3NlYW1jYWxsX3NhdmVk
-X3JldCgpIHRha2VzIHRoZSBwb2ludGVyIG9mICdzdHJ1Y3QgdGR4X21vZHVsZV9hcmdzJyBhcw0K
-PiA+IGFyZ3VtZW50LCB0aHVzIHRoZXJlJ3MgYSBtaXNtYXRjaC4NCj4gPiANCj4gPiBLVk0gY291
-bGQgY2hvb3NlIHRvIGNvcHkgaW5wdXQgcmVnaXN0ZXJzIGZyb20gJ3ZjcHU6OnJlZ3NbXScgdG8g
-YQ0KPiA+ICdzdHJ1Y3QgdGR4X21vZHVsZV9hcmdzJyBhbmQgdXNlIHRoYXQgYXMgYXJndW1lbnQg
-dG8gbWFrZSB0aGUgU0VBTUNBTEwsDQo+ID4gYnV0IHN1Y2ggbWVtb3J5IGNvcHkgaXNuJ3QgZGVz
-aXJlZCBhbmQgc2hvdWxkIGJlIGF2b2lkZWQgaWYgcG9zc2libGUuDQo+IA0KPiBJIGRvdWJ0IHRo
-ZSBjb3B5IHdpbGwgYmUgdmlzaWJsZSBvbiBhbnkgcHJvZmlsZS4NCj4gDQo+IEkgcGVyc29uYWxs
-eSBkb24ndCBsaWtlIHRoYXQga3ZtIGltcGxlbWVudGF0aW9uIGRldGFpbCBsZWFrcyBoZXJlLiBJ
-dA0KPiBzdXBwb3NlIHRvIGJlIGdlbmVyaWMgVERYIGNvZGUuDQo+IA0KPiANCg0KV2VsbCBJIGtp
-bmRhIGFncmVlIHdpdGggeW91LiAgQnV0IGl0IHNlZW1zIFBldGVyIHdhbnRlZCB0aGlzIHRvIGJl
-IGRvbmU6DQoNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvYTIzY2U4ZmQyODkxNDFjZWEz
-YTFiNGYzZGFjZTIyMWRjYTg0NzIzOC5jYW1lbEBpbnRlbC5jb20vVC8jbTM3ZjM5NDkzZTlmMmJm
-MGE0YzljY2M3MmFhZjQ5Mzg5MjczNzVkYzENCg==
+On 2023/8/5 4:52, Jaegeuk Kim wrote:
+> On 07/25, Chao Yu wrote:
+>> On 2023/7/22 4:23, Jaegeuk Kim wrote:
+>>> On 07/13, Chao Yu wrote:
+>>>> On 2023/7/12 23:55, Jaegeuk Kim wrote:
+>>>>> On 07/12, Chao Yu wrote:
+>>>>>> On 2023/7/12 0:37, Jaegeuk Kim wrote:
+>>>>>>> On 07/06, Chao Yu wrote:
+>>>>>>>> On 2023/7/6 1:30, Jaegeuk Kim wrote:
+>>>>>>>>> On 07/04, Chao Yu wrote:
+>>>>>>>>>> On 2023/7/4 18:53, Jaegeuk Kim wrote:
+>>>>>>>>>>> On 07/03, Chao Yu wrote:
+>>>>>>>>>>>> On 2023/6/15 0:10, Jaegeuk Kim wrote:
+>>>>>>>>>>>>> If there're huge # of small discards, this will increase checkpoint latency
+>>>>>>>>>>>>> insanely. Let's issue small discards only by trim.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>>>>>>>>>>>>> ---
+>>>>>>>>>>>>>
+>>>>>>>>>>>>>         Change log from v1:
+>>>>>>>>>>>>>          - move the skip logic to avoid dangling objects
+>>>>>>>>>>>>>
+>>>>>>>>>>>>>         fs/f2fs/segment.c | 2 +-
+>>>>>>>>>>>>>         1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>>>>>>>>>>>>> index 8c7af8b4fc47..0457d620011f 100644
+>>>>>>>>>>>>> --- a/fs/f2fs/segment.c
+>>>>>>>>>>>>> +++ b/fs/f2fs/segment.c
+>>>>>>>>>>>>> @@ -2193,7 +2193,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+>>>>>>>>>>>>>         			len = next_pos - cur_pos;
+>>>>>>>>>>>>>         			if (f2fs_sb_has_blkzoned(sbi) ||
+>>>>>>>>>>>>> -			    (force && len < cpc->trim_minlen))
+>>>>>>>>>>>>> +					!force || len < cpc->trim_minlen)
+>>>>>>>>>>>>>         				goto skip;
+>>>>>>>>>>>>
+>>>>>>>>>>>> Sorry for late reply.
+>>>>>>>>>>>>
+>>>>>>>>>>>> We have a configuration for such case, what do you think of setting
+>>>>>>>>>>>> max_small_discards to zero? otherwise, w/ above change, max_small_discards
+>>>>>>>>>>>> logic may be broken?
+>>>>>>>>>>>>
+>>>>>>>>>>>> What:           /sys/fs/f2fs/<disk>/max_small_discards
+>>>>>>>>>>>> Date:           November 2013
+>>>>>>>>>>>> Contact:        "Jaegeuk Kim" <jaegeuk.kim@samsung.com>
+>>>>>>>>>>>> Description:    Controls the issue rate of discard commands that consist of small
+>>>>>>>>>>>>                       blocks less than 2MB. The candidates to be discarded are cached until
+>>>>>>>>>>>>                       checkpoint is triggered, and issued during the checkpoint.
+>>>>>>>>>>>>                       By default, it is disabled with 0.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Or, if we prefer to disable small_discards by default, what about below change:
+>>>>>>>>>>>
+>>>>>>>>>>> I think small_discards is fine, but need to avoid long checkpoint latency only.
+>>>>>>>>>>
+>>>>>>>>>> I didn't get you, do you mean we can still issue small discard by
+>>>>>>>>>> fstrim, so small_discards functionality is fine?
+>>>>>>>>>
+>>>>>>>>> You got the point.
+>>>>>>>>
+>>>>>>>> Well, actually, what I mean is max_small_discards sysfs entry's functionality
+>>>>>>>> is broken. Now, the entry can not be used to control number of small discards
+>>>>>>>> committed by checkpoint.
+>>>>>>>
+>>>>>>> Could you descrbie this problem first?
+>>>>>>
+>>>>>> Oh, alright, actually, I've described this problem literally, but maybe it's not
+>>>>>> clear, let me give some examples as below:
+>>>>>>
+>>>>>> echo 0 > /sys/fs/f2fs/vdb/max_small_discards
+>>>>>> xfs_io -f /mnt/f2fs/file -c "pwrite 0 2m" -c "fsync"
+>>>>>> xfs_io /mnt/f2fs/file -c "fpunch 0 4k"
+>>>>>> sync
+>>>>>> cat /proc/fs/f2fs/vdb/discard_plist_info |head -2
+>>>>>>
+>>>>>> echo 100 > /sys/fs/f2fs/vdb/max_small_discards
+>>>>>> rm /mnt/f2fs/file
+>>>>>> xfs_io -f /mnt/f2fs/file -c "pwrite 0 2m" -c "fsync"
+>>>>>> xfs_io /mnt/f2fs/file -c "fpunch 0 4k"
+>>>>>> sync
+>>>>>> cat /proc/fs/f2fs/vdb/discard_plist_info |head -2
+>>>>>>
+>>>>>> Before the patch:
+>>>>>>
+>>>>>> Discard pend list(Show diacrd_cmd count on each entry, .:not exist):
+>>>>>>      0         .       .       .       .       .       .       .       .
+>>>>>>
+>>>>>> Discard pend list(Show diacrd_cmd count on each entry, .:not exist):
+>>>>>>      0         3       1       .       .       .       .       .       .
+>>>>>>
+>>>>>> After the patch:
+>>>>>> Discard pend list(Show diacrd_cmd count on each entry, .:not exist):
+>>>>>>      0         .       .       .       .       .       .       .       .
+>>>>>>
+>>>>>> Discard pend list(Show diacrd_cmd count on each entry, .:not exist):
+>>>>>>      0         .       .       .       .       .       .       .       .
+>>>>>>
+>>>>>> So, now max_small_discards can not be used to control small discard number
+>>>>>> cached by checkpoint.
+>>>>
+>>>> Let me explain more:
+>>>>
+>>>> Previously, we have two mechanisms to cache & submit small discards:
+>>>>
+>>>> a) set max small discard number in /sys/fs/f2fs/vdb/max_small_discards, and checkpoint
+>>>> will cache small discard candidates w/ configured maximum number.
+>>>>
+>>>> b) call FITRIM ioctl, also, checkpoint in f2fs_trim_fs() will cache small discard
+>>>> candidates w/ configured discard granularity, but w/o limitation of number. FSTRIM
+>>>> interface is asynchronized, so it won't submit discard directly.
+>>>>
+>>>> Finally, discard thread will submit them in background periodically.
+>>>>
+>>>> So what I mean is the mechanism a) is broken, since no matter how we configure the
+>>>> sysfs entry /sys/fs/f2fs/vdb/max_small_discards, checkpoint will not cache small
+>>>> discard candidates any more.
+>>>
+>>> Ok, it seems what I encountered before was adding this small discard even
+>>> after issuing it by checkpoint. Thoughts?
+>>
+>> Do you mean: in f2fs_clear_prefree_segments(), small discard may overlap
+>> segment granularity discard?
+> 
+> I didn't dig enough tho, don't think so. Somehow I got a loop as below which
+> said the same LBA was issued and added back repeatedly, not seen this short log
+> unfortunately.
+> 
+>>
+>> e.g.
+>> - f2fs_clear_prefree_segments
+>>   - f2fs_issue_discard(0, 512)  --- segment granularity discard
+>>   - f2fs_issue_discard(0, 1)  --- small discard
+>>   - f2fs_issue_discard(5, 1)  --- small discard
+>>
+>> Thanks,
+
+[snip]
+
+>>>    f2fs_discard-25-752     [003] .....  9744.173111: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c0ca, blklen = 0x1
+>>>    f2fs_discard-25-752     [004] .....  9744.175348: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c0ca, blklen = 0x1
+
+I don't see any loop via above log, am I missing something?
+
+The traces were printed in below call paths, and it printed the same LBAs as
+expected?
+
+- issue_discard_thread
+  - __issue_discard_cmd
+   - __submit_discard_cmd
+    - trace_f2fs_issue_discard
+9744.173111: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c0ca, blklen = 0x1
+  - __wait_all_discard_cmd
+   - __wait_discard_cmd_range
+    - __remove_discard_cmd
+     - trace_f2fs_remove_discard
+9744.175348: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c0ca, blklen = 0x1
+
+Thanks,
+
+>>>
+>>>>
+>>>> So, it needs to fix max_small_discards sysfs functionality? or just drop the
+>>>> functionality?
+>>>>
+>>>>>
+>>>>> Since we do not submit small discards anymore during checkpoint. Why not relying
+>>>>> on the discard thread to issue them?
+>>>>
+>>>> Sorry, I'm not sure I get your point, do you mean max_small_discards functionality
+>>>> is obsoleted, so it recommended to use fstrim to cache & submit small discards?
+>>>>
+>>>> Let me know, if I'm missing something or misunderstanding the point.
+>>>>
+>>>> Thanks,
+>>>>
+>>>>>
+>>>>>>
+>>>>>> Thanks,
+>>>>>>
+>>>>>>>
+>>>>>>>>
+>>>>>>>> I think there is another way to achieve "avoid long checkpoint latency caused
+>>>>>>>> by committing huge # of small discards", the way is we can set max_small_discards
+>>>>>>>> to small value or zero, w/ such configuration, it will take checkpoint much less
+>>>>>>>> time or no time to committing small discard due to below control logic:
+>>>>>>>>
+>>>>>>>> f2fs_flush_sit_entries()
+>>>>>>>> {
+>>>>>>>> ...
+>>>>>>>> 			if (!(cpc->reason & CP_DISCARD)) {
+>>>>>>>> 				cpc->trim_start = segno;
+>>>>>>>> 				add_discard_addrs(sbi, cpc, false);
+>>>>>>>> 			}
+>>>>>>>> ...
+>>>>>>>> }
+>>>>>>>>
+>>>>>>>> add_discard_addrs()
+>>>>>>>> {
+>>>>>>>> ...
+>>>>>>>> 	while (force || SM_I(sbi)->dcc_info->nr_discards <=
+>>>>>>>> 				SM_I(sbi)->dcc_info->max_discards) {
+>>>>>>>>
+>>>>>>>> It will break the loop once nr_discards is larger than max_discards, if
+>>>>>>>> max_discards is set to zero, checkpoint won't take time to handle small discards.
+>>>>>>>>
+>>>>>>>> ...
+>>>>>>>> 		if (!de) {
+>>>>>>>> 			de = f2fs_kmem_cache_alloc(discard_entry_slab,
+>>>>>>>> 						GFP_F2FS_ZERO, true, NULL);
+>>>>>>>> 			de->start_blkaddr = START_BLOCK(sbi, cpc->trim_start);
+>>>>>>>> 			list_add_tail(&de->list, head);
+>>>>>>>> 		}
+>>>>>>>> ...
+>>>>>>>> 	}
+>>>>>>>> ...
+>>>>>>>>
+>>>>>>>> Thanks,
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> Thanks,
+>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>>       From eb89d9b56e817e3046d7fa17165b12416f09d456 Mon Sep 17 00:00:00 2001
+>>>>>>>>>>>> From: Chao Yu <chao@kernel.org>
+>>>>>>>>>>>> Date: Mon, 3 Jul 2023 09:06:53 +0800
+>>>>>>>>>>>> Subject: [PATCH] Revert "f2fs: enable small discard by default"
+>>>>>>>>>>>>
+>>>>>>>>>>>> This reverts commit d618ebaf0aa83d175658aea5291e0c459d471d39 in order
+>>>>>>>>>>>> to disable small discard by default, so that if there're huge number of
+>>>>>>>>>>>> small discards, it will decrease checkpoint's latency obviously.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Also, this patch reverts 9ac00e7cef10 ("f2fs: do not issue small discard
+>>>>>>>>>>>> commands during checkpoint"), due to it breaks small discard feature which
+>>>>>>>>>>>> may be configured via sysfs entry max_small_discards.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Fixes: 9ac00e7cef10 ("f2fs: do not issue small discard commands during checkpoint")
+>>>>>>>>>>>> Signed-off-by: Chao Yu <chao@kernel.org>
+>>>>>>>>>>>> ---
+>>>>>>>>>>>>        fs/f2fs/segment.c | 4 ++--
+>>>>>>>>>>>>        1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>>>>>>>>>
+>>>>>>>>>>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>>>>>>>>>>>> index 14c822e5c9c9..0a313368f18b 100644
+>>>>>>>>>>>> --- a/fs/f2fs/segment.c
+>>>>>>>>>>>> +++ b/fs/f2fs/segment.c
+>>>>>>>>>>>> @@ -2193,7 +2193,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+>>>>>>>>>>>>        			len = next_pos - cur_pos;
+>>>>>>>>>>>>
+>>>>>>>>>>>>        			if (f2fs_sb_has_blkzoned(sbi) ||
+>>>>>>>>>>>> -					!force || len < cpc->trim_minlen)
+>>>>>>>>>>>> +			    (force && len < cpc->trim_minlen))
+>>>>>>>>>>>>        				goto skip;
+>>>>>>>>>>>>
+>>>>>>>>>>>>        			f2fs_issue_discard(sbi, entry->start_blkaddr + cur_pos,
+>>>>>>>>>>>> @@ -2269,7 +2269,7 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
+>>>>>>>>>>>>        	atomic_set(&dcc->queued_discard, 0);
+>>>>>>>>>>>>        	atomic_set(&dcc->discard_cmd_cnt, 0);
+>>>>>>>>>>>>        	dcc->nr_discards = 0;
+>>>>>>>>>>>> -	dcc->max_discards = MAIN_SEGS(sbi) << sbi->log_blocks_per_seg;
+>>>>>>>>>>>> +	dcc->max_discards = 0;
+>>>>>>>>>>>>        	dcc->max_discard_request = DEF_MAX_DISCARD_REQUEST;
+>>>>>>>>>>>>        	dcc->min_discard_issue_time = DEF_MIN_DISCARD_ISSUE_TIME;
+>>>>>>>>>>>>        	dcc->mid_discard_issue_time = DEF_MID_DISCARD_ISSUE_TIME;
+>>>>>>>>>>>> -- 
+>>>>>>>>>>>> 2.40.1
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>>>         			f2fs_issue_discard(sbi, entry->start_blkaddr + cur_pos,
