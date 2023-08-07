@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3D1771C72
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 10:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA73771C76
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 10:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230449AbjHGIlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 04:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
+        id S230451AbjHGIlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 04:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjHGIlP (ORCPT
+        with ESMTP id S230484AbjHGIlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 04:41:15 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6CC1724
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 01:41:13 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5222c5d71b8so5913736a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 01:41:13 -0700 (PDT)
+        Mon, 7 Aug 2023 04:41:22 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896711724
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 01:41:18 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5232bb5e47bso1930312a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 01:41:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691397672; x=1692002472;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FiBr4qX4MDbW0bMa0nAPFtANFmRzjD74lfH4gfwbvd0=;
-        b=iWuFcNfomzzwUernqbjgnHDmBrxPuIdUyl+xhLNUfhmAumSwMafnFExzEChBJ+4S/s
-         u4Fo6hpOHrgOqGV06jmqPnZtzU9BhNo/+5YzUOI+2hRYuG7eiw+HuJd6CsVpVZidHgNI
-         cozJDgPKoDh9UFbmr53PofIQRClu2SWCr3ZhjbKVKE3wwo9/usoXH5N6CpLxb5njgJbs
-         ZHZKcpMMlVDkswUaVLAIlfDLcRIdNJBtIDOYBma6dxkuwf0u9bI0xesAk9VgZY5BaFNb
-         +9LNUl8PqK1KxO9HLlEvUcpkaZcNd2dBtGqK3yPxklaZGoDwvw0mm1qY35bJAZE5Sqbs
-         b4OQ==
+        d=ventanamicro.com; s=google; t=1691397677; x=1692002477;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0eZZxF7uLAsYX/m67q6Fvc/Im25NatC6UCV3VKiuk20=;
+        b=SOtKNq3tep9e4rbOEALFWIYYuWuTYwXx9gYJwZykSKNXY7xG5QmRvc7w9rvFbKnLC/
+         R51Q64qs1ZO2UuY7kop5KJfapfNRxmjYA/Xm8u7dkaqYYh0pVL6z+yUzv++OnFUWs9O8
+         kEXwXJASlHhfNVRiNypwaUAxqZeN9tiAmltG4fm734KSgXPCmyOSjniZzrAdqFjRuOce
+         uH61wEY4n02TtZC3DKv5GXoXAVRRbTCVNprBkkazK3gdeYqTZ3XBJAp+BmyM9F7+qoQ8
+         6HiRrmt+auMZQNH1/21rgV6b46Z7KIDPAeHmmnBQ3kd3hOTkPuXO3izLsesVyKuX/TJf
+         pQhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691397672; x=1692002472;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FiBr4qX4MDbW0bMa0nAPFtANFmRzjD74lfH4gfwbvd0=;
-        b=N4jDzH8ppFrQ97CZEvkokTZFRwcIh8a5SbNxOWJwfS/g5TkAXMqEGjdNLr+DKnCDrJ
-         cpNXWMRXyUjBeokqjrVeI995WkUBjfGA8IzWiaeme0Vik3PzA7Xj/O71L30I4/BKuFMa
-         U/ldOUXQPrCuhigs3qH8D0JG7NPIq/clrePYEpAvq3nHTNXIfy+/rUMHjH1BoQdqOC2P
-         MtVByG4qqbllXCCgBLfliR5yBUtyQaOVsbO7E0ZGJJdJwTQblGGZ9iiXeAVfQCOcjKru
-         +FWcfWIi1n/SX3akwLoB8/3gKd/u0qqg7SO2h5YiRdGa6orHv/jENGoc1I88WDcQkndi
-         Mhew==
-X-Gm-Message-State: AOJu0YwvatglSxEOCZ4z3txRl1btKeEv+7+HzikYLHwcgPoRw6EhqvtZ
-        9FzVKkjmRGU84goml1Ol85VfEQ==
-X-Google-Smtp-Source: AGHT+IE9kWCdDPfh1ysGqzXA+sR8LgRcYRK5cY280j1rlxyyCD7yEz8BYDWSnuErnViUGY4Xfb5luw==
-X-Received: by 2002:a05:6402:6c1:b0:523:2da2:1ec4 with SMTP id n1-20020a05640206c100b005232da21ec4mr4356059edy.11.1691397672230;
-        Mon, 07 Aug 2023 01:41:12 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id b4-20020aa7dc04000000b005224f840130sm4794190edu.60.2023.08.07.01.41.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 01:41:11 -0700 (PDT)
-Message-ID: <f3c68353-720b-bacb-a4c4-fdce81fa4d13@linaro.org>
-Date:   Mon, 7 Aug 2023 10:41:10 +0200
+        d=1e100.net; s=20221208; t=1691397677; x=1692002477;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0eZZxF7uLAsYX/m67q6Fvc/Im25NatC6UCV3VKiuk20=;
+        b=lviUUKUbyylnJAFZ7L9Me3gbSYJzBTllFy0zPEgIU5L1aUHdXv28OdMFdiwXaf4XvZ
+         cvY3j05MJFQtkU3g71Fi/8K2w7pIb+HDZx1PDqOh5iqknGcDiHExdyhg6bmjVQ3cxOhl
+         5t8NfkZKRfgU/tTAFffpKpNy86NlRdlYlUyGFm7Quxj9FhhFK7XakDHTx/HD/W7isG/g
+         r2pOegX9L7fjrEZbH5GE9ukafSVadZ81BQRMUR16PjN0sY35x6tbzFXI2NxVGm9rwiDS
+         G/43RDkMRWwodexxi402OK4HI1l50mUk7VSNxe8BFJHQHSHIy5gY6TBVYWJhEKQ6DJCu
+         HxpQ==
+X-Gm-Message-State: AOJu0YwUsxxF2iwO4633mNqt4eHpRSblY0jrrI2jgq/up1u2r2ULsW5i
+        XnNx6/eRrPQOB3WgISVbJvsvJw==
+X-Google-Smtp-Source: AGHT+IFTUmMoVlFQ7J3hG7NjaV1KI5qAp1himGDYASyuQT814a4MvLXG3IwoM9SHGhAcRUnXpKqVow==
+X-Received: by 2002:aa7:d284:0:b0:51e:53eb:88a3 with SMTP id w4-20020aa7d284000000b0051e53eb88a3mr6239145edq.25.1691397677007;
+        Mon, 07 Aug 2023 01:41:17 -0700 (PDT)
+Received: from localhost (212-5-140-29.ip.btc-net.bg. [212.5.140.29])
+        by smtp.gmail.com with ESMTPSA id b20-20020a056402139400b00522d53bff56sm4769693edv.65.2023.08.07.01.41.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 01:41:16 -0700 (PDT)
+Date:   Mon, 7 Aug 2023 11:41:15 +0300
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Sunil V L <sunilvl@ventanamicro.com>
+Cc:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Anup Patel <anup@brainfault.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Haibo Xu <haibo1.xu@intel.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Atish Kumar Patra <atishp@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: Re: [RFC PATCH v1 04/21] RISC-V: ACPI: Enhance acpi_os_ioremap with
+ MMIO remapping
+Message-ID: <20230807-767cb417c44ed5f1437f7b0d@orel>
+References: <20230803175916.3174453-1-sunilvl@ventanamicro.com>
+ <20230803175916.3174453-5-sunilvl@ventanamicro.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [RESEND PATCH v3 3/4] dt-bindings: clock: rk3588: export
- PCLK_VO1GRF clk id
-To:     Conor Dooley <conor@kernel.org>,
-        Elaine Zhang <zhangqing@rock-chips.com>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        kever.yang@rock-chips.com, heiko@sntech.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, huangtao@rock-chips.com
-References: <20230804025101.28438-1-zhangqing@rock-chips.com>
- <20230804-colonial-balsamic-c97491ebec12@spud>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230804-colonial-balsamic-c97491ebec12@spud>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230803175916.3174453-5-sunilvl@ventanamicro.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,35 +98,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2023 17:38, Conor Dooley wrote:
-> On Fri, Aug 04, 2023 at 10:51:01AM +0800, Elaine Zhang wrote:
->> add PCLK_VO1GRF clk id.
->>
->> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
->> ---
->>  include/dt-bindings/clock/rockchip,rk3588-cru.h | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/dt-bindings/clock/rockchip,rk3588-cru.h b/include/dt-bindings/clock/rockchip,rk3588-cru.h
->> index b5616bca7b44..864a321ab362 100644
->> --- a/include/dt-bindings/clock/rockchip,rk3588-cru.h
->> +++ b/include/dt-bindings/clock/rockchip,rk3588-cru.h
->> @@ -733,8 +733,9 @@
->>  #define ACLK_AV1_PRE			718
->>  #define PCLK_AV1_PRE			719
->>  #define HCLK_SDIO_PRE			720
->> +#define PCLK_VO1GRF			721
->>  
->> -#define CLK_NR_CLKS			(HCLK_SDIO_PRE + 1)
->> +#define CLK_NR_CLKS			(PCLK_VO1GRF + 1)
+On Thu, Aug 03, 2023 at 11:28:59PM +0530, Sunil V L wrote:
+> Enhance the acpi_os_ioremap() to support opregions in MMIO
+> space. Also, have strict checks using EFI memory map
+> to allow remapping the RAM similar to arm64.
 > 
-> I only got this patch & not the rest of the series, so no idea what's
-> going in those patches, but since CLK_NR_CLKS was put in a dt-binding
-> header, is that value not now part of the ABI?
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Alexandre Ghiti <alexghiti@rivosinc.com>
+> 
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> ---
+>  arch/riscv/Kconfig       |  1 +
+>  arch/riscv/kernel/acpi.c | 86 +++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 86 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 318f62a0a187..e19f32c12a68 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -38,6 +38,7 @@ config RISCV
+>  	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+>  	select ARCH_HAS_UBSAN_SANITIZE_ALL
+>  	select ARCH_HAS_VDSO_DATA
+> +	select ARCH_KEEP_MEMBLOCK
+>  	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
+>  	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
+>  	select ARCH_STACKWALK
+> diff --git a/arch/riscv/kernel/acpi.c b/arch/riscv/kernel/acpi.c
+> index 56cb2c986c48..aa4433bca6d9 100644
+> --- a/arch/riscv/kernel/acpi.c
+> +++ b/arch/riscv/kernel/acpi.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/io.h>
+>  #include <linux/pci.h>
+>  #include <linux/efi.h>
+> +#include <linux/memblock.h>
+>  
+>  int acpi_noirq = 1;		/* skip ACPI IRQ initialization */
+>  int acpi_disabled = 1;
+> @@ -217,7 +218,90 @@ void __init __acpi_unmap_table(void __iomem *map, unsigned long size)
+>  
+>  void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+>  {
+> -	return (void __iomem *)memremap(phys, size, MEMREMAP_WB);
+> +	efi_memory_desc_t *md, *region = NULL;
+> +	pgprot_t prot;
+> +
+> +	if (WARN_ON_ONCE(!efi_enabled(EFI_MEMMAP)))
+> +		return NULL;
+> +
+> +	for_each_efi_memory_desc(md) {
+> +		u64 end = md->phys_addr + (md->num_pages << EFI_PAGE_SHIFT);
+> +
+> +		if (phys < md->phys_addr || phys >= end)
+> +			continue;
+> +
+> +		if (phys + size > end) {
+> +			pr_warn(FW_BUG "requested region covers multiple EFI memory regions\n");
+> +			return NULL;
+> +		}
+> +		region = md;
+> +		break;
+> +	}
+> +
+> +	/*
+> +	 * It is fine for AML to remap regions that are not represented in the
+> +	 * EFI memory map at all, as it only describes normal memory, and MMIO
+> +	 * regions that require a virtual mapping to make them accessible to
+> +	 * the EFI runtime services.
+> +	 */
+> +	prot = PAGE_KERNEL_IO;
+> +	if (region) {
+> +		switch (region->type) {
+> +		case EFI_LOADER_CODE:
+> +		case EFI_LOADER_DATA:
+> +		case EFI_BOOT_SERVICES_CODE:
+> +		case EFI_BOOT_SERVICES_DATA:
+> +		case EFI_CONVENTIONAL_MEMORY:
+> +		case EFI_PERSISTENT_MEMORY:
+> +			if (memblock_is_map_memory(phys) ||
+> +			    !memblock_is_region_memory(phys, size)) {
+> +				pr_warn(FW_BUG "requested region covers kernel memory @ %p\n",
+> +					&phys);
+> +				return NULL;
+> +			}
+> +
+> +			/*
+> +			 * Mapping kernel memory is permitted if the region in
+> +			 * question is covered by a single memblock with the
+> +			 * NOMAP attribute set: this enables the use of ACPI
+> +			 * table overrides passed via initramfs.
+> +			 * This particular use case only requires read access.
+> +			 */
+> +			fallthrough;
+> +
+> +		case EFI_RUNTIME_SERVICES_CODE:
+> +			/*
+> +			 * This would be unusual, but not problematic per se,
+> +			 * as long as we take care not to create a writable
+> +			 * mapping for executable code.
+> +			 */
+> +			prot = PAGE_KERNEL_RO;
+> +			break;
+> +
+> +		case EFI_ACPI_RECLAIM_MEMORY:
+> +			/*
+> +			 * ACPI reclaim memory is used to pass firmware tables
+> +			 * and other data that is intended for consumption by
+> +			 * the OS only, which may decide it wants to reclaim
+> +			 * that memory and use it for something else. We never
+> +			 * do that, but we usually add it to the linear map
+> +			 * anyway, in which case we should use the existing
+> +			 * mapping.
+> +			 */
+> +			if (memblock_is_map_memory(phys))
+> +				return (void __iomem *)__va(phys);
+> +			fallthrough;
+> +
+> +		default:
+> +			if (region->attribute & EFI_MEMORY_WB)
+> +				prot = PAGE_KERNEL;
+> +			else if ((region->attribute & EFI_MEMORY_WC) ||
+> +				 (region->attribute & EFI_MEMORY_WT))
+> +				prot = pgprot_writecombine(PAGE_KERNEL);
+> +		}
+> +	}
+> +
+> +	return ioremap_prot(phys, size, pgprot_val(prot));
+>  }
+>  
+>  #ifdef CONFIG_PCI
+> -- 
+> 2.39.2
+>
 
-Technically yes, practically does not matter because no one should use
-it. More bindings make the same mistakes, so it could be just dropped.
+Such a faithful port of arm64's function that it begs the question as to
+whether or not we should refactor and share. Anyway, other than Andy's
+comments, LGTM
 
-Best regards,
-Krzysztof
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
+Thanks,
+drew
