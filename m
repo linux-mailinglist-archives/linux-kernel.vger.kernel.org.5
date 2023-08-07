@@ -2,111 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58131771864
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309A5771869
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbjHGCil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 22:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43702 "EHLO
+        id S229845AbjHGCkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 22:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbjHGCij (ORCPT
+        with ESMTP id S229587AbjHGCkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 22:38:39 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2114.outbound.protection.outlook.com [40.107.255.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE5EFA
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:38:38 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kraoid4IsHoMm7jmkwo3S8eJN6o9ApYJGFqM+SnIj4k4qVFGH5PeWpQTX4mK61spBuHvxAhCbWxQlcHOns+zmivMe4Y4QZB5Xb/7JBk7ShrBKdOD/ZMFTJ0qQXZMQ4iFlstVr/krhuIUt3Vf0NfNLjaydgrBF2XIwlfSBPCmswKDq9iRdWAYXncv25u+oROphkc9nTY2kbl32V5togjkeYv+SVoujrB0IwhyZfpJonLETpLwqL0ltpKu6ARRLPLC0WMcWFr8rrfYQOG/mYDCZC5BZmlKbo4R3DL7Yka2czdoS0hTNse23gLIH22P2UoxmX3PInkR7pMIFruE4Haojg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BIAcp8nYryCw1a+nI3c3XtO+kwKr9rannCACAIGTh7E=;
- b=AmCbinYh5uwttzPNBmr4jyLfdpeeX0fMgTkYkNeSNOFk8L9HBigk/IehKbfodHw1vnzFLTZakEiLp9cFuwfAZ3Uhaw1t0JzovDVkxZGAZ195vqjQEMbreiX+U/cUkPvnTTPcxM1ty1fByLVSY9gRGfnDWGW6J+pMUztdhsQIdbEGe/fTrCYG7bEUgiKfVgGAHlMW3OwRQw5J5QMsbwchIZ+sHKIOqKYOCpSuOWPnQXebGdzqic7yjBkbK0PfCam/M6M0tlw5VgKylKLkFWhNlJ87H5mSFVjUdZId7BCkn8xO/FA4YnR9SvK7UOHYW7T3rFDANGHEGtqqxQ4MmkR1hA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BIAcp8nYryCw1a+nI3c3XtO+kwKr9rannCACAIGTh7E=;
- b=S33D1h6uX5GUQ4sHOdkK9EozzBco4Sf4rUKUNlpr7bQo8YWUOqhKlnUjEot3T9hR10FaxyXDp4nWy4VPPD+xLavyLAJ8loCItwg9PaJSmwxCecjQbKq1QOEWSWFn4X36IgSdtd5oFoeoF3ldOtkv2NRQXFCyxQijfVwkCZGMVkPpjCrp1NAEzEhkyb+keYapWh9qm1j7+3UPLx3ylJNmA13rHStv7ht0YOcESTt5Lz2DvAtwGF/gf8L1RS18nl/wtnaYsW2oryafuC0Di0v2IB1Gyqy9hKloRtYKowac/P0fc4IKg589TupH8HG9sZGB7hZAz0oSAXmYqoA1HJBwmw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SL2PR06MB3017.apcprd06.prod.outlook.com (2603:1096:100:3a::16)
- by TYZPR06MB5321.apcprd06.prod.outlook.com (2603:1096:400:1f3::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26; Mon, 7 Aug
- 2023 02:38:32 +0000
-Received: from SL2PR06MB3017.apcprd06.prod.outlook.com
- ([fe80::1528:9c5d:20bf:e5e0]) by SL2PR06MB3017.apcprd06.prod.outlook.com
- ([fe80::1528:9c5d:20bf:e5e0%5]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
- 02:38:32 +0000
-From:   Wu Bo <bo.wu@vivo.com>
-To:     chao@kernel.org
-Cc:     bo.wu@vivo.com, daehojeong@google.com, jaegeuk@kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, wubo.oduw@gmail.com
-Subject: Re: [f2fs-dev] [PATCH 1/1] f2fs: move fiemap to use iomap framework
-Date:   Mon,  7 Aug 2023 10:38:23 +0800
-Message-Id: <20230807023823.49564-1-bo.wu@vivo.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <791fbf71-093e-3ef5-b02b-6d6bba72b57f@kernel.org>
-References: <791fbf71-093e-3ef5-b02b-6d6bba72b57f@kernel.org>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0234.apcprd06.prod.outlook.com
- (2603:1096:4:ac::18) To SL2PR06MB3017.apcprd06.prod.outlook.com
- (2603:1096:100:3a::16)
+        Sun, 6 Aug 2023 22:40:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8C4FA
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:40:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C84C861324
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:40:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1F173C433CA;
+        Mon,  7 Aug 2023 02:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691376021;
+        bh=FdKig/TFxdJ4eoxL+le5qYryqsBWn1IJw88foFdlxAc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=hsoRIYYNuYmnGaZFJj3dxKwVUakN4eIbTc6Ty9rj5Eu2FlvbICBn9V6tUSkqDNMmz
+         ONbmfCoEK4EnNOiKZ1k3Kd97TXC+YTbt71njcBO6wXQy0jPP5Ryqf7URC2j+xBnEJs
+         osIrv6tZYu/agDsYVsa24h4rwtgLbXQfuIF5a1bTIg7gSsQ1LGnZrB4UD/Za8buUe6
+         XGkJfoy4PPYbctcnEIz0x5J4GajkmCgJmJV6QLd1m2rvCVq2/CNDoiuBoj7QqD1q3r
+         LZ/gmg1cMU1ZhUSyTlPoKGUMLYaOuG70opL0QpmsX7kI4x2E4SY9yYGAnLCdawo3fB
+         0Qkt1q+M2uSCQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F2CE3E505D5;
+        Mon,  7 Aug 2023 02:40:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SL2PR06MB3017:EE_|TYZPR06MB5321:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0a921fc4-8c16-42db-87c1-08db96ef6378
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GZzRPwgGzQaFazUwerSXI4SgMVKpikbRJnNwibobiWUCIEb8E5HlibpkkP9rOFrL6PBmGdpRtPSQsCMHdLvYWPnxggH/t8iKML/7vIMdw5OVBK/ee8QxZlVvh+ggcQVKcfkr/kLBc6GfsVUzIyH1AQeKaQouZSzF7xaIlqvzLKBLqK4k/HkEIqi8TpFqVNp5IcN2WKmYjwI3WlUGu38i9jtNbhwI1O6y6k/r8lsgIGX823YpWNA6v1g9qrVhh0yt9p82G2HCE64rZ6hvO6LpSiz7uga0sxA5b0PSelkUyQBefka4ZljfbZh0du0yLn8tuiQjN6hbAXj2XFLe82za3M+r30Mja0Gs1f3ivsuf7eFy+ecWWuzGW3UsPtYWlJDVfxXBT1FPiK1hNKSglJ4aP4yRasXk3TuRQEFAZcHfpjzIrBIRdZR9Xk5fsNS+Xpjx03H8MZB4ZehhJoWuIfDvCazQyNrRAsb7Tt+USS5pjT9Bae3/jDEHZmh/VPpOmQKV0BWnexSOdOyqgXhR2AYwmclU+07u/uNdd9UFjoWw19l5znDez2JMo7mgeEhG4XdYBnuz6Uqe+x7YO/XFxRleOK4DSgUTp5xws4Gvr557w9bPSFmoRoSMUvbh8lm+w7cx
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3017.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(366004)(376002)(39850400004)(346002)(451199021)(186006)(1800799003)(2616005)(36756003)(966005)(6512007)(4326008)(316002)(6916009)(86362001)(478600001)(38350700002)(38100700002)(52116002)(6666004)(66946007)(6486002)(66556008)(66476007)(53546011)(6506007)(41300700001)(1076003)(26005)(8936002)(8676002)(4001150100001)(2906002)(83380400001)(5660300002)(562404015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xKLLU8XAfRmNMJxvAZj6m6oje5wHrHK7S3W+K7jm3s+XDb3j4wQcm2JJ9HYO?=
- =?us-ascii?Q?XlsNZu888Opv77riwzQe7/2GuLf4vmwjAYs12IiVmom87stKUJMSEW3xoBqK?=
- =?us-ascii?Q?j1qWSrWnwvPbFL634yy4m+gcmGesM8uAXMGjaPjn4JDPJjNq+B/Yu5rk+mMA?=
- =?us-ascii?Q?6jyTh2cuXWTxLRA2PWc3oSr2MsqIownwkNaq6db5fhLo+B5Cdff9I0qAS+w6?=
- =?us-ascii?Q?dPFYjc9seh6M/Otz0sA0YjX0G/sY684uEo1DrRs2nlS2NYkXqCiBYfLIMAy3?=
- =?us-ascii?Q?MJ1kAYG4xG9p22H4bynRZd+zQwQeZ2kdgv5QvEYR9x5/dUFKNZhYPMb4iEXb?=
- =?us-ascii?Q?VyVtmf0JfviQgioFrHqFDJ+DS7Ysof2+kFGFjDpi1OFfJxDfzs2jP7WMbGVG?=
- =?us-ascii?Q?Zi/tcaXkiNQOh3Ck1pEGHWq5ojr2NkLQS7RjDSbN7of9Tv6rV3NkOq6K7krk?=
- =?us-ascii?Q?QIJXg0tMf+fTYDFT2sErlXvouHTDt2LnkiE6HbMlPjZOlO4BFNvFcFcSqqOb?=
- =?us-ascii?Q?3iXygJotMkFdIdZL2hrVnxy+PmGC94NI49mY/t1ZkcJUL2c1k6nDJCLCfBSo?=
- =?us-ascii?Q?snoVPRWngcuTAyogGUR9nFwBY4digDFJ0UA4wjM31VCb6ohjaWN1NGNt0vRg?=
- =?us-ascii?Q?AwM/6wRjI3jjPUpt2X1U5UOdC5mI05BIVtETcz+w+6TcphDbFDjCRkxJexI9?=
- =?us-ascii?Q?BslzlUeiYBkDPVJAgIUOdnPL5XAfT2Szon4+rEVkt5TusTxbXnPVE/9w0LZw?=
- =?us-ascii?Q?0Yc8hdgPh9TPRIRM8kZZSfMizG9rk92O+OoOsvtIryX00lzwOLCbdBiJUdPD?=
- =?us-ascii?Q?yvbO8uf3CsO8WzYtv8p7WGljPJrtR4L4HJKKIX1w38hcBNPtDfiTp2HSt5yZ?=
- =?us-ascii?Q?ZBNlf4f/2SrMPB23rjB6LUrcQSvP1cr8MSDLPprZVr+oL4J3z8GYjQ/Qada6?=
- =?us-ascii?Q?3mC5NjYkUfIIkOmsANgiBoeSzpuhCOsyh4aUc7oIYJlbjHgprHeL/gvJvyjQ?=
- =?us-ascii?Q?tSOHLmdvfxTS8rYzqQqNT84zFpMOfmKW0mPS5x8ppBozLTadZwsaEwrA1hXQ?=
- =?us-ascii?Q?+wLH1UL/R+G4Inz5Wq+ze6maJ0htiEQwV7IdLuFW/wgCUO6MG2TvUbT4Msbj?=
- =?us-ascii?Q?cqRLdA6cXZxFaVqrmhMjU20XFh/eG98z5sMidXR6AEMi/VQZmsdc0wtygRtc?=
- =?us-ascii?Q?nQbB8TWJ/wUI5h4TKbQ3As9AWI+Rozv02L9WfdB13zHVpfM4bfeXxty9qYMC?=
- =?us-ascii?Q?7wPzGKRdr646JliceiEaHeNmGZDjlB83WUBvoSXlSmwtuHNBpMLX+ECQw6iT?=
- =?us-ascii?Q?Ia9zbXLx+YQQZJ/JIIE1/NYwHLtL+HJjL1ksAgIR5xnL0IWLiUSzT/98Z5Tm?=
- =?us-ascii?Q?4g667Noi4ndf/nPPjR/CJjs5TrOK3/H0mAvI7azqcXeS5IvpR0bYgv8gKGvY?=
- =?us-ascii?Q?DNfun4v90Nyc8lmZHrj4tVVA2BpjwmnTgiU/KkOphd0qftyuCYY5mSjIBuVs?=
- =?us-ascii?Q?phzpp74YAf57ekG6DKE3hyl3RKxbjkYlQ37sod1g9wbMssSekCwna7AOUasd?=
- =?us-ascii?Q?TAbjfBbjTllyf1Jm0T03ShYkntsAVu00PAUptpQ/?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a921fc4-8c16-42db-87c1-08db96ef6378
-X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3017.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 02:38:31.9501
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2/D6yI6WeWrJWDLNdy+j1t01mYwAUVexQr7U8327As5V2i4r9b+XrHCOJBqnn7N668oyrHGbUsoYEnAtPl54xw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB5321
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] platform/chrome: cros_ec_lpc: Remove EC panic shutdown
+ timeout
+From:   patchwork-bot+chrome-platform@kernel.org
+Message-Id: <169137602099.16990.6569232365086631640.git-patchwork-notify@kernel.org>
+Date:   Mon, 07 Aug 2023 02:40:20 +0000
+References: <20230802175847.1.Ie9fc53b6a1f4c6661c5376286a50e0cf51b3e961@changeid>
+In-Reply-To: <20230802175847.1.Ie9fc53b6a1f4c6661c5376286a50e0cf51b3e961@changeid>
+To:     Rob Barnes <robbarnes@google.com>
+Cc:     bleung@chromium.org, groeck@chromium.org, tzungbi@kernel.org,
+        dtor@chromium.org, chrome-platform@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,122 +60,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/6 10:05, Chao Yu wrote:
+Hello:
 
-> On 2023/7/31 9:26, Wu Bo wrote:
->> This patch has been tested with xfstests by running 'kvm-xfstests -c
->> f2fs -g auto' with and without this patch; no regressions were seen.
->>
->> Some tests fail both before and after, and the test results are:
->> f2fs/default: 683 tests, 9 failures, 226 skipped, 30297 seconds
->>    Failures: generic/050 generic/064 generic/250 generic/252 generic/459
->>        generic/506 generic/563 generic/634 generic/635
->
-> Can you please take a look at gerneic/473 ?
+This patch was applied to chrome-platform/linux.git (for-kernelci)
+by Tzung-Bi Shih <tzungbi@kernel.org>:
 
-This generic/473 case is failed on xfs too. It's an issue of iomap.
+On Wed,  2 Aug 2023 17:58:48 +0000 you wrote:
+> Remove the 1 second timeout applied to hw_protection_shutdown after an
+> EC panic. On some platforms this 1 second timeout is insufficient to
+> allow the filesystem to fully sync. Independently the EC will force a
+> full system reset after a short period. So this backup timeout is
+> unnecessary.
+> 
+> Signed-off-by: Rob Barnes <robbarnes@google.com>
+> 
+> [...]
 
->
-> generic/473 1s ... - output mismatch (see
-> /media/fstests/results//generic/473.out.bad)
->     --- tests/generic/473.out    2022-11-10 08:42:19.231395230 +0000
->     +++ /media/fstests/results//generic/473.out.bad    2023-08-04
-> 02:02:01.000000000 +0000
->     @@ -6,7 +6,7 @@
->      1: [256..287]: hole
->      Hole + Data
->      0: [0..127]: hole
->     -1: [128..255]: data
->     +1: [128..135]: data
->      Hole + Data + Hole
->      0: [0..127]: hole
->     ...
->     (Run 'diff -u /media/fstests/tests/generic/473.out
-> /media/fstests/results//generic/473.out.bad'  to see the entire diff)
+Here is the summary with links:
+  - platform/chrome: cros_ec_lpc: Remove EC panic shutdown timeout
+    https://git.kernel.org/chrome-platform/c/f2d4dced9a58
 
-The layout of the test file is:
-fiemap.473:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..127]:        hole               128
-   1: [128..255]:      5283840..5283967   128 0x1000
-   2: [256..383]:      hole               128
-   3: [384..511]:      5283968..5284095   128 0x1000
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-And the test command is:
-xfs_io -c "fiemap -v 0 65k" fiemap.473
 
-So the difference is about when to stop traversal the extents.
-The iomap stop when the length beyond it is requested from fiemap command:
-...
-xfs_io-7399    [001] .....  1385.656328: f2fs_map_blocks: dev = (254,48), ino = 5, file offset = 15, start blkaddr = 0x0, len = 0x0, flags = 0, seg_type = 8, may_create = 0, multidevice = 0, flag = 1, err = 0                                                                                       
-xfs_io-7399    [001] .....  1385.656328: f2fs_map_blocks: dev = (254,48), ino = 5, file offset = 16, start blkaddr = 0x3400, len = 0x1, flags = 2, seg_type = 8, may_create = 0, multidevice = 0, flag = 1, err = 0            
-
-While previous logic is that stop traversal until next data extent is found:
-...
-xfs_io-2194    [000] .....   116.046690: f2fs_map_blocks: dev = (254,48), ino = 5, file offset = 15, start blkaddr = 0x0, len = 0x0, flags = 0, seg_type = 8, may_create = 0, multidevice = 0, flag = 1, err = 0
-xfs_io-2194    [000] .....   116.046690: f2fs_map_blocks: dev = (254,48), ino = 5, file offset = 16, start blkaddr = 0xa1400, len = 0x10, flags = 2, seg_type = 8, may_create = 0, multidevice = 0, flag = 1, err = 0
-xfs_io-2194    [000] .....   116.046691: f2fs_map_blocks: dev = (254,48), ino = 5, file offset = 32, start blkaddr = 0x0, len = 0x0, flags = 0, seg_type = 8, may_create = 0, multidevice = 0, flag = 1, err = 0
-...
-xfs_io-2194    [000] .....   116.046706: f2fs_map_blocks: dev = (254,48), ino = 5, file offset = 48, start blkaddr = 0xa1410, len = 0x10, flags = 2, seg_type = 8, may_create = 0, multidevice = 0, flag = 1, err = 0
-
->
-> Other concern is, it needs to test this implementation on compressed
-> file,
-> since the logic is a little bit complicated.
-
-To be honest, all the complex logic is try to handle compressed file situation.
-
-I used enwiki8 dataset to test compressed file:
-    mkfs.f2fs -f -O extra_attr,compression f2fs.img
-    mount f2fs.img f2fs -o compress_algorithm=lz4,compress_log_size=3,compress_mode=user
-    touch compressed_file
-    f2fs_io setflags compression compressed_file
-    cat enwiki8 > compressed_file
-    f2fs_io compress compressed_file
-    f2fs_io release_cblocks compressed_file
-    xfs_io -c fiemap compressed_file | awk '{print $2 $3}'
-
-enwiki8 download url: http://mattmahoney.net/dc/enwik8.zip
-
-And the result is:
---- a/orig
-+++ b/new
-@@ -1750,8 +1750,8 @@
- [111872..111935]:323448..323511
- [111936..111999]:323488..323551
- [112000..112063]:323520..323583
--[112064..112087]:323560..323583
--[112088..112127]:53248..53287
-+[112064..112095]:323560..323591
-+[112096..112127]:53248..53279
- [112128..112191]:53256..53319
- [112192..112255]:53288..53351
- [112256..112319]:53328..53391
-@@ -2078,10 +2078,8 @@
- [132800..132863]:65408..65471
- [132864..132927]:65448..65511
- [132928..132991]:65488..65551
--[132992..132999]:65528..65535
--[133000..133007]:65528..65535
--[133008..133039]:69632..69663
--[133040..133055]:hole
-+[132992..133007]:65528..65543
-+[133008..133055]:69632..69679
- [133056..133119]:69664..69727
- [133120..133183]:69704..69767
- [133184..133247]:69744..69807
-
-The first diff is I count the space of COMPRESS_ADDR belong to the head of one
-compressed cluster while previous count at the rear of cluster.
-The secound diff show the previous print a 'hole' in one cluster. I think a
-compressed cluster should not include a 'hole', so there may have a bug before.
-
-Also, as discussed in this thread:
-https://lore.kernel.org/linux-f2fs-devel/ZJmBmt3WmUpWR3+2@casper.infradead.org/T/#t
-If f2fs can support async buffer write, the performance can be greatly improved
-when using io_uring. 
-
-I think it's time to move f2fs to iomap framework. And really looking forward
-to hearing your opinion on this.
-
-Thanks
