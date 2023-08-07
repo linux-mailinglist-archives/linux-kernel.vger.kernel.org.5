@@ -2,135 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B96EA772E93
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 21:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D711F772E94
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 21:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbjHGTUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 15:20:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
+        id S231127AbjHGTVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 15:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbjHGTUm (ORCPT
+        with ESMTP id S229861AbjHGTVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 15:20:42 -0400
-Received: from out-84.mta1.migadu.com (out-84.mta1.migadu.com [IPv6:2001:41d0:203:375::54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7707F10F3
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 12:20:40 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-        t=1691436036;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3MO64bm8DFoP+FtMNEmWQlPXqTMO4IBSAv4wntQ0uL4=;
-        b=vDj1LhgzTqUvdYIJ+GyYNE/S8OovxIjbJAVnxEAJfbetB2Bs8LgZrUgjIh5e9wb2/CSec/
-        T6ClYlSomL585prfZpsCyjU1Yf/RigIoIk+BSNJa2xVEEKj2i7zjsCd5wgKlFmVeLFL16c
-        Pv6WpVr/YpPZFiTE4Am8W7lEnPOghWTv1sxC+jaamcOwz9wwpAdnRvdIvEPjV2woQ7R6y5
-        aJfWJlt+sUyrZhv1yYqMACRb618Kmg5tbsYnLkserZbGzBHulv4rkNDXMUvmX90psWhoEe
-        ViGgRiWSf+46Dgz+GRls+3yOA/18n9rNoU36Av4tPtBbttJEViMFeW1B/VphVA==
-From:   John Watts <contact@jookia.org>
-To:     linux-sunxi@lists.linux.dev
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Maksim Kiselev <bigunclemax@gmail.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        John Watts <contact@jookia.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] riscv: dts: allwinner: d1: Add CAN controller nodes
-Date:   Tue,  8 Aug 2023 05:19:52 +1000
-Message-ID: <20230807191952.2019208-1-contact@jookia.org>
+        Mon, 7 Aug 2023 15:21:05 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B5F6610F3
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 12:21:04 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 49DAE1FB;
+        Mon,  7 Aug 2023 12:21:47 -0700 (PDT)
+Received: from [192.168.1.102] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 50E903F64C;
+        Mon,  7 Aug 2023 12:21:02 -0700 (PDT)
+Message-ID: <661a7bb5-99e1-de16-d860-0cd17f7a0470@arm.com>
+Date:   Mon, 7 Aug 2023 20:20:45 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/1] iommu/arm-smmu-v3: Fix error case of range command
+Content-Language: en-GB
+To:     zhurui <zhurui3@huawei.com>, Nicolin Chen <nicolinc@nvidia.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Tomas Krcka <krckatom@amazon.de>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <1690784482-30028-1-git-send-email-wangwudi@hisilicon.com>
+ <20230801085504.GA26130@willie-the-truck>
+ <27c895b8-1fb0-be88-8bc3-878d754684c8@huawei.com>
+ <d5fc1f72-7428-4fef-d868-d06b85add635@huawei.com>
+ <20230804165225.GF30679@willie-the-truck> <ZM1DqxXcBT2SOs8/@Asurada-Nvidia>
+ <015b4573-9d74-451b-8028-a1050ade7019@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <015b4573-9d74-451b-8028-a1050ade7019@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Allwinner D1, T113 provide two CAN controllers that are variants
-of the R40 controller.
+On 2023-08-06 06:28, zhurui wrote:
+> On 2023/8/5 2:30, Nicolin Chen wrote:
+>> On Fri, Aug 04, 2023 at 05:52:25PM +0100, Will Deacon wrote:
+>>> On Fri, Aug 04, 2023 at 05:31:20PM +0800, zhurui wrote:
+>>>> When tg != 0 but ttl, scale, num all 0 in a range tlbi command, it
+>>>> is reserved and will cause the CERROR_ILL error. This case means
+>>>> that the size to be invalidated is only one page size, and the
+>>>> range invalidation is meaningless here. So we set tg to 0 in this
+>>>> case to do an non-range invalidation instead.
+>>
+>>>> @@ -1930,6 +1927,12 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
+>>>>                          num = (num_pages >> scale) & CMDQ_TLBI_RANGE_NUM_MAX;
+>>>>                          cmd->tlbi.num = num - 1;
+>>>>
+>>>> +                       /* Prevent error caused by one page tlbi with leaf 0 */
+>>>> +                       if (scale == 0 && num == 1 && cmd->tlbi.leaf == 0)
+>>>> +                               cmd->tlbi.tg = 0;
+>>>
+>>> This should only be true for the last iteration, right (i.e. when num_pages
+>>> == 1)? In which case, I'd prefer to leave the old code as-is and just add:
+>>>
+>>>          /* Single-page leaf invalidation requires a TG field of 0 */
+>>>          if (num_pages == 1 && !cmd->tlbi.leaf)
+>>>                  cmd->tlbi.tg = 0;To Will and Nicolin,
+> 
+> Not only the last iteration, it's the result of __ffs function. For example, if
+> numpages is 33, then the value of __ffs(num_pages) is 0, so the value of scale
+> is also 0. The value of num depends on CMDQ_TLBI_RANGE_NUM_MAX. That is, the
+> maximum value of num is 31. Therefore, the final value of num is 1.
+> So, if consider CMDQ_TLBI_RANGE_NUM_MAX, there will be some case not the last
+> one page but the beginning pages. That's why I use scale and num as conditions,
+> not num_pages. Then I should reassign tg based on the result.
 
-I have tested support for these controllers on two boards:
+Yeah, I'd rather not downgrade to a non-range invalidate since that 
+complicates the reasoning for the errata affecting those. If the size of 
+the invalidation is equal to TG then it can only represent a single 
+last-level page, i.e. TTL=3, thus if it does warrant handling here then 
+indeed rearranging to base the condition on num_pages as well ought to 
+suffice. However, this is all still begging the question of where and 
+why we're doing a *non-leaf* invalidation that isn't aligned to the size 
+of a table, because that in itself doesn't make a whole heap of sense - 
+my hunch is that that wants figuring out and could probably be fixed at 
+the source.
 
-- A Lichee Panel RV 86 Panel running a D1 chip
-- A Mango Pi MQ Dual running a T113-s3 chip
+Thanks,
+Robin.
 
-Both of these fully support both CAN controllers.
-
-Signed-off-by: John Watts <contact@jookia.org>
----
-Changes in v3:
-- Set default pinctrl for can controller
-- Moved can nodes to proper location
-- Moved can pins to proper location
-
- .../boot/dts/allwinner/sunxi-d1s-t113.dtsi    | 34 +++++++++++++++++++
- 1 file changed, 34 insertions(+)
-
-diff --git a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-index d59b4acf183a..24f2e70d5886 100644
---- a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-+++ b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-@@ -52,6 +52,18 @@ pio: pinctrl@2000000 {
- 			#gpio-cells = <3>;
- 			#interrupt-cells = <3>;
- 
-+			/omit-if-no-ref/
-+			can0_pins: can0-pins {
-+				pins = "PB2", "PB3";
-+				function = "can0";
-+			};
-+
-+			/omit-if-no-ref/
-+			can1_pins: can1-pins {
-+				pins = "PB4", "PB5";
-+				function = "can1";
-+			};
-+
- 			/omit-if-no-ref/
- 			clk_pg11_pin: clk-pg11-pin {
- 				pins = "PG11";
-@@ -356,6 +368,28 @@ i2c3: i2c@2502c00 {
- 			#size-cells = <0>;
- 		};
- 
-+		can0: can@2504000 {
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&can0_pins>;
-+			compatible = "allwinner,sun20i-d1-can";
-+			reg = <0x02504000 0x400>;
-+			interrupts = <SOC_PERIPHERAL_IRQ(21) IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_CAN0>;
-+			resets = <&ccu RST_BUS_CAN0>;
-+			status = "disabled";
-+		};
-+
-+		can1: can@2504400 {
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&can1_pins>;
-+			compatible = "allwinner,sun20i-d1-can";
-+			reg = <0x02504400 0x400>;
-+			interrupts = <SOC_PERIPHERAL_IRQ(22) IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_CAN1>;
-+			resets = <&ccu RST_BUS_CAN1>;
-+			status = "disabled";
-+		};
-+
- 		syscon: syscon@3000000 {
- 			compatible = "allwinner,sun20i-d1-system-control";
- 			reg = <0x3000000 0x1000>;
--- 
-2.41.0
-
+> 
+>>
+>> Is "!cmd->tlbi.leaf" to be "leaf" or "non-leaf"?
+>>
+>> IIUIC, this "num_pages == 1" implies "NUM == 0, SCALE == 0" while
+>> the "!cmd->tlbi.leaf" implies "TTL = 0b00", which in combination
+>> would result in a CERROR_ILL mentioned by the spec?
+>>
+>> I feel this could be more clear by just checking the three fields
+>> following the spec...>
+>> Thanks
+>> Nicolin
+>> .
+>>
+> Yes, based on spec 4.4.1.1 for ARM IHI 0070, after the TLL and TG table, there is a
+> description for TG != 0b00, and you can check it in the last point.
+> 
+> Thanks.
+> ZhuRui
+> .
