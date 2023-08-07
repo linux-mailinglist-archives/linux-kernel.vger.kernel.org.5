@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0350F772A97
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29977772A9B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbjHGQZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
+        id S231535AbjHGQZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbjHGQZS (ORCPT
+        with ESMTP id S229896AbjHGQZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:25:18 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6441BC8
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:25:07 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-56d6879dcaaso1322497eaf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:25:06 -0700 (PDT)
+        Mon, 7 Aug 2023 12:25:51 -0400
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D0F10CF
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:25:47 -0700 (PDT)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1a1fa977667so3582969fac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:25:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691425506; x=1692030306;
+        d=gmail.com; s=20221208; t=1691425546; x=1692030346;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YOWOgyUv1qrx+9DmmFpIQpCVfnmLKrcEfAnIcHRhdZs=;
-        b=s4nBDeDhgnn0DtVRgUkqUUbApXJue9T4uVFIFUPgNM1dYs3VFIDrG+fZyR8Fnzx+xk
-         ucLapytaUbg4ZOTBpkKRPOHgqqUXbyKVRxnYZyOfql03n15oL+y96fOlFUb7A4NQ4UCo
-         PmdvH9Uhs+Z/fezk0PP9PMZHr43jFqmHM6FBr2sUYsupkWnZrtb4sg42CjzNqEfjPNGM
-         IIVnqEg/2Qwk7ka5cBx1hOSOTXB1qQYuChoR6pJqRzYn8jeZe+xHETu71HWRmfVUgITL
-         0ZdZI0gsGYK2hQbnhqvvnwyWeTygqZhy6KVfrXsE2COuDARkVWOHTj2yNVkEOs03a7kk
-         eLjw==
+        bh=0WiRoo0vL6kJ0w8/dkfqWYfJVOit9SFqabx1jj5i4xE=;
+        b=MvZlnZBWLkQV8gMSfR7hfCYwLdRhK3YICmTNiPt26cN+I+OrIUHngzBL+nCym/cPRX
+         NdS2LnVSU9qr41ss0lf+5GBtc4Gwk1o2KvWB3WuBj2yOBk9ZVBz0CzCABKDKWb8TYci9
+         4usW7ZHcm40vToln4809gQlVLasWfqPGB+DZGkJj5Mc8maib8t1a/0Tu7w0bmeqk9mDq
+         bpKd+Omc4SGwT+76iqWRTidAWW54Fa/idbWR6lNei2QM7D+XLh1Dlrzs2rnrP3umd+FT
+         fKk9LPRFPMYeWMkNrm5OS8zbcmtIHYWrKF2ZSKsrvfstf6EQe4P0PcmA92qhCxrhIk57
+         Wa8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691425506; x=1692030306;
+        d=1e100.net; s=20221208; t=1691425546; x=1692030346;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YOWOgyUv1qrx+9DmmFpIQpCVfnmLKrcEfAnIcHRhdZs=;
-        b=iZZsYuFGYpaOxTR5M7ZCnd1e94TtEI9nMYSNWtTarBS+ne+BQ9U5B6Ks4DxfIeHmmo
-         bb0vvomdzDNrYWzQfcwcUHBlVqytPwcUYBRdwX7YFhsKSogey4V+6qtPMzEuDEEEk1pE
-         mUdP8d8d4wbbjudllRVJ9WZ44+ghYaEVqjfDw4D1qvOqES5hs5nz/CfdE8ldhCPL4VD5
-         VzT5R58oTGIL7862KuR8RuoMpj77+Rx6Fb7YukeTnCxLXaMGcFX0JAqR26QHJE3+uKjc
-         kXetEmKCggNNWf7Dbudk/jGbWJwsUhB5WZGSHqCAJEqS4NOBk4rvRdkwqjnZ4c1Ckkhq
-         /Lpg==
-X-Gm-Message-State: AOJu0Yy9XUH6wrSgjIssQNJTsZEO0ruxydn3OB/kbWJpr2Iv2MyJSwZ9
-        ZyjjKLHab4Uy3wbbIVLTiXjpFn+j95iSOyeyj9o=
-X-Google-Smtp-Source: AGHT+IHoGDnJkdKJd57JSppSx0FZ3g/L3aeLHmPRvBh3gPJZJymQwuBQvcISwk0qOsAZz6TrB9OBfNswDJLtwJ7ghPE=
-X-Received: by 2002:a05:6870:56aa:b0:1bf:2661:4871 with SMTP id
- p42-20020a05687056aa00b001bf26614871mr10898197oao.4.1691425506060; Mon, 07
- Aug 2023 09:25:06 -0700 (PDT)
+        bh=0WiRoo0vL6kJ0w8/dkfqWYfJVOit9SFqabx1jj5i4xE=;
+        b=HBFdbWCCBKAH5p4oIrH10rhjF4oTt7WawmRr0hwcCeInkpfXBu3icU8S0p02soe/ZM
+         h0yl13YRqrvVsuNJgYaLa09LtCgNC2tYNuYh3us06URcCCXJW2Y9eoN4KV6iDHUfUVAe
+         f0jffDCgK31UKMUxmzatB/aBXo8Du9SVrFQEN/9ONJpSgpWGCu7Qn7RkIYwQ1aaQDECD
+         AN2w3FGPFeL/wc7RfZuy181cvDGqsC5M/fMtolb4Axc6Cy1IcM/Wg2U7kSprB/dkRMHo
+         q7ef1m2jv4LFkIHAG8z1MiHytygjomsFMkKdQ46rWqtbhCYOnVAslWqsTpDkUg05VkfZ
+         Qujg==
+X-Gm-Message-State: AOJu0Yy3vqEd8nq4vQ0c0gOJ4wypT40EiW88Rheftdz66J+6UWr2c/5g
+        9t42G5PBaGeG15uvIuHoidvTkEmYsUbsYfd5rVY=
+X-Google-Smtp-Source: AGHT+IFg5y/8EPsteDlZHT0mE68zLPv3NjXJQrYnMkt2dG/pGwKCgDInQFjJZaPyiy8PnosX7rv/QyIDNJa+dA7mxBY=
+X-Received: by 2002:a05:6870:d147:b0:1b0:653a:af92 with SMTP id
+ f7-20020a056870d14700b001b0653aaf92mr11357377oac.8.1691425546593; Mon, 07 Aug
+ 2023 09:25:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230801024448.4848-1-sunran001@208suo.com>
-In-Reply-To: <20230801024448.4848-1-sunran001@208suo.com>
+References: <20230801025703.4979-1-sunran001@208suo.com>
+In-Reply-To: <20230801025703.4979-1-sunran001@208suo.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 12:24:55 -0400
-Message-ID: <CADnq5_PzOPWca4mU12MCaibRS8=tgY1-o7853sh0tf_Twh2ukQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: Clean up errors in vega10_baco.c
+Date:   Mon, 7 Aug 2023 12:25:35 -0400
+Message-ID: <CADnq5_NLSmco8_zs7pt9KSr7hia-2HcjpLR6PEN6YLZs3Nf=7Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/pm: Clean up errors in vega12_hwmgr.c
 To:     Ran Sun <sunran001@208suo.com>
 Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
         dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
@@ -62,8 +62,8 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -72,148 +72,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Applied.  Thanks!
 
-On Mon, Jul 31, 2023 at 10:45=E2=80=AFPM Ran Sun <sunran001@208suo.com> wro=
+On Mon, Jul 31, 2023 at 10:57=E2=80=AFPM Ran Sun <sunran001@208suo.com> wro=
 te:
 >
 > Fix the following errors reported by checkpatch:
 >
-> ERROR: that open brace { should be on the previous line
-> ERROR: space required after that ',' (ctx:VxV)
-> ERROR: space prohibited before that ',' (ctx:WxV)
+> ERROR: need consistent spacing around '/' (ctx:WxV)
+> ERROR: code indent should use tabs where possible
 >
 > Signed-off-by: Ran Sun <sunran001@208suo.com>
 > ---
->  .../drm/amd/pm/powerplay/hwmgr/vega10_baco.c  | 26 ++++++++-----------
->  1 file changed, 11 insertions(+), 15 deletions(-)
+>  drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_baco.c b/drive=
-rs/gpu/drm/amd/pm/powerplay/hwmgr/vega10_baco.c
-> index 46bb16c29cf6..6836e98d37be 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_baco.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_baco.c
-> @@ -31,24 +31,22 @@
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c b/driv=
+ers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c
+> index 1937be1cf5b4..4bd573d815ff 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c
+> @@ -1623,13 +1623,13 @@ static int vega12_notify_smc_display_config_after=
+_ps_adjustment(
 >
+>         if (data->smu_features[GNLD_DPM_DCEFCLK].supported) {
+>                 clock_req.clock_type =3D amd_pp_dcef_clock;
+> -               clock_req.clock_freq_in_khz =3D min_clocks.dcefClock/10;
+> +               clock_req.clock_freq_in_khz =3D min_clocks.dcefClock / 10=
+;
+>                 if (!vega12_display_clock_voltage_request(hwmgr, &clock_r=
+eq)) {
+>                         if (data->smu_features[GNLD_DS_DCEFCLK].supported=
+)
+>                                 PP_ASSERT_WITH_CODE(
+>                                         !smum_send_msg_to_smc_with_parame=
+ter(
+>                                         hwmgr, PPSMC_MSG_SetMinDeepSleepD=
+cefclk,
+> -                                       min_clocks.dcefClockInSR /100,
+> +                                       min_clocks.dcefClockInSR / 100,
+>                                         NULL),
+>                                         "Attempt to set divider for DCEFC=
+LK Failed!",
+>                                         return -1);
+> @@ -2354,8 +2354,8 @@ static int vega12_apply_clocks_adjust_rules(struct =
+pp_hwmgr *hwmgr)
+>         uint32_t i, latency;
 >
+>         disable_mclk_switching =3D ((1 < hwmgr->display_config->num_displ=
+ay) &&
+> -                                 !hwmgr->display_config->multi_monitor_i=
+n_sync) ||
+> -                                 vblank_too_short;
+> +                               !hwmgr->display_config->multi_monitor_in_=
+sync) ||
+> +                               vblank_too_short;
+>         latency =3D hwmgr->display_config->dce_tolerable_mclk_in_active_l=
+atency;
 >
-> -static const struct soc15_baco_cmd_entry  pre_baco_tbl[] =3D
-> -{
-> +static const struct soc15_baco_cmd_entry  pre_baco_tbl[] =3D {
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBIF_DOORBELL_CNT=
-L), BIF_DOORBELL_CNTL__DOORBELL_MONITOR_EN_MASK, BIF_DOORBELL_CNTL__DOORBEL=
-L_MONITOR_EN__SHIFT, 0, 1},
->         {CMD_WRITE, SOC15_REG_ENTRY(NBIF, 0, mmBIF_FB_EN), 0, 0, 0, 0},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO=
-_CNTL__BACO_DSTATE_BYPASS_MASK, BACO_CNTL__BACO_DSTATE_BYPASS__SHIFT, 0, 1}=
-,
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO=
-_CNTL__BACO_RST_INTR_MASK_MASK, BACO_CNTL__BACO_RST_INTR_MASK__SHIFT, 0, 1}
->  };
->
-> -static const struct soc15_baco_cmd_entry enter_baco_tbl[] =3D
-> -{
-> +static const struct soc15_baco_cmd_entry enter_baco_tbl[] =3D {
->         {CMD_WAITFOR, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_=
-CNTL__SOC_DOMAIN_IDLE_MASK, THM_BACO_CNTL__SOC_DOMAIN_IDLE__SHIFT, 0xffffff=
-ff, 0x80000000},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO=
-_CNTL__BACO_EN_MASK, BACO_CNTL__BACO_EN__SHIFT, 0, 1},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO=
-_CNTL__BACO_BIF_LCLK_SWITCH_MASK, BACO_CNTL__BACO_BIF_LCLK_SWITCH__SHIFT, 0=
-, 1},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO=
-_CNTL__BACO_DUMMY_EN_MASK, BACO_CNTL__BACO_DUMMY_EN__SHIFT, 0, 1},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_SOC_VDCI_RESET_MASK, THM_BACO_CNTL__BACO_SOC_VDCI_RESET_=
-_SHIFT, 0, 1},
-> -       {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_SMNCLK_MUX_MASK, THM_BACO_CNTL__BACO_SMNCLK_MUX__SHIFT,0=
-, 1},
-> +       {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_SMNCLK_MUX_MASK, THM_BACO_CNTL__BACO_SMNCLK_MUX__SHIFT, =
-0, 1},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_ISO_EN_MASK, THM_BACO_CNTL__BACO_ISO_EN__SHIFT, 0, 1},
-> -       {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_AEB_ISO_EN_MASK, THM_BACO_CNTL__BACO_AEB_ISO_EN__SHIFT,0=
-, 1},
-> +       {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_AEB_ISO_EN_MASK, THM_BACO_CNTL__BACO_AEB_ISO_EN__SHIFT, =
-0, 1},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_ANA_ISO_EN_MASK, THM_BACO_CNTL__BACO_ANA_ISO_EN__SHIFT, =
-0, 1},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_SOC_REFCLK_OFF_MASK,     THM_BACO_CNTL__BACO_SOC_REFCLK_=
-OFF__SHIFT, 0, 1},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO=
-_CNTL__BACO_POWER_OFF_MASK, BACO_CNTL__BACO_POWER_OFF__SHIFT, 0, 1},
-> @@ -58,13 +56,12 @@ static const struct soc15_baco_cmd_entry enter_baco_t=
-bl[] =3D
->         {CMD_WAITFOR, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__B=
-ACO_MODE_MASK, BACO_CNTL__BACO_MODE__SHIFT, 0xffffffff, 0x100}
->  };
->
-> -static const struct soc15_baco_cmd_entry exit_baco_tbl[] =3D
-> -{
-> +static const struct soc15_baco_cmd_entry exit_baco_tbl[] =3D {
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO=
-_CNTL__BACO_POWER_OFF_MASK, BACO_CNTL__BACO_POWER_OFF__SHIFT, 0, 0},
-> -       {CMD_DELAY_MS, 0, 0, 0, 0, 0, 0, 10,0},
-> -       {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_SOC_REFCLK_OFF_MASK, THM_BACO_CNTL__BACO_SOC_REFCLK_OFF_=
-_SHIFT, 0,0},
-> +       {CMD_DELAY_MS, 0, 0, 0, 0, 0, 0, 10, 0},
-> +       {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_SOC_REFCLK_OFF_MASK, THM_BACO_CNTL__BACO_SOC_REFCLK_OFF_=
-_SHIFT, 0, 0},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_ANA_ISO_EN_MASK, THM_BACO_CNTL__BACO_ANA_ISO_EN__SHIFT, =
-0, 0},
-> -       {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_AEB_ISO_EN_MASK, THM_BACO_CNTL__BACO_AEB_ISO_EN__SHIFT,0=
-, 0},
-> +       {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_AEB_ISO_EN_MASK, THM_BACO_CNTL__BACO_AEB_ISO_EN__SHIFT, =
-0, 0},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_ISO_EN_MASK, THM_BACO_CNTL__BACO_ISO_EN__SHIFT, 0, 0},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_PWROKRAW_CNTL_MASK, THM_BACO_CNTL__BACO_PWROKRAW_CNTL__S=
-HIFT, 0, 1},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_SMNCLK_MUX_MASK, THM_BACO_CNTL__BACO_SMNCLK_MUX__SHIFT, =
-0, 0},
-> @@ -74,13 +71,12 @@ static const struct soc15_baco_cmd_entry exit_baco_tb=
-l[] =3D
->         {CMD_WAITFOR, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_=
-CNTL__BACO_EXIT_MASK, 0, 0xffffffff, 0},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), T=
-HM_BACO_CNTL__BACO_SB_AXI_FENCE_MASK, THM_BACO_CNTL__BACO_SB_AXI_FENCE__SHI=
-FT, 0, 0},
->         {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO=
-_CNTL__BACO_DUMMY_EN_MASK, BACO_CNTL__BACO_DUMMY_EN__SHIFT,  0, 0},
-> -       {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO=
-_CNTL__BACO_BIF_LCLK_SWITCH_MASK ,BACO_CNTL__BACO_BIF_LCLK_SWITCH__SHIFT, 0=
-, 0},
-> -       {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO=
-_CNTL__BACO_EN_MASK , BACO_CNTL__BACO_EN__SHIFT, 0,0},
-> +       {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO=
-_CNTL__BACO_BIF_LCLK_SWITCH_MASK, BACO_CNTL__BACO_BIF_LCLK_SWITCH__SHIFT, 0=
-, 0},
-> +       {CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO=
-_CNTL__BACO_EN_MASK, BACO_CNTL__BACO_EN__SHIFT, 0, 0},
->         {CMD_WAITFOR, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__B=
-ACO_MODE_MASK, 0, 0xffffffff, 0}
->   };
->
-> -static const struct soc15_baco_cmd_entry clean_baco_tbl[] =3D
-> -{
-> +static const struct soc15_baco_cmd_entry clean_baco_tbl[] =3D {
->         {CMD_WRITE, SOC15_REG_ENTRY(NBIF, 0, mmBIOS_SCRATCH_6), 0, 0, 0, =
-0},
->         {CMD_WRITE, SOC15_REG_ENTRY(NBIF, 0, mmBIOS_SCRATCH_7), 0, 0, 0, =
-0},
->  };
+>         /* gfxclk */
+> @@ -2522,7 +2522,7 @@ static int vega12_set_uclk_to_highest_dpm_level(str=
+uct pp_hwmgr *hwmgr,
+>                 dpm_table->dpm_state.hard_min_level =3D dpm_table->dpm_le=
+vels[dpm_table->count - 1].value;
+>                 PP_ASSERT_WITH_CODE(!(ret =3D smum_send_msg_to_smc_with_p=
+arameter(hwmgr,
+>                                 PPSMC_MSG_SetHardMinByFreq,
+> -                               (PPCLK_UCLK << 16 ) | dpm_table->dpm_stat=
+e.hard_min_level,
+> +                               (PPCLK_UCLK << 16) | dpm_table->dpm_state=
+.hard_min_level,
+>                                 NULL)),
+>                                 "[SetUclkToHightestDpmLevel] Set hard min=
+ uclk failed!",
+>                                 return ret);
 > --
 > 2.17.1
 >
