@@ -2,159 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 322A57723D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CFB7723D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233468AbjHGMZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 08:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
+        id S233421AbjHGMZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233430AbjHGMZG (ORCPT
+        with ESMTP id S233413AbjHGMZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 08:25:06 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9A8128
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:25:04 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe32016bc8so37531045e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 05:25:04 -0700 (PDT)
+        Mon, 7 Aug 2023 08:25:01 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628BBE68
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:24:59 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bc34b32785so28032845ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 05:24:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691411103; x=1692015903;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1691411099; x=1692015899;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fsP5nkPghUp19sfWVmpj073CCh46k2F98rtPHNJSKVE=;
-        b=HCbP5hjavSOBpxbGA+3+VYKzXpS4H7ymx4XR1LfBAYF16hB5A60P/4lgvu/hlStE5x
-         XCCUrDeOttgSewGGrBWzV2ziExaEA9G6mDSgoQhJadBJN4drjZK7qBKf0fKZAh+PnliW
-         9juWbu9vE9KrTBTJ9+gtYcNx6Jsx9FT6V9pKUXGIcxINseiGmqfZNKmbvQsZXkIGF1am
-         iq4ns7vUvfllyChtK+eZExZJHznzI9FXeWjyebx9Ao1qWVzJsko2eN9kbVmNE7qSJO8j
-         s+R8Ruqmt0Dpu8uXWhAKmqkzUjVNyAU3Xev7Coz+RqjQnJKeKomKnh8TWQNDiw1gldSc
-         TL0Q==
+        bh=tzvycUSp6fj3lhy6v0s47NdlhPCC8jzqygliYQ4HaF8=;
+        b=kZ3jGdcXWEZ4oyg0oP0T/xcd6VEXp/7aa/nPih+VNkFf6OkCznLwQRb9/jRzCzHOCk
+         3Vi0RhO2IHMdpKPcwYMUEb2tKvyMWFfgmC83p57OWVM5GdbK7Yh3YguUZMlVEAzOmpb9
+         QaYVLP38DAub6T6A99e8dHKpv5/z/3099Ssdut5thWefm6PuSyc6y5r0mED2/XGGgsiH
+         q7HTKm58Nd6dnoI2I9ZF1gotW+WfkyGGGKLUwJP4EBLEGjCDhCBPYri9J4TBngYufbN6
+         RmJwVW1DngJ7cVDGCf3Z/HGNPPArBcaE+fAAjSeprwM8uDvTYDbTJXU1ThQ5I23awoaU
+         mr/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691411103; x=1692015903;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691411099; x=1692015899;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fsP5nkPghUp19sfWVmpj073CCh46k2F98rtPHNJSKVE=;
-        b=EVFa4PPwDyq5NXdRgowqv6qkDfmy7zsRffB33NIHNArU5Xw8nw7QBNMtqX9NSWZEGI
-         CcJ8o0ItQ7ZkIHHc0UHZa3W4E10BJcWjv+hxsuY/h9xFJ4HrdR1jjnAZXnwtNiiVraY+
-         nS7jOEBl/yCKEOrghjGe7nFlN8sn65Iype5F1MRlVDQAvtvAAa/DJjF4VdGOPbfTngvK
-         SpwgaSvyskXGEFIYoHbyrWcX0r06gvnnF1ozrYagFgdCbCP9fD5sYPkbOmRKrWx/RTbi
-         GvbL+QRH70KHkicO03lk50fr2PfIBMfzHtCkdt/ID8QyHkqKtxbAWLFthzPfe1zi79cB
-         0zXg==
-X-Gm-Message-State: AOJu0Yy617ul39rvUoTG1BhHld8Z+6tuPf97UM1DS1ymIIuaskHEGkY4
-        jZY8gbvzdWhL9l/CsiKX2Q9V0st3d3h8pjQ6mQiEtA==
-X-Google-Smtp-Source: AGHT+IGkDhKJzd1NsPjdHLX/dy9J8I2IzVN5ca8X5YV/X01EYWiVAfJfHJU+rwDFAp/3zaQfVRurPFTpiwow+cQF060=
-X-Received: by 2002:a7b:cd94:0:b0:3fe:3521:d9ca with SMTP id
- y20-20020a7bcd94000000b003fe3521d9camr5908666wmj.3.1691411102967; Mon, 07 Aug
- 2023 05:25:02 -0700 (PDT)
+        bh=tzvycUSp6fj3lhy6v0s47NdlhPCC8jzqygliYQ4HaF8=;
+        b=i2Vmwn8h5tqMAD3afpCQrA4F2L9lRu1rXBTFdRGgXCxn4uojZoagG3Ff1KGFRSq01G
+         xUNxouADjnONeA0GxeDtAF/NG7Jog0xV7F66QfoOdyh+6N1GDfiaVz2AejveVnybBVbb
+         cHqY735rBGrXNDqBJydaexF6x03NQr/qoQ/JLP+Yy/HBMpZN83zj9pu6tpzol+DnJxyZ
+         5aDztSryGolDIM02xb1eyQjP21Sp9gp5SY2poa8+45o96/Go8kHvyrjsy/i5IlU02yOH
+         LECl9cwa3ZCY7661PdnaqXAFt60Y8FYOeXyJKHDNx59cX3rQwZ2OhcXuOJb/mah6kqS6
+         gseA==
+X-Gm-Message-State: AOJu0YwsuCKjydbGwLQAHrF52BEtgRbgTh1FrPYlcTS+oE+p7xMtOw/X
+        F83iZRERlx4OjVOSF+Cgolqp9xccjHJ+fdetbRtlGw==
+X-Google-Smtp-Source: AGHT+IEboynI5V/8G38VpIJprkiWU7gjnmIYItz7meICAcRwBMHQ5y3CElE3+GIyHu1Z1mmgIEzXvA==
+X-Received: by 2002:a17:902:e84e:b0:1b6:4bbd:c3a7 with SMTP id t14-20020a170902e84e00b001b64bbdc3a7mr8900815plg.66.1691411098793;
+        Mon, 07 Aug 2023 05:24:58 -0700 (PDT)
+Received: from C02FG34NMD6R.bytedance.net ([139.177.225.252])
+        by smtp.gmail.com with ESMTPSA id b10-20020a170902a9ca00b001bc16bc9f5fsm6746674plr.284.2023.08.07.05.24.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 05:24:58 -0700 (PDT)
+From:   Albert Huang <huangjie.albert@bytedance.com>
+Cc:     Albert Huang <huangjie.albert@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+        linux-kernel@vger.kernel.org (open list),
+        bpf@vger.kernel.org (open list:XDP (eXpress Data Path))
+Subject: [RFC v2 Optimizing veth xsk performance 5/9] veth: use send queue tx napi to xmit xsk tx desc
+Date:   Mon,  7 Aug 2023 20:24:47 +0800
+Message-Id: <20230807122447.85725-1-huangjie.albert@bytedance.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+In-Reply-To: <20230807120434.83644-1-huangjie.albert@bytedance.com>
+References: <20230807120434.83644-1-huangjie.albert@bytedance.com>
 MIME-Version: 1.0
-References: <20230804090621.400-1-elver@google.com> <87il9rgjvw.fsf@oldenburg.str.redhat.com>
-In-Reply-To: <87il9rgjvw.fsf@oldenburg.str.redhat.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 7 Aug 2023 14:24:26 +0200
-Message-ID: <CANpmjNN4h2+i3LUG__GHha849PZ3jK=mBoFQWpSz4jffXB4wrw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] compiler_types: Introduce the Clang
- __preserve_most function attribute
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Aug 2023 at 13:41, Florian Weimer <fweimer@redhat.com> wrote:
->
-> * Marco Elver:
->
-> > [1]: "On X86-64 and AArch64 targets, this attribute changes the calling
-> > convention of a function. The preserve_most calling convention attempts
-> > to make the code in the caller as unintrusive as possible. This
-> > convention behaves identically to the C calling convention on how
-> > arguments and return values are passed, but it uses a different set of
-> > caller/callee-saved registers. This alleviates the burden of saving and
-> > recovering a large register set before and after the call in the
-> > caller."
-> >
-> > [1] https://clang.llvm.org/docs/AttributeReference.html#preserve-most
->
-> You dropped the interesting part:
+use send queue tx napi to xmit xsk tx desc
 
-I will add it back for the kernel documentation.
+Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
+---
+ drivers/net/veth.c | 230 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 229 insertions(+), 1 deletion(-)
 
-> | If the arguments are passed in callee-saved registers, then they will
-> | be preserved by the callee across the call. This doesn=E2=80=99t apply =
-for
-> | values returned in callee-saved registers.
-> |
-> |  =C2=B7  On X86-64 the callee preserves all general purpose registers, =
-except
-> |     for R11. R11 can be used as a scratch register. Floating-point
-> |     registers (XMMs/YMMs) are not preserved and need to be saved by the
-> |     caller.
-> |
-> |  =C2=B7  On AArch64 the callee preserve all general purpose registers, =
-except
-> |     X0-X8 and X16-X18.
->
-> Ideally, this would be documented in the respective psABI supplement.
-> I filled in some gaps and filed:
->
->   Document the ABI for __preserve_most__ function calls
->   <https://gitlab.com/x86-psABIs/x86-64-ABI/-/merge_requests/45>
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 25faba879505..28b891dd8dc9 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -27,6 +27,8 @@
+ #include <linux/bpf_trace.h>
+ #include <linux/net_tstamp.h>
+ #include <net/page_pool.h>
++#include <net/xdp_sock_drv.h>
++#include <net/xdp.h>
+ 
+ #define DRV_NAME	"veth"
+ #define DRV_VERSION	"1.0"
+@@ -1061,6 +1063,141 @@ static int veth_poll(struct napi_struct *napi, int budget)
+ 	return done;
+ }
+ 
++static struct sk_buff *veth_build_skb(void *head, int headroom, int len,
++				      int buflen)
++{
++	struct sk_buff *skb;
++
++	skb = build_skb(head, buflen);
++	if (!skb)
++		return NULL;
++
++	skb_reserve(skb, headroom);
++	skb_put(skb, len);
++
++	return skb;
++}
++
++static int veth_xsk_tx_xmit(struct veth_sq *sq, struct xsk_buff_pool *xsk_pool, int budget)
++{
++	struct veth_priv *priv, *peer_priv;
++	struct net_device *dev, *peer_dev;
++	struct veth_stats stats = {};
++	struct sk_buff *skb = NULL;
++	struct veth_rq *peer_rq;
++	struct xdp_desc desc;
++	int done = 0;
++
++	dev = sq->dev;
++	priv = netdev_priv(dev);
++	peer_dev = priv->peer;
++	peer_priv = netdev_priv(peer_dev);
++
++	/* todo: queue index must set before this */
++	peer_rq = &peer_priv->rq[sq->queue_index];
++
++	/* set xsk wake up flag, to do: where to disable */
++	if (xsk_uses_need_wakeup(xsk_pool))
++		xsk_set_tx_need_wakeup(xsk_pool);
++
++	while (budget-- > 0) {
++		unsigned int truesize = 0;
++		struct page *page;
++		void *vaddr;
++		void *addr;
++
++		if (!xsk_tx_peek_desc(xsk_pool, &desc))
++			break;
++
++		addr = xsk_buff_raw_get_data(xsk_pool, desc.addr);
++
++		/* can not hold all data in a page */
++		truesize =  SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
++		truesize += desc.len + xsk_pool->headroom;
++		if (truesize > PAGE_SIZE) {
++			xsk_tx_completed_addr(xsk_pool, desc.addr);
++			stats.xdp_drops++;
++			break;
++		}
++
++		page = dev_alloc_page();
++		if (!page) {
++			xsk_tx_completed_addr(xsk_pool, desc.addr);
++			stats.xdp_drops++;
++			break;
++		}
++		vaddr = page_to_virt(page);
++
++		memcpy(vaddr + xsk_pool->headroom, addr, desc.len);
++		xsk_tx_completed_addr(xsk_pool, desc.addr);
++
++		skb = veth_build_skb(vaddr, xsk_pool->headroom, desc.len, PAGE_SIZE);
++		if (!skb) {
++			put_page(page);
++			stats.xdp_drops++;
++			break;
++		}
++		skb->protocol = eth_type_trans(skb, peer_dev);
++		napi_gro_receive(&peer_rq->xdp_napi, skb);
++
++		stats.xdp_bytes += desc.len;
++		done++;
++	}
++
++	/* release, move consumer，and wakeup the producer */
++	if (done) {
++		napi_schedule(&peer_rq->xdp_napi);
++		xsk_tx_release(xsk_pool);
++	}
++
++	u64_stats_update_begin(&sq->stats.syncp);
++	sq->stats.vs.xdp_packets += done;
++	sq->stats.vs.xdp_bytes += stats.xdp_bytes;
++	sq->stats.vs.xdp_drops += stats.xdp_drops;
++	u64_stats_update_end(&sq->stats.syncp);
++
++	return done;
++}
++
++static int veth_poll_tx(struct napi_struct *napi, int budget)
++{
++	struct veth_sq *sq = container_of(napi, struct veth_sq, xdp_napi);
++	struct xsk_buff_pool *pool;
++	int done = 0;
++
++	sq->xsk.last_cpu = smp_processor_id();
++
++	/* xmit for tx queue */
++	rcu_read_lock();
++	pool = rcu_dereference(sq->xsk.pool);
++	if (pool)
++		done  = veth_xsk_tx_xmit(sq, pool, budget);
++
++	rcu_read_unlock();
++
++	if (done < budget) {
++		/* if done < budget, the tx ring is no buffer */
++		napi_complete_done(napi, done);
++	}
++
++	return done;
++}
++
++static int veth_napi_add_tx(struct net_device *dev)
++{
++	struct veth_priv *priv = netdev_priv(dev);
++	int i;
++
++	for (i = 0; i < dev->real_num_rx_queues; i++) {
++		struct veth_sq *sq = &priv->sq[i];
++
++		netif_napi_add(dev, &sq->xdp_napi, veth_poll_tx);
++		napi_enable(&sq->xdp_napi);
++	}
++
++	return 0;
++}
++
+ static int veth_create_page_pool(struct veth_rq *rq)
+ {
+ 	struct page_pool_params pp_params = {
+@@ -1153,6 +1290,19 @@ static void veth_napi_del_range(struct net_device *dev, int start, int end)
+ 	}
+ }
+ 
++static void veth_napi_del_tx(struct net_device *dev)
++{
++	struct veth_priv *priv = netdev_priv(dev);
++	int i;
++
++	for (i = 0; i < dev->real_num_rx_queues; i++) {
++		struct veth_sq *sq = &priv->sq[i];
++
++		napi_disable(&sq->xdp_napi);
++		__netif_napi_del(&sq->xdp_napi);
++	}
++}
++
+ static void veth_napi_del(struct net_device *dev)
+ {
+ 	veth_napi_del_range(dev, 0, dev->real_num_rx_queues);
+@@ -1360,7 +1510,7 @@ static void veth_set_xdp_features(struct net_device *dev)
+ 		struct veth_priv *priv_peer = netdev_priv(peer);
+ 		xdp_features_t val = NETDEV_XDP_ACT_BASIC |
+ 				     NETDEV_XDP_ACT_REDIRECT |
+-				     NETDEV_XDP_ACT_RX_SG;
++				     NETDEV_XDP_ACT_RX_SG | NETDEV_XDP_ACT_XSK_ZEROCOPY;
+ 
+ 		if (priv_peer->_xdp_prog || veth_gro_requested(peer))
+ 			val |= NETDEV_XDP_ACT_NDO_XMIT |
+@@ -1737,11 +1887,89 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ 	return err;
+ }
+ 
++static int veth_xsk_pool_enable(struct net_device *dev, struct xsk_buff_pool *pool, u16 qid)
++{
++	struct veth_priv *peer_priv;
++	struct veth_priv *priv = netdev_priv(dev);
++	struct net_device *peer_dev = priv->peer;
++	int err = 0;
++
++	if (qid >= dev->real_num_tx_queues)
++		return -EINVAL;
++
++	if (!peer_dev)
++		return -EINVAL;
++
++	/* no dma, so we just skip dma skip in xsk zero copy */
++	pool->dma_check_skip = true;
++
++	peer_priv = netdev_priv(peer_dev);
++
++	/* enable peer tx xdp here, this side
++	 * xdp is enable by veth_xdp_set
++	 * to do: we need to check whther this side is already enable xdp
++	 * maybe it do not have xdp prog
++	 */
++	if (!(peer_priv->_xdp_prog) && (!veth_gro_requested(peer_dev))) {
++		/*  peer should enable napi*/
++		err = veth_napi_enable(peer_dev);
++		if (err)
++			return err;
++	}
++
++	/* Here is already protected by rtnl_lock, so rcu_assign_pointer
++	 * is safe.
++	 */
++	rcu_assign_pointer(priv->sq[qid].xsk.pool, pool);
++
++	veth_napi_add_tx(dev);
++
++	return err;
++}
++
++static int veth_xsk_pool_disable(struct net_device *dev, u16 qid)
++{
++	struct veth_priv *peer_priv;
++	struct veth_priv *priv = netdev_priv(dev);
++	struct net_device *peer_dev = priv->peer;
++	int err = 0;
++
++	if (qid >= dev->real_num_tx_queues)
++		return -EINVAL;
++
++	if (!peer_dev)
++		return -EINVAL;
++
++	peer_priv = netdev_priv(peer_dev);
++
++	/* to do: this may be failed */
++	if (!(peer_priv->_xdp_prog) && (!veth_gro_requested(peer_dev))) {
++		/*  disable peer napi */
++		veth_napi_del(peer_dev);
++	}
++
++	veth_napi_del_tx(dev);
++
++	rcu_assign_pointer(priv->sq[qid].xsk.pool, NULL);
++	return err;
++}
++
++/* this  is for setup xdp */
++static int veth_xsk_pool_setup(struct net_device *dev, struct netdev_bpf *xdp)
++{
++	if (xdp->xsk.pool)
++		return veth_xsk_pool_enable(dev, xdp->xsk.pool, xdp->xsk.queue_id);
++	else
++		return veth_xsk_pool_disable(dev, xdp->xsk.queue_id);
++}
++
+ static int veth_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+ {
+ 	switch (xdp->command) {
+ 	case XDP_SETUP_PROG:
+ 		return veth_xdp_set(dev, xdp->prog, xdp->extack);
++	case XDP_SETUP_XSK_POOL:
++		return veth_xsk_pool_setup(dev, xdp);
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+2.20.1
 
-Good idea. I had already created
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D110899, and we need
-better spec to proceed for GCC anyway.
-
-> Doesn't this change impact the kernel module ABI?
->
-> I would really expect a check here
->
-> > +#if __has_attribute(__preserve_most__)
-> > +# define __preserve_most notrace __attribute__((__preserve_most__))
-> > +#else
-> > +# define __preserve_most
-> > +#endif
->
-> that this is not a compilation for a module.  Otherwise modules built
-> with a compiler with __preserve_most__ attribute support are
-> incompatible with kernels built with a compiler without that attribute.
-
-That's true, but is it a real problem? Isn't it known that trying to
-make kernel modules built for a kernel with a different config (incl.
-compiler) is not guaranteed to work? See IBT, CFI schemes, kernel
-sanitizers, etc?
-
-If we were to start trying to introduce some kind of minimal kernel to
-module ABI so that modules and kernels built with different toolchains
-keep working together, we'd need a mechanism to guarantee this minimal
-ABI or prohibit incompatible modules and kernels somehow. Is there a
-precedence for this somewhere?
