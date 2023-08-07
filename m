@@ -2,150 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A8377296A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961B477295F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbjHGPhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
+        id S230408AbjHGPhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 11:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbjHGPhk (ORCPT
+        with ESMTP id S230341AbjHGPhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:37:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6251EF3
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:36:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691422609;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wCM0LSVABzEid+9ZFB8RVu58baVBQ5wmkVT334cAYKs=;
-        b=dlHOSv6650uKMK7y6IFub5qerDl7w/6oHXuqCiC2rXK7mXr0JaPfo+E0c0YD8ioIr4HVmD
-        Wl46VYkPR4tWQsXn+AIpaqy3XaIATCi2jUq7G4GuJ6ctQVWbQmfcPq7ObIiTPefN+sRH7z
-        AfSheYF0HQNqc6MtYoAU+1yfNmHdYk0=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-607-TnOkE82uOMeDTHJn3xNjbQ-1; Mon, 07 Aug 2023 11:36:48 -0400
-X-MC-Unique: TnOkE82uOMeDTHJn3xNjbQ-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-30932d15a30so2517221f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 08:36:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691422607; x=1692027407;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wCM0LSVABzEid+9ZFB8RVu58baVBQ5wmkVT334cAYKs=;
-        b=d6iEPfJ9Q5rHdS6SyHy5/B7Z6ManOpyDVJthMDxqmxIuUaGSJhq5eK7+Fws52kAVkD
-         cYVwwoVbY6OAWQlEP8cyZv9GkpagDRmTo3g3bszm0wJZMSix0sXYxnOA5G+qDSUOhG8a
-         mnaRctQt8oKEGzOXQPy0wn4ZsZmBq88flOSZQ1ubKTBCIvwkSbXHiSlyltHyis1RyWh7
-         rn7IAmlispj29vTYGGwVGFknABlo1r40Ct2tmRXMzOMCTdpJvNydYZ+K72d9CC5YP9+f
-         yihJcyABhVQblJU55l7wVL9R9TRirxjBvtAgIvaQd6Wr6heV+DBxJBjHcnPnyXou0/oV
-         H2Sg==
-X-Gm-Message-State: AOJu0YyHRsYFTorrDjn17AJSxOqXirBeY/D1BOfUgh5z71VYJKAmAmNG
-        InhRFqSCDPJhaq7uqaI+9iR3/4OHT4fLcIX4xwrYOVClgU6yyvHPcLGGiWPXNQZvNLD73LiGBwi
-        l4kH9zC+N1bOideR/3+HRVR918TD2Yz3dNuAwb5ehv5hjmut/VLu15ti8QVtDSOxDi1rCREJi3O
-        6gPxCR
-X-Received: by 2002:a5d:4085:0:b0:315:96ca:dcab with SMTP id o5-20020a5d4085000000b0031596cadcabmr7337383wrp.35.1691422607088;
-        Mon, 07 Aug 2023 08:36:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFazJ0hQvyp0w7nVsyclbNvRXnBSHlJEwsegobzfYo7VP5sfkvDEV8yiWkWqkqGh7ZbhT/yBw==
-X-Received: by 2002:a5d:4085:0:b0:315:96ca:dcab with SMTP id o5-20020a5d4085000000b0031596cadcabmr7337347wrp.35.1691422606590;
-        Mon, 07 Aug 2023 08:36:46 -0700 (PDT)
-Received: from [192.168.3.108] (p4ff234da.dip0.t-ipconnect.de. [79.242.52.218])
-        by smtp.gmail.com with ESMTPSA id s1-20020adff801000000b00314417f5272sm10811517wrp.64.2023.08.07.08.36.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 08:36:46 -0700 (PDT)
-Message-ID: <e9cdb144-70c7-6596-2377-e675635c94e0@redhat.com>
-Date:   Mon, 7 Aug 2023 17:36:44 +0200
+        Mon, 7 Aug 2023 11:37:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB87C10DC;
+        Mon,  7 Aug 2023 08:37:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6922861E31;
+        Mon,  7 Aug 2023 15:37:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBB52C433C8;
+        Mon,  7 Aug 2023 15:36:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691422619;
+        bh=Rm2bAUsRPFrHQrBfNXP+Gimchvv0P1P9SUNLosCJSXw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mc0XgWHtFZpAPWBP2MrmMTcXwrE0x5Qk8z/49KcFfDEFBbTbOA3I/3+vF+P3dQjqO
+         6ziLRfMWP2QETN3FU+hltqu/8FOaL+CDibSouQjNcup/FMt2sn6xcMV8w5HgG/D2ih
+         EMDGK8285L6wF3G1l3yYYWTXBr2tw1ym/7tWXNixxbmusi8g5QgGdFNtEXUm/wlzJ7
+         mk1whT9pPEa8d4jsfnYyeDa5tBYFxRfPrhfLjOPZgFl2+7ILG8k4at/EdLpS+hwCbo
+         UJNYqqWoFlGikzAs/yuXQyKkx2p4nD6BfBW29LrG7x4WfuTwbNCdYTs0bjI0V62Oh6
+         S6/VXl5xjgnQg==
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 1/2] m68k: replace #include <asm/export.h> with #include <linux/export.h>
+Date:   Tue,  8 Aug 2023 00:36:53 +0900
+Message-Id: <20230807153654.997091-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 7/7] selftest/mm: ksm_functional_tests: Add PROT_NONE
- test
-Content-Language: en-US
-To:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mel Gorman <mgorman@suse.de>, Shuah Khan <shuah@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <20230803143208.383663-1-david@redhat.com>
- <20230803143208.383663-8-david@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230803143208.383663-8-david@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.08.23 16:32, David Hildenbrand wrote:
-> Let's test whether merging and unmerging in PROT_NONE areas works as
-> expected.
-> 
-> Pass a page protection to mmap_and_merge_range(), which will trigger
-> an mprotect() after writing to the pages, but before enabling merging.
-> 
-> Make sure that unsharing works as expected, by performing a ptrace write
-> (using /proc/self/mem) and by setting MADV_UNMERGEABLE.
-> 
-> Note that this implicitly tests that ptrace writes in an inaccessible
-> (PROT_NONE) mapping work as expected.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
+Commit ddb5cdbafaaa ("kbuild: generate KSYMTAB entries by modpost")
+deprecated <asm/export.h>, which is now a wrapper of <linux/export.h>.
 
-Andrew, can you squash the following?
+Replace #include <asm/export.h> with #include <linux/export.h>.
 
- From c2be7c02cb96b9189a52a5937821600ef4e259bd Mon Sep 17 00:00:00 2001
-From: David Hildenbrand <david@redhat.com>
-Date: Mon, 7 Aug 2023 17:33:54 +0200
-Subject: [PATCH] Fixup: selftest/mm: ksm_functional_tests: Add PROT_NONE test
+After all the <asm/export.h> lines are converted, <asm/export.h> and
+<asm-generic/export.h> will be removed.
 
-As noted by Peter, we should be using sizeof(i) in test_prot_none().
-
-Signed-off-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
-  tools/testing/selftests/mm/ksm_functional_tests.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/mm/ksm_functional_tests.c b/tools/testing/selftests/mm/ksm_functional_tests.c
-index 8fa4889ab4f3..901e950f9138 100644
---- a/tools/testing/selftests/mm/ksm_functional_tests.c
-+++ b/tools/testing/selftests/mm/ksm_functional_tests.c
-@@ -516,7 +516,7 @@ static void test_prot_none(void)
-  	/* Store a unique value in each page on one half using ptrace */
-  	for (i = 0; i < size / 2; i += pagesize) {
-  		lseek(mem_fd, (uintptr_t) map + i, SEEK_SET);
--		if (write(mem_fd, &i, sizeof(size)) != sizeof(size)) {
-+		if (write(mem_fd, &i, sizeof(i)) != sizeof(i)) {
-  			ksft_test_result_fail("ptrace write failed\n");
-  			goto unmap;
-  		}
+ arch/m68k/lib/divsi3.S  | 2 +-
+ arch/m68k/lib/modsi3.S  | 2 +-
+ arch/m68k/lib/mulsi3.S  | 2 +-
+ arch/m68k/lib/udivsi3.S | 2 +-
+ arch/m68k/lib/umodsi3.S | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/arch/m68k/lib/divsi3.S b/arch/m68k/lib/divsi3.S
+index 3a2143f51631..62787b4333e7 100644
+--- a/arch/m68k/lib/divsi3.S
++++ b/arch/m68k/lib/divsi3.S
+@@ -33,7 +33,7 @@ General Public License for more details. */
+    D. V. Henkel-Wallace (gumby@cygnus.com) Fete Bastille, 1992
+ */
+ 
+-#include <asm/export.h>
++#include <linux/export.h>
+ 
+ /* These are predefined by new versions of GNU cpp.  */
+ 
+diff --git a/arch/m68k/lib/modsi3.S b/arch/m68k/lib/modsi3.S
+index 1c967649a4e0..1bcb742d0b76 100644
+--- a/arch/m68k/lib/modsi3.S
++++ b/arch/m68k/lib/modsi3.S
+@@ -33,7 +33,7 @@ General Public License for more details. */
+    D. V. Henkel-Wallace (gumby@cygnus.com) Fete Bastille, 1992
+ */
+ 
+-#include <asm/export.h>
++#include <linux/export.h>
+ 
+ /* These are predefined by new versions of GNU cpp.  */
+ 
+diff --git a/arch/m68k/lib/mulsi3.S b/arch/m68k/lib/mulsi3.S
+index 855675e69a8a..c2853248249e 100644
+--- a/arch/m68k/lib/mulsi3.S
++++ b/arch/m68k/lib/mulsi3.S
+@@ -32,7 +32,7 @@ General Public License for more details. */
+    Some of this code comes from MINIX, via the folks at ericsson.
+    D. V. Henkel-Wallace (gumby@cygnus.com) Fete Bastille, 1992
+ */
+-#include <asm/export.h>
++#include <linux/export.h>
+ /* These are predefined by new versions of GNU cpp.  */
+ 
+ #ifndef __USER_LABEL_PREFIX__
+diff --git a/arch/m68k/lib/udivsi3.S b/arch/m68k/lib/udivsi3.S
+index 78440ae513bf..39ad70596293 100644
+--- a/arch/m68k/lib/udivsi3.S
++++ b/arch/m68k/lib/udivsi3.S
+@@ -32,7 +32,7 @@ General Public License for more details. */
+    Some of this code comes from MINIX, via the folks at ericsson.
+    D. V. Henkel-Wallace (gumby@cygnus.com) Fete Bastille, 1992
+ */
+-#include <asm/export.h>
++#include <linux/export.h>
+ /* These are predefined by new versions of GNU cpp.  */
+ 
+ #ifndef __USER_LABEL_PREFIX__
+diff --git a/arch/m68k/lib/umodsi3.S b/arch/m68k/lib/umodsi3.S
+index b6fd11f58948..6640eaa9eb03 100644
+--- a/arch/m68k/lib/umodsi3.S
++++ b/arch/m68k/lib/umodsi3.S
+@@ -32,7 +32,7 @@ General Public License for more details. */
+    Some of this code comes from MINIX, via the folks at ericsson.
+    D. V. Henkel-Wallace (gumby@cygnus.com) Fete Bastille, 1992
+ */
+-#include <asm/export.h>
++#include <linux/export.h>
+ /* These are predefined by new versions of GNU cpp.  */
+ 
+ #ifndef __USER_LABEL_PREFIX__
 -- 
-2.41.0
-
-
-
--- 
-Cheers,
-
-David / dhildenb
+2.39.2
 
