@@ -2,126 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D2B771D89
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F26F6771D8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbjHGJwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39002 "EHLO
+        id S231698AbjHGJxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 05:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbjHGJwE (ORCPT
+        with ESMTP id S229480AbjHGJxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:52:04 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C316D1BCD;
-        Mon,  7 Aug 2023 02:51:44 -0700 (PDT)
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4C043208694F;
-        Mon,  7 Aug 2023 02:51:02 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4C043208694F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1691401862;
-        bh=I8JPvW2x4wvhQ88X64Egmr5ves+Y3CqToeE6x4H3cos=;
-        h=From:To:Cc:Subject:Date:From;
-        b=l+M2Sgvx6w0bgLv9XXrQoQ/gVH46rV69/VdKwlhKbdqKgMZ2A5+EXQ9B7lutxuq76
-         U9QQGAGv0/Mops1yLwpjZ2Pc4I69vqAwCV80g2KHbLkBh5ZLTCz0mx2WBAa/ONFa5D
-         LYFVdF5MNiL8PMglP0jIoH2zNyyQIxz/KJ4WOIW0=
-From:   Saurabh Sengar <ssengar@linux.microsoft.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ssengar@microsoft.com
-Subject: [PATCH] hv: hyperv.h: Replace one-element array with flexible-array member
-Date:   Mon,  7 Aug 2023 02:50:53 -0700
-Message-Id: <1691401853-26974-1-git-send-email-ssengar@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 7 Aug 2023 05:53:02 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D08E119AA;
+        Mon,  7 Aug 2023 02:52:34 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 015E01FB;
+        Mon,  7 Aug 2023 02:52:58 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.32.139])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 013183F59C;
+        Mon,  7 Aug 2023 02:52:11 -0700 (PDT)
+Date:   Mon, 7 Aug 2023 10:52:09 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-perf-users@vger.kernel.org, ito-yuichi@fujitsu.com,
+        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 2/7] arm64: idle: Tag the arm64 idle functions as
+ __cpuidle
+Message-ID: <ZNC-yX9bW1iRShbh@FVFF77S0Q05N.cambridge.arm.com>
+References: <20230601213440.2488667-1-dianders@chromium.org>
+ <20230601143109.v9.2.I4baba13e220bdd24d11400c67f137c35f07f82c7@changeid>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230601143109.v9.2.I4baba13e220bdd24d11400c67f137c35f07f82c7@changeid>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One-element and zero-length arrays are deprecated. Replace one-element
-array in struct vmtransfer_page_packet_header with flexible-array
-member. This change fixes below warning:
+On Thu, Jun 01, 2023 at 02:31:46PM -0700, Douglas Anderson wrote:
+> As per the (somewhat recent) comment before the definition of
+> `__cpuidle`, the tag is like `noinstr` but also marks a function so it
+> can be identified by cpu_in_idle(). Let'a add this.
+> 
+> After doing this then when we dump stack traces of all processors
+> using nmi_cpu_backtrace() then instead of getting useless backtraces
+> we get things like:
+> 
+>   NMI backtrace for cpu N skipped: idling at cpu_do_idle+0x94/0x98
+> 
+> NOTE: this patch won't make cpu_in_idle() work perfectly for arm64,
+> but it doesn't hurt and does catch some cases. Specifically an example
+> that wasn't caught in my testing looked like this:
+> 
+>  gic_cpu_sys_reg_init+0x1f8/0x314
+>  gic_cpu_pm_notifier+0x40/0x78
+>  raw_notifier_call_chain+0x5c/0x134
+>  cpu_pm_notify+0x38/0x64
+>  cpu_pm_exit+0x20/0x2c
+>  psci_enter_idle_state+0x48/0x70
+>  cpuidle_enter_state+0xb8/0x260
+>  cpuidle_enter+0x44/0x5c
+>  do_idle+0x188/0x30c
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-[    2.593788] ================================================================================
-[    2.593908] UBSAN: array-index-out-of-bounds in drivers/net/hyperv/netvsc.c:1445:41
-[    2.593989] index 1 is out of range for type 'vmtransfer_page_range [1]'
-[    2.594049] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.5.0-rc4-next-20230803+ #1
-[    2.594114] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.1 04/20/2023
-[    2.594121] Call Trace:
-[    2.594126]  <IRQ>
-[    2.594133]  dump_stack_lvl+0x4c/0x70
-[    2.594154]  dump_stack+0x14/0x20
-[    2.594162]  __ubsan_handle_out_of_bounds+0xa6/0xf0
-[    2.594224]  netvsc_poll+0xc01/0xc90 [hv_netvsc]
-[    2.594258]  __napi_poll+0x30/0x1e0
-[    2.594320]  net_rx_action+0x194/0x2f0
-[    2.594333]  __do_softirq+0xde/0x31e
-[    2.594345]  __irq_exit_rcu+0x6b/0x90
-[    2.594357]  irq_exit_rcu+0x12/0x20
-[    2.594366]  sysvec_hyperv_callback+0x84/0x90
-[    2.594376]  </IRQ>
-[    2.594379]  <TASK>
-[    2.594383]  asm_sysvec_hyperv_callback+0x1f/0x30
-[    2.594394] RIP: 0010:pv_native_safe_halt+0xf/0x20
-[    2.594452] Code: 0b 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 66 90 0f 00 2d 05 35 3f 00 fb f4 <c3> cc cc cc cc 66 2e 0f 1f 84 00 00 00 00 00 66 90 90 90 90 90 90
-[    2.594459] RSP: 0018:ffffb841c00d3e88 EFLAGS: 00000256
-[    2.594469] RAX: ffff9d18c326f4a0 RBX: ffff9d18c031df40 RCX: 4000000000000000
-[    2.594475] RDX: 0000000000000001 RSI: 0000000000000082 RDI: 00000000000268dc
-[    2.594481] RBP: ffffb841c00d3e90 R08: 00000066a171109b R09: 00000000d33d2600
-[    2.594486] R10: 000000009a41bf00 R11: 0000000000000000 R12: 0000000000000001
-[    2.594491] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[    2.594501]  ? ct_kernel_exit.constprop.0+0x7d/0x90
-[    2.594513]  ? default_idle+0xd/0x20
-[    2.594523]  arch_cpu_idle+0xd/0x20
-[    2.594532]  default_idle_call+0x30/0xe0
-[    2.594542]  do_idle+0x200/0x240
-[    2.594553]  ? complete+0x71/0x80
-[    2.594613]  cpu_startup_entry+0x24/0x30
-[    2.594624]  start_secondary+0x12d/0x160
-[    2.594634]  secondary_startup_64_no_verify+0x17e/0x18b
-[    2.594649]  </TASK>
-[    2.594656] ================================================================================
+I don't have strong feelings either way for this, so:
 
-With this change the structure size is reduced by 8 bytes, below is the
-pahole output.
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-struct vmtransfer_page_packet_header {
-	struct vmpacket_descriptor d;                    /*     0    16 */
-	u16                        xfer_pageset_id;      /*    16     2 */
-	u8                         sender_owns_set;      /*    18     1 */
-	u8                         reserved;             /*    19     1 */
-	u32                        range_cnt;            /*    20     4 */
-	struct vmtransfer_page_range ranges[];           /*    24     0 */
+Thanks,
+Mark.
 
-	/* size: 24, cachelines: 1, members: 6 */
-	/* last cacheline: 24 bytes */
-};
-
-Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
----
- include/linux/hyperv.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-index bfbc37ce223b..c529f407bfb8 100644
---- a/include/linux/hyperv.h
-+++ b/include/linux/hyperv.h
-@@ -348,7 +348,7 @@ struct vmtransfer_page_packet_header {
- 	u8  sender_owns_set;
- 	u8 reserved;
- 	u32 range_cnt;
--	struct vmtransfer_page_range ranges[1];
-+	struct vmtransfer_page_range ranges[];
- } __packed;
- 
- struct vmgpadl_packet_header {
--- 
-2.34.1
-
+> ---
+> 
+> Changes in v9:
+> - Added to commit message that this doesn't catch all cases.
+> 
+> Changes in v8:
+> - "Tag the arm64 idle functions as __cpuidle" new for v8
+> 
+>  arch/arm64/kernel/idle.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/idle.c b/arch/arm64/kernel/idle.c
+> index c1125753fe9b..05cfb347ec26 100644
+> --- a/arch/arm64/kernel/idle.c
+> +++ b/arch/arm64/kernel/idle.c
+> @@ -20,7 +20,7 @@
+>   *	ensure that interrupts are not masked at the PMR (because the core will
+>   *	not wake up if we block the wake up signal in the interrupt controller).
+>   */
+> -void noinstr cpu_do_idle(void)
+> +void __cpuidle cpu_do_idle(void)
+>  {
+>  	struct arm_cpuidle_irq_context context;
+>  
+> @@ -35,7 +35,7 @@ void noinstr cpu_do_idle(void)
+>  /*
+>   * This is our default idle handler.
+>   */
+> -void noinstr arch_cpu_idle(void)
+> +void __cpuidle arch_cpu_idle(void)
+>  {
+>  	/*
+>  	 * This should do all the clock switching and wait for interrupt
+> -- 
+> 2.41.0.rc2.161.g9c6817b8e7-goog
+> 
