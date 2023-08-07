@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAA4772A50
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE86772A54
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbjHGQQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51756 "EHLO
+        id S231296AbjHGQRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:17:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjHGQQg (ORCPT
+        with ESMTP id S231215AbjHGQRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:16:36 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB3110CE;
-        Mon,  7 Aug 2023 09:16:35 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377GGQGU126323;
-        Mon, 7 Aug 2023 11:16:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691424986;
-        bh=cXxX9UN9/ul+16Vg/ekotOnm0YUjkRmVdJx9FnUIEY8=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=GyNJ2ZORIvh1eIEysbELMlZdReqbvs5nh6yUfg3rtMZ8w5EBfHeiIdTXMc7BEhcDA
-         X2mND+H04+aW7dmJvEBTHMxDkWBbYfd7qXi7n7dBEecEAx2lkj0zHtSVhRq51rLJtp
-         yu9JSTKyHqeD+SreVfcQDUCy6lLDrVrIs+py7C5c=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377GGQtC129125
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Aug 2023 11:16:26 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
- Aug 2023 11:16:26 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 7 Aug 2023 11:16:26 -0500
-Received: from [10.250.36.243] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377GGPWt105151;
-        Mon, 7 Aug 2023 11:16:25 -0500
-Message-ID: <191d171b-aa8d-3727-f5ad-9c25bfff96fe@ti.com>
-Date:   Mon, 7 Aug 2023 11:16:25 -0500
+        Mon, 7 Aug 2023 12:17:19 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C52E10D0;
+        Mon,  7 Aug 2023 09:17:18 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-56c7eb17945so2768874eaf.2;
+        Mon, 07 Aug 2023 09:17:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691425037; x=1692029837;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VJdGGiJkcrHISXvVvE0H/Vznsw3cOU8WUZgbJxZdrbE=;
+        b=Lqr9tTV9yaDkHfH7Kwwtjf05PiPzScNOTXxuf2JP4cSaK08vncLoIbljVhU02C+HpB
+         CzVJGJM+TlxUGMCU0XbpFDwKyt8+zKkKHGfJdmLC6+ILCsDQmUwcPOeexbNsCbAKVvI0
+         XePFfug1UQ1mlizK3ERkkdU958yh+V1/QPtpLad7bUWh1UXD27TEqAsF/nnlsTvr1OF/
+         ncdCXSjgNdfx2Yr4juhE2Dke8+5dr9resZ0ZUMtgh7TN4w5EVi6mIKrxFLKEgKgyaDiH
+         RcclQG+paa/fDQzS2KF2oAbiNk0LFjX0LsOE4OZLbnxLTXkzIH02IeQRIayKiBT+SFrw
+         2tLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691425037; x=1692029837;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VJdGGiJkcrHISXvVvE0H/Vznsw3cOU8WUZgbJxZdrbE=;
+        b=EVFNS6mdDNRxR7vJSw7ze3uxxeISO6hDFc6d6Yj8iinF/awTJTnPmqF7nBIML/ke21
+         /XJUhuhtpe35PtHOTEQWsDnXaNMgW78BqUV/xinS5nq/1CcEEeYrmZpd9OXV3t2K1BnM
+         Txvn1CY/CSo3x6cFvHrwiGCTDhlI7NWhE0gU9XsIu2S+H30bpGFsn38TlhwB2LiK0s3q
+         z5IJ2DyJDfgtU9WFT9Hd6KTOvl0POiS4i1UuvSao8b35U9yRj9uhx00/+Nxrs4laeai3
+         By1ST8J/Rpt2rWNZYDjDWzTSPt0W66unWYiDSseRfZmTUkuGqEn2UDMAiRmXAsm3FQ2n
+         7ugQ==
+X-Gm-Message-State: AOJu0Yx+rxsQPiZXnDsik15byFAMWDhkTI4B5l/1WOw4/7j1pE1aDTbO
+        xrso2o1Na6Abe7c2sirWjNJNAGdr1jRFjJCfMqI=
+X-Google-Smtp-Source: AGHT+IEfgr1D1t716LbkpwsVqpgp8wfvTRjXYPJxegUlcNb2afgWVwvQg1ei5/WSELs+Zi5YTPj1oCeWcsZDXnjDSBM=
+X-Received: by 2002:a4a:351e:0:b0:56c:8dde:bccb with SMTP id
+ l30-20020a4a351e000000b0056c8ddebccbmr9926993ooa.9.1691425037321; Mon, 07 Aug
+ 2023 09:17:17 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 10/13] arm64: dts: ti: k3-j7200: Enable GPIO nodes at the
- board level
-Content-Language: en-US
-To:     Nishanth Menon <nm@ti.com>
-CC:     Dhruva Gole <d-gole@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230802205309.257392-1-afd@ti.com>
- <20230802205309.257392-11-afd@ti.com>
- <ea932535-b69c-ec57-0dfe-31a891b6df5c@ti.com>
- <1b3366b0-e3a4-3609-9e25-7b880d2fe656@ti.com>
- <20230807154207.7eho6er55revipjo@shuffling>
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <20230807154207.7eho6er55revipjo@shuffling>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <20230801011237.3913-1-sunran001@208suo.com>
+In-Reply-To: <20230801011237.3913-1-sunran001@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 7 Aug 2023 12:17:06 -0400
+Message-ID: <CADnq5_NDLqDPU5n2yLJdp+OAUnnu4LW=uU4HXji0R1usJebtHQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/pm: Clean up errors in smu_v11_0.h
+To:     Ran Sun <sunran001@208suo.com>
+Cc:     apw@canonical.com, joe@perches.com, alexander.deucher@amd.com,
+        bpf@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,77 +70,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/23 10:42 AM, Nishanth Menon wrote:
-> On 10:28-20230807, Andrew Davis wrote:
->> On 8/7/23 12:38 AM, Dhruva Gole wrote:
->>> Andrew,
->>>
->>> On 03/08/23 02:23, Andrew Davis wrote:
->>>> GPIO nodes defined in the top-level J7200 SoC dtsi files are incomplete
->>>> and may not be functional unless they are extended with pinmux and
->>>> device information.
->>>>
->>>> Disable the GPIO nodes in the dtsi files and only enable the ones that
->>>> are actually pinned out on a given board.
->>>>
->>>> Signed-off-by: Andrew Davis <afd@ti.com>
->>>> ---
->>>>    .../boot/dts/ti/k3-j7200-common-proc-board.dts | 18 ++++--------------
->>>>    arch/arm64/boot/dts/ti/k3-j7200-main.dtsi      |  4 ++++
->>>>    .../arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi |  2 ++
->>>>    3 files changed, 10 insertions(+), 14 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
->>>> index dee9056f56051..4a5c4f36baeec 100644
->>>> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
->>>> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
->>>> @@ -240,27 +240,17 @@ &main_uart3 {
->>>>        pinctrl-0 = <&main_uart3_pins_default>;
->>>>    };
->>>> -&main_gpio2 {
->>>> -    status = "disabled";
->>>> -};
->>>> -
->>>> -&main_gpio4 {
->>>> -    status = "disabled";
->>>> -};
->>>> -
->>>> -&main_gpio6 {
->>>> -    status = "disabled";
->>>> +&main_gpio0 {
->>>> +    status = "okay";
->>>> +    /* default pins */
->>>
->>> Small question, where is the pmx for main_gpio0? What does "default pins"
->>> refer to here? Where are they pinmuxed?
->>>
->>
->> Good question, where is the pmx for main_gpio0? I don't know, it was
->> never defined before either, we only are noticing this now as we are
->> disabling by default instead of leaving an unfinished node enabled
->> by default. (another benefit of this disabled by default scheme).
->>
->> What is really happening is GPIO nodes we tend to pinmux differently
->> than normal device nodes. Their pinmux selections tends to be spread
->> out in all the nodes that make use of these GPIO pins, not all together
->> here in this node.
->>
->> For instance in this device we use one of the main_gpio0 pins as a
->> GPIO toggled regulator, and we define the pinmux for it in that node
->> (see vdd-sd-dv-default-pins).
->>
->> We can either define the rest of the pins not used elsewhere
->> here, or we can consider GPIO an exception to the rule, I'd say
->> the latter is fine for now.
-> 
-> 
-> GPIO pinmux are typically defined where they need - the only place where
-> they are explicitly called out in gpio is when they are meant to be used by
-> libgpio - typically in the case of dev boards.
-> 
-> Just drop the comments of /* default pins */ - that is just mis-leading.
-> 
+Applied with the garbage hunks dropped.
 
-True, will drop the comment for v2.
+Alex
 
-Andrew
+
+On Mon, Jul 31, 2023 at 9:12=E2=80=AFPM Ran Sun <sunran001@208suo.com> wrot=
+e:
+>
+> Fix the following errors reported by checkpatch:
+>
+> ERROR: that open brace { should be on the previous line
+> ERROR: code indent should use tabs where possible
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>  drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0.h |  7 +++---
+>  scripts/checkpatch.pl                        | 23 --------------------
+>  2 files changed, 3 insertions(+), 27 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0.h b/drivers/gpu/d=
+rm/amd/pm/swsmu/inc/smu_v11_0.h
+> index d466db6f0ad4..1b4e0e4716ea 100644
+> --- a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0.h
+> +++ b/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0.h
+> @@ -67,8 +67,7 @@ static const __maybe_unused uint16_t link_width[] =3D {=
+0, 1, 2, 4, 8, 12, 16};
+>  static const __maybe_unused uint16_t link_speed[] =3D {25, 50, 80, 160};
+>
+>  static const
+> -struct smu_temperature_range __maybe_unused smu11_thermal_policy[] =3D
+> -{
+> +struct smu_temperature_range __maybe_unused smu11_thermal_policy[] =3D {
+>         {-273150,  99000, 99000, -273150, 99000, 99000, -273150, 99000, 9=
+9000},
+>         { 120000, 120000, 120000, 120000, 120000, 120000, 120000, 120000,=
+ 120000},
+>  };
+> @@ -96,8 +95,8 @@ struct smu_11_0_dpm_table {
+>  };
+>
+>  struct smu_11_0_pcie_table {
+> -        uint8_t  pcie_gen[MAX_PCIE_CONF];
+> -        uint8_t  pcie_lane[MAX_PCIE_CONF];
+> +       uint8_t  pcie_gen[MAX_PCIE_CONF];
+> +       uint8_t  pcie_lane[MAX_PCIE_CONF];
+>  };
+>
+>  struct smu_11_0_dpm_tables {
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 85a0598bf723..528f619520eb 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -7449,23 +7449,6 @@ sub process {
+>                 }
+>
+>  # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU=
+).
+> -<<<<<<< HEAD
+> -<<<<<<< HEAD
+> -               if ($line =3D~ /\brcu_read_lock_trace\s*\(/ ||
+> -                   $line =3D~ /\brcu_read_lock_trace_held\s*\(/ ||
+> -                   $line =3D~ /\brcu_read_unlock_trace\s*\(/ ||
+> -                   $line =3D~ /\bcall_rcu_tasks_trace\s*\(/ ||
+> -                   $line =3D~ /\bsynchronize_rcu_tasks_trace\s*\(/ ||
+> -                   $line =3D~ /\brcu_barrier_tasks_trace\s*\(/ ||
+> -                   $line =3D~ /\brcu_request_urgent_qs_task\s*\(/) {
+> -                       if ($realfile !~ m@^kernel/bpf@ &&
+> -                           $realfile !~ m@^include/linux/bpf@ &&
+> -                           $realfile !~ m@^net/bpf@ &&
+> -                           $realfile !~ m@^kernel/rcu@ &&
+> -                           $realfile !~ m@^include/linux/rcu@) {
+> -=3D=3D=3D=3D=3D=3D=3D
+> -=3D=3D=3D=3D=3D=3D=3D
+> ->>>>>>> d7b3af5a77e8d8da28f435f313e069aea5bcf172
+>                 our $rcu_trace_funcs =3D qr{(?x:
+>                         rcu_read_lock_trace |
+>                         rcu_read_lock_trace_held |
+> @@ -7482,14 +7465,8 @@ sub process {
+>                         kernel/rcu/ |
+>                         include/linux/rcu
+>                 )};
+> -<<<<<<< HEAD
+> -               if ($line =3D~ /\b$rcu_trace_funcs\s*\(/) {
+> -                       if ($realfile !~ m@^$rcu_trace_paths@) {
+> ->>>>>>> 4d2c646ac07cf4a35ef1c4a935a1a4fd6c6b1a36
+> -=3D=3D=3D=3D=3D=3D=3D
+>                 if ($line =3D~ /\b($rcu_trace_funcs)\s*\(/) {
+>                         if ($realfile !~ m{^$rcu_trace_paths}) {
+> ->>>>>>> d7b3af5a77e8d8da28f435f313e069aea5bcf172
+>                                 WARN("RCU_TASKS_TRACE",
+>                                      "use of RCU tasks trace is incorrect=
+ outside BPF or core RCU code\n" . $herecurr);
+>                         }
+> --
+> 2.17.1
+>
