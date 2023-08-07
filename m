@@ -2,115 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A09CD772965
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0851B77296B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbjHGPha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58416 "EHLO
+        id S229655AbjHGPiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 11:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbjHGPh1 (ORCPT
+        with ESMTP id S229889AbjHGPiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:37:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD421703;
-        Mon,  7 Aug 2023 08:37:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691422640; x=1722958640;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WyY4m65TBzl1YIFH+NrWYCcN8qNM7vHmyLpIsh9nJDU=;
-  b=Bok/7IScVQPnQ5yIJ8+YvltqXhG+uKggPngq9Ej4mBzO4hRwVyzDKC0+
-   Xs3oogrPEm3V6mFpRXqBGSEPROOXbqSD5jDGXC3cuNHhYT+UHSGpSSTSN
-   KiWn6qo143Yw5VSHM+1kO9VznYCf80H0Zbk1nWa9XrRLQozKMgmJJgefM
-   94iEtaIH5SGJ7nKlvjtUg1afZW/6lrAAr0JYKU11uRUE0CWDfEPokt98O
-   VoLhvcYVsTVF9V+iYiFhG1UdYwtId6Jen7yqXA36YiK5d9PIggQse8UQ0
-   diayYrajPrG28voCHU6/GrFnZe/wRjSyedCiQyG56Exj+DD6+IqG1xw3H
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="456960583"
-X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
-   d="scan'208";a="456960583"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 08:37:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="845083880"
-X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
-   d="scan'208";a="845083880"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP; 07 Aug 2023 08:37:18 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qT2IG-0005qR-08;
-        Mon, 07 Aug 2023 18:37:16 +0300
-Date:   Mon, 7 Aug 2023 18:37:15 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] of: dynamic: Move dead property list check into
- property add/update functions
-Message-ID: <ZNEPqwQ0H9srkxxq@smile.fi.intel.com>
-References: <20230801-dt-changeset-fixes-v2-0-c2b701579dee@kernel.org>
- <20230801-dt-changeset-fixes-v2-5-c2b701579dee@kernel.org>
+        Mon, 7 Aug 2023 11:38:01 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8FC10DE
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:37:55 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377FboLE052026;
+        Mon, 7 Aug 2023 10:37:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691422670;
+        bh=FMHqZNEApmRwna7Z7k6VSvYjm3zUkpCE3DjcWAg7vQo=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=JYYUJmyTQ1YL6uZFTrf3l3EBWIguIj8mycPFEXFvIIoi69+tyOu0IohHpTIavS/9S
+         Jq2NOtCCt5JJw2T7Nvo3zzs/gCOBEqUZCTXRT9YXls5xEAGDbvWfSir6J2rbqOETuy
+         U/2r2BtdyhDL+RnGE2wZC0lM26s1fnVEmxyZg4ik=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377FborK107002
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Aug 2023 10:37:50 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
+ Aug 2023 10:37:49 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 7 Aug 2023 10:37:49 -0500
+Received: from [10.250.36.243] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377Fbn9K029221;
+        Mon, 7 Aug 2023 10:37:49 -0500
+Message-ID: <08ff46b0-09e6-fd04-afee-99ccc1d9274b@ti.com>
+Date:   Mon, 7 Aug 2023 10:37:49 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801-dt-changeset-fixes-v2-5-c2b701579dee@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] reset: ti: syscon: remove unneeded call to
+ platform_set_drvdata()
+Content-Language: en-US
+To:     Alexandru Ardelean <alex@shruggie.ro>,
+        Andrei Coardos <aboutphysycs@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>, <p.zabel@pengutronix.de>,
+        <s-anna@ti.com>
+References: <20230807111534.12392-1-aboutphysycs@gmail.com>
+ <CAH3L5QrdF3fZDKV4FvsO+czgWyWNxKZE3yaxP7C94o0oyLZ6HQ@mail.gmail.com>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <CAH3L5QrdF3fZDKV4FvsO+czgWyWNxKZE3yaxP7C94o0oyLZ6HQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 04:41:55PM -0600, Rob Herring wrote:
-> The changeset code checks for a property in the deadprops list when
-> adding/updating a property, but of_add_property() and
-> of_update_property() do not. As the users of these functions are pretty
-> simple, they have not hit this scenario or else the property lists
-> would get corrupted.
+On 8/7/23 6:57 AM, Alexandru Ardelean wrote:
+> On Mon, Aug 7, 2023 at 2:15 PM Andrei Coardos <aboutphysycs@gmail.com> wrote:
+>>
+>> This function call was found to be unnecessary as there is no equivalent
+>> platform_get_drvdata() call to access the private data of the driver. Also,
+>> the private data is defined in this driver, so there is no risk of it being
+>> accessed outside of this driver file.
+>>
+> 
+> Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+> 
+> // also adding the people listed as MODULE_AUTHOR
+> // the list seems a bit short otherwise; no idea if these emails work
+> 
+>> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+>> ---
 
-Suggested-by: ? :-)
+LGTM,
 
-...
+Acked-by: Andrew Davis <afd@ti.com>
 
-> +static void __of_remove_dead_property(struct device_node *np, struct property *prop)
-> +{
-> +	struct property **next;
-> +
-> +	/* If the property is in deadprops then it must be removed */
-> +	for (next = &np->deadprops; *next; next = &(*next)->next) {
-> +		if (*next != prop)
-> +			continue;
-> +
-> +		*next = prop->next;
-> +		prop->next = NULL;
-> +		break;
-
-Why not
-
-		if (*next == prop) {
-			*next = prop->next;
-			prop->next = NULL;
-			break;
-		}
-
-which seems to me clearer?
-
-> +	}
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>>   drivers/reset/reset-ti-syscon.c | 2 --
+>>   1 file changed, 2 deletions(-)
+>>
+>> diff --git a/drivers/reset/reset-ti-syscon.c b/drivers/reset/reset-ti-syscon.c
+>> index f0dd7ffc3b72..23f86ddb8668 100644
+>> --- a/drivers/reset/reset-ti-syscon.c
+>> +++ b/drivers/reset/reset-ti-syscon.c
+>> @@ -204,8 +204,6 @@ static int ti_syscon_reset_probe(struct platform_device *pdev)
+>>          data->controls = controls;
+>>          data->nr_controls = nr_controls;
+>>
+>> -       platform_set_drvdata(pdev, data);
+>> -
+>>          return devm_reset_controller_register(dev, &data->rcdev);
+>>   }
+>>
+>> --
+>> 2.34.1
+>>
