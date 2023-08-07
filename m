@@ -2,135 +2,412 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 784A7772252
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6574C77225A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232842AbjHGLcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37512 "EHLO
+        id S232859AbjHGLct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232840AbjHGLb5 (ORCPT
+        with ESMTP id S232500AbjHGLcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:31:57 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AE35B8E;
-        Mon,  7 Aug 2023 04:29:16 -0700 (PDT)
-Received: from [192.168.0.192] (unknown [194.146.248.75])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        Mon, 7 Aug 2023 07:32:25 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061471BF1
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 04:29:42 -0700 (PDT)
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com [209.85.219.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: andrzej.p)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id EEFCA66071C9;
-        Mon,  7 Aug 2023 12:28:06 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691407687;
-        bh=56gVYcaazTrYHIsA62HDQJBwlVRjju6wr+3l6jBJIO8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=HnjuxLv1rnNTd4l05rPxR/wWm8WHB2/x4L9dapjnflads/l+tW5yfjevSBkKfa6SF
-         GWwVr8FnMQlz0F75R2JD5omvQxSgsmHCdtMAIG1IhfZFFR83lIdZ+50xYym5LdQDXn
-         mtNa4bAsO4EWedDeR8s8/fHo4Zv/dN1vIQQM/V2gI9i5vyxWu8Iueqlkekmp8sje71
-         FVNrpBMH37Yf1NbaUXx96yTPxAEpd6O7P4LD4YYU2BnmDEumJu8tXU62DqEec+zRSn
-         B7CDKoo0woT+35IN6QBEtz+uu9s+S4slRgOkeXrCnvuZviGFG2dL139EIAmNw4yDiZ
-         rV4sli6X2HnDg==
-Message-ID: <fa3fd17d-570b-fd5f-1c35-3e4004333383@collabora.com>
-Date:   Mon, 7 Aug 2023 13:28:05 +0200
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3B05E3F189
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 11:28:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1691407726;
+        bh=qbnbOFh51mi/qrG/7hcqEm7+2Y8f9kd/IJcmNmyo2uY=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=cyTCkcim7GGKpmGkTo6E+OiQADp3bU/rtNSPo+a1RdrqaXyHs4ozhybbWM4LGdB5C
+         wz/HZLwb1vrbwaTXX3gwNOo6+6gKlKdHzq/kqt41armLaWpMmVz6TxQHph7/chHi4n
+         +uCtNx24XoZVndgpk5ViiwePq8iVoqLKJxCL93FHoBUpwqN/zge5GWyNfn4icexA8e
+         l3XNHrpx+Cdc8DZxKyhund8JpL8rUvGGPmCTFHkA+CY8n+PiOWanumuhorEIFetCrl
+         +Q7sfDB3kHe5Cyh3m0xwFF0VjsCFQRMIiTyZx2BvzPth5MYpwhvYAPKzVytcWi4V79
+         H9VFvtEuYLXLw==
+Received: by mail-yb1-f197.google.com with SMTP id 3f1490d57ef6-d4ca2881833so2058755276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 04:28:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691407725; x=1692012525;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qbnbOFh51mi/qrG/7hcqEm7+2Y8f9kd/IJcmNmyo2uY=;
+        b=PC5slKey/r/Y45VN7jUBzZj7yEWoYNXQFmra7hyQznAZsHHnR5umMp5Qkw8+Dj1yKv
+         RCT4HKUvvqwvr3vH75Uhry6DFhcPGJx8pjv0OKnv30ar4BKqSPIQFOZ0mg8q9vQyrg/m
+         Bv5W5Q+XrB8x4fPYg61W1Orb6rwpQeONDt57K4MNJO6b/9rAF+44AhLLf75dEZ1p8ygN
+         ghaXbcwvb5bJ394Lf8ojoF/ajQmiSkXn5ejbGedMG3jAN8xA1Ie4DyePjkGTanGDHw87
+         JB/BnFRW9pRVsUfB+5ajLIzwGEOfMtuCxrYw1WVRiOYAV9E9LQym11Lm47HdWoTioRFc
+         e+DQ==
+X-Gm-Message-State: AOJu0Yx6Ow8qJDRkZ8F7RzrAcl4elObgnPIKp6B+zViNITd0XeInYJiF
+        47etjjCWsiHgD8QdsrAxkVsDEPUWU3W4nFFUeku7Y4VX+VuRMDx1VgQvZNY9d6fmVCQUnfNNPqh
+        jVP6H/CZQ8jURvDvBpck5bxbrWO1MnhKhz5RPlj/lFjItu9udtPLBTYwYJg==
+X-Received: by 2002:a25:804e:0:b0:d0f:1f24:c620 with SMTP id a14-20020a25804e000000b00d0f1f24c620mr8058404ybn.9.1691407725113;
+        Mon, 07 Aug 2023 04:28:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE5AfpQ5OxPjO08RVKQslwxqbfNLDRI8BDefn6TTJJPa35dvfssWDJ1aF3OqRfAHIA1TfHP8AYt4tOHmxY3Ofo=
+X-Received: by 2002:a25:804e:0:b0:d0f:1f24:c620 with SMTP id
+ a14-20020a25804e000000b00d0f1f24c620mr8058393ybn.9.1691407724852; Mon, 07 Aug
+ 2023 04:28:44 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/5] docs: uapi: media: Move NV12_10BE_8L128 to NV15
- section
-Content-Language: en-US
-To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     kernel@collabora.com, linux-media@vger.kernel.org,
+References: <20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com>
+ <20230804084858.126104-4-aleksandr.mikhalitsyn@canonical.com>
+ <8446e5c9-7dd7-a1e9-e262-13811ee9e640@redhat.com> <CAEivzxedfaD7cPfQ-sspJabw_P6zSJtOrbiAGYN35LGXPoSwcg@mail.gmail.com>
+ <d119ef88-d827-5e8d-13e3-74ddfea61d7f@redhat.com> <CAEivzxeu9c-ZLRmz6kmvwUpofPK23cGn27XtOBRP3xSgb_JyWA@mail.gmail.com>
+ <abb24879-1606-7cb4-c136-4ba1f18b1140@redhat.com>
+In-Reply-To: <abb24879-1606-7cb4-c136-4ba1f18b1140@redhat.com>
+From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Date:   Mon, 7 Aug 2023 13:28:34 +0200
+Message-ID: <CAEivzxdTvDJ9htu7sVUkWFi35gMid07waA-2u=wne-B9auLEzg@mail.gmail.com>
+Subject: Re: [PATCH v9 03/12] ceph: handle idmapped mounts in create_request_message()
+To:     Xiubo Li <xiubli@redhat.com>
+Cc:     brauner@kernel.org, stgraber@ubuntu.com,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20230804192737.19016-1-nicolas.dufresne@collabora.com>
- <20230804192737.19016-3-nicolas.dufresne@collabora.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-In-Reply-To: <20230804192737.19016-3-nicolas.dufresne@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 4.08.2023 o 21:27, Nicolas Dufresne pisze:
-> This is a 15 bits per pixel (or packed 10 bit format), so move it
-> into the relevant section.
-> 
-> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+On Mon, Aug 7, 2023 at 1:21=E2=80=AFPM Xiubo Li <xiubli@redhat.com> wrote:
+>
+>
+> On 8/7/23 18:34, Aleksandr Mikhalitsyn wrote:
+> > On Mon, Aug 7, 2023 at 12:28=E2=80=AFPM Xiubo Li <xiubli@redhat.com> wr=
+ote:
+> >>
+> >> On 8/7/23 14:51, Aleksandr Mikhalitsyn wrote:
+> >>> On Mon, Aug 7, 2023 at 3:25=E2=80=AFAM Xiubo Li <xiubli@redhat.com> w=
+rote:
+> >>>> On 8/4/23 16:48, Alexander Mikhalitsyn wrote:
+> >>>>> From: Christian Brauner <brauner@kernel.org>
+> >>>>>
+> >>>>> Inode operations that create a new filesystem object such as ->mkno=
+d,
+> >>>>> ->create, ->mkdir() and others don't take a {g,u}id argument explic=
+itly.
+> >>>>> Instead the caller's fs{g,u}id is used for the {g,u}id of the new
+> >>>>> filesystem object.
+> >>>>>
+> >>>>> In order to ensure that the correct {g,u}id is used map the caller'=
+s
+> >>>>> fs{g,u}id for creation requests. This doesn't require complex chang=
+es.
+> >>>>> It suffices to pass in the relevant idmapping recorded in the reque=
+st
+> >>>>> message. If this request message was triggered from an inode operat=
+ion
+> >>>>> that creates filesystem objects it will have passed down the releva=
+nt
+> >>>>> idmaping. If this is a request message that was triggered from an i=
+node
+> >>>>> operation that doens't need to take idmappings into account the ini=
+tial
+> >>>>> idmapping is passed down which is an identity mapping.
+> >>>>>
+> >>>>> This change uses a new cephfs protocol extension CEPHFS_FEATURE_HAS=
+_OWNER_UIDGID
+> >>>>> which adds two new fields (owner_{u,g}id) to the request head struc=
+ture.
+> >>>>> So, we need to ensure that MDS supports it otherwise we need to fai=
+l
+> >>>>> any IO that comes through an idmapped mount because we can't proces=
+s it
+> >>>>> in a proper way. MDS server without such an extension will use call=
+er_{u,g}id
+> >>>>> fields to set a new inode owner UID/GID which is incorrect because =
+caller_{u,g}id
+> >>>>> values are unmapped. At the same time we can't map these fields wit=
+h an
+> >>>>> idmapping as it can break UID/GID-based permission checks logic on =
+the
+> >>>>> MDS side. This problem was described with a lot of details at [1], =
+[2].
+> >>>>>
+> >>>>> [1] https://lore.kernel.org/lkml/CAEivzxfw1fHO2TFA4dx3u23ZKK6Q+EThf=
+zuibrhA3RKM=3DZOYLg@mail.gmail.com/
+> >>>>> [2] https://lore.kernel.org/all/20220104140414.155198-3-brauner@ker=
+nel.org/
+> >>>>>
+> >>>>> Link: https://github.com/ceph/ceph/pull/52575
+> >>>>> Link: https://tracker.ceph.com/issues/62217
+> >>>>> Cc: Xiubo Li <xiubli@redhat.com>
+> >>>>> Cc: Jeff Layton <jlayton@kernel.org>
+> >>>>> Cc: Ilya Dryomov <idryomov@gmail.com>
+> >>>>> Cc: ceph-devel@vger.kernel.org
+> >>>>> Co-Developed-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canon=
+ical.com>
+> >>>>> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> >>>>> Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonic=
+al.com>
+> >>>>> ---
+> >>>>> v7:
+> >>>>>         - reworked to use two new fields for owner UID/GID (https:/=
+/github.com/ceph/ceph/pull/52575)
+> >>>>> v8:
+> >>>>>         - properly handled case when old MDS used with new kernel c=
+lient
+> >>>>> ---
+> >>>>>     fs/ceph/mds_client.c         | 47 +++++++++++++++++++++++++++++=
+++++---
+> >>>>>     fs/ceph/mds_client.h         |  5 +++-
+> >>>>>     include/linux/ceph/ceph_fs.h |  5 +++-
+> >>>>>     3 files changed, 52 insertions(+), 5 deletions(-)
+> >>>>>
+> >>>>> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+> >>>>> index 8829f55103da..41e4bf3811c4 100644
+> >>>>> --- a/fs/ceph/mds_client.c
+> >>>>> +++ b/fs/ceph/mds_client.c
+> >>>>> @@ -2902,6 +2902,17 @@ static void encode_mclientrequest_tail(void =
+**p, const struct ceph_mds_request *
+> >>>>>         }
+> >>>>>     }
+> >>>>>
+> >>>>> +static inline u16 mds_supported_head_version(struct ceph_mds_sessi=
+on *session)
+> >>>>> +{
+> >>>>> +     if (!test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD, &session->s_fe=
+atures))
+> >>>>> +             return 1;
+> >>>>> +
+> >>>>> +     if (!test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_fe=
+atures))
+> >>>>> +             return 2;
+> >>>>> +
+> >>>>> +     return CEPH_MDS_REQUEST_HEAD_VERSION;
+> >>>>> +}
+> >>>>> +
+> >>>>>     static struct ceph_mds_request_head_legacy *
+> >>>>>     find_legacy_request_head(void *p, u64 features)
+> >>>>>     {
+> >>>>> @@ -2923,6 +2934,7 @@ static struct ceph_msg *create_request_messag=
+e(struct ceph_mds_session *session,
+> >>>>>     {
+> >>>>>         int mds =3D session->s_mds;
+> >>>>>         struct ceph_mds_client *mdsc =3D session->s_mdsc;
+> >>>>> +     struct ceph_client *cl =3D mdsc->fsc->client;
+> >>>>>         struct ceph_msg *msg;
+> >>>>>         struct ceph_mds_request_head_legacy *lhead;
+> >>>>>         const char *path1 =3D NULL;
+> >>>>> @@ -2936,7 +2948,7 @@ static struct ceph_msg *create_request_messag=
+e(struct ceph_mds_session *session,
+> >>>>>         void *p, *end;
+> >>>>>         int ret;
+> >>>>>         bool legacy =3D !(session->s_con.peer_features & CEPH_FEATU=
+RE_FS_BTIME);
+> >>>>> -     bool old_version =3D !test_bit(CEPHFS_FEATURE_32BITS_RETRY_FW=
+D, &session->s_features);
+> >>>>> +     u16 request_head_version =3D mds_supported_head_version(sessi=
+on);
+> >>>>>
+> >>>>>         ret =3D set_request_path_attr(mdsc, req->r_inode, req->r_de=
+ntry,
+> >>>>>                               req->r_parent, req->r_path1, req->r_i=
+no1.ino,
+> >>>>> @@ -2977,8 +2989,10 @@ static struct ceph_msg *create_request_messa=
+ge(struct ceph_mds_session *session,
+> >>>>>          */
+> >>>>>         if (legacy)
+> >>>>>                 len =3D sizeof(struct ceph_mds_request_head_legacy)=
+;
+> >>>>> -     else if (old_version)
+> >>>>> +     else if (request_head_version =3D=3D 1)
+> >>>>>                 len =3D sizeof(struct ceph_mds_request_head_old);
+> >>>>> +     else if (request_head_version =3D=3D 2)
+> >>>>> +             len =3D offsetofend(struct ceph_mds_request_head, ext=
+_num_fwd);
+> >>>>>         else
+> >>>>>                 len =3D sizeof(struct ceph_mds_request_head);
+> >>>>>
+> >>>>> @@ -3028,6 +3042,16 @@ static struct ceph_msg *create_request_messa=
+ge(struct ceph_mds_session *session,
+> >>>>>         lhead =3D find_legacy_request_head(msg->front.iov_base,
+> >>>>>                                          session->s_con.peer_featur=
+es);
+> >>>>>
+> >>>>> +     if ((req->r_mnt_idmap !=3D &nop_mnt_idmap) &&
+> >>>>> +         !test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_fe=
+atures)) {
+> >>>>> +             pr_err_ratelimited_client(cl,
+> >>>>> +                     "idmapped mount is used and CEPHFS_FEATURE_HA=
+S_OWNER_UIDGID"
+> >>>>> +                     " is not supported by MDS. Fail request with =
+-EIO.\n");
+> >>>>> +
+> >>>>> +             ret =3D -EIO;
+> >>>>> +             goto out_err;
+> >>>>> +     }
+> >>>>> +
+> >>>>>         /*
+> >>>>>          * The ceph_mds_request_head_legacy didn't contain a versio=
+n field, and
+> >>>>>          * one was added when we moved the message version from 3->=
+4.
+> >>>>> @@ -3035,17 +3059,34 @@ static struct ceph_msg *create_request_mess=
+age(struct ceph_mds_session *session,
+> >>>>>         if (legacy) {
+> >>>>>                 msg->hdr.version =3D cpu_to_le16(3);
+> >>>>>                 p =3D msg->front.iov_base + sizeof(*lhead);
+> >>>>> -     } else if (old_version) {
+> >>>>> +     } else if (request_head_version =3D=3D 1) {
+> >>>>>                 struct ceph_mds_request_head_old *ohead =3D msg->fr=
+ont.iov_base;
+> >>>>>
+> >>>>>                 msg->hdr.version =3D cpu_to_le16(4);
+> >>>>>                 ohead->version =3D cpu_to_le16(1);
+> >>>>>                 p =3D msg->front.iov_base + sizeof(*ohead);
+> >>>>> +     } else if (request_head_version =3D=3D 2) {
+> >>>>> +             struct ceph_mds_request_head *nhead =3D msg->front.io=
+v_base;
+> >>>>> +
+> >>>>> +             msg->hdr.version =3D cpu_to_le16(6);
+> >>>>> +             nhead->version =3D cpu_to_le16(2);
+> >>>>> +
+> >>>>> +             p =3D msg->front.iov_base + offsetofend(struct ceph_m=
+ds_request_head, ext_num_fwd);
+> >>>>>         } else {
+> >>>>>                 struct ceph_mds_request_head *nhead =3D msg->front.=
+iov_base;
+> >>>>> +             kuid_t owner_fsuid;
+> >>>>> +             kgid_t owner_fsgid;
+> >>>>>
+> >>>>>                 msg->hdr.version =3D cpu_to_le16(6);
+> >>>>>                 nhead->version =3D cpu_to_le16(CEPH_MDS_REQUEST_HEA=
+D_VERSION);
+> >>>>> +             nhead->struct_len =3D sizeof(struct ceph_mds_request_=
+head);
+> >>>>> +
+> >>>>> +             owner_fsuid =3D from_vfsuid(req->r_mnt_idmap, &init_u=
+ser_ns,
+> >>>>> +                                       VFSUIDT_INIT(req->r_cred->f=
+suid));
+> >>>>> +             owner_fsgid =3D from_vfsgid(req->r_mnt_idmap, &init_u=
+ser_ns,
+> >>>>> +                                       VFSGIDT_INIT(req->r_cred->f=
+sgid));
+> >>>>> +             nhead->owner_uid =3D cpu_to_le32(from_kuid(&init_user=
+_ns, owner_fsuid));
+> >>>>> +             nhead->owner_gid =3D cpu_to_le32(from_kgid(&init_user=
+_ns, owner_fsgid));
+> >>>>>                 p =3D msg->front.iov_base + sizeof(*nhead);
+> >>>>>         }
+> >>>>>
+> >>>>> diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
+> >>>>> index e3bbf3ba8ee8..8f683e8203bd 100644
+> >>>>> --- a/fs/ceph/mds_client.h
+> >>>>> +++ b/fs/ceph/mds_client.h
+> >>>>> @@ -33,8 +33,10 @@ enum ceph_feature_type {
+> >>>>>         CEPHFS_FEATURE_NOTIFY_SESSION_STATE,
+> >>>>>         CEPHFS_FEATURE_OP_GETVXATTR,
+> >>>>>         CEPHFS_FEATURE_32BITS_RETRY_FWD,
+> >>>>> +     CEPHFS_FEATURE_NEW_SNAPREALM_INFO,
+> >>>>> +     CEPHFS_FEATURE_HAS_OWNER_UIDGID,
+> >>>>>
+> >>>>> -     CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_32BITS_RETRY_FWD,
+> >>>>> +     CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_HAS_OWNER_UIDGID,
+> >>>>>     };
+> >>>>>
+> >>>>>     #define CEPHFS_FEATURES_CLIENT_SUPPORTED {  \
+> >>>>> @@ -49,6 +51,7 @@ enum ceph_feature_type {
+> >>>>>         CEPHFS_FEATURE_NOTIFY_SESSION_STATE,    \
+> >>>>>         CEPHFS_FEATURE_OP_GETVXATTR,            \
+> >>>>>         CEPHFS_FEATURE_32BITS_RETRY_FWD,        \
+> >>>>> +     CEPHFS_FEATURE_HAS_OWNER_UIDGID,        \
+> >>>>>     }
+> >>>>>
+> >>>>>     /*
+> >>>>> diff --git a/include/linux/ceph/ceph_fs.h b/include/linux/ceph/ceph=
+_fs.h
+> >>>>> index 5f2301ee88bc..b91699b08f26 100644
+> >>>>> --- a/include/linux/ceph/ceph_fs.h
+> >>>>> +++ b/include/linux/ceph/ceph_fs.h
+> >>>>> @@ -499,7 +499,7 @@ struct ceph_mds_request_head_legacy {
+> >>>>>         union ceph_mds_request_args args;
+> >>>>>     } __attribute__ ((packed));
+> >>>>>
+> >>>>> -#define CEPH_MDS_REQUEST_HEAD_VERSION  2
+> >>>>> +#define CEPH_MDS_REQUEST_HEAD_VERSION  3
+> >>>>>
+> >>>>>     struct ceph_mds_request_head_old {
+> >>>>>         __le16 version;                /* struct version */
+> >>>>> @@ -530,6 +530,9 @@ struct ceph_mds_request_head {
+> >>>>>
+> >>>>>         __le32 ext_num_retry;          /* new count retry attempts =
+*/
+> >>>>>         __le32 ext_num_fwd;            /* new count fwd attempts */
+> >>>>> +
+> >>>>> +     __le32 struct_len;             /* to store size of struct cep=
+h_mds_request_head */
+> >>>>> +     __le32 owner_uid, owner_gid;   /* used for OPs which create i=
+nodes */
+> >>>> Let's also initialize them to -1 for all the other requests as we do=
+ in
+> >>>> your PR.
+> >>> They are always initialized already. As you can see from the code we
+> >>> don't have any extra conditions
+> >>> on filling these fields. We always fill them with an appropriate
+> >>> UID/GID. If mount is not idmapped then it's just =3D=3D caller_uid/gi=
+d,
+> >>> if mount idmapped then it's idmapped caller_uid/gid.
+> >> Then in kclient all the request will always initialized the
+> >> 'owner_{uid/gid}' with 'caller_{uid/gid}'. While in userspace libcephf=
+s
+> >> it will only set them for 'create/mknod/mkdir/symlink` instead.
+> >>
+> >> I'd prefer to make them consistent, which is what I am still focusing
+> >> on, to make them easier to read and comparing when troubles hooting.
+> > Dear Xiubo,
+> >
+> > Sure, I will do it.
+> >
+> > Couldn't you please review all the rest of the patches before I fix
+> > this particular thing?
+> > It will allow me to fix and send -v10 with all required fixes
+> > incorporated in it.
+>
+> I have gone through them all and they LGTM.
 
-Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Thanks!
 
-> ---
->   .../media/v4l/pixfmt-yuv-planar.rst           | 36 ++++++++++---------
->   1 file changed, 19 insertions(+), 17 deletions(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> index fb826923ff1d..1d43532095c0 100644
-> --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> @@ -295,8 +295,6 @@ of the luma plane.
->   .. _V4L2-PIX-FMT-NV12-32L32:
->   .. _V4L2-PIX-FMT-NV12M-8L128:
->   .. _V4L2-PIX-FMT-NV12-8L128:
-> -.. _V4L2-PIX-FMT-NV12M-10BE-8L128:
-> -.. _V4L2-PIX-FMT-NV12-10BE-8L128:
->   .. _V4L2-PIX-FMT-MM21:
->   
->   Tiled NV12
-> @@ -361,6 +359,25 @@ The layouts of the luma and chroma planes are identical.
->   ``V4L2_PIX_FMT_NV12_8L128`` is similar to ``V4L2_PIX_FMT_NV12M_8L128`` but stores
->   two planes in one memory.
->   
-> +``V4L2_PIX_FMT_MM21`` store luma pixel in 16x32 tiles, and chroma pixels
-> +in 16x16 tiles. The line stride must be aligned to a multiple of 16 and the
-> +image height must be aligned to a multiple of 32. The number of luma and chroma
-> +tiles are identical, even though the tile size differ. The image is formed of
-> +two non-contiguous planes.
-> +
-> +
-> +.. _V4L2-PIX-FMT-NV15-4L4:
-> +.. _V4L2-PIX-FMT-NV12M-10BE-8L128:
-> +.. _V4L2-PIX-FMT-NV12-10BE-8L128:
-> +
-> +Tiled NV15
-> +----------
-> +
-> +``V4L2_PIX_FMT_NV15_4L4`` Semi-planar 10-bit YUV 4:2:0 formats, using 4x4 tiling.
-> +All components are packed without any padding between each other.
-> +As a side-effect, each group of 4 components are stored over 5 bytes
-> +(YYYY or UVUV = 4 * 10 bits = 40 bits = 5 bytes).
-> +
->   ``V4L2_PIX_FMT_NV12M_10BE_8L128`` is similar to ``V4L2_PIX_FMT_NV12M`` but stores
->   10 bits pixels in 2D 8x128 tiles, and stores tiles linearly in memory.
->   the data is arranged in big endian order.
-> @@ -379,21 +396,6 @@ byte 4: Y3(bits 7-0)
->   ``V4L2_PIX_FMT_NV12_10BE_8L128`` is similar to ``V4L2_PIX_FMT_NV12M_10BE_8L128`` but stores
->   two planes in one memory.
->   
-> -``V4L2_PIX_FMT_MM21`` store luma pixel in 16x32 tiles, and chroma pixels
-> -in 16x16 tiles. The line stride must be aligned to a multiple of 16 and the
-> -image height must be aligned to a multiple of 32. The number of luma and chroma
-> -tiles are identical, even though the tile size differ. The image is formed of
-> -two non-contiguous planes.
-> -
-> -.. _V4L2-PIX-FMT-NV15-4L4:
-> -
-> -Tiled NV15
-> -----------
-> -
-> -Semi-planar 10-bit YUV 4:2:0 formats, using 4x4 tiling.
-> -All components are packed without any padding between each other.
-> -As a side-effect, each group of 4 components are stored over 5 bytes
-> -(YYYY or UVUV = 4 * 10 bits = 40 bits = 5 bytes).
->   
->   .. _V4L2-PIX-FMT-NV16:
->   .. _V4L2-PIX-FMT-NV61:
+Kind regards,
+Alex
 
+>
+> Thanks
+>
+> - Xiubo
+>
+>
+> > Kind regards,
+> > Alex
+> >
+> >> Thanks
+> >>
+> >> - Xiubo
+> >>
+> >>> Kind regards,
+> >>> Alex
+> >>>
+> >>>> Thanks
+> >>>>
+> >>>> - Xiubo
+> >>>>
+> >>>>
+> >>>>
+> >>>>>     } __attribute__ ((packed));
+> >>>>>
+> >>>>>     /* cap/lease release record */
+>
