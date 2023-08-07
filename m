@@ -2,90 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D6C773119
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 23:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5873177311B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 23:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbjHGVRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 17:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52212 "EHLO
+        id S230113AbjHGVSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 17:18:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjHGVRU (ORCPT
+        with ESMTP id S229996AbjHGVSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 17:17:20 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C651715
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 14:17:19 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 03A5D40E0197;
-        Mon,  7 Aug 2023 21:17:17 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id o5u-WEMUzBeW; Mon,  7 Aug 2023 21:17:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691443034; bh=J0eA2UqHFMwv+jFBzrbdJSwAYutp1v1yRYopctxZwOM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FBhZeKJl+V4yKj5+eZYFfG4EAcJ97wAqWZwDQGCnu5Qxbznfm5VFZnQrlUFYInrBx
-         IeuSSvljsoRMOVHBp0VboRTUwRKKRqaoat/XUXoa5XFlJg5SuSPi3DXF7HTE7Qp9Aj
-         ap2j7MKcRvDtf0R70SxBfa0HreiPFcIFNivomqNGJsYLMxPhV9+11+mNJi5Oeofda7
-         xfqwcYAcFACFUHBScfbtaGhristD6T887rrvlVO1HmiSAnMJvsPP+P6avmCikDDILY
-         7GJUjUkiVo4UlUU/2YnHCDqtlhloxiKLHldHqKWeuQkPSM63eJWzvpjjNHPTGG4uw0
-         ZHtamx+D/Hfgp+1R2M8D1Ffd1WZmKfsMgYrL8j+6vcdPw9g/MEYsLx4IxWfE6nZzs1
-         Uvzq+fZyCCB+yu17JrqMlvadnkJKct2fZfZiAV4ItQvGdSaWQqno1srOl/N7bP4RYm
-         tEqe8nxO4sYIFTQHIywyUq00XmOwQ7afZsbAe8Y7XsiByqh/5/63j9tS8JnO9TjLzd
-         naxxzCc96YoZskb2N7gju0mgA/21Zg5miUNLJBU+MsjuZSaR4vT7ng2iEYzSl1ZPhY
-         1arTG1nqPGowmtKiDE5yNmTiuhk84QQ7EiZqtXffKhgNaftf6lvLqZvYm5gMeGtxGl
-         xW+griy2NiTAMxjGiSoBHbRI=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 30B2440E018F;
-        Mon,  7 Aug 2023 21:17:05 +0000 (UTC)
-Date:   Mon, 7 Aug 2023 23:16:59 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 2/5] [RESEND] x86: avoid unneeded __div64_32 function
- definition
-Message-ID: <20230807211659.GKZNFfS+7PK71yYt0p@fat_crate.local>
-References: <20230725134837.1534228-1-arnd@kernel.org>
- <20230725134837.1534228-3-arnd@kernel.org>
- <20230801170315.GGZMk60zojZOeuUwX7@fat_crate.local>
- <baf750f4-a42c-453a-91dc-7fd457bc1e80@app.fastmail.com>
- <20230802172030.GEZMqQXmeb98Tm+Qhg@fat_crate.local>
- <alpine.DEB.2.21.2308072124320.38537@angie.orcam.me.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2308072124320.38537@angie.orcam.me.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 7 Aug 2023 17:18:08 -0400
+Received: from mail-oa1-x49.google.com (mail-oa1-x49.google.com [IPv6:2001:4860:4864:20::49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255EEE68
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 14:18:07 -0700 (PDT)
+Received: by mail-oa1-x49.google.com with SMTP id 586e51a60fabf-1bf94d4d2f4so6503337fac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 14:18:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691443085; x=1692047885;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2mfCIyPm2aO7x0iXfdEGub/+bSKhcssAHTeROw2F55I=;
+        b=iXvXoonIYBdhMFviyOkoygmsJIyTGeBeq4/AOnBxytLBvQQhjalGqFzg7pCH7KQxfF
+         eKRi5WxgelqBpHePErOT2Bt5zN88BKI9miy34Avnyz48BfPkNp3qp1t/NvRGeLfMSMBu
+         ZKa+3pwQi71GXW9fVgOgw5fIB079W+CRsJHTp+GUGaJsCoY+4M1QuK58KCYVKIgKNQhZ
+         MDzIdOWmfwnJvoSd7P4iHZp6p3yo4EwP6d7k43C+57isSu04UsZzVLz9k1QVhs9iHeMp
+         JDzFnnEmAS8cBGV9g1gv2aE9flzX+CV9jCKD2QZUmxpSkE8tujbKDIBT7w8/Lgv1ixP2
+         1iOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691443085; x=1692047885;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2mfCIyPm2aO7x0iXfdEGub/+bSKhcssAHTeROw2F55I=;
+        b=e/OkIZZFovgapgdV1o+hx2igl+Dj+eoscXiMdX9182gOyTVS3/03ylLY7T5/DHwmvJ
+         DnuGMFpTC1K09/uYwkGk/TqRv+uppfF5dYpRxMli1owjiEt8TSZ0QetaPBVXbzokwhrS
+         Zf94IZkBQeAAC3cjUQGEDo75pgj1kyt/0UJU87gwS1k/uQYe/UzGbZ4ckPz8fz5y6thy
+         bFuJnHWASPwWecf4kxQTrRu8r6F6CL+DINZeAqJvxMFOWTiuoiwn1GeCZxfiBRgU7h+9
+         hX/jDJE2ST6PE/bIuNK4G8b4as7zPyWYJZDDvaFguOW4+05wp6/uRmexcE0Tc++0UolM
+         pc5A==
+X-Gm-Message-State: AOJu0YwWFrM23nGjuejJu4Gfl9scjIMfA83WACyoohATS0/sguHQhHGK
+        4+GwmZS9sgldN+boLMzNdRcSGHuDSAJDij62xg==
+X-Google-Smtp-Source: AGHT+IGr5rwXC6cUJHtMMxiCQlU0uuF7YpzxMjNzb/DWy220WGAU/2ZgbGEhlaruYZWPZNrBVnzaPnyS5y+0Klm1ew==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6870:3a0f:b0:1bf:d7b9:9960 with
+ SMTP id du15-20020a0568703a0f00b001bfd7b99960mr7527734oab.2.1691443085255;
+ Mon, 07 Aug 2023 14:18:05 -0700 (PDT)
+Date:   Mon, 07 Aug 2023 21:17:56 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAINf0WQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDCwNz3cSi5Azd0lxd49Q0IxMTQ2MTI/NUJaDqgqLUtMwKsEnRsbW1AHb 5zV9ZAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691443084; l=1886;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=29NvDKooXX0ph89b44s4wsreDRVLQpWCZn8WSLtPy8Y=; b=E9ZtbxM3R6Zqci4MF+SDmmhn3TxUgdCPU66xW4h3e6fKqBfhSZq9iL/ienwg97ORyGw56fXX+
+ 9sD/afEHAV+BT4wvqLe0apqEsuO1EjSbbcyG+J/cbR93lW9E0n3XX51
+X-Mailer: b4 0.12.3
+Message-ID: <20230807-arch-um-v1-1-86dbbfb59709@google.com>
+Subject: [PATCH] um: refactor deprecated strncpy to strtomem
+From:   Justin Stitt <justinstitt@google.com>
+To:     Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-hardening@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 09:37:00PM +0100, Maciej W. Rozycki wrote:
->  Otherwise you risk `__div64_32(n, base)' getting expanded to `(n, base)', 
+Use `strtomem` here since `console_buf` is not expected to be
+NUL-terminated. We should probably also just use `MCONSOLE_MAX_DATA`
+instead of using `ARRAY_SIZE()` for every iteration of the loop.
 
-You mean in the very obscure case of a 32-bit kernel where they don't call
-do_div() but call this low level function?
+Also mark char buffer as `__nonstring` as per Kees' suggestion here [1]
 
-I'd say if they can't be bothered to even grep the tree for the right usage,
-they deserve both pieces... :)
+Finally, follow checkpatch's recommendation of using `min_t` over `min`
 
--- 
-Regards/Gruss,
-    Boris.
+Link: https://github.com/KSPP/linux/issues/90 [1]
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Notes:
+I only build tested this patch.
+---
+ arch/um/drivers/mconsole_kern.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-https://people.kernel.org/tglx/notes-about-netiquette
+diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
+index 5026e7b9adfe..fd4c024202ae 100644
+--- a/arch/um/drivers/mconsole_kern.c
++++ b/arch/um/drivers/mconsole_kern.c
+@@ -4,6 +4,7 @@
+  * Copyright (C) 2001 - 2008 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  */
+ 
++#include "linux/compiler_attributes.h"
+ #include <linux/console.h>
+ #include <linux/ctype.h>
+ #include <linux/string.h>
+@@ -554,7 +555,7 @@ struct mconsole_output {
+ 
+ static DEFINE_SPINLOCK(client_lock);
+ static LIST_HEAD(clients);
+-static char console_buf[MCONSOLE_MAX_DATA];
++static char console_buf[MCONSOLE_MAX_DATA] __nonstring;
+ 
+ static void console_write(struct console *console, const char *string,
+ 			  unsigned int len)
+@@ -566,8 +567,8 @@ static void console_write(struct console *console, const char *string,
+ 		return;
+ 
+ 	while (len > 0) {
+-		n = min((size_t) len, ARRAY_SIZE(console_buf));
+-		strncpy(console_buf, string, n);
++		n = min_t(size_t, len, MCONSOLE_MAX_DATA);
++		strtomem(console_buf, string);
+ 		string += n;
+ 		len -= n;
+ 
+
+---
+base-commit: c1a515d3c0270628df8ae5f5118ba859b85464a2
+change-id: 20230807-arch-um-3ef24413427e
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
