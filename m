@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C7A771855
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C526377185C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbjHGC1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 22:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
+        id S229802AbjHGCdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 22:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjHGC1n (ORCPT
+        with ESMTP id S229805AbjHGCdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 22:27:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4F795
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:27:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4479B61305
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:27:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 999E5C433C7;
-        Mon,  7 Aug 2023 02:27:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691375261;
-        bh=iJ2z82p0DxEKxBAy/Uy/k+cv7auNTA6XBM0RzAeWTYw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kEOZQRoWl2w1znZJpNHYIudRisLtK7+FSJmJrGxABK8lDHJWuGZX+dbSAvPCs7g8G
-         KdG9+KG9DXnEL56dA8ZE1mcTp9ZTGWRMLcPzP5FT2qixOeMT1xzQL6Lso4qqhTWTTB
-         3Jn/PiGFLEB190PvqVWP0rxo4F/eWAzMQcCXnmvD+odGVUL1fPJQA6H9Xm3ruRnQ9i
-         UZKvmPICjKkDVl0lp8rtF3BnaOtslh1ghOgvMyCsYVO7ic2KwffsOEfTdWu9pX85cX
-         DiQnG0ieL/bG9WnoE9DOFJg7CucRkPY5PLFqSmIV8rL4iCp9s/RpFWDwFmCfqg2Tg2
-         TtXOGsm+UGZgA==
-Date:   Mon, 7 Aug 2023 10:27:29 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, aisheng.dong@nxp.com,
-        alexander.stein@ew.tq-group.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V5 2/9] firmware: imx: scu: increase RPC timeout
-Message-ID: <20230807022729.GK151430@dragon>
-References: <20230731090449.2845997-1-peng.fan@oss.nxp.com>
- <20230731090449.2845997-3-peng.fan@oss.nxp.com>
+        Sun, 6 Aug 2023 22:33:13 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5311722
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:33:09 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RK0fN06qsz1Z1Tm;
+        Mon,  7 Aug 2023 10:30:20 +0800 (CST)
+Received: from huawei.com (10.174.151.185) by canpemm500002.china.huawei.com
+ (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 7 Aug
+ 2023 10:33:07 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <rppt@kernel.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH v2] mm/mm_init: use helper macro BITS_PER_LONG and BITS_PER_BYTE
+Date:   Mon, 7 Aug 2023 10:32:47 +0800
+Message-ID: <20230807023247.308414-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731090449.2845997-3-peng.fan@oss.nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.151.185]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 05:04:42PM +0800, Peng Fan (OSS) wrote:
-> From: Dong Aisheng <aisheng.dong@nxp.com>
-> 
-> When system loading is high, we can met some command timeout
+It's more readable to use helper macro BITS_PER_LONG and BITS_PER_BYTE.
+No functional change intended.
 
-s/met/meet
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+v2:
+  use BITS_PER_BYTE per Mike. Thanks.
+---
+ mm/mm_init.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> issue occasionaly, so increase the timeout to a more safe value.
+diff --git a/mm/mm_init.c b/mm/mm_init.c
+index 66aca3f6accd..93b1febd4a32 100644
+--- a/mm/mm_init.c
++++ b/mm/mm_init.c
+@@ -79,7 +79,7 @@ void __init mminit_verify_pageflags_layout(void)
+ 	int shift, width;
+ 	unsigned long or_mask, add_mask;
+ 
+-	shift = 8 * sizeof(unsigned long);
++	shift = BITS_PER_LONG;
+ 	width = shift - SECTIONS_WIDTH - NODES_WIDTH - ZONES_WIDTH
+ 		- LAST_CPUPID_SHIFT - KASAN_TAG_WIDTH - LRU_GEN_WIDTH - LRU_REFS_WIDTH;
+ 	mminit_dprintk(MMINIT_TRACE, "pageflags_layout_widths",
+@@ -1431,9 +1431,9 @@ static unsigned long __init usemap_size(unsigned long zone_start_pfn, unsigned l
+ 	usemapsize = roundup(zonesize, pageblock_nr_pages);
+ 	usemapsize = usemapsize >> pageblock_order;
+ 	usemapsize *= NR_PAGEBLOCK_BITS;
+-	usemapsize = roundup(usemapsize, 8 * sizeof(unsigned long));
++	usemapsize = roundup(usemapsize, BITS_PER_LONG);
+ 
+-	return usemapsize / 8;
++	return usemapsize / BITS_PER_BYTE;
+ }
+ 
+ static void __ref setup_usemap(struct zone *zone)
+-- 
+2.33.0
 
-s/occasionaly/occasionally
-
-Shawn
-
-> 
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/firmware/imx/imx-scu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/firmware/imx/imx-scu.c b/drivers/firmware/imx/imx-scu.c
-> index 2d24359420d8..14ff9d3504bf 100644
-> --- a/drivers/firmware/imx/imx-scu.c
-> +++ b/drivers/firmware/imx/imx-scu.c
-> @@ -20,7 +20,7 @@
->  #include <linux/platform_device.h>
->  
->  #define SCU_MU_CHAN_NUM		8
-> -#define MAX_RX_TIMEOUT		(msecs_to_jiffies(30))
-> +#define MAX_RX_TIMEOUT		(msecs_to_jiffies(3000))
->  
->  struct imx_sc_chan {
->  	struct imx_sc_ipc *sc_ipc;
-> -- 
-> 2.37.1
-> 
