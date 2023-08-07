@@ -2,65 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0BB7724C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFF87724C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbjHGMzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 08:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50540 "EHLO
+        id S233430AbjHGM4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231292AbjHGMzl (ORCPT
+        with ESMTP id S231672AbjHGM4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 08:55:41 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914821BC
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:55:40 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d13e0bfbbcfso6445624276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 05:55:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691412940; x=1692017740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5BfX6arEp17J1ApuZYgVDOdLXWCnkGmD0eG9nrcMvUg=;
-        b=ChEFz+t5kaMKFpe2jJ5x53CigMiXd9t5Je2Z+hV5pL5nF1xYgl44Y46vsURMayKRTs
-         sCyh6CM5EhZ08D9Cxq8tflRhGCkfqL1ZdfkCGS7CWLvIGMwTsEuwe9Wwp0/+SWSDA/YP
-         BAH2qXENMJJW13xvhHMsaZMapXNOPAC8Zvk4HdChEmGO2TXHCCC9/kLnr5z7QInuaOoq
-         DEaKwDsrtpodFVI4IL2qasaWBSXrUfdjM5PQR3Wg49qjta68P4kWcvja5Np1waUz0HnP
-         QeMPndPopdTaT/S//11k7wQ8AHRbgKL35UhAExVtoZUUI2HQCoNura2q1owu2Ck+8Na8
-         YvIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691412940; x=1692017740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5BfX6arEp17J1ApuZYgVDOdLXWCnkGmD0eG9nrcMvUg=;
-        b=RLcp1mKWyLzCKpmuxgwZXMYbMBG46I55DNd56GXJg8t7MPrmgqZNwpdW9FNdaRfAkj
-         cOGMYbGmGbk3U6+5ZmE1lFyxjPk675xaFzxS2gcvBWHblNrLlF3CH9GrUnsZroRiZehJ
-         1tJ/FzzJy7DbuaNBu+FMv5TceVO6rPe47E1ovDQ9myAysA8ACa0xHiEs30ZZYE1d4UZG
-         F15BwvsZp+bBCJsDsCuc80kD8AOUtf69bdF0NoMSSTuEH9RTvicUgWR1jfAPDTlkYBuy
-         +x7esB37dGJqV5GMRZjxA6LNLAgMJrcYBJ4OGlmQXpEM41Y6MBu0nO50xwUiulfbCfZt
-         gzmA==
-X-Gm-Message-State: AOJu0YwRACY/rRwMz9qLVy/uhwWAPcQ7pv4JXMoq8/5R8DcmNcqxKRnq
-        7OeV6AMnv7PegOYpizWtYWSKAI4L7xc6mGIsM9K7hApIY4/X+n2U
-X-Google-Smtp-Source: AGHT+IEBEw7X+sUekghvFs/pg7p7r8rTjn5GmiFSMqpTqd2GgLQW8CZaYlcMzQteiBhViqFLcWuQesWbPI6GF/4kX0g=
-X-Received: by 2002:a25:2943:0:b0:cef:b734:57fc with SMTP id
- p64-20020a252943000000b00cefb73457fcmr7974595ybp.25.1691412939852; Mon, 07
- Aug 2023 05:55:39 -0700 (PDT)
+        Mon, 7 Aug 2023 08:56:15 -0400
+Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1DACC1BC
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:56:13 -0700 (PDT)
+Received: from 8bytes.org (pd9fe94eb.dip0.t-ipconnect.de [217.254.148.235])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.8bytes.org (Postfix) with ESMTPSA id 9C0CF2802C0;
+        Mon,  7 Aug 2023 14:56:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+        s=default; t=1691412972;
+        bh=6Xy2YS2W3qgRvHtmtu9Lpdsks7qVo10Gru1ffayWzM0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZIWY4otYAViQBjh6/KLeMMqTKBYnq8otbfD4bQzLWO/xEPlJTewjO0BNknpNnXy5o
+         j7kpVKKcLDoTEsEFDWeXbsOouY6fNL0NLuy7UGvX82EVum2Fhtaz83hZNiE5TC+5pO
+         ki53ua5JyLT0XiFSsAeRuOmf7HsP6guxutu2t2suOluvUkz38xs0Na5jd3+QK43wDA
+         rPZyubg8wCjj+UU1WAvlQvUIR8EtekJ+Z7PKqlX1YudYaQa0be7WIxS0E23eLbfxfm
+         iV8TWUG8pzFUgJLwFNPOpOkXvRpV86Nh9eJUSPEG/xURFb9nxjzbbOUSRD2+VzC8Vd
+         4o/gorM2edJWQ==
+Date:   Mon, 7 Aug 2023 14:56:11 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Yue Haibing <yuehaibing@huawei.com>
+Cc:     suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] iommu/amd: Remove unsued extern declaration
+ amd_iommu_init_hardware()
+Message-ID: <ZNDp61liCikysQGf@8bytes.org>
+References: <20230802133201.17512-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-References: <20230726090409.16606-1-tychang@realtek.com>
-In-Reply-To: <20230726090409.16606-1-tychang@realtek.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 7 Aug 2023 14:55:28 +0200
-Message-ID: <CACRpkdYpFMwAMGnFuC-9agY4sV6HJo8hYBL35oacnGFvJxLJ-Q@mail.gmail.com>
-Subject: Re: [PATCH 0/7] Add pinctrl driver support for Realtek DHC SoCs
-To:     TY Chang <tychang@realtek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802133201.17512-1-yuehaibing@huawei.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -70,23 +53,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi TY Chang,
+On Wed, Aug 02, 2023 at 09:32:01PM +0800, Yue Haibing wrote:
+>  include/linux/amd-iommu.h | 1 -
+>  1 file changed, 1 deletion(-)
 
-thanks for the patches!
-
-On Wed, Jul 26, 2023 at 11:06=E2=80=AFAM TY Chang <tychang@realtek.com> wro=
-te:
-
-> These patches add the bindings and the pinctrl drivers for Realtek
-> DHC(Digital Home Center) RTD SoCs(RTD1619B, RTD1319D and RTD1315E).
-
-I really like the architecture with a central driver an modules for each So=
-C
-that makes this nicely maintainable in the future.
-
-There are some questions around the NMOS/PMOS totempole config
-(I guess that is what it is) so we need to hash that out into the
-documentation, then I think the rest falls into place pretty naturally.
-
-Yours,
-Linus Walleij
+Applied, thanks.
