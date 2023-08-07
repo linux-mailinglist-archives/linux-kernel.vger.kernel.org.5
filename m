@@ -2,237 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD66B771F28
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552DA771F11
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbjHGLCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
+        id S231785AbjHGLBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231819AbjHGLCE (ORCPT
+        with ESMTP id S229697AbjHGLBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:02:04 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2AC199B;
-        Mon,  7 Aug 2023 04:01:43 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377B1SNj125865;
-        Mon, 7 Aug 2023 06:01:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691406088;
-        bh=4xePQOXDVm56GWzIWBUHKlzDg6y45LjtpmC9Kz61C/k=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Df5RTn7hzS4Z2QbofR7Zb0AR5B1SNW8sQM9vhGg5b7pxwQ43agq9mxUG9D7i44r22
-         OrmO4J53N8TWTPJAcIH2WMk1kJQIvssvEOTQZzwdNPXwbpzDWuknyzOf5IiHHxzs/E
-         +qBiymSCscJQXzPuK3u7q/h05J9aOxAGw8Z082Ko=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377B1SUw075250
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Aug 2023 06:01:28 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
- Aug 2023 06:01:28 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 7 Aug 2023 06:01:28 -0500
-Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377B1SeZ073705;
-        Mon, 7 Aug 2023 06:01:28 -0500
-Received: from localhost (uda0501179.dhcp.ti.com [172.24.227.217])
-        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 377B1RHB028460;
-        Mon, 7 Aug 2023 06:01:28 -0500
-From:   MD Danish Anwar <danishanwar@ti.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        MD Danish Anwar <danishanwar@ti.com>
-CC:     <nm@ti.com>, <srk@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v2 5/5] net: ti: icssg-prueth: am65x SR2.0 add 10M full duplex support
-Date:   Mon, 7 Aug 2023 16:30:48 +0530
-Message-ID: <20230807110048.2611456-6-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230807110048.2611456-1-danishanwar@ti.com>
-References: <20230807110048.2611456-1-danishanwar@ti.com>
+        Mon, 7 Aug 2023 07:01:09 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AF61701;
+        Mon,  7 Aug 2023 04:01:03 -0700 (PDT)
+X-QQ-mid: bizesmtp64t1691406050t3gsqv07
+Received: from linux-lab-host.localdomain ( [116.30.130.12])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Mon, 07 Aug 2023 19:00:49 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: J5JfekO1WsimCxeLeaIRwLKPUP4hLs0KL6RLQnScNWp3T1pU0LAVZjC4TPlkd
+        k87XCapHbL4LiEUGX5UZzfPUuqLPBeuaVV+KP1TgwYN7UkHO+yVc+ABChQVqPXW25W9OJby
+        8VJAFTRRJjcUrn3uVYbuqzR+WQyMe0Bn25SZCtFh1UrDUTCf1zjc2R9uAAUYlXWusvIOFve
+        EFf8yDr5+a4HBvMgz8LsmEVwLXWMGmuKVjORDG8muFdZOfP0KYtkaZcPyPTqRLyc7qJ3IhA
+        SWfMtQ5ktT3lDR7PRBcoVeNvp4D4X0KTJQ9rGNoNog53rAKrSD5ZfQF6n1KebVvS50WvULX
+        i1BA8QyGptm586LBXjH4xN8xN3X+gV2DtmyvFzbSqd37csOi48U/HGkUDf7Y/bz6a6+fmgO
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 355986596095762811
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux@weissschuh.net,
+        tanyuan@tinylab.org, thomas@t-8ch.de
+Subject: [PATCH] tools/nolibc: silence ppc64 compile warnings
+Date:   Mon,  7 Aug 2023 19:00:48 +0800
+Message-Id: <682bbec9ff358b3726daee00752dbe0abc99370a.1691405029.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
+Silence the following warnings reported by the new -Wall -Wextra options
+with pure assembly code.
 
-For AM65x SR2.0 it's required to enable IEP1 in raw 64bit mode which is
-used by PRU FW to monitor the link and apply w/a for 10M link issue.
-Note. No public errata available yet.
+    In file included from sysroot/powerpc/include/stdio.h:13,
+                     from nolibc-test.c:13:
+    sysroot/powerpc/include/arch.h: In function '_start':
+    sysroot/powerpc/include/arch.h:192:32: warning: unused variable 'r2' [-Wunused-variable]
+      192 |         register volatile long r2 __asm__ ("r2") = (void *)&TOC - (void *)_start;
+          |                                ^~
+    sysroot/powerpc/include/arch.h:187:97: warning: optimization may eliminate reads and/or writes to register variables [-Wvolatile-register-var]
+      187 | void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
+          |                                                                                                 ^~~~~~
 
-Without this w/a the PRU FW will stuck if link state changes under TX
-traffic pressure.
+Since only elfv2 ABI requires to save the TOC/GOT pointer to r2
+register, when using elfv1 ABI, the old C code is simply ignored by the
+compiler, but the compiler can not ignore the inline assembly code and
+will introduce build failure or running segfaults. So, let's further
+only add the new assembly code for elfv2 ABI with the checking of
+_CALL_ELF == 2.
 
-Hence, add support for 10M full duplex for AM65x SR2.0:
- - add new IEP API to enable IEP, but without PTP support
- - add pdata quirk_10m_link_issue to enable 10M link issue w/a.
-
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+Link: https://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf64abi.pdf
+Link: https://www.llvm.org/devmtg/2014-04/PDFs/Talks/Euro-LLVM-2014-Weigand.pdf
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
 ---
- drivers/net/ethernet/ti/icssg/icss_iep.c     | 26 ++++++++++++++++++++
- drivers/net/ethernet/ti/icssg/icss_iep.h     |  2 ++
- drivers/net/ethernet/ti/icssg/icssg_config.c |  6 +++++
- drivers/net/ethernet/ti/icssg/icssg_prueth.c | 17 +++++++++++--
- 4 files changed, 49 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/ti/icssg/icss_iep.c b/drivers/net/ethernet/ti/icssg/icss_iep.c
-index 455c803dea36..527f17430f05 100644
---- a/drivers/net/ethernet/ti/icssg/icss_iep.c
-+++ b/drivers/net/ethernet/ti/icssg/icss_iep.c
-@@ -721,6 +721,32 @@ void icss_iep_put(struct icss_iep *iep)
- }
- EXPORT_SYMBOL_GPL(icss_iep_put);
- 
-+void icss_iep_init_fw(struct icss_iep *iep)
-+{
-+	/* start IEP for FW use in raw 64bit mode, no PTP support */
-+	iep->clk_tick_time = iep->def_inc;
-+	iep->cycle_time_ns = 0;
-+	iep->ops = NULL;
-+	iep->clockops_data = NULL;
-+	icss_iep_set_default_inc(iep, iep->def_inc);
-+	icss_iep_set_compensation_inc(iep, iep->def_inc);
-+	icss_iep_set_compensation_count(iep, 0);
-+	regmap_write(iep->map, ICSS_IEP_SYNC_PWIDTH_REG, iep->refclk_freq / 10); /* 100 ms pulse */
-+	regmap_write(iep->map, ICSS_IEP_SYNC0_PERIOD_REG, 0);
-+	if (iep->plat_data->flags & ICSS_IEP_SLOW_COMPEN_REG_SUPPORT)
-+		icss_iep_set_slow_compensation_count(iep, 0);
-+
-+	icss_iep_enable(iep);
-+	icss_iep_settime(iep, 0);
-+}
-+EXPORT_SYMBOL_GPL(icss_iep_init_fw);
-+
-+void icss_iep_exit_fw(struct icss_iep *iep)
-+{
-+	icss_iep_disable(iep);
-+}
-+EXPORT_SYMBOL_GPL(icss_iep_exit_fw);
-+
- int icss_iep_init(struct icss_iep *iep, const struct icss_iep_clockops *clkops,
- 		  void *clockops_data, u32 cycle_time_ns)
+Hi, Willy
+
+When rebase on latest 20230806-for-6.6-1 branch, -Wall -Wextra reported
+the above warnings.
+
+Here uses volatile inline assembly code instead of C code to silence the
+unused and optimization warnings.
+
+And since only elfv2 require to save TOC pointer to r2 register, this
+further only add the assembly code for elfv2.
+
+BR,
+Zhangjin
+
+---
+ tools/include/nolibc/arch-powerpc.h | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/tools/include/nolibc/arch-powerpc.h b/tools/include/nolibc/arch-powerpc.h
+index 76c3784f9dc7..ac212e6185b2 100644
+--- a/tools/include/nolibc/arch-powerpc.h
++++ b/tools/include/nolibc/arch-powerpc.h
+@@ -187,9 +187,17 @@
+ void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
  {
-diff --git a/drivers/net/ethernet/ti/icssg/icss_iep.h b/drivers/net/ethernet/ti/icssg/icss_iep.h
-index 9c7f4d0a0916..803a4b714893 100644
---- a/drivers/net/ethernet/ti/icssg/icss_iep.h
-+++ b/drivers/net/ethernet/ti/icssg/icss_iep.h
-@@ -35,5 +35,7 @@ int icss_iep_exit(struct icss_iep *iep);
- int icss_iep_get_count_low(struct icss_iep *iep);
- int icss_iep_get_count_hi(struct icss_iep *iep);
- int icss_iep_get_ptp_clock_idx(struct icss_iep *iep);
-+void icss_iep_init_fw(struct icss_iep *iep);
-+void icss_iep_exit_fw(struct icss_iep *iep);
+ #ifdef __powerpc64__
+-	/* On 64-bit PowerPC, save TOC/GOT pointer to r2 */
+-	extern char TOC __asm__ (".TOC.");
+-	register volatile long r2 __asm__ ("r2") = (void *)&TOC - (void *)_start;
++#if _CALL_ELF == 2
++	/* with -mabi=elfv2, save TOC/GOT pointer to r2
++	 * r12 is global entry pointer, we use it to compute TOC from r12
++	 * https://www.llvm.org/devmtg/2014-04/PDFs/Talks/Euro-LLVM-2014-Weigand.pdf
++	 * https://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf64abi.pdf
++	 */
++	__asm__ volatile (
++		"addis  2, 12, .TOC. - _start@ha\n"
++		"addi   2,  2, .TOC. - _start@l\n"
++	);
++#endif /* _CALL_ELF == 2 */
  
- #endif /* __NET_TI_ICSS_IEP_H */
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_config.c b/drivers/net/ethernet/ti/icssg/icssg_config.c
-index ab648d3efe85..4c2b5d496670 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_config.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_config.c
-@@ -210,6 +210,9 @@ void icssg_config_ipg(struct prueth_emac *emac)
- 	case SPEED_100:
- 		icssg_mii_update_ipg(prueth->mii_rt, slice, MII_RT_TX_IPG_100M);
- 		break;
-+	case SPEED_10:
-+		icssg_mii_update_ipg(prueth->mii_rt, slice, MII_RT_TX_IPG_100M);
-+		break;
- 	default:
- 		/* Other links speeds not supported */
- 		netdev_err(emac->ndev, "Unsupported link speed\n");
-@@ -440,6 +443,9 @@ void icssg_config_set_speed(struct prueth_emac *emac)
- 	case SPEED_100:
- 		fw_speed = FW_LINK_SPEED_100M;
- 		break;
-+	case SPEED_10:
-+		fw_speed = FW_LINK_SPEED_10M;
-+		break;
- 	default:
- 		/* Other links speeds not supported */
- 		netdev_err(emac->ndev, "Unsupported link speed\n");
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-index b82a718fd602..216918162960 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-@@ -1131,7 +1131,6 @@ static int emac_phy_connect(struct prueth_emac *emac)
- 
- 	/* remove unsupported modes */
- 	phy_remove_link_mode(ndev->phydev, ETHTOOL_LINK_MODE_10baseT_Half_BIT);
--	phy_remove_link_mode(ndev->phydev, ETHTOOL_LINK_MODE_10baseT_Full_BIT);
- 	phy_remove_link_mode(ndev->phydev, ETHTOOL_LINK_MODE_100baseT_Half_BIT);
- 	phy_remove_link_mode(ndev->phydev, ETHTOOL_LINK_MODE_1000baseT_Half_BIT);
- 	phy_remove_link_mode(ndev->phydev, ETHTOOL_LINK_MODE_Pause_BIT);
-@@ -2081,13 +2080,20 @@ static int prueth_probe(struct platform_device *pdev)
- 		goto free_pool;
- 	}
- 
-+	if (prueth->pdata.quirk_10m_link_issue) {
-+		/* Enable IEP1 for FW in 64bit mode as W/A for 10M FD link detect issue under TX
-+		 * traffic.
-+		 */
-+		icss_iep_init_fw(prueth->iep1);
-+	}
-+
- 	/* setup netdev interfaces */
- 	if (eth0_node) {
- 		ret = prueth_netdev_init(prueth, eth0_node);
- 		if (ret) {
- 			dev_err_probe(dev, ret, "netdev init %s failed\n",
- 				      eth0_node->name);
--			goto netdev_exit;
-+			goto exit_iep;
- 		}
- 		prueth->emac[PRUETH_MAC0]->iep = prueth->iep0;
- 	}
-@@ -2158,6 +2164,10 @@ static int prueth_probe(struct platform_device *pdev)
- 		prueth_netdev_exit(prueth, eth_node);
- 	}
- 
-+exit_iep:
-+	if (prueth->pdata.quirk_10m_link_issue)
-+		icss_iep_exit_fw(prueth->iep1);
-+
- free_pool:
- 	gen_pool_free(prueth->sram_pool,
- 		      (unsigned long)prueth->msmcram.va, msmc_ram_size);
-@@ -2203,6 +2213,9 @@ static void prueth_remove(struct platform_device *pdev)
- 		prueth_netdev_exit(prueth, eth_node);
- 	}
- 
-+	if (prueth->pdata.quirk_10m_link_issue)
-+		icss_iep_exit_fw(prueth->iep1);
-+
- 	icss_iep_put(prueth->iep1);
- 	icss_iep_put(prueth->iep0);
- 
+ 	__asm__ volatile (
+ 		"mr     3, 1\n"         /* save stack pointer to r3, as arg1 of _start_c */
 -- 
-2.34.1
+2.25.1
 
