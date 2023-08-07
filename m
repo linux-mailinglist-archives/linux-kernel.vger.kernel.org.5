@@ -2,208 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 491F1772F07
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 21:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197A9772FEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 21:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbjHGTjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 15:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59700 "EHLO
+        id S229737AbjHGTxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 15:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbjHGTi3 (ORCPT
+        with ESMTP id S230514AbjHGTxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 15:38:29 -0400
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2063.outbound.protection.outlook.com [40.107.104.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E771BFE;
-        Mon,  7 Aug 2023 12:38:17 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YO9mfXrF4vBKoVKDSym9u0ZdbitkgkAvsKyqGRLdQPIuV0T3XxJkEHcTF+PEKkATvXOM3KS3TfhA7TIle4oHbJkLivujRedfhuAS9loRbI+VUe/CPSKtUDSTmmywkkjfZPIfcx03n4N9TJiRIovEFC63atz2zSDh1C00UReQmQBSduhz5WBVi8q20Kfl7KTi9BxX+xpwYh9FyvV94KlPBtD5apEiwxkGyn3QraikPyQppiv6JELKmWY4ReahhwMTsSoJ14FSt5ALLjTAsDA0leLDGgHHW43IuoZIpMSOIat2PeIe5rbrtchg/oX+HpiyqAdL+G1MoL1eL9qDLidoKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=A3xMrLEX1BqcLSxrITZlrQvBSaLNXcOGJHw9v5sDdBY=;
- b=LBBtWaevY0p5yAOIsGAMIO5emXWdgwIkEzsMc+EKZaIDmLYuUpMi4n0zNBFjeSMtwEAe2lMqRiNfC8SGdrpyUof4Rnhz4ijVS/iXk9C0VyMsBcIcxbew0sokKDr5YN3brEsXVU156/DBt3TQLJfrBdNWW+PrdfrWvjtJp8vIXDLzdX+WLz5Kl6bwra2lRq1sliQs6n55XnGtYLtfr+6dQxY2QQav20/HEoxyd9GvfHArVAkUUDAyyc2+vpZ6dRzXXqoISUgzIacnS/Jiv2haLrmJl/H9cUhXPFTsY7V51nmTE027oy/JQ5mGu5D6XiWWTQf8Va2OYkRVh18lEGjRVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A3xMrLEX1BqcLSxrITZlrQvBSaLNXcOGJHw9v5sDdBY=;
- b=BMBeZZVc23cxdA8pc+GB01SLuQdCJJPtO5bSQ2wsSrpKbnTfnGu0EhkwT/8zidVgozdCuh+zBOHQX4QqDyIF16EZwjhNrA4KUL9Dw+6WVvc6UOX51+Appt5V/5ibxh5SDKhewpUFhrEVoDurtnuOjOKz4fFsIHc0qxCqBjToKMs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by DB9PR04MB9451.eurprd04.prod.outlook.com (2603:10a6:10:368::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26; Mon, 7 Aug
- 2023 19:37:45 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::d4ed:20a0:8c0a:d9cf]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::d4ed:20a0:8c0a:d9cf%6]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
- 19:37:45 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Pedro Tammela <pctammela@mojatatu.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Maxim Georgiev <glipus@gmail.com>
-Subject: [PATCH v4 net-next 11/11] selftests/tc-testing: verify that a qdisc can be grafted onto a taprio class
-Date:   Mon,  7 Aug 2023 22:33:24 +0300
-Message-Id: <20230807193324.4128292-12-vladimir.oltean@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230807193324.4128292-1-vladimir.oltean@nxp.com>
-References: <20230807193324.4128292-1-vladimir.oltean@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM0PR01CA0136.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:168::41) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+        Mon, 7 Aug 2023 15:53:04 -0400
+X-Greylist: delayed 1109 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 07 Aug 2023 12:53:03 PDT
+Received: from mx1.mythic-beasts.com (mx1.mythic-beasts.com [IPv6:2a00:1098:0:86:1000:0:2:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D461E7F
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 12:53:03 -0700 (PDT)
+Received: by mailhub-cam-d.mythic-beasts.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <jic23@jic23.retrosnub.co.uk>)
+        id 1qT603-006bGM-IH; Mon, 07 Aug 2023 20:34:44 +0100
+Date:   Mon, 7 Aug 2023 20:34:21 +0100
+From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+        llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: drivers/iio/light/opt4001.c:215:9: error: call to
+ '__compiletime_assert_355' declared with 'error' attribute: FIELD_PREP:
+ value too large for the field
+Message-ID: <20230807203421.4b62f931@jic23-huawei>
+In-Reply-To: <202308061902.0gVz6bSe-lkp@intel.com>
+References: <202308061902.0gVz6bSe-lkp@intel.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|DB9PR04MB9451:EE_
-X-MS-Office365-Filtering-Correlation-Id: f9d84cc8-35d7-4013-b879-08db977dc600
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JSVevBwQgYa69oIV7J9hZ4EtXSDFcHR+CEqSYHBgVNR0FX/pIogbVIAz4zjaRT9uCqk2JLduXwFRVSnDDYVPq2E5e8Wpq9MNDazoceJJFi2Rj8CXK2CNhPaLMjC+J5GmVl4T9dc53rWX3P9vBuPyDfIIgtouFmjifgSKZMBSf1bE20HAOn8SNhEJ/pM6YcXeAtsypplAHoqHhfk7kFC4WJ4wVSpuaRiFSzX4D6aor2ddE1+4hE+8BqmMH5mDhxBCxqu1igyOzHoCKu5oQTh6isksFxfW2+7CcxbwwiAjWVXI5p2gYv3EhDd0ja2bYgV3CHPYz3eW/XO7VkUlEFpyqjkzUUw4x39HgodY64cG80879REDICRFX8E3VaorMsM376F7hrUa9nXEvEaISowuBS3vYidvR7eTrYpQGaz4x6xSQ9TSmTAX1TvDuIEttcMs6sgXv6XofjnqQGIFhTL/4hThBsLahOmzDb5I3h1GdPRXSFpj5tWb5425ZM/tZTGJ5i/bwCdHSeajIy/iZWb/oEHCZdPb/CK590WfFRMUMXWRYTq0M4/6NypeOCWAwE1fEVOWfq4QGhE1DH8Coh3c1UkcPi9f8YpybuI9lxWcu9Ixk9jIo6PKrTVckPqLT8Lf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(39860400002)(346002)(136003)(396003)(366004)(186006)(1800799003)(451199021)(15650500001)(1076003)(41300700001)(26005)(2906002)(5660300002)(44832011)(83380400001)(7416002)(8676002)(8936002)(2616005)(6916009)(86362001)(316002)(6506007)(54906003)(38350700002)(38100700002)(6486002)(66476007)(66556008)(478600001)(52116002)(66946007)(6666004)(6512007)(4326008)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+HABeMmt2QZsAS1xllHzQmFQEv+VIkqz1IRk+A8UkTAYtLrv2VJY/Lp5w6N6?=
- =?us-ascii?Q?Q41AkL9kt23YQJgwO5LJUqUUnTb8EG8vLNR2qF+eam01Oy7fYh22Jx4yP5t9?=
- =?us-ascii?Q?YoPfgyFJ/C7YTxdC6H8sg+MoyK9Tl5mlB5TacXwIufJs+QfayE4x8a676b9n?=
- =?us-ascii?Q?xinz4KHdvkmXI2BLB70EVlJ4BQxaChiRR0HZmFathZIeDCB0YM418GeasoiB?=
- =?us-ascii?Q?y0RZ/2KICXXp+dZtsyj1TBsvwKRSV8CLTu9M+yddzZL3C7/hkbdZnpCQgYIT?=
- =?us-ascii?Q?557z1lbKDLbo8MTPaHvU1h4urXqq3LhzgbWBR/G/pwa/QV+mivsPPL2Tbh+3?=
- =?us-ascii?Q?II+KSzpJekU62lAuy/eLXvoNtrmx3TEqlRbpR4zX32ag4VReOPDXDFlcGWi9?=
- =?us-ascii?Q?iO7S6naVhJQMxLcT/i1cTIBbF/MMkzmbx8PKrqLXoAFl0rFbuiTjjGYYyvRi?=
- =?us-ascii?Q?paLdAaL4HZYWmKMYIYxQ1k+8mzG30CVF4YfE0I+aGoEx1Ti7SmCBZxWqJlgB?=
- =?us-ascii?Q?OeoVvdbFjHlVCGN29TUyNk9secVCTEHHwV0KeaxDSAakREjVycFoK+rkIFnC?=
- =?us-ascii?Q?wge3gE9rLy7ePruBofPzUkzfg/vO6WyMKN9x5y/1EmO7ojWaAaFgb55WvbvH?=
- =?us-ascii?Q?2nYpms0S7LT2yGbkmMZWYFL8a1L4/Bq6edNwYKaD/nDZqZCIYCuz/SmM0t+h?=
- =?us-ascii?Q?L1OjoFlJq829iOjiig3t1HMW9vEMgAtM27kPOhUdozMcdeDkairASJHRoCYm?=
- =?us-ascii?Q?53S2xNWbsY0yBCeq87PKYl/Pi+3Ko+hvM9VCv9XAu3AwGwtJpfmsiret4OiS?=
- =?us-ascii?Q?HcwQt+BUrUyxVACFB8/RCGVGVAr1l7499kma56zhAuGLFp2dPe+zoo8Sbe78?=
- =?us-ascii?Q?cBib1Z+SoCEF8o1ExIZddYT5CZTF35tXBjGbk2OoKHpTpeJuryP9Zp5IjLcF?=
- =?us-ascii?Q?ItOmP1wF/qiIVuys4i0jTRaxeNhAt0VO2mx82GyjXeMlkg1EzZiPeAB8Ku7N?=
- =?us-ascii?Q?XH40OTMl/KG+cPrDFV7j927eWcgCLPg6+nQfVXcWA1/p4vOGkp3xz0VwxDly?=
- =?us-ascii?Q?aseaw63OvGFK6FqBs6WA2C4JmHf9i6x/M0KguVttGJDq/S1tvgpmjpqm47Xp?=
- =?us-ascii?Q?dzBa4EKl80L+JN7Cb1Xf3nhni18oDQJA9iSKgjYe/uZ/aSlxSRcJe59iaULn?=
- =?us-ascii?Q?HYAof+2hrvdRD45sb7tcG9BZxstHTnHIHAFPCi/BDhBs6Mmh8+EYWgv1ON0E?=
- =?us-ascii?Q?UyqqP7lMYAW3Xjn6LHeDUyxPlb0wg379bvw3wVcA1CMd6o5qLHPEqJ+7RFs+?=
- =?us-ascii?Q?pQp9nxsWiNZ/DsSFa2aRkPKK7So4+bXaNvarhHxkOYslen/TnVqpnelBrsZd?=
- =?us-ascii?Q?Xv7wdEKnjX7+BI1mKnGOCO3lhAVMsOcLw8OYd83pjHgWzunKvpicPvor9B8Z?=
- =?us-ascii?Q?E//C0WWL+PGFPljsET/6ZkZFn820vwv8tDm1swUpNVkkdK9nhtUxSl/mqtQb?=
- =?us-ascii?Q?RQ+oy+2P2rUOam/5tuYMfpnvuEzzLCe7Imra81flMlMJ3sWmIRSFZD5tw1Yl?=
- =?us-ascii?Q?t1M8gGGHDfYmvmhfYeLG0TnpEFjOQMNrMoGoDBIwDfT30jNR1MDwOyUjVbPL?=
- =?us-ascii?Q?rw=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f9d84cc8-35d7-4013-b879-08db977dc600
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 19:37:45.3584
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tb8k29buXQruybpWREu5pL7/sbnmoWmCU42WpU2Z40n9ELoTHalOGww7QaYqTqiZdiZRRfdLZtHGuSdI64kDow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9451
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-BlackCat-Spam-Score: 4
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reason behind commit af7b29b1deaa ("Revert "net/sched: taprio: make
-qdisc_leaf() see the per-netdev-queue pfifo child qdiscs"") was that the
-patch it reverted caused a crash when attaching a CBS shaper to one of
-the taprio classes. Prevent that from happening again by adding a test
-case for it, which now passes correctly in both offload and software
-modes.
+On Sun, 6 Aug 2023 20:00:10 +0800
+kernel test robot <lkp@intel.com> wrote:
 
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Pedro Tammela <pctammela@mojatatu.com>
----
-v3->v4: none
-v2->v3: fix expected output for test 6a83 (missing "refcnt 2")
-v1->v2: patch is new
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   f0ab9f34e59e0c01a1c31142e0b336245367fd86
+> commit: 9a9608418292bb8733805c3f3123dfe0454fadac iio: light: Add support for TI OPT4001 light sensor
+> date:   3 months ago
+> config: s390-randconfig-r034-20230806 (https://download.01.org/0day-ci/archive/20230806/202308061902.0gVz6bSe-lkp@intel.com/config)
+> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> reproduce: (https://download.01.org/0day-ci/archive/20230806/202308061902.0gVz6bSe-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202308061902.0gVz6bSe-lkp@intel.com/
+> 	
+> All errors (new ones prefixed by >>):
+> 
+>    In file included from drivers/iio/light/opt4001.c:16:
+>    In file included from include/linux/regmap.h:20:
+>    In file included from include/linux/iopoll.h:14:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/s390/include/asm/io.h:75:
+>    include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>      547 |         val = __raw_readb(PCI_IOBASE + addr);
+>          |                           ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>      560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+>          |                                                         ~~~~~~~~~~ ^
+>    include/uapi/linux/byteorder/big_endian.h:37:59: note: expanded from macro '__le16_to_cpu'
+>       37 | #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
+>          |                                                           ^
+>    include/uapi/linux/swab.h:102:54: note: expanded from macro '__swab16'
+>      102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+>          |                                                      ^
+>    In file included from drivers/iio/light/opt4001.c:16:
+>    In file included from include/linux/regmap.h:20:
+>    In file included from include/linux/iopoll.h:14:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/s390/include/asm/io.h:75:
+>    include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>      573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+>          |                                                         ~~~~~~~~~~ ^
+>    include/uapi/linux/byteorder/big_endian.h:35:59: note: expanded from macro '__le32_to_cpu'
+>       35 | #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
+>          |                                                           ^
+>    include/uapi/linux/swab.h:115:54: note: expanded from macro '__swab32'
+>      115 | #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
+>          |                                                      ^
+>    In file included from drivers/iio/light/opt4001.c:16:
+>    In file included from include/linux/regmap.h:20:
+>    In file included from include/linux/iopoll.h:14:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/s390/include/asm/io.h:75:
+>    include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>      584 |         __raw_writeb(value, PCI_IOBASE + addr);
+>          |                             ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>      594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+>          |                                                       ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>      604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+>          |                                                       ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>      692 |         readsb(PCI_IOBASE + addr, buffer, count);
+>          |                ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>      700 |         readsw(PCI_IOBASE + addr, buffer, count);
+>          |                ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>      708 |         readsl(PCI_IOBASE + addr, buffer, count);
+>          |                ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>      717 |         writesb(PCI_IOBASE + addr, buffer, count);
+>          |                 ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>      726 |         writesw(PCI_IOBASE + addr, buffer, count);
+>          |                 ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>      735 |         writesl(PCI_IOBASE + addr, buffer, count);
+>          |                 ~~~~~~~~~~ ^
+> >> drivers/iio/light/opt4001.c:215:9: error: call to '__compiletime_assert_355' declared with 'error' attribute: FIELD_PREP: value too large for the field  
+>      215 |         reg |= FIELD_PREP(OPT4001_CTRL_CONV_TIME_MASK, chip->int_time);
+>          |                ^
+>    include/linux/bitfield.h:114:3: note: expanded from macro 'FIELD_PREP'
+>      114 |                 __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");    \
+>          |                 ^
+>    include/linux/bitfield.h:68:3: note: expanded from macro '__BF_FIELD_CHECK'
+>       68 |                 BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?           \
+>          |                 ^
+>    include/linux/build_bug.h:39:37: note: expanded from macro 'BUILD_BUG_ON_MSG'
+>       39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>          |                                     ^
+>    note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+>    include/linux/compiler_types.h:385:2: note: expanded from macro '_compiletime_assert'
+>      385 |         __compiletime_assert(condition, msg, prefix, suffix)
+>          |         ^
+>    include/linux/compiler_types.h:378:4: note: expanded from macro '__compiletime_assert'
+>      378 |                         prefix ## suffix();                             \
+>          |                         ^
+>    <scratch space>:55:1: note: expanded from here
+>       55 | __compiletime_assert_355
+>          | ^
+>    12 warnings and 1 error generated.
+> 
+> 
+> vim +215 drivers/iio/light/opt4001.c
+> 
+>    207	
+>    208	static int opt4001_set_conf(struct opt4001_chip *chip)
+>    209	{
+>    210		struct device *dev = &chip->client->dev;
+>    211		u16 reg;
+>    212		int ret;
+>    213	
+>    214		reg = FIELD_PREP(OPT4001_CTRL_RANGE_MASK, OPT4001_CTRL_LIGHT_SCALE_AUTO);
+>  > 215		reg |= FIELD_PREP(OPT4001_CTRL_CONV_TIME_MASK, chip->int_time);  
+>    216		reg |= FIELD_PREP(OPT4001_CTRL_OPER_MODE_MASK, OPT4001_CTRL_OPER_MODE_CONTINUOUS);
+>    217	
+>    218		ret = regmap_write(chip->regmap, OPT4001_CTRL, reg);
+>    219		if (ret)
+>    220			dev_err(dev, "Failed to set configuration\n");
+>    221	
+>    222		return ret;
+>    223	}
+>    224	
 
- .../tc-testing/tc-tests/qdiscs/taprio.json    | 50 +++++++++++++++++++
- 1 file changed, 50 insertions(+)
+This took me a few mins to conjecture what it might be finding.
+I think it's managing to spot the missing divide by 2 in here which ends up in int_time
+and could potentially go as high as 21 - overflowing the field,
 
-diff --git a/tools/testing/selftests/tc-testing/tc-tests/qdiscs/taprio.json b/tools/testing/selftests/tc-testing/tc-tests/qdiscs/taprio.json
-index f475967c509f..0599635c4bc6 100644
---- a/tools/testing/selftests/tc-testing/tc-tests/qdiscs/taprio.json
-+++ b/tools/testing/selftests/tc-testing/tc-tests/qdiscs/taprio.json
-@@ -206,5 +206,55 @@
-             "$TC qdisc del dev $ETH root",
-             "echo \"1\" > /sys/bus/netdevsim/del_device"
-         ]
-+    },
-+    {
-+        "id": "a7bf",
-+        "name": "Graft cbs as child of software taprio",
-+        "category": [
-+            "qdisc",
-+            "taprio",
-+            "cbs"
-+        ],
-+        "plugins": {
-+            "requires": "nsPlugin"
-+        },
-+        "setup": [
-+            "echo \"1 1 8\" > /sys/bus/netdevsim/new_device",
-+            "$TC qdisc replace dev $ETH handle 8001: parent root stab overhead 24 taprio num_tc 8 map 0 1 2 3 4 5 6 7 queues 1@0 1@1 1@2 1@3 1@4 1@5 1@6 1@7 base-time 0 sched-entry S ff 20000000 clockid CLOCK_TAI"
-+        ],
-+        "cmdUnderTest": "$TC qdisc replace dev $ETH handle 8002: parent 8001:8 cbs idleslope 20000 sendslope -980000 hicredit 30 locredit -1470",
-+        "expExitCode": "0",
-+        "verifyCmd": "$TC -d qdisc show dev $ETH",
-+        "matchPattern": "qdisc cbs 8002: parent 8001:8 hicredit 30 locredit -1470 sendslope -980000 idleslope 20000 offload 0",
-+        "matchCount": "1",
-+        "teardown": [
-+            "$TC qdisc del dev $ETH root",
-+            "echo \"1\" > /sys/bus/netdevsim/del_device"
-+        ]
-+    },
-+    {
-+        "id": "6a83",
-+        "name": "Graft cbs as child of offloaded taprio",
-+        "category": [
-+            "qdisc",
-+            "taprio",
-+            "cbs"
-+        ],
-+        "plugins": {
-+            "requires": "nsPlugin"
-+        },
-+        "setup": [
-+            "echo \"1 1 8\" > /sys/bus/netdevsim/new_device",
-+            "$TC qdisc replace dev $ETH handle 8001: parent root stab overhead 24 taprio num_tc 8 map 0 1 2 3 4 5 6 7 queues 1@0 1@1 1@2 1@3 1@4 1@5 1@6 1@7 base-time 0 sched-entry S ff 20000000 flags 0x2"
-+        ],
-+        "cmdUnderTest": "$TC qdisc replace dev $ETH handle 8002: parent 8001:8 cbs idleslope 20000 sendslope -980000 hicredit 30 locredit -1470",
-+        "expExitCode": "0",
-+        "verifyCmd": "$TC -d qdisc show dev $ETH",
-+        "matchPattern": "qdisc cbs 8002: parent 8001:8 refcnt 2 hicredit 30 locredit -1470 sendslope -980000 idleslope 20000 offload 0",
-+        "matchCount": "1",
-+        "teardown": [
-+            "$TC qdisc del dev $ETH root",
-+            "echo \"1\" > /sys/bus/netdevsim/del_device"
-+        ]
-     }
- ]
--- 
-2.34.1
+static int opt4001_als_time_to_index(const u32 als_integration_time)
+{
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(opt4001_int_time_available); i++) {
+		if (als_integration_time == opt4001_int_time_available[i][1])
+			return i;
+	}
+
+	return -EINVAL;
+}
+
+ARRAY_SIZE is applied to an Nx2 array so that should be ARRAY_SIZE()/2 to index over just
+the first dimension as intended.  I'll send a patch shortly once I've checked with the
+reproducer.  It's a bug either way (I think!)
+
+Jonathan
+
+
+
+> 
 
