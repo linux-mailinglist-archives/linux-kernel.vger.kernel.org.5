@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB814772593
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5801772594
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234130AbjHGNY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
+        id S233964AbjHGNZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234119AbjHGNYN (ORCPT
+        with ESMTP id S233929AbjHGNYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:24:13 -0400
+        Mon, 7 Aug 2023 09:24:37 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A86C2D57
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:23:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879832D7F
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:23:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D723561B0D
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 13:23:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D7A2C433C9;
-        Mon,  7 Aug 2023 13:23:15 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EAEA361A5A
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 13:23:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE26DC433CB;
+        Mon,  7 Aug 2023 13:23:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691414597;
-        bh=fjBFDwKo3KO8ngc80qTC0rIJuf+fwM3TGfE20y77Uv8=;
+        s=k20201202; t=1691414599;
+        bh=Jqo8XbuMCxp/lU8H372pqnV5J9no6ZO9LFvX2EEpUkI=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=oQzpSyKsYxPLi3to0W9DQqS/mGEukCCI/szQR+jA1oFg90bGzwUET1D2xnpvSISrb
-         65+OfiYiFnfosvUF7aZ5pZxngVXC7cDXj7QXj7NaC6FOkzIzxOdz6zS+ohB3inqycY
-         tS8t4A4nUnLLC6OcGhniQ6NFbzc1uAyEPb6KZi1uHCAuZqt2DZA0kp9n1C80pYP5J2
-         7hhi71nEeIWCyXC5C1YDf687VsB2eaQB3VUO14kr8D0XinuJquVJ+d7wOhYr/NUOJ0
-         XS5A/wV2HktIWke5TID75p6az2Nki8BnrgUOOzGjbveliZVlQxanAfY+KDXI3F4yQQ
-         dq3O1oRqh+p8Q==
+        b=dcKJzNz0Ci5OzkoSUNLW4LbMqNTrbb9mKTewnxvJziSjfXjDS0VJ+DcMwhU/YtRwe
+         sz5kZ24FOOX/ol1OZaSKbM9GjH1WpisQbuocqY3ZDPoM1tVPRQmzPqbvhIF+3AP0+i
+         ekDVxLqV8wO8EgJviTg5f64MoO9B2SapJMIovNW0bJL4IviW5qZMuWz6NKofaUf6YW
+         CLHKQtZn34RN3vBqK8eikB2d0h0ecYGNfEwNq8CQnqviAm3MUjzRAX1MUsI5wppYP8
+         dQLb+J5Y7TRRbhg5KGwUOKZMsrtEt3VSf9D8Q1NdL7aZhBeo8q9ACaywr/4r3ML+tJ
+         mfVqcFZF3zR8A==
 From:   Michael Walle <mwalle@kernel.org>
-Date:   Mon, 07 Aug 2023 15:21:34 +0200
-Subject: [PATCH 40/41] mtd: spi-nor: atmel: drop duplicate entry
+Date:   Mon, 07 Aug 2023 15:21:35 +0200
+Subject: [PATCH 41/41] mtd: spi-nor: core: get rid of the INFOx() macros
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230807-mtd-flash-info-db-rework-v1-40-3d3d5bef4ba4@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v1-41-3d3d5bef4ba4@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v1-0-3d3d5bef4ba4@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v1-0-3d3d5bef4ba4@kernel.org>
 To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
@@ -61,34 +61,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Atmel AT26DF321 and AT25DF321 have the same ID. Both were just
-discovered by reading their IDs, that is, there is no probing by name.
-Thus only the first one in the list was ever probed. The AT25DF is the
-newer series. Drop the older one.
+Now that all flash_info tables are converted to the new format, remove
+the old INFOx() macros.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
- drivers/mtd/spi-nor/atmel.c | 7 -------
- 1 file changed, 7 deletions(-)
+ drivers/mtd/spi-nor/core.h | 65 ----------------------------------------------
+ 1 file changed, 65 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-index 18e904962d0e..95f0e139284e 100644
---- a/drivers/mtd/spi-nor/atmel.c
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -206,13 +206,6 @@ static const struct flash_info atmel_nor_parts[] = {
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
- 		.no_sfdp_flags = SECT_4K,
- 		.fixups = &atmel_nor_global_protection_fixups
--	}, {
--		.id = SNOR_ID(0x1f, 0x47, 0x00),
--		.name = "at26df321",
--		.size = SZ_4M,
--		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
--		.no_sfdp_flags = SECT_4K,
--		.fixups = &atmel_nor_global_protection_fixups
- 	}, {
- 		.id = SNOR_ID(0x1f, 0x47, 0x01),
- 		.name = "at25df321a",
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index d0e83bfb847c..8f0f3c64488c 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -573,71 +573,6 @@ struct flash_info {
+ 		.n_regions = (_n_regions),				\
+ 	})
+ 
+-#define SPI_NOR_ID_2ITEMS(_id) ((_id) >> 8) & 0xff, (_id) & 0xff
+-#define SPI_NOR_ID_3ITEMS(_id) ((_id) >> 16) & 0xff, SPI_NOR_ID_2ITEMS(_id)
+-
+-#define SPI_NOR_ID(_jedec_id, _ext_id)					\
+-	.id = &(const struct spi_nor_id){				\
+-		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
+-				       SPI_NOR_ID_2ITEMS(_ext_id) },	\
+-		.len = !(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0)),	\
+-	}
+-
+-#define SPI_NOR_ID6(_jedec_id, _ext_id)					\
+-	.id = &(const struct spi_nor_id){				\
+-		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
+-				       SPI_NOR_ID_3ITEMS(_ext_id) },	\
+-		.len = 6,						\
+-	}
+-
+-#define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
+-	.size = (_sector_size) * (_n_sectors),				\
+-	.sector_size = (_sector_size == SZ_64K) ? 0 : (_sector_size),	\
+-	.n_banks = (_n_banks)
+-
+-/* Used when the "_ext_id" is two bytes at most */
+-#define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
+-	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
+-	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
+-
+-#define INFO0(_sector_size, _n_sectors)					\
+-	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
+-
+-#define INFOB(_jedec_id, _ext_id, _sector_size, _n_sectors, _n_banks)	\
+-	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
+-	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), (_n_banks)),
+-
+-#define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
+-	SPI_NOR_ID6((_jedec_id), (_ext_id)),				\
+-	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
+-
+-#define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
+-		.size = (_sector_size) * (_n_sectors),			\
+-		.sector_size = (_sector_size),				\
+-		.page_size = (_page_size),				\
+-		.addr_nbytes = (_addr_nbytes),				\
+-		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
+-
+-#define OTP_INFO(_len, _n_regions, _base, _offset)			\
+-		.otp = &(const struct spi_nor_otp_organization){	\
+-			.len = (_len),					\
+-			.base = (_base),				\
+-			.offset = (_offset),				\
+-			.n_regions = (_n_regions),			\
+-		},
+-
+-#define FLAGS(_flags)							\
+-		.flags = (_flags),					\
+-
+-#define NO_SFDP_FLAGS(_no_sfdp_flags)					\
+-		.no_sfdp_flags = (_no_sfdp_flags),			\
+-
+-#define FIXUP_FLAGS(_fixup_flags)					\
+-		.fixup_flags = (_fixup_flags),				\
+-
+-#define MFR_FLAGS(_mfr_flags)						\
+-		.mfr_flags = (_mfr_flags),				\
+-
+ /**
+  * struct spi_nor_manufacturer - SPI NOR manufacturer object
+  * @name: manufacturer name
 
 -- 
 2.39.2
