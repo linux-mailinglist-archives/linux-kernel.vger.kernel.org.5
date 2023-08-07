@@ -2,113 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9C3772D99
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDB7772DA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbjHGSSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 14:18:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
+        id S231201AbjHGSVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 14:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbjHGSSF (ORCPT
+        with ESMTP id S229804AbjHGSU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 14:18:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8153FD;
-        Mon,  7 Aug 2023 11:18:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 7 Aug 2023 14:20:58 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49610DE;
+        Mon,  7 Aug 2023 11:20:56 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 8cfedfee9a03d93a; Mon, 7 Aug 2023 20:20:54 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CE79620B6;
-        Mon,  7 Aug 2023 18:18:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4279CC433C8;
-        Mon,  7 Aug 2023 18:18:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691432282;
-        bh=ZzcdCc8mVMjmxDstZshcYeL44h63uApvnQxp94Go52Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NhzmpDgFGAyeE3CO2Wjt/Ekw4AW7B8yWCVuDfFVHcsSDqokzh+qKr3DS8uch4cie8
-         TKWTu6Qmr+tw77gLg/Ny3tVDT17TuL5aKpRF7A+bsz3KGrRitvlrEoSIgS9LpKk9qo
-         fGc6zzIG+Z22mvzddWfden/BUdjTL7bqxSdUtTAcayUe6XPs70DO8Kpr+IuT9QmRrI
-         PyhO8meNfLFTfEfr5Q2qlLYMBIeWYsuurHebppUMDIc9Tria+AHCNDV8SSH0/N6Dpw
-         rWTgAyRkgvi8P31ZZdoZydyIiBdoC7S/2k0YHENDf5JTyFSzF7VeJLZ+Is10u6nuyq
-         H+9J7mrzUBy+g==
-Date:   Mon, 7 Aug 2023 19:17:58 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Alexandru Ardelean <alex@shruggie.ro>
-Cc:     Andrei Coardos <aboutphysycs@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        nick.hawkins@hpe.com, verdun@hpe.com
-Subject: Re: [PATCH] spi: gxp: removed unneeded call to platform_set_drvdata()
-Message-ID: <196642e7-4136-4ba6-a918-8c759f27f818@sirena.org.uk>
-References: <20230807130217.17853-1-aboutphysycs@gmail.com>
- <c867e685-7665-420b-9478-bce6eb067463@sirena.org.uk>
- <CAH3L5Qrzk-7WoF8+GKMYS40Dj_fxGpiLrTvVB_PJdA_VZVsDAQ@mail.gmail.com>
+        by v370.home.net.pl (Postfix) with ESMTPSA id EBE836625B2;
+        Mon,  7 Aug 2023 20:20:53 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH v5 10/11] ACPI: thermal: Drop unnecessary thermal zone callbacks
+Date:   Mon, 07 Aug 2023 20:18:49 +0200
+Message-ID: <3436224.QJadu78ljV@kreacher>
+In-Reply-To: <4503814.LvFx2qVVIh@kreacher>
+References: <13318886.uLZWGnKmhe@kreacher> <4503814.LvFx2qVVIh@kreacher>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7gwrvj5+w54pKtcv"
-Content-Disposition: inline
-In-Reply-To: <CAH3L5Qrzk-7WoF8+GKMYS40Dj_fxGpiLrTvVB_PJdA_VZVsDAQ@mail.gmail.com>
-X-Cookie: idleness, n.:
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrledtgdduudejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+ thhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
---7gwrvj5+w54pKtcv
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Drop the .get_trip_type(), .get_trip_temp() and .get_crit_temp() thermal
+zone callbacks that are not necessary any more from the ACPI thermal
+driver along with the corresponding callback functions.
 
-On Mon, Aug 07, 2023 at 08:38:27PM +0300, Alexandru Ardelean wrote:
-> On Mon, Aug 7, 2023 at 4:27=E2=80=AFPM Mark Brown <broonie@kernel.org> wr=
-ote:
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-> > On Mon, Aug 07, 2023 at 04:02:17PM +0300, Andrei Coardos wrote:
+v4 -> v5: Rebase.
 
-> > > This function call was found to be unnecessary as there is no equival=
-ent
-> > > platform_get_drvdata() call to access the private data of the driver.=
- Also,
-> > > the private data is defined in this driver, so there is no risk of it=
- being
-> > > accessed outside of this driver file.
+v3 -> v4: No changes.
 
-> > That isn't enough of a check here - people can still reference the
-> > driver data without going through the accessor function.
+v2 -> v3: Rebase on top of the v2 of the previous patch.
 
-> So, is that like calling `platform_get_drvdata()` in a parent/chid
-> device, to check if the driver-data is set?
+v1 -> v2: No changes.
 
-That wasn't what I was thinking of, waht I was thinking of was just open
-coding platform_get_drvdata() and looking directly at struct device.
-Another common case is where drivers that support multiple bus types
-will pass around the struct device and use dev_get_drvdata() to read the
-data rather than using platform_get_drvdata().  The driver data can be
-allocated and initialised with bus specific bits before being passed off
-to the generic code.
+---
+ drivers/acpi/thermal.c |  115 -------------------------------------------------
+ 1 file changed, 115 deletions(-)
 
-That said the looking at the parent's driver data is definitely a thing
-that happens with MFDs.
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -484,118 +484,6 @@ static int thermal_get_temp(struct therm
+ 	return 0;
+ }
+ 
+-static int thermal_get_trip_type(struct thermal_zone_device *thermal,
+-				 int trip, enum thermal_trip_type *type)
+-{
+-	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
+-	int i;
+-
+-	if (!tz || trip < 0)
+-		return -EINVAL;
+-
+-	if (tz->trips.critical.valid) {
+-		if (!trip) {
+-			*type = THERMAL_TRIP_CRITICAL;
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	if (tz->trips.hot.valid) {
+-		if (!trip) {
+-			*type = THERMAL_TRIP_HOT;
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	if (tz->trips.passive.trip.valid) {
+-		if (!trip) {
+-			*type = THERMAL_TRIP_PASSIVE;
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].trip.valid; i++) {
+-		if (!trip) {
+-			*type = THERMAL_TRIP_ACTIVE;
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+-static int thermal_get_trip_temp(struct thermal_zone_device *thermal,
+-				 int trip, int *temp)
+-{
+-	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
+-	int i;
+-
+-	if (!tz || trip < 0)
+-		return -EINVAL;
+-
+-	if (tz->trips.critical.valid) {
+-		if (!trip) {
+-			*temp = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.critical.temperature,
+-					tz->kelvin_offset);
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	if (tz->trips.hot.valid) {
+-		if (!trip) {
+-			*temp = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.hot.temperature,
+-					tz->kelvin_offset);
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	if (tz->trips.passive.trip.valid) {
+-		if (!trip) {
+-			*temp = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.passive.trip.temperature,
+-					tz->kelvin_offset);
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE &&
+-		tz->trips.active[i].trip.valid; i++) {
+-		if (!trip) {
+-			*temp = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.active[i].trip.temperature,
+-					tz->kelvin_offset);
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+-static int thermal_get_crit_temp(struct thermal_zone_device *thermal,
+-				int *temperature)
+-{
+-	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
+-
+-	if (tz->trips.critical.valid) {
+-		*temperature = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.critical.temperature,
+-					tz->kelvin_offset);
+-		return 0;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+ static int thermal_get_trend(struct thermal_zone_device *thermal,
+ 			     int trip_index, enum thermal_trend *trend)
+ {
+@@ -758,9 +646,6 @@ static struct thermal_zone_device_ops ac
+ 	.bind = acpi_thermal_bind_cooling_device,
+ 	.unbind	= acpi_thermal_unbind_cooling_device,
+ 	.get_temp = thermal_get_temp,
+-	.get_trip_type = thermal_get_trip_type,
+-	.get_trip_temp = thermal_get_trip_temp,
+-	.get_crit_temp = thermal_get_crit_temp,
+ 	.get_trend = thermal_get_trend,
+ 	.hot = acpi_thermal_zone_device_hot,
+ 	.critical = acpi_thermal_zone_device_critical,
 
---7gwrvj5+w54pKtcv
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTRNVUACgkQJNaLcl1U
-h9DRbQf/UD6rT6THBwwsVjvF+9xmAJZdPPLu0/Bqms50iz2PhJKdjfhZfjo8vOXt
-yWawMNetOUo3iUVxnMesYI43et1n+veZB9tA5qaXX5Fu2OBXOAnHHWdbha7f/99R
-kdQ8+L+Hhw7rb+EalNBlx15aeo+b6iWJ1BiYFQ5PD2wLgHPUe24der7IbM1I0gRR
-u+DUr9SEoGBpPtKT/0AzTtVlLPc0kFLOUIotXVqgkgISKxylhdOK1aErIjdGJM5P
-3COmUmsJq5EyT9fm6+CC3Q/bPyCeYcZIwrouxPdImOM1AnGrW124BHTUVi8K8oVh
-sR3JyZuBS1jCYiccd/JEi7agqqqWLw==
-=NKz9
------END PGP SIGNATURE-----
-
---7gwrvj5+w54pKtcv--
