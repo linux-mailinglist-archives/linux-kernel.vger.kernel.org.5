@@ -2,133 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19020771912
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 06:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3197E771913
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 06:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbjHGElk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 00:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37690 "EHLO
+        id S229967AbjHGEnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 00:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjHGElh (ORCPT
+        with ESMTP id S229513AbjHGEnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 00:41:37 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7D210F3;
-        Sun,  6 Aug 2023 21:41:36 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3774QDmd016997;
-        Mon, 7 Aug 2023 04:41:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=qcppdkim1;
- bh=L/AODu6CiGzGr9FCJsPeSE9hoze7s8us5qkCMSXX18o=;
- b=VQFrzCxgAF5qJ/tQAmatax3uWgAJjH00KxlPVVHis+gHIuaSMoPAdCIa9YNvzTdb/98b
- OkO6B7HVLPYrBqLR5CoAsGpzBD11npNbjm5F99u+NZOsn+iq2bwen1vNPzvEcmvI/4tP
- ZTkWCTcn6KsdQaZmtXMQMgryN2vY3u7goI4C/lUCxU0Y80jyXmjmkMhI/cqlyCUcTgMS
- vBQg8fcPpcSrK/hfBDT1i/O6o+j7GafX9h6fMBmmx0xPL1Ipsz3pd9IPG2Mpo3PNqNUa
- 9sS0t3zvTHIZI9gE8kup8ACke53mXDOa4DeGMgm+SP6XzubXcGnb2ro5gArdGJOiwsiP Eg== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s9bsutqck-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Aug 2023 04:41:32 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3774fVDY024504
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 7 Aug 2023 04:41:31 GMT
-Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Sun, 6 Aug 2023 21:41:27 -0700
-Date:   Mon, 7 Aug 2023 10:11:24 +0530
-From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-CC:     Pavan Kondeti <quic_pkondeti@quicinc.com>,
-        Rohit Agarwal <quic_rohiagar@quicinc.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_jackp@quicinc.com>
-Subject: Re: [PATCH 3/8] arm64: dts: qcom: Add PMIC pm7550ba dtsi
-Message-ID: <161713d4-1c95-4822-ac66-dbc7c2d8b421@quicinc.com>
-References: <1690970366-30982-1-git-send-email-quic_rohiagar@quicinc.com>
- <1690970366-30982-4-git-send-email-quic_rohiagar@quicinc.com>
- <ce1af969-427a-3e4d-e85c-32d629755d9a@linaro.org>
- <bb374ec4-3dfa-42f1-dffb-fc8505625b73@quicinc.com>
- <2e97b032-4ca5-e59c-c891-2ed9ca39d237@linaro.org>
- <7941f5de-547c-4a92-9af1-a1c0add1ace4@quicinc.com>
- <dfe57d75-f0ff-41fb-bc81-0dc84dcfef7e@linaro.org>
+        Mon, 7 Aug 2023 00:43:18 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8954810FA
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 21:43:16 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA2031FB;
+        Sun,  6 Aug 2023 21:43:58 -0700 (PDT)
+Received: from [10.162.41.6] (a077893.blr.arm.com [10.162.41.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 114EE3F59C;
+        Sun,  6 Aug 2023 21:43:11 -0700 (PDT)
+Message-ID: <f6a5aaf2-4669-cbc2-1358-e8cfb341b9c5@arm.com>
+Date:   Mon, 7 Aug 2023 10:13:08 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V3 4/4] coresight: trbe: Enable ACPI based TRBE devices
+Content-Language: en-US
+To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
+Cc:     Sami Mujawar <sami.mujawar@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org
+References: <20230803055652.1322801-1-anshuman.khandual@arm.com>
+ <20230803055652.1322801-5-anshuman.khandual@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20230803055652.1322801-5-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <dfe57d75-f0ff-41fb-bc81-0dc84dcfef7e@linaro.org>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: T9m0EKq7IGi08IUHQM-3QZAy1U5Sedua
-X-Proofpoint-ORIG-GUID: T9m0EKq7IGi08IUHQM-3QZAy1U5Sedua
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-07_02,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- clxscore=1015 phishscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0
- impostorscore=0 priorityscore=1501 adultscore=0 bulkscore=0
- mlxlogscore=322 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308070042
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 06:58:34PM +0200, Konrad Dybcio wrote:
-> On 3.08.2023 07:06, Pavan Kondeti wrote:
-> > 
-> > On Wed, Aug 02, 2023 at 03:14:19PM +0200, Konrad Dybcio wrote:
-> >> On 2.08.2023 15:13, Rohit Agarwal wrote:
-> >>>
-> >>> On 8/2/2023 6:12 PM, Konrad Dybcio wrote:
-> >>>> On 2.08.2023 11:59, Rohit Agarwal wrote:
-> >>>>> Add dtsi for PMIC pm7550ba found in Qualcomm platforms.
-> >>>>>
-> >>>>> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
-> >>>>> ---
-> >>>> Subject: "PMIC pm7550ba" -> "pm7550ba PMIC"
-> >>>>
-> >>>> [...]
-> >>>>
-> >>>>> +
-> >>>>> +        pm7550ba_eusb2_repeater: phy@fd00 {
-> >>>>> +            compatible = "qcom,pm8550b-eusb2-repeater";
-> >>>> A new compatible should be introduced, so that it goes like this:
-> >>>>
-> >>>> compatible = "qcom,pm7550ba-eusb2-repeater", "qcom,pm8550b-eusb2-repeater";
-> >>> Just a doubt, Since the compatible can be same why we need to introduce a new compatible.
-> >>> Should every soc have a compatible string?
-> >> If it turns out that we need to add a quirk for PM7550BA 3 years down
-> >> the line, this approach lets us fix it for users that never updated
-> >> their device trees.
-> >>
-> > 
-> > Trying to make my understanding clear.
-> > 
-> > eUSB repeater is a peripheral in the PMIC. Do we need a separate
-> > compatible even if the peripheral is same in two different PMIC chips?
-> > I believe eUSB peripheral has some identification registers to apply any
-> > quirks in future.
-> Perhaps, but keeping the compatible tied to the specific hardware is
-> the way to go with the device tree. Most components don't have such
-> information avaiable, and since at introduction time there wasn't
-> any better name for it, "pm8550b-eusb2-repeater" was chosen.
+
+
+On 8/3/23 11:26, Anshuman Khandual wrote:
+> This detects and enables ACPI based TRBE devices via the dummy platform
+> device created earlier for this purpose.
 > 
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: coresight@lists.linaro.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-trbe.c | 9 +++++++++
+>  drivers/hwtracing/coresight/coresight-trbe.h | 1 +
+>  2 files changed, 10 insertions(+)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index e1d9d06e7725..f884883e9018 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -1537,7 +1537,16 @@ static const struct of_device_id arm_trbe_of_match[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, arm_trbe_of_match);
+>  
+> +#ifdef CONFIG_ACPI
+> +static const struct platform_device_id arm_trbe_acpi_match[] = {
+> +	{ ARMV8_TRBE_PDEV_NAME, 0 },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(platform, arm_trbe_acpi_match);
+> +#endif
+> +
+>  static struct platform_driver arm_trbe_driver = {
+> +	.id_table = arm_trbe_acpi_match,
 
-Thanks for the clarification and guidance. We can introduce a new
-compatible and use qcom,pm8550b-eusb2-repeater as generic binding.
+The build problem [1] reported on the first version of the series still exists
+here i.e arm_trbe_acpi_match is hidden without CONFIG_ACPI. I had assumed that
+CONFIG_CORESIGHT always enables CONFIG_ACPI, which is not the case. Following
+random config (with CONFIG_ACPI=n and CONFIG_CORESIGHT_TRBE=y) easily triggers
+the build problem.
 
-Thanks,
-Pavan
+https://download.01.org/0day-ci/archive/20230805/202308052123.uqR35d19-lkp@intel.com/config
+
+ make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 -s -j 128
+drivers/hwtracing/coresight/coresight-trbe.c:1563:23: error: implicit declaration of function â€˜ACPI_PTRâ€™ [-Werror=implicit-function-declaration]
+ 1563 |   .acpi_match_table = ACPI_PTR(arm_trbe_acpi_match),
+      |                       ^~~~~~~~
+drivers/hwtracing/coresight/coresight-trbe.c:1563:32: error: â€˜arm_trbe_acpi_matchâ€™ undeclared here (not in a function); did you mean â€˜arm_trbe_of_matchâ€™?
+ 1563 |   .acpi_match_table = ACPI_PTR(arm_trbe_acpi_match),
+      |                                ^~~~~~~~~~~~~~~~~~~
+      |                                arm_trbe_of_match
+
+Following config wrap around fixes the problem.
+
+--- a/drivers/hwtracing/coresight/coresight-trbe.c
++++ b/drivers/hwtracing/coresight/coresight-trbe.c
+@@ -1557,7 +1557,9 @@ MODULE_DEVICE_TABLE(platform, arm_trbe_acpi_match);
+ #endif
+ 
+ static struct platform_driver arm_trbe_driver = {
++#ifdef CONFIG_ACPI
+        .id_table = arm_trbe_acpi_match,
++#endif
+        .driver = {
+                .name = DRVNAME,
+                .of_match_table = of_match_ptr(arm_trbe_of_match),
+
+Please not that unlike other coresight drivers, TRBE is not using 'acpi_device_id'
+based "acpi_match_table = ACPI_PTR" construct. But regardless, ACPI_PTR() seems to
+be an alternate (probably better) solution as well.
+
+--- a/drivers/hwtracing/coresight/coresight-trbe.c
++++ b/drivers/hwtracing/coresight/coresight-trbe.c
+@@ -1557,7 +1557,7 @@ MODULE_DEVICE_TABLE(platform, arm_trbe_acpi_match);
+ #endif
+ 
+ static struct platform_driver arm_trbe_driver = {
+-       .id_table = arm_trbe_acpi_match,
++       .id_table = ACPI_PTR(arm_trbe_acpi_match),
+        .driver = {
+                .name = DRVNAME,
+                .of_match_table = of_match_ptr(arm_trbe_of_match),
+diff --git a/drivers/hwtracing/coresight/coresight-trbe.h b/drivers/hwtracing/coresight/coresight-trbe.h
+index 94e67009848a..fce1735d5c58 100644
+--- a/drivers/hwtracing/coresight/coresight-trbe.h
++++ b/drivers/hwtracing/coresight/coresight-trbe.h
+@@ -7,6 +7,7 @@
+  *
+  * Author: Anshuman Khandual <anshuman.khandual@arm.com>
+  */
++#include <linux/acpi.h>
+ #include <linux/coresight.h>
+ #include <linux/device.h>
+ #include <linux/irq.h>
+
+[1] https://lore.kernel.org/all/202308052123.uqR35d19-lkp@intel.com/
+
+>  	.driver	= {
+>  		.name = DRVNAME,
+>  		.of_match_table = of_match_ptr(arm_trbe_of_match),
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.h b/drivers/hwtracing/coresight/coresight-trbe.h
+> index 77cbb5c63878..94e67009848a 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.h
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.h
+> @@ -12,6 +12,7 @@
+>  #include <linux/irq.h>
+>  #include <linux/kernel.h>
+>  #include <linux/of.h>
+> +#include <linux/perf/arm_pmu.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/smp.h>
+>  
