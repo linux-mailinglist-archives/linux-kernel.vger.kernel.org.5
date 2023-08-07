@@ -2,57 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F9B771D4F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91EA771D52
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbjHGJmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
+        id S231651AbjHGJnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 05:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbjHGJmV (ORCPT
+        with ESMTP id S231645AbjHGJnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:42:21 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6C4F810C1;
-        Mon,  7 Aug 2023 02:42:20 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D7DA1FB;
-        Mon,  7 Aug 2023 02:43:03 -0700 (PDT)
-Received: from [10.57.90.63] (unknown [10.57.90.63])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E5353F59C;
-        Mon,  7 Aug 2023 02:42:17 -0700 (PDT)
-Message-ID: <73a5313d-9ab2-f5f9-42af-c3d9939198c6@arm.com>
-Date:   Mon, 7 Aug 2023 10:42:15 +0100
+        Mon, 7 Aug 2023 05:43:17 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754401701;
+        Mon,  7 Aug 2023 02:43:15 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-564a0d2d35eso2052648a12.0;
+        Mon, 07 Aug 2023 02:43:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691401395; x=1692006195;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=39EEzKezMc6xodopxuIo6ZRgeTbCfZRChxumxhtp/FM=;
+        b=mxHMQyaSOiY/aS8yiBkShK4dgrs5QZh/U6y6Bn0Pq1T5awerX0miafCAX/nu3cExWk
+         AtFEZ32D76TRkEy3VZLIl+g5W4xow6g+BLcCfu8HDUSPQfmbDBxlPE/oVRsdS90USkoU
+         /sOtP7ExllQI1x8dSCTk8Uyz4R71+vMEX7G0tEfOZasR0pT69Yp2foaLY7tc9Co9/6Fr
+         IhQrltu+Z7sGrT4SgtZNFfPFi503qsQqJ52hkaxfgK5bCN97ffU+z6jqNjwQwURUUto6
+         brSre94XpxeX7vaEcwjlT/qs5LWNUe7JzTs5ciFbpMMf+SABP3juqSEEAjNaFy2ZiSH0
+         N2Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691401395; x=1692006195;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=39EEzKezMc6xodopxuIo6ZRgeTbCfZRChxumxhtp/FM=;
+        b=LEsgKMIEc59S1OhrIZ/nbC3Wa6F6tzImWRjCLTTuNiigy+sSD3ZWIWWB8QEtreK8Cb
+         z4i1n8W1O3u1nEOH2DzgYtreEgLavi1iroNOc0hOfEBffsIxBPwfgHX6UkPksN3qWJgL
+         5d7wrhrtZ3unGDqmEcZxA1ZufvTEfD69UrO+JElGm5wOKzpfuhy9Uxdkk5CqSIxy7CKo
+         bGNk9Jah8UvkJOMNgB3hTWgu66hHeg2mHdoBcDUQVSy5/Ksmyxu4bUHarnAQYkN5a615
+         od+0p+QKX5E5m+8Veh3lRtCa/wd+Sj9bq3OEH0FHR5QHnaPbklWMAk239VNMnJVoKbGt
+         fDaw==
+X-Gm-Message-State: AOJu0YysavM48EeptqKvmkKAzlhUH6Dmi/rYYM4gVVx0KsVEtNd5m8I7
+        NfM79CM09Px1U0AF71RpB3DDBKcNPLs4IKxB
+X-Google-Smtp-Source: AGHT+IEyvi0w+FbeS2J9jh2Ijk09DU3+vm7M8mAkJGMtD9RfKYx/4/VZfsNOCDcBY9/hA6wqlap61A==
+X-Received: by 2002:a05:6a20:428f:b0:140:6979:2952 with SMTP id o15-20020a056a20428f00b0014069792952mr5111915pzj.47.1691401394599;
+        Mon, 07 Aug 2023 02:43:14 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id q8-20020a17090311c800b001bc675068e2sm2572378plh.111.2023.08.07.02.43.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 02:43:14 -0700 (PDT)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: x86: Remove break statements that will never be executed
+Date:   Mon,  7 Aug 2023 17:42:43 +0800
+Message-ID: <20230807094243.32516-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v7 07/13] coresight-tpdm: Add nodes to set trigger
- timestamp and type
-To:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Hao Zhang <quic_hazha@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, andersson@kernel.org
-References: <1690269353-10829-1-git-send-email-quic_taozha@quicinc.com>
- <1690269353-10829-8-git-send-email-quic_taozha@quicinc.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <1690269353-10829-8-git-send-email-quic_taozha@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,181 +71,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/2023 08:15, Tao Zhang wrote:
-> The nodes are needed to set or show the trigger timestamp and
-> trigger type. This change is to add these nodes to achieve these
-> function.
-> 
-> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> ---
->   .../ABI/testing/sysfs-bus-coresight-devices-tpdm   | 24 ++++++
->   drivers/hwtracing/coresight/coresight-tpdm.c       | 94 ++++++++++++++++++++++
->   2 files changed, 118 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> index dbc2fbd0..0b7b4ad 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> @@ -21,3 +21,27 @@ Description:
->   
->   		Accepts only one value -  1.
->   		1 : Reset the dataset of the tpdm
-> +
-> +What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_trig_type
-> +Date:		March 2023
-> +KernelVersion	6.5
-> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
-> +Description:
-> +		(Write) Set the trigger type of DSB tpdm. Read the trigger
-> +		type of DSB tpdm.
+From: Like Xu <likexu@tencent.com>
 
-Please use: (RW) instead of (Write).
+Fix compiler warnings when compiling KVM with [-Wunreachable-code-break].
+No functional change intended.
 
-		(RW) Set/Get the trigger type of the DSB for TPDM.
-Similarly for the items below.
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Like Xu <likexu@tencent.com>
+---
+ arch/x86/kvm/emulate.c | 2 --
+ arch/x86/kvm/hyperv.c  | 1 -
+ arch/x86/kvm/x86.c     | 1 -
+ 3 files changed, 4 deletions(-)
 
-> +
-> +		Accepts only one of the 2 values -  0 or 1.
-> +		0 : Set the DSB trigger type to false
-> +		1 : Set the DSB trigger type to true
-> +
-> +What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_trig_ts
-> +Date:		March 2023
-> +KernelVersion	6.5
-> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
-> +Description:
-> +		(Write) Set the trigger timestamp of DSB tpdm. Read the
-> +		trigger timestamp of DSB tpdm.
-> +
-> +		Accepts only one of the 2 values -  0 or 1.
-> +		0 : Set the DSB trigger type to false
-> +		1 : Set the DSB trigger type to true
-> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
-> index acc3eea..62efc18 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
-> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
-> @@ -20,6 +20,18 @@
->   
->   DEFINE_CORESIGHT_DEVLIST(tpdm_devs, "tpdm");
->   
-> +static umode_t tpdm_dsb_is_visible(struct kobject *kobj,
-> +					   struct attribute *attr, int n)
+diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+index 936a397a08cd..2673cd5c46cb 100644
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -1799,13 +1799,11 @@ static int writeback(struct x86_emulate_ctxt *ctxt, struct operand *op)
+ 					       op->addr.mem,
+ 					       &op->val,
+ 					       op->bytes);
+-		break;
+ 	case OP_MEM_STR:
+ 		return segmented_write(ctxt,
+ 				       op->addr.mem,
+ 				       op->data,
+ 				       op->bytes * op->count);
+-		break;
+ 	case OP_XMM:
+ 		kvm_write_sse_reg(op->addr.xmm, &op->vec_val);
+ 		break;
+diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+index b28fd020066f..7c2dac6824e2 100644
+--- a/arch/x86/kvm/hyperv.c
++++ b/arch/x86/kvm/hyperv.c
+@@ -1293,7 +1293,6 @@ static bool hv_check_msr_access(struct kvm_vcpu_hv *hv_vcpu, u32 msr)
+ 	case HV_X64_MSR_VP_ASSIST_PAGE:
+ 		return hv_vcpu->cpuid_cache.features_eax &
+ 			HV_MSR_APIC_ACCESS_AVAILABLE;
+-		break;
+ 	case HV_X64_MSR_TSC_FREQUENCY:
+ 	case HV_X64_MSR_APIC_FREQUENCY:
+ 		return hv_vcpu->cpuid_cache.features_eax &
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 34945c7dba38..f3f8d27acc96 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -4647,7 +4647,6 @@ static int kvm_x86_dev_get_attr(struct kvm_device_attr *attr)
+ 		return 0;
+ 	default:
+ 		return -ENXIO;
+-		break;
+ 	}
+ }
+ 
 
-Please keep the alignment.
-
-> +{
-> +	struct device *dev = kobj_to_dev(kobj);
-> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> +
-> +	if (drvdata && (drvdata->datasets & TPDM_PIDR0_DS_DSB))
-
-As suggested earlier, add a wrapper for the above check.
-
-> +		return attr->mode;
-> +
-> +	return 0;
-> +}
-> +
->   static void tpdm_reset_datasets(struct tpdm_drvdata *drvdata)
->   {
->   	if (drvdata->datasets & TPDM_PIDR0_DS_DSB) {
-> @@ -229,8 +241,90 @@ static struct attribute_group tpdm_attr_grp = {
->   	.attrs = tpdm_attrs,
->   };
->   
-> +static ssize_t dsb_trig_type_show(struct device *dev,
-> +				     struct device_attribute *attr, char *buf)
-
-Please follow the above alignment for all functions throughout the 
-series. There are unaligned parameter lists scattered around the series.
-
-> +{
-> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> +
-> +	return sysfs_emit(buf, "%u\n",
-> +			 (unsigned int)drvdata->dsb->trig_type);
-> +}
-> +
-> +/*
-> + * Trigger type (boolean):
-> + * false - Disable trigger type.
-> + * true  - Enable trigger type.
-> + */
-> +static ssize_t dsb_trig_type_store(struct device *dev,
-> +				      struct device_attribute *attr,
-> +				      const char *buf,
-> +				      size_t size)
-> +{
-> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> +	unsigned long val;
-> +
-> +	if ((kstrtoul(buf, 0, &val)) || (val & ~1UL))
-> +		return -EINVAL;
-> +
-> +	spin_lock(&drvdata->spinlock);
-> +	if (val)
-> +		drvdata->dsb->trig_type = true;
-> +	else
-> +		drvdata->dsb->trig_type = false;
-> +	spin_unlock(&drvdata->spinlock);
-> +	return size;
-> +}
-> +static DEVICE_ATTR_RW(dsb_trig_type);
-> +
-> +static ssize_t dsb_trig_ts_show(struct device *dev,
-> +				     struct device_attribute *attr, char *buf)
-> +{
-> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> +
-> +	return sysfs_emit(buf, "%u\n",
-> +			 (unsigned int)drvdata->dsb->trig_ts);
-> +}
-> +
-> +/*
-> + * Trigger timestamp (boolean):
-> + * false - Disable trigger timestamp.
-> + * true  - Enable trigger timestamp.
-> + */
-> +static ssize_t dsb_trig_ts_store(struct device *dev,
-> +				      struct device_attribute *attr,
-> +				      const char *buf,
-> +				      size_t size)
-> +{
-> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> +	unsigned long val;
-> +
-> +	if ((kstrtoul(buf, 0, &val)) || (val & ~1UL))
-> +		return -EINVAL;
-> +
-> +	spin_lock(&drvdata->spinlock);
-> +	if (val)
-> +		drvdata->dsb->trig_ts = true;
-> +	else
-> +		drvdata->dsb->trig_ts = false;
-> +	spin_unlock(&drvdata->spinlock);
-> +	return size;
-> +}
-> +static DEVICE_ATTR_RW(dsb_trig_ts);
-> +
-> +static struct attribute *tpdm_dsb_attrs[] = {
-> +	&dev_attr_dsb_trig_ts.attr,
-> +	&dev_attr_dsb_trig_type.attr,
-> +	NULL,
-> +};
-> +
-> +static struct attribute_group tpdm_dsb_attr_grp = {
-> +	.attrs = tpdm_dsb_attrs,
-> +	.is_visible = tpdm_dsb_is_visible,
-> +};
-> +
->   static const struct attribute_group *tpdm_attr_grps[] = {
->   	&tpdm_attr_grp,
-> +	&tpdm_dsb_attr_grp,
->   	NULL,
->   };
->   
-
-Rest looks fine.
-
-Suzuk
+base-commit: 240f736891887939571854bd6d734b6c9291f22e
+-- 
+2.41.0
 
