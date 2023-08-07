@@ -2,125 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC3A771DE8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA30771DF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbjHGKYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 06:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
+        id S231191AbjHGK0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 06:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbjHGKYc (ORCPT
+        with ESMTP id S229926AbjHGK0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 06:24:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EEE510F4;
-        Mon,  7 Aug 2023 03:24:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B738C6178A;
-        Mon,  7 Aug 2023 10:24:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91344C433C8;
-        Mon,  7 Aug 2023 10:24:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691403870;
-        bh=kIxXXpUAI67ManDrcGXE3YDE4EVMXn6NSEkXJ/fOOpc=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=J9MfkH41er9naJzIKmcUvOMwb+y45aHUagRy050m1jH5jq0vWRz9z+qJpVXi2KvpR
-         hCwoIssCZ06zgHKlWimHqw6LEbN7IbKkc92cu4rUsrirFuBgMEgXFQwoJb0r3SOv5L
-         2u94SOUH1q2fqdVAMEhnE7CjTLhNWzcLkGsuGir2NE2nS3UG8gWMdaaIyVkVzjH/DJ
-         dvHQeQ8rEYS7Ecu7sK2RDVAV+6LixGftRs5imgYosYbsNb+GLJwxlB+FweRV4B6rcO
-         V8mlURxgh0HN+dj0VQKUf82CUi+Hknx5ChATup/VNmFcKZaqpPdNaJrPLvotdcgp5z
-         5L5Z4IFV/hNdQ==
-Received: (nullmailer pid 791243 invoked by uid 1000);
-        Mon, 07 Aug 2023 10:24:27 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Mon, 7 Aug 2023 06:26:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF97610F4;
+        Mon,  7 Aug 2023 03:26:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691403990; x=1722939990;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=oYkA/eVfWqMWYQih0P/5J8PKnMH0gpzlXW9H1/RklVY=;
+  b=k846RlCXcqoKaDgnlJv3mN29eqcZgfhH1qg8p7qOdk/O3YObvndTEoSG
+   eG5FKwGOsGIcDIyJfUcsO0588nvMfwqJwPibQfR0xnVEk3dfwhozYFJdo
+   FiaETGUg681hbTd6zMlGGHMWXE/lXUBSKbXd66i122u0ljyfWqbpBQTDU
+   Via+lZEjctpbmZr3j88H2lgVD7Y8lScZtPjdcyOPa4EOBZbJk2eHfPpYq
+   tmdTmGuBFKeu1DnU4qNADqtXqF+QQ1OLEhVPLu21xUiwGVspsBvHHCUCh
+   XcIsYXakQWR5tfYvNA4RwkgYjEHy86bvApzUT4wZmtc6Qy0goCTA/yKG2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="434357177"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="434357177"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 03:26:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="800897150"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="800897150"
+Received: from siminapx-mobl1.ger.corp.intel.com ([10.251.210.150])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 03:26:27 -0700
+Date:   Mon, 7 Aug 2023 13:26:25 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
+cc:     Reinette Chatre <reinette.chatre@intel.com>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 07/19] selftests/resctrl: Refactor remount_resctrl(bool
+ mum_resctrlfs) to mount_resctrl()
+In-Reply-To: <903b5c02-7d7b-11c7-167b-c4f0f3862ae0@intel.com>
+Message-ID: <e19fb06b-5dad-e854-3dc-b73c635d7bb1@linux.intel.com>
+References: <20230713131932.133258-1-ilpo.jarvinen@linux.intel.com> <20230713131932.133258-8-ilpo.jarvinen@linux.intel.com> <09605219-19db-ba2d-aaad-9e279543f461@intel.com> <2c1f4d5f-7d6f-1178-7ec4-7f8b862b26e9@linux.intel.com>
+ <903b5c02-7d7b-11c7-167b-c4f0f3862ae0@intel.com>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Julien Stephan <jstephan@baylibre.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Florian Sylvestre <fsylvestre@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Phi-Bang Nguyen <pnguyen@baylibre.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andy Hsieh <andy.hsieh@mediatek.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Louis Kuo <louis.kuo@mediatek.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Moudy Ho <moudy.ho@mediatek.com>
-In-Reply-To: <20230807094940.329165-2-jstephan@baylibre.com>
-References: <20230807094940.329165-1-jstephan@baylibre.com>
- <20230807094940.329165-2-jstephan@baylibre.com>
-Message-Id: <169140386586.791137.15518824950356939117.robh@kernel.org>
-Subject: Re: [PATCH v3 1/4] dt-bindings: media: add mediatek ISP3.0 sensor
- interface
-Date:   Mon, 07 Aug 2023 04:24:27 -0600
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-276558506-1691403989=:9752"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On Mon, 07 Aug 2023 11:48:10 +0200, Julien Stephan wrote:
-> From: Louis Kuo <louis.kuo@mediatek.com>
+--8323329-276558506-1691403989=:9752
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+On Mon, 24 Jul 2023, Wieczor-Retman, Maciej wrote:
+> On 14.07.2023 13:03, Ilpo Järvinen wrote:
+> > On Thu, 13 Jul 2023, Reinette Chatre wrote:
+> >> On 7/13/2023 6:19 AM, Ilpo Järvinen wrote:
+> >>> -int remount_resctrlfs(bool mum_resctrlfs)
+> >>> +int mount_resctrlfs(void)
+> >>>  {
+> >>> -	char mountpoint[256];
+> >>>  	int ret;
+> >>>  
+> >>> -	ret = find_resctrl_mount(mountpoint);
+> >>> -	if (ret)
+> >>> -		strcpy(mountpoint, RESCTRL_PATH);
+> >>> -
+> >>> -	if (!ret && mum_resctrlfs && umount(mountpoint))
+> >>> -		ksft_print_msg("Fail: unmounting \"%s\"\n", mountpoint);
+> >>> -
+> >>> -	if (!ret && !mum_resctrlfs)
+> >>> -		return 0;
+> >>> +	ret = find_resctrl_mount(NULL);
+> >>> +	if (!ret)
+> >>> +		return -1;
+> >>
+> >> This treats "ret == 0" as a failure. What about -ENXIO? It seems to
+> >> me that only "ret == -ENOENT" is "success".
+> > 
+> > Yes, it's a good catch.
+> > 
 > 
-> This adds the bindings, for the mediatek ISP3.0 SENINF module embedded in
-> some Mediatek SoC, such as the mt8365
+> I had an idea about a small redesign of find_resctrl_mount
+> return values so it is easier to see what the function tries
+> to accomplish.
 > 
-> Signed-off-by: Louis Kuo <louis.kuo@mediatek.com>
-> Signed-off-by: Phi-Bang Nguyen <pnguyen@baylibre.com>
-> Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Signed-off-by: Julien Stephan <jstephan@baylibre.com>
-> ---
->  .../media/mediatek,mt8365-seninf.yaml         | 259 ++++++++++++++++++
->  MAINTAINERS                                   |   7 +
->  2 files changed, 266 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mt8365-seninf.yaml
+> When there is an error (-ENXIO for example) it could 
+> return the negative error value. When no mount is found
+> it could return a zero (instead of the -ENOENT error code).
+> Finally when a mount point was found it could return a positive
+> value (for example return 1). This way errors could be 
+> separate from regular return values and in my opinion the
+> function logic would be more transparent.
 > 
+> What do you think about it?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Yes, it's a great idea. It would be more logical and thus easier to 
+comprehend.
 
-yamllint warnings/errors:
+Since this already wast applied, it has to be done in another change.
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/media/mediatek,mt8365-seninf.example.dts:28:18: fatal error: dt-bindings/power/mediatek,mt8365-power.h: No such file or directory
-   28 |         #include <dt-bindings/power/mediatek,mt8365-power.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/media/mediatek,mt8365-seninf.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1500: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
 
-doc reference errors (make refcheckdocs):
+-- 
+ i.
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230807094940.329165-2-jstephan@baylibre.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+--8323329-276558506-1691403989=:9752--
