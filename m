@@ -2,120 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B5F772738
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B35D77273B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbjHGONW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
+        id S232759AbjHGONd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjHGONU (ORCPT
+        with ESMTP id S232676AbjHGONa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:13:20 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B21A4;
-        Mon,  7 Aug 2023 07:13:19 -0700 (PDT)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 377EA8Jx027339;
-        Mon, 7 Aug 2023 14:12:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=n84BQ09XyZvS5KUY2JrmSWiOSun89MF1BFDg9O40w/Q=;
- b=qQj+gKQWBPPopqtFLXQxL2+L26wqPCnUNRTVuIqD46ZluBWBLjlqCNmEKIq2RP9BF76p
- C8YuhGSPgCGMNJNFzBRRTpxTtsAVzapMTWLk4Dnv4PvH9c/D3QfHhAAuJ2/fn10NhTwj
- viU/DmUwuYVWfSvk4VuxnyVZr8vT1P/gW3jivDBUr3puhAfYcSkXAnaZWIbp5LJIzDcJ
- WnDlYP4NFxlQlsKLCr7fZX9S+IQHwMTwc9YSgZCwNQIP2G5pZ/U4/gWa/E8XWfI62OeZ
- 0n1EgWoUnWszxF6Kq2LiQtJ3MDYRsj32LIO2gheG/BSZux2SrsAS9hR4dqlFbRoaWQo1 +g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sb209r6ke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Aug 2023 14:12:20 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 377EBKEP032235;
-        Mon, 7 Aug 2023 14:12:19 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sb209r6jv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Aug 2023 14:12:19 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 377DKBhs000404;
-        Mon, 7 Aug 2023 14:12:18 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sa28k5hj5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Aug 2023 14:12:18 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 377ECIIC1638968
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Aug 2023 14:12:18 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5D6B758045;
-        Mon,  7 Aug 2023 14:12:18 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0EC9F58052;
-        Mon,  7 Aug 2023 14:12:17 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.107.174])
-        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  7 Aug 2023 14:12:16 +0000 (GMT)
-Message-ID: <53b8559db650886f013d5e91704ce8f4df77d815.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 RESEND] kexec_lock: Replace kexec_mutex() by
- kexec_lock() in two comments
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Wenyu Liu <liuwenyu7@huawei.com>, ebiederm@xmission.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Cc:     akpm@linux-foundation.org, vschneid@redhat.com,
-        pmenzel@molgen.mpg.de, bhe@redhat.com, louhongxiang@huawei.com
-Date:   Mon, 07 Aug 2023 10:12:16 -0400
-In-Reply-To: <20230807025206.3682381-1-liuwenyu7@huawei.com>
-References: <20230807025206.3682381-1-liuwenyu7@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 3MTXnmgIWlUckT8r0RJNoUpKvEmNRFKG
-X-Proofpoint-ORIG-GUID: Seemm6eNkL6LT_0YpO8DJa7mQCDyrpLg
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 7 Aug 2023 10:13:30 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F335CE53;
+        Mon,  7 Aug 2023 07:13:25 -0700 (PDT)
+X-QQ-mid: bizesmtp86t1691417575tcjpc2mz
+Received: from linux-lab-host.localdomain ( [116.30.130.12])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Mon, 07 Aug 2023 22:12:53 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: Fc2LLDWeHZ+nR+5cfJg6QxzjqIcbKDbNzrvy1zplnpYJRlW14iNG274IzKXPX
+        4l4rIhkpYAYpOOAuoryivBQEL6g/FUb8T8Uo+Lyp36PEkV+0A+ZHyVAIkcozcGBQ8KZBZdg
+        HUowF4+cjZIQx8Lm+6xBmm2lF2atk9nRM7L2jY9RQpHFQU9kxNjmE2UNfFWMlCN2fM0sSFi
+        8xFX6o3lmrgsipUSB6cTk3EriP1DF7FZuiLA4qFsK0JxYAZFddpdHCAGwC7ejbzanAQdjUB
+        bsma9Qw/Ww4YB41lnxSA0ypYlQJibYh9bCys1hySEqJ5x1G73oOPXtFATGImrkYb8I6OFbt
+        b/ZOGwAnLO6fRhzT5x/P4S/lJBKDB4avnj77BLU0SbO+OYSUNHgLZkEmv+CUw==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 13948958742550991541
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     david.laight@aculab.com
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de, w@1wt.eu
+Subject: RE: [PATCH v3] tools/nolibc: fix up size inflate regression
+Date:   Mon,  7 Aug 2023 22:12:52 +0800
+Message-Id: <20230807141252.24482-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <f51e54bcf470451ea36f24640f000e61@AcuMS.aculab.com>
+References: <f51e54bcf470451ea36f24640f000e61@AcuMS.aculab.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-07_14,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=930
- impostorscore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0
- priorityscore=1501 phishscore=0 clxscore=1011 mlxscore=0 adultscore=0
- spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308070130
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-08-07 at 10:52 +0800, Wenyu Liu wrote:
-> kexec_mutex is replaced by an atomic variable
-> in 05c6257433b (panic, kexec: make __crash_kexec() NMI safe).
+Hi, David
+
+> From: Zhangjin Wu
+> > Sent: 07 August 2023 06:58
+> ...
+> > +/* __auto_type is used instead of __typeof__ to workaround the build error
+> > + * 'error: assignment of read-only variable' when the argument has 'const' in
+> > + * the type, but __auto_type is a new feature from newer gcc version and it
+> > + * only works with 'const' from gcc 11.0 (__GXX_ABI_VERSION = 1016)
+> > + * https://gcc.gnu.org/legacy-ml/gcc-patches/2013-11/msg01378.html
+> > + */
 > 
-> But there are still two comments that referenced kexec_mutex,
-> replace them by kexec_lock.
+> You can use typeof((x) + 0) to lose the 'const' flag.
+> The only downside is that char/short become int.
+>
+
+Great, thanks!
+
+let's use it, and at least kill the branch using fixed 'long' type.
+
+    #if __GXX_ABI_VERSION >= 1016
+    #define __typeofdecl(arg) __auto_type
+    #else
+    #define __typeofdecl(arg) __typeof__(arg)
+    #endif
+
+    #define __sysret(arg)                                                    \
+    ({                                                                       \
+            __typeofdecl((arg) + 0) __ret = (arg);                           \
+            if (__is_signed_type(__typeof__(arg))) {                         \
+                    if ((long)__ret < 0) {                                   \
+                            SET_ERRNO(-(long)__ret);                         \
+                            __ret = (__typeof__(arg))-1L;                    \
+                    }                                                        \
+            } else {                                                         \
+                    if ((unsigned long)__ret >= (unsigned long)-MAX_ERRNO) { \
+                            SET_ERRNO(-(long)__ret);                         \
+                            __ret = (__typeof__(arg))-1L;                    \
+                    }                                                        \
+            }                                                                \
+            __ret;                                                           \
+    })
+
+My simple test on nolibc-test shows David's typeof solution does give
+the same size result like __auto_type.
+
+what's your suggestion? simply give up the '__auto_type' stuff and use
+the generic __typeof__ version?
+
+Willy, could you please test David's typeof solution on the one which
+have 3-4% size inflating? or any other big programs using nolibc.
+
+> > +
+> > +#if __GXX_ABI_VERSION >= 1016
+> > +#define __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT
+> > +#endif
+> > +
+> > +#ifdef __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT
+> > +#define __sysret(arg)                                                    \
+> > +({                                                                       \
+> > +	__auto_type __ret = (arg);                                       \
+> > +	if (__is_signed_type(__typeof__(arg))) {                         \
+> > +		if (__ret < 0) {                                         \
+> > +			SET_ERRNO(-(long)__ret);                         \
+> > +			__ret = (__typeof__(arg))(-1L);                  \
+> > +		}                                                        \
+> > +	} else {                                                         \
+> > +		if ((unsigned long)__ret >= (unsigned long)-MAX_ERRNO) { \
+> > +			SET_ERRNO(-(long)__ret);                         \
+> > +			__ret = (__typeof__(arg))(-1L);                  \
+> > +		}                                                        \
+> > +	}                                                                \
+> > +	__ret;                                                           \
+> > +})
+> > +
+> > +#else  /* ! __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT */
+> > +#define __sysret(arg)                                                    \
+> > +({                                                                       \
+> > +	long __ret = (long)(arg);                                        \
+> > +	if (__is_signed_type(__typeof__(arg))) {                         \
+> > +		if (__ret < 0) {                                         \
+> > +			SET_ERRNO(-__ret);                               \
+> > +			__ret = -1L;                                     \
+> > +		}                                                        \
+> > +	} else {                                                         \
+> > +		if ((unsigned long)__ret >= (unsigned long)-MAX_ERRNO) { \
+> > +			SET_ERRNO(-__ret);                               \
+> > +			__ret = -1L;                                     \
+> > +		}                                                        \
+> > +	}                                                                \
+> > +	(__typeof__(arg))__ret;                                          \
+> > +})
+> > +#endif /* ! __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT */
 > 
-> Signed-off-by: Wenyu Liu <liuwenyu7@huawei.com>
-> Acked-by: Baoquan He <bhe@redhat.com>
-> Acked-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> with (retyped so it may be wrong):
+> #define is_constexpr(x) sizeof(*(0 ? (void *)((long)(x) * 0) : (int *)0)) == 1)
+> and (because even (void *)0 isn't completely constant):
+> #define is_pointer(x) (!is_constexpr((typeof(x))0))
+> 
+> You can probably do:
+> #define __sysret(arg) \
+> ({ \
+> 	typeof((arg) + 0) __ret = arg; \
+> 	if (__built_choose_expr(is_pointer(arg), (unsigned long)-(MAX_ERRNO+1), __ret) \
+> 			< (__built_choose_expr(is_pointer(arg), (unsigned long)__ret, 0)) { \
+> 		SET_ERRNO(-__ret); \
+> 		__reg = typeof(ret)-1L; \
+> 	} \
+> 	__ret; \
+> })
+> 
+> Apart from the annoyance of having to reverse the conditional
+> that only has one copy of the check.
+> 
+> Using two __builtin_choose_expr() saves you having to write two
+> comparisons that are valid for both pointer and integer.
+>
 
-Thank you. It's now queued 
-https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git/log/?h=next-integrity
-.
+It works perfectly.
 
---
-thanks,
+    /*
+     * This returns a constant expression while determining if an argument is
+     * a constant expression, most importantly without evaluating the argument.
+     * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
+     * (from include/linux/const.h)
+     */
 
-Mimi
+    #define __is_constexpr(x) \
+            (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
 
+    #define __is_pointer(x) (!__is_constexpr((__typeof__(x))0))
+
+    #define __sysret(arg)                                                                      \
+    ({                                                                                         \
+            __typeofdecl((arg) + 0) __ret = (arg);                                             \
+            if (__builtin_choose_expr(__is_pointer(arg), (unsigned long)-(MAX_ERRNO + 1), ((long)__ret)) \
+                    < __builtin_choose_expr(__is_pointer(arg), (unsigned long)__ret, 0)) {      \
+                    SET_ERRNO(-(long)__ret);                                                   \
+                    __ret = (__typeof__(arg))-1L;                                              \
+            }                                                                                  \
+            __ret;                                                                             \
+    })
+
+I have tried the 'is_constexpr()' macro but failed and didn't look into
+it, your explanation here [1] is very clear:
+
+    You'll find that (void *)0 isn't 'constant enough' for
+    is_constexpr() - so is_constexpr((type)0) can be used
+    to detect pointer types.
+
+Best regards,
+Zhangjin
+---
+[1]: https://lore.kernel.org/lkml/a1732bbffd1542d3b9dd34c92f45076c@AcuMS.aculab.com/
+
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
