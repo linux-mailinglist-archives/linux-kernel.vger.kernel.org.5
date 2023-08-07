@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B1A7726D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A5A7726D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbjHGN5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41458 "EHLO
+        id S232788AbjHGN4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234655AbjHGN4m (ORCPT
+        with ESMTP id S231682AbjHGN40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:56:42 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6FF3AB9
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:54:21 -0700 (PDT)
-Message-ID: <20230807135029.061717423@linutronix.de>
+        Mon, 7 Aug 2023 09:56:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EC835AE
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:54:10 -0700 (PDT)
+Message-ID: <20230807135029.113801542@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691416432;
+        s=2020; t=1691416434;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=vq2LqKgDPaDhnlrBU4urRm/zoBPsw6UyhSpMosqqfTs=;
-        b=2LMEqnSWJ88DG/xbwPK2/D8zRGGIDIMKG7vbcYXhn+Wb6eyTJpYCjg3Ci+25IRBstViGLd
-        NSRdyQggrVb362Cf2Tuk3KczI8Y34GXrlLQ4LV8Pn/hz172+Cgqip//1Jcreqcotho152O
-        e7D3L6QzosmBajJ4SklaxErB+DUC0oBESJJ/orOqVQ4MUJjzzd9/r06VncMtDd7zcd2PPR
-        aumWruEG/huibXlfzAXznRCLI6oT68FgrcQOB3DXB1XlpHz93Q119JUUJXtu+THFY3N7lm
-        rGzURS6OAVToStmULtTJkDohNVbK8EZF5vsQLSHpbJ9GFiKcotn3lTGE1YTEdg==
+         references:references; bh=w4U+yB4ROBK4XzZUwiiPUCYehecaC+ipD1PTXQaVmCQ=;
+        b=fgD2PDxVwUdKHh2/dXbkPQQh2+P8oZa9wFPNt0LfCVfaIwvLWbw8GnzZbrnMp3vzym6fY/
+        gzy1z1c4L3xVcEiFqdgki0QIPc6dxSeR9DVvxlkCCLpA/cjO6wqkt+5zPaXoli0v41dAdh
+        ++GoXSRoY4G7Desul1Xx4PQxIwjbKGIj3h//Op0eKxEnUpAOZxzvRbSRMmAVgrU8Bb+igW
+        NYHJUi0vJNak3MvubdkU/vA587wuuGdln6dxUBcbWjYi23sN0bDpKcBXq+2hpumeNA2oUn
+        928/YyKdFDcYsNixfENVifg+o4NL85+d6MF1ntEgW5NYKITnEcV5qz/JWeLeNw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691416432;
+        s=2020e; t=1691416434;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=vq2LqKgDPaDhnlrBU4urRm/zoBPsw6UyhSpMosqqfTs=;
-        b=iv5hFfUxtG6Oze3lXxizz8BN2fAYPck3cM0RnS9YRy9x9lKZAWlY252Q15kAEabfCk7580
-        JIy+zgv1GLUG45AA==
+         references:references; bh=w4U+yB4ROBK4XzZUwiiPUCYehecaC+ipD1PTXQaVmCQ=;
+        b=/kkrO2CUw/3bkBxO1bRbt/+Dbz00VgAyWPb+rqGZ93bThk51PNJlMJoFL0axJDwnasya16
+        rwDq9Vm9y3Q3X9DA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
@@ -48,139 +48,156 @@ Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Feng Tang <feng.tang@intel.com>,
         Andy Shevchenko <andy@infradead.org>
-Subject: [patch 50/53] x86/cpu/topology: Rename smp_num_siblings
+Subject: [patch 51/53] x86/cpu/topology: Rename topology_max_die_per_package()
 References: <20230807130108.853357011@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon,  7 Aug 2023 15:53:52 +0200 (CEST)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Date:   Mon,  7 Aug 2023 15:53:53 +0200 (CEST)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's really a non-intuitive name. Rename it to __max_threads_per_core which
-is obvious.
+The plural of die is dies.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/include/asm/smp.h       |    2 --
- arch/x86/include/asm/topology.h  |    6 +++++-
- arch/x86/kernel/cpu/common.c     |    4 ++--
- arch/x86/kernel/cpu/debugfs.c    |    2 +-
- arch/x86/kernel/cpu/mce/inject.c |    2 +-
- arch/x86/kernel/cpu/topology.c   |    6 +++---
- arch/x86/kernel/smpboot.c        |    8 --------
- 7 files changed, 12 insertions(+), 18 deletions(-)
+ arch/x86/events/intel/cstate.c                                 |    2 +-
+ arch/x86/events/intel/uncore.c                                 |    2 +-
+ arch/x86/events/intel/uncore_snbep.c                           |    2 +-
+ arch/x86/events/rapl.c                                         |    2 +-
+ arch/x86/include/asm/topology.h                                |    2 +-
+ drivers/hwmon/coretemp.c                                       |    2 +-
+ drivers/platform/x86/intel/uncore-frequency/uncore-frequency.c |    2 +-
+ drivers/powercap/intel_rapl_common.c                           |    2 +-
+ drivers/thermal/intel/intel_hfi.c                              |    2 +-
+ drivers/thermal/intel/intel_powerclamp.c                       |    2 +-
+ drivers/thermal/intel/x86_pkg_temp_thermal.c                   |    2 +-
+ 11 files changed, 11 insertions(+), 11 deletions(-)
 
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -8,8 +8,6 @@
- #include <asm/current.h>
- #include <asm/thread_info.h>
+--- a/arch/x86/events/intel/cstate.c
++++ b/arch/x86/events/intel/cstate.c
+@@ -751,7 +751,7 @@ static int __init cstate_init(void)
+ 	}
  
--extern unsigned int smp_num_siblings;
--
- DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_sibling_map);
- DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_core_map);
- DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_die_map);
+ 	if (has_cstate_pkg) {
+-		if (topology_max_die_per_package() > 1) {
++		if (topology_max_dies_per_package() > 1) {
+ 			err = perf_pmu_register(&cstate_pkg_pmu,
+ 						"cstate_die", -1);
+ 		} else {
+--- a/arch/x86/events/intel/uncore.c
++++ b/arch/x86/events/intel/uncore.c
+@@ -1881,7 +1881,7 @@ static int __init intel_uncore_init(void
+ 		return -ENODEV;
+ 
+ 	__uncore_max_dies =
+-		topology_max_packages() * topology_max_die_per_package();
++		topology_max_packages() * topology_max_dies_per_package();
+ 
+ 	id = x86_match_cpu(intel_uncore_match);
+ 	if (!id) {
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -1441,7 +1441,7 @@ static int snbep_pci2phy_map_init(int de
+ 			 */
+ 			for (i = 0; i < 8; i++) {
+ 				if (nodeid == GIDNIDMAP(config, i)) {
+-					if (topology_max_die_per_package() > 1)
++					if (topology_max_dies_per_package() > 1)
+ 						die_id = i;
+ 					else
+ 						die_id = topology_phys_to_logical_pkg(i);
+--- a/arch/x86/events/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -678,7 +678,7 @@ static const struct attribute_group *rap
+ 
+ static int __init init_rapl_pmus(void)
+ {
+-	int maxdie = topology_max_packages() * topology_max_die_per_package();
++	int maxdie = topology_max_packages() * topology_max_dies_per_package();
+ 	size_t size;
+ 
+ 	size = sizeof(*rapl_pmus) + maxdie * sizeof(struct rapl_pmu *);
 --- a/arch/x86/include/asm/topology.h
 +++ b/arch/x86/include/asm/topology.h
-@@ -145,6 +145,7 @@ extern const struct cpumask *cpu_cluster
+@@ -152,7 +152,7 @@ static inline unsigned int topology_max_
+ 	return __max_logical_packages;
+ }
  
- extern unsigned int __max_dies_per_package;
- extern unsigned int __max_logical_packages;
-+extern unsigned int __max_threads_per_core;
- 
- static inline unsigned int topology_max_packages(void)
+-static inline unsigned int topology_max_die_per_package(void)
++static inline unsigned int topology_max_dies_per_package(void)
  {
-@@ -178,7 +179,10 @@ static inline int topology_max_smt_threa
- 	return __max_smt_threads;
+ 	return __max_dies_per_package;
  }
+--- a/drivers/hwmon/coretemp.c
++++ b/drivers/hwmon/coretemp.c
+@@ -780,7 +780,7 @@ static int __init coretemp_init(void)
+ 	if (!x86_match_cpu(coretemp_ids))
+ 		return -ENODEV;
  
--bool topology_smt_supported(void);
-+static inline bool topology_smt_supported(void)
-+{
-+	return __max_threads_per_core > 1;
-+}
+-	max_zones = topology_max_packages() * topology_max_die_per_package();
++	max_zones = topology_max_packages() * topology_max_dies_per_package();
+ 	zone_devices = kcalloc(max_zones, sizeof(struct platform_device *),
+ 			      GFP_KERNEL);
+ 	if (!zone_devices)
+--- a/drivers/platform/x86/intel/uncore-frequency/uncore-frequency.c
++++ b/drivers/platform/x86/intel/uncore-frequency/uncore-frequency.c
+@@ -229,7 +229,7 @@ static int __init intel_uncore_init(void
+ 		return -ENODEV;
  
- extern unsigned int __amd_nodes_per_pkg;
+ 	uncore_max_entries = topology_max_packages() *
+-					topology_max_die_per_package();
++					topology_max_dies_per_package();
+ 	uncore_instances = kcalloc(uncore_max_entries,
+ 				   sizeof(*uncore_instances), GFP_KERNEL);
+ 	if (!uncore_instances)
+--- a/drivers/powercap/intel_rapl_common.c
++++ b/drivers/powercap/intel_rapl_common.c
+@@ -1566,7 +1566,7 @@ struct rapl_package *rapl_add_package(in
+ 	if (id_is_cpu) {
+ 		rp->id = topology_logical_die_id(id);
+ 		rp->lead_cpu = id;
+-		if (topology_max_die_per_package() > 1)
++		if (topology_max_dies_per_package() > 1)
+ 			snprintf(rp->name, PACKAGE_DOMAIN_NAME_LENGTH, "package-%d-die-%d",
+ 				 topology_physical_package_id(id), topology_die_id(id));
+ 		else
+--- a/drivers/thermal/intel/intel_hfi.c
++++ b/drivers/thermal/intel/intel_hfi.c
+@@ -542,7 +542,7 @@ void __init intel_hfi_init(void)
  
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -72,8 +72,8 @@
- u32 elf_hwcap2 __read_mostly;
+ 	/* There is one HFI instance per die/package. */
+ 	max_hfi_instances = topology_max_packages() *
+-			    topology_max_die_per_package();
++			    topology_max_dies_per_package();
  
- /* Number of siblings per CPU package */
--unsigned int smp_num_siblings __ro_after_init = 1;
--EXPORT_SYMBOL(smp_num_siblings);
-+unsigned int __max_threads_per_core __ro_after_init = 1;
-+EXPORT_SYMBOL(__max_threads_per_core);
+ 	/*
+ 	 * This allocation may fail. CPU hotplug callbacks must check
+--- a/drivers/thermal/intel/intel_powerclamp.c
++++ b/drivers/thermal/intel/intel_powerclamp.c
+@@ -616,7 +616,7 @@ static int powerclamp_idle_injection_reg
+ 	poll_pkg_cstate_enable = false;
+ 	if (cpumask_equal(cpu_present_mask, idle_injection_cpu_mask)) {
+ 		ii_dev = idle_inject_register_full(idle_injection_cpu_mask, idle_inject_update);
+-		if (topology_max_packages() == 1 && topology_max_die_per_package() == 1)
++		if (topology_max_packages() == 1 && topology_max_dies_per_package() == 1)
+ 			poll_pkg_cstate_enable = true;
+ 	} else {
+ 		ii_dev = idle_inject_register(idle_injection_cpu_mask);
+--- a/drivers/thermal/intel/x86_pkg_temp_thermal.c
++++ b/drivers/thermal/intel/x86_pkg_temp_thermal.c
+@@ -494,7 +494,7 @@ static int __init pkg_temp_thermal_init(
+ 	if (!x86_match_cpu(pkg_temp_thermal_ids))
+ 		return -ENODEV;
  
- unsigned int __max_dies_per_package __ro_after_init = 1;
- EXPORT_SYMBOL(__max_dies_per_package);
---- a/arch/x86/kernel/cpu/debugfs.c
-+++ b/arch/x86/kernel/cpu/debugfs.c
-@@ -30,7 +30,7 @@ static int cpu_debug_show(struct seq_fil
- 	seq_printf(m, "amd_nodes_per_pkg:   %u\n", topology_amd_nodes_per_pkg());
- 	seq_printf(m, "max_cores:           %u\n", c->x86_max_cores);
- 	seq_printf(m, "max_dies_per_pkg:    %u\n", __max_dies_per_package);
--	seq_printf(m, "smp_num_siblings:    %u\n", smp_num_siblings);
-+	seq_printf(m, "max_threads_per_core:%u\n", __max_threads_per_core);
- 	return 0;
- }
- 
---- a/arch/x86/kernel/cpu/mce/inject.c
-+++ b/arch/x86/kernel/cpu/mce/inject.c
-@@ -433,7 +433,7 @@ static u32 get_nbc_for_node(int node_id)
- 	struct cpuinfo_x86 *c = &boot_cpu_data;
- 	u32 cores_per_node;
- 
--	cores_per_node = (c->x86_max_cores * smp_num_siblings) / topology_amd_nodes_per_pkg();
-+	cores_per_node = (c->x86_max_cores * __max_threads_per_core) / topology_amd_nodes_per_pkg();
- 	return cores_per_node * node_id;
- }
- 
---- a/arch/x86/kernel/cpu/topology.c
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -86,7 +86,7 @@ bool arch_match_cpu_phys_id(int cpu, u64
- #ifdef CONFIG_SMP
- static void cpu_mark_primary_thread(unsigned int cpu, unsigned int apicid)
- {
--	if (!(apicid & (smp_num_siblings - 1)))
-+	if (!(apicid & (__max_threads_per_core - 1)))
- 		cpumask_set_cpu(cpu, &__cpu_primary_thread_mask);
- }
- #else
-@@ -427,8 +427,8 @@ void __init topology_init_possible_cpus(
- 
- 	cnta = domain_weight(TOPO_CORE_DOMAIN);
- 	cntb = domain_weight(TOPO_SMT_DOMAIN);
--	smp_num_siblings = 1U << (get_count_order(cntb) - get_count_order(cnta));
--	pr_info("Max. threads per core: %3u\n", smp_num_siblings);
-+	__max_threads_per_core = 1U << (get_count_order(cntb) - get_count_order(cnta));
-+	pr_info("Max. threads per core: %3u\n", __max_threads_per_core);
- 
- 	pr_info("Allowing %u present CPUs plus %u hotplug CPUs\n", assigned, disabled);
- 	if (topo_info.nr_rejected_cpus)
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -320,14 +320,6 @@ static void notrace start_secondary(void
- 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
- }
- 
--/**
-- * topology_smt_supported - Check whether SMT is supported by the CPUs
-- */
--bool topology_smt_supported(void)
--{
--	return smp_num_siblings > 1;
--}
--
- void __init smp_store_boot_cpu_info(void)
- {
- 	struct cpuinfo_x86 *c = &cpu_data(0);
+-	max_id = topology_max_packages() * topology_max_die_per_package();
++	max_id = topology_max_packages() * topology_max_dies_per_package();
+ 	zones = kcalloc(max_id, sizeof(struct zone_device *),
+ 			   GFP_KERNEL);
+ 	if (!zones)
 
