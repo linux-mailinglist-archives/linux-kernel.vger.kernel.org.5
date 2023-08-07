@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A3B7724A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603AE7724A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbjHGMq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 08:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
+        id S229990AbjHGMrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:47:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbjHGMqX (ORCPT
+        with ESMTP id S231672AbjHGMrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 08:46:23 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DEB1FEF
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:46:00 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so6999143e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 05:46:00 -0700 (PDT)
+        Mon, 7 Aug 2023 08:47:05 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701E3172D
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:46:43 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-79aa01cc971so1671290241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 05:46:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691412355; x=1692017155;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=BM1kbz2sor4nBFnh9WswI/g45TnNXDre/AlWkm0RfbQ=;
-        b=uq30S6T9nAcl4QiN7iOhvdbLiZw77kkr1JRRhfr0W6ShfnXXM5ig2wbNADpcXqk+Rg
-         nXxriE8EAa8JIe4QV0j2eEeEAsdNWzWcpn6wQYuAUMFGtJTjoo6Oj/pjkKgkfpeNYe6m
-         TMS1LBhiauERgvHsD2+aL7eUCkBXxBqXX+Aikay+eamSCHGHwuC6USN0JNigr56wkM4Z
-         f06EgIBfT5XnFEOOpMOjefFzgTXlQWFR9PrN+snpkKL3qTEclHnp7MQogVn9eFbpiFgr
-         Co+igq6se4B6h/BM+d0dowORfaa/NxsPl+OLlY4ggKqTVN8r1v1Ln4NvFIrvnqKgux0H
-         LaEA==
+        d=linaro.org; s=google; t=1691412396; x=1692017196;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9t5nBRjNzdkdc9QzeOluuR4xKMtvtID49kCNpeDzH2Y=;
+        b=FwJjNe45kCbq5qXs+ry0Q1vC6w59/+Im+9Iw2Tvscb/IIQ6465g0P045SBWdXLPzfu
+         yaOXI7hqamCPU3+JqHAHlSS0YR8n2hLDcFZsuRBYGWZ1hyYrkRwaaknrdd1Eo359Wd6V
+         QZSWH6AgC8J/18tkRHRkXXwmUvJb7B0LUjdyUwabFXwkWlTS/nihJu6LO6LbsA+hxij1
+         xxXoF11NXguL33AeDKFUig6UTUosMmFCJgeN+8JsIDHFUuftJTlebpAjy8WeWwt/GoEt
+         df1gb0u1BPJIWSG/F3il55Dy8PSlm4YXmVYH7vvixK95vYt1LpMbaMXPoZwdxjZNrJJM
+         PzAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691412355; x=1692017155;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BM1kbz2sor4nBFnh9WswI/g45TnNXDre/AlWkm0RfbQ=;
-        b=bt/sh707I/hxlUsNAk4zcnOMwrmRtsE0gLidrblKCy3KtK3QlZt/BitSr75KdFMCkk
-         eLM/Rk/Q6YnlUroxvWfVSlvDUmtg6wWlysAq99ukTupF4me/m6q/WCctQA7/1yuCW1zy
-         mwg8bIb/q2EMylDGxDWcmeY51hkGC+RaTAltjRNj9Q78uPVbsMnvvriMow7fZIihiRXv
-         NMjBW4X42IzhQJ1wOJ4+M5Ho5P6dgIVHOS6DEVIuudsp78ou57a14sJm/9i3OhAlPDFz
-         8LNb/Dydqd0wWvdaCBroDngK+9x76iv/GAcWb5AzFkQHHcz7+81Qy1EX8qpG2yKeUYZ2
-         LJTQ==
-X-Gm-Message-State: AOJu0YzvHferNyQT6wAqM9g2/sl/PmDlVKN2AykLW7VDr5xGEY6rb5rN
-        fAKb7mShdaYQVhfY4e8hALrSmA==
-X-Google-Smtp-Source: AGHT+IErCLFJX26zK+vEYznMVLBrXzWNAXrAwI3vp1xDFz3J3Oft8RD/9dMuMHa1JBJ9o58sWbEM8g==
-X-Received: by 2002:a19:5007:0:b0:4fe:85c:aeba with SMTP id e7-20020a195007000000b004fe085caebamr5800744lfb.21.1691412355163;
-        Mon, 07 Aug 2023 05:45:55 -0700 (PDT)
-Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id l17-20020ac24a91000000b004f85d80ca64sm1490547lfp.221.2023.08.07.05.45.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 05:45:54 -0700 (PDT)
-Message-ID: <c4006b16-2c06-4c96-86a1-d4ba235503f4@linaro.org>
-Date:   Mon, 7 Aug 2023 14:45:54 +0200
+        d=1e100.net; s=20221208; t=1691412396; x=1692017196;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9t5nBRjNzdkdc9QzeOluuR4xKMtvtID49kCNpeDzH2Y=;
+        b=Q6JnYlINDJdadXG63oroQkp4AKirctcsifS6qQf6JoV3OiFl2ZLGPKKfa+OaCC4ApF
+         9zIT9+kYyJWgbqkAMgNQzv9El6eqV8B8iDZChEEHSfowntZLwM0SsR3t3s8S8bS90QyH
+         F/PfoR8LFoVJe0CUVR44BkK7hHsLd8hoaG38AKN2etIzrrBzecXV/1F500+umDwusfn2
+         p5nlIdnQO4Bzca1rYH5FmDQMMmyTpNqoTSMsMej/CMow4iwfynzZmSpbeWm7HwZMSCT1
+         Ia3w5wB6m8lzKi8is8k8kMDpqFVqE1hf9mUdy9+6ojYh1stukgD3yMsap3/083upFrEI
+         zHww==
+X-Gm-Message-State: AOJu0YyoAcdhPz3mK8CJdTJhd4Z//b6g6YR3gzw3etXG8pl+YhSq6uFi
+        wUvZFNuXckTCbvzfgUd8X/4ggnnGsI1VDgrGICyssQ==
+X-Google-Smtp-Source: AGHT+IG2sQb4KYXITpRPT/2oajN8A3GYoBsP/KAHU7XnME8OTvWW3UQnsC7Bentk96hJ/VHFSMldrPbP1fvvCyVgaIE=
+X-Received: by 2002:a67:f912:0:b0:446:da54:19b3 with SMTP id
+ t18-20020a67f912000000b00446da5419b3mr4527404vsq.23.1691412395913; Mon, 07
+ Aug 2023 05:46:35 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/9] Add pmics supported in Qualcomm's SDX75 platform
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, vkoul@kernel.org, kishon@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, abel.vesa@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        quic_pkondeti@quicinc.com
-References: <1691411333-1556-1-git-send-email-quic_rohiagar@quicinc.com>
- <83dff121-0a0f-4bd5-bf84-0c7c83f98615@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <83dff121-0a0f-4bd5-bf84-0c7c83f98615@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230601213440.2488667-1-dianders@chromium.org>
+ <CAD=FV=V2fFqwg3f3KS29+AkggHFDbyYvfAb12DrDn_PF8+bJjA@mail.gmail.com> <ZNDKVP2m-iiZCz3v@FVFF77S0Q05N.cambridge.arm.com>
+In-Reply-To: <ZNDKVP2m-iiZCz3v@FVFF77S0Q05N.cambridge.arm.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 7 Aug 2023 18:16:24 +0530
+Message-ID: <CAFA6WYMD4TRR5psUyhu2jhZ2XBMUfav3D7_eH1HE8VJfXc7Fuw@mail.gmail.com>
+Subject: Re: [PATCH v9 0/7] arm64: Add debug IPI for backtraces / kgdb; try to
+ use NMI for it
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-perf-users@vger.kernel.org, ito-yuichi@fujitsu.com,
+        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Ben Dooks <ben-linux@fluff.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Wei Li <liwei391@huawei.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -115,33 +94,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7.08.2023 14:45, Konrad Dybcio wrote:
-> On 7.08.2023 14:28, Rohit Agarwal wrote:
->> Hi,
->>
->> Changes in v2:
->>  - Added compatible for pm7550ba for eusb2 repeater and used it in DT.
->>  - Addressed some minor comments from Konrad to add fixes tag, labels
->>    and update the labels
->>
->> This series add support of pmics that are found in SDX75 platform and
->> add the corresponding regulators in the IDP platform as well.
->> It also parallely updates the pmic found in SDX65 to PM7250b and add pinctrl
->> support for the same pmic chip.
->> This series is based on the new header inclusion[1] and movement of the
->> regulators level from rpmpd to rpmhpd[2].
->> This series can be picked after successfully picking [2] and [3] as [1] has
->> already been applied.
->>
->> [1] https://lore.kernel.org/all/1689744162-9421-1-git-send-email-quic_rohiagar@quicinc.com/
->> [2] https://lore.kernel.org/all/1690781104-2290-1-git-send-email-quic_rohiagar@quicinc.com/
->> [3] https://lore.kernel.org/all/1690461813-22564-1-git-send-email-quic_rohiagar@quicinc.com/
->>
->> Thanks,
->> Rohit.
-> Since you resent this (as mentioned in the first thread with "v2" [1]),
-> the subject should be [PATCH RESEND ...]
-> 
-[1] https://lore.kernel.org/linux-arm-msm/f29eae07-b6c4-e7ea-3790-ee800d83859e@quicinc.com/T/#m863acf47848ba75987fcf144c588da21306dc2fe
+On Mon, 7 Aug 2023 at 16:11, Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> Hi Doug,
+>
+> Apologies for the delay.
+>
+> On Mon, Jul 24, 2023 at 08:55:44AM -0700, Doug Anderson wrote:
+> > On Thu, Jun 1, 2023 at 2:37=E2=80=AFPM Douglas Anderson <dianders@chrom=
+ium.org> wrote:
+> > I'm looking for some ideas on what to do to move this patch series
+> > forward. Thanks to Daniel, the kgdb patch is now in Linus's tree which
+> > hopefully makes this simpler to land. I guess there is still the
+> > irqchip dependency that will need to be sorted out, though...
+> >
+> > Even if folks aren't in agreement about whether this is ready to be
+> > enabled in production, I don't think anything here is super
+> > objectionable or controversial, is it? Can we land it? If you feel
+> > like it needs extra review, would it help if I tried to drum up some
+> > extra people to provide review feedback?
+>
+> Ignoring the soundness issues I mentioned before (which I'm slowly chippi=
+ng
+> away at, and you're likely lucky enough to avoid in practice)...
+>
+> Having looked over the series, I think the GICv3 bit isn't quite right, b=
+ut is
+> easy enough to fix. I've commented on the patch with what I think we shou=
+ld
+> have there.
 
-Konrad
+Thanks for catching this and I agree with your proposed fix.
+
+>
+> The only major thing otherwise from my PoV is the structure of the debug =
+IPI
+> framework. I'm not keen on that being a separate body of code and I think=
+ it
+> should live in smp.c along with the other IPIs.
+
+That's a fair point.
+
+> I'd also strongly prefer if we
+> could have separate IPI_CPU_BACKTRACE and IPI_CPU_KGDB IPIs,
+
+With current logic of single debug IPI, it is not required for a user
+to enable KGDB in order to use that IPI for backtrace. The original
+motivation for this logic was that the IPIs are a scarce resource on
+arm64 as per comments from Marc. So I am fine either way to keep them
+separate or unified.
+
+> and I think we can
+> do that either by unifying IPI_CPU_STOP && IPI_CPU_CRASH_STOP or by recla=
+iming
+> IPI_WAKEUP by reusing a different IPI for the parking protocol (e.g.
+> IPI_RESCHEDULE).
+
+That sounds like a good cleanup.
+
+>
+> I think it'd be nice if the series could enable NMIs for backtrace and th=
+e
+> CPU_{,CRASH_}STOP cases, with KGDB being the bonus atop. That way it'd be
+> clearly beneficial for anyone trying to debug lockups even if they're not=
+ a
+> KGDB user.
+>
+
+It's good to see other use-cases of IPIs turned into NMIs.
+
+-Sumit
+
+> > Also: in case it's interesting to anyone, I've been doing benchmarks
+> > on sc7180-trogdor devices in preparation for enabling this. On that
+> > platform, I did manage to see about 4% reduction in a set of hackbench
+> > numbers when fully enabling pseudo-NMI. However, when I instead ran
+> > Speedometer 2.1 I saw no difference. See:
+> >
+> > https://issuetracker.google.com/issues/197061987
+>
+> Thanks for the pointer!
+>
+> I know that there are a couple of things that we could do to slightly imp=
+rove
+> local_irq_*() when using pNMIs, though I suspect that the bulk of the cos=
+t
+> there will come from the necessary synchronization.
+>
+> Thanks,
+> Mark.
