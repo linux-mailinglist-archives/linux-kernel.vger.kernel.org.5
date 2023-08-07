@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A750B772C60
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED519772C33
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbjHGRMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
+        id S231972AbjHGRME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232017AbjHGRMX (ORCPT
+        with ESMTP id S230343AbjHGRL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:12:23 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDB31BF1;
-        Mon,  7 Aug 2023 10:12:08 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bc1c1c68e2so29730565ad.3;
-        Mon, 07 Aug 2023 10:12:08 -0700 (PDT)
+        Mon, 7 Aug 2023 13:11:58 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071821A3;
+        Mon,  7 Aug 2023 10:11:57 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52222562f1eso6588859a12.3;
+        Mon, 07 Aug 2023 10:11:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691428328; x=1692033128;
+        d=googlemail.com; s=20221208; t=1691428315; x=1692033115;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o/ZrwT0NJoa3SvrfuTbm+aI37YIFG6qkhwqRx+xCrA0=;
-        b=UqwBSzb7bDmSyec+1PJCPQEzpyJ0+EdMmkMvCke7Wnea0hLj+c9hkMVwbEw5OIZlt7
-         2jFHWIlB3pNRnbenayfQHGZvj+rIIEnIdoYp6wuzuzdJuPV95bZa1c33CO6m1zvKYZN8
-         SDRrnOVcXFN2xJuq9TuOmPsyc5HHQEycjoC00VXy6zC+vja0xBQwcwhdO3dug+bY9yUz
-         uItD6eYHilJWK3UpSAisNS3wT9CHEhIlEAsWVjwWDL64eFa4pFKQuuEhhneseSz94DT3
-         WhYkjovQZccQGJdgPZPdN4dhwG3euTQvC1g9vo6NR/WCZUDwvMeMpkkItLbFOxUoDpyG
-         dObQ==
+        bh=n++x1VyupiNA1jLZvucgYL91izWJdNor+dndheNguCo=;
+        b=W9Rx6EozIRNL2uZal/Q25+X+xyX9WQ88IheKymL4vdDvOWHBLHyCkkkDKq/+5tZXh1
+         fY24hvgjUggAzq1XcWKgw3U97gJMnxgmWA9mIU6hGlu0RP+QDyeB2S7ZjDA8p4PVg4Ab
+         PZYvBukK2p5Qqfio/Wj1oiS1+moack1GwTjQ2liT8a2ygSlFANPEZxxGKPyeJIxfDrnT
+         YC83t9RRrUoIBe+BBLSZExpmufDAw/So2rEVMkpHNEnBjqGTnAtheiYwRQHZBtZysBK1
+         3L8EbDc8YyJfLVKPmUctI0TEDv/k8AwEBxmUcTuBTZe/C74vQ5hq7DznahUfvRUYxmbP
+         i8hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691428328; x=1692033128;
+        d=1e100.net; s=20221208; t=1691428315; x=1692033115;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=o/ZrwT0NJoa3SvrfuTbm+aI37YIFG6qkhwqRx+xCrA0=;
-        b=acSsuaFsGj2csX7w+se2Ca7ioNUFD4HfSQglPAck/l7j9ZaunprmsguDKBRQ82mpCw
-         Aj7OasZP6dA+CHvLk2mE95IH3Gi+Nets8F/VBQhSHOVBMTOJYN/I8ayOKLqmfjzQfL22
-         nvAKtL99W6G0zMDzZGXc14D3jWoImCMHpZlY9heEi4IJmwzSQgnCNvcIBrvfTwa4xTaK
-         497RRtDbvB9zeUAxCmVseUinIoAb9znoEQDJXg4sQs8iV3VhYdF1d860ryJ2tJ4sUBIg
-         Vyjl4qlqSA5GBVbcT8y1esYoQ8SPqmYr5AeHJ1NAcWl2i4wvhcKSXpLL7+CL3bLu1HFq
-         v2hQ==
-X-Gm-Message-State: AOJu0YzJom4AHvmx/C1FeRHpDvx7w90QDgsTOCh2Kxk3x9GAF3N7jP6J
-        np6otGQhiqGajDtsDMXLVmE4nmorW5U=
-X-Google-Smtp-Source: AGHT+IHcE8fCOj51H5o9epINqTnpHnYF2YANR0R6RsiK0gsnRbxxmF0NZPQBL0kOhW0Cbcs0EmkDFA==
-X-Received: by 2002:a17:902:ab0c:b0:1bb:b855:db3c with SMTP id ik12-20020a170902ab0c00b001bbb855db3cmr7406106plb.41.1691428327863;
-        Mon, 07 Aug 2023 10:12:07 -0700 (PDT)
-Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
-        by smtp.gmail.com with ESMTPSA id v12-20020a170902b7cc00b001ac741dfd29sm7133303plz.295.2023.08.07.10.12.06
+        bh=n++x1VyupiNA1jLZvucgYL91izWJdNor+dndheNguCo=;
+        b=D5Y9jquOp0qYqJlom1ZzqQvcLZfJBd3nhRWF0y5XzdMX2MsHVWiFaKbgn4NoQmxe4p
+         N1xZvv178Hr+bBzbFSdoYnyQWYo5pB0spqth2ZWoo4BiWsen+tw6qdzXL+532ndiN5E8
+         JO3KuAbgCOt5yNk+XwF6Z1U9ftzeCqKcPcsj5opENpK40eZaQ3AosiCf9IOLRWIRT6Nk
+         16D31IzCUU0Qs8CzL4bdgHPytI+VRvlMw67/tajTCletahGRuxOGqco/+tyHYHMbOBD1
+         LaxE/FNn61Y6TpGf1xXKZFoFAs5r69ZMhwkM9oyfzNo90JyxjlmaMQ/p2GojwHzoHv7K
+         RKvg==
+X-Gm-Message-State: AOJu0YwDBgceInAhiFjABBcskjil11S/SrO2/fwro74zHqOpZ5aSH2+V
+        Q/M8g/iaJOTMnvYEtXMkkBjl5JH7F69t2Q==
+X-Google-Smtp-Source: AGHT+IHUdCLdza+YiraPasZnGbIcTqMVGNbrozQCAkRkbk+2XE5/9GN/9Yb7c6tXyG0rgvi13FHn2g==
+X-Received: by 2002:aa7:da96:0:b0:523:38eb:395f with SMTP id q22-20020aa7da96000000b0052338eb395fmr2338743eds.2.1691428315338;
+        Mon, 07 Aug 2023 10:11:55 -0700 (PDT)
+Received: from debian_development.DebianHome (dynamic-095-112-033-028.95.112.pool.telefonica.de. [95.112.33.28])
+        by smtp.gmail.com with ESMTPSA id e10-20020a056402148a00b005224d960e66sm5420814edv.96.2023.08.07.10.11.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 10:12:07 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pm@vger.kernel.org (open list:HIBERNATION (aka Software Suspend,
-        aka swsusp)), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 5/9] PM / QoS: Teach lockdep about dev_pm_qos_mtx locking order
-Date:   Mon,  7 Aug 2023 10:11:39 -0700
-Message-ID: <20230807171148.210181-6-robdclark@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230807171148.210181-1-robdclark@gmail.com>
-References: <20230807171148.210181-1-robdclark@gmail.com>
+        Mon, 07 Aug 2023 10:11:55 -0700 (PDT)
+From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+To:     selinux@vger.kernel.org
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 5/7] selinux: avoid implicit conversions in selinuxfs code
+Date:   Mon,  7 Aug 2023 19:11:39 +0200
+Message-Id: <20230807171143.208481-4-cgzones@googlemail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230807171143.208481-1-cgzones@googlemail.com>
+References: <20230807171143.208481-1-cgzones@googlemail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,35 +75,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+Use umode_t as parameter type for sel_make_inode(), which assigns the
+value to the member i_mode of struct inode.
 
-Annotate dev_pm_qos_mtx to teach lockdep to scream about allocations
-that could trigger reclaim under dev_pm_qos_mtx.
+Use identical and unsigned types for loop iterators.
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 ---
- drivers/base/power/qos.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+v3:
+  - drop leftover declaration in init-clauses of for loops
+  - use unsigned int instead of u32 for loop iterator with loop bounds
+    known at compile time to be small (<100)
+v2: avoid declarations in init-clauses of for loops
+---
+ security/selinux/selinuxfs.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/base/power/qos.c b/drivers/base/power/qos.c
-index 5ec06585b6d1..63cb1086f195 100644
---- a/drivers/base/power/qos.c
-+++ b/drivers/base/power/qos.c
-@@ -1017,3 +1017,14 @@ void dev_pm_qos_hide_latency_tolerance(struct device *dev)
- 	pm_runtime_put(dev);
+diff --git a/security/selinux/selinuxfs.c b/security/selinux/selinuxfs.c
+index b969e87fd870..107b028d5e40 100644
+--- a/security/selinux/selinuxfs.c
++++ b/security/selinux/selinuxfs.c
+@@ -97,7 +97,7 @@ static int selinux_fs_info_create(struct super_block *sb)
+ static void selinux_fs_info_free(struct super_block *sb)
+ {
+ 	struct selinux_fs_info *fsi = sb->s_fs_info;
+-	int i;
++	unsigned int i;
+ 
+ 	if (fsi) {
+ 		for (i = 0; i < fsi->bool_num; i++)
+@@ -1075,8 +1075,8 @@ static ssize_t sel_write_user(struct file *file, char *buf, size_t size)
+ 	u32 sid, *sids = NULL;
+ 	ssize_t length;
+ 	char *newcon;
+-	int i, rc;
+-	u32 len, nsids;
++	int rc;
++	u32 i, len, nsids;
+ 
+ 	length = avc_has_perm(current_sid(), SECINITSID_SECURITY,
+ 			      SECCLASS_SECURITY, SECURITY__COMPUTE_USER,
+@@ -1192,7 +1192,7 @@ static ssize_t sel_write_member(struct file *file, char *buf, size_t size)
+ 	return length;
  }
- EXPORT_SYMBOL_GPL(dev_pm_qos_hide_latency_tolerance);
-+
-+static int __init dev_pm_qos_init(void)
-+{
-+	/* Teach lockdep about lock ordering wrt. shrinker: */
-+	fs_reclaim_acquire(GFP_KERNEL);
-+	might_lock(&dev_pm_qos_mtx);
-+	fs_reclaim_release(GFP_KERNEL);
-+
-+	return 0;
-+}
-+early_initcall(dev_pm_qos_init);
+ 
+-static struct inode *sel_make_inode(struct super_block *sb, int mode)
++static struct inode *sel_make_inode(struct super_block *sb, umode_t mode)
+ {
+ 	struct inode *ret = new_inode(sb);
+ 
+@@ -1613,7 +1613,7 @@ static int sel_make_avc_files(struct dentry *dir)
+ {
+ 	struct super_block *sb = dir->d_sb;
+ 	struct selinux_fs_info *fsi = sb->s_fs_info;
+-	int i;
++	unsigned int i;
+ 	static const struct tree_descr files[] = {
+ 		{ "cache_threshold",
+ 		  &sel_avc_cache_threshold_ops, S_IRUGO|S_IWUSR },
+@@ -1649,7 +1649,7 @@ static int sel_make_ss_files(struct dentry *dir)
+ {
+ 	struct super_block *sb = dir->d_sb;
+ 	struct selinux_fs_info *fsi = sb->s_fs_info;
+-	int i;
++	unsigned int i;
+ 	static const struct tree_descr files[] = {
+ 		{ "sidtab_hash_stats", &sel_sidtab_hash_stats_ops, S_IRUGO },
+ 	};
+@@ -1700,7 +1700,7 @@ static const struct file_operations sel_initcon_ops = {
+ 
+ static int sel_make_initcon_files(struct dentry *dir)
+ {
+-	int i;
++	unsigned int i;
+ 
+ 	for (i = 1; i <= SECINITSID_NUM; i++) {
+ 		struct inode *inode;
 -- 
-2.41.0
+2.40.1
 
