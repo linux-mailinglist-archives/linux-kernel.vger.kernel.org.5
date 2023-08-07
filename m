@@ -2,118 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6742A772BC4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C93B772BC7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbjHGQ4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60014 "EHLO
+        id S229728AbjHGQ4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbjHGQ42 (ORCPT
+        with ESMTP id S230489AbjHGQ4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:56:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD4C19AF;
-        Mon,  7 Aug 2023 09:56:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 79A0D61FB5;
-        Mon,  7 Aug 2023 16:55:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CD06C433C8;
-        Mon,  7 Aug 2023 16:55:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691427328;
-        bh=WU3AeiqSRDkKCekepGZR4kr95/r5A21Ia8054t6T2ec=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y3NQqGi+B4y/KPTi4YTTMJpZixaDzDrB70X+f+DCDBOWJl6H2ZNBdO0n1AeyWxgJi
-         4AjZffAdBLZH+6iv1WA/yETU8ipTXzrSFmHtx5EvwUx8ONAdHXcTIjd+RILAD+WqVd
-         kvNWewKH0h3l0O03+5UeMobT9dBL3JSHQscCN4xds06zOpnQJSLS6Y0tIH7HR9md5P
-         N7mjgGppNygMOFSCZCduREpb5r7JY78NSidBD6lJN3n3OktnlcwWhXQ/y6WwBKMZUO
-         QIsvJ3sFcttsVrQc2mj2XvoR2Hoz+fOeTJuxO2x+iyP5itbuN5ksXEjy2FD8b2cxe8
-         eYrCsM4skQHJA==
-Date:   Mon, 7 Aug 2023 09:55:26 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] Makefile.extrawarn: enable
- -Wmissing-variable-declarations for W=1
-Message-ID: <20230807165526.GA2744968@dev-arch.thelio-3990X>
-References: <20230807-missing_proto-v1-1-7f566b7ba5ca@google.com>
+        Mon, 7 Aug 2023 12:56:44 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FDA1FC7;
+        Mon,  7 Aug 2023 09:56:23 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RKMlH5c02z6HJf6;
+        Tue,  8 Aug 2023 00:50:51 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 7 Aug
+ 2023 17:55:47 +0100
+Date:   Mon, 7 Aug 2023 17:55:46 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Huang Ying <ying.huang@intel.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        <nvdimm@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Wei Xu <weixugc@google.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Johannes Weiner" <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Rafael J Wysocki <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH RESEND 2/4] acpi, hmat: refactor
+ hmat_register_target_initiators()
+Message-ID: <20230807175546.00001566@Huawei.com>
+In-Reply-To: <20230721012932.190742-3-ying.huang@intel.com>
+References: <20230721012932.190742-1-ying.huang@intel.com>
+        <20230721012932.190742-3-ying.huang@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807-missing_proto-v1-1-7f566b7ba5ca@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 09:50:32AM -0700, Nick Desaulniers wrote:
-> I noticed Tom was sending patches where smatch was recommending
-> annotating functions as static when no previous declaration existed.
-> Surely the compiler could make such recommendations as well, I thought.
-> 
-> Looks like -Wmissing-variable-declarations can make such
-> recommendations.
-> 
-> GCC just added support for this warning (gcc 14.1.0 will ship with
-> support), and all versions of clang relevant to building the kernel
-> support this flag.
-> 
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Fri, 21 Jul 2023 09:29:30 +0800
+Huang Ying <ying.huang@intel.com> wrote:
 
-Any idea how many instances of this there are? At least x86_64 defconfig
-fails immediately with:
+> Previously, in hmat_register_target_initiators(), the performance
+> attributes are calculated and the corresponding sysfs links and files
+> are created too.  Which is called during memory onlining.
+> 
+> But now, to calculate the abstract distance of a memory target before
+> memory onlining, we need to calculate the performance attributes for
+> a memory target without creating sysfs links and files.
+> 
+> To do that, hmat_register_target_initiators() is refactored to make it
+> possible to calculate performance attributes separately.
+> 
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+> Cc: Wei Xu <weixugc@google.com>
+> Cc: Alistair Popple <apopple@nvidia.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Hansen <dave.hansen@intel.com>
+> Cc: Davidlohr Bueso <dave@stgolabs.net>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Yang Shi <shy828301@gmail.com>
+> Cc: Rafael J Wysocki <rafael.j.wysocki@intel.com>
 
-  In file included from scripts/mod/devicetable-offsets.c:3:
-  In file included from include/linux/mod_devicetable.h:14:
-  In file included from include/linux/uuid.h:11:
-  In file included from include/linux/string.h:20:
-  In file included from arch/x86/include/asm/string.h:5:
-  In file included from arch/x86/include/asm/string_64.h:6:
-  In file included from include/linux/jump_label.h:112:
-  In file included from arch/x86/include/asm/jump_label.h:7:
-  arch/x86/include/asm/asm.h:208:24: error: no previous extern declaration for non-static variable 'current_stack_pointer' [-Werror,-Wmissing-variable-declarations]
-    208 | register unsigned long current_stack_pointer asm(_ASM_SP);
-        |                        ^
-  arch/x86/include/asm/asm.h:208:10: note: declare 'static' if the variable is not intended to be used outside of this translation unit
-    208 | register unsigned long current_stack_pointer asm(_ASM_SP);
-        |          ^
-  1 error generated.
+Unfortunately I don't think I still have the tables I used to test the
+generic initiator and won't get time to generate them all again in
+next few weeks.  So just a superficial review for now.
+I 'think' the cleanup looks good but the original code was rather fiddly
+so I'm not 100% sure nothing is missed.
+
+One comment inline on the fact the list is now sorted twice.
+
 
 > ---
->  scripts/Makefile.extrawarn | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/acpi/numa/hmat.c | 81 +++++++++++++++-------------------------
+>  1 file changed, 30 insertions(+), 51 deletions(-)
 > 
-> diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-> index 40cd13eca82e..617739eb84e2 100644
-> --- a/scripts/Makefile.extrawarn
-> +++ b/scripts/Makefile.extrawarn
-> @@ -32,6 +32,7 @@ KBUILD_CFLAGS += $(call cc-option, -Wunused-but-set-variable)
->  KBUILD_CFLAGS += $(call cc-option, -Wunused-const-variable)
->  KBUILD_CFLAGS += $(call cc-option, -Wpacked-not-aligned)
->  KBUILD_CFLAGS += $(call cc-option, -Wstringop-truncation)
-> +KBUILD_CFLAGS += $(call cc-option, -Wmissing-varibale-declarations)
-                                                ^ variable
->  # The following turn off the warnings enabled by -Wextra
->  KBUILD_CFLAGS += -Wno-missing-field-initializers
->  KBUILD_CFLAGS += -Wno-sign-compare
-> 
-> ---
-> base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
-> change-id: 20230807-missing_proto-0cb90ec6454c
-> 
-> Best regards,
-> -- 
-> Nick Desaulniers <ndesaulniers@google.com>
-> 
+> diff --git a/drivers/acpi/numa/hmat.c b/drivers/acpi/numa/hmat.c
+> index bba268ecd802..2dee0098f1a9 100644
+> --- a/drivers/acpi/numa/hmat.c
+> +++ b/drivers/acpi/numa/hmat.c
+> @@ -582,28 +582,25 @@ static int initiators_to_nodemask(unsigned long *p_nodes)
+>  	return 0;
+>  }
+>  
+> -static void hmat_register_target_initiators(struct memory_target *target)
+> +static void hmat_update_target_attrs(struct memory_target *target,
+> +				     unsigned long *p_nodes, int access)
+>  {
+> -	static DECLARE_BITMAP(p_nodes, MAX_NUMNODES);
+>  	struct memory_initiator *initiator;
+> -	unsigned int mem_nid, cpu_nid;
+> +	unsigned int cpu_nid;
+>  	struct memory_locality *loc = NULL;
+>  	u32 best = 0;
+> -	bool access0done = false;
+>  	int i;
+>  
+> -	mem_nid = pxm_to_node(target->memory_pxm);
+> +	bitmap_zero(p_nodes, MAX_NUMNODES);
+>  	/*
+> -	 * If the Address Range Structure provides a local processor pxm, link
+> +	 * If the Address Range Structure provides a local processor pxm, set
+>  	 * only that one. Otherwise, find the best performance attributes and
+> -	 * register all initiators that match.
+> +	 * collect all initiators that match.
+>  	 */
+>  	if (target->processor_pxm != PXM_INVAL) {
+>  		cpu_nid = pxm_to_node(target->processor_pxm);
+> -		register_memory_node_under_compute_node(mem_nid, cpu_nid, 0);
+> -		access0done = true;
+> -		if (node_state(cpu_nid, N_CPU)) {
+> -			register_memory_node_under_compute_node(mem_nid, cpu_nid, 1);
+> +		if (access == 0 || node_state(cpu_nid, N_CPU)) {
+> +			set_bit(target->processor_pxm, p_nodes);
+>  			return;
+>  		}
+>  	}
+> @@ -617,47 +614,10 @@ static void hmat_register_target_initiators(struct memory_target *target)
+>  	 * We'll also use the sorting to prime the candidate nodes with known
+>  	 * initiators.
+>  	 */
+> -	bitmap_zero(p_nodes, MAX_NUMNODES);
+>  	list_sort(NULL, &initiators, initiator_cmp);
+>  	if (initiators_to_nodemask(p_nodes) < 0)
+>  		return;
+
+One result of this refactor is that a few things run twice, that previously only ran once
+like this list_sort()
+Not necessarily a problem though as probably fairly cheap.
+
+>  
+> -	if (!access0done) {
+> -		for (i = WRITE_LATENCY; i <= READ_BANDWIDTH; i++) {
+> -			loc = localities_types[i];
+> -			if (!loc)
+> -				continue;
+> -
+> -			best = 0;
+> -			list_for_each_entry(initiator, &initiators, node) {
+> -				u32 value;
+> -
+> -				if (!test_bit(initiator->processor_pxm, p_nodes))
+> -					continue;
+> -
+> -				value = hmat_initiator_perf(target, initiator,
+> -							    loc->hmat_loc);
+> -				if (hmat_update_best(loc->hmat_loc->data_type, value, &best))
+> -					bitmap_clear(p_nodes, 0, initiator->processor_pxm);
+> -				if (value != best)
+> -					clear_bit(initiator->processor_pxm, p_nodes);
+> -			}
+> -			if (best)
+> -				hmat_update_target_access(target, loc->hmat_loc->data_type,
+> -							  best, 0);
+> -		}
+> -
+> -		for_each_set_bit(i, p_nodes, MAX_NUMNODES) {
+> -			cpu_nid = pxm_to_node(i);
+> -			register_memory_node_under_compute_node(mem_nid, cpu_nid, 0);
+> -		}
+> -	}
+> -
+> -	/* Access 1 ignores Generic Initiators */
+> -	bitmap_zero(p_nodes, MAX_NUMNODES);
+> -	if (initiators_to_nodemask(p_nodes) < 0)
+> -		return;
+> -
+>  	for (i = WRITE_LATENCY; i <= READ_BANDWIDTH; i++) {
+>  		loc = localities_types[i];
+>  		if (!loc)
+> @@ -667,7 +627,7 @@ static void hmat_register_target_initiators(struct memory_target *target)
+>  		list_for_each_entry(initiator, &initiators, node) {
+>  			u32 value;
+>  
+> -			if (!initiator->has_cpu) {
+> +			if (access == 1 && !initiator->has_cpu) {
+>  				clear_bit(initiator->processor_pxm, p_nodes);
+>  				continue;
+>  			}
+> @@ -681,14 +641,33 @@ static void hmat_register_target_initiators(struct memory_target *target)
+>  				clear_bit(initiator->processor_pxm, p_nodes);
+>  		}
+>  		if (best)
+> -			hmat_update_target_access(target, loc->hmat_loc->data_type, best, 1);
+> +			hmat_update_target_access(target, loc->hmat_loc->data_type, best, access);
+>  	}
+> +}
+> +
+> +static void __hmat_register_target_initiators(struct memory_target *target,
+> +					      unsigned long *p_nodes,
+> +					      int access)
+> +{
+> +	unsigned int mem_nid, cpu_nid;
+> +	int i;
+> +
+> +	mem_nid = pxm_to_node(target->memory_pxm);
+> +	hmat_update_target_attrs(target, p_nodes, access);
+>  	for_each_set_bit(i, p_nodes, MAX_NUMNODES) {
+>  		cpu_nid = pxm_to_node(i);
+> -		register_memory_node_under_compute_node(mem_nid, cpu_nid, 1);
+> +		register_memory_node_under_compute_node(mem_nid, cpu_nid, access);
+>  	}
+>  }
+>  
+> +static void hmat_register_target_initiators(struct memory_target *target)
+> +{
+> +	static DECLARE_BITMAP(p_nodes, MAX_NUMNODES);
+> +
+> +	__hmat_register_target_initiators(target, p_nodes, 0);
+> +	__hmat_register_target_initiators(target, p_nodes, 1);
+> +}
+> +
+>  static void hmat_register_target_cache(struct memory_target *target)
+>  {
+>  	unsigned mem_nid = pxm_to_node(target->memory_pxm);
+
