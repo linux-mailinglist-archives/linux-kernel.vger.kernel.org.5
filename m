@@ -2,66 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29997772BF2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36618772BF6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbjHGRCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37690 "EHLO
+        id S230344AbjHGRCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjHGRCr (ORCPT
+        with ESMTP id S229924AbjHGRCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:02:47 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3112799
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:02:46 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1bfc2b68090so1689606fac.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:02:46 -0700 (PDT)
+        Mon, 7 Aug 2023 13:02:50 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330B8BD
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:02:49 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-76c845dc5beso283571985a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:02:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691427765; x=1692032565;
+        d=google.com; s=20221208; t=1691427768; x=1692032568;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VVDRCRyPz3INS8u4EM9etCObKyj/3EsmxYYKXXODKZE=;
-        b=nTzR/+6yCKJ7RqlGTmTSGv2vZ0CWsYlLhAtPUxMdevcT/oe6KJeuWJIhJe8XxxTnH6
-         udz0UCjZha3wwbr2Lt25n8T55NJwuXeXkFULIgJuEClMVEzbEc6N14z5f471sOb20Oq0
-         Xa14Yr3QNlMZRQbD8CBjgoNiRck3QoAc7Q1Pg6SkLqAruSiUpBOyGXhNPZK3axCC315A
-         XqM6LZk7TgN3HB2FOv3x8w1XfgPHe3VkVY6ALMthj9RjuIiLoRdTbQqWHaBmMqnG4ucy
-         p60p6BLxOkAq/QccN4bnxUsizGKGrkGPdxpJbh2CrimfYjcAqTnzp+cMyetO93fuS/pQ
-         fzIQ==
+        bh=pPzNa0UKe3qZKRzfGQZ1UEAX4I6z+lfQbRMixCND1rQ=;
+        b=4UaMPnbDEf30m1BGqzkma+HXL2WmhTgypGhqrEsiswwpaWLDyhObVXkR1g+/SnYsU2
+         xJ/i2xbhGJZXLGFwVyeQFY1iv0qRvB8/QDLGfWuftmY7IUhLw145TCPvDmWEexj8J1TQ
+         ffIhTXGSDZfKpb5ARJCC9ANqLfE8aoo5v+qLffOUKx8xgGJ/L8ZlMoXUCn3OHSWgAnzR
+         mt2qhHSTHEtN62CPl3YRQSA6ytVhDSh5GDzboxXR2M1H/22ZJAaRaJI+zK4XIz1Uho5z
+         gszTGDaiHOJNvFb+cV9a8USQsYIAWWjdI6vF1kTS2BENHcNeQtnm9YhOSWjQH78jW1fk
+         c32A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691427765; x=1692032565;
+        d=1e100.net; s=20221208; t=1691427768; x=1692032568;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VVDRCRyPz3INS8u4EM9etCObKyj/3EsmxYYKXXODKZE=;
-        b=azAM/gm7m/nt6R3N9GSc6AjvRAF/81o9W+wlQZLBZeujN5kPPpVtp+Hm8/GpyWLhNM
-         U7sqq2uU2XtHo8PplXaRWYMFGAEPtDP3ogTnhsD3O+8mo5JPzqHbqriDYKBdS/c4jNex
-         rsVKphciFZZS7b1o8AbBIeHEWunIK0TM1tfpaBO5/jFs/wiCeFaXsRrHsS53iloZV0bG
-         sL4tWnv7+Uk4zai/6YSYkjRbuuTuz+PGkMClQZFBL3LW32ukwJ1eD8Y7jMeejIAww5Mb
-         Cxg0Q3y5NoV/S1ib2hs+LAVf+n7BsFkrBNMFAhrwWRDaV97XBGXG/FumCrv0ayh5mizA
-         bnbQ==
-X-Gm-Message-State: AOJu0YzlDdJB4vkyQ4b3smGxvnQ6qwgK5kReJtwhNMXYxQR1SFytUUGG
-        oaH6AyVxAVAAPlVDu88EHPcDiUL/SmKHBWK9o3VeE5Bh
-X-Google-Smtp-Source: AGHT+IEeNjiTIeipTK+Jbtsq0baJSbOl1Cc9WIM2akrlEBkaEIBuus/uC4NmtBJ0hiKmYUa+/qnglepu+ep70QgGlKQ=
-X-Received: by 2002:a05:6870:c222:b0:1ba:59da:31dc with SMTP id
- z34-20020a056870c22200b001ba59da31dcmr13033330oae.24.1691427765434; Mon, 07
- Aug 2023 10:02:45 -0700 (PDT)
+        bh=pPzNa0UKe3qZKRzfGQZ1UEAX4I6z+lfQbRMixCND1rQ=;
+        b=GSlRC3v2gP/WxH/+EPTVAa/0/KGrZY+mZ/oaNKavNC+lBPQEt+wYNidPkZsBMKkhDu
+         o7ttldEWLwvcXiNilXbpucxFsOJ04e8qP9gSNRLUtFK0hFanLrAyhEr8TDhCf0dNoxwx
+         LuxB6JbfzX1t8Jpg/YlihscPsVIjDeEbpdac46UXTH3eIf83eMzSMExDR0eeBTNsYn0T
+         //SYL4WXed5xLSsG6P9yQ5ioZrvagzbujTfdvJCpira77SN5oevg1LA8XfwBCwRBRMpW
+         RrBMQoMjnKDj2uvNnchvSh12QK87EDr7dBV6Tbzwh2if6ceNJ2QRpJI/Er5hmagQ3OjB
+         ehCQ==
+X-Gm-Message-State: AOJu0Yzhw4/XgtaTB8GQTv/9Uafy4dDF7d/OaEg2e2ysfPZHue8lsR8t
+        uyBjRgxOsgad/fpb0sIcYjSAgNX7VIsQOGamn5sTokBXmzhtixhhOD9CYQ==
+X-Google-Smtp-Source: AGHT+IGfpiEjSoBiZNgXb9Gb35xtnJJw1TmzrzA2s+pmXNQMoTRjyei5j+ERFA0wB2V967+Rcx7x0WxRFtZth24fEz8=
+X-Received: by 2002:ad4:4149:0:b0:63c:fbe9:6837 with SMTP id
+ z9-20020ad44149000000b0063cfbe96837mr6996168qvp.11.1691427768106; Mon, 07 Aug
+ 2023 10:02:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230802020943.9322-1-sunran001@208suo.com>
-In-Reply-To: <20230802020943.9322-1-sunran001@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 13:02:34 -0400
-Message-ID: <CADnq5_MSiAwBwHJW=0kOD149miv1heCTGt2Q4RiJNFU1Zq7SaA@mail.gmail.com>
-Subject: Re: [PATCH] drivers/amd/pm: Clean up errors in smu8_smumgr.h
-To:     Ran Sun <sunran001@208suo.com>
-Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230807-missing_proto-v1-1-7f566b7ba5ca@google.com> <20230807165526.GA2744968@dev-arch.thelio-3990X>
+In-Reply-To: <20230807165526.GA2744968@dev-arch.thelio-3990X>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 7 Aug 2023 10:02:37 -0700
+Message-ID: <CAKwvOd=8kxkD9p+WW-F047ShN=r32SLYYfpgZhyDw3BXTDd-KA@mail.gmail.com>
+Subject: Re: [PATCH] Makefile.extrawarn: enable -Wmissing-variable-declarations
+ for W=1
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,177 +73,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Mon, Aug 7, 2023 at 9:55=E2=80=AFAM Nathan Chancellor <nathan@kernel.org=
+> wrote:
+>
+> On Mon, Aug 07, 2023 at 09:50:32AM -0700, Nick Desaulniers wrote:
+> > I noticed Tom was sending patches where smatch was recommending
+> > annotating functions as static when no previous declaration existed.
+> > Surely the compiler could make such recommendations as well, I thought.
+> >
+> > Looks like -Wmissing-variable-declarations can make such
+> > recommendations.
+> >
+> > GCC just added support for this warning (gcc 14.1.0 will ship with
+> > support), and all versions of clang relevant to building the kernel
+> > support this flag.
+> >
+> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> Any idea how many instances of this there are? At least x86_64 defconfig
+> fails immediately with:
 
-On Tue, Aug 1, 2023 at 10:10=E2=80=AFPM Ran Sun <sunran001@208suo.com> wrot=
-e:
+$ make LLVM=3D1 -j128 W=3D1 allnoconfig 2>log.txt
+$ grep -r Wmissing-variable-declarations log.txt | sort -u | wc -l
+140
+Though that's not perfectly filtered due to overlapping output due to -j 12=
+8.
+
 >
-> Fix the following errors reported by checkpatch:
+>   In file included from scripts/mod/devicetable-offsets.c:3:
+>   In file included from include/linux/mod_devicetable.h:14:
+>   In file included from include/linux/uuid.h:11:
+>   In file included from include/linux/string.h:20:
+>   In file included from arch/x86/include/asm/string.h:5:
+>   In file included from arch/x86/include/asm/string_64.h:6:
+>   In file included from include/linux/jump_label.h:112:
+>   In file included from arch/x86/include/asm/jump_label.h:7:
+>   arch/x86/include/asm/asm.h:208:24: error: no previous extern declaratio=
+n for non-static variable 'current_stack_pointer' [-Werror,-Wmissing-variab=
+le-declarations]
+>     208 | register unsigned long current_stack_pointer asm(_ASM_SP);
+>         |                        ^
+>   arch/x86/include/asm/asm.h:208:10: note: declare 'static' if the variab=
+le is not intended to be used outside of this translation unit
+>     208 | register unsigned long current_stack_pointer asm(_ASM_SP);
+>         |          ^
+
+Hmm...I wonder if clang and gcc should ignore variables with register
+storage for this warning.
+
+>   1 error generated.
 >
-> ERROR: that open brace { should be on the previous line
-> ERROR: space prohibited before that ',' (ctx:WxW)
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->  drivers/gpu/drm/amd/pm/legacy-dpm/kv_dpm.c | 48 ++++++++--------------
->  1 file changed, 17 insertions(+), 31 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/legacy-dpm/kv_dpm.c b/drivers/gpu/drm=
-/amd/pm/legacy-dpm/kv_dpm.c
-> index 36c831b280ed..5d28c951a319 100644
-> --- a/drivers/gpu/drm/amd/pm/legacy-dpm/kv_dpm.c
-> +++ b/drivers/gpu/drm/amd/pm/legacy-dpm/kv_dpm.c
-> @@ -191,8 +191,7 @@ static void sumo_construct_vid_mapping_table(struct a=
-mdgpu_device *adev,
->  }
->
->  #if 0
-> -static const struct kv_lcac_config_values sx_local_cac_cfg_kv[] =3D
-> -{
-> +static const struct kv_lcac_config_values sx_local_cac_cfg_kv[] =3D {
->         {  0,       4,        1    },
->         {  1,       4,        1    },
->         {  2,       5,        1    },
-> @@ -204,32 +203,27 @@ static const struct kv_lcac_config_values sx_local_=
-cac_cfg_kv[] =3D
->         { 0xffffffff }
->  };
->
-> -static const struct kv_lcac_config_values mc0_local_cac_cfg_kv[] =3D
-> -{
-> +static const struct kv_lcac_config_values mc0_local_cac_cfg_kv[] =3D {
->         {  0,       4,        1    },
->         { 0xffffffff }
->  };
->
-> -static const struct kv_lcac_config_values mc1_local_cac_cfg_kv[] =3D
-> -{
-> +static const struct kv_lcac_config_values mc1_local_cac_cfg_kv[] =3D {
->         {  0,       4,        1    },
->         { 0xffffffff }
->  };
->
-> -static const struct kv_lcac_config_values mc2_local_cac_cfg_kv[] =3D
-> -{
-> +static const struct kv_lcac_config_values mc2_local_cac_cfg_kv[] =3D {
->         {  0,       4,        1    },
->         { 0xffffffff }
->  };
->
-> -static const struct kv_lcac_config_values mc3_local_cac_cfg_kv[] =3D
-> -{
-> +static const struct kv_lcac_config_values mc3_local_cac_cfg_kv[] =3D {
->         {  0,       4,        1    },
->         { 0xffffffff }
->  };
->
-> -static const struct kv_lcac_config_values cpl_local_cac_cfg_kv[] =3D
-> -{
-> +static const struct kv_lcac_config_values cpl_local_cac_cfg_kv[] =3D {
->         {  0,       4,        1    },
->         {  1,       4,        1    },
->         {  2,       5,        1    },
-> @@ -260,39 +254,32 @@ static const struct kv_lcac_config_values cpl_local=
-_cac_cfg_kv[] =3D
->         { 0xffffffff }
->  };
->
-> -static const struct kv_lcac_config_reg sx0_cac_config_reg[] =3D
-> -{
-> +static const struct kv_lcac_config_reg sx0_cac_config_reg[] =3D {
->         { 0xc0400d00, 0x003e0000, 17, 0x3fc00000, 22, 0x0001fffe, 1, 0x00=
-000001, 0 }
->  };
->
-> -static const struct kv_lcac_config_reg mc0_cac_config_reg[] =3D
-> -{
-> +static const struct kv_lcac_config_reg mc0_cac_config_reg[] =3D {
->         { 0xc0400d30, 0x003e0000, 17, 0x3fc00000, 22, 0x0001fffe, 1, 0x00=
-000001, 0 }
->  };
->
-> -static const struct kv_lcac_config_reg mc1_cac_config_reg[] =3D
-> -{
-> +static const struct kv_lcac_config_reg mc1_cac_config_reg[] =3D {
->         { 0xc0400d3c, 0x003e0000, 17, 0x3fc00000, 22, 0x0001fffe, 1, 0x00=
-000001, 0 }
->  };
->
-> -static const struct kv_lcac_config_reg mc2_cac_config_reg[] =3D
-> -{
-> +static const struct kv_lcac_config_reg mc2_cac_config_reg[] =3D {
->         { 0xc0400d48, 0x003e0000, 17, 0x3fc00000, 22, 0x0001fffe, 1, 0x00=
-000001, 0 }
->  };
->
-> -static const struct kv_lcac_config_reg mc3_cac_config_reg[] =3D
-> -{
-> +static const struct kv_lcac_config_reg mc3_cac_config_reg[] =3D {
->         { 0xc0400d54, 0x003e0000, 17, 0x3fc00000, 22, 0x0001fffe, 1, 0x00=
-000001, 0 }
->  };
->
-> -static const struct kv_lcac_config_reg cpl_cac_config_reg[] =3D
-> -{
-> +static const struct kv_lcac_config_reg cpl_cac_config_reg[] =3D {
->         { 0xc0400d80, 0x003e0000, 17, 0x3fc00000, 22, 0x0001fffe, 1, 0x00=
-000001, 0 }
->  };
->  #endif
->
-> -static const struct kv_pt_config_reg didt_config_kv[] =3D
-> -{
-> +static const struct kv_pt_config_reg didt_config_kv[] =3D {
->         { 0x10, 0x000000ff, 0, 0x0, KV_CONFIGREG_DIDT_IND },
->         { 0x10, 0x0000ff00, 8, 0x0, KV_CONFIGREG_DIDT_IND },
->         { 0x10, 0x00ff0000, 16, 0x0, KV_CONFIGREG_DIDT_IND },
-> @@ -1173,9 +1160,9 @@ static void kv_calculate_dfs_bypass_settings(struct=
- amdgpu_device *adev)
->                                         pi->graphics_level[i].ClkBypassCn=
-tl =3D 2;
->                                 else if (kv_get_clock_difference(table->e=
-ntries[i].clk, 26600) < 200)
->                                         pi->graphics_level[i].ClkBypassCn=
-tl =3D 7;
-> -                               else if (kv_get_clock_difference(table->e=
-ntries[i].clk , 20000) < 200)
-> +                               else if (kv_get_clock_difference(table->e=
-ntries[i].clk, 20000) < 200)
->                                         pi->graphics_level[i].ClkBypassCn=
-tl =3D 6;
-> -                               else if (kv_get_clock_difference(table->e=
-ntries[i].clk , 10000) < 200)
-> +                               else if (kv_get_clock_difference(table->e=
-ntries[i].clk, 10000) < 200)
->                                         pi->graphics_level[i].ClkBypassCn=
-tl =3D 8;
->                                 else
->                                         pi->graphics_level[i].ClkBypassCn=
-tl =3D 0;
-> @@ -1825,7 +1812,7 @@ static void kv_set_valid_clock_range(struct amdgpu_=
-device *adev,
->                         if ((new_ps->levels[0].sclk -
->                              table->entries[pi->highest_valid].sclk_frequ=
-ency) >
->                             (table->entries[pi->lowest_valid].sclk_freque=
-ncy -
-> -                            new_ps->levels[new_ps->num_levels -1].sclk))
-> +                            new_ps->levels[new_ps->num_levels - 1].sclk)=
-)
->                                 pi->highest_valid =3D pi->lowest_valid;
->                         else
->                                 pi->lowest_valid =3D  pi->highest_valid;
-> @@ -3333,8 +3320,7 @@ static const struct amd_ip_funcs kv_dpm_ip_funcs =
-=3D {
->         .set_powergating_state =3D kv_dpm_set_powergating_state,
->  };
->
-> -const struct amdgpu_ip_block_version kv_smu_ip_block =3D
-> -{
-> +const struct amdgpu_ip_block_version kv_smu_ip_block =3D {
->         .type =3D AMD_IP_BLOCK_TYPE_SMC,
->         .major =3D 1,
->         .minor =3D 0,
-> --
-> 2.17.1
->
+> > ---
+> >  scripts/Makefile.extrawarn | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+> > index 40cd13eca82e..617739eb84e2 100644
+> > --- a/scripts/Makefile.extrawarn
+> > +++ b/scripts/Makefile.extrawarn
+> > @@ -32,6 +32,7 @@ KBUILD_CFLAGS +=3D $(call cc-option, -Wunused-but-set=
+-variable)
+> >  KBUILD_CFLAGS +=3D $(call cc-option, -Wunused-const-variable)
+> >  KBUILD_CFLAGS +=3D $(call cc-option, -Wpacked-not-aligned)
+> >  KBUILD_CFLAGS +=3D $(call cc-option, -Wstringop-truncation)
+> > +KBUILD_CFLAGS +=3D $(call cc-option, -Wmissing-varibale-declarations)
+>                                                 ^ variable
+> >  # The following turn off the warnings enabled by -Wextra
+> >  KBUILD_CFLAGS +=3D -Wno-missing-field-initializers
+> >  KBUILD_CFLAGS +=3D -Wno-sign-compare
+> >
+> > ---
+> > base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+> > change-id: 20230807-missing_proto-0cb90ec6454c
+> >
+> > Best regards,
+> > --
+> > Nick Desaulniers <ndesaulniers@google.com>
+> >
+
+
+
+--=20
+Thanks,
+~Nick Desaulniers
