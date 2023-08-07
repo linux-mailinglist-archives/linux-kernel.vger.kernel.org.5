@@ -2,217 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E71C2772E1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF83772E1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbjHGSph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 14:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37848 "EHLO
+        id S231151AbjHGSqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 14:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbjHGSpg (ORCPT
+        with ESMTP id S229627AbjHGSqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 14:45:36 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003321736
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 11:45:33 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9bee2d320so75238041fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 11:45:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691433932; x=1692038732;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=38HrjyT6i/aVsxFHr+VbXIpwsezPIh0E2/80JReEaOQ=;
-        b=FV/xjsJlU2e1sSDD4mDGS/tWpf61bWICtkZTcByRo+NyPFnLiZ5BnJtPrzTk5/V9Lc
-         KqAi6Ajk8+LW6wTfC3RlBljBSEpWsJY9OuWmYtJe5KvaaxaSre6rqSAP8KKhBymvMpAJ
-         Nr6Or2Hn/3l/KEcbWxDRFugTD7uFIEvglLAEVPVX8jtI0ofq1veofYL32iQjWmmFPJBj
-         +XcEEBpZpVeWsTSrxIoO5Ib2os75LR4Lb0TkoIxwk0i8WC3z85B79ZYiRMTTHK1vdhT3
-         BayP67zH7DoJn4iynV5vUhJwK2xOHHR5/VcHvp6inm1cFITq9lI/10v5fvmSlDf+HB0b
-         1B0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691433932; x=1692038732;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=38HrjyT6i/aVsxFHr+VbXIpwsezPIh0E2/80JReEaOQ=;
-        b=Urax1zg6Ask+qnlrmn3/WHgPrmxIrwbXbepZxDWUeNuvelV/O08z0YBKQiuB2OSsCo
-         jx3REAsqfFILdzJAAC+Yx0f5Fgin+8YcF5wP374SwHIrjmK2Xu9qLlIwReA+eqjWSBbE
-         y/sBf+92FlWiSJ8kXyeh5k8OXYhM76/xAu3auYR4ALsx+k4ym7Ohr2BUlC0B+/a+xaiw
-         h5z824PvW/A8Ff27Rrs/GHEalKjjXrNzX7gJog3bWAdESIY1Wqs3KJBGUcWcsYHGxCLs
-         SGEMtxeHIkP+LbpCGqzEm5Q8fcccd3lonZre7QO2GHhqstuiC4jbjIxxqN207tWZuFUE
-         4Xcg==
-X-Gm-Message-State: AOJu0YxbHXxz+u0fL0WweTwztdrs9GtjLBNTnxSUkkLyOildyCGo0iVt
-        cfg2DGAyQMNQz1j6eYG1SH258A==
-X-Google-Smtp-Source: AGHT+IHp8WGmQIARr8qeyndhlX98WtA953iinp7GeZpwvtnvucKA7Qr2bYTwUubrDOEUzuNCh4FIBA==
-X-Received: by 2002:a2e:6a11:0:b0:2b5:7f93:b3b0 with SMTP id f17-20020a2e6a11000000b002b57f93b3b0mr7173204ljc.17.1691433931956;
-        Mon, 07 Aug 2023 11:45:31 -0700 (PDT)
-Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id u19-20020a2e9b13000000b002b9f4841913sm1936258lji.1.2023.08.07.11.45.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 11:45:30 -0700 (PDT)
-Message-ID: <0feda32e-5430-4f35-b18a-7afce63a970c@linaro.org>
-Date:   Mon, 7 Aug 2023 20:45:29 +0200
+        Mon, 7 Aug 2023 14:46:08 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2066.outbound.protection.outlook.com [40.107.237.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E4D171E
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 11:46:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cpsuFWTZjGdHnrGMY/HpG35cJIIcIKEmXujq+0Hl0sBXCrzdPHrH9JyQGoyygg+o/Gw1wP35BUMk8FVmbNjClKWmsaPsAcp7kGFTEOnUp3/Z7CJTobmt6cSoE689jQd1s8SbJdiTosCdT09JYwgmv0Bvh8Uk53MPhrUhFdRigWFJ7UlQzy6j8kDhD5lnXe7btQQWqUBAJ2Pzx3PBh7Ee59gjT/SBzaF6pLshmZPBwKEHNfh/GCFgsVk0S/YheUtyr0SE+g0Zdjv0z2o25xDcbEg9S4MtP0/Yb/yQ99pOfnl4VOLO26aYnvmf0hpgyNXGFVDKoAM9UigZdDR0omYSwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jkbUjT7JxdW5egLEn9iiiuUoXGL3UeN+bHbBsuHGYMs=;
+ b=OOs28v8Cd+5vL1b5Pq3y1c2sxLe3KETG64Wf2U4tyIpPi2ge7+apjc710JKxLrnv7CVvW7skwbzxFAM2WJ3dw+6oLRtLpubqn/lSxFLJW6nCcdUeeM608/ZFqGthM93dQsONjSmTVB1BKMt0bvR4i79aZf1Y9QDSnQvGRQibqkvRgJGYxSgVyauJfIEPc3Qm56AsENMNn5R5YunHAsCeQ8jvkzdfnQRnjMkor76GVDGSl/BUkDwpuqKobfgi+t4m5Iu6o8gnATUdpY80pMqSCoDaQMhj9Ldu1gZneuhcEGz6SNsMGAqPZFwVkgJqpTHHRYJMRWlg2NpU2d8oapJNgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jkbUjT7JxdW5egLEn9iiiuUoXGL3UeN+bHbBsuHGYMs=;
+ b=C9fUWnAVxBfbceLhI1bJXfD1ozPfuECMlR/NyhTOjs4qeJgyaqPkt/znr/ES8gXDMNBWdecHARytpBsM9wJn1ns79t2UrTL8phbOdDg/8Fk7oYKBuqLUiWLajX6RMxAKvKWDGWfVOwyfUNp/vzRYMBkfxLcirxY+FhUlqOBNtAmC5UD7uoxeMwo2hdIlaKIBEa0kSHUIK7hdCW7SwkpBzRdK+kJiE5B5zRVxH1lvsyPS1X4vLq3FqT/baW/mSQPXXq3NUPmXb3mFuMZ7GHw8Mg+AoC0UF9hlKWzGjymnbV+fbQ4dJ1jvn6T2JPLU8+c+XTtCsXGt8jU8DCJ9IhzVqQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ SA1PR12MB6872.namprd12.prod.outlook.com (2603:10b6:806:24c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26; Mon, 7 Aug
+ 2023 18:45:58 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::c166:b535:d93:641e]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::c166:b535:d93:641e%4]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
+ 18:46:01 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH 1/4] mm: migrate: use a folio in add_page_for_migration()
+Date:   Mon, 07 Aug 2023 14:45:59 -0400
+X-Mailer: MailMate (1.14r5964)
+Message-ID: <5BBFF5D3-3416-4C0E-9FDD-655661657D67@nvidia.com>
+In-Reply-To: <de0100e4-d673-428b-8d50-11ae2b7a9641@huawei.com>
+References: <20230802095346.87449-1-wangkefeng.wang@huawei.com>
+ <20230802095346.87449-2-wangkefeng.wang@huawei.com>
+ <ZMpKYfNWA/jNgEuL@casper.infradead.org>
+ <001ee9b0-ea25-a896-e3ae-9a9b05a46546@huawei.com>
+ <ZMud3RreEpsvFKuA@casper.infradead.org>
+ <fb2a22cf-14ae-3594-f5f3-8680c2100d70@huawei.com>
+ <F2621E68-F36E-493C-8619-ADFE05050823@nvidia.com>
+ <d184ba78-97d1-a264-fc31-87dfdbe6fdff@huawei.com>
+ <de0100e4-d673-428b-8d50-11ae2b7a9641@huawei.com>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_D1A869DF-D4D0-4CA6-8237-85B3F5D9848D_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: MN2PR15CA0014.namprd15.prod.outlook.com
+ (2603:10b6:208:1b4::27) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] media: dt-bindings: Document SC8280XP/SM8350 Venus
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230731-topic-8280_venus-v1-0-8c8bbe1983a5@linaro.org>
- <20230731-topic-8280_venus-v1-1-8c8bbe1983a5@linaro.org>
- <84ab9380-2fb2-76f9-2eb9-71d9202718cc@linaro.org>
- <659e30a7-80f7-4fd8-af58-45505213a2ef@linaro.org>
- <ba40de82-b308-67b1-5751-bb2d95f2b8a5@linaro.org>
- <fa5dc696-6c67-49d0-b158-f1e3398813e2@linaro.org>
- <816359f7-ad4d-659f-db39-c971e1b1cd9a@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <816359f7-ad4d-659f-db39-c971e1b1cd9a@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|SA1PR12MB6872:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2e5ec2b6-bc99-4e65-2731-08db97768be0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NEQFBcbQcuTDkKLvx6QkAUfDY8qCMWpqXD6/h+LwydngDDiT4ufna0KU32I46ZzgKzatuq2zzfs1cdD/aQHU9o5yIgsDI0P5FvTUsvLfLzMreLkYyUJidRFK9KEE8LSQGni+RNG0OoaHTptgjwSCsqde1OZSuXR39OncwIWJQbA/OnFExFFM5G25+jbxTEz+GSbp3jb8VTXxzxqj4kXtl7CzBeU6RX9jrBAtl/NpI4hjOq/Ebo8RuXl5C2fuDSSErZ6Q6KLS4i8CKgm7UX2uCiTm4TS1MTKqi+enXhPPhEXwXYZyzFwWyEXnc3NeX+ulgadISqdj0ebC3lGSCam2NI3Ggnpjv/okQceoPXMhKTE5/i2ZopIx/e2JCpml+aChRvdH3zbs7sFM++TX8ABQAxOxKiRv5vm5aDJU3qy8sNBZoYgSlosELUztYLNva5XbfdQaB6HovTamIvLPPUH8i4kbUcqlTaPQ6SCiCqE8usvJOd8UbgsjOKwoLSWYfNBDWYpWvQNzuVuw8++Fu8pQaXwGlM73EaWUv4RhTqFyYt6YKBWcjrO7wkiomLWXTPBsRlLfiX2ytrYrfTSPl4OYfx2PEsT1ZyRehme33NG5nJw1H/EzYBS1PflAArvPHdI4Jvy9S3ha1tbaShGkBieEaFv3awiMJmo+DsFF7c9mE5l0OIcHwDHCcV5bTVyI6OWo
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(366004)(346002)(136003)(396003)(39860400002)(1800799003)(186006)(451199021)(83380400001)(2616005)(54906003)(2906002)(6916009)(4326008)(316002)(5660300002)(8936002)(8676002)(235185007)(66946007)(66556008)(66476007)(38100700002)(86362001)(966005)(6512007)(478600001)(33656002)(6486002)(33964004)(41300700001)(36756003)(6506007)(26005)(53546011)(45980500001)(72826004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UHFsNmlnaUpoV0dWdHNaUzVrSUhSdmVYWUVzb1k4Um9DMlU1cC9CS09ZUGJI?=
+ =?utf-8?B?TWRjRTJYVW9SNGxvbUYxOEhpZHk5L2g5c2htKzFuYjNiQ2JuVDhDaXdILzhu?=
+ =?utf-8?B?b3JUZWUzRzdZN3cwRGR5MWJadXhPK0JWamI1VUU2NmNxaUdQUmpidklMOG83?=
+ =?utf-8?B?dFVpWUxpUUl4WFNkQUNwcVlCR0U4VWxEeTdXR3NNUHlIb21wZGlkQzYzRERl?=
+ =?utf-8?B?ZlgrNWRTcTlmYlc2ai9pbTV0NmhDSW5LNElEYzc2V1VlZEVSeFd2N1pXaUxq?=
+ =?utf-8?B?amEzWllTVG0wWStiMERqM25kL3ZjcHd6Q0x4TFNQeHREL1hlNkhkSnBCeFdx?=
+ =?utf-8?B?T3QwN0hrOTNWOG9PYXJYOWlPK1hUaU9SenpseHNLY0VBZnJmbjk4cDJDYldJ?=
+ =?utf-8?B?MDgyajdiTGkwSklYTTlkT2ptZEZ2Qm0zWE9jT2FnWjFrLzdmQ0pBU1NDT1BX?=
+ =?utf-8?B?UHNjeTRON0hFUVdSRlg2NmZCRWVhQmxtdWFjOVpuK0VLempBUFh4VlF1Wldm?=
+ =?utf-8?B?UFlFbEU0UUZSUm9KdVVWbHh0L0w5Tm1pbHovVHFPVnExRSs3NkJiRCtVZmhR?=
+ =?utf-8?B?OEZ5QldGQnRnbmpPUnZMSUFyLzZRMGIrc0FKb2hhSzdZblVTdXpRSzlHYjYx?=
+ =?utf-8?B?YkVmOUY1cHBuUmQ0M1JNbzVhYURmQVJ4aGdUUk1CYm5vb0NBQllBcGY3ZmNa?=
+ =?utf-8?B?RFBZSXJDWHVWeWZrc2hVbVF3bUx2aDJGTG9pTUZHc0hYWHdFU1k0bDlsUFhz?=
+ =?utf-8?B?alhKRUpGNWI4RG1LWFVQQnRjOUNhUURjVG8wZk1Fbm4zRXQxM1JpZjFDWjBD?=
+ =?utf-8?B?NkRsQVFtL1pMRCt4R1JhRFN5NHBrb1NkT2Mza2tWbmt5eUlhbnJyS2NEVVlq?=
+ =?utf-8?B?RERiNGFBVVBFZkNnZG83R3hpWjJyMzdIUHg5WFJZZm1VUU11a0R3ZEVJbEZ0?=
+ =?utf-8?B?cHZKMmo5c1N6VHZBNnVQa1dTU1hLZTZtc1o2QnI1NUZDRk9GL2tHMTFBTGtz?=
+ =?utf-8?B?Y3RSblBWQXZFYUEzekVNdjVkdE9TUERxVjN5cUlNVW5JU21LNW1Rd3U3c1A4?=
+ =?utf-8?B?MGdRY1E3S0YvWDJOTVozVXRoVCtkcGNnTjRxOXJpdVl6NHlycXZMNnAzcGxM?=
+ =?utf-8?B?d2cvMFM4bHc2ZVhiMXFRaEZRbVgwK1N4MFdsWXR0OGVvYzdmbXBOU2tsbllw?=
+ =?utf-8?B?Y2QxcnFuTmxKVmlqMnJ6andlT1UxaHQzUVJGVVBYSXIwNmp2RnpUQkRJeEpX?=
+ =?utf-8?B?Um0vaGtJbmp1OVg0SnI3dmthSEQwYjBneHBMQ0QyMXJCRFRHZ1pVNExreDJV?=
+ =?utf-8?B?QnBkVERrRjFXcVMwYVN1Z2VHL01JTXRTZGUwb2tmWktYTDZjKzJLeDV6aGo0?=
+ =?utf-8?B?Q0EvMWxlMGMwajJMQnFhR2piM2VHbUdTWXFSV0dYQlN0YXRZS0RWRTRaZDFl?=
+ =?utf-8?B?WTZLS1Bsbkx5RmdJbnR2Y1JhdHZVa0hSc1BtZE1vWEpQcUNRVDlDVlBDY0ph?=
+ =?utf-8?B?bTQ4U1BkclBGS3YyaDk3TUZzVjQwNUlYR0lFYVc2SHl3SFdnT3NkZ0VOc2ln?=
+ =?utf-8?B?SGl0YS9NRXkzYldoQ1drR0dJazQzcis2N244dldlMDZ4eXNncGtFa2RtSkhQ?=
+ =?utf-8?B?U2wrbnFpSlJRZ05CWWtpa3VkQ3d3R25zSU01emhZLzhpZ2NKR2pXU1huYUlQ?=
+ =?utf-8?B?cUlrZ0VYMGRlV0xBMitmdUFjODhJWmJvaFhKakQ3c1JBUHd0dVMxS1NRTis1?=
+ =?utf-8?B?bldOWHh5SmtYS2xjS00vKzFPZXBxSzlPYm1rSGtydzlnWklPSXl1V3IvenJL?=
+ =?utf-8?B?Mlc0ZDdEeVY4UzhzcXhzdlRjVEhVVFhVVVZ3cjkwbkZMRXp3MERlUzJoWUVz?=
+ =?utf-8?B?Z3k4ekdKSk9QUFFxSC9tZm9KR3VXWDY1YVNkMVhYT0QzMXZwU3g4TmVaWGdK?=
+ =?utf-8?B?bXRObGJlUkpwQzZ0T0xOZUxCVWJqYml3SzNPay8zYklPdXI1cFRYYkF2UGZx?=
+ =?utf-8?B?N3FIUDVSNGpBcHlBeGtmMWo2OXdHVGJLanRlbmQxUDZYNnVGQnZBbzcyT0pw?=
+ =?utf-8?B?a3d2TXdxU000QVV1aEtHZEhtZzBPODZoV0FJd1k2T1N5Mm53RDlZVkxXUys5?=
+ =?utf-8?Q?0qPk=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e5ec2b6-bc99-4e65-2731-08db97768be0
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 18:46:01.2980
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +V/gj0Ead8+o3WyfzjuHRlA461Db5PCRE+Cn6NwEtx2m6n9DAif2Jxok2CjkUF1A
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6872
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7.08.2023 20:44, Bryan O'Donoghue wrote:
-> On 07/08/2023 16:02, Konrad Dybcio wrote:
->> On 7.08.2023 16:04, Krzysztof Kozlowski wrote:
->>> On 07/08/2023 14:41, Konrad Dybcio wrote:
->>>> On 5.08.2023 21:29, Krzysztof Kozlowski wrote:
->>>>> On 04/08/2023 22:09, Konrad Dybcio wrote:
->>>>>> Both of these SoCs implement an IRIS2 block, with SC8280XP being able
->>>>>> to clock it a bit higher.
->>>>>>
->>>>>
->>>>> ...
->>>>>
->>>>>> +
->>>>>> +  iommus:
->>>>>> +    maxItems: 1
->>>>>> +
->>>>>> +  video-decoder:
->>>>>> +    type: object
->>>>>> +
->>>>>> +    properties:
->>>>>> +      compatible:
->>>>>> +        const: venus-decoder
->>>>>
->>>>> That's not how compatibles are constructed... missing vendor prefix, SoC
->>>>> or IP block name.
->>>>>
->>>>>> +
->>>>>> +    required:
->>>>>> +      - compatible
->>>>>> +
->>>>>> +    additionalProperties: false
->>>>>
->>>>> Why do you need this child node? Child nodes without properties are
->>>>> usually useless.
->>>> For both comments: I aligned with what was there..
->>>>
->>>> The driver abuses these compats to probe enc/dec submodules, even though
->>>> every Venus implementation (to my knowledge) is implicitly enc/dec capable..
->>>
->>> Holy crap, I see...
->>>
->>>>
->>>> Perhaps a bigger clean-up is due. I guess I could just create the venc/vdec
->>>> devices from the venus core probe and get rid of this fake stuff?
->>>
->>> Few devices (qcom,msm8996-venus.yaml, sdm660, sdm845) have clocks there,
->>> so we actually could stay with these subnodes, just correct the
->>> compatibles to a list with correct prefixes:
->>>
->>> qcom,sc8280xp-venus-decoder + qcom,venus-decoder
->> Hm.. looks like pre-845-v2 (with the v2 being "v2 binding" and not
->> "v2 chip" or "v2 hardware") these were used to look up clocks but
->> then they were moved to the root node.
->>
->> I am not quite sure if it makes sense to distinguish e.g.
->> sc8280xp-venus-decoder within sc8280xp-venus..
->>
->> Perhaps deprecating the "8916 way" (clocks under subnodes), adding
->> some boilerplate to look up clocks/pds in both places and converting
->> everybody to the "7180 way" way of doing things (clocks under venus),
->> and then getting rid of venus encoder/decoder completely (by calling
->> device creation from venus probe) would be better. WDYT?
->>
->> Konrad
-> 
-> As I understand it though, for some classes of venus hardware - earlier, it was possible to have two encoders or two decoders and it really didn't - perhaps still doesn't matter which order they are declared in.
-> 
-> That's the logic behind having a compat string that assigns either encoder or decoder to one of the logical blocks.
-> 
-> You can have any mixture of
-> - encoder
-> - decoder
-> 
-> - encoder
-> - encoder
-> 
-> - decoder
-> - decoder
-> 
-> - decoder
-> - encoder
-> 
-> - encoder
-> 
-> - decoder
-> 
-> I think it should *still* be the case - whether it is a practical reality or not, that any of those mapping can be selected and supported.
-That can be taken care of with match data.
+--=_MailMate_D1A869DF-D4D0-4CA6-8237-85B3F5D9848D_=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Konrad
+On 7 Aug 2023, at 8:20, Kefeng Wang wrote:
+
+> Hi Zi Yan and Matthew and Naoya,
+>
+> On 2023/8/4 13:54, Kefeng Wang wrote:
+>>
+>>
+>> On 2023/8/4 10:42, Zi Yan wrote:
+>>> On 3 Aug 2023, at 21:45, Kefeng Wang wrote:
+>>>
+>>>> On 2023/8/3 20:30, Matthew Wilcox wrote:
+>>>>> On Thu, Aug 03, 2023 at 03:13:21PM +0800, Kefeng Wang wrote:
+>>>>>>
+>
+> ...
+>
+>>>>
+>>>>
+>>>> =C2=A0=C2=A0 if (PageHuge(page))=C2=A0 // page must be a hugetlb pag=
+e
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0if (PageHead(page)) // page must be a head p=
+age, not tail
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 isolate_hugetlb() // isolate the hugetlb page if head
+>>>>
+>>>> After using folio,
+>>>>
+>>>> =C2=A0=C2=A0 if (folio_test_hugetlb(folio)) // only check folio is h=
+ugetlb or not
+>>>>
+>>>> I don't check the page is head or not, since the follow_page could
+>>>> return a sub-page, so the check PageHead need be retained, right?
+>>>
+>>> Right. It will prevent the kernel from trying to isolate the same hug=
+etlb page
+>>> twice when two pages are in the same hugetlb folio. But looking at th=
+e
+>>> code, if you try to isolate an already-isolated hugetlb folio, isolat=
+e_hugetlb()
+>>> would return false, no error would show up. But it changes err value
+>>> from -EACCES to -EBUSY and user will see a different page status than=
+ before.
+>>
+>
+> Before e66f17ff7177 ("mm/hugetlb: take page table lock in follow_huge_p=
+md()")
+> in v4.0, follow_page() will return NULL on tail page for Huagetlb page,=
+
+> and move_pages() will return -ENOENT errno,but after that commit,
+> -EACCES is returned, which not match the manual,
+>
+>>
+>> When check man[1], the current -EACCES is not right, -EBUSY is not
+>> precise but more suitable for this scenario,
+>>
+>>  =C2=A0=C2=A0=C2=A0=C2=A0 -EACCES
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 The page is mapped by multiple processes and can be moved
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 only if MPOL_MF_MOVE_ALL is specified.
+>>
+>>  =C2=A0=C2=A0=C2=A0=C2=A0 -EBUSY The page is currently busy and cannot=
+ be moved.=C2=A0 Try again
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 later.=C2=A0 This occurs if a page is undergoing I/O or another=
+
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 kernel subsystem is holding a reference to the page.
+>>  =C2=A0=C2=A0=C2=A0=C2=A0-ENOENT
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 The page is not present.
+>>
+>>>
+>>> I wonder why we do not have follow_folio() and returns -ENOENT error =
+pointer
+>>> when addr points to a non head page. It would make this patch more fo=
+lio if
+>>> follow_folio() can be used in place of follow_page(). One caveat is t=
+hat
+>>> user will see -ENOENT instead of -EACCES after this change.
+>>>
+>>
+>> -ENOENT is ok, but maybe the man need to be updated too.
+>
+> According to above analysis, -ENOENT is suitable when introduce the
+> follow_folio(), but when THP migrate support is introduced by
+> e8db67eb0ded ("mm: migrate: move_pages() supports thp migration") in
+> v4.14, the tail page will be turned into head page and return -EBUSY,
+>
+> So should we unify errno(maybe use -ENOENT) about the tail page?
+>
+>
+>>
+>>
+>>
+>> [1] https://man7.org/linux/man-pages/man2/move_pages.2.html
+
+I think so. I think -EBUSY is more reasonable for tail pages. But there i=
+s
+some subtle difference between THP and hugetlb from current code:
+
+For THP, compound_head() is used to get the head page for isolation, this=
+ means
+if user specifies a tail page address in move_pages(), the whole THP can =
+be
+migrated.
+
+For hugetlb, only if user specifies the head page address of a hugetlb pa=
+ge,
+the hugetlb page will be migrated. Otherwise, an error would show up.
+
+Cc Mike to help us clarify the expected behavior of hugetlb.
+
+Hi Mike, what is the expected behavior, if a user tries to use move_pages=
+()
+to migrate a non head page of a hugetlb page?
+
+--
+Best Regards,
+Yan, Zi
+
+--=_MailMate_D1A869DF-D4D0-4CA6-8237-85B3F5D9848D_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmTRO+cPHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUAE0P/149O0Wit/HL4Fo5mqNJlWR797qVstmIhuiu
+wSKi8rZ3sBQKT5oaOIjmvCtKwO2ibvJsoOPXMY6OBvmXPaqfC2jNv//npuG7heZ0
+IZ4qivf5+e8wl5BFPyYMjUanNaRvtIb86B9Qdq8UsmvlTEd4/H2BtJ9MCaLc4nH5
+HC5tBEePcqYuRrGjWn9kAKHrsFJNUa52pqpNrPCHoa0P9mInONyp+v8MAZnpAlYd
+fL6aOh9bmZusFTXhT23mlHtz3LXN9NrZvGWzaMne4riQ4FQwYsKpXK54XHSd+LpS
+g1WoSOLS9tabfP5tZbh1Se5I98FgzZAPziWjgONYd5hb4jiULBR6FdDEwMuKtu9i
+cfncM8OF0gwGtjxyOsVwX8lnmUwAXVnwGippPa4CMBfLmrE4+KadYkOqWynxme+U
+Cl2DVtAL9xv6AWqbd1bG8itRUr0fF9BTE7s1Egzzd+WxWmD2Joc1o+FAypXKCFyn
+io/5gNnIYLGquHt9kyPckGdD1qCzs3fjlEpFYAXc/prp392oz1Y9uTXTTZNG9ECm
+i8qfg8CBaaDKty8zHQ+F0qOM+xqXwRqIfjh6Iqjv20vB2d2p0Ab7ZApFukKJpMD2
+f3Lf/1Kitu7HtVCXIS12jsZ4TKPB4lXUWTqa+LQEF/l+Um4y9YbvUKLUav0d00ik
+mGrku0bJ
+=tggN
+-----END PGP SIGNATURE-----
+
+--=_MailMate_D1A869DF-D4D0-4CA6-8237-85B3F5D9848D_=--
