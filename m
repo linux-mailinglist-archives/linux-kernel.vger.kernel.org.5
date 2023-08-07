@@ -2,238 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A789A7732E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 00:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F417E7732F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 00:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbjHGWV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 18:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56796 "EHLO
+        id S230153AbjHGW2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 18:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbjHGWV4 (ORCPT
+        with ESMTP id S229909AbjHGW2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 18:21:56 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0F9B3;
-        Mon,  7 Aug 2023 15:21:51 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 377MHn8W031068;
-        Mon, 7 Aug 2023 22:21:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=HuQGzR9nGcEDqsgxRQgpnqUloZrjPftuf8TrhulhEFs=;
- b=T4ygLLgy+z5E7d4rtH/IiMSl7pfGthOR1GEXJ26bUzQKozGtHDliiPETesb7vAHK5naj
- cs6chjARAFIfP2x5rJAzaq05QoRgSfVP/WRcTlUV8ROJqnxeFaaFrrPHWpoIgQRD5907
- CkkK3/N7fEA1O6TiH/0MMYHqwdbvUddQNeeqKeE2Mb5h28Kb19OVf5qmdb36oUz6Oebe
- Ln+XUi9YvLdOaQptucHEJUABRhrpzneczVnWGamDg6tfaeY2bIdKaxHhai0aI/fE1v/8
- XTMG0TakJrauRBImmF0KOVVNMq92ccK0GCbHTwl6GDgqUlTk8d4vUIwrVQVyrunQgO9f ww== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3saw0r9ny6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Aug 2023 22:21:43 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 377MLgak018490
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 7 Aug 2023 22:21:42 GMT
-Received: from [10.71.109.168] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 7 Aug
- 2023 15:21:42 -0700
-Message-ID: <b04755d6-cc52-3766-9f39-34529d9eb769@quicinc.com>
-Date:   Mon, 7 Aug 2023 15:21:41 -0700
+        Mon, 7 Aug 2023 18:28:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C76CF
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 15:27:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691447271;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OoCQj+gG1dm9NiP0aYa0b0pvxLVU+VxmVMWhUGehjZE=;
+        b=NpbFsbl57bIz9neiq1mAaQZP6tQKmIESEtES6JWvyJ8kBMbp8PfjT53iS/DEZqjM7g/sLa
+        wD705cxT3f06CIJ0d4KL9m33MZ4SyvVbl3o53iZwp+zwufHrRAGqpE1IIoV8xNNG1YsITd
+        KR2m15gp1smKEP2sdl9fXzSouoBqA0M=
+Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com
+ [209.85.217.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-438-ykALw4tGOtq3j4G-tzR8fg-1; Mon, 07 Aug 2023 18:27:48 -0400
+X-MC-Unique: ykALw4tGOtq3j4G-tzR8fg-1
+Received: by mail-vs1-f71.google.com with SMTP id ada2fe7eead31-447cb8a9766so984185137.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 15:27:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691447267; x=1692052067;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OoCQj+gG1dm9NiP0aYa0b0pvxLVU+VxmVMWhUGehjZE=;
+        b=HjaQIfC4elaipQpevGfLzKqXzmPz5BIG1jbHdyolFriwNUZgiFknl1MgWbRO7wG78y
+         aYUNvtB1IJ7uDUct+DYvp1LES13UPSApqEF2AnfWljAhjbSL2Yy3i3AOlb0M3sUTo7t7
+         TySxfspslNtMcXuF/WIth+DCyAIJFctgdaFjV6QQowxirC7oWfI5v0KLzEofGNUZ3StD
+         +LxkfVeWTC3AqjQ8yG9MOnGZggOyRwI8gJLeZvh62ShFxS6lG+AzJqgPKwDfi3/EkBsS
+         dmFZuykjyWMj2N2bwf6lDw27oFNAk2rJz36f701kQeOsy4JzxdJozC7PDitAcckPYStH
+         yg/w==
+X-Gm-Message-State: AOJu0Yw/q0KizofQBqIWYxuif5MD2yBgVGNPzqTKiROgsNz6ZuVCfZXG
+        g45wXjH2v3CHsqoFKFZ9WXgiasj8wbgQYA6pL2vsXbCl4zsEXTx2lgZWcr2bO1rDkS8gBVKGdyj
+        PtZbbhos8QqaLMenSwoPvE7bk
+X-Received: by 2002:a67:b602:0:b0:447:a303:bbf2 with SMTP id d2-20020a67b602000000b00447a303bbf2mr4519788vsm.24.1691447267718;
+        Mon, 07 Aug 2023 15:27:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEoKaR+izuGwqD5ORej9M/bSlTm97V1zhmD9i50ejqm8XmB/Yp0iCZwCW0ekYfB7D367IWYEQ==
+X-Received: by 2002:a67:b602:0:b0:447:a303:bbf2 with SMTP id d2-20020a67b602000000b00447a303bbf2mr4519771vsm.24.1691447267397;
+        Mon, 07 Aug 2023 15:27:47 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id x19-20020a0cda13000000b0063d585225e0sm3136365qvj.61.2023.08.07.15.27.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 15:27:46 -0700 (PDT)
+Date:   Mon, 7 Aug 2023 17:27:44 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 5/9] arm64: dts: qcom: sa8775p-ride: move the reset-gpios
+ property of the PHY
+Message-ID: <ld2j4llgfba6j43gesqxs6wz2baucka5scbj4nef5ehbex2cmt@d4dxsqp2vuoj>
+References: <20230807193507.6488-1-brgl@bgdev.pl>
+ <20230807193507.6488-6-brgl@bgdev.pl>
+ <siqiyihftz3musfjulpcqunhgi7npftumrfwfyh2pqnlx6zeb7@rrpwmkvjshfb>
+ <da679b5e-6712-4849-b29c-6aa42022abc4@lunn.ch>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] drm/msm/dpu: Enable widebus for DSI INTF
-Content-Language: en-US
-To:     Marijn Suijten <marijn.suijten@somainline.org>
-CC:     Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, <quic_abhinavk@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20230802-add-widebus-support-v3-0-2661706be001@quicinc.com>
- <20230802-add-widebus-support-v3-2-2661706be001@quicinc.com>
- <ujgfclphym2ezd6g4uw43tp3ciswhuon2qfp77uwqcbwrtqwqe@inybwaln3q5u>
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <ujgfclphym2ezd6g4uw43tp3ciswhuon2qfp77uwqcbwrtqwqe@inybwaln3q5u>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 5FZFHI-sGeY9VyQRQvVYfKSxH7wLD03i
-X-Proofpoint-ORIG-GUID: 5FZFHI-sGeY9VyQRQvVYfKSxH7wLD03i
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-07_25,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- phishscore=0 adultscore=0 impostorscore=0 mlxlogscore=999 clxscore=1015
- spamscore=0 lowpriorityscore=0 priorityscore=1501 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308070203
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <da679b5e-6712-4849-b29c-6aa42022abc4@lunn.ch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/2/2023 12:39 PM, Marijn Suijten wrote:
-> On 2023-08-02 11:08:49, Jessica Zhang wrote:
->> DPU supports a data-bus widen mode for DSI INTF.
->>
->> Enable this mode for all supported chipsets if widebus is enabled for DSI.
->>
->> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
->> ---
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c          | 11 ++++++++---
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  4 +++-
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c          |  3 +++
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h          |  1 +
->>   drivers/gpu/drm/msm/msm_drv.h                        |  6 +++++-
->>   5 files changed, 20 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> index 3dcd37c48aac..de08aad39e15 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> @@ -1196,15 +1196,20 @@ static void dpu_encoder_virt_atomic_enable(struct drm_encoder *drm_enc,
->>   	struct drm_display_mode *cur_mode = NULL;
->>   	struct msm_drm_private *priv = drm_enc->dev->dev_private;
->>   	struct msm_display_info *disp_info;
->> +	int index;
->>   
->>   	dpu_enc = to_dpu_encoder_virt(drm_enc);
->>   	disp_info = &dpu_enc->disp_info;
->>   
->> +	disp_info = &dpu_enc->disp_info;
->> +	index = disp_info->h_tile_instance[0];
->> +
->>   	dpu_enc->dsc = dpu_encoder_get_dsc_config(drm_enc);
->>   
->> -	if (disp_info->intf_type == INTF_DP)
->> -		dpu_enc->wide_bus_en = msm_dp_wide_bus_available(
->> -				priv->dp[disp_info->h_tile_instance[0]]);
->> +	if (disp_info->intf_type == INTF_DSI)
->> +		dpu_enc->wide_bus_en = msm_dsi_is_widebus_enabled(priv->dsi[index]);
->> +	else if (disp_info->intf_type == INTF_DP)
->> +		dpu_enc->wide_bus_en = msm_dp_wide_bus_available(priv->dp[index]);
+On Mon, Aug 07, 2023 at 11:51:40PM +0200, Andrew Lunn wrote:
+> > > I have proposed a solution for this problem in 2020 but it never got
+> > > upstream. Now we have a workaround in place which allows us to hard-code
+> > > the PHY id in the compatible property, thus skipping the ID scanning).
+> > 
+> > nitpicky, but I think that already existed at that time :D
 > 
-> This inconsistency really is killing.  wide_bus vs widebus, and one
-> function has an is_ while the other does not.
-
-Hi Marijn,
-
-Acked. Will change the DSI function name to match DP.
-
+> Yes, it has been there are long long time. It is however only in the
+> last 5 years of so has it been seen as a solution to the chicken egg
+> problem.
 > 
->>   
->>   	mutex_lock(&dpu_enc->enc_lock);
->>   	cur_mode = &dpu_enc->base.crtc->state->adjusted_mode;
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
->> index df88358e7037..dace6168be2d 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
->> @@ -69,8 +69,10 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
->>   				phys_enc->hw_intf,
->>   				phys_enc->hw_pp->idx);
->>   
->> -	if (intf_cfg.dsc != 0)
->> +	if (intf_cfg.dsc != 0) {
->>   		cmd_mode_cfg.data_compress = true;
->> +		cmd_mode_cfg.wide_bus_en = dpu_encoder_is_widebus_enabled(phys_enc->parent);
->> +	}
->>   
->>   	if (phys_enc->hw_intf->ops.program_intf_cmd_cfg)
->>   		phys_enc->hw_intf->ops.program_intf_cmd_cfg(phys_enc->hw_intf, &cmd_mode_cfg);
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->> index 8ec6505d9e78..dc6f3febb574 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->> @@ -521,6 +521,9 @@ static void dpu_hw_intf_program_intf_cmd_cfg(struct dpu_hw_intf *ctx,
->>   	if (cmd_mode_cfg->data_compress)
->>   		intf_cfg2 |= INTF_CFG2_DCE_DATA_COMPRESS;
->>   
->> +	if (cmd_mode_cfg->wide_bus_en)
->> +		intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN;
->> +
->>   	DPU_REG_WRITE(&ctx->hw, INTF_CONFIG2, intf_cfg2);
->>   }
->>   
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->> index 77f80531782b..c539025c418b 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->> @@ -50,6 +50,7 @@ struct dpu_hw_intf_status {
->>   
->>   struct dpu_hw_intf_cmd_mode_cfg {
->>   	u8 data_compress;	/* enable data compress between dpu and dsi */
->> +	u8 wide_bus_en;		/* enable databus widen mode */
+> > >  		sgmii_phy: phy@8 {
+> > > +			compatible = "ethernet-phy-id0141.0dd4";
+> > >  			reg = <0x8>;
+> > >  			device_type = "ethernet-phy";
+> > > +			reset-gpios = <&pmm8654au_2_gpios 8 GPIO_ACTIVE_LOW>;
+> > > +			reset-deassert-us = <70000>;
+> > 
+> > Doesn't this need reset-assert-us?
 > 
-> Any clue why these weren't just bool types?  These suffix-comments also
-> aren't adhering to the kerneldoc format, or is there a different
-> variant?
-
-It seems that the `u8` declaration and comment docs were meant to mirror 
-the other dpu_hw_intf_* structs [1]
-
-[1] 
-https://elixir.bootlin.com/linux/v6.5-rc5/source/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h#L44
-
+> If i remember correctly, there is a default value if DT does not
+> provide one.
 > 
->>   };
->>   
->>   /**
->> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
->> index 9d9d5e009163..e4f706b16aad 100644
->> --- a/drivers/gpu/drm/msm/msm_drv.h
->> +++ b/drivers/gpu/drm/msm/msm_drv.h
->> @@ -344,6 +344,7 @@ void msm_dsi_snapshot(struct msm_disp_state *disp_state, struct msm_dsi *msm_dsi
->>   bool msm_dsi_is_cmd_mode(struct msm_dsi *msm_dsi);
->>   bool msm_dsi_is_bonded_dsi(struct msm_dsi *msm_dsi);
->>   bool msm_dsi_is_master_dsi(struct msm_dsi *msm_dsi);
->> +bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi);
->>   struct drm_dsc_config *msm_dsi_get_dsc_config(struct msm_dsi *msm_dsi);
->>   #else
->>   static inline void __init msm_dsi_register(void)
->> @@ -373,7 +374,10 @@ static inline bool msm_dsi_is_master_dsi(struct msm_dsi *msm_dsi)
->>   {
->>   	return false;
->>   }
->> -
->> +static inline bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi)
->> +{
->> +	return false;
->> +}
-> 
-> Only this default inline implementation is defined, but the function is
-> declared in this commit.  Since there's no real functional
-> implementation yet your commit should clarify that it comes later (in a
-> followup commit in the same series?  I can't know because I am reviewing
-> this series linearly from start to finish...) or reorder the patches so
-> that this lack of clarity is circumvented entirely.
 
-This was so that there wouldn't be a compiler error in cases where 
-CONFIG_MSM_DSI=n (since DPU support is added before DSI support).
+I've been trying to make sure I view devicetree properties as an OS
+agnostic ABI lately, with that in mind...
 
-Thanks,
+The dt-binding says this for ethernet-phy:
 
-Jessica Zhang
+  reset-assert-us:
+    description:
+      Delay after the reset was asserted in microseconds. If this
+      property is missing the delay will be skipped.
 
-> 
-> - Marijn
-> 
->>   static inline struct drm_dsc_config *msm_dsi_get_dsc_config(struct msm_dsi *msm_dsi)
->>   {
->>   	return NULL;
->>
->> -- 
->> 2.41.0
->>
+If the hardware needs a delay I think we should encode it based on that
+description, else we risk it starting to look like a unit impulse!
+
