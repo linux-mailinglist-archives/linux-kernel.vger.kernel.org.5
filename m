@@ -2,147 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 249A67726FD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF361772707
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234714AbjHGOFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
+        id S232836AbjHGOGn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Aug 2023 10:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234710AbjHGOEx (ORCPT
+        with ESMTP id S231937AbjHGOGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:04:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E0C10F8
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:03:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691417036;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Xp1oqeDRZYna//2YOwNor1PRNcbpDVn9AtA0YOsdbXI=;
-        b=dDVKsyAP6627wYPybCX+MhMtlRgNXSEMW27MLfoCR2XGMDPUznyYf4QNJWOMwfE4tKHvxF
-        SKQPcWf4ILHYm22VH50JVxuZ/a+kDdz8iTygD1qtRI1m1agdLmlpWt67WLo/+KyNxgGMZI
-        xhvkr1apXgvWZwh33O3b1asqy0jC+vM=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-617-uF6iBe9oNna8EPtI-Fk9Xg-1; Mon, 07 Aug 2023 09:57:45 -0400
-X-MC-Unique: uF6iBe9oNna8EPtI-Fk9Xg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 814D938210AE;
-        Mon,  7 Aug 2023 13:52:44 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5311F40679C0;
-        Mon,  7 Aug 2023 13:52:44 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        oliver.upton@linux.dev, seanjc@google.com
-Subject: [GIT PULL] KVM changes for v6.5-rc6
-Date:   Mon,  7 Aug 2023 09:52:43 -0400
-Message-Id: <20230807135243.3394830-1-pbonzini@redhat.com>
+        Mon, 7 Aug 2023 10:06:34 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 55CE81FD8;
+        Mon,  7 Aug 2023 07:06:13 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B83D1FB;
+        Mon,  7 Aug 2023 06:57:58 -0700 (PDT)
+Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 441163F64C;
+        Mon,  7 Aug 2023 06:57:12 -0700 (PDT)
+Date:   Mon, 7 Aug 2023 14:57:09 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Jernej =?UTF-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+Cc:     martin.botka1@gmail.com, Martin Botka <martin@biqu3d.com>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jami Kettunen <jamipkettunen@somainline.org>,
+        Paul Bouchara <paul.bouchara@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
+        Ludwig Kormann <ludwig.kormann@ict42.de>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] Add BigTreeTech CB1 SoM & Boards
+Message-ID: <20230807145709.59156e51@donnerap.manchester.arm.com>
+In-Reply-To: <3242042.aeNJFYEL58@jernej-laptop>
+References: <5EB3DB1D7F80A40F+20230805083636.788048-1-martin@biqu3d.com>
+        <3242042.aeNJFYEL58@jernej-laptop>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Sun, 06 Aug 2023 13:54:21 +0200
+Jernej Škrabec <jernej.skrabec@gmail.com> wrote:
 
-The following changes since commit 5a7591176c47cce363c1eed704241e5d1c42c5a6:
+Hi,
 
-  KVM: selftests: Expand x86's sregs test to cover illegal CR0 values (2023-07-29 11:05:32 -0400)
+> Dne sobota, 05. avgust 2023 ob 10:36:03 CEST je Martin Botka napisal(a):
+> > Hello,
+> > This series adds a vendor prefix for BigTreeTech and adds BigTreeTech CB1,
+> > Manta board and BigTreeTech Pi.
+> > 
+> > CB1 is just an SoM thats based on AllWinner H616.
+> > BigTreeTech Manta boards are expander boards for CB1 and BigTreeTech Pi
+> > is an CB1 in Rpi style with few additional things like IR receiver and fan
+> > port on GPIO.
+> > 
+> > This work started before I was hired by BigTreeTech and thus majority of the
+> > patches are from SoMainline email and few are from my work email.
+> > 
+> > This series depends on commit https://lkml.org/lkml/2023/8/2/801
+> > "dt-bindings: mfd: x-powers,axp152: make interrupt optional for more chips".  
+> 
+> What's the status of above patch?
+> 
+> I won't merge this series until it's accepted and merged.
 
-are available in the Git repository at:
+So Conor ACKed it, and I think the only questions left were whether this
+should be extended to all PMICs (not now, as I argued[1]), and that the
+actual AXP MFD driver "implementing" the binding is not fit for that, with
+a fix now here [2].
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+So is there any chance that there would be a second PR with the CB1 and
+MangoPi DTs, still?
 
-for you to fetch changes up to d5ad9aae13dcced333c1a7816ff0a4fbbb052466:
+Cheers,
+Andre
 
-  selftests/rseq: Fix build with undefined __weak (2023-08-04 18:10:29 -0400)
+[1]
+https://lore.kernel.org/lkml/20230807144229.5710738d@donnerap.manchester.arm.com/
+[2]
+https://lore.kernel.org/lkml/20230807133930.94309-1-andre.przywara@arm.com/
 
-I won't be around for the next couple weeks, so while submaintainers are
-welcome to send me their merge window pull requests, any bug fixes will have
-to go through the architecture trees.  At least for x86 things seem to be in
-check, though.
-
-Paolo
-
-----------------------------------------------------------------
-x86:
-
-* Fix SEV race condition
-
-ARM:
-
-* Fixes for the configuration of SVE/SME traps when hVHE mode is in use
-
-* Allow use of pKVM on systems with FF-A implementations that are v1.0
-  compatible
-
-* Request/release percpu IRQs (arch timer, vGIC maintenance) correctly
-  when pKVM is in use
-
-* Fix function prototype after __kvm_host_psci_cpu_entry() rename
-
-* Skip to the next instruction when emulating writes to TCR_EL1 on
-  AmpereOne systems
-
-Selftests:
-
-* Fix missing include
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      KVM: arm64: fix __kvm_host_psci_cpu_entry() prototype
-
-Fuad Tabba (7):
-      KVM: arm64: Factor out code for checking (h)VHE mode into a macro
-      KVM: arm64: Use the appropriate feature trap register for SVE at EL2 setup
-      KVM: arm64: Disable SME traps for (h)VHE at setup
-      KVM: arm64: Helper to write to appropriate feature trap register based on mode
-      KVM: arm64: Use the appropriate feature trap register when activating traps
-      KVM: arm64: Fix resetting SVE trap values on reset for hVHE
-      KVM: arm64: Fix resetting SME trap values on reset for (h)VHE
-
-Mark Brown (1):
-      selftests/rseq: Fix build with undefined __weak
-
-Oliver Upton (3):
-      KVM: arm64: Allow pKVM on v1.0 compatible FF-A implementations
-      KVM: arm64: Rephrase percpu enable/disable tracking in terms of hyp
-      KVM: arm64: Skip instruction after emulating write to TCR_EL1
-
-Paolo Bonzini (4):
-      KVM: SEV: snapshot the GHCB before accessing it
-      KVM: SEV: only access GHCB fields once
-      KVM: SEV: remove ghcb variable declarations
-      Merge tag 'kvmarm-fixes-6.5-2' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD
-
-Raghavendra Rao Ananta (1):
-      KVM: arm64: Fix hardware enable/disable flows for pKVM
-
- arch/arm64/include/asm/el2_setup.h      |  44 ++++++++----
- arch/arm64/include/asm/kvm_asm.h        |   2 +-
- arch/arm64/include/asm/kvm_emulate.h    |  21 ++++--
- arch/arm64/kvm/arm.c                    |  61 +++++++---------
- arch/arm64/kvm/hyp/include/hyp/switch.h |   1 +
- arch/arm64/kvm/hyp/nvhe/ffa.c           |  15 +++-
- arch/arm64/kvm/hyp/nvhe/switch.c        |   2 +-
- arch/x86/kvm/svm/sev.c                  | 124 ++++++++++++++++----------------
- arch/x86/kvm/svm/svm.h                  |  26 +++++++
- tools/testing/selftests/rseq/Makefile   |   4 +-
- tools/testing/selftests/rseq/rseq.c     |   2 +
- 11 files changed, 182 insertions(+), 120 deletions(-)
+> Best regards,
+> Jernej
+> 
+> > 
+> > Cheers,
+> > Martin
+> > 
+> > Martin Botka (4):
+> >   dt-bindings: vendor-prefixes: Add BigTreeTech
+> >   dt-bindings: arm: sunxi: Add BigTreeTech boards
+> >   arm64: dts: allwinner: h616: Add BigTreeTech CB1 SoM & boards support
+> >   arm64: dts: allwinner: h616: Add BigTreeTech Pi support
+> > 
+> >  .../devicetree/bindings/arm/sunxi.yaml        |  11 ++
+> >  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+> >  arch/arm64/boot/dts/allwinner/Makefile        |   2 +
+> >  .../sun50i-h616-bigtreetech-cb1-manta.dts     |  35 +++++
+> >  .../sun50i-h616-bigtreetech-cb1.dtsi          | 140 ++++++++++++++++++
+> >  .../allwinner/sun50i-h616-bigtreetech-pi.dts  |  70 +++++++++
+> >  6 files changed, 260 insertions(+)
+> >  create mode 100644
+> > arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts create
+> > mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+> > create mode 100644
+> > arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts  
+> 
+> 
+> 
+> 
+> 
 
