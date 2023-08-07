@@ -2,226 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D68A7734FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 01:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C660F773509
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 01:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbjHGX2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 19:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
+        id S229777AbjHGXc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 19:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbjHGX2w (ORCPT
+        with ESMTP id S229445AbjHGXc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 19:28:52 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3403B19AD
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 16:28:49 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686b9964ae2so3587541b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 16:28:49 -0700 (PDT)
+        Mon, 7 Aug 2023 19:32:57 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09961721
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 16:32:55 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe32ec7201so18135e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 16:32:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1691450928; x=1692055728;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0xqamAux0UTVG6klbJHwJNM84FqVsjBhqmY+h06Y7S4=;
-        b=adlg0mZ+HbNffKaKec2p7cVEI4EUlpFfVSVpmG5fvHzHnQEOdBYZjEy4QnkJtTu7lu
-         YmN6EGaH1vJkJ2ZOmqiBcV/yaN6Y4JVna47CjKD7nPXpOiMzYNw9UySGma80pWoaj7Dk
-         jUxXtUXqouB4bUXn3WeUBdMeMQNzv8NtKVfvER+m7KEKe99ZrQWUTG4Y9TUCDw4Kbcew
-         TFF8/aAopaaIk2YO3rVVNpTSZmvFLss5lfJ8bn13k+LTkCPg51SMuEfV97r2Zvr+7s3C
-         AcdJXj3qJcnQFWBnyvELMIWQLaBKzEk7yCwrvdFLv4Z0y5aFUIdjan9j2uUGZT7xZ3GX
-         Ib8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691450928; x=1692055728;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1691451174; x=1692055974;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0xqamAux0UTVG6klbJHwJNM84FqVsjBhqmY+h06Y7S4=;
-        b=HchCj+W66o7zIoXCqNVUBwnazUNjmuo5nrEOOs/q6HQzHATGJx6pdFQPx2x6aNrE8F
-         xupJl0iR/n3TLkoBX0K8areBBqjdNhhQHmea1ykZdvUFxC1nMHSjg/I+/G4SDUcO5QJq
-         Wfl1Qvva4NdJ9aiosCLZ5rbeqOOH6LuG9zqd/gZRxRsu+PXpYLaR+ljUoTWA8opJ9I5h
-         botk98d9KWz0/k87hrb+Z9eO9QKkeQwPckey5MmJz7PMDW83hEtOAUVBq4Ajr1qAvu7D
-         aBaiFkvYuy1New1oovuQe+lzj6ULVZaIcuA8B88XQpFcHOpp5ma4MeoYfnQLPmXYJYfr
-         X1FQ==
-X-Gm-Message-State: AOJu0Yxt+uWUaIwK8vAyvVnkUcc1+8nAul967TDq7Kpi9ypeyjpIBpwW
-        ujmHK8BgNpkVfg5PY+LaioXxWA==
-X-Google-Smtp-Source: AGHT+IHWcHOenJQfOaWa9c7YDyMdy3l3j1H0rEzsEcwqog5HJ9HhPve3KCBNDXb4QQT+YEAg/cljWw==
-X-Received: by 2002:a05:6a20:8e04:b0:13c:8e50:34b8 with SMTP id y4-20020a056a208e0400b0013c8e5034b8mr12892217pzj.35.1691450928413;
-        Mon, 07 Aug 2023 16:28:48 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-166-213.pa.nsw.optusnet.com.au. [49.180.166.213])
-        by smtp.gmail.com with ESMTPSA id e18-20020aa78c52000000b0068620bee456sm6663729pfd.209.2023.08.07.16.28.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 16:28:47 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qT9eW-002TeM-1d;
-        Tue, 08 Aug 2023 09:28:44 +1000
-Date:   Tue, 8 Aug 2023 09:28:44 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
-        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
-        gregkh@linuxfoundation.org, muchun.song@linux.dev,
-        simon.horman@corigine.com, dlemoal@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 45/48] mm: shrinker: make global slab shrink lockless
-Message-ID: <ZNF+LLUpKWHDEG1u@dread.disaster.area>
-References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
- <20230807110936.21819-46-zhengqi.arch@bytedance.com>
+        bh=Hk5wWJ5y+xcA717b1to0UM3KKGoj2M4JnsBCjlgxkdQ=;
+        b=S2p731oYUxk3HCZ8+uLzkqMQ71Elw0yB7hgIuGDH0FUq8jJFU50uik2k2lPajzpwER
+         jkARbTqzMzqwrGh5l9yTZrzbvjJWxIzvWTD0dOWTvhVijfvglHW5+D9VPo/acNFSg8TC
+         sDNV6PvkfrW4tjJ3Pw4IhvBZ0dqjvqskodh+4j884Qtbz3pLlTc5VkN0GF5OMz35AUvg
+         lyrL0e2zsF9KkdhVwpJVEGnXGvE2I4+mpITDoxucZBL5r661e9dlx/t1/Kp2NA+YvQLZ
+         sHW5mkoSfGmbHTc11pXQApM9ydkMBLWQkASSV1IckcTFT3iDSvI16gdDXNZ1BHqf5P1c
+         WOUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691451174; x=1692055974;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Hk5wWJ5y+xcA717b1to0UM3KKGoj2M4JnsBCjlgxkdQ=;
+        b=ZZHYOruJwfEs8F8Crn5pulpybM6JjT6bv0xEkbbYFqll8hvVQTlZ3XuU3+44icr1sd
+         wHgfyixOsOzUqSGQzt8QVzQJszpK6nMN5Gcd3vevUwkX12/Nn3DGU+jD0ip2hjp5Q2xU
+         wt8e5pUwzkLkdEvsTP6kwYe00KtnNTDTjUqhH7hnzKNEiza3kEYzhPLI4TkwGImw9WGu
+         U6olmHtCNmjESm94azGdMXUunHVT2Zw4TYoiRsjF7DDR+P2T1fCPAvnmbEaRQbQnN5t3
+         SdcXa+uP5LvG8bssJ0gE9KwFpuCliISQahbHEvl38fHNt60FduVWFLqSHHPyBe1ag2/j
+         SVww==
+X-Gm-Message-State: AOJu0YwMjMRJZ+cLVK4RptcYnI1MzFTtUw9ywxcZtONqUZ/rpGlDmph7
+        HWYjQxXFpLdq9yMDx6OAQreoMXtb2iG6y4JOaGiBZQ==
+X-Google-Smtp-Source: AGHT+IHs1K3JWUN33cgTUjw6sByW5sJje7kFen+dPM5BLi5mOF92eke+sVgjo73w/c/hnc31anedzBaLVai9u0nUYYY=
+X-Received: by 2002:a05:600c:1e2a:b0:3f6:f4b:d4a6 with SMTP id
+ ay42-20020a05600c1e2a00b003f60f4bd4a6mr255530wmb.7.1691451173970; Mon, 07 Aug
+ 2023 16:32:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807110936.21819-46-zhengqi.arch@bytedance.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230807102352.4607-5-janusz.krzysztofik@linux.intel.com> <20230807102352.4607-6-janusz.krzysztofik@linux.intel.com>
+In-Reply-To: <20230807102352.4607-6-janusz.krzysztofik@linux.intel.com>
+From:   Rae Moar <rmoar@google.com>
+Date:   Mon, 7 Aug 2023 19:32:38 -0400
+Message-ID: <CA+GJov7Y4Ampk++ACtFV+ntzkBCDQGKexPG1_yWDt7-J=C2y-w@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] kunit: Report the count of test suites in a module
+To:     Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        igt-dev@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 07:09:33PM +0800, Qi Zheng wrote:
-> The shrinker_rwsem is a global read-write lock in shrinkers subsystem,
-> which protects most operations such as slab shrink, registration and
-> unregistration of shrinkers, etc. This can easily cause problems in the
-> following cases.
-....
-> This commit uses the refcount+RCU method [5] proposed by Dave Chinner
-> to re-implement the lockless global slab shrink. The memcg slab shrink is
-> handled in the subsequent patch.
-....
+On Mon, Aug 7, 2023 at 6:28=E2=80=AFAM Janusz Krzysztofik
+<janusz.krzysztofik@linux.intel.com> wrote:
+>
+> According to KTAP specification[1], results should always start from a
+> header that provides a TAP protocol version, followed by a test plan with
+> a count of items to be executed.  That pattern should be followed at each
+> nesting level.  In the current implementation of the top-most, i.e., test
+> suite level, those rules apply only for test suites built into the kernel=
+,
+> executed and reported on boot.  Results submitted to dmesg from kunit tes=
+t
+> modules loaded later are missing those top-level headers.
+>
+> As a consequence, if a kunit test module provides more than one test suit=
+e
+> then, without the top level test plan, external tools that are parsing
+> dmesg for kunit test output are not able to tell how many test suites
+> should be expected and whether to continue parsing after complete output
+> from the first test suite is collected.
+>
+> Submit the top-level headers also from the kunit test module notifier
+> initialization callback.
+>
+> v3: Fix new name of a structure moved to kunit namespace not updated in
+>     executor_test functions (lkp@intel.com).
+> v2: Use kunit_exec_run_tests() (Mauro, Rae), but prevent it from
+>     emitting the headers when called on load of non-test modules.
+>
+
+Hello!
+
+This patch looks good. This series also applies cleanly for me now.
+
+I have tested this patch and it works well. I realize this is a bigger
+change by exposing the executor function but I think it is overall
+cleaner. I am interested in what David Gow thinks about the change.
+
+Reviewed-by: Rae Moar <rmoar@google.com>
+
+Thanks!
+Rae
+
+> [1] https://docs.kernel.org/dev-tools/ktap.html#
+>
+> Signed-off-by: Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Rae Moar <rmoar@google.com>
 > ---
->  include/linux/shrinker.h | 17 ++++++++++
->  mm/shrinker.c            | 70 +++++++++++++++++++++++++++++-----------
->  2 files changed, 68 insertions(+), 19 deletions(-)
-
-There's no documentation in the code explaining how the lockless
-shrinker algorithm works. It's left to the reader to work out how
-this all goes together....
-
-> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-> index eb342994675a..f06225f18531 100644
-> --- a/include/linux/shrinker.h
-> +++ b/include/linux/shrinker.h
-> @@ -4,6 +4,8 @@
->  
->  #include <linux/atomic.h>
->  #include <linux/types.h>
-> +#include <linux/refcount.h>
-> +#include <linux/completion.h>
->  
->  #define SHRINKER_UNIT_BITS	BITS_PER_LONG
->  
-> @@ -87,6 +89,10 @@ struct shrinker {
->  	int seeks;	/* seeks to recreate an obj */
->  	unsigned flags;
->  
-> +	refcount_t refcount;
-> +	struct completion done;
-> +	struct rcu_head rcu;
-
-What does the refcount protect, why do we need the completion, etc?
-
+>  include/kunit/test.h      |  8 ++++++++
+>  lib/kunit/executor.c      | 42 +++++++++++++++++++++------------------
+>  lib/kunit/executor_test.c | 36 ++++++++++++++++++++++-----------
+>  lib/kunit/test.c          |  6 +++++-
+>  4 files changed, 60 insertions(+), 32 deletions(-)
+>
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 011e0d6bb506c..3d002e6b252f2 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -256,6 +256,12 @@ struct kunit_suite {
+>         int suite_init_err;
+>  };
+>
+> +/* Stores an array of suites, end points one past the end */
+> +struct kunit_suite_set {
+> +       struct kunit_suite * const *start;
+> +       struct kunit_suite * const *end;
+> +};
 > +
->  	void *private_data;
->  
->  	/* These are for internal use */
-> @@ -120,6 +126,17 @@ struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...);
->  void shrinker_register(struct shrinker *shrinker);
->  void shrinker_free(struct shrinker *shrinker);
->  
-> +static inline bool shrinker_try_get(struct shrinker *shrinker)
-> +{
-> +	return refcount_inc_not_zero(&shrinker->refcount);
-> +}
+>  /**
+>   * struct kunit - represents a running instance of a test.
+>   *
+> @@ -317,6 +323,8 @@ int __kunit_test_suites_init(struct kunit_suite * con=
+st * const suites, int num_
+>
+>  void __kunit_test_suites_exit(struct kunit_suite **suites, int num_suite=
+s);
+>
+> +void kunit_exec_run_tests(struct kunit_suite_set *suite_set, bool builti=
+n);
 > +
-> +static inline void shrinker_put(struct shrinker *shrinker)
-> +{
-> +	if (refcount_dec_and_test(&shrinker->refcount))
-> +		complete(&shrinker->done);
-> +}
-> +
->  #ifdef CONFIG_SHRINKER_DEBUG
->  extern int __printf(2, 3) shrinker_debugfs_rename(struct shrinker *shrinker,
->  						  const char *fmt, ...);
-> diff --git a/mm/shrinker.c b/mm/shrinker.c
-> index 1911c06b8af5..d318f5621862 100644
-> --- a/mm/shrinker.c
-> +++ b/mm/shrinker.c
-> @@ -2,6 +2,7 @@
->  #include <linux/memcontrol.h>
->  #include <linux/rwsem.h>
->  #include <linux/shrinker.h>
-> +#include <linux/rculist.h>
->  #include <trace/events/vmscan.h>
->  
->  #include "internal.h"
-> @@ -577,33 +578,42 @@ unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup *memcg,
->  	if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
->  		return shrink_slab_memcg(gfp_mask, nid, memcg, priority);
->  
-> -	if (!down_read_trylock(&shrinker_rwsem))
-> -		goto out;
+>  #if IS_BUILTIN(CONFIG_KUNIT)
+>  int kunit_run_all_tests(void);
+>  #else
+> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> index dc295150c4e57..5ef90c334eb0f 100644
+> --- a/lib/kunit/executor.c
+> +++ b/lib/kunit/executor.c
+> @@ -104,13 +104,7 @@ kunit_filter_glob_tests(const struct kunit_suite *co=
+nst suite, const char *test_
+>  static char *kunit_shutdown;
+>  core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
+>
+> -/* Stores an array of suites, end points one past the end */
+> -struct suite_set {
+> -       struct kunit_suite * const *start;
+> -       struct kunit_suite * const *end;
+> -};
 > -
-> -	list_for_each_entry(shrinker, &shrinker_list, list) {
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(shrinker, &shrinker_list, list) {
->  		struct shrink_control sc = {
->  			.gfp_mask = gfp_mask,
->  			.nid = nid,
->  			.memcg = memcg,
->  		};
->  
-> +		if (!shrinker_try_get(shrinker))
-> +			continue;
+> -static void kunit_free_suite_set(struct suite_set suite_set)
+> +static void kunit_free_suite_set(struct kunit_suite_set suite_set)
+>  {
+>         struct kunit_suite * const *suites;
+>
+> @@ -119,16 +113,17 @@ static void kunit_free_suite_set(struct suite_set s=
+uite_set)
+>         kfree(suite_set.start);
+>  }
+>
+> -static struct suite_set kunit_filter_suites(const struct suite_set *suit=
+e_set,
+> -                                           const char *filter_glob,
+> -                                               char *filters,
+> -                                               char *filter_action,
+> -                                           int *err)
+> +static struct kunit_suite_set
+> +kunit_filter_suites(const struct kunit_suite_set *suite_set,
+> +                   const char *filter_glob,
+> +                   char *filters,
+> +                   char *filter_action,
+> +                   int *err)
+>  {
+>         int i, j, k;
+>         int filter_count =3D 0;
+>         struct kunit_suite **copy, **copy_start, *filtered_suite, *new_fi=
+ltered_suite;
+> -       struct suite_set filtered =3D {NULL, NULL};
+> +       struct kunit_suite_set filtered =3D {NULL, NULL};
+>         struct kunit_glob_filter parsed_glob;
+>         struct kunit_attr_filter *parsed_filters =3D NULL;
+>
+> @@ -230,17 +225,24 @@ static void kunit_handle_shutdown(void)
+>
+>  }
+>
+> -static void kunit_exec_run_tests(struct suite_set *suite_set)
+> +#endif
 > +
-> +		/*
-> +		 * We can safely unlock the RCU lock here since we already
-> +		 * hold the refcount of the shrinker.
-> +		 */
-> +		rcu_read_unlock();
+> +void kunit_exec_run_tests(struct kunit_suite_set *suite_set, bool builti=
+n)
+>  {
+>         size_t num_suites =3D suite_set->end - suite_set->start;
+>
+> -       pr_info("KTAP version 1\n");
+> -       pr_info("1..%zu\n", num_suites);
+> +       if (builtin || num_suites) {
+> +               pr_info("KTAP version 1\n");
+> +               pr_info("1..%zu\n", num_suites);
+> +       }
+>
+>         __kunit_test_suites_init(suite_set->start, num_suites);
+>  }
+>
+> -static void kunit_exec_list_tests(struct suite_set *suite_set, bool incl=
+ude_attr)
+> +#if IS_BUILTIN(CONFIG_KUNIT)
 > +
->  		ret = do_shrink_slab(&sc, shrinker, priority);
->  		if (ret == SHRINK_EMPTY)
->  			ret = 0;
->  		freed += ret;
+> +static void kunit_exec_list_tests(struct kunit_suite_set *suite_set,
+> +                                 bool include_attr)
+>  {
+>         struct kunit_suite * const *suites;
+>         struct kunit_case *test_case;
+> @@ -265,7 +267,9 @@ static void kunit_exec_list_tests(struct suite_set *s=
+uite_set, bool include_attr
+>
+>  int kunit_run_all_tests(void)
+>  {
+> -       struct suite_set suite_set =3D {__kunit_suites_start, __kunit_sui=
+tes_end};
+> +       struct kunit_suite_set suite_set =3D {
+> +               __kunit_suites_start, __kunit_suites_end,
+> +       };
+>         int err =3D 0;
+>         if (!kunit_enabled()) {
+>                 pr_info("kunit: disabled\n");
+> @@ -282,7 +286,7 @@ int kunit_run_all_tests(void)
+>         }
+>
+>         if (!action_param)
+> -               kunit_exec_run_tests(&suite_set);
+> +               kunit_exec_run_tests(&suite_set, true);
+>         else if (strcmp(action_param, "list") =3D=3D 0)
+>                 kunit_exec_list_tests(&suite_set, false);
+>         else if (strcmp(action_param, "list_attr") =3D=3D 0)
+> diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
+> index 3e0a1c99cb4e8..4084071d0eb5b 100644
+> --- a/lib/kunit/executor_test.c
+> +++ b/lib/kunit/executor_test.c
+> @@ -43,8 +43,10 @@ static void parse_filter_test(struct kunit *test)
+>  static void filter_suites_test(struct kunit *test)
+>  {
+>         struct kunit_suite *subsuite[3] =3D {NULL, NULL};
+> -       struct suite_set suite_set =3D {.start =3D subsuite, .end =3D &su=
+bsuite[2]};
+> -       struct suite_set got;
+> +       struct kunit_suite_set suite_set =3D {
+> +               .start =3D subsuite, .end =3D &subsuite[2],
+> +       };
+> +       struct kunit_suite_set got;
+>         int err =3D 0;
+>
+>         subsuite[0] =3D alloc_fake_suite(test, "suite1", dummy_test_cases=
+);
+> @@ -67,8 +69,10 @@ static void filter_suites_test(struct kunit *test)
+>  static void filter_suites_test_glob_test(struct kunit *test)
+>  {
+>         struct kunit_suite *subsuite[3] =3D {NULL, NULL};
+> -       struct suite_set suite_set =3D {.start =3D subsuite, .end =3D &su=
+bsuite[2]};
+> -       struct suite_set got;
+> +       struct kunit_suite_set suite_set =3D {
+> +               .start =3D subsuite, .end =3D &subsuite[2],
+> +       };
+> +       struct kunit_suite_set got;
+>         int err =3D 0;
+>
+>         subsuite[0] =3D alloc_fake_suite(test, "suite1", dummy_test_cases=
+);
+> @@ -94,8 +98,10 @@ static void filter_suites_test_glob_test(struct kunit =
+*test)
+>  static void filter_suites_to_empty_test(struct kunit *test)
+>  {
+>         struct kunit_suite *subsuite[3] =3D {NULL, NULL};
+> -       struct suite_set suite_set =3D {.start =3D subsuite, .end =3D &su=
+bsuite[2]};
+> -       struct suite_set got;
+> +       struct kunit_suite_set suite_set =3D {
+> +               .start =3D subsuite, .end =3D &subsuite[2],
+> +       };
+> +       struct kunit_suite_set got;
+>         int err =3D 0;
+>
+>         subsuite[0] =3D alloc_fake_suite(test, "suite1", dummy_test_cases=
+);
+> @@ -144,8 +150,10 @@ static struct kunit_case dummy_attr_test_cases[] =3D=
+ {
+>  static void filter_attr_test(struct kunit *test)
+>  {
+>         struct kunit_suite *subsuite[3] =3D {NULL, NULL};
+> -       struct suite_set suite_set =3D {.start =3D subsuite, .end =3D &su=
+bsuite[2]};
+> -       struct suite_set got;
+> +       struct kunit_suite_set suite_set =3D {
+> +               .start =3D subsuite, .end =3D &subsuite[2],
+> +       };
+> +       struct kunit_suite_set got;
+>         int err =3D 0;
+>
+>         subsuite[0] =3D alloc_fake_suite(test, "normal_suite", dummy_attr=
+_test_cases);
+> @@ -179,8 +187,10 @@ static void filter_attr_test(struct kunit *test)
+>  static void filter_attr_empty_test(struct kunit *test)
+>  {
+>         struct kunit_suite *subsuite[3] =3D {NULL, NULL};
+> -       struct suite_set suite_set =3D {.start =3D subsuite, .end =3D &su=
+bsuite[2]};
+> -       struct suite_set got;
+> +       struct kunit_suite_set suite_set =3D {
+> +               .start =3D subsuite, .end =3D &subsuite[2],
+> +       };
+> +       struct kunit_suite_set got;
+>         int err =3D 0;
+>
+>         subsuite[0] =3D alloc_fake_suite(test, "suite1", dummy_attr_test_=
+cases);
+> @@ -197,8 +207,10 @@ static void filter_attr_empty_test(struct kunit *tes=
+t)
+>  static void filter_attr_skip_test(struct kunit *test)
+>  {
+>         struct kunit_suite *subsuite[2] =3D {NULL};
+> -       struct suite_set suite_set =3D {.start =3D subsuite, .end =3D &su=
+bsuite[1]};
+> -       struct suite_set got;
+> +       struct kunit_suite_set suite_set =3D {
+> +               .start =3D subsuite, .end =3D &subsuite[1],
+> +       };
+> +       struct kunit_suite_set got;
+>         int err =3D 0;
+>
+>         subsuite[0] =3D alloc_fake_suite(test, "suite", dummy_attr_test_c=
+ases);
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index cb9797fa6303f..8b2808068497f 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -736,7 +736,11 @@ EXPORT_SYMBOL_GPL(__kunit_test_suites_exit);
+>  #ifdef CONFIG_MODULES
+>  static void kunit_module_init(struct module *mod)
+>  {
+> -       __kunit_test_suites_init(mod->kunit_suites, mod->num_kunit_suites=
+);
+> +       struct kunit_suite_set suite_set =3D {
+> +               mod->kunit_suites, mod->kunit_suites + mod->num_kunit_sui=
+tes,
+> +       };
 > +
->  		/*
-> -		 * Bail out if someone want to register a new shrinker to
-> -		 * prevent the registration from being stalled for long periods
-> -		 * by parallel ongoing shrinking.
-> +		 * This shrinker may be deleted from shrinker_list and freed
-> +		 * after the shrinker_put() below, but this shrinker is still
-> +		 * used for the next traversal. So it is necessary to hold the
-> +		 * RCU lock first to prevent this shrinker from being freed,
-> +		 * which also ensures that the next shrinker that is traversed
-> +		 * will not be freed (even if it is deleted from shrinker_list
-> +		 * at the same time).
->  		 */
-
-This comment really should be at the head of the function,
-describing the algorithm used within the function itself. i.e. how
-reference counts are used w.r.t. the rcu_read_lock() usage to
-guarantee existence of the shrinker and the validity of the list
-walk.
-
-I'm not going to remember all these little details when I look at
-this code in another 6 months time, and having to work it out from
-first principles every time I look at the code will waste of a lot
-of time...
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> +       kunit_exec_run_tests(&suite_set, false);
+>  }
+>
+>  static void kunit_module_exit(struct module *mod)
+> --
+> 2.41.0
+>
