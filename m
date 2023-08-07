@@ -2,71 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E89771826
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB19C771827
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbjHGCFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 22:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35384 "EHLO
+        id S229679AbjHGCID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 22:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjHGCFb (ORCPT
+        with ESMTP id S229498AbjHGCIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 22:05:31 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA6299;
-        Sun,  6 Aug 2023 19:05:30 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id d9443c01a7336-1bbc64f9a91so35307775ad.0;
-        Sun, 06 Aug 2023 19:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691373930; x=1691978730;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xzqkz0xaGk6z113IiqwoO8SGlH2v+RBIOXZiNkod9NE=;
-        b=Eh4eAqYIZroph0TkppI+mL2PKdud4AgBGYmXe5oaefUeVeGzslhhP9ftc+LdUTh72R
-         8Y/P8FcGPKoZIFDnXsYob3GaHCzsL59VT6Puhb69RnpxCGdBIun0OGciAP9Yf/o8rAsq
-         SYo3E+p1moZJtpeldXVxdA1+Zfm8Uey5B4GiLb38YpL8kzsdgO8s+JnWn4GkqBuPqdEn
-         XTrE77wsTGH7QNleI0lfLDJ8rjQck0z+1a3lckXJ3d5jKU6GDecoZZCzOKQo2Sgyfe4t
-         6cPwnlo2E0UC8SmjO4uamH5d87fKJ2FZiVZ+GM9ZVT0ulReZ/x+JsuMR8aS5OXEe0je0
-         O64w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691373930; x=1691978730;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xzqkz0xaGk6z113IiqwoO8SGlH2v+RBIOXZiNkod9NE=;
-        b=leMkd0kEgFHLKxS46I18lbs4HtyeLt9BNNvQpgBqWM6dZc3WH0gFYPJNbnFzMestM/
-         An2EOwieGXx3b+hUiMHz4/BcqQWTmrQEWthkEkJIeq98U2vAyG5tMs9JppriaXh/7p8/
-         t0BV4EYlKKida6Snx7twQZyCX21JgeBB8+NdkJ+TBSoskAqddyznunwEcMhyWeMsf1p5
-         xZB7gINGWI9SdT/dQO3F2MGi4jzmDMrbqP+KrmKsWGXtXse2gioY53q+Jnc0BMlFNCuk
-         lRBkQrRnsGRhlZfRDwQFJTR7B7JrCUd2ZExx+5SG/KfW0/TVGJJ+jJyVseegjDOejGOr
-         KD1g==
-X-Gm-Message-State: AOJu0YyeSWyae9iJOUEQprFYyqDhA6XT59lxRofTPrCotxmBs5R0RXII
-        s0p56bVjshvXqrDifWC3IAc=
-X-Google-Smtp-Source: AGHT+IHMqxJeTx7HN8szhCwQKRlCR4wtLOKl+kaQLssDiYBl/5gnrxixJSad+dOvu3J5IM90t3y6rw==
-X-Received: by 2002:a17:903:2310:b0:1bb:d048:3173 with SMTP id d16-20020a170903231000b001bbd0483173mr9530028plh.61.1691373929657;
-        Sun, 06 Aug 2023 19:05:29 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id g5-20020a170902c38500b001bbd1562e75sm5482839plg.55.2023.08.06.19.05.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Aug 2023 19:05:29 -0700 (PDT)
-From:   xu <xu.xin.sc@gmail.com>
-X-Google-Original-From: xu <xu.xin16@zte.com.cn>
-To:     vadim.fedorenko@linux.dev
-Cc:     davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, yang.yang29@zte.com.cn,
-        xu.xin16@zte.com.cn, si.hao@zte.com.cn, dai.shixin@zte.com.cn
-Subject: Re: [PATCH] net/ipv4: return the real errno instead of -EINVAL
-Date:   Mon,  7 Aug 2023 02:05:25 +0000
-Message-Id: <20230807020525.248349-1-xu.xin16@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <3e38a143-b683-6368-8e76-277394155bc6@linux.dev>
-References: <3e38a143-b683-6368-8e76-277394155bc6@linux.dev>
+        Sun, 6 Aug 2023 22:08:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF4051701
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:08:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7743F612FE
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:08:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E0EEC433C7;
+        Mon,  7 Aug 2023 02:07:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691374079;
+        bh=vEzRQjXv1ttsp5vdYXUk/AoSYOpDU/Q7NEu1H1UZQq0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=hCsKvEeI+ES1k2p4uCYKudBehFAa7Mta/Px2N9VqjFRT4ZjKOyZpySoAlwJV8n9Os
+         aoPng/Jrj6vmPom/o9mwXKXsV1UZOmEezUYtigJhF4Xwq6oUBHk3+kaxlC5bSMt+pr
+         7hL9cx2SoxFx1hQ8IKMEXKoUMjfAG3ttwr/I9bEY4FwrVTVhZE3knX70I4Hn/crfU5
+         9wFn5+tMFBgikj2pm/gg4bHBYiXJ1EauidipdUexDv3MF8SpCE4dji2F3z6HgHo5g4
+         xyrg2u0ZsX1MdofIRKqs1rZn7/Yu5Q46mrfphgZSYBU3Cg48fOAHmrkUKUU6Iau+mN
+         w+XOdhDHY/Dyw==
+Message-ID: <c3cf952f-7011-a597-57a0-756cbc5b91ce@kernel.org>
+Date:   Mon, 7 Aug 2023 10:07:56 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [f2fs-dev] [PATCH] f2fs: clean up w/ sbi->log_sectors_per_block
+Content-Language: en-US
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+References: <20230523123521.67656-1-chao@kernel.org>
+ <fafcfeosil5yqwn2wcdx33im2mq4xkejw6bx7h2in3ay5h6znj@facx4rrg4p65>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <fafcfeosil5yqwn2wcdx33im2mq4xkejw6bx7h2in3ay5h6znj@facx4rrg4p65>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,29 +62,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> @@ -236,7 +234,8 @@ static int ip_finish_output2(struct net *net, struct sock *sk, struct sk_buff *s
->>   	net_dbg_ratelimited("%s: No header cache and no neighbour!\n",
->>   			    __func__);
->>   	kfree_skb_reason(skb, SKB_DROP_REASON_NEIGH_CREATEFAIL);
->> -	return -EINVAL;
->> +	res = PTR_ERR(neigh);
->> +	return res;
->
->I believe this part could be written as
->
->-	return -EINVAL;
->+	return PTR_ERR(neigh);
->
->
->and there is no need to change the code is other places. This will be
->easier to track/backport.
+On 2023/8/4 17:43, Shinichiro Kawasaki wrote:
+> On May 23, 2023 / 20:35, Chao Yu wrote:
+>> Use sbi->log_sectors_per_block to clean up below calculated one:
+>>
+>> unsigned int log_sectors_per_block = sbi->log_blocksize - SECTOR_SHIFT;
+> 
+> Hello Chao,
+> 
+> When I ran workloads on f2fs using v6.5-rcX with fixes [1][2] and a zoned block
+> devices with 4kb logical block size, I observe mount failure as follows. When
+> I revert this commit, the failure goes away.
+> 
+> [  167.781975][ T1555] F2FS-fs (dm-0): IO Block Size:        4 KB
+> [  167.890728][ T1555] F2FS-fs (dm-0): Found nat_bits in checkpoint
+> [  171.482588][ T1555] F2FS-fs (dm-0): Zone without valid block has non-zero write pointer. Reset the write pointer: wp[0x1300,0x8]
+> [  171.496000][ T1555] F2FS-fs (dm-0): (0) : Unaligned zone reset attempted (block 280000 + 80000)
+> [  171.505037][ T1555] F2FS-fs (dm-0): Discard zone failed:  (errno=-5)
+> 
+> The patch replaced "sbi->log_blocksize - SECTOR_SHIFT" with
+> "sbi->log_sectors_per_block". However, I think these two are not equal when the
+> device has 4k logical block size. The former uses Linux kernel sector size 512
+> byte. The latter use 512b sector size or 4kb sector size depending on the
+> device. mkfs.f2fs obtains logical block size via BLKSSZGET ioctl from the device
+> and reflects it to the value sbi->log_sector_size_per_block. This causes
+> unexpected write pointer calculations in check_zone_write_pointer(). This
+> resulted in unexpected zone reset and the mount failure.
+> 
+> I think this patch needs revert. What do you think?
 
-Sure, I initially wrote the same thing with you, but considering the convenience of maintainer review,
-I deliberately modified some other parts of the code to present a clear context of the core
-modifications.
+Hi Shinichiro,
 
-From your reply, I can see you agree with my key idea of this patch, so I have sent a v2 patch[1] according
-to your view.
+Oh, my bad, I think we need to revert that patch.
 
-[1] https://lore.kernel.org/all/20230807015408.248237-1-xu.xin16@zte.com.cn/
+Thanks for the report! :)
 
+Thanks,
+
+> 
+> [1] https://lkml.kernel.org/linux-f2fs-devel/20230711050101.GA19128@lst.de/
+> [2] https://lore.kernel.org/linux-f2fs-devel/20230804091556.2372567-1-shinichiro.kawasaki@wdc.com/
