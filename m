@@ -2,96 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 438D47724F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3517724F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233832AbjHGNGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
+        id S233826AbjHGNGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:06:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233803AbjHGNG3 (ORCPT
+        with ESMTP id S233791AbjHGNG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:06:29 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE05799;
-        Mon,  7 Aug 2023 06:06:28 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9cdba1228so72349571fa.2;
-        Mon, 07 Aug 2023 06:06:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691413586; x=1692018386;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=edF6okRAhEIaoVUfu5c9jPsQSXq90gu04OWEswlro8E=;
-        b=KzmV2E1b2U/AM3KoeVkXej0i5CiLcSaVxeBij8r0v8W3DjXFMr6btU1Wgk/pNp+EuC
-         L8shhipPz00p9phnxCl86jYMVzizlMwDok23vi5c/CQ7tIaWS1Bhr1XOJlXAdJNso9p1
-         63QVanjxnl4KfaljeI12ENNN/fBCrLLtGyBfk+eAiw2SiJjG68I0IsgIyqrMRwPzpMqs
-         wxYLtZyfal8b0VyRKxcCqk//agU5OLZDDPw+BgXNs7qYI1ke11A8YEAJv7K5uLAfMT2e
-         72L9l2VQpE55GFSOgrNDcrM1Go45Bq0HMgvq+U7/cKoGYPsJX3VACbDLGgnSgfGs5x9r
-         pm4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691413586; x=1692018386;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=edF6okRAhEIaoVUfu5c9jPsQSXq90gu04OWEswlro8E=;
-        b=YgZzcUB1onwui/XrGTe/+PDt+KBcEUXakpJjw8SKLb5j8fezeA58iJZ5Ph+Dvd+fcU
-         h4DcZx0wSLBfs/P2/6UUTSxAk/GYMd/nA/X5l7vQ+FeXhZ6oAbfnG79jADwEJDvl5+Dw
-         jnQjmzxlSSZytwiUSAKAkD4QxTaqH56HzY9c+LdiHZk1OX8/rD/shMQ/EnxeUYUJuxyi
-         RNCJeC0eZ8/cCcx8miZvbuFMcluOhq6ERqEh0s1whzd1s1dxeGR5SdON9J+bCC1pFBqW
-         B/n4SySVfQUpZnvtK9x4DiKjmYJK0Zzt5dn90H8mLLbfZ6MDXAUjgFwXrCm+AJrcIO3U
-         P04Q==
-X-Gm-Message-State: AOJu0YwNhuP67fSjMTOh//MSbyDFlv4ChXbl9KUaZNA/91IeKFtHBuS5
-        bT5V0PPuGjoyxNwsFmuAJf4Q6oCg6rjhWQ==
-X-Google-Smtp-Source: AGHT+IEREQ5rf3VpJcbhPJeLG7cE8+lkekw18g7T+dbFBfKpb2yB7bla1owo2msSSozbFf0SfNi0JQ==
-X-Received: by 2002:a05:651c:14c:b0:2b9:cf47:ce69 with SMTP id c12-20020a05651c014c00b002b9cf47ce69mr6536905ljd.48.1691413586295;
-        Mon, 07 Aug 2023 06:06:26 -0700 (PDT)
-Received: from localhost.localdomain ([92.85.190.61])
-        by smtp.gmail.com with ESMTPSA id x23-20020a1c7c17000000b003fe539b83f2sm6759493wmc.42.2023.08.07.06.06.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 06:06:25 -0700 (PDT)
-From:   Andrei Coardos <aboutphysycs@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Cc:     broonie@kernel.org, f.fangjian@huawei.com, alex@shruggie.ro,
-        Andrei Coardos <aboutphysycs@gmail.com>
-Subject: [PATCH] spi: hisi-sfc-v3xx: removed unneeded call to platform_set_drvdata()
-Date:   Mon,  7 Aug 2023 16:06:15 +0300
-Message-Id: <20230807130615.17991-1-aboutphysycs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 7 Aug 2023 09:06:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C424D1701;
+        Mon,  7 Aug 2023 06:06:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 586DA619CC;
+        Mon,  7 Aug 2023 13:06:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37D0FC433C7;
+        Mon,  7 Aug 2023 13:06:23 +0000 (UTC)
+Message-ID: <0b361e6c-d141-4758-edc2-c75b6f0efbe3@xs4all.nl>
+Date:   Mon, 7 Aug 2023 15:06:21 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 3/3] media: exynos4-is: fimc-is: replace duplicate pmu
+ node with phandle
+Content-Language: en-US, nl
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230722115441.139628-1-krzysztof.kozlowski@linaro.org>
+ <20230722115441.139628-3-krzysztof.kozlowski@linaro.org>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+In-Reply-To: <20230722115441.139628-3-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function call was found to be unnecessary as there is no equivalent
-platform_get_drvdata() call to access the private data of the driver. Also,
-the private data is defined in this driver, so there is no risk of it being
-accessed outside of this driver file.
+Hi Krzysztof,
 
-Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
----
- drivers/spi/spi-hisi-sfc-v3xx.c | 2 --
- 1 file changed, 2 deletions(-)
+On 22/07/2023 13:54, Krzysztof Kozlowski wrote:
+> Devicetree for the FIMC IS camera included duplicated PMU node as its
+> child like:
+> 
+>   soc@0 {
+>     system-controller@10020000 { ... }; // Real PMU
+> 
+>     camera@11800000 {
+>       fimc-is@12000000 {
+>         // FIMC IS camera node
+>         pmu@10020000 {
+>           reg = <0x10020000 0x3000>; // Fake PMU node
+>         };
+>       };
+>     };
+>   };
+> 
+> This is not a correct representation of the hardware.  Mapping the PMU
+> (Power Management Unit) IO memory should be via syscon-like phandle
+> (samsung,pmu-syscon, already used for other drivers), not by duplicating
+> "pmu" Devicetree node inside the FIMC IS.  Backward compatibility is
+> preserved.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../platform/samsung/exynos4-is/fimc-is.c     | 33 ++++++++++++++-----
+>  1 file changed, 24 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/media/platform/samsung/exynos4-is/fimc-is.c b/drivers/media/platform/samsung/exynos4-is/fimc-is.c
+> index 530a148fe4d3..c4c191771093 100644
+> --- a/drivers/media/platform/samsung/exynos4-is/fimc-is.c
+> +++ b/drivers/media/platform/samsung/exynos4-is/fimc-is.c
+> @@ -767,12 +767,32 @@ static void fimc_is_debugfs_create(struct fimc_is *is)
+>  static int fimc_is_runtime_resume(struct device *dev);
+>  static int fimc_is_runtime_suspend(struct device *dev);
+>  
+> +static void __iomem *fimc_is_get_pmu_regs(struct device *dev)
+> +{
+> +	struct device_node *node;
+> +	void __iomem *regs;
+> +
+> +	node = of_parse_phandle(dev->of_node, "samsung,pmu-syscon", 0);
+> +	if (!node) {
+> +		dev_warn(dev, "Finding PMU node via deprecated method, update your DTB\n");
+> +		node = of_get_child_by_name(dev->of_node, "pmu");
+> +		if (!node)
+> +			return ERR_PTR(-ENODEV);
+> +	}
+> +
+> +	regs = of_iomap(node, 0);
+> +	of_node_put(node);
+> +	if (!regs)
+> +		return ERR_PTR(-ENOMEM);
 
-diff --git a/drivers/spi/spi-hisi-sfc-v3xx.c b/drivers/spi/spi-hisi-sfc-v3xx.c
-index 7cbcb065bb44..b0da667eefb9 100644
---- a/drivers/spi/spi-hisi-sfc-v3xx.c
-+++ b/drivers/spi/spi-hisi-sfc-v3xx.c
-@@ -443,8 +443,6 @@ static int hisi_sfc_v3xx_probe(struct platform_device *pdev)
- 	host = spi_controller_get_devdata(ctlr);
- 	host->dev = dev;
- 
--	platform_set_drvdata(pdev, host);
--
- 	host->regbase = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(host->regbase)) {
- 		ret = PTR_ERR(host->regbase);
--- 
-2.34.1
+sparse gives me these warnings for these ERR_PTR returns:
+
+drivers/media/platform/samsung/exynos4-is/fimc-is.c:780:39: warning: incorrect type in return expression (different address spaces)
+drivers/media/platform/samsung/exynos4-is/fimc-is.c:780:39:    expected void [noderef] __iomem *
+drivers/media/platform/samsung/exynos4-is/fimc-is.c:780:39:    got void *
+drivers/media/platform/samsung/exynos4-is/fimc-is.c:786:31: warning: incorrect type in return expression (different address spaces)
+drivers/media/platform/samsung/exynos4-is/fimc-is.c:786:31:    expected void [noderef] __iomem *
+drivers/media/platform/samsung/exynos4-is/fimc-is.c:786:31:    got void *
+
+Regards,
+
+	Hans
+
+> +
+> +	return regs;
+> +}
+> +
+>  static int fimc_is_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+>  	struct fimc_is *is;
+>  	struct resource res;
+> -	struct device_node *node;
+>  	int ret;
+>  
+>  	is = devm_kzalloc(&pdev->dev, sizeof(*is), GFP_KERNEL);
+> @@ -794,14 +814,9 @@ static int fimc_is_probe(struct platform_device *pdev)
+>  	if (IS_ERR(is->regs))
+>  		return PTR_ERR(is->regs);
+>  
+> -	node = of_get_child_by_name(dev->of_node, "pmu");
+> -	if (!node)
+> -		return -ENODEV;
+> -
+> -	is->pmu_regs = of_iomap(node, 0);
+> -	of_node_put(node);
+> -	if (!is->pmu_regs)
+> -		return -ENOMEM;
+> +	is->pmu_regs = fimc_is_get_pmu_regs(dev);
+> +	if (IS_ERR(is->pmu_regs))
+> +		return PTR_ERR(is->pmu_regs);
+>  
+>  	is->irq = irq_of_parse_and_map(dev->of_node, 0);
+>  	if (!is->irq) {
 
