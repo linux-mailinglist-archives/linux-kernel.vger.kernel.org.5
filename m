@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B4C771D05
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF02B771D07
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbjHGJU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:20:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52812 "EHLO
+        id S231502AbjHGJVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 05:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbjHGJUw (ORCPT
+        with ESMTP id S230112AbjHGJVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:20:52 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BB710EC
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:20:45 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 92468240010;
-        Mon,  7 Aug 2023 09:20:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691400043;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zrbd4MQZkOGKQB45KGg8LvE/Sm+pVdcwlk6S0hIofJo=;
-        b=SBjghr39VxDBMbWljvWynJZfKFYha7VU91vMNlYu2pZVRmJkHKfEm5XKZH+BG7gyg578OJ
-        CiZz33ma25U+sYohl2VJrH6yfmflR8W6F6rZo9xwac9SQZO3VuJa8FbQA/8AumG1pNtU6z
-        u4ByMuPmzj6+weOBuRP+iOPmYD852byq04ORQLOXey/it3qiZaWeUDAIrjUPkgX3Pk9IVQ
-        XQWssPJfIHWEd+Ol8U+JWDnIzqnea1M97iyi9oTs64XjgEwlUOUCg/Ahs7myAKCVEYMpam
-        dM4F6rP6T9JFiDp9+kvkmtaBM33zjwk3XH007Olh0u2qZH1E5+v5Z9FJoQOSJA==
-Date:   Mon, 7 Aug 2023 11:20:40 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Daniel Golle <daniel@makrotopia.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH v8 0/8] NVMEM cells in sysfs
-Message-ID: <20230807112040.55af2163@xps-13>
-In-Reply-To: <CAGXv+5GaW5wtVqsN+GQJ6rzkmCq1R3c1xeZ=_hNmHmrkVZ=eug@mail.gmail.com>
-References: <20230807082419.38780-1-miquel.raynal@bootlin.com>
-        <CAGXv+5GaW5wtVqsN+GQJ6rzkmCq1R3c1xeZ=_hNmHmrkVZ=eug@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Mon, 7 Aug 2023 05:21:22 -0400
+Received: from icts-p-cavuit-4.kulnet.kuleuven.be (icts-p-cavuit-4.kulnet.kuleuven.be [134.58.240.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E46C1703;
+        Mon,  7 Aug 2023 02:21:17 -0700 (PDT)
+X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: 05B42103.A9A9A
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:145:242:ac11:22])
+        by icts-p-cavuit-4.kulnet.kuleuven.be (Postfix) with ESMTP id 05B42103;
+        Mon,  7 Aug 2023 11:21:14 +0200 (CEST)
+BCmilterd-Mark-Subject: no
+BCmilterd-Errors: 
+BCmilterd-Report: SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_VALID#0.00
+X-CAV-Cluster: smtps
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
+        s=cav; t=1691400073;
+        bh=pVmZuIzag398flw4SkU/Ks3/qpR3wQd+pxQKgYORXPg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=Ms7/Ke76H8j4jeSWuhdpKC9gQ8DvXYKuleAlmShPCRq2JMc2WkqOGzyUbHZV9saen
+         QwBsJPlGe5KlXeHUQBzHgcqlpd66GPc9iR32RYDhuWA9h9236L4UKxkeTHMFe9OlKs
+         nZgxlQvl8i4ErR7vf9BSUDMr6DCjt8r0YivYz/OY=
+Received: from [192.168.44.147] (unknown [77.241.232.19])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id AF16ED4F64AC2;
+        Mon,  7 Aug 2023 11:21:13 +0200 (CEST)
+Message-ID: <f0e29d32-286d-8973-dc34-93f1d8005787@cs.kuleuven.be>
+Date:   Mon, 7 Aug 2023 11:21:08 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 3/5] selftests/sgx: Ensure correct secinfo struct
+ alignment in test enclave.
+Content-Language: en-US
+To:     "Huang, Kai" <kai.huang@intel.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
+References: <20230724165832.15797-1-jo.vanbulck@cs.kuleuven.be>
+ <20230724165832.15797-4-jo.vanbulck@cs.kuleuven.be>
+ <4f4c7b98a707a7d5916d8e62681cc1a4b772dde4.camel@intel.com>
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+In-Reply-To: <4f4c7b98a707a7d5916d8e62681cc1a4b772dde4.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chen-Yu,
+On 03.08.23 06:00, Huang, Kai wrote:> We already have __aligned.  Can 
+you provide more information in what
+> circumstances that __aligned isn't enough to guarantee the alignment?
+> 
+> We have a lot of kernel code which has __aligned but doesn't have volatile.
 
-wenst@chromium.org wrote on Mon, 7 Aug 2023 16:57:03 +0800:
+Thank you. I also dug deeper into this and the proper fix is indeed not 
+to make the variable volatile.
 
-> On Mon, Aug 7, 2023 at 4:24=E2=80=AFPM Miquel Raynal <miquel.raynal@bootl=
-in.com> wrote:
-> >
-> > Hello,
-> >
-> > As part of a previous effort, support for dynamic NVMEM layouts was
-> > brought into mainline, helping a lot in getting information from NVMEM
-> > devices at non-static locations. One common example of NVMEM cell is the
-> > MAC address that must be used. Sometimes the cell content is mainly (or
-> > only) useful to the kernel, and sometimes it is not. Users might also
-> > want to know the content of cells such as: the manufacturing place and
-> > date, the hardware version, the unique ID, etc. Two possibilities in
-> > this case: either the users re-implement their own parser to go through
-> > the whole device and search for the information they want, or the kernel
-> > can expose the content of the cells if deemed relevant. This second
-> > approach sounds way more relevant than the first one to avoid useless
-> > code duplication, so here is a series bringing NVMEM cells content to
-> > the user through sysfs.
-> >
-> > Here is a real life example with a Marvell Armada 7040 TN48m switch:
-> >
-> > $ nvmem=3D/sys/bus/nvmem/devices/1-00563/
-> > $ for i in `ls -1 $nvmem/cells/*`; do basename $i; hexdump -C $i | head=
- -n1; done
-> > country-code@77
-> > 00000000  54 57                                             |TW|
-> > crc32@88
-> > 00000000  bb cd 51 98                                       |..Q.|
-> > device-version@49
-> > 00000000  02                                                |.|
-> > diag-version@80
-> > 00000000  56 31 2e 30 2e 30                                 |V1.0.0|
-> > label-revision@4c
-> > 00000000  44 31                                             |D1|
-> > mac-address@2c
-> > 00000000  18 be 92 13 9a 00                                 |......|
-> > manufacture-date@34
-> > 00000000  30 32 2f 32 34 2f 32 30  32 31 20 31 38 3a 35 39  |02/24/2021=
- 18:59|
-> > manufacturer@72
-> > 00000000  44 4e 49                                          |DNI|
-> > num-macs@6e
-> > 00000000  00 40                                             |.@|
-> > onie-version@61
-> > 00000000  32 30 32 30 2e 31 31 2d  56 30 31                 |2020.11-V0=
-1|
-> > platform-name@50
-> > 00000000  38 38 46 37 30 34 30 2f  38 38 46 36 38 32 30     |88F7040/88=
-F6820|
-> > product-name@d
-> > 00000000  54 4e 34 38 4d 2d 50 2d  44 4e                    |TN48M-P-DN|
-> > serial-number@19
-> > 00000000  54 4e 34 38 31 50 32 54  57 32 30 34 32 30 33 32  |TN481P2TW2=
-042032|
-> > vendor@7b
-> > 00000000  44 4e 49                                          |DNI|
-> >
-> > This layout with a cells/ folder containing one file per cell has been
-> > legitimately challenged by John Thomson. I am not against the idea of
-> > having a sub-folder per cell but I did not find a relevant way to do
-> > that so for know I did not change the sysfs organization. If someone
-> > really wants this other layout, please provide a code snipped which I
-> > can integrate.
-> >
-> > Current support does not include:
-> > * The knowledge of the type of data (binary vs. ASCII), so by default
-> >   all cells are exposed in binary form.
-> > * Write support.
-> >
-> > Changes in v8:
-> > * Fix a compilation warning whith !CONFIG_NVMEM_SYSFS.
-> > * Add a patch to return NULL when no layout is found (reported by Dan
-> >   Carpenter).
-> > * Fixed the documentation as well as the cover letter regarding the
-> >   addition of addresses in the cell names. =20
->=20
-> It seems this version no longer creates cells for legacy DT layout format=
-s?
-> So while I assume the issue I ran into is fixed, I don't see any cells
-> created on the MT8183 either.
->=20
-> Is this intended?
+The real problem is that the inline assembly does not have the "memory" 
+clobber to tell the compiler that the "assembly code performs memory 
+reads or writes to items other than those listed in the input and output 
+operands (for example, accessing the memory pointed to by one of the 
+input parameters)" [1].
 
-Not at all, but I am surprised they are no longer created. I will add
-fake cells and see how it behaves.
+I checked that, depending on the optimizations and compiler (gcc vs 
+clang), the compiler may indeed reorder the write to secinfo.flags to 
+_after_ the inline asm block. Declaring secinfo as volatile fixed that, 
+but the proper fix is of course to properly include a "memory" clobber 
+for the asm block.
 
-Thanks for the feedback!
-Miqu=C3=A8l
+I'll include a fix to include a "memory" clobber for the inline asm 
+block in the next patch revision.
+
+[1] 
+https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Clobbers-and-Scratch-Registers-1
