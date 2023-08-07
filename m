@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8770B772AE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D169772AE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbjHGQbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38272 "EHLO
+        id S229827AbjHGQcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:32:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHGQbo (ORCPT
+        with ESMTP id S229512AbjHGQcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:31:44 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C082172A
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:31:20 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9cbaee7a9so76420261fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:31:20 -0700 (PDT)
+        Mon, 7 Aug 2023 12:32:45 -0400
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD421BEA
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:32:26 -0700 (PDT)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1a1fa977667so3589148fac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:32:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691425821; x=1692030621;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4YJdY3GQFeB1iPWfE21MENyRveBHqJ2bQXsYhMqaqNs=;
-        b=bud6gN/t8XSLO8U7xhVgJsxkJbTLTumJZ3cwqonbSPcqmJZKWDlYaKV5DHPrxuU0ct
-         NecgEDbhmXMCPOKz71g4zgwIUvMvmYBdnOrZS1DLD3o+RTfjUSi4uXq0jt4K9tFfKgTE
-         I98vyS/Kyazu9ASQ6Tni4YKr0DOOwxoql2GDoEfPUefntb+xlAP5IG/O3KWa16jtKFLo
-         /peIzGTRy9XLXBdw7WlJX8elHsuEWzyNqua9ZX84jo9rFsbis2+7PJaEoyJoloLB0DRM
-         FwMDyKx90u83xosKpkv8+wz9XAiHZNfmaUjMqXBWj9OVE2pk4rM1lA8f+3xN/NGvbkO3
-         GWGg==
+        d=gmail.com; s=20221208; t=1691425945; x=1692030745;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ygTIUkZv7ZsC1Ak6vtB58w1LRxko3ruoE1DG7vp7o7g=;
+        b=LAXiJfRVuW487oHewQhGBJPinFMxMoTRw/6b/moPXJpsf1IV75KV9K92HO/autzoOR
+         rRg0qd7U7Rch7Wyf05kMunfAcflWrTpZGS9VV080lDEDu+ZywvmMy7A8gT0slXNWrPOe
+         VGhzlgOl2baKd3H6Y0Dqk1IvndoCx0uzmJ5fYVvf10TVZ9mIbR3WgwKEoIf15uhtr396
+         g8OpYuIEtz1oW37MOQbIRoZUsuF9g6VwQHNKQpH0H2IF/L9A0cZ6mmMT9DXr5lwXXGXT
+         dmvkYZG6pmghrVNBKPdjcPL8+A5MZfAaP7jF0+JZrPvfYJvw9ZtPhd8VI7tmcNLTh3A6
+         Xl2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691425821; x=1692030621;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4YJdY3GQFeB1iPWfE21MENyRveBHqJ2bQXsYhMqaqNs=;
-        b=cERAPtS1dEpozCMOrKvCmDZsbDD061a5Xi1q/UA2tjr0UkuI+U9a9ui6aglEf0GYh1
-         Mki8UkUjAufW/GMXwlDioeMG8duOICO2a+52AXUbZMN2o66VvcQbGHM246J8Pmee/DOG
-         T6BK0jequfVsiPy3rdwRSwtx2JbXquvt+G4ZNM+qNiFqaCNdfIebF9kofCFx6II5xREp
-         YiTWPT1SuI1Qpf+ubojDpWoyxVzZQ51Awg3V+yg+fVIk4jYv60QtThNJqOmTHVKfUTDz
-         nZGMBBWo7jCXOgbgQg1RTgSnp7bfOdvTu6v4ODu7IImpVLqoEJizEPUarIkZL0kFTbPI
-         8vWw==
-X-Gm-Message-State: AOJu0Yx8eVCBDMBghcoZ260uMbj9WyLOeLkszZIuYRSXceXcAQ1uCSUp
-        IhLh1SO2f4zpVxVi2DzTr94=
-X-Google-Smtp-Source: AGHT+IEXhrOmdBHpN5Q/bIH9nNrrHfqrgV5o9e7LcLLVXhYvdjOFkZFkSL5OYTbgiR6Cg8CGLsppgw==
-X-Received: by 2002:a2e:9dc7:0:b0:2b9:ea17:5580 with SMTP id x7-20020a2e9dc7000000b002b9ea175580mr7062788ljj.17.1691425820702;
-        Mon, 07 Aug 2023 09:30:20 -0700 (PDT)
-Received: from f.. (cst-prg-21-219.cust.vodafone.cz. [46.135.21.219])
-        by smtp.gmail.com with ESMTPSA id b3-20020a170906038300b0098e42bef732sm5389418eja.183.2023.08.07.09.30.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 09:30:19 -0700 (PDT)
-From:   Mateusz Guzik <mjguzik@gmail.com>
-To:     dhowells@redhat.com, keescook@chromium.org
-Cc:     linux-kernel@vger.kernel.org, Mateusz Guzik <mjguzik@gmail.com>
-Subject: [PATCH] cred: add get_cred_many and put_cred_many
-Date:   Mon,  7 Aug 2023 18:30:14 +0200
-Message-Id: <20230807163014.1425738-1-mjguzik@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20221208; t=1691425945; x=1692030745;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ygTIUkZv7ZsC1Ak6vtB58w1LRxko3ruoE1DG7vp7o7g=;
+        b=bVb8N90GS0XiX/v+U07wnG+9CZhqw1rAPqcexl9x9o6jJDgFO+V6MYeqduT4/sUt90
+         8QkxsjzMVi95UrPTWExxsAHTNmo+dOVHvHWNie9K5QVr3pR+EmfH3ZAHUx2lvwqYHLGV
+         ddYb0e8CgR6Pjo4FX6XtkwDmL+tLpx6bd4npHBElcD+XLT/t74+VyQH1EhPxLqlMMRzI
+         IK8tBzf2Bl8uw8GTfFodIQdqUzx9ThOwDdNWoQP2MSofRmeDd0k4LWCGZ4dhwVTTNQy+
+         qUBxWvbJtfe21ejCxt3a15dMabeYxrZwVrTcu4iLAlSbAKbFxNuobBQLEFtF4mA/xMbJ
+         3Xmw==
+X-Gm-Message-State: AOJu0Yy+MQWLKnkQtPj1aNGXV3YCqy/x0zrClXgK6Q7jKLZv8zD6jI55
+        wAKN3Vp4e4xepbSo0gsjXRbNtq0F9q+F0n1CHQhxgnu3
+X-Google-Smtp-Source: AGHT+IFADLzDrmJBNqD0h6jZKZIbu6BHvz8y++9SQhxMWpdkTVMzHfELTGfP1WMkMgGjfOdSRul6Lm9Zr3/E55f5C9o=
+X-Received: by 2002:a05:6870:8294:b0:1bb:8333:ab8a with SMTP id
+ q20-20020a056870829400b001bb8333ab8amr10538221oae.4.1691425945123; Mon, 07
+ Aug 2023 09:32:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230801055826.6000-1-sunran001@208suo.com>
+In-Reply-To: <20230801055826.6000-1-sunran001@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 7 Aug 2023 12:32:14 -0400
+Message-ID: <CADnq5_PJZ-vS+p8ky1C2LFPEfp6bVfTMveL7wFeKKytwvqePgw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/pm: Clean up errors in vega10_hwmgr.c
+To:     Ran Sun <sunran001@208suo.com>
+Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -68,148 +70,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shaves back-to-back atomics in a few places.
+This one doesn't apply due to whitespace differences.
 
-Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
----
- include/linux/cred.h | 27 +++++++++++++++++++++------
- kernel/cred.c        | 29 +++++++++++++++++------------
- 2 files changed, 38 insertions(+), 18 deletions(-)
+Alex
 
-diff --git a/include/linux/cred.h b/include/linux/cred.h
-index 9ed9232af934..b2b570ba204a 100644
---- a/include/linux/cred.h
-+++ b/include/linux/cred.h
-@@ -226,12 +226,17 @@ static inline bool cap_ambient_invariant_ok(const struct cred *cred)
-  * Get a reference on the specified set of new credentials.  The caller must
-  * release the reference.
-  */
--static inline struct cred *get_new_cred(struct cred *cred)
-+static inline struct cred *get_new_cred_many(struct cred *cred, int nr)
- {
--	atomic_inc(&cred->usage);
-+	atomic_add(nr, &cred->usage);
- 	return cred;
- }
- 
-+static inline struct cred *get_new_cred(struct cred *cred)
-+{
-+	return get_new_cred_many(cred, 1);
-+}
-+
- /**
-  * get_cred - Get a reference on a set of credentials
-  * @cred: The credentials to reference
-@@ -245,14 +250,19 @@ static inline struct cred *get_new_cred(struct cred *cred)
-  * accidental alteration of a set of credentials that should be considered
-  * immutable.
-  */
--static inline const struct cred *get_cred(const struct cred *cred)
-+static inline const struct cred *get_cred_many(const struct cred *cred, int nr)
- {
- 	struct cred *nonconst_cred = (struct cred *) cred;
- 	if (!cred)
- 		return cred;
- 	validate_creds(cred);
- 	nonconst_cred->non_rcu = 0;
--	return get_new_cred(nonconst_cred);
-+	return get_new_cred_many(nonconst_cred, nr);
-+}
-+
-+static inline const struct cred *get_cred(const struct cred *cred)
-+{
-+	return get_cred_many(cred, 1);
- }
- 
- static inline const struct cred *get_cred_rcu(const struct cred *cred)
-@@ -278,17 +288,22 @@ static inline const struct cred *get_cred_rcu(const struct cred *cred)
-  * on task_struct are attached by const pointers to prevent accidental
-  * alteration of otherwise immutable credential sets.
-  */
--static inline void put_cred(const struct cred *_cred)
-+static inline void put_cred_many(const struct cred *_cred, int nr)
- {
- 	struct cred *cred = (struct cred *) _cred;
- 
- 	if (cred) {
- 		validate_creds(cred);
--		if (atomic_dec_and_test(&(cred)->usage))
-+		if (atomic_sub_and_test(nr, &cred->usage))
- 			__put_cred(cred);
- 	}
- }
- 
-+static inline void put_cred(const struct cred *cred)
-+{
-+	put_cred_many(cred, 1);
-+}
-+
- /**
-  * current_cred - Access the current task's subjective credentials
-  *
-diff --git a/kernel/cred.c b/kernel/cred.c
-index 811ad654abd1..8a506bc7c1b8 100644
---- a/kernel/cred.c
-+++ b/kernel/cred.c
-@@ -159,23 +159,30 @@ EXPORT_SYMBOL(__put_cred);
-  */
- void exit_creds(struct task_struct *tsk)
- {
--	struct cred *cred;
-+	struct cred *real_cred, *cred;
- 
- 	kdebug("exit_creds(%u,%p,%p,{%d,%d})", tsk->pid, tsk->real_cred, tsk->cred,
- 	       atomic_read(&tsk->cred->usage),
- 	       read_cred_subscribers(tsk->cred));
- 
--	cred = (struct cred *) tsk->real_cred;
-+	real_cred = (struct cred *) tsk->real_cred;
- 	tsk->real_cred = NULL;
--	validate_creds(cred);
--	alter_cred_subscribers(cred, -1);
--	put_cred(cred);
- 
- 	cred = (struct cred *) tsk->cred;
- 	tsk->cred = NULL;
--	validate_creds(cred);
--	alter_cred_subscribers(cred, -1);
--	put_cred(cred);
-+
-+	if (real_cred == cred) {
-+		validate_creds(cred);
-+		alter_cred_subscribers(cred, -2);
-+		put_cred_many(cred, 2);
-+	} else {
-+		validate_creds(real_cred);
-+		validate_creds(cred);
-+		alter_cred_subscribers(real_cred, -1);
-+		put_cred(real_cred);
-+		alter_cred_subscribers(cred, -1);
-+		put_cred(cred);
-+	}
- 
- #ifdef CONFIG_KEYS_REQUEST_CACHE
- 	key_put(tsk->cached_requested_key);
-@@ -352,8 +359,7 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
- #endif
- 		clone_flags & CLONE_THREAD
- 	    ) {
--		p->real_cred = get_cred(p->cred);
--		get_cred(p->cred);
-+		p->real_cred = get_cred_many(p->cred, 2);
- 		alter_cred_subscribers(p->cred, 2);
- 		kdebug("share_creds(%p{%d,%d})",
- 		       p->cred, atomic_read(&p->cred->usage),
-@@ -517,8 +523,7 @@ int commit_creds(struct cred *new)
- 		proc_id_connector(task, PROC_EVENT_GID);
- 
- 	/* release the old obj and subj refs both */
--	put_cred(old);
--	put_cred(old);
-+	put_cred_many(old, 2);
- 	return 0;
- }
- EXPORT_SYMBOL(commit_creds);
--- 
-2.39.2
-
+On Tue, Aug 1, 2023 at 1:58=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
+:
+>
+> Fix the following errors reported by checkpatch:
+>
+> ERROR: trailing statements should be on next line
+> ERROR: space required before the open brace '{'
+> ERROR: space required before the open parenthesis '('
+> ERROR: space required after that ',' (ctx:VxV)
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>  .../drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c  | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c b/driv=
+ers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
+> index 08518bc1cbbe..ba7294daddfe 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
+> @@ -670,17 +670,23 @@ static int vega10_patch_voltage_dependency_tables_w=
+ith_lookup_table(
+>         for (i =3D 0; i < 6; i++) {
+>                 struct phm_ppt_v1_clock_voltage_dependency_table *vdt;
+>                 switch (i) {
+> -               case 0: vdt =3D table_info->vdd_dep_on_socclk;
+> +               case 0:
+> +                       vdt =3D table_info->vdd_dep_on_socclk;
+>                         break;
+> -               case 1: vdt =3D table_info->vdd_dep_on_sclk;
+> +               case 1:
+> +                       vdt =3D table_info->vdd_dep_on_sclk;
+>                         break;
+> -               case 2: vdt =3D table_info->vdd_dep_on_dcefclk;
+> +               case 2:
+> +                       vdt =3D table_info->vdd_dep_on_dcefclk;
+>                         break;
+> -               case 3: vdt =3D table_info->vdd_dep_on_pixclk;
+> +               case 3:
+> +                       vdt =3D table_info->vdd_dep_on_pixclk;
+>                         break;
+> -               case 4: vdt =3D table_info->vdd_dep_on_dispclk;
+> +               case 4:
+> +                       vdt =3D table_info->vdd_dep_on_dispclk;
+>                         break;
+> -               case 5: vdt =3D table_info->vdd_dep_on_phyclk;
+> +               case 5:
+> +                       vdt =3D table_info->vdd_dep_on_phyclk;
+>                         break;
+>                 }
+>
+> --
+> 2.17.1
+>
