@@ -2,174 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D218F772B04
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747E7772AEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbjHGQea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40694 "EHLO
+        id S229931AbjHGQdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231615AbjHGQeL (ORCPT
+        with ESMTP id S229795AbjHGQdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:34:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333721BE3
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:33:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691425985;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+2S62aAs2pHMB7uH7IHyHCrQs/gKhwqzaa+nqwK3QP4=;
-        b=FSNOPDBgd2rWzGhx410wphPZMeE9jCOHA8O2M8czSrI4vOwxGetef6QrzXL1HOnBFXD/xo
-        loiEAlcr+bkZQryGxpW7boc321soMYA25YgEs+0Hn54yVPcKg51iSnkjmS0ye8vhsPs06A
-        t9XcBbriuBkWSY2oYviF9dvnuR8jFW4=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-641-tnDrFH7INU-qhsWp06j72Q-1; Mon, 07 Aug 2023 12:33:04 -0400
-X-MC-Unique: tnDrFH7INU-qhsWp06j72Q-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-993c2d9e496so326315866b.0
+        Mon, 7 Aug 2023 12:33:20 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90FA1BE1
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:33:04 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6bc9d16c317so3712723a34.1
         for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:33:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691425982; x=1692030782;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xyv2Ai8G6V59y/N5vBsqZfF6gA3n7Ds45WJJHRAYVC8=;
+        b=NQX76BCOk/+2efqOSj8cNKLVHOsCRIJbntEvlmB9b3zrcky5wgMTIUcaw4wQEJSAr6
+         qJ6/EElIlKUr4ztPrd++6fJ6AyAFE0j8CMyuLZKbXiJpQu3jzBOjtGWsvRFNxYFx6yxD
+         4WGHGe3DbsX4B1dJtrr19XyXtind4830Qb1N8CrNdp7BDSZd4IFfw+kXugYlFFls7ADW
+         RK3SnyyshNV1AwxMSjYuA1Vap77n9x2ogpHMOdAu+AI5Mm1KvB3SCUj1VqkMckKi40om
+         ba1wZ/bQp6IBo/SkdGh1Ex+8KT5mXVBxFyy7xAopNTs3em6aZCcpV6h66QIKPr/nmvnK
+         Ggcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691425983; x=1692030783;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691425982; x=1692030782;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+2S62aAs2pHMB7uH7IHyHCrQs/gKhwqzaa+nqwK3QP4=;
-        b=LHFHog/TcqwJhgiPmYVmWJ9/P9pGBIskbvuW+vxhew4gDwnuDoJJYTubtsJmyNvCkK
-         s6pMU1xjhEXog+brvhiJXIkHzR59JQ7bGA62gUjy+ptKOn6IGBS7G77TuoWGL7+TEQ4/
-         IB7H4xaK+2NQWDEzQLPqeMprnwNJlilhTjOSHJgp1B+aCxFWNVzY9pHOG+mJHmNzEm1V
-         FTsI9gz1LHZwl+1cCfE+iijdcsjGTjM0TRWhzXmg4C1+wXsbhsXTU8BkawkZEaDs6A7A
-         ootwMO2jgt69KPm9ay+oSiUtIx4BWRlHOh7Vr+Mq46xADMj6u3qTzO6odolocFSTJE7a
-         OrXg==
-X-Gm-Message-State: AOJu0YwDusZEH4UkGKgVH8yCboCGuV0d2F9UXtigxryHY4ZdvJwE+SE4
-        kXJ7gXtjQxzkNu3N7p20MVJrcVthfIPk+2gCkm32X/gyTl4gSAzd+D8Fwcp7ctTghA/P3YkRd5V
-        CFPnYLo3yEvVJHayzw0eVsQgG
-X-Received: by 2002:a17:907:2c42:b0:99b:ef86:60d8 with SMTP id hf2-20020a1709072c4200b0099bef8660d8mr7492480ejc.5.1691425982806;
-        Mon, 07 Aug 2023 09:33:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHDd4lJA/lPWWyUyn4AV5CwgF5Dpm9yGhjxgNLtBZXvmCaU/mnXlPtmXy0UEJZds96u9UqFlQ==
-X-Received: by 2002:a17:907:2c42:b0:99b:ef86:60d8 with SMTP id hf2-20020a1709072c4200b0099bef8660d8mr7492472ejc.5.1691425982642;
-        Mon, 07 Aug 2023 09:33:02 -0700 (PDT)
-Received: from cassiopeiae.. ([2a02:810d:4b3f:de9c:642:1aff:fe31:a19f])
-        by smtp.gmail.com with ESMTPSA id bx22-20020a170906a1d600b00993860a6d37sm5409393ejb.40.2023.08.07.09.33.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 09:33:02 -0700 (PDT)
-From:   Danilo Krummrich <dakr@redhat.com>
-To:     airlied@gmail.com, daniel@ffwll.ch, bskeggs@redhat.com,
-        kherbst@redhat.com, lyude@redhat.com, sfr@canb.auug.org.au
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Danilo Krummrich <dakr@redhat.com>
-Subject: [PATCH drm-misc-next 5/5] drm/nouveau: uvmm: remove dedicated VM pointer from VMAs
-Date:   Mon,  7 Aug 2023 18:32:26 +0200
-Message-ID: <20230807163238.2091-6-dakr@redhat.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230807163238.2091-1-dakr@redhat.com>
-References: <20230807163238.2091-1-dakr@redhat.com>
+        bh=Xyv2Ai8G6V59y/N5vBsqZfF6gA3n7Ds45WJJHRAYVC8=;
+        b=f2UDFeP7HFa4YyjaFGLACXfIU1ILVgLroK3bfOz6QnaCrbpXXrcy9dHdB47m1+VK3D
+         CAMLjzjeli7d+tSwasBZ+wFZRaIThxqvbIBOEhCQrl9VKx12O0HTthEzIYEw5/2Cq8RM
+         UmCcY6a8zyrzEfZxqQmrT4Haq5LT5808YLZkC5u5ekN3hs4I3W7aKeSl1QHx1bqKomNm
+         UmQHYJnFPOSMIRkX14tpAJk2sQminSBwwuRGk3iv0BCs/yYAoQxNMVmeTUGjnLF3NJey
+         tSWcL7NkUSGrNTUpCIoBJ1hgSZbCt9ZQcRJIayZhGPoDzcoDFtu4DPDH8aFBceU/vUC+
+         0WwA==
+X-Gm-Message-State: AOJu0YyL8eD2nMRMDVlNFNzdITuHg/DAcLCh6uOCEP93bZOvLs0jPTte
+        u4KrEFGGWF4lYaJh7T7TAHCIwWPVgeNxuNhcZVw=
+X-Google-Smtp-Source: AGHT+IEv0wSPqpzLjRH4T7IC9t0Cqdza37V3DEkz92T/k1+NQ5jEsfTCnO6IqACa6NIHr+9PGfuSxtBa+FwOnLb0sdo=
+X-Received: by 2002:a05:6870:5494:b0:1be:cf5d:6f7b with SMTP id
+ f20-20020a056870549400b001becf5d6f7bmr11550277oan.17.1691425981935; Mon, 07
+ Aug 2023 09:33:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230801060443.6090-1-sunran001@208suo.com>
+In-Reply-To: <20230801060443.6090-1-sunran001@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 7 Aug 2023 12:32:51 -0400
+Message-ID: <CADnq5_OEG9hHxR7wgse7x3ibzH9q=bL66wCAhS2fDyTmRjeKqQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/pm: Clean up errors in vega12_pptable.h
+To:     Ran Sun <sunran001@208suo.com>
+Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VMAs can find their corresponding VM through their embedded struct
-drm_gpuva which already carries a pointer to a struct drm_gpuva_manager
-which the VM is based on. Hence, remove the struct nouveau_uvmm pointer
-from struct nouveau_uvma to save a couple of bytes per mapping.
+Applied.  Thanks!
 
-Signed-off-by: Danilo Krummrich <dakr@redhat.com>
----
- drivers/gpu/drm/nouveau/nouveau_uvmm.c |  9 ++++-----
- drivers/gpu/drm/nouveau/nouveau_uvmm.h | 10 +++++-----
- 2 files changed, 9 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-index 91b964ef98b1..3a1e8538f205 100644
---- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-@@ -181,7 +181,7 @@ nouveau_uvma_vmm_put(struct nouveau_uvma *uvma)
- 	u64 addr = uvma->va.va.addr;
- 	u64 range = uvma->va.va.range;
- 
--	return nouveau_uvmm_vmm_put(uvma->uvmm, addr, range);
-+	return nouveau_uvmm_vmm_put(to_uvmm(uvma), addr, range);
- }
- 
- static int
-@@ -192,7 +192,7 @@ nouveau_uvma_map(struct nouveau_uvma *uvma,
- 	u64 offset = uvma->va.gem.offset;
- 	u64 range = uvma->va.va.range;
- 
--	return nouveau_uvmm_vmm_map(uvma->uvmm, addr, range,
-+	return nouveau_uvmm_vmm_map(to_uvmm(uvma), addr, range,
- 				    offset, uvma->kind, mem);
- }
- 
-@@ -206,7 +206,7 @@ nouveau_uvma_unmap(struct nouveau_uvma *uvma)
- 	if (drm_gpuva_invalidated(&uvma->va))
- 		return 0;
- 
--	return nouveau_uvmm_vmm_unmap(uvma->uvmm, addr, range, sparse);
-+	return nouveau_uvmm_vmm_unmap(to_uvmm(uvma), addr, range, sparse);
- }
- 
- static int
-@@ -586,7 +586,6 @@ op_map_prepare(struct nouveau_uvmm *uvmm,
- 	if (ret)
- 		return ret;
- 
--	uvma->uvmm = uvmm;
- 	uvma->region = args->region;
- 	uvma->kind = args->kind;
- 
-@@ -794,7 +793,7 @@ op_unmap_range(struct drm_gpuva_op_unmap *u,
- 	bool sparse = !!uvma->region;
- 
- 	if (!drm_gpuva_invalidated(u->va))
--		nouveau_uvmm_vmm_unmap(uvma->uvmm, addr, range, sparse);
-+		nouveau_uvmm_vmm_unmap(to_uvmm(uvma), addr, range, sparse);
- }
- 
- static void
-diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.h b/drivers/gpu/drm/nouveau/nouveau_uvmm.h
-index 534baadc3bf7..fc7f6fd2a4e1 100644
---- a/drivers/gpu/drm/nouveau/nouveau_uvmm.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.h
-@@ -37,12 +37,15 @@ struct nouveau_uvma_region {
- struct nouveau_uvma {
- 	struct drm_gpuva va;
- 
--	struct nouveau_uvmm *uvmm;
- 	struct nouveau_uvma_region *region;
--
- 	u8 kind;
- };
- 
-+#define uvmm_from_mgr(x) container_of((x), struct nouveau_uvmm, umgr)
-+#define uvma_from_va(x) container_of((x), struct nouveau_uvma, va)
-+
-+#define to_uvmm(x) uvmm_from_mgr((x)->va.mgr)
-+
- struct nouveau_uvmm_bind_job {
- 	struct nouveau_job base;
- 
-@@ -79,9 +82,6 @@ struct nouveau_uvmm_bind_job_args {
- 
- #define to_uvmm_bind_job(job) container_of((job), struct nouveau_uvmm_bind_job, base)
- 
--#define uvmm_from_mgr(x) container_of((x), struct nouveau_uvmm, umgr)
--#define uvma_from_va(x) container_of((x), struct nouveau_uvma, va)
--
- int nouveau_uvmm_init(struct nouveau_uvmm *uvmm, struct nouveau_cli *cli,
- 		      u64 kernel_managed_addr, u64 kernel_managed_size);
- void nouveau_uvmm_fini(struct nouveau_uvmm *uvmm);
--- 
-2.41.0
-
+On Tue, Aug 1, 2023 at 2:04=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
+:
+>
+> Fix the following errors reported by checkpatch:
+>
+> ERROR: open brace '{' following struct go on the same line
+> ERROR: space prohibited before open square bracket '['
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>  .../gpu/drm/amd/pm/powerplay/hwmgr/vega12_pptable.h   | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_pptable.h b/dr=
+ivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_pptable.h
+> index bf4f5095b80d..9b8435a4d306 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_pptable.h
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_pptable.h
+> @@ -72,8 +72,7 @@ enum ATOM_VEGA12_PPCLOCK_ID {
+>  typedef enum ATOM_VEGA12_PPCLOCK_ID ATOM_VEGA12_PPCLOCK_ID;
+>
+>
+> -typedef struct _ATOM_VEGA12_POWERPLAYTABLE
+> -{
+> +typedef struct _ATOM_VEGA12_POWERPLAYTABLE {
+>        struct atom_common_table_header sHeader;
+>        UCHAR  ucTableRevision;
+>        USHORT usTableSize;
+> @@ -92,11 +91,11 @@ typedef struct _ATOM_VEGA12_POWERPLAYTABLE
+>        USHORT usODPowerSavePowerLimit;
+>        USHORT usSoftwareShutdownTemp;
+>
+> -      ULONG PowerSavingClockMax  [ATOM_VEGA12_PPCLOCK_COUNT];
+> -      ULONG PowerSavingClockMin  [ATOM_VEGA12_PPCLOCK_COUNT];
+> +      ULONG PowerSavingClockMax[ATOM_VEGA12_PPCLOCK_COUNT];
+> +      ULONG PowerSavingClockMin[ATOM_VEGA12_PPCLOCK_COUNT];
+>
+> -      ULONG ODSettingsMax [ATOM_VEGA12_ODSETTING_COUNT];
+> -      ULONG ODSettingsMin [ATOM_VEGA12_ODSETTING_COUNT];
+> +      ULONG ODSettingsMax[ATOM_VEGA12_ODSETTING_COUNT];
+> +      ULONG ODSettingsMin[ATOM_VEGA12_ODSETTING_COUNT];
+>
+>        USHORT usReserve[5];
+>
+> --
+> 2.17.1
+>
