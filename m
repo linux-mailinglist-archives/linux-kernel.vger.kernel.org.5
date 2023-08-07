@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A86F77722F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A8D7722F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232479AbjHGLnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:43:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50058 "EHLO
+        id S231744AbjHGLnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233445AbjHGLnb (ORCPT
+        with ESMTP id S233097AbjHGLmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:43:31 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B2744213E;
-        Mon,  7 Aug 2023 04:41:31 -0700 (PDT)
-Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RKDph6HGmz1KCLT;
+        Mon, 7 Aug 2023 07:42:53 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6BE3A92;
+        Mon,  7 Aug 2023 04:40:34 -0700 (PDT)
+Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RKDph447zzfbnL;
         Mon,  7 Aug 2023 19:38:20 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 7 Aug 2023 19:39:28 +0800
+ 15.1.2507.27; Mon, 7 Aug 2023 19:39:29 +0800
 From:   Jijie Shao <shaojijie@huawei.com>
 To:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
         <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
@@ -30,9 +30,9 @@ CC:     <shenjian15@huawei.com>, <wangjie125@huawei.com>,
         <liuyonglong@huawei.com>, <wangpeiyang1@huawei.com>,
         <shaojijie@huawei.com>, <netdev@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH V2 net 2/4] net: hns3: refactor hclge_mac_link_status_wait for interface reuse
-Date:   Mon, 7 Aug 2023 19:34:50 +0800
-Message-ID: <20230807113452.474224-3-shaojijie@huawei.com>
+Subject: [PATCH V2 net 3/4] net: hns3: add wait until mac link down
+Date:   Mon, 7 Aug 2023 19:34:51 +0800
+Message-ID: <20230807113452.474224-4-shaojijie@huawei.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230807113452.474224-1-shaojijie@huawei.com>
 References: <20230807113452.474224-1-shaojijie@huawei.com>
@@ -44,8 +44,8 @@ X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemm600007.china.huawei.com (7.193.23.208)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -54,68 +54,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jie Wang <wangjie125@huawei.com>
 
-Some nic configurations could only be performed after link is down. So this
-patch refactor this API for reuse.
+In some configure flow of hns3 driver, for example, change mtu, it will
+disable MAC through firmware before configuration. But firmware disables
+MAC asynchronously. The rx traffic may be not stopped in this case.
 
+So fixes it by waiting until mac link is down.
+
+Fixes: a9775bb64aa7 ("net: hns3: fix set and get link ksettings issue")
 Signed-off-by: Jie Wang <wangjie125@huawei.com>
 Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 ---
- .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c    | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 5594b8dd1e1d..b440e42e1d9c 100644
+index b440e42e1d9c..a940e35aef29 100644
 --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
 +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -72,6 +72,8 @@ static void hclge_restore_hw_table(struct hclge_dev *hdev);
- static void hclge_sync_promisc_mode(struct hclge_dev *hdev);
- static void hclge_sync_fd_table(struct hclge_dev *hdev);
- static void hclge_update_fec_stats(struct hclge_dev *hdev);
-+static int hclge_mac_link_status_wait(struct hclge_dev *hdev, int link_ret,
-+				      int wait_cnt);
+@@ -7560,6 +7560,8 @@ static void hclge_enable_fd(struct hnae3_handle *handle, bool enable)
  
- static struct hnae3_ae_algo ae_algo;
- 
-@@ -7647,10 +7649,9 @@ static void hclge_phy_link_status_wait(struct hclge_dev *hdev,
- 	} while (++i < HCLGE_PHY_LINK_STATUS_NUM);
- }
- 
--static int hclge_mac_link_status_wait(struct hclge_dev *hdev, int link_ret)
-+static int hclge_mac_link_status_wait(struct hclge_dev *hdev, int link_ret,
-+				      int wait_cnt)
+ static void hclge_cfg_mac_mode(struct hclge_dev *hdev, bool enable)
  {
--#define HCLGE_MAC_LINK_STATUS_NUM  100
--
- 	int link_status;
- 	int i = 0;
- 	int ret;
-@@ -7663,13 +7664,15 @@ static int hclge_mac_link_status_wait(struct hclge_dev *hdev, int link_ret)
- 			return 0;
- 
- 		msleep(HCLGE_LINK_STATUS_MS);
--	} while (++i < HCLGE_MAC_LINK_STATUS_NUM);
-+	} while (++i < wait_cnt);
- 	return -EBUSY;
- }
- 
- static int hclge_mac_phy_link_status_wait(struct hclge_dev *hdev, bool en,
- 					  bool is_phy)
- {
-+#define HCLGE_MAC_LINK_STATUS_NUM  100
++#define HCLGE_LINK_STATUS_WAIT_CNT  3
 +
- 	int link_ret;
+ 	struct hclge_desc desc;
+ 	struct hclge_config_mac_mode_cmd *req =
+ 		(struct hclge_config_mac_mode_cmd *)desc.data;
+@@ -7584,9 +7586,15 @@ static void hclge_cfg_mac_mode(struct hclge_dev *hdev, bool enable)
+ 	req->txrx_pad_fcs_loop_en = cpu_to_le32(loop_en);
  
- 	link_ret = en ? HCLGE_LINK_STATUS_UP : HCLGE_LINK_STATUS_DOWN;
-@@ -7677,7 +7680,8 @@ static int hclge_mac_phy_link_status_wait(struct hclge_dev *hdev, bool en,
- 	if (is_phy)
- 		hclge_phy_link_status_wait(hdev, link_ret);
- 
--	return hclge_mac_link_status_wait(hdev, link_ret);
-+	return hclge_mac_link_status_wait(hdev, link_ret,
-+					  HCLGE_MAC_LINK_STATUS_NUM);
+ 	ret = hclge_cmd_send(&hdev->hw, &desc, 1);
+-	if (ret)
++	if (ret) {
+ 		dev_err(&hdev->pdev->dev,
+ 			"mac enable fail, ret =%d.\n", ret);
++		return;
++	}
++
++	if (!enable)
++		hclge_mac_link_status_wait(hdev, HCLGE_LINK_STATUS_DOWN,
++					   HCLGE_LINK_STATUS_WAIT_CNT);
  }
  
- static int hclge_set_app_loopback(struct hclge_dev *hdev, bool en)
+ static int hclge_config_switch_param(struct hclge_dev *hdev, int vfid,
 -- 
 2.30.0
 
