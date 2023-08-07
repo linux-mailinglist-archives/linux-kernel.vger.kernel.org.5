@@ -2,103 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E36A2772B5B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1AAD772B63
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbjHGQpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52106 "EHLO
+        id S230460AbjHGQqv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Aug 2023 12:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbjHGQpI (ORCPT
+        with ESMTP id S229797AbjHGQqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:45:08 -0400
-Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B67A1736
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:45:07 -0700 (PDT)
-Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1bff2d2c141so574891fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:45:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691426706; x=1692031506;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bfoqLIba1AF87rihr9bsxZdVGLDPpuKR96GgIsmd5Nk=;
-        b=JHhtdfhFof0tkps0WXOG0EXsn3N+0wVgSXX6ubKj37GfkElHT22/ZFOG7xZnjycKHT
-         1PYFLR7mT5V5hEPOrYnrc7/nnqWH9TqwGnt492yGxNh70ex0hMSWqypgJ4403NgB4bxA
-         QvVEm59JY2qkaj5sGfYqEThuAnxGWXhQocxbvtodaG6/CCe0kRoa67HTKcBoez+INPUj
-         WdBoNiAZ/74Cy96ImF4dVM3Y/EajZjoamWKFQdIQNR7sVZKUCg+bi8/a9gsaKBAMA5+C
-         APLArB3d4moYvoW3+W/0M6G0MN5klXILgQYek2w7IooSpZT/4/ecXtmX7deqyZnVcf1n
-         wVJA==
+        Mon, 7 Aug 2023 12:46:49 -0400
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76AF10DE;
+        Mon,  7 Aug 2023 09:46:48 -0700 (PDT)
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1bc05bece1dso560009fac.1;
+        Mon, 07 Aug 2023 09:46:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691426706; x=1692031506;
+        d=1e100.net; s=20221208; t=1691426808; x=1692031608;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bfoqLIba1AF87rihr9bsxZdVGLDPpuKR96GgIsmd5Nk=;
-        b=DTcba+lUhif7KN7JC2LRMjQDUWBhGkaN9KEfmLxkB6+7TDqMWwmrPc633XukBDxnmF
-         xBBnkxc4NKYHRgg3sUotvxWILxESkH3vL+GqPMf7/kMild8YSjvTRKzKt3Kz4Gugk2c6
-         5BeKQQ3LCFQsqAsBcNjgY8ebMGcO4F0DtpeD4t8I/SF7YgtqUjhfcyh9detsdiZpvQBM
-         ZtioWSQNJzg1fbEuTyJ6w5Cj83dw/8letejx3pM6B/OHJYLFV4KTj9oo6gw40p+YlQj+
-         2zF9V9XLaXN7Tf/Mya0YZ95EtSOGdD1xTrilrnBCTe/5aq5kozk7Y+hdWynbar78k4Ho
-         PcCw==
-X-Gm-Message-State: AOJu0YzX6RQmoI1hNwYSOrsFe2Jpbsf3QpirKNre3zplT6kH4UCIknNA
-        LHZ2F6DGgrrDquq1vhAPD69+S1hBXY/F8GgROR0=
-X-Google-Smtp-Source: AGHT+IGumAWh6Kpn9QD3TQGrAhy4o0PVAVBatDxw6iAJ0kxQKsy00haaZblpIKVeZF5vbnMEIyKsxgdUgA6uZ4A1txQ=
-X-Received: by 2002:a05:6870:1713:b0:1ba:64a5:d2d1 with SMTP id
- h19-20020a056870171300b001ba64a5d2d1mr10025458oae.20.1691426706344; Mon, 07
- Aug 2023 09:45:06 -0700 (PDT)
+        bh=+cTkah9A+y0zHAsGnDn+WndtVM4Rfo0pn8/RM09YGig=;
+        b=h86AVbFyP4Oz/bojwqqWvlsrTGwrhAa/20iXOW/pYIwe7rxHBGMSL6kxbClj4UA4ef
+         F/pyTcKO2nfCMQ8Zs9HZhA1WFz41xwv2pvBfjQYLifOOSZTTJxfVPuVfl/1Fa1HqKL7f
+         I8zLkc8g3zrDOh5KHZQF3ZrGlYA/tIfNklU+wdBugZuMKviqgPvJr8bOjevNCv7GOPW4
+         o4ie+UUba571Z0Wj9CzeKzYNqK56Q6zs9fV5a3S1DQedZyim0Iwv+jgCYsF24jtsJFhE
+         tkKfxVKuk4G4vo45+sVyP4o27E2gvkTQFrONEDq72a6xpsq63nPlSaKi5kI8rzMaclG4
+         NkFA==
+X-Gm-Message-State: ABy/qLZWmY4ER1qRWSorUUOMPQvJeArFR8LJVuovoW/TIHffHF+6sMrk
+        6zMhAklOVcyeTCg4UewdLGZpjv7Zb7uHPSAqwv4=
+X-Google-Smtp-Source: APBJJlHQJeYGLJWAa+24trXn3icoqVc7zTAQgWg2FFLoc77mae6UbDnZCN8ksd/IRnv93s4pmE3TqI89mAa2MmTFQAU=
+X-Received: by 2002:a05:6870:d208:b0:192:6fce:d3be with SMTP id
+ g8-20020a056870d20800b001926fced3bemr27399356oac.1.1691426808091; Mon, 07 Aug
+ 2023 09:46:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230801093023.7584-1-sunran001@208suo.com>
-In-Reply-To: <20230801093023.7584-1-sunran001@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 12:44:55 -0400
-Message-ID: <CADnq5_NppWn77SagusVruWd4rEw_1ik0Uq4qY9Cz33VQdnRQQg@mail.gmail.com>
-Subject: Re: [PATCH] gpu: amd: Clean up errors in ppatomfwctrl.h
-To:     Ran Sun <sunran001@208suo.com>
-Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
+References: <5712331.DvuYhMxLoT@kreacher> <ZND5CL6Kl9RnDdhL@e126311.manchester.arm.com>
+In-Reply-To: <ZND5CL6Kl9RnDdhL@e126311.manchester.arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 7 Aug 2023 18:46:37 +0200
+Message-ID: <CAJZ5v0hPHBEtkSVuB4GfTpFf9+Fs=_0=2HOeuf49bqM4NR3qeg@mail.gmail.com>
+Subject: Re: [RFT][PATCH v2 0/3] cpuidle: teo: Do not check timers
+ unconditionally every time
+To:     Kajetan Puchalski <kajetan.puchalski@arm.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Hi Kajetan,
 
-On Tue, Aug 1, 2023 at 5:30=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
-:
+On Mon, Aug 7, 2023 at 4:04 PM Kajetan Puchalski
+<kajetan.puchalski@arm.com> wrote:
 >
-> Fix the following errors reported by checkpatch:
+> Hi Rafael,
 >
-> ERROR: open brace '{' following struct go on the same line
+> On Thu, Aug 03, 2023 at 10:57:04PM +0200, Rafael J. Wysocki wrote:
+> > Hi Folks,
+> >
+> > This is the second iteration of:
+> >
+> > https://lore.kernel.org/linux-pm/4511619.LvFx2qVVIh@kreacher/
+> >
+> > with an additional patch.
+> >
+> > There are some small modifications of patch [1/3] and the new
+> > patch causes governor statistics to play a role in deciding whether
+> > or not to stop the scheduler tick.
+> >
+> > Testing would be much appreciated!
+> >
+> > Thanks!
+> >
 >
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->  drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.h | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> My test results including the v2 are below.
 >
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.h b/driv=
-ers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.h
-> index 2fc1733bcdcf..e86e05c786d9 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.h
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.h
-> @@ -147,8 +147,7 @@ struct pp_atomfwctrl_bios_boot_up_values {
->         uint8_t    ucCoolingID;
->  };
+> 1. Geekbench 6
 >
-> -struct pp_atomfwctrl_smc_dpm_parameters
-> -{
-> +struct pp_atomfwctrl_smc_dpm_parameters {
->    uint8_t  liquid1_i2c_address;
->    uint8_t  liquid2_i2c_address;
->    uint8_t  vr_i2c_address;
-> --
-> 2.17.1
+> +---------------------------+---------------+-----------------+-------------------+----------------------+
+> |          metric           |      teo      |     teo_tick    |    teo_tick_rfc   |    teo_tick_rfc_v2   |
+> +---------------------------+---------------+-----------------+-------------------+----------------------+
+> |      multicore_score      | 3320.9 (0.0%) | 3303.3 (-0.53%) |  3293.6 (-0.82%)  |   3302.3 (-0.56%)    |
+> |           score           | 1415.7 (0.0%) | 1417.7 (0.14%)  |  1423.4 (0.54%)   |    1425.8 (0.71%)    |
+> |      CPU_total_power      | 2421.3 (0.0%) | 2429.3 (0.33%)  |  2442.2 (0.86%)   |    2461.9 (1.67%)    |
+> |  latency (AsyncTask #1)   | 49.41μ (0.0%) | 51.07μ (3.36%)  |   50.1μ (1.4%)    |    50.76μ (2.73%)    |
+> | latency (labs.geekbench6) | 65.63μ (0.0%) | 77.47μ (18.03%) | 55.82μ (-14.95%)  |    66.12μ (0.75%)    |
+> | latency (surfaceflinger)  | 39.46μ (0.0%) | 36.94μ (-6.39%) |  35.79μ (-9.28%)  |    40.36μ (2.3%)     |
+> +---------------------------+---------------+-----------------+-------------------+----------------------+
 >
+> +----------------------+-------------+------------+
+> |         tag          |    type     | count_perc |
+> +----------------------+-------------+------------+
+> |         teo          |  too deep   |   2.034    |
+> |       teo_tick       |  too deep   |    2.16    |
+> |     teo_tick_rfc     |  too deep   |   2.071    |
+> |    teo_tick_rfc_v2   |  too deep   |   2.548    |
+> |         teo          | too shallow |   15.791   |
+> |       teo_tick       | too shallow |   20.881   |
+> |     teo_tick_rfc     | too shallow |   20.337   |
+> |    teo_tick_rfc_v2   | too shallow |   19.886   |
+> +----------------------+-------------+------------+
+>
+>
+> 2. JetNews
+>
+> +-----------------+---------------+----------------+-----------------+-----------------+
+> |     metric      |      teo      |    teo_tick    |  teo_tick_rfc   | teo_tick_rfc_v2 |
+> +-----------------+---------------+----------------+-----------------+-----------------+
+> |       fps       |  86.2 (0.0%)  |  86.4 (0.16%)  |  86.0 (-0.28%)  |  86.6 (0.41%)   |
+> |    janks_pc     |  0.8 (0.0%)   |  0.8 (-0.66%)  |  0.8 (-1.37%)   |  0.7 (-11.37%)  |
+> | CPU_total_power | 185.2 (0.0%)  | 178.2 (-3.76%) |  182.2 (-1.6%)  | 169.4 (-8.53%)  | <- very interesting
+> +-----------------+---------------+----------------+-----------------+-----------------+
+>
+> +----------------------+-------------+--------------------+
+> |         tag          |    type     |     count_perc     |
+> +----------------------+-------------+--------------------+
+> |         teo          |  too deep   |       0.992        |
+> |       teo_tick       |  too deep   |       0.945        |
+> |     teo_tick_rfc     |  too deep   |       1.035        |
+> |    teo_tick_rfc_v2   |  too deep   |       1.127        |
+> |         teo          | too shallow |       17.085       |
+> |       teo_tick       | too shallow |       15.236       |
+> |     teo_tick_rfc     | too shallow |       15.379       |
+> |    teo_tick_rfc_v2   | too shallow |       15.34        |
+> +----------------------+-------------+--------------------+
+>
+> All in all looks pretty good. Unfortunately there's a slightly larger
+> percentage of too deep sleeps with the v2 (which is probably where the
+> increase in GB6 power usage comes from) but the lower jank percentage +
+> substantially lower power usage for the UI workload are very promising.
+>
+> Since we don't care about GB6 power usage as much as UI power usage, I'd
+> say that the patchset looks good :)
+>
+> Tested-by: Kajetan Puchalski <kajetan.puchalski@arm.com>
+
+Thanks a lot, much appreciated!
