@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F21D37726C1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921967726C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234599AbjHGNzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41282 "EHLO
+        id S232503AbjHGNzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234644AbjHGNx4 (ORCPT
+        with ESMTP id S234523AbjHGNx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:53:56 -0400
+        Mon, 7 Aug 2023 09:53:57 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCF11701
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:53:34 -0700 (PDT)
-Message-ID: <20230807135028.381851690@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4772B1FC8
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:53:35 -0700 (PDT)
+Message-ID: <20230807135028.433963067@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691416412;
+        s=2020; t=1691416413;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=O995zamcyhYTuo3Kkhh4AKJfSIZvbOUniiR7OEFHzns=;
-        b=ooWbvL8Y/LXoIpW3N8w2RajZ1Ijs3j/JUqufRAvJufCPk2pM2E8FLvXynkMXHkFrmL72l0
-        qAMj1K/Pof4iUjSLtyU0r8jmkyTlsIZ7m1LJLqXJRSAPx0uhyUZvWeUzhR0ptdNLAuXYn5
-        dK+4XtfeVhj462IKUeBO5e6SuX2E+fQwMDf/sGWdwWcPYeMCDyFZ+3A1eEuYZ78hAyQwVn
-        m96VSTnxhMK4Jx+kM/3ZDnT6TZiIA+mB84m0A2VLDSA7oKmuyihcJB7StIJLtPBM//1OZs
-        9S+AGObmbV001hSU+ea/E4+TaTpYjp9NfdlKKv9ls8JWRxKK5UvDHrEv+YpRTg==
+         references:references; bh=ItRqIV1rXpKFl7HGEZSaspnnBvb0OflCybv79tP0/ws=;
+        b=eu9j6DQBjz4P89PvAEyCXsuLWYGIwX3vPS/CxmgpYI/XyU9kxJobcUIy5PF0/bmPP4uVBo
+        MNk6gZFhhBRvEqLqSyQHHup7QzmnPwtcgMvpsbJ8OnCxePgFK6b9lWU926352O9P3pZI0I
+        Dkl05Z3I1YlgJdKfynferXvjovUR6imnXxXOcCgCcCK60ugPnVcpUb08j7edGeG1gGzgOu
+        ahD10ga6svYYj5DsGEEJLGpUvZhJnr2SKkg6a5dHs5tLZoZE+8F3puKgja1wyPKbzLpQeA
+        pFouLnYwCL6L10CZuuT2kc11Xzkq26nPXQofQ2E4KZoGjYz49CsAYgU44ry/Fg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691416412;
+        s=2020e; t=1691416413;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=O995zamcyhYTuo3Kkhh4AKJfSIZvbOUniiR7OEFHzns=;
-        b=DuyhtTc3TpwI0l+Eq/NYUaYB1q5S0VHEyVu4XhTDe2yY2AbAPjoQRWG8Jmo+9krVhSTd1U
-        FU/wqnoUMI5V6/AA==
+         references:references; bh=ItRqIV1rXpKFl7HGEZSaspnnBvb0OflCybv79tP0/ws=;
+        b=zo1phJpb/gek4xNYSVXfBdKy/rsQvx8FyDQj9tGI8n3+YOFgCB+qDumRt/Mpx/IcBu7wo9
+        AQ+tiYAJv8mMgBDQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
@@ -48,11 +48,12 @@ Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Feng Tang <feng.tang@intel.com>,
         Andy Shevchenko <andy@infradead.org>
-Subject: [patch 37/53] x86/cpu: Detect real BSP on crash kernels
+Subject: [patch 38/53] x86/topology: Add a mechanism to track topology via
+ APIC IDs
 References: <20230807130108.853357011@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon,  7 Aug 2023 15:53:31 +0200 (CEST)
+Date:   Mon,  7 Aug 2023 15:53:33 +0200 (CEST)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -62,174 +63,197 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a kdump kernel is started from a crashing CPU then there is no
-guarantee that this CPU is the real boot CPU (BSP). If the kdump kernel
-tries to online the BSP then the INIT sequence will reset the machine.
+Topology on X86 is determined by the registered APIC IDs and the
+segmentation information retrieved from CPUID. Depending on the granularity
+of the provided CPUID information the most fine grained scheme looks like
+this according to Intel terminology:
 
-There is a command line option to prevent this, but in case of nested kdump
-kernels this is wrong.
+   [PKG][DIE][TILE][MODULE][CORE][THREAD]
 
-But that command line option is not required at all because the real BSP
-has the lowest local APIC ID in the system. That was not always true, but
-support for the only known system which was different (Voyager) got removed
-long ago.
+Not enumerated domain levels consume 0 bits in the APIC ID. This allows to
+provide a consistent view at the topology and determine other information
+precisely like the number of cores in a package on hybrid systems, where
+the existing assumption that number or cores == number of threads / threads
+per core does not hold.
 
-Detect whether the boot CPU APIC ID is the lowest APIC ID in the system.
-If the lowest registered APIC ID is not the boot CPU APIC ID, then remove
-it from the present bitmap and let the possible map initialization ignore
-it.
+Provide per domain level bitmaps which record the APIC ID split into the
+domain levels to make later evaluation of domain level specific information
+simple. This allows to calculate e.g. the logical IDs without any further
+extra logic.
+
+Contrary to the existing registration mechanism this records disabled CPUs,
+which are subject to later hotplug as well. That's useful for boot time
+sizing of package or die dependent allocations without using heuristics.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- Documentation/admin-guide/kdump/kdump.rst       |    7 --
- Documentation/admin-guide/kernel-parameters.txt |    9 ---
- arch/x86/kernel/cpu/topology.c                  |   59 +++++++++++++++---------
- 3 files changed, 39 insertions(+), 36 deletions(-)
+ arch/x86/kernel/cpu/debugfs.c  |    8 ----
+ arch/x86/kernel/cpu/topology.c |   68 +++++++++++++++++++++++++++++++++++++++--
+ arch/x86/kernel/cpu/topology.h |    2 +
+ 3 files changed, 67 insertions(+), 11 deletions(-)
 
---- a/Documentation/admin-guide/kdump/kdump.rst
-+++ b/Documentation/admin-guide/kdump/kdump.rst
-@@ -191,9 +191,7 @@ Dump-capture kernel config options (Arch
-    CPU is enough for kdump kernel to dump vmcore on most of systems.
+--- a/arch/x86/kernel/cpu/debugfs.c
++++ b/arch/x86/kernel/cpu/debugfs.c
+@@ -48,14 +48,6 @@ static const struct file_operations dfs_
  
-    However, you can also specify nr_cpus=X to enable multiple processors
--   in kdump kernel. In this case, "disable_cpu_apicid=" is needed to
--   tell kdump kernel which cpu is 1st kernel's BSP. Please refer to
--   admin-guide/kernel-parameters.txt for more details.
-+   in kdump kernel.
+ static int dom_debug_show(struct seq_file *m, void *p)
+ {
+-	static const char *domain_names[TOPO_ROOT_DOMAIN] = {
+-		[TOPO_SMT_DOMAIN]	= "Thread",
+-		[TOPO_CORE_DOMAIN]	= "Core",
+-		[TOPO_MODULE_DOMAIN]	= "Module",
+-		[TOPO_TILE_DOMAIN]	= "Tile",
+-		[TOPO_DIE_DOMAIN]	= "Die",
+-		[TOPO_PKG_DOMAIN]	= "Package",
+-	};
+ 	unsigned int dom, nthreads = 1;
  
-    With CONFIG_SMP=n, the above things are not related.
- 
-@@ -485,8 +483,7 @@ loading dump-capture kernel.
-   to use multi-thread programs with it, such as parallel dump feature of
-   makedumpfile. Otherwise, the multi-thread program may have a great
-   performance degradation. To enable multi-cpu support, you should bring up an
--  SMP dump-capture kernel and specify maxcpus/nr_cpus, disable_cpu_apicid=[X]
--  options while loading it.
-+  SMP dump-capture kernel and specify maxcpus/nr_cpus options while loading it.
- 
- * For s390x there are two kdump modes: If a ELF header is specified with
-   the elfcorehdr= kernel parameter, it is used by the kdump kernel as it
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1071,15 +1071,6 @@
- 			Disable TLBIE instruction. Currently does not work
- 			with KVM, with HASH MMU, or with coherent accelerators.
- 
--	disable_cpu_apicid= [X86,APIC,SMP]
--			Format: <int>
--			The number of initial APIC ID for the
--			corresponding CPU to be disabled at boot,
--			mostly used for the kdump 2nd kernel to
--			disable BSP to wake up multiple CPUs without
--			causing system reset or hang due to sending
--			INIT from AP to BSP.
--
- 	disable_ddw	[PPC/PSERIES]
- 			Disable Dynamic DMA Window support. Use this
- 			to workaround buggy firmware.
+ 	for (dom = 0; dom < TOPO_ROOT_DOMAIN; dom++) {
 --- a/arch/x86/kernel/cpu/topology.c
 +++ b/arch/x86/kernel/cpu/topology.c
-@@ -32,18 +32,13 @@ struct {
- 	unsigned int		nr_disabled_cpus;
- 	unsigned int		nr_rejected_cpus;
- 	u32			boot_cpu_apic_id;
-+	u32			real_bsp_apic_id;
- } topo_info __read_mostly = {
- 	.nr_assigned_cpus	= 1,
- 	.boot_cpu_apic_id	= BAD_APICID,
-+	.real_bsp_apic_id	= BAD_APICID,
+@@ -1,5 +1,27 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-
++/*
++ * CPU/APIC topology
++ *
++ * The APIC IDs describe the system topology in multiple domain levels.
++ * The CPUID topology parser provides the information which part of the
++ * APIC ID is associated to the individual levels:
++ *
++ * [ROOT][PACKAGE][DIE][TILE][MODULE][CORE][THREAD]
++ *
++ * The root space contains the package (socket) IDs.
++ *
++ * Not enumerated levels consume 0 bits space, but conceptually they are
++ * always represented. If e.g. only CORE and THREAD levels are enumerated
++ * then the DIE, MODULE and TILE have the same physical ID as the PACKAGE.
++ *
++ * If SMT is not supported, then the THREAD domain is still used. It then
++ * has the same physical ID as the CORE domain and is the only child of
++ * the core domain.
++ *
++ * This allows a unified view on the system independent of the enumerated
++ * domain levels without requiring any conditionals in the code.
++ */
++#define pr_fmt(fmt) "CPU topo: " fmt
+ #include <linux/cpu.h>
+ 
+ #include <xen/xen.h>
+@@ -9,6 +31,8 @@
+ #include <asm/mpspec.h>
+ #include <asm/smp.h>
+ 
++#include "cpu.h"
++
+ /*
+  * Map cpu index to physical APIC ID
+  */
+@@ -23,6 +47,9 @@ DECLARE_BITMAP(phys_cpu_present_map, MAX
+ /* Used for CPU number allocation and parallel CPU bringup */
+ u32 cpuid_to_apicid[] __read_mostly = { [0 ... NR_CPUS - 1] = BAD_APICID, };
+ 
++/* Bitmaps to mark registered APICs at each topology domain */
++static struct { DECLARE_BITMAP(map, MAX_LOCAL_APIC); } apic_maps[TOPO_MAX_DOMAIN] __ro_after_init;
++
+ /*
+  * Keep track of assigned, disabled and rejected CPUs. Present assigned
+  * with 1 as CPU #0 is reserved for the boot CPU.
+@@ -39,6 +66,18 @@ struct {
+ 	.real_bsp_apic_id	= BAD_APICID,
  };
  
--/*
-- * Processor to be disabled specified by kernel parameter
-- * disable_cpu_apicid=<int>, mostly used for the kdump 2nd kernel to
-- * avoid undefined behaviour caused by sending INIT from AP to BSP.
-- */
--static u32 disabled_cpu_apicid __ro_after_init = BAD_APICID;
--
++const char *domain_names[TOPO_MAX_DOMAIN] = {
++	[TOPO_SMT_DOMAIN]	= "Thread",
++	[TOPO_CORE_DOMAIN]	= "Core",
++	[TOPO_MODULE_DOMAIN]	= "Module",
++	[TOPO_TILE_DOMAIN]	= "Tile",
++	[TOPO_DIE_DOMAIN]	= "Die",
++	[TOPO_PKG_DOMAIN]	= "Package",
++	[TOPO_ROOT_DOMAIN]	= "Root",
++};
++
++#define domain_weight(_dom)	bitmap_weight(apic_maps[_dom].map, MAX_LOCAL_APIC)
++
  bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
  {
  	return phys_id == (u64)cpuid_to_apicid[cpu];
-@@ -146,12 +141,6 @@ void __init topology_register_apic(u32 a
- 		return;
- 	}
+@@ -81,6 +120,17 @@ early_initcall(smp_init_primary_thread_m
+ static inline void cpu_mark_primary_thread(unsigned int cpu, unsigned int apicid) { }
+ #endif
  
--	if (disabled_cpu_apicid == apic_id) {
--		pr_info("Disabling CPU as requested via 'disable_cpu_apicid=0x%x'.\n", apic_id);
--		topo_info.nr_rejected_cpus++;
--		return;
--	}
--
- 	if (present) {
- 		/*
- 		 * Prevent double registration, which is valid in case of
-@@ -270,6 +259,30 @@ static __init bool restrict_to_up(void)
- 	return apic_is_disabled;
- }
- 
-+static __init void check_for_kdump_kernel(void)
++/*
++ * Convert the APIC ID to a domain level ID by masking out the low bits
++ * including the domain level @dom.
++ */
++static inline u32 topo_apicid(u32 apicid, enum x86_topology_domains dom)
 +{
-+	u32 bsp_apicid;
-+
-+	/*
-+	 * There is no real good way to detect whether this a kdump()
-+	 * kernel, but except on the Voyager SMP monstrosity which is not
-+	 * longer supported, the real BSP has always the lowest numbered
-+	 * APIC ID. If a crash happened on an AP, which then ends up as
-+	 * boot CPU in the kdump() kernel, then sending INIT to the real
-+	 * BSP would reset the whole system.
-+	 */
-+	bsp_apicid = find_first_bit(phys_cpu_present_map, MAX_LOCAL_APIC);
-+	if (bsp_apicid == topo_info.boot_cpu_apic_id)
-+		return;
-+
-+	pr_warn("Boot CPU APIC ID not the lowest APIC ID: %x > %x\n",
-+		topo_info.boot_cpu_apic_id, bsp_apicid);
-+	pr_warn("Crash kernel detected. Disabling real BSP to prevent machine INIT\n");
-+
-+	topo_info.real_bsp_apic_id = bsp_apicid;
-+	clear_bit(bsp_apicid, phys_cpu_present_map);
++	if (dom == TOPO_SMT_DOMAIN)
++		return apicid;
++	return apicid & (UINT_MAX << x86_topo_system.dom_shifts[dom - 1]);
 +}
 +
- void __init topology_init_possible_cpus(void)
+ static int topo_lookup_cpuid(u32 apic_id)
  {
+ 	int i;
+@@ -126,7 +176,7 @@ static void topo_set_cpuids(unsigned int
+  */
+ void __init topology_register_apic(u32 apic_id, u32 acpi_id, bool present)
+ {
+-	int cpu;
++	int cpu, dom;
+ 
+ 	if (apic_id >= MAX_LOCAL_APIC) {
+ 		pr_err_once("APIC ID %x exceeds kernel limit of: %x\n", apic_id, MAX_LOCAL_APIC - 1);
+@@ -159,6 +209,10 @@ void __init topology_register_apic(u32 a
+ 	} else {
+ 		topo_info.nr_disabled_cpus++;
+ 	}
++
++	/* Register present and possible CPUs in the domain maps */
++	for (dom = TOPO_SMT_DOMAIN; dom < TOPO_ROOT_DOMAIN; dom++)
++		set_bit(topo_apicid(apic_id, dom), apic_maps[dom].map);
+ }
+ 
+ /**
+@@ -281,6 +335,11 @@ static __init void check_for_kdump_kerne
+ 
+ 	topo_info.real_bsp_apic_id = bsp_apicid;
+ 	clear_bit(bsp_apicid, phys_cpu_present_map);
++	/*
++	 * Remove it from the SMT level, but no propagation as that would
++	 * corrupt the data set.
++	 */
++	clear_bit(bsp_apicid, apic_maps[TOPO_SMT_DOMAIN].map);
+ }
+ 
+ void __init topology_init_possible_cpus(void)
+@@ -288,7 +347,7 @@ void __init topology_init_possible_cpus(
  	unsigned int assigned = topo_info.nr_assigned_cpus;
-@@ -278,6 +291,9 @@ void __init topology_init_possible_cpus(
- 	unsigned int cpu, allowed = 1;
+ 	unsigned int disabled = topo_info.nr_disabled_cpus;
+ 	unsigned int total = assigned + disabled;
+-	unsigned int cpu, allowed = 1;
++	unsigned int cpu, dom, allowed = 1;
  
  	if (!restrict_to_up()) {
-+		if (total > 1)
-+			check_for_kdump_kernel();
-+
- 		if (WARN_ON_ONCE(assigned > nr_cpu_ids)) {
- 			disabled += assigned - nr_cpu_ids;
- 			assigned = nr_cpu_ids;
-@@ -308,6 +324,14 @@ void __init topology_init_possible_cpus(
- 	for (cpu = 0; cpu < allowed; cpu++) {
- 		u32 apicid = cpuid_to_apicid[cpu];
+ 		if (total > 1)
+@@ -318,6 +377,9 @@ void __init topology_init_possible_cpus(
+ 	if (topo_info.nr_rejected_cpus)
+ 		pr_info("Rejected CPUs %u\n", topo_info.nr_rejected_cpus);
  
-+		/*
-+		 * In case of a kdump() kernel, don't mark the real BSP in
-+		 * the present and possible maps. Sending INIT to it resets
-+		 * the machine.
-+		 */
-+		if (apicid != BAD_APICID && apicid == topo_info.real_bsp_apic_id)
-+			continue;
++	for (dom = TOPO_SMT_DOMAIN; dom < TOPO_ROOT_DOMAIN; dom++)
++		pr_info("%-10s: %5u\n", domain_names[dom], domain_weight(dom));
 +
- 		set_cpu_possible(cpu, true);
+ 	init_cpu_present(cpumask_of(0));
+ 	init_cpu_possible(cpumask_of(0));
  
- 		if (apicid == BAD_APICID)
-@@ -337,12 +361,3 @@ static int __init setup_possible_cpus(ch
+--- a/arch/x86/kernel/cpu/topology.h
++++ b/arch/x86/kernel/cpu/topology.h
+@@ -48,4 +48,6 @@ static inline void topology_update_dom(s
+ 	tscan->dom_ncpus[dom] = ncpus;
  }
- early_param("possible_cpus", setup_possible_cpus);
- #endif
--
--static int __init apic_set_disabled_cpu_apicid(char *arg)
--{
--	if (!arg || !get_option(&arg, &disabled_cpu_apicid))
--		return -EINVAL;
--
--	return 0;
--}
--early_param("disable_cpu_apicid", apic_set_disabled_cpu_apicid);
+ 
++extern const char *domain_names[TOPO_MAX_DOMAIN];
++
+ #endif /* ARCH_X86_TOPOLOGY_H */
 
