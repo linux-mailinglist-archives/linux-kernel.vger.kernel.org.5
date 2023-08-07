@@ -2,110 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC6F771B13
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 703FA771B20
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbjHGHFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 03:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59106 "EHLO
+        id S231361AbjHGHHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 03:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231302AbjHGHFH (ORCPT
+        with ESMTP id S231321AbjHGHHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 03:05:07 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD951BCF;
-        Mon,  7 Aug 2023 00:04:36 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C98401F460;
-        Mon,  7 Aug 2023 07:04:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691391874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bTuF2TgB1pBwN8OkG1rHpu4xeWoKn3NkiBu7ZL/kjNo=;
-        b=b+BEiZrOazh2iKNnKC3SDf37eCGPzo5Aktuj/Bb87LGLBIIPO0oKrfVZECh/ZUHZQ99A3c
-        I3vc76WsiiUEN9tTFrpjkAy6FTYDwpr9s0sxVhGg2tqAN3zAA3EYGD9Tyz5KJbN4X4u7Lp
-        b/oocpwiNVjz3VbAlTQNFBjjSQyLl8g=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AAB8013910;
-        Mon,  7 Aug 2023 07:04:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id k5euJoKX0GSvWAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 07 Aug 2023 07:04:34 +0000
-Date:   Mon, 7 Aug 2023 09:04:34 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, muchun.song@linux.dev,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wuyun.abel@bytedance.com, robin.lu@bytedance.com
-Subject: Re: [RFC PATCH 1/2] mm, oom: Introduce bpf_select_task
-Message-ID: <ZNCXgsZL7bKsCEBM@dhcp22.suse.cz>
-References: <20230804093804.47039-1-zhouchuyi@bytedance.com>
- <20230804093804.47039-2-zhouchuyi@bytedance.com>
- <ZMzhDFhvol2VQBE4@dhcp22.suse.cz>
- <dfbf05d1-daff-e855-f4fd-e802614b79c4@bytedance.com>
- <ZMz+aBHFvfcr0oIe@dhcp22.suse.cz>
- <866462cf-6045-6239-6e27-45a733aa7daa@bytedance.com>
+        Mon, 7 Aug 2023 03:07:32 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E0C6510F0;
+        Mon,  7 Aug 2023 00:07:26 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id E946A809D;
+        Mon,  7 Aug 2023 07:07:25 +0000 (UTC)
+Date:   Mon, 7 Aug 2023 10:07:24 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Dhruva Gole <d-gole@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-omap@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH] pinctrl: single: Add compatible for ti,am625-padconf
+Message-ID: <20230807070724.GN14799@atomide.com>
+References: <20230805045554.786092-1-d-gole@ti.com>
+ <20230805171508.schg4xquoa24klk5@october>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <866462cf-6045-6239-6e27-45a733aa7daa@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230805171508.schg4xquoa24klk5@october>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 07-08-23 10:21:09, Chuyi Zhou wrote:
+* Nishanth Menon <nm@ti.com> [230805 17:15]:
+> On 10:25-20230805, Dhruva Gole wrote:
+> > From: Tony Lindgren <tony@atomide.com>
+> > +static const struct pcs_soc_data pinctrl_single_am625 = {
+> > +	.flags = PCS_QUIRK_SHARED_IRQ | PCS_CONTEXT_LOSS_OFF,
+> > +	.irq_enable_mask = (1 << 29),   /* WKUP_EN */
+> > +	.irq_status_mask = (1 << 30),   /* WKUP_EVT */
+> > +};
+> > +
 > 
-> 
-> 在 2023/8/4 21:34, Michal Hocko 写道:
-> > On Fri 04-08-23 21:15:57, Chuyi Zhou wrote:
-> > [...]
-> > > > +	switch (bpf_oom_evaluate_task(task, oc, &points)) {
-> > > > +		case -EOPNOTSUPP: break; /* No BPF policy */
-> > > > +		case -EBUSY: goto abort; /* abort search process */
-> > > > +		case 0: goto next; /* ignore process */
-> > > > +		default: goto select; /* note the task */
-> > > > +	}
-> > > 
-> > > Why we need to change the *points* value if we do not care about oom_badness
-> > > ? Is it used to record some state? If so, we could record it through bpf
-> > > map.
-> > 
-> > Strictly speaking we do not need to. That would require BPF to keep the
-> > state internally. Many will do I suppose but we have to keep track of
-> > the victim so that the oom killer knows what to kill so I thought that
-> > it doesn't hurt to keep track of an abstract concept of points as well.
-> > If you think this is not needed then oc->points could be always 0 for
-> > bpf selected victims. The value is not used anyway in the proposed
-> > scheme.
-> > 
-> > Btw. we will need another hook or metadata for the reporting side of
-> > things. Generally dump_header() to know what has been the selection
-> > policy.
-> > 
-> OK. Maybe a integer like policy_type is enough to distinguish different
-> policies and the default method is zero. Or we can let BPF return a string
-> like policy_name.
-> 
-> Which one should I start implementing in next version? Do you have a better
-> idea?
+> Why cant we set this in the k3-pinctrl.h and set it once?
 
-String seems to be more descriptive.
--- 
-Michal Hocko
-SUSE Labs
+Good idea to define the bit offsets k3-pinctrl.h instead of magic numbers
+here :)
+
+> The event will not be generated until wakeup daisy chain is triggered
+> anyways.
+
+Yup, and having that happen is enough to show the wake-up reason with
+grep wakeup /proc/interrupts :)
+
+> Have you looked at all the padconf registers across devices to ensure
+> the WKUP_EN/EVT bits are present? daisy chain feature is used elsewhere
+> as well.
+
+The lack of bits at least earlier just meant that attempting to use a
+wake-up interrupt would just never trigger. Worth checking though.
+Dhruva, care to check if some padconf register have reserved bits for
+29 and 30 that might be set high by default?
+
+Regards,
+
+Tony
