@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD24771BC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39904771BCE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbjHGHud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 03:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
+        id S230109AbjHGHvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 03:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbjHGHu3 (ORCPT
+        with ESMTP id S229733AbjHGHvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 03:50:29 -0400
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4461700;
-        Mon,  7 Aug 2023 00:50:26 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VpBLPig_1691394619;
-Received: from 30.97.48.53(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VpBLPig_1691394619)
+        Mon, 7 Aug 2023 03:51:41 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CF210F4;
+        Mon,  7 Aug 2023 00:51:38 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VpC-01._1691394688;
+Received: from srmbuffer011165236051.sqa.net(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VpC-01._1691394688)
           by smtp.aliyun-inc.com;
-          Mon, 07 Aug 2023 15:50:19 +0800
-Message-ID: <19716311-c1c5-2638-05ef-a7c3f74de8fe@linux.alibaba.com>
-Date:   Mon, 7 Aug 2023 15:50:20 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 2/5] dma: add dma mask interface in probe
-To:     Kaiwei Liu <kaiwei.liu@unisoc.com>, Vinod Koul <vkoul@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kaiwei liu <liukaiwei086@gmail.com>,
-        Wenming Wu <wenming.wu@unisoc.com>
-References: <20230807052014.2781-1-kaiwei.liu@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230807052014.2781-1-kaiwei.liu@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.7 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+          Mon, 07 Aug 2023 15:51:34 +0800
+From:   Jing Zhang <renyu.zj@linux.alibaba.com>
+To:     John Garry <john.g.garry@oracle.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Will Deacon <will@kernel.org>, James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+Subject: [PATCH v6 0/7] Add aliases and metrics for Arm CMN
+Date:   Mon,  7 Aug 2023 15:51:18 +0800
+Message-Id: <1691394685-61240-1-git-send-email-renyu.zj@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes since v5:
+- Split the first patch out into 1st pmu.c change and 2nd metricgroup.c
+  change.
+- Change order to check alias and then identifier.
+- Fix matching_pmu.
+- Add event documentation links.
 
+Jing Zhang (7):
+  perf pmu: "Compat" supports matching multiple identifiers
+  perf metric: "Compat" supports matching multiple identifiers
+  perf jevents: Support more event fields
+  perf test: Fix matching_pmu
+  perf test: Add pmu-event test for "Compat" and new event_field.
+  perf jevents: Add support for Arm CMN PMU aliasing
+  perf vendor events: Add JSON metrics for Arm CMN
 
-On 8/7/2023 1:20 PM, Kaiwei Liu wrote:
-> In the probe of DMA, the default addressing range is 32 bits,
-> while the actual DMA hardware addressing range used is 36 bits.
-> So add dma_set_mask_and_coherent function to match DMA
-> addressing range.
-> 
-> Signed-off-by: Kaiwei Liu <kaiwei.liu@unisoc.com>
-> ---
->   drivers/dma/sprd-dma.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
-> index 20c3cb1ef2f5..0e146550dfbb 100644
-> --- a/drivers/dma/sprd-dma.c
-> +++ b/drivers/dma/sprd-dma.c
-> @@ -1115,6 +1115,15 @@ static int sprd_dma_probe(struct platform_device *pdev)
->   	u32 chn_count;
->   	int ret, i;
->   
-> +	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(36));
-> +	if (ret) {
-> +		ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
-> +		if (ret) {
-> +			dev_err(&pdev->dev, "dma_set_mask_and_coherent failed\n");
+ .../pmu-events/arch/arm64/arm/cmn/sys/cmn.json     | 266 +++++++++++++++++++++
+ .../pmu-events/arch/arm64/arm/cmn/sys/metric.json  |  74 ++++++
+ .../pmu-events/arch/test/test_soc/sys/uncore.json  |   8 +
+ tools/perf/pmu-events/jevents.py                   |  22 +-
+ tools/perf/tests/pmu-events.c                      |  64 ++++-
+ tools/perf/util/metricgroup.c                      |   2 +-
+ tools/perf/util/pmu.c                              |  33 ++-
+ tools/perf/util/pmu.h                              |   1 +
+ 8 files changed, 457 insertions(+), 13 deletions(-)
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/cmn/sys/metric.json
 
-The error message is not readable, may be something like below?
-"unable to set coherent mask to 32\n"
+-- 
+1.8.3.1
 
-The changes look good to me. Chunyan and Orson, please double check the 
-DMA mask?
-
-> +			return ret;
-> +		}
-> +	}
-> +
->   	/* Parse new and deprecated dma-channels properties */
->   	ret = device_property_read_u32(&pdev->dev, "dma-channels", &chn_count);
->   	if (ret)
