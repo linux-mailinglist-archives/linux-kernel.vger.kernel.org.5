@@ -2,66 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0340A772805
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EF1772806
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234744AbjHGOj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
+        id S232147AbjHGOk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233892AbjHGOjy (ORCPT
+        with ESMTP id S231655AbjHGOkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:39:54 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AFC10DC;
-        Mon,  7 Aug 2023 07:39:53 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377EdjbC103320;
-        Mon, 7 Aug 2023 09:39:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691419185;
-        bh=Pdscr+L8AXKSfRRQhEG+qdRFZK3xiYzM0aAgIqYRUpE=;
-        h=Date:Subject:To:References:From:In-Reply-To;
-        b=Ostj3Ijg2bZf/IdmFcCrnRItGEmRX5ivYpVWtmJrgZAKXsa8tjUwY7O48L0Zus1yL
-         /Z4AtfaqYh0UlEzne2K8pAQ+dX6394WcVcy6maKa71BfMRA6/fzYCM8i33M3OQqixa
-         50/4qlhFxGXA4TsYPlv5W2bA8/f2dk5FEeLukFKg=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377EdjDZ073109
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Aug 2023 09:39:45 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
- Aug 2023 09:39:45 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 7 Aug 2023 09:39:45 -0500
-Received: from [10.24.69.141] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377EdfrR111634;
-        Mon, 7 Aug 2023 09:39:42 -0500
-Message-ID: <0d311099-a93e-4270-e78f-a464b7fcaa34@ti.com>
-Date:   Mon, 7 Aug 2023 20:09:41 +0530
+        Mon, 7 Aug 2023 10:40:25 -0400
+Received: from out-116.mta0.migadu.com (out-116.mta0.migadu.com [91.218.175.116])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417AF1701
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:40:23 -0700 (PDT)
+Message-ID: <bc69afd6-6eec-a070-ab96-05ab137aaf0b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1691419221; h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o+OIVP1YK+9jwAPITublGsuGiAOtFhZlPBMKuZ8xpOU=;
+        b=vKEhzisigQ7rkFFRgQhn4r7VZzO75TnS0qtkm3O+D4xArIYeQMSJWCjyKr5anVuIts95k3
+        Rev3/M4EjZIUv3nMOLE2/fjCoh1f4IF97Z8qxLqiIR8ubjM+J9KnSAXVWR4oJYATJeimmd
+        oygDOZzMqb+HGSQ7ornKZ4QROtBCKK8=
+Date:   Mon, 7 Aug 2023 07:40:12 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-j784s4-evm: Correct Pin mux offset
- for ospi
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in
+ ieee802154_subif_start_xmit
 Content-Language: en-US
-To:     Udit Kumar <u-kumar1@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
-        <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <t-konduru@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230802114126.162445-1-u-kumar1@ti.com>
-From:   Vaishnav Achath <vaishnav.a@ti.com>
-In-Reply-To: <20230802114126.162445-1-u-kumar1@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     Eduard Zingerman <eddyz87@gmail.com>,
+        syzbot <syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
+        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
+        song@kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000002098bc0602496cc3@google.com>
+ <d520bd6c-bfd3-47f1-c794-ab451905256b@linux.dev>
+ <9c8f04a0bf90db4bb8e6192824ab71f58244b74b.camel@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <9c8f04a0bf90db4bb8e6192824ab71f58244b74b.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LOTS_OF_MONEY,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,117 +59,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Udit,
 
-On 02/08/23 17:11, Udit Kumar wrote:
-> After splitting wkup_pmx pin mux for J784S4 into four regions.
-> Pin mux offset for OSPI nodes were not updated to align with new
-> regions, due to this while setting ospi pin muxes out of range
-> error was seen.
+
+On 8/7/23 6:11 AM, Eduard Zingerman wrote:
+> On Sun, 2023-08-06 at 23:40 -0700, Yonghong Song wrote:
+>>
+>> On 8/6/23 4:23 PM, syzbot wrote:
+>>> Hello,
+>>>
+>>> syzbot found the following issue on:
+>>>
+>>> HEAD commit:    25ad10658dc1 riscv, bpf: Adapt bpf trampoline to optimized..
+>>> git tree:       bpf-next
+>>> console+strace: https://syzkaller.appspot.com/x/log.txt?x=147cbb29a80000
+>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=8acaeb93ad7c6aaa
+>>> dashboard link: https://syzkaller.appspot.com/bug?extid=d61b595e9205573133b3
+>>> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d73ccea80000
+>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1276aedea80000
+>>>
+>>> Downloadable assets:
+>>> disk image: https://storage.googleapis.com/syzbot-assets/3d378cc13d42/disk-25ad1065.raw.xz
+>>> vmlinux: https://storage.googleapis.com/syzbot-assets/44580fd5d1af/vmlinux-25ad1065.xz
+>>> kernel image: https://storage.googleapis.com/syzbot-assets/840587618b41/bzImage-25ad1065.xz
+>>>
+>>> The issue was bisected to:
+>>>
+>>> commit 8100928c881482a73ed8bd499d602bab0fe55608
+>>> Author: Yonghong Song <yonghong.song@linux.dev>
+>>> Date:   Fri Jul 28 01:12:02 2023 +0000
+>>>
+>>>       bpf: Support new sign-extension mov insns
+>>
+>> Thanks for reporting. I will look into this ASAP.
 > 
-> Pin mux offsets for OSPI nodes are corrected in this patch.
+> Hi Yonghong,
 > 
-> Fixes: 14462bd0b247 ("arm64: dts: ti: k3-j784s4: Fix wakeup pinmux range and pinctrl node offsets")
-> Signed-off-by: Udit Kumar <u-kumar1@ti.com>
-> ---
-> Logs
-> https://gist.github.com/uditkumarti/f3b1a5402f7202931a4b905f7d331502
+> I guess it's your night and my morning, so I did some initial assessment.
+> The BPF program being loaded is:
 > 
-> Please apply patch https://lore.kernel.org/all/20230721082654.27036-1-tony@atomide.com/
-> before this
+>    0 : (62) *(u32 *)(r10 -8) = 553656332
+>    1 : (bf) r1 = (s16)r10
+>    2 : (07) r1 += -8
+>    3 : (b7) r2 = 3
+>    4 : (bd) if r2 <= r1 goto pc+0
+>    5 : (85) call bpf_trace_printk#6
+>    6 : (b7) r0 = 0
+>    7 : (95) exit
 > 
-> Change log:
-> 
-> Change in v2
->   Changed name of pin mux to align with
->   https://lore.kernel.org/all/20230721082654.27036-1-tony@atomide.com/ patch
+> (Note: when using bpftool (prog dump xlated id <some-id>) the disassembly
+>   of the instruction #1 is incorrectly printed as "1: (bf) r1 = r10")
 >   
+> The error occurs when instruction #5 (call to printk) is executed.
+> An incorrect address for the format string is passed to printk.
+> Disassembly of the jited program looks as follows:
 > 
-> v1: https://lore.kernel.org/all/20230801141920.3317697-1-u-kumar1@ti.com/
->  
->  arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 29 +++++++++++++++---------
->  1 file changed, 18 insertions(+), 11 deletions(-)
+>    $ bpftool prog dump jited id <some-id>
+>    bpf_prog_ebeed182d92b487f:
+>       0: nopl    (%rax,%rax)
+>       5: nop
+>       7: pushq   %rbp
+>       8: movq    %rsp, %rbp
+>       b: subq    $8, %rsp
+>      12: movl    $553656332, -8(%rbp)
+>      19: movswq  %bp, %rdi            ; <---- Note movswq %bp !
+>      1d: addq    $-8, %rdi
+>      21: movl    $3, %esi
+>      26: cmpq    %rdi, %rsi
+>      29: jbe 0x2b
+>      2b: callq   0xffffffffe11c484c
+>      30: xorl    %eax, %eax
+>      32: leave
+>      33: retq
 > 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-> index 7ad152a1b90f..d594d233af87 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-> @@ -379,21 +379,28 @@ J784S4_WKUP_IOPAD(0x020, PIN_INPUT, 0) /* (D34) MCU_OSPI0_D5 */
->  			J784S4_WKUP_IOPAD(0x024, PIN_INPUT, 0) /* (E34) MCU_OSPI0_D6 */
->  			J784S4_WKUP_IOPAD(0x028, PIN_INPUT, 0) /* (E33) MCU_OSPI0_D7 */
->  			J784S4_WKUP_IOPAD(0x008, PIN_INPUT, 0) /* (C34) MCU_OSPI0_DQS */
-> -			J784S4_WKUP_IOPAD(0x03c, PIN_OUTPUT, 6) /* (C32) MCU_OSPI0_CSn3.MCU_OSPI0_ECC_FAIL */
-> -			J784S4_WKUP_IOPAD(0x038, PIN_OUTPUT, 6) /* (B34) MCU_OSPI0_CSn2.MCU_OSPI0_RESET_OUT0 */
-> +		>;
-> +	};
-> +};
-> +
-> +&wkup_pmx1 {
-> +	mcu_fss0_ospi0_1_pins_default: mcu-fss0-ospi0-1-default-pins {
-> +		pinctrl-single,pins = <
-> +			J784S4_WKUP_IOPAD(0x004, PIN_OUTPUT, 6) /* (C32) MCU_OSPI0_ECC_FAIL */
-> +			J784S4_WKUP_IOPAD(0x000, PIN_OUTPUT, 6) /* (B34) MCU_OSPI0_RESET_OUT0 */
->  		>;
->  	};
->  
->  	mcu_fss0_ospi1_pins_default: mcu-fss0-ospi1-default-pins {
->  		pinctrl-single,pins = <
-> -			J784S4_WKUP_IOPAD(0x040, PIN_OUTPUT, 0) /* (F32) MCU_OSPI1_CLK */
-> -			J784S4_WKUP_IOPAD(0x05c, PIN_OUTPUT, 0) /* (G32) MCU_OSPI1_CSn0 */
-> -			J784S4_WKUP_IOPAD(0x04c, PIN_INPUT, 0) /* (E35) MCU_OSPI1_D0 */
-> -			J784S4_WKUP_IOPAD(0x050, PIN_INPUT, 0) /* (D31) MCU_OSPI1_D1 */
-> -			J784S4_WKUP_IOPAD(0x054, PIN_INPUT, 0) /* (G31) MCU_OSPI1_D2 */
-> -			J784S4_WKUP_IOPAD(0x058, PIN_INPUT, 0) /* (F33) MCU_OSPI1_D3 */
-> -			J784S4_WKUP_IOPAD(0x048, PIN_INPUT, 0) /* (F31) MCU_OSPI1_DQS */
-> -			J784S4_WKUP_IOPAD(0x044, PIN_INPUT, 0) /* (C31) MCU_OSPI1_LBCLKO */
-> +			J784S4_WKUP_IOPAD(0x008, PIN_OUTPUT, 0) /* (F32) MCU_OSPI1_CLK */
-> +			J784S4_WKUP_IOPAD(0x024, PIN_OUTPUT, 0) /* (G32) MCU_OSPI1_CSn0 */
-> +			J784S4_WKUP_IOPAD(0x014, PIN_INPUT, 0) /* (E35) MCU_OSPI1_D0 */
-> +			J784S4_WKUP_IOPAD(0x018, PIN_INPUT, 0) /* (D31) MCU_OSPI1_D1 */
-> +			J784S4_WKUP_IOPAD(0x01C, PIN_INPUT, 0) /* (G31) MCU_OSPI1_D2 */
-> +			J784S4_WKUP_IOPAD(0x020, PIN_INPUT, 0) /* (F33) MCU_OSPI1_D3 */
-> +			J784S4_WKUP_IOPAD(0x010, PIN_INPUT, 0) /* (F31) MCU_OSPI1_DQS */
-> +			J784S4_WKUP_IOPAD(0x00C, PIN_INPUT, 0) /* (C31) MCU_OSPI1_LBCLKO */
+> Note jit instruction #19 corresponding to BPF instruction #1, which
+> loads truncated and sign-extended value of %rbp's first byte as an
+> address of format string.
+> 
+> Here is how verifier log looks for (slightly modified) program:
+> 
+>    func#0 @0
+>    0: R1=ctx(off=0,imm=0) R10=fp0
+>    ; asm volatile ("			\n\
+>    0: (b7) r1 = 553656332                ; R1_w=553656332
+>    1: (63) *(u32 *)(r10 -8) = r1         ; R1_w=553656332 R10=fp0 fp-8=553656332
+>    2: (bf) r1 = (s16)r10                 ; R1_w=fp0 R10=fp0
+>    3: (07) r1 += -8                      ; R1_w=fp-8
+>    4: (b7) r2 = 3                        ; R2_w=3
+>    5: (bd) if r2 <= r1 goto pc+0         ; R1_w=fp-8 R2_w=3
+>    6: (85) call bpf_trace_printk#6
+>    mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1
+>    ...
+>    mark_precise: frame0: falling back to forcing all scalars precise
+>    7: R0=scalar()
+>    7: (b7) r0 = 0                        ; R0_w=0
+>    8: (95) exit
+>    
+>    from 5 to 6: R1_w=fp-8 R2_w=3 R10=fp0 fp-8=553656332
+>    6: (85) call bpf_trace_printk#6
+>    mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1
+>    ...
+>    mark_precise: frame0: falling back to forcing all scalars precise
+>    7: safe
+> 
+> Note the following line:
+> 
+>    2: (bf) r1 = (s16)r10                 ; R1_w=fp0 R10=fp0
+> 
+> Verifier incorrectly marked r1 as fp0, hence not noticing the problem
+> with address passed to printk.
 
-Thank you for the patch,
+Thanks, Eduard. Right. I am also able to dump xlated code like
+below:
 
-For OSPI functionality:
+    0: (62) *(u32 *)(r10 -8) = 553656332
+    1: (bf) r1 = (s16)r10
+    2: (07) r1 += -8
+    3: (b7) r2 = 3
+    4: (bd) if r2 <= r1 goto pc+0
+    5: (85) call bpf_trace_printk#-138320
+    6: (b7) r0 = 0
+    7: (95) exit
 
-Tested-by: Vaishnav Achath <vaishnav.a@ti.com>
+Something like below can fix the problem,
 
-before: https://gist.github.com/vaishnavachath/c87275e53f6ae38bacc44c65ed09c733
-(QSPI probe fails due to wrong pinmux)
-after: https://gist.github.com/vaishnavachath/b5f6147cfae5218815aca94ec0dfd991
-(both QSPI, OSPI is functional)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 132f25dab931..db72619551b2 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -13171,6 +13171,7 @@ static int check_alu_op(struct bpf_verifier_env 
+*env, struct bpf_insn *insn)
+                                         if (no_sext && need_id)
+                                                 src_reg->id = 
+++env->id_gen;
+                                         copy_register_state(dst_reg, 
+src_reg);
++                                       dst_reg->type = SCALAR_VALUE;
+                                         if (!no_sext)
+                                                 dst_reg->id = 0;
+                                         coerce_reg_to_size_sx(dst_reg, 
+insn->off >> 3);
 
-heads-up :
-I see the following warnings for ADC:
+After insn 1, we need change r1 type to SCALAR_VALUE. Will add
+the the test to selftest and submit the patch to fix the problem
+today.
 
-```
- pinctrl-single 4301c068.pinctrl: mux offset out of range: 0x134 (0x120)
- pinctrl-single 4301c068.pinctrl: could not add functions for
-mcu-adc0-default-pins 308x
-pinctrl-single 4301c068.pinctrl: mux offset out of range: 0x154 (0x120)
-pinctrl-single 4301c068.pinctrl: could not add functions for
-mcu-adc1-default-pins 340x
-```
-
-mcu_adc0_pins_default and mcu_adc1_pins_default entries needs to have the
-wkup_pmx2 base (0x68) subtracted to get the appropriate offsets, not sure if
-there is already a patch addressing the same or should be part of this patch.
-
-Thanks and Regards,
-Vaishnav
-
->  		>;
->  	};
->  };
-> @@ -437,7 +444,7 @@ &fss {
->  &ospi0 {
->  	status = "okay";
->  	pinctrl-names = "default";
-> -	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
-> +	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>, <&mcu_fss0_ospi0_1_pins_default>;
->  
->  	flash@0 {
->  		compatible = "jedec,spi-nor";
+> 
+> Thanks,
+> Eduard.
+> 
+>>>
+>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17970c5da80000
+>>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=14570c5da80000
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=10570c5da80000
+>>>
+[...]
