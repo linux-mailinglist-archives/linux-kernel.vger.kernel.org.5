@@ -2,88 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5D7771BDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24B1771BE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbjHGHxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 03:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46634 "EHLO
+        id S229916AbjHGHz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 03:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbjHGHxl (ORCPT
+        with ESMTP id S231234AbjHGHzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 03:53:41 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4151BC2
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 00:53:18 -0700 (PDT)
-X-UUID: 73fcd5ac34f711ee9cb5633481061a41-20230807
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=LkWwtZsl/ZS2ofti0t2kC2R0Fufo15InoHqryA/vhoA=;
-        b=ZbkBirJnxdcW2Wb91f84BI/K9t2jkpCNbCPfHHTZP0xMuzofUkoYh5bDH49O8kTzqt4WM9IEidqxxj8O5QiZx6HfoCB3iRzhrZQMDz8JvZwyXQEReeoKuIfjvBJepxDJ2EP1lPYmEFMmXNMNaUwzuoJZAedflFDTT1YnlSu/Lak=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.30,REQID:85cb0795-ced5-4932-a652-3b7a648eacd0,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:1fcc6f8,CLOUDID:9c59f8a0-0933-4333-8d4f-6c3c53ebd55b,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: 73fcd5ac34f711ee9cb5633481061a41-20230807
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 224011429; Mon, 07 Aug 2023 15:53:10 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- MTKMBS14N2.mediatek.inc (172.21.101.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 7 Aug 2023 15:53:09 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 7 Aug 2023 15:53:09 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <lecopzer.chen@mediatek.com>
-CC:     <arnd@arndb.de>, <linus.walleij@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
-        <yj.chiang@mediatek.com>
-Subject: Re: [PATCH] ARM: ptrace: fix scno of -1 cause SIGILL
-Date:   Mon, 7 Aug 2023 15:53:09 +0800
-Message-ID: <20230807075309.6188-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230724121655.7894-1-lecopzer.chen@mediatek.com>
-References: <20230724121655.7894-1-lecopzer.chen@mediatek.com>
+        Mon, 7 Aug 2023 03:55:16 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978B2DD;
+        Mon,  7 Aug 2023 00:55:13 -0700 (PDT)
+X-QQ-mid: bizesmtp77t1691394885tju2pous
+Received: from linux-lab-host.localdomain ( [116.30.130.12])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Mon, 07 Aug 2023 15:54:43 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: 1fH6gRJ4X2KYo6S8RFhJ7dyJtT4AuywqyW3RGhFGExJ0qmLajUVclEjXNkEHX
+        zrJdqB9/cEuJ9lB70Kquntruv1m+7fwYQK/m2qGWL6SkotABF9M9MWTBvd0dfLzLt60po14
+        G59IyGqSNdXfls1bHywrU8KNJdySgX3Fcy5NhsZU8eRRpL7qYWZ8pqOUrsGWKRWPEkrJx9t
+        m7UO5oN20IzY5aj2A3K9s1PfWGlS94SnRcnGJBhTrr2POYpoOPbEVrzaFAjv6gz3QNggrdq
+        klDHgfe2gYuWW5g2Nh1bNNziWCivKhHqoFq0kuyEoteSf4XjAzso1cOkgEqQN8o30avfwyn
+        UWhEiM+2XqEJrNob3vApfN3w2Ipt0o1JN5YbPKIWqnniYf7odaJ1WvyjjFjWvrBcEYSyJC4
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 750520336660474344
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, david.laight@aculab.com, falcon@tinylab.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        thomas@t-8ch.de
+Subject: [PATCH v4] tools/nolibc: fix up size inflate regression
+Date:   Mon,  7 Aug 2023 15:54:42 +0800
+Message-Id: <a4084f7fac7a89f861b5582774bc7a98634d1e76.1691392805.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As reported and suggested by Willy, the inline __sysret() helper
+introduces three types of conversions and increases the size:
 
-> In commit [1], the -1 scno is used as a special scno when the task's
-> syscall is traced.
+(1) the "unsigned long" argument to __sysret() forces a sign extension
+from all sys_* functions that used to return 'int'
 
-> After commit [2], PTRACE_SET_SYSCALL will always mask syscall with
-> __NR_SYSCALL_MASK, this makes the condition `cmp scno, #-1` broken,
-> and some test like Android VTS[3] is also failed because SIGILL
-> interrupt the test program.
+(2) the comparison with the error range now has to be performed on a
+'unsigned long' instead of an 'int'
 
-> Let's test with `and` logic with #0x0ff000. Instead of #__NR_SYSCALL_MASK
-> because of the constraint of ARM Operand2 rules and avoid conflicting
-> with ARM private syscall.
+(3) the return value from __sysret() is a 'long' (note, a signed long)
+which then has to be turned back to an 'int' before being returned by the
+caller to satisfy the caller's prototype.
 
-...
+To fix up this, firstly, let's use macro instead of inline function to
+preserves the input type and avoids these useless conversions (1), (3).
 
-Please follow the commit from Kees below and ignore this patch, thanks.
+Secondly, comparison to -MAX_ERRNO inflicts on all integer returns where
+we could previously keep a simple sign comparison, let's use a new
+is_signed_type() macro from include/linux/compiler.h to limit the
+comparision to -MAX_ERRNO (2) only on demand and preserves a simple sign
+comparision for most of the cases as before.
 
-https://lore.kernel.org/all/20230804071045.never.134-kees@kernel.org/
+Thirdly, fix up the following warning by an explicit conversion and let
+__sysret() be able to accept the (void *) type of argument:
 
+    sysroot/powerpc/include/sys.h: In function 'sbrk':
+    sysroot/powerpc/include/sys.h:104:16: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+      104 |         return (void *)__sysret(-ENOMEM);
+
+Fourthly, to further workaround the argument type with 'const', must use
+__auto_type in a new enough version or use 'long' as before.
+
+Here reports the size testing result of nolibc-test with gcc 13.2.0:
+
+before:
+
+    // ppc64le with powerpc64-linux-gcc
+    $ size nolibc-test
+       text	   data	    bss	    dec	    hex	filename
+      28004	      8	     80	  28092	   6dbc	nolibc-test
+
+    // mips with mips64-linux-gcc (CFLAGS="-mabi=32 -EL")
+    $ size nolibc-test
+       text	   data	    bss	    dec	    hex	filename
+      23164	     64	     64	  23292	   5afc	nolibc-test
+
+after:
+
+    // ppc64le with powerpc64-linux-gcc
+    $ size nolibc-test
+       text	   data	    bss	    dec	    hex	filename
+      27828	      8	     80	  27916	   6d0c	nolibc-test
+
+    // mips with mips64-linux-gcc (CFLAGS="-mabi=32 -EL")
+    $ size nolibc-test
+       text	   data	    bss	    dec	    hex	filename
+      22924	     64	     64	  23052	   5a0c	nolibc-test
+
+Suggested-by: Willy Tarreau <w@1wt.eu>
+Link: https://lore.kernel.org/lkml/20230806095846.GB10627@1wt.eu/
+Link: https://lore.kernel.org/lkml/20230806134348.GA19145@1wt.eu/
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+
+Hi, Willy
+
+v4 rebases on latest 20230806-for-6.6-1	and fixes up a warning reported
+by the new -Wall -Wextra options.
+
+Changes from v3 --> v4:
+
+* fix up a new warning about 'ret < 0' when the input arg type is (void *)
+
+Changes from v2 --> v3:
+
+* define a __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT for gcc >= 11.0 (ABI_VERSION >= 1016)
+* split __sysret() to two versions by the macro instead of a mixed unified and unreadable version
+* use shorter __ret instead of __sysret_arg
+
+Changes from v1 --> v2:
+
+* fix up argument with 'const' in the type
+* support "void *" argument
+
+v2: https://lore.kernel.org/lkml/95fe3e732f455fab653fe1427118d905e4d04257.1691339836.git.falcon@tinylab.org/
+v1: https://lore.kernel.org/lkml/20230806131921.52453-1-falcon@tinylab.org/
+
+---
+ tools/include/nolibc/sys.h | 66 +++++++++++++++++++++++++++++++-------
+ 1 file changed, 55 insertions(+), 11 deletions(-)
+
+diff --git a/tools/include/nolibc/sys.h b/tools/include/nolibc/sys.h
+index 833d6c5e86dc..565b4a295c11 100644
+--- a/tools/include/nolibc/sys.h
++++ b/tools/include/nolibc/sys.h
+@@ -35,15 +35,59 @@
+  * (src/internal/syscall_ret.c) and glibc (sysdeps/unix/sysv/linux/sysdep.h)
+  */
+ 
+-static __inline__ __attribute__((unused, always_inline))
+-long __sysret(unsigned long ret)
+-{
+-	if (ret >= (unsigned long)-MAX_ERRNO) {
+-		SET_ERRNO(-(long)ret);
+-		return -1;
+-	}
+-	return ret;
+-}
++/*
++ * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
++ * bool and also pointer types. (from include/linux/compiler.h)
++ */
++#define __is_signed_type(type) (((type)(-1)) < (type)1)
++
++/* __auto_type is used instead of __typeof__ to workaround the build error
++ * 'error: assignment of read-only variable' when the argument has 'const' in
++ * the type, but __auto_type is a new feature from newer gcc version and it
++ * only works with 'const' from gcc 11.0 (__GXX_ABI_VERSION = 1016)
++ * https://gcc.gnu.org/legacy-ml/gcc-patches/2013-11/msg01378.html
++ */
++
++#if __GXX_ABI_VERSION >= 1016
++#define __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT
++#endif
++
++#ifdef __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT
++#define __sysret(arg)                                                    \
++({                                                                       \
++	__auto_type __ret = (arg);                                       \
++	if (__is_signed_type(__typeof__(arg))) {                         \
++		if ((long)__ret < 0) {                                   \
++			SET_ERRNO(-(long)__ret);                         \
++			__ret = (__typeof__(arg))(-1L);                  \
++		}                                                        \
++	} else {                                                         \
++		if ((unsigned long)__ret >= (unsigned long)-MAX_ERRNO) { \
++			SET_ERRNO(-(long)__ret);                         \
++			__ret = (__typeof__(arg))(-1L);                  \
++		}                                                        \
++	}                                                                \
++	__ret;                                                           \
++})
++
++#else  /* ! __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT */
++#define __sysret(arg)                                                    \
++({                                                                       \
++	long __ret = (long)(arg);                                        \
++	if (__is_signed_type(__typeof__(arg))) {                         \
++		if (__ret < 0) {                                         \
++			SET_ERRNO(-__ret);                               \
++			__ret = -1L;                                     \
++		}                                                        \
++	} else {                                                         \
++		if ((unsigned long)__ret >= (unsigned long)-MAX_ERRNO) { \
++			SET_ERRNO(-__ret);                               \
++			__ret = -1L;                                     \
++		}                                                        \
++	}                                                                \
++	(__typeof__(arg))__ret;                                          \
++})
++#endif /* ! __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT */
+ 
+ /* Functions in this file only describe syscalls. They're declared static so
+  * that the compiler usually decides to inline them while still being allowed
+@@ -94,7 +138,7 @@ void *sbrk(intptr_t inc)
+ 	if (ret && sys_brk(ret + inc) == ret + inc)
+ 		return ret + inc;
+ 
+-	return (void *)__sysret(-ENOMEM);
++	return __sysret((void *)-ENOMEM);
+ }
+ 
+ 
+@@ -682,7 +726,7 @@ void *sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
+ static __attribute__((unused))
+ void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
+ {
+-	return (void *)__sysret((unsigned long)sys_mmap(addr, length, prot, flags, fd, offset));
++	return __sysret(sys_mmap(addr, length, prot, flags, fd, offset));
+ }
+ 
+ static __attribute__((unused))
+-- 
+2.25.1
 
