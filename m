@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF917718CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 05:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2517718D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 05:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbjHGDdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 23:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
+        id S229968AbjHGDgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 23:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjHGDdH (ORCPT
+        with ESMTP id S229529AbjHGDga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 23:33:07 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915F89D;
-        Sun,  6 Aug 2023 20:33:05 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d4f022c6c91so1223947276.2;
-        Sun, 06 Aug 2023 20:33:05 -0700 (PDT)
+        Sun, 6 Aug 2023 23:36:30 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB5C9D
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 20:36:29 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686ba97e4feso3931129b3a.0
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 20:36:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691379185; x=1691983985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1691379388; x=1691984188;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PS6IeiZC33tTmiycd5oF9VziudnWFwA4fXSnPFJgzm0=;
-        b=jt1NcVkycFoQG/yHGtB+0jJlF/PZNamsiqBz0RYMIxTM2FlSh/KhjEUFsd4aHnhmP6
-         MIhB9FV/feBXmmOswUlFFjoABsS06vHrlIE7o9OtVnaXAJ66xaoRySmjFz/hP+hlylat
-         nmRdzA9UoLApEKAH12FPgawBGQ4j8n52ukQCgNh3Oxt1MTXRI+QvXD4qU2HrCGhDA/eq
-         S81N6xgsx7YR+qmVSykEcXlQlbvpyNttJ8kmT0uQgRkAX46FLXaHjXRCAGyusZrFz+sB
-         /qeAWIvGmiYogbK/PblG/PRiZ4NINhBEMonwBXNXWdaRYuFmAKV54FBzEQRXUk3aL7un
-         /xAw==
+        bh=WAmHsv0aooR3nX10HEjLL5tP/plsIB0hDyj15nET4fc=;
+        b=HX/bG4KLwTRh5wjISv7jDf/BZhZZfMUQIkKKTpsE4Z/nEdgem5yGJQ+klykQb7Br0q
+         y7EA4Xwz6bfgAGBQ4je7kw+PXiEnHaeArh2+vVWRJ5R9GbwnzOWeJoAemOa10kykp9xs
+         sr7uBgapdp0vnVjhZdiUHAXUpwVoJqEWqfYiAHpIZuPu3bL/MJ/MEeLVObazbIxMmrPE
+         ULlmAFuVXJtd3P6tz4I0Ken9ItLgysJzH3OhNswJQO8BKFVzsjN4sPM8mUk0t0qifGfh
+         FFZ5MOWXOM+mbM3Pa2SRYH6Udxq6Z3Uu8YbpxsE+pFrs64y9fepLwckCpV2uWOFy/AW1
+         apDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691379185; x=1691983985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PS6IeiZC33tTmiycd5oF9VziudnWFwA4fXSnPFJgzm0=;
-        b=ifd7vK+EOrLWK1QzyPoCeCDsfPFVT2lCb38Pqntv/pjYw+2a86V1FUF6MmSfELvzim
-         3MmTBp5Nr8ZKJPFOkGg/W3vcz1DpTm34Yx0T0IAK2pVHdan6Yazg8n+mOUqoAgK7L8GT
-         AoUMG/YVCoNvLPrGChDnBrqp3somKIynOe6iHUYpCam+oyOqd9bE4nOEwgby01vieeSJ
-         xOFaMpYzOimdRU7VkI5VQacSVsEWoY5Wpi5YGt5wlT1i5aNuY/mKQenr8trAlSRljbSM
-         6nXb5SGx7AuYRbAya5domUgA1+Jus3G1xTr16Gs4EHwZrL3ye8v3xfGzswWgrFnbBYxr
-         mHjw==
-X-Gm-Message-State: AOJu0YwS2RVlDDjKPaHsw1Us5JIqiX+ghVoO51mRM2iWVJpdIGAOiOjb
-        IeyQbjSrsR99Td2XMBTxKCn7YrcaB5/cIBSXnHo=
-X-Google-Smtp-Source: AGHT+IGPWU9smSGwGTr83XrOkHe/s5ajPSR2PQbL5KXhpXzqbR4Ms/gkpEunaKMSN++k3I+OK1Jz5YNuHLhT1H1UCHQ=
-X-Received: by 2002:a25:26c9:0:b0:d0d:786:2999 with SMTP id
- m192-20020a2526c9000000b00d0d07862999mr7742055ybm.29.1691379184552; Sun, 06
- Aug 2023 20:33:04 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691379388; x=1691984188;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=WAmHsv0aooR3nX10HEjLL5tP/plsIB0hDyj15nET4fc=;
+        b=QiDCPNZeflCfbKrNlOyItj0gTbw8azr3EH4EfeCq3/gQq6pzSei7jCdpejftZEIWba
+         /clqsxTAKw0HCG51Vhmx1e3s4XZd/te8OhOiD1yHON81Sq0s1yphR+iD4Jp7M30IdipW
+         ygSAECihJGPe8AnkiDKEIcovxd6cG97LIxeztuF8E1fljwo4CLShH4JWYs4MlyBDNhAO
+         bfSMNgmxARaILaRoD2nujRaeirCRNoBr8ljOkKkOUY7InRdn21KAsWR8AMoxnJwU/FIL
+         1oRL3Di9J7jJONmy56vFk+gLEmAvWLrxcnZKeiwBfDWJbN2GTVbHnyR0ldmMCk7GFiPL
+         wG7A==
+X-Gm-Message-State: AOJu0YxTYCds31H4UL8BMM4u1DUGEssxG+Yac+hPmSUYBGup03a1RdnQ
+        miSq3Rh+G8xavO1Nvr2KKGuYiQ==
+X-Google-Smtp-Source: AGHT+IEZFPA7qWk9DHQsPtm3SkDoNZK1SccOG5TU0sYc3d+dZtsrq0mteg81HlB/V1W6YKLdp3+GKw==
+X-Received: by 2002:a05:6a00:180c:b0:66a:386c:e6a6 with SMTP id y12-20020a056a00180c00b0066a386ce6a6mr11061551pfa.6.1691379388661;
+        Sun, 06 Aug 2023 20:36:28 -0700 (PDT)
+Received: from [10.85.115.102] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id k14-20020aa7820e000000b0063f00898245sm5106601pfi.146.2023.08.06.20.36.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Aug 2023 20:36:28 -0700 (PDT)
+Message-ID: <2ee4f673-8218-ac72-684f-3cd78c46f750@bytedance.com>
+Date:   Mon, 7 Aug 2023 11:36:22 +0800
 MIME-Version: 1.0
-References: <20230727093637.1262110-1-usama.anjum@collabora.com>
- <20230727093637.1262110-3-usama.anjum@collabora.com> <CABb0KFFtjTve+uM=CTPChzUbJvJ=Tr3Q8espo_Rr_hutZPPAiw@mail.gmail.com>
- <6b6a4e1c-a9e9-9592-d5b4-3c9210c8b650@collabora.com>
-In-Reply-To: <6b6a4e1c-a9e9-9592-d5b4-3c9210c8b650@collabora.com>
-From:   Andrei Vagin <avagin@gmail.com>
-Date:   Sun, 6 Aug 2023 20:32:53 -0700
-Message-ID: <CANaxB-wf6OeEAk0VtZoo6gJOBY9QAJHpO4=ctKHz1Nf8O1uw1g@mail.gmail.com>
-Subject: Re: WIP: Performance improvements
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Peter Xu <peterx@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [External] Re: [PATCH] cgroup/rstat: record the cumulative
+ per-cpu time of cgroup and its descendants
+To:     Tejun Heo <tj@kernel.org>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230717093612.40846-1-jiahao.os@bytedance.com>
+ <ZLWb-LsBD041hMvr@slm.duckdns.org>
+ <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
+ <ZLcJ1nH8KzWzoQWj@slm.duckdns.org>
+ <b4424767-dce7-08a9-3759-43cc9dfa4273@bytedance.com>
+ <3d2b68bf-9f40-c779-dcfd-4cf9939edecc@bytedance.com>
+ <ZMKs_GpHEW6Pfusj@slm.duckdns.org> <ZMrNHf2tg8AZ2F0z@slm.duckdns.org>
+From:   Hao Jia <jiahao.os@bytedance.com>
+In-Reply-To: <ZMrNHf2tg8AZ2F0z@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -95,176 +81,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 4:02=E2=80=AFAM Muhammad Usama Anjum
-<usama.anjum@collabora.com> wrote:
->
-> We are optimizing for more performance. Please find the change-set below
-> for easy review before next revision and post your comments:
->
-> - Replace memcpy() with direct copy as it proving to be very expensive
-> - Don't check if PAGE_IS_FILE if no mask needs it as it is very
->   expensive to check per pte
-> - Add question in comment for discussion purpose
-> - Add fast path for exclusive WP for ptes
-> ---
->  fs/proc/task_mmu.c | 54 ++++++++++++++++++++++++++++++++++++----------
->  1 file changed, 43 insertions(+), 11 deletions(-)
->
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index 7e92c33635cab..879baf896ed0b 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -1757,37 +1757,51 @@ static int pagemap_release(struct inode *inode,
-> struct file *file)
->                                  PAGE_IS_HUGE)
->  #define PM_SCAN_FLAGS          (PM_SCAN_WP_MATCHING | PM_SCAN_CHECK_WPAS=
-YNC)
->
-> +#define MASKS_OF_INTEREST(a)   (a.category_inverted | a.category_mask | =
-\
-> +                                a.category_anyof_mask | a.return_mask)
-> +
->  struct pagemap_scan_private {
->         struct pm_scan_arg arg;
-> +       unsigned long masks_of_interest;
->         unsigned long cur_vma_category;
->         struct page_region *vec_buf, cur_buf;
->         unsigned long vec_buf_len, vec_buf_index, found_pages, end_addr;
->         struct page_region __user *vec_out;
->  };
->
-> -static unsigned long pagemap_page_category(struct vm_area_struct *vma,
-> +static unsigned long pagemap_page_category(struct pagemap_scan_private *=
-p,
-> +                                          struct vm_area_struct *vma,
->                                            unsigned long addr, pte_t pte)
->  {
->         unsigned long categories =3D 0;
->
->         if (pte_present(pte)) {
-> -               struct page *page =3D vm_normal_page(vma, addr, pte);
-> +               struct page *page;
->
->                 categories |=3D PAGE_IS_PRESENT;
->                 if (!pte_uffd_wp(pte))
->                         categories |=3D PAGE_IS_WRITTEN;
-> -               if (page && !PageAnon(page))
-> -                       categories |=3D PAGE_IS_FILE;
-> +
-> +               if (p->masks_of_interest & PAGE_IS_FILE) {
-> +                       page =3D vm_normal_page(vma, addr, pte);
-> +                       if (page && !PageAnon(page))
-> +                               categories |=3D PAGE_IS_FILE;
-> +               }
-> +
->                 if (is_zero_pfn(pte_pfn(pte)))
->                         categories |=3D PAGE_IS_PFNZERO;
->         } else if (is_swap_pte(pte)) {
-> -               swp_entry_t swp =3D pte_to_swp_entry(pte);
-> +               swp_entry_t swp;
->
->                 categories |=3D PAGE_IS_SWAPPED;
->                 if (!pte_swp_uffd_wp_any(pte))
->                         categories |=3D PAGE_IS_WRITTEN;
-> -               if (is_pfn_swap_entry(swp) && !PageAnon(pfn_swap_entry_to=
-_page(swp)))
-> -                       categories |=3D PAGE_IS_FILE;
-> +
-> +               if (p->masks_of_interest & PAGE_IS_FILE) {
-> +                       swp =3D pte_to_swp_entry(pte);
-> +                       if (is_pfn_swap_entry(swp) && !PageAnon(pfn_swap_=
-entry_to_page(swp)))
-> +                               categories |=3D PAGE_IS_FILE;
-> +               }
->         }
->
->         return categories;
-> @@ -1957,9 +1971,7 @@ static bool pagemap_scan_push_range(unsigned long
-> categories,
->                 if (p->vec_buf_index >=3D p->vec_buf_len)
->                         return false;
->
-> -               memcpy(&p->vec_buf[p->vec_buf_index], cur_buf,
-> -                      sizeof(*p->vec_buf));
-> -               ++p->vec_buf_index;
-> +               p->vec_buf[p->vec_buf_index++] =3D *cur_buf;
->         }
->
->         cur_buf->start =3D addr;
-> @@ -2095,9 +2107,24 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd,
-> unsigned long start,
->                 return 0;
->         }
->
-> +       if (!p->vec_buf) {
-> +               /* Fast path for performing exclusive WP */
-> +               for (addr =3D start; addr !=3D end; pte++, addr +=3D PAGE=
-_SIZE) {
-> +                       if (pte_uffd_wp(ptep_get(pte)))
-> +                               continue;
-> +                       make_uffd_wp_pte(vma, addr, pte);
-> +                       if (!flush) {
-> +                               start =3D addr;
-> +                               flush =3D true;
-> +                       }
-> +               }
-> +               ret =3D 0;
-> +               goto flush_and_return;
-> +       }
-> +
->         for (addr =3D start; addr !=3D end; pte++, addr +=3D PAGE_SIZE) {
->                 unsigned long categories =3D p->cur_vma_category |
-> -                                          pagemap_page_category(vma, add=
-r, ptep_get(pte));
-> +                                          pagemap_page_category(p, vma, =
-addr, ptep_get(pte));
->                 unsigned long next =3D addr + PAGE_SIZE;
->
->                 ret =3D pagemap_scan_output(categories, p, addr, &next);
-> @@ -2119,6 +2146,7 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd,
-> unsigned long start,
->                 }
->         }
->
-> +flush_and_return:
->         if (flush)
->                 flush_tlb_range(vma, start, addr);
->
-> @@ -2284,6 +2312,9 @@ static int pagemap_scan_init_bounce_buffer(struct
-> pagemap_scan_private *p)
->          * consecutive ranges that have the same categories returned acro=
-ss
->          * walk_page_range() calls.
->          */
-> +       // Question: Increasing the vec_buf_len increases the execution s=
-peed.
-> +       // But it'll increase the memory needed to run the IOCTL. Can we =
-do
-> something here?
-> +       // Right now only have space for 512 entries of page_region
 
-The main problem here is that walk_page_range is executed for 512 pages.
-I think we need to execute it for the whole range and interrupt it
-when we need to
-drain the bounce buffer.
 
-For a trivial program that scans its address space the time is reduced from=
- 20
-seconds to 0.001 seconds. The test program and perf data are here:
-https://gist.github.com/avagin/c5a22f3c78f8cb34281602dfe9c43d10
+On 2023/8/3 Tejun Heo wrote:
+> I couldn't come up with an answer. Let's go ahead with adding the field but
+> can you please do the followings?
+> 
 
->         p->vec_buf_len =3D min_t(size_t, PAGEMAP_WALK_SIZE >> PAGE_SHIFT,
->                                p->arg.vec_len - 1);
->         p->vec_buf =3D kmalloc_array(p->vec_buf_len, sizeof(*p->vec_buf),
-> @@ -2329,6 +2360,7 @@ static long do_pagemap_scan(struct mm_struct *mm,
-> unsigned long uarg)
->         if (ret)
->                 return ret;
->
-> +       p.masks_of_interest =3D MASKS_OF_INTEREST(p.arg);
->         ret =3D pagemap_scan_init_bounce_buffer(&p);
->         if (ret)
->                 return ret;
-> --
-> 2.39.2
->
+Thank you for your suggestion. I am very willing to do it.
+
+> * Name it to something like subtree_bstat instead of cumul_bstat. The
+>    counters are all cumulative.
+
+I did it in v2 patch.
+
+> 
+> * Are you sure the upward propagation logic is correct? It's calculating
+>    global delta and then propagating to the per-cpu delta of the parent. Is
+>    that correct because the two delta calculations always end up the same?
+
+Sorry, I made a mistake and misled you. These two deltas are not always 
+equal.
+
+I found and reproduced a bug case:
+We build /sys/fs/cgroup/test /sys/fs/cgroup/test/t1, 
+/sys/fs/cgroup/test/t1/tt1 in turn.
+And there are only tasks in /sys/fs/cgroup/test/t1/tt1. After applying 
+this patch, some operations and corresponding data changes are as follows:
+
+Step 1、cat /sys/fs/cgroup/test/t1/tt1/cpu.stat
+*cpu 6* current flush cgroup /test/t1/tt1
+per-cpu delta utime 0 stime 0 sum_exec_runtime 257341
+/test/t1/tt1 cumul_bstat(cpu 6) utime 0 stime 0 sum_exec_runtime 257341
+/test/t1/tt1 cgrp->bstat utime 0 stime 0 sum_exec_runtime 257341
+if (cgroup_parent(parent)) {
+     cgrp delta utime 0 stime 0 sum_exec_runtime 257341
+     parent(/test/t1) ->bstat utime 0 stime 0 sum_exec_runtime 257341
+     parent(/test/t1) last_bstat utime 0 stime 0 sum_exec_runtime 0
+     parent(/test/t1) cumul_bstat utime 0 stime 0 sum_exec_runtime 257341
+}
+
+
+Step 2、cat /sys/fs/cgroup/test/t1/tt1/cpu.stat
+*cpu 12* current flush cgroup /test/t1/tt1
+per-cpu delta utime 0 stime 1000000 sum_exec_runtime 747042
+/test/t1/tt1 cumul_bstat utime 0 stime 1000000 sum_exec_runtime 747042
+/test/t1/tt1 cgrp->bstat utime 0 stime 1000000 sum_exec_runtime 1004383
+if (cgroup_parent(parent)) {
+     cgrp delta utime 0 stime 1000000 sum_exec_runtime 747042
+     parent(/test/t1) ->bstat utime 0 stime 1000000 sum_exec_runtime 1004383
+     parent(/test/t1) last_bstat utime 0 stime 0 sum_exec_runtime 0
+     parent(/test/t1) cumul_bstat utime 0 stime 1000000 sum_exec_runtime 
+747042
+}
+
+
+Step 3、cat /sys/fs/cgroup/test/cpu.stat
+(cgroup fulsh /test/t1/tt1 -> /test/t1 -> /test in turn)
+
+*cpu 6*  current flush cgroup /test/t1/tt1
+per-cpu delta utime 0 stime 0 sum_exec_runtime 263468
+/test/t1/tt1 cumul_bstat(cpu 6) utime 0 stime 0 sum_exec_runtime 520809
+/test/t1/tt1 cgrp->bstat utime 0 stime 1000000 sum_exec_runtime 1267851
+if (cgroup_parent(parent)) {
+     cgrp delta utime 0 stime 0 sum_exec_runtime 263468
+     parent(/test/t1) ->bstat utime 0 stime 1000000 sum_exec_runtime 1267851
+     parent(/test/t1) last_bstat utime 0 stime 0 sum_exec_runtime 0
+     parent(/test/t1) cumul_bstat utime 0 stime 0 sum_exec_runtime 520809
+}
+
+*cpu 6* current flush cgroup /test/t1
+per-cpu delta utime 0 stime 0 sum_exec_runtime 0
+/test/t1 cumul_bstat(cpu 6) utime 0 stime 0 sum_exec_runtime 520809
+/test/t1 cgrp->bstat utime 0 stime 1000000 sum_exec_runtime 1267851
+if (cgroup_parent(parent)) {
+     cgrp delta utime 0 stime 1000000 sum_exec_runtime 1267851  <---
+     parent(/test) ->bstat utime 0 stime 1000000 sum_exec_runtime 1267851
+     parent(/test) last_bstat utime 0 stime 0 sum_exec_runtime 0
+     parent(/test) cumul_bstat (cpu 6) utime 0 stime 1000000 
+sum_exec_runtime 1267851 <--- *error*
+******
+   Here cgrp delta is *not equal* to per-cpu delta.
+   The frequency of cgroup (/test) and its chiled cgroup (/test/t1/tt1) 
+  flush is inconsistent.
+   In other words (when we call cgroup_base_stat_flush(), we will not 
+necessarily flush to the highest-level cgroup except root(like step 1 
+and 2 above)).
+   Therefore, cgrp delta may contain the cumulative value of multiple 
+per-cpu deltas.
+
+   The correct value of parent(/test) cumul_bstat should be utime 0 
+stime 0 sum_exec_runtime 520809.
+******
+}
+
+*cpu 6* current flush cgroup /test
+per-cpu delta utime 0 stime 0 sum_exec_runtime 0
+cumul_bstat utime 0 stime 1000000 sum_exec_runtime 1267851
+/test ->bstat utime 0 stime 1000000 sum_exec_runtime 1267851
+	cgroup_parent(parent) is NULL end.
+
+
+So we should add a per-cpu variable subtree_last_bstat similar to 
+cgrp->last_bstat to record the last value.
+
+I have sent v2 patch, please review it again.
+v2 link:
+https://lore.kernel.org/all/20230807032930.87785-1-jiahao.os@bytedance.com
+
+
+> * Please add a comment explaining that the field is not currently used
+>    outside of being read from bpf / drgn and what not and that we're still
+>    trying to determine how to expose that in the cgroupfs interface.
+
+
+Thanks, I did it in v2 patch.
+
+Thanks,
+Hao
