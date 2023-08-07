@@ -2,116 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23AD4772386
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C55D772388
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233315AbjHGMLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 08:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45840 "EHLO
+        id S231440AbjHGMMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233297AbjHGMLp (ORCPT
+        with ESMTP id S229822AbjHGMMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 08:11:45 -0400
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5CAE47
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:11:16 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B78A34000A;
-        Mon,  7 Aug 2023 12:10:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691410261;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zA0Pqt8JIxag0Qxf0Qj9I/LI0SmbQ7bxHc5QrMxN8pU=;
-        b=A8gMQ035qKR7tPaLmCmG+XF1bt0w2wj91ufeIiUZM45cNeuwmFzd8N4jA8gPZmATF4UJBk
-        0UFAuHIid6Ciha0Xwwc6MLB4PQhta/ufLaC2moy49vBRsxQkru4NOMU9t8fhlFX+WNj34N
-        fJS/XGzBboxIWeO4wlFbMaBY+o107CDMGbh8n0onUqYPMMJcj8HTSg0srv8ei5GwUzMauF
-        9FK/z5h5FqI0eZtcLyFLXVrmCpz01ZGNJkuDOrM/A8SsFb54hsx3f5eyGA07xvH0f5xBF7
-        YrZM+O4AcTCMAJl+BstMoBy5xHn67c8irpbrqqgA5I0m9YeaktFXi9e6GJ/wMg==
-Date:   Mon, 7 Aug 2023 14:10:57 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH v8 4/8] nvmem: core: Track the registered devices
-Message-ID: <20230807141057.64976ee1@xps-13>
-In-Reply-To: <2023080732-gulp-pancake-93a5@gregkh>
-References: <20230807082419.38780-1-miquel.raynal@bootlin.com>
-        <20230807082419.38780-5-miquel.raynal@bootlin.com>
-        <2023080732-gulp-pancake-93a5@gregkh>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Mon, 7 Aug 2023 08:12:43 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51DB212F
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:12:11 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so103295e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 05:12:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691410327; x=1692015127;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ta/WOuRSiRVtqcU+Clzhq9Brgubf9rWM0gdEtm6Z4BE=;
+        b=bnX03fJgvPunKrLJ+Z76u1UtH6c4zssGgOkdtt7zV+7pPoEmfuzk12wzclk4B9FVJi
+         7e+ePJMa0VAL4nRD7AfaJDmz4B9RbQppttQ7D4aWoA7EwMwNxHGJ7LzOWwk0SSzAzf7n
+         Fl49AxXEmvl1+bp7SdZjAIt/O9biO8OxpY5Cyaoka3lid9Kuneszf8JrSPIhC9pS/JfK
+         OrwPJp5NIhXVm3xlLpBFTzIzBzaZHbRQnt/FNBPPr+6c9r0HK7+bhOnMYgQcpSNGaW4v
+         sZru5w5o/1Hd5Lp88C4QwV01gIKZxctsKZYp9jdD/e9vKAvfYjaAQRtnnc9upQloM4x7
+         P6KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691410327; x=1692015127;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ta/WOuRSiRVtqcU+Clzhq9Brgubf9rWM0gdEtm6Z4BE=;
+        b=Di29e2LFlytxsI3DfB6sC84zk5MisPnHW572yeDtwC9lcBubia2meM/VpbV1Dp7z21
+         AcucbjAmQtWUvT0Uf/w6JpiM2HEVPfZZFxG+clLqsMOYeAYCGH77p8D/iuumdnxTD85T
+         PgsD+aa6R8UNzNBWMnS+QOgESESHUrVtTEF6y6UbyfQYVFB0LyHcpa3Tx9MIiF6YAd8C
+         WyS0vfq4X3Ao/PWkitRK74oL+0buVO6rbcRWYvlFGAEc7MpzJd3OXWPOUJ9+xeI3AAZE
+         YIEirDatl55VuQ1ezOV3DhoXbVr2xjQXHP3mVZS06mCDols51073ovIWCkFLcx1Q2ODA
+         A9Uw==
+X-Gm-Message-State: AOJu0YysDsp3WP1gYb9zqcnzuy4dwvMvVCW0ckCzLl5hhTvSuuBzms49
+        IEVNAeSBq+Lo38K7MDX6/zZA1sEsH9JrbYoVqG8veUGRCNUWyIay1R+hYQ==
+X-Google-Smtp-Source: AGHT+IECvjHgSmIAlxGvyVvwhb3NLn83CQAD+Z9z/aIFjQmIF6915gw4nfaTY/yIAeWHxeeKGpOTapsUSZelKUaIalA=
+X-Received: by 2002:a05:600c:4746:b0:3fe:5ec3:447f with SMTP id
+ w6-20020a05600c474600b003fe5ec3447fmr44406wmo.1.1691410327495; Mon, 07 Aug
+ 2023 05:12:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <000000000000b35ea205ffc35fe1@google.com> <000000000000efbc2306024b74cf@google.com>
+In-Reply-To: <000000000000efbc2306024b74cf@google.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Mon, 7 Aug 2023 14:11:55 +0200
+Message-ID: <CANp29Y6ow1PS1NaiX-aSpRqGJQv0bE2QhzCBuhO-vEJa8RgjAw@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] kernel BUG in validate_mm (2)
+To:     syzbot <syzbot+70b97abe3e253d1c3f8e@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, jonathan.cameron@huawei.com,
+        krzysztof.kozlowski@linaro.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, luca@z3ntu.xyz, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Mon, Aug 7, 2023 at 3:49=E2=80=AFAM syzbot
+<syzbot+70b97abe3e253d1c3f8e@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit ef513aa7aa5038d2f53e9f2932af5006f37ed0b6
+> Author: Luca Weiss <luca@z3ntu.xyz>
+> Date:   Thu Apr 13 23:17:49 2023 +0000
+>
+>     dt-bindings: iio: adc: qcom,spmi-vadc: Allow 1/16 for pre-scaling
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D11aeb085a8=
+0000
+> start commit:   a901a3568fd2 Merge tag 'iomap-6.5-merge-1' of git://git.k=
+e..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Df5e1158c5b2f8=
+3bb
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D70b97abe3e253d1=
+c3f8e
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1511d490a80=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D130e5cfb28000=
+0
+>
+> If the result looks correct, please mark the issue as fixed by replying w=
+ith:
+>
+> #syz fix: dt-bindings: iio: adc: qcom,spmi-vadc: Allow 1/16 for pre-scali=
+ng
 
-gregkh@linuxfoundation.org wrote on Mon, 7 Aug 2023 11:02:35 +0200:
+No, that's wrong. Please ignore the email.
 
-> On Mon, Aug 07, 2023 at 10:24:15AM +0200, Miquel Raynal wrote:
-> > Create a list with all the NVMEM devices registered in the
-> > subsystem. This way we can iterate through them when needed (unused for
-> > now).
-> >=20
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
-> >  drivers/nvmem/core.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> >=20
-> > diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> > index 257328887263..4e81e0aaf433 100644
-> > --- a/drivers/nvmem/core.c
-> > +++ b/drivers/nvmem/core.c
-> > @@ -23,6 +23,7 @@
-> >  struct nvmem_device {
-> >  	struct module		*owner;
-> >  	struct device		dev;
-> > +	struct list_head	node;
-> >  	int			stride;
-> >  	int			word_size;
-> >  	int			id;
-> > @@ -76,6 +77,9 @@ static LIST_HEAD(nvmem_cell_tables);
-> >  static DEFINE_MUTEX(nvmem_lookup_mutex);
-> >  static LIST_HEAD(nvmem_lookup_list);
-> > =20
-> > +static DEFINE_MUTEX(nvmem_devices_mutex);
-> > +static LIST_HEAD(nvmem_devices_list); =20
->=20
-> But this list should already be in the driver core, why create
-> yet-another-list-and-lock?
-
-I did not think about using it. I believe you mean using
-bus_for_each_dev() here? Could definitely make the trick; I'll try.
-
->=20
-> Why is "when needed" not sufficient to use the list already present?
->=20
-> And now note, you have the same structure on 2 different lists, watch
-> out for device lifetime rules :(
->=20
-> thanks,
->=20
-> greg k-h
-
-
-Thanks,
-Miqu=C3=A8l
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
