@@ -2,340 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C20D772407
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FF477240C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233525AbjHGM3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 08:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
+        id S230138AbjHGMap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233567AbjHGM3r (ORCPT
+        with ESMTP id S232473AbjHGMai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 08:29:47 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB0C1980;
-        Mon,  7 Aug 2023 05:29:27 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 377BshQ5005115;
-        Mon, 7 Aug 2023 12:29:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=BqvX8/51PTMn3qNUof4nZRTqfxtDmgC7peZ436DV1fs=;
- b=eeuHJDnEHiRQusAGJTMSytwJKY3r+FMofk+KO3kaRuewhnlZfriCJxNdwt/ocBsUgTDm
- yC0MuSLmBZ6lWq6I+mrr1pVZMTE49xFv7ZBY4MDtj14q33DnfN37jREYo3+uWYuRboI5
- izzrz03XmQ3MtwcoSBIo2f0jRXJhVPXJmRjmtr1NYKPBgAekLgpjCc/7vG3+riTfE+Wo
- coqZT1O/9CQOIGBGTRp6RciNJFhNNy7aaQh8iM6xxB7mjbXDnPkAnD4Cr74/r/PmknQ6
- zKxFVYho8hxAQxuXA/OZ0L8beFmxjJXgE7+NZzG0PBHd9Z2a3915yZa9xMCuA4AtkoTX Bg== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s9fkuka03-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Aug 2023 12:29:19 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 377CSvQ2032723;
-        Mon, 7 Aug 2023 12:28:58 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3s9fgkntwv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 07 Aug 2023 12:28:58 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 377CSvUu032677;
-        Mon, 7 Aug 2023 12:28:57 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-rohiagar-hyd.qualcomm.com [10.213.106.138])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 377CSu3j032617;
-        Mon, 07 Aug 2023 12:28:57 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3970568)
-        id 072791B64; Mon,  7 Aug 2023 17:58:57 +0530 (+0530)
-From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        vkoul@kernel.org, kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        abel.vesa@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        quic_pkondeti@quicinc.com,
-        Rohit Agarwal <quic_rohiagar@quicinc.com>
-Subject: [PATCH v2 9/9] arm64: dts: qcom: sdx75-idp: Add regulator nodes
-Date:   Mon,  7 Aug 2023 17:58:53 +0530
-Message-Id: <1691411333-1556-10-git-send-email-quic_rohiagar@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1691411333-1556-1-git-send-email-quic_rohiagar@quicinc.com>
-References: <1691411333-1556-1-git-send-email-quic_rohiagar@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: PhiwTYUmf8_P_taBx_7IIXJQezjKv6hW
-X-Proofpoint-GUID: PhiwTYUmf8_P_taBx_7IIXJQezjKv6hW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-07_12,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 priorityscore=1501 phishscore=0 mlxlogscore=814 clxscore=1015
- impostorscore=0 adultscore=0 malwarescore=0 bulkscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308070116
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+        Mon, 7 Aug 2023 08:30:38 -0400
+Received: from mail.8bytes.org (mail.8bytes.org [IPv6:2a01:238:42d9:3f00:e505:6202:4f0c:f051])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C36891710;
+        Mon,  7 Aug 2023 05:30:19 -0700 (PDT)
+Received: from 8bytes.org (pd9fe94eb.dip0.t-ipconnect.de [217.254.148.235])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.8bytes.org (Postfix) with ESMTPSA id 1DBD22802C2;
+        Mon,  7 Aug 2023 14:30:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+        s=default; t=1691411417;
+        bh=c90Yi4nQt040JDhF9erB1oWX7zPJ6lrzrHSn0+kunok=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bGIxBTZgxFw6JJa7RMXuE/I8Zw+NcgF5f//wxdTV+F4R6BdunMII8DMX4IBYnewgA
+         IQNhOmd6zSLBr8yJYTQxVikb99dHEmAWD5JXXbeT5BTwb8ViI5oCTUaxJdrZc5mC6n
+         835qdE16OyAroZ7ZDnp1ieSyd0j+8tFbCXzwmOJU/BoFiKoHVeJdqvdnnjwiDRxA4H
+         qww2h/wbxnLnO7TpUzR/lNbpD0LF9O5ogmkwVT8v8vXkBMEJDjluYgy5pnUZzarHX4
+         6XumXbhqwKnUAvu6okwC8RLvstvLhwgjle0MzX2FoHyLREySBaJG/bMvOe2lZlLtYb
+         CmwPWzeuPpTSA==
+Date:   Mon, 7 Aug 2023 14:30:15 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH v3 1/2] iommu: Prevent RESV_DIRECT devices from blocking
+ domains
+Message-ID: <ZNDj1-Od0iXFhgce@8bytes.org>
+References: <20230724060352.113458-1-baolu.lu@linux.intel.com>
+ <20230724060352.113458-2-baolu.lu@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724060352.113458-2-baolu.lu@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add all the regulators along with labels found on SDX75 IDP.
+Hi Baolu,
 
-Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sdx75-idp.dts | 227 +++++++++++++++++++++++++++++++++
- 1 file changed, 227 insertions(+)
+On Mon, Jul 24, 2023 at 02:03:51PM +0800, Lu Baolu wrote:
+> The IOMMU_RESV_DIRECT flag indicates that a memory region must be mapped
+> 1:1 at all times. This means that the region must always be accessible to
+> the device, even if the device is attached to a blocking domain. This is
+> equal to saying that IOMMU_RESV_DIRECT flag prevents devices from being
+> attached to blocking domains.
+> 
+> This also implies that devices that implement RESV_DIRECT regions will be
+> prevented from being assigned to user space since taking the DMA ownership
+> immediately switches to a blocking domain.
+> 
+> The rule of preventing devices with the IOMMU_RESV_DIRECT regions from
+> being assigned to user space has existed in the Intel IOMMU driver for
+> a long time. Now, this rule is being lifted up to a general core rule,
+> as other architectures like AMD and ARM also have RMRR-like reserved
+> regions. This has been discussed in the community mailing list and refer
+> to below link for more details.
+> 
+> Other places using unmanaged domains for kernel DMA must follow the
+> iommu_get_resv_regions() and setup IOMMU_RESV_DIRECT - we do not restrict
+> them in the core code.
+> 
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Link: https://lore.kernel.org/linux-iommu/BN9PR11MB5276E84229B5BD952D78E9598C639@BN9PR11MB5276.namprd11.prod.outlook.com
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-diff --git a/arch/arm64/boot/dts/qcom/sdx75-idp.dts b/arch/arm64/boot/dts/qcom/sdx75-idp.dts
-index 0da8c98..10d1587 100644
---- a/arch/arm64/boot/dts/qcom/sdx75-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sdx75-idp.dts
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- 
-+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include "sdx75.dtsi"
- #include "pm7550ba.dtsi"
- #include "pmk8550.dtsi"
-@@ -17,6 +18,232 @@
- 	aliases {
- 		serial0 = &uart1;
- 	};
-+
-+	vph_pwr: vph-pwr-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vph_pwr";
-+		regulator-min-microvolt = <3700000>;
-+		regulator-max-microvolt = <3700000>;
-+	};
-+
-+	vph_ext: vph-ext-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vph_ext";
-+		regulator-min-microvolt = <3700000>;
-+		regulator-max-microvolt = <3700000>;
-+	};
-+
-+	vreg_bob_3p3: pmx75-bob {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vreg_bob_3p3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		vin-supply = <&vph_ext>;
-+	};
-+};
-+
-+&apps_rsc {
-+	pmx75-rpmh-regulators {
-+		compatible = "qcom,pmx75-rpmh-regulators";
-+		qcom,pmic-id = "b";
-+
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+		vdd-s7-supply = <&vph_pwr>;
-+		vdd-s8-supply = <&vph_pwr>;
-+		vdd-s9-supply = <&vph_pwr>;
-+		vdd-s10-supply = <&vph_pwr>;
-+		vdd-l1-supply = <&vreg_s2b_1p224>;
-+		vdd-l2-l18-supply = <&vreg_s2b_1p224>;
-+		vdd-l3-supply = <&vreg_s7b_0p936>;
-+		vdd-l4-l16-supply = <&vreg_s7b_0p936>;
-+		vdd-l5-l6-supply = <&vreg_s4b_1p824>;
-+		vdd-l7-supply = <&vreg_s7b_0p936>;
-+		vdd-l8-l9-supply = <&vreg_s8b_0p824>;
-+		vdd-l10-supply = <&vreg_bob_3p3>;
-+		vdd-l11-l13-supply = <&vreg_bob_3p3>;
-+		vdd-l12-supply = <&vreg_s2b_1p224>;
-+		vdd-l14-supply = <&vreg_s3b_0p752>;
-+		vdd-l15-supply = <&vreg_s2b_1p224>;
-+		vdd-l17-supply = <&vreg_s8b_0p824>;
-+		vdd-l19-supply = <&vreg_s7b_0p936>;
-+		vdd-l20-l21-supply = <&vreg_s7b_0p936>;
-+
-+		vreg_s2b_1p224: smps2 {
-+			regulator-name = "vreg_s2b_1p224";
-+			regulator-min-microvolt = <1224000>;
-+			regulator-max-microvolt = <1350000>;
-+		};
-+
-+		vreg_s3b_0p752: smps3 {
-+			regulator-name = "vreg_s3b_0p752";
-+			regulator-min-microvolt = <684000>;
-+			regulator-max-microvolt = <904000>;
-+		};
-+
-+		vreg_s4b_1p824: smps4 {
-+			regulator-name = "vreg_s4b_1p824";
-+			regulator-min-microvolt = <1824000>;
-+			regulator-max-microvolt = <1904000>;
-+		};
-+
-+		vreg_s7b_0p936: smps7 {
-+			regulator-name = "vreg_s7b_0p936";
-+			regulator-min-microvolt = <352000>;
-+			regulator-max-microvolt = <1060000>;
-+		};
-+
-+		vreg_s8b_0p824: smps8 {
-+			regulator-name = "vreg_s8b_0p824";
-+			regulator-min-microvolt = <500000>;
-+			regulator-max-microvolt = <1100000>;
-+		};
-+
-+		vreg_l1b_1p2: ldo1 {
-+			regulator-name = "vreg_l1b_1p2";
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l2b_1p128: ldo2 {
-+			regulator-name = "vreg_l2b_1p128";
-+			regulator-min-microvolt = <1000000>;
-+			regulator-max-microvolt = <1160000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l3b_0p896: ldo3 {
-+			regulator-name = "vreg_l3b_0p896";
-+			regulator-min-microvolt = <300000>;
-+			regulator-max-microvolt = <1040000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l4b_0p88: ldo4 {
-+			regulator-name = "vreg_l4b_0p88";
-+			regulator-min-microvolt = <864000>;
-+			regulator-max-microvolt = <912000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l5b_1p776: ldo5 {
-+			regulator-name = "vreg_l5b_1p776";
-+			regulator-min-microvolt = <1770000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6b_1p8: ldo6 {
-+			regulator-name = "vreg_l6b_1p8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7b_0p904: ldo7 {
-+			regulator-name = "vreg_l7b_0p904";
-+			regulator-min-microvolt = <300000>;
-+			regulator-max-microvolt = <960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l8b_0p8: ldo8 {
-+			regulator-name = "vreg_l8b_0p8";
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l9b_0p752: ldo9 {
-+			regulator-name = "vreg_l9b_0p752";
-+			regulator-min-microvolt = <752000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l10b_3p08: ldo10 {
-+			regulator-name = "vreg_l10b_3p08";
-+			regulator-min-microvolt = <3008000>;
-+			regulator-max-microvolt = <3088000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l11b_1p8: ldo11 {
-+			regulator-name = "vreg_l11b_1p8";
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <2928000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l12b_1p2: ldo12 {
-+			regulator-name = "vreg_l12b_1p2";
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l13b_1p8: ldo13 {
-+			regulator-name = "vreg_l13b_1p8";
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <2928000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l14b_0p624: ldo14 {
-+			regulator-name = "vreg_l14b_0p624";
-+			regulator-min-microvolt = <300000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l15b_1p2: ldo15 {
-+			regulator-name = "vreg_l15b_1p2";
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l16b_0p912: ldo16 {
-+			regulator-name = "vreg_l16b_0p912";
-+			regulator-min-microvolt = <880000>;
-+			regulator-max-microvolt = <920000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l17b_0p752: ldo17 {
-+			regulator-name = "vreg_l17b_0p752";
-+			regulator-min-microvolt = <684000>;
-+			regulator-max-microvolt = <957600>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l19b_0p952: ldo19 {
-+			regulator-name = "vreg_l19b_0p952";
-+			regulator-min-microvolt = <900000>;
-+			regulator-max-microvolt = <960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l20b_0p912: ldo20 {
-+			regulator-name = "vreg_l20b_0p912";
-+			regulator-min-microvolt = <912000>;
-+			regulator-max-microvolt = <952000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l21b_0p856: ldo21 {
-+			regulator-name = "vreg_l21b_0p856";
-+			regulator-min-microvolt = <300000>;
-+			regulator-max-microvolt = <1000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
- };
- 
- &chosen {
--- 
-2.7.4
+Acked-by: Joerg Roedel <jroedel@suse.de>
 
+Feel free to include that in your next round of VT-d updates you send my
+way.
