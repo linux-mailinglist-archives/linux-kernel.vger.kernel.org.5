@@ -2,154 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10915772749
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5BC77274B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbjHGOPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32834 "EHLO
+        id S232896AbjHGOPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232896AbjHGOO7 (ORCPT
+        with ESMTP id S232799AbjHGOPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:14:59 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F6A10D9
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:14:55 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2ba0f27a4c2so67248841fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 07:14:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1691417694; x=1692022494;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=miXhKIkPE3lmozcU/B+jO2gbohIQfxtvXQrL6JQrLaA=;
-        b=rUbGf+JZcp35dmq7w8slw0nHgKluYcuW30g35dHvkRNE8GAplx/bmohiweQc5R1m+t
-         n8zrOL6x18GLNviLyBdF1SBbwknD+YT0R92Z3r7ozf/LbxR/ZX+oGNC6AweYXTnFy1Td
-         qjM3KL4IzdURsMRiax7oRl3ig1sdRDyJ5+2Ck=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691417694; x=1692022494;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=miXhKIkPE3lmozcU/B+jO2gbohIQfxtvXQrL6JQrLaA=;
-        b=N01D1Etuw0GFxFzsSaVQIaOoqeViVSt+hEf2kpg5AUK+Kp2I6e7HOsfdlOGeo0v/We
-         wNu6g4qfXjlgaeeFk1qi6wQEUGYxc7nz7hrap1VdcFnVuWSEd4D2ROe0cdG0pvGA1Cre
-         B0aVyB5RiFxMxzJXmn5nxl28clULURw5wDOQb71yFN0clezXoOKn22JN5UbX7XZepBV5
-         u22claOdMMiLNgJxUFUdtT5ctQL+9hzjPWkCAkgJiB6uS8rJmIILswbKwP2RXDgT8F4s
-         mxtGw3oooV0NX78erLeAC5mUXkStbReMTBCZbINEcr1XfGO3VhHKxmclqou15O+DnA35
-         xlgQ==
-X-Gm-Message-State: AOJu0YyDKf0xxEoF/Tf5lPoygSoIAFjqFGvbL/URgi0c/Ve2hWU4s+bL
-        PwMbbU5YKRjQL3+veVea8lfsDhhU0X1LGHY1jo+05w==
-X-Google-Smtp-Source: AGHT+IEUzxQ8uhfef4Gwj5w4R2S1a/fG2YmFdaAnrERcAODuTjnUg5MW8ffcyCI3WwFTK01hsv/WyE2OTkrmMwFZBOU=
-X-Received: by 2002:a2e:9254:0:b0:2b6:dfef:d526 with SMTP id
- v20-20020a2e9254000000b002b6dfefd526mr6547671ljg.11.1691417693488; Mon, 07
- Aug 2023 07:14:53 -0700 (PDT)
+        Mon, 7 Aug 2023 10:15:38 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE3EF3
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:15:37 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RKJGp0B1vzfbnw;
+        Mon,  7 Aug 2023 22:14:26 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 7 Aug
+ 2023 22:15:35 +0800
+From:   Yue Haibing <yuehaibing@huawei.com>
+To:     <perex@perex.cz>, <tiwai@suse.com>, <yuehaibing@huawei.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] ALSA: info: Remove unused function declarations
+Date:   Mon, 7 Aug 2023 22:15:13 +0800
+Message-ID: <20230807141513.31440-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-References: <20230807110936.21819-1-zhengqi.arch@bytedance.com> <20230807110936.21819-20-zhengqi.arch@bytedance.com>
-In-Reply-To: <20230807110936.21819-20-zhengqi.arch@bytedance.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 7 Aug 2023 10:14:48 -0400
-Message-ID: <CAEXW_YQHGBE2kKupLf12BGOEU5GnQsBUtVQcyMnzxUZ4y48QFA@mail.gmail.com>
-Subject: Re: [PATCH v4 19/48] rcu: dynamically allocate the rcu-kfree shrinker
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev, simon.horman@corigine.com,
-        dlemoal@kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 7:17=E2=80=AFAM Qi Zheng <zhengqi.arch@bytedance.com=
-> wrote:
->
-> Use new APIs to dynamically allocate the rcu-kfree shrinker.
->
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+These declarations is never used since beginning of git history.
 
-For RCU:
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+---
+ include/sound/info.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-thanks,
+diff --git a/include/sound/info.h b/include/sound/info.h
+index 7c13bf52cc81..adbc506860d6 100644
+--- a/include/sound/info.h
++++ b/include/sound/info.h
+@@ -118,8 +118,6 @@ struct snd_info_entry *snd_info_create_card_entry(struct snd_card *card,
+ 					     const char *name,
+ 					     struct snd_info_entry *parent);
+ void snd_info_free_entry(struct snd_info_entry *entry);
+-int snd_info_store_text(struct snd_info_entry *entry);
+-int snd_info_restore_text(struct snd_info_entry *entry);
+ 
+ int snd_info_card_create(struct snd_card *card);
+ int snd_info_card_register(struct snd_card *card);
+-- 
+2.34.1
 
-- Joel
-
-
-> ---
->  kernel/rcu/tree.c | 22 +++++++++++++---------
->  1 file changed, 13 insertions(+), 9 deletions(-)
->
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 7c79480bfaa0..3b20fc46c514 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3449,13 +3449,6 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, str=
-uct shrink_control *sc)
->         return freed =3D=3D 0 ? SHRINK_STOP : freed;
->  }
->
-> -static struct shrinker kfree_rcu_shrinker =3D {
-> -       .count_objects =3D kfree_rcu_shrink_count,
-> -       .scan_objects =3D kfree_rcu_shrink_scan,
-> -       .batch =3D 0,
-> -       .seeks =3D DEFAULT_SEEKS,
-> -};
-> -
->  void __init kfree_rcu_scheduler_running(void)
->  {
->         int cpu;
-> @@ -4931,6 +4924,7 @@ static void __init kfree_rcu_batch_init(void)
->  {
->         int cpu;
->         int i, j;
-> +       struct shrinker *kfree_rcu_shrinker;
->
->         /* Clamp it to [0:100] seconds interval. */
->         if (rcu_delay_page_cache_fill_msec < 0 ||
-> @@ -4962,8 +4956,18 @@ static void __init kfree_rcu_batch_init(void)
->                 INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache=
-_func);
->                 krcp->initialized =3D true;
->         }
-> -       if (register_shrinker(&kfree_rcu_shrinker, "rcu-kfree"))
-> -               pr_err("Failed to register kfree_rcu() shrinker!\n");
-> +
-> +       kfree_rcu_shrinker =3D shrinker_alloc(0, "rcu-kfree");
-> +       if (!kfree_rcu_shrinker) {
-> +               pr_err("Failed to allocate kfree_rcu() shrinker!\n");
-> +               return;
-> +       }
-> +
-> +       kfree_rcu_shrinker->count_objects =3D kfree_rcu_shrink_count;
-> +       kfree_rcu_shrinker->scan_objects =3D kfree_rcu_shrink_scan;
-> +       kfree_rcu_shrinker->seeks =3D DEFAULT_SEEKS;
-> +
-> +       shrinker_register(kfree_rcu_shrinker);
->  }
->
->  void __init rcu_init(void)
-> --
-> 2.30.2
->
