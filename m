@@ -2,134 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B80772DCA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F39772DD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbjHGSXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 14:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55800 "EHLO
+        id S229566AbjHGSZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 14:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjHGSXk (ORCPT
+        with ESMTP id S229848AbjHGSZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 14:23:40 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C048F
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 11:23:09 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b89b0c73d7so6584135ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 11:23:09 -0700 (PDT)
+        Mon, 7 Aug 2023 14:25:03 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2413E50
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 11:25:01 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bb91c20602so10145885ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 11:25:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691432588; x=1692037388;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ScWOr6i/mZ/hSL9XJnUZEAFH7lnK6qsqFipDwCZSrAo=;
-        b=g05XxFNT+jxKL5KyU8W8HOcjptr7ey8e/As+wsWSrixnl3qq5bvA4TR4nQNoHR0bqN
-         HtLDD4+NfQIdw4BnqqQq+94pNG4IEPcmesY8XtQnnUEQsrrF4IVulde6E56RdWm6rKMo
-         dWvFbObkocQI5Uesfu7zs3g4wuMI/vCWzQtsUxigiv74zUd5ulWR63gn9h+S1ozChZS9
-         PvfjbXgOx6SNTG/Ed4RAS+aTg8rKKZCt4rcj7aHGCj2DGVb2ThdEkH+8I+3lne8uiaFl
-         ZFl0R175fxXl8Jw+87bekGxNkDliwmpSkI2ul1I++E/W+vsu9LRaBwjG7hbFTkQxoINF
-         v9rw==
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691432701; x=1692037501;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3pJjNXs4QCJ//eacbs196+Ii1BpskstaQNpYfpqnv34=;
+        b=kqpgx8X5bLaxAqYEt2ijFW6BbvzevlhTzCZkihAiTGIL5Bt5jai7jEaWqvv1B7EO+b
+         22+Upfg9ezalxH4MWmswPVIgAvpB6gqHr1UBWtXQh4GJ8lj7IPFOsFeQPxcUcl7CbGnN
+         5PkVwiWNBnQz+7my0AmCfmTF1JIPazlgFI9k9clZhAK4nNqyE6tnB+js5OIBMeE1dWgH
+         NCuxFlGYMHbG+08KJ2xmr/lVGyPUU7+nWAclpnykQk0yJkVkLCovZIuGYjCkfr1GRIjk
+         nflf74Wc4lnMaNOwfcrJpx+48WwZyCFGXvFGPlWCUlq7uU28bzZrsbxRVCw/ODyKsKk7
+         dFtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691432588; x=1692037388;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ScWOr6i/mZ/hSL9XJnUZEAFH7lnK6qsqFipDwCZSrAo=;
-        b=dsy1MUQFiDqSf4NMR5R9QSaK3A6AvMm3lmcUEvU74aONznGN1N8BKhwDa93ssL03fo
-         dSfZeZIR8tA5GAYVfm4T3eflGqcTCf8X+8M8rP0wDsbxUS4OIf2HMHnq77oMmRjRdDVE
-         JMTW2d9ywZbcGGYfpRvFVK1Dp/tOgPfipXTD2t4zEO4K8VNJ0YtpW+PQNJFGcDkPl3rr
-         euN0DyEWQ3YoavS1hkblMRs4eE5lM3IFt/RLLF759DJ99+lwk/LTSSZVYdyft3BGlnfb
-         +Yo3ZDMif+Gx7Sk7DEe+1yVYoAdRDQlJohyqiwzRFc/AFk3d+OFFWJTnD/CdWmlcdCft
-         uOhA==
-X-Gm-Message-State: ABy/qLYkPKEgg2mtEMV5BIkviFsuLG1DYmmE/kyoh83rji2NuEi3Se0F
-        uHlwd72dxlNxA3v+MseSJ94T9Q==
-X-Google-Smtp-Source: APBJJlGwsySKIXv1+2gPzF29mUmj8i9i9dwO+hZQQzKaWsEKfMdcXbUrNxJEgG5i9zM+bRr2kyLv4A==
-X-Received: by 2002:a17:902:e80e:b0:1b8:35fa:cdcc with SMTP id u14-20020a170902e80e00b001b835facdccmr33721837plg.5.1691432588424;
-        Mon, 07 Aug 2023 11:23:08 -0700 (PDT)
-Received: from [172.16.7.55] ([12.221.160.50])
-        by smtp.gmail.com with ESMTPSA id p18-20020a170902ead200b001b89045ff03sm7214431pld.233.2023.08.07.11.23.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 11:23:07 -0700 (PDT)
-Message-ID: <9153c0bf-405b-7c16-d26c-12608a02ee29@kernel.dk>
-Date:   Mon, 7 Aug 2023 12:23:06 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCHSET v4] Add io_uring futex/futexv support
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, andres@anarazel.de
-References: <20230728164235.1318118-1-axboe@kernel.dk> <87jzugnjzy.ffs@tglx>
- <e136823c-b5c9-b6b3-a0e2-7e9cfda2b2d8@kernel.dk> <875y5rmyqi.ffs@tglx>
+        d=1e100.net; s=20221208; t=1691432701; x=1692037501;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3pJjNXs4QCJ//eacbs196+Ii1BpskstaQNpYfpqnv34=;
+        b=k2geGprVrPbPA13nwtV0iB9KdzXw0LMlmFXopHYVtLkwxpdWvf9/xVvWE20dCVBgQC
+         Le3ArN9nIby5UqiRF2B/5FV+OU+kPs9Zd0uG7BYaUYrU9moYPIi9CLKgtoTuA4lDXYRY
+         Nki3w9YS560+XKrojkd/2XqlS1MmgaRsNJTcH5SaPQluoKsgGgMho+/UFwaNEGMnoJCS
+         ZRkjCLB/jDJzOuPjofXUr2a+/8OXYYmK3i5lUV9bZxH6ex6DmejiSJu+8JqzgoD9+zq9
+         IZykwumVBpom5sfPYgpY8mk10Hc1kubO9nQRc4keJHK00gACT7Ko0PezkZ40FWj/+sKO
+         Ukxg==
+X-Gm-Message-State: ABy/qLa5Z6zp6HKeYVo5a3Mtk0pEL3/uK7RQ5uXgKEFdIQT1wdlge1dm
+        jxq9vZGPAu6c4HzlQjQngWqYdd8lyUu2NllGI1A=
+X-Google-Smtp-Source: APBJJlFURYryyRLRBjK4Cyr916nSBSaubf5aUgZlsfvmwJhugTUqlPYOfhCnpbjWJ4qrDtXrk7/lgg==
+X-Received: by 2002:a17:902:d503:b0:1bb:83ec:832 with SMTP id b3-20020a170902d50300b001bb83ec0832mr33892430plg.2.1691432700593;
+        Mon, 07 Aug 2023 11:25:00 -0700 (PDT)
+Received: from [127.0.0.1] ([12.221.160.50])
+        by smtp.gmail.com with ESMTPSA id u3-20020a170902b28300b001b66a71a4a0sm7240722plr.32.2023.08.07.11.24.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 11:24:59 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <875y5rmyqi.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, stable@vger.kernel.org
+In-Reply-To: <20230807-resolve_cached-o_tmpfile-v3-1-e49323e1ef6f@cyphar.com>
+References: <20230807-resolve_cached-o_tmpfile-v3-1-e49323e1ef6f@cyphar.com>
+Subject: Re: [PATCH v3] io_uring: correct check for O_TMPFILE
+Message-Id: <169143269944.27533.6390760474967259170.b4-ty@kernel.dk>
+Date:   Mon, 07 Aug 2023 12:24:59 -0600
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/23 7:23?PM, Thomas Gleixner wrote:
-> Jens!
+
+On Mon, 07 Aug 2023 12:24:15 +1000, Aleksa Sarai wrote:
+> O_TMPFILE is actually __O_TMPFILE|O_DIRECTORY. This means that the old
+> check for whether RESOLVE_CACHED can be used would incorrectly think
+> that O_DIRECTORY could not be used with RESOLVE_CACHED.
 > 
-> On Sun, Aug 06 2023 at 10:44, Jens Axboe wrote:
->> On 7/31/23 10:06?AM, Thomas Gleixner wrote:
->>> Can you please just wait until the futex core bits have been agreed on
->>> and merged? No need to contribute more mess in everyones inbox.
->>
->> Also no need to keep dragging out the review of the other bits. The
->> dependency is only there so we can use FUTEX2 flags for this - which
->> does make sense to me, but we should probably split Peter's series in
->> two as there's no dependency on the functional bits on that patch
->> series. As we're getting ever closer to the merge window, and I have
->> other things sitting on top of the futex series, that's problematic for
->> me.
 > 
-> Seriously?
-> 
-> You are still trying to sell me "Features first - corrrectness
-> later/never"?
 
-That's not what I'm saying at all. I wrote these patches 3 months ago,
-and like I mentioned, I think doing the futex2 flags for that side is a
-good suggestion from Peter. As those initial prep patches are all these
-require, rather than the full futex2 series, there's no reason not to
-review these at the same time too, if people should be so inclined.
+Applied, thanks!
 
-> Go and look at the amount of fallout this has caused in the last years.
-> io-urine is definitely the leader of the pack in my security@kernel.org
-> inbox.
+[1/1] io_uring: correct check for O_TMPFILE
+      (no commit info)
 
-We're now resorting to name calling? Sorry, but I think that's pretty
-low and not very professional.
-
-> Vs. the problem at hand. I've failed to catch a major issue with futex
-> patches in the past and I'm not seeing any reason to rush any of this to
-> repeat the experience just because.
-
-I'm not asking anyone to rush anything.
-
-> You know very well that your whatever depends on this series has to wait
-> until the basics are sorted and there is absolutely no reason that your
-> so important things have to be rushed into the next merge window.
-
-Again, you're making assumptions.
-
-> It surely makes sense to split these things up into independent series,
-> but _you_ could have done that weeks ago instead of just reposting an
-> umodified and unreviewed RFC series from Peter and then coming out now
-> and complaining about the lack of progress.
-
-It's Peter's series, I'm not going to split his series and step on his
-toes. I already separately tested, and will do so with the updated
-series as well when I get back, since I saw he posted one.
-
+Best regards,
 -- 
 Jens Axboe
+
+
 
