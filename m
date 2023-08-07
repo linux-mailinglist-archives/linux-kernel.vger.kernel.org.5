@@ -2,45 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C892771BB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FCE771BC1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbjHGHnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 03:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43984 "EHLO
+        id S230294AbjHGHqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 03:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbjHGHnL (ORCPT
+        with ESMTP id S229491AbjHGHqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 03:43:11 -0400
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5352010D4;
-        Mon,  7 Aug 2023 00:43:09 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VpBxhTy_1691394185;
-Received: from 30.97.48.53(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VpBxhTy_1691394185)
-          by smtp.aliyun-inc.com;
-          Mon, 07 Aug 2023 15:43:06 +0800
-Message-ID: <cef5d9ad-7b29-f09f-f88b-2fd78451165b@linux.alibaba.com>
-Date:   Mon, 7 Aug 2023 15:43:07 +0800
+        Mon, 7 Aug 2023 03:46:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8AFB5;
+        Mon,  7 Aug 2023 00:45:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9BE3B615E2;
+        Mon,  7 Aug 2023 07:45:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFC3FC433C7;
+        Mon,  7 Aug 2023 07:45:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691394358;
+        bh=qsp1Oxg2WXRgJ943p0ma6lIVdbOsynz/TYJEUIi8Ti4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iUvf0/T8ZE27GCIGnr/nt2VVPv+T0SeS6ntnxRwc5Z0CkvrBWv3yMwd4oyaVV42Cd
+         R32nDU4qRUq0Oven3FraG47pCP5GeHhXMTOzTDUFpf+/eIGUFuDUlT86Qwyjh8hp77
+         Jng143a2lG5FOuvRiuDZfLqtKgqCWUiMLwc3QIPbdwPAByYifBwsSBsEhi/yBS5lZB
+         y02iEkWgVr/7xC2YQaCfLj6Nx/01dYRzcfsYthbYak9vBgLoLm0BKGaqBJvosHBr1U
+         SptHRszWD+UFyV6NIBksU43Mq8gNqzl0lwuUydHQUKMgEEuDEbbjTllvAuL+D2kTqs
+         M97hWJbvdo7WA==
+Date:   Mon, 7 Aug 2023 08:45:52 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Minda Chen <minda.chen@starfivetech.com>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v2 3/4] dt-bindings: PCI: Add StarFive JH7110 PCIe
+ controller
+Message-ID: <20230807-financial-strategic-e691db948011@spud>
+References: <20230727103949.26149-1-minda.chen@starfivetech.com>
+ <20230727103949.26149-4-minda.chen@starfivetech.com>
+ <20230804-irregular-distrust-c5d46afe3d9c@wendy>
+ <6c1a4b77-996e-9274-bece-84fe42d6099a@starfivetech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/5] dma: delect redundant parameter for dma driver
- function
-To:     Kaiwei Liu <kaiwei.liu@unisoc.com>, Vinod Koul <vkoul@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kaiwei liu <liukaiwei086@gmail.com>,
-        Wenming Wu <wenming.wu@unisoc.com>
-References: <20230807051907.2713-1-kaiwei.liu@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230807051907.2713-1-kaiwei.liu@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-14.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3RDzNovR7DNXD9yQ"
+Content-Disposition: inline
+In-Reply-To: <6c1a4b77-996e-9274-bece-84fe42d6099a@starfivetech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -48,44 +71,68 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--3RDzNovR7DNXD9yQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 8/7/2023 1:19 PM, Kaiwei Liu wrote:
-> The parameter *sdesc in function sprd_dma_check_trans_done is not
-> used, so here delect redundant parameter.
-> 
-> Signed-off-by: Kaiwei Liu <kaiwei.liu@unisoc.com>
+On Mon, Aug 07, 2023 at 02:54:50PM +0800, Minda Chen wrote:
+> On 2023/8/4 15:10, Conor Dooley wrote:
+> > On Thu, Jul 27, 2023 at 06:39:48PM +0800, Minda Chen wrote:
+> >> +  starfive,stg-syscon:
+> >> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> >> +    items:
+> >> +      - items:
+> >> +          - description: phandle to System Register Controller stg_sy=
+scon node.
+> >> +          - description: register0 offset of STG_SYSCONSAIF__SYSCFG r=
+egister for PCIe.
+> >> +          - description: register1 offset of STG_SYSCONSAIF__SYSCFG r=
+egister for PCIe.
+> >> +          - description: register2 offset of STG_SYSCONSAIF__SYSCFG r=
+egister for PCIe.
+> >> +          - description: register3 offset of STG_SYSCONSAIF__SYSCFG r=
+egister for PCIe.
+> >> +    description:
+> >> +      The phandle to System Register Controller syscon node and the o=
+ffset
+> >> +      of STG_SYSCONSAIF__SYSCFG register for PCIe. Total 4 regsisters=
+ offset
+> >> +      for PCIe.
+> >=20
+> > These property names tie them closely with naming on the jh7110, but
+> > there's little value in specifying all of these offsets when you have
+> > one implementation where they are all fixed.
+> Yes, the offset value is tied to SoC.=20
+> > Do you know what the jh81xx stuff is going to do yet w.r.t. PCI and if
+> > so, how could you reuse this property?
+> I do not participate in jh8100. But I heard sys-syscon is exist in 81xx.
+> But I think stg-syscon and sys-syscon  can be move to a common dt-binding=
+ doc.
+> Bot 71x0 and 81x0 driver can use this.=20
+> > Particularly, saying "register 0" seems unlikely to transfer well
+> > between SoCs.
+> > I'd be inclined to drop the offsets entirely & rely on match data to
+> > provide them if needed in the future.
+> That's ok. The dts can change to starfive,stg-syscon =3D <&stg_syscon>;
+> I will try to move the offset to driver match data.
 
-The subject line should be "dmaengine: sprd: xxx", and please also 
-change all your following patches.
+To be clear, you don't need match data now, only when the jh8100 stuff
+shows up. Until then the values can be hard coded in the driver as there
+is only one device it works for.
 
-With subject line fixed, you can add:
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Thanks,
+Conor.
 
-> ---
->   drivers/dma/sprd-dma.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
-> index 2b639adb48ba..20c3cb1ef2f5 100644
-> --- a/drivers/dma/sprd-dma.c
-> +++ b/drivers/dma/sprd-dma.c
-> @@ -572,8 +572,7 @@ static void sprd_dma_stop(struct sprd_dma_chn *schan)
->   	schan->cur_desc = NULL;
->   }
->   
-> -static bool sprd_dma_check_trans_done(struct sprd_dma_desc *sdesc,
-> -				      enum sprd_dma_int_type int_type,
-> +static bool sprd_dma_check_trans_done(enum sprd_dma_int_type int_type,
->   				      enum sprd_dma_req_mode req_mode)
->   {
->   	if (int_type == SPRD_DMA_NO_INT)
-> @@ -619,8 +618,7 @@ static irqreturn_t dma_irq_handle(int irq, void *dev_id)
->   			vchan_cyclic_callback(&sdesc->vd);
->   		} else {
->   			/* Check if the dma request descriptor is done. */
-> -			trans_done = sprd_dma_check_trans_done(sdesc, int_type,
-> -							       req_type);
-> +			trans_done = sprd_dma_check_trans_done(int_type, req_type);
->   			if (trans_done == true) {
->   				vchan_cookie_complete(&sdesc->vd);
->   				schan->cur_desc = NULL;
+--3RDzNovR7DNXD9yQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNChKQAKCRB4tDGHoIJi
+0oJtAP9DsbfNbx9S7vnxHBnWs4BuGLy0YOzbgKrrD5l+muVWFAD+K9R7IhMsVt3X
+8KNtKqBBMWQC8ARlBYqLpGpGbSgBPA4=
+=REYK
+-----END PGP SIGNATURE-----
+
+--3RDzNovR7DNXD9yQ--
