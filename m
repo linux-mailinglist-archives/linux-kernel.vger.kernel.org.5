@@ -2,107 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A90477224B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784A7772252
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232654AbjHGLb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
+        id S232842AbjHGLcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbjHGLbj (ORCPT
+        with ESMTP id S232840AbjHGLb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:31:39 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667DA3ABE
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 04:28:52 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so7213779e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 04:28:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691407684; x=1692012484;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FCN3ASjgm6paKRrXP7UgHgJnVBIgMohTjb+0gbMZTcY=;
-        b=WT/RnJPABirNR+dI8bW9M2e2Bt2+as9xxjdPaLiRTIJxM35FNyJxTwskuYVKDEzuIb
-         weu3OEtH7C+gtDG+x5M5XZTf2a0z1O/2/D40wwbRPvpvamm7kxyUAcN+n2Vddh4NGiVZ
-         MYhvu2KmBXoV3yH857L9aj9yx76Hm+WTttDAvaOotIgXLLyU5aPvbrKAqYLOCbCgbbLc
-         LceuyD9Tvr4UnNAkPqiPWVRryWNRU/qMsypIlXcluy+9F4XccsG8iaiAlrKopZO9gCie
-         cZew6vTueds6bShrTx5UQiV2FSY03RDrRxJt8zQPLT0+hZS0o1FRC5fWj9Qq9Sij2obP
-         2Qzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691407684; x=1692012484;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FCN3ASjgm6paKRrXP7UgHgJnVBIgMohTjb+0gbMZTcY=;
-        b=Pty1zVbqT37t/CTKrAoCmu6iwafAEIaV9vw4/OQE9TaDgcpaIO4qwXFhZkUE5hTYNx
-         STXhgYjruLlbFEW1lHylTFawUCjDhZesP2MFjDqM9PZ0Nu+/V5MMXn/ODEBREdOQuxvi
-         ecpkXergaExMzM2lHP0SY5Rw2TJikg4F5fvkYt9W5xQPl79zzTT92LExjicC3ToNJtxO
-         n9hYYLfZS8dIRGiGFeFMhBaM+K7ZvyuUbR/CxBhWWGOQ2431iahhBVdlrNgWOWH6K63m
-         An+KcbkTL0gXdFSDM0Y8iMPA/vBykhrDdRkF9A1uS3JGYhLpwTEFyulFJv1sjY+VYxoC
-         QT/g==
-X-Gm-Message-State: AOJu0Yy8fLypNALuR/mYup7k6wWV62LTXgnhl0JlRnaCFsRRYGAsmP0v
-        obPdD3z3ErX2YGilYfK4vkdFzw==
-X-Google-Smtp-Source: AGHT+IG1+2Xh0c89iavLMPnQAJeWQ0PIKd44rb33qy+ZPVMIOZsK5rUSHRY+qr1o1UGzRLFbxBd3KQ==
-X-Received: by 2002:a19:5f54:0:b0:4f8:7325:bcd4 with SMTP id a20-20020a195f54000000b004f87325bcd4mr5210157lfj.0.1691407683760;
-        Mon, 07 Aug 2023 04:28:03 -0700 (PDT)
-Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
-        by smtp.gmail.com with ESMTPSA id z23-20020ac25df7000000b004fbddb14020sm1448083lfq.56.2023.08.07.04.28.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 04:28:03 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [GIT PULL] MMC fixes for v6.5-rc6
-Date:   Mon,  7 Aug 2023 13:28:02 +0200
-Message-Id: <20230807112802.7032-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Mon, 7 Aug 2023 07:31:57 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AE35B8E;
+        Mon,  7 Aug 2023 04:29:16 -0700 (PDT)
+Received: from [192.168.0.192] (unknown [194.146.248.75])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: andrzej.p)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id EEFCA66071C9;
+        Mon,  7 Aug 2023 12:28:06 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1691407687;
+        bh=56gVYcaazTrYHIsA62HDQJBwlVRjju6wr+3l6jBJIO8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=HnjuxLv1rnNTd4l05rPxR/wWm8WHB2/x4L9dapjnflads/l+tW5yfjevSBkKfa6SF
+         GWwVr8FnMQlz0F75R2JD5omvQxSgsmHCdtMAIG1IhfZFFR83lIdZ+50xYym5LdQDXn
+         mtNa4bAsO4EWedDeR8s8/fHo4Zv/dN1vIQQM/V2gI9i5vyxWu8Iueqlkekmp8sje71
+         FVNrpBMH37Yf1NbaUXx96yTPxAEpd6O7P4LD4YYU2BnmDEumJu8tXU62DqEec+zRSn
+         B7CDKoo0woT+35IN6QBEtz+uu9s+S4slRgOkeXrCnvuZviGFG2dL139EIAmNw4yDiZ
+         rV4sli6X2HnDg==
+Message-ID: <fa3fd17d-570b-fd5f-1c35-3e4004333383@collabora.com>
+Date:   Mon, 7 Aug 2023 13:28:05 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/5] docs: uapi: media: Move NV12_10BE_8L128 to NV15
+ section
+Content-Language: en-US
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     kernel@collabora.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230804192737.19016-1-nicolas.dufresne@collabora.com>
+ <20230804192737.19016-3-nicolas.dufresne@collabora.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+In-Reply-To: <20230804192737.19016-3-nicolas.dufresne@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+W dniu 4.08.2023 o 21:27, Nicolas Dufresne pisze:
+> This is a 15 bits per pixel (or packed 10 bit format), so move it
+> into the relevant section.
+> 
+> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
 
-Here's a PR with a couple of MMC fixes intended for v6.5-rc6. Details about the
-highlights are as usual found in the signed tag.
+Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-Please pull this in!
+> ---
+>   .../media/v4l/pixfmt-yuv-planar.rst           | 36 ++++++++++---------
+>   1 file changed, 19 insertions(+), 17 deletions(-)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+> index fb826923ff1d..1d43532095c0 100644
+> --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+> +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+> @@ -295,8 +295,6 @@ of the luma plane.
+>   .. _V4L2-PIX-FMT-NV12-32L32:
+>   .. _V4L2-PIX-FMT-NV12M-8L128:
+>   .. _V4L2-PIX-FMT-NV12-8L128:
+> -.. _V4L2-PIX-FMT-NV12M-10BE-8L128:
+> -.. _V4L2-PIX-FMT-NV12-10BE-8L128:
+>   .. _V4L2-PIX-FMT-MM21:
+>   
+>   Tiled NV12
+> @@ -361,6 +359,25 @@ The layouts of the luma and chroma planes are identical.
+>   ``V4L2_PIX_FMT_NV12_8L128`` is similar to ``V4L2_PIX_FMT_NV12M_8L128`` but stores
+>   two planes in one memory.
+>   
+> +``V4L2_PIX_FMT_MM21`` store luma pixel in 16x32 tiles, and chroma pixels
+> +in 16x16 tiles. The line stride must be aligned to a multiple of 16 and the
+> +image height must be aligned to a multiple of 32. The number of luma and chroma
+> +tiles are identical, even though the tile size differ. The image is formed of
+> +two non-contiguous planes.
+> +
+> +
+> +.. _V4L2-PIX-FMT-NV15-4L4:
+> +.. _V4L2-PIX-FMT-NV12M-10BE-8L128:
+> +.. _V4L2-PIX-FMT-NV12-10BE-8L128:
+> +
+> +Tiled NV15
+> +----------
+> +
+> +``V4L2_PIX_FMT_NV15_4L4`` Semi-planar 10-bit YUV 4:2:0 formats, using 4x4 tiling.
+> +All components are packed without any padding between each other.
+> +As a side-effect, each group of 4 components are stored over 5 bytes
+> +(YYYY or UVUV = 4 * 10 bits = 40 bits = 5 bytes).
+> +
+>   ``V4L2_PIX_FMT_NV12M_10BE_8L128`` is similar to ``V4L2_PIX_FMT_NV12M`` but stores
+>   10 bits pixels in 2D 8x128 tiles, and stores tiles linearly in memory.
+>   the data is arranged in big endian order.
+> @@ -379,21 +396,6 @@ byte 4: Y3(bits 7-0)
+>   ``V4L2_PIX_FMT_NV12_10BE_8L128`` is similar to ``V4L2_PIX_FMT_NV12M_10BE_8L128`` but stores
+>   two planes in one memory.
+>   
+> -``V4L2_PIX_FMT_MM21`` store luma pixel in 16x32 tiles, and chroma pixels
+> -in 16x16 tiles. The line stride must be aligned to a multiple of 16 and the
+> -image height must be aligned to a multiple of 32. The number of luma and chroma
+> -tiles are identical, even though the tile size differ. The image is formed of
+> -two non-contiguous planes.
+> -
+> -.. _V4L2-PIX-FMT-NV15-4L4:
+> -
+> -Tiled NV15
+> -----------
+> -
+> -Semi-planar 10-bit YUV 4:2:0 formats, using 4x4 tiling.
+> -All components are packed without any padding between each other.
+> -As a side-effect, each group of 4 components are stored over 5 bytes
+> -(YYYY or UVUV = 4 * 10 bits = 40 bits = 5 bytes).
+>   
+>   .. _V4L2-PIX-FMT-NV16:
+>   .. _V4L2-PIX-FMT-NV61:
 
-Kind regards
-Ulf Hansson
-
-
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
-
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v6.5-rc1
-
-for you to fetch changes up to 5def5c1c15bf22934ee227af85c1716762f3829f:
-
-  mmc: sdhci-f-sdh30: Replace with sdhci_pltfm (2023-07-14 11:28:55 +0200)
-
-----------------------------------------------------------------
-MMC host:
- - moxart: Fix big-endian conversion for SCR structure
- - sdhci-f-sdh30: Replace with sdhci_pltfm to fix PM support
-
-----------------------------------------------------------------
-Kunihiko Hayashi (1):
-      mmc: sdhci-f-sdh30: Replace with sdhci_pltfm
-
-Sergei Antonov (1):
-      mmc: moxart: read scr register without changing byte order
-
- drivers/mmc/host/moxart-mmc.c    |  8 +-----
- drivers/mmc/host/sdhci_f_sdh30.c | 60 ++++++++++++++++++----------------------
- 2 files changed, 28 insertions(+), 40 deletions(-)
