@@ -2,81 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF06772961
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09CD772965
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbjHGPhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:37:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57950 "EHLO
+        id S230410AbjHGPha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 11:37:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbjHGPhC (ORCPT
+        with ESMTP id S230446AbjHGPh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:37:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6177099;
-        Mon,  7 Aug 2023 08:37:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E65ED6112C;
-        Mon,  7 Aug 2023 15:37:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BB37C433CA;
-        Mon,  7 Aug 2023 15:37:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691422621;
-        bh=7Roui5OuujMMwov1eKQ6IILD+ppjN8Ic19utJAPJSJA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fUMzo8uH4T+4igV/HDZM/OaK6H4l4rJttBi4fgXZsTPw0f1Z01aFxLdPDknY8jLLm
-         qUSP2YuSUxlj+KJVwYI6wHq5NjNVyf/FIlhBzfefWn1mMnsJcykwTqSTKOLLqlnxjM
-         CSP068B/5Zs4kHJ5FFFW843BSKjgMkD+g6/FZGKxi6AE/iuLoJ3uknUI6dJ8tbs9G8
-         OqzdtxY0+p/hp92AlsG+wxDpHyN8b+1GqNz+SqqhrEy1wTZQ/1sonNttQVSl3kxXbu
-         EuIfFQvwfvSgrX54aFAh1fReFmH73GqnqWlAG/Po+fnZMD0H1xEfnqAM/0vVCnruMC
-         5mHjVUX+kkscw==
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 2/2] m68k: remove <asm/export.h>
-Date:   Tue,  8 Aug 2023 00:36:54 +0900
-Message-Id: <20230807153654.997091-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230807153654.997091-1-masahiroy@kernel.org>
-References: <20230807153654.997091-1-masahiroy@kernel.org>
+        Mon, 7 Aug 2023 11:37:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD421703;
+        Mon,  7 Aug 2023 08:37:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691422640; x=1722958640;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WyY4m65TBzl1YIFH+NrWYCcN8qNM7vHmyLpIsh9nJDU=;
+  b=Bok/7IScVQPnQ5yIJ8+YvltqXhG+uKggPngq9Ej4mBzO4hRwVyzDKC0+
+   Xs3oogrPEm3V6mFpRXqBGSEPROOXbqSD5jDGXC3cuNHhYT+UHSGpSSTSN
+   KiWn6qo143Yw5VSHM+1kO9VznYCf80H0Zbk1nWa9XrRLQozKMgmJJgefM
+   94iEtaIH5SGJ7nKlvjtUg1afZW/6lrAAr0JYKU11uRUE0CWDfEPokt98O
+   VoLhvcYVsTVF9V+iYiFhG1UdYwtId6Jen7yqXA36YiK5d9PIggQse8UQ0
+   diayYrajPrG28voCHU6/GrFnZe/wRjSyedCiQyG56Exj+DD6+IqG1xw3H
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="456960583"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="456960583"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 08:37:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="845083880"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="845083880"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP; 07 Aug 2023 08:37:18 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qT2IG-0005qR-08;
+        Mon, 07 Aug 2023 18:37:16 +0300
+Date:   Mon, 7 Aug 2023 18:37:15 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] of: dynamic: Move dead property list check into
+ property add/update functions
+Message-ID: <ZNEPqwQ0H9srkxxq@smile.fi.intel.com>
+References: <20230801-dt-changeset-fixes-v2-0-c2b701579dee@kernel.org>
+ <20230801-dt-changeset-fixes-v2-5-c2b701579dee@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801-dt-changeset-fixes-v2-5-c2b701579dee@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All *.S files under arch/m68k/ have been converted to include
-<linux/export.h> instead of <asm/export.h>.
+On Fri, Aug 04, 2023 at 04:41:55PM -0600, Rob Herring wrote:
+> The changeset code checks for a property in the deadprops list when
+> adding/updating a property, but of_add_property() and
+> of_update_property() do not. As the users of these functions are pretty
+> simple, they have not hit this scenario or else the property lists
+> would get corrupted.
 
-Remove <asm/export.h>.
+Suggested-by: ? :-)
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+...
 
- arch/m68k/include/asm/Kbuild | 1 -
- 1 file changed, 1 deletion(-)
+> +static void __of_remove_dead_property(struct device_node *np, struct property *prop)
+> +{
+> +	struct property **next;
+> +
+> +	/* If the property is in deadprops then it must be removed */
+> +	for (next = &np->deadprops; *next; next = &(*next)->next) {
+> +		if (*next != prop)
+> +			continue;
+> +
+> +		*next = prop->next;
+> +		prop->next = NULL;
+> +		break;
 
-diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
-index 1b720299deb1..0dbf9c5c6fae 100644
---- a/arch/m68k/include/asm/Kbuild
-+++ b/arch/m68k/include/asm/Kbuild
-@@ -1,6 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- generated-y += syscall_table.h
--generic-y += export.h
- generic-y += extable.h
- generic-y += kvm_para.h
- generic-y += mcs_spinlock.h
+Why not
+
+		if (*next == prop) {
+			*next = prop->next;
+			prop->next = NULL;
+			break;
+		}
+
+which seems to me clearer?
+
+> +	}
+> +}
+
 -- 
-2.39.2
+With Best Regards,
+Andy Shevchenko
+
 
