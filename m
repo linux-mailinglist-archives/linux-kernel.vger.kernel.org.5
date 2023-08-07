@@ -2,97 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA8B77268A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D18C77268E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234390AbjHGNuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39012 "EHLO
+        id S234455AbjHGNvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbjHGNul (ORCPT
+        with ESMTP id S229843AbjHGNvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:50:41 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A047B92
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:50:39 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52164adea19so5892348a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 06:50:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691416238; x=1692021038;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TJvK32hfp7W2IiN/EvVttylVS5EgMni1Y/4T65DWePg=;
-        b=L5ZeOA4RaGuzqdd+ADcWzq9s/f1sZ4yf3ThmLa07nCL0zuDUx5mgGPA6nvy47kNdyj
-         S+ASwiMDNoWGciC4wW+UaqyQLBhvyiQhSlwp+Ikr6iIKtqp4iC65B7YKOU7mBzPKFQFL
-         Awn/67aAFv+VBTrNhXedHHEIY/3ka9vR6MyKCE/nDoNm64E7/1VVxGHPdnGWQZ+Akw6K
-         ZJlEOJilxd/sOHVsJ0uDEYOOAtKHhMC4Dx60yd+PJQ+mGgO+GipECtK4d+WJ/8TI9XuU
-         j2E/qNXWukiehaVOAAsh+2/R8fIrJEe/ro1EupSBg+nzTbaRbhNh0kaMqjTrrKfvHwKn
-         RVCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691416238; x=1692021038;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TJvK32hfp7W2IiN/EvVttylVS5EgMni1Y/4T65DWePg=;
-        b=Gj5B4X8S9YRt1SEHflwrjIXCAUtkmzvxOS8++OW7+kXH889G6HTmOUseHTnMpP6G+j
-         UpA9z/jesh315W9tKSY4buuAX56x5thCPjvwcnsQRYcENpo67T5pvibYFhvS4FR0T9Ah
-         Y2eBr/IfysHE0BvyRwrdcVz/p3jbYwiSJxynSvnBLFCdLXD58rA/vUKB5BZjpg1ZQdZX
-         TQffXNxn+n2uvWeKYZdvP7KwhKVWtuDJAaf4ao7Upbt30ayi3xtMpHEi2UtGBBGP3Fqv
-         92VUcN6UEuDJx8Q93REB3coH+HYqE2TeabgVPwavw4+Mgrv4NOusqN/S00XQFmze6KOD
-         D4LA==
-X-Gm-Message-State: AOJu0YybwoziJI03UL3uRm3sQkfPpNUdPeBoh7g5OXd0oEg82+pWrBza
-        CQDpTHOFxnnL89dFSC6gAG/iDQ==
-X-Google-Smtp-Source: AGHT+IEpZcOZrB1JjhLGm3EtdG7FGURcI374JR8G6zMsbVKzVKzlpVS/LBHaKsa06lDjpvqguJ0d1g==
-X-Received: by 2002:aa7:c651:0:b0:522:3ea4:81a9 with SMTP id z17-20020aa7c651000000b005223ea481a9mr7731992edr.34.1691416238152;
-        Mon, 07 Aug 2023 06:50:38 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id i22-20020a50fc16000000b005232e637c24sm2512196edr.84.2023.08.07.06.50.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 06:50:37 -0700 (PDT)
-Message-ID: <9967fa81-f3f4-04c4-a837-d507a19989cc@linaro.org>
-Date:   Mon, 7 Aug 2023 15:50:35 +0200
+        Mon, 7 Aug 2023 09:51:23 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517E6E79
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:51:21 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C0600240007;
+        Mon,  7 Aug 2023 13:51:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1691416279;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ktn/E2TMTobEbahcoWB8iS3oHsRaWzFkcZKnVtcZ+lQ=;
+        b=C8NUcX7sbrIT1NfME3Ih4AIey2goRXwF08YG5a+jPwaMFI0qu3W2JT3Mze1+rOtd8fCImG
+        pVcSvpdqhKuc6aiN3hGrV/EaCI6wJHxZoGIPTawPcgAKkRcaMrV+/DKWLzz5kCRfqprM6u
+        Uc4IW2aXiEkGrnbgNmTc26OrTl9xJtA8oVNXQc5+JQnitSo9wrIGja5dcE9YcQ85XvFXtX
+        47nQlqPufc3RG+YqKv/+P8958vfLF2kHfpOsLYXMdgoFTJyXJ4x1Lt9KbX99Yj8bn0XyXk
+        K62lHHs1VogU1MUmBSsIKNCCiEuTDSF3vjcpR7i09nfmQThQdbanGLPyUWBuqA==
+Date:   Mon, 7 Aug 2023 15:51:17 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Michael Walle <mwalle@kernel.org>
+Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 08/41] mtd: spi-nor: default .n_banks to 1
+Message-ID: <20230807155117.704f4401@xps-13>
+In-Reply-To: <20230807-mtd-flash-info-db-rework-v1-8-3d3d5bef4ba4@kernel.org>
+References: <20230807-mtd-flash-info-db-rework-v1-0-3d3d5bef4ba4@kernel.org>
+        <20230807-mtd-flash-info-db-rework-v1-8-3d3d5bef4ba4@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] tty: serial: samsung: Set missing PM ops for hibernation
- support
-Content-Language: en-US
-To:     Anton Eliasson <anton.eliasson@axis.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@axis.com
-References: <20230803-samsung_tty_pm_ops-v1-1-1ea7be72194d@axis.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230803-samsung_tty_pm_ops-v1-1-1ea7be72194d@axis.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2023 13:26, Anton Eliasson wrote:
-> At least freeze, restore and thaw need to be set in order for the driver
-> to support system hibernation. The existing suspend/resume functions can
-> be reused since those functions don't touch the device's power state or
-> wakeup capability. Use the helper macros SET_SYSTEM_SLEEP_PM_OPS and
-> SET_NOIRQ_SYSTEM_SLEEP_PM_OPS for symmetry with similar drivers.
-> 
+Hi Michael,
 
-Looks sensible, although you should also test the other sleep methods,
-e.g. suspend to idle.
+mwalle@kernel.org wrote on Mon, 07 Aug 2023 15:21:02 +0200:
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> If .n_banks is not set in the flash_info database, the default value
+> should be 1. This way, we don't have to always set the .n_banks
+> parameter in flash_info.
+>=20
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
+> ---
+>  drivers/mtd/spi-nor/core.c   | 3 +--
+>  drivers/mtd/spi-nor/core.h   | 8 ++++----
+>  drivers/mtd/spi-nor/xilinx.c | 1 -
+>  3 files changed, 5 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index ea94fb0da1e5..015152ba8973 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2016,7 +2016,6 @@ static const struct spi_nor_manufacturer *manufactu=
+rers[] =3D {
+> =20
+>  static const struct flash_info spi_nor_generic_flash =3D {
+>  	.name =3D "spi-nor-generic",
+> -	.n_banks =3D 1,
+>  	.parse_sfdp =3D true,
+>  };
+> =20
+> @@ -2996,7 +2995,7 @@ static void spi_nor_init_default_params(struct spi_=
+nor *nor)
+>  	params->size =3D info->size;
+>  	params->bank_size =3D params->size;
+>  	params->page_size =3D info->page_size ?: SPI_NOR_DEFAULT_PAGE_SIZE;
+> -	params->n_banks =3D info->n_banks;
+> +	params->n_banks =3D info->n_banks ?: SPI_NOR_DEFAULT_N_BANKS;
 
-Best regards,
-Krzysztof
+Same here, I'm not against ternary operators at all, but the=20
 
+	? /* nothing */ : <something>
+
+form is strange.
+
+> =20
+>  	if (!(info->flags & SPI_NOR_NO_FR)) {
+>  		/* Default to Fast Read for DT and non-DT platform devices. */
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index fe1ce232a6c8..c90445e186c0 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -15,6 +15,7 @@
+>   * have the page size defined within their SFDP tables.
+>   */
+>  #define SPI_NOR_DEFAULT_PAGE_SIZE 256
+> +#define SPI_NOR_DEFAULT_N_BANKS 1
+> =20
+>  /* Standard SPI NOR flash operations. */
+>  #define SPI_NOR_READID_OP(naddr, ndummy, buf, len)			\
+> @@ -453,7 +454,7 @@ struct spi_nor_fixups {
+>   * @size:           the size of the flash in bytes.
+>   * @sector_size:    the size listed here is what works with SPINOR_OP_SE=
+, which
+>   *                  isn't necessarily called a "sector" by the vendor.
+> - * @n_banks:        the number of banks.
+> + * @n_banks:        (optional) the number of banks. Defaults to 1.
+>   * @page_size:      (optional) the flash's page size. Defaults to 256.
+>   * @addr_nbytes:    number of address bytes to send.
+>   *
+> @@ -570,7 +571,7 @@ struct flash_info {
+>  /* Used when the "_ext_id" is two bytes at most */
+>  #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
+>  	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
+> -	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
+> +	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
+> =20
+>  #define INFOB(_jedec_id, _ext_id, _sector_size, _n_sectors, _n_banks)	\
+>  	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
+> @@ -578,13 +579,12 @@ struct flash_info {
+> =20
+>  #define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
+>  	SPI_NOR_ID6((_jedec_id), (_ext_id)),				\
+> -	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
+> +	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
+> =20
+>  #define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
+>  		.size =3D (_sector_size) * (_n_sectors),			\
+>  		.sector_size =3D (_sector_size),				\
+>  		.page_size =3D (_page_size),				\
+> -		.n_banks =3D 1,						\
+>  		.addr_nbytes =3D (_addr_nbytes),				\
+>  		.flags =3D SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
+> =20
+> diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
+> index 284e2e4970ab..8d4539e32dfe 100644
+> --- a/drivers/mtd/spi-nor/xilinx.c
+> +++ b/drivers/mtd/spi-nor/xilinx.c
+> @@ -26,7 +26,6 @@
+>  		.size =3D 8 * (_page_size) * (_n_sectors),		\
+>  		.sector_size =3D (8 * (_page_size)),			\
+>  		.page_size =3D (_page_size),				\
+> -		.n_banks =3D 1,						\
+>  		.flags =3D SPI_NOR_NO_FR
+> =20
+>  /* Xilinx S3AN share MFR with Atmel SPI NOR */
+>=20
+
+But otherwise
+
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+
+Thanks,
+Miqu=C3=A8l
