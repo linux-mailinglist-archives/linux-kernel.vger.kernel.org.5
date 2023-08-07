@@ -2,96 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD03377314D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 23:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262D777315A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 23:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbjHGVe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 17:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
+        id S229445AbjHGVj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 17:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbjHGVe5 (ORCPT
+        with ESMTP id S229892AbjHGVjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 17:34:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B98E7F;
-        Mon,  7 Aug 2023 14:34:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B9DF62262;
-        Mon,  7 Aug 2023 21:34:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C0E3C433C7;
-        Mon,  7 Aug 2023 21:34:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691444095;
-        bh=2vh5MKnUPvpayE8v3B6yBNfJsLF72v8kjOqfdpQ4ziQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q1w4z8FuPe0YjK1E9yk0PGDEUcr8NUMlvZCIR048M0izDsRTHdLgeB00XlXdOJt3h
-         9mH+nakIVu2Aev/xlK1SbMGSQi6Et1JjseY7zZuSI6zH2WIts0ZI+KiPvGyC/91iMV
-         JD3/L4YQ7MqkG7g5AT1heuwNO+GF5/l/dUVzNSKb3XM4OyaYRmynLmMBiO63CVY0cV
-         EhxlMgA+96uVg1r1PImuSp3j3hiLAnZZv9gzlgHXUgHLhIp9KkctRMjYSBCPKbCx3V
-         1jkopuLqsXRPHNIDq4OJQLuJcgclPadDh2SURsnPprtfuoy0k37ngN3T0BJHm5vwi6
-         c4AujB1SuJ5SA==
-Date:   Mon, 7 Aug 2023 23:34:52 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Anton Eliasson <anton.eliasson@axis.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@axis.com
-Subject: Re: [PATCH] tty: serial: samsung: Set missing PM ops for hibernation
- support
-Message-ID: <20230807213452.aev2ubalxvydmxjv@intel.intel>
-References: <20230803-samsung_tty_pm_ops-v1-1-1ea7be72194d@axis.com>
- <20230805213824.ol7sr3b52rwrsfs6@intel.intel>
- <1dbc24c4-b057-0e71-432a-a7d0ce2df2dc@axis.com>
+        Mon, 7 Aug 2023 17:39:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449C510C0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 14:39:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691444346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4s0Kw+c/F9UtXftYXYaWtU9eJKPG9T0A3yU/7K9uITw=;
+        b=SeUbR82N7WxqMO/Va/lxZMP2QTrX07n1mwtdFiWBKQkk7zYIMZBGm1ErKSKC2YrsJasJM5
+        raQiQKBbqPJy/hflBZGbclF1G8tcalgsGWzOytcULjM1BPXubbW5wCTZp0DT7KbxrlC+Gs
+        tEz0iRCFJ0mA+RwWBHYQ8VSEq0UCpOs=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-265-o47XY7FaNRKaSsCuyF0y-g-1; Mon, 07 Aug 2023 17:39:05 -0400
+X-MC-Unique: o47XY7FaNRKaSsCuyF0y-g-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-40831789e55so61430221cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 14:39:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691444344; x=1692049144;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4s0Kw+c/F9UtXftYXYaWtU9eJKPG9T0A3yU/7K9uITw=;
+        b=dxnDADdwEeonj7+pw7s5qVRAYUEg083+PiNGD99BmrlLyBTWDBCq5MfgpmHlKORd0w
+         E+EmeN30NCzZKQJcLMuWSbt7mtu21ymZxkuwc76AIMKEcvXJ0ZKuBBVUaQZF0TEEc9J/
+         WT5qzz+NKcfZaZPkOH8fSUxJxe8MlHuyPXN0myyOCj9FuqzdBhSUUdb/9X3V9yEUnb5M
+         zd2HQKiEEKrJlf0w+5c0f+GAZxMJKx5wFA6cMf3IGyIf9SUQnreElnL75pGmclArQuQX
+         rfjTnxCQ6ymYE8jIQnmrDqY0G/adAdkBRTQIrGQ4LQypdo6nhzNTm4tpkrD4wliVG29m
+         773A==
+X-Gm-Message-State: AOJu0YxAUs7b95JItWocrwDnIPenzlJcMKzKVhwo3HgIR4OykJTmhJGD
+        Fi7viebt1LH+3NqqxQwoZmpYNri1m441Ojl9SxuYhOR2EnIlmAOJ3jTJnw3sjIqLGb7FZiwbVv+
+        zDkhuLlaCNu4Ud0oCve23wkQHMbMRblib
+X-Received: by 2002:a05:622a:181d:b0:405:56bb:343b with SMTP id t29-20020a05622a181d00b0040556bb343bmr13385089qtc.41.1691444344369;
+        Mon, 07 Aug 2023 14:39:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGZpV2xc1KEBl5NM0N+gFp8G7X0ze4YFLSxvaNIXK7YS+wUiw1yPsPPpwWdI7eh5WPCHibnfw==
+X-Received: by 2002:a05:622a:181d:b0:405:56bb:343b with SMTP id t29-20020a05622a181d00b0040556bb343bmr13385075qtc.41.1691444344061;
+        Mon, 07 Aug 2023 14:39:04 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id a7-20020ac844a7000000b0040ff0e520besm2953727qto.35.2023.08.07.14.39.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 14:39:03 -0700 (PDT)
+Date:   Mon, 7 Aug 2023 16:39:01 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 1/9] arm64: dts: qcom: sa8775p: add a node for the second
+ serdes PHY
+Message-ID: <ann5dn236wyjoz2v3lmvihh2f5ses7nwy7lpqlkpoxvpcxgbjp@7ys6bkodptek>
+References: <20230807193507.6488-1-brgl@bgdev.pl>
+ <20230807193507.6488-2-brgl@bgdev.pl>
+ <qdagbipfnukpsn5a7f6hswbktrwutizluf3zom2gq6q4q6w6df@h4lkoi3mjzes>
+ <b5e30baf-4cf4-4a7f-aa2f-348de843226f@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1dbc24c4-b057-0e71-432a-a7d0ce2df2dc@axis.com>
+In-Reply-To: <b5e30baf-4cf4-4a7f-aa2f-348de843226f@lunn.ch>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anton,
-
-On Mon, Aug 07, 2023 at 11:57:04AM +0200, Anton Eliasson wrote:
-> On 05/08/2023 23.38, Andi Shyti wrote:
-> > Hi Anton,
+On Mon, Aug 07, 2023 at 11:28:15PM +0200, Andrew Lunn wrote:
+> On Mon, Aug 07, 2023 at 04:10:34PM -0500, Andrew Halaney wrote:
+> > On Mon, Aug 07, 2023 at 09:34:59PM +0200, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > 
+> > > Add a node for the SerDes PHY used by EMAC1 on sa8775p-ride.
+> > > 
+> > > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > > 
-> > On Thu, Aug 03, 2023 at 01:26:42PM +0200, Anton Eliasson wrote:
-> > > At least freeze, restore and thaw need to be set in order for the driver
-> > > to support system hibernation. The existing suspend/resume functions can
-> > > be reused since those functions don't touch the device's power state or
-> > > wakeup capability. Use the helper macros SET_SYSTEM_SLEEP_PM_OPS and
-> > > SET_NOIRQ_SYSTEM_SLEEP_PM_OPS for symmetry with similar drivers.
-> > and why do we need hibernation in this device?
+> > FWIW this seems to match downstream sources.
 > > 
-> > Andi
+> > Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
 > 
-> Hi!
+> Why does matching downstream make it correct and deserve a
+> Reviewed-by?
 > 
-> I wanted to test whether hibernation is possible on our SoC, even though it
-> is not a common feature on embedded ARM systems. This is the only mainline
-> driver that I found that needed modification, for my proof-of-concept
-> anyway, and I couldn't see any harm in the change.
+> Did you actually review the change?
+> 
+>     Andrew
+> 
 
-Thanks, makes sense, mine was just curiosity, can I know which
-SoC you are testing that is using the samsung serial device?
+That wording of "match downstream sources" is amiguous, sorry.
 
-You can add my r-b, anyway:
+What I meant was that:
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
+    1. This looks like a properly formatted dtsi node, follows
+       conventions in the file for ordering, etc
+    2. The downstream devicetree from Qualcomm uses the same MMIO region
+       same dependencies for clocks, etc. I do not have documentation
+       to further review past that
+
+I didn't suspect anyone else would cross check this information, so I
+did and thought it deserves a RB after that. Please let me know if you'd
+rather I just leave a comment saying such without any formal tags (but I
+thought since the whole patch looks proper and that information looks
+correct compared to the "documentation" I have access to it deserved
+such).
+
+In the rest of this series review I may have used similar phrasing with
+respect to downstream, but that expanded description is what I meant in
+those cases as well.
 
 Thanks,
-Andi
+Andrew
+
