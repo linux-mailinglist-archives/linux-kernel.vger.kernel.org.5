@@ -2,65 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E5A772357
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF40C77235C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233280AbjHGMBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 08:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37070 "EHLO
+        id S233174AbjHGMCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233179AbjHGMBE (ORCPT
+        with ESMTP id S231416AbjHGMCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 08:01:04 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD36173C
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:00:43 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe21e7f3d1so7225140e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 05:00:43 -0700 (PDT)
+        Mon, 7 Aug 2023 08:02:47 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F95D1FC8;
+        Mon,  7 Aug 2023 05:02:06 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bb893e6365so27632825ad.2;
+        Mon, 07 Aug 2023 05:02:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1691409641; x=1692014441;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O/HTBsyr0MohJdbS2bO21jR5mm/zlYlkZCwkIlEc3Z4=;
-        b=3YwDd9ZygrOvMwTKNuVBEMfQ+EIQPbAfbuuFkrhZaV32mFn5rGLrO9dRw4gl7BMNQN
-         PT+JYJ7S6r0wvtU9gJPNCsv4biEzMn6wsz4r/QefpO+wdgn8L5NfQWDKoadfB2ypxXaf
-         cGtadKwPqZGJYLpqYmokScSXoh9J3jC0iewfX4DQMKDof+2Nr0SHx5UZ51xkDKaCMb18
-         q/4IO+JQIpc7jxPDWhyxkn7OMSoAOOkUMyvRdUwDDIQ408WgFrgVxXy/LidfI2/QzHFd
-         zqNFCP1XDJwdaGZcWRrFzIBd62OkLEuUQAWlW9bi68gheNRIuGZQTLkFo5m2q8IyCd0I
-         6dTg==
+        d=gmail.com; s=20221208; t=1691409725; x=1692014525;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GUzrPfmRrMPt+i4UE/lAe9+fC5lOiUGAw2K7J8tfV2c=;
+        b=d2GE3aQo5mQfZvlEF7f4oSva4EKJvypvIGy6IuBTAsIUE3RDscNyHs6Em+I3dvnLEN
+         Obr3UC2AiaTlHrSkEsJ/2/LFeYfvI1DiNMw5FenkPOHuDossPPZc8ZfeJGsIy+R9emgH
+         S+zPKCf80hsaVWKsNUpdmTN80mS2TgCrpRIY5tVhvkJPAPvo5KeS0X2Jwyldn9yI+g6Q
+         Z55xF5Wu+GHCqh6GAMq9ECVbnwQqBc3oeadTkaDvDDfs5YsfG/1knWcS8z7eeL+BWZrT
+         egWAAOtE1/vlGanMsyRR3IJqlk1YK1GLJmry94YPMykoZPpGbxmbd5/l8MnQYh04wIDr
+         yzPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691409641; x=1692014441;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O/HTBsyr0MohJdbS2bO21jR5mm/zlYlkZCwkIlEc3Z4=;
-        b=gOPRp8PYNYzHfK+4qMG+owsSIMxZ3Mi4ZE7cNd0Bata36MHZja5ODOAT4iyhZRKlj+
-         FHvDxju53PeYEupOf4WA0FrZabeRzNchHj7/V56rUNWPpkUm4NCluIcuAd/pSETbO3mJ
-         OdQAUlPvhnDCzCFNEfVLtjQHC2SVnldQlUMuZafGVrwv+SRlwOjG42Nr/FTGKTcnsfIu
-         IhsmptfM4krj+943wfNygo0XHgazLLD0LVEGqJpmMb60siCdGZEKNJCbPzdLAx9MHvFj
-         9tDASVP/Rz1AKZqG6oqYYKA4G2/wQcpH9PxQxU442Yf9Ufgn22zXTpCQmx4EDJrn/ajD
-         kStA==
-X-Gm-Message-State: AOJu0Yy3kLtEbGYDDHk0EEQuRzxod+lx3DQct1APx5W1V5IyGHKpbyUQ
-        hjVYBHdHWtoXg3aMbRR+Ba8YjDzZe07YkQQr07QbxrqRMwmy2/gHl29BUQ==
-X-Google-Smtp-Source: AGHT+IEJpk9APAtkpkW4PXCsQlb/BOQrQVRJaWgrCIXeL6B+JMDXe4WPRpGKaM5KBYRfwBwOhDpUTOifsBUBuU9DhbM=
-X-Received: by 2002:a05:6512:b8b:b0:4fb:89ad:6651 with SMTP id
- b11-20020a0565120b8b00b004fb89ad6651mr6880691lfv.28.1691409641463; Mon, 07
- Aug 2023 05:00:41 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691409725; x=1692014525;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GUzrPfmRrMPt+i4UE/lAe9+fC5lOiUGAw2K7J8tfV2c=;
+        b=MXnsLErHJ9VZOsyQJLYTuC4A5hiBTRsVY58ivG6u0RFHg7ncdh8cy2x1eY5qDiPW4V
+         qS4bZvvUERtyilxlAxosNjdWooEgR2O80M4V7DN+kkJDEj5xJ+qaMMuZa7cGotUaVHQJ
+         kQ6Q9Pp6G7gLiKleXK9aeFPOaU5MbVNz+vhFjkrCkwzilYypWmjyZftkyi3vje7EzXtO
+         AUVHc2FvPz10FM8sCH5J1f5BPgt20LHMDnpXPw/halxd+ZvmUc+7+/M+TRhztExJ3bI0
+         21vMU5VuqwNvILaRbvHg+CabvpA/RjnKhT5gnchHz6bo29QcPwOuVa1tmXVdLOHR7lb7
+         qxRw==
+X-Gm-Message-State: AOJu0Ywqj9gFM3GMC4Y4d9rTPoS/mfkBZ83s2eQOjG9GoegtqZJ5EMTn
+        NIR9umm27tbHnxBN72xj5vw=
+X-Google-Smtp-Source: AGHT+IHWYNulalQMDqlB0MHADRqG5ScHqlrzXhiB9uHTqVA4K3003dWe9L2ntXhX6qq+PcVohtu+WA==
+X-Received: by 2002:a17:902:c101:b0:1b5:edd:e3c7 with SMTP id 1-20020a170902c10100b001b50edde3c7mr7864273pli.16.1691409724767;
+        Mon, 07 Aug 2023 05:02:04 -0700 (PDT)
+Received: from [192.168.255.10] ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id jc15-20020a17090325cf00b001b7ffca7dbcsm6752298plb.148.2023.08.07.05.02.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 05:02:04 -0700 (PDT)
+Message-ID: <5581418b-2e1c-6011-f0a4-580df7e00b44@gmail.com>
+Date:   Mon, 7 Aug 2023 20:01:55 +0800
 MIME-Version: 1.0
-References: <20230807113545.14743-1-aboutphysycs@gmail.com>
-In-Reply-To: <20230807113545.14743-1-aboutphysycs@gmail.com>
-From:   Alexandru Ardelean <alex@shruggie.ro>
-Date:   Mon, 7 Aug 2023 15:00:30 +0300
-Message-ID: <CAH3L5QpJztEie-OO8QbnBOMpZ3RtLuepMCyrj1bq7pPCZSNV3Q@mail.gmail.com>
-Subject: Re: [PATCH] reset: zynq: remove unneeded call to platfrom_set_drvdata()
-To:     Andrei Coardos <aboutphysycs@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        michal.simek@amd.com, p.zabel@pengutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH 19/27] KVM: x86/mmu: Use page-track notifiers iff there
+ are external users
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Yan Zhao <yan.y.zhao@intel.com>,
+        Ben Gardon <bgardon@google.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <20221223005739.1295925-1-seanjc@google.com>
+ <20221223005739.1295925-20-seanjc@google.com>
+Content-Language: en-US
+From:   Like Xu <like.xu.linux@gmail.com>
+In-Reply-To: <20221223005739.1295925-20-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,37 +82,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 2:35=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.c=
-om> wrote:
->
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver. Als=
-o,
-> the private data is defined in this driver, so there is no risk of it bei=
-ng
-> accessed outside of this driver file.
->
+On 23/12/2022 8:57 am, Sean Christopherson wrote:
+> +static inline void kvm_page_track_write(struct kvm_vcpu *vcpu, gpa_t gpa,
+> +					const u8 *new, int bytes)
+> +{
+> +	__kvm_page_track_write(vcpu, gpa, new, bytes);
+> +
+> +	kvm_mmu_track_write(vcpu, gpa, new, bytes);
+> +}
 
-Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
-
-> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
-> ---
->  drivers/reset/reset-zynq.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/reset/reset-zynq.c b/drivers/reset/reset-zynq.c
-> index 706bbbbb4ec7..688b512882ec 100644
-> --- a/drivers/reset/reset-zynq.c
-> +++ b/drivers/reset/reset-zynq.c
-> @@ -94,7 +94,6 @@ static int zynq_reset_probe(struct platform_device *pde=
-v)
->         priv =3D devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
->         if (!priv)
->                 return -ENOMEM;
-> -       platform_set_drvdata(pdev, priv);
->
->         priv->slcr =3D syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
->                                                      "syscon");
-> --
-> 2.34.1
->
+The kvm_mmu_track_write() is only used for x86, where the incoming parameter
+"u8 *new" has not been required since 0e0fee5c539b ("kvm: mmu: Fix race in
+emulated page table writes"), please help confirm if it's still needed ? Thanks.
+A minor clean up is proposed.
