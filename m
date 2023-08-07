@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5C0772A7D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CCF772A8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbjHGQW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
+        id S231501AbjHGQYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbjHGQWZ (ORCPT
+        with ESMTP id S231500AbjHGQX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:22:25 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C7810DE
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:22:20 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-56cb1e602e7so2880119eaf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:22:20 -0700 (PDT)
+        Mon, 7 Aug 2023 12:23:58 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F182E173D
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:23:32 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6bcccbd9365so3641702a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:23:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691425340; x=1692030140;
+        d=gmail.com; s=20221208; t=1691425386; x=1692030186;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UUVPtQ4uffECPeWL3GR8MnvNWj95BmoZE6AwQJLdvYA=;
-        b=JnhpwUbEwmaB1X5eMIa1H0Ttk0AcCLltM036ifUFbLvc6yGDivsEkCFumZISCdcDMQ
-         AhQV9+qcbVwMEM03Pjgf1D2o1DLKUssmEsUOhimspCKQ6jDnv9JbmeNHT7lrn0ixFj/r
-         HQclzQrXsdiftsx6b1pSUD9/R6NvZvwJiezg/6QBJkytuZ6q46c1ekYhW5aQ15ByKVHe
-         3uIaTxEP8DV/s/yV9vbn1e+pFzKTEZaBGnekH11guLHmPJCZrf8SdadeGaxJN84+02wR
-         2H0VsNVHdZ4frXhUXTbICU/4wu4ujQIoq7lOOL5gfuNkyxiE7CsiarObdDICNyXL7reA
-         sAyQ==
+        bh=L7MLgX//c9aErISuUZEec4pqzAsW+rw0jQNMnk+tMag=;
+        b=YTfBQIIP3baZBzHLZfZAMXXo1vU4qQaj4/9FJAZ5yCXXUFTOmBSm5XOSFICbcXZN34
+         cr4MqOZpTff4/J6LFvhwCPmHLfyAC/y3y9pB3W1oUiWI3YTqzj/zezcF/tDCrrGdxAsX
+         QbLxFWWYIWY9uqW4feTfYHsMF8/iWFW+Ujq7V08hj974ZQWAk9xMlzEO8CaSbm139ZHK
+         0hHba4i4DViLEzTdrUQpKuaoAAw0HilZqSTPJ/lc2gVUk6B0cJTENI7FomaHjao9vs5h
+         7YrsUvOXPQepjT6wKL/PgoViCoa7EmoIVXlgnX56+SFK9nMsecw44IMBrg39+2nhMUJJ
+         rTyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691425340; x=1692030140;
+        d=1e100.net; s=20221208; t=1691425386; x=1692030186;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UUVPtQ4uffECPeWL3GR8MnvNWj95BmoZE6AwQJLdvYA=;
-        b=O+FgSsjiXYOxk9s4R9Hm48KuAtDycb5MWxEqKXWxa83wCJkTHY5jNA+uEpY4yZG1Gf
-         z47KuZghfG/IGVpPfJmDbwGGb4NV5M05Rk4sPEGSm8LQkuMyy4JFlB/DNKf6K9VrnGoR
-         vQjxBuW+eY4u2tsS45aVNvaj/E2+UGDymsWbGuZQDzNx1WVRfSd/nIO4eGMEmAqp3OQV
-         5vcmUzpSH8CgLI1TZgWcp2fDZ+fIG2DE1Ra8eXIXLB7hB150aC9txwqYcvrPdc136+m+
-         yA63nhLR2YsT0pMIlFHyr/vquFedOZduHdt0VEn9Z64QLGpR30E8eon6WIZ7HXX7pLWO
-         xNCA==
-X-Gm-Message-State: AOJu0YyOCorMLEeXElr+N90jgCrU4bg1+ol8OavHmygX7UQAyCWK4+Wf
-        AlQVC36W0sGgXjjtByqJ+w6rekba9fkZhIgC+Ds=
-X-Google-Smtp-Source: AGHT+IFG0/Am3diUr/m2+r/PPuvSgAgvYLcl/89tTxa/yB4pEVFb/nj9I+lomFUljhKSdlsnRF0dCzxkTjpd/0TGMUs=
-X-Received: by 2002:a05:6870:7010:b0:1bb:5480:4b4 with SMTP id
- u16-20020a056870701000b001bb548004b4mr11226715oae.8.1691425340185; Mon, 07
- Aug 2023 09:22:20 -0700 (PDT)
+        bh=L7MLgX//c9aErISuUZEec4pqzAsW+rw0jQNMnk+tMag=;
+        b=Qd/lViKJCTs4uwQ5Mpwwi/vecwJNzfWj/TvR1JK9GhhkxGwK56ejIqcbX6gajIHJLz
+         3xC5zPV81XxWJK2Tf+Mtl3qSw6RoDK4SEKXD2n9iC4nNy3COjaN4xYSmAaq794WU9Fn6
+         wrd83fMV3XlsVOX2P58YwmrnBMz0KI1ankXEkMPdid8Jn0gscNbYH4DuIH2mHcNszJIw
+         rkKbCleJWHnnTd1Hqpec2uPE4lNp8wZBrX0V9fVLazGw8ZC9ZFcQ+8fWWJQj+o9m7ikE
+         Q5mFcuXNs8+UxN5SuRQGwAD4zBNCl0de7ogunYF4PbriYSM5p4FbxxlpyLhB3Rj27x9f
+         wjsw==
+X-Gm-Message-State: AOJu0YxZ+zUMR93NopURdBFLxatQDxotT7hLmySLEpsYLTsbqiYFciE1
+        Y7v3o7hx4QcLA1AQjqjjoo7D6uuUtY1Rq6Ko8N0=
+X-Google-Smtp-Source: AGHT+IFPbosy3FdWE+KBz+V5wTA/k7xCp/jTZ0S6fFWDwY+GhxsenpyI5P9bf18tADOmQWbNFhp2w+gBiVrjFRBItqQ=
+X-Received: by 2002:a05:6870:d611:b0:1bf:7b3:5116 with SMTP id
+ a17-20020a056870d61100b001bf07b35116mr12624311oaq.47.1691425386563; Mon, 07
+ Aug 2023 09:23:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230801020839.4369-1-sunran001@208suo.com>
-In-Reply-To: <20230801020839.4369-1-sunran001@208suo.com>
+References: <20230801021129.4458-1-sunran001@208suo.com>
+In-Reply-To: <20230801021129.4458-1-sunran001@208suo.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 12:22:09 -0400
-Message-ID: <CADnq5_PYShAc4M47zrfbzv4FUe1oD8+k08Q4_oDPzp4xoE_eGA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: Clean up errors in smu_v13_0_5_ppt.c
+Date:   Mon, 7 Aug 2023 12:22:55 -0400
+Message-ID: <CADnq5_NZLtJjmRPo=GXhftc1_g=8OsJBawb6j1sCAKs1788JEQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd: Clean up errors in smu_v13_0_5_ppt.c
 To:     Ran Sun <sunran001@208suo.com>
 Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
         dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
@@ -72,7 +72,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Applied.  Thanks!
 
-On Mon, Jul 31, 2023 at 10:08=E2=80=AFPM Ran Sun <sunran001@208suo.com> wro=
+On Mon, Jul 31, 2023 at 10:11=E2=80=AFPM Ran Sun <sunran001@208suo.com> wro=
 te:
 >
 > Fix the following errors reported by checkpatch:
@@ -81,32 +81,47 @@ te:
 >
 > Signed-off-by: Ran Sun <sunran001@208suo.com>
 > ---
->  drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_5_ppt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/gpu/drm/amd/pm/swsmu/smu_internal.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_5_ppt.c b/drive=
-rs/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_5_ppt.c
-> index 42f110602eb1..87a79e6f983b 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_5_ppt.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_5_ppt.c
-> @@ -75,7 +75,7 @@ static struct cmn2asic_msg_mapping smu_v13_0_5_message_=
-map[SMU_MSG_MAX_COUNT] =3D
->         MSG_MAP(SetDriverDramAddrHigh,            PPSMC_MSG_SetDriverDram=
-AddrHigh,      1),
->         MSG_MAP(SetDriverDramAddrLow,          PPSMC_MSG_SetDriverDramAdd=
-rLow,  1),
->         MSG_MAP(TransferTableSmu2Dram,           PPSMC_MSG_TransferTableS=
-mu2Dram,               1),
-> -       MSG_MAP(TransferTableDram2Smu,          PPSMC_MSG_TransferTableDr=
-am2Smu ,       1),
-> +       MSG_MAP(TransferTableDram2Smu,          PPSMC_MSG_TransferTableDr=
-am2Smu,        1),
->         MSG_MAP(GetGfxclkFrequency,          PPSMC_MSG_GetGfxclkFrequency=
-,      1),
->         MSG_MAP(GetEnabledSmuFeatures,           PPSMC_MSG_GetEnabledSmuF=
-eatures,               1),
->         MSG_MAP(SetSoftMaxVcn,          PPSMC_MSG_SetSoftMaxVcn,        1=
-),
+> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu_internal.h b/drivers/gpu/dr=
+m/amd/pm/swsmu/smu_internal.h
+> index ceb13c838067..bcc42abfc768 100644
+> --- a/drivers/gpu/drm/amd/pm/swsmu/smu_internal.h
+> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu_internal.h
+> @@ -61,14 +61,14 @@
+>  #define smu_feature_get_enabled_mask(smu, mask)                         =
+       smu_ppt_funcs(get_enabled_mask, -EOPNOTSUPP, smu, mask)
+>  #define smu_feature_is_enabled(smu, mask)                              s=
+mu_ppt_funcs(feature_is_enabled, 0, smu, mask)
+>  #define smu_disable_all_features_with_exception(smu, mask)             s=
+mu_ppt_funcs(disable_all_features_with_exception, 0, smu, mask)
+> -#define smu_is_dpm_running(smu)                                         =
+       smu_ppt_funcs(is_dpm_running, 0 , smu)
+> +#define smu_is_dpm_running(smu)                                         =
+       smu_ppt_funcs(is_dpm_running, 0, smu)
+>  #define smu_notify_display_change(smu)                                 s=
+mu_ppt_funcs(notify_display_change, 0, smu)
+>  #define smu_populate_umd_state_clk(smu)                                 =
+       smu_ppt_funcs(populate_umd_state_clk, 0, smu)
+>  #define smu_enable_thermal_alert(smu)                                  s=
+mu_ppt_funcs(enable_thermal_alert, 0, smu)
+>  #define smu_disable_thermal_alert(smu)                                 s=
+mu_ppt_funcs(disable_thermal_alert, 0, smu)
+>  #define smu_smc_read_sensor(smu, sensor, data, size)                   s=
+mu_ppt_funcs(read_sensor, -EINVAL, smu, sensor, data, size)
+>  #define smu_pre_display_config_changed(smu)                            s=
+mu_ppt_funcs(pre_display_config_changed, 0, smu)
+> -#define smu_display_config_changed(smu)                                 =
+       smu_ppt_funcs(display_config_changed, 0 , smu)
+> +#define smu_display_config_changed(smu)                                 =
+       smu_ppt_funcs(display_config_changed, 0, smu)
+>  #define smu_apply_clocks_adjust_rules(smu)                             s=
+mu_ppt_funcs(apply_clocks_adjust_rules, 0, smu)
+>  #define smu_notify_smc_display_config(smu)                             s=
+mu_ppt_funcs(notify_smc_display_config, 0, smu)
+>  #define smu_run_btc(smu)                                               s=
+mu_ppt_funcs(run_btc, 0, smu)
 > --
 > 2.17.1
 >
