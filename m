@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CE0772882
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80ECF772885
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbjHGPDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
+        id S230024AbjHGPD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 11:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjHGPDO (ORCPT
+        with ESMTP id S229901AbjHGPDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:03:14 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20339F
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:03:13 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-407db3e9669so469171cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 08:03:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691420593; x=1692025393;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8sjbQgfVh4+chNJ8EXVHqEaf9Z0qufHdO6KYLZ0+AlE=;
-        b=C13nAX71DuxP8u8617uVB420fVs33zJxNc32Nz4uo3tPmeOfxMu0iUIxYp09pE7q53
-         rw50DsGmJoJmzuziN+xcSYGi6PZwBsAeB0g8sPpr9LUiDjo471gQdZaa+aSM42u96OBa
-         B8pOdFy1d+PtTpqiZqI547fF8x6Ii+4UZEc+5c4opfh9eWbANSQfDzrKEW1WLVrp5ssT
-         6XD0xyk7q3g1KZ6V893GRTJSKq4QWxfVZNY4XVUkl43HL5Z8O/pKAFctscSUcCmS0wWl
-         0PoBGcf4wnSqB03+1nTMLEDafoTekrrUYmlHW/L/2VumHIbqGdDrzzn3TeK2U2sHIBPY
-         giEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691420593; x=1692025393;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8sjbQgfVh4+chNJ8EXVHqEaf9Z0qufHdO6KYLZ0+AlE=;
-        b=bexvrIdnqsWXWBzPpR4W3Rg7xyag6BkH1egXvaPNk3IWORm8xBd+i+1L8eObA2+C4C
-         yT+MRc4KQycTCdn8DZYw1HBAki3xCXBSNUjnlHmkbpROTPs1H9FYHfldZnBbMoIwnH1c
-         5rJd9iR2gGiWp/Nv+towjZy9zW2GJsz2U4eYMGq1jZS4EatnwbktaGNONNQC7+Jr/OUW
-         UFQDTTE0kaF43ExO6VNG40Gaz2COcFcFLPYoiTD78TUMmtoQsOrSGcBYVXpCYllnSc4u
-         gPj9zsFC3DiB5ve5i6/9otLPg6kOnvYtipO9EjwrqcVTFzC87RmMnk+RpujtPARAhEwN
-         /UiA==
-X-Gm-Message-State: AOJu0YzA4PDmKbymwomeVijVcTDDPI9JPkGRaHi0xJ09L3E20i4rw3EP
-        VHx2BO6noqFL08UA3NZqGyqR2pQLtVwXCE/zojEjFw==
-X-Google-Smtp-Source: AGHT+IEGoZQC7C1AQ/DFaQeVurM32Yd2O9ZQ+8VygMrQeWsl+H1IH61VxF2PRXaBNe4iiVPWyOtMfBWdCO4Px6caR34=
-X-Received: by 2002:a05:622a:40f:b0:40d:eb06:d3cc with SMTP id
- n15-20020a05622a040f00b0040deb06d3ccmr429004qtx.7.1691420592462; Mon, 07 Aug
- 2023 08:03:12 -0700 (PDT)
+        Mon, 7 Aug 2023 11:03:23 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DA610DE
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:03:22 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DE1E91FE49;
+        Mon,  7 Aug 2023 15:03:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1691420600; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X3A2NsvXpmNRnd8PNau9KuaPdja1LGVqq+oucwV7B34=;
+        b=e6SNj8R713ZAAtu9DcuUfZqEtfKTl8DeMypsLAoGTGdfqcoR4T2yEVzvjrykJiB1+VmeYO
+        vcmcyfr/xYigmi95BOsdYOgMbOC+xj8cZff8BI/GiNnTw8pgUn9StcWccERojMAS69TpnF
+        SqkgvXce6Ob9uND7M59kPc3u1X0maqI=
+Received: from suse.cz (unknown [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 5ADD22C142;
+        Mon,  7 Aug 2023 15:03:20 +0000 (UTC)
+Date:   Mon, 7 Aug 2023 17:03:19 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
+Message-ID: <ZNEHt564a8RCLWon@alley>
+References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
+ <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20230802163328.2623773-1-mshavit@google.com> <20230803003234.v4.7.Idedc0f496231e2faab3df057219c5e2d937bbfe4@changeid>
- <ZM1Yh5vzfxwV5Rbc@Asurada-Nvidia>
-In-Reply-To: <ZM1Yh5vzfxwV5Rbc@Asurada-Nvidia>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Mon, 7 Aug 2023 23:02:36 +0800
-Message-ID: <CAKHBV24356NsGu8QL3iVh2ANt8NMGx+ppMuwgYF=hwHTVE0-MQ@mail.gmail.com>
-Subject: Re: [PATCH v4 7/8] iommu/arm-smmu-v3: Skip cd sync if CD table isn't active
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, will@kernel.org,
-        robin.murphy@arm.com, jgg@nvidia.com, jean-philippe@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 5, 2023 at 3:59=E2=80=AFAM Nicolin Chen <nicolinc@nvidia.com> w=
-rote:
->
-> Before this chunk, there is another fork for "Bypass/fault", where
-> we could set "installed" to false too, although it doesn't seem to
-> cause a problem at this moment since arm_smmu_sync_cd() is called
-> only in the context of an ARM_SMMU_DOMAIN_S1.
+On Sat 2023-08-05 20:50:26, Andy Shevchenko wrote:
+> kernel.h is being used as a dump for all kinds of stuff for a long time.
+> sprintf() and friends are used in many drivers without need of the full
+> kernel.h dependency train with it.
+> 
+> Here is the attempt on cleaning it up by splitting out sprintf() and
+> friends.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  include/linux/kernel.h  | 30 +-----------------------------
+>  include/linux/sprintf.h | 25 +++++++++++++++++++++++++
+>  lib/test_printf.c       |  1 +
+>  lib/vsprintf.c          |  1 +
+>  4 files changed, 28 insertions(+), 29 deletions(-)
+>  create mode 100644 include/linux/sprintf.h
 
-Oh, good catch; I didn't notice the return in that branch.
-Fixing in v5.
+I agree that kernel.h is not the right place. But are there any
+numbers how much separate sprintf.h might safe?
+
+Maybe, we should not reinvent the wheel and get inspired by
+userspace.
+
+sprintf() and friends are basic functions which most people know
+from userspace. And it is pretty handy that the kernel variants
+are are mostly compatible as well.
+
+IMHO, it might be handful when they are also included similar way
+as in userspace. From my POV printk.h is like stdio.h. And we already
+have include/linux/stdarg.h where the v*print*() function might
+fit nicely.
+
+How does this sound, please?
+
+Best Regards,
+Petr
