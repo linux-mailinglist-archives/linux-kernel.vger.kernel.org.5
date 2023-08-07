@@ -2,134 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 622F477273D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F2477285A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbjHGONh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
+        id S230090AbjHGO47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:56:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232676AbjHGONe (ORCPT
+        with ESMTP id S229848AbjHGO4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:13:34 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0B3107;
-        Mon,  7 Aug 2023 07:13:32 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3778eCqw024287;
-        Mon, 7 Aug 2023 14:13:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Gt+gCUHmgDjj2zNUxEfs8O41tYDOTQH90wdcsrwitAc=;
- b=S1WdKG5Y5q3RgokRD85oKHJKd5mUZNVUJgd3j02B25wuR/5W/GOtxIMEHOW2FTzVj/gj
- gtUJzOVBgpGkDOAahRQgUoLP8ECkwKI9wtqRPJ6rcAZqadZKcpjtF6E1VOqkZY+TlmN6
- Orty990YVLgJDPKu0lJHam1suD8vnOHmbSHiheDrVFiww/g2hB0IFFuFHVKkhAjLh8jQ
- W8ZO/VSWVwApsQQRVbCEsGQbHSiZotZpt/MxwWgX7zcm5zJNp/Yy7FvG7elkWla/XGgq
- CMpKsU7bJg10EWG9HI2P9ktmiEH5XEqbi13C7/R8y23S7sUP/TlZ9n8P6LkH7bMlQTP7 ig== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3saw0r8s43-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Aug 2023 14:13:22 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 377EDLRJ028863
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 7 Aug 2023 14:13:21 GMT
-Received: from [10.111.180.219] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 7 Aug
- 2023 07:13:21 -0700
-Message-ID: <47f1a06b-8bfe-911a-3a05-da7d522b588f@quicinc.com>
-Date:   Mon, 7 Aug 2023 07:13:20 -0700
+        Mon, 7 Aug 2023 10:56:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5241910CC
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:56:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691420202; x=1722956202;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=JqeztFeqeIb8u0ximbuaFAtMKDPtvXdzUyTKSrRS9Kk=;
+  b=JpHwAzmIHNc8R5fbipuLrOWOVcsOKzelC37f2enQ8Wdcx3k1x6nC3Cvx
+   zPXW5xg4o8hu8d/Lei/h6hq+5w2GfVr6bmV7Q9p4qSmF+xciHE7oCgUCc
+   rxydUfiV93bDHroVy2xQt4IvHiolLuNHhmTpS4AQK7Yd64QbJspffFQpz
+   wBzNVqj5PbFx+HSJPQexns1dfLOszboU6ACDlX0GC/Cw/6v5hCxIsT6O2
+   f41eJqKRwI1wkVQ10SDv+LUZpCVWAY+dSMgTRLFVRM6xT+6d+DmLppc0S
+   ZF1yhWd002uG8elVearrsfAI2k1aYOJQ657Re7uP4VCZAS3H6VeZapI0t
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="434410608"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="434410608"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:56:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="1061623880"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="1061623880"
+Received: from hweelee-mobl.amr.corp.intel.com (HELO [10.209.181.215]) ([10.209.181.215])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:56:39 -0700
+Message-ID: <e710e29b-73a3-735e-6c78-9fd4829a25cc@linux.intel.com>
+Date:   Mon, 7 Aug 2023 09:13:57 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] ath6kl: replace one-element array with flexible-array
- member
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v3 5/9] ASoC: Intel: avs: Move snd_hdac_i915_init to
+ before probe_work.
 Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>, Kalle Valo <kvalo@kernel.org>
-CC:     Atul Raut <rauji.raut@gmail.com>,
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230804045554.6934-1-rauji.raut@gmail.com>
- <2023080433-patio-staining-2cfe@gregkh> <87sf8zs2oi.fsf@kernel.org>
- <2023080410-unadorned-vertigo-c0b8@gregkh>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <2023080410-unadorned-vertigo-c0b8@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        alsa-devel@alsa-project.org
+Cc:     Maarten Lankhorst <dev@lankhorst.se>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
+ <20230807090045.198993-6-maarten.lankhorst@linux.intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230807090045.198993-6-maarten.lankhorst@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: g6PxgHzzUW0wA2SGSy-RByiRbc4Ag86W
-X-Proofpoint-ORIG-GUID: g6PxgHzzUW0wA2SGSy-RByiRbc4Ag86W
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-07_13,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- phishscore=0 adultscore=0 impostorscore=0 mlxlogscore=502 clxscore=1011
- spamscore=0 lowpriorityscore=0 priorityscore=1501 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308070131
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/2023 2:30 AM, Greg KH wrote:
-> On Fri, Aug 04, 2023 at 10:10:37AM +0300, Kalle Valo wrote:
->> Greg KH <gregkh@linuxfoundation.org> writes:
->>
->>> On Thu, Aug 03, 2023 at 09:55:54PM -0700, Atul Raut wrote:
->>>
->>>> One-element arrays are no longer relevant, and their
->>>> place has been taken by flexible array members thus,
->>>> use a flexible-array member to replace the one-element
->>>> array in struct ath6kl_usb_ctrl_diag_cmd_write
->>>>
->>>> This fixes warnings such as:
->>>> ./drivers/net/wireless/ath/ath6kl/usb.c:109:8-12: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
->>>>
->>>> Signed-off-by: Atul Raut <rauji.raut@gmail.com>
->>>> ---
->>>>   drivers/net/wireless/ath/ath6kl/usb.c | 2 +-
->>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/net/wireless/ath/ath6kl/usb.c b/drivers/net/wireless/ath/ath6kl/usb.c
->>>> index 5220809841a6..c8ecc9e85897 100644
->>>> --- a/drivers/net/wireless/ath/ath6kl/usb.c
->>>> +++ b/drivers/net/wireless/ath/ath6kl/usb.c
->>>> @@ -106,7 +106,7 @@ struct ath6kl_usb_ctrl_diag_cmd_write {
->>>>   	__le32 cmd;
->>>>   	__le32 address;
->>>>   	__le32 value;
->>>> -	__le32 _pad[1];
->>>> +	__le32 _pad[];
->>>
->>> Are you sure this is actually a variable length array?
->>
->> It's not, it's just padding. We both told this in v1:
->>
->> https://patchwork.kernel.org/project/linux-wireless/patch/20230731012941.21875-1-rauji.raut@gmail.com/
-> 
-> Hey, I'm consistent, nice!  :)
-> 
-> But Atul, that's not good to ignore our review comments.  Usually that
-> ends up meaning that everyone will then just ignore your submissions,
-> generally a not-good resolution.
-> 
-> thanks,
-> 
-> greg k-h
 
-Since the 'pad' field is never directly accessed, suggest the author 
-respin this this to use simply:
-	__le32 _pad;
 
-That will prevent others from trying to "fix" this actual one-element 
-array in the future.
+On 8/7/23 04:00, Maarten Lankhorst wrote:
+> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+> the snd_hdac_i915_init into a workqueue. It's likely the whole workqueue
+> can be destroyed, but I don't have the means to test this.
+> 
+> Removing the workqueue would simplify init even further, but is left
+> as exercise for the reviewer.
+> 
+> Changes since v1:
+> - Rename error label.
+
+same issue with changes, they need to be ...
+> 
+> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Acked-by: Mark Brown <broonie@kernel.org>
+> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>> ---
+
+...here
+
+>  sound/soc/intel/avs/core.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
+> index 3311a6f14200..64e7a4e650a8 100644
+> --- a/sound/soc/intel/avs/core.c
+> +++ b/sound/soc/intel/avs/core.c
+> @@ -191,10 +191,6 @@ static void avs_hda_probe_work(struct work_struct *work)
+>  
+>  	pm_runtime_set_active(bus->dev); /* clear runtime_error flag */
+>  
+> -	ret = snd_hdac_i915_init(bus, true);
+> -	if (ret < 0)
+> -		dev_info(bus->dev, "i915 init unsuccessful: %d\n", ret);
+> -
+>  	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+>  	avs_hdac_bus_init_chip(bus, true);
+>  	avs_hdac_bus_probe_codecs(bus);
+> @@ -465,10 +461,19 @@ static int avs_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
+>  	pci_set_drvdata(pci, bus);
+>  	device_disable_async_suspend(dev);
+>  
+> +	ret = snd_hdac_i915_init(bus, false);
+> +	if (ret == -EPROBE_DEFER)
+> +		goto err_i915_init;
+> +	else if (ret < 0)
+> +		dev_info(bus->dev, "i915 init unsuccessful: %d\n", ret);
+> +
+>  	schedule_work(&adev->probe_work);
+>  
+>  	return 0;
+>  
+> +err_i915_init:
+> +	pci_clear_master(pci);
+> +	pci_set_drvdata(pci, NULL);
+>  err_acquire_irq:
+>  	snd_hdac_bus_free_stream_pages(bus);
+>  	snd_hdac_ext_stream_free_all(bus);
