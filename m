@@ -2,136 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0B1773053
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC255773056
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbjHGUa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 16:30:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60876 "EHLO
+        id S229930AbjHGUdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 16:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjHGUa1 (ORCPT
+        with ESMTP id S229503AbjHGUdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 16:30:27 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE7710D8
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 13:30:21 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-63d4b5890a0so34823326d6.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 13:30:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691440220; x=1692045020;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pr2i5qxkhGjfmILz+uvOF1tjyrYgdGxHdOcxcXBJNWA=;
-        b=e682w2ePBOffmfaYz1w3+u2PwZXBa0YID7tktFUK+ssSjtvFDZmQ8dfRCkR5U4hwxL
-         7detsLe4bUDQ5EYA4XacQ+q+KTxCrDbV7Oh7TN7XR9nkA2NtB639UfKubxv6Zv1gc3La
-         LBfI0o/2y5svx7pPO310H7Bq6t6bkJmruFitD8dRafZEJ/eS8mwCNEyNmaRvxVK+3HtQ
-         5HQc7ggl12Cq97KM7SZMgrI5BcLrCuUCKdARWaXte7snGfyqVu9YYqaABdFeUMuH5IlN
-         cmCIgvlaL6AewM0kprEarb0ggzVwsgCZ+o30yWarG0CISt+Tn+RDOvkWP8qFBFXfAMVK
-         CTkA==
+        Mon, 7 Aug 2023 16:33:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B0910D8
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 13:32:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691440379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ef2qFHsqfq9w04kkUFwpr5VGp6ZXP1q9+YtKoiAHED8=;
+        b=anh3X1KXDChmrXDskB5b+O4TKCj/wt3Q0l6wC4kUsM+6I/q/q4QH/5KpIHcukRZs7c4rXB
+        zRbyl3P8SNp/Q+XJuhVXph6B0f4ED0bR/rUlP5qPHUpab9pmLPU40Y2a7l4dDUJ17Y093i
+        7Xv5peG7y6qh0jpoibP+jh13xRUd3+E=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-633-SVUP9cvKPJO68kX_eC-L6Q-1; Mon, 07 Aug 2023 16:32:56 -0400
+X-MC-Unique: SVUP9cvKPJO68kX_eC-L6Q-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-40feb0c08c0so37243741cf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 13:32:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691440220; x=1692045020;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Pr2i5qxkhGjfmILz+uvOF1tjyrYgdGxHdOcxcXBJNWA=;
-        b=kCz3MmaZaiQAeU6uKG94bj4r+hCye8EbiD28jpVgIOkGfIODpW5zdGybCBWGd2rFuJ
-         JmeFFmIRrQ1Zbl8lHBzFLvM5cWzhcBQR8y4awJZ+0QGVxLlDsCRkglcgZq4dmqlBqqfI
-         7JnDGwjKa/choOh4boIsVP6BVvFR/MT2TAIpwa8uCrLo1HKNrgZvWhcbDH4f0sWY5JAv
-         dSKqc5p130skSEtp49XdJgZxHVriMglLx0zUYD/MoXEB4WXp13a2soKgpG7Wgz6YAYga
-         AaK5GArEBywCh7iGdmE4UGyCGlpmjbuyPvBYbGjFElBim4jDclqzP53nTaeTrjOvo4xJ
-         vNOQ==
-X-Gm-Message-State: AOJu0YxVKj7EqRyaluyYqxu8bPzwdOYlzbe2WAQLVOqYRMChM+6P6S3n
-        QQhtxvJf8UrCMSUG5syrCkE=
-X-Google-Smtp-Source: AGHT+IEokm+HBFcmGmD+MkPfzaJHTJspxUNh1wJnk3t/yGb4NQBXo9Tv+Bt2w/sfT0u9NgedSXQ3nA==
-X-Received: by 2002:ad4:4e83:0:b0:63d:3bea:f663 with SMTP id dy3-20020ad44e83000000b0063d3beaf663mr9037192qvb.47.1691440220156;
-        Mon, 07 Aug 2023 13:30:20 -0700 (PDT)
-Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
-        by smtp.gmail.com with ESMTPSA id j5-20020a05620a000500b0076cbcf8ad3bsm2808618qki.55.2023.08.07.13.30.18
+        d=1e100.net; s=20221208; t=1691440376; x=1692045176;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ef2qFHsqfq9w04kkUFwpr5VGp6ZXP1q9+YtKoiAHED8=;
+        b=iAhx4+ocPXcbI82fRnsLhYa9ODrJkWsVCAqa7Dp2FlqWmV1lEgxE9714llb6tRSwgv
+         JCkRJbS/PlfVJGXUgYIy24drvlqIJlUMkxLtJ/nkXuTh1djO9L6KJC2cccftEnGKrz04
+         beTFaqh3s1dD9jtG2olSKxqM8qsDDsr6lmT6NuCpTbo0L8a1qWazngynIovLGZCkPt7r
+         7DKMnXdI97cttEop1FycomsrcFqylmpK7Utsd4mwqH6gSxFezaBcioeBSFz5+BdxK56C
+         Yaqr3c2OnTiVxQGrsmX8DP2f3UkbrFABaVY7/kX7BgQ8ZT312xPpLaS1nD1QeikpM+ys
+         eTQQ==
+X-Gm-Message-State: AOJu0YzYWfRZTUxvvVmdayqJFCf4XVxGWvvszKQ6CMWIL7SFt3XTK7Wd
+        9pEhwyz3jv6eUrF3GgMA1s01cGAm9W0hycWcXHLl0J4N0fToJrMwPFUKzUyIr7dGNWNTGDqVqr9
+        ax9Fs+ADWX0lI4pYvjgEyrEWg
+X-Received: by 2002:a05:622a:1301:b0:410:682:972c with SMTP id v1-20020a05622a130100b004100682972cmr6058591qtk.62.1691440375833;
+        Mon, 07 Aug 2023 13:32:55 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHPqPsJ9+KhVuwjTgj9i7DT2wVC/+erfl77JxIrDG0C82kOepjLE2//seLYHR3tPeHf0bg4Kg==
+X-Received: by 2002:a05:622a:1301:b0:410:682:972c with SMTP id v1-20020a05622a130100b004100682972cmr6058576qtk.62.1691440375600;
+        Mon, 07 Aug 2023 13:32:55 -0700 (PDT)
+Received: from ?IPv6:2600:4040:5c7d:5f00:6966:42dc:c4a4:dad3? ([2600:4040:5c7d:5f00:6966:42dc:c4a4:dad3])
+        by smtp.gmail.com with ESMTPSA id r17-20020ac87951000000b00401217aa51dsm2894075qtt.76.2023.08.07.13.32.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 13:30:19 -0700 (PDT)
-Date:   Mon, 7 Aug 2023 17:30:15 -0300
-From:   Alexon Oliveira <alexondunkan@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging: vme_user: fix check alignment should match open
- parenthesis
-Message-ID: <ZNFUV2M7eX6xb+1x@alolivei-thinkpadt480s.gru.csb>
-References: <ZM1rsu0M22HHtjfl@alolivei-thinkpadt480s.gru.csb>
- <2023080510-vacation-support-7afe@gregkh>
- <ZNEKJH3mEoOwV6eF@alolivei-thinkpadt480s.gru.csb>
- <2023080746-consonant-employed-030d@gregkh>
+        Mon, 07 Aug 2023 13:32:54 -0700 (PDT)
+Message-ID: <b350fd1e60cc0fa24a81be512e35f9b6a2358f94.camel@redhat.com>
+Subject: Re: [PATCH] drm/nouveau/disp: Revert a NULL check inside
+ nouveau_connector_get_modes
+From:   Lyude Paul <lyude@redhat.com>
+To:     Karol Herbst <kherbst@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Ben Skeggs <bskeggs@redhat.com>, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, Olaf Skibbe <news@kravcenko.com>
+Date:   Mon, 07 Aug 2023 16:32:53 -0400
+In-Reply-To: <20230805101813.2603989-1-kherbst@redhat.com>
+References: <20230805101813.2603989-1-kherbst@redhat.com>
+Organization: Red Hat Inc.
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.3 (3.48.3-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023080746-consonant-employed-030d@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 05:26:04PM +0200, Greg KH wrote:
-> On Mon, Aug 07, 2023 at 12:13:40PM -0300, Alexon Oliveira wrote:
-> > On Sat, Aug 05, 2023 at 08:14:33AM +0200, Greg KH wrote:
-> > > On Fri, Aug 04, 2023 at 06:20:50PM -0300, Alexon Oliveira wrote:
-> > > > Fixed all CHECK: Alignment should match open parenthesis
-> > > > as reported by checkpatch to adhere to the Linux kernel
-> > > > coding-style guidelines.
-> > > 
-> > > This does not describe the changes you actually made in this patch :(
-> > > 
-> > Hi Greg,
-> > 
-> > Thank you for your feedback. Don't get me wrong, please, I'm just trying
-> > to understand it now, but honestly I don't know what is wrong with
-> > it this time. I described exactly what I did in the code: ran the
-> > checkpatch, which identified a lot of "CHECK: Alignment should match
-> > open parenthesis" messages, fixed them all according to the coding-style
-> > guidelines and comitted it.
-> 
-> But you did not change the alignment of the open parenthesis, right?
-> You deleted the trailing whitespace.
-> 
+Ugh, thanks for catching this!
 
-Hmm, I did both, but the last one I did right before commit, due a final
-check. But you're right, I forgot to mention it in the changelog as
-well. I'm going to submit a new patch with the correct description.
-Thank you for the explanation.
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 
-> > 
-> > This is the same thing I did previously for the file
-> > drivers/staging/vme_user/vme_bridge.h in the commit
-> > 7d5ce25fb4c3cc91d16e27163dc141de0eba213b, but now is the file
-> > drivers/staging/vme_user/vme.c and commit
-> > a1f0b0a8ba9a496504c2e3d4b37cee388e78f0ea. Different files,
-> > different commits, similar fixes for the same warnings,
-> > and same description.
-> > 
-> > The only thing I found strange is because instead of starting a new
-> > email thread it ended up in the same email thread as the previous
-> > patch. Would that be the problem?
-> 
-> That would be a problem, and it seems you used the same subject line as
-> previous patches that were different?
-> 
+On Sat, 2023-08-05 at 12:18 +0200, Karol Herbst wrote:
+> The original commit adding that check tried to protect the kenrel against
+> a potential invalid NULL pointer access.
+>=20
+> However we call nouveau_connector_detect_depth once without a native_mode
+> set on purpose for non LVDS connectors and this broke DP support in a few
+> cases.
+>=20
+> Cc: Olaf Skibbe <news@kravcenko.com>
+> Cc: Lyude Paul <lyude@redhat.com>
+> Closes: https://gitlab.freedesktop.org/drm/nouveau/-/issues/238
+> Closes: https://gitlab.freedesktop.org/drm/nouveau/-/issues/245
+> Fixes: 20a2ce87fbaf8 ("drm/nouveau/dp: check for NULL nv_connector->nativ=
+e_mode")
+> Signed-off-by: Karol Herbst <kherbst@redhat.com>
+> ---
+>  drivers/gpu/drm/nouveau/nouveau_connector.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.c b/drivers/gpu/dr=
+m/nouveau/nouveau_connector.c
+> index f75c6f09dd2af..a2e0033e8a260 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_connector.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
+> @@ -967,7 +967,7 @@ nouveau_connector_get_modes(struct drm_connector *con=
+nector)
+>  	/* Determine display colour depth for everything except LVDS now,
+>  	 * DP requires this before mode_valid() is called.
+>  	 */
+> -	if (connector->connector_type !=3D DRM_MODE_CONNECTOR_LVDS && nv_connec=
+tor->native_mode)
+> +	if (connector->connector_type !=3D DRM_MODE_CONNECTOR_LVDS)
+>  		nouveau_connector_detect_depth(connector);
+> =20
+>  	/* Find the native mode if this is a digital panel, if we didn't
 
-Yep, used same subject line. I'm going to change it slightly to not
-extend this thread, since it's a commit for a different file.
+--=20
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
 
-> Anyway, my comment was about the trailing whitespace change.
-> 
-
-ACK
-
-> thanks,
-> 
-> greg k-h
-
-Thank you.
-
-Alexon Oliveira
