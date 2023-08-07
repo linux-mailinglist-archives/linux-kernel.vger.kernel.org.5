@@ -2,69 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8940772787
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A4B77278B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233224AbjHGOUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
+        id S232627AbjHGOWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbjHGOUK (ORCPT
+        with ESMTP id S230320AbjHGOWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:20:10 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A897C10F7
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:20:04 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-40a47e8e38dso457571cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 07:20:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691418004; x=1692022804;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/22JZjyzmTPowrwDf0aWQTwiV29hTfY9LBfaaAzpCOc=;
-        b=kQkkTkomqoQgnmdCjKFqcKsG4FMV5xgL9PgnfekqFcaBbWAVcGkrF+DNOrnVBTyUWl
-         0kNSME1RN3CHU113+ikghGQZHl8GA+kKicaS/ir24Z4tLEat0KODjUjOGUW4SqMvCy1O
-         YHNGzdSi48ifylDeb4UnmgtjSylQMsnoxvGb60JZ1B/Z3uybmFHQmWM4UJuYI0YE/9kK
-         ljuOYBTp6cQaEx/+7DihWddgBiTyt+bnUjBwEV0uONnH3yJJDyP0JM68iEy4E/ctyCmS
-         xjJzVPq9JaCc0bX2j2KKBqVocXEpQ3sOTlZadPAQvoCVxX2xLgNYXy4Xc7z6esF7e0nz
-         t3zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691418004; x=1692022804;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/22JZjyzmTPowrwDf0aWQTwiV29hTfY9LBfaaAzpCOc=;
-        b=C3WphD8ojq7R6nstS4FePZnEXXfel04CDrc3PM2cmeIAJWuIlss9MOvWemKrb4iY0O
-         TNPy04pJn2f0LeEwAbsFLY1YdKTlCr1kp1E+ReOEKurCSkcsYia/8sG0VCZ1OyoyRpAZ
-         v3U5CLXtN1cG7hSpxgW0IwqWzGi7tdVJmtKAz2PeTGMU9HZ/Ucv44MfAlTGNGqEarwp4
-         XnLkUBAwCOS5mtqBT1eODlpbE9qUVWnTNTCKMKPboaXkI0TGo+sIvx77rIZNFp6yoPc3
-         fRcIdqQ58lBLV+P3LEYyyPf0oodlStjgeCP18FLFPVbLMGTSFa+wlAohg5obr1JvY+Dd
-         Vl7g==
-X-Gm-Message-State: AOJu0YwjdyNLrQnPOCjPhyIvj2TOOyhgUOafhcdixVVUIN2SGtceSm+0
-        pUmaP3+pvvHqwluq/gSW9hT311Y78NgRkM+Z+jRxkw==
-X-Google-Smtp-Source: AGHT+IEvs04uw4bF9mUDTPFwLeLAcPFK7k8/SNwJQbcPN8JRvQ2GkRLjRRFLLDYoEKjNUCBm6OH2NUaeIY6gg06T7fY=
-X-Received: by 2002:a05:622a:116:b0:405:432b:9973 with SMTP id
- u22-20020a05622a011600b00405432b9973mr542416qtw.0.1691418003516; Mon, 07 Aug
- 2023 07:20:03 -0700 (PDT)
+        Mon, 7 Aug 2023 10:22:01 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2BBC7E53;
+        Mon,  7 Aug 2023 07:22:00 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B61061FB;
+        Mon,  7 Aug 2023 07:22:42 -0700 (PDT)
+Received: from localhost.localdomain (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A583D3F64C;
+        Mon,  7 Aug 2023 07:21:56 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     linux-perf-users@vger.kernel.org, irogers@google.com,
+        john.g.garry@oracle.com, renyu.zj@linux.alibaba.com
+Cc:     James Clark <james.clark@arm.com>, Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Nick Forrington <nick.forrington@arm.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Subject: [PATCH v4 0/6] perf vendor events arm64: Update N2 and V2 metrics and events using Arm telemetry repo
+Date:   Mon,  7 Aug 2023 15:20:44 +0100
+Message-Id: <20230807142138.288713-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230807134547.2782227-1-imagedong@tencent.com> <20230807134547.2782227-4-imagedong@tencent.com>
-In-Reply-To: <20230807134547.2782227-4-imagedong@tencent.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 7 Aug 2023 16:19:52 +0200
-Message-ID: <CANn89iKLXu1axtg9vMpbWv1CRYh=U_r38dJ8Q2s3togZcXqJ6Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 3/3] net: tcp: fix unexcepted socket die when
- snd_wnd is 0
-To:     menglong8.dong@gmail.com
-Cc:     ncardwell@google.com, davem@davemloft.net, kuba@kernel.org,
-        pabeni@redhat.com, dsahern@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,93 +57,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 3:47=E2=80=AFPM <menglong8.dong@gmail.com> wrote:
->
-> From: Menglong Dong <imagedong@tencent.com>
->
-> In tcp_retransmit_timer(), a window shrunk connection will be regarded
-> as timeout if 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX'. This is not
-> right all the time.
->
-> The retransmits will become zero-window probes in tcp_retransmit_timer()
-> if the 'snd_wnd=3D=3D0'. Therefore, the icsk->icsk_rto will come up to
-> TCP_RTO_MAX sooner or later.
->
-> However, the timer is not precise enough, as it base on timer wheel.
+This is a completely new approach from V3 [1], although the metrics and
+event descriptions are autogenerated, the topdown metrics have been
+manually edited to use #no_stall_errata. This removes the need to
+duplicate the whole set of JSONs when only the topdown metrics are
+different between N2 and V2.
 
-> Sorry that I am not good at timer, but I know the concept of time-wheel.
+The CPU ID comparison function still needs to change so that the new
+literal can compare on versions, but now no change is needed to mapfile
+or the PMU event generation code because we still only support one
+set of JSONs per CPU.
 
-Can you remove this line, can we keep focused on the actual patch instead ?
+[1]: https://lore.kernel.org/lkml/20230711100218.1651995-1-james.clark@arm.com/
 
-Regardless of timer-wheel, a timer can be delayed under load.
+------
 
-> The longer of the timer, the rougher it will be. So the timeout is not
-> triggered after TCP_RTO_MAX, but 122877ms as I tested.
->
-> Therefore, 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX' is always true
-> once the RTO come up to TCP_RTO_MAX, and the socket will die.
->
-> Fix this by replacing the 'tcp_jiffies32' with '(u32)icsk->icsk_timeout',
-> which is exact the timestamp of the timeout. Meanwhile, using
-> "max(tp->retrans_stamp, tp->rcv_tstamp)" as the last updated timestamp in
-> the receiving path, as "tp->rcv_tstamp" can restart from idle, then
-> tp->rcv_tstamp could already be a long time (minutes or hours) in the
-> past even on the first RTO.
->
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Link: https://lore.kernel.org/netdev/CADxym3YyMiO+zMD4zj03YPM3FBi-1LHi6gS=
-D2XT8pyAMM096pg@mail.gmail.com/
-> Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> ---
-> v2:
-> - consider the case of the connection restart from idle, as Neal comment
-> ---
->  net/ipv4/tcp_timer.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
-> index d45c96c7f5a4..e4b2d8706cae 100644
-> --- a/net/ipv4/tcp_timer.c
-> +++ b/net/ipv4/tcp_timer.c
-> @@ -454,6 +454,14 @@ static void tcp_fastopen_synack_timer(struct sock *s=
-k, struct request_sock *req)
->                           req->timeout << req->num_timeout, TCP_RTO_MAX);
->  }
->
-> +static bool tcp_rtx_probe0_timed_out(struct sock *sk)
-> +{
-> +       struct tcp_sock *tp =3D tcp_sk(sk);
-> +       u32 last_ts;
-> +
-> +       last_ts =3D max(tp->retrans_stamp, tp->rcv_tstamp);
+Changes since v3:
+  * Instead of duplicating all the metrics, add a new expression
+    literal that can be used to share the same metrics between N2 and V2
+  * Move tests to arch/arm64/tests
+  * Remove changes from jevents.py and mapfile.csv
 
-u32     retrans_stamp;  /* Timestamp of the last retransmit,
-u32     rcv_tstamp;     /* timestamp of last received ACK (for keepalives) =
-*/
+Changes since v2:
+  * version -> variant in second commit message
+  * Add a bit more detail about version matching in the second commit
+    message
+  * Update the comments in pmu-events/arch/arm64/mapfile.csv to say that
+    variant and revision fields are now used
+  * Increase the CC list
 
-Both fields receive tcp_jiffies32 values, which wrap every 2^32 ticks.
+Changes since v1:
+  * Split last change into two so it doesn't hit the mailing list size
+    limit
 
-So max(A, B) won't work as you expect...
+James Clark (6):
+  perf: cs-etm: Don't duplicate FIELD_GET()
+  perf arm64: Allow version comparisons of CPU IDs
+  perf test: Add a test for the new Arm CPU ID comparison behavior
+  perf vendor events arm64: Update scale units and descriptions of
+    common topdown metrics
+  perf vendor events arm64: Update stall_slot workaround for N2 r0p3
+  perf vendor events arm64: Update N2 and V2 metrics and events using
+    Arm telemetry repo
 
-You need to use before(), after() or something like that.
+ tools/perf/arch/arm64/include/arch-tests.h    |   3 +
+ tools/perf/arch/arm64/tests/Build             |   1 +
+ tools/perf/arch/arm64/tests/arch-tests.c      |   4 +
+ tools/perf/arch/arm64/tests/cpuid-match.c     |  38 ++
+ tools/perf/arch/arm64/util/header.c           |  64 ++-
+ tools/perf/arch/arm64/util/pmu.c              |  21 +
+ .../arch/arm64/arm/neoverse-n2-v2/branch.json |   8 -
+ .../arch/arm64/arm/neoverse-n2-v2/bus.json    |  18 +-
+ .../arch/arm64/arm/neoverse-n2-v2/cache.json  | 155 --------
+ .../arm64/arm/neoverse-n2-v2/exception.json   |  45 ++-
+ .../arm/neoverse-n2-v2/fp_operation.json      |  22 ++
+ .../arm64/arm/neoverse-n2-v2/general.json     |  10 +
+ .../arm64/arm/neoverse-n2-v2/instruction.json | 143 -------
+ .../arm64/arm/neoverse-n2-v2/l1d_cache.json   |  54 +++
+ .../arm64/arm/neoverse-n2-v2/l1i_cache.json   |  14 +
+ .../arm64/arm/neoverse-n2-v2/l2_cache.json    |  50 +++
+ .../arm64/arm/neoverse-n2-v2/l3_cache.json    |  22 ++
+ .../arm64/arm/neoverse-n2-v2/ll_cache.json    |  10 +
+ .../arch/arm64/arm/neoverse-n2-v2/memory.json |  39 +-
+ .../arm64/arm/neoverse-n2-v2/metrics.json     | 365 ++++++++++--------
+ .../arm64/arm/neoverse-n2-v2/pipeline.json    |  23 --
+ .../arm64/arm/neoverse-n2-v2/retired.json     |  30 ++
+ .../arch/arm64/arm/neoverse-n2-v2/spe.json    |  12 +-
+ .../arm/neoverse-n2-v2/spec_operation.json    | 110 ++++++
+ .../arch/arm64/arm/neoverse-n2-v2/stall.json  |  30 ++
+ .../arch/arm64/arm/neoverse-n2-v2/sve.json    |  50 +++
+ .../arch/arm64/arm/neoverse-n2-v2/tlb.json    |  66 ++++
+ .../arch/arm64/arm/neoverse-n2-v2/trace.json  |  27 +-
+ tools/perf/pmu-events/arch/arm64/sbsa.json    |  24 +-
+ tools/perf/util/cs-etm.c                      |  14 +-
+ tools/perf/util/expr.c                        |   4 +
+ tools/perf/util/pmu.c                         |   6 +
+ tools/perf/util/pmu.h                         |   1 +
+ 33 files changed, 894 insertions(+), 589 deletions(-)
+ create mode 100644 tools/perf/arch/arm64/tests/cpuid-match.c
+ delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/branch.json
+ delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/fp_operation.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/general.json
+ delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/instruction.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/l1d_cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/l1i_cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/l2_cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/l3_cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/ll_cache.json
+ delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/pipeline.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/retired.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/spec_operation.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/stall.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/sve.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/tlb.json
 
-https://en.wikipedia.org/wiki/Serial_number_arithmetic#General_Solution
+-- 
+2.34.1
 
-
-> +       return inet_csk(sk)->icsk_timeout - last_ts > TCP_RTO_MAX;
-> +}
->
->  /**
->   *  tcp_retransmit_timer() - The TCP retransmit timeout handler
-> @@ -519,7 +527,7 @@ void tcp_retransmit_timer(struct sock *sk)
->                                             tp->snd_una, tp->snd_nxt);
->                 }
->  #endif
-> -               if (tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX) {
-> +               if (tcp_rtx_probe0_timed_out(sk)) {
->                         tcp_write_err(sk);
->                         goto out;
->                 }
-> --
-> 2.40.1
->
