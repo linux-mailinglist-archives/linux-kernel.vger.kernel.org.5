@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2175A772B95
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16FF772BBC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbjHGQxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56348 "EHLO
+        id S229782AbjHGQzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbjHGQxl (ORCPT
+        with ESMTP id S229496AbjHGQzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:53:41 -0400
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E362A1989
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:53:31 -0700 (PDT)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1bff2d2c141so580838fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:53:31 -0700 (PDT)
+        Mon, 7 Aug 2023 12:55:39 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78063173B
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:55:17 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-76c8dd2ce79so471388485a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:55:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691427211; x=1692032011;
+        d=google.com; s=20221208; t=1691427295; x=1692032095;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hLRoozb0+Gs5ofW34vZ6zv9jitiui+Q1IYSegK3uXaU=;
-        b=Yw4WkyWsnCJUsB1QLoWXYxFXxP4HJWUK6ELdleOp2COMgHeAQYvnJPhoRW4cftlUhO
-         u/V7sVOnnO50KrGOJ6TMpDCeyAKCROa8E++y+zhkmDm0RGDF19e5W+uU1iFm7zb+S9/8
-         92nJV6rZ5VzOfryX01lMSxPMzr1lUsp6/+VBPy6yFbsMdotuoo/OWip56MP10wCMqorF
-         hmGXhy2MbXqNl6WldWihgNxBdPogffOMOJdY40ANcViWd3EbQCP/M0sy0nrmIYrTUXj6
-         gOXozOIGlAo4VTY2lMGhZli178Lebu6ZIviXQ4NckaT7h/kneM9Biz9nqXOoAGWwNj6M
-         gF3g==
+        bh=s5cddJzIOPCTcsiTflLavXmr7qSZtA1VgTifuJQg0Dk=;
+        b=VNz6c1jOtKboiDGkYmzFk2dxRBEGQhwM3JVWTqlT6u+8gQeqV1dNNEb+vql8z4uY9E
+         XC8gEJo02hnLguERc3oXDPOtJ1uFeNFjeik0QEuR0ICXLEk2i/V2Ch1hX6Uk7p7Kf4L9
+         OalbP4FMkppD8l4XIAbqopvPxCx2Qxey0FajTNurZho/fhCIMvdWfuf5mTODjcgMw3p4
+         xpvVaOb/hgqGmHGMcO+xdBpC39edYE+8hm1b33AnIFRXI/1iPnZYYBXtlJrST1ja5PLK
+         GcusknhpcXYEE+9wvRR3UmTaiKyWm333aPays6oxy+rQFBTaIPF/ytpitjt2en/eMXSc
+         poOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691427211; x=1692032011;
+        d=1e100.net; s=20221208; t=1691427295; x=1692032095;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hLRoozb0+Gs5ofW34vZ6zv9jitiui+Q1IYSegK3uXaU=;
-        b=R+G57yFflCAUlj/uhEoSa1YeJiy1UIMg3ubgTdY6eqVhGTXLA9vARV2nZ/YsvnsEfj
-         v3TWulOeyphe1UsNbt7fjGJy5Oqrrz6uIeJsXAN1m1l6FLtmeYpZ8vaKqow+A6tIAZEj
-         CZ27Kqi4ikYZHo7Q4uJkMiALxLV8TRJm/p0fZBDco9WunaJ39j6Jhq8dOvBC0GkJvXmQ
-         8ix1EeX3Kg+7izTMs94YXqPHuMtNnwTSmwHUQqJHoHBpxk/KW+pBMCa7S0N6psZbPqeN
-         5wwXl0D2zbU33tGWCXftGqsYlSKbZc/NbEdHtLj55PSUvYkBhPpAH1hgp9e0l0cgcoGC
-         a/CQ==
-X-Gm-Message-State: AOJu0Ywo8n3FG4W1Na/2J559ztNGIvty2FszWs1y1sYza/3gi8cW3jbr
-        k00HF+9HUEUZIiGcFehzGYiT6iZ0T/sHROA+0oc=
-X-Google-Smtp-Source: AGHT+IFq83Az3S8S2tZiqWs8mYYSFPtms9A2S2DaQFzDZtAmCStVFdHp4lMV8d34R91aGAFliySthbf+c/Ic5OIPfxE=
-X-Received: by 2002:a05:6870:d252:b0:1bb:8cc2:8c3e with SMTP id
- h18-20020a056870d25200b001bb8cc28c3emr9703625oac.15.1691427211035; Mon, 07
- Aug 2023 09:53:31 -0700 (PDT)
+        bh=s5cddJzIOPCTcsiTflLavXmr7qSZtA1VgTifuJQg0Dk=;
+        b=WRjGsawdgn/26XhFl8m5dqr1R5jR4J3GpubC+rU3RiHrjuYXXu1dFlKVX+V6ZYgUob
+         MiRh5Vz9UPq1di3mvuUNaZ9yWKIc2hZ6uB2Hjc+GwfyM7AoGT837YRrmyEqj3d3tgSlO
+         jkt/OnUD/4vvo/ZvIf3GMwiSVH8wDZZRv85XPCTDm+jKiPn+sWTi6Ds4PS3oLOK962lV
+         OzlNmkmlPzG0fjWtmiW8Fn+sPgq1LN/6y5zQwcPoSUsX/oCw58ti10p1QMN7tgqYnw8f
+         avj5abRcqn2FgyBTxc+/UwWGnYbhvEVt5NheQdt1M4lli+IojMYQA1Ru6CpQMqO4gxVM
+         ls0g==
+X-Gm-Message-State: AOJu0YwdZA6A71uf/A1QQQDneIVmPcirV2DVGIzakTN5dNjawmGEzQ1V
+        TCie4aezcatmUjTVfw+sj5Oekn5iyJdBCAnOxC7JyQ==
+X-Google-Smtp-Source: AGHT+IEQiIfK4z3yyCGkeZPF2C+P8nQA6AbqE0wDfTzyMPFrsW44XDNbBzE3YEEGxN3ZSCFic2gL6lZuymo8psJnyW4=
+X-Received: by 2002:a0c:f50d:0:b0:63c:ef89:1a5c with SMTP id
+ j13-20020a0cf50d000000b0063cef891a5cmr10219908qvm.62.1691427295460; Mon, 07
+ Aug 2023 09:54:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230801095056.8120-1-sunran001@208suo.com>
-In-Reply-To: <20230801095056.8120-1-sunran001@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 12:53:20 -0400
-Message-ID: <CADnq5_N4tdXL2Fc0j5ZoYAjV=ZDfWctk1J=sOHgRB6CjHzNwgA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: Clean up errors in smu9_driver_if.h
-To:     Ran Sun <sunran001@208suo.com>
-Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
+References: <20230807-missing_proto-v1-1-7f566b7ba5ca@google.com>
+In-Reply-To: <20230807-missing_proto-v1-1-7f566b7ba5ca@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 7 Aug 2023 09:54:44 -0700
+Message-ID: <CAKwvOdncCH4uoKfTnYf5pgTtY49b-S7XfWoF4UnH4b3AV3R3vA@mail.gmail.com>
+Subject: Re: [PATCH] Makefile.extrawarn: enable -Wmissing-variable-declarations
+ for W=1
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,62 +73,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
-
-On Tue, Aug 1, 2023 at 5:51=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
-:
+On Mon, Aug 7, 2023 at 9:50=E2=80=AFAM Nick Desaulniers <ndesaulniers@googl=
+e.com> wrote:
 >
-> Fix the following errors reported by checkpatch:
+> I noticed Tom was sending patches where smatch was recommending
+> annotating functions as static when no previous declaration existed.
+> Surely the compiler could make such recommendations as well, I thought.
 >
-> ERROR: space prohibited before open square bracket '['
+> Looks like -Wmissing-variable-declarations can make such
+> recommendations.
 >
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> GCC just added support for this warning (gcc 14.1.0 will ship with
+> support), and all versions of clang relevant to building the kernel
+> support this flag.
+>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 > ---
->  .../drm/amd/pm/powerplay/inc/smu9_driver_if.h | 20 +++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
+>  scripts/Makefile.extrawarn | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/inc/smu9_driver_if.h b/driv=
-ers/gpu/drm/amd/pm/powerplay/inc/smu9_driver_if.h
-> index faae4b918d90..2c69a5694f94 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/inc/smu9_driver_if.h
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/inc/smu9_driver_if.h
-> @@ -178,20 +178,20 @@ typedef struct {
->    uint8_t      padding8_2[2];
+> diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+> index 40cd13eca82e..617739eb84e2 100644
+> --- a/scripts/Makefile.extrawarn
+> +++ b/scripts/Makefile.extrawarn
+> @@ -32,6 +32,7 @@ KBUILD_CFLAGS +=3D $(call cc-option, -Wunused-but-set-v=
+ariable)
+>  KBUILD_CFLAGS +=3D $(call cc-option, -Wunused-const-variable)
+>  KBUILD_CFLAGS +=3D $(call cc-option, -Wpacked-not-aligned)
+>  KBUILD_CFLAGS +=3D $(call cc-option, -Wstringop-truncation)
+> +KBUILD_CFLAGS +=3D $(call cc-option, -Wmissing-varibale-declarations)
+
+^ sigh, misspelled
+
+>  # The following turn off the warnings enabled by -Wextra
+>  KBUILD_CFLAGS +=3D -Wno-missing-field-initializers
+>  KBUILD_CFLAGS +=3D -Wno-sign-compare
 >
->    /* SOC Frequencies */
-> -  PllSetting_t GfxclkLevel        [NUM_GFXCLK_DPM_LEVELS];
-> +  PllSetting_t GfxclkLevel[NUM_GFXCLK_DPM_LEVELS];
+> ---
+> base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+> change-id: 20230807-missing_proto-0cb90ec6454c
 >
-> -  uint8_t      SocclkDid          [NUM_SOCCLK_DPM_LEVELS];          /* D=
-ID */
-> -  uint8_t      SocDpmVoltageIndex [NUM_SOCCLK_DPM_LEVELS];
-> +  uint8_t      SocclkDid[NUM_SOCCLK_DPM_LEVELS];          /* DID */
-> +  uint8_t      SocDpmVoltageIndex[NUM_SOCCLK_DPM_LEVELS];
->
-> -  uint8_t      VclkDid            [NUM_UVD_DPM_LEVELS];            /* DI=
-D */
-> -  uint8_t      DclkDid            [NUM_UVD_DPM_LEVELS];            /* DI=
-D */
-> -  uint8_t      UvdDpmVoltageIndex [NUM_UVD_DPM_LEVELS];
-> +  uint8_t      VclkDid[NUM_UVD_DPM_LEVELS];            /* DID */
-> +  uint8_t      DclkDid[NUM_UVD_DPM_LEVELS];            /* DID */
-> +  uint8_t      UvdDpmVoltageIndex[NUM_UVD_DPM_LEVELS];
->
-> -  uint8_t      EclkDid            [NUM_VCE_DPM_LEVELS];            /* DI=
-D */
-> -  uint8_t      VceDpmVoltageIndex [NUM_VCE_DPM_LEVELS];
-> +  uint8_t      EclkDid[NUM_VCE_DPM_LEVELS];            /* DID */
-> +  uint8_t      VceDpmVoltageIndex[NUM_VCE_DPM_LEVELS];
->
-> -  uint8_t      Mp0clkDid          [NUM_MP0CLK_DPM_LEVELS];          /* D=
-ID */
-> -  uint8_t      Mp0DpmVoltageIndex [NUM_MP0CLK_DPM_LEVELS];
-> +  uint8_t      Mp0clkDid[NUM_MP0CLK_DPM_LEVELS];          /* DID */
-> +  uint8_t      Mp0DpmVoltageIndex[NUM_MP0CLK_DPM_LEVELS];
->
->    DisplayClockTable_t DisplayClockTable[DSPCLK_COUNT][NUM_DSPCLK_LEVELS]=
-;
->    QuadraticInt_t      DisplayClock2Gfxclk[DSPCLK_COUNT];
+> Best regards,
 > --
-> 2.17.1
+> Nick Desaulniers <ndesaulniers@google.com>
 >
+
+
+--=20
+Thanks,
+~Nick Desaulniers
