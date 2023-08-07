@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D20772CF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C60772CF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbjHGR3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34762 "EHLO
+        id S231411AbjHGR36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231397AbjHGR3b (ORCPT
+        with ESMTP id S231337AbjHGR34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:29:31 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE99510FE
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:29:27 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a76cbd4bbfso3710058b6e.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:29:27 -0700 (PDT)
+        Mon, 7 Aug 2023 13:29:56 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA50E68
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:29:55 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-40fd276621aso33501501cf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:29:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691429366; x=1692034166;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PxI0sX/bHlGbroOhST0CXWhe2PjX6mn9rOX1bspgZeg=;
-        b=nOpV9SIadaALQmP0ifWEr7qPnFSJIkJd9WZ23kL2xPTbBQqAPj35vBqi15sMJz8bgg
-         a5DpmNmj8XeIjFYjY+/V2HcBntXuEj2qrhBOAcGsEwSEvZ9CHcNiQNCSnwhKXMN5qQnj
-         uEnUUswP63K6zEEve6BJMUgxBMfFDhcOUtDMpplf7QqT6nBkpxb7kthRF6DiN8WdSvVl
-         v9XCV6dFDGLYKD4vQIL/UHo2AWfxgH2ehTrNeGigczm7J34W+HooAwglepVIwUg93rSq
-         e8hIMcFJh0O+0yu09qrbZygv86gwAiY2y9d4crxafZbtnIaZXUjtsvonsoTQ3n5h+2jX
-         GlnQ==
+        d=gmail.com; s=20221208; t=1691429394; x=1692034194;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=s8Am+NuCF8QWOzKex4jmoxA1gAih8dsglrkA++VhjHo=;
+        b=D1t8IqXcZ6X/6+kjvndB2rmw8GHobr/D4q0HEp1VC842sFBu6ODSwWzCepiuiLojWa
+         xXhaj9kLT5em2l4hyqRaY/F63VzICNEaO3U0ZpRx8EX3D9Ue25Jv5YeuP5uuaZtlkk65
+         NkcSFmHZC6OcFbhJgwQQOwyKDkZpDTWr5dQIGeHB61JUzBcjrg/npwCyTjaABiSlD4e2
+         b5zmj6fqAHMgcRpGGkBVCiKX4nq4X5dKm4cme6ts//af1YG5uggXAaDc5qvzvAAGgZwQ
+         m2q2NUmFQZ4CScGlT1AwbVJFdXcfejC7RpQkh4WRA/t2UDGMViMv2M+AiR0maY5QSjFQ
+         Emag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691429366; x=1692034166;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PxI0sX/bHlGbroOhST0CXWhe2PjX6mn9rOX1bspgZeg=;
-        b=aS+XR2KsG6CqrFIMANpZSOzTiLR27Ya1wnQsrMrzWsNgBpAoYSQQx8fB/62IB7KY2j
-         7/k3ilHZZninp5Jj/dn98usI5i7gBnCCJF0RyP0QMJ6nGJoRKIlgHtGz8guBZSGNlAR+
-         j44/PGawTOlI3MXOvI6wTJE6qfAfcBoItGIuncpXPqTZI353YkiS+6r70DLzQIBhuVre
-         9g9u0sChjekmos/SUoALgzaN8CwBjedtXOgbT4y3UXy2i/bLa3tA2gZGKdljvWB36IRx
-         rtQosPir4omVp7oQtzsaaS5k9VV9JQ5Hs8R6eiRW0nvVWXaHCnV8t741DySOIDEWtf82
-         sbiA==
-X-Gm-Message-State: AOJu0Yx6uMVoA6oFm/b+xbAzOyGYV//8XL6U9oP7SXiTkqxv8IhjjhSJ
-        XeHWdEIg7XifPb90OJLWGBTa7oSmlpXiJn5BCWQ=
-X-Google-Smtp-Source: AGHT+IHTHPuDthKALX7K16Uo8m13HAqVVIHgxWMlhIydeR+iCjkwJIf9vCVCJ/5qaOiKuAUOJxUWwYfsSD4tVucjRRs=
-X-Received: by 2002:a05:6808:1204:b0:3a7:2621:2d9e with SMTP id
- a4-20020a056808120400b003a726212d9emr12156773oil.27.1691429366520; Mon, 07
- Aug 2023 10:29:26 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691429394; x=1692034194;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s8Am+NuCF8QWOzKex4jmoxA1gAih8dsglrkA++VhjHo=;
+        b=gu+MX/PVSMT09FrkP4JCrQ6tmmDWhZbZo07l85U4npV3AGhOrVzVCslTzHzVKPaMnz
+         KYgnT65p6GZAbavl51iQcdLqGzhxmKwEoiKY4MYCm+6bj0mh/XuCsn2dcQO20rzvPTRp
+         +yw3j2eb4J9ohRcQ8t6apBab2Ci0uCcHqBDvYpuUwVU8ykfdSZZh8EVgHdrh97yqKu6d
+         sa7+F+sf6Dqzmg4B7Tu7meELmEgBDPLb423VA3ifjS5vfx/dlrwtUEsX95ptUwwy70Ss
+         udx6UBKas2Zy+jdVIdxs1ck7vdpVUEr40V9cLq2yVngrT7JiKwSF2ohdpjqQCf90h1nA
+         s2kg==
+X-Gm-Message-State: AOJu0YxJYrordUrZzT4HvI2FXxNOKYj8MhBO06Bn06kj2u/IrUpZRqQY
+        DcpFQ/0ey8t8x8DvzZ6cwNr9JP6ZsOVujXMJJF8=
+X-Google-Smtp-Source: AGHT+IE8JXAdZZ2AhJvnTVq38tCiS5y3S8Lr8F9jRzOV7FZBwOTu62PWZj5snMysoZ5yp7eyV6RFDORrEGQ2dRGrHMo=
+X-Received: by 2002:ac8:5e07:0:b0:409:f273:e28d with SMTP id
+ h7-20020ac85e07000000b00409f273e28dmr14321455qtx.62.1691429394504; Mon, 07
+ Aug 2023 10:29:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230802073141.13343-1-sunran001@208suo.com>
-In-Reply-To: <20230802073141.13343-1-sunran001@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 13:29:15 -0400
-Message-ID: <CADnq5_PyBm7AhC_QNnFeoHGHXuqPXomHC_8EkMNUQrb7wmhHWg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: Clean up errors in amdgpu_virt.c
-To:     Ran Sun <sunran001@208suo.com>
-Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <c7f1bf9b-b183-bf6e-1cbb-d43f72494083@gmail.com>
+ <2023080743-amendable-moonlit-15b7@gregkh> <CAFqe=zJ9uRTVG=jny2PzUrrFGW2E_mZrGKF-3YMRkjzMUdu_7A@mail.gmail.com>
+ <CAKwvOdm0Tv0=KGdhVwuJX+8N-Dgx+kzuPy6zCBsV1kOc+6b+qQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdm0Tv0=KGdhVwuJX+8N-Dgx+kzuPy6zCBsV1kOc+6b+qQ@mail.gmail.com>
+From:   =?UTF-8?Q?Jannik_Gl=C3=BCckert?= <jannik.glueckert@gmail.com>
+Date:   Mon, 7 Aug 2023 19:29:43 +0200
+Message-ID: <CAFqe=zKdcOQpBFJXtjWUzET76mzsLE5Qu6jr_cRSsAeccmTEcA@mail.gmail.com>
+Subject: Re: Fwd: CFI violation when reading amd_pstate/status
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LLVM Build Support <llvm@lists.linux.dev>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -69,39 +71,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+> Can you tell us more about your distro? Is it public? Is it built with clang?
 
-On Wed, Aug 2, 2023 at 3:31=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
-:
->
-> Fix the following errors reported by checkpatch:
->
-> ERROR: space required before the open parenthesis '('
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c b/drivers/gpu/drm/a=
-md/amdgpu/amdgpu_virt.c
-> index ec044f711eb9..96857ae7fb5b 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
-> @@ -520,7 +520,7 @@ static int amdgpu_virt_read_pf2vf_data(struct amdgpu_=
-device *adev)
->                         tmp =3D ((struct amd_sriov_msg_pf2vf_info *)pf2vf=
-_info)->mm_bw_management[i].encode_max_frame_pixels;
->                         adev->virt.encode_max_frame_pixels =3D max(tmp, a=
-dev->virt.encode_max_frame_pixels);
->                 }
-> -               if((adev->virt.decode_max_dimension_pixels > 0) || (adev-=
->virt.encode_max_dimension_pixels > 0))
-> +               if ((adev->virt.decode_max_dimension_pixels > 0) || (adev=
-->virt.encode_max_dimension_pixels > 0))
->                         adev->virt.is_mm_bw_enabled =3D true;
->
->                 adev->unique_id =3D
-> --
-> 2.17.1
->
+Hi Nick,
+
+this is Gentoo Linux, one of the oldest source distributions. We're
+also the basis for ChromeOS and various other niche distros.
+
+Gentoo defaults to gcc and glibc, though we also support clang and
+musl (and any combination thereof).
+You can find our compatibility tracker here
+https://bugs.gentoo.org/408963 . You can also find us on
+irc.libera.chat in the #gentoo-llvm channel.
+
+Best regards
+Jannik
