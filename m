@@ -2,68 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE173772073
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021EF772096
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231937AbjHGLPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
+        id S231737AbjHGLQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:16:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbjHGLPV (ORCPT
+        with ESMTP id S232206AbjHGLQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:15:21 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80279199E;
-        Mon,  7 Aug 2023 04:14:17 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-686b643df5dso2864151b3a.1;
-        Mon, 07 Aug 2023 04:14:17 -0700 (PDT)
+        Mon, 7 Aug 2023 07:16:11 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750E92D42;
+        Mon,  7 Aug 2023 04:14:50 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686efb9ee3cso4205288b3a.3;
+        Mon, 07 Aug 2023 04:14:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691406801; x=1692011601;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zhGXmtL0Qpe6G7G7Z2rnbE/6crx1iwJDMAPGjsoJge4=;
-        b=S7AP62fbMFJOF9aEWvVk3W3e/mx0FEodUpn42wQfSzPMXWK8dUVuSTME8YK8Jcl1o1
-         F6B+awy7JBMy9Hgc3YDVbaWFdW/Ym50Zwyxs2CtTM/VHqMvk0kSxUuTDa9Hos7F3gHck
-         tpMcEfOStY3BxbMHoz4cfMsC2EmLKTB9b/cnjEdvGz6/1vTQWsDk1IN61ASb3AZNJ0tH
-         2y0vK8dbQovSeaFIAPBE1QrE/TWufMZg+d/W/QoFM5+S5Bff/+W2Nhi1ht/O7D6Cwc63
-         6qHsnBzmMmHNbhNr2wVaNIawYgXJ2NA3k6ddjPu3DqKN66l8bT4lQMYWb6CDIARRHQPg
-         MsZA==
+        d=gmail.com; s=20221208; t=1691406802; x=1692011602;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sshxUFVbctBDVN/rzug39I/npfxRGzCIXVTdlhheim4=;
+        b=QK/zubLdZZoZP6gIBKll8Bu1c0ZW4s26X+pmcAjKk7aKp87JjNJHvan60ekq0fxM/3
+         8rBlrw8ymXTrQV3kypJvf68/gadP19Hrit8zQkGUAAjmFthnxjuOyJFGKBpAVWMlKZ9w
+         4S2G0kR+nQZ3r8S02PZxb/XTI9Y6cJCI4Z+CQQbxCDMsv50iWJJFox/e+rmNIdkF13mR
+         gmUy1RW183vTiNh22GiC7aYlK0GqGlAi9qGfbWH3Bw8oJtyLo7c63ZaR6fY4poBgcMgO
+         jwUucRyITbL8BdyJERcdrPWZLe6xGBl2p7azg9I1nXElJjZIHNA6AE95YqPg5Yfz5nyY
+         NzsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691406801; x=1692011601;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zhGXmtL0Qpe6G7G7Z2rnbE/6crx1iwJDMAPGjsoJge4=;
-        b=i+TP3aR8QGpgYPIPupRDg9aLbNr1QY8B3Ylyn7gml7nqoQzkRqvwwTpCA1QNlYnzUl
-         BmzDj0Mgp5lMwHIRN77TUvVgdgUjpiblU2JJ0ScH0DaY9HrmGUPqtptUOnaCuNkRz8d9
-         kx1liUQqNllu7/hrsSKwAEtkiTwn7NOsVBrFcKaRC1dpKWrbcpQj1b7qEFsXLwNKj4uR
-         DZ2s1ntI4cvGz85XdxA3Eqh2a/A8BxnYcxdXbcuL3dcXorarCCxVgy502mqlXyjB5Dqd
-         G7eHTgdSfBJlxwwQU7ksB0Wgpg1Zsg91v5gsn8JheY2tHaqsOdByGVuMxLWhnEIPCJ0M
-         Kdbw==
-X-Gm-Message-State: AOJu0YxU1OVSOvUMwfYElM97TF5FNsyDhK1JTIddD3xe9zyEpaJHXa5m
-        kdDq7BKGNwZm/IaYOIiEr8C8EFasaPk=
-X-Google-Smtp-Source: AGHT+IEd63tE4kf93xvvS9qkitwIlGvoP5jnEd1UUYwL08Dfh084BVwZm24KaKwP1HnDsLMVvPksiw==
-X-Received: by 2002:a05:6a00:851:b0:681:3ed2:b493 with SMTP id q17-20020a056a00085100b006813ed2b493mr9008987pfk.26.1691406800707;
-        Mon, 07 Aug 2023 04:13:20 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691406802; x=1692011602;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sshxUFVbctBDVN/rzug39I/npfxRGzCIXVTdlhheim4=;
+        b=ioUy6GG8JidZg6CFTWeXyWZRZYAronksLn9G/nmA5Asp2YshDLHde/LxJQVOau4S0g
+         kfyJy/KZHS7f6/72XfWiBmlSpt5LduU1wdFy//ff96XwQWIs7WtLRC4E2dRzoQuJU1Xg
+         tIFJpYD5Z8S359VlApwLom4mN92+S4dkUnGLP35SxiRUMxouVMmfKt1TbH4Yfe8QDv/r
+         1NtM/HTn4OMQz9Gl2TBbH1IJnAfpQ7ynTH11KFlSMhkTjhE2wP8CWkZtSD1Zf44eM6+R
+         fuOCqg7pBz8FUI5B5RuNzelzs0e1UU9/DkatY/IzLpsqqCIq/45fG2zeycrJwSv1ufnU
+         n+Fg==
+X-Gm-Message-State: AOJu0YwjJ3YtO2sr5jOB/i6hOAC/+aR9zyZN5w7i8Bws5HYuJsVanrNw
+        n6YUmW/Mhkawv71pc5CkM3I=
+X-Google-Smtp-Source: AGHT+IEsERBFZP3UIISrmaZikUwTc5ArhwjO+MU9vrxHAAF3rZinitGAg6jh86hMdNOyUtjcAA9m/w==
+X-Received: by 2002:a05:6a00:1488:b0:687:6184:def4 with SMTP id v8-20020a056a00148800b006876184def4mr11462825pfu.21.1691406802248;
+        Mon, 07 Aug 2023 04:13:22 -0700 (PDT)
 Received: from f38.eng.vmware.com ([66.170.99.1])
-        by smtp.googlemail.com with ESMTPSA id 4-20020aa79144000000b00660d80087a8sm5939173pfi.187.2023.08.07.04.13.19
+        by smtp.googlemail.com with ESMTPSA id 4-20020aa79144000000b00660d80087a8sm5939173pfi.187.2023.08.07.04.13.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 04:13:20 -0700 (PDT)
+        Mon, 07 Aug 2023 04:13:21 -0700 (PDT)
 From:   Shreenidhi Shedi <yesshedi@gmail.com>
 To:     dhowells@redhat.com, dwmw2@infradead.org,
         gregkh@linuxfoundation.org, masahiroy@kernel.org,
         nathan@kernel.org, ndesaulniers@google.com, nicolas@fjasle.eu
 Cc:     yesshedi@gmail.com, linux-kernel@vger.kernel.org,
         sshedi@vmware.com, linux-kbuild@vger.kernel.org
-Subject: [PATCH v8 0/8] refactor file signing program
-Date:   Mon,  7 Aug 2023 16:43:08 +0530
-Message-ID: <20230807111316.315836-1-yesshedi@gmail.com>
+Subject: [PATCH v8 1/8] sign-file: use getopt_long_only for parsing input args
+Date:   Mon,  7 Aug 2023 16:43:09 +0530
+Message-ID: <20230807111316.315836-2-yesshedi@gmail.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230807111316.315836-1-yesshedi@gmail.com>
+References: <20230807111316.315836-1-yesshedi@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,73 +74,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series refactors the sign-file program.
+- getopt_long_only gives an option to use long names for options, so
+  using it here to make the app usage easier.
 
-Brief of changes in this patch series:
+- Use more easy to remember command line argument names
 
-- Improve argument parsing logic.
-- Add few more easy to remember arguments.
-- Add support to sign bunch of modules at once.
-- Improve the help message with examples.
-- Few trivial checkpatch reported issue fixes.
-- Divide the modules_install task into sub tasks
+- Introduce cmd_opts structure to ease the handling of command line args
 
-Version 8 changes:
-- Addressed comments from Masahiro Yamada
-- Fix the bisect'ability error in patch 2.
-- Fix missed out modules_sign_only issue.
+Signed-off-by: Shreenidhi Shedi <yesshedi@gmail.com>
+---
+ scripts/sign-file.c | 97 ++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 78 insertions(+), 19 deletions(-)
 
-Version 7 changes:
-- Change Makefile.modinst and divide the tasks further
-- Don't do everything from one place.
-- This whole thing is done to facilitate bulk signing of modules
-- Greg suggsted this idea here:
-https://lore.kernel.org/all/2023060155-mustard-mating-32b7@gregkh/
-- Thanks for the inputs Greg
-- v7-0008-kbuild-modinst-do-modules_install-step-by-step.patch is fairly
-big and I'm sorry about it. I created all patches considering build
-stability in mind, so this can't be broken into pieces else in the
-intermediate commit build will break.
-
-Version 6 changes:
-- Fix commit messages as suggested by Greg and David.
-
-Version 5 changes:
-- Addressed review comments from David Howells.
-- Fragmented the patches into further small units.
-Link:
-v4: https://lore.kernel.org/all/20230221170804.3267242-1-yesshedi@gmail.com/
-
-Version 1 - Version 4 changes:
-Did some back and forth changes. Getting familiar with patch submission
-process, nothing significant happened.
-
-Links:
-v1: https://lore.kernel.org/all/dc852d8e-816a-0fb2-f50e-ff6c2aa11dd8@gmail.com/
-v2: https://lore.kernel.org/all/20230213185019.56902-1-yesshedi@gmail.com/
-v3: https://lore.kernel.org/all/20230213190034.57097-1-yesshedi@gmail.com/
-
-Shreenidhi Shedi (8):
-  sign-file: use getopt_long_only for parsing input args
-  sign-file: inntroduce few new flags to make argument processing easy.
-  sign-file: move file signing logic to its own function
-  sign-file: add support to sign modules in bulk
-  sign-file: improve help message
-  sign-file: use const with a global string constant
-  sign-file: fix do while styling issue
-  kbuild: modinst: do modules_install step by step
-
- scripts/Makefile.compress |  53 +++++++
- scripts/Makefile.install  |  66 +++++++++
- scripts/Makefile.modinst  | 106 ++------------
- scripts/Makefile.sign     |  37 +++++
- scripts/sign-file.c       | 292 +++++++++++++++++++++++++++-----------
- scripts/signfile.sh       |  24 ++++
- 6 files changed, 397 insertions(+), 181 deletions(-)
- create mode 100644 scripts/Makefile.compress
- create mode 100644 scripts/Makefile.install
- create mode 100644 scripts/Makefile.sign
- create mode 100755 scripts/signfile.sh
-
---
+diff --git a/scripts/sign-file.c b/scripts/sign-file.c
+index 598ef5465f82..94228865b6cc 100644
+--- a/scripts/sign-file.c
++++ b/scripts/sign-file.c
+@@ -213,15 +213,77 @@ static X509 *read_x509(const char *x509_name)
+ 	return x509;
+ }
+ 
++struct cmd_opts {
++	char *raw_sig_name;
++	bool save_sig;
++	bool replace_orig;
++	bool raw_sig;
++	bool sign_only;
++#ifndef USE_PKCS7
++	unsigned int use_keyid;
++#endif
++};
++
++static void parse_args(int argc, char **argv, struct cmd_opts *opts)
++{
++	struct option cmd_options[] = {
++		{"rawsig",	required_argument,  0,	's'},
++		{"savesig",	no_argument,	    0,	'p'},
++		{"signonly",	no_argument,	    0,	'd'},
++#ifndef USE_PKCS7
++		{"usekeyid",	no_argument,	    0,	'k'},
++#endif
++		{0, 0, 0, 0}
++	};
++
++	int opt;
++	int opt_index = 0;
++
++	do {
++#ifndef USE_PKCS7
++		opt = getopt_long_only(argc, argv, "pds:",
++				cmd_options, &opt_index);
++#else
++		opt = getopt_long_only(argc, argv, "pdks:",
++				cmd_options, &opt_index);
++#endif
++		switch (opt) {
++		case 's':
++			opts->raw_sig = true;
++			opts->raw_sig_name = optarg;
++			break;
++
++		case 'p':
++			opts->save_sig = true;
++			break;
++
++		case 'd':
++			opts->sign_only = true;
++			opts->save_sig = true;
++			break;
++
++#ifndef USE_PKCS7
++		case 'k':
++			opts->use_keyid = CMS_USE_KEYID;
++			break;
++#endif
++
++		case -1:
++			break;
++
++		default:
++			format();
++			break;
++		}
++	} while (opt != -1);
++}
++
+ int main(int argc, char **argv)
+ {
+ 	struct module_signature sig_info = { .id_type = PKEY_ID_PKCS7 };
+ 	char *hash_algo = NULL;
+-	char *private_key_name = NULL, *raw_sig_name = NULL;
++	char *private_key_name = NULL;
+ 	char *x509_name, *module_name, *dest_name;
+-	bool save_sig = false, replace_orig;
+-	bool sign_only = false;
+-	bool raw_sig = false;
+ 	unsigned char buf[4096];
+ 	unsigned long module_size, sig_size;
+ 	unsigned int use_signed_attrs;
+@@ -229,13 +291,14 @@ int main(int argc, char **argv)
+ 	EVP_PKEY *private_key;
+ #ifndef USE_PKCS7
+ 	CMS_ContentInfo *cms = NULL;
+-	unsigned int use_keyid = 0;
+ #else
+ 	PKCS7 *pkcs7 = NULL;
+ #endif
+ 	X509 *x509;
+ 	BIO *bd, *bm;
+-	int opt, n;
++	int n;
++	struct cmd_opts opts = {};
++
+ 	OpenSSL_add_all_algorithms();
+ 	ERR_load_crypto_strings();
+ 	ERR_clear_error();
+@@ -247,23 +310,19 @@ int main(int argc, char **argv)
+ #else
+ 	use_signed_attrs = PKCS7_NOATTR;
+ #endif
++	parse_args(argc, argv, &opts);
++	argc -= optind;
++	argv += optind;
+ 
+-	do {
+-		opt = getopt(argc, argv, "sdpk");
+-		switch (opt) {
+-		case 's': raw_sig = true; break;
+-		case 'p': save_sig = true; break;
+-		case 'd': sign_only = true; save_sig = true; break;
++	const char *raw_sig_name = opts.raw_sig_name;
++	const bool save_sig = opts.save_sig;
++	const bool raw_sig = opts.raw_sig;
++	const bool sign_only = opts.sign_only;
++	bool replace_orig = opts.replace_orig;
+ #ifndef USE_PKCS7
+-		case 'k': use_keyid = CMS_USE_KEYID; break;
++	const unsigned int use_keyid = opts.use_keyid;
+ #endif
+-		case -1: break;
+-		default: format();
+-		}
+-	} while (opt != -1);
+ 
+-	argc -= optind;
+-	argv += optind;
+ 	if (argc < 4 || argc > 5)
+ 		format();
+ 
+-- 
 2.41.0
+
