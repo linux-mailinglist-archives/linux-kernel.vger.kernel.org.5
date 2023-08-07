@@ -2,86 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E7F771A55
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D56771A59
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbjHGG1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
+        id S231279AbjHGG2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231217AbjHGG1g (ORCPT
+        with ESMTP id S231294AbjHGG1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:27:36 -0400
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862BE10F9;
-        Sun,  6 Aug 2023 23:27:33 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=guangguan.wang@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VpANHwl_1691389649;
-Received: from localhost.localdomain(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0VpANHwl_1691389649)
-          by smtp.aliyun-inc.com;
-          Mon, 07 Aug 2023 14:27:29 +0800
-From:   Guangguan Wang <guangguan.wang@linux.alibaba.com>
-To:     wenjia@linux.ibm.com, jaka@linux.ibm.com, kgraul@linux.ibm.com,
-        tonylu@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com
-Cc:     horms@kernel.org, alibuda@linux.alibaba.com,
-        guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 net-next 6/6] net/smc: Extend SMCR v2 linkgroup netlink attribute
-Date:   Mon,  7 Aug 2023 14:27:20 +0800
-Message-Id: <20230807062720.20555-7-guangguan.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20230807062720.20555-1-guangguan.wang@linux.alibaba.com>
-References: <20230807062720.20555-1-guangguan.wang@linux.alibaba.com>
+        Mon, 7 Aug 2023 02:27:53 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D21198C;
+        Sun,  6 Aug 2023 23:27:43 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fe1d462762so34747205e9.0;
+        Sun, 06 Aug 2023 23:27:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691389661; x=1691994461;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z2G7ZZDLvprT0WNAleu7FGdTqW3zfs7xA+cMHXaVBTU=;
+        b=rKcfkJonfzc3GBXs7ZWhx13ebxbAotG+H4lEtW89dSCcs3fxdOGZbdzf3F3tuBE0df
+         RvMx2SKfb9Ozz6b8u42rHs9rxCtIrieT1UW7x6mSj70X6fxEvHbigoeEsRBY8tbI7kR3
+         EAaKxjrH4V0Nr0OcCuVPVKMRUVOEOT9sfJyAqsE/0Tb3NihAETxbV0icScQNuBcYktV+
+         FGhFpG4oSd1PmUCoQ/Q+vPBmO8S8rhic+JQZ+KVdZsIz3A4bBSScNiTdwbttqrACz1EI
+         uolgMY9j9qQuQTURMyTwwpjRdSGOqwwtfPPYkDTjwPswxqQmu6+P+rfeylInG5I2YujR
+         sraQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691389661; x=1691994461;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z2G7ZZDLvprT0WNAleu7FGdTqW3zfs7xA+cMHXaVBTU=;
+        b=G2JV1z1G40Nr1pAHFQ1SikqM3ypxuRlCQrunu1oL+CXIkuF+6H/1e0nzMoykAgTEFL
+         lU02DGEYSHBgvFocDwahlifZ7CpB7rMD96sT9Vw2fYXWHaqqcOTkaRpbfph2JEE+jx7r
+         1gGOVEFAzgoMbGbCkDqjYbyjwnwUuO5seCgMV/DN6cMWNGqSADUbiLX0TQCr+L00wX3S
+         JUpYfJm5iFIYvZBjAdBeE6u9lXXON/Sk+67PLGgsIuJcPgwFnpIrZx7qheFZfmYwXtlY
+         JuacCUtDW0gq8cdJu4g1WI/8IKQqUjEfMT8+11w3qJrCueHz/xmmzH+ZeepS3Q6Kzilb
+         vv6Q==
+X-Gm-Message-State: AOJu0YwSNW5esDeZH7siGk2IyVcfLvr3DC/xGSl125JX8Kgd96VNCJOI
+        RWJ5DNm+DicZK5B+ABcG5/hLSSXt1xqEkA==
+X-Google-Smtp-Source: AGHT+IE61fkb3i7JmGzzqDAPXw/JHC7k3oRilm0+8xDj5IYI/szcRBVycRe74gaziBPKXWjYrs3ffg==
+X-Received: by 2002:a05:600c:364f:b0:3fe:4900:db95 with SMTP id y15-20020a05600c364f00b003fe4900db95mr5253046wmq.37.1691389661276;
+        Sun, 06 Aug 2023 23:27:41 -0700 (PDT)
+Received: from khadija-virtual-machine ([124.29.208.67])
+        by smtp.gmail.com with ESMTPSA id v13-20020a1cf70d000000b003fe17901fcdsm14056012wmh.32.2023.08.06.23.27.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Aug 2023 23:27:40 -0700 (PDT)
+Date:   Mon, 7 Aug 2023 11:27:34 +0500
+From:   Khadija Kamran <kamrankhadijadj@gmail.com>
+To:     Alison Schofield <alison.schofield@intel.com>
+Cc:     ztarkhani@microsoft.com, Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lsm: add comment block for security_sk_classify_flow LSM
+ hook
+Message-ID: <ZNCO1hOTKfBwD1zm@gmail.com>
+References: <ZMfG/w5FWqCGE4pn@gmail.com>
+ <ZMfnpPe3WCHgSDFQ@aschofie-mobl2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMfnpPe3WCHgSDFQ@aschofie-mobl2>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SMC_NLA_LGR_R_V2_MAX_CONNS and SMC_NLA_LGR_R_V2_MAX_LINKS
-to SMCR v2 linkgroup netlink attribute SMC_NLA_LGR_R_V2 for
-linkgroup's detail info showing.
+On Mon, Jul 31, 2023 at 09:56:04AM -0700, Alison Schofield wrote:
+> On Mon, Jul 31, 2023 at 07:36:47PM +0500, Khadija Kamran wrote:
+> > security_sk_classify_flow LSM hook has no comment block. Add a comment
+> > block with a brief description of LSM hook and its function parameters.
+> 
+> When referring to functions, in the one line commit message, or here
+> in the commit log, it is customary to add the parenthesis to be clear
+> it is a function name.
+> 
+> ie. security_sk_classify_flow()
+> 
+> > 
+> > Signed-off-by: Khadija Kamran <kamrankhadijadj@gmail.com>
+> > ---
+> >  security/security.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/security/security.c b/security/security.c
+> > index d5ff7ff45b77..ffc5519e49cd 100644
+> > --- a/security/security.c
+> > +++ b/security/security.c
+> > @@ -4396,6 +4396,13 @@ void security_sk_clone(const struct sock *sk, struct sock *newsk)
+> >  }
+> >  EXPORT_SYMBOL(security_sk_clone);
+> >  
+> > +/**
+> > + * security_sk_classify_flow() - Set a flow's secid based on socket
+> > + * @sk:  original socket
+>            ^errant space
+>
 
-Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
----
- include/uapi/linux/smc.h | 2 ++
- net/smc/smc_core.c       | 4 ++++
- 2 files changed, 6 insertions(+)
+Hey Alison,
+Noted. Thank you.
 
-diff --git a/include/uapi/linux/smc.h b/include/uapi/linux/smc.h
-index bb4dacca31e7..837fcd4b0abc 100644
---- a/include/uapi/linux/smc.h
-+++ b/include/uapi/linux/smc.h
-@@ -107,6 +107,8 @@ enum {
- enum {
- 	SMC_NLA_LGR_R_V2_UNSPEC,
- 	SMC_NLA_LGR_R_V2_DIRECT,	/* u8 */
-+	SMC_NLA_LGR_R_V2_MAX_CONNS,	/* u8 */
-+	SMC_NLA_LGR_R_V2_MAX_LINKS,	/* u8 */
- 	__SMC_NLA_LGR_R_V2_MAX,
- 	SMC_NLA_LGR_R_V2_MAX = __SMC_NLA_LGR_R_V2_MAX - 1
- };
-diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-index d5967826bcdf..182ac69d25c8 100644
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -319,6 +319,10 @@ static int smc_nl_fill_smcr_lgr_v2(struct smc_link_group *lgr,
- 		goto errattr;
- 	if (nla_put_u8(skb, SMC_NLA_LGR_R_V2_DIRECT, !lgr->uses_gateway))
- 		goto errv2attr;
-+	if (nla_put_u8(skb, SMC_NLA_LGR_R_V2_MAX_CONNS, lgr->max_conns))
-+		goto errv2attr;
-+	if (nla_put_u8(skb, SMC_NLA_LGR_R_V2_MAX_LINKS, lgr->max_links))
-+		goto errv2attr;
- 
- 	nla_nest_end(skb, v2_attrs);
- 	return 0;
--- 
-2.24.3 (Apple Git-128)
-
+> > + * @flic: target flow
+> > + *
+> > + * Set the target flow's secid to socket's secid.
+> > + */
+> >  void security_sk_classify_flow(struct sock *sk, struct flowi_common *flic)
+> >  {
+> >  	call_void_hook(sk_getsecid, sk, &flic->flowic_secid);
+> > -- 
+> > 2.34.1
+> > 
