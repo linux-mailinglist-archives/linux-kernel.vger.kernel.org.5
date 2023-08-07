@@ -2,179 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6394772365
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC04877236B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbjHGMFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 08:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42096 "EHLO
+        id S232947AbjHGMHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:07:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbjHGMFp (ORCPT
+        with ESMTP id S230324AbjHGMHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 08:05:45 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB2AF0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:05:44 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2680182bc21so2234988a91.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 05:05:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691409944; x=1692014744;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UxNPOJp2gtDhfWZRzOWarZZZVlOwdeuN9g0kWHnf9gs=;
-        b=WsVfgJHsSXlOYhSa7RnTOFdsaoX0xEoReCh4sis0XDX/ZC4AZZ4i7l+6ft+Dh8q6vB
-         ZANsA/Dtc2VdW8u7FnrP6vhl0HCYwl+0lqeYM5BgkcxalSXu0RgUX8YfcOrtCb+IU5qh
-         8tfYLBfQRD8KRBSA3FfUsqZ5ZRrfd2q9Ypk+RU6CqBzKSdW79JSEAfOtj3sDInliciF5
-         MIBhYmv1/CGoUDgvZSIAlmIyn9r6HsjyaSq7lbNiasxCJUaJDvoHvCPyqcFX66qUV2iP
-         je8aXyp/+daaeX0IfqkVrnyT7rGBLtqve+JO7YPpk4qVZ/pOITQZ/mPUFQmjBzWa0+eY
-         sz4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691409944; x=1692014744;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UxNPOJp2gtDhfWZRzOWarZZZVlOwdeuN9g0kWHnf9gs=;
-        b=OKb2EcbwdkqDS53HwQJMc+Xz9q9WBmH/pT02O73Za+sPlJS+9f7F86QqVHJHgofT3+
-         sYAtOl+rVmzgerS9FHMbjy0ntqzWcgHdH7OmlBCQlBeI4hbvTafXfMA+OHvO0V6P0cQr
-         wG+0RfP66wTPEz9ohavFiVMji1n0+QTxKp5nz2mAggA6p4VlpbBnmKGBt5gj3n2Txg8B
-         VZ0eVrr4XEfOiop4gu7foU8dlym7s0OrTvErJAwrFQOsWlxdi9W6KOt5rwq5j3sZvymA
-         lmYteCKV9iHVjLwST/QBL9fEbKPgiijT5I8MEXFMTsz7eKHkfXHCa6WNAWxNRjzfligF
-         UBSQ==
-X-Gm-Message-State: AOJu0Yxwem+ypmPv3O1pJJ4u87kAf/wpMwMm7rj/j/7CLsheNhk/OOCa
-        p6vSd7RI3NDSb7S00PG8ddqdswjTmEcQoK9FnxdR4g==
-X-Google-Smtp-Source: AGHT+IGIntJFzxEfnZfu0K5hC4TFi3jmhVJZWB+WVqNK9Sop7DxQpbxBhPnmG4v2fW+FmoyvjvB0Ag==
-X-Received: by 2002:a17:90a:a095:b0:263:53be:5120 with SMTP id r21-20020a17090aa09500b0026353be5120mr6488176pjp.36.1691409943733;
-        Mon, 07 Aug 2023 05:05:43 -0700 (PDT)
-Received: from C02FG34NMD6R.bytedance.net ([2408:8656:30f8:e020::b])
-        by smtp.gmail.com with ESMTPSA id bx6-20020a17090af48600b00263f8915aa3sm8578098pjb.31.2023.08.07.05.05.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 05:05:43 -0700 (PDT)
-From:   Albert Huang <huangjie.albert@bytedance.com>
-Cc:     Albert Huang <huangjie.albert@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Richard Gobert <richardbgobert@gmail.com>,
-        Menglong Dong <imagedong@tencent.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list),
-        bpf@vger.kernel.org (open list:XDP SOCKETS (AF_XDP))
-Subject: [RFC v2 Optimizing veth xsk performance 0/9]
-Date:   Mon,  7 Aug 2023 20:04:20 +0800
-Message-Id: <20230807120434.83644-1-huangjie.albert@bytedance.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+        Mon, 7 Aug 2023 08:07:41 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9438106;
+        Mon,  7 Aug 2023 05:07:40 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377C7LQc068043;
+        Mon, 7 Aug 2023 07:07:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691410041;
+        bh=WEyFU/jxpVUNwOc97gBnubORBV+Y0SIaGA1ypBvIFPE=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=UQ2ak3c+wON0sLYo6MO8CGiUx+hFqgio87Maea7bcN9RmEGxEzxokSJAlNV7kAJ68
+         ZyeJyRpJ6I8+qjyOtvOVpP3hUy4yEKkzC7PBpnAcnYc9kEgGIp6Y/ABQ37NDRfW5B+
+         6po1WBbMcCphMUi3m4O48+fDiWIfb3qAu0vrf5uo=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377C7LSe123866
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Aug 2023 07:07:21 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
+ Aug 2023 07:07:20 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 7 Aug 2023 07:07:20 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377C7Kef020948;
+        Mon, 7 Aug 2023 07:07:20 -0500
+Date:   Mon, 7 Aug 2023 07:07:20 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Francesco Dolcini <francesco@dolcini.it>
+CC:     Devarsh Thakkar <devarsht@ti.com>, <afd@ti.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <a-bhatia1@ti.com>, <j-luthra@ti.com>, <praneeth@ti.com>,
+        <j-choudhary@ti.com>
+Subject: Re: [PATCH] arm64: dts: ti: k3-am62x-sk-common: Reserve 128MiB of
+ global CMA
+Message-ID: <20230807120720.ibqxqoqifndafls6@judge>
+References: <20230803111455.811339-1-devarsht@ti.com>
+ <20230805193355.o657pwbq2w3tciui@vehicular>
+ <ZNCNi9k2bKwbXh81@francesco-nb.int.toradex.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=yes
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZNCNi9k2bKwbXh81@francesco-nb.int.toradex.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AF_XDP is a kernel bypass technology that can greatly improve performance.
-However, for virtual devices like veth, even with the use of AF_XDP sockets,
-there are still many additional software paths that consume CPU resources. 
-This patch series focuses on optimizing the performance of AF_XDP sockets 
-for veth virtual devices. Patches 1 to 4 mainly involve preparatory work. 
-Patch 5 introduces tx queue and tx napi for packet transmission, while 
-patch 8 primarily implements batch sending for IPv4 UDP packets, and patch 9
-add support for AF_XDP tx need_wakup feature. These optimizations significantly
-reduce the software path and support checksum offload.
+On 08:46-20230807, Francesco Dolcini wrote:
+> On Sat, Aug 05, 2023 at 02:33:55PM -0500, Nishanth Menon wrote:
+> > I am esp concerned since there are platforms based on am62x and just
+> > 256MB DDR.
+> 
+> On that regard, currently you have reserved memory areas just before
+> 512MB DDR limit. Any plan to move those?
 
-I tested those feature with
-A typical topology is shown below:
-client(send):                                        server:(recv)
-veth<-->veth-peer                                    veth1-peer<--->veth1
-  1       |                                                  |   7
-          |2                                                6|
-          |                                                  |
-        bridge<------->eth0(mlnx5)- switch -eth1(mlnx5)<--->bridge1
-                  3                    4                 5    
-             (machine1)                              (machine2)    
-AF_XDP socket is attach to veth and veth1. and send packets to physical NIC(eth0)
-veth:(172.17.0.2/24)
-bridge:(172.17.0.1/24)
-eth0:(192.168.156.66/24)
-
-eth1(172.17.0.2/24)
-bridge1:(172.17.0.1/24)
-eth0:(192.168.156.88/24)
-
-after set default route、snat、dnat. we can have a tests
-to get the performance results.
-
-packets send from veth to veth1:
-af_xdp test tool:
-link:https://github.com/cclinuxer/libxudp
-send:(veth)
-./objs/xudpperf send --dst 192.168.156.88:6002 -l 1300
-recv:(veth1)
-./objs/xudpperf recv --src 172.17.0.2:6002
-
-udp test tool:iperf3
-send:(veth)
-iperf3 -c 192.168.156.88 -p 6002 -l 1300 -b 0 -u
-recv:(veth1)
-iperf3 -s -p 6002
-
-performance:
-performance:(test weth libxudp lib)
-UDP                              : 320 Kpps (with 100% cpu)
-AF_XDP   no  zerocopy + no batch : 480 Kpps (with ksoftirqd 100% cpu)
-AF_XDP  with  batch  +  zerocopy : 1.5 Mpps (with ksoftirqd 15% cpu)
-
-With af_xdp batch, the libxudp user-space program reaches a bottleneck.
-Therefore, the softirq did not reach the limit.
-
-This is just an RFC patch series, and some code details still need 
-further consideration. Please review this proposal.
-
-thanks!
-
-v1->v2:
-- all the patches pass checkpatch.pl test. suggested by Simon Horman.
-- iperf3 tested with -b 0, update the test results. suggested by Paolo Abeni.
-- refactor code to make code structure clearer.
-- delete some useless code logic in the veth_xsk_tx_xmit function.
-- add support for AF_XDP tx need_wakup feature.
-
-Albert Huang (9):
-  veth: Implement ethtool's get_ringparam() callback
-  xsk: add dma_check_skip for skipping dma check
-  veth: add support for send queue
-  xsk: add xsk_tx_completed_addr function
-  veth: use send queue tx napi to xmit xsk tx desc
-  veth: add ndo_xsk_wakeup callback for veth
-  sk_buff: add destructor_arg_xsk_pool for zero copy
-  veth: af_xdp tx batch support for ipv4 udp
-  veth: add support for AF_XDP tx need_wakup feature
-
- drivers/net/veth.c          | 679 +++++++++++++++++++++++++++++++++++-
- include/linux/skbuff.h      |   2 +
- include/net/xdp_sock_drv.h  |   1 +
- include/net/xsk_buff_pool.h |   1 +
- net/xdp/xsk.c               |   6 +
- net/xdp/xsk_buff_pool.c     |   3 +-
- net/xdp/xsk_queue.h         |  10 +
- 7 files changed, 700 insertions(+), 2 deletions(-)
+Nope. Common min configuration we have seen is 512MB (why TI evms use
+that definition). There are exceptional cases of 256MB boards, but in
+such cases, the board dts should describe it.
 
 -- 
-2.20.1
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
