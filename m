@@ -2,198 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 353CC7719FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A34771A0A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbjHGGGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
+        id S231151AbjHGGL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbjHGGGt (ORCPT
+        with ESMTP id S229640AbjHGGL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:06:49 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2042.outbound.protection.outlook.com [40.107.105.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D1B10F6
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:06:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q/hu2s5c37kf9g97lQeixyRVvJ1gOf+dYRbsD5zTRAEhDiJWdtIe6VkeYmG9gg2+tY3vsrOUbr3iWTZW5/RszyIVu4ID1DkllPfXQvrEKz3XJ0d91MZTNaS6D2Tm2YQA0kOEX4okm/G8lvHwg8haPjzzWy4jlXsHkicGlyJ5uwuxuqOx87a5M/JulfLcK3AEXKcyovWtz2Q7R0QHfJ+SxTEpelZ9VchJnDgNjay5SB0N8QNwkLy63Z7Tdrw4joHR7a8iu8Mom645XX0tiCrI9pPqUH8Uk3p+6TJXV0+lUbFiiaUF+IV8g/1zAVKZaKscdrM/bMjMdgBlyXnL6/Ld2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zZmDnc1a1KpVpPMuG03e10+QC3pZKZZgk8/B2IspMYQ=;
- b=AWL/WoVbzDw004UFDOO4AOe82ptDgi42ZF/IadWzVAFnnkvXWTzqlFOT8D1/Kzc4Xw+s7pzbWKKqLdZ1wAYxaNqC6/d9qkAf1WXMLNGEdwjX2tjNtpQZEYkqeExHHdKVR9G09gwz7EE2SCbxlkNy/l+MM8BbAMHUUam/CF+hsNel7PS9Gq5gX/8unsfD9ST4O0RHa8GCJRvml5liP2MIo10iIaZ0QdK0mEiRaPfdd9iLo3ZA+nYmYexKL0wtIVSoE6ntW+FpNhDVhBy+dIVQAwYd60xzqSHlndXagTeWt2g3jVUAbTy/bZl7jBdLS2rvG8SQrd3rt76/dmdw0kv6iQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zZmDnc1a1KpVpPMuG03e10+QC3pZKZZgk8/B2IspMYQ=;
- b=jDu+iAoX1HFWuM366HOB2Ry0z9+v+U0dggmrscO7huvATM1QSMias8/xWK72K7x1Gfs2762QBb5MsSoZMxX5/VoJxFv1GOWCQ4dlfPICcdhELZgKSfQrFM57jc7jHggWDnlztgGa5qnHWw02BJjZTUBxfiO/7lzJAbhDOz0waD8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
- by AS8PR04MB9125.eurprd04.prod.outlook.com (2603:10a6:20b:448::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26; Mon, 7 Aug
- 2023 06:06:45 +0000
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::9018:e395:332c:e24b]) by AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::9018:e395:332c:e24b%4]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
- 06:06:44 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     andrzej.hajda@intel.com, neil.armstrong@linaro.org,
-        rfoss@kernel.org, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@gmail.com,
-        daniel@ffwll.ch, Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v3] drm/bridge: panel: Add a device link between drm device and panel device
-Date:   Mon,  7 Aug 2023 14:11:15 +0800
-Message-Id: <20230807061115.3244501-1-victor.liu@nxp.com>
-X-Mailer: git-send-email 2.37.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0186.apcprd06.prod.outlook.com (2603:1096:4:1::18)
- To AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
+        Mon, 7 Aug 2023 02:11:57 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F61E170B;
+        Sun,  6 Aug 2023 23:11:55 -0700 (PDT)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3775wFMh020598;
+        Mon, 7 Aug 2023 06:11:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=j6yJ6jHZrVeyGg3/xEZXZ6Ubsw7C8+LS3s8QLNfS7zM=;
+ b=C6aDvG5p/hMUeZ+xkX8GTpAoZDO0eMEGqQo7ZR0mGSJrCQXwJO4UfQrY/z1v7lZCqmqi
+ lM85/Lzm+Q/GmrNBTfmZRUUnI9VmC87hYSrW6t1HrjESocPhNBPcePyWwsFNOn1d8zwS
+ skJlESOez4XBrv39oM3O4I2igKE4bvR6B3MW4G/abcAPuPEHTfIVY85oxrHk0aKxqKPn
+ Lf4msYSJjFhpR8ak0NV84ozoUrAVr7pjnsvxAMc6LAYHHe/Pa7Fj/B0MRhHL0ER2WD0h
+ E0M105ZZdqQLlc5l7ek5/h7gdEt0MDGJCqkuD4pA32UV+vlAqEnzdad20WF7XUB73Zo/ Lg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3satx40bpr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Aug 2023 06:11:51 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37765FxV017070;
+        Mon, 7 Aug 2023 06:11:49 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3satx40bh3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Aug 2023 06:11:48 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3774co0M001619;
+        Mon, 7 Aug 2023 06:11:45 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sa2yjj512-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Aug 2023 06:11:45 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3776BgHJ41615906
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 7 Aug 2023 06:11:43 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DA3172004B;
+        Mon,  7 Aug 2023 06:11:42 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4978620040;
+        Mon,  7 Aug 2023 06:11:41 +0000 (GMT)
+Received: from [9.109.248.226] (unknown [9.109.248.226])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  7 Aug 2023 06:11:41 +0000 (GMT)
+Subject: [PATCH v8 2/2] PCI: rpaphp: Error out on busy status from
+ get-sensor-state
+From:   Mahesh Salgaonkar <mahesh@linux.ibm.com>
+To:     linuxppc-dev <linuxppc-dev@ozlabs.org>
+Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Date:   Mon, 07 Aug 2023 11:41:40 +0530
+Message-ID: <169138866633.65607.1187931053262842024.stgit@jupiter>
+In-Reply-To: <169138864808.65607.6576358707894823512.stgit@jupiter>
+References: <169138864808.65607.6576358707894823512.stgit@jupiter>
+User-Agent: StGit/1.5
+Content-Type: text/plain; charset="utf-8"
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: kmit7_FEarmaWgfOuZwqZLoTPOhw0mFH
+X-Proofpoint-GUID: A1biAKzrlSk7htxgyRv6FGeXPNKxdhx_
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM7PR04MB7046:EE_|AS8PR04MB9125:EE_
-X-MS-Office365-Filtering-Correlation-Id: 899eb515-7fdd-474f-776a-08db970c7a0e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wVH3qdRDA2eicp7gRru10Nw/lFwG5ZRw9LlTPH93nzVdpv7gdIZBIm8SlTs+gHs42FyeXPusykCmctB4bVzfh7G8O7bZlylPC8kJ9sgXeQqCGVu4jdLN6MEDrIffgi6Gr7eg0cEDLqiEt1bDF+GVThH3aZTz8SBqcLueu6M+6RY2PpXZcOSPHgjOw/cUbl+R07BCdsBKw7tc2BmCBfMA/eeuWQXYYbBBhyok1aGBKWD1gYoFnaki7w4/3k6Pkph8ft+Egtp4VKRMS6kpI/AGjjsWu9LQ0AiN4rDb2u65QLk50tsKZYtHCfBB4vD6Yozvqx1i+3czjJcHl8bAYNSIxnoQe64/q8rRAWAJIC8Swzwt5NoNj0GaP/syQxzvbIH5tfcl28koFSDy5CWdwqo5mCpMmyCptQp2DlzJZnFLX7NAyEYyByyF5pY/vGTcWUC3MHeRXoAlKd9qsg8TE01TsE711nW41LGxe+0reai5W0AHALRTku+cO9cGt5ZSqf2gNAzD+T8EYl9VY9S3PwGP/atoU8gNJ2UOThRmhH95ceu/dzN/aVFqIhtKWE9WitizryqkpJoSwX+MVVqpN9ITZKQXbrRrb19OKD6gDyS44gE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(366004)(396003)(136003)(39860400002)(1800799003)(186006)(451199021)(1076003)(41300700001)(26005)(2906002)(5660300002)(83380400001)(7416002)(8936002)(8676002)(2616005)(478600001)(86362001)(316002)(6506007)(38350700002)(38100700002)(6486002)(66476007)(66556008)(52116002)(66946007)(6666004)(6512007)(966005)(4326008)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?G4N9rUBw4gI5xvx6rVg/4uHOjocxIBaGv+jC2UlnX/iKFXRst/RVaCswUSJH?=
- =?us-ascii?Q?qAiRRR9/K7uB0ZVKak2ibXQsOddGabtA/lySC6/EN2BSpz5eI+YxsBl0GYVn?=
- =?us-ascii?Q?heYS4Qiqj3Q8gx3V2Dv9iV26VJ7MCJUZGgxCxmKTFSpW22TLUSNEBFURSQMd?=
- =?us-ascii?Q?AWA/vDTiOmYY1mP1sfloGpg5AxYfzrW2BDV7ZgSTfR4PybBgO68Y95W9sz+B?=
- =?us-ascii?Q?VPe1wU7ObxDlzN741uxOZ2YOKLGK6ClPRZ1Q55HIKRkECOPewpfmSQQfYktk?=
- =?us-ascii?Q?AWzFsXZShX7zHPmg9RKSMnOBvpY5W2rrY8hw9PSBy7HdduFKBburOSWXTVht?=
- =?us-ascii?Q?0StyCrr4YL6Z66iRuQ6zysf5A/keuRfPvYnH1LMrUrW38zgVM37kQr7NffBd?=
- =?us-ascii?Q?KbheqkNqJ8HZX6/AXRgnAvwJc/au/IodtRjo42TsU7Z//Nn8qhPshOD9j2lA?=
- =?us-ascii?Q?jwk36/9tcwW9vv2JNttl4x8+DEcPvex2++t+bzw7jLvxSUR1KeDMNixJF9cx?=
- =?us-ascii?Q?0Cu3+WynvETX2guvQG2/XkL+L5wOExzKMJdo60uQDslb+dqo26qtEhB5v7Ih?=
- =?us-ascii?Q?BLshFcIg49gV/XmAdvMyX6S653YxwyIeEvfw4EpcsQtxZhZGQNeda4VaB+sN?=
- =?us-ascii?Q?yWyDXSRndm9C/PzekiQKhA9VRDxr67sl1ZWQ29Wma8tS8vqEM3Vn52I1sCkZ?=
- =?us-ascii?Q?QblJR6lUcVsPxprVk/vn0PuzG07+upO3y/DF1xlMrL/9GJMQnaHt3kJpdjLj?=
- =?us-ascii?Q?7Ov70dLjKjy2mNe8OOpqSjdrKjd1yTJlo9fP/DxE+iGvaRwh7mWkkifYazYv?=
- =?us-ascii?Q?/kQnJTcMpYy4zqK6nubRyKgS6V1ex+B+NuiLgk4gg5CwaOWdCtoE5mg8/sO+?=
- =?us-ascii?Q?m0ezti513sV54HVzIxwGHPrLPZI+54kzObvz19fAK0d2mAk35c11pE1KXUqj?=
- =?us-ascii?Q?edtEVMEDskfZkGlIuXPvH6KafOhVsQd6TGOUGhacHT17tO6qDitTANfiSrO0?=
- =?us-ascii?Q?3E+gdz2MuEZuRL/JNZW/yZZdUAJhXkShBqY01NgpZVzcnSTMYM2Auhs/mPCQ?=
- =?us-ascii?Q?v/GEi4m+EdtoKqhL8FvW7HGcrid8VXy/34zM6tIMlNiZfA/k5cRwxfe6CRil?=
- =?us-ascii?Q?a7zTyQ0tug6azZlfGz+G0Tp2O/OBhgWSH1U/EKoZmF8Hce2gopgaWeMOyzqz?=
- =?us-ascii?Q?dWui9Sxpbxlfg1ZCbpArqvHbITiz4g3UH3cYrciSz0ZTHnC6+UBFMv4busog?=
- =?us-ascii?Q?XPVexw71dcGfUg7PakNPOLo1a/WNf/e8cceayj2YpTtsNVwfDsv9/nTwK3x6?=
- =?us-ascii?Q?CJzL0rPnlLOeC2UTCvszbqdNpLTQYU2lwagqyEjuf8yXs28mayO8B+j9zwSD?=
- =?us-ascii?Q?pvYxr/WIjGyA2Gs6QJ4eL+cZ8aIc1DJPFjVHwXQKGqnwuX16pdVJaoY9fXKm?=
- =?us-ascii?Q?tfwAvcbodKN2SNKm2BbTlAJR9PgjveHKMRGDdo5Rcvd6xlLEcW7Mz5GMQ+y7?=
- =?us-ascii?Q?Y0Z7nudsOA+6kPBZqGWFoE49e+KhGF1u/VR/L1Ga/cislz7XGAO6jZF9u3HW?=
- =?us-ascii?Q?jE7G8/LoamnlQz59VJJ4qFcauTywBhrMWoQ5MXN6?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 899eb515-7fdd-474f-776a-08db970c7a0e
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 06:06:44.8104
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fxiLoS88ERSs4Xov1EAqWb3YoU6v+bWG4fCkD6DoFyR42CA6UiyJRxubYAtGmWCPcjXdvLWiHFjIj7GyKeKqBg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB9125
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-07_04,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ lowpriorityscore=0 phishscore=0 impostorscore=0 clxscore=1015
+ malwarescore=0 adultscore=0 mlxlogscore=999 bulkscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308070055
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the device link when panel bridge is attached and delete the link
-when panel bridge is detached.  The drm device is the consumer while
-the panel device is the supplier.  This makes sure that the drm device
-suspends eariler and resumes later than the panel device, hence resolves
-problems where the order is reversed, like the problematic case mentioned
-in the below link.
+When certain PHB HW failure causes pHyp to recover PHB, it marks the PE
+state as temporarily unavailable until recovery is complete. This also
+triggers an EEH handler in Linux which needs to notify drivers, and perform
+recovery. But before notifying the driver about the PCI error it uses
+get_adapter_status()->rpaphp_get_sensor_state()->rtas_call(get-sensor-state)
+operation of the hotplug_slot to determine if the slot contains a device or
+not. If the slot is empty, the recovery is skipped entirely.
 
-Link: https://lore.kernel.org/lkml/CAPDyKFr0XjrU_udKoUKQ_q8RWaUkyqL+8fV-7s1CTMqi7u3-Rg@mail.gmail.com/T/
-Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
+eeh_event_handler()
+  ->eeh_handle_normal_event()
+    ->eeh_slot_presence_check()
+      ->get_adapter_status()
+        ->rpaphp_get_sensor_state()
+          ->rtas_get_sensor()
+            ->rtas_call(get-sensor-state)
+
+However on certain PHB failures, the RTAS call rtas_call(get-sensor-state)
+returns extended busy error (9902) until PHB is recovered by pHyp. Once PHB
+is recovered, the rtas_call(get-sensor-state) returns success with correct
+presence status. The RTAS call interface rtas_get_sensor() loops over the
+RTAS call on extended delay return code (9902) until the return value is
+either success (0) or error (-1). This causes the EEH handler to get stuck
+for ~6 seconds before it could notify that the PCI error has been detected
+and stop any active operations. Hence with running I/O traffic, during this
+6 seconds, the network driver continues its operation and hits a timeout
+(netdev watchdog).
+
+------------
+[52732.244731] DEBUG: ibm_read_slot_reset_state2()
+[52732.244762] DEBUG: ret = 0, rets[0]=5, rets[1]=1, rets[2]=4000, rets[3]=>
+[52732.244798] DEBUG: in eeh_slot_presence_check
+[52732.244804] DEBUG: error state check
+[52732.244807] DEBUG: Is slot hotpluggable
+[52732.244810] DEBUG: hotpluggable ops ?
+[52732.244953] DEBUG: Calling ops->get_adapter_status
+[52732.244958] DEBUG: calling rpaphp_get_sensor_state
+[52736.564262] ------------[ cut here ]------------
+[52736.564299] NETDEV WATCHDOG: enP64p1s0f3 (tg3): transmit queue 0 timed o>
+[52736.564324] WARNING: CPU: 1442 PID: 0 at net/sched/sch_generic.c:478 dev>
+[...]
+[52736.564505] NIP [c000000000c32368] dev_watchdog+0x438/0x440
+[52736.564513] LR [c000000000c32364] dev_watchdog+0x434/0x440
+------------
+
+On timeouts, network driver starts dumping debug information to console
+(e.g bnx2 driver calls bnx2x_panic_dump()), and go into recovery path while
+pHyp is still recovering the PHB. As part of recovery, the driver tries to
+reset the device and it keeps failing since every PCI read/write returns
+ff's. And when EEH recovery kicks-in, the driver is unable to recover the
+device. This impacts the ssh connection and leads to the system being
+inaccessible. To get the NIC working again it needs a reboot or re-assign
+the I/O adapter from HMC.
+
+[ 9531.168587] EEH: Beginning: 'slot_reset'
+[ 9531.168601] PCI 0013:01:00.0#10000: EEH: Invoking bnx2x->slot_reset()
+[...]
+[ 9614.110094] bnx2x: [bnx2x_func_stop:9129(enP19p1s0f0)]FUNC_STOP ramrod failed. Running a dry transaction
+[ 9614.110300] bnx2x: [bnx2x_igu_int_disable:902(enP19p1s0f0)]BUG! Proper val not read from IGU!
+[ 9629.178067] bnx2x: [bnx2x_fw_command:3055(enP19p1s0f0)]FW failed to respond!
+[ 9629.178085] bnx2x 0013:01:00.0 enP19p1s0f0: bc 7.10.4
+[ 9629.178091] bnx2x: [bnx2x_fw_dump_lvl:789(enP19p1s0f0)]Cannot dump MCP info while in PCI error
+[ 9644.241813] bnx2x: [bnx2x_io_slot_reset:14245(enP19p1s0f0)]IO slot reset --> driver unload
+[...]
+[ 9644.241819] PCI 0013:01:00.0#10000: EEH: bnx2x driver reports: 'disconnect'
+[ 9644.241823] PCI 0013:01:00.1#10000: EEH: Invoking bnx2x->slot_reset()
+[ 9644.241827] bnx2x: [bnx2x_io_slot_reset:14229(enP19p1s0f1)]IO slot reset initializing...
+[ 9644.241916] bnx2x 0013:01:00.1: enabling device (0140 -> 0142)
+[ 9644.258604] bnx2x: [bnx2x_io_slot_reset:14245(enP19p1s0f1)]IO slot reset --> driver unload
+[ 9644.258612] PCI 0013:01:00.1#10000: EEH: bnx2x driver reports: 'disconnect'
+[ 9644.258615] EEH: Finished:'slot_reset' with aggregate recovery state:'disconnect'
+[ 9644.258620] EEH: Unable to recover from failure from PHB#13-PE#10000.
+[ 9644.261811] EEH: Beginning: 'error_detected(permanent failure)'
+[...]
+[ 9644.261823] EEH: Finished:'error_detected(permanent failure)'
+
+Hence, it becomes important to inform driver about the PCI error detection
+as early as possible, so that driver is aware of PCI error and waits for
+EEH handler's next action for successful recovery.
+
+Current implementation uses rtas_get_sensor() API which blocks the slot
+check state until RTAS call returns success. To avoid this, fix the PCI
+hotplug driver (rpaphp) to return an error (-EBUSY) if the slot presence
+state can not be detected immediately while PE is in EEH recovery state.
+Change rpaphp_get_sensor_state() to invoke rtas_call(get-sensor-state)
+directly only if the respective PE is in EEH recovery state, and take
+actions based on RTAS return status. This way EEH handler will not be
+blocked on rpaphp_get_sensor_state() and can immediately notify driver
+about the PCI error and stop any active operations.
+
+In normal cases (non-EEH case) rpaphp_get_sensor_state() will continue to
+invoke rtas_get_sensor() as it was earlier with no change in existing
+behavior.
+
+Signed-off-by: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+Reviewed-by: Nathan Lynch <nathanl@linux.ibm.com>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 ---
-v2->v3:
-* Improve commit message s/swapped/reversed/.
+Change in v8:
+- Removed redundant #ifdef CONFIG_EEH and addressed other review comments.
+  https://lore.kernel.org/lkml/20230801213808.GA51837@bhelgaas/
 
-v1->v2:
-* Fix bailout for panel_bridge_attach() in case device_link_add() fails.
+Change in v7:
+- Modified patch description to explain affect of timeout on NIC
+  functioning.
+- Fix few nits requested in previous review at
+  https://lore.kernel.org/all/20220612170248.l6ftaneqjfof2jrc@in.ibm.com/
+- Add additional patch before this to introduce rtas_generic_errno() to
+  handle generic rtas error codes.
+  https://lore.kernel.org/all/20220429162545.GA79541@bhelgaas/
 
- drivers/gpu/drm/bridge/panel.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Change in v6:
+- Fixed typo's in the patch description as per review comments.
 
-diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/panel.c
-index 9316384b4474..a6587d233505 100644
---- a/drivers/gpu/drm/bridge/panel.c
-+++ b/drivers/gpu/drm/bridge/panel.c
-@@ -4,6 +4,8 @@
-  * Copyright (C) 2017 Broadcom
-  */
+Change in v5:
+- Fixup #define macros with parentheses around the values.
+
+Change in V4:
+- Error out on sensor busy only if PE is going through EEH recovery instead
+  of always error out.
+
+Change in V3:
+- Invoke rtas_call(get-sensor-state) directly from
+  rpaphp_get_sensor_state() directly and do special handling.
+- See v2 at
+  https://lore.kernel.org/all/163817631601.2016996.16085383012429651821.stgit@jupiter/
+
+Change in V2:
+- Alternate approach to fix the EEH issue instead of delaying slot presence
+  check proposed at
+  https://lore.kernel.org/all/163767273634.1368569.7327743414665595326.stgit@jupiter/
+
+Also refer:
+https://lore.kernel.org/all/20211125053402.zyzpl3te5x3ryypx@in.ibm.com/
+---
+ drivers/pci/hotplug/rpaphp_pci.c |   81 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 78 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/pci/hotplug/rpaphp_pci.c b/drivers/pci/hotplug/rpaphp_pci.c
+index 630f77057c23d..ec6e353acea3b 100644
+--- a/drivers/pci/hotplug/rpaphp_pci.c
++++ b/drivers/pci/hotplug/rpaphp_pci.c
+@@ -19,12 +19,88 @@
+ #include "../pci.h"		/* for pci_add_new_bus */
+ #include "rpaphp.h"
  
-+#include <linux/device.h>
-+
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_bridge.h>
- #include <drm/drm_connector.h>
-@@ -19,6 +21,7 @@ struct panel_bridge {
- 	struct drm_bridge bridge;
- 	struct drm_connector connector;
- 	struct drm_panel *panel;
-+	struct device_link *link;
- 	u32 connector_type;
- };
- 
-@@ -60,6 +63,8 @@ static int panel_bridge_attach(struct drm_bridge *bridge,
- {
- 	struct panel_bridge *panel_bridge = drm_bridge_to_panel_bridge(bridge);
- 	struct drm_connector *connector = &panel_bridge->connector;
-+	struct drm_panel *panel = panel_bridge->panel;
-+	struct drm_device *drm_dev = bridge->dev;
- 	int ret;
- 
- 	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)
-@@ -70,6 +75,14 @@ static int panel_bridge_attach(struct drm_bridge *bridge,
- 		return -ENODEV;
- 	}
- 
-+	panel_bridge->link = device_link_add(drm_dev->dev, panel->dev,
-+					     DL_FLAG_STATELESS);
-+	if (!panel_bridge->link) {
-+		DRM_ERROR("Failed to add device link between %s and %s\n",
-+			  dev_name(drm_dev->dev), dev_name(panel->dev));
-+		return -EINVAL;
++/*
++ * RTAS call get-sensor-state(DR_ENTITY_SENSE) return values as per PAPR:
++ * -- generic return codes ---
++ *    -1: Hardware Error
++ *    -2: RTAS_BUSY
++ *    -3: Invalid sensor. RTAS Parameter Error.
++ * -- rtas_get_sensor function specific return codes ---
++ * -9000: Need DR entity to be powered up and unisolated before RTAS call
++ * -9001: Need DR entity to be powered up, but not unisolated, before RTAS call
++ * -9002: DR entity unusable
++ *  990x: Extended delay - where x is a number in the range of 0-5
++ */
++static int rtas_get_sensor_errno(int rtas_rc)
++{
++	switch (rtas_rc) {
++	case 0:
++		/* Success case */
++		return 0;
++	case RTAS_SLOT_UNISOLATED:
++	case RTAS_SLOT_NOT_UNISOLATED:
++		return -EFAULT;
++	case RTAS_SLOT_NOT_USABLE:
++		return -ENODEV;
++	case RTAS_BUSY:
++	case RTAS_EXTENDED_DELAY_MIN...RTAS_EXTENDED_DELAY_MAX:
++		return -EBUSY;
++	default:
++		return rtas_generic_errno(rtas_rc);
 +	}
++}
 +
- 	drm_connector_helper_add(connector,
- 				 &panel_bridge_connector_helper_funcs);
- 
-@@ -78,6 +91,7 @@ static int panel_bridge_attach(struct drm_bridge *bridge,
- 				 panel_bridge->connector_type);
- 	if (ret) {
- 		DRM_ERROR("Failed to initialize connector\n");
-+		device_link_del(panel_bridge->link);
- 		return ret;
- 	}
- 
-@@ -100,6 +114,8 @@ static void panel_bridge_detach(struct drm_bridge *bridge)
- 	struct panel_bridge *panel_bridge = drm_bridge_to_panel_bridge(bridge);
- 	struct drm_connector *connector = &panel_bridge->connector;
- 
-+	device_link_del(panel_bridge->link);
++/*
++ * get_adapter_status() can be called by the EEH handler during EEH recovery.
++ * On certain PHB failures, the RTAS call rtas_call(get-sensor-state) returns
++ * extended busy error (9902) until PHB is recovered by pHyp. The RTAS call
++ * interface rtas_get_sensor() loops over the RTAS call on extended delay
++ * return code (9902) until the return value is either success (0) or error
++ * (-1). This causes the EEH handler to get stuck for ~6 seconds before it
++ * could notify that the PCI error has been detected and stop any active
++ * operations. This sometimes causes EEH recovery to fail. To avoid this issue,
++ * invoke rtas_call(get-sensor-state) directly if the respective PE is in EEH
++ * recovery state and return -EBUSY error based on RTAS return status. This
++ * will help the EEH handler to notify the driver about the PCI error
++ * immediately and successfully proceed with EEH recovery steps.
++ */
 +
- 	/*
- 	 * Cleanup the connector if we know it was initialized.
- 	 *
--- 
-2.37.1
++static int __rpaphp_get_sensor_state(struct slot *slot, int *state)
++{
++	int rc;
++	int token = rtas_token("get-sensor-state");
++	struct pci_dn *pdn;
++	struct eeh_pe *pe;
++	struct pci_controller *phb = PCI_DN(slot->dn)->phb;
++
++	if (token == RTAS_UNKNOWN_SERVICE)
++		return -ENOENT;
++
++	/*
++	 * Fallback to existing method for empty slot or PE isn't in EEH
++	 * recovery.
++	 */
++	pdn = list_first_entry_or_null(&PCI_DN(phb->dn)->child_list,
++					struct pci_dn, list);
++	if (!pdn)
++		goto fallback;
++
++	pe = eeh_dev_to_pe(pdn->edev);
++	if (pe && (pe->state & EEH_PE_RECOVERING)) {
++		rc = rtas_call(token, 2, 2, state, DR_ENTITY_SENSE,
++			       slot->index);
++		return rtas_get_sensor_errno(rc);
++	}
++fallback:
++	return rtas_get_sensor(DR_ENTITY_SENSE, slot->index, state);
++}
++
+ int rpaphp_get_sensor_state(struct slot *slot, int *state)
+ {
+ 	int rc;
+ 	int setlevel;
+ 
+-	rc = rtas_get_sensor(DR_ENTITY_SENSE, slot->index, state);
++	rc = __rpaphp_get_sensor_state(slot, state);
+ 
+ 	if (rc < 0) {
+ 		if (rc == -EFAULT || rc == -EEXIST) {
+@@ -40,8 +116,7 @@ int rpaphp_get_sensor_state(struct slot *slot, int *state)
+ 				dbg("%s: power on slot[%s] failed rc=%d.\n",
+ 				    __func__, slot->name, rc);
+ 			} else {
+-				rc = rtas_get_sensor(DR_ENTITY_SENSE,
+-						     slot->index, state);
++				rc = __rpaphp_get_sensor_state(slot, state);
+ 			}
+ 		} else if (rc == -ENODEV)
+ 			info("%s: slot is unusable\n", __func__);
+
 
