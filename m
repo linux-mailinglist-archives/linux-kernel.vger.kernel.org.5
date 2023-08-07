@@ -2,705 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AB0771A66
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17073771A69
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbjHGG3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38010 "EHLO
+        id S231361AbjHGGaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbjHGG32 (ORCPT
+        with ESMTP id S231281AbjHGG3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:29:28 -0400
-Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 349EF19A6;
-        Sun,  6 Aug 2023 23:28:55 -0700 (PDT)
-X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
-Received: from 192.168.10.47
-        by mg.richtek.com with MailGates ESMTPS Server V6.0(3962136:0:AUTH_RELAY)
-        (envelope-from <alina_yu@richtek.com>)
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256); Mon, 07 Aug 2023 14:28:14 +0800 (CST)
-Received: from ex3.rt.l (192.168.10.46) by ex4.rt.l (192.168.10.47) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.25; Mon, 7 Aug
- 2023 14:28:14 +0800
-Received: from linuxcarl2.richtek.com (192.168.10.154) by ex3.rt.l
- (192.168.10.45) with Microsoft SMTP Server id 15.2.1118.25 via Frontend
- Transport; Mon, 7 Aug 2023 14:28:14 +0800
-From:   Alina Yu <alina_yu@richtek.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <alina_yu@richtek.com>
-Subject: [PATCH v7 2/2] regulator: rtq2208: Add Richtek RTQ2208 SubPMIC driver
-Date:   Mon, 7 Aug 2023 14:28:07 +0800
-Message-ID: <1691389687-31211-3-git-send-email-alina_yu@richtek.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1691389687-31211-1-git-send-email-alina_yu@richtek.com>
-References: <1691389687-31211-1-git-send-email-alina_yu@richtek.com>
+        Mon, 7 Aug 2023 02:29:33 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0144170B
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:29:25 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-317c1845a07so2998594f8f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 23:29:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691389764; x=1691994564;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Z7rnWNHFUneQ3py2i1MBfIqg4WaLvrT3ZVmHSN5iKRs=;
+        b=f8insg7X86ppQ5F6Ftef+QhplHoXoRQAMzFMVl2RdeVQ2Cn675LFV6uigapurhe9JF
+         HldFfIEGHpm9b5MvBSH7/C8CfgQfXb8onmWizItMbRzFPNLH3NxRQxq2YoAxV/QUj+gj
+         Xq/Plk9HWec7x3LlQUT7TSRVzSUprBMMD8NPtiMDhZybAJ00NaRZGmqzJvPR8Gk0Lxbr
+         Uyl7qo33UrJBbDk3TSZiA2siPMr1VQVzjZH8dyblNByvz3N/Qc/V+KcDivWTUqazW/N+
+         k8TCdZah0Ccmqhavl0s9AF+IwPvXKNFH+mx+WROAMFNaWNvOy4uRJJ1zIA+VaI+NQv/q
+         Qlmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691389764; x=1691994564;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z7rnWNHFUneQ3py2i1MBfIqg4WaLvrT3ZVmHSN5iKRs=;
+        b=PXn6778lIK/p6PELRk3CWDVFUNwMv8Qa7wQKNemRBEElsyzO5K68z1E92uXIT0msVq
+         KWSs2Naa+mEG595o8xN64c9o2uiM4Y4cQ0KiMAfC9y9xx0Tr6ohHKe5KcIVZlqg1AktG
+         X69YRi7c9j1dcAWc7llNDUqcO/qVeeOi//SqoYAC8DMh411w1Y3zCI2stuYDdsST/by9
+         JuC4BKG4tP7S0H0LwEaag7sFEnexy63tewIrL/OKgibCOiV6Sqd4yzUHPd2qjofo6Upp
+         6SE35GsAW3Uc5WKWkkhFcxSmHStcgbbEeYzy3UPp8obNuzO4o1iZrDAliR4M87rTCTEm
+         lZ7Q==
+X-Gm-Message-State: AOJu0YybRt4feu1qybXSwSImxqoai5JlOkjiFZEX842BlqX0NUVuwtK4
+        s+TLrBYv4MLqNxkY9KH8eGdxIw==
+X-Google-Smtp-Source: AGHT+IHoV4+y4ygwE201jI1n35hdg8Xn3ESUU/xDOlVSMzH8Nm0HJsqGqZvTNuNydoy+mLFZinL9WQ==
+X-Received: by 2002:a5d:6509:0:b0:313:ef57:5bde with SMTP id x9-20020a5d6509000000b00313ef575bdemr4758869wru.42.1691389764237;
+        Sun, 06 Aug 2023 23:29:24 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id b3-20020adfee83000000b0031773e3cf46sm9393070wro.61.2023.08.06.23.29.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Aug 2023 23:29:23 -0700 (PDT)
+Message-ID: <ca0b9a19-d7d7-80e5-f47e-f74615cdac86@linaro.org>
+Date:   Mon, 7 Aug 2023 08:29:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH RFC v2 1/4] dt-bindings: mmc: sdhci-of-dwcmhsc: Add T-Head
+ TH1520 support
+Content-Language: en-US
+To:     Drew Fustini <dfustini@baylibre.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>
+References: <20230724-th1520-emmc-v2-0-132ed2e2171e@baylibre.com>
+ <20230724-th1520-emmc-v2-1-132ed2e2171e@baylibre.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230724-th1520-emmc-v2-1-132ed2e2171e@baylibre.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the RTQ2208 SubPMIC
-This ic integrates with configurable, synchrnous buck converters and two ldos.
+On 05/08/2023 05:14, Drew Fustini wrote:
+> Add compatible value for the T-Head TH1520 dwcmshc controller and
+> thead,io-fixed-1v8 and thead,pull-up properties.
+> 
+> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+> index a43eb837f8da..57602c345cab 100644
+> --- a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+> @@ -19,6 +19,7 @@ properties:
+>        - rockchip,rk3568-dwcmshc
+>        - rockchip,rk3588-dwcmshc
+>        - snps,dwcmshc-sdhci
+> +      - thead,th1520-dwcmshc
+>  
+>    reg:
+>      maxItems: 1
+> @@ -60,6 +61,14 @@ properties:
+>      description: Specify the number of delay for tx sampling.
+>      $ref: /schemas/types.yaml#/definitions/uint8
+>  
+> +  thead,io-fixed-1v8:
+> +    description: SoC PHY pad is fixed 1.8V
+> +    type: boolean
 
-Signed-off-by: Alina Yu <alina_yu@richtek.com>
----
-v7
-- Include missing <linux/mod_devicetable.h>
-- Remove fixed_uV in self-defined structure and rtq2208_ldo_get_voltage
-- Modify sizeof() parameter in rdesc = devm_kzalloc(..., sizeof().....)
-- Add const to type casting in regulator_ops to avoid unexpected manipulation
-- Remove rtq2208_of_parse_cb and use of_regulator_match to get constraints.min_uV
-- Return devm_request_threaded_irq directly
-- Remove __maybe_unused and redundant comma in rtq2208_device_tables
-- Remove v2 in MODULE_LICENSE
-v6
-- Remove Reported-by tag
-v5
-- Modify 'rdesc->fixed_uV' get, becasue "richtek,fixed-uV" is removed from yaml
-- Modify 'mtp_sel' get because read property is changed from "richtek,mtp-sel" to
-  "richtek,mtp-sel-high" in yaml
-- Add missing regulators_node points to regulator node in yaml
-- Include <linux/bitfield.h> for 'FIELD_PREP' reported by kernel test robot
----
- drivers/regulator/Kconfig             |  11 +
- drivers/regulator/Makefile            |   1 +
- drivers/regulator/rtq2208-regulator.c | 583 ++++++++++++++++++++++++++++++++++
- 3 files changed, 595 insertions(+)
- create mode 100644 drivers/regulator/rtq2208-regulator.c
+Isn't this duplicating existing properties for MMC modes with 1.8 V?
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index e5f3613..a6b2c84 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -1213,6 +1213,17 @@ config REGULATOR_RTQ6752
- 	  synchronous boost converters for PAVDD, and one synchronous NAVDD
- 	  buck-boost. This device is suitable for automotive TFT-LCD panel.
- 
-+config REGULATOR_RTQ2208
-+	tristate "Richtek RTQ2208 SubPMIC Regulator"
-+	depends on I2C
-+	select REGMAP_I2C
-+	help
-+	  This driver adds support for RTQ2208 SubPMIC regulators.
-+	  The RTQ2208 is a multi-phase, programmable power management IC that
-+	  integrate with dual multi-configurable, synchronous buck converters
-+	  and two ldos. It features wide output voltage range from 0.4V to 2.05V
-+	  and the capability to configure the corresponding power stages.
-+
- config REGULATOR_S2MPA01
- 	tristate "Samsung S2MPA01 voltage regulator"
- 	depends on MFD_SEC_CORE || COMPILE_TEST
-diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index 58dfe01..04cbad17 100644
---- a/drivers/regulator/Makefile
-+++ b/drivers/regulator/Makefile
-@@ -143,6 +143,7 @@ obj-$(CONFIG_REGULATOR_RT6245)	+= rt6245-regulator.o
- obj-$(CONFIG_REGULATOR_RTMV20)	+= rtmv20-regulator.o
- obj-$(CONFIG_REGULATOR_RTQ2134) += rtq2134-regulator.o
- obj-$(CONFIG_REGULATOR_RTQ6752)	+= rtq6752-regulator.o
-+obj-$(CONFIG_REGULATOR_RTQ2208) += rtq2208-regulator.o
- obj-$(CONFIG_REGULATOR_S2MPA01) += s2mpa01.o
- obj-$(CONFIG_REGULATOR_S2MPS11) += s2mps11.o
- obj-$(CONFIG_REGULATOR_S5M8767) += s5m8767.o
-diff --git a/drivers/regulator/rtq2208-regulator.c b/drivers/regulator/rtq2208-regulator.c
-new file mode 100644
-index 0000000..2463aea
---- /dev/null
-+++ b/drivers/regulator/rtq2208-regulator.c
-@@ -0,0 +1,583 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+
-+#include <linux/bitops.h>
-+#include <linux/bitfield.h>
-+#include <linux/util_macros.h>
-+#include <linux/module.h>
-+#include <linux/i2c.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/driver.h>
-+#include <linux/regulator/machine.h>
-+#include <linux/regulator/of_regulator.h>
-+#include <linux/mod_devicetable.h>
-+
-+/* Register */
-+#define RTQ2208_REG_GLOBAL_INT1			0x12
-+#define RTQ2208_REG_FLT_RECORDBUCK_CB		0x18
-+#define RTQ2208_REG_GLOBAL_INT1_MASK		0x1D
-+#define RTQ2208_REG_FLT_MASKBUCK_CB		0x1F
-+#define RTQ2208_REG_BUCK_C_CFG0			0x32
-+#define RTQ2208_REG_BUCK_B_CFG0			0x42
-+#define RTQ2208_REG_BUCK_A_CFG0			0x52
-+#define RTQ2208_REG_BUCK_D_CFG0			0x62
-+#define RTQ2208_REG_BUCK_G_CFG0			0x72
-+#define RTQ2208_REG_BUCK_F_CFG0			0x82
-+#define RTQ2208_REG_BUCK_E_CFG0			0x92
-+#define RTQ2208_REG_BUCK_H_CFG0			0xA2
-+#define RTQ2208_REG_LDO1_CFG			0xB1
-+#define RTQ2208_REG_LDO2_CFG			0xC1
-+
-+/* Mask */
-+#define RTQ2208_BUCK_NR_MTP_SEL_MASK		GENMASK(7, 0)
-+#define RTQ2208_BUCK_EN_NR_MTP_SEL0_MASK	BIT(0)
-+#define RTQ2208_BUCK_EN_NR_MTP_SEL1_MASK	BIT(1)
-+#define RTQ2208_BUCK_RSPUP_MASK			GENMASK(6, 4)
-+#define RTQ2208_BUCK_RSPDN_MASK			GENMASK(2, 0)
-+#define RTQ2208_BUCK_NRMODE_MASK		BIT(5)
-+#define RTQ2208_BUCK_STRMODE_MASK		BIT(5)
-+#define RTQ2208_BUCK_EN_STR_MASK		BIT(0)
-+#define RTQ2208_LDO_EN_STR_MASK			BIT(7)
-+#define RTQ2208_EN_DIS_MASK			BIT(0)
-+#define RTQ2208_BUCK_RAMP_SEL_MASK		GENMASK(2, 0)
-+#define RTQ2208_HD_INT_MASK			BIT(0)
-+
-+/* Size */
-+#define RTQ2208_VOUT_MAXNUM			256
-+#define RTQ2208_BUCK_NUM_IRQ_REGS		5
-+#define RTQ2208_STS_NUM_IRQ_REGS		2
-+
-+/* Value */
-+#define RTQ2208_RAMP_VALUE_MIN_uV		500
-+#define RTQ2208_RAMP_VALUE_MAX_uV		64000
-+
-+#define RTQ2208_BUCK_MASK(uv_irq, ov_irq)	(1 << ((uv_irq) % 8) | 1 << ((ov_irq) % 8))
-+
-+enum {
-+	RTQ2208_BUCK_B = 0,
-+	RTQ2208_BUCK_C,
-+	RTQ2208_BUCK_D,
-+	RTQ2208_BUCK_A,
-+	RTQ2208_BUCK_F,
-+	RTQ2208_BUCK_G,
-+	RTQ2208_BUCK_H,
-+	RTQ2208_BUCK_E,
-+	RTQ2208_LDO2,
-+	RTQ2208_LDO1,
-+	RTQ2208_LDO_MAX,
-+};
-+
-+enum {
-+	RTQ2208_AUTO_MODE = 0,
-+	RTQ2208_FCCM,
-+};
-+
-+struct rtq2208_regulator_desc {
-+	struct regulator_desc desc;
-+	unsigned int mtp_sel_reg;
-+	unsigned int mtp_sel_mask;
-+	unsigned int mode_reg;
-+	unsigned int mode_mask;
-+	unsigned int suspend_config_reg;
-+	unsigned int suspend_enable_mask;
-+	unsigned int suspend_mode_mask;
-+};
-+
-+struct rtq2208_rdev_map {
-+	struct regulator_dev *rdev[RTQ2208_LDO_MAX];
-+	struct regmap *regmap;
-+	struct device *dev;
-+};
-+
-+/* set Normal Auto/FCCM mode */
-+static int rtq2208_set_mode(struct regulator_dev *rdev, unsigned int mode)
-+{
-+	const struct rtq2208_regulator_desc *rdesc =
-+		(const struct rtq2208_regulator_desc *)rdev->desc;
-+	unsigned int val, shift;
-+
-+	switch (mode) {
-+	case REGULATOR_MODE_NORMAL:
-+		val = RTQ2208_AUTO_MODE;
-+		break;
-+	case REGULATOR_MODE_FAST:
-+		val = RTQ2208_FCCM;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	shift = ffs(rdesc->mode_mask) - 1;
-+	return regmap_update_bits(rdev->regmap, rdesc->mode_reg,
-+				  rdesc->mode_mask, val << shift);
-+}
-+
-+static unsigned int rtq2208_get_mode(struct regulator_dev *rdev)
-+{
-+	const struct rtq2208_regulator_desc *rdesc =
-+		(const struct rtq2208_regulator_desc *)rdev->desc;
-+	unsigned int mode_val;
-+	int ret;
-+
-+	ret = regmap_read(rdev->regmap, rdesc->mode_reg, &mode_val);
-+	if (ret)
-+		return REGULATOR_MODE_INVALID;
-+
-+	return (mode_val & rdesc->mode_mask) ? REGULATOR_MODE_FAST : REGULATOR_MODE_NORMAL;
-+}
-+
-+static int rtq2208_set_ramp_delay(struct regulator_dev *rdev, int ramp_delay)
-+{
-+	const struct regulator_desc *desc = rdev->desc;
-+	unsigned int sel = 0, val;
-+
-+	ramp_delay = max(ramp_delay, RTQ2208_RAMP_VALUE_MIN_uV);
-+	ramp_delay = min(ramp_delay, RTQ2208_RAMP_VALUE_MAX_uV);
-+
-+	ramp_delay /= RTQ2208_RAMP_VALUE_MIN_uV;
-+
-+	/*
-+	 * fls(ramp_delay) - 1: doing LSB shift, let it starts from 0
-+	 *
-+	 * RTQ2208_BUCK_RAMP_SEL_MASK - sel: doing descending order shifting.
-+	 * Because the relation of seleltion and value is like that
-+	 *
-+	 * seletion: value
-+	 * 000: 64mv
-+	 * 001: 32mv
-+	 * ...
-+	 * 111: 0.5mv
-+	 *
-+	 * For example, if I would like to select 64mv, the fls(ramp_delay) - 1 will be 0b111,
-+	 * and I need to use 0b111 - sel to do the shifting
-+	 */
-+
-+	sel = fls(ramp_delay) - 1;
-+	sel = RTQ2208_BUCK_RAMP_SEL_MASK - sel;
-+
-+	val = FIELD_PREP(RTQ2208_BUCK_RSPUP_MASK, sel) | FIELD_PREP(RTQ2208_BUCK_RSPDN_MASK, sel);
-+
-+	return regmap_update_bits(rdev->regmap, desc->ramp_reg,
-+				  RTQ2208_BUCK_RSPUP_MASK | RTQ2208_BUCK_RSPDN_MASK, val);
-+}
-+
-+static int rtq2208_set_suspend_enable(struct regulator_dev *rdev)
-+{
-+	const struct rtq2208_regulator_desc *rdesc =
-+		(const struct rtq2208_regulator_desc *)rdev->desc;
-+
-+	return regmap_set_bits(rdev->regmap, rdesc->suspend_config_reg, rdesc->suspend_enable_mask);
-+}
-+
-+static int rtq2208_set_suspend_disable(struct regulator_dev *rdev)
-+{
-+	const struct rtq2208_regulator_desc *rdesc =
-+		(const struct rtq2208_regulator_desc *)rdev->desc;
-+
-+	return regmap_update_bits(rdev->regmap, rdesc->suspend_config_reg, rdesc->suspend_enable_mask, 0);
-+}
-+
-+static int rtq2208_set_suspend_mode(struct regulator_dev *rdev, unsigned int mode)
-+{
-+	const struct rtq2208_regulator_desc *rdesc =
-+		(const struct rtq2208_regulator_desc *)rdev->desc;
-+	unsigned int val, shift;
-+
-+	switch (mode) {
-+	case REGULATOR_MODE_NORMAL:
-+		val = RTQ2208_AUTO_MODE;
-+		break;
-+	case REGULATOR_MODE_FAST:
-+		val = RTQ2208_FCCM;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	shift = ffs(rdesc->suspend_mode_mask) - 1;
-+
-+	return regmap_update_bits(rdev->regmap, rdesc->suspend_config_reg,
-+			rdesc->suspend_mode_mask, val << shift);
-+}
-+
-+static const struct regulator_ops rtq2208_regulator_buck_ops = {
-+	.enable = regulator_enable_regmap,
-+	.disable = regulator_disable_regmap,
-+	.is_enabled = regulator_is_enabled_regmap,
-+	.list_voltage = regulator_list_voltage_linear_range,
-+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
-+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
-+	.set_mode = rtq2208_set_mode,
-+	.get_mode = rtq2208_get_mode,
-+	.set_ramp_delay = rtq2208_set_ramp_delay,
-+	.set_active_discharge = regulator_set_active_discharge_regmap,
-+	.set_suspend_enable = rtq2208_set_suspend_enable,
-+	.set_suspend_disable = rtq2208_set_suspend_disable,
-+	.set_suspend_mode = rtq2208_set_suspend_mode,
-+};
-+
-+static const struct regulator_ops rtq2208_regulator_ldo_ops = {
-+	.enable = regulator_enable_regmap,
-+	.disable = regulator_disable_regmap,
-+	.is_enabled = regulator_is_enabled_regmap,
-+	.set_active_discharge = regulator_set_active_discharge_regmap,
-+	.set_suspend_enable = rtq2208_set_suspend_enable,
-+	.set_suspend_disable = rtq2208_set_suspend_disable,
-+};
-+
-+static unsigned int rtq2208_of_map_mode(unsigned int mode)
-+{
-+	switch (mode) {
-+	case RTQ2208_AUTO_MODE:
-+		return REGULATOR_MODE_NORMAL;
-+	case RTQ2208_FCCM:
-+		return REGULATOR_MODE_FAST;
-+	default:
-+		return REGULATOR_MODE_INVALID;
-+	}
-+}
-+
-+static int rtq2208_init_irq_mask(struct rtq2208_rdev_map *rdev_map, unsigned int *buck_masks)
-+{
-+	unsigned char buck_clr_masks[5] = {0x33, 0x33, 0x33, 0x33, 0x33},
-+		      sts_clr_masks[2] = {0xE7, 0xF7}, sts_masks[2] = {0xE6, 0xF6};
-+	int ret;
-+
-+	/* write clear all buck irq once */
-+	ret = regmap_bulk_write(rdev_map->regmap, RTQ2208_REG_FLT_RECORDBUCK_CB, buck_clr_masks, 5);
-+	if (ret)
-+		return dev_err_probe(rdev_map->dev, ret, "Failed to clr buck irqs\n");
-+
-+	/* write clear general irq once */
-+	ret = regmap_bulk_write(rdev_map->regmap, RTQ2208_REG_GLOBAL_INT1, sts_clr_masks, 2);
-+	if (ret)
-+		return dev_err_probe(rdev_map->dev, ret, "Failed to clr general irqs\n");
-+
-+	/* unmask buck ov/uv irq */
-+	ret = regmap_bulk_write(rdev_map->regmap, RTQ2208_REG_FLT_MASKBUCK_CB, buck_masks, 5);
-+	if (ret)
-+		return dev_err_probe(rdev_map->dev, ret, "Failed to unmask buck irqs\n");
-+
-+	/* unmask needed general irq */
-+	return regmap_bulk_write(rdev_map->regmap, RTQ2208_REG_GLOBAL_INT1_MASK, sts_masks, 2);
-+}
-+
-+static irqreturn_t rtq2208_irq_handler(int irqno, void *devid)
-+{
-+	unsigned char buck_flags[RTQ2208_BUCK_NUM_IRQ_REGS], sts_flags[RTQ2208_STS_NUM_IRQ_REGS];
-+	int ret = 0, i, uv_bit, ov_bit;
-+	struct rtq2208_rdev_map *rdev_map = devid;
-+	struct regulator_dev *rdev;
-+
-+	if (!rdev_map)
-+		return IRQ_NONE;
-+
-+	/* read irq event */
-+	ret = regmap_bulk_read(rdev_map->regmap, RTQ2208_REG_FLT_RECORDBUCK_CB,
-+				buck_flags, ARRAY_SIZE(buck_flags));
-+	if (ret)
-+		return IRQ_NONE;
-+
-+	ret = regmap_bulk_read(rdev_map->regmap, RTQ2208_REG_GLOBAL_INT1,
-+				sts_flags, ARRAY_SIZE(sts_flags));
-+	if (ret)
-+		return IRQ_NONE;
-+
-+	/* clear irq event */
-+	ret = regmap_bulk_write(rdev_map->regmap, RTQ2208_REG_FLT_RECORDBUCK_CB,
-+				buck_flags, ARRAY_SIZE(buck_flags));
-+	if (ret)
-+		return IRQ_NONE;
-+
-+	ret = regmap_bulk_write(rdev_map->regmap, RTQ2208_REG_GLOBAL_INT1,
-+				sts_flags, ARRAY_SIZE(sts_flags));
-+	if (ret)
-+		return IRQ_NONE;
-+
-+	for (i = 0; i < RTQ2208_LDO_MAX; i++) {
-+		if (!rdev_map->rdev[i])
-+			continue;
-+
-+		rdev = rdev_map->rdev[i];
-+		/* uv irq */
-+		uv_bit = (i & 1) ? 4 : 0;
-+		if (buck_flags[i >> 1] & (1 << uv_bit))
-+			regulator_notifier_call_chain(rdev,
-+					REGULATOR_EVENT_UNDER_VOLTAGE, NULL);
-+		/* ov irq */
-+		ov_bit = uv_bit + 1;
-+		if (buck_flags[i >> 1] & (1 << ov_bit))
-+			regulator_notifier_call_chain(rdev,
-+					REGULATOR_EVENT_REGULATION_OUT, NULL);
-+
-+		/* hd irq */
-+		if (sts_flags[1] & RTQ2208_HD_INT_MASK)
-+			regulator_notifier_call_chain(rdev,
-+					REGULATOR_EVENT_OVER_TEMP, NULL);
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+#define RTQ2208_REGULATOR_INFO(_name, _base) \
-+{ \
-+	.name = #_name, \
-+	.base = _base, \
-+}
-+#define BUCK_RG_BASE(_id)	RTQ2208_REG_BUCK_##_id##_CFG0
-+#define BUCK_RG_SHIFT(_base, _shift)	(_base + _shift)
-+#define LDO_RG_BASE(_id)	RTQ2208_REG_LDO##_id##_CFG
-+#define LDO_RG_SHIFT(_base, _shift)	(_base + _shift)
-+#define	VSEL_SHIFT(_sel)	(_sel ? 3 : 1)
-+#define MTP_SEL_MASK(_sel)	RTQ2208_BUCK_EN_NR_MTP_SEL##_sel##_MASK
-+
-+static const struct linear_range rtq2208_vout_range[] = {
-+	REGULATOR_LINEAR_RANGE(400000, 0, 180, 5000),
-+	REGULATOR_LINEAR_RANGE(1310000, 181, 255, 10000),
-+};
-+
-+static int rtq2208_of_get_fixed_voltage(struct device *dev,
-+					struct of_regulator_match *rtq2208_ldo_match, int n_fixed)
-+{
-+	struct device_node *np;
-+	struct of_regulator_match *match;
-+	struct rtq2208_regulator_desc *rdesc;
-+	struct regulator_init_data *init_data;
-+	int ret, i;
-+
-+	if (!dev->of_node)
-+		return -ENODEV;
-+
-+	np = of_get_child_by_name(dev->of_node, "regulators");
-+	if (!np)
-+		np = dev->of_node;
-+
-+	ret = of_regulator_match(dev, np, rtq2208_ldo_match, n_fixed);
-+
-+	of_node_put(np);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	for (i = 0; i < n_fixed; i++) {
-+		match = rtq2208_ldo_match + i;
-+		init_data = match->init_data;
-+		rdesc = (struct rtq2208_regulator_desc *)match->driver_data;
-+
-+		if (!init_data || !rdesc)
-+			continue;
-+
-+		if (init_data->constraints.min_uV == init_data->constraints.max_uV)
-+			rdesc->desc.fixed_uV = init_data->constraints.min_uV;
-+	}
-+
-+	return 0;
-+}
-+
-+static void rtq2208_init_regulator_desc(struct rtq2208_regulator_desc *rdesc, int mtp_sel,
-+					int idx, struct of_regulator_match *rtq2208_ldo_match, int *ldo_idx)
-+{
-+	struct regulator_desc *desc;
-+	static const struct {
-+		char *name;
-+		int base;
-+	} regulator_info[] = {
-+		RTQ2208_REGULATOR_INFO(buck-b, BUCK_RG_BASE(B)),
-+		RTQ2208_REGULATOR_INFO(buck-c, BUCK_RG_BASE(C)),
-+		RTQ2208_REGULATOR_INFO(buck-d, BUCK_RG_BASE(D)),
-+		RTQ2208_REGULATOR_INFO(buck-a, BUCK_RG_BASE(A)),
-+		RTQ2208_REGULATOR_INFO(buck-f, BUCK_RG_BASE(F)),
-+		RTQ2208_REGULATOR_INFO(buck-g, BUCK_RG_BASE(G)),
-+		RTQ2208_REGULATOR_INFO(buck-h, BUCK_RG_BASE(H)),
-+		RTQ2208_REGULATOR_INFO(buck-e, BUCK_RG_BASE(E)),
-+		RTQ2208_REGULATOR_INFO(ldo2, LDO_RG_BASE(2)),
-+		RTQ2208_REGULATOR_INFO(ldo1, LDO_RG_BASE(1)),
-+	}, *curr_info;
-+
-+	curr_info = regulator_info + idx;
-+	desc = &rdesc->desc;
-+	desc->name = curr_info->name;
-+	desc->of_match = of_match_ptr(curr_info->name);
-+	desc->regulators_node = of_match_ptr("regulators");
-+	desc->id = idx;
-+	desc->owner = THIS_MODULE;
-+	desc->type = REGULATOR_VOLTAGE;
-+	desc->enable_mask = mtp_sel ? MTP_SEL_MASK(1) : MTP_SEL_MASK(0);
-+	desc->active_discharge_on = RTQ2208_EN_DIS_MASK;
-+	desc->active_discharge_off = 0;
-+	desc->active_discharge_mask = RTQ2208_EN_DIS_MASK;
-+
-+	rdesc->mode_mask = RTQ2208_BUCK_NRMODE_MASK;
-+
-+	if (idx >= RTQ2208_BUCK_B && idx <= RTQ2208_BUCK_E) {
-+		/* init buck desc */
-+		desc->enable_reg = BUCK_RG_SHIFT(curr_info->base, 2);
-+		desc->ops = &rtq2208_regulator_buck_ops;
-+		desc->vsel_reg = curr_info->base + VSEL_SHIFT(mtp_sel);
-+		desc->vsel_mask = RTQ2208_BUCK_NR_MTP_SEL_MASK;
-+		desc->n_voltages = RTQ2208_VOUT_MAXNUM;
-+		desc->linear_ranges = rtq2208_vout_range;
-+		desc->n_linear_ranges = ARRAY_SIZE(rtq2208_vout_range);
-+		desc->ramp_reg = BUCK_RG_SHIFT(curr_info->base, 5);
-+		desc->active_discharge_reg = curr_info->base;
-+		desc->of_map_mode = rtq2208_of_map_mode;
-+
-+		rdesc->mode_reg = BUCK_RG_SHIFT(curr_info->base, 2);
-+		rdesc->suspend_config_reg = BUCK_RG_SHIFT(curr_info->base, 4);
-+		rdesc->suspend_enable_mask = RTQ2208_BUCK_EN_STR_MASK;
-+		rdesc->suspend_mode_mask = RTQ2208_BUCK_STRMODE_MASK;
-+	} else {
-+		/* init ldo desc */
-+		desc->enable_reg = curr_info->base;
-+		desc->ops = &rtq2208_regulator_ldo_ops;
-+		desc->n_voltages = 1;
-+		desc->active_discharge_reg = LDO_RG_SHIFT(curr_info->base, 2);
-+
-+		rtq2208_ldo_match[*ldo_idx].name = desc->name;
-+		rtq2208_ldo_match[*ldo_idx].driver_data = rdesc;
-+		rtq2208_ldo_match[(*ldo_idx)++].desc = desc;
-+
-+		rdesc->suspend_config_reg = curr_info->base;
-+		rdesc->suspend_enable_mask = RTQ2208_LDO_EN_STR_MASK;
-+	}
-+}
-+
-+static int rtq2208_parse_regulator_dt_data(int n_regulator, const unsigned int *regulator_idx_table,
-+		struct rtq2208_regulator_desc *rdesc[RTQ2208_LDO_MAX], struct device *dev)
-+{
-+	struct of_regulator_match rtq2208_ldo_match[2];
-+	int mtp_sel, ret, i, idx, ldo_idx = 0;
-+
-+	/* get mtp_sel0 or mtp_sel1 */
-+	mtp_sel = device_property_read_bool(dev, "richtek,mtp-sel-high");
-+
-+	for (i = 0; i < n_regulator; i++) {
-+		idx = regulator_idx_table[i];
-+
-+		rdesc[i] = devm_kcalloc(dev, 1, sizeof(*rdesc[0]), GFP_KERNEL);
-+		if (!rdesc[i])
-+			return -ENOMEM;
-+
-+		rtq2208_init_regulator_desc(rdesc[i], mtp_sel, idx, rtq2208_ldo_match, &ldo_idx);
-+	}
-+
-+	/* init ldo fixed_uV */
-+	ret = rtq2208_of_get_fixed_voltage(dev, rtq2208_ldo_match, ldo_idx);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to get ldo fixed_uV\n");
-+
-+	return 0;
-+
-+}
-+
-+/** different slave address corresponds different used bucks
-+ * slave address 0x10: BUCK[BCA FGE]
-+ * slave address 0x20: BUCK[BC FGHE]
-+ * slave address 0x40: BUCK[C G]
-+ */
-+static int rtq2208_regulator_check(int slave_addr, int *num,
-+				int *regulator_idx_table, unsigned int *buck_masks)
-+{
-+	static bool rtq2208_used_table[3][RTQ2208_LDO_MAX] = {
-+		/* BUCK[BCA FGE], LDO[12] */
-+		{1, 1, 0, 1, 1, 1, 0, 1, 1, 1},
-+		/* BUCK[BC FGHE], LDO[12]*/
-+		{1, 1, 0, 0, 1, 1, 1, 1, 1, 1},
-+		/* BUCK[C G], LDO[12] */
-+		{0, 1, 0, 0, 0, 1, 0, 0, 1, 1},
-+	};
-+	int i, idx = ffs(slave_addr >> 4) - 1;
-+	u8 mask;
-+
-+	for (i = 0; i < RTQ2208_LDO_MAX; i++) {
-+		if (!rtq2208_used_table[idx][i])
-+			continue;
-+
-+		regulator_idx_table[(*num)++] = i;
-+
-+		mask = RTQ2208_BUCK_MASK(4 * i, 4 * i + 1);
-+		buck_masks[i >> 1] &= ~mask;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct regmap_config rtq2208_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.max_register = 0xEF,
-+};
-+
-+static int rtq2208_probe(struct i2c_client *i2c)
-+{
-+	struct device *dev = &i2c->dev;
-+	struct regmap *regmap;
-+	struct rtq2208_regulator_desc *rdesc[RTQ2208_LDO_MAX];
-+	struct regulator_dev *rdev;
-+	struct regulator_config cfg;
-+	struct rtq2208_rdev_map *rdev_map;
-+	int i, ret = 0, idx, n_regulator = 0;
-+	unsigned int regulator_idx_table[RTQ2208_LDO_MAX],
-+		     buck_masks[RTQ2208_BUCK_NUM_IRQ_REGS] = {0x33, 0x33, 0x33, 0x33, 0x33};
-+
-+	rdev_map = devm_kzalloc(dev, sizeof(struct rtq2208_rdev_map), GFP_KERNEL);
-+	if (!rdev_map)
-+		return -ENOMEM;
-+
-+	regmap = devm_regmap_init_i2c(i2c, &rtq2208_regmap_config);
-+	if (IS_ERR(regmap))
-+		return dev_err_probe(dev, PTR_ERR(regmap), "Failed to allocate regmap\n");
-+
-+	/* get needed regulator */
-+	ret = rtq2208_regulator_check(i2c->addr, &n_regulator, regulator_idx_table, buck_masks);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to check used regulators\n");
-+
-+	rdev_map->regmap = regmap;
-+	rdev_map->dev = dev;
-+
-+	cfg.dev = dev;
-+
-+	/* init regulator desc */
-+	ret = rtq2208_parse_regulator_dt_data(n_regulator, regulator_idx_table, rdesc, dev);
-+	if (ret)
-+		return ret;
-+
-+	for (i = 0; i < n_regulator; i++) {
-+		idx = regulator_idx_table[i];
-+
-+		/* register regulator */
-+		rdev = devm_regulator_register(dev, &rdesc[i]->desc, &cfg);
-+		if (IS_ERR(rdev))
-+			return PTR_ERR(rdev);
-+
-+		rdev_map->rdev[idx] = rdev;
-+	}
-+
-+	/* init interrupt mask */
-+	ret = rtq2208_init_irq_mask(rdev_map, buck_masks);
-+	if (ret)
-+		return ret;
-+
-+	/* register interrupt */
-+	return devm_request_threaded_irq(dev, i2c->irq, NULL, rtq2208_irq_handler,
-+					IRQF_ONESHOT, dev_name(dev), rdev_map);
-+}
-+
-+static const struct of_device_id rtq2208_device_tables[] = {
-+	{ .compatible = "richtek,rtq2208" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, rtq2208_device_tables);
-+
-+static struct i2c_driver rtq2208_driver = {
-+	.driver = {
-+		.name = "rtq2208",
-+		.of_match_table = rtq2208_device_tables,
-+	},
-+	.probe_new = rtq2208_probe,
-+};
-+module_i2c_driver(rtq2208_driver);
-+
-+MODULE_AUTHOR("Alina Yu <alina_yu@richtek.com>");
-+MODULE_DESCRIPTION("Richtek RTQ2208 Regulator Driver");
-+MODULE_LICENSE("GPL");
--- 
-2.7.4
+> +
+> +  thead,pull-up:
+> +    description: True if pull-up, false if pull-down
+
+This explains me nothing. No clue what you are pulling and why do you
+need it. Pin pulls should be done via pin controller, not MMC.
+
+Anyway you should have here allOf:if:then (move the allOf: from top to
+behind "required:") which will disallow these properties for other variants.
+
+> +    type: boolean
+> +
+>  
+>  required:
+>    - compatible
+> 
+
+Best regards,
+Krzysztof
 
