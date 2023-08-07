@@ -2,153 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2176771C69
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 10:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE30771C6C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 10:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbjHGIju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 04:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
+        id S230362AbjHGIkj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Aug 2023 04:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbjHGIjt (ORCPT
+        with ESMTP id S229691AbjHGIki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 04:39:49 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CE210EF
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 01:39:48 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-48719854eb9so1218927e0c.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 01:39:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691397587; x=1692002387;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BPzZTlICzLYEHMNh2iGs7nTLC2Ztxao8NLG8OMNUOK0=;
-        b=FM53P8h7ve9is3BOG/5+xvjnPTfH5lB0YQcOp3ZovLoZKpjTgwypoT9loSaVciRU4V
-         +P0bzq1sFOpMZCn66RaRdve2DTdRn47tBO+7nlmCcY7GHBV96ISMSWhef3k26Gy7Mcfp
-         AqPBxGhncfT8VH91Y+JagWTYuQ+veYPbZI1I0kXUjF8HRs8A8cD/1znwNCoZNE3rDJ4l
-         7zGtBVY7Ah+t38pnjZF+B8oVo+FKOd7cKl/UYgEfvo3HLpy2KDJcUikhuPtVIDJ8pJK9
-         JMC0L15Snj6ToehTMzpjJaAg31eQy9LLS48Q4RRn8rFMBrLMztV7efxHsC9EzXRSkEkl
-         1Y7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691397587; x=1692002387;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BPzZTlICzLYEHMNh2iGs7nTLC2Ztxao8NLG8OMNUOK0=;
-        b=HhWo/pDAayF+DMzXy3CCXmfxvYQiEIjhfu6YybAsIouMWCh8lrv6PCZvhvNTgCw0tJ
-         Cguw4PdOIrhnMTZxLq0/93VO5rGg5rBN/J2pBodQHxIh88V/H1QxX8BPHWri+ZmVvJBr
-         6QBxT0uL5S+zCr4EIJTu2+HbJiMt3qoNy4SLTPCQ9m4JQjyw5K7DeHtX+3YMyBJgA2ad
-         V/HdjybdBhTYEScKCdkiEKckJn+kJxp+GYLUWcvhqZyPssfs8wM3X7EjZ+qMffHI8Eja
-         FkyaY9CMsZTZjAD6j/7FuDctXTTuj35ZjryZLC7F+Nm1s6ggQvPPzJ43GIHmtX2I0sBd
-         Vj7A==
-X-Gm-Message-State: AOJu0YzMIBbzlsDAoQBqqxZaH8+iVN29nvmAX1nQNl7T07NOA15Y32av
-        k0qodDadSMeCvqhKTnMj6SfXS3JSnwVS2VsJmCo=
-X-Google-Smtp-Source: AGHT+IHL5u3t52XLQEfHjY0HO8ytpXExG0xmtQIZn6rLE5AItd5HTGIYn8AxhWWp1BT4sRC/YFbTfh8JxD1CjlWRyQs=
-X-Received: by 2002:a1f:3d95:0:b0:485:e984:779e with SMTP id
- k143-20020a1f3d95000000b00485e984779emr3965774vka.2.1691397587074; Mon, 07
- Aug 2023 01:39:47 -0700 (PDT)
+        Mon, 7 Aug 2023 04:40:38 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F7D51722
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 01:40:37 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-74-vUjLTDvzN4WT0QZiNbwsZw-1; Mon, 07 Aug 2023 09:40:30 +0100
+X-MC-Unique: vUjLTDvzN4WT0QZiNbwsZw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 7 Aug
+ 2023 09:40:27 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 7 Aug 2023 09:40:27 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Zhangjin Wu' <falcon@tinylab.org>, "w@1wt.eu" <w@1wt.eu>
+CC:     "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "thomas@t-8ch.de" <thomas@t-8ch.de>
+Subject: RE: [PATCH v3] tools/nolibc: fix up size inflate regression
+Thread-Topic: [PATCH v3] tools/nolibc: fix up size inflate regression
+Thread-Index: AQHZyPQZCzWEgy7xdkqtRS3MdkRe3q/efQWQ
+Date:   Mon, 7 Aug 2023 08:40:27 +0000
+Message-ID: <f51e54bcf470451ea36f24640f000e61@AcuMS.aculab.com>
+References: <8eaab5da2dcbba42e3f3efc2ae686a22c95f84f0.1691386601.git.falcon@tinylab.org>
+In-Reply-To: <8eaab5da2dcbba42e3f3efc2ae686a22c95f84f0.1691386601.git.falcon@tinylab.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20230723190906.4082646-1-42.hyeyoo@gmail.com> <20230723190906.4082646-3-42.hyeyoo@gmail.com>
- <1f88aff2-8027-1020-71b2-6a6528f82207@suse.cz>
-In-Reply-To: <1f88aff2-8027-1020-71b2-6a6528f82207@suse.cz>
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Mon, 7 Aug 2023 17:39:35 +0900
-Message-ID: <CAB=+i9R52jLzD9eAMxhRTMHTFDmAGPDPcD0pwCxxDwq5yFZbxQ@mail.gmail.com>
-Subject: Re: [RFC 2/2] mm/slub: prefer NUMA locality over slight memory saving
- on NUMA machines
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Rientjes <rientjes@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Feng Tang <feng.tang@intel.com>,
-        "Sang, Oliver" <oliver.sang@intel.com>,
-        Jay Patel <jaypatel@linux.ibm.com>,
-        Binder Makin <merimus@google.com>, aneesh.kumar@linux.ibm.com,
-        tsahu@linux.ibm.com, piyushs@linux.ibm.com, fengwei.yin@intel.com,
-        ying.huang@intel.com, lkp <lkp@intel.com>,
-        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 11:54=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> On 7/23/23 21:09, Hyeonggon Yoo wrote:
-> > By default, SLUB sets remote_node_defrag_ratio to 1000, which makes it
-> > (in most cases) take slabs from remote nodes first before trying alloca=
-ting
-> > new folios on the local node from buddy.
-> >
-> > Documentation/ABI/testing/sysfs-kernel-slab says:
-> >> The file remote_node_defrag_ratio specifies the percentage of
-> >> times SLUB will attempt to refill the cpu slab with a partial
-> >> slab from a remote node as opposed to allocating a new slab on
-> >> the local node.  This reduces the amount of wasted memory over
-> >> the entire system but can be expensive.
-> >
-> > Although this made sense when it was introduced, the portion of
-> > per node partial lists in the overall SLUB memory usage has been decrea=
-sed
-> > since the introduction of per cpu partial lists. Therefore, it's worth
-> > reevaluating its overhead on performance and memory usage.
-> >
-> > [
-> >       XXX: Add performance data. I tried to measure its impact on
-> >       hackbench with a 2 socket NUMA  machine. but it seems hackbench i=
-s
-> >       too synthetic to benefit from this, because the skbuff_head_cache=
-'s
-> >       size fits into the last level cache.
-> >
-> >       Probably more realistic workloads like netperf would benefit
-> >       from this?
-> > ]
-> >
-> > Set remote_node_defrag_ratio to zero by default, and the new behavior i=
-s:
-> >       1) try refilling per CPU partial list from the local node
-> >       2) try allocating new slabs from the local node without reclamati=
-on
-> >       3) try refilling per CPU partial list from remote nodes
-> >       4) try allocating new slabs from the local node or remote nodes
-> >
-> > If user specified remote_node_defrag_ratio, it probabilistically tries
-> > 3) first and then try 2) and 4) in order, to avoid unexpected behaviora=
-l
-> > change from user's perspective.
->
-> It makes sense to me, but as you note it would be great to demonstrate
-> benefits, because it adds complexity, especially in the already complex
-> ___slab_alloc(). Networking has been indeed historically a workload very
-> sensitive to slab performance, so seems a good candidate.
+From: Zhangjin Wu
+> Sent: 07 August 2023 06:58
+...
+> +/* __auto_type is used instead of __typeof__ to workaround the build error
+> + * 'error: assignment of read-only variable' when the argument has 'const' in
+> + * the type, but __auto_type is a new feature from newer gcc version and it
+> + * only works with 'const' from gcc 11.0 (__GXX_ABI_VERSION = 1016)
+> + * https://gcc.gnu.org/legacy-ml/gcc-patches/2013-11/msg01378.html
+> + */
 
-Thank you for looking at it!
+You can use typeof((x) + 0) to lose the 'const' flag.
+The only downside is that char/short become int.
 
-Yeah, it was a PoC for what I thought "oh, it might be useful"
-and definitely I will try to measure it.
+> +
+> +#if __GXX_ABI_VERSION >= 1016
+> +#define __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT
+> +#endif
+> +
+> +#ifdef __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT
+> +#define __sysret(arg)                                                    \
+> +({                                                                       \
+> +	__auto_type __ret = (arg);                                       \
+> +	if (__is_signed_type(__typeof__(arg))) {                         \
+> +		if (__ret < 0) {                                         \
+> +			SET_ERRNO(-(long)__ret);                         \
+> +			__ret = (__typeof__(arg))(-1L);                  \
+> +		}                                                        \
+> +	} else {                                                         \
+> +		if ((unsigned long)__ret >= (unsigned long)-MAX_ERRNO) { \
+> +			SET_ERRNO(-(long)__ret);                         \
+> +			__ret = (__typeof__(arg))(-1L);                  \
+> +		}                                                        \
+> +	}                                                                \
+> +	__ret;                                                           \
+> +})
+> +
+> +#else  /* ! __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT */
+> +#define __sysret(arg)                                                    \
+> +({                                                                       \
+> +	long __ret = (long)(arg);                                        \
+> +	if (__is_signed_type(__typeof__(arg))) {                         \
+> +		if (__ret < 0) {                                         \
+> +			SET_ERRNO(-__ret);                               \
+> +			__ret = -1L;                                     \
+> +		}                                                        \
+> +	} else {                                                         \
+> +		if ((unsigned long)__ret >= (unsigned long)-MAX_ERRNO) { \
+> +			SET_ERRNO(-__ret);                               \
+> +			__ret = -1L;                                     \
+> +		}                                                        \
+> +	}                                                                \
+> +	(__typeof__(arg))__ret;                                          \
+> +})
+> +#endif /* ! __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT */
 
-> We could also postpone this until we have tried the percpu arrays
-> improvements discussed at LSF/MM.
+with (retyped so it may be wrong):
+#define is_constexpr(x) sizeof(*(0 ? (void *)((long)(x) * 0) : (int *)0)) == 1)
+and (because even (void *)0 isn't completely constant):
+#define is_pointer(x) (!is_constexpr((typeof(x))0))
 
-Possibly, but can you please share your plans/opinions on it?
-I think one possible way is simply to allow the cpu freelist to be
-mixed by objects from different slabs
-if we want to minimize changes, Or introduce a per cpu array similar
-to what SLAB does now.
+You can probably do:
+#define __sysret(arg) \
+({ \
+	typeof((arg) + 0) __ret = arg; \
+	if (__built_choose_expr(is_pointer(arg), (unsigned long)-(MAX_ERRNO+1), __ret) \
+			< (__built_choose_expr(is_pointer(arg), (unsigned long)__ret, 0)) { \
+		SET_ERRNO(-__ret); \
+		__reg = typeof(ret)-1L; \
+	} \
+	__ret; \
+})
 
-And one thing I'm having difficulty understanding is - what is the
-mind behind/or impact of managing objects
-on a slab basis, other than avoiding array queues in 2007?
+Apart from the annoyance of having to reverse the conditional
+that only has one copy of the check.
+
+Using two __builtin_choose_expr() saves you having to write two
+comparisons that are valid for both pointer and integer.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
