@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7A2772C93
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FDE772C96
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbjHGRSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48510 "EHLO
+        id S232161AbjHGRSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232234AbjHGRSA (ORCPT
+        with ESMTP id S232584AbjHGRSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:18:00 -0400
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B9A41BF4
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:17:35 -0700 (PDT)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1a28de15c8aso3619914fac.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:17:34 -0700 (PDT)
+        Mon, 7 Aug 2023 13:18:35 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6BD1A3
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:18:10 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6bca88c3487so3942732a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:18:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691428653; x=1692033453;
+        d=gmail.com; s=20221208; t=1691428689; x=1692033489;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=x941QFRlMNZmZDZM2xkbsmo9UZJniXSX6pOd9x9J2Qs=;
-        b=blhY82Z2TAD9PejRmNdoxblYK6rGOr/pG9QeXBKDotxEHgZe3gVEfLcZBrhIKZ5CMk
-         +N2OA83ILZ5n4KkKb6F/f7u7cI3CpdvCspz8dTAS6Bo5H/E93db8IndBORsE2glQH0cf
-         n4wmdIn3ThQ671Q/vRQ5jw3JJE/7jgzDA7OkdKebIL4aEgmsFwtFiIQYSuDHdQ5ZRGXz
-         KtfKW0Lj8Ds925SH18glTANjFG6z5sV69sQnWP3TWiVgTtoAV9uz9iN9fOcQ+v314H6p
-         yyiLDhNqNmocQbt8kMZv74QFJBaW9Ts0H393Vy8Tw3b8GlHViwpEI893Yig2LwGVxVTb
-         +18g==
+        bh=XV34gRN59NUXgPyKRqnl/Sn4kJFEpMQBDpWvtbTAeLk=;
+        b=c8QS/POYZDVCy+zrr7lKWNWXC1LM0EjzSsNlMdfGnQH3HUcEzwfacv4W3XGqZFp1Nx
+         kqHHS3BhtciMnfLsrjTBDvV1/2qxBs4wDwzlquknrAjdmd5I3cvtcGCsX/TdtH0O/X7S
+         b5LtGKzhVpfodzCbifmnJ1xF/tJTP/JljGD/n8+5hJD4r4ObNJCi3Bii09hyxjE4Gksc
+         VnSElVbQDzM3AONVcHv0+RcIm8YZtPxMH6As44T9anuJXJEoE2OPNh81HFxgQmW3Zf9p
+         wut85O+rkynHPJwkzc+kqz5QWNcuRbm4hPpji3ijwLl28N/8AqtN9DYT4OFiYZeshZli
+         OHfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691428653; x=1692033453;
+        d=1e100.net; s=20221208; t=1691428689; x=1692033489;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=x941QFRlMNZmZDZM2xkbsmo9UZJniXSX6pOd9x9J2Qs=;
-        b=QLQQMsV/wTJohGIy7Lh8FyAa6/K9BTLPbp0oXFtYSYgaQvU34OwMyEdRaSIWnfqf6W
-         Nv02am9v8Qo6fF3ko4G/BBQ7BLEsjCZluxcV+jOeEgjRKyMkfok6hZVPdl/VltE1ifN/
-         7aKturwV6hxZKZLRsASm7SyoQiMs0svDXbM7ugtLU0gZtbNoP+Uw6kTydTsIhwyBZt7O
-         DzvbtkeEG0Fqro0ai8f5FpVaRvkn6tbtYc7mnUPsTM4XCDmW+pPpEGE5qUXrDcRfz9IE
-         3REbnYj0hfqK93urXzZHB9D42rNPesAQcqXY54AkjT3N8uioEynIQZYKVTuuzoBSCyH8
-         2W6w==
-X-Gm-Message-State: AOJu0YxbQRIMtSAYTAK+RRFwSad6LWi1vxLcfrQT2rUOkK/9ouFIipWv
-        xALGk0OeLkN6ubuzMnbmQL/5TjD8Dhhjn7zGkYs=
-X-Google-Smtp-Source: AGHT+IHaA9hJV6vOMsXo4/1MdAleuqC1jj0XAUUTOZfjJpB83+O/s/QZSipeKBkSC0UZCxCc7qSr5BJUnGwHnuIA/vQ=
-X-Received: by 2002:a05:6870:c1cb:b0:1bf:4a66:d54f with SMTP id
- i11-20020a056870c1cb00b001bf4a66d54fmr11775593oad.56.1691428653044; Mon, 07
- Aug 2023 10:17:33 -0700 (PDT)
+        bh=XV34gRN59NUXgPyKRqnl/Sn4kJFEpMQBDpWvtbTAeLk=;
+        b=SPjBvInV7JsRqqe4HapfBl5eicQfQ6n2MropWutYqzSVgE1b4jkaAFFuKUcgNhrGRf
+         J2Uu776RTb7dvOs1+mKOBBGLSvWAE9Wat10PQImrVsMoUu54w1ntDLjEEF0FRmiMXamp
+         aPmSe1IFQBneHiOocUVgezFydLr6Kf1FlyoGLTAsYkTyn35i9UuPzmwxcQrOfH2hMsxk
+         RkyrivMotF2XqK5pjU9gMm6u1EY+GYpaeSEUabkl+x3ik7bn0psHm0HnIkZQ0a8YQpTu
+         jksIqL8IozGE8dpxbTqmFhlkZ0aan0qitj8DfgYx3q7RkfR21hKbDKq55Wtxu+SOe8pF
+         Avpg==
+X-Gm-Message-State: AOJu0Yxvyno/72dXloLbVMiANRzk4WKgiLoAlB5f5qx6EMjoanhgLky3
+        hD9hIJt0X6QDz0G7qXPMvhWsjA7Ia1yHVdwQnaQ=
+X-Google-Smtp-Source: AGHT+IEqb0XN5+AviKjgEtzF5xxq33xiyN7TQ2h94ZssjX8/OEf4jSCH08clopGvmS9RGtf1fE6Uau80c6mGy5akoQA=
+X-Received: by 2002:a05:6870:63a3:b0:1bb:a359:b909 with SMTP id
+ t35-20020a05687063a300b001bba359b909mr11694940oap.55.1691428689591; Mon, 07
+ Aug 2023 10:18:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230802064024.11806-1-sunran001@208suo.com>
-In-Reply-To: <20230802064024.11806-1-sunran001@208suo.com>
+References: <20230802064333.11895-1-sunran001@208suo.com>
+In-Reply-To: <20230802064333.11895-1-sunran001@208suo.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 13:17:22 -0400
-Message-ID: <CADnq5_Nk_kyK2SViK3cPKvkXQOgsW+tGCwz+4uFveCUBk0BjkQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: Clean up errors in amdgpu_psp.h
+Date:   Mon, 7 Aug 2023 13:17:58 -0400
+Message-ID: <CADnq5_MmBnK5sq=LVfJa9hWyN23XQ=TRvw15ns28sm+G7E=9aA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: Clean up errors in ih_v6_0.c
 To:     Ran Sun <sunran001@208suo.com>
 Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
@@ -61,7 +61,7 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,65 +71,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Applied.  Thanks!
 
-On Wed, Aug 2, 2023 at 2:40=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
+On Wed, Aug 2, 2023 at 2:43=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
 :
 >
 > Fix the following errors reported by checkpatch:
 >
-> ERROR: open brace '{' following struct go on the same line
-> ERROR: open brace '{' following enum go on the same line
+> ERROR: trailing statements should be on next line
+> ERROR: that open brace { should be on the previous line
 >
 > Signed-off-by: Ran Sun <sunran001@208suo.com>
 > ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_psp.h | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
+>  drivers/gpu/drm/amd/amdgpu/ih_v6_0.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.h b/drivers/gpu/drm/am=
-d/amdgpu/amdgpu_psp.h
-> index c3203de4a007..feef988bf0c1 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.h
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.h
-> @@ -78,8 +78,7 @@ enum psp_bootloader_cmd {
->         PSP_BL__LOAD_TOS_SPL_TABLE      =3D 0x10000000,
->  };
+> diff --git a/drivers/gpu/drm/amd/amdgpu/ih_v6_0.c b/drivers/gpu/drm/amd/a=
+mdgpu/ih_v6_0.c
+> index 980b24120080..ec0c8f8b465a 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/ih_v6_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/ih_v6_0.c
+> @@ -494,7 +494,8 @@ static int ih_v6_0_self_irq(struct amdgpu_device *ade=
+v,
+>                 *adev->irq.ih1.wptr_cpu =3D wptr;
+>                 schedule_work(&adev->irq.ih1_work);
+>                 break;
+> -       default: break;
+> +       default:
+> +               break;
+>         }
+>         return 0;
+>  }
+> @@ -759,8 +760,7 @@ static void ih_v6_0_set_interrupt_funcs(struct amdgpu=
+_device *adev)
+>         adev->irq.ih_funcs =3D &ih_v6_0_funcs;
+>  }
 >
-> -enum psp_ring_type
+> -const struct amdgpu_ip_block_version ih_v6_0_ip_block =3D
 > -{
-> +enum psp_ring_type {
->         PSP_RING_TYPE__INVALID =3D 0,
->         /*
->          * These values map to the way the PSP kernel identifies the
-> @@ -89,8 +88,7 @@ enum psp_ring_type
->         PSP_RING_TYPE__KM =3D 2  /* Kernel mode ring (formerly called GPC=
-OM) */
->  };
->
-> -struct psp_ring
-> -{
-> +struct psp_ring {
->         enum psp_ring_type              ring_type;
->         struct psp_gfx_rb_frame         *ring_mem;
->         uint64_t                        ring_mem_mc_addr;
-> @@ -107,8 +105,7 @@ enum psp_reg_prog_id {
->         PSP_REG_LAST
->  };
->
-> -struct psp_funcs
-> -{
-> +struct psp_funcs {
->         int (*init_microcode)(struct psp_context *psp);
->         int (*bootloader_load_kdb)(struct psp_context *psp);
->         int (*bootloader_load_spl)(struct psp_context *psp);
-> @@ -307,8 +304,7 @@ struct psp_runtime_scpm_entry {
->         enum psp_runtime_scpm_authentication scpm_status;
->  };
->
-> -struct psp_context
-> -{
-> +struct psp_context {
->         struct amdgpu_device            *adev;
->         struct psp_ring                 km_ring;
->         struct psp_gfx_cmd_resp         *cmd;
+> +const struct amdgpu_ip_block_version ih_v6_0_ip_block =3D {
+>         .type =3D AMD_IP_BLOCK_TYPE_IH,
+>         .major =3D 6,
+>         .minor =3D 0,
 > --
 > 2.17.1
 >
