@@ -2,87 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D4A771F09
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D490771F10
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbjHGK73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 06:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39126 "EHLO
+        id S231779AbjHGLBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbjHGK70 (ORCPT
+        with ESMTP id S229554AbjHGLBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 06:59:26 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7A5EA10FA;
-        Mon,  7 Aug 2023 03:59:25 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 8EDEC809D;
-        Mon,  7 Aug 2023 10:59:24 +0000 (UTC)
-Date:   Mon, 7 Aug 2023 13:59:23 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Dhruva Gole <d-gole@ti.com>
-Cc:     Nishanth Menon <nm@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-omap@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH] pinctrl: single: Add compatible for ti,am625-padconf
-Message-ID: <20230807105923.GO14799@atomide.com>
-References: <20230805045554.786092-1-d-gole@ti.com>
- <20230805171508.schg4xquoa24klk5@october>
- <20230807070724.GN14799@atomide.com>
- <20230807080922.t35yvyvrknjcriyr@dhruva>
+        Mon, 7 Aug 2023 07:01:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F1E10FA
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 04:00:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691406017;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R+iPVr47N7bKYNd0s7qLkiMufN9f9ERRqZmsaHbfMOk=;
+        b=gWEC+WWVDYGB7P77M6FTBhdftRElH+azpAs/0YqKdXjTnjiSZqoXWTuzEfXm8DGVYs/q5F
+        dJKxudrdeItwmHlrfYE6MAEQtRQ8Kh2DfiG6BLwWahGmFOTzw5lm3cnGuW1DB+5fbs1f70
+        fLnpFgjNiOch4oV7aQDwlzZvbvvxK9o=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-592-7IvRzP0UPe6JUkFbBOdltQ-1; Mon, 07 Aug 2023 07:00:15 -0400
+X-MC-Unique: 7IvRzP0UPe6JUkFbBOdltQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6F34E85CCE0;
+        Mon,  7 Aug 2023 11:00:14 +0000 (UTC)
+Received: from alecto.usersys.redhat.com (unknown [10.45.225.231])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5B4CB403168;
+        Mon,  7 Aug 2023 11:00:11 +0000 (UTC)
+Date:   Mon, 7 Aug 2023 13:00:08 +0200
+From:   Artem Savkov <asavkov@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Milian Wolff <milian.wolff@kdab.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] Revert "perf report: Append inlines to non-DWARF
+ callchains"
+Message-ID: <20230807110008.GA886657@alecto.usersys.redhat.com>
+References: <ZMl8VyhdwhClTM5g@kernel.org>
+ <20230802074335.GA622710@alecto.usersys.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230807080922.t35yvyvrknjcriyr@dhruva>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230802074335.GA622710@alecto.usersys.redhat.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Dhruva Gole <d-gole@ti.com> [230807 08:09]:
-> On Aug 07, 2023 at 10:07:24 +0300, Tony Lindgren wrote:
-> > * Nishanth Menon <nm@ti.com> [230805 17:15]:
-> > > On 10:25-20230805, Dhruva Gole wrote:
-> > > > From: Tony Lindgren <tony@atomide.com>
-> > > > +static const struct pcs_soc_data pinctrl_single_am625 = {
-> > > > +	.flags = PCS_QUIRK_SHARED_IRQ | PCS_CONTEXT_LOSS_OFF,
-> > > > +	.irq_enable_mask = (1 << 29),   /* WKUP_EN */
-> > > > +	.irq_status_mask = (1 << 30),   /* WKUP_EVT */
-> > > > +};
-> > > > +
-> > > 
-> > > Why cant we set this in the k3-pinctrl.h and set it once?
+On Wed, Aug 02, 2023 at 09:43:40AM +0200, Artem Savkov wrote:
+> Hi Arnaldo,
 > 
-> Do you mean that I set 1 << 29 and 30 as sort of macros in the
-> k3-pinctrl.h file and then include it in pinctrl-single.c?
+> On Tue, Aug 01, 2023 at 06:42:47PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Hi Artem,
+> > 
+> > 	Can you please double check this? I reproduced with:
+> > 
+> > git checkout 46d21ec067490ab9cdcc89b9de5aae28786a8b8e
+> > build it
+> > perf record -a -g sleep 5s
+> > perf report
+> > 
+> > 	Do you get the same slowness and then reverting it, i.e. just
+> > going to HEAD~ and rebuilding getting a fast 'perf report' startup, i.e.
+> > without the inlines in the callchains?
 > 
-> Are we okay to #include a header from arch/arm64/boot/dts/ti?
-
-Yes, but SoC specific defines needs to start with a SoC specific
-prefix as multiple files may be included for various SoCs.
-
-> If I understand what Nishanth is saying correctly, are we expected to
-> set the wake_en bit on every single K3 SoC's every single padconf reg?
+> With a simple test like this I definitely get a slowdown, but not sure
+> if it can be called excessive.
 > 
-> I am a little sceptical with this approach, because what is people
-> _don't_ want to wakeup from certain pads? What would be the right way to
-> disable wakeup on those pads then?
+> Below are the times I got by running 'time perf report' and hitting 'q'
+> during load so that it quits as soon as it is loads up. Tested on a
+> freshly updated fedora 38.
 
-The wake_en only gets set when some driver does request_irq() on
-the wakeirq. No need to set them all.
+My bad, I had wrong debuginfo installed for the kernel I tested. I can
+reproduce it with the correct one. Looks like vmlinux is just too much
+for addr2line. Maybe we can skip it but leave other inlines in, like so:
 
-> Sure, I could take a look, but setting wake_en on all pads still
-> doesn't feel right to me.
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index 11de3ca8d4fa7..fef309cd401f7 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -2388,7 +2388,9 @@ static int add_callchain_ip(struct thread *thread,
+ 	ms.map = map__get(al.map);
+ 	ms.sym = al.sym;
+ 
+-	if (!branch && append_inlines(cursor, &ms, ip) == 0)
++	if (!branch && ms.map && ms.map->dso &&
++	    strcmp(ms.map->dso->short_name, "[kernel.vmlinux]") &&
++	    append_inlines(cursor, &ms, ip) == 0)
+ 		goto out;
+ 
+ 	srcline = callchain_srcline(&ms, al.addr);
 
-No need to set all wake_en pads, just checking that if request_irq()
-is done for some pin that does not have wake_en capability does not
-cause eternal interrupts if a reserved bit is high all the time :)
+> > - Arnaldo
+> > 
+> > ----
+> > 
+> > This reverts commit 46d21ec067490ab9cdcc89b9de5aae28786a8b8e.
+> > 
+> > The tests were made with a specific workload, further tests on a
+> > recently updated fedora 38 system with a system wide perf.data file
+> > shows 'perf report' taking excessive time, so lets revert this until a
+> > full investigation and improvement on the addr2line support code is
+> > made.
+> > 
+> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > Cc: Artem Savkov <asavkov@redhat.com>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > Cc: Adrian Hunter <adrian.hunter@intel.com>
+> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> > Cc: Ian Rogers <irogers@google.com>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Jiri Olsa <jolsa@kernel.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > Cc: Milian Wolff <milian.wolff@kdab.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > ---
+> >  tools/perf/util/machine.c | 5 -----
+> >  1 file changed, 5 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> > index 4e62843d51b7dbf9..f4cb41ee23cdbcfc 100644
+> > --- a/tools/perf/util/machine.c
+> > +++ b/tools/perf/util/machine.c
+> > @@ -45,7 +45,6 @@
+> >  
+> >  static void __machine__remove_thread(struct machine *machine, struct thread_rb_node *nd,
+> >  				     struct thread *th, bool lock);
+> > -static int append_inlines(struct callchain_cursor *cursor, struct map_symbol *ms, u64 ip);
+> >  
+> >  static struct dso *machine__kernel_dso(struct machine *machine)
+> >  {
+> > @@ -2385,10 +2384,6 @@ static int add_callchain_ip(struct thread *thread,
+> >  	ms.maps = maps__get(al.maps);
+> >  	ms.map = map__get(al.map);
+> >  	ms.sym = al.sym;
+> > -
+> > -	if (!branch && append_inlines(cursor, &ms, ip) == 0)
+> > -		goto out;
+> > -
+> >  	srcline = callchain_srcline(&ms, al.addr);
+> >  	err = callchain_cursor_append(cursor, ip, &ms,
+> >  				      branch, flags, nr_loop_iter,
+> > -- 
+> > 2.41.0
+> > 
+> 
+> -- 
+>  Artem
 
-Regards,
+-- 
+ Artem
 
-Tony
