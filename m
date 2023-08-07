@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 427C7772350
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D35E772351
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbjHGMA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 08:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37068 "EHLO
+        id S233209AbjHGMBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233173AbjHGMAs (ORCPT
+        with ESMTP id S233159AbjHGMAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 08:00:48 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D710E10E0;
-        Mon,  7 Aug 2023 05:00:30 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d2e1a72fcca58-68706d67ed9so3004638b3a.2;
-        Mon, 07 Aug 2023 05:00:30 -0700 (PDT)
+        Mon, 7 Aug 2023 08:00:49 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C2DE5A;
+        Mon,  7 Aug 2023 05:00:33 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d2e1a72fcca58-686f0d66652so4219953b3a.2;
+        Mon, 07 Aug 2023 05:00:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691409630; x=1692014430;
+        d=gmail.com; s=20221208; t=1691409633; x=1692014433;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QAcMAkOEEJOMPamUrjBYhNdogwU9IE1IaXVm3ZpGv80=;
-        b=SU4YU2mOQ6oTpPOIxSgtboG7UzhWHhVxG+nN0nQZF0EL7chmFAwM7GpkQ2Z7xF2tRk
-         FHOn2qfWNV5Neo4/PXySrJ2FRadtFhTfPvTVJ3GMnO0sAsnqaI+79h9FHkN1PIILnPFz
-         n4ykhzwYY1FvMkfdX6m3GhLdwdoGIY+AhPSg4a64SxMRKdxoe7hTn+ekMPEnsAu21jNb
-         veVbC5zi7v0cREt9W7tfisjM2530h/z5goFmsn2BUvgnfub28jzoOzjJqK4MLmwWj31v
-         W+yKncb0v3pMDaDQtbLgkUVLo+7m4Lru3StCwgymhMB4uQwCTRNhKdhBKYLIS215X0Vg
-         SNVg==
+        bh=bOTT3ocs5JS/M9oY/Qz6qPTtcZIfhKxiBJT+VKUnYUM=;
+        b=Wv0SnLYdusLUjLeSDaiXZ59LVe474seqZoAdL5s88eRgqDX6v4xAAIFdb5Br1xfJuB
+         yr3EbNL1wnXdvPRP+bgnY0HjF4ZBUt3NuNb4CBqyz7BdmPCcukLHOtwyUMc1/dkJ0hoC
+         zf5az6B8DkhkYj6dZYNfS3TMAKkItJqa0C6k48bgU1/xoHy3+wMeStwvyuP3uftltjBM
+         kiT8DxAFZw+8U1dlkqzsbliivG7pEsXAUK+dSr83ed3gDYB6VyNPxeqBjXVbuvjt45N2
+         pzTtFMf1gxERr/nR4tbymXABt9tyVIVuLLTpp+n9nrAUFfrSe/6WEOpSU6iWePuqQeCP
+         8UHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691409630; x=1692014430;
+        d=1e100.net; s=20221208; t=1691409633; x=1692014433;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QAcMAkOEEJOMPamUrjBYhNdogwU9IE1IaXVm3ZpGv80=;
-        b=gZwDR1LhY+6d8ZbzDQ2CpoDR1Uss7RKNf5goF+inzei1/nWUrZr4prPpCBh6m/qru4
-         psMdMHenc8AQ9y5mxR/jqhV8d7E0djrf9GG/FTy0hhnwdiB63YrC38KZV264rpn/EQaS
-         t6OsgEuktiXS89L64sIfMaVqp6vYta4JUTSY6tONo2avGOlUPEcpi9Oa23NOzzM6NAfI
-         wZRgaSz3Ah0pIl4GI9D8lX+zMyXZ/+Wd7JN4Mf5YQBB58Ewm8j0es+VuhfDCmPP2S5lg
-         nSTzvXxs7zA4ICuBAvaSOBJIn0jhr/frBCGzzjaIucEwFw8Ld0rtBt4nDt56cJYzD4X5
-         i1fQ==
-X-Gm-Message-State: AOJu0YxC1YGjqxc+WvGRIFq7EHSYdUkSsz15R86iS/qtxbtQjRfWuX7D
-        q18W06MCQE/VqHhARMdzCxk=
-X-Google-Smtp-Source: AGHT+IFZSP29bxarmYXaIIsYf+6opK+zkOBNhmpCFXYXdidTMIxFcz3j0bddoRPZRpvqAIgv/8+DNg==
-X-Received: by 2002:a05:6a20:3b1d:b0:140:48d4:8199 with SMTP id c29-20020a056a203b1d00b0014048d48199mr4808556pzh.24.1691409629800;
-        Mon, 07 Aug 2023 05:00:29 -0700 (PDT)
+        bh=bOTT3ocs5JS/M9oY/Qz6qPTtcZIfhKxiBJT+VKUnYUM=;
+        b=TCqoUyhukRZuzcSkQJc/0Bv5kqaKeOaFSX8fuwuaytefcZPVRQA69uhyfDD0xZGc4W
+         XuMXYNeIk43XRoiHK/Lc/TW0wKGZ5mxjT99wq614w9XrtIioGjaiZGSxbdNxhoWqzHMx
+         SsYm0OiqniAVRh6V3cwfZvofxtaMVJ7Te3fo7t3JaYfmLPvq9kmYGWRX+U/+pU6U9mR+
+         o8m6qrqZR6/vRef7XrZ0wcWdkC2ZMIG57qMG0pfc7c95dp3Wn7+jkiJqrBLhQUvjhFLZ
+         E7E867cqHFw6QXA7kZNNle1P0SYG+m6+3tujNu/GuCwX4aMM0mRRapTb9mSOd3vjqlQ/
+         a8yQ==
+X-Gm-Message-State: AOJu0YzHPQluRImSmtflYIuCtc76LQma/XM6t+oY9Nn/8q7HnqO6Oc4f
+        DkVnoBYbW+x+JGTm8xuuZKc=
+X-Google-Smtp-Source: AGHT+IGKdQqMSBFweOC3eBnmzOyTGDnO4n8wn5aOc+c9PlOhvC/wwJmV61lrREviQeRT5p+rK65onA==
+X-Received: by 2002:a05:6a20:3ca4:b0:133:e31f:e7d6 with SMTP id b36-20020a056a203ca400b00133e31fe7d6mr12539960pzj.55.1691409632946;
+        Mon, 07 Aug 2023 05:00:32 -0700 (PDT)
 Received: from localhost.localdomain ([113.251.7.202])
-        by smtp.gmail.com with ESMTPSA id e16-20020a62ee10000000b00686940bfb77sm6013108pfi.71.2023.08.07.05.00.27
+        by smtp.gmail.com with ESMTPSA id e16-20020a62ee10000000b00686940bfb77sm6013108pfi.71.2023.08.07.05.00.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 05:00:29 -0700 (PDT)
+        Mon, 07 Aug 2023 05:00:32 -0700 (PDT)
 From:   Hu Haowen <src.res.211@gmail.com>
 To:     corbet@lwn.net
 Cc:     Hu Haowen <src.res.211@gmail.com>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/6] docs/zh_TW: update cpu-freq
-Date:   Mon,  7 Aug 2023 20:00:03 +0800
-Message-Id: <20230807120006.6361-4-src.res.211@gmail.com>
+Subject: [PATCH v3 4/6] docs/zh_TW: update filesystems
+Date:   Mon,  7 Aug 2023 20:00:04 +0800
+Message-Id: <20230807120006.6361-5-src.res.211@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230807120006.6361-1-src.res.211@gmail.com>
 References: <20230807120006.6361-1-src.res.211@gmail.com>
@@ -65,15 +65,15 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update zh_TW's cpu-freq documentation concentrating on the following
+Update zh_TW's filesystems documentation concentrating on the following
 aspects:
 
     * The file tree structure changes of the main documentation;
@@ -86,492 +86,368 @@ aspects:
 
 Signed-off-by: Hu Haowen <src.res.211@gmail.com>
 ---
- .../translations/zh_TW/cpu-freq/core.rst      |  26 ++--
- .../zh_TW/cpu-freq/cpu-drivers.rst            | 147 +++++++++---------
- .../zh_TW/cpu-freq/cpufreq-stats.rst          |  41 +++--
- .../translations/zh_TW/cpu-freq/index.rst     |   4 +-
- 4 files changed, 108 insertions(+), 110 deletions(-)
+ .../zh_TW/filesystems/debugfs.rst             | 38 +++++++++----------
+ .../translations/zh_TW/filesystems/index.rst  |  2 +-
+ .../translations/zh_TW/filesystems/sysfs.txt  | 16 ++++----
+ .../translations/zh_TW/filesystems/tmpfs.rst  | 32 ++++++++--------
+ .../zh_TW/filesystems/virtiofs.rst            |  8 ++--
+ 5 files changed, 47 insertions(+), 49 deletions(-)
 
-diff --git a/Documentation/translations/zh_TW/cpu-freq/core.rst b/Documentation/translations/zh_TW/cpu-freq/core.rst
-index 3d890c2f2a61..20ec33aa98e4 100644
---- a/Documentation/translations/zh_TW/cpu-freq/core.rst
-+++ b/Documentation/translations/zh_TW/cpu-freq/core.rst
-@@ -29,10 +29,10 @@ CPUFreq核心和CPUFreq通知器的通用說明
- ======================
- 
- cpufreq核心代碼位於drivers/cpufreq/cpufreq.c中。這些cpufreq代碼爲CPUFreq架構的驅
--動程序（那些操作硬體切換頻率的代碼）以及 "通知器 "提供了一個標準化的接口。
--這些是設備驅動程序或需要了解策略變化的其它內核部分（如 ACPI 熱量管理）或所有頻率更改（除
--計時代碼外），甚至需要強制確定速度限制的通知器（如 ARM 架構上的 LCD 驅動程序）。
--此外， 內核 "常數" loops_per_jiffy會根據頻率變化而更新。
-+動程序（那些執行硬件頻率切換的代碼）以及 "通知器" 提供了一個標準化的接口。
-+包括設備驅動程序；需要了解策略變化（如 ACPI 熱量管理），或所有頻率變化（如計時代碼），
-+甚至需要強制限制爲指定頻率（如 ARM 架構上的 LCD 驅動程序）的其它內核組件。
-+此外，內核 "常數" loops_per_jiffy 會根據頻率變化而更新。
- 
- cpufreq策略的引用計數由 cpufreq_cpu_get 和 cpufreq_cpu_put 來完成，以確保 cpufreq 驅
- 動程序被正確地註冊到核心中，並且驅動程序在 cpufreq_put_cpu 被調用之前不會被卸載。這也保證
-@@ -41,10 +41,10 @@ cpufreq策略的引用計數由 cpufreq_cpu_get 和 cpufreq_cpu_put 來完成，
- 2. CPUFreq 通知器
- ====================
- 
--CPUFreq通知器符合標準的內核通知器接口。
-+CPUFreq通知器遵循標準的內核通知器接口。
- 關於通知器的細節請參閱 linux/include/linux/notifier.h。
- 
--這裡有兩個不同的CPUfreq通知器 - 策略通知器和轉換通知器。
-+這裏有兩個不同的CPUfreq通知器 - 策略通知器和轉換通知器。
- 
- 
- 2.1 CPUFreq策略通知器
-@@ -62,27 +62,27 @@ CPUFreq通知器符合標準的內核通知器接口。
- 2.2 CPUFreq轉換通知器
- --------------------------------
- 
--當CPUfreq驅動切換CPU核心頻率時，策略中的每個在線CPU都會收到兩次通知，這些變化沒有任何外部干
-+當CPUfreq驅動切換CPU核心頻率時，策略中的每個在線CPU都會收到兩次通知，這些變化沒有任何外部幹
- 預。
- 
- 第二個參數指定階段 - CPUFREQ_PRECHANGE or CPUFREQ_POSTCHANGE.
- 
- 第三個參數是一個包含如下值的結構體cpufreq_freqs：
- 
--=====	====================
--cpu	受影響cpu的編號
-+======	===============================
-+policy	指向struct cpufreq_policy的指針
- old	舊頻率
- new	新頻率
- flags	cpufreq驅動的標誌
--=====	====================
-+======	===============================
- 
- 3. 含有Operating Performance Point (OPP)的CPUFreq表的生成
- ==================================================================
- 關於OPP的細節請參閱 Documentation/power/opp.rst
- 
- dev_pm_opp_init_cpufreq_table -
--	這個功能提供了一個隨時可用的轉換程序，用來將OPP層關於可用頻率的內部信息翻譯成一種容易提供給
--	cpufreq的格式。
-+	這個函數提供了一個隨時可用的轉換例程，用來將OPP層關於可用頻率的內部信息翻譯成一種
-+	cpufreq易於處理的格式。
- 
- 	.. Warning::
- 
-@@ -101,7 +101,7 @@ dev_pm_opp_init_cpufreq_table -
- 
- 	.. note::
- 
--		該函數只有在CONFIG_PM_OPP之外還啓用了CONFIG_CPU_FREQ時才可用。
-+		該函數只有在CONFIG_PM_OPP之外還啓用了CONFIG_CPU_FREQ時纔可用。
- 
- dev_pm_opp_free_cpufreq_table
- 	釋放dev_pm_opp_init_cpufreq_table分配的表。
-diff --git a/Documentation/translations/zh_TW/cpu-freq/cpu-drivers.rst b/Documentation/translations/zh_TW/cpu-freq/cpu-drivers.rst
-index 2bb8197cd320..40b56259cf72 100644
---- a/Documentation/translations/zh_TW/cpu-freq/cpu-drivers.rst
-+++ b/Documentation/translations/zh_TW/cpu-freq/cpu-drivers.rst
-@@ -37,15 +37,15 @@
- 1. 怎麼做？
- ===========
- 
--如此，你剛剛得到了一個全新的CPU/晶片組及其數據手冊，並希望爲這個CPU/晶片組添加cpufreq
--支持？很好，這裡有一些至關重要的提示：
-+如果，你剛剛得到了一個全新的CPU/芯片組及其數據手冊，並希望爲這個CPU/芯片組添加cpufreq
-+支持？很好，這裏有一些至關重要的提示：
- 
- 
- 1.1 初始化
- ----------
- 
--首先，在__initcall_level_7 (module_init())或更靠後的函數中檢查這個內核是否
--運行在正確的CPU和正確的晶片組上。如果是，則使用cpufreq_register_driver()向
-+首先，在 __initcall level 7 (module_init())或更靠後的函數中檢查這個內核是否
-+運行在正確的CPU和正確的芯片組上。如果是，則使用cpufreq_register_driver()向
- CPUfreq核心層註冊一個cpufreq_driver結構體。
- 
- 結構體cpufreq_driver應該包含什麼成員?
-@@ -59,11 +59,11 @@ CPUfreq核心層註冊一個cpufreq_driver結構體。
-  .setpolicy 或 .fast_switch 或 .target 或 .target_index - 差異見
-  下文。
- 
--並且可選擇
-+其它可選成員
- 
-- .flags - cpufreq核的提示。
-+ .flags - 給cpufreq核心的提示。
- 
-- .driver_data - cpufreq驅動程序的特定數據。
-+ .driver_data - cpufreq驅動程序的特有數據。
- 
-  .get_intermediate 和 target_intermediate - 用於在改變CPU頻率時切換到穩定
-  的頻率。
-@@ -72,18 +72,18 @@ CPUfreq核心層註冊一個cpufreq_driver結構體。
- 
-  .bios_limit - 返回HW/BIOS對CPU的最大頻率限制值。
- 
-- .exit - 一個指向per-policy清理函數的指針，該函數在cpu熱插拔過程的CPU_POST_DEAD
-+ .exit - 一個指向per-policy清理函數的指針，該函數在CPU熱插拔過程的CPU_POST_DEAD
-  階段被調用。
- 
-  .suspend - 一個指向per-policy暫停函數的指針，該函數在關中斷且在該策略的調節器停止
-  後被調用。
- 
-- .resume - 一個指向per-policy恢復函數的指針，該函數在關中斷且在調節器再一次開始前被
-+ .resume - 一個指向per-policy恢復函數的指針，該函數在關中斷且在調節器再一次啓動前被
-  調用。
- 
-  .ready - 一個指向per-policy準備函數的指針，該函數在策略完全初始化之後被調用。
- 
-- .attr - 一個指向NULL結尾的"struct freq_attr"列表的指針，該函數允許導出值到
-+ .attr - 一個指向NULL結尾的"struct freq_attr"列表的指針，該列表允許導出值到
-  sysfs。
- 
-  .boost_enabled - 如果設置，則啓用提升(boost)頻率。
-@@ -94,95 +94,93 @@ CPUfreq核心層註冊一個cpufreq_driver結構體。
- 1.2 Per-CPU 初始化
- ------------------
- 
--每當一個新的CPU被註冊到設備模型中，或者在cpufreq驅動註冊自己之後，如果此CPU的cpufreq策
--略不存在，則會調用per-policy的初始化函數cpufreq_driver.init。請注意，.init()和.exit()程序
--只對策略調用一次，而不是對策略管理的每個CPU調用一次。它需要一個 ``struct cpufreq_policy
-+每當一個新的CPU被註冊到設備模型中，或者當cpufreq驅動註冊自身之後，如果此CPU的cpufreq策
-+略不存在，則會調用per-policy的初始化函數cpufreq_driver.init。請注意，.init()和.exit()例程
-+只爲某個策略調用一次，而不是對該策略管理的每個CPU調用一次。它需要一個 ``struct cpufreq_policy
- *policy`` 作爲參數。現在該怎麼做呢？
- 
- 如果有必要，請在你的CPU上激活CPUfreq功能支持。
- 
--然後，驅動程序必須填寫以下數值:
-+然後，驅動程序必須填寫以下值:
- 
- +-----------------------------------+--------------------------------------+
--|policy->cpuinfo.min_freq 和	   |					  |
--|policy->cpuinfo.max_freq	    | 該CPU支持的最低和最高頻率（kHz）     |
--|				    |                                      |
--|				    | 				           |
-+|policy->cpuinfo.min_freq和         | 該CPU支持的最低和最高頻率（kHz）     |
-+|policy->cpuinfo.max_freq           |                                      |
-+|                                   |                                      |
- +-----------------------------------+--------------------------------------+
--|policy->cpuinfo.transition_latency |                                      |
--|				    | CPU在兩個頻率之間切換所需的時間，以  |
--|				    | 納秒爲單位（如適用，否則指定         |
--|				    | CPUFREQ_ETERNAL）                    |
-+|policy->cpuinfo.transition_latency | CPU在兩個頻率之間切換所需的時間，以  |
-+|                                   | 納秒爲單位（如不適用，設定爲         |
-+|                                   | CPUFREQ_ETERNAL）                    |
-+|                                   |                                      |
- +-----------------------------------+--------------------------------------+
--|policy->cur			    | 該CPU當前的工作頻率(如適用)          |
--|				    |                                      |
-+|policy->cur                        | 該CPU當前的工作頻率(如適用)          |
-+|                                   |                                      |
- +-----------------------------------+--------------------------------------+
--|policy->min,			    |					   |
--|policy->max,			    |					   |
--|policy->policy and, if necessary,  |					   |
--|policy->governor		    | 必須包含該cpu的 「默認策略」。稍後   |
--|				    | 會用這些值調用                       |
--|				    | cpufreq_driver.verify and either     |
--|				    | cpufreq_driver.setpolicy or          |
--|				    | cpufreq_driver.target/target_index   |
--|				    | 		                           |
-+|policy->min,                       | 必須包含該CPU的"默認策略"。稍後      |
-+|policy->max,                       | 會用這些值調用                       |
-+|policy->policy and, if necessary,  | cpufreq_driver.verify和下面函數      |
-+|policy->governor                   | 之一：cpufreq_driver.setpolicy或     |
-+|                                   | cpufreq_driver.target/target_index   |
-+|                                   |                                      |
- +-----------------------------------+--------------------------------------+
--|policy->cpus			    | 用與這個CPU一起做DVFS的(在線+離線)   |
--|				    | CPU(即與它共享時鐘/電壓軌)的掩碼更新 |
--|				    | 這個                                 |
--|				    |                                      |
-+|policy->cpus                       | 該policy通過DVFS框架影響的全部CPU    |
-+|                                   | (即與本CPU共享"時鐘/電壓"對)構成     |
-+|                                   | 掩碼(同時包含在線和離線CPU)，用掩碼  |
-+|                                   | 更新本字段                           |
-+|                                   |                                      |
- +-----------------------------------+--------------------------------------+
- 
--對於設置其中的一些值(cpuinfo.min[max]_freq, policy->min[max])，頻率表助手可能會有幫
-+對於設置其中的一些值(cpuinfo.min[max]_freq, policy->min[max])，頻率表輔助函數可能會有幫
- 助。關於它們的更多信息，請參見第2節。
- 
- 
- 1.3 驗證
- --------
- 
--當用戶決定設置一個新的策略(由 「policy,governor,min,max組成」)時，必須對這個策略進行驗證，
-+當用戶決定設置一個新的策略(由"policy,governor,min,max組成")時，必須對這個策略進行驗證，
- 以便糾正不兼容的值。爲了驗證這些值，cpufreq_verify_within_limits(``struct cpufreq_policy
- *policy``, ``unsigned int min_freq``, ``unsigned int max_freq``)函數可能會有幫助。
--關於頻率表助手的詳細內容請參見第2節。
-+關於頻率表輔助函數的詳細內容請參見第2節。
- 
- 您需要確保至少有一個有效頻率（或工作範圍）在 policy->min 和 policy->max 範圍內。如果有必
--要，先增加policy->max，只有在沒有辦法的情況下，才減少policy->min。
-+要，先增大policy->max，只有在沒有解決方案的情況下，才減小policy->min。
- 
- 
- 1.4 target 或 target_index 或 setpolicy 或 fast_switch?
- -------------------------------------------------------
- 
--大多數cpufreq驅動甚至大多數cpu頻率升降算法只允許將CPU頻率設置爲預定義的固定值。對於這些，你
-+大多數cpufreq驅動甚至大多數CPU頻率升降算法只允許將CPU頻率設置爲預定義的固定值。對於這些，你
- 可以使用->target()，->target_index()或->fast_switch()回調。
- 
--有些cpufreq功能的處理器可以自己在某些限制之間切換頻率。這些應使用->setpolicy()回調。
-+有些具有硬件調頻能力的處理器可以自行依據某些限制來切換CPU頻率。它們應使用->setpolicy()回調。
- 
- 
- 1.5. target/target_index
- ------------------------
- 
--target_index調用有兩個參數：``struct cpufreq_policy * policy``和``unsigned int``
--索引(於列出的頻率表)。
-+target_index調用有兩個參數： ``struct cpufreq_policy * policy`` 和 ``unsigned int``
-+索引(用於索引頻率表項)。
- 
--當調用這裡時，CPUfreq驅動必須設置新的頻率。實際頻率必須由freq_table[index].frequency決定。
-+當調用這裏時，CPUfreq驅動必須設置新的頻率。實際頻率必須由freq_table[index].frequency決定。
- 
--它應該總是在錯誤的情況下恢復到之前的頻率(即policy->restore_freq)，即使我們之前切換到中間頻率。
-+在發生錯誤的情況下總是應該恢復到之前的頻率(即policy->restore_freq)，即使我們已經切換到了
-+中間頻率。
- 
- 已棄用
- ----------
--目標調用有三個參數。``struct cpufreq_policy * policy``, unsigned int target_frequency,
-+target調用有三個參數。``struct cpufreq_policy * policy``, unsigned int target_frequency,
- unsigned int relation.
- 
--CPUfreq驅動在調用這裡時必須設置新的頻率。實際的頻率必須使用以下規則來確定。
-+CPUfreq驅動在調用這裏時必須設置新的頻率。實際的頻率必須使用以下規則來確定。
- 
--- 緊跟 "目標頻率"。
-+- 儘量貼近"目標頻率"。
- - policy->min <= new_freq <= policy->max (這必須是有效的!!!)
- - 如果 relation==CPUFREQ_REL_L，嘗試選擇一個高於或等於 target_freq 的 new_freq。("L代表
-   最低，但不能低於")
- - 如果 relation==CPUFREQ_REL_H，嘗試選擇一個低於或等於 target_freq 的 new_freq。("H代表
-   最高，但不能高於")
- 
--這裡，頻率表助手可能會幫助你--詳見第2節。
-+這裏，頻率表輔助函數可能會幫助你 -- 詳見第2節。
- 
- 1.6. fast_switch
- ----------------
-@@ -196,51 +194,52 @@ CPUfreq驅動在調用這裡時必須設置新的頻率。實際的頻率必須
- 1.7 setpolicy
- -------------
- 
--setpolicy調用只需要一個``struct cpufreq_policy * policy``作爲參數。需要將處理器內或晶片組內動態頻
-+setpolicy調用只需要一個 ``struct cpufreq_policy * policy`` 作爲參數。需要將處理器內或芯片組內動態頻
- 率切換的下限設置爲policy->min，上限設置爲policy->max，如果支持的話，當policy->policy爲
--CPUFREQ_POLICY_PERFORMANCE時選擇面向性能的設置，當CPUFREQ_POLICY_POWERSAVE時選擇面向省電的設置。
-+CPUFREQ_POLICY_PERFORMANCE時選擇面向性能的設置，爲CPUFREQ_POLICY_POWERSAVE時選擇面向省電的設置。
- 也可以查看drivers/cpufreq/longrun.c中的參考實現。
- 
- 1.8 get_intermediate 和 target_intermediate
- --------------------------------------------
- 
--僅適用於 target_index() 和 CPUFREQ_ASYNC_NOTIFICATION 未設置的驅動。
-+僅適用於未設置 target_index() 和 CPUFREQ_ASYNC_NOTIFICATION 的驅動。
- 
--get_intermediate應該返回一個平台想要切換到的穩定的中間頻率，target_intermediate()應該將CPU設置爲
--該頻率，然後再跳轉到'index'對應的頻率。核心會負責發送通知，驅動不必在target_intermediate()或
--target_index()中處理。
-+get_intermediate應該返回一個平臺想要切換到的穩定的中間頻率，target_intermediate()應該將CPU設置爲
-+該頻率，然後再跳轉到'index'對應的頻率。cpufreq核心會負責發送通知，驅動不必在
-+target_intermediate()或target_index()中處理它們。
- 
--在驅動程序不想因爲某個目標頻率切換到中間頻率的情況下，它們可以從get_intermediate()中返回'0'。在這種情況
--下，核心將直接調用->target_index()。
-+在驅動程序不想爲某個目標頻率切換到中間頻率的情況下，它們可以讓get_intermediate()返回'0'。
-+在這種情況下，cpufreq核心將直接調用->target_index()。
- 
--注意：->target_index()應該在失敗的情況下恢復到policy->restore_freq，因爲core會爲此發送通知。
-+注意：->target_index()應該在發生失敗的情況下將頻率恢復到policy->restore_freq，
-+因爲cpufreq核心會爲此發送通知。
- 
- 
--2. 頻率表助手
--=============
-+2. 頻率表輔助函數
-+=================
- 
--由於大多數cpufreq處理器只允許被設置爲幾個特定的頻率，因此，一個帶有一些函數的 「頻率表」可能會輔助處理器驅動
--程序的一些工作。這樣的 "頻率表" 由一個cpufreq_frequency_table條目構成的數組組成，"driver_data" 中包
--含了驅動程序的具體數值，"frequency" 中包含了相應的頻率，並設置了標誌。在表的最後，需要添加一個
--cpufreq_frequency_table條目，頻率設置爲CPUFREQ_TABLE_END。而如果想跳過表中的一個條目，則將頻率設置爲
--CPUFREQ_ENTRY_INVALID。這些條目不需要按照任何特定的順序排序，但如果它們是cpufreq 核心會對它們進行快速的DVFS，
-+由於大多數支持cpufreq的處理器只允許被設置爲幾個特定的頻率，因此，"頻率表"和一些相關函數可能會輔助處理器驅動
-+程序的一些工作。這樣的"頻率表"是一個由struct cpufreq_frequency_table的條目構成的數組，"driver_data"成員包
-+含驅動程序的專用值，"frequency"成員包含了相應的頻率，此外還有標誌成員。在表的最後，需要添加一個
-+cpufreq_frequency_table條目，頻率設置爲CPUFREQ_TABLE_END。如果想跳過表中的一個條目，則將頻率設置爲
-+CPUFREQ_ENTRY_INVALID。這些條目不需要按照任何特定的順序排序，如果排序了，cpufreq核心執行DVFS會更快一點，
- 因爲搜索最佳匹配會更快。
- 
--如果策略在其policy->freq_table欄位中包含一個有效的指針，cpufreq表就會被核心自動驗證。
-+如果在policy->freq_table字段中包含一個有效的頻率表指針，頻率表就會被cpufreq核心自動驗證。
- 
- cpufreq_frequency_table_verify()保證至少有一個有效的頻率在policy->min和policy->max範圍內，並且所有其他
--標準都被滿足。這對->verify調用很有幫助。
-+準則都被滿足。這對->verify調用很有幫助。
- 
--cpufreq_frequency_table_target()是對應於->target階段的頻率表助手。只要把數值傳遞給這個函數，這個函數就會返
-+cpufreq_frequency_table_target()是對應於->target階段的頻率表輔助函數。只要把值傳遞給這個函數，這個函數就會返
- 回包含CPU要設置的頻率的頻率表條目。
- 
--以下宏可以作爲cpufreq_frequency_table的疊代器。
-+以下宏可以作爲cpufreq_frequency_table的迭代器。
- 
- cpufreq_for_each_entry(pos, table) - 遍歷頻率表的所有條目。
- 
- cpufreq_for_each_valid_entry(pos, table) - 該函數遍歷所有條目，不包括CPUFREQ_ENTRY_INVALID頻率。
--使用參數 "pos"-一個``cpufreq_frequency_table * `` 作爲循環變量，使用參數 "table"-作爲你想疊代
--的``cpufreq_frequency_table * `` 。
-+使用參數"pos" -- 一個 ``cpufreq_frequency_table *`` 作爲循環指針，使用參數"table" -- 作爲你想迭代
-+的 ``cpufreq_frequency_table *`` 。
- 
- 例如::
- 
-@@ -251,6 +250,6 @@ cpufreq_for_each_valid_entry(pos, table) - 該函數遍歷所有條目，不包
- 		pos->frequency = ...
- 	}
- 
--如果你需要在driver_freq_table中處理pos的位置，不要減去指針，因爲它的代價相當高。相反，使用宏
-+如果你需要在driver_freq_table中處理pos的位置，不要做指針減法，因爲它的代價相當高。作爲替代，使用宏
- cpufreq_for_each_entry_idx() 和 cpufreq_for_each_valid_entry_idx() 。
- 
-diff --git a/Documentation/translations/zh_TW/cpu-freq/cpufreq-stats.rst b/Documentation/translations/zh_TW/cpu-freq/cpufreq-stats.rst
-index d80bfed50e8c..f8d0d462f29a 100644
---- a/Documentation/translations/zh_TW/cpu-freq/cpufreq-stats.rst
-+++ b/Documentation/translations/zh_TW/cpu-freq/cpufreq-stats.rst
-@@ -13,7 +13,7 @@
- sysfs CPUFreq Stats的一般說明
- ==========================================
- 
--用戶信息
-+爲使用者準備的信息
- 
- 
- 作者: Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>
-@@ -28,17 +28,16 @@ sysfs CPUFreq Stats的一般說明
- 1. 簡介
- ===============
- 
--cpufreq-stats是一個爲每個CPU提供CPU頻率統計的驅動。
--這些統計數據在/sysfs中以一堆只讀接口的形式提供。這個接口（在配置好後）將出現在
--/sysfs（<sysfs root>/devices/system/cpu/cpuX/cpufreq/stats/）中cpufreq下的一個單
--獨的目錄中，提供給每個CPU。
--各種統計數據將在此目錄下形成只讀文件。
-+cpufreq-stats是一種爲每個CPU提供CPU頻率統計的驅動。
-+這些統計數據以/sysfs中一系列只讀接口的形式呈現。cpufreq-stats接口（若已配置）將爲每個CPU生成
-+/sysfs（<sysfs root>/devices/system/cpu/cpuX/cpufreq/stats/）中cpufreq目錄下的stats目錄。
-+各項統計數據將在stats目錄下形成對應的只讀文件。
- 
--此驅動是獨立於任何可能運行在你所用CPU上的特定cpufreq_driver而設計的。因此，它將與所有
--cpufreq_driver一起工作。
-+此驅動是以獨立於任何可能運行在你所用CPU上的特定cpufreq_driver的方式設計的。因此，它將能和任何
-+cpufreq_driver協同工作。
- 
- 
--2. 提供的統計數據(舉例說明)
-+2. 已提供的統計數據(有例子)
- =====================================
- 
- cpufreq stats提供了以下統計數據（在下面詳細解釋）。
-@@ -47,8 +46,8 @@ cpufreq stats提供了以下統計數據（在下面詳細解釋）。
- -  total_trans
- -  trans_table
- 
--所有的統計數據將從統計驅動被載入的時間（或統計被重置的時間）開始，到某一統計數據被讀取的時間爲止。
--顯然，統計驅動不會有任何關於統計驅動載入之前的頻率轉換信息。
-+所有統計數據來自以下時間範圍：從統計驅動被加載的時間（或統計數據被重置的時間）開始，到某一統計數據被讀取的時間爲止。
-+顯然，統計驅動不會保存它被加載之前的任何頻率轉換信息。
- 
- ::
- 
-@@ -63,14 +62,14 @@ cpufreq stats提供了以下統計數據（在下面詳細解釋）。
- 
- - **reset**
- 
--只寫屬性，可用於重置統計計數器。這對於評估不同調節器下的系統行爲非常有用，且無需重啓。
-+只寫屬性，可用於重置統計計數器。這對於評估不同調節器的系統行爲非常有用，且無需重啓。
- 
- 
- - **time_in_state**
- 
--此項給出了這個CPU所支持的每個頻率所花費的時間。cat輸出的每一行都會有"<frequency>
--<time>"對，表示這個CPU在<frequency>上花費了<time>個usertime單位的時間。這裡的
--usertime單位是10mS（類似於/proc中輸出的其他時間）。
-+此文件給出了在本CPU支持的每個頻率上分別花費的時間。cat輸出的每一行都是一個"<frequency>
-+<time>"對，表示這個CPU在<frequency>上花費了<time>個usertime單位的時間。輸出的每一行對應
-+一個CPU支持的頻率。這裏usertime單位是10mS（類似於/proc導出的其它時間）。
- 
- ::
- 
-@@ -84,7 +83,7 @@ usertime單位是10mS（類似於/proc中輸出的其他時間）。
- 
- - **total_trans**
- 
--給出了這個CPU上頻率轉換的總次數。cat的輸出將有一個單一的計數，這就是頻率轉換的總數。
-+此文件給出了這個CPU頻率轉換的總次數。cat的輸出是一個計數值，它就是頻率轉換的總次數。
- 
- ::
- 
-@@ -93,10 +92,10 @@ usertime單位是10mS（類似於/proc中輸出的其他時間）。
- 
- - **trans_table**
- 
--這將提供所有CPU頻率轉換的細粒度信息。這裡的cat輸出是一個二維矩陣，其中一個條目<i, j>（第
-+本文件提供所有CPU頻率轉換的細粒度信息。這裏的cat輸出是一個二維矩陣，其中一個條目<i, j>（第
- i行，第j列）代表從Freq_i到Freq_j的轉換次數。Freq_i行和Freq_j列遵循驅動最初提供給cpufreq
--核的頻率表的排序順序，因此可以排序（升序或降序）或不排序。 這裡的輸出也包含了每行每列的實際
--頻率值，以便更好地閱讀。
-+核心的頻率表的排列順序，因此可以已排序（升序或降序）或未排序。這裏的輸出也包含了實際
-+頻率值，分別按行和按列顯示，以便更好地閱讀。
- 
- 如果轉換表大於PAGE_SIZE，讀取時將返回一個-EFBIG錯誤。
- 
-@@ -114,7 +113,7 @@ i行，第j列）代表從Freq_i到Freq_j的轉換次數。Freq_i行和Freq_j列
- 3. 配置cpufreq-stats
- ============================
- 
--要在你的內核中配置cpufreq-stats::
-+按以下方式在你的內核中配置cpufreq-stats::
- 
- 	Config Main Menu
- 		Power management options (ACPI, APM)  --->
-@@ -123,7 +122,7 @@ i行，第j列）代表從Freq_i到Freq_j的轉換次數。Freq_i行和Freq_j列
- 				[*]   CPU frequency translation statistics
- 
- 
--"CPU Frequency scaling" (CONFIG_CPU_FREQ) 應該被啓用以配置cpufreq-stats。
-+"CPU Frequency scaling" (CONFIG_CPU_FREQ) 應該被啓用，以支持配置cpufreq-stats。
- 
- "CPU frequency translation statistics" (CONFIG_CPU_FREQ_STAT)提供了包括
- time_in_state、total_trans和trans_table的統計數據。
-diff --git a/Documentation/translations/zh_TW/cpu-freq/index.rst b/Documentation/translations/zh_TW/cpu-freq/index.rst
-index 1a8e680f95ed..ce717dd6dcd5 100644
---- a/Documentation/translations/zh_TW/cpu-freq/index.rst
-+++ b/Documentation/translations/zh_TW/cpu-freq/index.rst
-@@ -28,10 +28,10 @@ Author: Dominik Brodowski  <linux@brodo.de>
- 
- 郵件列表
- ------------
--這裡有一個 CPU 頻率變化的 CVS 提交和通用列表，您可以在這裡報告bug、問題或提交補丁。要發
-+這裏有一個 CPU 頻率變化的 CVS 提交和通用列表，您可以在這裏報告bug、問題或提交補丁。要發
- 布消息，請發送電子郵件到 linux-pm@vger.kernel.org。
- 
--連結
-+鏈接
- -----
- FTP檔案:
- * ftp://ftp.linux.org.uk/pub/linux/cpufreq/
+diff --git a/Documentation/translations/zh_TW/filesystems/debugfs.rst b/Documentation/translations/zh_TW/filesystems/debugfs.rst
+index 270dd94fddf1..45347ae1ccd2 100644
+--- a/Documentation/translations/zh_TW/filesystems/debugfs.rst
++++ b/Documentation/translations/zh_TW/filesystems/debugfs.rst
+@@ -23,8 +23,8 @@ Debugfs
+ 
+ 
+ Debugfs是內核開發人員在用戶空間獲取信息的簡單方法。與/proc不同，proc只提供進程
+-信息。也不像sysfs,具有嚴格的「每個文件一個值「的規則。debugfs根本沒有規則,開發
+-人員可以在這裡放置他們想要的任何信息。debugfs文件系統也不能用作穩定的ABI接口。
++信息。也不像sysfs,具有嚴格的“每個文件一個值“的規則。debugfs根本沒有規則,開發
++人員可以在這裏放置他們想要的任何信息。debugfs文件系統也不能用作穩定的ABI接口。
+ 從理論上講，debugfs導出文件的時候沒有任何約束。但是[1]實際情況並不總是那麼
+ 簡單。即使是debugfs接口，也最好根據需要進行設計,並儘量保持接口不變。
+ 
+@@ -34,8 +34,8 @@ Debugfs通常使用以下命令安裝::
+     mount -t debugfs none /sys/kernel/debug
+ 
+ （或等效的/etc/fstab行）。
+-debugfs根目錄默認僅可由root用戶訪問。要更改對文件樹的訪問，請使用「 uid」，「 gid」
+-和「 mode」掛載選項。請注意，debugfs API僅按照GPL協議導出到模塊。
++debugfs根目錄默認僅可由root用戶訪問。要更改對文件樹的訪問，請使用“ uid”，“ gid”
++和“ mode”掛載選項。請注意，debugfs API僅按照GPL協議導出到模塊。
+ 
+ 使用debugfs的代碼應包含<linux/debugfs.h>。然後，首先是創建至少一個目錄來保存
+ 一組debugfs文件::
+@@ -54,8 +54,8 @@ debugfs根目錄默認僅可由root用戶訪問。要更改對文件樹的訪問
+ 				       struct dentry *parent, void *data,
+ 				       const struct file_operations *fops);
+ 
+-在這裡，name是要創建的文件的名稱，mode描述了訪問文件應具有的權限，parent指向
+-應該保存文件的目錄，data將存儲在產生的inode結構體的i_private欄位中，而fops是
++在這裏，name是要創建的文件的名稱，mode描述了訪問文件應具有的權限，parent指向
++應該保存文件的目錄，data將存儲在產生的inode結構體的i_private字段中，而fops是
+ 一組文件操作函數，這些函數中實現文件操作的具體行爲。至少，read（）和/或
+ write（）操作應提供；其他可以根據需要包括在內。同樣的，返回值將是指向創建文件
+ 的dentry指針，錯誤時返回ERR_PTR（-ERROR），系統不支持debugfs時返回值爲ERR_PTR
+@@ -81,7 +81,7 @@ file_size是初始文件大小。其他參數跟函數debugfs_create_file的相
+ 			    struct dentry *parent, u64 *value);
+ 
+ 這些文件支持讀取和寫入給定值。如果某個文件不支持寫入，只需根據需要設置mode
+-參數位。這些文件中的值以十進位表示；如果需要使用十六進位，可以使用以下函數
++參數位。這些文件中的值以十進制表示；如果需要使用十六進制，可以使用以下函數
+ 替代::
+ 
+     void debugfs_create_x8(const char *name, umode_t mode,
+@@ -93,7 +93,7 @@ file_size是初始文件大小。其他參數跟函數debugfs_create_file的相
+     void debugfs_create_x64(const char *name, umode_t mode,
+ 			    struct dentry *parent, u64 *value);
+ 
+-這些功能只有在開發人員知道導出值的大小的時候才有用。某些數據類型在不同的架構上
++這些功能只有在開發人員知道導出值的大小的時候纔有用。某些數據類型在不同的架構上
+ 有不同的寬度，這樣會使情況變得有些複雜。在這種特殊情況下可以使用以下函數::
+ 
+     void debugfs_create_size_t(const char *name, umode_t mode,
+@@ -101,7 +101,7 @@ file_size是初始文件大小。其他參數跟函數debugfs_create_file的相
+ 
+ 不出所料，此函數將創建一個debugfs文件來表示類型爲size_t的變量。
+ 
+-同樣地，也有導出無符號長整型變量的函數，分別以十進位和十六進位表示如下::
++同樣地，也有導出無符號長整型變量的函數，分別以十進制和十六進制表示如下::
+ 
+     struct dentry *debugfs_create_ulong(const char *name, umode_t mode,
+ 					struct dentry *parent,
+@@ -125,7 +125,7 @@ file_size是初始文件大小。其他參數跟函數debugfs_create_file的相
+ 
+ 讀取此文件將獲得atomic_t值，寫入此文件將設置atomic_t值。
+ 
+-另一個選擇是通過以下結構體和函數導出一個任意二進位數據塊::
++另一個選擇是通過以下結構體和函數導出一個任意二進制數據塊::
+ 
+     struct debugfs_blob_wrapper {
+ 	void *data;
+@@ -136,10 +136,10 @@ file_size是初始文件大小。其他參數跟函數debugfs_create_file的相
+ 				       struct dentry *parent,
+ 				       struct debugfs_blob_wrapper *blob);
+ 
+-讀取此文件將返回由指針指向debugfs_blob_wrapper結構體的數據。一些驅動使用「blobs」
+-作爲一種返回幾行（靜態）格式化文本的簡單方法。這個函數可用於導出二進位信息，但
++讀取此文件將返回由指針指向debugfs_blob_wrapper結構體的數據。一些驅動使用“blobs”
++作爲一種返回幾行（靜態）格式化文本的簡單方法。這個函數可用於導出二進制信息，但
+ 似乎在主線中沒有任何代碼這樣做。請注意，使用debugfs_create_blob（）命令創建的
+-所有文件是只讀的。
++所有文件是隻讀的。
+ 
+ 如果您要轉儲一個寄存器塊（在開發過程中經常會這麼做，但是這樣的調試代碼很少上傳
+ 到主線中。Debugfs提供兩個函數：一個用於創建僅寄存器文件，另一個把一個寄存器塊
+@@ -163,7 +163,7 @@ file_size是初始文件大小。其他參數跟函數debugfs_create_file的相
+     void debugfs_print_regs32(struct seq_file *s, struct debugfs_reg32 *regs,
+ 			 int nregs, void __iomem *base, char *prefix);
+ 
+-「base」參數可能爲0，但您可能需要使用__stringify構建reg32數組，實際上有許多寄存器
++“base”參數可能爲0，但您可能需要使用__stringify構建reg32數組，實際上有許多寄存器
+ 名稱（宏）是寄存器塊在基址上的字節偏移量。
+ 
+ 如果要在debugfs中轉儲u32數組，可以使用以下函數創建文件::
+@@ -172,7 +172,7 @@ file_size是初始文件大小。其他參數跟函數debugfs_create_file的相
+ 			struct dentry *parent,
+ 			u32 *array, u32 elements);
+ 
+-「array」參數提供數據，而「elements」參數爲數組中元素的數量。注意：數組創建後，數組
++“array”參數提供數據，而“elements”參數爲數組中元素的數量。注意：數組創建後，數組
+ 大小無法更改。
+ 
+ 有一個函數來創建與設備相關的seq_file::
+@@ -183,8 +183,8 @@ file_size是初始文件大小。其他參數跟函數debugfs_create_file的相
+ 				int (*read_fn)(struct seq_file *s,
+ 					void *data));
+ 
+-「dev」參數是與此debugfs文件相關的設備，並且「read_fn」是一個函數指針，這個函數在
+-列印seq_file內容的時候被回調。
++“dev”參數是與此debugfs文件相關的設備，並且“read_fn”是一個函數指針，這個函數在
++打印seq_file內容的時候被回調。
+ 
+ 還有一些其他的面向目錄的函數::
+ 
+@@ -199,7 +199,7 @@ file_size是初始文件大小。其他參數跟函數debugfs_create_file的相
+ 
+ 調用debugfs_rename()將爲現有的debugfs文件重命名，可能同時切換目錄。 new_name
+ 函數調用之前不能存在；返回值爲old_dentry，其中包含更新的信息。可以使用
+-debugfs_create_symlink（）創建符號連結。
++debugfs_create_symlink（）創建符號鏈接。
+ 
+ 所有debugfs用戶必須考慮的一件事是：
+ 
+@@ -219,6 +219,6 @@ dentry值可以爲NULL或錯誤值，在這種情況下，不會有任何文件
+ 
+ 如果將對應頂層目錄的dentry傳遞給以上函數，則該目錄下的整個層次結構將會被刪除。
+ 
+-注釋：
++註釋：
+ [1] http://lwn.net/Articles/309298/
+ 
+diff --git a/Documentation/translations/zh_TW/filesystems/index.rst b/Documentation/translations/zh_TW/filesystems/index.rst
+index 4e5dde0dca3c..415abfe327c1 100644
+--- a/Documentation/translations/zh_TW/filesystems/index.rst
++++ b/Documentation/translations/zh_TW/filesystems/index.rst
+@@ -12,7 +12,7 @@
+ Linux Kernel中的文件系統
+ ========================
+ 
+-這份正在開發的手冊或許在未來某個輝煌的日子裡以易懂的形式將Linux虛擬\
++這份正在開發的手冊或許在未來某個輝煌的日子裏以易懂的形式將Linux虛擬\
+ 文件系統（VFS）層以及基於其上的各種文件系統如何工作呈現給大家。當前\
+ 可以看到下面的內容。
+ 
+diff --git a/Documentation/translations/zh_TW/filesystems/sysfs.txt b/Documentation/translations/zh_TW/filesystems/sysfs.txt
+index 280824cc7e5d..a401739d0914 100644
+--- a/Documentation/translations/zh_TW/filesystems/sysfs.txt
++++ b/Documentation/translations/zh_TW/filesystems/sysfs.txt
+@@ -1,5 +1,3 @@
+-SPDX-License-Identifier: GPL-2.0
+-
+ Chinese translated version of Documentation/filesystems/sysfs.rst
+ 
+ If you have any comment or update to the content, please contact the
+@@ -61,7 +59,7 @@ Documentation/core-api/kobject.rst 文檔以獲得更多關於 kobject 接口的
+ 
+ 任何 kobject 在系統中註冊，就會有一個目錄在 sysfs 中被創建。這個
+ 目錄是作爲該 kobject 的父對象所在目錄的子目錄創建的，以準確地傳遞
+-內核的對象層次到用戶空間。sysfs 中的頂層目錄代表著內核對象層次的
++內核的對象層次到用戶空間。sysfs 中的頂層目錄代表着內核對象層次的
+ 共同祖先；例如：某些對象屬於某個子系統。
+ 
+ Sysfs 在與其目錄關聯的 kernfs_node 對象中內部保存一個指向實現
+@@ -198,7 +196,7 @@ Sysfs 將會爲每次讀寫操作調用一次這個方法。這使得這些方
+   不會不太高。
+ 
+   這使得用戶空間可以局部地讀和任意的向前搜索整個文件。如果用戶空間
+-  向後搜索到零或使用『0』偏移執行一個pread(2)操作，show()方法將
++  向後搜索到零或使用‘0’偏移執行一個pread(2)操作，show()方法將
+   再次被調用，以重新填充緩存。
+ 
+ - 在寫方面（write(2)），sysfs 希望在第一次寫操作時得到整個緩衝區。
+@@ -253,7 +251,7 @@ static DEVICE_ATTR(name, S_IRUGO, show_name, store_name);
+ 
+ （注意：真正的實現不允許用戶空間設置設備名。）
+ 
+-頂層目錄布局
++頂層目錄佈局
+ ~~~~~~~~~~~~
+ 
+ sysfs 目錄的安排顯示了內核數據結構之間的關係。
+@@ -272,23 +270,23 @@ fs/
+ devices/ 包含了一個設備樹的文件系統表示。他直接映射了內部的內核
+ 設備樹，反映了設備的層次結構。
+ 
+-bus/ 包含了內核中各種總線類型的平面目錄布局。每個總線目錄包含兩個
++bus/ 包含了內核中各種總線類型的平面目錄佈局。每個總線目錄包含兩個
+ 子目錄:
+ 
+ 	devices/
+ 	drivers/
+ 
+-devices/ 包含了系統中出現的每個設備的符號連結，他們指向 root/ 下的
++devices/ 包含了系統中出現的每個設備的符號鏈接，他們指向 root/ 下的
+ 設備目錄。
+ 
+-drivers/ 包含了每個已爲特定總線上的設備而掛載的驅動程序的目錄(這裡
++drivers/ 包含了每個已爲特定總線上的設備而掛載的驅動程序的目錄(這裏
+ 假定驅動沒有跨越多個總線類型)。
+ 
+ fs/ 包含了一個爲文件系統設立的目錄。現在每個想要導出屬性的文件系統必須
+ 在 fs/ 下創建自己的層次結構(參見Documentation/filesystems/fuse.rst)。
+ 
+ dev/ 包含兩個子目錄： char/ 和 block/。在這兩個子目錄中，有以
+-<major>:<minor> 格式命名的符號連結。這些符號連結指向 sysfs 目錄
++<major>:<minor> 格式命名的符號鏈接。這些符號鏈接指向 sysfs 目錄
+ 中相應的設備。/sys/dev 提供一個通過一個 stat(2) 操作結果，查找
+ 設備 sysfs 接口快捷的方法。
+ 
+diff --git a/Documentation/translations/zh_TW/filesystems/tmpfs.rst b/Documentation/translations/zh_TW/filesystems/tmpfs.rst
+index 8d753a34785b..16c188436b41 100644
+--- a/Documentation/translations/zh_TW/filesystems/tmpfs.rst
++++ b/Documentation/translations/zh_TW/filesystems/tmpfs.rst
+@@ -13,18 +13,18 @@ Tmpfs
+ 
+ Tmpfs是一個將所有文件都保存在虛擬內存中的文件系統。
+ 
+-tmpfs中的所有內容都是臨時的，也就是說沒有任何文件會在硬碟上創建。
++tmpfs中的所有內容都是臨時的，也就是說沒有任何文件會在硬盤上創建。
+ 如果卸載tmpfs實例，所有保存在其中的文件都會丟失。
+ 
+-tmpfs將所有文件保存在內核緩存中，隨著文件內容增長或縮小可以將不需要的
+-頁面swap出去。它具有最大限制，可以通過「mount -o remount ...」調整。
++tmpfs將所有文件保存在內核緩存中，隨着文件內容增長或縮小可以將不需要的
++頁面swap出去。它具有最大限制，可以通過“mount -o remount ...”調整。
+ 
+ 和ramfs（創建tmpfs的模板）相比，tmpfs包含交換和限制檢查。和tmpfs相似的另
+-一個東西是RAM磁碟（/dev/ram*），可以在物理RAM中模擬固定大小的硬碟，並在
++一個東西是RAM磁盤（/dev/ram*），可以在物理RAM中模擬固定大小的硬盤，並在
+ 此之上創建一個普通的文件系統。Ramdisks無法swap，因此無法調整它們的大小。
+ 
+ 由於tmpfs完全保存於頁面緩存和swap中，因此所有tmpfs頁面將在/proc/meminfo
+-中顯示爲「Shmem」，而在free(1)中顯示爲「Shared」。請注意，這些計數還包括
++中顯示爲“Shmem”，而在free(1)中顯示爲“Shared”。請注意，這些計數還包括
+ 共享內存(shmem，請參閱ipcs(1))。獲得計數的最可靠方法是使用df(1)和du(1)。
+ 
+ tmpfs具有以下用途：
+@@ -45,7 +45,7 @@ tmpfs具有以下用途：
+    tmpfs的前身(shm fs)才能使用SYSV共享內存)
+ 
+ 3) 很多人（包括我）都覺的在/tmp和/var/tmp上掛載非常方便，並具有較大的
+-   swap分區。目前循環掛載tmpfs可以正常工作，所以大多數發布都應當可以
++   swap分區。目前循環掛載tmpfs可以正常工作，所以大多數發佈都應當可以
+    使用mkinitrd通過/tmp訪問/tmp。
+ 
+ 4) 也許還有更多我不知道的地方:-)
+@@ -58,11 +58,11 @@ size       tmpfs實例分配的字節數限制。默認值是不swap時物理RAM
+            如果tmpfs實例過大，機器將死鎖，因爲OOM處理將無法釋放該內存。
+ nr_blocks  與size相同，但以PAGE_SIZE爲單位。
+ nr_inodes  tmpfs實例的最大inode個數。默認值是物理內存頁數的一半，或者
+-           (有高端內存的機器)低端內存RAM的頁數，二者以較低者為準。
++           (有高端內存的機器)低端內存RAM的頁數，二者以較低者爲準。
+ =========  ===========================================================
+ 
+ 這些參數接受後綴k，m或g表示千，兆和千兆字節，可以在remount時更改。
+-size參數也接受後綴％用來限制tmpfs實例占用物理RAM的百分比：
++size參數也接受後綴％用來限制tmpfs實例佔用物理RAM的百分比：
+ 未指定size或nr_blocks時，默認值爲size=50％
+ 
+ 如果nr_blocks=0（或size=0），block個數將不受限制；如果nr_inodes=0，
+@@ -71,26 +71,26 @@ inode個數將不受限制。這樣掛載通常是不明智的，因爲它允許
+ 場景下的訪問。
+ 
+ tmpfs具有爲所有文件設置NUMA內存分配策略掛載選項(如果啓用了CONFIG_NUMA),
+-可以通過「mount -o remount ...」調整
++可以通過“mount -o remount ...”調整
+ 
+ ======================== =========================
+ mpol=default             採用進程分配策略
+                          (請參閱 set_mempolicy(2))
+ mpol=prefer:Node         傾向從給定的節點分配
+-mpol=bind:NodeList       只允許從指定的鍊表分配
++mpol=bind:NodeList       只允許從指定的鏈表分配
+ mpol=interleave          傾向於依次從每個節點分配
+ mpol=interleave:NodeList 依次從每個節點分配
+ mpol=local               優先本地節點分配內存
+ ======================== =========================
+ 
+-NodeList格式是以逗號分隔的十進位數字表示大小和範圍，最大和最小範圍是用-
+-分隔符的十進位數來表示。例如，mpol=bind0-3,5,7,9-15
++NodeList格式是以逗號分隔的十進制數字表示大小和範圍，最大和最小範圍是用-
++分隔符的十進制數來表示。例如，mpol=bind0-3,5,7,9-15
+ 
+ 帶有有效NodeList的內存策略將按指定格式保存，在創建文件時使用。當任務在該
+ 文件系統上創建文件時，會使用到掛載時的內存策略NodeList選項，如果設置的話，
+ 由調用任務的cpuset[請參見Documentation/admin-guide/cgroup-v1/cpusets.rst]
+ 以及下面列出的可選標誌約束。如果NodeLists爲設置爲空集，則文件的內存策略將
+-恢復爲「默認」策略。
++恢復爲“默認”策略。
+ 
+ NUMA內存分配策略有可選標誌，可以用於模式結合。在掛載tmpfs時指定這些可選
+ 標誌可以在NodeList之前生效。
+@@ -107,12 +107,12 @@ Documentation/admin-guide/mm/numa_memory_policy.rst列出所有可用的內存
+ 請注意，如果內核不支持NUMA，那麼使用mpol選項掛載tmpfs將會失敗；nodelist指定不
+ 在線的節點也會失敗。如果您的系統依賴於此，但內核會運行不帶NUMA功能(也許是安全
+ revocery內核)，或者具有較少的節點在線，建議從自動模式中省略mpol選項掛載選項。
+-可以在以後通過「mount -o remount,mpol=Policy:NodeList MountPoint」添加到掛載點。
++可以在以後通過“mount -o remount,mpol=Policy:NodeList MountPoint”添加到掛載點。
+ 
+ 要指定初始根目錄，可以使用如下掛載選項：
+ 
+ ====	====================
+-模式	權限用八進位數字表示
++模式	權限用八進制數字表示
+ uid	用戶ID
+ gid	組ID
+ ====	====================
+@@ -129,7 +129,7 @@ inode32   使用32位inode
+ 
+ 在32位內核上，默認是inode32，掛載時指定inode64會被拒絕。
+ 在64位內核上，默認配置是CONFIG_TMPFS_INODE64。inode64避免了單個設備上可能有多個
+-具有相同inode編號的文件；比如32位應用程式使用glibc如果長期訪問tmpfs，一旦達到33
++具有相同inode編號的文件；比如32位應用程序使用glibc如果長期訪問tmpfs，一旦達到33
+ 位inode編號，就有EOVERFLOW失敗的危險，無法打開大於2GiB的文件，並返回EINVAL。
+ 
+ 所以'mount -t tmpfs -o size=10G,nr_inodes=10k,mode=700 tmpfs /mytmpfs'將在
+diff --git a/Documentation/translations/zh_TW/filesystems/virtiofs.rst b/Documentation/translations/zh_TW/filesystems/virtiofs.rst
+index 2b05e84375dd..05274d9e0843 100644
+--- a/Documentation/translations/zh_TW/filesystems/virtiofs.rst
++++ b/Documentation/translations/zh_TW/filesystems/virtiofs.rst
+@@ -21,7 +21,7 @@ virtiofs: virtio-fs 主機<->客機共享文件系統
+ 
+ 介紹
+ ====
+-Linux的virtiofs文件系統實現了一個半虛擬化VIRTIO類型「virtio-fs」設備的驅動，通過該\
++Linux的virtiofs文件系統實現了一個半虛擬化VIRTIO類型“virtio-fs”設備的驅動，通過該\
+ 類型設備實現客機<->主機文件系統共享。它允許客機掛載一個已經導出到主機的目錄。
+ 
+ 客機通常需要訪問主機或者遠程系統上的文件。使用場景包括：在新客機安裝時讓文件對其\
+@@ -42,12 +42,12 @@ Linux的virtiofs文件系統實現了一個半虛擬化VIRTIO類型「virtio-fs
+ 
+   guest# mount -t virtiofs myfs /mnt
+ 
+-請查閱 https://virtio-fs.gitlab.io/ 了解配置QEMU和virtiofsd守護程序的詳細信息。
++請查閱 https://virtio-fs.gitlab.io/ 瞭解配置QEMU和virtiofsd守護程序的詳細信息。
+ 
+ 內幕
+ ====
+ 由於virtio-fs設備將FUSE協議用於文件系統請求，因此Linux的virtiofs文件系統與FUSE文\
+-件系統客戶端緊密集成在一起。客機充當FUSE客戶端而主機充當FUSE伺服器，內核與用戶空\
++件系統客戶端緊密集成在一起。客機充當FUSE客戶端而主機充當FUSE服務器，內核與用戶空\
+ 間之間的/dev/fuse接口由virtio-fs設備接口代替。
+ 
+ FUSE請求被置於虛擬隊列中由主機處理。主機填充緩衝區中的響應部分，而客機處理請求的完成部分。
+@@ -55,7 +55,7 @@ FUSE請求被置於虛擬隊列中由主機處理。主機填充緩衝區中的
+ 將/dev/fuse映射到虛擬隊列需要解決/dev/fuse和虛擬隊列之間語義上的差異。每次讀取\
+ /dev/fuse設備時，FUSE客戶端都可以選擇要傳輸的請求，從而可以使某些請求優先於其他\
+ 請求。虛擬隊列有其隊列語義，無法更改已入隊請求的順序。在虛擬隊列已滿的情況下尤
+-其關鍵，因爲此時不可能加入高優先級的請求。爲了解決此差異，virtio-fs設備採用「hiprio」\
++其關鍵，因爲此時不可能加入高優先級的請求。爲了解決此差異，virtio-fs設備採用“hiprio”\
+ （高優先級）虛擬隊列，專門用於有別於普通請求的高優先級請求。
+ 
+ 
 -- 
 2.34.1
 
