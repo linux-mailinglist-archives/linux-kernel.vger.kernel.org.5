@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 309A5771869
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD1077186D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbjHGCkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 22:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
+        id S229854AbjHGCpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 22:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjHGCkW (ORCPT
+        with ESMTP id S229587AbjHGCpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 22:40:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8C4FA
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:40:22 -0700 (PDT)
+        Sun, 6 Aug 2023 22:45:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90D4E6A;
+        Sun,  6 Aug 2023 19:45:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C84C861324
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:40:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1F173C433CA;
-        Mon,  7 Aug 2023 02:40:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 609DE61305;
+        Mon,  7 Aug 2023 02:45:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BECFC433C8;
+        Mon,  7 Aug 2023 02:44:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691376021;
-        bh=FdKig/TFxdJ4eoxL+le5qYryqsBWn1IJw88foFdlxAc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=hsoRIYYNuYmnGaZFJj3dxKwVUakN4eIbTc6Ty9rj5Eu2FlvbICBn9V6tUSkqDNMmz
-         ONbmfCoEK4EnNOiKZ1k3Kd97TXC+YTbt71njcBO6wXQy0jPP5Ryqf7URC2j+xBnEJs
-         osIrv6tZYu/agDsYVsa24h4rwtgLbXQfuIF5a1bTIg7gSsQ1LGnZrB4UD/Za8buUe6
-         XGkJfoy4PPYbctcnEIz0x5J4GajkmCgJmJV6QLd1m2rvCVq2/CNDoiuBoj7QqD1q3r
-         LZ/gmg1cMU1ZhUSyTlPoKGUMLYaOuG70opL0QpmsX7kI4x2E4SY9yYGAnLCdawo3fB
-         0Qkt1q+M2uSCQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F2CE3E505D5;
-        Mon,  7 Aug 2023 02:40:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] platform/chrome: cros_ec_lpc: Remove EC panic shutdown
- timeout
-From:   patchwork-bot+chrome-platform@kernel.org
-Message-Id: <169137602099.16990.6569232365086631640.git-patchwork-notify@kernel.org>
-Date:   Mon, 07 Aug 2023 02:40:20 +0000
-References: <20230802175847.1.Ie9fc53b6a1f4c6661c5376286a50e0cf51b3e961@changeid>
-In-Reply-To: <20230802175847.1.Ie9fc53b6a1f4c6661c5376286a50e0cf51b3e961@changeid>
-To:     Rob Barnes <robbarnes@google.com>
-Cc:     bleung@chromium.org, groeck@chromium.org, tzungbi@kernel.org,
-        dtor@chromium.org, chrome-platform@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        s=k20201202; t=1691376300;
+        bh=USJIDDP4kE+cHkQpFsYQKXS4O9YsCyYriaif+zRMHog=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GsGnow7ie8LxtIeC6X2zkGz1iQ19g51CjlUZ/q4wN2GfgP9HTXdWWd9tY+69L1JKh
+         TAGeYVROKtU0OWlnUEZ8IYDv6w6fIEHL4Jj63cl4FF2QgWNflWt98pSSdLDAS8svDC
+         dGmdgRh4iL3XoGrBSrkFZZJz6+aBRqgLNsAO2JiVM5CxDJxljcSPzEvFiNsbmdtNOJ
+         rFq1xFyJNtopVS2TMwb36r/4/dKrcT3Nus4unJw5wO44n6oHykN3ZVwHKMiN4uBgHO
+         JuKGJH0FeN2H+1YKq1GmGcLmSAODdk3zcKDHlb3ZMF/xsEqYjcDMuRioEE9D3bmz1k
+         PO7Ytcz2Ws0GQ==
+Date:   Mon, 7 Aug 2023 11:44:55 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     paulmck@kernel.org
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>, akpm@linux-foundation.org,
+        mhiramat@kernel.org, arnd@kernel.org, ndesaulniers@google.com,
+        sfr@canb.auug.org.au, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH RFC bootconfig] 1/2] fs/proc: Add /proc/cmdline_load for
+ boot loader arguments
+Message-Id: <20230807114455.b4bab41d771556d086e8bdf4@kernel.org>
+In-Reply-To: <9a42de2a-7d9f-4be3-b6c8-9f3e8a092c4d@paulmck-laptop>
+References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
+        <20230728033701.817094-1-paulmck@kernel.org>
+        <db2617d2-589d-47c1-a0cc-e8aeca58710a@p183>
+        <9a42de2a-7d9f-4be3-b6c8-9f3e8a092c4d@paulmck-laptop>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,29 +62,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, 4 Aug 2023 10:36:17 -0700
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-This patch was applied to chrome-platform/linux.git (for-kernelci)
-by Tzung-Bi Shih <tzungbi@kernel.org>:
-
-On Wed,  2 Aug 2023 17:58:48 +0000 you wrote:
-> Remove the 1 second timeout applied to hw_protection_shutdown after an
-> EC panic. On some platforms this 1 second timeout is insufficient to
-> allow the filesystem to fully sync. Independently the EC will force a
-> full system reset after a short period. So this backup timeout is
-> unnecessary.
+> On Fri, Aug 04, 2023 at 08:23:20PM +0300, Alexey Dobriyan wrote:
+> > On Thu, Jul 27, 2023 at 08:37:00PM -0700, Paul E. McKenney wrote:
+> > > In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will
+> > > show all kernel boot parameters, both those supplied by the boot loader
+> > > and those embedded in the kernel image.  This works well for those who
+> > > just want to see all of the kernel boot parameters, but is not helpful to
+> > > those who need to see only those parameters supplied by the boot loader.
+> > > This is especially important when these parameters are presented to the
+> > > boot loader by automation that might gather them from diverse sources.
+> > > 
+> > > Therefore, provide a /proc/cmdline_load file that shows only those kernel
+> > > boot parameters supplied by the boot loader.
+> > 
+> > > +static int cmdline_load_proc_show(struct seq_file *m, void *v)
+> > > +{
+> > > +	seq_puts(m, boot_command_line);
+> > > +	seq_putc(m, '\n');
+> > > +	return 0;
+> > > +}
+> > > +
+> > >  static int __init proc_cmdline_init(void)
+> > >  {
+> > >  	struct proc_dir_entry *pde;
+> > > @@ -19,6 +27,11 @@ static int __init proc_cmdline_init(void)
+> > >  	pde = proc_create_single("cmdline", 0, NULL, cmdline_proc_show);
+> > >  	pde_make_permanent(pde);
+> > >  	pde->size = saved_command_line_len + 1;
+> > > +	if (IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE)) {
+> > > +		pde = proc_create_single("cmdline_load", 0, NULL, cmdline_load_proc_show);
+> > > +		pde_make_permanent(pde);
+> > > +		pde->size = strnlen(boot_command_line, COMMAND_LINE_SIZE) + 1;
+> > > +	}
+> > 
+> > Please add it as separate fs/proc/cmdline_load.c file so that name of
+> > the file matches name of the /proc file.
 > 
-> Signed-off-by: Rob Barnes <robbarnes@google.com>
+> Thank you, will do!
 > 
-> [...]
+> > The name "cmdline_load" is kind of non-descriptive. Mentioning "bootloader"
+> > somewhere should improve things.
+> 
+> If we can all quickly come to agreement on a name, I can of course easily
+> change it.
+> 
+> /proc/cmdline_bootloader?  Better than /proc/cmdline_from_bootloader,
+> I suppose.  /proc/cmdline_bootldr?  /proc/bootloader by analogy with
+> /proc/bootconfig?  Something else?
 
-Here is the summary with links:
-  - platform/chrome: cros_ec_lpc: Remove EC panic shutdown timeout
-    https://git.kernel.org/chrome-platform/c/f2d4dced9a58
+What about "/proc/raw_cmdline" ?
 
-You are awesome, thank you!
+Thank you,
+
+
+> 
+> 							Thanx, Paul
+
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
