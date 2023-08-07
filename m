@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BDF772C02
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEE4772C07
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbjHGRGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39120 "EHLO
+        id S229863AbjHGRGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjHGRGA (ORCPT
+        with ESMTP id S229503AbjHGRGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:06:00 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEC2C2
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:05:59 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-56ca1eebcd7so2910918eaf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:05:59 -0700 (PDT)
+        Mon, 7 Aug 2023 13:06:34 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D490C2
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:06:34 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3a5ad21a1f9so3288196b6e.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:06:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691427958; x=1692032758;
+        d=gmail.com; s=20221208; t=1691427993; x=1692032793;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bbn3YRFHanofvHWO+jcCmLwBDagt8+vqY/B84h8as8k=;
-        b=YnDZGWvNInlb1gECA6sEW2wGzcmqJjlpkxVx70DOIVYRxkiQ7x4Alv0CX5HpbLlzXa
-         YOmTww0FYlm7gbIXuPqCQWs5aNJ6ELwQ4xNFRdl2SCnKMqUJcDCRLteWr+n2KmcaflIB
-         YBPtItQDez+AFQ/aHNBx8QRkkGdAyss9/4co306Fe9i1PPXordqRNy3+sHfKbCcexEWg
-         d8LaX5lhQ/kquX7uE6IxzfsWRGaklYucy9w8EnYYzO5r62LaQFAWx9ySQrMND8zBjguU
-         yuarWYV9wnafp/5h7QBpoHRC5/nqcbX/mLIIDaBI2zWSDDDOPAq7g2bq14L974tyJ2pU
-         1CxA==
+        bh=rLDScHjDjgU2dNICfgHVvNlYK9Try5et+YRqhYmFBk8=;
+        b=PmPoOrMbUmYQQrA9L1loL6tAuljo1As/0pfzu0hEDaxMvt9Up4xwA33Y93eVRpgMYh
+         OoAOjU5mtSvy6MLa9AdD2J5m1XbKuA0yUb/xekLsq2iDcstvbRf8CTkDVhfxMgXZXExo
+         jDux+z+pyp/XqhHuvG5rTxfcPAQfPInoEg4qeS5hXPUQHiQMyT750PO/d1+bdEXrWlB5
+         i6ghH+VSnlxra+4x1pDlWCSh8Rx+COJOBgSztGbrDdBSP7P9lbvg7V1jO8IjxpSt7NcA
+         eYg+OMcJzB91+vXBNbh26ajkbc/giHF6rWT8Ulxlqdk5qmZBpS8OVJlxRG7xjMmtpbmt
+         f24A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691427958; x=1692032758;
+        d=1e100.net; s=20221208; t=1691427993; x=1692032793;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bbn3YRFHanofvHWO+jcCmLwBDagt8+vqY/B84h8as8k=;
-        b=K/tZ2Rbx+o7kEJwWCK5c1IFQFNhpP2JU/DTXTyAQd+2NmlT1Ex75Bh/DMLkz+nJYt3
-         JQzvoOA5UcshY5AcuBfDNPGf62fj/A2bCPjrqWEzFGvKfQNin0hBfQXviuLctVwU3055
-         G71JKSlwKZNSDAn0q6VgIG9Qo51aGklK+RFbWQ+w8QOhzQI7MoqPCtu5Savdt4CsAlgj
-         IAaBQ4BMXoPC2KFIZ2fP4o/dLsc6iAvgoHe689rykTlEFz/0aXsRWL/4bm5fHxaYTAVT
-         rno41lBZAEJDeuF/PxAJ16bnL0GyCsGJDGzn77oNVh4WQHOsxDn9vGoo6ckYO9ef2H1K
-         JRHQ==
-X-Gm-Message-State: AOJu0Yw80iL6MbloPO82NjxLhyhOXhTcTWsDQEkMl4IrDqeea4NS1N8l
-        q16R3lMrhz4YQXPdIuFmQ8AIpJanaJAVUZitcJg=
-X-Google-Smtp-Source: AGHT+IHFXB5CD8Mu6cDxwSyhTdt0CsqJNa2tDSIT2JIqrM0/yIbzRZq7+6WBDMPTTJWby2C/E0cwCZrrktpO0nCt2QY=
-X-Received: by 2002:a4a:3018:0:b0:56c:7428:4a35 with SMTP id
- q24-20020a4a3018000000b0056c74284a35mr7764930oof.7.1691427958447; Mon, 07 Aug
- 2023 10:05:58 -0700 (PDT)
+        bh=rLDScHjDjgU2dNICfgHVvNlYK9Try5et+YRqhYmFBk8=;
+        b=ESGJYgCDKVjyDvRewwQV6fuxv192Y8YKa5P0jg7fUKuOwHFSBHQh9r0rCpdSXQLRPW
+         ZaX69hAPzK3f8sND/+XY+oEy1mGdVwigv3s1i1P/531GtIRPEQZPC2TeJgfIAGBlLhdJ
+         OExuVxQ2BVdolz+6gfvO5fdpCF3brBlKT5s4HwJdqmeINYim+qd2uAmQv4Hu9EKPy5/i
+         MkuhsM+siACuNTSYw/t6hklAiEfAwpm0q//4Zy7EHTGGAE743t1YenDiDwQMZGKzDGTU
+         120ofN8PRCT7D4QBeoiu2I6iGKjtLWrOcW6/hQeykNovu81VLcIW+UsglOUyuk/N+Dcn
+         UpLg==
+X-Gm-Message-State: AOJu0YxSblC/ZKML0MtOYlzjAYYysGEy7xirEoXCmlrQgAGryvOysMCF
+        IUtWPFlB5U6PXNc2xZY1V9/VxYcFXKtkp+wlZ8A=
+X-Google-Smtp-Source: AGHT+IHSB9fXVJNJdhoJJavHP9tjCE+HR0p7P5SqCVY6Q+IWYe9oFwSsU+jpVUt5xWFSSMteVs2tYnZYP3RYLRswnwE=
+X-Received: by 2002:a05:6870:8a14:b0:1bb:75af:37b5 with SMTP id
+ p20-20020a0568708a1400b001bb75af37b5mr10976138oaq.10.1691427993175; Mon, 07
+ Aug 2023 10:06:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230802023109.9924-1-sunran001@208suo.com>
-In-Reply-To: <20230802023109.9924-1-sunran001@208suo.com>
+References: <20230802023955.10014-1-sunran001@208suo.com>
+In-Reply-To: <20230802023955.10014-1-sunran001@208suo.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 13:05:47 -0400
-Message-ID: <CADnq5_NZSV-gvX9zOWLEifcBpj+fim5YCy2uW5yLsDnxcYiRTQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: Clean up errors in amdgpu_pm.c
+Date:   Mon, 7 Aug 2023 13:06:22 -0400
+Message-ID: <CADnq5_OK0VXCNpA-aix2hCvBJ04R1FXhem+Q0eGpvtWu9kna=Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Clean up errors in color_gamma.c
 To:     Ran Sun <sunran001@208suo.com>
 Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
@@ -71,45 +71,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Applied.  Thanks!
 
-On Tue, Aug 1, 2023 at 10:31=E2=80=AFPM Ran Sun <sunran001@208suo.com> wrot=
+On Tue, Aug 1, 2023 at 10:40=E2=80=AFPM Ran Sun <sunran001@208suo.com> wrot=
 e:
 >
 > Fix the following errors reported by checkpatch:
 >
-> ERROR: that open brace { should be on the previous line
-> ERROR: space required before the open parenthesis '('
+> ERROR: trailing whitespace
+> ERROR: else should follow close brace '}'
 >
 > Signed-off-by: Ran Sun <sunran001@208suo.com>
 > ---
->  drivers/gpu/drm/amd/pm/amdgpu_pm.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  drivers/gpu/drm/amd/display/modules/color/color_gamma.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/=
-amdgpu_pm.c
-> index 3922dd274f30..acaab3441030 100644
-> --- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> +++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> @@ -743,7 +743,7 @@ static ssize_t amdgpu_set_pp_od_clk_voltage(struct de=
-vice *dev,
->                 type =3D PP_OD_EDIT_CCLK_VDDC_TABLE;
->         else if (*buf =3D=3D 'm')
->                 type =3D PP_OD_EDIT_MCLK_VDDC_TABLE;
-> -       else if(*buf =3D=3D 'r')
-> +       else if (*buf =3D=3D 'r')
->                 type =3D PP_OD_RESTORE_DEFAULT_TABLE;
->         else if (*buf =3D=3D 'c')
->                 type =3D PP_OD_COMMIT_DPM_TABLE;
-> @@ -3532,7 +3532,8 @@ void amdgpu_pm_sysfs_fini(struct amdgpu_device *ade=
-v)
->  #if defined(CONFIG_DEBUG_FS)
+> diff --git a/drivers/gpu/drm/amd/display/modules/color/color_gamma.c b/dr=
+ivers/gpu/drm/amd/display/modules/color/color_gamma.c
+> index 67a062af3ab0..ff8e5708735d 100644
+> --- a/drivers/gpu/drm/amd/display/modules/color/color_gamma.c
+> +++ b/drivers/gpu/drm/amd/display/modules/color/color_gamma.c
+> @@ -359,7 +359,7 @@ static struct fixed31_32 translate_from_linear_space(
+>                 scratch_1 =3D dc_fixpt_add(one, args->a3);
+>                 /* In the first region (first 16 points) and in the
+>                  * region delimited by START/END we calculate with
+> -                * full precision to avoid error accumulation.
+> +                * full precision to avoid error accumulation.
+>                  */
+>                 if ((cal_buffer->buffer_index >=3D PRECISE_LUT_REGION_STA=
+RT &&
+>                         cal_buffer->buffer_index <=3D PRECISE_LUT_REGION_=
+END) ||
+> @@ -379,8 +379,7 @@ static struct fixed31_32 translate_from_linear_space(
+>                 scratch_1 =3D dc_fixpt_sub(scratch_1, args->a2);
 >
->  static void amdgpu_debugfs_prints_cpu_info(struct seq_file *m,
-> -                                          struct amdgpu_device *adev) {
-> +                                          struct amdgpu_device *adev)
-> +{
->         uint16_t *p_val;
->         uint32_t size;
->         int i;
+>                 return scratch_1;
+> -       }
+> -       else
+> +       } else
+>                 return dc_fixpt_mul(args->arg, args->a1);
+>  }
+>
 > --
 > 2.17.1
 >
