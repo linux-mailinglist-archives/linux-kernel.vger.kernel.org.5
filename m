@@ -2,114 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2300C77290B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F9B772913
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbjHGPXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
+        id S229891AbjHGPYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 11:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjHGPXN (ORCPT
+        with ESMTP id S229461AbjHGPYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:23:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D423F10FD
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:22:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691421746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4h12AIk7L/c0oP7stLiuZR/eX5q/mQ5GkvzWyc7yNXg=;
-        b=Dh5GTXVJWJz4/CCx/vJ07B2AGBl0xZ4Qwx6W/YQ7mxfckFDIJvy6u7mbfB3ss5wtjlh6ou
-        zBgfcuvIHl+e016MWJoiNRI1YoYmheIuVQhdGVpzp7Mty3YOgGZ7pRJgOwXv+oigofHpiC
-        VxfeUtiM7MMZXrxHRsFVgaoXDl69Hbw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-669-JV-xu71EOsKqSwAA8fO31w-1; Mon, 07 Aug 2023 11:22:25 -0400
-X-MC-Unique: JV-xu71EOsKqSwAA8fO31w-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-317a84a3ebeso2399818f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 08:22:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691421744; x=1692026544;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4h12AIk7L/c0oP7stLiuZR/eX5q/mQ5GkvzWyc7yNXg=;
-        b=gMwgFy/u2By8/jxccvLiBTp1TNs9YN6BL/7zhdgz+NUm9EzhVYMFedTVWLV5NZEih3
-         mj1ezntvu7h5ZkQmelUDWmQ2VkmtzNCSE86b+kBvHSE71mLdnKwSz0sEkZJqca/Yp1v8
-         u569dUKXCIPSL4IL2IKXhJnf9TLiXhozRlnTqpNa11Lbv2z73tfUsj4KYKJM2WvLnxNO
-         8xgb/kIuPKyBCxjNmzwz6T+tgsJyU6LrYwOpEeFCmWuRhKzuvuNSM6rJYo/crU8S0096
-         JnMo/0Na/FtSrvXaBbeH+RI0p5g5OM7ZNaSlu9JooEgHbmgya4c5U2PY2yI1Wb6mE0Wg
-         WUiw==
-X-Gm-Message-State: AOJu0YyDvTDl46x47spzsnCjkwX5g08OU18rZ57aQW7e0W1Z7xSXqkEe
-        HTbB3KWbxe1QdDtYrUXNhRXModjiCCFkEyKSmSwsz/yb6eMvoOJeUMuk2Qt2PiJILsRrCzjfAgX
-        K+VZLlxw2ih5r7x4pfLkeD9JQzr3E9Avm
-X-Received: by 2002:a5d:660e:0:b0:317:e9d7:9387 with SMTP id n14-20020a5d660e000000b00317e9d79387mr2649704wru.25.1691421744158;
-        Mon, 07 Aug 2023 08:22:24 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHT+CRJxwBtjETCZhueOO73oT3V/JAO1GgSXHBmBFiXNWByV4hMkGXVBufEggmc7Ta4sJA7ow==
-X-Received: by 2002:a5d:660e:0:b0:317:e9d7:9387 with SMTP id n14-20020a5d660e000000b00317e9d79387mr2649685wru.25.1691421743773;
-        Mon, 07 Aug 2023 08:22:23 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c740:5d00:5143:1cd2:a300:ceff? (p200300cbc7405d0051431cd2a300ceff.dip0.t-ipconnect.de. [2003:cb:c740:5d00:5143:1cd2:a300:ceff])
-        by smtp.gmail.com with ESMTPSA id n12-20020adff08c000000b00317b5c8a4f1sm10743469wro.60.2023.08.07.08.22.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 08:22:23 -0700 (PDT)
-Message-ID: <a90dcf9c-f1dd-3cbe-3e35-f86499985790@redhat.com>
-Date:   Mon, 7 Aug 2023 17:22:22 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] mm: no need to export mm_kobj
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <2023080436-algebra-cabana-417d@gregkh>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <2023080436-algebra-cabana-417d@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 7 Aug 2023 11:24:46 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEB883;
+        Mon,  7 Aug 2023 08:24:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Content-Type:Mime-Version:
+        References:In-Reply-To:Message-Id:Cc:To:From:Date:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=KKQfHfIn4A+51pYAsg98lmEl57EfbQ66seb9xvjWI08=; b=w4LaAmcr4sPrucHtK+GJN1jAnB
+        XFgRybepb3zDWobH8xHWzEkB942a11cShIU9K7y08xet8hxCSUcJdqJDjBCvnvgiqM5ku/imTkOMG
+        uPH9YSQHnvWct/PqBk0XuKnKwbq4Vfqq/oyXbqMh9E/K6eD5qNYja7xp467UpCDrP0g8=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:51798 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qT266-0004KT-8S; Mon, 07 Aug 2023 11:24:43 -0400
+Date:   Mon, 7 Aug 2023 11:24:41 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        linux-kernel@vger.kernel.org
+Message-Id: <20230807112441.c8aa3891cfd6da6b8c65cafc@hugovil.com>
+In-Reply-To: <20230804101722.7e437a81b2639ccab408d6ba@hugovil.com>
+References: <20230803140551.970141-1-hugo@hugovil.com>
+        <2023080417-surname-sizzling-591e@gregkh>
+        <20230804101722.7e437a81b2639ccab408d6ba@hugovil.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] serial: max310x: add comments for membase address
+ workaround
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.08.23 08:43, Greg Kroah-Hartman wrote:
-> There are no modules using mm_kobj, so do not export it.
+On Fri, 4 Aug 2023 10:17:22 -0400
+Hugo Villeneuve <hugo@hugovil.com> wrote:
+
+> On Fri, 4 Aug 2023 15:07:50 +0200
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 > 
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->   mm/mm_init.c | 1 -
->   1 file changed, 1 deletion(-)
+> > On Thu, Aug 03, 2023 at 10:05:51AM -0400, Hugo Villeneuve wrote:
+> > > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > > 
+> > > Add comments about workaround used to configure membase address. This
+> > > follows suggestions made during review of a sc16is7xx driver patch to
+> > > add the same workaround.
+> > > 
+> > > Link: https://lore.kernel.org/lkml/2936e18f-44ea-faed-9fa0-2ddefe7c3194@linux.intel.com
+> > > Link: https://lore.kernel.org/lkml/20230801131655.80bd8f97f018dda6155d65f6@hugovil.com/
+> > > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > > ---
+> > >  drivers/tty/serial/max310x.c | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > > 
+> > > diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+> > > index 416d553b73a7..5903dd033fd0 100644
+> > > --- a/drivers/tty/serial/max310x.c
+> > > +++ b/drivers/tty/serial/max310x.c
+> > > @@ -1369,6 +1369,11 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
+> > >  		s->p[i].port.flags	= UPF_FIXED_TYPE | UPF_LOW_LATENCY;
+> > >  		s->p[i].port.iotype	= UPIO_PORT;
+> > >  		s->p[i].port.iobase	= i;
+> > > +		/*
+> > > +		 * Use all ones as membase to make sure uart_configure_port() in
+> > > +		 * serial_core.c does not abort for SPI/I2C devices where the
+> > > +		 * membase address is not applicable.
+> > > +		 */
+> > >  		s->p[i].port.membase	= (void __iomem *)~0;
+> > >  		s->p[i].port.uartclk	= uartclk;
+> > >  		s->p[i].port.rs485_config = max310x_rs485_config;
+> > > 
+> > > base-commit: 426263d5fb400ccde5444748693dc75bda18f01e
+> > > -- 
+> > > 2.30.2
+> > > 
+> > 
+> > Meta-comment, your email system is not correct and is not able to be
+> > verified as I get the following when attempting to apply your patch:
+> > 
+> > ---
+> >   ✗ [PATCH] serial: max310x: add comments for membase address workaround
+> >   ---
+> >   ✗ BADSIG: DKIM/hugovil.com
+> > 
+> > Please fix up for future submissions.
+> > 
+> > thanks,
+> > 
+> > greg k-h
 > 
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index a1963c3322af..1c9d6f428906 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -154,7 +154,6 @@ early_param("mminit_loglevel", set_mminit_loglevel);
->   #endif /* CONFIG_DEBUG_MEMORY_INIT */
->   
->   struct kobject *mm_kobj;
-> -EXPORT_SYMBOL_GPL(mm_kobj);
->   
->   #ifdef CONFIG_SMP
->   s32 vm_committed_as_batch = 32;
+> Hi Greg,
+> I will look into it. Thank you.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Hi Greg,
+I double-checked my DKIM setup, but everything looks fine. If I send
+emails to gmail or outlook servers, they both report "DKIM
+signature=pass", and I also checked with an online DKIM validation
+service and it is also ok.
 
--- 
-Cheers,
+What tool are you using to check the DKIM signature?
 
-David / dhildenb
-
+Thank you,
+Hugo.
