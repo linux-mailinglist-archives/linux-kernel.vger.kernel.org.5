@@ -2,264 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEF2772DF1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057F8772DF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbjHGSfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 14:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33462 "EHLO
+        id S229884AbjHGSg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 14:36:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbjHGSfl (ORCPT
+        with ESMTP id S229591AbjHGSgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 14:35:41 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F27171A;
-        Mon,  7 Aug 2023 11:35:40 -0700 (PDT)
-Received: from [192.168.0.192] (unknown [194.146.248.75])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 7 Aug 2023 14:36:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A189919A6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 11:36:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: andrzej.p)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7FD7866071D9;
-        Mon,  7 Aug 2023 19:35:37 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691433337;
-        bh=dPnDNV7LmH7OYgmsw2Nn/NUMcXyai/QmLxO1CX3FTIs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=WcVy0f++PYVX6fMJ4f1NB1VDa++tfy8JTOdOFw1tZSHHpCqCNmG1PPjU0ivsDpa+o
-         a+FhmYk9Bi/bOpofFg8r/fSHe5I4kePk+TEO9j7Tz+QhgQ7WzvYJFaycbTTVEyG5uE
-         ZNZD0BzlGNhHD4e0TACRHBc7/fH5J5J4CbBF21u1E2NEnIK51icHxPf1HFnYQPmIav
-         gGpgvhxEn6+50P5cApntkvAMy1WowjGt3+lz6XGH3ALsarfsZeHoz6pPSirlG1q7wq
-         pBcmj5xUu4yWR8Oo/+NiUSdmtK4JLp/oxnnJn6LJf/D4b7yMDYiPlVEtH5dO7h1R2n
-         bXXE8S3jNUUjw==
-Message-ID: <c26a69d9-5fd4-365f-9291-ae223158a662@collabora.com>
-Date:   Mon, 7 Aug 2023 20:35:34 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 31DCF62101
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 18:36:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B393C433CB
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 18:36:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691433376;
+        bh=x+9shEnFgT9asbnDHeTcP7gNn7aM/1DmzixkT3zbbC0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Anmgxl/Fx7HEN3j+xksubCW7bNIBoz1Y+AbvDIzHnspA9CIhfXyzdY4XM5uE3Ex88
+         3fejhVDkdNkOc4hJ6JrcUhNRNfb4stId0MeMKqkcAyzjI3XKJm5ER5jj8FEJYK0+Bj
+         eF9igsH8yEU4ceVlUW54ZsXKEtMPt8OIMZSwWPlzrgsXB5ghEgDb6fjyUylwQlQaGR
+         J5Vq4y8D1FE8GyAljFkiJq/pnmaccB/F8vJjra7jtVfzQ9yKw+Nk9S3ydEvoEqBVQk
+         K+3Kd6WwhOF/ftJRt5KC+ioz5CHa8SMdn46zZk/BuEz8X5ojHvzJqDDeB9zXtx7sRS
+         3eehs15M6J/1Q==
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6bb07d274feso3950214a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 11:36:16 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwDL1HJp4vrpx2GpcNxZuG3nfVKZTPOOAiHNWNtXmKSJUaYF6rO
+        HQNs5u+2TcOiNlZfNf4XrmzVBvDIs1G4Go4evv8=
+X-Google-Smtp-Source: AGHT+IF1Q0TtfxmyXbnTUSy+Pznt7LAa+8JitTwCf7HNyqEzFv9YIjhrmS+Jesz/HayAez5ofYjfL8d47xqadjpWaLI=
+X-Received: by 2002:a05:6870:8a0c:b0:1bf:5d1a:41f5 with SMTP id
+ p12-20020a0568708a0c00b001bf5d1a41f5mr12266504oaq.26.1691433375768; Mon, 07
+ Aug 2023 11:36:15 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 5/5] docs: uapi: media: Document Mediatek 10bit tiled
- formats
-To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     kernel@collabora.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230804192737.19016-1-nicolas.dufresne@collabora.com>
- <20230804192737.19016-6-nicolas.dufresne@collabora.com>
-Content-Language: en-US
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-In-Reply-To: <20230804192737.19016-6-nicolas.dufresne@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230321193341.87997-1-sshedi@vmware.com> <0ae37bcc-4398-644b-a295-1245d73e5450@gmail.com>
+ <2023053135-bubbling-commodore-3a7b@gregkh> <cefc1a42-725a-8afa-c222-f4df085ba6a2@gmail.com>
+ <2023053148-ahead-overbite-863d@gregkh> <730c8712-1553-63e5-ffa1-d75a922f4a42@gmail.com>
+ <2023060155-mustard-mating-32b7@gregkh> <CAK7LNASUmc1nFEkEvmd9VKbD6VjOs2HhpwLY-GsduRFDFGOfvg@mail.gmail.com>
+ <8d20e867-1c13-4d2a-9802-b9570085fd25@gmail.com>
+In-Reply-To: <8d20e867-1c13-4d2a-9802-b9570085fd25@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 8 Aug 2023 03:35:39 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATNRchNoj0Y6sdb+_81xwV3kAX57-w5q2zew-q8RyzJVg@mail.gmail.com>
+Message-ID: <CAK7LNATNRchNoj0Y6sdb+_81xwV3kAX57-w5q2zew-q8RyzJVg@mail.gmail.com>
+Subject: Re: [PATCH v6 0/7] refactor file signing program
+To:     Shreenidhi Shedi <yesshedi@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, dhowells@redhat.com,
+        dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+        sshedi@vmware.com
+Content-Type: multipart/mixed; boundary="000000000000863e1406025985ae"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+--000000000000863e1406025985ae
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-W dniu 4.08.2023 o 21:27, Nicolas Dufresne pisze:
-> Document V4L2_PIX_FMT_MT2110T and V4L2_PIX_FMT_MT2110R. These two
-> formats are nearly identical, reusing MM21 format and expending it
-> by inserting chunk of 16 bytes of lower 2 bit pixel data after each
-> chunk of 64 bytes higher 8 bit of data.
-> 
-> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> ---
->   .../media/v4l/pixfmt-reserved.rst             |  13 --
->   .../media/v4l/pixfmt-yuv-planar.rst           | 122 ++++++++++++++++++
->   2 files changed, 122 insertions(+), 13 deletions(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-> index 296ad2025e8d..58f6ae25b2e7 100644
-> --- a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-> +++ b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-> @@ -275,19 +275,6 @@ please make a proposal on the linux-media mailing list.
->   
->           Decoder's implementation can be found here,
->           `aspeed_codec <https://github.com/AspeedTech-BMC/aspeed_codec/>`__
-> -    * .. _V4L2-PIX-FMT-MT2110T:
-> -
-> -      - ``V4L2_PIX_FMT_MT2110T``
-> -      - 'MT2110T'
-> -      - This format is two-planar 10-Bit tile mode and having similitude with
-> -        ``V4L2_PIX_FMT_MM21`` in term of alignment and tiling. Used for VP9, AV1
-> -        and HEVC.
-> -    * .. _V4L2-PIX-FMT-MT2110R:
-> -
-> -      - ``V4L2_PIX_FMT_MT2110R``
-> -      - 'MT2110R'
-> -      - This format is two-planar 10-Bit raster mode and having similitude with
-> -        ``V4L2_PIX_FMT_MM21`` in term of alignment and tiling. Used for AVC.
->   .. raw:: latex
->   
->       \normalsize
-> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> index 052927bd9396..6ef5cd6bd9e2 100644
-> --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> @@ -144,6 +144,20 @@ All components are stored with the same number of bits per component.
->         - Cb, Cr
->         - Yes
->         - 4x4 tiles
-> +    * - V4L2_PIX_FMT_MT2110T
-> +      - 'MT2T'
-> +      - 15
-> +      - 4:2:0
-> +      - Cb, Cr
-> +      - No
-> +      - 16x32 / 16x16 tiles tiled low bits
-> +    * - V4L2_PIX_FMT_MT2110R
-> +      - 'MT2R'
-> +      - 15
-> +      - 4:2:0
-> +      - Cb, Cr
-> +      - No
-> +      - 16x32 / 16x16 tiles raster low bits
->       * - V4L2_PIX_FMT_NV16
->         - 'NV16'
->         - 8
-> @@ -369,6 +383,8 @@ two non-contiguous planes.
->   .. _V4L2-PIX-FMT-NV15-4L4:
->   .. _V4L2-PIX-FMT-NV12M-10BE-8L128:
->   .. _V4L2-PIX-FMT-NV12-10BE-8L128:
-> +.. _V4L2-PIX-FMT-MT2110T:
-> +.. _V4L2-PIX-FMT-MT2110R:
->   
->   Tiled NV15
->   ----------
-> @@ -453,6 +469,112 @@ it means that the low bits and high bits of one pixel may be in different tiles.
->   ``V4L2_PIX_FMT_NV12_10BE_8L128`` is similar to ``V4L2_PIX_FMT_NV12M_10BE_8L128`` but stores
->   two planes in one memory.
->   
-> +``V4L2_PIX_FMT_MT2110T``` is one of Mediatek packed 10bit YUV 4:2:0 formats.
-> +It is fully packed 10bit 4:2:0 format like NV15 (15 bits per pixel), except
-> +that the lower two bits data is stored in separate partitions. The format is
-> +composed of 16x32 luma tiles, and 16x16 chroma tiles. Each tiles have 640
+On Mon, Aug 7, 2023 at 5:17=E2=80=AFPM Shreenidhi Shedi <yesshedi@gmail.com=
+> wrote:
+>
+> On 07/08/23 07:53, Masahiro Yamada wrote:
+> > On Thu, Jun 1, 2023 at 6:08=E2=80=AFPM Greg KH <gregkh@linuxfoundation.=
+org> wrote:
+> >>
+> >> On Thu, Jun 01, 2023 at 02:33:23PM +0530, Shreenidhi Shedi wrote:
+> >>> On Wed, 31-May-2023 22:20, Greg KH wrote:
+> >>>> On Wed, May 31, 2023 at 09:01:24PM +0530, Shreenidhi Shedi wrote:
+> >>>>> On Wed, 31-May-2023 20:08, Greg KH wrote:
+> >>>>>> On Tue, Apr 25, 2023 at 04:14:49PM +0530, Shreenidhi Shedi wrote:
+> >>>>>>> On Wed, 22-Mar-2023 01:03, Shreenidhi Shedi wrote:
+> >>>>>>> Can you please review the latest patch series? I think I have add=
+ressed your
+> >>>>>>> concerns. Thanks.
+> >>>>>>
+> >>>>>> The big question is, "who is going to use these new features"?  Th=
+is
+> >>>>>> tool is only used by the in-kernel build scripts, and if they do n=
+ot
+> >>>>>> take advantage of these new options you have added, why are they n=
+eeded?
+> >>>>>>
+> >>>>>> thanks,
+> >>>>>>
+> >>>>>> greg k-h
+> >>>>>
+> >>>>> Hi Greg,
+> >>>>>
+> >>>>> Thanks for the response.
+> >>>>>
+> >>>>> We use it in VMware Photon OS. Following is the link for the same.
+> >>>>> https://github.com/vmware/photon/blob/master/SPECS/linux/spec_insta=
+ll_post.inc#L4
+> >>>>>
+> >>>>> If this change goes in, it will give a slight push to our build per=
+formance.
+> >>>>
+> >>>> What exactly do you mean by "slight push"?
+> >>>
+> >>> Instead of invoking the signing tool binary for each module, we can p=
+ass
+> >>> modules in bulk and it will reduce the build time by couple of second=
+s.
+> >>
+> >> Then why not modify the in-kernel build system to also do this, allowi=
+ng
+> >> everyone to save time and money (i.e. energy)?
+> >>
+> >> Why keep the build savings to yourself?
+> >>
+> >> thanks,
+> >>
+> >> greg k-h
+> >
+> >
+> > If I understand correctly,
+> > "sign-file: add support to sign modules in bulk"
+> > is the only benefit in the patchset.
+> >
+> > I tested the bulk option, but I did not see build savings.
+> >
+> >
+> >
+> > My evaluation:
+> > 1.  'make allmodconfig all', then 'make modules_install'.
+> >          (9476 modules installed)
+> >
+> > 2.  I ran 'perf stat' for single signing vs bulk signing
+> >        (5 runs for each).
+> >        I changed the -n option in scripts/signfile.sh
+> >
+> >
+> >
+> >
+> > A.  single sign
+> >
+> > Sign one module per scripts/sign-file invocation.
+> >
+> > find "${MODULES_PATH}" -name *.ko -type f -print0 | \
+> >          xargs -r -0 -P$(nproc) -x -n1 sh -c "..."
+> >
+> >
+> >
+> >   Performance counter stats for './signfile-single.sh' (5 runs):
+> >
+> >               22.33 +- 2.26 seconds time elapsed  ( +- 10.12% )
+> >
+> >
+> >
+> >
+> > B. bulk sign
+> >
+> > Sign 32 modules per scripts/sign-file invocation
+> >
+> > find "${MODULES_PATH}" -name *.ko -type f -print0 | \
+> >          xargs -r -0 -P$(nproc) -x -n32 sh -c "..."
+> >
+> >
+> >   Performance counter stats for './signfile-bulk.sh' (5 runs):
+> >
+> >               24.78 +- 3.01 seconds time elapsed  ( +- 12.14% )
+> >
+> >
+> >
+> >
+> > The bulk option decreases the process forks of scripts/sign-file
+> > but I did not get even "slight push".
+> >
+> >
+> >
+>
+> That's some really interesting data. I'm surprised that with stand alone
+> run bulk signing is not performing as expected. Can you give the full
+> command you used for bulk sign?
 
-Each tile is 640 bytes long, divided into 8 partitions of 80 bytes?
-
-> +bytes separate in 8 partitions of 80 bytes each. The first 64 bytes represents
-
-bytes represent? (plural)
-
-> +the 8 most significant bits of pixel data. The remaining 16 bytes contains the
-
-contain? (plural)
-
-> +2 least significant of pixel data.
-
-least significant bits?
-
-Regards,
-
-Andrzej
+Attached.
 
 
-> +
-> +.. kernel-figure:: mt2110t.svg
-> +    :alt:    mt2110t.svg
-> +    :align:  center
-> +
-> +    Layout of Example MT2110T Chroma Tile
-> +
-> +Filtering out the lower part of each partitions results in a valid
-> +``V4L2_PIX_FMT_MM21`` frame. A partition is a sub-tile of size 16 x 4. The
-> +lower two bits is said to be tiled since each bytes contains the lower two
-> +bits of the column of for pixel matching the same index. The chroma tiles
-> +only have 4 partitions.
-> +
-> +.. flat-table:: MT2110T LSB bits layout
-> +    :header-rows:  1
-> +    :stub-columns: 0
-> +
-> +    * -
-> +      - start + 0
-> +      - start + 1
-> +      - . . .
-> +      - start\ +\ 15
-> +    * - bits 0:2
-> +      - Y'\ :sub:`0:0`
-> +      - Y'\ :sub:`0:1`
-> +      - . . .
-> +      - Y'\ :sub:`0:15`
-> +    * - bits 2:3
-> +      - Y'\ :sub:`1:0`
-> +      - Y'\ :sub:`1:1`
-> +      - . . .
-> +      - Y'\ :sub:`1:15`
-> +    * - bits 4:5
-> +      - Y'\ :sub:`2:0`
-> +      - Y'\ :sub:`2:1`
-> +      - . . .
-> +      - Y'\ :sub:`2:15`
-> +    * - bits 6:7
-> +      - Y'\ :sub:`3:0`
-> +      - Y'\ :sub:`3:1`
-> +      - . . .
-> +      - Y'\ :sub:`3:15`
-> +
-> +``V4L2_PIX_FMT_MT2110R`` is identical to ``V4L2_PIX_FMT_MT2110T`` except that
-> +the least significant two bits layout is in raster order. This means the first byte
-> +contains 4 pixels of the first row, with 4 bytes per line.
-> +
-> +.. flat-table:: MT2110R LSB bits layout
-> +    :header-rows:  1
-> +    :stub-columns: 0
-> +
-> +    * -
-> +      - b0
-> +      -
-> +      -
-> +      -
-> +      - ...
-> +      - b3
-> +    * - start + 0
-> +      - Y'\ :sub:`0:0`
-> +      - Y'\ :sub:`0:1`
-> +      - Y'\ :sub:`0:2`
-> +      - Y'\ :sub:`0:3`
-> +      - ...
-> +      - Y'\ :sub:`0:12`
-> +      - Y'\ :sub:`0:13`
-> +      - Y'\ :sub:`0:14`
-> +      - Y'\ :sub:`0:15`
-> +    * - start + 4
-> +      - Y'\ :sub:`1:0`
-> +      - Y'\ :sub:`1:1`
-> +      - Y'\ :sub:`1:2`
-> +      - Y'\ :sub:`1:3`
-> +      - ...
-> +      - Y'\ :sub:`1:12`
-> +      - Y'\ :sub:`1:13`
-> +      - Y'\ :sub:`1:14`
-> +      - Y'\ :sub:`1:15`
-> +    * - start + 8
-> +      - Y'\ :sub:`2:0`
-> +      - Y'\ :sub:`2:1`
-> +      - Y'\ :sub:`2:2`
-> +      - Y'\ :sub:`2:3`
-> +      - ...
-> +      - Y'\ :sub:`2:12`
-> +      - Y'\ :sub:`2:13`
-> +      - Y'\ :sub:`2:14`
-> +      - Y'\ :sub:`2:15`
-> +    * - start\ +\ 12
-> +      - Y'\ :sub:`3:0`
-> +      - Y'\ :sub:`3:1`
-> +      - Y'\ :sub:`3:2`
-> +      - Y'\ :sub:`3:3`
-> +      - ...
-> +      - Y'\ :sub:`3:12`
-> +      - Y'\ :sub:`3:13`
-> +      - Y'\ :sub:`3:14`
-> +      - Y'\ :sub:`3:15`
-> +
->   
->   .. _V4L2-PIX-FMT-NV16:
->   .. _V4L2-PIX-FMT-NV61:
+> Reduced number of forks should
+> eventually lead to getting more done in less time.
 
+Not necessarily.
+
+You sign 32 modules per thread.
+
+Assume you have 4 CPUs and 160 modules to sign.
+For simplicity, assume every module takes the same time to sign.
+
+
+[Sign 32 modules per 1 process]
+
+CPU0: <=3DSign 32 mods=3D><=3DSign 32 mods=3D> Finish
+CPU1: <=3DSign 32 mods=3D><=3D=3D=3D=3D Idle =3D=3D=3D=3D>
+CPU2: <=3DSign 32 mods=3D><=3D=3D=3D=3D Idle =3D=3D=3D=3D>
+CPU3: <=3DSign 32 mods=3D><=3D=3D=3D=3D Idle =3D=3D=3D=3D>
+
+
+[Sign 1 modules per 1 process]
+
+CPU0: <=3D=3D=3DSign 40 mods=3D=3D=3D> Finish
+CPU1: <=3D=3D=3DSign 40 mods=3D=3D=3D>
+CPU2: <=3D=3D=3DSign 40 mods=3D=3D=3D>
+CPU3: <=3D=3D=3DSign 40 mods=3D=3D=3D>
+
+
+
+In your approach, if CPU0 eats the last 32 modules
+from the command line, the other CPUs end up
+just waiting for CPU0 to complete the task.
+
+
+
+The more CPUs you have, the more idle CPUs
+at the last portion of the signing stage.
+
+
+
+Do not try to save such a small cost of process forking.
+
+Leave the task scheduling to GNU Make.
+
+
+
+
+
+>
+> But I got ~1.4 seconds boost when I did "make module_install".
+>
+> I gave the data in my other response as well. Copying the same here
+> because this has in better context.
+>
+> root@ph5dev:~/linux-6.3.5 # ./test.sh orig
+>
+> real    0m14.699s
+> user    0m55.519s
+> sys     0m9.036s
+>
+> root@ph5dev:~/linux-6.3.5 # ./test.sh new
+>
+> real    0m13.327s
+> user    0m46.885s
+> sys     0m6.770s
+>
+> Here is my test script.
+> ```
+> #!/bin/bash
+>
+> set -e
+>
+> if [ "$1" !=3D "new" ] && [ "$1" !=3D "orig" ]; then
+>     echo "invalid arg, ($0 [orig|new])" >&2
+>     exit 1
+> fi
+>
+> rm -rf $PWD/tmp
+>
+> s=3D"scripts/sign-file.c"
+> m=3D"scripts/Makefile.modinst"
+> fns=3D($s $m)
+>
+> for f in ${fns[@]}; do
+>       cp $f.$1 $f
+> done
+>
+> cd scripts
+> gcc -o sign-file sign-file.c -lcrypto
+> cd -
+>
+> time make modules_install INSTALL_MOD_PATH=3D$PWD/tmp -s -j$(nproc)
+> ```
+
+
+Just in case, I followed your
+'time make modules_install'  measurement.
+allmodconfig based on the mainline.
+
+
+
+[Setup]
+
+masahiro@oscar:~$ nproc
+24
+masahiro@oscar:~$ for ((cpu=3D0; cpu<$(nproc); cpu++)); do sudo sh -c
+"echo performance >
+/sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_governor"; done
+
+
+
+[Mainline  (3 runs)]
+
+masahiro@oscar:~/ref/linux(master)$ git log -1 --oneline
+0108963f14e9 (HEAD -> master, origin/master, origin/HEAD) Merge tag
+'v6.5-rc5.vfs.fixes' of
+git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs
+masahiro@oscar:~/ref/linux(master)$ make -s -j24
+masahiro@oscar:~/ref/linux(master)$ wc modules.order
+  9476   9476 314661 modules.order
+masahiro@oscar:~/ref/linux(master)$ rm -rf /tmp/modules; sudo sh -c
+"echo 1 > /proc/sys/vm/drop_caches"; time make -s -j24
+INSTALL_MOD_PATH=3D/tmp/modules modules_install
+
+real 0m21.743s
+user 1m49.849s
+sys 0m18.345s
+masahiro@oscar:~/ref/linux(master)$ rm -rf /tmp/modules; sudo sh -c
+"echo 1 > /proc/sys/vm/drop_caches"; time make -s -j24
+INSTALL_MOD_PATH=3D/tmp/modules modules_install
+
+real 0m22.246s
+user 1m49.303s
+sys 0m18.390s
+masahiro@oscar:~/ref/linux(master)$ rm -rf /tmp/modules; sudo sh -c
+"echo 1 > /proc/sys/vm/drop_caches"; time make -s -j24
+INSTALL_MOD_PATH=3D/tmp/modules modules_install
+
+real 0m28.210s
+user 1m46.584s
+sys 0m17.678s
+
+
+[Mainline + your patch set (3 runs)]
+
+masahiro@oscar:~/ref/linux(sig-file)$ git log -9 --oneline
+7c95522599c5 (HEAD -> sig-file) kbuild: modinst: do modules_install step by=
+ step
+1cc212890d9a sign-file: fix do while styling issue
+0f9c5c01d378 sign-file: use const with a global string constant
+6ddc845c5976 sign-file: improve help message
+4573855b7e90 sign-file: add support to sign modules in bulk
+f9f0c2c4200c sign-file: move file signing logic to its own function
+41cb7c94595d sign-file: inntroduce few new flags to make argument
+processing easy.
+af85d6eaa481 sign-file: use getopt_long_only for parsing input args
+0108963f14e9 (origin/master, origin/HEAD, master) Merge tag
+'v6.5-rc5.vfs.fixes' of
+git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs
+masahiro@oscar:~/ref/linux(sig-file)$ make -s -j24
+masahiro@oscar:~/ref/linux(sig-file)$ wc modules.order
+  9476   9476 314661 modules.order
+masahiro@oscar:~/ref/linux(sig-file)$ rm -rf /tmp/modules; sudo sh -c
+"echo 1 > /proc/sys/vm/drop_caches"; time make -s -j24
+INSTALL_MOD_PATH=3D/tmp/modules modules_install
+
+real 0m25.931s
+user 1m40.787s
+sys 0m8.390s
+masahiro@oscar:~/ref/linux(sig-file)$ rm -rf /tmp/modules; sudo sh -c
+"echo 1 > /proc/sys/vm/drop_caches"; time make -s -j24
+INSTALL_MOD_PATH=3D/tmp/modules modules_install
+
+real 0m33.393s
+user 1m41.782s
+sys 0m8.390s
+masahiro@oscar:~/ref/linux(sig-file)$ rm -rf /tmp/modules; sudo sh -c
+"echo 1 > /proc/sys/vm/drop_caches"; time make -s -j24
+INSTALL_MOD_PATH=3D/tmp/modules modules_install
+
+real 0m26.311s
+user 1m39.205s
+sys 0m8.196s
+
+
+
+With your apprach, 'sys' is much shorter,
+presumably due to less number of process forks.
+
+But, 'real' is not attractive.
+
+
+--
+Best Regards
+Masahiro Yamada
+
+--000000000000863e1406025985ae
+Content-Type: application/x-shellscript; name="signfile-single.sh"
+Content-Disposition: attachment; filename="signfile-single.sh"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ll17qbpr1>
+X-Attachment-Id: f_ll17qbpr1
+
+IyEvYmluL3NoCiMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKIwojIEEgc2lnbi1m
+aWxlIHdyYXBwZXIgdXNlZCBieSBzY3JpcHRzL01ha2VmaWxlLnNpZ24KCiNzZXQgLXgKCgpTSUdf
+SEFTSD1zaGExClNJR19LRVk9Y2VydHMvc2lnbmluZ19rZXkucGVtCgpNT0RVTEVTX1BBVEg9L3Rt
+cC9tb2R1bGVzCgpmaW5kICIke01PRFVMRVNfUEFUSH0iIC1uYW1lICoua28gLXR5cGUgZiAtcHJp
+bnQwIHwgXAogICAgeGFyZ3MgLXIgLTAgLVAkKG5wcm9jKSAteCAtbjEgc2ggLWMgIlwKc2NyaXB0
+cy9zaWduLWZpbGUgXAotYSBcIiR7U0lHX0hBU0h9XCIgXAotaSBcIiR7U0lHX0tFWX1cIiBcCi14
+IGNlcnRzL3NpZ25pbmdfa2V5Lng1MDkgXAotYiBcJEAgXCQwIgo=
+--000000000000863e1406025985ae
+Content-Type: application/x-shellscript; name="signfile-bulk.sh"
+Content-Disposition: attachment; filename="signfile-bulk.sh"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ll17qbpc0>
+X-Attachment-Id: f_ll17qbpc0
+
+IyEvYmluL3NoCiMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKIwojIEEgc2lnbi1m
+aWxlIHdyYXBwZXIgdXNlZCBieSBzY3JpcHRzL01ha2VmaWxlLnNpZ24KCiNzZXQgLXgKCgpTSUdf
+SEFTSD1zaGExClNJR19LRVk9Y2VydHMvc2lnbmluZ19rZXkucGVtCgpNT0RVTEVTX1BBVEg9L3Rt
+cC9tb2R1bGVzCgpmaW5kICIke01PRFVMRVNfUEFUSH0iIC1uYW1lICoua28gLXR5cGUgZiAtcHJp
+bnQwIHwgXAogICAgeGFyZ3MgLXIgLTAgLVAkKG5wcm9jKSAteCAtbjMyIHNoIC1jICJcCnNjcmlw
+dHMvc2lnbi1maWxlIFwKLWEgXCIke1NJR19IQVNIfVwiIFwKLWkgXCIke1NJR19LRVl9XCIgXAot
+eCBjZXJ0cy9zaWduaW5nX2tleS54NTA5IFwKLWIgXCRAIFwkMCIK
+--000000000000863e1406025985ae--
