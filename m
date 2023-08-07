@@ -2,78 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16463771A02
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A310771A05
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbjHGGHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
+        id S231137AbjHGGJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbjHGGHF (ORCPT
+        with ESMTP id S229640AbjHGGJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:07:05 -0400
-Received: from icts-p-cavuit-1.kulnet.kuleuven.be (icts-p-cavuit-1.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 548B81724;
-        Sun,  6 Aug 2023 23:07:02 -0700 (PDT)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: 360FD2016C.A7649
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:145:242:ac11:22])
-        by icts-p-cavuit-1.kulnet.kuleuven.be (Postfix) with ESMTP id 360FD2016C;
-        Mon,  7 Aug 2023 08:06:59 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_SIGNED#0.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1691388419;
-        bh=vo2vKLGfT7lup78gRTtsKKXog9tMvYYCJG1cHKh0xBs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=PcWhzB7a96kkwjX+aDL5sZovrbQUrBmIXJqQBG941BMefspcUaLrXeH4z9VzDERmR
-         mjSEXtjUj9ZemxDuNW9yzj2UfEEN7SIY6vonz/XeBtHs53ReYE7SjwWLjP2Us8BCWP
-         qnaSscn8Yt76m1KRkesojTJkcCGGPsdxzvaHFzOY=
-Received: from [10.101.1.242] (ip-185-104-137-32.ptr.icomera.net [185.104.137.32])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id 8F953D4F780D6;
-        Mon,  7 Aug 2023 08:06:58 +0200 (CEST)
-Message-ID: <d1b884b4-830a-88f5-7818-0e7d0ca2ef1b@cs.kuleuven.be>
-Date:   Mon, 7 Aug 2023 08:06:57 +0200
+        Mon, 7 Aug 2023 02:09:22 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D9310F9
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:09:21 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37760gNX022469;
+        Mon, 7 Aug 2023 06:08:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=8lC68q+3Etjcpz76NeQMAydEwaS4UejuJGfrWFBuZ18=;
+ b=OLklORmIOKQpJsMe1pLFOtL6A+RvHGb2jpFgF5KxYnZLhqnd7hkaoju9/A2VqNM6BKuf
+ ITc3lN1j6RQTwBTUv6Nup1LZaNcUM+3QBJENqxeV0VPiwVJ+GN3CFDB5wzbYijrrCX6A
+ zyTsu6WxRu+ZiRgehsAegNfbuhnkXRxWeoubU6iMMXOyKuquzy+18w43GyMHM/Kmr4td
+ 6o9uvOvdW2CtLZK5swLcFvxugERzg0e9rA0uH04HNCfQpXDRCxiZEpHh2yHGCTHCczBA
+ 0BaXUT/gp3cv7hP2sAiXU8bl8klc5wX+li/OjC8tEDG6DfI1AoOwoIK7tEcHvFDA+4n5 UA== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3satyhg96c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Aug 2023 06:08:52 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3774tDBl001597;
+        Mon, 7 Aug 2023 06:08:52 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sa2yjj4er-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Aug 2023 06:08:51 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37768opB1639122
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 7 Aug 2023 06:08:50 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A41B2004D;
+        Mon,  7 Aug 2023 06:08:50 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 167BC20049;
+        Mon,  7 Aug 2023 06:08:50 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Mon,  7 Aug 2023 06:08:50 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: BUG: KASAN: slab-out-of-bounds in print_synth_event+0xa68/0xa78
+References: <yt9dsf8zfhw8.fsf@linux.ibm.com>
+        <20230804115033.34c2b5af@gandalf.local.home>
+        <yt9da5v66a4v.fsf@linux.ibm.com>
+        <20230804133601.40cb5fe9@gandalf.local.home>
+Date:   Mon, 07 Aug 2023 08:08:49 +0200
+In-Reply-To: <20230804133601.40cb5fe9@gandalf.local.home> (Steven Rostedt's
+        message of "Fri, 4 Aug 2023 13:36:01 -0400")
+Message-ID: <yt9d7cq7s7ta.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/5] selftests/sgx: Fix uninitialized pointer dereference
- in error path.
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com
-References: <20230724165832.15797-1-jo.vanbulck@cs.kuleuven.be>
- <20230724165832.15797-2-jo.vanbulck@cs.kuleuven.be>
- <CUE1EZWZ2B1V.3RB2KB8Q2A52W@seitikki>
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-In-Reply-To: <CUE1EZWZ2B1V.3RB2KB8Q2A52W@seitikki>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: HWi_FLwC-oz-O_BaiBR_fCVOMLXPK7YA
+X-Proofpoint-GUID: HWi_FLwC-oz-O_BaiBR_fCVOMLXPK7YA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-07_04,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ adultscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=906 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308070055
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.23 21:03, Jarkko Sakkinen wrote:
-> Add a fixes tag. In other words, find the commit ID that caused the issue
-> and add the output of the following to this patch before your sob:
-> 
-> git --no-pager log --format='Fixes: %h ("%s")' --abbrev=12 -1 <commit ID>;
-> 
-> BR, Jarkko
+Steven Rostedt <rostedt@goodmis.org> writes:
 
-Thank you, added for the next patch revision.
+> On Fri, 04 Aug 2023 18:32:48 +0200
+> Sven Schnelle <svens@linux.ibm.com> wrote:
+>
+>> > Can you show where exactly the above line is?  
+>> 
+>> It is:
+>> 
+>> (gdb) list *(print_synth_event+0xa68)
+>> 0x5e4f60 is in print_synth_event (/home/svens/ibmgit/linux/kernel/trace/trace_events_synth.c:410).
+>> 405                             p = (void *)entry + data_offset;
+>> 406                             end = (void *)p + len - (sizeof(long) - 1);
+>> 407
+>> 408                             trace_seq_printf(s, "%s=STACK:\n", se->fields[i]->name);
+>> 409
+>> 410                             for (; *p && p < end; p++)
+>
+> I think that conditional needs to be swapped. Can you test the following
+> change and see if the problem disappears?
+
+Unfortunately that doesn't change anything, still exactly the same splat.
