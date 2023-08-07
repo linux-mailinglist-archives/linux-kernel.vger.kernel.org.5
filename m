@@ -2,109 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F4A772635
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2785677263D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234340AbjHGNmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57736 "EHLO
+        id S234000AbjHGNm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234315AbjHGNmB (ORCPT
+        with ESMTP id S234326AbjHGNmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:42:01 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5172A10EF
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:41:45 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe0e34f498so7472600e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 06:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691415693; x=1692020493;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5BEiFgoT8gmcD9TslPsPb7lIuLpctjm+0r2XxTVa0tA=;
-        b=KPZkClBUdNA5+JA6XWRPXAuqNvR/OnwfoptN8HmzX+XXZoO5rBXsRm34zjSBeQGP+y
-         LpZhg9IpZEDxJmfGGcF1mDwbssDIxdQBSxhgY9ELmXdHR0cWog2mJXneXMyHlBVQZNLp
-         kJ/CnN8egI5OzgArFwlZR4mBJWazqY3mdDKvibC/ExxDqcLjqysVnZxjKWVMLyeU6ca5
-         CxORoj26LKrx7IKw7vzMURYA8IeyODFMY9vOF4ulTpTb/jb4ha8fYyZwDOrR8jWa247f
-         MeVIBSTQhZxyyzDs+on62TmsvROB5/e+As7hemzMEczfQDvR8yZop07oTSwunf8rHrTn
-         hLig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691415693; x=1692020493;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5BEiFgoT8gmcD9TslPsPb7lIuLpctjm+0r2XxTVa0tA=;
-        b=CkT4/LlIuwNTUPfceZNDKYXYAJs7Yij/ozt1i61SVp/Sl+CAStmGZJSMwqJBaD2HXz
-         QK1lzw26/FcVwOlbZHE2oDDCMWQopvbIm9dOFaiya4ZyxEv6amDcXt1btFSc+DmpC79P
-         aZN4SZ7m9bcSu0DHENwiIF00uuP4UaB3aQxxJj/p0NRlg25Zkf5/6n0ywggJgvuAMt4x
-         XKPzT8gmSgTinGvJ32cbEhqbDDUkZGvmduO5Z9GBtnOAg/3AV4VKmvCCgp0eom9kMo4I
-         3MFlGk7wQYPn5fo6ETSB2/zxtqbpRd8dkfqdTtO10MdZLbWEu3DBNYQ4L1HSllRNaH7A
-         49SA==
-X-Gm-Message-State: AOJu0Ywwh8BS4q4oJ1iFKrXuO96VvaWrgr9UZqcuPvBiFT22rgTAdf0Y
-        dGOlnlZYdecX8dPcPHOQJW+p7g==
-X-Google-Smtp-Source: AGHT+IGe/Zza0tMqba4IiTa8jOL/b4znqqnNt120r307vuxbcTzZLnFy9+uO0anGI2ps8cHD0sQVBw==
-X-Received: by 2002:ac2:5e28:0:b0:4fe:1dc8:7ec with SMTP id o8-20020ac25e28000000b004fe1dc807ecmr4965814lfg.37.1691415693457;
-        Mon, 07 Aug 2023 06:41:33 -0700 (PDT)
-Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id r6-20020a19ac46000000b004fe3a2e3952sm1511134lfc.100.2023.08.07.06.41.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 06:41:33 -0700 (PDT)
-Message-ID: <63c0d09f-4846-4933-ac8f-b757b348c74a@linaro.org>
-Date:   Mon, 7 Aug 2023 15:41:32 +0200
+        Mon, 7 Aug 2023 09:42:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7836A1701;
+        Mon,  7 Aug 2023 06:41:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 401D261BA3;
+        Mon,  7 Aug 2023 13:41:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97E0DC433C7;
+        Mon,  7 Aug 2023 13:41:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691415715;
+        bh=wYk2Cp2sscYS219b6KlE7eZdHifMs6/0J8jPk9orT6Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uO/Z9uypkfQeZgNjUzr4HYXM8WoQieGHXKg+NnpQIJAkRa+fCw6abmM1htcbhqAEP
+         kVSkD0764zU/EAIeiGZ6p4AVRNSmrjuKpuRsRY9aen28D6JGIsHYS4Vo0PWkMp+uJq
+         WS9ho+de5m555VdcgTzwjtA4DQigyI4RShBmHzZarTHVyV6XdxcrbPifjiafAeC9tc
+         xu+lbWc9Oe/3yiItPZjicD1zCL4IDPOpQPS4buIg6zDxVZZjak2zu9P1elyAUWoG87
+         o6WQiKv8ni6Tb4u4nWQFXZspl0gfC2IKZXz/DttkApq0O8fbR4JxRHtwV99y//0L2R
+         KgE3c8Q8wHt0g==
+Date:   Mon, 7 Aug 2023 19:11:38 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     helgaas@kernel.org, bhelgaas@google.com,
+        devicetree@vger.kernel.org, gustavo.pimentel@synopsys.com,
+        imx@lists.linux.dev, kw@linux.com, leoyang.li@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org,
+        manivannan.sadhasivam@linaro.org, minghuan.lian@nxp.com,
+        mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
+        shawnguo@kernel.org, zhiqiang.hou@nxp.com
+Subject: Re: [PATCH v9 3/3] PCI: layerscape: Add power management support for
+ ls1028a
+Message-ID: <20230807134138.GE18257@thinkpad>
+References: <20230804180637.462573-1-Frank.Li@nxp.com>
+ <20230804180637.462573-4-Frank.Li@nxp.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND v2 5/9] arm64: dts: qcom: Add pmx75 PMIC dtsi
-Content-Language: en-US
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, vkoul@kernel.org, kishon@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, abel.vesa@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
-References: <1691415534-31820-1-git-send-email-quic_rohiagar@quicinc.com>
- <1691415534-31820-6-git-send-email-quic_rohiagar@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1691415534-31820-6-git-send-email-quic_rohiagar@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230804180637.462573-4-Frank.Li@nxp.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -112,11 +64,243 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7.08.2023 15:38, Rohit Agarwal wrote:
-> Add dtsi for pmx75 PMIC found in Qualcomm platforms.
+On Fri, Aug 04, 2023 at 02:06:37PM -0400, Frank Li wrote:
+> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 > 
-> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Add PME_Turn_off/PME_TO_Ack handshake sequence for ls1028a platform. Call
+> common dwc dw_pcie_suspend(resume)_noirq() function when system enter/exit
+> suspend state.
+> 
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-Konrad
+Minor nits below. With that,
+
+Acked-by: Manivannan Sadhasivam <mani@kernel.org>
+
+> ---
+>  drivers/pci/controller/dwc/pci-layerscape.c | 130 ++++++++++++++++++--
+>  1 file changed, 121 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
+> index ed5fb492fe084..7586aece769b2 100644
+> --- a/drivers/pci/controller/dwc/pci-layerscape.c
+> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
+> @@ -8,9 +8,11 @@
+>   * Author: Minghuan Lian <Minghuan.Lian@freescale.com>
+>   */
+>  
+> +#include <linux/delay.h>
+>  #include <linux/kernel.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/init.h>
+> +#include <linux/iopoll.h>
+>  #include <linux/of_pci.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/of_address.h>
+> @@ -20,6 +22,7 @@
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/regmap.h>
+>  
+> +#include "../../pci.h"
+>  #include "pcie-designware.h"
+>  
+>  /* PEX Internal Configuration Registers */
+> @@ -27,12 +30,26 @@
+>  #define PCIE_ABSERR		0x8d0 /* Bridge Slave Error Response Register */
+>  #define PCIE_ABSERR_SETTING	0x9401 /* Forward error of non-posted request */
+>  
+> +/* PF Message Command Register */
+> +#define LS_PCIE_PF_MCR		0x2c
+> +#define PF_MCR_PTOMR		BIT(0)
+> +#define PF_MCR_EXL2S		BIT(1)
+> +
+>  #define PCIE_IATU_NUM		6
+>  
+> +struct ls_pcie_drvdata {
+> +	const u32 pf_off;
+> +	bool pm_support;
+> +};
+> +
+>  struct ls_pcie {
+>  	struct dw_pcie *pci;
+> +	const struct ls_pcie_drvdata *drvdata;
+> +	void __iomem *pf_base;
+> +	bool big_endian;
+>  };
+>  
+> +#define ls_pcie_pf_readl_addr(addr)	ls_pcie_pf_readl(pcie, addr)
+>  #define to_ls_pcie(x)	dev_get_drvdata((x)->dev)
+>  
+>  static bool ls_pcie_is_bridge(struct ls_pcie *pcie)
+> @@ -73,6 +90,60 @@ static void ls_pcie_fix_error_response(struct ls_pcie *pcie)
+>  	iowrite32(PCIE_ABSERR_SETTING, pci->dbi_base + PCIE_ABSERR);
+>  }
+>  
+> +static u32 ls_pcie_pf_readl(struct ls_pcie *pcie, u32 off)
+> +{
+> +	if (pcie->big_endian)
+> +		return ioread32be(pcie->pf_base + off);
+> +
+> +	return ioread32(pcie->pf_base + off);
+> +}
+> +
+> +static void ls_pcie_pf_writel(struct ls_pcie *pcie, u32 off, u32 val)
+> +{
+> +	if (pcie->big_endian)
+> +		iowrite32be(val, pcie->pf_base + off);
+> +	else
+> +		iowrite32(val, pcie->pf_base + off);
+> +}
+> +
+> +static void ls_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
+> +{
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> +	u32 val;
+> +	int ret;
+> +
+> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
+> +	val |= PF_MCR_PTOMR;
+> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
+> +
+> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
+> +				 val, !(val & PF_MCR_PTOMR),
+> +				 PCIE_PME_TO_L2_TIMEOUT_US/10,
+> +				 PCIE_PME_TO_L2_TIMEOUT_US);
+> +	if (ret)
+> +		dev_err(pcie->pci->dev, "poll turn off message timeout\n");
+
+dev_err(pci->dev, "PME_Turn_off timeout\n");
+
+> +}
+> +
+> +static void ls_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+> +{
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> +	u32 val;
+> +	int ret;
+> +
+> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
+> +	val |= PF_MCR_EXL2S;
+> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
+> +
+> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
+> +				 val, !(val & PF_MCR_EXL2S),
+> +				 PCIE_PME_TO_L2_TIMEOUT_US/10,
+> +				 PCIE_PME_TO_L2_TIMEOUT_US);
+> +	if (ret)
+> +		dev_err(pcie->pci->dev, "poll exit L2 state timeout\n");
+
+dev_err(pci->dev, "L2 exit timeout\n");
+
+- Mani
+
+> +}
+> +
+>  static int ls_pcie_host_init(struct dw_pcie_rp *pp)
+>  {
+>  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> @@ -91,18 +162,28 @@ static int ls_pcie_host_init(struct dw_pcie_rp *pp)
+>  
+>  static const struct dw_pcie_host_ops ls_pcie_host_ops = {
+>  	.host_init = ls_pcie_host_init,
+> +	.pme_turn_off = ls_pcie_send_turnoff_msg,
+> +	.exit_from_l2 = ls_pcie_exit_from_l2,
+> +};
+> +
+> +static const struct ls_pcie_drvdata ls1021a_drvdata = {
+> +};
+> +
+> +static const struct ls_pcie_drvdata layerscape_drvdata = {
+> +	.pf_off = 0xc0000,
+> +	.pm_support = true,
+>  };
+>  
+>  static const struct of_device_id ls_pcie_of_match[] = {
+> -	{ .compatible = "fsl,ls1012a-pcie", },
+> -	{ .compatible = "fsl,ls1021a-pcie", },
+> -	{ .compatible = "fsl,ls1028a-pcie", },
+> -	{ .compatible = "fsl,ls1043a-pcie", },
+> -	{ .compatible = "fsl,ls1046a-pcie", },
+> -	{ .compatible = "fsl,ls2080a-pcie", },
+> -	{ .compatible = "fsl,ls2085a-pcie", },
+> -	{ .compatible = "fsl,ls2088a-pcie", },
+> -	{ .compatible = "fsl,ls1088a-pcie", },
+> +	{ .compatible = "fsl,ls1012a-pcie", .data = &layerscape_drvdata },
+> +	{ .compatible = "fsl,ls1021a-pcie", .data = &ls1021a_drvdata },
+> +	{ .compatible = "fsl,ls1028a-pcie", .data = &layerscape_drvdata },
+> +	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1021a_drvdata },
+> +	{ .compatible = "fsl,ls1046a-pcie", .data = &layerscape_drvdata },
+> +	{ .compatible = "fsl,ls2080a-pcie", .data = &layerscape_drvdata },
+> +	{ .compatible = "fsl,ls2085a-pcie", .data = &layerscape_drvdata },
+> +	{ .compatible = "fsl,ls2088a-pcie", .data = &layerscape_drvdata },
+> +	{ .compatible = "fsl,ls1088a-pcie", .data = &layerscape_drvdata },
+>  	{ },
+>  };
+>  
+> @@ -121,6 +202,8 @@ static int ls_pcie_probe(struct platform_device *pdev)
+>  	if (!pci)
+>  		return -ENOMEM;
+>  
+> +	pcie->drvdata = of_device_get_match_data(dev);
+> +
+>  	pci->dev = dev;
+>  	pci->pp.ops = &ls_pcie_host_ops;
+>  
+> @@ -131,6 +214,10 @@ static int ls_pcie_probe(struct platform_device *pdev)
+>  	if (IS_ERR(pci->dbi_base))
+>  		return PTR_ERR(pci->dbi_base);
+>  
+> +	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
+> +
+> +	pcie->pf_base = pci->dbi_base + pcie->drvdata->pf_off;
+> +
+>  	if (!ls_pcie_is_bridge(pcie))
+>  		return -ENODEV;
+>  
+> @@ -139,12 +226,37 @@ static int ls_pcie_probe(struct platform_device *pdev)
+>  	return dw_pcie_host_init(&pci->pp);
+>  }
+>  
+> +static int ls_pcie_suspend_noirq(struct device *dev)
+> +{
+> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
+> +
+> +	if (!pcie->drvdata->pm_support)
+> +		return 0;
+> +
+> +	return dw_pcie_suspend_noirq(pcie->pci);
+> +}
+> +
+> +static int ls_pcie_resume_noirq(struct device *dev)
+> +{
+> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
+> +
+> +	if (!pcie->drvdata->pm_support)
+> +		return 0;
+> +
+> +	return dw_pcie_resume_noirq(pcie->pci);
+> +}
+> +
+> +static const struct dev_pm_ops ls_pcie_pm_ops = {
+> +	NOIRQ_SYSTEM_SLEEP_PM_OPS(ls_pcie_suspend_noirq, ls_pcie_resume_noirq)
+> +};
+> +
+>  static struct platform_driver ls_pcie_driver = {
+>  	.probe = ls_pcie_probe,
+>  	.driver = {
+>  		.name = "layerscape-pcie",
+>  		.of_match_table = ls_pcie_of_match,
+>  		.suppress_bind_attrs = true,
+> +		.pm = &ls_pcie_pm_ops,
+>  	},
+>  };
+>  builtin_platform_driver(ls_pcie_driver);
+> -- 
+> 2.34.1
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
