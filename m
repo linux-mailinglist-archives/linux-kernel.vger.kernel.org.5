@@ -2,48 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8714771958
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 07:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C6477196C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 07:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbjHGFVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 01:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44824 "EHLO
+        id S230236AbjHGFW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 01:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjHGFVb (ORCPT
+        with ESMTP id S229580AbjHGFW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 01:21:31 -0400
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CDE171E;
-        Sun,  6 Aug 2023 22:21:27 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 3775L0LD022298;
-        Mon, 7 Aug 2023 13:21:00 +0800 (+08)
-        (envelope-from Kaiwei.Liu@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx07.spreadtrum.com [10.0.1.12])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RK4P854KHz2K1r9q;
-        Mon,  7 Aug 2023 13:19:08 +0800 (CST)
-Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx07.spreadtrum.com
- (10.0.1.12) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Mon, 7 Aug 2023
- 13:20:58 +0800
-From:   Kaiwei Liu <kaiwei.liu@unisoc.com>
-To:     Vinod Koul <vkoul@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        kaiwei liu <liukaiwei086@gmail.com>,
-        Wenming Wu <wenming.wu@unisoc.com>
-Subject: [PATCH 5/5] dma: add relative interface to support deep sleep
-Date:   Mon, 7 Aug 2023 13:20:56 +0800
-Message-ID: <20230807052056.2963-1-kaiwei.liu@unisoc.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 7 Aug 2023 01:22:57 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA34113;
+        Sun,  6 Aug 2023 22:22:56 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3775MofM104866;
+        Mon, 7 Aug 2023 00:22:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691385770;
+        bh=o43BVAIwu1eTDn8xtuDb7nxNe4jYXLcrI+Wj3Fyn1T4=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=RnZL1LOVWeuU6nw8s+bF1t6gnxE8lK9tdxVr34/9BxVvwwk+apwRRaS3VpVw+UXHt
+         2IPZcX0S7DbEcXMm9dY0jUkO1qgHFjkabcksM49Cas3Dn6GuM17dfe+TkvQ+PyYzmr
+         pclJ7Go56bERbDrjgAO7qoRrvIvMV2VZttW2QdjI=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3775Mo3L006638
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Aug 2023 00:22:50 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
+ Aug 2023 00:22:50 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 7 Aug 2023 00:22:49 -0500
+Received: from [172.24.227.68] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3775MkI2028422;
+        Mon, 7 Aug 2023 00:22:47 -0500
+Message-ID: <bbcf23b6-cadc-17ff-25a6-bd8efc058279@ti.com>
+Date:   Mon, 7 Aug 2023 10:52:46 +0530
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.13.2.29]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx07.spreadtrum.com (10.0.1.12)
-X-MAIL: SHSQR01.spreadtrum.com 3775L0LD022298
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 01/13] arm64: dts: ti: k3-j721e: Enable SDHCI nodes at the
+ board level
+Content-Language: en-US
+To:     Andrew Davis <afd@ti.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230802205309.257392-1-afd@ti.com>
+ <20230802205309.257392-2-afd@ti.com>
+From:   Dhruva Gole <d-gole@ti.com>
+In-Reply-To: <20230802205309.257392-2-afd@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,49 +73,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DMA doesn't support deep sleep before, here add
-relative interface in deep sleep framework.
 
-Signed-off-by: Kaiwei Liu <kaiwei.liu@unisoc.com>
----
- drivers/dma/sprd-dma.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
 
-diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
-index 41d427df5098..b1dbbc5f4e70 100644
---- a/drivers/dma/sprd-dma.c
-+++ b/drivers/dma/sprd-dma.c
-@@ -1339,10 +1339,30 @@ static int __maybe_unused sprd_dma_runtime_resume(struct device *dev)
- 	return ret;
- }
- 
-+static int sprd_dma_suspend_noirq(struct device *dev)
-+{
-+	if ((pm_runtime_status_suspended(dev)) ||
-+	    (atomic_read(&(dev->power.usage_count)) > 1))
-+		return 0;
-+
-+	return sprd_dma_runtime_suspend(dev);
-+}
-+
-+static int sprd_dma_resume_early(struct device *dev)
-+{
-+	if ((pm_runtime_status_suspended(dev)) ||
-+	    (atomic_read(&(dev->power.usage_count)) > 1))
-+		return 0;
-+
-+	return sprd_dma_runtime_resume(dev);
-+}
-+
- static const struct dev_pm_ops sprd_dma_pm_ops = {
- 	SET_RUNTIME_PM_OPS(sprd_dma_runtime_suspend,
- 			   sprd_dma_runtime_resume,
- 			   NULL)
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(sprd_dma_suspend_noirq,
-+				      sprd_dma_resume_early)
- };
- 
- static struct platform_driver sprd_dma_driver = {
+On 03/08/23 02:22, Andrew Davis wrote:
+> SDHCI nodes defined in the top-level J721e SoC dtsi files are incomplete
+> and will not be functional unless they are extended.
+> 
+> As the attached SD/eMMC is only known about at the board integration level,
+> these nodes should only be enabled when provided with this information.
+> 
+> Disable the SDHCI nodes in the dtsi files and only enable the ones that
+> are actually pinned out on a given board.
+> 
+> Signed-off-by: Andrew Davis <afd@ti.com>
+> ---
+>   arch/arm64/boot/dts/ti/k3-j721e-beagleboneai64.dts    |  7 ++-----
+>   arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts |  7 ++-----
+>   arch/arm64/boot/dts/ti/k3-j721e-main.dtsi             |  3 +++
+>   arch/arm64/boot/dts/ti/k3-j721e-sk.dts                | 11 +----------
+>   4 files changed, 8 insertions(+), 20 deletions(-)
+> 
+[snip]
+
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
+
 -- 
-2.17.1
-
+Thanks and Regards,
+Dhruva Gole
