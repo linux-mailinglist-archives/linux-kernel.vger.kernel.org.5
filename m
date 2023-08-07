@@ -2,268 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4203C7718E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 05:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778287718E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 05:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbjHGDym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 23:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
+        id S229742AbjHGD4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 23:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjHGDyj (ORCPT
+        with ESMTP id S229578AbjHGD4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 23:54:39 -0400
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5986DFA
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 20:54:38 -0700 (PDT)
-Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-48716a85f16so998426e0c.3
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 20:54:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691380477; x=1691985277;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VpD9tJeTGeAwp028FzCGIn2OEO9pwOWKOLBWazZV6+s=;
-        b=YBPSHtg5ZFmyeS6whane3bRmBlRHyjjkhdOUajBQ9Fa5gwW2/iUY76RCvsnE2fYptN
-         jbXebBzdnGJX7JZMLgaSfV+JFCtRYbINJpZ8qCHKPPlPDN/cZ2MkuB6ql8EaqE+aotfS
-         jH9WrGMI2U5IDtcP0BTlvOYq/jsJ/nR7OXn40=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691380477; x=1691985277;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VpD9tJeTGeAwp028FzCGIn2OEO9pwOWKOLBWazZV6+s=;
-        b=VFM9t6mpW4Pqur9iuIE2ZVdxnpmfIR6jDfl/2ex2s9quP+BiiPeuNDi+CbXHeFUFUZ
-         qT37nHTgypMo/ah//0golHp8XWoQMuR6VTbPHY0eKsPvDAQky0BTBGBcVrnQRIIz6hDH
-         6NCLKMmhYTIzXzj8UAqTHQH5iu4fp6ZrJv7ftbp2U5ct/+5aR/w64624Kp6v6k6zmc1k
-         aYmJtbOrGapAgH5ZPwAlIUZxGogmD3WZK43bqZi5FZS0TjyI65mH5Jwry7XwYmRquJ2N
-         ALDw4fhzTVTEQMc0lV2bC9LTu6Sff3aQxq0cZMiV62nPtNFhKma8xfGoxZcnqTQ+tie1
-         rnyA==
-X-Gm-Message-State: AOJu0Yyzh9SEYLO6AXXindLV3ZMkGwPlmvA0RbRwvdGkMg/DphAsn2a1
-        rS4M4YIr8V2yHN6BF2KQKd1g8NB0jkiBsHZ/HrGLyw==
-X-Google-Smtp-Source: AGHT+IE0rMis9MAg4485WZz7GtdCSvCROK6UgrYXLMEp+mc+YO1B/RgsuKIVkVsIL8EjL9HBwfK/4jxzqz/qcBzuANc=
-X-Received: by 2002:a67:e3da:0:b0:447:d044:3e3e with SMTP id
- k26-20020a67e3da000000b00447d0443e3emr3121184vsm.27.1691380477428; Sun, 06
- Aug 2023 20:54:37 -0700 (PDT)
+        Sun, 6 Aug 2023 23:56:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4242D10FD;
+        Sun,  6 Aug 2023 20:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691380604; x=1722916604;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=WSnu3N2KTELqRHiCd7RjrFverT6LZyOWNDAJxoBK9MA=;
+  b=cKl+M0zyhcrzux9Cr2ngqL2ylIPh0uPwN1hnDq1mCTNp6gCTgM7j7Xgx
+   U5iOPlkA0zMecf7Ctx5pR3LveT05agSO7SUMAbOyG/yL1CudYb+tA+wuL
+   4Wkg0GQJK25KjSE1ZpANSG2xg+WNuEcWCn6AvgR5Y5pjmJ6ls07sPXI4C
+   EKilZo8l/MqQvrE8Jl+4WE0BrjlFcEiaC87jFrnywr+a/J87/DLpcFrm4
+   YsrfKBN3RnHZFPb6jfxIa4CHc7jaFCxf2sLwShEcrjBUE47TItVDvzZ7j
+   yKLpgU4ZbQan4pYe9JcfYx9OcasRGKyTJc8q8c9jFNtUbVGBauko66viq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="355386399"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="355386399"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2023 20:56:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="904566989"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="904566989"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga005.jf.intel.com with ESMTP; 06 Aug 2023 20:56:43 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sun, 6 Aug 2023 20:56:42 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sun, 6 Aug 2023 20:56:42 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Sun, 6 Aug 2023 20:56:42 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.107)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Sun, 6 Aug 2023 20:56:42 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lpOSSLLXnMmjDlCyTRBw5+XWY9M0yBpn12jtl/We7nDHi7TpRqgwToMZICaYWHOPOivHTrdJYXT49AjXZCFwMEXS7/yHgqE6ecjm/b9omUmjNR3tmD65dQqJiVCXdoZb0OfNoUfCZ1+QAI8rf/ByqIroOmbsMeLmDrFeJpTzfWaEDvArsx+DcZGPN5TfZMZGcRxSJlwq5WK+KrpuqJvQrEWoBHK1UlFXUF9j9vNichAIAjE+kCwmGo9itGAzMejoxcA3PiAW9dUsQbP94jKtXtt6rsAiHyDJO2mykvCzE+wULAtibEs4bMzPiiGEkLAkSGB9182UjuBmczXIjanzMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WSnu3N2KTELqRHiCd7RjrFverT6LZyOWNDAJxoBK9MA=;
+ b=KAboSAoFGJZpYh3DUjl4RukHsb+5beSc7F1e2m0h/gNZsk4/7gMG5zDiNNwWcTKXotPAm93hxkKhh6eorrgDEG3iG1CPVa1EdHQG3jSYl9E8R1R8zD9+jtnE3jP4AwZn3+5obbTUFuzyyucBeKf7IeRcdKrJXxi+ByrP1r7ZV8NC24wCiPlg+d3cVk1Wg+tpx5HOSS9AVJ1RMcmG6UeQrJQDQIyzLRQJ9ZQbdg6qZI/CEFPJSYUbO7lJkFpRlOd/kxXNvwlXS5Ac4/vP0AdaXeJtZiarQfVmRwx5yZmICNOnEPgQqYdIEuzuq0z2lSZZrnjlKf05VkkmABcJSV2OHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from DM6PR11MB3291.namprd11.prod.outlook.com (2603:10b6:5:d::10) by
+ CO1PR11MB4945.namprd11.prod.outlook.com (2603:10b6:303:9c::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6652.26; Mon, 7 Aug 2023 03:56:35 +0000
+Received: from DM6PR11MB3291.namprd11.prod.outlook.com
+ ([fe80::cf83:5843:b3c9:10af]) by DM6PR11MB3291.namprd11.prod.outlook.com
+ ([fe80::cf83:5843:b3c9:10af%6]) with mapi id 15.20.6652.025; Mon, 7 Aug 2023
+ 03:56:35 +0000
+From:   "Rabara, Niravkumar L" <niravkumar.l.rabara@intel.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     "Ng, Adrian Ho Yin" <adrian.ho.yin.ng@intel.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dinguyen@kernel.org" <dinguyen@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Turquette, Mike" <mturquette@baylibre.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "wen.ping.teh@intel.com" <wen.ping.teh@intel.com>
+Subject: RE: [PATCH v2 3/5] dt-bindings: clock: add Intel Agilex5 clock
+ manager
+Thread-Topic: [PATCH v2 3/5] dt-bindings: clock: add Intel Agilex5 clock
+ manager
+Thread-Index: AQHZxBQYoDLOJHXuDEWKBojhTKBqcq/dsgiAgACL3yA=
+Date:   Mon, 7 Aug 2023 03:56:35 +0000
+Message-ID: <DM6PR11MB3291E2046F9596358B6384F8A20CA@DM6PR11MB3291.namprd11.prod.outlook.com>
+References: <20230618132235.728641-1-niravkumar.l.rabara@intel.com>
+ <20230801010234.792557-1-niravkumar.l.rabara@intel.com>
+ <20230801010234.792557-4-niravkumar.l.rabara@intel.com>
+ <6fcd8e51-7e97-1261-7cd5-5e18840aaf8e@linaro.org>
+In-Reply-To: <6fcd8e51-7e97-1261-7cd5-5e18840aaf8e@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR11MB3291:EE_|CO1PR11MB4945:EE_
+x-ms-office365-filtering-correlation-id: d4e3bf2d-affd-4a27-d203-08db96fa4b48
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: v51T9clfvcbnoc/rdacaZBlvSJ6hOT8WzscUvp1wrT9y5Bpe2i73iKSqcP6XJTC80XYkbRELHTtBCBht1ahWFrxYNKFHfXYVPlXXEC1yEI89DiMveWJq86xwWliZw0ApeH3BGowJuKi33KaNIt3Y0/4qKBsA3nIIyOOu3q5yXlLFE4jra//z3ZRtMhAn2q/NyKu5phA2DXSVeiS5BBsqJPMWDQAUCG26AZd6xsicxng+GnZ87+Cn61c9SLeol+kpGlLBnt6nHe+chaZ0CeZSVjp2fNahIL51frNdO+FSZO2K8mloDGqkBqKow+UH/H73sBSvqJ45Q+8BaPn3058UQxMTCXLDnCP7DUz+F9ZX0Rmzj87TdzjUarOxKzL3O47fNlRTRFV7lCksouK+ZDichR131H84J2n31F5d25HBBGqGQqI4lRiQVRh9diQ2CQn3O9S7GBe2q4BH7JZpFN7C5FZHtE0pz5uQ5hSS86zBFvwi8/sb1ggC8oZbJDPbz1yiDwZPtcTfXe80PhW/TyVZQ7dbu3nWZt5dhDD+2vpWPHTwvW0ymH+bkodZs2765/p6G+qqSqXKYzZiaGLZpRmazfoTFGv5IbVcBxpqA9g2JfYdFpR5efIu8spRFa3Ws5Mv
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3291.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(376002)(346002)(136003)(396003)(366004)(186006)(1800799003)(451199021)(52536014)(38070700005)(41300700001)(26005)(107886003)(2906002)(5660300002)(83380400001)(7416002)(8936002)(8676002)(55016003)(478600001)(122000001)(6916009)(86362001)(316002)(82960400001)(33656002)(6506007)(53546011)(7696005)(38100700002)(54906003)(76116006)(64756008)(66446008)(66476007)(66556008)(71200400001)(66946007)(4326008)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Wm1IN0d3Q1lYUGpqSDlRMmhpRVRTaUdCZGVMSm95YTk2aWp5OEdtNXNBZzJR?=
+ =?utf-8?B?eHd6NEc4OWpvUDZrYmZVM2duaGtXZ1hDVFJEK2FVay9XN0JZTVVRcU1TYXcy?=
+ =?utf-8?B?citVT0c1eEwydnozdDRQOE5iL2o4aC9INXhnQkIyU0hhRzZTc0U0TVZNN3ZY?=
+ =?utf-8?B?K3dXRWxCNDNpOTdmKytCT0pqc3dxZW9lYWhZazd6ZzlXdU13WlJQRURHUUpi?=
+ =?utf-8?B?MjNtS2toSDJLK0hjN1d5SE0rWXBvWjhKNkpRRlFOeWMzeXd2bktUUmxYc3R1?=
+ =?utf-8?B?UmUzNDZqWVNBQ25scW10S0JrVjh3SStCNVBNL2pUTGhKdkNORDltdEg1UzAr?=
+ =?utf-8?B?QmQ4bGRlQ3YvL2tjQSt6SzlJVnBZVFF3ZUwzRDc3S2dkeWpaamZmVmtRd0Nr?=
+ =?utf-8?B?dmZEUlVvVW4vSGNnK1lUWXNqYmsxdm9vZkxvZmhWWkI3UEljZWlqdDRCN0pZ?=
+ =?utf-8?B?Yk9LeWU5YUtyYWU2MW9DL2lvMUR4eFNCOStxUm8xNlpBd0ZGZzl5MkIxaUJm?=
+ =?utf-8?B?dDRqQUFCcUZBRFZ5MzJXL2Z5eU52WWZLOFBkRERsMTJ4eW14YVNFSHN6TDc0?=
+ =?utf-8?B?SDM0cGJkUkk5Q2tDa0FFbjdydzI0MFIrcVcrKy9SN1R6bWFlUWYvQkcwUERM?=
+ =?utf-8?B?TXhId1E1cUN3Ukl4T2RtY0JmV3VjZGs1eHRnSXhvR0tUWEIrTEZGOUUwSUVt?=
+ =?utf-8?B?WmpsM0ZVcTdPVmM1WmVoaXlHQWZKQVdYUk12ZWtORkQrWnpZcjdVRXVYa3Ny?=
+ =?utf-8?B?NG1YcjJFSU1KR29wUGhPKzh6L1AxcVhNK2tpdVhWWDcvMXZDSGhYWlFqSHF5?=
+ =?utf-8?B?bTFtb2NDVFkzcDF4cDJVa3Zpcm9SZ09SN3B1S3AyajBzTzAwQnF6V28wMk8y?=
+ =?utf-8?B?UXZZZkxiRGtHbzVnNGpCeFkxdmNvTGJDSlpDbzhLYjdIUUg0WWEvNm1QRS9Y?=
+ =?utf-8?B?L0dZQWtialRZa1VnKzJ6M1l0dzBDZTJTTWtuNWxqUzZJNFM5QU5SNm5CQWlp?=
+ =?utf-8?B?UWdidzIrbENwQkIzWlNIWUVHRFIxQVJGWmtnaGJQajA1Umh4Uk50Q3pKRVZ6?=
+ =?utf-8?B?Yi9OZHM3SUdCWTlTais1OS8zU0NsMlh0a2V1SHdIUmZKWFgvREx5enc2ZHZX?=
+ =?utf-8?B?VEpoM0dacExIRVJsaEhoTVVoRC85L2J6Q3lZMHE5NGczc2tZajUyV2JRSUxj?=
+ =?utf-8?B?R3NXeEpYbU5INWxNN1NwUTJkdzlTT0RyakZuMVl2U1IyS3BGdHBkVmNVNFBB?=
+ =?utf-8?B?Y2RiUVE2ZUIwbFBmaFY3MW1KODJrbXlLRzlmbHh4NEk3M1JCYzJIOFNOOWVF?=
+ =?utf-8?B?T2pmSWtqejZYYUN4blgxTXNBTXZEN2hzYncybitBZ25VQk1CSFBOd3ZmRUQ5?=
+ =?utf-8?B?bUpZOGxZcEZkNmQvaVd4WlU4OEFWMHhaT0VVd0ZIUE15djFqRW1UTjhnanpj?=
+ =?utf-8?B?bDQwTGV3ak9STVNIMEwrYTdlaTkxT2VxOWpJZm5lWmM1b2tmcE9jUzlmbEtF?=
+ =?utf-8?B?T0Mxdkx0RXZ0aElNeFJwUWtZVHJKMSswUUhtdTFoem55VHd5QlRuWFNTVVJD?=
+ =?utf-8?B?UVlrMUVaOU5IZ205WlYzY0xkRlE3N1luNnFma3ZVaWJpdHZJT3hJYzRxbm9P?=
+ =?utf-8?B?VUxPU3JuME1tVjlTSElvZ2V3M3Z5YWltRHVJNkFKSVE2ZzEvRGp0Z2ltWHEx?=
+ =?utf-8?B?WFBvdkFHeXFlMUlGaXp3Wm1yeWlFbitqeWdYYks0UWxoOTFFeitFNnE4Ryto?=
+ =?utf-8?B?aVk2UDMyTWFld3llWDRWUnlHSGpJRnhiU3FheURHVllRSCt6cDB2THVCbCtx?=
+ =?utf-8?B?Y24wd0NpRE9Id2VTNCt5U09OUW5OWEVuMHF1a1RCYlpjdmJ3VDUzQ1d4d3hq?=
+ =?utf-8?B?SytQcG1oTXpEOU5ScnNFZVo4OUJFd3NCaFlZUVhmZ2ZIeVpJZ2hEUFd5SEh5?=
+ =?utf-8?B?RjB4a0pEVTdsbS9USWdSckFpcXovamhRVWxkNTFxWXJhZFV1SmR5a0JQK2Zj?=
+ =?utf-8?B?dzFuYjZLSjZQVzhvenAvQXNQWEJ6eWIrRWgrak5OUU1ZRVFhdmNHZ3Y2ZTdt?=
+ =?utf-8?B?V2lvYXIxcjFDR1NXNTRoT3ZMcnE2eDQyWnRic0kvQmVMNkV6d09UcUdETmZt?=
+ =?utf-8?B?OEJRRldnWDYwY2lvT1VNeENGcElaSDJwQlcvQWM0Wi81TThkNTNHc0I1ZVFw?=
+ =?utf-8?B?YWc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20230803074249.3065586-1-wenst@chromium.org> <20230803074249.3065586-6-wenst@chromium.org>
- <06473794-8c9f-5c55-b14a-db326d4ab5e9@collabora.com> <05133411-8486-a514-1e61-ab6aadd0f932@collabora.com>
-In-Reply-To: <05133411-8486-a514-1e61-ab6aadd0f932@collabora.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 7 Aug 2023 11:54:25 +0800
-Message-ID: <CAGXv+5H78HgiLd7RErkK5MyZN_E0GxiFh-vv5BVV+fUhSmDKig@mail.gmail.com>
-Subject: Re: [PATCH 5/9] regulator: mt6358: fix and drop type prefix in MT6366
- regulator node names
-To:     Eugen Hristev <eugen.hristev@collabora.com>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3291.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4e3bf2d-affd-4a27-d203-08db96fa4b48
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Aug 2023 03:56:35.2035
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: I7AOaWz4+0ofE0GihMk7enttUJMGtOR96mtpb/V0MPAwcEwrjmWd3r3BiK35MXxmfcTpE6xHCc009FLLlcI4CH02Btzmz8SWnTi3VRMoi20=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4945
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 6:13=E2=80=AFPM Eugen Hristev
-<eugen.hristev@collabora.com> wrote:
->
-> Hi Chen-Yu,
->
-> On 8/3/23 12:01, AngeloGioacchino Del Regno wrote:
-> > Il 03/08/23 09:42, Chen-Yu Tsai ha scritto:
-> >> The new MT6366 binding does away with the type prefix ("buck_", "ldo_"=
-)
-> >> in the regulator node names. This better matches the PMIC pin names.
-> >> Remaining underscores in names are also replaced with hyphens.
-> >>
-> >> Drop the type prefixes and replace remaining underscores to match the
-> >> MT6366 binding.
-> >>
-> >> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> >
-> > There is *no upstream devicetree* using any of those names, as the firs=
-t
-> > devices
-> > that will use the MT6366 will be MT8186 Corsola, which are not
-> > upstreamed yet.
-> >
-> > This means that this commit does not break ABI, so, I agree - which
-> > implies....
-> >
-> > Reviewed-by: AngeloGioacchino Del Regno
-> > <angelogioacchino.delregno@collabora.com>
-> >
-> > Cheers,
-> > Angelo
-> >
-> >> ---
-> >>   drivers/regulator/mt6358-regulator.c | 70 ++++++++++++++------------=
---
-> >>   1 file changed, 35 insertions(+), 35 deletions(-)
-> >>
-> >> diff --git a/drivers/regulator/mt6358-regulator.c
-> >> b/drivers/regulator/mt6358-regulator.c
-> >> index 3cb2e6768e25..5a43a84c7a3e 100644
-> >> --- a/drivers/regulator/mt6358-regulator.c
-> >> +++ b/drivers/regulator/mt6358-regulator.c
-> >> @@ -536,68 +536,68 @@ static const struct mt6358_regulator_info
-> >> mt6358_regulators[] =3D {
-> >>   /* The array is indexed by id(MT6366_ID_XXX) */
-> >>   static const struct mt6358_regulator_info mt6366_regulators[] =3D {
-> >> -    MT6366_BUCK("buck_vdram1", VDRAM1, 500000, 2087500, 12500,
-> >> +    MT6366_BUCK("vdram1", VDRAM1, 500000, 2087500, 12500,
-> >>               0x7f, MT6358_BUCK_VDRAM1_DBG0, 0x7f,
-> >> MT6358_VDRAM1_ANA_CON0, 8),
-> >> -    MT6366_BUCK("buck_vcore", VCORE, 500000, 1293750, 6250,
-> >> +    MT6366_BUCK("vcore", VCORE, 500000, 1293750, 6250,
-> >>               0x7f, MT6358_BUCK_VCORE_DBG0, 0x7f,
-> >> MT6358_VCORE_VGPU_ANA_CON0, 1),
-> >> -    MT6366_BUCK("buck_vpa", VPA, 500000, 3650000, 50000,
-> >> +    MT6366_BUCK("vpa", VPA, 500000, 3650000, 50000,
-> >>               0x3f, MT6358_BUCK_VPA_DBG0, 0x3f, MT6358_VPA_ANA_CON0, 3=
-),
-> >> -    MT6366_BUCK("buck_vproc11", VPROC11, 500000, 1293750, 6250,
-> >> +    MT6366_BUCK("vproc11", VPROC11, 500000, 1293750, 6250,
-> >>               0x7f, MT6358_BUCK_VPROC11_DBG0, 0x7f,
-> >> MT6358_VPROC_ANA_CON0, 1),
-> >> -    MT6366_BUCK("buck_vproc12", VPROC12, 500000, 1293750, 6250,
-> >> +    MT6366_BUCK("vproc12", VPROC12, 500000, 1293750, 6250,
-> >>               0x7f, MT6358_BUCK_VPROC12_DBG0, 0x7f,
-> >> MT6358_VPROC_ANA_CON0, 2),
-> >> -    MT6366_BUCK("buck_vgpu", VGPU, 500000, 1293750, 6250,
-> >> +    MT6366_BUCK("vgpu", VGPU, 500000, 1293750, 6250,
-> >>               0x7f, MT6358_BUCK_VGPU_ELR0, 0x7f,
-> >> MT6358_VCORE_VGPU_ANA_CON0, 2),
-> >> -    MT6366_BUCK("buck_vs2", VS2, 500000, 2087500, 12500,
-> >> +    MT6366_BUCK("vs2", VS2, 500000, 2087500, 12500,
-> >>               0x7f, MT6358_BUCK_VS2_DBG0, 0x7f, MT6358_VS2_ANA_CON0, 8=
-),
-> >> -    MT6366_BUCK("buck_vmodem", VMODEM, 500000, 1293750, 6250,
-> >> +    MT6366_BUCK("vmodem", VMODEM, 500000, 1293750, 6250,
-> >>               0x7f, MT6358_BUCK_VMODEM_DBG0, 0x7f,
-> >> MT6358_VMODEM_ANA_CON0, 8),
-> >> -    MT6366_BUCK("buck_vs1", VS1, 1000000, 2587500, 12500,
-> >> +    MT6366_BUCK("vs1", VS1, 1000000, 2587500, 12500,
-> >>               0x7f, MT6358_BUCK_VS1_DBG0, 0x7f, MT6358_VS1_ANA_CON0, 8=
-),
-> >> -    MT6366_REG_FIXED("ldo_vrf12", VRF12,
-> >> +    MT6366_REG_FIXED("vrf12", VRF12,
-> >>                MT6358_LDO_VRF12_CON0, 0, 1200000),
-> >> -    MT6366_REG_FIXED("ldo_vio18", VIO18,
-> >> +    MT6366_REG_FIXED("vio18", VIO18,
-> >>                MT6358_LDO_VIO18_CON0, 0, 1800000),
-> >> -    MT6366_REG_FIXED("ldo_vcn18", VCN18, MT6358_LDO_VCN18_CON0, 0,
-> >> 1800000),
-> >> -    MT6366_REG_FIXED("ldo_vfe28", VFE28, MT6358_LDO_VFE28_CON0, 0,
-> >> 2800000),
-> >> -    MT6366_REG_FIXED("ldo_vcn28", VCN28, MT6358_LDO_VCN28_CON0, 0,
-> >> 2800000),
-> >> -    MT6366_REG_FIXED("ldo_vxo22", VXO22, MT6358_LDO_VXO22_CON0, 0,
-> >> 2200000),
-> >> -    MT6366_REG_FIXED("ldo_vaux18", VAUX18,
-> >> +    MT6366_REG_FIXED("vcn18", VCN18, MT6358_LDO_VCN18_CON0, 0, 180000=
-0),
-> >> +    MT6366_REG_FIXED("vfe28", VFE28, MT6358_LDO_VFE28_CON0, 0, 280000=
-0),
-> >> +    MT6366_REG_FIXED("vcn28", VCN28, MT6358_LDO_VCN28_CON0, 0, 280000=
-0),
-> >> +    MT6366_REG_FIXED("vxo22", VXO22, MT6358_LDO_VXO22_CON0, 0, 220000=
-0),
-> >> +    MT6366_REG_FIXED("vaux18", VAUX18,
-> >>                MT6358_LDO_VAUX18_CON0, 0, 1800000),
->
-> The line being shorter, can't you compact them on a single line now ?
-> Here, and on other occasions in the changes you made.
-
-I would prefer to do a final cleanup after all this has landed.
-That makes the refactoring easier to read, i.e. identify the changes.
-
-ChenYu
-
-> Regards,
->
-> >> -    MT6366_REG_FIXED("ldo_vbif28", VBIF28,
-> >> +    MT6366_REG_FIXED("vbif28", VBIF28,
-> >>                MT6358_LDO_VBIF28_CON0, 0, 2800000),
-> >> -    MT6366_REG_FIXED("ldo_vio28", VIO28, MT6358_LDO_VIO28_CON0, 0,
-> >> 2800000),
-> >> -    MT6366_REG_FIXED("ldo_va12", VA12, MT6358_LDO_VA12_CON0, 0,
-> >> 1200000),
-> >> -    MT6366_REG_FIXED("ldo_vrf18", VRF18, MT6358_LDO_VRF18_CON0, 0,
-> >> 1800000),
-> >> -    MT6366_REG_FIXED("ldo_vaud28", VAUD28,
-> >> +    MT6366_REG_FIXED("vio28", VIO28, MT6358_LDO_VIO28_CON0, 0, 280000=
-0),
-> >> +    MT6366_REG_FIXED("va12", VA12, MT6358_LDO_VA12_CON0, 0, 1200000),
-> >> +    MT6366_REG_FIXED("vrf18", VRF18, MT6358_LDO_VRF18_CON0, 0, 180000=
-0),
-> >> +    MT6366_REG_FIXED("vaud28", VAUD28,
-> >>                MT6358_LDO_VAUD28_CON0, 0, 2800000),
-> >> -    MT6366_LDO("ldo_vdram2", VDRAM2, vdram2,
-> >> +    MT6366_LDO("vdram2", VDRAM2, vdram2,
-> >>              MT6358_LDO_VDRAM2_CON0, 0, MT6358_LDO_VDRAM2_ELR0, 0x10),
-> >> -    MT6366_LDO("ldo_vsim1", VSIM1, vsim,
-> >> +    MT6366_LDO("vsim1", VSIM1, vsim,
-> >>              MT6358_LDO_VSIM1_CON0, 0, MT6358_VSIM1_ANA_CON0, 0xf00),
-> >> -    MT6366_LDO("ldo_vibr", VIBR, vibr,
-> >> +    MT6366_LDO("vibr", VIBR, vibr,
-> >>              MT6358_LDO_VIBR_CON0, 0, MT6358_VIBR_ANA_CON0, 0xf00),
-> >> -    MT6366_LDO("ldo_vusb", VUSB, vusb,
-> >> +    MT6366_LDO("vusb", VUSB, vusb,
-> >>              MT6358_LDO_VUSB_CON0_0, 0, MT6358_VUSB_ANA_CON0, 0x700),
-> >> -    MT6366_LDO("ldo_vefuse", VEFUSE, vefuse,
-> >> +    MT6366_LDO("vefuse", VEFUSE, vefuse,
-> >>              MT6358_LDO_VEFUSE_CON0, 0, MT6358_VEFUSE_ANA_CON0, 0xf00)=
-,
-> >> -    MT6366_LDO("ldo_vmch", VMCH, vmch_vemc,
-> >> +    MT6366_LDO("vmch", VMCH, vmch_vemc,
-> >>              MT6358_LDO_VMCH_CON0, 0, MT6358_VMCH_ANA_CON0, 0x700),
-> >> -    MT6366_LDO("ldo_vemc", VEMC, vmch_vemc,
-> >> +    MT6366_LDO("vemc", VEMC, vmch_vemc,
-> >>              MT6358_LDO_VEMC_CON0, 0, MT6358_VEMC_ANA_CON0, 0x700),
-> >> -    MT6366_LDO("ldo_vcn33", VCN33, vcn33,
-> >> +    MT6366_LDO("vcn33", VCN33, vcn33,
-> >>              MT6358_LDO_VCN33_CON0_0, 0, MT6358_VCN33_ANA_CON0, 0x300)=
-,
-> >> -    MT6366_LDO("ldo_vmc", VMC, vmc,
-> >> +    MT6366_LDO("vmc", VMC, vmc,
-> >>              MT6358_LDO_VMC_CON0, 0, MT6358_VMC_ANA_CON0, 0xf00),
-> >> -    MT6366_LDO("ldo_vsim2", VSIM2, vsim,
-> >> +    MT6366_LDO("vsim2", VSIM2, vsim,
-> >>              MT6358_LDO_VSIM2_CON0, 0, MT6358_VSIM2_ANA_CON0, 0xf00),
-> >> -    MT6366_LDO1("ldo_vsram_proc11", VSRAM_PROC11, 500000, 1293750, 62=
-50,
-> >> +    MT6366_LDO1("vsram-proc11", VSRAM_PROC11, 500000, 1293750, 6250,
-> >>               MT6358_LDO_VSRAM_PROC11_DBG0, 0x7f00,
-> >> MT6358_LDO_VSRAM_CON0, 0x7f),
-> >> -    MT6366_LDO1("ldo_vsram_others", VSRAM_OTHERS, 500000, 1293750, 62=
-50,
-> >> +    MT6366_LDO1("vsram-others", VSRAM_OTHERS, 500000, 1293750, 6250,
-> >>               MT6358_LDO_VSRAM_OTHERS_DBG0, 0x7f00,
-> >> MT6358_LDO_VSRAM_CON2, 0x7f),
-> >> -    MT6366_LDO1("ldo_vsram_gpu", VSRAM_GPU, 500000, 1293750, 6250,
-> >> +    MT6366_LDO1("vsram-gpu", VSRAM_GPU, 500000, 1293750, 6250,
-> >>               MT6358_LDO_VSRAM_GPU_DBG0, 0x7f00,
-> >> MT6358_LDO_VSRAM_CON3, 0x7f),
-> >> -    MT6366_LDO1("ldo_vsram_proc12", VSRAM_PROC12, 500000, 1293750, 62=
-50,
-> >> +    MT6366_LDO1("vsram-proc12", VSRAM_PROC12, 500000, 1293750, 6250,
-> >>               MT6358_LDO_VSRAM_PROC12_DBG0, 0x7f00,
-> >> MT6358_LDO_VSRAM_CON1, 0x7f),
-> >>   };
-> >
-> >
-> >
->
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS3J6eXN6dG9mIEtvemxv
+d3NraSA8a3J6eXN6dG9mLmtvemxvd3NraUBsaW5hcm8ub3JnPg0KPiBTZW50OiBNb25kYXksIDcg
+QXVndXN0LCAyMDIzIDM6MzUgQU0NCj4gVG86IFJhYmFyYSwgTmlyYXZrdW1hciBMIDxuaXJhdmt1
+bWFyLmwucmFiYXJhQGludGVsLmNvbT4NCj4gQ2M6IE5nLCBBZHJpYW4gSG8gWWluIDxhZHJpYW4u
+aG8ueWluLm5nQGludGVsLmNvbT47IGFuZHJld0BsdW5uLmNoOw0KPiBjb25vcitkdEBrZXJuZWwu
+b3JnOyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgZGluZ3V5ZW5Aa2VybmVsLm9yZzsNCj4g
+a3J6eXN6dG9mLmtvemxvd3NraStkdEBsaW5hcm8ub3JnOyBsaW51eC1jbGtAdmdlci5rZXJuZWwu
+b3JnOyBsaW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZzsgVHVycXVldHRlLCBNaWtlIDxt
+dHVycXVldHRlQGJheWxpYnJlLmNvbT47DQo+IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IHAuemFi
+ZWxAcGVuZ3V0cm9uaXguZGU7DQo+IHJpY2hhcmRjb2NocmFuQGdtYWlsLmNvbTsgcm9iaCtkdEBr
+ZXJuZWwub3JnOyBzYm95ZEBrZXJuZWwub3JnOw0KPiB3ZW4ucGluZy50ZWhAaW50ZWwuY29tDQo+
+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjIgMy81XSBkdC1iaW5kaW5nczogY2xvY2s6IGFkZCBJbnRl
+bCBBZ2lsZXg1IGNsb2NrDQo+IG1hbmFnZXINCj4gDQo+IE9uIDAxLzA4LzIwMjMgMDM6MDIsIG5p
+cmF2a3VtYXIubC5yYWJhcmFAaW50ZWwuY29tIHdyb3RlOg0KPiA+IEZyb206IE5pcmF2a3VtYXIg
+TCBSYWJhcmEgPG5pcmF2a3VtYXIubC5yYWJhcmFAaW50ZWwuY29tPg0KPiA+DQo+ID4gQWRkIGNs
+b2NrIElEIGRlZmluaXRpb25zIGZvciBJbnRlbCBBZ2lsZXg1IFNvQ0ZQR0EuDQo+ID4gVGhlIHJl
+Z2lzdGVycyBpbiBBZ2lsZXg1IGhhbmRsaW5nIHRoZSBjbG9jayBpcyBuYW1lZCBhcyBjbG9jayBt
+YW5hZ2VyLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogVGVoIFdlbiBQaW5nIDx3ZW4ucGluZy50
+ZWhAaW50ZWwuY29tPg0KPiA+IFJldmlld2VkLWJ5OiBEaW5oIE5ndXllbiA8ZGluZ3V5ZW5Aa2Vy
+bmVsLm9yZz4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBOaXJhdmt1bWFyIEwgUmFiYXJhIDxuaXJhdmt1
+bWFyLmwucmFiYXJhQGludGVsLmNvbT4NCj4gPiAtLS0NCj4gDQo+IERvIG5vdCBhdHRhY2ggKHRo
+cmVhZCkgeW91ciBwYXRjaHNldHMgdG8gc29tZSBvdGhlciB0aHJlYWRzICh1bnJlbGF0ZWQgb3IN
+Cj4gb2xkZXIgdmVyc2lvbnMpLiBUaGlzIGJ1cmllcyB0aGVtIGRlZXAgaW4gdGhlIG1haWxib3gg
+YW5kIG1pZ2h0IGludGVyZmVyZQ0KPiB3aXRoIGFwcGx5aW5nIGVudGlyZSBzZXRzLg0KPiANCj4g
+QmVzdCByZWdhcmRzLA0KPiBLcnp5c3p0b2YNCg0KU29ycnkgaXQgd2FzIGEgbWlzdGFrZS4NCldp
+bGwgYmUgY2FyZWZ1bCBub3cgb253YXJkcy4NCg0KVGhhbmtzLA0KTmlyYXYNCg==
