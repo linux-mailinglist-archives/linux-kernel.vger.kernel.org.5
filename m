@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E41B77233C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE29772340
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233098AbjHGL72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
+        id S233087AbjHGL7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233127AbjHGL7X (ORCPT
+        with ESMTP id S233103AbjHGL7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:59:23 -0400
+        Mon, 7 Aug 2023 07:59:45 -0400
 Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E292106;
-        Mon,  7 Aug 2023 04:59:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A68B10C0;
+        Mon,  7 Aug 2023 04:59:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
         s=mail; t=1691407284;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ijYexI5QmdWQ0kvS0dVtdtyvZPj2CtQpyXkKIil5a8I=;
-        b=zHVPC15KEWG1gbOY+NqxDYvWE6TtwuWRG1btnF/NDRyQnbKSEQ3h24ruJ8yS81DSkW58dd
-        g5UgpThZwHpHfj4YPDwYGj/Wb9FFOuktHD2FuDzhq7GlAoDJp8r9vfxmFI9flk4iefN1Im
-        AiXkuWvvjdWOYrDqkcwt0Q1bg/LoPoA=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5TsvBzqlVMpWiPu3QW4pi/wCyFZ4xiLd9O4EJVtN2Pg=;
+        b=PknnydrG2RODBxGRCPwnIZ8YTvFhUPvRgHuJDURDjjZ2i3E1ZONa3W5sgnYGr3fLj8i0et
+        jSZjmJ8TLPcjw3h6Kzc46GjYUD1o1mCfL2ckYpGtiMg6l+pzLI7AsYWii6teql1aDBJYHG
+        hTYTQErU1Btx9PXmjWZ2bZxv4d9SST8=
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Jonathan Cameron <jic23@kernel.org>
 Cc:     Lars-Peter Clausen <lars@metafoo.de>,
@@ -31,9 +32,11 @@ Cc:     Lars-Peter Clausen <lars@metafoo.de>,
         =?UTF-8?q?Nuno=20S=C3=A1?= <noname.nuno@gmail.com>,
         linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
         Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v4 0/6] iio: Add buffer write() support
-Date:   Mon,  7 Aug 2023 13:21:07 +0200
-Message-Id: <20230807112113.47157-1-paul@crapouillou.net>
+Subject: [PATCH v4 1/6] iio: buffer-dma: Get rid of outgoing queue
+Date:   Mon,  7 Aug 2023 13:21:08 +0200
+Message-Id: <20230807112113.47157-2-paul@crapouillou.net>
+In-Reply-To: <20230807112113.47157-1-paul@crapouillou.net>
+References: <20230807112113.47157-1-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam: Yes
@@ -46,71 +49,198 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[V3 was: "iio: new DMABUF based API, v3"][1]
+The buffer-dma code was using two queues, incoming and outgoing, to
+manage the state of the blocks in use.
 
-Hi Jonathan,
+While this totally works, it adds some complexity to the code,
+especially since the code only manages 2 blocks. It is much easier to
+just check each block's state manually, and keep a counter for the next
+block to dequeue.
 
-This is a subset of my patchset that introduced a new interface based on
-DMABUF objects [1]. It adds write() support to the IIO buffer
-infrastructure.
+Since the new DMABUF based API wouldn't use the outgoing queue anyway,
+getting rid of it now makes the upcoming changes simpler.
 
-The reason it is not the full IIO-DMABUF patchset, is because you
-requested performance benchmarks - and our current numbers are barely
-better (~ +10%) than the fileio interface. There is a good reason for
-that: V3 of the patchset switched from having the IIO core creating the
-DMABUFs backed by physically contiguous memory, to having the IIO core
-being a simple DMABUF importer, and having the DMABUFs created
-externally. We now use the udmabuf driver to create those, and they are
-allocated from paged memory. While this works perfectly fine, our
-buffers are now cut in 4 KiB chunks (pages), non-contiguous in memory,
-which causes the DMA hardware to create an IRQ storm, as it raises an
-interrupt after each 4 KiB in the worst case scenario.
+With this change, the IIO_BLOCK_STATE_DEQUEUED is now useless, and can
+be removed.
 
-Anyway, this is not directly a problem of the IIO-DMABUF code - but I
-can't really upstream a shiny new interface that I claim is much faster,
-without giving numbers.
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-So while we fix this (either by updating the DMA IP and driver to
-support scatter-gather, or by hacking something quick to give us
-physically contiguous DMABUFs just for the benchmark), I thought it
-would make sense to upstream the few patches of the V3 patchset that are
-needed for the IIO-DMABUF interface but aren't directly related.
+---
+v2: - Only remove the outgoing queue, and keep the incoming queue, as we
+      want the buffer to start streaming data as soon as it is enabled.
+    - Remove IIO_BLOCK_STATE_DEQUEUED, since it is now functionally the
+      same as IIO_BLOCK_STATE_DONE.
+---
+ drivers/iio/buffer/industrialio-buffer-dma.c | 44 ++++++++++----------
+ include/linux/iio/buffer-dma.h               |  7 ++--
+ 2 files changed, 26 insertions(+), 25 deletions(-)
 
-As for write() support, Nuno (Cc'd) said he will work on upstreaming the
-DAC counterpart of adc/adi-axi-adc.c in the next few weeks, so there
-will be a user for the buffer write() support. I hope you are okay with
-this - otherwise, we can just wait until this work is done and submit it
-all at once.
-
-Changelog since v3:
-- [PATCH 2/6] is new;
-- [PATCH 3/6]: Drop iio_dma_buffer_space_available() function, and
-  update patch description accordingly;
-- [PATCH 6/6]: .space_available is now set to iio_dma_buffer_usage
-  (which is functionally the exact same).
-
-Cheers,
--Paul
-
-[1] https://lore.kernel.org/all/20230403154800.215924-1-paul@crapouillou.net/
-
-Alexandru Ardelean (1):
-  iio: buffer-dma: split iio_dma_buffer_fileio_free() function
-
-Paul Cercueil (5):
-  iio: buffer-dma: Get rid of outgoing queue
-  iio: buffer-dma: Rename iio_dma_buffer_data_available()
-  iio: buffer-dma: Enable buffer write support
-  iio: buffer-dmaengine: Support specifying buffer direction
-  iio: buffer-dmaengine: Enable write support
-
- drivers/iio/adc/adi-axi-adc.c                 |   3 +-
- drivers/iio/buffer/industrialio-buffer-dma.c  | 187 ++++++++++++------
- .../buffer/industrialio-buffer-dmaengine.c    |  28 ++-
- include/linux/iio/buffer-dma.h                |  11 +-
- include/linux/iio/buffer-dmaengine.h          |   5 +-
- 5 files changed, 160 insertions(+), 74 deletions(-)
-
+diff --git a/drivers/iio/buffer/industrialio-buffer-dma.c b/drivers/iio/buffer/industrialio-buffer-dma.c
+index d348af8b9705..1fc91467d1aa 100644
+--- a/drivers/iio/buffer/industrialio-buffer-dma.c
++++ b/drivers/iio/buffer/industrialio-buffer-dma.c
+@@ -179,7 +179,7 @@ static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
+ 	}
+ 
+ 	block->size = size;
+-	block->state = IIO_BLOCK_STATE_DEQUEUED;
++	block->state = IIO_BLOCK_STATE_DONE;
+ 	block->queue = queue;
+ 	INIT_LIST_HEAD(&block->head);
+ 	kref_init(&block->kref);
+@@ -191,16 +191,8 @@ static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
+ 
+ static void _iio_dma_buffer_block_done(struct iio_dma_buffer_block *block)
+ {
+-	struct iio_dma_buffer_queue *queue = block->queue;
+-
+-	/*
+-	 * The buffer has already been freed by the application, just drop the
+-	 * reference.
+-	 */
+-	if (block->state != IIO_BLOCK_STATE_DEAD) {
++	if (block->state != IIO_BLOCK_STATE_DEAD)
+ 		block->state = IIO_BLOCK_STATE_DONE;
+-		list_add_tail(&block->head, &queue->outgoing);
+-	}
+ }
+ 
+ /**
+@@ -261,7 +253,6 @@ static bool iio_dma_block_reusable(struct iio_dma_buffer_block *block)
+ 	 * not support abort and has not given back the block yet.
+ 	 */
+ 	switch (block->state) {
+-	case IIO_BLOCK_STATE_DEQUEUED:
+ 	case IIO_BLOCK_STATE_QUEUED:
+ 	case IIO_BLOCK_STATE_DONE:
+ 		return true;
+@@ -317,7 +308,6 @@ int iio_dma_buffer_request_update(struct iio_buffer *buffer)
+ 	 * dead. This means we can reset the lists without having to fear
+ 	 * corrution.
+ 	 */
+-	INIT_LIST_HEAD(&queue->outgoing);
+ 	spin_unlock_irq(&queue->list_lock);
+ 
+ 	INIT_LIST_HEAD(&queue->incoming);
+@@ -456,14 +446,20 @@ static struct iio_dma_buffer_block *iio_dma_buffer_dequeue(
+ 	struct iio_dma_buffer_queue *queue)
+ {
+ 	struct iio_dma_buffer_block *block;
++	unsigned int idx;
+ 
+ 	spin_lock_irq(&queue->list_lock);
+-	block = list_first_entry_or_null(&queue->outgoing, struct
+-		iio_dma_buffer_block, head);
+-	if (block != NULL) {
+-		list_del(&block->head);
+-		block->state = IIO_BLOCK_STATE_DEQUEUED;
++
++	idx = queue->fileio.next_dequeue;
++	block = queue->fileio.blocks[idx];
++
++	if (block->state == IIO_BLOCK_STATE_DONE) {
++		idx = (idx + 1) % ARRAY_SIZE(queue->fileio.blocks);
++		queue->fileio.next_dequeue = idx;
++	} else {
++		block = NULL;
+ 	}
++
+ 	spin_unlock_irq(&queue->list_lock);
+ 
+ 	return block;
+@@ -539,6 +535,7 @@ size_t iio_dma_buffer_data_available(struct iio_buffer *buf)
+ 	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buf);
+ 	struct iio_dma_buffer_block *block;
+ 	size_t data_available = 0;
++	unsigned int i;
+ 
+ 	/*
+ 	 * For counting the available bytes we'll use the size of the block not
+@@ -552,8 +549,15 @@ size_t iio_dma_buffer_data_available(struct iio_buffer *buf)
+ 		data_available += queue->fileio.active_block->size;
+ 
+ 	spin_lock_irq(&queue->list_lock);
+-	list_for_each_entry(block, &queue->outgoing, head)
+-		data_available += block->size;
++
++	for (i = 0; i < ARRAY_SIZE(queue->fileio.blocks); i++) {
++		block = queue->fileio.blocks[i];
++
++		if (block != queue->fileio.active_block
++		    && block->state == IIO_BLOCK_STATE_DONE)
++			data_available += block->size;
++	}
++
+ 	spin_unlock_irq(&queue->list_lock);
+ 	mutex_unlock(&queue->lock);
+ 
+@@ -617,7 +621,6 @@ int iio_dma_buffer_init(struct iio_dma_buffer_queue *queue,
+ 	queue->ops = ops;
+ 
+ 	INIT_LIST_HEAD(&queue->incoming);
+-	INIT_LIST_HEAD(&queue->outgoing);
+ 
+ 	mutex_init(&queue->lock);
+ 	spin_lock_init(&queue->list_lock);
+@@ -645,7 +648,6 @@ void iio_dma_buffer_exit(struct iio_dma_buffer_queue *queue)
+ 			continue;
+ 		queue->fileio.blocks[i]->state = IIO_BLOCK_STATE_DEAD;
+ 	}
+-	INIT_LIST_HEAD(&queue->outgoing);
+ 	spin_unlock_irq(&queue->list_lock);
+ 
+ 	INIT_LIST_HEAD(&queue->incoming);
+diff --git a/include/linux/iio/buffer-dma.h b/include/linux/iio/buffer-dma.h
+index 6564bdcdac66..18d3702fa95d 100644
+--- a/include/linux/iio/buffer-dma.h
++++ b/include/linux/iio/buffer-dma.h
+@@ -19,14 +19,12 @@ struct device;
+ 
+ /**
+  * enum iio_block_state - State of a struct iio_dma_buffer_block
+- * @IIO_BLOCK_STATE_DEQUEUED: Block is not queued
+  * @IIO_BLOCK_STATE_QUEUED: Block is on the incoming queue
+  * @IIO_BLOCK_STATE_ACTIVE: Block is currently being processed by the DMA
+  * @IIO_BLOCK_STATE_DONE: Block is on the outgoing queue
+  * @IIO_BLOCK_STATE_DEAD: Block has been marked as to be freed
+  */
+ enum iio_block_state {
+-	IIO_BLOCK_STATE_DEQUEUED,
+ 	IIO_BLOCK_STATE_QUEUED,
+ 	IIO_BLOCK_STATE_ACTIVE,
+ 	IIO_BLOCK_STATE_DONE,
+@@ -73,12 +71,15 @@ struct iio_dma_buffer_block {
+  * @active_block: Block being used in read()
+  * @pos: Read offset in the active block
+  * @block_size: Size of each block
++ * @next_dequeue: index of next block that will be dequeued
+  */
+ struct iio_dma_buffer_queue_fileio {
+ 	struct iio_dma_buffer_block *blocks[2];
+ 	struct iio_dma_buffer_block *active_block;
+ 	size_t pos;
+ 	size_t block_size;
++
++	unsigned int next_dequeue;
+ };
+ 
+ /**
+@@ -93,7 +94,6 @@ struct iio_dma_buffer_queue_fileio {
+  *   list and typically also a list of active blocks in the part that handles
+  *   the DMA controller
+  * @incoming: List of buffers on the incoming queue
+- * @outgoing: List of buffers on the outgoing queue
+  * @active: Whether the buffer is currently active
+  * @fileio: FileIO state
+  */
+@@ -105,7 +105,6 @@ struct iio_dma_buffer_queue {
+ 	struct mutex lock;
+ 	spinlock_t list_lock;
+ 	struct list_head incoming;
+-	struct list_head outgoing;
+ 
+ 	bool active;
+ 
 -- 
 2.40.1
 
