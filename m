@@ -2,270 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B27C977281D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC8D772820
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234757AbjHGOqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52848 "EHLO
+        id S234765AbjHGOqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234755AbjHGOqC (ORCPT
+        with ESMTP id S230027AbjHGOqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:46:02 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3F710DC;
-        Mon,  7 Aug 2023 07:46:00 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c47ef365cso691109266b.0;
-        Mon, 07 Aug 2023 07:46:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691419559; x=1692024359;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hAlba8j5WNsUJrqq14ThkPmUT4lIimPw4652fzwMMR4=;
-        b=A+xUi1Aug1Dht+qcl9x83hPQb5fNj4iSVUvtAgxaUP6G+rmyTlDrrAUTUT/g9wUoZS
-         vnW4K8v+IkW72ddlwr0dl7YDPdXPiihrBT1HuGEB6wKcrZZQLX0CEu9kN6KZ5EAwXQ3E
-         181yq5k6s3W1Q99G9OSyXkHAsX3I+g5dpTBa/88fu9+7BYFlHjYBzPElKSnB7EeExfaF
-         n3X9/+Q2JggBAIC9Kxb03eEPwNZ0q8Q3nPgyL5aihbluFH9zW9cAohfDq6YZGhDQpCsz
-         8WBRXbpoqecoEqnlLckFzI6vFPJkQAh3845jOvbsj3iIGV0GHygLow1sGP9Oj76mzFyd
-         Gdcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691419559; x=1692024359;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=hAlba8j5WNsUJrqq14ThkPmUT4lIimPw4652fzwMMR4=;
-        b=LnL+w4g2uid6jsr/anH6cPgMioap86x2vXoOWHiI/8tBpeBY6PD2TmAwwu8kBhiiWA
-         Vzy708xfM0hhYZ8JelRY1jMmSMBfvFzL//+u0sK6JjC9cimPRNWuwkMWSZEF8iTycGn4
-         bjMuNcj5AR93zGxMOQyk4UZMayKOQLi7rjgnXUYTWkJJ541FZtdcohH3Cdwt924UzNdT
-         dl8zPfa7+Y7nLCYpoYWLFHeqsOlqB5a8QbwImqM8EzYO+Rs9mPnvf1DZkfKyxI2NmP57
-         cMFy6Z4kb4ztCIHeLXxI80mHJ2DnUWdMpS+bh3ze7Vwuu9oim5QXD7BjogxPC9d9xFvh
-         zIWg==
-X-Gm-Message-State: AOJu0Yw1aaIZNs/Qm/Lq2d5OGp5cKd8bPgiBzIVsByi/+0xnMv4lkMXF
-        XHRaC+HAe29l1kF9ePcEFfs=
-X-Google-Smtp-Source: AGHT+IFYYxUG11Fu8DIQ2vdtlUyk+6wNpqkNFpRzgx0gu7BNpd2ZblEVe9sa86EpMu7L7EW/zB/urw==
-X-Received: by 2002:a17:906:51d7:b0:994:9ed:300b with SMTP id v23-20020a17090651d700b0099409ed300bmr10035935ejk.16.1691419559044;
-        Mon, 07 Aug 2023 07:45:59 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id d11-20020a170906c20b00b00992d70f8078sm5329200ejz.106.2023.08.07.07.45.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 07:45:58 -0700 (PDT)
-Message-ID: <72e2ff187fb8cd031a6330e4c3cd8e66a0590fc1.camel@gmail.com>
-Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in
- ieee802154_subif_start_xmit
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     yonghong.song@linux.dev,
-        syzbot <syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
-        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
-        song@kernel.org, syzkaller-bugs@googlegroups.com
-Date:   Mon, 07 Aug 2023 17:45:56 +0300
-In-Reply-To: <bc69afd6-6eec-a070-ab96-05ab137aaf0b@linux.dev>
-References: <0000000000002098bc0602496cc3@google.com>
-         <d520bd6c-bfd3-47f1-c794-ab451905256b@linux.dev>
-         <9c8f04a0bf90db4bb8e6192824ab71f58244b74b.camel@gmail.com>
-         <bc69afd6-6eec-a070-ab96-05ab137aaf0b@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Mon, 7 Aug 2023 10:46:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C5210DC
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:46:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691419606; x=1722955606;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=JNLS8jFBfRx4CXMitXxjjSQjaruvMYX/p2Luw7f8D3s=;
+  b=anX2q+tsTubMmUz0cIQqbR7zJcbV+c+MPlX8BxKfglkrs8Z1Wkenh7fM
+   +JlFhSB7g5dnzz6TFMpBlRmOCgiHnm9RTWlgglcakqlLZWni0cMaT7beN
+   P+QaDDt9YA1fNYq1unjx2MJb4A1VIgGGyg5dYeASIu2W59Msuw0lTKS8V
+   /5CAQbVo29UEL2JSG41JsPpEVi2pH+Tsi4MqoqyvNs7eByYt6ovJcEbTQ
+   yff6syCdl5e7YQDybMlXRBw+OK0xaT0aPMG3VzrJAh8YEA0NKoPRX/3cA
+   9JOkuMYcwrSZRMWmSXed4LSE6PnhfS054MFPqqHJf8FXvkU17id1BjrTn
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="368018482"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="368018482"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:46:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="680827500"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="680827500"
+Received: from abhatia-mobl2.amr.corp.intel.com (HELO [10.212.249.113]) ([10.212.249.113])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:46:45 -0700
+Message-ID: <f410c645-b1d1-2bc1-1271-0653eedb74e3@intel.com>
+Date:   Mon, 7 Aug 2023 07:46:45 -0700
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 11/12] x86/virt/tdx: Allow SEAMCALL to handle #UD and
+ #GP
+Content-Language: en-US
+To:     kirill.shutemov@linux.intel.com, Kai Huang <kai.huang@intel.com>
+Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, bp@alien8.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, seanjc@google.com, pbonzini@redhat.com,
+        isaku.yamahata@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        n.borisov.lkml@gmail.com
+References: <cover.1690369495.git.kai.huang@intel.com>
+ <659b10910c206cb4a8de314fcf7cd58814279aa6.1690369495.git.kai.huang@intel.com>
+ <20230806114131.2ilofgmxhdaa2u6b@box.shutemov.name>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <20230806114131.2ilofgmxhdaa2u6b@box.shutemov.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-08-07 at 07:40 -0700, Yonghong Song wrote:
->=20
-> On 8/7/23 6:11 AM, Eduard Zingerman wrote:
-> > On Sun, 2023-08-06 at 23:40 -0700, Yonghong Song wrote:
-> > >=20
-> > > On 8/6/23 4:23 PM, syzbot wrote:
-> > > > Hello,
-> > > >=20
-> > > > syzbot found the following issue on:
-> > > >=20
-> > > > HEAD commit:    25ad10658dc1 riscv, bpf: Adapt bpf trampoline to op=
-timized..
-> > > > git tree:       bpf-next
-> > > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D147cbb2=
-9a80000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D8acaeb9=
-3ad7c6aaa
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd61b595e9=
-205573133b3
-> > > > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils=
- for Debian) 2.40
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D14d73=
-ccea80000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1276aed=
-ea80000
-> > > >=20
-> > > > Downloadable assets:
-> > > > disk image: https://storage.googleapis.com/syzbot-assets/3d378cc13d=
-42/disk-25ad1065.raw.xz
-> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/44580fd5d1af/=
-vmlinux-25ad1065.xz
-> > > > kernel image: https://storage.googleapis.com/syzbot-assets/84058761=
-8b41/bzImage-25ad1065.xz
-> > > >=20
-> > > > The issue was bisected to:
-> > > >=20
-> > > > commit 8100928c881482a73ed8bd499d602bab0fe55608
-> > > > Author: Yonghong Song <yonghong.song@linux.dev>
-> > > > Date:   Fri Jul 28 01:12:02 2023 +0000
-> > > >=20
-> > > >       bpf: Support new sign-extension mov insns
-> > >=20
-> > > Thanks for reporting. I will look into this ASAP.
-> >=20
-> > Hi Yonghong,
-> >=20
-> > I guess it's your night and my morning, so I did some initial assessmen=
-t.
-> > The BPF program being loaded is:
-> >=20
-> >    0 : (62) *(u32 *)(r10 -8) =3D 553656332
-> >    1 : (bf) r1 =3D (s16)r10
-> >    2 : (07) r1 +=3D -8
-> >    3 : (b7) r2 =3D 3
-> >    4 : (bd) if r2 <=3D r1 goto pc+0
-> >    5 : (85) call bpf_trace_printk#6
-> >    6 : (b7) r0 =3D 0
-> >    7 : (95) exit
-> >=20
-> > (Note: when using bpftool (prog dump xlated id <some-id>) the disassemb=
-ly
-> >   of the instruction #1 is incorrectly printed as "1: (bf) r1 =3D r10")
-> >  =20
-> > The error occurs when instruction #5 (call to printk) is executed.
-> > An incorrect address for the format string is passed to printk.
-> > Disassembly of the jited program looks as follows:
-> >=20
-> >    $ bpftool prog dump jited id <some-id>
-> >    bpf_prog_ebeed182d92b487f:
-> >       0: nopl    (%rax,%rax)
-> >       5: nop
-> >       7: pushq   %rbp
-> >       8: movq    %rsp, %rbp
-> >       b: subq    $8, %rsp
-> >      12: movl    $553656332, -8(%rbp)
-> >      19: movswq  %bp, %rdi            ; <---- Note movswq %bp !
-> >      1d: addq    $-8, %rdi
-> >      21: movl    $3, %esi
-> >      26: cmpq    %rdi, %rsi
-> >      29: jbe 0x2b
-> >      2b: callq   0xffffffffe11c484c
-> >      30: xorl    %eax, %eax
-> >      32: leave
-> >      33: retq
-> >=20
-> > Note jit instruction #19 corresponding to BPF instruction #1, which
-> > loads truncated and sign-extended value of %rbp's first byte as an
-> > address of format string.
-> >=20
-> > Here is how verifier log looks for (slightly modified) program:
-> >=20
-> >    func#0 @0
-> >    0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-> >    ; asm volatile ("			\n\
-> >    0: (b7) r1 =3D 553656332                ; R1_w=3D553656332
-> >    1: (63) *(u32 *)(r10 -8) =3D r1         ; R1_w=3D553656332 R10=3Dfp0=
- fp-8=3D553656332
-> >    2: (bf) r1 =3D (s16)r10                 ; R1_w=3Dfp0 R10=3Dfp0
-> >    3: (07) r1 +=3D -8                      ; R1_w=3Dfp-8
-> >    4: (b7) r2 =3D 3                        ; R2_w=3D3
-> >    5: (bd) if r2 <=3D r1 goto pc+0         ; R1_w=3Dfp-8 R2_w=3D3
-> >    6: (85) call bpf_trace_printk#6
-> >    mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1
-> >    ...
-> >    mark_precise: frame0: falling back to forcing all scalars precise
-> >    7: R0=3Dscalar()
-> >    7: (b7) r0 =3D 0                        ; R0_w=3D0
-> >    8: (95) exit
-> >   =20
-> >    from 5 to 6: R1_w=3Dfp-8 R2_w=3D3 R10=3Dfp0 fp-8=3D553656332
-> >    6: (85) call bpf_trace_printk#6
-> >    mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1
-> >    ...
-> >    mark_precise: frame0: falling back to forcing all scalars precise
-> >    7: safe
-> >=20
-> > Note the following line:
-> >=20
-> >    2: (bf) r1 =3D (s16)r10                 ; R1_w=3Dfp0 R10=3Dfp0
-> >=20
-> > Verifier incorrectly marked r1 as fp0, hence not noticing the problem
-> > with address passed to printk.
->=20
-> Thanks, Eduard. Right. I am also able to dump xlated code like
-> below:
->=20
->     0: (62) *(u32 *)(r10 -8) =3D 553656332
->     1: (bf) r1 =3D (s16)r10
->     2: (07) r1 +=3D -8
->     3: (b7) r2 =3D 3
->     4: (bd) if r2 <=3D r1 goto pc+0
->     5: (85) call bpf_trace_printk#-138320
->     6: (b7) r0 =3D 0
->     7: (95) exit
->=20
-> Something like below can fix the problem,
->=20
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 132f25dab931..db72619551b2 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -13171,6 +13171,7 @@ static int check_alu_op(struct bpf_verifier_env=
-=20
-> *env, struct bpf_insn *insn)
->                                          if (no_sext && need_id)
->                                                  src_reg->id =3D=20
-> ++env->id_gen;
->                                          copy_register_state(dst_reg,=20
-> src_reg);
-> +                                       dst_reg->type =3D SCALAR_VALUE;
->                                          if (!no_sext)
->                                                  dst_reg->id =3D 0;
->                                          coerce_reg_to_size_sx(dst_reg,=
-=20
-> insn->off >> 3);
->=20
-> After insn 1, we need change r1 type to SCALAR_VALUE. Will add
-> the the test to selftest and submit the patch to fix the problem
-> today.
+On 8/6/23 04:41, kirill.shutemov@linux.intel.com wrote:
+> On Wed, Jul 26, 2023 at 11:25:13PM +1200, Kai Huang wrote:
+>> @@ -20,6 +21,9 @@
+>>  #define TDX_SW_ERROR			(TDX_ERROR | GENMASK_ULL(47, 40))
+>>  #define TDX_SEAMCALL_VMFAILINVALID	(TDX_SW_ERROR | _UL(0xFFFF0000))
+>>  
+>> +#define TDX_SEAMCALL_GP			(TDX_SW_ERROR | X86_TRAP_GP)
+>> +#define TDX_SEAMCALL_UD			(TDX_SW_ERROR | X86_TRAP_UD)
+> Is there any explantion how these error codes got chosen? Looks very
+> arbitrary and may collide with other error codes in the future.
 
-Should this be an error?
-Like in the same function but slightly below, when u32 moves are
-processed:
+If they collide, we can just fix it then.
 
-    /* R1 =3D (u32) R2 */
-    if (is_pointer_value(env, insn->src_reg)) {
-        verbose(env,
-            "R%d partial copy of pointer\n",
-            insn->src_reg);
-        return -EACCES;
-    } else { ...
-
->=20
-> >=20
-> > Thanks,
-> > Eduard.
-> >=20
-> > > >=20
-> > > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1797=
-0c5da80000
-> > > > final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D1457=
-0c5da80000
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D10570c5=
-da80000
-> > > >=20
-> [...]
-
+So, please, do comment what the limitations are and what must be avoided
+in the future, but I don't think we need to go mucking with this at all.
