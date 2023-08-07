@@ -2,59 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A1277221E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBDF77216C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbjHGL3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:29:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
+        id S232432AbjHGLWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233264AbjHGL2p (ORCPT
+        with ESMTP id S231925AbjHGLVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:28:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8595FEE;
-        Mon,  7 Aug 2023 04:26:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0B4F161841;
-        Mon,  7 Aug 2023 11:17:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CEE0C433C9;
-        Mon,  7 Aug 2023 11:16:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691407019;
-        bh=cwBHdp29+KXQfhU6rSZ1ufJNDTKuC3zk0WO2z1hIGTU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ovLaOhv55dh0aszjTH7N+AmnC6NtCKA1MaMN6DtSqOb4+qGiNHGFCd0A00AcqKMyU
-         h40D/SMMZ+e3lTxmoIMos96ZTo6TEtpaNgeLbKi7xHaD81H2V7MNKjGvCrEP1iwMnJ
-         3gzb8cXzdHrNItXddvlAJQBQOM+hn0H4NHOFlKgXhXWwIUUaxz97/Nb3XOrPFG8H7U
-         IAJVqSZfkZQfJHBmhrigpCyMjIW6C5tB6z9P0ojdH3NBqCwqewApHfEdn33S0YXfix
-         CBqdPm/gxqDbUG/GsEHkBz6IydLT/Ob+SsWszlHWftyXOcKh0MQXzKHCHA1qL5P8wo
-         FiG/hRjIkciyw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Pankaj Gupta <pankaj.gupta@nxp.com>,
-        Gaurav Jain <gaurav.jain@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>,
-        Victoria Milhoan <vicki.milhoan@freescale.com>,
-        Franck LENORMAND <franck.lenormand@nxp.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Vipul Kumar <vipul_kumar@mentor.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Dan Douglass <dan.douglass@nxp.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: caam: fix PM operations definition
-Date:   Mon,  7 Aug 2023 13:16:43 +0200
-Message-Id: <20230807111653.1794160-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Mon, 7 Aug 2023 07:21:25 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A147E198E;
+        Mon,  7 Aug 2023 04:19:35 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-564ef63a010so753776a12.0;
+        Mon, 07 Aug 2023 04:19:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691407110; x=1692011910;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=10WRxgCd1Ra/UwnCOO5Le6ouxzvPUSQ7L4DRj9cnhvQ=;
+        b=BbMhxrRT3BQWilMzDO0kOG53k1csR55VFCEWxQmgnHXytaruemu6eCXJr3tW4oX8cb
+         ps9wcx2EfT2UO4gVdTD1Z35xkQJkbrMjIIJhxGqVksl+fHRl4dVYQj3OSAYRYrv5lgWz
+         FQM0OmbqLpQ/JVy8hWw33TuEEsjYrmWj4lqikbkwCS0G9xHgKYPMgtKXGYatRPxSrLlB
+         DgvVuIWp+kqP8qE1xHndtrxPi032sCLlXe8vzDzLGCHsJglemI0Tpolog0azU/FOgEgt
+         IAPEY5BzdA0bb2y0TUKhhaVrDcPhNVINC7+oUKhl4yGTjwh8p5igAolQb7Stab2Q8k8/
+         LCnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691407110; x=1692011910;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=10WRxgCd1Ra/UwnCOO5Le6ouxzvPUSQ7L4DRj9cnhvQ=;
+        b=l+gvHGLBIapKGvcmMEPnBF6SG/iwp7cY0HDryicuiX2UVDSUg9jhi0zElu6RTiIIuS
+         jOwKSSV4eEBp8k/hfMhRe6yzRq0S3I4E88XBVf0B9tBidHH+fTB7wnm3i/Yt+/FRIJoN
+         yRrRe3rdYbMn17R70of9helRi9W6RhKhcQkcBI5Jy2VLk5a8C93pPq8f/GcbnMKgUlaH
+         JmXiVtC88GEGnAAn7EZ9Tf7+f3WTFBz6rwZA8T7RFA8weCT6KfTHabuxhdkg6XbPFRTF
+         4CrxefP+49tqgMbCq9huuGU9Ik2OF5J011hmnYIg9Xkl8/t0boRxBc6XC9cILCR0Kp/h
+         QHFg==
+X-Gm-Message-State: AOJu0Yzt9niVB7YRlv4y3D8C31gfPfSP4XSDc/PXRx/4utCvqAf93sPI
+        CixZ3P/5mgEImfsOzNKS9VU=
+X-Google-Smtp-Source: AGHT+IFb1tkA18QJP9FlaWRYGpLo1HYosfByYwLhOuZichV4jLkKO6rer96PRSVBpGX4H+kokZLFPg==
+X-Received: by 2002:a17:90b:283:b0:262:e589:678f with SMTP id az3-20020a17090b028300b00262e589678fmr8403115pjb.10.1691407110138;
+        Mon, 07 Aug 2023 04:18:30 -0700 (PDT)
+Received: from [192.168.0.101] ([49.207.242.210])
+        by smtp.gmail.com with ESMTPSA id 16-20020a17090a019000b00263cca08d95sm9078876pjc.55.2023.08.07.04.18.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 04:18:29 -0700 (PDT)
+Message-ID: <80bd4203-471a-4e47-8799-e6c0e70c9c24@gmail.com>
+Date:   Mon, 7 Aug 2023 16:48:24 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 8/8] kbuild: modinst: do modules_install step by step
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     dhowells@redhat.com, dwmw2@infradead.org, masahiroy@kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com, nicolas@fjasle.eu,
+        linux-kernel@vger.kernel.org, sshedi@vmware.com,
+        linux-kbuild@vger.kernel.org
+References: <20230623145358.568971-1-yesshedi@gmail.com>
+ <20230623145358.568971-9-yesshedi@gmail.com>
+ <2023080434-verbose-value-1200@gregkh>
+ <9ff945e6-c963-41d2-9df2-542d83ada519@gmail.com>
+ <2023080630-entomb-ogle-3da8@gregkh>
+Content-Language: en-US
+From:   Shreenidhi Shedi <yesshedi@gmail.com>
+In-Reply-To: <2023080630-entomb-ogle-3da8@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,78 +80,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 06/08/23 12:15, Greg KH wrote:
+> On Sun, Aug 06, 2023 at 12:30:22AM +0530, Shreenidhi Shedi wrote:
+>> On 04/08/23 19:36, Greg KH wrote:
+>>> On Fri, Jun 23, 2023 at 08:23:58PM +0530, Shreenidhi Shedi wrote:
+>>>> Currently Makefile.modinst does three tasks on each module built:
+>>>> - Install modules
+>>>> - Sign modules
+>>>> - Compress modules
+>>>>
+>>>> All the above tasks happen from a single place.
+>>>>
+>>>> This patch divides this task further and uses a different makefile for
+>>>> each task.
+>>>> Signing module logic is completely refactored and everything happens
+>>>> from a shell script now.
+>>>>
+>>>> Signed-off-by: Shreenidhi Shedi <yesshedi@gmail.com>
+>>>> ---
+>>>>    scripts/Makefile.compress |  53 ++++++++++++++++++
+>>>>    scripts/Makefile.install  |  66 +++++++++++++++++++++++
+>>>>    scripts/Makefile.modinst  | 111 +++-----------------------------------
+>>>>    scripts/Makefile.sign     |  37 +++++++++++++
+>>>>    scripts/signfile.sh       |  24 +++++++++
+>>>>    5 files changed, 186 insertions(+), 105 deletions(-)
+>>>>    create mode 100644 scripts/Makefile.compress
+>>>>    create mode 100644 scripts/Makefile.install
+>>>>    create mode 100644 scripts/Makefile.sign
+>>>>    create mode 100755 scripts/signfile.sh
+>>>
+>>> As you are touching the build process, you should always cc: the proper
+>>> mailing list, and the KBUILD maintainer.  Please do so for this series,
+>>> as that is the proper tree for this to go through.
+>>>
+>>> thanks,
+>>>
+>>> greg k-h
+>>
+>> Thanks for the inputs Greg.
+>>
+>> CC-ing linux-kbuild@vger.kernel.org as suggested.
+> 
+> This doesn't actually do anything, sorry.  Please resend the whole
+> patchset again and add the proper people and list.
+> 
+> thanks,
+> 
+> greg k-h
 
-The newly added PM operations use the deprecated SIMPLE_DEV_PM_OPS() macro,
-causing a warning in some configurations:
+Done. Addressed comments from Masahiro Yamada and sent a new patch 
+series, hopefully I have added everyone this time :) Thanks.
 
-drivers/crypto/caam/ctrl.c:828:12: error: 'caam_ctrl_resume' defined but not used [-Werror=unused-function]
-  828 | static int caam_ctrl_resume(struct device *dev)
-      |            ^~~~~~~~~~~~~~~~
-drivers/crypto/caam/ctrl.c:818:12: error: 'caam_ctrl_suspend' defined but not used [-Werror=unused-function]
-  818 | static int caam_ctrl_suspend(struct device *dev)
-      |            ^~~~~~~~~~~~~~~~~
-drivers/crypto/caam/jr.c:732:12: error: 'caam_jr_resume' defined but not used [-Werror=unused-function]
-  732 | static int caam_jr_resume(struct device *dev)
-      |            ^~~~~~~~~~~~~~
-drivers/crypto/caam/jr.c:687:12: error: 'caam_jr_suspend' defined but not used [-Werror=unused-function]
-  687 | static int caam_jr_suspend(struct device *dev)
-      |            ^~~~~~~~~~~~~~~
-
-Use the normal DEFINE_SIMPLE_DEV_PM_OPS() variant now, and use pm_ptr() to
-completely eliminate the structure in configs without CONFIG_PM.
-
-Fixes: 322d74752c28a ("crypto: caam - add power management support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/crypto/caam/ctrl.c | 4 ++--
- drivers/crypto/caam/jr.c   | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
-index a7a4583107f41..2a228a36fa15a 100644
---- a/drivers/crypto/caam/ctrl.c
-+++ b/drivers/crypto/caam/ctrl.c
-@@ -841,7 +841,7 @@ static int caam_ctrl_resume(struct device *dev)
- 	return ret;
- }
- 
--static SIMPLE_DEV_PM_OPS(caam_ctrl_pm_ops, caam_ctrl_suspend, caam_ctrl_resume);
-+static DEFINE_SIMPLE_DEV_PM_OPS(caam_ctrl_pm_ops, caam_ctrl_suspend, caam_ctrl_resume);
- 
- /* Probe routine for CAAM top (controller) level */
- static int caam_probe(struct platform_device *pdev)
-@@ -1138,7 +1138,7 @@ static struct platform_driver caam_driver = {
- 	.driver = {
- 		.name = "caam",
- 		.of_match_table = caam_match,
--		.pm = &caam_ctrl_pm_ops,
-+		.pm = pm_ptr(&caam_ctrl_pm_ops),
- 	},
- 	.probe       = caam_probe,
- };
-diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
-index 316180d26f8ae..767fbf052536a 100644
---- a/drivers/crypto/caam/jr.c
-+++ b/drivers/crypto/caam/jr.c
-@@ -794,7 +794,7 @@ static int caam_jr_resume(struct device *dev)
- 	return 0;
- }
- 
--static SIMPLE_DEV_PM_OPS(caam_jr_pm_ops, caam_jr_suspend, caam_jr_resume);
-+static DEFINE_SIMPLE_DEV_PM_OPS(caam_jr_pm_ops, caam_jr_suspend, caam_jr_resume);
- 
- static const struct of_device_id caam_jr_match[] = {
- 	{
-@@ -811,7 +811,7 @@ static struct platform_driver caam_jr_driver = {
- 	.driver = {
- 		.name = "caam_jr",
- 		.of_match_table = caam_jr_match,
--		.pm = &caam_jr_pm_ops,
-+		.pm = pm_ptr(&caam_jr_pm_ops),
- 	},
- 	.probe       = caam_jr_probe,
- 	.remove      = caam_jr_remove,
 -- 
-2.39.2
+Shedi
 
