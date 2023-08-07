@@ -2,181 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF4F771A8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20556771A8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbjHGGkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
+        id S231160AbjHGGka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:40:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjHGGkU (ORCPT
+        with ESMTP id S229646AbjHGGk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:40:20 -0400
-Received: from out-71.mta1.migadu.com (out-71.mta1.migadu.com [IPv6:2001:41d0:203:375::47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC2B1A4
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:40:18 -0700 (PDT)
-Message-ID: <d520bd6c-bfd3-47f1-c794-ab451905256b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691390414; h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VJUWcmGTVPGG4iy4ZlXmu/uUCSg/dG8oHYGl3onncXI=;
-        b=juJSH2azRyHhlpCmHz8a+I42wI3hVpYDl9UQ3isBoEGYSF4cDG/+0nyzEvDE/QguW6bFpo
-        ex4wq66m29GF1e43jKXhMgYucmp5tt8rlY1yikpOXPJPdoYaczBSmHVKoY9z5/8o/7P9wY
-        qBZLEePvPH8xv8pXloWy7oLmoTK3NdI=
-Date:   Sun, 6 Aug 2023 23:40:04 -0700
+        Mon, 7 Aug 2023 02:40:26 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0AA6134;
+        Sun,  6 Aug 2023 23:40:25 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5E6FC5C00F0;
+        Mon,  7 Aug 2023 02:40:22 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Mon, 07 Aug 2023 02:40:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1691390422; x=1691476822; bh=7w
+        sLwwq7EjWKcy2P5DPl/2RDDmu+tk7L8a+2xFPiBJE=; b=JphD8sarulUSb0Nqm7
+        wCDstecxWol0fIP1nHbDkU/rETvXL6nj7ano49b491QJWt/IqW1RU1s+rxFVxc0t
+        QcZljlRXKdsSMoGGisVtihStb8Y6H1EfRt7Ux8JHZepc9kiUrD/GU7EHxx4oa0CJ
+        luJIZi1dy+b6NcW9bWyZRa9tn2xp2biUxZn44QbgTtmNFvqxUYJNv98iv0GaTuyH
+        k5et18Vlr+znk++RVXLTZNbH4z8CgEL/5EM+1WYV08mIVHCoPAJTu7VY9jGGxUiI
+        pSTpi6nvc+jdf4czMDf5i9teKz1xbIzsrbRRNaLtxa48NOdu/06DVILUi/5lsPrE
+        +NXg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1691390422; x=1691476822; bh=7wsLwwq7EjWKc
+        y2P5DPl/2RDDmu+tk7L8a+2xFPiBJE=; b=tDTpNjdZq1WbqMb48Kz+wTFeZQSi4
+        n0BL9hqJAzAWHdBz56r6CzitZ2xf0bE5wgXXEfsJYdZZI+RCbj5+DwzGAaSL2yn0
+        LBAh23yXxqFsWd8uesD+pvy96vXUqUMxR8o7ObMES3lUej7Qj2FzkjEyvNArMY7n
+        xYKruQE9WewJ1H/0nFF7icOqiRi4XomlS2bXsVXGFJlmIrzmpiqBjzpl9KP92y6C
+        xaD8LovoNCX+mKOYeCNW7/GZF5Zi9NidajUSiG6EzOXcAeNwJGzEQ644VrB6+emo
+        rM/ijA7lUQ3TY7WfZAER0qglziGF4t705EcsSupCroWjs0qXHQqgOImIA==
+X-ME-Sender: <xms:1ZHQZInIPC7CKnnaiTQ-SKWEaMAJ3FKpnceqg5sOPOFqDgsY9DQb3Q>
+    <xme:1ZHQZH2UTkDdbcRG2sjet-rlELhRXSqoH9ktZIq-RdYtoSkMo3Oq5KG43tU3mDZ-D
+    _hdX7xne_1Ifw>
+X-ME-Received: <xmr:1ZHQZGrfeTsAswTI9HZaDAFv5qhtFNAPDDPzhwmYsU2NeF1XZUBY7GCAL9icluz2YXQd-_mAmqb_wPQ3LyfYHGGgStZSAaBTY4cjqQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrkeelgddutdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
+    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:1pHQZEnIOPiXiabuZ9IAeStFTJbuMSs36EMNTfNWV84VP2JvTRJDBQ>
+    <xmx:1pHQZG2hruFVJ6xC5yNIvSJldTSKm5SyBJeL2AFXcx0maoH7_5SGuw>
+    <xmx:1pHQZLtFxdPXxrUM7A8G_KK4ZkRmxd80elLbYtHZjZzE_Vyl4yhYHQ>
+    <xmx:1pHQZPtoZEBUKJuE6KXcgNw9JY49vrpDvyOx1Jfp9z02ebUFXBmr9g>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 7 Aug 2023 02:40:21 -0400 (EDT)
+Date:   Mon, 7 Aug 2023 08:40:20 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: duplicate patches in the char-misc tree
+Message-ID: <2023080703-renewable-rust-233d@gregkh>
+References: <20230807154457.062a8a1a@canb.auug.org.au>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in
- ieee802154_subif_start_xmit
-Content-Language: en-US
-To:     syzbot <syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
-        haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
-        jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@linux.dev,
-        netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
-        syzkaller-bugs@googlegroups.com
-References: <0000000000002098bc0602496cc3@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <0000000000002098bc0602496cc3@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807154457.062a8a1a@canb.auug.org.au>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 07, 2023 at 03:44:57PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> The following commits are also in the mm tree as different commits
+> (but the same patches):
+> 
+>   acdbfa04816a ("pcmcia : make PCMCIA depend on HAS_IOMEM")
+>   aefc8b57af77 ("misc: open-dice: make OPEN_DICE depend on HAS_IOMEM")
+>   806eb9e4160d ("char: xillybus: make XILLYBUS_OF depend on HAS_IOMEM")
+> 
+> These are commits
+> 
+>   2ef95c7f4177 ("pcmcia : make PCMCIA depend on HAS_IOMEM")
+>   3650ce6d8409 ("misc: open-dice: make OPEN_DICE depend on HAS_IOMEM")
+>   420d959a77fe ("char: xillybus: make XILLYBUS_OF depend on HAS_IOMEM")
+> 
+> in the mm tree.
 
+Thanks for the notice, should be fine if they end up getting merged both
+ways.
 
-On 8/6/23 4:23 PM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    25ad10658dc1 riscv, bpf: Adapt bpf trampoline to optimized..
-> git tree:       bpf-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=147cbb29a80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=8acaeb93ad7c6aaa
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d61b595e9205573133b3
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d73ccea80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1276aedea80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/3d378cc13d42/disk-25ad1065.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/44580fd5d1af/vmlinux-25ad1065.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/840587618b41/bzImage-25ad1065.xz
-> 
-> The issue was bisected to:
-> 
-> commit 8100928c881482a73ed8bd499d602bab0fe55608
-> Author: Yonghong Song <yonghong.song@linux.dev>
-> Date:   Fri Jul 28 01:12:02 2023 +0000
-> 
->      bpf: Support new sign-extension mov insns
-
-Thanks for reporting. I will look into this ASAP.
-
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17970c5da80000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=14570c5da80000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10570c5da80000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com
-> Fixes: 8100928c8814 ("bpf: Support new sign-extension mov insns")
-> 
-> general protection fault, probably for non-canonical address 0xdffffc0000000f4f: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: probably user-memory-access in range [0x0000000000007a78-0x0000000000007a7f]
-> CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.5.0-rc2-syzkaller-00619-g25ad10658dc1 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-> RIP: 0010:strnchr+0x25/0x80 lib/string.c:403
-> Code: 00 00 00 00 90 f3 0f 1e fa 53 48 01 fe 48 bb 00 00 00 00 00 fc ff df 48 83 ec 18 eb 28 48 89 f8 48 89 f9 48 c1 e8 03 83 e1 07 <0f> b6 04 18 38 c8 7f 04 84 c0 75 25 0f b6 07 38 d0 74 15 48 83 c7
-> RSP: 0018:ffffc90000177848 EFLAGS: 00010046
-> RAX: 0000000000000f4f RBX: dffffc0000000000 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: 0000000000007a7b RDI: 0000000000007a78
-> RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000007a78
-> R13: ffffc900001779b0 R14: 0000000000000000 R15: 0000000000000003
-> FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00005611db5094b8 CR3: 0000000028ef0000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   bpf_bprintf_prepare+0x127/0x1490 kernel/bpf/helpers.c:823
->   ____bpf_trace_printk kernel/trace/bpf_trace.c:385 [inline]
->   bpf_trace_printk+0xdb/0x180 kernel/trace/bpf_trace.c:375
->   bpf_prog_ebeed182d92b487f+0x38/0x3c
->   bpf_dispatcher_nop_func include/linux/bpf.h:1180 [inline]
->   __bpf_prog_run include/linux/filter.h:609 [inline]
->   bpf_prog_run include/linux/filter.h:616 [inline]
->   __bpf_trace_run kernel/trace/bpf_trace.c:2269 [inline]
->   bpf_trace_run1+0x148/0x400 kernel/trace/bpf_trace.c:2307
->   __bpf_trace_rcu_utilization+0x8e/0xc0 include/trace/events/rcu.h:27
->   trace_rcu_utilization+0xcd/0x120 include/trace/events/rcu.h:27
->   rcu_note_context_switch+0x6c/0x1ac0 kernel/rcu/tree_plugin.h:318
->   __schedule+0x293/0x59f0 kernel/sched/core.c:6610
->   schedule_idle+0x5b/0x80 kernel/sched/core.c:6814
->   do_idle+0x288/0x3f0 kernel/sched/idle.c:310
->   cpu_startup_entry+0x18/0x20 kernel/sched/idle.c:379
->   start_secondary+0x200/0x290 arch/x86/kernel/smpboot.c:326
->   secondary_startup_64_no_verify+0x167/0x16b
->   </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:strnchr+0x25/0x80 lib/string.c:403
-> Code: 00 00 00 00 90 f3 0f 1e fa 53 48 01 fe 48 bb 00 00 00 00 00 fc ff df 48 83 ec 18 eb 28 48 89 f8 48 89 f9 48 c1 e8 03 83 e1 07 <0f> b6 04 18 38 c8 7f 04 84 c0 75 25 0f b6 07 38 d0 74 15 48 83 c7
-> RSP: 0018:ffffc90000177848 EFLAGS: 00010046
-> 
-> RAX: 0000000000000f4f RBX: dffffc0000000000 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: 0000000000007a7b RDI: 0000000000007a78
-> RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000007a78
-> R13: ffffc900001779b0 R14: 0000000000000000 R15: 0000000000000003
-> FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00005611db5094b8 CR3: 0000000028ef0000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> ----------------
-> Code disassembly (best guess):
->     0:	00 00                	add    %al,(%rax)
->     2:	00 00                	add    %al,(%rax)
->     4:	90                   	nop
->     5:	f3 0f 1e fa          	endbr64
->     9:	53                   	push   %rbx
->     a:	48 01 fe             	add    %rdi,%rsi
->     d:	48 bb 00 00 00 00 00 	movabs $0xdffffc0000000000,%rbx
->    14:	fc ff df
->    17:	48 83 ec 18          	sub    $0x18,%rsp
->    1b:	eb 28                	jmp    0x45
->    1d:	48 89 f8             	mov    %rdi,%rax
->    20:	48 89 f9             	mov    %rdi,%rcx
->    23:	48 c1 e8 03          	shr    $0x3,%rax
->    27:	83 e1 07             	and    $0x7,%ecx
-> * 2a:	0f b6 04 18          	movzbl (%rax,%rbx,1),%eax <-- trapping instruction
->    2e:	38 c8                	cmp    %cl,%al
->    30:	7f 04                	jg     0x36
->    32:	84 c0                	test   %al,%al
->    34:	75 25                	jne    0x5b
->    36:	0f b6 07             	movzbl (%rdi),%eax
->    39:	38 d0                	cmp    %dl,%al
->    3b:	74 15                	je     0x52
->    3d:	48                   	rex.W
->    3e:	83                   	.byte 0x83
->    3f:	c7                   	.byte 0xc7
-> 
-> 
-[...]
+greg k-h
