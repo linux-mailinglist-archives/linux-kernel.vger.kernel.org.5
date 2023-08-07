@@ -2,81 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DFB771D92
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346D4771D90
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbjHGJxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231730AbjHGJxh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230013AbjHGJxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 7 Aug 2023 05:53:37 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006571735
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:53:28 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-258-aI0RKJy1M2uSLFOio4P2fg-1; Mon, 07 Aug 2023 10:53:17 +0100
-X-MC-Unique: aI0RKJy1M2uSLFOio4P2fg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 7 Aug
- 2023 10:53:07 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 7 Aug 2023 10:53:07 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Zhangjin Wu' <falcon@tinylab.org>, "w@1wt.eu" <w@1wt.eu>
-CC:     "arnd@arndb.de" <arnd@arndb.de>,
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231723AbjHGJxd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Aug 2023 05:53:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC8719AF
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:53:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691402005; x=1722938005;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2Nc0sn8jPiREnF0nZ2Y+oxkmuIgHUt8V/8LLT+aoC7E=;
+  b=WHjdDH5uwuLiWTK0FnONNhnC59PFlmurZMnbUySim0gKYJ13FY0kFAv9
+   fKYuMSUqDga9htDP5grKSodFLIHiwlnwxmvn69FAe4LF9PKYuCV+7dxYh
+   egOl0GYLDjc12pGdeK60vYEsMFt0r7KM0QCwkQhTAL7NK7xD2oqiMbZ2P
+   igpZ7TKJZvO/Ye5MQqNXzMp7ULMyU4+2f9CDeHuIK6JRZGJJ69HGnd073
+   ON1O7RDdH1SqGOTw2syOXFwL61KAkm1bsVAr1l9fBFATtnndMwgaQ8VAb
+   QnGgijkPepUnGkAwR3Cq/gIrzeKkZWNrxkSh9CuSWGEpweEwGHI2+HAdA
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="374178599"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="374178599"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 02:53:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="760412225"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="760412225"
+Received: from aamakine-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.48.92])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 02:53:10 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 9747F10A122; Mon,  7 Aug 2023 12:53:07 +0300 (+03)
+Date:   Mon, 7 Aug 2023 12:53:07 +0300
+From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "thomas@t-8ch.de" <thomas@t-8ch.de>
-Subject: RE: [PATCH v3] tools/nolibc: fix up size inflate regression
-Thread-Topic: [PATCH v3] tools/nolibc: fix up size inflate regression
-Thread-Index: AQHZyPQZCzWEgy7xdkqtRS3MdkRe3q/efQWQgAAY3cA=
-Date:   Mon, 7 Aug 2023 09:53:07 +0000
-Message-ID: <2e6897775c5147a8a31fc6678eb01a8c@AcuMS.aculab.com>
-References: <8eaab5da2dcbba42e3f3efc2ae686a22c95f84f0.1691386601.git.falcon@tinylab.org>
- <f51e54bcf470451ea36f24640f000e61@AcuMS.aculab.com>
-In-Reply-To: <f51e54bcf470451ea36f24640f000e61@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "n.borisov.lkml@gmail.com" <n.borisov.lkml@gmail.com>
+Subject: Re: [PATCH v3 11/12] x86/virt/tdx: Allow SEAMCALL to handle #UD and
+ #GP
+Message-ID: <20230807095307.l7khgiu5y55pqq22@box.shutemov.name>
+References: <cover.1690369495.git.kai.huang@intel.com>
+ <659b10910c206cb4a8de314fcf7cd58814279aa6.1690369495.git.kai.huang@intel.com>
+ <20230806114131.2ilofgmxhdaa2u6b@box.shutemov.name>
+ <b15b45ff5dc2fcfa08dfb3171c269d9ab0349088.camel@intel.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b15b45ff5dc2fcfa08dfb3171c269d9ab0349088.camel@intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRGF2aWQgTGFpZ2h0DQo+IFNlbnQ6IDA3IEF1Z3VzdCAyMDIzIDA5OjQwDQouLi4uDQo+
-IHdpdGggKHJldHlwZWQgc28gaXQgbWF5IGJlIHdyb25nKToNCj4gI2RlZmluZSBpc19jb25zdGV4
-cHIoeCkgc2l6ZW9mKCooMCA/ICh2b2lkICopKChsb25nKSh4KSAqIDApIDogKGludCAqKTApKSA9
-PSAxKQ0KDQpCYWgsIEkga25vdyB3aHkgdGhhdCB3b3JrcyBhbmQgSSBzdGlsbCBnb3QgaXMgYmFj
-a3dhcmRzIDotKA0KQmFzaWNhbGx5IHRoZSBjb21waWxlciBuZWVkcyB0byBmaW5kIGEgdHlwZSB0
-aGF0IGlzICdjb21wYXRpYmxlJw0Kd2l0aCBib3RoIHRoZSBwb3NzaWJsZSByZXN1bHRzLg0KU2lu
-Y2UgJyh2b2lkICopMCcgaXMgYSB2YWxpZCAnaW50IConIHZhbHVlIHRoYXQgZ2l2ZXMgJ2ludCAq
-Jy4NCkJ1dCAnKHZvaWQgKikoYW55dGhpbmdfZWxzZSknIHJlcXVpcmVzIHRoZSAnaW50IConIGJl
-IGNvbnZlcnRlZA0KdG8gJ3ZvaWQgKicuDQoNCkFsc28gdGhlIGZvbGxvd2luZyBzZWVtcyB0byBj
-b21waWxlIHRvIHNhbmUgY29kZQ0KZm9yIGFsbCB0eXBlcyBvbiAzMmJpdCBhbmQgNjRiaXQgeDg2
-Lg0KDQppbnQgZXJybm87DQoNCiNkZWZpbmUgTUFYRVJSTk8gMHg0MDAwDQojZGVmaW5lIHR5cGUg
-aW50ICoNCg0KdHlwZSBzeXNyZXQodHlwZSBhcmcpDQp7DQogICAgaWYgKCh1bnNpZ25lZCBsb25n
-KWFyZyA8IDB1bCAtIE1BWEVSUk5PKQ0KICAgICAgICByZXR1cm4gYXJnOw0KDQogICAgZXJybm8g
-PSAtKGxvbmcpYXJnOw0KICAgIHJldHVybiAoX190eXBlb2YoYXJnKSktMTsgICAgICAgIA0KfQ0K
-DQpZb3UgZG8gZ2V0IGEgY29tcGFyaXNvbiBidXQgbm8gc2lnbiBleHRlbnNpb25zLg0KDQoJRGF2
-aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50
-IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTcz
-ODYgKFdhbGVzKQ0K
+On Mon, Aug 07, 2023 at 02:14:37AM +0000, Huang, Kai wrote:
+> On Sun, 2023-08-06 at 14:41 +0300, kirill.shutemov@linux.intel.com wrote:
+> > On Wed, Jul 26, 2023 at 11:25:13PM +1200, Kai Huang wrote:
+> > > @@ -20,6 +21,9 @@
+> > >  #define TDX_SW_ERROR			(TDX_ERROR | GENMASK_ULL(47, 40))
+> > >  #define TDX_SEAMCALL_VMFAILINVALID	(TDX_SW_ERROR | _UL(0xFFFF0000))
+> > >  
+> > > +#define TDX_SEAMCALL_GP			(TDX_SW_ERROR | X86_TRAP_GP)
+> > > +#define TDX_SEAMCALL_UD			(TDX_SW_ERROR | X86_TRAP_UD)
+> > 
+> > Is there any explantion how these error codes got chosen? Looks very
+> > arbitrary and may collide with other error codes in the future.
+> > 
+> 
+> Any error code has TDX_SW_ERROR is reserved to software use so the TDX module
+> can never return any error code which conflicts with those software ones.
+> 
+> For why to choose these two, I believe XOR the TRAP number to TDX_SW_ERROR is
+> the simplest way to achieve: 1) costing minimal assembly code; 2)
+> opportunistically handling #GP too, allowing caller to distinguish the two
+> errors.
 
+My problem is that it is going to conflict with errno-based errors if we
+going to take this path in the future. Like these errors are the same as
+(TDX_SW_ERROR | EACCES) and (TDX_SW_ERROR | ENXIO) respectively.
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
