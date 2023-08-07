@@ -2,66 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 741E6771EB4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39DD771EBA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbjHGKrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 06:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33622 "EHLO
+        id S230386AbjHGKsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 06:48:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbjHGKrj (ORCPT
+        with ESMTP id S229934AbjHGKso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 06:47:39 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C3E1BD8
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 03:47:06 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3090d3e9c92so3819083f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 03:47:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691405165; x=1692009965;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sCx9YJZnsVfzC3MwgVAa6Vuv6aGhMRIxY/5pPdiDPwE=;
-        b=FQpZwsxQ3yNVRMCMo7Mf6/QqTYVkYvcMLfg52+hj0L9V5AWtDyihsqa45B8aBPVPio
-         h55uCiay3sQcVG4lOG4ACxOT1TsnOfx3rkSzI4ZnY6srhr7112J71ERBBa1kCK68HCI5
-         EDQ3OE2pWiFLkagT+wGzfJaT3MQNI9jxWkSSLhWbrNEwt9UdW2eAjDEZeslFTI1sYLkb
-         kp9XUu5K2hRsTLmMAx7DWFz1xwisaODls3Il1FJfOGqnHWJVeUOUqzjueoHe3rpIowit
-         7i4zhM/5skEQaUmAIrMpXp0xCYGWatfRumME2C/5MjIaGI1+esObvznyR4HctHgGe7dO
-         eSiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691405165; x=1692009965;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sCx9YJZnsVfzC3MwgVAa6Vuv6aGhMRIxY/5pPdiDPwE=;
-        b=cLuhe0a6t91eZCTFfYhtLCWqQCyRIodw66QWl13txFwA706WZuPYvptdqyVJZq/d56
-         GJpnG2w4SjakuOV7AEjDfTvRS36KMBinqwJ59qa2tdcG2Bkn4kFflpitZSgpdPbHLjNq
-         zisqneeOWhNTP5jxqdlhTCLlaEmx0VpmDVJUNB+XHxoTbTHpmVWzDxEjdXGxr2YY8HW3
-         i3v3H5lNxa8c2OIBYyb6ga0NvMMQYaXMqW+H6+m8L32ahVL4e+wPTUoTKn8aNjHkc9A+
-         LiNNgtQCgFvH4Zz+Yauaco/AQzSEzf8BYaiwNgGAO+g7qRj7gQSPMqO/Pss/GkCyPW4k
-         b4ew==
-X-Gm-Message-State: AOJu0YzDKAHZJsFLfD4QJ2CRzt6aSau7htbB5o8f1fRfOtPkx6hrq1tw
-        /mIpZMk1Et0sPvVNOxNMczrfHXVDIuVAsw==
-X-Google-Smtp-Source: AGHT+IGgPqgXgVEp2wKzN0EK/+LdBYoy2IHBLtb5WVt0zzg4uJNxA7n1WBatSOj2FGOFfPBma6ABBg==
-X-Received: by 2002:adf:f5cd:0:b0:315:8a80:329e with SMTP id k13-20020adff5cd000000b003158a80329emr6718709wrp.40.1691405165446;
-        Mon, 07 Aug 2023 03:46:05 -0700 (PDT)
-Received: from localhost.localdomain ([92.85.190.61])
-        by smtp.gmail.com with ESMTPSA id k2-20020adfe8c2000000b00317ddccb0d1sm6186279wrn.24.2023.08.07.03.46.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 03:46:05 -0700 (PDT)
-From:   Andrei Coardos <aboutphysycs@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     vz@mleia.com, p.zabel@pengutronix.de,
-        Andrei Coardos <aboutphysycs@gmail.com>,
-        Alexandru Ardelean <alex@shruggie.ro>
-Subject: [PATCH] reset: lpc18xx: remove unneeded call to platform_set_drvdata()
-Date:   Mon,  7 Aug 2023 13:45:49 +0300
-Message-Id: <20230807104549.11225-1-aboutphysycs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 7 Aug 2023 06:48:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC4419B0;
+        Mon,  7 Aug 2023 03:47:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A6D16617A0;
+        Mon,  7 Aug 2023 10:47:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3C07C433C7;
+        Mon,  7 Aug 2023 10:47:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691405227;
+        bh=UAackwL7UM7HgpYl/6xaBi50e0epZnNRDwJYOlZupq4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XTR4HktOiAPHWP3h5fhk2wD4UGXcszx/1wmiz0cTUw4hgJdMG/oBFXfBL5g8PRXDm
+         yLyTKTnw9g7BoWrTvMncRJn8LkXHzRuxipnZVjx0vFvcXrqT4eR86TG5LTl5tNbObo
+         xJQ/FGp3frhFh6/f8dqgOoKdt8ON2EbmmdwfHh1i08coEHUQBuFyz/x83TcE1yqtjt
+         7TqWEYZDHjUKH3kW5qO6/n6uSTXpZqFvYnjjmhqi5LD4LAJSCsEkKcRIcR2CCWQAgo
+         Gs1ws/3JxfY+LKKLeFt9C8F81JN/6L0Q0raPKMl4v1iHyjfJxQnAsOOrha9B/6u7Tz
+         9Y1H3yabnBsiw==
+Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qSxlQ-002nFK-Gz;
+        Mon, 07 Aug 2023 11:47:04 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Date:   Mon, 07 Aug 2023 11:47:04 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-perf-users@vger.kernel.org, ito-yuichi@fujitsu.com,
+        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Wei Li <liwei391@huawei.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 7/7] arm64: kgdb: Roundup cpus using the debug IPI
+In-Reply-To: <ZNDHZLGds0DTN6zg@FVFF77S0Q05N.cambridge.arm.com>
+References: <20230601213440.2488667-1-dianders@chromium.org>
+ <20230601143109.v9.7.I2ef26d1b3bfbed2d10a281942b0da7d9854de05e@changeid>
+ <ZNDHZLGds0DTN6zg@FVFF77S0Q05N.cambridge.arm.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <a030019c7c5887d54b97054ed7d9af12@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 217.182.43.188
+X-SA-Exim-Rcpt-To: mark.rutland@arm.com, dianders@chromium.org, catalin.marinas@arm.com, will@kernel.org, sumit.garg@linaro.org, daniel.thompson@linaro.org, linux-perf-users@vger.kernel.org, ito-yuichi@fujitsu.com, wens@csie.org, ardb@kernel.org, swboyd@chromium.org, peterz@infradead.org, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, kgdb-bugreport@lists.sourceforge.net, msys.mizuma@gmail.com, rafael.j.wysocki@intel.com, lecopzer.chen@mediatek.com, liwei391@huawei.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,30 +84,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function call was found to be unnecessary as there is no equivalent
-platform_get_drvdata() call to access the private data of the driver. Also,
-the private data is defined in this driver, so there is no risk of it being
-accessed outside of this driver file.
+On 2023-08-07 11:28, Mark Rutland wrote:
+> On Thu, Jun 01, 2023 at 02:31:51PM -0700, Douglas Anderson wrote:
+>> From: Sumit Garg <sumit.garg@linaro.org>
+>> 
+>> Let's use the debug IPI for rounding up CPUs in kgdb. When the debug
+>> IPI is backed by an NMI (or pseudo NMI) then this will let us debug
+>> even hard locked CPUs. When the debug IPI isn't backed by an NMI then
+>> this won't really have any huge benefit but it will still work.
+>> 
+>> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>> ---
+>> 
+>> Changes in v9:
+>> - Remove fallback for when debug IPI isn't available.
+>> - Renamed "NMI IPI" to "debug IPI" since it might not be backed by 
+>> NMI.
+>> 
+>>  arch/arm64/kernel/ipi_debug.c |  5 +++++
+>>  arch/arm64/kernel/kgdb.c      | 14 ++++++++++++++
+>>  2 files changed, 19 insertions(+)
+> 
+> This looks fine to me, but I'd feel a bit happier if we had separate 
+> SGIs for
+> the backtrace and the KGDB callback as they're logically unrelated.
 
-Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
-Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
----
- drivers/reset/reset-lpc18xx.c | 2 --
- 1 file changed, 2 deletions(-)
+Well, we're a bit stuck here.
 
-diff --git a/drivers/reset/reset-lpc18xx.c b/drivers/reset/reset-lpc18xx.c
-index 36ec95518905..28fb85772b3e 100644
---- a/drivers/reset/reset-lpc18xx.c
-+++ b/drivers/reset/reset-lpc18xx.c
-@@ -188,8 +188,6 @@ static int lpc18xx_rgu_probe(struct platform_device *pdev)
- 	rc->rcdev.ops = &lpc18xx_rgu_ops;
- 	rc->rcdev.of_node = pdev->dev.of_node;
- 
--	platform_set_drvdata(pdev, rc);
--
- 	ret = reset_controller_register(&rc->rcdev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "unable to register device\n");
+We have exactly *one* spare SGI with GICv3, as we lose 8 of them
+to the secure side. One possibility would be to mux some of the
+lesser used IPIs onto two SGIs (one with standard priority, and
+one with NMI priority).
+
+         M.
 -- 
-2.34.1
-
+Jazz is not dead. It just smells funny...
