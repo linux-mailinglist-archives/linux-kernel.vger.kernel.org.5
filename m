@@ -2,65 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B91EA771D52
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD462771D54
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbjHGJnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34404 "EHLO
+        id S231645AbjHGJpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 05:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231645AbjHGJnR (ORCPT
+        with ESMTP id S229977AbjHGJo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:43:17 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754401701;
-        Mon,  7 Aug 2023 02:43:15 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-564a0d2d35eso2052648a12.0;
-        Mon, 07 Aug 2023 02:43:15 -0700 (PDT)
+        Mon, 7 Aug 2023 05:44:59 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B54195
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:44:58 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bc6bfc4b58so3849595ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 02:44:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691401395; x=1692006195;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=39EEzKezMc6xodopxuIo6ZRgeTbCfZRChxumxhtp/FM=;
-        b=mxHMQyaSOiY/aS8yiBkShK4dgrs5QZh/U6y6Bn0Pq1T5awerX0miafCAX/nu3cExWk
-         AtFEZ32D76TRkEy3VZLIl+g5W4xow6g+BLcCfu8HDUSPQfmbDBxlPE/oVRsdS90USkoU
-         /sOtP7ExllQI1x8dSCTk8Uyz4R71+vMEX7G0tEfOZasR0pT69Yp2foaLY7tc9Co9/6Fr
-         IhQrltu+Z7sGrT4SgtZNFfPFi503qsQqJ52hkaxfgK5bCN97ffU+z6jqNjwQwURUUto6
-         brSre94XpxeX7vaEcwjlT/qs5LWNUe7JzTs5ciFbpMMf+SABP3juqSEEAjNaFy2ZiSH0
-         N2Xw==
+        d=gmail.com; s=20221208; t=1691401498; x=1692006298;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MkUdmOsdanYJRPaOBW+Sf9SKg08UmbFYSf2hDRsm7Ew=;
+        b=J9pgGgRPpqHlck1+0KnoJkG88FkDuJlHW5sLQ9r8MVmOhil5QYz/fhfhzEOSPMI28R
+         i3clEExQpgGOf/DVuEkNsFeViQfeNSSiDAllWffOjOFiD0fKk/ClwukylBnoZWKJqt1c
+         u+fPX9F0YS+1cchDFZwpBysy8iILSJqaf+Ny8ER/J4XfqYwDb4kyNAfG1UEkY2JubGlD
+         KaEtpKiTaavV1zx4Kz2ghyFotC6weGlY1sk6dW3M6dt14JjsnvrMfQlBTN3uxIlDQAIp
+         nKru/lUhoHZs6qjO/DR1xJc8AhPyQjioBdo5TDLJv5nka35WsXlFqJsSmkc7TCl7Asm6
+         ZyWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691401395; x=1692006195;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=39EEzKezMc6xodopxuIo6ZRgeTbCfZRChxumxhtp/FM=;
-        b=LEsgKMIEc59S1OhrIZ/nbC3Wa6F6tzImWRjCLTTuNiigy+sSD3ZWIWWB8QEtreK8Cb
-         z4i1n8W1O3u1nEOH2DzgYtreEgLavi1iroNOc0hOfEBffsIxBPwfgHX6UkPksN3qWJgL
-         5d7wrhrtZ3unGDqmEcZxA1ZufvTEfD69UrO+JElGm5wOKzpfuhy9Uxdkk5CqSIxy7CKo
-         bGNk9Jah8UvkJOMNgB3hTWgu66hHeg2mHdoBcDUQVSy5/Ksmyxu4bUHarnAQYkN5a615
-         od+0p+QKX5E5m+8Veh3lRtCa/wd+Sj9bq3OEH0FHR5QHnaPbklWMAk239VNMnJVoKbGt
-         fDaw==
-X-Gm-Message-State: AOJu0YysavM48EeptqKvmkKAzlhUH6Dmi/rYYM4gVVx0KsVEtNd5m8I7
-        NfM79CM09Px1U0AF71RpB3DDBKcNPLs4IKxB
-X-Google-Smtp-Source: AGHT+IEyvi0w+FbeS2J9jh2Ijk09DU3+vm7M8mAkJGMtD9RfKYx/4/VZfsNOCDcBY9/hA6wqlap61A==
-X-Received: by 2002:a05:6a20:428f:b0:140:6979:2952 with SMTP id o15-20020a056a20428f00b0014069792952mr5111915pzj.47.1691401394599;
-        Mon, 07 Aug 2023 02:43:14 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id q8-20020a17090311c800b001bc675068e2sm2572378plh.111.2023.08.07.02.43.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 02:43:14 -0700 (PDT)
-From:   Like Xu <like.xu.linux@gmail.com>
-X-Google-Original-From: Like Xu <likexu@tencent.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86: Remove break statements that will never be executed
-Date:   Mon,  7 Aug 2023 17:42:43 +0800
-Message-ID: <20230807094243.32516-1-likexu@tencent.com>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20221208; t=1691401498; x=1692006298;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MkUdmOsdanYJRPaOBW+Sf9SKg08UmbFYSf2hDRsm7Ew=;
+        b=gLqknskazrWYa06jlssfnOlyYw4GTBBAOUB9T18oTbu9r46297Z2MeGXJ+5zujIMZQ
+         7FPyMNVA2npKxOSlU8hvScYnPpDRgJoC9Krb6UoiEsOVBa6ixbNwjdo4cZUPlK9gUsqq
+         pnqUCSXRCRIv5c5pRpxRA+KHTvaS6y/Ug6TyuZA+7ijFvT0tmui2NDUWfVtJbV0BKgBc
+         Cl13FAYVUzmPRIKDR96bdrrUV4MQC4kwJAvV2/pONCiBKOWmCMfyKJ0Y7qMgbLs/Me0A
+         PXddjIBoiCSOAVuqnDakx3WDy+TAyHAuR40FeiiYsgfPTBKMVN+pbTz3v956cJeIo3bt
+         N9zA==
+X-Gm-Message-State: AOJu0YwgTl28Ao8vVtCsBX5dcaZF1Q/hS08i1jnUNY6WtfpS3M2NOsrs
+        jAHGihaGPe/LQ2abrO/4Gqqj7kgacAb123mh
+X-Google-Smtp-Source: AGHT+IEd7cs63rRKy5qAJS39wV13USrhwp2ni+AteUU85QcEbpUv2VW2KfMRQ3pMCfSHmJu3iWkvgg==
+X-Received: by 2002:a17:902:e5c2:b0:1bc:5e50:9345 with SMTP id u2-20020a170902e5c200b001bc5e509345mr3893259plf.50.1691401498021;
+        Mon, 07 Aug 2023 02:44:58 -0700 (PDT)
+Received: from localhost.localdomain ([1.237.29.215])
+        by smtp.gmail.com with ESMTPSA id ji5-20020a170903324500b001bc445e249asm6424809plb.124.2023.08.07.02.44.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Aug 2023 02:44:57 -0700 (PDT)
+From:   Hyeongtak Ji <hyeongtak.ji@gmail.com>
+To:     sj@kernel.org, akpm@linux-foundation.org
+Cc:     damon@lists.linux.dev, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Hyeongtak Ji <hyeongtak.ji@gmail.com>,
+        Hyeongtak Ji <hyeongtak.ji@sk.com>
+Subject: [PATCH] mm/damon: Prevent unnecessary age reset for regions
+Date:   Mon,  7 Aug 2023 18:44:35 +0900
+Message-Id: <1691401475-3796-1-git-send-email-hyeongtak.ji@gmail.com>
+X-Mailer: git-send-email 2.7.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,63 +68,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <likexu@tencent.com>
+DAMON resets the age of each region after applying each scheme,
+regardless of whether the scheme has been successfully applied.
 
-Fix compiler warnings when compiling KVM with [-Wunreachable-code-break].
-No functional change intended.
+This patch adds a simple condition to prevent the age of regions from
+being reset when schemes have not been actually applied.
 
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Like Xu <likexu@tencent.com>
+Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
 ---
- arch/x86/kvm/emulate.c | 2 --
- arch/x86/kvm/hyperv.c  | 1 -
- arch/x86/kvm/x86.c     | 1 -
- 3 files changed, 4 deletions(-)
+ mm/damon/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index 936a397a08cd..2673cd5c46cb 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -1799,13 +1799,11 @@ static int writeback(struct x86_emulate_ctxt *ctxt, struct operand *op)
- 					       op->addr.mem,
- 					       &op->val,
- 					       op->bytes);
--		break;
- 	case OP_MEM_STR:
- 		return segmented_write(ctxt,
- 				       op->addr.mem,
- 				       op->data,
- 				       op->bytes * op->count);
--		break;
- 	case OP_XMM:
- 		kvm_write_sse_reg(op->addr.xmm, &op->vec_val);
- 		break;
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index b28fd020066f..7c2dac6824e2 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -1293,7 +1293,6 @@ static bool hv_check_msr_access(struct kvm_vcpu_hv *hv_vcpu, u32 msr)
- 	case HV_X64_MSR_VP_ASSIST_PAGE:
- 		return hv_vcpu->cpuid_cache.features_eax &
- 			HV_MSR_APIC_ACCESS_AVAILABLE;
--		break;
- 	case HV_X64_MSR_TSC_FREQUENCY:
- 	case HV_X64_MSR_APIC_FREQUENCY:
- 		return hv_vcpu->cpuid_cache.features_eax &
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 34945c7dba38..f3f8d27acc96 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4647,7 +4647,6 @@ static int kvm_x86_dev_get_attr(struct kvm_device_attr *attr)
- 		return 0;
- 	default:
- 		return -ENXIO;
--		break;
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index 91cff7f2997e..4044fcf18ac1 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -908,7 +908,7 @@ static void damos_apply_scheme(struct damon_ctx *c, struct damon_target *t,
+ 			quota->charge_addr_from = r->ar.end + 1;
+ 		}
  	}
- }
+-	if (s->action != DAMOS_STAT)
++	if (s->action != DAMOS_STAT && sz_applied > 0)
+ 		r->age = 0;
  
-
-base-commit: 240f736891887939571854bd6d734b6c9291f22e
+ update_stat:
 -- 
-2.41.0
+2.7.4
 
