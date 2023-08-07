@@ -2,157 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7B37722E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AA07722EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbjHGLlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
+        id S232979AbjHGLmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:42:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbjHGLlc (ORCPT
+        with ESMTP id S232087AbjHGLl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:41:32 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5304F46BA
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 04:38:38 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 578BA1FB;
-        Mon,  7 Aug 2023 04:38:12 -0700 (PDT)
-Received: from [10.57.90.63] (unknown [10.57.90.63])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A82633F59C;
-        Mon,  7 Aug 2023 04:37:27 -0700 (PDT)
-Message-ID: <177702e7-e68f-fa7a-4507-48dc82fcc030@arm.com>
-Date:   Mon, 7 Aug 2023 12:37:26 +0100
+        Mon, 7 Aug 2023 07:41:57 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151532103
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 04:39:19 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe1e44fd2bso98965e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 04:39:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691408299; x=1692013099;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8W+bofDGJlB4M5uPfge6sirfCHYwbUhgLAeHUFoaWIs=;
+        b=oK6l60z3Y/5Wy8fWWjBLc/gvsatLjg8OEhPFkO7kO+u77JF6wUsxpXgdPSy9a5bo7W
+         zKkWWxjj/9Wt3AGNzGGGSE3JL0YqxAwmng2sHl6++BVkQa6MRVUZ0pTuMkqhonqp7cVL
+         ooxMdgywEpg3u69CuhN/PSltoIPqWxsH2dKODl/IJ+j0Qibff4MoI0VZG2s5MSIOLiMm
+         Hv7xGb8InonKy5qRRtaVSo6bIJGE7CxKsH+pICSO4LHQ08tIoAyhjOS8H3uEcQsel7wS
+         XV+KpClkKXgOdMvNiCEBdnDJNddhHbV9f0w3sYEdSkPRTNAEZZbjDntaHS60Jembj3gk
+         6f5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691408299; x=1692013099;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8W+bofDGJlB4M5uPfge6sirfCHYwbUhgLAeHUFoaWIs=;
+        b=JFmQ19vYu45FUoAMHRP4+FGTcaK2n4eiEAjSQKX4LjF+APZuT0y4yyBrgmOrbGjYXa
+         3JMRVX6z1CDq9ldg17swlz/2Phzhugx+ghl7ScSHDsj4mJ0YNQOUqlUEkDr72BaxZi/p
+         BuIyXkKoH4jhdUPJNlfDahEMDjTeQ0ptbY/bPMJHnx2DJkPby4mdqY2k52sWOjTDX8IZ
+         cU6kWwKOXwKZ0Omj67UyLsJo30YrPnOKRtdeWPWqzSxGfkg/t5uhbzN3S+vQtKXZT8cP
+         dDpQ1pZnB3Gyfou7JJAA3P417HBwCRgMXup+76T77I35OVRbhOEKTJbBpHHtnH/2rP4v
+         ZRMQ==
+X-Gm-Message-State: AOJu0YyZW9n027WYmnxejELJt3juhfuR4rcV9TUpcetYt96Hrj3ebBDB
+        hclcV2pHiBiUVEeNyOYbTTeGqQs52OMmhV4eSWTU8Q==
+X-Google-Smtp-Source: AGHT+IGmhutOzq3fC03uoNya0cqOJh4UT8fO+Jie4zzFpBH4+HCUPwSHATUE0aSXieDtSvPS6NpGxhP3oVmADaOnfiE=
+X-Received: by 2002:a05:600c:1d13:b0:3fe:b38:5596 with SMTP id
+ l19-20020a05600c1d1300b003fe0b385596mr143015wms.6.1691408299251; Mon, 07 Aug
+ 2023 04:38:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH V3 4/4] coresight: trbe: Enable ACPI based TRBE devices
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Sami Mujawar <sami.mujawar@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-References: <20230803055652.1322801-1-anshuman.khandual@arm.com>
- <20230803055652.1322801-5-anshuman.khandual@arm.com>
- <f6a5aaf2-4669-cbc2-1358-e8cfb341b9c5@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <f6a5aaf2-4669-cbc2-1358-e8cfb341b9c5@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <0000000000005003fe05a8af2231@google.com> <000000000000597f580602464669@google.com>
+In-Reply-To: <000000000000597f580602464669@google.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Mon, 7 Aug 2023 13:38:07 +0200
+Message-ID: <CANp29Y7srmhGbKYB_6Y5KvijXrgHtzU9NqKcBcnit0wLmvbdCA@mail.gmail.com>
+Subject: Re: [syzbot] [wireless?] INFO: trying to register non-static key in skb_queue_tail
+To:     syzbot <syzbot+743547b2a7fd655ffb6d@syzkaller.appspotmail.com>
+Cc:     andreyknvl@google.com, ath9k-devel@qca.qualcomm.com,
+        brookebasile@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        kvalo@codeaurora.org, kvalo@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, pchelkin@ispras.ru, quic_kvalo@quicinc.com,
+        syzkaller-bugs@googlegroups.com, toke@toke.dk
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/08/2023 05:43, Anshuman Khandual wrote:
-> 
-> 
-> On 8/3/23 11:26, Anshuman Khandual wrote:
->> This detects and enables ACPI based TRBE devices via the dummy platform
->> device created earlier for this purpose.
->>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Leo Yan <leo.yan@linaro.org>
->> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->> Cc: coresight@lists.linaro.org
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>   drivers/hwtracing/coresight/coresight-trbe.c | 9 +++++++++
->>   drivers/hwtracing/coresight/coresight-trbe.h | 1 +
->>   2 files changed, 10 insertions(+)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
->> index e1d9d06e7725..f884883e9018 100644
->> --- a/drivers/hwtracing/coresight/coresight-trbe.c
->> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
->> @@ -1537,7 +1537,16 @@ static const struct of_device_id arm_trbe_of_match[] = {
->>   };
->>   MODULE_DEVICE_TABLE(of, arm_trbe_of_match);
->>   
->> +#ifdef CONFIG_ACPI
->> +static const struct platform_device_id arm_trbe_acpi_match[] = {
->> +	{ ARMV8_TRBE_PDEV_NAME, 0 },
->> +	{ }
->> +};
->> +MODULE_DEVICE_TABLE(platform, arm_trbe_acpi_match);
->> +#endif
->> +
->>   static struct platform_driver arm_trbe_driver = {
->> +	.id_table = arm_trbe_acpi_match,
-> 
-> The build problem [1] reported on the first version of the series still exists
-> here i.e arm_trbe_acpi_match is hidden without CONFIG_ACPI. I had assumed that
-> CONFIG_CORESIGHT always enables CONFIG_ACPI, which is not the case. Following
-> random config (with CONFIG_ACPI=n and CONFIG_CORESIGHT_TRBE=y) easily triggers
-> the build problem.
-> 
-> https://download.01.org/0day-ci/archive/20230805/202308052123.uqR35d19-lkp@intel.com/config
-> 
->   make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 -s -j 128
-> drivers/hwtracing/coresight/coresight-trbe.c:1563:23: error: implicit declaration of function ‘ACPI_PTR’ [-Werror=implicit-function-declaration]
->   1563 |   .acpi_match_table = ACPI_PTR(arm_trbe_acpi_match),
->        |                       ^~~~~~~~
-> drivers/hwtracing/coresight/coresight-trbe.c:1563:32: error: ‘arm_trbe_acpi_match’ undeclared here (not in a function); did you mean ‘arm_trbe_of_match’?
->   1563 |   .acpi_match_table = ACPI_PTR(arm_trbe_acpi_match),
->        |                                ^~~~~~~~~~~~~~~~~~~
->        |                                arm_trbe_of_match
-> 
-> Following config wrap around fixes the problem.
-> 
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -1557,7 +1557,9 @@ MODULE_DEVICE_TABLE(platform, arm_trbe_acpi_match);
->   #endif
->   
->   static struct platform_driver arm_trbe_driver = {
-> +#ifdef CONFIG_ACPI
->          .id_table = arm_trbe_acpi_match,
-> +#endif
->          .driver = {
->                  .name = DRVNAME,
->                  .of_match_table = of_match_ptr(arm_trbe_of_match),
-> 
-> Please not that unlike other coresight drivers, TRBE is not using 'acpi_device_id'
-> based "acpi_match_table = ACPI_PTR" construct. But regardless, ACPI_PTR() seems to
-> be an alternate (probably better) solution as well.
-> 
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -1557,7 +1557,7 @@ MODULE_DEVICE_TABLE(platform, arm_trbe_acpi_match);
->   #endif
->   
->   static struct platform_driver arm_trbe_driver = {
-> -       .id_table = arm_trbe_acpi_match,
-> +       .id_table = ACPI_PTR(arm_trbe_acpi_match),
+On Sun, Aug 6, 2023 at 9:38=E2=80=AFPM syzbot
+<syzbot+743547b2a7fd655ffb6d@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 061b0cb9327b80d7a0f63a33e7c3e2a91a71f142
+> Author: Fedor Pchelkin <pchelkin@ispras.ru>
+> Date:   Wed May 17 15:03:17 2023 +0000
+>
+>     wifi: ath9k: don't allow to overwrite ENDPOINT0 attributes
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1243d549a8=
+0000
+> start commit:   559089e0a93d vmalloc: replace VM_NO_HUGE_VMAP with VM_ALL=
+O..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Ddd7c9a79dfcfa=
+205
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D743547b2a7fd655=
+ffb6d
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D15d5d7f4f00=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D106ff834f0000=
+0
+>
+> If the result looks correct, please mark the issue as fixed by replying w=
+ith:
+>
+> #syz fix: wifi: ath9k: don't allow to overwrite ENDPOINT0 attributes
 
-This is preferred.
+Seems reasonable.
 
->          .driver = {
->                  .name = DRVNAME,
->                  .of_match_table = of_match_ptr(arm_trbe_of_match),
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.h b/drivers/hwtracing/coresight/coresight-trbe.h
-> index 94e67009848a..fce1735d5c58 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.h
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.h
-> @@ -7,6 +7,7 @@
->    *
->    * Author: Anshuman Khandual <anshuman.khandual@arm.com>
->    */
-> +#include <linux/acpi.h>
+#syz fix: wifi: ath9k: don't allow to overwrite ENDPOINT0 attributes
 
-Shouldn't this be added in trbe.c ? Does trbe.h depend on any ACPI headers ?
-
-Suzuki
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/syzkaller-bugs/000000000000597f580602464669%40google.com.
