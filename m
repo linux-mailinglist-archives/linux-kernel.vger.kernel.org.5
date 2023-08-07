@@ -2,53 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3517724F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14C27724FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233826AbjHGNGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53804 "EHLO
+        id S233831AbjHGNHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233791AbjHGNG2 (ORCPT
+        with ESMTP id S233878AbjHGNHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:06:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C424D1701;
-        Mon,  7 Aug 2023 06:06:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 586DA619CC;
-        Mon,  7 Aug 2023 13:06:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37D0FC433C7;
-        Mon,  7 Aug 2023 13:06:23 +0000 (UTC)
-Message-ID: <0b361e6c-d141-4758-edc2-c75b6f0efbe3@xs4all.nl>
-Date:   Mon, 7 Aug 2023 15:06:21 +0200
+        Mon, 7 Aug 2023 09:07:06 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0CB1FE4
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:06:54 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d4364cf8be3so3471192276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 06:06:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691413613; x=1692018413;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YN5TMkTY0ygg4jFnAPE5f0kWVzSNcpz9+iRD79bC3Z8=;
+        b=xpSCvUoQbw1tjxn+0pZ6cSy2bPnR/cI/N5v1Xa8IkA31SVzn/S+g0e9pWhC2z1ew5h
+         oU+JROfYYJZovhf186MJRP0DNrRNrtrBKPxMbRVGMSwQNFUZUm1h2qHsVrIZ/9OJIv9C
+         fvgBVwcUpM2siwYe6A84FoyH8wuJBQVrP09+Zo6NBG9tl9SnLf1wNV0xx7hmw5RePlMs
+         qwKSXeFlTsIy//gg+MU4nPzw9JfVuTmRxNIn+vTPB3YG30SvjpzU70gSB20XUwlCptb6
+         LFbcqdFnalTPgXLGlG/1iJcEwt4cYFbpKf1ws5droSP7fBmcsG3P5llSCwvsY/eQIsiV
+         maoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691413613; x=1692018413;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YN5TMkTY0ygg4jFnAPE5f0kWVzSNcpz9+iRD79bC3Z8=;
+        b=f2paJKDD4KlK4XqbY4QpSm+0bQrRDnojWEE2EHFp2/8P6zgoxzeCNiIhVN8E9/dOmz
+         DO7I0IrMyVUewrkBAvZRF8LR2xct+veJKziId48p2JqjwFSz7qqD7jJ6Nv5VjA9kgVQW
+         hgrnZWawLcLAkz6kigqDUJvcpxF0eeaj5t08dTktfIkpuFQe5tNlgWLS5o1VUYJruSDr
+         5z1UturtBBCQ9MJWAS/J8L8UekRkP3GnPsHZui5IJC0i+6kVt/ILlikE+esa6xf5zd4d
+         Y4gxSAGxbxST4ifYK7ZTb3VgOF1wGdWwP6jvPXiztA55b5p2tkfKaIFYgBFM/Ce+8rbV
+         jUAg==
+X-Gm-Message-State: AOJu0YyPb9fNzQR59kgivxMiYH+VflNPOGqxLN8JMhCN6y9vvJPXQ7R3
+        NZfz+L49BiBo70E8TL73v2wFQy4n0/wuy7207fN6nQ==
+X-Google-Smtp-Source: AGHT+IEMKCq/m3/N1+FiikwFsnDje8GRItyWdNDJE1nuhiz2PrdZl+YFSqKhB6L6a9fy66xvdbZfHLOx9hNasWI6TVw=
+X-Received: by 2002:a05:6902:4f4:b0:d09:85d3:4edb with SMTP id
+ w20-20020a05690204f400b00d0985d34edbmr8822226ybs.7.1691413613049; Mon, 07 Aug
+ 2023 06:06:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 3/3] media: exynos4-is: fimc-is: replace duplicate pmu
- node with phandle
-Content-Language: en-US, nl
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+References: <20230726150225.483464-1-herve.codina@bootlin.com>
+ <20230726150225.483464-25-herve.codina@bootlin.com> <CACRpkdYXCQRd3ZXNGHwMaQYiJc7tGtAJnBaSh5O-8ruDAJVdiA@mail.gmail.com>
+In-Reply-To: <CACRpkdYXCQRd3ZXNGHwMaQYiJc7tGtAJnBaSh5O-8ruDAJVdiA@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 7 Aug 2023 15:06:42 +0200
+Message-ID: <CACRpkdZebvrdGXooLXmgXhUcgdgxBczJBpdEoEyJDR39abaAqQ@mail.gmail.com>
+Subject: Re: [PATCH v2 24/28] pinctrl: Add support for the Lantic PEF2256 pinmux
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230722115441.139628-1-krzysztof.kozlowski@linaro.org>
- <20230722115441.139628-3-krzysztof.kozlowski@linaro.org>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-In-Reply-To: <20230722115441.139628-3-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,104 +89,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Mon, Aug 7, 2023 at 3:05=E2=80=AFPM Linus Walleij <linus.walleij@linaro.=
+org> wrote:
 
-On 22/07/2023 13:54, Krzysztof Kozlowski wrote:
-> Devicetree for the FIMC IS camera included duplicated PMU node as its
-> child like:
-> 
->   soc@0 {
->     system-controller@10020000 { ... }; // Real PMU
-> 
->     camera@11800000 {
->       fimc-is@12000000 {
->         // FIMC IS camera node
->         pmu@10020000 {
->           reg = <0x10020000 0x3000>; // Fake PMU node
->         };
->       };
->     };
->   };
-> 
-> This is not a correct representation of the hardware.  Mapping the PMU
-> (Power Management Unit) IO memory should be via syscon-like phandle
-> (samsung,pmu-syscon, already used for other drivers), not by duplicating
-> "pmu" Devicetree node inside the FIMC IS.  Backward compatibility is
-> preserved.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  .../platform/samsung/exynos4-is/fimc-is.c     | 33 ++++++++++++++-----
->  1 file changed, 24 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/media/platform/samsung/exynos4-is/fimc-is.c b/drivers/media/platform/samsung/exynos4-is/fimc-is.c
-> index 530a148fe4d3..c4c191771093 100644
-> --- a/drivers/media/platform/samsung/exynos4-is/fimc-is.c
-> +++ b/drivers/media/platform/samsung/exynos4-is/fimc-is.c
-> @@ -767,12 +767,32 @@ static void fimc_is_debugfs_create(struct fimc_is *is)
->  static int fimc_is_runtime_resume(struct device *dev);
->  static int fimc_is_runtime_suspend(struct device *dev);
->  
-> +static void __iomem *fimc_is_get_pmu_regs(struct device *dev)
-> +{
-> +	struct device_node *node;
-> +	void __iomem *regs;
-> +
-> +	node = of_parse_phandle(dev->of_node, "samsung,pmu-syscon", 0);
-> +	if (!node) {
-> +		dev_warn(dev, "Finding PMU node via deprecated method, update your DTB\n");
-> +		node = of_get_child_by_name(dev->of_node, "pmu");
-> +		if (!node)
-> +			return ERR_PTR(-ENODEV);
-> +	}
-> +
-> +	regs = of_iomap(node, 0);
-> +	of_node_put(node);
-> +	if (!regs)
-> +		return ERR_PTR(-ENOMEM);
+> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+>
+> So it is a bridge chip? Please use that terminology since Linux
+> DRM often talks about bridges.
 
-sparse gives me these warnings for these ERR_PTR returns:
+Replying to self: no it's not a bridge, it's a WAN thingy.
 
-drivers/media/platform/samsung/exynos4-is/fimc-is.c:780:39: warning: incorrect type in return expression (different address spaces)
-drivers/media/platform/samsung/exynos4-is/fimc-is.c:780:39:    expected void [noderef] __iomem *
-drivers/media/platform/samsung/exynos4-is/fimc-is.c:780:39:    got void *
-drivers/media/platform/samsung/exynos4-is/fimc-is.c:786:31: warning: incorrect type in return expression (different address spaces)
-drivers/media/platform/samsung/exynos4-is/fimc-is.c:786:31:    expected void [noderef] __iomem *
-drivers/media/platform/samsung/exynos4-is/fimc-is.c:786:31:    got void *
+So perhaps write that this is a WAN interface adapter chip.
 
-Regards,
-
-	Hans
-
-> +
-> +	return regs;
-> +}
-> +
->  static int fimc_is_probe(struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
->  	struct fimc_is *is;
->  	struct resource res;
-> -	struct device_node *node;
->  	int ret;
->  
->  	is = devm_kzalloc(&pdev->dev, sizeof(*is), GFP_KERNEL);
-> @@ -794,14 +814,9 @@ static int fimc_is_probe(struct platform_device *pdev)
->  	if (IS_ERR(is->regs))
->  		return PTR_ERR(is->regs);
->  
-> -	node = of_get_child_by_name(dev->of_node, "pmu");
-> -	if (!node)
-> -		return -ENODEV;
-> -
-> -	is->pmu_regs = of_iomap(node, 0);
-> -	of_node_put(node);
-> -	if (!is->pmu_regs)
-> -		return -ENOMEM;
-> +	is->pmu_regs = fimc_is_get_pmu_regs(dev);
-> +	if (IS_ERR(is->pmu_regs))
-> +		return PTR_ERR(is->pmu_regs);
->  
->  	is->irq = irq_of_parse_and_map(dev->of_node, 0);
->  	if (!is->irq) {
-
+Yours,
+Linus Walleij
