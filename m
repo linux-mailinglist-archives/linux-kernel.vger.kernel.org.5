@@ -2,141 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1FA771ACF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A15771AD2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbjHGGxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
+        id S230434AbjHGGy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231506AbjHGGxB (ORCPT
+        with ESMTP id S231429AbjHGGyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:53:01 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD6951BDF
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:52:37 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b9cdbf682eso63568191fa.2
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 23:52:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691391131; x=1691995931;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8IF0yzc6AQ9CBWm+WqCwLb44jaEvchA3XftCWbCQ9L4=;
-        b=IfRIAHWGdjLxmsV0rmnZyf1fOg8WbNu+ehKL82gk425VAwtIEAIINC4zB4q7Jb+dzr
-         p9b/gbxhTtIX9WvRBLx5J0gqFffnZUNnEiYLaT0P07NiI87qqxlIfjIeKCs7mFMI3J30
-         tfbKVHhRs+ltj78Y/kvblNAusfd+1GzAvHUIiHGkYHLnUoFrUdygK/H+zGdVxuuQ9LUd
-         zN+OkffDfzKtlDkgwRwuDWBru+bive5yqnfsciRIB7QOAeYLDZTebey+EB3Qonju3iVu
-         WeGPP7ImXtyJ7iSbqe4aMi4xr/fDFQV2hqN0q6N0IajkntePqwvJO+JdRqQxrLu21zj9
-         rguQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691391131; x=1691995931;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8IF0yzc6AQ9CBWm+WqCwLb44jaEvchA3XftCWbCQ9L4=;
-        b=hva8KDok1GyunSsxJaa/yHlQB0Bl//hF2UFQo+cREGHDitteLt4tm6yQ+A2CCug948
-         Aj2Iu83s4dq8adPcAykxOjjNxHjT1+LZJ8mOoSFQ8jf1PthgFsKcJg+NBhIoe9w+yB5p
-         gEeSJXQ33oQHr+H2zQyYxmt6l5Ltifsvr+k6GYaCVWxCWnSnzdfk1hKmZ6xtZcr6kzg+
-         67ZR61F7bQ2DronAnmh7tehBnUkeeQVRqyrjfZrDp2ab5WYNUbcPoDnCPfv1UgOfDGQh
-         hGNTjDaN+XxyYW1mB6j2C1uZmsc5FS85uk9bjipgAAGWbl5TPK9ICiNPY2s28UxtaIFB
-         q18Q==
-X-Gm-Message-State: AOJu0YxXxSoABsFGjfrCTtreY5t+pymyD5gSkMlDNAu8syuD1qyU8mD9
-        IhfQLS803FEDk2ZOctf5euHxww==
-X-Google-Smtp-Source: AGHT+IGqjo6zmRgY8j0C8XXJLbmy3JnrMpqbfOBeiwcg7iAa1v/qGTulOKuyVucOW2ba5x7xXnmTAQ==
-X-Received: by 2002:a2e:6a0e:0:b0:2b9:e831:f165 with SMTP id f14-20020a2e6a0e000000b002b9e831f165mr5522024ljc.42.1691391131429;
-        Sun, 06 Aug 2023 23:52:11 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id s9-20020a170906354900b0099b7276235esm4787000eja.93.2023.08.06.23.52.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Aug 2023 23:52:11 -0700 (PDT)
-Message-ID: <ef996a7e-6eba-4366-c3ea-0d08f2768e98@linaro.org>
-Date:   Mon, 7 Aug 2023 08:52:08 +0200
+        Mon, 7 Aug 2023 02:54:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DB2198B;
+        Sun,  6 Aug 2023 23:54:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 924566129B;
+        Mon,  7 Aug 2023 06:54:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F55DC433C8;
+        Mon,  7 Aug 2023 06:54:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691391252;
+        bh=Z+bbSWp+iTKuc6nMMWDMyK5HRW0hCgjlS5Ejp1gNsto=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d07X106Qf6huErjWltXmTvMlXxPFR+LQm8kpi2gkEuvn1sKE0MacU5bWIfUTlK3Yg
+         u4uPboOGs2R8k5jjCVYwPmRqxckOntHm7/IQhQ/itnG0Ccc5lhUWVlyPKSTeiLauh4
+         miDqSpq5Rq6tfDZ81gb+GtjsCraXX3pLDEInutbBHmiXyMwQyRFtYE/VuDoGTW7iru
+         PXbKB+nFvaGqDRRggDFX68ti9/SGMMGDceTXyDkIgi0T13k3BIXA4N4+5I6XFJtmSJ
+         6YILQmP4fKPnyFui+a//RMJ+G+waxzSz/JadXANqBUdOFIbY+IakJCfY1GaO4lC115
+         dRq6V9p2x/ltQ==
+Date:   Mon, 7 Aug 2023 08:54:08 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] drivers: base: Add tests showing devm handling
+ inconsistencies
+Message-ID: <ckldghyavb6fj2mxfcw5spsr3v2rlyj2br64tnvwl5waz3i6id@zbxu7ipjtlwd>
+References: <20230720-kunit-devm-inconsistencies-test-v3-0-6aa7e074f373@kernel.org>
+ <xlb7rwyg5j4hk6afqssxniprn72goxv4avjzjrs3oc3nvfhbsa@fn4amdp6dkx5>
+ <2023073131-glimmer-both-05b6@gregkh>
+ <2023080416-suspend-cattail-f048@gregkh>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 2/3] dt-bindings: clock: add qca8386/qca8084 clock and
- reset definitions
-Content-Language: en-US
-To:     Luo Jie <quic_luoj@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        p.zabel@pengutronix.de
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_srichara@quicinc.com
-References: <20230801085352.22873-1-quic_luoj@quicinc.com>
- <20230801085352.22873-3-quic_luoj@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230801085352.22873-3-quic_luoj@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ksi2ulj7htpymjyy"
+Content-Disposition: inline
+In-Reply-To: <2023080416-suspend-cattail-f048@gregkh>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/08/2023 10:53, Luo Jie wrote:
-> QCA8386/QCA8084 includes the clock & reset controller that is
-> accessed by MDIO bus. Two work modes are supported, qca8386 works
-> as switch mode, qca8084 works as PHY mode.
-> 
-> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-> ---
->  .../bindings/clock/qcom,nsscc-qca8k.yaml      |  59 ++++++++++
->  include/dt-bindings/clock/qcom,nsscc-qca8k.h  | 102 ++++++++++++++++++
->  include/dt-bindings/reset/qcom,nsscc-qca8k.h  |  76 +++++++++++++
->  3 files changed, 237 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/qcom,nsscc-qca8k.yaml
->  create mode 100644 include/dt-bindings/clock/qcom,nsscc-qca8k.h
->  create mode 100644 include/dt-bindings/reset/qcom,nsscc-qca8k.h
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/qcom,nsscc-qca8k.yaml b/Documentation/devicetree/bindings/clock/qcom,nsscc-qca8k.yaml
-> new file mode 100644
-> index 000000000000..8fb77156070c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/qcom,nsscc-qca8k.yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/qcom,nsscc-qca8k.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm NSS Clock & Reset Controller on QCA8386/QCA8084
-> +
-> +maintainers:
-> +  - Luo Jie <quic_luoj@quicinc.com>
-> +
-> +description: |
-> +  Qualcomm NSS clock control module provides the clocks and resets
-> +  on QCA8386(switch mode)/QCA8084(PHY mode)
-> +
-> +  See also::
-> +    include/dt-bindings/clock/qcom,nsscc-qca8k.h
-> +    include/dt-bindings/reset/qcom,nsscc-qca8k.h
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,nsscc-qca8k
 
-SoC name is before IP block names. See:
-Documentation/devicetree/bindings/arm/qcom-soc.yaml
+--ksi2ulj7htpymjyy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-qca8k is not SoC specific. I don't know what you are documenting here,
-but if this is a SoC, then follow SoC rules.
+Hi,
 
-If this is not SoC, it confuses me a bit to use GCC binding.
+On Fri, Aug 04, 2023 at 05:01:50PM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Jul 31, 2023 at 09:28:47AM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Jul 31, 2023 at 08:34:03AM +0200, Maxime Ripard wrote:
+> > > On Thu, Jul 20, 2023 at 02:45:06PM +0200, Maxime Ripard wrote:
+> > > > Hi,
+> > > >=20
+> > > > This follows the discussion here:
+> > > > https://lore.kernel.org/linux-kselftest/20230324123157.bbwvfq4gsxnl=
+nfwb@houat/
+> > > >=20
+> > > > This shows a couple of inconsistencies with regard to how device-ma=
+naged
+> > > > resources are cleaned up. Basically, devm resources will only be cl=
+eaned up
+> > > > if the device is attached to a bus and bound to a driver. Failing a=
+ny of
+> > > > these cases, a call to device_unregister will not end up in the devm
+> > > > resources being released.
+> > > >=20
+> > > > We had to work around it in DRM to provide helpers to create a devi=
+ce for
+> > > > kunit tests, but the current discussion around creating similar, ge=
+neric,
+> > > > helpers for kunit resumed interest in fixing this.
+> > > >=20
+> > > > This can be tested using the command:
+> > > > ./tools/testing/kunit/kunit.py run --kunitconfig=3Ddrivers/base/tes=
+t/
+> > > >=20
+> > > > I added the fix David suggested back in that discussion which does =
+fix
+> > > > the tests. The SoB is missing, since David didn't provide it back t=
+hen.
+> > > >=20
+> > > > Let me know what you think,
+> > > > Maxime
+> > > >=20
+> > > > Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> > >=20
+> > > Ping?
+> >=20
+> > It's in my review queue, still trying to catch up...
+>=20
+> I didn't make it here this week, sorry.
 
-Anyway, this was not tested, as pointed out by bot... Please test the
-code before sending.
+np, I just don't want that patch to disappear into the ether :)
 
-Best regards,
-Krzysztof
+> I kind of worry about encoding the current "odd" functionality in a
+> test as being the correct thing, but will look at it closer next week.
 
+I don't think I'm doing that? The tests we've added are all how we think
+it should behave, the broken ones being skipped to avoid any failures.
+
+The last patch drops the kunit_skip() to make sure that it's tested
+going forward.
+
+So we shouldn't encode the odd behaviour anywhere in this series, unless
+I got you wrong?
+
+Maxime
+
+--ksi2ulj7htpymjyy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZNCVEAAKCRDj7w1vZxhR
+xTyzAQDxd6KiKHz8VbSLz7KZ0iaMt833B9AVaGNrpuJ6crXX2AEA2T6G1PnmKTtC
+58kw4RHBcoJUjUze7V9SMywGhnJVtwA=
+=1eb3
+-----END PGP SIGNATURE-----
+
+--ksi2ulj7htpymjyy--
