@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6D9771B10
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC6F771B13
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbjHGHEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 03:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58260 "EHLO
+        id S231334AbjHGHFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 03:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231473AbjHGHEX (ORCPT
+        with ESMTP id S231302AbjHGHFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 03:04:23 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A5A81993
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 00:04:16 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52256241c66so8827231a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 00:04:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691391854; x=1691996654;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h0W6+QdLUJgynbZQgwWh7N15Tm3OM7n0lMK69GE2HrE=;
-        b=zFk4nCcRVFsDnk9v0UmcphZoXlpxMkP2BQ4nYRj+4kLnB9P/L+hISywfUnTwdoX/KS
-         FbNccluyX1lqC/26YenM0GhQAKepKshQ/Lcfu4Wmj2P2Gq5A4+/IJmMzcHFzZOBTbgBW
-         1CxvHtgRYv5TMit8/44jV/WNiLNOOzEOXRJTkRotyNNLHBVHlYEK9qsN00854OPPHKr0
-         5i1AfmBEqkxmACQoLLk07PolkIc7qcsxvW147Zn5v22lgi2kEkpPpPkDaJUmG0bFTZOE
-         CGKuJeGOdM2NPQHDo/fTwQ7g78vyhk8XZY62qtVpqCnY+telRRRUiooKQAV5imshZ2eI
-         8YzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691391854; x=1691996654;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h0W6+QdLUJgynbZQgwWh7N15Tm3OM7n0lMK69GE2HrE=;
-        b=EwQB/hW0GZaLLXonU7F0kDqh0bY6mkvn4t6tJo31KyAClYyh4JLhYO6XUvxOE4S4yn
-         bHi1c9p972Xk6vnpsefvVEMRtiFjMv6EvCvAbPDtHoYkKIl19pP6QmeyQfG1v0EfYlSO
-         mgG1CvdHk/4cSArpt9rHSa+Qg8uggxODbjVfX6LZG/UyfZsd4HWQhnPbtgodyGXtxthY
-         bcKvHrHvG7mXi4kp98DZYNzNvDmgBb0HBBP19/WJWqSwdMfhh9AhQs5uNzNEU/Ducp2q
-         Exv3GuyT/NSoJgfC3vs72u28mv94gTaKCiYNHGyRdcc1n1kKeahGDfRpZFGgKkYZPgNb
-         P0Jg==
-X-Gm-Message-State: AOJu0YyTiisczBX8U9QzIllTdFkXSbANG+wZGCwnDbTFdtCm16fVaVMx
-        FDLCTpK6aqMXVZQyIU+6f1cvEw==
-X-Google-Smtp-Source: AGHT+IEiwyAhsNltvxs223l22JolgdfXujvQSbMR8kUItZ3zoEsOz8v5drYKxaTaP1z/S0WHRBUPpA==
-X-Received: by 2002:aa7:c784:0:b0:51e:421e:d209 with SMTP id n4-20020aa7c784000000b0051e421ed209mr6723609eds.13.1691391854494;
-        Mon, 07 Aug 2023 00:04:14 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id g17-20020a056402115100b005230f2a12b9sm4722187edw.43.2023.08.07.00.04.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 00:04:14 -0700 (PDT)
-Message-ID: <a6553faa-8522-d47a-8446-296e3d69ef31@linaro.org>
-Date:   Mon, 7 Aug 2023 09:04:12 +0200
+        Mon, 7 Aug 2023 03:05:07 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD951BCF;
+        Mon,  7 Aug 2023 00:04:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C98401F460;
+        Mon,  7 Aug 2023 07:04:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1691391874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bTuF2TgB1pBwN8OkG1rHpu4xeWoKn3NkiBu7ZL/kjNo=;
+        b=b+BEiZrOazh2iKNnKC3SDf37eCGPzo5Aktuj/Bb87LGLBIIPO0oKrfVZECh/ZUHZQ99A3c
+        I3vc76WsiiUEN9tTFrpjkAy6FTYDwpr9s0sxVhGg2tqAN3zAA3EYGD9Tyz5KJbN4X4u7Lp
+        b/oocpwiNVjz3VbAlTQNFBjjSQyLl8g=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AAB8013910;
+        Mon,  7 Aug 2023 07:04:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id k5euJoKX0GSvWAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Mon, 07 Aug 2023 07:04:34 +0000
+Date:   Mon, 7 Aug 2023 09:04:34 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, muchun.song@linux.dev,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wuyun.abel@bytedance.com, robin.lu@bytedance.com
+Subject: Re: [RFC PATCH 1/2] mm, oom: Introduce bpf_select_task
+Message-ID: <ZNCXgsZL7bKsCEBM@dhcp22.suse.cz>
+References: <20230804093804.47039-1-zhouchuyi@bytedance.com>
+ <20230804093804.47039-2-zhouchuyi@bytedance.com>
+ <ZMzhDFhvol2VQBE4@dhcp22.suse.cz>
+ <dfbf05d1-daff-e855-f4fd-e802614b79c4@bytedance.com>
+ <ZMz+aBHFvfcr0oIe@dhcp22.suse.cz>
+ <866462cf-6045-6239-6e27-45a733aa7daa@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 3/9] dt-bindings: PCI: fsl,imx6q: Add i.MX7D PCIe EP
- compatibles
-Content-Language: en-US
-To:     Richard Zhu <hongxing.zhu@nxp.com>, frank.li@nxp.com,
-        l.stach@pengutronix.de, shawnguo@kernel.org, lpieralisi@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
-Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, linux-imx@nxp.com
-References: <1691114975-4750-1-git-send-email-hongxing.zhu@nxp.com>
- <1691114975-4750-4-git-send-email-hongxing.zhu@nxp.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1691114975-4750-4-git-send-email-hongxing.zhu@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <866462cf-6045-6239-6e27-45a733aa7daa@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2023 04:09, Richard Zhu wrote:
-> Add i.MX7D PCIe EP compatibles.
+On Mon 07-08-23 10:21:09, Chuyi Zhou wrote:
 > 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> ---
+> 
+> 在 2023/8/4 21:34, Michal Hocko 写道:
+> > On Fri 04-08-23 21:15:57, Chuyi Zhou wrote:
+> > [...]
+> > > > +	switch (bpf_oom_evaluate_task(task, oc, &points)) {
+> > > > +		case -EOPNOTSUPP: break; /* No BPF policy */
+> > > > +		case -EBUSY: goto abort; /* abort search process */
+> > > > +		case 0: goto next; /* ignore process */
+> > > > +		default: goto select; /* note the task */
+> > > > +	}
+> > > 
+> > > Why we need to change the *points* value if we do not care about oom_badness
+> > > ? Is it used to record some state? If so, we could record it through bpf
+> > > map.
+> > 
+> > Strictly speaking we do not need to. That would require BPF to keep the
+> > state internally. Many will do I suppose but we have to keep track of
+> > the victim so that the oom killer knows what to kill so I thought that
+> > it doesn't hurt to keep track of an abstract concept of points as well.
+> > If you think this is not needed then oc->points could be always 0 for
+> > bpf selected victims. The value is not used anyway in the proposed
+> > scheme.
+> > 
+> > Btw. we will need another hook or metadata for the reporting side of
+> > things. Generally dump_header() to know what has been the selection
+> > policy.
+> > 
+> OK. Maybe a integer like policy_type is enough to distinguish different
+> policies and the default method is zero. Or we can let BPF return a string
+> like policy_name.
+> 
+> Which one should I start implementing in next version? Do you have a better
+> idea?
 
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+String seems to be more descriptive.
+-- 
+Michal Hocko
+SUSE Labs
