@@ -2,219 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8AE7717F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 03:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AE87717F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 03:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229522AbjHGBpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 21:45:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58458 "EHLO
+        id S229555AbjHGBpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 21:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjHGBpN (ORCPT
+        with ESMTP id S229530AbjHGBpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 21:45:13 -0400
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D7B6C171A
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 18:45:10 -0700 (PDT)
-X-AuditID: a67dfc5b-d6dff70000001748-af-64d04ca56cf9
-Date:   Mon, 7 Aug 2023 10:42:29 +0900
-From:   Byungchul Park <byungchul@sk.com>
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        "kernel_team@skhynix.com" <kernel_team@skhynix.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "xhao@linux.alibaba.com" <xhao@linux.alibaba.com>,
-        "mgorman@techsingularity.net" <mgorman@techsingularity.net>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [RFC 2/2] mm: Defer TLB flush by keeping both src and dst folios
- at migration
-Message-ID: <20230807014229.GB69206@system.software.com>
-References: <20230804061850.21498-1-byungchul@sk.com>
- <20230804061850.21498-3-byungchul@sk.com>
- <7023C1AF-6C9B-4544-8EC4-0BB790C1E338@vmware.com>
+        Sun, 6 Aug 2023 21:45:14 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7833C170B;
+        Sun,  6 Aug 2023 18:45:11 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 3771i6ZG1031859, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 3771i6ZG1031859
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 7 Aug 2023 09:44:06 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Mon, 7 Aug 2023 09:44:22 +0800
+Received: from localhost.localhost (172.21.132.123) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Mon, 7 Aug 2023 09:44:19 +0800
+From:   <max.chou@realtek.com>
+To:     <marcel@holtmann.org>
+CC:     <johan.hedberg@gmail.com>, <luiz.dentz@gmail.com>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alex_lu@realsil.com.cn>, <hildawu@realtek.com>,
+        <karenhsu@realtek.com>, <kidman@realtek.com>,
+        <max.chou@realtek.com>, <juerg.haefliger@canonical.com>,
+        <vicamo.yang@canonical.com>, <Riley.Kao@dell.com>,
+        <stable@vger.kernel.org>, <jwboyer@kernel.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <regressions@lists.linux.dev>
+Subject: [PATCH v3] Bluetooth: btrtl: Load FW v2 otherwise FW v1 for RTL8852C
+Date:   Mon, 7 Aug 2023 09:44:15 +0800
+Message-ID: <20230807014415.12358-1-max.chou@realtek.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7023C1AF-6C9B-4544-8EC4-0BB790C1E338@vmware.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFIsWRmVeSWpSXmKPExsXC9ZZnke4ynwspBl37WC3mrF/DZvFiQzuj
-        xdf1v5gtnn7qY7G4vGsOm8W9Nf9ZLc7vWstqsWPpPiaL67seMloc7z3AZPH7B1B2zhQri5Oz
-        JrM48Hos2FTqsXmFlsfiPS+ZPDat6mTz2PRpErvHiRm/WTx2PrT0mHcy0OP9vqtsHlt/2Xl8
-        3iTn8W7+W7YAnigum5TUnMyy1CJ9uwSujCUPPrMW3DWqeDZnC2MD4zn1LkZODgkBE4mT0/Yz
-        wtg7jr5kBrFZBFQkeg52gMXZBNQlbtz4CRYXEVCUOLT/HlicWeAKi8TXeXwgtrBAjMSJLZ+Z
-        QGxeAQuJowuvsXYxcnEICUxllLjRfRsqIShxcuYTFohmdYk/8y4BDeUAsqUllv/jgAjLSzRv
-        nQ22i1PATmLu1stgraICyhIHth1nApkpIdDPLrFzRxPU0ZISB1fcYJnAKDgLyYpZSFbMQlgx
-        C8mKBYwsqxiFMvPKchMzc0z0MirzMiv0kvNzNzECY3BZ7Z/oHYyfLgQfYhTgYFTi4W04fD5F
-        iDWxrLgy9xCjBAezkgjvvCdAId6UxMqq1KL8+KLSnNTiQ4zSHCxK4rxG38pThATSE0tSs1NT
-        C1KLYLJMHJxSDYyFVi991AqTE8qaTz3au46xec0UsQs+zxkdDKuWJ6rk903Y+7Jd5lrdxFPP
-        VS60P3Rcv2779zd/0tex7/u2R87V7y7DzhMT17T0v1E+xDlzzsdeVwM/hnnv7Q5eaPlhV635
-        af7RmVn9j77s4LYutXyqNfOa5V12/ZAypll3Nqr4roufIlWo72alxFKckWioxVxUnAgAGiuj
-        aL0CAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIIsWRmVeSWpSXmKPExsXC5WfdrLvU50KKwYRb5hZz1q9hs3ixoZ3R
-        4uv6X8wWTz/1sVgcnnuS1eLyrjlsFvfW/Ge1OL9rLavFjqX7mCyu73rIaHG89wCTxe8fQNk5
-        U6wsTs6azOLA57FgU6nH5hVaHov3vGTy2LSqk81j06dJ7B4nZvxm8dj50NJj3slAj/f7rrJ5
-        LH7xgclj6y87j8+b5DzezX/LFsAbxWWTkpqTWZZapG+XwJWx5MFn1oK7RhXP5mxhbGA8p97F
-        yMkhIWAisePoS2YQm0VARaLnYAcjiM0moC5x48ZPsLiIgKLEof33wOLMAldYJL7O4wOxhQVi
-        JE5s+cwEYvMKWEgcXXiNtYuRi0NIYCqjxI3u21AJQYmTM5+wQDSrS/yZdwloKAeQLS2x/B8H
-        RFheonnrbLBdnAJ2EnO3XgZrFRVQljiw7TjTBEa+WUgmzUIyaRbCpFlIJi1gZFnFKJKZV5ab
-        mJljqlecnVGZl1mhl5yfu4kRGFHLav9M3MH45bL7IUYBDkYlHt6Gw+dThFgTy4orcw8xSnAw
-        K4nwznsCFOJNSaysSi3Kjy8qzUktPsQozcGiJM7rFZ6aICSQnliSmp2aWpBaBJNl4uCUamCU
-        yZobsHP/wS2JZzh1DO/cf7TdQMFSVfNBd5P5pV8z2uc/uGitvLJjiqS8LRdrsdEBiRma3HJu
-        d15t/VvNsGLpzaxN16wv9t5+l6++f1GSvRr3+y23ateJP+08tqQn7Lm6SaGplp2/eQPnIblT
-        gkLbLn798rV0fTNnuRTrScU5k/Ot1K/+0HRTYinOSDTUYi4qTgQAGQvBOKQCAAA=
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.132.123]
+X-ClientProxiedBy: RTEXH36505.realtek.com.tw (172.21.6.25) To
+ RTEXMBS03.realtek.com.tw (172.21.6.96)
+X-KSE-ServerInfo: RTEXMBS03.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 05:32:30PM +0000, Nadav Amit wrote:
-> > On Aug 3, 2023, at 11:18 PM, Byungchul Park <byungchul@sk.com> wrote:
-> > 
-> > Implementation of CONFIG_MIGRC that stands for 'Migration Read Copy'.
-> > 
-> > We always face the migration overhead at either promotion or demotion,
-> > while working with tiered memory e.g. CXL memory and found out TLB
-> > shootdown is a quite big one that is needed to get rid of if possible.
-> > 
-> > Fortunately, TLB flush can be defered or even skipped if both source and
-> > destination of folios during migration are kept until all TLB flushes
-> > required will have been done, of course, only if the target PTE entries
-> > have read only permission, more precisely speaking, don't have write
-> > permission. Otherwise, no doubt the folio might get messed up.
-> > 
-> > To achieve that:
-> > 
-> >   1. For the folios that have only non-writable TLB entries, prevent
-> >      TLB flush by keeping both source and destination of folios during
-> >      migration, which will be handled later at a better time.
-> > 
-> >   2. When any non-writable TLB entry changes to writable e.g. through
-> >      fault handler, give up CONFIG_MIGRC mechanism so as to perform
-> >      TLB flush required right away.
-> > 
-> >   3. TLB flushes can be skipped if all TLB flushes required to free the
-> >      duplicated folios have been done by any reason, which doesn't have
-> >      to be done from migrations.
-> > 
-> >   4. Adjust watermark check routine, __zone_watermark_ok(), with the
-> >      number of duplicated folios because those folios can be freed
-> >      and obtained right away through appropreate TLB flushes.
-> > 
-> >   5. Perform TLB flushes and free the duplicated folios pending the
-> >      flushes if page allocation routine is in trouble due to memory
-> >      pressure, even more aggresively for high order allocation.
-> 
-> So I think that what you want to do may be possible, but I think it worth
-> checking once an RFC that can be reviewed is posted. The complexity and
-> overheads would then need to be evaluated.
-> 
-> The patch in its current form, I am afraid, is very very hard to review.
-> It is way too big and is missing comments. Having CONFIG_MIGRC makes no
+From: Max Chou <max.chou@realtek.com>
 
-Sorry for that. I will split this patch set into more pieces and try to
-add sufficient comments, and then will repost it in the next spin.
+In the commit of linux-firmware project, rtl8852cu_fw.bin is updated as
+FW v2 format[1]. Consider the case that if driver did not be updated for
+FW v2 supported[2], it can not use FW v2.
+By Canonical's suggestion, older driver should be able to load FW v1,
+so rtl8852cu_fw.bin will be revert to the previous commit as FW v1 and
+add rtl8852cu_fw_v2.bin as FW v2. This item will be started on
+linux-firmware project.
 
-> sense (I guess it is intended to be a “chicken-bit”). Variable and
+In this commit, the driver prefers to load FW v2 if available. Fallback to
+FW v1 otherwise.
 
-Exactly.
+Note that the driver has supported to extract the data for v1 and v2
+since the commit[1].
+The previous FW format of RTL8852C is v1. After the commit[2], the FW
+format was changed to v2. Only RTL8852C suffered the different FW formats,
+so we will use rtl8852cu_fw.bin for the original commit as FW v1 and
+rtl8852cu_fw_v2.bin for the future maintained as FW v2. Other Realtek
+chips will not been impacted by this patch.
 
-> function names are not informative. The memory barriers are handle
+To do on linux-firmware project after this commit.
+1. revert '55e7448533e7 ("rtl_bt: Update RTL8852C BT USB firmware
+   to 0x040D_7225")'
+   => rtl_bt/rtl8852cu_fw.bin: FW v1 (stay at ver. 0xD7B8_FABF)
+2. Add a new commit for rtl8852cu_fw_v2.bin
+   =>rtl_bt/rtl8852cu_fw_v2.bin: FW v2 (to be maintained)
 
-Yeah, 'naming' is the hardest one to do. Lemme try to rename those.
+Reference:
+[1]'9a24ce5e29b1 ("Bluetooth: btrtl: Firmware format v2 support")'
+[2]'55e7448533e7 ("rtl_bt: Update RTL8852C BT USB firmware
+    to 0x040D_7225")'
 
-> improperly (please check again the smp_mb__after_atomic() rules).
+Fixes: '9a24ce5e29b ("Bluetooth: btrtl: Firmware format v2 support")'
+Suggested-by: Juerg Haefliger <juerg.haefliger@canonical.com>
+Tested-by: Hilda Wu <hildawu@realtek.com>
+Signed-off-by: Max Chou <max.chou@realtek.com>
 
-Thank you. I meant to put a smp_mb() along with atomic_read() after
-that, between reading migrc_gen and TLB flush. I will check it more.
+---
+Changes in v2:
+- Fix commit log for CheckPatch FAIL
 
-> Actually, when it comes to concurrency, there are many things I did not
-> understand from a glance at the code when it comes to concurrency: the
-> use of llist_add when (I think?) the llist is not shared (I think?); the
+Changes in v2:
+- Tuning the code for more readable. Thanks Juerg!
+- Modify the commit log.
+---
+ drivers/bluetooth/btrtl.c | 70 +++++++++++++++++++++++++--------------
+ 1 file changed, 45 insertions(+), 25 deletions(-)
 
-A llist isolated for handling TLB flush and freeing folios is a stack
-variable so it's not shared. However, there is another type of llist
-that is a global llist so as to be shared, that is for collecting
-all the requests in the system.
+diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+index ddae6524106d..84c2c2e1122f 100644
+--- a/drivers/bluetooth/btrtl.c
++++ b/drivers/bluetooth/btrtl.c
+@@ -104,7 +104,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8723A, 0xb, 0x6, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = false,
+-	  .fw_name = "rtl_bt/rtl8723a_fw.bin",
++	  .fw_name = "rtl_bt/rtl8723a_fw",
+ 	  .cfg_name = NULL,
+ 	  .hw_info = "rtl8723au" },
+ 
+@@ -112,7 +112,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb, 0x6, HCI_UART),
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723bs_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723bs_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723bs_config",
+ 	  .hw_info  = "rtl8723bs" },
+ 
+@@ -120,7 +120,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb, 0x6, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723b_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723b_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723b_config",
+ 	  .hw_info  = "rtl8723bu" },
+ 
+@@ -132,7 +132,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .hci_bus = HCI_UART,
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723cs_cg_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723cs_cg_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723cs_cg_config",
+ 	  .hw_info  = "rtl8723cs-cg" },
+ 
+@@ -144,7 +144,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .hci_bus = HCI_UART,
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723cs_vf_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723cs_vf_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723cs_vf_config",
+ 	  .hw_info  = "rtl8723cs-vf" },
+ 
+@@ -156,7 +156,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .hci_bus = HCI_UART,
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723cs_xx_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723cs_xx_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723cs_xx_config",
+ 	  .hw_info  = "rtl8723cs" },
+ 
+@@ -164,7 +164,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd, 0x8, HCI_USB),
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723d_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723d_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723d_config",
+ 	  .hw_info  = "rtl8723du" },
+ 
+@@ -172,7 +172,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd, 0x8, HCI_UART),
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723ds_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723ds_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723ds_config",
+ 	  .hw_info  = "rtl8723ds" },
+ 
+@@ -180,7 +180,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8821A, 0xa, 0x6, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8821a_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8821a_fw",
+ 	  .cfg_name = "rtl_bt/rtl8821a_config",
+ 	  .hw_info  = "rtl8821au" },
+ 
+@@ -189,7 +189,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8821c_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8821c_fw",
+ 	  .cfg_name = "rtl_bt/rtl8821c_config",
+ 	  .hw_info  = "rtl8821cu" },
+ 
+@@ -198,7 +198,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8821cs_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8821cs_fw",
+ 	  .cfg_name = "rtl_bt/rtl8821cs_config",
+ 	  .hw_info  = "rtl8821cs" },
+ 
+@@ -206,7 +206,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8761A, 0xa, 0x6, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8761a_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8761a_fw",
+ 	  .cfg_name = "rtl_bt/rtl8761a_config",
+ 	  .hw_info  = "rtl8761au" },
+ 
+@@ -215,7 +215,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8761b_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8761b_fw",
+ 	  .cfg_name = "rtl_bt/rtl8761b_config",
+ 	  .hw_info  = "rtl8761btv" },
+ 
+@@ -223,7 +223,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8761A, 0xb, 0xa, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8761bu_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8761bu_fw",
+ 	  .cfg_name = "rtl_bt/rtl8761bu_config",
+ 	  .hw_info  = "rtl8761bu" },
+ 
+@@ -232,7 +232,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8822cs_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8822cs_fw",
+ 	  .cfg_name = "rtl_bt/rtl8822cs_config",
+ 	  .hw_info  = "rtl8822cs" },
+ 
+@@ -241,7 +241,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8822cs_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8822cs_fw",
+ 	  .cfg_name = "rtl_bt/rtl8822cs_config",
+ 	  .hw_info  = "rtl8822cs" },
+ 
+@@ -250,7 +250,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8822cu_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8822cu_fw",
+ 	  .cfg_name = "rtl_bt/rtl8822cu_config",
+ 	  .hw_info  = "rtl8822cu" },
+ 
+@@ -259,7 +259,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8822b_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8822b_fw",
+ 	  .cfg_name = "rtl_bt/rtl8822b_config",
+ 	  .hw_info  = "rtl8822bu" },
+ 
+@@ -268,7 +268,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8852au_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8852au_fw",
+ 	  .cfg_name = "rtl_bt/rtl8852au_config",
+ 	  .hw_info  = "rtl8852au" },
+ 
+@@ -277,7 +277,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8852bs_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8852bs_fw",
+ 	  .cfg_name = "rtl_bt/rtl8852bs_config",
+ 	  .hw_info  = "rtl8852bs" },
+ 
+@@ -286,7 +286,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8852bu_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8852bu_fw",
+ 	  .cfg_name = "rtl_bt/rtl8852bu_config",
+ 	  .hw_info  = "rtl8852bu" },
+ 
+@@ -295,7 +295,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8852cu_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8852cu_fw",
+ 	  .cfg_name = "rtl_bt/rtl8852cu_config",
+ 	  .hw_info  = "rtl8852cu" },
+ 
+@@ -304,7 +304,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = false,
+-	  .fw_name  = "rtl_bt/rtl8851bu_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8851bu_fw",
+ 	  .cfg_name = "rtl_bt/rtl8851bu_config",
+ 	  .hw_info  = "rtl8851bu" },
+ 	};
+@@ -1045,6 +1045,7 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
+ 	struct sk_buff *skb;
+ 	struct hci_rp_read_local_version *resp;
+ 	struct hci_command_hdr *cmd;
++	char fw_name[40];
+ 	char cfg_name[40];
+ 	u16 hci_rev, lmp_subver;
+ 	u8 hci_ver, lmp_ver, chip_type = 0;
+@@ -1154,8 +1155,26 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
+ 			goto err_free;
+ 	}
+ 
+-	btrtl_dev->fw_len = rtl_load_file(hdev, btrtl_dev->ic_info->fw_name,
+-					  &btrtl_dev->fw_data);
++	if (!btrtl_dev->ic_info->fw_name) {
++		ret = -ENOMEM;
++		goto err_free;
++	}
++
++	btrtl_dev->fw_len = -EIO;
++	if (lmp_subver == RTL_ROM_LMP_8852A && hci_rev == 0x000c) {
++		snprintf(fw_name, sizeof(fw_name), "%s_v2.bin",
++				btrtl_dev->ic_info->fw_name);
++		btrtl_dev->fw_len = rtl_load_file(hdev, fw_name,
++				&btrtl_dev->fw_data);
++	}
++
++	if (btrtl_dev->fw_len < 0) {
++		snprintf(fw_name, sizeof(fw_name), "%s.bin",
++				btrtl_dev->ic_info->fw_name);
++		btrtl_dev->fw_len = rtl_load_file(hdev, fw_name,
++				&btrtl_dev->fw_data);
++	}
++
+ 	if (btrtl_dev->fw_len < 0) {
+ 		rtl_dev_err(hdev, "firmware file %s not found",
+ 			    btrtl_dev->ic_info->fw_name);
+@@ -1491,4 +1510,5 @@ MODULE_FIRMWARE("rtl_bt/rtl8852bs_config.bin");
+ MODULE_FIRMWARE("rtl_bt/rtl8852bu_fw.bin");
+ MODULE_FIRMWARE("rtl_bt/rtl8852bu_config.bin");
+ MODULE_FIRMWARE("rtl_bt/rtl8852cu_fw.bin");
++MODULE_FIRMWARE("rtl_bt/rtl8852cu_fw_v2.bin");
+ MODULE_FIRMWARE("rtl_bt/rtl8852cu_config.bin");
+-- 
+2.34.1
 
-> use of WRITE_ONCE() for synchronization; migrc_gen scheme (and BTW, since
-> such a counter might overflow it should be atomic64).
-
-Sure. It would overflow but it's not a big problem because we can
-compare between the generation numbers with '(int)(a - b) < 0' trick
-unless more than the MAX_INT/2 numbers of requests happen at the same
-time. I assumed it's barely gonna happen.
-
-> But much more importantly, going up one level, there are several issues
-> that should be addressed/considered/discussed:
-> 
-> a. It seems to me that when a new PTE is established (e.g., following
->    an mmap()), and there are pending deferred flushes, a full TLB flush
->    would also be required. So your point (2) would need to be extended.
-
-It has nothing to do with tiering migration. So I think It would work as
-it was with the original code, say, it would perform TLB flush needed
-for the PTE change. I don't think CONFIG_MIGRC needs to consider the
-case. Could you explain what would be a probelm in this case in more
-detail?
-
-> b. When a reference to the page is taken in other means (get_user_pages()),
->    a TLB flush might also be needed.
-
-All TLB flush would be performed as it was, except TLB flushes at
-tiering migration where CONFIG_MIGRC works. I might miss things.. Please
-explain in more detail what you think is a problem.
-
-> c. If we start deferring TLB flushes for a long time, and throughout that
->    time many events (TLB flush, page-faults, etc.) might require a *full*
->    TLB flush, that might have negative impact.
-
-I let it work as it was, except tiering migration. It'd help me get you
-if you describe in more detail. I might need to make this patch set more
-readable first tho. However, I'd like to understand what you are
-concerning exactly so that I can answer like either 'you don't have to
-worry about that because blur blur' or 'Oh my I will fix it thank you'.
-
-> d. The interactions with other mechanisms that inspect the PTE to make
->    decisions and might not take into account the fact a TLB flush was not
->    done need to be considered. The interaction with mmu_gather has been
->    taken for, but there is a question of whether something here might
->    break it.  
-
-I also think I need to be more careful when it comes to mmu_gather
-things. My opinion on this is, it'd be okay becasue CONFIG_MIGRC only
-works with tiering migration and let other pathes where TLB flush is
-required go as it was. Howerver, it definitely should be considered if
-those routines that require TLB flush during tiering migration. Am I
-missing something?
-
-> Now there are many things in the patch that need to be addressed and are
-> unacceptable in their current form (e.g., migrc_try_flush() flushing
-> potentially twice the same cores), but reviewing this patch in its
-
-No. It doens't flush twice cuz it keeps whether each CPU has been TLB
-flushed that was requested, or not ;)
-
-> current form is too tedious for me.
-
-I will reform it.
-
-> [ BTW: for future versions, consider cc'ing Peter Zijlstra, Andy
->   Lutomirski and Dave Hansen. ]
-
-I will.
-
-Appreciate all your comments!
-
-	Byungchul
