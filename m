@@ -2,266 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 072C1772E7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 21:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DC6772E80
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 21:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbjHGTIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 15:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48876 "EHLO
+        id S230397AbjHGTIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 15:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231311AbjHGTH7 (ORCPT
+        with ESMTP id S229441AbjHGTIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 15:07:59 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4F3B810F7
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 12:07:57 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD7E71FB;
-        Mon,  7 Aug 2023 12:08:39 -0700 (PDT)
-Received: from [10.57.77.247] (unknown [10.57.77.247])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 529C13F64C;
-        Mon,  7 Aug 2023 12:07:54 -0700 (PDT)
-Message-ID: <433fb8de-f5c0-d150-ac7b-5d73e9958e02@arm.com>
-Date:   Mon, 7 Aug 2023 20:07:52 +0100
+        Mon, 7 Aug 2023 15:08:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5A61701;
+        Mon,  7 Aug 2023 12:08:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A800762166;
+        Mon,  7 Aug 2023 19:08:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72776C433C8;
+        Mon,  7 Aug 2023 19:08:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691435328;
+        bh=9hJaF99KfuyO0MAbT/sVT9KSXAiWpGzLkHZqHLnTTH8=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=L9iynZphM10jPqIO2cUXBMFJW+En1wuWXz5+RESQbepD588n08srg7U6xoKOeA407
+         h/9Kveuyo2HHsU4GP8SmhH33D/zxQ3UWnjPdFUztEizsMX6+LtPaCVxrDUKIHa4soc
+         p+WWhiBXHU3ITlQtUJon5c767iwZjSks2427je+uKJoYraCFIu2z6AXpLErtpzLgaV
+         +4PGy6kKvIsPZo+Oiv7LG/JTub3Z9LG4SY3qO1oiuuY8kPzDUlJD6rX3UThR0CjEOk
+         S4BlsdF/GGEtcvQsK9r8Thf/1tN+U2UhLL/wTmf1cc+NP48sNyyNuC9u3ggXIkRWCB
+         qlLenWrh97b1w==
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>
+Cc:     Rajendra Nayak <quic_rjendra@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-msm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+In-Reply-To: <20230801095702.2891127-1-abel.vesa@linaro.org>
+References: <20230801095702.2891127-1-abel.vesa@linaro.org>
+Subject: Re: [PATCH] regulator: qcom-rpmh: Fix LDO 12 regulator for PM8550
+Message-Id: <169143532617.213897.12646437489915335366.b4-ty@kernel.org>
+Date:   Mon, 07 Aug 2023 20:08:46 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 2/5] mm: LARGE_ANON_FOLIO for improved performance
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230726095146.2826796-1-ryan.roberts@arm.com>
- <20230726095146.2826796-3-ryan.roberts@arm.com>
- <CAOUHufbdbeFhpXw_w4z62=PwCjCa-yuvE6Brhpd3AOxiswa_2Q@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAOUHufbdbeFhpXw_w4z62=PwCjCa-yuvE6Brhpd3AOxiswa_2Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/08/2023 06:24, Yu Zhao wrote:
-> On Wed, Jul 26, 2023 at 3:52 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> Introduce LARGE_ANON_FOLIO feature, which allows anonymous memory to be
->> allocated in large folios of a determined order. All pages of the large
->> folio are pte-mapped during the same page fault, significantly reducing
->> the number of page faults. The number of per-page operations (e.g. ref
->> counting, rmap management lru list management) are also significantly
->> reduced since those ops now become per-folio.
->>
->> The new behaviour is hidden behind the new LARGE_ANON_FOLIO Kconfig,
->> which defaults to disabled for now; The long term aim is for this to
->> defaut to enabled, but there are some risks around internal
->> fragmentation that need to be better understood first.
->>
->> When enabled, the folio order is determined as such: For a vma, process
->> or system that has explicitly disabled THP, we continue to allocate
->> order-0. THP is most likely disabled to avoid any possible internal
->> fragmentation so we honour that request.
->>
->> Otherwise, the return value of arch_wants_pte_order() is used. For vmas
->> that have not explicitly opted-in to use transparent hugepages (e.g.
->> where thp=madvise and the vma does not have MADV_HUGEPAGE), then
->> arch_wants_pte_order() is limited to 64K (or PAGE_SIZE, whichever is
->> bigger). This allows for a performance boost without requiring any
->> explicit opt-in from the workload while limitting internal
->> fragmentation.
->>
->> If the preferred order can't be used (e.g. because the folio would
->> breach the bounds of the vma, or because ptes in the region are already
->> mapped) then we fall back to a suitable lower order; first
->> PAGE_ALLOC_COSTLY_ORDER, then order-0.
->>
->> arch_wants_pte_order() can be overridden by the architecture if desired.
->> Some architectures (e.g. arm64) can coalsece TLB entries if a contiguous
->> set of ptes map physically contigious, naturally aligned memory, so this
->> mechanism allows the architecture to optimize as required.
->>
->> Here we add the default implementation of arch_wants_pte_order(), used
->> when the architecture does not define it, which returns -1, implying
->> that the HW has no preference. In this case, mm will choose it's own
->> default order.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>  include/linux/pgtable.h |  13 ++++
->>  mm/Kconfig              |  10 +++
->>  mm/memory.c             | 166 ++++++++++++++++++++++++++++++++++++----
->>  3 files changed, 172 insertions(+), 17 deletions(-)
->>
->> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->> index 5063b482e34f..2a1d83775837 100644
->> --- a/include/linux/pgtable.h
->> +++ b/include/linux/pgtable.h
->> @@ -313,6 +313,19 @@ static inline bool arch_has_hw_pte_young(void)
->>  }
->>  #endif
->>
->> +#ifndef arch_wants_pte_order
->> +/*
->> + * Returns preferred folio order for pte-mapped memory. Must be in range [0,
->> + * PMD_SHIFT-PAGE_SHIFT) and must not be order-1 since THP requires large folios
->> + * to be at least order-2. Negative value implies that the HW has no preference
->> + * and mm will choose it's own default order.
->> + */
->> +static inline int arch_wants_pte_order(void)
->> +{
->> +       return -1;
->> +}
->> +#endif
->> +
->>  #ifndef __HAVE_ARCH_PTEP_GET_AND_CLEAR
->>  static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
->>                                        unsigned long address,
->> diff --git a/mm/Kconfig b/mm/Kconfig
->> index 09130434e30d..fa61ea160447 100644
->> --- a/mm/Kconfig
->> +++ b/mm/Kconfig
->> @@ -1238,4 +1238,14 @@ config LOCK_MM_AND_FIND_VMA
->>
->>  source "mm/damon/Kconfig"
->>
->> +config LARGE_ANON_FOLIO
->> +       bool "Allocate large folios for anonymous memory"
->> +       depends on TRANSPARENT_HUGEPAGE
->> +       default n
->> +       help
->> +         Use large (bigger than order-0) folios to back anonymous memory where
->> +         possible, even for pte-mapped memory. This reduces the number of page
->> +         faults, as well as other per-page overheads to improve performance for
->> +         many workloads.
->> +
->>  endmenu
->> diff --git a/mm/memory.c b/mm/memory.c
->> index 01f39e8144ef..64c3f242c49a 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -4050,6 +4050,127 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>         return ret;
->>  }
->>
->> +static bool vmf_pte_range_changed(struct vm_fault *vmf, int nr_pages)
->> +{
->> +       int i;
->> +
->> +       if (nr_pages == 1)
->> +               return vmf_pte_changed(vmf);
->> +
->> +       for (i = 0; i < nr_pages; i++) {
->> +               if (!pte_none(ptep_get_lockless(vmf->pte + i)))
->> +                       return true;
->> +       }
->> +
->> +       return false;
->> +}
->> +
->> +#ifdef CONFIG_LARGE_ANON_FOLIO
->> +#define ANON_FOLIO_MAX_ORDER_UNHINTED \
->> +               (ilog2(max_t(unsigned long, SZ_64K, PAGE_SIZE)) - PAGE_SHIFT)
->> +
->> +static int anon_folio_order(struct vm_area_struct *vma)
->> +{
->> +       int order;
->> +
->> +       /*
->> +        * If THP is explicitly disabled for either the vma, the process or the
->> +        * system, then this is very likely intended to limit internal
->> +        * fragmentation; in this case, don't attempt to allocate a large
->> +        * anonymous folio.
->> +        *
->> +        * Else, if the vma is eligible for thp, allocate a large folio of the
->> +        * size preferred by the arch. Or if the arch requested a very small
->> +        * size or didn't request a size, then use PAGE_ALLOC_COSTLY_ORDER,
->> +        * which still meets the arch's requirements but means we still take
->> +        * advantage of SW optimizations (e.g. fewer page faults).
->> +        *
->> +        * Finally if thp is enabled but the vma isn't eligible, take the
->> +        * arch-preferred size and limit it to ANON_FOLIO_MAX_ORDER_UNHINTED.
->> +        * This ensures workloads that have not explicitly opted-in take benefit
->> +        * while capping the potential for internal fragmentation.
->> +        */
->> +
->> +       if ((vma->vm_flags & VM_NOHUGEPAGE) ||
->> +           test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags) ||
->> +           !hugepage_flags_enabled())
->> +               order = 0;
->> +       else {
->> +               order = max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_ORDER);
->> +
->> +               if (!hugepage_vma_check(vma, vma->vm_flags, false, true, true))
->> +                       order = min(order, ANON_FOLIO_MAX_ORDER_UNHINTED);
->> +       }
->> +
->> +       return order;
->> +}
->> +
->> +static int alloc_anon_folio(struct vm_fault *vmf, struct folio **folio)
->> +{
->> +       int i;
->> +       gfp_t gfp;
->> +       pte_t *pte;
->> +       unsigned long addr;
->> +       struct vm_area_struct *vma = vmf->vma;
->> +       int prefer = anon_folio_order(vma);
->> +       int orders[] = {
->> +               prefer,
->> +               prefer > PAGE_ALLOC_COSTLY_ORDER ? PAGE_ALLOC_COSTLY_ORDER : 0,
->> +               0,
->> +       };
->> +
->> +       *folio = NULL;
->> +
->> +       if (vmf_orig_pte_uffd_wp(vmf))
->> +               goto fallback;
+On Tue, 01 Aug 2023 12:57:02 +0300, Abel Vesa wrote:
+> The LDO 12 is NLDO 515 low voltage type, so fix accordingly.
 > 
-> Per the discussion, we need to check hugepage_vma_check() for
-> correctness of VM LM. I'd just check it here and fall back to order 0
-> if that helper returns false.
+> 
 
-I'm not sure if either you haven't noticed the logic in anon_folio_order()
-above, or whether you are making this suggestion because you disagree with the
-subtle difference in my logic?
+Applied to
 
-My logic is deliberately not calling hugepage_vma_check() because that would
-return false for the thp=madvise,mmap=unhinted case, whereas the policy I'm
-implementing wants to apply LAF in that case.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
+Thanks!
 
-My intended policy:
+[1/1] regulator: qcom-rpmh: Fix LDO 12 regulator for PM8550
+      commit: 7cdf55462c5533a1c78ae13ab8563558e30e4130
 
-                | never     | madvise   | always
-----------------|-----------|-----------|-----------
-no hint         | S         | LAF>S     | THP>LAF>S
-MADV_HUGEPAGE   | S         | THP>LAF>S | THP>LAF>S
-MADV_NOHUGEPAGE | S         | S         | S
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-What your suggestion would give:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-                | never     | madvise   | always
-----------------|-----------|-----------|-----------
-no hint         | S         | S         | THP>LAF>S
-MADV_HUGEPAGE   | S         | THP>LAF>S | THP>LAF>S
-MADV_NOHUGEPAGE | S         | S         | S
-
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Ryan
+Mark
 
