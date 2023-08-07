@@ -2,55 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF6B771CF4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADFFE771CFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbjHGJPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50680 "EHLO
+        id S231407AbjHGJSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 05:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbjHGJPV (ORCPT
+        with ESMTP id S229496AbjHGJSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:15:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8722E68;
-        Mon,  7 Aug 2023 02:15:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C8CE616EA;
-        Mon,  7 Aug 2023 09:15:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60DC2C433C8;
-        Mon,  7 Aug 2023 09:15:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691399719;
-        bh=WxAh8iW+258bwzaDgHMpc14XPRfhm/gtCpiInP6uO78=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WQ5kz3l1kCG1seHKBJtn2Nvn6Jl47GPL2qmAppv0jy4/SCW8whxLwLLVphOO84sBD
-         zuXgb/eoKwxiv1AyShNwmy1kf8bmFSrETaAgzyJ+7d4guemGZtAFogE1BqVyvkIE/2
-         hhLQk0XmGL1uF2N7kHGUnqViaKBB2LiDhnXE/1/w=
-Date:   Mon, 7 Aug 2023 11:15:17 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc:     linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russell.h.weight@intel.com>,
-        Tianfei Zhang <tianfei.zhang@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
-        Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH v3 4.14 1/1] test_firmware: fix the memory leaks with the
- reqs buffer
-Message-ID: <2023080705-poet-nickname-5e08@gregkh>
-References: <20230804170017.92671-1-mirsad.todorovac@alu.unizg.hr>
+        Mon, 7 Aug 2023 05:18:02 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E2AE68
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:18:00 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-31771a876b5so3184437f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 02:18:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691399879; x=1692004679;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pVzTFSX+f3NLp8W+oubkEcGfLvriaLn/mzk8yERB4EQ=;
+        b=qJNkHMMX6yWfZ0+pTVtKomPhic8oIkVTU4BgI6+YGQ09zaqOV+wKh9W0VMaDF5vGVK
+         unpdERvcAcVRzv4T+5eC6utzpr7Tujtt4DxNGg5+D0zups3hSP94fD4C6Uq7d+QA/UfX
+         Sixs7SltrhRg3Z2s4cDrRNFbVUvMUojpSzMGxhDPUhF1dzNE6PeVKZRcXXA09Qr/NMCc
+         4/ENs3n9eQZK25cJJHF3O3p4hP5uyg6YXkPYotQ85mlUAB18yaC4W/dV7RuK2jvuNwbF
+         AyG5SBgOF2lJne/Hu/DDneyX2OuAtEZipBpoT1RUjDbrGTA/GusqpUqTCXE1vBKusIgW
+         MYzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691399879; x=1692004679;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pVzTFSX+f3NLp8W+oubkEcGfLvriaLn/mzk8yERB4EQ=;
+        b=fLuSDLWCAjW9o7bwRIifesKNnMjA/FowYZdbUi5/2OxIrGApKEqOF8qMtu+il7XtxM
+         owgclchA9MmQUBkadp2PYXPj02XDS6MhFj5eGLDxo1YoSrIZ4AIS9IzbSfg9SBi9jWMa
+         t/wHyIm5pSTPbqgcaTpPbNvdsrds9AwfjBQwxTUZETHmre28/LDNZWw0f+jFvuWPsgLb
+         pFr04HIcQw6cvIyHhMEemvzfm5flWS8nbyp44vJsH3Z90jwvlmDxVtSwFB6zbfkfP6pX
+         lHhgxFfM8UIq314FDolVjL2PpWzOwxH4km5PxfBx3uVsnX/yUkdZJPah4PESWpabfk31
+         mj/g==
+X-Gm-Message-State: AOJu0Yxo55IzG/fzq5Q75iq815SL58OEI347uchMleKWYEDJromgHw3S
+        JPe+I4ZG/7+o6rhOl1knXxoT+g==
+X-Google-Smtp-Source: AGHT+IGt4KGgRS1McoIAI5KnJK92YrcRCVd7O+/H015bztf8+4T/Ho4NkPj03Y5Li3pMLxhNwVc9aw==
+X-Received: by 2002:a5d:4044:0:b0:314:a3f:9c17 with SMTP id w4-20020a5d4044000000b003140a3f9c17mr5695333wrp.42.1691399879376;
+        Mon, 07 Aug 2023 02:17:59 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id r15-20020adfdc8f000000b00317909f9985sm9893936wrj.113.2023.08.07.02.17.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 02:17:58 -0700 (PDT)
+Message-ID: <f0744dfd-00fe-2f58-065e-6828b6bd3450@linaro.org>
+Date:   Mon, 7 Aug 2023 11:17:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804170017.92671-1-mirsad.todorovac@alu.unizg.hr>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 2/5] ASoC: dt-bindings: snps,designware-i2s: Add
+ StarFive JH7110 SoC support
+Content-Language: en-US
+To:     Xingyu Wu <xingyu.wu@starfivetech.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc:     Jose Abreu <joabreu@synopsys.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Walker Chen <walker.chen@starfivetech.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-riscv@lists.infradead.org
+References: <20230802084301.134122-1-xingyu.wu@starfivetech.com>
+ <20230802084301.134122-3-xingyu.wu@starfivetech.com>
+ <37a636dd-fbd8-d475-8814-e0cc6d5cc812@linaro.org>
+ <12a9bfda-9c9f-6baf-3e5f-ce7cc7d79aee@starfivetech.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <12a9bfda-9c9f-6baf-3e5f-ce7cc7d79aee@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,37 +92,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 07:00:18PM +0200, Mirsad Todorovac wrote:
-> [ commit be37bed754ed90b2655382f93f9724b3c1aae847 upstream ]
+On 07/08/2023 11:03, Xingyu Wu wrote:
+>>>> +  - if:
+>>> +      properties:
+>>> +        compatible:
+>>> +          contains:
+>>> +            const: snps,designware-i2s
+>>> +    then:
+>>> +      properties:
+>>> +        clocks:
+>>> +          maxItems: 1
+>>> +        clock-names:
+>>> +          maxItems: 1
+>>> +        resets:
+>>> +          maxItems: 1
+>>> +    else:
+>>> +      properties:
+>>> +        resets:
+>>> +          minItems: 2
 > 
-> Dan Carpenter spotted that test_fw_config->reqs will be leaked if
-> trigger_batched_requests_store() is called two or more times.
-> The same appears with trigger_batched_requests_async_store().
-> 
-> This bug wasn't triggered by the tests, but observed by Dan's visual
-> inspection of the code.
-> 
-> The recommended workaround was to return -EBUSY if test_fw_config->reqs
-> is already allocated.
-> 
-> Fixes: c92316bf8e94 ("test_firmware: add batched firmware tests")
-> Cc: Luis Chamberlain <mcgrof@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Russ Weight <russell.h.weight@intel.com>
-> Cc: Tianfei Zhang <tianfei.zhang@intel.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Colin Ian King <colin.i.king@gmail.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Cc: linux-kselftest@vger.kernel.org
-> Cc: stable@vger.kernel.org # v4.14
-> Suggested-by: Dan Carpenter <error27@gmail.com>
-> Suggested-by: Takashi Iwai <tiwai@suse.de>
-> Link: https://lore.kernel.org/r/20230509084746.48259-2-mirsad.todorovac@alu.unizg.hr
-> Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-> 
-> [ This fix is applied against the 4.14 stable branch. There are no changes to the ]
-> [ fix in code when compared to the upstread, only the reformatting for backport.  ]
+> The resets of TX0/TX1/RX on JH7110 SoC are mentioned in 'else' here.
 
-Thanks for all of these, now queued up.
+Ah, its fine. Clocks seem to be also constrained.
 
-greg k-h
+> 
+>>> +  - if:
+>>> +      properties:
+>>> +        compatible:
+>>> +          contains:
+>>> +            const: starfive,jh7110-i2stx0
+>>> +    then:
+>>> +      properties:
+>>> +        clocks:
+>>> +          minItems: 5
+>>
+>> Also maxItems
+> 
+> Will add.
+> 
+>>
+>>> +        clock-names:
+>>> +          minItems: 5
+>>
+>> Also maxItems
+> 
+> Will add.
+> 
+>>
+>> What about resets? 1 or 2 items?
+> 
+> Mentioned it in the 'else'.
+> Or do you mean I should drop the 'else' and add the resets in here?
+> And is the same for TX1 and RX?
+
+It won't be easy to read... probably the binding should be split.
+Anyway, it's fine as is, except the maxItems above.
+
+Best regards,
+Krzysztof
+
