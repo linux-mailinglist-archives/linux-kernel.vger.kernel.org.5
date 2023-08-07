@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A71BD7717AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 03:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFD97717AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 03:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbjHGBHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 21:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
+        id S230335AbjHGBJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 21:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbjHGBHp (ORCPT
+        with ESMTP id S229470AbjHGBJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 21:07:45 -0400
+        Sun, 6 Aug 2023 21:09:26 -0400
 Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E66170A
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 18:07:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B58170C;
+        Sun,  6 Aug 2023 18:09:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
         ; s=bytemarkmx; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:
         Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
         List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=1tuL617+37cRkiGWRH2coKymCeMrUmvDC57ciaxAYQg=; b=r0NT4fx5ws2Hnzm5krr7X+y81F
-        v+JpbR1wF7N/XjzvCRP0695xT1r7A/yhDRpwV4yzAp8HmUbCWjJEe0H5r/EFoQsMe++92LnUmvn5B
-        KnJpm0ILeOFYVKq5EWLzB42OIZ10EnnCj2LJNqPnbDSsAILAvhrUQqe1bvLFR5F1/fxrGbKsLlfat
-        N3hYrfLNij3BgS90iScRrharuWvGTGJaPxa6ROd5676mu6DPwuVPiloOtiZFcOYXKC6GfketVwy7I
-        1+BZoCUyr66ZLZPOAaJJ+mR5XgzcNqCdZ4mOPm4TYVr1pA+MEHWKE0ZQdDBozRg3kSX9fasmQulOz
-        cZrG/B2A==;
+        bh=3cQnbhsnQ/psySJKZ8LSzBEBAHVyqSLhD7MAQscIXuk=; b=Pe+mScr1lihE7/mdIksM2d9nVa
+        2Nocr8ILEV0ebP7NJlyYLv/nQcFQGcRBWpxLFMQIrnhsxtwDW76WFEEqwZu/K32Da3qLA9SfEPYay
+        ygZBdO+mwEd/fBjCLjq7yKUKu9/F+I5njlAqaZhywTLMcvBnArrCm/mMl/CYoYF5g1leGSgWpqFD9
+        5cMYoykIiQrR3J3RpOCEVAD96RxPb2ThO+VHu4X9xnRuVPobUtAlBcLoZD/tr2LBsmm2bvfPRYHTc
+        KWY9DB5lVv6LZ0Eq35VJtga+EvZE7WiZAe+A0aOD/kpIz0fRAc4LzdSJUkcAkHl3KQaY6WCevZYZR
+        XdjgTwMQ==;
 Received: from localhost ([127.0.0.1] helo=dalek.home.treblig.org)
         by mx.treblig.org with esmtp (Exim 4.94.2)
         (envelope-from <linux@treblig.org>)
-        id 1qSoiX-005S6p-3X; Mon, 07 Aug 2023 01:07:28 +0000
+        id 1qSokG-005S7r-Qp; Mon, 07 Aug 2023 01:09:15 +0000
 From:   linux@treblig.org
-To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        sam@ravnborg.org, benh@kernel.crashing.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org, "Dr. David Alan Gilbert" <linux@treblig.org>
-Subject: [PATCH v2] powerpc: Use shared font data
-Date:   Mon,  7 Aug 2023 02:07:21 +0100
-Message-ID: <20230807010721.799613-1-linux@treblig.org>
+To:     davem@davemloft.net, sam@ravnborg.org, benh@kernel.crashing.org,
+        akpm@linux-foundation.org
+Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mpe@ellerman.id.au, glaubitz@physik.fu-berlin.de,
+        "Dr. David Alan Gilbert" <linux@treblig.org>
+Subject: [PATCH v3] sparc: Use shared font data
+Date:   Mon,  7 Aug 2023 02:09:14 +0100
+Message-ID: <20230807010914.799713-1-linux@treblig.org>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -53,7 +54,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Dr. David Alan Gilbert" <linux@treblig.org>
 
-PowerPC has a 'btext' font used for the console which is almost identical
+sparc has a 'btext' font used for the console which is almost identical
 to the shared font_sun8x16, so use it rather than duplicating the data.
 
 They were actually identical until about a decade ago when
@@ -63,67 +64,83 @@ They were actually identical until about a decade ago when
 which changed the | in the shared font to be a solid
 bar rather than a broken bar.  That's the only difference.
 
-This was originally spotted by PMD which noticed that sparc does
+This was originally spotted by PMD which noticed that PPC does
 the same thing with the same data, and they also share a bunch
-of functions to manipulate the data.  I've previously posted a near
-identical patch for sparc.
-
-One difference I notice in PowerPC is that there are a bunch of compile
-options for the .c files for the early code to avoid a bunch of security
-compilation features;  it's not clear to me if this is a problem for
-this font data.
+of functions to manipulate the data.
 
 Tested very lightly with a boot without FS in qemu.
 
-v2
+Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+
+v3
   Added 'select FONT_SUPPORT' (to stop modconfig causing the font to be
    linked into a module rather than the main kernel)
-  Added 'select FONTS' to satisfy requirements in lib/fonts
 
-Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
 ---
- arch/powerpc/Kconfig.debug  |   3 +
- arch/powerpc/kernel/btext.c | 360 +-----------------------------------
- 2 files changed, 9 insertions(+), 354 deletions(-)
+ arch/sparc/Kconfig        |   2 +
+ arch/sparc/kernel/btext.c | 365 +-------------------------------------
+ 2 files changed, 11 insertions(+), 356 deletions(-)
 
-diff --git a/arch/powerpc/Kconfig.debug b/arch/powerpc/Kconfig.debug
-index 2a54fadbeaf51..521c4baf30e88 100644
---- a/arch/powerpc/Kconfig.debug
-+++ b/arch/powerpc/Kconfig.debug
-@@ -147,6 +147,9 @@ config BDI_SWITCH
- config BOOTX_TEXT
- 	bool "Support for early boot text console (BootX or OpenFirmware only)"
- 	depends on PPC_BOOK3S
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index 49849790e66dc..e3ec9f2d7ebd1 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -219,6 +219,8 @@ config EARLYFB
+ 	bool "Support for early boot text console"
+ 	default y
+ 	depends on SPARC64
 +	select FONT_SUN8x16
 +	select FONT_SUPPORT
-+	select FONTS
  	help
- 	  Say Y here to see progress messages from the boot firmware in text
- 	  mode. Requires either BootX or Open Firmware.
-diff --git a/arch/powerpc/kernel/btext.c b/arch/powerpc/kernel/btext.c
-index 19e46fd623b0d..7f63f1cdc6c39 100644
---- a/arch/powerpc/kernel/btext.c
-+++ b/arch/powerpc/kernel/btext.c
+ 	  Say Y here to enable a faster early framebuffer boot console.
+ 
+diff --git a/arch/sparc/kernel/btext.c b/arch/sparc/kernel/btext.c
+index e2d3f0d2971f7..2bf558a0c5680 100644
+--- a/arch/sparc/kernel/btext.c
++++ b/arch/sparc/kernel/btext.c
 @@ -8,6 +8,7 @@
  #include <linux/string.h>
  #include <linux/init.h>
- #include <linux/export.h>
+ #include <linux/console.h>
 +#include <linux/font.h>
- #include <linux/memblock.h>
- #include <linux/pgtable.h>
- #include <linux/of.h>
-@@ -41,10 +42,6 @@ static unsigned char *logicalDisplayBase __force_data;
  
- unsigned long disp_BAT[2] __initdata = {0, 0};
+ #include <asm/btext.h>
+ #include <asm/oplib.h>
+@@ -20,9 +21,9 @@ static void scrollscreen(void);
+ #endif
+ 
+ static void draw_byte(unsigned char c, long locX, long locY);
+-static void draw_byte_32(unsigned char *bits, unsigned int *base, int rb);
+-static void draw_byte_16(unsigned char *bits, unsigned int *base, int rb);
+-static void draw_byte_8(unsigned char *bits, unsigned int *base, int rb);
++static void draw_byte_32(const unsigned char *bits, unsigned int *base, int rb);
++static void draw_byte_16(const unsigned char *bits, unsigned int *base, int rb);
++static void draw_byte_8(const unsigned char *bits, unsigned int *base, int rb);
+ 
+ #define __force_data __section(".data")
+ 
+@@ -36,10 +37,6 @@ static int dispDeviceDepth  __force_data;
+ static int dispDeviceRect[4] __force_data;
+ static unsigned char *dispDeviceBase __force_data;
  
 -#define cmapsz	(16*256)
 -
 -static unsigned char vga_font[cmapsz];
 -
- static int boot_text_mapped __force_data;
+ static int __init btext_initialize(phandle node)
+ {
+ 	unsigned int width, height, depth, pitch;
+@@ -194,7 +191,8 @@ static void btext_drawtext(const char *c, unsigned int len)
+ static void draw_byte(unsigned char c, long locX, long locY)
+ {
+ 	unsigned char *base	= calc_base(locX << 3, locY << 4);
+-	unsigned char *font	= &vga_font[((unsigned int)c) * 16];
++	unsigned int font_index = c * 16;
++	const unsigned char *font	= font_sun_8x16.data + font_index;
+ 	int rb			= dispDeviceRowBytes;
  
- extern void rmci_on(void);
-@@ -407,7 +404,7 @@ static unsigned int expand_bits_16[4] = {
+ 	switch(dispDeviceDepth) {
+@@ -239,7 +237,7 @@ static unsigned int expand_bits_16[4] = {
  };
  
  
@@ -132,37 +149,27 @@ index 19e46fd623b0d..7f63f1cdc6c39 100644
  {
  	int l, bits;
  	int fg = 0xFFFFFFFFUL;
-@@ -428,7 +425,7 @@ static void draw_byte_32(unsigned char *font, unsigned int *base, int rb)
+@@ -260,7 +258,7 @@ static void draw_byte_32(unsigned char *font, unsigned int *base, int rb)
  	}
  }
  
--static inline void draw_byte_16(unsigned char *font, unsigned int *base, int rb)
-+static inline void draw_byte_16(const unsigned char *font, unsigned int *base, int rb)
+-static void draw_byte_16(unsigned char *font, unsigned int *base, int rb)
++static void draw_byte_16(const unsigned char *font, unsigned int *base, int rb)
  {
  	int l, bits;
  	int fg = 0xFFFFFFFFUL;
-@@ -446,7 +443,7 @@ static inline void draw_byte_16(unsigned char *font, unsigned int *base, int rb)
+@@ -278,7 +276,7 @@ static void draw_byte_16(unsigned char *font, unsigned int *base, int rb)
  	}
  }
  
--static inline void draw_byte_8(unsigned char *font, unsigned int *base, int rb)
-+static inline void draw_byte_8(const unsigned char *font, unsigned int *base, int rb)
+-static void draw_byte_8(unsigned char *font, unsigned int *base, int rb)
++static void draw_byte_8(const unsigned char *font, unsigned int *base, int rb)
  {
  	int l, bits;
  	int fg = 0x0F0F0F0FUL;
-@@ -465,7 +462,8 @@ static inline void draw_byte_8(unsigned char *font, unsigned int *base, int rb)
- static noinline void draw_byte(unsigned char c, long locX, long locY)
- {
- 	unsigned char *base	= calc_base(locX << 3, locY << 4);
--	unsigned char *font	= &vga_font[((unsigned int)c) * 16];
-+	unsigned int font_index = c * 16;
-+	const unsigned char *font	= font_sun_8x16.data + font_index;
- 	int rb			= dispDeviceRowBytes;
- 
- 	rmci_maybe_on();
-@@ -583,349 +581,3 @@ void __init udbg_init_btext(void)
- 	 */
- 	udbg_putc = btext_drawchar;
+@@ -326,348 +324,3 @@ int __init btext_find_display(void)
+ 	}
+ 	return ret;
  }
 -
 -static unsigned char vga_font[cmapsz] = {
@@ -509,7 +516,6 @@ index 19e46fd623b0d..7f63f1cdc6c39 100644
 -0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 -0x00, 0x00, 0x00, 0x00,
 -};
--
 -- 
 2.41.0
 
