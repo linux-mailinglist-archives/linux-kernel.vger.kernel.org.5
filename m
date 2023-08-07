@@ -2,320 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 595DC772E65
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 21:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28352772E69
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 21:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjHGTAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 15:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
+        id S230386AbjHGTBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 15:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjHGTAe (ORCPT
+        with ESMTP id S230397AbjHGTBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 15:00:34 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F302F1726
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 12:00:30 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7441E1FB;
-        Mon,  7 Aug 2023 12:01:13 -0700 (PDT)
-Received: from [10.57.77.247] (unknown [10.57.77.247])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2862A3F64C;
-        Mon,  7 Aug 2023 12:00:27 -0700 (PDT)
-Message-ID: <9cd7681c-a54e-c0f4-f97c-eba1ecb661d6@arm.com>
-Date:   Mon, 7 Aug 2023 20:00:25 +0100
+        Mon, 7 Aug 2023 15:01:13 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D9710F6;
+        Mon,  7 Aug 2023 12:01:04 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691434863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PiEO6NIg937sHypTir7yOojP64nd2ALRT50aoFEoOKE=;
+        b=aRMOu91uWxeBHc0c5zj3O7oyeJF6oDdT1EyR5h7WrTTzf+CO+0+TsrPvMMXzzF/c/cAGgT
+        VmDwoBk6Q4ikJaceHZNqt5dEz9Lz2SYkSRh3Cwg4RaUFJfpRWmkBowHcJ6Jbk5kQc/Thsa
+        8x2+ECWWXS9YdJ6EbbLYl3gealZKnFKDb7sgJMktY4PFoBhmOdKSkNcoPQb6XUjV+eZB/I
+        ywjWJGE5JwIU6sfVAGXzZPiEK/YSQFmcKF/K1IhKLVoIxtvOgNqJpc88czhsRl+W9tbNQ4
+        u070GWDsR2iDI1Ba6LQMaD4enUiH422v35w/G+p8etMzxLxiIsTVBXEYMk5pDA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691434863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PiEO6NIg937sHypTir7yOojP64nd2ALRT50aoFEoOKE=;
+        b=A2M+a4twJBCcb93nTtEUneYkth3jS4pDLuUf5S3P3d34tZ3PuyJpRyolmPD5fFxqytuM26
+        NqIIyIvXp0HK2MDQ==
+To:     Peter Zijlstra <peterz@infradead.org>, axboe@kernel.dk
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, dvhart@infradead.org, dave@stgolabs.net,
+        andrealmeid@igalia.com, Andrew Morton <akpm@linux-foundation.org>,
+        urezki@gmail.com, hch@infradead.org, lstoakes@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        malteskarupke@web.de
+Subject: Re: [PATCH  v2 08/14] futex: Add flags2 argument to futex_requeue()
+In-Reply-To: <20230807123323.297438324@infradead.org>
+References: <20230807121843.710612856@infradead.org>
+ <20230807123323.297438324@infradead.org>
+Date:   Mon, 07 Aug 2023 21:01:02 +0200
+Message-ID: <87leemu175.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 2/5] mm: LARGE_ANON_FOLIO for improved performance
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230726095146.2826796-1-ryan.roberts@arm.com>
- <20230726095146.2826796-3-ryan.roberts@arm.com>
- <c02a95e9-b728-ad64-6942-f23dbd66af0c@arm.com>
- <20230803142154.nvgkavg33uyn6f72@box.shutemov.name>
- <CAOUHufZWTdpF0vdPkyOafVNFOOY7Wui+Q-O83=SZcfv4KZcHbg@mail.gmail.com>
- <b98b0f69-f469-b445-2c51-aa2f85da07b6@arm.com>
- <CAOUHufYQTcOdKU=1mPq-fdLV7a66sHx1=EJpPpMVogciCNKO9A@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAOUHufYQTcOdKU=1mPq-fdLV7a66sHx1=EJpPpMVogciCNKO9A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2023 19:53, Yu Zhao wrote:
-> On Fri, Aug 4, 2023 at 3:06 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 04/08/2023 01:19, Yu Zhao wrote:
->>> On Thu, Aug 3, 2023 at 8:27 AM Kirill A. Shutemov
->>> <kirill.shutemov@linux.intel.com> wrote:
->>>>
->>>> On Thu, Aug 03, 2023 at 01:43:31PM +0100, Ryan Roberts wrote:
->>>>> + Kirill
->>>>>
->>>>> On 26/07/2023 10:51, Ryan Roberts wrote:
->>>>>> Introduce LARGE_ANON_FOLIO feature, which allows anonymous memory to be
->>>>>> allocated in large folios of a determined order. All pages of the large
->>>>>> folio are pte-mapped during the same page fault, significantly reducing
->>>>>> the number of page faults. The number of per-page operations (e.g. ref
->>>>>> counting, rmap management lru list management) are also significantly
->>>>>> reduced since those ops now become per-folio.
->>>>>>
->>>>>> The new behaviour is hidden behind the new LARGE_ANON_FOLIO Kconfig,
->>>>>> which defaults to disabled for now; The long term aim is for this to
->>>>>> defaut to enabled, but there are some risks around internal
->>>>>> fragmentation that need to be better understood first.
->>>>>>
->>>>>> When enabled, the folio order is determined as such: For a vma, process
->>>>>> or system that has explicitly disabled THP, we continue to allocate
->>>>>> order-0. THP is most likely disabled to avoid any possible internal
->>>>>> fragmentation so we honour that request.
->>>>>>
->>>>>> Otherwise, the return value of arch_wants_pte_order() is used. For vmas
->>>>>> that have not explicitly opted-in to use transparent hugepages (e.g.
->>>>>> where thp=madvise and the vma does not have MADV_HUGEPAGE), then
->>>>>> arch_wants_pte_order() is limited to 64K (or PAGE_SIZE, whichever is
->>>>>> bigger). This allows for a performance boost without requiring any
->>>>>> explicit opt-in from the workload while limitting internal
->>>>>> fragmentation.
->>>>>>
->>>>>> If the preferred order can't be used (e.g. because the folio would
->>>>>> breach the bounds of the vma, or because ptes in the region are already
->>>>>> mapped) then we fall back to a suitable lower order; first
->>>>>> PAGE_ALLOC_COSTLY_ORDER, then order-0.
->>>>>>
->>>>>
->>>>> ...
->>>>>
->>>>>> +#define ANON_FOLIO_MAX_ORDER_UNHINTED \
->>>>>> +           (ilog2(max_t(unsigned long, SZ_64K, PAGE_SIZE)) - PAGE_SHIFT)
->>>>>> +
->>>>>> +static int anon_folio_order(struct vm_area_struct *vma)
->>>>>> +{
->>>>>> +   int order;
->>>>>> +
->>>>>> +   /*
->>>>>> +    * If THP is explicitly disabled for either the vma, the process or the
->>>>>> +    * system, then this is very likely intended to limit internal
->>>>>> +    * fragmentation; in this case, don't attempt to allocate a large
->>>>>> +    * anonymous folio.
->>>>>> +    *
->>>>>> +    * Else, if the vma is eligible for thp, allocate a large folio of the
->>>>>> +    * size preferred by the arch. Or if the arch requested a very small
->>>>>> +    * size or didn't request a size, then use PAGE_ALLOC_COSTLY_ORDER,
->>>>>> +    * which still meets the arch's requirements but means we still take
->>>>>> +    * advantage of SW optimizations (e.g. fewer page faults).
->>>>>> +    *
->>>>>> +    * Finally if thp is enabled but the vma isn't eligible, take the
->>>>>> +    * arch-preferred size and limit it to ANON_FOLIO_MAX_ORDER_UNHINTED.
->>>>>> +    * This ensures workloads that have not explicitly opted-in take benefit
->>>>>> +    * while capping the potential for internal fragmentation.
->>>>>> +    */
->>>>>> +
->>>>>> +   if ((vma->vm_flags & VM_NOHUGEPAGE) ||
->>>>>> +       test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags) ||
->>>>>> +       !hugepage_flags_enabled())
->>>>>> +           order = 0;
->>>>>> +   else {
->>>>>> +           order = max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_ORDER);
->>>>>> +
->>>>>> +           if (!hugepage_vma_check(vma, vma->vm_flags, false, true, true))
->>>>>> +                   order = min(order, ANON_FOLIO_MAX_ORDER_UNHINTED);
->>>>>> +   }
->>>>>> +
->>>>>> +   return order;
->>>>>> +}
->>>>>
->>>>>
->>>>> Hi All,
->>>>>
->>>>> I'm writing up the conclusions that we arrived at during discussion in the THP
->>>>> meeting yesterday, regarding linkage with exiting THP ABIs. It would be great if
->>>>> I can get explicit "agree" or disagree + rationale from at least David, Yu and
->>>>> Kirill.
->>>>>
->>>>> In summary; I think we are converging on the approach that is already coded, but
->>>>> I'd like confirmation.
->>>>>
->>>>>
->>>>>
->>>>> The THP situation today
->>>>> -----------------------
->>>>>
->>>>>  - At system level: THP can be set to "never", "madvise" or "always"
->>>>>  - At process level: THP can be "never" or "defer to system setting"
->>>>>  - At VMA level: no-hint, MADV_HUGEPAGE, MADV_NOHUGEPAGE
->>>>>
->>>>> That gives us this table to describe how a page fault is handled, according to
->>>>> process state (columns) and vma flags (rows):
->>>>>
->>>>>                 | never     | madvise   | always
->>>>> ----------------|-----------|-----------|-----------
->>>>> no hint         | S         | S         | THP>S
->>>>> MADV_HUGEPAGE   | S         | THP>S     | THP>S
->>>>> MADV_NOHUGEPAGE | S         | S         | S
->>>>>
->>>>> Legend:
->>>>> S     allocate single page (PTE-mapped)
->>>>> LAF   allocate lage anon folio (PTE-mapped)
->>>>> THP   allocate THP-sized folio (PMD-mapped)
->>>>>>     fallback (usually because vma size/alignment insufficient for folio)
->>>>>
->>>>>
->>>>>
->>>>> Principles for Large Anon Folios (LAF)
->>>>> --------------------------------------
->>>>>
->>>>> David tells us there are use cases today (e.g. qemu live migration) which use
->>>>> MADV_NOHUGEPAGE to mean "don't fill any PTEs that are not explicitly faulted"
->>>>> and these use cases will break (i.e. functionally incorrect) if this request is
->>>>> not honoured.
->>>>>
->>>>> So LAF must at least honour MADV_NOHUGEPAGE to prevent breaking existing use
->>>>> cases. And once we do this, then I think the least confusing thing is for it to
->>>>> also honor the "never" system/process state; so if either the system, process or
->>>>> vma has explicitly opted-out of THP, then LAF should also be bypassed.
->>>>>
->>>>> Similarly, any case that would previously cause the allocation of PMD-sized THP
->>>>> must continue to be honoured, else we risk performance regression.
->>>>>
->>>>> That leaves the "madvise/no-hint" case, and all THP fallback paths due to the
->>>>> VMA not being correctly aligned or sized to hold a PMD-sized mapping. In these
->>>>> cases, we will attempt to use LAF first, and fallback to single page if the vma
->>>>> size/alignment doesn't permit it.
->>>>>
->>>>>                 | never     | madvise   | always
->>>>> ----------------|-----------|-----------|-----------
->>>>> no hint         | S         | LAF>S     | THP>LAF>S
->>>>> MADV_HUGEPAGE   | S         | THP>LAF>S | THP>LAF>S
->>>>> MADV_NOHUGEPAGE | S         | S         | S
->>>>>
->>>>> I think this (perhaps conservative) approach will be the least surprising to
->>>>> users. And is the policy that is already implemented in this patch.
->>>>
->>>> This looks very reasonable.
->>>>
->>>> The only questionable field is no-hint/madvise. I can argue for both LAF>S
->>>> and S here. I think LAF>S is fine as long as we are not too aggressive
->>>> with allocation order.
->>>>
->>>> I think we need to work on eliminating reasons for users to set 'never'.
->>>> If something behaves better with 'never' kernel has failed user.
->>>>
->>>>> Downsides of this policy
->>>>> ------------------------
->>>>>
->>>>> As Yu and Yin have pointed out, there are some workloads which do not perform
->>>>> well with THP, due to large fault latency or memory wastage, etc. But which
->>>>> _may_ still benefit from LAF. By taking the conservative approach, we exclude
->>>>> these workloads from benefiting automatically.
->>>>
->>>> Hm. I don't buy it. Why THP with order-9 is too much, but order-8 LAF is
->>>> fine?
->>>
->>> No, it's not. And no one said order-8 LAF is fine :) The starting
->>> order for LAF that we have been discussing is at most 64KB (vs 2MB
->>> THP). For my taste, it's still too large. I'd go with 32KB/16KB.
->>
->> Its currently influenced by the arch. If the arch doesn't have an opinion then
->> its currently 32K in the code. The 64K size is my aspiration for arm64 if/when I
->> land the contpte mapping work.
-> 
-> Just to double check: this discussion covers the long term/permanente
-> solution/roadmap, correct? That's what Kirill and I were arguing
-> about. Otherwise, the order-8/9 concern above is totally irrelevant,
-> since we don't have them in this series.
-> 
-> For the short term (this series), what you described above looks good
-> to me: we may regress but will not break any existing use cases, and
-> we are behind a Kconfig option.
+On Mon, Aug 07 2023 at 14:18, Peter Zijlstra wrote:
 
-OK that's good to hear.
+> In order to support mixed size requeue, add a second flags argument to
+> the internal futex_requeue() function.
+>
+> No functional change intended.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-> 
->>> However, the same argument can be used to argue against the policy
->>> Ryan listed above: why order-10 LAF is ok for madvise but not order-11
->>> (which becomes "always")?
->>
->> Sorry I don't understand what you are saying here. Where has order-10 LAF come from?
-> 
-> I pushed that rhetoric a bit further: order-11 is the THP size (32MB)
-> with 16KB base page size on ARM. Confusing, isn't it? And there is
-> another complaint from Fengwei here [1].
-> 
-> [1] https://lore.kernel.org/linux-mm/CAOUHufasZ6w32sHO+Lq33+tGy3+GiO0_dd6mNYwfS_5gqhzYbw@mail.gmail.com/
-> 
->>> I'm strongly against this policy
-> 
-> Again, just to be clear: I'm strongly against this policy to be
-> exposed to userspace in any way and become a long-term/permanent thing
-> we have to maintain/change in the future, since I'm assuming that's
-> the context.
-
-I'm still confused. The policy I described (and which I thought we were
-discussing) does not expose any new tunables to user space. And you said above
-that what I described "looks good to me". So is "this policy" which you are
-strongly against referring to the policy I wrote down or something else?
-
-> 
->> Ugh, I thought we came to an agreement (or at least "disagree and commit") on
->> the THP call. Obviously I was wrong.
-> 
-> My impression is we only agreed on one thing: at the current stage, we
-> should respect things we absolutely have to. We didn't agree on what
-> "never" means ("never 2MB" or "never >4KB"), and we didn't touch on
-> how "always" should behave at all.
-
-I _think_ we have now agreed some of this in other threads, but please re-raise
-in the context of the other email thread I just sent out - its probably cleaner
-to continue discussion there.
-
-> 
->> David is telling us that we will break user space if we don't consider
->> MADV_NOHUGEPAGE to mean "never allocate memory to unfaulted addresses". So tying
->> to at least this must be cast in stone, no? Could you lay out any policy
->> proposal you have as an alternative that still follows this requirement?
-> 
-> If MADV_NOHUGEPAGE falls into the category of things we have to
-> absolutely respect, then we will. But I don't think it does, because
-> the UFFD check we have in this series already guarantees the KVM use
-> case. I can explain how it works in detail if it's still not clear to
-> you: long story short, the UFFD check precedes the MADV_NOHUGEPAGE
-> check in alloc_anon_folio().
-
-I think we have now concluded that its not this simple; MADV_NOHUGEPAGE is
-applied to the region and pages are faulted in before UFFD is registered, so
-checking for UFFD is not sufficient.
-
-> 
-> Here is what I recommend for the medium and long terms:
-> https://lore.kernel.org/linux-mm/CAOUHufYm6Lkm4tLRbyKOc3-NYU-8d6ZDMNDWHo=e=E16oasN8A@mail.gmail.com/
-> 
-> For the short term, hard-coding two orders (hw/sw preferred), putting
-> them behind a Kconfig and not exposing this info to the userspace are
-> good enough for me.
-
-I think that's pretty much what I have now, so perhaps I'm laboring the point a
-bit too much here. Let's just get the prerequisites ticked off then get this
-patch set merged??
-
-
-
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
