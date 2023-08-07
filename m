@@ -2,85 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39049772361
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2307D772363
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbjHGMEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 08:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
+        id S231981AbjHGMFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231536AbjHGMEK (ORCPT
+        with ESMTP id S233206AbjHGME7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 08:04:10 -0400
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB6718E;
-        Mon,  7 Aug 2023 05:03:43 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0VpGaULx_1691409755;
-Received: from 30.221.158.57(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VpGaULx_1691409755)
-          by smtp.aliyun-inc.com;
-          Mon, 07 Aug 2023 20:02:36 +0800
-Message-ID: <110412ae-108a-27ed-b0f7-8f30eab122a2@linux.alibaba.com>
-Date:   Mon, 7 Aug 2023 20:02:34 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.11.2
-Subject: Re: [PATCH v6 4/7] perf test: Fix matching_pmu
-To:     John Garry <john.g.garry@oracle.com>,
-        Ian Rogers <irogers@google.com>
-Cc:     Will Deacon <will@kernel.org>, James Clark <james.clark@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
-        Zhuo Song <zhuo.song@linux.alibaba.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>
-References: <1691394685-61240-1-git-send-email-renyu.zj@linux.alibaba.com>
- <1691394685-61240-5-git-send-email-renyu.zj@linux.alibaba.com>
- <c791e9b5-e459-539b-d9f7-8808486a1aa8@oracle.com>
-From:   Jing Zhang <renyu.zj@linux.alibaba.com>
-In-Reply-To: <c791e9b5-e459-539b-d9f7-8808486a1aa8@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.7 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 7 Aug 2023 08:04:59 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EFD1BF3;
+        Mon,  7 Aug 2023 05:04:38 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 01489320095B;
+        Mon,  7 Aug 2023 08:04:27 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Mon, 07 Aug 2023 08:04:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1691409867; x=1691496267; bh=4q
+        R2S2MtVT1gufffbhUzZeedkipKDGuTgchxc/0LCac=; b=QlwvjflpzuAEvaxUPL
+        +xZACfpn+GmIuZBxQGWdiykq/If49cEKM3odstW87to7HaMsjBdJj/n7VaWROGQ7
+        TUoPbXbrVHQjWQDlF0oMsDdBg0vGp69LpEU2E5b/PTBRSEA3UDM2BB9jvoQgkPUb
+        aG1M234zfAj6O0RII4crLzOysHHC/q4JalH1LARDz5k4fhwPNI+pMSKLN8jQ3vp9
+        IimMQPpcCqQAJkjXQhoHBdTSrhSu+jC1372MDfz/Jo5c8BfdibO7jS5zSj4U9ay5
+        kli2ojMD7diVeG5rQKj6CVyedZePp32L+4H9dgUgkSM8QmCjqs1IBr4Jn1hButSA
+        hSnw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1691409867; x=1691496267; bh=4qR2S2MtVT1gu
+        fffbhUzZeedkipKDGuTgchxc/0LCac=; b=Qk4VLf08hmFsYsFFSdEgCtC7I+HwG
+        lshWiDjV7R/mJbnTfX0SQsva2CiqE+cEiFnmQA/KGAyT43veeaCLTxzSgvyA8NIF
+        Mj+TnNTKt6YCVhIreek36gUKPWNVp3jb72fr589LKsc8XiAr220AoFaMroc6v3dh
+        138JWbOavi65y2guLY9jjx1OO0VRNQu/R+tim0kEHjwjvjLiEjSNJIlhYJ3GiBFe
+        4cbEwkSEPLUNMrm19SqARBI2+WyhNAT7mm4kz8+bE3TIcCukylVga4O8FGxn8VLV
+        2P1u0BO1PpD6XAdTQiDGrGyslDPhu5yxG4EIKWDAgvIXWgtKIFXeA7H6A==
+X-ME-Sender: <xms:yt3QZPbSU21E0WaikpEfNTThLwrot25PH7X8Zdm2-CFE9aBleETSFA>
+    <xme:yt3QZOby9_LQfDmnq9s07tSc9vZvsvzfHW8ieJIvsOgB97dAQMfPg-10B41NS-ha-
+    5NOnxbJCVBSHud3k9Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrledtgdegiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpefgtedtvedufefgffetgefgheefudehteeggffgheeukeevffdvfeeifeevjeef
+    ieenucffohhmrghinhepphgrshhtvggsihhnrdgtohhmpdehqdhrtgdurdhinhenucevlh
+    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghr
+    nhgusgdruggv
+X-ME-Proxy: <xmx:yt3QZB9oNY-80EfHEonmjj-pF7oVazaVp_IB7wIdNiWMWPmkRrw_JQ>
+    <xmx:yt3QZFqbwBhBauYc2rr3TgBtyrjoG5FYvT5AQCfiooliZlLcNY6yLA>
+    <xmx:yt3QZKrF0BQTZoXLt82IhA1hQ8jObDeiYHBkEk6Q-zLT7-002wV46A>
+    <xmx:y93QZHRpo1HxVlPVMDZ8ROUD0G1BtbAIEzRhPivHBWWr2XyzJR6vBw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 27325B60089; Mon,  7 Aug 2023 08:04:26 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
+Mime-Version: 1.0
+Message-Id: <d9184ad7-7d34-45bf-81e3-db053bf7425c@app.fastmail.com>
+In-Reply-To: <ZMyz27awrVJ8QHzA@gondor.apana.org.au>
+References: <20230724135327.1173309-1-arnd@kernel.org>
+ <ZMyz27awrVJ8QHzA@gondor.apana.org.au>
+Date:   Mon, 07 Aug 2023 14:04:05 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Herbert Xu" <herbert@gondor.apana.org.au>,
+        "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        "Ryan Wanner" <Ryan.Wanner@microchip.com>,
+        "Yangtao Li" <frank.li@vivo.com>, linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        "Sergiu Moga" <sergiu.moga@microchip.com>,
+        "Ayush Sawal" <ayush.sawal@chelsio.com>,
+        "Gaosheng Cui" <cuigaosheng1@huawei.com>,
+        "Claudiu Beznea" <claudiu.beznea@microchip.com>,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        "Kees Cook" <keescook@chromium.org>
+Subject: Re: [PATCH 1/2] crypto: drivers - avoid memcpy size warning
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 4, 2023, at 10:16, Herbert Xu wrote:
+> On Mon, Jul 24, 2023 at 03:53:01PM +0200, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> Some configurations with gcc-12 or gcc-13 produce a warning for the source
+>> and destination of a memcpy() in atmel_sha_hmac_compute_ipad_hash() potentially
+>> overlapping:
+>> 
+>> In file included from include/linux/string.h:254,
+>>                  from drivers/crypto/atmel-sha.c:15:
+>> drivers/crypto/atmel-sha.c: In function 'atmel_sha_hmac_compute_ipad_hash':
+>> include/linux/fortify-string.h:57:33: error: '__builtin_memcpy' accessing 129 or more bytes at offsets 408 and 280 overlaps 1 or more bytes at offset 408 [-Werror=restrict]
+>>    57 | #define __underlying_memcpy     __builtin_memcpy
+>>       |                                 ^
+>> include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
+>>   648 |         __underlying_##op(p, q, __fortify_size);                        \
+>>       |         ^~~~~~~~~~~~~
+>> include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
+>>   693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
+>>       |                          ^~~~~~~~~~~~~~~~~~~~
+>> drivers/crypto/atmel-sha.c:1773:9: note: in expansion of macro 'memcpy'
+>>  1773 |         memcpy(hmac->opad, hmac->ipad, bs);
+>>       |         ^~~~~~
+>> 
+>> The same thing happens in two more drivers that have the same logic:
+>
+> Please send me the configurations which triggers these warnings.
+> As these are false positives, I'd like to enable them only on the
+> configurations where they actually cause a problem.
 
+See https://pastebin.com/raw/ip3tfpJF for a config that triggers this
+on x86 with the chelsio and atmel drivers. The bcm driver is only
+available on arm64, so you won't hit that one here. I also
+see this with allmodconfig, as well as defconfig after enabling
+CONFIG_FORTIFY_SOURCE and the three crypto drivers.
 
-在 2023/8/7 下午5:21, John Garry 写道:
-> On 07/08/2023 08:51, Jing Zhang wrote:
->> The perf_pmu_test_event.matching_pmu didn't work. No matter what its
->> value is, it does not affect the test results. So let matching_pmu be
->> used for matching perf_pmu_test_pmu.pmu.name.
->>
->> Fixes: 5a65c0c8f6fd ("perf test: Re-add pmu-event uncore PMU alias test")
-> 
-> Is this tag correct, as I was not sure if this ever worked?
-> 
+I see that commit df8fc4e934c12 ("kbuild: Enable -fstrict-flex-arrays=3")
+turned on the strict flex-array behavior that triggers the
+warning, so this did not show up until linux-6.5-rc1.
+In linux-next, I see no other code hit this warning after all
+my other patches for it got merged, regardless strict flex
+arrays.
 
-I added the tag with reference to the previous fixed patch, and it seems correct.
+At the moment, -Wrestrict is completely disabled in all builds,
+so you have to add a patch to enable it in the build system,
+this is what I use locally to enable it at the W=1 level,
+though you can probably just replace the cc-disable-warning
+line with a -Wrestrict line.
 
-> BTW, I am not sure how useful fixes tags are for self-test anyway...
-> 
+     Arnd
 
-I'm not sure if it's useful either, but I added it anyway.:)
+--- a/scripts/Makefile.extrawarn
++++ b/scripts/Makefile.extrawarn
+@@ -49,9 +49,6 @@ KBUILD_CFLAGS += -Wno-pointer-sign
+ # globally built with -Wcast-function-type.
+ KBUILD_CFLAGS += $(call cc-option, -Wcast-function-type)
+ 
+-# Another good warning that we'll want to enable eventually
+-KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
+-
+ # The allocators already balk at large sizes, so silence the compiler
+ # warnings for bounds checks involving those possible values. While
+ # -Wno-alloc-size-larger-than would normally be used here, earlier versions
+@@ -93,6 +90,7 @@ export KBUILD_EXTRA_WARN
+ ifneq ($(findstring 1, $(KBUILD_EXTRA_WARN)),)
+ 
+ KBUILD_CFLAGS += -Wextra -Wunused -Wno-unused-parameter
++KBUILD_CFLAGS += $(call cc-option, -Wrestrict)
+ KBUILD_CFLAGS += -Wmissing-format-attribute
+ KBUILD_CFLAGS += -Wold-style-definition
+ KBUILD_CFLAGS += -Wmissing-include-dirs
+@@ -105,6 +103,7 @@ else
+ 
+ # Some diagnostics enabled by default are noisy.
+ # Suppress them by using -Wno... except for W=1.
++KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
+ KBUILD_CFLAGS += $(call cc-disable-warning, packed-not-aligned)
+ 
+ ifdef CONFIG_CC_IS_CLANG
 
->> Signed-off-by: Jing Zhang<renyu.zj@linux.alibaba.com>
-> 
-> Reviewed-by: John Garry <john.g.garry@oracle.com>
-
-Thank you sincerely!
