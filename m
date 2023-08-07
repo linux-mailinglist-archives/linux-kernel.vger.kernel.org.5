@@ -2,305 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2785677263D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE02772648
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbjHGNm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:42:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
+        id S234411AbjHGNnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:43:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234326AbjHGNmN (ORCPT
+        with ESMTP id S234456AbjHGNnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:42:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7836A1701;
-        Mon,  7 Aug 2023 06:41:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 401D261BA3;
-        Mon,  7 Aug 2023 13:41:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97E0DC433C7;
-        Mon,  7 Aug 2023 13:41:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691415715;
-        bh=wYk2Cp2sscYS219b6KlE7eZdHifMs6/0J8jPk9orT6Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uO/Z9uypkfQeZgNjUzr4HYXM8WoQieGHXKg+NnpQIJAkRa+fCw6abmM1htcbhqAEP
-         kVSkD0764zU/EAIeiGZ6p4AVRNSmrjuKpuRsRY9aen28D6JGIsHYS4Vo0PWkMp+uJq
-         WS9ho+de5m555VdcgTzwjtA4DQigyI4RShBmHzZarTHVyV6XdxcrbPifjiafAeC9tc
-         xu+lbWc9Oe/3yiItPZjicD1zCL4IDPOpQPS4buIg6zDxVZZjak2zu9P1elyAUWoG87
-         o6WQiKv8ni6Tb4u4nWQFXZspl0gfC2IKZXz/DttkApq0O8fbR4JxRHtwV99y//0L2R
-         KgE3c8Q8wHt0g==
-Date:   Mon, 7 Aug 2023 19:11:38 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     helgaas@kernel.org, bhelgaas@google.com,
-        devicetree@vger.kernel.org, gustavo.pimentel@synopsys.com,
-        imx@lists.linux.dev, kw@linux.com, leoyang.li@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org,
-        manivannan.sadhasivam@linaro.org, minghuan.lian@nxp.com,
-        mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
-        shawnguo@kernel.org, zhiqiang.hou@nxp.com
-Subject: Re: [PATCH v9 3/3] PCI: layerscape: Add power management support for
- ls1028a
-Message-ID: <20230807134138.GE18257@thinkpad>
-References: <20230804180637.462573-1-Frank.Li@nxp.com>
- <20230804180637.462573-4-Frank.Li@nxp.com>
+        Mon, 7 Aug 2023 09:43:08 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583121FEA;
+        Mon,  7 Aug 2023 06:42:42 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377Dg3aY023591;
+        Mon, 7 Aug 2023 08:42:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691415723;
+        bh=NJdbHAWINh9tDnG69+ypmrXoPpaIlunNO+Lvc31LXNo=;
+        h=Date:Subject:To:References:From:In-Reply-To;
+        b=akvN2LkO7lPBrLaTF1VTgkV3ZPIxA74V8LDjtoYKfkTnADRERIWuSqSpuVmn4lnSB
+         Pxov0mAsXI0Cm/b4t7d/VQjMvX9h4kCcruzT4SLteMSM9t+mQMBNxpiM+nysufJEgQ
+         cekz8W+gZjnuA1W1xEibwdMKmzAF4I8/jfR7ovx8=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377Dg3fj040151
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Aug 2023 08:42:03 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
+ Aug 2023 08:42:02 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 7 Aug 2023 08:42:02 -0500
+Received: from [10.24.69.141] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377Dfw8h013246;
+        Mon, 7 Aug 2023 08:41:59 -0500
+Message-ID: <a462b419-a467-d648-ac70-32a00b94d16f@ti.com>
+Date:   Mon, 7 Aug 2023 19:11:58 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230804180637.462573-4-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v4] arm64: dts: ti: k3-j721s2: correct pinmux offset for
+ ospi
+Content-Language: en-US
+To:     Udit Kumar <u-kumar1@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <sinthu.raja@ti.com>, <t-konduru@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <eblanc@baylibre.com>
+References: <20230804075341.3858488-1-u-kumar1@ti.com>
+From:   Vaishnav Achath <vaishnav.a@ti.com>
+In-Reply-To: <20230804075341.3858488-1-u-kumar1@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 02:06:37PM -0400, Frank Li wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Hi Udit,
+
+On 04/08/23 13:23, Udit Kumar wrote:
+> Due to non-addressable regions in J721S2 SOC wkup_pmx was split
+> into four regions from wkup_pmx0 to wkup_pmx3.
 > 
-> Add PME_Turn_off/PME_TO_Ack handshake sequence for ls1028a platform. Call
-> common dwc dw_pcie_suspend(resume)_noirq() function when system enter/exit
-> suspend state.
+> Correcting OSPI1 pin mux, which now falls under wkup_pmx1.
+> Along with that removing unused pin mux for OSPI-0.
 > 
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-
-Minor nits below. With that,
-
-Acked-by: Manivannan Sadhasivam <mani@kernel.org>
-
+> Fixes: 6bc829ceea41 ("arm64: dts: ti: k3-j721s2: Fix wkup pinmux range")
+> 
+> Signed-off-by: Udit Kumar <u-kumar1@ti.com>
 > ---
->  drivers/pci/controller/dwc/pci-layerscape.c | 130 ++++++++++++++++++--
->  1 file changed, 121 insertions(+), 9 deletions(-)
+> Logs with v4
+> https://gist.github.com/uditkumarti/84a18d9c9a62fe0d22ee7c650340b12e
+> line 980 and 983 Both flashes are detected
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-> index ed5fb492fe084..7586aece769b2 100644
-> --- a/drivers/pci/controller/dwc/pci-layerscape.c
-> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
-> @@ -8,9 +8,11 @@
->   * Author: Minghuan Lian <Minghuan.Lian@freescale.com>
->   */
->  
-> +#include <linux/delay.h>
->  #include <linux/kernel.h>
->  #include <linux/interrupt.h>
->  #include <linux/init.h>
-> +#include <linux/iopoll.h>
->  #include <linux/of_pci.h>
->  #include <linux/of_platform.h>
->  #include <linux/of_address.h>
-> @@ -20,6 +22,7 @@
->  #include <linux/mfd/syscon.h>
->  #include <linux/regmap.h>
->  
-> +#include "../../pci.h"
->  #include "pcie-designware.h"
->  
->  /* PEX Internal Configuration Registers */
-> @@ -27,12 +30,26 @@
->  #define PCIE_ABSERR		0x8d0 /* Bridge Slave Error Response Register */
->  #define PCIE_ABSERR_SETTING	0x9401 /* Forward error of non-posted request */
->  
-> +/* PF Message Command Register */
-> +#define LS_PCIE_PF_MCR		0x2c
-> +#define PF_MCR_PTOMR		BIT(0)
-> +#define PF_MCR_EXL2S		BIT(1)
-> +
->  #define PCIE_IATU_NUM		6
->  
-> +struct ls_pcie_drvdata {
-> +	const u32 pf_off;
-> +	bool pm_support;
-> +};
-> +
->  struct ls_pcie {
->  	struct dw_pcie *pci;
-> +	const struct ls_pcie_drvdata *drvdata;
-> +	void __iomem *pf_base;
-> +	bool big_endian;
->  };
->  
-> +#define ls_pcie_pf_readl_addr(addr)	ls_pcie_pf_readl(pcie, addr)
->  #define to_ls_pcie(x)	dev_get_drvdata((x)->dev)
->  
->  static bool ls_pcie_is_bridge(struct ls_pcie *pcie)
-> @@ -73,6 +90,60 @@ static void ls_pcie_fix_error_response(struct ls_pcie *pcie)
->  	iowrite32(PCIE_ABSERR_SETTING, pci->dbi_base + PCIE_ABSERR);
->  }
->  
-> +static u32 ls_pcie_pf_readl(struct ls_pcie *pcie, u32 off)
-> +{
-> +	if (pcie->big_endian)
-> +		return ioread32be(pcie->pf_base + off);
-> +
-> +	return ioread32(pcie->pf_base + off);
-> +}
-> +
-> +static void ls_pcie_pf_writel(struct ls_pcie *pcie, u32 off, u32 val)
-> +{
-> +	if (pcie->big_endian)
-> +		iowrite32be(val, pcie->pf_base + off);
-> +	else
-> +		iowrite32(val, pcie->pf_base + off);
-> +}
-> +
-> +static void ls_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> +	u32 val;
-> +	int ret;
-> +
-> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-> +	val |= PF_MCR_PTOMR;
-> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-> +
-> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-> +				 val, !(val & PF_MCR_PTOMR),
-> +				 PCIE_PME_TO_L2_TIMEOUT_US/10,
-> +				 PCIE_PME_TO_L2_TIMEOUT_US);
-> +	if (ret)
-> +		dev_err(pcie->pci->dev, "poll turn off message timeout\n");
-
-dev_err(pci->dev, "PME_Turn_off timeout\n");
-
-> +}
-> +
-> +static void ls_pcie_exit_from_l2(struct dw_pcie_rp *pp)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> +	u32 val;
-> +	int ret;
-> +
-> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-> +	val |= PF_MCR_EXL2S;
-> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-> +
-> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-> +				 val, !(val & PF_MCR_EXL2S),
-> +				 PCIE_PME_TO_L2_TIMEOUT_US/10,
-> +				 PCIE_PME_TO_L2_TIMEOUT_US);
-> +	if (ret)
-> +		dev_err(pcie->pci->dev, "poll exit L2 state timeout\n");
-
-dev_err(pci->dev, "L2 exit timeout\n");
-
-- Mani
-
-> +}
-> +
->  static int ls_pcie_host_init(struct dw_pcie_rp *pp)
->  {
->  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> @@ -91,18 +162,28 @@ static int ls_pcie_host_init(struct dw_pcie_rp *pp)
->  
->  static const struct dw_pcie_host_ops ls_pcie_host_ops = {
->  	.host_init = ls_pcie_host_init,
-> +	.pme_turn_off = ls_pcie_send_turnoff_msg,
-> +	.exit_from_l2 = ls_pcie_exit_from_l2,
-> +};
-> +
-> +static const struct ls_pcie_drvdata ls1021a_drvdata = {
-> +};
-> +
-> +static const struct ls_pcie_drvdata layerscape_drvdata = {
-> +	.pf_off = 0xc0000,
-> +	.pm_support = true,
->  };
->  
->  static const struct of_device_id ls_pcie_of_match[] = {
-> -	{ .compatible = "fsl,ls1012a-pcie", },
-> -	{ .compatible = "fsl,ls1021a-pcie", },
-> -	{ .compatible = "fsl,ls1028a-pcie", },
-> -	{ .compatible = "fsl,ls1043a-pcie", },
-> -	{ .compatible = "fsl,ls1046a-pcie", },
-> -	{ .compatible = "fsl,ls2080a-pcie", },
-> -	{ .compatible = "fsl,ls2085a-pcie", },
-> -	{ .compatible = "fsl,ls2088a-pcie", },
-> -	{ .compatible = "fsl,ls1088a-pcie", },
-> +	{ .compatible = "fsl,ls1012a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls1021a-pcie", .data = &ls1021a_drvdata },
-> +	{ .compatible = "fsl,ls1028a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1021a_drvdata },
-> +	{ .compatible = "fsl,ls1046a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls2080a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls2085a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls2088a-pcie", .data = &layerscape_drvdata },
-> +	{ .compatible = "fsl,ls1088a-pcie", .data = &layerscape_drvdata },
->  	{ },
->  };
->  
-> @@ -121,6 +202,8 @@ static int ls_pcie_probe(struct platform_device *pdev)
->  	if (!pci)
->  		return -ENOMEM;
->  
-> +	pcie->drvdata = of_device_get_match_data(dev);
-> +
->  	pci->dev = dev;
->  	pci->pp.ops = &ls_pcie_host_ops;
->  
-> @@ -131,6 +214,10 @@ static int ls_pcie_probe(struct platform_device *pdev)
->  	if (IS_ERR(pci->dbi_base))
->  		return PTR_ERR(pci->dbi_base);
->  
-> +	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
-> +
-> +	pcie->pf_base = pci->dbi_base + pcie->drvdata->pf_off;
-> +
->  	if (!ls_pcie_is_bridge(pcie))
->  		return -ENODEV;
->  
-> @@ -139,12 +226,37 @@ static int ls_pcie_probe(struct platform_device *pdev)
->  	return dw_pcie_host_init(&pci->pp);
->  }
->  
-> +static int ls_pcie_suspend_noirq(struct device *dev)
-> +{
-> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
-> +
-> +	if (!pcie->drvdata->pm_support)
-> +		return 0;
-> +
-> +	return dw_pcie_suspend_noirq(pcie->pci);
-> +}
-> +
-> +static int ls_pcie_resume_noirq(struct device *dev)
-> +{
-> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
-> +
-> +	if (!pcie->drvdata->pm_support)
-> +		return 0;
-> +
-> +	return dw_pcie_resume_noirq(pcie->pci);
-> +}
-> +
-> +static const struct dev_pm_ops ls_pcie_pm_ops = {
-> +	NOIRQ_SYSTEM_SLEEP_PM_OPS(ls_pcie_suspend_noirq, ls_pcie_resume_noirq)
-> +};
-> +
->  static struct platform_driver ls_pcie_driver = {
->  	.probe = ls_pcie_probe,
->  	.driver = {
->  		.name = "layerscape-pcie",
->  		.of_match_table = ls_pcie_of_match,
->  		.suppress_bind_attrs = true,
-> +		.pm = &ls_pcie_pm_ops,
->  	},
->  };
->  builtin_platform_driver(ls_pcie_driver);
-> -- 
-> 2.34.1
+> Logs with original tree
+> https://gist.github.com/uditkumarti/41d3d7ccf278d4e00e6da349478e58aa
+> (line 1192) pin mux error, line 1209 and 1212 flashes are not detected
 > 
+> dtbs_check run after applying https://lore.kernel.org/all/20230721082654.27036-1-tony@atomide.com/
+> 
+> Change log:
+> 
+> Changes in v4:
+>   - Removed unused CS pin mux
+>   - Rebased and tested with next-20230804
+>   - v3 : https://lore.kernel.org/all/20230803145655.806001-1-u-kumar1@ti.com/
+> 
+> Changes in v3:
+>   - Corrected wkup_pmx for ospi1
+>   - Removed unused pin MCU_OSPI1_CSn1, shared with pmic
+>   - v2: https://lore.kernel.org/all/20230802113500.162276-1-u-kumar1@ti.com/
+> 
+> Changes in v2:
+>   - Changed name of pin mux to align with
+>   https://lore.kernel.org/all/20230721082654.27036-1-tony@atomide.com/ patch
+>   - v1: https://lore.kernel.org/all/20230801125626.3287306-1-u-kumar1@ti.com/
+> 
+>  .../dts/ti/k3-j721s2-common-proc-board.dts    | 19 ++++++++++---------
+>  arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi  |  3 ---
+>  2 files changed, 10 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts
+> index 20b32563c0ed..e81ef8a7a8a2 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts
+> @@ -282,18 +282,19 @@ J721S2_WKUP_IOPAD(0x104, PIN_INPUT, 0) /* (N26) MCU_ADC1_AIN6 */
+>  			J721S2_WKUP_IOPAD(0x108, PIN_INPUT, 0) /* (N27) MCU_ADC1_AIN7 */
+>  		>;
+>  	};
+> +};
+>  
+> +&wkup_pmx1 {
+>  	mcu_fss0_ospi1_pins_default: mcu-fss0-ospi1-default-pins {
+>  		pinctrl-single,pins = <
+> -			J721S2_WKUP_IOPAD(0x040, PIN_OUTPUT, 0) /* (A19) MCU_OSPI1_CLK */
+> -			J721S2_WKUP_IOPAD(0x05c, PIN_OUTPUT, 0) /* (D20) MCU_OSPI1_CSn0 */
+> -			J721S2_WKUP_IOPAD(0x060, PIN_OUTPUT, 0) /* (C21) MCU_OSPI1_CSn1 */
+> -			J721S2_WKUP_IOPAD(0x04c, PIN_INPUT, 0) /* (D21) MCU_OSPI1_D0 */
+> -			J721S2_WKUP_IOPAD(0x050, PIN_INPUT, 0) /* (G20) MCU_OSPI1_D1 */
+> -			J721S2_WKUP_IOPAD(0x054, PIN_INPUT, 0) /* (C20) MCU_OSPI1_D2 */
+> -			J721S2_WKUP_IOPAD(0x058, PIN_INPUT, 0) /* (A20) MCU_OSPI1_D3 */
+> -			J721S2_WKUP_IOPAD(0x048, PIN_INPUT, 0) /* (B19) MCU_OSPI1_DQS */
+> -			J721S2_WKUP_IOPAD(0x044, PIN_INPUT, 0) /* (B20) MCU_OSPI1_LBCLKO */
+> +			J721S2_WKUP_IOPAD(0x008, PIN_OUTPUT, 0) /* (A19) MCU_OSPI1_CLK */
+> +			J721S2_WKUP_IOPAD(0x024, PIN_OUTPUT, 0) /* (D20) MCU_OSPI1_CSn0 */
+> +			J721S2_WKUP_IOPAD(0x014, PIN_INPUT, 0) /* (D21) MCU_OSPI1_D0 */
+> +			J721S2_WKUP_IOPAD(0x018, PIN_INPUT, 0) /* (G20) MCU_OSPI1_D1 */
+> +			J721S2_WKUP_IOPAD(0x01c, PIN_INPUT, 0) /* (C20) MCU_OSPI1_D2 */
+> +			J721S2_WKUP_IOPAD(0x020, PIN_INPUT, 0) /* (A20) MCU_OSPI1_D3 */
+> +			J721S2_WKUP_IOPAD(0x010, PIN_INPUT, 0) /* (B19) MCU_OSPI1_DQS */
+> +			J721S2_WKUP_IOPAD(0x00c, PIN_INPUT, 0) /* (B20) MCU_OSPI1_LBCLKO */
+>  		>;
+>  	};
+>  };
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi
+> index 594766482071..a4006f328027 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi
+> @@ -56,9 +56,6 @@ mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-default-pins {
+>  		pinctrl-single,pins = <
+>  			J721S2_WKUP_IOPAD(0x000, PIN_OUTPUT, 0) /* (D19) MCU_OSPI0_CLK */
+>  			J721S2_WKUP_IOPAD(0x02c, PIN_OUTPUT, 0) /* (F15) MCU_OSPI0_CSn0 */
+> -			J721S2_WKUP_IOPAD(0x030, PIN_OUTPUT, 0) /* (G17) MCU_OSPI0_CSn1 */
+> -			J721S2_WKUP_IOPAD(0x038, PIN_OUTPUT, 0) /* (F14) MCU_OSPI0_CSn2 */
+> -			J721S2_WKUP_IOPAD(0x03c, PIN_OUTPUT, 0) /* (F17) MCU_OSPI0_CSn3 */
 
--- 
-மணிவண்ணன் சதாசிவம்
+Thank you for the patch,
+
+Reviewed-by: Vaishnav Achath <vaishnav.a@ti.com>
+
+Thanks and Regards,
+Vaishnav
+>  			J721S2_WKUP_IOPAD(0x00c, PIN_INPUT, 0) /* (C19) MCU_OSPI0_D0 */
+>  			J721S2_WKUP_IOPAD(0x010, PIN_INPUT, 0) /* (F16) MCU_OSPI0_D1 */
+>  			J721S2_WKUP_IOPAD(0x014, PIN_INPUT, 0) /* (G15) MCU_OSPI0_D2 */
