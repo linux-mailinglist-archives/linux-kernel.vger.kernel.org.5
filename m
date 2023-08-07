@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6911B772EB2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 21:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91081772EB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 21:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbjHGTbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 15:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54328 "EHLO
+        id S229773AbjHGTbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 15:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjHGTbf (ORCPT
+        with ESMTP id S230140AbjHGTbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 15:31:35 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCFE1717
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 12:31:33 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fe24dd8898so42073305e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 12:31:33 -0700 (PDT)
+        Mon, 7 Aug 2023 15:31:37 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B7621726
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 12:31:35 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3090d3e9c92so4240990f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 12:31:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691436692; x=1692041492;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eRSwV6Gm+XzxbXgNMBpKpDlEh6gTRS+MFq99dQgncbQ=;
-        b=mHrDzRq+wq6uTZHPmwteMcteTqBarR3Nk2/LC+UMcpxDdpyYVB/0FPzO+LDxTTbbNr
-         hRhzkXWggtKCLT4xwA7fIp3dNwm5RWOSGd3w4YU41OwbdBx+3TsaQno03l0rK33u9g29
-         Mm3pzAcNw4BPYcA6KtUHgbmxynAXxh683LDni4HrDhgv95CoIFLQOyru7phiWKQkGpPI
-         LecLAQigg50nsbneHX72Bl9nT/Umvd5U9X6d/NHRYZWJrzCXRsQ0oxSGLsRB6I04PHxm
-         pomhLzO6E0p/XZZ9ABl879hBlfPQi9HFO3KNgYy1Nc8E7e3gSGuQk5OWV4X7lV4DBs+G
-         oFAg==
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691436693; x=1692041493;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eAPKS4SAXmZKxicJb9ydkGPtaas2WIonOZ7to+HEfxA=;
+        b=tOmh3T/d1Kx4g5+xfWbagK8zeGuje07up/l4PO1tcHXwuVmvIvKezEFEUOszEceBwv
+         WLoDiMbUQkX8jTprThvfI+94af++yK1HBv5TLq1zf5liFa6GUHWuLrbyYBO0KyAAx0sW
+         G2YMRuSYtUZkPA6TUkDb0scVx1tV5W+yGsHfFKU+iwvrWydYuU/0Yd+dyq0Z6CgdXhCl
+         kxKph2hAcWnEy/TuTREzxTULR40oj+9vctCBPlWjIp1S+PjMazFOy9kN+l9V1dn6ae0X
+         x8M6Hk9pZxtjeD89oR/plTnS6CIGysZeXPcQ6k/Tppw434ibY95fOMnSJJIDiU5GfYxO
+         OpuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691436692; x=1692041492;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eRSwV6Gm+XzxbXgNMBpKpDlEh6gTRS+MFq99dQgncbQ=;
-        b=cTvh2ppsgJYH6sqBGzGOKl/bLayUGcc+yPK8k/Mmxy8YEnDSCeJdpeXzCSzqMDBcor
-         yu7ztRORyCFEh5jSgpmNusSE7PGNCBJv95m7Uz2dlAPfjT3PnJFtFFSw40GXSsMiqHua
-         c7G6rZxI0OoD7Ntgb9L9kUs3F8SZwQrPuNxBS97xdN+Fa16qokeg1eqsOAZkTHEb100B
-         bJM20ZsBu8iy3N41D3/8Te7DXuc6sDUvNg8b0AhebNRtaU3G8HoTmJT1A/10QXxYvyhV
-         B2xuor10Mlc/vQs53jIEgK3pf/Vak8bKa8aaMWNjBf+yNYEjTrHmXvNAGaMY8yNOSrEW
-         Rdiw==
-X-Gm-Message-State: AOJu0Yy4KJP5N8pQrq9649BEe52fstnADEQNNfBu6lYgxbZh8yH06w5h
-        8VvIlru9+eDWcQHXQBQeqP/BHw==
-X-Google-Smtp-Source: AGHT+IHcrhdGZU6crsuk18nFD4cu1qWw7VPP+T0+AdP+h8J/EgCXLVdYCouqFEEXXaCm890UjwpwOg==
-X-Received: by 2002:a1c:740b:0:b0:3fe:5053:1a0b with SMTP id p11-20020a1c740b000000b003fe50531a0bmr4034769wmc.11.1691436692253;
-        Mon, 07 Aug 2023 12:31:32 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691436693; x=1692041493;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eAPKS4SAXmZKxicJb9ydkGPtaas2WIonOZ7to+HEfxA=;
+        b=ayYEAN6jtgNPSf2r3+II1FnY5Z4vhhFjjfYNnJX3PV7XYknfW1CvVYUY+Grchh42tw
+         7PT5GbJCsjjupFuZWTxriB/ldVcjjamOivjByDPaaZVGamidQDlqOHeDBeTNTtZHp1YK
+         bLiUZdSnATWatqgaHa+dAQJINvUj1tIrjjjro7JChihV8X/kvSEsvpkNdj6CGI95e7CX
+         XLbHtF0TY/hF9xSnMEoVkD4Fg0y65qTcug4ryxblQJt4VjF0wYcTfPo081Q8QltyVgo7
+         IMEZqSl+HKZ9i2Oy3krclPIF5oVFLjJ3B+W8DkAVz9BtbG96iJUdXlJkAUKKikjQ4wry
+         B7Jw==
+X-Gm-Message-State: AOJu0YwSerWNzwB1CSnf/aqp8HKSssRdHAResL5Glc2B+RphnGZAqYai
+        vetHi0nuYGqGC7gpQPt/ulWJsw==
+X-Google-Smtp-Source: AGHT+IFftT9bB5ixmjqvw1q7hvp1QMCeUhqraDuekV0noaWoXd5f9+2RWAbtpR5sMmr8DxPlkMO5oQ==
+X-Received: by 2002:a5d:6683:0:b0:317:67fa:eeb4 with SMTP id l3-20020a5d6683000000b0031767faeeb4mr7411809wru.57.1691436693519;
+        Mon, 07 Aug 2023 12:31:33 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:b3d6:9e6:79d9:37cd])
-        by smtp.gmail.com with ESMTPSA id l7-20020a7bc347000000b003fbdbd0a7desm15985654wmj.27.2023.08.07.12.31.31
+        by smtp.gmail.com with ESMTPSA id l7-20020a7bc347000000b003fbdbd0a7desm15985654wmj.27.2023.08.07.12.31.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 12:31:31 -0700 (PDT)
+        Mon, 07 Aug 2023 12:31:33 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -68,15 +69,17 @@ Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 0/2] net: stmmac: allow sharing MDIO lines
-Date:   Mon,  7 Aug 2023 21:31:00 +0200
-Message-Id: <20230807193102.6374-1-brgl@bgdev.pl>
+Subject: [PATCH 1/2] dt-bindings: net: snps,dwmac: document the snps,shared-mdio property
+Date:   Mon,  7 Aug 2023 21:31:01 +0200
+Message-Id: <20230807193102.6374-2-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230807193102.6374-1-brgl@bgdev.pl>
+References: <20230807193102.6374-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -85,20 +88,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Two MACs may share MDIO lines to the PHYs. Let's allow that in the
-stmmac driver by providing a new device-tree property allowing one MAC
-node to reference the MDIO bus defined on a second MAC node.
+Two MACs may share one MDIO lines to their respective PHYs. In this case
+one of the MACs is the logical "owner" of the bus, while the other can be
+considered a secondary controller. Add a new property that allows one
+MAC node to reference the MDIO node on a different MAC over a phandle.
 
-Bartosz Golaszewski (2):
-  dt-bindings: net: snps,dwmac: document the snps,shared-mdio property
-  net: stmmac: support shared MDIO
-
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 6 ++++++
- drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c     | 8 ++++++++
- drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 6 ++++++
- include/linux/stmmac.h                                | 1 +
- 4 files changed, 21 insertions(+)
+ 1 file changed, 6 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+index ddf9522a5dc2..f9c2285674d1 100644
+--- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+@@ -500,6 +500,12 @@ properties:
+     required:
+       - compatible
+ 
++  snps,shared-mdio:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle to the mdio node defined on a different MAC node which this
++      device shares.
++
+   stmmac-axi-config:
+     type: object
+     unevaluatedProperties: false
 -- 
 2.39.2
 
