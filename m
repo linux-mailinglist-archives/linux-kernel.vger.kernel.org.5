@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B31773006
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA8677300E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbjHGUAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 16:00:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
+        id S229454AbjHGUDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 16:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjHGUAf (ORCPT
+        with ESMTP id S229504AbjHGUDG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 16:00:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB9CE79;
-        Mon,  7 Aug 2023 13:00:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 30D71621D1;
-        Mon,  7 Aug 2023 20:00:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 893A4C433CA;
-        Mon,  7 Aug 2023 20:00:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691438433;
-        bh=6x1f0CDkPY07PiLmERMbBg0AbE6kPaoNOevutTQlpsU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kq3NK0iHwGA7dWaTY9/KwSdKcbo0/NXa9khrMylmw0zeW/3Lczndrres/GalYAeaz
-         QfpoMnzBZGNsajgPx/MCGvgyTg0XkKmegC06/sg2owA5BUpya7+yp3+YNzzOX7qMXC
-         H5eLR6550J5ndHYkJqgvZ10t9K5y3qWBVoGk3AYLAaCyX/k9CHBduUZIONOdSFku8c
-         EQNnNxJeC/07cD4nyjTZ+O4krJ/v8E1T1WES8cD6lofs7vC35PpRmxWgkMTiXZ9Mh3
-         cI6DZRYQCvuSy24qIvWp4abPaR8oAhFF4Kj1YBz8jorNAAXJhn9NM0kneovabArsrQ
-         BnOJUuu2J06UA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 59C1BE505D4;
-        Mon,  7 Aug 2023 20:00:33 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 7 Aug 2023 16:03:06 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42192B1;
+        Mon,  7 Aug 2023 13:03:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=wFuRcpPA6Dr272QXy0vNv1CuM8nKwgLSfUQGS099Afw=; b=4gCHpEF4M5Z6cpd6p6Go2bm3nR
+        ovr+oN5RwdbhrFh6CsumTwg94XScINmW8j2eFNTGxi6HMT5fXU8CYFvf3Rj3YIDl/mZxqtnDM8P2O
+        bG4UUviDbjZBjuIz8IeQ70ZMIAlQ1m8Gq9xh7O3c1XN8VW6e1/bm55CW4OuFecSUnQLE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qT6RQ-003O4i-7a; Mon, 07 Aug 2023 22:03:00 +0200
+Date:   Mon, 7 Aug 2023 22:03:00 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 9/9] arm64: dts: qcom: sa8775p-ride: enable EMAC1
+Message-ID: <2d88a48e-e8c1-463e-8d41-dc24e8579dfe@lunn.ch>
+References: <20230807193507.6488-1-brgl@bgdev.pl>
+ <20230807193507.6488-10-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [f2fs-dev] [PATCH] Revert "f2fs: clean up w/
- sbi->log_sectors_per_block"
-From:   patchwork-bot+f2fs@kernel.org
-Message-Id: <169143843336.8972.4125102884764821098.git-patchwork-notify@kernel.org>
-Date:   Mon, 07 Aug 2023 20:00:33 +0000
-References: <20230807195219.371131-1-jaegeuk@kernel.org>
-In-Reply-To: <20230807195219.371131-1-jaegeuk@kernel.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        shinichiro.kawasaki@wdc.com, stable@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807193507.6488-10-brgl@bgdev.pl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to jaegeuk/f2fs.git (dev)
-by Jaegeuk Kim <jaegeuk@kernel.org>:
-
-On Mon,  7 Aug 2023 12:52:19 -0700 you wrote:
-> This reverts commit bfd476623999118d9c509cb0fa9380f2912bc225.
+On Mon, Aug 07, 2023 at 09:35:07PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> Shinichiro Kawasaki reported:
+> Enable the second MAC on sa8775p-ride.
 > 
-> When I ran workloads on f2fs using v6.5-rcX with fixes [1][2] and a zoned block
-> devices with 4kb logical block size, I observe mount failure as follows. When
-> I revert this commit, the failure goes away.
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sa8775p-ride.dts | 74 +++++++++++++++++++++++
+>  1 file changed, 74 insertions(+)
 > 
-> [...]
+> diff --git a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
+> index af50aa2d9b10..0862bfb4c580 100644
+> --- a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
+> +++ b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
+> @@ -356,6 +356,80 @@ queue3 {
+>  	};
+>  };
+>  
+> +&ethernet1 {
+> +	phy-mode = "sgmii";
+> +	phy-handle = <&sgmii_phy1>;
 
-Here is the summary with links:
-  - [f2fs-dev] Revert "f2fs: clean up w/ sbi->log_sectors_per_block"
-    https://git.kernel.org/jaegeuk/f2fs/c/f7a177b8690e
+This should be all you need.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> +	snps,shared-mdio = <&mdio0>;
 
+This is not needed, since it is implicit in the phy-handle.
 
+You need to debug why the existing -EPROBE_DEFER is not working.
+
+    Andrew
