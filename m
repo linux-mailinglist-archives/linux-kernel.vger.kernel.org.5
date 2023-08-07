@@ -2,167 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40716771ABD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9CD771AC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbjHGGuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
+        id S230191AbjHGGv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbjHGGuA (ORCPT
+        with ESMTP id S229751AbjHGGvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:50:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D6E1BF5;
-        Sun,  6 Aug 2023 23:49:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 7 Aug 2023 02:51:23 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813A910C2
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:51:20 -0700 (PDT)
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A51361588;
-        Mon,  7 Aug 2023 06:49:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 560CAC433C8;
-        Mon,  7 Aug 2023 06:49:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691390979;
-        bh=zlG4XdXdEpC54rcZoPhBS/p5nrcyfvD1Z3WKRvALoqk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q4INJuoaj4RDLwYhiq+qDhUwK96mCQ5IDS6Lape7RZ73ZgbZUhVYtx3unt/mCRClf
-         k7np5U2H4wvBHj0c7fFzVxbxWYDbsJEcpNV5uB4ibxp66MJ0yb28iDCJhEWF7KWg1b
-         3s4P2ZyV7ovH/Svx20xalERpCY59ryGgBrT7K0dWKF2U54ZvJ9c5LpPiL7tjzeAEsq
-         39jYUPsTlSyvg+m3PI/8RMmyHDy0ATihAq9yAxE07QYZiiy5Q4KEZ2KzCrCLLKIs5Q
-         oFlMtbn4UG1+rDU5v0LBZVw4AHPsKUd4sSyxLfMYHpbFh5sPK1H9zt/9ZldWPTfa+T
-         S+RnhQ+eLI78g==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>
-Cc:     linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [RFC PATCH v2 6/6] bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
-Date:   Mon,  7 Aug 2023 15:49:33 +0900
-Message-Id: <169139097360.324433.2521527070503682979.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <169139090386.324433.6412259486776991296.stgit@devnote2>
-References: <169139090386.324433.6412259486776991296.stgit@devnote2>
-User-Agent: StGit/0.19
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B050E413C3
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:51:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1691391078;
+        bh=PggsEy84fZWlgbba8z1nKEleWVdKwuckVEDccJes6ig=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=dIVjAUJhYlSvSjL9mY+S4ClLJCUFUHP0LZ3aKRZogfuG5bDPL4llzabrQ72dRP2Zh
+         GzWjBJsisaygwFjidK+DtYbX08JNMAZFpSAO1a0SSwvmsLenpu4ENb+MLuZJ2nfpp1
+         b4FRgBOqN8FhNTW71f+CKXoEYMcyllOmix0Ro/7kJKoy2zY3eKJ2nezFZU1H2KQFkM
+         z50Nh4NlsmPDSo1GlrfV1MrfjIqDFCtxhdX7d/r0Tv1hIgAdAw4E1HVl5R93GITYcH
+         n/+hpsCCk4RIrCPRREaaJMwtE+eK1drHKzKaHvnteeXRY2SK8mXO3Ay4ghMPVFJ4eD
+         ccfWAyotR2RmQ==
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3a7a17912d2so481885b6e.2
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 23:51:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691391077; x=1691995877;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PggsEy84fZWlgbba8z1nKEleWVdKwuckVEDccJes6ig=;
+        b=HF6n+iRDwgW5/vppTrS+6+Pm/n1qATWQ2ewHRcKAun5/eAGym2sJCUKm8lkhSPmoW+
+         +GLvJqOB6P3641Dd0ZDpEzALckC5UcwbaFsSejZRAOsOjKwkrCtuUl3pvycea98hvNfW
+         jTcXi+NB2h2avxXWqXZgp0DvhItHnpbVskLZpPajSiloOe+hX5k/ZGrrpnMrp5ZmKEs1
+         4N5LdXgKCzbHv1NOjKsb/gt3emB6Bp2JmzUC9o6L+ol6NNjPlZsWYREB+oKfmC6KvGQN
+         KJAVFQhr85Puda8fqDzJkXfl4/c6bA/Ya1WWgAgzvj7278GrkUgmGHCeYwEY0rOTZpMp
+         u0Fw==
+X-Gm-Message-State: AOJu0Yxhv7th1xw4qB7/vikDZ+kDKSLALblFi2e521jI4m++EE3YGg26
+        HCXrH+oNp3l0nmYrA6P8GJ6EjS8JcBjbGMj1ifVn3v5H/X0wocXI++RX1xzh7h0jso1zFSLmfYz
+        j7ED2DlQToElvI9D3HrEYUf3uITh8ATXLsUTy8cfTv5hNkDLTujMLTk3Wzg==
+X-Received: by 2002:a05:6358:2484:b0:139:c7cb:77cd with SMTP id m4-20020a056358248400b00139c7cb77cdmr8851272rwc.11.1691391077170;
+        Sun, 06 Aug 2023 23:51:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFqBAqtQZNmd5IKvfl34fA+arv+IV2EwCvvh/g5BrkOOdPEx67IoUKVYwuTDYTcWc9DhYFcafDN9Uj1PG01jhE=
+X-Received: by 2002:a05:6358:2484:b0:139:c7cb:77cd with SMTP id
+ m4-20020a056358248400b00139c7cb77cdmr8851256rwc.11.1691391076694; Sun, 06 Aug
+ 2023 23:51:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com>
+ <20230804084858.126104-4-aleksandr.mikhalitsyn@canonical.com> <8446e5c9-7dd7-a1e9-e262-13811ee9e640@redhat.com>
+In-Reply-To: <8446e5c9-7dd7-a1e9-e262-13811ee9e640@redhat.com>
+From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Date:   Mon, 7 Aug 2023 08:51:05 +0200
+Message-ID: <CAEivzxedfaD7cPfQ-sspJabw_P6zSJtOrbiAGYN35LGXPoSwcg@mail.gmail.com>
+Subject: Re: [PATCH v9 03/12] ceph: handle idmapped mounts in create_request_message()
+To:     Xiubo Li <xiubli@redhat.com>
+Cc:     brauner@kernel.org, stgraber@ubuntu.com,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Enable kprobe_multi feature if CONFIG_FPROBE is enabled. The pt_regs is
-converted from ftrace_regs by ftrace_partial_regs(), thus some registers
-may always returns 0. But it should be enough for function entry (access
-arguments) and exit (access return value).
-
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- kernel/trace/bpf_trace.c |   22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 99c5f95360f9..0725272a3de2 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2460,7 +2460,7 @@ static int __init bpf_event_init(void)
- fs_initcall(bpf_event_init);
- #endif /* CONFIG_MODULES */
- 
--#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-+#ifdef CONFIG_FPROBE
- struct bpf_kprobe_multi_link {
- 	struct bpf_link link;
- 	struct fprobe fp;
-@@ -2482,6 +2482,8 @@ struct user_syms {
- 	char *buf;
- };
- 
-+static DEFINE_PER_CPU(struct pt_regs, bpf_kprobe_multi_pt_regs);
-+
- static int copy_user_syms(struct user_syms *us, unsigned long __user *usyms, u32 cnt)
- {
- 	unsigned long __user usymbol;
-@@ -2623,13 +2625,14 @@ static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
- 
- static int
- kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
--			   unsigned long entry_ip, struct pt_regs *regs)
-+			   unsigned long entry_ip, struct ftrace_regs *fregs)
- {
- 	struct bpf_kprobe_multi_run_ctx run_ctx = {
- 		.link = link,
- 		.entry_ip = entry_ip,
- 	};
- 	struct bpf_run_ctx *old_run_ctx;
-+	struct pt_regs *regs;
- 	int err;
- 
- 	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
-@@ -2639,6 +2642,7 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
- 
- 	migrate_disable();
- 	rcu_read_lock();
-+	regs = ftrace_partial_regs(fregs, this_cpu_ptr(&bpf_kprobe_multi_pt_regs));
- 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
- 	err = bpf_prog_run(link->link.prog, regs);
- 	bpf_reset_run_ctx(old_run_ctx);
-@@ -2656,13 +2660,9 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
- 			  void *data)
- {
- 	struct bpf_kprobe_multi_link *link;
--	struct pt_regs *regs = ftrace_get_regs(fregs);
+On Mon, Aug 7, 2023 at 3:25=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wrote:
+>
+>
+> On 8/4/23 16:48, Alexander Mikhalitsyn wrote:
+> > From: Christian Brauner <brauner@kernel.org>
+> >
+> > Inode operations that create a new filesystem object such as ->mknod,
+> > ->create, ->mkdir() and others don't take a {g,u}id argument explicitly=
+.
+> > Instead the caller's fs{g,u}id is used for the {g,u}id of the new
+> > filesystem object.
+> >
+> > In order to ensure that the correct {g,u}id is used map the caller's
+> > fs{g,u}id for creation requests. This doesn't require complex changes.
+> > It suffices to pass in the relevant idmapping recorded in the request
+> > message. If this request message was triggered from an inode operation
+> > that creates filesystem objects it will have passed down the relevant
+> > idmaping. If this is a request message that was triggered from an inode
+> > operation that doens't need to take idmappings into account the initial
+> > idmapping is passed down which is an identity mapping.
+> >
+> > This change uses a new cephfs protocol extension CEPHFS_FEATURE_HAS_OWN=
+ER_UIDGID
+> > which adds two new fields (owner_{u,g}id) to the request head structure=
+.
+> > So, we need to ensure that MDS supports it otherwise we need to fail
+> > any IO that comes through an idmapped mount because we can't process it
+> > in a proper way. MDS server without such an extension will use caller_{=
+u,g}id
+> > fields to set a new inode owner UID/GID which is incorrect because call=
+er_{u,g}id
+> > values are unmapped. At the same time we can't map these fields with an
+> > idmapping as it can break UID/GID-based permission checks logic on the
+> > MDS side. This problem was described with a lot of details at [1], [2].
+> >
+> > [1] https://lore.kernel.org/lkml/CAEivzxfw1fHO2TFA4dx3u23ZKK6Q+EThfzuib=
+rhA3RKM=3DZOYLg@mail.gmail.com/
+> > [2] https://lore.kernel.org/all/20220104140414.155198-3-brauner@kernel.=
+org/
+> >
+> > Link: https://github.com/ceph/ceph/pull/52575
+> > Link: https://tracker.ceph.com/issues/62217
+> > Cc: Xiubo Li <xiubli@redhat.com>
+> > Cc: Jeff Layton <jlayton@kernel.org>
+> > Cc: Ilya Dryomov <idryomov@gmail.com>
+> > Cc: ceph-devel@vger.kernel.org
+> > Co-Developed-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical=
+.com>
+> > Signed-off-by: Christian Brauner <brauner@kernel.org>
+> > Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.c=
+om>
+> > ---
+> > v7:
+> >       - reworked to use two new fields for owner UID/GID (https://githu=
+b.com/ceph/ceph/pull/52575)
+> > v8:
+> >       - properly handled case when old MDS used with new kernel client
+> > ---
+> >   fs/ceph/mds_client.c         | 47 +++++++++++++++++++++++++++++++++--=
 -
--	if (!regs)
--		return 0;
- 
- 	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
--	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
-+	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
- 	return 0;
- }
- 
-@@ -2672,13 +2672,9 @@ kprobe_multi_link_exit_handler(struct fprobe *fp, unsigned long fentry_ip,
- 			       void *data)
- {
- 	struct bpf_kprobe_multi_link *link;
--	struct pt_regs *regs = ftrace_get_regs(fregs);
--
--	if (!regs)
--		return;
- 
- 	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
--	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
-+	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
- }
- 
- static int symbols_cmp_r(const void *a, const void *b, const void *priv)
-@@ -2918,7 +2914,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 	kvfree(cookies);
- 	return err;
- }
--#else /* !CONFIG_DYNAMIC_FTRACE_WITH_REGS */
-+#else /* !CONFIG_FPROBE */
- int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- {
- 	return -EOPNOTSUPP;
+> >   fs/ceph/mds_client.h         |  5 +++-
+> >   include/linux/ceph/ceph_fs.h |  5 +++-
+> >   3 files changed, 52 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+> > index 8829f55103da..41e4bf3811c4 100644
+> > --- a/fs/ceph/mds_client.c
+> > +++ b/fs/ceph/mds_client.c
+> > @@ -2902,6 +2902,17 @@ static void encode_mclientrequest_tail(void **p,=
+ const struct ceph_mds_request *
+> >       }
+> >   }
+> >
+> > +static inline u16 mds_supported_head_version(struct ceph_mds_session *=
+session)
+> > +{
+> > +     if (!test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD, &session->s_featur=
+es))
+> > +             return 1;
+> > +
+> > +     if (!test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_featur=
+es))
+> > +             return 2;
+> > +
+> > +     return CEPH_MDS_REQUEST_HEAD_VERSION;
+> > +}
+> > +
+> >   static struct ceph_mds_request_head_legacy *
+> >   find_legacy_request_head(void *p, u64 features)
+> >   {
+> > @@ -2923,6 +2934,7 @@ static struct ceph_msg *create_request_message(st=
+ruct ceph_mds_session *session,
+> >   {
+> >       int mds =3D session->s_mds;
+> >       struct ceph_mds_client *mdsc =3D session->s_mdsc;
+> > +     struct ceph_client *cl =3D mdsc->fsc->client;
+> >       struct ceph_msg *msg;
+> >       struct ceph_mds_request_head_legacy *lhead;
+> >       const char *path1 =3D NULL;
+> > @@ -2936,7 +2948,7 @@ static struct ceph_msg *create_request_message(st=
+ruct ceph_mds_session *session,
+> >       void *p, *end;
+> >       int ret;
+> >       bool legacy =3D !(session->s_con.peer_features & CEPH_FEATURE_FS_=
+BTIME);
+> > -     bool old_version =3D !test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD, &=
+session->s_features);
+> > +     u16 request_head_version =3D mds_supported_head_version(session);
+> >
+> >       ret =3D set_request_path_attr(mdsc, req->r_inode, req->r_dentry,
+> >                             req->r_parent, req->r_path1, req->r_ino1.in=
+o,
+> > @@ -2977,8 +2989,10 @@ static struct ceph_msg *create_request_message(s=
+truct ceph_mds_session *session,
+> >        */
+> >       if (legacy)
+> >               len =3D sizeof(struct ceph_mds_request_head_legacy);
+> > -     else if (old_version)
+> > +     else if (request_head_version =3D=3D 1)
+> >               len =3D sizeof(struct ceph_mds_request_head_old);
+> > +     else if (request_head_version =3D=3D 2)
+> > +             len =3D offsetofend(struct ceph_mds_request_head, ext_num=
+_fwd);
+> >       else
+> >               len =3D sizeof(struct ceph_mds_request_head);
+> >
+> > @@ -3028,6 +3042,16 @@ static struct ceph_msg *create_request_message(s=
+truct ceph_mds_session *session,
+> >       lhead =3D find_legacy_request_head(msg->front.iov_base,
+> >                                        session->s_con.peer_features);
+> >
+> > +     if ((req->r_mnt_idmap !=3D &nop_mnt_idmap) &&
+> > +         !test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_featur=
+es)) {
+> > +             pr_err_ratelimited_client(cl,
+> > +                     "idmapped mount is used and CEPHFS_FEATURE_HAS_OW=
+NER_UIDGID"
+> > +                     " is not supported by MDS. Fail request with -EIO=
+.\n");
+> > +
+> > +             ret =3D -EIO;
+> > +             goto out_err;
+> > +     }
+> > +
+> >       /*
+> >        * The ceph_mds_request_head_legacy didn't contain a version fiel=
+d, and
+> >        * one was added when we moved the message version from 3->4.
+> > @@ -3035,17 +3059,34 @@ static struct ceph_msg *create_request_message(=
+struct ceph_mds_session *session,
+> >       if (legacy) {
+> >               msg->hdr.version =3D cpu_to_le16(3);
+> >               p =3D msg->front.iov_base + sizeof(*lhead);
+> > -     } else if (old_version) {
+> > +     } else if (request_head_version =3D=3D 1) {
+> >               struct ceph_mds_request_head_old *ohead =3D msg->front.io=
+v_base;
+> >
+> >               msg->hdr.version =3D cpu_to_le16(4);
+> >               ohead->version =3D cpu_to_le16(1);
+> >               p =3D msg->front.iov_base + sizeof(*ohead);
+> > +     } else if (request_head_version =3D=3D 2) {
+> > +             struct ceph_mds_request_head *nhead =3D msg->front.iov_ba=
+se;
+> > +
+> > +             msg->hdr.version =3D cpu_to_le16(6);
+> > +             nhead->version =3D cpu_to_le16(2);
+> > +
+> > +             p =3D msg->front.iov_base + offsetofend(struct ceph_mds_r=
+equest_head, ext_num_fwd);
+> >       } else {
+> >               struct ceph_mds_request_head *nhead =3D msg->front.iov_ba=
+se;
+> > +             kuid_t owner_fsuid;
+> > +             kgid_t owner_fsgid;
+> >
+> >               msg->hdr.version =3D cpu_to_le16(6);
+> >               nhead->version =3D cpu_to_le16(CEPH_MDS_REQUEST_HEAD_VERS=
+ION);
+> > +             nhead->struct_len =3D sizeof(struct ceph_mds_request_head=
+);
+> > +
+> > +             owner_fsuid =3D from_vfsuid(req->r_mnt_idmap, &init_user_=
+ns,
+> > +                                       VFSUIDT_INIT(req->r_cred->fsuid=
+));
+> > +             owner_fsgid =3D from_vfsgid(req->r_mnt_idmap, &init_user_=
+ns,
+> > +                                       VFSGIDT_INIT(req->r_cred->fsgid=
+));
+> > +             nhead->owner_uid =3D cpu_to_le32(from_kuid(&init_user_ns,=
+ owner_fsuid));
+> > +             nhead->owner_gid =3D cpu_to_le32(from_kgid(&init_user_ns,=
+ owner_fsgid));
+> >               p =3D msg->front.iov_base + sizeof(*nhead);
+> >       }
+> >
+> > diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
+> > index e3bbf3ba8ee8..8f683e8203bd 100644
+> > --- a/fs/ceph/mds_client.h
+> > +++ b/fs/ceph/mds_client.h
+> > @@ -33,8 +33,10 @@ enum ceph_feature_type {
+> >       CEPHFS_FEATURE_NOTIFY_SESSION_STATE,
+> >       CEPHFS_FEATURE_OP_GETVXATTR,
+> >       CEPHFS_FEATURE_32BITS_RETRY_FWD,
+> > +     CEPHFS_FEATURE_NEW_SNAPREALM_INFO,
+> > +     CEPHFS_FEATURE_HAS_OWNER_UIDGID,
+> >
+> > -     CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_32BITS_RETRY_FWD,
+> > +     CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_HAS_OWNER_UIDGID,
+> >   };
+> >
+> >   #define CEPHFS_FEATURES_CLIENT_SUPPORTED {  \
+> > @@ -49,6 +51,7 @@ enum ceph_feature_type {
+> >       CEPHFS_FEATURE_NOTIFY_SESSION_STATE,    \
+> >       CEPHFS_FEATURE_OP_GETVXATTR,            \
+> >       CEPHFS_FEATURE_32BITS_RETRY_FWD,        \
+> > +     CEPHFS_FEATURE_HAS_OWNER_UIDGID,        \
+> >   }
+> >
+> >   /*
+> > diff --git a/include/linux/ceph/ceph_fs.h b/include/linux/ceph/ceph_fs.=
+h
+> > index 5f2301ee88bc..b91699b08f26 100644
+> > --- a/include/linux/ceph/ceph_fs.h
+> > +++ b/include/linux/ceph/ceph_fs.h
+> > @@ -499,7 +499,7 @@ struct ceph_mds_request_head_legacy {
+> >       union ceph_mds_request_args args;
+> >   } __attribute__ ((packed));
+> >
+> > -#define CEPH_MDS_REQUEST_HEAD_VERSION  2
+> > +#define CEPH_MDS_REQUEST_HEAD_VERSION  3
+> >
+> >   struct ceph_mds_request_head_old {
+> >       __le16 version;                /* struct version */
+> > @@ -530,6 +530,9 @@ struct ceph_mds_request_head {
+> >
+> >       __le32 ext_num_retry;          /* new count retry attempts */
+> >       __le32 ext_num_fwd;            /* new count fwd attempts */
+> > +
+> > +     __le32 struct_len;             /* to store size of struct ceph_md=
+s_request_head */
+> > +     __le32 owner_uid, owner_gid;   /* used for OPs which create inode=
+s */
+>
+> Let's also initialize them to -1 for all the other requests as we do in
+> your PR.
 
+They are always initialized already. As you can see from the code we
+don't have any extra conditions
+on filling these fields. We always fill them with an appropriate
+UID/GID. If mount is not idmapped then it's just =3D=3D caller_uid/gid,
+if mount idmapped then it's idmapped caller_uid/gid.
+
+Kind regards,
+Alex
+
+>
+> Thanks
+>
+> - Xiubo
+>
+>
+>
+> >   } __attribute__ ((packed));
+> >
+> >   /* cap/lease release record */
+>
