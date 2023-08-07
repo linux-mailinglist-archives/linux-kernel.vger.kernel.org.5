@@ -2,240 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA62772511
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBB777250D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbjHGNIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55520 "EHLO
+        id S230481AbjHGNIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232907AbjHGNIu (ORCPT
+        with ESMTP id S233853AbjHGNIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:08:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7791701
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:07:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691413670;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jme0rhfzh6JhD99ZB8QzeloyQi3m6yoYS6ZHD9wuvr8=;
-        b=a6IePgmJ8TUo0/05KHF6PBSiS6vjHiM4cz4Xeg/LDabRinThIW4sIxfoIXt/+jE464CMQz
-        AfkwLEfGVy3kBu2NuJzxnzaqaQmNCXvcY5yiGuE7yAEuSXoYwsTGfvjpBrwJQwi7ZDOCPa
-        mLchtT4Rvg2WgiyrLQ029oOk/Pc/DkM=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-596-ymxZUC97NSKsTe91quUnZg-1; Mon, 07 Aug 2023 09:07:48 -0400
-X-MC-Unique: ymxZUC97NSKsTe91quUnZg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-94a355cf318so361147066b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 06:07:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691413668; x=1692018468;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jme0rhfzh6JhD99ZB8QzeloyQi3m6yoYS6ZHD9wuvr8=;
-        b=lsq28bzU7SRwMVoe9dh3CGbAj26hifHN/k43cZ+WUGn9hjMUFCtOEDMP6tyijEfvm4
-         ek2JDqSV0ctG1GadqNiwpDLi6DezF0oZCjpr0gZ4WruOHa8su8dq7CRsEYOxGFf3ZYel
-         TB+8/SXARnh7iu9sw3rm4SIfmAgjbHevGuDAQV2d60SQ0hoiZ/VxDM5LuhroIJ3R2QPw
-         dzSRf6J26I0y8ZEmfasppXunkRlwRUapjgsHtHHbSS7Ifq5lkydMw2NOYZ2Nc8j6XDPK
-         IPTs5F7zrTXE7p+Cv+0148HnXenr9AaJ2C7/n4IMcKestq624zceDUyoq3Sn3uOo9d+8
-         c6mg==
-X-Gm-Message-State: AOJu0YyqBKHsQUhRZ6M6HhgF9H3TvDoRZBusP9eMIRnJ6vD+lmVXXLac
-        /3fOuW8z/R2lILfKCaSmM1FmoO1OByLjJfXgJZmqEDKC5VctqarTgCw/g/b18cL/6wLK3ybwggO
-        2M2tTtbBGnynHGv/BgCpMc88/
-X-Received: by 2002:a17:906:1099:b0:99c:9e69:6a1c with SMTP id u25-20020a170906109900b0099c9e696a1cmr8450752eju.67.1691413667811;
-        Mon, 07 Aug 2023 06:07:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHvInCHNia93LEtdHlepW/JiEfDS2iww5AfvYdIACudI7+y/DnDZC10te1SlCSv/d3wNgreXw==
-X-Received: by 2002:a17:906:1099:b0:99c:9e69:6a1c with SMTP id u25-20020a170906109900b0099c9e696a1cmr8450735eju.67.1691413667517;
-        Mon, 07 Aug 2023 06:07:47 -0700 (PDT)
-Received: from imammedo.users.ipa.redhat.com (nat-pool-brq-t.redhat.com. [213.175.37.10])
-        by smtp.gmail.com with ESMTPSA id y16-20020a170906071000b00992d122af63sm5190783ejb.89.2023.08.07.06.07.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 06:07:46 -0700 (PDT)
-Date:   Mon, 7 Aug 2023 15:07:46 +0200
-From:   Igor Mammedov <imammedo@redhat.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, terraluna977@gmail.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org, mst@redhat.com,
-        rafael@kernel.org, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH 1/1] PCI: acpiphp:: use
- pci_assign_unassigned_bridge_resources() only if bus->self not NULL
-Message-ID: <20230807150746.71ca1df3@imammedo.users.ipa.redhat.com>
-In-Reply-To: <20230804232709.GA174043@bhelgaas>
-References: <20230726123518.2361181-2-imammedo@redhat.com>
-        <20230804232709.GA174043@bhelgaas>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 7 Aug 2023 09:08:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373D310FD;
+        Mon,  7 Aug 2023 06:08:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BA00561A73;
+        Mon,  7 Aug 2023 13:08:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FF49C433C8;
+        Mon,  7 Aug 2023 13:08:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691413688;
+        bh=T4H5FHLaTu/CMH204/FAnov8lc6ZCUi87TDnDHHPTE4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CRco9KD2M2RT13Q9QDFHqw7O9kx+gb9Xfxmh2X85dVJCyOaKFD6d/qS219QiH46jH
+         fCk6AKnukj8xDtWQZOU2Y/IMZ14PoR6VgFPb+iX39ookD+LXdK9NkS9D4jI6xeP3Ql
+         281kAbXQJsCXmYSDlwtKYoYTwYzThA/qadNhhVKaDilCJVrADlV5f/1QYueQxzPaIx
+         O5bd2m0pEu6A232+Gzt/JTlXjpg+JwL3yJgLQ0rosx+A8vUZWe9RNcLMqchZ8UD9aL
+         UX7t2E6P0rjgbcYQu0VY9zxIL4aDDjmdlfi/8UwmX7y+o8EFqdKTTIpev+Kgs1NM6d
+         AZV9cjvUh1Mng==
+Date:   Mon, 7 Aug 2023 15:08:01 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Scott Mayhew <smayhew@redhat.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Subject: Re: [PATCH v7] vfs, security: Fix automount superblock LSM init
+ problem, preventing NFS sb sharing
+Message-ID: <20230807-gastdirigent-laufkundschaft-17e681a8e14e@brauner>
+References: <20230804-master-v7-1-5d4e48407298@kernel.org>
+ <20230805-anrechnen-medien-c639c85ebd42@brauner>
+ <650f7b6ea6b55de4c9cbc791af0da4f800907c21.camel@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <650f7b6ea6b55de4c9cbc791af0da4f800907c21.camel@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Aug 2023 18:27:09 -0500
-Bjorn Helgaas <helgaas@kernel.org> wrote:
-
-> On Wed, Jul 26, 2023 at 02:35:18PM +0200, Igor Mammedov wrote:
-> > Commit [1] switched acpiphp hotplug to use
-> >    pci_assign_unassigned_bridge_resources()
-> > which depends on bridge being available, however in some cases
-> > when acpiphp is in use, enable_slot() can get a slot without
-> > bridge associated.  
+On Mon, Aug 07, 2023 at 08:57:03AM -0400, Jeff Layton wrote:
+> On Sat, 2023-08-05 at 14:43 +0200, Christian Brauner wrote:
+> > On Fri, Aug 04, 2023 at 12:09:34PM -0400, Jeff Layton wrote:
+> > > From: David Howells <dhowells@redhat.com>
+> > > 
+> > > When NFS superblocks are created by automounting, their LSM parameters
+> > > aren't set in the fs_context struct prior to sget_fc() being called,
+> > > leading to failure to match existing superblocks.
+> > > 
+> > > This bug leads to messages like the following appearing in dmesg when
+> > > fscache is enabled:
+> > > 
+> > >     NFS: Cache volume key already in use (nfs,4.2,2,108,106a8c0,1,,,,100000,100000,2ee,3a98,1d4c,3a98,1)
+> > > 
+> > > Fix this by adding a new LSM hook to load fc->security for submount
+> > > creation when alloc_fs_context() is creating the fs_context for it.
+> > > 
+> > > Signed-off-by: David Howells <dhowells@redhat.com>
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > Fixes: 9bc61ab18b1d ("vfs: Introduce fs_context, switch vfs_kern_mount() to it.")
+> > > Fixes: 779df6a5480f ("NFS: Ensure security label is set for root inode)
+> > > Tested-by: Jeff Layton <jlayton@kernel.org>
+> > > Reviewed-by: Jeff Layton <jlayton@kernel.org>
+> > > Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+> > > Acked-by: "Christian Brauner (Microsoft)" <brauner@kernel.org>
+> > > Link: https://lore.kernel.org/r/165962680944.3334508.6610023900349142034.stgit@warthog.procyon.org.uk/ # v1
+> > > Link: https://lore.kernel.org/r/165962729225.3357250.14350728846471527137.stgit@warthog.procyon.org.uk/ # v2
+> > > Link: https://lore.kernel.org/r/165970659095.2812394.6868894171102318796.stgit@warthog.procyon.org.uk/ # v3
+> > > Link: https://lore.kernel.org/r/166133579016.3678898.6283195019480567275.stgit@warthog.procyon.org.uk/ # v4
+> > > Link: https://lore.kernel.org/r/217595.1662033775@warthog.procyon.org.uk/ # v5
+> > > ---
+> > > ver #7)
+> > >  - Drop lsm_set boolean
+> > >  - Link to v6: https://lore.kernel.org/r/20230802-master-v6-1-45d48299168b@kernel.org
+> > > 
+> > > ver #6)
+> > >  - Rebase onto v6.5.0-rc4
+> > > 
+> > > ver #5)
+> > >  - Removed unused variable.
+> > >  - Only allocate smack_mnt_opts if we're dealing with a submount.
+> > > 
+> > > ver #4)
+> > >  - When doing a FOR_SUBMOUNT mount, don't set the root label in SELinux or
+> > >    Smack.
+> > > 
+> > > ver #3)
+> > >  - Made LSM parameter extraction dependent on fc->purpose ==
+> > >    FS_CONTEXT_FOR_SUBMOUNT.  Shouldn't happen on FOR_RECONFIGURE.
+> > > 
+> > > ver #2)
+> > >  - Added Smack support
+> > >  - Made LSM parameter extraction dependent on reference != NULL.
+> > > ---
+> > >  fs/fs_context.c               |  4 ++++
+> > >  include/linux/lsm_hook_defs.h |  1 +
+> > >  include/linux/security.h      |  6 +++++
+> > >  security/security.c           | 14 +++++++++++
+> > >  security/selinux/hooks.c      | 25 ++++++++++++++++++++
+> > >  security/smack/smack_lsm.c    | 54 +++++++++++++++++++++++++++++++++++++++++++
+> > >  6 files changed, 104 insertions(+)
+> > > 
+> > > diff --git a/fs/fs_context.c b/fs/fs_context.c
+> > > index 851214d1d013..a523aea956c4 100644
+> > > --- a/fs/fs_context.c
+> > > +++ b/fs/fs_context.c
+> > > @@ -282,6 +282,10 @@ static struct fs_context *alloc_fs_context(struct file_system_type *fs_type,
+> > >  		break;
+> > >  	}
+> > >  
+> > > +	ret = security_fs_context_init(fc, reference);
+> > > +	if (ret < 0)
+> > > +		goto err_fc;
+> > > +
+> > >  	/* TODO: Make all filesystems support this unconditionally */
+> > >  	init_fs_context = fc->fs_type->init_fs_context;
+> > >  	if (!init_fs_context)
+> > > diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> > > index 7308a1a7599b..7ce3550154b1 100644
+> > > --- a/include/linux/lsm_hook_defs.h
+> > > +++ b/include/linux/lsm_hook_defs.h
+> > > @@ -54,6 +54,7 @@ LSM_HOOK(int, 0, bprm_creds_from_file, struct linux_binprm *bprm, struct file *f
+> > >  LSM_HOOK(int, 0, bprm_check_security, struct linux_binprm *bprm)
+> > >  LSM_HOOK(void, LSM_RET_VOID, bprm_committing_creds, struct linux_binprm *bprm)
+> > >  LSM_HOOK(void, LSM_RET_VOID, bprm_committed_creds, struct linux_binprm *bprm)
+> > > +LSM_HOOK(int, 0, fs_context_init, struct fs_context *fc, struct dentry *reference)
+> > >  LSM_HOOK(int, 0, fs_context_dup, struct fs_context *fc,
+> > >  	 struct fs_context *src_sc)
+> > >  LSM_HOOK(int, -ENOPARAM, fs_context_parse_param, struct fs_context *fc,
+> > > diff --git a/include/linux/security.h b/include/linux/security.h
+> > > index 32828502f09e..61fda06fac9d 100644
+> > > --- a/include/linux/security.h
+> > > +++ b/include/linux/security.h
+> > > @@ -293,6 +293,7 @@ int security_bprm_creds_from_file(struct linux_binprm *bprm, struct file *file);
+> > >  int security_bprm_check(struct linux_binprm *bprm);
+> > >  void security_bprm_committing_creds(struct linux_binprm *bprm);
+> > >  void security_bprm_committed_creds(struct linux_binprm *bprm);
+> > > +int security_fs_context_init(struct fs_context *fc, struct dentry *reference);
+> > >  int security_fs_context_dup(struct fs_context *fc, struct fs_context *src_fc);
+> > >  int security_fs_context_parse_param(struct fs_context *fc, struct fs_parameter *param);
+> > >  int security_sb_alloc(struct super_block *sb);
+> > > @@ -629,6 +630,11 @@ static inline void security_bprm_committed_creds(struct linux_binprm *bprm)
+> > >  {
+> > >  }
+> > >  
+> > > +static inline int security_fs_context_init(struct fs_context *fc,
+> > > +					   struct dentry *reference)
+> > 
+> > I think that's the wrong way of doing this hook. The security hook
+> > really doesn't belong into alloc_fs_context().
+> > 
+> > I think what we want is a dedicated helper similar to vfs_dup_context():
+> > 
+> > // Only pass the superblock. There's no need for the dentry. I would
+> > // avoid even passing fs_context but if that's preferred then sure.
+> > security_fs_context_submount(struct fs_context *fc, const struct super_block *sb)
+> > 
+> > vfs_submount_fs_context(struct file_system_type *fs_type, struct dentry *reference)
+> > {
+> >         fc = fs_context_for_submount(fs_type, reference);
+> > 
+> >         security_fs_context_for_submount(fc, reference->d_sb);
+> > }
+> > 
+> > This automatically ensures it's only called for submounts, the LSM
+> > doesn't need to care about fc->purpose and this isn't called
+> > in a pure allocation function for all allocation calls.
+> > 
+> > The we should switch all callers over to that new helper and unexport
+> > that fs_context_for_submount() thing completely. Yes, that's more work
+> > but that's the correct thing to do. And we need to audit fuse, cifs,
+> > afs, and nfs anyway that they work fine with the new security hook.*
+> > 
 > 
-> acpiphp is *always* in use if we get to enable_slot(), so that doesn't
-> really add information here.
-> 
-> >   1. legitimate case of hotplug on root bus
-> >       (likely not exiting on real hw, but widely used in virt world)
-> >   2. broken firmware, that sends 'Bus check' events to non
-> >      existing root ports (Dell Inspiron 7352/0W6WV0), which somehow
-> >      endup at acpiphp:enable_slot(..., bridge = 0) and with bus
-> >      without bridge assigned to it.  
+> It's the same prototype. We could just move the hook call to the end of
+> fs_context_for_submount, and that would be less churn for its callers.
 
-how about following commit message (incorporating all feed back in this thread):
+If you just add it into fs_context_for_submount() after the allocation
+and then leave that as first class citizen it's fine ofc. It's the same
+result as what I mentioned earlier. We just shouldn't put generic hooks
+in an allocation function that allocates different types of filesystem
+contexts. I prefer to have them as targeted as possible and also avoid
+unnecessary trips into the LSM layer.
 
--- cut --
-Commit [1] switched acpiphp hotplug to use
-   pci_assign_unassigned_bridge_resources()
-which depends on bridge being available, however in case
-when acpiphp is enabled [2], enable_slot() can be called without
-bridge associated.
-  1. legitimate case of hotplug on root bus
-      (widely used in virt world)
-  2. a (misbehaving) firmware, that sends 'Bus check' events
-     to non existing root ports (Dell Inspiron 7352/0W6WV0),
-     which endup at acpiphp:enable_slot(..., bridge = 0)
-     where bus has not bridge assigned to it.
-     acpihp doesn't know that it's a bridge, and bus specific
-     'PCI subsystem' can't argument ACPI context with bridge
-     information since the PCI device to get this data from
-     is/was not available.
+> Or were you wanting to do that to make this a more gradual changeover
+> for some reason?
 
-Issue is easy to reproduce with QEMU's 'pc' machine, which supports
-PCI hotplug on hostbridge slots. To reproduce boot kernel at
-commit [1] in VM started with following CLI (assuming guest root fs
-is installed on sda1 partition):
-
-   # qemu-system-x86_64 -M pc -m 1G -enable-kvm -cpu host \
-         -monitor stdio -serial file:serial.log           \
-         -kernel arch/x86/boot/bzImage                    \
-         -append "root=/dev/sda1 console=ttyS0"           \
-         guest_disk.img
-
-once guest OS is fully booted at qemu prompt:
-
-(qemu) device_add e1000
-
-(check serial.log) it will cause NULL pointer dereference at:
-
-    void pci_assign_unassigned_bridge_resources(struct pci_dev *bridge)
-    {
-        struct pci_bus *parent = bridge->subordinate;
-
-[  612.277651] BUG: kernel NULL pointer dereference, address: 0000000000000018
-[...]
-[  612.277798]  ? pci_assign_unassigned_bridge_resources+0x1f/0x260
-[  612.277804]  ? pcibios_allocate_dev_resources+0x3c/0x2a0
-[  612.277809]  enable_slot+0x21f/0x3e0
-[  612.277816]  acpiphp_hotplug_notify+0x13d/0x260
-[  612.277822]  ? __pfx_acpiphp_hotplug_notify+0x10/0x10
-[  612.277827]  acpi_device_hotplug+0xbc/0x540
-[  612.277834]  acpi_hotplug_work_fn+0x15/0x20
-[  612.277839]  process_one_work+0x1f7/0x370
-[  612.277845]  worker_thread+0x45/0x3b0
-[  612.277850]  ? __pfx_worker_thread+0x10/0x10
-[  612.277854]  kthread+0xdc/0x110
-[  612.277860]  ? __pfx_kthread+0x10/0x10
-[  612.277866]  ret_from_fork+0x28/0x40
-[  612.277871]  ? __pfx_kthread+0x10/0x10
-[  612.277876]  ret_from_fork_asm+0x1b/0x30
-
-The issue was discovered on Dell Inspiron 7352/0W6WV0 laptop with
-following sequence:
-   1. suspend to RAM
-   2. wake up with the same backtrace being observed:
-   3. 2nd suspend to RAM attempt makes laptop freeze
-
-Fix it by using __pci_bus_assign_resources() instead of
-pci_assign_unassigned_bridge_resources() as we used to do
-but only in case when bus doesn't have a bridge associated
-(to cover for the case of ACPI event on hostbridge or
-non existing root port).
-
-That let us keep hotplug on root bus working like it used to be
-and at the same time keeps resource reassignment usable on
-root ports (and other 1st level bridges) that was fixed by [1].
-
-1)
-Fixes: 40613da52b13 ("PCI: acpiphp: Reassign resources on bridge if necessary")
-2) CONFIG_HOTPLUG_PCI_ACPI=y
-
--- cut --
-
-if commit message is looking acceptable to you, I can respin
-amended patch with your suggestions taken in account.
-
-> IIUC, the Inspiron problem happens when:
-> 
->   - acpiphp_context->bridge is NULL, so hotplug_event() calls
->     enable_slot() instead of acpiphp_check_bridge(), AND
-> 
->   - acpiphp_slot->bus->self is also NULL, because enable_slot() calls
->     pci_assign_unassigned_bridge_resources() with that NULL pointer,
->     which dereferences "bridge->subordinate"
-> 
-> But I can't figure out why acpiphp_context->bridge is NULL for RP07
-> and RP08 (which don't exist), but not for RP03 (which does).
-> 
-> I guess all the acpiphp_contexts (RP03, RP07, RP08) must be allocated in
-> acpiphp_add_context() by acpiphp_init_context().
-> 
-> Woody's lspci from [1] shows only one Root Port:
-> 
->   00:1c.0 Wildcat Point-LP PCI Express Root Port #3
-> 
-> The DSDT.DSL includes:
-> 
->   Device (RP01) _ADR 0x001C0000		# 1c.0
->   Device (RP02) _ADR 0x001C0001		# 1c.1
->   Device (RP03) _ADR 0x001C0002		# 1c.2
->   Device (RP04) _ADR 0x001C0003		# 1c.3
->   Device (RP05) _ADR 0x001C0004		# 1c.4
->   Device (RP06) _ADR 0x001C0005		# 1c.5
->   Device (RP07) _ADR 0x001C0006		# 1c.6
->   Device (RP08) _ADR 0x001C0007		# 1c.7
-> 
-> I can see why we might need a Bus Check after resume to see if
-> something got added while we were suspended.  But I don't see why we
-> handle RP03 differently from RP07 and RP08.
-> 
-> Can you help me out?  I'm lost in a maze of twisty passages, all
-> alike.
-
-I'll try to trace call path and see where it leads
-(based on a guess in updated commit message: OS/nor ACPI
-has info if it's bridge when the device didn't exists
-during boot).
-
-(though, I don't think it should hold this patch.
-while it would be good to understand where bridge
-gets added in acpi context, it's not directly relevant
-to the fixing hotplug on hostbridge and buscheck events 
-on non-existing root-ports)
-
-> Bjorn
-> 
-> [1] https://lore.kernel.org/r/92150d8d-8a3a-d600-a996-f60a8e4c876c@gmail.com
-> 
-
-
+No, I think it's fine if you switch it all in one go. I just don't know
+if fuse/virtiofs submounts expect an selinux context to be bestowed upon
+them.
