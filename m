@@ -2,159 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C13BA771DE2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BC4771E02
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbjHGKXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 06:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
+        id S231303AbjHGK2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 06:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbjHGKXw (ORCPT
+        with ESMTP id S229926AbjHGK2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 06:23:52 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 941AB10F8;
-        Mon,  7 Aug 2023 03:23:50 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 235D01FB;
-        Mon,  7 Aug 2023 03:24:33 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.32.139])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A24E3F59C;
-        Mon,  7 Aug 2023 03:23:47 -0700 (PDT)
-Date:   Mon, 7 Aug 2023 11:23:44 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-perf-users@vger.kernel.org, ito-yuichi@fujitsu.com,
-        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 5/7] arm64: ipi_debug: Add support for backtrace using
- the debug IPI
-Message-ID: <ZNDGMJW01avOMShn@FVFF77S0Q05N.cambridge.arm.com>
-References: <20230601213440.2488667-1-dianders@chromium.org>
- <20230601143109.v9.5.I65981105e1f62550b0316625dd1e599deaf9e1aa@changeid>
+        Mon, 7 Aug 2023 06:28:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B764210F4;
+        Mon,  7 Aug 2023 03:28:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691404110; x=1722940110;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=dkHorrBffv4xQS+bxgJDmsQVKSSR++utvuao/xqLQqw=;
+  b=KB1HzHMVJ2OXbCG6iF/Grlc4tFUzzG1raPQhzd1EFQCKWveyHmYbJyI2
+   ghTrYZvpN+BfHiXh3eBf3S6QSKjagXccSIadCMOmH9K3hFd/+CKTzhWI+
+   46aqABLXPXHLNnCv2VFo/C53gOqHbOX0vR150jhbR9hKJqoxAXtdeTYgI
+   1FznqpPmQp3WXsWMy9poUIcro3u5fKRUWjP/wmFVAxZjvHCry07/NqZcN
+   LqFFnXkDHPLVWwu4pFh6Y3ca6oba1GsAsygkzXqqKTKy4OSHQCQqsHrgU
+   HI5YTSNMayzwhXOiCz6ta6KdvwP/u+zHKq2vSSb/Vg15HJjhA7xUjdxJE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="350818181"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="350818181"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 03:28:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="730909195"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="730909195"
+Received: from kornelo-mobl2.ger.corp.intel.com (HELO jkrzyszt-mobl2.ger.corp.intel.com) ([10.213.30.73])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 03:28:22 -0700
+From:   Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+To:     Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        igt-dev@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>,
+        Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+Subject: [PATCH v5 0/3] kunit: Expose some built-in features to modules
+Date:   Mon,  7 Aug 2023 12:23:53 +0200
+Message-ID: <20230807102352.4607-5-janusz.krzysztofik@linux.intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230601143109.v9.5.I65981105e1f62550b0316625dd1e599deaf9e1aa@changeid>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 01, 2023 at 02:31:49PM -0700, Douglas Anderson wrote:
-> From: Sumit Garg <sumit.garg@linaro.org>
-> 
-> Enable arch_trigger_cpumask_backtrace() support on arm64 using the new
-> debug IPI. With this arm64 can now get backtraces in cases where
-> callers of the trigger_xyz_backtrace() class of functions don't check
-> the return code and implement a fallback. One example is
-> `kernel.softlockup_all_cpu_backtrace`. This also allows us to
-> backtrace hard locked up CPUs in cases where the debug IPI is backed
-> by an NMI (or pseudo NMI).
-> 
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
-> Changes in v9:
-> - Added comments that we might not be using NMI always.
-> - Renamed "NMI IPI" to "debug IPI" since it might not be backed by NMI.
-> - arch_trigger_cpumask_backtrace() no longer returns bool
-> 
-> Changes in v8:
-> - Removed "#ifdef CONFIG_SMP" since arm64 is always SMP
-> 
->  arch/arm64/include/asm/irq.h  |  3 +++
->  arch/arm64/kernel/ipi_debug.c | 25 +++++++++++++++++++++++--
->  2 files changed, 26 insertions(+), 2 deletions(-)
+Submit the top-level headers also from the kunit test module notifier
+initialization callback, so external tools that are parsing dmesg for
+kunit test output are able to tell how many test suites should be expected
+and whether to continue parsing after complete output from the first test
+suite is collected.
 
-As with prior patches, I'd prefer if this lived in smp.c with the other IPI
-logic.
+Extend kunit module notifier initialization callback with a processing
+path for only listing the tests provided by a module if the kunit action
+parameter is set to "list", so external tools can obtain a list of test
+cases to be executed in advance and can make a better job on assigning
+kernel messages interleaved with kunit output to specific tests. 
 
-> 
-> diff --git a/arch/arm64/include/asm/irq.h b/arch/arm64/include/asm/irq.h
-> index fac08e18bcd5..be2d103f316e 100644
-> --- a/arch/arm64/include/asm/irq.h
-> +++ b/arch/arm64/include/asm/irq.h
-> @@ -6,6 +6,9 @@
->  
->  #include <asm-generic/irq.h>
->  
-> +void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self);
-> +#define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
-> +
->  struct pt_regs;
->  
->  int set_handle_irq(void (*handle_irq)(struct pt_regs *));
-> diff --git a/arch/arm64/kernel/ipi_debug.c b/arch/arm64/kernel/ipi_debug.c
-> index b57833e31eaf..6984ed507e1f 100644
-> --- a/arch/arm64/kernel/ipi_debug.c
-> +++ b/arch/arm64/kernel/ipi_debug.c
-> @@ -8,6 +8,7 @@
->  
->  #include <linux/interrupt.h>
->  #include <linux/irq.h>
-> +#include <linux/nmi.h>
->  #include <linux/smp.h>
->  
->  #include "ipi_debug.h"
-> @@ -24,11 +25,31 @@ void arm64_debug_ipi(cpumask_t *mask)
->  	__ipi_send_mask(ipi_debug_desc, mask);
->  }
->  
-> +void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
-> +{
-> +	/*
-> +	 * NOTE: though nmi_trigger_cpumask_backtrace has "nmi_" in the name,
-> +	 * nothing about it truly needs to be backed by an NMI, it's just that
-> +	 * it's _allowed_ to be called from an NMI. If set_smp_debug_ipi()
-> +	 * failed to get an NMI (or pseudo-NMI) this will just be backed by a
-> +	 * regular IPI.
-> +	 */
-> +	nmi_trigger_cpumask_backtrace(mask, exclude_self, arm64_debug_ipi);
-> +}
-> +
->  static irqreturn_t ipi_debug_handler(int irq, void *data)
->  {
-> -	/* nop, NMI handlers for special features can be added here. */
-> +	irqreturn_t ret = IRQ_NONE;
-> +
-> +	/*
-> +	 * NOTE: Just like in arch_trigger_cpumask_backtrace(), we're calling
-> +	 * a function with "nmi_" in the name but it works fine even if we
-> +	 * are using a regulaor IPI.
-> +	 */
-> +	if (nmi_cpu_backtrace(get_irq_regs()))
-> +		ret = IRQ_HANDLED;
->  
+Use test filtering functions in kunit module notifier callback functions,
+so external tools are able to execute individual test cases from kunit
+test modules in order to still better isolate their potential impact on
+kernel messages that appear interleaved with output from other tests.
+    
+v5: Fix new name of a structure moved to kunit namespace not updated in
+    executor_test functions (lkp@intel.com),
+  - refresh on tpp of attributes filtering fix.
+v4: Use kunit_exec_run_tests() (Mauro, Rae), but prevent it from
+    emitting the headers when called on load of non-test modules, 
+  - don't use a different list format, use kunit_exec_list_tests() (Rae),
+  - refresh on top of newly introduced attributes patches, handle newly
+    introduced kunit.action=list_attr case (Rae).
+v3: Fix CONFIG_GLOB, required by filtering functions, not selected when
+    building as a module (lkp@intel.com).
+v2: Fix new name of a structure moved to kunit namespace not updated
+    across all uses (lkp@intel.com).
 
-Does this need the printk_deferred_{enter,exit}() that 32-bit arm has?
+Janusz Krzysztofik (3):
+  kunit: Report the count of test suites in a module
+  kunit: Make 'list' action available to kunit test modules
+  kunit: Allow kunit test modules to use test filtering
 
-Thanks,
-Mark.
+ include/kunit/test.h      |  21 +++++++
+ lib/kunit/Kconfig         |   2 +-
+ lib/kunit/executor.c      | 115 ++++++++++++++++++++++----------------
+ lib/kunit/executor_test.c |  36 ++++++++----
+ lib/kunit/test.c          |  37 +++++++++++-
+ 5 files changed, 149 insertions(+), 62 deletions(-)
 
-> -	return IRQ_NONE;
-> +	return ret;
->  }
->  
->  void debug_ipi_setup(void)
-> -- 
-> 2.41.0.rc2.161.g9c6817b8e7-goog
-> 
+
+base-commit: 1c9fd080dffe5e5ad763527fbc2aa3f6f8c653e9
+-- 
+2.41.0
+
