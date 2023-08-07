@@ -2,355 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 563BF772E42
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E09772E3D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbjHGSzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 14:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41246 "EHLO
+        id S230076AbjHGSy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 14:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbjHGSzU (ORCPT
+        with ESMTP id S229613AbjHGSyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 14:55:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB33F171E
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 11:54:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691434472;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fGmK0lr+Ae4kkT+rcZBfWw0gc9neet3R4+rYEQk6ky0=;
-        b=BmuM9NqtWipzXsHxz9YV83QG5WWQIjxP/vJPdkFQDwOaZCMLiTii2C7fDQYW96oSWBuajT
-        acNIyUSH15jrkW4vNjhM+fGpDfma7SNXoljnlA+IJ4kPApSCtY6AYKR4yBI2NIReoRopvh
-        X5pPskVbxMM7cJJFtPeSHDQXR92lGMQ=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-30-Aa0v8a8OMc2t8c7ly_XoOQ-1; Mon, 07 Aug 2023 14:54:30 -0400
-X-MC-Unique: Aa0v8a8OMc2t8c7ly_XoOQ-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-99beea69484so362604066b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 11:54:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691434468; x=1692039268;
-        h=content-transfer-encoding:in-reply-to:organization:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fGmK0lr+Ae4kkT+rcZBfWw0gc9neet3R4+rYEQk6ky0=;
-        b=Dez33yCeb5LkLlSrLNLRbrS3V/7xXEcM6YJ2KqETzqb0LjV0d1YRi5+vVFH79/u98M
-         q6gX7c1LfSTQMJlkOmnkOJ9MZEC8bxK+V5X/4Ub7F63i01pqyJawl4jHuaztQH/K19NK
-         hJuq1zCJo5EM0QvUfTzrHnso48yk81ovC3xNPTjjeoplUL5yWKvI8Fgd4gqL7C5r+URs
-         CuBIAqpTMxl6jq5r/BxVOdpr4/u5MUJ9g0O+HFjOuYsPeR1cCpU0MW4oeEBxaOJYOaXB
-         yo1byF5CBaFOL9fq+f/o5gietnAi9PBLuBj6rJuzT0J/YfDKbxOkVUV/1fMpNFhITXKZ
-         37qw==
-X-Gm-Message-State: AOJu0Yz0tO9Y77xgwNnhpWSlFV/7JnQX2lGsSHS5+YE4f4v0CnPGmyZZ
-        dgjrHK6k2bdkU+kFeHbpXU/jCzt3z3k0FLJB6dy8dyTbolt68Qef6Zz1MSDXmas5e0LyQD/7vA3
-        tN4NP1ZOvUWQxmUp0snMf1chz
-X-Received: by 2002:a17:906:19b:b0:98d:1f6a:fd47 with SMTP id 27-20020a170906019b00b0098d1f6afd47mr8934642ejb.76.1691434468148;
-        Mon, 07 Aug 2023 11:54:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGBmf5yeIuKOZKg8cZawt01i8LS3w/uep4tJgbBbGkxhguyGfW95XtaFJPaIXTl4c7T/oQw3w==
-X-Received: by 2002:a17:906:19b:b0:98d:1f6a:fd47 with SMTP id 27-20020a170906019b00b0098d1f6afd47mr8934637ejb.76.1691434467873;
-        Mon, 07 Aug 2023 11:54:27 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id s8-20020a170906284800b0099bc08862b6sm5635415ejc.171.2023.08.07.11.54.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 11:54:27 -0700 (PDT)
-Message-ID: <619cbc61-d40f-a19f-179d-1ae35a1a17d4@redhat.com>
-Date:   Mon, 7 Aug 2023 20:54:25 +0200
+        Mon, 7 Aug 2023 14:54:55 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF061724;
+        Mon,  7 Aug 2023 11:54:54 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377Isibf095794;
+        Mon, 7 Aug 2023 13:54:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691434484;
+        bh=xMjOj/G4IR8jZ+IHh5UsSNh5g3Elh/kuwNhFmuKSTnw=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=LjjITOV8HeDS+pZzd85Ohwa/ItqwoXUpJb7Oe0hpjcbQYbzvUUUD+Qy6WKEkmxEGo
+         yoTvCX7UL9i9kLgjXa7qFoyoWbyx/tRfRT2bePXNaN9kmwBAhjpAvjr/IgxYPiXhn4
+         EW51r4WnUWuGw4hQE6SekkDeudbR4jSAL9k5P3uM=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377Isifm110351
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Aug 2023 13:54:44 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
+ Aug 2023 13:54:44 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 7 Aug 2023 13:54:43 -0500
+Received: from [10.250.36.243] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377IshtQ111912;
+        Mon, 7 Aug 2023 13:54:43 -0500
+Message-ID: <570903b6-8239-d44a-5fac-71700804cb5d@ti.com>
+Date:   Mon, 7 Aug 2023 13:54:42 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH drm-misc-next v9 06/11] drm/nouveau: fence: separate fence
- alloc and emit
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        airlied@gmail.com, daniel@ffwll.ch, tzimmermann@suse.de,
-        mripard@kernel.org, corbet@lwn.net, bskeggs@redhat.com,
-        Liam.Howlett@oracle.com, matthew.brost@intel.com,
-        boris.brezillon@collabora.com, alexdeucher@gmail.com,
-        ogabbay@kernel.org, bagasdotme@gmail.com, willy@infradead.org,
-        jason@jlekstrand.net, donald.robson@imgtec.com
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230803165238.8798-1-dakr@redhat.com>
- <20230803165238.8798-7-dakr@redhat.com>
- <91fa63c6-dcce-34b0-938b-2f47362541e0@amd.com>
+Subject: Re: [PATCH v9 4/5] arm64: dts: ti: k3-j784s4-evm: Enable
+ DisplayPort-0
 Content-Language: en-US
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <91fa63c6-dcce-34b0-938b-2f47362541e0@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Aradhya Bhatia <a-bhatia1@ti.com>,
+        Jayesh Choudhary <j-choudhary@ti.com>, <nm@ti.com>,
+        <vigneshr@ti.com>, <robh+dt@kernel.org>
+CC:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        <s-vadapalli@ti.com>, <kristo@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <r-ravikumar@ti.com>, <sabiya.d@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <rogerq@kernel.org>
+References: <20230803080441.367341-1-j-choudhary@ti.com>
+ <20230803080441.367341-5-j-choudhary@ti.com>
+ <9f19e01e-6211-16eb-c911-998ee2d46161@ti.com>
+ <2ddc34f9-92ad-9a0c-8044-0ec671e55e9e@ti.com>
+ <06708b12-34af-bcb5-7b65-c9bdd830b9f0@ti.com>
+ <7c2b0f22-95d3-2976-7999-7e65c6d9801b@ti.com>
+ <435f9b99-b888-2e18-cf70-8c7d074b68be@ti.com>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <435f9b99-b888-2e18-cf70-8c7d074b68be@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
-
-On 8/7/23 20:07, Christian König wrote:
-> Am 03.08.23 um 18:52 schrieb Danilo Krummrich:
->> The new (VM_BIND) UAPI exports DMA fences through DRM syncobjs. Hence,
->> in order to emit fences within DMA fence signalling critical sections
->> (e.g. as typically done in the DRM GPU schedulers run_job() callback) we
->> need to separate fence allocation and fence emitting.
+On 8/7/23 1:29 PM, Aradhya Bhatia wrote:
 > 
-> At least from the description that sounds like it might be illegal. 
-> Daniel can you take a look as well.
 > 
-> What exactly are you doing here?
-
-I'm basically doing exactly the same as amdgpu_fence_emit() does in 
-amdgpu_ib_schedule() called by amdgpu_job_run().
-
-The difference - and this is what this patch is for - is that I separate 
-the fence allocation from emitting the fence, such that the fence 
-structure is allocated before the job is submitted to the GPU scheduler. 
-amdgpu solves this with GFP_ATOMIC within amdgpu_fence_emit() to 
-allocate the fence structure in this case.
-
-- Danilo
-
+> On 07-Aug-23 21:19, Andrew Davis wrote:
+>> On 8/7/23 7:56 AM, Aradhya Bhatia wrote:
+>>> Hi Jayesh,
+>>>
+>>> On 07-Aug-23 17:54, Jayesh Choudhary wrote:
+>>>> Hello Aradhya,
+>>>>
+>>>> Thank you for the review.
+>>>>
+>>>> On 05/08/23 00:52, Aradhya Bhatia wrote:
+>>>>> Hi Jayesh,
+>>>>>
+>>>>>
+>>>>> On 03-Aug-23 13:34, Jayesh Choudhary wrote:
+>>>>>> From: Rahul T R <r-ravikumar@ti.com>
+>>>>>>
+>>>>>> Enable display for J784S4 EVM.
+>>>>>>
+>>>>>> Add assigned clocks for DSS, DT node for DisplayPort PHY and pinmux
+>>>>>> for
+>>>>>> DP HPD. Add the clock frequency for serdes_refclk.
+>>>>>>
+>>>>>> Add the endpoint nodes to describe connection from:
+>>>>>> DSS => MHDP => DisplayPort connector.
+>>>>>>
+>>>>>> Also add the GPIO expander-4 node and pinmux for main_i2c4 which is
+>>>>>> required for controlling DP power. Set status for all required nodes
+>>>>>> for DP-0 as "okay".
+>>>>>>
+>>>>>> Signed-off-by: Rahul T R <r-ravikumar@ti.com>
+>>>>>> [j-choudhary@ti.com: move all the changes together to enable DP-0 in
+>>>>>> EVM]
+>>>>>> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+>>>>>> ---
+>>>>>>     arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 119
+>>>>>> +++++++++++++++++++++++
+>>>>>>     1 file changed, 119 insertions(+)
+>>>>
+>>>> [...]
+>>>>
+>>>>>> +        reg = <0>;
+>>>>>> +        cdns,num-lanes = <4>;
+>>>>>> +        #phy-cells = <0>;
+>>>>>> +        cdns,phy-type = <PHY_TYPE_DP>;
+>>>>>> +        resets = <&serdes_wiz4 1>, <&serdes_wiz4 2>,
+>>>>>> +             <&serdes_wiz4 3>, <&serdes_wiz4 4>;
+>>>>>> +    };
+>>>>>> +};
+>>>>>> +
+>>>>>> +&mhdp {
+>>>>>> +    status = "okay";
+>>>>>> +    pinctrl-names = "default";
+>>>>>> +    pinctrl-0 = <&dp0_pins_default>;
+>>>>>> +    phys = <&serdes4_dp_link>;
+>>>>>> +    phy-names = "dpphy";
+>>>>>> +};
+>>>>>> +
+>>>>>> +&dss_ports {
+>>>>>> +    port {
+>>>>>
+>>>>> Port index has not been added here. Since this port outputs to MHDP
+>>>>> bridge, this should be "port@0", and a "reg = <0>;" property should be
+>>>>> added below (along with the address and size cells properties).
+>>>>>
+>>>>> I suppose this works functionally in this case, because the port gets
+>>>>> defaulted to "0" by the driver. But in future, when we add support for
+>>>>> other dss output(s) on j784s4-evm, the driver will need indices to
+>>>>> distinguish among them.
+>>>>>
+>>>>
+>>>> Okay. It makes sense.
+>>>> Just one thing here. Adding reg here would require it to have #address-
+>>>> cells and #size-cell but since we have only single child port that too
+>>>> at reg=<0>, it would throw dtbs_check warning:
+>>>>
+>>>> arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi:1828.20-1831.5: Warning
+>>>> (graph_child_address): /bus@100000/dss@4a00000/ports: graph node has
+>>>> single child node 'port@0', #address-cells/#size-cells are not necessary
+>>>>     also defined at arch/arm64/boot/dts/ti/k3-j784s4-evm.dts:911.12-919.3
+>>>>
+>>>
+>>> Okay! Was not aware about this. I still think "port@0" should be
+>>> specified instead of just "port" and the warning should be ignored, if
+>>> possible.
+>>>
+>>
+>> Do not ignore new DT check warnings, if you go with "port@0" (which you
+>> need to do as the "ti,j721e-dss" binding requires it) you must also add
+>> the #address-cells/#size-cells.
+>>
 > 
-> Regards,
-> Christian.
+> The warning that Jayesh mentioned above comes when "port@0" is
+> mentioned, *along-with* the #address-cells/#size-cells properties.
+> Essentially, it wants us to not use "port@0" when only single port is
+> being added whose reg values is 0.
+> 
+> This warning does not come when only a single port other than 0,
+> "port@1" for e.g., is being used. That's the warning, that should get
+> ignored, if possible.
+> 
+
+Ah, I see now.
+
+Almost seems like a bug in dtc checks, but checking the code it
+looks deliberate, although I cannot see why..
+
+Rob,
+
+Could you provide some guidance on why graph nodes are handled
+this way? Seems this is valid:
+
+ports {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	port@1 {
+		reg = <1>;
+	};
+}
+
+but this is not:
+
+ports {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	port@0 {
+		reg = <0>;
+	};
+};
+
+I'm guessing we allow port 0 to not be numbered if it is the only
+one for legacy convenience, but *forcing* it to not be numbered
+when it would otherwise be more consistent seems overly strict.
+
+Andrew
+
+> However, just mentioning "port@0", without the #address-cells/
+> #size-cells, would be plain wrong.
+> 
+> Regards
+> Aradhya
 > 
 >>
->> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
->> ---
->>   drivers/gpu/drm/nouveau/dispnv04/crtc.c |  9 ++++-
->>   drivers/gpu/drm/nouveau/nouveau_bo.c    | 52 +++++++++++++++----------
->>   drivers/gpu/drm/nouveau/nouveau_chan.c  |  6 ++-
->>   drivers/gpu/drm/nouveau/nouveau_dmem.c  |  9 +++--
->>   drivers/gpu/drm/nouveau/nouveau_fence.c | 16 +++-----
->>   drivers/gpu/drm/nouveau/nouveau_fence.h |  3 +-
->>   drivers/gpu/drm/nouveau/nouveau_gem.c   |  5 ++-
->>   7 files changed, 59 insertions(+), 41 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/nouveau/dispnv04/crtc.c 
->> b/drivers/gpu/drm/nouveau/dispnv04/crtc.c
->> index a6f2e681bde9..a34924523133 100644
->> --- a/drivers/gpu/drm/nouveau/dispnv04/crtc.c
->> +++ b/drivers/gpu/drm/nouveau/dispnv04/crtc.c
->> @@ -1122,11 +1122,18 @@ nv04_page_flip_emit(struct nouveau_channel *chan,
->>       PUSH_NVSQ(push, NV_SW, NV_SW_PAGE_FLIP, 0x00000000);
->>       PUSH_KICK(push);
->> -    ret = nouveau_fence_new(chan, false, pfence);
->> +    ret = nouveau_fence_new(pfence);
->>       if (ret)
->>           goto fail;
->> +    ret = nouveau_fence_emit(*pfence, chan);
->> +    if (ret)
->> +        goto fail_fence_unref;
->> +
->>       return 0;
->> +
->> +fail_fence_unref:
->> +    nouveau_fence_unref(pfence);
->>   fail:
->>       spin_lock_irqsave(&dev->event_lock, flags);
->>       list_del(&s->head);
->> diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c 
->> b/drivers/gpu/drm/nouveau/nouveau_bo.c
->> index 057bc995f19b..e9cbbf594e6f 100644
->> --- a/drivers/gpu/drm/nouveau/nouveau_bo.c
->> +++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
->> @@ -820,29 +820,39 @@ nouveau_bo_move_m2mf(struct ttm_buffer_object 
->> *bo, int evict,
->>           mutex_lock(&cli->mutex);
->>       else
->>           mutex_lock_nested(&cli->mutex, SINGLE_DEPTH_NESTING);
->> +
->>       ret = nouveau_fence_sync(nouveau_bo(bo), chan, true, 
->> ctx->interruptible);
->> -    if (ret == 0) {
->> -        ret = drm->ttm.move(chan, bo, bo->resource, new_reg);
->> -        if (ret == 0) {
->> -            ret = nouveau_fence_new(chan, false, &fence);
->> -            if (ret == 0) {
->> -                /* TODO: figure out a better solution here
->> -                 *
->> -                 * wait on the fence here explicitly as going through
->> -                 * ttm_bo_move_accel_cleanup somehow doesn't seem to 
->> do it.
->> -                 *
->> -                 * Without this the operation can timeout and we'll 
->> fallback to a
->> -                 * software copy, which might take several minutes to 
->> finish.
->> -                 */
->> -                nouveau_fence_wait(fence, false, false);
->> -                ret = ttm_bo_move_accel_cleanup(bo,
->> -                                &fence->base,
->> -                                evict, false,
->> -                                new_reg);
->> -                nouveau_fence_unref(&fence);
->> -            }
->> -        }
->> +    if (ret)
->> +        goto out_unlock;
->> +
->> +    ret = drm->ttm.move(chan, bo, bo->resource, new_reg);
->> +    if (ret)
->> +        goto out_unlock;
->> +
->> +    ret = nouveau_fence_new(&fence);
->> +    if (ret)
->> +        goto out_unlock;
->> +
->> +    ret = nouveau_fence_emit(fence, chan);
->> +    if (ret) {
->> +        nouveau_fence_unref(&fence);
->> +        goto out_unlock;
->>       }
->> +
->> +    /* TODO: figure out a better solution here
->> +     *
->> +     * wait on the fence here explicitly as going through
->> +     * ttm_bo_move_accel_cleanup somehow doesn't seem to do it.
->> +     *
->> +     * Without this the operation can timeout and we'll fallback to a
->> +     * software copy, which might take several minutes to finish.
->> +     */
->> +    nouveau_fence_wait(fence, false, false);
->> +    ret = ttm_bo_move_accel_cleanup(bo, &fence->base, evict, false,
->> +                    new_reg);
->> +    nouveau_fence_unref(&fence);
->> +
->> +out_unlock:
->>       mutex_unlock(&cli->mutex);
->>       return ret;
->>   }
->> diff --git a/drivers/gpu/drm/nouveau/nouveau_chan.c 
->> b/drivers/gpu/drm/nouveau/nouveau_chan.c
->> index 6d639314250a..f69be4c8f9f2 100644
->> --- a/drivers/gpu/drm/nouveau/nouveau_chan.c
->> +++ b/drivers/gpu/drm/nouveau/nouveau_chan.c
->> @@ -62,9 +62,11 @@ nouveau_channel_idle(struct nouveau_channel *chan)
->>           struct nouveau_fence *fence = NULL;
->>           int ret;
->> -        ret = nouveau_fence_new(chan, false, &fence);
->> +        ret = nouveau_fence_new(&fence);
->>           if (!ret) {
->> -            ret = nouveau_fence_wait(fence, false, false);
->> +            ret = nouveau_fence_emit(fence, chan);
->> +            if (!ret)
->> +                ret = nouveau_fence_wait(fence, false, false);
->>               nouveau_fence_unref(&fence);
->>           }
->> diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c 
->> b/drivers/gpu/drm/nouveau/nouveau_dmem.c
->> index 789857faa048..4ad40e42cae1 100644
->> --- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
->> +++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
->> @@ -209,7 +209,8 @@ static vm_fault_t 
->> nouveau_dmem_migrate_to_ram(struct vm_fault *vmf)
->>           goto done;
->>       }
->> -    nouveau_fence_new(dmem->migrate.chan, false, &fence);
->> +    if (!nouveau_fence_new(&fence))
->> +        nouveau_fence_emit(fence, dmem->migrate.chan);
->>       migrate_vma_pages(&args);
->>       nouveau_dmem_fence_done(&fence);
->>       dma_unmap_page(drm->dev->dev, dma_addr, PAGE_SIZE, 
->> DMA_BIDIRECTIONAL);
->> @@ -402,7 +403,8 @@ nouveau_dmem_evict_chunk(struct nouveau_dmem_chunk 
->> *chunk)
->>           }
->>       }
->> -    nouveau_fence_new(chunk->drm->dmem->migrate.chan, false, &fence);
->> +    if (!nouveau_fence_new(&fence))
->> +        nouveau_fence_emit(fence, chunk->drm->dmem->migrate.chan);
->>       migrate_device_pages(src_pfns, dst_pfns, npages);
->>       nouveau_dmem_fence_done(&fence);
->>       migrate_device_finalize(src_pfns, dst_pfns, npages);
->> @@ -675,7 +677,8 @@ static void nouveau_dmem_migrate_chunk(struct 
->> nouveau_drm *drm,
->>           addr += PAGE_SIZE;
->>       }
->> -    nouveau_fence_new(drm->dmem->migrate.chan, false, &fence);
->> +    if (!nouveau_fence_new(&fence))
->> +        nouveau_fence_emit(fence, chunk->drm->dmem->migrate.chan);
->>       migrate_vma_pages(args);
->>       nouveau_dmem_fence_done(&fence);
->>       nouveau_pfns_map(svmm, args->vma->vm_mm, args->start, pfns, i);
->> diff --git a/drivers/gpu/drm/nouveau/nouveau_fence.c 
->> b/drivers/gpu/drm/nouveau/nouveau_fence.c
->> index ee5e9d40c166..e946408f945b 100644
->> --- a/drivers/gpu/drm/nouveau/nouveau_fence.c
->> +++ b/drivers/gpu/drm/nouveau/nouveau_fence.c
->> @@ -210,6 +210,9 @@ nouveau_fence_emit(struct nouveau_fence *fence, 
->> struct nouveau_channel *chan)
->>       struct nouveau_fence_priv *priv = (void*)chan->drm->fence;
->>       int ret;
->> +    if (unlikely(!chan->fence))
->> +        return -ENODEV;
->> +
->>       fence->channel  = chan;
->>       fence->timeout  = jiffies + (15 * HZ);
->> @@ -396,25 +399,16 @@ nouveau_fence_unref(struct nouveau_fence **pfence)
->>   }
->>   int
->> -nouveau_fence_new(struct nouveau_channel *chan, bool sysmem,
->> -          struct nouveau_fence **pfence)
->> +nouveau_fence_new(struct nouveau_fence **pfence)
->>   {
->>       struct nouveau_fence *fence;
->> -    int ret = 0;
->> -
->> -    if (unlikely(!chan->fence))
->> -        return -ENODEV;
->>       fence = kzalloc(sizeof(*fence), GFP_KERNEL);
->>       if (!fence)
->>           return -ENOMEM;
->> -    ret = nouveau_fence_emit(fence, chan);
->> -    if (ret)
->> -        nouveau_fence_unref(&fence);
->> -
->>       *pfence = fence;
->> -    return ret;
->> +    return 0;
->>   }
->>   static const char *nouveau_fence_get_get_driver_name(struct 
->> dma_fence *fence)
->> diff --git a/drivers/gpu/drm/nouveau/nouveau_fence.h 
->> b/drivers/gpu/drm/nouveau/nouveau_fence.h
->> index 0ca2bc85adf6..7c73c7c9834a 100644
->> --- a/drivers/gpu/drm/nouveau/nouveau_fence.h
->> +++ b/drivers/gpu/drm/nouveau/nouveau_fence.h
->> @@ -17,8 +17,7 @@ struct nouveau_fence {
->>       unsigned long timeout;
->>   };
->> -int  nouveau_fence_new(struct nouveau_channel *, bool sysmem,
->> -               struct nouveau_fence **);
->> +int  nouveau_fence_new(struct nouveau_fence **);
->>   void nouveau_fence_unref(struct nouveau_fence **);
->>   int  nouveau_fence_emit(struct nouveau_fence *, struct 
->> nouveau_channel *);
->> diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c 
->> b/drivers/gpu/drm/nouveau/nouveau_gem.c
->> index a48f42aaeab9..9c8d1b911a01 100644
->> --- a/drivers/gpu/drm/nouveau/nouveau_gem.c
->> +++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
->> @@ -873,8 +873,11 @@ nouveau_gem_ioctl_pushbuf(struct drm_device *dev, 
->> void *data,
->>           }
->>       }
->> -    ret = nouveau_fence_new(chan, false, &fence);
->> +    ret = nouveau_fence_new(&fence);
->> +    if (!ret)
->> +        ret = nouveau_fence_emit(fence, chan);
->>       if (ret) {
->> +        nouveau_fence_unref(&fence);
->>           NV_PRINTK(err, cli, "error fencing pushbuf: %d\n", ret);
->>           WIND_RING(chan);
->>           goto out;
+>>> If there were only a "port@1" child node, this warning would not have
+>>> come up, and I believe "port@0" should be treated just the same.
+>>>
+>>> Moreover, while we can add these properties at a later stage as an
+>>> incremental patch, adding the size and address cells in the dtsi would
+>>> affect other platform dts files as well, that use this SoC.
+>>>
+>>> For e.g., the patch 5/5 of this series, on AM69-SK will still require
+>>> the size and address cells for its ports. The clean up then will be that
+>>> much more, when adding those incremental patches.
+>>>
+>>> Anyway, I will let Nishanth and Vignesh take the final call on this.
+>>>
+>>> Regards
+>>> Aradhya
+>>>
+>>>>
+>>>>>> +        dpi0_out: endpoint {
+>>>>>> +            remote-endpoint = <&dp0_in>;
+>>>>
+>>>>
+>>>> [...]
+>>>
 > 
-
