@@ -2,152 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4FC772DBB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A692772D8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbjHGSVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 14:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
+        id S230284AbjHGSMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 14:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230411AbjHGSVA (ORCPT
+        with ESMTP id S229619AbjHGSMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 14:21:00 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7DFE50;
-        Mon,  7 Aug 2023 11:20:58 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 150a4115505eee88; Mon, 7 Aug 2023 20:20:56 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Mon, 7 Aug 2023 14:12:03 -0400
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A193171E;
+        Mon,  7 Aug 2023 11:12:02 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 46A036625B2;
-        Mon,  7 Aug 2023 20:20:56 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH v5 07/11] thermal: core: Rework and rename __for_each_thermal_trip()
-Date:   Mon, 07 Aug 2023 20:11:07 +0200
-Message-ID: <3755730.kQq0lBPeGt@kreacher>
-In-Reply-To: <4503814.LvFx2qVVIh@kreacher>
-References: <13318886.uLZWGnKmhe@kreacher> <4503814.LvFx2qVVIh@kreacher>
+        by ms.lwn.net (Postfix) with ESMTPSA id ABA884BF;
+        Mon,  7 Aug 2023 18:12:01 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net ABA884BF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1691431921; bh=WHqC6U0bmErWak531vlTN+is0veLI9Xe/uZCUjZYmW8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=DDori1jGeHLG0LG1FnwlmIV62Ilr1Ke8Mhb5t9z6KXjQfFmOfBRPyIHaNpwal8wWH
+         Be5SmiVq/rQabOj7dNpmobiG7AhTKeCQ5AuwzCG7ZdxJ4ywiJHRT8gwbsCvJ1HfztS
+         UKcavh92ZfNnqBfg4f/khxbEO+BzBeHbFVrNZhX5vT8GhN1ZHV472u7bpQYi2FyVch
+         0FU3Kn8jUQ2ZINFULrTnWMzvIlATwChqO+bZNCs+bpxDpFI3CGDJUcmHIvqopSGmvj
+         8ErUC+84nM7y4HR1XpPsIhzI5TSHpRcSv/jxq/pnsR9X8xZnOYRKbayGHxdIC8beJw
+         OHdGOI463W9bw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        torvalds@linux-foundation.org, randy.dunlap@oracle.com,
+        paulmck@kernel.org, markus.heiser@darmarIT.de
+Subject: Re: [PATCH]upi:media: Added rest of the Generic Error Codes to the
+ existing list
+In-Reply-To: <20230807045212.32489-2-unixbhaskar@gmail.com>
+References: <20230807045212.32489-2-unixbhaskar@gmail.com>
+Date:   Mon, 07 Aug 2023 12:12:00 -0600
+Message-ID: <875y5q67tb.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrledtgdduudejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
- thhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
 
-Rework the currently unused __for_each_thermal_trip() to pass original
-pointers to struct thermal_trip objects to the callback, so it can be
-used for updating trip data (e.g. temperatures), rename it to
-for_each_thermal_trip() and make it available to modular drivers.
+> Added rest of the Generic Error Codes to the existing list of codes.
+>
+> cc: torvalds@linux-foundation.org
+> cc: randy.dunlap@oracle.com
+> cc: paulmck@kernel.org
+> cc: corbet@lwn.net
+> cc: markus.heiser@darmarIT.de
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  There is a "moreutils" package across the Linux distribution, if you
+>  installed it and that package has a binary name "errno",if you run it with
+>  "-l" or "--list" option, it will show all the error codes.In my system, while
+>  running it shows me precisely, 134 of such codes.YMMV
+>
+>  .../userspace-api/media/gen-errors.rst        | 479 ++++++++++++++++++
+>  1 file changed, 479 insertions(+)
 
-Suggested-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+This document is a list of errors that can be returned by media drivers,
+with a focus on what those errors mean in the media context.  What is
+the point of stuffing it full of error numbers that media drivers will
+never return, along with generic, one-line descriptions?  I'll defer to
+the media folks on this, but I don't think this helps their users.
 
-New patch in v5.
+Thanks,
 
----
- drivers/thermal/thermal_core.h |    4 ----
- drivers/thermal/thermal_trip.c |   18 ++++++++----------
- include/linux/thermal.h        |    3 +++
- 3 files changed, 11 insertions(+), 14 deletions(-)
-
-Index: linux-pm/drivers/thermal/thermal_core.h
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_core.h
-+++ linux-pm/drivers/thermal/thermal_core.h
-@@ -54,10 +54,6 @@ int for_each_thermal_cooling_device(int
- int for_each_thermal_governor(int (*cb)(struct thermal_governor *, void *),
- 			      void *thermal_governor);
- 
--int __for_each_thermal_trip(struct thermal_zone_device *,
--			    int (*cb)(struct thermal_trip *, void *),
--			    void *);
--
- struct thermal_zone_device *thermal_zone_get_by_id(int id);
- 
- struct thermal_attr {
-Index: linux-pm/drivers/thermal/thermal_trip.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_trip.c
-+++ linux-pm/drivers/thermal/thermal_trip.c
-@@ -9,28 +9,26 @@
-  */
- #include "thermal_core.h"
- 
--int __for_each_thermal_trip(struct thermal_zone_device *tz,
--			    int (*cb)(struct thermal_trip *, void *),
--			    void *data)
-+int for_each_thermal_trip(struct thermal_zone_device *tz,
-+			  int (*cb)(struct thermal_trip *, void *),
-+			  void *data)
- {
- 	int i, ret;
--	struct thermal_trip trip;
- 
- 	lockdep_assert_held(&tz->lock);
- 
--	for (i = 0; i < tz->num_trips; i++) {
-+	if (!tz->trips)
-+		return -ENODATA;
- 
--		ret = __thermal_zone_get_trip(tz, i, &trip);
--		if (ret)
--			return ret;
--
--		ret = cb(&trip, data);
-+	for (i = 0; i < tz->num_trips; i++) {
-+		ret = cb(&tz->trips[i], data);
- 		if (ret)
- 			return ret;
- 	}
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(for_each_thermal_trip);
- 
- int thermal_zone_get_num_trips(struct thermal_zone_device *tz)
- {
-Index: linux-pm/include/linux/thermal.h
-===================================================================
---- linux-pm.orig/include/linux/thermal.h
-+++ linux-pm/include/linux/thermal.h
-@@ -290,6 +290,9 @@ int thermal_zone_get_trip(struct thermal
- int thermal_zone_set_trip(struct thermal_zone_device *tz, int trip_id,
- 			  const struct thermal_trip *trip);
- 
-+int for_each_thermal_trip(struct thermal_zone_device *tz,
-+			  int (*cb)(struct thermal_trip *, void *),
-+			  void *data);
- int thermal_zone_get_num_trips(struct thermal_zone_device *tz);
- 
- int thermal_zone_get_crit_temp(struct thermal_zone_device *tz, int *temp);
-
-
-
+jon
