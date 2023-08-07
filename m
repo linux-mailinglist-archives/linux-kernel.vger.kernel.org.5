@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F202C7731B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 23:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910147731BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 23:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbjHGV5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 17:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
+        id S230171AbjHGV5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 17:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbjHGV5e (ORCPT
+        with ESMTP id S229998AbjHGV5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 17:57:34 -0400
+        Mon, 7 Aug 2023 17:57:35 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA44AA8;
-        Mon,  7 Aug 2023 14:57:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0953094;
+        Mon,  7 Aug 2023 14:57:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 490AF6228D;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9AD3E6227C;
+        Mon,  7 Aug 2023 21:57:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F283C433C8;
         Mon,  7 Aug 2023 21:57:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFC70C433C7;
-        Mon,  7 Aug 2023 21:57:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691445452;
-        bh=Hjr9TC5T/2rdK2wbUjAujziz8ImCXcl8RITuuGXMqSk=;
+        s=k20201202; t=1691445454;
+        bh=ZBdsSzFVKRY6PmokTMG4ushfFOwsRYYskB/P5mPnNWc=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Im0t4U06DzMB4wtkyZXrmkFPUAX3Fxpyy0MDNdyekL5M8fCCdm9IruGDp55cDUa2w
-         +4hYC7Lt2/hI5/bWH9o/ATBup8f0cH//laVEISqdoteME7mL9Wx0x5wW66Huqywfh1
-         eOI7UhXge1+CKSoneaH9ALInBa+g8+qiVziGELnC3q7YZs57nWrupd2RwZlptO1IxA
-         IkmvQ+LuA1Vzy9Z0jgQfMRuYdmtzrgwdgsjhYonsOh8PX91D+K8rpuHYeGCPhd9ZPa
-         UYQigIMTSBeBsUyX7cXNbClECaSC6tBL2hPVuKPanreOgnJsPwDJfsNR+YicvABe02
-         5sSPavZGYoiRA==
+        b=Zvf0yctAVdibWfzojglrSgk/ffqQTc8vzB7IJkrzcfZa7QH0MZn98vW69pVpZkVIR
+         nI9PyeW7HU5Nk6/Py7tx3PcwF1ZxIDqPnkgu/XO//NKjxtW3CzP774YZcBZgF4rOvH
+         4kPMD4JQIisVzh4aoAEzpec2w/tZgAUqBCx1o9gd/2fCVZTZIixYh2g6TT7uJv9M28
+         o/y15aCYTKSeh8AC4/X+aDpB6iEBG6SrWksS+/otxQSmly4nkyMlYnXOuyMREA2QWx
+         Pp+omntF00A+zNsHqsTUA7DyHr7YkAD/pqGLRuRv1Q45jfC7y4HrjF5GEQrkkXazdq
+         I33L5xUJA5GOQ==
 From:   Mark Brown <broonie@kernel.org>
 To:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
         coolrrsh@gmail.com
 Cc:     linux-kernel-mentees@lists.linuxfoundation.org
-In-Reply-To: <20230806083734.7685-2-coolrrsh@gmail.com>
-References: <20230806083734.7685-1-coolrrsh@gmail.com>
- <20230806083734.7685-2-coolrrsh@gmail.com>
-Subject: Re: [PATCH v3] spi: spi-mpc52xx-psc: Fix an unsigned comparison
+In-Reply-To: <20230807144942.30317-2-coolrrsh@gmail.com>
+References: <20230807144942.30317-1-coolrrsh@gmail.com>
+ <20230807144942.30317-2-coolrrsh@gmail.com>
+Subject: Re: [PATCH v2] spi: spi-mpc52xx-psc: Fix an unsigned comparison
  that can never be negative
-Message-Id: <169144545157.329334.2631329470445507219.b4-ty@kernel.org>
-Date:   Mon, 07 Aug 2023 22:57:31 +0100
+Message-Id: <169144545291.329334.7193582247834857976.b4-ty@kernel.org>
+Date:   Mon, 07 Aug 2023 22:57:32 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -57,7 +57,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 06 Aug 2023 14:07:34 +0530, coolrrsh@gmail.com wrote:
+On Mon, 07 Aug 2023 20:19:42 +0530, coolrrsh@gmail.com wrote:
 > In struct mpc52xx_psc_spi, the variable 'irq' is declared as an unsigned int.
 > The comparison of variable 'irq'  with signed int operand is incorrect. Also,
 > the return value from the call to platform_get_irq(pdev,0) is int and it is
@@ -66,6 +66,7 @@ On Sun, 06 Aug 2023 14:07:34 +0530, coolrrsh@gmail.com wrote:
 > 
 > This fixes warning such as:
 > drivers/spi/spi-mpc52xx-psc.c:332:5-13:
+> WARNING: Unsigned expression compared with zero: mps -> irq < 0
 > 
 > [...]
 
