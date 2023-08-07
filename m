@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 265D1772B00
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98BA5772B05
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbjHGQeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40516 "EHLO
+        id S231713AbjHGQed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230337AbjHGQeC (ORCPT
+        with ESMTP id S231620AbjHGQeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:34:02 -0400
+        Mon, 7 Aug 2023 12:34:11 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B901BDF
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:33:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7833B1BF2
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:33:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691425977;
+        s=mimecast20190719; t=1691425984;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=piPAJWb0pb900GeCYfzlLDbns7cOjvHHVSLvNcNzuY4=;
-        b=fGO5AfZbERvGfkD2FJid6dTDUWJVPHGhFlvQ1H2KHaegw70LrWgzJrtcyfZJXjLvqq0WKi
-        5UXEJnza4biKYJk7EK4YB4iNxExYabqOPXqjVgIOZgeAIpQ7barf/LrlfRdNH0cwD7blFJ
-        WIOMzTM3w4L3RC3wMDos5myQavis17g=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=7zFP8XpgqMd1ZR+xUc/aq9ardUQohRgS98TLoMxhZWU=;
+        b=TeqlOsojErq9/NDkd08RY9jbBQjMqNPR5Pn5deCxhOey1/Py4LzlhxpxNCfcM+D28P02cV
+        0nyZRO088WTxGfLutxWuFKTmqRv+S6zfsMpPFp4M2KlDa4Hfno8r0KXHNxmRXk1JH9ZTSq
+        FAYRpkMsijNg0K5IkzbjkB2JmTzetOg=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-389-wRzHF3_zN-y-wncBUy5D9w-1; Mon, 07 Aug 2023 12:32:56 -0400
-X-MC-Unique: wRzHF3_zN-y-wncBUy5D9w-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-99bfe3dd009so756789866b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:32:55 -0700 (PDT)
+ us-mta-117-uEE4ilScOiCtkkoRNJu-dw-1; Mon, 07 Aug 2023 12:33:03 -0400
+X-MC-Unique: uEE4ilScOiCtkkoRNJu-dw-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-99cc32f2ec5so135806866b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:32:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691425974; x=1692030774;
+        d=1e100.net; s=20221208; t=1691425979; x=1692030779;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=piPAJWb0pb900GeCYfzlLDbns7cOjvHHVSLvNcNzuY4=;
-        b=diuYd2g9duZRzcy6NSWc6Zkfh+Z7yy+R1/4qYQ93NXjYAWw0WzbglV/DmfcCAp6XSZ
-         EOLb7BBLb1VZBboYjmZmnRBfgoNn55xeIiSFMOgl0hytNg52zyDxpdUKXROrR4si+LLj
-         RWJYZHVlZhm/ndcPgLsjZRR5pDyMyR+vJ6PpY8BBzeoQzv8eXtK4RaGlUIKdqdDqXJL3
-         r3HTKbw7nbawSrEaSsLx2CHQeR2ZA3yMpcZaULoRVDimhyiN8UDiVGSPkJVswyUtjX8q
-         bzOqYd3lXwK6YI1XTmb+OuWFcz+Va+cg99M+VIG/ilAUpl6Xww692K++o0nL9X3823qR
-         JblA==
-X-Gm-Message-State: AOJu0YzOe0f46BjQWEUsetRCzA6ZnvpSKgjjp3DexmoAhofSrz4/F6xY
-        Zmhnu/8Pf/o+MA1jLTuFP1BkJUTpJjd8FIILz6u63coYZedlBJPx61VWJS/6ASrNJ2cTdVFzY1G
-        WAFJ1+pc/luja6Oiu1QMKiiJ/yf2zA6qw
-X-Received: by 2002:a17:906:108f:b0:994:1880:dc32 with SMTP id u15-20020a170906108f00b009941880dc32mr8042334eju.17.1691425974848;
-        Mon, 07 Aug 2023 09:32:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHAOrA3sQdOCxahpEKiwq8VOW54ZSfWV5X0WyopCri708v3H0dc43QYOi6NsAXi+7lwk8xLjA==
-X-Received: by 2002:a17:906:108f:b0:994:1880:dc32 with SMTP id u15-20020a170906108f00b009941880dc32mr8042319eju.17.1691425974672;
-        Mon, 07 Aug 2023 09:32:54 -0700 (PDT)
+        bh=7zFP8XpgqMd1ZR+xUc/aq9ardUQohRgS98TLoMxhZWU=;
+        b=RiNApnMHZJ1axvRbU21EQqs640ZFobXaBIo9f8ubRc2cfxt53lwz7PijrwWzD6rzOP
+         sImFPjTpDdNMBnsPH0VMlXi4eTSuMiWNjB7Ky/WZBOw7nZsqutG5oS50KskztP9htoXY
+         2NZQXsf8cgJTexarZlhdesbM8HNnY/HD2zPFkOT2suBM6bCNVwyihRRu+MCMdNu8Bddt
+         +l27M+gidgpsYR239AqYHq/cpPWCRgPzmFDhJIQWF63UEEdxAFYlbo0OGYIRLJog0wRY
+         /eaQgNLtJJ8EG3crAAfvGnpgLCpzKFW7Yjfesvf6+ZVLogobtM4K8ub4plqmuv3Y6C9C
+         I71g==
+X-Gm-Message-State: AOJu0YzHdao7obn9kstQGmIuvtcU/wKb+9Hk1ZYrPa/gYKolPVxscZPJ
+        6i2sj+G6v0KYmeUxvq2JVzEbMyA83S+f+d+F6dcMlvBBDR3KRFNbIUnTuYh7rxxcuxurzQ/dAUT
+        DPFMZeEuUmaiiPLD9coDgdUNs
+X-Received: by 2002:a17:906:5dce:b0:99c:aa43:b20c with SMTP id p14-20020a1709065dce00b0099caa43b20cmr6276324ejv.33.1691425978964;
+        Mon, 07 Aug 2023 09:32:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFzwa0036YfN6zZ9wxNCsP6a+2soTFVv0lKi71JnNJfbR+fIxNYwVKxG8hEDVJBGDY4OrEouA==
+X-Received: by 2002:a17:906:5dce:b0:99c:aa43:b20c with SMTP id p14-20020a1709065dce00b0099caa43b20cmr6276305ejv.33.1691425978678;
+        Mon, 07 Aug 2023 09:32:58 -0700 (PDT)
 Received: from cassiopeiae.. ([2a02:810d:4b3f:de9c:642:1aff:fe31:a19f])
-        by smtp.gmail.com with ESMTPSA id f8-20020a170906560800b00992b7ff3993sm5334625ejq.126.2023.08.07.09.32.53
+        by smtp.gmail.com with ESMTPSA id bn10-20020a170906c0ca00b00992b0745548sm5435523ejb.152.2023.08.07.09.32.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 09:32:54 -0700 (PDT)
+        Mon, 07 Aug 2023 09:32:58 -0700 (PDT)
 From:   Danilo Krummrich <dakr@redhat.com>
 To:     airlied@gmail.com, daniel@ffwll.ch, bskeggs@redhat.com,
         kherbst@redhat.com, lyude@redhat.com, sfr@canb.auug.org.au
 Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, Danilo Krummrich <dakr@redhat.com>,
         kernel test robot <lkp@intel.com>
-Subject: [PATCH drm-misc-next 3/5] drm/nouveau: remove incorrect __user annotations
-Date:   Mon,  7 Aug 2023 18:32:24 +0200
-Message-ID: <20230807163238.2091-4-dakr@redhat.com>
+Subject: [PATCH drm-misc-next 4/5] drm/nouveau: uvmm: remove incorrect calls to mas_unlock()
+Date:   Mon,  7 Aug 2023 18:32:25 +0200
+Message-ID: <20230807163238.2091-5-dakr@redhat.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230807163238.2091-1-dakr@redhat.com>
 References: <20230807163238.2091-1-dakr@redhat.com>
@@ -80,108 +80,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix copy-paste error causing EXEC and VM_BIND syscalls data pointers
-to carry incorrect __user annotations.
+Remove incorrect calls to mas_unlock() in the unwind path of
+__nouveau_uvma_region_insert(). The region maple tree uses an external
+lock instead, namely the global uvmm lock.
 
 Fixes: b88baab82871 ("drm/nouveau: implement new VM_BIND uAPI")
 Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Danilo Krummrich <dakr@redhat.com>
 ---
- drivers/gpu/drm/nouveau/nouveau_exec.c | 6 +++---
- drivers/gpu/drm/nouveau/nouveau_exec.h | 2 +-
- drivers/gpu/drm/nouveau/nouveau_uvmm.c | 6 +++---
- drivers/gpu/drm/nouveau/nouveau_uvmm.h | 4 ++--
- 4 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_uvmm.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_exec.c b/drivers/gpu/drm/nouveau/nouveau_exec.c
-index 42d9dd43ea02..0f927adda4ed 100644
---- a/drivers/gpu/drm/nouveau/nouveau_exec.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_exec.c
-@@ -293,7 +293,7 @@ nouveau_exec(struct nouveau_exec_job_args *args)
- 
- static int
- nouveau_exec_ucopy(struct nouveau_exec_job_args *args,
--		   struct drm_nouveau_exec __user *req)
-+		   struct drm_nouveau_exec *req)
- {
- 	struct drm_nouveau_sync **s;
- 	u32 inc = req->wait_count;
-@@ -352,7 +352,7 @@ nouveau_exec_ufree(struct nouveau_exec_job_args *args)
- 
- int
- nouveau_exec_ioctl_exec(struct drm_device *dev,
--			void __user *data,
-+			void *data,
- 			struct drm_file *file_priv)
- {
- 	struct nouveau_abi16 *abi16 = nouveau_abi16_get(file_priv);
-@@ -360,7 +360,7 @@ nouveau_exec_ioctl_exec(struct drm_device *dev,
- 	struct nouveau_abi16_chan *chan16;
- 	struct nouveau_channel *chan = NULL;
- 	struct nouveau_exec_job_args args = {};
--	struct drm_nouveau_exec __user *req = data;
-+	struct drm_nouveau_exec *req = data;
- 	int ret = 0;
- 
- 	if (unlikely(!abi16))
-diff --git a/drivers/gpu/drm/nouveau/nouveau_exec.h b/drivers/gpu/drm/nouveau/nouveau_exec.h
-index 3032db27b8d7..778cacd90f65 100644
---- a/drivers/gpu/drm/nouveau/nouveau_exec.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_exec.h
-@@ -48,7 +48,7 @@ struct nouveau_exec_job {
- int nouveau_exec_job_init(struct nouveau_exec_job **job,
- 			  struct nouveau_exec_job_args *args);
- 
--int nouveau_exec_ioctl_exec(struct drm_device *dev, void __user *data,
-+int nouveau_exec_ioctl_exec(struct drm_device *dev, void *data,
- 			    struct drm_file *file_priv);
- 
- #endif
 diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-index b515a21aa08e..2acbac73e57a 100644
+index 2acbac73e57a..91b964ef98b1 100644
 --- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
 +++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-@@ -1687,7 +1687,7 @@ nouveau_uvmm_vm_bind(struct nouveau_uvmm_bind_job_args *args)
+@@ -279,15 +279,11 @@ __nouveau_uvma_region_insert(struct nouveau_uvmm *uvmm,
+ 	u64 last = addr + range - 1;
+ 	MA_STATE(mas, &uvmm->region_mt, addr, addr);
  
- static int
- nouveau_uvmm_vm_bind_ucopy(struct nouveau_uvmm_bind_job_args *args,
--			   struct drm_nouveau_vm_bind __user *req)
-+			   struct drm_nouveau_vm_bind *req)
- {
- 	struct drm_nouveau_sync **s;
- 	u32 inc = req->wait_count;
-@@ -1749,12 +1749,12 @@ nouveau_uvmm_vm_bind_ufree(struct nouveau_uvmm_bind_job_args *args)
+-	if (unlikely(mas_walk(&mas))) {
+-		mas_unlock(&mas);
++	if (unlikely(mas_walk(&mas)))
+ 		return -EEXIST;
+-	}
  
- int
- nouveau_uvmm_ioctl_vm_bind(struct drm_device *dev,
--			   void __user *data,
-+			   void *data,
- 			   struct drm_file *file_priv)
- {
- 	struct nouveau_cli *cli = nouveau_cli(file_priv);
- 	struct nouveau_uvmm_bind_job_args args = {};
--	struct drm_nouveau_vm_bind __user *req = data;
-+	struct drm_nouveau_vm_bind *req = data;
- 	int ret = 0;
+-	if (unlikely(mas.last < last)) {
+-		mas_unlock(&mas);
++	if (unlikely(mas.last < last))
+ 		return -EEXIST;
+-	}
  
- 	if (unlikely(!nouveau_cli_uvmm_locked(cli)))
-diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.h b/drivers/gpu/drm/nouveau/nouveau_uvmm.h
-index 3923c03012f9..534baadc3bf7 100644
---- a/drivers/gpu/drm/nouveau/nouveau_uvmm.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.h
-@@ -89,10 +89,10 @@ void nouveau_uvmm_fini(struct nouveau_uvmm *uvmm);
- void nouveau_uvmm_bo_map_all(struct nouveau_bo *nvbov, struct nouveau_mem *mem);
- void nouveau_uvmm_bo_unmap_all(struct nouveau_bo *nvbo);
- 
--int nouveau_uvmm_ioctl_vm_init(struct drm_device *dev, void __user *data,
-+int nouveau_uvmm_ioctl_vm_init(struct drm_device *dev, void *data,
- 			       struct drm_file *file_priv);
- 
--int nouveau_uvmm_ioctl_vm_bind(struct drm_device *dev, void __user *data,
-+int nouveau_uvmm_ioctl_vm_bind(struct drm_device *dev, void *data,
- 			       struct drm_file *file_priv);
- 
- static inline void nouveau_uvmm_lock(struct nouveau_uvmm *uvmm)
+ 	mas.index = addr;
+ 	mas.last = last;
 -- 
 2.41.0
 
