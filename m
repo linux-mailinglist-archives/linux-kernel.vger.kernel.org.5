@@ -2,62 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EAC9771D2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202E4771D42
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbjHGJel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
+        id S231616AbjHGJjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 05:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHGJei (ORCPT
+        with ESMTP id S229640AbjHGJji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:34:38 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1D610C0;
-        Mon,  7 Aug 2023 02:34:37 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RKB3p0Gtqz4f3q30;
-        Mon,  7 Aug 2023 17:34:30 +0800 (CST)
-Received: from ubuntu20.huawei.com (unknown [10.67.174.33])
-        by APP2 (Coremail) with SMTP id Syh0CgCnyGyfutBkuLyOAA--.13731S2;
-        Mon, 07 Aug 2023 17:34:30 +0800 (CST)
-From:   "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
-To:     John Johansen <john.johansen@canonical.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>
-Cc:     apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Xiu Jianfeng <xiujianfeng@huawei.com>,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        gongruiqi@huaweicloud.com
-Subject: [PATCH] apparmor: remove unused PROF_* macros
-Date:   Mon,  7 Aug 2023 17:39:04 +0800
-Message-Id: <20230807093904.565766-1-gongruiqi@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 7 Aug 2023 05:39:38 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1329E10C1;
+        Mon,  7 Aug 2023 02:39:38 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5768a7e3adbso76980467b3.0;
+        Mon, 07 Aug 2023 02:39:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691401177; x=1692005977;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KANoAi4KJxWNG4lfh8UFbdoVDzynEqjJ4XX3JtIISDA=;
+        b=FStAdle3A+eN6EDU2RoWhI0wC+xZ6DjAHAhBdp6qx+EamI7CD+12o60qRr5NLZfPVN
+         g2KnTCcxDgR0SAjJp8/Uzt7YLoGwwIMbwPT9yZ62XdZTR/dppwPjXaRQqFUM7gofjbRJ
+         pdJgQJRRc/+7ekahK8FRCaTVqJXwcC+i2HVK3KWiZ9opSZp+A5H7Wf50oZAcDm2Bi+F5
+         WvZC4tp+7yJfBVG6spVYy+eV9u0luxvpaXbKPPuoai1aFvCNi+bUq86z1FcZFqvJZAEm
+         Hp6ByQcpFTPPFC5r1lilYs3ym/UuyBo/QBtvQmVXPAXSm1niMGzDiBoD6W/6emcXfNs5
+         Rn6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691401177; x=1692005977;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KANoAi4KJxWNG4lfh8UFbdoVDzynEqjJ4XX3JtIISDA=;
+        b=YpihfOLx/fWPj3GlONICLSP0BMFvLnQDn9OrBURiFER2Vt1lnzCz+IlPALIl+61KXp
+         WJ2w4oihHIoGPrakcxkWSZkvPgiZTmjaHHR8/K7vfQRYBf+NfmKUw1NqUxEl4iYXxYek
+         PQp7dAJlsjb3o6B0gjN9EBtipoE73BQf1jnYKT7j9CFXT17ZpsQMMuh5voZKYDbBW8I7
+         407vVtDGsOR0wQya/FELYIJJUyu0h62QsEen3byms5F3bAiUrSqm5ZAHbxr3+0cABl32
+         WCiW3G/WDrcJ8C17/ARxVv9yHqJaAae56cBYbLmKQp7BwxNN2nulwgy5CejY21bgdOL7
+         9fiA==
+X-Gm-Message-State: AOJu0YwrE0NCg7dkG0RMHakJqJDdqtdTGR8im0WLbNwiQrWn1W09gwaX
+        fE3LK6U//eif1wccTa1Gzkv4oKCxi92tkhVwB2hiezJ2
+X-Google-Smtp-Source: AGHT+IE1VZFpJpCa0mdDRCG8L2APBzvJPVO5xHPetYuXQyjt6XOOI3itXxnOADZw2UopJTBtnw92Ooo/pOZToPwLEU0=
+X-Received: by 2002:a05:6902:4e6:b0:d48:7988:15e0 with SMTP id
+ w6-20020a05690204e600b00d48798815e0mr6296024ybs.6.1691401177260; Mon, 07 Aug
+ 2023 02:39:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgCnyGyfutBkuLyOAA--.13731S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7XF4UuF17GFy3Cw4UJF13urg_yoWfZrb_C3
-        Wj9w1xurs3ZF1fXa40va48uF97u3y8JFZ09a4Fqr9rAryDKw4rWa4jyryxWrW3uws7GrWU
-        CFyfKrW5AF1xWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbxxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
-        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-        AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
-        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUF9
-        a9DUUUU
-X-CM-SenderInfo: pjrqw2pxltxq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20230807091302.6370fc50@canb.auug.org.au>
+In-Reply-To: <20230807091302.6370fc50@canb.auug.org.au>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 7 Aug 2023 11:39:26 +0200
+Message-ID: <CANiq72nspJn=YGkMH-hC56ynBc+d6mHdUOQtcui6_UntJNAb1Q@mail.gmail.com>
+Subject: Re: linux-next: duplicate patch in the rust tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,31 +70,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+Hi Stephen,
 
-The last usage of PROF_{ADD,REPLACE} were removed by commit 18e99f191a8e
-("apparmor: provide finer control over policy management"). So remove
-these two unused macros.
+On Mon, Aug 7, 2023 at 1:13=E2=80=AFAM Stephen Rothwell <sfr@canb.auug.org.=
+au> wrote:
+>
+> The following commit is also in Linus Torvalds' tree as a different commi=
+t
+> (but the same patch):
 
-Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
----
- security/apparmor/include/policy.h | 3 ---
- 1 file changed, 3 deletions(-)
+Thanks! I should have pushed the reword to `rust-next` too, sorry.
 
-diff --git a/security/apparmor/include/policy.h b/security/apparmor/include/policy.h
-index 545f791cabda..ed9a8669af80 100644
---- a/security/apparmor/include/policy.h
-+++ b/security/apparmor/include/policy.h
-@@ -254,9 +254,6 @@ ssize_t aa_remove_profiles(struct aa_ns *view, struct aa_label *label,
- 			   char *name, size_t size);
- void __aa_profile_list_release(struct list_head *head);
- 
--#define PROF_ADD 1
--#define PROF_REPLACE 0
--
- #define profile_unconfined(X) ((X)->mode == APPARMOR_UNCONFINED)
- 
- /**
--- 
-2.25.1
+It is gone now.
 
+Cheers,
+Miguel
