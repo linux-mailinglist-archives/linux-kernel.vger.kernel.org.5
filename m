@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA4B771DB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67731771DAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbjHGKBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 06:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
+        id S231453AbjHGKAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 06:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230378AbjHGKB2 (ORCPT
+        with ESMTP id S229866AbjHGKAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 06:01:28 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1746F4
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 03:01:27 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bc6bfc4b58so3940675ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 03:01:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691402487; x=1692007287;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SwYs+O8vgVUJyFlM5JLIVDfwN1J1PxEBLDaKVVtoMJk=;
-        b=oLL+7m6qYd+7DmSzgxQ/ozPBUYav/WFnUQSkLLnbvTrC/Eah1DuL3NQa1bI4YPhny2
-         eKQvY1rOkDmzv/HkX511l60S2rxcznZ9ftrIudmmcrZIY3sI+fm2kIidGg9Hg0tG/4O7
-         tJxEi3/gKDEFHdttLLrHktUDcEtc4Gu1lmMNvD2eN0MVJIphMJzpK5Qi8xB2jHkX4v/C
-         V73p0DQjGCGjO5bl+BYELymO00X+U3tcuapjTyT3gSV9taYqpEduPipGxmCXAD6FxCz7
-         d1+uIcENzfr7LOsC2HTX+/idCoS7gdhz3+mQ8F1Xjp6hT4EjJOqzCQuNMv7QVdelseGI
-         Mv6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691402487; x=1692007287;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SwYs+O8vgVUJyFlM5JLIVDfwN1J1PxEBLDaKVVtoMJk=;
-        b=R9Lje20ZWawcxl0mDzTgM7NTyvlQEiInNilPIBsEJlPv8udj/phUtWhdmy8e9xr2sJ
-         cluUfLSvXLsIGWkceqKUY6Qi1oCgV2mpIZnN3CZHv7ebBBAi6pdJA+ixpBVbstdps1ti
-         ZDH0a3Sh71dnaGx5+wJ/SAOwTw3djuVjR/ll6D1j615uJKLejg3HpUIStGiOCHwJemdI
-         tN/1llGeawcX802RZrZJ4Gz7CLkuFTxjZVGEwV18Ma+9g1IK7/Lez0r0GIJWzmd6IQxT
-         3nqWotzFJLsKfm21xhYKSI4/++02DhIkc+MmcMgZ5N73g2YgFbQLMUTmcueAowFNwn11
-         v6bw==
-X-Gm-Message-State: AOJu0YyQm5ADBd0tQjim3nTcdSZ55a5T+cnvNLeybc9YmXIopsehpd4D
-        KGw1Spxb/To3xs9sLgPnoTqrkt4dYxEHmR4T
-X-Google-Smtp-Source: AGHT+IFebdmfKSKoXjZXDKP1MSLkwdlsoq5rPCk96tCzk/RXPb8Sxcuq26swmScT/Xm0Zc8Km/HeTw==
-X-Received: by 2002:a17:902:c404:b0:1bb:a367:a77 with SMTP id k4-20020a170902c40400b001bba3670a77mr9004909plk.31.1691402486995;
-        Mon, 07 Aug 2023 03:01:26 -0700 (PDT)
-Received: from localhost.localdomain ([1.237.29.215])
-        by smtp.gmail.com with ESMTPSA id ji1-20020a170903324100b001b881a8251bsm6484800plb.106.2023.08.07.03.01.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 07 Aug 2023 03:01:26 -0700 (PDT)
-From:   Hyeongtak Ji <hyeongtak.ji@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Hyeongtak Ji <hyeongtak.ji@gmail.com>,
-        Hyeongtak Ji <hyeongtak.ji@sk.com>
-Subject: [PATCH] mm/vmscan: consider previously reclaimed pages in shrink_lruvec()
-Date:   Mon,  7 Aug 2023 19:01:16 +0900
-Message-Id: <1691402476-4838-1-git-send-email-hyeongtak.ji@gmail.com>
-X-Mailer: git-send-email 2.7.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 7 Aug 2023 06:00:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9D1DD;
+        Mon,  7 Aug 2023 03:00:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691402408; x=1722938408;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Cnv86AvV5oXeXJaWvkZrIjdDJcntU03jA75p6wKRBLg=;
+  b=h3O5dousvy/5Qc9ljW32WaQmhn9d+Dk/lu8/jKohuEmrXdqy7si9QLg7
+   G+dlr1IIiTbDaCEgwUqvYW9D+AN07UtzvIbRvH3LuVL3qFnAM/yZ68/Pj
+   aGsTRltTpd0FgdCTVdORl8KE9NeZUqvfMpYMGRGgdowJBPg+VwZ9I1bcE
+   Aq24SH/N9j7mhxjV10/gpUV7SEoazQOcDUp9unlu0LQZbjFfGEz06sLtW
+   qgGJO2k8CtafL5+gWOE6GlIOyYPZJz3iRxHe1HSWPczO4cb+Nvv7bH5o2
+   LOIgqom6zMM5YtrPe88ZSEj2Oou9ChgZ36om3DSXgsQwyw6zM0ZIlFYym
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="369406962"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="369406962"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 03:00:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="1061536245"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="1061536245"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 07 Aug 2023 03:00:05 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 58C1917C; Mon,  7 Aug 2023 13:02:19 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Justin Tee <justin.tee@broadcom.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 1/1] scsi: lpfc: Do not abuse UUID APIs
+Date:   Mon,  7 Aug 2023 13:02:17 +0300
+Message-Id: <20230807100217.34646-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-shrink_lruvec() currently ignores previously reclaimed pages in
-scan_control->nr_reclaimed.  This can lead shrink_lruvec() to reclaiming
-more pages than expected.
+The lpfc_vmid_host_uuid is not defined as uuid_t and its usage is not
+the same as for uuid_t operations (like exporting or importing).
+Hence replace call to uuid_is_null() by respective memchr_inv() without
+abusing casting.
 
-This patch fixes shrink_lruvec() to take into account the previously
-reclaimed pages.
-
-Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- mm/vmscan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2: fixed the logic: memchr_inv() returns "true" when uuid_is_null() returns false.
+ drivers/scsi/lpfc/lpfc_els.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 1080209a568b..315da4ae16f1 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -6261,7 +6261,7 @@ static void shrink_lruvec(struct lruvec *lruvec, struct scan_control *sc)
- 	unsigned long nr_to_scan;
- 	enum lru_list lru;
- 	unsigned long nr_reclaimed = 0;
--	unsigned long nr_to_reclaim = sc->nr_to_reclaim;
-+	unsigned long nr_to_reclaim = sc->nr_to_reclaim - sc->nr_reclaimed;
- 	bool proportional_reclaim;
- 	struct blk_plug plug;
+diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
+index 2bad9954c355..1e74ae65768d 100644
+--- a/drivers/scsi/lpfc/lpfc_els.c
++++ b/drivers/scsi/lpfc/lpfc_els.c
+@@ -1332,7 +1332,7 @@ lpfc_issue_els_flogi(struct lpfc_vport *vport, struct lpfc_nodelist *ndlp,
+ 	if (phba->cfg_vmid_priority_tagging) {
+ 		sp->cmn.priority_tagging = 1;
+ 		/* lpfc_vmid_host_uuid is combination of wwpn and wwnn */
+-		if (uuid_is_null((uuid_t *)vport->lpfc_vmid_host_uuid)) {
++		if (!memchr_inv(vport->lpfc_vmid_host_uuid, 0, LPFC_COMPRESS_VMID_SIZE)) {
+ 			memcpy(vport->lpfc_vmid_host_uuid, phba->wwpn,
+ 			       sizeof(phba->wwpn));
+ 			memcpy(&vport->lpfc_vmid_host_uuid[8], phba->wwnn,
+@@ -12331,7 +12331,7 @@ lpfc_vmid_uvem(struct lpfc_vport *vport,
+ 	elsiocb->vmid_tag.vmid_context = vmid_context;
+ 	pcmd = (u8 *)elsiocb->cmd_dmabuf->virt;
+ 
+-	if (uuid_is_null((uuid_t *)vport->lpfc_vmid_host_uuid))
++	if (!memchr_inv(vport->lpfc_vmid_host_uuid, 0, LPFC_COMPRESS_VMID_SIZE))
+ 		memcpy(vport->lpfc_vmid_host_uuid, vmid->host_vmid,
+ 		       LPFC_COMPRESS_VMID_SIZE);
  
 -- 
-2.7.4
+2.40.0.1.gaa8946217a0b
 
