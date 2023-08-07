@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0069771B4B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F72771B5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbjHGHOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 03:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
+        id S231552AbjHGHRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 03:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjHGHOr (ORCPT
+        with ESMTP id S231569AbjHGHRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 03:14:47 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275E5E78;
-        Mon,  7 Aug 2023 00:14:46 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fe4b45a336so19402095e9.1;
-        Mon, 07 Aug 2023 00:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691392484; x=1691997284;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h/q7KrvUsuo+6OfYFpsl2TwzIR1F7EEM+glRfJ969Fs=;
-        b=ooI8pLA5WbikDzEsTrpi5Adh45gbEe1YJFPIFnc1c8h4DVHLb1qGl/f/2UITnC0dAU
-         cMz4bz10wnA5fLHVYBoPTH2iY+AzRllM8KHMB4NzKgegRnhO88hEc4qF7B8OckcVq61/
-         W7N9fyRbFYwgrS7003b9wTRCUwGa+bVyONUNxUVj7hNgkkSj8QzOLkA8tyW1f3fY1L/c
-         SEa/yx8A8uQwydLTLJbEo3z/M1lubuGcdVv0w6tHvLXN8JhTijFUeFxSTzDdcGJiv9Z8
-         O7ueVQq57zS3z0vV6zD9NYV38Bz3z4Y8PjBcYrz3cxhshc8bGePvp1WH/hDAy7HwmTbK
-         ONtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691392484; x=1691997284;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h/q7KrvUsuo+6OfYFpsl2TwzIR1F7EEM+glRfJ969Fs=;
-        b=D6HqWPu1+KzkG0kTTLtAyHe/+GR9EHUndZIsBudCiC3w5qQylgSW6h/wOf4/1nJ1a8
-         pX7RhGx1x94kgBWQBHqaj9CNmZIReR23JeAxy2VYnSYNAaWGTcS3yNRpVYugXpVdVBwL
-         EOvXabJDFieUz0wPpHEf21HIcNDenqvs4LJNXBndghhIiwPe7AwV5lejku7wJMyzJl6k
-         3i8An9yLHKVDv67IsxyfuLwtGLV7IevJk+OLJbiHUkD/4IqeE5fdeimWKefwpqRU9Rkk
-         mZiviAjqPCPYsY77309P3+Q2kmfFpJwZOKXwTT9w92V1zIvgrJv5dtWHyf3EfE8M1GRM
-         K7DA==
-X-Gm-Message-State: AOJu0Yz15LVkPZUULZ8AjNAGgLFi3fknnG4ZrxpoMdEM1iRTZ+nbSjiB
-        j+95L6IqD5xyjae4sij4qekkKoernVkG+w==
-X-Google-Smtp-Source: AGHT+IGFQpVxRgW0c9Dee3AMkALeVXE44WfOlwAa9nbqNsWfDhwzFaUjYrgaiCLLh0CfNuUdjQAgGQ==
-X-Received: by 2002:a5d:400f:0:b0:317:7255:6ca1 with SMTP id n15-20020a5d400f000000b0031772556ca1mr4688746wrp.31.1691392484112;
-        Mon, 07 Aug 2023 00:14:44 -0700 (PDT)
-Received: from khadija-virtual-machine ([124.29.208.67])
-        by smtp.gmail.com with ESMTPSA id q14-20020adfcd8e000000b00314329f7d8asm9544888wrj.29.2023.08.07.00.14.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 00:14:43 -0700 (PDT)
-Date:   Mon, 7 Aug 2023 12:14:40 +0500
-From:   Khadija Kamran <kamrankhadijadj@gmail.com>
-To:     Alison Schofield <alison.schofield@intel.com>,
-        ztarkhani@microsoft.com, Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] lsm: add comment block for security_sk_classify_flow()
- LSM hook
-Message-ID: <ZNCZ4KL7TRDE9vIC@gmail.com>
+        Mon, 7 Aug 2023 03:17:25 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39F31BDB
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 00:17:13 -0700 (PDT)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qSuTs-0008Tg-09; Mon, 07 Aug 2023 09:16:44 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 192BD20588D;
+        Mon,  7 Aug 2023 07:16:42 +0000 (UTC)
+Date:   Mon, 7 Aug 2023 09:16:41 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Cc:     John Watts <contact@jookia.org>,
+        Maksim Kiselev <bigunclemax@gmail.com>, aou@eecs.berkeley.edu,
+        conor+dt@kernel.org, davem@davemloft.net,
+        devicetree@vger.kernel.org, edumazet@google.com,
+        krzysztof.kozlowski+dt@linaro.org, kuba@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, netdev@vger.kernel.org,
+        pabeni@redhat.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
+        robh+dt@kernel.org, samuel@sholland.org, wens@csie.org,
+        wg@grandegger.com
+Subject: Re: [PATCH v2 2/4] riscv: dts: allwinner: d1: Add CAN controller
+ nodes
+Message-ID: <20230807-denatured-gangrene-e6f37ba5f9ef-mkl@pengutronix.de>
+References: <20230721221552.1973203-4-contact@jookia.org>
+ <2690764.mvXUDI8C0e@jernej-laptop>
+ <ZM8-yfRVscYjxp2p@titan>
+ <4848155.31r3eYUQgx@jernej-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="knn54obranxnvfa4"
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <4848155.31r3eYUQgx@jernej-laptop>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,37 +66,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-security_sk_classify_flow() LSM hook has no comment block. Add a comment
-block with a brief description of LSM hook and its function parameters.
 
-Signed-off-by: Khadija Kamran <kamrankhadijadj@gmail.com>
----
-Changed in v2:
- - Add parenthesis with security_sk_calssify_flow to refer to it as a
-   function in commit message and commit log. 
- - Remove an extra space in the comment block.
+--knn54obranxnvfa4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-security/security.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+On 06.08.2023 13:42:28, Jernej =C5=A0krabec wrote:
+> Dne nedelja, 06. avgust 2023 ob 08:33:45 CEST je John Watts napisal(a):
+> > On Sat, Aug 05, 2023 at 07:49:51PM +0200, Jernej =C5=A0krabec wrote:
+> > > Dne sobota, 05. avgust 2023 ob 18:51:53 CEST je John Watts napisal(a):
+> > > > On Sat, Aug 05, 2023 at 07:40:52PM +0300, Maksim Kiselev wrote:
+> > > > > Hi John, Jernej
+> > > > > Should we also keep a pinctrl nodes itself in alphabetical order?
+> > > > > I mean placing a CAN nodes before `clk_pg11_pin` node?
+> > > > > Looks like the other nodes sorted in this way...
+> > > >=20
+> > > > Good catch. Now that you mention it, the device tree nodes are sort=
+ed
+> > > > by memory order too! These should be after i2c3.
+> > > >=20
+> > > > It looks like I might need to do a patch to re-order those too.
+> > >=20
+> > > It would be better if DT patches are dropped from netdev tree and then
+> > > post
+> > > new versions.
+> > >=20
+> > > Best regards,
+> > > Jernej
+> >=20
+> > Agreed. Is there a way to request that? Or will the maintainer just read
+> > this?
+>=20
+> Hopefully it will.
 
-diff --git a/security/security.c b/security/security.c
-index d5ff7ff45b77..b76fb27a1dc6 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -4396,6 +4396,13 @@ void security_sk_clone(const struct sock *sk, struct sock *newsk)
- }
- EXPORT_SYMBOL(security_sk_clone);
- 
-+/**
-+ * security_sk_classify_flow() - Set a flow's secid based on socket
-+ * @sk: original socket
-+ * @flic: target flow
-+ *
-+ * Set the target flow's secid to socket's secid.
-+ */
- void security_sk_classify_flow(struct sock *sk, struct flowi_common *flic)
- {
- 	call_void_hook(sk_getsecid, sk, &flic->flowic_secid);
--- 
-2.34.1
+I'm just catching up on last week's post (I had a long off-line
+weekend).
 
+I'll revert the DT changes and send a PR to net-next.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--knn54obranxnvfa4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmTQmlYACgkQvlAcSiqK
+BOgEOAf/fUZfi2B2HANlxUlb4fdyka/TP5ZLHNHvg7p3zeXtN/14VVOHERsUPbXh
+Kldv7yC7b/fwT8eNXA00kF7stor8jzf2pmRnH0O1Nq/OeOezlf6neZxWwzitGCbL
+qWYirtSsJw5oN4Q/hxohHL2y9CX2jCXK9f6TQ3eMzr2vhXCrtDxLKPBaL0Abb1qv
+vRdIDpQtXYpYWsXXlP1Fw9PArbvZ3mDVFDnBpYIri/nt7wX+TYveOjVOn1h8W+Im
+dbFqaDjgwOe4SWL2oWpVMQAWOAs4gCM3af9aC/zcXbYXnEHZduRWlPs/g9kNo13L
+IP3YMj70efZqX1eHk2reC0R/Ppf/Xw==
+=TA6D
+-----END PGP SIGNATURE-----
+
+--knn54obranxnvfa4--
