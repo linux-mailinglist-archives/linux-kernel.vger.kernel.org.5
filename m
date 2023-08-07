@@ -2,96 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3D7771EC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CADB8771EC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbjHGKtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 06:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
+        id S231366AbjHGKuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 06:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231539AbjHGKtQ (ORCPT
+        with ESMTP id S229587AbjHGKuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 06:49:16 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB1519AF
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 03:48:55 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1bb75afeee3so3188301fac.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 03:48:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691405334; x=1692010134;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZOqvjYpL8TOY1VQyCJX/k1Wl0dCAzqBeX1FG+QU3ZR4=;
-        b=gzo6NysgKKweswL7UjeFF09Y9Ji9Z/Uf35i4LQFrP2/dcJDHC3DI4879BexeA91mcm
-         z57MKJY/ByZcaAqP+krUXrut6lJ64eQqk0AA3hgN1xtyRpnbXOM6Ln+Zb96JjxqS82pB
-         fJUSk81uyUh5w8E+a0TWGnYrObQqTwoE5qbBSC0u2Lc8xRhqK/qh4WHRgzhDCCuCFBcY
-         lgpKrODnkD6Qud5xAGpvV6011VAjCDlP1uWz1egqTmfmGSJ/OdeyJ3MLwv/jY5R7qrKL
-         G782BxQ/6StluxlFjNdYHp+3k1l5bOaBIirjO4NHAsLhFG7yxjnxIGmleMJbf8zUHT/c
-         6aIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691405334; x=1692010134;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZOqvjYpL8TOY1VQyCJX/k1Wl0dCAzqBeX1FG+QU3ZR4=;
-        b=XNNj5IgWVbTCyd0+XdhpS7cKkYWTNS0KNIsZwEQa2DzJWwxUV8BLTt2P04tnjSwVqm
-         AgTcjGzMa9x/2Wn4nMbq63G3W/5kSSiZ7hb2lvqprMToxoHG8NbPtGz/TIGUko3JDfwL
-         W/hyo1KpFFUWCn5mevDJ58j+vY0ZsD0kSBmVPVnGcD9YaUFoSMciwX9DWQlHX5qOIFqG
-         XybgAGHc2csKPDpxCAln/Dpkk4PgPFYdZEhCI5AeFBeB4a6uY79cTwlaKUiSSNUatTHo
-         MAnisDIXq1GMOXgrD6ONXK0d2xwy6xUCu3m3ZXO3zGsR+XwrvguTahiFFcLrZKZ8N4ZI
-         ay8A==
-X-Gm-Message-State: AOJu0YxcNt06haMw137Tya6S8wK+s9SB9ydLxQ5vVbBjSeuXpUp7/Pvc
-        +OIwhIucqEG6+zjDbklrFu+XpyM4rlSTu59emWDxArK/
-X-Google-Smtp-Source: AGHT+IE+8t6WZmXSA2gENA1tNwHAJ+VRkzEbu+o+tPqzLzZjNhYYW9QWCVRwSEdItXD2Ro0U1Y9LHJOpP+xowR4bSgc=
-X-Received: by 2002:a05:6870:d0c4:b0:1b8:5d9e:638b with SMTP id
- k4-20020a056870d0c400b001b85d9e638bmr10052976oaa.43.1691405333876; Mon, 07
- Aug 2023 03:48:53 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:ac9:7b87:0:b0:4f0:1250:dd51 with HTTP; Mon, 7 Aug 2023
- 03:48:53 -0700 (PDT)
-In-Reply-To: <ZNBfEjZRWnPrCIGu@casper.infradead.org>
-References: <20230806231611.1395735-1-mjguzik@gmail.com> <ZNBfEjZRWnPrCIGu@casper.infradead.org>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Mon, 7 Aug 2023 12:48:53 +0200
-Message-ID: <CAGudoHHXa47bGqBh5QELBmpT1zS2znjT9U52Tb+bp=g3zq5Cww@mail.gmail.com>
-Subject: Re: [PATCH] mm: move dummy_vm_ops out of a header
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 7 Aug 2023 06:50:13 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8DE4F97;
+        Mon,  7 Aug 2023 03:50:11 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+        id 0934220861E6; Mon,  7 Aug 2023 03:50:11 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0934220861E6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1691405411;
+        bh=wlQbnMoNYTIUFTlnlboiUtcBjn9Zi3YpgrgIpoIIo50=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dlOGbRyrSv17W9cUwr1k3usY+YYbMg3mPLJE1zT5RD0L/qSPnOjkkdorJGTjmpFUE
+         oDxf7XE724F1YLxTAtXKtdo790ZfsNo0BZGJVgmPRkR19ukoBa10UADPyXEgVJpJvx
+         bRZ3KFICIGTynxws/Kb8wbqVAuEY7SfGkwKLC2dY=
+From:   Shradha Gupta <shradhagupta@linux.microsoft.com>
+To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Shradha Gupta <shradhagupta@linux.microsoft.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: [PATCH net-next] net: mana: Add gdma stats to ethtool output for mana
+Date:   Mon,  7 Aug 2023 03:50:02 -0700
+Message-Id: <1691405402-2641-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/23, Matthew Wilcox <willy@infradead.org> wrote:
-> On Mon, Aug 07, 2023 at 01:16:11AM +0200, Mateusz Guzik wrote:
->> Otherwise the kernel ends up with multiple copies:
->> $ nm vmlinux | grep dummy_vm_ops
->> ffffffff81e4ea00 d dummy_vm_ops.2
->> ffffffff81e11760 d dummy_vm_ops.254
->> ffffffff81e406e0 d dummy_vm_ops.4
->> ffffffff81e3c780 d dummy_vm_ops.7
->>
->> While here prefix it with vma_.
->
-> It really shouldn't be prefixed with vma.  Other than that, I love this
-> patch.
->
+Extended performance counter stats in 'ethtool -S <interface>'
+for MANA VF to include GDMA tx LSO packets and bytes count.
 
-I think an unprefixed global is iffy, but I'm not going to insist on
-semi-cosmetics.
+Tested-on: Ubuntu22
+Testcases:
+1. LISA testcase:
+PERF-NETWORK-TCP-THROUGHPUT-MULTICONNECTION-NTTTCP-Synthetic
+2. LISA testcase:
+PERF-NETWORK-TCP-THROUGHPUT-MULTICONNECTION-NTTTCP-SRIOV
+3. Validated the GDMA stat packets and byte counters
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+---
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 40 +++++++++
+ .../ethernet/microsoft/mana/mana_ethtool.c    | 15 ++++
+ include/net/mana/mana.h                       | 88 +++++++++++++++++++
+ 3 files changed, 143 insertions(+)
 
-The one thing I expected people to complain about is the location of
-the struct. The mm_init.c file was the least bad choice I found, but
-maybe something else is preferred?
-I'm just trying to avoid sending V3 for this patch after someone
-claims dummy ops should land elsewhere. ;)
-
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index ac2acc9aca9d..eb5e4164b9bf 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -2234,6 +2234,46 @@ int mana_config_rss(struct mana_port_context *apc, enum TRI_STATE rx,
+ 	return 0;
+ }
+ 
++void mana_query_gf_stats(struct mana_port_context *apc)
++{
++	struct mana_query_gf_stat_req	req = {};
++	struct mana_query_gf_stat_resp resp = {};
++	struct net_device *ndev = apc->ndev;
++	int err;
++
++	mana_gd_init_req_hdr(&req.hdr, MANA_QUERY_GF_STAT,
++			     sizeof(req), sizeof(resp));
++	req.req_stats = STATISTICS_FLAGS_HC_TX_BYTES |
++			STATISTICS_FLAGS_HC_TX_UCAST_PACKETS |
++			STATISTICS_FLAGS_HC_TX_UCAST_BYTES |
++			STATISTICS_FLAGS_HC_TX_MCAST_PACKETS |
++			STATISTICS_FLAGS_HC_TX_MCAST_BYTES |
++			STATISTICS_FLAGS_HC_TX_BCAST_PACKETS |
++			STATISTICS_FLAGS_HC_TX_BCAST_BYTES;
++
++	err = mana_send_request(apc->ac, &req, sizeof(req), &resp,
++				sizeof(resp));
++	if (err) {
++		netdev_err(ndev, "Failed to query GF stats: %d\n", err);
++		return;
++	}
++	err = mana_verify_resp_hdr(&resp.hdr, MANA_QUERY_GF_STAT,
++				   sizeof(resp));
++	if (err || resp.hdr.status) {
++		netdev_err(ndev, "Failed to query GF stats: %d, 0x%x\n", err,
++			   resp.hdr.status);
++		return;
++	}
++
++	apc->eth_stats.hc_tx_bytes = resp.hc_tx_bytes;
++	apc->eth_stats.hc_tx_ucast_pkts = resp.hc_tx_ucast_pkts;
++	apc->eth_stats.hc_tx_ucast_bytes = resp.hc_tx_ucast_bytes;
++	apc->eth_stats.hc_tx_bcast_pkts = resp.hc_tx_bcast_pkts;
++	apc->eth_stats.hc_tx_bcast_bytes = resp.hc_tx_bcast_bytes;
++	apc->eth_stats.hc_tx_mcast_pkts = resp.hc_tx_mcast_pkts;
++	apc->eth_stats.hc_tx_mcast_bytes = resp.hc_tx_mcast_bytes;
++}
++
+ static int mana_init_port(struct net_device *ndev)
+ {
+ 	struct mana_port_context *apc = netdev_priv(ndev);
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+index 0dc78679f620..607150165ab4 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+@@ -13,6 +13,19 @@ static const struct {
+ } mana_eth_stats[] = {
+ 	{"stop_queue", offsetof(struct mana_ethtool_stats, stop_queue)},
+ 	{"wake_queue", offsetof(struct mana_ethtool_stats, wake_queue)},
++	{"hc_tx_bytes", offsetof(struct mana_ethtool_stats, hc_tx_bytes)},
++	{"hc_tx_ucast_pkts", offsetof(struct mana_ethtool_stats,
++					hc_tx_ucast_pkts)},
++	{"hc_tx_ucast_bytes", offsetof(struct mana_ethtool_stats,
++					hc_tx_ucast_bytes)},
++	{"hc_tx_bcast_pkts", offsetof(struct mana_ethtool_stats,
++					hc_tx_bcast_pkts)},
++	{"hc_tx_bcast_bytes", offsetof(struct mana_ethtool_stats,
++					hc_tx_bcast_bytes)},
++	{"hc_tx_mcast_pkts", offsetof(struct mana_ethtool_stats,
++					hc_tx_mcast_pkts)},
++	{"hc_tx_mcast_bytes", offsetof(struct mana_ethtool_stats,
++					hc_tx_mcast_bytes)},
+ 	{"tx_cq_err", offsetof(struct mana_ethtool_stats, tx_cqe_err)},
+ 	{"tx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
+ 					tx_cqe_unknown_type)},
+@@ -114,6 +127,8 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
+ 
+ 	if (!apc->port_is_up)
+ 		return;
++	/* we call mana function to update stats from GDMA */
++	mana_query_gf_stats(apc);
+ 
+ 	for (q = 0; q < ARRAY_SIZE(mana_eth_stats); q++)
+ 		data[i++] = *(u64 *)(eth_stats + mana_eth_stats[q].offset);
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 024ad8ddb27e..1a751c73e69a 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -347,6 +347,13 @@ struct mana_tx_qp {
+ struct mana_ethtool_stats {
+ 	u64 stop_queue;
+ 	u64 wake_queue;
++	u64 hc_tx_bytes;
++	u64 hc_tx_ucast_pkts;
++	u64 hc_tx_ucast_bytes;
++	u64 hc_tx_bcast_pkts;
++	u64 hc_tx_bcast_bytes;
++	u64 hc_tx_mcast_pkts;
++	u64 hc_tx_mcast_bytes;
+ 	u64 tx_cqe_err;
+ 	u64 tx_cqe_unknown_type;
+ 	u64 rx_coalesced_err;
+@@ -437,6 +444,7 @@ u32 mana_run_xdp(struct net_device *ndev, struct mana_rxq *rxq,
+ struct bpf_prog *mana_xdp_get(struct mana_port_context *apc);
+ void mana_chn_setxdp(struct mana_port_context *apc, struct bpf_prog *prog);
+ int mana_bpf(struct net_device *ndev, struct netdev_bpf *bpf);
++void mana_query_gf_stats(struct mana_port_context *apc);
+ 
+ extern const struct ethtool_ops mana_ethtool_ops;
+ 
+@@ -578,6 +586,49 @@ struct mana_fence_rq_resp {
+ 	struct gdma_resp_hdr hdr;
+ }; /* HW DATA */
+ 
++/* Query stats RQ */
++struct mana_query_gf_stat_req {
++	struct gdma_req_hdr hdr;
++	u64 req_stats;
++}; /* HW DATA */
++
++struct mana_query_gf_stat_resp {
++	struct gdma_resp_hdr hdr;
++	u64 reported_stats;
++	/* rx errors/discards */
++	u64 discard_rx_nowqe;
++	u64 err_rx_vport_disabled;
++	/* rx bytes/packets */
++	u64 hc_rx_bytes;
++	u64 hc_rx_ucast_pkts;
++	u64 hc_rx_ucast_bytes;
++	u64 hc_rx_bcast_pkts;
++	u64 hc_rx_bcast_bytes;
++	u64 hc_rx_mcast_pkts;
++	u64 hc_rx_mcast_bytes;
++	/* tx errors */
++	u64 err_tx_gf_disabled;
++	u64 err_tx_vport_disabled;
++	u64 err_tx_inval_vport_offset_pkt;
++	u64 err_tx_vlan_enforcement;
++	u64 err_tx_ethtype_enforcement;
++	u64 err_tx_SA_enforecement;
++	u64 err_tx_SQPDID_enforcement;
++	u64 err_tx_CQPDID_enforcement;
++	u64 err_tx_mtu_violation;
++	u64 err_tx_inval_oob;
++	/* tx bytes/packets */
++	u64 hc_tx_bytes;
++	u64 hc_tx_ucast_pkts;
++	u64 hc_tx_ucast_bytes;
++	u64 hc_tx_bcast_pkts;
++	u64 hc_tx_bcast_bytes;
++	u64 hc_tx_mcast_pkts;
++	u64 hc_tx_mcast_bytes;
++	/* tx error */
++	u64 err_tx_gdma;
++}; /* HW DATA */
++
+ /* Configure vPort Rx Steering */
+ struct mana_cfg_rx_steer_req_v2 {
+ 	struct gdma_req_hdr hdr;
+@@ -657,6 +708,43 @@ struct mana_deregister_filter_resp {
+ 	struct gdma_resp_hdr hdr;
+ }; /* HW DATA */
+ 
++/* Requested GF stats Flags */
++/* Rx discards/Errors */
++#define STATISTICS_FLAGS_RX_DISCARDS_NO_WQE		0x0000000000000001
++#define STATISTICS_FLAGS_RX_ERRORS_VPORT_DISABLED	0x0000000000000002
++/* Rx bytes/pkts */
++#define STATISTICS_FLAGS_HC_RX_BYTES			0x0000000000000004
++#define STATISTICS_FLAGS_HC_RX_UCAST_PACKETS		0x0000000000000008
++#define STATISTICS_FLAGS_HC_RX_UCAST_BYTES		0x0000000000000010
++#define STATISTICS_FLAGS_HC_RX_MCAST_PACKETS		0x0000000000000020
++#define STATISTICS_FLAGS_HC_RX_MCAST_BYTES		0x0000000000000040
++#define STATISTICS_FLAGS_HC_RX_BCAST_PACKETS		0x0000000000000080
++#define STATISTICS_FLAGS_HC_RX_BCAST_BYTES		0x0000000000000100
++/* Tx errors */
++#define STATISTICS_FLAGS_TX_ERRORS_GF_DISABLED		0x0000000000000200
++#define STATISTICS_FLAGS_TX_ERRORS_VPORT_DISABLED	0x0000000000000400
++#define STATISTICS_FLAGS_TX_ERRORS_INVAL_VPORT_OFFSET_PACKETS		\
++							0x0000000000000800
++#define STATISTICS_FLAGS_TX_ERRORS_VLAN_ENFORCEMENT	0x0000000000001000
++#define STATISTICS_FLAGS_TX_ERRORS_ETH_TYPE_ENFORCEMENT			\
++							0x0000000000002000
++#define STATISTICS_FLAGS_TX_ERRORS_SA_ENFORCEMENT	0x0000000000004000
++#define STATISTICS_FLAGS_TX_ERRORS_SQPDID_ENFORCEMENT	0x0000000000008000
++#define STATISTICS_FLAGS_TX_ERRORS_CQPDID_ENFORCEMENT	0x0000000000010000
++#define STATISTICS_FLAGS_TX_ERRORS_MTU_VIOLATION	0x0000000000020000
++#define STATISTICS_FLAGS_TX_ERRORS_INVALID_OOB		0x0000000000040000
++/* Tx bytes/pkts */
++#define STATISTICS_FLAGS_HC_TX_BYTES			0x0000000000080000
++#define STATISTICS_FLAGS_HC_TX_UCAST_PACKETS		0x0000000000100000
++#define STATISTICS_FLAGS_HC_TX_UCAST_BYTES		0x0000000000200000
++#define STATISTICS_FLAGS_HC_TX_MCAST_PACKETS		0x0000000000400000
++#define STATISTICS_FLAGS_HC_TX_MCAST_BYTES		0x0000000000800000
++#define STATISTICS_FLAGS_HC_TX_BCAST_PACKETS		0x0000000001000000
++#define STATISTICS_FLAGS_HC_TX_BCAST_BYTES		0x0000000002000000
++/* Tx error */
++#define STATISTICS_FLAGS_TX_ERRORS_GDMA_ERROR		0x0000000004000000
++
++
+ #define MANA_MAX_NUM_QUEUES 64
+ 
+ #define MANA_SHORT_VPORT_OFFSET_MAX ((1U << 8) - 1)
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+2.34.1
+
