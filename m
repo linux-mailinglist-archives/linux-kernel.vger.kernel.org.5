@@ -2,163 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB917728E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71AB7728EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjHGPR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
+        id S229666AbjHGPTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 11:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjHGPRY (ORCPT
+        with ESMTP id S229454AbjHGPTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:17:24 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4D310DE;
-        Mon,  7 Aug 2023 08:17:23 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bba48b0bd2so29399615ad.3;
-        Mon, 07 Aug 2023 08:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691421443; x=1692026243;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8+9F0mm26547YwGdsOYT/6OgcExXxmjtiA50SQtPXRg=;
-        b=JljrwEsM1fFtKPnszTzIISBcoRaaj7fBrx95Wccvs2g6MsC921pQR/6GbKbfooj9cC
-         MNRSGq7fAbsYu+5r4It5zyJFFwXQYy2GI2q9HuaS9fTGzot+l2YzegkF4eeI9RXOiQu3
-         ixmB3kf29LycmnoopQPqhEBFhm1BrrkwWtLsIZxbkQEHBu3PmQpu/ZCZZUVAyWZVJPpX
-         RiraItHyTa5KIWZNwqTJqDDPp7Et0O4PmzRCmFYQ/5pWsNSLtoVqClVi0ne6ZJFaBzKL
-         5xO3C5kI0lNCRa9XifcBTOeLBYxZ5Wpms8J/9B9vNcqNdZEH3ga77/FmZP5eybZXdSCM
-         jPaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691421443; x=1692026243;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8+9F0mm26547YwGdsOYT/6OgcExXxmjtiA50SQtPXRg=;
-        b=C8ghGh3ajlpWh1cJ0BjhVfkJfBoGcRyQntf9FRFoCt6h5S+CeEIqOiBIMwLK919dUf
-         /obUI8K/2qGLZ1hQkg4Bp3/6K6hSMI8bjeDSSNVc4qtQ3QZ5raAg0n2hlTSmeiip5ud0
-         hGfVP1mfomO3/gl4E9VZ3IY+sxbzXCfRUZtPjpquCN1eqmCEDI0fbjbwwyc9xN0fyUYa
-         88HW/QReYtLg7JMr9ARd6gb7n6SQCUN1oQlKwcpzL+OgDYv9TRjw46lT8GdHv6PNxyko
-         RjDvroANf5xdhsCdcIOdx6JcY1OFT4S8tUnGtvTggFm5UKcsTOjDBejytgE9jp02xbMt
-         AwdQ==
-X-Gm-Message-State: AOJu0YyGtL8tM1Kz+9JxDObhaPH1IUkz2mttzlD2XMPr/avzeUsYe8R5
-        aU+e3neLQ2M/FZRLdpSWk+s=
-X-Google-Smtp-Source: AGHT+IEdWab8M45OJVYq6HKxCC/BIo1O8CXS+FMGJY+gu/L2pr/OZXQIAidO7BK76Zxz5T74hNQUEQ==
-X-Received: by 2002:a17:903:191:b0:1bb:a056:2c5f with SMTP id z17-20020a170903019100b001bba0562c5fmr9832821plg.7.1691421442901;
-        Mon, 07 Aug 2023 08:17:22 -0700 (PDT)
-Received: from rajgad ([2601:204:df00:9cd0:b50f:ee2a:c29c:a732])
-        by smtp.gmail.com with ESMTPSA id q5-20020a170902bd8500b001b89b1b99fasm7018101pls.243.2023.08.07.08.17.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 08:17:22 -0700 (PDT)
-Date:   Mon, 7 Aug 2023 08:17:21 -0700
-From:   Atul Raut <rauji.raut@gmail.com>
-To:     Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc:     gregkh@linuxfoundation.org, kvalo@kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ath6kl: replace one-element array with flexible-array
- member
-Message-ID: <20230807151721.qasrym5x5lqoqjgd@rajgad>
-References: <20230804045554.6934-1-rauji.raut@gmail.com>
- <2023080433-patio-staining-2cfe@gregkh>
- <87sf8zs2oi.fsf@kernel.org>
- <2023080410-unadorned-vertigo-c0b8@gregkh>
- <47f1a06b-8bfe-911a-3a05-da7d522b588f@quicinc.com>
+        Mon, 7 Aug 2023 11:19:03 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F06010F6;
+        Mon,  7 Aug 2023 08:19:02 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377FIqAV054763;
+        Mon, 7 Aug 2023 10:18:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691421532;
+        bh=Dz24on+wEQPpYN6Xa5J23UHkSkIVtlonN1jK6mdXl1U=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=aZ6cH+kLLO3iUkG3h0WaNDlO+IXT8BHHOfYn1YyAt4ArzSKLNVxHumvOffUIhNFCL
+         Ard5U9FwfM6l6qkinxzHo2ps67N8WBoHHIdsgVt29diwn99wJHFI+0a4PD5uzGoqUb
+         HQW9N0zVgI+Sti46hYTavBv3JAQFIY0YKQpyTHHQ=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377FIqoP110743
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Aug 2023 10:18:52 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
+ Aug 2023 10:18:52 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 7 Aug 2023 10:18:52 -0500
+Received: from [10.250.36.243] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377FIp5v017993;
+        Mon, 7 Aug 2023 10:18:51 -0500
+Message-ID: <627ed411-a6f7-cbc9-d48f-2678bf63c609@ti.com>
+Date:   Mon, 7 Aug 2023 10:18:51 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rcfpwov7x5kwjhxg"
-Content-Disposition: inline
-In-Reply-To: <47f1a06b-8bfe-911a-3a05-da7d522b588f@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 04/13] arm64: dts: ti: k3-am65: Enable OSPI nodes at the
+ board level
+Content-Language: en-US
+To:     Dhruva Gole <d-gole@ti.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230802205309.257392-1-afd@ti.com>
+ <20230802205309.257392-5-afd@ti.com>
+ <bb87effc-00c3-7d97-08c9-68408f9c514c@ti.com>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <bb87effc-00c3-7d97-08c9-68408f9c514c@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---rcfpwov7x5kwjhxg
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Description: I appreciate the comments. Will refrain from altering this or any other submitted patches, as advised.
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Aug 07, 2023 at 07:13:20AM -0700, Jeff Johnson wrote:
->On 8/4/2023 2:30 AM, Greg KH wrote:
->>On Fri, Aug 04, 2023 at 10:10:37AM +0300, Kalle Valo wrote:
->>>Greg KH <gregkh@linuxfoundation.org> writes:
->>>
->>>>On Thu, Aug 03, 2023 at 09:55:54PM -0700, Atul Raut wrote:
->>>>
->>>>>One-element arrays are no longer relevant, and their
->>>>>place has been taken by flexible array members thus,
->>>>>use a flexible-array member to replace the one-element
->>>>>array in struct ath6kl_usb_ctrl_diag_cmd_write
->>>>>
->>>>>This fixes warnings such as:
->>>>>./drivers/net/wireless/ath/ath6kl/usb.c:109:8-12: WARNING use flexible=
--array member instead (https://www.kernel.org/doc/html/latest/process/depre=
-cated.html#zero-length-and-one-element-arrays)
->>>>>
->>>>>Signed-off-by: Atul Raut <rauji.raut@gmail.com>
->>>>>---
->>>>>  drivers/net/wireless/ath/ath6kl/usb.c | 2 +-
->>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>>diff --git a/drivers/net/wireless/ath/ath6kl/usb.c b/drivers/net/wirel=
-ess/ath/ath6kl/usb.c
->>>>>index 5220809841a6..c8ecc9e85897 100644
->>>>>--- a/drivers/net/wireless/ath/ath6kl/usb.c
->>>>>+++ b/drivers/net/wireless/ath/ath6kl/usb.c
->>>>>@@ -106,7 +106,7 @@ struct ath6kl_usb_ctrl_diag_cmd_write {
->>>>>  	__le32 cmd;
->>>>>  	__le32 address;
->>>>>  	__le32 value;
->>>>>-	__le32 _pad[1];
->>>>>+	__le32 _pad[];
->>>>
->>>>Are you sure this is actually a variable length array?
->>>
->>>It's not, it's just padding. We both told this in v1:
->>>
->>>https://patchwork.kernel.org/project/linux-wireless/patch/20230731012941=
-=2E21875-1-rauji.raut@gmail.com/
+On 8/7/23 1:16 AM, Dhruva Gole wrote:
+> Hi Andrew,
+> 
+> On 03/08/23 02:23, Andrew Davis wrote:
+>> OSPI nodes defined in the top-level AM65x SoC dtsi files are incomplete
+>> and may not be functional unless they are extended with pinmux and
+>> device information.
 >>
->>Hey, I'm consistent, nice!  :)
+>> As the attached OSPI device is only known about at the board integration
+>> level, these nodes should only be enabled when provided with this
+>> information.
 >>
->>But Atul, that's not good to ignore our review comments.  Usually that
->>ends up meaning that everyone will then just ignore your submissions,
->>generally a not-good resolution.
+>> Disable the OSPI nodes in the dtsi files and only enable the ones that
+>> are actually pinned out on a given board.
 >>
->>thanks,
+>> Signed-off-by: Andrew Davis <afd@ti.com>
+>> ---
+>>   arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi | 1 +
+>>   arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi            | 2 ++
+>>   arch/arm64/boot/dts/ti/k3-am654-base-board.dts     | 1 +
+>>   3 files changed, 4 insertions(+)
 >>
->>greg k-h
->
->Since the 'pad' field is never directly accessed, suggest the author=20
->respin this this to use simply:
->	__le32 _pad;
->
->That will prevent others from trying to "fix" this actual one-element=20
->array in the future.
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+>> index e26bd988e5224..6041862d5aa75 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+>> @@ -593,6 +593,7 @@ adc {
+>>   };
+>>   &ospi0 {
+>> +    status = "okay";
+> 
+> Ok, so this k3-am65-iot2050 series of DT files seem to be structured in
+> a bit different manner than our SKs and EVMs?
+> 
+> The terminologies like advanced, advanced-m2, basic, etc. are a little
+> confusing to me. However, I am wondering if we don't do any status = ..
+> here, and rather make ospi status okays from the iot2050 dts files?
+> 
+> Pardon me if I am making an invalid suggestion, I don't have much
+> background on these boards.
+> 
 
---rcfpwov7x5kwjhxg
-Content-Type: application/pgp-signature; name="signature.asc"
+This is a valid question, and yes the IOT2050 DTS organization is
+slightly different than the one we use with our SK/EVMs.
 
------BEGIN PGP SIGNATURE-----
+The way these DT files tend to work is layering more functionality
+or information in each file, starting with the core/most common
+in the base .dtsi, and ending with .dts that is specific to a given
+board. (In that way I would consider instances of "/delete-node/"
+to be an indicator of bad layering, but that is a different topic..)
 
-iQGzBAABCgAdFiEEk+Uz5/8aTg0U2TbgUdAfNFxksqcFAmTRCv0ACgkQUdAfNFxk
-sqfOrQwAptc9XDlqik1wPWhDQR3FcwX0d30+AQUk9qPg47CfXTjoY0Wk2eN/f8H2
-MSVv4UYFw4vePh83nPkdZMtmaMgck3TWCJ522khoWVM1Auj6y4piuOu7SyYnraPT
-CHBxkeBHHOpicHCgCjtojdiaNRFxtCsAmr5dzpI+uKhLZqmUtXcU+CP73xmxcO+i
-mMaWrHDvBAha9d1IIFCTcuO0wH+kvz+LJ5UcO9WGgbTjkpLYOwRpekDvHfvgeLPT
-4bu/kUExrYnZ20ur34sujn+eBs2ISqAVvpniNrufGDCrUjpjIVHauxEQZgRbGrdF
-vQnN992f/hw4+5LQHoVK1IC55GVL6WPw3Q9RIboEgJu5YxASKlSF4Tho1GLDs+Sm
-lo+pyxL54zSALszhIjUdXiVSRiW8Oos062rrSfIqTwc0CD3SSdlbUeP4mAMgHkSp
-P2P5Tgmevc723Kx05qCaSUa3DAYU4tXvf/YJRSmK4FkGejgdtIEYlDHxXFodPece
-1TAGz34i
-=Y0V4
------END PGP SIGNATURE-----
+Any node that is only partially defined in a layer should be marked
+disabled, and then only enabled in the layer that finally completes
+the node. That is often the pinmux info at the board level.
 
---rcfpwov7x5kwjhxg--
+In this case, the OSPI nodes are complete after this point, there
+is no additional information given in the DTS files, so we can
+enable it here in this .dtsi file.
+
+Andrew
+
+>>       pinctrl-names = "default";
+>>       pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+>> index 7b1f94a89eca8..2c9c20a9d9179 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+>> @@ -295,6 +295,7 @@ ospi0: spi@47040000 {
+>>               power-domains = <&k3_pds 248 TI_SCI_PD_EXCLUSIVE>;
+>>               #address-cells = <1>;
+>>               #size-cells = <0>;
+>> +            status = "disabled";
+>>           };
+>>           ospi1: spi@47050000 {
+>> @@ -309,6 +310,7 @@ ospi1: spi@47050000 {
+>>               power-domains = <&k3_pds 249 TI_SCI_PD_EXCLUSIVE>;
+>>               #address-cells = <1>;
+>>               #size-cells = <0>;
+>> +            status = "disabled";
+>>           };
+>>       };
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+>> index 973a89b04a22f..43de7c132d343 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+>> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+>> @@ -530,6 +530,7 @@ &mcu_r5fss0_core1 {
+>>   };
+>>   &ospi0 {
+>> +    status = "okay";
+>>       pinctrl-names = "default";
+>>       pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
+> 
