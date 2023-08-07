@@ -2,60 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9A677253A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D0977253C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232590AbjHGNPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:15:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60196 "EHLO
+        id S232910AbjHGNPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjHGNPT (ORCPT
+        with ESMTP id S232259AbjHGNPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:15:19 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE01E5A
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:15:17 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RKGx96wp0z1KCNY;
-        Mon,  7 Aug 2023 21:14:05 +0800 (CST)
-Received: from [10.67.102.169] (10.67.102.169) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 7 Aug 2023 21:15:14 +0800
-CC:     <yangyicong@hisilicon.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <juri.lelli@redhat.com>,
-        <vincent.guittot@linaro.org>, <dietmar.eggemann@arm.com>,
-        <tim.c.chen@linux.intel.com>, <gautham.shenoy@amd.com>,
-        <mgorman@suse.de>, <vschneid@redhat.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <rostedt@goodmis.org>,
-        <bsegall@google.com>, <bristot@redhat.com>,
-        <prime.zeng@huawei.com>, <jonathan.cameron@huawei.com>,
-        <ego@linux.vnet.ibm.com>, <srikar@linux.vnet.ibm.com>,
-        <linuxarm@huawei.com>, <21cnbao@gmail.com>,
-        <kprateek.nayak@amd.com>, <wuyun.abel@bytedance.com>
-Subject: Re: [PATCH v9 2/2] sched/fair: Scan cluster before scanning LLC in
- wake-up path
-To:     Chen Yu <yu.c.chen@intel.com>
-References: <20230719092838.2302-1-yangyicong@huawei.com>
- <20230719092838.2302-3-yangyicong@huawei.com>
- <ZLpVZmI8FrQtsfRH@chenyu5-mobl2>
- <ac8d1fef-ebe2-021f-b621-208c619cc2ea@huawei.com>
- <ZM0nYEB4m883KfIy@chenyu5-mobl2>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <c6f93f10-fea5-a734-9a78-64aa9ff44adb@huawei.com>
-Date:   Mon, 7 Aug 2023 21:15:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Mon, 7 Aug 2023 09:15:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C6CE5A
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:15:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B958261A8D
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 13:15:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A126C433C8;
+        Mon,  7 Aug 2023 13:15:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691414128;
+        bh=88hsxuLYKVqz+P+8ZpynUOYXC8Wm0wXVKKrSqpdIOug=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=YBlxm7LoLK6UmjBK4jHs58gD/F3lMu8Psw28IA2IEDXh91vGWSHe8iy/TkSyK9xwW
+         c8kzPYJenw58/QcIgmbbrA/KRPaAxgoYmIbBRiNcPs1CQrRbs+NrbYC49S1idtv2b2
+         MsIzeZ4+TtaZHwa72bA6i1nObVOXVppYOnw4gnMWENf/IZ5YBEuFjAeaGmG08V3CzQ
+         085e8YnnB/+yGlXA1bNO0HxKycKBUEfEkHH4oOeAD9MjwhLoHMuiAIKebV4JheCZFz
+         abhEd2A1BgcsJRB4rvZboGli8P4Jo5OGVMGim9lROetRRF6ibt0oUzo0I29hkjkBU1
+         UDSl/2scXRsew==
+Message-ID: <8fd0313b-8f6f-9814-247d-c2687d053e2a@kernel.org>
+Date:   Mon, 7 Aug 2023 15:15:22 +0200
 MIME-Version: 1.0
-In-Reply-To: <ZM0nYEB4m883KfIy@chenyu5-mobl2>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Content-Language: en-US
+To:     Wei Fang <wei.fang@nxp.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20230731060025.3117343-1-wei.fang@nxp.com>
+ <20230802104706.5ce541e9@kernel.org>
+ <AM5PR04MB313985C61D92E183238809138808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <1bf41ea8-5131-7d54-c373-00c1fbcac095@redhat.com>
+ <AM5PR04MB31398ABF941EBDD0907E845B8808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <cc24e860-7d6f-7ec8-49cb-a49cb066f618@kernel.org>
+ <AM5PR04MB3139D8AAAB6B96B58425BBA08809A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <ba96db35-2273-9cc5-9a32-e924e8eff37c@kernel.org>
+ <AM5PR04MB313903036E0DF277FEC45722880CA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+From:   Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <AM5PR04MB313903036E0DF277FEC45722880CA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.169]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,280 +80,214 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/5 0:29, Chen Yu wrote:
-> Hi Yicong,
-> 
-> On 2023-08-01 at 20:06:56 +0800, Yicong Yang wrote:
->> Hi Chenyu,
+
+
+On 07/08/2023 12.30, Wei Fang wrote:
+>>> The flow-control was not disabled before, so according to your
+>>> suggestion, I disable the flow-control on the both boards and run the
+>>> test again, the performance is slightly improved, but still can not
+>>> see a clear difference between the two methods. Below are the results.
 >>
->> Sorry for the late reply. Something's wrong and cause this didn't appear
->> in my mail box. I check it out on the LKML.
+>> Something else must be stalling the CPU.
+>> When looking at fec_main.c code, I noticed that
+>> fec_enet_txq_xmit_frame() will do a MMIO write for every xdp_frame (to
+>> trigger transmit start), which I believe will stall the CPU.
+>> The ndo_xdp_xmit/fec_enet_xdp_xmit does bulking, and should be the
+>> function that does the MMIO write to trigger transmit start.
 >>
->  
-> No worries : )
-> 
->> On 2023/7/21 17:52, Chen Yu wrote:
->>> Hi Yicong,
->>>
->>> Thanks for sending this version!
->>>
->>> On 2023-07-19 at 17:28:38 +0800, Yicong Yang wrote:
->>>> From: Barry Song <song.bao.hua@hisilicon.com>
->>>>
->>>> For platforms having clusters like Kunpeng920, CPUs within the same cluster
->>>> have lower latency when synchronizing and accessing shared resources like
->>>> cache. Thus, this patch tries to find an idle cpu within the cluster of the
->>>> target CPU before scanning the whole LLC to gain lower latency. This
->>>> will be implemented in 3 steps in select_idle_sibling():
->>>> 1. When the prev_cpu/recent_used_cpu are good wakeup candidates, use them
->>>>    if they're sharing cluster with the target CPU. Otherwise record them
->>>>    and do the scanning first.
->>>> 2. Scanning the cluster prior to the LLC of the target CPU for an
->>>>    idle CPU to wakeup.
->>>> 3. If no idle CPU found after scanning and the prev_cpu/recent_used_cpu
->>>>    can be used, use them.
->>>>
->>>> Testing has been done on Kunpeng920 by pinning tasks to one numa and two
->>>> numa. On Kunpeng920, Each numa has 8 clusters and each cluster has 4 CPUs.
->>>>
->>>> With this patch, We noticed enhancement on tbench and netperf within one
->>>> numa or cross two numa on 6.5-rc1:
->>>> tbench results (node 0):
->>>>              baseline                    patched
->>>>   1:        325.9673        378.9117 (   16.24%)
->>>>   4:       1311.9667       1501.5033 (   14.45%)
->>>>   8:       2629.4667       2961.9100 (   12.64%)
->>>>  16:       5259.1633       5928.0833 (   12.72%)
->>>>  32:      10368.6333      10566.8667 (    1.91%)
->>>>  64:       7868.7700       8182.0100 (    3.98%)
->>>> 128:       6528.5733       6801.8000 (    4.19%)
->>>> tbench results (node 0-1):
->>>>               vanilla                    patched
->>>>   1:        329.2757        380.8907 (   15.68%)
->>>>   4:       1327.7900       1494.5300 (   12.56%)
->>>>   8:       2627.2133       2917.1233 (   11.03%)
->>>>  16:       5201.3367       5835.9233 (   12.20%)
->>>>  32:       8811.8500      11154.2000 (   26.58%)
->>>>  64:      15832.4000      19643.7667 (   24.07%)
->>>> 128:      12605.5667      14639.5667 (   16.14%)
->>>> netperf results TCP_RR (node 0):
->>>>              baseline                    patched
->>>>   1:      77302.8667      92172.2100 (   19.24%)
->>>>   4:      78724.9200      91581.3100 (   16.33%)
->>>>   8:      79168.1296      91091.7942 (   15.06%)
->>>>  16:      81079.4200      90546.5225 (   11.68%)
->>>>  32:      82201.5799      78910.4982 (   -4.00%)
->>>>  64:      29539.3509      29131.4698 (   -1.38%)
->>>> 128:      12082.7522      11956.7705 (   -1.04%)
->>>> netperf results TCP_RR (node 0-1):
->>>>              baseline                    patched
->>>>   1:      78340.5233      92101.8733 (   17.57%)
->>>>   4:      79644.2483      91326.7517 (   14.67%)
->>>>   8:      79557.4313      90737.8096 (   14.05%)
->>>>  16:      79215.5304      90568.4542 (   14.33%)
->>>>  32:      78999.3983      85460.6044 (    8.18%)
->>>>  64:      74198.9494      74325.4361 (    0.17%)
->>>> 128:      27397.4810      27757.5471 (    1.31%)
->>>> netperf results UDP_RR (node 0):
->>>>              baseline                    patched
->>>>   1:      95721.9367     111546.1367 (   16.53%)
->>>>   4:      96384.2250     110036.1408 (   14.16%)
->>>>   8:      97460.6546     109968.0883 (   12.83%)
->>>>  16:      98876.1687     109387.8065 (   10.63%)
->>>>  32:     104364.6417     105241.6767 (    0.84%)
->>>>  64:      37502.6246      37451.1204 (   -0.14%)
->>>> 128:      14496.1780      14610.5538 (    0.79%)
->>>> netperf results UDP_RR (node 0-1):
->>>>              baseline                    patched
->>>>   1:      96176.1633     111397.5333 (   15.83%)
->>>>   4:      94758.5575     105681.7833 (   11.53%)
->>>>   8:      94340.2200     104138.3613 (   10.39%)
->>>>  16:      95208.5285     106714.0396 (   12.08%)
->>>>  32:      74745.9028     100713.8764 (   34.74%)
->>>>  64:      59351.4977      73536.1434 (   23.90%)
->>>> 128:      23755.4971      26648.7413 (   12.18%)
->>>>
->>>> Note neither Kunpeng920 nor x86 Jacobsville supports SMT, so the SMT branch
->>>> in the code has not been tested but it supposed to work.
->>>>
->>>> Chen Yu also noticed this will improve the performance of tbench and
->>>> netperf on a 24 CPUs Jacobsville machine, there are 4 CPUs in one
->>>> cluster sharing L2 Cache.
->>>>
->>>> Suggested-by: Peter Zijlstra <peterz@infradead.org>
->>>> [https://lore.kernel.org/lkml/Ytfjs+m1kUs0ScSn@worktop.programming.kicks-ass.net]
->>>> Tested-by: Yicong Yang <yangyicong@hisilicon.com>
->>>> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
->>>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
->>>> Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
->>>> Reviewed-by: Chen Yu <yu.c.chen@intel.com>
->>>> ---
->>>>  kernel/sched/fair.c     | 59 +++++++++++++++++++++++++++++++++++++----
->>>>  kernel/sched/sched.h    |  1 +
->>>>  kernel/sched/topology.c | 12 +++++++++
->>>>  3 files changed, 67 insertions(+), 5 deletions(-)
->>>>
->>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->>>> index b3e25be58e2b..d91bf64f81f5 100644
->>>> --- a/kernel/sched/fair.c
->>>> +++ b/kernel/sched/fair.c
->>>> @@ -7012,6 +7012,30 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
->>>>  		}
->>>>  	}
->>>>  
->>>> +	if (static_branch_unlikely(&sched_cluster_active)) {
->>>> +		struct sched_group *sg = sd->groups;
->>>> +
->>>> +		if (sg->flags & SD_CLUSTER) {
->>>> +			for_each_cpu_wrap(cpu, sched_group_span(sg), target + 1) {
->>>> +				if (!cpumask_test_cpu(cpu, cpus))
->>>> +					continue;
->>>> +
->>>> +				if (has_idle_core) {
->>>> +					i = select_idle_core(p, cpu, cpus, &idle_cpu);
->>>> +					if ((unsigned int)i < nr_cpumask_bits)
->>>> +						return i;
->>>> +				} else {
->>>> +					if (--nr <= 0)
->>>> +						return -1;
->>>> +					idle_cpu = __select_idle_cpu(cpu, p);
->>>> +					if ((unsigned int)idle_cpu < nr_cpumask_bits)
->>>> +						return idle_cpu;
->>>> +				}
->>>> +			}
->>>> +			cpumask_andnot(cpus, cpus, sched_group_span(sg));
->>>> +		}
->>>> +	}
->>>> +
->>>>  	for_each_cpu_wrap(cpu, cpus, target + 1) {
->>>>  		if (has_idle_core) {
->>>>  			i = select_idle_core(p, cpu, cpus, &idle_cpu);
->>>> @@ -7019,7 +7043,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
->>>>  				return i;
->>>>  
->>>>  		} else {
->>>> -			if (!--nr)
->>>> +			if (--nr <= 0)
->>>>  				return -1;
->>>>  			idle_cpu = __select_idle_cpu(cpu, p);
->>>>  			if ((unsigned int)idle_cpu < nr_cpumask_bits)
->>>> @@ -7121,7 +7145,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->>>>  	bool has_idle_core = false;
->>>>  	struct sched_domain *sd;
->>>>  	unsigned long task_util, util_min, util_max;
->>>> -	int i, recent_used_cpu;
->>>> +	int i, recent_used_cpu, prev_aff = -1;
->>>>  
->>>>  	/*
->>>>  	 * On asymmetric system, update task utilization because we will check
->>>> @@ -7148,8 +7172,14 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->>>>  	 */
->>>>  	if (prev != target && cpus_share_cache(prev, target) &&
->>>>  	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
->>>> -	    asym_fits_cpu(task_util, util_min, util_max, prev))
->>>> -		return prev;
->>>> +	    asym_fits_cpu(task_util, util_min, util_max, prev)) {
->>>> +		if (!static_branch_unlikely(&sched_cluster_active))
->>>> +			return prev;
->>>> +
->>>> +		if (cpus_share_resources(prev, target))
->>>> +			return prev;
->>>
->>> I have one minor question, previously Peter mentioned that he wants to get rid of the
->>> percpu sd_share_id, not sure if he means that not using it in select_idle_cpu()
->>> or remove that variable completely to not introduce extra space? 
->>> Hi Peter, could you please give us more hints on this? thanks.
->>>
->>> If we wants to get rid of this variable, would this work?
->>>
->>> 	if ((sd->groups->flags & SD_CLUSTER) &&
->>> 	    cpumask_test_cpu(prev, sched_group_span(sd->groups))
->>> 		return prev
->>>
->>
->> In the current implementation, nop, we haven't deferenced the @sd yet and we don't
->> need to if scanning is not needed.
->>
->> Since we're on the quick path without scanning here, I wonder it'll be a bit more
->> efficient to use a per-cpu id rather than deference the rcu and do the bitmap
->> computation.
->>
-> 
-> Dereference is a memory barrier and the bitmap is of one operation/instruction which
-> should not have too much overhead. But anyway I've tested this patch on Jacobsville
-> and the data looks OK to me:
-> 
-> 
-> netperf
-> =======
-> case            	load    	baseline(std%)	compare%( std%)
-> TCP_RR          	6-threads	 1.00 (  0.84)	 -0.32 (  0.71)
-> TCP_RR          	12-threads	 1.00 (  0.35)	 +1.52 (  0.42)
-> TCP_RR          	18-threads	 1.00 (  0.31)	 +3.89 (  0.38)
-> TCP_RR          	24-threads	 1.00 (  0.87)	 -0.34 (  0.75)
-> TCP_RR          	30-threads	 1.00 (  5.84)	 +0.71 (  4.85)
-> TCP_RR          	36-threads	 1.00 (  4.84)	 +0.24 (  3.30)
-> TCP_RR          	42-threads	 1.00 (  3.75)	 +0.26 (  3.56)
-> TCP_RR          	48-threads	 1.00 (  1.51)	 +0.45 (  1.28)
-> UDP_RR          	6-threads	 1.00 (  0.65)	+10.12 (  0.63)
-> UDP_RR          	12-threads	 1.00 (  0.20)	 +9.91 (  0.25)
-> UDP_RR          	18-threads	 1.00 ( 11.13)	+16.77 (  0.49)
-> UDP_RR          	24-threads	 1.00 ( 12.38)	 +2.52 (  0.98)
-> UDP_RR          	30-threads	 1.00 (  5.63)	 -0.34 (  4.38)
-> UDP_RR          	36-threads	 1.00 ( 19.12)	 -0.89 (  3.30)
-> UDP_RR          	42-threads	 1.00 (  2.96)	 -1.41 (  3.17)
-> UDP_RR          	48-threads	 1.00 ( 14.08)	 -0.77 ( 10.77)
-> 
-> Good improvement in several cases. No regression is detected.
-> 
-> tbench
-> ======
-> case            	load    	baseline(std%)	compare%( std%)
-> loopback        	6-threads	 1.00 (  0.41)	 +1.63 (  0.17)
-> loopback        	12-threads	 1.00 (  0.18)	 +4.39 (  0.12)
-> loopback        	18-threads	 1.00 (  0.43)	+10.42 (  0.18)
-> loopback        	24-threads	 1.00 (  0.38)	 +1.24 (  0.38)
-> loopback        	30-threads	 1.00 (  0.24)	 +0.60 (  0.14)
-> loopback        	36-threads	 1.00 (  0.17)	 +0.63 (  0.17)
-> loopback        	42-threads	 1.00 (  0.26)	 +0.76 (  0.08)
-> loopback        	48-threads	 1.00 (  0.23)	 +0.91 (  0.10)
-> 
-> Good improvement in 18-threads case. No regression is detected.
-> 
-> hackbench
-> =========
-> case            	load    	baseline(std%)	compare%( std%)
-> process-pipe    	1-groups	 1.00 (  0.52)	 +9.26 (  0.57)
-> process-pipe    	2-groups	 1.00 (  1.55)	 +6.92 (  0.56)
-> process-pipe    	4-groups	 1.00 (  1.36)	 +4.80 (  3.78)
-> process-sockets 	1-groups	 1.00 (  2.16)	 -6.35 (  1.10)
-> process-sockets 	2-groups	 1.00 (  2.34)	 -6.35 (  5.52)
-> process-sockets 	4-groups	 1.00 (  0.35)	 -5.64 (  1.19)
-> threads-pipe    	1-groups	 1.00 (  0.82)	 +8.00 (  0.00)
-> threads-pipe    	2-groups	 1.00 (  0.47)	 +6.91 (  0.50)
-> threads-pipe    	4-groups	 1.00 (  0.45)	 +8.92 (  2.27)
-> threads-sockets 	1-groups	 1.00 (  1.02)	 -4.13 (  2.30)
-> threads-sockets 	2-groups	 1.00 (  0.34)	 -1.86 (  2.39)
-> threads-sockets 	4-groups	 1.00 (  1.51)	 -3.99 (  1.59)
-> 
-> Pros and cons for hackbench. There is improvement for pipe mode, but
-> slight regression on sockets mode. I think this is within acceptable range.
-> 
-> schbench
-> ========
-> case            	load    	baseline(std%)	compare%( std%)
-> normal          	1-mthreads	 1.00 (  0.00)	 +0.00 (  0.00)
-> normal          	2-mthreads	 1.00 (  0.00)	 +0.00 (  0.00)
-> normal          	4-mthreads	 1.00 (  3.82)	 +0.00 (  3.82)
-> 
-> There is impact to schbench at all, and the results are quite stable.
-> 
-> For the whole series:
-> 
-> Tested-by: Chen Yu <yu.c.chen@intel.com>
+> We'd better keep a MMIO write for every xdp_frame on txq, as you know,
+> the txq will be inactive when no additional ready descriptors remain in the
+> tx-BDR. So it may increase the delay of the packets if we do a MMIO write
+> for multiple packets.
 > 
 
-Thanks for testing.
+You know this hardware better than me, so I will leave to you.
 
-Yicong.
+>> $ git diff
+>> diff --git a/drivers/net/ethernet/freescale/fec_main.c
+>> b/drivers/net/ethernet/freescale/fec_main.c
+>> index 03ac7690b5c4..57a6a3899b80 100644
+>> --- a/drivers/net/ethernet/freescale/fec_main.c
+>> +++ b/drivers/net/ethernet/freescale/fec_main.c
+>> @@ -3849,9 +3849,6 @@ static int fec_enet_txq_xmit_frame(struct
+>> fec_enet_private *fep,
+>>
+>>           txq->bd.cur = bdp;
+>>
+>> -       /* Trigger transmission start */
+>> -       writel(0, txq->bd.reg_desc_active);
+>> -
+>>           return 0;
+>>    }
+>>
+>> @@ -3880,6 +3877,9 @@ static int fec_enet_xdp_xmit(struct net_device
+>> *dev,
+>>                   sent_frames++;
+>>           }
+>>
+>> +       /* Trigger transmission start */
+>> +       writel(0, txq->bd.reg_desc_active);
+>> +
+>>           __netif_tx_unlock(nq);
+>>
+>>           return sent_frames;
+>>
+>>
+>>> Result: use "sync_dma_len" method
+>>> root@imx8mpevk:~# ./xdp2 eth0
+>>
+>> The xdp2 (and xdp1) program(s) have a performance issue (due to using
+>>
+>> Can I ask you to test using xdp_rxq_info, like:
+>>
+>>    sudo ./xdp_rxq_info --dev mlx5p1 --action XDP_TX
+>>
+> Yes, below are the results, the results are also basically the same.
+> Result 1: current method
+> ./xdp_rxq_info --dev eth0 --action XDP_TX
+> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      0       259,102     0
+> XDP-RX CPU      total   259,102
+> RXQ stats       RXQ:CPU pps         issue-pps
+> rx_queue_index    0:0   259,102     0
+> rx_queue_index    0:sum 259,102
+> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      0       259,498     0
+> XDP-RX CPU      total   259,498
+> RXQ stats       RXQ:CPU pps         issue-pps
+> rx_queue_index    0:0   259,496     0
+> rx_queue_index    0:sum 259,496
+> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      0       259,408     0
+> XDP-RX CPU      total   259,408
+> 
+> Result 2: dma_sync_len method
+> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      0       258,254     0
+> XDP-RX CPU      total   258,254
+> RXQ stats       RXQ:CPU pps         issue-pps
+> rx_queue_index    0:0   258,254     0
+> rx_queue_index    0:sum 258,254
+> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      0       259,316     0
+> XDP-RX CPU      total   259,316
+> RXQ stats       RXQ:CPU pps         issue-pps
+> rx_queue_index    0:0   259,318     0
+> rx_queue_index    0:sum 259,318
+> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      0       259,554     0
+> XDP-RX CPU      total   259,554
+> RXQ stats       RXQ:CPU pps         issue-pps
+> rx_queue_index    0:0   259,553     0
+> rx_queue_index    0:sum 259,553
+> 
 
+Thanks for running this.
+
+>>
+>>> proto 17:     258886 pkt/s
+>>> proto 17:     258879 pkt/s
+>>
+>> If you provide numbers for xdp_redirect, then we could better evaluate if
+>> changing the lock per xdp_frame, for XDP_TX also, is worth it.
+>>
+> For XDP_REDIRECT, the performance show as follow.
+> root@imx8mpevk:~# ./xdp_redirect eth1 eth0
+> Redirecting from eth1 (ifindex 3; driver st_gmac) to eth0 (ifindex 2; driver fec)
+
+This is not exactly the same as XDP_TX setup as here you choose to 
+redirect between eth1 (driver st_gmac) and to eth0 (driver fec).
+
+I would like to see eth0 to eth0 XDP_REDIRECT, so we can compare to 
+XDP_TX performance.
+Sorry for all the requests, but can you provide those numbers?
+
+> eth1->eth0        221,642 rx/s       0 err,drop/s      221,643 xmit/s
+
+So, XDP_REDIRECT is approx (1-(221825/259554))*100 = 14.53% slower.
+But as this is 'eth1->eth0' this isn't true comparison to XDP_TX.
+
+> eth1->eth0        221,761 rx/s       0 err,drop/s      221,760 xmit/s
+> eth1->eth0        221,793 rx/s       0 err,drop/s      221,794 xmit/s
+> eth1->eth0        221,825 rx/s       0 err,drop/s      221,825 xmit/s
+> eth1->eth0        221,823 rx/s       0 err,drop/s      221,821 xmit/s
+> eth1->eth0        221,815 rx/s       0 err,drop/s      221,816 xmit/s
+> eth1->eth0        222,016 rx/s       0 err,drop/s      222,016 xmit/s
+> eth1->eth0        222,059 rx/s       0 err,drop/s      222,059 xmit/s
+> eth1->eth0        222,085 rx/s       0 err,drop/s      222,089 xmit/s
+> eth1->eth0        221,956 rx/s       0 err,drop/s      221,952 xmit/s
+> eth1->eth0        222,070 rx/s       0 err,drop/s      222,071 xmit/s
+> eth1->eth0        222,017 rx/s       0 err,drop/s      222,017 xmit/s
+> eth1->eth0        222,069 rx/s       0 err,drop/s      222,067 xmit/s
+> eth1->eth0        221,986 rx/s       0 err,drop/s      221,987 xmit/s
+> eth1->eth0        221,932 rx/s       0 err,drop/s      221,936 xmit/s
+> eth1->eth0        222,045 rx/s       0 err,drop/s      222,041 xmit/s
+> eth1->eth0        222,014 rx/s       0 err,drop/s      222,014 xmit/s
+>    Packets received    : 3,772,908
+>    Average packets/s   : 221,936
+>    Packets transmitted : 3,772,908
+>    Average transmit/s  : 221,936
+>> And also find out of moving the MMIO write have any effect.
+>>
+> I move the MMIO write to fec_enet_xdp_xmit(), the result shows as follow,
+> the performance is slightly improved.
+> 
+
+I'm puzzled that moving the MMIO write isn't change performance.
+
+Can you please verify that the packet generator machine is sending more
+frame than the system can handle?
+
+(meaning the pktgen_sample03_burst_single_flow.sh script fast enough?)
+
+> root@imx8mpevk:~# ./xdp_redirect eth1 eth0
+> Redirecting from eth1 (ifindex 3; driver st_gmac) to eth0 (ifindex 2; driver fec)
+> eth1->eth0        222,666 rx/s        0 err,drop/s      222,668 xmit/s
+> eth1->eth0        221,663 rx/s        0 err,drop/s      221,664 xmit/s
+> eth1->eth0        222,743 rx/s        0 err,drop/s      222,741 xmit/s
+> eth1->eth0        222,917 rx/s        0 err,drop/s      222,923 xmit/s
+> eth1->eth0        221,810 rx/s        0 err,drop/s      221,808 xmit/s
+> eth1->eth0        222,891 rx/s        0 err,drop/s      222,888 xmit/s
+> eth1->eth0        222,983 rx/s        0 err,drop/s      222,984 xmit/s
+> eth1->eth0        221,655 rx/s        0 err,drop/s      221,653 xmit/s
+> eth1->eth0        222,827 rx/s        0 err,drop/s      222,827 xmit/s
+> eth1->eth0        221,728 rx/s        0 err,drop/s      221,728 xmit/s
+> eth1->eth0        222,790 rx/s        0 err,drop/s      222,789 xmit/s
+> eth1->eth0        222,874 rx/s        0 err,drop/s      222,874 xmit/s
+> eth1->eth0        221,888 rx/s        0 err,drop/s      221,887 xmit/s
+> eth1->eth0        223,057 rx/s        0 err,drop/s      223,056 xmit/s
+> eth1->eth0        222,219 rx/s        0 err,drop/s      222,220 xmit/s
+>    Packets received    : 3,336,711
+>    Average packets/s   : 222,447
+>    Packets transmitted : 3,336,710
+>    Average transmit/s  : 222,447
+> 
+>> I also noticed driver does a MMIO write (on rxq) for every RX-packet in
+>> fec_enet_rx_queue() napi-poll loop.  This also looks like a potential
+>> performance stall.
+>>
+> The same as txq, the rxq will be inactive if the rx-BDR has no free BDs, so we'd
+> better do a MMIO write when we recycle a BD, so that the hardware can timely
+> attach the received pakcets on the rx-BDR.
+> 
+> In addition, I also tried to avoid using xdp_convert_buff_to_frame(), but the
+> performance of XDP_TX is still not improved. :(
+> 
+
+I would not expect much performance improvement from this anyhow.
+
+> After these days of testing, I think it's best to keep the solution in V3, and then
+> make some optimizations on the V3 patch.
+
+I agree.
+
+I think you need to send a V5, and then I can ACK that.
+
+Thanks for all this testing,
+--Jesper
