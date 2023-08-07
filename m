@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA30771DF5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FDF4771DF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231191AbjHGK0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 06:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
+        id S229864AbjHGK1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 06:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbjHGK0b (ORCPT
+        with ESMTP id S229926AbjHGK1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 06:26:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF97610F4;
-        Mon,  7 Aug 2023 03:26:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691403990; x=1722939990;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=oYkA/eVfWqMWYQih0P/5J8PKnMH0gpzlXW9H1/RklVY=;
-  b=k846RlCXcqoKaDgnlJv3mN29eqcZgfhH1qg8p7qOdk/O3YObvndTEoSG
-   eG5FKwGOsGIcDIyJfUcsO0588nvMfwqJwPibQfR0xnVEk3dfwhozYFJdo
-   FiaETGUg681hbTd6zMlGGHMWXE/lXUBSKbXd66i122u0ljyfWqbpBQTDU
-   Via+lZEjctpbmZr3j88H2lgVD7Y8lScZtPjdcyOPa4EOBZbJk2eHfPpYq
-   tmdTmGuBFKeu1DnU4qNADqtXqF+QQ1OLEhVPLu21xUiwGVspsBvHHCUCh
-   XcIsYXakQWR5tfYvNA4RwkgYjEHy86bvApzUT4wZmtc6Qy0goCTA/yKG2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="434357177"
-X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
-   d="scan'208";a="434357177"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 03:26:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="800897150"
-X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
-   d="scan'208";a="800897150"
-Received: from siminapx-mobl1.ger.corp.intel.com ([10.251.210.150])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 03:26:27 -0700
-Date:   Mon, 7 Aug 2023 13:26:25 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
-cc:     Reinette Chatre <reinette.chatre@intel.com>,
-        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 07/19] selftests/resctrl: Refactor remount_resctrl(bool
- mum_resctrlfs) to mount_resctrl()
-In-Reply-To: <903b5c02-7d7b-11c7-167b-c4f0f3862ae0@intel.com>
-Message-ID: <e19fb06b-5dad-e854-3dc-b73c635d7bb1@linux.intel.com>
-References: <20230713131932.133258-1-ilpo.jarvinen@linux.intel.com> <20230713131932.133258-8-ilpo.jarvinen@linux.intel.com> <09605219-19db-ba2d-aaad-9e279543f461@intel.com> <2c1f4d5f-7d6f-1178-7ec4-7f8b862b26e9@linux.intel.com>
- <903b5c02-7d7b-11c7-167b-c4f0f3862ae0@intel.com>
+        Mon, 7 Aug 2023 06:27:07 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2473110F4;
+        Mon,  7 Aug 2023 03:27:06 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B02331FB;
+        Mon,  7 Aug 2023 03:27:48 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.32.139])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 01C8E3F59C;
+        Mon,  7 Aug 2023 03:27:02 -0700 (PDT)
+Date:   Mon, 7 Aug 2023 11:27:00 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-perf-users@vger.kernel.org, ito-yuichi@fujitsu.com,
+        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 6/7] kgdb: Provide a stub kgdb_nmicallback() if
+ !CONFIG_KGDB
+Message-ID: <ZNDG9AIdH443Z4BX@FVFF77S0Q05N.cambridge.arm.com>
+References: <20230601213440.2488667-1-dianders@chromium.org>
+ <20230601143109.v9.6.Ia3aeac89bb6751b682237e76e5ba594318e4b1aa@changeid>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-276558506-1691403989=:9752"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230601143109.v9.6.Ia3aeac89bb6751b682237e76e5ba594318e4b1aa@changeid>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-276558506-1691403989=:9752
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Mon, 24 Jul 2023, Wieczor-Retman, Maciej wrote:
-> On 14.07.2023 13:03, Ilpo Järvinen wrote:
-> > On Thu, 13 Jul 2023, Reinette Chatre wrote:
-> >> On 7/13/2023 6:19 AM, Ilpo Järvinen wrote:
-> >>> -int remount_resctrlfs(bool mum_resctrlfs)
-> >>> +int mount_resctrlfs(void)
-> >>>  {
-> >>> -	char mountpoint[256];
-> >>>  	int ret;
-> >>>  
-> >>> -	ret = find_resctrl_mount(mountpoint);
-> >>> -	if (ret)
-> >>> -		strcpy(mountpoint, RESCTRL_PATH);
-> >>> -
-> >>> -	if (!ret && mum_resctrlfs && umount(mountpoint))
-> >>> -		ksft_print_msg("Fail: unmounting \"%s\"\n", mountpoint);
-> >>> -
-> >>> -	if (!ret && !mum_resctrlfs)
-> >>> -		return 0;
-> >>> +	ret = find_resctrl_mount(NULL);
-> >>> +	if (!ret)
-> >>> +		return -1;
-> >>
-> >> This treats "ret == 0" as a failure. What about -ENXIO? It seems to
-> >> me that only "ret == -ENOENT" is "success".
-> > 
-> > Yes, it's a good catch.
-> > 
+On Thu, Jun 01, 2023 at 02:31:50PM -0700, Douglas Anderson wrote:
+> To save architectures from needing to wrap the call in #ifdefs, add a
+> stub no-op version of kgdb_nmicallback(), which returns 1 if it didn't
+> handle anything.
 > 
-> I had an idea about a small redesign of find_resctrl_mount
-> return values so it is easier to see what the function tries
-> to accomplish.
+> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> In v9 this is the only kgdb dependency. I'm assuming it could go
+> through the arm64 tree? If that's not a good idea, we could always
+> change the patch ("arm64: kgdb: Roundup cpus using IPI as NMI") not to
+> depend on it by only calling kgdb_nmicallback() if CONFIG_KGDB is not
+> defined.
 > 
-> When there is an error (-ENXIO for example) it could 
-> return the negative error value. When no mount is found
-> it could return a zero (instead of the -ENOENT error code).
-> Finally when a mount point was found it could return a positive
-> value (for example return 1). This way errors could be 
-> separate from regular return values and in my opinion the
-> function logic would be more transparent.
+> Changes in v9:
+> - Added missing "inline"
 > 
-> What do you think about it?
+> Changes in v8:
+> - "Provide a stub kgdb_nmicallback() if !CONFIG_KGDB" new for v8
+> 
+>  include/linux/kgdb.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+> index 258cdde8d356..76e891ee9e37 100644
+> --- a/include/linux/kgdb.h
+> +++ b/include/linux/kgdb.h
+> @@ -365,5 +365,6 @@ extern void kgdb_free_init_mem(void);
+>  #define dbg_late_init()
+>  static inline void kgdb_panic(const char *msg) {}
+>  static inline void kgdb_free_init_mem(void) { }
+> +static inline int kgdb_nmicallback(int cpu, void *regs) { return 1; }
 
-Yes, it's a great idea. It would be more logical and thus easier to 
-comprehend.
+Is '1' an error?
 
-Since this already wast applied, it has to be done in another change.
+Can we return an actual error code if so? It makes it *much* clearer to anyone
+looking at the code.
 
+Thanks,
+Mark.
 
--- 
- i.
-
---8323329-276558506-1691403989=:9752--
+>  #endif /* ! CONFIG_KGDB */
+>  #endif /* _KGDB_H_ */
+> -- 
+> 2.41.0.rc2.161.g9c6817b8e7-goog
+> 
