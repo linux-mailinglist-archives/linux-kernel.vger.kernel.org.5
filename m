@@ -2,80 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1107730E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 23:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE10C7730EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 23:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbjHGVE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 17:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
+        id S230101AbjHGVLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 17:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjHGVEZ (ORCPT
+        with ESMTP id S229831AbjHGVL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 17:04:25 -0400
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D0EE5B;
-        Mon,  7 Aug 2023 14:04:24 -0700 (PDT)
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1bc5acc627dso13714025ad.1;
-        Mon, 07 Aug 2023 14:04:24 -0700 (PDT)
+        Mon, 7 Aug 2023 17:11:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BA81715
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 14:10:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691442639;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=w0UqcugjS0RccYNXeQE8DX5IYJH0+T9wqvZIkdmfE2c=;
+        b=fRdmZ2x5YxRqdxQ3/iRR50ePpLwMgxMVCb7Vh9uY1I4cEiBEwxYtBOmJifT+QOJ6HdXFSR
+        1Dd7YREMfc9NbDqg8NjInOlSrlDphFdLUxTVn9UykuwRG2Y1nZ4tk0XhgPnXPxKYZ83K1l
+        kjErt8rJhN1gMtuvoysFPBBPboU78UA=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-377-R0W9W8urM-y36Xq1rgLIaQ-1; Mon, 07 Aug 2023 17:10:37 -0400
+X-MC-Unique: R0W9W8urM-y36Xq1rgLIaQ-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-63d0b65ae89so41804706d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 14:10:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691442264; x=1692047064;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kPBytzBoXkM8SqSSVspWR99ekr3CTrS2qhfrVqOaXbk=;
-        b=fC1ak0eBcn/DIlla02RD+Q3r+U4MtGukf4tVqRDsuN9aMuZV8yCe7dlV66G2t1TQQp
-         ATtDluM9Hd2oirY5rkXc5y99XNvZtsbbeU41QeuO5z42U45zAWSRGfAmkR74t/S8To/o
-         8XDG5p9Hd1WylrdFkMzkCOknWfBrQvPw9kWHJ3qmkV6t0PufgDb9UuCR8nMIp8lxK97c
-         YijYjypxPiSrqHYqeYiwWqKYUzelpcKTYmxc2KhBLXX52UPPzuhMSVoe/v/N/Fo1araW
-         +PUAXE60M2r9zECIk+y+nQ0BI/rgSq0oBKiblCjzkU1llwDXXm31BMJPRb4Vh5jOXLrm
-         xXwA==
-X-Gm-Message-State: AOJu0Yzfy3gX7/mKl5T0ZUwWZwegxaBHK4uROTRRwZSx07HppISo4Y1c
-        767yt8le7AX41aSJWNDGgWzfHg5365M=
-X-Google-Smtp-Source: AGHT+IGWdyymJ9nh1oxiWQLjE3SnxLNbyLy57pWpEMcpvGt47jzwM6QMpgGSgSownW23XgA+VaBwmg==
-X-Received: by 2002:a17:902:e5cb:b0:1bb:5b88:73da with SMTP id u11-20020a170902e5cb00b001bb5b8873damr9815793plf.61.1691442263601;
-        Mon, 07 Aug 2023 14:04:23 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:3aca:8f43:1895:4b6c? ([2620:15c:211:201:3aca:8f43:1895:4b6c])
-        by smtp.gmail.com with ESMTPSA id a4-20020a170902ecc400b001b8b4730355sm7345677plh.287.2023.08.07.14.04.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 14:04:23 -0700 (PDT)
-Message-ID: <e37e0d80-9ddc-5a36-44a6-22dd0e36bf8d@acm.org>
-Date:   Mon, 7 Aug 2023 14:04:21 -0700
+        d=1e100.net; s=20221208; t=1691442637; x=1692047437;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w0UqcugjS0RccYNXeQE8DX5IYJH0+T9wqvZIkdmfE2c=;
+        b=UOT2SNWil4YtCyuZKilztZaYXnOLGnUNrKc4XOzzaW9Oqo76i1IuMbRWeo74fMWYBI
+         WLj4s4lXcQBJ3V2L/SZOcWcTVdeoA7r7yq890nJHxiAtp1rB5sWiHxhdMAXyzazdeO19
+         fcz0z49JKeN+Z6U27T/2aWWciNgqI0zF4B5UjuOgarTy56kSNFnlA0B1Ud1YA6GxHRs9
+         B/hxIzcNlscGtaMMKlEjL8Ki2/24trFXKshfB/AuwKUHyipPMvn1QuXvLGY6JwF7ZadX
+         8sM8XXSDSYmVA1wtGyvdS2EM73x2m5XOAmTCYQp/gb0iCBv4PeyoIPxxu/tDEuTOkbYP
+         GjPg==
+X-Gm-Message-State: AOJu0Yyzts15d0VYmBRbiQhN5KfkXsTHiKNt8lyYemUGVELyEFQ93hzz
+        BTDidugiEGovS3ow+0kWwLDdcYm3MrBbyhn/Bdx+bIVitvicP+4KdNC2VSb/Pu1/e4ZlFbKR5oU
+        jJ9NJhhlDygz95zbOjgIHH7og
+X-Received: by 2002:a05:6214:5285:b0:637:2eb:6c23 with SMTP id kj5-20020a056214528500b0063702eb6c23mr10940436qvb.18.1691442637342;
+        Mon, 07 Aug 2023 14:10:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE+zDgMXaVHPxp5LJzPa58rANcJME3055x5SPbjCrUnzx2WN7zSjd+W5Z5TVRpgxbKxPeoiLw==
+X-Received: by 2002:a05:6214:5285:b0:637:2eb:6c23 with SMTP id kj5-20020a056214528500b0063702eb6c23mr10940418qvb.18.1691442637101;
+        Mon, 07 Aug 2023 14:10:37 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id q15-20020a0cf5cf000000b0063d4631d1e4sm3134431qvm.68.2023.08.07.14.10.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 14:10:36 -0700 (PDT)
+Date:   Mon, 7 Aug 2023 16:10:34 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 1/9] arm64: dts: qcom: sa8775p: add a node for the second
+ serdes PHY
+Message-ID: <qdagbipfnukpsn5a7f6hswbktrwutizluf3zom2gq6q4q6w6df@h4lkoi3mjzes>
+References: <20230807193507.6488-1-brgl@bgdev.pl>
+ <20230807193507.6488-2-brgl@bgdev.pl>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] scsi: ufs: ufs-pci: Add support for QEMU
-Content-Language: en-US
-To:     jeuk20.kim@samsung.com, "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <CGME20230807013726epcms2p1c604cb8e98680aebebb7cc5ab2d580f5@epcms2p1>
- <20230807013726epcms2p1c604cb8e98680aebebb7cc5ab2d580f5@epcms2p1>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20230807013726epcms2p1c604cb8e98680aebebb7cc5ab2d580f5@epcms2p1>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807193507.6488-2-brgl@bgdev.pl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/23 18:37, Jeuk Kim wrote:
->   static const struct pci_device_id ufshcd_pci_tbl[] = {
-> +	{ PCI_VENDOR_ID_REDHAT, 0x0013, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 },
->   	{ PCI_VENDOR_ID_SAMSUNG, 0xC00C, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 },
+On Mon, Aug 07, 2023 at 09:34:59PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> Add a node for the SerDes PHY used by EMAC1 on sa8775p-ride.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Does Red Hat agree with using device ID 0x0013 for this purpose? Is it 
-guaranteed that this device ID won't be used for any other purpose?
+FWIW this seems to match downstream sources.
 
-Thanks,
+Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
 
-Bart.
+> ---
+>  arch/arm64/boot/dts/qcom/sa8775p.dtsi | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> index 7b55cb701472..38d10af37ab0 100644
+> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> @@ -1846,6 +1846,15 @@ serdes0: phy@8901000 {
+>  			status = "disabled";
+>  		};
+>  
+> +		serdes1: phy@8902000 {
+> +			compatible = "qcom,sa8775p-dwmac-sgmii-phy";
+> +			reg = <0x0 0x08902000 0x0 0xe10>;
+> +			clocks = <&gcc GCC_SGMI_CLKREF_EN>;
+> +			clock-names = "sgmi_ref";
+> +			#phy-cells = <0>;
+> +			status = "disabled";
+> +		};
+> +
+>  		pdc: interrupt-controller@b220000 {
+>  			compatible = "qcom,sa8775p-pdc", "qcom,pdc";
+>  			reg = <0x0 0x0b220000 0x0 0x30000>,
+> -- 
+> 2.39.2
+> 
 
