@@ -2,145 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4DB771F6C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E82D771FC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231882AbjHGLK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47518 "EHLO
+        id S231897AbjHGLMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231843AbjHGLKV (ORCPT
+        with ESMTP id S231978AbjHGLLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:10:21 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CA2B3;
-        Mon,  7 Aug 2023 04:10:15 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe426521adso6817115e87.0;
-        Mon, 07 Aug 2023 04:10:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691406613; x=1692011413;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GwJ0VfQ+vMDvyOW9FkLQ8b9EFxXB9GwcO9Ph5XHR3Ew=;
-        b=BgZ4tJyQ2yIZtYNdUTua3Huk6DdFfMcLY1/cmRqBC+FafadmrFGITpMYQuzNHpvB8b
-         /EyCWXTTVFk04BYt2vOqyx6g+V5PkkYFXZOgKjuxce+12zYqCyssQZMzcPm8B0PSB4a+
-         kRz5DoCYfg+bNrOdFXTCz+rSvQlh5ruH83r6Pw6zZw9iBfCdPE1zFgvNyl0mnUnGHRwK
-         Wy0o1KuG/6d3/yU/LnUQQCN60HCklTq1K5eOxd9hYiixS2G9VlRadq6xTO27c0MJ668d
-         r+zgrMnEE6gx8WE8svH336pClAW8wQ6bm4Wqb4d3/K6r264FSNs0JHJQminlUZCVk5Iv
-         kSsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691406613; x=1692011413;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GwJ0VfQ+vMDvyOW9FkLQ8b9EFxXB9GwcO9Ph5XHR3Ew=;
-        b=bHbHDn65WKtZUCrS0H0zuIasY3SsikvNYzX+sOhPwNSzbK3RbPjneLMP+rSFlLPdBj
-         9BKhoovQwCu5wjhOfpwKXC8in6Xwx5ItYICcuQGpfFSNq4j9nVCjrPkMcmWH2MMs8oIB
-         un82kXWod7BMXHPg+uBVAvx8Ir4HtAAwXIJPi0q032cuaysNIjG5ktyQdl+dFe33vwds
-         W0V36gBTpu2OH5JNlshLsCb+cjH7oniAExBBrhyzH/Mv234fzhI2nCEtwGdK5zFrAFq6
-         i3TE5283DKiY7EG7wkYmlhQy5ilUNacUfRGHr2jAeniJWn5BHp7kMOV3aDDECxX2Ey83
-         YLoA==
-X-Gm-Message-State: AOJu0YzwSoWn2/wzTfr3+4XkmYoQj5ITjJTzzUy8vx+nzYfGZBS5Q4e5
-        n5cwDUVCoHLl3/bsUUx5Q0g=
-X-Google-Smtp-Source: AGHT+IGdJlKPNGSLi2wCWxWzcdq6Bhj1eY6HS9Agi105G0fdzX0qdgytZmZO9maDnyvykkjOlZG7pA==
-X-Received: by 2002:a05:6512:3e2:b0:4fb:89b3:3374 with SMTP id n2-20020a05651203e200b004fb89b33374mr5076716lfq.54.1691406613317;
-        Mon, 07 Aug 2023 04:10:13 -0700 (PDT)
-Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.googlemail.com with ESMTPSA id f8-20020a19ae08000000b004fe7011072fsm143012lfc.58.2023.08.07.04.10.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 04:10:12 -0700 (PDT)
-Message-ID: <0f9d0cd6-d344-7915-7bc1-7a090b8305d2@gmail.com>
-Date:   Mon, 7 Aug 2023 13:10:11 +0200
+        Mon, 7 Aug 2023 07:11:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126751BD0;
+        Mon,  7 Aug 2023 04:11:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A2A8761620;
+        Mon,  7 Aug 2023 11:11:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56EF0C433C8;
+        Mon,  7 Aug 2023 11:10:58 +0000 (UTC)
+Message-ID: <daaafe46-ce37-fe2e-4b77-d1e24d2b5662@xs4all.nl>
+Date:   Mon, 7 Aug 2023 13:10:56 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: ARM board lockups/hangs triggered by locks and mutexes
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-clk@vger.kernel.org,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     OpenWrt Development List <openwrt-devel@lists.openwrt.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
-References: <CACna6rxpzDWE5-gnmpgMgfzPmmHvEGTZk4GJvJ8jLSMazh2bVA@mail.gmail.com>
- <bd5feeb3-bc44-d4d2-7708-eea9243b49a4@gmail.com>
-Content-Language: en-US
-In-Reply-To: <bd5feeb3-bc44-d4d2-7708-eea9243b49a4@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [v3] media: mediatek: vcodec: fix AV1 decoding on MT8188
+Content-Language: en-US, nl
+To:     Xiaoyong Lu <xiaoyong.lu@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+Cc:     George Sun <george.sun@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20230803111017.2418-1-xiaoyong.lu@mediatek.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230803111017.2418-1-xiaoyong.lu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4.08.2023 13:07, Rafał Miłecki wrote:
-> I triple checked that. Dropping a single unused function breaks kernel /
-> device stability on BCM53573!
+FYI: the v2 patch has already been merged, so I dropped this v3.
+
+On 03/08/2023 13:10, Xiaoyong Lu wrote:
+> Fix AV1 decoding failure when the iova is 36bit.
 > 
-> AFAIK the only thing below diff actually affects is location of symbols
-> (I actually verified that by comparing System.map before and after -
-> over 22'000 of relocated symbols).
+> Before this fix, the decoder was accessing incorrect addresses with 36bit
+> iova tile buffer, leading to iommu faults.
 > 
-> Can some unfortunate location of symbols cause those hangs/lockups?
+> Fixes: 2f5d0aef37c6 ("media: mediatek: vcodec: support stateless AV1 decoder")
+> Signed-off-by: Xiaoyong Lu<xiaoyong.lu@mediatek.com>
+> ---
+> Changes from v2:
+> 
+> - refine commit subject and message
 
-I performed another experiment. First I dropped mtd_check_of_node() to
-bring kernel back to the stable state.
+It's only subject/commit message changes, the actual code is the same.
 
-Then I started adding useless code to the mtdchar_unlocked_ioctl(). I
-ended up adding just enough to make sure all post-mtd symbols in
-System.map got the same offset as in case of backporting
-mtd_check_of_node().
+Regards,
 
-I started experiencing lockups/hangs again.
+	Hans
 
-I repeated the same test with adding dumb code to the brcm_nvram_probe()
-and verifying symbols offsets following brcm_nvram_probe one.
-
-I believe this confirms that this problem is about offset or alignment
-of some specific symbol(s). The remaining question is what symbols and
-how to fix or workaround that.
-
-Following dump change brings back lockups/hangs:
-
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index ee437af41..0a24dec55 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -1028,6 +1028,22 @@ static long mtdchar_unlocked_ioctl(struct file *file, u_int cmd, u_long arg)
-  {
-  	int ret;
-
-+	if (!file)
-+		pr_info("Missing\n");
-+	WARN_ON(!file);
-+	WARN_ON(cmd == 1234);
-+	WARN_ON(cmd == 5678);
-+	WARN_ON(cmd == 1234);
-+	WARN_ON(cmd == 5678);
-+	WARN_ON(cmd == 1234);
-+	WARN_ON(cmd == 5678);
-+	WARN_ON(cmd == 1234);
-+	WARN_ON(cmd == 5678);
-+	WARN_ON(cmd == 1234);
-+	WARN_ON(cmd == 5678);
-+	WARN_ON(cmd == 1234);
-+	WARN_ON(cmd == 5678);
-+
-  	mutex_lock(&mtd_mutex);
-  	ret = mtdchar_ioctl(file, cmd, arg);
-  	mutex_unlock(&mtd_mutex);
+> 
+> Changes from v1:
+> 
+> - prefer '|' rather than '+'
+> - prefer '&' rather than shift operation
+> - add comments for address operations
+> 
+> v1:
+> - VDEC HW can access tile buffer and decode normally.
+> - Test ok by mt8195 32bit and mt8188 36bit iova.
+> 
+> ---
+>  .../mediatek/vcodec/vdec/vdec_av1_req_lat_if.c       | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/media/platform/mediatek/vcodec/vdec/vdec_av1_req_lat_if.c b/drivers/media/platform/mediatek/vcodec/vdec/vdec_av1_req_lat_if.c
+> index 404a1a23fd402..e9f2393f6a883 100644
+> --- a/drivers/media/platform/mediatek/vcodec/vdec/vdec_av1_req_lat_if.c
+> +++ b/drivers/media/platform/mediatek/vcodec/vdec/vdec_av1_req_lat_if.c
+> @@ -1658,9 +1658,9 @@ static void vdec_av1_slice_setup_tile_buffer(struct vdec_av1_slice_instance *ins
+>  	u32 allow_update_cdf = 0;
+>  	u32 sb_boundary_x_m1 = 0, sb_boundary_y_m1 = 0;
+>  	int tile_info_base;
+> -	u32 tile_buf_pa;
+> +	u64 tile_buf_pa;
+>  	u32 *tile_info_buf = instance->tile.va;
+> -	u32 pa = (u32)bs->dma_addr;
+> +	u64 pa = (u64)bs->dma_addr;
+>  
+>  	if (uh->disable_cdf_update == 0)
+>  		allow_update_cdf = 1;
+> @@ -1673,8 +1673,12 @@ static void vdec_av1_slice_setup_tile_buffer(struct vdec_av1_slice_instance *ins
+>  		tile_info_buf[tile_info_base + 0] = (tile_group->tile_size[tile_num] << 3);
+>  		tile_buf_pa = pa + tile_group->tile_start_offset[tile_num];
+>  
+> -		tile_info_buf[tile_info_base + 1] = (tile_buf_pa >> 4) << 4;
+> -		tile_info_buf[tile_info_base + 2] = (tile_buf_pa % 16) << 3;
+> +		/* save av1 tile high 4bits(bit 32-35) address in lower 4 bits position
+> +		 * and clear original for hw requirement.
+> +		 */
+> +		tile_info_buf[tile_info_base + 1] = (tile_buf_pa & 0xFFFFFFF0ull) |
+> +			((tile_buf_pa & 0xF00000000ull) >> 32);
+> +		tile_info_buf[tile_info_base + 2] = (tile_buf_pa & 0xFull) << 3;
+>  
+>  		sb_boundary_x_m1 =
+>  			(tile->mi_col_starts[tile_col + 1] - tile->mi_col_starts[tile_col] - 1) &
 
