@@ -2,153 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 249B1771A3D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE6A771A6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbjHGGX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
+        id S229538AbjHGGaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjHGGXy (ORCPT
+        with ESMTP id S231294AbjHGG3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:23:54 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E322610F9
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:23:52 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe4ad22eb0so24868885e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 23:23:52 -0700 (PDT)
+        Mon, 7 Aug 2023 02:29:34 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D3C172D
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:29:33 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-686f090310dso4199602b3a.0
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 23:29:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691389431; x=1691994231;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3A446E/kT3GEJ5OdOfp6vlTjEoG2ufXKFcEfUJuKEMI=;
-        b=wY2Bp5xhxoMYp9AWapejnTHfg+ixw+U4HdSL7LFDfxm1JL3Sd3BL4myGDItmJgB6/s
-         zV5taHSANXkoO8LH9RME+CUJLq4IgqsXy6oZRYJjWa7b+FLh+ec28dPyngJlywQwWSST
-         Rfj+3Hujx0jViEih2fanVRArvPyRS348FK6ZIXEydCv7x0nvC7JTz3h5ggDqtScEpfYh
-         sI/YoU6nhDalj3uqCPbhdKZ+v3FBy5xJp8Hy3hd7AckJJxUMGa6yqx+paVcadbX/FxO5
-         PklfjvLiwNpWgZ11q/yhX3nh9dXdHsMitzgLHwl/3lej+1dFTGXN7CELuu2MU89O/th1
-         +aww==
+        d=igel-co-jp.20221208.gappssmtp.com; s=20221208; t=1691389772; x=1691994572;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2KhJcMMHF/QGvcv4V+SvNCxHUnjoV6Ng8+aFfn5AdYA=;
+        b=fs7s2Xlp88INcWS7tNQLgGN60cO0nAz+utJVEUemGul8/xSDJ21UtEgMHzUvF5vfwN
+         /MDRVb05BOtxTyn1Ffk6dGmYT0bCnCBkqcFGucWJ79bMlE0gv8fBXdqnYmfFWbGA9Gvx
+         6GVB3cgElVZYABWqEIW2vs6WaapSGgNOPq/uNw2761ZEIZy2YBWA28cb6uYND80TRlfj
+         YcKL2QBM/QagmQnUKlwCjBehlB9fK5uTr2C1FC+LqDEAjclzUUsc4q4ZO98nQlfjpv0x
+         63zbbkFZRTsyCLlpuKt3tHEw0Khdy2/tfhu9kZb9Hx4nyXK2lG2Ih7mEjN8mVOWB/pXI
+         t0uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691389431; x=1691994231;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3A446E/kT3GEJ5OdOfp6vlTjEoG2ufXKFcEfUJuKEMI=;
-        b=SzgXQm59TWyVjmjKdRo4zcfGo/3gfXt0qolAiPkf7l1aFG6YSIAdue45dO7HbP+6zy
-         qWbeRk+eaFnJ2FNdQH3eJZl+p5jocvMr1GyAKYOdm0nHkz+U9c9HrosPZHbHcmElAVEi
-         2lK9/3tlBYc5sxVfytIVmjfo9LAqvbgy4g4dzCB0Hyfos7L6J+WAnh0MpQn4CU8tNI9i
-         XglhBNxyXyR7rR6kD41KVxgVZIRlNKwCJcp5o9KMVZrePEgtmaHncVn8kiZj+/7QHtjn
-         3DxYmnJUXrFtWttks3avyhv9dpyr3Mxl6q6/Jk/o0a71RiS0OEGf8MsTblEIu9ROIXLK
-         qLfQ==
-X-Gm-Message-State: AOJu0Yzvg9shBN8oSvC6Zt5hNincvox84nRPj2k5+zf9g3JXzylq6Thc
-        6X98jYroIkfYJacheVLXX/FMQA==
-X-Google-Smtp-Source: AGHT+IG0HwQnerR7/Jt+ZlEFWrzo/YHVAHF7jx+cIf1OJDRkcHOwo7Ixn6i8JDQMCLC5UL0HXqh+Aw==
-X-Received: by 2002:a05:600c:2286:b0:3fa:8c68:4aba with SMTP id 6-20020a05600c228600b003fa8c684abamr6193638wmf.25.1691389430634;
-        Sun, 06 Aug 2023 23:23:50 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id t25-20020a1c7719000000b003fe2b6d64c8sm13923548wmi.21.2023.08.06.23.23.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Aug 2023 23:23:50 -0700 (PDT)
-Message-ID: <6bf91ced-076f-ecc1-f626-f531f7d991bd@linaro.org>
-Date:   Mon, 7 Aug 2023 08:23:48 +0200
+        d=1e100.net; s=20221208; t=1691389772; x=1691994572;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2KhJcMMHF/QGvcv4V+SvNCxHUnjoV6Ng8+aFfn5AdYA=;
+        b=gak+VUrNwEFQz9tcKUJxWWfakYoDaGn2WJoszfV2fWJB3KGUKBdzeEMBWXjgwsAjrv
+         gBhgrxXVlsqhPjwjAHL+5SNW8Hniz1hyDq0Sg9gQ9kAUvdC6OTlxBfk930r7UGrPPAMy
+         IgS3i27t4hJ+z5s5yRw3fr1CxTAQed0zhaDMfOTDWl8FDQrOjeaKKk8yTnoT9FEzIpKq
+         R42noyBLCQhap1nRjD6g0ia+jnxlgoNcon1uY9UvfDqq0vXiRFYaQpVuA+qoyMU04l0h
+         kZsw+P1M4jpfAmiom9pyOs+YcPwBiylWP3SH6kuOEupKSuVYEMJcpnfcBZHn9e/5YuOb
+         bnRg==
+X-Gm-Message-State: AOJu0Yy79HSFs/xTNV+JGXozFE8ClY4cXVTF+Zf18xoKg+yRGzZ4wBml
+        Y8RKaGBm5nqA9OLyZ9Q7L6PhBQ==
+X-Google-Smtp-Source: AGHT+IEAuY8XGTkyoOcnJC0CLiGG976Ootrt5rrvsyVIzma2je36sHWbmaa2fVHPyHTShPNI42VHsg==
+X-Received: by 2002:a05:6a20:244b:b0:140:3554:3f44 with SMTP id t11-20020a056a20244b00b0014035543f44mr8699412pzc.22.1691389772644;
+        Sun, 06 Aug 2023 23:29:32 -0700 (PDT)
+Received: from localhost.co.jp (napt.igel.co.jp. [219.106.231.132])
+        by smtp.gmail.com with ESMTPSA id s8-20020aa78d48000000b0065a1b05193asm5347392pfe.185.2023.08.06.23.29.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Aug 2023 23:29:32 -0700 (PDT)
+From:   Ake Koomsin <ake@igel.co.jp>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Ake Koomsin <ake@igel.co.jp>
+Subject: [RFC PATCH] KVM: x86: inhibit APICv upon detecting direct APIC access from L2
+Date:   Mon,  7 Aug 2023 15:26:11 +0900
+Message-ID: <20230807062611.12596-1-ake@igel.co.jp>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 4/9] regulator: dt-bindings: mediatek: Add MT6366 PMIC
-Content-Language: en-US
-To:     Chen-Yu Tsai <wenst@chromium.org>, Lee Jones <lee@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Zhiyong Tao <zhiyong.tao@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230803074249.3065586-1-wenst@chromium.org>
- <20230803074249.3065586-5-wenst@chromium.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230803074249.3065586-5-wenst@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2023 09:42, Chen-Yu Tsai wrote:
-> From: Zhiyong Tao <zhiyong.tao@mediatek.com>
-> 
-> The MediaTek MT6366 PMIC is similar to the MT6358 PMIC. It is designed
-> to be paired with the MediaTek MT8186 SoC. It has 9 buck regulators and
-> 29 LDO regulators, not counting ones that feed internally and basically
-> have no controls. The regulators are named after their intended usage
-> for the SoC and system design, thus not named generically as ldoX or
-> dcdcX, but as vcn33 or vgpu.
-> 
-> Add a binding document describing all the regulators and their supplies.
-> 
-> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
-> [wens@chromium.org: major rework and added commit message]
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> ---
-> Changes since Zhiyong's last version (v4) [1]:
-> - simplified regulator names
-> - added descriptions to regulators
-> - removed bogus regulators (*_sshub)
-> - merged vcn33-wifi and vcn33-bt as vcn33
-> - added missing regulators (vm18, vmddr, vsram-core)
-> - cut down examples to a handful of cases and made them complete
-> - expanded commit message a lot
-> 
-> [1] https://lore.kernel.org/linux-arm-kernel/20220823123745.14061-1-zhiyong.tao@mediatek.com/
-> 
->  .../regulator/mediatek,mt6366-regulator.yaml  | 154 ++++++++++++++++++
->  1 file changed, 154 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/mediatek,mt6366-regulator.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/regulator/mediatek,mt6366-regulator.yaml b/Documentation/devicetree/bindings/regulator/mediatek,mt6366-regulator.yaml
-> new file mode 100644
-> index 000000000000..715c6ffcb3ab
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/regulator/mediatek,mt6366-regulator.yaml
-> @@ -0,0 +1,154 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/regulator/mediatek,mt6366-regulator.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MT6366 Regulator from MediaTek Integrated
-> +
-> +maintainers:
-> +  - Zhiyong Tao <zhiyong.tao@mediatek.com>
-> +
-> +description: |
-> +  Regulator part of the MT6366 PMIC. This node should be under the PMIC's
-> +  device node.
-> +
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt6366-regulator
-> +
-> +  vsys_ldo1-supply:
+Current KVM does not expect L1 hypervisor to allow L2 guest to access
+APIC page directly when APICv is enabled. When this happens, KVM
+emulates the access itself resulting in interrupt lost.
 
-Don't use underscores in property names. Only hyphens, if needed.
+As this kind of hypervisor is rare, it is simpler to inhibit APICv upon
+detecting direct APIC access from L2 to avoid unexpected interrupt lost.
 
-> +    description: Supply for LDOs vfe28, vxo22, vcn28, vaux18, vaud28, vsim1, vusb, vbif28
-> +  vsys_ldo2-supply:
+Signed-off-by: Ake Koomsin <ake@igel.co.jp>
+---
+ arch/x86/include/asm/kvm_host.h |  6 ++++++
+ arch/x86/kvm/mmu/mmu.c          | 33 ++++++++++++++++++++++++++-------
+ arch/x86/kvm/svm/svm.h          |  3 ++-
+ arch/x86/kvm/vmx/vmx.c          |  3 ++-
+ 4 files changed, 36 insertions(+), 9 deletions(-)
 
-
-
-Best regards,
-Krzysztof
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 3bc146dfd38d..8764b11922a0 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1188,6 +1188,12 @@ enum kvm_apicv_inhibit {
+ 	APICV_INHIBIT_REASON_APIC_ID_MODIFIED,
+ 	APICV_INHIBIT_REASON_APIC_BASE_MODIFIED,
+ 
++	/*
++	 * APICv is disabled because L1 hypervisor allows L2 guest to access
++	 * APIC directly.
++	 */
++	APICV_INHIBIT_REASON_L2_PASSTHROUGH_ACCESS,
++
+ 	/******************************************************/
+ 	/* INHIBITs that are relevant only to the AMD's AVIC. */
+ 	/******************************************************/
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index ec169f5c7dce..c1150ef9fce1 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4293,6 +4293,30 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
+ 	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, 0, true, NULL);
+ }
+ 
++static int __kvm_faultin_pfn_guest_mode(struct kvm_vcpu *vcpu,
++					struct kvm_page_fault *fault)
++{
++	struct kvm_memory_slot *slot = fault->slot;
++
++	/* Don't expose private memslots to L2. */
++	fault->slot = NULL;
++	fault->pfn = KVM_PFN_NOSLOT;
++	fault->map_writable = false;
++
++	/*
++	 * APICv does not work when L1 hypervisor allows L2 guest to access
++	 * APIC directly. As this kind of L1 hypervisor is rare, it is simpler
++	 * to inhibit APICv when we detect direct APIC access from L2, and
++	 * fallback to emulation path to avoid interrupt lost.
++	 */
++	if (unlikely(slot && slot->id == APIC_ACCESS_PAGE_PRIVATE_MEMSLOT &&
++		     kvm_apicv_activated(vcpu->kvm)))
++		kvm_set_apicv_inhibit(vcpu->kvm,
++				      APICV_INHIBIT_REASON_L2_PASSTHROUGH_ACCESS);
++
++	return RET_PF_CONTINUE;
++}
++
+ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+ {
+ 	struct kvm_memory_slot *slot = fault->slot;
+@@ -4307,13 +4331,8 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
+ 		return RET_PF_RETRY;
+ 
+ 	if (!kvm_is_visible_memslot(slot)) {
+-		/* Don't expose private memslots to L2. */
+-		if (is_guest_mode(vcpu)) {
+-			fault->slot = NULL;
+-			fault->pfn = KVM_PFN_NOSLOT;
+-			fault->map_writable = false;
+-			return RET_PF_CONTINUE;
+-		}
++		if (is_guest_mode(vcpu))
++			return __kvm_faultin_pfn_guest_mode(vcpu, fault);
+ 		/*
+ 		 * If the APIC access page exists but is disabled, go directly
+ 		 * to emulation without caching the MMIO access or creating a
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 18af7e712a5a..8d77932ee0fb 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -683,7 +683,8 @@ extern struct kvm_x86_nested_ops svm_nested_ops;
+ 	BIT(APICV_INHIBIT_REASON_PHYSICAL_ID_ALIASED) |	\
+ 	BIT(APICV_INHIBIT_REASON_APIC_ID_MODIFIED) |	\
+ 	BIT(APICV_INHIBIT_REASON_APIC_BASE_MODIFIED) |	\
+-	BIT(APICV_INHIBIT_REASON_LOGICAL_ID_ALIASED)	\
++	BIT(APICV_INHIBIT_REASON_LOGICAL_ID_ALIASED) |	\
++	BIT(APICV_INHIBIT_REASON_L2_PASSTHROUGH_ACCESS)	\
+ )
+ 
+ bool avic_hardware_setup(void);
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index df461f387e20..f652397c9765 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -8189,7 +8189,8 @@ static void vmx_hardware_unsetup(void)
+ 	BIT(APICV_INHIBIT_REASON_BLOCKIRQ) |		\
+ 	BIT(APICV_INHIBIT_REASON_PHYSICAL_ID_ALIASED) |	\
+ 	BIT(APICV_INHIBIT_REASON_APIC_ID_MODIFIED) |	\
+-	BIT(APICV_INHIBIT_REASON_APIC_BASE_MODIFIED)	\
++	BIT(APICV_INHIBIT_REASON_APIC_BASE_MODIFIED) |	\
++	BIT(APICV_INHIBIT_REASON_L2_PASSTHROUGH_ACCESS)	\
+ )
+ 
+ static void vmx_vm_destroy(struct kvm *kvm)
+-- 
+2.41.0
 
