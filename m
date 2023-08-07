@@ -2,126 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE8F7722F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EE47722F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232946AbjHGLn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50656 "EHLO
+        id S232349AbjHGLoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233180AbjHGLnE (ORCPT
+        with ESMTP id S233136AbjHGLo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:43:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330EF1FC8
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 04:39:45 -0700 (PDT)
+        Mon, 7 Aug 2023 07:44:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E494693
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 04:42:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691408316;
+        s=mimecast20190719; t=1691408477;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oMQdzYvM+Pe5aw7tEIhxWj87hwS9adLKe0i6Mj8H6Ns=;
-        b=N0bZYKIFqs4JI7Yxp10r/ZmnESnFeL1hcvPX28fCqw0ln/f+dt5XXtDuAJLCQkqgylB01W
-        F9opbJ4VCQbu1sFUiKP9kEayo0WlqTWFRg8q0/l5aczbQtHICGnnKHrh+xheQUqP9Mv7Eo
-        3wxGaj4hww4vx0Zh+5XOWaZFbhVBHRw=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-171-gnOnpn0WOUiUlDiYxCH8zg-1; Mon, 07 Aug 2023 07:38:35 -0400
-X-MC-Unique: gnOnpn0WOUiUlDiYxCH8zg-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-99cc32f2ec5so117374366b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 04:38:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691408314; x=1692013114;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oMQdzYvM+Pe5aw7tEIhxWj87hwS9adLKe0i6Mj8H6Ns=;
-        b=IFStzBlJuOngGZLUrUC7S10tFZWwInh4DcxR562hSNCtN24r5DX4/ute1G9bLKkHyt
-         RALeTMNyq3SRyM9YuHmrLw9XR/cfjFDUC9T2vHKs6K3/RvoNjVKzJ02OOmNgIHwcPjHL
-         kBe5vQM/0nCNbwImyLrj+ClpLf9EZTWjUZ4Vzc2/rs8hde46nkQQrQkZ+ze8TzOAvdpT
-         vHV5zC/VgCzzeG0cB6Pm0y6n2RxchZMYdV5CCc5Wt1Oy5MzNNo0+U9nKQac+Qq1+jqyv
-         Z3KcNRgPMj6G2EMMkxG524AdLZhuhWaZ96JJPvNHPNhwaht1AlM/7H1Fyml/vBvucMxa
-         dUDw==
-X-Gm-Message-State: AOJu0YxAWMGL30Kes9aNAsBjer3QFTHE9sSMfKBKApirJsp0vXUls4GP
-        Jzkk8jWXtR8WfLpF8R9ds+ui+QmGYRwRPXUspfI7beL19ayyvHmaO2bqD8y+pIpYiQt08Ezg7hP
-        P3fLXejE6IStLSvap70rNcP7y
-X-Received: by 2002:a17:906:5a48:b0:98c:e72c:6b83 with SMTP id my8-20020a1709065a4800b0098ce72c6b83mr6759513ejc.45.1691408314630;
-        Mon, 07 Aug 2023 04:38:34 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEednnRIFSijaQW/ULGrqvXgaSTiwrn9ONCcNWwL9t4vr8DBCCz8S3u7jBD/hirMYouKTl9Pw==
-X-Received: by 2002:a17:906:5a48:b0:98c:e72c:6b83 with SMTP id my8-20020a1709065a4800b0098ce72c6b83mr6759504ejc.45.1691408314388;
-        Mon, 07 Aug 2023 04:38:34 -0700 (PDT)
-Received: from [10.40.98.142] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id 4-20020a170906058400b00992c92af6f4sm5134795ejn.144.2023.08.07.04.38.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 04:38:33 -0700 (PDT)
-Message-ID: <92096817-0183-566a-cdd3-74e6fa3a09c8@redhat.com>
-Date:   Mon, 7 Aug 2023 13:38:33 +0200
+        bh=WmODk+CdskyMtYG8TdUz/Cv201lmsUcEqfPEQkGIYLY=;
+        b=G+kX1ODjU9xbFOZYfOo4hYtnSaB8wLwhgmr7/5RrQ7+tmAdEc9g9dbYUZW1035SnXjRucI
+        bihnZhLYn2NawdRPzPBGscq0xR9x0oXwURcTFrbak6iZdu0Sc305A3oIcbSVp6egBeIOC9
+        NkPUFbSTVCJfuzTjG3BzZMFF5o1NcO0=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-74-2LnRN-WnO9Klk1-rMuLD1w-1; Mon, 07 Aug 2023 07:41:14 -0400
+X-MC-Unique: 2LnRN-WnO9Klk1-rMuLD1w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F38281C0690C;
+        Mon,  7 Aug 2023 11:41:12 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.2.16.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 72335140E962;
+        Mon,  7 Aug 2023 11:41:08 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] compiler_types: Introduce the Clang
+ __preserve_most function attribute
+References: <20230804090621.400-1-elver@google.com>
+Date:   Mon, 07 Aug 2023 13:41:07 +0200
+In-Reply-To: <20230804090621.400-1-elver@google.com> (Marco Elver's message of
+        "Fri, 4 Aug 2023 11:02:56 +0200")
+Message-ID: <87il9rgjvw.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/8] hp-bioscfg: Overall fixes and code cleanup
-Content-Language: en-US
-To:     Jorge Lopez <jorgealtxwork@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas@t-8ch.de, ilpo.jarvinen@linux.intel.com,
-        dan.carpenter@linaro.org
-References: <20230731203141.30044-1-jorge.lopez2@hp.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230731203141.30044-1-jorge.lopez2@hp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+* Marco Elver:
 
-On 7/31/23 22:31, Jorge Lopez wrote:
-> Submit individual patches to address memory leaks and uninitialized 
-> variable errors. 
-> Addressed several review comments making the source code more readable.
-> Removed duplicate use of variable in inner loop.
-> 
-> Changes were tested with a HP EliteBook x360 1030 G3
-> 
-> Jorge Lopez (8):
->   hp-bioscfg: Fix memory leaks in attribute packages
->   hp-bioscfg: Fix uninitialized variable errors
->   hp-bioscfg: Replace the word HACK from source code
->   hp-bioscfg: Change how prerequisites size is evaluated
->   hp-bioscfg: Change how order list size is evaluated
->   hp-bioscfg: Change how enum possible values size is evaluated
->   hp-bioscfg: Change how password encoding size is evaluated
->   hp-bioscfg: Remove duplicate use of variable in inner loop
-> 
->  .../x86/hp/hp-bioscfg/enum-attributes.c       | 24 ++++++++----
->  .../x86/hp/hp-bioscfg/int-attributes.c        | 15 +++++--
->  .../x86/hp/hp-bioscfg/order-list-attributes.c | 39 ++++++++++++-------
->  .../x86/hp/hp-bioscfg/passwdobj-attributes.c  | 27 +++++++++----
->  .../x86/hp/hp-bioscfg/string-attributes.c     | 13 +++++--
->  5 files changed, 82 insertions(+), 36 deletions(-)
+> [1]: "On X86-64 and AArch64 targets, this attribute changes the calling
+> convention of a function. The preserve_most calling convention attempts
+> to make the code in the caller as unintrusive as possible. This
+> convention behaves identically to the C calling convention on how
+> arguments and return values are passed, but it uses a different set of
+> caller/callee-saved registers. This alleviates the burden of saving and
+> recovering a large register set before and after the call in the
+> caller."
+>
+> [1] https://clang.llvm.org/docs/AttributeReference.html#preserve-most
 
-Thank you for your patch-series, I've applied the series to my
-review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+You dropped the interesting part:
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+| If the arguments are passed in callee-saved registers, then they will
+| be preserved by the callee across the call. This doesn=E2=80=99t apply for
+| values returned in callee-saved registers.
+|=20
+|  =C2=B7  On X86-64 the callee preserves all general purpose registers, ex=
+cept
+|     for R11. R11 can be used as a scratch register. Floating-point
+|     registers (XMMs/YMMs) are not preserved and need to be saved by the
+|     caller.
+|=20=20=20=20=20
+|  =C2=B7  On AArch64 the callee preserve all general purpose registers, ex=
+cept
+|     X0-X8 and X16-X18.
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+Ideally, this would be documented in the respective psABI supplement.
+I filled in some gaps and filed:
 
-Regards,
+  Document the ABI for __preserve_most__ function calls
+  <https://gitlab.com/x86-psABIs/x86-64-ABI/-/merge_requests/45>
 
-Hans
+Doesn't this change impact the kernel module ABI?
+
+I would really expect a check here
+
+> +#if __has_attribute(__preserve_most__)
+> +# define __preserve_most notrace __attribute__((__preserve_most__))
+> +#else
+> +# define __preserve_most
+> +#endif
+
+that this is not a compilation for a module.  Otherwise modules built
+with a compiler with __preserve_most__ attribute support are
+incompatible with kernels built with a compiler without that attribute.
+
+Thanks,
+Florian
 
