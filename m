@@ -2,202 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E44A0771BAC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1193771BB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbjHGHlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 03:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
+        id S230504AbjHGHl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 03:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjHGHlE (ORCPT
+        with ESMTP id S229824AbjHGHl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 03:41:04 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 30B7710FD;
-        Mon,  7 Aug 2023 00:41:00 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.201])
-        by gateway (Coremail) with SMTP id _____8AxDOsLoNBkDeARAA--.34612S3;
-        Mon, 07 Aug 2023 15:40:59 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.20.42.201])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxB838n9Bk+dBMAA--.56868S4;
-        Mon, 07 Aug 2023 15:40:57 +0800 (CST)
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        loongson-kernel@lists.loongnix.cn, Yinbo Zhu <zhuyinbo@loongson.cn>
-Subject: [PATCH v3 2/2] gpio: loongson: add firmware offset parse support
-Date:   Mon,  7 Aug 2023 15:40:43 +0800
-Message-Id: <20230807074043.31288-3-zhuyinbo@loongson.cn>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230807074043.31288-1-zhuyinbo@loongson.cn>
-References: <20230807074043.31288-1-zhuyinbo@loongson.cn>
+        Mon, 7 Aug 2023 03:41:57 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8070B1733;
+        Mon,  7 Aug 2023 00:41:39 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 3777fGId9002920, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 3777fGId9002920
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 7 Aug 2023 15:41:16 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Mon, 7 Aug 2023 15:41:32 +0800
+Received: from RTEXH36506.realtek.com.tw (172.21.6.27) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Mon, 7 Aug 2023 15:41:31 +0800
+Received: from localhost.localdomain (172.21.252.101) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server id
+ 15.1.2507.17 via Frontend Transport; Mon, 7 Aug 2023 15:41:31 +0800
+From:   Stanley Chang <stanley_chang@realtek.com>
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+CC:     Stanley Chang <stanley_chang@realtek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 RESEND] usb: dwc3: core: configure TX/RX threshold for DWC3_IP
+Date:   Mon, 7 Aug 2023 15:41:24 +0800
+Message-ID: <20230807074131.27355-1-stanley_chang@realtek.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxB838n9Bk+dBMAA--.56868S4
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Loongson GPIO controllers come in multiple variants that are compatible
-except for certain register offset values.  Add support for device
-properties allowing to specify them in ACPI or DT.
+In Synopsys's dwc3 data book:
+To avoid underrun and overrun during the burst, in a high-latency bus
+system (like USB), threshold and burst size control is provided through
+GTXTHRCFG and GRXTHRCFG registers.
 
-Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+In Realtek DHC SoC, DWC3 USB 3.0 uses AHB system bus. When dwc3 is
+connected with USB 2.5G Ethernet, there will be overrun problem.
+Therefore, setting TX/RX thresholds can avoid this issue.
+
+Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
 ---
- drivers/gpio/gpio-loongson-64bit.c | 74 +++++++++++++++++++++++++++---
- 1 file changed, 67 insertions(+), 7 deletions(-)
+ drivers/usb/dwc3/core.c | 33 +++++++++++++++++++++++++++++++++
+ drivers/usb/dwc3/core.h |  5 +++++
+ 2 files changed, 38 insertions(+)
 
-diff --git a/drivers/gpio/gpio-loongson-64bit.c b/drivers/gpio/gpio-loongson-64bit.c
-index 06213bbfabdd..51bcd6e8660f 100644
---- a/drivers/gpio/gpio-loongson-64bit.c
-+++ b/drivers/gpio/gpio-loongson-64bit.c
-@@ -26,6 +26,7 @@ struct loongson_gpio_chip_data {
- 	unsigned int		conf_offset;
- 	unsigned int		out_offset;
- 	unsigned int		in_offset;
-+	unsigned int		inten_offset;
- };
- 
- struct loongson_gpio_chip {
-@@ -117,7 +118,17 @@ static void loongson_gpio_set(struct gpio_chip *chip, unsigned int pin, int valu
- 
- static int loongson_gpio_to_irq(struct gpio_chip *chip, unsigned int offset)
- {
-+	unsigned int u;
- 	struct platform_device *pdev = to_platform_device(chip->parent);
-+	struct loongson_gpio_chip *lgpio = to_loongson_gpio_chip(chip);
-+
-+	if (lgpio->chip_data->mode == BIT_CTRL_MODE) {
-+		u = readl(lgpio->reg_base + lgpio->chip_data->inten_offset + offset / 32 * 4);
-+		u |= BIT(offset % 32);
-+		writel(u, lgpio->reg_base + lgpio->chip_data->inten_offset + offset / 32 * 4);
-+	} else {
-+		writeb(1, lgpio->reg_base + lgpio->chip_data->inten_offset + offset);
-+	}
- 
- 	return platform_get_irq(pdev, offset);
- }
-@@ -127,11 +138,30 @@ static int loongson_gpio_init(struct device *dev, struct loongson_gpio_chip *lgp
- {
- 	int ret;
- 	u32 ngpios;
-+	unsigned int io_width;
- 
- 	lgpio->reg_base = reg_base;
-+	if (device_property_read_u32(dev, "ngpios", &ngpios) || !ngpios)
-+		return -EINVAL;
-+
-+	ret = DIV_ROUND_UP(ngpios, 8);
-+	switch (ret) {
-+	case 1 ... 2:
-+		io_width = ret;
-+		break;
-+	case 3 ... 4:
-+		io_width = 0x4;
-+		break;
-+	case 5 ... 8:
-+		io_width = 0x8;
-+		break;
-+	default:
-+		dev_err(dev, "unsupported io width\n");
-+		return -EINVAL;
-+	}
- 
- 	if (lgpio->chip_data->mode == BIT_CTRL_MODE) {
--		ret = bgpio_init(&lgpio->chip, dev, 8,
-+		ret = bgpio_init(&lgpio->chip, dev, io_width,
- 				lgpio->reg_base + lgpio->chip_data->in_offset,
- 				lgpio->reg_base + lgpio->chip_data->out_offset,
- 				NULL, NULL,
-@@ -151,16 +181,35 @@ static int loongson_gpio_init(struct device *dev, struct loongson_gpio_chip *lgp
- 		spin_lock_init(&lgpio->lock);
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index f6689b731718..a0a54e5c4ad9 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -1262,6 +1262,39 @@ static int dwc3_core_init(struct dwc3 *dwc)
+ 		}
  	}
  
--	device_property_read_u32(dev, "ngpios", &ngpios);
--
--	lgpio->chip.can_sleep = 0;
- 	lgpio->chip.ngpio = ngpios;
--	lgpio->chip.label = lgpio->chip_data->label;
--	lgpio->chip.to_irq = loongson_gpio_to_irq;
-+	lgpio->chip.can_sleep = 0;
-+	if (lgpio->chip_data->label)
-+		lgpio->chip.label = lgpio->chip_data->label;
-+	else
-+		lgpio->chip.label = kstrdup(to_platform_device(dev)->name, GFP_KERNEL);
++	if (DWC3_IP_IS(DWC3)) {
++		u8 rx_thr_num = dwc->rx_thr_num_pkt_prd;
++		u8 rx_maxburst = dwc->rx_max_burst_prd;
++		u8 tx_thr_num = dwc->tx_thr_num_pkt_prd;
++		u8 tx_maxburst = dwc->tx_max_burst_prd;
 +
-+	if (lgpio->chip_data->inten_offset)
-+		lgpio->chip.to_irq = loongson_gpio_to_irq;
++		if (rx_thr_num && rx_maxburst) {
++			reg = dwc3_readl(dwc->regs, DWC3_GRXTHRCFG);
++			reg |= DWC3_GRXTHRCFG_PKTCNTSEL;
++
++			reg &= ~DWC3_GRXTHRCFG_RXPKTCNT(~0);
++			reg |= DWC3_GRXTHRCFG_RXPKTCNT(rx_thr_num);
++
++			reg &= ~DWC3_GRXTHRCFG_MAXRXBURSTSIZE(~0);
++			reg |= DWC3_GRXTHRCFG_MAXRXBURSTSIZE(rx_maxburst);
++
++			dwc3_writel(dwc->regs, DWC3_GRXTHRCFG, reg);
++		}
++
++		if (tx_thr_num && tx_maxburst) {
++			reg = dwc3_readl(dwc->regs, DWC3_GTXTHRCFG);
++			reg |= DWC3_GTXTHRCFG_PKTCNTSEL;
++
++			reg &= ~DWC3_GTXTHRCFG_TXPKTCNT(~0);
++			reg |= DWC3_GTXTHRCFG_TXPKTCNT(tx_thr_num);
++
++			reg &= ~DWC3_GTXTHRCFG_MAXTXBURSTSIZE(~0);
++			reg |= DWC3_GTXTHRCFG_MAXTXBURSTSIZE(tx_maxburst);
++
++			dwc3_writel(dwc->regs, DWC3_GTXTHRCFG, reg);
++		}
++	}
++
+ 	return 0;
  
- 	return devm_gpiochip_add_data(dev, &lgpio->chip, lgpio);
- }
+ err_power_off_phy:
+diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+index 8b1295e4dcdd..5480fcb59bcb 100644
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -211,6 +211,11 @@
+ #define DWC3_GRXTHRCFG_RXPKTCNT(n) (((n) & 0xf) << 24)
+ #define DWC3_GRXTHRCFG_PKTCNTSEL BIT(29)
  
-+static int loongson_gpio_get_props(struct device *dev,
-+				    struct loongson_gpio_chip *lgpio)
-+{
-+	const struct loongson_gpio_chip_data *d = lgpio->chip_data;
++/* Global TX Threshold Configuration Register */
++#define DWC3_GTXTHRCFG_MAXTXBURSTSIZE(n) (((n) & 0xff) << 16)
++#define DWC3_GTXTHRCFG_TXPKTCNT(n) (((n) & 0xf) << 24)
++#define DWC3_GTXTHRCFG_PKTCNTSEL BIT(29)
 +
-+	if (device_property_read_u32(dev, "loongson,gpio-conf-offset", (u32 *)&d->conf_offset)
-+	    || device_property_read_u32(dev, "loongson,gpio-in-offset", (u32 *)&d->in_offset)
-+	    || device_property_read_u32(dev, "loongson,gpio-out-offset", (u32 *)&d->out_offset)
-+	    || device_property_read_u32(dev, "loongson,gpio-ctrl-mode", (u32 *)&d->mode))
-+		return -EINVAL;
-+
-+	device_property_read_u32(dev, "loongson,gpio-inten-offset", (u32 *)&d->inten_offset);
-+
-+	return 0;
-+}
-+
- static int loongson_gpio_probe(struct platform_device *pdev)
- {
- 	void __iomem *reg_base;
-@@ -172,7 +221,12 @@ static int loongson_gpio_probe(struct platform_device *pdev)
- 	if (!lgpio)
- 		return -ENOMEM;
- 
--	lgpio->chip_data = device_get_match_data(dev);
-+	lgpio->chip_data = devm_kzalloc(dev, sizeof(*lgpio->chip_data), GFP_KERNEL);
-+	if (!lgpio->chip_data)
-+		return -ENOMEM;
-+
-+	if (loongson_gpio_get_props(dev, lgpio))
-+		lgpio->chip_data = device_get_match_data(dev);
- 
- 	reg_base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(reg_base))
-@@ -206,6 +260,9 @@ static const struct of_device_id loongson_gpio_of_match[] = {
- 		.compatible = "loongson,ls7a-gpio",
- 		.data = &loongson_gpio_ls7a_data,
- 	},
-+	{
-+		.compatible = "loongson,ls2k1000-gpio",
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, loongson_gpio_of_match);
-@@ -215,6 +272,9 @@ static const struct acpi_device_id loongson_gpio_acpi_match[] = {
- 		.id = "LOON0002",
- 		.driver_data = (kernel_ulong_t)&loongson_gpio_ls7a_data,
- 	},
-+	{
-+		.id = "LOON0007",
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(acpi, loongson_gpio_acpi_match);
+ /* Global RX Threshold Configuration Register for DWC_usb31 only */
+ #define DWC31_GRXTHRCFG_MAXRXBURSTSIZE(n)	(((n) & 0x1f) << 16)
+ #define DWC31_GRXTHRCFG_RXPKTCNT(n)		(((n) & 0x1f) << 21)
 -- 
-2.20.1
+2.34.1
 
