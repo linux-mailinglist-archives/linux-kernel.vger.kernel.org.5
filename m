@@ -2,107 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0372E772B19
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B9E772B1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbjHGQg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44850 "EHLO
+        id S231756AbjHGQhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbjHGQgv (ORCPT
+        with ESMTP id S231800AbjHGQhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:36:51 -0400
+        Mon, 7 Aug 2023 12:37:08 -0400
 Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2085.outbound.protection.outlook.com [40.107.93.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168801BDC;
-        Mon,  7 Aug 2023 09:36:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E2F1FD2;
+        Mon,  7 Aug 2023 09:36:52 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jayp3fiAih8Bq6svx8gvMT1X/F5aF/HslpiwEDImkSyl/vX8gPKWzZ6HUgpUoe2sB6UXONhyWGR3z6aXZuuv4dl2cUQ/8FPOKjZDock9dk40bWGAHbDiWS1MBfDZTrIcbGkW8n3vdAbSHkOX7nhXVWYHukimLg/tIS/SX22ufvYxU5kIVnmGMhTgOerdu+2xVETjHOmSv4pJlgwE/Lt0JdA4eDVBYfqN9djNa7Wpl3jZOvVQfrqaxW9xhRjWqnv08TmxQHACCCGEt76fZ2WnQWH49l8iJsTjUxMlXS6xJdKEE7U6vQbcyEslSQlyhhK84WsxKHdcSBCw2p2nWRX0CQ==
+ b=lAPUv2PHMAgqF9tSxOet4tPR2qGlzZSCVoYXUR0rIMuyg3InUH6BxZg42ZqK2H4hLG+/XcScMF5LQj2B0LeyWCuQO2isRDnwX/SdnZCK4r8Pny9MWePtJtwBUaPgZQkNbmsQTP9ppl7pZDzZRAWesD06IW+GB+39eICnksyGkc/iZUySoEeD12Ko5S2HDB8uTaDG2siECnZNGyGlbQ2bi2yOWp/u839FDEmSJbdEgA+/svdCe9vwDmGZdhc3aYOn4MGzFjXQioJzZklbcjE9iKLNgYkp9UuEwGXFa48JvTtB27N/E9gNf8X1kC+w863UKM2F3ILMk4xoeq0ATL5KzQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y3cIzk9HM4lnkLLBMruHzfSO/FP+GzN9JroxpYrJVEU=;
- b=ciJFlPiAXevyeFsqreqpB4DOBkv0lhnW7id24YdLxQSG96preBxXp4We4As18gbQ1A6HdUXZ2K40+xBWs8XeTeAjBXU86shvF0hBnBXHHFN3LgO4bB526Vq5g/Ls1R9N4n24YOTbOgCZScnAuIBh5yFOjrY/mv9tHKqD1dPOlVd+ZIo8n0b0ffx6uN4nvbzzVIgyPsh1zOG8YokMSVdPD4524TAx7oj5SAfDoWJOse0Ol/wFOM5Aowa8zqODPQjw2a9aWQ9nD0ZVdLGIVfHvoxNVhpnNbF6Slr/Soz2B7ml7IfVVJPXNaVxAvSgUJ0Yz0fkgNyT0eJotSToDDp15ZQ==
+ bh=yncJlmf0iV+XzHh/TEFnFWL8+qNScScuQKlA7PUqiSI=;
+ b=X/iG9NMyI6evm8xCnTJpfHedr5M/u6Y0y6xvnC8Uhr03OSMPNXqxnb/rsHqmFxL4lF6oAawSYCu/I1UDqhYfED9GDKwM8Y9BVRPg1eq/zKVMppb7gH41bzCyZNjuMs1MfUrTEgMGWqTT5APKqshbsQbIl29DZV1dIMneQjG3eT7dfaWT+vR2WoF9Vz7i2fEeGxbdIBoLnxrVTaGnYLG785cq+ryqJzPyC2Vb1Cs5g3mWuTlPNj8hBLPRknM/CRc29GNEJyc3ycMuQhgw2PcXnlsFnDN+Wltq4MoOXTHoD+7zdquYAVRD8wUA2whGybAN2eCQHj3FgtH/C1V+X9cbfw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y3cIzk9HM4lnkLLBMruHzfSO/FP+GzN9JroxpYrJVEU=;
- b=kkZPLegeDjx+oPM5QUakldjaBELEdw4vKJjceVTwo96bzQ15jqMk5jyDijHG9GHME68CcRaRrc3vQ1L1sOUBHVhNEh0OyX8EMv2RAm7mW6A7vOaQUJ2DNoi4oWwSYInLxUo0hTGViJEJHsdg7emJGU9Km4FVPdngnPFDhkowRtc6zunzNGEiC26k0ms48V/w9Hy5v7E5BP3VeHmBOwZdq8r0tAIzdP6X0UshcDlA8Fh5B6Ej81U4CApYddk9TEnCbDQ5Z597mpmNXFvfBdLFXJh3cGNfFoWIAHzPJRvMV8LAvTTb9SUgDKJUgU5CrKc+yN/d9KX6EdFoa7QPkzyg+A==
+ bh=yncJlmf0iV+XzHh/TEFnFWL8+qNScScuQKlA7PUqiSI=;
+ b=YwXZ/QdKjAEX5CfU8ROnFReseIpsqQlybLL/bieFvApRH5QXRt288oMQk0kfgpebkbzVGeKFZAIFJaY8YeJpgSERxnIGZG1db5v1pEfdA7hLvBYtPGKqaewqnJVdBUwk3Xz/b63osVFE3IR85k/QSOXJwub2soqANV166z37Iu6BP3W0EqNVOEmQImk5zMfnY0VKkdr6UpKbUeIatkVn0mZ1JNfsdHkzHPzurHuoNvoSd9Djah1vHmjaJFwXkvOUa6OBDS3ScVTyExnuqWWMqJQZ/z82Nho4CgFcVR5Fkya14hTkGtUHtoJb1aGg5OK+KUCeGjGvMULmzTWJbjTzcQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
  by CY8PR12MB8194.namprd12.prod.outlook.com (2603:10b6:930:76::5) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Mon, 7 Aug
- 2023 16:36:25 +0000
+ 2023 16:36:27 +0000
 Received: from BYAPR12MB2743.namprd12.prod.outlook.com
  ([fe80::bd1:3314:4416:227f]) by BYAPR12MB2743.namprd12.prod.outlook.com
  ([fe80::bd1:3314:4416:227f%4]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
- 16:36:29 +0000
+ 16:36:30 +0000
 From:   Rahul Rameshbabu <rrameshbabu@nvidia.com>
 To:     Jiri Kosina <jikos@kernel.org>,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>
 Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
         Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Subject: [PATCH 1/3] HID: nvidia-shield: Remove led_classdev_unregister in thunderstrike_create
-Date:   Mon,  7 Aug 2023 09:36:18 -0700
-Message-Id: <20230807163620.16855-1-rrameshbabu@nvidia.com>
+Subject: [PATCH 2/3] HID: nvidia-shield: Add battery support for Thunderstrike
+Date:   Mon,  7 Aug 2023 09:36:19 -0700
+Message-Id: <20230807163620.16855-2-rrameshbabu@nvidia.com>
 X-Mailer: git-send-email 2.40.1
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR05CA0013.namprd05.prod.outlook.com
- (2603:10b6:a03:c0::26) To BYAPR12MB2743.namprd12.prod.outlook.com
+In-Reply-To: <20230807163620.16855-1-rrameshbabu@nvidia.com>
+References: <20230807163620.16855-1-rrameshbabu@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SJ0PR05CA0101.namprd05.prod.outlook.com
+ (2603:10b6:a03:334::16) To BYAPR12MB2743.namprd12.prod.outlook.com
  (2603:10b6:a03:61::28)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|CY8PR12MB8194:EE_
-X-MS-Office365-Filtering-Correlation-Id: 896cc682-63eb-4eae-f3f6-08db97647327
+X-MS-Office365-Filtering-Correlation-Id: 810861ae-1ba2-4312-9831-08db976473f2
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nnAaaAXUdJ+m9//xMfKTU4qBYkntaz7HCS9L2NsUpI/qYeWUrJBGF4iGvt/lu/MXYj8MYTuT7XLHLSMngZ5dcjkzgy8I/AocfbTo/SsBOKjdSi0TpzEp5NueCL2ukTCk0N2KG4VSHV9mN9OQE6oa4FLC0dNIes98VqiG+3x4Fumh2i9qLitqgPyhF1Zdbou+Eu52XlN/s7ZI7WPTPoSpZHBNDs7uej9s3B1wlnePLKH5+68Zt0/SnQVjbk6gZmo06W7PNq50zTXiOF9aRV2CmukVFEaEN+3VpHMcdWABH95lakb16gOfHMJAn0JAc3lyoef3kAvrFxwF5tbTTPo9YLktei7W1382zPW7tkVwiH9ocEW7Lqi/J/ddu//IIOxwtZMpNkYPdTbhxjGH5zY/kzzkAay8IydfDhLldPdKi7fd97nX/5heaHYBmdMrogyt1m1doL4DBFzfeKI1hcmJEb38EXHuUDDDRhrXQnqJEiEZhTmI6YTTQt2CVQVfnzfP/4HiH890+IIJxA4jjIclS79JLfwpzqgVWUKDm0gG4zczkn2rBOrr4Z9nSX+SrbKb
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39860400002)(346002)(376002)(136003)(396003)(186006)(1800799003)(451199021)(4326008)(316002)(66476007)(66556008)(66946007)(38100700002)(36756003)(6666004)(6512007)(45080400002)(6486002)(107886003)(2616005)(83380400001)(1076003)(26005)(6506007)(2906002)(86362001)(478600001)(110136005)(8676002)(8936002)(41300700001)(5660300002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: hbfiep7+wIsaxxBC3AgTQ4WyQBFnzj0CZFPGBeYfg0MH6QTI6zL5x9qceIpuvae91DaXC65fm7Bote3J0wfCQd0zVCinN96Z0nsy4UZPDiMkpvMM1CNbMDm5bscBf5U6wl29Km8BMYjvmW8/KooLGv5230tmf9TggyQFODWV98KiVhPV8YdaeEsZLK3vV42j4lhKZmvmWZdpHwO9gXWgLh2bnCkAkCE97AATeeg9JhyphvtOBvmE5oLOjQBRAfuaz/XZ/D9yb6nigwrwSjsoJMM9i5xViYLO0FxQFztwjm0v+7ksIrxMb3NF5lINaen8QsJ5fFUA+ahFOq4mk4PznPWKOk4W76eeiNBgjPD9lT1pXuqTJgx6bBhYjHBRZYnsONr3W7LCpc3UqkY1tyMHbVzspwjgQriT9DhcTwBAYyvU6N/+oJAEeT9hHXgnxdi2aXjWab6ZY4y/68EOaSnAx+JwFivwuIsP9JsvwZFOGeyyga5Xzr114OCpucYVJleldwUCLDJF7zlfNuzDz3gQgYDse7JmyyBqmXmMMsc0JAn9zJ3dp+CQBlmi720bS2G9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39860400002)(346002)(376002)(136003)(396003)(186006)(1800799003)(451199021)(4326008)(316002)(66476007)(66556008)(66946007)(38100700002)(36756003)(6666004)(6512007)(6486002)(107886003)(2616005)(83380400001)(66574015)(1076003)(26005)(6506007)(30864003)(2906002)(86362001)(478600001)(110136005)(8676002)(8936002)(41300700001)(5660300002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9w4+PMspmBjdQEyvGSm0t61XfoVc5EOKENvQZj7WNXVoJl7+Pjny/fgnvCHz?=
- =?us-ascii?Q?nciSUYMcBsTeKcIjpwyVAV+WNT4NNoLDKF7wZynhsXn3O8RPHyIu4yeqFTcI?=
- =?us-ascii?Q?J8bNpcjWr2LCwuxYcDNvhuCvyeOC2qqz9oxEWe2OyPfKkUpKF8L7AfYNe9fZ?=
- =?us-ascii?Q?wfKlmUDUK7nngAe5hPFaCf3KoXKvq0EUEQU45jRJPobkepfWDHlC/nyCfzPN?=
- =?us-ascii?Q?GIIZQH0U2olbIgzhklTAw3v/i0tCgeM/VPKRDOASNSu6y2rykw5+aNxksvyh?=
- =?us-ascii?Q?H0VJio0EeBDBuhoUBSRXOxx0qfl3wvDWFDNFW36yZ+iFEmPYULK+O5j7T7wU?=
- =?us-ascii?Q?iTbjZvEvt+zNxHmvg1tzIf63B17tnmwIUNlekIr4vErleJ85m0t7/qb+f0FX?=
- =?us-ascii?Q?TkdPXO4u46uuFgLA6RDnnsGpvUUA4QKt+eIxqy54We7SnDmKp6vz0AY8chAl?=
- =?us-ascii?Q?Cjq6+MtZvcfHwDpYN2VABU6DuV/FgUCc7vpbauc8rMM3TKV/YD6MGOVJcmYj?=
- =?us-ascii?Q?opE6Vi71zlMStjY6Qks607YPxJcS0Ad0Pwna7p5TLUxtZDrKCA5T/Yx0WlDP?=
- =?us-ascii?Q?YKLu7psnx9LtWE0pUgr1U8WCJFjwfcRpIGRealBqQpf2JCURa+jEkrS3SDEv?=
- =?us-ascii?Q?1V5hF5MXLDTEnT1eHO/e1GW1SvetN0LZ9AbIK5taPXpJ7nNEHB0aQ1i/8VmP?=
- =?us-ascii?Q?yT5OJMxN4JgXo4DPT+Z5pCNCJKH321YKOCzb0+YsHWnLkDoHJve+s/0dcGvG?=
- =?us-ascii?Q?zYPu7WBdt4xpsqzQLXTOdWjBB/6N7x7AtpIgKzfPRu5FcDq1rTeqV0MAt7vp?=
- =?us-ascii?Q?Je8ELRM6/vyWR0IWukK03yimADVYUtPrIkIc+bkJclQJkfN9lnbIzHh6BJoe?=
- =?us-ascii?Q?bl9NVYgcTKkE07rk+G/lOXbs+aRtAudBcWCfqUFx0szYXZ/Fjb2ZSxpK+fQM?=
- =?us-ascii?Q?qpcsfr+3Y51g6a7k9Zc/x33IFHx8Nk2afsj4vxGWoljkGFTj+mQL2muTyZmm?=
- =?us-ascii?Q?tz/1TfzZnQt+F36MjtZqVGmqBhoeqTvgPahJ1qVtx9350aRGky2fiImS9Qnz?=
- =?us-ascii?Q?4BMd4qr9zbr8KwugP4HZiCnBeEYiqSeSZczbHMXzTQwodHTv473LkAfaFBWg?=
- =?us-ascii?Q?OdF1tjmbKpQOMpJSyaquuy1ShPX2kqBUqmDY+frmKTtGF4DcKGNPm11prCW2?=
- =?us-ascii?Q?rPptHGbkMJwftE7Zf2odMw+4sqrfDP8sMqsJ/LzjCxcYSgbnkDgZekOojMPj?=
- =?us-ascii?Q?zpKj7toZGyliMJwW2c4cAa8WNaQ52ALT8ZSWs15Tlhod8TLjNHju12rEHaYq?=
- =?us-ascii?Q?eDY295/VCFUeSkMNdrdWCcQtq88zrwBWW9oeaZzUzYXmEZDE7FI2HikjFxhz?=
- =?us-ascii?Q?5XnVeBAYoFglK8y5Cfx13/NVh9p9G8UaGsafEafT0P0qCGkoBPXJOQ2YynG1?=
- =?us-ascii?Q?fxIDulTW/76pQFpO1TXvDjFSD32ujOBfsCaJ+7MRKHf4tFzOFFDe2UtvwIb7?=
- =?us-ascii?Q?rKqRXg0cxnavbPaUdQamr3rygP8zxomWylNBaSnW4Y1sqXuk2mM6Vx5Z2uM6?=
- =?us-ascii?Q?2bpDu1lroZZ7xku+FdjwkNQ/DLiCY8PDv+0QqEvVRWsYT8b3pXZ35ZdHgp5H?=
- =?us-ascii?Q?kw=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VXpDeFBqSCtiNStIeEkvL3JCbEg5QWNsRWpud1hNZjIwQ1Nqbi9XVEhwZ1RY?=
+ =?utf-8?B?ZkVXQ0pzNStYR3FiaURQNlphQlhSQ2ZzbDhHaGd5N1Y3cll1bXRQKzFVYmtr?=
+ =?utf-8?B?dHhqRWU3M0tYRUpXZGkySDZBTkdOTFlib2szU25HbDR1N0tCSU5ycVJabHRt?=
+ =?utf-8?B?bXFuUzJJUXU3dzBUNGRqNzZHREZlTnp3VG1xclVlRC93UEdOZUlyejBvL1Fo?=
+ =?utf-8?B?dmRkcEJzQWtTQXMzRkozejRJSFFQNnFxMXRrT1dOWFVsamd0eWhFY0JPVzVk?=
+ =?utf-8?B?VkdWUDVkeFRQNDB3aitqVUQrUm9FOFB1MmlnRDhYMm5YSy8wK1hqV1dpQTM0?=
+ =?utf-8?B?WlhxYy9sYUZFYVFMNmMzdUFtaWxOUDFIY09FSGhWRDZvcHdhQmNDTmY2NUlU?=
+ =?utf-8?B?enU5dGoyYlNQbmd5UHpoZC9uNkFKaWsyWmVsWHovOXVaSmI5U25zaWVVa3Ba?=
+ =?utf-8?B?RlFYYjFVL3RoSXlDTElEQ0lPUUF2cE1UL2dDNUpqNnQ0dlF2NEFlSklKR01r?=
+ =?utf-8?B?aFZ2cndaeUJSdVQ2dFZCdzBOeGZ1Wm1mN1VnRW9FOHlOMWRmQi9xNkpWZXhZ?=
+ =?utf-8?B?bXR6dVQrb3AvRTl1QlJMd0tVM1U4ZnZwZHBXZ2dLOEcyQ3RSVDUyeHMvOUJX?=
+ =?utf-8?B?bytaN3dRcEsrVS85WlUwZlJtZ1lCSjRwZndwZld5OVZHMTNySlNmQVBZZU5z?=
+ =?utf-8?B?V2ZVRTFrQ1htUnV5MUhMNGRmaEQ2b1lDNUdsUndJcW1mTjRyVE1JZzJXTkFC?=
+ =?utf-8?B?VUVRdjV2SUV1a1JCSDRUZkZKamp4RGt4QmVRb3FLekowaUpqa3pERXJvOVVM?=
+ =?utf-8?B?U2VKcVIrL1RseUE2MkRWL0g1UGdhR1c5ZUg5TFdzTVRSYjVkQTRoak9ISzBt?=
+ =?utf-8?B?b1dPcXB1OUVjekpDM2o2ZWNuVXg1NThMV05HZjVwWnlmYTdsWlQ2S3RXWVNK?=
+ =?utf-8?B?dFZ1bmVzbTJ5KzRQYmVpT2d6SEVtYm45ZG1LY1pPTUxEeE5rbnBSMHlIT0dE?=
+ =?utf-8?B?b0pTNlIrRllIei9GbS8vN29idmdsL2Q3KzYyZTJTa0Y5YVZ6Z1JFQUIxWDRF?=
+ =?utf-8?B?WFh3UHYrR3FVOWJQMU50b1JzTzFpdDloVEtCSFBMMThOanhDaTYvbEVMWGk4?=
+ =?utf-8?B?Wlk0L1RnNm5GOUk5UnZueWVDYURSWlh0aUZDb0dwVmpCQUlDMzFuaEJKKzIr?=
+ =?utf-8?B?Y24wSUxkS2lHTkY3N3JRRlBoVUsyUEVZQ3B0VkRxOWd6UlhGRHVubUg1MC84?=
+ =?utf-8?B?QnNpWXFSN3pHSWFZS1N4aGJxUVVFMkJpc1U5MFR6L2o4REEyYzByVnRyWUZ1?=
+ =?utf-8?B?NU1ZTURhVDJIZkFsUmZBS3lxSHpzUFVra0JSN1FDQlQ0bmxMR3ZvWlcrSlVk?=
+ =?utf-8?B?eFRkSm1ncWplbWRzMk1ST0FZbWU3YlQvMmNacXAvK05WcUczNXVXWlR4azVr?=
+ =?utf-8?B?c0NjUEZnMng4YkRVdnZDTHdBR3R3QVNZYU1hK2o5OUxaZzd5U2IrdDJ1YnZZ?=
+ =?utf-8?B?L2g0TlZEbnBHQ0RLdDNMWnFsKzNWdzRINUJ5MkRQN0xBK2g3dmFlREZvMGQz?=
+ =?utf-8?B?bDZuY1VOZDkycTJIV0RSQktqakJTd2o1RnA1bUVPa0JBemJUcHI5aWRZYnZH?=
+ =?utf-8?B?QnRTNVVwNisrQnYvZ3Fkb1pWa2pYc0J5RW90cU9DT3lYanpaTGFrdzVpY3Zz?=
+ =?utf-8?B?MnB2UFJCNHdwUnl2WCtOVWJCS1ZrSHJmanJDbzVhUWFUcXBCVXZTUERQQmVX?=
+ =?utf-8?B?TWJQcm9CYlNvdlNJMm8wMGw2M2FnUDU5YnhBTk9jUis2TE04Smc1eTlCbE0v?=
+ =?utf-8?B?WTJFTGhKeVFuSEhlZlIvZHZFcWhRNnNYWnRDbzdlUnRMUTVKQWMwNTdONTRo?=
+ =?utf-8?B?Wmc3Qzc4TnkxSElUV3hXamhyeHlRL3B2YlBaN1pDOTBKejE4YVBQbzh1eU5l?=
+ =?utf-8?B?cU1RSk4zMkVydmVFc0RjUlV0bUFlN0VZcG1XZ0t5b3ZqWkFjSDRBcU1MaFBp?=
+ =?utf-8?B?emVaeUxyWTZWUWw4MDRTYlFwclorV2xNTFpoQ2FEZkoxTEdUYUpoUlRzMTA1?=
+ =?utf-8?B?MXVDMndFRFZURGlSeUl3QVZ1UVowN2dXV2pQS25Sa2Q2YTAzMWF1cFJxV1Bq?=
+ =?utf-8?B?RW5lVTBJUDZCd2F0K1R5QXRaOHI1QmtkTUtaM0g0eGpzT29JRGgyY0Z0MmFR?=
+ =?utf-8?B?NUE9PQ==?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 896cc682-63eb-4eae-f3f6-08db97647327
+X-MS-Exchange-CrossTenant-Network-Message-Id: 810861ae-1ba2-4312-9831-08db976473f2
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 16:36:28.9171
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 16:36:30.2244
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QmZBwpyWBp2sXofi8N7wPOoxsv/U0raNrRhc55qcxqgWfqBLrUY+KkgQJYu53DaT+WpBjNp2foOQrC5thdq+1Q==
+X-MS-Exchange-CrossTenant-UserPrincipalName: GYpaqp7JlNRmO1bVTmNuB5QVLO+JcThyWEBwu9b4PoNygyEutD42mZWBkZdfysoASoISv6M47pnzmuBHtrU/vQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8194
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
@@ -114,186 +125,599 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid calling thunderstrike_led_set_brightness from thunderstrike_create
-when led_classdev_unregister is called. led_classdev_unregister was called
-from thunderstrike_create in the error path. Calling
-thunderstrike_led_set_brightness in this situation is unsafe.
+Use power supply API to expose battery information about connected
+Thunderstrike controllers to the system. Provide information on battery
+capacity, charge status, charger type, voltage, and temperature.
 
-Fixes: f88af60e74a5 ("HID: nvidia-shield: Support LED functionality for Thu=
-nderstrike")
 Signed-off-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
 ---
+ drivers/hid/hid-nvidia-shield.c | 418 ++++++++++++++++++++++++++++++--
+ 1 file changed, 401 insertions(+), 17 deletions(-)
 
-Notes:
-    Discussion:
-=20=20=20=20
-    An alternative approach that could be used here is setting the
-    LED_RETAIN_AT_SHUTDOWN flag. To me, this felt like a less appropriate
-    solution since in other contexts in the driver, calling
-    led_classdev_unregister where it then tries to set the led to the LED_O=
-FF
-    state is safe.
-=20=20=20=20
-    Example backtrace of problem when led_classdev_unregister is called from
-    thunderstrike_create.
-=20=20=20=20
-        [  +0.000061] thermal_sys: Thermal zone name (thunderstrike_0_batte=
-ry) too long, should be under 20 chars
-        [  +0.000096] shield 0005:0955:7214.001B: Failed to register Thunde=
-rstrike battery device
-        [  +0.000001] shield 0005:0955:7214.001B: Failed to create Thunders=
-trike power supply instance
-        [  +0.000024] shield 0005:0955:7214.001B: Failed to create SHIELD d=
-evice
-        [  +0.000003] shield: probe of 0005:0955:7214.001B failed with erro=
-r -22
-        [  +0.121671] BUG: unable to handle page fault for address: 0000000=
-46474e550
-        [  +0.000009] #PF: supervisor read access in kernel mode
-        [  +0.000003] #PF: error_code(0x0000) - not-present page
-        [  +0.000003] PGD 0 P4D 0
-        [  +0.000005] Oops: 0000 [#1] PREEMPT SMP NOPTI
-        [  +0.000004] CPU: 14 PID: 36436 Comm: kworker/14:3 Tainted: P     =
-      O       6.4.7 #1-NixOS
-        [  +0.000005] Hardware name: Dell Inc. Precision 5760/0WP4FK, BIOS =
-1.16.1 11/22/2022
-        [  +0.000002] Workqueue: events thunderstrike_hostcmd_req_work_hand=
-ler [hid_nvidia_shield]
-        [  +0.000017] RIP: 0010:thunderstrike_hostcmd_req_work_handler+0x1b=
-3/0x390 [hid_nvidia_shield]
-        [  +0.000010] Code: 09 00 00 00 41 b8 01 00 00 00 48 c7 45 08 00 00=
- 00 00 48 c7 45 17 00 00 00 00 66 41 89 04 24 48 8b 53 98 48 8b bb 90 fd ff=
- ff <0f> b6 32 e8 b5 5e 99 fa 85 c0 0f 88 9d 01 00 00 0f b7 05 cc 05 02
-        [  +0.000003] RSP: 0018:ffffa43e8f66fe78 EFLAGS: 00010207
-        [  +0.000004] RAX: 0000000000000704 RBX: ffff93edf8498a98 RCX: 0000=
-000000000021
-        [  +0.000003] RDX: 000000046474e550 RSI: 0000000000000206 RDI: 0000=
-0000000002d8
-        [  +0.000003] RBP: ffff93eca5485e6a R08: 0000000000000001 R09: 0000=
-000000000009
-        [  +0.000002] R10: 0000000000000001 R11: 0000000000000000 R12: ffff=
-93eca5485e68
-        [  +0.000002] R13: 0000000000000000 R14: ffff93eca8c34540 R15: ffff=
-93edf8498aa0
-        [  +0.000003] FS:  0000000000000000(0000) GS:ffff93f3ef780000(0000)=
- knlGS:0000000000000000
-        [  +0.000002] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-        [  +0.000003] CR2: 000000046474e550 CR3: 000000027d820003 CR4: 0000=
-000000f70ee0
-        [  +0.000003] PKRU: 55555554
-        [  +0.000001] Call Trace:
-        [  +0.000004]  <TASK>
-        [  +0.000005]  ? __die+0x23/0x70
-        [  +0.000009]  ? page_fault_oops+0x17d/0x4b0
-        [  +0.000005]  ? lock_timer_base+0x61/0x80
-        [  +0.000005]  ? exc_page_fault+0x6d/0x150
-        [  +0.000008]  ? asm_exc_page_fault+0x26/0x30
-        [  +0.000012]  ? thunderstrike_hostcmd_req_work_handler+0x1b3/0x390=
- [hid_nvidia_shield]
-        [  +0.000008]  ? thunderstrike_hostcmd_req_work_handler+0x13b/0x390=
- [hid_nvidia_shield]
-        [  +0.000009]  process_one_work+0x1c5/0x3c0
-        [  +0.000005]  worker_thread+0x51/0x390
-        [  +0.000004]  ? __pfx_worker_thread+0x10/0x10
-        [  +0.000003]  kthread+0xe5/0x120
-        [  +0.000005]  ? __pfx_kthread+0x10/0x10
-        [  +0.000004]  ret_from_fork+0x29/0x50
-        [  +0.000008]  </TASK>
-        [  +0.000002] Modules linked in: hid_nvidia_shield(O) hidp rfcomm s=
-nd_seq_dummy snd_hrtimer snd_seq nf_conntrack_netlink xfrm_user xfrm_algo x=
-t_addrtype ccm cmac algif_hash algif_skcipher af_alg xt_CHECKSUM xt_MASQUER=
-ADE af_packet ipt_REJECT nf_reject_ipv4 nft_chain_nat bnep msr xt_conntrack=
- ip6t_rpfilter ipt_rpfilter xt_pkttype xt_LOG nf_log_syslog xt_tcpudp nft_c=
-ompat nf_tables nfnetlink sch_fq_codel hid_sensor_custom_intel_hinge hid_se=
-nsor_als hid_sensor_trigger industrialio_triggered_buffer kfifo_buf hid_sen=
-sor_iio_common industrialio hid_sensor_custom hid_sensor_hub intel_ishtp_hi=
-d snd_ctl_led snd_soc_sof_sdw hid_multitouch snd_soc_intel_hda_dsp_common s=
-nd_sof_probes snd_soc_intel_sof_maxim_common snd_soc_rt711 snd_soc_rt715 sn=
-d_soc_rt1308_sdw regmap_sdw snd_soc_dmic snd_sof_pci_intel_tgl snd_sof_inte=
-l_hda_common snd_soc_hdac_hda soundwire_intel soundwire_cadence snd_sof_int=
-el_hda_mlink snd_sof_intel_hda snd_sof_pci snd_sof_xtensa_dsp snd_sof snd_s=
-of_utils snd_hda_ext_core snd_soc_acpi_intel_match snd_soc_acpi
-        [  +0.000074]  soundwire_generic_allocation soundwire_bus snd_soc_c=
-ore snd_hda_codec_hdmi snd_compress ac97_bus snd_pcm_dmaengine iwlmvm mac80=
-211 dell_rbtn ptp pps_core libarc4 i2c_designware_platform i2c_designware_c=
-ore cmdlinepart x86_pkg_temp_thermal intel_powerclamp ee1004 spi_nor iTCO_w=
-dt mei_hdcp mei_wdt intel_pmc_bxt mei_pxp watchdog mtd r8153_ecm nls_iso885=
-9_1 snd_hda_intel cdc_ether nls_cp437 coretemp pmt_telemetry snd_intel_dspc=
-fg usbnet vfat intel_rapl_msr dell_laptop snd_intel_sdw_acpi crc32_pclmul p=
-mt_class ledtrig_audio fat polyval_clmulni iwlwifi snd_usb_audio btusb dell=
-_wmi polyval_generic snd_hda_codec btrtl gf128mul uvcvideo ghash_clmulni_in=
-tel hci_uart btbcm processor_thermal_device_pci_legacy snd_usbmidi_lib nvid=
-ia_drm(PO) snd_hda_core btintel videobuf2_vmalloc processor_thermal_device =
-uvc btqca dell_smbios snd_rawmidi intel_lpss_pci ucsi_acpi btmtk processor_=
-thermal_rfim rapl videobuf2_memops videobuf2_v4l2 dell_wmi_sysman typec_ucs=
-i dcdbas snd_hwdep intel_cstate nvidia_uvm(PO) snd_seq_device
-        [  +0.000085]  cfg80211 bluetooth psmouse intel_uncore videodev del=
-l_wmi_ddv firmware_attributes_class dell_wmi_descriptor nvidia_modeset(PO) =
-intel_ish_ipc intel_lpss wmi_bmof processor_thermal_mbox snd_pcm idma64 typ=
-ec r8152 i2c_i801 intel_ishtp tpm_crb videobuf2_common processor_thermal_ra=
-pl mei_me spi_intel_pci tiny_power_button spi_intel intel_rapl_common i2c_s=
-mbus ecdh_generic mc mei snd_timer 8250_pci int3403_thermal mii virt_dma rf=
-kill intel_vsec snd ecc int3400_thermal i2c_hid_acpi intel_hid mousedev evd=
-ev tpm_tis soundcore intel_soc_dts_iosf tpm_tis_core roles battery button i=
-2c_hid crc16 joydev int340x_thermal_zone intel_pmc_core acpi_thermal_rel pi=
-nctrl_tigerlake mac_hid acpi_pad sparse_keymap serio_raw acpi_tad ac nvidia=
-(PO) ctr loop cpufreq_powersave xt_nat nf_nat nf_conntrack nf_defrag_ipv6 n=
-f_defrag_ipv4 br_netfilter veth tun tap macvlan bridge stp llc kvm_intel kv=
-m fuse irqbypass deflate efi_pstore configfs efivarfs dmi_sysfs ip_tables x=
-_tables autofs4 dm_crypt cbc encrypted_keys trusted asn1_encoder tee
-        [  +0.000100]  tpm rng_core hid_generic usbhid hid xhci_pci rtsx_pc=
-i_sdmmc xhci_pci_renesas xhci_hcd mmc_core input_leds led_class nvme thunde=
-rbolt usbcore atkbd libps2 nvme_core vivaldi_fmap sha512_ssse3 sha512_gener=
-ic aesni_intel rtsx_pci libaes t10_pi crypto_simd cryptd crc64_rocksoft crc=
-64 crc_t10dif crct10dif_generic mfd_core usb_common crct10dif_pclmul crct10=
-dif_common i8042 rtc_cmos serio btrfs blake2b_generic xor libcrc32c crc32c_=
-generic crc32c_intel raid6_pq i915 i2c_algo_bit drm_buddy cec intel_gtt vid=
-eo wmi drm_display_helper drm_kms_helper syscopyarea sysfillrect sysimgblt =
-ttm agpgart drm i2c_core backlight dm_snapshot dm_bufio dm_mod dax [last un=
-loaded: hid_nvidia_shield(O)]
-        [  +0.000075] CR2: 000000046474e550
-        [  +0.000004] ---[ end trace 0000000000000000 ]---
-
- drivers/hid/hid-nvidia-shield.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/hid/hid-nvidia-shield.c b/drivers/hid/hid-nvidia-shiel=
-d.c
-index a928ad2be62d..4e183650c447 100644
+diff --git a/drivers/hid/hid-nvidia-shield.c b/drivers/hid/hid-nvidia-shield.c
+index 4e183650c447..1612de3ef4c5 100644
 --- a/drivers/hid/hid-nvidia-shield.c
 +++ b/drivers/hid/hid-nvidia-shield.c
-@@ -513,21 +513,22 @@ static struct shield_device *thunderstrike_create(str=
-uct hid_device *hdev)
-=20
- 	hid_set_drvdata(hdev, shield_dev);
-=20
-+	ts->haptics_dev =3D shield_haptics_create(shield_dev, thunderstrike_play_=
-effect);
-+	if (IS_ERR(ts->haptics_dev))
-+		return ERR_CAST(ts->haptics_dev);
+@@ -6,11 +6,15 @@
+  */
+ 
+ #include <linux/hid.h>
++#include <linux/idr.h>
+ #include <linux/input-event-codes.h>
+ #include <linux/input.h>
++#include <linux/jiffies.h>
+ #include <linux/leds.h>
+ #include <linux/module.h>
++#include <linux/power_supply.h>
+ #include <linux/spinlock.h>
++#include <linux/timer.h>
+ #include <linux/workqueue.h>
+ 
+ #include "hid-ids.h"
+@@ -30,6 +34,8 @@ enum {
+ enum {
+ 	SHIELD_FW_VERSION_INITIALIZED = 0,
+ 	SHIELD_BOARD_INFO_INITIALIZED,
++	SHIELD_BATTERY_STATS_INITIALIZED,
++	SHIELD_CHARGER_STATE_INITIALIZED,
+ };
+ 
+ enum {
+@@ -37,6 +43,7 @@ enum {
+ 	THUNDERSTRIKE_BOARD_INFO_UPDATE,
+ 	THUNDERSTRIKE_HAPTICS_UPDATE,
+ 	THUNDERSTRIKE_LED_UPDATE,
++	THUNDERSTRIKE_POWER_SUPPLY_STATS_UPDATE,
+ };
+ 
+ enum {
+@@ -48,10 +55,46 @@ enum {
+ enum {
+ 	THUNDERSTRIKE_HOSTCMD_ID_FW_VERSION = 1,
+ 	THUNDERSTRIKE_HOSTCMD_ID_LED = 6,
++	THUNDERSTRIKE_HOSTCMD_ID_BATTERY,
+ 	THUNDERSTRIKE_HOSTCMD_ID_BOARD_INFO = 16,
+ 	THUNDERSTRIKE_HOSTCMD_ID_USB_INIT = 53,
+ 	THUNDERSTRIKE_HOSTCMD_ID_HAPTICS = 57,
+-	THUNDERSTRIKE_HOSTCMD_ID_BLUETOOTH_INIT = 58,
++	THUNDERSTRIKE_HOSTCMD_ID_CHARGER,
++};
 +
- 	ret =3D thunderstrike_led_create(ts);
++struct power_supply_dev {
++	struct power_supply *psy;
++	struct power_supply_desc desc;
++};
++
++struct thunderstrike_psy_prop_values {
++	int voltage_min;
++	int voltage_now;
++	int voltage_avg;
++	int voltage_boot;
++	int capacity;
++	int status;
++	int charge_type;
++	int temp;
++};
++
++static const enum power_supply_property thunderstrike_battery_props[] = {
++	POWER_SUPPLY_PROP_STATUS,
++	POWER_SUPPLY_PROP_CHARGE_TYPE,
++	POWER_SUPPLY_PROP_PRESENT,
++	POWER_SUPPLY_PROP_VOLTAGE_MIN,
++	POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN,
++	POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN,
++	POWER_SUPPLY_PROP_VOLTAGE_NOW,
++	POWER_SUPPLY_PROP_VOLTAGE_AVG,
++	POWER_SUPPLY_PROP_VOLTAGE_BOOT,
++	POWER_SUPPLY_PROP_CAPACITY,
++	POWER_SUPPLY_PROP_SCOPE,
++	POWER_SUPPLY_PROP_TEMP,
++	POWER_SUPPLY_PROP_TEMP_MIN,
++	POWER_SUPPLY_PROP_TEMP_MAX,
++	POWER_SUPPLY_PROP_TEMP_ALERT_MIN,
++	POWER_SUPPLY_PROP_TEMP_ALERT_MAX,
+ };
+ 
+ enum thunderstrike_led_state {
+@@ -60,6 +103,38 @@ enum thunderstrike_led_state {
+ } __packed;
+ static_assert(sizeof(enum thunderstrike_led_state) == 1);
+ 
++struct thunderstrike_hostcmd_battery {
++	__le16 voltage_avg;
++	u8 reserved_at_10;
++	__le16 thermistor;
++	__le16 voltage_min;
++	__le16 voltage_boot;
++	__le16 voltage_now;
++	u8 capacity;
++} __packed;
++
++enum thunderstrike_charger_type {
++	THUNDERSTRIKE_CHARGER_TYPE_NONE = 0,
++	THUNDERSTRIKE_CHARGER_TYPE_TRICKLE,
++	THUNDERSTRIKE_CHARGER_TYPE_NORMAL,
++} __packed;
++static_assert(sizeof(enum thunderstrike_charger_type) == 1);
++
++enum thunderstrike_charger_state {
++	THUNDERSTRIKE_CHARGER_STATE_UNKNOWN = 0,
++	THUNDERSTRIKE_CHARGER_STATE_DISABLED,
++	THUNDERSTRIKE_CHARGER_STATE_CHARGING,
++	THUNDERSTRIKE_CHARGER_STATE_FULL,
++	THUNDERSTRIKE_CHARGER_STATE_FAILED = 8,
++} __packed;
++static_assert(sizeof(enum thunderstrike_charger_state) == 1);
++
++struct thunderstrike_hostcmd_charger {
++	u8 connected;
++	enum thunderstrike_charger_type type;
++	enum thunderstrike_charger_state state;
++} __packed;
++
+ struct thunderstrike_hostcmd_board_info {
+ 	__le16 revision;
+ 	__le16 serial[7];
+@@ -80,6 +155,8 @@ struct thunderstrike_hostcmd_resp_report {
+ 		struct thunderstrike_hostcmd_haptics motors;
+ 		__le16 fw_version;
+ 		enum thunderstrike_led_state led_state;
++		struct thunderstrike_hostcmd_battery battery;
++		struct thunderstrike_hostcmd_charger charger;
+ 		u8 payload[30];
+ 	} __packed;
+ } __packed;
+@@ -109,6 +186,7 @@ static_assert(sizeof(struct thunderstrike_hostcmd_req_report) ==
+ /* Common struct for shield accessories. */
+ struct shield_device {
+ 	struct hid_device *hdev;
++	struct power_supply_dev battery_dev;
+ 
+ 	unsigned long initialized_flags;
+ 	const char *codename;
+@@ -119,9 +197,17 @@ struct shield_device {
+ 	} board_info;
+ };
+ 
++/*
++ * Non-trivial to uniquely identify Thunderstrike controllers at initialization
++ * time. Use an ID allocator to help with this.
++ */
++static DEFINE_IDA(thunderstrike_ida);
++
+ struct thunderstrike {
+ 	struct shield_device base;
+ 
++	int id;
++
+ 	/* Sub-devices */
+ 	struct input_dev *haptics_dev;
+ 	struct led_classdev led_dev;
+@@ -133,6 +219,9 @@ struct thunderstrike {
+ 	spinlock_t haptics_update_lock;
+ 	u8 led_state : 1;
+ 	enum thunderstrike_led_state led_value;
++	struct thunderstrike_psy_prop_values psy_stats;
++	spinlock_t psy_stats_lock;
++	struct timer_list psy_stats_timer;
+ 	struct work_struct hostcmd_req_work;
+ };
+ 
+@@ -247,6 +336,16 @@ static void thunderstrike_hostcmd_req_work_handler(struct work_struct *work)
+ 		thunderstrike_send_hostcmd_request(ts);
+ 	}
+ 
++	if (test_and_clear_bit(THUNDERSTRIKE_POWER_SUPPLY_STATS_UPDATE, &ts->update_flags)) {
++		thunderstrike_hostcmd_req_report_init(
++			report, THUNDERSTRIKE_HOSTCMD_ID_BATTERY);
++		thunderstrike_send_hostcmd_request(ts);
++
++		thunderstrike_hostcmd_req_report_init(
++			report, THUNDERSTRIKE_HOSTCMD_ID_CHARGER);
++		thunderstrike_send_hostcmd_request(ts);
++	}
++
+ 	if (test_and_clear_bit(THUNDERSTRIKE_BOARD_INFO_UPDATE, &ts->update_flags)) {
+ 		thunderstrike_hostcmd_req_report_init(
+ 			report, THUNDERSTRIKE_HOSTCMD_ID_BOARD_INFO);
+@@ -352,6 +451,93 @@ static void thunderstrike_led_set_brightness(struct led_classdev *led,
+ 	schedule_work(&ts->hostcmd_req_work);
+ }
+ 
++static int thunderstrike_battery_get_property(struct power_supply *psy,
++					      enum power_supply_property psp,
++					      union power_supply_propval *val)
++{
++	struct shield_device *shield_dev = power_supply_get_drvdata(psy);
++	struct thunderstrike_psy_prop_values prop_values;
++	struct thunderstrike *ts;
++	int ret = 0;
++
++	ts = container_of(shield_dev, struct thunderstrike, base);
++	spin_lock(&ts->psy_stats_lock);
++	prop_values = ts->psy_stats;
++	spin_unlock(&ts->psy_stats_lock);
++
++	switch (psp) {
++	case POWER_SUPPLY_PROP_STATUS:
++		val->intval = prop_values.status;
++		break;
++	case POWER_SUPPLY_PROP_CHARGE_TYPE:
++		val->intval = prop_values.charge_type;
++		break;
++	case POWER_SUPPLY_PROP_PRESENT:
++		val->intval = 1;
++		break;
++	case POWER_SUPPLY_PROP_VOLTAGE_MIN:
++		val->intval = prop_values.voltage_min;
++		break;
++	case POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN:
++		val->intval = 2900000; /* 2.9 V */
++		break;
++	case POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN:
++		val->intval = 2200000; /* 2.2 V */
++		break;
++	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
++		val->intval = prop_values.voltage_now;
++		break;
++	case POWER_SUPPLY_PROP_VOLTAGE_AVG:
++		val->intval = prop_values.voltage_avg;
++		break;
++	case POWER_SUPPLY_PROP_VOLTAGE_BOOT:
++		val->intval = prop_values.voltage_boot;
++		break;
++	case POWER_SUPPLY_PROP_CAPACITY:
++		val->intval = prop_values.capacity;
++		break;
++	case POWER_SUPPLY_PROP_SCOPE:
++		val->intval = POWER_SUPPLY_SCOPE_DEVICE;
++		break;
++	case POWER_SUPPLY_PROP_TEMP:
++		val->intval = prop_values.temp;
++		break;
++	case POWER_SUPPLY_PROP_TEMP_MIN:
++		val->intval = 0; /* 0 C */
++		break;
++	case POWER_SUPPLY_PROP_TEMP_MAX:
++		val->intval = 400; /* 40 C */
++		break;
++	case POWER_SUPPLY_PROP_TEMP_ALERT_MIN:
++		val->intval = 15; /* 1.5 C */
++		break;
++	case POWER_SUPPLY_PROP_TEMP_ALERT_MAX:
++		val->intval = 380; /* 38 C */
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
++static inline void thunderstrike_request_psy_stats(struct thunderstrike *ts)
++{
++	set_bit(THUNDERSTRIKE_POWER_SUPPLY_STATS_UPDATE, &ts->update_flags);
++	schedule_work(&ts->hostcmd_req_work);
++}
++
++static void thunderstrike_psy_stats_timer_handler(struct timer_list *timer)
++{
++	struct thunderstrike *ts =
++		container_of(timer, struct thunderstrike, psy_stats_timer);
++
++	thunderstrike_request_psy_stats(ts);
++	/* Query battery statistics from device every five minutes */
++	mod_timer(timer, jiffies + 300 * HZ);
++}
++
+ static void
+ thunderstrike_parse_fw_version_payload(struct shield_device *shield_dev,
+ 				       __le16 fw_version)
+@@ -416,13 +602,138 @@ thunderstrike_parse_led_payload(struct shield_device *shield_dev,
+ 	hid_dbg(shield_dev->hdev, "Thunderstrike led HOSTCMD response, 0x%02X\n", led_state);
+ }
+ 
++static void thunderstrike_parse_battery_payload(
++	struct shield_device *shield_dev,
++	struct thunderstrike_hostcmd_battery *battery)
++{
++	struct thunderstrike *ts = container_of(shield_dev, struct thunderstrike, base);
++	u16 hostcmd_voltage_boot = le16_to_cpu(battery->voltage_boot);
++	u16 hostcmd_voltage_avg = le16_to_cpu(battery->voltage_avg);
++	u16 hostcmd_voltage_min = le16_to_cpu(battery->voltage_min);
++	u16 hostcmd_voltage_now = le16_to_cpu(battery->voltage_now);
++	u16 hostcmd_thermistor = le16_to_cpu(battery->thermistor);
++	int voltage_boot, voltage_avg, voltage_min, voltage_now;
++	struct hid_device *hdev = shield_dev->hdev;
++	u8 capacity = battery->capacity;
++	int temp;
++
++	/* Convert thunderstrike device values to µV and tenths of degree Celsius */
++	voltage_boot = hostcmd_voltage_boot * 1000;
++	voltage_avg = hostcmd_voltage_avg * 1000;
++	voltage_min = hostcmd_voltage_min * 1000;
++	voltage_now = hostcmd_voltage_now * 1000;
++	temp = (1378 - (int)hostcmd_thermistor) * 10 / 19;
++
++	/* Copy converted values */
++	spin_lock(&ts->psy_stats_lock);
++	ts->psy_stats.voltage_boot = voltage_boot;
++	ts->psy_stats.voltage_avg = voltage_avg;
++	ts->psy_stats.voltage_min = voltage_min;
++	ts->psy_stats.voltage_now = voltage_now;
++	ts->psy_stats.capacity = capacity;
++	ts->psy_stats.temp = temp;
++	spin_unlock(&ts->psy_stats_lock);
++
++	set_bit(SHIELD_BATTERY_STATS_INITIALIZED, &shield_dev->initialized_flags);
++
++	hid_dbg(hdev,
++		"Thunderstrike battery HOSTCMD response, voltage_avg: %u voltage_now: %u\n",
++		hostcmd_voltage_avg, hostcmd_voltage_now);
++	hid_dbg(hdev,
++		"Thunderstrike battery HOSTCMD response, voltage_boot: %u voltage_min: %u\n",
++		hostcmd_voltage_boot, hostcmd_voltage_min);
++	hid_dbg(hdev,
++		"Thunderstrike battery HOSTCMD response, thermistor: %u\n",
++		hostcmd_thermistor);
++	hid_dbg(hdev,
++		"Thunderstrike battery HOSTCMD response, capacity: %u%%\n",
++		capacity);
++}
++
++static void thunderstrike_parse_charger_payload(
++	struct shield_device *shield_dev,
++	struct thunderstrike_hostcmd_charger *charger)
++{
++	struct thunderstrike *ts = container_of(shield_dev, struct thunderstrike, base);
++	int charge_type = POWER_SUPPLY_CHARGE_TYPE_UNKNOWN;
++	struct hid_device *hdev = shield_dev->hdev;
++	int status = POWER_SUPPLY_STATUS_UNKNOWN;
++
++	switch (charger->type) {
++	case THUNDERSTRIKE_CHARGER_TYPE_NONE:
++		charge_type = POWER_SUPPLY_CHARGE_TYPE_NONE;
++		break;
++	case THUNDERSTRIKE_CHARGER_TYPE_TRICKLE:
++		charge_type = POWER_SUPPLY_CHARGE_TYPE_TRICKLE;
++		break;
++	case THUNDERSTRIKE_CHARGER_TYPE_NORMAL:
++		charge_type = POWER_SUPPLY_CHARGE_TYPE_STANDARD;
++		break;
++	default:
++		hid_warn(hdev, "Unhandled Thunderstrike charger HOSTCMD type, %u\n",
++			 charger->type);
++		break;
++	}
++
++	switch (charger->state) {
++	case THUNDERSTRIKE_CHARGER_STATE_UNKNOWN:
++		status = POWER_SUPPLY_STATUS_UNKNOWN;
++		break;
++	case THUNDERSTRIKE_CHARGER_STATE_DISABLED:
++		/* Indicates charger is disconnected */
++		break;
++	case THUNDERSTRIKE_CHARGER_STATE_CHARGING:
++		status = POWER_SUPPLY_STATUS_CHARGING;
++		break;
++	case THUNDERSTRIKE_CHARGER_STATE_FULL:
++		status = POWER_SUPPLY_STATUS_FULL;
++		break;
++	case THUNDERSTRIKE_CHARGER_STATE_FAILED:
++		status = POWER_SUPPLY_STATUS_NOT_CHARGING;
++		hid_err(hdev, "Thunderstrike device failed to charge\n");
++		break;
++	default:
++		hid_warn(hdev, "Unhandled Thunderstrike charger HOSTCMD state, %u\n",
++			 charger->state);
++		break;
++	}
++
++	if (!charger->connected)
++		status = POWER_SUPPLY_STATUS_DISCHARGING;
++
++	spin_lock(&ts->psy_stats_lock);
++	ts->psy_stats.charge_type = charge_type;
++	ts->psy_stats.status = status;
++	spin_unlock(&ts->psy_stats_lock);
++
++	set_bit(SHIELD_CHARGER_STATE_INITIALIZED, &shield_dev->initialized_flags);
++
++	hid_dbg(hdev,
++		"Thunderstrike charger HOSTCMD response, connected: %u, type: %u, state: %u\n",
++		charger->connected, charger->type, charger->state);
++}
++
++static inline void thunderstrike_device_init_info(struct shield_device *shield_dev)
++{
++	struct thunderstrike *ts =
++		container_of(shield_dev, struct thunderstrike, base);
++
++	if (!test_bit(SHIELD_FW_VERSION_INITIALIZED, &shield_dev->initialized_flags))
++		thunderstrike_request_firmware_version(ts);
++
++	if (!test_bit(SHIELD_BOARD_INFO_INITIALIZED, &shield_dev->initialized_flags))
++		thunderstrike_request_board_info(ts);
++
++	if (!test_bit(SHIELD_BATTERY_STATS_INITIALIZED, &shield_dev->initialized_flags) ||
++	    !test_bit(SHIELD_CHARGER_STATE_INITIALIZED, &shield_dev->initialized_flags))
++		thunderstrike_psy_stats_timer_handler(&ts->psy_stats_timer);
++}
++
+ static int thunderstrike_parse_report(struct shield_device *shield_dev,
+ 				      struct hid_report *report, u8 *data,
+ 				      int size)
+ {
+ 	struct thunderstrike_hostcmd_resp_report *hostcmd_resp_report;
+-	struct thunderstrike *ts =
+-		container_of(shield_dev, struct thunderstrike, base);
+ 	struct hid_device *hdev = shield_dev->hdev;
+ 
+ 	switch (report->id) {
+@@ -445,6 +756,10 @@ static int thunderstrike_parse_report(struct shield_device *shield_dev,
+ 		case THUNDERSTRIKE_HOSTCMD_ID_LED:
+ 			thunderstrike_parse_led_payload(shield_dev, hostcmd_resp_report->led_state);
+ 			break;
++		case THUNDERSTRIKE_HOSTCMD_ID_BATTERY:
++			thunderstrike_parse_battery_payload(shield_dev,
++							    &hostcmd_resp_report->battery);
++			break;
+ 		case THUNDERSTRIKE_HOSTCMD_ID_BOARD_INFO:
+ 			thunderstrike_parse_board_info_payload(
+ 				shield_dev, &hostcmd_resp_report->board_info);
+@@ -453,14 +768,17 @@ static int thunderstrike_parse_report(struct shield_device *shield_dev,
+ 			thunderstrike_parse_haptics_payload(
+ 				shield_dev, &hostcmd_resp_report->motors);
+ 			break;
+-
+ 		case THUNDERSTRIKE_HOSTCMD_ID_USB_INIT:
+-		case THUNDERSTRIKE_HOSTCMD_ID_BLUETOOTH_INIT:
+ 			/* May block HOSTCMD requests till received initially */
+-			thunderstrike_request_firmware_version(ts);
+-			thunderstrike_request_board_info(ts);
+-			/* Only HOSTCMD that can be triggered without a request */
+-			return 0;
++			thunderstrike_device_init_info(shield_dev);
++			break;
++		case THUNDERSTRIKE_HOSTCMD_ID_CHARGER:
++			/* May block HOSTCMD requests till received initially */
++			thunderstrike_device_init_info(shield_dev);
++
++			thunderstrike_parse_charger_payload(
++				shield_dev, &hostcmd_resp_report->charger);
++			break;
+ 		default:
+ 			hid_warn(hdev,
+ 				 "Unhandled Thunderstrike HOSTCMD id %d\n",
+@@ -489,6 +807,50 @@ static inline int thunderstrike_led_create(struct thunderstrike *ts)
+ 	return led_classdev_register(&ts->base.hdev->dev, led);
+ }
+ 
++static inline int thunderstrike_psy_create(struct shield_device *shield_dev)
++{
++	struct thunderstrike *ts = container_of(shield_dev, struct thunderstrike, base);
++	struct power_supply_config psy_cfg = { .drv_data = shield_dev, };
++	struct hid_device *hdev = shield_dev->hdev;
++	int ret;
++
++	/*
++	 * Set an initial capacity and temperature value to avoid prematurely
++	 * triggering alerts. Will be replaced by values queried from initial
++	 * HOSTCMD requests.
++	 */
++	ts->psy_stats.capacity = 100;
++	ts->psy_stats.temp = 182;
++
++	shield_dev->battery_dev.desc.properties = thunderstrike_battery_props;
++	shield_dev->battery_dev.desc.num_properties =
++		ARRAY_SIZE(thunderstrike_battery_props);
++	shield_dev->battery_dev.desc.get_property = thunderstrike_battery_get_property;
++	shield_dev->battery_dev.desc.type = POWER_SUPPLY_TYPE_BATTERY;
++	shield_dev->battery_dev.desc.name =
++		devm_kasprintf(&ts->base.hdev->dev, GFP_KERNEL,
++			       "thunderstrike_%d", ts->id);
++
++	shield_dev->battery_dev.psy = power_supply_register(
++		&hdev->dev, &shield_dev->battery_dev.desc, &psy_cfg);
++	if (IS_ERR(shield_dev->battery_dev.psy)) {
++		hid_err(hdev, "Failed to register Thunderstrike battery device\n");
++		return PTR_ERR(shield_dev->battery_dev.psy);
++	}
++
++	ret = power_supply_powers(shield_dev->battery_dev.psy, &hdev->dev);
++	if (ret) {
++		hid_err(hdev, "Failed to associate battery device to Thunderstrike\n");
++		goto err;
++	}
++
++	return 0;
++
++err:
++	power_supply_unregister(shield_dev->battery_dev.psy);
++	return ret;
++}
++
+ static struct shield_device *thunderstrike_create(struct hid_device *hdev)
+ {
+ 	struct shield_device *shield_dev;
+@@ -509,27 +871,47 @@ static struct shield_device *thunderstrike_create(struct hid_device *hdev)
+ 	shield_dev->codename = "Thunderstrike";
+ 
+ 	spin_lock_init(&ts->haptics_update_lock);
++	spin_lock_init(&ts->psy_stats_lock);
+ 	INIT_WORK(&ts->hostcmd_req_work, thunderstrike_hostcmd_req_work_handler);
+ 
+ 	hid_set_drvdata(hdev, shield_dev);
+ 
++	ts->id = ida_alloc(&thunderstrike_ida, GFP_KERNEL);
++	if (ts->id < 0)
++		return ERR_PTR(ts->id);
++
+ 	ts->haptics_dev = shield_haptics_create(shield_dev, thunderstrike_play_effect);
+-	if (IS_ERR(ts->haptics_dev))
+-		return ERR_CAST(ts->haptics_dev);
++	if (IS_ERR(ts->haptics_dev)) {
++		hid_err(hdev, "Failed to create Thunderstrike haptics instance\n");
++		ret = PTR_ERR(ts->haptics_dev);
++		goto err_id;
++	}
++
++	ret = thunderstrike_psy_create(shield_dev);
++	if (ret) {
++		hid_err(hdev, "Failed to create Thunderstrike power supply instance\n");
++		goto err_haptics;
++	}
+ 
+ 	ret = thunderstrike_led_create(ts);
  	if (ret) {
  		hid_err(hdev, "Failed to create Thunderstrike LED instance\n");
--		return ERR_PTR(ret);
--	}
--
--	ts->haptics_dev =3D shield_haptics_create(shield_dev, thunderstrike_play_=
-effect);
--	if (IS_ERR(ts->haptics_dev))
- 		goto err;
-+	}
-=20
+-		goto err;
++		goto err_psy;
+ 	}
+ 
++	timer_setup(&ts->psy_stats_timer, thunderstrike_psy_stats_timer_handler, 0);
++
  	hid_info(hdev, "Registered Thunderstrike controller\n");
  	return shield_dev;
-=20
- err:
--	led_classdev_unregister(&ts->led_dev);
-+	if (ts->haptics_dev)
-+		input_unregister_device(ts->haptics_dev);
- 	return ERR_CAST(ts->haptics_dev);
+ 
+-err:
++err_psy:
++	power_supply_unregister(shield_dev->battery_dev.psy);
++err_haptics:
+ 	if (ts->haptics_dev)
+ 		input_unregister_device(ts->haptics_dev);
+-	return ERR_CAST(ts->haptics_dev);
++err_id:
++	ida_free(&thunderstrike_ida, ts->id);
++	return ERR_PTR(ret);
  }
-=20
---=20
+ 
+ static int android_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+@@ -684,8 +1066,7 @@ static int shield_probe(struct hid_device *hdev, const struct hid_device_id *id)
+ 		goto err_stop;
+ 	}
+ 
+-	thunderstrike_request_firmware_version(ts);
+-	thunderstrike_request_board_info(ts);
++	thunderstrike_device_init_info(shield_dev);
+ 
+ 	return ret;
+ 
+@@ -705,9 +1086,12 @@ static void shield_remove(struct hid_device *hdev)
+ 	ts = container_of(dev, struct thunderstrike, base);
+ 
+ 	hid_hw_close(hdev);
+-	led_classdev_unregister(&ts->led_dev);
++	power_supply_unregister(dev->battery_dev.psy);
+ 	if (ts->haptics_dev)
+ 		input_unregister_device(ts->haptics_dev);
++	led_classdev_unregister(&ts->led_dev);
++	ida_free(&thunderstrike_ida, ts->id);
++	del_timer_sync(&ts->psy_stats_timer);
+ 	cancel_work_sync(&ts->hostcmd_req_work);
+ 	hid_hw_stop(hdev);
+ }
+-- 
 2.40.1
 
