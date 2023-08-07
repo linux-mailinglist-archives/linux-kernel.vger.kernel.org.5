@@ -2,82 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0068E771A88
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF4F771A8B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbjHGGkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43428 "EHLO
+        id S230504AbjHGGkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjHGGj6 (ORCPT
+        with ESMTP id S229458AbjHGGkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:39:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B374BA;
-        Sun,  6 Aug 2023 23:39:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2730161554;
-        Mon,  7 Aug 2023 06:39:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02C00C433C7;
-        Mon,  7 Aug 2023 06:39:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691390396;
-        bh=cLRE+sII7UxJ95Wse28eozoKbP82elCRGURB4T28oU0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xv3pC6z4NdGXo6fFO2mAE0b7pnfTYgjb109MExyrfTcLvK1Nb0Ld75UnbO+0aByN3
-         /yyKCBy5B+XW5LNWCm1k1MgrJirKlbInMghvuZJw7m1cAPmaBiRJYIxrFUra4Jsubx
-         KIqy2yPpqlk6KnycbxENlR3VzDHUoGHteVhNLduE=
-Date:   Mon, 7 Aug 2023 08:39:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jannik =?iso-8859-1?Q?Gl=FCckert?= <jannik.glueckert@gmail.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Power Management <linux-pm@vger.kernel.org>,
-        Linux LLVM Build Support <llvm@lists.linux.dev>
-Subject: Re: Fwd: CFI violation when reading amd_pstate/status
-Message-ID: <2023080747-outsider-despite-acd2@gregkh>
-References: <c7f1bf9b-b183-bf6e-1cbb-d43f72494083@gmail.com>
- <2023080743-amendable-moonlit-15b7@gregkh>
- <CAFqe=zJ9uRTVG=jny2PzUrrFGW2E_mZrGKF-3YMRkjzMUdu_7A@mail.gmail.com>
+        Mon, 7 Aug 2023 02:40:20 -0400
+Received: from out-71.mta1.migadu.com (out-71.mta1.migadu.com [IPv6:2001:41d0:203:375::47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC2B1A4
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:40:18 -0700 (PDT)
+Message-ID: <d520bd6c-bfd3-47f1-c794-ab451905256b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1691390414; h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VJUWcmGTVPGG4iy4ZlXmu/uUCSg/dG8oHYGl3onncXI=;
+        b=juJSH2azRyHhlpCmHz8a+I42wI3hVpYDl9UQ3isBoEGYSF4cDG/+0nyzEvDE/QguW6bFpo
+        ex4wq66m29GF1e43jKXhMgYucmp5tt8rlY1yikpOXPJPdoYaczBSmHVKoY9z5/8o/7P9wY
+        qBZLEePvPH8xv8pXloWy7oLmoTK3NdI=
+Date:   Sun, 6 Aug 2023 23:40:04 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFqe=zJ9uRTVG=jny2PzUrrFGW2E_mZrGKF-3YMRkjzMUdu_7A@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in
+ ieee802154_subif_start_xmit
+Content-Language: en-US
+To:     syzbot <syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
+        haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+        netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <0000000000002098bc0602496cc3@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <0000000000002098bc0602496cc3@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 08:21:37AM +0200, Jannik Glückert wrote:
-> Hi Greg,
-> 
-> our kernel uses the Fedora config and has a homeopathic patchset on
-> top of upstream - see
-> https://gitweb.gentoo.org/proj/linux-patches.git/tree/?h=6.4 except
-> the 50** patches.
-> Namely we don't touch cpufreq or pm.
-> 
-> > Comm: cat Tainted: P
-> 
-> I am not using any out of tree modules, the kernel switches to
-> Tainted: P on the first CFI violation.
 
-Ah, ok.  Then work with the amd_pstate driver authors on this, odds are
-one of the sysfs callbacks is incorrectly created which is quite easy to
-do for stuff like this.  CFI also gets confused at times when dealing
-with sysfs attributes due to them being cast in all sorts of crazy ways.
 
-good luck!
+On 8/6/23 4:23 PM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    25ad10658dc1 riscv, bpf: Adapt bpf trampoline to optimized..
+> git tree:       bpf-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=147cbb29a80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8acaeb93ad7c6aaa
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d61b595e9205573133b3
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d73ccea80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1276aedea80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/3d378cc13d42/disk-25ad1065.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/44580fd5d1af/vmlinux-25ad1065.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/840587618b41/bzImage-25ad1065.xz
+> 
+> The issue was bisected to:
+> 
+> commit 8100928c881482a73ed8bd499d602bab0fe55608
+> Author: Yonghong Song <yonghong.song@linux.dev>
+> Date:   Fri Jul 28 01:12:02 2023 +0000
+> 
+>      bpf: Support new sign-extension mov insns
 
-greg k-h
+Thanks for reporting. I will look into this ASAP.
+
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17970c5da80000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=14570c5da80000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10570c5da80000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com
+> Fixes: 8100928c8814 ("bpf: Support new sign-extension mov insns")
+> 
+> general protection fault, probably for non-canonical address 0xdffffc0000000f4f: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: probably user-memory-access in range [0x0000000000007a78-0x0000000000007a7f]
+> CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.5.0-rc2-syzkaller-00619-g25ad10658dc1 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+> RIP: 0010:strnchr+0x25/0x80 lib/string.c:403
+> Code: 00 00 00 00 90 f3 0f 1e fa 53 48 01 fe 48 bb 00 00 00 00 00 fc ff df 48 83 ec 18 eb 28 48 89 f8 48 89 f9 48 c1 e8 03 83 e1 07 <0f> b6 04 18 38 c8 7f 04 84 c0 75 25 0f b6 07 38 d0 74 15 48 83 c7
+> RSP: 0018:ffffc90000177848 EFLAGS: 00010046
+> RAX: 0000000000000f4f RBX: dffffc0000000000 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: 0000000000007a7b RDI: 0000000000007a78
+> RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000007a78
+> R13: ffffc900001779b0 R14: 0000000000000000 R15: 0000000000000003
+> FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00005611db5094b8 CR3: 0000000028ef0000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   <TASK>
+>   bpf_bprintf_prepare+0x127/0x1490 kernel/bpf/helpers.c:823
+>   ____bpf_trace_printk kernel/trace/bpf_trace.c:385 [inline]
+>   bpf_trace_printk+0xdb/0x180 kernel/trace/bpf_trace.c:375
+>   bpf_prog_ebeed182d92b487f+0x38/0x3c
+>   bpf_dispatcher_nop_func include/linux/bpf.h:1180 [inline]
+>   __bpf_prog_run include/linux/filter.h:609 [inline]
+>   bpf_prog_run include/linux/filter.h:616 [inline]
+>   __bpf_trace_run kernel/trace/bpf_trace.c:2269 [inline]
+>   bpf_trace_run1+0x148/0x400 kernel/trace/bpf_trace.c:2307
+>   __bpf_trace_rcu_utilization+0x8e/0xc0 include/trace/events/rcu.h:27
+>   trace_rcu_utilization+0xcd/0x120 include/trace/events/rcu.h:27
+>   rcu_note_context_switch+0x6c/0x1ac0 kernel/rcu/tree_plugin.h:318
+>   __schedule+0x293/0x59f0 kernel/sched/core.c:6610
+>   schedule_idle+0x5b/0x80 kernel/sched/core.c:6814
+>   do_idle+0x288/0x3f0 kernel/sched/idle.c:310
+>   cpu_startup_entry+0x18/0x20 kernel/sched/idle.c:379
+>   start_secondary+0x200/0x290 arch/x86/kernel/smpboot.c:326
+>   secondary_startup_64_no_verify+0x167/0x16b
+>   </TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:strnchr+0x25/0x80 lib/string.c:403
+> Code: 00 00 00 00 90 f3 0f 1e fa 53 48 01 fe 48 bb 00 00 00 00 00 fc ff df 48 83 ec 18 eb 28 48 89 f8 48 89 f9 48 c1 e8 03 83 e1 07 <0f> b6 04 18 38 c8 7f 04 84 c0 75 25 0f b6 07 38 d0 74 15 48 83 c7
+> RSP: 0018:ffffc90000177848 EFLAGS: 00010046
+> 
+> RAX: 0000000000000f4f RBX: dffffc0000000000 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: 0000000000007a7b RDI: 0000000000007a78
+> RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000007a78
+> R13: ffffc900001779b0 R14: 0000000000000000 R15: 0000000000000003
+> FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00005611db5094b8 CR3: 0000000028ef0000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> ----------------
+> Code disassembly (best guess):
+>     0:	00 00                	add    %al,(%rax)
+>     2:	00 00                	add    %al,(%rax)
+>     4:	90                   	nop
+>     5:	f3 0f 1e fa          	endbr64
+>     9:	53                   	push   %rbx
+>     a:	48 01 fe             	add    %rdi,%rsi
+>     d:	48 bb 00 00 00 00 00 	movabs $0xdffffc0000000000,%rbx
+>    14:	fc ff df
+>    17:	48 83 ec 18          	sub    $0x18,%rsp
+>    1b:	eb 28                	jmp    0x45
+>    1d:	48 89 f8             	mov    %rdi,%rax
+>    20:	48 89 f9             	mov    %rdi,%rcx
+>    23:	48 c1 e8 03          	shr    $0x3,%rax
+>    27:	83 e1 07             	and    $0x7,%ecx
+> * 2a:	0f b6 04 18          	movzbl (%rax,%rbx,1),%eax <-- trapping instruction
+>    2e:	38 c8                	cmp    %cl,%al
+>    30:	7f 04                	jg     0x36
+>    32:	84 c0                	test   %al,%al
+>    34:	75 25                	jne    0x5b
+>    36:	0f b6 07             	movzbl (%rdi),%eax
+>    39:	38 d0                	cmp    %dl,%al
+>    3b:	74 15                	je     0x52
+>    3d:	48                   	rex.W
+>    3e:	83                   	.byte 0x83
+>    3f:	c7                   	.byte 0xc7
+> 
+> 
+[...]
