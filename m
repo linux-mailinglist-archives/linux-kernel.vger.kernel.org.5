@@ -2,153 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35658771CF0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF6B771CF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbjHGJOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50274 "EHLO
+        id S231382AbjHGJPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 05:15:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbjHGJOw (ORCPT
+        with ESMTP id S229776AbjHGJPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:14:52 -0400
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [20.231.56.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AC917E7F;
-        Mon,  7 Aug 2023 02:14:46 -0700 (PDT)
-Received: from localhost.localdomain (unknown [115.206.160.170])
-        by mail-app2 (Coremail) with SMTP id by_KCgCXDxvXtdBkKGQpCw--.25311S4;
-        Mon, 07 Aug 2023 17:14:00 +0800 (CST)
-From:   Lin Ma <linma@zju.edu.cn>
-To:     michael.chan@broadcom.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        ajit.khaparde@broadcom.com, sriharsha.basavapatna@broadcom.com,
-        somnath.kotur@broadcom.com, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
-        simon.horman@corigine.com, louis.peens@corigine.com,
-        yinjun.zhang@corigine.com, huanhuan.wang@corigine.com,
-        tglx@linutronix.de, na.wang@corigine.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, oss-drivers@corigine.com
-Cc:     Lin Ma <linma@zju.edu.cn>
-Subject: [PATCH net-next v2] rtnetlink: remove redundant checks for nlattr IFLA_BRIDGE_MODE
-Date:   Mon,  7 Aug 2023 17:13:47 +0800
-Message-Id: <20230807091347.3804523-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgCXDxvXtdBkKGQpCw--.25311S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZw1DXF1xXw4xWrW3Gw17Wrg_yoWrGFyDpa
-        1UJa4xZ3yvqr15Xan7Ja18ZF9Yqay7t398uF4Sya1rZw1vvFyDCr4DKF9I9ryUArWUGF13
-        tr4UAF13Aas8X3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCY02Avz4vE14v_GFWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-        73UjIFyTuYvjfUeF4EDUUUU
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 7 Aug 2023 05:15:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8722E68;
+        Mon,  7 Aug 2023 02:15:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C8CE616EA;
+        Mon,  7 Aug 2023 09:15:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60DC2C433C8;
+        Mon,  7 Aug 2023 09:15:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691399719;
+        bh=WxAh8iW+258bwzaDgHMpc14XPRfhm/gtCpiInP6uO78=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WQ5kz3l1kCG1seHKBJtn2Nvn6Jl47GPL2qmAppv0jy4/SCW8whxLwLLVphOO84sBD
+         zuXgb/eoKwxiv1AyShNwmy1kf8bmFSrETaAgzyJ+7d4guemGZtAFogE1BqVyvkIE/2
+         hhLQk0XmGL1uF2N7kHGUnqViaKBB2LiDhnXE/1/w=
+Date:   Mon, 7 Aug 2023 11:15:17 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russell.h.weight@intel.com>,
+        Tianfei Zhang <tianfei.zhang@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
+        Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH v3 4.14 1/1] test_firmware: fix the memory leaks with the
+ reqs buffer
+Message-ID: <2023080705-poet-nickname-5e08@gregkh>
+References: <20230804170017.92671-1-mirsad.todorovac@alu.unizg.hr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804170017.92671-1-mirsad.todorovac@alu.unizg.hr>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit d73ef2d69c0d ("rtnetlink: let rtnl_bridge_setlink checks
-IFLA_BRIDGE_MODE length") added the nla_len check in rtnl_bridge_setlink,
-which is the only caller for ndo_bridge_setlink handlers defined in
-low-level driver codes. Hence, this patch cleanups the redundant checks in
-each ndo_bridge_setlink handler function.
+On Fri, Aug 04, 2023 at 07:00:18PM +0200, Mirsad Todorovac wrote:
+> [ commit be37bed754ed90b2655382f93f9724b3c1aae847 upstream ]
+> 
+> Dan Carpenter spotted that test_fw_config->reqs will be leaked if
+> trigger_batched_requests_store() is called two or more times.
+> The same appears with trigger_batched_requests_async_store().
+> 
+> This bug wasn't triggered by the tests, but observed by Dan's visual
+> inspection of the code.
+> 
+> The recommended workaround was to return -EBUSY if test_fw_config->reqs
+> is already allocated.
+> 
+> Fixes: c92316bf8e94 ("test_firmware: add batched firmware tests")
+> Cc: Luis Chamberlain <mcgrof@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Russ Weight <russell.h.weight@intel.com>
+> Cc: Tianfei Zhang <tianfei.zhang@intel.com>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Colin Ian King <colin.i.king@gmail.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: linux-kselftest@vger.kernel.org
+> Cc: stable@vger.kernel.org # v4.14
+> Suggested-by: Dan Carpenter <error27@gmail.com>
+> Suggested-by: Takashi Iwai <tiwai@suse.de>
+> Link: https://lore.kernel.org/r/20230509084746.48259-2-mirsad.todorovac@alu.unizg.hr
+> Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+> 
+> [ This fix is applied against the 4.14 stable branch. There are no changes to the ]
+> [ fix in code when compared to the upstread, only the reformatting for backport.  ]
 
-Suggested-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
-V1->V2: delete the link to last commit as it already in tree
+Thanks for all of these, now queued up.
 
- drivers/net/ethernet/broadcom/bnxt/bnxt.c           | 3 ---
- drivers/net/ethernet/emulex/benet/be_main.c         | 3 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c       | 3 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c   | 3 ---
- drivers/net/ethernet/netronome/nfp/nfp_net_common.c | 3 ---
- 5 files changed, 15 deletions(-)
-
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index e5b54e6025be..9e098c1cf1ab 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -13101,9 +13101,6 @@ static int bnxt_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
- 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
- 			continue;
- 
--		if (nla_len(attr) < sizeof(mode))
--			return -EINVAL;
--
- 		mode = nla_get_u16(attr);
- 		if (mode == bp->br_mode)
- 			break;
-diff --git a/drivers/net/ethernet/emulex/benet/be_main.c b/drivers/net/ethernet/emulex/benet/be_main.c
-index 18c2fc880d09..e8abc43a7061 100644
---- a/drivers/net/ethernet/emulex/benet/be_main.c
-+++ b/drivers/net/ethernet/emulex/benet/be_main.c
-@@ -4985,9 +4985,6 @@ static int be_ndo_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
- 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
- 			continue;
- 
--		if (nla_len(attr) < sizeof(mode))
--			return -EINVAL;
--
- 		mode = nla_get_u16(attr);
- 		if (BE3_chip(adapter) && mode == BRIDGE_MODE_VEPA)
- 			return -EOPNOTSUPP;
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 1726297f2e0d..d1381b1b3f3a 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -10042,9 +10042,6 @@ static int ixgbe_ndo_bridge_setlink(struct net_device *dev,
- 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
- 			continue;
- 
--		if (nla_len(attr) < sizeof(mode))
--			return -EINVAL;
--
- 		mode = nla_get_u16(attr);
- 		status = ixgbe_configure_bridge_mode(adapter, mode);
- 		if (status)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index defb1efccb78..b2df8e517a85 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -4883,9 +4883,6 @@ static int mlx5e_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
- 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
- 			continue;
- 
--		if (nla_len(attr) < sizeof(mode))
--			return -EINVAL;
--
- 		mode = nla_get_u16(attr);
- 		if (mode > BRIDGE_MODE_VEPA)
- 			return -EINVAL;
-diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-index 6b1fb5708434..85f36ec2f986 100644
---- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-+++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-@@ -2068,9 +2068,6 @@ static int nfp_net_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
- 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
- 			continue;
- 
--		if (nla_len(attr) < sizeof(mode))
--			return -EINVAL;
--
- 		new_ctrl = nn->dp.ctrl;
- 		mode = nla_get_u16(attr);
- 		if (mode == BRIDGE_MODE_VEPA)
--- 
-2.17.1
-
+greg k-h
