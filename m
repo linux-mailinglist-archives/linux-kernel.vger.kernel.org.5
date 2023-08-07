@@ -2,224 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BDF772867
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1C8772871
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbjHGO6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60070 "EHLO
+        id S230035AbjHGO7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:59:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230458AbjHGO6A (ORCPT
+        with ESMTP id S230097AbjHGO72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:58:00 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8215010FC;
-        Mon,  7 Aug 2023 07:57:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Content-Type:Mime-Version:
-        References:In-Reply-To:Message-Id:Cc:To:From:Date:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=v8cnprTcRW0lb/rZREcoQQN63RLmD3dHcAJ9oi0D9NM=; b=cpmFuoqVi7per+0qehgdVtvb5A
-        PzKNjAmfpcH8XLpPcWxKavt20H5SDXO2wq+VWpHrZq0B5WZ6SZPgyrpHfgG4LIIUQzoWSRMTULYcl
-        EvWPbVYIWkGJMrBL1VN8oGOmNtUGvGzPMF/sMv8L0CpDBqhMtm7rxUvT7AVRq7xzWy5E=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:40284 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qT1fg-0003y0-5w; Mon, 07 Aug 2023 10:57:25 -0400
-Date:   Mon, 7 Aug 2023 10:57:23 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
-        isaac.true@canonical.com, jesse.sung@canonical.com,
-        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        stable@vger.kernel.org, Lech Perczak <lech.perczak@camlingroup.com>
-Message-Id: <20230807105723.0ae2cf72e1925e074a9256ad@hugovil.com>
-In-Reply-To: <2023080433-depravity-debate-57d3@gregkh>
-References: <20230725142343.1724130-1-hugo@hugovil.com>
-        <20230725142343.1724130-5-hugo@hugovil.com>
-        <2023073118-mousiness-sandlot-6258@gregkh>
-        <20230803121449.bcf74899e062ca39dfb073a3@hugovil.com>
-        <2023080415-kinetic-repurpose-030a@gregkh>
-        <20230804101554.c63202df93481bd5728bd3f1@hugovil.com>
-        <2023080433-depravity-debate-57d3@gregkh>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Mon, 7 Aug 2023 10:59:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C6B172A
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:59:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691420347; x=1722956347;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6jKYcqoZbZb+y6bFjNGXgbrH6GTB4XHCuMLza1e1NpA=;
+  b=bFEpDFpdHTJZ5dX+dqdrzdObLN2nQg8R0Fso78ySkOMx4yBx49xsNzEG
+   7/CHKkjG3hiu0/FBzPpFWLxgLT9Y3GIhRSOu+wcbOLSIZ3PVN2I7XqOFL
+   ESklrCcAHjKhcOGVn2PnHac93hboVNmGqqamls8g4nY4CIvyr9HuqDPDk
+   Ody/X5K46g5VhpK+bmR36mwXkVdMuq7b13zhNbJRZK8hQ5QV8G5dbRot6
+   y+BcoDa3YACWrNKrFpbahMro3H/NCV21ZY52qO83l8mXV2RMOudHw5EGU
+   EWrlp9v2GJ1SKZb+857aXFn8+HtoS7OAf5/GcelKSMcvWGZst7W5+VXEF
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="350872883"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="350872883"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:58:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="800960674"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="800960674"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP; 07 Aug 2023 07:58:56 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qT1h8-00GNLO-24;
+        Mon, 07 Aug 2023 17:58:54 +0300
+Date:   Mon, 7 Aug 2023 17:58:54 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 1/3] lib/vsprintf: Sort headers alphabetically
+Message-ID: <ZNEGrl2lzbbuelV7@smile.fi.intel.com>
+References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
+ <20230805175027.50029-2-andriy.shevchenko@linux.intel.com>
+ <ZNEASXq6SNS5oIu1@alley>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNEASXq6SNS5oIu1@alley>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
-Subject: Re: [PATCH v9 04/10] serial: sc16is7xx: refactor GPIO controller
- registration
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Aug 2023 17:09:13 +0200
-Greg KH <gregkh@linuxfoundation.org> wrote:
-
-> On Fri, Aug 04, 2023 at 10:15:54AM -0400, Hugo Villeneuve wrote:
-> > On Fri, 4 Aug 2023 15:14:18 +0200
-> > Greg KH <gregkh@linuxfoundation.org> wrote:
-> > 
-> > > On Thu, Aug 03, 2023 at 12:14:49PM -0400, Hugo Villeneuve wrote:
-> > > > On Mon, 31 Jul 2023 17:55:42 +0200
-> > > > Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > 
-> > > > > On Tue, Jul 25, 2023 at 10:23:36AM -0400, Hugo Villeneuve wrote:
-> > > > > > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > > > > > 
-> > > > > > In preparation for upcoming patch "fix regression with GPIO
-> > > > > > configuration". To facilitate review and make code more modular.
-> > > > > 
-> > > > > I would much rather the issue be fixed _before_ the code is refactored,
-> > > > > unless it is impossible to fix it without the refactor?
-> > > > 
-> > > > Hi Greg,
-> > > > normally I would agree, but the refactor in this case helps a lot to
-> > > > address some issues raised by you and Andy in V7 of this series.
-> > > > 
-> > > > Maybe I could merge it with the actual patch "fix regression with GPIO
-> > > > configuration"?
-> > > 
-> > > Sure.
-> > 
-> > Hi Greg,
-> > will do.
-> > 
-> >  
-> > > > > > Cc: <stable@vger.kernel.org> # 6.1.x
-> > > > > 
-> > > > > What commit id does this fix?
-> > > > 
-> > > > It doesn't fix anything, but I tought that I needed this tag since
-> > > > this patch is a prerequisite for the next patch in the series, which
-> > > > would be applied to stable kernels. I will remove this tag (assuming
-> > > > the patch stays as it is, depending on your answer to the above
-> > > > question).
-> > > > 
-> > > >  
-> > > > > > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > > > > > Reviewed-by: Lech Perczak <lech.perczak@camlingroup.com>
-> > > > > > Tested-by: Lech Perczak <lech.perczak@camlingroup.com>
-> > > > > > ---
-> > > > > >  drivers/tty/serial/sc16is7xx.c | 40 ++++++++++++++++++++--------------
-> > > > > >  1 file changed, 24 insertions(+), 16 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-> > > > > > index 32d43d00a583..5b0aeef9d534 100644
-> > > > > > --- a/drivers/tty/serial/sc16is7xx.c
-> > > > > > +++ b/drivers/tty/serial/sc16is7xx.c
-> > > > > > @@ -332,6 +332,7 @@ struct sc16is7xx_one {
-> > > > > >  
-> > > > > >  struct sc16is7xx_port {
-> > > > > >  	const struct sc16is7xx_devtype	*devtype;
-> > > > > > +	struct device			*dev;
-> > > > > 
-> > > > > Why is this pointer needed?
-> > > > > 
-> > > > > Why is it grabbed and yet the reference count is never incremented?  Who
-> > > > > owns the reference count and when will it go away?
-> > > > > 
-> > > > > And what device is this?  The parent?  Current device?  What type of
-> > > > > device is it?  And why is it needed?
-> > > > > 
-> > > > > Using "raw" devices is almost never something a driver should do, they
-> > > > > are only passed into functions by the driver core, but then the driver
-> > > > > should instantly turn them into the "real" structure.
-> > > > 
-> > > > We already discussed that a lot in previous versions (v7)... I am
-> > > > trying my best to modify the code to address your concerns, but I am
-> > > > not fully understanding what you mean about raw devices, and you didn't
-> > > > answer some of my previous questions/interrogations in v7 about that.
-> > > 
-> > > I don't have time to answer all questions, sorry.
-> > > 
-> > > Please help review submitted patches to reduce my load and allow me to
-> > > answer other stuff :)
-> > 
-> > Ok.
-> > 
-> > 
-> > > > So, in the new function that I
-> > > > need to implement, sc16is7xx_setup_gpio_chip(), I absolutely need to use
-> > > > a raw device to read a device tree property and to set
-> > > > s->gpio.parent:
-> > > > 
-> > > >     count = device_property_count_u32(dev, ...
-> > > >     ...
-> > > >     s->gpio.parent = dev;
-> > > > 
-> > > > Do we agree on that?
-> > > 
-> > > Yes, but what type of parent is that?
-> > 
-> > I am confused by your question. I do not understand why the type of
-> > parent matters... And what do you call the parent: s, s->gpio or
-> > s->gpio.parent?
-> > 
-> > For me, the way I understand it, the only question that matters is how I
-> > can extract the raw device structure pointer from maybe "struct
-> > sc16is7xx_port" or some other structure, and then use it in my
-> > new function...
-> > 
-> > I should not have put "s->gpio.parent = dev" in the example, I think it
-> > just complexifies things. Lets start over with a more simple example and
-> > only:
-> > 
-> >     count = device_property_count_u32(dev, ...
-> > 
-> > 
-> > > > Then, how do I pass this raw device to the 
-> > > > device_property_count_u32() function and to the s->gpio.parent
-> > > > assignment?
-> > > > 
-> > > > Should I modify sc16is7xx_setup_gpio_chip() like so:
-> > > > 
-> > > >     static int sc16is7xx_setup_gpio_chip(struct sc16is7xx_port *s)
-> > > >     {
-> > > > 	struct device *dev = &s->p[0].port.dev;
-> > > > 
-> > > >         count = device_property_count_u32(dev, ...
-> > > >         ...
-> > > >         s->gpio.parent = dev;
-> > > 
-> > > Again, what is the real type of that parent?  It's a port, right, so
-> > > pass in the port to this function and then do the "take the struct
-> > > device of the port" at that point in time.
-> > 
-> > With the simplified example, is the following ok:
-> > 
-> > static int sc16is7xx_setup_gpio_chip(struct sc16is7xx_port *s)
-> > {
-> >     struct device *dev = &s->p[0].port.dev;
-> > 
-> >     count = device_property_count_u32(dev, ...
-> >     ...
-> > }
-> > 
-> > If not, please indicate how you would do it with an actual example...
+On Mon, Aug 07, 2023 at 04:31:37PM +0200, Petr Mladek wrote:
+> On Sat 2023-08-05 20:50:25, Andy Shevchenko wrote:
+> > Sorting headers alphabetically helps locating duplicates, and
+> > make it easier to figure out where to insert new headers.
 > 
-> At this point, after reviewing 500+ patches today, I really have no
-> idea, my brain is fried.  Do what you think is right here and submit a
-> new series and I'll be glad to review it.
+> I agree that includes become a mess after some time. But I am
+> not persuaded that sorting them alphabetically in random source
+> files help anything.
+> 
+> Is this part of some grand plan for the entire kernel, please?
+> Is this outcome from some particular discussion?
+> Will this become a well know rule checked by checkpatch.pl?
+> 
+> I am personally not going to reject patches because of wrongly
+> sorted headers unless there is some real plan behind it.
+> 
+> I agree that it might look better. An inverse Christmas' tree
+> also looks better. But it does not mean that it makes the life
+> easier.
 
-Ok :)
+It does from my point of view as maintainability is increased.
 
-Will do.
+> The important things are still hidden in the details
+> (every single line).
+> 
+> From my POV, this patch would just create a mess in the git
+> history and complicate backporting.
+> 
+> I am sorry but I will not accept this patch unless there
+> is a wide consensus that this makes sense.
 
-Hugo.
+Your choice, of course, But I see in practice dup headers being
+added, or some unrelated ones left untouched because header list
+mess, and in those cases sorting can help (a bit) in my opinion.
+
+TL;DR: I was tolerating unsorted mess (for really long header
+inclusion block) up to the point when I realized how it helps
+people to maintain the code.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
