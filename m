@@ -2,67 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B16EC7732E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 00:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A789A7732E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 00:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbjHGWVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 18:21:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56550 "EHLO
+        id S229972AbjHGWV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 18:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjHGWVh (ORCPT
+        with ESMTP id S229909AbjHGWV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 18:21:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEA48F
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 15:21:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E77D1622B1
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 22:21:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E1A9C433C7;
-        Mon,  7 Aug 2023 22:21:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691446894;
-        bh=xOUwFjdJ4X0S873rAYEoVXdGL+g6dxq/FSauta25+d4=;
-        h=From:Date:Subject:To:Cc:From;
-        b=ZlkWPHtzRcQthsqych0C/vWlxqvWgKs7n6eTnaGpkHit/gUk6mINEh2ZQeXytOlUi
-         UttlSU9E1qvpgCw9DndNRGnfShHWozx1OI7n+ea4VC4ooQ1d3Gf5NJFZk0cKZFUP85
-         Bkwq5PedVJ8BnfAYrY8cIjRaPTW0EO6N5/hK76e9WhyFw+R2YGV9DyFuaepkhdV61T
-         nFIRCbB1FN5JsSCVAqAvM5noAN3vvczqYNyYSaIIhfN71JwXIH3Kci5ScL/eIWOZll
-         Ikv+H98gVjkcDW15Hzh+GI/M2UppsW1i7BRlmTUJ3V7rJ4MYFSGRgyd31NnItNCjOs
-         D97l8HFnNm1YQ==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Mon, 07 Aug 2023 23:20:38 +0100
-Subject: [PATCH] arm64/fpsimd: Suppress SVE access traps when loading
- FPSIMD state
+        Mon, 7 Aug 2023 18:21:56 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0F9B3;
+        Mon,  7 Aug 2023 15:21:51 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 377MHn8W031068;
+        Mon, 7 Aug 2023 22:21:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=HuQGzR9nGcEDqsgxRQgpnqUloZrjPftuf8TrhulhEFs=;
+ b=T4ygLLgy+z5E7d4rtH/IiMSl7pfGthOR1GEXJ26bUzQKozGtHDliiPETesb7vAHK5naj
+ cs6chjARAFIfP2x5rJAzaq05QoRgSfVP/WRcTlUV8ROJqnxeFaaFrrPHWpoIgQRD5907
+ CkkK3/N7fEA1O6TiH/0MMYHqwdbvUddQNeeqKeE2Mb5h28Kb19OVf5qmdb36oUz6Oebe
+ Ln+XUi9YvLdOaQptucHEJUABRhrpzneczVnWGamDg6tfaeY2bIdKaxHhai0aI/fE1v/8
+ XTMG0TakJrauRBImmF0KOVVNMq92ccK0GCbHTwl6GDgqUlTk8d4vUIwrVQVyrunQgO9f ww== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3saw0r9ny6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Aug 2023 22:21:43 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 377MLgak018490
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 7 Aug 2023 22:21:42 GMT
+Received: from [10.71.109.168] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 7 Aug
+ 2023 15:21:42 -0700
+Message-ID: <b04755d6-cc52-3766-9f39-34529d9eb769@quicinc.com>
+Date:   Mon, 7 Aug 2023 15:21:41 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/4] drm/msm/dpu: Enable widebus for DSI INTF
+Content-Language: en-US
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+CC:     Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, <quic_abhinavk@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20230802-add-widebus-support-v3-0-2661706be001@quicinc.com>
+ <20230802-add-widebus-support-v3-2-2661706be001@quicinc.com>
+ <ujgfclphym2ezd6g4uw43tp3ciswhuon2qfp77uwqcbwrtqwqe@inybwaln3q5u>
+From:   Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <ujgfclphym2ezd6g4uw43tp3ciswhuon2qfp77uwqcbwrtqwqe@inybwaln3q5u>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230807-arm64-sve-trap-mitigation-v1-1-d92eed1d2855@kernel.org>
-X-B4-Tracking: v=1; b=H4sIADVu0WQC/x3MQQqAIBBA0avErBswFbOuEi2kppqFFaNEEN09a
- fkX7z+QSJgS9NUDQhcnPvYSTV3BtIV9JeS5NGiljfKqxSDRWUwXYZZwYuTMa8hFoaaWtHNm8ra
- D4k+hhe//PYzv+wGnfVnVawAAAA==
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-034f2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7237; i=broonie@kernel.org;
- h=from:subject:message-id; bh=xOUwFjdJ4X0S873rAYEoVXdGL+g6dxq/FSauta25+d4=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBk0W5sjiIRyf9R6UXLfAPxONbfUZ7yeeIBBGi3xGWn
- 1TO/Ag+JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZNFubAAKCRAk1otyXVSH0PbgB/
- 4pr8gOCYB2Ej4oexZ7LLxPoKBaXWlYlaihkElwyF28quowaQbVv1Suh73TjG7QTcrfoc0T7i++rQK9
- wiASeBF9XwiQRADevR+KWthNB9OQUSqz7P7XoiNGHG+qZGv1PK2BeuVFSzZc57SxYSWTL+JKyou12c
- Mxg6O9yvvfY7iL53p+tBKCT7/0gDeI4XzGkHhfhkVYISDZhg/0SptSgpqe7eSPQ6pjdku8gka1Rr4s
- j6UNbFt9b3PJ66okm5FPV16yOJmlEB9WydQVHoMapcXO6DmPjurfqIiOMf403YY/Y7+ChvvISLxZZD
- lF7pJQUzJwvowNN71mpuQ5xKPNW+y5
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5FZFHI-sGeY9VyQRQvVYfKSxH7wLD03i
+X-Proofpoint-ORIG-GUID: 5FZFHI-sGeY9VyQRQvVYfKSxH7wLD03i
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-07_25,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ phishscore=0 adultscore=0 impostorscore=0 mlxlogscore=999 clxscore=1015
+ spamscore=0 lowpriorityscore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308070203
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,177 +83,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we are in a syscall we take the opportunity to discard the SVE state,
-saving only the FPSIMD subset of the register state. When we reload the
-state from memory we reenable SVE access traps, stopping tracking SVE until
-the task takes another SVE access trap. This means that for a task which is
-actively using SVE many blocking system calls will have the additional
-overhead of a SVE access trap.
 
-As SVE deployment is progressing we are seeing much wider use of the SVE
-instruction set, including performance optimised implementations of
-operations like memset() and memcpy(), which mean that even tasks which are
-not obviously floating point based can end up with substantial SVE usage.
 
-It does not, however, make sense to just unconditionally use the full SVE
-register state all the time since it is larger than the FPSIMD register
-state so there is overhead saving and restoring it on context switch and
-our requirement to flush the register state not shared with FPSIMD on
-syscall also creates a noticeable overhead on system call.
+On 8/2/2023 12:39 PM, Marijn Suijten wrote:
+> On 2023-08-02 11:08:49, Jessica Zhang wrote:
+>> DPU supports a data-bus widen mode for DSI INTF.
+>>
+>> Enable this mode for all supported chipsets if widebus is enabled for DSI.
+>>
+>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+>> ---
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c          | 11 ++++++++---
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  4 +++-
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c          |  3 +++
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h          |  1 +
+>>   drivers/gpu/drm/msm/msm_drv.h                        |  6 +++++-
+>>   5 files changed, 20 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>> index 3dcd37c48aac..de08aad39e15 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>> @@ -1196,15 +1196,20 @@ static void dpu_encoder_virt_atomic_enable(struct drm_encoder *drm_enc,
+>>   	struct drm_display_mode *cur_mode = NULL;
+>>   	struct msm_drm_private *priv = drm_enc->dev->dev_private;
+>>   	struct msm_display_info *disp_info;
+>> +	int index;
+>>   
+>>   	dpu_enc = to_dpu_encoder_virt(drm_enc);
+>>   	disp_info = &dpu_enc->disp_info;
+>>   
+>> +	disp_info = &dpu_enc->disp_info;
+>> +	index = disp_info->h_tile_instance[0];
+>> +
+>>   	dpu_enc->dsc = dpu_encoder_get_dsc_config(drm_enc);
+>>   
+>> -	if (disp_info->intf_type == INTF_DP)
+>> -		dpu_enc->wide_bus_en = msm_dp_wide_bus_available(
+>> -				priv->dp[disp_info->h_tile_instance[0]]);
+>> +	if (disp_info->intf_type == INTF_DSI)
+>> +		dpu_enc->wide_bus_en = msm_dsi_is_widebus_enabled(priv->dsi[index]);
+>> +	else if (disp_info->intf_type == INTF_DP)
+>> +		dpu_enc->wide_bus_en = msm_dp_wide_bus_available(priv->dp[index]);
+> 
+> This inconsistency really is killing.  wide_bus vs widebus, and one
+> function has an is_ while the other does not.
 
-I did some instrumentation which counted the number of SVE access traps
-and the number of times we loaded FPSIMD only register state for each task.
-Testing with Debian Bookworm this showed that during boot the overwhelming
-majority of tasks triggered another SVE access trap more than 50% of the
-time after loading FPSIMD only state with a substantial number near 100%,
-though some programs had a very small number of SVE accesses most likely
-from startup. There were few tasks in the range 5-45%, most tasks either
-used SVE frequently or used it only a tiny proportion of times. As expected
-older distributions which do not have the SVE performance work available
-showed no SVE usage in general applications.
+Hi Marijn,
 
-This indicates that there should be some useful benefit from reducing the
-number of SVE access traps for blocking system calls like we did for non
-blocking system calls in commit 8c845e273104 ("arm64/sve: Leave SVE enabled
-on syscall if we don't context switch"). Let's do this by counting the
-number of times we have loaded FPSIMD only register state for SVE tasks
-and only disabling traps after some number of times, otherwise leaving
-traps disabled and flushing the non-shared register state like we would on
-trap.
+Acked. Will change the DSI function name to match DP.
 
-I pulled 64 out of thin air for the number of flushes to do, there is
-doubtless room for tuning here. Ideally we would be able to tell if the
-task is actually using SVE but without using performance counters (which
-would be substantial work) we can't currently tell. I picked the number
-because so many of the tasks using SVE used it so frequently.
+> 
+>>   
+>>   	mutex_lock(&dpu_enc->enc_lock);
+>>   	cur_mode = &dpu_enc->base.crtc->state->adjusted_mode;
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+>> index df88358e7037..dace6168be2d 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+>> @@ -69,8 +69,10 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
+>>   				phys_enc->hw_intf,
+>>   				phys_enc->hw_pp->idx);
+>>   
+>> -	if (intf_cfg.dsc != 0)
+>> +	if (intf_cfg.dsc != 0) {
+>>   		cmd_mode_cfg.data_compress = true;
+>> +		cmd_mode_cfg.wide_bus_en = dpu_encoder_is_widebus_enabled(phys_enc->parent);
+>> +	}
+>>   
+>>   	if (phys_enc->hw_intf->ops.program_intf_cmd_cfg)
+>>   		phys_enc->hw_intf->ops.program_intf_cmd_cfg(phys_enc->hw_intf, &cmd_mode_cfg);
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+>> index 8ec6505d9e78..dc6f3febb574 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+>> @@ -521,6 +521,9 @@ static void dpu_hw_intf_program_intf_cmd_cfg(struct dpu_hw_intf *ctx,
+>>   	if (cmd_mode_cfg->data_compress)
+>>   		intf_cfg2 |= INTF_CFG2_DCE_DATA_COMPRESS;
+>>   
+>> +	if (cmd_mode_cfg->wide_bus_en)
+>> +		intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN;
+>> +
+>>   	DPU_REG_WRITE(&ctx->hw, INTF_CONFIG2, intf_cfg2);
+>>   }
+>>   
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
+>> index 77f80531782b..c539025c418b 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
+>> @@ -50,6 +50,7 @@ struct dpu_hw_intf_status {
+>>   
+>>   struct dpu_hw_intf_cmd_mode_cfg {
+>>   	u8 data_compress;	/* enable data compress between dpu and dsi */
+>> +	u8 wide_bus_en;		/* enable databus widen mode */
+> 
+> Any clue why these weren't just bool types?  These suffix-comments also
+> aren't adhering to the kerneldoc format, or is there a different
+> variant?
 
-This means that for a task which is actively using SVE the number of SVE
-access traps will be substantially reduced but applications which use SVE
-only very infrequently will avoid the overheads associated with tracking
-SVE state once the counter expires.
+It seems that the `u8` declaration and comment docs were meant to mirror 
+the other dpu_hw_intf_* structs [1]
 
-There should be no functional change resulting from this, it is purely a
-performance optimisation.
+[1] 
+https://elixir.bootlin.com/linux/v6.5-rc5/source/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h#L44
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- arch/arm64/include/asm/processor.h |  1 +
- arch/arm64/kernel/fpsimd.c         | 43 ++++++++++++++++++++++++++++++++------
- 2 files changed, 38 insertions(+), 6 deletions(-)
+> 
+>>   };
+>>   
+>>   /**
+>> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+>> index 9d9d5e009163..e4f706b16aad 100644
+>> --- a/drivers/gpu/drm/msm/msm_drv.h
+>> +++ b/drivers/gpu/drm/msm/msm_drv.h
+>> @@ -344,6 +344,7 @@ void msm_dsi_snapshot(struct msm_disp_state *disp_state, struct msm_dsi *msm_dsi
+>>   bool msm_dsi_is_cmd_mode(struct msm_dsi *msm_dsi);
+>>   bool msm_dsi_is_bonded_dsi(struct msm_dsi *msm_dsi);
+>>   bool msm_dsi_is_master_dsi(struct msm_dsi *msm_dsi);
+>> +bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi);
+>>   struct drm_dsc_config *msm_dsi_get_dsc_config(struct msm_dsi *msm_dsi);
+>>   #else
+>>   static inline void __init msm_dsi_register(void)
+>> @@ -373,7 +374,10 @@ static inline bool msm_dsi_is_master_dsi(struct msm_dsi *msm_dsi)
+>>   {
+>>   	return false;
+>>   }
+>> -
+>> +static inline bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi)
+>> +{
+>> +	return false;
+>> +}
+> 
+> Only this default inline implementation is defined, but the function is
+> declared in this commit.  Since there's no real functional
+> implementation yet your commit should clarify that it comes later (in a
+> followup commit in the same series?  I can't know because I am reviewing
+> this series linearly from start to finish...) or reorder the patches so
+> that this lack of clarity is circumvented entirely.
 
-diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
-index 3918f2a67970..ed4d9fa730d6 100644
---- a/arch/arm64/include/asm/processor.h
-+++ b/arch/arm64/include/asm/processor.h
-@@ -162,6 +162,7 @@ struct thread_struct {
- 	unsigned int		fpsimd_cpu;
- 	void			*sve_state;	/* SVE registers, if any */
- 	void			*sme_state;	/* ZA and ZT state, if any */
-+	unsigned int		sve_timeout;    /* For SVE trap suppression */
- 	unsigned int		vl[ARM64_VEC_MAX];	/* vector length */
- 	unsigned int		vl_onexec[ARM64_VEC_MAX]; /* vl after next exec */
- 	unsigned long		fault_address;	/* fault info */
-diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
-index 75c37b1c55aa..d5b0222baed6 100644
---- a/arch/arm64/kernel/fpsimd.c
-+++ b/arch/arm64/kernel/fpsimd.c
-@@ -381,6 +381,7 @@ static void task_fpsimd_load(void)
- {
- 	bool restore_sve_regs = false;
- 	bool restore_ffr;
-+	unsigned long sve_vq_minus_one;
- 
- 	WARN_ON(!system_supports_fpsimd());
- 	WARN_ON(!have_cpu_fpsimd_context());
-@@ -388,18 +389,12 @@ static void task_fpsimd_load(void)
- 	if (system_supports_sve() || system_supports_sme()) {
- 		switch (current->thread.fp_type) {
- 		case FP_STATE_FPSIMD:
--			/* Stop tracking SVE for this task until next use. */
--			if (test_and_clear_thread_flag(TIF_SVE))
--				sve_user_disable();
- 			break;
- 		case FP_STATE_SVE:
- 			if (!thread_sm_enabled(&current->thread) &&
- 			    !WARN_ON_ONCE(!test_and_set_thread_flag(TIF_SVE)))
- 				sve_user_enable();
- 
--			if (test_thread_flag(TIF_SVE))
--				sve_set_vq(sve_vq_from_vl(task_get_sve_vl(current)) - 1);
--
- 			restore_sve_regs = true;
- 			restore_ffr = true;
- 			break;
-@@ -418,6 +413,15 @@ static void task_fpsimd_load(void)
- 		}
- 	}
- 
-+	/*
-+	 * If SVE has been enabled we may keep it enabled even if
-+	 * loading only FPSIMD state, so always set the VL.
-+	 */
-+	if (system_supports_sve() && test_thread_flag(TIF_SVE)) {
-+		sve_vq_minus_one = sve_vq_from_vl(task_get_sve_vl(current)) - 1;
-+		sve_set_vq(sve_vq_minus_one);
-+	}
-+
- 	/* Restore SME, override SVE register configuration if needed */
- 	if (system_supports_sme()) {
- 		unsigned long sme_vl = task_get_sme_vl(current);
-@@ -444,6 +448,25 @@ static void task_fpsimd_load(void)
- 	} else {
- 		WARN_ON_ONCE(current->thread.fp_type != FP_STATE_FPSIMD);
- 		fpsimd_load_state(&current->thread.uw.fpsimd_state);
-+
-+		/*
-+		 * If the task had been using SVE we keep it enabled
-+		 * when loading FPSIMD only state for a number of
-+		 * times to minimise overhead for tasks actively using
-+		 * SVE, disabling it periodicaly to enusre that tasks
-+		 * that use SVE intermittently do eventually avoid the
-+		 * overhead of carrying SVE state.  The timeout is
-+		 * initialised when we take a SVE trap in in do_sve_acc().
-+		 */
-+		if (system_supports_sve() && test_thread_flag(TIF_SVE)) {
-+			if (!current->thread.sve_timeout) {
-+				clear_thread_flag(TIF_SVE);
-+				sve_user_disable();
-+			} else {
-+				current->thread.sve_timeout--;
-+				sve_flush_live(true, sve_vq_minus_one);
-+			}
-+		}
- 	}
- }
- 
-@@ -1471,6 +1494,13 @@ void do_sve_acc(unsigned long esr, struct pt_regs *regs)
- 
- 	get_cpu_fpsimd_context();
- 
-+	/*
-+	 * We will keep SVE enabled when loading FPSIMD only state
-+	 * this many times to minimise traps when userspace is
-+	 * actively using SVE.
-+	 */
-+	current->thread.sve_timeout = 64;
-+
- 	if (test_and_set_thread_flag(TIF_SVE))
- 		WARN_ON(1); /* SVE access shouldn't have trapped */
- 
-@@ -1654,6 +1684,7 @@ void fpsimd_flush_thread(void)
- 		/* Defer kfree() while in atomic context */
- 		sve_state = current->thread.sve_state;
- 		current->thread.sve_state = NULL;
-+		current->thread.sve_timeout = 0;
- 
- 		fpsimd_flush_thread_vl(ARM64_VEC_SVE);
- 	}
+This was so that there wouldn't be a compiler error in cases where 
+CONFIG_MSM_DSI=n (since DPU support is added before DSI support).
 
----
-base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
-change-id: 20230807-arm64-sve-trap-mitigation-2e7e2663c849
+Thanks,
 
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
+Jessica Zhang
 
+> 
+> - Marijn
+> 
+>>   static inline struct drm_dsc_config *msm_dsi_get_dsc_config(struct msm_dsi *msm_dsi)
+>>   {
+>>   	return NULL;
+>>
+>> -- 
+>> 2.41.0
+>>
