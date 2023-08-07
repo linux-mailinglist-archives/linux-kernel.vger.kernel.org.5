@@ -2,114 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 314BF772B6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872BC772B71
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbjHGQru convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Aug 2023 12:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53268 "EHLO
+        id S231878AbjHGQsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbjHGQrt (ORCPT
+        with ESMTP id S229696AbjHGQsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:47:49 -0400
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA751721;
-        Mon,  7 Aug 2023 09:47:48 -0700 (PDT)
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-56d0deeca09so732070eaf.0;
-        Mon, 07 Aug 2023 09:47:48 -0700 (PDT)
+        Mon, 7 Aug 2023 12:48:37 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3208999
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:48:36 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-56d8bc0d909so733912eaf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:48:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691426915; x=1692031715;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8/XFpb9Q8SxuX4Bb0HzWApCl0ETedoYgIgDWXMebOdI=;
+        b=JRv3FIduq6+iAKQo+88VdtQNqPMnEcW4wMVXdNwqZFEN2iMSHtgfvNqHy5Ck6bgYPV
+         F8LcORa/HoiITMQyZepn1unEb0zD78crosXXir4GYrHNkZRsBGHmVioe4tRH1bqoQEXn
+         zgCakowf1RxZ4c7jmEa9wCvIHVZzHYe885V/X5P2MzhoIM6tneK05nqGVTomjrLNzpCT
+         boPNCd50O5WS70LDNR/FRbEZ607W7FjZoBl+GQo/BB2K7ODtc+Ktm9ztj6IxMfux7R/v
+         oEuRuAni4FUdp10UXV7vJuph8LyzhheDCXlu7ieshfJ/3RPsqNmvoUednUni6/0Hc6+G
+         Fcnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691426867; x=1692031667;
+        d=1e100.net; s=20221208; t=1691426915; x=1692031715;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XoAePLIfboXCizIZO3iLMpP4Wv3M5byMYzrnW11izx0=;
-        b=jABXFhv8mwZ5J2YgbwNAyg470B1dEuDse5Dim1KNj2Bgz2J7EuzrUNCvnVcFBi4+Zz
-         gu8wZidLqbVziB6wzXYZTZ1N73o1TUCYcJsVqY12NJ/ql3Gvf9rGK907iI+c+scXfdrD
-         hT2a4xHx12c755v5RUyfoJERqrU7rthxnRw9alsBiZeAu1VCyziHLjZClXO0xG2NxjfA
-         X7TsboDw7K4quWHubb0ulJ136T6oyH9bZAmK8AEHNfzTvdZpeaYDiGppeVEpqVmemd9I
-         aO5EuqR17JyZR1BWMb130P76DOHRPAlwAHF+WZWpqvWb1glIepssHETaGAheC+T5r7Km
-         CY7Q==
-X-Gm-Message-State: ABy/qLYo375bQ3jskscD+yVKYms8S7+Xd7KldFLDW+P2iYGIU3uyCdBD
-        3ujP3fl8cVmROvbw9VqAC2ZbZtvYMMoDJOZaDuA=
-X-Google-Smtp-Source: APBJJlHeESdiwSjHbGHne2Z791YC9l9SiiKkVWT+mAOKl06WXmu42KW5Z1OqbYdZGc6M4LO2hInNf022AlXpb6xBv+Q=
-X-Received: by 2002:a4a:cf14:0:b0:569:a08a:d9c5 with SMTP id
- l20-20020a4acf14000000b00569a08ad9c5mr20658543oos.0.1691426867329; Mon, 07
- Aug 2023 09:47:47 -0700 (PDT)
+        bh=8/XFpb9Q8SxuX4Bb0HzWApCl0ETedoYgIgDWXMebOdI=;
+        b=azA7SdoVXPVSJZT9PgI6/yOUbX1fjacnSjWhTxpmh9oWT/OZBigNJSgkPPu123KAD1
+         K9OR9QMNDyM8nteAzFeHBzBMUCvdyMYfHqoecOdTS4YTG9EVGmpfs2aW23pqLgfMdKwx
+         nI5b45i6/P9iMTvvqKqOJQsuQjSBwfDRehMwDEUnJNDOQATzVxrql0gLOm/UaZ02q9ga
+         YPt7AfcRp//QxdHcwAGlmSapFpHbN4edRs8q0VL/xX4ad55Un3U1hxPUAIyH0MzCodeh
+         408bONBgqnzzBXAZD5TaWMh0ploETn+gUheQt+ZZBhKX9C4HPA94UEfB01Pooq4bI+2M
+         JSIA==
+X-Gm-Message-State: AOJu0YzI1+QUxnFVAVOyXJtLbK0/3DswoJf+5jRtJvt1uXeEgHOYHW8A
+        SSiEfYvFYPRLiHqLx0CTi4RZjmpvoQhKnJjcHZU=
+X-Google-Smtp-Source: AGHT+IEHDP4Fk56b/IDFNDYPsywp6rtzDsPvd4tyvoY1127dvwwNOtZRqIx0ZoqYS1/qV0w36xVPjxLEYQ86n8O2rcg=
+X-Received: by 2002:a4a:929a:0:b0:56c:7a55:f6b3 with SMTP id
+ i26-20020a4a929a000000b0056c7a55f6b3mr8516267ooh.5.1691426915440; Mon, 07 Aug
+ 2023 09:48:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <5712331.DvuYhMxLoT@kreacher> <CAJZ5v0jTG-oqV+misnP-=W5aq0S9X631kW9EhKNEn1VJQqwL2g@mail.gmail.com>
- <e3dc9417-626d-bae2-c016-36e14914c9b8@linutronix.de>
-In-Reply-To: <e3dc9417-626d-bae2-c016-36e14914c9b8@linutronix.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 7 Aug 2023 18:47:36 +0200
-Message-ID: <CAJZ5v0jX1_yTG6CxnPNVEMf8mMEKc33jpoWoHkreMDZLPK8UcA@mail.gmail.com>
-Subject: Re: [RFT][PATCH v2 0/3] cpuidle: teo: Do not check timers
- unconditionally every time
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Kajetan Puchalski <kajetan.puchalski@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
+References: <20230801093656.7761-1-sunran001@208suo.com>
+In-Reply-To: <20230801093656.7761-1-sunran001@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 7 Aug 2023 12:48:24 -0400
+Message-ID: <CADnq5_N8PzxV27cpYsw9MBe2dDvt7Ba7Pjf1d_O8hpEgSjJZCg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/pm/powerplay/hwmgr/hwmgr: Clean up errors in hwmgr.c
+To:     Ran Sun <sunran001@208suo.com>
+Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 5:38 PM Anna-Maria Behnsen
-<anna-maria@linutronix.de> wrote:
->
-> On Thu, 3 Aug 2023, Rafael J. Wysocki wrote:
->
-> > On Thu, Aug 3, 2023 at 11:12 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> > >
-> > > Hi Folks,
-> > >
-> > > This is the second iteration of:
-> > >
-> > > https://lore.kernel.org/linux-pm/4511619.LvFx2qVVIh@kreacher/
-> > >
-> > > with an additional patch.
-> > >
-> > > There are some small modifications of patch [1/3] and the new
-> > > patch causes governor statistics to play a role in deciding whether
-> > > or not to stop the scheduler tick.
-> > >
-> > > Testing would be much appreciated!
-> >
-> > For convenience, this series is now available in the following git branch:
-> >
-> > git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
-> >  pm-cpuidle-teo
-> >
->
-> Gauthams tests and the distribution of idle time durations looks pretty
-> good. Also the prevention of calling tick_nohz_get_sleep_length() is very
-> nice (21477 calls of tick_nohz_next_event() and the tick was stopped 2670
-> times).
->
-> Here is the deviation of idle time durations (based on your branch):
->
-> Idle Total              2670    100.00%
-> x >= 4ms                2537    95.02%
-> 4ms> x >= 2ms           19      0.71%
-> 2ms > x >= 1ms          10      0.37%
-> 1ms > x >= 500us        7       0.26%
-> 500us > x >= 250us      6       0.22%
-> 250us > x >=100us       13      0.49%
-> 100us > x >= 50us       17      0.64%
-> 50us > x >= 25us        25      0.94%
-> 25us > x >= 10us        22      0.82%
-> 10us > x > 5us          9       0.34%
-> 5us > x                 5       0.19%
+Applied.  Thanks!
 
-Thanks a lot for the data!
-
-Can I add a Tested-by: tag from you to this series?
+On Tue, Aug 1, 2023 at 5:37=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
+:
+>
+> Fix the following errors reported by checkpatch:
+>
+> ERROR: space prohibited after that '~' (ctx:WxW)
+> ERROR: spaces required around that '||' (ctx:VxW)
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>  drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c b/drivers/gpu=
+/drm/amd/pm/powerplay/hwmgr/hwmgr.c
+> index f2cef0930aa9..2b5ac21fee39 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c
+> @@ -120,7 +120,7 @@ int hwmgr_early_init(struct pp_hwmgr *hwmgr)
+>                 case CHIP_TOPAZ:
+>                         hwmgr->smumgr_funcs =3D &iceland_smu_funcs;
+>                         topaz_set_asic_special_caps(hwmgr);
+> -                       hwmgr->feature_mask &=3D ~ (PP_VBI_TIME_SUPPORT_M=
+ASK |
+> +                       hwmgr->feature_mask &=3D ~(PP_VBI_TIME_SUPPORT_MA=
+SK |
+>                                                 PP_ENABLE_GFX_CG_THRU_SMU=
+);
+>                         hwmgr->pp_table_version =3D PP_TABLE_V0;
+>                         hwmgr->od_enabled =3D false;
+> @@ -133,7 +133,7 @@ int hwmgr_early_init(struct pp_hwmgr *hwmgr)
+>                 case CHIP_FIJI:
+>                         hwmgr->smumgr_funcs =3D &fiji_smu_funcs;
+>                         fiji_set_asic_special_caps(hwmgr);
+> -                       hwmgr->feature_mask &=3D ~ (PP_VBI_TIME_SUPPORT_M=
+ASK |
+> +                       hwmgr->feature_mask &=3D ~(PP_VBI_TIME_SUPPORT_MA=
+SK |
+>                                                 PP_ENABLE_GFX_CG_THRU_SMU=
+);
+>                         break;
+>                 case CHIP_POLARIS11:
+> @@ -195,7 +195,7 @@ int hwmgr_early_init(struct pp_hwmgr *hwmgr)
+>
+>  int hwmgr_sw_init(struct pp_hwmgr *hwmgr)
+>  {
+> -       if (!hwmgr|| !hwmgr->smumgr_funcs || !hwmgr->smumgr_funcs->smu_in=
+it)
+> +       if (!hwmgr || !hwmgr->smumgr_funcs || !hwmgr->smumgr_funcs->smu_i=
+nit)
+>                 return -EINVAL;
+>
+>         phm_register_irq_handlers(hwmgr);
+> --
+> 2.17.1
+>
