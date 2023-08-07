@@ -2,189 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C86ED772A53
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD92772A5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbjHGQRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
+        id S230498AbjHGQSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjHGQRK (ORCPT
+        with ESMTP id S229824AbjHGQSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:17:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432E810CF;
-        Mon,  7 Aug 2023 09:17:09 -0700 (PDT)
-Date:   Mon, 07 Aug 2023 16:17:07 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691425027;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Mon, 7 Aug 2023 12:18:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE2F10E3
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:17:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691425061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=r1J6/XJHA6bwbRRigYF+K38WbO59nZ7IUa3YfUFyvtM=;
-        b=3g5LqPra0pdThL+PNXAA4M+FT9DFKSGjDficXnuypV4czn9GytEIKs9lu83nWTJ4zm+LG5
-        ycao8T9X4swT/+2qhqFKRPiKy2SzMtoLaTUesE7NU18z2FVzS/3pMjtCi6jR2pIppri1qn
-        xIZF4zM5uX2o2p41H0C4Tt+RJkbRKA0c3qQS/Y0qNoqnpw3r0WvbGAC5wyvgUzfBYDo/vp
-        uV+QqYvegMr4GvhjwfMXocqP53RIohELfhnfBy/Mvw4r1kwUSeG7Mh36SiyTFDje0g6AdO
-        +Ay6xAP4l+LDf+GF8dc1ZxOv3tUkZMmWuMFZV+J9P6TdYy/wvrLMRIgbv4o2Eg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691425027;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r1J6/XJHA6bwbRRigYF+K38WbO59nZ7IUa3YfUFyvtM=;
-        b=6ZqrdrHPAERu1N9ypC7FehYPYwIMptyGtZLlARNovd2NMAc5FBhzgx2AabxnnFO0bQvKPk
-        I0UhbvApgULXdAAg==
-From:   "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/sev: Do not try to parse for the CC blob on
- non-AMD hardware
-Cc:     Tao Liu <ltao@redhat.com>, "Borislav Petkov (AMD)" <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>, <stable@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230601072043.24439-1-ltao@redhat.com>
-References: <20230601072043.24439-1-ltao@redhat.com>
+        bh=f+TOwkD920NNblLgbScyx3AiTipyCC5JcEGUcFdBUPs=;
+        b=QP/v9hKMM9+R0Pp/4ZFCOLCxvcAPYs9SXpITRRb74ncS0vNXIkTz6JqxEEztNeS6+Mkiy9
+        Usg0G/NabyTVuovNdiG6UiFc7V0eEXOhezQ8C901c0o2cZi5DkffD2CIFPH6K1/m5U6Wld
+        LBfnkzhIFO7XjhicQAMuuWlA4wPtbRI=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-83-rtAcrjWdNI2ShbD_mTbAbw-1; Mon, 07 Aug 2023 12:17:37 -0400
+X-MC-Unique: rtAcrjWdNI2ShbD_mTbAbw-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-40c10c73650so54861731cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:17:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691425057; x=1692029857;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f+TOwkD920NNblLgbScyx3AiTipyCC5JcEGUcFdBUPs=;
+        b=CGnLinj0zPJZnKlaQ43FAYHzfopTuPRqHErueh0Zl2dUX3OSMnADwunDNWrBvW/aCe
+         1hcjNUj3Ywfy83CpCUtnPEL0cEeTgM6no8ESJbuDCIBIo3BDDB46i689fXlz9zGyPQh0
+         /x9CWXaA4dTNZEURiJlZlsRuwL6ZD5WD4HPM2Y3O/jL1D+t29jXWq8sWsWJkMUEwoR2e
+         QiPzMilupd9AANWo2tDl1orMTN+GVdrzcvs/WFwExYm3DHIQz/wme8twhcW9JtfI22z0
+         6HNM01hdrs0IoBW5Y8eMRa3drYnKyNuU7/ZTUR7itdRE6ZnhkxLGb/S0bRom8HEz6aVg
+         tqNw==
+X-Gm-Message-State: AOJu0YxOtL0et5lUqONEpXlUEETlxEiUKTQniNLtrn1RbPu4tTeuO22b
+        E+MFp8loGFd6CGjNuljaqpV0z31TiPQLFWLM1AuYqbdjpqecD/yeXpu/4bPDRr03nfj7PimkkeM
+        ZWAMaEAVjAdZfzjesP/S/IwDkwO7zE3N95WO4le1y
+X-Received: by 2002:ac8:5a45:0:b0:403:72fa:62fc with SMTP id o5-20020ac85a45000000b0040372fa62fcmr12784376qta.68.1691425057283;
+        Mon, 07 Aug 2023 09:17:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFlzwO53YEgQjvZs9+YZkXcApeDo8pVppvR3nJ2N8I8AKCEXc4gO89XVeJx6MYXSmefpt5g6JVcXHnFRGRxlSI=
+X-Received: by 2002:ac8:5a45:0:b0:403:72fa:62fc with SMTP id
+ o5-20020ac85a45000000b0040372fa62fcmr12784353qta.68.1691425056956; Mon, 07
+ Aug 2023 09:17:36 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <169142502710.28540.13313883143989495944.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230804084900.1135660-2-leobras@redhat.com> <20230804084900.1135660-6-leobras@redhat.com>
+ <CAJF2gTTOT3_3K_cWNY9n_DgRoPhYEhBLno=bh57r9D--OavREQ@mail.gmail.com>
+ <CAJ6HWG4gy7HV11-cdoB0VAP2z1Zw-zyJhNRpJ1eDMmrkvnob3w@mail.gmail.com> <CAJF2gTQY5RX87Zo8HcM1Og-Oc6vd5Vyj97KL-o6UcqMaT4oxng@mail.gmail.com>
+In-Reply-To: <CAJF2gTQY5RX87Zo8HcM1Og-Oc6vd5Vyj97KL-o6UcqMaT4oxng@mail.gmail.com>
+From:   Leonardo Bras Soares Passos <leobras@redhat.com>
+Date:   Mon, 7 Aug 2023 13:17:22 -0300
+Message-ID: <CAJ6HWG4apf5D_H43Kf7+E9pA1UmcFe1mV6YGuvk0Q9SH_ZFDdw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 4/5] riscv/cmpxchg: Implement cmpxchg for variables
+ of size 1 and 2
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Sat, Aug 5, 2023 at 1:24=E2=80=AFAM Guo Ren <guoren@kernel.org> wrote:
+>
+> On Sat, Aug 5, 2023 at 11:14=E2=80=AFAM Leonardo Bras Soares Passos
+> <leobras@redhat.com> wrote:
+> >
+> > Hello Guo Ren, thanks for the feedback!
+> >
+> > On Fri, Aug 4, 2023 at 2:45=E2=80=AFPM Guo Ren <guoren@kernel.org> wrot=
+e:
+> > >
+> > > On Fri, Aug 4, 2023 at 4:49=E2=80=AFAM Leonardo Bras <leobras@redhat.=
+com> wrote:
+> > > >
+> > > > cmpxchg for variables of size 1-byte and 2-bytes is not yet availab=
+le for
+> > > > riscv, even though its present in other architectures such as arm64=
+ and
+> > > > x86. This could lead to not being able to implement some locking me=
+chanisms
+> > > > or requiring some rework to make it work properly.
+> > > >
+> > > > Implement 1-byte and 2-bytes cmpxchg in order to achieve parity wit=
+h other
+> > > > architectures.
+> > > >
+> > > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > > > ---
+> > > >  arch/riscv/include/asm/cmpxchg.h | 35 ++++++++++++++++++++++++++++=
+++++
+> > > >  1 file changed, 35 insertions(+)
+> > > >
+> > > > diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/=
+asm/cmpxchg.h
+> > > > index 5a07646fae65..dfb433ac544f 100644
+> > > > --- a/arch/riscv/include/asm/cmpxchg.h
+> > > > +++ b/arch/riscv/include/asm/cmpxchg.h
+> > > > @@ -72,6 +72,36 @@
+> > > >   * indicated by comparing RETURN with OLD.
+> > > >   */
+> > > >
+> > > > +#define __arch_cmpxchg_mask(sc_sfx, prepend, append, r, p, o, n)  =
+     \
+> > > > +({                                                                =
+     \
+> > > > +       /* Depends on 2-byte variables being 2-byte aligned */     =
+     \
+> > > > +       ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;          =
+       \
+> > > > +       ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1=
+, 0)   \
+> > > > +                       << __s;                                    =
+     \
+> > > > +       ulong __newx =3D (ulong)(n) << __s;                        =
+       \
+> > > > +       ulong __oldx =3D (ulong)(o) << __s;                        =
+       \
+> > > > +       ulong __retx;                                              =
+     \
+> > > > +       register unsigned int __rc;                                =
+     \
+> > > > +                                                                  =
+     \
+> > > > +       __asm__ __volatile__ (                                     =
+     \
+> > > > +               prepend                                            =
+     \
+> > > > +               "0:     lr.w %0, %2\n"                             =
+     \
+> > > > +               "       and  %0, %0, %z5\n"                        =
+     \
+> > > > +               "       bne  %0, %z3, 1f\n"                        =
+     \
+> >
+> > > bug:
+> > > -               "       and  %0, %0, %z5\n"                          =
+   \
+> > > -               "       bne  %0, %z3, 1f\n"                          =
+   \
+> > > +               "       and  %1, %0, %z5\n"                          =
+   \
+> > > +               "       bne  %1, %z3, 1f\n"                          =
+   \
+> > > Your code breaks the %0.
+> >
+> > What do you mean by breaks here?
+> >
+> > In the end of this macro, I intended  to have __retx =3D (*p & __mask)
+> > which means the value is clean to be rotated at the end of the macro
+> > (no need to apply the mask again): r =3D __ret >> __s;
+> >
+> > Also, I assumed we are supposed to return the same variable type
+> > as the pointer, so this is valid:
+> > u8 a, *b, c;
+> > a =3D xchg(b, c);
+> >
+> > Is this correct?
+> I missed your removing "__ret & mask" at the end. So this may not the pro=
+blem.
+>
+> Your patch can't boot. After chewing your code for several hours, I
+> found a problem:
+> diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cm=
+pxchg.h
+> index 943f094375c7..67bcce63b267 100644
+> --- a/arch/riscv/include/asm/cmpxchg.h
+> +++ b/arch/riscv/include/asm/cmpxchg.h
+> @@ -14,6 +14,7 @@
+>  #define __arch_xchg_mask(prepend, append, r, p, n)                     \
+>  ({                                                                     \
+>         /* Depends on 2-byte variables being 2-byte aligned */          \
+> +       volatile ulong *__p =3D (ulong *)((ulong)(p) & ~0x3);            =
+ \
 
-Commit-ID:     bee6cf1a80b54548a039e224c651bb15b644a480
-Gitweb:        https://git.kernel.org/tip/bee6cf1a80b54548a039e224c651bb15b644a480
-Author:        Borislav Petkov (AMD) <bp@alien8.de>
-AuthorDate:    Sun, 16 Jul 2023 20:22:20 +02:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 07 Aug 2023 18:05:13 +02:00
+Wow, I totally missed this one: I should not assume the processor
+behavior on unaligned lr/sc.
+Thanks for spotting this :)
 
-x86/sev: Do not try to parse for the CC blob on non-AMD hardware
+>         ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;                =
+ \
+>         ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)  =
+ \
+>                         << __s;                                         \
+> @@ -29,7 +30,7 @@
+>                "        sc.w %1, %1, %2\n"                              \
+>                "        bnez %1, 0b\n"                                  \
+>                append                                                   \
+> -              : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))           =
+   \
+> +              : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(__p))         =
+   \
+>                : "rJ" (__newx), "rJ" (~__mask)                          \
+>                : "memory");                                             \
+>                                                                         \
+> @@ -106,6 +107,7 @@
+>  #define __arch_cmpxchg_mask(sc_sfx, prepend, append, r, p, o, n)       \
+>  ({                                                                     \
+>         /* Depends on 2-byte variables being 2-byte aligned */          \
+> +       volatile ulong *__p =3D (ulong *)((ulong)(p) & ~0x3);            =
+ \
+>         ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;                =
+ \
+>         ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)  =
+ \
+>                         << __s;                                         \
+> @@ -125,7 +127,7 @@
+>                 "       bnez %1, 0b\n"                                  \
+>                 append                                                  \
+>                 "1:\n"                                                  \
+> -               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))          =
+   \
+> +               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(__p))        =
+   \
+>                 : "rJ" ((long)__oldx), "rJ" (__newx),                   \
+>                   "rJ" (__mask), "rJ" (~__mask)                         \
+>                 : "memory");                                            \
+>
+> But the lkvm-static still can't boot with paravirt_spinlock .... Are
+> there any atomic tests in the Linux?
 
-Tao Liu reported a boot hang on an Intel Atom machine due to an unmapped
-EFI config table. The reason being that the CC blob which contains the
-CPUID page for AMD SNP guests is parsed for before even checking
-whether the machine runs on AMD hardware.
+I recall reading something about 'locktorture' or so, not sure if useful:
 
-Usually that's not a problem on !AMD hw - it simply won't find the CC
-blob's GUID and return. However, if any parts of the config table
-pointers array is not mapped, the kernel will #PF very early in the
-decompressor stage without any opportunity to recover.
+https://docs.kernel.org/locking/locktorture.html
 
-Therefore, do a superficial CPUID check before poking for the CC blob.
-This will fix the current issue on real hardware. It would also work as
-a guest on a non-lying hypervisor.
+>
+> I found you use some "register int variables". Would it cause the problem=
+?
 
-For the lying hypervisor, the check is done again, *after* parsing the
-CC blob as the real CPUID page will be present then.
+Honestly, not sure.
+I will try inspecting the generated asm for any unexpected changes
+compared to your version.
 
-Clear the #VC handler in case SEV-{ES,SNP} hasn't been detected, as
-a precaution.
+>
+> You can reference this file, and it has passed the lock torture test:
+> https://github.com/guoren83/linux/blob/sg2042-master-qspinlock-64ilp32_v4=
+/arch/riscv/include/asm/cmpxchg.h
+>
+> I also merged your patches with the qspinlock series: (Use the above
+> cmpxchg.h the lkvm would run normally.)
+> https://github.com/guoren83/linux/tree/qspinlock_v11
 
-Fixes: c01fce9cef84 ("x86/compressed: Add SEV-SNP feature detection/setup")
-Reported-by: Tao Liu <ltao@redhat.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Tested-by: Tao Liu <ltao@redhat.com>
-Cc: <stable@kernel.org>
-Link: https://lore.kernel.org/r/20230601072043.24439-1-ltao@redhat.com
----
- arch/x86/boot/compressed/idt_64.c |  9 ++++++-
- arch/x86/boot/compressed/sev.c    | 37 ++++++++++++++++++++++++++++--
- 2 files changed, 43 insertions(+), 3 deletions(-)
+Thanks!
 
-diff --git a/arch/x86/boot/compressed/idt_64.c b/arch/x86/boot/compressed/idt_64.c
-index 6debb81..3cdf94b 100644
---- a/arch/x86/boot/compressed/idt_64.c
-+++ b/arch/x86/boot/compressed/idt_64.c
-@@ -63,7 +63,14 @@ void load_stage2_idt(void)
- 	set_idt_entry(X86_TRAP_PF, boot_page_fault);
- 
- #ifdef CONFIG_AMD_MEM_ENCRYPT
--	set_idt_entry(X86_TRAP_VC, boot_stage2_vc);
-+	/*
-+	 * Clear the second stage #VC handler in case guest types
-+	 * needing #VC have not been detected.
-+	 */
-+	if (sev_status & BIT(1))
-+		set_idt_entry(X86_TRAP_VC, boot_stage2_vc);
-+	else
-+		set_idt_entry(X86_TRAP_VC, NULL);
- #endif
- 
- 	load_boot_idt(&boot_idt_desc);
-diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
-index 09dc8c1..c3e343b 100644
---- a/arch/x86/boot/compressed/sev.c
-+++ b/arch/x86/boot/compressed/sev.c
-@@ -405,12 +405,45 @@ void sev_enable(struct boot_params *bp)
- 		bp->cc_blob_address = 0;
- 
- 	/*
-+	 * Do an initial SEV capability check before snp_init() which
-+	 * loads the CPUID page and the same checks afterwards are done
-+	 * without the hypervisor and are trustworthy.
-+	 *
-+	 * If the HV fakes SEV support, the guest will crash'n'burn
-+	 * which is good enough.
-+	 */
-+
-+	/* Check for the SME/SEV support leaf */
-+	eax = 0x80000000;
-+	ecx = 0;
-+	native_cpuid(&eax, &ebx, &ecx, &edx);
-+	if (eax < 0x8000001f)
-+		return;
-+
-+	/*
-+	 * Check for the SME/SEV feature:
-+	 *   CPUID Fn8000_001F[EAX]
-+	 *   - Bit 0 - Secure Memory Encryption support
-+	 *   - Bit 1 - Secure Encrypted Virtualization support
-+	 *   CPUID Fn8000_001F[EBX]
-+	 *   - Bits 5:0 - Pagetable bit position used to indicate encryption
-+	 */
-+	eax = 0x8000001f;
-+	ecx = 0;
-+	native_cpuid(&eax, &ebx, &ecx, &edx);
-+	/* Check whether SEV is supported */
-+	if (!(eax & BIT(1)))
-+		return;
-+
-+	/*
- 	 * Setup/preliminary detection of SNP. This will be sanity-checked
- 	 * against CPUID/MSR values later.
- 	 */
- 	snp = snp_init(bp);
- 
--	/* Check for the SME/SEV support leaf */
-+	/* Now repeat the checks with the SNP CPUID table. */
-+
-+	/* Recheck the SME/SEV support leaf */
- 	eax = 0x80000000;
- 	ecx = 0;
- 	native_cpuid(&eax, &ebx, &ecx, &edx);
-@@ -418,7 +451,7 @@ void sev_enable(struct boot_params *bp)
- 		return;
- 
- 	/*
--	 * Check for the SME/SEV feature:
-+	 * Recheck for the SME/SEV feature:
- 	 *   CPUID Fn8000_001F[EAX]
- 	 *   - Bit 0 - Secure Memory Encryption support
- 	 *   - Bit 1 - Secure Encrypted Virtualization support
+I should reply as soon as I find anything.
+
+Best regards,
+Leo
+
+>
+>
+>
+> >
+> > > > +               append                                             =
+     \
+> > > > +               "1:\n"                                             =
+     \
+> > > > +               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))    =
+         \
+> > > > +               : "rJ" ((long)__oldx), "rJ" (__newx),              =
+     \
+> > > > +                 "rJ" (__mask), "rJ" (~__mask)                    =
+     \
+> > > > +               : "memory");                                       =
+     \
+> > > > +                                                                  =
+     \
+> > > > +       r =3D (__typeof__(*(p)))(__retx >> __s);                   =
+       \
+> > > > +})
+> > > > +
+> > > >
+> > > >  #define __arch_cmpxchg(lr_sfx, sc_sfx, prepend, append, r, p, co, =
+o, n)        \
+> > > >  ({                                                                =
+     \
+> > > > @@ -98,6 +128,11 @@
+> > > >         __typeof__(*(ptr)) __ret;                                  =
+     \
+> > > >                                                                    =
+     \
+> > > >         switch (sizeof(*__ptr)) {                                  =
+     \
+> > > > +       case 1:                                                    =
+     \
+> > > > +       case 2:                                                    =
+     \
+> > > > +               __arch_cmpxchg_mask(sc_sfx, prepend, append,       =
+     \
+> > > > +                                       __ret, __ptr, __old, __new)=
+;    \
+> > > > +               break;                                             =
+     \
+> > > >         case 4:                                                    =
+     \
+> > > >                 __arch_cmpxchg(".w", ".w" sc_sfx, prepend, append, =
+     \
+> > > >                                 __ret, __ptr, (long), __old, __new)=
+;    \
+> > > > --
+> > > > 2.41.0
+> > > >
+> > >
+> > >
+> > > --
+> > > Best Regards
+> > >  Guo Ren
+> > >
+> >
+>
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+
