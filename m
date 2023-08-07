@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29977772A9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5D4772AA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231535AbjHGQZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
+        id S231366AbjHGQ0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbjHGQZv (ORCPT
+        with ESMTP id S230088AbjHGQ03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:25:51 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D0F10CF
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:25:47 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1a1fa977667so3582969fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:25:47 -0700 (PDT)
+        Mon, 7 Aug 2023 12:26:29 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7FDC9
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:26:28 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-56ce1bd7fc4so3274892eaf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:26:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691425546; x=1692030346;
+        d=gmail.com; s=20221208; t=1691425588; x=1692030388;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0WiRoo0vL6kJ0w8/dkfqWYfJVOit9SFqabx1jj5i4xE=;
-        b=MvZlnZBWLkQV8gMSfR7hfCYwLdRhK3YICmTNiPt26cN+I+OrIUHngzBL+nCym/cPRX
-         NdS2LnVSU9qr41ss0lf+5GBtc4Gwk1o2KvWB3WuBj2yOBk9ZVBz0CzCABKDKWb8TYci9
-         4usW7ZHcm40vToln4809gQlVLasWfqPGB+DZGkJj5Mc8maib8t1a/0Tu7w0bmeqk9mDq
-         bpKd+Omc4SGwT+76iqWRTidAWW54Fa/idbWR6lNei2QM7D+XLh1Dlrzs2rnrP3umd+FT
-         fKk9LPRFPMYeWMkNrm5OS8zbcmtIHYWrKF2ZSKsrvfstf6EQe4P0PcmA92qhCxrhIk57
-         Wa8Q==
+        bh=e+y0EPgsXPYGqDhgU0ly4Js9jdJ8CVWq1QGImohPTzg=;
+        b=U26wNKBXF4TXIYytCM7pRJjJtOffhyxeALBgdZu6WaxOb8+SG/25jUDmFTbHxPnyYZ
+         lt+MTlSgweJIXIdbjj//oJAVAAywyV+zHEN+wq/ySVgOIhApxP4nYF82RnxmVytwABe2
+         U0wFcJ4GJ9mzWAVr3wAMUrXw6qMWXGszMsUXm73xSHZFxB7Ywv+QXEnbZGYoYdJSLDR9
+         Xp3jqle9ZgMQ0TG3RdtJCvPSKvQ8+WxhZdhFl3FGhly7/4aQXf5vyHTnXqTfNsQSz2D5
+         FytNZmrc2ncRWZ7zshSAzaIh4nDHaEhcX7qwm8NnGVBBrMgUi19I9XVs8lU1kKTKBpwg
+         2Oow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691425546; x=1692030346;
+        d=1e100.net; s=20221208; t=1691425588; x=1692030388;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0WiRoo0vL6kJ0w8/dkfqWYfJVOit9SFqabx1jj5i4xE=;
-        b=HBFdbWCCBKAH5p4oIrH10rhjF4oTt7WawmRr0hwcCeInkpfXBu3icU8S0p02soe/ZM
-         h0yl13YRqrvVsuNJgYaLa09LtCgNC2tYNuYh3us06URcCCXJW2Y9eoN4KV6iDHUfUVAe
-         f0jffDCgK31UKMUxmzatB/aBXo8Du9SVrFQEN/9ONJpSgpWGCu7Qn7RkIYwQ1aaQDECD
-         AN2w3FGPFeL/wc7RfZuy181cvDGqsC5M/fMtolb4Axc6Cy1IcM/Wg2U7kSprB/dkRMHo
-         q7ef1m2jv4LFkIHAG8z1MiHytygjomsFMkKdQ46rWqtbhCYOnVAslWqsTpDkUg05VkfZ
-         Qujg==
-X-Gm-Message-State: AOJu0Yy3vqEd8nq4vQ0c0gOJ4wypT40EiW88Rheftdz66J+6UWr2c/5g
-        9t42G5PBaGeG15uvIuHoidvTkEmYsUbsYfd5rVY=
-X-Google-Smtp-Source: AGHT+IFg5y/8EPsteDlZHT0mE68zLPv3NjXJQrYnMkt2dG/pGwKCgDInQFjJZaPyiy8PnosX7rv/QyIDNJa+dA7mxBY=
-X-Received: by 2002:a05:6870:d147:b0:1b0:653a:af92 with SMTP id
- f7-20020a056870d14700b001b0653aaf92mr11357377oac.8.1691425546593; Mon, 07 Aug
- 2023 09:25:46 -0700 (PDT)
+        bh=e+y0EPgsXPYGqDhgU0ly4Js9jdJ8CVWq1QGImohPTzg=;
+        b=E8LEbpH+H8uhynfp615aoyVfDBAlvokuQTOKexgF3sNcOHGkqCT14rO1gjJxL2pwFL
+         wk1o8GU9h+QHLOKxj/beSxiA5aCaLtyilxEv6seBoDtdtC0/NQhJ1AqQyqQ4eRfngKZm
+         W5gYd9CUh2fq8EtMTO0iQ5gReEYcaOY3bpB+kBdsFNi5kDmbFEcWix+CvMou7NdwPjM6
+         OCaOIctk20De1eTp+Oe3vb2y4RiE8PqiqTP2qZIGbgfO6w5XCX4793rF8PRTg6ZCFKwc
+         FpGJXXJdLaXz+vf456XW/P+b+iQew7p2RJfwcvR4z+Qkdn+3F75V8P7kDISsIGWuN76Q
+         V+6A==
+X-Gm-Message-State: AOJu0YwOUf6DYfAs5LH0bKDl+n/PaoMvTiJH/FLFrf+YYkHCCVz1LUIr
+        46aiAeBUjgBPvkJO5KggzuUDP5ljZ4C+/pzecok=
+X-Google-Smtp-Source: AGHT+IHtXN34eo/D+WLHPMKn8uFbvoUL7yxU34VnYFA/V9sKmSdzupmYHvysUFwQ9U2POQsuhyD6WyVpyFJMVk+Tctw=
+X-Received: by 2002:a05:6870:c087:b0:1bb:8ab6:6642 with SMTP id
+ c7-20020a056870c08700b001bb8ab66642mr11612014oad.8.1691425587807; Mon, 07 Aug
+ 2023 09:26:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230801025703.4979-1-sunran001@208suo.com>
-In-Reply-To: <20230801025703.4979-1-sunran001@208suo.com>
+References: <20230801030334.5069-1-sunran001@208suo.com>
+In-Reply-To: <20230801030334.5069-1-sunran001@208suo.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 12:25:35 -0400
-Message-ID: <CADnq5_NLSmco8_zs7pt9KSr7hia-2HcjpLR6PEN6YLZs3Nf=7Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: Clean up errors in vega12_hwmgr.c
+Date:   Mon, 7 Aug 2023 12:26:16 -0400
+Message-ID: <CADnq5_OVqaYzv6_y20axW+dmx1+_x9M9A29R8dKnM8rVNjh-=g@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/pm/powerplay/hwmgr/ppevvmath: Clean up errors in ppevvmath.h
 To:     Ran Sun <sunran001@208suo.com>
 Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
         dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
@@ -72,78 +72,97 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Applied.  Thanks!
 
-On Mon, Jul 31, 2023 at 10:57=E2=80=AFPM Ran Sun <sunran001@208suo.com> wro=
+On Mon, Jul 31, 2023 at 11:03=E2=80=AFPM Ran Sun <sunran001@208suo.com> wro=
 te:
 >
 > Fix the following errors reported by checkpatch:
 >
-> ERROR: need consistent spacing around '/' (ctx:WxV)
-> ERROR: code indent should use tabs where possible
+> ERROR: return is not a function, parentheses are not required
+> ERROR: space required after that ',' (ctx:VxV)
+> ERROR: space required before the open parenthesis '('
+> ERROR: need consistent spacing around '-' (ctx:WxV)
 >
 > Signed-off-by: Ran Sun <sunran001@208suo.com>
 > ---
->  drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+>  drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppevvmath.h | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c b/driv=
-ers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c
-> index 1937be1cf5b4..4bd573d815ff 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c
-> @@ -1623,13 +1623,13 @@ static int vega12_notify_smc_display_config_after=
-_ps_adjustment(
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppevvmath.h b/drivers=
+/gpu/drm/amd/pm/powerplay/hwmgr/ppevvmath.h
+> index dac29fe6cfc6..6f54c410c2f9 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppevvmath.h
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppevvmath.h
+> @@ -166,7 +166,7 @@ static fInt fNaturalLog(fInt value)
 >
->         if (data->smu_features[GNLD_DPM_DCEFCLK].supported) {
->                 clock_req.clock_type =3D amd_pp_dcef_clock;
-> -               clock_req.clock_freq_in_khz =3D min_clocks.dcefClock/10;
-> +               clock_req.clock_freq_in_khz =3D min_clocks.dcefClock / 10=
-;
->                 if (!vega12_display_clock_voltage_request(hwmgr, &clock_r=
-eq)) {
->                         if (data->smu_features[GNLD_DS_DCEFCLK].supported=
-)
->                                 PP_ASSERT_WITH_CODE(
->                                         !smum_send_msg_to_smc_with_parame=
-ter(
->                                         hwmgr, PPSMC_MSG_SetMinDeepSleepD=
-cefclk,
-> -                                       min_clocks.dcefClockInSR /100,
-> +                                       min_clocks.dcefClockInSR / 100,
->                                         NULL),
->                                         "Attempt to set divider for DCEFC=
-LK Failed!",
->                                         return -1);
-> @@ -2354,8 +2354,8 @@ static int vega12_apply_clocks_adjust_rules(struct =
-pp_hwmgr *hwmgr)
->         uint32_t i, latency;
+>         error_term =3D fAdd(fNegativeOne, value);
 >
->         disable_mclk_switching =3D ((1 < hwmgr->display_config->num_displ=
-ay) &&
-> -                                 !hwmgr->display_config->multi_monitor_i=
-n_sync) ||
-> -                                 vblank_too_short;
-> +                               !hwmgr->display_config->multi_monitor_in_=
-sync) ||
-> +                               vblank_too_short;
->         latency =3D hwmgr->display_config->dce_tolerable_mclk_in_active_l=
-atency;
+> -       return (fAdd(solution, error_term));
+> +       return fAdd(solution, error_term);
+>  }
 >
->         /* gfxclk */
-> @@ -2522,7 +2522,7 @@ static int vega12_set_uclk_to_highest_dpm_level(str=
-uct pp_hwmgr *hwmgr,
->                 dpm_table->dpm_state.hard_min_level =3D dpm_table->dpm_le=
-vels[dpm_table->count - 1].value;
->                 PP_ASSERT_WITH_CODE(!(ret =3D smum_send_msg_to_smc_with_p=
-arameter(hwmgr,
->                                 PPSMC_MSG_SetHardMinByFreq,
-> -                               (PPCLK_UCLK << 16 ) | dpm_table->dpm_stat=
-e.hard_min_level,
-> +                               (PPCLK_UCLK << 16) | dpm_table->dpm_state=
-.hard_min_level,
->                                 NULL)),
->                                 "[SetUclkToHightestDpmLevel] Set hard min=
- uclk failed!",
->                                 return ret);
+>  static fInt fDecodeLinearFuse(uint32_t fuse_value, fInt f_min, fInt f_ra=
+nge, uint32_t bitlength)
+> @@ -230,7 +230,7 @@ static fInt ConvertToFraction(int X) /*Add all range =
+checking here. Is it possib
+>  static fInt fNegate(fInt X)
+>  {
+>         fInt CONSTANT_NEGONE =3D ConvertToFraction(-1);
+> -       return (fMultiply(X, CONSTANT_NEGONE));
+> +       return fMultiply(X, CONSTANT_NEGONE);
+>  }
+>
+>  static fInt Convert_ULONG_ToFraction(uint32_t X)
+> @@ -382,14 +382,14 @@ static int ConvertBackToInteger (fInt A) /*THIS is =
+the function that will be use
+>
+>         scaledDecimal.full =3D uGetScaledDecimal(A);
+>
+> -       fullNumber =3D fAdd(scaledDecimal,scaledReal);
+> +       fullNumber =3D fAdd(scaledDecimal, scaledReal);
+>
+>         return fullNumber.full;
+>  }
+>
+>  static fInt fGetSquare(fInt A)
+>  {
+> -       return fMultiply(A,A);
+> +       return fMultiply(A, A);
+>  }
+>
+>  /* x_new =3D x_old - (x_old^2 - C) / (2 * x_old) */
+> @@ -447,7 +447,7 @@ static fInt fSqrt(fInt num)
+>
+>         } while (uAbs(error) > 0);
+>
+> -       return (x_new);
+> +       return x_new;
+>  }
+>
+>  static void SolveQuadracticEqn(fInt A, fInt B, fInt C, fInt Roots[])
+> @@ -459,7 +459,7 @@ static void SolveQuadracticEqn(fInt A, fInt B, fInt C=
+, fInt Roots[])
+>         f_CONSTANT100 =3D ConvertToFraction(100);
+>         f_CONSTANT10 =3D ConvertToFraction(10);
+>
+> -       while(GreaterThan(A, f_CONSTANT100) || GreaterThan(B, f_CONSTANT1=
+00) || GreaterThan(C, f_CONSTANT100)) {
+> +       while (GreaterThan(A, f_CONSTANT100) || GreaterThan(B, f_CONSTANT=
+100) || GreaterThan(C, f_CONSTANT100)) {
+>                 A =3D fDivide(A, f_CONSTANT10);
+>                 B =3D fDivide(B, f_CONSTANT10);
+>                 C =3D fDivide(C, f_CONSTANT10);
+> @@ -515,7 +515,7 @@ static int uGetScaledDecimal (fInt A) /*Converts the =
+fractional portion to whole
+>                 dec[i] =3D tmp / (1 << SHIFT_AMOUNT);
+>                 tmp =3D tmp - ((1 << SHIFT_AMOUNT)*dec[i]);
+>                 tmp *=3D 10;
+> -               scaledDecimal =3D scaledDecimal + dec[i]*uPow(10, PRECISI=
+ON - 1 -i);
+> +               scaledDecimal =3D scaledDecimal + dec[i]*uPow(10, PRECISI=
+ON - 1 - i);
+>         }
+>
+>         return scaledDecimal;
 > --
 > 2.17.1
 >
