@@ -2,80 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E54EF772D22
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8240772D28
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbjHGRhM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Aug 2023 13:37:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39376 "EHLO
+        id S231458AbjHGRio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbjHGRhK (ORCPT
+        with ESMTP id S229872AbjHGRim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:37:10 -0400
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED24107;
-        Mon,  7 Aug 2023 10:37:09 -0700 (PDT)
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-56d67c5e87cso205878eaf.0;
-        Mon, 07 Aug 2023 10:37:09 -0700 (PDT)
+        Mon, 7 Aug 2023 13:38:42 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33800E6A
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:38:41 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe700f9bf7so1287326e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:38:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1691429919; x=1692034719;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BeLMkdS4bEOt6i78w7d+SDLHGpVLJwpOL241iqSqZlk=;
+        b=4zVRQB3AZ586JXNQoQhXr8R2SDlemOEvMtMspbdZsW+vLeuxbMmIMHV+DyTKCER8HN
+         MxBAwgGntntyBWutPNqv8YSYlxuOoXPlalCRN9b2WMSYfNb8vplS6M8bXKCTOVwV1wV+
+         QJMe7Fs7cws4u8ytlrrKTP5pYVp5jdTXnshcW8+x/1jebRoXi0GB+B3iS8KD7XEYI0HJ
+         RAySIoeW22nKEmzBzJVfSgq3HO08NrC8B4xRsItK4QRZAN2RqlWsV7t0+2Nx55q0PzsI
+         z/Jzi1fH2enYJo0KcORl9KvqKUfT3axetwkcelwvEn3Q3DX3kTInTg7W11+HBdw5hZ2J
+         KOIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691429828; x=1692034628;
+        d=1e100.net; s=20221208; t=1691429919; x=1692034719;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sCQUve8Vagg2X8vXCVBWX8BBtpGA+YDuLqqwWNPe/Hk=;
-        b=LCK+j3NiS0Psxm0qT1ueIUxL44NNg9nwMphk3YLPrVNU89/uqEy9ujULlWykEv17us
-         9z4hR5Kx1ZQKWnOus7aoAidENmaumKsPtTEbRPC2Zkvo27drN97/y5ImWUrV5J3Qj4GP
-         9eqQMx4hde8Upj6UJBCP0ulXlc9Ic1q9YpBUV3uLAaINgTmRlR63QW9gZTfaCYrLBnaV
-         ybMicM9ErQtxlZR+3LlAwHIHurXUJRNbkAxXz0X0MQdYRLkzgHQfPzB8LEVxK/HaKAUV
-         r7j2G7DDEjveUyGiORnIWcnpR26e1UPkIWheMdYDNmAAoXLrI7IH5np6o0ImJBRFwpe3
-         VJIg==
-X-Gm-Message-State: ABy/qLazrHJDWv6W1ch9WWpoW9htZhby675Awou8QQeUjaJd8F4SEOhT
-        Cwqc/LIGv79KiEdmSlPcBiT5XTCNpJvbQk8dRtM=
-X-Google-Smtp-Source: APBJJlGStwyqYpvysRXo2djgk7GfihDl4coG+Oo8uIUh8grNj7h6POAG56vsYq86TwUCm2yDGnlGpZoxeCTj1OjCd6k=
-X-Received: by 2002:a4a:d027:0:b0:563:3b56:5dc1 with SMTP id
- w7-20020a4ad027000000b005633b565dc1mr19522081oor.0.1691429828594; Mon, 07 Aug
- 2023 10:37:08 -0700 (PDT)
+        bh=BeLMkdS4bEOt6i78w7d+SDLHGpVLJwpOL241iqSqZlk=;
+        b=GCmHtD6mC9DI+JA+vVX78+7lKbKn0NoCNKnfS5QpWN5BNC2jAOb0qaX1p7Po9++ry/
+         LjL/kl/EYJd/LIrgsk3IqgUZbJS+SPcdrnOPXtpDInnQMwcovO2Tyu7dK8aE46rhgLFz
+         UBGmBXdQBmjvjLIHB1n38CIF94VPd0ddg5t4eHpB4wUOjTWP5OYc47RvF8LGaZBxgqnI
+         vm71m80kn/ay7WHmzHg5cbP6/nBbpp5mY+SZ4G0JALhagRys81Eb/IVqVJn1qA169Jzj
+         +t4A0+IBWhiC0O9PFit/z7uVO99vf29SsZgr7T6GeXZMrr+wvCYdLAVLW7IclrZtNgoA
+         l3mA==
+X-Gm-Message-State: AOJu0YxmMpqP0P3EcCUePFxoGd1Eg8F0b365G3qXEvneLqsfqD04DCiN
+        ikaiuL5LbJsktyNAwc69SfnXRgrtstwdfCXMfa0tyg==
+X-Google-Smtp-Source: AGHT+IEzmiMTr6ANKOt18g/8iLIrlI4zDOz7TuXjpBy7vxgTnMv2IQCSTILzAT8WyXErRgZkMhpWb0+iPj038CLoSGM=
+X-Received: by 2002:a05:6512:398a:b0:4fe:db6:cb41 with SMTP id
+ j10-20020a056512398a00b004fe0db6cb41mr8477776lfu.39.1691429919236; Mon, 07
+ Aug 2023 10:38:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230807123806.700370534@infradead.org>
-In-Reply-To: <20230807123806.700370534@infradead.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 7 Aug 2023 19:36:57 +0200
-Message-ID: <CAJZ5v0i0t-cTSBG=_i9b84CqBBZd3A_N_iu-WBw37nDsLFk0dA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] x86/cpu: Cleanup of INTEL_FAM6_foo
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
-        adrian.hunter@intel.com, tglx@linutronix.de, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com,
-        Tony Luck <tony.luck@intel.com>, luto@kernel.org,
-        james.morse@arm.com, mchehab@kernel.org, rric@kernel.org,
-        jacob.jun.pan@linux.intel.com, lenb@kernel.org,
-        irenic.rajneesh@gmail.com, david.e.box@intel.com,
-        hdegoede@redhat.com, markgross@kernel.org,
-        srinivas.pandruvada@linux.intel.com, rafael@kernel.org,
-        daniel.lezcano@linaro.org, amitk@kernel.org, rui.zhang@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-pm@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
+References: <20230807130217.17853-1-aboutphysycs@gmail.com> <c867e685-7665-420b-9478-bce6eb067463@sirena.org.uk>
+In-Reply-To: <c867e685-7665-420b-9478-bce6eb067463@sirena.org.uk>
+From:   Alexandru Ardelean <alex@shruggie.ro>
+Date:   Mon, 7 Aug 2023 20:38:27 +0300
+Message-ID: <CAH3L5Qrzk-7WoF8+GKMYS40Dj_fxGpiLrTvVB_PJdA_VZVsDAQ@mail.gmail.com>
+Subject: Re: [PATCH] spi: gxp: removed unneeded call to platform_set_drvdata()
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andrei Coardos <aboutphysycs@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        nick.hawkins@hpe.com, verdun@hpe.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 5:07 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On Mon, Aug 7, 2023 at 4:27=E2=80=AFPM Mark Brown <broonie@kernel.org> wrot=
+e:
 >
-> Hi,
+> On Mon, Aug 07, 2023 at 04:02:17PM +0300, Andrei Coardos wrote:
 >
-> I seem to have missed 'spring' but here goes...
+> > This function call was found to be unnecessary as there is no equivalen=
+t
+> > platform_get_drvdata() call to access the private data of the driver. A=
+lso,
+> > the private data is defined in this driver, so there is no risk of it b=
+eing
+> > accessed outside of this driver file.
+>
+> That isn't enough of a check here - people can still reference the
+> driver data without going through the accessor function.
 
-FWIW
+So, is that like calling `platform_get_drvdata()` in a parent/chid
+device, to check if the driver-data is set?
+Would it make sense for another driver to do that (i.e. check the
+driver-data is non-null, but not access the data)?
+I can imagine that being possible, but it's a bit quirky.
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Or, is the issue with the wording of the comment?
