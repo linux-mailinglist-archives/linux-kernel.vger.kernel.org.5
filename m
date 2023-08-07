@@ -2,83 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1241772EB8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 21:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28808772EB9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 21:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbjHGTbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 15:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54372 "EHLO
+        id S231254AbjHGTbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 15:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbjHGTbh (ORCPT
+        with ESMTP id S231177AbjHGTbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 15:31:37 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3611717
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 12:31:36 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31781e15a0cso3844900f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 12:31:36 -0700 (PDT)
+        Mon, 7 Aug 2023 15:31:44 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD171715
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 12:31:42 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe700f9bf7so1451138e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 12:31:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691436695; x=1692041495;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gUv2dCmaY1HQ3Em9YoZBFw+fysyiFKPhrXvqJWxPFfc=;
-        b=fwYEVPozF0KvOAt3mvF2iWylh9QmqRqt6P7UQtmErMGi7zH3ak4HGMUMpMJ2bZ1lXm
-         VYM/qx/GA1gZswRwl/BrgW8MPuzikyAs9Uxg3IBlbTWatJ03xBxshTdi4JF1qsKXjU1Z
-         /irX6Ft5wQ+jIRnRo1aHiCGv3cgH7YDlBandU2g9jE10W7Khmwr/xqTS4Fj3vUO9DuL0
-         JwJ2sEeD3P7L1CiXMTb1Sjq0RnceQPtkEL4ODMK8QJzK7EQlNwG4r2u8V2vuZ4wfRueI
-         HkX0Rlz77K+vIPk4wurJ+N4egWqsykC0CyJYc+WeeM9z8hzqB5rMFP7iOL9imijzAxEK
-         AUug==
+        d=rasmusvillemoes.dk; s=google; t=1691436700; x=1692041500;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uLrESuDnsmXF0LnLVgvvKKzxJ74Ji/f7/0NisgyaeNY=;
+        b=XWXEoDjwIoxLdSnNQYBFSi1jX94xWwYgs4i714OjShNXUvW43/woTznr3IeaCP1HKu
+         j7i6M7GAtPEl0AdM0vYHMdp7T+eY1avUVJNuM1YRuyBTsjdxorB0QYXqd1Mww7keuXhp
+         5PwS1WTmAuEkxJN7z9ApJON4oKGgEXGh2AoV0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691436695; x=1692041495;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gUv2dCmaY1HQ3Em9YoZBFw+fysyiFKPhrXvqJWxPFfc=;
-        b=ait+M6wX+lOuZnVkKY3CSVOI/IHCF1d1La+FZgY0V1qjS1pjUM4pD2FO7E9clRQh0f
-         ItBBu3D4K7tdsE24TUzyHe+IvFWYigXxW2b3eX72+yBGSZBeb1CzJgAPGqaJIKDDlYKs
-         ZLNtk+Q7lwZ8tkuUHAyLvvdB5sCRiW+g2SivLhLzYdcUD35sWj18mre/pu5QrVftkYM8
-         nN0JtvvauMjVKfNr6iuftmFo/TjBuFZaKRiEW91rcQe1IVP+deUeDGvb+mn/yHYpdfTF
-         AfY5lHqApBMOIyJpXir01njJGebY18khYI1n3cFZXfBO5SSCiyQv7GF+6+XFAInQNrTW
-         5S7Q==
-X-Gm-Message-State: AOJu0YxKKlASXWieUG4fGZLHpffre2lk49/9zL+O9sA5cv4XT3o7ZP07
-        7G6kkcHOj0/HHrNm/ezRNMkd5w==
-X-Google-Smtp-Source: AGHT+IGKHNN7HjiGFusOQDWkTj+8K7D28pYI8N1+cBGqCVE35V0LUQ9gkEQ2lEJmnrAT6utfK07xtA==
-X-Received: by 2002:a5d:5912:0:b0:317:606d:c767 with SMTP id v18-20020a5d5912000000b00317606dc767mr5959349wrd.44.1691436694877;
-        Mon, 07 Aug 2023 12:31:34 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:b3d6:9e6:79d9:37cd])
-        by smtp.gmail.com with ESMTPSA id l7-20020a7bc347000000b003fbdbd0a7desm15985654wmj.27.2023.08.07.12.31.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 12:31:34 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 2/2] net: stmmac: support shared MDIO
-Date:   Mon,  7 Aug 2023 21:31:02 +0200
-Message-Id: <20230807193102.6374-3-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230807193102.6374-1-brgl@bgdev.pl>
-References: <20230807193102.6374-1-brgl@bgdev.pl>
+        d=1e100.net; s=20221208; t=1691436700; x=1692041500;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uLrESuDnsmXF0LnLVgvvKKzxJ74Ji/f7/0NisgyaeNY=;
+        b=ffdi3TUP1ZVP0EYzyV1PoqhsFC1QNv+RJpM/xcuxGtcYLJPVp37NNhNKok9Zj0RFPy
+         n1Hm85ehKBbI7yxCnwQolbtS0Qbab+AJ4vjiDEo8AN8vKmdnpZwAxh5an/8HzxST5eU8
+         uJfD5azbvAY8Cp4VdHohFAsaPA5/Z8VQaXce6xmbMvhnPwxJ4WY5lg0MU3rv7EM+31l1
+         HW+s+yUXs9RdNo64lVEKnFQsNxVm8tGr69wsnSfo1NzEZ9C+INhvDyRR1KF6eQxqsSBp
+         JUuuJyBjDl1J2iATkqqnuWgeJwRsFGwLDTh7FIqgAJxRggaCTOayIxNpRQ2rSb8MsLjK
+         4klA==
+X-Gm-Message-State: AOJu0YzEaAuh8WGBB1tYCnc76zhCsOUHJZZRCV3YbY6Z6HLVxGGX0YOk
+        blOJbtn2hFC0+02IgibuYFXt2g==
+X-Google-Smtp-Source: AGHT+IFk3+ohzmOe6boF0ZZ2cAYTtOL4Ql9DEH7mbY5LEm16+hpE8IoUOk6elVbSrPdVAbdqOb6hUA==
+X-Received: by 2002:a05:6512:3696:b0:4fe:61f:3025 with SMTP id d22-20020a056512369600b004fe061f3025mr5912246lfs.61.1691436700291;
+        Mon, 07 Aug 2023 12:31:40 -0700 (PDT)
+Received: from [192.168.1.128] (77.33.185.10.dhcp.fibianet.dk. [77.33.185.10])
+        by smtp.gmail.com with ESMTPSA id c18-20020aa7c752000000b0052228721f84sm5609359eds.77.2023.08.07.12.31.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 12:31:39 -0700 (PDT)
+Message-ID: <fdd7eb5d-2b76-d326-f059-5cdf652b5848@rasmusvillemoes.dk>
+Date:   Mon, 7 Aug 2023 21:31:38 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
+Content-Language: en-US, da
+To:     Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
+ <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
+ <ZNEHt564a8RCLWon@alley>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+In-Reply-To: <ZNEHt564a8RCLWon@alley>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,76 +80,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 07/08/2023 17.03, Petr Mladek wrote:
 
-When two MACs share the MDIO lines to their respective PHYs, one is
-considered the logical "owner" of the bus. The secondary controller must
-wait until the MDIO bus is registered before trying to attach to the
-PHY.
+> I agree that kernel.h is not the right place. But are there any
+> numbers how much separate sprintf.h might safe?
+> 
+> Maybe, we should not reinvent the wheel and get inspired by
+> userspace.
+> 
+> sprintf() and friends are basic functions which most people know
+> from userspace. And it is pretty handy that the kernel variants
+> are are mostly compatible as well.
+> 
+> IMHO, it might be handful when they are also included similar way
+> as in userspace. From my POV printk.h is like stdio.h. And we already
+> have include/linux/stdarg.h where the v*print*() function might
+> fit nicely.
+> 
+> How does this sound, please?
 
-If the mdio node is not defined for given MAC, try to read the
-"snps,shared-mdio" property on its node. If it exists, parse the phandle
-and store the result as the MAC's mdio device-tree node.
+No, please. Let's have a separate header for the functions defined in
+vsprintf.c. We really need to trim our headers down to something more
+manageable, and stop including everything from everywhere just because
+$this little macro needs $that little inline function.
 
-When registering the MDIO bus: if we know that we share it with another
-MAC, lookup the MDIO bus and if it's not up yet, defer probe until it
-is.
+I did https://wildmoose.dk/header-bloat/ many moons ago, I'm sure it
+looks even worse today. I also did some sparse-hackery to let it tell me
+which macros/functions/types were declared/defined in a given .h file,
+and then if some .c file included that .h file but didn't use any of
+those, the #include could go away.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c     | 8 ++++++++
- drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 6 ++++++
- include/linux/stmmac.h                                | 1 +
- 3 files changed, 15 insertions(+)
+Sure, individually, moving the sprintf family out of kernel.h won't save
+much (and, of course, nothing at all initially when we're forced to add
+an include of that new header from kernel.h). But this technical debt
+has crept in over many years, it's not going away in one or two
+releases. And use of the sprintf family is very easy to grep for, so
+it's a good low-hanging fruit where we should be able to make everybody
+who needs one of them include the proper header, and then drop the
+include from kernel.h.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-index dd9e2fec5328..6a74b91595d0 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-@@ -543,6 +543,14 @@ int stmmac_mdio_register(struct net_device *ndev)
- 	if (!mdio_bus_data)
- 		return 0;
- 
-+	if (priv->plat->flags & STMMAC_FLAG_SHARED_MDIO) {
-+		new_bus = of_mdio_find_bus(mdio_node);
-+		if (!new_bus)
-+			return -EPROBE_DEFER;
-+
-+		goto bus_register_done;
-+	}
-+
- 	new_bus = mdiobus_alloc();
- 	if (!new_bus)
- 		return -ENOMEM;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index be8e79c7aa34..11a24b1c7beb 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -340,6 +340,12 @@ static int stmmac_dt_phy(struct plat_stmmacenet_data *plat,
- 		}
- 	}
- 
-+	if (!plat->mdio_node) {
-+		plat->mdio_node = of_parse_phandle(np, "snps,shared-mdio", 0);
-+		if (plat->mdio_node)
-+			plat->flags |= STMMAC_FLAG_SHARED_MDIO;
-+	}
-+
- 	if (plat->mdio_node) {
- 		dev_dbg(dev, "Found MDIO subnode\n");
- 		mdio = true;
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index 3d0702510224..892f61051002 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -218,6 +218,7 @@ struct dwmac4_addrs {
- #define STMMAC_FLAG_INT_SNAPSHOT_EN		BIT(9)
- #define STMMAC_FLAG_RX_CLK_RUNS_IN_LPI		BIT(10)
- #define STMMAC_FLAG_EN_TX_LPI_CLOCKGATING	BIT(11)
-+#define STMMAC_FLAG_SHARED_MDIO			BIT(12)
- 
- struct plat_stmmacenet_data {
- 	int bus_id;
--- 
-2.39.2
+Rasmus
 
