@@ -2,81 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2CD772A8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EE2772A8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231518AbjHGQYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58624 "EHLO
+        id S231172AbjHGQYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjHGQYB (ORCPT
+        with ESMTP id S231496AbjHGQYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:24:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBD710CF
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:23:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LglLvfSHGs7k23R/juUd/AgJcqfnL4Y+TCCHAVC/09k=; b=BMzxh/uaG48qsMwdsp6NKso+Qb
-        M64ZeBCX2QpFVJrUK2AC+OAOBUqO/HBHAP5K0qAg9c1aNxSV46C6zrRdJVmmBWUlX+Wt9gpCRduGj
-        DxVE7d9RYoJ7C4Sz+BjRz2jITJH08F5dXXqw7jhOsWQC2eU1EQMOu27BKW6oD0aHcaZXRi6lOo1J0
-        QICx1RQ7ISBsvcMnyjlpKa+rk9cQek7B4FY2xQUJPXIdadZYX5j3B+wZGqDHfuKR8JU1/t1bGWIOk
-        MuFbPMDkJP16ArtX+D7SBbB+RypHT4wejX+LjWKzTqoJ3q5uogHv6PpJjQWYtDUD+pp/pQzl11iU9
-        6OxcfbQA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qT30y-00C7di-8H; Mon, 07 Aug 2023 16:23:28 +0000
-Date:   Mon, 7 Aug 2023 17:23:28 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH] arm: dma-mapping: fix potential endless loop in
- __dma_page_dev_to_cpu()
-Message-ID: <ZNEagJ6rVDwBKUdr@casper.infradead.org>
-References: <CGME20230807152704eucas1p1bbe08af4559a7d2984198fe8ba487a2e@eucas1p1.samsung.com>
- <20230807152657.1692414-1-m.szyprowski@samsung.com>
+        Mon, 7 Aug 2023 12:24:03 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BE61715
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:23:50 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6bca88c3487so3902674a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691425429; x=1692030229;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IutisKUxSex6+AO1pD8aPRPz9d2NNY3R1jp6DKxdDOU=;
+        b=iJ64I1cECsaaUtRWyIX4rGvNdgjNVSuBQbJPUMNASE3bSLJ2Qkjs1eXgkWbubInFG9
+         JuOp5D+dgNuWyE5gp6/POnWlR8ajwEpgFNZ7raxjX8khkeNMoUlNKrnfrcMkjRf36BPa
+         9IVquV7DwnUoTOXaOgGI0300kSi+CxPus3cZq/MhSl2ek7jQecDvlRmKYBUlmvGuYJLt
+         RWvpF6HrW8Vrgh95VH6Klp6zvsydRQMd1bFKwDOHhbHO8C7BlK/jYKe5TWtUN/rGSuVj
+         nTd62S1OzZZzB1dYaZHBhbFqKlCruSc/EcTyUcJ+4FzdsLT7tNQxjvh8DDRRp8E2k6t1
+         422Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691425429; x=1692030229;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IutisKUxSex6+AO1pD8aPRPz9d2NNY3R1jp6DKxdDOU=;
+        b=crSmIdpK/QtpbegkXUsHhjzoGe8I+PgiZbPdF4qBs7ApaIDj01/enVap0fBCTdWALi
+         X+gQcBZ7jF5vP20DiGFmr8VTcZfEPUOiuZmC3Z/0NkTNnVVVft5Y12MZNsnkduRlXRCG
+         eLsUq6flkTlTCAnRQVck+bOGf5wJPEOPzEDbY5khRGw9gMYWXu7vXd53x/lfYpbX9QzC
+         xiPCHIZyyq5I2ne+EIcrnWut9COc1OMhpRjeVYRh+FkuYVTYWRcxmj/qBhm89Lr6ibXW
+         plQEA/BgZk6LlExA41ZV/sn0ZPEwm0lArwSwMs7VE7XMjAHxrxL2zBIVakH9q8YlpK49
+         X9Gw==
+X-Gm-Message-State: AOJu0YyFcghMp4zP3SydeN7CY2JSrFhlQUvcNCzp9fxjWglDWaMItKFk
+        jU3e5lGcZEAWr9owB9pn7WSOiu86u0VAg2f8z68=
+X-Google-Smtp-Source: AGHT+IGZo2uqDnzuqlUtTLAMntPIx4KKfmqoss2Wq/oAXN/Zac1lFpQPRP7LyrGTdD73ypz3W4Nz5EkuiGGyMhQLUyY=
+X-Received: by 2002:a05:6870:b525:b0:1be:c2c5:a1cf with SMTP id
+ v37-20020a056870b52500b001bec2c5a1cfmr11317397oap.51.1691425429629; Mon, 07
+ Aug 2023 09:23:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807152657.1692414-1-m.szyprowski@samsung.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230801022814.4577-1-sunran001@208suo.com>
+In-Reply-To: <20230801022814.4577-1-sunran001@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 7 Aug 2023 12:23:38 -0400
+Message-ID: <CADnq5_NvRJeZUK8--n9vCdF+NxxQqLdPcrgwKwh6mY1BL3W7xg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/pm: Clean up errors in amdgpu_smu.c
+To:     Ran Sun <sunran001@208suo.com>
+Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 05:26:57PM +0200, Marek Szyprowski wrote:
-> It is possible that the folio_size() of the next folio returns zero, so
+Applied.  Thanks!
 
-What?  How can folio_size() return zero?
-
-        return PAGE_SIZE << folio_order(folio);
-
-It is a minimum of PAGE_SIZE.
-
-> avoid looping with 'left' equals to zero in D-cache cleaning loop.
-> 
-> This fixes the following endless loop observed by RCU stall:
-> --->8---
-> rcu: INFO: rcu_sched self-detected stall on CPU
-> rcu:     0-....: (27320 ticks this GP) idle=e414/1/0x40000002 softirq=36/36 fqs=13044
-> rcu:     (t=27385 jiffies g=-1067 q=34 ncpus=8)
-> CPU: 0 PID: 93 Comm: kworker/0:1H Not tainted 6.5.0-rc5-next-20230807 #6981
-> Hardware name: Samsung Exynos (Flattened Device Tree)
-> Workqueue: mmc_complete mmc_blk_mq_complete_work
-> PC is at _set_bit+0x28/0x44
-> LR is at __dma_page_dev_to_cpu+0xdc/0x170
-> ..
->  _set_bit from __dma_page_dev_to_cpu+0xdc/0x170
->  __dma_page_dev_to_cpu from dma_direct_unmap_sg+0x100/0x130
->  dma_direct_unmap_sg from dw_mci_post_req+0x68/0x6c
->  dw_mci_post_req from mmc_blk_mq_post_req+0x34/0x100
-
-I don't know what you've actually hit here, but the explanation is wrong.
+On Mon, Jul 31, 2023 at 10:28=E2=80=AFPM Ran Sun <sunran001@208suo.com> wro=
+te:
+>
+> Fix the following errors reported by checkpatch:
+>
+> ERROR: spaces required around that '=3D' (ctx:WxV)
+> ERROR: spaces required around that '&&' (ctx:VxW)
+> ERROR: that open brace { should be on the previous line
+> ERROR: space required before the open parenthesis '('
+> ERROR: space required before the open brace '{'
+> ERROR: spaces required around that ':' (ctx:VxW)
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>  drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c | 23 ++++++++++-------------
+>  1 file changed, 10 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c b/drivers/gpu/drm/=
+amd/pm/swsmu/amdgpu_smu.c
+> index ce41a8309582..a7199275ffb8 100644
+> --- a/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
+> +++ b/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
+> @@ -618,7 +618,7 @@ static int smu_set_funcs(struct amdgpu_device *adev)
+>                 adev->pm.pp_feature &=3D ~PP_GFXOFF_MASK;
+>                 arcturus_set_ppt_funcs(smu);
+>                 /* OD is not supported on Arcturus */
+> -               smu->od_enabled =3Dfalse;
+> +               smu->od_enabled =3D false;
+>                 break;
+>         case IP_VERSION(13, 0, 2):
+>                 aldebaran_set_ppt_funcs(smu);
+> @@ -1648,7 +1648,7 @@ static int smu_hw_fini(void *handle)
+>         struct amdgpu_device *adev =3D (struct amdgpu_device *)handle;
+>         struct smu_context *smu =3D adev->powerplay.pp_handle;
+>
+> -       if (amdgpu_sriov_vf(adev)&& !amdgpu_sriov_is_pp_one_vf(adev))
+> +       if (amdgpu_sriov_vf(adev) && !amdgpu_sriov_is_pp_one_vf(adev))
+>                 return 0;
+>
+>         smu_dpm_set_vcn_enable(smu, false);
+> @@ -1700,7 +1700,7 @@ static int smu_suspend(void *handle)
+>         int ret;
+>         uint64_t count;
+>
+> -       if (amdgpu_sriov_vf(adev)&& !amdgpu_sriov_is_pp_one_vf(adev))
+> +       if (amdgpu_sriov_vf(adev) && !amdgpu_sriov_is_pp_one_vf(adev))
+>                 return 0;
+>
+>         if (!smu->pm_enabled)
+> @@ -2217,8 +2217,7 @@ const struct amd_ip_funcs smu_ip_funcs =3D {
+>         .set_powergating_state =3D smu_set_powergating_state,
+>  };
+>
+> -const struct amdgpu_ip_block_version smu_v11_0_ip_block =3D
+> -{
+> +const struct amdgpu_ip_block_version smu_v11_0_ip_block =3D {
+>         .type =3D AMD_IP_BLOCK_TYPE_SMC,
+>         .major =3D 11,
+>         .minor =3D 0,
+> @@ -2226,8 +2225,7 @@ const struct amdgpu_ip_block_version smu_v11_0_ip_b=
+lock =3D
+>         .funcs =3D &smu_ip_funcs,
+>  };
+>
+> -const struct amdgpu_ip_block_version smu_v12_0_ip_block =3D
+> -{
+> +const struct amdgpu_ip_block_version smu_v12_0_ip_block =3D {
+>         .type =3D AMD_IP_BLOCK_TYPE_SMC,
+>         .major =3D 12,
+>         .minor =3D 0,
+> @@ -2235,8 +2233,7 @@ const struct amdgpu_ip_block_version smu_v12_0_ip_b=
+lock =3D
+>         .funcs =3D &smu_ip_funcs,
+>  };
+>
+> -const struct amdgpu_ip_block_version smu_v13_0_ip_block =3D
+> -{
+> +const struct amdgpu_ip_block_version smu_v13_0_ip_block =3D {
+>         .type =3D AMD_IP_BLOCK_TYPE_SMC,
+>         .major =3D 13,
+>         .minor =3D 0,
+> @@ -2337,7 +2334,7 @@ int smu_get_power_limit(void *handle,
+>         if (!smu->pm_enabled || !smu->adev->pm.dpm_enabled)
+>                 return -EOPNOTSUPP;
+>
+> -       switch(pp_power_type) {
+> +       switch (pp_power_type) {
+>         case PP_PWR_TYPE_SUSTAINED:
+>                 limit_type =3D SMU_DEFAULT_PPT_LIMIT;
+>                 break;
+> @@ -2349,7 +2346,7 @@ int smu_get_power_limit(void *handle,
+>                 break;
+>         }
+>
+> -       switch(pp_limit_level){
+> +       switch (pp_limit_level) {
+>         case PP_PWR_LIMIT_CURRENT:
+>                 limit_level =3D SMU_PPT_LIMIT_CURRENT;
+>                 break;
+> @@ -2595,7 +2592,7 @@ static int smu_read_sensor(void *handle,
+>                 *size =3D 4;
+>                 break;
+>         case AMDGPU_PP_SENSOR_VCN_POWER_STATE:
+> -               *(uint32_t *)data =3D atomic_read(&smu->smu_power.power_g=
+ate.vcn_gated) ? 0: 1;
+> +               *(uint32_t *)data =3D atomic_read(&smu->smu_power.power_g=
+ate.vcn_gated) ? 0 : 1;
+>                 *size =3D 4;
+>                 break;
+>         case AMDGPU_PP_SENSOR_MIN_FAN_RPM:
+> @@ -2868,7 +2865,7 @@ static int smu_set_xgmi_pstate(void *handle,
+>         if (smu->ppt_funcs->set_xgmi_pstate)
+>                 ret =3D smu->ppt_funcs->set_xgmi_pstate(smu, pstate);
+>
+> -       if(ret)
+> +       if (ret)
+>                 dev_err(smu->adev->dev, "Failed to set XGMI pstate!\n");
+>
+>         return ret;
+> --
+> 2.17.1
+>
