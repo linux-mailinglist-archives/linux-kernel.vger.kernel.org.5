@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1090771791
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 02:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0089C771789
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 02:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbjHGAqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 20:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
+        id S230172AbjHGAoQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 6 Aug 2023 20:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHGAql (ORCPT
+        with ESMTP id S229436AbjHGAoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 20:46:41 -0400
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 953A5B1
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 17:46:38 -0700 (PDT)
-X-AuditID: a67dfc5b-d85ff70000001748-37-64d03ee9cc1e
-Date:   Mon, 7 Aug 2023 09:43:53 +0900
-From:   Byungchul Park <byungchul@sk.com>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kernel_team@skhynix.com, akpm@linux-foundation.org,
-        ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
-        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
-        david@redhat.com, peterz@infradead.org, luto@kernel.org,
-        dave.hansen@linux.intel.com
-Subject: Re: [RFC 2/2] mm: Defer TLB flush by keeping both src and dst folios
- at migration
-Message-ID: <20230807004353.GA69206@system.software.com>
-References: <20230804061850.21498-1-byungchul@sk.com>
- <20230804061850.21498-3-byungchul@sk.com>
- <A59E5AD9-11DA-435A-AD17-6F735F0C0840@nvidia.com>
+        Sun, 6 Aug 2023 20:44:14 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7072B1;
+        Sun,  6 Aug 2023 17:44:11 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 3E50B24E28D;
+        Mon,  7 Aug 2023 08:44:08 +0800 (CST)
+Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 7 Aug
+ 2023 08:44:08 +0800
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX068.cuchost.com
+ (172.16.6.68) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 7 Aug
+ 2023 08:44:07 +0800
+Received: from EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f]) by
+ EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f%17]) with mapi id
+ 15.00.1497.044; Mon, 7 Aug 2023 08:44:07 +0800
+From:   JeeHeng Sia <jeeheng.sia@starfivetech.com>
+To:     Conor Dooley <conor.dooley@microchip.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>
+CC:     "conor@kernel.org" <conor@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+        Song Shuai <suagrfillet@gmail.com>,
+        Petr Tesarik <petrtesarik@huaweicloud.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [RFT 1/2] RISC-V: handle missing "no-map" properties for
+ OpenSBI's PMP protected regions
+Thread-Topic: [RFT 1/2] RISC-V: handle missing "no-map" properties for
+ OpenSBI's PMP protected regions
+Thread-Index: AQHZxTKPVELaCqW/WUK93+UXGxBdOK/eAqwg
+Date:   Mon, 7 Aug 2023 00:44:07 +0000
+Message-ID: <3e066032031e4552b4b7903755deb669@EXMBX066.cuchost.com>
+References: <20230802-purse-hydrant-6f44f77364b0@wendy>
+ <20230802-detention-second-82ab2b53e07a@wendy>
+In-Reply-To: <20230802-detention-second-82ab2b53e07a@wendy>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [202.188.176.82]
+x-yovoleruleagent: yovoleflag
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <A59E5AD9-11DA-435A-AD17-6F735F0C0840@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNIsWRmVeSWpSXmKPExsXC9ZZnoe5LuwspBu0fjS3mrF/DZvFiQzuj
-        xdf1v5gtnn7qY7G4vGsOm8W9Nf9ZLc7vWstqsWPpPiaL67seMloc7z3AZPH7B1B2zhQri5Oz
-        JrNYzD56j92Bz2PBplKPzSu0PBbvecnksWlVJ5vHpk+T2D1OzPjN4rHzoaXHvJOBHr3N79g8
-        3u+7yuax9Zedx+dNch7v5r9lC+CN4rJJSc3JLEst0rdL4Mr4N/cPW8FZ7YqPez8wNjA+Vuhi
-        5OCQEDCRuPo3rIuRE8zse3WGFcRmEVCR6JizlBnEZhNQl7hx4yeYLSIgLXG67w+QzcXBLHCG
-        SeLa3DlgCWGBGIkTWz4zgdi8AhYSfRePsIIUCQlMZZRYu+8lVEJQ4uTMJywgNrOAlsSNfyBx
-        DiBbWmL5Pw4Qk1PATmLhezGQClEBZYkD244zgYyREOhnl7h7eh0jxKGSEgdX3GCZwCgwC8nU
-        WUimzkKYuoCReRWjUGZeWW5iZo6JXkZlXmaFXnJ+7iZGYJQtq/0TvYPx04XgQ4wCHIxKPLwN
-        h8+nCLEmlhVX5h5ilOBgVhLhnfcEKMSbklhZlVqUH19UmpNafIhRmoNFSZzX6Ft5ipBAemJJ
-        anZqakFqEUyWiYNTqoFxcoqyg6jpJJMVHvnKtxrLitZPmGlTvZzp9r6sh6sXCvh7vXVMNPvE
-        8uivbQebtK2f1q3XaY3cBbofjGfa7v/09OC9vPAPq4+cnu9e1/X6xPeki+92100KLvqb/mjL
-        hi0XD3McdTdbnLE/d0ewh3KfzTceBXaHjJAvj81mzt5ad3XKNgXD39FxSizFGYmGWsxFxYkA
-        VbiC4a4CAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmkeLIzCtJLcpLzFFi42Lh8rNu1n1pdyHF4GqvisWc9WvYLF5saGe0
-        +Lr+F7PF0099LBaH555ktbi8aw6bxb01/1ktzu9ay2qxY+k+Jovrux4yWhzvPcBk8fsHUHbO
-        FCuLk7Mms1jMPnqP3YHfY8GmUo/NK7Q8Fu95yeSxaVUnm8emT5PYPU7M+M3isfOhpce8k4Ee
-        vc3v2Dze77vK5rH4xQcmj62/7Dw+b5LzeDf/LVsAXxSXTUpqTmZZapG+XQJXxr+5f9gKzmpX
-        fNz7gbGB8bFCFyMnh4SAiUTfqzOsIDaLgIpEx5ylzCA2m4C6xI0bP8FsEQFpidN9f4BsLg5m
-        gTNMEtfmzgFLCAvESJzY8pkJxOYVsJDou3iEFaRISGAqo8TafS+hEoISJ2c+YQGxmQW0JG78
-        A4lzANnSEsv/cYCYnAJ2Egvfi4FUiAooSxzYdpxpAiPvLCTNs5A0z0JoXsDIvIpRJDOvLDcx
-        M8dUrzg7ozIvs0IvOT93EyMwapbV/pm4g/HLZfdDjAIcjEo8vA2Hz6cIsSaWFVfmHmKU4GBW
-        EuGd9wQoxJuSWFmVWpQfX1Sak1p8iFGag0VJnNcrPDVBSCA9sSQ1OzW1ILUIJsvEwSnVwChY
-        q+akx7uq5ZTb+pMWs7/29nyeEfJOh+PIoguvxDSkbOae7Ao5vKbw4WXXZ0/WBl3UNRSdP9/p
-        agLL3V8b7M2cvDRnvFyctLz5LsvGdPMpl85yq93b/HK+lVViFcfRy2ck5x+XvSG1eI5WJdOa
-        22e2XnO0/c31ZJ9SWNwvnSlf21uMv2SHvj2sxFKckWioxVxUnAgA85RtapYCAAA=
-X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -71,155 +72,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 12:08:07PM -0400, Zi Yan wrote:
-> On 4 Aug 2023, at 2:18, Byungchul Park wrote:
+
+
+> -----Original Message-----
+> From: Conor Dooley <conor.dooley@microchip.com>
+> Sent: Wednesday, August 2, 2023 7:13 PM
+> To: palmer@dabbelt.com
+> Cc: conor@kernel.org; conor.dooley@microchip.com; Paul Walmsley <paul.walmsley@sifive.com>; Atish Patra
+> <atishp@rivosinc.com>; Anup Patel <apatel@ventanamicro.com>; Alexandre Ghiti <alexghiti@rivosinc.com>; Björn Töpel
+> <bjorn@rivosinc.com>; Song Shuai <suagrfillet@gmail.com>; JeeHeng Sia <jeeheng.sia@starfivetech.com>; Petr Tesarik
+> <petrtesarik@huaweicloud.com>; linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; stable@vger.kernel.org
+> Subject: [RFT 1/2] RISC-V: handle missing "no-map" properties for OpenSBI's PMP protected regions
 > 
-> > Implementation of CONFIG_MIGRC that stands for 'Migration Read Copy'.
-> >
-> > We always face the migration overhead at either promotion or demotion,
-> > while working with tiered memory e.g. CXL memory and found out TLB
-> > shootdown is a quite big one that is needed to get rid of if possible.
-> >
-> > Fortunately, TLB flush can be defered or even skipped if both source and
-> > destination of folios during migration are kept until all TLB flushes
-> > required will have been done, of course, only if the target PTE entries
-> > have read only permission, more precisely speaking, don't have write
-> > permission. Otherwise, no doubt the folio might get messed up.
+> Add an erratum for versions [v0.8 to v1.3) of OpenSBI which fail to add
+> the "no-map" property to the reserved memory nodes for the regions it
+> has protected using PMPs.
 > 
-> So this would only reduce or eliminate TLB flushes? The same goal should
-> be achievable with batched TLB flush, right? You probably can group
-
-CONFIG_MIGRC achieves the reduction with:
-
-   1) Batch TLB flush,
-   2) defer TLB flush aggressively for non-writable folios.
-
-The 2nd benifit is one that this patch set focuses on more.
-
-> to-be-migrated pages into a read-only group and a writable group and
-> migrate the read-only group first then the writable group. It would
-> reduce or eliminate the TLB flushes for the read-only group of pages, right?
-
-I'm not sure we are in the same page.
-
-> > To achieve that:
-> >
-> >    1. For the folios that have only non-writable TLB entries, prevent
-> >       TLB flush by keeping both source and destination of folios during
-> >       migration, which will be handled later at a better time.
+> Our existing fix sweeping hibernation under the carpet by marking it
+> NONPORTABLE is insufficient as there are other ways to generate
+> accesses to these reserved memory regions, as Petr discovered [1]
+> while testing crash kernels & kdump.
 > 
-> In this case, the page table points to the destination folio, but TLB
-> would cache the old translation pointing to the source folio. I wonder
-> if there would be any correctness issue.
-
-Kinda yes. That's why I keep the old source folio until guaranteed all
-TLB flushes required will be done or special cases e.g. memory pressure
-or the permission changes to writable through fault handler.
-
-Worth noting that of course this works only with non-writable folios to
-keep the consistency and correctness.
-
-It'd be apprecisated to point out if I miss something.
-
-	Byungchul
-
-> >    2. When any non-writable TLB entry changes to writable e.g. through
-> >       fault handler, give up CONFIG_MIGRC mechanism so as to perform
-> >       TLB flush required right away.
-> >
-> >    3. TLB flushes can be skipped if all TLB flushes required to free the
-> >       duplicated folios have been done by any reason, which doesn't have
-> >       to be done from migrations.
-> >
-> >    4. Adjust watermark check routine, __zone_watermark_ok(), with the
-> >       number of duplicated folios because those folios can be freed
-> >       and obtained right away through appropreate TLB flushes.
-> >
-> >    5. Perform TLB flushes and free the duplicated folios pending the
-> >       flushes if page allocation routine is in trouble due to memory
-> >       pressure, even more aggresively for high order allocation.
-> >
-> > The measurement result:
-> >
-> >    Architecture - x86_64
-> >    QEMU - kvm enabled, host cpu, 2nodes((4cpus, 2GB)+(cpuless, 6GB))
-> >    Linux Kernel - v6.4, numa balancing tiering on, demotion enabled
-> >    Benchmark - XSBench with no parameter changed
-> >
-> >    run 'perf stat' using events:
-> >    (FYI, process wide result ~= system wide result(-a option))
-> >       1) itlb.itlb_flush
-> >       2) tlb_flush.dtlb_thread
-> >       3) tlb_flush.stlb_any
-> >
-> >    run 'cat /proc/vmstat' and pick up:
-> >       1) pgdemote_kswapd
-> >       2) numa_pages_migrated
-> >       3) pgmigrate_success
-> >       4) nr_tlb_remote_flush
-> >       5) nr_tlb_remote_flush_received
-> >       6) nr_tlb_local_flush_all
-> >       7) nr_tlb_local_flush_one
-> >
-> >    BEFORE - mainline v6.4
-> >    ==========================================
-> >
-> >    $ perf stat -e itlb.itlb_flush,tlb_flush.dtlb_thread,tlb_flush.stlb_any ./XSBench
-> >
-> >    Performance counter stats for './XSBench':
-> >
-> >       426856       itlb.itlb_flush
-> >       6900414      tlb_flush.dtlb_thread
-> >       7303137      tlb_flush.stlb_any
-> >
-> >    33.500486566 seconds time elapsed
-> >    92.852128000 seconds user
-> >    10.526718000 seconds sys
-> >
-> >    $ cat /proc/vmstat
-> >
-> >    ...
-> >    pgdemote_kswapd 1052596
-> >    numa_pages_migrated 1052359
-> >    pgmigrate_success 2161846
-> >    nr_tlb_remote_flush 72370
-> >    nr_tlb_remote_flush_received 213711
-> >    nr_tlb_local_flush_all 3385
-> >    nr_tlb_local_flush_one 198679
-> >    ...
-> >
-> >    AFTER - mainline v6.4 + CONFIG_MIGRC
-> >    ==========================================
-> >
-> >    $ perf stat -e itlb.itlb_flush,tlb_flush.dtlb_thread,tlb_flush.stlb_any ./XSBench
-> >
-> >    Performance counter stats for './XSBench':
-> >
-> >       179537       itlb.itlb_flush
-> >       6131135      tlb_flush.dtlb_thread
-> >       6920979      tlb_flush.stlb_any
-> >
-> >    30.396700625 seconds time elapsed
-> >    80.331252000 seconds user
-> >    10.303761000 seconds sys
-> >
-> >    $ cat /proc/vmstat
-> >
-> >    ...
-> >    pgdemote_kswapd 1044602
-> >    numa_pages_migrated 1044202
-> >    pgmigrate_success 2157808
-> >    nr_tlb_remote_flush 30453
-> >    nr_tlb_remote_flush_received 88840
-> >    nr_tlb_local_flush_all 3039
-> >    nr_tlb_local_flush_one 198875
-> >    ...
-> >
-> > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> > ---
+> Intercede during the boot process when the afflicted versions of OpenSBI
+> are present & set the "no-map" property in all "mmode_resv" nodes before
+> the kernel does its reserved memory region initialisation.
 > 
+> Reported-by: Song Shuai <suagrfillet@gmail.com>
+> Link: https://lore.kernel.org/all/CAAYs2=gQvkhTeioMmqRDVGjdtNF_vhB+vm_1dHJxPNi75YDQ_Q@mail.gmail.com/
+> Reported-by: JeeHeng Sia <jeeheng.sia@starfivetech.com>
+> Link: https://groups.google.com/a/groups.riscv.org/g/sw-dev/c/ITXwaKfA6z8
+> Reported-by: Petr Tesarik <petrtesarik@huaweicloud.com>
+> Closes: https://lore.kernel.org/linux-riscv/76ff0f51-d6c1-580d-f943-061e93073306@huaweicloud.com/ [1]
+> CC: stable@vger.kernel.org
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+>  arch/riscv/include/asm/sbi.h |  5 +++++
+>  arch/riscv/kernel/sbi.c      | 42 +++++++++++++++++++++++++++++++++++-
+>  arch/riscv/mm/init.c         |  3 +++
+>  3 files changed, 49 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+> index 5b4a1bf5f439..5360f3476278 100644
+> --- a/arch/riscv/include/asm/sbi.h
+> +++ b/arch/riscv/include/asm/sbi.h
+> @@ -252,6 +252,9 @@ enum sbi_pmu_ctr_type {
+>  #define SBI_ERR_ALREADY_STARTED -7
+>  #define SBI_ERR_ALREADY_STOPPED -8
+> 
+> +/* SBI implementation IDs */
+> +#define SBI_IMP_OPENSBI	1
+I would suggest to create an enum struct for the SBI Imp ID in the sbi.h file. What do you think?
+> +
+>  extern unsigned long sbi_spec_version;
+>  struct sbiret {
+>  	long error;
+> @@ -259,6 +262,8 @@ struct sbiret {
+>  };
+> 
+>  void sbi_init(void);
+> +void sbi_apply_reserved_mem_erratum(void *dtb_va);
+> +
+>  struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
+>  			unsigned long arg1, unsigned long arg2,
+>  			unsigned long arg3, unsigned long arg4,
+> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+> index c672c8ba9a2a..aeb27263fa53 100644
+> --- a/arch/riscv/kernel/sbi.c
+> +++ b/arch/riscv/kernel/sbi.c
+> @@ -5,8 +5,10 @@
+>   * Copyright (c) 2020 Western Digital Corporation or its affiliates.
+>   */
+> 
+> +#include <linux/acpi.h>
+>  #include <linux/bits.h>
+>  #include <linux/init.h>
+> +#include <linux/libfdt.h>
+>  #include <linux/pm.h>
+>  #include <linux/reboot.h>
+>  #include <asm/sbi.h>
+> @@ -583,6 +585,40 @@ long sbi_get_mimpid(void)
+>  }
+>  EXPORT_SYMBOL_GPL(sbi_get_mimpid);
+> 
+> +static long sbi_firmware_id;
+> +static long sbi_firmware_version;
+> +
+> +/*
+> + * For devicetrees patched by OpenSBI a "mmode_resv" node is added to cover
+> + * the region OpenSBI has protected by means of a PMP. Some versions of OpenSBI,
+> + * [v0.8 to v1.3), omitted the "no-map" property, but this trips up hibernation
+> + * among other things.
+> + */
+> +void __init sbi_apply_reserved_mem_erratum(void *dtb_pa)
+> +{
+> +	int child, reserved_mem;
+> +
+> +	if (sbi_firmware_id != SBI_IMP_OPENSBI)
+> +		return;
+> +
+> +	if (!acpi_disabled)
+> +		return;
+> +
+> +	if (sbi_firmware_version >= 0x10003 || sbi_firmware_version < 0x8)
+> +		return;
+> +
+> +	reserved_mem = fdt_path_offset((void *)dtb_pa, "/reserved-memory");
+> +	if (reserved_mem < 0)
+> +		return;
+> +
+> +	fdt_for_each_subnode(child, (void *)dtb_pa, reserved_mem) {
+> +		const char *name = fdt_get_name((void *)dtb_pa, child, NULL);
+> +
+> +		if (!strncmp(name, "mmode_resv", 10))
+> +			fdt_setprop((void *)dtb_pa, child, "no-map", NULL, 0);
+> +	}
+> +};
+> +
+>  void __init sbi_init(void)
+>  {
+>  	int ret;
+> @@ -596,8 +632,12 @@ void __init sbi_init(void)
+>  		sbi_major_version(), sbi_minor_version());
+> 
+>  	if (!sbi_spec_is_0_1()) {
+> +		sbi_firmware_id = sbi_get_firmware_id();
+> +		sbi_firmware_version = sbi_get_firmware_version();
+> +
+>  		pr_info("SBI implementation ID=0x%lx Version=0x%lx\n",
+> -			sbi_get_firmware_id(), sbi_get_firmware_version());
+> +			sbi_firmware_id, sbi_firmware_version);
+> +
+>  		if (sbi_probe_extension(SBI_EXT_TIME)) {
+>  			__sbi_set_timer = __sbi_set_timer_v02;
+>  			pr_info("SBI TIME extension detected\n");
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 70fb31960b63..cb16bfdeacdb 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -29,6 +29,7 @@
+>  #include <asm/tlbflush.h>
+>  #include <asm/sections.h>
+>  #include <asm/soc.h>
+> +#include <asm/sbi.h>
+>  #include <asm/io.h>
+>  #include <asm/ptdump.h>
+>  #include <asm/numa.h>
+> @@ -253,6 +254,8 @@ static void __init setup_bootmem(void)
+>  	 * in the device tree, otherwise the allocation could end up in a
+>  	 * reserved region.
+>  	 */
+> +
+> +	sbi_apply_reserved_mem_erratum(dtb_early_va);
+>  	early_init_fdt_scan_reserved_mem();
+> 
+>  	/*
 > --
-> Best Regards,
-> Yan, Zi
-
+> 2.40.1
 
