@@ -2,78 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0973B7728A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638E47728A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbjHGPHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38754 "EHLO
+        id S230213AbjHGPHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 11:07:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbjHGPHk (ORCPT
+        with ESMTP id S230341AbjHGPHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:07:40 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A637D1BC8;
-        Mon,  7 Aug 2023 08:07:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zOz2Sl6sETEspUjEfHGN0Doq9IKMqDh9com1ZKQ2ccQ=; b=L84dIEOGbchqXHanFmF61ALhon
-        HTWLrRNFiG+i4OH+sZd6IzaTjVs+X08wTRaG4WbHVcPFUkStJ0VR4FmmWq3yvmQrDyiDSu7t8tALr
-        exouGMBNLEgZ/RkcFRxuAgG0xD3zMAPNH33IuJHyyZ1AMUkM74PWftDLKPgQJdBaWtARbr/k+jncm
-        61WcqynycYOSanAel3SSyem+JxNGHNErJu5tPC6tLnrhAH0AtnGZ3OVSTZyRM/ZqW7pFALUCczdMN
-        TLr6fnqW213OqECH5Z8FjGXOEYmfuFb0j+yJKe+QdQRho8yrtPhLfOk5fjTrtp5WfbXpmuwO669i4
-        EP0Y5+zA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qT1oI-003w69-37;
-        Mon, 07 Aug 2023 15:06:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6B7E7300473;
-        Mon,  7 Aug 2023 17:06:17 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4840C2028F056; Mon,  7 Aug 2023 17:06:17 +0200 (CEST)
-Date:   Mon, 7 Aug 2023 17:06:17 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] compiler_types: Introduce the Clang
- __preserve_most function attribute
-Message-ID: <20230807150617.GB569857@hirez.programming.kicks-ass.net>
-References: <20230804090621.400-1-elver@google.com>
- <87il9rgjvw.fsf@oldenburg.str.redhat.com>
- <CANpmjNN4h2+i3LUG__GHha849PZ3jK=mBoFQWpSz4jffXB4wrw@mail.gmail.com>
- <87pm3zf2qi.fsf@oldenburg.str.redhat.com>
+        Mon, 7 Aug 2023 11:07:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CF91BFF
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:06:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691420789; x=1722956789;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2c+nj8vIWoWHU5yXQEiQFKDo3Rw14j0iZrAqheVIpbc=;
+  b=Rd0hVGKOLHh2Ggj/vbnCLDmUX6PKK1gGgPevNCU0BZptnMOKmOCSH/OF
+   5e7S0Cws4y0C05v22NFnlePasq107baHqaX5ZAIyafpn6usEXm8IMNykq
+   93pGKwQaPWkSmnRHUR3JzFo32ES6QWbgvE2zQ0cGUl0xkbqV5bOhyi5cw
+   RCQdVVH5+/sjISuC4ts0AWND+5/NrX/HijUsBWbO3gvClCTD+p/gGq4/P
+   bsjBQe9GM1axffVyb2h7m3U9/phWmVmEWLJyd8hf9k3woaKNOlEJFiCL5
+   1TszsdFyju2RUubo/2g+rRmtgfNwY52sfpD4Z3kAkxkxdjPwzH78n4S8d
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="350876157"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="350876157"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 08:06:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="766030293"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="766030293"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga001.jf.intel.com with ESMTP; 07 Aug 2023 08:06:26 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qT1oO-00GdKa-2h;
+        Mon, 07 Aug 2023 18:06:24 +0300
+Date:   Mon, 7 Aug 2023 18:06:24 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v1 1/1] irqdomain: Refactor error path in
+ __irq_domain_alloc_fwnode()
+Message-ID: <ZNEIcDk7tQktPMGd@smile.fi.intel.com>
+References: <20230804164932.40582-1-andriy.shevchenko@linux.intel.com>
+ <84f2ea9ee0c08c8826c0f26c4a6291c9@kernel.org>
+ <ZM1bm2+/lyb+IH86@smile.fi.intel.com>
+ <86cz025tvh.wl-maz@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87pm3zf2qi.fsf@oldenburg.str.redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <86cz025tvh.wl-maz@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,25 +69,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 02:36:53PM +0200, Florian Weimer wrote:
+On Fri, Aug 04, 2023 at 11:24:02PM +0100, Marc Zyngier wrote:
+> On Fri, 04 Aug 2023 21:12:11 +0100,
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > On Fri, Aug 04, 2023 at 06:33:07PM +0100, Marc Zyngier wrote:
+> > > On 2023-08-04 17:49, Andy Shevchenko wrote:
 
-> I think the GCC vs Clang thing is expected to work today, isn't it?
-> Using the Clang-based BPF tools with a GCC-compiled kernel requires a
-> matching ABI.
+...
 
-Nope, all bets are off. There is no module ABI, in the widest possible
-sense.
+> > > >  		n = kasprintf(GFP_KERNEL, "irqchip@%pa", pa);
+> > > >  		break;
+> > > >  	}
+> > > > -
+> > > > -	if (!fwid || !n) {
+> > > > +	if (!n) {
+> > > >  		kfree(fwid);
+> > > > -		kfree(n);
+> > > >  		return NULL;
+> > > >  	}
+> > > 
+> > > What are you trying to fix?
+> > 
+> > I'm not trying to fix anything (there is no such statement from me),
+> > but I would think of some micro-optimization (speedup boot for
+> > unnoticeable time? Dunno.).
+> 
+> Error handling paths rarely qualify as an optimisation.
 
-There's all sorts of subtle breakage, I don't remember the exact
-details, but IIRC building the kernel with a compiler that has
-asm-goto-output and modules with a compiler that doesn't have it gets
-you fireworks.
+OK.
 
-We absolutely do even bother tracking any of this.
+...
 
-There's also things like GCC plugins, they can randomly (literally in
-the case of struct randomization) change things around that isn't
-compatible with what the other compiler does -- or perhaps even a later
-version of the same compiler.
+> > > We have a common error handling path, which makes it easy to
+> > > track the memory management. I don't think this sort of bike
+> > > shedding adds much to the maintainability of this code.
+> > 
+> > Your call, of course, but I not often see in the kernel two or three attempts
+> > to allocate some memory and have grouped check for the failure.
+> 
+> Things like this[1]?
+
+Yes.
+
+> Well, this is a pattern I use often enough. Maybe
+> it isn't everybody's taste, but it suits me.
+
+Understand. Thanks for review!
+
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/irqchip/irq-gic-v3-its.c#n3438
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
