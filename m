@@ -2,83 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B0A77190F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 06:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFA277190E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 06:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbjHGEjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 00:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
+        id S229638AbjHGEjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 00:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjHGEjc (ORCPT
+        with ESMTP id S229462AbjHGEjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 00:39:32 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D51B10F6;
-        Sun,  6 Aug 2023 21:39:30 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3774d59W095336;
-        Sun, 6 Aug 2023 23:39:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691383145;
-        bh=APCpSccY3IAvSeWWn8YjMyI7Inx0AhMlTsgMSw5GeC8=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=F5ukYQvc7oof3VcOmi5WyZkf2tFmsZPpws5cgIUcOB7oEoP9Yssgo8sjFKcQF8P9Q
-         Rg45D3LpunD2S5YWcXZ27MsVaDpxy9slVao5AUbt8AOYa0/DvjFvrm9eP/oESCHvSI
-         /lw3N7UU4krz2MiGRvxjpH4gkP6XTYd6pMOYCTJ4=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3774d5LA106623
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 6 Aug 2023 23:39:05 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 6
- Aug 2023 23:39:04 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sun, 6 Aug 2023 23:39:04 -0500
-Received: from [172.24.227.217] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3774cw28066389;
-        Sun, 6 Aug 2023 23:38:58 -0500
-Message-ID: <296d8c57-67aa-cb0a-8bab-538c52fb41e4@ti.com>
-Date:   Mon, 7 Aug 2023 10:08:57 +0530
+        Mon, 7 Aug 2023 00:39:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D104010F3;
+        Sun,  6 Aug 2023 21:39:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5230D613EF;
+        Mon,  7 Aug 2023 04:39:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACF39C433C7;
+        Mon,  7 Aug 2023 04:39:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691383168;
+        bh=kaWg1WYQfTBpsM157yv/RZZY4HnHHaN48l3NfDkH/QI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=cYqoEUMmLadnviWvN5QB2CgDi0u+4yv+E2+/ftWgxAbDRaBMWqtwOSDsnGfrB2tRG
+         ZkccaWo8U2pwSEJMfOVmCEPQxyjx6qFwiEjGsHdEGnDcWRFVuJf7Xs2Xg+W0YqIUlt
+         mo6k1KhXJIT5aS0RGzDzo2D/srZgYIDAPAEZV9pQqShhV8T9wKRcM2M8XU/xAR87vd
+         xPO1V/9xyrd91oBUokBC+rntuC/9Oc3Dm0VWDg5Xp4vX1IZH3Lc9UyS9hKDdXbVgtB
+         u2zK/ud0s8I9LFG2sq7DBbxXPeGpFj9YV/XG8+Dn1qRvmrPnqB32k4crfoZi2hB6vn
+         O+0DuQxCOSpJg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 78DB7CE075B; Sun,  6 Aug 2023 21:39:28 -0700 (PDT)
+Date:   Sun, 6 Aug 2023 21:39:28 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>, akpm@linux-foundation.org,
+        arnd@kernel.org, ndesaulniers@google.com, sfr@canb.auug.org.au,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com
+Subject: Re: [PATCH RFC bootconfig] 1/2] fs/proc: Add /proc/cmdline_load for
+ boot loader arguments
+Message-ID: <7c81c63b-7097-4d28-864e-f364eaafc5a0@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
+ <20230728033701.817094-1-paulmck@kernel.org>
+ <db2617d2-589d-47c1-a0cc-e8aeca58710a@p183>
+ <9a42de2a-7d9f-4be3-b6c8-9f3e8a092c4d@paulmck-laptop>
+ <20230807114455.b4bab41d771556d086e8bdf4@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [EXTERNAL] Re: [PATCH 1/4] dt-bindings: net: Add ICSS IEP
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-CC:     MD Danish Anwar <danishanwar@ti.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230803110153.3309577-1-danishanwar@ti.com>
- <20230803110153.3309577-2-danishanwar@ti.com>
- <20230803-guacamole-buddy-d8179f11615e@spud>
- <d3d53a4f-a1f8-09d4-77e8-a881829fac68@ti.com>
- <20230804-uncombed-escalate-d46b38ce37a2@spud>
-From:   Md Danish Anwar <a0501179@ti.com>
-Organization: Texas Instruments
-In-Reply-To: <20230804-uncombed-escalate-d46b38ce37a2@spud>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807114455.b4bab41d771556d086e8bdf4@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,75 +65,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/23 9:05 pm, Conor Dooley wrote:
-> On Fri, Aug 04, 2023 at 11:56:19AM +0530, Md Danish Anwar wrote:
->> Hi Conor,
->>
->> On 03/08/23 8:57 pm, Conor Dooley wrote:
->>> On Thu, Aug 03, 2023 at 04:31:50PM +0530, MD Danish Anwar wrote:
->>>> From: Md Danish Anwar <danishanwar@ti.com>
->>>>
->>>> Add DT binding documentation for ICSS IEP module.
->>>>
->>>> Signed-off-by: Md Danish Anwar <danishanwar@ti.com>
->>>> ---
->>>>  .../devicetree/bindings/net/ti,icss-iep.yaml  | 37 +++++++++++++++++++
->>>>  1 file changed, 37 insertions(+)
->>>>  create mode 100644 Documentation/devicetree/bindings/net/ti,icss-iep.yaml
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/net/ti,icss-iep.yaml b/Documentation/devicetree/bindings/net/ti,icss-iep.yaml
->>>> new file mode 100644
->>>> index 000000000000..79cd72b330a6
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/net/ti,icss-iep.yaml
->>>> @@ -0,0 +1,37 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/net/ti,icss-iep.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: Texas Instruments ICSS Industrial Ethernet Peripheral (IEP) module
->>>> +
->>>> +maintainers:
->>>> +  - Md Danish Anwar <danishanwar@ti.com>
->>>> +
->>>> +properties:
->>>> +  compatible:
->>>> +    enum:
->>>> +      - ti,am654-icss-iep   # for K3 AM65x, J721E and AM64x SoCs
->>>
->>> No. ti,am654-icss-iep is for am654. You should really have compatibles
->>> specific to the SoC - is there a reason why this has not been done?
->>>
->>
->> Yes, ti,am654-icss-iep is for am654. You are right, the compatibles should be
->> specific to SoC. Currently the upstream support is being added for only AM65x.
->>
->> I will remove J721E and AM64x SoCs from the comment above and these compatibles
->> when their support is enabled in future.
+On Mon, Aug 07, 2023 at 11:44:55AM +0900, Masami Hiramatsu wrote:
+> On Fri, 4 Aug 2023 10:36:17 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> So the comment was totally wrong? Or does the same code work for all 3
-> of these SoC types & you used the same compatible on each of the 3?
-
-Comment was not totally wrong, the same compatible currently works for all
-these 3 SoCs as the same code works for them.
-
-But for now as we are upstreaming only for AM65x, I will only keep am65x in the
-comment.
-
+> > On Fri, Aug 04, 2023 at 08:23:20PM +0300, Alexey Dobriyan wrote:
+> > > On Thu, Jul 27, 2023 at 08:37:00PM -0700, Paul E. McKenney wrote:
+> > > > In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will
+> > > > show all kernel boot parameters, both those supplied by the boot loader
+> > > > and those embedded in the kernel image.  This works well for those who
+> > > > just want to see all of the kernel boot parameters, but is not helpful to
+> > > > those who need to see only those parameters supplied by the boot loader.
+> > > > This is especially important when these parameters are presented to the
+> > > > boot loader by automation that might gather them from diverse sources.
+> > > > 
+> > > > Therefore, provide a /proc/cmdline_load file that shows only those kernel
+> > > > boot parameters supplied by the boot loader.
+> > > 
+> > > > +static int cmdline_load_proc_show(struct seq_file *m, void *v)
+> > > > +{
+> > > > +	seq_puts(m, boot_command_line);
+> > > > +	seq_putc(m, '\n');
+> > > > +	return 0;
+> > > > +}
+> > > > +
+> > > >  static int __init proc_cmdline_init(void)
+> > > >  {
+> > > >  	struct proc_dir_entry *pde;
+> > > > @@ -19,6 +27,11 @@ static int __init proc_cmdline_init(void)
+> > > >  	pde = proc_create_single("cmdline", 0, NULL, cmdline_proc_show);
+> > > >  	pde_make_permanent(pde);
+> > > >  	pde->size = saved_command_line_len + 1;
+> > > > +	if (IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE)) {
+> > > > +		pde = proc_create_single("cmdline_load", 0, NULL, cmdline_load_proc_show);
+> > > > +		pde_make_permanent(pde);
+> > > > +		pde->size = strnlen(boot_command_line, COMMAND_LINE_SIZE) + 1;
+> > > > +	}
+> > > 
+> > > Please add it as separate fs/proc/cmdline_load.c file so that name of
+> > > the file matches name of the /proc file.
+> > 
+> > Thank you, will do!
+> > 
+> > > The name "cmdline_load" is kind of non-descriptive. Mentioning "bootloader"
+> > > somewhere should improve things.
+> > 
+> > If we can all quickly come to agreement on a name, I can of course easily
+> > change it.
+> > 
+> > /proc/cmdline_bootloader?  Better than /proc/cmdline_from_bootloader,
+> > I suppose.  /proc/cmdline_bootldr?  /proc/bootloader by analogy with
+> > /proc/bootconfig?  Something else?
 > 
-> Thanks,
-> Conor.
-> 
-> 
->> Below is the updated compatible property.
->>
->> properties:
->>   compatible:
->>     enum:
->>       - ti,am654-icss-iep   # for K3 AM65x SoCs
+> What about "/proc/raw_cmdline" ?
 
--- 
-Thanks and Regards,
-Danish.
+That would work of me!
+
+Any objections to /proc/raw_cmdline?
+
+Going once...
+
+							Thanx, Paul
