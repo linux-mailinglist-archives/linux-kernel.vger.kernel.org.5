@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3938773038
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD04B773039
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbjHGUSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 16:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
+        id S230383AbjHGUU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 16:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231382AbjHGUSB (ORCPT
+        with ESMTP id S229560AbjHGUUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 16:18:01 -0400
-Received: from smtp-fw-9103.amazon.com (smtp-fw-9103.amazon.com [207.171.188.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE7F10E9;
-        Mon,  7 Aug 2023 13:18:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1691439480; x=1722975480;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=OjaD1kiL3NKu3sqnMgGz4vBVLZs1JplbyeNEYGhZYI8=;
-  b=Z2vb0LJ596ZAnbGP67PRzpe7SM22pChumwTNCejhb8A8T2RWGKWEW0q5
-   B46Gf/l5ig+E+sfv5952UYhX5EBnXZXI9u7hqTlvlEdRRJK8tQ5PE6FWY
-   /AeyqdwL9y5FHjHUBwsp1XSGxpPmE0cSYwA543P+6Jfz2tDh7EDxbGcJm
-   E=;
-X-IronPort-AV: E=Sophos;i="6.01,262,1684800000"; 
-   d="scan'208";a="1147272346"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-a893d89c.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9103.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 20:17:54 +0000
-Received: from EX19MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2b-m6i4x-a893d89c.us-west-2.amazon.com (Postfix) with ESMTPS id D6A6540D59;
-        Mon,  7 Aug 2023 20:17:53 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 7 Aug 2023 20:17:46 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.187.170.12) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 7 Aug 2023 20:17:43 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.com>
-To:     <xu.xin.sc@gmail.com>
-CC:     <davem@davemloft.net>, <dsahern@kernel.org>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <pabeni@redhat.com>, <si.hao@zte.com.cn>, <xu.xin16@zte.com.cn>,
-        <yang.yang29@zte.com.cn>, <kuniyu@amazon.com>
-Subject: Re: [PATCH linux-next v2] net/ipv4: return the real errno instead of -EINVAL
-Date:   Mon, 7 Aug 2023 13:17:33 -0700
-Message-ID: <20230807201733.45450-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230807015408.248237-1-xu.xin16@zte.com.cn>
-References: <20230807015408.248237-1-xu.xin16@zte.com.cn>
+        Mon, 7 Aug 2023 16:20:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA86810DE
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 13:20:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7D25A62090
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 20:20:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CF103C433C8;
+        Mon,  7 Aug 2023 20:20:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691439623;
+        bh=V9AFzfpmpeFOjhnhAQI/RQMk0Kz5hdHnESDiZoo0NE0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ZBLyIvkTP6BBmNj0Hw8jMi44b6gjK4DwS8jvbZVclYdwWi1kFgkt8v95qVsiaho7n
+         ntMLXdtZmc3F7GYidww1VJZ0sR+hvnBYjKJiBL46mkHIPFRb4CP8a+61uuvTdsBpBS
+         l6HKVoB4wBUmnCJpFpTvizNq30D4XNUxH5/N0dhbdLaiDoXFh/f9Sz2DJNt4+8mM76
+         xkDK/yKk5h9B42oYwhs0cD7OzYJI/YNRaFrYHYUCfAPZhBfyvrye+hcyo+6bH9YZuW
+         +14X7q/s3fJin4CfmY+JKGGiKEb+gsOa3rcHzEIuLns+hJyhI2UTLBhmA/m/LwV7D8
+         u6T/fo2GIDYlg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B3FCAE505D5;
+        Mon,  7 Aug 2023 20:20:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.187.170.12]
-X-ClientProxiedBy: EX19D040UWA002.ant.amazon.com (10.13.139.113) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=no autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCH net-next v4 0/6] page_pool: a couple of assorted optimizations
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169143962373.20323.15736867821555960200.git-patchwork-notify@kernel.org>
+Date:   Mon, 07 Aug 2023 20:20:23 +0000
+References: <20230804180529.2483231-1-aleksander.lobakin@intel.com>
+In-Reply-To: <20230804180529.2483231-1-aleksander.lobakin@intel.com>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, maciej.fijalkowski@intel.com,
+        larysa.zaremba@intel.com, linyunsheng@huawei.com,
+        alexanderduyck@fb.com, hawk@kernel.org,
+        ilias.apalodimas@linaro.org, simon.horman@corigine.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From:   xu.xin.sc@gmail.com
-Date:   Mon,  7 Aug 2023 01:54:08 +0000
-> From: xu xin <xu.xin16@zte.com.cn>
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri,  4 Aug 2023 20:05:23 +0200 you wrote:
+> That initially was a spin-off of the IAVF PP series[0], but has grown
+> (and shrunk) since then a bunch. In fact, it consists of three
+> semi-independent blocks:
 > 
-> For now, No matter what error pointer ip_neigh_for_gw() returns,
-> ip_finish_output2() always return -EINVAL, which may mislead the upper
-> users.
+> * #1-2: Compile-time optimization. Split page_pool.h into 2 headers to
+>   not overbloat the consumers not needing complex inline helpers and
+>   then stop including it in skbuff.h at all. The first patch is also
+>   prereq for the whole series.
+> * #3: Improve cacheline locality for users of the Page Pool frag API.
+> * #4-6: Use direct cache recycling more aggressively, when it is safe
+>   obviously. In addition, make sure nobody wants to use Page Pool API
+>   with disabled interrupts.
 > 
-> For exemple, an application uses sendto to send an UDP packet, but when the
-> neighbor table overflows, sendto() will get a value of -EINVAL, and it will
-> cause users to waste a lot of time checking parameters for errors.
-> 
-> Return the real errno instead of -EINVAL.
-> 
-> Signed-off-by: xu xin <xu.xin16@zte.com.cn>
-> Reviewed-by: Yang Yang <yang.yang29@zte.com.cn>
+> [...]
 
-Recently I was also investigating a similar issue that ip_finish_output2()
-returned the fixed -EINVAL.  But in my case, arp_constructor() failed with
--EINVAL, and ___neigh_create() returned ERR_PTR(-EINVAL);
+Here is the summary with links:
+  - [net-next,v4,1/6] page_pool: split types and declarations from page_pool.h
+    https://git.kernel.org/netdev/net-next/c/a9ca9f9ceff3
+  - [net-next,v4,2/6] net: skbuff: don't include <net/page_pool/types.h> to <linux/skbuff.h>
+    https://git.kernel.org/netdev/net-next/c/75eaf63ea7af
+  - [net-next,v4,3/6] page_pool: place frag_* fields in one cacheline
+    https://git.kernel.org/netdev/net-next/c/06d0fbdad612
+  - [net-next,v4,4/6] net: skbuff: avoid accessing page_pool if !napi_safe when returning page
+    https://git.kernel.org/netdev/net-next/c/5b899c33b3b8
+  - [net-next,v4,5/6] page_pool: add a lockdep check for recycling in hardirq
+    https://git.kernel.org/netdev/net-next/c/ff4e538c8c3e
+  - [net-next,v4,6/6] net: skbuff: always try to recycle PP pages directly when in softirq
+    https://git.kernel.org/netdev/net-next/c/4a36d0180c45
 
-So, there are still confusing paths even with this patch though, the change
-would be useful.
-
-Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-
-Thanks!
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-> Cc: Si Hao <si.hao@zte.com.cn>
-> ---
->  net/ipv4/ip_output.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-> index 6ba1a0fafbaa..f28c87533a46 100644
-> --- a/net/ipv4/ip_output.c
-> +++ b/net/ipv4/ip_output.c
-> @@ -236,7 +236,7 @@ static int ip_finish_output2(struct net *net, struct sock *sk, struct sk_buff *s
->  	net_dbg_ratelimited("%s: No header cache and no neighbour!\n",
->  			    __func__);
->  	kfree_skb_reason(skb, SKB_DROP_REASON_NEIGH_CREATEFAIL);
-> -	return -EINVAL;
-> +	return PTR_ERR(neigh);
->  }
->  
->  static int ip_finish_output_gso(struct net *net, struct sock *sk,
-> -- 
-> 2.15.2
