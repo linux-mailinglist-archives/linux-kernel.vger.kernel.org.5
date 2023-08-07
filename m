@@ -2,56 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EF1772806
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7042977280F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbjHGOk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50934 "EHLO
+        id S233043AbjHGOn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231655AbjHGOkZ (ORCPT
+        with ESMTP id S230003AbjHGOn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:40:25 -0400
-Received: from out-116.mta0.migadu.com (out-116.mta0.migadu.com [91.218.175.116])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417AF1701
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:40:23 -0700 (PDT)
-Message-ID: <bc69afd6-6eec-a070-ab96-05ab137aaf0b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691419221; h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=o+OIVP1YK+9jwAPITublGsuGiAOtFhZlPBMKuZ8xpOU=;
-        b=vKEhzisigQ7rkFFRgQhn4r7VZzO75TnS0qtkm3O+D4xArIYeQMSJWCjyKr5anVuIts95k3
-        Rev3/M4EjZIUv3nMOLE2/fjCoh1f4IF97Z8qxLqiIR8ubjM+J9KnSAXVWR4oJYATJeimmd
-        oygDOZzMqb+HGSQ7ornKZ4QROtBCKK8=
-Date:   Mon, 7 Aug 2023 07:40:12 -0700
+        Mon, 7 Aug 2023 10:43:26 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7700710F6;
+        Mon,  7 Aug 2023 07:43:25 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 9B208809D;
+        Mon,  7 Aug 2023 14:43:24 +0000 (UTC)
+Date:   Mon, 7 Aug 2023 17:43:23 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Dhruva Gole <d-gole@ti.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH] dt-bindings: pinctrl: pinctrl-single: add am62x
+ compatible
+Message-ID: <20230807144323.GP14799@atomide.com>
+References: <20230803092311.604610-1-d-gole@ti.com>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in
- ieee802154_subif_start_xmit
-Content-Language: en-US
-To:     Eduard Zingerman <eddyz87@gmail.com>,
-        syzbot <syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
-        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
-        song@kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000002098bc0602496cc3@google.com>
- <d520bd6c-bfd3-47f1-c794-ab451905256b@linux.dev>
- <9c8f04a0bf90db4bb8e6192824ab71f58244b74b.camel@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <9c8f04a0bf90db4bb8e6192824ab71f58244b74b.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LOTS_OF_MONEY,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230803092311.604610-1-d-gole@ti.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,158 +46,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Dhruva Gole <d-gole@ti.com> [230803 09:24]:
+> Add the am62x compatible property to add support for the new
+> wakeup enable and status bits positions
+> 
+> Cc: Nishanth Menon <nm@ti.com>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> CC: Tony Lindgren <tony@atomide.com>
+> Signed-off-by: Dhruva Gole <d-gole@ti.com>
 
-
-On 8/7/23 6:11 AM, Eduard Zingerman wrote:
-> On Sun, 2023-08-06 at 23:40 -0700, Yonghong Song wrote:
->>
->> On 8/6/23 4:23 PM, syzbot wrote:
->>> Hello,
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    25ad10658dc1 riscv, bpf: Adapt bpf trampoline to optimized..
->>> git tree:       bpf-next
->>> console+strace: https://syzkaller.appspot.com/x/log.txt?x=147cbb29a80000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=8acaeb93ad7c6aaa
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=d61b595e9205573133b3
->>> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d73ccea80000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1276aedea80000
->>>
->>> Downloadable assets:
->>> disk image: https://storage.googleapis.com/syzbot-assets/3d378cc13d42/disk-25ad1065.raw.xz
->>> vmlinux: https://storage.googleapis.com/syzbot-assets/44580fd5d1af/vmlinux-25ad1065.xz
->>> kernel image: https://storage.googleapis.com/syzbot-assets/840587618b41/bzImage-25ad1065.xz
->>>
->>> The issue was bisected to:
->>>
->>> commit 8100928c881482a73ed8bd499d602bab0fe55608
->>> Author: Yonghong Song <yonghong.song@linux.dev>
->>> Date:   Fri Jul 28 01:12:02 2023 +0000
->>>
->>>       bpf: Support new sign-extension mov insns
->>
->> Thanks for reporting. I will look into this ASAP.
-> 
-> Hi Yonghong,
-> 
-> I guess it's your night and my morning, so I did some initial assessment.
-> The BPF program being loaded is:
-> 
->    0 : (62) *(u32 *)(r10 -8) = 553656332
->    1 : (bf) r1 = (s16)r10
->    2 : (07) r1 += -8
->    3 : (b7) r2 = 3
->    4 : (bd) if r2 <= r1 goto pc+0
->    5 : (85) call bpf_trace_printk#6
->    6 : (b7) r0 = 0
->    7 : (95) exit
-> 
-> (Note: when using bpftool (prog dump xlated id <some-id>) the disassembly
->   of the instruction #1 is incorrectly printed as "1: (bf) r1 = r10")
->   
-> The error occurs when instruction #5 (call to printk) is executed.
-> An incorrect address for the format string is passed to printk.
-> Disassembly of the jited program looks as follows:
-> 
->    $ bpftool prog dump jited id <some-id>
->    bpf_prog_ebeed182d92b487f:
->       0: nopl    (%rax,%rax)
->       5: nop
->       7: pushq   %rbp
->       8: movq    %rsp, %rbp
->       b: subq    $8, %rsp
->      12: movl    $553656332, -8(%rbp)
->      19: movswq  %bp, %rdi            ; <---- Note movswq %bp !
->      1d: addq    $-8, %rdi
->      21: movl    $3, %esi
->      26: cmpq    %rdi, %rsi
->      29: jbe 0x2b
->      2b: callq   0xffffffffe11c484c
->      30: xorl    %eax, %eax
->      32: leave
->      33: retq
-> 
-> Note jit instruction #19 corresponding to BPF instruction #1, which
-> loads truncated and sign-extended value of %rbp's first byte as an
-> address of format string.
-> 
-> Here is how verifier log looks for (slightly modified) program:
-> 
->    func#0 @0
->    0: R1=ctx(off=0,imm=0) R10=fp0
->    ; asm volatile ("			\n\
->    0: (b7) r1 = 553656332                ; R1_w=553656332
->    1: (63) *(u32 *)(r10 -8) = r1         ; R1_w=553656332 R10=fp0 fp-8=553656332
->    2: (bf) r1 = (s16)r10                 ; R1_w=fp0 R10=fp0
->    3: (07) r1 += -8                      ; R1_w=fp-8
->    4: (b7) r2 = 3                        ; R2_w=3
->    5: (bd) if r2 <= r1 goto pc+0         ; R1_w=fp-8 R2_w=3
->    6: (85) call bpf_trace_printk#6
->    mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1
->    ...
->    mark_precise: frame0: falling back to forcing all scalars precise
->    7: R0=scalar()
->    7: (b7) r0 = 0                        ; R0_w=0
->    8: (95) exit
->    
->    from 5 to 6: R1_w=fp-8 R2_w=3 R10=fp0 fp-8=553656332
->    6: (85) call bpf_trace_printk#6
->    mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1
->    ...
->    mark_precise: frame0: falling back to forcing all scalars precise
->    7: safe
-> 
-> Note the following line:
-> 
->    2: (bf) r1 = (s16)r10                 ; R1_w=fp0 R10=fp0
-> 
-> Verifier incorrectly marked r1 as fp0, hence not noticing the problem
-> with address passed to printk.
-
-Thanks, Eduard. Right. I am also able to dump xlated code like
-below:
-
-    0: (62) *(u32 *)(r10 -8) = 553656332
-    1: (bf) r1 = (s16)r10
-    2: (07) r1 += -8
-    3: (b7) r2 = 3
-    4: (bd) if r2 <= r1 goto pc+0
-    5: (85) call bpf_trace_printk#-138320
-    6: (b7) r0 = 0
-    7: (95) exit
-
-Something like below can fix the problem,
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 132f25dab931..db72619551b2 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -13171,6 +13171,7 @@ static int check_alu_op(struct bpf_verifier_env 
-*env, struct bpf_insn *insn)
-                                         if (no_sext && need_id)
-                                                 src_reg->id = 
-++env->id_gen;
-                                         copy_register_state(dst_reg, 
-src_reg);
-+                                       dst_reg->type = SCALAR_VALUE;
-                                         if (!no_sext)
-                                                 dst_reg->id = 0;
-                                         coerce_reg_to_size_sx(dst_reg, 
-insn->off >> 3);
-
-After insn 1, we need change r1 type to SCALAR_VALUE. Will add
-the the test to selftest and submit the patch to fix the problem
-today.
-
-> 
-> Thanks,
-> Eduard.
-> 
->>>
->>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17970c5da80000
->>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=14570c5da80000
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=10570c5da80000
->>>
-[...]
+Reviewed-by: Tony Lindgren <tony@atomide.com>
