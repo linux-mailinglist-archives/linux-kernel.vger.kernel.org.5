@@ -2,188 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB2C772902
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2300C77290B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbjHGPWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48168 "EHLO
+        id S229830AbjHGPXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 11:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjHGPWP (ORCPT
+        with ESMTP id S229461AbjHGPXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:22:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 287AF10FC
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:22:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A4F3C61DAD
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 15:22:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0E00C433C7;
-        Mon,  7 Aug 2023 15:22:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691421733;
-        bh=7/lhRGbx1Z8mj8yTwu0TZl8hjKPrT6ZhZ2ZIvkkXYRE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YnsG8fxeV0cI4oAqvU8ZvZblZfbUcz7TQ3Koum112qMFhlUz/hdtLsseTUxdR+Eqa
-         PyesnJKI2QwT4AWfLuJ6NKuoFBcN4Y1EJJRJDQLTKa67wxMzLn92dYiuTpvkqsxTjB
-         nZDEnLrUnsfxPwgTE2LjQ4TrEF9/r3ORjO11lVLxRCjZfOWDXbj3foW0EM3vxIbHHz
-         8WDOrdLJsGvX+yireB1q10El3EGNbx2YVxJCONN9e+1ogtZbzJdpeZCeEbu0fOEKOE
-         Hit2fSOEdJFTvg0s74NMn+XpCebYIh/kDRFYnWE9TAVWpUp4N4mbydeh7gTlAJF+zq
-         7migfJwZ19xcQ==
-Date:   Mon, 7 Aug 2023 17:22:10 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [RFC PATCH 0/6] softirq: Start pushing down the big softirq lock
-Message-ID: <ZNEMImA1dWs07U3z@lothringen>
-References: <20230801132441.559222-1-frederic@kernel.org>
- <20230807125020.0tMGart2@linutronix.de>
+        Mon, 7 Aug 2023 11:23:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D423F10FD
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691421746;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4h12AIk7L/c0oP7stLiuZR/eX5q/mQ5GkvzWyc7yNXg=;
+        b=Dh5GTXVJWJz4/CCx/vJ07B2AGBl0xZ4Qwx6W/YQ7mxfckFDIJvy6u7mbfB3ss5wtjlh6ou
+        zBgfcuvIHl+e016MWJoiNRI1YoYmheIuVQhdGVpzp7Mty3YOgGZ7pRJgOwXv+oigofHpiC
+        VxfeUtiM7MMZXrxHRsFVgaoXDl69Hbw=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-669-JV-xu71EOsKqSwAA8fO31w-1; Mon, 07 Aug 2023 11:22:25 -0400
+X-MC-Unique: JV-xu71EOsKqSwAA8fO31w-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-317a84a3ebeso2399818f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 08:22:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691421744; x=1692026544;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4h12AIk7L/c0oP7stLiuZR/eX5q/mQ5GkvzWyc7yNXg=;
+        b=gMwgFy/u2By8/jxccvLiBTp1TNs9YN6BL/7zhdgz+NUm9EzhVYMFedTVWLV5NZEih3
+         mj1ezntvu7h5ZkQmelUDWmQ2VkmtzNCSE86b+kBvHSE71mLdnKwSz0sEkZJqca/Yp1v8
+         u569dUKXCIPSL4IL2IKXhJnf9TLiXhozRlnTqpNa11Lbv2z73tfUsj4KYKJM2WvLnxNO
+         8xgb/kIuPKyBCxjNmzwz6T+tgsJyU6LrYwOpEeFCmWuRhKzuvuNSM6rJYo/crU8S0096
+         JnMo/0Na/FtSrvXaBbeH+RI0p5g5OM7ZNaSlu9JooEgHbmgya4c5U2PY2yI1Wb6mE0Wg
+         WUiw==
+X-Gm-Message-State: AOJu0YyDvTDl46x47spzsnCjkwX5g08OU18rZ57aQW7e0W1Z7xSXqkEe
+        HTbB3KWbxe1QdDtYrUXNhRXModjiCCFkEyKSmSwsz/yb6eMvoOJeUMuk2Qt2PiJILsRrCzjfAgX
+        K+VZLlxw2ih5r7x4pfLkeD9JQzr3E9Avm
+X-Received: by 2002:a5d:660e:0:b0:317:e9d7:9387 with SMTP id n14-20020a5d660e000000b00317e9d79387mr2649704wru.25.1691421744158;
+        Mon, 07 Aug 2023 08:22:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHT+CRJxwBtjETCZhueOO73oT3V/JAO1GgSXHBmBFiXNWByV4hMkGXVBufEggmc7Ta4sJA7ow==
+X-Received: by 2002:a5d:660e:0:b0:317:e9d7:9387 with SMTP id n14-20020a5d660e000000b00317e9d79387mr2649685wru.25.1691421743773;
+        Mon, 07 Aug 2023 08:22:23 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c740:5d00:5143:1cd2:a300:ceff? (p200300cbc7405d0051431cd2a300ceff.dip0.t-ipconnect.de. [2003:cb:c740:5d00:5143:1cd2:a300:ceff])
+        by smtp.gmail.com with ESMTPSA id n12-20020adff08c000000b00317b5c8a4f1sm10743469wro.60.2023.08.07.08.22.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 08:22:23 -0700 (PDT)
+Message-ID: <a90dcf9c-f1dd-3cbe-3e35-f86499985790@redhat.com>
+Date:   Mon, 7 Aug 2023 17:22:22 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807125020.0tMGart2@linutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] mm: no need to export mm_kobj
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <2023080436-algebra-cabana-417d@gregkh>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <2023080436-algebra-cabana-417d@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 02:50:20PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2023-08-01 15:24:35 [+0200], Frederic Weisbecker wrote:
-> > Networking softirqs can take time, holding the execution of block,
-> > tasklets, timers and RCU callbacks.
-> > 
-> > People fight hard through this big softirq lock, proposing more and
-> > more hacks over the years to deal with the resulting fundamental
-> > unfairness that is not only a problem for RT users.
-> > 
-> > Here is a proposal for an entrypoint to dealing with that issue in the
-> > long term. The purpose is to adopt a similar journey to the one we took
-> > with the BKL push-down but with timers. Most timers are unrelated to
-> > other softirq vectors, those can simply be tagged with the new
-> > TIMER_SOFTINTERRUPTIBLE flag that makes a callback soft-interruptible.
-> > The others can carry the TIMER_SOFTINTERRUPTIBLE after they get converted
-> > to use appropriate synchronization against other vectors callbacks
-> > (using spin_lock_bh() for example).
+On 04.08.23 08:43, Greg Kroah-Hartman wrote:
+> There are no modules using mm_kobj, so do not export it.
 > 
-> This doesn't work as proposed because of lock ordering:
-> |======================================================
-> |WARNING: possible circular locking dependency detected
-> |6.5.0-rc4-rt1+ #220 Not tainted
-> |------------------------------------------------------
-> |ktimers/0/15 is trying to acquire lock:
-> |ffff88817b41b6d8 ((softirq_ctrl.lock)){+.+.}-{2:2}, at: __local_bh_disable_ip+0xb7/0x1a0
-> |
-> |but task is already holding lock:
-> |ffff88817b41c820 (&base->expiry_lock){+.+.}-{2:2}, at: run_timer_softirq+0x61/0x3f0
-> |
-> |which lock already depends on the new lock.
-> |
-> |
-> |the existing dependency chain (in reverse order) is:
-> |
-> |-> #1 (&base->expiry_lock){+.+.}-{2:2}:
-> |       lock_acquire+0xd4/0x2f0
-> |       rt_spin_lock+0x21/0xf0
-> |       run_timer_softirq+0x61/0x3f0
-> |       __do_softirq+0x19b/0x4cb
-> |       run_timersd+0x92/0xf0
-> |       smpboot_thread_fn+0x211/0x330
-> |       kthread+0x110/0x130
-> |       ret_from_fork+0x2b/0x40
-> |       ret_from_fork_asm+0x1b/0x30
-> |
-> |-> #0 ((softirq_ctrl.lock)){+.+.}-{2:2}:
-> |       check_prev_add+0xe2/0xd60
-> |       __lock_acquire+0x132d/0x1700
-> |       lock_acquire+0xd4/0x2f0
-> |       rt_spin_lock+0x21/0xf0
-> |       __local_bh_disable_ip+0xb7/0x1a0
-> |       call_timer_fn+0x172/0x310
-> |       run_timer_softirq+0x331/0x3f0
-> |       __do_softirq+0x19b/0x4cb
-> |       run_timersd+0x92/0xf0
-> |       smpboot_thread_fn+0x211/0x330
-> |       kthread+0x110/0x130
-> |       ret_from_fork+0x2b/0x40
-> |       ret_from_fork_asm+0x1b/0x30
-> |
-> |other info that might help us debug this:
-> |
-> | Possible unsafe locking scenario:
-> |
-> |       CPU0                    CPU1
-> |       ----                    ----
-> |  lock(&base->expiry_lock);
-> |                               lock((softirq_ctrl.lock));
-> |                               lock(&base->expiry_lock);
-> |  lock((softirq_ctrl.lock));
-> |
-> | *** DEADLOCK ***
-> |
-> |2 locks held by ktimers/0/15:
-> | #0: ffffffff826e9ce0 (rcu_read_lock){....}-{1:2}, at: rt_spin_lock+0x5d/0xf0
-> | #1: ffff88817b41c820 (&base->expiry_lock){+.+.}-{2:2}, at:
-> |run_timer_softirq+0x61/0x3f0
-
-Right, need to pull that to the caller before it releases the lock.
-
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>   mm/mm_init.c | 1 -
+>   1 file changed, 1 deletion(-)
 > 
-> I posted a different series last week where I drop the lock for other
-> reasons at a different spot where it is safe to do so. It needs adopting
-> other level softirq handler (besides TIMER_SOFTIRQ) but there is no
-> need to deal with the individual callback.
+> diff --git a/mm/mm_init.c b/mm/mm_init.c
+> index a1963c3322af..1c9d6f428906 100644
+> --- a/mm/mm_init.c
+> +++ b/mm/mm_init.c
+> @@ -154,7 +154,6 @@ early_param("mminit_loglevel", set_mminit_loglevel);
+>   #endif /* CONFIG_DEBUG_MEMORY_INIT */
+>   
+>   struct kobject *mm_kobj;
+> -EXPORT_SYMBOL_GPL(mm_kobj);
+>   
+>   #ifdef CONFIG_SMP
+>   s32 vm_committed_as_batch = 32;
 
-I've seen that yes, I have yet to review deeper but it looks like a good idea
-in any case to have a preemption point between timer callbacks.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-RCU already does a similar thing from its rcu boost processing with
-cond_resched_tasks_rcu_qs().
+-- 
+Cheers,
 
-> 
-> However, how do you continue here? Assuming all timers are marked
-> TIMER_SOFTINTERRUPTIBLE then you could avoid the BH-lock at the
-> timer-softirq.
-> But when is a timer considered safe? Would the lack of the _bh suffix be
-> that and you would simply add it during your push down?
+David / dhildenb
 
-Yeah that requires manual inspection. A timer that obviously doesn't mess
-up with other softirqs, as is the case most of the time, can simply get the flag.
-
-Other timers can be dealt with individually with local_bh_disable() or
-spin_lock_bh() or critical section.
-
-> Then you continue the same thing for the remaining softirqs. And once
-> you are done you would remove that RT lock within local_bh_disable()?
-> This isn't something a !RT user would benefit, right?
-
-Why not? A long lasting ksoftirqd handling lots of NET_RX could be
-interrupted by a timer/rcu softirq in !RT for example. Further, there
-could even be more than one ksoftirqd if necessary, though I doubt it.
-
-> The other idea I have (besides the preemption point in each softirq
-> handler (mentioned earlier)) is to simple drop the BH-lock on RT. Unlike
-> mainline, RT wouldn't deadlock then. The only that would be missing is
-> synchronisation against local_bh_disable() only locking for variables.
-> From what I remember from the various BH-models we have in RT in the
-> past, that was the only thing that exploded.
-
-I thought the issue was about timers fiddling with per-cpu state assuming
-they wouldn't be disturbed by other vectors and thus they lack
-local_bh_disable() on appropriate places. Or perhaps I misunderstood?
-
-Otherwise all timers can carry TIMER_SOFTINTERRUPTIBLE right away, right?
-
-Thanks.
