@@ -2,81 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A39DD771EBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3D7771EC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbjHGKsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 06:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
+        id S231415AbjHGKtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 06:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbjHGKso (ORCPT
+        with ESMTP id S231539AbjHGKtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 06:48:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC4419B0;
-        Mon,  7 Aug 2023 03:47:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A6D16617A0;
-        Mon,  7 Aug 2023 10:47:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3C07C433C7;
-        Mon,  7 Aug 2023 10:47:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691405227;
-        bh=UAackwL7UM7HgpYl/6xaBi50e0epZnNRDwJYOlZupq4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XTR4HktOiAPHWP3h5fhk2wD4UGXcszx/1wmiz0cTUw4hgJdMG/oBFXfBL5g8PRXDm
-         yLyTKTnw9g7BoWrTvMncRJn8LkXHzRuxipnZVjx0vFvcXrqT4eR86TG5LTl5tNbObo
-         xJQ/FGp3frhFh6/f8dqgOoKdt8ON2EbmmdwfHh1i08coEHUQBuFyz/x83TcE1yqtjt
-         7TqWEYZDHjUKH3kW5qO6/n6uSTXpZqFvYnjjmhqi5LD4LAJSCsEkKcRIcR2CCWQAgo
-         Gs1ws/3JxfY+LKKLeFt9C8F81JN/6L0Q0raPKMl4v1iHyjfJxQnAsOOrha9B/6u7Tz
-         9Y1H3yabnBsiw==
-Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1qSxlQ-002nFK-Gz;
-        Mon, 07 Aug 2023 11:47:04 +0100
+        Mon, 7 Aug 2023 06:49:16 -0400
+Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB1519AF
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 03:48:55 -0700 (PDT)
+Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1bb75afeee3so3188301fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 03:48:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691405334; x=1692010134;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZOqvjYpL8TOY1VQyCJX/k1Wl0dCAzqBeX1FG+QU3ZR4=;
+        b=gzo6NysgKKweswL7UjeFF09Y9Ji9Z/Uf35i4LQFrP2/dcJDHC3DI4879BexeA91mcm
+         z57MKJY/ByZcaAqP+krUXrut6lJ64eQqk0AA3hgN1xtyRpnbXOM6Ln+Zb96JjxqS82pB
+         fJUSk81uyUh5w8E+a0TWGnYrObQqTwoE5qbBSC0u2Lc8xRhqK/qh4WHRgzhDCCuCFBcY
+         lgpKrODnkD6Qud5xAGpvV6011VAjCDlP1uWz1egqTmfmGSJ/OdeyJ3MLwv/jY5R7qrKL
+         G782BxQ/6StluxlFjNdYHp+3k1l5bOaBIirjO4NHAsLhFG7yxjnxIGmleMJbf8zUHT/c
+         6aIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691405334; x=1692010134;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZOqvjYpL8TOY1VQyCJX/k1Wl0dCAzqBeX1FG+QU3ZR4=;
+        b=XNNj5IgWVbTCyd0+XdhpS7cKkYWTNS0KNIsZwEQa2DzJWwxUV8BLTt2P04tnjSwVqm
+         AgTcjGzMa9x/2Wn4nMbq63G3W/5kSSiZ7hb2lvqprMToxoHG8NbPtGz/TIGUko3JDfwL
+         W/hyo1KpFFUWCn5mevDJ58j+vY0ZsD0kSBmVPVnGcD9YaUFoSMciwX9DWQlHX5qOIFqG
+         XybgAGHc2csKPDpxCAln/Dpkk4PgPFYdZEhCI5AeFBeB4a6uY79cTwlaKUiSSNUatTHo
+         MAnisDIXq1GMOXgrD6ONXK0d2xwy6xUCu3m3ZXO3zGsR+XwrvguTahiFFcLrZKZ8N4ZI
+         ay8A==
+X-Gm-Message-State: AOJu0YxcNt06haMw137Tya6S8wK+s9SB9ydLxQ5vVbBjSeuXpUp7/Pvc
+        +OIwhIucqEG6+zjDbklrFu+XpyM4rlSTu59emWDxArK/
+X-Google-Smtp-Source: AGHT+IE+8t6WZmXSA2gENA1tNwHAJ+VRkzEbu+o+tPqzLzZjNhYYW9QWCVRwSEdItXD2Ro0U1Y9LHJOpP+xowR4bSgc=
+X-Received: by 2002:a05:6870:d0c4:b0:1b8:5d9e:638b with SMTP id
+ k4-20020a056870d0c400b001b85d9e638bmr10052976oaa.43.1691405333876; Mon, 07
+ Aug 2023 03:48:53 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Mon, 07 Aug 2023 11:47:04 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-perf-users@vger.kernel.org, ito-yuichi@fujitsu.com,
-        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Wei Li <liwei391@huawei.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 7/7] arm64: kgdb: Roundup cpus using the debug IPI
-In-Reply-To: <ZNDHZLGds0DTN6zg@FVFF77S0Q05N.cambridge.arm.com>
-References: <20230601213440.2488667-1-dianders@chromium.org>
- <20230601143109.v9.7.I2ef26d1b3bfbed2d10a281942b0da7d9854de05e@changeid>
- <ZNDHZLGds0DTN6zg@FVFF77S0Q05N.cambridge.arm.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <a030019c7c5887d54b97054ed7d9af12@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 217.182.43.188
-X-SA-Exim-Rcpt-To: mark.rutland@arm.com, dianders@chromium.org, catalin.marinas@arm.com, will@kernel.org, sumit.garg@linaro.org, daniel.thompson@linaro.org, linux-perf-users@vger.kernel.org, ito-yuichi@fujitsu.com, wens@csie.org, ardb@kernel.org, swboyd@chromium.org, peterz@infradead.org, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, kgdb-bugreport@lists.sourceforge.net, msys.mizuma@gmail.com, rafael.j.wysocki@intel.com, lecopzer.chen@mediatek.com, liwei391@huawei.com, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Received: by 2002:ac9:7b87:0:b0:4f0:1250:dd51 with HTTP; Mon, 7 Aug 2023
+ 03:48:53 -0700 (PDT)
+In-Reply-To: <ZNBfEjZRWnPrCIGu@casper.infradead.org>
+References: <20230806231611.1395735-1-mjguzik@gmail.com> <ZNBfEjZRWnPrCIGu@casper.infradead.org>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Mon, 7 Aug 2023 12:48:53 +0200
+Message-ID: <CAGudoHHXa47bGqBh5QELBmpT1zS2znjT9U52Tb+bp=g3zq5Cww@mail.gmail.com>
+Subject: Re: [PATCH] mm: move dummy_vm_ops out of a header
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,39 +69,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-07 11:28, Mark Rutland wrote:
-> On Thu, Jun 01, 2023 at 02:31:51PM -0700, Douglas Anderson wrote:
->> From: Sumit Garg <sumit.garg@linaro.org>
->> 
->> Let's use the debug IPI for rounding up CPUs in kgdb. When the debug
->> IPI is backed by an NMI (or pseudo NMI) then this will let us debug
->> even hard locked CPUs. When the debug IPI isn't backed by an NMI then
->> this won't really have any huge benefit but it will still work.
->> 
->> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
->> Signed-off-by: Douglas Anderson <dianders@chromium.org>
->> ---
->> 
->> Changes in v9:
->> - Remove fallback for when debug IPI isn't available.
->> - Renamed "NMI IPI" to "debug IPI" since it might not be backed by 
->> NMI.
->> 
->>  arch/arm64/kernel/ipi_debug.c |  5 +++++
->>  arch/arm64/kernel/kgdb.c      | 14 ++++++++++++++
->>  2 files changed, 19 insertions(+)
-> 
-> This looks fine to me, but I'd feel a bit happier if we had separate 
-> SGIs for
-> the backtrace and the KGDB callback as they're logically unrelated.
+On 8/7/23, Matthew Wilcox <willy@infradead.org> wrote:
+> On Mon, Aug 07, 2023 at 01:16:11AM +0200, Mateusz Guzik wrote:
+>> Otherwise the kernel ends up with multiple copies:
+>> $ nm vmlinux | grep dummy_vm_ops
+>> ffffffff81e4ea00 d dummy_vm_ops.2
+>> ffffffff81e11760 d dummy_vm_ops.254
+>> ffffffff81e406e0 d dummy_vm_ops.4
+>> ffffffff81e3c780 d dummy_vm_ops.7
+>>
+>> While here prefix it with vma_.
+>
+> It really shouldn't be prefixed with vma.  Other than that, I love this
+> patch.
+>
 
-Well, we're a bit stuck here.
+I think an unprefixed global is iffy, but I'm not going to insist on
+semi-cosmetics.
 
-We have exactly *one* spare SGI with GICv3, as we lose 8 of them
-to the secure side. One possibility would be to mux some of the
-lesser used IPIs onto two SGIs (one with standard priority, and
-one with NMI priority).
+The one thing I expected people to complain about is the location of
+the struct. The mm_init.c file was the least bad choice I found, but
+maybe something else is preferred?
+I'm just trying to avoid sending V3 for this patch after someone
+claims dummy ops should land elsewhere. ;)
 
-         M.
 -- 
-Jazz is not dead. It just smells funny...
+Mateusz Guzik <mjguzik gmail.com>
