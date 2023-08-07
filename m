@@ -2,196 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D737725E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D527725E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbjHGNfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:35:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
+        id S233206AbjHGNfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232608AbjHGNe6 (ORCPT
+        with ESMTP id S232478AbjHGNfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:34:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C56F199E
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:34:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A99461B4B
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 13:34:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0885CC433C7;
-        Mon,  7 Aug 2023 13:34:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691415287;
-        bh=23g4TF7jUSDvHuW9nQLpzshE2Y0FqB478rLGyEZGXV0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KGmRcSOWJcTpShFnZkD26ZLcyk040TecQjHCBiy3mDL16U8vVoRsJcxDiyh/brdeg
-         rfa6GCkagDLqkVFGGkhTvxbfIhYjYl+7ln6wDT6ZMzz9AdzIIaTsu6UOjJmHW3Xt0X
-         U4J4Jei768DZPs1BK2+gyNk+4xzQWA82hGt22Sa+10aWUv2Cg3X9rqD6HLenthqXtJ
-         nCsKEatkLpYECotDwqg/2o0HqecgNBZWiRoYEsmT1qucGtm1HWzFzJFtUlHQFR6Vfp
-         RWQIKR2vmbXruuP2hWVjBBwqo64hIQLnIOWPui8ZPJyPlOwUbdQLRvZL8WZvfV+Ree
-         tUpaDywaZJPsw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 50E0B404DF; Mon,  7 Aug 2023 10:34:44 -0300 (-03)
-Date:   Mon, 7 Aug 2023 10:34:44 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Artem Savkov <asavkov@redhat.com>
-Cc:     Jesper Dangaard Brouer <hawk@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Milian Wolff <milian.wolff@kdab.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] Revert "perf report: Append inlines to non-DWARF
- callchains"
-Message-ID: <ZNDy9EBLsUlERql6@kernel.org>
-References: <ZMl8VyhdwhClTM5g@kernel.org>
- <20230802074335.GA622710@alecto.usersys.redhat.com>
- <20230807110008.GA886657@alecto.usersys.redhat.com>
+        Mon, 7 Aug 2023 09:35:33 -0400
+Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AE6A9
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:35:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1691415332;
+  x=1722951332;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=YHNEaDy2r6kxnZWFMLyhqsXhrsplDLTKyk6Oya5XTzI=;
+  b=hJj3MLru47bsKCl8nFlJXqITtFQU+hpEh9Y8q7gmNQqeJP8cJnryfMrO
+   GAmmDhDYKQstITguGK4nOhFFWOcAAri8AELxFG2Etn7NQysgKoQXs2VCm
+   whNN6fJ9I3Tw2XvwtcDD30r29PABUIGfFlwi+NUpI58hIvcXi3B7p0qoN
+   +yD/zHrNBA3afMG1hoLgbhqoUtBUEefp8nqFm+8Dhi0sujsGHKV3eV5tp
+   bcM3cUYWJ1/DcEc+CWhXGnmL8ZgI8yp/JEMmym9NHHNqUzvGbn2bu584R
+   Dof6cr1Y76cRdkwNAXBBJImStRtwz1tHyOcpUibViVoaWvYbTgAY3eODv
+   A==;
+From:   =?utf-8?q?M=C3=A5rten_Lindahl?= <marten.lindahl@axis.com>
+Date:   Mon, 7 Aug 2023 15:34:50 +0200
+Subject: [PATCH v2] ARM: kexec: Make smp stop calls asynchronous
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807110008.GA886657@alecto.usersys.redhat.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-ID: <20230807-arm-smp-call-async-v2-1-ce2307dd528c@axis.com>
+X-B4-Tracking: v=1; b=H4sIAPny0GQC/22NQQ6CMBBFr0K6dkxbAdGV9zAshjKVJrSQDiEQw
+ t0tuHX5/s/L2wRTdMTimW0i0uzYDSGBvmTCdBg+BK5NLLTUN1nJO2D0wH4Eg30PyGswkBvVom7
+ pUWolktggEzQRg+kO1SNPFI9jjGTdctbedeLO8TTE9YzP6lh/nVIV/zqzAgVFZXO0jZZW2hcuj
+ q9m8KLe9/0LvsqOR8wAAAA=
+To:     Russell King <linux@armlinux.org.uk>
+CC:     Baoquan He <bhe@redhat.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@axis.com>,
+        =?utf-8?q?M=C3=A5rten_Lindahl?= <marten.lindahl@axis.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691415329; l=2394;
+ i=marten.lindahl@axis.com; s=20230329; h=from:subject:message-id;
+ bh=I5pU/e9Qq+g1cUnHBmdzxZ7d0mwn3mejD1Eb5k4FO5c=;
+ b=kPnl+cpPkI6RIPl2SutToGYsPbnY+LdNDSlSDe59MMHgRKqzdhAOTUnlHTnn3FIjqu7i4cC0b
+ 01gkSNJL2irBsSCbikg0bBN/iYQKGxEyyjaQGCI3sbbvyVgd/vLz8np
+X-Developer-Key: i=marten.lindahl@axis.com; a=ed25519;
+ pk=JfbjqFPJnIDIQOkJBeatC8+S3Ax3N0RIdmN+fL3wXgw=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Aug 07, 2023 at 01:00:08PM +0200, Artem Savkov escreveu:
-> On Wed, Aug 02, 2023 at 09:43:40AM +0200, Artem Savkov wrote:
-> > Hi Arnaldo,
-> > 
-> > On Tue, Aug 01, 2023 at 06:42:47PM -0300, Arnaldo Carvalho de Melo wrote:
-> > > Hi Artem,
-> > > 
-> > > 	Can you please double check this? I reproduced with:
-> > > 
-> > > git checkout 46d21ec067490ab9cdcc89b9de5aae28786a8b8e
-> > > build it
-> > > perf record -a -g sleep 5s
-> > > perf report
-> > > 
-> > > 	Do you get the same slowness and then reverting it, i.e. just
-> > > going to HEAD~ and rebuilding getting a fast 'perf report' startup, i.e.
-> > > without the inlines in the callchains?
-> > 
-> > With a simple test like this I definitely get a slowdown, but not sure
-> > if it can be called excessive.
-> > 
-> > Below are the times I got by running 'time perf report' and hitting 'q'
-> > during load so that it quits as soon as it is loads up. Tested on a
-> > freshly updated fedora 38.
-> 
-> My bad, I had wrong debuginfo installed for the kernel I tested. I can
-> reproduce it with the correct one. Looks like vmlinux is just too much
-> for addr2line. Maybe we can skip it but leave other inlines in, like so:
+If a panic is triggered by a hrtimer interrupt all online cpus will be
+notified and set offline. But as highlighted by commit 19dbdcb8039c
+("smp: Warn on function calls from softirq context") this call should
+not be made synchronous with disabled interrupts:
 
-That is a possibilit, and probably we could make it cheaper by looking
-at the cpumode, avoiding calling addr2line when we didn't makage to
-resolve the symbol, etc.
+  softdog: Initiating panic
+  Kernel panic - not syncing: Software Watchdog Timer expired
+  WARNING: CPU: 1 PID: 0 at kernel/smp.c:753 smp_call_function_many_cond
+    unwind_backtrace:
+      show_stack
+      dump_stack_lvl
+      __warn
+      warn_slowpath_fmt
+      smp_call_function_many_cond
+      smp_call_function
+      crash_smp_send_stop.part.0
+      machine_crash_shutdown
+      __crash_kexec
+      panic
+      softdog_fire
+      __hrtimer_run_queues
+      hrtimer_interrupt
 
-We also may want to have this as an option that has to be explicitely
-enabled, like --resolve-inlines, as this will add overhead no matter if
-we stop calling addr2line and do it more efficiently, etc.
+Make the smp call for machine_crash_nonpanic_core() asynchronous.
 
-Fact is, we're late in the 6.5 schedule, so the best thing now is to
-just revert the patch and then try again later, ok?
+Signed-off-by: Mårten Lindahl <marten.lindahl@axis.com>
+---
+Changes in v2:
+- Fixed commit msg typo "noitfied" => "notified"
+- Link to v1: https://lore.kernel.org/r/20230615-arm-smp-call-async-v1-1-58f4afb20f0f@axis.com
+---
+ arch/arm/kernel/machine_kexec.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-- Arnaldo
+diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
+index 46364b699cc3..5d07cf9e0044 100644
+--- a/arch/arm/kernel/machine_kexec.c
++++ b/arch/arm/kernel/machine_kexec.c
+@@ -94,16 +94,28 @@ static void machine_crash_nonpanic_core(void *unused)
+ 	}
+ }
  
-> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> index 11de3ca8d4fa7..fef309cd401f7 100644
-> --- a/tools/perf/util/machine.c
-> +++ b/tools/perf/util/machine.c
-> @@ -2388,7 +2388,9 @@ static int add_callchain_ip(struct thread *thread,
->  	ms.map = map__get(al.map);
->  	ms.sym = al.sym;
->  
-> -	if (!branch && append_inlines(cursor, &ms, ip) == 0)
-> +	if (!branch && ms.map && ms.map->dso &&
-> +	    strcmp(ms.map->dso->short_name, "[kernel.vmlinux]") &&
-> +	    append_inlines(cursor, &ms, ip) == 0)
->  		goto out;
->  
->  	srcline = callchain_srcline(&ms, al.addr);
-> 
-> > > - Arnaldo
-> > > 
-> > > ----
-> > > 
-> > > This reverts commit 46d21ec067490ab9cdcc89b9de5aae28786a8b8e.
-> > > 
-> > > The tests were made with a specific workload, further tests on a
-> > > recently updated fedora 38 system with a system wide perf.data file
-> > > shows 'perf report' taking excessive time, so lets revert this until a
-> > > full investigation and improvement on the addr2line support code is
-> > > made.
-> > > 
-> > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > Cc: Artem Savkov <asavkov@redhat.com>
-> > > Cc: Namhyung Kim <namhyung@kernel.org>
-> > > Cc: Adrian Hunter <adrian.hunter@intel.com>
-> > > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> > > Cc: Ian Rogers <irogers@google.com>
-> > > Cc: Ingo Molnar <mingo@redhat.com>
-> > > Cc: Jiri Olsa <jolsa@kernel.org>
-> > > Cc: Mark Rutland <mark.rutland@arm.com>
-> > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > > Cc: Milian Wolff <milian.wolff@kdab.com>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > ---
-> > >  tools/perf/util/machine.c | 5 -----
-> > >  1 file changed, 5 deletions(-)
-> > > 
-> > > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> > > index 4e62843d51b7dbf9..f4cb41ee23cdbcfc 100644
-> > > --- a/tools/perf/util/machine.c
-> > > +++ b/tools/perf/util/machine.c
-> > > @@ -45,7 +45,6 @@
-> > >  
-> > >  static void __machine__remove_thread(struct machine *machine, struct thread_rb_node *nd,
-> > >  				     struct thread *th, bool lock);
-> > > -static int append_inlines(struct callchain_cursor *cursor, struct map_symbol *ms, u64 ip);
-> > >  
-> > >  static struct dso *machine__kernel_dso(struct machine *machine)
-> > >  {
-> > > @@ -2385,10 +2384,6 @@ static int add_callchain_ip(struct thread *thread,
-> > >  	ms.maps = maps__get(al.maps);
-> > >  	ms.map = map__get(al.map);
-> > >  	ms.sym = al.sym;
-> > > -
-> > > -	if (!branch && append_inlines(cursor, &ms, ip) == 0)
-> > > -		goto out;
-> > > -
-> > >  	srcline = callchain_srcline(&ms, al.addr);
-> > >  	err = callchain_cursor_append(cursor, ip, &ms,
-> > >  				      branch, flags, nr_loop_iter,
-> > > -- 
-> > > 2.41.0
-> > > 
-> > 
-> > -- 
-> >  Artem
-> 
-> -- 
->  Artem
-> 
++static DEFINE_PER_CPU(call_single_data_t, cpu_stop_csd) =
++	CSD_INIT(machine_crash_nonpanic_core, NULL);
++
+ void crash_smp_send_stop(void)
+ {
+ 	static int cpus_stopped;
+ 	unsigned long msecs;
++	call_single_data_t *csd;
++	int cpu, this_cpu = raw_smp_processor_id();
+ 
+ 	if (cpus_stopped)
+ 		return;
+ 
+ 	atomic_set(&waiting_for_crash_ipi, num_online_cpus() - 1);
+-	smp_call_function(machine_crash_nonpanic_core, NULL, false);
++	for_each_online_cpu(cpu) {
++		if (cpu == this_cpu)
++			continue;
++
++		csd = &per_cpu(cpu_stop_csd, cpu);
++		smp_call_function_single_async(cpu, csd);
++	}
++
+ 	msecs = 1000; /* Wait at most a second for the other cpus to stop */
+ 	while ((atomic_read(&waiting_for_crash_ipi) > 0) && msecs) {
+ 		mdelay(1);
 
+---
+base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+change-id: 20230807-arm-smp-call-async-4c1da2de9621
+
+Best regards,
 -- 
+Mårten Lindahl <marten.lindahl@axis.com>
 
-- Arnaldo
