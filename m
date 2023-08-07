@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 366697726BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FBD7726BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbjHGNyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41236 "EHLO
+        id S230473AbjHGNyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:54:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234589AbjHGNxe (ORCPT
+        with ESMTP id S234596AbjHGNxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:53:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F57919B5
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:53:27 -0700 (PDT)
-Message-ID: <20230807135028.161442319@linutronix.de>
+        Mon, 7 Aug 2023 09:53:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED561703
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:53:28 -0700 (PDT)
+Message-ID: <20230807135028.217017488@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691416405;
+        s=2020; t=1691416407;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=v+176pp9ACIIPvLc6LDktKyoU9X9mReBTN4+zBUGjJ0=;
-        b=3MJAVBOyeqWg+qSoumYYElftm3Sj3O9raM/01lyZenNB8+4NpMSykM4UoZv0bN8RFX/a1M
-        vweOBTgXt91vD5pnnUGl7araPthxkzw7/oGD4Ti41s/GH5eIGNPWE/9FY9NZAuaQcCQCdY
-        4XQWDmzjoqdo65zJrueUdBi2iBJRghqjsXNR0ybbDFBk36zyYRHAd21Bj4wX2IswkpKhKE
-        SmSk4Wm++OlNU0Ci48xXcuMcQHyCafLbqHeyID1vmlOXbeIUDGncRvikpwnTSD0agD3KYs
-        G2Wtm39HEQokotO2z5usTSVgH581qGkNffIeFieYsDqC/sytBpNc8vQaKDvr1A==
+         references:references; bh=yTx1K1TOgVQKpA16O0I6vT9VzfdHaMEzdywPzDbFuOw=;
+        b=1WEqWUxRklJni9r/WJ5i62dKJgjJrRVTauTMWkeUrcmaMzCnOyozSrIq3E0nTa5V2PUSQv
+        Yx2Ar7qZ2UAENEFcYO5Y9YQAdVQdbM+VhSgGg1/kzbr6Y0v/ATFnTPVEEnFM7ZR2M2D0jl
+        9Q1LuETfQUK9Z7Jhock90JOkTBVIWtjPE4NcsxdT+nzC+UBZbVJ5Ch4RuwOI+x+lQVqnT0
+        Wdfn27PEnJORrkqPRfLlg/u28peJ7E9Xxtv5a+Lh4wyuUVQ3DpXJUukKUu+WfS9Q7JuU/i
+        Q4Nop8ha0qreLWjo9M1QHcA34BwG63GpdvA8NEBjtZrQnxWtnk4Msau42/Kd8g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691416405;
+        s=2020e; t=1691416407;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=v+176pp9ACIIPvLc6LDktKyoU9X9mReBTN4+zBUGjJ0=;
-        b=/YrelmPGc4/3kKdLXjSqR4pk8rqpMbhIIEJ3nii5pjz+WTr7GDQKm2bRKegxKj29p2zFT5
-        ZY6bN47weaoxzkAw==
+         references:references; bh=yTx1K1TOgVQKpA16O0I6vT9VzfdHaMEzdywPzDbFuOw=;
+        b=7RtmB+XTjyJwlP4WRawDg3RmJTpeBvMUSdrIKC6b+z8/BwacVTc1qY73W6C5VjhXZdTScj
+        LzRQsTbxaoGgHgCw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
@@ -48,173 +48,47 @@ Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Feng Tang <feng.tang@intel.com>,
         Andy Shevchenko <andy@infradead.org>
-Subject: [patch 33/53] x86/cpu/topology: Use a data structure for topology
- info
+Subject: [patch 34/53] x86/smpboot: Make error message actually useful
 References: <20230807130108.853357011@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon,  7 Aug 2023 15:53:25 +0200 (CEST)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Date:   Mon,  7 Aug 2023 15:53:26 +0200 (CEST)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Put the processor accounting into a data structure, which will gain more
-topology related information in the next steps, and sanitize the accounting.
+"smpboot: native_kick_ap: bad cpu 33" is absolutely useless information.
+
+Replace it with something meaningful which allows to decode the failure
+condition.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/cpu/topology.c |   59 ++++++++++++++++++++---------------------
- 1 file changed, 29 insertions(+), 30 deletions(-)
+ arch/x86/kernel/smpboot.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
---- a/arch/x86/kernel/cpu/topology.c
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -23,25 +23,24 @@ DECLARE_BITMAP(phys_cpu_present_map, MAX
- u32 cpuid_to_apicid[] __read_mostly = { [0 ... NR_CPUS - 1] = BAD_APICID, };
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1081,9 +1081,13 @@ int native_kick_ap(unsigned int cpu, str
  
- /*
-+ * Keep track of assigned, disabled and rejected CPUs. Present assigned
-+ * with 1 as CPU #0 is reserved for the boot CPU.
-+ */
-+struct {
-+	unsigned int		nr_assigned_cpus;
-+	unsigned int		nr_disabled_cpus;
-+	unsigned int		nr_rejected_cpus;
-+} topo_info __read_mostly = {
-+	.nr_assigned_cpus	= 1,
-+};
+ 	pr_debug("++++++++++++++++++++=_---CPU UP  %u\n", cpu);
+ 
+-	if (apicid == BAD_APICID || !test_bit(apicid, phys_cpu_present_map) ||
+-	    !apic_id_valid(apicid)) {
+-		pr_err("%s: bad cpu %d\n", __func__, cpu);
++	if (apicid == BAD_APICID || !apic_id_valid(apicid)) {
++		pr_err("CPU %u has invalid APIC ID %x. Aborting bringup\n", cpu, apicid);
++		return -EINVAL;
++	}
 +
-+/*
-  * Processor to be disabled specified by kernel parameter
-  * disable_cpu_apicid=<int>, mostly used for the kdump 2nd kernel to
-  * avoid undefined behaviour caused by sending INIT from AP to BSP.
-  */
- static u32 disabled_cpu_apicid __ro_after_init = BAD_APICID;
- 
--static unsigned int num_processors;
--static unsigned int disabled_cpus;
--
--/*
-- * The number of allocated logical CPU IDs. Since logical CPU IDs are allocated
-- * contiguously, it equals to current allocated max logical CPU ID plus 1.
-- * All allocated CPU IDs should be in the [0, nr_logical_cpuids) range,
-- * so the maximum of nr_logical_cpuids is nr_cpu_ids.
-- *
-- * NOTE: Reserve 0 for BSP.
-- */
--static int nr_logical_cpuids = 1;
--
- bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
- {
- 	return phys_id == (u64)cpuid_to_apicid[cpu];
-@@ -75,7 +74,7 @@ static int __init smp_init_primary_threa
- 		return 0;
++	if (!test_bit(apicid, phys_cpu_present_map)) {
++		pr_err("CPU %u APIC ID %x is not present. Aborting bringup\n", cpu, apicid);
+ 		return -EINVAL;
  	}
- 
--	for (cpu = 0; cpu < nr_logical_cpuids; cpu++)
-+	for (cpu = 0; cpu < topo_info.nr_assigned_cpus; cpu++)
- 		cpu_mark_primary_thread(cpu, cpuid_to_apicid[cpu]);
- 	return 0;
- }
-@@ -89,7 +88,7 @@ static int topo_lookup_cpuid(u32 apic_id
- 	int i;
- 
- 	/* CPU# to APICID mapping is persistent once it is established */
--	for (i = 0; i < nr_logical_cpuids; i++) {
-+	for (i = 0; i < topo_info.nr_assigned_cpus; i++) {
- 		if (cpuid_to_apicid[i] == apic_id)
- 			return i;
- 	}
-@@ -107,22 +106,21 @@ static int allocate_logical_cpuid(u32 ap
- 	if (cpu >= 0)
- 		return cpu;
- 
--	cpuid_to_apicid[nr_logical_cpuids] = apic_id;
--	return nr_logical_cpuids++;
-+	return topo_info.nr_assigned_cpus++;
- }
- 
--static void cpu_update_apic(int cpu, u32 apicid)
-+static void cpu_update_apic(unsigned int cpu, u32 apic_id)
- {
- #if defined(CONFIG_SMP) || defined(CONFIG_X86_64)
--	early_per_cpu(x86_cpu_to_apicid, cpu) = apicid;
-+	early_per_cpu(x86_cpu_to_apicid, cpu) = apic_id;
- #endif
-+	cpuid_to_apicid[cpu] = apic_id;
- 	set_cpu_possible(cpu, true);
--	set_bit(apicid, phys_cpu_present_map);
-+	set_bit(apic_id, phys_cpu_present_map);
- 	set_cpu_present(cpu, true);
--	num_processors++;
- 
- 	if (system_state != SYSTEM_BOOTING)
--		cpu_mark_primary_thread(cpu, apicid);
-+		cpu_mark_primary_thread(cpu, apic_id);
- }
- 
- static int generic_processor_info(int apicid)
-@@ -137,18 +135,18 @@ static int generic_processor_info(int ap
- 		return 0;
- 
- 	if (disabled_cpu_apicid == apicid) {
--		int thiscpu = num_processors + disabled_cpus;
-+		int thiscpu = topo_info.nr_assigned_cpus + topo_info.nr_disabled_cpus;
- 
- 		pr_warn("APIC: Disabling requested cpu. Processor %d/0x%x ignored.\n",
- 			thiscpu, apicid);
- 
--		disabled_cpus++;
-+		topo_info.nr_rejected_cpus++;
- 		return -ENODEV;
- 	}
- 
--	if (num_processors >= nr_cpu_ids) {
-+	if (topo_info.nr_assigned_cpus >= nr_cpu_ids) {
- 		pr_warn_once("APIC: CPU limit of %d reached. Ignoring further CPUs\n", nr_cpu_ids);
--		disabled_cpus++;
-+		topo_info.nr_rejected_cpus++;
- 		return -ENOSPC;
- 	}
- 
-@@ -178,14 +176,16 @@ static int __initdata setup_possible_cpu
-  */
- __init void prefill_possible_map(void)
- {
-+	unsigned int num_processors = topo_info.nr_assigned_cpus;
-+	unsigned int disabled_cpus = topo_info.nr_disabled_cpus;
- 	int i, possible;
- 
- 	i = setup_max_cpus ?: 1;
- 	if (setup_possible_cpus == -1) {
--		possible = num_processors;
-+		possible = topo_info.nr_assigned_cpus;
- #ifdef CONFIG_HOTPLUG_CPU
- 		if (setup_max_cpus)
--			possible += disabled_cpus;
-+			possible += num_processors;
- #else
- 		if (possible > i)
- 			possible = i;
-@@ -238,7 +238,7 @@ void __init topology_register_apic(u32 a
- 	}
- 
- 	if (!present) {
--		disabled_cpus++;
-+		topo_info.nr_disabled_cpus++;
- 		return;
- 	}
- 
-@@ -295,7 +295,6 @@ void topology_hotunplug_apic(unsigned in
- 	per_cpu(x86_cpu_to_apicid, cpu) = BAD_APICID;
- 	clear_bit(apic_id, phys_cpu_present_map);
- 	set_cpu_present(cpu, false);
--	num_processors--;
- }
- #endif
  
 
