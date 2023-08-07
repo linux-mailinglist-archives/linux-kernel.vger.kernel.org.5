@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55151771976
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 07:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A881771978
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 07:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbjHGFcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 01:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47024 "EHLO
+        id S230078AbjHGFdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 01:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjHGFcR (ORCPT
+        with ESMTP id S229515AbjHGFdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 01:32:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0777110EB
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 22:32:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7277561480
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:32:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60E15C433C8;
-        Mon,  7 Aug 2023 05:32:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691386332;
-        bh=Nx33dZHqYps2LYUm/QBXsjpmf7uARmP1F3mLqF1K4lg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MiUVl9PsDHH/Ak6HhKuKR0mNY0qc0g6L6J05y1ZwVpcmaPuxjZQ7uxFIKZhhrunhL
-         +mZMMAlyKNIoGfndfUNW7yoCIGRZyhcPcIY7yRZpqz4BlYZHnUJ+fN6TAUV33dNMft
-         yzMWmyRFAOrp1ifPMbb0IucPe6pGmRPipXLEXi5QSP6OFJlY/nplFpdIhyUU9zag0i
-         aaQO0DsBGCjN4KpLWQqzAtIetv8kJQ4RZLsE4m4GCltVzDArn3Sa1Ij8bpuii6GvSN
-         BwFx0oFE/D+u9b9ncSRDfE6JZPOdBLBnqguktESDdaJMzybj6T8iFG5ji5fY5Pr9sP
-         VI/8xxWNFkpgw==
-Date:   Mon, 7 Aug 2023 08:31:23 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, david@redhat.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v2] mm/mm_init: use helper macro BITS_PER_LONG and
- BITS_PER_BYTE
-Message-ID: <20230807053123.GJ2607694@kernel.org>
-References: <20230807023528.325191-1-linmiaohe@huawei.com>
+        Mon, 7 Aug 2023 01:33:47 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C1C6710EC
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 22:33:46 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 662081FB;
+        Sun,  6 Aug 2023 22:34:29 -0700 (PDT)
+Received: from [10.162.41.6] (a077893.blr.arm.com [10.162.41.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 539C13F6C4;
+        Sun,  6 Aug 2023 22:33:43 -0700 (PDT)
+Message-ID: <9b630f76-2f9e-fc42-012e-403f4b8c1dee@arm.com>
+Date:   Mon, 7 Aug 2023 11:03:40 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807023528.325191-1-linmiaohe@huawei.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V3 1/4] arm_pmu: acpi: Refactor
+ arm_spe_acpi_register_device()
+Content-Language: en-US
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
+        Sami Mujawar <sami.mujawar@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
+References: <20230803055652.1322801-1-anshuman.khandual@arm.com>
+ <20230803055652.1322801-2-anshuman.khandual@arm.com>
+ <89058c7c-1fed-60ea-7233-04187772a931@arm.com>
+ <20230804163921.GE30679@willie-the-truck>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20230804163921.GE30679@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 10:35:28AM +0800, Miaohe Lin wrote:
-> It's more readable to use helper macro BITS_PER_LONG and BITS_PER_BYTE.
-> No functional change intended.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-> ---
-> v2:
->   use BITS_PER_BYTE per Mike.
->   Collect Reviewed-by tag per David.
->   Thanks both.
-> ---
->  mm/mm_init.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+On 8/4/23 22:09, Will Deacon wrote:
+> On Thu, Aug 03, 2023 at 11:43:27AM +0530, Anshuman Khandual wrote:
+>>
+>>
+>> On 8/3/23 11:26, Anshuman Khandual wrote:
+>>> +	/*
+>>> +	 * Sanity check all the GICC tables for the same interrupt
+>>> +	 * number. For now, only support homogeneous ACPI machines.
+>>> +	 */
+>>> +	for_each_possible_cpu(cpu) {
+>>> +		struct acpi_madt_generic_interrupt *gicc;
+>>> +
+>>> +		gicc = acpi_cpu_get_madt_gicc(cpu);
+>>> +		if (gicc->header.length < len)
+>>> +			return gsi ? -ENXIO : 0;
+>>> +
+>>> +		this_gsi = parse_gsi(gicc);
+>>> +		if (!this_gsi)
+>>> +			return gsi ? -ENXIO : 0;
+>>
+>> Hello Will,
+>>
+>> Moved parse_gsi() return code checking to its original place just to
+>> make it similar in semantics to existing 'gicc->header.length check'.
+>> If 'gsi' is valid i.e atleast a single cpu has been probed, return
+>> -ENXIO indicating mismatch, otherwise just return 0.
 > 
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index 66aca3f6accd..93b1febd4a32 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -79,7 +79,7 @@ void __init mminit_verify_pageflags_layout(void)
->  	int shift, width;
->  	unsigned long or_mask, add_mask;
->  
-> -	shift = 8 * sizeof(unsigned long);
-> +	shift = BITS_PER_LONG;
->  	width = shift - SECTIONS_WIDTH - NODES_WIDTH - ZONES_WIDTH
->  		- LAST_CPUPID_SHIFT - KASAN_TAG_WIDTH - LRU_GEN_WIDTH - LRU_REFS_WIDTH;
->  	mminit_dprintk(MMINIT_TRACE, "pageflags_layout_widths",
-> @@ -1431,9 +1431,9 @@ static unsigned long __init usemap_size(unsigned long zone_start_pfn, unsigned l
->  	usemapsize = roundup(zonesize, pageblock_nr_pages);
->  	usemapsize = usemapsize >> pageblock_order;
->  	usemapsize *= NR_PAGEBLOCK_BITS;
-> -	usemapsize = roundup(usemapsize, 8 * sizeof(unsigned long));
-> +	usemapsize = roundup(usemapsize, BITS_PER_LONG);
->  
-> -	return usemapsize / 8;
-> +	return usemapsize / BITS_PER_BYTE;
->  }
->  
->  static void __ref setup_usemap(struct zone *zone)
-> -- 
-> 2.33.0
-> 
+> Wouldn't that still be the case without the check in this hunk? We'd run
+> into the homogeneous check and return -ENXIO from there, no?
+Although the return code will be the same i.e -ENXIO, but not for the same reason.
 
--- 
-Sincerely yours,
-Mike.
+		this_gsi = parse_gsi(gicc);
+		if (!this_gsi)
+			return gsi ? -ENXIO : 0;
+
+This returns 0 when IRQ could not be parsed for the first cpu, but returns -ENXIO
+for subsequent cpus. Although return code -ENXIO here still indicates IRQ parsing
+to have failed.
+
+		} else if (hetid != this_hetid || gsi != this_gsi) {
+			pr_warn("ACPI: %s: must be homogeneous\n", pdev->name);
+			return -ENXIO;
+		} 
+
+This returns -ENXIO when there is a IRQ mismatch. But if the above check is not
+there, -ENXIO return code here could not be classified into IRQ parse problem or
+mismatch without looking into the IRQ value.
