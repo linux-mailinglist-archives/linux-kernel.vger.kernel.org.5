@@ -2,123 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 314877728B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249A67726FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbjHGPIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:08:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39674 "EHLO
+        id S234714AbjHGOFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjHGPIm (ORCPT
+        with ESMTP id S234710AbjHGOEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:08:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547B11FC9;
-        Mon,  7 Aug 2023 08:08:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=FsGLstpvkSVmBkgu77rL1Iiy2ks7bnKLLUqwpkys3+c=; b=ccMB1SjDD/dV/XdmrvdlHzl7vb
-        864L3C27FVT1g+tUqxfFZj0idVnGgVhyYy5i8cEr75czsjVJGaGjuGWFIrFcX2ZbcMrMg3ZdoABq3
-        K8tbhG06vFtbvYiUKths0+iXbFw269a4chcUKDqJE8o9YUDEoyEXiwS7raprI7nEh8rejmqXWYuzt
-        VweDhbU+5WSUkYKueWaANZhTIE8wVDXVKBWAA4BecfgbOEUdHOg/nvj8Xu/RIcBJXpAO9+zwZlIWq
-        C62kXusZ3AZyvQd10T+G/sB2YEQ6cI7ZyErLzmILMRQLJL2YnlSly/Ku7zz2Uw0dwNcXTQKA1f/A/
-        nJBNMx2w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qT1pQ-00BlpE-1v; Mon, 07 Aug 2023 15:07:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A4A9B3006F1;
-        Mon,  7 Aug 2023 17:07:27 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 84F30201F3C6C; Mon,  7 Aug 2023 17:07:27 +0200 (CEST)
-Message-ID: <20230807150405.828551866@infradead.org>
-User-Agent: quilt/0.66
-Date:   Mon, 07 Aug 2023 14:38:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
-        adrian.hunter@intel.com, tglx@linutronix.de, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com,
-        Tony Luck <tony.luck@intel.com>, luto@kernel.org,
-        james.morse@arm.com, mchehab@kernel.org, rric@kernel.org,
-        jacob.jun.pan@linux.intel.com, lenb@kernel.org,
-        irenic.rajneesh@gmail.com, david.e.box@intel.com,
-        hdegoede@redhat.com, markgross@kernel.org,
-        srinivas.pandruvada@linux.intel.com, rafael@kernel.org,
-        daniel.lezcano@linaro.org, amitk@kernel.org, rui.zhang@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-pm@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH 3/3] x86/cpu: Update Hybrids
-References: <20230807123806.700370534@infradead.org>
+        Mon, 7 Aug 2023 10:04:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E0C10F8
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:03:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691417036;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Xp1oqeDRZYna//2YOwNor1PRNcbpDVn9AtA0YOsdbXI=;
+        b=dDVKsyAP6627wYPybCX+MhMtlRgNXSEMW27MLfoCR2XGMDPUznyYf4QNJWOMwfE4tKHvxF
+        SKQPcWf4ILHYm22VH50JVxuZ/a+kDdz8iTygD1qtRI1m1agdLmlpWt67WLo/+KyNxgGMZI
+        xhvkr1apXgvWZwh33O3b1asqy0jC+vM=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-617-uF6iBe9oNna8EPtI-Fk9Xg-1; Mon, 07 Aug 2023 09:57:45 -0400
+X-MC-Unique: uF6iBe9oNna8EPtI-Fk9Xg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 814D938210AE;
+        Mon,  7 Aug 2023 13:52:44 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5311F40679C0;
+        Mon,  7 Aug 2023 13:52:44 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        oliver.upton@linux.dev, seanjc@google.com
+Subject: [GIT PULL] KVM changes for v6.5-rc6
+Date:   Mon,  7 Aug 2023 09:52:43 -0400
+Message-Id: <20230807135243.3394830-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Give the hybrid thingies their own section, appropriately between Core
-and Atom.
+Linus,
 
-Add the Raptor Lake uarch names.
+The following changes since commit 5a7591176c47cce363c1eed704241e5d1c42c5a6:
 
-Put Lunar Lake after Arrow Lake per interweb guidance.
+  KVM: selftests: Expand x86's sregs test to cover illegal CR0 values (2023-07-29 11:05:32 -0400)
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/include/asm/intel-family.h |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+are available in the Git repository at:
 
---- a/arch/x86/include/asm/intel-family.h
-+++ b/arch/x86/include/asm/intel-family.h
-@@ -98,8 +98,6 @@
- #define INTEL_FAM6_ICELAKE_L		0x7E	/* Sunny Cove */
- #define INTEL_FAM6_ICELAKE_NNPI		0x9D	/* Sunny Cove */
- 
--#define INTEL_FAM6_LAKEFIELD		0x8A	/* Sunny Cove / Tremont */
--
- #define INTEL_FAM6_ROCKETLAKE		0xA7	/* Cypress Cove */
- 
- #define INTEL_FAM6_TIGERLAKE_L		0x8C	/* Willow Cove */
-@@ -112,20 +110,24 @@
- #define INTEL_FAM6_GRANITERAPIDS_X	0xAD
- #define INTEL_FAM6_GRANITERAPIDS_D	0xAE
- 
-+/* "Hybrid" Processors (P-Core/E-Core) */
-+
-+#define INTEL_FAM6_LAKEFIELD		0x8A	/* Sunny Cove / Tremont */
-+
- #define INTEL_FAM6_ALDERLAKE		0x97	/* Golden Cove / Gracemont */
- #define INTEL_FAM6_ALDERLAKE_L		0x9A	/* Golden Cove / Gracemont */
- 
--#define INTEL_FAM6_RAPTORLAKE		0xB7
-+#define INTEL_FAM6_RAPTORLAKE		0xB7	/* Raptor Cove / Enhanced Gracemont */
- #define INTEL_FAM6_RAPTORLAKE_P		0xBA
- #define INTEL_FAM6_RAPTORLAKE_S		0xBF
- 
- #define INTEL_FAM6_METEORLAKE		0xAC
- #define INTEL_FAM6_METEORLAKE_L		0xAA
- 
--#define INTEL_FAM6_LUNARLAKE_M		0xBD
--
- #define INTEL_FAM6_ARROWLAKE		0xC6
- 
-+#define INTEL_FAM6_LUNARLAKE_M		0xBD
-+
- /* "Small Core" Processors (Atom/E-Core) */
- 
- #define INTEL_FAM6_ATOM_BONNELL		0x1C /* Diamondville, Pineview */
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
+for you to fetch changes up to d5ad9aae13dcced333c1a7816ff0a4fbbb052466:
+
+  selftests/rseq: Fix build with undefined __weak (2023-08-04 18:10:29 -0400)
+
+I won't be around for the next couple weeks, so while submaintainers are
+welcome to send me their merge window pull requests, any bug fixes will have
+to go through the architecture trees.  At least for x86 things seem to be in
+check, though.
+
+Paolo
+
+----------------------------------------------------------------
+x86:
+
+* Fix SEV race condition
+
+ARM:
+
+* Fixes for the configuration of SVE/SME traps when hVHE mode is in use
+
+* Allow use of pKVM on systems with FF-A implementations that are v1.0
+  compatible
+
+* Request/release percpu IRQs (arch timer, vGIC maintenance) correctly
+  when pKVM is in use
+
+* Fix function prototype after __kvm_host_psci_cpu_entry() rename
+
+* Skip to the next instruction when emulating writes to TCR_EL1 on
+  AmpereOne systems
+
+Selftests:
+
+* Fix missing include
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      KVM: arm64: fix __kvm_host_psci_cpu_entry() prototype
+
+Fuad Tabba (7):
+      KVM: arm64: Factor out code for checking (h)VHE mode into a macro
+      KVM: arm64: Use the appropriate feature trap register for SVE at EL2 setup
+      KVM: arm64: Disable SME traps for (h)VHE at setup
+      KVM: arm64: Helper to write to appropriate feature trap register based on mode
+      KVM: arm64: Use the appropriate feature trap register when activating traps
+      KVM: arm64: Fix resetting SVE trap values on reset for hVHE
+      KVM: arm64: Fix resetting SME trap values on reset for (h)VHE
+
+Mark Brown (1):
+      selftests/rseq: Fix build with undefined __weak
+
+Oliver Upton (3):
+      KVM: arm64: Allow pKVM on v1.0 compatible FF-A implementations
+      KVM: arm64: Rephrase percpu enable/disable tracking in terms of hyp
+      KVM: arm64: Skip instruction after emulating write to TCR_EL1
+
+Paolo Bonzini (4):
+      KVM: SEV: snapshot the GHCB before accessing it
+      KVM: SEV: only access GHCB fields once
+      KVM: SEV: remove ghcb variable declarations
+      Merge tag 'kvmarm-fixes-6.5-2' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD
+
+Raghavendra Rao Ananta (1):
+      KVM: arm64: Fix hardware enable/disable flows for pKVM
+
+ arch/arm64/include/asm/el2_setup.h      |  44 ++++++++----
+ arch/arm64/include/asm/kvm_asm.h        |   2 +-
+ arch/arm64/include/asm/kvm_emulate.h    |  21 ++++--
+ arch/arm64/kvm/arm.c                    |  61 +++++++---------
+ arch/arm64/kvm/hyp/include/hyp/switch.h |   1 +
+ arch/arm64/kvm/hyp/nvhe/ffa.c           |  15 +++-
+ arch/arm64/kvm/hyp/nvhe/switch.c        |   2 +-
+ arch/x86/kvm/svm/sev.c                  | 124 ++++++++++++++++----------------
+ arch/x86/kvm/svm/svm.h                  |  26 +++++++
+ tools/testing/selftests/rseq/Makefile   |   4 +-
+ tools/testing/selftests/rseq/rseq.c     |   2 +
+ 11 files changed, 182 insertions(+), 120 deletions(-)
 
