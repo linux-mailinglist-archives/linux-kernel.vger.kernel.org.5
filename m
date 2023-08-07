@@ -2,180 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 310DE771AE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BAF771AE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbjHGG5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:57:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
+        id S230517AbjHGG7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHGG5B (ORCPT
+        with ESMTP id S229468AbjHGG7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:57:01 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1F41A4;
-        Sun,  6 Aug 2023 23:57:00 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6bb07d274feso3422549a34.0;
-        Sun, 06 Aug 2023 23:57:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691391419; x=1691996219;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=f9OrhSZvhb/ZMUIdWe8j3Y2F94jn11ho58WAhi9rnzk=;
-        b=YCwJ5Wqbvh4a14jpVGxdNgmejAUYJA985sKomXUERwzROFls45NZv80dRiubGhA4oN
-         IsN9pIKMLdB1L6Ah57ZccCxc6xPNhffAsVUTqG7FZYyWpl4O744iN2/z8Q5OAcFceY3S
-         VXwHWDiBcGmpbISnLJkFuFZfw1xOfVNhIebw2/qW9rJCFy0DmEKdMMc2erEs5290mZKY
-         NnXLwT8wihI78z89cYUI+KmFi0x/51eMO+lHhoLqCjYIvkIYVWHp2WSQWiT9CPFhGDfV
-         MvRJCGB4XBkcyG16NG7ivDraz7jkdryBQ/v79FXyi/Oi9m3qGJBvtVradILNt7+L4ig+
-         kEog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691391419; x=1691996219;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f9OrhSZvhb/ZMUIdWe8j3Y2F94jn11ho58WAhi9rnzk=;
-        b=C/G6K3Qmsx6hTC1E6wbAMGq0ugGtAdpHEWWsVFNV6TdHjub/rW2kM0nxH+Xi+p3Udg
-         y4zBT2WILsZBQ5veLa8J4TZdivPlTKmEfOodeoXbKg9o0khtRocQrU/L8i1ibZUTM/y8
-         i834GRlfbTk1DAHvQuyC/X18S1enW32XcSZFYypAmslTDhBISwZaSJ0bvED93IL0PuQ/
-         jxJ7H3iC1j2yjnT3kflCyDHM7stF+GPn3ZoBDaTAbcWg6BlixCm8y5kzzFGE5d+VPkB3
-         7kC7sVEptKS34JaC+JrXBEoeCPvusFD0bIi4cTTBJZUhJfAJ7osI+gLA1+MCOnBwINMu
-         /Jng==
-X-Gm-Message-State: AOJu0YwyAPwiD6/AkUXh8Kv+NDtH/JRhU8Zj2xuK+FqiRs8Vs30NTmYm
-        5+1Xto0ZHm4rD94dngodmVw=
-X-Google-Smtp-Source: AGHT+IEq+N/N48py0+EYLPagfqEI5zpmAY0xVp0Qka/6+3fufCJCQGhCpXNmwkK+qrKzMAzN2GLY/A==
-X-Received: by 2002:a05:6359:668b:b0:134:e06a:ef40 with SMTP id so11-20020a056359668b00b00134e06aef40mr3185789rwb.17.1691391419432;
-        Sun, 06 Aug 2023 23:56:59 -0700 (PDT)
-Received: from localhost.localdomain ([198.211.45.220])
-        by smtp.googlemail.com with ESMTPSA id m68-20020a633f47000000b00563e1ef0491sm4522311pga.8.2023.08.06.23.56.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Aug 2023 23:56:59 -0700 (PDT)
-From:   Furong Xu <0x1207@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Joao Pinto <jpinto@synopsys.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        xfr@outlook.com, rock.xu@nio.com, Furong Xu <0x1207@gmail.com>
-Subject: [PATCH] net: stmmac: xgmac: RX queue routing configuration
-Date:   Mon,  7 Aug 2023 14:56:09 +0800
-Message-Id: <20230807065609.1096076-1-0x1207@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 7 Aug 2023 02:59:07 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEC21A4;
+        Sun,  6 Aug 2023 23:59:05 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 70B5224E2AA;
+        Mon,  7 Aug 2023 14:59:03 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 7 Aug
+ 2023 14:59:03 +0800
+Received: from [192.168.125.127] (113.72.146.246) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 7 Aug
+ 2023 14:59:02 +0800
+Message-ID: <4921ac0b-a877-6f3f-50a9-b2a053b1a09a@starfivetech.com>
+Date:   Mon, 7 Aug 2023 14:59:02 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 0/4] Refactoring Microchip PCIe driver and add StarFive
+ PCIe
+Content-Language: en-US
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+References: <20230727103949.26149-1-minda.chen@starfivetech.com>
+ <CAJM55Z-r3EtMGui=g8PhwbkYbuPFJgk8OcAF6S_1LcTRAqbOdw@mail.gmail.com>
+From:   Minda Chen <minda.chen@starfivetech.com>
+In-Reply-To: <CAJM55Z-r3EtMGui=g8PhwbkYbuPFJgk8OcAF6S_1LcTRAqbOdw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [113.72.146.246]
+X-ClientProxiedBy: EXCAS065.cuchost.com (172.16.6.25) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit abe80fdc6ee6 ("net: stmmac: RX queue routing configuration")
-introduced RX queue routing to DWMAC4 core.
-This patch extend the support to XGMAC2 core.
 
-Signed-off-by: Furong Xu <0x1207@gmail.com>
----
- .../net/ethernet/stmicro/stmmac/dwxgmac2.h    | 14 +++++++
- .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 37 ++++++++++++++++++-
- 2 files changed, 49 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-index 1913385df685..a2498da7406b 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-@@ -74,8 +74,22 @@
- #define XGMAC_RXQEN(x)			GENMASK((x) * 2 + 1, (x) * 2)
- #define XGMAC_RXQEN_SHIFT(x)		((x) * 2)
- #define XGMAC_RXQ_CTRL1			0x000000a4
-+#define XGMAC_AVCPQ			GENMASK(31, 28)
-+#define XGMAC_AVCPQ_SHIFT		28
-+#define XGMAC_PTPQ			GENMASK(27, 24)
-+#define XGMAC_PTPQ_SHIFT		24
-+#define XGMAC_TACPQE			BIT(23)
-+#define XGMAC_TACPQE_SHIFT		23
-+#define XGMAC_DCBCPQ			GENMASK(19, 16)
-+#define XGMAC_DCBCPQ_SHIFT		16
-+#define XGMAC_MCBCQEN			BIT(15)
-+#define XGMAC_MCBCQEN_SHIFT		15
-+#define XGMAC_MCBCQ			GENMASK(11, 8)
-+#define XGMAC_MCBCQ_SHIFT		8
- #define XGMAC_RQ			GENMASK(7, 4)
- #define XGMAC_RQ_SHIFT			4
-+#define XGMAC_UPQ			GENMASK(3, 0)
-+#define XGMAC_UPQ_SHIFT			0
- #define XGMAC_RXQ_CTRL2			0x000000a8
- #define XGMAC_RXQ_CTRL3			0x000000ac
- #define XGMAC_PSRQ(x)			GENMASK((x) * 8 + 7, (x) * 8)
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-index a0c2ef8bb0ac..24918d95f612 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-@@ -127,6 +127,39 @@ static void dwxgmac2_tx_queue_prio(struct mac_device_info *hw, u32 prio,
- 	writel(value, ioaddr + reg);
- }
- 
-+static void dwxgmac2_rx_queue_routing(struct mac_device_info *hw,
-+				      u8 packet, u32 queue)
-+{
-+	void __iomem *ioaddr = hw->pcsr;
-+	u32 value;
-+
-+	static const struct stmmac_rx_routing dwxgmac2_route_possibilities[] = {
-+		{ XGMAC_AVCPQ, XGMAC_AVCPQ_SHIFT },
-+		{ XGMAC_PTPQ, XGMAC_PTPQ_SHIFT },
-+		{ XGMAC_DCBCPQ, XGMAC_DCBCPQ_SHIFT },
-+		{ XGMAC_UPQ, XGMAC_UPQ_SHIFT },
-+		{ XGMAC_MCBCQ, XGMAC_MCBCQ_SHIFT },
-+	};
-+
-+	value = readl(ioaddr + XGMAC_RXQ_CTRL1);
-+
-+	/* routing configuration */
-+	value &= ~dwxgmac2_route_possibilities[packet - 1].reg_mask;
-+	value |= (queue << dwxgmac2_route_possibilities[packet-1].reg_shift) &
-+		dwxgmac2_route_possibilities[packet - 1].reg_mask;
-+
-+	/* some packets require extra ops */
-+	if (packet == PACKET_AVCPQ) {
-+		value &= ~XGMAC_TACPQE;
-+		value |= 0x1 << XGMAC_TACPQE_SHIFT;
-+	} else if (packet == PACKET_MCBCQ) {
-+		value &= ~XGMAC_MCBCQEN;
-+		value |= 0x1 << XGMAC_MCBCQEN_SHIFT;
-+	}
-+
-+	writel(value, ioaddr + XGMAC_RXQ_CTRL1);
-+}
-+
- static void dwxgmac2_prog_mtl_rx_algorithms(struct mac_device_info *hw,
- 					    u32 rx_alg)
- {
-@@ -1463,7 +1496,7 @@ const struct stmmac_ops dwxgmac210_ops = {
- 	.rx_queue_enable = dwxgmac2_rx_queue_enable,
- 	.rx_queue_prio = dwxgmac2_rx_queue_prio,
- 	.tx_queue_prio = dwxgmac2_tx_queue_prio,
--	.rx_queue_routing = NULL,
-+	.rx_queue_routing = dwxgmac2_rx_queue_routing,
- 	.prog_mtl_rx_algorithms = dwxgmac2_prog_mtl_rx_algorithms,
- 	.prog_mtl_tx_algorithms = dwxgmac2_prog_mtl_tx_algorithms,
- 	.set_mtl_tx_queue_weight = dwxgmac2_set_mtl_tx_queue_weight,
-@@ -1524,7 +1557,7 @@ const struct stmmac_ops dwxlgmac2_ops = {
- 	.rx_queue_enable = dwxlgmac2_rx_queue_enable,
- 	.rx_queue_prio = dwxgmac2_rx_queue_prio,
- 	.tx_queue_prio = dwxgmac2_tx_queue_prio,
--	.rx_queue_routing = NULL,
-+	.rx_queue_routing = dwxgmac2_rx_queue_routing,
- 	.prog_mtl_rx_algorithms = dwxgmac2_prog_mtl_rx_algorithms,
- 	.prog_mtl_tx_algorithms = dwxgmac2_prog_mtl_tx_algorithms,
- 	.set_mtl_tx_queue_weight = dwxgmac2_set_mtl_tx_queue_weight,
--- 
-2.34.1
-
+On 2023/8/5 21:05, Emil Renner Berthing wrote:
+> On Thu, 27 Jul 2023 at 12:40, Minda Chen <minda.chen@starfivetech.com> wrote:
+>>
+>> This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
+>> JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
+>> same IP and have commit their codes, which are mixed with PLDA
+>> controller codes and Microchip platform codes.
+>>
+>> For re-use the PLDA controller codes, I request refactoring microchip
+>> codes, move PLDA common codes to PLDA files.
+>> Desigware and Cadence is good example for refactoring codes.
+>>
+>> So first step is extract the PLDA common codes from microchip, and
+>> refactoring the microchip codes.(patch1 - 2)
+>> Then, add Starfive codes. (patch3 - 4)
+>>
+>> This patchset is base on v6.5-rc1
+>>
+>> patch1 is move PLDA XpressRICH PCIe host common properties dt-binding
+>>        docs from microchip,pcie-host.yaml
+>> patch2 is extracting the PLDA common codes from microchip Polarfire PCIe
+>>        codes. The change list in the commit message.
+>> patch3 is add StarFive JH7110 PCIe dt-binding doc.
+>> patch4 is add StarFive JH7110 Soc PCIe codes.
+> 
+> Hi Minda,
+> 
+> To test this series properly it needs matching nodes in the VisionFive
+> 2 device trees, but it seems to be missing from this version of the
+> patch series. If I apply the device tree patch from v1 I get errors
+> like this:
+> 
+>   pcie-starfive 2b000000.pcie: invalid resource (null)
+>   pcie-starfive 2b000000.pcie: error -EINVAL: failed to map reg memory
+> 
+> It would be great if you included the device tree patch in the next
+> series so this can actually be tested.
+> 
+> /Emil
+> 
+ok. thanks.
+>> I have noticed that Daire have changed microchip's codes.
+>> https://patchwork.kernel.org/project/linux-pci/cover/20230630154859.2049521-1-daire.mcnamara@microchip.com/
+>> I have changed patch2 base on their commits. StarFive
+>> PCIe driver still can work. But their codes is under reviewed and
+>> maybe changing. Do not base on their changes first.
+>> I will base on their commit to change patch2 as soon as
+>> their commits are accepted.
+>>
+>> previous version:
+>> v1:https://patchwork.kernel.org/project/linux-pci/cover/20230719102057.22329-1-minda.chen@starfivetech.com/
+>>
+>> change:
+>>   v2:
+>>     patch1:
+>>       - squash dt-bindings patches to patch1
+>>       - add 'required' list.
+>>       - plda doc rename to plda,xpressrich-axi-common.yaml
+>>     patch2:
+>>       - squash the microchip modification patch to patch 2.
+>>     patch3:
+>>       - remove the plda common required property.
+>>     patch4:
+>>       - Sync the hide rc bar ops with config read function.
+>>       - Revert the T_PVPERL to 100ms and add comments for the source.
+>>       - Replace the link check function by the standard link ops.
+>>       - Convert to new pm ops marcos.
+>>       - Some formats modification.
+>>       - pcie-plda-host modification merge to patch4.
+>>     other:
+>>       - remove the pcie-plda-plat.c
+>>       - remove the starfive dts patch first. for it depends on
+>>         stg clock and syscon setting.
+>>
+>> Minda Chen (4):
+>>   dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
+>>   PCI: plda: Get common codes from Microchip PolarFire host
+>>   dt-bindings: PCI: Add StarFive JH7110 PCIe controller
+>>   PCI: starfive: Add JH7110 PCIe controller
+>>
+>>  .../bindings/pci/microchip,pcie-host.yaml     |  49 +-
+>>  .../pci/plda,xpressrich3-axi-common.yaml      |  69 ++
+>>  .../bindings/pci/starfive,jh7110-pcie.yaml    | 133 ++++
+>>  MAINTAINERS                                   |  19 +-
+>>  drivers/pci/controller/Kconfig                |   9 +-
+>>  drivers/pci/controller/Makefile               |   2 +-
+>>  drivers/pci/controller/plda/Kconfig           |  31 +
+>>  drivers/pci/controller/plda/Makefile          |   4 +
+>>  .../{ => plda}/pcie-microchip-host.c          | 594 ++--------------
+>>  drivers/pci/controller/plda/pcie-plda-host.c  | 665 ++++++++++++++++++
+>>  drivers/pci/controller/plda/pcie-plda.h       | 242 +++++++
+>>  drivers/pci/controller/plda/pcie-starfive.c   | 438 ++++++++++++
+>>  12 files changed, 1645 insertions(+), 610 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml
+>>  create mode 100644 Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
+>>  create mode 100644 drivers/pci/controller/plda/Kconfig
+>>  create mode 100644 drivers/pci/controller/plda/Makefile
+>>  rename drivers/pci/controller/{ => plda}/pcie-microchip-host.c (50%)
+>>  create mode 100644 drivers/pci/controller/plda/pcie-plda-host.c
+>>  create mode 100644 drivers/pci/controller/plda/pcie-plda.h
+>>  create mode 100644 drivers/pci/controller/plda/pcie-starfive.c
+>>
+>>
+>> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+>> --
+>> 2.17.1
+>>
