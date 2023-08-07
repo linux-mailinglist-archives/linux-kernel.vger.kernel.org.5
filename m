@@ -2,76 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9CD771AC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6B9771AC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbjHGGv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
+        id S229468AbjHGGvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:51:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbjHGGvX (ORCPT
+        with ESMTP id S231340AbjHGGvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:51:23 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813A910C2
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:51:20 -0700 (PDT)
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B050E413C3
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:51:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1691391078;
-        bh=PggsEy84fZWlgbba8z1nKEleWVdKwuckVEDccJes6ig=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=dIVjAUJhYlSvSjL9mY+S4ClLJCUFUHP0LZ3aKRZogfuG5bDPL4llzabrQ72dRP2Zh
-         GzWjBJsisaygwFjidK+DtYbX08JNMAZFpSAO1a0SSwvmsLenpu4ENb+MLuZJ2nfpp1
-         b4FRgBOqN8FhNTW71f+CKXoEYMcyllOmix0Ro/7kJKoy2zY3eKJ2nezFZU1H2KQFkM
-         z50Nh4NlsmPDSo1GlrfV1MrfjIqDFCtxhdX7d/r0Tv1hIgAdAw4E1HVl5R93GITYcH
-         n/+hpsCCk4RIrCPRREaaJMwtE+eK1drHKzKaHvnteeXRY2SK8mXO3Ay4ghMPVFJ4eD
-         ccfWAyotR2RmQ==
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3a7a17912d2so481885b6e.2
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 23:51:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691391077; x=1691995877;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PggsEy84fZWlgbba8z1nKEleWVdKwuckVEDccJes6ig=;
-        b=HF6n+iRDwgW5/vppTrS+6+Pm/n1qATWQ2ewHRcKAun5/eAGym2sJCUKm8lkhSPmoW+
-         +GLvJqOB6P3641Dd0ZDpEzALckC5UcwbaFsSejZRAOsOjKwkrCtuUl3pvycea98hvNfW
-         jTcXi+NB2h2avxXWqXZgp0DvhItHnpbVskLZpPajSiloOe+hX5k/ZGrrpnMrp5ZmKEs1
-         4N5LdXgKCzbHv1NOjKsb/gt3emB6Bp2JmzUC9o6L+ol6NNjPlZsWYREB+oKfmC6KvGQN
-         KJAVFQhr85Puda8fqDzJkXfl4/c6bA/Ya1WWgAgzvj7278GrkUgmGHCeYwEY0rOTZpMp
-         u0Fw==
-X-Gm-Message-State: AOJu0Yxhv7th1xw4qB7/vikDZ+kDKSLALblFi2e521jI4m++EE3YGg26
-        HCXrH+oNp3l0nmYrA6P8GJ6EjS8JcBjbGMj1ifVn3v5H/X0wocXI++RX1xzh7h0jso1zFSLmfYz
-        j7ED2DlQToElvI9D3HrEYUf3uITh8ATXLsUTy8cfTv5hNkDLTujMLTk3Wzg==
-X-Received: by 2002:a05:6358:2484:b0:139:c7cb:77cd with SMTP id m4-20020a056358248400b00139c7cb77cdmr8851272rwc.11.1691391077170;
-        Sun, 06 Aug 2023 23:51:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFqBAqtQZNmd5IKvfl34fA+arv+IV2EwCvvh/g5BrkOOdPEx67IoUKVYwuTDYTcWc9DhYFcafDN9Uj1PG01jhE=
-X-Received: by 2002:a05:6358:2484:b0:139:c7cb:77cd with SMTP id
- m4-20020a056358248400b00139c7cb77cdmr8851256rwc.11.1691391076694; Sun, 06 Aug
- 2023 23:51:16 -0700 (PDT)
+        Mon, 7 Aug 2023 02:51:45 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3FF481B5;
+        Sun,  6 Aug 2023 23:51:41 -0700 (PDT)
+Received: from loongson.cn (unknown [10.2.5.185])
+        by gateway (Coremail) with SMTP id _____8BxHOt6lNBk49wRAA--.35082S3;
+        Mon, 07 Aug 2023 14:51:38 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.185])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxJ8x5lNBkwspMAA--.23544S2;
+        Mon, 07 Aug 2023 14:51:37 +0800 (CST)
+From:   Tianrui Zhao <zhaotianrui@loongson.cn>
+To:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vishal Annapurve <vannapurve@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        Peter Xu <peterx@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn,
+        zhaotianrui@loongson.cn
+Subject: [PATCH v2 0/4] KVM: selftests: Add LoongArch support
+Date:   Mon,  7 Aug 2023 14:51:33 +0800
+Message-Id: <20230807065137.3408970-1-zhaotianrui@loongson.cn>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-References: <20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com>
- <20230804084858.126104-4-aleksandr.mikhalitsyn@canonical.com> <8446e5c9-7dd7-a1e9-e262-13811ee9e640@redhat.com>
-In-Reply-To: <8446e5c9-7dd7-a1e9-e262-13811ee9e640@redhat.com>
-From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Date:   Mon, 7 Aug 2023 08:51:05 +0200
-Message-ID: <CAEivzxedfaD7cPfQ-sspJabw_P6zSJtOrbiAGYN35LGXPoSwcg@mail.gmail.com>
-Subject: Re: [PATCH v9 03/12] ceph: handle idmapped mounts in create_request_message()
-To:     Xiubo Li <xiubli@redhat.com>
-Cc:     brauner@kernel.org, stgraber@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8DxJ8x5lNBkwspMAA--.23544S2
+X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
+        nUUI43ZEXa7xR_UUUUUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,271 +51,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 3:25=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wrote:
->
->
-> On 8/4/23 16:48, Alexander Mikhalitsyn wrote:
-> > From: Christian Brauner <brauner@kernel.org>
-> >
-> > Inode operations that create a new filesystem object such as ->mknod,
-> > ->create, ->mkdir() and others don't take a {g,u}id argument explicitly=
-.
-> > Instead the caller's fs{g,u}id is used for the {g,u}id of the new
-> > filesystem object.
-> >
-> > In order to ensure that the correct {g,u}id is used map the caller's
-> > fs{g,u}id for creation requests. This doesn't require complex changes.
-> > It suffices to pass in the relevant idmapping recorded in the request
-> > message. If this request message was triggered from an inode operation
-> > that creates filesystem objects it will have passed down the relevant
-> > idmaping. If this is a request message that was triggered from an inode
-> > operation that doens't need to take idmappings into account the initial
-> > idmapping is passed down which is an identity mapping.
-> >
-> > This change uses a new cephfs protocol extension CEPHFS_FEATURE_HAS_OWN=
-ER_UIDGID
-> > which adds two new fields (owner_{u,g}id) to the request head structure=
-.
-> > So, we need to ensure that MDS supports it otherwise we need to fail
-> > any IO that comes through an idmapped mount because we can't process it
-> > in a proper way. MDS server without such an extension will use caller_{=
-u,g}id
-> > fields to set a new inode owner UID/GID which is incorrect because call=
-er_{u,g}id
-> > values are unmapped. At the same time we can't map these fields with an
-> > idmapping as it can break UID/GID-based permission checks logic on the
-> > MDS side. This problem was described with a lot of details at [1], [2].
-> >
-> > [1] https://lore.kernel.org/lkml/CAEivzxfw1fHO2TFA4dx3u23ZKK6Q+EThfzuib=
-rhA3RKM=3DZOYLg@mail.gmail.com/
-> > [2] https://lore.kernel.org/all/20220104140414.155198-3-brauner@kernel.=
-org/
-> >
-> > Link: https://github.com/ceph/ceph/pull/52575
-> > Link: https://tracker.ceph.com/issues/62217
-> > Cc: Xiubo Li <xiubli@redhat.com>
-> > Cc: Jeff Layton <jlayton@kernel.org>
-> > Cc: Ilya Dryomov <idryomov@gmail.com>
-> > Cc: ceph-devel@vger.kernel.org
-> > Co-Developed-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical=
-.com>
-> > Signed-off-by: Christian Brauner <brauner@kernel.org>
-> > Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.c=
-om>
-> > ---
-> > v7:
-> >       - reworked to use two new fields for owner UID/GID (https://githu=
-b.com/ceph/ceph/pull/52575)
-> > v8:
-> >       - properly handled case when old MDS used with new kernel client
-> > ---
-> >   fs/ceph/mds_client.c         | 47 +++++++++++++++++++++++++++++++++--=
--
-> >   fs/ceph/mds_client.h         |  5 +++-
-> >   include/linux/ceph/ceph_fs.h |  5 +++-
-> >   3 files changed, 52 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-> > index 8829f55103da..41e4bf3811c4 100644
-> > --- a/fs/ceph/mds_client.c
-> > +++ b/fs/ceph/mds_client.c
-> > @@ -2902,6 +2902,17 @@ static void encode_mclientrequest_tail(void **p,=
- const struct ceph_mds_request *
-> >       }
-> >   }
-> >
-> > +static inline u16 mds_supported_head_version(struct ceph_mds_session *=
-session)
-> > +{
-> > +     if (!test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD, &session->s_featur=
-es))
-> > +             return 1;
-> > +
-> > +     if (!test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_featur=
-es))
-> > +             return 2;
-> > +
-> > +     return CEPH_MDS_REQUEST_HEAD_VERSION;
-> > +}
-> > +
-> >   static struct ceph_mds_request_head_legacy *
-> >   find_legacy_request_head(void *p, u64 features)
-> >   {
-> > @@ -2923,6 +2934,7 @@ static struct ceph_msg *create_request_message(st=
-ruct ceph_mds_session *session,
-> >   {
-> >       int mds =3D session->s_mds;
-> >       struct ceph_mds_client *mdsc =3D session->s_mdsc;
-> > +     struct ceph_client *cl =3D mdsc->fsc->client;
-> >       struct ceph_msg *msg;
-> >       struct ceph_mds_request_head_legacy *lhead;
-> >       const char *path1 =3D NULL;
-> > @@ -2936,7 +2948,7 @@ static struct ceph_msg *create_request_message(st=
-ruct ceph_mds_session *session,
-> >       void *p, *end;
-> >       int ret;
-> >       bool legacy =3D !(session->s_con.peer_features & CEPH_FEATURE_FS_=
-BTIME);
-> > -     bool old_version =3D !test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD, &=
-session->s_features);
-> > +     u16 request_head_version =3D mds_supported_head_version(session);
-> >
-> >       ret =3D set_request_path_attr(mdsc, req->r_inode, req->r_dentry,
-> >                             req->r_parent, req->r_path1, req->r_ino1.in=
-o,
-> > @@ -2977,8 +2989,10 @@ static struct ceph_msg *create_request_message(s=
-truct ceph_mds_session *session,
-> >        */
-> >       if (legacy)
-> >               len =3D sizeof(struct ceph_mds_request_head_legacy);
-> > -     else if (old_version)
-> > +     else if (request_head_version =3D=3D 1)
-> >               len =3D sizeof(struct ceph_mds_request_head_old);
-> > +     else if (request_head_version =3D=3D 2)
-> > +             len =3D offsetofend(struct ceph_mds_request_head, ext_num=
-_fwd);
-> >       else
-> >               len =3D sizeof(struct ceph_mds_request_head);
-> >
-> > @@ -3028,6 +3042,16 @@ static struct ceph_msg *create_request_message(s=
-truct ceph_mds_session *session,
-> >       lhead =3D find_legacy_request_head(msg->front.iov_base,
-> >                                        session->s_con.peer_features);
-> >
-> > +     if ((req->r_mnt_idmap !=3D &nop_mnt_idmap) &&
-> > +         !test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_featur=
-es)) {
-> > +             pr_err_ratelimited_client(cl,
-> > +                     "idmapped mount is used and CEPHFS_FEATURE_HAS_OW=
-NER_UIDGID"
-> > +                     " is not supported by MDS. Fail request with -EIO=
-.\n");
-> > +
-> > +             ret =3D -EIO;
-> > +             goto out_err;
-> > +     }
-> > +
-> >       /*
-> >        * The ceph_mds_request_head_legacy didn't contain a version fiel=
-d, and
-> >        * one was added when we moved the message version from 3->4.
-> > @@ -3035,17 +3059,34 @@ static struct ceph_msg *create_request_message(=
-struct ceph_mds_session *session,
-> >       if (legacy) {
-> >               msg->hdr.version =3D cpu_to_le16(3);
-> >               p =3D msg->front.iov_base + sizeof(*lhead);
-> > -     } else if (old_version) {
-> > +     } else if (request_head_version =3D=3D 1) {
-> >               struct ceph_mds_request_head_old *ohead =3D msg->front.io=
-v_base;
-> >
-> >               msg->hdr.version =3D cpu_to_le16(4);
-> >               ohead->version =3D cpu_to_le16(1);
-> >               p =3D msg->front.iov_base + sizeof(*ohead);
-> > +     } else if (request_head_version =3D=3D 2) {
-> > +             struct ceph_mds_request_head *nhead =3D msg->front.iov_ba=
-se;
-> > +
-> > +             msg->hdr.version =3D cpu_to_le16(6);
-> > +             nhead->version =3D cpu_to_le16(2);
-> > +
-> > +             p =3D msg->front.iov_base + offsetofend(struct ceph_mds_r=
-equest_head, ext_num_fwd);
-> >       } else {
-> >               struct ceph_mds_request_head *nhead =3D msg->front.iov_ba=
-se;
-> > +             kuid_t owner_fsuid;
-> > +             kgid_t owner_fsgid;
-> >
-> >               msg->hdr.version =3D cpu_to_le16(6);
-> >               nhead->version =3D cpu_to_le16(CEPH_MDS_REQUEST_HEAD_VERS=
-ION);
-> > +             nhead->struct_len =3D sizeof(struct ceph_mds_request_head=
-);
-> > +
-> > +             owner_fsuid =3D from_vfsuid(req->r_mnt_idmap, &init_user_=
-ns,
-> > +                                       VFSUIDT_INIT(req->r_cred->fsuid=
-));
-> > +             owner_fsgid =3D from_vfsgid(req->r_mnt_idmap, &init_user_=
-ns,
-> > +                                       VFSGIDT_INIT(req->r_cred->fsgid=
-));
-> > +             nhead->owner_uid =3D cpu_to_le32(from_kuid(&init_user_ns,=
- owner_fsuid));
-> > +             nhead->owner_gid =3D cpu_to_le32(from_kgid(&init_user_ns,=
- owner_fsgid));
-> >               p =3D msg->front.iov_base + sizeof(*nhead);
-> >       }
-> >
-> > diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
-> > index e3bbf3ba8ee8..8f683e8203bd 100644
-> > --- a/fs/ceph/mds_client.h
-> > +++ b/fs/ceph/mds_client.h
-> > @@ -33,8 +33,10 @@ enum ceph_feature_type {
-> >       CEPHFS_FEATURE_NOTIFY_SESSION_STATE,
-> >       CEPHFS_FEATURE_OP_GETVXATTR,
-> >       CEPHFS_FEATURE_32BITS_RETRY_FWD,
-> > +     CEPHFS_FEATURE_NEW_SNAPREALM_INFO,
-> > +     CEPHFS_FEATURE_HAS_OWNER_UIDGID,
-> >
-> > -     CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_32BITS_RETRY_FWD,
-> > +     CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_HAS_OWNER_UIDGID,
-> >   };
-> >
-> >   #define CEPHFS_FEATURES_CLIENT_SUPPORTED {  \
-> > @@ -49,6 +51,7 @@ enum ceph_feature_type {
-> >       CEPHFS_FEATURE_NOTIFY_SESSION_STATE,    \
-> >       CEPHFS_FEATURE_OP_GETVXATTR,            \
-> >       CEPHFS_FEATURE_32BITS_RETRY_FWD,        \
-> > +     CEPHFS_FEATURE_HAS_OWNER_UIDGID,        \
-> >   }
-> >
-> >   /*
-> > diff --git a/include/linux/ceph/ceph_fs.h b/include/linux/ceph/ceph_fs.=
-h
-> > index 5f2301ee88bc..b91699b08f26 100644
-> > --- a/include/linux/ceph/ceph_fs.h
-> > +++ b/include/linux/ceph/ceph_fs.h
-> > @@ -499,7 +499,7 @@ struct ceph_mds_request_head_legacy {
-> >       union ceph_mds_request_args args;
-> >   } __attribute__ ((packed));
-> >
-> > -#define CEPH_MDS_REQUEST_HEAD_VERSION  2
-> > +#define CEPH_MDS_REQUEST_HEAD_VERSION  3
-> >
-> >   struct ceph_mds_request_head_old {
-> >       __le16 version;                /* struct version */
-> > @@ -530,6 +530,9 @@ struct ceph_mds_request_head {
-> >
-> >       __le32 ext_num_retry;          /* new count retry attempts */
-> >       __le32 ext_num_fwd;            /* new count fwd attempts */
-> > +
-> > +     __le32 struct_len;             /* to store size of struct ceph_md=
-s_request_head */
-> > +     __le32 owner_uid, owner_gid;   /* used for OPs which create inode=
-s */
->
-> Let's also initialize them to -1 for all the other requests as we do in
-> your PR.
+This patch series base on the Linux LoongArch KVM patch:
+Based-on: <20230803022138.2736430-1-zhaotianrui@loongson.cn>
 
-They are always initialized already. As you can see from the code we
-don't have any extra conditions
-on filling these fields. We always fill them with an appropriate
-UID/GID. If mount is not idmapped then it's just =3D=3D caller_uid/gid,
-if mount idmapped then it's idmapped caller_uid/gid.
+We add LoongArch support into KVM selftests and there are some KVM
+test cases we have passed:
+  kvm_create_max_vcpus
+  demand_paging_test
+  kvm_page_table_test
+  set_memory_region_test
+  memslot_modification_stress_test
+  memslot_perf_test
+  kvm_binary_stats_test
 
-Kind regards,
-Alex
+The test results:
+1..7
+selftests: kvm: kvm_create_max_vcpus
+  KVM_CAP_MAX_VCPU_ID: 256
+  KVM_CAP_MAX_VCPUS: 256
+  Testing creating 256 vCPUs, with IDs 0...255.
+  ok 1 selftests: kvm: kvm_create_max_vcpus
 
->
-> Thanks
->
-> - Xiubo
->
->
->
-> >   } __attribute__ ((packed));
-> >
-> >   /* cap/lease release record */
->
+selftests: kvm: demand_paging_test
+  Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+  guest physical test memory: [0xfbfffc000, 0xfffffc000)
+  Finished creating vCPUs and starting uffd threads
+  Started all vCPUs
+  All vCPU threads joined
+  Total guest execution time: 0.787727423s
+  Overall demand paging rate: 83196.291111 pgs/sec
+  ok 2 selftests: kvm: demand_paging_test
+
+selftests: kvm: kvm_page_table_test
+  Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+  Testing memory backing src type: anonymous
+  Testing memory backing src granularity: 0x4000
+  Testing memory size(aligned): 0x40000000
+  Guest physical test memory offset: 0xfbfffc000
+  Host  virtual  test memory offset: 0xffb011c000
+  Number of testing vCPUs: 1
+  Started all vCPUs successfully
+  KVM_CREATE_MAPPINGS: total execution time: -3.-672213074s
+  KVM_UPDATE_MAPPINGS: total execution time: -4.-381650744s
+  KVM_ADJUST_MAPPINGS: total execution time: -4.-434860241s
+  ok 3 selftests: kvm: kvm_page_table_test
+
+selftests: kvm: set_memory_region_test
+  Allowed number of memory slots: 256
+  Adding slots 0..255, each memory region with 2048K size
+  ok 4 selftests: kvm: set_memory_region_test
+
+selftests: kvm: memslot_modification_stress_test
+  Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+  guest physical test memory: [0xfbfffc000, 0xfffffc000)
+  Finished creating vCPUs
+  Started all vCPUs
+  All vCPU threads joined
+  ok 5 selftests: kvm: memslot_modification_stress_test
+
+selftests: kvm: memslot_perf_test
+  Testing map performance with 1 runs, 5 seconds each
+  Test took 0.003797735s for slot setup + 5.012294023s all iterations
+  Done 369 iterations, avg 0.013583452s each
+  Best runtime result was 0.013583452s per iteration (with 369 iterations)
+
+  Testing unmap performance with 1 runs, 5 seconds each
+  Test took 0.003841196s for slot setup + 5.001802893s all iterations
+  Done 341 iterations, avg 0.014668043s each
+  Best runtime result was 0.014668043s per iteration (with 341 iterations)
+
+  Testing unmap chunked performance with 1 runs, 5 seconds each
+  Test took 0.003784356s for slot setup + 5.000265398s all iterations
+  Done 7376 iterations, avg 0.000677910s each
+  Best runtime result was 0.000677910s per iteration (with 7376 iterations)
+
+  Testing move active area performance with 1 runs, 5 seconds each
+  Test took 0.003828075s for slot setup + 5.000021760s all iterations
+  Done 85449 iterations, avg 0.000058514s each
+  Best runtime result was 0.000058514s per iteration (with 85449 iterations)
+
+  Testing move inactive area performance with 1 runs, 5 seconds each
+  Test took 0.003809146s for slot setup + 5.000024149s all iterations
+  Done 181908 iterations, avg 0.000027486s each
+  Best runtime result was 0.000027486s per iteration (with 181908 iterations)
+
+  Testing RW performance with 1 runs, 5 seconds each
+  Test took 0.003780596s for slot setup + 5.001116175s all iterations
+  Done 391 iterations, avg 0.012790578s each
+  Best runtime result was 0.012790578s per iteration (with 391 iterations)
+  Best slot setup time for the whole test area was 0.003780596s
+  ok 6 selftests: kvm: memslot_perf_test
+
+selftests: kvm: kvm_binary_stats_test
+  TAP version 13
+  1..4
+  ok 1 vm0
+  ok 2 vm1
+  ok 3 vm2
+  ok 4 vm3
+  Totals: pass:4 fail:0 xfail:0 xpass:0 skip:0 error:0
+  ok 7 selftests: kvm: kvm_binary_stats_test
+
+Changes for v2:
+1. We should use ".balign 4096" to align the assemble code with 4K in
+exception.S instead of "align 12".
+2. LoongArch only supports 3 or 4 levels page tables, so we remove the
+hanlders for 2-levels page table.
+3. Remove the DEFAULT_LOONGARCH_GUEST_STACK_VADDR_MIN and use the common
+DEFAULT_GUEST_STACK_VADDR_MIN to allocate stack memory in guest.
+4. Reorganize the test cases supported by LoongArch.
+5. Fix some code comments.
+6. Add kvm_binary_stats_test test case into LoongArch KVM selftests.
+
+changes for v1:
+1. Add kvm selftests header files for LoongArch.
+2. Add processor tests for LoongArch KVM.
+3. Add ucall tests for LoongArch KVM.
+4. Add LoongArch tests into makefile.
+
+Tianrui Zhao (4):
+  KVM: selftests: Add KVM selftests header files for LoongArch
+  KVM: selftests: Add core KVM selftests support for LoongArch
+  KVM: selftests: Add ucall test support for LoongArch
+  KVM: selftests: Add test cases supported by LoongArch into makefile
+
+ tools/testing/selftests/kvm/Makefile          |  12 +
+ .../selftests/kvm/include/kvm_util_base.h     |   5 +
+ .../kvm/include/loongarch/processor.h         | 107 ++++++
+ .../selftests/kvm/lib/loongarch/exception.S   |  27 ++
+ .../selftests/kvm/lib/loongarch/processor.c   | 356 ++++++++++++++++++
+ .../selftests/kvm/lib/loongarch/ucall.c       |  43 +++
+ 6 files changed, 550 insertions(+)
+ create mode 100644 tools/testing/selftests/kvm/include/loongarch/processor.h
+ create mode 100644 tools/testing/selftests/kvm/lib/loongarch/exception.S
+ create mode 100644 tools/testing/selftests/kvm/lib/loongarch/processor.c
+ create mode 100644 tools/testing/selftests/kvm/lib/loongarch/ucall.c
+
+-- 
+2.39.1
+
