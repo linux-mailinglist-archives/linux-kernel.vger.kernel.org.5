@@ -2,122 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B797727F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40EB77727F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbjHGOgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
+        id S234092AbjHGOhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234091AbjHGOgr (ORCPT
+        with ESMTP id S231945AbjHGOhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:36:47 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9E010F3;
-        Mon,  7 Aug 2023 07:36:31 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B7938E0008;
-        Mon,  7 Aug 2023 14:36:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691418990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CoovJrYPxkDFGogd5wvVhZC1R5Dq4lKn3YHaDGn4/LM=;
-        b=HmQ6EWLUrDj97BUk7IGsXLcmAJ2miJvyMgaSQlOietWT5pvqGoMYmO6yr+Bhc0Lx67tKD6
-        df7Z6+KBom37uNEQWfw8FJht1ZSI3QWLiHNjcNXBmvIwSynDxYMQivLHbJtb7uzGw5pJZ2
-        EAinCJbElQ6rO13JeWO3s9sPGU4+27Q8M5T52pS7PcbF+R8WyuQKAjhFeLCmKcp+6TWkuR
-        IdO0UMWLzMibIMpfP4ahj/zKwHCDxTgVc0R059ZGQaSUIC06o5hsPMQ2XYgtkWYBNaUzS4
-        qP1VmAe+U2gpEDS1hmzhbhx0eTbGq6h1G2uNh4GG0oC80TOYZeIgosi77P7S8A==
-Date:   Mon, 7 Aug 2023 16:36:26 +0200
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 24/28] pinctrl: Add support for the Lantic PEF2256
- pinmux
-Message-ID: <20230807163626.79a5ca7b@bootlin.com>
-In-Reply-To: <eb99e739-6578-4aee-a0f4-7a0c5e5e81ef@lunn.ch>
-References: <20230726150225.483464-1-herve.codina@bootlin.com>
-        <20230726150225.483464-25-herve.codina@bootlin.com>
-        <CACRpkdYXCQRd3ZXNGHwMaQYiJc7tGtAJnBaSh5O-8ruDAJVdiA@mail.gmail.com>
-        <CACRpkdZebvrdGXooLXmgXhUcgdgxBczJBpdEoEyJDR39abaAqQ@mail.gmail.com>
-        <eb99e739-6578-4aee-a0f4-7a0c5e5e81ef@lunn.ch>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 7 Aug 2023 10:37:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBB210DC;
+        Mon,  7 Aug 2023 07:37:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691419053; x=1722955053;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IQp76Oi9F1FPEe0VQq/loiMqcyX1xlJBgAyOmGBe3Jk=;
+  b=dfPHaoQXwRHsut6oOye8L+iwfc8iLVqKT0emmMwg+P1u4/FLqkQCuxOw
+   vv2ePk/AaJzRwS4KOHKJu4j13wanXz6pKGwyfmJ6rQ3ahmyDbamEkCFwk
+   uPoS4xewk5ZMxKsqsBx21SF76EsLbeMfHrgQXNNeiGQeoF2wnqxqZLfEj
+   Wl91beLSX/xfwdhOJDFxZvKWxArKuJ2Haap9BkXKxGFSDlHP1gzTcvxZt
+   eJVyHGc3yDNpZPSD+faZfFbOknfZE9+943NVJjjoSloKXMpI7MpwExYYr
+   gFFKDgzGcTKnmQw8nCX2MTz217nlsq7LwZHZ1bL+SkZMgMmwXBrg2TsGR
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="350868479"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="350868479"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:37:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="800956757"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="800956757"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP; 07 Aug 2023 07:37:30 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qT1MP-00FdRP-0j;
+        Mon, 07 Aug 2023 17:37:29 +0300
+Date:   Mon, 7 Aug 2023 17:37:28 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andi Shyti <andi.shyti@kernel.org>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>
+Subject: Re: [PATCH v1 9/9] i2c: designware: Fix spelling and other issues in
+ the comments
+Message-ID: <ZNEBqDamvHMMRqRw@smile.fi.intel.com>
+References: <20230725143023.86325-1-andriy.shevchenko@linux.intel.com>
+ <20230725143023.86325-10-andriy.shevchenko@linux.intel.com>
+ <20230804214157.iaylzqcmpflx6x7j@intel.intel>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804214157.iaylzqcmpflx6x7j@intel.intel>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus, Andrew,
+On Fri, Aug 04, 2023 at 11:41:57PM +0200, Andi Shyti wrote:
 
-On Mon, 7 Aug 2023 15:17:11 +0200
-Andrew Lunn <andrew@lunn.ch> wrote:
+...
 
-> On Mon, Aug 07, 2023 at 03:06:42PM +0200, Linus Walleij wrote:
-> > On Mon, Aug 7, 2023 at 3:05 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> >   
-> > > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>  
-> > >
-> > > So it is a bridge chip? Please use that terminology since Linux
-> > > DRM often talks about bridges.  
-> > 
-> > Replying to self: no it's not a bridge, it's a WAN thingy.
-> > 
-> > So perhaps write that this is a WAN interface adapter chip.  
+> > @@ -210,12 +210,12 @@ static void psp_release_i2c_bus(void)
+> >  {
+> >  	mutex_lock(&psp_i2c_access_mutex);
+> >  
+> > -	/* Return early if mailbox was malfunctional */
+> > +	/* Return early if mailbox was malfunctioned */
 > 
-> Hi Linus
+> I think "was malfunctioned" is not really correct... maybe "has
+> malfunctioned"? "is malfunctioning"?
+
+I first stumbled over this, but than I read the function name...
+I guess they are correct. So I think I need to drop this hunk.
+
+...
+
+> > -		 * transfer supported by the driver (for 400KHz this is
+> > +		 * transfer supported by the driver (for 400kHz this is
 > 
-> In the E1/T1/J1 world, framer is a well understood concept. Maybe the
-> text needs a bit more background information to explain what this is
-> to somebody who does not have an old school telecoms background.
-> 
->    Andrew
+> what did you change here? :)
 
-Maybe I can add in my commit log:
---- 8< ---
-This kind of component can be found in old telecommunication system.
-It was used to digital transmission of many simultaneous telephone calls
-by time-division multiplexing. Also using HDLC protocol, WAN networks
-can be reached through the framer.
---- 8< ---
-
-Do you think it will be better ?
-
-Regards,
-Hervé Codina
+Proper units. k is the official SI prefix for KILO.
 
 -- 
-Hervé Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+With Best Regards,
+Andy Shevchenko
+
+
