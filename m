@@ -2,113 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53245771D55
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F323771DA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbjHGJpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35646 "EHLO
+        id S231740AbjHGJ4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 05:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbjHGJpk (ORCPT
+        with ESMTP id S229776AbjHGJ4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:45:40 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9026D9F
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:45:38 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3178dd771ceso3760873f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 02:45:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1691401537; x=1692006337;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ImTxFrGkAb789gW58cUuVJn9oePTNlXvzPB5nJrZCQ4=;
-        b=F8E8v6VCabwPufDFg52rLMuhHjcVTlKRIkxSchTMvPMZvYyrHlb88+ruQSwa9aS8o+
-         ecPuJfre8m1B3T9UCIUAWhmtm8WxAEJP/1vvCQulIVBvbuAvIcLrFAeIwG7fvHp6xYyW
-         rS2Q/C/CaNvFsf2mvN/RElo/LPHvXfCZxeDnKOACOZFS1rN5USa+JIugANj1tKyraWz2
-         lwnOwzQO0UoH01bs1joHvmBKFe27HdhKZxO2cxH97j51YKJKWkaqGSEe03V/Dhy5a3yR
-         HWWq0IA29ZPUkeHH/kjNQH3mlNVUB9jY7+Fzsljudd5LBNYDTjEbAdD76wnUXJckbCWs
-         92xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691401537; x=1692006337;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ImTxFrGkAb789gW58cUuVJn9oePTNlXvzPB5nJrZCQ4=;
-        b=GyOtBC6KGT31lJEaAm5vigHQOlw3v6HsxxlieqPmsudr80ondHZRxu07EBvqYSUjdH
-         WlTk6VY3QJQ7u5AfQaIKQ76Ly4x0reLbWSSbu0jXmo/rWVLJToVEaIf58Jc/HyUDajMW
-         o+l+wrZh3l+RvnG3kttd9zQJ4dQ/PhYTBWqL1t5VU6tLpdyb7QrTpFTtXldXjnNdrNCX
-         CNbzxQBpD6i/+VD8haZ9mccefKeAdi78BYKzaIelPvNAr0nSuWZNQV0V4yfNNGBJ20GL
-         d2eJ/YVsTjtiPSciPIeB2j/GQKE0pSUuOd9832iAnit6NGOZIs8BrjaPGOYTblXia+Mj
-         sxhQ==
-X-Gm-Message-State: AOJu0Yw5KXZFyajZXOMWaYBp2y5vBQBSf493HPSZIXW5C6bqc6Evhr31
-        y8ibqIMOzEMTnGuf8ht224a+8HU6AnLMEhi/Smc=
-X-Google-Smtp-Source: AGHT+IHz363ez884R4/+bJfvf59hexuHu1VfipBNOcFTwW09jwsazFEehtYVAJh1NXc2ExFcVlICdw==
-X-Received: by 2002:adf:ff8c:0:b0:317:df3e:13d with SMTP id j12-20020adfff8c000000b00317df3e013dmr3290134wrr.38.1691401536950;
-        Mon, 07 Aug 2023 02:45:36 -0700 (PDT)
-Received: from [192.168.3.194] ([89.226.188.45])
-        by smtp.gmail.com with ESMTPSA id w17-20020adff9d1000000b00301a351a8d6sm10042906wrr.84.2023.08.07.02.45.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 02:45:36 -0700 (PDT)
-Message-ID: <98fe8211-52b4-37ec-a0eb-7dc0ae5a0615@baylibre.com>
-Date:   Mon, 7 Aug 2023 11:45:35 +0200
+        Mon, 7 Aug 2023 05:56:53 -0400
+X-Greylist: delayed 520 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 07 Aug 2023 02:56:52 PDT
+Received: from smtp-8faf.mail.infomaniak.ch (smtp-8faf.mail.infomaniak.ch [IPv6:2001:1600:3:17::8faf])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA5AF4
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:56:51 -0700 (PDT)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4RKBMY4RNRzMpntf;
+        Mon,  7 Aug 2023 09:48:09 +0000 (UTC)
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4RKBMX6qBgztQ;
+        Mon,  7 Aug 2023 11:48:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=smartandconnective.com; s=20191114; t=1691401689;
+        bh=0dDAO1bt/2vWPfDekSlH01rl3211+tDoxSvSMKqyrA0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=V9qiAjkMjTDbr7D9WqO0lKigdfdlzbj+HEe9bSOiA2pHQki2d+2hm5wmdTi1R/8gH
+         IqjrqYTt/3u33aMgG7CFrDQJf4T3C2f3z1Nm4Jfjm3mE27uhw+KNl1oUPBFIN2gSS9
+         05Kk15y2TVHMuUbJfmMGDZ3C7yIGqRmZyjl7Mw0U=
+Message-ID: <6cd83d97f76217e10ebc8ea788e38db671218ab6.camel@smartandconnective.com>
+Subject: Re: [PATCH] tty: serial: imx: fix rs485 rx after tx
+From:   Sebastien Laveze <slaveze@smartandconnective.com>
+To:     Martin Fuzzey <martin.fuzzey@flowbird.group>,
+        linux-serial@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Marek Vasut <marex@denx.de>, linux-kernel@vger.kernel.org,
+        Thibaud Canale <tcanale@smartandconnective.com>
+Date:   Mon, 07 Aug 2023 11:48:08 +0200
+In-Reply-To: <20230616104838.2729694-1-martin.fuzzey@flowbird.group>
+References: <20230616104838.2729694-1-martin.fuzzey@flowbird.group>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH RESEND v4 2/2] drm/mediatek: Fix iommu fault during crtc
- enabling
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20230807015110.30579-1-jason-jh.lin@mediatek.com>
- <20230807015110.30579-3-jason-jh.lin@mediatek.com>
-Content-Language: en-US
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20230807015110.30579-3-jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Infomaniak-Routing: alpha
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+> Since commit 79d0224f6bf2 ("tty: serial: imx: Handle RS485 DE signal
+> active high") RS485 reception no longer works after a transmission.
 
-You forgot to put the Reviewed-by got from the V3 in your commit message.
+I can confirm on a Modbus/RS485 setup.
 
+> Fix this by moving the existing loopback disable code to a helper
+> function
+> and calling it from imx_uart_start_rx() too.
+>=20
+> Fixes: 79d0224f6bf2 ("tty: serial: imx: Handle RS485 DE signal active
+> high")
 
-On 07/08/2023 03:51, Jason-JH.Lin wrote:
-> The plane_state of drm_atomic_state is not sync to the mtk_plane_state
-> stored in mtk_crtc during crtc enabling.
-> 
-> So we need to update the mtk_plane_state stored in mtk_crtc by the
-> drm_atomic_state carried from mtk_drm_crtc_atomic_enable().
-> 
-> While updating mtk_plane_state, OVL layer should be disabled when the fb
-> in plane_state of drm_atomic_state is NULL.
-> 
-> Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> ---
-> Change in RESEND v4:
-> Remove redundant plane_state assigning.
-> ---
+Unfortunately this doesn't fix the regression on my setup and I had to
+fully revert 79d0224f6bf2.=C2=A0
 
+Since there's a Modbus layer on top, it's always TX to remote then RX.
 
--- 
-Regards,
-Alexandre
+Note that RS485 communication has never been perfect on my setup. After
+TX the DE line is often held active for too long leading to corrupted
+RX if too close from last TX. This leads to occasional frame loss in
+Modbus but it's not a blocker. Hope to get some time to investigate.
+
+https://bugzilla.kernel.org/show_bug.cgi?id=3D207751
+
