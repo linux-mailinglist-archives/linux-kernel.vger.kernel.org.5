@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AECAB77305E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF64773060
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbjHGUfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 16:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33998 "EHLO
+        id S230191AbjHGUhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 16:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbjHGUf3 (ORCPT
+        with ESMTP id S229830AbjHGUhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 16:35:29 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5240010F0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 13:35:28 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-bc379e4c1cbso5360133276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 13:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691440527; x=1692045327;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YgsQjPYSA4x9EUAST26pLIMgzwk5/fmUNEDBBVE+P4A=;
-        b=WGuPu7g6E23RXr1v5LnKJEwl5/NhLHAEmhF1044iAo3zlPa7q/dCiC92JtWaTvN7LN
-         bVXSSjM+IWwdQf1AGsnUhtt0TLD2CCmfvj8Sjsh3wWo6GyC8KlsMejMvV9iNlMpUx9m1
-         e/eijDs1mEJFLO2TJBkN14g3t0J7/HRjYHt6jGqkdngI9wph52Q3ogRxNMdKAtzxeg25
-         XcWL+ONayv2a0pAGg3swXgiokEXA9gilyRGOhIKTk6x9SVYmEuPxsePgRyIfDvwxlOgo
-         +P+p48B+fjlmlUQjs4uiEbdAC7avrSnparZrobMq0G7U0aWx0KuTlGpL6KaJ4cD3tzP0
-         zoPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691440527; x=1692045327;
-        h=to:subject:message-id:date:from:sender:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YgsQjPYSA4x9EUAST26pLIMgzwk5/fmUNEDBBVE+P4A=;
-        b=Wo3FYWr6LAFP1NEHUvKT+IZ7WkeNYjC1a06KQuknn8EwBcUnHR14UU+owl27FvCRwf
-         gP1S+9S54q0lMxF945WpWPLYVvCIUCwuEce7QHGNvlacUOTO9ic3sOKMM2ABfoDc+nrw
-         gULTSBhXXEWMOTATLAD5rgXfalp2xFL+X9F32hu4C1GQB+OWJcrvgoRnhwV7Cd7qzWKo
-         UA/ReolnMh0cmiND/FT0KsgNaYjoH4RZ89nvGitGJc1y1WPcUErnl9eTIoJ8S/Epe87n
-         SHf1SYwzg40Hxcab5b7JVMRhzSV1+XMyaJKQUg7JowDcA9INPSFTI6cBaDCus62FjPn/
-         wS5w==
-X-Gm-Message-State: AOJu0YxMsvrAasuqbO2+ubquFgNLlgTXIVE0PlXkoBoT5jVYwDsZMo62
-        NKqHeV3XjqH3cAtihdALfIyA6bqrAhQ3x1oeJC0=
-X-Google-Smtp-Source: AGHT+IH6RhdoplRqECcY8mUnEMQB3kKUONmBVdu9pLDcOmWR/5QFK305l7kYojCsuoKgbwfz4sV69GprXYw/1zMEwFI=
-X-Received: by 2002:a0d:dfd8:0:b0:56c:e706:2e04 with SMTP id
- i207-20020a0ddfd8000000b0056ce7062e04mr12209481ywe.0.1691440527025; Mon, 07
- Aug 2023 13:35:27 -0700 (PDT)
+        Mon, 7 Aug 2023 16:37:03 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3A01B83
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 13:37:02 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 2B0D09200C0; Mon,  7 Aug 2023 22:37:00 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 25ACC9200BF;
+        Mon,  7 Aug 2023 21:37:00 +0100 (BST)
+Date:   Mon, 7 Aug 2023 21:37:00 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Borislav Petkov <bp@alien8.de>
+cc:     Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 2/5] [RESEND] x86: avoid unneeded __div64_32 function
+ definition
+In-Reply-To: <20230802172030.GEZMqQXmeb98Tm+Qhg@fat_crate.local>
+Message-ID: <alpine.DEB.2.21.2308072124320.38537@angie.orcam.me.uk>
+References: <20230725134837.1534228-1-arnd@kernel.org> <20230725134837.1534228-3-arnd@kernel.org> <20230801170315.GGZMk60zojZOeuUwX7@fat_crate.local> <baf750f4-a42c-453a-91dc-7fd457bc1e80@app.fastmail.com>
+ <20230802172030.GEZMqQXmeb98Tm+Qhg@fat_crate.local>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Sender: lw466553@gmail.com
-Received: by 2002:a05:7108:160f:b0:326:a9e:5940 with HTTP; Mon, 7 Aug 2023
- 13:35:26 -0700 (PDT)
-From:   Dr Lisa Williams <lw4666555@gmail.com>
-Date:   Mon, 7 Aug 2023 13:35:26 -0700
-X-Google-Sender-Auth: 0G1lXpJv-q7nK9NDmCu4G39nQek
-Message-ID: <CAPHeqezXrZjPmETqsqybz9ND0xuLHy7Yn1jh0fx-tfjmjnpqCg@mail.gmail.com>
-Subject: Hi,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 2 Aug 2023, Borislav Petkov wrote:
 
-My name is Dr. Lisa Williams, from the United States, currently living
-in the United Kingdom.
+> > --- a/arch/x86/include/asm/div64.h
+> > +++ b/arch/x86/include/asm/div64.h
+> > @@ -71,6 +71,11 @@ static inline u64 mul_u32_u32(u32 a, u32 b)
+> >  }
+> >  #define mul_u32_u32 mul_u32_u32
+> >  
+> > +/*
+> > + * __div64_32() is never called on x86, so prevent the
+> > + * generic definition from getting built.
+> > + */
+> > +#define __div64_32
+> >  
+> >  #else
+> >  # include <asm-generic/div64.h>
+> 
+> Yap.
 
-I hope you consider my friend request. I will share some of my photos
-and more details about me when I get your reply.
+ Hmm, shouldn't this be something like:
 
-With love
-Lisa
+#define __div64_32(n, base) BUILD_BUG()
+
+instead?
+
+ Otherwise you risk `__div64_32(n, base)' getting expanded to `(n, base)', 
+if the macro does get called mistakenly for some reason, and the expansion 
+is a valid expression which may not produce a warning even, depending on 
+usage.
+
+  Maciej
