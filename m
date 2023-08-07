@@ -2,122 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E2D773015
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B5577301A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbjHGUDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 16:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
+        id S230387AbjHGUEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 16:04:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbjHGUD0 (ORCPT
+        with ESMTP id S229509AbjHGUEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 16:03:26 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF54172B;
-        Mon,  7 Aug 2023 13:03:21 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 377HUMfN016146;
-        Mon, 7 Aug 2023 20:03:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=iuZ3TDQo1tozN5VS9Wo/E3D3xrzfQoD/Zc3kj7u+4tc=;
- b=i7m7+5zDsDl65yll7O8V+0VXjZ2JB0/0xyII8rp/O9xXwYePXbpkplVQxe5PI6Y8q2jA
- 4fePmJPuDZm8c0PhzKkN5tUTEY/IDyyTk3cUTfJ/kAKBcjpVfmTlhLRToMozcCakGiXI
- s4HVeQW+Wt5PYkgliGFVXVRKr8Z5r6eCkLIHDcqEgz87I1z9rsCzgtkdS483t740lCLU
- rArF5CBgKPrfZOmjwI1JlT4UzAf69sMyprbyvjotv/DMmdg3z14Sm/yB2COPKrLPKqUt
- AnKB/LsBUIc1TW58ny0nxPaF3lNSuSTygvS5stC5YrxCV/axkoMjSC3HaSEdlRPbfriv tg== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sawbg9dan-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Aug 2023 20:03:08 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 377K37Js019208
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 7 Aug 2023 20:03:07 GMT
-Received: from [10.110.62.211] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 7 Aug
- 2023 13:03:06 -0700
-Message-ID: <900b3b16-cfad-d043-39b4-8ea6802f87bc@quicinc.com>
-Date:   Mon, 7 Aug 2023 13:03:05 -0700
+        Mon, 7 Aug 2023 16:04:36 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161DEB1;
+        Mon,  7 Aug 2023 13:04:33 -0700 (PDT)
+X-QQ-mid: bizesmtp91t1691438647t4zdb9ni
+Received: from linux-lab-host.localdomain ( [116.30.130.12])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Tue, 08 Aug 2023 04:04:06 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000B00A0000000
+X-QQ-FEAT: 90EFqYDyPxD3+sLbshWU2U7dnyvuq1IbEuoeERgw34fSNjGR16yp5HBwQ+TSj
+        9K6shDeVXkc2VkizJ0+TQnqGpqjn1nQWY0Qbqxq9XMvB5HnYFY42l5sdwEKSyCv5D/y6kjM
+        euzoSJc2+4GP+gv78sqvd/6Xth+94Hm/cKzvA9pG2IHXZU0q0HCbKpHqEu4u73oPaWltHWD
+        HPc2CDdN0G/9fQwMJXvrhYqyicxJ3Q0Fu8COTXlochfK4r4BFhN2qdifl4X+XPjfmH2WG7g
+        N21d5LClAUEvCmkfg2LjfPfwOaJet5FteH9O2Z+ea4ZHuKNSnIp3NkKCTlyPOlC1F6/xklU
+        ANJe6rj+zJV8u1FZl6SHnmoJtSEG+YRBDE7rIXW
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 5223824127262790404
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     david.laight@aculab.com, w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de,
+        David Laight <David.Laight@ACULAB.COM>
+Subject: [PATCH v5] tools/nolibc: fix up size inflate regression
+Date:   Tue,  8 Aug 2023 04:04:05 +0800
+Message-Id: <b6ff2684f557f6ce00151905990643e651391614.1691437328.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v2 2/7] dt-bindings: leds: leds-qcom-lpg: Add support for
- LPG PPG
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-CC:     <pavel@ucw.cz>, <lee@kernel.org>, <thierry.reding@gmail.com>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <luca.weiss@fairphone.com>, <konrad.dybcio@linaro.org>,
-        <u.kleine-koenig@pengutronix.de>, <quic_subbaram@quicinc.com>,
-        <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-pwm@vger.kernel.org>
-References: <20230725193423.25047-1-quic_amelende@quicinc.com>
- <20230725193423.25047-3-quic_amelende@quicinc.com>
- <20230803002502.GA1569972-robh@kernel.org>
-From:   Anjelique Melendez <quic_amelende@quicinc.com>
-In-Reply-To: <20230803002502.GA1569972-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: tA45PtcBV9TNqiAInbRxmq3CJjyHZ6KV
-X-Proofpoint-GUID: tA45PtcBV9TNqiAInbRxmq3CJjyHZ6KV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-07_22,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=745
- impostorscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0
- mlxscore=0 priorityscore=1501 malwarescore=0 adultscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308070183
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As reported and suggested by Willy, the inline __sysret() helper
+introduces three types of conversions and increases the size:
 
+(1) the "unsigned long" argument to __sysret() forces a sign extension
+from all sys_* functions that used to return 'int'
 
-On 8/2/2023 5:25 PM, Rob Herring wrote:
-> On Tue, Jul 25, 2023 at 12:34:18PM -0700, Anjelique Melendez wrote:
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            enum:
->> +              - qcom,pm8350c-pw
->> +              - qcom,pm8550-pwm
->> +    then:
->> +      properties:
->> +        nvmem:
->> +          minItems: 2
->> +        nvmem-names:
->> +          items:
->> +            - const: lpg_chan_sdam
->> +            - const: lut_sdam
-> 
-> This can go into the main section and then here you just say 
-> 'minItems: 2'. And similar for the 1st if/then.
-> 
-ACK
->> +      required:
->> +        - nvmem
->> +        - nvmem-names
-> 
-> Looks like these are always required.
-These are only required for the compatibles properties that do not
-have lut peripherals. Right now this is is only for qcom,pmi632-lpg, 
-qcom,pm8350c-pwm and qcom,pm8550-pwm.
+(2) the comparison with the error range now has to be performed on a
+'unsigned long' instead of an 'int'
 
+(3) the return value from __sysret() is a 'long' (note, a signed long)
+which then has to be turned back to an 'int' before being returned by the
+caller to satisfy the caller's prototype.
+
+To fix up this, firstly, let's use macro instead of inline function to
+preserves the input type and avoids these useless conversions (1), (3).
+
+Secondly, comparison to -MAX_ERRNO inflicts on all integer returns where
+we could previously keep a simple sign comparison, let's use a new
+__is_pointer() macro suggested by David Laight to limit the comparison
+to -MAX_ERRNO (2) only for pointer returns and preserve a simple sign
+comparison for integer returns as before. The __builtin_choose_expr()
+is suggested by David Laight to choose different comparisons based on
+the types to share code.
+
+Thirdly, fix up the following warning by an explicit conversion and let
+__sysret() be able to accept the (void *) type of argument:
+
+    sysroot/powerpc/include/sys.h: In function 'sbrk':
+    sysroot/powerpc/include/sys.h:104:16: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+      104 |         return (void *)__sysret(-ENOMEM);
+
+Fourthly, to further workaround the argument type with 'const' flag,
+must use __auto_type for gcc >= 11.0 and __typeof__((arg) + 0) suggested
+by David Laight for old gcc versions.
+
+Suggested-by: Willy Tarreau <w@1wt.eu>
+Link: https://lore.kernel.org/lkml/20230806095846.GB10627@1wt.eu/
+Link: https://lore.kernel.org/lkml/20230806134348.GA19145@1wt.eu/
+Suggested-by: David Laight <David.Laight@ACULAB.COM>
+Link: https://lore.kernel.org/lkml/f51e54bcf470451ea36f24640f000e61@AcuMS.aculab.com/
+Link: https://lore.kernel.org/lkml/a1732bbffd1542d3b9dd34c92f45076c@AcuMS.aculab.com/
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+
+Hi, Willy, Hi, David
+
+v5 applies suggestions from David Laight, it further drops the fixed
+'long' conversion branch by using a __typeof__((arg) + 0) trick and also
+merges the pointer type and integer type comparisons with
+__bultin_choose_expr() and a new __is_pointer() macro, now, the code is
+cleaner than before versions.
+
+David, Thanks a lot!
+
+Like before, tests run for all nolibc supported boards.
+
+Changes from v4 --> v5:
+
+* Use __typeof__((arg) + 0) to lose the 'const' flag for old gcc
+  versions.
+
+* Import the famous __is_constexpr() macro from kernel side and add a
+  __is_pointer() macro based on it. (David, to avoid introduce extra
+  discuss on the prove-in-use __is_constexpr macro, this patch uses the
+  original version instead of your suggested version, more info here:
+  https://lore.kernel.org/lkml/20220131204357.1133674-1-keescook@chromium.org/)
+
+* Use __builtin_choose_expr() to merge two comparisons to share the same
+  errno setting code and the -1L assignment code.
+
+Changes from v3 --> v4:
+
+* fix up a new warning about 'ret < 0' when the input arg type is (void *)
+
+Changes from v2 --> v3:
+
+* define a __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT for gcc >= 11.0 (ABI_VERSION >= 1016)
+* split __sysret() to two versions by the macro instead of a mixed unified and unreadable version
+* use shorter __ret instead of __sysret_arg
+
+Changes from v1 --> v2:
+
+* fix up argument with 'const' in the type
+* support "void *" argument
+
+Best regards,
+Zhangjin
+---
+
+v4: https://lore.kernel.org/lkml/a4084f7fac7a89f861b5582774bc7a98634d1e76.1691392805.git.falcon@tinylab.org/
+v3: https://lore.kernel.org/lkml/8eaab5da2dcbba42e3f3efc2ae686a22c95f84f0.1691386601.git.falcon@tinylab.org/
+v2: https://lore.kernel.org/lkml/95fe3e732f455fab653fe1427118d905e4d04257.1691339836.git.falcon@tinylab.org/
+v1: https://lore.kernel.org/lkml/20230806131921.52453-1-falcon@tinylab.org/
+
+---
+ tools/include/nolibc/sys.h | 74 ++++++++++++++++++++++++++++++--------
+ 1 file changed, 59 insertions(+), 15 deletions(-)
+
+diff --git a/tools/include/nolibc/sys.h b/tools/include/nolibc/sys.h
+index 833d6c5e86dc..6bdd18716e84 100644
+--- a/tools/include/nolibc/sys.h
++++ b/tools/include/nolibc/sys.h
+@@ -27,23 +27,67 @@
+ #include "errno.h"
+ #include "types.h"
+ 
++/*
++ * This returns a constant expression while determining if an argument is
++ * a constant expression, most importantly without evaluating the argument.
++ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
++ * (from include/linux/const.h)
++ */
++#define __is_constexpr(x) \
++	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
++
++/*
++ * "(void *)0 isn't 'constant enough' for is_constexpr() - so
++ * is_constexpr((type)0) can be used to detect pointer types."
++ * (from David Laight <David.Laight@ACULAB.COM>)
++ */
++#define __is_pointer(x) (!__is_constexpr((__typeof__(x))0))
+ 
+-/* Syscall return helper for library routines, set errno as -ret when ret is in
+- * range of [-MAX_ERRNO, -1]
++/*
++ * To preserve the input type and workaround the 'error: assignment of
++ * read-only variable' when the input type has 'const' flag.
++ *
++ * For gcc >= 11.0 (__GXX_ABI_VERSION = 1016), use the new __auto_type keyword
++ * instead of __typeof__().
+  *
+- * Note, No official reference states the errno range here aligns with musl
+- * (src/internal/syscall_ret.c) and glibc (sysdeps/unix/sysv/linux/sysdep.h)
++ * For old gcc versions, "use typeof((x) + 0) to lose the 'const' flag. The
++ * only downside is that char/short become int." (from David Laight
++ * <David.Laight@ACULAB.COM>)
+  */
+ 
+-static __inline__ __attribute__((unused, always_inline))
+-long __sysret(unsigned long ret)
+-{
+-	if (ret >= (unsigned long)-MAX_ERRNO) {
+-		SET_ERRNO(-(long)ret);
+-		return -1;
+-	}
+-	return ret;
+-}
++#if __GXX_ABI_VERSION >= 1016
++#define __typeofdecl(arg) __auto_type
++#else
++#define __typeofdecl(arg) __typeof__((arg) + 0)
++#endif
++
++/* Syscall return helper for library routines
++ *
++ * - for pointer returns, set errno as -ret when ret is in [-MAX_ERRNO, -1]
++ * - for integer returns, set errno as -ret when ret < 0
++ *
++ * Note,
++ *
++ * - No official reference states the errno range, here aligns with musl
++ *   (src/internal/syscall_ret.c) and glibc (sysdeps/unix/sysv/linux/sysdep.h).
++ *
++ * - To reduce binary size by removing useless type conversions and sign
++ *   extensions, the helper is defined as a macro to preserve input type and
++ *   provide two comparisons for both pointer and integer types during the
++ *   compiling stage.
++ */
++
++#define __sysret(arg)                                                                              \
++({                                                                                                 \
++	__typeofdecl(arg) __ret = (arg);                                                           \
++	if (__builtin_choose_expr(__is_pointer(arg), (unsigned long)-(MAX_ERRNO + 1), (long)__ret) \
++		< __builtin_choose_expr(__is_pointer(arg), (unsigned long)__ret, 0)) {             \
++		SET_ERRNO(-(long)__ret);                                                           \
++		__ret = (__typeof__(arg))-1L;                                                      \
++	}                                                                                          \
++	__ret;                                                                                     \
++})
++
+ 
+ /* Functions in this file only describe syscalls. They're declared static so
+  * that the compiler usually decides to inline them while still being allowed
+@@ -94,7 +138,7 @@ void *sbrk(intptr_t inc)
+ 	if (ret && sys_brk(ret + inc) == ret + inc)
+ 		return ret + inc;
+ 
+-	return (void *)__sysret(-ENOMEM);
++	return __sysret((void *)-ENOMEM);
+ }
+ 
+ 
+@@ -682,7 +726,7 @@ void *sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
+ static __attribute__((unused))
+ void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
+ {
+-	return (void *)__sysret((unsigned long)sys_mmap(addr, length, prot, flags, fd, offset));
++	return __sysret(sys_mmap(addr, length, prot, flags, fd, offset));
+ }
+ 
+ static __attribute__((unused))
+-- 
+2.25.1
 
