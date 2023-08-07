@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9AC7726D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 845BA7726D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234631AbjHGN4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
+        id S232158AbjHGN4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:56:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234346AbjHGN4M (ORCPT
+        with ESMTP id S234574AbjHGN4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:56:12 -0400
+        Mon, 7 Aug 2023 09:56:13 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC6E30D6
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:54:02 -0700 (PDT)
-Message-ID: <20230807135028.905547409@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48C230E6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:54:03 -0700 (PDT)
+Message-ID: <20230807135028.957980935@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691416427;
+        s=2020; t=1691416429;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=j7OFjclpvkjeiv/gw2/Emcd71M9jz+vMU9xYSIvRiEo=;
-        b=xqo9ZaM1LLCfF08ATvGnDcfpYmc4mAh21E6HXSz2Om+ipnlUgYwN5lmPluijLFLdM886kg
-        qv/6chThN3AsZxYj8WBPuJMIU4j7g9X2MDcds2qTr0bhBe/364H0Yp+xVqesuciaKOc5ew
-        s5Q5EOXD4NKqpbjtxg3KEpfbLNSJJgGt0WKNyNxdsw170KZXTaqXrksfvNWTfh3WPm/DwM
-        XqrwbL5jqz1VpGLi4wLgDXimEn3rQJHVJQSxYxWFjkYeS59cohvC8ES0omJZwEealB8FjN
-        42ZJJmiHs2kNvgE946Or/nSi7XMM30sm6S7ZC60UrMqYSg48QLQ60TozG2Lemg==
+         references:references; bh=ph7RYPSGUyMuFVs2yJ045YytT8AyPZYMy0+K0KiHV3c=;
+        b=lpaO6/ZmrKCyJgmJ2rFvtDsqnC+QbF2AxqmmgLpn15UrjOcbXwkSxXYQVL5t7Cy5Gfhvse
+        R3VVz+SXGZWHcJ4A/TJ+X+qaGnfkP3d8key5eJ54lqx2fveumR3I4RrFFGYIuubBEH+QGw
+        PMcFrcxnMRYmbXXR6kuY0q7ljtGq1MomJA/0bCc0jm6lXasZXgYjFfqIoLlnVldbxZ2Phh
+        +7oELvK/Ke1j7/LEzmEmQbao+aD9xfxYxfCLI1e1Pv1ISa9ygiJnukOZhtpYVXgZe7QO0N
+        l6SWnLkJVFMENO0RdaKYOAdyEpBLcrKBDQjoIm40yAiCm/gLTbvZ6vSW4m3njQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691416427;
+        s=2020e; t=1691416429;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=j7OFjclpvkjeiv/gw2/Emcd71M9jz+vMU9xYSIvRiEo=;
-        b=ngJBZMNxfFt/IejW6lJIeykdXTMvumCez1aqyhbJURw4eDoqjrSC5ZCtUKcGnhPFy6mADo
-        yln+WXBT8AGRNXAA==
+         references:references; bh=ph7RYPSGUyMuFVs2yJ045YytT8AyPZYMy0+K0KiHV3c=;
+        b=sFnIZqwJYWUDUa5fF6yrsi+9p88PE8KFWxoTA0yzJBIp0OBhwuhlhCJ0Klz3NwuaWALTYj
+        VTrpkk/0b3mQt+DQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
@@ -48,12 +48,12 @@ Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Feng Tang <feng.tang@intel.com>,
         Andy Shevchenko <andy@infradead.org>
-Subject: [patch 47/53] x86/cpu/topology: Use topology logical mapping
- mechanism
+Subject: [patch 48/53] x86/cpu/topology: Retrieve cores per package from
+ topology bitmaps
 References: <20230807130108.853357011@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon,  7 Aug 2023 15:53:47 +0200 (CEST)
+Date:   Mon,  7 Aug 2023 15:53:48 +0200 (CEST)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -63,231 +63,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the logical package and die management functionality and retrieve
-the logical IDs from the topology bitmaps.
+Similar to other sizing information the number of cores per package can be
+established from the topology bitmap.
+
+Provide a function for retrieving that information and replace the buggy
+hack in the CPUID evaluation with it.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/include/asm/topology.h       |   13 +--
- arch/x86/kernel/cpu/common.c          |   13 ---
- arch/x86/kernel/cpu/topology_common.c |    4 +
- arch/x86/kernel/smpboot.c             |  111 ----------------------------------
- 4 files changed, 11 insertions(+), 130 deletions(-)
+ arch/x86/kernel/cpu/topology.c        |   43 ++++++++++++++++++++++++++++++++++
+ arch/x86/kernel/cpu/topology.h        |    3 ++
+ arch/x86/kernel/cpu/topology_common.c |   18 ++------------
+ 3 files changed, 49 insertions(+), 15 deletions(-)
 
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -158,6 +158,12 @@ static inline unsigned int topology_max_
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -227,6 +227,49 @@ int topology_get_logical_id(u32 apicid,
+ }
+ EXPORT_SYMBOL_GPL(topology_get_logical_id);
  
- int topology_get_logical_id(u32 apicid, enum x86_topology_domains at_level);
- 
-+static inline int topology_phys_to_logical_pkg(unsigned int pkg)
++/**
++ * topology_unit_count - Retrieve the count of specified units at a given topology domain level
++ * @apicid:		The APIC ID which specifies the search range
++ * @which_units:	The domain level specifying the units to count
++ * @at_level:		The domain level at which @which_units have to be counted
++ *
++ * This returns the number of possible units according to the enumerated
++ * information.
++ *
++ * E.g. topology_count_units(apicid, TOPO_CORE_DOMAIN, TOPO_PKG_DOMAIN)
++ * counts the number of possible cores in the package to which @apicid
++ * belongs.
++ *
++ * @at_level must obviously be greater than @which_level to produce useful
++ * results.  If @at_level is equal to @which_units the result is
++ * unsurprisingly 1. If @at_level is less than @which_units the results
++ * is by definition undefined and the function returns 0.
++ */
++unsigned int topology_unit_count(u32 apicid, enum x86_topology_domains which_units,
++				 enum x86_topology_domains at_level)
 +{
-+	return topology_get_logical_id(pkg << x86_topo_system.dom_shifts[TOPO_PKG_DOMAIN],
-+				       TOPO_PKG_DOMAIN);
++	/* Remove the bits below @at_level to get the proper level ID of @apicid */
++	unsigned int lvlid = topo_apicid(apicid, at_level);
++	unsigned int id, end, cnt = 0;
++
++	if (lvlid >= MAX_LOCAL_APIC)
++		return 0;
++	if (!test_bit(lvlid, apic_maps[at_level].map))
++		return 0;
++	if (which_units > at_level)
++		return 0;
++	if (which_units == at_level)
++		return 1;
++
++	/* Calculate the exclusive end */
++	end = lvlid + (1U << x86_topo_system.dom_shifts[at_level]);
++	/* Unfortunately there is no bitmap_weight_range() */
++	for (id = find_next_bit(apic_maps[which_units].map, end, lvlid);
++	     id < end; id = find_next_bit(apic_maps[which_units].map, end, ++id))
++		cnt++;
++	return cnt;
 +}
 +
- #ifdef CONFIG_SMP
- #define topology_cluster_id(cpu)		(cpu_data(cpu).topo.l2c_id)
- #define topology_die_cpumask(cpu)		(per_cpu(cpu_die_map, cpu))
-@@ -172,9 +178,6 @@ static inline int topology_max_smt_threa
- 	return __max_smt_threads;
- }
+ #ifdef CONFIG_ACPI_HOTPLUG_CPU
+ /**
+  * topology_hotplug_apic - Handle a physical hotplugged APIC after boot
+--- a/arch/x86/kernel/cpu/topology.h
++++ b/arch/x86/kernel/cpu/topology.h
+@@ -50,4 +50,7 @@ static inline void topology_update_dom(s
  
--int topology_update_package_map(unsigned int apicid, unsigned int cpu);
--int topology_update_die_map(unsigned int dieid, unsigned int cpu);
--int topology_phys_to_logical_pkg(unsigned int pkg);
- bool topology_smt_supported(void);
+ extern const char *domain_names[TOPO_MAX_DOMAIN];
  
- extern unsigned int __amd_nodes_per_pkg;
-@@ -199,10 +202,6 @@ static inline bool topology_is_primary_t
- void topology_apply_cmdline_limits_early(void);
- 
- #else /* CONFIG_SMP */
--static inline int
--topology_update_package_map(unsigned int apicid, unsigned int cpu) { return 0; }
--static inline int
--topology_update_die_map(unsigned int dieid, unsigned int cpu) { return 0; }
- static inline int topology_phys_to_logical_pkg(unsigned int pkg) { return 0; }
- static inline int topology_max_smt_threads(void) { return 1; }
- static inline bool topology_is_primary_thread(unsigned int cpu) { return true; }
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1679,18 +1679,6 @@ static void generic_identify(struct cpui
- #endif
- }
- 
--static void update_package_map(struct cpuinfo_x86 *c)
--{
--#ifdef CONFIG_SMP
--	unsigned int cpu = smp_processor_id();
--
--	BUG_ON(topology_update_package_map(c->topo.pkg_id, cpu));
--	BUG_ON(topology_update_die_map(c->topo.die_id, cpu));
--#else
--	c->topo.logical_pkg_id = 0;
--#endif
--}
--
- /*
-  * This does the hard work of actually picking apart the CPU stuff...
-  */
-@@ -1868,7 +1856,6 @@ void identify_secondary_cpu(struct cpuin
- #ifdef CONFIG_X86_32
- 	enable_sep_cpu();
- #endif
--	update_package_map(c);
- 	x86_spec_ctrl_setup_ap();
- 	update_srbds_msr();
- 
++unsigned int topology_unit_count(u32 apicid, enum x86_topology_domains which_units,
++				 enum x86_topology_domains at_level);
++
+ #endif /* ARCH_X86_TOPOLOGY_H */
 --- a/arch/x86/kernel/cpu/topology_common.c
 +++ b/arch/x86/kernel/cpu/topology_common.c
-@@ -10,6 +10,7 @@
- #include "cpu.h"
- 
- struct x86_topology_system x86_topo_system __ro_after_init;
-+EXPORT_SYMBOL_GPL(x86_topo_system);
- 
- unsigned int __amd_nodes_per_pkg __ro_after_init;
- EXPORT_SYMBOL_GPL(__amd_nodes_per_pkg);
-@@ -147,6 +148,9 @@ static void topo_set_ids(struct topo_sca
- 	c->topo.pkg_id = topo_shift_apicid(apicid, TOPO_PKG_DOMAIN);
- 	c->topo.die_id = topo_shift_apicid(apicid, TOPO_DIE_DOMAIN);
- 
-+	c->topo.logical_pkg_id = topology_get_logical_id(apicid, TOPO_PKG_DOMAIN);
-+	c->topo.logical_die_id = topology_get_logical_id(apicid, TOPO_DIE_DOMAIN);
-+
+@@ -154,25 +154,15 @@ static void topo_set_ids(struct topo_sca
  	/* Relative core ID */
  	c->topo.core_id = topo_relative_domain_id(apicid, TOPO_CORE_DOMAIN);
  
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -124,23 +124,6 @@ struct mwait_cpu_dead {
-  */
- static DEFINE_PER_CPU_ALIGNED(struct mwait_cpu_dead, mwait_cpu_dead);
++	/* Maximum number of cores on this package */
++	c->x86_max_cores = topology_unit_count(apicid, TOPO_CORE_DOMAIN, TOPO_PKG_DOMAIN);
++
+ 	c->topo.amd_node_id = tscan->amd_node_id;
  
--/* Logical package management. */
--struct logical_maps {
--	u32	phys_pkg_id;
--	u32	phys_die_id;
--	u32	logical_pkg_id;
--	u32	logical_die_id;
--};
--
--/* Temporary workaround until the full topology mechanics is in place */
--static DEFINE_PER_CPU_READ_MOSTLY(struct logical_maps, logical_maps) = {
--	.phys_pkg_id	= U32_MAX,
--	.phys_die_id	= U32_MAX,
--};
--
--static unsigned int logical_packages __read_mostly;
--static unsigned int logical_die __read_mostly;
--
- /* Maximum number of SMT threads on any online core */
- int __read_mostly __max_smt_threads = 1;
- 
-@@ -345,103 +328,11 @@ bool topology_smt_supported(void)
- 	return smp_num_siblings > 1;
+ 	if (c->x86_vendor == X86_VENDOR_AMD)
+ 		cpu_topology_fixup_amd(tscan);
  }
  
--/**
-- * topology_phys_to_logical_pkg - Map a physical package id to a logical
-- * @phys_pkg:	The physical package id to map
-- *
-- * Returns logical package id or -1 if not found
-- */
--int topology_phys_to_logical_pkg(unsigned int phys_pkg)
+-static void topo_set_max_cores(struct topo_scan *tscan)
 -{
--	int cpu;
--
--	for_each_possible_cpu(cpu) {
--		if (per_cpu(logical_maps.phys_pkg_id, cpu) == phys_pkg)
--			return per_cpu(logical_maps.logical_pkg_id, cpu);
--	}
--	return -1;
--}
--EXPORT_SYMBOL(topology_phys_to_logical_pkg);
--
--/**
-- * topology_phys_to_logical_die - Map a physical die id to logical
-- * @die_id:	The physical die id to map
-- * @cur_cpu:	The CPU for which the mapping is done
-- *
-- * Returns logical die id or -1 if not found
-- */
--static int topology_phys_to_logical_die(unsigned int die_id, unsigned int cur_cpu)
--{
--	int cpu, proc_id = cpu_data(cur_cpu).topo.pkg_id;
--
--	for_each_possible_cpu(cpu) {
--		if (per_cpu(logical_maps.phys_pkg_id, cpu) == proc_id &&
--		    per_cpu(logical_maps.phys_die_id, cpu) == die_id)
--			return per_cpu(logical_maps.logical_die_id, cpu);
--	}
--	return -1;
+-	/*
+-	 * Bug compatible for now. This is broken on hybrid systems:
+-	 * 8 cores SMT + 8 cores w/o SMT
+-	 * tscan.dom_ncpus[TOPO_CORE_DOMAIN] = 24; 24 / 2 = 12 !!
+-	 *
+-	 * Cannot be fixed without further topology enumeration changes.
+-	 */
+-	tscan->c->x86_max_cores = tscan->dom_ncpus[TOPO_CORE_DOMAIN] >>
+-		x86_topo_system.dom_shifts[TOPO_SMT_DOMAIN];
 -}
 -
--/**
-- * topology_update_package_map - Update the physical to logical package map
-- * @pkg:	The physical package id as retrieved via CPUID
-- * @cpu:	The cpu for which this is updated
-- */
--int topology_update_package_map(unsigned int pkg, unsigned int cpu)
--{
--	int new;
--
--	/* Already available somewhere? */
--	new = topology_phys_to_logical_pkg(pkg);
--	if (new >= 0)
--		goto found;
--
--	new = logical_packages++;
--	if (new != pkg) {
--		pr_info("CPU %u Converting physical %u to logical package %u\n",
--			cpu, pkg, new);
--	}
--found:
--	per_cpu(logical_maps.phys_pkg_id, cpu) = pkg;
--	per_cpu(logical_maps.logical_pkg_id, cpu) = new;
--	cpu_data(cpu).topo.logical_pkg_id = new;
--	return 0;
--}
--/**
-- * topology_update_die_map - Update the physical to logical die map
-- * @die:	The die id as retrieved via CPUID
-- * @cpu:	The cpu for which this is updated
-- */
--int topology_update_die_map(unsigned int die, unsigned int cpu)
--{
--	int new;
--
--	/* Already available somewhere? */
--	new = topology_phys_to_logical_die(die, cpu);
--	if (new >= 0)
--		goto found;
--
--	new = logical_die++;
--	if (new != die) {
--		pr_info("CPU %u Converting physical %u to logical die %u\n",
--			cpu, die, new);
--	}
--found:
--	per_cpu(logical_maps.phys_die_id, cpu) = die;
--	per_cpu(logical_maps.logical_die_id, cpu) = new;
--	cpu_data(cpu).topo.logical_die_id = new;
--	return 0;
--}
--
- void __init smp_store_boot_cpu_info(void)
+ void cpu_parse_topology(struct cpuinfo_x86 *c)
  {
--	int id = 0; /* CPU 0 */
--	struct cpuinfo_x86 *c = &cpu_data(id);
-+	struct cpuinfo_x86 *c = &cpu_data(0);
+ 	unsigned int dom, cpu = smp_processor_id();
+@@ -198,7 +188,6 @@ void cpu_parse_topology(struct cpuinfo_x
+ 	}
  
- 	*c = boot_cpu_data;
--	c->cpu_index = id;
--	topology_update_package_map(c->topo.pkg_id, id);
--	topology_update_die_map(c->topo.die_id, id);
- 	c->initialized = true;
+ 	topo_set_ids(&tscan);
+-	topo_set_max_cores(&tscan);
  }
  
+ void __init cpu_init_topology(struct cpuinfo_x86 *c)
+@@ -220,7 +209,6 @@ void __init cpu_init_topology(struct cpu
+ 	}
+ 
+ 	topo_set_ids(&tscan);
+-	topo_set_max_cores(&tscan);
+ 
+ 	/*
+ 	 * AMD systems have Nodes per package which cannot be mapped to
 
