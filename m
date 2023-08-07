@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67731771DAF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DF3771DB8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbjHGKAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 06:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44244 "EHLO
+        id S231151AbjHGKEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 06:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbjHGKAJ (ORCPT
+        with ESMTP id S229581AbjHGKEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 06:00:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9D1DD;
-        Mon,  7 Aug 2023 03:00:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691402408; x=1722938408;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Cnv86AvV5oXeXJaWvkZrIjdDJcntU03jA75p6wKRBLg=;
-  b=h3O5dousvy/5Qc9ljW32WaQmhn9d+Dk/lu8/jKohuEmrXdqy7si9QLg7
-   G+dlr1IIiTbDaCEgwUqvYW9D+AN07UtzvIbRvH3LuVL3qFnAM/yZ68/Pj
-   aGsTRltTpd0FgdCTVdORl8KE9NeZUqvfMpYMGRGgdowJBPg+VwZ9I1bcE
-   Aq24SH/N9j7mhxjV10/gpUV7SEoazQOcDUp9unlu0LQZbjFfGEz06sLtW
-   qgGJO2k8CtafL5+gWOE6GlIOyYPZJz3iRxHe1HSWPczO4cb+Nvv7bH5o2
-   LOIgqom6zMM5YtrPe88ZSEj2Oou9ChgZ36om3DSXgsQwyw6zM0ZIlFYym
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="369406962"
-X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
-   d="scan'208";a="369406962"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 03:00:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="1061536245"
-X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
-   d="scan'208";a="1061536245"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP; 07 Aug 2023 03:00:05 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 58C1917C; Mon,  7 Aug 2023 13:02:19 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Justin Tee <justin.tee@broadcom.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 1/1] scsi: lpfc: Do not abuse UUID APIs
-Date:   Mon,  7 Aug 2023 13:02:17 +0300
-Message-Id: <20230807100217.34646-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Mon, 7 Aug 2023 06:04:06 -0400
+Received: from icts-p-cavuit-1.kulnet.kuleuven.be (icts-p-cavuit-1.kulnet.kuleuven.be [134.58.240.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7166F4;
+        Mon,  7 Aug 2023 03:04:03 -0700 (PDT)
+X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: 2FD5B2005B.AB1E1
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-ceifnet-smtps-0.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:144:242:ac11:2f])
+        by icts-p-cavuit-1.kulnet.kuleuven.be (Postfix) with ESMTP id 2FD5B2005B;
+        Mon,  7 Aug 2023 12:04:01 +0200 (CEST)
+BCmilterd-Mark-Subject: no
+BCmilterd-Errors: 
+BCmilterd-Report: SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID_AU#0.00
+X-CAV-Cluster: smtps
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
+        s=cav; t=1691402641;
+        bh=RmRz9LoqDZp6qH6qZw7V6w8nVwyQgi4xXe25hmaXnWE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=fnQ6LKe8yf7cfK1Z+T99T9Gy5gZvwwdG0elfGQAbrFCcSfdlKZ26U9bMQb/+9xLQ5
+         EGhKf8e+x0vDCeLuR4JFPnylkV1hZy2QWNqXDHaa3LEKDyUUI8uZKhWranrf6TNm1B
+         pkAlmoeiwEq+Y0q7vjDaZmmdsUGPMQpxj5PPzoSs=
+Received: from [192.168.44.147] (ptr-94-109-231-173.dyn.orange.be [94.109.231.173])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by icts-p-ceifnet-smtps-0.kuleuven.be (Postfix) with ESMTPSA id 86253D4F78D56;
+        Mon,  7 Aug 2023 12:04:00 +0200 (CEST)
+Message-ID: <a4e752f6-05c8-1fa1-54a4-f68191a617d1@cs.kuleuven.be>
+Date:   Mon, 7 Aug 2023 12:03:58 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 5/5] selftests/sgx: Enclave freestanding compilation +
+ separate linker options.
+Content-Language: en-US
+To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     dave.hansen@linux.intel.com
+References: <20230724165832.15797-1-jo.vanbulck@cs.kuleuven.be>
+ <20230724165832.15797-6-jo.vanbulck@cs.kuleuven.be>
+ <CUE1SWKWLXPX.46QZ3KU4UAWL@seitikki>
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+In-Reply-To: <CUE1SWKWLXPX.46QZ3KU4UAWL@seitikki>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The lpfc_vmid_host_uuid is not defined as uuid_t and its usage is not
-the same as for uuid_t operations (like exporting or importing).
-Hence replace call to uuid_is_null() by respective memchr_inv() without
-abusing casting.
+On 28.07.23 21:22, Jarkko Sakkinen wrote:
+> Should be split into two patches. 
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: fixed the logic: memchr_inv() returns "true" when uuid_is_null() returns false.
- drivers/scsi/lpfc/lpfc_els.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks, will do in the next patch revision.
 
-diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
-index 2bad9954c355..1e74ae65768d 100644
---- a/drivers/scsi/lpfc/lpfc_els.c
-+++ b/drivers/scsi/lpfc/lpfc_els.c
-@@ -1332,7 +1332,7 @@ lpfc_issue_els_flogi(struct lpfc_vport *vport, struct lpfc_nodelist *ndlp,
- 	if (phba->cfg_vmid_priority_tagging) {
- 		sp->cmn.priority_tagging = 1;
- 		/* lpfc_vmid_host_uuid is combination of wwpn and wwnn */
--		if (uuid_is_null((uuid_t *)vport->lpfc_vmid_host_uuid)) {
-+		if (!memchr_inv(vport->lpfc_vmid_host_uuid, 0, LPFC_COMPRESS_VMID_SIZE)) {
- 			memcpy(vport->lpfc_vmid_host_uuid, phba->wwpn,
- 			       sizeof(phba->wwpn));
- 			memcpy(&vport->lpfc_vmid_host_uuid[8], phba->wwnn,
-@@ -12331,7 +12331,7 @@ lpfc_vmid_uvem(struct lpfc_vport *vport,
- 	elsiocb->vmid_tag.vmid_context = vmid_context;
- 	pcmd = (u8 *)elsiocb->cmd_dmabuf->virt;
- 
--	if (uuid_is_null((uuid_t *)vport->lpfc_vmid_host_uuid))
-+	if (!memchr_inv(vport->lpfc_vmid_host_uuid, 0, LPFC_COMPRESS_VMID_SIZE))
- 		memcpy(vport->lpfc_vmid_host_uuid, vmid->host_vmid,
- 		       LPFC_COMPRESS_VMID_SIZE);
- 
--- 
-2.40.0.1.gaa8946217a0b
+> Please describe the motivation for the
+> second paragraph in the patch, which adds '-ffreestanding'.
 
+Even when passing -nostdlib, the compiler still assumes memset and 
+memcpy are present [1].
+
+I found that, when not passing '-ffreestanding', clang seems to optimize 
+away the existing memcpy/memset implementations and errors with:
+
+/bin/ld: test_encl.o: in function `do_encl_init_tcs_page':
+test_encl.c:(.text+0x17e): undefined reference to `memset'
+
+I will add this information in the next patch revision.
+
+[1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=90701
+
+Best,
+Jo
