@@ -2,65 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0889A772D10
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BE2772D15
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbjHGRdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38060 "EHLO
+        id S230229AbjHGRez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:34:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231156AbjHGRdv (ORCPT
+        with ESMTP id S231156AbjHGRex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:33:51 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A83D9F
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:33:50 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3a1ebb85f99so4079725b6e.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691429630; x=1692034430;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8Xgnz7mlTNaIdh0IQghOP6QiClppwV7KNLYC2hrQ44c=;
-        b=QPZZdCl+yIUJyB11mddD06BONdKoecQPaEP9meDsWe2HbjDlBALihWQ4wMNJ7FoIz1
-         SQz3GbST9klBEdZ0nuYgVb3lBXEOFoBeNLSPG/M8wVoy0/B8fRmiRMuWrYjHSZ4Z7zlg
-         TIKT1BQu0vFEXl46H7x5/YZ5tA5bhqJtArOU/pROsUWre5q+2u6RfXdx0yw0OOFPABuF
-         Xem/F4Gqkvpur33XGzEI5spVd3kVX/AT2jkwK734EfSQ6iuPJgs1ksvXc+u5AkyDALYz
-         4XXBL3B1shhfcVuLBt1JqhWB3hrwXWhfOaK8j5p3N3qZhhoyDuf37hBpU1ZxuPgv4D0X
-         SpOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691429630; x=1692034430;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8Xgnz7mlTNaIdh0IQghOP6QiClppwV7KNLYC2hrQ44c=;
-        b=P7x0bVldtwX0yzLzf8ZZGlILC+NnCu4pDhqi/JIVTXK1rvdHOQxBzY48y5Nl7eBw4j
-         OttMBxspX+RIhypbl3OSw1pwlqyc5a0fEDx8aQ46Hfe1lNfAbQnbgFWrxdAWDe0woQ8r
-         u7rAwOX4PSW6R+YIGyvqIGqCNx+z8cCEVebsuXedjM084A3b3rDOQ6F49ys4rpDn+m4w
-         lWoxr4dgbRG9V94/uY77xkdAwfaDihqxsnK59i7MCnHYDF3lHUi0JsyZUKKIaoDSWh/I
-         AnI0SmDIYetKxQBGsApHwkJlQaJGDO9e9/GfpKHuRSATU3DI1z4J1vV0jMKur8L7l17i
-         8jcQ==
-X-Gm-Message-State: AOJu0YxiCTwI776MhnyGCHwyQ/BmGt5b30xJIEc9TPSrnAcAGFjDBsSp
-        tCUiFzMRSYMnm9CBJeixk31UZidVTq+y06W2DkKhOgSX
-X-Google-Smtp-Source: AGHT+IGB/gO1axOANy6aP1Itgk+YXBFfN97zNjuiniI4JVi6s03LTT2FmLcUSxQdRIIa1IqEQiOwimnRFlqlirYYu4M=
-X-Received: by 2002:a05:6808:15a5:b0:3a7:55f2:552d with SMTP id
- t37-20020a05680815a500b003a755f2552dmr11757972oiw.58.1691429629797; Mon, 07
- Aug 2023 10:33:49 -0700 (PDT)
+        Mon, 7 Aug 2023 13:34:53 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85055F9;
+        Mon,  7 Aug 2023 10:34:52 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 377H1UNR006191;
+        Mon, 7 Aug 2023 17:34:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=ayIUv30cKBFqtzxnKsc+A+U+A6120Vy/VZjRRC7ftUY=;
+ b=bn0OS0UcdPTlaOCDZPIwcQgtdRYqzg0d/htpaaT/7W4Pn/+RWG6UGXIeyi6aup/EKb5z
+ hEkhoEOoTURjsMPeIKSN6FRKOS8/MGb/K9doRsTUecMhq9LcyiZNs8P8GiqRZPjG210Y
+ dPgpAd5SenYbTdF/g8lgYnb56Wz2ThFjzt/BWb+9bETqkgaJuS7doZ9gIZMspGDKVW07
+ mHMFk2BKCmDC0ZdEwaqRI7UAO9K/9TErKigAVFCbhT8ghQC++0Mp4e0SKEdfRVCF0DM2
+ PMXMOofX6fNf3NPQbM1bxDhbxo4QMqk3lEEAYFqpIr9BxFOZNvjLXJCgcYFZ6NykElR4 +Q== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sax18s165-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Aug 2023 17:34:30 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 377HY3tK009634
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 7 Aug 2023 17:34:03 GMT
+Received: from [10.50.29.168] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 7 Aug
+ 2023 10:33:58 -0700
+Message-ID: <75c25eac-e92c-5ca2-4ef6-06ee89584ce6@quicinc.com>
+Date:   Mon, 7 Aug 2023 23:03:45 +0530
 MIME-Version: 1.0
-References: <20230802075309.13950-1-sunran001@208suo.com>
-In-Reply-To: <20230802075309.13950-1-sunran001@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 13:33:38 -0400
-Message-ID: <CADnq5_NdP=Uk3JCFwvO12nOWGJuFh9ZWaEuH7zSWsKAM9hufXQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: Clean up errors in vcn_v3_0.c
-To:     Ran Sun <sunran001@208suo.com>
-Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH V25 0/3] misc: Add driver support for Data Capture and
+ Compare unit(DCC)
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Trilok Soni <quic_tsoni@quicinc.com>
+CC:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Alex Elder <elder@ieee.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Sibi Sankar <quic_sibis@quicinc.com>,
+        "Rajendra Nayak" <quic_rjendra@quicinc.com>
+References: <cover.1687945879.git.quic_schowdhu@quicinc.com>
+ <f25f8c43-2996-23ff-e6af-9e39b7fced86@quicinc.com>
+ <774b688f-0324-9097-6504-58d15a3e6afb@quicinc.com>
+ <2023080438-reacquire-obsessed-3e81@gregkh>
+ <2023080408-zoom-defraud-1ae8@gregkh>
+Content-Language: en-US
+From:   Souradeep Chowdhury <quic_schowdhu@quicinc.com>
+In-Reply-To: <2023080408-zoom-defraud-1ae8@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: t7LGmfv5Gg0ZH668W6KF0jTmIyG0--Vw
+X-Proofpoint-ORIG-GUID: t7LGmfv5Gg0ZH668W6KF0jTmIyG0--Vw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-07_19,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ spamscore=0 clxscore=1015 lowpriorityscore=0 bulkscore=0 phishscore=0
+ impostorscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308070161
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,80 +93,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
 
-On Wed, Aug 2, 2023 at 3:53=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
-:
->
-> Fix the following errors reported by checkpatch:
->
-> ERROR: space required before the open brace '{'
-> ERROR: "foo * bar" should be "foo *bar"
-> ERROR: space required before the open parenthesis '('
-> ERROR: that open brace { should be on the previous line
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c b/drivers/gpu/drm/amd/=
-amdgpu/vcn_v3_0.c
-> index b76ba21b5a89..1e7613bb80ae 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
-> @@ -1105,7 +1105,7 @@ static int vcn_v3_0_start(struct amdgpu_device *ade=
-v)
->                 if (adev->vcn.harvest_config & (1 << i))
->                         continue;
->
-> -               if (adev->pg_flags & AMD_PG_SUPPORT_VCN_DPG){
-> +               if (adev->pg_flags & AMD_PG_SUPPORT_VCN_DPG) {
->                         r =3D vcn_v3_0_start_dpg_mode(adev, i, adev->vcn.=
-indirect_sram);
->                         continue;
->                 }
-> @@ -1789,7 +1789,7 @@ static int vcn_v3_0_dec_msg(struct amdgpu_cs_parser=
- *p, struct amdgpu_job *job,
->         struct amdgpu_bo *bo;
->         uint64_t start, end;
->         unsigned int i;
-> -       void * ptr;
-> +       void *ptr;
->         int r;
->
->         addr &=3D AMDGPU_GMC_HOLE_MASK;
-> @@ -2129,7 +2129,7 @@ static int vcn_v3_0_set_powergating_state(void *han=
-dle,
->                 return 0;
->         }
->
-> -       if(state =3D=3D adev->vcn.cur_state)
-> +       if (state =3D=3D adev->vcn.cur_state)
->                 return 0;
->
->         if (state =3D=3D AMD_PG_STATE_GATE)
-> @@ -2137,7 +2137,7 @@ static int vcn_v3_0_set_powergating_state(void *han=
-dle,
->         else
->                 ret =3D vcn_v3_0_start(adev);
->
-> -       if(!ret)
-> +       if (!ret)
->                 adev->vcn.cur_state =3D state;
->
->         return ret;
-> @@ -2228,8 +2228,7 @@ static const struct amd_ip_funcs vcn_v3_0_ip_funcs =
-=3D {
->         .set_powergating_state =3D vcn_v3_0_set_powergating_state,
->  };
->
-> -const struct amdgpu_ip_block_version vcn_v3_0_ip_block =3D
-> -{
-> +const struct amdgpu_ip_block_version vcn_v3_0_ip_block =3D {
->         .type =3D AMD_IP_BLOCK_TYPE_VCN,
->         .major =3D 3,
->         .minor =3D 0,
-> --
-> 2.17.1
->
+
+On 8/4/2023 7:19 PM, Greg Kroah-Hartman wrote:
+> On Fri, Aug 04, 2023 at 03:47:26PM +0200, Greg Kroah-Hartman wrote:
+>> On Thu, Aug 03, 2023 at 07:35:18AM -0700, Trilok Soni wrote:
+>>> On 8/3/2023 12:06 AM, Souradeep Chowdhury wrote:
+>>>>
+>>>>
+>>>> On 6/28/2023 3:53 PM, Souradeep Chowdhury wrote:
+>>>
+>>> ...
+>>>
+>>>>>
+>>>>> https://git.codelinaro.org/clo/le/platform/vendor/qcom-opensource/tools/-/tree/opensource-tools.lnx.1.0.r176-rel/dcc_parser
+>>>>>
+>>>>> Changes in v25
+>>>>>
+>>>>> * Updated the documentation of the structure dcc_config_entry as per
+>>>>> the comments in V23
+>>>>> * Updated the documentation of the dcc Kconfig definition as per
+>>>>> comment in V24
+>>>>> * Used u64 where applicable
+>>>>> * Removed the mutex locks where it is not needed
+>>>>> * Removed the use of unlikely keyword
+>>>>> * Renamed "nr_link_list" to "max_link_list"
+>>>>>
+>>>>> Souradeep Chowdhury (3):
+>>>>>     dt-bindings: misc: qcom,dcc: Add the dtschema
+>>>>>     misc: dcc: Add driver support for Data Capture and Compare unit(DCC)
+>>>>>     MAINTAINERS: Add the entry for DCC(Data Capture and Compare) driver
+>>>>>       support
+>>>>>
+>>>>>    Documentation/ABI/testing/debugfs-driver-dcc  |   10 +-
+>>>>>    .../devicetree/bindings/misc/qcom,dcc.yaml    |   44 +
+>>>>>    MAINTAINERS                                   |    8 +
+>>>>>    drivers/misc/Kconfig                          |    8 +
+>>>>>    drivers/misc/Makefile                         |    1 +
+>>>>>    drivers/misc/qcom-dcc.c                       | 1312 +++++++++++++++++
+>>>>>    6 files changed, 1378 insertions(+), 5 deletions(-)
+>>>>>    create mode 100644 Documentation/devicetree/bindings/misc/qcom,dcc.yaml
+>>>>>    create mode 100644 drivers/misc/qcom-dcc.c
+>>>>
+>>>> Gentle Ping
+>>>
+>>> Thank you for the reminder Souradeep. Greg and others, please see if we need
+>>> any changes here or it can be picked up?
+>>
+>> It would help if the code would actually build:
+>>
+>> drivers/misc/qcom-dcc.c: In function ‘ready_read’:
+>> drivers/misc/qcom-dcc.c:853:13: error: unused variable ‘ret’ [-Werror=unused-variable]
+>>    853 |         int ret = 0;
+>>        |             ^~~
+>>
+>> {sigh}
+>>
+>> How in the world was this ever tested?
+> 
+> Ok, next time I want to see some QCOM engineers to sign off on this that
+> it was actually tested and they can back it up that this is ready to be
+> merged.  When the code doesn't even build, that is a huge red flag that
+> this whole thing is being rushed as it obviously was never tested in the
+> form that was submitted for inclusion.
+> 
+> You all know better than this.
+
+My apologies on missing out on this, it is a W=1 level compilation 
+warning that got suppressed on a normal kernel build. I will be
+posting V26 by correcting this. Otherwise, this driver has no
+functional issues and is already ported in downstream kernels.
+
+> 
+> greg k-h
