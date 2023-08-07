@@ -2,174 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3686771CD0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA71771CC2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbjHGJCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
+        id S231225AbjHGJBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 05:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231276AbjHGJBu (ORCPT
+        with ESMTP id S229470AbjHGJBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:01:50 -0400
-Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F271989
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:01:40 -0700 (PDT)
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Maarten Lankhorst <dev@lankhorst.se>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH v3 9/9] ALSA: hda/i915: Remove extra argument from snd_hdac_i915_init
-Date:   Mon,  7 Aug 2023 11:00:45 +0200
-Message-Id: <20230807090045.198993-10-maarten.lankhorst@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
-References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
+        Mon, 7 Aug 2023 05:01:07 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FC8E74
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:01:06 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d4364cf8be3so3257926276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 02:01:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691398865; x=1692003665;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GmPeF2Yo4yjKKsdpscDMoUm9x/eDwRXj5nItZhzfM78=;
+        b=xwjGnQ22TOvfWV9zTt168I4LV00sZqTUcBeX/cs7f9wHCm3yhi9zZk4HkInarayqdL
+         hbFoARgGD3zyplYs2CQrzVSqenn1thDeAegEpu+5IzplQyIWIB2OkX8tBF7MVkC8TORu
+         iT6ZOf6xxUr6x7TuJgla6W06am+pbwPo3ldOfNSJxr819tbF8oa17l3ZMA3uInqUfwCy
+         Y6UTMaQ3OjzXlnqhp8Z/S8aCGSax4oQ2T5uUt9LzppuyXmMmegnntrPF6ADX/4CG2RAq
+         P1dGrHIy9Ta9y3StKmvvWDFGYo8CfDm36rlsXMzL1P67db/om0PR4TmCtAEJmY0L/XnW
+         OS/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691398865; x=1692003665;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GmPeF2Yo4yjKKsdpscDMoUm9x/eDwRXj5nItZhzfM78=;
+        b=AIitf/LF/CGuLnSxQhplGOcTHjkJmoKTfdNnKGWTcWOCa40ie2jbw6LEVihwYmVhBT
+         6UBnIr3poittg6lJO12EDNhLbdinEMvNEc7NghnS86N05COoWxD5CrEuykeRjdG0HS45
+         Z2t4ZNGrWW64x1T90O5gFq9tflRnTVKlusWHZ/NR+TYtQt3Dghp4kcvA0v6Wy9WPYbjZ
+         A11DrDPWd3mpnyUtlsxcB4oHaeaIzDDgk8akrfnJ/cazr2UJoFOgm041TKZEALZs6Bqu
+         /LS8ShGELFnjPZqNSmbZ6Am8udMdYE72hu8Xa0sS13J23ww8BYWfQPosbMKk3NuwBqb5
+         Gt2Q==
+X-Gm-Message-State: AOJu0YxWsXzWhfH7L1ANlUFqtIlgu+AJQpK/R7MdVT8TSYX1Hk5he1Qp
+        vY+FMeV7xS10a4A/vNhFCdK4IUepGrZwkNKui8M4DmU3iDZrq5rSgps=
+X-Google-Smtp-Source: AGHT+IGNz3qMrODq1LB5wqlhtqjoComq5pxU82VLl/izKto2p2jjd4gCjQ6Fb7pJkQbUsvyv5AUjgJJy55C7aN4ZuV4=
+X-Received: by 2002:a5b:a8f:0:b0:d06:7e60:251a with SMTP id
+ h15-20020a5b0a8f000000b00d067e60251amr8530675ybq.49.1691398865306; Mon, 07
+ Aug 2023 02:01:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+References: <20230712022250.2319557-1-colin.foster@in-advantage.com>
+ <20230712022250.2319557-2-colin.foster@in-advantage.com> <CACRpkdYXeGq2LnD+bpAXm82Aa-Czob8afQSfjfMFweBLhdr9uw@mail.gmail.com>
+ <ZLmSvkizdykGGpv6@MSI.localdomain> <20230724065957.a72yejua7us5e2s3@soft-dev3-1>
+ <ZL7JJ2nLA27Z/VnR@colin-ia-desktop>
+In-Reply-To: <ZL7JJ2nLA27Z/VnR@colin-ia-desktop>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 7 Aug 2023 11:00:54 +0200
+Message-ID: <CACRpkdZBzEqAiztAjfQw7wymb6sjpx2Wwgn_RP4ZuO6EdDLMzQ@mail.gmail.com>
+Subject: Re: [RFC RESEND v1 pinctrl-next 1/1] pinctrl: microchip-sgpio: add
+ activity and blink functionality
+To:     Colin Foster <colin.foster@in-advantage.com>
+Cc:     Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        Daniel Machon <daniel.machon@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that all drivers have moved from modprobe loading to
-handling -EPROBE_DEFER, we can remove the argument again.
+On Mon, Jul 24, 2023 at 8:55=E2=80=AFPM Colin Foster
+<colin.foster@in-advantage.com> wrote:
 
-Changes since v1:
-- Use dev_err_probe() to set reason in debugfs for deferred probe.
+> Is there a tree I should test these patches against? I don't have any
+> active development going on so I've been hopping along the latest RCs
+> instead of keeping up with net-next, gpio-next, or otherwise...
 
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- include/sound/hda_i915.h        |  4 ++--
- sound/hda/hdac_i915.c           | 14 +++-----------
- sound/pci/hda/hda_intel.c       |  2 +-
- sound/soc/intel/avs/core.c      |  2 +-
- sound/soc/intel/skylake/skl.c   |  2 +-
- sound/soc/sof/intel/hda-codec.c |  2 +-
- 6 files changed, 9 insertions(+), 17 deletions(-)
+Use the "devel" branch in the pinctrl tree:
+https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git/lo=
+g/?h=3Ddevel
 
-diff --git a/include/sound/hda_i915.h b/include/sound/hda_i915.h
-index f91bd6636086..6b79614a893b 100644
---- a/include/sound/hda_i915.h
-+++ b/include/sound/hda_i915.h
-@@ -9,12 +9,12 @@
- 
- #ifdef CONFIG_SND_HDA_I915
- void snd_hdac_i915_set_bclk(struct hdac_bus *bus);
--int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe);
-+int snd_hdac_i915_init(struct hdac_bus *bus);
- #else
- static inline void snd_hdac_i915_set_bclk(struct hdac_bus *bus)
- {
- }
--static inline int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
-+static inline int snd_hdac_i915_init(struct hdac_bus *bus)
- {
- 	return -ENODEV;
- }
-diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-index 12c1f8d93499..ad13f0e2f94f 100644
---- a/sound/hda/hdac_i915.c
-+++ b/sound/hda/hdac_i915.c
-@@ -156,7 +156,7 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
-  *
-  * Returns zero for success or a negative error code.
-  */
--int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
-+int snd_hdac_i915_init(struct hdac_bus *bus)
- {
- 	struct drm_audio_component *acomp;
- 	int err;
-@@ -172,18 +172,10 @@ int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
- 	acomp = bus->audio_component;
- 	if (!acomp)
- 		return -ENODEV;
--	if (allow_modprobe && !acomp->ops) {
--		if (!IS_ENABLED(CONFIG_MODULES) ||
--		    !request_module("i915")) {
--			/* 60s timeout */
--			wait_for_completion_killable_timeout(&acomp->master_bind_complete,
--							     msecs_to_jiffies(60 * 1000));
--		}
--	}
- 	if (!acomp->ops) {
--		int err = allow_modprobe ? -ENODEV : -EPROBE_DEFER;
- 		snd_hdac_acomp_exit(bus);
--		return dev_err_probe(bus->dev, err, "couldn't bind with audio component\n");
-+		return dev_err_probe(bus->dev, -EPROBE_DEFER,
-+				     "couldn't bind with audio component\n");
- 	}
- 	return 0;
- }
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index e3128d7d742e..b4fa925a992b 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2150,7 +2150,7 @@ static int azx_probe(struct pci_dev *pci,
- #ifdef CONFIG_SND_HDA_I915
- 	/* bind with i915 if needed */
- 	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
--		err = snd_hdac_i915_init(azx_bus(chip), false);
-+		err = snd_hdac_i915_init(azx_bus(chip));
- 		if (err < 0) {
- 			/* if the controller is bound only with HDMI/DP
- 			 * (for HSW and BDW), we need to abort the probe;
-diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
-index 64e7a4e650a8..d350204a1d86 100644
---- a/sound/soc/intel/avs/core.c
-+++ b/sound/soc/intel/avs/core.c
-@@ -461,7 +461,7 @@ static int avs_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
- 	pci_set_drvdata(pci, bus);
- 	device_disable_async_suspend(dev);
- 
--	ret = snd_hdac_i915_init(bus, false);
-+	ret = snd_hdac_i915_init(bus);
- 	if (ret == -EPROBE_DEFER)
- 		goto err_i915_init;
- 	else if (ret < 0)
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index ff80d83a9fb7..49147ee3a76d 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -1056,7 +1056,7 @@ static int skl_probe(struct pci_dev *pci,
- 	}
- 
- 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
--		err = snd_hdac_i915_init(bus, false);
-+		err = snd_hdac_i915_init(bus);
- 		if (err < 0)
- 			goto out_dmic_unregister;
- 	}
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index 344b61576c0e..8a5e99a898ec 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -415,7 +415,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
- 		return 0;
- 
- 	/* i915 exposes a HDA codec for HDMI audio */
--	ret = snd_hdac_i915_init(bus, false);
-+	ret = snd_hdac_i915_init(bus);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-2.39.2
+If you resend based on this branch I'll apply the patch, I think Horatiu's
+reply counts as an Acked-by so record it as such.
 
+Yours,
+Linus Walleij
