@@ -2,109 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4FF772E0F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D22772E16
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbjHGSmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 14:42:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
+        id S231223AbjHGSom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 14:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjHGSmE (ORCPT
+        with ESMTP id S230326AbjHGSok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 14:42:04 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2566D171A;
-        Mon,  7 Aug 2023 11:42:04 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bb84194bf3so31963115ad.3;
-        Mon, 07 Aug 2023 11:42:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691433723; x=1692038523;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZjR5pXl0UuinG01FbgVJViJLXMyiirXmYlC8ixIZaWI=;
-        b=LBJ/vxIxnRKTm7zQ76pErn2jwczKbYDq41bpll/TUjJBnW7H/rQJVuz1tyUkGcB6oM
-         sV67vRXYiyxhwWeEsQLiJ0ID04XmOSbbo3N1w86bLzq6xWRNq49SI9OPgbvf4/AyPxLs
-         qL4112juNxcf595WcqGthvXUXZhQWF/PBxa+jZ+4C7rjwk36arxNV9yw3hoY7vf+XO1r
-         0TxQ8G0HUw0gsWJjOTe85l556gc0VS5FHct7gGGq0LhfJcw8uIHOTS6oK6fTMFklJiHn
-         Yey8etyXTAmszbJjWEEybEs45+iZ77ajyB36HpRv1hA6Fqc7E+0qtnvqqxBV2B9+Qy4k
-         XBcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691433723; x=1692038523;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZjR5pXl0UuinG01FbgVJViJLXMyiirXmYlC8ixIZaWI=;
-        b=T4JMuAtyEWFhbRVXbEXVzL56fxogEzKJDXFv1Ln6FqQk76R3KfQ7Z2GWoSRRQRz8Qo
-         n5DOcchAHgVJddukewY37OI5bDZoOQh8tUamfjn2GYg7Y0fMdNywpGLXOtLLN+5ahNym
-         x+8YthwicJHe572/TeaJxabLnwcYjis/FFFv6Q07Er8rQWIIlG33il6eQwnZvCyyHHOu
-         kM8MTH2ECA8WcMapcQHFQLxN9PX+uo6lS5dM0O/fdiUEcSze/aw6Rl+LEx2NJpDhymlT
-         Om3q9s/fyiIi+3sXL/vMPbiH1I5FePZr+XpozEbwTFiK+IN7Wh/Y61Pb91RydtqLFNmm
-         oSvg==
-X-Gm-Message-State: AOJu0YzFe7Y14MMJTIQzmZmrWD58pgnluejCqoINflcpPGZiRwVi6qE6
-        ct92VRfsibKwrgygwdZTKkI=
-X-Google-Smtp-Source: AGHT+IF5OMe5bFNGQysrQDFaEvUlHdMMAhUHimv4sE0RqHepvqKXiKrN6ts3bZVslLjBfXo6BT8gew==
-X-Received: by 2002:a17:903:1cb:b0:1bc:5bdd:1f38 with SMTP id e11-20020a17090301cb00b001bc5bdd1f38mr7575761plh.3.1691433723515;
-        Mon, 07 Aug 2023 11:42:03 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:9d5d])
-        by smtp.gmail.com with ESMTPSA id c13-20020a170902d48d00b001b801044466sm7240525plg.114.2023.08.07.11.42.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 11:42:03 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 7 Aug 2023 08:42:01 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Hao Jia <jiahao.os@bytedance.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
-        songmuchun@bytedance.com, muchun.song@linux.dev,
-        wuyun.abel@bytedance.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] cgroup/rstat: Record the cumulative per-cpu time of
- cgroup and its descendants
-Message-ID: <ZNE6-U5zwKUguRJE@slm.duckdns.org>
-References: <20230807032930.87785-1-jiahao.os@bytedance.com>
+        Mon, 7 Aug 2023 14:44:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E752171C
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 11:44:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BEDD762123
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 18:44:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19FF8C433B9
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 18:44:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691433878;
+        bh=zcobmAFSDfSYyAGTuIrS1z2tk0Tfj/OjYcY8FpzEp9U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=b4Z8QheX/wKVn3rObb0aygAdPMglIgGILREvYyzTWAPpWmz9sQUWwdMR0Kv1D6KC5
+         XB4WbuY446ee3OEJJ4S12r+9AKRgbWuBRU23H0BKzCRjTNdI1xQXzl5UlHTcnEDlC5
+         yfTL42W1EgvT6dW5ZM02QxKk+SvMsxnsCedjWVacDrf5Am0CzMrokfhwc+Eqj3dKFW
+         BptQEXv9li8P0zqq5hz02/W7uQ7nXR776y3TDHDTd0wkuKXb6pbn6vXQYbc+IwBypq
+         +BvSKJE09Mcw8ILRLsBkkL21kAz26Qg5pVqtNY8t3oLuGXh5AgIUXKo3kdmPmthh8o
+         Qg8YXSsvST6Mg==
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-56cc3453e31so3170574eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 11:44:38 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw9e6rDZzy9vMNQFWDQXcGUUtlNgl1Xj05mKOa0b35ErGEj+G+H
+        RUec8Xyh1gvTHZmDr4q/ex+Wsj7fSQd9DwxBjV4=
+X-Google-Smtp-Source: AGHT+IEnr9g6cMRHUfWZzxSBbYYbZhHoFnKV5kxBZuTJawdcrsOATSyuCSBg9MnnLK5yZ8YfuQnLFtO4q+FnwbhrlPo=
+X-Received: by 2002:a4a:d20d:0:b0:566:ffa7:fd00 with SMTP id
+ c13-20020a4ad20d000000b00566ffa7fd00mr8344397oos.6.1691433877368; Mon, 07 Aug
+ 2023 11:44:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807032930.87785-1-jiahao.os@bytedance.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230623145358.568971-1-yesshedi@gmail.com> <20230623145358.568971-9-yesshedi@gmail.com>
+ <CAK7LNARnuaOi-GwW0qnFgH5styuUTtmjSNWV92PEO6VgpqNvQg@mail.gmail.com> <c98ffcdc-1e2f-4496-99a3-3b590002e5b1@gmail.com>
+In-Reply-To: <c98ffcdc-1e2f-4496-99a3-3b590002e5b1@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 8 Aug 2023 03:44:01 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASR1fCXG8M-3=Zb-_i2mFFt-cHpREzeWkw1Fe-Zuz_XSw@mail.gmail.com>
+Message-ID: <CAK7LNASR1fCXG8M-3=Zb-_i2mFFt-cHpREzeWkw1Fe-Zuz_XSw@mail.gmail.com>
+Subject: Re: [PATCH v7 8/8] kbuild: modinst: do modules_install step by step
+To:     Shreenidhi Shedi <yesshedi@gmail.com>
+Cc:     dhowells@redhat.com, dwmw2@infradead.org,
+        gregkh@linuxfoundation.org, nathan@kernel.org,
+        ndesaulniers@google.com, nicolas@fjasle.eu,
+        linux-kernel@vger.kernel.org, sshedi@vmware.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 11:29:30AM +0800, Hao Jia wrote:
-> The member variable bstat of the structure cgroup_rstat_cpu
-> records the per-cpu time of the cgroup itself, but does not
-> include the per-cpu time of its descendants. The per-cpu time
-> including descendants is very useful for calculating the
-> per-cpu usage of cgroups.
-> 
-> Although we can indirectly obtain the total per-cpu time
-> of the cgroup and its descendants by accumulating the per-cpu
-> bstat of each descendant of the cgroup. But after a child cgroup
-> is removed, we will lose its bstat information. This will cause
-> the cumulative value to be non-monotonic, thus affecting
-> the accuracy of cgroup per-cpu usage.
-> 
-> So we add the subtree_bstat variable to record the total
-> per-cpu time of this cgroup and its descendants, which is
-> similar to "cpuacct.usage*" in cgroup v1. And this is
-> also helpful for the migration from cgroup v1 to cgroup v2.
-> After adding this variable, we can obtain the per-cpu time of
-> cgroup and its descendants in user mode through eBPF/drgn, etc.
-> And we are still trying to determine how to expose it in the
-> cgroupfs interface.
-> 
-> Suggested-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Hao Jia <jiahao.os@bytedance.com>
+On Mon, Aug 7, 2023 at 5:08=E2=80=AFPM Shreenidhi Shedi <yesshedi@gmail.com=
+> wrote:
+>
+> On 07/08/23 01:02, Masahiro Yamada wrote:
+> > On Fri, Jun 23, 2023 at 11:54=E2=80=AFPM Shreenidhi Shedi <yesshedi@gma=
+il.com> wrote:
+> >>
+> >> Currently Makefile.modinst does three tasks on each module built:
+> >> - Install modules
+> >> - Sign modules
+> >> - Compress modules
+> >>
+> >> All the above tasks happen from a single place.
+> >>
+> >> This patch divides this task further and uses a different makefile for
+> >> each task.
+> >> Signing module logic is completely refactored and everything happens
+> >> from a shell script now.
+> >>
+> >> Signed-off-by: Shreenidhi Shedi <yesshedi@gmail.com>
+> >
+> >
+> > This patch is bad in multiple ways.
+> >
+> > 1. Break "make modules_sign"
+>
+> Correct, somehow I missed it. I will fix it.
+> I'm using below command to test sign only option. Please let me know if
+> I should use something else.
+>
+> make modules_sign modules_sign_only=3D1 INSTALL_MOD_PATH=3D$PWD/tmp -j8
+>
+> > 2.   Serialize the installation steps, that is, works less efficiently
+>
+> Even in the existing system it happens in serially.
 
-Applied to cgroup/for-6.6.
+The existing code runs in parallel.
 
-Thanks.
+ 1.  Copy the module "foo.ko" to the destination
+ 2.  Sign the module "bar.ko"
+ 3.  Compress the module "baz.ko"
 
--- 
-tejun
+Those three have no dependency among them, so
+should be able to run in parallel.
+
+Your code serializes 1 -> 2 -> 3
+
+
+
+> And the existing
+> method takes more time than the proposed version.
+>
+> root@ph5dev:~/linux-6.3.5 # ./test.sh orig
+>
+> real    0m14.699s
+> user    0m55.519s
+> sys     0m9.036s
+>
+> root@ph5dev:~/linux-6.3.5 # ./test.sh new
+>
+> real    0m13.327s
+> user    0m46.885s
+> sys     0m6.770s
+>
+> Here is my test script.
+> ```
+> #!/bin/bash
+>
+> set -e
+>
+> if [ "$1" !=3D "new" ] && [ "$1" !=3D "orig" ]; then
+>    echo "invalid arg, ($0 [orig|new])" >&2
+>    exit 1
+> fi
+>
+> rm -rf $PWD/tmp
+>
+> s=3D"scripts/sign-file.c"
+> m=3D"scripts/Makefile.modinst"
+> fns=3D($s $m)
+>
+> for f in ${fns[@]}; do
+>      cp $f.$1 $f
+> done
+>
+> cd scripts
+> gcc -o sign-file sign-file.c -lcrypto
+> cd -
+>
+> time make modules_install INSTALL_MOD_PATH=3D$PWD/tmp -s -j$(nproc)
+> ```
+>
+> > 3.   Increase code without adding any benefits.
+> >Agree with increased code but this change is one step closer to Unix
+> philosophy, do one thing well wrt modules_install.
+
+
+I do not understand why "closer to Unix philosophy"?
+
+You are adding extra/unnecessary complexity.
+
+Currently, the parallel job is managed by Make's job server.
+
+You are introducing another way of parallel execution
+in scripts/signfile.sh
+(and you completely ignored  -j <jobs> option to Make,
+and always spawned $(nproc) threads).
+
+
+Leave the parallel execution GNU Make.
+That is how Kbuild works _properly_.
+
+
+
+
+> > There is no good reason to do these chang >I hope the data I provided a=
+bove to your 2nd point provides evidence
+> that this fix is improving existing system. Please take a look again.
+
+
+I saw it.   I re-confirmed this is not an improvement.  Thanks for the data=
+.
+
+As I replied to the other thread, my measurement did not show an
+attractive result.
+https://lore.kernel.org/lkml/CAK7LNATNRchNoj0Y6sdb+_81xwV3kAX57-w5q2zew-q8R=
+yzJVg@mail.gmail.com/T/#m8234fc76e631363fbe6bdfb6e45ef6727fc48e80
+
+
+>
+> > NACK.
+>
+> Hi Masahiro Yamada,
+>
+> Replies inline above.
+>
+> Please correct me if my understanding is wrong. Thanks a lot for your
+> time and patience. Have a nice time ahead.
+
+
+I must let you know you are misunderstanding
+the meaning of NACK.
+
+
+NACK means:
+ "I do not like it. Please do not submit it any more".
+
+
+
+--
+Best Regards
+Masahiro Yamada
