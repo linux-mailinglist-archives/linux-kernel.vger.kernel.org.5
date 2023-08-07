@@ -2,43 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCE6771C45
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 10:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7BD771C47
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 10:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbjHGI1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 04:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58710 "EHLO
+        id S229984AbjHGI3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 04:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjHGI1X (ORCPT
+        with ESMTP id S229469AbjHGI3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 04:27:23 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8944C10EF;
-        Mon,  7 Aug 2023 01:27:20 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VpDH3HQ_1691396836;
-Received: from 30.97.48.53(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VpDH3HQ_1691396836)
-          by smtp.aliyun-inc.com;
-          Mon, 07 Aug 2023 16:27:17 +0800
-Message-ID: <522e9d29-fab2-5bb0-c2d3-9cf908007000@linux.alibaba.com>
-Date:   Mon, 7 Aug 2023 16:27:18 +0800
+        Mon, 7 Aug 2023 04:29:21 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303AD10EF
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 01:29:17 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe5eb84dceso2379825e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 01:29:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691396955; x=1692001755;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xedCfYnu7czqa8+w0BoRZkS95VJKbfhAvT84gadWBaQ=;
+        b=KJ2v+8P5T7FADtAwsbOhuzi61mzvR1n4HyST8IoTE14WUadiVYAj8bcixUS70lVDuJ
+         uoi/Oy+5mVguqk53vI8lECmjIRCpiMs2FmaAmKQ/Ollou3HB9AWtOKEiO6to+JyIkOXf
+         sp5CmXaypEnAaZAxllmkXcAICXQ3z2ms38lRaWNpTw1W1Lqn6KNPtWBlA0c9OvILior9
+         URNEn7R85E6iwLNizheIzMJ7Yq79nN+oVjNBaaPeKGKdrPoRsgOcsFQAXRp3LFkYBx/b
+         f+E04UShl8WS7sgpjiSQkESxMCukp8S0nnY8f9OwpXIDQHxxfs0OZihj+mjUvCjBi1cb
+         6m9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691396955; x=1692001755;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xedCfYnu7czqa8+w0BoRZkS95VJKbfhAvT84gadWBaQ=;
+        b=PLo0tyI11zwqqwBV1hrn9uSaiuKnnbdgLcVFz0vLI9aZqb6Y6n7WlxSZ2GS8O2ukHL
+         Tde8wy8NOCWalxHsADMU7J5mTNLwpiRmO0E8ks2yc5CUY9rU8ipJwl8STx/Ho0WRPTDw
+         sZaeKRWqjUxHYLOG/iZCEGIFOA4fYJEZXWJvNazokoHCaCiC8Kc/cqB+ULb4rsiWLzZD
+         W2TyW65ckSEOGiMVyTDgUd9QL8giaFEP92hobPqHJB4yHo6+pG8TjNqbNgWRyeSmaTao
+         odW/LRHiDVAcq4SxjzabPxR+rcNtxs1x6UjidhNXYjHPw+gxyUGvq+NRWcbnc0mby7gU
+         ZITA==
+X-Gm-Message-State: AOJu0Ywc3JFp+V3cebqvid2DPNJUW+/eT+5wXPlFVjeime31Ak7KVDP4
+        +x/pfkPGGCMhtgrSDbRnR+w=
+X-Google-Smtp-Source: AGHT+IGZc6ZOK0l/SXR4eXxv2Uq9owLaIVHisIsoNGlxGTL2VSplKSwRiG+i8/bMfg3xyYMR8pNl+w==
+X-Received: by 2002:a05:600c:2286:b0:3fa:8c68:4aba with SMTP id 6-20020a05600c228600b003fa8c684abamr6396840wmf.25.1691396955320;
+        Mon, 07 Aug 2023 01:29:15 -0700 (PDT)
+Received: from [192.168.0.118] (88-113-27-52.elisa-laajakaista.fi. [88.113.27.52])
+        by smtp.gmail.com with ESMTPSA id n1-20020a05600c4f8100b003fe15ac0934sm20884809wmq.1.2023.08.07.01.29.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 01:29:14 -0700 (PDT)
+Message-ID: <b3f9b848-be97-8ce8-9f6c-b9abcb0086f5@gmail.com>
+Date:   Mon, 7 Aug 2023 11:29:13 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 3/5] dma: optimize two stage transfer function
-To:     Kaiwei Liu <kaiwei.liu@unisoc.com>, Vinod Koul <vkoul@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kaiwei liu <liukaiwei086@gmail.com>,
-        Wenming Wu <wenming.wu@unisoc.com>
-References: <20230807052028.2854-1-kaiwei.liu@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230807052028.2854-1-kaiwei.liu@unisoc.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: Kernel regression tracking/reporting initiatives and KCIDB
+Content-Language: en-US
+To:     Thorsten Leemhuis <regressions@leemhuis.info>,
+        =?UTF-8?Q?Ricardo_Ca=c3=b1uelo?= <ricardo.canuelo@collabora.com>,
+        kernelci@lists.linux.dev, gregkh@linuxfoundation.org,
+        regressions@lists.linux.dev
+Cc:     kernel@collabora.com, linux-kernel@vger.kernel.org,
+        Gustavo Padovan <gustavo.padovan@collabora.com>,
+        Shreeya Patel <shreeya.patel@collabora.com>
+References: <874jljhtmj.fsf@rcn-XPS-13-9305.i-did-not-set--mail-host-address--so-tickle-me>
+ <ed9a0b64-b7e7-7735-85f7-d688a3b8e89e@leemhuis.info>
+From:   Nikolai Kondrashov <spbnick@gmail.com>
+In-Reply-To: <ed9a0b64-b7e7-7735-85f7-d688a3b8e89e@leemhuis.info>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.7 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,238 +80,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Thorsten,
 
+On 8/2/23 11:07, Thorsten Leemhuis wrote:
+ > On 01.08.23 13:47, Ricardo Cañuelo wrote:
+ >> So far, we’ve been using the KernelCI regression data and reports as
+ >> data source, we're now wondering if we could tackle the problem with a
+ >> more general approach by building on top of what KCIDB already provides.
+ >
+ > That's more your area of expertise, but I have to wonder: doesn't that
+ > mainly depend on what the people/projects want which feed their test
+ > results into KCIDB? I had expected some of them might already have
+ > something to stay on top of regressions found by their systems, to at
+ > least ensure they notice and fix tests that broke for external reasons
+ > -- e.g. a test script going sideways, faulty hardware, a network
+ > miss-configuration or others things which naturally will occur in this
+ > line of work.
 
-On 8/7/2023 1:20 PM, Kaiwei Liu wrote:
-> The DMA hardware is updated to optimize two stages transmission
-> function, so modify relative register and logic. Two
-> stages transmission mode of dma allows one channel finished
-> transmission then start another channel transfer automatically.
-> 
-> Signed-off-by: Kaiwei Liu <kaiwei.liu@unisoc.com>
-> ---
->   drivers/dma/sprd-dma.c | 124 ++++++++++++++++++++++++++++++-----------
->   1 file changed, 91 insertions(+), 33 deletions(-)
-> 
-> diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
-> index 0e146550dfbb..01053e106e8a 100644
-> --- a/drivers/dma/sprd-dma.c
-> +++ b/drivers/dma/sprd-dma.c
-> @@ -68,6 +68,7 @@
->   #define SPRD_DMA_GLB_TRANS_DONE_TRG	BIT(18)
->   #define SPRD_DMA_GLB_BLOCK_DONE_TRG	BIT(17)
->   #define SPRD_DMA_GLB_FRAG_DONE_TRG	BIT(16)
-> +#define SPRD_DMA_GLB_TRG_MASK		GENMASK(19, 16)
->   #define SPRD_DMA_GLB_TRG_OFFSET		16
->   #define SPRD_DMA_GLB_DEST_CHN_MASK	GENMASK(13, 8)
->   #define SPRD_DMA_GLB_DEST_CHN_OFFSET	8
-> @@ -155,6 +156,13 @@
->   
->   #define SPRD_DMA_SOFTWARE_UID		0
->   
-> +#define SPRD_DMA_SRC_CHN0_INT		9
-> +#define SPRD_DMA_SRC_CHN1_INT		10
-> +#define SPRD_DMA_DST_CHN0_INT		11
-> +#define SPRD_DMA_DST_CHN1_INT		12
-> +#define SPRD_DMA_2STAGE_SET		1
-> +#define SPRD_DMA_2STAGE_CLEAR		0
+Yes, some of this is already done by some CI systems submitting results to
+KCIDB. Syzbot is doing a very good job deduplicating crashes they have found,
+0day is looking for outcome differences, AFAIK, and CKI has its known-issue
+tracking system, which handles problems of various origin.
 
-This 2 are not hardware definition, and I don't think they are helpful, 
-just use a boolean parameter.
+ >> In general, CI systems tend to define regressions as a low-level concept
+ >> which is rather static: a snapshot of a test result at a certain point
+ >> in time. When it comes to reporting them to developers, there's much
+ >> more info that could be added to them.
+ >
+ > I wonder if it should be s/could/should/ here, as *if I* would be
+ > running CI systems I'd fear that developers sooner or later might start
+ > ignoring more and more of the reports my systems sends when too many of
+ > them turn out to be bogus/misleading -- which naturally will happen for
+ > various reasons you outlined below yourself (broken
+ > hardware/test/network/...) (and seem to happen regularly, as mentioned
+ > in https://lwn.net/Articles/939538/ ).
 
-> +
->   /* dma data width values */
->   enum sprd_dma_datawidth {
->   	SPRD_DMA_DATAWIDTH_1_BYTE,
-> @@ -212,7 +220,7 @@ struct sprd_dma_dev {
->   	struct clk		*ashb_clk;
->   	int			irq;
->   	u32			total_chns;
-> -	struct sprd_dma_chn	channels[];
-> +	struct sprd_dma_chn	channels[0];
+Yes, this is a constant struggle.
 
-Please remove redundant changes.
+ > That doesn't mean that I think each failed test should be judged by a
+ > human before it's sent to the developers. Compile errors for example
+ > will be helpful often right away, especially for stable-rc.
 
->   };
->   
->   static void sprd_dma_free_desc(struct virt_dma_desc *vd);
-> @@ -431,50 +439,90 @@ static enum sprd_dma_req_mode sprd_dma_get_req_type(struct sprd_dma_chn *schan)
->   	return (frag_reg >> SPRD_DMA_REQ_MODE_OFFSET) & SPRD_DMA_REQ_MODE_MASK;
->   }
->   
-> -static int sprd_dma_set_2stage_config(struct sprd_dma_chn *schan)
-> +static int sprd_dma_2stage_config(struct sprd_dma_chn *schan, u32 config_type)
+Ehhh, KCIDB gets build failures all the time (in merged code) and it takes
+a while before a fix propagates across all the trees.
 
-Why change the function name? 'config_type' should be boolean.
+For example, the recent v6.5-rc5 has got 14 build failures (out of 865 builds
+received):
 
->   {
->   	struct sprd_dma_dev *sdev = to_sprd_dma_dev(&schan->vc.chan);
->   	u32 val, chn = schan->chn_num + 1;
->   
->   	switch (schan->chn_mode) {
->   	case SPRD_DMA_SRC_CHN0:
-> -		val = chn & SPRD_DMA_GLB_SRC_CHN_MASK;
-> -		val |= BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFFSET;
-> -		val |= SPRD_DMA_GLB_2STAGE_EN;
-> -		if (schan->int_type != SPRD_DMA_NO_INT)
-> -			val |= SPRD_DMA_GLB_SRC_INT;
-> -
-> -		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1, val, val);
-> +		if (config_type == SPRD_DMA_2STAGE_SET) {
-> +			val = chn & SPRD_DMA_GLB_SRC_CHN_MASK;
-> +			val |= BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFFSET;
-> +			val |= SPRD_DMA_GLB_2STAGE_EN;
-> +			if (schan->int_type & SPRD_DMA_SRC_CHN0_INT)
+https://kcidb.kernelci.org/d/revision/revision?orgId=1&var-git_commit_hash=52a93d39b17dc7eb98b6aa3edb93943248e03b2f&var-patchset_hash=
 
-can you explain why change the interrupt validation? ignore other 
-interrupt type?
+I suspect that someone somewhere is already working on these, or even their
+fix has been merged somewhere already, but the CI just keeps failing
+meanwhile.
 
-> +				val |= SPRD_DMA_GLB_SRC_INT;
-> +
-> +			sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1,
-> +					    SPRD_DMA_GLB_SRC_INT |
-> +					    SPRD_DMA_GLB_TRG_MASK |
-> +					    SPRD_DMA_GLB_SRC_CHN_MASK, val);
-> +		} else {
-> +			sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1,
-> +					    SPRD_DMA_GLB_SRC_INT |
-> +					    SPRD_DMA_GLB_TRG_MASK |
-> +					    SPRD_DMA_GLB_2STAGE_EN |
-> +					    SPRD_DMA_GLB_SRC_CHN_MASK, 0);
-> +		}
->   		break;
->   
->   	case SPRD_DMA_SRC_CHN1:
-> -		val = chn & SPRD_DMA_GLB_SRC_CHN_MASK;
-> -		val |= BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFFSET;
-> -		val |= SPRD_DMA_GLB_2STAGE_EN;
-> -		if (schan->int_type != SPRD_DMA_NO_INT)
-> -			val |= SPRD_DMA_GLB_SRC_INT;
-> -
-> -		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2, val, val);
-> +		if (config_type == SPRD_DMA_2STAGE_SET) {
-> +			val = chn & SPRD_DMA_GLB_SRC_CHN_MASK;
-> +			val |= BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFFSET;
-> +			val |= SPRD_DMA_GLB_2STAGE_EN;
-> +			if (schan->int_type & SPRD_DMA_SRC_CHN1_INT)
-> +				val |= SPRD_DMA_GLB_SRC_INT;
-> +
-> +			sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2,
-> +					    SPRD_DMA_GLB_SRC_INT |
-> +					    SPRD_DMA_GLB_TRG_MASK |
-> +					    SPRD_DMA_GLB_SRC_CHN_MASK, val);
-> +		} else {
-> +			sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2,
-> +					    SPRD_DMA_GLB_SRC_INT |
-> +					    SPRD_DMA_GLB_TRG_MASK |
-> +					    SPRD_DMA_GLB_2STAGE_EN |
-> +					    SPRD_DMA_GLB_SRC_CHN_MASK, 0);
-> +		}
->   		break;
->   
->   	case SPRD_DMA_DST_CHN0:
-> -		val = (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
-> -			SPRD_DMA_GLB_DEST_CHN_MASK;
-> -		val |= SPRD_DMA_GLB_2STAGE_EN;
-> -		if (schan->int_type != SPRD_DMA_NO_INT)
-> -			val |= SPRD_DMA_GLB_DEST_INT;
-> -
-> -		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1, val, val);
-> +		if (config_type == SPRD_DMA_2STAGE_SET) {
-> +			val = (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
-> +				SPRD_DMA_GLB_DEST_CHN_MASK;
-> +			val |= SPRD_DMA_GLB_2STAGE_EN;
-> +			if (schan->int_type & SPRD_DMA_DST_CHN0_INT)
-> +				val |= SPRD_DMA_GLB_DEST_INT;
-> +
-> +			sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1,
-> +					    SPRD_DMA_GLB_DEST_INT |
-> +					    SPRD_DMA_GLB_DEST_CHN_MASK, val);
-> +		} else {
-> +			sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1,
-> +					    SPRD_DMA_GLB_DEST_INT |
-> +					    SPRD_DMA_GLB_2STAGE_EN |
-> +					    SPRD_DMA_GLB_DEST_CHN_MASK, 0);
-> +		}
->   		break;
->   
->   	case SPRD_DMA_DST_CHN1:
-> -		val = (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
-> -			SPRD_DMA_GLB_DEST_CHN_MASK;
-> -		val |= SPRD_DMA_GLB_2STAGE_EN;
-> -		if (schan->int_type != SPRD_DMA_NO_INT)
-> -			val |= SPRD_DMA_GLB_DEST_INT;
-> -
-> -		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2, val, val);
-> +		if (config_type == SPRD_DMA_2STAGE_SET) {
-> +			val = (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
-> +				SPRD_DMA_GLB_DEST_CHN_MASK;
-> +			val |= SPRD_DMA_GLB_2STAGE_EN;
-> +			if (schan->int_type & SPRD_DMA_DST_CHN1_INT)
-> +				val |= SPRD_DMA_GLB_DEST_INT;
-> +
-> +			sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2,
-> +					    SPRD_DMA_GLB_DEST_INT |
-> +					    SPRD_DMA_GLB_DEST_CHN_MASK, val);
-> +		} else {
-> +			sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2,
-> +					    SPRD_DMA_GLB_DEST_INT |
-> +					    SPRD_DMA_GLB_2STAGE_EN |
-> +					    SPRD_DMA_GLB_DEST_CHN_MASK, 0);
-> +		}
->   		break;
->   
->   	default:
-> @@ -545,7 +593,7 @@ static void sprd_dma_start(struct sprd_dma_chn *schan)
->   	 * Set 2-stage configuration if the channel starts one 2-stage
->   	 * transfer.
->   	 */
-> -	if (schan->chn_mode && sprd_dma_set_2stage_config(schan))
-> +	if (schan->chn_mode && sprd_dma_2stage_config(schan, SPRD_DMA_2STAGE_SET))
->   		return;
->   
->   	/*
-> @@ -569,6 +617,12 @@ static void sprd_dma_stop(struct sprd_dma_chn *schan)
->   	sprd_dma_set_pending(schan, false);
->   	sprd_dma_unset_uid(schan);
->   	sprd_dma_clear_int(schan);
-> +	/*
-> +	 * If 2-stage transfer is used, the configuration must be clear
-> +	 * when release DMA channel.
+ >> In particular, the context of it
+ >> and the fact that a reported regression has a life cycle:
+ >>
+ >> - did this test also fail on other hardware targets or with other kernel
+ >>    configurations?
+ >> - is it possible that the test failed because of an infrastructure
+ >>    error?
+ >> - does the test fail consistently since that commit or does it show
+ >>    unstable results?
+ >> - does the test output show any traces of already known bugs?
+ >> - has this regression been bisected and reported anywhere?
+ >> - was the regression reported by anyone? If so, is there someone already
+ >>    working on it?
+ >>
+ >> Many of these info points can be extracted from the CI results databases
+ >> and processed to provide additional regression data. That’s what we’re
+ >> trying to do with the Regression Tracker tool, and we think it’d be
+ >> interesting to start experimenting with the data in KCIDB to see how
+ >> this could be improved and what would be the right way to integrate this
+ >> type of functionality.
+ >
+ > I (with my likely somewhat biased view due to regzbot and my work with
+ > it) wonder if we have two aspects here that might be wise to keep separated:
+ >
+ > * tests suddenly failing in one or multiple CI systems, which might be
+ > due to something going sideways in the tests or a real kernel regression
+ >
+ > * regressions found by individuals or CI systems where a human with some
+ > knowledge about the kernel did a sanity check (and also looked for
+ > duplicates) to ensure this most likely is a regression that should be
+ > acted upon -- and thus is also something that definitely should not be
+ > forgotten.
+ >
+ > Your regression tracking tool could be the former, regzbot the latter
+ > (which could feed the outcome back to the CI regression tracking
+ > system). But as I said, my view is obviously biased, so maybe I'm to
+ > blinded to see a better solution.
 
-Please explain why? not only 'what'.
+I agree that a human would be trusted more most of the time, and it would be
+beneficial to give the results of human review a boost. However, ultimately,
+automatic error detection is also made by humans, and it doesn't get tired,
+can detect harder-to-spot problems, and problems happening en-masse, as you
+mention.
 
-> +	 */
-> +	if (schan->chn_mode)
-> +		sprd_dma_2stage_config(schan, SPRD_DMA_2STAGE_CLEAR);
+If we consider applying patterns defined by humans to find already-known
+issues in other test results, we get a combination of the two. I think
+training an AI on the manually-detected issues, and those picked by those
+patterns, could help us find completely new issues, and would further blur the
+line between manual and automatic issue detection. Something that I'm looking
+forward to exploring.
 
-How to ensure backward compatibility with previous SPRD DMA IP?
+Regardless, I think we need both, and, in general, every trick in the book to
+get Linux quality control on track.
 
->   	schan->cur_desc = NULL;
->   }
->   
-> @@ -757,7 +811,9 @@ static int sprd_dma_fill_desc(struct dma_chan *chan,
->   	phys_addr_t llist_ptr;
->   
->   	if (dir == DMA_MEM_TO_DEV) {
-> -		src_step = sprd_dma_get_step(slave_cfg->src_addr_width);
-> +		src_step = slave_cfg->src_port_window_size ?
-> +			   slave_cfg->src_port_window_size :
-> +			   sprd_dma_get_step(slave_cfg->src_addr_width);
-
-Please also explain why.
-
->   		if (src_step < 0) {
->   			dev_err(sdev->dma_dev.dev, "invalid source step\n");
->   			return src_step;
-> @@ -773,7 +829,9 @@ static int sprd_dma_fill_desc(struct dma_chan *chan,
->   		else
->   			dst_step = SPRD_DMA_NONE_STEP;
->   	} else {
-> -		dst_step = sprd_dma_get_step(slave_cfg->dst_addr_width);
-> +		dst_step = slave_cfg->dst_port_window_size ?
-> +			   slave_cfg->dst_port_window_size :
-> +			   sprd_dma_get_step(slave_cfg->dst_addr_width);
->   		if (dst_step < 0) {
->   			dev_err(sdev->dma_dev.dev, "invalid destination step\n");
->   			return dst_step;
+Nick
