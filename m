@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A88772B76
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660F7772B7A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbjHGQt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
+        id S230349AbjHGQvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbjHGQt5 (ORCPT
+        with ESMTP id S229640AbjHGQvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:49:57 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82589D
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:49:56 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-56d263da4f2so3403607eaf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:49:56 -0700 (PDT)
+        Mon, 7 Aug 2023 12:51:00 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32EB9D
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:50:59 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-586a5ac5c29so41664667b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:50:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691426996; x=1692031796;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cgQa+1FKvDWzR4zoWEz8VexbuxihC5GZckb0Q0xRORc=;
-        b=FQTZy50gW5hiLnD/qVVaqF2n4OXGk9PzU4wck0u5FbLinIBT//IhILVvwwU3x9Rtm8
-         +lZXsAW2YkdkgV9Eexq3fUXpgofjnAkhuSbOVy80lx+5f8pszAh1xrUONZD6fRNpAhkw
-         tg2bGo0vdY0sr4sqUMdlcduc+IBdahhv+QzitcQbsf6Bynaw6PhS3KmIJW11tT7SJDZh
-         itWgPTtTILvwpUbcpW5S2f1V9S6MXwMftJYXay9qge47tFbJh35OPuk1uQadtSnKw15M
-         KH8KSK7YoQopcH3HxcWRgt5SqTw1l7IPsmEH3yyKI1yZIL7LgFqzUZvcWF0sxxuqRV8Q
-         Wy3A==
+        d=google.com; s=20221208; t=1691427059; x=1692031859;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+DH1RGsmuAo7vrM49oUA1O8QELPBtiixKmknDzKlrMs=;
+        b=UcHqa2R41JL5C38LwWIBt1mJ8uByZE/Xlbtryhjq0yCeZ6PnmszUdnIGGJIDIeCLi8
+         izw5ctPRXAuigX+MwUivoQlyykmafMQntoahk+xwngh3F3EGGkXCPyGtgs7pDJHUztcc
+         KgP4bdF8yo/CXbiMEgD74mER7n9AKk1iGRVqBEq7wfXQoeiJ+xiH7ifIbrHM4f5b2k4l
+         IOoba3EUMrJutY0FqS3n3c6i49D0hNSdz7Q+U3XzX3L9+0JhBUN87PvlQGHGV67XrqX6
+         aqL2eFZEpykmK3Mg3eJCmPZlMl3hQE0z+z7JMNgBk1YUtISVT/vwtxVMll1SH7S/k/41
+         l7ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691426996; x=1692031796;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cgQa+1FKvDWzR4zoWEz8VexbuxihC5GZckb0Q0xRORc=;
-        b=Z1JYAjsdivdMZvHNgx0PR9YL9hHTsh49g2Q2oVPHOrnveo5xzIFZEVkKbdDESK0DEO
-         peK9+AHi3yHKCzWL5mcSjHSLgZXtW5S7fivTTsYQRItMg6MC7ofKcqD8+XxBCwQSXroW
-         ST1AsFpl0MlwVIwbEsj9GU4R85J6Q6WcWf4fNHMBX32jy1QRcVzIGlJl+rlboZhQr0jx
-         Jtc773t6sLfxHaenPsDmO1WKoHAaVlHNZ/beIHmjBeSt0Z7WDH5nSy+QAunnbkt6k25B
-         3ZKJRZ8dANhShGVh8G3tCbS/UZbSqEAMkX2HRk5Vmr//gxkzkSunulEYOueWY4+ua8nx
-         LOuA==
-X-Gm-Message-State: AOJu0Yw6ymQUEnEVFUY3aAlUIGBtgvYUeKSxyCZaPP9pIHgtNLKkuLYM
-        GAZp2pCptOFLoYF/g6bZxRfYiyn1tg+YqIg2bN0=
-X-Google-Smtp-Source: AGHT+IF/s1MEl434BzAsfKCcOnEZp4qpAJMatQaOEWnbl10rllg9YsKo7f4muZb+TbaWgnJGpjbma+BjChf8iv/FsII=
-X-Received: by 2002:a54:4e0d:0:b0:3a7:9837:7148 with SMTP id
- a13-20020a544e0d000000b003a798377148mr3848673oiy.58.1691426995953; Mon, 07
- Aug 2023 09:49:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230801094443.7942-1-sunran001@208suo.com>
-In-Reply-To: <20230801094443.7942-1-sunran001@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 12:49:45 -0400
-Message-ID: <CADnq5_MbmP9sEkWHndxaG+pp6bJkeO7h1qvya3wZWmktDpFYpQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: Clean up errors in vega20_pptable.h
-To:     Ran Sun <sunran001@208suo.com>
-Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        d=1e100.net; s=20221208; t=1691427059; x=1692031859;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+DH1RGsmuAo7vrM49oUA1O8QELPBtiixKmknDzKlrMs=;
+        b=gr+yac4XzebsQCnewZMgWEUieIhh9JEztH6QgTdBlpBQuOUg6YO+bCFx6vNFWGBqFu
+         RJROBchOkwSF6h+gl5arpBd3NiMmM0GBSE6ITa9HThqp3Rfw/D6fYC7hcEZKMXol49yd
+         knkOEDWXR8Oc17DnsMbhJZz1IvzG92ORlGx+7DmuZiX1Q/tv3XV4OUejBTLuzU7PsaRM
+         8vQw4anfFi1H8dQ0EGy88vTrfGnoWZ2mT/iixio+dH0hiXWnSvRDewD1g+ARWkJ5NT7r
+         /6WFCSqahqYBIPJJkA19z/Q4/TcEr81SebG7EQ7qJUXPJ8piZAvwOhbej2/uClNl/I9P
+         49Tw==
+X-Gm-Message-State: AOJu0YxN0w1V5Te9wgViyMmFE3v7duFJ1NAaJ6rcXF6PcjQqFybgMMgO
+        yi7dMatPK05JTpVajspjLFqCfZd3SZGSL1FvVvU=
+X-Google-Smtp-Source: AGHT+IGuAP8rnQ8ZbxkJ9M/ve9RTC6jY6Usa6MkjZJQMxI+QRocRxszMBKkMFRYH6dyg+LQrAT7iExlQ5heullsOMDA=
+X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:4746:957d:1a28:5104])
+ (user=ndesaulniers job=sendgmr) by 2002:a81:b144:0:b0:56f:f77c:3c7d with SMTP
+ id p65-20020a81b144000000b0056ff77c3c7dmr77675ywh.3.1691427058981; Mon, 07
+ Aug 2023 09:50:58 -0700 (PDT)
+Date:   Mon, 07 Aug 2023 09:50:32 -0700
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIANcg0WQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDCwNz3dzM4uLMvPT4gqL8knxdg+QkS4PUZDMTU5NkJaCegqLUtMwKsHn RsbW1AANxIeRfAAAA
+X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691427057; l=1415;
+ i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
+ bh=3s6B3WRHZwONDqr660gEy+YqAcQ7kOQd/SC/ue2x6Kc=; b=o9mPOXezO1m1peqnQnJ9Xh9NmpG6OGUleGqyCPai/FHu3L5j1iHQdxfIhbIC4aYIa1C1emYrj
+ fT1jBNQi6XgDsLGtvc8W9xWd9BF1MF+sBN52XQfIibvFQNPns+iYt/y
+X-Mailer: b4 0.12.3
+Message-ID: <20230807-missing_proto-v1-1-7f566b7ba5ca@google.com>
+Subject: [PATCH] Makefile.extrawarn: enable -Wmissing-variable-declarations
+ for W=1
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,77 +76,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+I noticed Tom was sending patches where smatch was recommending
+annotating functions as static when no previous declaration existed.
+Surely the compiler could make such recommendations as well, I thought.
 
-On Tue, Aug 1, 2023 at 5:44=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
-:
->
-> Fix the following errors reported by checkpatch:
->
-> ERROR: open brace '{' following struct go on the same line
-> ERROR: space prohibited before open square bracket '['
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->  .../amd/pm/powerplay/hwmgr/vega20_pptable.h   | 19 ++++++++-----------
->  1 file changed, 8 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_pptable.h b/dr=
-ivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_pptable.h
-> index 2222e29405c6..b468dddbefff 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_pptable.h
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_pptable.h
-> @@ -73,14 +73,13 @@ enum ATOM_VEGA20_ODSETTING_ID {
->  };
->  typedef enum ATOM_VEGA20_ODSETTING_ID ATOM_VEGA20_ODSETTING_ID;
->
-> -typedef struct _ATOM_VEGA20_OVERDRIVE8_RECORD
-> -{
-> +typedef struct _ATOM_VEGA20_OVERDRIVE8_RECORD {
->    UCHAR ucODTableRevision;
->    ULONG ODFeatureCount;
-> -  UCHAR ODFeatureCapabilities [ATOM_VEGA20_ODFEATURE_MAX_COUNT];   //OD =
-feature support flags
-> +  UCHAR ODFeatureCapabilities[ATOM_VEGA20_ODFEATURE_MAX_COUNT];   //OD f=
-eature support flags
->    ULONG ODSettingCount;
-> -  ULONG ODSettingsMax [ATOM_VEGA20_ODSETTING_MAX_COUNT];           //Upp=
-er Limit for each OD Setting
-> -  ULONG ODSettingsMin [ATOM_VEGA20_ODSETTING_MAX_COUNT];           //Low=
-er Limit for each OD Setting
-> +  ULONG ODSettingsMax[ATOM_VEGA20_ODSETTING_MAX_COUNT];           //Uppe=
-r Limit for each OD Setting
-> +  ULONG ODSettingsMin[ATOM_VEGA20_ODSETTING_MAX_COUNT];           //Lowe=
-r Limit for each OD Setting
->  } ATOM_VEGA20_OVERDRIVE8_RECORD;
->
->  enum ATOM_VEGA20_PPCLOCK_ID {
-> @@ -99,16 +98,14 @@ enum ATOM_VEGA20_PPCLOCK_ID {
->  };
->  typedef enum ATOM_VEGA20_PPCLOCK_ID ATOM_VEGA20_PPCLOCK_ID;
->
-> -typedef struct _ATOM_VEGA20_POWER_SAVING_CLOCK_RECORD
-> -{
-> +typedef struct _ATOM_VEGA20_POWER_SAVING_CLOCK_RECORD {
->    UCHAR ucTableRevision;
->    ULONG PowerSavingClockCount;                                 // Count =
-of PowerSavingClock Mode
-> -  ULONG PowerSavingClockMax  [ATOM_VEGA20_PPCLOCK_MAX_COUNT];      // Po=
-werSavingClock Mode Clock Maximum array In MHz
-> -  ULONG PowerSavingClockMin  [ATOM_VEGA20_PPCLOCK_MAX_COUNT];      // Po=
-werSavingClock Mode Clock Minimum array In MHz
-> +  ULONG PowerSavingClockMax[ATOM_VEGA20_PPCLOCK_MAX_COUNT];      // Powe=
-rSavingClock Mode Clock Maximum array In MHz
-> +  ULONG PowerSavingClockMin[ATOM_VEGA20_PPCLOCK_MAX_COUNT];      // Powe=
-rSavingClock Mode Clock Minimum array In MHz
->  } ATOM_VEGA20_POWER_SAVING_CLOCK_RECORD;
->
-> -typedef struct _ATOM_VEGA20_POWERPLAYTABLE
-> -{
-> +typedef struct _ATOM_VEGA20_POWERPLAYTABLE {
->        struct atom_common_table_header sHeader;
->        UCHAR  ucTableRevision;
->        USHORT usTableSize;
-> --
-> 2.17.1
->
+Looks like -Wmissing-variable-declarations can make such
+recommendations.
+
+GCC just added support for this warning (gcc 14.1.0 will ship with
+support), and all versions of clang relevant to building the kernel
+support this flag.
+
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ scripts/Makefile.extrawarn | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+index 40cd13eca82e..617739eb84e2 100644
+--- a/scripts/Makefile.extrawarn
++++ b/scripts/Makefile.extrawarn
+@@ -32,6 +32,7 @@ KBUILD_CFLAGS += $(call cc-option, -Wunused-but-set-variable)
+ KBUILD_CFLAGS += $(call cc-option, -Wunused-const-variable)
+ KBUILD_CFLAGS += $(call cc-option, -Wpacked-not-aligned)
+ KBUILD_CFLAGS += $(call cc-option, -Wstringop-truncation)
++KBUILD_CFLAGS += $(call cc-option, -Wmissing-varibale-declarations)
+ # The following turn off the warnings enabled by -Wextra
+ KBUILD_CFLAGS += -Wno-missing-field-initializers
+ KBUILD_CFLAGS += -Wno-sign-compare
+
+---
+base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+change-id: 20230807-missing_proto-0cb90ec6454c
+
+Best regards,
+-- 
+Nick Desaulniers <ndesaulniers@google.com>
+
