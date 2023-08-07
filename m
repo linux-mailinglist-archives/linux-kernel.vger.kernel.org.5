@@ -2,66 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5E477284E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BDF772867
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbjHGO4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
+        id S230303AbjHGO6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjHGO4H (ORCPT
+        with ESMTP id S230458AbjHGO6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:56:07 -0400
+        Mon, 7 Aug 2023 10:58:00 -0400
 Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EFC107;
-        Mon,  7 Aug 2023 07:56:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8215010FC;
+        Mon,  7 Aug 2023 07:57:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
         ; s=x; h=Subject:Content-Transfer-Encoding:Content-Type:Mime-Version:
         References:In-Reply-To:Message-Id:Cc:To:From:Date:Sender:Reply-To:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=g3hhovT0tDP4nv8TwY9Cvh2h3vrcrT925rPbO0OkZfs=; b=Pwwiz0LIsjNM0pesyOIJBF0ajR
-        q9NtwnumEaWf+t4KyB3BCxkTPmZ6tIQPnp1IWZml4bcpdOmMCfL3DSneLM5aGsyHx3fKdLDionSsP
-        NdNkI8pO9w2Wluwn5bYwv81BsPPcyzOTGViDSphY3KEqm6IL2a9xczqjkuPlzS0CFAKc=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:60300 helo=pettiford)
+        bh=v8cnprTcRW0lb/rZREcoQQN63RLmD3dHcAJ9oi0D9NM=; b=cpmFuoqVi7per+0qehgdVtvb5A
+        PzKNjAmfpcH8XLpPcWxKavt20H5SDXO2wq+VWpHrZq0B5WZ6SZPgyrpHfgG4LIIUQzoWSRMTULYcl
+        EvWPbVYIWkGJMrBL1VN8oGOmNtUGvGzPMF/sMv8L0CpDBqhMtm7rxUvT7AVRq7xzWy5E=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:40284 helo=pettiford)
         by mail.hugovil.com with esmtpa (Exim 4.92)
         (envelope-from <hugo@hugovil.com>)
-        id 1qT1eA-0003x0-JI; Mon, 07 Aug 2023 10:55:52 -0400
-Date:   Mon, 7 Aug 2023 10:55:49 -0400
+        id 1qT1fg-0003y0-5w; Mon, 07 Aug 2023 10:57:25 -0400
+Date:   Mon, 7 Aug 2023 10:57:23 -0400
 From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jirislaby@kernel.org, jringle@gridpoint.com,
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
         isaac.true@canonical.com, jesse.sung@canonical.com,
-        tomasz.mon@camlingroup.com, l.perczak@camlintechnologies.com,
+        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
         linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
         Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Lech Perczak <lech.perczak@camlingroup.com>
-Message-Id: <20230807105549.e4f81835f180326969031910@hugovil.com>
-In-Reply-To: <20230803173854.efdda6d30d88b85ee101ce6b@hugovil.com>
-References: <20230721161840.1393996-1-hugo@hugovil.com>
-        <20230721161840.1393996-7-hugo@hugovil.com>
-        <CAL_JsqJpdhtnZ8FcM7kGWnM+iuDs1fWiCVgf413evbw-o8TZGQ@mail.gmail.com>
-        <20230722104724.ef0c5896c239e721794b9fe9@hugovil.com>
-        <2023072240-supremacy-shallot-a77f@gregkh>
-        <20230724115428.d191186852c0bd0ee0d78398@hugovil.com>
-        <CAL_JsqL8rjwONd6UAitKik0U44BKSD6m8zbachgfq0R9oHBW8w@mail.gmail.com>
-        <20230731124600.39eb8d5c132f9338c2897543@hugovil.com>
-        <CAL_JsqLaF70hNQndXpJfmH1TMGNbA7myQG0GK9fjyKOs63z-3w@mail.gmail.com>
-        <20230731144115.14733f0e01f586a7efb91370@hugovil.com>
-        <20230803135401.3a11bfb7c2985c1a90a2521b@hugovil.com>
-        <CAL_JsqK-qbz=w2a00EXh_e1XmY1gF1nvxih7AOYXw+VuMXhnmw@mail.gmail.com>
-        <20230803173854.efdda6d30d88b85ee101ce6b@hugovil.com>
+        stable@vger.kernel.org, Lech Perczak <lech.perczak@camlingroup.com>
+Message-Id: <20230807105723.0ae2cf72e1925e074a9256ad@hugovil.com>
+In-Reply-To: <2023080433-depravity-debate-57d3@gregkh>
+References: <20230725142343.1724130-1-hugo@hugovil.com>
+        <20230725142343.1724130-5-hugo@hugovil.com>
+        <2023073118-mousiness-sandlot-6258@gregkh>
+        <20230803121449.bcf74899e062ca39dfb073a3@hugovil.com>
+        <2023080415-kinetic-repurpose-030a@gregkh>
+        <20230804101554.c63202df93481bd5728bd3f1@hugovil.com>
+        <2023080433-depravity-debate-57d3@gregkh>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-SA-Exim-Connect-IP: 184.161.19.61
 X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,167 +61,165 @@ X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
-Subject: Re: [RESEND PATCH v8 06/10] serial: sc16is7xx: fix regression with
- GPIO configuration
+Subject: Re: [PATCH v9 04/10] serial: sc16is7xx: refactor GPIO controller
+ registration
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Aug 2023 17:38:54 -0400
-Hugo Villeneuve <hugo@hugovil.com> wrote:
+On Fri, 4 Aug 2023 17:09:13 +0200
+Greg KH <gregkh@linuxfoundation.org> wrote:
 
-> On Thu, 3 Aug 2023 14:10:30 -0600
-> Rob Herring <robh+dt@kernel.org> wrote:
-> 
-> > On Thu, Aug 3, 2023 at 11:54 AM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > >
-> > > On Mon, 31 Jul 2023 14:41:15 -0400
-> > > Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > >
-> > > > On Mon, 31 Jul 2023 12:04:45 -0600
-> > > > Rob Herring <robh+dt@kernel.org> wrote:
-> > > >
-> > > > > On Mon, Jul 31, 2023 at 10:46 AM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > > > >
-> > > > > > On Mon, 31 Jul 2023 09:31:53 -0600
-> > > > > > Rob Herring <robh+dt@kernel.org> wrote:
-> > > > > >
-> > > > > > > On Mon, Jul 24, 2023 at 9:54 AM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > > > > > >
-> > > > > > > > On Sat, 22 Jul 2023 17:15:26 +0200
-> > > > > > > > Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > > > > >
-> > > > > > > > > On Sat, Jul 22, 2023 at 10:47:24AM -0400, Hugo Villeneuve wrote:
-> > > > > > > > > > On Fri, 21 Jul 2023 13:24:19 -0600
-> > > > > > > > > > Rob Herring <robh+dt@kernel.org> wrote:
-> > > > > > > > > >
-> > > > > > > > > > > On Fri, Jul 21, 2023 at 10:19 AM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > > > > > > > > > >
-> > > > > > > > > > > > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > > > > > > > > > > >
-> > > > > > > > > > > > Commit 679875d1d880 ("sc16is7xx: Separate GPIOs from modem control lines")
-> > > > > > > > > > > > and commit 21144bab4f11 ("sc16is7xx: Handle modem status lines")
-> > > > > > > > > > > > changed the function of the GPIOs pins to act as modem control
-> > > > > > > > > > > > lines without any possibility of selecting GPIO function.
-> > > > > > > > > > >
-> > > > > > > > > > > Requiring a new DT property is not fixing a kernel regression. You
-> > > > > > > > > > > should be returning the kernel to original behavior and then have a
-> > > > > > > > > > > new DT property for new behavior.
-> > > > > > > > > >
-> > > > > > > > > > Hi Rob,
-> > > > > > > > > > please read the entire patch history starting from V1
-> > > > > > > > > >  and you will understand why this course of action was
-> > > > > > > > > >  not selected.
-> > > > > > > > >
-> > > > > > > > > That's not going to happen, sorry, you need to explain it here, in this
-> > > > > > > > > patch series, why a specific action is being taken over another one, as
-> > > > > > > > > no one has time to go dig through past history, sorry.
-> > > > > > > >
-> > > > > > > > Hi Rob,
-> > > > > > > > I initially submitted a patch to revert the kernel to original
-> > > > > > > > behavior, but it created more problems because the patch was
-> > > > > > > > unfortunately split in two separate patches, and mixed with other non
-> > > > > > > > closely-related changes. It was also noted to me that reverting to the
-> > > > > > > > old behavior would break things for some users.
-> > > > > > > >
-> > > > > > > > It was suggested to me by a more experienced kernel developer to
-> > > > > > > > "suggest a fix, instead of hurrying a revert":
-> > > > > > > >
-> > > > > > > >     https://lkml.org/lkml/2023/5/17/758
-> > > > > > >
-> > > > > > > Do I have to go read this to decipher the justification and reasoning?
-> > > > > > > When Greg says "in this patch series", he means in the commit messages
-> > > > > > > of the patches. You send v9 already and it doesn't have that. The
-> > > > > > > patchset needs to stand on its own summarizing any relevant prior
-> > > > > > > discussions.
-> > > > > > >
-> > > > > > > I never suggested doing a revert.
-> > > > > >
-> > > > > > Hi Rob,
-> > > > > > I am sorry, but this is exactly what I "deciphered" from your
-> > > > > > original email.
-> > > > > >
-> > > > > > I am trying very hard to understand exactly what you mean, but it is
-> > > > > > not that obvious for me. If something is not clear in my commit message,
-> > > > > > I will try to improve it. But before, let's try to focus on making sure
-> > > > > > I understand more clearly what you want exactly.
-> > > > > >
-> > > > > > > Obviously, someone still wants the
-> > > > > > > new feature.
-> > > > > >
-> > > > > > I assume that you refer to the "new feature" as what was added in
-> > > > > > the commit 679875d1d880 ("sc16is7xx: Separate GPIOs from modem control
-> > > > > > lines")?
-> > > > >
-> > > > > Shrug. It's one of the 2 commits mentioned, I don't know which one
-> > > > > exactly. Whichever one changed default behavior from use GPIOs to use
-> > > > > modem ctrl lines.
-> > > > >
-> > > > > Reading it again, I *think* this patch is correct. Default behavior is
-> > > > > restored to use GPIOs. The DT property is needed to enable modem ctrl
-> > > > > lines.
-> > > >
-> > > > Hi,
-> > > > this is correct.
-> > > >
-> > > >
-> > > > > What's not okay is just saying, these platforms may or may not need an update:
-> > > > >
-> > > > >     arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
-> > > > >     mips/boot/dts/ingenic/cu1830-neo.dts
-> > > > >     mips/boot/dts/ingenic/cu1000-neo.dts
-> > > >
-> > > > Yes, my bad. I initially mentioned them and hoped to get some
-> > > > feedback, which I never got, and I kind of forgot about it.
-> > > >
-> > > > > You need to figure that out. Have you checked with maintainers of
-> > > > > these boards? When were they added and by who? At the same time or by
-> > > > > the same person would be a good indication the platform uses modem
-> > > > > ctrl lines. Or were these platforms in use before adding modem ctrl
-> > > > > support? Then they probably use GPIOs or nothing.
-> > > > >
-> > > > > If there are platforms which would regress if the modem ctrl feature
-> > > > > was just reverted, which ones are those?
-> > > >
-> > > > Ok, let me do some checks and get back to you on this.
-> > >
-> > > Hi Rob,
-> > > for this board:
-> > >     arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
-> > >
-> > > it uses a SC16IS740, which doesn't have any GPIOs nor modem
-> > > control lines, so no DT changes required.
-> > >
-> > > For these two Ingenic boards:
-> > >     mips/boot/dts/ingenic/cu1830-neo.dts
-> > >     mips/boot/dts/ingenic/cu1000-neo.dts
-> > >
-> > > They use a SC16IS752, which has shared modem control lines and GPIOs.
-> > > Unfortunately, the maintainers have not (yet) responded to my
-> > > inquiries. Also, I tried to search for schematics or block diagrams on
-> > > the net but couldn't find anything.
-> > >
-> > > These platforms were in use before the patch to add the modem control
-> > > lines was added. Then like you said they probably use these shared
-> > > lines as GPIOs or nothing, so no DT changes would be required.
+> On Fri, Aug 04, 2023 at 10:15:54AM -0400, Hugo Villeneuve wrote:
+> > On Fri, 4 Aug 2023 15:14:18 +0200
+> > Greg KH <gregkh@linuxfoundation.org> wrote:
 > > 
-> > Okay, that's useful (please add to the commit msg).
+> > > On Thu, Aug 03, 2023 at 12:14:49PM -0400, Hugo Villeneuve wrote:
+> > > > On Mon, 31 Jul 2023 17:55:42 +0200
+> > > > Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > 
+> > > > > On Tue, Jul 25, 2023 at 10:23:36AM -0400, Hugo Villeneuve wrote:
+> > > > > > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > > > > > 
+> > > > > > In preparation for upcoming patch "fix regression with GPIO
+> > > > > > configuration". To facilitate review and make code more modular.
+> > > > > 
+> > > > > I would much rather the issue be fixed _before_ the code is refactored,
+> > > > > unless it is impossible to fix it without the refactor?
+> > > > 
+> > > > Hi Greg,
+> > > > normally I would agree, but the refactor in this case helps a lot to
+> > > > address some issues raised by you and Andy in V7 of this series.
+> > > > 
+> > > > Maybe I could merge it with the actual patch "fix regression with GPIO
+> > > > configuration"?
+> > > 
+> > > Sure.
+> > 
+> > Hi Greg,
+> > will do.
+> > 
+> >  
+> > > > > > Cc: <stable@vger.kernel.org> # 6.1.x
+> > > > > 
+> > > > > What commit id does this fix?
+> > > > 
+> > > > It doesn't fix anything, but I tought that I needed this tag since
+> > > > this patch is a prerequisite for the next patch in the series, which
+> > > > would be applied to stable kernels. I will remove this tag (assuming
+> > > > the patch stays as it is, depending on your answer to the above
+> > > > question).
+> > > > 
+> > > >  
+> > > > > > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > > > > > Reviewed-by: Lech Perczak <lech.perczak@camlingroup.com>
+> > > > > > Tested-by: Lech Perczak <lech.perczak@camlingroup.com>
+> > > > > > ---
+> > > > > >  drivers/tty/serial/sc16is7xx.c | 40 ++++++++++++++++++++--------------
+> > > > > >  1 file changed, 24 insertions(+), 16 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+> > > > > > index 32d43d00a583..5b0aeef9d534 100644
+> > > > > > --- a/drivers/tty/serial/sc16is7xx.c
+> > > > > > +++ b/drivers/tty/serial/sc16is7xx.c
+> > > > > > @@ -332,6 +332,7 @@ struct sc16is7xx_one {
+> > > > > >  
+> > > > > >  struct sc16is7xx_port {
+> > > > > >  	const struct sc16is7xx_devtype	*devtype;
+> > > > > > +	struct device			*dev;
+> > > > > 
+> > > > > Why is this pointer needed?
+> > > > > 
+> > > > > Why is it grabbed and yet the reference count is never incremented?  Who
+> > > > > owns the reference count and when will it go away?
+> > > > > 
+> > > > > And what device is this?  The parent?  Current device?  What type of
+> > > > > device is it?  And why is it needed?
+> > > > > 
+> > > > > Using "raw" devices is almost never something a driver should do, they
+> > > > > are only passed into functions by the driver core, but then the driver
+> > > > > should instantly turn them into the "real" structure.
+> > > > 
+> > > > We already discussed that a lot in previous versions (v7)... I am
+> > > > trying my best to modify the code to address your concerns, but I am
+> > > > not fully understanding what you mean about raw devices, and you didn't
+> > > > answer some of my previous questions/interrogations in v7 about that.
+> > > 
+> > > I don't have time to answer all questions, sorry.
+> > > 
+> > > Please help review submitted patches to reduce my load and allow me to
+> > > answer other stuff :)
+> > 
+> > Ok.
+> > 
+> > 
+> > > > So, in the new function that I
+> > > > need to implement, sc16is7xx_setup_gpio_chip(), I absolutely need to use
+> > > > a raw device to read a device tree property and to set
+> > > > s->gpio.parent:
+> > > > 
+> > > >     count = device_property_count_u32(dev, ...
+> > > >     ...
+> > > >     s->gpio.parent = dev;
+> > > > 
+> > > > Do we agree on that?
+> > > 
+> > > Yes, but what type of parent is that?
+> > 
+> > I am confused by your question. I do not understand why the type of
+> > parent matters... And what do you call the parent: s, s->gpio or
+> > s->gpio.parent?
+> > 
+> > For me, the way I understand it, the only question that matters is how I
+> > can extract the raw device structure pointer from maybe "struct
+> > sc16is7xx_port" or some other structure, and then use it in my
+> > new function...
+> > 
+> > I should not have put "s->gpio.parent = dev" in the example, I think it
+> > just complexifies things. Lets start over with a more simple example and
+> > only:
+> > 
+> >     count = device_property_count_u32(dev, ...
+> > 
+> > 
+> > > > Then, how do I pass this raw device to the 
+> > > > device_property_count_u32() function and to the s->gpio.parent
+> > > > assignment?
+> > > > 
+> > > > Should I modify sc16is7xx_setup_gpio_chip() like so:
+> > > > 
+> > > >     static int sc16is7xx_setup_gpio_chip(struct sc16is7xx_port *s)
+> > > >     {
+> > > > 	struct device *dev = &s->p[0].port.dev;
+> > > > 
+> > > >         count = device_property_count_u32(dev, ...
+> > > >         ...
+> > > >         s->gpio.parent = dev;
+> > > 
+> > > Again, what is the real type of that parent?  It's a port, right, so
+> > > pass in the port to this function and then do the "take the struct
+> > > device of the port" at that point in time.
+> > 
+> > With the simplified example, is the following ok:
+> > 
+> > static int sc16is7xx_setup_gpio_chip(struct sc16is7xx_port *s)
+> > {
+> >     struct device *dev = &s->p[0].port.dev;
+> > 
+> >     count = device_property_count_u32(dev, ...
+> >     ...
+> > }
+> > 
+> > If not, please indicate how you would do it with an actual example...
 > 
-> I added the information in the cover letter, but I can add it to the
-> actual patch commit message if you prefer.
-> 
-> > Still, what platform(s) need the modem control feature? Presumably
-> > that's whatever platform Lech and Tomasz work on. I guess given the
-> > Reviewed-by they are fine with needing a DT change.
-> 
-> Ok. I have previously also emailed Lech about that, but he has not
-> responded yet.
+> At this point, after reviewing 500+ patches today, I really have no
+> idea, my brain is fried.  Do what you think is right here and submit a
+> new series and I'll be glad to review it.
 
-Hi Rob,
-Lech just confirmed that he made the DT changes
-to a board that was used only internally, and that no other DT changes
-should be necessary for in-tree DTS.
+Ok :)
+
+Will do.
 
 Hugo.
