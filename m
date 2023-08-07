@@ -2,91 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C807730A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348D17730AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbjHGUsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 16:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
+        id S230090AbjHGUvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 16:51:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbjHGUsm (ORCPT
+        with ESMTP id S229864AbjHGUvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 16:48:42 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BD610F6;
-        Mon,  7 Aug 2023 13:48:34 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9936b3d0286so750347466b.0;
-        Mon, 07 Aug 2023 13:48:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691441313; x=1692046113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8CVC74fhP0sy/y3NvWAwOMXaX3+HMUjEbw6HzuiD9uQ=;
-        b=PaO30Qr5zLgmYyvf4Z+3G9KqIMYdeSd8FopFZ00wZGL4BEOxcbvvOpWz7RlOI1c9US
-         6aZAkmx9N0AvGcN8N3/tQ1qTjP3JNKdY+zB59VB7BetcvCRJrnKPY2Ckw3nKC7LbcUij
-         8gryIoefc4PbipIouFSencBJt48m/ZpWWU3HCBLIXLM9jd0VApvE7wDIUEfvxhzNZlKN
-         cLHLPey7tiMmqYjczppU9fc8B9sZGMqO3XyNdW0Gh3bz9PxB+qNweIwAQSz0YsJumcv8
-         uMu/8r7BKAtq0b9AcHz5imdDna1lTdFQ+NdWd0VuHZPz0RpHGGdlKTDAtTFf4yqAY+ee
-         mt/Q==
+        Mon, 7 Aug 2023 16:51:54 -0400
+Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EEFE64
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 13:51:52 -0700 (PDT)
+Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-6b9d8b76be5so8893231a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 13:51:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691441313; x=1692046113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8CVC74fhP0sy/y3NvWAwOMXaX3+HMUjEbw6HzuiD9uQ=;
-        b=EypoGcyikHW8kCvdPONsrlqaOb6PwGIcZVxfteYvZ/KJJ2IIN9dp5p7iIwvovtY9/f
-         Ptbtg4xuQw9yVS1Q369FR4+VwrhWeq6xfXYE9lVCNs+pftzFt8eTzFVnS4W4J07Kz9SX
-         sntrGM3+cj+LxKpNb4Uw0oE7hRm2aux7kKfrnRFqi27/TlmYBkSHBsFwPHGpHOUZYYrx
-         //Je0fr2xd8U2bbYwgqd85MYpAy9WAD7QG4OUzmCaRRX75uetbZo/7LoJPmQqu/oPvOJ
-         aS7Erv4YpnTL64mwV7aU5ZQHTD7eae8/9Bp7ppUBIwuzano3nn4TnEwZ7VRpwFHCWV4w
-         3wdA==
-X-Gm-Message-State: AOJu0YyWm71Vok4PYz+i/bsHkZL5u/P52YJnnjZ+eEn74ENumKISyNBu
-        K97/8CZO8nYZXq9q6DyNLpU=
-X-Google-Smtp-Source: AGHT+IGi9neasvPU3HF15xpZdrL+c2axX9IYb3Ux1/9J0YE2gqbZBeoWr756aN7H9t+gAOmSyfgBGA==
-X-Received: by 2002:a17:906:1045:b0:98d:f4a7:71cf with SMTP id j5-20020a170906104500b0098df4a771cfmr10832322ejj.62.1691441312595;
-        Mon, 07 Aug 2023 13:48:32 -0700 (PDT)
-Received: from krava ([83.240.60.134])
-        by smtp.gmail.com with ESMTPSA id ot29-20020a170906ccdd00b00991d54db2acsm5617944ejb.44.2023.08.07.13.48.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 13:48:32 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 7 Aug 2023 22:48:29 +0200
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Florent Revest <revest@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-ID: <ZNFYnbqlyOjo5dkH@krava>
-References: <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
- <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
- <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
- <20230802000228.158f1bd605e497351611739e@kernel.org>
- <20230801112036.0d4ee60d@gandalf.local.home>
- <20230801113240.4e625020@gandalf.local.home>
- <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
- <20230801190920.7a1abfd5@gandalf.local.home>
- <CABRcYmJjtVq-330ktqTAUiNO1=yG_aHd0xz=c550O5C7QP++UA@mail.gmail.com>
- <20230804004206.9fdfae0b9270b9acca2c096f@kernel.org>
+        d=1e100.net; s=20221208; t=1691441511; x=1692046311;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Lh1FMFT+xwdpzqPLYhlJOnPoEabJHwYdIfiobgwEUnQ=;
+        b=IbigHt64ibU0ei76phV6bGFDrcnKR34BBBlv9tt6p7XlpQ9cZiUc+GjvBZLDjbonEK
+         LUbpkNYNPwfL+lC/9TXlxKioK5tTCRHwrQjqispNgOBlfOEgHmniJjWNYf+L23eCNP3v
+         2zaSW9EfE8gB4npvxQww0UHf55vfT5mn5F7zToEnC1Cvjh+vf/+V9F1AyE0D1wDG8g9t
+         60C7RneAzJSS6Fmso8gUdaMyrFG4g6OgAuPtmr0P8YwyibS1r9RGcCK+2paAvMe+deoV
+         RE87QUYgy4qh5xebuhVeH19N0QAVLgxdxGCv8mgxl91MUSNj8vGh6eBCGrH0GogZnEcf
+         0ISw==
+X-Gm-Message-State: AOJu0YzjlxKPBo6JmWzB6g5cAqEEfKobxITjGPSs250mGykJ6pfkt2R8
+        VWH11FV2udAPdmoOAf3C5IiDOIaasMnFPHUlhNbPFpTN6vOE
+X-Google-Smtp-Source: AGHT+IGN+moUvMByXJ97OXKSF+t6QS/yf6GfoQu8VlkC01QCk/z5XcirJVZ6FSmownmJ7dGxGawhHzKSLfSiGtmw4/IqqBCW8EcO
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804004206.9fdfae0b9270b9acca2c096f@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a05:6830:145:b0:6b9:8ea6:fb02 with SMTP id
+ j5-20020a056830014500b006b98ea6fb02mr12821328otp.2.1691441511864; Mon, 07 Aug
+ 2023 13:51:51 -0700 (PDT)
+Date:   Mon, 07 Aug 2023 13:51:51 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007921d606025b6ad6@google.com>
+Subject: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in btrfs_open_devices
+From:   syzbot <syzbot+26860029a4d562566231@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,120 +55,202 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 12:42:06AM +0900, Masami Hiramatsu wrote:
+Hello,
 
-SNIP
+syzbot found the following issue on:
 
-> > 
-> > On the other hand, untangling all code paths that come from
-> > trampolines (with a light regs structure) from those that come from an
-> > exception (with a pt_regs) could lead to a lot of duplicated code, and
-> > converting between each subsystem's idea of a light regs structure
-> > (what if perf introduces a perf_regs now ?) would be tedious and slow
-> > (lots of copies ?).
-> 
-> This is one discussion point I think. Actually, using pt_regs in kretprobe
-> (and rethook) is histrical accident. Originally, it had put a kprobe on
-> the function return trampoline to hook it. So keep the API compatiblity
-> I made the hand assembled code to save the pt_regs on the stack.
-> 
-> My another question is if we have the fprobe to trace (hook) the function
-> return, why we still need the kretprobe itself. I think we can remove
-> kretprobe and use fprobe exit handler, because "function" probing will
-> be done by fprobe, not kprobe. And then, we can simplify the kprobe
-> interface and clarify what it is -- "kprobe is a wrapper of software
-> breakpoint". And we don't need to think about duplicated code anymore :)
+HEAD commit:    f7dc24b34138 Add linux-next specific files for 20230807
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12a0862ba80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d7847c9dca13d6c5
+dashboard link: https://syzkaller.appspot.com/bug?extid=26860029a4d562566231
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=179704c9a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17868ba9a80000
 
-1+ sounds like good idea
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/24eb0299fcf6/disk-f7dc24b3.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d1dc5212ed72/vmlinux-f7dc24b3.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/062c8c075e0c/bzImage-f7dc24b3.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/8e4e0cc06a40/mount_0.gz
 
-> 
-> >  
-> > > Otherwise, ftrace_regs() has support on arm64 for getting to the argument
-> > > registers and the stack. Even live kernel patching now uses ftrace_regs().
-> > >
-> > > >
-> > > > If you guys decide to convert fprobe to ftrace_regs please
-> > > > make it depend on kconfig or something.
-> > > > bpf side needs full pt_regs.
-> > 
-> > Some wild ideas that I brought up once in a BPF office hour: BPF
-> > "multi_kprobe" could provide a fake pt_regs (either by constructing a
-> > sparse one on the stack or by JIT-ing different offset accesses and/or
-> > by having the verifier deny access to unpopulated fields) or break the
-> > current API (is it conceivable to phase out BPF "multi_kprobe"
-> > programs in favor of BPF "fprobe" programs that don't lie about their
-> > API and guarantees and just provide a ftrace_regs ?)
-> 
-> +1 :)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+26860029a4d562566231@syzkaller.appspotmail.com
 
-so multi_kprobe link was created to allow fast attach of BPF kprobe-type
-programs to multiple functions.. I don't think there's need for new fprobe
-program
+==================================================================
+BUG: KASAN: slab-use-after-free in btrfs_open_devices+0xb8/0xc0 fs/btrfs/volumes.c:1281
+Read of size 4 at addr ffff8880293c8d30 by task syz-executor243/5048
 
-> 
-> > 
-> > > Then use kprobes. When I asked Masami what the difference between fprobes
-> > > and kprobes was, he told me that it would be that it would no longer rely
-> > > on the slower FTRACE_WITH_REGS. But currently, it still does.
-> > 
-> > Actually... Moving fprobe to ftrace_regs should get even more spicy!
-> > :) Fprobe also wraps "rethook" which is basically the same thing as
-> > kretprobe: a return trampoline that saves a pt_regs, to the point that
-> > on x86 kretprobe's trampoline got dropped in favor of rethook's
-> > trampoline. But for the same reasons that we don't want ftrace to save
-> > pt_regs on arm64, rethook should probably also just save a ftrace_regs
-> > ? (also, to keep the fprobe callback signatures consistent between
-> > pre- and post- handlers). But if we want fprobe "post" callbacks to
-> > save a ftrace_regs now, either we need to re-introduce the kretprobe
-> > trampoline or also change the API of kretprobe (and break its symmetry
-> > with kprobe and we'd have the same problem all over again with BPF
-> > kretprobe program types...). All of this is "beautifully" entangled...
-> > :)
-> 
-> As I said, I would like to phase out the kretprobe itself because it
-> provides the same feature of fprobe, which is confusing. jprobe was
-> removed a while ago, and now kretprobe is. But we can not phase out
-> it at once. So I think we will keep current kretprobe trampoline on
-> arm64 and just add new ftrace_regs based rethook. Then remove the
-> API next release. (after all users including systemtap is moved) 
-> 
-> > 
-> > > The reason I started the FTRACE_WITH_ARGS (which gave us ftrace_regs) in
-> > > the first place, was because of the overhead you reported to me with
-> > > ftrace_regs_caller and why you wanted to go the direct trampoline approach.
-> > > That's when I realized I could use a subset because those registers were
-> > > already being saved. The only reason FTRACE_WITH_REGS was created was it
-> > > had to supply full pt_regs (including flags) and emulate a breakpoint for
-> > > the kprobes interface. But in reality, nothing really needs all that.
-> > >
-> > > > It's not about access to args.
-> > > > pt_regs is passed from bpf prog further into all kinds of perf event
-> > > > functions including stack walking.
-> > 
-> > If all accesses are done in BPF bytecode, we could (theoretically)
-> > have the verifier and JIT work together to deny accesses to
-> > unpopulated fields, or relocate pt_regs accesses to ftrace_regs
-> > accesses to keep backward compatibility with existing multi_kprobe BPF
-> > programs.
-> 
-> Yeah, that is what I would like to suggest, and what my patch does.
-> (let me update rethook too, it'll be a bit tricky since I don't want
-> break anything) 
-> 
-> Thanks,
-> 
-> > 
-> > Is there a risk that a "multi_kprobe" program could call into a BPF
-> > helper or kfunc that reads this pt_regs pointer and expect certain
-> > fields to be set ? I suppose we could also deny giving that "pt_regs"
-> > pointer to a helper... :/
+CPU: 0 PID: 5048 Comm: syz-executor243 Not tainted 6.5.0-rc5-next-20230807-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ btrfs_open_devices+0xb8/0xc0 fs/btrfs/volumes.c:1281
+ btrfs_mount_root+0x681/0xda0 fs/btrfs/super.c:1505
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:611
+ vfs_get_tree+0x88/0x350 fs/super.c:1544
+ fc_mount fs/namespace.c:1112 [inline]
+ vfs_kern_mount.part.0+0xcb/0x170 fs/namespace.c:1142
+ vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
+ btrfs_mount+0x292/0xb10 fs/btrfs/super.c:1578
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:611
+ vfs_get_tree+0x88/0x350 fs/super.c:1544
+ do_new_mount fs/namespace.c:3335 [inline]
+ path_mount+0x1492/0x1ed0 fs/namespace.c:3662
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount fs/namespace.c:3861 [inline]
+ __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fc50e075e9a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd2e2532d8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffd2e2532f0 RCX: 00007fc50e075e9a
+RDX: 00000000200051c0 RSI: 0000000020005200 RDI: 00007ffd2e2532f0
+RBP: 0000000000000004 R08: 00007ffd2e253330 R09: 00000000000051a5
+R10: 0000000001000008 R11: 0000000000000282 R12: 0000000001000008
+R13: 00007ffd2e253330 R14: 0000000000000003 R15: 0000000001000000
+ </TASK>
 
-I think Alexei answered this earlier in the thread:
+Allocated by task 5043:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:599 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ alloc_fs_devices+0x54/0x2b0 fs/btrfs/volumes.c:375
+ device_list_add.constprop.0+0x3eb/0x1db0 fs/btrfs/volumes.c:807
+ btrfs_scan_one_device+0x1b7/0x2a0 fs/btrfs/volumes.c:1405
+ btrfs_mount_root+0x4a8/0xda0 fs/btrfs/super.c:1482
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:611
+ vfs_get_tree+0x88/0x350 fs/super.c:1544
+ fc_mount fs/namespace.c:1112 [inline]
+ vfs_kern_mount.part.0+0xcb/0x170 fs/namespace.c:1142
+ vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
+ btrfs_mount+0x292/0xb10 fs/btrfs/super.c:1578
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:611
+ vfs_get_tree+0x88/0x350 fs/super.c:1544
+ do_new_mount fs/namespace.c:3335 [inline]
+ path_mount+0x1492/0x1ed0 fs/namespace.c:3662
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount fs/namespace.c:3861 [inline]
+ __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
- >From bpf side we don't care that such pt_regs is 100% filled in or
- >only partial as long as this pt_regs pointer is valid for perf_event_output
- >and stack walking that consume pt_regs.
- >I believe that was and still is the case for both x86 and arm64.
+Freed by task 5043:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x15e/0x1b0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
+ btrfs_close_devices+0x4cd/0x610 fs/btrfs/volumes.c:1207
+ open_ctree+0x1c1/0x5710 fs/btrfs/disk-io.c:3612
+ btrfs_fill_super fs/btrfs/super.c:1158 [inline]
+ btrfs_mount_root+0x976/0xda0 fs/btrfs/super.c:1520
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:611
+ vfs_get_tree+0x88/0x350 fs/super.c:1544
+ fc_mount fs/namespace.c:1112 [inline]
+ vfs_kern_mount.part.0+0xcb/0x170 fs/namespace.c:1142
+ vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
+ btrfs_mount+0x292/0xb10 fs/btrfs/super.c:1578
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:611
+ vfs_get_tree+0x88/0x350 fs/super.c:1544
+ do_new_mount fs/namespace.c:3335 [inline]
+ path_mount+0x1492/0x1ed0 fs/namespace.c:3662
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount fs/namespace.c:3861 [inline]
+ __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+The buggy address belongs to the object at ffff8880293c8c00
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 304 bytes inside of
+ freed 512-byte region [ffff8880293c8c00, ffff8880293c8e00)
+
+The buggy address belongs to the physical page:
+page:ffffea0000a4f200 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x293c8
+head:ffffea0000a4f200 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000010200 ffff888012841c80 ffffea00008f2d00 dead000000000002
+raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4147, tgid 4147 (kworker/u4:3), ts 10970429937, free_ts 0
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2d2/0x350 mm/page_alloc.c:1567
+ prep_new_page mm/page_alloc.c:1574 [inline]
+ get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3253
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4509
+ alloc_pages+0x1a9/0x270 mm/mempolicy.c:2298
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab+0x24e/0x380 mm/slub.c:2017
+ new_slab mm/slub.c:2070 [inline]
+ ___slab_alloc+0x8bc/0x1570 mm/slub.c:3223
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x137/0x350 mm/slub.c:3517
+ kmalloc_trace+0x25/0xe0 mm/slab_common.c:1114
+ kmalloc include/linux/slab.h:599 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ alloc_bprm+0x51/0xaf0 fs/exec.c:1514
+ kernel_execve+0xaf/0x4e0 fs/exec.c:1989
+ call_usermodehelper_exec_async+0x256/0x4c0 kernel/umh.c:110
+ ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff8880293c8c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880293c8c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff8880293c8d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                     ^
+ ffff8880293c8d80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880293c8e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
 
 
-jirka
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
