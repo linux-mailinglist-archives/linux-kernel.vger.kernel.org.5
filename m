@@ -2,70 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B710F771946
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 07:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B9B77194E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 07:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbjHGFS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 01:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43122 "EHLO
+        id S230190AbjHGFTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 01:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjHGFSz (ORCPT
+        with ESMTP id S229841AbjHGFTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 01:18:55 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501AC1701;
-        Sun,  6 Aug 2023 22:18:51 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3775Ihu1027241;
-        Mon, 7 Aug 2023 00:18:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691385523;
-        bh=iGxBg5A6V1C/me8rd0dS8lTI+4EDWR61R5JBnylmqkE=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=KOK98yqbBDI5mgTKBmrnQwseU99oQcDIBu7A4dWOfl44BfSmH+g5zALjeFakCPNKf
-         AlW9SRf4X45mFpW042keVikgf+TKTit9vIzRE751GKHy9Tahw5YUKtKejvmJMs7o6f
-         VOlV2fPJFvUDM0uit931cacG+COYcQJbOLA4vrSs=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3775Ih0A024388
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Aug 2023 00:18:43 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
- Aug 2023 00:18:43 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 7 Aug 2023 00:18:42 -0500
-Received: from [172.24.227.68] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3775Ic2k104239;
-        Mon, 7 Aug 2023 00:18:39 -0500
-Message-ID: <5c07e90a-2fab-b7aa-4d8e-6d329a8f33ea@ti.com>
-Date:   Mon, 7 Aug 2023 10:48:38 +0530
+        Mon, 7 Aug 2023 01:19:45 -0400
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BEF1722;
+        Sun,  6 Aug 2023 22:19:40 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 3775JDpj015992;
+        Mon, 7 Aug 2023 13:19:13 +0800 (+08)
+        (envelope-from Kaiwei.Liu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx07.spreadtrum.com [10.0.1.12])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RK4M50K7xz2P5F6B;
+        Mon,  7 Aug 2023 13:17:21 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx07.spreadtrum.com
+ (10.0.1.12) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Mon, 7 Aug 2023
+ 13:19:11 +0800
+From:   Kaiwei Liu <kaiwei.liu@unisoc.com>
+To:     Vinod Koul <vkoul@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        kaiwei liu <liukaiwei086@gmail.com>,
+        Wenming Wu <wenming.wu@unisoc.com>
+Subject: [PATCH 1/5] dma: delect redundant parameter for dma driver function
+Date:   Mon, 7 Aug 2023 13:19:07 +0800
+Message-ID: <20230807051907.2713-1-kaiwei.liu@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 07/13] arm64: dts: ti: k3-am64: Enable OSPI nodes at the
- board level
-Content-Language: en-US
-To:     Andrew Davis <afd@ti.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230802205309.257392-1-afd@ti.com>
- <20230802205309.257392-8-afd@ti.com>
-From:   Dhruva Gole <d-gole@ti.com>
-In-Reply-To: <20230802205309.257392-8-afd@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-8.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx07.spreadtrum.com (10.0.1.12)
+X-MAIL: SHSQR01.spreadtrum.com 3775JDpj015992
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,79 +51,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The parameter *sdesc in function sprd_dma_check_trans_done is not
+used, so here delect redundant parameter.
 
-On 03/08/23 02:23, Andrew Davis wrote:
-> OSPI nodes defined in the top-level AM64 SoC dtsi files are incomplete
-> and may not be functional unless they are extended with pinmux and
-> device information.
-> 
-> As the attached OSPI device is only known about at the board integration
-> level, these nodes should only be enabled when provided with this
-> information.
-> 
-> Disable the OSPI nodes in the dtsi files and only enable the ones that
-> are actually pinned out on a given board.
-> 
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
->   arch/arm64/boot/dts/ti/k3-am64-main.dtsi        | 1 +
->   arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi | 1 +
->   arch/arm64/boot/dts/ti/k3-am642-evm.dts         | 1 +
->   arch/arm64/boot/dts/ti/k3-am642-sk.dts          | 1 +
->   4 files changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> index d3dd8c426dada..49f910e4b03fc 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> @@ -802,6 +802,7 @@ ospi0: spi@fc40000 {
->   			assigned-clock-parents = <&k3_clks 75 7>;
->   			assigned-clock-rates = <166666666>;
->   			power-domains = <&k3_pds 75 TI_SCI_PD_EXCLUSIVE>;
-> +			status = "disabled";
->   		};
->   	};
->   
-> diff --git a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
-> index 5606d775153d4..1c2c8f0daca9f 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
-> @@ -181,6 +181,7 @@ i2c_som_rtc: rtc@52 {
->   };
->   
->   &ospi0 {
-> +	status = "okay";
->   	pinctrl-names = "default";
->   	pinctrl-0 = <&ospi0_pins_default>;
->   
-> diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-> index d84e7ee160328..b4a1f73d4fb17 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-> @@ -520,6 +520,7 @@ &tscadc0 {
->   };
->   
->   &ospi0 {
-> +	status = "okay";
->   	pinctrl-names = "default";
->   	pinctrl-0 = <&ospi0_pins_default>;
->   
-> diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-> index 963d796a3a970..af06ccd466802 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-> @@ -518,6 +518,7 @@ &tscadc0 {
->   };
->   
->   &ospi0 {
-> +	status = "okay";
->   	pinctrl-names = "default";
->   	pinctrl-0 = <&ospi0_pins_default>;
->   
+Signed-off-by: Kaiwei Liu <kaiwei.liu@unisoc.com>
+---
+ drivers/dma/sprd-dma.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-
-
+diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
+index 2b639adb48ba..20c3cb1ef2f5 100644
+--- a/drivers/dma/sprd-dma.c
++++ b/drivers/dma/sprd-dma.c
+@@ -572,8 +572,7 @@ static void sprd_dma_stop(struct sprd_dma_chn *schan)
+ 	schan->cur_desc = NULL;
+ }
+ 
+-static bool sprd_dma_check_trans_done(struct sprd_dma_desc *sdesc,
+-				      enum sprd_dma_int_type int_type,
++static bool sprd_dma_check_trans_done(enum sprd_dma_int_type int_type,
+ 				      enum sprd_dma_req_mode req_mode)
+ {
+ 	if (int_type == SPRD_DMA_NO_INT)
+@@ -619,8 +618,7 @@ static irqreturn_t dma_irq_handle(int irq, void *dev_id)
+ 			vchan_cyclic_callback(&sdesc->vd);
+ 		} else {
+ 			/* Check if the dma request descriptor is done. */
+-			trans_done = sprd_dma_check_trans_done(sdesc, int_type,
+-							       req_type);
++			trans_done = sprd_dma_check_trans_done(int_type, req_type);
+ 			if (trans_done == true) {
+ 				vchan_cookie_complete(&sdesc->vd);
+ 				schan->cur_desc = NULL;
 -- 
-Thanks and Regards,
-Dhruva Gole
+2.17.1
+
