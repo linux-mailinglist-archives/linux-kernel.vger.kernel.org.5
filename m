@@ -2,375 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FAA772D85
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE07772DBF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbjHGSHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 14:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
+        id S231656AbjHGSVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 14:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbjHGSHx (ORCPT
+        with ESMTP id S230502AbjHGSVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 14:07:53 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2066.outbound.protection.outlook.com [40.107.93.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94EF6171A;
-        Mon,  7 Aug 2023 11:07:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mXdUPvpwMFA1+8LFdyjFYZ3goiKt8HOinmeYQHeeuXJXXkizme9hmbMxwsk4gYtPG7KTD6x1Xzd3EnacJ2SJwU/JXxJ1x4M3lvVV2QWuueX8TrRWxKQsBe0DSO/6a1XKh2p60UK8eYICBaarJYBGmGXF3jT58GCoDUNouvmfrP7Lojf0EQxSwIbsU9omocMZ8pBm8HmKeFlxUBNu8PqbdrpfRqTM5sL6otxOsmFK0Y/8i+ut6DQTeUGhSOkaOgOm3czy7UpPOYBKRz9jAaYmFs4hImCJoS4kOxDwRP9k4PdgtM0hlCl+CLzD+d5yJaUJv4fiYpJABahnjSsyVhS0lg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vuxpEIQgS5h/ejzASehh+egfsd5bbK6LQ8dSlZO2gh4=;
- b=DMMYSkSlR3Slo+PBOX/5oh9NviHM29nB/FSxdB7UE5fvbMpp47n5uThhxJSnMq2AwFM7reKnwCRhqZwIugCwIsSe26r5gIfVmYbaHXVOaGXSJjJ8j75zA5V4OpEH4XJc3cqiMV3TdY0ydzyJTINppyVJUfPGp5JSoAObo7WIwZT1w1aN+JIe+Jjn4X/1ab+4mGMqISVtlOCVOvGI+hJLTDrBvbC/XisQ9rA61z8WCfbSs3aWYeFfCNaoJlybVkpGAgUJYTM+PtQ/SdTiG3hVLmtY2iyhNYOxFwIir6mHycTkBkze8H1JBFepYhgZsLYhISgSeBf3WvoQ865Ozj0ieA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vuxpEIQgS5h/ejzASehh+egfsd5bbK6LQ8dSlZO2gh4=;
- b=YrKFJxQ1hlw4wd5xecXJBFQ1P5qPFqAQrT0o7aD9XU4TAd2ZMZNhyFYR2shxZIMsmmaKxATEs848FtXgyo1zVhOcbXC1oB9Awxa4NhE6FAnB6OwnrYblI5ardutVzKDCpW2zX8ltmw9d5ojpUrHiz3GNY/AbWitbJE5fCgtEpW4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by SN7PR12MB6929.namprd12.prod.outlook.com (2603:10b6:806:263::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Mon, 7 Aug
- 2023 18:07:45 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
- 18:07:45 +0000
-Message-ID: <91fa63c6-dcce-34b0-938b-2f47362541e0@amd.com>
-Date:   Mon, 7 Aug 2023 20:07:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH drm-misc-next v9 06/11] drm/nouveau: fence: separate fence
- alloc and emit
-Content-Language: en-US
-To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, tzimmermann@suse.de, mripard@kernel.org,
-        corbet@lwn.net, bskeggs@redhat.com, Liam.Howlett@oracle.com,
-        matthew.brost@intel.com, boris.brezillon@collabora.com,
-        alexdeucher@gmail.com, ogabbay@kernel.org, bagasdotme@gmail.com,
-        willy@infradead.org, jason@jlekstrand.net,
-        donald.robson@imgtec.com, Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230803165238.8798-1-dakr@redhat.com>
- <20230803165238.8798-7-dakr@redhat.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20230803165238.8798-7-dakr@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0068.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:4b::15) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        Mon, 7 Aug 2023 14:21:01 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1E58F;
+        Mon,  7 Aug 2023 11:20:59 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id dd494a809452f723; Mon, 7 Aug 2023 20:20:58 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id B2A3A6625B2;
+        Mon,  7 Aug 2023 20:20:57 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH v5 05/11] ACPI: thermal: Carry out trip point updates under zone lock
+Date:   Mon, 07 Aug 2023 20:08:26 +0200
+Message-ID: <2236767.iZASKD2KPV@kreacher>
+In-Reply-To: <4503814.LvFx2qVVIh@kreacher>
+References: <13318886.uLZWGnKmhe@kreacher> <4503814.LvFx2qVVIh@kreacher>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SN7PR12MB6929:EE_
-X-MS-Office365-Filtering-Correlation-Id: 427e4ec2-c8c6-4778-8b52-08db977133a1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ax+nmOQnVsYycjtdCsovjILwNb3qTe0ponFbRmNImN1bc9riCna+sIhIJEPwsYvWl82FyNUGaQYaMJhIuX/Bl/cFe7uDh2fGrrVpxpetfnlm3h/7+pNS2qhiG1XU4kIsh0l0lE1hjy0jMVKVmgW6eb6xoAKTu1AbX9Er2Ld3KuYXzPDUf3RkmB4wBVgoPB9C3u5AbyeAY2kj/Gc4FeJTlDV1M14BtmOwvQP1HMrtN/V6kjjnCVGRM2bI9Arz1cS5QfJwgpvEcQX4RQHU9ceUdWphHkr+CnKfC/Ii0Jxs7/fRIbCu6LW4vTX3aFEok5jfr39nLGz9l4eXHgCC1rGP5BKz26Dj1myfoC642KCqy3GRuCc1C1K7vkRkohYaEpEfvk+JhDlPK9QKBaeWydcDSqAIY3wUpPsDHwr4yVfRRDZq7KZSl94KKTxDpeFX/1v3/W7yZVZMRdHW7I2LNLITahw6qrOOIamnawcb4OUeap2nN86A1liGrO1Bc71oT8QJE8fBleK2wRnIIGGSrganVxbtPmegdF6ld8pGeekWVcEJ8+rIO8uuqnuMvqR9/Qm/vhfOI3OtjyK3tQ+iQxiOyA8KfZLnDZB1/cE59L8e//SDfBAGZbtiPHiRCs8cw6GcHXj0qPiKV9gTqJD7ck+xxv+IiyhL4Ra2Yitm45efYqo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(366004)(376002)(136003)(346002)(396003)(186006)(1800799003)(451199021)(7416002)(36756003)(66946007)(66556008)(66476007)(4326008)(2906002)(31696002)(478600001)(31686004)(8676002)(8936002)(5660300002)(41300700001)(316002)(110136005)(86362001)(921005)(6486002)(6666004)(38100700002)(6512007)(6506007)(2616005)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L2toQVA1NlQ3ZFRjeTFFVytmaVBha1RieGlFRG1ZSWJzS1RPUVhoRzNOQXJO?=
- =?utf-8?B?M0ZNc2tERGtIcXFtYVdnNFpOdVVCcC9Kd3hHUExQbm1jOGdZU0pUenN3WHRY?=
- =?utf-8?B?WlVHRjhHNHZYUUNLUm5YOVRsR0hYNTRJVmFJWXgrTkFoLzh5TTdNTzF2U1Zk?=
- =?utf-8?B?U3c1QmczNWxQZExkbnduWEZTRitwZE1pNjJ4dGxBUkNUYUM4WGdHbS9uMEpI?=
- =?utf-8?B?M01QRUFLQ2lhcm8vczdpS1ZGeVZBaWgvRTZZdk4vZUlnc2FCekgzZW5oeGdl?=
- =?utf-8?B?Y3hsUWtHQ012MW9rUFVPOGZId1FxWUhBY3JYdkFpS1k3VlRRNjFIdU96MitN?=
- =?utf-8?B?WkoyT0JKTnY1T2VVRnplWW12RURPd0x0TGtSWnJMTEVGQkNYT2hEMlQzMjhO?=
- =?utf-8?B?VDVmQnl3cFRKVzgyTkRoK2Zrc0dRVmxGTDAxZVh6dmVMK1lnY3RuTlJMak93?=
- =?utf-8?B?bFh6eHc3N0RoMUF3SUJYZC9KYy9CVEdyS2Ezc2V0dmlRaUtjY1N5b1dXOTB2?=
- =?utf-8?B?TVpEeHNibmJjYnY1NFZiaFhyc3RHZVNKbTdzMzRnTERYb1JHQ0lVcmZyL0Er?=
- =?utf-8?B?ekpqMll6YXZHTTNwemNaOFJEQ0xESnVTWHlSdEJpelhPYlBHRi94ci80Ry9J?=
- =?utf-8?B?WnJibEJPNmRxNFBYSDJXNkgycTk0bUVJM09qWk41SXRjc2JISEk1Y0NVKzhv?=
- =?utf-8?B?OFIzaHJ6NmpETVZZUVdNWWlCT0xSR285VEQ0SEZYWGx4ckxzSkp4bGlrMnJa?=
- =?utf-8?B?bmtSbnAwbldsVTRoNHFsMkZzUnhzUU5tNmVKZE1KQUpiTXhqV2Q5MVQrMFk5?=
- =?utf-8?B?UzErV0tjU0dPalYxcktNTHVGLy9pbEVZT1hnV29hV3o2Z3hnK25FMklqUlYv?=
- =?utf-8?B?clQwc1p0TkZjUFVsSzZLRVN1NDJ2L2tvL3FFUVVlNVV1c2RVRm5tTDd1VDFV?=
- =?utf-8?B?QWNJYzQ2UUFhNGV1QW1QZlEyTUxXbm1iN21YdmtuTksrNWFKOUpKdlF0YTEy?=
- =?utf-8?B?ZXozQUpwbkdNQVFYZEZJV1p1VUJpNnduNHZuZTBCOG90amxhTG9pVmt3a2tt?=
- =?utf-8?B?N1FueUNXTTZxN2d5YlQ4a09QaHJYNzc3Q0wvSzNXZlRrVC9aWDI4MWswTmdZ?=
- =?utf-8?B?c0VQR3RGYXZ3b2doTFZpeU5ZMWlETVQyZndKL0E1SVJJdzkrT25PYUNOTlUr?=
- =?utf-8?B?Q0VMYmt2NTcxZGJjdmVqTnhRTWl0ei9ESFdTVktPS3NMK3VvcCthM0VkM1lU?=
- =?utf-8?B?U2J0ZWFhVkR2M0ZabFNpU2R2Vk1oSGFjM2oxdDFLT0YvK0laa0IvTkZFRS9B?=
- =?utf-8?B?TXpLamxmNERZdFd0SDBlZ0pYc3czVzdBMjBZd3NiWTY3OUg0WnZaQXRUMnJF?=
- =?utf-8?B?a2d1THRZdXJPZWdCRzNKRXltQldLMXlkN0l3Z2Vta0V6aXVuSGhneWI4Ym5D?=
- =?utf-8?B?d01Od2d4QWlSSWdWRWkyZE1EOFZ2VnhEZDZCSHdDNXdCM05Fd0lhWVUyLzFp?=
- =?utf-8?B?dFVQYUN0ZGNad1dVamVsNXEwN21kVXNFdTR0SGthMXp5Q295YzZXVUxXQnB1?=
- =?utf-8?B?RVVZNkh1bk9VY0NtbDFTakl5WUhuRzE4bG43c2ZqQlNmZHJLZ2R4NXY3elBU?=
- =?utf-8?B?SWJnZXoremMzcFZ5VllpemxxUEI5NXRyUG9MaDRhYUhVaHdFSHdoUUdCN3ls?=
- =?utf-8?B?MU9Wa2Z6bWo0azAzRDd0WXdnVk9SVi9IZmMxV0JtVG9rajZFR211MGl5bTFG?=
- =?utf-8?B?ZHBsVVRqL3dxdlMycWg0TzZadm92cm5MbkVkNTkydTVCUkIzdSt0R1JxUi9C?=
- =?utf-8?B?QkhaR1RvSE55dE1mYXJzenhYRzBxTGFkYnNiZm1CQ0pybHUrWitzeS9YTk5M?=
- =?utf-8?B?aldoY3VSZ201NEZnaVdCOGVuamxYcDNvV3BxRVBLY0ZUZFhVdHZheFVTaXJB?=
- =?utf-8?B?YmF1djJZSERvMkpKNXJZUFBMZlBFUHArQVJUUW05V1pSZTlZSjg5bmNoNC9T?=
- =?utf-8?B?bDZQOG9reC9yYTVmVm05c1Q3akJyVUZHOEJEMXlBeEdaRVBtQWtxMm1oV2hO?=
- =?utf-8?B?c3FMZ2F0MTkycjNQOUt0OElSbnJpMVpzQkZ5U3htWUhURHBQZnJKdzI3ektp?=
- =?utf-8?B?SHRvU1NMbFJycDUrVGduUzFaenRxenNPZitKcWxEdm96cjliQ3R3cHpYRkFo?=
- =?utf-8?Q?bCnBwjWVtp+GCL24wcb3GMEPho1nNB1fL5UjlVoB7w2x?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 427e4ec2-c8c6-4778-8b52-08db977133a1
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 18:07:45.7562
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mKhWUWt/HLnoBP6IwrIaM5R+Naz8rwXQ1mhdEU9VepUj3KEl6rX/p0y3bkgHKyf7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6929
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrledtgdduudejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+ thhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 03.08.23 um 18:52 schrieb Danilo Krummrich:
-> The new (VM_BIND) UAPI exports DMA fences through DRM syncobjs. Hence,
-> in order to emit fences within DMA fence signalling critical sections
-> (e.g. as typically done in the DRM GPU schedulers run_job() callback) we
-> need to separate fence allocation and fence emitting.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-At least from the description that sounds like it might be illegal. 
-Daniel can you take a look as well.
+There is a race condition between acpi_thermal_trips_update() and
+acpi_thermal_check_fn(), because the trip points may get updated while
+the latter is running which in theory may lead to inconsistent results.
+For example, if two trips are updated together, using the temperature
+value of one of them from before the update and the temperature value
+of the other one from after the update may not lead to the expected
+outcome.
 
-What exactly are you doing here?
+Moreover, if thermal_get_trend() runs when a trip points update is in
+progress, it may end up using stale trip point temperatures.
 
-Regards,
-Christian.
+To address this, make acpi_thermal_trips_update() call
+thermal_zone_device_adjust() to carry out the trip points update and
+provide a new  acpi_thermal_adjust_thermal_zone() wrapper around
+__acpi_thermal_trips_update() as the callback function for the latter.
 
->
-> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
-> ---
->   drivers/gpu/drm/nouveau/dispnv04/crtc.c |  9 ++++-
->   drivers/gpu/drm/nouveau/nouveau_bo.c    | 52 +++++++++++++++----------
->   drivers/gpu/drm/nouveau/nouveau_chan.c  |  6 ++-
->   drivers/gpu/drm/nouveau/nouveau_dmem.c  |  9 +++--
->   drivers/gpu/drm/nouveau/nouveau_fence.c | 16 +++-----
->   drivers/gpu/drm/nouveau/nouveau_fence.h |  3 +-
->   drivers/gpu/drm/nouveau/nouveau_gem.c   |  5 ++-
->   7 files changed, 59 insertions(+), 41 deletions(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/dispnv04/crtc.c b/drivers/gpu/drm/nouveau/dispnv04/crtc.c
-> index a6f2e681bde9..a34924523133 100644
-> --- a/drivers/gpu/drm/nouveau/dispnv04/crtc.c
-> +++ b/drivers/gpu/drm/nouveau/dispnv04/crtc.c
-> @@ -1122,11 +1122,18 @@ nv04_page_flip_emit(struct nouveau_channel *chan,
->   	PUSH_NVSQ(push, NV_SW, NV_SW_PAGE_FLIP, 0x00000000);
->   	PUSH_KICK(push);
->   
-> -	ret = nouveau_fence_new(chan, false, pfence);
-> +	ret = nouveau_fence_new(pfence);
->   	if (ret)
->   		goto fail;
->   
-> +	ret = nouveau_fence_emit(*pfence, chan);
-> +	if (ret)
-> +		goto fail_fence_unref;
-> +
->   	return 0;
-> +
-> +fail_fence_unref:
-> +	nouveau_fence_unref(pfence);
->   fail:
->   	spin_lock_irqsave(&dev->event_lock, flags);
->   	list_del(&s->head);
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
-> index 057bc995f19b..e9cbbf594e6f 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_bo.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
-> @@ -820,29 +820,39 @@ nouveau_bo_move_m2mf(struct ttm_buffer_object *bo, int evict,
->   		mutex_lock(&cli->mutex);
->   	else
->   		mutex_lock_nested(&cli->mutex, SINGLE_DEPTH_NESTING);
-> +
->   	ret = nouveau_fence_sync(nouveau_bo(bo), chan, true, ctx->interruptible);
-> -	if (ret == 0) {
-> -		ret = drm->ttm.move(chan, bo, bo->resource, new_reg);
-> -		if (ret == 0) {
-> -			ret = nouveau_fence_new(chan, false, &fence);
-> -			if (ret == 0) {
-> -				/* TODO: figure out a better solution here
-> -				 *
-> -				 * wait on the fence here explicitly as going through
-> -				 * ttm_bo_move_accel_cleanup somehow doesn't seem to do it.
-> -				 *
-> -				 * Without this the operation can timeout and we'll fallback to a
-> -				 * software copy, which might take several minutes to finish.
-> -				 */
-> -				nouveau_fence_wait(fence, false, false);
-> -				ret = ttm_bo_move_accel_cleanup(bo,
-> -								&fence->base,
-> -								evict, false,
-> -								new_reg);
-> -				nouveau_fence_unref(&fence);
-> -			}
-> -		}
-> +	if (ret)
-> +		goto out_unlock;
-> +
-> +	ret = drm->ttm.move(chan, bo, bo->resource, new_reg);
-> +	if (ret)
-> +		goto out_unlock;
-> +
-> +	ret = nouveau_fence_new(&fence);
-> +	if (ret)
-> +		goto out_unlock;
-> +
-> +	ret = nouveau_fence_emit(fence, chan);
-> +	if (ret) {
-> +		nouveau_fence_unref(&fence);
-> +		goto out_unlock;
->   	}
-> +
-> +	/* TODO: figure out a better solution here
-> +	 *
-> +	 * wait on the fence here explicitly as going through
-> +	 * ttm_bo_move_accel_cleanup somehow doesn't seem to do it.
-> +	 *
-> +	 * Without this the operation can timeout and we'll fallback to a
-> +	 * software copy, which might take several minutes to finish.
-> +	 */
-> +	nouveau_fence_wait(fence, false, false);
-> +	ret = ttm_bo_move_accel_cleanup(bo, &fence->base, evict, false,
-> +					new_reg);
-> +	nouveau_fence_unref(&fence);
-> +
-> +out_unlock:
->   	mutex_unlock(&cli->mutex);
->   	return ret;
->   }
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_chan.c b/drivers/gpu/drm/nouveau/nouveau_chan.c
-> index 6d639314250a..f69be4c8f9f2 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_chan.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_chan.c
-> @@ -62,9 +62,11 @@ nouveau_channel_idle(struct nouveau_channel *chan)
->   		struct nouveau_fence *fence = NULL;
->   		int ret;
->   
-> -		ret = nouveau_fence_new(chan, false, &fence);
-> +		ret = nouveau_fence_new(&fence);
->   		if (!ret) {
-> -			ret = nouveau_fence_wait(fence, false, false);
-> +			ret = nouveau_fence_emit(fence, chan);
-> +			if (!ret)
-> +				ret = nouveau_fence_wait(fence, false, false);
->   			nouveau_fence_unref(&fence);
->   		}
->   
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-> index 789857faa048..4ad40e42cae1 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-> @@ -209,7 +209,8 @@ static vm_fault_t nouveau_dmem_migrate_to_ram(struct vm_fault *vmf)
->   		goto done;
->   	}
->   
-> -	nouveau_fence_new(dmem->migrate.chan, false, &fence);
-> +	if (!nouveau_fence_new(&fence))
-> +		nouveau_fence_emit(fence, dmem->migrate.chan);
->   	migrate_vma_pages(&args);
->   	nouveau_dmem_fence_done(&fence);
->   	dma_unmap_page(drm->dev->dev, dma_addr, PAGE_SIZE, DMA_BIDIRECTIONAL);
-> @@ -402,7 +403,8 @@ nouveau_dmem_evict_chunk(struct nouveau_dmem_chunk *chunk)
->   		}
->   	}
->   
-> -	nouveau_fence_new(chunk->drm->dmem->migrate.chan, false, &fence);
-> +	if (!nouveau_fence_new(&fence))
-> +		nouveau_fence_emit(fence, chunk->drm->dmem->migrate.chan);
->   	migrate_device_pages(src_pfns, dst_pfns, npages);
->   	nouveau_dmem_fence_done(&fence);
->   	migrate_device_finalize(src_pfns, dst_pfns, npages);
-> @@ -675,7 +677,8 @@ static void nouveau_dmem_migrate_chunk(struct nouveau_drm *drm,
->   		addr += PAGE_SIZE;
->   	}
->   
-> -	nouveau_fence_new(drm->dmem->migrate.chan, false, &fence);
-> +	if (!nouveau_fence_new(&fence))
-> +		nouveau_fence_emit(fence, chunk->drm->dmem->migrate.chan);
->   	migrate_vma_pages(args);
->   	nouveau_dmem_fence_done(&fence);
->   	nouveau_pfns_map(svmm, args->vma->vm_mm, args->start, pfns, i);
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_fence.c b/drivers/gpu/drm/nouveau/nouveau_fence.c
-> index ee5e9d40c166..e946408f945b 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_fence.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_fence.c
-> @@ -210,6 +210,9 @@ nouveau_fence_emit(struct nouveau_fence *fence, struct nouveau_channel *chan)
->   	struct nouveau_fence_priv *priv = (void*)chan->drm->fence;
->   	int ret;
->   
-> +	if (unlikely(!chan->fence))
-> +		return -ENODEV;
-> +
->   	fence->channel  = chan;
->   	fence->timeout  = jiffies + (15 * HZ);
->   
-> @@ -396,25 +399,16 @@ nouveau_fence_unref(struct nouveau_fence **pfence)
->   }
->   
->   int
-> -nouveau_fence_new(struct nouveau_channel *chan, bool sysmem,
-> -		  struct nouveau_fence **pfence)
-> +nouveau_fence_new(struct nouveau_fence **pfence)
->   {
->   	struct nouveau_fence *fence;
-> -	int ret = 0;
-> -
-> -	if (unlikely(!chan->fence))
-> -		return -ENODEV;
->   
->   	fence = kzalloc(sizeof(*fence), GFP_KERNEL);
->   	if (!fence)
->   		return -ENOMEM;
->   
-> -	ret = nouveau_fence_emit(fence, chan);
-> -	if (ret)
-> -		nouveau_fence_unref(&fence);
-> -
->   	*pfence = fence;
-> -	return ret;
-> +	return 0;
->   }
->   
->   static const char *nouveau_fence_get_get_driver_name(struct dma_fence *fence)
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_fence.h b/drivers/gpu/drm/nouveau/nouveau_fence.h
-> index 0ca2bc85adf6..7c73c7c9834a 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_fence.h
-> +++ b/drivers/gpu/drm/nouveau/nouveau_fence.h
-> @@ -17,8 +17,7 @@ struct nouveau_fence {
->   	unsigned long timeout;
->   };
->   
-> -int  nouveau_fence_new(struct nouveau_channel *, bool sysmem,
-> -		       struct nouveau_fence **);
-> +int  nouveau_fence_new(struct nouveau_fence **);
->   void nouveau_fence_unref(struct nouveau_fence **);
->   
->   int  nouveau_fence_emit(struct nouveau_fence *, struct nouveau_channel *);
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c b/drivers/gpu/drm/nouveau/nouveau_gem.c
-> index a48f42aaeab9..9c8d1b911a01 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_gem.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
-> @@ -873,8 +873,11 @@ nouveau_gem_ioctl_pushbuf(struct drm_device *dev, void *data,
->   		}
->   	}
->   
-> -	ret = nouveau_fence_new(chan, false, &fence);
-> +	ret = nouveau_fence_new(&fence);
-> +	if (!ret)
-> +		ret = nouveau_fence_emit(fence, chan);
->   	if (ret) {
-> +		nouveau_fence_unref(&fence);
->   		NV_PRINTK(err, cli, "error fencing pushbuf: %d\n", ret);
->   		WIND_RING(chan);
->   		goto out;
+While at it, change the acpi_thermal_trips_update() return data type
+to void as that function always returns 0 anyway.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+v4 -> v5: No changes.
+
+v3 -> v4:
+   * Rework to use thermal_zone_device_adjust() and the .update() callback
+     instead of using the (exported) zone lock directly.
+   * Call acpi_queue_thermal_check() from acpi_thermal_trips_update() which
+     allows code duplication in acpi_thermal_notify() to be reduced.
+
+v2 -> v3: No changes.
+
+v1 -> v2:
+   * Hold the thermal zone lock instead of thermal_check_lock around trip
+     point updates (this also helps to protect thermal_get_trend() from using
+     stale trip temperatures).
+   * Add a comment documenting the purpose of the locking.
+   * Make acpi_thermal_trips_update() void.
+
+---
+ drivers/acpi/thermal.c |   41 ++++++++++++++++++++++++++++-------------
+ 1 file changed, 28 insertions(+), 13 deletions(-)
+
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -185,7 +185,7 @@ static int acpi_thermal_get_polling_freq
+ 	return 0;
+ }
+ 
+-static int acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
++static void __acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
+ {
+ 	acpi_status status;
+ 	unsigned long long tmp;
+@@ -393,17 +393,39 @@ static int acpi_thermal_trips_update(str
+ 			ACPI_THERMAL_TRIPS_EXCEPTION(flag, tz, "device");
+ 		}
+ 	}
++}
+ 
+-	return 0;
++static void acpi_thermal_adjust_thermal_zone(struct thermal_zone_device *thermal,
++					     unsigned long data)
++{
++	__acpi_thermal_trips_update(thermal_zone_device_priv(thermal), data);
++}
++
++static void acpi_queue_thermal_check(struct acpi_thermal *tz)
++{
++	if (!work_pending(&tz->thermal_check_work))
++		queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
++}
++
++static void acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
++{
++	/*
++	 * Use thermal_zone_device_adjust() to carry out the trip points
++	 * update, so as to protect thermal_get_trend() from getting stale
++	 * trip point temperatures and to prevent thermal_zone_device_update()
++	 * invoked from acpi_thermal_check_fn() from producing inconsistent
++	 * results.
++	 */
++	thermal_zone_device_adjust(tz->thermal_zone, flag);
++	acpi_queue_thermal_check(tz);
+ }
+ 
+ static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
+ {
+-	int i, ret = acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
+ 	bool valid;
++	int i;
+ 
+-	if (ret)
+-		return ret;
++	__acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
+ 
+ 	valid = tz->trips.critical.valid |
+ 		tz->trips.hot.valid |
+@@ -710,6 +732,7 @@ static struct thermal_zone_device_ops ac
+ 	.get_trend = thermal_get_trend,
+ 	.hot = acpi_thermal_zone_device_hot,
+ 	.critical = acpi_thermal_zone_device_critical,
++	.update = acpi_thermal_adjust_thermal_zone,
+ };
+ 
+ static int acpi_thermal_zone_sysfs_add(struct acpi_thermal *tz)
+@@ -810,12 +833,6 @@ static void acpi_thermal_unregister_ther
+                                  Driver Interface
+    -------------------------------------------------------------------------- */
+ 
+-static void acpi_queue_thermal_check(struct acpi_thermal *tz)
+-{
+-	if (!work_pending(&tz->thermal_check_work))
+-		queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
+-}
+-
+ static void acpi_thermal_notify(acpi_handle handle, u32 event, void *data)
+ {
+ 	struct acpi_device *device = data;
+@@ -830,13 +847,11 @@ static void acpi_thermal_notify(acpi_han
+ 		break;
+ 	case ACPI_THERMAL_NOTIFY_THRESHOLDS:
+ 		acpi_thermal_trips_update(tz, ACPI_TRIPS_THRESHOLDS);
+-		acpi_queue_thermal_check(tz);
+ 		acpi_bus_generate_netlink_event(device->pnp.device_class,
+ 						dev_name(&device->dev), event, 0);
+ 		break;
+ 	case ACPI_THERMAL_NOTIFY_DEVICES:
+ 		acpi_thermal_trips_update(tz, ACPI_TRIPS_DEVICES);
+-		acpi_queue_thermal_check(tz);
+ 		acpi_bus_generate_netlink_event(device->pnp.device_class,
+ 						dev_name(&device->dev), event, 0);
+ 		break;
+
+
 
