@@ -2,75 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEA4771BDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AA1771BCC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbjHGHwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 03:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45848 "EHLO
+        id S229710AbjHGHvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 03:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbjHGHwA (ORCPT
+        with ESMTP id S229517AbjHGHvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 03:52:00 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70871708
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 00:51:52 -0700 (PDT)
-Received: from kwepemi500009.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RK7k62zMtz1Z1Yq;
-        Mon,  7 Aug 2023 15:49:02 +0800 (CST)
-Received: from huawei.com (10.67.175.85) by kwepemi500009.china.huawei.com
- (7.221.188.199) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 7 Aug
- 2023 15:51:49 +0800
-From:   Xia Fukun <xiafukun@huawei.com>
-To:     <peter.ujfalusi@linux.intel.com>, <broonie@kernel.org>,
-        <pierre-louis.bossart@linux.intel.com>,
-        <ranjani.sridharan@linux.intel.com>,
-        <yung-chuan.liao@linux.intel.com>, <cujomalainey@chromium.org>,
-        <noah.klayman@intel.com>, <daniel.baluta@nxp.com>,
-        <rander.wang@intel.com>
-CC:     <linux-kernel@vger.kernel.org>, <xiafukun@huawei.com>
-Subject: [PATCH] ASoC: SOF: Fix incorrect use of sizeof in sof_ipc3_do_rx_work()
-Date:   Mon, 7 Aug 2023 15:51:18 +0800
-Message-ID: <20230807075118.128122-1-xiafukun@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.175.85]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemi500009.china.huawei.com (7.221.188.199)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 7 Aug 2023 03:51:41 -0400
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE18A1700;
+        Mon,  7 Aug 2023 00:51:39 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VpC-03F_1691394694;
+Received: from srmbuffer011165236051.sqa.net(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VpC-03F_1691394694)
+          by smtp.aliyun-inc.com;
+          Mon, 07 Aug 2023 15:51:35 +0800
+From:   Jing Zhang <renyu.zj@linux.alibaba.com>
+To:     John Garry <john.g.garry@oracle.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Will Deacon <will@kernel.org>, James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+Subject: [PATCH v6 1/7] perf pmu: "Compat" supports matching multiple identifiers
+Date:   Mon,  7 Aug 2023 15:51:19 +0800
+Message-Id: <1691394685-61240-2-git-send-email-renyu.zj@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1691394685-61240-1-git-send-email-renyu.zj@linux.alibaba.com>
+References: <1691394685-61240-1-git-send-email-renyu.zj@linux.alibaba.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here hdr is a pointer, and we should measure the size of
-struct sof_ipc_cmd_hdr.
+The jevent "Compat" is used for uncore PMU alias or metric definitions.
 
-Fixes: 12c41c779fad ("ASoC: SOF: Refactor rx function for fuzzing")
-Signed-off-by: Xia Fukun <xiafukun@huawei.com>
+The same PMU driver has different PMU identifiers due to different
+hardware versions and types, but they may have some common PMU event.
+Since a Compat value can only match one identifier, when adding the
+same event alias to PMUs with different identifiers, each identifier
+needs to be defined once, which is not streamlined enough.
+
+So let "Compat" supports matching multiple identifiers for uncore PMU
+alias. For example, the Compat value {43401;436*} can match the PMU
+identifier "43401", that is, CMN600_r0p0, and the PMU identifier with
+the prefix "436", that is, all CMN650, where "*" is a wildcard.
+Tokens in Unit field are delimited by ';' with no spaces.
+
+Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
 ---
- sound/soc/sof/ipc3.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/pmu.c | 33 +++++++++++++++++++++++++++++++--
+ tools/perf/util/pmu.h |  1 +
+ 2 files changed, 32 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/ipc3.c b/sound/soc/sof/ipc3.c
-index 2c5aac31e8b0..580960ff273d 100644
---- a/sound/soc/sof/ipc3.c
-+++ b/sound/soc/sof/ipc3.c
-@@ -1001,7 +1001,7 @@ void sof_ipc3_do_rx_work(struct snd_sof_dev *sdev, struct sof_ipc_cmd_hdr *hdr,
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index ad209c8..6402423 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -776,6 +776,35 @@ static bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
+ 	return res;
+ }
  
- 	ipc3_log_header(sdev->dev, "ipc rx", hdr->cmd);
++bool pmu_uncore_identifier_match(const char *id, const char *compat)
++{
++	char *tmp = NULL, *tok, *str;
++	bool res;
++	int n;
++
++	/*
++	 * The strdup() call is necessary here because "compat" is a const str*
++	 * type and cannot be used as an argument to strtok_r().
++	 */
++	str = strdup(compat);
++	if (!str)
++		return false;
++
++	tok = strtok_r(str, ";", &tmp);
++	for (; tok; tok = strtok_r(NULL, ";", &tmp)) {
++		n = strlen(tok);
++		if ((tok[n - 1] == '*' && !strncmp(id, tok, n - 1)) ||
++		    !strcmp(id, tok)) {
++			res = true;
++			goto out;
++		}
++	}
++	res = false;
++out:
++	free(str);
++	return res;
++}
++
+ struct pmu_add_cpu_aliases_map_data {
+ 	struct list_head *head;
+ 	const char *name;
+@@ -847,8 +876,8 @@ static int pmu_add_sys_aliases_iter_fn(const struct pmu_event *pe,
+ 	if (!pe->compat || !pe->pmu)
+ 		return 0;
  
--	if (hdr->size < sizeof(hdr) || hdr->size > SOF_IPC_MSG_MAX_SIZE) {
-+	if (hdr->size < sizeof(*hdr) || hdr->size > SOF_IPC_MSG_MAX_SIZE) {
- 		dev_err(sdev->dev, "The received message size is invalid: %u\n",
- 			hdr->size);
- 		return;
+-	if (!strcmp(pmu->id, pe->compat) &&
+-	    pmu_uncore_alias_match(pe->pmu, pmu->name)) {
++	if (pmu_uncore_alias_match(pe->pmu, pmu->name) &&
++	    pmu_uncore_identifier_match(pmu->id, pe->compat)) {
+ 		__perf_pmu__new_alias(idata->head, -1,
+ 				      (char *)pe->name,
+ 				      (char *)pe->desc,
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index b9a02de..9d4385d 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -241,6 +241,7 @@ void pmu_add_cpu_aliases_table(struct list_head *head, struct perf_pmu *pmu,
+ char *perf_pmu__getcpuid(struct perf_pmu *pmu);
+ const struct pmu_events_table *pmu_events_table__find(void);
+ const struct pmu_metrics_table *pmu_metrics_table__find(void);
++bool pmu_uncore_identifier_match(const char *id, const char *compat);
+ void perf_pmu_free_alias(struct perf_pmu_alias *alias);
+ 
+ int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
 -- 
-2.17.1
+1.8.3.1
 
