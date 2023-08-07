@@ -2,139 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F30E07725E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D403A77259D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234207AbjHGNfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50862 "EHLO
+        id S233806AbjHGN1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234050AbjHGNfk (ORCPT
+        with ESMTP id S233694AbjHGN1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:35:40 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 01F5618C;
-        Mon,  7 Aug 2023 06:35:38 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F3781FB;
-        Mon,  7 Aug 2023 06:26:03 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.32.139])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 777963F64C;
-        Mon,  7 Aug 2023 06:25:17 -0700 (PDT)
-Date:   Mon, 7 Aug 2023 14:25:08 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-perf-users@vger.kernel.org, ito-yuichi@fujitsu.com,
-        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 1/7] irqchip/gic-v3: Enable support for SGIs to act as
- NMIs
-Message-ID: <ZNDwtMJmhk9pP3Nq@FVFF77S0Q05N.cambridge.arm.com>
-References: <20230601213440.2488667-1-dianders@chromium.org>
- <20230601143109.v9.1.I1223c11c88937bd0cbd9b086d4ef216985797302@changeid>
- <ZNC-YRQopO0PaIIo@FVFF77S0Q05N.cambridge.arm.com>
- <CAFA6WYN7SH83mnTPqBj9=hCakM=KJkor7fMQasdeBe6Ue5JXRg@mail.gmail.com>
+        Mon, 7 Aug 2023 09:27:34 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B53A1FEB
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:27:06 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40c72caec5cso444331cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 06:27:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691414768; x=1692019568;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aV86SNTrsedHb/4GViYCEi4y0WkKBp0siTYx3zahDc8=;
+        b=4S7gV7c2cdcuEpB2T5mX/CpOL0kpeYdnmSvNbTa56EyndJ1AvAzRNKOCHIXMgx0KOG
+         m3pW2Po9Xpwb5mBlkkTlDX7BdfoeEdLud2EtxxftfD36WTiHHe2nEeXaITwz2BDbbA0E
+         mSvp6S22gXS5JjA4PzFAz3yxbfL/xwTpchOOFlQes8Q9oNXqFc9aOWbePypmk7q1dk4A
+         a4vRst4pzFXh9rN/C4cxoJLZMGwpmyH5jRV3WLEwpNBiRYis7cS9NoowQ/CtsnQCP+xr
+         DEBbVtZs2zdvHzsuMXpeRoX/6pa4fjpkmdII9AdqLI15u6AO9N5fAAXHrXdcgBZmZLKS
+         kpZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691414768; x=1692019568;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aV86SNTrsedHb/4GViYCEi4y0WkKBp0siTYx3zahDc8=;
+        b=df4ESYGcQs5dcfFsc2mqXkSaBFOfAKvP91wZXaTuZLJ1B8OYgI7/XjdjjhT/s4eV6k
+         YD3D8jMJwem7LY15YY22aGm7tyuxvXCzKX+ljAq9GplurD+fWoorDvsAr8SlS1Pv6K6u
+         yCV9yqbrD6lNjpiqJSQ2GIUbtqrmU8YA4RC6lC26SL3a9HsODWVJm/oBKATI4AW1mJsl
+         i4yOX89CxmNBlFVhMquzxVUQNGSAUYK7AR+s74F4V7vDkmDWrDt8jSwd6Tul4KZE0Amf
+         HX4qfeYVYDThFogWLZ4KMumyqqSLUBt6MwnUM/PG1aLasJyL8lEAwHJj9v/Uf4o2ydnV
+         HTVw==
+X-Gm-Message-State: AOJu0YyoTimxGKJDn9h4VFWFlf6wEqbga+bJbjMu2gikLoAP4lbwOl2u
+        yB5EPLmLIVCwzDkKYRer2+sxx14pz5QMcAepPfNR/TgebhckOIExjPDC5A==
+X-Google-Smtp-Source: AGHT+IH7l8fz/va80d2V76Roj1BsoAMY57SE1UROxLkV3dyWOxXlttc6h2gDN6ZO1f9HDD+7BbQ8h6jdtiwhSOmFGN4=
+X-Received: by 2002:a05:622a:1806:b0:403:ac17:c18a with SMTP id
+ t6-20020a05622a180600b00403ac17c18amr454405qtc.14.1691414768116; Mon, 07 Aug
+ 2023 06:26:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFA6WYN7SH83mnTPqBj9=hCakM=KJkor7fMQasdeBe6Ue5JXRg@mail.gmail.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230806075216.13378-1-me@manjusaka.me> <CANn89i+bMh-xU7PCxf_O5N+vy=83S+V=23mAAmbCuhjuP5Ob9g@mail.gmail.com>
+ <8d25f9e8-9653-4e9b-b88b-c5434ce8aabf@app.fastmail.com>
+In-Reply-To: <8d25f9e8-9653-4e9b-b88b-c5434ce8aabf@app.fastmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 7 Aug 2023 15:25:56 +0200
+Message-ID: <CANn89iJAu5CLq1LkRLt0qJ+ytFGXWGqymMHBnMevcPS4Z2GAXQ@mail.gmail.com>
+Subject: Re: [PATCH] [RFC PATCH] tcp event: add new tcp:tcp_cwnd_restart event
+To:     Manjusaka <me@manjusaka.me>
+Cc:     mhiramat@kernel.org, rostedt@goodmis.org, davem@davemloft.net,
+        dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 04:52:40PM +0530, Sumit Garg wrote:
-> On Mon, 7 Aug 2023 at 15:20, Mark Rutland <mark.rutland@arm.com> wrote:
-> > On Thu, Jun 01, 2023 at 02:31:45PM -0700, Douglas Anderson wrote:
-> > > @@ -542,16 +543,22 @@ static int gic_irq_nmi_setup(struct irq_data *d)
-> > >               return -EINVAL;
-> > >
-> > >       /* desc lock should already be held */
-> > > -     if (gic_irq_in_rdist(d)) {
-> > > -             u32 idx = gic_get_ppi_index(d);
-> > > +     switch (get_intid_range(d)) {
-> > > +     case SGI_RANGE:
-> > > +             break;
-> > > +     case PPI_RANGE:
-> > > +     case EPPI_RANGE:
-> > > +             idx = gic_get_ppi_index(d);
-> > >
-> > >               /* Setting up PPI as NMI, only switch handler for first NMI */
-> > >               if (!refcount_inc_not_zero(&ppi_nmi_refs[idx])) {
-> > >                       refcount_set(&ppi_nmi_refs[idx], 1);
-> > >                       desc->handle_irq = handle_percpu_devid_fasteoi_nmi;
-> > >               }
-> > > -     } else {
-> > > +             break;
-> > > +     default:
-> > >               desc->handle_irq = handle_fasteoi_nmi;
-> > > +             break;
-> > >       }
-> >
-> > As above, I reckon this isn't right, and we should treat all rdist interrupts
-> > (which are all percpu) the same.
-> >
-> > I reckon what we should be doing here is make ppi_nmi_refs cover all of the
-> > rdist interrupts (e.g. make that rdist_nmi_refs, add a gic_get_rdist_idx()
-> > helper), and then here have something like:
-> >
-> >         if (gic_irq_in_rdist(d)) {
-> >                 u32 idx = gic_get_rdist_idx(d);
-> >
-> >                 /*
-> >                  * Setting up a percpu interrupt as NMI, only switch handler
-> >                  * for first NMI
-> >                  */
-> >                 if (!refcount_inc_not_zero(&rdist_nmi_refs[idx])) {
-> >                         refcount_set(&ppi_nmi_refs[idx], 1);
-> >                         desc->handle_irq = handle_percpu_devid_fasteoi_nmi;
-> >                 }
-> >         }
-> 
-> It looks like you missed the else part here as follows for all other
-> interrupt types:
-> 
->          } else {
->                  desc->handle_irq = handle_fasteoi_nmi;
->          }
+On Mon, Aug 7, 2023 at 2:49=E2=80=AFPM Manjusaka <me@manjusaka.me> wrote:
+>
+> > Do not include code before variable declarations.
+> Sorry about that. I will update the code later.
+>
+> > I would rather add a trace in tcp_ca_event(), this would be more generi=
+c ?
+>
+> https://elixir.bootlin.com/linux/latest/source/net/ipv4/tcp_cong.c#L41
+>
+> I think maybe we already have the tcp_ca_event but named tcp_cong_state_s=
+et?
 
-Yes, sorry; I had meant for that to be included, i.e.
+I am speaking of tcp_ca_event()...
 
-	if (gic_irq_in_rdist(d)) {
-		u32 idx = gic_get_rdist_idx(d);
+For instance, tcp_cwnd_restart() calls tcp_ca_event(sk, CA_EVENT_CWND_RESTA=
+RT);
 
-		/*
-		 * Setting up a percpu interrupt as NMI, only switch handler
-		 * for first NMI
-		 */
-		if (!refcount_inc_not_zero(&rdist_nmi_refs[idx])) {
-			refcount_set(&ppi_nmi_refs[idx], 1);
-			desc->handle_irq = handle_percpu_devid_fasteoi_nmi;
-		}
-	} else {
-		desc->handle_irq = handle_fasteoi_nmi;
-	}
+tcp_set_ca_state() can only set icsk_ca_state to one value from enum
+tcp_ca_state:
+TCP_CA_Open, TCP_CA_Disorder, TCP_CA_CWR, TCP_CA_Recovery, TCP_CA_Loss
 
-> Apart from that, your logic sounds good to me.
-
-Great!
-
-Thanks,
-Mark.
+enum tcp_ca_event has instead:
+CA_EVENT_TX_START, CA_EVENT_CWND_RESTART, CA_EVENT_COMPLETE_CWR,
+CA_EVENT_LOSS, CA_EVENT_ECN_NO_CE, CA_EVENT_ECN_IS_CE
