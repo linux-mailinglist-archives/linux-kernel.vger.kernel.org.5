@@ -2,60 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F46771CCD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4278E771CD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbjHGJCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
+        id S231276AbjHGJDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 05:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231255AbjHGJBr (ORCPT
+        with ESMTP id S229776AbjHGJDG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:01:47 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C261738
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:01:34 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9eaa7c83dso7827291fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 02:01:34 -0700 (PDT)
+        Mon, 7 Aug 2023 05:03:06 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B202D45
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:02:29 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d0548cf861aso4536417276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 02:02:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mihalicyn.com; s=mihalicyn; t=1691398892; x=1692003692;
+        d=linaro.org; s=google; t=1691398936; x=1692003736;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0zHdqO6B0uFI6lNP0y9AW2K5q29rU7RbO5lwyLOgfdE=;
-        b=LvpiUi2kF02TYvAh9ppDB9Zt0Yl128QZ+CHwoRMnhwI2jzEd3T5k171dhS+Eo2hstW
-         HLv/94M2N/XvN2Mq9W3rNKSY9kSeexDCKKQdHZJvj/IUOP8kwbHGYJ3ny7J1jhoM+A7p
-         lvKeixtRkTvgD6UYMjEDyh16nBYtTAMnlNFcE=
+        bh=+LnORt0w2WaBBTXxnGuGRnHMAouDS1iv7SlCa9HMty8=;
+        b=YnHh0CSrVsRhnZQ8IR9haybhkmEtN4T5+9MeOfpwVrIfnHAhvav9BGGn26woWf43j/
+         pBcfeXh+zb+KA5QDK3qtQwxl93pOLX2KlDB5DGhhXmZCpHYjF3t9Ok3wDVTnqeEeSyqD
+         urG+PUkn2FIML1zPiPT/Y0iVcVWnSoEKLW2DkE6OiJV0WTMj/RHCCQM7yL/1+gCzrQuu
+         U+s6H1Ml5QaINxbPyZmpy3cc3kuYKPyh08bV7MF0gCJUzAgoujux3kfBaATktbeIh2e1
+         AkqLB8zqKPNrIWf34bcSvZuuW6L0hICBvX93PcB9mZswWpwysE7Dycr/QL17cDl3fxvK
+         N7Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691398892; x=1692003692;
+        d=1e100.net; s=20221208; t=1691398936; x=1692003736;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0zHdqO6B0uFI6lNP0y9AW2K5q29rU7RbO5lwyLOgfdE=;
-        b=ao0wZYhJNN5czjZ/2fAJ/5HpXV6sXIAklvfZ7FYBCh0hbiMX+j87bkwOW+5o3O6xM7
-         8iOQI9Sf1y0f1DF3M0WHlahj3KZkxeXcohLeiuv+47JZ9uGYr+ovc90zHEMfXf49FeqZ
-         0archXW6myZKJL8JW4GXuVwgpzJKjTfBdPjCur/CA0d9UC3bUTvEaCscc5FQJfo8RXYp
-         5hxHWOFxwSRedyaGjmfR1R9ZoHw2208GyWqKdY/IX3o0JmMJ8SskHsHeT6u+cKv+Audd
-         PvPePnKAujRQ5gIDZJlgpbIeTaeZz/Sn6PqOFT7h8m79rSZndQAQN1/UUYTCDCoE60Cb
-         hL7g==
-X-Gm-Message-State: ABy/qLZiUQaVCZBQreaTa6O3tEOM2GZ5ED6foVWXc1EKoNrllyczYYvZ
-        4HdN1q8LDV0oKIXaOP6hcmAeDWZ3Ger4TehG1QxmXHxUdFC4+VKUWwQNT5nW
-X-Google-Smtp-Source: APBJJlG0jyfKgEFF91WdALcAehEdYNuGJReQnPKPInJCZ96HtklkX/fJEt3YNtPsAxp47CaVDyLg0GbMFA8KBS3LL74=
-X-Received: by 2002:a2e:a788:0:b0:2b9:689b:2e3a with SMTP id
- c8-20020a2ea788000000b002b9689b2e3amr20263450ljf.3.1691398891995; Mon, 07 Aug
- 2023 02:01:31 -0700 (PDT)
+        bh=+LnORt0w2WaBBTXxnGuGRnHMAouDS1iv7SlCa9HMty8=;
+        b=YXSe1dX5xvmVe5Jhdw9hw15ddvXL2ZzbeQ2cRGqZYwRGIwQC+HV7f/anE6CQ8FcXYn
+         GOfD+FJFklfj4tjkrMdixCtqSnQlgKksT2DbKRRfCIACZR0gVPeCOkFHXO1NopCZpZNH
+         l72qyTMGMMUa4UMdKwLQlrhOGy0WpiI2Sq+vZc7Wa2GxFJ6RUVz0EzF0vF1y1mQd/wIq
+         ZrOEHUpMwhUF1ohu29NAGfT+d0Xy9NLX84s1l417XzaFlysirpsWo8U0C4/OdAT2n7LN
+         rVtobXrg4VNMjALJ49TiZbjX1Wh8kJdVkNglwU26BKRcBS6Qf83n8nacqWFd7ELNAlcW
+         PGkA==
+X-Gm-Message-State: AOJu0YwA9uxKJXKJ5h9a/QW1GSrZDLPnidNrqCw3v6HkqH5Oyd84KZ3+
+        i95nh/MOsbNfP9ydH8/XsqveGFjX0vsrPYhGM2RbRA==
+X-Google-Smtp-Source: AGHT+IFUQqODHoeAVuP9Czlc9nQuP+oHH0JOPYjo1jINrz/Uekb/1EK1zrJaDHwi4fTURWcUqkNXJ9c5jxnFuQ64zyw=
+X-Received: by 2002:a5b:20e:0:b0:d07:5b87:ec56 with SMTP id
+ z14-20020a5b020e000000b00d075b87ec56mr6801980ybl.14.1691398936634; Mon, 07
+ Aug 2023 02:02:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230807085203.819772-1-david@readahead.eu>
-In-Reply-To: <20230807085203.819772-1-david@readahead.eu>
-From:   Alexander Mikhalitsyn <alexander@mihalicyn.com>
-Date:   Mon, 7 Aug 2023 11:01:20 +0200
-Message-ID: <CAJqdLroQE1sU2uOG018Ezyome1sQb89c_mdSdvOCpM7=XNt+xg@mail.gmail.com>
-Subject: Re: [PATCH] pid: allow pidfds for reaped tasks
-To:     David Rheinsberg <david@readahead.eu>
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
-        Luca Boccassi <bluca@debian.org>
+References: <1689934361-32642-1-git-send-email-quic_srichara@quicinc.com>
+In-Reply-To: <1689934361-32642-1-git-send-email-quic_srichara@quicinc.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 7 Aug 2023 11:02:05 +0200
+Message-ID: <CACRpkdb_VLSVm4s7wLcbRri7kdsuMEZ6p_kiaSP0SFWM+0HwtA@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: qcom: Remove the unused _groups variable build warning
+To:     Sricharan Ramabadhran <quic_srichara@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        quic_varada@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -67,117 +70,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 10:52=E2=80=AFAM David Rheinsberg <david@readahead.e=
-u> wrote:
->
-> A pidfd can currently only be created for tasks that are thread-group
-> leaders and not reaped. This patch changes the pidfd-core to allow for
-> pidfds on reapead thread-group leaders as well.
->
-> A pidfd can outlive the task it refers to, and thus user-space must
-> already be prepared that the task underlying a pidfd is gone at the time
-> they get their hands on the pidfd. For instance, resolving the pidfd to
-> a PID via the fdinfo must be prepared to read `-1`.
->
-> Despite user-space knowing that a pidfd might be stale, several kernel
-> APIs currently add another layer that checks for this. In particular,
-> SO_PEERPIDFD returns `EINVAL` if the peer-task was already reaped,
-> but returns a stale pidfd if the task is reaped immediately after the
-> respective alive-check.
->
-> This has the unfortunate effect that user-space now has two ways to
-> check for the exact same scenario: A syscall might return
-> EINVAL/ESRCH/... *or* the pidfd might be stale, even though there is no
-> particular reason to distinguish both cases. This also propagates
-> through user-space APIs, which pass on pidfds. They must be prepared to
-> pass on `-1` *or* the pidfd, because there is no guaranteed way to get a
-> stale pidfd from the kernel.
->
-> This patch changes the core pidfd helpers to allow creation of pidfds
-> even if the PID is no longer linked to any task. This only affects one
-> of the three pidfd users that currently exist:
->
->  1) fanotify already tests for a linked TGID-task manually before
->     creating the PIDFD, thus it is not directly affected by this change.
->     However, note that the current fanotify code fails with an error if
->     the target process is reaped exactly between the TGID-check in
->     fanotify and the test in pidfd_prepare(). With this patch, this
->     will no longer be the case.
->
->  2) pidfd_open(2) calls find_get_pid() before creating the pidfd, thus
->     it is also not directly affected by this change.
->     Again, similar to fanotify, there is a race between the
->     find_get_pid() call and pidfd_prepare(), which currently causes
->     pidfd_open(2) to return EINVAL rather than ESRCH if the process is
->     reaped just between those two checks. With this patch, this will no
->     longer be the case.
->
->  3) SO_PEERPIDFD will be affected by this change and from now on return
->     stale pidfds rather than EINVAL if the respective peer task is
->     reaped already.
->
-> Given that users of SO_PEERPIDFD must already deal with stale pidfds,
-> this change hopefully simplifies the API of SO_PEERPIDFD, and all
-> dependent user-space APIs (e.g., GetConnectionCredentials() on D-Bus
-> driver APIs). Also note that SO_PEERPIDFD is still pending to be
-> released with linux-6.5.
->
-> Signed-off-by: David Rheinsberg <david@readahead.eu>
-> ---
->  kernel/fork.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index d2e12b6d2b18..4dde19a8c264 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -2161,7 +2161,7 @@ static int __pidfd_prepare(struct pid *pid, unsigne=
-d int flags, struct file **re
->   * Allocate a new file that stashes @pid and reserve a new pidfd number =
-in the
->   * caller's file descriptor table. The pidfd is reserved but not install=
-ed yet.
->   *
-> - * The helper verifies that @pid is used as a thread group leader.
-> + * The helper verifies that @pid is/was used as a thread group leader.
->   *
->   * If this function returns successfully the caller is responsible to ei=
-ther
->   * call fd_install() passing the returned pidfd and pidfd file as argume=
-nts in
-> @@ -2180,7 +2180,14 @@ static int __pidfd_prepare(struct pid *pid, unsign=
-ed int flags, struct file **re
->   */
->  int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret=
-)
->  {
-> -       if (!pid || !pid_has_task(pid, PIDTYPE_TGID))
-> +       if (!pid)
-> +               return -EINVAL;
-> +
-> +       /*
-> +        * Non thread-group leaders cannot have pidfds, but we allow them=
- for
-> +        * reaped thread-group leaders.
-> +        */
-> +       if (pid_has_task(pid, PIDTYPE_PID) && !pid_has_task(pid, PIDTYPE_=
-TGID))
->                 return -EINVAL;
+On Fri, Jul 21, 2023 at 12:13=E2=80=AFPM Sricharan Ramabadhran
+<quic_srichara@quicinc.com> wrote:
 
-Hi David!
-
-As far as I understand, __unhash_process is always called with a
-tasklist_lock held for writing.
-Don't we need to take tasklist_lock for reading here to guarantee
-consistency between
-pid_has_task(pid, PIDTYPE_PID) and pid_has_task(pid, PIDTYPE_TGID)
-return values?
-
-Kind regards,
-Alex
-
+> When building with clang toolchain and arm64-randconfig-r015-20230712
+> kernel test robot reports the below warning.
 >
->         return __pidfd_prepare(pid, flags, ret);
-> --
-> 2.41.0
+>  drivers/pinctrl/qcom/pinctrl-ipq5018.c:244:27: warning: unused variable =
+'_groups' [-Wunused-const-variable]
+>    static const char * const _groups[] =3D {
+>                              ^
+>    1 warning generated.
 >
+>      static const char * const _groups[] =3D {
+>              "gpio0", "gpio1", "gpio2", "gpio3", "gpio4", "gpio5", "gpio6=
+", "gpio7",
+>              "gpio8", "gpio9", "gpio10", "gpio11", "gpio12", "gpio13", "g=
+pio14",
+>              "gpio15", "gpio16", "gpio17", "gpio18", "gpio19", "gpio20", =
+"gpio21",
+>              "gpio22", "gpio23", "gpio24", "gpio25", "gpio26", "gpio27", =
+"gpio28",
+>              "gpio29", "gpio30", "gpio31", "gpio32", "gpio33", "gpio34", =
+"gpio35",
+>              "gpio36", "gpio37", "gpio38", "gpio39", "gpio40", "gpio41", =
+"gpio42",
+>              "gpio43", "gpio44", "gpio45", "gpio46",
+>    };
+>
+> Fixing it by removing the variable.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202307120814.vWPY6URk-lkp@i=
+ntel.com/
+> Fixes: 725d1c891658 ("pinctrl: qcom: Add IPQ5018 pinctrl driver")
+> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+
+Patch applied, thanks for fixing this!
+
+Yours,
+Linus Walleij
