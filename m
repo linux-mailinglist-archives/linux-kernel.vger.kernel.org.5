@@ -2,56 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7452F772DC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5596E772D78
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbjHGSV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 14:21:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
+        id S229557AbjHGSEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 14:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbjHGSVD (ORCPT
+        with ESMTP id S229559AbjHGSEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 14:21:03 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C02194;
-        Mon,  7 Aug 2023 11:21:01 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 5eb1f2393699e2aa; Mon, 7 Aug 2023 20:20:59 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 510F86625B2;
-        Mon,  7 Aug 2023 20:20:59 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH v5 03/11] thermal: core: Add priv pointer to struct thermal_trip
-Date:   Mon, 07 Aug 2023 20:04:47 +0200
-Message-ID: <2896662.e9J7NaK4W3@kreacher>
-In-Reply-To: <4503814.LvFx2qVVIh@kreacher>
-References: <13318886.uLZWGnKmhe@kreacher> <4503814.LvFx2qVVIh@kreacher>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrledtgdduudejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
- thhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Mon, 7 Aug 2023 14:04:52 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21782171A
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 11:04:51 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-564364d11adso2938772a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 11:04:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691431490; x=1692036290;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OExYOOf8M1CpNU2fJgIYRywdcLhFkzkukKiV9j1xays=;
+        b=jQIlcBumk+cFSXohMvN9lg2D+elmWJ3TBAgGENXmq2Zc/QKsZwAn6n/dtcuIav+z53
+         qvFmhT6r7avNTnMIBrsQsGuXxYETHaXGCK+d40JiDxP9jodrVn9kec1G4yH1R0jylyGS
+         GHU6zqjPiOasRdl1NgO0wbCYw5sBcR3wGrhc3cPieHO6Jryx9X9g3rFc7/PeNoTd6eO6
+         zr5i87Ui+U7H3rlFeA94R+YFUDByoYh6BF3IordnnrE4nI5fgI8WqUrpz4UBKKPsyw6N
+         dFhrCpn9CXXdVE7e4zQ6jmO3IEj8mHCN0uWMipXLOSC1oRybrRGbTfMk8pUdWAm2BtlY
+         CVMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691431490; x=1692036290;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OExYOOf8M1CpNU2fJgIYRywdcLhFkzkukKiV9j1xays=;
+        b=Y0/fLj8bAW7KEAbaKcjJ2Z+s2wO44k+rQAKnp6vf28kxA7T0GFF8IFNip34YzpqzWX
+         QTBE4sjC7/qCAeGLYkBHkSqgcKBEmz2cDW5Ac+8XNER4cGVqfEvljqW8hYTNIDTBw5K+
+         VlkHPmQboXlK1wIRrvXbx3VAVaN6/gvBNy/7XWmu70Sf32WKGqDASVVKqrPnYu4ML7Wg
+         jZd2tH/p+ZZQHNmIKettcTV+kBlPwlTw5Z545ybsRKX4aafNzo8bht5asUzbvYMn6UbR
+         kcitaermbkwr3XkfqX/2DJurrgtS6ZR33ukPxu6vKkB+xBnNkhKOGjEjPneQaIa52VWa
+         kKYQ==
+X-Gm-Message-State: AOJu0Yxjezf24gxtpENeCbgcj/41lCPERrbc6cK6XQGM3IcG0TOvs4JD
+        8hPuF9u9dWY7WbO1lrQ2QezTv4l61lo=
+X-Google-Smtp-Source: AGHT+IExiQFiHytMd/Auc5RNpEglghE5+NWd0DaggG8keL2Ib6PWkxMHonl0QgyMzWAdYLlef56zu9uL2mM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:db02:b0:1b8:95fc:d18 with SMTP id
+ m2-20020a170902db0200b001b895fc0d18mr40862plx.8.1691431490364; Mon, 07 Aug
+ 2023 11:04:50 -0700 (PDT)
+Date:   Mon, 7 Aug 2023 11:04:48 -0700
+In-Reply-To: <43c18a3d57305cf52a1c3643fa8f714ae3769551.camel@redhat.com>
+Mime-Version: 1.0
+References: <20230807062611.12596-1-ake@igel.co.jp> <43c18a3d57305cf52a1c3643fa8f714ae3769551.camel@redhat.com>
+Message-ID: <ZNEyQM8CYSAcyt9F@google.com>
+Subject: Re: [RFC PATCH] KVM: x86: inhibit APICv upon detecting direct APIC
+ access from L2
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Ake Koomsin <ake@igel.co.jp>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,43 +75,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon, Aug 07, 2023, Maxim Levitsky wrote:
+> =D0=A3 =D0=BF=D0=BD, 2023-08-07 =D1=83 15:26 +0900, Ake Koomsin =D0=BF=D0=
+=B8=D1=88=D0=B5:
+> > Current KVM does not expect L1 hypervisor to allow L2 guest to access
+> > APIC page directly when APICv is enabled. When this happens, KVM
+> > emulates the access itself resulting in interrupt lost.
 
-Add a new field called priv to struct thermal_trip to allow thermal
-drivers to store pointers to their local data associated with trip
-points.
+Kinda stating the obvious, but as Maxim alluded to, emulating an APIC acces=
+s while
+APICv is active should not result in lost interrupts.  I.e. suppressing API=
+Cv is
+likely masking a bug that isn't unique to this specific scenario.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
+> Is there a good reason why KVM doesn't expose APIC memslot to a nested gu=
+est?
 
-v4 -> v5: ACK from Daniel.
+AFAIK, simply because no one has ever requested that KVM support such a use=
+ case.
 
+> While nested guest runs, the L1's APICv is "inhibited" effectively anyway=
+, so
+> writes to this memslot should update APIC registers and be picked up by A=
+PICv
+> hardware when L1 resumes execution.
+>=20
+> Since APICv alows itself to be inhibited due to other reasons, it means t=
+hat
+> just like AVIC, it should be able to pick up arbitrary changes to APIC
+> registers which happened while it was inhibited, just like AVIC does.
+>=20
+> I'll take a look at the code to see if APICv does this (I know AVIC's cod=
+e
+> much better that APICv's)
+>=20
+> Is there a reproducer for this bug?
 
-New patch in v4.
-
----
- include/linux/thermal.h |    2 ++
- 1 file changed, 2 insertions(+)
-
-Index: linux-pm/include/linux/thermal.h
-===================================================================
---- linux-pm.orig/include/linux/thermal.h
-+++ linux-pm/include/linux/thermal.h
-@@ -82,11 +82,13 @@ struct thermal_zone_device_ops {
-  * @temperature: temperature value in miliCelsius
-  * @hysteresis: relative hysteresis in miliCelsius
-  * @type: trip point type
-+ * @priv: pointer to driver data associated with this trip
-  */
- struct thermal_trip {
- 	int temperature;
- 	int hysteresis;
- 	enum thermal_trip_type type;
-+	void *priv;
- };
- 
- struct thermal_cooling_device_ops {
-
-
-
++1, this needs a reproducer, or at the very least a very detailed explanati=
+on
+and analysis.
