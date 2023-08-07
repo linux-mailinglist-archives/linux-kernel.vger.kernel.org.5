@@ -2,189 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 588D1772548
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9A677253A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbjHGNSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
+        id S232590AbjHGNPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbjHGNSH (ORCPT
+        with ESMTP id S229820AbjHGNPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:18:07 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2088.outbound.protection.outlook.com [40.107.220.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91828E43;
-        Mon,  7 Aug 2023 06:18:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RqJDh/IsQwvcd66B8o4xgRRIs2zEq1kIk5mQXi5pnqXBbm0/6HVxCMVY6MGh0gy+zHAKDIGiq9nbjQwqED6db0ZnhcMg7zFfgSkknPDGRnPD9eTdPOC//r3J5vpf8tAzlx0wgaXpVsD2wK3JHjU6esE9VK+BSU7hCH1elMxF8tM1bf0FVMrDD+/MrjzFkXafXllS1Dc9taHqZqLMVsvxAsjcMM/tvHbtcaNM0cCknQTrQ9zwyamUNgjfSUpVRpfIm1uw+l2J7skiiJtNvZKQgqGsN/OFCwFh8h+mo/D6gmN+BEnP1n4GC6sW1xJrxRS8uK6r7v8b6l8bp7BoH47jGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jf1g97LwgcR5dH+cutavnADHry3axcnxPgJ/+79jG/o=;
- b=fOSoGJAzOggk1GCmJCnPHOp69LLc5w/2LoqkhsAKI+KZbvAOy6VjGul7Xn3COHtQFj0lanX24iSCcT4bjRT/ZK0NXHYVNnnO9V0b0HOWi+mItwQ1MbUkj7nP28tHEZARm8ZmIc9XpRV4uU8cATng4mpN/sEwyqC0f9GfXE7daiPjk7xc44S7y51kL9pnRlyIX1s7CYigMwmeGEn/rE18nljyGYl3Y/5TkrgDCXmximN0CE2CLRMRbKEiQDmniohcK4jPtDSN0AKrA17r7pFoBkHzn6UpHqA3OHbkIMoYLbuXJf3P3jnx/Kbp7x+JAkGeLn6P3wIHoLKygjuom87Uww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=microchip.com smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jf1g97LwgcR5dH+cutavnADHry3axcnxPgJ/+79jG/o=;
- b=PLrlJINPn8TtMwTpem9HKz1PlKlR9xm6xAHbgzJmfxmiBU7Bwi3uV31+Qnej6K2z5v0nPjA83JOvTVEAayJsIaqJ18anniuYxWpfCVF4pOL45lCbOHX8XYsRMaUogUA2LBrfnwvWZ77sfkGqc47vKxzIHswZspBSEV+lhEWmgD0=
-Received: from DS7PR05CA0079.namprd05.prod.outlook.com (2603:10b6:8:57::9) by
- BL1PR12MB5160.namprd12.prod.outlook.com (2603:10b6:208:311::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Mon, 7 Aug
- 2023 13:18:02 +0000
-Received: from CY4PEPF0000EE36.namprd05.prod.outlook.com
- (2603:10b6:8:57:cafe::cf) by DS7PR05CA0079.outlook.office365.com
- (2603:10b6:8:57::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.16 via Frontend
- Transport; Mon, 7 Aug 2023 13:18:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CY4PEPF0000EE36.mail.protection.outlook.com (10.167.242.42) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6652.19 via Frontend Transport; Mon, 7 Aug 2023 13:18:02 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 7 Aug
- 2023 08:18:01 -0500
-Received: from xhdradheys41.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Mon, 7 Aug 2023 08:17:58 -0500
-From:   Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-To:     <nicolas.ferre@microchip.com>, <claudiu.beznea@microchip.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <linux@armlinux.org.uk>,
-        <robert.hancock@calian.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@amd.com>, Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-Subject: [PATCH net] net: macb: In ZynqMP resume always configure PS GTR for non-wakeup source
-Date:   Mon, 7 Aug 2023 18:44:51 +0530
-Message-ID: <1691414091-2260697-1-git-send-email-radhey.shyam.pandey@amd.com>
-X-Mailer: git-send-email 2.1.1
+        Mon, 7 Aug 2023 09:15:19 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE01E5A
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:15:17 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RKGx96wp0z1KCNY;
+        Mon,  7 Aug 2023 21:14:05 +0800 (CST)
+Received: from [10.67.102.169] (10.67.102.169) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 7 Aug 2023 21:15:14 +0800
+CC:     <yangyicong@hisilicon.com>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <juri.lelli@redhat.com>,
+        <vincent.guittot@linaro.org>, <dietmar.eggemann@arm.com>,
+        <tim.c.chen@linux.intel.com>, <gautham.shenoy@amd.com>,
+        <mgorman@suse.de>, <vschneid@redhat.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <bristot@redhat.com>,
+        <prime.zeng@huawei.com>, <jonathan.cameron@huawei.com>,
+        <ego@linux.vnet.ibm.com>, <srikar@linux.vnet.ibm.com>,
+        <linuxarm@huawei.com>, <21cnbao@gmail.com>,
+        <kprateek.nayak@amd.com>, <wuyun.abel@bytedance.com>
+Subject: Re: [PATCH v9 2/2] sched/fair: Scan cluster before scanning LLC in
+ wake-up path
+To:     Chen Yu <yu.c.chen@intel.com>
+References: <20230719092838.2302-1-yangyicong@huawei.com>
+ <20230719092838.2302-3-yangyicong@huawei.com>
+ <ZLpVZmI8FrQtsfRH@chenyu5-mobl2>
+ <ac8d1fef-ebe2-021f-b621-208c619cc2ea@huawei.com>
+ <ZM0nYEB4m883KfIy@chenyu5-mobl2>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <c6f93f10-fea5-a734-9a78-64aa9ff44adb@huawei.com>
+Date:   Mon, 7 Aug 2023 21:15:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE36:EE_|BL1PR12MB5160:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2ad7d27b-625d-4d39-33b4-08db9748ba66
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Nn0BwYggzmrpehV8Nv4EJ4m5lQtv+VZslsE7gf/Z90qgOSs5nGfTrI4scWh+vOzbTT55E8GMR/3qFZtSkEdBqJvgfJTSZFMi6Qcd08OVr+Dqtdip5SeyGxy/jLRHGvPrITCPykz0MKqU0tEeLhBvljLInFOrw6CVyRiL1+qlqT4dOEQ+i2RJZNPiV79sQVY87Mj8nasY7lHM13929HFiPshUfr+DV66T+sgqoSVi3+ivgYN0q31XSolKqizjnGOyQuHO38kU9J+2pUcN31YuTxFfNY3Znaywn9Nb617hHOSYokFfcAa7VS9pEWizLU0Ic137YlEegwyK7i2OWETWPP6kgCiUvBbvndX4B+XVwmtxMGg4dxKGlhIvX4ChND/rSEbU8aZy6PXGx9b7mUZeOOj3mNOrI10z+8ivYZeotba5gcR1qe0sfLWAclAHM9oNpQCFSBFTd0ktD7DNdOyy47XLlZ5zDyL1/9WGyN4LvaZC7YixAbEYwF1h2Gz/mwLbjwDDG0jAuQbo7Il9s58jEm1xh+BIbO/cEgb3PYKBrNcCjrRQR+4lTEmjZYMu00PfCArc+GxIgSAdIVxDkAEHFa1nWkvG7Nmx7MCh+xmEJrTSfkK700ny2FDjELKkQzMdZXJamZkplD1dicj6+ceFw8jeq6rj4SNZWFc43QVa3X8eNedNIVOi5lSY4eZ9DisihPxsWaZuvkh/GXrADjKchYEwnWoVD8b3gWMG+6x4sUs7ZtbS5iC1ALqpCHQtUtyhjv8vt0X8KNrFsQIOm+LMfg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(39860400002)(346002)(136003)(451199021)(82310400008)(1800799003)(186006)(40470700004)(36840700001)(46966006)(40480700001)(40460700003)(2616005)(6666004)(478600001)(86362001)(82740400003)(81166007)(26005)(356005)(36756003)(41300700001)(316002)(5660300002)(7416002)(8936002)(8676002)(54906003)(110136005)(4326008)(2906002)(70206006)(70586007)(336012)(47076005)(83380400001)(36860700001)(426003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 13:18:02.2819
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ad7d27b-625d-4d39-33b4-08db9748ba66
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE36.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5160
-X-Spam-Status: No, score=1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+In-Reply-To: <ZM0nYEB4m883KfIy@chenyu5-mobl2>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.169]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Zynq UltraScale+ MPSoC ubuntu platform when systemctl issues suspend,
-network manager bring down the interface and goes into suspend. When it
-wakes up it again enables the interface.
+On 2023/8/5 0:29, Chen Yu wrote:
+> Hi Yicong,
+> 
+> On 2023-08-01 at 20:06:56 +0800, Yicong Yang wrote:
+>> Hi Chenyu,
+>>
+>> Sorry for the late reply. Something's wrong and cause this didn't appear
+>> in my mail box. I check it out on the LKML.
+>>
+>  
+> No worries : )
+> 
+>> On 2023/7/21 17:52, Chen Yu wrote:
+>>> Hi Yicong,
+>>>
+>>> Thanks for sending this version!
+>>>
+>>> On 2023-07-19 at 17:28:38 +0800, Yicong Yang wrote:
+>>>> From: Barry Song <song.bao.hua@hisilicon.com>
+>>>>
+>>>> For platforms having clusters like Kunpeng920, CPUs within the same cluster
+>>>> have lower latency when synchronizing and accessing shared resources like
+>>>> cache. Thus, this patch tries to find an idle cpu within the cluster of the
+>>>> target CPU before scanning the whole LLC to gain lower latency. This
+>>>> will be implemented in 3 steps in select_idle_sibling():
+>>>> 1. When the prev_cpu/recent_used_cpu are good wakeup candidates, use them
+>>>>    if they're sharing cluster with the target CPU. Otherwise record them
+>>>>    and do the scanning first.
+>>>> 2. Scanning the cluster prior to the LLC of the target CPU for an
+>>>>    idle CPU to wakeup.
+>>>> 3. If no idle CPU found after scanning and the prev_cpu/recent_used_cpu
+>>>>    can be used, use them.
+>>>>
+>>>> Testing has been done on Kunpeng920 by pinning tasks to one numa and two
+>>>> numa. On Kunpeng920, Each numa has 8 clusters and each cluster has 4 CPUs.
+>>>>
+>>>> With this patch, We noticed enhancement on tbench and netperf within one
+>>>> numa or cross two numa on 6.5-rc1:
+>>>> tbench results (node 0):
+>>>>              baseline                    patched
+>>>>   1:        325.9673        378.9117 (   16.24%)
+>>>>   4:       1311.9667       1501.5033 (   14.45%)
+>>>>   8:       2629.4667       2961.9100 (   12.64%)
+>>>>  16:       5259.1633       5928.0833 (   12.72%)
+>>>>  32:      10368.6333      10566.8667 (    1.91%)
+>>>>  64:       7868.7700       8182.0100 (    3.98%)
+>>>> 128:       6528.5733       6801.8000 (    4.19%)
+>>>> tbench results (node 0-1):
+>>>>               vanilla                    patched
+>>>>   1:        329.2757        380.8907 (   15.68%)
+>>>>   4:       1327.7900       1494.5300 (   12.56%)
+>>>>   8:       2627.2133       2917.1233 (   11.03%)
+>>>>  16:       5201.3367       5835.9233 (   12.20%)
+>>>>  32:       8811.8500      11154.2000 (   26.58%)
+>>>>  64:      15832.4000      19643.7667 (   24.07%)
+>>>> 128:      12605.5667      14639.5667 (   16.14%)
+>>>> netperf results TCP_RR (node 0):
+>>>>              baseline                    patched
+>>>>   1:      77302.8667      92172.2100 (   19.24%)
+>>>>   4:      78724.9200      91581.3100 (   16.33%)
+>>>>   8:      79168.1296      91091.7942 (   15.06%)
+>>>>  16:      81079.4200      90546.5225 (   11.68%)
+>>>>  32:      82201.5799      78910.4982 (   -4.00%)
+>>>>  64:      29539.3509      29131.4698 (   -1.38%)
+>>>> 128:      12082.7522      11956.7705 (   -1.04%)
+>>>> netperf results TCP_RR (node 0-1):
+>>>>              baseline                    patched
+>>>>   1:      78340.5233      92101.8733 (   17.57%)
+>>>>   4:      79644.2483      91326.7517 (   14.67%)
+>>>>   8:      79557.4313      90737.8096 (   14.05%)
+>>>>  16:      79215.5304      90568.4542 (   14.33%)
+>>>>  32:      78999.3983      85460.6044 (    8.18%)
+>>>>  64:      74198.9494      74325.4361 (    0.17%)
+>>>> 128:      27397.4810      27757.5471 (    1.31%)
+>>>> netperf results UDP_RR (node 0):
+>>>>              baseline                    patched
+>>>>   1:      95721.9367     111546.1367 (   16.53%)
+>>>>   4:      96384.2250     110036.1408 (   14.16%)
+>>>>   8:      97460.6546     109968.0883 (   12.83%)
+>>>>  16:      98876.1687     109387.8065 (   10.63%)
+>>>>  32:     104364.6417     105241.6767 (    0.84%)
+>>>>  64:      37502.6246      37451.1204 (   -0.14%)
+>>>> 128:      14496.1780      14610.5538 (    0.79%)
+>>>> netperf results UDP_RR (node 0-1):
+>>>>              baseline                    patched
+>>>>   1:      96176.1633     111397.5333 (   15.83%)
+>>>>   4:      94758.5575     105681.7833 (   11.53%)
+>>>>   8:      94340.2200     104138.3613 (   10.39%)
+>>>>  16:      95208.5285     106714.0396 (   12.08%)
+>>>>  32:      74745.9028     100713.8764 (   34.74%)
+>>>>  64:      59351.4977      73536.1434 (   23.90%)
+>>>> 128:      23755.4971      26648.7413 (   12.18%)
+>>>>
+>>>> Note neither Kunpeng920 nor x86 Jacobsville supports SMT, so the SMT branch
+>>>> in the code has not been tested but it supposed to work.
+>>>>
+>>>> Chen Yu also noticed this will improve the performance of tbench and
+>>>> netperf on a 24 CPUs Jacobsville machine, there are 4 CPUs in one
+>>>> cluster sharing L2 Cache.
+>>>>
+>>>> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+>>>> [https://lore.kernel.org/lkml/Ytfjs+m1kUs0ScSn@worktop.programming.kicks-ass.net]
+>>>> Tested-by: Yicong Yang <yangyicong@hisilicon.com>
+>>>> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+>>>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>>>> Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
+>>>> Reviewed-by: Chen Yu <yu.c.chen@intel.com>
+>>>> ---
+>>>>  kernel/sched/fair.c     | 59 +++++++++++++++++++++++++++++++++++++----
+>>>>  kernel/sched/sched.h    |  1 +
+>>>>  kernel/sched/topology.c | 12 +++++++++
+>>>>  3 files changed, 67 insertions(+), 5 deletions(-)
+>>>>
+>>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>>>> index b3e25be58e2b..d91bf64f81f5 100644
+>>>> --- a/kernel/sched/fair.c
+>>>> +++ b/kernel/sched/fair.c
+>>>> @@ -7012,6 +7012,30 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+>>>>  		}
+>>>>  	}
+>>>>  
+>>>> +	if (static_branch_unlikely(&sched_cluster_active)) {
+>>>> +		struct sched_group *sg = sd->groups;
+>>>> +
+>>>> +		if (sg->flags & SD_CLUSTER) {
+>>>> +			for_each_cpu_wrap(cpu, sched_group_span(sg), target + 1) {
+>>>> +				if (!cpumask_test_cpu(cpu, cpus))
+>>>> +					continue;
+>>>> +
+>>>> +				if (has_idle_core) {
+>>>> +					i = select_idle_core(p, cpu, cpus, &idle_cpu);
+>>>> +					if ((unsigned int)i < nr_cpumask_bits)
+>>>> +						return i;
+>>>> +				} else {
+>>>> +					if (--nr <= 0)
+>>>> +						return -1;
+>>>> +					idle_cpu = __select_idle_cpu(cpu, p);
+>>>> +					if ((unsigned int)idle_cpu < nr_cpumask_bits)
+>>>> +						return idle_cpu;
+>>>> +				}
+>>>> +			}
+>>>> +			cpumask_andnot(cpus, cpus, sched_group_span(sg));
+>>>> +		}
+>>>> +	}
+>>>> +
+>>>>  	for_each_cpu_wrap(cpu, cpus, target + 1) {
+>>>>  		if (has_idle_core) {
+>>>>  			i = select_idle_core(p, cpu, cpus, &idle_cpu);
+>>>> @@ -7019,7 +7043,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+>>>>  				return i;
+>>>>  
+>>>>  		} else {
+>>>> -			if (!--nr)
+>>>> +			if (--nr <= 0)
+>>>>  				return -1;
+>>>>  			idle_cpu = __select_idle_cpu(cpu, p);
+>>>>  			if ((unsigned int)idle_cpu < nr_cpumask_bits)
+>>>> @@ -7121,7 +7145,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>>>  	bool has_idle_core = false;
+>>>>  	struct sched_domain *sd;
+>>>>  	unsigned long task_util, util_min, util_max;
+>>>> -	int i, recent_used_cpu;
+>>>> +	int i, recent_used_cpu, prev_aff = -1;
+>>>>  
+>>>>  	/*
+>>>>  	 * On asymmetric system, update task utilization because we will check
+>>>> @@ -7148,8 +7172,14 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>>>  	 */
+>>>>  	if (prev != target && cpus_share_cache(prev, target) &&
+>>>>  	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
+>>>> -	    asym_fits_cpu(task_util, util_min, util_max, prev))
+>>>> -		return prev;
+>>>> +	    asym_fits_cpu(task_util, util_min, util_max, prev)) {
+>>>> +		if (!static_branch_unlikely(&sched_cluster_active))
+>>>> +			return prev;
+>>>> +
+>>>> +		if (cpus_share_resources(prev, target))
+>>>> +			return prev;
+>>>
+>>> I have one minor question, previously Peter mentioned that he wants to get rid of the
+>>> percpu sd_share_id, not sure if he means that not using it in select_idle_cpu()
+>>> or remove that variable completely to not introduce extra space? 
+>>> Hi Peter, could you please give us more hints on this? thanks.
+>>>
+>>> If we wants to get rid of this variable, would this work?
+>>>
+>>> 	if ((sd->groups->flags & SD_CLUSTER) &&
+>>> 	    cpumask_test_cpu(prev, sched_group_span(sd->groups))
+>>> 		return prev
+>>>
+>>
+>> In the current implementation, nop, we haven't deferenced the @sd yet and we don't
+>> need to if scanning is not needed.
+>>
+>> Since we're on the quick path without scanning here, I wonder it'll be a bit more
+>> efficient to use a per-cpu id rather than deference the rcu and do the bitmap
+>> computation.
+>>
+> 
+> Dereference is a memory barrier and the bitmap is of one operation/instruction which
+> should not have too much overhead. But anyway I've tested this patch on Jacobsville
+> and the data looks OK to me:
+> 
+> 
+> netperf
+> =======
+> case            	load    	baseline(std%)	compare%( std%)
+> TCP_RR          	6-threads	 1.00 (  0.84)	 -0.32 (  0.71)
+> TCP_RR          	12-threads	 1.00 (  0.35)	 +1.52 (  0.42)
+> TCP_RR          	18-threads	 1.00 (  0.31)	 +3.89 (  0.38)
+> TCP_RR          	24-threads	 1.00 (  0.87)	 -0.34 (  0.75)
+> TCP_RR          	30-threads	 1.00 (  5.84)	 +0.71 (  4.85)
+> TCP_RR          	36-threads	 1.00 (  4.84)	 +0.24 (  3.30)
+> TCP_RR          	42-threads	 1.00 (  3.75)	 +0.26 (  3.56)
+> TCP_RR          	48-threads	 1.00 (  1.51)	 +0.45 (  1.28)
+> UDP_RR          	6-threads	 1.00 (  0.65)	+10.12 (  0.63)
+> UDP_RR          	12-threads	 1.00 (  0.20)	 +9.91 (  0.25)
+> UDP_RR          	18-threads	 1.00 ( 11.13)	+16.77 (  0.49)
+> UDP_RR          	24-threads	 1.00 ( 12.38)	 +2.52 (  0.98)
+> UDP_RR          	30-threads	 1.00 (  5.63)	 -0.34 (  4.38)
+> UDP_RR          	36-threads	 1.00 ( 19.12)	 -0.89 (  3.30)
+> UDP_RR          	42-threads	 1.00 (  2.96)	 -1.41 (  3.17)
+> UDP_RR          	48-threads	 1.00 ( 14.08)	 -0.77 ( 10.77)
+> 
+> Good improvement in several cases. No regression is detected.
+> 
+> tbench
+> ======
+> case            	load    	baseline(std%)	compare%( std%)
+> loopback        	6-threads	 1.00 (  0.41)	 +1.63 (  0.17)
+> loopback        	12-threads	 1.00 (  0.18)	 +4.39 (  0.12)
+> loopback        	18-threads	 1.00 (  0.43)	+10.42 (  0.18)
+> loopback        	24-threads	 1.00 (  0.38)	 +1.24 (  0.38)
+> loopback        	30-threads	 1.00 (  0.24)	 +0.60 (  0.14)
+> loopback        	36-threads	 1.00 (  0.17)	 +0.63 (  0.17)
+> loopback        	42-threads	 1.00 (  0.26)	 +0.76 (  0.08)
+> loopback        	48-threads	 1.00 (  0.23)	 +0.91 (  0.10)
+> 
+> Good improvement in 18-threads case. No regression is detected.
+> 
+> hackbench
+> =========
+> case            	load    	baseline(std%)	compare%( std%)
+> process-pipe    	1-groups	 1.00 (  0.52)	 +9.26 (  0.57)
+> process-pipe    	2-groups	 1.00 (  1.55)	 +6.92 (  0.56)
+> process-pipe    	4-groups	 1.00 (  1.36)	 +4.80 (  3.78)
+> process-sockets 	1-groups	 1.00 (  2.16)	 -6.35 (  1.10)
+> process-sockets 	2-groups	 1.00 (  2.34)	 -6.35 (  5.52)
+> process-sockets 	4-groups	 1.00 (  0.35)	 -5.64 (  1.19)
+> threads-pipe    	1-groups	 1.00 (  0.82)	 +8.00 (  0.00)
+> threads-pipe    	2-groups	 1.00 (  0.47)	 +6.91 (  0.50)
+> threads-pipe    	4-groups	 1.00 (  0.45)	 +8.92 (  2.27)
+> threads-sockets 	1-groups	 1.00 (  1.02)	 -4.13 (  2.30)
+> threads-sockets 	2-groups	 1.00 (  0.34)	 -1.86 (  2.39)
+> threads-sockets 	4-groups	 1.00 (  1.51)	 -3.99 (  1.59)
+> 
+> Pros and cons for hackbench. There is improvement for pipe mode, but
+> slight regression on sockets mode. I think this is within acceptable range.
+> 
+> schbench
+> ========
+> case            	load    	baseline(std%)	compare%( std%)
+> normal          	1-mthreads	 1.00 (  0.00)	 +0.00 (  0.00)
+> normal          	2-mthreads	 1.00 (  0.00)	 +0.00 (  0.00)
+> normal          	4-mthreads	 1.00 (  3.82)	 +0.00 (  3.82)
+> 
+> There is impact to schbench at all, and the results are quite stable.
+> 
+> For the whole series:
+> 
+> Tested-by: Chen Yu <yu.c.chen@intel.com>
+> 
 
-This leads to xilinx-psgtr "PLL lock timeout" on interface bringup, as
-the power management controller power down the entire FPD (including
-SERDES) if none of the FPD devices are in use and serdes is not
-initialized on resume.
+Thanks for testing.
 
-$ sudo rtcwake -m no -s 120 -v
-$ sudo systemctl suspend  <this does ifconfig eth1 down>
-$ ifconfig eth1 up
-xilinx-psgtr fd400000.phy: lane 0 (type 10, protocol 5): PLL lock timeout
-phy phy-fd400000.phy.0: phy poweron failed --> -110
-
-macb driver is called in this way:
-1. macb_close: Stop network interface. In this function, it
-   reset MACB IP and disables PHY and network interface.
-
-2. macb_suspend: It is called in kernel suspend flow. But because
-   network interface has been disabled(netif_running(ndev) is
-   false), it does nothing and returns directly;
-
-3. System goes into suspend state. Some time later, system is
-   waken up by RTC wakeup device;
-
-4. macb_resume: It does nothing because network interface has
-   been disabled;
-
-5. macb_open: It is called to enable network interface again. ethernet
-   interface is initialized in this API but serdes which is power-off
-   by PMUFW during FPD-off suspend is not initialized again and so
-   we hit GT PLL lock issue on open.
-
-To resolve this PLL timeout issue always do PS GTR initialization
-when ethernet device is configured as non-wakeup source.
-
-Fixes: f22bd29ba19a ("net: macb: Fix ZynqMP SGMII non-wakeup source resume failure")
-Fixes: 8b73fa3ae02b ("net: macb: Added ZynqMP-specific initialization")
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
----
- drivers/net/ethernet/cadence/macb_main.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index f6a0f12a6d52..82929ee76739 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -5194,6 +5194,9 @@ static int __maybe_unused macb_suspend(struct device *dev)
- 	unsigned int q;
- 	int err;
- 
-+	if (!device_may_wakeup(&bp->dev->dev))
-+		phy_exit(bp->sgmii_phy);
-+
- 	if (!netif_running(netdev))
- 		return 0;
- 
-@@ -5254,7 +5257,6 @@ static int __maybe_unused macb_suspend(struct device *dev)
- 	if (!(bp->wol & MACB_WOL_ENABLED)) {
- 		rtnl_lock();
- 		phylink_stop(bp->phylink);
--		phy_exit(bp->sgmii_phy);
- 		rtnl_unlock();
- 		spin_lock_irqsave(&bp->lock, flags);
- 		macb_reset_hw(bp);
-@@ -5284,6 +5286,9 @@ static int __maybe_unused macb_resume(struct device *dev)
- 	unsigned int q;
- 	int err;
- 
-+	if (!device_may_wakeup(&bp->dev->dev))
-+		phy_init(bp->sgmii_phy);
-+
- 	if (!netif_running(netdev))
- 		return 0;
- 
-@@ -5344,8 +5349,6 @@ static int __maybe_unused macb_resume(struct device *dev)
- 	macb_set_rx_mode(netdev);
- 	macb_restore_features(bp);
- 	rtnl_lock();
--	if (!device_may_wakeup(&bp->dev->dev))
--		phy_init(bp->sgmii_phy);
- 
- 	phylink_start(bp->phylink);
- 	rtnl_unlock();
--- 
-2.34.1
+Yicong.
 
