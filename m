@@ -2,242 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF857719CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 07:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5987719D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbjHGF6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 01:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57264 "EHLO
+        id S230476AbjHGGAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230483AbjHGF57 (ORCPT
+        with ESMTP id S229969AbjHGGAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 01:57:59 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC2C170B;
-        Sun,  6 Aug 2023 22:57:55 -0700 (PDT)
-X-QQ-mid: bizesmtp70t1691387853tz776qn7
-Received: from linux-lab-host.localdomain ( [116.30.130.12])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Mon, 07 Aug 2023 13:57:32 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: 7jw2iSiCazrDRCkOXuADr5FHLOFZXWkxZuDnONNhh+oqJ3Wt3OCZM/MgwcO+4
-        SdEQqXlZfjCMNUfrOjH6EsTZNBaCEFYx3otcNH7v5TDzYW7FWNZWS261/ej8VXbXpYCCd1u
-        Kw+KjhyW45sQPfcOrJvzb3X9Zco/k868fgrfmk2KKzl+dY/omThbOAgqqsUQ4DVUYkDWE9s
-        j3pLbl3UNGMlO6CeOBQWyubYCqgdwfS4qkQcMxaH1Lq7uChjjUC632J8PR1sbXU82/v/4LT
-        1RFhMtFgl1aK1kkzgn/Gc2jdODnpPOsXzNcQniiVjzpJC3GkYRnHrC3jxy1lZEQTtA/kPXi
-        YG6EESBIXs5g/inWtWhT/oxSqvRQrGCypjQI3lblntTdTUtlNOiwiBz5Up/dzlwUSPg7nUb
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 8095711180092042174
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, david.laight@aculab.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        thomas@t-8ch.de
-Subject: [PATCH v3] tools/nolibc: fix up size inflate regression
-Date:   Mon,  7 Aug 2023 13:57:32 +0800
-Message-Id: <8eaab5da2dcbba42e3f3efc2ae686a22c95f84f0.1691386601.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 7 Aug 2023 02:00:18 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1279A10F6
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:00:16 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe12820bffso35033385e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 23:00:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691388014; x=1691992814;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vBFHuRwuyk/hnPCEfjgfoHOKPA/ytrkp+MGxY8mmrKo=;
+        b=ing8uEaEI6AyFRCS86oxZCzrhNFZrz8eWqmEwOAVETm0oEwqoMzRaZXtrUhyLmH3Ue
+         g432XZJQAydL1L9hVsnpW3b/J1BEyU/z9K248mkSwpWkY1OTTS/k4ELkhyxrwu6vD65X
+         f3ppPjIGcQq4lsq4p65kMnKCSLTsj24SMvEW06akzsasr1T2i6xPCOiV0vobRAon5XcF
+         YAI1Ze+ANA8HZegTTarYMIwxlK2j3hTsPYgnSX3AFQ2Qo3TVh5tPWJDH2tA9MbW+eCnW
+         7HtnLl43Ld40ka3QcPe+iqMI9sA79z4emvVMdYCsMhPKb7BQDMFRlTpL2oL4q7lFc71+
+         kU4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691388014; x=1691992814;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vBFHuRwuyk/hnPCEfjgfoHOKPA/ytrkp+MGxY8mmrKo=;
+        b=NBgZ8xK9C0fV3U0WeqkPY0zv+QoWSRMdNy7jMXTVXbPRndAO9WlwWA6IdvgQxB5PEh
+         gY1CKN/pHM9p6HijU5gs34o7evDC66G6dUB+oDmJE1hpqZzeXsLSmUTTVrq6x0Dn1xqH
+         v/bkriaHdOmeUPjic6qMl3Zs0OgGff0S6F34ofkYDmrErwX9ylhhoMJeP1i7WKVDXX66
+         5EF9V9HuxJzlLk95nQb3cEOVgVfCnndgscbozVTQC9EvU8PHZ2rV+zQwh8Vhy35AcjQ6
+         Q8jg3ESGoXHCbelLpF+PKzXfOCYTk+ChWPLEEfFo550ijAbuca/CWRyAypOrUVvp6zrY
+         QN2w==
+X-Gm-Message-State: AOJu0YwbLumD+EHAd7PdixfBDtg2qCUjqhwtSIZAH/QSeS6vQqLyZyCs
+        U/mzCimrHWbBHCVXRLrTmWUIUeJsU8DXt7GcfqUsMw==
+X-Google-Smtp-Source: AGHT+IHDpKikMK162S/f6hlLKBlIolxb1nyfPLWImrljpKPeBJjZEK+kRSf/yDbSwFjsCHJRe15fR+4BgfkRl3Gf0qM=
+X-Received: by 2002:a1c:ed03:0:b0:3fb:a102:6d7a with SMTP id
+ l3-20020a1ced03000000b003fba1026d7amr4975049wmh.28.1691388014380; Sun, 06 Aug
+ 2023 23:00:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com> <20230805175027.50029-4-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230805175027.50029-4-andriy.shevchenko@linux.intel.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 7 Aug 2023 08:00:00 +0200
+Message-ID: <CANpmjNPN9JTc9WBSSPTCSmc2FphJ2FK7=x7wkwh3hv+X+E_C8A@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] lib/vsprintf: Declare no_hash_pointers in sprintf.h
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As reported and suggested by Willy, the inline __sysret() helper
-introduces three types of conversions and increases the size:
+On Sat, 5 Aug 2023 at 19:49, Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> Sparse is not happy to see non-static variable without declaration:
+> lib/vsprintf.c:61:6: warning: symbol 'no_hash_pointers' was not declared. Should it be static?
+>
+> Declare respective variable in the sprintf.h. With this, add a comment
+> to discourage its use if no real need.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-(1) the "unsigned long" argument to __sysret() forces a sign extension
-from all sys_* functions that used to return 'int'
+Acked-by: Marco Elver <elver@google.com>
 
-(2) the comparison with the error range now has to be performed on a
-'unsigned long' instead of an 'int'
-
-(3) the return value from __sysret() is a 'long' (note, a signed long)
-which then has to be turned back to an 'int' before being returned by the
-caller to satisfy the caller's prototype.
-
-To fix up this, firstly, let's use macro instead of inline function to
-preserves the input type and avoids these useless conversions (1), (3).
-
-Secondly, comparison to -MAX_ERRNO inflicts on all integer returns where
-we could previously keep a simple sign comparison, let's use a new
-is_signed_type() macro from include/linux/compiler.h to limit the
-comparision to -MAX_ERRNO (2) only on demand and preserves a simple sign
-comparision for most of the cases as before.
-
-Thirdly, fix up the following warning by an explicit conversion and let
-__sysret() be able to accept the (void *) type of argument and return
-value with the same (void *) type:
-
-    sysroot/powerpc/include/sys.h: In function 'sbrk':
-    sysroot/powerpc/include/sys.h:104:16: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-      104 |         return (void *)__sysret(-ENOMEM);
-
-Fourthly, to further workaround the argument type with 'const', must use
-__auto_type for a new enough gcc versions and use 'long' for the old gcc
-versions as before.
-
-Here reports the size testing result with nolibc-test:
-
-before:
-
-    // ppc64le
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      27916	      8	     80	  28004	   6d64	nolibc-test
-
-    // mips
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      23276	     64	     64	  23404	   5b6c	nolibc-test
-
-after:
-
-    // ppc64le
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      27736	      8	     80	  27824	   6cb0	nolibc-test
-
-    // mips
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      23036	     64	     64	  23164	   5a7c	nolibc-test
-
-Suggested-by: Willy Tarreau <w@1wt.eu>
-Link: https://lore.kernel.org/lkml/20230806095846.GB10627@1wt.eu/
-Link: https://lore.kernel.org/lkml/20230806134348.GA19145@1wt.eu/
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
-
-Hi, Willy
-
-To increase readability, v3 further defines a
-__GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT macro for gcc >= 11.0
-(ABI_VERSION >= 1016) who has __auto_type with 'const' support.
-
-When this macro is defined, provides a __sysret version with
-__auto_type, otherwise, use a fixed 'long' type as a fallback.
-
-Tested for all of the nolibc supported architectures with Arnd's
-13.2.0 toolchains. and also for x86_64 with gcc-4.8 and gcc-9, no
-compile failures, no compile warnings, no running failures.
-
-Changes from v2 --> v3:
-
-* define a __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT for gcc >= 11.0 (ABI_VERSION >= 1016)
-* split __sysret() to two versions by the macro instead of a mixed unified and unreadable version
-* use shorter __ret instead of __sysret_arg
-
-Changes from v1 --> v2:
-
-* fix up argument with 'const' in the type
-* support "void *" argument
-
-v2: https://lore.kernel.org/lkml/95fe3e732f455fab653fe1427118d905e4d04257.1691339836.git.falcon@tinylab.org/
-v1: https://lore.kernel.org/lkml/20230806131921.52453-1-falcon@tinylab.org/
-
----
- tools/include/nolibc/sys.h | 66 +++++++++++++++++++++++++++++++-------
- 1 file changed, 55 insertions(+), 11 deletions(-)
-
-diff --git a/tools/include/nolibc/sys.h b/tools/include/nolibc/sys.h
-index 56f63eb48a1b..b137f7771db9 100644
---- a/tools/include/nolibc/sys.h
-+++ b/tools/include/nolibc/sys.h
-@@ -35,15 +35,59 @@
-  * (src/internal/syscall_ret.c) and glibc (sysdeps/unix/sysv/linux/sysdep.h)
-  */
- 
--static __inline__ __attribute__((unused, always_inline))
--long __sysret(unsigned long ret)
--{
--	if (ret >= (unsigned long)-MAX_ERRNO) {
--		SET_ERRNO(-(long)ret);
--		return -1;
--	}
--	return ret;
--}
-+/*
-+ * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
-+ * bool and also pointer types. (from include/linux/compiler.h)
-+ */
-+#define __is_signed_type(type) (((type)(-1)) < (type)1)
-+
-+/* __auto_type is used instead of __typeof__ to workaround the build error
-+ * 'error: assignment of read-only variable' when the argument has 'const' in
-+ * the type, but __auto_type is a new feature from newer gcc version and it
-+ * only works with 'const' from gcc 11.0 (__GXX_ABI_VERSION = 1016)
-+ * https://gcc.gnu.org/legacy-ml/gcc-patches/2013-11/msg01378.html
-+ */
-+
-+#if __GXX_ABI_VERSION >= 1016
-+#define __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT
-+#endif
-+
-+#ifdef __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT
-+#define __sysret(arg)                                                    \
-+({                                                                       \
-+	__auto_type __ret = (arg);                                       \
-+	if (__is_signed_type(__typeof__(arg))) {                         \
-+		if (__ret < 0) {                                         \
-+			SET_ERRNO(-(long)__ret);                         \
-+			__ret = (__typeof__(arg))(-1L);                  \
-+		}                                                        \
-+	} else {                                                         \
-+		if ((unsigned long)__ret >= (unsigned long)-MAX_ERRNO) { \
-+			SET_ERRNO(-(long)__ret);                         \
-+			__ret = (__typeof__(arg))(-1L);                  \
-+		}                                                        \
-+	}                                                                \
-+	__ret;                                                           \
-+})
-+
-+#else  /* ! __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT */
-+#define __sysret(arg)                                                    \
-+({                                                                       \
-+	long __ret = (long)(arg);                                        \
-+	if (__is_signed_type(__typeof__(arg))) {                         \
-+		if (__ret < 0) {                                         \
-+			SET_ERRNO(-__ret);                               \
-+			__ret = -1L;                                     \
-+		}                                                        \
-+	} else {                                                         \
-+		if ((unsigned long)__ret >= (unsigned long)-MAX_ERRNO) { \
-+			SET_ERRNO(-__ret);                               \
-+			__ret = -1L;                                     \
-+		}                                                        \
-+	}                                                                \
-+	(__typeof__(arg))__ret;                                          \
-+})
-+#endif /* ! __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT */
- 
- /* Functions in this file only describe syscalls. They're declared static so
-  * that the compiler usually decides to inline them while still being allowed
-@@ -94,7 +138,7 @@ void *sbrk(intptr_t inc)
- 	if (ret && sys_brk(ret + inc) == ret + inc)
- 		return ret + inc;
- 
--	return (void *)__sysret(-ENOMEM);
-+	return __sysret((void *)-ENOMEM);
- }
- 
- 
-@@ -682,7 +726,7 @@ void *sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
- static __attribute__((unused))
- void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
- {
--	return (void *)__sysret((unsigned long)sys_mmap(addr, length, prot, flags, fd, offset));
-+	return __sysret(sys_mmap(addr, length, prot, flags, fd, offset));
- }
- 
- static __attribute__((unused))
--- 
-2.25.1
-
+> ---
+>  include/linux/sprintf.h | 2 ++
+>  lib/test_printf.c       | 2 --
+>  mm/kfence/report.c      | 3 +--
+>  3 files changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/linux/sprintf.h b/include/linux/sprintf.h
+> index 9ca23bcf9f42..33dcbec71925 100644
+> --- a/include/linux/sprintf.h
+> +++ b/include/linux/sprintf.h
+> @@ -20,6 +20,8 @@ __printf(2, 0) const char *kvasprintf_const(gfp_t gfp, const char *fmt, va_list
+>  __scanf(2, 3) int sscanf(const char *, const char *, ...);
+>  __scanf(2, 0) int vsscanf(const char *, const char *, va_list);
+>
+> +/* These are for specific cases, do not use without real need */
+> +extern bool no_hash_pointers;
+>  int no_hash_pointers_enable(char *str);
+>
+>  #endif /* _LINUX_KERNEL_SPRINTF_H */
+> diff --git a/lib/test_printf.c b/lib/test_printf.c
+> index 5adca19d34e2..cf861dc22169 100644
+> --- a/lib/test_printf.c
+> +++ b/lib/test_printf.c
+> @@ -39,8 +39,6 @@ KSTM_MODULE_GLOBALS();
+>  static char *test_buffer __initdata;
+>  static char *alloced_buffer __initdata;
+>
+> -extern bool no_hash_pointers;
+> -
+>  static int __printf(4, 0) __init
+>  do_test(int bufsize, const char *expect, int elen,
+>         const char *fmt, va_list ap)
+> diff --git a/mm/kfence/report.c b/mm/kfence/report.c
+> index 197430a5be4a..c509aed326ce 100644
+> --- a/mm/kfence/report.c
+> +++ b/mm/kfence/report.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/printk.h>
+>  #include <linux/sched/debug.h>
+>  #include <linux/seq_file.h>
+> +#include <linux/sprintf.h>
+>  #include <linux/stacktrace.h>
+>  #include <linux/string.h>
+>  #include <trace/events/error_report.h>
+> @@ -26,8 +27,6 @@
+>  #define ARCH_FUNC_PREFIX ""
+>  #endif
+>
+> -extern bool no_hash_pointers;
+> -
+>  /* Helper function to either print to a seq_file or to console. */
+>  __printf(2, 3)
+>  static void seq_con_printf(struct seq_file *seq, const char *fmt, ...)
+> --
+> 2.40.0.1.gaa8946217a0b
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20230805175027.50029-4-andriy.shevchenko%40linux.intel.com.
