@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FE177249B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B483772469
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233725AbjHGMpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 08:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42864 "EHLO
+        id S231208AbjHGMnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbjHGMon (ORCPT
+        with ESMTP id S229469AbjHGMnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 08:44:43 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050:0:465::202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3C2172C;
-        Mon,  7 Aug 2023 05:44:26 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4RKGGv3BnLz9sW7;
-        Mon,  7 Aug 2023 14:44:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
-        s=MBO0001; t=1691412263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eujE6oPZv+zmJCFxuwNd5VPBn5IlE6vd2cc/1IpSkXc=;
-        b=Y1z6Z9dbD+y1cpjLhNyi5Zd1auL26Zaea26L4auYxOnb7gY/t1T63Qn1SspKzzzaWFymKv
-        K/bqQXnYbTDFmS9MHm38d14vse6oAdAWh/UxdZthEgZVkCuI25ovn+rQdU9Z+kjuQz2RoD
-        pbohH+fLmF7Td9avv8QkGczZJOsGczso5j6KWRfr35yVS38LfgyI5ROYLZRoIdl0zjGsvx
-        xsCAiwrsQV0cbPY2imTw9jpLz0oZUWqhhZAmVeoGZpb2CiLyTZ9HwTddNEFTRP4A6LaftN
-        dSiqazAAqdEzi55CxIDcX/9jaSWqM/LYHvvaMiNDOrx0zEp5Uz0I23arZ+fUpg==
-From:   Frank Oltmanns <frank@oltmanns.dev>
-Date:   Mon, 07 Aug 2023 14:43:44 +0200
-Subject: [PATCH v6 11/11] clk: sunxi-ng: nkm: Prefer current parent rate
+        Mon, 7 Aug 2023 08:43:49 -0400
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C1710F7
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:43:48 -0700 (PDT)
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3a3a70425b4so7470669b6e.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 05:43:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691412227; x=1692017027;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wAEWqP5gKB8uMLpoS6Eqg26cWLFr6ZbPDCWQagcLkqw=;
+        b=VHXU4MslkHg8tu4pDD/rIWQkDcUeKchMw9fLpp0T3CEri0FOEV5cXxC1dB9YdhIwJT
+         +e0rqMWB95iZQO8Q7H/Uz3FPuBlZF40un5FlFyizgU3i1Jf7sbndRwqDh7E/zIrHxtHW
+         FmzI7VDdUaK9bGQy/2bPrlC4x77unh2JTGbtiEI/oDaM1Ds/T4udhim1Bfdt4pf4h5RY
+         RUhkI7YBV0hOta8Mnzsk1ZDF8B3MbvxoyFd8UGmvbh99bS2OomgH+R4HnzTkrG70fwwi
+         +w010IKbMzR4IaRuUMKNViaIi2XhwcYUz6V77msG/bFbVPh/03EctL3BD/TI4ZQvLk5K
+         77sA==
+X-Gm-Message-State: AOJu0Yyi5BjjOL4vHnCiTILBWss1v896sh2EnzxgUzm0b6lYga+MuHpk
+        E7gv0CONBYZzfiFIrb+lRgeDPgfoRd2U8HOwnMhnE44Yr2C4
+X-Google-Smtp-Source: AGHT+IHoJoMb/0e51YPNNTuP6jvIId9mMmDNqwQpwY5ckCNyEbt8LKrux+lqYhBfIuZKO5MvEUix56dTzWkvf3fG+sopLtXkkSGO
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230807-pll-mipi_set_rate_parent-v6-11-f173239a4b59@oltmanns.dev>
-References: <20230807-pll-mipi_set_rate_parent-v6-0-f173239a4b59@oltmanns.dev>
-In-Reply-To: <20230807-pll-mipi_set_rate_parent-v6-0-f173239a4b59@oltmanns.dev>
-To:     Maxime Ripard <mripard@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Roman Beranek <me@crly.cz>
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Frank Oltmanns <frank@oltmanns.dev>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=975; i=frank@oltmanns.dev;
- h=from:subject:message-id; bh=nX7O6HIGcIL6L1G1S3ONo9eulQgwHWxaNoxqcrZCmdE=;
- b=owEB7QES/pANAwAIAZppogiUStPHAcsmYgBk0OcLfaRyp447JpXrEZFmI4EHjbwF9UWfiLNWq
- QOaFHIRNpmJAbMEAAEIAB0WIQQC/SV7f5DmuaVET5aaaaIIlErTxwUCZNDnCwAKCRCaaaIIlErT
- x60gC/9o+RMltX9ZY6ftQCMuJXLFJlqfRCHw9zBPZWmougN1+w6ltG1Tp0m/y2ITx6pTgi25D6+
- KD9Ipv4gUg0pfpZxgUbIibzgzLktFCj8nsWuwP6RoczbZf2cz5EC6uJPCppRY8n8VoCYJ3MQXCj
- AkFvx/V/K+DxWpCdqbaBhBXC04tGPbx/UehIXdK/1dgtg17uq4t3lM+2tCN9i413FTp9mbpR/1X
- a2Yb9ESG+SVVTmTUy1VkBBofGvCCN0Mymk/vGv2ofXjuAuo2xZ5Wy47wkKIvy+XV9VG+u6IY3Bi
- ltLW6QAHXbhdtcCFk4YCSakotisQcD7kTSmJc31x0LZq0LwzbJ3bfWVyLWkEwlNDxkA9SPQPOEE
- IXQ56SwHsSRbtoC5ovgn13hmyRv0o9W6nerBobz1bNYtciMCLURFL74OfvCueBeHym+XjUYp5fS
- KPWPeR89A3oydQ4e4zuHAgXaEELjn8CvW2H96XYViGCxkQZuBFiSMCAQWS1Y/BA+/ZY/Q=
-X-Developer-Key: i=frank@oltmanns.dev; a=openpgp;
- fpr=02FD257B7F90E6B9A5444F969A69A208944AD3C7
-X-Rspamd-Queue-Id: 4RKGGv3BnLz9sW7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:150d:b0:3a3:efef:5c74 with SMTP id
+ u13-20020a056808150d00b003a3efef5c74mr16036098oiw.8.1691412227608; Mon, 07
+ Aug 2023 05:43:47 -0700 (PDT)
+Date:   Mon, 07 Aug 2023 05:43:47 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fed3d506025498b2@google.com>
+Subject: [syzbot] Monthly udf report (Aug 2023)
+From:   syzbot <syzbot+listb71671ff52af662862e3@syzkaller.appspotmail.com>
+To:     jack@suse.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to ccu_mp, if the current parent rate allows getting the ideal
-rate, prefer to not change the parent clock's rate.
+Hello udf maintainers/developers,
 
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+This is a 31-day syzbot report for the udf subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/udf
+
+During the period, 2 new issues were detected and 0 were fixed.
+In total, 19 issues are still open and 18 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 1068    Yes   WARNING in udf_truncate_extents
+                  https://syzkaller.appspot.com/bug?extid=43fc5ba6dcb33e3261ca
+<2> 69      Yes   KASAN: use-after-free Write in udf_close_lvid
+                  https://syzkaller.appspot.com/bug?extid=60864ed35b1073540d57
+<3> 12      Yes   KASAN: use-after-free Read in udf_finalize_lvid
+                  https://syzkaller.appspot.com/bug?extid=46073c22edd7f242c028
+<4> 5       Yes   WARNING in __udf_add_aext (2)
+                  https://syzkaller.appspot.com/bug?extid=e381e4c52ca8a53c3af7
+<5> 3       Yes   KASAN: slab-out-of-bounds Write in udf_adinicb_writepage
+                  https://syzkaller.appspot.com/bug?extid=a3db10baf0c0ee459854
+<6> 1       No    UBSAN: array-index-out-of-bounds in udf_process_sequence
+                  https://syzkaller.appspot.com/bug?extid=abb7222a58e4ebc930ad
+
 ---
- drivers/clk/sunxi-ng/ccu_nkm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu_nkm.c
-index a714dcf0dfc1..eed64547ad42 100644
---- a/drivers/clk/sunxi-ng/ccu_nkm.c
-+++ b/drivers/clk/sunxi-ng/ccu_nkm.c
-@@ -34,7 +34,8 @@ static unsigned long ccu_nkm_find_best_with_parent_adj(struct ccu_common *common
- 
- 				tmp_rate = tmp_parent * _n * _k / _m;
- 
--				if (ccu_is_better_rate(common, rate, tmp_rate, best_rate)) {
-+				if (ccu_is_better_rate(common, rate, tmp_rate, best_rate) ||
-+				    (tmp_parent == *parent && tmp_rate == best_rate)) {
- 					best_rate = tmp_rate;
- 					best_parent_rate = tmp_parent;
- 					best_n = _n;
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
--- 
-2.41.0
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
+You may send multiple commands in a single email message.
