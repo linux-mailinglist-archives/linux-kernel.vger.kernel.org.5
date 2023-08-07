@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EA87726C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EDB7726CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232721AbjHGNzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:55:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
+        id S234604AbjHGNzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234689AbjHGNyZ (ORCPT
+        with ESMTP id S234700AbjHGNyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:54:25 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B114210C
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:53:38 -0700 (PDT)
-Message-ID: <20230807135028.538458200@linutronix.de>
+        Mon, 7 Aug 2023 09:54:39 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEF32136
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:53:40 -0700 (PDT)
+Message-ID: <20230807135028.590964892@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691416416;
+        s=2020; t=1691416418;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=lEJAM6lSEYnamHvy/pM3gmY344lRoNlxzC3YlBMWnmA=;
-        b=ETtcYkCFrSbFl0znfhjYUotU5DP8+kA+1D4ue1kZJamGsOntPw2n8RS/1U4jA4nvldKqlz
-        NzCli0ZDDmh9ksl03VtpnZCBoQAKG6F/F8XwWOL32hm4QP1ClWXslbDtI559xXBv0BOZ8p
-        HTIyFj5SNGQY0KtHfjHwFEZP0Q0DR30ykm1eaVZ2iqjfmdAdy+VsRrYeWXDok5gCHoXi4Y
-        HCJIRYcXiyqn7Z1aDeAzZEkA/1cfeyr29j/H3kmMg5lFKp2zRPKGMukU1nAwaQ1KW/jBF+
-        rW2HlA7oz3SqrQPjDCGp+qNlt0ysSUMtUjhtT2dRxirgWEIeMXAr9SODu0jhEg==
+         references:references; bh=o9SLDTJj0ahrwCVinyEBp+cl3PdBP7t2Ahe9Zy+O4Hg=;
+        b=qxJvIkaob+sckp0E/Da7Q7nfjiLdwKRN313sR467mp0de3ZCApwTHm16s7a3z5aRCxal1g
+        3kP3eHzRW1I/0VO2eRYYlsGpMTctiBssw6PNIPNzJaRPef2xoixxzRRF4pWff84MQbiV37
+        QKEYHo0CWE1HKAonM5dEbii6DS5gYUmLg+EHT0wAkgOa5hh47EL1Mn47LOVL6s/xKQK/ow
+        d0a2HBYxeFa/WuzGMQwU3imkV8gM6LSTj/yzRIEAlreID2OpLzUeJ2l+RQGGIIz0qf6gcW
+        wjmeShMeLOwedLmc2TPFdRDNzVTdWqPHqhRcOH7L3t3Sz4nSZO+AKatinqnF5A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691416416;
+        s=2020e; t=1691416418;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=lEJAM6lSEYnamHvy/pM3gmY344lRoNlxzC3YlBMWnmA=;
-        b=NSuebcMVp9x5AsXQoWpMIxO89mNbQXxraBRBoC3sF3EUEebdEi5yMQl8LiWzPYIJndMHey
-        xeyJZANDEw66CZAQ==
+         references:references; bh=o9SLDTJj0ahrwCVinyEBp+cl3PdBP7t2Ahe9Zy+O4Hg=;
+        b=1oHVvXW3zugTioz7NcC7YLqdyBQOGBYt7nb34N5AFkST+ZYjs85CN3l8F3biTdkhWKuf+r
+        /a432DbYL5kUfxBQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
@@ -48,120 +48,93 @@ Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Feng Tang <feng.tang@intel.com>,
         Andy Shevchenko <andy@infradead.org>
-Subject: [patch 40/53] x86/cpu/topology: Assign hotpluggable CPUIDs during
- init
+Subject: [patch 41/53] x86/xen/smp_pv: Count number of vCPUs early
 References: <20230807130108.853357011@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon,  7 Aug 2023 15:53:36 +0200 (CEST)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Date:   Mon,  7 Aug 2023 15:53:37 +0200 (CEST)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no point in assigning the CPU numbers during ACPI physical
-hotplug. The number of possible hotplug CPUs is known when the possible map
-is initialized, so the CPU numbers can be associated to the registered
-non-present APIC IDs right there.
+XEN/PV has a completely broken vCPU enumeration scheme, which just works by
+chance and provides zero topology information. Each vCPU ends up being a
+single core package.
 
-This allows to put more code into the __init section and makes the related
-data __ro_after_init.
+Dom0 provides MADT which can be used for topology information, but that
+table is the unmodified host table, which means that there can be more CPUs
+registered than the number of vCPUs XEN provides for the dom0 guest.
+
+DomU does not have ACPI and both rely on counting the possible vCPUs via an
+hypercall.
+
+To prepare for using CPUID topology information either via MADT or via fake
+APIC IDs count the number of possible CPUs during early boot and adjust
+nr_cpu_ids() accordingly.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/cpu/topology.c |   28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ arch/x86/xen/enlighten_pv.c |    3 +++
+ arch/x86/xen/smp.h          |    2 ++
+ arch/x86/xen/smp_pv.c       |   14 ++++++++++++++
+ 3 files changed, 19 insertions(+)
 
---- a/arch/x86/kernel/cpu/topology.c
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -45,7 +45,7 @@ EXPORT_EARLY_PER_CPU_SYMBOL(x86_cpu_to_a
- DECLARE_BITMAP(phys_cpu_present_map, MAX_LOCAL_APIC) __read_mostly;
- 
- /* Used for CPU number allocation and parallel CPU bringup */
--u32 cpuid_to_apicid[] __read_mostly = { [0 ... NR_CPUS - 1] = BAD_APICID, };
-+u32 cpuid_to_apicid[] __ro_after_init = { [0 ... NR_CPUS - 1] = BAD_APICID, };
- 
- /* Bitmaps to mark registered APICs at each topology domain */
- static struct { DECLARE_BITMAP(map, MAX_LOCAL_APIC); } apic_maps[TOPO_MAX_DOMAIN] __ro_after_init;
-@@ -60,7 +60,7 @@ struct {
- 	unsigned int		nr_rejected_cpus;
- 	u32			boot_cpu_apic_id;
- 	u32			real_bsp_apic_id;
--} topo_info __read_mostly = {
-+} topo_info __ro_after_init = {
- 	.nr_assigned_cpus	= 1,
- 	.boot_cpu_apic_id	= BAD_APICID,
- 	.real_bsp_apic_id	= BAD_APICID,
-@@ -143,7 +143,7 @@ static int topo_lookup_cpuid(u32 apic_id
- 	return -ENODEV;
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -189,6 +189,9 @@ static void __init xen_pv_init_platform(
+ 		xen_set_mtrr_data();
+ 	else
+ 		mtrr_overwrite_state(NULL, 0, MTRR_TYPE_WRBACK);
++
++	/* Adjust nr_cpu_ids before "enumeration" happens */
++	xen_smp_count_cpus();
  }
  
--static int topo_assign_cpunr(u32 apic_id)
-+static __init int topo_assign_cpunr(u32 apic_id)
- {
- 	int cpu = topo_lookup_cpuid(apic_id);
+ static void __init xen_pv_guest_late_init(void)
+--- a/arch/x86/xen/smp.h
++++ b/arch/x86/xen/smp.h
+@@ -19,6 +19,7 @@ extern void xen_smp_intr_free(unsigned i
+ int xen_smp_intr_init_pv(unsigned int cpu);
+ void xen_smp_intr_free_pv(unsigned int cpu);
  
-@@ -159,8 +159,6 @@ static void topo_set_cpuids(unsigned int
- 	early_per_cpu(x86_cpu_to_apicid, cpu) = apic_id;
- 	early_per_cpu(x86_cpu_to_acpiid, cpu) = acpi_id;
++void xen_smp_count_cpus(void);
+ void xen_smp_cpus_done(unsigned int max_cpus);
+ 
+ void xen_smp_send_reschedule(int cpu);
+@@ -44,6 +45,7 @@ static inline int xen_smp_intr_init_pv(u
+ 	return 0;
+ }
+ static inline void xen_smp_intr_free_pv(unsigned int cpu) {}
++static inline void xen_smp_count_cpus(void) { }
+ #endif /* CONFIG_SMP */
+ 
  #endif
--	cpuid_to_apicid[cpu] = apic_id;
--
- 	set_cpu_possible(cpu, true);
- 	set_cpu_present(cpu, true);
+--- a/arch/x86/xen/smp_pv.c
++++ b/arch/x86/xen/smp_pv.c
+@@ -411,6 +411,20 @@ static irqreturn_t xen_irq_work_interrup
+ 	return IRQ_HANDLED;
+ }
  
-@@ -205,6 +203,8 @@ void __init topology_register_apic(u32 a
- 			cpu = 0;
- 		else
- 			cpu = topo_assign_cpunr(apic_id);
++void __init xen_smp_count_cpus(void)
++{
++	unsigned int cpus;
 +
-+		cpuid_to_apicid[cpu] = apic_id;
- 		topo_set_cpuids(cpu, apic_id, acpi_id);
- 	} else {
- 		topo_info.nr_disabled_cpus++;
-@@ -247,12 +247,9 @@ int topology_hotplug_apic(u32 apic_id, u
- 		return -ENODEV;
- 
- 	cpu = topo_lookup_cpuid(apic_id);
--	if (cpu < 0) {
--		if (topo_info.nr_assigned_cpus >= nr_cpu_ids)
--			return -ENOSPC;
-+	if (cpu < 0)
-+		return -ENOSPC;
- 
--		cpu = topo_assign_cpunr(apic_id);
--	}
- 	set_bit(apic_id, phys_cpu_present_map);
- 	topo_set_cpuids(cpu, apic_id, acpi_id);
- 	return cpu;
-@@ -352,6 +349,7 @@ void __init topology_init_possible_cpus(
- 	unsigned int disabled = topo_info.nr_disabled_cpus;
- 	unsigned int total = assigned + disabled;
- 	unsigned int cpu, dom, allowed = 1;
-+	u32 apicid;
- 
- 	if (!restrict_to_up()) {
- 		if (total > 1)
-@@ -386,8 +384,16 @@ void __init topology_init_possible_cpus(
- 	init_cpu_present(cpumask_of(0));
- 	init_cpu_possible(cpumask_of(0));
- 
-+	for (apicid = 0; disabled; disabled--, apicid++) {
-+		apicid = find_next_andnot_bit(apic_maps[TOPO_SMT_DOMAIN].map, phys_cpu_present_map,
-+					      MAX_LOCAL_APIC, apicid);
-+		if (apicid >= MAX_LOCAL_APIC)
++	for (cpus = 0; cpus < nr_cpu_ids; cpus++) {
++		if (HYPERVISOR_vcpu_op(VCPUOP_is_up, cpus, NULL) < 0)
 +			break;
-+		cpuid_to_apicid[topo_info.nr_assigned_cpus++] = apicid;
 +	}
 +
- 	for (cpu = 0; cpu < allowed; cpu++) {
--		u32 apicid = cpuid_to_apicid[cpu];
-+		apicid = cpuid_to_apicid[cpu];
- 
- 		/*
- 		 * In case of a kdump() kernel, don't mark the real BSP in
++	pr_info("Xen PV: Detected %u vCPUS\n", cpus);
++	if (cpus < nr_cpu_ids)
++		set_nr_cpu_ids(cpus);
++}
++
+ static const struct smp_ops xen_smp_ops __initconst = {
+ 	.smp_prepare_boot_cpu = xen_pv_smp_prepare_boot_cpu,
+ 	.smp_prepare_cpus = xen_pv_smp_prepare_cpus,
 
