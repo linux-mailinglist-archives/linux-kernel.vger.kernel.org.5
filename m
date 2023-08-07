@@ -2,252 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F267B771AD8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF55771ADE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbjHGGzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
+        id S231308AbjHGG4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbjHGGzL (ORCPT
+        with ESMTP id S229468AbjHGG4C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:55:11 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85D41A4;
-        Sun,  6 Aug 2023 23:55:08 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id A4AE524E251;
-        Mon,  7 Aug 2023 14:54:51 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 7 Aug
- 2023 14:54:52 +0800
-Received: from [192.168.125.127] (113.72.146.246) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 7 Aug
- 2023 14:54:51 +0800
-Message-ID: <6c1a4b77-996e-9274-bece-84fe42d6099a@starfivetech.com>
-Date:   Mon, 7 Aug 2023 14:54:50 +0800
+        Mon, 7 Aug 2023 02:56:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FDFB10D4
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:55:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691391311;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ho4TOU4xYIxDlaPGJbh5CdW3AQ8AoyQ6uWHEuuD2FN8=;
+        b=EtdXRM4yeC78nWtoSOjY7HKWOJs0LUIYE+RYB6WK83f16gVrLAZ3TaC7TEyj1upFP2C8sL
+        C90m6osz6c6pmxm6IS2km9S+nYOgxLUf6o7PnsXI6DJrshgr2MLJf/6/VddvyssgBqDCau
+        m0n3LlIvVOM4K+OnMkTmofxUyk+/ARo=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-626-ENfSAIHrMJO1qy-lIOgz2g-1; Mon, 07 Aug 2023 02:55:10 -0400
+X-MC-Unique: ENfSAIHrMJO1qy-lIOgz2g-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-317ebae819aso300888f8f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 23:55:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691391309; x=1691996109;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ho4TOU4xYIxDlaPGJbh5CdW3AQ8AoyQ6uWHEuuD2FN8=;
+        b=VeBRP8kHZjX4XEWnrFiE6ZVOql9DtqZa/RO40CemFqMYslwErdzvURBsVposALSti7
+         nQKgn6aOYZgiYW5zkVcW1BptKS1AbGdv0X6Y2+PnzOSdZGZbCojSniidp17MFg9LEqUQ
+         H6lFbXH/75FC80avHHBEXuRxcWZMrajbEg2a7ueRQ3heIDSuSNiyy1xdSuOhbfYmZ+OY
+         AiE2YkPSeQ6NkOHCU/oMDdcBbNu4QbZ2Urqur8q3iDfc5vRPO0L9gyavBhJmeCKa6Upv
+         0anGSbF5NipV4bzw6IFlGZZ+7qRIuXzP6gAV16Lmto+9LbNhKUE8zjMcMtk1kLUJ1S7Y
+         6IlQ==
+X-Gm-Message-State: AOJu0YxiCErjzjhbg8ypps8T6l9AqVPPmG1K8jSwbDyavfvxIfW2sImj
+        Lj3dR+Fcib0FWKN5biQ98ydL4VZCc9DoWaUUAunbolYsXFyXSxp/VXykjzXKDQDxI5bzT3SsH66
+        02tM9ND2NU/D7ECqetHCKbg0K
+X-Received: by 2002:a7b:c3c1:0:b0:3fa:96ad:5d2e with SMTP id t1-20020a7bc3c1000000b003fa96ad5d2emr6236054wmj.19.1691391309012;
+        Sun, 06 Aug 2023 23:55:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGbqsyRD6exvzZaZpz4Zzq7W+cysAHnnx6rDqQMGoLvuKnifa+ME2mPeuNFLtkftztRZe1Otg==
+X-Received: by 2002:a7b:c3c1:0:b0:3fa:96ad:5d2e with SMTP id t1-20020a7bc3c1000000b003fa96ad5d2emr6236048wmj.19.1691391308715;
+        Sun, 06 Aug 2023 23:55:08 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.googlemail.com with ESMTPSA id z10-20020a05600c220a00b003fba6a0c881sm14113789wml.43.2023.08.06.23.55.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Aug 2023 23:55:07 -0700 (PDT)
+Message-ID: <763f3b3f-861e-1716-f65f-1b4f256590c5@redhat.com>
+Date:   Mon, 7 Aug 2023 08:55:05 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v2 3/4] dt-bindings: PCI: Add StarFive JH7110 PCIe
- controller
+Subject: Re: [PATCH v5 04/19] KVM:x86: Refresh CPUID on write to guest
+ MSR_IA32_XSS
 Content-Language: en-US
-To:     Conor Dooley <conor.dooley@microchip.com>
-CC:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20230727103949.26149-1-minda.chen@starfivetech.com>
- <20230727103949.26149-4-minda.chen@starfivetech.com>
- <20230804-irregular-distrust-c5d46afe3d9c@wendy>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <20230804-irregular-distrust-c5d46afe3d9c@wendy>
-Content-Type: text/plain; charset="UTF-8"
+To:     Sean Christopherson <seanjc@google.com>,
+        Yang Weijiang <weijiang.yang@intel.com>
+Cc:     peterz@infradead.org, john.allen@amd.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rick.p.edgecombe@intel.com,
+        chao.gao@intel.com, binbin.wu@linux.intel.com,
+        Zhang Yi Z <yi.z.zhang@linux.intel.com>
+References: <20230803042732.88515-1-weijiang.yang@intel.com>
+ <20230803042732.88515-5-weijiang.yang@intel.com>
+ <ZM1C+ILRMCfzJxx7@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <ZM1C+ILRMCfzJxx7@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.146.246]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/4/23 20:27, Sean Christopherson wrote:
+> I think my preference is to enforce guest CPUID for host accesses to 
+> XSS, XFD, XFD_ERR, etc I'm pretty sure I've advocated for the exact 
+> opposite in the past, i.e. argued that KVM's ABI is to not enforce 
+> ordering between KVM_SET_CPUID2 and KVM_SET_MSR. But this is becoming
+> untenable, juggling the dependencies in KVM is complex and is going
+> to result in a nasty bug at some point.
 
+Fortunately, you are right now.  Well, almost :) but the important part 
+is that indeed the dependencies are too complex.
 
-On 2023/8/4 15:10, Conor Dooley wrote:
-> On Thu, Jul 27, 2023 at 06:39:48PM +0800, Minda Chen wrote:
->> Add StarFive JH7110 SoC PCIe controller dt-bindings.
->> JH7110 using PLDA XpressRICH PCIe host controller IP.
->> 
->> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
->> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
->> ---
->>  .../bindings/pci/starfive,jh7110-pcie.yaml    | 133 ++++++++++++++++++
->>  1 file changed, 133 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
->> 
->> diff --git a/Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml b/Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
->> new file mode 100644
->> index 000000000000..9273e029fb20
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
->> @@ -0,0 +1,133 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/pci/starfive,jh7110-pcie.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: StarFive JH7110 PCIe host controller
->> +
->> +maintainers:
->> +  - Kevin Xie <kevin.xie@starfivetech.com>
->> +
->> +allOf:
->> +  - $ref: /schemas/pci/pci-bus.yaml#
->> +  - $ref: plda,xpressrich3-axi-common.yaml#
->> +  - $ref: /schemas/interrupt-controller/msi-controller.yaml#
->> +  - $ref: /schemas/gpio/gpio-consumer-common.yaml#
->> +
->> +properties:
->> +  compatible:
->> +    const: starfive,jh7110-pcie
->> +
->> +  clocks:
->> +    items:
->> +      - description: NOC bus clock
->> +      - description: Transport layer clock
->> +      - description: AXI MST0 clock
->> +      - description: APB clock
->> +
->> +  clock-names:
->> +    items:
->> +      - const: noc
->> +      - const: tl
->> +      - const: axi_mst0
->> +      - const: apb
->> +
->> +  resets:
->> +    items:
->> +      - description: AXI MST0 reset
->> +      - description: AXI SLAVE0 reset
->> +      - description: AXI SLAVE reset
->> +      - description: PCIE BRIDGE reset
->> +      - description: PCIE CORE reset
->> +      - description: PCIE APB reset
->> +
->> +  reset-names:
->> +    items:
->> +      - const: mst0
->> +      - const: slv0
->> +      - const: slv
->> +      - const: brg
->> +      - const: core
->> +      - const: apb
->> +
->> +  starfive,stg-syscon:
->> +    $ref: /schemas/types.yaml#/definitions/phandle-array
->> +    items:
->> +      - items:
->> +          - description: phandle to System Register Controller stg_syscon node.
->> +          - description: register0 offset of STG_SYSCONSAIF__SYSCFG register for PCIe.
->> +          - description: register1 offset of STG_SYSCONSAIF__SYSCFG register for PCIe.
->> +          - description: register2 offset of STG_SYSCONSAIF__SYSCFG register for PCIe.
->> +          - description: register3 offset of STG_SYSCONSAIF__SYSCFG register for PCIe.
->> +    description:
->> +      The phandle to System Register Controller syscon node and the offset
->> +      of STG_SYSCONSAIF__SYSCFG register for PCIe. Total 4 regsisters offset
->> +      for PCIe.
-> 
-> These property names tie them closely with naming on the jh7110, but
-> there's little value in specifying all of these offsets when you have
-> one implementation where they are all fixed.
-Yes, the offset value is tied to SoC. 
-> Do you know what the jh81xx stuff is going to do yet w.r.t. PCI and if
-> so, how could you reuse this property?
-I do not participate in jh8100. But I heard sys-syscon is exist in 81xx.
-But I think stg-syscon and sys-syscon  can be move to a common dt-binding doc.
-Bot 71x0 and 81x0 driver can use this. 
-> Particularly, saying "register 0" seems unlikely to transfer well
-> between SoCs.
-> I'd be inclined to drop the offsets entirely & rely on match data to
-> provide them if needed in the future.
-That's ok. The dts can change to starfive,stg-syscon = <&stg_syscon>;
-I will try to move the offset to driver match data.
->> +
->> +  phys:
->> +    description:
->> +      Specified PHY is attached to PCIe controller.
->> +    maxItems: 1
->> +
->> +required:
->> +  - compatible
->> +  - clocks
->> +  - resets
->> +  - starfive,stg-syscon
->> +  - "#interrupt-cells"
->> +  - interrupt-map-mask
->> +  - interrupt-map
->> +
->> +unevaluatedProperties: false
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/gpio/gpio.h>
->> +    soc {
->> +        #address-cells = <2>;
->> +        #size-cells = <2>;
->> +
->> +        pcie0: pcie@2b000000 {
-> 
-> nit: you don't need labels in examples if they are not referenced
-> anywhere.
-> 
-> Otherwise, this looks good to me.
-> 
-> Thanks,
-> Conor.
-> 
-ok, thanks.
->> +            compatible = "starfive,jh7110-pcie";
->> +            reg = <0x9 0x40000000 0x0 0x10000000>,
->> +                  <0x0 0x2b000000 0x0 0x1000000>;
->> +            reg-names = "cfg", "apb";
->> +            #address-cells = <3>;
->> +            #size-cells = <2>;
->> +            #interrupt-cells = <1>;
->> +            device_type = "pci";
->> +            ranges = <0x82000000  0x0 0x30000000  0x0 0x30000000 0x0 0x08000000>,
->> +                     <0xc3000000  0x9 0x00000000  0x9 0x00000000 0x0 0x40000000>;
->> +            starfive,stg-syscon = <&stg_syscon 0xc0 0xc4 0x130 0x1b8>;
->> +            bus-range = <0x0 0xff>;
->> +            interrupt-parent = <&plic>;
->> +            interrupts = <56>;
->> +            interrupt-map-mask = <0x0 0x0 0x0 0x7>;
->> +            interrupt-map = <0x0 0x0 0x0 0x1 &pcie_intc0 0x1>,
->> +                            <0x0 0x0 0x0 0x2 &pcie_intc0 0x2>,
->> +                            <0x0 0x0 0x0 0x3 &pcie_intc0 0x3>,
->> +                            <0x0 0x0 0x0 0x4 &pcie_intc0 0x4>;
->> +            msi-parent = <&pcie0>;
->> +            msi-controller;
->> +            clocks = <&syscrg 86>,
->> +                     <&stgcrg 10>,
->> +                     <&stgcrg 8>,
->> +                     <&stgcrg 9>;
->> +            clock-names = "noc", "tl", "axi_mst0", "apb";
->> +            resets = <&stgcrg 11>,
->> +                     <&stgcrg 12>,
->> +                     <&stgcrg 13>,
->> +                     <&stgcrg 14>,
->> +                     <&stgcrg 15>,
->> +                     <&stgcrg 16>;
->> +            reset-gpios = <&gpios 26 GPIO_ACTIVE_LOW>;
->> +            phys = <&pciephy0>;
->> +
->> +            pcie_intc0: interrupt-controller {
->> +                #address-cells = <0>;
->> +                #interrupt-cells = <1>;
->> +                interrupt-controller;
->> +            };
->> +        };
->> +    };
->> -- 
->> 2.17.1
->> 
+While host-side accesses must be allowed, they should only allow the 
+default value if the CPUID bit is not set.
+
+Paolo
+
