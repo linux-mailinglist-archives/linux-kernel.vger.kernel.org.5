@@ -2,292 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D0977253C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD19772546
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232910AbjHGNPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
+        id S232790AbjHGNRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232259AbjHGNPa (ORCPT
+        with ESMTP id S231332AbjHGNRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:15:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C6CE5A
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:15:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B958261A8D
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 13:15:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A126C433C8;
-        Mon,  7 Aug 2023 13:15:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691414128;
-        bh=88hsxuLYKVqz+P+8ZpynUOYXC8Wm0wXVKKrSqpdIOug=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=YBlxm7LoLK6UmjBK4jHs58gD/F3lMu8Psw28IA2IEDXh91vGWSHe8iy/TkSyK9xwW
-         c8kzPYJenw58/QcIgmbbrA/KRPaAxgoYmIbBRiNcPs1CQrRbs+NrbYC49S1idtv2b2
-         MsIzeZ4+TtaZHwa72bA6i1nObVOXVppYOnw4gnMWENf/IZ5YBEuFjAeaGmG08V3CzQ
-         085e8YnnB/+yGlXA1bNO0HxKycKBUEfEkHH4oOeAD9MjwhLoHMuiAIKebV4JheCZFz
-         abhEd2A1BgcsJRB4rvZboGli8P4Jo5OGVMGim9lROetRRF6ibt0oUzo0I29hkjkBU1
-         UDSl/2scXRsew==
-Message-ID: <8fd0313b-8f6f-9814-247d-c2687d053e2a@kernel.org>
-Date:   Mon, 7 Aug 2023 15:15:22 +0200
+        Mon, 7 Aug 2023 09:17:48 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D431B3;
+        Mon,  7 Aug 2023 06:17:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=FX+zdCyQC4fqrwzCs9Z9NLrYt/aKv0Rj29Ql81i5Bfg=; b=AH
+        ViUK/ANA+r75YY8/oJVy5vwqLaEm/CyAxID8ZcWNHMyFnu8LOYfr5CkQTdB0k85TnOTXTMLne1w4M
+        T9oaWzt87Rtwm1CAiBG9/2w5u9/7hpGa1sIzLjaUvvEFw23YxbG7FW9htEQ4pYmfh88sLA0GCcJIU
+        ETGs1tdyjkNQhnA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qT06h-003JzP-3p; Mon, 07 Aug 2023 15:17:11 +0200
+Date:   Mon, 7 Aug 2023 15:17:11 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Herve Codina <herve.codina@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 24/28] pinctrl: Add support for the Lantic PEF2256
+ pinmux
+Message-ID: <eb99e739-6578-4aee-a0f4-7a0c5e5e81ef@lunn.ch>
+References: <20230726150225.483464-1-herve.codina@bootlin.com>
+ <20230726150225.483464-25-herve.codina@bootlin.com>
+ <CACRpkdYXCQRd3ZXNGHwMaQYiJc7tGtAJnBaSh5O-8ruDAJVdiA@mail.gmail.com>
+ <CACRpkdZebvrdGXooLXmgXhUcgdgxBczJBpdEoEyJDR39abaAqQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH V3 net-next] net: fec: add XDP_TX feature support
-Content-Language: en-US
-To:     Wei Fang <wei.fang@nxp.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20230731060025.3117343-1-wei.fang@nxp.com>
- <20230802104706.5ce541e9@kernel.org>
- <AM5PR04MB313985C61D92E183238809138808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
- <1bf41ea8-5131-7d54-c373-00c1fbcac095@redhat.com>
- <AM5PR04MB31398ABF941EBDD0907E845B8808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
- <cc24e860-7d6f-7ec8-49cb-a49cb066f618@kernel.org>
- <AM5PR04MB3139D8AAAB6B96B58425BBA08809A@AM5PR04MB3139.eurprd04.prod.outlook.com>
- <ba96db35-2273-9cc5-9a32-e924e8eff37c@kernel.org>
- <AM5PR04MB313903036E0DF277FEC45722880CA@AM5PR04MB3139.eurprd04.prod.outlook.com>
-From:   Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <AM5PR04MB313903036E0DF277FEC45722880CA@AM5PR04MB3139.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdZebvrdGXooLXmgXhUcgdgxBczJBpdEoEyJDR39abaAqQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 07/08/2023 12.30, Wei Fang wrote:
->>> The flow-control was not disabled before, so according to your
->>> suggestion, I disable the flow-control on the both boards and run the
->>> test again, the performance is slightly improved, but still can not
->>> see a clear difference between the two methods. Below are the results.
->>
->> Something else must be stalling the CPU.
->> When looking at fec_main.c code, I noticed that
->> fec_enet_txq_xmit_frame() will do a MMIO write for every xdp_frame (to
->> trigger transmit start), which I believe will stall the CPU.
->> The ndo_xdp_xmit/fec_enet_xdp_xmit does bulking, and should be the
->> function that does the MMIO write to trigger transmit start.
->>
-> We'd better keep a MMIO write for every xdp_frame on txq, as you know,
-> the txq will be inactive when no additional ready descriptors remain in the
-> tx-BDR. So it may increase the delay of the packets if we do a MMIO write
-> for multiple packets.
+On Mon, Aug 07, 2023 at 03:06:42PM +0200, Linus Walleij wrote:
+> On Mon, Aug 7, 2023 at 3:05 PM Linus Walleij <linus.walleij@linaro.org> wrote:
 > 
-
-You know this hardware better than me, so I will leave to you.
-
->> $ git diff
->> diff --git a/drivers/net/ethernet/freescale/fec_main.c
->> b/drivers/net/ethernet/freescale/fec_main.c
->> index 03ac7690b5c4..57a6a3899b80 100644
->> --- a/drivers/net/ethernet/freescale/fec_main.c
->> +++ b/drivers/net/ethernet/freescale/fec_main.c
->> @@ -3849,9 +3849,6 @@ static int fec_enet_txq_xmit_frame(struct
->> fec_enet_private *fep,
->>
->>           txq->bd.cur = bdp;
->>
->> -       /* Trigger transmission start */
->> -       writel(0, txq->bd.reg_desc_active);
->> -
->>           return 0;
->>    }
->>
->> @@ -3880,6 +3877,9 @@ static int fec_enet_xdp_xmit(struct net_device
->> *dev,
->>                   sent_frames++;
->>           }
->>
->> +       /* Trigger transmission start */
->> +       writel(0, txq->bd.reg_desc_active);
->> +
->>           __netif_tx_unlock(nq);
->>
->>           return sent_frames;
->>
->>
->>> Result: use "sync_dma_len" method
->>> root@imx8mpevk:~# ./xdp2 eth0
->>
->> The xdp2 (and xdp1) program(s) have a performance issue (due to using
->>
->> Can I ask you to test using xdp_rxq_info, like:
->>
->>    sudo ./xdp_rxq_info --dev mlx5p1 --action XDP_TX
->>
-> Yes, below are the results, the results are also basically the same.
-> Result 1: current method
-> ./xdp_rxq_info --dev eth0 --action XDP_TX
-> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
-> XDP stats       CPU     pps         issue-pps
-> XDP-RX CPU      0       259,102     0
-> XDP-RX CPU      total   259,102
-> RXQ stats       RXQ:CPU pps         issue-pps
-> rx_queue_index    0:0   259,102     0
-> rx_queue_index    0:sum 259,102
-> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
-> XDP stats       CPU     pps         issue-pps
-> XDP-RX CPU      0       259,498     0
-> XDP-RX CPU      total   259,498
-> RXQ stats       RXQ:CPU pps         issue-pps
-> rx_queue_index    0:0   259,496     0
-> rx_queue_index    0:sum 259,496
-> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
-> XDP stats       CPU     pps         issue-pps
-> XDP-RX CPU      0       259,408     0
-> XDP-RX CPU      total   259,408
+> > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> >
+> > So it is a bridge chip? Please use that terminology since Linux
+> > DRM often talks about bridges.
 > 
-> Result 2: dma_sync_len method
-> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
-> XDP stats       CPU     pps         issue-pps
-> XDP-RX CPU      0       258,254     0
-> XDP-RX CPU      total   258,254
-> RXQ stats       RXQ:CPU pps         issue-pps
-> rx_queue_index    0:0   258,254     0
-> rx_queue_index    0:sum 258,254
-> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
-> XDP stats       CPU     pps         issue-pps
-> XDP-RX CPU      0       259,316     0
-> XDP-RX CPU      total   259,316
-> RXQ stats       RXQ:CPU pps         issue-pps
-> rx_queue_index    0:0   259,318     0
-> rx_queue_index    0:sum 259,318
-> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
-> XDP stats       CPU     pps         issue-pps
-> XDP-RX CPU      0       259,554     0
-> XDP-RX CPU      total   259,554
-> RXQ stats       RXQ:CPU pps         issue-pps
-> rx_queue_index    0:0   259,553     0
-> rx_queue_index    0:sum 259,553
+> Replying to self: no it's not a bridge, it's a WAN thingy.
 > 
+> So perhaps write that this is a WAN interface adapter chip.
 
-Thanks for running this.
+Hi Linus
 
->>
->>> proto 17:     258886 pkt/s
->>> proto 17:     258879 pkt/s
->>
->> If you provide numbers for xdp_redirect, then we could better evaluate if
->> changing the lock per xdp_frame, for XDP_TX also, is worth it.
->>
-> For XDP_REDIRECT, the performance show as follow.
-> root@imx8mpevk:~# ./xdp_redirect eth1 eth0
-> Redirecting from eth1 (ifindex 3; driver st_gmac) to eth0 (ifindex 2; driver fec)
+In the E1/T1/J1 world, framer is a well understood concept. Maybe the
+text needs a bit more background information to explain what this is
+to somebody who does not have an old school telecoms background.
 
-This is not exactly the same as XDP_TX setup as here you choose to 
-redirect between eth1 (driver st_gmac) and to eth0 (driver fec).
-
-I would like to see eth0 to eth0 XDP_REDIRECT, so we can compare to 
-XDP_TX performance.
-Sorry for all the requests, but can you provide those numbers?
-
-> eth1->eth0        221,642 rx/s       0 err,drop/s      221,643 xmit/s
-
-So, XDP_REDIRECT is approx (1-(221825/259554))*100 = 14.53% slower.
-But as this is 'eth1->eth0' this isn't true comparison to XDP_TX.
-
-> eth1->eth0        221,761 rx/s       0 err,drop/s      221,760 xmit/s
-> eth1->eth0        221,793 rx/s       0 err,drop/s      221,794 xmit/s
-> eth1->eth0        221,825 rx/s       0 err,drop/s      221,825 xmit/s
-> eth1->eth0        221,823 rx/s       0 err,drop/s      221,821 xmit/s
-> eth1->eth0        221,815 rx/s       0 err,drop/s      221,816 xmit/s
-> eth1->eth0        222,016 rx/s       0 err,drop/s      222,016 xmit/s
-> eth1->eth0        222,059 rx/s       0 err,drop/s      222,059 xmit/s
-> eth1->eth0        222,085 rx/s       0 err,drop/s      222,089 xmit/s
-> eth1->eth0        221,956 rx/s       0 err,drop/s      221,952 xmit/s
-> eth1->eth0        222,070 rx/s       0 err,drop/s      222,071 xmit/s
-> eth1->eth0        222,017 rx/s       0 err,drop/s      222,017 xmit/s
-> eth1->eth0        222,069 rx/s       0 err,drop/s      222,067 xmit/s
-> eth1->eth0        221,986 rx/s       0 err,drop/s      221,987 xmit/s
-> eth1->eth0        221,932 rx/s       0 err,drop/s      221,936 xmit/s
-> eth1->eth0        222,045 rx/s       0 err,drop/s      222,041 xmit/s
-> eth1->eth0        222,014 rx/s       0 err,drop/s      222,014 xmit/s
->    Packets received    : 3,772,908
->    Average packets/s   : 221,936
->    Packets transmitted : 3,772,908
->    Average transmit/s  : 221,936
->> And also find out of moving the MMIO write have any effect.
->>
-> I move the MMIO write to fec_enet_xdp_xmit(), the result shows as follow,
-> the performance is slightly improved.
-> 
-
-I'm puzzled that moving the MMIO write isn't change performance.
-
-Can you please verify that the packet generator machine is sending more
-frame than the system can handle?
-
-(meaning the pktgen_sample03_burst_single_flow.sh script fast enough?)
-
-> root@imx8mpevk:~# ./xdp_redirect eth1 eth0
-> Redirecting from eth1 (ifindex 3; driver st_gmac) to eth0 (ifindex 2; driver fec)
-> eth1->eth0        222,666 rx/s        0 err,drop/s      222,668 xmit/s
-> eth1->eth0        221,663 rx/s        0 err,drop/s      221,664 xmit/s
-> eth1->eth0        222,743 rx/s        0 err,drop/s      222,741 xmit/s
-> eth1->eth0        222,917 rx/s        0 err,drop/s      222,923 xmit/s
-> eth1->eth0        221,810 rx/s        0 err,drop/s      221,808 xmit/s
-> eth1->eth0        222,891 rx/s        0 err,drop/s      222,888 xmit/s
-> eth1->eth0        222,983 rx/s        0 err,drop/s      222,984 xmit/s
-> eth1->eth0        221,655 rx/s        0 err,drop/s      221,653 xmit/s
-> eth1->eth0        222,827 rx/s        0 err,drop/s      222,827 xmit/s
-> eth1->eth0        221,728 rx/s        0 err,drop/s      221,728 xmit/s
-> eth1->eth0        222,790 rx/s        0 err,drop/s      222,789 xmit/s
-> eth1->eth0        222,874 rx/s        0 err,drop/s      222,874 xmit/s
-> eth1->eth0        221,888 rx/s        0 err,drop/s      221,887 xmit/s
-> eth1->eth0        223,057 rx/s        0 err,drop/s      223,056 xmit/s
-> eth1->eth0        222,219 rx/s        0 err,drop/s      222,220 xmit/s
->    Packets received    : 3,336,711
->    Average packets/s   : 222,447
->    Packets transmitted : 3,336,710
->    Average transmit/s  : 222,447
-> 
->> I also noticed driver does a MMIO write (on rxq) for every RX-packet in
->> fec_enet_rx_queue() napi-poll loop.  This also looks like a potential
->> performance stall.
->>
-> The same as txq, the rxq will be inactive if the rx-BDR has no free BDs, so we'd
-> better do a MMIO write when we recycle a BD, so that the hardware can timely
-> attach the received pakcets on the rx-BDR.
-> 
-> In addition, I also tried to avoid using xdp_convert_buff_to_frame(), but the
-> performance of XDP_TX is still not improved. :(
-> 
-
-I would not expect much performance improvement from this anyhow.
-
-> After these days of testing, I think it's best to keep the solution in V3, and then
-> make some optimizations on the V3 patch.
-
-I agree.
-
-I think you need to send a V5, and then I can ACK that.
-
-Thanks for all this testing,
---Jesper
+   Andrew
