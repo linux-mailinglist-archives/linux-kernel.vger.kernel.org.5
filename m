@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C60772CF8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD2C772CF9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbjHGR36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35212 "EHLO
+        id S232114AbjHGRaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbjHGR34 (ORCPT
+        with ESMTP id S231534AbjHGRaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:29:56 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA50E68
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:29:55 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-40fd276621aso33501501cf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:29:55 -0700 (PDT)
+        Mon, 7 Aug 2023 13:30:06 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D245310F3
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:30:04 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6bcccbd9365so3698237a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:30:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691429394; x=1692034194;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=s8Am+NuCF8QWOzKex4jmoxA1gAih8dsglrkA++VhjHo=;
-        b=D1t8IqXcZ6X/6+kjvndB2rmw8GHobr/D4q0HEp1VC842sFBu6ODSwWzCepiuiLojWa
-         xXhaj9kLT5em2l4hyqRaY/F63VzICNEaO3U0ZpRx8EX3D9Ue25Jv5YeuP5uuaZtlkk65
-         NkcSFmHZC6OcFbhJgwQQOwyKDkZpDTWr5dQIGeHB61JUzBcjrg/npwCyTjaABiSlD4e2
-         b5zmj6fqAHMgcRpGGkBVCiKX4nq4X5dKm4cme6ts//af1YG5uggXAaDc5qvzvAAGgZwQ
-         m2q2NUmFQZ4CScGlT1AwbVJFdXcfejC7RpQkh4WRA/t2UDGMViMv2M+AiR0maY5QSjFQ
-         Emag==
+        d=gmail.com; s=20221208; t=1691429404; x=1692034204;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VRFYnEPdLG8+V3CbBn+Rgg8YFLvKXfz9kmIHrHlJZqY=;
+        b=i3AZl7f1zQofjB/HlnVbZ0HkHBJAKfQRelucEctSEMbl3SzjzuOLPDMB3JyLPFd3Jo
+         y/afLAWDZkGKugC/SslQIaj42iw2fBK5bAg0NJvAPvyEfnXp1N4J95KebsMtI5IQlgMt
+         NMWEM1l0ba1qcCgKdR46GTsKUyolgRKeWaJm7PSy26bb98/2C4X4vtnmgJBPDgHx9Z0C
+         oPs+dFG+87CDjhFjsz/3A6MuHm6WYG4JSLFu7ZqSltqLAIDBcqb6i+J+fJ4EUCqpHKo1
+         1i0TpKUo9T/IF/FfUr799Mc9ec4zbzUFgf4CBZ2jGLYo3566dqTOwct9jJrCOYvPanN0
+         qA5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691429394; x=1692034194;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s8Am+NuCF8QWOzKex4jmoxA1gAih8dsglrkA++VhjHo=;
-        b=gu+MX/PVSMT09FrkP4JCrQ6tmmDWhZbZo07l85U4npV3AGhOrVzVCslTzHzVKPaMnz
-         KYgnT65p6GZAbavl51iQcdLqGzhxmKwEoiKY4MYCm+6bj0mh/XuCsn2dcQO20rzvPTRp
-         +yw3j2eb4J9ohRcQ8t6apBab2Ci0uCcHqBDvYpuUwVU8ykfdSZZh8EVgHdrh97yqKu6d
-         sa7+F+sf6Dqzmg4B7Tu7meELmEgBDPLb423VA3ifjS5vfx/dlrwtUEsX95ptUwwy70Ss
-         udx6UBKas2Zy+jdVIdxs1ck7vdpVUEr40V9cLq2yVngrT7JiKwSF2ohdpjqQCf90h1nA
-         s2kg==
-X-Gm-Message-State: AOJu0YxJYrordUrZzT4HvI2FXxNOKYj8MhBO06Bn06kj2u/IrUpZRqQY
-        DcpFQ/0ey8t8x8DvzZ6cwNr9JP6ZsOVujXMJJF8=
-X-Google-Smtp-Source: AGHT+IE8JXAdZZ2AhJvnTVq38tCiS5y3S8Lr8F9jRzOV7FZBwOTu62PWZj5snMysoZ5yp7eyV6RFDORrEGQ2dRGrHMo=
-X-Received: by 2002:ac8:5e07:0:b0:409:f273:e28d with SMTP id
- h7-20020ac85e07000000b00409f273e28dmr14321455qtx.62.1691429394504; Mon, 07
- Aug 2023 10:29:54 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691429404; x=1692034204;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VRFYnEPdLG8+V3CbBn+Rgg8YFLvKXfz9kmIHrHlJZqY=;
+        b=aJ6cjxCofiK9ZB08PIdOu2a61eQe4ihT8uWUAq0eRSl8yx1zGOXZFS1UbLVAV09O/E
+         /SOZPQtPo6E2kUYQiTN8LdHP28M3JddKa7LYQ0Px2lg+o3rGpY23aLzsuba0PHwQKjVl
+         Fy/JxiKT4m6V4IiuWXds0JQeSb68Zx3QBABTsKWmgxQOFw0Kn37N8tztOEYS7C+iMRyX
+         ACJlZ95SC9yHvHbIyNeDCXF0Z8cawd1zMp6gBvf4c9CKg2bD647JRj+xvgTE3jtaRlX6
+         3MeRGBoV4Tfnd0EuSAMkNbCWgxtxK0S2FowTC/nmC5ICQeZAkL9D/UHV9eyvtYn2nGV+
+         hugw==
+X-Gm-Message-State: AOJu0YygblHdHHvz4pqFovLIt8F0scx4cBySAVLzmJx/oz6im6mhburL
+        LGbs97Nsa6e1MZo3hNbPEYjHPZRoxZ93bjomV70=
+X-Google-Smtp-Source: AGHT+IGAoRJJR7tAjLWYKQe5Tl1E9/UL30bicC3/HiF0MJyfYZJ1OmqLbll+xzQSnmt85AMPJBAJpYGa5/jvPggjckE=
+X-Received: by 2002:a05:6871:6a9:b0:1ba:2c39:5cf3 with SMTP id
+ l41-20020a05687106a900b001ba2c395cf3mr12446829oao.31.1691429404084; Mon, 07
+ Aug 2023 10:30:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <c7f1bf9b-b183-bf6e-1cbb-d43f72494083@gmail.com>
- <2023080743-amendable-moonlit-15b7@gregkh> <CAFqe=zJ9uRTVG=jny2PzUrrFGW2E_mZrGKF-3YMRkjzMUdu_7A@mail.gmail.com>
- <CAKwvOdm0Tv0=KGdhVwuJX+8N-Dgx+kzuPy6zCBsV1kOc+6b+qQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdm0Tv0=KGdhVwuJX+8N-Dgx+kzuPy6zCBsV1kOc+6b+qQ@mail.gmail.com>
-From:   =?UTF-8?Q?Jannik_Gl=C3=BCckert?= <jannik.glueckert@gmail.com>
-Date:   Mon, 7 Aug 2023 19:29:43 +0200
-Message-ID: <CAFqe=zKdcOQpBFJXtjWUzET76mzsLE5Qu6jr_cRSsAeccmTEcA@mail.gmail.com>
-Subject: Re: Fwd: CFI violation when reading amd_pstate/status
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LLVM Build Support <llvm@lists.linux.dev>
+References: <20230802073439.13432-1-sunran001@208suo.com>
+In-Reply-To: <20230802073439.13432-1-sunran001@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 7 Aug 2023 13:29:53 -0400
+Message-ID: <CADnq5_MwqU2dumXc4tjkap63sv4ynni29M3=MTFngzmbZ0BbLw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: Clean up errors in nv.c
+To:     Ran Sun <sunran001@208suo.com>
+Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,18 +69,218 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Can you tell us more about your distro? Is it public? Is it built with clang?
+Applied.  Thanks!
 
-Hi Nick,
-
-this is Gentoo Linux, one of the oldest source distributions. We're
-also the basis for ChromeOS and various other niche distros.
-
-Gentoo defaults to gcc and glibc, though we also support clang and
-musl (and any combination thereof).
-You can find our compatibility tracker here
-https://bugs.gentoo.org/408963 . You can also find us on
-irc.libera.chat in the #gentoo-llvm channel.
-
-Best regards
-Jannik
+On Wed, Aug 2, 2023 at 3:34=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
+:
+>
+> Fix the following errors reported by checkpatch:
+>
+> ERROR: that open brace { should be on the previous line
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/nv.c | 48 +++++++++++----------------------
+>  1 file changed, 16 insertions(+), 32 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/nv.c b/drivers/gpu/drm/amd/amdgpu=
+/nv.c
+> index 51523b27a186..414c3c85172d 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/nv.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/nv.c
+> @@ -67,21 +67,18 @@
+>  static const struct amd_ip_funcs nv_common_ip_funcs;
+>
+>  /* Navi */
+> -static const struct amdgpu_video_codec_info nv_video_codecs_encode_array=
+[] =3D
+> -{
+> +static const struct amdgpu_video_codec_info nv_video_codecs_encode_array=
+[] =3D {
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4_AVC, 409=
+6, 2304, 0)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_HEVC, 4096, 23=
+04, 0)},
+>  };
+>
+> -static const struct amdgpu_video_codecs nv_video_codecs_encode =3D
+> -{
+> +static const struct amdgpu_video_codecs nv_video_codecs_encode =3D {
+>         .codec_count =3D ARRAY_SIZE(nv_video_codecs_encode_array),
+>         .codec_array =3D nv_video_codecs_encode_array,
+>  };
+>
+>  /* Navi1x */
+> -static const struct amdgpu_video_codec_info nv_video_codecs_decode_array=
+[] =3D
+> -{
+> +static const struct amdgpu_video_codec_info nv_video_codecs_decode_array=
+[] =3D {
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG2, 4096, 4=
+096, 3)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4, 4096, 4=
+096, 5)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4_AVC, 409=
+6, 4096, 52)},
+> @@ -91,8 +88,7 @@ static const struct amdgpu_video_codec_info nv_video_co=
+decs_decode_array[] =3D
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_VP9, 8192, 435=
+2, 0)},
+>  };
+>
+> -static const struct amdgpu_video_codecs nv_video_codecs_decode =3D
+> -{
+> +static const struct amdgpu_video_codecs nv_video_codecs_decode =3D {
+>         .codec_count =3D ARRAY_SIZE(nv_video_codecs_decode_array),
+>         .codec_array =3D nv_video_codecs_decode_array,
+>  };
+> @@ -108,8 +104,7 @@ static const struct amdgpu_video_codecs sc_video_code=
+cs_encode =3D {
+>         .codec_array =3D sc_video_codecs_encode_array,
+>  };
+>
+> -static const struct amdgpu_video_codec_info sc_video_codecs_decode_array=
+_vcn0[] =3D
+> -{
+> +static const struct amdgpu_video_codec_info sc_video_codecs_decode_array=
+_vcn0[] =3D {
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG2, 4096, 4=
+096, 3)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4, 4096, 4=
+096, 5)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4_AVC, 409=
+6, 4096, 52)},
+> @@ -120,8 +115,7 @@ static const struct amdgpu_video_codec_info sc_video_=
+codecs_decode_array_vcn0[]
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_AV1, 8192, 435=
+2, 0)},
+>  };
+>
+> -static const struct amdgpu_video_codec_info sc_video_codecs_decode_array=
+_vcn1[] =3D
+> -{
+> +static const struct amdgpu_video_codec_info sc_video_codecs_decode_array=
+_vcn1[] =3D {
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG2, 4096, 4=
+096, 3)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4, 4096, 4=
+096, 5)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4_AVC, 409=
+6, 4096, 52)},
+> @@ -131,27 +125,23 @@ static const struct amdgpu_video_codec_info sc_vide=
+o_codecs_decode_array_vcn1[]
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_VP9, 8192, 435=
+2, 0)},
+>  };
+>
+> -static const struct amdgpu_video_codecs sc_video_codecs_decode_vcn0 =3D
+> -{
+> +static const struct amdgpu_video_codecs sc_video_codecs_decode_vcn0 =3D =
+{
+>         .codec_count =3D ARRAY_SIZE(sc_video_codecs_decode_array_vcn0),
+>         .codec_array =3D sc_video_codecs_decode_array_vcn0,
+>  };
+>
+> -static const struct amdgpu_video_codecs sc_video_codecs_decode_vcn1 =3D
+> -{
+> +static const struct amdgpu_video_codecs sc_video_codecs_decode_vcn1 =3D =
+{
+>         .codec_count =3D ARRAY_SIZE(sc_video_codecs_decode_array_vcn1),
+>         .codec_array =3D sc_video_codecs_decode_array_vcn1,
+>  };
+>
+>  /* SRIOV Sienna Cichlid, not const since data is controlled by host */
+> -static struct amdgpu_video_codec_info sriov_sc_video_codecs_encode_array=
+[] =3D
+> -{
+> +static struct amdgpu_video_codec_info sriov_sc_video_codecs_encode_array=
+[] =3D {
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4_AVC, 409=
+6, 2160, 0)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_HEVC, 7680, 43=
+52, 0)},
+>  };
+>
+> -static struct amdgpu_video_codec_info sriov_sc_video_codecs_decode_array=
+_vcn0[] =3D
+> -{
+> +static struct amdgpu_video_codec_info sriov_sc_video_codecs_decode_array=
+_vcn0[] =3D {
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG2, 4096, 4=
+096, 3)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4, 4096, 4=
+096, 5)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4_AVC, 409=
+6, 4096, 52)},
+> @@ -162,8 +152,7 @@ static struct amdgpu_video_codec_info sriov_sc_video_=
+codecs_decode_array_vcn0[]
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_AV1, 8192, 435=
+2, 0)},
+>  };
+>
+> -static struct amdgpu_video_codec_info sriov_sc_video_codecs_decode_array=
+_vcn1[] =3D
+> -{
+> +static struct amdgpu_video_codec_info sriov_sc_video_codecs_decode_array=
+_vcn1[] =3D {
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG2, 4096, 4=
+096, 3)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4, 4096, 4=
+096, 5)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4_AVC, 409=
+6, 4096, 52)},
+> @@ -173,20 +162,17 @@ static struct amdgpu_video_codec_info sriov_sc_vide=
+o_codecs_decode_array_vcn1[]
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_VP9, 8192, 435=
+2, 0)},
+>  };
+>
+> -static struct amdgpu_video_codecs sriov_sc_video_codecs_encode =3D
+> -{
+> +static struct amdgpu_video_codecs sriov_sc_video_codecs_encode =3D {
+>         .codec_count =3D ARRAY_SIZE(sriov_sc_video_codecs_encode_array),
+>         .codec_array =3D sriov_sc_video_codecs_encode_array,
+>  };
+>
+> -static struct amdgpu_video_codecs sriov_sc_video_codecs_decode_vcn0 =3D
+> -{
+> +static struct amdgpu_video_codecs sriov_sc_video_codecs_decode_vcn0 =3D =
+{
+>         .codec_count =3D ARRAY_SIZE(sriov_sc_video_codecs_decode_array_vc=
+n0),
+>         .codec_array =3D sriov_sc_video_codecs_decode_array_vcn0,
+>  };
+>
+> -static struct amdgpu_video_codecs sriov_sc_video_codecs_decode_vcn1 =3D
+> -{
+> +static struct amdgpu_video_codecs sriov_sc_video_codecs_decode_vcn1 =3D =
+{
+>         .codec_count =3D ARRAY_SIZE(sriov_sc_video_codecs_decode_array_vc=
+n1),
+>         .codec_array =3D sriov_sc_video_codecs_decode_array_vcn1,
+>  };
+> @@ -536,8 +522,7 @@ static void nv_program_aspm(struct amdgpu_device *ade=
+v)
+>
+>  }
+>
+> -const struct amdgpu_ip_block_version nv_common_ip_block =3D
+> -{
+> +const struct amdgpu_ip_block_version nv_common_ip_block =3D {
+>         .type =3D AMD_IP_BLOCK_TYPE_COMMON,
+>         .major =3D 1,
+>         .minor =3D 0,
+> @@ -642,8 +627,7 @@ static int nv_update_umd_stable_pstate(struct amdgpu_=
+device *adev,
+>         return 0;
+>  }
+>
+> -static const struct amdgpu_asic_funcs nv_asic_funcs =3D
+> -{
+> +static const struct amdgpu_asic_funcs nv_asic_funcs =3D {
+>         .read_disabled_bios =3D &nv_read_disabled_bios,
+>         .read_bios_from_rom =3D &amdgpu_soc15_read_bios_from_rom,
+>         .read_register =3D &nv_read_register,
+> --
+> 2.17.1
+>
