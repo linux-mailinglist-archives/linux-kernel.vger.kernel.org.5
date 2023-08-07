@@ -2,186 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E347722E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7B37722E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbjHGLlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47808 "EHLO
+        id S232131AbjHGLlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbjHGLl3 (ORCPT
+        with ESMTP id S232825AbjHGLlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:41:29 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583321FFB;
-        Mon,  7 Aug 2023 04:38:35 -0700 (PDT)
-Received: from [192.168.0.192] (unknown [194.146.248.75])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: andrzej.p)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1653E66071CF;
-        Mon,  7 Aug 2023 12:37:26 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691408246;
-        bh=t//jemkWdtKHj5sMxR9vF0Gs1A+Rfx78G+6Cdqob5J8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=SXjzRIVbLx6EDCQ99IH5MSa0Y+g88OqDaXKgfbeKD1QC8e7/2d0iLlF8lNQd2pv+7
-         cbNusFO6FqUkq27+t/BiNXf0r+OrVfJrO5PsuBMwWSSFla/yN7w6+0973AJBzyRTmn
-         xqKHZh1riUEzgfOrm8J0VcaY6TNrMHkBDQxsItErV50+2F+Hyf35C+q7CJi3ovUdjR
-         OgSzyo3XcML4OQ5AWRuOFWfE9DfzdtLIsNyYSQr1Qu6YINJP8VP66hB5bE27Q8GvG3
-         GLQ7M0i7z5QWiOsXYc6BbbpP9RZ+XhEbe4L/Xx55Jxt4IixH6ib8V+AD3ZekZDDZ+K
-         8d+ZW+n4tyI2Q==
-Message-ID: <f5ede7a6-66ee-cf69-e1c9-2d75d8f37a02@collabora.com>
-Date:   Mon, 7 Aug 2023 13:37:23 +0200
+        Mon, 7 Aug 2023 07:41:32 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5304F46BA
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 04:38:38 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 578BA1FB;
+        Mon,  7 Aug 2023 04:38:12 -0700 (PDT)
+Received: from [10.57.90.63] (unknown [10.57.90.63])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A82633F59C;
+        Mon,  7 Aug 2023 04:37:27 -0700 (PDT)
+Message-ID: <177702e7-e68f-fa7a-4507-48dc82fcc030@arm.com>
+Date:   Mon, 7 Aug 2023 12:37:26 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 3/5] docs: uapi: media: Add common documentation of tiled
- NV15
-Content-Language: en-US
-To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     kernel@collabora.com, linux-media@vger.kernel.org,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH V3 4/4] coresight: trbe: Enable ACPI based TRBE devices
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Sami Mujawar <sami.mujawar@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
         linux-kernel@vger.kernel.org
-References: <20230804192737.19016-1-nicolas.dufresne@collabora.com>
- <20230804192737.19016-4-nicolas.dufresne@collabora.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-In-Reply-To: <20230804192737.19016-4-nicolas.dufresne@collabora.com>
+References: <20230803055652.1322801-1-anshuman.khandual@arm.com>
+ <20230803055652.1322801-5-anshuman.khandual@arm.com>
+ <f6a5aaf2-4669-cbc2-1358-e8cfb341b9c5@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <f6a5aaf2-4669-cbc2-1358-e8cfb341b9c5@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
-
-W dniu 4.08.2023 o 21:27, Nicolas Dufresne pisze:
-> This way we don't have to repeat over and over how the pixels are
-> packed in NV15.
+On 07/08/2023 05:43, Anshuman Khandual wrote:
 > 
-> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> ---
->   .../media/v4l/pixfmt-yuv-planar.rst           | 79 ++++++++++++++++---
->   1 file changed, 68 insertions(+), 11 deletions(-)
 > 
-> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> index 1d43532095c0..052927bd9396 100644
-> --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> @@ -373,10 +373,74 @@ two non-contiguous planes.
->   Tiled NV15
->   ----------
+> On 8/3/23 11:26, Anshuman Khandual wrote:
+>> This detects and enables ACPI based TRBE devices via the dummy platform
+>> device created earlier for this purpose.
+>>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+>> Cc: coresight@lists.linaro.org
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-trbe.c | 9 +++++++++
+>>   drivers/hwtracing/coresight/coresight-trbe.h | 1 +
+>>   2 files changed, 10 insertions(+)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+>> index e1d9d06e7725..f884883e9018 100644
+>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+>> @@ -1537,7 +1537,16 @@ static const struct of_device_id arm_trbe_of_match[] = {
+>>   };
+>>   MODULE_DEVICE_TABLE(of, arm_trbe_of_match);
+>>   
+>> +#ifdef CONFIG_ACPI
+>> +static const struct platform_device_id arm_trbe_acpi_match[] = {
+>> +	{ ARMV8_TRBE_PDEV_NAME, 0 },
+>> +	{ }
+>> +};
+>> +MODULE_DEVICE_TABLE(platform, arm_trbe_acpi_match);
+>> +#endif
+>> +
+>>   static struct platform_driver arm_trbe_driver = {
+>> +	.id_table = arm_trbe_acpi_match,
+> 
+> The build problem [1] reported on the first version of the series still exists
+> here i.e arm_trbe_acpi_match is hidden without CONFIG_ACPI. I had assumed that
+> CONFIG_CORESIGHT always enables CONFIG_ACPI, which is not the case. Following
+> random config (with CONFIG_ACPI=n and CONFIG_CORESIGHT_TRBE=y) easily triggers
+> the build problem.
+> 
+> https://download.01.org/0day-ci/archive/20230805/202308052123.uqR35d19-lkp@intel.com/config
+> 
+>   make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 -s -j 128
+> drivers/hwtracing/coresight/coresight-trbe.c:1563:23: error: implicit declaration of function ‘ACPI_PTR’ [-Werror=implicit-function-declaration]
+>   1563 |   .acpi_match_table = ACPI_PTR(arm_trbe_acpi_match),
+>        |                       ^~~~~~~~
+> drivers/hwtracing/coresight/coresight-trbe.c:1563:32: error: ‘arm_trbe_acpi_match’ undeclared here (not in a function); did you mean ‘arm_trbe_of_match’?
+>   1563 |   .acpi_match_table = ACPI_PTR(arm_trbe_acpi_match),
+>        |                                ^~~~~~~~~~~~~~~~~~~
+>        |                                arm_trbe_of_match
+> 
+> Following config wrap around fixes the problem.
+> 
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -1557,7 +1557,9 @@ MODULE_DEVICE_TABLE(platform, arm_trbe_acpi_match);
+>   #endif
 >   
-> -``V4L2_PIX_FMT_NV15_4L4`` Semi-planar 10-bit YUV 4:2:0 formats, using 4x4 tiling.
-> -All components are packed without any padding between each other.
-> -As a side-effect, each group of 4 components are stored over 5 bytes
-> -(YYYY or UVUV = 4 * 10 bits = 40 bits = 5 bytes).
-> +Semi-planar 10-bit YUV 4:2:0 formats. All components are packed
-> +without any padding between each other. Each pixels occupy 15 bits
-
-Maybe "Each pixel group"?
-
-
-
-> +and are usually stored in group of 4 components stored over 5 bytes
-> +(YYYY or UVUV = 4 * 10 bits = 40 bits = 5 bytes) or partitioned into
-> +upper 8 bit and lower 2 bits.
-> +
-> +.. flat-table:: Sample of 4 NV15 luma pixels
-> +    :header-rows:  2
-> +    :stub-columns: 0
-> +
-> +    * -
-> +      - 8
-> +      - 7
-> +      - 6
-> +      - 5
-> +      - 4
-> +      - 3
-> +      - 2
-> +      - 1
-> +      - 0
-> +    * - byte 0
-> +      - Y'\ :sub:`0:0`
-> +      - Y'\ :sub:`0:1`
-> +      - Y'\ :sub:`0:2`
-> +      - Y'\ :sub:`0:3`
-> +      - Y'\ :sub:`0:4`
-> +      - Y'\ :sub:`0:5`
-> +      - Y'\ :sub:`0:6`
-> +      - Y'\ :sub:`0:7`
-
-So byte 0 contains Y0, bits 0..7 but then...
-
-> +    * - byte 1
-> +      - Y'\ :sub:`0:8`
-> +      - Y'\ :sub:`0:9`
-> +      - Y'\ :sub:`1:0`
-> +      - Y'\ :sub:`1:1`
-> +      - Y'\ :sub:`1:2`
-> +      - Y'\ :sub:`1:3`
-> +      - Y'\ :sub:`1:4`
-> +      - Y'\ :sub:`1:5`
-> +    * - byte 2
-> +      - Y'\ :sub:`1:6`
-> +      - Y'\ :sub:`1:7`
-> +      - Y'\ :sub:`1:8`
-> +      - Y'\ :sub:`1:9`
-> +      - Y'\ :sub:`2:0`
-> +      - Y'\ :sub:`2:1`
-> +      - Y'\ :sub:`2:2`
-> +      - Y'\ :sub:`2:3`
-> +    * - byte 3
-> +      - Y'\ :sub:`2:4`
-> +      - Y'\ :sub:`2:5`
-> +      - Y'\ :sub:`2:6`
-> +      - Y'\ :sub:`2:7`
-> +      - Y'\ :sub:`2:8`
-> +      - Y'\ :sub:`2:9`
-> +      - Y'\ :sub:`3:0`
-> +      - Y'\ :sub:`3:1`
-> +    * - byte 4
-> +      - Y'\ :sub:`3:2`
-> +      - Y'\ :sub:`3:3`
-> +      - Y'\ :sub:`3:4`
-> +      - Y'\ :sub:`3:5`
-> +      - Y'\ :sub:`3:6`
-> +      - Y'\ :sub:`3:7`
-> +      - Y'\ :sub:`3:8`
-> +      - Y'\ :sub:`3:9`
-> +
-> +``V4L2_PIX_FMT_NV15_4L4`` stores pixels in 4x4 tiles, and stores tiles linearly
-> +in memory.
+>   static struct platform_driver arm_trbe_driver = {
+> +#ifdef CONFIG_ACPI
+>          .id_table = arm_trbe_acpi_match,
+> +#endif
+>          .driver = {
+>                  .name = DRVNAME,
+>                  .of_match_table = of_match_ptr(arm_trbe_of_match),
+> 
+> Please not that unlike other coresight drivers, TRBE is not using 'acpi_device_id'
+> based "acpi_match_table = ACPI_PTR" construct. But regardless, ACPI_PTR() seems to
+> be an alternate (probably better) solution as well.
+> 
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -1557,7 +1557,7 @@ MODULE_DEVICE_TABLE(platform, arm_trbe_acpi_match);
+>   #endif
 >   
->   ``V4L2_PIX_FMT_NV12M_10BE_8L128`` is similar to ``V4L2_PIX_FMT_NV12M`` but stores
->   10 bits pixels in 2D 8x128 tiles, and stores tiles linearly in memory.
-> @@ -385,13 +449,6 @@ The image height must be aligned to a multiple of 128.
->   The layouts of the luma and chroma planes are identical.
->   Note the tile size is 8bytes multiplied by 128 bytes,
->   it means that the low bits and high bits of one pixel may be in different tiles.
-> -The 10 bit pixels are packed, so 5 bytes contain 4 10-bit pixels layout like
-> -this (for luma):
-> -byte 0: Y0(bits 9-2)
+>   static struct platform_driver arm_trbe_driver = {
+> -       .id_table = arm_trbe_acpi_match,
+> +       .id_table = ACPI_PTR(arm_trbe_acpi_match),
 
-...here it says byts 9-2? Is it a mistake or are you cleaning up the doc
-and the table above is the correct version?
+This is preferred.
 
-Regards,
+>          .driver = {
+>                  .name = DRVNAME,
+>                  .of_match_table = of_match_ptr(arm_trbe_of_match),
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.h b/drivers/hwtracing/coresight/coresight-trbe.h
+> index 94e67009848a..fce1735d5c58 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.h
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.h
+> @@ -7,6 +7,7 @@
+>    *
+>    * Author: Anshuman Khandual <anshuman.khandual@arm.com>
+>    */
+> +#include <linux/acpi.h>
 
-Andrzej
+Shouldn't this be added in trbe.c ? Does trbe.h depend on any ACPI headers ?
 
-> -byte 1: Y0(bits 1-0) Y1(bits 9-4)
-> -byte 2: Y1(bits 3-0) Y2(bits 9-6)
-> -byte 3: Y2(bits 5-0) Y3(bits 9-8)
-> -byte 4: Y3(bits 7-0)
->   
->   ``V4L2_PIX_FMT_NV12_10BE_8L128`` is similar to ``V4L2_PIX_FMT_NV12M_10BE_8L128`` but stores
->   two planes in one memory.
-
+Suzuki
