@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E608771CC7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD08771CC8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbjHGJBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
+        id S231292AbjHGJBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 05:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231241AbjHGJBg (ORCPT
+        with ESMTP id S230466AbjHGJBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:01:36 -0400
+        Mon, 7 Aug 2023 05:01:39 -0400
 Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7233CE79
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F42F199D
         for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:01:26 -0700 (PDT)
 From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 To:     alsa-devel@alsa-project.org
@@ -31,9 +31,9 @@ Cc:     Maarten Lankhorst <dev@lankhorst.se>,
         Daniel Baluta <daniel.baluta@nxp.com>,
         linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH v3 2/9] ALSA: hda/i915: Allow override of gpu binding.
-Date:   Mon,  7 Aug 2023 11:00:38 +0200
-Message-Id: <20230807090045.198993-3-maarten.lankhorst@linux.intel.com>
+Subject: [PATCH v3 3/9] ALSA: hda/i915: Add an allow_modprobe argument to snd_hdac_i915_init
+Date:   Mon,  7 Aug 2023 11:00:39 +0200
+Message-Id: <20230807090045.198993-4-maarten.lankhorst@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
 References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
@@ -48,57 +48,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Selecting CONFIG_DRM selects CONFIG_VIDEO_NOMODESET, which exports
-video_firmware_drivers_only(). This can be used as a first
-approximation on whether i915 will be available. It's safe to use as
-this is only built when CONFIG_SND_HDA_I915 is selected by CONFIG_I915.
+Xe is a new GPU driver that re-uses the display (and sound) code from
+i915. It's no longer possible to load i915, as the GPU can be driven
+by the xe driver instead.
 
-It's not completely fool proof, as you can boot with "nomodeset
-i915.modeset=1" to make i915 load regardless, or use
-"i915.force_probe=!*" to never load i915, but the common case of
-booting with nomodeset to disable all GPU drivers this will work as
-intended.
+The new behavior will return -EPROBE_DEFER, and wait for a compatible
+driver to be loaded instead of modprobing i915.
 
-Because of this, we add an extra module parameter,
-snd_hda_core.gpu_bind that can be used to signal users intent.
--1 follows nomodeset, 0 disables binding, 1 forces wait/-EPROBE_DEFER
-on binding.
+Converting all drivers at the same time is a lot of work, instead we
+will convert each user one by one.
+
+Changes since v1:
+- Use dev_err_probe to set a probe reason for debugfs' deferred_devices.
 
 Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/hda/hdac_i915.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ include/sound/hda_i915.h        | 4 ++--
+ sound/hda/hdac_i915.c           | 8 ++++----
+ sound/pci/hda/hda_intel.c       | 2 +-
+ sound/soc/intel/avs/core.c      | 2 +-
+ sound/soc/intel/skylake/skl.c   | 2 +-
+ sound/soc/sof/intel/hda-codec.c | 2 +-
+ 6 files changed, 10 insertions(+), 10 deletions(-)
 
+diff --git a/include/sound/hda_i915.h b/include/sound/hda_i915.h
+index 6b79614a893b..f91bd6636086 100644
+--- a/include/sound/hda_i915.h
++++ b/include/sound/hda_i915.h
+@@ -9,12 +9,12 @@
+ 
+ #ifdef CONFIG_SND_HDA_I915
+ void snd_hdac_i915_set_bclk(struct hdac_bus *bus);
+-int snd_hdac_i915_init(struct hdac_bus *bus);
++int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe);
+ #else
+ static inline void snd_hdac_i915_set_bclk(struct hdac_bus *bus)
+ {
+ }
+-static inline int snd_hdac_i915_init(struct hdac_bus *bus)
++static inline int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
+ {
+ 	return -ENODEV;
+ }
 diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-index 161a9711cd63..c32709fa4115 100644
+index c32709fa4115..961fcd3397f4 100644
 --- a/sound/hda/hdac_i915.c
 +++ b/sound/hda/hdac_i915.c
-@@ -11,6 +11,13 @@
- #include <sound/hda_i915.h>
- #include <sound/hda_register.h>
- 
-+#include <video/nomodeset.h>
-+
-+static int gpu_bind = -1;
-+module_param(gpu_bind, int, 0644);
-+MODULE_PARM_DESC(gpu_bind, "Whether to bind sound component to GPU "
-+			   "(1=always, 0=never, -1=on nomodeset(default))");
-+
- #define IS_HSW_CONTROLLER(pci) (((pci)->device == 0x0a0c) || \
- 				((pci)->device == 0x0c0c) || \
- 				((pci)->device == 0x0d0c) || \
-@@ -121,6 +128,9 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
+@@ -155,7 +155,7 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
+  *
+  * Returns zero for success or a negative error code.
+  */
+-int snd_hdac_i915_init(struct hdac_bus *bus)
++int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
  {
- 	struct pci_dev *display_dev = NULL;
+ 	struct drm_audio_component *acomp;
+ 	int err;
+@@ -171,7 +171,7 @@ int snd_hdac_i915_init(struct hdac_bus *bus)
+ 	acomp = bus->audio_component;
+ 	if (!acomp)
+ 		return -ENODEV;
+-	if (!acomp->ops) {
++	if (allow_modprobe && !acomp->ops) {
+ 		if (!IS_ENABLED(CONFIG_MODULES) ||
+ 		    !request_module("i915")) {
+ 			/* 60s timeout */
+@@ -180,9 +180,9 @@ int snd_hdac_i915_init(struct hdac_bus *bus)
+ 		}
+ 	}
+ 	if (!acomp->ops) {
+-		dev_info(bus->dev, "couldn't bind with audio component\n");
++		int err = allow_modprobe ? -ENODEV : -EPROBE_DEFER;
+ 		snd_hdac_acomp_exit(bus);
+-		return -ENODEV;
++		return dev_err_probe(bus->dev, err, "couldn't bind with audio component\n");
+ 	}
+ 	return 0;
+ }
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 0d2d6bc6c75e..11cf9907f039 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2277,7 +2277,7 @@ static int azx_probe_continue(struct azx *chip)
  
-+	if (!gpu_bind || (gpu_bind < 0 && video_firmware_drivers_only()))
-+		return false;
-+
- 	for_each_pci_dev(display_dev) {
- 		if (display_dev->vendor == PCI_VENDOR_ID_INTEL &&
- 		    (display_dev->class >> 16) == PCI_BASE_CLASS_DISPLAY &&
+ 	/* bind with i915 if needed */
+ 	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
+-		err = snd_hdac_i915_init(bus);
++		err = snd_hdac_i915_init(bus, true);
+ 		if (err < 0) {
+ 			/* if the controller is bound only with HDMI/DP
+ 			 * (for HSW and BDW), we need to abort the probe;
+diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
+index 637501850728..3311a6f14200 100644
+--- a/sound/soc/intel/avs/core.c
++++ b/sound/soc/intel/avs/core.c
+@@ -191,7 +191,7 @@ static void avs_hda_probe_work(struct work_struct *work)
+ 
+ 	pm_runtime_set_active(bus->dev); /* clear runtime_error flag */
+ 
+-	ret = snd_hdac_i915_init(bus);
++	ret = snd_hdac_i915_init(bus, true);
+ 	if (ret < 0)
+ 		dev_info(bus->dev, "i915 init unsuccessful: %d\n", ret);
+ 
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 998bd0232cf1..4d93b8690467 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -791,7 +791,7 @@ static int skl_i915_init(struct hdac_bus *bus)
+ 	 * The HDMI codec is in GPU so we need to ensure that it is powered
+ 	 * up and ready for probe
+ 	 */
+-	err = snd_hdac_i915_init(bus);
++	err = snd_hdac_i915_init(bus, true);
+ 	if (err < 0)
+ 		return err;
+ 
+diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+index 8a5e99a898ec..f1fd5b44aaac 100644
+--- a/sound/soc/sof/intel/hda-codec.c
++++ b/sound/soc/sof/intel/hda-codec.c
+@@ -415,7 +415,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
+ 		return 0;
+ 
+ 	/* i915 exposes a HDA codec for HDMI audio */
+-	ret = snd_hdac_i915_init(bus);
++	ret = snd_hdac_i915_init(bus, true);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
 2.39.2
 
