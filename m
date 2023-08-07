@@ -2,73 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B48E772BD3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB4F772BD7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbjHGQ6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
+        id S232003AbjHGQ6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbjHGQ6J (ORCPT
+        with ESMTP id S230388AbjHGQ6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:58:09 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DF12109
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:57:46 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5734d919156so40879417b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:57:46 -0700 (PDT)
+        Mon, 7 Aug 2023 12:58:40 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 088B5210E
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:58:24 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6b9defb36a2so4491043a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:58:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691427465; x=1692032265;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OhiUftOb2o56hkUQV+ZtLncPSlYoXMv0SECjTg7Jt94=;
-        b=TljiyfJW5u5nsEuK9l9Jz1vIL1gWGBr6Px3os1xU1f83SmzDxB6bEquswGJ5SdzB7v
-         jYEdyMj8F83vDjsQxr6QZ5tdLSAvKiPajCYuAg/Wsqv5cfqSMocJ0XSZ6RrS1w4tOB7/
-         Q5TCsCBjULogwwcWjYttdXUVWIXaQrYWQppoeX0kKnOU6HSStOjT2SHLjYxJTV3PPjkK
-         2E8d44Q//5X3h9RwfRfMVXkQFPC3HnwZ03BQZcMO2Pzlet4vtQLODjFWf5VVKziJsrZT
-         d+fifZDim0wavKDzpLRoTj2RFojONIoJbU5hjQpM0U9PIDYm47AeBOWrDq+wNaL8T41x
-         t2AQ==
+        d=gmail.com; s=20221208; t=1691427503; x=1692032303;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wdIDxHlj3CBjEs4/nbCl29OQGxlIEXIjwPDyccsPxDE=;
+        b=andONpF4M/88tEP2nqehwpuHN7tQ3fImuVgkX8eWzlSKV2lc/RwxoVl8VmJ+UYCnEg
+         A2m1Ix+2Imf1UdtHZTL34HJOrtIUX8TNly1xld4iUVqveSQTyAL0SpGbSyMyKC/Uc0XR
+         WMQcMQmwirnQz84Hq7m2G40WowDjwGoTNP6yPVsDsx5AYXS0tooNBAq4onubGWjhCwT9
+         Q89Dt3yomRLyYM7myoltbdOy8uqHFGj90EojIyg7S915cS/qFabiUvF8qaHJz3RJf/sB
+         4qZADKs9BFyKsxUCmS90fa0pVMHQ4hSK9/cb3WJlRqO1nmtmgj1zmzIKPZI/mcy9Hjv9
+         iqyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691427465; x=1692032265;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OhiUftOb2o56hkUQV+ZtLncPSlYoXMv0SECjTg7Jt94=;
-        b=PWX6YhLZQQnzjDZtE9Jey5l9Ry67W7r1531gjMGP3Sxf454vZBgnGi1inTrT+YLBoY
-         Mu0PgjnJisb8slukIM6RZFObwt+46xpkhF/r2rpDmiXZKN5J7gIVUAMt8ukdUYsd9rE6
-         Bftvqwl0Ljt1AXJCMNMPSM5AYdUhzlFzAV7IilRBwlS5vYtJNsuNGxFCOvz/zatJRe3W
-         OSjHv0mESL8IDMWSkqHLPAr3T8fbO8JCXpoCzsu8K+PQyBtX0FGvBf5Zo7OtROWXv/Yi
-         VNYaNXEz5engWLdDJO7sRGqC+Sh1CzZLzd48OrAPfF+ZHXqP+CfQ42dq/o9bJfsqpLVa
-         qfYw==
-X-Gm-Message-State: AOJu0YzykYRaA7kcOUOwMQDsK1Wje9WVTB4U71eSYKZpFhy6V/dwBbds
-        P+rk2RW/ImFF+6FOiX3W1sbhTfPBRIt+ZLxlomU=
-X-Google-Smtp-Source: AGHT+IFWkQ0pLgPAKWFDCriEIiAIO+33WqMKSSXVJL3oPrcmXL+Bseok4OpPoN4rRXf53fZG+IVdJph/ei2vIJld6Po=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:4746:957d:1a28:5104])
- (user=ndesaulniers job=sendgmr) by 2002:a81:a84a:0:b0:570:7d9b:9b16 with SMTP
- id f71-20020a81a84a000000b005707d9b9b16mr69838ywh.2.1691427465219; Mon, 07
- Aug 2023 09:57:45 -0700 (PDT)
-Date:   Mon, 07 Aug 2023 09:57:43 -0700
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAIYi0WQC/3XMQQrCMBCF4auUWRtJa5OoK+8hRZI4TQdspySlK
- CV3N3bv8n/wvg0SRsIE12qDiCsl4qlEc6jAD3YKKOhZGhrZnORZGjFSSjSFxxx5YSG9u0j0ulW th/KZI/b03r17V3qgtHD87Pxa/9Z/0lqLWpheae2Ms8rbW2AOLzx6HqHLOX8B31sGXKsAAAA=
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691427463; l=1707;
- i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
- bh=/3ebNjUMiHT+ZDd7Ua2EPlNM8kr/3S8xi33sTpmWDMc=; b=WZkUghyVlQr8CofcN5Yr2Itll/XZeeEa+w7dIYsN21Mosf0pZvOZYSBDP3MaFJvJfwA7mp+on
- FTDDnEp75lPAqMse60QXcUKBJ6gadYonZb8YYFKpcH4AmjHHDIz3fC7
-X-Mailer: b4 0.12.3
-Message-ID: <20230807-missing_proto-v2-1-3ae2e188bb0c@google.com>
-Subject: [PATCH v2] Makefile.extrawarn: enable -Wmissing-variable-declarations
- for W=1
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        d=1e100.net; s=20221208; t=1691427503; x=1692032303;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wdIDxHlj3CBjEs4/nbCl29OQGxlIEXIjwPDyccsPxDE=;
+        b=d/4ff6QOhO0BgG24kf01o2+inkgY3AelJO4NUI0y65FIb0qwCbIHyv+SEMon2WhDBL
+         Qiukl8eijHIjQFLF9q7Nj8vaSYx+lJtwItCS9tk06j9QSFgNounHCMP2EEs9DjAfIQl2
+         iAMn2FdfiEhhZnaQXY21nH4zoaR6fWRU6PQyOnaTDbz2Xc45BuV3bry8rbhq0dKgLdpg
+         8SLstCSQ8qkw0pDgiO4tbrRNNJdjV4OQldNnLfkVMBx0/s+Jg11cbQwRVTJj20cWTxIN
+         etZWO/CODZOTp/2PJFGyaz20qvOiEKHhv77krDvM/3uwUIqgNqVJqFRmB1tjbDBsWvnA
+         47/g==
+X-Gm-Message-State: AOJu0Yxq7tDrxztokoEESFeoOoRgkYm7e/MURL4fLqUKgJHatxtfj0Se
+        oernSE3Cu9dKGBZX7VD+KD2TXJ1Gf9Kij7wfvSw=
+X-Google-Smtp-Source: AGHT+IFTGh7xGv1PL5QDFuVB2WyIhIetxgTZttc29LRUs6RK4LBIlMq8AQYuQjrD5hikB7bp3y/QblOCIXCtkrvwk+g=
+X-Received: by 2002:a05:6870:5694:b0:1bf:1246:4e8c with SMTP id
+ p20-20020a056870569400b001bf12464e8cmr13106946oao.11.1691427503318; Mon, 07
+ Aug 2023 09:58:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230802013818.8766-1-sunran001@208suo.com>
+In-Reply-To: <20230802013818.8766-1-sunran001@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 7 Aug 2023 12:58:12 -0400
+Message-ID: <CADnq5_O6nh6jxUWhvf_ZTyfDzrFWqLCpO6mkasxw02c__oCYag@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/pm: Clean up errors in pp_thermal.h
+To:     Ran Sun <sunran001@208suo.com>
+Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,46 +69,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I noticed Tom was sending patches where smatch was recommending
-annotating functions as static when no previous declaration existed.
-Surely the compiler could make such recommendations as well, I thought.
+Applied.  Thanks!
 
-Looks like -Wmissing-variable-declarations can make such
-recommendations.
-
-GCC just added support for this warning (gcc 14.1.0 will ship with
-support), and all versions of clang relevant to building the kernel
-support this flag.
-
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes in v2:
-- Fix typo in warning flag name. I thought I tested W=1 but I was
-  looking at -Wmissing-declaration, not the expected
-  -Wmissing-variable-declaration. Actually verified v2.
-- Link to v1: https://lore.kernel.org/r/20230807-missing_proto-v1-1-7f566b7ba5ca@google.com
----
- scripts/Makefile.extrawarn | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-index 40cd13eca82e..18ce75c5c384 100644
---- a/scripts/Makefile.extrawarn
-+++ b/scripts/Makefile.extrawarn
-@@ -32,6 +32,7 @@ KBUILD_CFLAGS += $(call cc-option, -Wunused-but-set-variable)
- KBUILD_CFLAGS += $(call cc-option, -Wunused-const-variable)
- KBUILD_CFLAGS += $(call cc-option, -Wpacked-not-aligned)
- KBUILD_CFLAGS += $(call cc-option, -Wstringop-truncation)
-+KBUILD_CFLAGS += $(call cc-option, -Wmissing-variable-declarations)
- # The following turn off the warnings enabled by -Wextra
- KBUILD_CFLAGS += -Wno-missing-field-initializers
- KBUILD_CFLAGS += -Wno-sign-compare
-
----
-base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
-change-id: 20230807-missing_proto-0cb90ec6454c
-
-Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
-
+On Tue, Aug 1, 2023 at 9:38=E2=80=AFPM Ran Sun <sunran001@208suo.com> wrote=
+:
+>
+> Fix the following errors reported by checkpatch:
+>
+> ERROR: open brace '{' following struct go on the same line
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>  drivers/gpu/drm/amd/pm/powerplay/inc/pp_thermal.h | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/inc/pp_thermal.h b/drivers/=
+gpu/drm/amd/pm/powerplay/inc/pp_thermal.h
+> index f7c41185097e..2003acc70ca0 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/inc/pp_thermal.h
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/inc/pp_thermal.h
+> @@ -25,14 +25,12 @@
+>
+>  #include "power_state.h"
+>
+> -static const struct PP_TemperatureRange __maybe_unused SMU7ThermalWithDe=
+layPolicy[] =3D
+> -{
+> +static const struct PP_TemperatureRange __maybe_unused SMU7ThermalWithDe=
+layPolicy[] =3D {
+>         {-273150,  99000, 99000, -273150, 99000, 99000, -273150, 99000, 9=
+9000},
+>         { 120000, 120000, 120000, 120000, 120000, 120000, 120000, 120000,=
+ 120000},
+>  };
+>
+> -static const struct PP_TemperatureRange __maybe_unused SMU7ThermalPolicy=
+[] =3D
+> -{
+> +static const struct PP_TemperatureRange __maybe_unused SMU7ThermalPolicy=
+[] =3D {
+>         {-273150,  99000, 99000, -273150, 99000, 99000, -273150, 99000, 9=
+9000},
+>         { 120000, 120000, 120000, 120000, 120000, 120000, 120000, 120000,=
+ 120000},
+>  };
+> --
+> 2.17.1
+>
