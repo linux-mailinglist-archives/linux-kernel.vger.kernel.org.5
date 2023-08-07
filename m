@@ -2,266 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D4A771A07
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353CC7719FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbjHGGLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
+        id S230440AbjHGGGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjHGGLa (ORCPT
+        with ESMTP id S230513AbjHGGGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:11:30 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF7B10F9;
-        Sun,  6 Aug 2023 23:11:27 -0700 (PDT)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37765frh001989;
-        Mon, 7 Aug 2023 06:11:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=pp1; bh=v6bVsBRvYVg98O9RgVNLDY/D+1vwMKKtfASX5Dxrvy0=;
- b=FAEH190pAZ5MMi35ewFtybWMMO6vZWQMeRyYZXJZkldQpVfvqC0cGg5NeznrkBOcrZac
- v4SjynkQYtjuPPIqxXfBPUbo8U618EuTR9s8MesWFrH2BQp7OF93qsmZZlisJ33gudE5
- yXbdXb1qQ0W6Spru8FLvhMvmVTeBMqn2objrn2q7ZOlJE4x3yOBkAeaA9ZvXLG+Y7DQB
- lXDZhqAhseW3PSsWrQfc6CR0UwtLPHm34WdOJoLmyLERuze2MpoUHpo0XCvAZ16VLrY+
- A0ZpmLM0SJLv2N5HOIyFxrUZa1CNbBo81LnAjVCArIhNOsJyXIyjBwSO9FBJ6vxYdKr2 zQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sau1s08hx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Aug 2023 06:11:21 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37766EXv004571;
-        Mon, 7 Aug 2023 06:11:13 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sau1s082e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Aug 2023 06:11:13 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3774rV0W001592;
-        Mon, 7 Aug 2023 06:11:04 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sa2yjj4va-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Aug 2023 06:11:03 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3776B1nX39780628
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Aug 2023 06:11:01 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2876520043;
-        Mon,  7 Aug 2023 06:11:01 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BB88920040;
-        Mon,  7 Aug 2023 06:10:59 +0000 (GMT)
-Received: from [9.109.248.226] (unknown [9.109.248.226])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  7 Aug 2023 06:10:59 +0000 (GMT)
-Subject: [PATCH v8 1/2] powerpc/rtas: Rename rtas_error_rc to
- rtas_generic_errno
-From:   Mahesh Salgaonkar <mahesh@linux.ibm.com>
-To:     linuxppc-dev <linuxppc-dev@ozlabs.org>
-Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Date:   Mon, 07 Aug 2023 11:40:59 +0530
-Message-ID: <169138864808.65607.6576358707894823512.stgit@jupiter>
-User-Agent: StGit/1.5
-Content-Type: text/plain; charset="utf-8"
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: OhR9Ycvb8fZTOPfJRfuXemztRrpSS7dk
-X-Proofpoint-GUID: i8xOCyeWt4q0P0j14EtDWGRKX6-frePv
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 7 Aug 2023 02:06:49 -0400
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2042.outbound.protection.outlook.com [40.107.105.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D1B10F6
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:06:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q/hu2s5c37kf9g97lQeixyRVvJ1gOf+dYRbsD5zTRAEhDiJWdtIe6VkeYmG9gg2+tY3vsrOUbr3iWTZW5/RszyIVu4ID1DkllPfXQvrEKz3XJ0d91MZTNaS6D2Tm2YQA0kOEX4okm/G8lvHwg8haPjzzWy4jlXsHkicGlyJ5uwuxuqOx87a5M/JulfLcK3AEXKcyovWtz2Q7R0QHfJ+SxTEpelZ9VchJnDgNjay5SB0N8QNwkLy63Z7Tdrw4joHR7a8iu8Mom645XX0tiCrI9pPqUH8Uk3p+6TJXV0+lUbFiiaUF+IV8g/1zAVKZaKscdrM/bMjMdgBlyXnL6/Ld2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zZmDnc1a1KpVpPMuG03e10+QC3pZKZZgk8/B2IspMYQ=;
+ b=AWL/WoVbzDw004UFDOO4AOe82ptDgi42ZF/IadWzVAFnnkvXWTzqlFOT8D1/Kzc4Xw+s7pzbWKKqLdZ1wAYxaNqC6/d9qkAf1WXMLNGEdwjX2tjNtpQZEYkqeExHHdKVR9G09gwz7EE2SCbxlkNy/l+MM8BbAMHUUam/CF+hsNel7PS9Gq5gX/8unsfD9ST4O0RHa8GCJRvml5liP2MIo10iIaZ0QdK0mEiRaPfdd9iLo3ZA+nYmYexKL0wtIVSoE6ntW+FpNhDVhBy+dIVQAwYd60xzqSHlndXagTeWt2g3jVUAbTy/bZl7jBdLS2rvG8SQrd3rt76/dmdw0kv6iQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zZmDnc1a1KpVpPMuG03e10+QC3pZKZZgk8/B2IspMYQ=;
+ b=jDu+iAoX1HFWuM366HOB2Ry0z9+v+U0dggmrscO7huvATM1QSMias8/xWK72K7x1Gfs2762QBb5MsSoZMxX5/VoJxFv1GOWCQ4dlfPICcdhELZgKSfQrFM57jc7jHggWDnlztgGa5qnHWw02BJjZTUBxfiO/7lzJAbhDOz0waD8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
+ by AS8PR04MB9125.eurprd04.prod.outlook.com (2603:10a6:20b:448::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26; Mon, 7 Aug
+ 2023 06:06:45 +0000
+Received: from AM7PR04MB7046.eurprd04.prod.outlook.com
+ ([fe80::9018:e395:332c:e24b]) by AM7PR04MB7046.eurprd04.prod.outlook.com
+ ([fe80::9018:e395:332c:e24b%4]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
+ 06:06:44 +0000
+From:   Liu Ying <victor.liu@nxp.com>
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     andrzej.hajda@intel.com, neil.armstrong@linaro.org,
+        rfoss@kernel.org, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@gmail.com,
+        daniel@ffwll.ch, Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH v3] drm/bridge: panel: Add a device link between drm device and panel device
+Date:   Mon,  7 Aug 2023 14:11:15 +0800
+Message-Id: <20230807061115.3244501-1-victor.liu@nxp.com>
+X-Mailer: git-send-email 2.37.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0186.apcprd06.prod.outlook.com (2603:1096:4:1::18)
+ To AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-07_04,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- clxscore=1011 impostorscore=0 priorityscore=1501 lowpriorityscore=0
- mlxscore=0 bulkscore=0 malwarescore=0 adultscore=0 phishscore=0
- mlxlogscore=866 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308070055
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM7PR04MB7046:EE_|AS8PR04MB9125:EE_
+X-MS-Office365-Filtering-Correlation-Id: 899eb515-7fdd-474f-776a-08db970c7a0e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wVH3qdRDA2eicp7gRru10Nw/lFwG5ZRw9LlTPH93nzVdpv7gdIZBIm8SlTs+gHs42FyeXPusykCmctB4bVzfh7G8O7bZlylPC8kJ9sgXeQqCGVu4jdLN6MEDrIffgi6Gr7eg0cEDLqiEt1bDF+GVThH3aZTz8SBqcLueu6M+6RY2PpXZcOSPHgjOw/cUbl+R07BCdsBKw7tc2BmCBfMA/eeuWQXYYbBBhyok1aGBKWD1gYoFnaki7w4/3k6Pkph8ft+Egtp4VKRMS6kpI/AGjjsWu9LQ0AiN4rDb2u65QLk50tsKZYtHCfBB4vD6Yozvqx1i+3czjJcHl8bAYNSIxnoQe64/q8rRAWAJIC8Swzwt5NoNj0GaP/syQxzvbIH5tfcl28koFSDy5CWdwqo5mCpMmyCptQp2DlzJZnFLX7NAyEYyByyF5pY/vGTcWUC3MHeRXoAlKd9qsg8TE01TsE711nW41LGxe+0reai5W0AHALRTku+cO9cGt5ZSqf2gNAzD+T8EYl9VY9S3PwGP/atoU8gNJ2UOThRmhH95ceu/dzN/aVFqIhtKWE9WitizryqkpJoSwX+MVVqpN9ITZKQXbrRrb19OKD6gDyS44gE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(366004)(396003)(136003)(39860400002)(1800799003)(186006)(451199021)(1076003)(41300700001)(26005)(2906002)(5660300002)(83380400001)(7416002)(8936002)(8676002)(2616005)(478600001)(86362001)(316002)(6506007)(38350700002)(38100700002)(6486002)(66476007)(66556008)(52116002)(66946007)(6666004)(6512007)(966005)(4326008)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?G4N9rUBw4gI5xvx6rVg/4uHOjocxIBaGv+jC2UlnX/iKFXRst/RVaCswUSJH?=
+ =?us-ascii?Q?qAiRRR9/K7uB0ZVKak2ibXQsOddGabtA/lySC6/EN2BSpz5eI+YxsBl0GYVn?=
+ =?us-ascii?Q?heYS4Qiqj3Q8gx3V2Dv9iV26VJ7MCJUZGgxCxmKTFSpW22TLUSNEBFURSQMd?=
+ =?us-ascii?Q?AWA/vDTiOmYY1mP1sfloGpg5AxYfzrW2BDV7ZgSTfR4PybBgO68Y95W9sz+B?=
+ =?us-ascii?Q?VPe1wU7ObxDlzN741uxOZ2YOKLGK6ClPRZ1Q55HIKRkECOPewpfmSQQfYktk?=
+ =?us-ascii?Q?AWzFsXZShX7zHPmg9RKSMnOBvpY5W2rrY8hw9PSBy7HdduFKBburOSWXTVht?=
+ =?us-ascii?Q?0StyCrr4YL6Z66iRuQ6zysf5A/keuRfPvYnH1LMrUrW38zgVM37kQr7NffBd?=
+ =?us-ascii?Q?KbheqkNqJ8HZX6/AXRgnAvwJc/au/IodtRjo42TsU7Z//Nn8qhPshOD9j2lA?=
+ =?us-ascii?Q?jwk36/9tcwW9vv2JNttl4x8+DEcPvex2++t+bzw7jLvxSUR1KeDMNixJF9cx?=
+ =?us-ascii?Q?0Cu3+WynvETX2guvQG2/XkL+L5wOExzKMJdo60uQDslb+dqo26qtEhB5v7Ih?=
+ =?us-ascii?Q?BLshFcIg49gV/XmAdvMyX6S653YxwyIeEvfw4EpcsQtxZhZGQNeda4VaB+sN?=
+ =?us-ascii?Q?yWyDXSRndm9C/PzekiQKhA9VRDxr67sl1ZWQ29Wma8tS8vqEM3Vn52I1sCkZ?=
+ =?us-ascii?Q?QblJR6lUcVsPxprVk/vn0PuzG07+upO3y/DF1xlMrL/9GJMQnaHt3kJpdjLj?=
+ =?us-ascii?Q?7Ov70dLjKjy2mNe8OOpqSjdrKjd1yTJlo9fP/DxE+iGvaRwh7mWkkifYazYv?=
+ =?us-ascii?Q?/kQnJTcMpYy4zqK6nubRyKgS6V1ex+B+NuiLgk4gg5CwaOWdCtoE5mg8/sO+?=
+ =?us-ascii?Q?m0ezti513sV54HVzIxwGHPrLPZI+54kzObvz19fAK0d2mAk35c11pE1KXUqj?=
+ =?us-ascii?Q?edtEVMEDskfZkGlIuXPvH6KafOhVsQd6TGOUGhacHT17tO6qDitTANfiSrO0?=
+ =?us-ascii?Q?3E+gdz2MuEZuRL/JNZW/yZZdUAJhXkShBqY01NgpZVzcnSTMYM2Auhs/mPCQ?=
+ =?us-ascii?Q?v/GEi4m+EdtoKqhL8FvW7HGcrid8VXy/34zM6tIMlNiZfA/k5cRwxfe6CRil?=
+ =?us-ascii?Q?a7zTyQ0tug6azZlfGz+G0Tp2O/OBhgWSH1U/EKoZmF8Hce2gopgaWeMOyzqz?=
+ =?us-ascii?Q?dWui9Sxpbxlfg1ZCbpArqvHbITiz4g3UH3cYrciSz0ZTHnC6+UBFMv4busog?=
+ =?us-ascii?Q?XPVexw71dcGfUg7PakNPOLo1a/WNf/e8cceayj2YpTtsNVwfDsv9/nTwK3x6?=
+ =?us-ascii?Q?CJzL0rPnlLOeC2UTCvszbqdNpLTQYU2lwagqyEjuf8yXs28mayO8B+j9zwSD?=
+ =?us-ascii?Q?pvYxr/WIjGyA2Gs6QJ4eL+cZ8aIc1DJPFjVHwXQKGqnwuX16pdVJaoY9fXKm?=
+ =?us-ascii?Q?tfwAvcbodKN2SNKm2BbTlAJR9PgjveHKMRGDdo5Rcvd6xlLEcW7Mz5GMQ+y7?=
+ =?us-ascii?Q?Y0Z7nudsOA+6kPBZqGWFoE49e+KhGF1u/VR/L1Ga/cislz7XGAO6jZF9u3HW?=
+ =?us-ascii?Q?jE7G8/LoamnlQz59VJJ4qFcauTywBhrMWoQ5MXN6?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 899eb515-7fdd-474f-776a-08db970c7a0e
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7046.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 06:06:44.8104
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fxiLoS88ERSs4Xov1EAqWb3YoU6v+bWG4fCkD6DoFyR42CA6UiyJRxubYAtGmWCPcjXdvLWiHFjIj7GyKeKqBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB9125
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rtas_generic_errno() function will convert the generic rtas return codes
-into errno. Also, #define descriptive names for rtas return codes and use
-it instead of numeric values.
+Add the device link when panel bridge is attached and delete the link
+when panel bridge is detached.  The drm device is the consumer while
+the panel device is the supplier.  This makes sure that the drm device
+suspends eariler and resumes later than the panel device, hence resolves
+problems where the order is reversed, like the problematic case mentioned
+in the below link.
 
-Signed-off-by: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+Link: https://lore.kernel.org/lkml/CAPDyKFr0XjrU_udKoUKQ_q8RWaUkyqL+8fV-7s1CTMqi7u3-Rg@mail.gmail.com/T/
+Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Liu Ying <victor.liu@nxp.com>
 ---
+v2->v3:
+* Improve commit message s/swapped/reversed/.
 
-(no changes since v7)
+v1->v2:
+* Fix bailout for panel_bridge_attach() in case device_link_add() fails.
 
-Change in V7:
-- Until v6 there was only one patch with subject "PCI hotplug: rpaphp:
-  Error out on busy status from get-sensor-state". Starting from v7, adding
-  this new patch to introduce rtas_generic_errno() to handle generic rtas
-  error codes.
-  https://lore.kernel.org/all/20220429162545.GA79541@bhelgaas/
----
- arch/powerpc/include/asm/rtas.h |   10 +++++++
- arch/powerpc/kernel/rtas.c      |   53 ++++++++++++++++++++-------------------
- 2 files changed, 36 insertions(+), 27 deletions(-)
+ drivers/gpu/drm/bridge/panel.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/arch/powerpc/include/asm/rtas.h b/arch/powerpc/include/asm/rtas.h
-index 3abe15ac79db1..5572a0a2f6e18 100644
---- a/arch/powerpc/include/asm/rtas.h
-+++ b/arch/powerpc/include/asm/rtas.h
-@@ -202,7 +202,9 @@ typedef struct {
- #define RTAS_USER_REGION_SIZE (64 * 1024)
+diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/panel.c
+index 9316384b4474..a6587d233505 100644
+--- a/drivers/gpu/drm/bridge/panel.c
++++ b/drivers/gpu/drm/bridge/panel.c
+@@ -4,6 +4,8 @@
+  * Copyright (C) 2017 Broadcom
+  */
  
- /* RTAS return status codes */
--#define RTAS_BUSY		-2    /* RTAS Busy */
-+#define RTAS_HARDWARE_ERROR	(-1)  /* Hardware Error */
-+#define RTAS_BUSY		(-2)  /* RTAS Busy */
-+#define RTAS_INVALID_PARAMETER	(-3)  /* Invalid indicator/domain/sensor etc. */
- #define RTAS_EXTENDED_DELAY_MIN	9900
- #define RTAS_EXTENDED_DELAY_MAX	9905
- 
-@@ -212,6 +214,11 @@ typedef struct {
- #define RTAS_THREADS_ACTIVE     -9005 /* Multiple processor threads active */
- #define RTAS_OUTSTANDING_COPROC -9006 /* Outstanding coprocessor operations */
- 
-+/* statuses specific to get-sensor-state */
-+#define RTAS_SLOT_UNISOLATED		(-9000)
-+#define RTAS_SLOT_NOT_UNISOLATED	(-9001)
-+#define RTAS_SLOT_NOT_USABLE		(-9002)
++#include <linux/device.h>
 +
- /* RTAS event classes */
- #define RTAS_INTERNAL_ERROR		0x80000000 /* set bit 0 */
- #define RTAS_EPOW_WARNING		0x40000000 /* set bit 1 */
-@@ -425,6 +432,7 @@ extern int rtas_set_indicator(int indicator, int index, int new_value);
- extern int rtas_set_indicator_fast(int indicator, int index, int new_value);
- extern void rtas_progress(char *s, unsigned short hex);
- int rtas_ibm_suspend_me(int *fw_status);
-+int rtas_generic_errno(int rtas_rc);
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_bridge.h>
+ #include <drm/drm_connector.h>
+@@ -19,6 +21,7 @@ struct panel_bridge {
+ 	struct drm_bridge bridge;
+ 	struct drm_connector connector;
+ 	struct drm_panel *panel;
++	struct device_link *link;
+ 	u32 connector_type;
+ };
  
- struct rtc_time;
- extern time64_t rtas_get_boot_time(void);
-diff --git a/arch/powerpc/kernel/rtas.c b/arch/powerpc/kernel/rtas.c
-index c087eeee320ff..80b6099e8ce20 100644
---- a/arch/powerpc/kernel/rtas.c
-+++ b/arch/powerpc/kernel/rtas.c
-@@ -1330,33 +1330,34 @@ bool __ref rtas_busy_delay(int status)
- }
- EXPORT_SYMBOL_GPL(rtas_busy_delay);
- 
--static int rtas_error_rc(int rtas_rc)
-+int rtas_generic_errno(int rtas_rc)
+@@ -60,6 +63,8 @@ static int panel_bridge_attach(struct drm_bridge *bridge,
  {
- 	int rc;
+ 	struct panel_bridge *panel_bridge = drm_bridge_to_panel_bridge(bridge);
+ 	struct drm_connector *connector = &panel_bridge->connector;
++	struct drm_panel *panel = panel_bridge->panel;
++	struct drm_device *drm_dev = bridge->dev;
+ 	int ret;
  
- 	switch (rtas_rc) {
--		case -1: 		/* Hardware Error */
--			rc = -EIO;
--			break;
--		case -3:		/* Bad indicator/domain/etc */
--			rc = -EINVAL;
--			break;
--		case -9000:		/* Isolation error */
--			rc = -EFAULT;
--			break;
--		case -9001:		/* Outstanding TCE/PTE */
--			rc = -EEXIST;
--			break;
--		case -9002:		/* No usable slot */
--			rc = -ENODEV;
--			break;
--		default:
--			pr_err("%s: unexpected error %d\n", __func__, rtas_rc);
--			rc = -ERANGE;
--			break;
-+	case RTAS_HARDWARE_ERROR:	/* Hardware Error */
-+		rc = -EIO;
-+		break;
-+	case RTAS_INVALID_PARAMETER:	/* Bad indicator/domain/etc */
-+		rc = -EINVAL;
-+		break;
-+	case RTAS_SLOT_UNISOLATED:	/* Isolation error */
-+		rc = -EFAULT;
-+		break;
-+	case RTAS_SLOT_NOT_UNISOLATED:	/* Outstanding TCE/PTE */
-+		rc = -EEXIST;
-+		break;
-+	case RTAS_SLOT_NOT_USABLE:	/* No usable slot */
-+		rc = -ENODEV;
-+		break;
-+	default:
-+		pr_err("%s: unexpected error %d\n", __func__, rtas_rc);
-+		rc = -ERANGE;
-+		break;
+ 	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)
+@@ -70,6 +75,14 @@ static int panel_bridge_attach(struct drm_bridge *bridge,
+ 		return -ENODEV;
  	}
- 	return rc;
- }
-+EXPORT_SYMBOL(rtas_generic_errno);
  
- int rtas_get_power_level(int powerdomain, int *level)
- {
-@@ -1370,7 +1371,7 @@ int rtas_get_power_level(int powerdomain, int *level)
- 		udelay(1);
++	panel_bridge->link = device_link_add(drm_dev->dev, panel->dev,
++					     DL_FLAG_STATELESS);
++	if (!panel_bridge->link) {
++		DRM_ERROR("Failed to add device link between %s and %s\n",
++			  dev_name(drm_dev->dev), dev_name(panel->dev));
++		return -EINVAL;
++	}
++
+ 	drm_connector_helper_add(connector,
+ 				 &panel_bridge_connector_helper_funcs);
  
- 	if (rc < 0)
--		return rtas_error_rc(rc);
-+		return rtas_generic_errno(rc);
- 	return rc;
- }
- EXPORT_SYMBOL_GPL(rtas_get_power_level);
-@@ -1388,7 +1389,7 @@ int rtas_set_power_level(int powerdomain, int level, int *setlevel)
- 	} while (rtas_busy_delay(rc));
+@@ -78,6 +91,7 @@ static int panel_bridge_attach(struct drm_bridge *bridge,
+ 				 panel_bridge->connector_type);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to initialize connector\n");
++		device_link_del(panel_bridge->link);
+ 		return ret;
+ 	}
  
- 	if (rc < 0)
--		return rtas_error_rc(rc);
-+		return rtas_generic_errno(rc);
- 	return rc;
- }
- EXPORT_SYMBOL_GPL(rtas_set_power_level);
-@@ -1406,7 +1407,7 @@ int rtas_get_sensor(int sensor, int index, int *state)
- 	} while (rtas_busy_delay(rc));
+@@ -100,6 +114,8 @@ static void panel_bridge_detach(struct drm_bridge *bridge)
+ 	struct panel_bridge *panel_bridge = drm_bridge_to_panel_bridge(bridge);
+ 	struct drm_connector *connector = &panel_bridge->connector;
  
- 	if (rc < 0)
--		return rtas_error_rc(rc);
-+		return rtas_generic_errno(rc);
- 	return rc;
- }
- EXPORT_SYMBOL_GPL(rtas_get_sensor);
-@@ -1424,7 +1425,7 @@ int rtas_get_sensor_fast(int sensor, int index, int *state)
- 				    rc <= RTAS_EXTENDED_DELAY_MAX));
- 
- 	if (rc < 0)
--		return rtas_error_rc(rc);
-+		return rtas_generic_errno(rc);
- 	return rc;
- }
- 
-@@ -1466,7 +1467,7 @@ int rtas_set_indicator(int indicator, int index, int new_value)
- 	} while (rtas_busy_delay(rc));
- 
- 	if (rc < 0)
--		return rtas_error_rc(rc);
-+		return rtas_generic_errno(rc);
- 	return rc;
- }
- EXPORT_SYMBOL_GPL(rtas_set_indicator);
-@@ -1488,7 +1489,7 @@ int rtas_set_indicator_fast(int indicator, int index, int new_value)
- 				    rc <= RTAS_EXTENDED_DELAY_MAX));
- 
- 	if (rc < 0)
--		return rtas_error_rc(rc);
-+		return rtas_generic_errno(rc);
- 
- 	return rc;
- }
-
++	device_link_del(panel_bridge->link);
++
+ 	/*
+ 	 * Cleanup the connector if we know it was initialized.
+ 	 *
+-- 
+2.37.1
 
