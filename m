@@ -2,201 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCB47719FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D407719FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbjHGGEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58710 "EHLO
+        id S230511AbjHGGG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjHGGEN (ORCPT
+        with ESMTP id S229484AbjHGGGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:04:13 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C9510F7;
-        Sun,  6 Aug 2023 23:04:11 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3776433N116671;
-        Mon, 7 Aug 2023 01:04:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691388243;
-        bh=z4xXCBW2WtWwhXULzwLLBfUTw1DeQ6YaU1rc1hGNsMM=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=H6i5cuHpNmIwE2b9BL7o0AYuvMf3SHc35iLb6PpnpYkFt2KUfBk8NwWSvjMXH5Dlq
-         5Re0a3xHNh50l05T0bu1sDZ8Gn9fii9r3KfuuuyTRVuPbBwNPnWUYEH+5vUcdfvjPt
-         idlBtVAeBJT6E8La1GMYr1N8XRNBuJW2wrfeofb0=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377643nt032478
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Aug 2023 01:04:03 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
- Aug 2023 01:04:02 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 7 Aug 2023 01:04:02 -0500
-Received: from [172.24.227.6] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37763wpp019706;
-        Mon, 7 Aug 2023 01:03:58 -0500
-Message-ID: <9b61e8a0-fec0-b33f-259c-c744aa5a88b9@ti.com>
-Date:   Mon, 7 Aug 2023 11:33:57 +0530
+        Mon, 7 Aug 2023 02:06:21 -0400
+Received: from icts-p-cavuit-3.kulnet.kuleuven.be (icts-p-cavuit-3.kulnet.kuleuven.be [134.58.240.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993401708;
+        Sun,  6 Aug 2023 23:06:17 -0700 (PDT)
+X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: 2981320034.A8C05
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-ceifnet-smtps-0.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:144:242:ac11:2f])
+        by icts-p-cavuit-3.kulnet.kuleuven.be (Postfix) with ESMTP id 2981320034;
+        Mon,  7 Aug 2023 08:06:12 +0200 (CEST)
+BCmilterd-Mark-Subject: no
+BCmilterd-Errors: 
+BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID#0.00
+X-CAV-Cluster: smtps
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
+        s=cav; t=1691388372;
+        bh=BFQM0e7g+mI/8gIBbpN6sEd4TZoiADa3E5JrjbshxvE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=bKd0B19c7f8BBHCHu0EJvXcKc7C5DXY5jLT18Od+QjWSk0d5Pz0nMJ+IvZDGlctWn
+         fLUMsejlSExP9BqdTV0TWC1JN+G8o4CLx+lS+LJnOm5B/R2uYebk4xGh1Uuvldu49Q
+         v6ln2pfALadcIdDzcTp9Z6XfSjfLlZJ7sQgbcdcU=
+Received: from [10.101.1.242] (ip-185-104-137-32.ptr.icomera.net [185.104.137.32])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by icts-p-ceifnet-smtps-0.kuleuven.be (Postfix) with ESMTPSA id 77FA8D4F64538;
+        Mon,  7 Aug 2023 08:06:11 +0200 (CEST)
+Message-ID: <d3ad2bfb-2d64-73f5-7e37-0119eaa89c93@cs.kuleuven.be>
+Date:   Mon, 7 Aug 2023 08:06:03 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] arm64: dts: ti: k3-am62x-sk-common: Reserve 128MiB of
- global CMA
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 0/4] selftests/sgx: Harden test enclave
 Content-Language: en-US
-To:     Nishanth Menon <nm@ti.com>, <afd@ti.com>
-CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <a-bhatia1@ti.com>, <j-luthra@ti.com>, <praneeth@ti.com>,
-        <j-choudhary@ti.com>
-References: <20230803111455.811339-1-devarsht@ti.com>
- <20230805193355.o657pwbq2w3tciui@vehicular>
-From:   Devarsh Thakkar <devarsht@ti.com>
-In-Reply-To: <20230805193355.o657pwbq2w3tciui@vehicular>
-Content-Type: text/plain; charset="UTF-8"
+To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     dave.hansen@linux.intel.com
+References: <20230719142500.13623-1-jo.vanbulck@cs.kuleuven.be>
+ <CU76BC9V7H3Z.TQ3L8AZY1WD@suppilovahvero>
+ <a6e26927-acb0-c967-10c4-90a41d9a8cad@cs.kuleuven.be>
+ <CU8WIZGB01DT.2YX12UG6QRTA@seitikki>
+ <707e662f-5aed-ef86-a2e3-dda3959d6f7d@cs.kuleuven.be>
+ <CUE17WOKP8HH.39KZQV0H8IRBV@seitikki>
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+In-Reply-To: <CUE17WOKP8HH.39KZQV0H8IRBV@seitikki>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nishanth,
-
-Thanks for the review.
-
-On 06/08/23 01:03, Nishanth Menon wrote:
-> On 16:44-20230803, Devarsh Thakkar wrote:
->> Reserve 128MiB of global CMA which is also marked as re-usable
->> so that OS can also use the same if peripheral drivers are not using the
->> same.
->>
->> AM62x supports multimedia components such as GPU, dual Display and Camera.
->> Assuming the worst-case scenario where all 3 are run in parallel below
->> is the calculation :
->>
->> 1) OV5640 camera sensor supports 1920x1080 resolution
->> -> 1920 width x 1080 height x 2 bytesperpixel x 8 buffers
->>    (default in yavta) : 32MiB
->>
->> 2) 1920x1200 Microtips LVDS panel supported
->> -> 1920 width x 1080 height x 4 bytesperpixel x 2 buffers :
->>    16 MiB
->>
->> 3) 1920x1080 HDMI display supported
->> -> 1920 width x 1080 height x 4 bytesperpixel x 2 buffers :
->>    15.82 MiB which is ~16 MiB
->>
->> 4) IMG GPU shares with display allocated buffers while rendering
->>    but in case some dedicated operation viz color conversion,
->>    keeping same window of ~16 MiB for GPU too.
->>
->> Total is 80 MiB and adding 32 MiB for other peripherals and extra
->> 16 MiB to keep as buffer for fragmentation thus rounding total to 128
->> MiB.
->>
->> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
->> Acked-by: Darren Etheridge <detheridge@ti.com>
->> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
->> ---
+On 28.07.23 20:54, Jarkko Sakkinen wrote
+> It should be relatively easy to relicense the code as most of the
+> commits have Intel copyright.
 > 
-> I don't think this is right approach. There are other techniques
-> than having to do this (Andrew: please comment) and require drivers to
-> behave properly.
+> Personally I would not mind because that would give opportunity for
+> code that I wrote to have a wider audience but it needs to be forked
+> with some other license first.
 
-Sorry but I did not understand clearly the disadvantage of this approach.
-Here we are reserving CMA and also marking it as re-usable so that in case
-driver is not using it OS can use that region.
-
-Also I see quite a few vendors already taking this approach :
-
-$grep -r cma-default arch/arm64/boot/dts
-arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts:276:
- linux,cma-default;
-arch/arm64/boot/dts/qcom/sc8280xp-crd.dts:222:
-linux,cma-default;
-arch/arm64/boot/dts/freescale/imx8mp-tqma8mpql-mba8mpxl.dts:201:
-         linux,cma-default;
-arch/arm64/boot/dts/freescale/imx8ulp-evk.dts:32:
-linux,cma-default;
-arch/arm64/boot/dts/freescale/imx8-apalis-v1.1.dtsi:198:
- linux,cma-default;
-arch/arm64/boot/dts/freescale/imx8mm-tqma8mqml.dtsi:48:
-linux,cma-default;
-arch/arm64/boot/dts/freescale/imx8dxl-evk.dts:50:
-linux,cma-default;
-arch/arm64/boot/dts/freescale/imx93-tqma9352.dtsi:24:
-linux,cma-default;
-arch/arm64/boot/dts/freescale/imx8mq-tqma8mq.dtsi:59:
-linux,cma-default;
-arch/arm64/boot/dts/freescale/imx8mn-tqma8mqnl.dtsi:46:
-linux,cma-default;
-arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts:28:
-linux,cma-default;
-arch/arm64/boot/dts/hisilicon/hi6220-hikey.dts:67:
-linux,cma-default;
-arch/arm64/boot/dts/amlogic/meson-gx.dtsi:63:
-linux,cma-default;
-arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi:121:
-linux,cma-default;
-arch/arm64/boot/dts/amlogic/meson-a1.dtsi:59:
-linux,cma-default;
-
-
- I am esp concerned since there are platforms based on
-> am62x and just 256MB DDR.
+> I support also the idea of refining the selftest as a run-time, which
+> could perhaps consist of the following steps:
 > 
+> 1. Create a repository of the self-compiling selftest with GPLv2. You
+>    could add also AUTHORS file for the initial content by crawling this
+>    data from the git log.
+> 2. Create a commit with sob's from the required stakeholders, which
+>    changes the license to something more appropriate, and get the
+>    sob's with some process.
 
-The file "k3-am62x-sk-common.dtsi" refers DDR memory size as 2Gb[1] and so I
-put CMA reservation in same file assuming all boards including this file have
-2Gb.
+Thank you Jarkko, appreciated! I plan to start working on the fork from 
+next month onwards. However, I think GPL would be the best license for 
+this project and I'd prefer to stick to it for the time being.
 
-But if there are some boards having lesser DDR and including this
-k3-am62x-sk-common.dtsi and overriding memory node, I can put the CMA
-reservation node in board specific file i.e. k3-am625-sk.dts in V2.
-
-Kindly let me know if above is preferred approach.
-
-[1]
-https://gitlab.com/linux-kernel/linux-next/-/blob/next-20230807/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi?ref_type=tags#L33
-
-Regards
-Devarsh
-
->>  arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi | 8 ++++++++
->>  1 file changed, 8 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
->> index 34c8ffc553ec..9dd6e23ca9ca 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
->> @@ -47,6 +47,14 @@ ramoops@9ca00000 {
->>  			pmsg-size = <0x8000>;
->>  		};
->>  
->> +		/* global cma region */
->> +		linux,cma {
->> +			compatible = "shared-dma-pool";
->> +			reusable;
->> +			size = <0x00 0x8000000>;
->> +			linux,cma-default;
->> +		};
->> +
->>  		secure_tfa_ddr: tfa@9e780000 {
->>  			reg = <0x00 0x9e780000 0x00 0x80000>;
->>  			alignment = <0x1000>;
->> -- 
->> 2.34.1
->>
-> 
+Best,
+Jo
