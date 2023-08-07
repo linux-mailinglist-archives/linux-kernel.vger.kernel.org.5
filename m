@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84ED677309A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AE677309C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbjHGUpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 16:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40576 "EHLO
+        id S229839AbjHGUrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 16:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbjHGUpQ (ORCPT
+        with ESMTP id S229493AbjHGUrG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 16:45:16 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5F310D8
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 13:45:14 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d0728058651so5277318276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 13:45:14 -0700 (PDT)
+        Mon, 7 Aug 2023 16:47:06 -0400
+Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD351189;
+        Mon,  7 Aug 2023 13:47:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691441113; x=1692045913;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rE1MWVaat/AiNtyFh/LjesZXl9uJfxK9Zc1szYm1w/c=;
-        b=Kgk2aYszqQy41q1ZUVv94elAKhN2boLrcVajcKDI27FomlD7fI1FgkUh/l6pkpYtLb
-         PCJx/6jdy06kQlTn4ky+T9m4cwmEpycvBlDex0GgcnAHGxl1Say/z7hsapnYgl8L9Vsw
-         O4c6CENLA8DoGzzg5TH6zJmmhWc5HmKwYbqqODwQ5zEb5vbzptwDYuDv6CXLOZfDQBas
-         OLiZeylF3JMo51omqs/HudQBr0VnB95lwF6kQcP9Zv0RuxgVXvUIAp5Ye3uOLNtYfQKZ
-         LkvGHV6NLp6w78DCkZrSO/JkM7ML6dN+hhscQ5EeTg9GDt3IBbnwtCd1njIDd6SXcmKE
-         LiiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691441113; x=1692045913;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rE1MWVaat/AiNtyFh/LjesZXl9uJfxK9Zc1szYm1w/c=;
-        b=YL0NZDENr3cxi37lEVrJCHU5SxI6Ww7mp8L3EGLqGzx4GqL0C7EYfyqej7tYadbv37
-         xhDBOwNqQ5uq9XurU5mwO9oASZ/fRFCLjDfhNhmmJzMBRXZDR6YkWslgWW94RnP1Kwbr
-         oU8o7IsKwL4tAyp+QB4slACkK+Sm16+yWJfUtIFCi/saa1xLOsIfE8dCrpKvJNbeGF35
-         ED3eBSOBNzkVVjLfwP+ithYIZkXCwxuB0wUfr8ZV9fTTITrMFnq4574pFdWQQdPlR4gX
-         /U2lwnaWJjBVSkVwNPT108bOY3eJkFPKxlMs3eSLslKnqGVyMA0aokdtSaVMGXi+XC6B
-         x2Pw==
-X-Gm-Message-State: AOJu0YwlY24OHOOzqrgH/82/VNGpRcLiB7dl/eZ0acepDzDsqwhNjf5T
-        FO6c7wF1Kt4EArkpO+er7K03rj8v28bqzvXgpDqd9w==
-X-Google-Smtp-Source: AGHT+IFLElI8ebV0rp+YGdgbtvDnbtDTc41M6AdOaK7Ioap0j8cOz4gPwnVdYVhs+HohtNkdzYvuZcOzHyo2Uv5q5M8=
-X-Received: by 2002:a25:8c88:0:b0:d51:e4d7:e061 with SMTP id
- m8-20020a258c88000000b00d51e4d7e061mr4727293ybl.7.1691441113283; Mon, 07 Aug
- 2023 13:45:13 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1691441226; x=1722977226;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=i3BspMO1SbyaVrPL43K1PgldA9iQctRpaOUukh+SQm0=;
+  b=m7hnTHmYsgih5/c6G+Gd0jAODsQfKnWA/wKrhNUsDMzP8GR1sfWuuPiC
+   u+Ac9FA1SKGJKbG1mnHJtvQ4DhropoQHJbf4AgwAvsdAqYkpiJVUy1Mdm
+   E1NFRuUcSe2Fsfxuux6nOS3I5xeRlKAp5xqJX8NrgfvdV0dnV2BxWDYHs
+   w=;
+X-IronPort-AV: E=Sophos;i="6.01,263,1684800000"; 
+   d="scan'208";a="665009981"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-1197e3af.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 20:47:00 +0000
+Received: from EX19MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2a-m6i4x-1197e3af.us-west-2.amazon.com (Postfix) with ESMTPS id 7766510064B;
+        Mon,  7 Aug 2023 20:46:59 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 7 Aug 2023 20:46:59 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.187.170.12) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.30;
+ Mon, 7 Aug 2023 20:46:56 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <mirsad.todorovac@alu.unizg.hr>
+CC:     <alexander@mihalicyn.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <fw@strlen.de>, <kuba@kernel.org>,
+        <kuniyu@amazon.com>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>, <shuah@kernel.org>
+Subject: Re: selftests: net/af_unix test_unix_oob [FAILED]
+Date:   Mon, 7 Aug 2023 13:46:47 -0700
+Message-ID: <20230807204648.50070-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <abf98942-0058-f2ad-8e55-fbdd83b7c2d6@alu.unizg.hr>
+References: <abf98942-0058-f2ad-8e55-fbdd83b7c2d6@alu.unizg.hr>
 MIME-Version: 1.0
-References: <20230717201652.17168-1-mario.limonciello@amd.com>
- <CACRpkdYoxoZ0G7QzQ7XV2FPh9gUJG-CKfpFY1xNQdbBcJOQ=3w@mail.gmail.com> <87eada13-004a-4dd1-91fe-901cfdfd7992@amd.com>
-In-Reply-To: <87eada13-004a-4dd1-91fe-901cfdfd7992@amd.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 7 Aug 2023 22:45:00 +0200
-Message-ID: <CACRpkdY8cH3pAcQZCEOV=QN+iAE6hBoD+3ZJ2C4VGD0R5FP2Jg@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: amd: Don't show `Invalid config param` errors
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Basavaraj.Natikar@amd.com, Shyam-sundar.S-k@amd.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.187.170.12]
+X-ClientProxiedBy: EX19D045UWC004.ant.amazon.com (10.13.139.203) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,32 +70,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 8:17=E2=80=AFPM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
-> On 7/23/2023 14:41, Linus Walleij wrote:
-> > On Mon, Jul 17, 2023 at 10:17=E2=80=AFPM Mario Limonciello
-> > <mario.limonciello@amd.com> wrote:
-> >
-> >> On some systems amd_pinconf_set() is called with parameters
-> >> 0x8 (PIN_CONFIG_DRIVE_PUSH_PULL) or 0x14 (PIN_CONFIG_PERSIST_STATE)
-> >> which are not supported by pinctrl-amd.
-> >>
-> >> Don't show an err message when called with an invalid parameter,
-> >> downgrade this to debug instead.
-> >>
-> >> Cc: stable@vger.kernel.org # 6.1
-> >> Fixes: 635a750d958e1 ("pinctrl: amd: Use amd_pinconf_set() for all con=
-fig options")
-> >> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> >
-> > Applied for nonurgent fixes.
-> >
->
-> Just wanted to check if you'll be sending this out for -rc6.  It
-> backported to stable and a few bugs cropped up because it's noisy.
+From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Date: Mon, 7 Aug 2023 21:44:41 +0200
+> Hi all,
+> 
+> In the kernel 6.5-rc5 build on Ubuntu 22.04 LTS (jammy jellyfish) on a Ryzen 7950 assembled box,
+> vanilla torvalds tree kernel, the test test_unix_oob unexpectedly fails:
+> 
+> # selftests: net/af_unix: test_unix_oob
+> # Test 2 failed, sigurg 23 len 63 OOB %
+> 
+> It is this code:
+> 
+>          /* Test 2:
+>           * Verify that the first OOB is over written by
+>           * the 2nd one and the first OOB is returned as
+>           * part of the read, and sigurg is received.
+>           */
+>          wait_for_data(pfd, POLLIN | POLLPRI);
+>          len = 0;
+>          while (len < 70)
+>                  len = recv(pfd, buf, 1024, MSG_PEEK);
+>          len = read_data(pfd, buf, 1024);
+>          read_oob(pfd, &oob);
+>          if (!signal_recvd || len != 127 || oob != '#') {
+>                  fprintf(stderr, "Test 2 failed, sigurg %d len %d OOB %c\n",
+>                  signal_recvd, len, oob);
+>                  die(1);
+>          }
+> 
+> In 6.5-rc4, this test was OK, so it might mean we have a regression?
 
-No, nonurgent means I queue it for v6.6. Fear of causing regressions
-on mainline is the reason to not send fixes unless they are urgent.
+Thanks for reporting.
 
-Yours,
-Linus Walleij
+I confirmed the test doesn't fail on net-next at least, but it's based
+on v6.5-rc4.
+
+  ---8<---
+  [root@localhost ~]# ./test_unix_oob 
+  [root@localhost ~]# echo $?
+  0
+  [root@localhost ~]# uname -r
+  6.5.0-rc4-01192-g66244337512f
+  ---8<---
+
+I'll check 6.5-rc5 later.
+
+
+> 
+> marvin@defiant:~/linux/kernel/linux_torvalds$ grep test_unix_oob ../kselftest-6.5-rc4-1.log
+> /net/af_unix/test_unix_oob
+> # selftests: net/af_unix: test_unix_oob
+> ok 2 selftests: net/af_unix: test_unix_oob
+> marvin@defiant:~/linux/kernel/linux_torvalds$
+> 
+> Hope this helps.
+> 
+> NOTE: the kernel is vanilla torvalds tree, only "dirty" because the selftests were modified.
+> 
+> Kind regards,
+> Mirsad Todorovac
