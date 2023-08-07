@@ -2,147 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F2B772693
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D21F772697
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234465AbjHGNvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39870 "EHLO
+        id S234473AbjHGNwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234383AbjHGNvs (ORCPT
+        with ESMTP id S234383AbjHGNwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:51:48 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1383A10DB
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:51:47 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so9688453a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 06:51:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691416305; x=1692021105;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5U7uXQPqJdJRTybbD7UWkq4hcpTzTPPBe48JRQK60d8=;
-        b=siUwPP6TAI6SSnVRXaqAXAkU8Y+9KQFZNj8SGOBskXBIh5sKvzKy5gY3yyHBWgiERn
-         bhmarSHyd6YFmvOXWtq7r29XxO6ht/vgMpJSHrL8LpRBWtOblDd1S2qDnQBiMvbYE0ig
-         1m0no4m00eF9Cs8ietNs0mpAFHuFT8/OUqmSZgq10I0uJMOqax04L67CiRZK5pHAk+gT
-         pDLWYzbvzWdq/b5se479A9NNUxiZxS2MM3+bApIBYpjn/K3kF0smFqXVoJLP5ta97b/Y
-         z4//rrJqg3X35F14zrNDD7PWe3JNaHiEp3ezuFaSKEP7UQoLbUVonTYJmzsRLbPxKLfp
-         ojPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691416305; x=1692021105;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5U7uXQPqJdJRTybbD7UWkq4hcpTzTPPBe48JRQK60d8=;
-        b=Xi8chxeKO+qyGJZfvNbDur4vrLxhRadfCA8LlkymKhbegVOYgs1ln3Nyo2E8LQGQ84
-         KYrWaXZq22kcsbbirJfSP02ou/V/AjGXVZ3NDNDIGIoEvwOg6etHA/wTbmK+MGJqpwzo
-         bh/ztY+2wq46Ga1D4SmmTjek65OxKx70A54doTkEB8RfPoKOJeKXC35B8gIzboEMXrX5
-         Si5pMwDJLz365gRb/cO+IDRu5piNVYoNxJwrTwARKwaidtUUAwFIC1L3UuukrbakRCzp
-         4brpY8LGuY+BDrwxnhLaAk/0CoJmwIg+W30G9pyARdINM4Ia/63xspTSYX/X3Ee10ikU
-         IxHw==
-X-Gm-Message-State: AOJu0YxtW09fXvpAfgb92VYYYJXH8PDiYGS40zIXVo2vi4Dz5rlj4P/m
-        L/dlm5LY2IGGPIPLqs+dlqeyJQ==
-X-Google-Smtp-Source: AGHT+IFHT60GM0SzX9TXq5wlvNhwlntdej2m89q9MKu3133qU0DChWx1leGNQ8gUg3hl1tGkiS5DKQ==
-X-Received: by 2002:a05:6402:51d2:b0:521:ef0f:8ef9 with SMTP id r18-20020a05640251d200b00521ef0f8ef9mr8152852edd.19.1691416305604;
-        Mon, 07 Aug 2023 06:51:45 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id e26-20020a50ec9a000000b0051873c201a0sm5195571edr.26.2023.08.07.06.51.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 06:51:45 -0700 (PDT)
-Message-ID: <af8893b8-0556-e355-abe9-aba99c7a839a@linaro.org>
-Date:   Mon, 7 Aug 2023 15:51:43 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 4/4] ARM: configs: s5pv210_defconfig: enable IIO
- required by MAX17040
-Content-Language: en-US
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     Svyatoslav Ryhel <clamor95@gmail.com>,
-        Iskren Chernev <me@iskren.info>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matheus Castello <matheus@castello.eng.br>,
-        Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Stefan Hansson <newbie13xd@gmail.com>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20230731073613.10394-1-clamor95@gmail.com>
- <20230731073613.10394-5-clamor95@gmail.com>
- <20230805224211.qquexvseq24hxcju@intel.intel>
- <16047849-1001-4d6f-4995-0fdfc065cded@linaro.org>
- <20230807085543.3tfzpsa2joolay3r@intel.intel>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230807085543.3tfzpsa2joolay3r@intel.intel>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Mon, 7 Aug 2023 09:52:37 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A8110CF
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:52:35 -0700 (PDT)
+Message-ID: <20230807130108.853357011@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691416353;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=tcLAdFLsW4PUtHOE80f0kO1ua+kPzb3mSbS72PnrT3o=;
+        b=SX4+uLBmkOjLZDXuPAlPtn2+MoAVZwrWQpnOj+Va/QAjBQoqngQurKg/+92WDJWb4EuSaW
+        uhovPUxbex2bNv4PngOgfHpdhccrw0BJVyjse8zajz2E1pqBU2GSi5ohtqTTCH3xhkMUGW
+        9RON3pHnYQdWPuuWK0FXlCH1U7xmoLbVU5WtHzoYB+JlC0n7hMaXXKJW3+zbLQ92BPPw3V
+        3fXBjxqOJITaEa92xzVOO9/2z31GviMaPneGbgIkKzMq9iXmnlbUc9kx2tWT8LGNKKmGg8
+        3ynWOMvLftjkFhUfo5iyVRn77QGDYSxoj9/JUSqkBFcgzpkLgHDg0EcJbnZo6A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691416353;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=tcLAdFLsW4PUtHOE80f0kO1ua+kPzb3mSbS72PnrT3o=;
+        b=HIEvSaNuhOL+ToJdwhCgr/QxHrhC+7WUwkdThQzcJw/Uas06kGbaLHi0lgRwhQIGnu3JY/
+        ps0b7cuWq0LsbJBQ==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Feng Tang <feng.tang@intel.com>,
+        Andy Shevchenko <andy@infradead.org>
+Subject: [patch 00/53] x86/topology: The final installment
+Date:   Mon,  7 Aug 2023 15:52:33 +0200 (CEST)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/08/2023 10:55, Andi Shyti wrote:
-> Hi,
-> 
-> On Sun, Aug 06, 2023 at 10:29:04AM +0200, Krzysztof Kozlowski wrote:
->> On 06/08/2023 00:42, Andi Shyti wrote:
->>> Hi Svyatoslav,
->>>
->>> On Mon, Jul 31, 2023 at 10:36:13AM +0300, Svyatoslav Ryhel wrote:
->>>> After adding support for passing temperature data from thermal sensor
->>>> to MAX17040 it got dependency on CONFIG_IIO. From all defconfigs
->>>> using MAX17040 only s5pv210_defconfig did not have IIO already enabled
->>>> so let's enable it to avoid regression.
->>>>
->>>> Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
->>>> ---
->>>>  arch/arm/configs/s5pv210_defconfig | 1 +
->>>>  1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/arch/arm/configs/s5pv210_defconfig b/arch/arm/configs/s5pv210_defconfig
->>>> index 4c1e480b5bbd..24070ee3d43e 100644
->>>> --- a/arch/arm/configs/s5pv210_defconfig
->>>> +++ b/arch/arm/configs/s5pv210_defconfig
->>>> @@ -97,6 +97,7 @@ CONFIG_MMC_SDHCI_S3C_DMA=y
->>>>  CONFIG_RTC_CLASS=y
->>>>  CONFIG_RTC_DRV_MAX8998=m
->>>>  CONFIG_DMADEVICES=y
->>>> +CONFIG_IIO=y
->>>>  CONFIG_PWM=y
->>>>  CONFIG_PWM_SAMSUNG=y
->>>>  CONFIG_PHY_SAMSUNG_USB2=m
->>>
->>> Should this patch be squashed to the previous patch? I think you
->>> break bisectability for this board if you enable iio only here.
->>
->> The defconfig change matters less - distros don't use them - so this
->> points to the fact that patchset affected the users. All existing users
->> of max17040 drivers, who do not enable IIO, will have their setups broken.
-> 
-> That's why I'm suggesting to squash this patch with the previous.
+Hi!
 
-It would not solve much. All existing users will be still broken.
+This is the (for now) last part of reworking topology enumeration and
+management. It's based on the APIC and CPUID rework series which can be
+found here:
 
-> 
-> Anyway, up to you... except of this note everything looks fine in
-> the series.
+      https://lore.kernel.org/lkml/20230802101635.459108805@linutronix.de
 
-I would actually prefer not to depend on IIO, but this would require
-stubs for missing IIO functions.
+With these preparatory changes in place, it's now possible to address the
+real issues of the current topology code:
 
-Best regards,
-Krzysztof
+  - Wrong core count on hybrid systems
 
+  - Heuristics based size information for packages and dies which
+    are failing to work correctly with certain command line parameters.
+
+  - Full evaluation fail for a theoretical hybrid system which boots
+    from an E-core
+
+  - The complete insanity of manipulating global data from firmware parsers
+    or the XEN/PV fake SMP enumeration. The latter is really a piece of art.
+
+This series addresses this by
+
+  - Mopping up some more historical technical debt
+
+  - Consolidating all topology relevant functionality into one place
+
+  - Providing separate interfaces for boot time and ACPI hotplug operations
+
+  - A sane ordering of command line options and restrictions
+
+  - A sensible way to handle the BSP problem in kdump kernels instead of
+    the unreliable command line option.
+
+  - Confinement of topology relevant variables by replacing the XEN/PV SMP
+    enumeration fake with something halfways sensible.
+
+  - Evaluation of sizes by analysing the topology via the CPUID provided
+    APIC ID segmentation and the actual APIC IDs which are registered at
+    boot time.
+
+  - Removal of heuristics and broken size calculations
+
+The idea behind this is the following:
+
+The APIC IDs describe the system topology in multiple domain levels. The
+CPUID topology parser provides the information which part of the APIC ID is
+associated to the individual levels (Intel terminology):
+
+   [ROOT][PACKAGE][DIE][TILE][MODULE][CORE][THREAD]
+
+The root space contains the package (socket) IDs. Not enumerated levels
+consume 0 bits space, but conceptually they are always represented. If
+e.g. only CORE and THREAD levels are enumerated then the DIE, MODULE and
+TILE have the same physical ID as the PACKAGE.
+
+If SMT is not supported, then the THREAD domain is still used. It then
+has the same physical ID as the CORE domain and is the only child of
+the core domain.
+
+This allows an unified view on the system independent of the enumerated
+domain levels without requiring any conditionals in the code.
+
+AMD does only expose 4 domain levels with obviously different terminology,
+but that can be easily mapped into the Intel variant with a trivial lookup
+table added to the CPUID parser.
+
+The resulting topology information of an ADL hybrid system with 8 P-Cores
+and 8 E-Cores looks like this:
+
+ CPU topo: Max. logical packages:   1
+ CPU topo: Max. logical dies:       1
+ CPU topo: Max. dies per package:   1
+ CPU topo: Max. threads per core:   2
+ CPU topo: Num. cores per package:    16
+ CPU topo: Num. threads per package:  24
+ CPU topo: Allowing 24 present CPUs plus 0 hotplug CPUs
+ CPU topo: Thread    :    24
+ CPU topo: Core      :    16
+ CPU topo: Module    :     1
+ CPU topo: Tile      :     1
+ CPU topo: Die       :     1
+ CPU topo: Package   :     1
+
+This is happening on the boot CPU before any of the APs is started and
+provides correct size information right from the start.
+
+Even the XEN/PV trainwreck makes use of this now. On Dom0 it utilizes the
+MADT and on DomU it provides fake APIC IDs, which combined with the
+provided CPUID information make it at least look halfways realistic instead
+of claiming to have one CPU per package as the current upstream code does.
+
+This is solely addressing the core topology issues, but there is a plan for
+further consolidation of other topology related information into one single
+source of information instead of having a gazillion of localized special
+parsers and representations all over the place. There are quite some other
+things which can be simplified on top of this, like updating the various
+cpumasks during CPU bringup, but that's all left for later.
+
+So another 53 patches later, the resulting diffstat is:
+
+   64 files changed, 830 insertions(+), 955 deletions(-)
+
+and the combo diffstat of all three series combined:
+
+  115 files changed, 2414 insertions(+), 3035 deletions(-)
+
+The current series applies on top of 
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-cpuid-v3
+
+and is available from git here:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-full-v1
+
+Thanks,
+
+	tglx
+---
+ Documentation/admin-guide/kdump/kdump.rst                      |    7 
+ Documentation/admin-guide/kernel-parameters.txt                |    9 
+ Documentation/arch/x86/topology.rst                            |   24 
+ arch/x86/events/intel/cstate.c                                 |    2 
+ arch/x86/events/intel/uncore.c                                 |    2 
+ arch/x86/events/intel/uncore_nhmex.c                           |    4 
+ arch/x86/events/intel/uncore_snb.c                             |    8 
+ arch/x86/events/intel/uncore_snbep.c                           |   18 
+ arch/x86/events/rapl.c                                         |    2 
+ arch/x86/include/asm/apic.h                                    |   17 
+ arch/x86/include/asm/io_apic.h                                 |    1 
+ arch/x86/include/asm/mpspec.h                                  |   66 -
+ arch/x86/include/asm/perf_event_p4.h                           |   11 
+ arch/x86/include/asm/processor.h                               |    2 
+ arch/x86/include/asm/prom.h                                    |    4 
+ arch/x86/include/asm/smp.h                                     |    6 
+ arch/x86/include/asm/topology.h                                |   60 -
+ arch/x86/include/asm/x86_init.h                                |   10 
+ arch/x86/kernel/acpi/boot.c                                    |   59 -
+ arch/x86/kernel/apic/apic.c                                    |  207 ----
+ arch/x86/kernel/apic/apic_common.c                             |   15 
+ arch/x86/kernel/apic/apic_flat_64.c                            |    9 
+ arch/x86/kernel/apic/apic_noop.c                               |    2 
+ arch/x86/kernel/apic/apic_numachip.c                           |   12 
+ arch/x86/kernel/apic/bigsmp_32.c                               |   14 
+ arch/x86/kernel/apic/io_apic.c                                 |   85 -
+ arch/x86/kernel/apic/local.h                                   |    4 
+ arch/x86/kernel/apic/probe_32.c                                |    3 
+ arch/x86/kernel/apic/x2apic_cluster.c                          |    3 
+ arch/x86/kernel/apic/x2apic_phys.c                             |    6 
+ arch/x86/kernel/apic/x2apic_uv_x.c                             |    6 
+ arch/x86/kernel/cpu/Makefile                                   |   12 
+ arch/x86/kernel/cpu/cacheinfo.c                                |    2 
+ arch/x86/kernel/cpu/common.c                                   |   42 
+ arch/x86/kernel/cpu/debugfs.c                                  |   15 
+ arch/x86/kernel/cpu/mce/inject.c                               |    3 
+ arch/x86/kernel/cpu/microcode/intel.c                          |    4 
+ arch/x86/kernel/cpu/topology.c                                 |  497 ++++++++++
+ arch/x86/kernel/cpu/topology.h                                 |    5 
+ arch/x86/kernel/cpu/topology_common.c                          |   57 -
+ arch/x86/kernel/devicetree.c                                   |    4 
+ arch/x86/kernel/jailhouse.c                                    |   30 
+ arch/x86/kernel/mpparse.c                                      |   35 
+ arch/x86/kernel/process.c                                      |    2 
+ arch/x86/kernel/setup.c                                        |   27 
+ arch/x86/kernel/smpboot.c                                      |  229 ----
+ arch/x86/kernel/x86_init.c                                     |    5 
+ arch/x86/mm/amdtopology.c                                      |    7 
+ arch/x86/platform/ce4100/ce4100.c                              |   14 
+ arch/x86/platform/intel-mid/intel-mid.c                        |    5 
+ arch/x86/xen/apic.c                                            |   21 
+ arch/x86/xen/enlighten_hvm.c                                   |    2 
+ arch/x86/xen/enlighten_pv.c                                    |    3 
+ arch/x86/xen/smp.c                                             |    2 
+ arch/x86/xen/smp.h                                             |    2 
+ arch/x86/xen/smp_pv.c                                          |   66 -
+ drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c               |    2 
+ drivers/hwmon/coretemp.c                                       |    2 
+ drivers/hwmon/fam15h_power.c                                   |    2 
+ drivers/platform/x86/intel/uncore-frequency/uncore-frequency.c |    2 
+ drivers/powercap/intel_rapl_common.c                           |    2 
+ drivers/thermal/intel/intel_hfi.c                              |    2 
+ drivers/thermal/intel/intel_powerclamp.c                       |    2 
+ drivers/thermal/intel/x86_pkg_temp_thermal.c                   |    2 
+ 64 files changed, 830 insertions(+), 955 deletions(-)
