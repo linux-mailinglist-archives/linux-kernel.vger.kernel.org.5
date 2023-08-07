@@ -2,141 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE56A771CDE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74831771CE9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbjHGJIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
+        id S231342AbjHGJMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 05:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbjHGJIT (ORCPT
+        with ESMTP id S231331AbjHGJMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:08:19 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 610E3E79;
-        Mon,  7 Aug 2023 02:08:15 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37797gmH6014049, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37797gmH6014049
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 7 Aug 2023 17:07:42 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Mon, 7 Aug 2023 17:07:13 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 7 Aug 2023 17:07:12 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
- RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
- 15.01.2375.007; Mon, 7 Aug 2023 17:07:12 +0800
-From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
-        <stanley_chang@realtek.com>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 1/2] usb: dwc3: add Realtek DHC RTD SoC dwc3 glue layer driver
-Thread-Topic: [PATCH v2 1/2] usb: dwc3: add Realtek DHC RTD SoC dwc3 glue
- layer driver
-Thread-Index: AQHZxFokPxd4W07ijUGGBrmKl0qPKq/VrnaAgADyIuCAAIy6gIAA9MlwgACO44CABeKOsA==
-Date:   Mon, 7 Aug 2023 09:07:12 +0000
-Message-ID: <ae619edfcce545b78697c6bcdadfff27@realtek.com>
-References: <20230801092541.25261-1-stanley_chang@realtek.com>
- <20230802011400.v4jim6ajsqc3tvei@synopsys.com>
- <ff9ca6f15936450696bff502c0047708@realtek.com>
- <20230803000417.qfuwsx5we5a7lfvd@synopsys.com>
- <7d47cbfdbc31436b89d3d92bf980c8fa@realtek.com>
- <20230803231156.laggnj5bzuhugwfd@synopsys.com>
-In-Reply-To: <20230803231156.laggnj5bzuhugwfd@synopsys.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.190.159]
-x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 7 Aug 2023 05:12:36 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75674E6C
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:12:35 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id AB2665C00C0;
+        Mon,  7 Aug 2023 05:12:33 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute6.internal (MEProxy); Mon, 07 Aug 2023 05:12:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=readahead.eu; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1691399553; x=1691485953; bh=y3DPVjkaUxmqO62aQ4XQSfaxDrnmEMdPiEB
+        qy9V57yg=; b=IxYbbtvo/JaymIlnXE7lQ3CiNTPRz/wOKkq6mR6l2Q+IR0aN8Y2
+        wfuHeFr6UmzUWtArndSqggkRMKp+y7CDcQLPVLjXG/i+Owf77OoQu+RweFTZwV2+
+        Irynuu+iSfkhIJbBrBvPwVFR6C0waicxUWHps/vKvQ7uiR41e5UuH5tN7lS1z4iE
+        uT4spH7u9T950VStlfZnJAAO/TOPqLkT/3hjavsrrFIzqEh2zl97CKLFf7RE23KT
+        0kKE1Qs87UpWud4wy+SfeuBgUQwVupdidCZ/L2D54Qq0luwvRDM5754/+jZYuAU+
+        qydfu8SCpKmAmUoA2rPVAz9HEzYcpxxb9fw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1691399553; x=1691485953; bh=y3DPVjkaUxmqO62aQ4XQSfaxDrnmEMdPiEB
+        qy9V57yg=; b=ysGGkc2TZ3T//tTg2gphUgG2pgxOYDGTCWJwQkNn8u9MTR1FkgR
+        PVoHVIhlqXFe63RhtXO9CF+Dsx4g4upHdfqTL2VOWTYzsSULiYNOx6pBuszO9zz3
+        KWSX4ZPJgh+TNEF/wBpsYx8GmyXWSYtfdmBj11UKX6SNkCGxGG7ESHO4g0x+dF/a
+        w+8xC0tEebg82Hp9GogsphdD5w3ai9oMyQy/u8exxq+H0Jnl7UdW2d4Ze6v1pu10
+        v93+1o74JnvsaDlFbl+FaI4Mju8OEEqn2/8kg8epZ17vDE2I3F29Cc3SFu0IASRd
+        y51cVB1FmADh4apb/SL1/x4FVw6NQZatrLw==
+X-ME-Sender: <xms:gbXQZBCVYod6MuJDDYymSKZmbtKNoGIJIOb891JrDzev2uh1xet7jA>
+    <xme:gbXQZPjzm8mfMXV4PN8Hf6gjpE43OManTyuEAOTqXvN3tOA0vBVzPFfimMyaPiuvF
+    zICBIFcbLP0p9DROUo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrledtgdduudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedfffgr
+    vhhiugcutfhhvghinhhssggvrhhgfdcuoegurghvihgusehrvggruggrhhgvrggurdgvuh
+    eqnecuggftrfgrthhtvghrnhepjeeguedtueeftdejffdvgffhvddvteetjeeftdeiffek
+    udffieehieejhedvkeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepuggrvhhiugesrhgvrggurghhvggrugdrvghu
+X-ME-Proxy: <xmx:gbXQZMkImOQYhc4SE-6TpMdcsYkyO2kr8iBrPYp1hktfgOYtRdrPrg>
+    <xmx:gbXQZLy_z5hSWLK9MMCR6WSkfjzx8ewxFhNk22oD5GIWxJUDLj3miA>
+    <xmx:gbXQZGRPS7xyw0wEceI7CK_mhfeXyQCtmSb_doDo82WpgdOFjPvKZg>
+    <xmx:gbXQZEe-t-FQi1fA_yaXPEy7RDdCKs-pA-gUSMKqjYtjlBv2ssCzUg>
+Feedback-ID: id2994666:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0E0BF1700089; Mon,  7 Aug 2023 05:12:33 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
+Mime-Version: 1.0
+Message-Id: <24357f20-4354-4b44-b3f7-4cb29dcfb8b4@app.fastmail.com>
+In-Reply-To: <CAJqdLroQE1sU2uOG018Ezyome1sQb89c_mdSdvOCpM7=XNt+xg@mail.gmail.com>
+References: <20230807085203.819772-1-david@readahead.eu>
+ <CAJqdLroQE1sU2uOG018Ezyome1sQb89c_mdSdvOCpM7=XNt+xg@mail.gmail.com>
+Date:   Mon, 07 Aug 2023 11:12:11 +0200
+From:   "David Rheinsberg" <david@readahead.eu>
+To:     "Alexander Mikhalitsyn" <alexander@mihalicyn.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Christian Brauner" <brauner@kernel.org>,
+        "Jan Kara" <jack@suse.cz>, "Kees Cook" <keescook@chromium.org>,
+        "Luca Boccassi" <bluca@debian.org>
+Subject: Re: [PATCH] pid: allow pidfds for reaped tasks
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgVGhpbmgsDQoNCj4gPiA+ID4gPiA+ICtzdGF0aWMgaW50IGR3YzNfcnRrX3NldHVwX3JvbGVf
-c3dpdGNoKHN0cnVjdCBkd2MzX3J0ayAqcnRrKQ0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gQW55IHJl
-YXNvbiB3aHkgd2UncmUgZG9pbmcgdGhlIHJvbGUgc3dpdGNoIGhlcmUgYW5kIG5vdCB3aGF0J3MN
-Cj4gPiA+ID4gPiBpbXBsZW1lbnRlZCBmcm9tIHRoZSBjb3JlPw0KPiA+ID4gPiA+DQo+ID4gPiA+
-IEJlY2F1c2Ugd2UgaGF2ZSB0byBzZXQgdGhlIHVzYiAyLjAgcGh5IG1vZGUgdGhyb3VnaA0KPiA+
-ID4gPiBzd2l0Y2hfdXNiMl9kcl9tb2RlDQo+ID4gPiBpbiB0aGUgZnVuY3Rpb24gZHdjM19ydGtf
-c2V0X2RyX21vZGUuDQo+ID4gPiA+IEluIGZhY3QsIHN3aXRjaF9kd2MzX2RyX21vZGUgd2lsbCB1
-c2UgdGhlIHJvbGUgc3dpdGNoaW5nDQo+ID4gPiA+IGltcGxlbWVudGVkIGJ5DQo+ID4gPiBjb3Jl
-Lg0KPiA+ID4gPg0KPiA+ID4NCj4gPiA+IEkgZG9uJ3QgdGhpbmsgdGhpcyBpcyBhIGdvb2Qgd2F5
-IHRvIGdvIGFib3V0IGl0LiBEbyB5b3UgKHRoZSBnbHVlDQo+ID4gPiBkcml2ZXIpIGNyZWF0ZSBh
-IHJvbGUgc3dpdGNoIHN0cnVjdHVyZSBhbmQgcmVnaXN0ZXIgdG8gdGhlIHNhbWUgcm9sZQ0KPiA+
-ID4gc3dpdGNoIGRldmljZSB0aGF0IHRoZSBkd2MzIGNvcmUgd291bGQgcmVnaXN0ZXIgbGF0ZXI/
-IEkgZGlkIG5vdA0KPiA+ID4gZXhwZWN0IHRoYXQgdG8gd29yayBhdCBhbGwuDQo+ID4gPg0KPiA+
-IEluIG91ciBhcHBsaWNhdGlvbiwgdGhpcyByb2xlIHN3aXRjaCBpbiB0aGUgZ2x1ZSBkcml2ZXIg
-d29ya3MgZmluZS4NCj4gDQo+IElzIHRoZSBvcmRlciBvZiBvcGVyYXRpb24gYmV0d2VlbiB0aGUg
-c3dpdGNoIGZyb20gdGhlIGNvcmUgdnMgdGhlIGdsdWUNCj4gZGV0ZXJtaW5hdGU/IEFsc28sIHdo
-aWNoIG9wZXJhdGlvbiBzaG91bGQgaGFwcGVuIGZpcnN0PyBJdCdzIG5vdCBjbGVhciBob3cgeW91
-DQo+IGhhbmRsZSBpdCBoZXJlLg0KDQpXZSBoYXZlIGEgdHlwZSBjIGRyaXZlciB0aGF0IGZpcnN0
-IGNhbGxzIHJvbGUgc3dpdGNoIGluIGdsdWUuDQpUaGUgcm9sZSBzd2l0Y2hpbmcgZnVuY3Rpb24g
-aW4gZ2x1ZSB3aWxsIGNhbGwgdGhlIHJvbGUgc3dpdGNoaW5nIGZ1bmN0aW9uIGluIGNvcmUuDQoN
-ClR5cGUgYyBkcml2ZXIgc2V0dGluZyBzd2l0Y2ggcm9sZSBmdW5jdGlvbjoNCiAgICAgIHwtLS0t
-PiBTZXQgcm9sZSBpbiB0aGUgZ2x1ZQ0KICAgICAgICAgICAgICAgICAgIHwtLS0tPiBTZXQgcm9s
-ZXMgaW4gdGhlIGNvcmUNCiAgICAgICAgICAgICAgICAgICB8LS0tLT4gc3dpdGNoX3VzYjJfZHJf
-bW9kZSBpbiBnbHVlDQoNCj4gPg0KPiA+ID4gSG93IGFib3V0IHdlIGNyZWF0ZSBhIGNvdXBsZSBv
-cHMgY2FsbGJhY2tzIHRvIGR3YzMgc3RydWN0dXJlLiBPbmUgdG8NCj4gPiA+IGluaXRpYWxpemUg
-Z2FkZ2V0IGFuZCB0aGUgb3RoZXIgZm9yIGhvc3QuIFNob3VsZCBhbnkgcGxhdGZvcm0NCj4gPiA+
-IHNwZWNpZmljIGRldmljZSBuZWVkIHNvbWUgaW50aWFsaXphdGlvbiBiZWZvcmUgaW5pdGlhbGl6
-aW5nIHRoZQ0KPiA+ID4gc3BlY2lmaWMgcm9sZSwgd2UgY2FuIGludm9rZSB0aGVzZSBjYWxsYmFj
-a3MuDQo+ID4gPg0KPiA+ID4gZS5nLjoNCj4gPiA+DQo+ID4gPiBzdHJ1Y3QgZHdjM19nbHVlX29w
-cyB7DQo+ID4gPiAgICAgICAgIGludCAoKmluaXRfZ2FkZ2V0KShzdHJ1Y3QgZHdjMyAqZHdjKTsN
-Cj4gPiA+ICAgICAgICAgaW50ICgqaW5pdF9ob3N0KShzdHJ1Y3QgZHdjMyAqZHdjKTsgfQ0KPiA+
-ID4NCj4gPiA+IHN0cnVjdCBkd2MzIHsNCj4gPiA+ICAgICAgICAgLi4NCj4gPiA+ICAgICAgICAg
-Y29uc3Qgc3RydWN0IGR3YzNfZ2x1ZV9vcHMgICAgICAqb3BzOw0KPiA+ID4gfQ0KPiA+ID4NCj4g
-PiA+DQo+ID4gPiBzdGF0aWMgaW50IGR3YzNfZ2x1ZV9pbml0X2dhZGdldChzdHJ1Y3QgZHdjMyAq
-ZHdjKSB7DQo+ID4gPiAgICAgICAgIGlmICghZHdjLT5vcHMtPmluaXRfZ2FkZ2V0KQ0KPiA+ID4g
-ICAgICAgICAgICAgICAgIHJldHVybiAwOw0KPiA+ID4NCj4gPiA+ICAgICAgICAgcmV0dXJuIGR3
-Yy0+b3BzLT5pbml0X2dhZGdldChkd2MpOyB9DQo+ID4gPg0KPiA+ID4gc3RhdGljIGludCBkd2Mz
-X2dsdWVfaW5pdF9ob3N0KHN0cnVjdCBkd2MzICpkd2MpIHsNCj4gPiA+ICAgICAgICAgaWYgKCFk
-d2MtPm9wcy0+aW5pdF9ob3N0KQ0KPiA+ID4gICAgICAgICAgICAgICAgIHJldHVybiAwOw0KPiA+
-ID4NCj4gPiA+ICAgICAgICAgcmV0dXJuIGR3Yy0+b3BzLT5pbml0X2hvc3QoZHdjKTsgfQ0KPiA+
-ID4NCj4gPiA+DQo+ID4gPiBZb3VyIGdsdWUgZHJpdmVyIHdvdWxkIGltcGxlbWVudCB0aGVzZSBj
-YWxsYmFja3MuIEluDQo+ID4gPiBkd2MzX2dhZGdldF9pbml0KCkgYW5kIGR3YzNfaG9zdF9pbml0
-KCksIHdlIGNhbiBjYWxsIHRoZXNlIGNhbGxiYWNrcw0KPiA+ID4gYXQgc3RhcnQuIEkgYWRtaXQg
-dGhhdCB0aGlzIG1heSBub3QgYmUgdGhlIGdyZWF0ZXN0IHNvbHV0aW9uIHNpbmNlDQo+ID4gPiBp
-dCB3b3VsZCByZXF1aXJlIHRoZSBnbHVlIGRyaXZlciB0byBhbGxvYyBhbmQgcmVnaXN0ZXIgYSBk
-d2MzDQo+ID4gPiBwbGF0Zm9ybSBkZXZpY2UuIEJ1dCBJIHRoaW5rIHNob3VsZCBiZSBvay4gSWYg
-YW55b25lIGVsc2UgY2FuIGNoaW1lIGluIGZvcg0KPiBtb3JlIGlkZWEsIGl0J2QgYmUgZ3JlYXQu
-DQo+ID4NCj4gPg0KPiA+IFRoYW5rcyBmb3IgeW91ciBhZHZpY2UuDQo+ID4gSGVyZSBpcyBhIHNv
-bHV0aW9uLiBBcyB5b3UncmUgY29uY2VybmVkLCBpdCBtdXN0IHJlZ2lzdGVyIGNhbGxiYWNrcyB3
-aXRoIHRoZQ0KPiBjb3JlIGRyaXZlci4gSXQgbG9va3MgYSBiaXQgY29tcGxpY2F0ZWQuDQo+ID4g
-SSBub3RpY2VkIHRoZSBwaHlfc2V0X21vZGUgYXBpLg0KPiA+IE1heWJlIEkgY2FuIHRyeSB0byBt
-b3ZlIHN3aXRjaF91c2IyX2RyX21vZGUgdG8gcGh5IGRyaXZlci4NCj4gPg0KPiA+IHBoeV9zZXRf
-bW9kZShkd2MtPnVzYjJfZ2VuZXJpY19waHksIFBIWV9NT0RFX1VTQl9IT1NUKTsNCj4gPiBwaHlf
-c2V0X21vZGUoZHdjLT51c2IyX2dlbmVyaWNfcGh5LCBQSFlfTU9ERV9VU0JfREVWSUNFKTsNCj4g
-Pg0KPiANCj4gSSdtIGNvbmNlcm4gaWYgdGhlcmUgYXJlIG90aGVyIHVud2FudGVkIHNpZGUgZWZm
-ZWN0cyB0aGlzIG1heSBoYXZlIHRvIG90aGVyDQo+IHBsYXRmb3Jtcy4NCg0KDQpJIGRpZG4ndCBh
-ZGQgYW55IG5ldyBwaHlfc2V0X21vZGUgdG8gZHdjMy9jb3JlLg0KSSBtZWFuIHVzZSBleGlzdGlu
-ZyBjYWxsYmFjaywgYXMgZm9sbG93cw0KaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgv
-djYuNC44L3NvdXJjZS9kcml2ZXJzL3VzYi9kd2MzL2NvcmUuYyNMMjAzDQoNCg0KVGhhbmtzLA0K
-U3RhbmxleQ0K
+Hi
+
+On Mon, Aug 7, 2023, at 11:01 AM, Alexander Mikhalitsyn wrote:
+> On Mon, Aug 7, 2023 at 10:52=E2=80=AFAM David Rheinsberg <david@readah=
+ead.eu> wrote:
+[...]
+>>  int pidfd_prepare(struct pid *pid, unsigned int flags, struct file *=
+*ret)
+>>  {
+>> -       if (!pid || !pid_has_task(pid, PIDTYPE_TGID))
+>> +       if (!pid)
+>> +               return -EINVAL;
+>> +
+>> +       /*
+>> +        * Non thread-group leaders cannot have pidfds, but we allow =
+them for
+>> +        * reaped thread-group leaders.
+>> +        */
+>> +       if (pid_has_task(pid, PIDTYPE_PID) && !pid_has_task(pid, PIDT=
+YPE_TGID))
+>>                 return -EINVAL;
+>
+> Hi David!
+>
+> As far as I understand, __unhash_process is always called with a
+> tasklist_lock held for writing.
+> Don't we need to take tasklist_lock for reading here to guarantee
+> consistency between
+> pid_has_task(pid, PIDTYPE_PID) and pid_has_task(pid, PIDTYPE_TGID)
+> return values?
+
+You mean PIDTYPE_TGID being cleared before PIDTYPE_PID (at least from th=
+e perspective of the unlocked reader)? I don't think it is a compatibili=
+ty issue, because the same issue existed before the patch. But it might =
+indeed be required to avoid spurious EINVAL _while_ the target process i=
+s reaped.
+
+It would be unfortunate if we need that. Because it is really not requir=
+ed for AF_UNIX or fanotify (they guarantee that they always deal with TG=
+IDs). So maybe the correct call is to just drop pidfd_prepare() and alwa=
+ys use __pidfd_prepare()? So far the safety-measures of pidfd_prepare() =
+introduced two races I already mentioned in the commit-message. So maybe=
+ it is just better to document that the caller of __pidfd_prepare() need=
+s to ensure the source is/was a TGID?
+
+Thanks
+David
