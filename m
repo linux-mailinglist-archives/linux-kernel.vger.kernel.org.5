@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 660F7772B7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0E6772B7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbjHGQvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:51:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55028 "EHLO
+        id S231452AbjHGQwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjHGQvA (ORCPT
+        with ESMTP id S229640AbjHGQwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:51:00 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32EB9D
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:50:59 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-586a5ac5c29so41664667b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:50:59 -0700 (PDT)
+        Mon, 7 Aug 2023 12:52:20 -0400
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E7C99
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:52:19 -0700 (PDT)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-1bbaa549bcbso3600288fac.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:52:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691427059; x=1692031859;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+DH1RGsmuAo7vrM49oUA1O8QELPBtiixKmknDzKlrMs=;
-        b=UcHqa2R41JL5C38LwWIBt1mJ8uByZE/Xlbtryhjq0yCeZ6PnmszUdnIGGJIDIeCLi8
-         izw5ctPRXAuigX+MwUivoQlyykmafMQntoahk+xwngh3F3EGGkXCPyGtgs7pDJHUztcc
-         KgP4bdF8yo/CXbiMEgD74mER7n9AKk1iGRVqBEq7wfXQoeiJ+xiH7ifIbrHM4f5b2k4l
-         IOoba3EUMrJutY0FqS3n3c6i49D0hNSdz7Q+U3XzX3L9+0JhBUN87PvlQGHGV67XrqX6
-         aqL2eFZEpykmK3Mg3eJCmPZlMl3hQE0z+z7JMNgBk1YUtISVT/vwtxVMll1SH7S/k/41
-         l7ew==
+        d=gmail.com; s=20221208; t=1691427138; x=1692031938;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+zr5bzEAJ4u0jG+0pMtfI/Oc4OFWdg2dWRl6/DHgxTs=;
+        b=pJSy8y2sNQTIav/8/1US++ovx3EBG/babM+jC9VSwH89YPxl/9l32061+nQxW9EMWI
+         QWlkrZQ4KKLTf+RmB45uhJqZW6NrUpS+dNFJ+4+8epIfUH+YMao7jkNBcNfYeOCukpYV
+         m5HtCxp9KNdLxCPm4yO9Sjqvx2gLN+dFUOzoj5J608N8TBbfpo7gLJbmykemeXXgQcAp
+         jUzg98RKSoFx6nOjDZS+nCA+UrRJLoPMWDcGFXUqCQLMopI7zeWwS2NTepvlYGXd1v07
+         4UzIAVAJLJBYw6VXtbtktd3jAZHOty0o8wg/kXympToTH20QNTRBw83wRUasuHO3uIN6
+         TUKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691427059; x=1692031859;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+DH1RGsmuAo7vrM49oUA1O8QELPBtiixKmknDzKlrMs=;
-        b=gr+yac4XzebsQCnewZMgWEUieIhh9JEztH6QgTdBlpBQuOUg6YO+bCFx6vNFWGBqFu
-         RJROBchOkwSF6h+gl5arpBd3NiMmM0GBSE6ITa9HThqp3Rfw/D6fYC7hcEZKMXol49yd
-         knkOEDWXR8Oc17DnsMbhJZz1IvzG92ORlGx+7DmuZiX1Q/tv3XV4OUejBTLuzU7PsaRM
-         8vQw4anfFi1H8dQ0EGy88vTrfGnoWZ2mT/iixio+dH0hiXWnSvRDewD1g+ARWkJ5NT7r
-         /6WFCSqahqYBIPJJkA19z/Q4/TcEr81SebG7EQ7qJUXPJ8piZAvwOhbej2/uClNl/I9P
-         49Tw==
-X-Gm-Message-State: AOJu0YxN0w1V5Te9wgViyMmFE3v7duFJ1NAaJ6rcXF6PcjQqFybgMMgO
-        yi7dMatPK05JTpVajspjLFqCfZd3SZGSL1FvVvU=
-X-Google-Smtp-Source: AGHT+IGuAP8rnQ8ZbxkJ9M/ve9RTC6jY6Usa6MkjZJQMxI+QRocRxszMBKkMFRYH6dyg+LQrAT7iExlQ5heullsOMDA=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:4746:957d:1a28:5104])
- (user=ndesaulniers job=sendgmr) by 2002:a81:b144:0:b0:56f:f77c:3c7d with SMTP
- id p65-20020a81b144000000b0056ff77c3c7dmr77675ywh.3.1691427058981; Mon, 07
- Aug 2023 09:50:58 -0700 (PDT)
-Date:   Mon, 07 Aug 2023 09:50:32 -0700
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIANcg0WQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDCwNz3dzM4uLMvPT4gqL8knxdg+QkS4PUZDMTU5NkJaCegqLUtMwKsHn RsbW1AANxIeRfAAAA
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691427057; l=1415;
- i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
- bh=3s6B3WRHZwONDqr660gEy+YqAcQ7kOQd/SC/ue2x6Kc=; b=o9mPOXezO1m1peqnQnJ9Xh9NmpG6OGUleGqyCPai/FHu3L5j1iHQdxfIhbIC4aYIa1C1emYrj
- fT1jBNQi6XgDsLGtvc8W9xWd9BF1MF+sBN52XQfIibvFQNPns+iYt/y
-X-Mailer: b4 0.12.3
-Message-ID: <20230807-missing_proto-v1-1-7f566b7ba5ca@google.com>
-Subject: [PATCH] Makefile.extrawarn: enable -Wmissing-variable-declarations
- for W=1
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        d=1e100.net; s=20221208; t=1691427138; x=1692031938;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+zr5bzEAJ4u0jG+0pMtfI/Oc4OFWdg2dWRl6/DHgxTs=;
+        b=W7e1OQLMpsHudAw38JUN16SwiPOdbpDeQqgVz8P+H22jQRzb4akQnqQ2oIni3mA7jd
+         FsF9rN3smOitEvDLC1XR24VkfuE3ubKFikkDAYS1uhL+9pjK6sGNq4V4ybqeCKB0Vw8a
+         j0r5nudy0MIG5Ift+smIn7nA/jFmj+T9gcqdeIoqz04mDFXWSr3+A/h2Wi1X+O3Ez76C
+         OMbJwPe3yl5p1cGubHmokR8+bZlEOoPDXwaXQvBkUGlTvOSev82E0dwY9KQF8Q10ARrl
+         ssBjPGySdjG1tgu+XEYMYLfB6FBNDFvu+Am91Sj6wdfkS8J9VTbOfROU5DyDIqi85QuL
+         mPBQ==
+X-Gm-Message-State: AOJu0Yz11kXW05oiiDgEg8oTRf//LzLb5D6+FHMC7cSrRaPMdpCpUth8
+        DNqp3wFDcNUIpgWxUWKegfwAreiCrk02PBg9QXldUWQW
+X-Google-Smtp-Source: AGHT+IGOylr6WBFk/yfrsvOLNljNjtq4DOhPqdkeGj2n7GfTSiG1+C4wb1gY88HX3UzRmxq6kEie15ZwuW5xRY6gCUo=
+X-Received: by 2002:a05:6870:e6d4:b0:1b7:4655:2ac3 with SMTP id
+ s20-20020a056870e6d400b001b746552ac3mr11502882oak.13.1691427138338; Mon, 07
+ Aug 2023 09:52:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230801094742.8032-1-sunran001@208suo.com>
+In-Reply-To: <20230801094742.8032-1-sunran001@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 7 Aug 2023 12:52:07 -0400
+Message-ID: <CADnq5_N_EQgTBLsJ_PFtEBi_0TD+8=Zp3=2D7NcsmJH1MEEJpQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/pm: Clean up errors in polaris_baco.c
+To:     Ran Sun <sunran001@208suo.com>
+Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,40 +70,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I noticed Tom was sending patches where smatch was recommending
-annotating functions as static when no previous declaration existed.
-Surely the compiler could make such recommendations as well, I thought.
+Applied.  Thanks!
 
-Looks like -Wmissing-variable-declarations can make such
-recommendations.
-
-GCC just added support for this warning (gcc 14.1.0 will ship with
-support), and all versions of clang relevant to building the kernel
-support this flag.
-
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- scripts/Makefile.extrawarn | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-index 40cd13eca82e..617739eb84e2 100644
---- a/scripts/Makefile.extrawarn
-+++ b/scripts/Makefile.extrawarn
-@@ -32,6 +32,7 @@ KBUILD_CFLAGS += $(call cc-option, -Wunused-but-set-variable)
- KBUILD_CFLAGS += $(call cc-option, -Wunused-const-variable)
- KBUILD_CFLAGS += $(call cc-option, -Wpacked-not-aligned)
- KBUILD_CFLAGS += $(call cc-option, -Wstringop-truncation)
-+KBUILD_CFLAGS += $(call cc-option, -Wmissing-varibale-declarations)
- # The following turn off the warnings enabled by -Wextra
- KBUILD_CFLAGS += -Wno-missing-field-initializers
- KBUILD_CFLAGS += -Wno-sign-compare
-
----
-base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
-change-id: 20230807-missing_proto-0cb90ec6454c
-
-Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
-
+On Tue, Aug 1, 2023 at 5:47=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
+:
+>
+> Fix the following errors reported by checkpatch:
+>
+> ERROR: that open brace { should be on the previous line
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>  .../drm/amd/pm/powerplay/hwmgr/polaris_baco.c | 30 +++++++------------
+>  1 file changed, 10 insertions(+), 20 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/polaris_baco.c b/driv=
+ers/gpu/drm/amd/pm/powerplay/hwmgr/polaris_baco.c
+> index 8f8e296f2fe9..a6a6d43b09f8 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/polaris_baco.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/polaris_baco.c
+> @@ -35,8 +35,7 @@
+>  #include "smu/smu_7_1_3_d.h"
+>  #include "smu/smu_7_1_3_sh_mask.h"
+>
+> -static const struct baco_cmd_entry gpio_tbl[] =3D
+> -{
+> +static const struct baco_cmd_entry gpio_tbl[] =3D {
+>         { CMD_WRITE, mmGPIOPAD_EN, 0, 0, 0, 0x0 },
+>         { CMD_WRITE, mmGPIOPAD_PD_EN, 0, 0, 0, 0x0 },
+>         { CMD_WRITE, mmGPIOPAD_PU_EN, 0, 0, 0, 0x0 },
+> @@ -49,15 +48,13 @@ static const struct baco_cmd_entry gpio_tbl[] =3D
+>         { CMD_READMODIFYWRITE, mmDC_GPIO_SYNCA_MASK, 0, 0, 0, 0x00001111 =
+}
+>  };
+>
+> -static const struct baco_cmd_entry enable_fb_req_rej_tbl[] =3D
+> -{
+> +static const struct baco_cmd_entry enable_fb_req_rej_tbl[] =3D {
+>         { CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, 0xC0300024 },
+>         { CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, 0x1, 0x0, 0, 0x1 },
+>         { CMD_WRITE, mmBIF_FB_EN, 0, 0, 0, 0x0 }
+>  };
+>
+> -static const struct baco_cmd_entry use_bclk_tbl[] =3D
+> -{
+> +static const struct baco_cmd_entry use_bclk_tbl[] =3D {
+>         { CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, ixCG_SPLL_FUNC_CNTL },
+>         { CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, CG_SPLL_FUNC_CNTL__SPL=
+L_BYPASS_EN_MASK, CG_SPLL_FUNC_CNTL__SPLL_BYPASS_EN__SHIFT, 0, 0x1 },
+>         { CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, 0xC0500170 },
+> @@ -70,8 +67,7 @@ static const struct baco_cmd_entry use_bclk_tbl[] =3D
+>         { CMD_READMODIFYWRITE, mmMPLL_CNTL_MODE, MPLL_CNTL_MODE__MPLL_MCL=
+K_SEL_MASK, MPLL_CNTL_MODE__MPLL_MCLK_SEL__SHIFT, 0, 0x0 }
+>  };
+>
+> -static const struct baco_cmd_entry turn_off_plls_tbl[] =3D
+> -{
+> +static const struct baco_cmd_entry turn_off_plls_tbl[] =3D {
+>         { CMD_READMODIFYWRITE, mmDC_GPIO_PAD_STRENGTH_1, DC_GPIO_PAD_STRE=
+NGTH_1__GENLK_STRENGTH_SP_MASK, DC_GPIO_PAD_STRENGTH_1__GENLK_STRENGTH_SP__=
+SHIFT, 0, 0x1 },
+>         { CMD_DELAY_US, 0, 0, 0, 1, 0x0 },
+>         { CMD_READMODIFYWRITE, mmMC_SEQ_DRAM, MC_SEQ_DRAM__RST_CTL_MASK, =
+MC_SEQ_DRAM__RST_CTL__SHIFT, 0, 0x1 },
+> @@ -92,8 +88,7 @@ static const struct baco_cmd_entry turn_off_plls_tbl[] =
+=3D
+>         { CMD_DELAY_US, 0, 0, 0, 5, 0x0 }
+>  };
+>
+> -static const struct baco_cmd_entry clk_req_b_tbl[] =3D
+> -{
+> +static const struct baco_cmd_entry clk_req_b_tbl[] =3D {
+>         { CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, ixTHM_CLK_CNTL },
+>         { CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, THM_CLK_CNTL__CMON_CLK=
+_SEL_MASK, THM_CLK_CNTL__CMON_CLK_SEL__SHIFT, 0, 0x1 },
+>         { CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, THM_CLK_CNTL__TMON_CLK=
+_SEL_MASK, THM_CLK_CNTL__TMON_CLK_SEL__SHIFT, 0, 0x1 },
+> @@ -108,8 +103,7 @@ static const struct baco_cmd_entry clk_req_b_tbl[] =
+=3D
+>         { CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, MPLL_BYPASSCLK_SEL__MP=
+LL_CLKOUT_SEL_MASK, MPLL_BYPASSCLK_SEL__MPLL_CLKOUT_SEL__SHIFT, 0,     0x4 =
+}
+>  };
+>
+> -static const struct baco_cmd_entry enter_baco_tbl[] =3D
+> -{
+> +static const struct baco_cmd_entry enter_baco_tbl[] =3D {
+>         { CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_EN_MASK, BACO=
+_CNTL__BACO_EN__SHIFT, 0, 0x01 },
+>         { CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_BIF_SCLK_SWIT=
+CH_MASK, BACO_CNTL__BACO_BIF_SCLK_SWITCH__SHIFT, 0, 0x01 },
+>         { CMD_WAITFOR, mmBACO_CNTL, BACO_CNTL__BACO_BIF_SCLK_SWITCH_MASK,=
+ 0, 5, 0x40000 },
+> @@ -126,8 +120,7 @@ static const struct baco_cmd_entry enter_baco_tbl[] =
+=3D
+>
+>  #define BACO_CNTL__PWRGOOD_MASK  BACO_CNTL__PWRGOOD_GPIO_MASK+BACO_CNTL_=
+_PWRGOOD_MEM_MASK+BACO_CNTL__PWRGOOD_DVO_MASK
+>
+> -static const struct baco_cmd_entry exit_baco_tbl[] =3D
+> -{
+> +static const struct baco_cmd_entry exit_baco_tbl[] =3D {
+>         { CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_RESET_EN_MASK=
+, BACO_CNTL__BACO_RESET_EN__SHIFT, 0, 0x01 },
+>         { CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_BCLK_OFF_MASK=
+, BACO_CNTL__BACO_BCLK_OFF__SHIFT, 0, 0x00 },
+>         { CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_POWER_OFF_MAS=
+K, BACO_CNTL__BACO_POWER_OFF__SHIFT, 0, 0x00 },
+> @@ -142,14 +135,12 @@ static const struct baco_cmd_entry exit_baco_tbl[] =
+=3D
+>         { CMD_WAITFOR, mmBACO_CNTL, BACO_CNTL__BACO_MODE_MASK, 0, 0xfffff=
+fff, 0x00 }
+>  };
+>
+> -static const struct baco_cmd_entry clean_baco_tbl[] =3D
+> -{
+> +static const struct baco_cmd_entry clean_baco_tbl[] =3D {
+>         { CMD_WRITE, mmBIOS_SCRATCH_6, 0, 0, 0, 0 },
+>         { CMD_WRITE, mmBIOS_SCRATCH_7, 0, 0, 0, 0 }
+>  };
+>
+> -static const struct baco_cmd_entry use_bclk_tbl_vg[] =3D
+> -{
+> +static const struct baco_cmd_entry use_bclk_tbl_vg[] =3D {
+>         { CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, ixCG_SPLL_FUNC_CNTL },
+>         { CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, CG_SPLL_FUNC_CNTL__SPL=
+L_BYPASS_EN_MASK, CG_SPLL_FUNC_CNTL__SPLL_BYPASS_EN__SHIFT, 0, 0x1 },
+>         { CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, 0xC0500170 },
+> @@ -160,8 +151,7 @@ static const struct baco_cmd_entry use_bclk_tbl_vg[] =
+=3D
+>         { CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, MPLL_BYPASSCLK_SEL__MP=
+LL_CLKOUT_SEL_MASK, MPLL_BYPASSCLK_SEL__MPLL_CLKOUT_SEL__SHIFT, 0, 0x2 }
+>  };
+>
+> -static const struct baco_cmd_entry turn_off_plls_tbl_vg[] =3D
+> -{
+> +static const struct baco_cmd_entry turn_off_plls_tbl_vg[] =3D {
+>         { CMD_READMODIFYWRITE, mmDC_GPIO_PAD_STRENGTH_1, DC_GPIO_PAD_STRE=
+NGTH_1__GENLK_STRENGTH_SP_MASK, DC_GPIO_PAD_STRENGTH_1__GENLK_STRENGTH_SP__=
+SHIFT, 0, 0x1 },
+>         { CMD_DELAY_US, 0, 0, 0, 1, 0x0 },
+>         { CMD_READMODIFYWRITE, mmMC_SEQ_DRAM, MC_SEQ_DRAM__RST_CTL_MASK, =
+MC_SEQ_DRAM__RST_CTL__SHIFT, 0, 0x1 },
+> --
+> 2.17.1
+>
