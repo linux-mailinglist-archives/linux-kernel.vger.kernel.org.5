@@ -2,63 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BAF771AE7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DAB771AEA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbjHGG7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54666 "EHLO
+        id S231342AbjHGG7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHGG7H (ORCPT
+        with ESMTP id S229468AbjHGG7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:59:07 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEC21A4;
-        Sun,  6 Aug 2023 23:59:05 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 70B5224E2AA;
-        Mon,  7 Aug 2023 14:59:03 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 7 Aug
- 2023 14:59:03 +0800
-Received: from [192.168.125.127] (113.72.146.246) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 7 Aug
- 2023 14:59:02 +0800
-Message-ID: <4921ac0b-a877-6f3f-50a9-b2a053b1a09a@starfivetech.com>
-Date:   Mon, 7 Aug 2023 14:59:02 +0800
+        Mon, 7 Aug 2023 02:59:36 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3071BB;
+        Sun,  6 Aug 2023 23:59:34 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe2048c910so34773985e9.1;
+        Sun, 06 Aug 2023 23:59:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691391573; x=1691996373;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yoEjkyoJWoU8MTKFrPpvoEvG+DJ9Uo0OBGnuZDHzeuY=;
+        b=aBHdNavavWvZNE5TYPD1x/w6Y7U0r4NdjdRVcoKX2DCGZ+pKFMVv2LEcR/J/Hj7+2T
+         LTk3k4CHSpSh3AI9vA9n5pf4OqCtfyfjzJUSuSn3/2r/2Q/mWoX8MZKdKrrqHZbjtxlE
+         vBPUC/c1Ry/iMVSSqRYfFWQT/+OS4oaxD5/FPk5r/AlkpZA2n1e9W0qNVLenJ+bdG7+S
+         aUSFTYxPFgl6GOxKlniNKAnYqqACwZtJFLgX8nUfKBrPhlDnEscvbrcVGn2IPhzC4Gpf
+         /uux5h4WM51ZCQk3w6maeHNZyqWU3vCeBlfb8m85eBAh34f4c2i013tsK9nWlpa32Bcf
+         mnJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691391573; x=1691996373;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yoEjkyoJWoU8MTKFrPpvoEvG+DJ9Uo0OBGnuZDHzeuY=;
+        b=jchkr7yZTclX37K8urYIEOeKfjtdDWSyCRB+O5ambmBAwUmB2Y2Krlr++B66QYyveQ
+         mpjkWBYQULLRcTnN3DSK9Ca/Mb9tc1C1w8sXtEVh5UGY/FZjFS70xmG1ot/C2XhIcaNk
+         JtR+3zTxe4tRUguty0yJR/VlwEVVVFjJ6NghGDaDHKXpseMq2IQlI5igdEQzafAgZjqP
+         MjUoAZE3JtXLeKx6jtaeqNoXSaj9eS13xRuLZOx1jUE08/UdSebw6/3RG3tz0ffwZJfy
+         5SbgWET13jXuk000AQsQxarO0YiZEWif3hSg61+XFfJt/HohNu/sd6/b0Y79OYJwhzwh
+         abvg==
+X-Gm-Message-State: AOJu0YzKqImfKuFFqYf6flFmKeChoBTRAvh48yX5N2neO6v9Kd/pSFt1
+        gtO9JjGbCy8WYkolGDJcVRw=
+X-Google-Smtp-Source: AGHT+IFNpTAp1sf/QAMLhuwEX/5EuBOM3S+430+mCRJJeI/cGJ4W192pU/l3+DGp1K6bF8bs2omGlg==
+X-Received: by 2002:a7b:ce09:0:b0:3fe:2219:9052 with SMTP id m9-20020a7bce09000000b003fe22199052mr5327478wmc.18.1691391572688;
+        Sun, 06 Aug 2023 23:59:32 -0700 (PDT)
+Received: from khadija-virtual-machine ([124.29.208.67])
+        by smtp.gmail.com with ESMTPSA id q7-20020a1cf307000000b003fa98908014sm14086700wmq.8.2023.08.06.23.59.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Aug 2023 23:59:32 -0700 (PDT)
+Date:   Mon, 7 Aug 2023 11:59:29 +0500
+From:   Khadija Kamran <kamrankhadijadj@gmail.com>
+To:     Alison Schofield <alison.schofield@intel.com>, paul@paul-moore.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jmorris@namei.org, serge@hallyn.com,
+        linux-security-module@vger.kernel.org, apparmor@lists.ubuntu.com,
+        john.johansen@canonical.com, ztarkhani@microsoft.com
+Subject: [PATCH v2] lsm: constify the 'target' parameter in security_capget()
+Message-ID: <ZNCWUQXKrZnCeB/5@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 0/4] Refactoring Microchip PCIe driver and add StarFive
- PCIe
-Content-Language: en-US
-To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
-CC:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20230727103949.26149-1-minda.chen@starfivetech.com>
- <CAJM55Z-r3EtMGui=g8PhwbkYbuPFJgk8OcAF6S_1LcTRAqbOdw@mail.gmail.com>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <CAJM55Z-r3EtMGui=g8PhwbkYbuPFJgk8OcAF6S_1LcTRAqbOdw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.146.246]
-X-ClientProxiedBy: EXCAS065.cuchost.com (172.16.6.25) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,112 +71,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Three LSMs register the implementations for the "capget" hook: AppArmor,
+SELinux, and the normal capability code. Looking at the function
+implementations we may observe that the first parameter "target" is not
+changing.
 
+Mark the first argument "target" of LSM hook security_capget() as
+"const" since it will not be changing in the LSM hook.
 
-On 2023/8/5 21:05, Emil Renner Berthing wrote:
-> On Thu, 27 Jul 2023 at 12:40, Minda Chen <minda.chen@starfivetech.com> wrote:
->>
->> This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
->> JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
->> same IP and have commit their codes, which are mixed with PLDA
->> controller codes and Microchip platform codes.
->>
->> For re-use the PLDA controller codes, I request refactoring microchip
->> codes, move PLDA common codes to PLDA files.
->> Desigware and Cadence is good example for refactoring codes.
->>
->> So first step is extract the PLDA common codes from microchip, and
->> refactoring the microchip codes.(patch1 - 2)
->> Then, add Starfive codes. (patch3 - 4)
->>
->> This patchset is base on v6.5-rc1
->>
->> patch1 is move PLDA XpressRICH PCIe host common properties dt-binding
->>        docs from microchip,pcie-host.yaml
->> patch2 is extracting the PLDA common codes from microchip Polarfire PCIe
->>        codes. The change list in the commit message.
->> patch3 is add StarFive JH7110 PCIe dt-binding doc.
->> patch4 is add StarFive JH7110 Soc PCIe codes.
-> 
-> Hi Minda,
-> 
-> To test this series properly it needs matching nodes in the VisionFive
-> 2 device trees, but it seems to be missing from this version of the
-> patch series. If I apply the device tree patch from v1 I get errors
-> like this:
-> 
->   pcie-starfive 2b000000.pcie: invalid resource (null)
->   pcie-starfive 2b000000.pcie: error -EINVAL: failed to map reg memory
-> 
-> It would be great if you included the device tree patch in the next
-> series so this can actually be tested.
-> 
-> /Emil
-> 
-ok. thanks.
->> I have noticed that Daire have changed microchip's codes.
->> https://patchwork.kernel.org/project/linux-pci/cover/20230630154859.2049521-1-daire.mcnamara@microchip.com/
->> I have changed patch2 base on their commits. StarFive
->> PCIe driver still can work. But their codes is under reviewed and
->> maybe changing. Do not base on their changes first.
->> I will base on their commit to change patch2 as soon as
->> their commits are accepted.
->>
->> previous version:
->> v1:https://patchwork.kernel.org/project/linux-pci/cover/20230719102057.22329-1-minda.chen@starfivetech.com/
->>
->> change:
->>   v2:
->>     patch1:
->>       - squash dt-bindings patches to patch1
->>       - add 'required' list.
->>       - plda doc rename to plda,xpressrich-axi-common.yaml
->>     patch2:
->>       - squash the microchip modification patch to patch 2.
->>     patch3:
->>       - remove the plda common required property.
->>     patch4:
->>       - Sync the hide rc bar ops with config read function.
->>       - Revert the T_PVPERL to 100ms and add comments for the source.
->>       - Replace the link check function by the standard link ops.
->>       - Convert to new pm ops marcos.
->>       - Some formats modification.
->>       - pcie-plda-host modification merge to patch4.
->>     other:
->>       - remove the pcie-plda-plat.c
->>       - remove the starfive dts patch first. for it depends on
->>         stg clock and syscon setting.
->>
->> Minda Chen (4):
->>   dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
->>   PCI: plda: Get common codes from Microchip PolarFire host
->>   dt-bindings: PCI: Add StarFive JH7110 PCIe controller
->>   PCI: starfive: Add JH7110 PCIe controller
->>
->>  .../bindings/pci/microchip,pcie-host.yaml     |  49 +-
->>  .../pci/plda,xpressrich3-axi-common.yaml      |  69 ++
->>  .../bindings/pci/starfive,jh7110-pcie.yaml    | 133 ++++
->>  MAINTAINERS                                   |  19 +-
->>  drivers/pci/controller/Kconfig                |   9 +-
->>  drivers/pci/controller/Makefile               |   2 +-
->>  drivers/pci/controller/plda/Kconfig           |  31 +
->>  drivers/pci/controller/plda/Makefile          |   4 +
->>  .../{ => plda}/pcie-microchip-host.c          | 594 ++--------------
->>  drivers/pci/controller/plda/pcie-plda-host.c  | 665 ++++++++++++++++++
->>  drivers/pci/controller/plda/pcie-plda.h       | 242 +++++++
->>  drivers/pci/controller/plda/pcie-starfive.c   | 438 ++++++++++++
->>  12 files changed, 1645 insertions(+), 610 deletions(-)
->>  create mode 100644 Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml
->>  create mode 100644 Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
->>  create mode 100644 drivers/pci/controller/plda/Kconfig
->>  create mode 100644 drivers/pci/controller/plda/Makefile
->>  rename drivers/pci/controller/{ => plda}/pcie-microchip-host.c (50%)
->>  create mode 100644 drivers/pci/controller/plda/pcie-plda-host.c
->>  create mode 100644 drivers/pci/controller/plda/pcie-plda.h
->>  create mode 100644 drivers/pci/controller/plda/pcie-starfive.c
->>
->>
->> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
->> --
->> 2.17.1
->>
+cap_capget() LSM hook declaration exceeds the 80 characters per line
+limit. Split the function declaration to multple lines to decrease the
+line length.
+
+Signed-off-by: Khadija Kamran <kamrankhadijadj@gmail.com>
+---
+Changes in v2:
+ - Squash the patches 1/2 and 2/2 into a single patch
+ - Simplify the commit message
+
+ include/linux/lsm_hook_defs.h | 2 +-
+ include/linux/security.h      | 7 ++++---
+ kernel/capability.c           | 2 +-
+ security/apparmor/lsm.c       | 2 +-
+ security/commoncap.c          | 2 +-
+ security/security.c           | 2 +-
+ security/selinux/hooks.c      | 2 +-
+ 7 files changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index 6bb55e61e8e8..fd3844e11077 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -36,7 +36,7 @@ LSM_HOOK(int, 0, binder_transfer_file, const struct cred *from,
+ LSM_HOOK(int, 0, ptrace_access_check, struct task_struct *child,
+ 	 unsigned int mode)
+ LSM_HOOK(int, 0, ptrace_traceme, struct task_struct *parent)
+-LSM_HOOK(int, 0, capget, struct task_struct *target, kernel_cap_t *effective,
++LSM_HOOK(int, 0, capget, const struct task_struct *target, kernel_cap_t *effective,
+ 	 kernel_cap_t *inheritable, kernel_cap_t *permitted)
+ LSM_HOOK(int, 0, capset, struct cred *new, const struct cred *old,
+ 	 const kernel_cap_t *effective, const kernel_cap_t *inheritable,
+diff --git a/include/linux/security.h b/include/linux/security.h
+index e2734e9e44d5..fef65d0e522d 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -145,7 +145,8 @@ extern int cap_capable(const struct cred *cred, struct user_namespace *ns,
+ extern int cap_settime(const struct timespec64 *ts, const struct timezone *tz);
+ extern int cap_ptrace_access_check(struct task_struct *child, unsigned int mode);
+ extern int cap_ptrace_traceme(struct task_struct *parent);
+-extern int cap_capget(struct task_struct *target, kernel_cap_t *effective, kernel_cap_t *inheritable, kernel_cap_t *permitted);
++extern int cap_capget(const struct task_struct *target, kernel_cap_t *effective,
++					  kernel_cap_t *inheritable, kernel_cap_t *permitted);
+ extern int cap_capset(struct cred *new, const struct cred *old,
+ 		      const kernel_cap_t *effective,
+ 		      const kernel_cap_t *inheritable,
+@@ -271,7 +272,7 @@ int security_binder_transfer_file(const struct cred *from,
+ 				  const struct cred *to, struct file *file);
+ int security_ptrace_access_check(struct task_struct *child, unsigned int mode);
+ int security_ptrace_traceme(struct task_struct *parent);
+-int security_capget(struct task_struct *target,
++int security_capget(const struct task_struct *target,
+ 		    kernel_cap_t *effective,
+ 		    kernel_cap_t *inheritable,
+ 		    kernel_cap_t *permitted);
+@@ -553,7 +554,7 @@ static inline int security_ptrace_traceme(struct task_struct *parent)
+ 	return cap_ptrace_traceme(parent);
+ }
+ 
+-static inline int security_capget(struct task_struct *target,
++static inline int security_capget(const struct task_struct *target,
+ 				   kernel_cap_t *effective,
+ 				   kernel_cap_t *inheritable,
+ 				   kernel_cap_t *permitted)
+diff --git a/kernel/capability.c b/kernel/capability.c
+index 3e058f41df32..67bdee3414dd 100644
+--- a/kernel/capability.c
++++ b/kernel/capability.c
+@@ -112,7 +112,7 @@ static inline int cap_get_target_pid(pid_t pid, kernel_cap_t *pEp,
+ 	int ret;
+ 
+ 	if (pid && (pid != task_pid_vnr(current))) {
+-		struct task_struct *target;
++		const struct task_struct *target;
+ 
+ 		rcu_read_lock();
+ 
+diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
+index f431251ffb91..12dd96c3b2f0 100644
+--- a/security/apparmor/lsm.c
++++ b/security/apparmor/lsm.c
+@@ -144,7 +144,7 @@ static int apparmor_ptrace_traceme(struct task_struct *parent)
+ }
+ 
+ /* Derived from security/commoncap.c:cap_capget */
+-static int apparmor_capget(struct task_struct *target, kernel_cap_t *effective,
++static int apparmor_capget(const struct task_struct *target, kernel_cap_t *effective,
+ 			   kernel_cap_t *inheritable, kernel_cap_t *permitted)
+ {
+ 	struct aa_label *label;
+diff --git a/security/commoncap.c b/security/commoncap.c
+index 0b3fc2f3afe7..5fd64d3e5bfd 100644
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -197,7 +197,7 @@ int cap_ptrace_traceme(struct task_struct *parent)
+  * This function retrieves the capabilities of the nominated task and returns
+  * them to the caller.
+  */
+-int cap_capget(struct task_struct *target, kernel_cap_t *effective,
++int cap_capget(const struct task_struct *target, kernel_cap_t *effective,
+ 	       kernel_cap_t *inheritable, kernel_cap_t *permitted)
+ {
+ 	const struct cred *cred;
+diff --git a/security/security.c b/security/security.c
+index d5ff7ff45b77..fb2d93b481f1 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -893,7 +893,7 @@ int security_ptrace_traceme(struct task_struct *parent)
+  *
+  * Return: Returns 0 if the capability sets were successfully obtained.
+  */
+-int security_capget(struct task_struct *target,
++int security_capget(const struct task_struct *target,
+ 		    kernel_cap_t *effective,
+ 		    kernel_cap_t *inheritable,
+ 		    kernel_cap_t *permitted)
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 79b4890e9936..ff42d49f1b41 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -2056,7 +2056,7 @@ static int selinux_ptrace_traceme(struct task_struct *parent)
+ 			    SECCLASS_PROCESS, PROCESS__PTRACE, NULL);
+ }
+ 
+-static int selinux_capget(struct task_struct *target, kernel_cap_t *effective,
++static int selinux_capget(const struct task_struct *target, kernel_cap_t *effective,
+ 			  kernel_cap_t *inheritable, kernel_cap_t *permitted)
+ {
+ 	return avc_has_perm(current_sid(), task_sid_obj(target),
+-- 
+2.34.1
+
