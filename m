@@ -2,166 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCD0771917
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 06:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84773771921
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 06:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbjHGEo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 00:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
+        id S230037AbjHGErE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 00:47:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbjHGEox (ORCPT
+        with ESMTP id S229487AbjHGErB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 00:44:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2B610FE
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 21:44:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691383450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E+2EbnFZV7yJtZskjh+cWG4NxmXWzvfmJSRPX0ne/hU=;
-        b=Gok80n6k1JA4onMrnAOha7hVQmzE3KGkcH1CF9kCML69KMTZHbOMvtogNX9wN952GTSls2
-        oGCWho1F2/eKtmUMuyBK9SiRTdAXXZBCgCmzaN8vCFrAXCyawxfqtTKJf53Xyc9brZ1nu2
-        wmoBdb6/15s6F4QzEn45WXClSyS7CMg=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-28-PZmsn8s2NV-ZPAaCJvNfVA-1; Mon, 07 Aug 2023 00:44:08 -0400
-X-MC-Unique: PZmsn8s2NV-ZPAaCJvNfVA-1
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-68701df1ac7so2597577b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 21:44:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691383447; x=1691988247;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E+2EbnFZV7yJtZskjh+cWG4NxmXWzvfmJSRPX0ne/hU=;
-        b=OxOfM/HD8gOUF6inKj0sMSb6XBgeauRE/mFn2CVJGSN3hnmPDdOYO+echmEduq0QoT
-         VEWyz2RP2TsiAwCuNvS8WkALm2FEPeQ8sUONtZmChz6orqmJn1hurudGHGBD9eta+ejx
-         LN3HPETrvbd+xfEjUdQDkoiuqaGps3KOytspBN9GQu0CpRIC+La6dCU4AAypKgBGKWSD
-         u/iuzgXJ4eXjoTfSLpwhHzbtOsnXGzNuIzo43BPFtrZFIsY25Qbl5hV9x5RVCtzw/Fx3
-         tXQ3f/u5/qmPswgf2Qe/E+mMEJ4h/EpYkz7DiAXpbSi0XbOV1ycT+eFFDpYJzL3RdqXL
-         riTQ==
-X-Gm-Message-State: AOJu0Yy180/QR3B0uiyL75NVQpXjiL72824uYNakiYABAN/sMRk5J+Vn
-        puksSn2QEGDlqdbBe+BQyVlfc3af+ANzUUVDnHAXrfCoqCtBAUWOU2VEjQ+WGCRRB4OqnM7HMKg
-        qZzsslWt3jdU5JonvUS+Imjsr
-X-Received: by 2002:a05:6a20:1006:b0:125:f3d8:e65b with SMTP id gs6-20020a056a20100600b00125f3d8e65bmr7292036pzc.18.1691383447541;
-        Sun, 06 Aug 2023 21:44:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFDShi2vAdRaNGp+RB4NdbaHvukAeLo4WlRfe0u382qDdlhARlZSEovvdd8LQZl2heUKcBudQ==
-X-Received: by 2002:a05:6a20:1006:b0:125:f3d8:e65b with SMTP id gs6-20020a056a20100600b00125f3d8e65bmr7292025pzc.18.1691383447235;
-        Sun, 06 Aug 2023 21:44:07 -0700 (PDT)
-Received: from fedora19.localdomain ([2401:d002:2d05:b10a:c9ac:2dd7:6463:bb84])
-        by smtp.gmail.com with ESMTPSA id iz7-20020a170902ef8700b001b895a17429sm5697860plb.280.2023.08.06.21.44.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Aug 2023 21:44:06 -0700 (PDT)
-Date:   Mon, 7 Aug 2023 14:44:00 +1000
-From:   Ian Wienand <iwienand@redhat.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Martin Doucha <mdoucha@suse.cz>,
-        Yang Xu <xuyang2018.jy@fujitsu.com>
-Subject: Re: [PATCH 0/1] Possible bug in zram on ppc64le on vfat
-Message-ID: <ZNB2kORYiKdl3vSq@fedora19.localdomain>
-References: <20221107191136.18048-1-pvorel@suse.cz>
- <Y2l3vJb1y2Jynf50@google.com>
- <ZMycl7xKyJoQNpcu@fedora19.localdomain>
+        Mon, 7 Aug 2023 00:47:01 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7F9E8
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 21:47:00 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qSs8d-0007YL-53; Mon, 07 Aug 2023 06:46:39 +0200
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qSs8Y-00077x-2w; Mon, 07 Aug 2023 06:46:34 +0200
+Date:   Mon, 7 Aug 2023 06:46:34 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Ziqi Zhao <astrajoan@yahoo.com>
+Cc:     davem@davemloft.net, edumazet@google.com, ivan.orlov0322@gmail.com,
+        kernel@pengutronix.de, kuba@kernel.org, linux@rempel-privat.de,
+        linux-can@vger.kernel.org, mkl@pengutronix.de, pabeni@redhat.com,
+        robin@protonic.nl, skhan@linuxfoundation.org,
+        socketcan@hartkopp.net, arnd@arndb.de, netdev@vger.kernel.org,
+        bridge@lists.linux-foundation.org, syzkaller-bugs@googlegroups.com,
+        linux-kernel@vger.kernel.org, mudongliangabcd@gmail.com,
+        nikolay@nvidia.com,
+        syzbot+1591462f226d9cbf0564@syzkaller.appspotmail.com,
+        roopa@nvidia.com,
+        syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com
+Subject: Re: [PATCH] can: j1939: prevent deadlock by changing
+ j1939_socks_lock to rwlock
+Message-ID: <20230807044634.GA5736@pengutronix.de>
+References: <20230704064710.3189-1-astrajoan@yahoo.com>
+ <20230721162226.8639-1-astrajoan@yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZMycl7xKyJoQNpcu@fedora19.localdomain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230721162226.8639-1-astrajoan@yahoo.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After thinking it through, I think I might have a explanation...
-
-On Fri, Aug 04, 2023 at 04:37:11PM +1000, Ian Wienand wrote:
-> To recap; this test [1] creates a zram device, makes a filesystem on
-> it, and fills it with sequential 1k writes from /dev/zero via dd.  The
-> problem is that it sees the mem_used_total for the zram device as zero
-> in the sysfs stats after the writes; this causes a divide by zero
-> error in the script calculation.
+On Fri, Jul 21, 2023 at 09:22:26AM -0700, Ziqi Zhao wrote:
+> The following 3 locks would race against each other, causing the
+> deadlock situation in the Syzbot bug report:
 > 
-> An annoted extract:
+> - j1939_socks_lock
+> - active_session_list_lock
+> - sk_session_queue_lock
 > 
->  zram01 3 TINFO: /sys/block/zram1/disksize = '26214400'
->  zram01 3 TPASS: test succeeded
->  zram01 4 TINFO: set memory limit to zram device(s)
->  zram01 4 TINFO: /sys/block/zram1/mem_limit = '25M'
->  zram01 4 TPASS: test succeeded
->  zram01 5 TINFO: make vfat filesystem on /dev/zram1
+> A reasonable fix is to change j1939_socks_lock to an rwlock, since in
+> the rare situations where a write lock is required for the linked list
+> that j1939_socks_lock is protecting, the code does not attempt to
+> acquire any more locks. This would break the circular lock dependency,
+> where, for example, the current thread already locks j1939_socks_lock
+> and attempts to acquire sk_session_queue_lock, and at the same time,
+> another thread attempts to acquire j1939_socks_lock while holding
+> sk_session_queue_lock.
 > 
->  >> at this point a cat of /sys/block/zram1/mm_stat shows
->  >>   65536      527    65536 26214400    65536        0        0        0
+> NOTE: This patch along does not fix the unregister_netdevice bug
+> reported by Syzbot; instead, it solves a deadlock situation to prepare
+> for one or more further patches to actually fix the Syzbot bug, which
+> appears to be a reference counting problem within the j1939 codebase.
 > 
->  zram01 5 TPASS: zram_makefs succeeded
+> Reported-by: syzbot+1591462f226d9cbf0564@syzkaller.appspotmail.com
+> Signed-off-by: Ziqi Zhao <astrajoan@yahoo.com>
 
-So I think the thing to note is that mem_used_total is the current
-number of pages (reported * PAGE_SIZE) used by the zsmalloc allocator
-to store compressed data.
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-So we have made the file system, which is now quiescent and just has
-basic vfat data; this is compressed and stored and there's one page
-allocated for this (arm64, 64k pages).
+Thank you!
 
->  zram01 6 TINFO: mount /dev/zram1
->  zram01 6 TPASS: mount of zram device(s) succeeded
->  zram01 7 TINFO: filling zram1 (it can take long time)
->  zram01 7 TPASS: zram1 was filled with '25568' KB
->
->  >> however, /sys/block/zram1/mm_stat shows
->  >>   9502720        0        0 26214400   196608      145        0        0
->  >> the script reads this zero value and tries to calculate the
->  >> compression ratio
+> ---
+>  net/can/j1939/j1939-priv.h |  2 +-
+>  net/can/j1939/main.c       |  2 +-
+>  net/can/j1939/socket.c     | 25 +++++++++++++------------
+>  3 files changed, 15 insertions(+), 14 deletions(-)
 > 
->  ./zram01.sh: line 145: 100 * 1024 * 25568 / 0: division by 0 (error token is "0")
+> diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
+> index 16af1a7f80f6..74f15592d170 100644
+> --- a/net/can/j1939/j1939-priv.h
+> +++ b/net/can/j1939/j1939-priv.h
+> @@ -86,7 +86,7 @@ struct j1939_priv {
+>  	unsigned int tp_max_packet_size;
+>  
+>  	/* lock for j1939_socks list */
+> -	spinlock_t j1939_socks_lock;
+> +	rwlock_t j1939_socks_lock;
+>  	struct list_head j1939_socks;
+>  
+>  	struct kref rx_kref;
+> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> index ecff1c947d68..a6fb89fa6278 100644
+> --- a/net/can/j1939/main.c
+> +++ b/net/can/j1939/main.c
+> @@ -274,7 +274,7 @@ struct j1939_priv *j1939_netdev_start(struct net_device *ndev)
+>  		return ERR_PTR(-ENOMEM);
+>  
+>  	j1939_tp_init(priv);
+> -	spin_lock_init(&priv->j1939_socks_lock);
+> +	rwlock_init(&priv->j1939_socks_lock);
+>  	INIT_LIST_HEAD(&priv->j1939_socks);
+>  
+>  	mutex_lock(&j1939_netdev_lock);
+> diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+> index feaec4ad6d16..a8b981dc2065 100644
+> --- a/net/can/j1939/socket.c
+> +++ b/net/can/j1939/socket.c
+> @@ -80,16 +80,16 @@ static void j1939_jsk_add(struct j1939_priv *priv, struct j1939_sock *jsk)
+>  	jsk->state |= J1939_SOCK_BOUND;
+>  	j1939_priv_get(priv);
+>  
+> -	spin_lock_bh(&priv->j1939_socks_lock);
+> +	write_lock_bh(&priv->j1939_socks_lock);
+>  	list_add_tail(&jsk->list, &priv->j1939_socks);
+> -	spin_unlock_bh(&priv->j1939_socks_lock);
+> +	write_unlock_bh(&priv->j1939_socks_lock);
+>  }
+>  
+>  static void j1939_jsk_del(struct j1939_priv *priv, struct j1939_sock *jsk)
+>  {
+> -	spin_lock_bh(&priv->j1939_socks_lock);
+> +	write_lock_bh(&priv->j1939_socks_lock);
+>  	list_del_init(&jsk->list);
+> -	spin_unlock_bh(&priv->j1939_socks_lock);
+> +	write_unlock_bh(&priv->j1939_socks_lock);
+>  
+>  	j1939_priv_put(priv);
+>  	jsk->state &= ~J1939_SOCK_BOUND;
+> @@ -329,13 +329,13 @@ bool j1939_sk_recv_match(struct j1939_priv *priv, struct j1939_sk_buff_cb *skcb)
+>  	struct j1939_sock *jsk;
+>  	bool match = false;
+>  
+> -	spin_lock_bh(&priv->j1939_socks_lock);
+> +	read_lock_bh(&priv->j1939_socks_lock);
+>  	list_for_each_entry(jsk, &priv->j1939_socks, list) {
+>  		match = j1939_sk_recv_match_one(jsk, skcb);
+>  		if (match)
+>  			break;
+>  	}
+> -	spin_unlock_bh(&priv->j1939_socks_lock);
+> +	read_unlock_bh(&priv->j1939_socks_lock);
+>  
+>  	return match;
+>  }
+> @@ -344,11 +344,11 @@ void j1939_sk_recv(struct j1939_priv *priv, struct sk_buff *skb)
+>  {
+>  	struct j1939_sock *jsk;
+>  
+> -	spin_lock_bh(&priv->j1939_socks_lock);
+> +	read_lock_bh(&priv->j1939_socks_lock);
+>  	list_for_each_entry(jsk, &priv->j1939_socks, list) {
+>  		j1939_sk_recv_one(jsk, skb);
+>  	}
+> -	spin_unlock_bh(&priv->j1939_socks_lock);
+> +	read_unlock_bh(&priv->j1939_socks_lock);
+>  }
+>  
+>  static void j1939_sk_sock_destruct(struct sock *sk)
+> @@ -484,6 +484,7 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
+>  
+>  		priv = j1939_netdev_start(ndev);
+>  		dev_put(ndev);
+> +
+>  		if (IS_ERR(priv)) {
+>  			ret = PTR_ERR(priv);
+>  			goto out_release_sock;
+> @@ -1078,12 +1079,12 @@ void j1939_sk_errqueue(struct j1939_session *session,
+>  	}
+>  
+>  	/* spread RX notifications to all sockets subscribed to this session */
+> -	spin_lock_bh(&priv->j1939_socks_lock);
+> +	read_lock_bh(&priv->j1939_socks_lock);
+>  	list_for_each_entry(jsk, &priv->j1939_socks, list) {
+>  		if (j1939_sk_recv_match_one(jsk, &session->skcb))
+>  			__j1939_sk_errqueue(session, &jsk->sk, type);
+>  	}
+> -	spin_unlock_bh(&priv->j1939_socks_lock);
+> +	read_unlock_bh(&priv->j1939_socks_lock);
+>  };
+>  
+>  void j1939_sk_send_loop_abort(struct sock *sk, int err)
+> @@ -1271,7 +1272,7 @@ void j1939_sk_netdev_event_netdown(struct j1939_priv *priv)
+>  	struct j1939_sock *jsk;
+>  	int error_code = ENETDOWN;
+>  
+> -	spin_lock_bh(&priv->j1939_socks_lock);
+> +	read_lock_bh(&priv->j1939_socks_lock);
+>  	list_for_each_entry(jsk, &priv->j1939_socks, list) {
+>  		jsk->sk.sk_err = error_code;
+>  		if (!sock_flag(&jsk->sk, SOCK_DEAD))
+> @@ -1279,7 +1280,7 @@ void j1939_sk_netdev_event_netdown(struct j1939_priv *priv)
+>  
+>  		j1939_sk_queue_drop_all(priv, jsk, error_code);
+>  	}
+> -	spin_unlock_bh(&priv->j1939_socks_lock);
+> +	read_unlock_bh(&priv->j1939_socks_lock);
+>  }
+>  
+>  static int j1939_sk_no_ioctlcmd(struct socket *sock, unsigned int cmd,
+> -- 
+> 2.34.1
+> 
+> 
+> 
 
-At this point, because this test fills from /dev/zero, the zsmalloc
-pool doesn't actually have anything in it.  The filesystem metadata is
-in-use from the writes, and is not written out as compressed data.
-The zram page de-duplication has kicked in, and instead of handles to
-zsmalloc areas for data we just have "this is a page of zeros"
-recorded.  So this is correctly reflecting that fact that we don't
-actually have anything compressed stored at this time.
-
->  >> If we do a "sync" then redisply the mm_stat after, we get
->  >>   26214400     2842    65536 26214400   196608      399        0        0
-
-Now we've finished writing all our zeros and have synced, we would
-have finished updating vfat allocations, etc.  So this gets compressed
-and written, and we're back to have some small FS metadata compressed
-in our 1 page of zsmalloc allocations.
-
-I think what is probably "special" about this reproducer system is
-that it is slow enough to allow the zero allocation to persist between
-the end of the test writes and examining the stats.
-
-I'd be happy for any thoughts on the likelyhood of this!
-
-If we think this is right; then the point of the end of this test [1]
-is ensure a high reported compression ratio on the device, presumably
-to ensure the compression is working.  Filling it with urandom would
-be unreliable in this regard.  I think what we want to do is something
-highly compressable like alternate lengths of 0x00 and 0xFF.  This
-will avoid the same-page detection and ensure we actually have
-compressed data, and we can continue to assert on the high compression
-ratio reliably.  I'm happy to propose this if we generally agree.
-
-Thanks,
-
--i
-
-> [1] https://github.com/linux-test-project/ltp/blob/8c201e55f684965df2ae5a13ff439b28278dec0d/testcases/kernel/device-drivers/zram/zram01.sh
-
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
