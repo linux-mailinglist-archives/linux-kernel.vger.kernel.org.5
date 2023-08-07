@@ -2,150 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5801772594
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A16772567
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233964AbjHGNZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:25:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
+        id S232503AbjHGNWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233929AbjHGNYh (ORCPT
+        with ESMTP id S233183AbjHGNV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:24:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879832D7F
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:23:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EAEA361A5A
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 13:23:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE26DC433CB;
-        Mon,  7 Aug 2023 13:23:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691414599;
-        bh=Jqo8XbuMCxp/lU8H372pqnV5J9no6ZO9LFvX2EEpUkI=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=dcKJzNz0Ci5OzkoSUNLW4LbMqNTrbb9mKTewnxvJziSjfXjDS0VJ+DcMwhU/YtRwe
-         sz5kZ24FOOX/ol1OZaSKbM9GjH1WpisQbuocqY3ZDPoM1tVPRQmzPqbvhIF+3AP0+i
-         ekDVxLqV8wO8EgJviTg5f64MoO9B2SapJMIovNW0bJL4IviW5qZMuWz6NKofaUf6YW
-         CLHKQtZn34RN3vBqK8eikB2d0h0ecYGNfEwNq8CQnqviAm3MUjzRAX1MUsI5wppYP8
-         dQLb+J5Y7TRRbhg5KGwUOKZMsrtEt3VSf9D8Q1NdL7aZhBeo8q9ACaywr/4r3ML+tJ
-         mfVqcFZF3zR8A==
-From:   Michael Walle <mwalle@kernel.org>
-Date:   Mon, 07 Aug 2023 15:21:35 +0200
-Subject: [PATCH 41/41] mtd: spi-nor: core: get rid of the INFOx() macros
+        Mon, 7 Aug 2023 09:21:58 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AC0E7;
+        Mon,  7 Aug 2023 06:21:54 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377DLd8N018605;
+        Mon, 7 Aug 2023 08:21:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691414499;
+        bh=i+4mblcvdltevVmrqGuk4NDXd/pk6bZBqD9nS6WGZ34=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=cnSWMJoqahZfP17Mj7LxNoe7ZVX7kHTCGhdXAKSEGQwcdUo8EkS19KPtgDJb92Jay
+         7JN7dqldEDPnof1FIVK3rcvJUGtLLAoHAdCYCLgJMU7mI1/evY9HG8bCqMugCAMujB
+         oMCbT9fizNbKocBFo8ifRaoH3aj/5e/s0UJx0rgs=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377DLdnW028166
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Aug 2023 08:21:39 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
+ Aug 2023 08:21:38 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 7 Aug 2023 08:21:38 -0500
+Received: from [10.250.36.243] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377DLbin089934;
+        Mon, 7 Aug 2023 08:21:38 -0500
+Message-ID: <fcdb8ff2-2e78-10b0-c674-f18a0263d6d7@ti.com>
+Date:   Mon, 7 Aug 2023 08:21:37 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 3/3] arm64: dts: ti: k3-am64: Fix epwm_tbclk node name to
+ generic name
+To:     Francesco Dolcini <francesco@dolcini.it>,
+        Nishanth Menon <nm@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230802174521.236255-1-afd@ti.com>
+ <20230802174521.236255-3-afd@ti.com>
+ <ZM9a93OTLuwIKitA@francesco-nb.int.toradex.com>
+Content-Language: en-US
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <ZM9a93OTLuwIKitA@francesco-nb.int.toradex.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230807-mtd-flash-info-db-rework-v1-41-3d3d5bef4ba4@kernel.org>
-References: <20230807-mtd-flash-info-db-rework-v1-0-3d3d5bef4ba4@kernel.org>
-In-Reply-To: <20230807-mtd-flash-info-db-rework-v1-0-3d3d5bef4ba4@kernel.org>
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Michael Walle <mwalle@kernel.org>
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that all flash_info tables are converted to the new format, remove
-the old INFOx() macros.
+On 8/6/23 3:33 AM, Francesco Dolcini wrote:
+> Hello Andrew, hello Nishanth
+> 
+> On Wed, Aug 02, 2023 at 12:45:21PM -0500, Andrew Davis wrote:
+>> The name "clock" is not allowed for nodes, use "clock-controller" to
+>> remove the DTS check warning.
+>>
+>> Signed-off-by: Andrew Davis <afd@ti.com>
+>> ---
+>>   arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+>> index e27eb2e585f14..4e3e450e4e4c8 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+>> @@ -61,7 +61,7 @@ phy_gmii_sel: phy@4044 {
+>>   			#phy-cells = <1>;
+>>   		};
+>>   
+>> -		epwm_tbclk: clock@4140 {
+>> +		epwm_tbclk: clock-controller@4140 {
+> 
+> I was asked to do the exact same change here [1] by Nishanth, and I'm
+> sending the updated patch in a short while.
+> 
+> However I have one question, according to the
+> devicetree-specification-v0.4.pdf [2] "2.2.2 Generic Names
+> Recommendation", clock is a valid node name.
+> 
+> While testing the DT (make CHECK_DTBS=y), I did not have any warning nor
+> error.
+> 
+> What am I missing?
+> 
 
-Signed-off-by: Michael Walle <mwalle@kernel.org>
----
- drivers/mtd/spi-nor/core.h | 65 ----------------------------------------------
- 1 file changed, 65 deletions(-)
+These nodes are not just any nodes, they are part of "ti,j721e-system-controller"
+(well not really, we have been just calling these areas that to sneak around
+the restrictions on "syscon", "simple-mfd" devices), and so can only have the
+node names specified by that binding [0].
 
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index d0e83bfb847c..8f0f3c64488c 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -573,71 +573,6 @@ struct flash_info {
- 		.n_regions = (_n_regions),				\
- 	})
- 
--#define SPI_NOR_ID_2ITEMS(_id) ((_id) >> 8) & 0xff, (_id) & 0xff
--#define SPI_NOR_ID_3ITEMS(_id) ((_id) >> 16) & 0xff, SPI_NOR_ID_2ITEMS(_id)
--
--#define SPI_NOR_ID(_jedec_id, _ext_id)					\
--	.id = &(const struct spi_nor_id){				\
--		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
--				       SPI_NOR_ID_2ITEMS(_ext_id) },	\
--		.len = !(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0)),	\
--	}
--
--#define SPI_NOR_ID6(_jedec_id, _ext_id)					\
--	.id = &(const struct spi_nor_id){				\
--		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
--				       SPI_NOR_ID_3ITEMS(_ext_id) },	\
--		.len = 6,						\
--	}
--
--#define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
--	.size = (_sector_size) * (_n_sectors),				\
--	.sector_size = (_sector_size == SZ_64K) ? 0 : (_sector_size),	\
--	.n_banks = (_n_banks)
--
--/* Used when the "_ext_id" is two bytes at most */
--#define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
--	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
--	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
--
--#define INFO0(_sector_size, _n_sectors)					\
--	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
--
--#define INFOB(_jedec_id, _ext_id, _sector_size, _n_sectors, _n_banks)	\
--	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
--	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), (_n_banks)),
--
--#define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
--	SPI_NOR_ID6((_jedec_id), (_ext_id)),				\
--	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
--
--#define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
--		.size = (_sector_size) * (_n_sectors),			\
--		.sector_size = (_sector_size),				\
--		.page_size = (_page_size),				\
--		.addr_nbytes = (_addr_nbytes),				\
--		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
--
--#define OTP_INFO(_len, _n_regions, _base, _offset)			\
--		.otp = &(const struct spi_nor_otp_organization){	\
--			.len = (_len),					\
--			.base = (_base),				\
--			.offset = (_offset),				\
--			.n_regions = (_n_regions),			\
--		},
--
--#define FLAGS(_flags)							\
--		.flags = (_flags),					\
--
--#define NO_SFDP_FLAGS(_no_sfdp_flags)					\
--		.no_sfdp_flags = (_no_sfdp_flags),			\
--
--#define FIXUP_FLAGS(_fixup_flags)					\
--		.fixup_flags = (_fixup_flags),				\
--
--#define MFR_FLAGS(_mfr_flags)						\
--		.mfr_flags = (_mfr_flags),				\
--
- /**
-  * struct spi_nor_manufacturer - SPI NOR manufacturer object
-  * @name: manufacturer name
+I'm working to convert these areas to normal "simple-bus" nodes, when that is
+complete then the name "clock" will be fine again here.
 
--- 
-2.39.2
+Andrew
 
+[0] https://www.kernel.org/doc/Documentation/devicetree/bindings/mfd/ti%2Cj721e-system-controller.yaml
+
+> In addition to that I guess we should also update the example in the dt
+> bindings yaml file.
+> 
+> Francesco
+> 
+> 
+> [1] https://lore.kernel.org/all/20230731142135.108477-2-francesco@dolcini.it/
+> [2] https://github.com/devicetree-org/devicetree-specification/releases/download/v0.4/devicetree-specification-v0.4.pdf
