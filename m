@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD86772B3A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4A4772B41
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231375AbjHGQkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
+        id S231659AbjHGQlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjHGQkn (ORCPT
+        with ESMTP id S229804AbjHGQlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:40:43 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915C61BDC
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:40:37 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6bc93523162so4050827a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:40:37 -0700 (PDT)
+        Mon, 7 Aug 2023 12:41:14 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCAD1100
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:41:12 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6bca66e6c44so4062436a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:41:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691426437; x=1692031237;
+        d=gmail.com; s=20221208; t=1691426472; x=1692031272;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yaPYaqaFDCU5jC3MKKmSmMMn4YAXxnsQcK9wgpCcRQ4=;
-        b=gBxDE02r5V+myaSbv5/I3zVBzUL6Y08FjzDWLGY9Mn1YOGOSKFx8fQc7Q/GLfqsByL
-         v6l002Y37dfvGCR2gZPbCX+vEfczWF2x04zGPK0ZcEI0tz94dVQOvoDRXQaLGL1uSZLn
-         JT9lPQ1FeDUMW1cS+wMR3rL6KcPf0lyoIrUU+tL+JoClm9BbxUgOzuuAoCxd9dGCqBlI
-         QhD73bDMegwqAgjPMxPrf9/+GWBZrKU15hLCJN0k6XAVRawYtdCZ/nYL4fsJFxyMIqc1
-         nWghePP92IQP0v3yXuVaUsGwxiptE83Xk/RwWv+2mv0AIb92L3RjmP0bweW2mfaSKQNV
-         4wWg==
+        bh=TX744ksRAmEB2v2LFFyLe06U3uCgrdtHOoMM/78k+Wc=;
+        b=cZnexmh9fQVWZ9khuz+PAU8TeTeq25QZFx4DiE/RKo0hYnUD5kIjMl9MjMu9V33l4k
+         36xQj3yvh9m6Y0AkYS+yM3wdNhL+cQ03mzP3bBj1GcnG0cZA36gRimxwQqQcaPdzA7jE
+         cYRL0/DnTsST7u42ktbmYpyI1ik9k2rgEK9IqaFshKFBqcYD53jTqYKoB4/n+V+zKPue
+         eO03F0Saw862kGqJMfxX1Uer9RO9CNaxh9un+/DurDLR1Khr8l/WRSTJbSZIgBkouvyC
+         8zXkHV+tEaeVeWOLkmfbHgxHOoehcRXEjylnRI+pEamVEpr+UA61GkSQt0e8spBeu6WF
+         jQuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691426437; x=1692031237;
+        d=1e100.net; s=20221208; t=1691426472; x=1692031272;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yaPYaqaFDCU5jC3MKKmSmMMn4YAXxnsQcK9wgpCcRQ4=;
-        b=AWobcsUfGqvdwNZXBjBw/NpKe7kdbbfMsmirFAPbcfUAH08zPU2W3xHyfv2yxqAAGc
-         pNHChRN3bml9ordaFr5iaaT7/Pf4LI1xG32mUGAPLJxEzh68F7S/2DUwIRky+61SLjtK
-         7G5km8C5k8SMS2cGtIly08oBkO+5zMKm5nnjqxqA8yOmRdw9+smfsN1XN6XC0DHWOtTg
-         nw8vFociO/nVvTPgmvPBuLWfQsZynkwDRcbzfyjlVXjswMpOgGLjnkOrz2Ql1ztAZjVM
-         NZ6/mkQ7WP15b/DcuMLNcpDX0bqvTxNQ/Hs8pFI05g59HnthbuHvYYUeyIUgZ5kyyjVs
-         q8xw==
-X-Gm-Message-State: AOJu0YzB1uWeD7tT6noa6Hpih4ZRUjGWik6ndJNDmMwKnSW7aeT9+NCW
-        VWkYg2JgUhOB3W83/2MtVFeSsna78v2xTTYVqVg=
-X-Google-Smtp-Source: AGHT+IGFmb5vESGA6g+6euItG2gjeRnrfhDdtSVwLuyAV78N6vIgNdo1FsMx/lyO+M6eZf5E6F3z6P9PQhaHQDGOJ60=
-X-Received: by 2002:a05:6870:8a14:b0:1be:c87d:c670 with SMTP id
- p20-20020a0568708a1400b001bec87dc670mr11199409oaq.47.1691426436882; Mon, 07
- Aug 2023 09:40:36 -0700 (PDT)
+        bh=TX744ksRAmEB2v2LFFyLe06U3uCgrdtHOoMM/78k+Wc=;
+        b=S+VVIjk2pgF8O0X0Qqs7EJadcdd5gzS2EdcbhKBicnj0S/QI+yAseNhTIH9VX8JWC3
+         EicLEyhhnRf4EpfSGVCw9bZQ468jLd2qG9xgbFVnaEJ3QsvZDbA0gKrdVYWF5tvVTeem
+         4n30a0T2DeictVtFL1jEAC07I2q8UeA2bRF8AXiGMShMPlc2d5kD5qchobm0Q3gfZaaX
+         g9CQxu+y3IFas8ZwEKPVq1zQBpPRpYLnwmbTSQBEMbLkfr3yBtwDVvRlWZL1Au8RlxZj
+         cgqlmcWZD8+mgsiD9fV32cEV9yYcKdNxPW97OBmOf9/44itnlNrA/3JKkCcl+Rb5nHej
+         lAeA==
+X-Gm-Message-State: AOJu0YzUl16oOVWUnqewRuR1UXljH1J3g9HjgJCpGXHmecsoMWKqqFxx
+        4PRJWBQldTF61GHze8xsW0LEVYBWp2sdiC0BQwI=
+X-Google-Smtp-Source: AGHT+IF++/sSKVlLioAJq19YbZy4gat4ybxvqCv9EBBFQSz7GX0zsq7s8IFYUU5nuP/v/12NG7/4k2tOv5FGeAPGbeE=
+X-Received: by 2002:a05:6870:8a28:b0:1bb:4ec1:50af with SMTP id
+ p40-20020a0568708a2800b001bb4ec150afmr11767708oaq.4.1691426471339; Mon, 07
+ Aug 2023 09:41:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230801091906.7270-1-sunran001@208suo.com>
-In-Reply-To: <20230801091906.7270-1-sunran001@208suo.com>
+References: <20230801092213.7360-1-sunran001@208suo.com>
+In-Reply-To: <20230801092213.7360-1-sunran001@208suo.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 12:40:25 -0400
-Message-ID: <CADnq5_Mb3c1Mks+O-9jP15gH-Be+oL8CX9WJ2zdF3hxvmNT72w@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd: Clean up errors in vega10_processpptables.c
+Date:   Mon, 7 Aug 2023 12:41:00 -0400
+Message-ID: <CADnq5_MOWKO0q=7+oVtqGbqreH-cpTMyK_PCY-4Dp4Z-wTi2cw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu/powerplay: Clean up errors in smu_helper.h
 To:     Ran Sun <sunran001@208suo.com>
 Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
         dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
@@ -62,7 +62,7 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,48 +72,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Applied.  Thanks!
 
-On Tue, Aug 1, 2023 at 5:19=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
+On Tue, Aug 1, 2023 at 5:22=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
 :
 >
 > Fix the following errors reported by checkpatch:
 >
-> ERROR: "foo* bar" should be "foo *bar"
-> ERROR: space required before the open brace '{'
-> ERROR: space required before the open parenthesis '('
+> ERROR: space prohibited before that close parenthesis ')'
 >
 > Signed-off-by: Ran Sun <sunran001@208suo.com>
 > ---
->  .../gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptable=
-s.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
-> index bb90d8abf79b..3be616af327e 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
-> @@ -372,9 +372,9 @@ static int get_mm_clock_voltage_table(
->         return 0;
->  }
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.h b/driver=
+s/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.h
+> index 2a75da1e9f03..83b3c9315143 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.h
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.h
+> @@ -194,7 +194,7 @@ int smu_set_watermarks_for_clocks_ranges(void *wt_tab=
+le,
+>  #define PHM_WAIT_INDIRECT_FIELD_UNEQUAL(hwmgr, port, reg, field, fieldva=
+l)                          \
+>                 PHM_WAIT_INDIRECT_REGISTER_UNEQUAL(hwmgr, port, reg, \
+>                                 (fieldval) << PHM_FIELD_SHIFT(reg, field)=
+, \
+> -                                       PHM_FIELD_MASK(reg, field) )
+> +                                       PHM_FIELD_MASK(reg, field))
 >
-> -static void get_scl_sda_value(uint8_t line, uint8_t *scl, uint8_t* sda)
-> +static void get_scl_sda_value(uint8_t line, uint8_t *scl, uint8_t *sda)
->  {
-> -       switch(line){
-> +       switch (line) {
->         case Vega10_I2CLineID_DDC1:
->                 *scl =3D Vega10_I2C_DDC1CLK;
->                 *sda =3D Vega10_I2C_DDC1DATA;
-> @@ -954,7 +954,7 @@ static int init_powerplay_extended_tables(
->         if (!result && powerplay_table->usPixclkDependencyTableOffset)
->                 result =3D get_pix_clk_voltage_dependency_table(hwmgr,
->                                 &pp_table_info->vdd_dep_on_pixclk,
-> -                               (const ATOM_Vega10_PIXCLK_Dependency_Tabl=
-e*)
-> +                               (const ATOM_Vega10_PIXCLK_Dependency_Tabl=
-e *)
->                                 pixclk_dep_table);
 >
->         if (!result && powerplay_table->usPhyClkDependencyTableOffset)
+>  #define PHM_WAIT_VFPF_INDIRECT_REGISTER_UNEQUAL_GIVEN_INDEX(hwmgr,     \
 > --
 > 2.17.1
 >
