@@ -2,284 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B2C771E1B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53968771E2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 12:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbjHGKap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 06:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
+        id S231325AbjHGKfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 06:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231479AbjHGKal (ORCPT
+        with ESMTP id S231195AbjHGKe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 06:30:41 -0400
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2081.outbound.protection.outlook.com [40.107.104.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F971735;
-        Mon,  7 Aug 2023 03:30:37 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NeF3mI0fePX7UOAaXV/Fay3NDXPtkW0F99Czye44LfkYBZ0bS/Sz6GN2Nb5Ys419RFvW3IiAib2mfNOym3YWAhI7I0jJ50EQYSQdpm9nckZYbzaOuPfJHbfZ476qBy0QFu6NeZdWXyxuGnUe23q9CoGY7w9EUTrwyfTJcEW3ikJpwiB0cdQE12rngJGB4XxtoVw1OJNCoXhavUOx0MRg7488GOz39DJ49MKgMosrnMocDLdE37pWLz+qi7+48bTfFdRpz6sWScBNthh5sLpE2JYrB6+71IzZBqY8YXkTjxJuEiWJECAsbKbjj9pPWXQfQ1pzJfQK/ljeGu+o8zaEsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=o/+BG7+++o2UEu5w5g8hegUepK4SeGQVtzs5DJVK9lA=;
- b=DZGP5dpK67N/wGFn+HeID06iJ6dzNaHi1/mdTuCaH56KrsPu53oauRz5LkWbkR894cN54ISzh0jXCK6xqKfl59P9PpyCeK5/sPHcr+IhriMRdWLTcNM3ABYDXvg9BcrIBh6DNLeYFJs95fQp4U+1zPt+6E+y6iQTCJA7WoVRYV237vQ8rk4/QsbvKff3YfFbELX4wFWMTdvpVQ2CEzVqGF4YlkJVGv3EjplUoTJjwN4RWKcghcbfzzbiE91GxbxrHCr4L2lpPRfuNpHsNffOy2IytiBIXrOy/Sp+XZSX5ncejmDIDLYuagUP3/rMuc9UPyVLVhqipYNN1yPIREGsgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o/+BG7+++o2UEu5w5g8hegUepK4SeGQVtzs5DJVK9lA=;
- b=HH/gJWRwQDl0Nqp14dvvAqxI7/A2jI5cBauH+Q7VHWlcj+rcm9hG0zgBeUAs84x2iE6Be3wXx2hq3Zf+Fa14rULApEZz8VTz7tOfN0VIadPIUG9rfa2xng0VTJ8pwzdoHtcc6J/Wo+/6UQZf5a7jVithedD6YvJcpHkdZnWEcJ0=
-Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
- by DBBPR04MB8009.eurprd04.prod.outlook.com (2603:10a6:10:1ef::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26; Mon, 7 Aug
- 2023 10:30:35 +0000
-Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
- ([fe80::2468:a15e:aa9b:7f8e]) by AM5PR04MB3139.eurprd04.prod.outlook.com
- ([fe80::2468:a15e:aa9b:7f8e%4]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
- 10:30:34 +0000
-From:   Wei Fang <wei.fang@nxp.com>
-To:     Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     "brouer@redhat.com" <brouer@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-Subject: RE: [PATCH V3 net-next] net: fec: add XDP_TX feature support
-Thread-Topic: [PATCH V3 net-next] net: fec: add XDP_TX feature support
-Thread-Index: AQHZw3VFF5NSBizeREOxLxVc18wksa/XS8kAgACl6SCAAEHAAIAAOPLAgAAgSoCAAOhtQIAApJaAgAR1gPA=
-Date:   Mon, 7 Aug 2023 10:30:34 +0000
-Message-ID: <AM5PR04MB313903036E0DF277FEC45722880CA@AM5PR04MB3139.eurprd04.prod.outlook.com>
-References: <20230731060025.3117343-1-wei.fang@nxp.com>
- <20230802104706.5ce541e9@kernel.org>
- <AM5PR04MB313985C61D92E183238809138808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
- <1bf41ea8-5131-7d54-c373-00c1fbcac095@redhat.com>
- <AM5PR04MB31398ABF941EBDD0907E845B8808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
- <cc24e860-7d6f-7ec8-49cb-a49cb066f618@kernel.org>
- <AM5PR04MB3139D8AAAB6B96B58425BBA08809A@AM5PR04MB3139.eurprd04.prod.outlook.com>
- <ba96db35-2273-9cc5-9a32-e924e8eff37c@kernel.org>
-In-Reply-To: <ba96db35-2273-9cc5-9a32-e924e8eff37c@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM5PR04MB3139:EE_|DBBPR04MB8009:EE_
-x-ms-office365-filtering-correlation-id: e5b7b5c7-030b-4035-8a6d-08db973155a5
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Lc4hQ1zLvweXrBvDGFcSNiqIzcIaJw1yqQMYYFO0zMMD6IRgyMmEQMlxzQsYbxrTZ51Y24LBBNX3JEB52wRrUBZ2chBODpBJeChNSGeJgPM/js1YdcDfy9wo/iJlHvzG73vc7hXH55dNhlYgmV05QKApxtsE7PNMXeEaCSQrRpCYZEe0S92tBFNp4jPjBri5mnIK22ZqyQSNzv5CCkmoc6+REy4JrcMrw+f0S4rPE8jdC7mZr5gCbHv4Karl/8z4bQAfBsa/kggDomQvcMb5KU6ZZrlNaBbsiYNArBtQaZdnT1FmnvileEsB9xC5MWH+ldoCIC+CYGlj2Vc7mdwKZ39xsPywz32fk9ybbWQSQfPeXWkGKZpVO7mFYbtd2AweFU0eDpHm4NeNBv+5Iiz+vGgSXe+aiyztDj7Hl5JKu4rPjUGiGIVjLOJA2xXM1gD4/llh0GLu95IiT+8sqQo1OOteK+akoD/FN/dNTjk2YTXvrl/82x4gnzamKb066IesWvkxI5fRw2n2tGceL9ay6xZr8FFZ8sfuP1cuoEY8yxqEZvLaN89tnNOSH/oFChPSa4D/h/ygJTjSVEZl0H3q7+3Kcf1dDiG44wEMwGmfoYtlGqWMD6ueNSptQYhGePlm
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(136003)(346002)(376002)(366004)(451199021)(186006)(1800799003)(55016003)(9686003)(4326008)(316002)(86362001)(478600001)(122000001)(54906003)(110136005)(38100700002)(76116006)(71200400001)(66946007)(66446008)(64756008)(66556008)(66476007)(33656002)(7696005)(6506007)(41300700001)(26005)(52536014)(38070700005)(8676002)(8936002)(2906002)(83380400001)(7416002)(5660300002)(44832011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cDZ4dzMrM2MrUmEzeUZKVVVRVzd0WjlxOFhwcDJpL0ZmQUtkMEE3dFpQS0RG?=
- =?utf-8?B?QmUwdGhzN2RiVzJubTJlVGV5ZmZjTVpPMkFvc1RaUVJTbUZsNnZEeTZrdFRI?=
- =?utf-8?B?RVRaS0d2SjVEcmpxMldoVXpHV0VYa3JMakpGYjJBTjAwZDFDUks2YTRQbHNF?=
- =?utf-8?B?SXRMV3Vmd1AxdWw3YzBrcElJZmlHSG5wOFJZYVpFQmErM1NpZFhYU1lkWld1?=
- =?utf-8?B?c2pWeU5VVEh3L3BzV1dXdmMvUmZER1dXZENsVzJ2YWdsRGNuM2NKaklHRDdx?=
- =?utf-8?B?cnNJSWNrVlJBaHRPay9NNUhQUXZaVXZBSmQ2d2VUK3d6cmVab01oeW4xSHB5?=
- =?utf-8?B?NzNqbVdNR2tWSzRMREtaZDhxMUcvRXRwM3lHanROSHczeGhQdnVONm15L2lV?=
- =?utf-8?B?Vkd6eUZPWVJSemtQeFNQM2dranprSEpTU2lFSkE3TVg0OFNLS24yS3g2N2dz?=
- =?utf-8?B?OFEvZW5zOFoyL1VRR1RScDQ1NlZqQ1FTdkJRUnBxemVIU20vMFRCdGpsbWY2?=
- =?utf-8?B?dmI2ZGFXTWswTE1NOFJPYnBhd1JJSWFJTENpamhRMGhySktGa0xLa1BpYXY0?=
- =?utf-8?B?M0NJZUZ1RmFEbWg4cnVoUFNQVWhneWVPSVFsVHBFOXM0SS80ZmpuWElDYnUx?=
- =?utf-8?B?M3JyRDFVdy9YeE9ndGRHREdUT0FBTWFPc2FPMW1yeEkweWsxbGdMVm5sVXk5?=
- =?utf-8?B?VzZSRmJTeWpxNmxyMWpoOVg5Y1llcUQ2bG5BaTdPbG5sWnZ5S3dBSk9LeVNF?=
- =?utf-8?B?aFdvM3RWUmlXcHB3bVVoWG9ZZE5ZdFZ0UTBWMm9pbTVKS1FVVUJyN0VsVUZC?=
- =?utf-8?B?SHAxZktJc3lDQXN5NTNqaDRkdTRSMnFtOWRoUkxJRzh2WkVxVTlMb2haUlZo?=
- =?utf-8?B?T2RKUi9ocHRUOWlqWWZKTkJFc2l1MkRiZ3lqUE1aREFOcWpYSGU2ZVlKZkdo?=
- =?utf-8?B?VDN0L2tqcWpVZVh2MXFMZldVZHU0QlhLSEdiQnVVNHNVZDMyQ1BCTFYwam83?=
- =?utf-8?B?L2swTW1vWmtNa0dPSmxocVY0SjhNV1pmdXIwOFFVTWxKSk9kUzhVRFFqRlph?=
- =?utf-8?B?UG1mV2M4ZlV1ZXBCUGxoU3MxLzk3R1BZbTRMNTJ6bjJIRS94eFh3YWNGd0x5?=
- =?utf-8?B?ZVlBbzFpM2tQWXc3d1NJcXYrc0FlLzhPS2x0WjZsMThmUS8vcExTSFc3OEZ2?=
- =?utf-8?B?cnVrc0I3aFhGcVNka3kxQTZpRGhtTittdWs4OEk3L3hFYVNCbzQyMFlQdElE?=
- =?utf-8?B?Yi83VjMrL0dpaUl2YStNdUtsV2JuYkp2QVNIT205aVYralI5ak1wR1kxREhO?=
- =?utf-8?B?aDY0bjFFaFhMakU5T05vRExMaHpRNFlyeU5PYnhnYjhZM1BMSmczQ21GenVB?=
- =?utf-8?B?b3kyTUR2OWV1L1BlTDVnQUQrVEdkVUhIOGYzRWE0blpzcGRleWdFWWF5S3dB?=
- =?utf-8?B?aWV0VVVXUnVETFBUK1pWUUpocjRLRG54V0s3TmJpS05TR1k1SFBEaGpXUEtR?=
- =?utf-8?B?d3VhazVzaUxiZU5RVXJzbGtYMmRERWVxUTIwSXFhcCtvTmdoQzhqWW5ISUdv?=
- =?utf-8?B?V3lsN0tFRDNKUnZ2OHJhWGhsV3YxazdialluaElqK3YyMU5jam5sQlR1bXN2?=
- =?utf-8?B?UEdZd2kzaXpvSitmTlV6ZWVqdytwM1ZwalVwWFBqZytTT1NBWFA3ZldSVTdB?=
- =?utf-8?B?MjBXWFg5QnBKN3ZCUjVDZFVWdWhNcXhWWjRRY1hwN0FKSW40RWl4OTI3aGZL?=
- =?utf-8?B?b3NRZm1GOEhxckhxdWduTHJDL3lpM0V3VUlzeTA2TEw5M0g2NWk5eVo3RXFh?=
- =?utf-8?B?b1FaQnZUWEFqbkNzZ3lyQ2o0MFpYWjBUVXBadExtTS9EbHVlKzFCNjRITGZh?=
- =?utf-8?B?WTc2U0VKTmdILzRQU2hSbmpDdnd6Q2srdnlMemtTSW1XZHI5ZmVFcjBYdSto?=
- =?utf-8?B?a3c2WmhUYVZyaUowY3paaWo2WVJvbDZHVjluOHJvRW03T0IwanFySkhOcVhj?=
- =?utf-8?B?ZzlrUTdYRGZpQWRKUXdxcWtvTmNMeGo5MWR3QzJ1aHF0ZlR1Smt3ZnUvT3dL?=
- =?utf-8?B?UmdXeTJUR256L291MTRzdDl1ekhkU1NaVnZjRHI3L2RHR0ErUGZWS0VteW1k?=
- =?utf-8?Q?Ugfo=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 7 Aug 2023 06:34:56 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A5610F8
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 03:34:54 -0700 (PDT)
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com [209.85.219.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A4E404422B
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:34:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1691404491;
+        bh=jxCnlIcS4KeOxtxhqOQiG9Twpa6ijTqYfKwpK/hGiyw=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=ayx9kL5gIfI2MWU/AmJOJCitCRD2w11VcgbbtgBpWIdv5tivQsgsH7P+z5Mnda5uY
+         71KffVXcyq4akkGcHaBpIQa26jLd6Q8Z0SrfqpnwsUL8YIWadRl9EzXrWDlyoJI3U+
+         Yvs66CYstLyaoYo4ZIp4yj7rYeTJBKkcjQmqhgpHd4RrUHNpUoKAWtl2zggLB7FHWA
+         bOXb+6jlImH3aB8JpTePz9lZdUqwrdPVwOWjWkbgXhOpZzpqMBE7AFdC5E/1HqVDvr
+         UQIp6bSN1ur5pJn6CZjyZ2tlAscZMJV9jVHumYOqzk1rhMyj4fU1kwoI0cgIuBjhzf
+         X3ql5ksV4f4tA==
+Received: by mail-yb1-f200.google.com with SMTP id 3f1490d57ef6-d437624b9c1so3403840276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 03:34:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691404490; x=1692009290;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jxCnlIcS4KeOxtxhqOQiG9Twpa6ijTqYfKwpK/hGiyw=;
+        b=inxCFGgeP+tI8y/gEOCy4TtbRI32iACfA1rMU9yXnlWA7kq+gZkGJVPK5LEFBmyR+E
+         vh3cYGWzj/aoq0KSl32GYvi0MtFBMoCijyBuyf1yoaq+1t5OEH5b2bKQp4tsonfoDHyc
+         JdLDkI59+9IJcyRxsV4etBUcQyapv3JrKVY9b1LWdHQnpt/7wrBlCmI8C+I1Iw+T5ACf
+         rgtGCEyqNj73Q6yw4kJ7YkxFkg7wOBGc8pvzsbrex+m6f93PFGoh7KANo2KBN6qUv/LV
+         6M+iWwMSTb6R+ueFR0/o1m5Ivx1keCdCBqtOf4nQmtyS9FyCi+5wCmxoiutuAfFLVVlh
+         SxUw==
+X-Gm-Message-State: AOJu0Yw1g3VKbPMPD+gPTeN4fNMxuM3i4nSt4o2Iucg4N9IY2OhIGQwM
+        cTSwC2wMGwY1g07aWZ4aWS4NA/A8dH2ZwFfUm+ee2UvLfR3xZU8IwGc9gZfHeCg0kWfg4DvWXed
+        O/Rq47RCsVZ0XnlToyYpWBI+sgMXx6JhSIJ7RKtoC6mV0wSJOnq22k0vp4w==
+X-Received: by 2002:a05:6902:70a:b0:d4e:f64d:97bd with SMTP id k10-20020a056902070a00b00d4ef64d97bdmr5237861ybt.63.1691404490633;
+        Mon, 07 Aug 2023 03:34:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEs1kCklRUH8/ebmlXd8KPIlNFDnlF4oDl61QCUrYMMpAiodJceb2rEaV50BY/+0iZ9xgZofIRyp/J1kV/At38=
+X-Received: by 2002:a05:6902:70a:b0:d4e:f64d:97bd with SMTP id
+ k10-20020a056902070a00b00d4ef64d97bdmr5237846ybt.63.1691404490370; Mon, 07
+ Aug 2023 03:34:50 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5b7b5c7-030b-4035-8a6d-08db973155a5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Aug 2023 10:30:34.9038
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /RFFpLmInaqtU8dccCJ0hF6ud5i2lCwtO+KAeABPMfO+N4230rdnmaryUAraIEhc7zOFKmtKDvnnawKanjHTTw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB8009
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com>
+ <20230804084858.126104-4-aleksandr.mikhalitsyn@canonical.com>
+ <8446e5c9-7dd7-a1e9-e262-13811ee9e640@redhat.com> <CAEivzxedfaD7cPfQ-sspJabw_P6zSJtOrbiAGYN35LGXPoSwcg@mail.gmail.com>
+ <d119ef88-d827-5e8d-13e3-74ddfea61d7f@redhat.com>
+In-Reply-To: <d119ef88-d827-5e8d-13e3-74ddfea61d7f@redhat.com>
+From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Date:   Mon, 7 Aug 2023 12:34:39 +0200
+Message-ID: <CAEivzxeu9c-ZLRmz6kmvwUpofPK23cGn27XtOBRP3xSgb_JyWA@mail.gmail.com>
+Subject: Re: [PATCH v9 03/12] ceph: handle idmapped mounts in create_request_message()
+To:     Xiubo Li <xiubli@redhat.com>
+Cc:     brauner@kernel.org, stgraber@ubuntu.com,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+IFRoZSBmbG93LWNvbnRyb2wgd2FzIG5vdCBkaXNhYmxlZCBiZWZvcmUsIHNvIGFjY29yZGlu
-ZyB0byB5b3VyDQo+ID4gc3VnZ2VzdGlvbiwgSSBkaXNhYmxlIHRoZSBmbG93LWNvbnRyb2wgb24g
-dGhlIGJvdGggYm9hcmRzIGFuZCBydW4gdGhlDQo+ID4gdGVzdCBhZ2FpbiwgdGhlIHBlcmZvcm1h
-bmNlIGlzIHNsaWdodGx5IGltcHJvdmVkLCBidXQgc3RpbGwgY2FuIG5vdA0KPiA+IHNlZSBhIGNs
-ZWFyIGRpZmZlcmVuY2UgYmV0d2VlbiB0aGUgdHdvIG1ldGhvZHMuIEJlbG93IGFyZSB0aGUgcmVz
-dWx0cy4NCj4gDQo+IFNvbWV0aGluZyBlbHNlIG11c3QgYmUgc3RhbGxpbmcgdGhlIENQVS4NCj4g
-V2hlbiBsb29raW5nIGF0IGZlY19tYWluLmMgY29kZSwgSSBub3RpY2VkIHRoYXQNCj4gZmVjX2Vu
-ZXRfdHhxX3htaXRfZnJhbWUoKSB3aWxsIGRvIGEgTU1JTyB3cml0ZSBmb3IgZXZlcnkgeGRwX2Zy
-YW1lICh0bw0KPiB0cmlnZ2VyIHRyYW5zbWl0IHN0YXJ0KSwgd2hpY2ggSSBiZWxpZXZlIHdpbGwg
-c3RhbGwgdGhlIENQVS4NCj4gVGhlIG5kb194ZHBfeG1pdC9mZWNfZW5ldF94ZHBfeG1pdCBkb2Vz
-IGJ1bGtpbmcsIGFuZCBzaG91bGQgYmUgdGhlDQo+IGZ1bmN0aW9uIHRoYXQgZG9lcyB0aGUgTU1J
-TyB3cml0ZSB0byB0cmlnZ2VyIHRyYW5zbWl0IHN0YXJ0Lg0KPiANCldlJ2QgYmV0dGVyIGtlZXAg
-YSBNTUlPIHdyaXRlIGZvciBldmVyeSB4ZHBfZnJhbWUgb24gdHhxLCBhcyB5b3Uga25vdywNCnRo
-ZSB0eHEgd2lsbCBiZSBpbmFjdGl2ZSB3aGVuIG5vIGFkZGl0aW9uYWwgcmVhZHkgZGVzY3JpcHRv
-cnMgcmVtYWluIGluIHRoZQ0KdHgtQkRSLiBTbyBpdCBtYXkgaW5jcmVhc2UgdGhlIGRlbGF5IG9m
-IHRoZSBwYWNrZXRzIGlmIHdlIGRvIGEgTU1JTyB3cml0ZQ0KZm9yIG11bHRpcGxlIHBhY2tldHMu
-DQoNCj4gJCBnaXQgZGlmZg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvZnJl
-ZXNjYWxlL2ZlY19tYWluLmMNCj4gYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9mcmVlc2NhbGUvZmVj
-X21haW4uYw0KPiBpbmRleCAwM2FjNzY5MGI1YzQuLjU3YTZhMzg5OWI4MCAxMDA2NDQNCj4gLS0t
-IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvZnJlZXNjYWxlL2ZlY19tYWluLmMNCj4gKysrIGIvZHJp
-dmVycy9uZXQvZXRoZXJuZXQvZnJlZXNjYWxlL2ZlY19tYWluLmMNCj4gQEAgLTM4NDksOSArMzg0
-OSw2IEBAIHN0YXRpYyBpbnQgZmVjX2VuZXRfdHhxX3htaXRfZnJhbWUoc3RydWN0DQo+IGZlY19l
-bmV0X3ByaXZhdGUgKmZlcCwNCj4gDQo+ICAgICAgICAgIHR4cS0+YmQuY3VyID0gYmRwOw0KPiAN
-Cj4gLSAgICAgICAvKiBUcmlnZ2VyIHRyYW5zbWlzc2lvbiBzdGFydCAqLw0KPiAtICAgICAgIHdy
-aXRlbCgwLCB0eHEtPmJkLnJlZ19kZXNjX2FjdGl2ZSk7DQo+IC0NCj4gICAgICAgICAgcmV0dXJu
-IDA7DQo+ICAgfQ0KPiANCj4gQEAgLTM4ODAsNiArMzg3Nyw5IEBAIHN0YXRpYyBpbnQgZmVjX2Vu
-ZXRfeGRwX3htaXQoc3RydWN0IG5ldF9kZXZpY2UNCj4gKmRldiwNCj4gICAgICAgICAgICAgICAg
-ICBzZW50X2ZyYW1lcysrOw0KPiAgICAgICAgICB9DQo+IA0KPiArICAgICAgIC8qIFRyaWdnZXIg
-dHJhbnNtaXNzaW9uIHN0YXJ0ICovDQo+ICsgICAgICAgd3JpdGVsKDAsIHR4cS0+YmQucmVnX2Rl
-c2NfYWN0aXZlKTsNCj4gKw0KPiAgICAgICAgICBfX25ldGlmX3R4X3VubG9jayhucSk7DQo+IA0K
-PiAgICAgICAgICByZXR1cm4gc2VudF9mcmFtZXM7DQo+IA0KPiANCj4gPiBSZXN1bHQ6IHVzZSAi
-c3luY19kbWFfbGVuIiBtZXRob2QNCj4gPiByb290QGlteDhtcGV2azp+IyAuL3hkcDIgZXRoMA0K
-PiANCj4gVGhlIHhkcDIgKGFuZCB4ZHAxKSBwcm9ncmFtKHMpIGhhdmUgYSBwZXJmb3JtYW5jZSBp
-c3N1ZSAoZHVlIHRvIHVzaW5nDQo+IA0KPiBDYW4gSSBhc2sgeW91IHRvIHRlc3QgdXNpbmcgeGRw
-X3J4cV9pbmZvLCBsaWtlOg0KPiANCj4gICBzdWRvIC4veGRwX3J4cV9pbmZvIC0tZGV2IG1seDVw
-MSAtLWFjdGlvbiBYRFBfVFgNCj4gDQpZZXMsIGJlbG93IGFyZSB0aGUgcmVzdWx0cywgdGhlIHJl
-c3VsdHMgYXJlIGFsc28gYmFzaWNhbGx5IHRoZSBzYW1lLg0KUmVzdWx0IDE6IGN1cnJlbnQgbWV0
-aG9kDQouL3hkcF9yeHFfaW5mbyAtLWRldiBldGgwIC0tYWN0aW9uIFhEUF9UWA0KUnVubmluZyBY
-RFAgb24gZGV2OmV0aDAgKGlmaW5kZXg6MikgYWN0aW9uOlhEUF9UWCBvcHRpb25zOnN3YXBtYWMN
-ClhEUCBzdGF0cyAgICAgICBDUFUgICAgIHBwcyAgICAgICAgIGlzc3VlLXBwcw0KWERQLVJYIENQ
-VSAgICAgIDAgICAgICAgMjU5LDEwMiAgICAgMA0KWERQLVJYIENQVSAgICAgIHRvdGFsICAgMjU5
-LDEwMg0KUlhRIHN0YXRzICAgICAgIFJYUTpDUFUgcHBzICAgICAgICAgaXNzdWUtcHBzDQpyeF9x
-dWV1ZV9pbmRleCAgICAwOjAgICAyNTksMTAyICAgICAwDQpyeF9xdWV1ZV9pbmRleCAgICAwOnN1
-bSAyNTksMTAyDQpSdW5uaW5nIFhEUCBvbiBkZXY6ZXRoMCAoaWZpbmRleDoyKSBhY3Rpb246WERQ
-X1RYIG9wdGlvbnM6c3dhcG1hYw0KWERQIHN0YXRzICAgICAgIENQVSAgICAgcHBzICAgICAgICAg
-aXNzdWUtcHBzDQpYRFAtUlggQ1BVICAgICAgMCAgICAgICAyNTksNDk4ICAgICAwDQpYRFAtUlgg
-Q1BVICAgICAgdG90YWwgICAyNTksNDk4DQpSWFEgc3RhdHMgICAgICAgUlhROkNQVSBwcHMgICAg
-ICAgICBpc3N1ZS1wcHMNCnJ4X3F1ZXVlX2luZGV4ICAgIDA6MCAgIDI1OSw0OTYgICAgIDANCnJ4
-X3F1ZXVlX2luZGV4ICAgIDA6c3VtIDI1OSw0OTYNClJ1bm5pbmcgWERQIG9uIGRldjpldGgwIChp
-ZmluZGV4OjIpIGFjdGlvbjpYRFBfVFggb3B0aW9uczpzd2FwbWFjDQpYRFAgc3RhdHMgICAgICAg
-Q1BVICAgICBwcHMgICAgICAgICBpc3N1ZS1wcHMNClhEUC1SWCBDUFUgICAgICAwICAgICAgIDI1
-OSw0MDggICAgIDANClhEUC1SWCBDUFUgICAgICB0b3RhbCAgIDI1OSw0MDgNCg0KUmVzdWx0IDI6
-IGRtYV9zeW5jX2xlbiBtZXRob2QNClJ1bm5pbmcgWERQIG9uIGRldjpldGgwIChpZmluZGV4OjIp
-IGFjdGlvbjpYRFBfVFggb3B0aW9uczpzd2FwbWFjDQpYRFAgc3RhdHMgICAgICAgQ1BVICAgICBw
-cHMgICAgICAgICBpc3N1ZS1wcHMNClhEUC1SWCBDUFUgICAgICAwICAgICAgIDI1OCwyNTQgICAg
-IDANClhEUC1SWCBDUFUgICAgICB0b3RhbCAgIDI1OCwyNTQNClJYUSBzdGF0cyAgICAgICBSWFE6
-Q1BVIHBwcyAgICAgICAgIGlzc3VlLXBwcw0KcnhfcXVldWVfaW5kZXggICAgMDowICAgMjU4LDI1
-NCAgICAgMA0KcnhfcXVldWVfaW5kZXggICAgMDpzdW0gMjU4LDI1NA0KUnVubmluZyBYRFAgb24g
-ZGV2OmV0aDAgKGlmaW5kZXg6MikgYWN0aW9uOlhEUF9UWCBvcHRpb25zOnN3YXBtYWMNClhEUCBz
-dGF0cyAgICAgICBDUFUgICAgIHBwcyAgICAgICAgIGlzc3VlLXBwcw0KWERQLVJYIENQVSAgICAg
-IDAgICAgICAgMjU5LDMxNiAgICAgMA0KWERQLVJYIENQVSAgICAgIHRvdGFsICAgMjU5LDMxNg0K
-UlhRIHN0YXRzICAgICAgIFJYUTpDUFUgcHBzICAgICAgICAgaXNzdWUtcHBzDQpyeF9xdWV1ZV9p
-bmRleCAgICAwOjAgICAyNTksMzE4ICAgICAwDQpyeF9xdWV1ZV9pbmRleCAgICAwOnN1bSAyNTks
-MzE4DQpSdW5uaW5nIFhEUCBvbiBkZXY6ZXRoMCAoaWZpbmRleDoyKSBhY3Rpb246WERQX1RYIG9w
-dGlvbnM6c3dhcG1hYw0KWERQIHN0YXRzICAgICAgIENQVSAgICAgcHBzICAgICAgICAgaXNzdWUt
-cHBzDQpYRFAtUlggQ1BVICAgICAgMCAgICAgICAyNTksNTU0ICAgICAwDQpYRFAtUlggQ1BVICAg
-ICAgdG90YWwgICAyNTksNTU0DQpSWFEgc3RhdHMgICAgICAgUlhROkNQVSBwcHMgICAgICAgICBp
-c3N1ZS1wcHMNCnJ4X3F1ZXVlX2luZGV4ICAgIDA6MCAgIDI1OSw1NTMgICAgIDANCnJ4X3F1ZXVl
-X2luZGV4ICAgIDA6c3VtIDI1OSw1NTMNCg0KPiANCj4gPiBwcm90byAxNzogICAgIDI1ODg4NiBw
-a3Qvcw0KPiA+IHByb3RvIDE3OiAgICAgMjU4ODc5IHBrdC9zDQo+IA0KPiBJZiB5b3UgcHJvdmlk
-ZSBudW1iZXJzIGZvciB4ZHBfcmVkaXJlY3QsIHRoZW4gd2UgY291bGQgYmV0dGVyIGV2YWx1YXRl
-IGlmDQo+IGNoYW5naW5nIHRoZSBsb2NrIHBlciB4ZHBfZnJhbWUsIGZvciBYRFBfVFggYWxzbywg
-aXMgd29ydGggaXQuDQo+IA0KRm9yIFhEUF9SRURJUkVDVCwgdGhlIHBlcmZvcm1hbmNlIHNob3cg
-YXMgZm9sbG93Lg0Kcm9vdEBpbXg4bXBldms6fiMgLi94ZHBfcmVkaXJlY3QgZXRoMSBldGgwDQpS
-ZWRpcmVjdGluZyBmcm9tIGV0aDEgKGlmaW5kZXggMzsgZHJpdmVyIHN0X2dtYWMpIHRvIGV0aDAg
-KGlmaW5kZXggMjsgZHJpdmVyIGZlYykNCmV0aDEtPmV0aDAgICAgICAgIDIyMSw2NDIgcngvcyAg
-ICAgICAwIGVycixkcm9wL3MgICAgICAyMjEsNjQzIHhtaXQvcw0KZXRoMS0+ZXRoMCAgICAgICAg
-MjIxLDc2MSByeC9zICAgICAgIDAgZXJyLGRyb3AvcyAgICAgIDIyMSw3NjAgeG1pdC9zDQpldGgx
-LT5ldGgwICAgICAgICAyMjEsNzkzIHJ4L3MgICAgICAgMCBlcnIsZHJvcC9zICAgICAgMjIxLDc5
-NCB4bWl0L3MNCmV0aDEtPmV0aDAgICAgICAgIDIyMSw4MjUgcngvcyAgICAgICAwIGVycixkcm9w
-L3MgICAgICAyMjEsODI1IHhtaXQvcw0KZXRoMS0+ZXRoMCAgICAgICAgMjIxLDgyMyByeC9zICAg
-ICAgIDAgZXJyLGRyb3AvcyAgICAgIDIyMSw4MjEgeG1pdC9zDQpldGgxLT5ldGgwICAgICAgICAy
-MjEsODE1IHJ4L3MgICAgICAgMCBlcnIsZHJvcC9zICAgICAgMjIxLDgxNiB4bWl0L3MNCmV0aDEt
-PmV0aDAgICAgICAgIDIyMiwwMTYgcngvcyAgICAgICAwIGVycixkcm9wL3MgICAgICAyMjIsMDE2
-IHhtaXQvcw0KZXRoMS0+ZXRoMCAgICAgICAgMjIyLDA1OSByeC9zICAgICAgIDAgZXJyLGRyb3Av
-cyAgICAgIDIyMiwwNTkgeG1pdC9zDQpldGgxLT5ldGgwICAgICAgICAyMjIsMDg1IHJ4L3MgICAg
-ICAgMCBlcnIsZHJvcC9zICAgICAgMjIyLDA4OSB4bWl0L3MNCmV0aDEtPmV0aDAgICAgICAgIDIy
-MSw5NTYgcngvcyAgICAgICAwIGVycixkcm9wL3MgICAgICAyMjEsOTUyIHhtaXQvcw0KZXRoMS0+
-ZXRoMCAgICAgICAgMjIyLDA3MCByeC9zICAgICAgIDAgZXJyLGRyb3AvcyAgICAgIDIyMiwwNzEg
-eG1pdC9zDQpldGgxLT5ldGgwICAgICAgICAyMjIsMDE3IHJ4L3MgICAgICAgMCBlcnIsZHJvcC9z
-ICAgICAgMjIyLDAxNyB4bWl0L3MNCmV0aDEtPmV0aDAgICAgICAgIDIyMiwwNjkgcngvcyAgICAg
-ICAwIGVycixkcm9wL3MgICAgICAyMjIsMDY3IHhtaXQvcw0KZXRoMS0+ZXRoMCAgICAgICAgMjIx
-LDk4NiByeC9zICAgICAgIDAgZXJyLGRyb3AvcyAgICAgIDIyMSw5ODcgeG1pdC9zDQpldGgxLT5l
-dGgwICAgICAgICAyMjEsOTMyIHJ4L3MgICAgICAgMCBlcnIsZHJvcC9zICAgICAgMjIxLDkzNiB4
-bWl0L3MNCmV0aDEtPmV0aDAgICAgICAgIDIyMiwwNDUgcngvcyAgICAgICAwIGVycixkcm9wL3Mg
-ICAgICAyMjIsMDQxIHhtaXQvcw0KZXRoMS0+ZXRoMCAgICAgICAgMjIyLDAxNCByeC9zICAgICAg
-IDAgZXJyLGRyb3AvcyAgICAgIDIyMiwwMTQgeG1pdC9zDQogIFBhY2tldHMgcmVjZWl2ZWQgICAg
-OiAzLDc3Miw5MDgNCiAgQXZlcmFnZSBwYWNrZXRzL3MgICA6IDIyMSw5MzYNCiAgUGFja2V0cyB0
-cmFuc21pdHRlZCA6IDMsNzcyLDkwOA0KICBBdmVyYWdlIHRyYW5zbWl0L3MgIDogMjIxLDkzNg0K
-DQo+IEFuZCBhbHNvIGZpbmQgb3V0IG9mIG1vdmluZyB0aGUgTU1JTyB3cml0ZSBoYXZlIGFueSBl
-ZmZlY3QuDQo+IA0KSSBtb3ZlIHRoZSBNTUlPIHdyaXRlIHRvIGZlY19lbmV0X3hkcF94bWl0KCks
-IHRoZSByZXN1bHQgc2hvd3MgYXMgZm9sbG93LA0KdGhlIHBlcmZvcm1hbmNlIGlzIHNsaWdodGx5
-IGltcHJvdmVkLg0KDQpyb290QGlteDhtcGV2azp+IyAuL3hkcF9yZWRpcmVjdCBldGgxIGV0aDAN
-ClJlZGlyZWN0aW5nIGZyb20gZXRoMSAoaWZpbmRleCAzOyBkcml2ZXIgc3RfZ21hYykgdG8gZXRo
-MCAoaWZpbmRleCAyOyBkcml2ZXIgZmVjKQ0KZXRoMS0+ZXRoMCAgICAgICAgMjIyLDY2NiByeC9z
-ICAgICAgICAwIGVycixkcm9wL3MgICAgICAyMjIsNjY4IHhtaXQvcw0KZXRoMS0+ZXRoMCAgICAg
-ICAgMjIxLDY2MyByeC9zICAgICAgICAwIGVycixkcm9wL3MgICAgICAyMjEsNjY0IHhtaXQvcw0K
-ZXRoMS0+ZXRoMCAgICAgICAgMjIyLDc0MyByeC9zICAgICAgICAwIGVycixkcm9wL3MgICAgICAy
-MjIsNzQxIHhtaXQvcw0KZXRoMS0+ZXRoMCAgICAgICAgMjIyLDkxNyByeC9zICAgICAgICAwIGVy
-cixkcm9wL3MgICAgICAyMjIsOTIzIHhtaXQvcw0KZXRoMS0+ZXRoMCAgICAgICAgMjIxLDgxMCBy
-eC9zICAgICAgICAwIGVycixkcm9wL3MgICAgICAyMjEsODA4IHhtaXQvcw0KZXRoMS0+ZXRoMCAg
-ICAgICAgMjIyLDg5MSByeC9zICAgICAgICAwIGVycixkcm9wL3MgICAgICAyMjIsODg4IHhtaXQv
-cw0KZXRoMS0+ZXRoMCAgICAgICAgMjIyLDk4MyByeC9zICAgICAgICAwIGVycixkcm9wL3MgICAg
-ICAyMjIsOTg0IHhtaXQvcw0KZXRoMS0+ZXRoMCAgICAgICAgMjIxLDY1NSByeC9zICAgICAgICAw
-IGVycixkcm9wL3MgICAgICAyMjEsNjUzIHhtaXQvcw0KZXRoMS0+ZXRoMCAgICAgICAgMjIyLDgy
-NyByeC9zICAgICAgICAwIGVycixkcm9wL3MgICAgICAyMjIsODI3IHhtaXQvcw0KZXRoMS0+ZXRo
-MCAgICAgICAgMjIxLDcyOCByeC9zICAgICAgICAwIGVycixkcm9wL3MgICAgICAyMjEsNzI4IHht
-aXQvcw0KZXRoMS0+ZXRoMCAgICAgICAgMjIyLDc5MCByeC9zICAgICAgICAwIGVycixkcm9wL3Mg
-ICAgICAyMjIsNzg5IHhtaXQvcw0KZXRoMS0+ZXRoMCAgICAgICAgMjIyLDg3NCByeC9zICAgICAg
-ICAwIGVycixkcm9wL3MgICAgICAyMjIsODc0IHhtaXQvcw0KZXRoMS0+ZXRoMCAgICAgICAgMjIx
-LDg4OCByeC9zICAgICAgICAwIGVycixkcm9wL3MgICAgICAyMjEsODg3IHhtaXQvcw0KZXRoMS0+
-ZXRoMCAgICAgICAgMjIzLDA1NyByeC9zICAgICAgICAwIGVycixkcm9wL3MgICAgICAyMjMsMDU2
-IHhtaXQvcw0KZXRoMS0+ZXRoMCAgICAgICAgMjIyLDIxOSByeC9zICAgICAgICAwIGVycixkcm9w
-L3MgICAgICAyMjIsMjIwIHhtaXQvcw0KICBQYWNrZXRzIHJlY2VpdmVkICAgIDogMywzMzYsNzEx
-DQogIEF2ZXJhZ2UgcGFja2V0cy9zICAgOiAyMjIsNDQ3DQogIFBhY2tldHMgdHJhbnNtaXR0ZWQg
-OiAzLDMzNiw3MTANCiAgQXZlcmFnZSB0cmFuc21pdC9zICA6IDIyMiw0NDcNCg0KPiBJIGFsc28g
-bm90aWNlZCBkcml2ZXIgZG9lcyBhIE1NSU8gd3JpdGUgKG9uIHJ4cSkgZm9yIGV2ZXJ5IFJYLXBh
-Y2tldCBpbg0KPiBmZWNfZW5ldF9yeF9xdWV1ZSgpIG5hcGktcG9sbCBsb29wLiAgVGhpcyBhbHNv
-IGxvb2tzIGxpa2UgYSBwb3RlbnRpYWwNCj4gcGVyZm9ybWFuY2Ugc3RhbGwuDQo+IA0KVGhlIHNh
-bWUgYXMgdHhxLCB0aGUgcnhxIHdpbGwgYmUgaW5hY3RpdmUgaWYgdGhlIHJ4LUJEUiBoYXMgbm8g
-ZnJlZSBCRHMsIHNvIHdlJ2QNCmJldHRlciBkbyBhIE1NSU8gd3JpdGUgd2hlbiB3ZSByZWN5Y2xl
-IGEgQkQsIHNvIHRoYXQgdGhlIGhhcmR3YXJlIGNhbiB0aW1lbHkNCmF0dGFjaCB0aGUgcmVjZWl2
-ZWQgcGFrY2V0cyBvbiB0aGUgcngtQkRSLg0KDQpJbiBhZGRpdGlvbiwgSSBhbHNvIHRyaWVkIHRv
-IGF2b2lkIHVzaW5nIHhkcF9jb252ZXJ0X2J1ZmZfdG9fZnJhbWUoKSwgYnV0IHRoZQ0KcGVyZm9y
-bWFuY2Ugb2YgWERQX1RYIGlzIHN0aWxsIG5vdCBpbXByb3ZlZC4gOigNCg0KQWZ0ZXIgdGhlc2Ug
-ZGF5cyBvZiB0ZXN0aW5nLCBJIHRoaW5rIGl0J3MgYmVzdCB0byBrZWVwIHRoZSBzb2x1dGlvbiBp
-biBWMywgYW5kIHRoZW4NCm1ha2Ugc29tZSBvcHRpbWl6YXRpb25zIG9uIHRoZSBWMyBwYXRjaC4N
-Cg==
+On Mon, Aug 7, 2023 at 12:28=E2=80=AFPM Xiubo Li <xiubli@redhat.com> wrote:
+>
+>
+> On 8/7/23 14:51, Aleksandr Mikhalitsyn wrote:
+> > On Mon, Aug 7, 2023 at 3:25=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wro=
+te:
+> >>
+> >> On 8/4/23 16:48, Alexander Mikhalitsyn wrote:
+> >>> From: Christian Brauner <brauner@kernel.org>
+> >>>
+> >>> Inode operations that create a new filesystem object such as ->mknod,
+> >>> ->create, ->mkdir() and others don't take a {g,u}id argument explicit=
+ly.
+> >>> Instead the caller's fs{g,u}id is used for the {g,u}id of the new
+> >>> filesystem object.
+> >>>
+> >>> In order to ensure that the correct {g,u}id is used map the caller's
+> >>> fs{g,u}id for creation requests. This doesn't require complex changes=
+.
+> >>> It suffices to pass in the relevant idmapping recorded in the request
+> >>> message. If this request message was triggered from an inode operatio=
+n
+> >>> that creates filesystem objects it will have passed down the relevant
+> >>> idmaping. If this is a request message that was triggered from an ino=
+de
+> >>> operation that doens't need to take idmappings into account the initi=
+al
+> >>> idmapping is passed down which is an identity mapping.
+> >>>
+> >>> This change uses a new cephfs protocol extension CEPHFS_FEATURE_HAS_O=
+WNER_UIDGID
+> >>> which adds two new fields (owner_{u,g}id) to the request head structu=
+re.
+> >>> So, we need to ensure that MDS supports it otherwise we need to fail
+> >>> any IO that comes through an idmapped mount because we can't process =
+it
+> >>> in a proper way. MDS server without such an extension will use caller=
+_{u,g}id
+> >>> fields to set a new inode owner UID/GID which is incorrect because ca=
+ller_{u,g}id
+> >>> values are unmapped. At the same time we can't map these fields with =
+an
+> >>> idmapping as it can break UID/GID-based permission checks logic on th=
+e
+> >>> MDS side. This problem was described with a lot of details at [1], [2=
+].
+> >>>
+> >>> [1] https://lore.kernel.org/lkml/CAEivzxfw1fHO2TFA4dx3u23ZKK6Q+EThfzu=
+ibrhA3RKM=3DZOYLg@mail.gmail.com/
+> >>> [2] https://lore.kernel.org/all/20220104140414.155198-3-brauner@kerne=
+l.org/
+> >>>
+> >>> Link: https://github.com/ceph/ceph/pull/52575
+> >>> Link: https://tracker.ceph.com/issues/62217
+> >>> Cc: Xiubo Li <xiubli@redhat.com>
+> >>> Cc: Jeff Layton <jlayton@kernel.org>
+> >>> Cc: Ilya Dryomov <idryomov@gmail.com>
+> >>> Cc: ceph-devel@vger.kernel.org
+> >>> Co-Developed-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonic=
+al.com>
+> >>> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> >>> Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical=
+.com>
+> >>> ---
+> >>> v7:
+> >>>        - reworked to use two new fields for owner UID/GID (https://gi=
+thub.com/ceph/ceph/pull/52575)
+> >>> v8:
+> >>>        - properly handled case when old MDS used with new kernel clie=
+nt
+> >>> ---
+> >>>    fs/ceph/mds_client.c         | 47 ++++++++++++++++++++++++++++++++=
++---
+> >>>    fs/ceph/mds_client.h         |  5 +++-
+> >>>    include/linux/ceph/ceph_fs.h |  5 +++-
+> >>>    3 files changed, 52 insertions(+), 5 deletions(-)
+> >>>
+> >>> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+> >>> index 8829f55103da..41e4bf3811c4 100644
+> >>> --- a/fs/ceph/mds_client.c
+> >>> +++ b/fs/ceph/mds_client.c
+> >>> @@ -2902,6 +2902,17 @@ static void encode_mclientrequest_tail(void **=
+p, const struct ceph_mds_request *
+> >>>        }
+> >>>    }
+> >>>
+> >>> +static inline u16 mds_supported_head_version(struct ceph_mds_session=
+ *session)
+> >>> +{
+> >>> +     if (!test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD, &session->s_feat=
+ures))
+> >>> +             return 1;
+> >>> +
+> >>> +     if (!test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_feat=
+ures))
+> >>> +             return 2;
+> >>> +
+> >>> +     return CEPH_MDS_REQUEST_HEAD_VERSION;
+> >>> +}
+> >>> +
+> >>>    static struct ceph_mds_request_head_legacy *
+> >>>    find_legacy_request_head(void *p, u64 features)
+> >>>    {
+> >>> @@ -2923,6 +2934,7 @@ static struct ceph_msg *create_request_message(=
+struct ceph_mds_session *session,
+> >>>    {
+> >>>        int mds =3D session->s_mds;
+> >>>        struct ceph_mds_client *mdsc =3D session->s_mdsc;
+> >>> +     struct ceph_client *cl =3D mdsc->fsc->client;
+> >>>        struct ceph_msg *msg;
+> >>>        struct ceph_mds_request_head_legacy *lhead;
+> >>>        const char *path1 =3D NULL;
+> >>> @@ -2936,7 +2948,7 @@ static struct ceph_msg *create_request_message(=
+struct ceph_mds_session *session,
+> >>>        void *p, *end;
+> >>>        int ret;
+> >>>        bool legacy =3D !(session->s_con.peer_features & CEPH_FEATURE_=
+FS_BTIME);
+> >>> -     bool old_version =3D !test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD,=
+ &session->s_features);
+> >>> +     u16 request_head_version =3D mds_supported_head_version(session=
+);
+> >>>
+> >>>        ret =3D set_request_path_attr(mdsc, req->r_inode, req->r_dentr=
+y,
+> >>>                              req->r_parent, req->r_path1, req->r_ino1=
+.ino,
+> >>> @@ -2977,8 +2989,10 @@ static struct ceph_msg *create_request_message=
+(struct ceph_mds_session *session,
+> >>>         */
+> >>>        if (legacy)
+> >>>                len =3D sizeof(struct ceph_mds_request_head_legacy);
+> >>> -     else if (old_version)
+> >>> +     else if (request_head_version =3D=3D 1)
+> >>>                len =3D sizeof(struct ceph_mds_request_head_old);
+> >>> +     else if (request_head_version =3D=3D 2)
+> >>> +             len =3D offsetofend(struct ceph_mds_request_head, ext_n=
+um_fwd);
+> >>>        else
+> >>>                len =3D sizeof(struct ceph_mds_request_head);
+> >>>
+> >>> @@ -3028,6 +3042,16 @@ static struct ceph_msg *create_request_message=
+(struct ceph_mds_session *session,
+> >>>        lhead =3D find_legacy_request_head(msg->front.iov_base,
+> >>>                                         session->s_con.peer_features)=
+;
+> >>>
+> >>> +     if ((req->r_mnt_idmap !=3D &nop_mnt_idmap) &&
+> >>> +         !test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_feat=
+ures)) {
+> >>> +             pr_err_ratelimited_client(cl,
+> >>> +                     "idmapped mount is used and CEPHFS_FEATURE_HAS_=
+OWNER_UIDGID"
+> >>> +                     " is not supported by MDS. Fail request with -E=
+IO.\n");
+> >>> +
+> >>> +             ret =3D -EIO;
+> >>> +             goto out_err;
+> >>> +     }
+> >>> +
+> >>>        /*
+> >>>         * The ceph_mds_request_head_legacy didn't contain a version f=
+ield, and
+> >>>         * one was added when we moved the message version from 3->4.
+> >>> @@ -3035,17 +3059,34 @@ static struct ceph_msg *create_request_messag=
+e(struct ceph_mds_session *session,
+> >>>        if (legacy) {
+> >>>                msg->hdr.version =3D cpu_to_le16(3);
+> >>>                p =3D msg->front.iov_base + sizeof(*lhead);
+> >>> -     } else if (old_version) {
+> >>> +     } else if (request_head_version =3D=3D 1) {
+> >>>                struct ceph_mds_request_head_old *ohead =3D msg->front=
+.iov_base;
+> >>>
+> >>>                msg->hdr.version =3D cpu_to_le16(4);
+> >>>                ohead->version =3D cpu_to_le16(1);
+> >>>                p =3D msg->front.iov_base + sizeof(*ohead);
+> >>> +     } else if (request_head_version =3D=3D 2) {
+> >>> +             struct ceph_mds_request_head *nhead =3D msg->front.iov_=
+base;
+> >>> +
+> >>> +             msg->hdr.version =3D cpu_to_le16(6);
+> >>> +             nhead->version =3D cpu_to_le16(2);
+> >>> +
+> >>> +             p =3D msg->front.iov_base + offsetofend(struct ceph_mds=
+_request_head, ext_num_fwd);
+> >>>        } else {
+> >>>                struct ceph_mds_request_head *nhead =3D msg->front.iov=
+_base;
+> >>> +             kuid_t owner_fsuid;
+> >>> +             kgid_t owner_fsgid;
+> >>>
+> >>>                msg->hdr.version =3D cpu_to_le16(6);
+> >>>                nhead->version =3D cpu_to_le16(CEPH_MDS_REQUEST_HEAD_V=
+ERSION);
+> >>> +             nhead->struct_len =3D sizeof(struct ceph_mds_request_he=
+ad);
+> >>> +
+> >>> +             owner_fsuid =3D from_vfsuid(req->r_mnt_idmap, &init_use=
+r_ns,
+> >>> +                                       VFSUIDT_INIT(req->r_cred->fsu=
+id));
+> >>> +             owner_fsgid =3D from_vfsgid(req->r_mnt_idmap, &init_use=
+r_ns,
+> >>> +                                       VFSGIDT_INIT(req->r_cred->fsg=
+id));
+> >>> +             nhead->owner_uid =3D cpu_to_le32(from_kuid(&init_user_n=
+s, owner_fsuid));
+> >>> +             nhead->owner_gid =3D cpu_to_le32(from_kgid(&init_user_n=
+s, owner_fsgid));
+> >>>                p =3D msg->front.iov_base + sizeof(*nhead);
+> >>>        }
+> >>>
+> >>> diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
+> >>> index e3bbf3ba8ee8..8f683e8203bd 100644
+> >>> --- a/fs/ceph/mds_client.h
+> >>> +++ b/fs/ceph/mds_client.h
+> >>> @@ -33,8 +33,10 @@ enum ceph_feature_type {
+> >>>        CEPHFS_FEATURE_NOTIFY_SESSION_STATE,
+> >>>        CEPHFS_FEATURE_OP_GETVXATTR,
+> >>>        CEPHFS_FEATURE_32BITS_RETRY_FWD,
+> >>> +     CEPHFS_FEATURE_NEW_SNAPREALM_INFO,
+> >>> +     CEPHFS_FEATURE_HAS_OWNER_UIDGID,
+> >>>
+> >>> -     CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_32BITS_RETRY_FWD,
+> >>> +     CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_HAS_OWNER_UIDGID,
+> >>>    };
+> >>>
+> >>>    #define CEPHFS_FEATURES_CLIENT_SUPPORTED {  \
+> >>> @@ -49,6 +51,7 @@ enum ceph_feature_type {
+> >>>        CEPHFS_FEATURE_NOTIFY_SESSION_STATE,    \
+> >>>        CEPHFS_FEATURE_OP_GETVXATTR,            \
+> >>>        CEPHFS_FEATURE_32BITS_RETRY_FWD,        \
+> >>> +     CEPHFS_FEATURE_HAS_OWNER_UIDGID,        \
+> >>>    }
+> >>>
+> >>>    /*
+> >>> diff --git a/include/linux/ceph/ceph_fs.h b/include/linux/ceph/ceph_f=
+s.h
+> >>> index 5f2301ee88bc..b91699b08f26 100644
+> >>> --- a/include/linux/ceph/ceph_fs.h
+> >>> +++ b/include/linux/ceph/ceph_fs.h
+> >>> @@ -499,7 +499,7 @@ struct ceph_mds_request_head_legacy {
+> >>>        union ceph_mds_request_args args;
+> >>>    } __attribute__ ((packed));
+> >>>
+> >>> -#define CEPH_MDS_REQUEST_HEAD_VERSION  2
+> >>> +#define CEPH_MDS_REQUEST_HEAD_VERSION  3
+> >>>
+> >>>    struct ceph_mds_request_head_old {
+> >>>        __le16 version;                /* struct version */
+> >>> @@ -530,6 +530,9 @@ struct ceph_mds_request_head {
+> >>>
+> >>>        __le32 ext_num_retry;          /* new count retry attempts */
+> >>>        __le32 ext_num_fwd;            /* new count fwd attempts */
+> >>> +
+> >>> +     __le32 struct_len;             /* to store size of struct ceph_=
+mds_request_head */
+> >>> +     __le32 owner_uid, owner_gid;   /* used for OPs which create ino=
+des */
+> >> Let's also initialize them to -1 for all the other requests as we do i=
+n
+> >> your PR.
+> > They are always initialized already. As you can see from the code we
+> > don't have any extra conditions
+> > on filling these fields. We always fill them with an appropriate
+> > UID/GID. If mount is not idmapped then it's just =3D=3D caller_uid/gid,
+> > if mount idmapped then it's idmapped caller_uid/gid.
+>
+> Then in kclient all the request will always initialized the
+> 'owner_{uid/gid}' with 'caller_{uid/gid}'. While in userspace libcephfs
+> it will only set them for 'create/mknod/mkdir/symlink` instead.
+>
+> I'd prefer to make them consistent, which is what I am still focusing
+> on, to make them easier to read and comparing when troubles hooting.
+
+Dear Xiubo,
+
+Sure, I will do it.
+
+Couldn't you please review all the rest of the patches before I fix
+this particular thing?
+It will allow me to fix and send -v10 with all required fixes
+incorporated in it.
+
+Kind regards,
+Alex
+
+>
+> Thanks
+>
+> - Xiubo
+>
+> > Kind regards,
+> > Alex
+> >
+> >> Thanks
+> >>
+> >> - Xiubo
+> >>
+> >>
+> >>
+> >>>    } __attribute__ ((packed));
+> >>>
+> >>>    /* cap/lease release record */
+>
