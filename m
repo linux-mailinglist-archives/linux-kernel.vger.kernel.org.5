@@ -2,66 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D73B5771C08
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 10:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D2E771C16
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 10:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbjHGIJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 04:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52006 "EHLO
+        id S230247AbjHGINA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 04:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjHGIJa (ORCPT
+        with ESMTP id S229795AbjHGIM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 04:09:30 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839D1170A;
-        Mon,  7 Aug 2023 01:09:29 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37789NeD088783;
-        Mon, 7 Aug 2023 03:09:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691395763;
-        bh=qXreic1jeDVpRWpVaJNwZXPhQDgIeVSEDk98xTOHGBY=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=xhI9Yiuz1Uumh52CcWtha1h6ubD29E+hDHlxmTz9RdmGawemMH5Mc3q7pnGgqxgTx
-         YzQcV9BB01dN1Uy/1N//ldg8zBWHJj1x8WaMj97WjTBXPXSTD4Oli984K+cV2uGjm5
-         PEktHsDE6401V/UO9C7P9dCj7xcnkNznml0QUngY=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37789Nxt095413
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Aug 2023 03:09:23 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
- Aug 2023 03:09:23 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 7 Aug 2023 03:09:23 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37789MwN023168;
-        Mon, 7 Aug 2023 03:09:23 -0500
-Date:   Mon, 7 Aug 2023 13:39:22 +0530
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Tony Lindgren <tony@atomide.com>
-CC:     Nishanth Menon <nm@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH] pinctrl: single: Add compatible for ti,am625-padconf
-Message-ID: <20230807080922.t35yvyvrknjcriyr@dhruva>
-References: <20230805045554.786092-1-d-gole@ti.com>
- <20230805171508.schg4xquoa24klk5@october>
- <20230807070724.GN14799@atomide.com>
+        Mon, 7 Aug 2023 04:12:59 -0400
+Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82631708
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 01:12:53 -0700 (PDT)
+X-ASG-Debug-ID: 1691395968-086e23186c103a0001-xx1T2L
+Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx1.zhaoxin.com with ESMTP id iucwwu9ktQWASxuh (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Mon, 07 Aug 2023 16:12:48 +0800 (CST)
+X-Barracuda-Envelope-From: TonyWWang-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX1.zhaoxin.com
+ (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Mon, 7 Aug
+ 2023 16:12:47 +0800
+Received: from tony-HX002EA.zhaoxin.com (10.32.65.162) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Mon, 7 Aug
+ 2023 16:12:46 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.163
+To:     <rafael@kernel.org>, <viresh.kumar@linaro.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <CobeChen@zhaoxin.com>, <TimGuo@zhaoxin.com>,
+        <LeoLiu-oc@zhaoxin.com>, <LindaChai@zhaoxin.com>
+Subject: [PATCH] cpufreq: ACPI: add ITMT support when CPPC enabled
+Date:   Mon, 7 Aug 2023 16:12:48 +0800
+X-ASG-Orig-Subj: [PATCH] cpufreq: ACPI: add ITMT support when CPPC enabled
+Message-ID: <20230807081248.4745-1-TonyWWang-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230807070724.GN14799@atomide.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-Originating-IP: [10.32.65.162]
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
+X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
+X-Barracuda-Start-Time: 1691395968
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 3567
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.112427
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,81 +67,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 07, 2023 at 10:07:24 +0300, Tony Lindgren wrote:
-> * Nishanth Menon <nm@ti.com> [230805 17:15]:
-> > On 10:25-20230805, Dhruva Gole wrote:
-> > > From: Tony Lindgren <tony@atomide.com>
-> > > +static const struct pcs_soc_data pinctrl_single_am625 = {
-> > > +	.flags = PCS_QUIRK_SHARED_IRQ | PCS_CONTEXT_LOSS_OFF,
-> > > +	.irq_enable_mask = (1 << 29),   /* WKUP_EN */
-> > > +	.irq_status_mask = (1 << 30),   /* WKUP_EVT */
-> > > +};
-> > > +
-> > 
-> > Why cant we set this in the k3-pinctrl.h and set it once?
+The _CPC method can get per-core highest frequency.
+The highest frequency may varies between cores which mean cores can
+running at different max frequency, so can use it as a core priority
+and give a hint to scheduler in order to put critical task to the
+higher priority core.
 
-Do you mean that I set 1 << 29 and 30 as sort of macros in the
-k3-pinctrl.h file and then include it in pinctrl-single.c?
+Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+---
+ drivers/cpufreq/acpi-cpufreq.c | 59 ++++++++++++++++++++++++++++++----
+ 1 file changed, 52 insertions(+), 7 deletions(-)
 
-Are we okay to #include a header from arch/arm64/boot/dts/ti?
-
-> 
-> Good idea to define the bit offsets k3-pinctrl.h instead of magic numbers
-> here :)
-
-If I understand what Nishanth is saying correctly, are we expected to
-set the wake_en bit on every single K3 SoC's every single padconf reg?
-
-I am a little sceptical with this approach, because what is people
-_don't_ want to wakeup from certain pads? What would be the right way to
-disable wakeup on those pads then?
-
-> 
-> > The event will not be generated until wakeup daisy chain is triggered
-> > anyways.
-
-Any voltage level shift can potentially trigger a daisychain and I don't
-think that's really such a good idea?
-
-> 
-> Yup, and having that happen is enough to show the wake-up reason with
-> grep wakeup /proc/interrupts :)
-> 
-> > Have you looked at all the padconf registers across devices to ensure
-> > the WKUP_EN/EVT bits are present? daisy chain feature is used elsewhere
-> > as well.
-
-In my limited experience, I have only seen daisychain wakeups being
-enabled on AM62x SOC. This is because this is one of the first K3
-devices to implement deepsleep, and I think IO daisychain only applies for
-wakeups in the case of deepsleep kind of scenarios.
-
-> 
-> The lack of bits at least earlier just meant that attempting to use a
-> wake-up interrupt would just never trigger. Worth checking though.
-> Dhruva, care to check if some padconf register have reserved bits for
-> 29 and 30 that might be set high by default?
-
-Sure, I could take a look, but setting wake_en on all pads still
-doesn't feel right to me.
-
-> 
-> Regards,
-> 
-> Tony
-
-To summarise, I don't think any other devices are using daisychain
-atleast today, and even if there is possibility of using in future I
-think the same compatible I have used here can be used to set wake_en
-wherever applicable, for eg. whenever AM62A would want to use daisychain
-it can use this quirk in it's DT node.
-
-I believe that we shouldn't set every pad as daisychain enabled
-otherwise in deepsleep it may result in unintended wakeups. And the way
-I thought we can give this choice to the user is using wakeirq chained
-interrupt along with this quirk,
-compatible = "ti,am6-padconf";
-
+diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+index b2f05d27167e..5733323e04ac 100644
+--- a/drivers/cpufreq/acpi-cpufreq.c
++++ b/drivers/cpufreq/acpi-cpufreq.c
+@@ -628,28 +628,35 @@ static int acpi_cpufreq_blacklist(struct cpuinfo_x86 *c)
+ #endif
+ 
+ #ifdef CONFIG_ACPI_CPPC_LIB
+-static u64 get_max_boost_ratio(unsigned int cpu)
++static void cpufreq_get_core_perf(int cpu, u64 *highest_perf, u64 *nominal_perf)
+ {
+ 	struct cppc_perf_caps perf_caps;
+-	u64 highest_perf, nominal_perf;
+ 	int ret;
+ 
+ 	if (acpi_pstate_strict)
+-		return 0;
++		return;
+ 
+ 	ret = cppc_get_perf_caps(cpu, &perf_caps);
+ 	if (ret) {
+ 		pr_debug("CPU%d: Unable to get performance capabilities (%d)\n",
+ 			 cpu, ret);
+-		return 0;
++		return;
+ 	}
+ 
+ 	if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
+-		highest_perf = amd_get_highest_perf();
++		*highest_perf = amd_get_highest_perf();
+ 	else
+-		highest_perf = perf_caps.highest_perf;
++		*highest_perf = perf_caps.highest_perf;
++
++	*nominal_perf = perf_caps.nominal_perf;
++	return;
++}
+ 
+-	nominal_perf = perf_caps.nominal_perf;
++static u64 get_max_boost_ratio(unsigned int cpu)
++{
++	u64 highest_perf, nominal_perf;
++
++	cpufreq_get_core_perf(cpu, &highest_perf, &nominal_perf);
+ 
+ 	if (!highest_perf || !nominal_perf) {
+ 		pr_debug("CPU%d: highest or nominal performance missing\n", cpu);
+@@ -663,8 +670,44 @@ static u64 get_max_boost_ratio(unsigned int cpu)
+ 
+ 	return div_u64(highest_perf << SCHED_CAPACITY_SHIFT, nominal_perf);
+ }
++
++static void cpufreq_sched_itmt_work_fn(struct work_struct *work)
++{
++	sched_set_itmt_support();
++}
++
++static DECLARE_WORK(sched_itmt_work, cpufreq_sched_itmt_work_fn);
++
++static void cpufreq_set_itmt_prio(int cpu)
++{
++	u64 highest_perf, nominal_perf;
++	static u32 max_highest_perf = 0, min_highest_perf = U32_MAX;
++
++	cpufreq_get_core_perf(cpu, &highest_perf, &nominal_perf);
++
++	sched_set_itmt_core_prio(highest_perf, cpu);
++
++	if (max_highest_perf <= min_highest_perf) {
++		if (highest_perf > max_highest_perf)
++			max_highest_perf = highest_perf;
++
++		if (highest_perf < min_highest_perf)
++			min_highest_perf = highest_perf;
++
++		if (max_highest_perf > min_highest_perf) {
++			/*
++			 * This code can be run during CPU online under the
++			 * CPU hotplug locks, so sched_set_itmt_support()
++			 * cannot be called from here.  Queue up a work item
++			 * to invoke it.
++			 */
++			schedule_work(&sched_itmt_work);
++		}
++	}
++}
+ #else
+ static inline u64 get_max_boost_ratio(unsigned int cpu) { return 0; }
++static void cpufreq_set_itmt_prio(int cpu) { return; }
+ #endif
+ 
+ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
+@@ -870,6 +913,8 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
+ 	/* notify BIOS that we exist */
+ 	acpi_processor_notify_smm(THIS_MODULE);
+ 
++	cpufreq_set_itmt_prio(cpu);
++
+ 	pr_debug("CPU%u - ACPI performance management activated.\n", cpu);
+ 	for (i = 0; i < perf->state_count; i++)
+ 		pr_debug("     %cP%d: %d MHz, %d mW, %d uS\n",
 -- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+2.17.1
+
