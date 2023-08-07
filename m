@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAE9772C5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4021772C31
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbjHGRMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43616 "EHLO
+        id S230475AbjHGRMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:12:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232090AbjHGRMR (ORCPT
+        with ESMTP id S230506AbjHGRL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:12:17 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E745B1BD3;
-        Mon,  7 Aug 2023 10:12:06 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bc411e9d17so29224915ad.0;
-        Mon, 07 Aug 2023 10:12:06 -0700 (PDT)
+        Mon, 7 Aug 2023 13:11:57 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CC8E65;
+        Mon,  7 Aug 2023 10:11:56 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe11652b64so7387754e87.0;
+        Mon, 07 Aug 2023 10:11:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691428326; x=1692033126;
+        d=googlemail.com; s=20221208; t=1691428314; x=1692033114;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8BWwQKRJpzoHOTxVfrEWi7WrUwdArtmVUIFmQG2FfZk=;
-        b=nUcZ6zaKb9oJP6CEIYRcJkVn2doIh/RF8s3VrpAVFmfsq1IIqx19G69U84jz9jzQgY
-         cHr+lYbYhmNdbIukaqOqGsPKk2sw7KWC72wtrTjbwCp2nPjSAYHSsMBH7eotQ46I/B5g
-         nrRXrNOtuNQ5D77wN3uGg1Kyl8uwOqC3fyBEvWvZPLsblIAAkDYjhjLFN0cHZTIlyy1p
-         xqJ+DIubWTGtHZgXWaPwzzkZRHyyhuHowAEJC2+dZuPLFCgSw5RkybhX20f8D894mI3n
-         uzwcIeGy9iHqQ7RK7Rgox4rrkdOrpBNCJihzyD4UB+d9OGt8+t7Z2G+lZDzn8OPSEH/w
-         aoqA==
+        bh=1KhCpc37sMq8hfJahbNI7sAkZNZxhd0cG15a8ZsTo7w=;
+        b=Sh52DhymwxQXUXmMTjKNMSN1j8bLQn0UKLirqyD6CTjQY6jT0qgixd5ekHUsNSvjAT
+         NlctFiVmROOkJknjucfzWTja1FcU6YDglvns52lOeWG3kVzAEAwAYT6FegYBnEFOATV6
+         uN/xcY8WqD1IN+5GQ3ReC/fSjiAkkyTzqc+OZFgPK5m9GvioP2sNfl6IgdnDVmxj3jAb
+         p6Ar8cCtSlv8+arYuzGOaqPHU/93hu0gzwdL0g4azaB6+tludIQBKv28zo80yUwuc7bV
+         /wLlRxRObF/x1PzqOTKKtsAnvBkP1Zzhv8KQk0eQ5JwrtNhc2zxAGi3XVWLe4JWvwsPH
+         io4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691428326; x=1692033126;
+        d=1e100.net; s=20221208; t=1691428314; x=1692033114;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8BWwQKRJpzoHOTxVfrEWi7WrUwdArtmVUIFmQG2FfZk=;
-        b=SLHFXzeKvy6TDiqkOJq/wNXcnBhe4djslkO4WhAbA5X/Gea8wz+d/uExuHuzw9WrB9
-         fM8TK4g3xoF9D/I7SwaMScgYwriDGWx4eVx43cKXga03/GxrZ2f8Lx7+hVVYYQ0y3z9g
-         UundRB6qk4gWAqXWUe+dVfiLde2Z01x4joruk5Dmn8r8W9yjxrxkoebHsaw63uf2H8yC
-         0RwDpXF+7nx3dwXKNU1si4XkTZprA1xz80ei8NJxeNDt7G2ulaL/rhKvOmlKuNrAe3r2
-         29ZXlp4dk+GzRT587NkXnmGhiTqg+ofaWFBLjGE+PYP6EjQl3XC/DqUPSwh4/kEkITAY
-         sVlA==
-X-Gm-Message-State: AOJu0YyyT2QDV/e7PDHU4mxFlZ5hq/kHZFr5hWASzUzLtj8Q7TLyf5ZE
-        Xmv47tKuodvqCnh6aNyEqkDAnRKmRvg=
-X-Google-Smtp-Source: AGHT+IHiIsybfpW8I/4HRIF/dVyngB0zec9md5KKieStD7fN6pUtE5S6xEynqQO6g3nIMhlAahP9yQ==
-X-Received: by 2002:a17:902:ecc3:b0:1bc:382b:6897 with SMTP id a3-20020a170902ecc300b001bc382b6897mr10420079plh.13.1691428325704;
-        Mon, 07 Aug 2023 10:12:05 -0700 (PDT)
-Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
-        by smtp.gmail.com with ESMTPSA id s21-20020a170902b19500b001a1b66af22fsm7155258plr.62.2023.08.07.10.12.04
+        bh=1KhCpc37sMq8hfJahbNI7sAkZNZxhd0cG15a8ZsTo7w=;
+        b=JVolW9NyUux8obmOVL9CVfArQln5TlrqnRkxTlMT48d98/KvFfc+Xs0QTwNE/WvQzi
+         O3cqTTDz1Tjp9h91HuoTDAuNvI1xJVauLg/0YQE/b3M6NJDCzAhTw/7rEaFoI7qSX5lu
+         JHEIp+MULEZskAE8AQbHcsiFsfr72MwhMilYvfHeXKB8Z0ZelSkaPZpiz/+QWHRThzKK
+         xw51z83q4LjOhM/jqlCLu4AHkVCWEdYxyMm0WLQ0ODtZx36dRWGJEyO9tJ/ZLU0yQvkN
+         EU9JYs0FJUXvcHe4smE5MCmkKFDffgZtsEEa0YKYDPBJAepaRIV7RWTwNrCz2cFLkksW
+         C5FA==
+X-Gm-Message-State: AOJu0Ywdf/vB43TOXk0gJ5x21/bqMaaLa4g+7XOXEP7ZVrQcNAXewV+K
+        wVR8bRbL71HuLG6L0GiJYulbVIz0jPONWg==
+X-Google-Smtp-Source: AGHT+IET/AFGK+4+CLYk42xKMODKni6DQCsckrcFGBs624e3hfN1sCJq6kNnpt0/pNFm7ohbZ0kn6Q==
+X-Received: by 2002:a19:6742:0:b0:4fb:7d73:d097 with SMTP id e2-20020a196742000000b004fb7d73d097mr5892482lfj.39.1691428314359;
+        Mon, 07 Aug 2023 10:11:54 -0700 (PDT)
+Received: from debian_development.DebianHome (dynamic-095-112-033-028.95.112.pool.telefonica.de. [95.112.33.28])
+        by smtp.gmail.com with ESMTPSA id e10-20020a056402148a00b005224d960e66sm5420814edv.96.2023.08.07.10.11.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 10:12:05 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pm@vger.kernel.org (open list:POWER MANAGEMENT CORE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 4/9] PM / QoS: Decouple request alloc from dev_pm_qos_mtx
-Date:   Mon,  7 Aug 2023 10:11:38 -0700
-Message-ID: <20230807171148.210181-5-robdclark@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230807171148.210181-1-robdclark@gmail.com>
-References: <20230807171148.210181-1-robdclark@gmail.com>
+        Mon, 07 Aug 2023 10:11:54 -0700 (PDT)
+From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+To:     selinux@vger.kernel.org
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        "GONG, Ruiqi" <gongruiqi1@huawei.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 4/7] selinux: make left shifts well defined
+Date:   Mon,  7 Aug 2023 19:11:38 +0200
+Message-Id: <20230807171143.208481-3-cgzones@googlemail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230807171143.208481-1-cgzones@googlemail.com>
+References: <20230807171143.208481-1-cgzones@googlemail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -77,72 +76,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+The loops upper bound represent the number of permissions used (for the
+current class or in general).  The limit for this is 32, thus we might
+left shift of one less, 31.  Shifting a base of 1 results in undefined
+behavior; use (u32)1 as base.
 
-Similar to the previous patch, move the allocation out from under
-dev_pm_qos_mtx, by speculatively doing the allocation and handle
-any race after acquiring dev_pm_qos_mtx by freeing the redundant
-allocation.
-
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 ---
- drivers/base/power/qos.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+v3: split from parent commit and apply cast to correct shift operand
+---
+ security/selinux/ss/services.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/base/power/qos.c b/drivers/base/power/qos.c
-index 7e95760d16dc..5ec06585b6d1 100644
---- a/drivers/base/power/qos.c
-+++ b/drivers/base/power/qos.c
-@@ -930,8 +930,12 @@ s32 dev_pm_qos_get_user_latency_tolerance(struct device *dev)
- int dev_pm_qos_update_user_latency_tolerance(struct device *dev, s32 val)
- {
- 	struct dev_pm_qos *qos = dev_pm_qos_constraints_allocate(dev);
-+	struct dev_pm_qos_request *req = NULL;
- 	int ret = 0;
+diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
+index dacec2ebdcd7..1eeffc66ea7d 100644
+--- a/security/selinux/ss/services.c
++++ b/security/selinux/ss/services.c
+@@ -207,22 +207,22 @@ static void map_decision(struct selinux_map *map,
  
-+	if (!dev->power.qos->latency_tolerance_req)
-+		req = kzalloc(sizeof(*req), GFP_KERNEL);
-+
- 	mutex_lock(&dev_pm_qos_mtx);
- 
- 	dev_pm_qos_constraints_set(dev, qos);
-@@ -945,8 +949,6 @@ int dev_pm_qos_update_user_latency_tolerance(struct device *dev, s32 val)
- 		goto out;
- 
- 	if (!dev->power.qos->latency_tolerance_req) {
--		struct dev_pm_qos_request *req;
--
- 		if (val < 0) {
- 			if (val == PM_QOS_LATENCY_TOLERANCE_NO_CONSTRAINT)
- 				ret = 0;
-@@ -954,17 +956,15 @@ int dev_pm_qos_update_user_latency_tolerance(struct device *dev, s32 val)
- 				ret = -EINVAL;
- 			goto out;
+ 		for (i = 0, result = 0; i < n; i++) {
+ 			if (avd->allowed & mapping->perms[i])
+-				result |= 1<<i;
++				result |= (u32)1<<i;
+ 			if (allow_unknown && !mapping->perms[i])
+-				result |= 1<<i;
++				result |= (u32)1<<i;
  		}
--		req = kzalloc(sizeof(*req), GFP_KERNEL);
- 		if (!req) {
- 			ret = -ENOMEM;
- 			goto out;
- 		}
- 		ret = __dev_pm_qos_add_request(dev, req, DEV_PM_QOS_LATENCY_TOLERANCE, val);
--		if (ret < 0) {
--			kfree(req);
-+		if (ret < 0)
- 			goto out;
--		}
- 		dev->power.qos->latency_tolerance_req = req;
-+		req = NULL;
- 	} else {
- 		if (val < 0) {
- 			__dev_pm_qos_drop_user_request(dev, DEV_PM_QOS_LATENCY_TOLERANCE);
-@@ -976,6 +976,7 @@ int dev_pm_qos_update_user_latency_tolerance(struct device *dev, s32 val)
+ 		avd->allowed = result;
  
-  out:
- 	mutex_unlock(&dev_pm_qos_mtx);
-+	kfree(req);
- 	return ret;
+ 		for (i = 0, result = 0; i < n; i++)
+ 			if (avd->auditallow & mapping->perms[i])
+-				result |= 1<<i;
++				result |= (u32)1<<i;
+ 		avd->auditallow = result;
+ 
+ 		for (i = 0, result = 0; i < n; i++) {
+ 			if (avd->auditdeny & mapping->perms[i])
+-				result |= 1<<i;
++				result |= (u32)1<<i;
+ 			if (!allow_unknown && !mapping->perms[i])
+-				result |= 1<<i;
++				result |= (u32)1<<i;
+ 		}
+ 		/*
+ 		 * In case the kernel has a bug and requests a permission
+@@ -230,7 +230,7 @@ static void map_decision(struct selinux_map *map,
+ 		 * should audit that denial
+ 		 */
+ 		for (; i < (sizeof(u32)*8); i++)
+-			result |= 1<<i;
++			result |= (u32)1<<i;
+ 		avd->auditdeny = result;
+ 	}
  }
- EXPORT_SYMBOL_GPL(dev_pm_qos_update_user_latency_tolerance);
 -- 
-2.41.0
+2.40.1
 
