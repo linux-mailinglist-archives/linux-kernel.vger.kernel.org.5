@@ -2,135 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1193771BB0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C892771BB7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbjHGHl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 03:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43300 "EHLO
+        id S230466AbjHGHnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 03:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbjHGHl5 (ORCPT
+        with ESMTP id S230496AbjHGHnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 03:41:57 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8070B1733;
-        Mon,  7 Aug 2023 00:41:39 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 3777fGId9002920, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 3777fGId9002920
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 7 Aug 2023 15:41:16 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 7 Aug 2023 15:41:32 +0800
-Received: from RTEXH36506.realtek.com.tw (172.21.6.27) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 7 Aug 2023 15:41:31 +0800
-Received: from localhost.localdomain (172.21.252.101) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server id
- 15.1.2507.17 via Frontend Transport; Mon, 7 Aug 2023 15:41:31 +0800
-From:   Stanley Chang <stanley_chang@realtek.com>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-CC:     Stanley Chang <stanley_chang@realtek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 RESEND] usb: dwc3: core: configure TX/RX threshold for DWC3_IP
-Date:   Mon, 7 Aug 2023 15:41:24 +0800
-Message-ID: <20230807074131.27355-1-stanley_chang@realtek.com>
-X-Mailer: git-send-email 2.41.0
+        Mon, 7 Aug 2023 03:43:11 -0400
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5352010D4;
+        Mon,  7 Aug 2023 00:43:09 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VpBxhTy_1691394185;
+Received: from 30.97.48.53(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VpBxhTy_1691394185)
+          by smtp.aliyun-inc.com;
+          Mon, 07 Aug 2023 15:43:06 +0800
+Message-ID: <cef5d9ad-7b29-f09f-f88b-2fd78451165b@linux.alibaba.com>
+Date:   Mon, 7 Aug 2023 15:43:07 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/5] dma: delect redundant parameter for dma driver
+ function
+To:     Kaiwei Liu <kaiwei.liu@unisoc.com>, Vinod Koul <vkoul@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kaiwei liu <liukaiwei086@gmail.com>,
+        Wenming Wu <wenming.wu@unisoc.com>
+References: <20230807051907.2713-1-kaiwei.liu@unisoc.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230807051907.2713-1-kaiwei.liu@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-14.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In Synopsys's dwc3 data book:
-To avoid underrun and overrun during the burst, in a high-latency bus
-system (like USB), threshold and burst size control is provided through
-GTXTHRCFG and GRXTHRCFG registers.
 
-In Realtek DHC SoC, DWC3 USB 3.0 uses AHB system bus. When dwc3 is
-connected with USB 2.5G Ethernet, there will be overrun problem.
-Therefore, setting TX/RX thresholds can avoid this issue.
 
-Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
----
- drivers/usb/dwc3/core.c | 33 +++++++++++++++++++++++++++++++++
- drivers/usb/dwc3/core.h |  5 +++++
- 2 files changed, 38 insertions(+)
+On 8/7/2023 1:19 PM, Kaiwei Liu wrote:
+> The parameter *sdesc in function sprd_dma_check_trans_done is not
+> used, so here delect redundant parameter.
+> 
+> Signed-off-by: Kaiwei Liu <kaiwei.liu@unisoc.com>
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index f6689b731718..a0a54e5c4ad9 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -1262,6 +1262,39 @@ static int dwc3_core_init(struct dwc3 *dwc)
- 		}
- 	}
- 
-+	if (DWC3_IP_IS(DWC3)) {
-+		u8 rx_thr_num = dwc->rx_thr_num_pkt_prd;
-+		u8 rx_maxburst = dwc->rx_max_burst_prd;
-+		u8 tx_thr_num = dwc->tx_thr_num_pkt_prd;
-+		u8 tx_maxburst = dwc->tx_max_burst_prd;
-+
-+		if (rx_thr_num && rx_maxburst) {
-+			reg = dwc3_readl(dwc->regs, DWC3_GRXTHRCFG);
-+			reg |= DWC3_GRXTHRCFG_PKTCNTSEL;
-+
-+			reg &= ~DWC3_GRXTHRCFG_RXPKTCNT(~0);
-+			reg |= DWC3_GRXTHRCFG_RXPKTCNT(rx_thr_num);
-+
-+			reg &= ~DWC3_GRXTHRCFG_MAXRXBURSTSIZE(~0);
-+			reg |= DWC3_GRXTHRCFG_MAXRXBURSTSIZE(rx_maxburst);
-+
-+			dwc3_writel(dwc->regs, DWC3_GRXTHRCFG, reg);
-+		}
-+
-+		if (tx_thr_num && tx_maxburst) {
-+			reg = dwc3_readl(dwc->regs, DWC3_GTXTHRCFG);
-+			reg |= DWC3_GTXTHRCFG_PKTCNTSEL;
-+
-+			reg &= ~DWC3_GTXTHRCFG_TXPKTCNT(~0);
-+			reg |= DWC3_GTXTHRCFG_TXPKTCNT(tx_thr_num);
-+
-+			reg &= ~DWC3_GTXTHRCFG_MAXTXBURSTSIZE(~0);
-+			reg |= DWC3_GTXTHRCFG_MAXTXBURSTSIZE(tx_maxburst);
-+
-+			dwc3_writel(dwc->regs, DWC3_GTXTHRCFG, reg);
-+		}
-+	}
-+
- 	return 0;
- 
- err_power_off_phy:
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index 8b1295e4dcdd..5480fcb59bcb 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -211,6 +211,11 @@
- #define DWC3_GRXTHRCFG_RXPKTCNT(n) (((n) & 0xf) << 24)
- #define DWC3_GRXTHRCFG_PKTCNTSEL BIT(29)
- 
-+/* Global TX Threshold Configuration Register */
-+#define DWC3_GTXTHRCFG_MAXTXBURSTSIZE(n) (((n) & 0xff) << 16)
-+#define DWC3_GTXTHRCFG_TXPKTCNT(n) (((n) & 0xf) << 24)
-+#define DWC3_GTXTHRCFG_PKTCNTSEL BIT(29)
-+
- /* Global RX Threshold Configuration Register for DWC_usb31 only */
- #define DWC31_GRXTHRCFG_MAXRXBURSTSIZE(n)	(((n) & 0x1f) << 16)
- #define DWC31_GRXTHRCFG_RXPKTCNT(n)		(((n) & 0x1f) << 21)
--- 
-2.34.1
+The subject line should be "dmaengine: sprd: xxx", and please also 
+change all your following patches.
 
+With subject line fixed, you can add:
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+
+> ---
+>   drivers/dma/sprd-dma.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
+> index 2b639adb48ba..20c3cb1ef2f5 100644
+> --- a/drivers/dma/sprd-dma.c
+> +++ b/drivers/dma/sprd-dma.c
+> @@ -572,8 +572,7 @@ static void sprd_dma_stop(struct sprd_dma_chn *schan)
+>   	schan->cur_desc = NULL;
+>   }
+>   
+> -static bool sprd_dma_check_trans_done(struct sprd_dma_desc *sdesc,
+> -				      enum sprd_dma_int_type int_type,
+> +static bool sprd_dma_check_trans_done(enum sprd_dma_int_type int_type,
+>   				      enum sprd_dma_req_mode req_mode)
+>   {
+>   	if (int_type == SPRD_DMA_NO_INT)
+> @@ -619,8 +618,7 @@ static irqreturn_t dma_irq_handle(int irq, void *dev_id)
+>   			vchan_cyclic_callback(&sdesc->vd);
+>   		} else {
+>   			/* Check if the dma request descriptor is done. */
+> -			trans_done = sprd_dma_check_trans_done(sdesc, int_type,
+> -							       req_type);
+> +			trans_done = sprd_dma_check_trans_done(int_type, req_type);
+>   			if (trans_done == true) {
+>   				vchan_cookie_complete(&sdesc->vd);
+>   				schan->cur_desc = NULL;
