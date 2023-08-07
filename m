@@ -2,79 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF40C77235C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526B277235D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233174AbjHGMCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 08:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39022 "EHLO
+        id S233200AbjHGMDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231416AbjHGMCr (ORCPT
+        with ESMTP id S233265AbjHGMDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 08:02:47 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F95D1FC8;
-        Mon,  7 Aug 2023 05:02:06 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bb893e6365so27632825ad.2;
-        Mon, 07 Aug 2023 05:02:06 -0700 (PDT)
+        Mon, 7 Aug 2023 08:03:03 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5471988
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:02:21 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe44955decso5350532e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 05:02:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691409725; x=1692014525;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GUzrPfmRrMPt+i4UE/lAe9+fC5lOiUGAw2K7J8tfV2c=;
-        b=d2GE3aQo5mQfZvlEF7f4oSva4EKJvypvIGy6IuBTAsIUE3RDscNyHs6Em+I3dvnLEN
-         Obr3UC2AiaTlHrSkEsJ/2/LFeYfvI1DiNMw5FenkPOHuDossPPZc8ZfeJGsIy+R9emgH
-         S+zPKCf80hsaVWKsNUpdmTN80mS2TgCrpRIY5tVhvkJPAPvo5KeS0X2Jwyldn9yI+g6Q
-         Z55xF5Wu+GHCqh6GAMq9ECVbnwQqBc3oeadTkaDvDDfs5YsfG/1knWcS8z7eeL+BWZrT
-         egWAAOtE1/vlGanMsyRR3IJqlk1YK1GLJmry94YPMykoZPpGbxmbd5/l8MnQYh04wIDr
-         yzPA==
+        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1691409739; x=1692014539;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1XEWFnQ6wWwe1R7VCKVrV7mlKuDCVT8DIRevt6MRMfc=;
+        b=Vd8Pmqn/MOfQ6NfrYfFsg+cEovms7aUgZEdPiAL6FfaOo40DiYG688XYB7rQmhYZO/
+         LZHlbsaFI4SvrPa/hbjGmI3DXU4uPg5T17MHSIPaGnUXme+gdHLIZP2zQXPcxM8AXSK2
+         I35SG3AQ+njlSz9PhoHaL4gM7JVBt7MsDX+k7QdQQVvNodKFp/eOdvA8fFzB+5egyvtF
+         cGdC+EVQ5wV3cmbtLF6NhzEzxVbNbYtEgF/E8vbAN4jJYkR9ab72r3l8QH7uEYhAfznv
+         QGmC1uzALYB7YR7iOPBEIzJAA64sPvugXWtC7taQ3Vs8LCvHXi7XtnqShXBEmKWqRGPG
+         cSOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691409725; x=1692014525;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GUzrPfmRrMPt+i4UE/lAe9+fC5lOiUGAw2K7J8tfV2c=;
-        b=MXnsLErHJ9VZOsyQJLYTuC4A5hiBTRsVY58ivG6u0RFHg7ncdh8cy2x1eY5qDiPW4V
-         qS4bZvvUERtyilxlAxosNjdWooEgR2O80M4V7DN+kkJDEj5xJ+qaMMuZa7cGotUaVHQJ
-         kQ6Q9Pp6G7gLiKleXK9aeFPOaU5MbVNz+vhFjkrCkwzilYypWmjyZftkyi3vje7EzXtO
-         AUVHc2FvPz10FM8sCH5J1f5BPgt20LHMDnpXPw/halxd+ZvmUc+7+/M+TRhztExJ3bI0
-         21vMU5VuqwNvILaRbvHg+CabvpA/RjnKhT5gnchHz6bo29QcPwOuVa1tmXVdLOHR7lb7
-         qxRw==
-X-Gm-Message-State: AOJu0Ywqj9gFM3GMC4Y4d9rTPoS/mfkBZ83s2eQOjG9GoegtqZJ5EMTn
-        NIR9umm27tbHnxBN72xj5vw=
-X-Google-Smtp-Source: AGHT+IHWYNulalQMDqlB0MHADRqG5ScHqlrzXhiB9uHTqVA4K3003dWe9L2ntXhX6qq+PcVohtu+WA==
-X-Received: by 2002:a17:902:c101:b0:1b5:edd:e3c7 with SMTP id 1-20020a170902c10100b001b50edde3c7mr7864273pli.16.1691409724767;
-        Mon, 07 Aug 2023 05:02:04 -0700 (PDT)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id jc15-20020a17090325cf00b001b7ffca7dbcsm6752298plb.148.2023.08.07.05.02.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 05:02:04 -0700 (PDT)
-Message-ID: <5581418b-2e1c-6011-f0a4-580df7e00b44@gmail.com>
-Date:   Mon, 7 Aug 2023 20:01:55 +0800
+        d=1e100.net; s=20221208; t=1691409739; x=1692014539;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1XEWFnQ6wWwe1R7VCKVrV7mlKuDCVT8DIRevt6MRMfc=;
+        b=YHJ8FPE4qyzDNwF2bmt+iNys40dM+tsct1inZKIXyBFj1fgSdyqssnZTXx31y8DRN+
+         uVOikmKyFgcPhFb7nfOuh9hk8ed5P//QPvZEja/HqMgTnDH3XC3EoQIB77o/sH+Mr4K5
+         xue6kfbzaS5KlNBKeRiCU9+7C/oveU/7x/wkOjZoEZQ2Yv1XuVg5j1w9leUAuxoRl+cZ
+         WgHkknhEujUss+BpPV/qmOawTtotcknxbfv+ex5Vb6O87mGziI5oA29ngHH/knIFQCNy
+         CmX9oJMLXAVBT6sOceQKGlfXmocRWnGFV9QNSYX7M79+Y7tnR1GDWGAxOKElg+e57mze
+         CoWQ==
+X-Gm-Message-State: AOJu0YyKgTL/u2FAkm5TTXj8YuysDZBbnKskO+NrQzUVbsPKBfl7gxrs
+        76Ngb7M9qVO61tpkcomE7eqTnksP1jxrK3mexUZHvg==
+X-Google-Smtp-Source: AGHT+IF7cfXe0r1UAs/wpi+FxOMg+fD3LNT0Av1JAc5dMInD8cq8Khad5SYIpY/bZ/psux7GEkRDVH8mjkCDmzfYW+U=
+X-Received: by 2002:ac2:528f:0:b0:4fd:f6db:a7d9 with SMTP id
+ q15-20020ac2528f000000b004fdf6dba7d9mr1892044lfm.32.1691409738918; Mon, 07
+ Aug 2023 05:02:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH 19/27] KVM: x86/mmu: Use page-track notifiers iff there
- are external users
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Yan Zhao <yan.y.zhao@intel.com>,
-        Ben Gardon <bgardon@google.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20221223005739.1295925-1-seanjc@google.com>
- <20221223005739.1295925-20-seanjc@google.com>
-Content-Language: en-US
-From:   Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <20221223005739.1295925-20-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230807114344.15076-1-aboutphysycs@gmail.com>
+In-Reply-To: <20230807114344.15076-1-aboutphysycs@gmail.com>
+From:   Alexandru Ardelean <alex@shruggie.ro>
+Date:   Mon, 7 Aug 2023 15:02:08 +0300
+Message-ID: <CAH3L5QoC5rzTCr3SmODm49ms-ThAjaGkM2whoo2-=r9Pq_oUfQ@mail.gmail.com>
+Subject: Re: [PATCH] reset: zynqmp: removed unneeded call to platform_set_drvdata()
+To:     Andrei Coardos <aboutphysycs@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        michal.simek@amd.com, p.zabel@pengutronix.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,16 +68,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/12/2022 8:57 am, Sean Christopherson wrote:
-> +static inline void kvm_page_track_write(struct kvm_vcpu *vcpu, gpa_t gpa,
-> +					const u8 *new, int bytes)
-> +{
-> +	__kvm_page_track_write(vcpu, gpa, new, bytes);
-> +
-> +	kvm_mmu_track_write(vcpu, gpa, new, bytes);
-> +}
+On Mon, Aug 7, 2023 at 2:43=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.c=
+om> wrote:
+>
+> This function call was found to be unnecessary as there is no equivalent
+> platform_get_drvdata() call to access the private data of the driver. Als=
+o,
+> the private data is defined in this driver, so there is no risk of it bei=
+ng
+> accessed outside of this driver file.
+>
 
-The kvm_mmu_track_write() is only used for x86, where the incoming parameter
-"u8 *new" has not been required since 0e0fee5c539b ("kvm: mmu: Fix race in
-emulated page table writes"), please help confirm if it's still needed ? Thanks.
-A minor clean up is proposed.
+Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+
+> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+> ---
+>  drivers/reset/reset-zynqmp.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/reset/reset-zynqmp.c b/drivers/reset/reset-zynqmp.c
+> index 59dc0ff9af9e..510c168d635f 100644
+> --- a/drivers/reset/reset-zynqmp.c
+> +++ b/drivers/reset/reset-zynqmp.c
+> @@ -107,8 +107,6 @@ static int zynqmp_reset_probe(struct platform_device =
+*pdev)
+>         if (!priv->data)
+>                 return -EINVAL;
+>
+> -       platform_set_drvdata(pdev, priv);
+> -
+>         priv->rcdev.ops =3D &zynqmp_reset_ops;
+>         priv->rcdev.owner =3D THIS_MODULE;
+>         priv->rcdev.of_node =3D pdev->dev.of_node;
+> --
+> 2.34.1
+>
