@@ -2,119 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D49A27727B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207A77727B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbjHGO2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41420 "EHLO
+        id S233792AbjHGO20 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Aug 2023 10:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233843AbjHGO1z (ORCPT
+        with ESMTP id S233769AbjHGO2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:27:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A03910D4
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:27:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691418474; x=1722954474;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9Zlmippzoi9DzqmMZMkxhBrZSu0A1LY1gGDgN1+bH2U=;
-  b=XDxP2y9JzQ6NenxmIZ9EdyDGyR+JXoafyq+OzvmCWsRfiiScOAWzrpsn
-   FnKoEkaQvza/AwLaEB6TN9KhXFglosGQ7VVAMs9ajXKNFLwLYVU4VX1AO
-   usisNuyXqsj4yygJZ0bmKw7CnPCBMGymzZ3+qNvxutrF6hBtlrRp81pDn
-   ilqRCPlGSF3lobby8ySYiGXSospLu8UJbZ6oD81rCUkE7Z8DCHs5DV9di
-   v1i2lTezL5QVV1NwNfJrBtbh5WEBF/KzMvIv2VLP8MB8mLnQFYq9WgNGa
-   xGsBuZjb87JCSlxisIYvmpUxhCOdGbJexHGOiTArYpTd+jqcVf6o0doYR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="456938857"
-X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
-   d="scan'208";a="456938857"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:27:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="796341150"
-X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
-   d="scan'208";a="796341150"
-Received: from aamakine-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.48.92])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:27:50 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id EC01D10A122; Mon,  7 Aug 2023 17:27:47 +0300 (+03)
-Date:   Mon, 7 Aug 2023 17:27:47 +0300
-From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-To:     "Huang, Kai" <kai.huang@intel.com>
-Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "n.borisov.lkml@gmail.com" <n.borisov.lkml@gmail.com>
-Subject: Re: [PATCH v3 11/12] x86/virt/tdx: Allow SEAMCALL to handle #UD and
- #GP
-Message-ID: <20230807142747.7x6my6wp2nttto5y@box.shutemov.name>
-References: <cover.1690369495.git.kai.huang@intel.com>
- <659b10910c206cb4a8de314fcf7cd58814279aa6.1690369495.git.kai.huang@intel.com>
- <20230806114131.2ilofgmxhdaa2u6b@box.shutemov.name>
- <b15b45ff5dc2fcfa08dfb3171c269d9ab0349088.camel@intel.com>
- <20230807095307.l7khgiu5y55pqq22@box.shutemov.name>
- <c4b1ab39b8e6e03e40ca390a41c96d096325428f.camel@intel.com>
+        Mon, 7 Aug 2023 10:28:23 -0400
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26988AA;
+        Mon,  7 Aug 2023 07:28:22 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-686bea20652so4553930b3a.1;
+        Mon, 07 Aug 2023 07:28:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691418500; x=1692023300;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Oe/CN6/jCuhHF6++Sm5t23zpKw7bQYwVaG0CyMWDU64=;
+        b=IN81SCZEftK27d5We2DHPjzrQEeT2zGY3K6/pxcPEks4D+WqaQich5jB1ncONuRTHL
+         uaI8QkYJBvTHkOTLYnT4lW9PpschWneGL9dAFB1mPu5NcL7WLMo4fT2klLB4XzOWOjq0
+         YctS0UG6o8H0zZ4RhsivDNe8pNcRIpCeyDDfzxrDXdXOx8yv8T+1U7rcGbshHDc/UdhF
+         kG1Y4z+wnA4its0zJUVUDRnw5gFCGBNSRY9obvdrO1MwCPB5Wo5r0gt96LkpIEV7CZCA
+         VrbzF6dYXwrFYZ1j+NmmgvJLalcy9as4qoxwZYhgNUidvPP/GFUQOkl4gmGdZ594SZrU
+         i5rA==
+X-Gm-Message-State: AOJu0Yw6/wzwNtFQHPBmazve2H2/HlF2zMT6uAP2eh71rA0+cM8kIkez
+        WrghRMIXgQ1gEO7pDVsGgCipiT6y6OE5eQ==
+X-Google-Smtp-Source: AGHT+IGZ1hjWySWWaW3ScwMcO4sFbu7Zt6hRol07Gi2rE0Ma3vw8pHXzlDY4y742ViM9HGzo1Yb98w==
+X-Received: by 2002:a05:6a20:3d83:b0:137:db14:e88b with SMTP id s3-20020a056a203d8300b00137db14e88bmr13899304pzi.29.1691418500397;
+        Mon, 07 Aug 2023 07:28:20 -0700 (PDT)
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com. [209.85.216.46])
+        by smtp.gmail.com with ESMTPSA id 18-20020a631252000000b0056428865aadsm4867689pgs.82.2023.08.07.07.28.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 07:28:20 -0700 (PDT)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-267ffa7e441so3055236a91.1;
+        Mon, 07 Aug 2023 07:28:19 -0700 (PDT)
+X-Received: by 2002:a17:90a:ce96:b0:268:5bca:3bdf with SMTP id
+ g22-20020a17090ace9600b002685bca3bdfmr8841244pju.40.1691418499602; Mon, 07
+ Aug 2023 07:28:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c4b1ab39b8e6e03e40ca390a41c96d096325428f.camel@intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230807-pll-mipi_set_rate_parent-v6-0-f173239a4b59@oltmanns.dev> <20230807-pll-mipi_set_rate_parent-v6-2-f173239a4b59@oltmanns.dev>
+In-Reply-To: <20230807-pll-mipi_set_rate_parent-v6-2-f173239a4b59@oltmanns.dev>
+Reply-To: wens@csie.org
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Mon, 7 Aug 2023 22:28:08 +0800
+X-Gmail-Original-Message-ID: <CAGb2v67YWKbit+F1gOuZ2KFNjcD7NzwwKKpue=f8R2Se8Fg1ag@mail.gmail.com>
+Message-ID: <CAGb2v67YWKbit+F1gOuZ2KFNjcD7NzwwKKpue=f8R2Se8Fg1ag@mail.gmail.com>
+Subject: Re: [PATCH v6 02/11] clk: sunxi-ng: nkm: consider alternative parent
+ rates when determining rate
+To:     Frank Oltmanns <frank@oltmanns.dev>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Roman Beranek <me@crly.cz>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 12:41:13PM +0000, Huang, Kai wrote:
-> On Mon, 2023-08-07 at 12:53 +0300, kirill.shutemov@linux.intel.com wrote:
-> > On Mon, Aug 07, 2023 at 02:14:37AM +0000, Huang, Kai wrote:
-> > > On Sun, 2023-08-06 at 14:41 +0300, kirill.shutemov@linux.intel.com wrote:
-> > > > On Wed, Jul 26, 2023 at 11:25:13PM +1200, Kai Huang wrote:
-> > > > > @@ -20,6 +21,9 @@
-> > > > >  #define TDX_SW_ERROR			(TDX_ERROR | GENMASK_ULL(47, 40))
-> > > > >  #define TDX_SEAMCALL_VMFAILINVALID	(TDX_SW_ERROR | _UL(0xFFFF0000))
-> > > > >  
-> > > > > +#define TDX_SEAMCALL_GP			(TDX_SW_ERROR | X86_TRAP_GP)
-> > > > > +#define TDX_SEAMCALL_UD			(TDX_SW_ERROR | X86_TRAP_UD)
-> > > > 
-> > > > Is there any explantion how these error codes got chosen? Looks very
-> > > > arbitrary and may collide with other error codes in the future.
-> > > > 
-> > > 
-> > > Any error code has TDX_SW_ERROR is reserved to software use so the TDX module
-> > > can never return any error code which conflicts with those software ones.
-> > > 
-> > > For why to choose these two, I believe XOR the TRAP number to TDX_SW_ERROR is
-> > > the simplest way to achieve: 1) costing minimal assembly code; 2)
-> > > opportunistically handling #GP too, allowing caller to distinguish the two
-> > > errors.
-> > 
-> > My problem is that it is going to conflict with errno-based errors if we
-> > going to take this path in the future. Like these errors are the same as
-> > (TDX_SW_ERROR | EACCES) and (TDX_SW_ERROR | ENXIO) respectively.
-> > 
-> 
-> Is there any use case that we need those definitions?
-> 
-> Even we have such requirement in the future, we still have many bits available
-> after taking out the bits of TDX_SW_ERROR thus I assume we can do some bit shift
-> when this really happens?? 
+On Mon, Aug 7, 2023 at 8:44 PM Frank Oltmanns <frank@oltmanns.dev> wrote:
+>
+> In case the CLK_SET_RATE_PARENT flag is set, consider using a different
+> parent rate when determining a new rate.
+>
+> To find the best match for the requested rate, perform the following
+> steps for each NKM combination:
+>  - calculate the optimal parent rate,
+>  - find the best parent rate that the parent clock actually supports
+>  - use that parent rate to calculate the effective rate.
+>
+> In case the clk does not support setting the parent rate, use the same
+> algorithm as before.
+>
+> Acked-by: Maxime Ripard <mripard@kernel.org>
+> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
 
-Okay, fair enough.
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
