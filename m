@@ -2,65 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 526B277235D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39049772361
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233200AbjHGMDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 08:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39242 "EHLO
+        id S233210AbjHGMEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233265AbjHGMDD (ORCPT
+        with ESMTP id S231536AbjHGMEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 08:03:03 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5471988
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:02:21 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe44955decso5350532e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 05:02:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1691409739; x=1692014539;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1XEWFnQ6wWwe1R7VCKVrV7mlKuDCVT8DIRevt6MRMfc=;
-        b=Vd8Pmqn/MOfQ6NfrYfFsg+cEovms7aUgZEdPiAL6FfaOo40DiYG688XYB7rQmhYZO/
-         LZHlbsaFI4SvrPa/hbjGmI3DXU4uPg5T17MHSIPaGnUXme+gdHLIZP2zQXPcxM8AXSK2
-         I35SG3AQ+njlSz9PhoHaL4gM7JVBt7MsDX+k7QdQQVvNodKFp/eOdvA8fFzB+5egyvtF
-         cGdC+EVQ5wV3cmbtLF6NhzEzxVbNbYtEgF/E8vbAN4jJYkR9ab72r3l8QH7uEYhAfznv
-         QGmC1uzALYB7YR7iOPBEIzJAA64sPvugXWtC7taQ3Vs8LCvHXi7XtnqShXBEmKWqRGPG
-         cSOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691409739; x=1692014539;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1XEWFnQ6wWwe1R7VCKVrV7mlKuDCVT8DIRevt6MRMfc=;
-        b=YHJ8FPE4qyzDNwF2bmt+iNys40dM+tsct1inZKIXyBFj1fgSdyqssnZTXx31y8DRN+
-         uVOikmKyFgcPhFb7nfOuh9hk8ed5P//QPvZEja/HqMgTnDH3XC3EoQIB77o/sH+Mr4K5
-         xue6kfbzaS5KlNBKeRiCU9+7C/oveU/7x/wkOjZoEZQ2Yv1XuVg5j1w9leUAuxoRl+cZ
-         WgHkknhEujUss+BpPV/qmOawTtotcknxbfv+ex5Vb6O87mGziI5oA29ngHH/knIFQCNy
-         CmX9oJMLXAVBT6sOceQKGlfXmocRWnGFV9QNSYX7M79+Y7tnR1GDWGAxOKElg+e57mze
-         CoWQ==
-X-Gm-Message-State: AOJu0YyKgTL/u2FAkm5TTXj8YuysDZBbnKskO+NrQzUVbsPKBfl7gxrs
-        76Ngb7M9qVO61tpkcomE7eqTnksP1jxrK3mexUZHvg==
-X-Google-Smtp-Source: AGHT+IF7cfXe0r1UAs/wpi+FxOMg+fD3LNT0Av1JAc5dMInD8cq8Khad5SYIpY/bZ/psux7GEkRDVH8mjkCDmzfYW+U=
-X-Received: by 2002:ac2:528f:0:b0:4fd:f6db:a7d9 with SMTP id
- q15-20020ac2528f000000b004fdf6dba7d9mr1892044lfm.32.1691409738918; Mon, 07
- Aug 2023 05:02:18 -0700 (PDT)
+        Mon, 7 Aug 2023 08:04:10 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB6718E;
+        Mon,  7 Aug 2023 05:03:43 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0VpGaULx_1691409755;
+Received: from 30.221.158.57(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VpGaULx_1691409755)
+          by smtp.aliyun-inc.com;
+          Mon, 07 Aug 2023 20:02:36 +0800
+Message-ID: <110412ae-108a-27ed-b0f7-8f30eab122a2@linux.alibaba.com>
+Date:   Mon, 7 Aug 2023 20:02:34 +0800
 MIME-Version: 1.0
-References: <20230807114344.15076-1-aboutphysycs@gmail.com>
-In-Reply-To: <20230807114344.15076-1-aboutphysycs@gmail.com>
-From:   Alexandru Ardelean <alex@shruggie.ro>
-Date:   Mon, 7 Aug 2023 15:02:08 +0300
-Message-ID: <CAH3L5QoC5rzTCr3SmODm49ms-ThAjaGkM2whoo2-=r9Pq_oUfQ@mail.gmail.com>
-Subject: Re: [PATCH] reset: zynqmp: removed unneeded call to platform_set_drvdata()
-To:     Andrei Coardos <aboutphysycs@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        michal.simek@amd.com, p.zabel@pengutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.2
+Subject: Re: [PATCH v6 4/7] perf test: Fix matching_pmu
+To:     John Garry <john.g.garry@oracle.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Will Deacon <will@kernel.org>, James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+References: <1691394685-61240-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <1691394685-61240-5-git-send-email-renyu.zj@linux.alibaba.com>
+ <c791e9b5-e459-539b-d9f7-8808486a1aa8@oracle.com>
+From:   Jing Zhang <renyu.zj@linux.alibaba.com>
+In-Reply-To: <c791e9b5-e459-539b-d9f7-8808486a1aa8@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-11.7 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,38 +59,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 2:43=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.c=
-om> wrote:
->
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver. Als=
-o,
-> the private data is defined in this driver, so there is no risk of it bei=
-ng
-> accessed outside of this driver file.
->
 
-Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
 
-> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
-> ---
->  drivers/reset/reset-zynqmp.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/reset/reset-zynqmp.c b/drivers/reset/reset-zynqmp.c
-> index 59dc0ff9af9e..510c168d635f 100644
-> --- a/drivers/reset/reset-zynqmp.c
-> +++ b/drivers/reset/reset-zynqmp.c
-> @@ -107,8 +107,6 @@ static int zynqmp_reset_probe(struct platform_device =
-*pdev)
->         if (!priv->data)
->                 return -EINVAL;
->
-> -       platform_set_drvdata(pdev, priv);
-> -
->         priv->rcdev.ops =3D &zynqmp_reset_ops;
->         priv->rcdev.owner =3D THIS_MODULE;
->         priv->rcdev.of_node =3D pdev->dev.of_node;
-> --
-> 2.34.1
->
+在 2023/8/7 下午5:21, John Garry 写道:
+> On 07/08/2023 08:51, Jing Zhang wrote:
+>> The perf_pmu_test_event.matching_pmu didn't work. No matter what its
+>> value is, it does not affect the test results. So let matching_pmu be
+>> used for matching perf_pmu_test_pmu.pmu.name.
+>>
+>> Fixes: 5a65c0c8f6fd ("perf test: Re-add pmu-event uncore PMU alias test")
+> 
+> Is this tag correct, as I was not sure if this ever worked?
+> 
+
+I added the tag with reference to the previous fixed patch, and it seems correct.
+
+> BTW, I am not sure how useful fixes tags are for self-test anyway...
+> 
+
+I'm not sure if it's useful either, but I added it anyway.:)
+
+>> Signed-off-by: Jing Zhang<renyu.zj@linux.alibaba.com>
+> 
+> Reviewed-by: John Garry <john.g.garry@oracle.com>
+
+Thank you sincerely!
