@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 207A77727B5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64EE477285B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233792AbjHGO20 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Aug 2023 10:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41750 "EHLO
+        id S230033AbjHGO5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233769AbjHGO2X (ORCPT
+        with ESMTP id S229889AbjHGO4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:28:23 -0400
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26988AA;
-        Mon,  7 Aug 2023 07:28:22 -0700 (PDT)
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-686bea20652so4553930b3a.1;
-        Mon, 07 Aug 2023 07:28:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691418500; x=1692023300;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Oe/CN6/jCuhHF6++Sm5t23zpKw7bQYwVaG0CyMWDU64=;
-        b=IN81SCZEftK27d5We2DHPjzrQEeT2zGY3K6/pxcPEks4D+WqaQich5jB1ncONuRTHL
-         uaI8QkYJBvTHkOTLYnT4lW9PpschWneGL9dAFB1mPu5NcL7WLMo4fT2klLB4XzOWOjq0
-         YctS0UG6o8H0zZ4RhsivDNe8pNcRIpCeyDDfzxrDXdXOx8yv8T+1U7rcGbshHDc/UdhF
-         kG1Y4z+wnA4its0zJUVUDRnw5gFCGBNSRY9obvdrO1MwCPB5Wo5r0gt96LkpIEV7CZCA
-         VrbzF6dYXwrFYZ1j+NmmgvJLalcy9as4qoxwZYhgNUidvPP/GFUQOkl4gmGdZ594SZrU
-         i5rA==
-X-Gm-Message-State: AOJu0Yw6/wzwNtFQHPBmazve2H2/HlF2zMT6uAP2eh71rA0+cM8kIkez
-        WrghRMIXgQ1gEO7pDVsGgCipiT6y6OE5eQ==
-X-Google-Smtp-Source: AGHT+IGZ1hjWySWWaW3ScwMcO4sFbu7Zt6hRol07Gi2rE0Ma3vw8pHXzlDY4y742ViM9HGzo1Yb98w==
-X-Received: by 2002:a05:6a20:3d83:b0:137:db14:e88b with SMTP id s3-20020a056a203d8300b00137db14e88bmr13899304pzi.29.1691418500397;
-        Mon, 07 Aug 2023 07:28:20 -0700 (PDT)
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com. [209.85.216.46])
-        by smtp.gmail.com with ESMTPSA id 18-20020a631252000000b0056428865aadsm4867689pgs.82.2023.08.07.07.28.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 07:28:20 -0700 (PDT)
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-267ffa7e441so3055236a91.1;
-        Mon, 07 Aug 2023 07:28:19 -0700 (PDT)
-X-Received: by 2002:a17:90a:ce96:b0:268:5bca:3bdf with SMTP id
- g22-20020a17090ace9600b002685bca3bdfmr8841244pju.40.1691418499602; Mon, 07
- Aug 2023 07:28:19 -0700 (PDT)
+        Mon, 7 Aug 2023 10:56:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADC010F6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691420205; x=1722956205;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=SUHQAeoPZgXBUwMl+B0ovX2ZyA2nHmqJqeRcETZsoR0=;
+  b=mSDJx8vB41sP0glGZxvIJtSsWjGrSQWvySvdoz2kBWDsbDtPvS2XEv6U
+   ibKuSiHcpnoEn8jobPV0GTef5MCuYoIaoupnyqwVw8YISkPQiUUFBymVo
+   ymHpKmvQeUuqAlvQ4CDG43tN2ptVfdPkzIV99lfLt6cUUVPFo3yWXKcHJ
+   eZ7wQT2NvXSDbOlg0VyXd/CVJNhUfwshjgXIOzQemtDQFeI3yJOsIlm39
+   nuQwsL09V1i86BesN85SM2nZRnk2pCEdCiYXJBRtzj7QhFYG5pwOvvKxX
+   VJ1ci3MQc7vqfbBGAilwnpenJ5/ZcEW1RKVQ7MabpAHc/TdcU8mdFe/dl
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="434410643"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="434410643"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:56:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="1061623896"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="1061623896"
+Received: from hweelee-mobl.amr.corp.intel.com (HELO [10.209.181.215]) ([10.209.181.215])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:56:44 -0700
+Message-ID: <401de8fb-8d33-d699-ba09-a7b90356d915@linux.intel.com>
+Date:   Mon, 7 Aug 2023 09:28:35 -0500
 MIME-Version: 1.0
-References: <20230807-pll-mipi_set_rate_parent-v6-0-f173239a4b59@oltmanns.dev> <20230807-pll-mipi_set_rate_parent-v6-2-f173239a4b59@oltmanns.dev>
-In-Reply-To: <20230807-pll-mipi_set_rate_parent-v6-2-f173239a4b59@oltmanns.dev>
-Reply-To: wens@csie.org
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Mon, 7 Aug 2023 22:28:08 +0800
-X-Gmail-Original-Message-ID: <CAGb2v67YWKbit+F1gOuZ2KFNjcD7NzwwKKpue=f8R2Se8Fg1ag@mail.gmail.com>
-Message-ID: <CAGb2v67YWKbit+F1gOuZ2KFNjcD7NzwwKKpue=f8R2Se8Fg1ag@mail.gmail.com>
-Subject: Re: [PATCH v6 02/11] clk: sunxi-ng: nkm: consider alternative parent
- rates when determining rate
-To:     Frank Oltmanns <frank@oltmanns.dev>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Roman Beranek <me@crly.cz>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v3 9/9] ALSA: hda/i915: Remove extra argument from
+ snd_hdac_i915_init
+Content-Language: en-US
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        alsa-devel@alsa-project.org
+Cc:     Maarten Lankhorst <dev@lankhorst.se>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
+ <20230807090045.198993-10-maarten.lankhorst@linux.intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230807090045.198993-10-maarten.lankhorst@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 8:44 PM Frank Oltmanns <frank@oltmanns.dev> wrote:
->
-> In case the CLK_SET_RATE_PARENT flag is set, consider using a different
-> parent rate when determining a new rate.
->
-> To find the best match for the requested rate, perform the following
-> steps for each NKM combination:
->  - calculate the optimal parent rate,
->  - find the best parent rate that the parent clock actually supports
->  - use that parent rate to calculate the effective rate.
->
-> In case the clk does not support setting the parent rate, use the same
-> algorithm as before.
->
-> Acked-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
 
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+
+
+> @@ -172,18 +172,10 @@ int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
+>  	acomp = bus->audio_component;
+>  	if (!acomp)
+>  		return -ENODEV;
+> -	if (allow_modprobe && !acomp->ops) {
+> -		if (!IS_ENABLED(CONFIG_MODULES) ||
+> -		    !request_module("i915")) {
+> -			/* 60s timeout */
+> -			wait_for_completion_killable_timeout(&acomp->master_bind_complete,
+> -							     msecs_to_jiffies(60 * 1000));
+
+heads-up that I have a conflicting patch to make the 60s delay
+configurable, see https://github.com/thesofproject/linux/pull/4505
+
+> -		}
+> -	}
+>  	if (!acomp->ops) {
+> -		int err = allow_modprobe ? -ENODEV : -EPROBE_DEFER;
+>  		snd_hdac_acomp_exit(bus);
+> -		return dev_err_probe(bus->dev, err, "couldn't bind with audio component\n");
+> +		return dev_err_probe(bus->dev, -EPROBE_DEFER,
+> +				     "couldn't bind with audio component\n");
+>  	}
+>  	return 0;
+>  }
