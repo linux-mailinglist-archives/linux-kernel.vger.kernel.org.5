@@ -2,66 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7F0772C79
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD59772C82
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbjHGRPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
+        id S231899AbjHGRQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbjHGRPh (ORCPT
+        with ESMTP id S231827AbjHGRQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:15:37 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6144419A2
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:15:18 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6b9a2416b1cso4072416a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:15:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691428517; x=1692033317;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5kFXDoHF7GQ9pqFFzxyYijKExHAUDXpf8bLNBIMwDQc=;
-        b=j4omNGFfHvaJj3AnMmflJ8VRfcki1f4QtDauC81JM+6mpZqIjmSRLFdAJ6sCbCRglX
-         cN37W4uaQFKQ/eK5tQ9P6W/89vbqENJteuDp1IgSM3HiHyrtnaITT0x8NUlkO+4JueNo
-         idOJ/K9S+oDMT8ltHPmUVe3LRjYClIrVFih9B0+554N1Nc0EKktiSjkSrFfp/mz5wKZM
-         Cm53anU91soLJFagVTuQOQZ3Bcp5BO4z1lQTTgdZA5j3yEtJQpgkOHe0rnJAU5cr4jlj
-         B72dgfIj77DUl88zbwYqZp+p9tNuoz07zQJ4tnobJ6BTGbYLhfLfFlxtadlHID0gmoXN
-         vXig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691428517; x=1692033317;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5kFXDoHF7GQ9pqFFzxyYijKExHAUDXpf8bLNBIMwDQc=;
-        b=QFRvO5EI0ZQmJmAb6XGAfwfG6j8EwlKZA5QSC4Mj2VfyipuE1iVWeMFxJ4DxjrnZDa
-         Rlzlc5aD+hUEuq60nsYepPYBG1sv8ybZeUtmZqCYt5TG/skmYN9JMGjmMZgJHx24Wis+
-         krAotpGZ9OEPV6JepVEXmCTocWvrHDkmfd9qLmiw4WvSgEysJMUEHPU9FEzbEZZd6qze
-         7+qu1dLp6boCqBy6DLRucO0xIrV2XFZ7XKIQqGyfRQyZ9vhgirEQDv4bLI2m2BtxqGuM
-         7HSB2ZiPo68wbryXZAZd4v/D+goCeXn9cOI6dHTaTPKtMQd8gM8iIuOMOgP8vfl4Kozn
-         1L2Q==
-X-Gm-Message-State: AOJu0YyskxuSKAUNHAigxPPRFQXJ7jvVsn4uqCNbtrk0P+bKwGgLbINh
-        taJvI6Ao0r9vbsu570hGbau/2veqXtMU+G84JK87DA/V
-X-Google-Smtp-Source: AGHT+IHcvWbklkO9vjl1KqJpyj7I8Hljj5IDdhpuX3IRLnuKNb8XtBUIRPgPCQCqfMbxqlSjM0DOG2YxjYtujvCBJT0=
-X-Received: by 2002:a05:6870:d154:b0:1be:f8d9:7bdd with SMTP id
- f20-20020a056870d15400b001bef8d97bddmr11390360oac.6.1691428516729; Mon, 07
- Aug 2023 10:15:16 -0700 (PDT)
+        Mon, 7 Aug 2023 13:16:04 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D581FE0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:15:34 -0700 (PDT)
+Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <m.felsch@pengutronix.de>)
+        id 1qT3p6-0001hr-6i; Mon, 07 Aug 2023 19:15:16 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        laurent.pinchart@ideasonboard.com, dan.scally@ideasonboard.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v3 1/4] arm64: dts: imx8mp-debix: remove unused fec pinctrl node
+Date:   Mon,  7 Aug 2023 19:15:10 +0200
+Message-Id: <20230807171513.156907-1-m.felsch@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20230802062025.11332-1-sunran001@208suo.com>
-In-Reply-To: <20230802062025.11332-1-sunran001@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 13:15:05 -0400
-Message-ID: <CADnq5_PFMaDMHX_VfpBAfVusz-8XPVu3C-WP9ugCrfDx1HbHrw@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Clean up errors in display_mode_vba_30.c
-To:     Ran Sun <sunran001@208suo.com>
-Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::28
+X-SA-Exim-Mail-From: m.felsch@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,48 +45,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+The SoM A uses the EQOS ethernet interface and not the FEC, so drop the
+interface pinctrl node from the device tree.
 
-On Wed, Aug 2, 2023 at 2:20=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
-:
->
-> Fix the following errors reported by checkpatch:
->
-> ERROR: else should follow close brace '}'
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->  .../gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c  | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30=
-.c b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
-> index 9af1a43c042b..ad741a723c0e 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
-> @@ -784,8 +784,7 @@ static unsigned int dscComputeDelay(enum output_forma=
-t_class pixelFormat, enum o
->                 Delay =3D Delay + 1;
->                 //   sft
->                 Delay =3D Delay + 1;
-> -       }
-> -       else {
-> +       } else {
->                 //   sfr
->                 Delay =3D Delay + 2;
->                 //   dsccif
-> @@ -3489,8 +3488,7 @@ static double TruncToValidBPP(
->                 if (Format =3D=3D dm_n422) {
->                         MinDSCBPP =3D 7;
->                         MaxDSCBPP =3D 2 * DSCInputBitPerComponent - 1.0 /=
- 16.0;
-> -               }
-> -               else {
-> +               } else {
->                         MinDSCBPP =3D 8;
->                         MaxDSCBPP =3D 3 * DSCInputBitPerComponent - 1.0 /=
- 16.0;
->                 }
-> --
-> 2.17.1
->
+Fixes: c86d350aae68 ("arm64: dts: Add device tree for the Debix Model A Board")
+Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+---
+Changelog:
+
+v3:
+- add Laurents rb tag
+- v2-link: https://lore.kernel.org/all/20230717165127.2882535-1-m.felsch@pengutronix.de/
+
+v2:
+- new patch
+
+ .../dts/freescale/imx8mp-debix-model-a.dts    | 22 -------------------
+ 1 file changed, 22 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-debix-model-a.dts b/arch/arm64/boot/dts/freescale/imx8mp-debix-model-a.dts
+index b4409349eb3f..1004ab0abb13 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-debix-model-a.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-debix-model-a.dts
+@@ -355,28 +355,6 @@ MX8MP_IOMUXC_SAI1_TXD6__GPIO4_IO18				0x19
+ 		>;
+ 	};
+ 
+-	pinctrl_fec: fecgrp {
+-		fsl,pins = <
+-			MX8MP_IOMUXC_SAI1_RXD2__ENET1_MDC				0x3
+-			MX8MP_IOMUXC_SAI1_RXD3__ENET1_MDIO				0x3
+-			MX8MP_IOMUXC_SAI1_RXD4__ENET1_RGMII_RD0				0x91
+-			MX8MP_IOMUXC_SAI1_RXD5__ENET1_RGMII_RD1				0x91
+-			MX8MP_IOMUXC_SAI1_RXD6__ENET1_RGMII_RD2				0x91
+-			MX8MP_IOMUXC_SAI1_RXD7__ENET1_RGMII_RD3				0x91
+-			MX8MP_IOMUXC_SAI1_TXC__ENET1_RGMII_RXC				0x91
+-			MX8MP_IOMUXC_SAI1_TXFS__ENET1_RGMII_RX_CTL			0x91
+-			MX8MP_IOMUXC_SAI1_TXD0__ENET1_RGMII_TD0				0x1f
+-			MX8MP_IOMUXC_SAI1_TXD1__ENET1_RGMII_TD1				0x1f
+-			MX8MP_IOMUXC_SAI1_TXD2__ENET1_RGMII_TD2				0x1f
+-			MX8MP_IOMUXC_SAI1_TXD3__ENET1_RGMII_TD3				0x1f
+-			MX8MP_IOMUXC_SAI1_TXD4__ENET1_RGMII_TX_CTL			0x1f
+-			MX8MP_IOMUXC_SAI1_TXD5__ENET1_RGMII_TXC				0x1f
+-			MX8MP_IOMUXC_SAI1_RXD1__ENET1_1588_EVENT1_OUT			0x1f
+-			MX8MP_IOMUXC_SAI1_RXD0__ENET1_1588_EVENT1_IN			0x1f
+-			MX8MP_IOMUXC_SAI1_TXD7__GPIO4_IO19				0x19
+-		>;
+-	};
+-
+ 	pinctrl_gpio_led: gpioledgrp {
+ 		fsl,pins = <
+ 			MX8MP_IOMUXC_NAND_READY_B__GPIO3_IO16				0x19
+-- 
+2.39.2
+
