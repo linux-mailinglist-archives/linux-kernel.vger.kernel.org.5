@@ -2,79 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB36772922
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B24C77292B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbjHGP1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50996 "EHLO
+        id S230055AbjHGP1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 11:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbjHGP1b (ORCPT
+        with ESMTP id S230135AbjHGP1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:27:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507AA1980
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:27:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7cRgz4y4UNjYdJkJx9xCOww5SjVBcnlVxBW3449Tu/s=; b=SQBe4ik5EZj5PnSBGnEHe73Ch+
-        AitjglaNlvx5VJOcJyldY9PzTpbCWI1Ie4vUBUF5mIt7vwaRsyLSSWUCokPsjcOSpegW8fc9zyt3s
-        rWfJqNMH2VANk8ptl5T5c9jm/PKZpodYE25dNBq7PSFDjcVnn0WcoTd2XYZeN77vvWHzfXFihPm/e
-        NsuXrgZNuya4dF0yF0c4B/FSSHJPrOyThy7bK/pFSah6EzZ9nyJ5pEJ3P1YKEAArs6imRkUfC0fxL
-        phs/7AEqVS17viZ1k7goL8Xnv/qXu+or9ZPa/9x9PTyXBwnk+tdbgOBs7ntpZqJPX2loF7DyVouZS
-        r3K4EltQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qT28R-00BrKo-2N; Mon, 07 Aug 2023 15:27:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3AE2D30014A;
-        Mon,  7 Aug 2023 17:27:06 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1A41720299019; Mon,  7 Aug 2023 17:27:06 +0200 (CEST)
-Date:   Mon, 7 Aug 2023 17:27:06 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Feng Tang <feng.tang@intel.com>,
-        Andy Shevchenko <andy@infradead.org>
-Subject: Re: [patch 25/53] x86/acpi: Use new APIC registration functions
-Message-ID: <20230807152706.GC569857@hirez.programming.kicks-ass.net>
-References: <20230807130108.853357011@linutronix.de>
- <20230807135027.744726431@linutronix.de>
+        Mon, 7 Aug 2023 11:27:46 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0851735
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:27:40 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-63cf28db24cso28308466d6.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 08:27:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691422059; x=1692026859;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dUwZAwY3w/DCovXOhpFaYpG5BJu/scVYyvQE2nkhLjk=;
+        b=ZWONZDbN4DLl+GxuPDPb/kn5iUAK3wkJvTpyZc/I7t8nLVCDHq2ZUaCzaEQuUmk0Z3
+         FFH5Jy/FCYU7NiHCsaWnsZTfgKzvSEgCW+jdZI978Hx3OIc+KK8BVtHtOAvxkmqsMAO+
+         +BvlMicPvzgF/8u7YljscTAnlgLUHcQ8qY9ar/ixqFNLXc7BiPGedFRdgbGnXtY8aTOU
+         sQ83vU/dSwG3USoQSXU6I1e4FCZvhGpYR3DDEGMJ00z1P8XCjSc5JZa00wGMNlQlKttO
+         o2PoISTP8orIkHdyWKCib5MXsvGIo5oY8KQTKPPsPNLyS6LIxu8K+GCS4Qf45pyp750u
+         VxLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691422059; x=1692026859;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dUwZAwY3w/DCovXOhpFaYpG5BJu/scVYyvQE2nkhLjk=;
+        b=AwX6Nq1X+MpyFKtuOJu7tSsK/CjXbuNJLktJxvQmdJ5oldKLpHKoKvsjlv7j2LnKb9
+         gAjlejkkJFuoltwdKHOa4cBg6ihKcdshbRZIQsDXzKVA4S8yzJej7qqKDimb1aOcXgB4
+         Bj/sQXQh9YZsQVdp3yWXTYsUAwPNG9/4P62g5V1aDP3ib6x9SkoHAk55ljknopGvfnhK
+         9I3XHNh4YIKiBZ4d+3vjLRGpwuFZHyJTrHYKWd3Z9e5D5lW5KIjA4UM29poZdz7ar4KN
+         tnPVhH8VCwT5mPZ2cqoHIug6PicErBWktQGDQTLU36zzigc8W3BHEIxosAKgvzZESXYR
+         JKPg==
+X-Gm-Message-State: AOJu0YxM928MTACO37MudbjNtHNhiWsfuaRyzvYtr48Y04nOKUGj6eOf
+        ocop8Vj/YlujrFmd2s1q88MAlr7lMjb2MPgJRwonVg==
+X-Google-Smtp-Source: AGHT+IGoaH+s4R0EmOFvCPGZkJiL5/BBp3MuHbjbOs5J/ajqWaKGRjUz2hwympLNGjtDR6ahbq+YlO+vvxuAv1fnkUU=
+X-Received: by 2002:a05:6214:580b:b0:63d:36ab:93e6 with SMTP id
+ mk11-20020a056214580b00b0063d36ab93e6mr9060294qvb.65.1691422059150; Mon, 07
+ Aug 2023 08:27:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807135027.744726431@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230804090621.400-1-elver@google.com> <87il9rgjvw.fsf@oldenburg.str.redhat.com>
+In-Reply-To: <87il9rgjvw.fsf@oldenburg.str.redhat.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 7 Aug 2023 08:27:27 -0700
+Message-ID: <CAKwvOdm7cTWmp-wAgePBQpa19=PLaYWh6WxJbNUcasSn87ecnw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] compiler_types: Introduce the Clang
+ __preserve_most function attribute
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, linux-toolchains@vger.kernel.org,
+        Jakub Jelinek <jakub@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 03:53:12PM +0200, Thomas Gleixner wrote:
-> +static __init void acpi_register_lapic(u32 apic_id, u32 acpi_id, bool present)
+On Mon, Aug 7, 2023 at 4:41=E2=80=AFAM Florian Weimer <fweimer@redhat.com> =
+wrote:
+>
+> * Marco Elver:
+>
+> > [1]: "On X86-64 and AArch64 targets, this attribute changes the calling
+> > convention of a function. The preserve_most calling convention attempts
+> > to make the code in the caller as unintrusive as possible. This
+> > convention behaves identically to the C calling convention on how
+> > arguments and return values are passed, but it uses a different set of
+> > caller/callee-saved registers. This alleviates the burden of saving and
+> > recovering a large register set before and after the call in the
+> > caller."
+> >
+> > [1] https://clang.llvm.org/docs/AttributeReference.html#preserve-most
+>
+> You dropped the interesting part:
+>
+> | If the arguments are passed in callee-saved registers, then they will
+> | be preserved by the callee across the call. This doesn=E2=80=99t apply =
+for
+> | values returned in callee-saved registers.
+> |
+> |  =C2=B7  On X86-64 the callee preserves all general purpose registers, =
+except
+> |     for R11. R11 can be used as a scratch register. Floating-point
+> |     registers (XMMs/YMMs) are not preserved and need to be saved by the
+> |     caller.
+> |
+> |  =C2=B7  On AArch64 the callee preserve all general purpose registers, =
+except
+> |     X0-X8 and X16-X18.
+>
+> Ideally, this would be documented in the respective psABI supplement.
+> I filled in some gaps and filed:
+>
+>   Document the ABI for __preserve_most__ function calls
+>   <https://gitlab.com/x86-psABIs/x86-64-ABI/-/merge_requests/45>
+>
+> Doesn't this change impact the kernel module ABI?
+>
+> I would really expect a check here
+>
+> > +#if __has_attribute(__preserve_most__)
+> > +# define __preserve_most notrace __attribute__((__preserve_most__))
+> > +#else
+> > +# define __preserve_most
+> > +#endif
+>
+> that this is not a compilation for a module.  Otherwise modules built
+> with a compiler with __preserve_most__ attribute support are
+> incompatible with kernels built with a compiler without that attribute.
 
-just stating on the record what I said during review last week: whoever
-caused these APIC and ACPI names to go together was a sadist.
+Surely the Linux kernel has a stable ABI for modules right? Nah.
+https://www.kernel.org/doc/Documentation/process/stable-api-nonsense.rst
 
-Same 4 letters but permuted differently :-/ this is so very hard to keep
-straight.
+>
+> Thanks,
+> Florian
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
