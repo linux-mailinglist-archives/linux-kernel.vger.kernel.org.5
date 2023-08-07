@@ -2,113 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24362772855
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B5F772738
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbjHGO4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58468 "EHLO
+        id S231982AbjHGONW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:13:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjHGO4m (ORCPT
+        with ESMTP id S229517AbjHGONU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:56:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C0B10D1
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:56:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691420201; x=1722956201;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=SaHNAycvvF2ElR8nisXlQ70kDCQK0462eRAig4OuDxs=;
-  b=HqvMqJrvVbLKNXl5JHA3wR4EDl3CjFDlxkYtkIpi531O+azgFf4cHb7L
-   sPiQKNT/lLML9fKmTW8QJPGrrrLZ1ByVHBxMd52TUS/TEPCmqdCtCVRCp
-   RIcl25YXcwvZ82pG8EpPzogsUsAV7pz/xJtEc8VMrWnWAOY2ChVehb2wI
-   8ZIt0w1VKmWFhDWRc2WfUtTYeuRiUoWCd0t0zMgJ+9hdHx+PaUsp/iUJW
-   Yi8RebQt133pdupIUSeyRkrdEcfaSotAROwPkG8SegQW/D4GqbsJSQIuc
-   U7w2XpB5jwUTm2o7DjrI4zFIZbQsZnNgDlS2wKgxWepXDzJWQmZDK1w8Z
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="434410600"
-X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
-   d="scan'208";a="434410600"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:56:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="1061623874"
-X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
-   d="scan'208";a="1061623874"
-Received: from hweelee-mobl.amr.corp.intel.com (HELO [10.209.181.215]) ([10.209.181.215])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:56:38 -0700
-Message-ID: <92d03e5e-c0b4-98ef-5f02-6088b4a0e5f8@linux.intel.com>
-Date:   Mon, 7 Aug 2023 09:11:47 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v3 4/9] ALSA: hda/i915: Allow xe as match for
- i915_component_master_match
-Content-Language: en-US
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        alsa-devel@alsa-project.org
-Cc:     Maarten Lankhorst <dev@lankhorst.se>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
- <20230807090045.198993-5-maarten.lankhorst@linux.intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230807090045.198993-5-maarten.lankhorst@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
+        Mon, 7 Aug 2023 10:13:20 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B21A4;
+        Mon,  7 Aug 2023 07:13:19 -0700 (PDT)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 377EA8Jx027339;
+        Mon, 7 Aug 2023 14:12:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=n84BQ09XyZvS5KUY2JrmSWiOSun89MF1BFDg9O40w/Q=;
+ b=qQj+gKQWBPPopqtFLXQxL2+L26wqPCnUNRTVuIqD46ZluBWBLjlqCNmEKIq2RP9BF76p
+ C8YuhGSPgCGMNJNFzBRRTpxTtsAVzapMTWLk4Dnv4PvH9c/D3QfHhAAuJ2/fn10NhTwj
+ viU/DmUwuYVWfSvk4VuxnyVZr8vT1P/gW3jivDBUr3puhAfYcSkXAnaZWIbp5LJIzDcJ
+ WnDlYP4NFxlQlsKLCr7fZX9S+IQHwMTwc9YSgZCwNQIP2G5pZ/U4/gWa/E8XWfI62OeZ
+ 0n1EgWoUnWszxF6Kq2LiQtJ3MDYRsj32LIO2gheG/BSZux2SrsAS9hR4dqlFbRoaWQo1 +g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sb209r6ke-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Aug 2023 14:12:20 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 377EBKEP032235;
+        Mon, 7 Aug 2023 14:12:19 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sb209r6jv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Aug 2023 14:12:19 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 377DKBhs000404;
+        Mon, 7 Aug 2023 14:12:18 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sa28k5hj5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Aug 2023 14:12:18 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 377ECIIC1638968
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 7 Aug 2023 14:12:18 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D6B758045;
+        Mon,  7 Aug 2023 14:12:18 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0EC9F58052;
+        Mon,  7 Aug 2023 14:12:17 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.107.174])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  7 Aug 2023 14:12:16 +0000 (GMT)
+Message-ID: <53b8559db650886f013d5e91704ce8f4df77d815.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 RESEND] kexec_lock: Replace kexec_mutex() by
+ kexec_lock() in two comments
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Wenyu Liu <liuwenyu7@huawei.com>, ebiederm@xmission.com,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org
+Cc:     akpm@linux-foundation.org, vschneid@redhat.com,
+        pmenzel@molgen.mpg.de, bhe@redhat.com, louhongxiang@huawei.com
+Date:   Mon, 07 Aug 2023 10:12:16 -0400
+In-Reply-To: <20230807025206.3682381-1-liuwenyu7@huawei.com>
+References: <20230807025206.3682381-1-liuwenyu7@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 3MTXnmgIWlUckT8r0RJNoUpKvEmNRFKG
+X-Proofpoint-ORIG-GUID: Seemm6eNkL6LT_0YpO8DJa7mQCDyrpLg
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-07_14,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=930
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 phishscore=0 clxscore=1011 mlxscore=0 adultscore=0
+ spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308070130
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/7/23 04:00, Maarten Lankhorst wrote:
-> xe is a new driver for intel GPU's that shares the sound related code
-> with i915.
+On Mon, 2023-08-07 at 10:52 +0800, Wenyu Liu wrote:
+> kexec_mutex is replaced by an atomic variable
+> in 05c6257433b (panic, kexec: make __crash_kexec() NMI safe).
 > 
-> Don't allow it to be modprobed though; the module is not upstream yet
-> and we should exclusively use the EPROBE_DEFER mechanism.
-
-The wording hasn't changed and remains confusing, likely to trigger all
-paranoia triplines. Consider rewording if there's an update.
-
-> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> ---
->  sound/hda/hdac_i915.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> But there are still two comments that referenced kexec_mutex,
+> replace them by kexec_lock.
 > 
-> diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-> index 961fcd3397f4..12c1f8d93499 100644
-> --- a/sound/hda/hdac_i915.c
-> +++ b/sound/hda/hdac_i915.c
-> @@ -115,7 +115,8 @@ static int i915_component_master_match(struct device *dev, int subcomponent,
->  	hdac_pci = to_pci_dev(bus->dev);
->  	i915_pci = to_pci_dev(dev);
->  
-> -	if (!strcmp(dev->driver->name, "i915") &&
-> +	if ((!strcmp(dev->driver->name, "i915") ||
-> +		 !strcmp(dev->driver->name, "xe")) &&
->  	    subcomponent == I915_COMPONENT_AUDIO &&
->  	    connectivity_check(i915_pci, hdac_pci))
->  		return 1;
+> Signed-off-by: Wenyu Liu <liuwenyu7@huawei.com>
+> Acked-by: Baoquan He <bhe@redhat.com>
+> Acked-by: Paul Menzel <pmenzel@molgen.mpg.de>
+
+Thank you. It's now queued 
+https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git/log/?h=next-integrity
+.
+
+--
+thanks,
+
+Mimi
+
