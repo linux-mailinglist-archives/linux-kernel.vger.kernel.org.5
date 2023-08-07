@@ -2,134 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0335771B66
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAA9771B77
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 09:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbjHGHWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 03:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
+        id S229491AbjHGH1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 03:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjHGHWd (ORCPT
+        with ESMTP id S231226AbjHGH1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 03:22:33 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 811C3A7
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 00:22:28 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qSuZN-0005Ox-Gr; Mon, 07 Aug 2023 09:22:25 +0200
-Message-ID: <b76b886f-daa8-adee-c776-43655ff2a977@leemhuis.info>
-Date:   Mon, 7 Aug 2023 09:22:24 +0200
+        Mon, 7 Aug 2023 03:27:42 -0400
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C59171B
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 00:27:41 -0700 (PDT)
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3a1bcdd0966so7899166b6e.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 00:27:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691393260; x=1691998060;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jt1EHUJ/Ui1IKUmjrZnqy7gNDh7T+l9iYKNdAfqS/e4=;
+        b=RlcxwaFF56Z8+CnYxMW+0A9SkMrRlRZg4t8hK6GIk+oBSQViweWkFrAKsqKZ0fSbD7
+         s+f+7+XuPIFKYV4OnhVBymfkupYDHwR1Q+obIfIA2t1YA/hWwGfVV1sALmMZdztGpNZJ
+         k4DkpI9fOT2G4724nM8UHBwC30bkMX0YWzUmBbBnX9zR5e9idfqz3cJnauYpYoCDIvxu
+         j0h8AIPh8LEvLv2gcLayZpg7/ZAJlpULdNwXoGznvRTYHrelYEngRNU+TNWgfxssygC1
+         9d1n3NG5Niq9A42I4wL4V/pdcsTd4o3hoOaHiujx8bmErnTQK92v1tFwsfeefu3sJCcu
+         VNLw==
+X-Gm-Message-State: AOJu0YwxjioXmidtnZGhQMDor0+/DT9YDrLxwf8wm1DhxhEoUFwohub1
+        CV3w1dX3GMIX8eVnRq6IdREYKfIR/SnrByiwvC6cnpUJQFMU
+X-Google-Smtp-Source: AGHT+IFPD/rYsXyVYZQBmlTvhb28DZxR9f5/A/V01ZJcmvPlgZ+lzf54RZ0T61Y6YGa0sVFNOHtIdwfP/EbmBAUv2UC3Cb8W3uwY
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] nmi_backtrace: fix trigger_allbutcpu_cpu_backtrace() stub
- definition
-Content-Language: en-US, de-DE
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Petr Mladek <pmladek@suse.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org
-References: <20230807071109.3386799-1-arnd@kernel.org>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Autocrypt: addr=linux@leemhuis.info; keydata=
- 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 n7RI
-In-Reply-To: <20230807071109.3386799-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1691392948;2ff2b519;
-X-HE-SMSGID: 1qSuZN-0005Ox-Gr
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:2015:b0:3a7:3737:60d1 with SMTP id
+ q21-20020a056808201500b003a7373760d1mr14872337oiw.8.1691393260415; Mon, 07
+ Aug 2023 00:27:40 -0700 (PDT)
+Date:   Mon, 07 Aug 2023 00:27:40 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007673490602502e68@google.com>
+Subject: [syzbot] Monthly f2fs report (Aug 2023)
+From:   syzbot <syzbot+list9eec7f8f6d11cff003fa@syzkaller.appspotmail.com>
+To:     chao@kernel.org, jaegeuk@kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.08.23 09:10, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The prototype for the extern declaration was changed, but the one for
-> the empty stub is now missing an unused argument:
-> 
-> kernel/watchdog.c: In function 'watchdog_timer_fn':
-> kernel/watchdog.c:521:4: error: too many arguments to function 'trigger_allbutcpu_cpu_backtrace'
->   521 |    trigger_allbutcpu_cpu_backtrace(smp_processor_id());
->       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from kernel/watchdog.c:17:
-> include/linux/nmi.h:193:20: note: declared here
->   193 | static inline bool trigger_allbutcpu_cpu_backtrace(void)
->       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hello f2fs maintainers/developers,
 
-Thx for this, ran into the same problem while building -next today:
-https://copr-be.cloud.fedoraproject.org/results/@kernel-vanilla/next/fedora-rawhide-aarch64/06247267-next-next-all/build.log.gz
+This is a 31-day syzbot report for the f2fs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/f2fs
 
-FWIW, it seems Andrew had noticed it and a fix ready:
-https://lore.kernel.org/all/20230805100033.37f1df3bf720a7c21ad8980d@linux-foundation.org/
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 11 issues are still open and 31 have been fixed so far.
 
-Maybe it was just not committed or something?
+Some of the still happening issues:
 
-Ciao, Thorsten
+Ref Crashes Repro Title
+<1> 11074   Yes   possible deadlock in f2fs_add_inline_entry
+                  https://syzkaller.appspot.com/bug?extid=a4976ce949df66b1ddf1
+<2> 1573    Yes   possible deadlock in f2fs_getxattr
+                  https://syzkaller.appspot.com/bug?extid=e5600587fa9cbf8e3826
+<3> 236     Yes   INFO: task hung in f2fs_balance_fs
+                  https://syzkaller.appspot.com/bug?extid=8b85865808c8908a0d8c
+<4> 5       Yes   UBSAN: array-index-out-of-bounds in f2fs_iget
+                  https://syzkaller.appspot.com/bug?extid=601018296973a481f302
 
-> Fixes: 0ca1d340a231e ("nmi_backtrace: allow excluding an arbitrary CPU")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/linux/nmi.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/nmi.h b/include/linux/nmi.h
-> index 7cf7801856a1b..e92e378df000f 100644
-> --- a/include/linux/nmi.h
-> +++ b/include/linux/nmi.h
-> @@ -190,7 +190,7 @@ static inline bool trigger_all_cpu_backtrace(void)
->  {
->  	return false;
->  }
-> -static inline bool trigger_allbutcpu_cpu_backtrace(void)
-> +static inline bool trigger_allbutcpu_cpu_backtrace(int exclude_cpu)
->  {
->  	return false;
->  }
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
