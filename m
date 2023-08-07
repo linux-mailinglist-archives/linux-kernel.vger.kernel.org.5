@@ -2,188 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF62772C0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81004772C15
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbjHGRIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39920 "EHLO
+        id S231572AbjHGRI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbjHGRH5 (ORCPT
+        with ESMTP id S230055AbjHGRI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:07:57 -0400
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A5EB1
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:07:56 -0700 (PDT)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1bef8f0904eso3490982fac.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:07:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691428075; x=1692032875;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yNzZQ+NIGCLYdKkCdgPTcseTFitCm2erAU7nFmqF0U8=;
-        b=jZ6OBxB4XRqSubR9akBWwvcxHAoVf7ke4KLmippVdxId+IlLgKzXHSE0R0UHevPSTZ
-         261Qa1Xb139hfAFJrFIg7rWkTwUqewhs+gH6pYfjJ3mFUVOKXH+atftAtRtxQaLvquWc
-         7/CGWQEpezdGu0r+hiacNHRIzEm++XAfKjHa/HHZGi2umEwOmpICbQpYB0dmfXlNqZh1
-         WSxsUDhv+VhtnA13XjgYT6BPbmU3cO4aYCIfugLzKYi5mHghEYE44VP8McYiQv/frTpm
-         qcE2bIcOd4V9g2AKdVq5K7wf3Udkt4UkB/XCoF4HXI9ocrMxBDehAOkn1pa+GmZJr7+f
-         k8sA==
+        Mon, 7 Aug 2023 13:08:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87DDE68
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:08:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691428093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PaUoN6jEp6bScPFRDpbhbjlwtESgFZLJBJ4BEap2ll4=;
+        b=BvxsOpcDqeyi7NrmKeu+1679u1bmEquqMT9o9MDysfCV2T/VeHEcrpj6zPpLIVtxMQH2IW
+        7oYTYF1YaonYD/BJ5RysHz+IE6GFgD5Ob086rFcM23aPZUYPAk8Yyv9u9QMd94K2n17vIp
+        uuPFk2ePeErSz/GdwduMxVqpq6JZt5s=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-686-uk2BBh2YMEyACCFyjw_rWA-1; Mon, 07 Aug 2023 13:08:12 -0400
+X-MC-Unique: uk2BBh2YMEyACCFyjw_rWA-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-99bcfdaaa52so322349066b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:08:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691428075; x=1692032875;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yNzZQ+NIGCLYdKkCdgPTcseTFitCm2erAU7nFmqF0U8=;
-        b=L0l5Qy90J9w9oWvAdR9suoKJsWBk0l9nvJeHfJYPHx+6ifb5aJujeroQVycwMI9nE7
-         HzzgECZLZUV855fULerJCPPGYOd0442ocut+ZlibGHlNbQ2GSBTk3q/X3GB3C7d8vrB9
-         JqEvAPhLNc37Kln8sGKHkG8bP8t9WfC23aFujNQeSmwxSlyCANCv87e1v5gRnFiH2w56
-         +k3/QAHvmYd/Qfw7irk72GLG/UnfqSrEeOU+GMPe+3xcNfoXT/pOj3aZ1VS3zjBWuK7M
-         9lI7FJTYgEEvI4aSFG+qPS2pgU3SAaJuzKIljnm2ep7kUotrXildQIy1jeOId93u66fW
-         myDQ==
-X-Gm-Message-State: AOJu0Yzvt7PucQRkjze8cmnM+3FZGz2Zqt6TY9JZeN+Zdfl3uz/wjo7U
-        aiH6Bc6x3jvm2QfI0YvX7HPXg3mPAyNeyqIfrfI=
-X-Google-Smtp-Source: AGHT+IEFUyFd2cT1tI+gNgP1IWErdwV3EmKpBZOnRM0udVvEu2T1rrcA1RTiyVbEtqiDC/DqMmLTo3uKs+aedZXm8P4=
-X-Received: by 2002:a05:6870:9109:b0:1bf:1c49:7455 with SMTP id
- o9-20020a056870910900b001bf1c497455mr11109115oae.6.1691428075301; Mon, 07 Aug
- 2023 10:07:55 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691428091; x=1692032891;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PaUoN6jEp6bScPFRDpbhbjlwtESgFZLJBJ4BEap2ll4=;
+        b=jt2b3y3xm5fQOTRkGon6o1EPuFUlRhK07gMBqCVKMzQG7//2xkcgZksnyF3DK/cUuD
+         kbEB7M6Pit0AaSeYY+jXRmh2RAqRmt8sDw8A1BcyGGf4pS0JeB1/MKzBlpgl3AojfkK8
+         1AOcNckqiAtpS+r320CyGl6X+mSco8OT25pAIagcrynq9E0+UHi0GC3xfeo8ZCZZaLEQ
+         vvqZzSJ7Rv7J6Y9PogBZxJcMx6repsSqQUMoG9Q6js8SRyZ21VNFr2GoaVETicharaxt
+         94feWN22gZszQmnVFj5daERtubva8MCTTDJwdLoj/vfTGyg3O5ss+OIX2a4QV0WlcCDh
+         lEaA==
+X-Gm-Message-State: AOJu0YyJTUeDJsAkL5puH/SKjzpeSCoe9uwvZ44STUhTpTnoqXfpkyWb
+        kKz8RytyOJN546NuJ+NoJm+aSppwPD9T8y6OPHuGqwUP0eV4Q39ItC9kYhUjHv0CeLuBOspz2u+
+        sRfiqAml6MrAYIlqZ854JAMOa
+X-Received: by 2002:a17:907:a068:b0:99c:20f0:dec0 with SMTP id ia8-20020a170907a06800b0099c20f0dec0mr7398272ejc.43.1691428091251;
+        Mon, 07 Aug 2023 10:08:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFdRWArae2xjTleGNCnyKN3zPJYqQ7yEgmEAbjdVbwFTs5hltjWWTGAXlxt5oOp8DbgHNlFdw==
+X-Received: by 2002:a17:907:a068:b0:99c:20f0:dec0 with SMTP id ia8-20020a170907a06800b0099c20f0dec0mr7398260ejc.43.1691428091012;
+        Mon, 07 Aug 2023 10:08:11 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id k2-20020a1709063fc200b00993470682e5sm5474991ejj.32.2023.08.07.10.08.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 10:08:10 -0700 (PDT)
+Message-ID: <79004399-65df-01ed-faa7-5dd6c3cbb75d@redhat.com>
+Date:   Mon, 7 Aug 2023 19:08:09 +0200
 MIME-Version: 1.0
-References: <20230802024346.10104-1-sunran001@208suo.com>
-In-Reply-To: <20230802024346.10104-1-sunran001@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 13:07:44 -0400
-Message-ID: <CADnq5_N9SDN5mK_DBdfb-pKkt_+9mzKMDJESb9FyAArf1svzGg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Clean up errors in ddc_regs.h
-To:     Ran Sun <sunran001@208suo.com>
-Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] drivers/input/touchscreen/goodix.c: Add support for ACPI
+ ID GDX9110
+Content-Language: en-US, nl
+To:     Felix Engelhardt <felix.engelhardt@eidu.com>
+Cc:     Bastien Nocera <hadess@hadess.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230807124723.382899-1-felix.engelhardt@eidu.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230807124723.382899-1-felix.engelhardt@eidu.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Hi,
 
-On Tue, Aug 1, 2023 at 10:44=E2=80=AFPM Ran Sun <sunran001@208suo.com> wrot=
-e:
->
-> Fix the following errors reported by checkpatch:
->
-> ERROR: space required after that ',' (ctx:VxV)
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
+On 8/7/23 14:47, Felix Engelhardt wrote:
+> The Goodix touchscreen controller with ACPI ID GDX9110 was not recognized
+> by the goodix driver. This patch adds this ID to the list of supported IDs,
+> allowing the driver to be used with this device. The change will allow
+> Linux to be used on ~1 million tablet devices used in Kenyan primary
+> schools.
+> 
+> Signed-off-by: Felix Engelhardt <felix.engelhardt@eidu.com>
 > ---
->  .../gpu/drm/amd/display/dc/gpio/ddc_regs.h    | 40 +++++++++----------
->  1 file changed, 20 insertions(+), 20 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/gpio/ddc_regs.h b/drivers/gpu=
-/drm/amd/display/dc/gpio/ddc_regs.h
-> index 59884ef651b3..4a2bf81286d8 100644
-> --- a/drivers/gpu/drm/amd/display/dc/gpio/ddc_regs.h
-> +++ b/drivers/gpu/drm/amd/display/dc/gpio/ddc_regs.h
-> @@ -31,21 +31,21 @@
->  /****************************** new register headers */
->  /*** following in header */
->
-> -#define DDC_GPIO_REG_LIST_ENTRY(type,cd,id) \
-> +#define DDC_GPIO_REG_LIST_ENTRY(type, cd, id) \
->         .type ## _reg =3D   REG(DC_GPIO_DDC ## id ## _ ## type),\
->         .type ## _mask =3D  DC_GPIO_DDC ## id ## _ ## type ## __DC_GPIO_D=
-DC ## id ## cd ## _ ## type ## _MASK,\
->         .type ## _shift =3D DC_GPIO_DDC ## id ## _ ## type ## __DC_GPIO_D=
-DC ## id ## cd ## _ ## type ## __SHIFT
->
-> -#define DDC_GPIO_REG_LIST(cd,id) \
-> +#define DDC_GPIO_REG_LIST(cd, id) \
->         {\
-> -       DDC_GPIO_REG_LIST_ENTRY(MASK,cd,id),\
-> -       DDC_GPIO_REG_LIST_ENTRY(A,cd,id),\
-> -       DDC_GPIO_REG_LIST_ENTRY(EN,cd,id),\
-> -       DDC_GPIO_REG_LIST_ENTRY(Y,cd,id)\
-> +       DDC_GPIO_REG_LIST_ENTRY(MASK, cd, id),\
-> +       DDC_GPIO_REG_LIST_ENTRY(A, cd, id),\
-> +       DDC_GPIO_REG_LIST_ENTRY(EN, cd, id),\
-> +       DDC_GPIO_REG_LIST_ENTRY(Y, cd, id)\
->         }
->
-> -#define DDC_REG_LIST(cd,id) \
-> -       DDC_GPIO_REG_LIST(cd,id),\
-> +#define DDC_REG_LIST(cd, id) \
-> +       DDC_GPIO_REG_LIST(cd, id),\
->         .ddc_setup =3D REG(DC_I2C_DDC ## id ## _SETUP)
->
->         #define DDC_REG_LIST_DCN2(cd, id) \
-> @@ -54,34 +54,34 @@
->         .phy_aux_cntl =3D REG(PHY_AUX_CNTL), \
->         .dc_gpio_aux_ctrl_5 =3D REG(DC_GPIO_AUX_CTRL_5)
->
-> -#define DDC_GPIO_VGA_REG_LIST_ENTRY(type,cd)\
-> +#define DDC_GPIO_VGA_REG_LIST_ENTRY(type, cd)\
->         .type ## _reg =3D   REG(DC_GPIO_DDCVGA_ ## type),\
->         .type ## _mask =3D  DC_GPIO_DDCVGA_ ## type ## __DC_GPIO_DDCVGA #=
-# cd ## _ ## type ## _MASK,\
->         .type ## _shift =3D DC_GPIO_DDCVGA_ ## type ## __DC_GPIO_DDCVGA #=
-# cd ## _ ## type ## __SHIFT
->
->  #define DDC_GPIO_VGA_REG_LIST(cd) \
->         {\
-> -       DDC_GPIO_VGA_REG_LIST_ENTRY(MASK,cd),\
-> -       DDC_GPIO_VGA_REG_LIST_ENTRY(A,cd),\
-> -       DDC_GPIO_VGA_REG_LIST_ENTRY(EN,cd),\
-> -       DDC_GPIO_VGA_REG_LIST_ENTRY(Y,cd)\
-> +       DDC_GPIO_VGA_REG_LIST_ENTRY(MASK, cd),\
-> +       DDC_GPIO_VGA_REG_LIST_ENTRY(A, cd),\
-> +       DDC_GPIO_VGA_REG_LIST_ENTRY(EN, cd),\
-> +       DDC_GPIO_VGA_REG_LIST_ENTRY(Y, cd)\
->         }
->
->  #define DDC_VGA_REG_LIST(cd) \
->         DDC_GPIO_VGA_REG_LIST(cd),\
->         .ddc_setup =3D mmDC_I2C_DDCVGA_SETUP
->
-> -#define DDC_GPIO_I2C_REG_LIST_ENTRY(type,cd) \
-> +#define DDC_GPIO_I2C_REG_LIST_ENTRY(type, cd) \
->         .type ## _reg =3D   REG(DC_GPIO_I2CPAD_ ## type),\
->         .type ## _mask =3D  DC_GPIO_I2CPAD_ ## type ## __DC_GPIO_ ## cd #=
-# _ ## type ## _MASK,\
->         .type ## _shift =3D DC_GPIO_I2CPAD_ ## type ## __DC_GPIO_ ## cd #=
-# _ ## type ## __SHIFT
->
->  #define DDC_GPIO_I2C_REG_LIST(cd) \
->         {\
-> -       DDC_GPIO_I2C_REG_LIST_ENTRY(MASK,cd),\
-> -       DDC_GPIO_I2C_REG_LIST_ENTRY(A,cd),\
-> -       DDC_GPIO_I2C_REG_LIST_ENTRY(EN,cd),\
-> -       DDC_GPIO_I2C_REG_LIST_ENTRY(Y,cd)\
-> +       DDC_GPIO_I2C_REG_LIST_ENTRY(MASK, cd),\
-> +       DDC_GPIO_I2C_REG_LIST_ENTRY(A, cd),\
-> +       DDC_GPIO_I2C_REG_LIST_ENTRY(EN, cd),\
-> +       DDC_GPIO_I2C_REG_LIST_ENTRY(Y, cd)\
->         }
->
->  #define DDC_I2C_REG_LIST(cd) \
-> @@ -150,12 +150,12 @@ struct ddc_sh_mask {
->
->  #define ddc_data_regs(id) \
->  {\
-> -       DDC_REG_LIST(DATA,id)\
-> +       DDC_REG_LIST(DATA, id)\
->  }
->
->  #define ddc_clk_regs(id) \
->  {\
-> -       DDC_REG_LIST(CLK,id)\
-> +       DDC_REG_LIST(CLK, id)\
->  }
->
->  #define ddc_vga_data_regs \
-> --
-> 2.17.1
->
+>  drivers/input/touchscreen/goodix.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
+> index 4f53d3c57e69..9cdc01eb00c9 100644
+> --- a/drivers/input/touchscreen/goodix.c
+> +++ b/drivers/input/touchscreen/goodix.c
+> @@ -1379,6 +1379,7 @@ MODULE_DEVICE_TABLE(i2c, goodix_ts_id);
+>  static const struct acpi_device_id goodix_acpi_match[] = {
+>  	{ "GDIX1001", 0 },
+>  	{ "GDIX1002", 0 },
+> +	{ "GDX9110", 0 },
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(acpi, goodix_acpi_match);
+
+Hmm, GDX without the 'I' does look like an official ACPI vendor prefix. But if this is used in the wild, then I guess we'll just need to live with it:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
+
