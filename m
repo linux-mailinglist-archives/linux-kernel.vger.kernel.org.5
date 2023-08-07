@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EE2772A8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C881F772A92
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbjHGQYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
+        id S229459AbjHGQYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231496AbjHGQYD (ORCPT
+        with ESMTP id S231185AbjHGQYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:24:03 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BE61715
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:23:50 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6bca88c3487so3902674a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:23:50 -0700 (PDT)
+        Mon, 7 Aug 2023 12:24:38 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7F310DE
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:24:23 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-56c96982829so3294709eaf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:24:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691425429; x=1692030229;
+        d=gmail.com; s=20221208; t=1691425462; x=1692030262;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IutisKUxSex6+AO1pD8aPRPz9d2NNY3R1jp6DKxdDOU=;
-        b=iJ64I1cECsaaUtRWyIX4rGvNdgjNVSuBQbJPUMNASE3bSLJ2Qkjs1eXgkWbubInFG9
-         JuOp5D+dgNuWyE5gp6/POnWlR8ajwEpgFNZ7raxjX8khkeNMoUlNKrnfrcMkjRf36BPa
-         9IVquV7DwnUoTOXaOgGI0300kSi+CxPus3cZq/MhSl2ek7jQecDvlRmKYBUlmvGuYJLt
-         RWvpF6HrW8Vrgh95VH6Klp6zvsydRQMd1bFKwDOHhbHO8C7BlK/jYKe5TWtUN/rGSuVj
-         nTd62S1OzZZzB1dYaZHBhbFqKlCruSc/EcTyUcJ+4FzdsLT7tNQxjvh8DDRRp8E2k6t1
-         422Q==
+        bh=VA7ZGTP/1iIUz0NSZwan87qZk2dibq5PfQ7YdL9IqMM=;
+        b=hA6asJm0yHV08nnQvgNI1vQwBdogPPdoOirvla3DXIv13onvTOJUXQGi9YL0QdFrz9
+         QyMbdCorzP+ZVfAQDYS4rN/P8b5AGQvcjIyUdiSeTlGCqmN9ba1IrkCZi9eGKbwojvw0
+         WUo6AuZW014oePyJcQc3Y0+rU3rJrk9dLNBP1zj/YmHxgWZcdrKbDudIxvpKY3aQLyJG
+         CneiIBU20bvfwqpWRr/i+d3fsHydsuOlhD9Vkv/+XFds4Orij3/arJwjcSwyZNPhhW8f
+         yOWqVwmGllhSuNJ523xhzKs0FuVl/0OVa9gdSevSG3LmB7CWCnlDQ+JG5VkrIIAB3cHd
+         R52A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691425429; x=1692030229;
+        d=1e100.net; s=20221208; t=1691425462; x=1692030262;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IutisKUxSex6+AO1pD8aPRPz9d2NNY3R1jp6DKxdDOU=;
-        b=crSmIdpK/QtpbegkXUsHhjzoGe8I+PgiZbPdF4qBs7ApaIDj01/enVap0fBCTdWALi
-         X+gQcBZ7jF5vP20DiGFmr8VTcZfEPUOiuZmC3Z/0NkTNnVVVft5Y12MZNsnkduRlXRCG
-         eLsUq6flkTlTCAnRQVck+bOGf5wJPEOPzEDbY5khRGw9gMYWXu7vXd53x/lfYpbX9QzC
-         xiPCHIZyyq5I2ne+EIcrnWut9COc1OMhpRjeVYRh+FkuYVTYWRcxmj/qBhm89Lr6ibXW
-         plQEA/BgZk6LlExA41ZV/sn0ZPEwm0lArwSwMs7VE7XMjAHxrxL2zBIVakH9q8YlpK49
-         X9Gw==
-X-Gm-Message-State: AOJu0YyFcghMp4zP3SydeN7CY2JSrFhlQUvcNCzp9fxjWglDWaMItKFk
-        jU3e5lGcZEAWr9owB9pn7WSOiu86u0VAg2f8z68=
-X-Google-Smtp-Source: AGHT+IGZo2uqDnzuqlUtTLAMntPIx4KKfmqoss2Wq/oAXN/Zac1lFpQPRP7LyrGTdD73ypz3W4Nz5EkuiGGyMhQLUyY=
-X-Received: by 2002:a05:6870:b525:b0:1be:c2c5:a1cf with SMTP id
- v37-20020a056870b52500b001bec2c5a1cfmr11317397oap.51.1691425429629; Mon, 07
- Aug 2023 09:23:49 -0700 (PDT)
+        bh=VA7ZGTP/1iIUz0NSZwan87qZk2dibq5PfQ7YdL9IqMM=;
+        b=UyoL3U8iiKZ1RXuuKscRMs44MpjFHlltb9/nz3eQCQQcoOdij+iIC0JC8idJh3I0KK
+         swoCu892V7hk24BSUol54EpSpr51otD/n8hesU8Ej+aYvTpRNSqhBqLAii8vWbfmPfSz
+         jMNACA1qBq2W9SwV/gdqvbjbH6/ao/SHVqwltD4Em9Fs8W5HtSSDts37Hm+YAMkigT1m
+         ocW8dGr2q+9K6IInNHavaFcyOeMo1b0iRcm/V02IyN7cGtj5MANsltp20wMAZX9D+fjI
+         JE9ALBotsXYpPpTYwp8Qk6DPbhu7+z87b1nSfBFAwzOUANKGhCrxpu+u+Q/MqvmYPu92
+         PEZA==
+X-Gm-Message-State: AOJu0Yxwu5bD77gGnuaiJzrFiGFCsKuRbj+qT9ipg1of1hdF7IfgfVeq
+        kVDxktgL+kkaWs189cQuAu5KDTZZksCMNyxiDSw=
+X-Google-Smtp-Source: AGHT+IEYefXHM0TruKEa032jSyMqc1e77wIIewxYQEFOzkvak8lTQqoj7Y1uEiYfF5xMHwImLEdmeS+RTmJ7wEDkQFY=
+X-Received: by 2002:a05:6870:6486:b0:1bb:8867:f7ed with SMTP id
+ cz6-20020a056870648600b001bb8867f7edmr12411828oab.33.1691425462283; Mon, 07
+ Aug 2023 09:24:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230801022814.4577-1-sunran001@208suo.com>
-In-Reply-To: <20230801022814.4577-1-sunran001@208suo.com>
+References: <20230801023658.4667-1-sunran001@208suo.com>
+In-Reply-To: <20230801023658.4667-1-sunran001@208suo.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 12:23:38 -0400
-Message-ID: <CADnq5_NvRJeZUK8--n9vCdF+NxxQqLdPcrgwKwh6mY1BL3W7xg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: Clean up errors in amdgpu_smu.c
+Date:   Mon, 7 Aug 2023 12:24:11 -0400
+Message-ID: <CADnq5_MZ7HOUiw05H4oQokT4ad+=4ypjVBtSyYdqBNgfL5Q3CA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/pm: Clean up errors in amd_powerplay.c
 To:     Ran Sun <sunran001@208suo.com>
 Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
         dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
@@ -62,7 +62,7 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,125 +72,102 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Applied.  Thanks!
 
-On Mon, Jul 31, 2023 at 10:28=E2=80=AFPM Ran Sun <sunran001@208suo.com> wro=
+On Mon, Jul 31, 2023 at 10:37=E2=80=AFPM Ran Sun <sunran001@208suo.com> wro=
 te:
 >
 > Fix the following errors reported by checkpatch:
 >
-> ERROR: spaces required around that '=3D' (ctx:WxV)
-> ERROR: spaces required around that '&&' (ctx:VxW)
 > ERROR: that open brace { should be on the previous line
-> ERROR: space required before the open parenthesis '('
-> ERROR: space required before the open brace '{'
-> ERROR: spaces required around that ':' (ctx:VxW)
+> ERROR: spaces required around that '||' (ctx:WxO)
 >
 > Signed-off-by: Ran Sun <sunran001@208suo.com>
 > ---
->  drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c | 23 ++++++++++-------------
->  1 file changed, 10 insertions(+), 13 deletions(-)
+>  drivers/gpu/drm/amd/pm/powerplay/amd_powerplay.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c b/drivers/gpu/drm/=
-amd/pm/swsmu/amdgpu_smu.c
-> index ce41a8309582..a7199275ffb8 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
-> @@ -618,7 +618,7 @@ static int smu_set_funcs(struct amdgpu_device *adev)
->                 adev->pm.pp_feature &=3D ~PP_GFXOFF_MASK;
->                 arcturus_set_ppt_funcs(smu);
->                 /* OD is not supported on Arcturus */
-> -               smu->od_enabled =3Dfalse;
-> +               smu->od_enabled =3D false;
->                 break;
->         case IP_VERSION(13, 0, 2):
->                 aldebaran_set_ppt_funcs(smu);
-> @@ -1648,7 +1648,7 @@ static int smu_hw_fini(void *handle)
->         struct amdgpu_device *adev =3D (struct amdgpu_device *)handle;
->         struct smu_context *smu =3D adev->powerplay.pp_handle;
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/amd_powerplay.c b/drivers/g=
+pu/drm/amd/pm/powerplay/amd_powerplay.c
+> index ff360c699171..9e4f8a4104a3 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/amd_powerplay.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/amd_powerplay.c
+> @@ -612,7 +612,7 @@ static int pp_dpm_get_pp_num_states(void *handle,
 >
-> -       if (amdgpu_sriov_vf(adev)&& !amdgpu_sriov_is_pp_one_vf(adev))
-> +       if (amdgpu_sriov_vf(adev) && !amdgpu_sriov_is_pp_one_vf(adev))
->                 return 0;
+>         memset(data, 0, sizeof(*data));
 >
->         smu_dpm_set_vcn_enable(smu, false);
-> @@ -1700,7 +1700,7 @@ static int smu_suspend(void *handle)
->         int ret;
->         uint64_t count;
+> -       if (!hwmgr || !hwmgr->pm_en ||!hwmgr->ps)
+> +       if (!hwmgr || !hwmgr->pm_en || !hwmgr->ps)
+>                 return -EINVAL;
 >
-> -       if (amdgpu_sriov_vf(adev)&& !amdgpu_sriov_is_pp_one_vf(adev))
-> +       if (amdgpu_sriov_vf(adev) && !amdgpu_sriov_is_pp_one_vf(adev))
->                 return 0;
+>         data->nums =3D hwmgr->num_ps;
+> @@ -644,7 +644,7 @@ static int pp_dpm_get_pp_table(void *handle, char **t=
+able)
+>  {
+>         struct pp_hwmgr *hwmgr =3D handle;
 >
->         if (!smu->pm_enabled)
-> @@ -2217,8 +2217,7 @@ const struct amd_ip_funcs smu_ip_funcs =3D {
->         .set_powergating_state =3D smu_set_powergating_state,
->  };
+> -       if (!hwmgr || !hwmgr->pm_en ||!hwmgr->soft_pp_table)
+> +       if (!hwmgr || !hwmgr->pm_en || !hwmgr->soft_pp_table)
+>                 return -EINVAL;
 >
-> -const struct amdgpu_ip_block_version smu_v11_0_ip_block =3D
-> -{
-> +const struct amdgpu_ip_block_version smu_v11_0_ip_block =3D {
->         .type =3D AMD_IP_BLOCK_TYPE_SMC,
->         .major =3D 11,
->         .minor =3D 0,
-> @@ -2226,8 +2225,7 @@ const struct amdgpu_ip_block_version smu_v11_0_ip_b=
-lock =3D
->         .funcs =3D &smu_ip_funcs,
->  };
+>         *table =3D (char *)hwmgr->soft_pp_table;
+> @@ -1002,7 +1002,7 @@ static int pp_get_power_limit(void *handle, uint32_=
+t *limit,
+>         struct pp_hwmgr *hwmgr =3D handle;
+>         int ret =3D 0;
 >
-> -const struct amdgpu_ip_block_version smu_v12_0_ip_block =3D
-> -{
-> +const struct amdgpu_ip_block_version smu_v12_0_ip_block =3D {
->         .type =3D AMD_IP_BLOCK_TYPE_SMC,
->         .major =3D 12,
->         .minor =3D 0,
-> @@ -2235,8 +2233,7 @@ const struct amdgpu_ip_block_version smu_v12_0_ip_b=
-lock =3D
->         .funcs =3D &smu_ip_funcs,
->  };
+> -       if (!hwmgr || !hwmgr->pm_en ||!limit)
+> +       if (!hwmgr || !hwmgr->pm_en || !limit)
+>                 return -EINVAL;
 >
-> -const struct amdgpu_ip_block_version smu_v13_0_ip_block =3D
-> -{
-> +const struct amdgpu_ip_block_version smu_v13_0_ip_block =3D {
->         .type =3D AMD_IP_BLOCK_TYPE_SMC,
->         .major =3D 13,
->         .minor =3D 0,
-> @@ -2337,7 +2334,7 @@ int smu_get_power_limit(void *handle,
->         if (!smu->pm_enabled || !smu->adev->pm.dpm_enabled)
->                 return -EOPNOTSUPP;
+>         if (power_type !=3D PP_PWR_TYPE_SUSTAINED)
+> @@ -1047,7 +1047,7 @@ static int pp_get_display_power_level(void *handle,
+>  {
+>         struct pp_hwmgr *hwmgr =3D handle;
 >
-> -       switch(pp_power_type) {
-> +       switch (pp_power_type) {
->         case PP_PWR_TYPE_SUSTAINED:
->                 limit_type =3D SMU_DEFAULT_PPT_LIMIT;
->                 break;
-> @@ -2349,7 +2346,7 @@ int smu_get_power_limit(void *handle,
->                 break;
->         }
+> -       if (!hwmgr || !hwmgr->pm_en ||!output)
+> +       if (!hwmgr || !hwmgr->pm_en || !output)
+>                 return -EINVAL;
 >
-> -       switch(pp_limit_level){
-> +       switch (pp_limit_level) {
->         case PP_PWR_LIMIT_CURRENT:
->                 limit_level =3D SMU_PPT_LIMIT_CURRENT;
->                 break;
-> @@ -2595,7 +2592,7 @@ static int smu_read_sensor(void *handle,
->                 *size =3D 4;
->                 break;
->         case AMDGPU_PP_SENSOR_VCN_POWER_STATE:
-> -               *(uint32_t *)data =3D atomic_read(&smu->smu_power.power_g=
-ate.vcn_gated) ? 0: 1;
-> +               *(uint32_t *)data =3D atomic_read(&smu->smu_power.power_g=
-ate.vcn_gated) ? 0 : 1;
->                 *size =3D 4;
->                 break;
->         case AMDGPU_PP_SENSOR_MIN_FAN_RPM:
-> @@ -2868,7 +2865,7 @@ static int smu_set_xgmi_pstate(void *handle,
->         if (smu->ppt_funcs->set_xgmi_pstate)
->                 ret =3D smu->ppt_funcs->set_xgmi_pstate(smu, pstate);
+>         return phm_get_dal_power_level(hwmgr, output);
+> @@ -1120,7 +1120,7 @@ static int pp_get_clock_by_type_with_latency(void *=
+handle,
+>  {
+>         struct pp_hwmgr *hwmgr =3D handle;
 >
-> -       if(ret)
-> +       if (ret)
->                 dev_err(smu->adev->dev, "Failed to set XGMI pstate!\n");
+> -       if (!hwmgr || !hwmgr->pm_en ||!clocks)
+> +       if (!hwmgr || !hwmgr->pm_en || !clocks)
+>                 return -EINVAL;
 >
->         return ret;
+>         return phm_get_clock_by_type_with_latency(hwmgr, type, clocks);
+> @@ -1132,7 +1132,7 @@ static int pp_get_clock_by_type_with_voltage(void *=
+handle,
+>  {
+>         struct pp_hwmgr *hwmgr =3D handle;
+>
+> -       if (!hwmgr || !hwmgr->pm_en ||!clocks)
+> +       if (!hwmgr || !hwmgr->pm_en || !clocks)
+>                 return -EINVAL;
+>
+>         return phm_get_clock_by_type_with_voltage(hwmgr, type, clocks);
+> @@ -1155,7 +1155,7 @@ static int pp_display_clock_voltage_request(void *h=
+andle,
+>  {
+>         struct pp_hwmgr *hwmgr =3D handle;
+>
+> -       if (!hwmgr || !hwmgr->pm_en ||!clock)
+> +       if (!hwmgr || !hwmgr->pm_en || !clock)
+>                 return -EINVAL;
+>
+>         return phm_display_clock_voltage_request(hwmgr, clock);
+> @@ -1167,7 +1167,7 @@ static int pp_get_display_mode_validation_clocks(vo=
+id *handle,
+>         struct pp_hwmgr *hwmgr =3D handle;
+>         int ret =3D 0;
+>
+> -       if (!hwmgr || !hwmgr->pm_en ||!clocks)
+> +       if (!hwmgr || !hwmgr->pm_en || !clocks)
+>                 return -EINVAL;
+>
+>         clocks->level =3D PP_DAL_POWERLEVEL_7;
 > --
 > 2.17.1
 >
