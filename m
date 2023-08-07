@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7DBC7726CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DF07726CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234122AbjHGN4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41552 "EHLO
+        id S232915AbjHGN4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234551AbjHGNz1 (ORCPT
+        with ESMTP id S234575AbjHGNze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:55:27 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D1326BE
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:53:45 -0700 (PDT)
-Message-ID: <20230807135028.747059118@linutronix.de>
+        Mon, 7 Aug 2023 09:55:34 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251532719
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:53:48 -0700 (PDT)
+Message-ID: <20230807135028.800668666@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691416423;
+        s=2020; t=1691416424;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=HA0GkWkS8cpM1N2spYIG0KC2cT4EUF8chsnc8hqXNxI=;
-        b=mbcBIdnUQxSlwmQa6B+H/Gxl393lPsdfzT7tBvYwR3Pn3VJf+tNWgt85zxFZlKT+UExE60
-        ASDnC02eCyZYX7oG5pFGosDAY7wgWYXqfo7i9s4IXwE7UN8vUEKjyg70NMAgWSck1bK9Vp
-        sq8DFONe71gmmM6A6utJkBgjTFWyvu/Y94S+hHnZVWQbEUIe2n89QtOy3IG1YHv/g6OYwt
-        Y0Daaj5eXg7Ztf98SmbUplU62i50xj7dd1bVbHmJcYXAVc7vmzhkSvTsB20gGfqqrGaq4y
-        2dlTvsOe9Pi5x41DNKPfgkdFBAyGsl69fcCLCbKMt+PpcIcoisLs+YTvzKenHA==
+         references:references; bh=AfQzecPadC51W0+MsVlK3HeQl1U7zVudClCfarez7gY=;
+        b=o3DfM5U0t2/heXbjNrpNe+8MgvT4QU3LQfgTHRXocTWlyqrnHGZNM70YEC67f6seJ6oYyC
+        fxveX/aTf8tLgHbBB0UQEMmtkGmC1U7BmWy2D85o3o5rU3I4N/RcTLLb4q9xTyddK4z0jn
+        Z+vX5Cm/t18OeSXWodBOBacNzfaytosgpaNoejFmDnFwmG0Uda10M1rfZHc2umSzSU/VdL
+        gcJ4nNBgc8R/3EOwSgWxgoh4eTWpRospBv3KlZ0AlFUv92Frqerr4e0BYNHGBaTzTXn8la
+        ipk5LpKdJpA+f1XJXXy8So30LuuXvNG0XnL1jIlXWviUvsMlfy9TzB929UMSLw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691416423;
+        s=2020e; t=1691416424;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=HA0GkWkS8cpM1N2spYIG0KC2cT4EUF8chsnc8hqXNxI=;
-        b=cMZSsmtB0P6xqMZ/ZMF9HG3Kk7dfRR61Hvfa0iJr5FHBerw5WEqBc+hBW+SJbcqeNUvqIs
-        VSi+KA69RHL6wTCg==
+         references:references; bh=AfQzecPadC51W0+MsVlK3HeQl1U7zVudClCfarez7gY=;
+        b=IDoTbYofzNkQBexjtr281rhNB0OHaOZL+AMofq4QKR4XiiVdvkCJjeRknNnfvs6D2zO3LR
+        aNw5JcxvNd3IaFCA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
@@ -48,90 +48,40 @@ Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Feng Tang <feng.tang@intel.com>,
         Andy Shevchenko <andy@infradead.org>
-Subject: [patch 44/53] x86/cpu/topology: Mop up primary thread mask handling
+Subject: [patch 45/53] x86/cpu/topology: Simplify cpu_mark_primary_thread()
 References: <20230807130108.853357011@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon,  7 Aug 2023 15:53:42 +0200 (CEST)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Date:   Mon,  7 Aug 2023 15:53:44 +0200 (CEST)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The early initcall to initialize the primary thread mask is not longer
-required because topology_init_possible_cpus() can mark primary threads
-correctly when initializing the possible and present map as the number of
-SMT threads is already determined correctly.
-
-The XENPV workaround is not longer required because XENPV now registers
-fake APIC IDs which will just work like any other enumeration.
+No point in creating a mask via fls(). smp_num_siblings is guaranteed to be
+a power of 2. So just using (smp_num_siblings - 1) has the same effect.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/cpu/topology.c |   29 ++---------------------------
- 1 file changed, 2 insertions(+), 27 deletions(-)
+ arch/x86/kernel/cpu/topology.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 --- a/arch/x86/kernel/cpu/topology.c
 +++ b/arch/x86/kernel/cpu/topology.c
-@@ -92,30 +92,6 @@ static void cpu_mark_primary_thread(unsi
- 	if (smp_num_siblings == 1 || !(apicid & mask))
+@@ -86,10 +86,7 @@ bool arch_match_cpu_phys_id(int cpu, u64
+ #ifdef CONFIG_SMP
+ static void cpu_mark_primary_thread(unsigned int cpu, unsigned int apicid)
+ {
+-	/* Isolate the SMT bit(s) in the APICID and check for 0 */
+-	u32 mask = (1U << (fls(smp_num_siblings) - 1)) - 1;
+-
+-	if (smp_num_siblings == 1 || !(apicid & mask))
++	if (!(apicid & (smp_num_siblings - 1)))
  		cpumask_set_cpu(cpu, &__cpu_primary_thread_mask);
  }
--
--/*
-- * Due to the utter mess of CPUID evaluation smp_num_siblings is not valid
-- * during early boot. Initialize the primary thread mask before SMP
-- * bringup.
-- */
--static int __init smp_init_primary_thread_mask(void)
--{
--	unsigned int cpu;
--
--	/*
--	 * XEN/PV provides either none or useless topology information.
--	 * Pretend that all vCPUs are primary threads.
--	 */
--	if (xen_pv_domain()) {
--		cpumask_copy(&__cpu_primary_thread_mask, cpu_possible_mask);
--		return 0;
--	}
--
--	for (cpu = 0; cpu < topo_info.nr_assigned_cpus; cpu++)
--		cpu_mark_primary_thread(cpu, cpuid_to_apicid[cpu]);
--	return 0;
--}
--early_initcall(smp_init_primary_thread_mask);
  #else
- static inline void cpu_mark_primary_thread(unsigned int cpu, unsigned int apicid) { }
- #endif
-@@ -161,9 +137,6 @@ static void topo_set_cpuids(unsigned int
- #endif
- 	set_cpu_possible(cpu, true);
- 	set_cpu_present(cpu, true);
--
--	if (system_state != SYSTEM_BOOTING)
--		cpu_mark_primary_thread(cpu, apic_id);
- }
- 
- /**
-@@ -252,6 +225,7 @@ int topology_hotplug_apic(u32 apic_id, u
- 
- 	set_bit(apic_id, phys_cpu_present_map);
- 	topo_set_cpuids(cpu, apic_id, acpi_id);
-+	cpu_mark_primary_thread(cpu, apic_id);
- 	return cpu;
- }
- 
-@@ -422,6 +396,7 @@ void __init topology_init_possible_cpus(
- 		if (apicid == BAD_APICID)
- 			continue;
- 
-+		cpu_mark_primary_thread(cpu, apicid);
- 		set_cpu_present(cpu, test_bit(apicid, phys_cpu_present_map));
- 	}
- }
 
