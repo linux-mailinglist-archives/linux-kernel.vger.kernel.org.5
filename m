@@ -2,177 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AADFA7727E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B797727F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234096AbjHGOfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
+        id S234442AbjHGOgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234127AbjHGOfk (ORCPT
+        with ESMTP id S234091AbjHGOgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:35:40 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF1810DD;
-        Mon,  7 Aug 2023 07:35:38 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-977e0fbd742so631682366b.2;
-        Mon, 07 Aug 2023 07:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691418937; x=1692023737;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IyTj/EAHU86MCmjIDTneVFZ/F0zuNFke5LJEBRUozL0=;
-        b=d+b9Bgxt8jjhWPSZN8YGF+VhD2yHLtLkBYtZCPk9VS2usI+5pUfv1lOceCn2jCEhU3
-         bIXRbL27djBDBnqqN6oEN6+zL5NYrceLq0i488o53TZCGQ9g+F5ut9NM7WVJghK8/Fw/
-         /JKY5z3wXjvNJXPIKVJ7ZLq/o+GCim1f3WomPX3IWHCesbIGdoYgh2uynrRgvUZThunI
-         VBZvOvrsOHt7Kw79NU8zNgc7dZtR4lngga+ZXSMu7xyzTdTwpA2Cv8OPxmnQ1md4kEQ9
-         tNHTLcXku1SrjPQqHtGPMl9UCg74r3bE1LZXfXjSsVqaZaF/8z7yHDyd14E8WfburjHE
-         AZiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691418937; x=1692023737;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IyTj/EAHU86MCmjIDTneVFZ/F0zuNFke5LJEBRUozL0=;
-        b=Civ82Bggp8UthH2005D1brhFcPCLOr91mDxuB/FVjTMJjTSnh/QqVTKjGvOdHYi7tT
-         H/3r4rgT2Yyc8NlCb33nFgCKrM6ZLsdMxyh3cSs8MTP6D2c3QE3+WRJXWTYyh3GaMG/3
-         WPyhoK2BpI9sqHro6bO3HDl1HGG1HxmtPnlEIwYzIvJLJU/AYLACX+iq5HacT3X20scL
-         64YJsguXeYXLYnTBP8HA6+w4JPbu2Nu4FeAnWM/ARxtwxPFCYjNAQ4+TNDBgNWt4hJuV
-         9UNV6LhUl1C2Gt908gdr7FpEoofkM6cBCZT+/kb7jdZmcowmLnOjKftr4wovu4kOUOwX
-         bEtw==
-X-Gm-Message-State: AOJu0YyVFNArFxRfLMdvHtgKE9IMI0bmarctIi++SGud/G+rcYIV6Sgg
-        eAud4mTnoBjBoQvWbtrOJ5M=
-X-Google-Smtp-Source: AGHT+IEBOTjjQty4GTArfLewTs7sbydLqR0FAVIlgxNIR8H11ce7m0dYpelCzN4OBZskoCwE97nmYA==
-X-Received: by 2002:a17:906:51c8:b0:991:c566:979 with SMTP id v8-20020a17090651c800b00991c5660979mr8427229ejk.36.1691418937036;
-        Mon, 07 Aug 2023 07:35:37 -0700 (PDT)
-Received: from xeon.. ([188.163.112.48])
-        by smtp.gmail.com with ESMTPSA id e3-20020a170906504300b0099329b3ab67sm5323292ejk.71.2023.08.07.07.35.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 07:35:36 -0700 (PDT)
-From:   Svyatoslav Ryhel <clamor95@gmail.com>
-To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Mon, 7 Aug 2023 10:36:47 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9E010F3;
+        Mon,  7 Aug 2023 07:36:31 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B7938E0008;
+        Mon,  7 Aug 2023 14:36:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1691418990;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CoovJrYPxkDFGogd5wvVhZC1R5Dq4lKn3YHaDGn4/LM=;
+        b=HmQ6EWLUrDj97BUk7IGsXLcmAJ2miJvyMgaSQlOietWT5pvqGoMYmO6yr+Bhc0Lx67tKD6
+        df7Z6+KBom37uNEQWfw8FJht1ZSI3QWLiHNjcNXBmvIwSynDxYMQivLHbJtb7uzGw5pJZ2
+        EAinCJbElQ6rO13JeWO3s9sPGU4+27Q8M5T52pS7PcbF+R8WyuQKAjhFeLCmKcp+6TWkuR
+        IdO0UMWLzMibIMpfP4ahj/zKwHCDxTgVc0R059ZGQaSUIC06o5hsPMQ2XYgtkWYBNaUzS4
+        qP1VmAe+U2gpEDS1hmzhbhx0eTbGq6h1G2uNh4GG0oC80TOYZeIgosi77P7S8A==
+Date:   Mon, 7 Aug 2023 16:36:26 +0200
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Dmitry Osipenko <digetx@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] ARM: tegra: transformers: add connector node
-Date:   Mon,  7 Aug 2023 17:35:15 +0300
-Message-Id: <20230807143515.7882-6-clamor95@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230807143515.7882-1-clamor95@gmail.com>
-References: <20230807143515.7882-1-clamor95@gmail.com>
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 24/28] pinctrl: Add support for the Lantic PEF2256
+ pinmux
+Message-ID: <20230807163626.79a5ca7b@bootlin.com>
+In-Reply-To: <eb99e739-6578-4aee-a0f4-7a0c5e5e81ef@lunn.ch>
+References: <20230726150225.483464-1-herve.codina@bootlin.com>
+        <20230726150225.483464-25-herve.codina@bootlin.com>
+        <CACRpkdYXCQRd3ZXNGHwMaQYiJc7tGtAJnBaSh5O-8ruDAJVdiA@mail.gmail.com>
+        <CACRpkdZebvrdGXooLXmgXhUcgdgxBczJBpdEoEyJDR39abaAqQ@mail.gmail.com>
+        <eb99e739-6578-4aee-a0f4-7a0c5e5e81ef@lunn.ch>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All ASUS Transformers have micro-HDMI connector directly available.
-After Tegra HDMI got bridge/connector support, we should use connector
-framework for proper HW description.
+Hi Linus, Andrew,
 
-Tested-by: Andreas Westman Dorcsak <hedmoo@yahoo.com> # ASUS TF T30
-Tested-by: Robert Eckelmann <longnoserob@gmail.com> # ASUS TF101 T20
-Tested-by: Svyatoslav Ryhel <clamor95@gmail.com> # ASUS TF201 T30
-Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
----
- .../boot/dts/nvidia/tegra20-asus-tf101.dts    | 22 ++++++++++++++++---
- .../tegra30-asus-transformer-common.dtsi      | 21 ++++++++++++++++--
- 2 files changed, 38 insertions(+), 5 deletions(-)
+On Mon, 7 Aug 2023 15:17:11 +0200
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-diff --git a/arch/arm/boot/dts/nvidia/tegra20-asus-tf101.dts b/arch/arm/boot/dts/nvidia/tegra20-asus-tf101.dts
-index e118809dc6d9..cd6acbea0318 100644
---- a/arch/arm/boot/dts/nvidia/tegra20-asus-tf101.dts
-+++ b/arch/arm/boot/dts/nvidia/tegra20-asus-tf101.dts
-@@ -82,9 +82,11 @@ hdmi@54280000 {
- 			pll-supply = <&hdmi_pll_reg>;
- 			hdmi-supply = <&vdd_hdmi_en>;
- 
--			nvidia,ddc-i2c-bus = <&hdmi_ddc>;
--			nvidia,hpd-gpio = <&gpio TEGRA_GPIO(N, 7)
--				GPIO_ACTIVE_HIGH>;
-+			port {
-+				hdmi_out: endpoint {
-+					remote-endpoint = <&connector_in>;
-+				};
-+			};
- 		};
- 	};
- 
-@@ -967,6 +969,20 @@ clk32k_in: clock-32k-in {
- 		#clock-cells = <0>;
- 	};
- 
-+	connector {
-+		compatible = "hdmi-connector";
-+		type = "d";
-+
-+		hpd-gpios = <&gpio TEGRA_GPIO(N, 7) GPIO_ACTIVE_HIGH>;
-+		ddc-i2c-bus = <&hdmi_ddc>;
-+
-+		port {
-+			connector_in: endpoint {
-+				remote-endpoint = <&hdmi_out>;
-+			};
-+		};
-+	};
-+
- 	cpus {
- 		cpu0: cpu@0 {
- 			cpu-supply = <&vdd_cpu>;
-diff --git a/arch/arm/boot/dts/nvidia/tegra30-asus-transformer-common.dtsi b/arch/arm/boot/dts/nvidia/tegra30-asus-transformer-common.dtsi
-index ead95306840f..9b658b3de7a4 100644
---- a/arch/arm/boot/dts/nvidia/tegra30-asus-transformer-common.dtsi
-+++ b/arch/arm/boot/dts/nvidia/tegra30-asus-transformer-common.dtsi
-@@ -80,8 +80,11 @@ hdmi: hdmi@54280000 {
- 			pll-supply = <&vdd_1v8_vio>;
- 			vdd-supply = <&vdd_3v3_sys>;
- 
--			nvidia,hpd-gpio = <&gpio TEGRA_GPIO(N, 7) GPIO_ACTIVE_HIGH>;
--			nvidia,ddc-i2c-bus = <&hdmi_ddc>;
-+			port {
-+				hdmi_out: endpoint {
-+					remote-endpoint = <&connector_in>;
-+				};
-+			};
- 		};
- 	};
- 
-@@ -1494,6 +1497,20 @@ clk32k_in: clock-32k {
- 		clock-output-names = "pmic-oscillator";
- 	};
- 
-+	connector {
-+		compatible = "hdmi-connector";
-+		type = "d";
-+
-+		hpd-gpios = <&gpio TEGRA_GPIO(N, 7) GPIO_ACTIVE_HIGH>;
-+		ddc-i2c-bus = <&hdmi_ddc>;
-+
-+		port {
-+			connector_in: endpoint {
-+				remote-endpoint = <&hdmi_out>;
-+			};
-+		};
-+	};
-+
- 	cpus {
- 		cpu0: cpu@0 {
- 			cpu-supply = <&vdd_cpu>;
+> On Mon, Aug 07, 2023 at 03:06:42PM +0200, Linus Walleij wrote:
+> > On Mon, Aug 7, 2023 at 3:05 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> >   
+> > > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>  
+> > >
+> > > So it is a bridge chip? Please use that terminology since Linux
+> > > DRM often talks about bridges.  
+> > 
+> > Replying to self: no it's not a bridge, it's a WAN thingy.
+> > 
+> > So perhaps write that this is a WAN interface adapter chip.  
+> 
+> Hi Linus
+> 
+> In the E1/T1/J1 world, framer is a well understood concept. Maybe the
+> text needs a bit more background information to explain what this is
+> to somebody who does not have an old school telecoms background.
+> 
+>    Andrew
+
+Maybe I can add in my commit log:
+--- 8< ---
+This kind of component can be found in old telecommunication system.
+It was used to digital transmission of many simultaneous telephone calls
+by time-division multiplexing. Also using HDLC protocol, WAN networks
+can be reached through the framer.
+--- 8< ---
+
+Do you think it will be better ?
+
+Regards,
+Hervé Codina
+
 -- 
-2.39.2
-
+Hervé Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
