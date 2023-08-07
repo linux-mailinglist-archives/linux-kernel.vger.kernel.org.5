@@ -2,178 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B9877184E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7043A771852
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbjHGCYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 22:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40098 "EHLO
+        id S229648AbjHGCYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 22:24:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjHGCYP (ORCPT
+        with ESMTP id S229459AbjHGCYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 22:24:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A0D95
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:24:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Sun, 6 Aug 2023 22:24:51 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637611703;
+        Sun,  6 Aug 2023 19:24:49 -0700 (PDT)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8DDF761314
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:24:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB74AC433CC
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:24:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691375053;
-        bh=1MFl7Wv7VFkUx/QWQVYQvf/6x85DYdfMcBs4zfrrnW0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=m1Sq3ud3OviOGriP+zAdwCQB6bgxPDW64rzClJqCl8vsklPyQHGINxwl2j6cJ+uj7
-         nl3Mhx3Vfut40Z8b86jQH9Se5EsB3VzCGv5/Szp9obqh0SnLx06aiFhpG3lVapOpzQ
-         sG1k2hVsc9wB4fv4HMa5wVHEmRaKJMNolTDqcU1r8eozS+/Xii4c7N/AtQqcM4BhKo
-         UQlsCrBjCAGh/i66hvT+t9Ll8gCS0Wdo4anfpkAG3yGx/Sp+WN+6tIb6AiWvtarIpl
-         Z4dCpSLJIWTNTvFJwagUxMlVWUBZ5SKL5z5udVi09CB+BG8z1GBAvuSjxCbSv4uhMG
-         7xzbXw7W4FEHQ==
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3a5a7e7cd61so2681279b6e.0
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 19:24:12 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxztXlENKB/Hf/aB2jXlcNaM8JxZ13gxKs69efp4+vQAoNfJcyu
-        qeP3nA8lhmiz8+gG8iuS322WEQBT7AW6RDGFA4Y=
-X-Google-Smtp-Source: AGHT+IETw1PnCwbrYlsqpVY2SotYy1SJb6VNvtE87x6rpcGYDadehdL1gW0P4xsCXxcejyz+lgKWCruIwbMq4YffGgY=
-X-Received: by 2002:a05:6808:1997:b0:3a7:5346:fcee with SMTP id
- bj23-20020a056808199700b003a75346fceemr5152219oib.0.1691375052213; Sun, 06
- Aug 2023 19:24:12 -0700 (PDT)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4RK0Wx39WDz9sDN;
+        Mon,  7 Aug 2023 04:24:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
+        t=1691375085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RjIz0d/LyFh1HN+ykIhW6eGVn/BJvPsew0dX158t2RI=;
+        b=iEWTtFcZdxFOAs+0l4674VmuAzO4IeVvxQuFCMi1YnnjgDoz+UBrg3UFMdBQzUQQrDiQj1
+        +RErtXMyktY7sc6YQ8//gSCg5J0ESHLYR9UwgKdVrdwaoRjn3FJ8mGTGO8vt+T09v4aeN9
+        p/+p/921P/sLb433m2azotaAUXHwfztOIzAkniIRTQCZH7a+I0S/NWcecB9UUNM9vqZs84
+        KjHUFFYqy0OjjiggjtfU4PfnZztixc19J+kv6JC9lDUPJqP1XkQgwVd0bZTHDyOtqsC/1V
+        HrB8C09v2XwZ+MHQbGOReiHJS5+PevJsJstazC/eGgQWvmTKzXdIkFMGAlJ6Ww==
+From:   Aleksa Sarai <cyphar@cyphar.com>
+Date:   Mon, 07 Aug 2023 12:24:15 +1000
+Subject: [PATCH v3] io_uring: correct check for O_TMPFILE
 MIME-Version: 1.0
-References: <20230321193341.87997-1-sshedi@vmware.com> <0ae37bcc-4398-644b-a295-1245d73e5450@gmail.com>
- <2023053135-bubbling-commodore-3a7b@gregkh> <cefc1a42-725a-8afa-c222-f4df085ba6a2@gmail.com>
- <2023053148-ahead-overbite-863d@gregkh> <730c8712-1553-63e5-ffa1-d75a922f4a42@gmail.com>
- <2023060155-mustard-mating-32b7@gregkh>
-In-Reply-To: <2023060155-mustard-mating-32b7@gregkh>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 7 Aug 2023 11:23:36 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASUmc1nFEkEvmd9VKbD6VjOs2HhpwLY-GsduRFDFGOfvg@mail.gmail.com>
-Message-ID: <CAK7LNASUmc1nFEkEvmd9VKbD6VjOs2HhpwLY-GsduRFDFGOfvg@mail.gmail.com>
-Subject: Re: [PATCH v6 0/7] refactor file signing program
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Shreenidhi Shedi <yesshedi@gmail.com>, dhowells@redhat.com,
-        dwmw2@infradead.org, linux-kernel@vger.kernel.org,
-        sshedi@vmware.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230807-resolve_cached-o_tmpfile-v3-1-e49323e1ef6f@cyphar.com>
+X-B4-Tracking: v=1; b=H4sIAM5V0GQC/43NwQ6DIAyA4VdZOK8LoCLbae+xLEawDBIVA4bMG
+ N996G03j3/Tfl1JxOAwksdlJQGTi86POYrrhWjbjh8E1+UmnPKCSiogYPR9wka32mIHvpmHybg
+ e4V5LrXghVSckyedTQOO+B/1657Yuzj4sx6fE9ukJNDFgUKuWibxYigqfeplsG27aD2RXEz8rc
+ aBAK6mM4aVRTPxJ27b9AEPcKzgLAQAA
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, stable@vger.kernel.org,
+        Aleksa Sarai <cyphar@cyphar.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1769; i=cyphar@cyphar.com;
+ h=from:subject:message-id; bh=wPyNGrBAAbtCrG61WptNEwxMQZr6Mx68bOkIIkKOnxc=;
+ b=owGbwMvMwCWmMf3Xpe0vXfIZT6slMaRcCH3+66lU9Yokud4DnadP+r79vGenfnHfafFQjhNM9
+ Ut3WT817ShlYRDjYpAVU2TZ5ucZumn+4ivJn1aywcxhZQIZwsDFKQATOfKH4Z9xOGOgToaO4oSL
+ Gaz6gnNnZXSIHDdNqrvQcP3Vv4PLOJsZGd7U/TywKK76zOb0LvujdWX5S3Zk7Hzx23xaVoW85Z0
+ z1YwA
+X-Developer-Key: i=cyphar@cyphar.com; a=openpgp;
+ fpr=C9C370B246B09F6DBCFC744C34401015D1D2D386
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 1, 2023 at 6:08=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org>=
- wrote:
->
-> On Thu, Jun 01, 2023 at 02:33:23PM +0530, Shreenidhi Shedi wrote:
-> > On Wed, 31-May-2023 22:20, Greg KH wrote:
-> > > On Wed, May 31, 2023 at 09:01:24PM +0530, Shreenidhi Shedi wrote:
-> > > > On Wed, 31-May-2023 20:08, Greg KH wrote:
-> > > > > On Tue, Apr 25, 2023 at 04:14:49PM +0530, Shreenidhi Shedi wrote:
-> > > > > > On Wed, 22-Mar-2023 01:03, Shreenidhi Shedi wrote:
-> > > > > > Can you please review the latest patch series? I think I have a=
-ddressed your
-> > > > > > concerns. Thanks.
-> > > > >
-> > > > > The big question is, "who is going to use these new features"?  T=
-his
-> > > > > tool is only used by the in-kernel build scripts, and if they do =
-not
-> > > > > take advantage of these new options you have added, why are they =
-needed?
-> > > > >
-> > > > > thanks,
-> > > > >
-> > > > > greg k-h
-> > > >
-> > > > Hi Greg,
-> > > >
-> > > > Thanks for the response.
-> > > >
-> > > > We use it in VMware Photon OS. Following is the link for the same.
-> > > > https://github.com/vmware/photon/blob/master/SPECS/linux/spec_insta=
-ll_post.inc#L4
-> > > >
-> > > > If this change goes in, it will give a slight push to our build per=
-formance.
-> > >
-> > > What exactly do you mean by "slight push"?
-> >
-> > Instead of invoking the signing tool binary for each module, we can pas=
-s
-> > modules in bulk and it will reduce the build time by couple of seconds.
->
-> Then why not modify the in-kernel build system to also do this, allowing
-> everyone to save time and money (i.e. energy)?
->
-> Why keep the build savings to yourself?
->
-> thanks,
->
-> greg k-h
+O_TMPFILE is actually __O_TMPFILE|O_DIRECTORY. This means that the old
+check for whether RESOLVE_CACHED can be used would incorrectly think
+that O_DIRECTORY could not be used with RESOLVE_CACHED.
 
+Cc: stable@vger.kernel.org # v5.12+
+Fixes: 3a81fd02045c ("io_uring: enable LOOKUP_CACHED path resolution for filename lookups")
+Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
+---
+Changes in v3:
+- drop openat2 patch, as it's already in Christian's tree
+- explain __O_TMPFILE usage in io_openat_force_async comment
+- v2: https://lore.kernel.org/r/20230806-resolve_cached-o_tmpfile-v2-0-058bff24fb16@cyphar.com
 
-If I understand correctly,
-"sign-file: add support to sign modules in bulk"
-is the only benefit in the patchset.
+Changes in v2:
+- fix io_uring's io_openat_force_async as well.
+- v1: <https://lore.kernel.org/r/20230806-resolve_cached-o_tmpfile-v1-1-7ba16308465e@cyphar.com>
+---
+ io_uring/openclose.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-I tested the bulk option, but I did not see build savings.
+diff --git a/io_uring/openclose.c b/io_uring/openclose.c
+index 10ca57f5bd24..e3fae26e025d 100644
+--- a/io_uring/openclose.c
++++ b/io_uring/openclose.c
+@@ -35,9 +35,11 @@ static bool io_openat_force_async(struct io_open *open)
+ {
+ 	/*
+ 	 * Don't bother trying for O_TRUNC, O_CREAT, or O_TMPFILE open,
+-	 * it'll always -EAGAIN
++	 * it'll always -EAGAIN. Note that we test for __O_TMPFILE because
++	 * O_TMPFILE includes O_DIRECTORY, which isn't a flag we need to force
++	 * async for.
+ 	 */
+-	return open->how.flags & (O_TRUNC | O_CREAT | O_TMPFILE);
++	return open->how.flags & (O_TRUNC | O_CREAT | __O_TMPFILE);
+ }
+ 
+ static int __io_openat_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
 
+---
+base-commit: 272af00d6825f19b48b9d9cfd11b1f6bdc011e2c
+change-id: 20230806-resolve_cached-o_tmpfile-978cb238bd68
 
+Best regards,
+-- 
+Aleksa Sarai <cyphar@cyphar.com>
 
-My evaluation:
-1.  'make allmodconfig all', then 'make modules_install'.
-        (9476 modules installed)
-
-2.  I ran 'perf stat' for single signing vs bulk signing
-      (5 runs for each).
-      I changed the -n option in scripts/signfile.sh
-
-
-
-
-A.  single sign
-
-Sign one module per scripts/sign-file invocation.
-
-find "${MODULES_PATH}" -name *.ko -type f -print0 | \
-        xargs -r -0 -P$(nproc) -x -n1 sh -c "..."
-
-
-
- Performance counter stats for './signfile-single.sh' (5 runs):
-
-             22.33 +- 2.26 seconds time elapsed  ( +- 10.12% )
-
-
-
-
-B. bulk sign
-
-Sign 32 modules per scripts/sign-file invocation
-
-find "${MODULES_PATH}" -name *.ko -type f -print0 | \
-        xargs -r -0 -P$(nproc) -x -n32 sh -c "..."
-
-
- Performance counter stats for './signfile-bulk.sh' (5 runs):
-
-             24.78 +- 3.01 seconds time elapsed  ( +- 12.14% )
-
-
-
-
-The bulk option decreases the process forks of scripts/sign-file
-but I did not get even "slight push".
-
-
-
---=20
-Best Regards
-Masahiro Yamada
