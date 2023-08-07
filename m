@@ -2,57 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A4B771780
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 02:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ADAF771781
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 02:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbjHGAfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 20:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45486 "EHLO
+        id S230035AbjHGAgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 20:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjHGAfG (ORCPT
+        with ESMTP id S229515AbjHGAgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 20:35:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3A8170E
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 17:35:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691368506; x=1722904506;
-  h=date:from:to:cc:subject:message-id;
-  bh=qQKVKlhnWCJd+IesQCMtiLnkMiuQ1zhowJiT50wx7ME=;
-  b=O5ClBZQsmseAQ9o1ljYzgcRliCavSFbOdWHPMW3f9U7hM31U+mOUw+lV
-   QUU+57BeaxY213niJPPum1R2TTjIlE7P4+VT0xlWqyOIT/O4YJEfGYtel
-   UFSRV1EZm5iHkZqPW1FmA74OjHAdNOBZtvw7ldGpRH+SNsHrSeQgaB7a2
-   /Z+NNsskqO2MGTGqjkiaFPrXYtR+lY3Re2V6nYdprB0GFRq2fNhPvpUdR
-   Mdnz6ZdsZAcJ1vhunIF8WqDOhAm8b/wqfRG+Uht0ciOQEOYhL4xAIa5p1
-   o/aqqIG3YVOoaJT7Qsl5LEyzz8eBVWW4Vyhg8gXkg94wXgoWqA7qY5WJn
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="374086811"
-X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
-   d="scan'208";a="374086811"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2023 17:35:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="820801822"
-X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
-   d="scan'208";a="820801822"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 06 Aug 2023 17:35:04 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qSoD9-0004R4-0p;
-        Mon, 07 Aug 2023 00:35:03 +0000
-Date:   Mon, 07 Aug 2023 08:34:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/apic] BUILD SUCCESS
- 6e3edb0fb5c0ee3ab1edc1fcfd159e7dd177ef0e
-Message-ID: <202308070828.liSJY8h5-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Sun, 6 Aug 2023 20:36:12 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA6F101
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 17:36:11 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686b879f605so2632415b3a.1
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 17:36:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691368570; x=1691973370;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HJaYuD0/DwZjvYuP3suP4sHB39g0WGFkx7q7Sdv5RQQ=;
+        b=EnQzFWwX9nM6C3d5iwgIneyMG/4yxkanOp5peQkRR+ZX8bDha5YaI8ZutNOxwjyrNR
+         OZtLJTVS5vfbR+ZJz/XTHaApcQ+irK7cxMr0BEPSwiJnWG3LSZ5QKrbx2I0/RFUXpHLk
+         4t+NubGEOaYG83+APkBV4+AvZpRTa8nwOy9xEyE5JBUrJLAAXmj5NIkXy3ZrnxCtna6a
+         3k71RSW6bT5vUkDwGjN5ZsBPrZNL0Uw0XNM7Ae/Sa3QuYhjmhmrIohvUnhM1ONS9HTm3
+         YZ5b+eTHfbwYcnj56O+h86Jd2WEgkWA7n/tMeUWBMY2Mkv7KEXx8giNbdKKvEsBLGrLo
+         ZHZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691368570; x=1691973370;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HJaYuD0/DwZjvYuP3suP4sHB39g0WGFkx7q7Sdv5RQQ=;
+        b=OJNYIX0S0vuHqbhNRapZgQaDUXZTSsO3k0M7d0hZp29GVsU2ZMUrf18KSv6ioq5mEr
+         vMMdbX9DWFLlEXoxxAKixGN3klpNR+ylxOlblXVjMfEzLVkrjAR9eI6uVRqoTLzM0NaU
+         Ip48iiLXowipCVH1wX4dDkgEFlVJuZi3rJkZXGiZBa4V7BhyjlMB35N4b7xnqEFbdD2/
+         91PTpDzmT3gcFJJmU9Gi7tLmnUW6UXQHMP8rb8nfMljyBL1KDr3WMp0pvkPHrxPYXH3A
+         Drp5Kpabxe7GfT1262iOC3DluserlKf/oMX4L+AvOaS/M66rlT0CE0ON2eh9/69iEAmy
+         +nYg==
+X-Gm-Message-State: AOJu0YyBwKuKjW+UwrOISoFWsSHMHGAvReFh9+h2rlntqwvuWWBeXFyc
+        kw3vbI6UpNYYDL05TJJLm9YD3WrM2u8=
+X-Google-Smtp-Source: AGHT+IHagfq5vsNZXxqrY4jF86em4T+b14dTXq6wlETvHRnwmzcH31qVuGscwWIxfd0bCJVXfKLw1Q==
+X-Received: by 2002:a05:6a21:6d93:b0:13f:13cb:bc51 with SMTP id wl19-20020a056a216d9300b0013f13cbbc51mr8476682pzb.25.1691368570309;
+        Sun, 06 Aug 2023 17:36:10 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id iz2-20020a170902ef8200b001bbb22652a4sm5413429plb.226.2023.08.06.17.36.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Aug 2023 17:36:09 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 20A8E81C1EBE; Mon,  7 Aug 2023 07:36:03 +0700 (WIB)
+Date:   Mon, 7 Aug 2023 07:36:03 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "zhangyongle001@208suo.com" <zhangyongle001@208suo.com>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "npiggin@gmail.com" <npiggin@gmail.com>
+Cc:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] floppy: ERROR: that open brace { should be on the
+ previous line
+Message-ID: <ZNA8c4HlbbJ4XE30@debian.me>
+References: <058c3448e220ee16bcb5e588271b685c@208suo.com>
+ <72a156e7-d15d-629e-9166-461622ad0f21@csgroup.eu>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SErABh50vbaitwzM"
+Content-Disposition: inline
+In-Reply-To: <72a156e7-d15d-629e-9166-461622ad0f21@csgroup.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,123 +79,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/apic
-branch HEAD: 6e3edb0fb5c0ee3ab1edc1fcfd159e7dd177ef0e  tools: Get rid of IRQ_MOVE_CLEANUP_VECTOR from tools
 
-elapsed time: 725m
+--SErABh50vbaitwzM
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-configs tested: 104
-configs skipped: 7
+On Fri, Aug 04, 2023 at 04:05:09PM +0000, Christophe Leroy wrote:
+> Hello,
+>=20
+> Le 20/07/2023 =C3=A0 12:17, zhangyongle001@208suo.com a =C3=A9crit=C2=A0:
+> > [Vous ne recevez pas souvent de courriers de zhangyongle001@208suo.com.=
+=20
+> > D?couvrez pourquoi ceci est important ?=20
+> > https://aka.ms/LearnAboutSenderIdentification ]
+> >=20
+> > Fix twoce occurrences of the checkpatch.pl error:
+> > ERROR: that open brace { should be on the previous line
+>=20
+>=20
+> Can you please explain the purpose of those changes ? Do you use some=20
+> tools that get disturbed by such cosmetic errors ? Otherwise what is=20
+> your reason ?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Hi,
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r005-20230806   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r043-20230806   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r001-20230806   gcc  
-arm                  randconfig-r012-20230806   clang
-arm                  randconfig-r021-20230806   clang
-arm                  randconfig-r032-20230806   gcc  
-arm                  randconfig-r046-20230806   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r031-20230806   clang
-arm64                randconfig-r034-20230806   clang
-csky                                defconfig   gcc  
-csky                 randconfig-r013-20230806   gcc  
-hexagon              randconfig-r036-20230806   clang
-hexagon              randconfig-r041-20230806   clang
-hexagon              randconfig-r045-20230806   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230806   clang
-i386         buildonly-randconfig-r005-20230806   clang
-i386         buildonly-randconfig-r006-20230806   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230806   clang
-i386                 randconfig-i002-20230806   clang
-i386                 randconfig-i003-20230806   clang
-i386                 randconfig-i004-20230806   clang
-i386                 randconfig-i005-20230806   clang
-i386                 randconfig-i006-20230806   clang
-i386                 randconfig-i011-20230806   gcc  
-i386                 randconfig-i012-20230806   gcc  
-i386                 randconfig-i013-20230806   gcc  
-i386                 randconfig-i014-20230806   gcc  
-i386                 randconfig-i015-20230806   gcc  
-i386                 randconfig-i016-20230806   gcc  
-i386                 randconfig-r002-20230806   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r006-20230806   gcc  
-loongarch            randconfig-r025-20230806   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r004-20230806   gcc  
-mips                 randconfig-r015-20230806   clang
-nios2                               defconfig   gcc  
-openrisc             randconfig-r014-20230806   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r022-20230806   gcc  
-riscv                randconfig-r042-20230806   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230806   gcc  
-sh                               allmodconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r003-20230806   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r023-20230806   clang
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230806   clang
-x86_64       buildonly-randconfig-r002-20230806   clang
-x86_64       buildonly-randconfig-r003-20230806   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r035-20230806   clang
-x86_64               randconfig-x001-20230806   gcc  
-x86_64               randconfig-x002-20230806   gcc  
-x86_64               randconfig-x003-20230806   gcc  
-x86_64               randconfig-x004-20230806   gcc  
-x86_64               randconfig-x005-20230806   gcc  
-x86_64               randconfig-x006-20230806   gcc  
-x86_64               randconfig-x011-20230806   clang
-x86_64               randconfig-x012-20230806   clang
-x86_64               randconfig-x013-20230806   clang
-x86_64               randconfig-x014-20230806   clang
-x86_64               randconfig-x015-20230806   clang
-x86_64               randconfig-x016-20230806   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+208suo.com people do checkpatch fixes (that is, they run
+scripts/checkpatch.pl -f <random source file> then try to make the script
+happy). Steven warned them to not submitting such patches again [1] but
+they keep spamming maintainers with checkpatch patches (ignoring the review
+warning). I voiced this concern when reviewing one of their patches and
+Jani replied that such one-way interaction with kernel communty is
+detrimental [2].
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The exact same situation happened last year involving developers from
+cdjrlc.com domain. They also did trivial patches, including mostly
+(and notoriously known for) redundant word stripping. While some of these
+patches were accepted, others were not with reviews requesting changes in
+v2, yet they also ignored reviews. In fact, in the early waves of 208suo.com
+patches, they used the same email infra as 208suo.com people and they sent
+patches as HTML emails (which were rejected by mailing lists obviously)
+so that the latter people have to send their patches on their behalf
+(but corrupted since 208suo.com people used Roundcube instead of
+git-send-email(1)).
+
+Regarding 208suo.com's mail infra, after I pointed out this [3], they
+changed the infra so that patches sent didn't get corrupted. Thus, they did
+listen in regard of tooling and infra changes, but they deliberately
+doesn't answer code reviews.
+
+Thanks.
+
+[1]: https://lore.kernel.org/lkml/20230720134501.01f9f1de@gandalf.local.hom=
+e/
+[2]: https://lore.kernel.org/lkml/87cz07vvwu.fsf@intel.com/
+[3]: https://lore.kernel.org/lkml/ZJK7sC4i+MK98k%2F+@debian.me/
+
+>=20
+> We don't accept such standelone minor cosmetic changes at the first=20
+> place because it looks like a waste of time.
+
+PS: And in fact, complicating stable backports...
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--SErABh50vbaitwzM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZNA8aQAKCRD2uYlJVVFO
+o1acAQDW60nBwSLxR3hsP5HX++ukVRwWzC4LuylPdMo2w/GNcAEA9uw09JR+PKcp
+Jg6+XPElt+x2FfUaAd0pHuRAiVBaKgc=
+=J/zU
+-----END PGP SIGNATURE-----
+
+--SErABh50vbaitwzM--
