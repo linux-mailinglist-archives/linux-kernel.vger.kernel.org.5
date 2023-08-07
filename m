@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C6D772CB6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6317A772CB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbjHGRW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56300 "EHLO
+        id S232204AbjHGRWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:22:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232229AbjHGRWZ (ORCPT
+        with ESMTP id S232181AbjHGRWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:22:25 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB941998;
-        Mon,  7 Aug 2023 10:22:05 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377HLXSu075288;
-        Mon, 7 Aug 2023 12:21:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691428893;
-        bh=7g5ucWjAlicSpn6dGsJoOnWTxKuqa0qe20V4GTrhG3c=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=F8GMjV/qablgQbyn0Np3uOxnob0jnuBOHm9aLpCYSIp5zBZ/m9APdIPiaaiyfeuYn
-         EY2QxbzM8wCWBCKUKiP7H8gcG1OmkEgx9WybZ489cNeyYB2AQO0NeTdBfzBIdGb5a/
-         4TOSLRyCq87yimQG15DB/ek2wFMxd6cI2ttNweHc=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377HLX1q039324
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Aug 2023 12:21:33 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
- Aug 2023 12:21:33 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 7 Aug 2023 12:21:33 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377HLWnQ027250;
-        Mon, 7 Aug 2023 12:21:32 -0500
-Date:   Mon, 7 Aug 2023 12:21:32 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Apurva Nandan <a-nandan@ti.com>
-CC:     "Kumar, Udit" <u-kumar1@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Hari Nagalla <hnagalla@ti.com>
-Subject: Re: [PATCH 2/3] arm64: dts: ti: k3-j784s4-mcu-wakeup: Add
- bootph-pre-ram property for SPL nodes
-Message-ID: <20230807172132.7e4qux3f72zyfd33@mocker>
-References: <20230806164838.18088-1-a-nandan@ti.com>
- <20230806164838.18088-3-a-nandan@ti.com>
- <3a2d1880-10aa-ac19-24e1-b2f697bc1a73@ti.com>
- <ef834d0b-b13a-5c3d-6c1d-088006fdfa32@ti.com>
+        Mon, 7 Aug 2023 13:22:20 -0400
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD5819B6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:22:01 -0700 (PDT)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1bbaa549bcbso3627950fac.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:22:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691428907; x=1692033707;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8YvbsUJg0/MEi6rG+cUpAFNtn5WudefBqhX2T15JqJg=;
+        b=ed1lHmdV820f17A4KM8vckb+CtmsQK+h8Na/No7yS6n8rRy92/oVzmqcGTuD+zm0j5
+         c6KO4c4ZAHIaUqTRd4Jq/QxdveAcVWJMMhhXWnoiUuHV2uDzmoWABAL4jtoVrkdieqdX
+         DvdPuBSLG/NC+MaWVyhOnGIflKlJDmuptwkQKdi8xPk31LKQJYvTavYfbLb+05F5TGJ8
+         FgvhEDtssv3/jG168DMsO04k23WP8HE2zjqt51dC5n3nl2zUvWVvqvLJUcahraUXX5ha
+         Yztyi+jc5YLth7eArr7EZogtQITjFmR+8RcUYRJV51nHiFAkCVB2Lr+PZiu6uJ7ayhG/
+         KVtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691428907; x=1692033707;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8YvbsUJg0/MEi6rG+cUpAFNtn5WudefBqhX2T15JqJg=;
+        b=J1RgBesD24eXG4tlWsv05auCXrX+663ZCsVxU9yVhj+Gw47bRzCwGPMle8HXJ7KwCV
+         ugVoWnGnPvYuEY+kAD5gvoAIK+kyNtRs0dfYuM0dOmF2ttdkuOCv/54bYCXJKdEuQzlL
+         WpV59umRAJ8d7MZKGLx5DU+6N3/ygWMZvuuvJGG+tg4twAV5v2EKWidGgi2p9Jd8Dpyi
+         u0VSHGPKs+r5x9j6JkuiRv71R+vK5kGrP0TU/pDXSEPB3xZurQMdgXeQyy7WDq2MzQVQ
+         CUQ01ZnsKaCzfJebUDYZnkbx3uow6JJxI3Xg4qhkqf6gtatPXcayWxFJsDzKOveCCnag
+         UreQ==
+X-Gm-Message-State: AOJu0YxtDevzzB83RjQGJItdZzrrFNp9AVbMhb8Hi1N/1i1EHKJtf339
+        QMMtpnu1bpcm125cR7fyW5v1l+GHkN9tBdf+YtY=
+X-Google-Smtp-Source: AGHT+IHawkKgmlrHGsgRqcMkQZbxvKoqspEbzHp781Amg3VTbLYE3tUVZu5Y5/KQnXJrM1eeSgpKwe0EleAfxLnD29I=
+X-Received: by 2002:a05:6870:c1cb:b0:1bf:4a66:d54f with SMTP id
+ i11-20020a056870c1cb00b001bf4a66d54fmr11790002oad.56.1691428907356; Mon, 07
+ Aug 2023 10:21:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ef834d0b-b13a-5c3d-6c1d-088006fdfa32@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <20230802065518.12271-1-sunran001@208suo.com>
+In-Reply-To: <20230802065518.12271-1-sunran001@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 7 Aug 2023 13:21:36 -0400
+Message-ID: <CADnq5_NOoz1ciFDqtbv54dRB2Bd_55sO-0kLnZXxBxxdT2cc_A@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd: Clean up errors in amdgpu_cgs.c
+To:     Ran Sun <sunran001@208suo.com>
+Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,23 +69,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22:43-20230807, Apurva Nandan wrote:
-[..]
+Already fixed.
 
-> > mcu_timer0: timer@40400000 should be part of your list.
-> Maybe you are referring to mcu_timer1. mcu_timer1 will be a part of
-> u-boot.dtsi as we need to edit
-> the node for removing k3_clks and power-domains properties from it. So we
-> should add bootph-pre-ram
-> there itself in uboot.dtsi as the node will be already there.
-
-a) you need the timer even before talking to anything - u-boot needs it
-for basic delay - so add the pre-ram property.
-b) what you are doing in u-boot currently a hack - am625 in u-boot got
-it fixed the right way - follow the model then you dont need the hackery
-with deleting clock and power-domains properties.
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+On Wed, Aug 2, 2023 at 2:55=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
+:
+>
+> Fix the following errors reported by checkpatch:
+>
+> ERROR: switch and case should be at the same indent
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_cgs.c | 64 ++++++++++++-------------
+>  1 file changed, 32 insertions(+), 32 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cgs.c b/drivers/gpu/drm/am=
+d/amdgpu/amdgpu_cgs.c
+> index 456e385333b6..fafe7057a8c9 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cgs.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cgs.c
+> @@ -163,38 +163,38 @@ static uint16_t amdgpu_get_firmware_version(struct =
+cgs_device *cgs_device,
+>         uint16_t fw_version =3D 0;
+>
+>         switch (type) {
+> -               case CGS_UCODE_ID_SDMA0:
+> -                       fw_version =3D adev->sdma.instance[0].fw_version;
+> -                       break;
+> -               case CGS_UCODE_ID_SDMA1:
+> -                       fw_version =3D adev->sdma.instance[1].fw_version;
+> -                       break;
+> -               case CGS_UCODE_ID_CP_CE:
+> -                       fw_version =3D adev->gfx.ce_fw_version;
+> -                       break;
+> -               case CGS_UCODE_ID_CP_PFP:
+> -                       fw_version =3D adev->gfx.pfp_fw_version;
+> -                       break;
+> -               case CGS_UCODE_ID_CP_ME:
+> -                       fw_version =3D adev->gfx.me_fw_version;
+> -                       break;
+> -               case CGS_UCODE_ID_CP_MEC:
+> -                       fw_version =3D adev->gfx.mec_fw_version;
+> -                       break;
+> -               case CGS_UCODE_ID_CP_MEC_JT1:
+> -                       fw_version =3D adev->gfx.mec_fw_version;
+> -                       break;
+> -               case CGS_UCODE_ID_CP_MEC_JT2:
+> -                       fw_version =3D adev->gfx.mec_fw_version;
+> -                       break;
+> -               case CGS_UCODE_ID_RLC_G:
+> -                       fw_version =3D adev->gfx.rlc_fw_version;
+> -                       break;
+> -               case CGS_UCODE_ID_STORAGE:
+> -                       break;
+> -               default:
+> -                       DRM_ERROR("firmware type %d do not have version\n=
+", type);
+> -                       break;
+> +       case CGS_UCODE_ID_SDMA0:
+> +               fw_version =3D adev->sdma.instance[0].fw_version;
+> +               break;
+> +       case CGS_UCODE_ID_SDMA1:
+> +               fw_version =3D adev->sdma.instance[1].fw_version;
+> +               break;
+> +       case CGS_UCODE_ID_CP_CE:
+> +               fw_version =3D adev->gfx.ce_fw_version;
+> +               break;
+> +       case CGS_UCODE_ID_CP_PFP:
+> +               fw_version =3D adev->gfx.pfp_fw_version;
+> +               break;
+> +       case CGS_UCODE_ID_CP_ME:
+> +               fw_version =3D adev->gfx.me_fw_version;
+> +               break;
+> +       case CGS_UCODE_ID_CP_MEC:
+> +               fw_version =3D adev->gfx.mec_fw_version;
+> +               break;
+> +       case CGS_UCODE_ID_CP_MEC_JT1:
+> +               fw_version =3D adev->gfx.mec_fw_version;
+> +               break;
+> +       case CGS_UCODE_ID_CP_MEC_JT2:
+> +               fw_version =3D adev->gfx.mec_fw_version;
+> +               break;
+> +       case CGS_UCODE_ID_RLC_G:
+> +               fw_version =3D adev->gfx.rlc_fw_version;
+> +               break;
+> +       case CGS_UCODE_ID_STORAGE:
+> +               break;
+> +       default:
+> +               DRM_ERROR("firmware type %d do not have version\n", type)=
+;
+> +               break;
+>         }
+>         return fw_version;
+>  }
+> --
+> 2.17.1
+>
