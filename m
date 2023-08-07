@@ -2,209 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E51777270A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD816772700
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229620AbjHGOGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
+        id S231373AbjHGOFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232759AbjHGOGm (ORCPT
+        with ESMTP id S233471AbjHGOFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:06:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A041FF3
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:05:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691417094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8Nlu9SHTk8pF76iz8mRyg8hI9jWId+zKXclHtiFUBI8=;
-        b=O/YtG1Brpbu0YxtCjhLydR5vMAwGiXrmj3CDLPxs+5eiBFqfowpKvjnW0XZnXAzSCxlqOs
-        o1dxSIY81VZ+GJ2EbBOQToYWtBO42AVEtItrk1BzyGt2Y9ATeo+jmd313Vt1+FRiOsGYbp
-        a7Oy0t9s6nNS+zFW9G4lSVCxGFuwr6E=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-196-7laFvo-9Njerfwt0h5DW3Q-1; Mon, 07 Aug 2023 10:04:50 -0400
-X-MC-Unique: 7laFvo-9Njerfwt0h5DW3Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 81BA2830F5B;
-        Mon,  7 Aug 2023 14:03:51 +0000 (UTC)
-Received: from alecto.usersys.redhat.com (unknown [10.45.225.231])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1FF612026D4B;
-        Mon,  7 Aug 2023 14:03:46 +0000 (UTC)
-Date:   Mon, 7 Aug 2023 16:03:43 +0200
-From:   Artem Savkov <asavkov@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jesper Dangaard Brouer <hawk@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Milian Wolff <milian.wolff@kdab.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] Revert "perf report: Append inlines to non-DWARF
- callchains"
-Message-ID: <20230807140343.GA910089@alecto.usersys.redhat.com>
-References: <ZMl8VyhdwhClTM5g@kernel.org>
- <20230802074335.GA622710@alecto.usersys.redhat.com>
- <20230807110008.GA886657@alecto.usersys.redhat.com>
- <ZNDy9EBLsUlERql6@kernel.org>
+        Mon, 7 Aug 2023 10:05:23 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C39C32727
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:04:44 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9dc1bff38so70771121fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 07:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691417079; x=1692021879;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UKSrhcE5Bln8vQQGTHtL4QDZJ+tT1+92+NGnlfVJ2k0=;
+        b=O0bP2X7Yu58QOiyOA57b5a+g7b72bAfdkW0yXkeQQdZZQiVjurj73+CUZMsll5txeS
+         Uac1l9skbh9f7pHv9667e5ZIwgY9Tg4r9edtmpPfv9Z7rXTsj3IrAgS0keiC/Jjg63vd
+         1BRYd79hMAYZBgQa5JUWPmS6/0A2jIMbv0zfcD/dzq5NkjgEU4RtH6GnHS4IZtwE86zH
+         lECRrM3vB/iZgJ1+MwbnsVx1mVPeEyaDs2JPgxMG7D9UT7RAngjviNL7nfEljZbvWVrI
+         REdj6p99L0cxiiE19jDuQ4BwXZwi7XILkIs6LOtl9BfbJ7mkCoNJ/XyT4hq0RyaBiNbj
+         hF7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691417079; x=1692021879;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UKSrhcE5Bln8vQQGTHtL4QDZJ+tT1+92+NGnlfVJ2k0=;
+        b=Wo6du6RWuv1Ei1wBHrQ3KDvBiOexjAKjJtx55fuiMvL/CiW7oD9aLRAwMFXErhS52y
+         I8w5u7spiYhajkxUQweGTfEFA4uRDNY4V3kTA7rF3JP5mjUkz9ikwliWM+N+32Aw8TTV
+         ak0RjQSUtnEWKb3Id18AxUb3YcTKUCfyi3q2GtV80IrZ4ytWKmMdQoU//bci2oAq//cm
+         diPW11w1PvHoUdoa7vAXyoH/r5XyEA+BwGebZiyGSnqZzY66T9Y9h6ypMcLMVTe5hNZN
+         W9jDjudwqP9Zg0RkSspOLRuATjiN5fiAekTvqh4dUUZeaCu57pVR8YrQ3riE16V8Nhwv
+         HA1w==
+X-Gm-Message-State: AOJu0YxtXIPgTBH9hLqYY1/X4IKUubq32u9g6V4PoEBG3W3OhDNv4/jY
+        Ffn3RWxfsB9FqS9gRzeRN7CSgQ==
+X-Google-Smtp-Source: AGHT+IHCrcRfDWUcueQ6OuYJVjkC4Z602JSHTqP1DbVPjQLQkoBsDryvz98IyZzcKGS29BVtwEritA==
+X-Received: by 2002:a2e:a0cb:0:b0:2b9:cce3:a126 with SMTP id f11-20020a2ea0cb000000b002b9cce3a126mr6405556ljm.21.1691417079270;
+        Mon, 07 Aug 2023 07:04:39 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id y8-20020a1709063a8800b0099316c56db9sm5158207ejd.127.2023.08.07.07.04.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 07:04:38 -0700 (PDT)
+Message-ID: <ba40de82-b308-67b1-5751-bb2d95f2b8a5@linaro.org>
+Date:   Mon, 7 Aug 2023 16:04:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZNDy9EBLsUlERql6@kernel.org>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/6] media: dt-bindings: Document SC8280XP/SM8350 Venus
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230731-topic-8280_venus-v1-0-8c8bbe1983a5@linaro.org>
+ <20230731-topic-8280_venus-v1-1-8c8bbe1983a5@linaro.org>
+ <84ab9380-2fb2-76f9-2eb9-71d9202718cc@linaro.org>
+ <659e30a7-80f7-4fd8-af58-45505213a2ef@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <659e30a7-80f7-4fd8-af58-45505213a2ef@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 10:34:44AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Aug 07, 2023 at 01:00:08PM +0200, Artem Savkov escreveu:
-> > On Wed, Aug 02, 2023 at 09:43:40AM +0200, Artem Savkov wrote:
-> > > Hi Arnaldo,
-> > > 
-> > > On Tue, Aug 01, 2023 at 06:42:47PM -0300, Arnaldo Carvalho de Melo wrote:
-> > > > Hi Artem,
-> > > > 
-> > > > 	Can you please double check this? I reproduced with:
-> > > > 
-> > > > git checkout 46d21ec067490ab9cdcc89b9de5aae28786a8b8e
-> > > > build it
-> > > > perf record -a -g sleep 5s
-> > > > perf report
-> > > > 
-> > > > 	Do you get the same slowness and then reverting it, i.e. just
-> > > > going to HEAD~ and rebuilding getting a fast 'perf report' startup, i.e.
-> > > > without the inlines in the callchains?
-> > > 
-> > > With a simple test like this I definitely get a slowdown, but not sure
-> > > if it can be called excessive.
-> > > 
-> > > Below are the times I got by running 'time perf report' and hitting 'q'
-> > > during load so that it quits as soon as it is loads up. Tested on a
-> > > freshly updated fedora 38.
-> > 
-> > My bad, I had wrong debuginfo installed for the kernel I tested. I can
-> > reproduce it with the correct one. Looks like vmlinux is just too much
-> > for addr2line. Maybe we can skip it but leave other inlines in, like so:
+On 07/08/2023 14:41, Konrad Dybcio wrote:
+> On 5.08.2023 21:29, Krzysztof Kozlowski wrote:
+>> On 04/08/2023 22:09, Konrad Dybcio wrote:
+>>> Both of these SoCs implement an IRIS2 block, with SC8280XP being able
+>>> to clock it a bit higher.
+>>>
+>>
+>> ...
+>>
+>>> +
+>>> +  iommus:
+>>> +    maxItems: 1
+>>> +
+>>> +  video-decoder:
+>>> +    type: object
+>>> +
+>>> +    properties:
+>>> +      compatible:
+>>> +        const: venus-decoder
+>>
+>> That's not how compatibles are constructed... missing vendor prefix, SoC
+>> or IP block name.
+>>
+>>> +
+>>> +    required:
+>>> +      - compatible
+>>> +
+>>> +    additionalProperties: false
+>>
+>> Why do you need this child node? Child nodes without properties are
+>> usually useless.
+> For both comments: I aligned with what was there..
 > 
-> That is a possibilit, and probably we could make it cheaper by looking
-> at the cpumode, avoiding calling addr2line when we didn't makage to
-> resolve the symbol, etc.
+> The driver abuses these compats to probe enc/dec submodules, even though
+> every Venus implementation (to my knowledge) is implicitly enc/dec capable..
+
+Holy crap, I see...
+
 > 
-> We also may want to have this as an option that has to be explicitely
-> enabled, like --resolve-inlines, as this will add overhead no matter if
-> we stop calling addr2line and do it more efficiently, etc.
+> Perhaps a bigger clean-up is due. I guess I could just create the venc/vdec
+> devices from the venus core probe and get rid of this fake stuff?
 
-Sounds good, I'll look into it.
+Few devices (qcom,msm8996-venus.yaml, sdm660, sdm845) have clocks there,
+so we actually could stay with these subnodes, just correct the
+compatibles to a list with correct prefixes:
 
-> Fact is, we're late in the 6.5 schedule, so the best thing now is to
-> just revert the patch and then try again later, ok?
+qcom,sc8280xp-venus-decoder + qcom,venus-decoder
 
-Yes, sure.
-
-> - Arnaldo
->  
-> > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> > index 11de3ca8d4fa7..fef309cd401f7 100644
-> > --- a/tools/perf/util/machine.c
-> > +++ b/tools/perf/util/machine.c
-> > @@ -2388,7 +2388,9 @@ static int add_callchain_ip(struct thread *thread,
-> >  	ms.map = map__get(al.map);
-> >  	ms.sym = al.sym;
-> >  
-> > -	if (!branch && append_inlines(cursor, &ms, ip) == 0)
-> > +	if (!branch && ms.map && ms.map->dso &&
-> > +	    strcmp(ms.map->dso->short_name, "[kernel.vmlinux]") &&
-> > +	    append_inlines(cursor, &ms, ip) == 0)
-> >  		goto out;
-> >  
-> >  	srcline = callchain_srcline(&ms, al.addr);
-> > 
-> > > > - Arnaldo
-> > > > 
-> > > > ----
-> > > > 
-> > > > This reverts commit 46d21ec067490ab9cdcc89b9de5aae28786a8b8e.
-> > > > 
-> > > > The tests were made with a specific workload, further tests on a
-> > > > recently updated fedora 38 system with a system wide perf.data file
-> > > > shows 'perf report' taking excessive time, so lets revert this until a
-> > > > full investigation and improvement on the addr2line support code is
-> > > > made.
-> > > > 
-> > > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > > Cc: Artem Savkov <asavkov@redhat.com>
-> > > > Cc: Namhyung Kim <namhyung@kernel.org>
-> > > > Cc: Adrian Hunter <adrian.hunter@intel.com>
-> > > > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> > > > Cc: Ian Rogers <irogers@google.com>
-> > > > Cc: Ingo Molnar <mingo@redhat.com>
-> > > > Cc: Jiri Olsa <jolsa@kernel.org>
-> > > > Cc: Mark Rutland <mark.rutland@arm.com>
-> > > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > > > Cc: Milian Wolff <milian.wolff@kdab.com>
-> > > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > > ---
-> > > >  tools/perf/util/machine.c | 5 -----
-> > > >  1 file changed, 5 deletions(-)
-> > > > 
-> > > > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> > > > index 4e62843d51b7dbf9..f4cb41ee23cdbcfc 100644
-> > > > --- a/tools/perf/util/machine.c
-> > > > +++ b/tools/perf/util/machine.c
-> > > > @@ -45,7 +45,6 @@
-> > > >  
-> > > >  static void __machine__remove_thread(struct machine *machine, struct thread_rb_node *nd,
-> > > >  				     struct thread *th, bool lock);
-> > > > -static int append_inlines(struct callchain_cursor *cursor, struct map_symbol *ms, u64 ip);
-> > > >  
-> > > >  static struct dso *machine__kernel_dso(struct machine *machine)
-> > > >  {
-> > > > @@ -2385,10 +2384,6 @@ static int add_callchain_ip(struct thread *thread,
-> > > >  	ms.maps = maps__get(al.maps);
-> > > >  	ms.map = map__get(al.map);
-> > > >  	ms.sym = al.sym;
-> > > > -
-> > > > -	if (!branch && append_inlines(cursor, &ms, ip) == 0)
-> > > > -		goto out;
-> > > > -
-> > > >  	srcline = callchain_srcline(&ms, al.addr);
-> > > >  	err = callchain_cursor_append(cursor, ip, &ms,
-> > > >  				      branch, flags, nr_loop_iter,
-> > > > -- 
-> > > > 2.41.0
-> > > > 
-> > > 
-> > > -- 
-> > >  Artem
-> > 
-> > -- 
-> >  Artem
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
-> 
-
--- 
- Artem
+Best regards,
+Krzysztof
 
