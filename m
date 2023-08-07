@@ -2,76 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 723B97727C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F127727CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232152AbjHGOaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        id S233947AbjHGObM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232879AbjHGOaI (ORCPT
+        with ESMTP id S233643AbjHGObJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:30:08 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E5C10CF
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:30:05 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bbbc4ae328so35603385ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 07:30:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691418605; x=1692023405;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bMdPzG2XrCBcIhVHkWNK3nWK0wLFcxVC5hw4AAEh6/o=;
-        b=r+pL34KOKCyCvT1G6ujMdYSsC+crCp5k626T+yQFecWvtFUQ1hf0pqfn3YDsJ/9MCe
-         XgoOpSipaVd1TJGBElPgSMYRBZwWMyleJsuAHgioDjuxBzdsQRfw+pWAw14w/98Ebwne
-         8rFuc+wzPBMLyeiPXpvIKUNXsn/1a+QC8grStbv8jVZZNhHnvvvDrNZBWRcOYFiK3nxt
-         GrDnM8OsLDSVxp3PN9+4FFiuPV+zJf0jR6XmgQzFSAl/M0Nn1aKHZDBHBy32tB+394A3
-         VA0ooqPDPOzMGDu1c3/MCB4ECYeeYsf/ZARv6vtUTb0v12spGSddiSTHJ+svdK6g/I7h
-         uHzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691418605; x=1692023405;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bMdPzG2XrCBcIhVHkWNK3nWK0wLFcxVC5hw4AAEh6/o=;
-        b=Fg8RdTP3enz3M+xEbyQnvZg1efNo/Pyqth9RtnOriCh3CX7VyDVMVIIGIxoRy//4mW
-         dqMMPif4O6udEMnjnA+c3x/mZ6Sc5EUmCiqjs7b/Tp07OVGFc2rQLmqsq0UI/9VuEpJl
-         I/4BiEEpBiIhrad0Y4q8O6q3TKPhAS9BVEhDpsOr17Bec/TAhB/rmZjC5J05kOnDoPR5
-         Fpsc5PZiG3FPtmH8Pr8CWVfCZESZAGbC9eXu7C1YJb011nnXPIHMKu49KxeVgTJyADai
-         9VX6HYYhWnMSY3uNOz+BkpjhNNdJ8eoOG9Hs7GRTL31FHiKqegE2bOJW6t8U6GBgFY7x
-         pigw==
-X-Gm-Message-State: AOJu0YzPTLndkIBOYlcWcMqZBfXwsVZxW9qkq+onoOvqPDAyBElIUC3l
-        nlmokHdFaJ5LJEwMqXxTo9XGm28JTmk=
-X-Google-Smtp-Source: AGHT+IGomqVsnwl3zZAfC62MD1t+0pP4FGydWER6MsEYy/PY4td7kLcqKxXda0j7BcBmIz10jftfPDmWgKo=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:244f:b0:1b8:c666:207a with SMTP id
- l15-20020a170903244f00b001b8c666207amr38755pls.9.1691418604729; Mon, 07 Aug
- 2023 07:30:04 -0700 (PDT)
-Date:   Mon, 7 Aug 2023 07:30:03 -0700
-In-Reply-To: <030a485fb852c4604371adc3aeb5511ac6501b88.camel@intel.com>
-Mime-Version: 1.0
-References: <cover.1690369495.git.kai.huang@intel.com> <b57460d1d12d1f6eac9073cefd6976812b1eef5f.1690369495.git.kai.huang@intel.com>
- <20230806113623.f7am5levfsllpko7@box.shutemov.name> <030a485fb852c4604371adc3aeb5511ac6501b88.camel@intel.com>
-Message-ID: <ZND+Cs8roqwnGba4@google.com>
-Subject: Re: [PATCH v3 10/12] x86/virt/tdx: Wire up basic SEAMCALL functions
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "n.borisov.lkml@gmail.com" <n.borisov.lkml@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        Mon, 7 Aug 2023 10:31:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DBB10FC;
+        Mon,  7 Aug 2023 07:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691418652; x=1722954652;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=b4ntnBblVTNwmgcGMyzwF6IHwP6pZoZCktC9WwMsxe8=;
+  b=kxfxqlT+ni3cC35ZKhzYecW7pGoQuySeMGpBJaGNlZuQ1YxcjG1wB/1x
+   t7JYN1VaaBezLUUgWoHb3A5NOqQ4E81rOsy1taIeu6EskdTBMRXhsiOyM
+   7Uha+7mAEJYePRaBdcJzeM624k5MGbuiEuoJ4EE3jaUdfSqNWSU2RctwG
+   jBoG8tdB4oKn+55lDO/rEyXughUgCc/eT+p0UFSa8IW06VyIZBzrPC2hf
+   l9gV8vC+eVvSmlYPDvcE9RmHw0mSGq8ookICPxo+UES5GdAzRfSmwTnMe
+   IZ7THO46fWcIbfeHqeNGcuxF0tepA41JDHxKLgNUhNy6xyBmvuUymTw+y
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="401530413"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="401530413"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:30:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="724532691"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="724532691"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP; 07 Aug 2023 07:30:12 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qT1FL-00FO0v-1x;
+        Mon, 07 Aug 2023 17:30:11 +0300
+Date:   Mon, 7 Aug 2023 17:30:11 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: Re: [PATCH v1 00/12] HID: cp2112: Cleanups and refactorings
+Message-ID: <ZND/8wd67YbGs8d5@smile.fi.intel.com>
+References: <20230703185222.50554-1-andriy.shevchenko@linux.intel.com>
+ <ZMK60UphgVuj4Z+L@smile.fi.intel.com>
+ <ZMydcGv8Dvu3Hje1@smile.fi.intel.com>
+ <nycvar.YFH.7.76.2308071319140.14207@cbobk.fhfr.pm>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <nycvar.YFH.7.76.2308071319140.14207@cbobk.fhfr.pm>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,29 +69,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023, Kai Huang wrote:
-> 
-> > >  
-> > > +config INTEL_TDX_HOST
-> > > +	bool "Intel Trust Domain Extensions (TDX) host support"
-> > > +	depends on CPU_SUP_INTEL
-> > > +	depends on X86_64
-> > > +	depends on KVM_INTEL
+On Mon, Aug 07, 2023 at 01:19:54PM +0200, Jiri Kosina wrote:
+> On Fri, 4 Aug 2023, Andy Shevchenko wrote:
+> > On Thu, Jul 27, 2023 at 09:43:29PM +0300, Andy Shevchenko wrote:
+> > > On Mon, Jul 03, 2023 at 09:52:10PM +0300, Andy Shevchenko wrote:
+> > > > After I updated GPIO library for the case Benjamin has with CP2112,
+> > > > I have a brief look into the CP2112 driver itself.
+> > > > 
+> > > > From GPIO perspective it has two main (maitenance) issues:
+> > > > - usage of ->to_irq() with IRQ chip present;
+> > > > - having IRQ chip not immutable.
+> > > > 
+> > > > Besides that there are plenty small cleanups here and there.
+> > > > Hence this series.
+> > > 
+> > > Any comments on this?
 > > 
-> > Hm. I expected KVM_INTEL to depend on CPU_SUP_INTEL, but apparently no.
-> > Any reasons why?
+> > Gentle ping^2 for this...
+> > 
+> > Anything should I do to improve it or is it okay to go as is?
 > 
-> Hmm.. Not sure :-)
+> I have been off pretty much the whole July. I am now back and slowly 
+> making my way through everything that accumulated, I will eventually get 
+> to this.
+> 
+> Thanks for the patience,
 
-Centuar and Zhaoxin CPUs also support VMX.
+Ah, okay, no worries and take your time!
 
-  commit 8f63aaf5c493c6502a058585cdfa3c71cdf8c44a
-  Author: Sean Christopherson <seanjc@google.com>
-  Date:   Fri Dec 20 20:45:13 2019 -0800
+I was thinking more on Benjamin's answer as last time he had a hw setup
+to test... Not sure what the status of that now and if he has a chance
+to test this or busy enough with something else.
 
-    KVM: VMX: Allow KVM_INTEL when building for Centaur and/or Zhaoxin CPUs
-    
-    Change the dependency for KVM_INTEL, i.e. KVM w/ VMX, from Intel CPUs to
-    any CPU that supports the IA32_FEAT_CTL MSR and thus VMX functionality.
-    This effectively allows building KVM_INTEL for Centaur and Zhaoxin CPUs.
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
