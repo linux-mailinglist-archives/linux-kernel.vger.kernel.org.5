@@ -2,142 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17073771A69
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C541771A6D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 08:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbjHGGaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 02:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38478 "EHLO
+        id S230156AbjHGGbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 02:31:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbjHGG3d (ORCPT
+        with ESMTP id S231243AbjHGGbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 02:29:33 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0144170B
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:29:25 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-317c1845a07so2998594f8f.2
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 23:29:25 -0700 (PDT)
+        Mon, 7 Aug 2023 02:31:15 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEAB1730
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 23:30:58 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-4872462d9fbso668540e0c.2
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 23:30:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691389764; x=1691994564;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Z7rnWNHFUneQ3py2i1MBfIqg4WaLvrT3ZVmHSN5iKRs=;
-        b=f8insg7X86ppQ5F6Ftef+QhplHoXoRQAMzFMVl2RdeVQ2Cn675LFV6uigapurhe9JF
-         HldFfIEGHpm9b5MvBSH7/C8CfgQfXb8onmWizItMbRzFPNLH3NxRQxq2YoAxV/QUj+gj
-         Xq/Plk9HWec7x3LlQUT7TSRVzSUprBMMD8NPtiMDhZybAJ00NaRZGmqzJvPR8Gk0Lxbr
-         Uyl7qo33UrJBbDk3TSZiA2siPMr1VQVzjZH8dyblNByvz3N/Qc/V+KcDivWTUqazW/N+
-         k8TCdZah0Ccmqhavl0s9AF+IwPvXKNFH+mx+WROAMFNaWNvOy4uRJJ1zIA+VaI+NQv/q
-         Qlmg==
+        d=chromium.org; s=google; t=1691389857; x=1691994657;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dz6eKo8ao64sqXLdxYJHv9qUv5zxZGq6Qjyo6fttDw4=;
+        b=mqWQ6iX60FNxqn1uZdDpETS1WqNG6kf0qgn5d2qNxveiPsG7uVPGE44hkvxr0svXsf
+         MCelDOTnhurHG9EEQ0GIHC5Rh5W4NedMhlr1gzMIX81oXiOOaflVbHPh+wkrUsCeaww2
+         Mk3vAx+AqD5UCOQfkpMjJLnfF1GJah1GEUPcg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691389764; x=1691994564;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z7rnWNHFUneQ3py2i1MBfIqg4WaLvrT3ZVmHSN5iKRs=;
-        b=PXn6778lIK/p6PELRk3CWDVFUNwMv8Qa7wQKNemRBEElsyzO5K68z1E92uXIT0msVq
-         KWSs2Naa+mEG595o8xN64c9o2uiM4Y4cQ0KiMAfC9y9xx0Tr6ohHKe5KcIVZlqg1AktG
-         X69YRi7c9j1dcAWc7llNDUqcO/qVeeOi//SqoYAC8DMh411w1Y3zCI2stuYDdsST/by9
-         JuC4BKG4tP7S0H0LwEaag7sFEnexy63tewIrL/OKgibCOiV6Sqd4yzUHPd2qjofo6Upp
-         6SE35GsAW3Uc5WKWkkhFcxSmHStcgbbEeYzy3UPp8obNuzO4o1iZrDAliR4M87rTCTEm
-         lZ7Q==
-X-Gm-Message-State: AOJu0YybRt4feu1qybXSwSImxqoai5JlOkjiFZEX842BlqX0NUVuwtK4
-        s+TLrBYv4MLqNxkY9KH8eGdxIw==
-X-Google-Smtp-Source: AGHT+IHoV4+y4ygwE201jI1n35hdg8Xn3ESUU/xDOlVSMzH8Nm0HJsqGqZvTNuNydoy+mLFZinL9WQ==
-X-Received: by 2002:a5d:6509:0:b0:313:ef57:5bde with SMTP id x9-20020a5d6509000000b00313ef575bdemr4758869wru.42.1691389764237;
-        Sun, 06 Aug 2023 23:29:24 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id b3-20020adfee83000000b0031773e3cf46sm9393070wro.61.2023.08.06.23.29.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Aug 2023 23:29:23 -0700 (PDT)
-Message-ID: <ca0b9a19-d7d7-80e5-f47e-f74615cdac86@linaro.org>
-Date:   Mon, 7 Aug 2023 08:29:21 +0200
+        d=1e100.net; s=20221208; t=1691389857; x=1691994657;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dz6eKo8ao64sqXLdxYJHv9qUv5zxZGq6Qjyo6fttDw4=;
+        b=NjYmjTFp3+cavw5APuCbbGxw4kHqdgEMM3yS3oYdFKfKWlpYyDPu9TWi0PCg5602gY
+         sVKsBzl4OOz4kWvOhhzx6JkUoHqCLBTa8t1dT6RYo5515G/gsgXaHDCfwBEWkpmzDOhd
+         j91s61tqj51jW/dTQBe8Zpy8Ub3rXOHpDhYVoEwIs14OCf1fUx36sPXRlIj9k5+WMomM
+         Q5p7+nxQqvGrZpSHIL/5NZJ761Inv07cVHcMFDCIjfOYoRiaM/2Fp9CkrMWIfls36KAM
+         8QvS3aWROUE7m25pOBsJ+Chp3bS0djcCJ9P//Ca2CF6YdRIickYua4iiHgXAESC1oHPE
+         YjFw==
+X-Gm-Message-State: AOJu0Yw39GbQiOY5zF00QZnkTSg+iusCK4eqQg8uaG2agHZQztrAfyjq
+        vqEewu5HQukVjRduJ9GyhzSdUnRjmw01wNNFYzF6cw==
+X-Google-Smtp-Source: AGHT+IHAIsK2vrz4BJhQdqKK6BvozPPoH0WWweyvQz4XE8NxINWS7h3Y07jWSgKFBY6rRarBKCKnMXk8PH9IDMazhhs=
+X-Received: by 2002:a1f:4511:0:b0:486:4a16:63c6 with SMTP id
+ s17-20020a1f4511000000b004864a1663c6mr2586648vka.15.1691389857325; Sun, 06
+ Aug 2023 23:30:57 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH RFC v2 1/4] dt-bindings: mmc: sdhci-of-dwcmhsc: Add T-Head
- TH1520 support
-Content-Language: en-US
-To:     Drew Fustini <dfustini@baylibre.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
+References: <20230803074249.3065586-1-wenst@chromium.org> <20230803074249.3065586-5-wenst@chromium.org>
+ <6bf91ced-076f-ecc1-f626-f531f7d991bd@linaro.org>
+In-Reply-To: <6bf91ced-076f-ecc1-f626-f531f7d991bd@linaro.org>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 7 Aug 2023 14:30:46 +0800
+Message-ID: <CAGXv+5HkKQ79k8T7LbowpHLCLHDvyxKrOZn=PePyrPREdpT1sg@mail.gmail.com>
+Subject: Re: [PATCH 4/9] regulator: dt-bindings: mediatek: Add MT6366 PMIC
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>
-References: <20230724-th1520-emmc-v2-0-132ed2e2171e@baylibre.com>
- <20230724-th1520-emmc-v2-1-132ed2e2171e@baylibre.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230724-th1520-emmc-v2-1-132ed2e2171e@baylibre.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Mark Brown <broonie@kernel.org>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/08/2023 05:14, Drew Fustini wrote:
-> Add compatible value for the T-Head TH1520 dwcmshc controller and
-> thead,io-fixed-1v8 and thead,pull-up properties.
-> 
-> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
-> ---
->  Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
-> index a43eb837f8da..57602c345cab 100644
-> --- a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
-> @@ -19,6 +19,7 @@ properties:
->        - rockchip,rk3568-dwcmshc
->        - rockchip,rk3588-dwcmshc
->        - snps,dwcmshc-sdhci
-> +      - thead,th1520-dwcmshc
->  
->    reg:
->      maxItems: 1
-> @@ -60,6 +61,14 @@ properties:
->      description: Specify the number of delay for tx sampling.
->      $ref: /schemas/types.yaml#/definitions/uint8
->  
-> +  thead,io-fixed-1v8:
-> +    description: SoC PHY pad is fixed 1.8V
-> +    type: boolean
+On Mon, Aug 7, 2023 at 2:23=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 03/08/2023 09:42, Chen-Yu Tsai wrote:
+> > From: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> >
+> > The MediaTek MT6366 PMIC is similar to the MT6358 PMIC. It is designed
+> > to be paired with the MediaTek MT8186 SoC. It has 9 buck regulators and
+> > 29 LDO regulators, not counting ones that feed internally and basically
+> > have no controls. The regulators are named after their intended usage
+> > for the SoC and system design, thus not named generically as ldoX or
+> > dcdcX, but as vcn33 or vgpu.
+> >
+> > Add a binding document describing all the regulators and their supplies=
+.
+> >
+> > Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> > [wens@chromium.org: major rework and added commit message]
+> > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> > ---
+> > Changes since Zhiyong's last version (v4) [1]:
+> > - simplified regulator names
+> > - added descriptions to regulators
+> > - removed bogus regulators (*_sshub)
+> > - merged vcn33-wifi and vcn33-bt as vcn33
+> > - added missing regulators (vm18, vmddr, vsram-core)
+> > - cut down examples to a handful of cases and made them complete
+> > - expanded commit message a lot
+> >
+> > [1] https://lore.kernel.org/linux-arm-kernel/20220823123745.14061-1-zhi=
+yong.tao@mediatek.com/
+> >
+> >  .../regulator/mediatek,mt6366-regulator.yaml  | 154 ++++++++++++++++++
+> >  1 file changed, 154 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/regulator/mediate=
+k,mt6366-regulator.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/regulator/mediatek,mt636=
+6-regulator.yaml b/Documentation/devicetree/bindings/regulator/mediatek,mt6=
+366-regulator.yaml
+> > new file mode 100644
+> > index 000000000000..715c6ffcb3ab
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/regulator/mediatek,mt6366-regul=
+ator.yaml
+> > @@ -0,0 +1,154 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/regulator/mediatek,mt6366-regulator=
+.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: MT6366 Regulator from MediaTek Integrated
+> > +
+> > +maintainers:
+> > +  - Zhiyong Tao <zhiyong.tao@mediatek.com>
+> > +
+> > +description: |
+> > +  Regulator part of the MT6366 PMIC. This node should be under the PMI=
+C's
+> > +  device node.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: mediatek,mt6366-regulator
+> > +
+> > +  vsys_ldo1-supply:
+>
+> Don't use underscores in property names. Only hyphens, if needed.
 
-Isn't this duplicating existing properties for MMC modes with 1.8 V?
+I assume that applies even if the actual name in the datasheet has
+underscores?
 
-> +
-> +  thead,pull-up:
-> +    description: True if pull-up, false if pull-down
+Will change, but will wait on discussion on patch 3 before sending a new
+revision.
 
-This explains me nothing. No clue what you are pulling and why do you
-need it. Pin pulls should be done via pin controller, not MMC.
+ChenYu
 
-Anyway you should have here allOf:if:then (move the allOf: from top to
-behind "required:") which will disallow these properties for other variants.
 
-> +    type: boolean
-> +
->  
->  required:
->    - compatible
-> 
-
-Best regards,
-Krzysztof
-
+> > +    description: Supply for LDOs vfe28, vxo22, vcn28, vaux18, vaud28, =
+vsim1, vusb, vbif28
+> > +  vsys_ldo2-supply:
+>
+>
+>
+> Best regards,
+> Krzysztof
+>
