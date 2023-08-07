@@ -2,75 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6D7772CD1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28084772CD9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231967AbjHGRZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
+        id S232284AbjHGR0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbjHGRZ4 (ORCPT
+        with ESMTP id S230308AbjHGR0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:25:56 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DAFE67;
-        Mon,  7 Aug 2023 10:25:54 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377HPl04011321;
-        Mon, 7 Aug 2023 12:25:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691429147;
-        bh=LfENCgN+IImSktt1Uhld80rys0xsgjA5RPZ6MWSRcik=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=bA+Vuv9Sm8N5FcIUhjoWfwRecpu+iov+HlfO9U+7Q+LAG9zNwWyMQpdmcK64b/SE+
-         f5CIZRGSQFpUruuPptsLRenk68ZuQd0R2783gKjVsF6HW0F/rSKvSHO7MzdewPquyM
-         Yj8CQyyDliAuwRRzwZhiC2YsMDdYusFoszKYZKsQ=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377HPluX059546
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Aug 2023 12:25:47 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
- Aug 2023 12:25:47 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 7 Aug 2023 12:25:47 -0500
-Received: from [10.24.69.34] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377HPh4X002900;
-        Mon, 7 Aug 2023 12:25:44 -0500
-Message-ID: <ef020531-e7b9-4666-0ea2-dd5c4803234b@ti.com>
-Date:   Mon, 7 Aug 2023 22:55:43 +0530
+        Mon, 7 Aug 2023 13:26:20 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A06EF9
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:26:18 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a78a2c0f81so1571267b6e.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:26:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691429177; x=1692033977;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CSOWVrjZ1/u9To54jiA15JDLcV2I1XHj1QAMnIKhAvY=;
+        b=scuOA7ac5toaJ55K4HcKWCHf+y9/KRko3nm0b2dp7tiEtLP/mHWWtrzGVarrKClqZ2
+         nAV2UNP3Xmw2LjuWLSQri0TO6ZQRdStQ3OUySRdMZu1rHxgjcIgGuTndjgCnFDhwkWNf
+         Q2kTu7A34vC0xJMsWFysuLy24ib3d4MJWJRybTw6uOibnqX5An7404wPNV+2MSLOADet
+         9vkGQpE22x30LHyy9KUBNF7cWDgsTaIczRB8rmIxIe5xLo9Lw/3AvJY8Fuq6+9vOivyH
+         R7Rr8HmIQULCm3oiCkyGJD++nyniXbTrUPv44+xW0osY7fEfCZSDuGNJ+CAQRr9on78R
+         NDiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691429177; x=1692033977;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CSOWVrjZ1/u9To54jiA15JDLcV2I1XHj1QAMnIKhAvY=;
+        b=OXCDek1G46M8miOziLz6Egp6TH8JptdntOj2Vy/DtT/Jmm8wpj7jtUtwq0Y7Zix14Y
+         WBPzRlghEq2OXoRL48TiixTLihBO5rqJ+28H13qtR+zIAkJL9Q+jvKslGQIAjsMCty5v
+         NBbFGwkQpzVHgh4IlWfwF4j8Bty4TGY2UJ9HFx8GHDWgf/VpYwRyhGCZVtepdTHwi0fr
+         75xxAB8ICcUBGx1aEUnhynmkqxp9kszRnRi1r3FgEwXqWRhvrrMiQEDm89ArvozL/Tpk
+         7ldXAuVq3AQkj8+cem7XWRlI/mYBBVHWydGAIU5z0f4gRgQe+7vg7oJDiAjPTpeyYabv
+         hRAg==
+X-Gm-Message-State: AOJu0YxaAvUJuvwXeAmTd3TjC9itVuiXpyQaWyfyTZtDZnagRcENWaPd
+        SkX9/OBwTHkUH9UQQHL5zNTirjcZnRBZj4RzZtA=
+X-Google-Smtp-Source: AGHT+IHv07CWDxAqO5ul3ZXsB9vYEfcAx0bnOry4mrq0FjhomLVxvTG9la8IwMlZQuK33HtwaISGD3Uk9EzhigswBg0=
+X-Received: by 2002:a05:6808:1410:b0:3a3:640d:ed71 with SMTP id
+ w16-20020a056808141000b003a3640ded71mr14211892oiv.10.1691429177306; Mon, 07
+ Aug 2023 10:26:17 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/3] arm64: dts: ti: k3-j784s4-mcu-wakeup: Add
- bootph-pre-ram property for SPL nodes
-Content-Language: en-US
-To:     Nishanth Menon <nm@ti.com>
-CC:     "Kumar, Udit" <u-kumar1@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Hari Nagalla <hnagalla@ti.com>
-References: <20230806164838.18088-1-a-nandan@ti.com>
- <20230806164838.18088-3-a-nandan@ti.com>
- <3a2d1880-10aa-ac19-24e1-b2f697bc1a73@ti.com>
- <ef834d0b-b13a-5c3d-6c1d-088006fdfa32@ti.com>
- <20230807172132.7e4qux3f72zyfd33@mocker>
-From:   Apurva Nandan <a-nandan@ti.com>
-In-Reply-To: <20230807172132.7e4qux3f72zyfd33@mocker>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <20230802072127.12896-1-sunran001@208suo.com>
+In-Reply-To: <20230802072127.12896-1-sunran001@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 7 Aug 2023 13:26:06 -0400
+Message-ID: <CADnq5_NK9xz9OAoLkjKMtaZ+k+7PsOT7oeCacqap8MRs_9oG1g@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: Clean up errors in soc21.c
+To:     Ran Sun <sunran001@208suo.com>
+Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,21 +69,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Applied.  Thanks!
 
-On 07/08/23 22:51, Nishanth Menon wrote:
-> On 22:43-20230807, Apurva Nandan wrote:
-> [..]
+On Wed, Aug 2, 2023 at 3:21=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
+:
 >
->>> mcu_timer0: timer@40400000 should be part of your list.
->> Maybe you are referring to mcu_timer1. mcu_timer1 will be a part of
->> u-boot.dtsi as we need to edit
->> the node for removing k3_clks and power-domains properties from it. So we
->> should add bootph-pre-ram
->> there itself in uboot.dtsi as the node will be already there.
-> a) you need the timer even before talking to anything - u-boot needs it
-> for basic delay - so add the pre-ram property.
-> b) what you are doing in u-boot currently a hack - am625 in u-boot got
-> it fixed the right way - follow the model then you dont need the hackery
-> with deleting clock and power-domains properties.
+> Fix the following errors reported by checkpatch:
 >
-Okay, thanks!
+> ERROR: that open brace { should be on the previous line
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/soc21.c | 30 ++++++++++--------------------
+>  1 file changed, 10 insertions(+), 20 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/soc21.c b/drivers/gpu/drm/amd/amd=
+gpu/soc21.c
+> index e5e5d68a4d70..4f3ecd66eb6b 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/soc21.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/soc21.c
+> @@ -48,33 +48,28 @@
+>  static const struct amd_ip_funcs soc21_common_ip_funcs;
+>
+>  /* SOC21 */
+> -static const struct amdgpu_video_codec_info vcn_4_0_0_video_codecs_encod=
+e_array_vcn0[] =3D
+> -{
+> +static const struct amdgpu_video_codec_info vcn_4_0_0_video_codecs_encod=
+e_array_vcn0[] =3D {
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4_AVC, 409=
+6, 2304, 0)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_HEVC, 4096, 23=
+04, 0)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_AV1, 8192, 435=
+2, 0)},
+>  };
+>
+> -static const struct amdgpu_video_codec_info vcn_4_0_0_video_codecs_encod=
+e_array_vcn1[] =3D
+> -{
+> +static const struct amdgpu_video_codec_info vcn_4_0_0_video_codecs_encod=
+e_array_vcn1[] =3D {
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4_AVC, 409=
+6, 2304, 0)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_HEVC, 4096, 23=
+04, 0)},
+>  };
+>
+> -static const struct amdgpu_video_codecs vcn_4_0_0_video_codecs_encode_vc=
+n0 =3D
+> -{
+> +static const struct amdgpu_video_codecs vcn_4_0_0_video_codecs_encode_vc=
+n0 =3D {
+>         .codec_count =3D ARRAY_SIZE(vcn_4_0_0_video_codecs_encode_array_v=
+cn0),
+>         .codec_array =3D vcn_4_0_0_video_codecs_encode_array_vcn0,
+>  };
+>
+> -static const struct amdgpu_video_codecs vcn_4_0_0_video_codecs_encode_vc=
+n1 =3D
+> -{
+> +static const struct amdgpu_video_codecs vcn_4_0_0_video_codecs_encode_vc=
+n1 =3D {
+>         .codec_count =3D ARRAY_SIZE(vcn_4_0_0_video_codecs_encode_array_v=
+cn1),
+>         .codec_array =3D vcn_4_0_0_video_codecs_encode_array_vcn1,
+>  };
+>
+> -static const struct amdgpu_video_codec_info vcn_4_0_0_video_codecs_decod=
+e_array_vcn0[] =3D
+> -{
+> +static const struct amdgpu_video_codec_info vcn_4_0_0_video_codecs_decod=
+e_array_vcn0[] =3D {
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4_AVC, 409=
+6, 4096, 52)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_HEVC, 8192, 43=
+52, 186)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_JPEG, 4096, 40=
+96, 0)},
+> @@ -82,22 +77,19 @@ static const struct amdgpu_video_codec_info vcn_4_0_0=
+_video_codecs_decode_array_
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_AV1, 8192, 435=
+2, 0)},
+>  };
+>
+> -static const struct amdgpu_video_codec_info vcn_4_0_0_video_codecs_decod=
+e_array_vcn1[] =3D
+> -{
+> +static const struct amdgpu_video_codec_info vcn_4_0_0_video_codecs_decod=
+e_array_vcn1[] =3D {
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_MPEG4_AVC, 409=
+6, 4096, 52)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_HEVC, 8192, 43=
+52, 186)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_JPEG, 4096, 40=
+96, 0)},
+>         {codec_info_build(AMDGPU_INFO_VIDEO_CAPS_CODEC_IDX_VP9, 8192, 435=
+2, 0)},
+>  };
+>
+> -static const struct amdgpu_video_codecs vcn_4_0_0_video_codecs_decode_vc=
+n0 =3D
+> -{
+> +static const struct amdgpu_video_codecs vcn_4_0_0_video_codecs_decode_vc=
+n0 =3D {
+>         .codec_count =3D ARRAY_SIZE(vcn_4_0_0_video_codecs_decode_array_v=
+cn0),
+>         .codec_array =3D vcn_4_0_0_video_codecs_decode_array_vcn0,
+>  };
+>
+> -static const struct amdgpu_video_codecs vcn_4_0_0_video_codecs_decode_vc=
+n1 =3D
+> -{
+> +static const struct amdgpu_video_codecs vcn_4_0_0_video_codecs_decode_vc=
+n1 =3D {
+>         .codec_count =3D ARRAY_SIZE(vcn_4_0_0_video_codecs_decode_array_v=
+cn1),
+>         .codec_array =3D vcn_4_0_0_video_codecs_decode_array_vcn1,
+>  };
+> @@ -445,8 +437,7 @@ static void soc21_program_aspm(struct amdgpu_device *=
+adev)
+>                 adev->nbio.funcs->program_aspm(adev);
+>  }
+>
+> -const struct amdgpu_ip_block_version soc21_common_ip_block =3D
+> -{
+> +const struct amdgpu_ip_block_version soc21_common_ip_block =3D {
+>         .type =3D AMD_IP_BLOCK_TYPE_COMMON,
+>         .major =3D 1,
+>         .minor =3D 0,
+> @@ -547,8 +538,7 @@ static int soc21_update_umd_stable_pstate(struct amdg=
+pu_device *adev,
+>         return 0;
+>  }
+>
+> -static const struct amdgpu_asic_funcs soc21_asic_funcs =3D
+> -{
+> +static const struct amdgpu_asic_funcs soc21_asic_funcs =3D {
+>         .read_disabled_bios =3D &soc21_read_disabled_bios,
+>         .read_bios_from_rom =3D &amdgpu_soc15_read_bios_from_rom,
+>         .read_register =3D &soc21_read_register,
+> --
+> 2.17.1
+>
