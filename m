@@ -2,197 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2178772D61
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C59B772D6C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbjHGR6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47090 "EHLO
+        id S230012AbjHGSBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 14:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbjHGR63 (ORCPT
+        with ESMTP id S229576AbjHGSA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:58:29 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2A8170B;
-        Mon,  7 Aug 2023 10:58:28 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 377F140Q011181;
-        Mon, 7 Aug 2023 12:58:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        PODMain02222019; bh=VkFnQsZNlDqBq06hekSB15FFoglrgZ3jS+q8nHiG8Bs=; b=
-        XRP8EGUajQsR7m0Fg5/D1vjIWgEI1RTTBnBuc870JuYKnQmKpQdP4/Ovf7sA5oCb
-        PTd52cDEjTYgYuHMe82luGWg9Q/K65YPySzaBP/dG0knxFR1Y17odjyhaWGY2iD5
-        CcKStTdr6PHIhFR+s8+J/CJabQHC/9oZGUjdcPdVT+Yu+yGgczAOkQgz9VNXH5u7
-        LSTmWdN3vVko9F1inOKBy9eNSRnTREaPAA5NePYW+seAsfeKOWyIJ9o6WI5SzS7x
-        RkD2DsW+cDaYQloMuLqpgkKjqJOuVABpbCpYNYU9Rs8MlyK9Ier/ko3fhJNmpvAj
-        hLeTIXyHZApAtgSnu3ZXnQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhsv9a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Aug 2023 12:58:17 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 7 Aug
- 2023 18:58:16 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Mon, 7 Aug 2023 18:58:16 +0100
-Received: from [198.61.64.220] (EDIN4L06LR3.ad.cirrus.com [198.61.64.220])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9E42015B7;
-        Mon,  7 Aug 2023 17:58:15 +0000 (UTC)
-Message-ID: <b0bf7b45-5d63-5dbf-e529-9c3a3f6ac6dd@opensource.cirrus.com>
-Date:   Mon, 7 Aug 2023 18:58:15 +0100
+        Mon, 7 Aug 2023 14:00:59 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8963B10F3;
+        Mon,  7 Aug 2023 11:00:57 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377I0nq3018704;
+        Mon, 7 Aug 2023 13:00:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691431249;
+        bh=b6FLmaE1Rf5mwg/wVsO9g/4WdXaAznkBCXsadwi9pD0=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=bmCqtk9inLN/s4+ePCos5wDZydMQ+FSyNcPUGxOWGWtSAjQ2Fj6EMk4WBKTbtXyl3
+         UjcYfFCLUiZ8ur0oO5Hb24F0K7jl0KrohQhjjNoxFcxbWzm5QNyAmHdeclW0di8xTG
+         wy5iBRFpS75g0/39toeTky0cQcBd3A1fXaAc/ddQ=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377I0njq064284
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Aug 2023 13:00:49 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
+ Aug 2023 13:00:49 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 7 Aug 2023 13:00:49 -0500
+Received: from [10.250.36.243] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377I0mIj035524;
+        Mon, 7 Aug 2023 13:00:48 -0500
+Message-ID: <18bb47b8-c441-00b1-7ac7-f9038dffedc4@ti.com>
+Date:   Mon, 7 Aug 2023 13:00:47 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] kunit: Replace fixed-size log with dynamically-extending
- buffer
-To:     David Gow <davidgow@google.com>
-CC:     <brendan.higgins@linux.dev>, <linux-kselftest@vger.kernel.org>,
-        <kunit-dev@googlegroups.com>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>, Rae Moar <rmoar@google.com>
-References: <20230804141446.21068-1-rf@opensource.cirrus.com>
- <CABVgOSmhj_Qu+NCCzCmVx9Z0n-pAD-s2UekbVv1Y-2kOnNN_NA@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] arm64: dts: ti: k3-am62x-sk-common: Reserve 128MiB of
+ global CMA
 Content-Language: en-US
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <CABVgOSmhj_Qu+NCCzCmVx9Z0n-pAD-s2UekbVv1Y-2kOnNN_NA@mail.gmail.com>
+To:     Devarsh Thakkar <devarsht@ti.com>, Nishanth Menon <nm@ti.com>
+CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <a-bhatia1@ti.com>, <j-luthra@ti.com>, <praneeth@ti.com>,
+        <j-choudhary@ti.com>
+References: <20230803111455.811339-1-devarsht@ti.com>
+ <20230805193355.o657pwbq2w3tciui@vehicular>
+ <9b61e8a0-fec0-b33f-259c-c744aa5a88b9@ti.com>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <9b61e8a0-fec0-b33f-259c-c744aa5a88b9@ti.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: HAuCc9EXEAWGvfYF1Do2V0iu-EQUtQTX
-X-Proofpoint-ORIG-GUID: HAuCc9EXEAWGvfYF1Do2V0iu-EQUtQTX
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/8/23 10:17, David Gow wrote:
-> On Fri, 4 Aug 2023 at 22:14, Richard Fitzgerald
-> <rf@opensource.cirrus.com> wrote:
->>
->> Re-implement the log buffer as a list of buffer fragments that can
->> be extended as the size of the log info grows.
->>
->> When using parameterization the test case can run many times and create
->> a large amount of log. It's not really practical to keep increasing the
->> size of the fixed buffer every time a test needs more space. And a big
->> fixed buffer wastes memory.
->>
->> The original char *log pointer is replaced by a pointer to a list of
->> struct kunit_log_frag, each containing a fixed-size buffer.
->>
->> kunit_log_append() now attempts to append to that last kunit_log_frag in
->> the list. If there isn't enough space it will append a new kunit_log_frag
->> to the list. This simple implementation does not attempt to completely
->> fill the buffer in every kunit_log_frag.
->>
->> The 'log' member of kunit_suite, kunit_test_case and kunit_suite must be a
->> pointer because the API of kunit_log() requires that is the same type in
->> all  three structs. As kunit.log is a pointer to the 'log' of the current
->> kunit_case, it must be a pointer in the other two structs.
->>
->> The existing kunit-test.c log tests have been updated for the new log
->> buffer and a new kunit_log_extend_test() case to test extending the buffer.
->>
->> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
->> ---
+On 8/7/23 1:03 AM, Devarsh Thakkar wrote:
+> Hi Nishanth,
 > 
-> +Rae, since she's the last person to touch the log code.
+> Thanks for the review.
 > 
-> Thanks a bunch. Some way of handling longer logs has been on the to-do
-> list for a while, and this is probably better than the other options
-> of allowing per-test log sizes or using krealloc().
-> 
-> This mostly works okay here, but the test fails when running:
-> ./tools/testing/kunit/kunit.py run --alltests
-> [17:05:12]     # kunit_log_extend_test: EXPECTATION FAILED at
-> lib/kunit/kunit-test.c:624
-> [17:05:12]     Expected sscanf(p, "The quick brown fox jumps over the
-> lazy penguin %d", &q) == 1, but
-> [17:05:12]         sscanf(p, "The quick brown fox jumps over the lazy
-> penguin %d", &q) == 0 (0x0)
-> 
-> I haven't found the cause of it, yet, but it happens both on UML and
-> QEMU x86_64.
->
-
-Strange, I haven't been able to reproduce this. But sscanf() isn't the
-best function to use here because of how it treats whitespace.
-'\n' doesn't match a newline, it mtaches any whitespace.
-I'm working on a V2 chain, and one change I've made is to replace the
-sscanf() with an exact match of what the string should be. I've also
-added some test cases.
-
->>   include/kunit/test.h   | 25 +++++++++----
->>   lib/kunit/debugfs.c    | 65 ++++++++++++++++++++++++++-------
->>   lib/kunit/kunit-test.c | 82 +++++++++++++++++++++++++++++++++++++-----
->>   lib/kunit/test.c       | 51 ++++++++++++++++----------
->>   4 files changed, 177 insertions(+), 46 deletions(-)
+> On 06/08/23 01:03, Nishanth Menon wrote:
+>> On 16:44-20230803, Devarsh Thakkar wrote:
+>>> Reserve 128MiB of global CMA which is also marked as re-usable
+>>> so that OS can also use the same if peripheral drivers are not using the
+>>> same.
+>>>
+>>> AM62x supports multimedia components such as GPU, dual Display and Camera.
+>>> Assuming the worst-case scenario where all 3 are run in parallel below
+>>> is the calculation :
+>>>
+>>> 1) OV5640 camera sensor supports 1920x1080 resolution
+>>> -> 1920 width x 1080 height x 2 bytesperpixel x 8 buffers
+>>>     (default in yavta) : 32MiB
+>>>
+>>> 2) 1920x1200 Microtips LVDS panel supported
+>>> -> 1920 width x 1080 height x 4 bytesperpixel x 2 buffers :
+>>>     16 MiB
+>>>
+>>> 3) 1920x1080 HDMI display supported
+>>> -> 1920 width x 1080 height x 4 bytesperpixel x 2 buffers :
+>>>     15.82 MiB which is ~16 MiB
+>>>
+>>> 4) IMG GPU shares with display allocated buffers while rendering
+>>>     but in case some dedicated operation viz color conversion,
+>>>     keeping same window of ~16 MiB for GPU too.
+>>>
+>>> Total is 80 MiB and adding 32 MiB for other peripherals and extra
+>>> 16 MiB to keep as buffer for fragmentation thus rounding total to 128
+>>> MiB.
+>>>
+>>> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+>>> Acked-by: Darren Etheridge <detheridge@ti.com>
+>>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+>>> ---
 >>
->> diff --git a/include/kunit/test.h b/include/kunit/test.h
->> index 011e0d6bb506..907b30401669 100644
->> --- a/include/kunit/test.h
->> +++ b/include/kunit/test.h
->> @@ -33,8 +33,8 @@ DECLARE_STATIC_KEY_FALSE(kunit_running);
->>
->>   struct kunit;
->>
->> -/* Size of log associated with test. */
->> -#define KUNIT_LOG_SIZE 2048
->> +/* Initial size of log associated with test. */
->> +#define KUNIT_DEFAULT_LOG_SIZE 500
+>> I don't think this is right approach. There are other techniques
+>> than having to do this (Andrew: please comment) and require drivers to
+>> behave properly.
 > 
-> Would it make more sense to call this KUNIT_LOG_FRAGMENT_SIZE or
-> similar, as not only is this the default size, but also the amount by
-> which the size is incremented.
-> 
-> Also, there's plenty of scope for bikeshedding the exact value of
-> this, two considerations being:
-> - Most tests have very small logs: we possibly should look into what
-> the average log size is.
-> - It may make sense to tweak the log size to fit nicely within common
-> allocation/page sizes. e.g., PAGE_SIZE-sizeof(struct list_head) or
-> something. Though that is probably too big by default.
+> Sorry but I did not understand clearly the disadvantage of this approach.
+> Here we are reserving CMA and also marking it as re-usable so that in case
+> driver is not using it OS can use that region.
 > 
 
-This initial implementation doesn't support splitting the log line over
-multiple fragments (I like to avoid rewirting the whole world in one
-patch.) So the fragment size also limits the maximum log line.
+It isn't always that easy, many types of allocations can be pinned and
+cannot be placed in this region. It still has cost.
 
-I've done some work in supporting long lines and will include it in
-my V2 chain.
-
-...
-
->> +       i = 0;
->> +       while ((pn = strchr(p, '\n')) != NULL) {
->> +               *pn = '\0';
->> +               KUNIT_ASSERT_EQ(test, sscanf(p,
->> +                                            "The quick brown fox jumps over the lazy penguin %d\n",
-> 
-> Do we want the '\n' at the end of this if we're overwriting it above?
+> Also I see quite a few vendors already taking this approach :
 > 
 
-Oh, that's an embarrassing error. But see my comment above about
-sscanf().
+Just because others have gotten away with it doesn't mean it is correct :)
 
->> +                                            &q), 1);
->> +               KUNIT_ASSERT_EQ(test, q, i);
-> 
-> Could we make these KUNIT_EXPECT_EQ? I'd rather not have this kill the
-> test thread.
-> 
+There are some cases when the DMA/CMA region needs to be in a specific
+location as the hardware only supports some addresses (only some address
+pins wired out, etc..). But general CMA size selection is a configuration
+and so has no place in DT which should only be used to describe hardware.
 
-Yes, that's a typo.
-Personally, I find the choice of ASSERT/EXPECT confusing. Since people
-are so used to _asserting_ the condition to be checked, the brain tends
-to go for ASSERT out of habit. IMO it would have been better to use
-ASSERT for the thing the test is checking (for consistency with normal
-usage) and maybe KUNIT_NEEDS_xxx() for things that are prerequisites of
-the test code itself.
+Another issue I have is that this forces all users of these boards to
+have this rather large carveout, even if they do not intend to use all
+of these IP at the same time, or even at all.
+
+Actually, upstream we don't support GPU yet, so you can't use all of
+this carveout anyway.
+
+Lastly, large CMA carveouts as in this case are masking a bigger issue,
+there is hardware IP that cannot handle scatter-gather and there is
+no system level IOMMU to help with that. This simply does not scale,
+fragmentation can set in even with CMA in a running system, physically
+contiguous allocations can still fail. As our devices grow in complexity
+while still not having an IOMMU we would need to reserve ever increasingly
+sized CMA areas.
+
+This might sound like an ad absurdum argument, but we only need to look
+at our current evil vendor tree to see where this leads [0]. Yes you
+are reading the size right, 1.75GB(!) of CMA..
+
+We need a better solution upstream, I'm not claiming I know what
+that solution is (probably something involved in the memory allocation
+to allow for more/larger movable pages). But for the above 3 reasons
+this patch is not a viable solution.
+
+[0] https://git.ti.com/cgit/ti-linux-kernel/ti-linux-kernel/tree/arch/arm64/boot/dts/ti/k3-am69-sk.dts?h=ti-linux-6.1.y#n48
+
+Andrew
+
+> $grep -r cma-default arch/arm64/boot/dts
+> arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts:276:
+>   linux,cma-default;
+> arch/arm64/boot/dts/qcom/sc8280xp-crd.dts:222:
+> linux,cma-default;
+> arch/arm64/boot/dts/freescale/imx8mp-tqma8mpql-mba8mpxl.dts:201:
+>           linux,cma-default;
+> arch/arm64/boot/dts/freescale/imx8ulp-evk.dts:32:
+> linux,cma-default;
+> arch/arm64/boot/dts/freescale/imx8-apalis-v1.1.dtsi:198:
+>   linux,cma-default;
+> arch/arm64/boot/dts/freescale/imx8mm-tqma8mqml.dtsi:48:
+> linux,cma-default;
+> arch/arm64/boot/dts/freescale/imx8dxl-evk.dts:50:
+> linux,cma-default;
+> arch/arm64/boot/dts/freescale/imx93-tqma9352.dtsi:24:
+> linux,cma-default;
+> arch/arm64/boot/dts/freescale/imx8mq-tqma8mq.dtsi:59:
+> linux,cma-default;
+> arch/arm64/boot/dts/freescale/imx8mn-tqma8mqnl.dtsi:46:
+> linux,cma-default;
+> arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts:28:
+> linux,cma-default;
+> arch/arm64/boot/dts/hisilicon/hi6220-hikey.dts:67:
+> linux,cma-default;
+> arch/arm64/boot/dts/amlogic/meson-gx.dtsi:63:
+> linux,cma-default;
+> arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi:121:
+> linux,cma-default;
+> arch/arm64/boot/dts/amlogic/meson-a1.dtsi:59:
+> linux,cma-default;
+> 
+> 
+>   I am esp concerned since there are platforms based on
+>> am62x and just 256MB DDR.
+>>
+> 
+> The file "k3-am62x-sk-common.dtsi" refers DDR memory size as 2Gb[1] and so I
+> put CMA reservation in same file assuming all boards including this file have
+> 2Gb.
+> 
+> But if there are some boards having lesser DDR and including this
+> k3-am62x-sk-common.dtsi and overriding memory node, I can put the CMA
+> reservation node in board specific file i.e. k3-am625-sk.dts in V2.
+> 
+> Kindly let me know if above is preferred approach.
+> 
+> [1]
+> https://gitlab.com/linux-kernel/linux-next/-/blob/next-20230807/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi?ref_type=tags#L33
+> 
+> Regards
+> Devarsh
+> 
+>>>   arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi | 8 ++++++++
+>>>   1 file changed, 8 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
+>>> index 34c8ffc553ec..9dd6e23ca9ca 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
+>>> +++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
+>>> @@ -47,6 +47,14 @@ ramoops@9ca00000 {
+>>>   			pmsg-size = <0x8000>;
+>>>   		};
+>>>   
+>>> +		/* global cma region */
+>>> +		linux,cma {
+>>> +			compatible = "shared-dma-pool";
+>>> +			reusable;
+>>> +			size = <0x00 0x8000000>;
+>>> +			linux,cma-default;
+>>> +		};
+>>> +
+>>>   		secure_tfa_ddr: tfa@9e780000 {
+>>>   			reg = <0x00 0x9e780000 0x00 0x80000>;
+>>>   			alignment = <0x1000>;
+>>> -- 
+>>> 2.34.1
+>>>
+>>
