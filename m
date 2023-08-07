@@ -2,129 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C79772733
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622F477273D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbjHGOKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58726 "EHLO
+        id S232834AbjHGONh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232102AbjHGOK3 (ORCPT
+        with ESMTP id S232676AbjHGONe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:10:29 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD769E;
-        Mon,  7 Aug 2023 07:10:25 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9b50be31aso69842461fa.3;
-        Mon, 07 Aug 2023 07:10:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691417423; x=1692022223;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=KCn6b8Y4egX4m+kFsKdxSAcYU2iXuIgvgiEXKk/fp/0=;
-        b=oJ4KDzJY0v4rfA8l+OXaUHjGrU6eM9tIo+Vru04y0dubzkPTojVnDwnVImQ3ymmpNk
-         O2RNGQaz5IpnCUNemSRZwbU1lljIYZClF0Z2oahr22/YIuT8YX52NMeS+973mOrlU82m
-         GWx5936E9GBFTHIzBrg4oMox/nx/RQAqqBiSog6ZbXv7l3Xt0hYE/U2unY2wmh2wqB7t
-         moyBpp4R7x7MWAIMoWt5P2dzOQwrT/iJw782v1d/Llha+OppM1IZTJNnPAfGLaYJTiY5
-         QclEi0IDiVQbeXN/Zn1FRidRozoBtYxODKOBSCaZ+QY5iVlaHIjkysabf8WOyhoQtD6x
-         IliQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691417423; x=1692022223;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KCn6b8Y4egX4m+kFsKdxSAcYU2iXuIgvgiEXKk/fp/0=;
-        b=CcWHgzxr9oIJK/f014GWxbwlnkd3U/DP+7e/IAbvHNh/AHyKrineZpVu0rXgosw+zd
-         9hft8tBsr+gjYy0deqLKItl1Z30d64j3P9oD3hUs+zEb5Bt/7KYTQhJgt3kdGnGZjmhA
-         5S0WKxu2lQXkMeqdgRY18zokfgNMx9mvmuN1xfawQvvt5VxnzNtJdw+CQvKMyWN6zic8
-         3xDOJ3Y811fFKZbrHYNvcN2EkfX068csrinv5jJzpYMaXptOq/WzNNsbqa0xlmPlBIfX
-         qQ1YsIyw67thZVv0LAK/9l9gwqDYUbEgMdH/A/pnn2A9HmDAuOGlOYWur/H7VOl2vbO1
-         1Tuw==
-X-Gm-Message-State: AOJu0Yxn1oJ3Go/VMxO+HezU76SbDj6vILvS/0StDMLMe5pB0PoI6eqX
-        q+4iUbcpGWhs27nmkQMFYIc=
-X-Google-Smtp-Source: AGHT+IEw8gtJrH4053Gs3+OKrmHzil5bOmEJj/YkwjBnLmacxmd0J61iDfWXdUZu8kKtgbOuH6cghg==
-X-Received: by 2002:a2e:8e86:0:b0:2ba:2cf8:9334 with SMTP id z6-20020a2e8e86000000b002ba2cf89334mr3548429ljk.19.1691417423023;
-        Mon, 07 Aug 2023 07:10:23 -0700 (PDT)
-Received: from ?IPv6:2003:f6:ef09:a500:ffed:38f8:59e7:f38e? (p200300f6ef09a500ffed38f859e7f38e.dip0.t-ipconnect.de. [2003:f6:ef09:a500:ffed:38f8:59e7:f38e])
-        by smtp.gmail.com with ESMTPSA id x4-20020a170906804400b00992ed412c74sm5191566ejw.88.2023.08.07.07.10.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 07:10:22 -0700 (PDT)
-Message-ID: <068ce8a2f8111ccc4b6374985dde972548741a9a.camel@gmail.com>
-Subject: Re: [PATCH v4 0/6] iio: Add buffer write() support
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 07 Aug 2023 16:12:56 +0200
-In-Reply-To: <20230807112113.47157-1-paul@crapouillou.net>
-References: <20230807112113.47157-1-paul@crapouillou.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+        Mon, 7 Aug 2023 10:13:34 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0B3107;
+        Mon,  7 Aug 2023 07:13:32 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3778eCqw024287;
+        Mon, 7 Aug 2023 14:13:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Gt+gCUHmgDjj2zNUxEfs8O41tYDOTQH90wdcsrwitAc=;
+ b=S1WdKG5Y5q3RgokRD85oKHJKd5mUZNVUJgd3j02B25wuR/5W/GOtxIMEHOW2FTzVj/gj
+ gtUJzOVBgpGkDOAahRQgUoLP8ECkwKI9wtqRPJ6rcAZqadZKcpjtF6E1VOqkZY+TlmN6
+ Orty990YVLgJDPKu0lJHam1suD8vnOHmbSHiheDrVFiww/g2hB0IFFuFHVKkhAjLh8jQ
+ W8ZO/VSWVwApsQQRVbCEsGQbHSiZotZpt/MxwWgX7zcm5zJNp/Yy7FvG7elkWla/XGgq
+ CMpKsU7bJg10EWG9HI2P9ktmiEH5XEqbi13C7/R8y23S7sUP/TlZ9n8P6LkH7bMlQTP7 ig== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3saw0r8s43-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Aug 2023 14:13:22 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 377EDLRJ028863
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 7 Aug 2023 14:13:21 GMT
+Received: from [10.111.180.219] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 7 Aug
+ 2023 07:13:21 -0700
+Message-ID: <47f1a06b-8bfe-911a-3a05-da7d522b588f@quicinc.com>
+Date:   Mon, 7 Aug 2023 07:13:20 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] ath6kl: replace one-element array with flexible-array
+ member
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>, Kalle Valo <kvalo@kernel.org>
+CC:     Atul Raut <rauji.raut@gmail.com>,
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230804045554.6934-1-rauji.raut@gmail.com>
+ <2023080433-patio-staining-2cfe@gregkh> <87sf8zs2oi.fsf@kernel.org>
+ <2023080410-unadorned-vertigo-c0b8@gregkh>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <2023080410-unadorned-vertigo-c0b8@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: g6PxgHzzUW0wA2SGSy-RByiRbc4Ag86W
+X-Proofpoint-ORIG-GUID: g6PxgHzzUW0wA2SGSy-RByiRbc4Ag86W
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-07_13,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ phishscore=0 adultscore=0 impostorscore=0 mlxlogscore=502 clxscore=1011
+ spamscore=0 lowpriorityscore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308070131
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-08-07 at 13:21 +0200, Paul Cercueil wrote:
-> [V3 was: "iio: new DMABUF based API, v3"][1]
->=20
-> Hi Jonathan,
->=20
-> This is a subset of my patchset that introduced a new interface based on
-> DMABUF objects [1]. It adds write() support to the IIO buffer
-> infrastructure.
->=20
-> The reason it is not the full IIO-DMABUF patchset, is because you
-> requested performance benchmarks - and our current numbers are barely
-> better (~ +10%) than the fileio interface. There is a good reason for
-> that: V3 of the patchset switched from having the IIO core creating the
-> DMABUFs backed by physically contiguous memory, to having the IIO core
-> being a simple DMABUF importer, and having the DMABUFs created
-> externally. We now use the udmabuf driver to create those, and they are
-> allocated from paged memory. While this works perfectly fine, our
-> buffers are now cut in 4 KiB chunks (pages), non-contiguous in memory,
-> which causes the DMA hardware to create an IRQ storm, as it raises an
-> interrupt after each 4 KiB in the worst case scenario.
->=20
-> Anyway, this is not directly a problem of the IIO-DMABUF code - but I
-> can't really upstream a shiny new interface that I claim is much faster,
-> without giving numbers.
->=20
-> So while we fix this (either by updating the DMA IP and driver to
-> support scatter-gather, or by hacking something quick to give us
-> physically contiguous DMABUFs just for the benchmark), I thought it
-> would make sense to upstream the few patches of the V3 patchset that are
-> needed for the IIO-DMABUF interface but aren't directly related.
->=20
-> As for write() support, Nuno (Cc'd) said he will work on upstreaming the
-> DAC counterpart of adc/adi-axi-adc.c in the next few weeks, so there
-> will be a user for the buffer write() support. I hope you are okay with
-> this - otherwise, we can just wait until this work is done and submit it
-> all at once.
->=20
+On 8/4/2023 2:30 AM, Greg KH wrote:
+> On Fri, Aug 04, 2023 at 10:10:37AM +0300, Kalle Valo wrote:
+>> Greg KH <gregkh@linuxfoundation.org> writes:
+>>
+>>> On Thu, Aug 03, 2023 at 09:55:54PM -0700, Atul Raut wrote:
+>>>
+>>>> One-element arrays are no longer relevant, and their
+>>>> place has been taken by flexible array members thus,
+>>>> use a flexible-array member to replace the one-element
+>>>> array in struct ath6kl_usb_ctrl_diag_cmd_write
+>>>>
+>>>> This fixes warnings such as:
+>>>> ./drivers/net/wireless/ath/ath6kl/usb.c:109:8-12: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+>>>>
+>>>> Signed-off-by: Atul Raut <rauji.raut@gmail.com>
+>>>> ---
+>>>>   drivers/net/wireless/ath/ath6kl/usb.c | 2 +-
+>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/net/wireless/ath/ath6kl/usb.c b/drivers/net/wireless/ath/ath6kl/usb.c
+>>>> index 5220809841a6..c8ecc9e85897 100644
+>>>> --- a/drivers/net/wireless/ath/ath6kl/usb.c
+>>>> +++ b/drivers/net/wireless/ath/ath6kl/usb.c
+>>>> @@ -106,7 +106,7 @@ struct ath6kl_usb_ctrl_diag_cmd_write {
+>>>>   	__le32 cmd;
+>>>>   	__le32 address;
+>>>>   	__le32 value;
+>>>> -	__le32 _pad[1];
+>>>> +	__le32 _pad[];
+>>>
+>>> Are you sure this is actually a variable length array?
+>>
+>> It's not, it's just padding. We both told this in v1:
+>>
+>> https://patchwork.kernel.org/project/linux-wireless/patch/20230731012941.21875-1-rauji.raut@gmail.com/
+> 
+> Hey, I'm consistent, nice!  :)
+> 
+> But Atul, that's not good to ignore our review comments.  Usually that
+> ends up meaning that everyone will then just ignore your submissions,
+> generally a not-good resolution.
+> 
+> thanks,
+> 
+> greg k-h
 
-Yeah, I've started that process last week:
+Since the 'pad' field is never directly accessed, suggest the author 
+respin this this to use simply:
+	__le32 _pad;
 
-https://lore.kernel.org/linux-iio/20230804145342.1600136-1-nuno.sa@analog.c=
-om/
-
-the dac counterpart is actually missing in the RFC (as the goal of the RFC =
-is
-not review those drivers but the framework) but I do state that my plan is =
-to
-have it in the actual series where I actually mention we would need this wo=
-rk
-:).
-
-- Nuno S=C3=A1
-
+That will prevent others from trying to "fix" this actual one-element 
+array in the future.
