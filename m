@@ -2,116 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F29477283D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44E2772840
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbjHGOxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56636 "EHLO
+        id S229619AbjHGOyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHGOxi (ORCPT
+        with ESMTP id S229576AbjHGOyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:53:38 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727E110D1
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:53:32 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-986d8332f50so631413566b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 07:53:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691420011; x=1692024811;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=54uwNnL1v7fjVMZOIVyUvwsV3rz6KMPoI0gYcM/jYX8=;
-        b=SHMFmLE5BnwygWErFm2yZEUWbWo7BvYFXzj5dFCcin+OgeyibPCPrRnASlz0ihzceQ
-         NFX6N//DkfTS+FcF63+NhWpL1c4DqkDf7WvfTTFjY7Eupe5ndjU7ZRlNDwucG/RSCnrG
-         ixNqxlbd7RtsLPGPwjLCTbhc+PP9qaB2c/yKvBwZB0viaeJVOgeLQd1yA2N+lNQoQaRj
-         yrVNsCMhtLIhqKQtoEX2MANratl33TUFGaf3lwpqdAbedQaDcu9DPSrZu2nC4EnypwZR
-         ZPc6eVMhhUnP1exhuDwlWdn2FfNZuyFroiJHLqkIn7ZZuOpckdyUIKM1xQ8FPYABJSDh
-         O5CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691420011; x=1692024811;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=54uwNnL1v7fjVMZOIVyUvwsV3rz6KMPoI0gYcM/jYX8=;
-        b=LJQaEdL++pwvh+L78vNX6zY9vgzPiUR+GoKKiZLVCg5vtvhReqrkT2o3pTDwBpG+2r
-         GqYduQwA9GeyUw8jLHeSuKlM7ad03sBrwb2spJPa6vV1m+Oyy9lUaFO3JDAlN/6nn5OU
-         1AmpIKMw4Po3vwgZsYxTJupSvevznU6mnoe5CrQ74n2h5DOVh16AzDzvnO5XMYPMtW45
-         TyBTzSE850pXeIRLEpQvMQQkZP0t6WvnFUuJD99rOpuKfpWF4EBcF+lWd9oV7O+NmwE2
-         UnNcECbkv67BqzR5991qL+N1+3mnGoy/0+rr0EY2c0mM5tP24pe8pOfKHA2/VPUSPeKT
-         yc1w==
-X-Gm-Message-State: AOJu0YxeymTPWcwT8NyDV/cXtZlxTAL0E4Q2aAAMQiQzvgytcjnWwxnY
-        +rWOrLwqu8yIaxrUwksiivnBDA==
-X-Google-Smtp-Source: AGHT+IGPQPpw12NV2S/MAXHkU3RUQ2whwPAyprmDBww6+C7MqehHDlK8PYY+pEJng1Xr629RHHl1Mg==
-X-Received: by 2002:a17:906:32d9:b0:982:c69c:8c30 with SMTP id k25-20020a17090632d900b00982c69c8c30mr8591365ejk.55.1691420011001;
-        Mon, 07 Aug 2023 07:53:31 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id x2-20020a1709060a4200b00993b381f808sm5322787ejf.38.2023.08.07.07.53.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 07:53:30 -0700 (PDT)
-Message-ID: <89993371-e26d-0308-060c-312a66c0cb08@linaro.org>
-Date:   Mon, 7 Aug 2023 16:53:28 +0200
+        Mon, 7 Aug 2023 10:54:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D15E710CC
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:54:08 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691420044;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dWPWCeO32Ooz2qU+ay/je0IMsANVu/pNL7syLVoePSQ=;
+        b=F8UAS1H2nTThs6X6voolX/Rn/DN0B0TQqBa527ADk/LMxy+hv+Tr+JVSGV3oP5F942lWsx
+        TN5IXwDs5OAfMpxSxLaSWzchMtZymhoSVtZqQ1gPRNYTgw+7eM+f7lwch+eNynqDWiXSZm
+        ebbT85k/qOX9lDWbGwZqWhSxH6W+/sZ7p5OzWL6JNgJBbgOPSDSEK4e2nrLnkzbEUQnxnH
+        tfiTAV5tTfL5rtkt6C9TyH9wH/M8UkEUwrKP7dwkz43NsX8z7YLGXxp55cbTw8ghobD+ln
+        W5JV2c68KbgZgszeS27TI31zCUrAuES5mVb/i5eUz3q7LemhtINxqXXQ86147g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691420044;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dWPWCeO32Ooz2qU+ay/je0IMsANVu/pNL7syLVoePSQ=;
+        b=uTkP1nZBwhoskT5ObsbqbZFAjb026R/rU1gA5ZqKLvpPNPe4y7aqXOXQwiKswTvHj8BfwZ
+        nvR17JW9byOjG4AQ==
+To:     Arjan van de Ven <arjan@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Feng Tang <feng.tang@intel.com>,
+        Andy Shevchenko <andy@infradead.org>
+Subject: Re: [patch 02/53] x86/cpu/topology: Make the APIC mismatch warnings
+ complete
+In-Reply-To: <c21f9f42-d270-d9be-b94e-de4d4b6e5ad5@linux.intel.com>
+References: <20230807130108.853357011@linutronix.de>
+ <20230807135026.528433010@linutronix.de>
+ <c21f9f42-d270-d9be-b94e-de4d4b6e5ad5@linux.intel.com>
+Date:   Mon, 07 Aug 2023 16:54:03 +0200
+Message-ID: <877cq6vr78.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] dt-bindings: pinctrl: pinctrl-single: add am62x
- compatible
-Content-Language: en-US
-To:     Dhruva Gole <d-gole@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-omap@vger.kernel.org, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-References: <20230803092311.604610-1-d-gole@ti.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230803092311.604610-1-d-gole@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2023 11:23, Dhruva Gole wrote:
-> Add the am62x compatible property to add support for the new
-> wakeup enable and status bits positions
-> 
-> Cc: Nishanth Menon <nm@ti.com>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> CC: Tony Lindgren <tony@atomide.com>
-> Signed-off-by: Dhruva Gole <d-gole@ti.com>
-> ---
-> 
-> Base: tag: next-20230731 + below "depends on" patch
-> Depends on: https://lore.kernel.org/linux-omap/20230731061908.GG5194@atomide.com/T/
-> 
->  Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
-> index b6b6bcd7074b..4c98035a1217 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
-> +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
-> @@ -23,6 +23,7 @@ properties:
->            - pinconf-single
->        - items:
->            - enum:
-> +              - ti,am6-padconf
+On Mon, Aug 07 2023 at 07:28, Arjan van de Ven wrote:
 
-This does not look like am62x. Except this, am62x looks like family, not
-SoC.
+> On 8/7/2023 6:52 AM, T
+>>   
+>> --- a/arch/x86/kernel/cpu/topology_common.c
+>> +++ b/arch/x86/kernel/cpu/topology_common.c
+>> @@ -176,6 +176,16 @@ void cpu_parse_topology(struct cpuinfo_x
+>>   
+>>   	parse_topology(&tscan, false);
+>>   
+>> +	if (c->topo.initial_apicid != c->topo.apicid) {
+>> +		pr_err(FW_BUG "CPU%4u: APIC ID mismatch. CPUID: 0x%04x APIC: 0x%04x\n",
+>> +		       cpu, c->topo.initial_apicid, c->topo.apicid);
+>> +	}
+>> +
+>> +	if (c->topo.apicid != cpuid_to_apicid[cpu]) {
+>> +		pr_err(FW_BUG "CPU%4u: APIC ID mismatch. Firmware: 0x%04x APIC: 0x%04x\n",
+>> +		       cpu, cpuid_to_apicid[cpu], c->topo.apicid);
+>> +	}
+>> +
+>
+> while these messages are basically the same as current ones they are short one key thing for the user
+> ... which one of the two will be used. Yes one can look up in the source code where the message comes from
+> and reverse engineer that... or we can just add this to these pr_err() messages
+>
+>
+> like
+>
+> pr_err(FW_BUG "CPU%4u: APIC ID mismatch. CPUID: 0x%04x APIC: 0x%04x. APIC value will be used.\n",
+> 		       cpu, c->topo.initial_apicid, c->topo.apicid);
 
-Best regards,
-Krzysztof
-
+Good point.
