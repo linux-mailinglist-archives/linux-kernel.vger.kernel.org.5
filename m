@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEE4772C07
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF62772C0E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbjHGRGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
+        id S229805AbjHGRIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:08:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjHGRGe (ORCPT
+        with ESMTP id S232024AbjHGRH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:06:34 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D490C2
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:06:34 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3a5ad21a1f9so3288196b6e.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:06:34 -0700 (PDT)
+        Mon, 7 Aug 2023 13:07:57 -0400
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A5EB1
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:07:56 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1bef8f0904eso3490982fac.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:07:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691427993; x=1692032793;
+        d=gmail.com; s=20221208; t=1691428075; x=1692032875;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rLDScHjDjgU2dNICfgHVvNlYK9Try5et+YRqhYmFBk8=;
-        b=PmPoOrMbUmYQQrA9L1loL6tAuljo1As/0pfzu0hEDaxMvt9Up4xwA33Y93eVRpgMYh
-         OoAOjU5mtSvy6MLa9AdD2J5m1XbKuA0yUb/xekLsq2iDcstvbRf8CTkDVhfxMgXZXExo
-         jDux+z+pyp/XqhHuvG5rTxfcPAQfPInoEg4qeS5hXPUQHiQMyT750PO/d1+bdEXrWlB5
-         i6ghH+VSnlxra+4x1pDlWCSh8Rx+COJOBgSztGbrDdBSP7P9lbvg7V1jO8IjxpSt7NcA
-         eYg+OMcJzB91+vXBNbh26ajkbc/giHF6rWT8Ulxlqdk5qmZBpS8OVJlxRG7xjMmtpbmt
-         f24A==
+        bh=yNzZQ+NIGCLYdKkCdgPTcseTFitCm2erAU7nFmqF0U8=;
+        b=jZ6OBxB4XRqSubR9akBWwvcxHAoVf7ke4KLmippVdxId+IlLgKzXHSE0R0UHevPSTZ
+         261Qa1Xb139hfAFJrFIg7rWkTwUqewhs+gH6pYfjJ3mFUVOKXH+atftAtRtxQaLvquWc
+         7/CGWQEpezdGu0r+hiacNHRIzEm++XAfKjHa/HHZGi2umEwOmpICbQpYB0dmfXlNqZh1
+         WSxsUDhv+VhtnA13XjgYT6BPbmU3cO4aYCIfugLzKYi5mHghEYE44VP8McYiQv/frTpm
+         qcE2bIcOd4V9g2AKdVq5K7wf3Udkt4UkB/XCoF4HXI9ocrMxBDehAOkn1pa+GmZJr7+f
+         k8sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691427993; x=1692032793;
+        d=1e100.net; s=20221208; t=1691428075; x=1692032875;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rLDScHjDjgU2dNICfgHVvNlYK9Try5et+YRqhYmFBk8=;
-        b=ESGJYgCDKVjyDvRewwQV6fuxv192Y8YKa5P0jg7fUKuOwHFSBHQh9r0rCpdSXQLRPW
-         ZaX69hAPzK3f8sND/+XY+oEy1mGdVwigv3s1i1P/531GtIRPEQZPC2TeJgfIAGBlLhdJ
-         OExuVxQ2BVdolz+6gfvO5fdpCF3brBlKT5s4HwJdqmeINYim+qd2uAmQv4Hu9EKPy5/i
-         MkuhsM+siACuNTSYw/t6hklAiEfAwpm0q//4Zy7EHTGGAE743t1YenDiDwQMZGKzDGTU
-         120ofN8PRCT7D4QBeoiu2I6iGKjtLWrOcW6/hQeykNovu81VLcIW+UsglOUyuk/N+Dcn
-         UpLg==
-X-Gm-Message-State: AOJu0YxSblC/ZKML0MtOYlzjAYYysGEy7xirEoXCmlrQgAGryvOysMCF
-        IUtWPFlB5U6PXNc2xZY1V9/VxYcFXKtkp+wlZ8A=
-X-Google-Smtp-Source: AGHT+IHSB9fXVJNJdhoJJavHP9tjCE+HR0p7P5SqCVY6Q+IWYe9oFwSsU+jpVUt5xWFSSMteVs2tYnZYP3RYLRswnwE=
-X-Received: by 2002:a05:6870:8a14:b0:1bb:75af:37b5 with SMTP id
- p20-20020a0568708a1400b001bb75af37b5mr10976138oaq.10.1691427993175; Mon, 07
- Aug 2023 10:06:33 -0700 (PDT)
+        bh=yNzZQ+NIGCLYdKkCdgPTcseTFitCm2erAU7nFmqF0U8=;
+        b=L0l5Qy90J9w9oWvAdR9suoKJsWBk0l9nvJeHfJYPHx+6ifb5aJujeroQVycwMI9nE7
+         HzzgECZLZUV855fULerJCPPGYOd0442ocut+ZlibGHlNbQ2GSBTk3q/X3GB3C7d8vrB9
+         JqEvAPhLNc37Kln8sGKHkG8bP8t9WfC23aFujNQeSmwxSlyCANCv87e1v5gRnFiH2w56
+         +k3/QAHvmYd/Qfw7irk72GLG/UnfqSrEeOU+GMPe+3xcNfoXT/pOj3aZ1VS3zjBWuK7M
+         9lI7FJTYgEEvI4aSFG+qPS2pgU3SAaJuzKIljnm2ep7kUotrXildQIy1jeOId93u66fW
+         myDQ==
+X-Gm-Message-State: AOJu0Yzvt7PucQRkjze8cmnM+3FZGz2Zqt6TY9JZeN+Zdfl3uz/wjo7U
+        aiH6Bc6x3jvm2QfI0YvX7HPXg3mPAyNeyqIfrfI=
+X-Google-Smtp-Source: AGHT+IEFUyFd2cT1tI+gNgP1IWErdwV3EmKpBZOnRM0udVvEu2T1rrcA1RTiyVbEtqiDC/DqMmLTo3uKs+aedZXm8P4=
+X-Received: by 2002:a05:6870:9109:b0:1bf:1c49:7455 with SMTP id
+ o9-20020a056870910900b001bf1c497455mr11109115oae.6.1691428075301; Mon, 07 Aug
+ 2023 10:07:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230802023955.10014-1-sunran001@208suo.com>
-In-Reply-To: <20230802023955.10014-1-sunran001@208suo.com>
+References: <20230802024346.10104-1-sunran001@208suo.com>
+In-Reply-To: <20230802024346.10104-1-sunran001@208suo.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 13:06:22 -0400
-Message-ID: <CADnq5_OK0VXCNpA-aix2hCvBJ04R1FXhem+Q0eGpvtWu9kna=Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Clean up errors in color_gamma.c
+Date:   Mon, 7 Aug 2023 13:07:44 -0400
+Message-ID: <CADnq5_N9SDN5mK_DBdfb-pKkt_+9mzKMDJESb9FyAArf1svzGg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Clean up errors in ddc_regs.h
 To:     Ran Sun <sunran001@208suo.com>
 Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
@@ -61,8 +61,8 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -71,45 +71,119 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Applied.  Thanks!
 
-On Tue, Aug 1, 2023 at 10:40=E2=80=AFPM Ran Sun <sunran001@208suo.com> wrot=
+On Tue, Aug 1, 2023 at 10:44=E2=80=AFPM Ran Sun <sunran001@208suo.com> wrot=
 e:
 >
 > Fix the following errors reported by checkpatch:
 >
-> ERROR: trailing whitespace
-> ERROR: else should follow close brace '}'
+> ERROR: space required after that ',' (ctx:VxV)
 >
 > Signed-off-by: Ran Sun <sunran001@208suo.com>
 > ---
->  drivers/gpu/drm/amd/display/modules/color/color_gamma.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  .../gpu/drm/amd/display/dc/gpio/ddc_regs.h    | 40 +++++++++----------
+>  1 file changed, 20 insertions(+), 20 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/display/modules/color/color_gamma.c b/dr=
-ivers/gpu/drm/amd/display/modules/color/color_gamma.c
-> index 67a062af3ab0..ff8e5708735d 100644
-> --- a/drivers/gpu/drm/amd/display/modules/color/color_gamma.c
-> +++ b/drivers/gpu/drm/amd/display/modules/color/color_gamma.c
-> @@ -359,7 +359,7 @@ static struct fixed31_32 translate_from_linear_space(
->                 scratch_1 =3D dc_fixpt_add(one, args->a3);
->                 /* In the first region (first 16 points) and in the
->                  * region delimited by START/END we calculate with
-> -                * full precision to avoid error accumulation.
-> +                * full precision to avoid error accumulation.
->                  */
->                 if ((cal_buffer->buffer_index >=3D PRECISE_LUT_REGION_STA=
-RT &&
->                         cal_buffer->buffer_index <=3D PRECISE_LUT_REGION_=
-END) ||
-> @@ -379,8 +379,7 @@ static struct fixed31_32 translate_from_linear_space(
->                 scratch_1 =3D dc_fixpt_sub(scratch_1, args->a2);
+> diff --git a/drivers/gpu/drm/amd/display/dc/gpio/ddc_regs.h b/drivers/gpu=
+/drm/amd/display/dc/gpio/ddc_regs.h
+> index 59884ef651b3..4a2bf81286d8 100644
+> --- a/drivers/gpu/drm/amd/display/dc/gpio/ddc_regs.h
+> +++ b/drivers/gpu/drm/amd/display/dc/gpio/ddc_regs.h
+> @@ -31,21 +31,21 @@
+>  /****************************** new register headers */
+>  /*** following in header */
 >
->                 return scratch_1;
-> -       }
-> -       else
-> +       } else
->                 return dc_fixpt_mul(args->arg, args->a1);
+> -#define DDC_GPIO_REG_LIST_ENTRY(type,cd,id) \
+> +#define DDC_GPIO_REG_LIST_ENTRY(type, cd, id) \
+>         .type ## _reg =3D   REG(DC_GPIO_DDC ## id ## _ ## type),\
+>         .type ## _mask =3D  DC_GPIO_DDC ## id ## _ ## type ## __DC_GPIO_D=
+DC ## id ## cd ## _ ## type ## _MASK,\
+>         .type ## _shift =3D DC_GPIO_DDC ## id ## _ ## type ## __DC_GPIO_D=
+DC ## id ## cd ## _ ## type ## __SHIFT
+>
+> -#define DDC_GPIO_REG_LIST(cd,id) \
+> +#define DDC_GPIO_REG_LIST(cd, id) \
+>         {\
+> -       DDC_GPIO_REG_LIST_ENTRY(MASK,cd,id),\
+> -       DDC_GPIO_REG_LIST_ENTRY(A,cd,id),\
+> -       DDC_GPIO_REG_LIST_ENTRY(EN,cd,id),\
+> -       DDC_GPIO_REG_LIST_ENTRY(Y,cd,id)\
+> +       DDC_GPIO_REG_LIST_ENTRY(MASK, cd, id),\
+> +       DDC_GPIO_REG_LIST_ENTRY(A, cd, id),\
+> +       DDC_GPIO_REG_LIST_ENTRY(EN, cd, id),\
+> +       DDC_GPIO_REG_LIST_ENTRY(Y, cd, id)\
+>         }
+>
+> -#define DDC_REG_LIST(cd,id) \
+> -       DDC_GPIO_REG_LIST(cd,id),\
+> +#define DDC_REG_LIST(cd, id) \
+> +       DDC_GPIO_REG_LIST(cd, id),\
+>         .ddc_setup =3D REG(DC_I2C_DDC ## id ## _SETUP)
+>
+>         #define DDC_REG_LIST_DCN2(cd, id) \
+> @@ -54,34 +54,34 @@
+>         .phy_aux_cntl =3D REG(PHY_AUX_CNTL), \
+>         .dc_gpio_aux_ctrl_5 =3D REG(DC_GPIO_AUX_CTRL_5)
+>
+> -#define DDC_GPIO_VGA_REG_LIST_ENTRY(type,cd)\
+> +#define DDC_GPIO_VGA_REG_LIST_ENTRY(type, cd)\
+>         .type ## _reg =3D   REG(DC_GPIO_DDCVGA_ ## type),\
+>         .type ## _mask =3D  DC_GPIO_DDCVGA_ ## type ## __DC_GPIO_DDCVGA #=
+# cd ## _ ## type ## _MASK,\
+>         .type ## _shift =3D DC_GPIO_DDCVGA_ ## type ## __DC_GPIO_DDCVGA #=
+# cd ## _ ## type ## __SHIFT
+>
+>  #define DDC_GPIO_VGA_REG_LIST(cd) \
+>         {\
+> -       DDC_GPIO_VGA_REG_LIST_ENTRY(MASK,cd),\
+> -       DDC_GPIO_VGA_REG_LIST_ENTRY(A,cd),\
+> -       DDC_GPIO_VGA_REG_LIST_ENTRY(EN,cd),\
+> -       DDC_GPIO_VGA_REG_LIST_ENTRY(Y,cd)\
+> +       DDC_GPIO_VGA_REG_LIST_ENTRY(MASK, cd),\
+> +       DDC_GPIO_VGA_REG_LIST_ENTRY(A, cd),\
+> +       DDC_GPIO_VGA_REG_LIST_ENTRY(EN, cd),\
+> +       DDC_GPIO_VGA_REG_LIST_ENTRY(Y, cd)\
+>         }
+>
+>  #define DDC_VGA_REG_LIST(cd) \
+>         DDC_GPIO_VGA_REG_LIST(cd),\
+>         .ddc_setup =3D mmDC_I2C_DDCVGA_SETUP
+>
+> -#define DDC_GPIO_I2C_REG_LIST_ENTRY(type,cd) \
+> +#define DDC_GPIO_I2C_REG_LIST_ENTRY(type, cd) \
+>         .type ## _reg =3D   REG(DC_GPIO_I2CPAD_ ## type),\
+>         .type ## _mask =3D  DC_GPIO_I2CPAD_ ## type ## __DC_GPIO_ ## cd #=
+# _ ## type ## _MASK,\
+>         .type ## _shift =3D DC_GPIO_I2CPAD_ ## type ## __DC_GPIO_ ## cd #=
+# _ ## type ## __SHIFT
+>
+>  #define DDC_GPIO_I2C_REG_LIST(cd) \
+>         {\
+> -       DDC_GPIO_I2C_REG_LIST_ENTRY(MASK,cd),\
+> -       DDC_GPIO_I2C_REG_LIST_ENTRY(A,cd),\
+> -       DDC_GPIO_I2C_REG_LIST_ENTRY(EN,cd),\
+> -       DDC_GPIO_I2C_REG_LIST_ENTRY(Y,cd)\
+> +       DDC_GPIO_I2C_REG_LIST_ENTRY(MASK, cd),\
+> +       DDC_GPIO_I2C_REG_LIST_ENTRY(A, cd),\
+> +       DDC_GPIO_I2C_REG_LIST_ENTRY(EN, cd),\
+> +       DDC_GPIO_I2C_REG_LIST_ENTRY(Y, cd)\
+>         }
+>
+>  #define DDC_I2C_REG_LIST(cd) \
+> @@ -150,12 +150,12 @@ struct ddc_sh_mask {
+>
+>  #define ddc_data_regs(id) \
+>  {\
+> -       DDC_REG_LIST(DATA,id)\
+> +       DDC_REG_LIST(DATA, id)\
 >  }
 >
+>  #define ddc_clk_regs(id) \
+>  {\
+> -       DDC_REG_LIST(CLK,id)\
+> +       DDC_REG_LIST(CLK, id)\
+>  }
+>
+>  #define ddc_vga_data_regs \
 > --
 > 2.17.1
 >
