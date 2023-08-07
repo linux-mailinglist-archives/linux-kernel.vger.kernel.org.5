@@ -2,121 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AA07722EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE8F7722F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232979AbjHGLmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        id S232946AbjHGLn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232087AbjHGLl5 (ORCPT
+        with ESMTP id S233180AbjHGLnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:41:57 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151532103
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 04:39:19 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe1e44fd2bso98965e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 04:39:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691408299; x=1692013099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8W+bofDGJlB4M5uPfge6sirfCHYwbUhgLAeHUFoaWIs=;
-        b=oK6l60z3Y/5Wy8fWWjBLc/gvsatLjg8OEhPFkO7kO+u77JF6wUsxpXgdPSy9a5bo7W
-         zKkWWxjj/9Wt3AGNzGGGSE3JL0YqxAwmng2sHl6++BVkQa6MRVUZ0pTuMkqhonqp7cVL
-         ooxMdgywEpg3u69CuhN/PSltoIPqWxsH2dKODl/IJ+j0Qibff4MoI0VZG2s5MSIOLiMm
-         Hv7xGb8InonKy5qRRtaVSo6bIJGE7CxKsH+pICSO4LHQ08tIoAyhjOS8H3uEcQsel7wS
-         XV+KpClkKXgOdMvNiCEBdnDJNddhHbV9f0w3sYEdSkPRTNAEZZbjDntaHS60Jembj3gk
-         6f5Q==
+        Mon, 7 Aug 2023 07:43:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330EF1FC8
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 04:39:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691408316;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oMQdzYvM+Pe5aw7tEIhxWj87hwS9adLKe0i6Mj8H6Ns=;
+        b=N0bZYKIFqs4JI7Yxp10r/ZmnESnFeL1hcvPX28fCqw0ln/f+dt5XXtDuAJLCQkqgylB01W
+        F9opbJ4VCQbu1sFUiKP9kEayo0WlqTWFRg8q0/l5aczbQtHICGnnKHrh+xheQUqP9Mv7Eo
+        3wxGaj4hww4vx0Zh+5XOWaZFbhVBHRw=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-171-gnOnpn0WOUiUlDiYxCH8zg-1; Mon, 07 Aug 2023 07:38:35 -0400
+X-MC-Unique: gnOnpn0WOUiUlDiYxCH8zg-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-99cc32f2ec5so117374366b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 04:38:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691408299; x=1692013099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8W+bofDGJlB4M5uPfge6sirfCHYwbUhgLAeHUFoaWIs=;
-        b=JFmQ19vYu45FUoAMHRP4+FGTcaK2n4eiEAjSQKX4LjF+APZuT0y4yyBrgmOrbGjYXa
-         3JMRVX6z1CDq9ldg17swlz/2Phzhugx+ghl7ScSHDsj4mJ0YNQOUqlUEkDr72BaxZi/p
-         BuIyXkKoH4jhdUPJNlfDahEMDjTeQ0ptbY/bPMJHnx2DJkPby4mdqY2k52sWOjTDX8IZ
-         cU6kWwKOXwKZ0Omj67UyLsJo30YrPnOKRtdeWPWqzSxGfkg/t5uhbzN3S+vQtKXZT8cP
-         dDpQ1pZnB3Gyfou7JJAA3P417HBwCRgMXup+76T77I35OVRbhOEKTJbBpHHtnH/2rP4v
-         ZRMQ==
-X-Gm-Message-State: AOJu0YyZW9n027WYmnxejELJt3juhfuR4rcV9TUpcetYt96Hrj3ebBDB
-        hclcV2pHiBiUVEeNyOYbTTeGqQs52OMmhV4eSWTU8Q==
-X-Google-Smtp-Source: AGHT+IGmhutOzq3fC03uoNya0cqOJh4UT8fO+Jie4zzFpBH4+HCUPwSHATUE0aSXieDtSvPS6NpGxhP3oVmADaOnfiE=
-X-Received: by 2002:a05:600c:1d13:b0:3fe:b38:5596 with SMTP id
- l19-20020a05600c1d1300b003fe0b385596mr143015wms.6.1691408299251; Mon, 07 Aug
- 2023 04:38:19 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691408314; x=1692013114;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oMQdzYvM+Pe5aw7tEIhxWj87hwS9adLKe0i6Mj8H6Ns=;
+        b=IFStzBlJuOngGZLUrUC7S10tFZWwInh4DcxR562hSNCtN24r5DX4/ute1G9bLKkHyt
+         RALeTMNyq3SRyM9YuHmrLw9XR/cfjFDUC9T2vHKs6K3/RvoNjVKzJ02OOmNgIHwcPjHL
+         kBe5vQM/0nCNbwImyLrj+ClpLf9EZTWjUZ4Vzc2/rs8hde46nkQQrQkZ+ze8TzOAvdpT
+         vHV5zC/VgCzzeG0cB6Pm0y6n2RxchZMYdV5CCc5Wt1Oy5MzNNo0+U9nKQac+Qq1+jqyv
+         Z3KcNRgPMj6G2EMMkxG524AdLZhuhWaZ96JJPvNHPNhwaht1AlM/7H1Fyml/vBvucMxa
+         dUDw==
+X-Gm-Message-State: AOJu0YxAWMGL30Kes9aNAsBjer3QFTHE9sSMfKBKApirJsp0vXUls4GP
+        Jzkk8jWXtR8WfLpF8R9ds+ui+QmGYRwRPXUspfI7beL19ayyvHmaO2bqD8y+pIpYiQt08Ezg7hP
+        P3fLXejE6IStLSvap70rNcP7y
+X-Received: by 2002:a17:906:5a48:b0:98c:e72c:6b83 with SMTP id my8-20020a1709065a4800b0098ce72c6b83mr6759513ejc.45.1691408314630;
+        Mon, 07 Aug 2023 04:38:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEednnRIFSijaQW/ULGrqvXgaSTiwrn9ONCcNWwL9t4vr8DBCCz8S3u7jBD/hirMYouKTl9Pw==
+X-Received: by 2002:a17:906:5a48:b0:98c:e72c:6b83 with SMTP id my8-20020a1709065a4800b0098ce72c6b83mr6759504ejc.45.1691408314388;
+        Mon, 07 Aug 2023 04:38:34 -0700 (PDT)
+Received: from [10.40.98.142] ([78.108.130.194])
+        by smtp.gmail.com with ESMTPSA id 4-20020a170906058400b00992c92af6f4sm5134795ejn.144.2023.08.07.04.38.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 04:38:33 -0700 (PDT)
+Message-ID: <92096817-0183-566a-cdd3-74e6fa3a09c8@redhat.com>
+Date:   Mon, 7 Aug 2023 13:38:33 +0200
 MIME-Version: 1.0
-References: <0000000000005003fe05a8af2231@google.com> <000000000000597f580602464669@google.com>
-In-Reply-To: <000000000000597f580602464669@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Mon, 7 Aug 2023 13:38:07 +0200
-Message-ID: <CANp29Y7srmhGbKYB_6Y5KvijXrgHtzU9NqKcBcnit0wLmvbdCA@mail.gmail.com>
-Subject: Re: [syzbot] [wireless?] INFO: trying to register non-static key in skb_queue_tail
-To:     syzbot <syzbot+743547b2a7fd655ffb6d@syzkaller.appspotmail.com>
-Cc:     andreyknvl@google.com, ath9k-devel@qca.qualcomm.com,
-        brookebasile@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        kvalo@codeaurora.org, kvalo@kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, pchelkin@ispras.ru, quic_kvalo@quicinc.com,
-        syzkaller-bugs@googlegroups.com, toke@toke.dk
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 0/8] hp-bioscfg: Overall fixes and code cleanup
+Content-Language: en-US
+To:     Jorge Lopez <jorgealtxwork@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas@t-8ch.de, ilpo.jarvinen@linux.intel.com,
+        dan.carpenter@linaro.org
+References: <20230731203141.30044-1-jorge.lopez2@hp.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230731203141.30044-1-jorge.lopez2@hp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 6, 2023 at 9:38=E2=80=AFPM syzbot
-<syzbot+743547b2a7fd655ffb6d@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 061b0cb9327b80d7a0f63a33e7c3e2a91a71f142
-> Author: Fedor Pchelkin <pchelkin@ispras.ru>
-> Date:   Wed May 17 15:03:17 2023 +0000
->
->     wifi: ath9k: don't allow to overwrite ENDPOINT0 attributes
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1243d549a8=
-0000
-> start commit:   559089e0a93d vmalloc: replace VM_NO_HUGE_VMAP with VM_ALL=
-O..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Ddd7c9a79dfcfa=
-205
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D743547b2a7fd655=
-ffb6d
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D15d5d7f4f00=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D106ff834f0000=
-0
->
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
->
-> #syz fix: wifi: ath9k: don't allow to overwrite ENDPOINT0 attributes
+Hi,
 
-Seems reasonable.
+On 7/31/23 22:31, Jorge Lopez wrote:
+> Submit individual patches to address memory leaks and uninitialized 
+> variable errors. 
+> Addressed several review comments making the source code more readable.
+> Removed duplicate use of variable in inner loop.
+> 
+> Changes were tested with a HP EliteBook x360 1030 G3
+> 
+> Jorge Lopez (8):
+>   hp-bioscfg: Fix memory leaks in attribute packages
+>   hp-bioscfg: Fix uninitialized variable errors
+>   hp-bioscfg: Replace the word HACK from source code
+>   hp-bioscfg: Change how prerequisites size is evaluated
+>   hp-bioscfg: Change how order list size is evaluated
+>   hp-bioscfg: Change how enum possible values size is evaluated
+>   hp-bioscfg: Change how password encoding size is evaluated
+>   hp-bioscfg: Remove duplicate use of variable in inner loop
+> 
+>  .../x86/hp/hp-bioscfg/enum-attributes.c       | 24 ++++++++----
+>  .../x86/hp/hp-bioscfg/int-attributes.c        | 15 +++++--
+>  .../x86/hp/hp-bioscfg/order-list-attributes.c | 39 ++++++++++++-------
+>  .../x86/hp/hp-bioscfg/passwdobj-attributes.c  | 27 +++++++++----
+>  .../x86/hp/hp-bioscfg/string-attributes.c     | 13 +++++--
+>  5 files changed, 82 insertions(+), 36 deletions(-)
 
-#syz fix: wifi: ath9k: don't allow to overwrite ENDPOINT0 attributes
+Thank you for your patch-series, I've applied the series to my
+review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgi=
-d/syzkaller-bugs/000000000000597f580602464669%40google.com.
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
