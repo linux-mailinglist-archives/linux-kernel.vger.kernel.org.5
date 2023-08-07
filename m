@@ -2,138 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AC77724D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBEB7724DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232579AbjHGNA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52134 "EHLO
+        id S233755AbjHGNCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231728AbjHGNAy (ORCPT
+        with ESMTP id S232105AbjHGNCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:00:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298261BC;
-        Mon,  7 Aug 2023 06:00:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9872D619FD;
-        Mon,  7 Aug 2023 13:00:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31608C433C7;
-        Mon,  7 Aug 2023 13:00:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691413252;
-        bh=VIywjKfIQjCBtdbDPXYlia2uvZPXVd/riPHCXoskQic=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rvvDU8srIyUZqSC/AZn5tENk73e6b7lcMD0bggv0OZy+kdMv1wzrdao14Ek53Iiyx
-         IRdeP2i7dHvG05GYveqesPRozZBWvPkPzVgLAPzRKehV8FG4dTBFTlwNmq6W9aAmXd
-         TOJ2NMgyqruEmA77u2ERYj64yfya3426m3ZWoUGeog++a6pvx66c8pChwY38vz523S
-         ChaYFX40JW+pa2BW1vXmOmq45J6hBtdc88n5UAJdNuTfAiy2eP80JJIFmiP356Yg99
-         NUF9YdSDWmi87A0gAAG2I/js0A4x5VYEjSB7V464D9htKF6RuocFXxnBcwe4+5gtev
-         Hkzg/2TxLfPZA==
-Date:   Mon, 7 Aug 2023 14:00:42 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v3 21/36] arm64/mm: Implement map_shadow_stack()
-Message-ID: <3a077ff3-8627-4337-9b4a-6a8828eda0e7@sirena.org.uk>
-References: <20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org>
- <20230731-arm64-gcs-v3-21-cddf9f980d98@kernel.org>
- <ZNDFioFIM34VcsuV@arm.com>
+        Mon, 7 Aug 2023 09:02:32 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3545F10FD;
+        Mon,  7 Aug 2023 06:02:31 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fe1fc8768aso44671345e9.1;
+        Mon, 07 Aug 2023 06:02:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691413349; x=1692018149;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b9Nt4QYYjEL+p64RRfFuSmwTrTt38SuyWllng/Q97cM=;
+        b=i1ViJfLDxjT2Inkm71aoUY7ogCUVoAxy7viyDUzQs1GOcMEyDx+UN2HdFGiOM6/W/k
+         MzMj++aO0nEZHX8H9JJGMniqxKduqsikNqJ5N6Eggeo3DcNndg3Hqw4UdSTGKAxYRrrm
+         2u45bzXlWwGGxrhajeOYLA0HsZ4Nc5sNMqOzddIBop14Yv8pckq2DwgBdq25R32KZ/CK
+         NC05tw8kDTngdg34Vlw7tctbFDF2P+X+GDmZtBs/omGoRVIwnneu3oIQtsY1YVvli07u
+         epD8UjywaQay80rXEt3nM/HZTstCp8nTlikmFxu/V86VkRHYTYpwVFiRq6ImhY2hfK1b
+         FXBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691413349; x=1692018149;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b9Nt4QYYjEL+p64RRfFuSmwTrTt38SuyWllng/Q97cM=;
+        b=lKzukbvO/4nap4a7T0zAM9dJjiYeqwN8Rw0vZ8VCK0V9wvc9exdjNc+vLdD0Nv0ufH
+         rQOtLgnyirvJ9rRsHaQg5IvbHWapvFKl8LpQPaEc5z2ka1/A2IzKj+sFZMq+ofn0VCml
+         rCmIeR0SuDoele4vTJZFMkfotuSnvX4UTqw7gX5Gm3EWnbEutB2ENtAbHmEFw9jggEd6
+         W2N+utFyLxC7sgCg4UFsrDzG1p+ujSYWdfGBdyNPF9xw5ZtaTHpGxy5JQ2ZrnFOkCa3C
+         qEm9yqP6eBiHLVJDcTvYTkVqa2Z7/RdGZb2lDBOeClERHV+S8jDZShRAv+I68OyZs9rJ
+         lOeg==
+X-Gm-Message-State: AOJu0YyphnmWVl1HPDEcWWinRW2wbV0+FZvjOYZJpEC86/cD5KGFyOWW
+        jC5dVzi20jsk/JSrwTX3SoRZYepaT79IKg==
+X-Google-Smtp-Source: AGHT+IFt803ICS7HHS+eqsWbjJ+vUNt7vM0QFSnn+y9M9UuGRQbPibDcwSyY2UVRsNg8gnj4kSNcVA==
+X-Received: by 2002:adf:f7d2:0:b0:313:f676:8327 with SMTP id a18-20020adff7d2000000b00313f6768327mr6905591wrq.60.1691413349296;
+        Mon, 07 Aug 2023 06:02:29 -0700 (PDT)
+Received: from localhost.localdomain ([92.85.190.61])
+        by smtp.gmail.com with ESMTPSA id n4-20020a5d4204000000b0030ae499da59sm10439843wrq.111.2023.08.07.06.02.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 06:02:28 -0700 (PDT)
+From:   Andrei Coardos <aboutphysycs@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Cc:     broonie@kernel.org, nick.hawkins@hpe.com, verdun@hpe.com,
+        alex@shruggie.ro, Andrei Coardos <aboutphysycs@gmail.com>
+Subject: [PATCH] spi: gxp: removed unneeded call to platform_set_drvdata()
+Date:   Mon,  7 Aug 2023 16:02:17 +0300
+Message-Id: <20230807130217.17853-1-aboutphysycs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zuyh0JKERt9z219h"
-Content-Disposition: inline
-In-Reply-To: <ZNDFioFIM34VcsuV@arm.com>
-X-Cookie: idleness, n.:
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This function call was found to be unnecessary as there is no equivalent
+platform_get_drvdata() call to access the private data of the driver. Also,
+the private data is defined in this driver, so there is no risk of it being
+accessed outside of this driver file.
 
---zuyh0JKERt9z219h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+---
+ drivers/spi/spi-gxp.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Mon, Aug 07, 2023 at 11:20:58AM +0100, Szabolcs Nagy wrote:
-> The 07/31/2023 14:43, Mark Brown wrote:
-> > +SYSCALL_DEFINE3(map_shadow_stack, unsigned long, addr, unsigned long, size, unsigned int, flags)
-> > +{
-> > +	unsigned long alloc_size;
-> > +	unsigned long __user *cap_ptr;
-> > +	unsigned long cap_val;
-> > +	int ret;
-> > +
-> > +	if (!system_supports_gcs())
-> > +		return -EOPNOTSUPP;
-> > +
-> > +	if (flags)
-> > +		return -EINVAL;
-> > +
-> > +	if (addr % 16)
-> > +		return -EINVAL;
+diff --git a/drivers/spi/spi-gxp.c b/drivers/spi/spi-gxp.c
+index 684d63f402f3..6261d9f036bc 100644
+--- a/drivers/spi/spi-gxp.c
++++ b/drivers/spi/spi-gxp.c
+@@ -264,7 +264,6 @@ static int gxp_spifi_probe(struct platform_device *pdev)
+ 
+ 	spifi = spi_controller_get_devdata(ctlr);
+ 
+-	platform_set_drvdata(pdev, spifi);
+ 	spifi->data = data;
+ 	spifi->dev = dev;
+ 
+-- 
+2.34.1
 
-> mmap addr must be page aligned (and there is no align req on size).
-
-> i'd expect similar api here.
-
-That's not what the manual page or a quick check of the code suggest
-that mmap() does, they say that the kernel just takes it as a hint and
-chooses a nearby page boundary, though I didn't test.  I'm not sure why
-I have that alignment check at all TBH, and to the extent it's needed I
-could just be 8 - this level of code doesn't really care.
-
-> > +	if (size == 16 || size % 16)
-> > +		return -EINVAL;
-
-> why %16 and not %8 ?
-
-I don't think that's needed any more - there was some stuff in an
-earlier version of the code but no longer.
-
---zuyh0JKERt9z219h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTQ6voACgkQJNaLcl1U
-h9ADtwf9Hi+3Tmw6lo4OcpVr7n1Zx4xMLurjUWXhlQulr3E2yaNH/LoJepX0V/Hy
-cYyeMDXfa9itHkAmxF+PWpfByFW2ak1NvN+VB1ywgbz4kJFiAK11hsjQzWuiJw+s
-e1it4mLwr1FXHqL0ewxN4pWvkFHmoyVTtKmtIlYrR4K9Xq8KEWrEDi6x5LHrI6tk
-HXZ6HBESzDzzrctdnfG91f3YdpxLKuvuE1l+HEVfKlh5EqEHtTxzLT1BCDHy4ebI
-URGjT1qEAOxoNDbYkJaaPcVnDkFfcXuSC07xv57tktihM+MnQCtZd0b+IH9lf6Ry
-E10gfnUnsEkptjykMZVkmRiHM0iWvQ==
-=jbyG
------END PGP SIGNATURE-----
-
---zuyh0JKERt9z219h--
