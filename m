@@ -2,118 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AFC771C53
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 10:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495CD771C5A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 10:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbjHGIeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 04:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59810 "EHLO
+        id S230294AbjHGIfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 04:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjHGIeO (ORCPT
+        with ESMTP id S229469AbjHGIfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 04:34:14 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E64710EF;
-        Mon,  7 Aug 2023 01:34:12 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 7 Aug 2023 04:35:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3688A10EF;
+        Mon,  7 Aug 2023 01:35:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 44AAB218A9;
-        Mon,  7 Aug 2023 08:34:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691397251; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=CkiLjiLMxObzy3Sb9w3oxtxHFV8IOAxBlCK+K5bcwaE=;
-        b=r+DUjLGFEllhgYp/YiieuZF0DOCjFDWeLyJoWFD0+nxlhS2s+B4eZvPMd4W3P12+txsJ5K
-        G431i69aOhsJSqtUZcspvZ0xB1KGBCaF8Sc0PPEF5QWSdWdODP1kf6Odvb05n1/K6EP4OM
-        2N5m5JFtHu58v9ZyWEHYpAtkTXoamI0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691397251;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=CkiLjiLMxObzy3Sb9w3oxtxHFV8IOAxBlCK+K5bcwaE=;
-        b=PmOcswpF0o6Csfk6kbt4+f54rrFElHQs3ovyF4w1bqSUJ5n6roG5qyOxTHY7f0PI1TMtU0
-        9q+79oecr2eV8RBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0F71013487;
-        Mon,  7 Aug 2023 08:34:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9RkuA4Os0GTCBwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 07 Aug 2023 08:34:11 +0000
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Jens Axboe <axboe@kernel.dk>
-Cc:     dm-devel@redhat.com, gregkh@linuxfoundation.org, hch@lst.de,
-        joern@lazybastard.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-pm@vger.kernel.org, loic.poulain@linaro.org,
-        miquel.raynal@bootlin.com, regressions@lists.linux.dev,
-        richard@nod.at, snitzer@kernel.org, vigneshr@ti.com,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH for 6.5 regression] PM: hibernate: fix resume_store() return value when hibernation not available
-Date:   Mon,  7 Aug 2023 10:33:57 +0200
-Message-ID: <20230807083356.19222-2-vbabka@suse.cz>
-X-Mailer: git-send-email 2.41.0
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BEF8861666;
+        Mon,  7 Aug 2023 08:35:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E921C433CC;
+        Mon,  7 Aug 2023 08:35:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691397312;
+        bh=dQQYVCV202V1fkp+H9UYGcqK9NudKTkhkMb/AaQNtto=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=AHBpwm2yXk/zDdi/IuT5WptLqTuta3FroC6SuurxaOy3UnmeMYJzT2/FD+N7S1K99
+         VhT+tOE4K5IzfA7Fc+lS6dkK72uTWhw9BtgS+9LVnJRUeUxGgPNTMpySIt0JLqlEkV
+         CdHA10dcbgLn97pcYK+cxXKYzI2Ymw5wpMempKkf5GT8ZwG7JJ1iZDVlsBHVt011k1
+         Gy6JhhtpXZkdXr6F+4I6nCoRusAMES8rB2YZYQp3nVyWmkEoEDitjcx+MASrmXOVgu
+         g5mtLIEZOKj9z38imh4oKyzKDQdX+O5vjGrnlWeDICBFLN2uxAMHMj17h9WWWIHlJn
+         q//0thIlNzCyA==
+Message-ID: <6f69bd92-a063-1934-2bd8-42a5950254a7@kernel.org>
+Date:   Mon, 7 Aug 2023 10:35:05 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
+        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
+        wei.liu@kernel.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
+        ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com,
+        bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
+        hawk@kernel.org, tglx@linutronix.de,
+        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V6,net-next] net: mana: Add page pool for RX buffers
+Content-Language: en-US
+To:     Haiyang Zhang <haiyangz@microsoft.com>,
+        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org
+References: <1691181233-25286-1-git-send-email-haiyangz@microsoft.com>
+From:   Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <1691181233-25286-1-git-send-email-haiyangz@microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a laptop with hibernation set up but not actively used, and with
-secure boot and lockdown enabled kernel, 6.5-rc1 gets stuck on boot with
-the following repeated messages:
 
-  A start job is running for Resume from hibernation using device /dev/system/swap (24s / no limit)
-  lockdown_is_locked_down: 25311154 callbacks suppressed
-  Lockdown: systemd-hiberna: hibernation is restricted; see man kernel_lockdown.7
-  ...
 
-Checking the resume code leads to commit cc89c63e2fe3 ("PM: hibernate:
-move finding the resume device out of software_resume") which
-inadvertently changed the return value from resume_store() to 0 when
-!hibernation_available(). This apparently translates to userspace
-write() returning 0 as in number of bytes written, and userspace looping
-indefinitely in the attempt to write the intended value.
+On 04/08/2023 22.33, Haiyang Zhang wrote:
+> Add page pool for RX buffers for faster buffer cycle and reduce CPU
+> usage.
+> 
+> The standard page pool API is used.
+> 
+> With iperf and 128 threads test, this patch improved the throughput
+> by 12-15%, and decreased the IRQ associated CPU's usage from 99-100% to
+> 10-50%.
+> 
+> Signed-off-by: Haiyang Zhang<haiyangz@microsoft.com>
+> Reviewed-by: Jesse Brandeburg<jesse.brandeburg@intel.com>
 
-Fix this by returning the full number of bytes that were to be written,
-as that's what was done before the commit.
+For the record I want to provide my ACK as page_pool maintainer:
 
-Fixes: cc89c63e2fe3 ("PM: hibernate: move finding the resume device out of software_resume")
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-Resend with review/ack tags added and not buried in the thread.
-Link: https://lore.kernel.org/all/2cfa5f55-1d68-8a4f-d049-13f42e0d1484@suse.cz/
+Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
- kernel/power/hibernate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+As patch was applied Sunday, my ACK will not reach the git tree
+  https://git.kernel.org/netdev/net-next/c/b1d13f7a3b53
 
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index e1b4bfa938dd..2b4a946a6ff5 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -1166,7 +1166,7 @@ static ssize_t resume_store(struct kobject *kobj, struct kobj_attribute *attr,
- 	int error;
- 
- 	if (!hibernation_available())
--		return 0;
-+		return n;
- 
- 	if (len && buf[len-1] == '\n')
- 		len--;
--- 
-2.41.0
-
+--Jesper
