@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 936717726DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B688F7726E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234468AbjHGOBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
+        id S231672AbjHGOEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234245AbjHGOBe (ORCPT
+        with ESMTP id S231682AbjHGOCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:01:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D2F2D69;
-        Mon,  7 Aug 2023 06:59:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4260761CBC;
-        Mon,  7 Aug 2023 13:58:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 353EDC433CC;
-        Mon,  7 Aug 2023 13:58:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691416718;
-        bh=ldo/PfwX1/YEJAZBSBXdjfdco2obKz6ExqpCyGI1fKw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YwcjSfUcWBuI5yDy5LmbY+EIciLl56lQYS52ul5UgTv4C5Jptkmhiz9Ig2IYczl9R
-         8BfGC6kitScsZ2gEfKbYTA8vruAwZFdqjbu1xwmCjXeZIulzGrwpdLDHL3blOy0N1l
-         pyg2zgG0Rdoqf1QOnN0yFAa/IQHN3in4uMv+ixNxiN8D8D9MdBSbaQQt/5xL5nhCls
-         S1JHGCdb8mYAjRXz2gkuwCdvyxxTF+Ke+lAvt3tL8zVxl7tk5xtsApFXOsrOtlf5dG
-         kVNiZOzJ82XQ4ipLR1qAkIwhiIsmF20z+gaNK7707B/FMghpau8Os+uxeqW1bmPMjj
-         2dKSRAQjVMr/A==
-Date:   Mon, 7 Aug 2023 15:58:33 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Petr Pavlu <petr.pavlu@suse.com>
-Cc:     tariqt@nvidia.com, yishaih@nvidia.com, leon@kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jgg@ziepe.ca, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 03/10] mlx4: Replace the mlx4_interface.event
- callback with a notifier
-Message-ID: <ZND4iQMbv5LWNaZA@vergenet.net>
-References: <20230804150527.6117-1-petr.pavlu@suse.com>
- <20230804150527.6117-4-petr.pavlu@suse.com>
+        Mon, 7 Aug 2023 10:02:53 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91CA526D
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:01:11 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-686bc261111so3110805b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 07:01:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691416868; x=1692021668;
+        h=reply-to:date:to:subject:content-description
+         :content-transfer-encoding:mime-version:from:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qeJMC8uQd6uF4qr+WdPwE3eIC4QtXm265LEcDc12V2I=;
+        b=CvLd0udIIP1521KeosdB+tY5lpPEIgLus4aqjuvQObaEOsfX3bjwvEWvdddpvR83vE
+         ha/+/zOlWLT9Gy20nDNEyr+YI8F7KEtnmwUmyVdT+nywLx2ZCyowrCJgB9gU0bArEHyu
+         FDTzxzgNsb2QAXnRI/se09JeXgajWDj5n6zGTlL2rs+lFhK5vO53nugR14U+sn1nsQv6
+         MO/kyseFDJEFhvaREqm9VwHcu0+CE4LM2JQf3/U5TWsv0vRMZLNoxwPhIr//o0Rn173I
+         1jqknazoL6LVpKmfC6r2PTIGINMHD+cl47qhUCc9/HdCxOyAfm+aqIYwtE75ZPfj9hu8
+         /zuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691416868; x=1692021668;
+        h=reply-to:date:to:subject:content-description
+         :content-transfer-encoding:mime-version:from:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qeJMC8uQd6uF4qr+WdPwE3eIC4QtXm265LEcDc12V2I=;
+        b=aY6yBBnVf/OTyE+S1B57574pUKT8a0rQyf4Y0Fq7QdcgfP0o1xt8/4P/gCldoKhSX3
+         8F57iFFlQxlaYh32iboBvH/VtyAK+cISdbkeW6B2PQzRHuF84VlmmJomWc2lzQuVzms4
+         ksRP9PyMlMlrSvobKkQRYFaMbR1wBNuy4USzgHNaIwM+j/frmGov2u/Nrw76IKdCpLBk
+         4SQHiLhPXF0mPvTF8MtEvLIqf5M8HZ6OWGw0Bs0BPRxWkRTuJLkcRxmMtuQKTB1SLv1X
+         /FvbZZ1tbL8uOo0klLkXPV0INZq8MW2S1JcVw7WRI0VHcd8xcpAggCJDZSt+wfwk87CA
+         HiuQ==
+X-Gm-Message-State: AOJu0YwZ8scrT4xhoT0fy4JgiWJKk0RpdvrEWymlLT8EhldKmOlO23Xe
+        35IfOTqCCsKw69k9Rtdy6lcO5oLAA+bg2YHG
+X-Google-Smtp-Source: AGHT+IH4PXx8yvkS3Pz7yzTEcs5JeZDuFy4E15+4oKFHrVbebrzOcSkqbOAlLfG3YmXPKNGwYcNpuQ==
+X-Received: by 2002:a05:6a00:124b:b0:64a:2dd6:4f18 with SMTP id u11-20020a056a00124b00b0064a2dd64f18mr9315921pfi.13.1691416867280;
+        Mon, 07 Aug 2023 07:01:07 -0700 (PDT)
+Received: from [192.168.1.102] ([192.166.244.71])
+        by smtp.gmail.com with ESMTPSA id t22-20020a62ea16000000b00666912d8a52sm6189445pfh.197.2023.08.07.07.01.05
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Mon, 07 Aug 2023 07:01:06 -0700 (PDT)
+Message-ID: <64d0f922.620a0220.8c426.a761@mx.google.com>
+From:   World Health Organization Empowerment Group 
+        <sanderrobin72@gmail.com>
+X-Google-Original-From: World Health Organization Empowerment Group
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804150527.6117-4-petr.pavlu@suse.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: We have a Job opportunity for you in your country;
+To:     Recipients <World@vger.kernel.org>
+Date:   Mon, 07 Aug 2023 21:00:47 +0700
+Reply-To: drjeromewalcott@gmail.com
+X-Spam-Status: No, score=2.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,TO_MALFORMED,T_FILL_THIS_FORM_SHORT autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 05:05:20PM +0200, Petr Pavlu wrote:
+Greetings! Sir /Madam.
+                   =
 
-...
+We are writing this email to you from (World Health Organization Empowermen=
+t Group) to inform you that we have a Job opportunity for you in your count=
+ry, if you receive this message, send your CV or your information, Your Ful=
+l Name, Your Address, Your Occupation, to (Dr.Jerome) via this email addres=
+s: drjeromewalcott@gmail.com  For more information about the Job. The Job c=
+annot stop your business or the work you are doing already. =
 
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_main.c b/drivers/net/ethernet/mellanox/mlx4/en_main.c
 
-...
+We know that this Message may come as a surprise to you.
 
-> @@ -326,6 +333,11 @@ static void *mlx4_en_add(struct mlx4_dev *dev)
->  	mutex_init(&mdev->state_lock);
->  	mdev->device_up = true;
->  
-> +	/* register mlx4 core notifier */
-> +	mdev->mlx_nb.notifier_call = mlx4_en_event;
-> +	err = mlx4_register_event_notifier(dev, &mdev->mlx_nb);
+Best Regards
+Dr.Jerome Walcott
+Office Email:drjeromewalcott@gmail.com
+Office  WhatsApp Number: +447405575102. =
 
-Hi Petr.
-
-This fails to build because err isn't declared in this context.
-
-> +	WARN(err, "failed to register mlx4 event notifier (%d)", err);
-> +
->  	return mdev;
->  
->  err_mr:
-
-...
+Office Contact Number: +1-7712204594
