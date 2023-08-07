@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87199771895
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A18177189C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229436AbjHGC4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 22:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
+        id S229555AbjHGC4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 22:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbjHGC4T (ORCPT
+        with ESMTP id S229976AbjHGC40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 22:56:19 -0400
+        Sun, 6 Aug 2023 22:56:26 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8431BDA;
-        Sun,  6 Aug 2023 19:55:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2365B1733;
+        Sun,  6 Aug 2023 19:55:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8DBFF60A4B;
-        Mon,  7 Aug 2023 02:55:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FDA7C433C8;
-        Mon,  7 Aug 2023 02:55:40 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A1526133A;
+        Mon,  7 Aug 2023 02:55:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05FE5C433C7;
+        Mon,  7 Aug 2023 02:55:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691376943;
-        bh=gcAsXcNpHr2neQoiFwF9exmEBvK8RQO7NJB0uoPDuFA=;
+        s=k20201202; t=1691376953;
+        bh=rmxZE83d3FXHRV2guA/jsebhw3LfN+eEvFVGseZCh3Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m8kJkHWo1ZCZN67vC77Y1xjVj/QZdd7HEOmFmNVl7MijaFHWbLZcKL+dqdDstAalz
-         8alWXxiJoI7N4Zl+6ArHCH8sFfKRsNjzNBNUQoiT5i+RdsoBYwZGffZtIfwM0mv53C
-         P1wYK7TvF5qDSa7CDpm8juPvvAKCYrUDFwbN4rtLHyj7hPt1HGqxr7iXrXweE2GAZM
-         tGxkCbK+y7WrGleUzkjx0aaz+Cvb8OeR2zqiK07ZRFc0m372nYKOrt1C8Bqu0+KP+k
-         KHEJ44pJHWFAONwnDfeapJZdHZKlJotNoYHzgmF05rx1gyM9+6Sgld7rsQW44ljPpH
-         zR8YOVkhRZkpg==
+        b=WnYTCRr1Lss7WR/d5AJQW78eAGilsSVBOaKHG+hpnKM2wB7vUxBgcYYolWgAkJc2I
+         lqE6mV9rwSCLhZVsmgJNIBcySKQ+dbaHFw/kLhdGvySDg2gOwfXwV6bFWak9ONysmt
+         SSti2LMCUdHSdL6H605JndN4N6BneEQuaboVNr5OiSTQW4fAmFY+WOMcVNUniriw+Z
+         9d8dFQob/b5SuMH7nHB2Oryp7xSsoLjrkePhQhjYFQQtrBHBCnPoYnEIJaW70JFmDh
+         IbSL9rolpHsyXCwWEzKzuZOfHJ/2oR6kZoI7rEQYN9JX0BCqog+DemIUY1n0v8DfM7
+         xnWLZQhyvw2PA==
 From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To:     linux-trace-kernel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         mhiramat@kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
         bpf@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH v5 7/9] tracing/fprobe-event: Assume fprobe is a return event by $retval
-Date:   Mon,  7 Aug 2023 11:55:38 +0900
-Message-Id: <169137693852.271367.5757753088603858125.stgit@devnote2>
+Subject: [PATCH v5 8/9] selftests/ftrace: Add BTF fields access testcases
+Date:   Mon,  7 Aug 2023 11:55:48 +0900
+Message-Id: <169137694835.271367.10787741563925762942.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <169137686814.271367.11218568219311636206.stgit@devnote2>
 References: <169137686814.271367.11218568219311636206.stgit@devnote2>
@@ -61,119 +61,102 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Assume the fprobe event is a return event if there is $retval is
-used in the probe's argument without %return. e.g.
+Add test cases for accessing the data structure fields using BTF info.
+This includes the field access from parameters and retval, and accessing
+string information.
 
-echo 'f:myevent vfs_read $retval' >> dynamic_events
-
-then 'myevent' is a return probe event.
-
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- kernel/trace/trace_fprobe.c                        |   58 +++++++++++++++-----
- .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    2 -
- 2 files changed, 45 insertions(+), 15 deletions(-)
+Changes in v2:
+ - Use '$retval' instead of 'retval'.
+ - Add a test that use both '$retval' and '$arg1' for fprobe.
+Changes in v3:
+ - Change a test case with a numeric value.
+ - Add a test case with mixed '.' and '->' operators.
+Changes in v5:
+ - Check fields access availability.
+---
+ .../ftrace/test.d/dynevent/add_remove_btfarg.tc    |   20 ++++++++++++++++++++
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    8 ++++++++
+ 2 files changed, 28 insertions(+)
 
-diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
-index 8f43f1f65b1b..8bfe23af9c73 100644
---- a/kernel/trace/trace_fprobe.c
-+++ b/kernel/trace/trace_fprobe.c
-@@ -898,6 +898,46 @@ static struct tracepoint *find_tracepoint(const char *tp_name)
- 	return data.tpoint;
- }
+diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
+index f34b14ef9781..b9c21a81d248 100644
+--- a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
++++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
+@@ -5,6 +5,7 @@
  
-+static int parse_symbol_and_return(int argc, const char *argv[],
-+				   char **symbol, bool *is_return,
-+				   bool is_tracepoint)
-+{
-+	char *tmp = strchr(argv[1], '%');
-+	int i;
-+
-+	if (tmp) {
-+		int len = tmp - argv[1];
-+
-+		if (!is_tracepoint && !strcmp(tmp, "%return")) {
-+			*is_return = true;
-+		} else {
-+			trace_probe_log_err(len, BAD_ADDR_SUFFIX);
-+			return -EINVAL;
-+		}
-+		*symbol = kmemdup_nul(argv[1], len, GFP_KERNEL);
-+	} else
-+		*symbol = kstrdup(argv[1], GFP_KERNEL);
-+	if (!*symbol)
-+		return -ENOMEM;
-+
-+	if (*is_return)
-+		return 0;
-+
-+	/* If there is $retval, this should be a return fprobe. */
-+	for (i = 2; i < argc; i++) {
-+		tmp = strstr(argv[i], "$retval");
-+		if (tmp && !isalnum(tmp[7]) && tmp[7] != '_') {
-+			*is_return = true;
-+			/*
-+			 * NOTE: Don't check is_tracepoint here, because it will
-+			 * be checked when the argument is parsed.
-+			 */
-+			break;
-+		}
-+	}
-+	return 0;
-+}
-+
- static int __trace_fprobe_create(int argc, const char *argv[])
- {
- 	/*
-@@ -927,7 +967,7 @@ static int __trace_fprobe_create(int argc, const char *argv[])
- 	struct trace_fprobe *tf = NULL;
- 	int i, len, new_argc = 0, ret = 0;
- 	bool is_return = false;
--	char *symbol = NULL, *tmp = NULL;
-+	char *symbol = NULL;
- 	const char *event = NULL, *group = FPROBE_EVENT_SYSTEM;
- 	const char **new_argv = NULL;
- 	int maxactive = 0;
-@@ -983,20 +1023,10 @@ static int __trace_fprobe_create(int argc, const char *argv[])
- 	trace_probe_log_set_index(1);
+ KPROBES=
+ FPROBES=
++FIELDS=
  
- 	/* a symbol(or tracepoint) must be specified */
--	symbol = kstrdup(argv[1], GFP_KERNEL);
--	if (!symbol)
--		return -ENOMEM;
-+	ret = parse_symbol_and_return(argc, argv, &symbol, &is_return, is_tracepoint);
-+	if (ret < 0)
-+		goto parse_error;
+ if grep -qF "p[:[<group>/][<event>]] <place> [<args>]" README ; then
+   KPROBES=yes
+@@ -12,6 +13,9 @@ fi
+ if grep -qF "f[:[<group>/][<event>]] <func-name>[%return] [<args>]" README ; then
+   FPROBES=yes
+ fi
++if grep -qF "<argname>[->field[->field|.field...]]" README ; then
++  FIELDS=yes
++fi
  
--	tmp = strchr(symbol, '%');
--	if (tmp) {
--		if (!is_tracepoint && !strcmp(tmp, "%return")) {
--			*tmp = '\0';
--			is_return = true;
--		} else {
--			trace_probe_log_err(tmp - symbol, BAD_ADDR_SUFFIX);
--			goto parse_error;
--		}
--	}
- 	if (!is_return && maxactive) {
- 		trace_probe_log_set_index(0);
- 		trace_probe_log_err(1, BAD_MAXACT_TYPE);
+ if [ -z "$KPROBES" -a -z "$FPROBES" ] ; then
+   exit_unsupported
+@@ -21,6 +25,9 @@ echo 0 > events/enable
+ echo > dynamic_events
+ 
+ TP=kfree
++TP2=kmem_cache_alloc
++TP3=getname_flags
++TP4=sched_wakeup
+ 
+ if [ "$FPROBES" ] ; then
+ echo "f:fpevent $TP object" >> dynamic_events
+@@ -33,6 +40,7 @@ echo > dynamic_events
+ 
+ echo "f:fpevent $TP "'$arg1' >> dynamic_events
+ grep -q "fpevent.*object=object" dynamic_events
++
+ echo > dynamic_events
+ 
+ echo "f:fpevent $TP "'$arg*' >> dynamic_events
+@@ -45,6 +53,18 @@ fi
+ 
+ echo > dynamic_events
+ 
++if [ "$FIELDS" ] ; then
++echo "t:tpevent ${TP2} obj_size=s->object_size" >> dynamic_events
++echo "f:fpevent ${TP3}%return path=\$retval->name:string" >> dynamic_events
++echo "t:tpevent2 ${TP4} p->se.group_node.next->prev" >> dynamic_events
++
++grep -q "tpevent .*obj_size=s->object_size" dynamic_events
++grep -q "fpevent.*path=\$retval->name:string" dynamic_events
++grep -q 'tpevent2 .*p->se.group_node.next->prev' dynamic_events
++
++echo > dynamic_events
++fi
++
+ if [ "$KPROBES" ] ; then
+ echo "p:kpevent $TP object" >> dynamic_events
+ grep -q "kpevent.*object=object" dynamic_events
 diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-index 812f5b3f6055..72563b2e0812 100644
+index 72563b2e0812..20e42c030095 100644
 --- a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
 +++ b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-@@ -30,11 +30,11 @@ check_error 'f:^ vfs_read'		# NO_EVENT_NAME
- check_error 'f:foo/^12345678901234567890123456789012345678901234567890123456789012345 vfs_read'	# EVENT_TOO_LONG
- check_error 'f:foo/^bar.1 vfs_read'	# BAD_EVENT_NAME
- 
--check_error 'f vfs_read ^$retval'	# RETVAL_ON_PROBE
- check_error 'f vfs_read ^$stack10000'	# BAD_STACK_NUM
- 
- check_error 'f vfs_read ^$arg10000'	# BAD_ARG_NUM
- 
-+check_error 'f vfs_read $retval ^$arg1' # BAD_VAR
- check_error 'f vfs_read ^$none_var'	# BAD_VAR
- check_error 'f vfs_read ^'$REG		# BAD_VAR
- 
+@@ -103,6 +103,14 @@ check_error 'f vfs_read%return ^$arg*'		# NOFENTRY_ARGS
+ check_error 'f vfs_read ^hoge'			# NO_BTFARG
+ check_error 'f kfree ^$arg10'			# NO_BTFARG (exceed the number of parameters)
+ check_error 'f kfree%return ^$retval'		# NO_RETVAL
++
++if grep -qF "<argname>[->field[->field|.field...]]" README ; then
++check_error 'f vfs_read%return $retval->^foo'	# NO_PTR_STRCT
++check_error 'f vfs_read file->^foo'		# NO_BTF_FIELD
++check_error 'f vfs_read file^-.foo'		# BAD_HYPHEN
++check_error 'f vfs_read ^file:string'		# BAD_TYPE4STR
++fi
++
+ else
+ check_error 'f vfs_read ^$arg*'			# NOSUP_BTFARG
+ check_error 't kfree ^$arg*'			# NOSUP_BTFARG
 
