@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A41D6772C6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B930F772C57
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbjHGRNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43824 "EHLO
+        id S232084AbjHGRMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:12:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232156AbjHGRMy (ORCPT
+        with ESMTP id S232078AbjHGRMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:12:54 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5AC199C;
-        Mon,  7 Aug 2023 10:12:17 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6877eb31261so3425072b3a.1;
-        Mon, 07 Aug 2023 10:12:17 -0700 (PDT)
+        Mon, 7 Aug 2023 13:12:14 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340C219BA
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:12:05 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-56cb1e602e7so2914552eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:12:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691428336; x=1692033136;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1691428324; x=1692033124;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nXZWjfN9jRVe+H33im5sYKdcYpl83+nexah9W681kvs=;
-        b=JxtZ0TOHGdOvBVososgY9Zy15pOWAkF7x8gemX+XNHlZcmEwUGJH6gS7S5u0636e08
-         DiOV4aG8XKBk3aaL1ZVD2tiUaTPI4gMubJmq7Mf+JpRTj/mhbtWlFt1qLc2v7ofqYi9t
-         RgK5Ym7wckZkEwX/gvnpwuxMT77wMtDJbPIIqtaOpUGM0EWb8lnlk67dEBK4XSbfidgo
-         p/Lj6BMenBt7K/mvIRlCIIaM5NFCKtT8GCuCba+blaWeK8LMDukx8oHEyivtwKyHFaOC
-         8YnI1Rh7Y+KYIKJdx/rIQylrQUic0EKQNctdRw4RtQh+uRsx/lrMKyfUtbbVPy6r/06n
-         +3dQ==
+        bh=n1fFiDl47tj0kGpFVmy5pI63q4LR33axRCdbXWh8XXc=;
+        b=Dxv/yJ1pcK4dyFHi2blaRWsooeHDuJVqxDYsmx3LVyICVQ7gUd+DO1ddjkZHSLAk7f
+         EcxaoiFdT0G5F01Nqg1UQLjI17n0RqJ1PrreI5L5bucMQSsGhxHM/HMhGi9abKNaK3oi
+         f2luBXDYx9BylQ9olG46Veb8eHXZk0R/H/+sTGBCop3G113iOGbO3Kjax+nWjniQ20DW
+         Hr7l0lV1iBzGVMs4o+lz0bQeCGPz/ajvCu2D8xpgYomMEy43wFFoIud812IjIKYwNTGe
+         eQfU3W1uOdvk59laOm5gtyrOaMigl4L9H72rvRJkEl6Mj5fDCa0sCF5kpteaTHbu6ucT
+         f4qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691428336; x=1692033136;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691428324; x=1692033124;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nXZWjfN9jRVe+H33im5sYKdcYpl83+nexah9W681kvs=;
-        b=cy1bcnJXfmtL9HVpiqQfhrLd9zgtHX4+75yH7N0rWVrgSy9Bf6l/9lQ5UhhNsacdto
-         Xcqf3bHPiKCCpVUNco9UZ3/YB0YuQqCzjzB+jCH4QYrbIpDataTRIa4FQaBIwd6E7X9C
-         +LObSCbQ0vnKwU2MfWXHlMjLLUHAfZtbtwc1OFIyL5rAwBeqO/gJAtKRfXfqiEVB8xH7
-         g7K04nTJgza9zBcJyI4N4e8buRiKYgHe3YXCih1BV7l9BC/J7HGHfAQHiUZEG53GRNSm
-         Ynvjj16uGz3g+Z1xBtn8gIxuC6p6zdBI4ACo0fow6Xqjfmyn8sykXRHmGOC5hx2dsPzM
-         EGQA==
-X-Gm-Message-State: AOJu0YwAlzvkbC72ps//GUgnI4+ZIRQkqxkBXO0fSfPbhtnyjO5nFZ9N
-        sqtCf7z6SkC8Kh8vDVzMM3k=
-X-Google-Smtp-Source: AGHT+IFHBNbwLQimjGOtzcaKvIByqk/TQzJWCN/W+g5iL3kJg/6pWmYPHRMzc0ZNijBedo2YSdDiqw==
-X-Received: by 2002:a05:6a20:1604:b0:13f:4e70:ad48 with SMTP id l4-20020a056a20160400b0013f4e70ad48mr12770238pzj.52.1691428336288;
-        Mon, 07 Aug 2023 10:12:16 -0700 (PDT)
-Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
-        by smtp.gmail.com with ESMTPSA id j8-20020aa783c8000000b00682c864f35bsm6624048pfn.140.2023.08.07.10.12.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 10:12:15 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 9/9] drm/msm: Enable fence signalling annotations
-Date:   Mon,  7 Aug 2023 10:11:43 -0700
-Message-ID: <20230807171148.210181-10-robdclark@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230807171148.210181-1-robdclark@gmail.com>
-References: <20230807171148.210181-1-robdclark@gmail.com>
+        bh=n1fFiDl47tj0kGpFVmy5pI63q4LR33axRCdbXWh8XXc=;
+        b=ThLzamFz3X/brFe14TytnRovuW2t5HluWKYkCkUP+Wf0/gLQesAsA5kVTOIjuT2Q5t
+         HxeyJF5khhBNG80Js9GfeWP1llTHYcIgXOHYYacjGpq0aRC005qEg1NFy4W/jeWMJRNP
+         S//srDhPgKRaAkY7z3HJvivSZPjlcvgtEB3SM7Gh9vxah4xGpVvj4UPAMsQU0fd8HmNF
+         bzgZKp0jag1JLsaAy7Rq68Nucdl92Njml9z/Uz+GskQw5SV7VVmzf2KuOAoD0gJInXZn
+         q41w+3783sZO/Wnhl0p+oYuQpAvWzorKBXnEaIr5Us68u2UYXPOawV4xK7naOqXXU7ba
+         0qQg==
+X-Gm-Message-State: AOJu0YzHMiRr9ZLxjeV5Dud1iHx6K4HRIAzDN1GnLQIPhBBrf8KE0bJL
+        tiPFMvKcOAVmCXWzWBzXjUsjNO7mdcgf6XVxQeo=
+X-Google-Smtp-Source: AGHT+IHzkSIlb9qWb8fkuZr8pkIIw3XgHtPA3sONL8H7DYzco0Urpf/mPFc/8HIKfCJlsmFJ0Z5tso9FusLyZUVB+WI=
+X-Received: by 2002:a4a:d2dc:0:b0:56c:43cd:7267 with SMTP id
+ j28-20020a4ad2dc000000b0056c43cd7267mr8345158oos.8.1691428324097; Mon, 07 Aug
+ 2023 10:12:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230802030311.10746-1-sunran001@208suo.com>
+In-Reply-To: <20230802030311.10746-1-sunran001@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 7 Aug 2023 13:11:53 -0400
+Message-ID: <CADnq5_PfyEZEWw1T-9RBvVtNrkHS=UB36nF8-M9TyEOFaCX3Eg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Clean up errors in dcn316_smu.c
+To:     Ran Sun <sunran001@208suo.com>
+Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,29 +69,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+Applied.  Thanks!
 
-Now that the runpm/qos/interconnect lockdep vs reclaim issues are
-solved, we can enable the fence signalling annotations without lockdep
-making it's immediate displeasure known.
-
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_ringbuffer.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.c b/drivers/gpu/drm/msm/msm_ringbuffer.c
-index 7f5e0a961bba..cb9cf41bcb9b 100644
---- a/drivers/gpu/drm/msm/msm_ringbuffer.c
-+++ b/drivers/gpu/drm/msm/msm_ringbuffer.c
-@@ -97,6 +97,7 @@ struct msm_ringbuffer *msm_ringbuffer_new(struct msm_gpu *gpu, int id,
- 	 /* currently managing hangcheck ourselves: */
- 	sched_timeout = MAX_SCHEDULE_TIMEOUT;
- 
-+	ring->sched.fence_signalling = true;
- 	ret = drm_sched_init(&ring->sched, &msm_sched_ops,
- 			num_hw_submissions, 0, sched_timeout,
- 			NULL, NULL, to_msm_bo(ring->bo)->name, gpu->dev->dev);
--- 
-2.41.0
-
+On Tue, Aug 1, 2023 at 11:03=E2=80=AFPM Ran Sun <sunran001@208suo.com> wrot=
+e:
+>
+> Fix the following errors reported by checkpatch:
+>
+> ERROR: open brace '{' following struct go on the same line
+> ERROR: code indent should use tabs where possible
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>  .../amd/display/dc/clk_mgr/dcn316/dcn316_smu.c | 18 ++++++++----------
+>  1 file changed, 8 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn316/dcn316_smu.c b=
+/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn316/dcn316_smu.c
+> index 457a9254ae1c..3ed19197a755 100644
+> --- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn316/dcn316_smu.c
+> +++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn316/dcn316_smu.c
+> @@ -34,23 +34,21 @@
+>  #define MAX_INSTANCE                                        7
+>  #define MAX_SEGMENT                                         6
+>
+> -struct IP_BASE_INSTANCE
+> -{
+> +struct IP_BASE_INSTANCE {
+>      unsigned int segment[MAX_SEGMENT];
+>  };
+>
+> -struct IP_BASE
+> -{
+> +struct IP_BASE {
+>      struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
+>  };
+>
+>  static const struct IP_BASE MP0_BASE =3D { { { { 0x00016000, 0x00DC0000,=
+ 0x00E00000, 0x00E40000, 0x0243FC00, 0 } },
+> -                                        { { 0, 0, 0, 0, 0, 0 } },
+> -                                        { { 0, 0, 0, 0, 0, 0 } },
+> -                                        { { 0, 0, 0, 0, 0, 0 } },
+> -                                        { { 0, 0, 0, 0, 0, 0 } },
+> -                                        { { 0, 0, 0, 0, 0, 0 } },
+> -                                        { { 0, 0, 0, 0, 0, 0 } } } };
+> +                                       { { 0, 0, 0, 0, 0, 0 } },
+> +                                       { { 0, 0, 0, 0, 0, 0 } },
+> +                                       { { 0, 0, 0, 0, 0, 0 } },
+> +                                       { { 0, 0, 0, 0, 0, 0 } },
+> +                                       { { 0, 0, 0, 0, 0, 0 } },
+> +                                       { { 0, 0, 0, 0, 0, 0 } } } };
+>
+>  #define REG(reg_name) \
+>         (MP0_BASE.instance[0].segment[reg ## reg_name ## _BASE_IDX] + reg=
+ ## reg_name)
+> --
+> 2.17.1
+>
