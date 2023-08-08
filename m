@@ -2,160 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBC9774A29
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C6B774A2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234231AbjHHUVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
+        id S229993AbjHHUVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234016AbjHHUUu (ORCPT
+        with ESMTP id S231830AbjHHUU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:20:50 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEEDA6AB0;
-        Tue,  8 Aug 2023 12:26:51 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 752E76016E;
-        Tue,  8 Aug 2023 21:26:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1691522799; bh=42Ov8jrdWSouqXJnDzfdWxBesTTZMngT6wAy2edAW/w=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=E9hNIjarZwig6adv0rcta4RJ24zoCbOYC/g7Gf4o1c4zg2Kr4JpxkCEPhBkbit9UE
-         ZkJnHdyKGMqapeAqMoaZrlncClCAAG+h4Ime3ZfV9VTZrmvmxICm8uKKHTHAG8I4Cf
-         OksjKB/F/ZFoAJOH2XQNujeIDSLjjDNm2qcSCQlotRRqr4dHnugtFmSxgSfr7m/Kq0
-         rQdiE+Kbz/QQWnPTOiSdrnfBXUjU6praYDZphGoZ4optoejIZwIli70nnPaYMttbCD
-         NcGeU+Qq+qkCKEfg2/LBp+ZY73kFjI6/zmH79DI1O/04zPu2qUpERhhT+w1/hCAaRQ
-         TsovLiRX9dtug==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id e3CtfOAwfMdD; Tue,  8 Aug 2023 21:26:36 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 6CAD46015F;
-        Tue,  8 Aug 2023 21:26:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1691522796; bh=42Ov8jrdWSouqXJnDzfdWxBesTTZMngT6wAy2edAW/w=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=pGaNmvMEH4k+VJqZzWBluvDX2OkmL7ZytZAuuKwGVMDdOlnGV7PZA29V0IAVsA6xr
-         /JlrKKECBLrY7m3fiY4lWYeU+Ucpr7uK2q/aa2tj8zB0fIX+IpdHGzjcXsfMaDTQoC
-         8rPGqsoldTV3dRsDY//Oi5+QH0iKWOX4yQhIZDXLhhZlwi4KC5plobP+CE9TMBLHR8
-         AphrCDIWKrI5ZQdOU6cK3YBRbhMRXqixizNXvNCYQo1Q+JXebzHsSFPrrrlOFNeTFa
-         XrgKPguPHnDd7f/A/y7YTWnshbB4TJnYLvkAUYk/v9NFdOb+ZytpkU1PhSN7lTP4sN
-         wd6jl2PAPokcw==
-Message-ID: <dc641c92-38c2-4aa6-71d7-b30064c38d55@alu.unizg.hr>
-Date:   Tue, 8 Aug 2023 21:26:31 +0200
+        Tue, 8 Aug 2023 16:20:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838495998;
+        Tue,  8 Aug 2023 12:27:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 19E4962ADC;
+        Tue,  8 Aug 2023 19:27:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34991C433C7;
+        Tue,  8 Aug 2023 19:27:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691522838;
+        bh=koE2O1Koz3SVVKu8roIdMywrfi7dwuz5XC5ik2SFJXw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=O1AjCojo2d4ECuimgWH06jPVzpH/QaAERktmLINMADX9gxIv1KBq+55GKvibimJBB
+         SsWDa//FvdN9mLvCF6Gz4rzR00jpDVYgYeTNdbkw6EsoXxvr/ZqK3rsV0FNfyMMQYV
+         AamSt0PbthTiZDUoxsDeSVO/IH8shpSyUbmwsK9SxQ/NwLmuyLuVULxcgOSrT960SK
+         fVGeJw2xy5Aawhe66juAqadI53xX/X6Z6biI5VqucHCU1xsx+vl5xx1myfhclOCjmo
+         J/TOmYfZnOhyRJrh7r2XX8hb6qYgBP66rNaABthrYrY1YO0rpe3QlxO7aMYe0Huqb+
+         b07MmClz7aimQ==
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     linux-pci@vger.kernel.org
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Igor Mammedov <imammedo@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Woody Suwalski <terraluna977@gmail.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH] PCI: acpiphp: Log more slot and notification details
+Date:   Tue,  8 Aug 2023 14:27:13 -0500
+Message-Id: <20230808192713.329414-1-helgaas@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 4.14 1/1] test_firmware: fix the memory leaks with the
- reqs buffer
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russell.h.weight@intel.com>,
-        Tianfei Zhang <tianfei.zhang@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
-        Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>
-References: <20230804170017.92671-1-mirsad.todorovac@alu.unizg.hr>
- <2023080705-poet-nickname-5e08@gregkh>
- <a9e443c7-c7b5-63ce-08d9-5604ac545bf6@alu.unizg.hr>
- <2023080802-moonrise-cascade-a4c0@gregkh>
- <1269af66-bd86-0fab-e4ec-968f14371279@alu.unizg.hr>
- <2023080817-why-shawl-8ac1@gregkh>
-Content-Language: en-US
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <2023080817-why-shawl-8ac1@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Bjorn Helgaas <bhelgaas@google.com>
 
+When registering an acpiphp slot, log the slot name in the same style as
+pciehp and include the PCI bus/device and whether a device is present or
+the slot is empty.
 
-On 8/8/23 09:35, Greg Kroah-Hartman wrote:
-> On Tue, Aug 08, 2023 at 08:24:43AM +0200, Mirsad Todorovac wrote:
->> On 8/8/23 06:28, Greg Kroah-Hartman wrote:
->>> On Mon, Aug 07, 2023 at 08:28:04PM +0200, Mirsad Todorovac wrote:
->>>> On 8/7/23 11:15, Greg Kroah-Hartman wrote:
->>>>> On Fri, Aug 04, 2023 at 07:00:18PM +0200, Mirsad Todorovac wrote:
->>>>>> [ commit be37bed754ed90b2655382f93f9724b3c1aae847 upstream ]
->>>>>>
->>>>>> Dan Carpenter spotted that test_fw_config->reqs will be leaked if
->>>>>> trigger_batched_requests_store() is called two or more times.
->>>>>> The same appears with trigger_batched_requests_async_store().
->>>>>>
->>>>>> This bug wasn't triggered by the tests, but observed by Dan's visual
->>>>>> inspection of the code.
->>>>>>
->>>>>> The recommended workaround was to return -EBUSY if test_fw_config->reqs
->>>>>> is already allocated.
->>>>>>
->>>>>> Fixes: c92316bf8e94 ("test_firmware: add batched firmware tests")
->>>>>> Cc: Luis Chamberlain <mcgrof@kernel.org>
->>>>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>>>> Cc: Russ Weight <russell.h.weight@intel.com>
->>>>>> Cc: Tianfei Zhang <tianfei.zhang@intel.com>
->>>>>> Cc: Shuah Khan <shuah@kernel.org>
->>>>>> Cc: Colin Ian King <colin.i.king@gmail.com>
->>>>>> Cc: Randy Dunlap <rdunlap@infradead.org>
->>>>>> Cc: linux-kselftest@vger.kernel.org
->>>>>> Cc: stable@vger.kernel.org # v4.14
->>>>>> Suggested-by: Dan Carpenter <error27@gmail.com>
->>>>>> Suggested-by: Takashi Iwai <tiwai@suse.de>
->>>>>> Link: https://lore.kernel.org/r/20230509084746.48259-2-mirsad.todorovac@alu.unizg.hr
->>>>>> Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
->>>>>>
->>>>>> [ This fix is applied against the 4.14 stable branch. There are no changes to the ]
->>>>>> [ fix in code when compared to the upstread, only the reformatting for backport.  ]
->>>>>
->>>>> Thanks for all of these, now queued up.
->>>>
->>>> No problem, I should have done it right the first time to reduce your load.
->>>>
->>>> I really believe that backporting bug fix patches is important because many systems
->>>> cannot upgrade because of the legacy apps and hardware, to state the obvious.
->>>
->>> What "legacy apps" rely on a specific kernel version?
->>
->> Hi, Mr. Greg,
->>
->> Actually, in our particular case, it was the Eprints that required old mysql on Debian stretch
->> rather than MariaDB that came with Buster. So, the release required particular kernel version (4.9).
-> 
-> So what happens when this kernel becomes end-of-life?
+When handling an ACPI notification, log the PCI bus/device and notification
+type.
 
-I guess by now I could maintain the 4.19 line, with the bug fixes and the security fixes,
-but it would impose significant overhead to already overwhelmed IT department.
+Sample dmesg log diff:
 
-I could use the same config and produce the same kernel, but w/o the testing as it would
-happen w the distro kernels.
+    ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
+  - acpiphp: Slot [3] registered
+  - acpiphp: Slot [4] registered
+    PCI host bridge to bus 0000:00
+    pci 0000:00:03.0: [8086:100e] type 00 class 0x020000
+    <ACPI Device Check notification>
+    pci 0000:00:04.0: [8086:100e] type 00 class 0x020000
 
->> Of course, we can upgrade to any mainline kernel, but that is no longer a tested distro kernel,
->> and faults would be blamed on me entirely. Plus the overhead of regular patching ...
-> 
-> You should be doing regular patching for any LTS kernel as well, right?
-> Same for testing, there should not be any difference in testing any
-> kernel update be it on a LTS branch, or between major versions.
+    ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
+  + acpiphp: pci 0000:00:03 Slot(3) registered (enabled)
+  + acpiphp: pci 0000:00:04 Slot(4) registered (empty)
+    PCI host bridge to bus 0000:00
+    pci 0000:00:03.0: [8086:100e] type 00 class 0x020000
+    <ACPI Device Check notification>
+  + acpiphp: pci 0000:00:04 Slot(4) Device Check
+    pci 0000:00:04.0: [8086:100e] type 00 class 0x020000
 
-Sure, but apt-get dist-upgrade is easier than rebuilding the kernel. I say, we'd have to
-get the necessary "blessings" to make this routine or procedure. Now we have the machines
-that could build a recent kernel in less than an hour, but it wasn't always so :-)
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+---
+ drivers/pci/hotplug/acpiphp_core.c |  4 ----
+ drivers/pci/hotplug/acpiphp_glue.c | 23 +++++++++++++++++++++--
+ 2 files changed, 21 insertions(+), 6 deletions(-)
 
-We still do not have a twin test server for each single one of our production releases.
+diff --git a/drivers/pci/hotplug/acpiphp_core.c b/drivers/pci/hotplug/acpiphp_core.c
+index c02257f4b61c..19d47607d009 100644
+--- a/drivers/pci/hotplug/acpiphp_core.c
++++ b/drivers/pci/hotplug/acpiphp_core.c
+@@ -282,8 +282,6 @@ int acpiphp_register_hotplug_slot(struct acpiphp_slot *acpiphp_slot,
+ 		goto error_slot;
+ 	}
+ 
+-	pr_info("Slot [%s] registered\n", slot_name(slot));
+-
+ 	return 0;
+ error_slot:
+ 	kfree(slot);
+@@ -296,8 +294,6 @@ void acpiphp_unregister_hotplug_slot(struct acpiphp_slot *acpiphp_slot)
+ {
+ 	struct slot *slot = acpiphp_slot->slot;
+ 
+-	pr_info("Slot [%s] unregistered\n", slot_name(slot));
+-
+ 	pci_hp_deregister(&slot->hotplug_slot);
+ 	kfree(slot);
+ }
+diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
+index 328d1e416014..eeca2753a5c7 100644
+--- a/drivers/pci/hotplug/acpiphp_glue.c
++++ b/drivers/pci/hotplug/acpiphp_glue.c
+@@ -25,7 +25,7 @@
+  *    bus. It loses the refcount when the driver unloads.
+  */
+ 
+-#define pr_fmt(fmt) "acpiphp_glue: " fmt
++#define pr_fmt(fmt) "acpiphp: " fmt
+ 
+ #include <linux/module.h>
+ 
+@@ -333,6 +333,12 @@ static acpi_status acpiphp_add_context(acpi_handle handle, u32 lvl, void *data,
+ 				       &val, 60*1000))
+ 		slot->flags |= SLOT_ENABLED;
+ 
++	if (slot->slot)
++		pr_info("pci %04x:%02x:%02x Slot(%s) registered (%s)\n",
++			pci_domain_nr(slot->bus), slot->bus->number,
++			slot->device, slot_name(slot->slot),
++			slot->flags & SLOT_ENABLED ? "enabled" : "empty");
++
+ 	return AE_OK;
+ }
+ 
+@@ -351,8 +357,13 @@ static void cleanup_bridge(struct acpiphp_bridge *bridge)
+ 			acpi_unlock_hp_context();
+ 		}
+ 		slot->flags |= SLOT_IS_GOING_AWAY;
+-		if (slot->slot)
++		if (slot->slot) {
++			pr_info("pci %04x:%02x:%02x Slot(%s) unregistered\n",
++				pci_domain_nr(slot->bus), slot->bus->number,
++				slot->device, slot_name(slot->slot));
++
+ 			acpiphp_unregister_hotplug_slot(slot);
++		}
+ 	}
+ 
+ 	mutex_lock(&bridge_mutex);
+@@ -793,6 +804,14 @@ static void hotplug_event(u32 type, struct acpiphp_context *context)
+ 
+ 	pci_lock_rescan_remove();
+ 
++	pr_info("pci %04x:%02x:%02x Slot(%s) %s\n",
++		pci_domain_nr(slot->bus), slot->bus->number,
++		slot->device, slot_name(slot->slot),
++		type == ACPI_NOTIFY_BUS_CHECK ? "Bus Check" :
++		type == ACPI_NOTIFY_DEVICE_CHECK ? "Device Check" :
++		type == ACPI_NOTIFY_EJECT_REQUEST ? "Eject Request" :
++		"Notification");
++
+ 	switch (type) {
+ 	case ACPI_NOTIFY_BUS_CHECK:
+ 		/* bus re-enumerate */
+-- 
+2.34.1
 
-> anyway, good luck!
-
-Thanks, I think we'll need it.
-
-Kind regards,
-Mirsad Todorovac
