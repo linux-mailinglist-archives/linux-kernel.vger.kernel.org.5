@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C77E774892
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDBF774868
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbjHHTfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35672 "EHLO
+        id S234702AbjHHTcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236376AbjHHTfY (ORCPT
+        with ESMTP id S233375AbjHHTcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:35:24 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DC87D797;
-        Tue,  8 Aug 2023 10:23:12 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3784jYY6092030;
-        Mon, 7 Aug 2023 23:45:34 -0500
+        Tue, 8 Aug 2023 15:32:24 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D549016;
+        Tue,  8 Aug 2023 12:05:04 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3784jZWI099081;
+        Mon, 7 Aug 2023 23:45:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691469934;
-        bh=e1qpTh7OgoPv/Lc8NJeUn0X/U4gQfp0Iaxx1TIJy1g8=;
+        s=ti-com-17Q1; t=1691469935;
+        bh=Yjzy1f4Yo+2tE1Bz1o6r2anCMRPv55nXaymz1EfrMOE=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=hfZ5LmzWkaBZ1+Ol/ywTGzAwwcZWy4oBvMLlyAz5c4ujSLooblbjvVOx7TRkVVrgR
-         80ndbpIMLf/yPi6v+yPYWyi+gCkNLmAlPbMv1IaE828a6+7KXCI+XN3teRkr+7tiLZ
-         UD1AzhvHKSfYAuQKJnsIftj68W7OBNPFMNA0hXg4=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3784jYY8073747
+        b=Of+H05UUMjW2bzglpzZSb4M5B9YJc7YGYDoOoY+jpl7DnUHRqAnPOR3iAKNFWauuT
+         xs+BGCJUrc+95ayq6YxTmq1uvistaoE4DjYZ/tjJIJUbCijFZdGqIrSz9xD+uJQ0vQ
+         SOGCJ3dbfFsUewaMFpz6fLXOpv0dX2KGKX+3Dxr4=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3784jZrG009809
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Aug 2023 23:45:34 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
- Aug 2023 23:45:33 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
+        Mon, 7 Aug 2023 23:45:35 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE114.ent.ti.com
  (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
+ Aug 2023 23:45:35 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 7 Aug 2023 23:45:33 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3784jXcH098630;
-        Mon, 7 Aug 2023 23:45:33 -0500
+ Frontend Transport; Mon, 7 Aug 2023 23:45:35 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3784jZBc114394;
+        Mon, 7 Aug 2023 23:45:35 -0500
 From:   Hari Nagalla <hnagalla@ti.com>
 To:     <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
         <p.zabel@pengutronix.de>, <martyn.welch@collabora.com>,
@@ -49,9 +49,9 @@ To:     <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
 CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>
-Subject: [PATCH v5 1/5] dt-bindings: remoteproc: k3-m4f: Add K3 AM64x SoCs
-Date:   Mon, 7 Aug 2023 23:45:25 -0500
-Message-ID: <20230808044529.25925-2-hnagalla@ti.com>
+Subject: [PATCH v5 3/5] arm64: dts: ti: k3-am64 : Add M4F remote proc node
+Date:   Mon, 7 Aug 2023 23:45:27 -0500
+Message-ID: <20230808044529.25925-4-hnagalla@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230808044529.25925-1-hnagalla@ti.com>
 References: <20230808044529.25925-1-hnagalla@ti.com>
@@ -68,180 +68,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-K3 AM64x SoC has a Cortex M4F subsystem in the MCU voltage domain.
-The remote processor's life cycle management and IPC mechanisms are
-similar across the R5F and M4F cores from remote processor driver
-point of view. However, there are subtle differences in image loading
-and starting the M4F subsystems.
+The AM64x SoCs of the TI K3 family have a Cortex M4F core in the MCU
+domain. This core can be used by non safety applications as a remote
+processor. When used as a remote processor with virtio/rpmessage IPC,
+two carveout reserved memory nodes are needed. The first region is used
+as a DMA pool for the rproc device, and the second region will furnish
+the static carveout regions for the firmware memory.
 
-The YAML binding document provides the various node properties to be
-configured by the consumers of the M4F subsystem.
+The current carveout addresses and sizes are defined statically for
+each rproc device. The M4F processor do not have an MMU, and as such
+require the exact memory used by the firmware to be set-aside.
 
-Signed-off-by: Martyn Welch <martyn.welch@collabora.com>
 Signed-off-by: Hari Nagalla <hnagalla@ti.com>
 ---
-Changes since v1:
- - Spelling corrections
- - Corrected to pass DT checks
+Changes in v5:
+ - Add M4F device node patches to the patch list
 
-Changes since v2:
- - Missed spelling correction to commit message
+ arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi | 12 ++++++++++++
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts | 18 ++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am642-sk.dts  | 18 ++++++++++++++++++
+ 3 files changed, 48 insertions(+)
 
-Changes since v3:
- - Removed unnecessary descriptions and used generic memory region names
- - Made mboxes and memory-region optional
- - Removed unrelated items from examples
-
-Changes since v4:
- - Rebased to the latest kernel-next tree
- - Added optional sram memory region for m4f device node
-
- .../bindings/remoteproc/ti,k3-m4f-rproc.yaml  | 136 ++++++++++++++++++
- 1 file changed, 136 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
-
-diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
-new file mode 100644
-index 000000000000..21b7f14d9dc4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
-@@ -0,0 +1,136 @@
-+# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/remoteproc/ti,k3-m4f-rproc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
+index 686d49790721..4151d0057bc8 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
+@@ -158,4 +158,16 @@ mcu_esm: esm@4100000 {
+ 		reg = <0x00 0x4100000 0x00 0x1000>;
+ 		ti,esm-pins = <0>, <1>;
+ 	};
 +
-+title: TI K3 M4F processor subsystems
++	mcu_m4fss: m4fss@5000000 {
++		compatible = "ti,am64-m4fss";
++		reg = <0x00 0x5000000 0x00 0x30000>,
++		<0x00 0x5040000 0x00 0x10000>;
++		reg-names = "iram", "dram";
++		ti,sci = <&dmsc>;
++		ti,sci-dev-id = <9>;
++		ti,sci-proc-ids = <0x18 0xff>;
++		resets = <&k3_reset 9 1>;
++		firmware-name = "am64-mcu-m4f0_0-fw";
++	};
+ };
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+index d84e7ee16032..4fd1dc162534 100644
+--- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+@@ -99,6 +99,18 @@ main_r5fss1_core1_memory_region: r5f-memory@a3100000 {
+ 			no-map;
+ 		};
+ 
++		mcu_m4fss_dma_memory_region: m4f-dma-memory@a4000000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa4000000 0x00 0x100000>;
++			no-map;
++		};
 +
-+maintainers:
-+  - Hari Nagalla <hnagalla@ti.com>
-+  - Mathieu Poirier <mathieu.poirier@linaro.org>
++		mcu_m4fss_memory_region: m4f-memory@a4100000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa4100000 0x00 0xf00000>;
++			no-map;
++		};
 +
-+description: |
-+  Some K3 family SoCs have Arm Cortex M4F cores. AM64x is a SoC in K3
-+  family with a M4F core. Typically safety oriented applications may use
-+  the M4F core in isolation without an IPC. Where as some industrial and
-+  home automation applications, may use the M4F core as a remote processor
-+  with IPC communications.
+ 		rtos_ipc_memory_region: ipc-memories@a5000000 {
+ 			reg = <0x00 0xa5000000 0x00 0x00800000>;
+ 			alignment = <0x1000>;
+@@ -639,6 +651,12 @@ &main_r5fss1_core1 {
+ 			<&main_r5fss1_core1_memory_region>;
+ };
+ 
++&mcu_m4fss {
++	mboxes = <&mailbox0_cluster6>, <&mbox_m4_0>;
++	memory-region = <&mcu_m4fss_dma_memory_region>,
++			<&mcu_m4fss_memory_region>;
++};
 +
-+$ref: /schemas/arm/keystone/ti,k3-sci-common.yaml#
+ &serdes_ln_ctrl {
+ 	idle-states = <AM64_SERDES0_LANE0_PCIE0>;
+ };
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
+index 963d796a3a97..f919dd5ba9ba 100644
+--- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
+@@ -98,6 +98,18 @@ main_r5fss1_core1_memory_region: r5f-memory@a3100000 {
+ 			no-map;
+ 		};
+ 
++		mcu_m4fss_dma_memory_region: m4f-dma-memory@a4000000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa4000000 0x00 0x100000>;
++			no-map;
++		};
 +
-+properties:
++		mcu_m4fss_memory_region: m4f-memory@a4100000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa4100000 0x00 0xf00000>;
++			no-map;
++		};
 +
-+  compatible:
-+    enum:
-+      - ti,am64-m4fss
+ 		rtos_ipc_memory_region: ipc-memories@a5000000 {
+ 			reg = <0x00 0xa5000000 0x00 0x00800000>;
+ 			alignment = <0x1000>;
+@@ -637,6 +649,12 @@ &main_r5fss1_core1 {
+ 			<&main_r5fss1_core1_memory_region>;
+ };
+ 
++&mcu_m4fss {
++	mboxes = <&mailbox0_cluster6>, <&mbox_m4_0>;
++	memory-region = <&mcu_m4fss_dma_memory_region>,
++			<&mcu_m4fss_memory_region>;
++};
 +
-+  power-domains:
-+    maxItems: 1
-+
-+  "#address-cells":
-+    const: 2
-+
-+  "#size-cells":
-+    const: 2
-+
-+  reg:
-+    items:
-+      - description: IRAM internal memory region
-+      - description: DRAM internal memory region
-+
-+  reg-names:
-+    items:
-+      - const: iram
-+      - const: dram
-+
-+  resets:
-+    maxItems: 1
-+
-+  firmware-name:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: Name of firmware to load for the M4F core
-+
-+  mboxes:
-+    description: |
-+      Mailbox specifier denoting the sub-mailbox, to be used for communication
-+      with the remote processor. This property should match with the
-+      sub-mailbox node used in the firmware image.
-+    maxItems: 2
-+
-+  memory-region:
-+    description: |
-+      phandle to the reserved memory nodes to be associated with the
-+      remoteproc device. The reserved memory nodes should be carveout nodes,
-+      and should be defined with a "no-map" property as per the bindings in
-+      Documentation/devicetree/bindings/reserved-memory/reserved-memory.yaml
-+      Optional memory regions available for firmware specific purposes.
-+    maxItems: 8
-+    items:
-+      - description: regions used for DMA allocations like vrings, vring buffers
-+                     and memory dedicated to firmware's specific purposes.
-+    additionalItems: true
-+
-+  sram:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    minItems: 1
-+    maxItems: 4
-+    items:
-+      maxItems: 4
-+    description: |
-+      phandles to one or more reserved on-chip SRAM regions. The regions
-+      should be defined as child nodes of the respective SRAM node, and
-+      should be defined as per the generic bindings in,
-+      Documentation/devicetree/bindings/sram/sram.yaml
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - ti,sci
-+  - ti,sci-dev-id
-+  - ti,sci-proc-ids
-+  - resets
-+  - firmware-name
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    reserved-memory {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        mcu_m4fss_dma_memory_region: m4f-dma-memory@9cb00000 {
-+            compatible = "shared-dma-pool";
-+            reg = <0x00 0x9cb00000 0x00 0x100000>;
-+            no-map;
-+        };
-+
-+        mcu_m4fss_memory_region: m4f-memory@9cc00000 {
-+            compatible = "shared-dma-pool";
-+            reg = <0x00 0x9cc00000 0x00 0xe00000>;
-+            no-map;
-+        };
-+    };
-+
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        remoteproc@5000000 {
-+            compatible = "ti,am64-m4fss";
-+            reg = <0x00 0x5000000 0x00 0x30000>,
-+                  <0x00 0x5040000 0x00 0x10000>;
-+            reg-names = "iram", "dram";
-+            ti,sci = <&dmsc>;
-+            ti,sci-dev-id = <9>;
-+            ti,sci-proc-ids = <0x18 0xff>;
-+            resets = <&k3_reset 9 1>;
-+            firmware-name = "am62-mcu-m4f0_0-fw";
-+            mboxes = <&mailbox0_cluster0>, <&mbox_m4_0>;
-+            memory-region = <&mcu_m4fss_dma_memory_region>,
-+                            <&mcu_m4fss_memory_region>;
-+            sram = <&oc_sram>;
-+         };
-+    };
+ &ecap0 {
+ 	status = "okay";
+ 	/* PWM is available on Pin 1 of header J3 */
 -- 
 2.34.1
 
