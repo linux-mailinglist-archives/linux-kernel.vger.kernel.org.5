@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7D2773FF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BCB774040
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbjHHQ5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
+        id S233942AbjHHRBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233698AbjHHQ4x (ORCPT
+        with ESMTP id S233896AbjHHRAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:56:53 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6C419418
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:59:58 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bc512526cso850349266b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:59:58 -0700 (PDT)
+        Tue, 8 Aug 2023 13:00:30 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201726EA1
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:00:39 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe1344b707so9166979e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:00:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691510381; x=1692115181;
+        d=linaro.org; s=google; t=1691510404; x=1692115204;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=oMxa/gVKuibvIVWmpuZpFEwzt5/SE/hyALHDnspMprc=;
-        b=APBgrt3C3itVlNbiO6kRKj9GJylAzpbSRWqWoH7imhPKP4364nZOfJjIuU8NP4tW0+
-         OBLn3dRTQvbr9xaTZLE3Eq+Dk9FIxUOKTqZgKCdE//N/HNdbee9Xk3SJq128K9pBzgf3
-         q39fkzthJTV1YTeBceTrvWDiINhKaUeM895bXJHwlQbVKgF7ps3Pc+I0mOQZmbX0p6rC
-         UhFf6hfUn3sHjnR5yGJ19swURzA172Uc0IZ4508FtCASzqMUb+G3CMQHhb6SdLAJ02Mj
-         4iXzIHqztOevMtzQP3xdoVamuz3EZVkcJigPVlGX/FG/X3DRViYo3lp97lIktNvSD4Ib
-         jwDA==
+        bh=RE7wtMExHdhFwKLLqjqt4LfjR7+37ThDsOcCDy3qTQQ=;
+        b=PwDjsnZPpEOON21XmhMp+u0sisjWLyBSPad9QxaLPGHW7nSgAhPQ1LjU8UOwI1vfor
+         45ifcbnWH1NYoLzcAuTvGv4NZkjNtXLa5B6BV17UibKiSQyTh8i/wDL3p27vY8Fzo7LU
+         2DEQiC1nO0B/mkA/afSZBymtADJ2geddDbPz+lpTZHxbRYPlKJt/uJyqkdm0ZOS0AgRE
+         dqIS/yf3dlUwkL0lvfcDs237LoV3SHlzAVxCBlRku/R4G1vjxTgUuTCzfA7xkw1lOL54
+         7mdiOer0rm7E2e6f1jzUu1hGB8TrtXdhr+55sG74Fhwm+KDUGQGjkteDF4AXRAFFw/fg
+         sv2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510381; x=1692115181;
+        d=1e100.net; s=20221208; t=1691510404; x=1692115204;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oMxa/gVKuibvIVWmpuZpFEwzt5/SE/hyALHDnspMprc=;
-        b=ZPIX0laS6kfpa0uTfhiiJdwVFVjLZDgZ7Rl1H1ghFbPZ4rMmO3iCmBb6KIKGgaIw6E
-         H843p1szNl3880bYDVijkMTyopTLZ2SIWkf/BAyH1uDupOHYfDl+o3Lc8d1wWdYtX8eq
-         KJimHrTI+rc77Ue4m7+iwivxh7A1s0IWo86wjbDkDcD4p84mVFMsNbwHJJlj8pBRSWdj
-         lkogCHR3Bjg+19mELX6UQRvX7NbXvFWyzzV+886oV39QlaqyrdutwX4Yj4PH5BltO9qy
-         hKjxK1bglC4c2C2xjrsT2Tg8Zpl8ZAsgfKlfefVBMVMwP2lhU1pwWw6Y+3NA4aE1FMdA
-         mtEw==
-X-Gm-Message-State: AOJu0YzrWjGNT+uyun+VMEcdFTLqrLbGc5bKHoEs7BF06sVp6th56wjL
-        S5GfuPlElnzpUEdkIiiBc4Wn/A==
-X-Google-Smtp-Source: AGHT+IHhsovjxambnGZbWubCZ75bBFP/uvpp7zDOuVqUVK6QAMMeX03Ka2xjCi2S22J1Wto5SIwDqA==
-X-Received: by 2002:a17:907:2c75:b0:99b:4378:a5ab with SMTP id ib21-20020a1709072c7500b0099b4378a5abmr9603548ejc.74.1691510381238;
-        Tue, 08 Aug 2023 08:59:41 -0700 (PDT)
+        bh=RE7wtMExHdhFwKLLqjqt4LfjR7+37ThDsOcCDy3qTQQ=;
+        b=AZ5G99jH1G9ZUZFbP/+p9yS+9OPshqm4ica+vM0/POU7Vo5uwjPA51+QwH/OtMPGXu
+         DDY3MkQGEw1ChHI40BEPOR1G4YC5Zae1CitC6tfjyGMavCQdCv99oZZcwiH+tLx4zeBL
+         +6DY0w9c9N0bg9iaaA8uDDtb49JJbDjlfxV7IaOoBU1dqydJOPtZra1pTotAS26vYtGd
+         wkYyG0VB7i4p7hxhvbcbIFqAYX9wjK9ScNhfgPf4NFhtORdUMqdC5hqVjldyqxG6ELiB
+         ph+KXn6Zw/piOHF49+HEZocmHfzPhD/dPSKteuNLxWxQst5pYqh5mTpc/mgT4r3tRgAN
+         Kz1A==
+X-Gm-Message-State: AOJu0YwtHa6XSDD2wZe/CYhXCYQg/oqmkbs9oNqmfmvvH3+bTJSgvPtR
+        YTu2cHmLRMySXxZHxZY1rvUV+w==
+X-Google-Smtp-Source: AGHT+IHbksfzqPLdhw5/yCLJTbCZEOgLAM2KQI/YGEb2WX3hUJsxDJkD4J/0HYLK1y1YsVgSMdIzhA==
+X-Received: by 2002:ac2:4850:0:b0:4fe:56d8:631d with SMTP id 16-20020ac24850000000b004fe56d8631dmr8327458lfy.25.1691510404500;
+        Tue, 08 Aug 2023 09:00:04 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id bn10-20020a170906c0ca00b00992b0745548sm6886811ejb.152.2023.08.08.08.59.39
+        by smtp.gmail.com with ESMTPSA id j18-20020aa7c0d2000000b0052239012c65sm6837797edp.82.2023.08.08.09.00.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 08:59:40 -0700 (PDT)
-Message-ID: <49edf46a-b35c-1135-c500-2382a453e58d@linaro.org>
-Date:   Tue, 8 Aug 2023 17:59:38 +0200
+        Tue, 08 Aug 2023 09:00:03 -0700 (PDT)
+Message-ID: <f85df327-c321-8c1e-2043-c60210fbed56@linaro.org>
+Date:   Tue, 8 Aug 2023 18:00:01 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH 2/3] dt-bindings: i3c: ast2600: Add resets and reset-names
+Subject: Re: [PATCH 3/3] i3c: ast2600: Add reset deassertion for global
+ registers
 Content-Language: en-US
 To:     Dylan Hung <dylan_hung@aspeedtech.com>, jk@codeconstruct.com.au,
         alexandre.belloni@bootlin.com, robh+dt@kernel.org,
@@ -66,15 +67,15 @@ To:     Dylan Hung <dylan_hung@aspeedtech.com>, jk@codeconstruct.com.au,
         linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
 Cc:     BMC-SW@aspeedtech.com, kobedylan@gmail.com
 References: <20230808154241.749641-1-dylan_hung@aspeedtech.com>
- <20230808154241.749641-3-dylan_hung@aspeedtech.com>
+ <20230808154241.749641-4-dylan_hung@aspeedtech.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230808154241.749641-3-dylan_hung@aspeedtech.com>
+In-Reply-To: <20230808154241.749641-4-dylan_hung@aspeedtech.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -82,49 +83,43 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 08/08/2023 17:42, Dylan Hung wrote:
-> Add two reset lines to the AST2600 I3C controller:
-> - core_rst: the reset line of the controller itself
-> - global_rst: the reset line of the I3C global register block. Since all
-> six I3C controllers in AST2600 share this global register block, the
-> driver needs to handle this carefully. Generally, this reset line should
-> only need to be de-asserted.
-
-The commit msg does not explain why this is now required.
-
+> Add missing reset deassertion of the I3C global control registers.
 > 
 > Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
 > ---
->  .../devicetree/bindings/i3c/aspeed,ast2600-i3c.yaml  | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
+>  drivers/i3c/master/ast2600-i3c-master.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/i3c/aspeed,ast2600-i3c.yaml b/Documentation/devicetree/bindings/i3c/aspeed,ast2600-i3c.yaml
-> index fcc3dbff9c9a..3166d6f3a39c 100644
-> --- a/Documentation/devicetree/bindings/i3c/aspeed,ast2600-i3c.yaml
-> +++ b/Documentation/devicetree/bindings/i3c/aspeed,ast2600-i3c.yaml
-> @@ -23,7 +23,12 @@ properties:
->      maxItems: 1
+> diff --git a/drivers/i3c/master/ast2600-i3c-master.c b/drivers/i3c/master/ast2600-i3c-master.c
+> index 09ed19d489e9..5d9d060134e0 100644
+> --- a/drivers/i3c/master/ast2600-i3c-master.c
+> +++ b/drivers/i3c/master/ast2600-i3c-master.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regmap.h>
+> +#include <linux/reset.h>
 >  
->    resets:
-> -    maxItems: 1
-> +    maxItems: 2
-> +
-> +  reset-names:
-> +    items:
-> +      - const: core_rst
-> +      - const: global_rst
+>  #include "dw-i3c-master.h"
 >  
+> @@ -128,6 +129,7 @@ static int ast2600_i3c_probe(struct platform_device *pdev)
+>  	struct device_node *np = pdev->dev.of_node;
+>  	struct of_phandle_args gspec;
+>  	struct ast2600_i3c *i3c;
+> +	struct reset_control *rst;
+>  	int rc;
+>  
+>  	i3c = devm_kzalloc(&pdev->dev, sizeof(*i3c), GFP_KERNEL);
+> @@ -156,6 +158,13 @@ static int ast2600_i3c_probe(struct platform_device *pdev)
+>  		dev_err(&pdev->dev, "invalid sda-pullup value %d\n",
+>  			i3c->sda_pullup);
+>  
+> +	rst = devm_reset_control_get_shared(&pdev->dev, "global_rst");
+> +	if (IS_ERR(rst)) {
+> +		dev_err(&pdev->dev, "missing of invalid reset entry");
+> +		return PTR_ERR(rst);
 
-Drop "_rst" suffixes from both.
-
->    interrupts:
->      maxItems: 1
-> @@ -48,6 +53,8 @@ required:
->    - compatible
->    - reg
->    - clocks
-> +  - resets
-> +  - reset-names
-
+return dev_err_probe
 
 Best regards,
 Krzysztof
