@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C426F774BF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E234774BF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbjHHVBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
+        id S233286AbjHHVBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231645AbjHHVAx (ORCPT
+        with ESMTP id S235021AbjHHVAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Aug 2023 17:00:53 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFA330C0;
-        Tue,  8 Aug 2023 13:59:29 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so9678707e87.2;
-        Tue, 08 Aug 2023 13:59:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691528368; x=1692133168;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YptjaSK25c+LT9Dq7yPSnNM+eMfZSyQd6iKMJ7jTM1Y=;
-        b=sZK+zJ1JWprxyHsNiCXibbwJ5LfUc94PxC84/VHbEISOquUIyQsncIFf9jsa/l944b
-         vIN52UtCgD+GlbKOMvFT6BfSIE7p5+U5s5UxVTMJ+yjV7fzMFgumJJDPkU2hSuYRhVPH
-         sN4W72IzbUeKWnQzIuD4thaUWl8ov1rdprFKplQHRc9zOLfP1FrgeXJcFJhG0nXmy2SH
-         bMw9lrg6AESG8YgaDNoFwmvpGFAalB/7u3LgIkCRpkdmcq6NtUltDlDI9eGXHhtV+A+y
-         sKeXXrE/fXuCBDM4XDCSaaIZ2uLKXKbdiuLKsClFqjzG5qRWVlZHmftGx5KHrP0wIhro
-         9VCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691528368; x=1692133168;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YptjaSK25c+LT9Dq7yPSnNM+eMfZSyQd6iKMJ7jTM1Y=;
-        b=jmHbQaOS06//nurW3wiJE84yRyhtqySIApQisILlfiv4KG1WZY/yS0ss6g7i0YO/FT
-         ysRZZLHL/7V/k5hf8sxvsOwVlkf/FsJD7aAbBzDee/gciq00S5mht+W2Ltv6ZOKm+Ih2
-         1hp5ctb9UUgigCRjC0upPLXqRr+bask0xkicFS3d/GyH6LusJ34hHQqOjPAKHakZfhkZ
-         tLIHFbBkK0hNIlBTGZE8jorG0UQTnhvaE49qkYoAR2PwPdjk4vpMa0EOQ4gcv+p9cIcA
-         e9Npz3hX1x2Q9tCVBxSLFy7SCsYVQfWXKdtiynEDwURdLqNi+cXmKA0/CgE3Fol6nTe1
-         hQ6w==
-X-Gm-Message-State: AOJu0YxqMMGD7oMcinIY4owWlw5b++c3hQgaUQ+pfRkOQBebvGqNmcWo
-        mSjuyaCKlynjB5U0qF/zYbQ=
-X-Google-Smtp-Source: AGHT+IE5QO7/2mwuLU5kziUoaIoYXM/KZLHOk0t03y5qCm3M8qEdwaFJYMxcz+sB2cAtgD1rXaDKNw==
-X-Received: by 2002:a05:6512:3b90:b0:4fd:c785:58b with SMTP id g16-20020a0565123b9000b004fdc785058bmr560301lfv.4.1691528367697;
-        Tue, 08 Aug 2023 13:59:27 -0700 (PDT)
-Received: from mobilestation (89-109-46-22.dynamic.mts-nn.ru. [89.109.46.22])
-        by smtp.gmail.com with ESMTPSA id j20-20020ac253b4000000b004fbdba4b075sm2013185lfh.57.2023.08.08.13.59.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 13:59:26 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 23:59:24 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: dw: Set default value if reg-io-width isn't
- specified
-Message-ID: <4dhdiqmyd2ytpxjv3ph2shxmfu4cg7sshpip7qic6rmqlbfen3@knn33heekvu3>
-References: <20230807001621.196776-1-hayashi.kunihiko@socionext.com>
- <az7wvv5f42mnuuwkqzpfmwg4ngvl4jvpcfmns7d6lhzogc4qdi@ox64l6i7b44r>
- <213763b3-5a8b-3a88-54f1-024325f7fe80@socionext.com>
- <1505ec01-186d-451a-9164-d42796954c01@sirena.org.uk>
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD980660A
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 13:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=6eKGWV+qXBOmXib4CH5Q5ZonD3D+jdcD2iPRNMQYDUk=; b=a3g8FEOddyrqjCqTRZ1q+zPw7z
+        fkLukIqE640YENNCXDa8maIEuKT2w71FPQ2faM0KUkRDtkJVGLEFUd3RBRGFOPYWKyH6cVq36oTYm
+        kZJV8HgqNXCMieknQrGI397rm6F2V+TGepvWdhRDPsrJBzLFg6dj7AsdyA39J3lCdNupkftNuKekA
+        LEd9qgfK8OxNusous4QBhGmmB7oCa5IX0c6mmFxkuKqaobANr1GIcg3hgt4Otl/XSBdCtj6jdJuwG
+        Oez1iaXSEW/LfZBIakcEQbbDXE0qt0HZU8Eban0MerDMozdKZNVePY60Mm7VRNrGGv93+TlEf/b78
+        rNxcd2ew==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qTTni-003Se7-0L;
+        Tue, 08 Aug 2023 20:59:34 +0000
+Message-ID: <3c11047c-0ef7-2316-6d77-70aca59b555d@infradead.org>
+Date:   Tue, 8 Aug 2023 13:59:33 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1505ec01-186d-451a-9164-d42796954c01@sirena.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] LoongArch: Remove redundant "source
+ drivers/firmware/Kconfig"
+Content-Language: en-US
+To:     Xi Ruoyao <xry111@xry111.site>, loongarch@lists.linux.dev
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, linux-kernel@vger.kernel.org
+References: <20230808075505.2481-1-xry111@xry111.site>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230808075505.2481-1-xry111@xry111.site>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 01:46:08PM +0100, Mark Brown wrote:
-> On Tue, Aug 08, 2023 at 09:00:18AM +0900, Kunihiko Hayashi wrote:
-> > On 2023/08/08 7:57, Serge Semin wrote:
-> > > On Mon, Aug 07, 2023 at 09:16:21AM +0900, Kunihiko Hayashi wrote:
-> 
-> > > > According to the dt-bindings, the default value of reg-io-width is 4.
-> > > > However, the value becomes zero when reg-io-width isn't specified.
-> 
-> > > This semantic is implied by the dw_read_io_reg() and dw_write_io_reg()
-> > > methods. It doesn't seem like that much necessary duplicating it in the
-> > > property parse procedure, if not to say - redundant.
-> 
-> > I see. Currently since the variable reg_io_width has no other references
-> > other than dw_{read, write}_io_reg(), it means the default value is taken
-> > if this is zero.
-> 
-> > So, I think we should be careful when actually using the value of
-> > this variable.
-> 
-> It does feel like a sensible robustness improvement,
 
-I wouldn't call it "a sensible improvement" in this context, but
-merely something like "a data-field/property coherency fixup".
 
-> even if it's not
-> fixing a specific issue now it might save us from future issues.
+On 8/8/23 00:55, Xi Ruoyao wrote:
+> In drivers/Kconfig, drivers/firmware/Kconfig is sourced for all ports so
+> there is no need to source it in the port-specific Kconfig file.  And
+> sourcing it here also caused the "Firmware Drivers" menu appeared two
+> times: once in the "Device Drivers" menu, another time in the toplevel
+> menu.  This was really puzzling.
+> 
+> Signed-off-by: Xi Ruoyao <xry111@xry111.site>
 
-Such issues are very unlikely to happen unless somebody would try to
-use the dw_spi.reg_io_width field separately from the denoted methods.
-If one does, what he would have needed to make sure is that the field
-always takes a correct value which would have led to this patch anyway
-but at least it would have got a firm justification.
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-So to speak I wouldn't have bothered with merging the patch now at
-least without changing the patch log which would have had to be
-reduced to just the first paragraph with additional message stating
-that the change just makes sure that the field is in a coherent state
-with the DT-property value in order to improve the code
-maintainability.
+Thanks.
 
--Serge(y)
+> ---
+>  arch/loongarch/Kconfig | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+> index e71d5bf2cee0..465759f6b0ed 100644
+> --- a/arch/loongarch/Kconfig
+> +++ b/arch/loongarch/Kconfig
+> @@ -662,5 +662,3 @@ source "kernel/power/Kconfig"
+>  source "drivers/acpi/Kconfig"
+>  
+>  endmenu
+> -
+> -source "drivers/firmware/Kconfig"
+
+-- 
+~Randy
