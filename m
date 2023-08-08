@@ -2,117 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B875774BF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C426F774BF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234657AbjHHVAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
+        id S232424AbjHHVBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234743AbjHHVAK (ORCPT
+        with ESMTP id S231645AbjHHVAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 17:00:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425D12132;
-        Tue,  8 Aug 2023 13:58:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CDB2862CE4;
-        Tue,  8 Aug 2023 20:58:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3CEAC433C8;
-        Tue,  8 Aug 2023 20:58:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691528283;
-        bh=mYemYrP7GxRXt1G2n3VYbCmt+/S/G4zndMYQnQVP8Ds=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=nsogyuLBgUkJ0Yqi3ufuq76tQCvCd4aRz5PRxcLx2mNmnAOFuJuV6lSDO2jUuJCXf
-         qA/Kcgza+wEAauOSKITfIC9IffWs4bHG6n8g1HDn1pkrNf1TCypMqJK00ILaPLlc2g
-         7O3kgGQxEluLXn7jOxSiy/L/5UlpBX0wtAaIOYgZWfteN5bzStcFIvytflBN6k1WkY
-         +VGLRGkq0kv9Opy5nkJh/rLKrqPPbhDeA/Cvap4l37Trhp6G3nV7MbDo8s/OQGdGZt
-         G2pVOodYUJ5l/J1sMdR7wBc53hgcmhY7Tk/IM8csLCNeI/0/3/FDwSTsvVJDxYdKTR
-         GsLRWCcjTs1QA==
-Date:   Tue, 8 Aug 2023 15:58:00 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-pci@vger.kernel.org, Len Brown <lenb@kernel.org>,
-        Igor Mammedov <imammedo@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Woody Suwalski <terraluna977@gmail.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH] PCI: acpiphp: Log more slot and notification details
-Message-ID: <20230808205800.GA332785@bhelgaas>
+        Tue, 8 Aug 2023 17:00:53 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFA330C0;
+        Tue,  8 Aug 2023 13:59:29 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so9678707e87.2;
+        Tue, 08 Aug 2023 13:59:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691528368; x=1692133168;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YptjaSK25c+LT9Dq7yPSnNM+eMfZSyQd6iKMJ7jTM1Y=;
+        b=sZK+zJ1JWprxyHsNiCXibbwJ5LfUc94PxC84/VHbEISOquUIyQsncIFf9jsa/l944b
+         vIN52UtCgD+GlbKOMvFT6BfSIE7p5+U5s5UxVTMJ+yjV7fzMFgumJJDPkU2hSuYRhVPH
+         sN4W72IzbUeKWnQzIuD4thaUWl8ov1rdprFKplQHRc9zOLfP1FrgeXJcFJhG0nXmy2SH
+         bMw9lrg6AESG8YgaDNoFwmvpGFAalB/7u3LgIkCRpkdmcq6NtUltDlDI9eGXHhtV+A+y
+         sKeXXrE/fXuCBDM4XDCSaaIZ2uLKXKbdiuLKsClFqjzG5qRWVlZHmftGx5KHrP0wIhro
+         9VCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691528368; x=1692133168;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YptjaSK25c+LT9Dq7yPSnNM+eMfZSyQd6iKMJ7jTM1Y=;
+        b=jmHbQaOS06//nurW3wiJE84yRyhtqySIApQisILlfiv4KG1WZY/yS0ss6g7i0YO/FT
+         ysRZZLHL/7V/k5hf8sxvsOwVlkf/FsJD7aAbBzDee/gciq00S5mht+W2Ltv6ZOKm+Ih2
+         1hp5ctb9UUgigCRjC0upPLXqRr+bask0xkicFS3d/GyH6LusJ34hHQqOjPAKHakZfhkZ
+         tLIHFbBkK0hNIlBTGZE8jorG0UQTnhvaE49qkYoAR2PwPdjk4vpMa0EOQ4gcv+p9cIcA
+         e9Npz3hX1x2Q9tCVBxSLFy7SCsYVQfWXKdtiynEDwURdLqNi+cXmKA0/CgE3Fol6nTe1
+         hQ6w==
+X-Gm-Message-State: AOJu0YxqMMGD7oMcinIY4owWlw5b++c3hQgaUQ+pfRkOQBebvGqNmcWo
+        mSjuyaCKlynjB5U0qF/zYbQ=
+X-Google-Smtp-Source: AGHT+IE5QO7/2mwuLU5kziUoaIoYXM/KZLHOk0t03y5qCm3M8qEdwaFJYMxcz+sB2cAtgD1rXaDKNw==
+X-Received: by 2002:a05:6512:3b90:b0:4fd:c785:58b with SMTP id g16-20020a0565123b9000b004fdc785058bmr560301lfv.4.1691528367697;
+        Tue, 08 Aug 2023 13:59:27 -0700 (PDT)
+Received: from mobilestation (89-109-46-22.dynamic.mts-nn.ru. [89.109.46.22])
+        by smtp.gmail.com with ESMTPSA id j20-20020ac253b4000000b004fbdba4b075sm2013185lfh.57.2023.08.08.13.59.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 13:59:26 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 23:59:24 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: dw: Set default value if reg-io-width isn't
+ specified
+Message-ID: <4dhdiqmyd2ytpxjv3ph2shxmfu4cg7sshpip7qic6rmqlbfen3@knn33heekvu3>
+References: <20230807001621.196776-1-hayashi.kunihiko@socionext.com>
+ <az7wvv5f42mnuuwkqzpfmwg4ngvl4jvpcfmns7d6lhzogc4qdi@ox64l6i7b44r>
+ <213763b3-5a8b-3a88-54f1-024325f7fe80@socionext.com>
+ <1505ec01-186d-451a-9164-d42796954c01@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jc5dn+6WtH6O30EeJfGDLewiLaAY9YJEAO6d_n+Uv7ig@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1505ec01-186d-451a-9164-d42796954c01@sirena.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 09:39:22PM +0200, Rafael J. Wysocki wrote:
-> On Tue, Aug 8, 2023 at 9:27 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > From: Bjorn Helgaas <bhelgaas@google.com>
-> >
-> > When registering an acpiphp slot, log the slot name in the same style as
-> > pciehp and include the PCI bus/device and whether a device is present or
-> > the slot is empty.
-> >
-> > When handling an ACPI notification, log the PCI bus/device and notification
-> > type.
-> >
-> > Sample dmesg log diff:
-> >
-> >     ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
-> >   - acpiphp: Slot [3] registered
-> >   - acpiphp: Slot [4] registered
-> >     PCI host bridge to bus 0000:00
-> >     pci 0000:00:03.0: [8086:100e] type 00 class 0x020000
-> >     <ACPI Device Check notification>
-> >     pci 0000:00:04.0: [8086:100e] type 00 class 0x020000
-> >
-> >     ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
-> >   + acpiphp: pci 0000:00:03 Slot(3) registered (enabled)
-> >   + acpiphp: pci 0000:00:04 Slot(4) registered (empty)
-> >     PCI host bridge to bus 0000:00
-> >     pci 0000:00:03.0: [8086:100e] type 00 class 0x020000
-> >     <ACPI Device Check notification>
-> >   + acpiphp: pci 0000:00:04 Slot(4) Device Check
-> >     pci 0000:00:04.0: [8086:100e] type 00 class 0x020000
-> > ...
-
-> > @@ -793,6 +804,14 @@ static void hotplug_event(u32 type, struct acpiphp_context *context)
-> >
-> >         pci_lock_rescan_remove();
-> >
-> > +       pr_info("pci %04x:%02x:%02x Slot(%s) %s\n",
-> > +               pci_domain_nr(slot->bus), slot->bus->number,
-> > +               slot->device, slot_name(slot->slot),
-> > +               type == ACPI_NOTIFY_BUS_CHECK ? "Bus Check" :
-> > +               type == ACPI_NOTIFY_DEVICE_CHECK ? "Device Check" :
-> > +               type == ACPI_NOTIFY_EJECT_REQUEST ? "Eject Request" :
-> > +               "Notification");
+On Tue, Aug 08, 2023 at 01:46:08PM +0100, Mark Brown wrote:
+> On Tue, Aug 08, 2023 at 09:00:18AM +0900, Kunihiko Hayashi wrote:
+> > On 2023/08/08 7:57, Serge Semin wrote:
+> > > On Mon, Aug 07, 2023 at 09:16:21AM +0900, Kunihiko Hayashi wrote:
 > 
-> pr_debug() perhaps?
+> > > > According to the dt-bindings, the default value of reg-io-width is 4.
+> > > > However, the value becomes zero when reg-io-width isn't specified.
 > 
-> On systems that don't have any hotplug problems these messages will
-> just be filling the kernel log unnecessarily.
+> > > This semantic is implied by the dw_read_io_reg() and dw_write_io_reg()
+> > > methods. It doesn't seem like that much necessary duplicating it in the
+> > > property parse procedure, if not to say - redundant.
+> 
+> > I see. Currently since the variable reg_io_width has no other references
+> > other than dw_{read, write}_io_reg(), it means the default value is taken
+> > if this is zero.
+> 
+> > So, I think we should be careful when actually using the value of
+> > this variable.
+> 
+> It does feel like a sensible robustness improvement,
 
-If these notifications are really common, pr_debug() sounds like the
-right thing.  I assumed that they would not be common, e.g., they
-would happen for user-time things like dock/undock, plug/unplug,
-suspend/resume, etc.
+I wouldn't call it "a sensible improvement" in this context, but
+merely something like "a data-field/property coherency fixup".
 
-In pciehp, we use _info for attention button presses, presence detect
-changes, link up/down, and I assumed the ACPI notify events would
-roughly correspond to those.  No?
+> even if it's not
+> fixing a specific issue now it might save us from future issues.
 
-Bjorn
+Such issues are very unlikely to happen unless somebody would try to
+use the dw_spi.reg_io_width field separately from the denoted methods.
+If one does, what he would have needed to make sure is that the field
+always takes a correct value which would have led to this patch anyway
+but at least it would have got a firm justification.
+
+So to speak I wouldn't have bothered with merging the patch now at
+least without changing the patch log which would have had to be
+reduced to just the first paragraph with additional message stating
+that the change just makes sure that the field is in a coherent state
+with the DT-property value in order to improve the code
+maintainability.
+
+-Serge(y)
