@@ -2,126 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A097749C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDA47749C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234385AbjHHUDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43930 "EHLO
+        id S232149AbjHHUDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:03:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232964AbjHHUDE (ORCPT
+        with ESMTP id S231449AbjHHUDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:03:04 -0400
-Received: from www.kot-begemot.co.uk (ns1.kot-begemot.co.uk [217.160.28.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A1F27AB8
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 11:20:29 -0700 (PDT)
-Received: from 212-39-89-7.ip.btc-net.bg ([212.39.89.7] helo=[192.168.14.227])
-        by www.kot-begemot.co.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1qTFpV-000Srs-NP; Tue, 08 Aug 2023 06:04:32 +0000
-Message-ID: <0bdda692-25a3-227c-69ef-341f037e1dd7@cambridgegreys.com>
-Date:   Tue, 8 Aug 2023 07:04:29 +0100
+        Tue, 8 Aug 2023 16:03:00 -0400
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1153686247
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 11:20:23 -0700 (PDT)
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4RKjN05xwXz9t2b;
+        Tue,  8 Aug 2023 08:05:20 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id D3jkJswzO1Ba; Tue,  8 Aug 2023 08:05:20 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4RKjN05Ft1z9t1q;
+        Tue,  8 Aug 2023 08:05:20 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B09248B76E;
+        Tue,  8 Aug 2023 08:05:20 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id CHQslQO16iuk; Tue,  8 Aug 2023 08:05:20 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.232.230])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 719F08B763;
+        Tue,  8 Aug 2023 08:05:20 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37865G0v1246288
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 8 Aug 2023 08:05:16 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37865FCi1246253;
+        Tue, 8 Aug 2023 08:05:15 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v1 1/6] powerpc/include: Remove unneeded #include <asm/fs_pd.h>
+Date:   Tue,  8 Aug 2023 08:04:38 +0200
+Message-ID: <b056c4e986a4a7707fc1994304c34f7bd15d6871.1691474658.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] um: vector: refactor deprecated strncpy
-To:     Justin Stitt <justinstitt@google.com>,
-        Richard Weinberger <richard@nod.at>,
-        Johannes Berg <johannes@sipsolutions.net>
-Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org
-References: <20230807-arch-um-drivers-v1-1-10d602c5577a@google.com>
-Content-Language: en-US
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20230807-arch-um-drivers-v1-1-10d602c5577a@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -2.0
-X-Clacks-Overhead: GNU Terry Pratchett
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_SBL_CSS,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691474677; l=1181; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=8wdCUsSlZXzuwg/I86D6mJJCOiQgvc6jMMSxdMXB5qo=; b=iE46uKhUYpDbqAGpF9fHiPVTC0SWgbLNE2q7MU0GzpVW7h26m2PveV/OhGxo4TtatH4TKeixM 62QwexxFwK/CCiRLj3Lsc/eHBId9CnNw2zPtlpNmjcc/azr93GozzVX
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tqm8xx_setup.c and fs_enet.h don't use any items provided by fs_pd.h
 
+Remove unneeded #include <asm/fs_pd.h>
 
-On 07/08/2023 19:22, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
-> 
-> A suitable replacement is `strscpy` [2] due to the fact that it
-> guarantees NUL-termination on its destination buffer argument which is
-> _not_ the case for `strncpy`!
-> 
-> In this case, we are able to drop the now superfluous `... - 1`
-> instances because `strscpy` will automatically truncate the last byte by
-> setting it to a NUL byte if the source size exceeds the destination size
-> or if the source string is not NUL-terminated.
-> 
-> I've also opted to remove the seemingly useless char* casts. I'm not
-> sure why they're present at all since (after expanding the `ifr_name`
-> macro) `ifr.ifr_ifrn.ifrn_name` is a char* already.
-> 
-> All in all, `strscpy` is a more robust and less ambiguous interface
-> while also letting us remove some `... -1`'s which cleans things up a
-> bit.
-> 
-> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-> [2]: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
-> 
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
->   arch/um/drivers/vector_user.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-> index c650e428432b..c719e1ec4645 100644
-> --- a/arch/um/drivers/vector_user.c
-> +++ b/arch/um/drivers/vector_user.c
-> @@ -141,7 +141,7 @@ static int create_tap_fd(char *iface)
->   	}
->   	memset(&ifr, 0, sizeof(ifr));
->   	ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_VNET_HDR;
-> -	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
-> +	strscpy(ifr.ifr_name, iface, sizeof(ifr.ifr_name));
->   
->   	err = ioctl(fd, TUNSETIFF, (void *) &ifr);
->   	if (err != 0) {
-> @@ -171,7 +171,7 @@ static int create_raw_fd(char *iface, int flags, int proto)
->   		goto raw_fd_cleanup;
->   	}
->   	memset(&ifr, 0, sizeof(ifr));
-> -	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
-> +	strscpy(ifr.ifr_name, iface, sizeof(ifr.ifr_name));
->   	if (ioctl(fd, SIOCGIFINDEX, (void *) &ifr) < 0) {
->   		err = -errno;
->   		goto raw_fd_cleanup;
-> 
-> ---
-> base-commit: c1a515d3c0270628df8ae5f5118ba859b85464a2
-> change-id: 20230807-arch-um-drivers-ad44050885d0
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
-> 
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
-> 
-Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/platforms/8xx/tqm8xx_setup.c        | 1 -
+ drivers/net/ethernet/freescale/fs_enet/fs_enet.h | 1 -
+ 2 files changed, 2 deletions(-)
 
+diff --git a/arch/powerpc/platforms/8xx/tqm8xx_setup.c b/arch/powerpc/platforms/8xx/tqm8xx_setup.c
+index 7d8eb50bb9cd..c422262ba27b 100644
+--- a/arch/powerpc/platforms/8xx/tqm8xx_setup.c
++++ b/arch/powerpc/platforms/8xx/tqm8xx_setup.c
+@@ -39,7 +39,6 @@
+ #include <asm/time.h>
+ #include <asm/8xx_immap.h>
+ #include <asm/cpm1.h>
+-#include <asm/fs_pd.h>
+ #include <asm/udbg.h>
+ 
+ #include "mpc8xx.h"
+diff --git a/drivers/net/ethernet/freescale/fs_enet/fs_enet.h b/drivers/net/ethernet/freescale/fs_enet/fs_enet.h
+index cb419aef8d1b..aad96cb2ab4e 100644
+--- a/drivers/net/ethernet/freescale/fs_enet/fs_enet.h
++++ b/drivers/net/ethernet/freescale/fs_enet/fs_enet.h
+@@ -10,7 +10,6 @@
+ #include <linux/dma-mapping.h>
+ 
+ #include <linux/fs_enet_pd.h>
+-#include <asm/fs_pd.h>
+ 
+ #ifdef CONFIG_CPM1
+ #include <asm/cpm1.h>
 -- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+2.41.0
+
