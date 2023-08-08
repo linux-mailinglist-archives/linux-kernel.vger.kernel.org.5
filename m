@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FF2773549
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 01:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EF177354D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 02:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbjHGX70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 19:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39918 "EHLO
+        id S230149AbjHHAAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 20:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjHGX7Z (ORCPT
+        with ESMTP id S229473AbjHHAAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 19:59:25 -0400
-Received: from out-100.mta0.migadu.com (out-100.mta0.migadu.com [IPv6:2001:41d0:1004:224b::64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB78DE
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 16:59:24 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 08:59:12 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691452759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b4JJU/L+7XhSRIV+47Wbag20pFFf+rBHfWamIK40tDM=;
-        b=s1fRNWn5Qa294sWyzLXrDWWU53ZKamerOUvMDXiBEhPzE2YvTHzcriyw83T5Sfs9cS5gHH
-        etsLJeGwRxW+yGUiw1MoMUWKFjjVtx+7hrZcJqb9nwh2S46aJyE5aHU6dqmKu6ns5nyzOd
-        mjw+hFi9Hn2kM+DKGGGekX8PUBGeJNE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: memory-failure: use helper macro
- llist_for_each_entry_safe()
-Message-ID: <20230807235912.GA1743869@ik1-406-35019.vs.sakura.ne.jp>
-References: <20230807114125.3440802-1-linmiaohe@huawei.com>
+        Mon, 7 Aug 2023 20:00:22 -0400
+Received: from mx.socionext.com (mx.socionext.com [202.248.49.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AD04EDE;
+        Mon,  7 Aug 2023 17:00:20 -0700 (PDT)
+Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 08 Aug 2023 09:00:20 +0900
+Received: from mail.mfilter.local (mail-arc01.css.socionext.com [10.213.46.36])
+        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id EA17F2058453;
+        Tue,  8 Aug 2023 09:00:19 +0900 (JST)
+Received: from kinkan2.css.socionext.com ([172.31.9.51]) by m-FILTER with ESMTP; Tue, 8 Aug 2023 09:00:19 +0900
+Received: from [10.212.159.175] (unknown [10.212.159.175])
+        by kinkan2.css.socionext.com (Postfix) with ESMTP id 436EA1CF7;
+        Tue,  8 Aug 2023 09:00:19 +0900 (JST)
+Message-ID: <213763b3-5a8b-3a88-54f1-024325f7fe80@socionext.com>
+Date:   Tue, 8 Aug 2023 09:00:18 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230807114125.3440802-1-linmiaohe@huawei.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH] spi: dw: Set default value if reg-io-width isn't
+ specified
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230807001621.196776-1-hayashi.kunihiko@socionext.com>
+ <az7wvv5f42mnuuwkqzpfmwg4ngvl4jvpcfmns7d6lhzogc4qdi@ox64l6i7b44r>
+Content-Language: en-US
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+In-Reply-To: <az7wvv5f42mnuuwkqzpfmwg4ngvl4jvpcfmns7d6lhzogc4qdi@ox64l6i7b44r>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,12 +49,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 07:41:25PM +0800, Miaohe Lin wrote:
-> It's more convenient to use helper macro llist_for_each_entry_safe().
-> No functional change intended.
+Hi Serge,
+
+On 2023/08/08 7:57, Serge Semin wrote:
+> On Mon, Aug 07, 2023 at 09:16:21AM +0900, Kunihiko Hayashi wrote:
+>> According to the dt-bindings, the default value of reg-io-width is 4.
+>> However, the value becomes zero when reg-io-width isn't specified.
 > 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> This semantic is implied by the dw_read_io_reg() and dw_write_io_reg()
+> methods. It doesn't seem like that much necessary duplicating it in the
+> property parse procedure, if not to say - redundant.
 
-Thanks, looks good to me.
+I see. Currently since the variable reg_io_width has no other references
+other than dw_{read, write}_io_reg(), it means the default value is taken
+if this is zero.
 
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com> 
+So, I think we should be careful when actually using the value of
+this variable.
+
+Thank you,
+
+> 
+> -Serge(y)
+> 
+>>
+>> Should set the actual value to dws->reg_io_width, considering it
+>> referenced.
+>>
+>> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+>> ---
+>>   drivers/spi/spi-dw-mmio.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
+>> index a963bc96c223..7eafc07ef7aa 100644
+>> --- a/drivers/spi/spi-dw-mmio.c
+>> +++ b/drivers/spi/spi-dw-mmio.c
+>> @@ -369,7 +369,9 @@ static int dw_spi_mmio_probe(struct platform_device
+> *pdev)
+>>   
+>>   	dws->max_freq = clk_get_rate(dwsmmio->clk);
+>>   
+>> -	device_property_read_u32(&pdev->dev, "reg-io-width",
+> &dws->reg_io_width);
+>> +	if (device_property_read_u32(&pdev->dev, "reg-io-width",
+>> +				     &dws->reg_io_width))
+>> +		dws->reg_io_width = 4;
+>>   
+>>   	num_cs = 4;
+>>   
+>> -- 
+>> 2.25.1
+>>
+
+---
+Best Regards
+Kunihiko Hayashi
