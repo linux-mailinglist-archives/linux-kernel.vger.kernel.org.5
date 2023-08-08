@@ -2,59 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C5B774598
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9EBD774901
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbjHHSnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
+        id S236511AbjHHTq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232133AbjHHSnX (ORCPT
+        with ESMTP id S235635AbjHHTqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:43:23 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16AEB47E2;
-        Tue,  8 Aug 2023 09:37:48 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so7259366b.0;
-        Tue, 08 Aug 2023 09:37:48 -0700 (PDT)
+        Tue, 8 Aug 2023 15:46:06 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DBF4A044;
+        Tue,  8 Aug 2023 09:50:23 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-686e0213c0bso4253024b3a.1;
+        Tue, 08 Aug 2023 09:50:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691513422; x=1692118222;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m86pfXXuQMAMRz51pUxOAytG4Ja5agUvJe7SSaobTsg=;
+        b=lbfB0HwgDOICfiD5Jx2dkcibdBn+BBpeqM+H7RPgRY7cOdP26E6zPQQ/VzPdtli3Rs
+         H8w9FmyUeXjNXMVSuBwJhXEMVH/hWu8C6ivoumSXYOcEdxCGtQri1jpZhcf3PVCoMEI1
+         8fWiHdHnnrduzt9GRtvZTs/6VicmpvNtp03t+a463gRi33+3jnBMaJPoxjAFxMaBT7/L
+         aFhfeDd/ISRwUsDu8gnfocajpdroNsI0ihXQDqjN7bRi9SpbQdtuVmDjPt6W5L1kygFe
+         oc2wap/sNggfuHJSdB8rVwlThAl5+6mQ64Of3dAhYaiA/Z2+P3VEtDXZtKZnUnvTdUMV
+         t1Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691512580; x=1692117380;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DkmTv84pMJXYa4K1dNGjk/Yamo7BduW6q6khqHXBPa8=;
-        b=Dd8Vgwj0UHNXYwynWoCRfMASq4JLeZpNRyD/tDC9/ATD1zoHWUD7ZBnS7KIY4WDcfK
-         ft9+HC6Im3yySuN5IA5x2mBmsJHnSVZ1PXbqb+ovN4ly171nyV0dASxLtRo3/nlwXxDo
-         aLK1oV5PIlsIJs2UrdsvJjI7JFwh3NrDn54tIZ3w0s3CkR0cC0e71kaoBOGXWS8pJA0W
-         nEmzli7l0wxxb4cN1N2BC61xsSM+p2tbs2xTwZyKuS7hTuFdRVGBsWeUl3I7NzhFcLoR
-         ZEoZ8LhZxB+pGH0RTFuHz9iTIkCjkS5MgAOof+PL6lB2JUE8uTccbwHO/zc5G23VX2UL
-         RJVg==
-X-Gm-Message-State: AOJu0Yx4C50amqYS9gt0/ZdikrVwIQtBhmV0KIH8JFMRFOWB81RRqczP
-        dTuNCJmSONEKBPOItM+Xhm94RIj+iFA=
-X-Google-Smtp-Source: AGHT+IFCb2xDaXaWa86RAvY8VGrjOIB1tiZauK4N/+kpq0thYV6NlgElKwksutrFFgGq6zVtrt/YmA==
-X-Received: by 2002:a17:906:53ce:b0:99c:7300:94b8 with SMTP id p14-20020a17090653ce00b0099c730094b8mr10749291ejo.10.1691502074057;
-        Tue, 08 Aug 2023 06:41:14 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-116.fbsv.net. [2a03:2880:31ff:74::face:b00c])
-        by smtp.gmail.com with ESMTPSA id qh17-20020a170906ecb100b0099cc1ffd8f5sm4484910ejb.53.2023.08.08.06.41.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 06:41:13 -0700 (PDT)
-From:   Breno Leitao <leitao@debian.org>
-To:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org, kuba@kernel.org,
-        pabeni@redhat.com
-Subject: [PATCH v2 8/8] io_uring/cmd: BPF hook for setsockopt cmd
-Date:   Tue,  8 Aug 2023 06:40:48 -0700
-Message-Id: <20230808134049.1407498-9-leitao@debian.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230808134049.1407498-1-leitao@debian.org>
-References: <20230808134049.1407498-1-leitao@debian.org>
+        d=1e100.net; s=20221208; t=1691513422; x=1692118222;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=m86pfXXuQMAMRz51pUxOAytG4Ja5agUvJe7SSaobTsg=;
+        b=fwXTYNG1VgDfihfZO3Ho76o+VaHB4UIbHDujYrTtk0fjr0hevs+w3vxOLkPH5Ec4Bw
+         JuQ4thAQ+S1YqAPY7vMfDPwzhFc0L49UnM/hjdOmsagxPm7CjDRzg0o989XMnMJbRrhb
+         38AO8nam7jUN4NGRdKBpEtkT2ZAZRjdsXjfrlucm0LKSCExVaEj6gnWDbC5x8RgHg6nt
+         JRfvF2FLyGjt9UdkAYj7IgQoQZuuzPB9XFg+EB8OeRbWNOjpXZ8PE+U83k5BBH+3mwRN
+         f7Tk0/Xp2bExh7+koM6/lDHz0+fc1GtkouZFCrp/wrnZrHRTV9xWBnnLLSFqg3OKJFkH
+         KtIA==
+X-Gm-Message-State: AOJu0Yx/Bd6IzmwhgTbHrU+5P1DnzP1BBXpSeosVg1JZNJqRMlqVsQ0R
+        FJDajfO+E+g2nrbHH/DQr/O4ndMRgG8=
+X-Google-Smtp-Source: AGHT+IExw3PsoAFt7iUN1CtlVmtBWxSm6CiZ27g8sCTwbosvnsXuzLew22DanAUYdLPQltuAGYVbjQ==
+X-Received: by 2002:a17:902:c409:b0:1bc:5b36:a2df with SMTP id k9-20020a170902c40900b001bc5b36a2dfmr8343835plk.1.1691502291367;
+        Tue, 08 Aug 2023 06:44:51 -0700 (PDT)
+Received: from [192.168.0.105] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id z11-20020a170902ee0b00b001bb7a736b4csm9066071plb.77.2023.08.08.06.44.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 06:44:50 -0700 (PDT)
+Message-ID: <97224321-c839-c0a7-52dd-3fb6e52fc15e@gmail.com>
+Date:   Tue, 8 Aug 2023 20:44:36 +0700
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Content-Language: en-US
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        TatriX <tatrics@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Bluetooth <linux-bluetooth@vger.kernel.org>,
+        Linux Kernel Build System <linux-kbuild@vger.kernel.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Bluetooth LE scan doesn't show device name
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,67 +79,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for BPF hooks for io_uring setsockopts command.
+Hi,
 
-This implementation follows a similar approach to what
-__sys_setsockopt() does, but, operates only on kernel memory instead of
-user memory (which is also possible, but not preferred since the kernel
-memory is already available)
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- io_uring/uring_cmd.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+> Hi!
+> At some point after kernel 5.9 I started having issues with LE device scanning.
+> Here's how it used to work:
+> 
+>     $ bluetoothctl
+>     # power on
+>     # scan on
+>      ...
+>     [NEW] Device 68:71:DD:73:97:D5 Playfinity-2
+> 
+> It successfully finds my device and it's name.
+> On a newer kernel instead I'm getting no name:
+> 
+>     [NEW] Device 4D:18:19:A8:63:B5 4D-18-19-A8-63-B5
+> 
+> Here's corresponding btmon logs. First from kernel 5.9.12 that can see device's name:
+> 
+> ```5.9.12
+>> HCI Event: LE Meta Event (0x3e) plen 33                  #118 [hci0] 5.607028
+>       LE Extended Advertising Report (0x0d)
+>         Num reports: 1
+>         Entry 0
+>           Event type: 0x0013
+>             Props: 0x0013
+>               Connectable
+>               Scannable
+>               Use legacy advertising PDUs
+>             Data status:  [0;32mComplete [0m
+>           Legacy PDU Type: ADV_IND (0x0013)
+>           Address type: Random (0x01)
+>           Address: 68:71:DD:73:97:D5 (Resolvable)
+>           Primary PHY: LE 1M
+>           Secondary PHY: No packets
+>           SID: no ADI field (0xff)
+>           TX power: 127 dBm
+>           RSSI: -54 dBm (0xca)
+>           Periodic advertising interval: 0.00 msec (0x0000)
+>           Direct address type: Public (0x00)
+>           Direct address: 00:00:00:00:00:00 (OUI 00-00-00)
+>           Data length: 0x07
+>         02 01 06 03 02 f0 ff                             .......
+>         Flags: 0x06
+>           LE General Discoverable Mode
+>           BR/EDR Not Supported
+>         16-bit Service UUIDs (partial): 1 entry
+>           Unknown (0xfff0)
+>> HCI Event: LE Meta Event (0x3e) plen 49                  #119 [hci0] 5.608029
+>       LE Extended Advertising Report (0x0d)
+>         Num reports: 1
+>         Entry 0
+>           Event type: 0x001b
+>             Props: 0x001b
+>               Connectable
+>               Scannable
+>               Scan response
+>               Use legacy advertising PDUs
+>             Data status:  [0;32mComplete [0m
+>           Legacy PDU Type: SCAN_RSP to an ADV_SCAN_IND (0x001b)
+>           Address type: Random (0x01)
+>           Address: 68:71:DD:73:97:D5 (Resolvable)
+>           Primary PHY: LE 1M
+>           Secondary PHY: No packets
+>           SID: no ADI field (0xff)
+>           TX power: 127 dBm
+>           RSSI: -54 dBm (0xca)
+>           Periodic advertising interval: 0.00 msec (0x0000)
+>           Direct address type: Public (0x00)
+>           Direct address: 00:00:00:00:00:00 (OUI 00-00-00)
+>           Data length: 0x17
+>         0d 09 50 6c 61 79 66 69 6e 69 74 79 2d 32 02 0a  ..Playfinity-2..
+>         00 05 12 50 00 68 00                             ...P.h.
+>         Name (complete): Playfinity-2
+>         TX power: 0 dBm
+>         Peripheral Conn. Interval: 0x0050 - 0x0068
+> ```
+> 
+> And from 6.4.8:
+> 
+> ```6.4.8
+>> HCI Event: LE Meta Event (0x3e) plen 33                  #130 [hci0] 9.180207
+>       LE Extended Advertising Report (0x0d)
+>         Num reports: 1
+>         Entry 0
+>           Event type: 0x0013
+>             Props: 0x0013
+>               Connectable
+>               Scannable
+>               Use legacy advertising PDUs
+>             Data status: �[0;32mComplete�[0m
+>           Legacy PDU Type: ADV_IND (0x0013)
+>           Address type: Random (0x01)
+>           Address: 4D:18:19:A8:63:B5 (Resolvable)
+>           Primary PHY: LE 1M
+>           Secondary PHY: No packets
+>           SID: no ADI field (0xff)
+>           TX power: 127 dBm
+>           RSSI: -53 dBm (0xcb)
+>           Periodic advertising interval: 0.00 msec (0x0000)
+>           Direct address type: Public (0x00)
+>           Direct address: 00:00:00:00:00:00 (OUI 00-00-00)
+>           Data length: 0x07
+>         02 01 06 03 02 f0 ff                             .......
+>         Flags: 0x06
+>           LE General Discoverable Mode
+>           BR/EDR Not Supported
+>         16-bit Service UUIDs (partial): 1 entry
+>           Unknown (0xfff0)
+> ```
+> 
+> I've tried compiling 5.9.12 to see if I can bissect, but it fails to compile with gcc12..
+> 
+> Is it expected that newer kernels can't get device name? Perhaps some additional action is needed fetch it?
+>  
+> Thanks!
 
-diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
-index 3693e5779229..b7b27e4dbddd 100644
---- a/io_uring/uring_cmd.c
-+++ b/io_uring/uring_cmd.c
-@@ -205,23 +205,42 @@ static inline int io_uring_cmd_setsockopt(struct socket *sock,
- {
- 	void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
- 	int optname = READ_ONCE(cmd->sqe->optname);
-+	sockptr_t optval_s = USER_SOCKPTR(optval);
- 	int optlen = READ_ONCE(cmd->sqe->optlen);
- 	int level = READ_ONCE(cmd->sqe->level);
-+	char *kernel_optval = NULL;
- 	int err;
- 
- 	err = security_socket_setsockopt(sock, level, optname);
- 	if (err)
- 		return err;
- 
-+	if (!in_compat_syscall()) {
-+		err = BPF_CGROUP_RUN_PROG_SETSOCKOPT(sock->sk, &level,
-+						     &optname,
-+						     USER_SOCKPTR(optval),
-+						     &optlen,
-+						     &kernel_optval);
-+		if (err < 0)
-+			return err;
-+		if (err > 0)
-+			return 0;
-+
-+		/* Replace optval by the one returned by BPF */
-+		if (kernel_optval)
-+			optval_s = KERNEL_SOCKPTR(kernel_optval);
-+	}
-+
- 	if (level == SOL_SOCKET && !sock_use_custom_sol_socket(sock))
- 		err = sock_setsockopt(sock, level, optname,
--				      USER_SOCKPTR(optval), optlen);
-+				      optval_s, optlen);
- 	else if (unlikely(!sock->ops->setsockopt))
- 		err = -EOPNOTSUPP;
- 	else
- 		err = sock->ops->setsockopt(sock, level, optname,
--					    USER_SOCKPTR(koptval), optlen);
-+					    optval_s, optlen);
- 
-+	kfree(kernel_optval);
- 	return err;
- }
- 
+See Bugzilla for the full thread.
+
+TatriX: Can you also attach dmesg output to your Bugzilla report?
+Since you also have kernel build problem, can you also attach build
+log (``make 2>&1 | tee build.log``)?
+
+Anyway, I'm adding this regression to be tracked by regzbot:
+
+#regzbot introduced: v5.9..v6.4 https://bugzilla.kernel.org/show_bug.cgi?id=217773
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217773
+
 -- 
-2.34.1
-
+An old man doll... just what I always wanted! - Clara
