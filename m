@@ -2,61 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7512D773E99
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B1C773E70
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232925AbjHHQcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
+        id S232860AbjHHQ3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232831AbjHHQb0 (ORCPT
+        with ESMTP id S232739AbjHHQ2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:31:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBAB13968;
-        Tue,  8 Aug 2023 08:51:46 -0700 (PDT)
+        Tue, 8 Aug 2023 12:28:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109C512520
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:51:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B290624AE;
-        Tue,  8 Aug 2023 11:03:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15FDFC433C8;
-        Tue,  8 Aug 2023 11:03:49 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 880AB624C0
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 11:04:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB25BC433C7;
+        Tue,  8 Aug 2023 11:04:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691492630;
-        bh=A+mqCpN+QuFAcnM1ap+yOp5utSXZlVUNIHG5R4odB6M=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Lik0sr/+SSNBgc79MfJ0720gb9FA9wUR4ajKbE4hlQU6LR65Rua/0DtXWZPnb1DcG
-         O8S9x3mi3rg6f3b/25KTN1yGu+//8gTrvLdJNpL6MBlgN+OL7yD/a5LCCQ7s5wRz+W
-         il/KbU0sOxJm3PI2uS15NacnsFKi4D8/aNvPGNKTSu+f1v7cEoyXzlOm9qUZGjOjBo
-         2XjDDJUpf9x71LBBoQtAEXWcTLpdyF0gxg1ikRhp+ZMePGOLAGme6a9c6PjX0IYCCl
-         sPPm2ZRYpnLlp42kQv2Vr5psLo4DHDAqcZCzE+6CtOX/1phyAG/52byRnUO6ef2GKQ
-         HrZXAh5+GT4WA==
-Message-ID: <4c0dfd1c-2b61-b954-73ad-ac8d4b82487d@kernel.org>
-Date:   Tue, 8 Aug 2023 06:03:47 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 4/5] clk: socfpga: agilex: add clock driver for the
- Agilex5
-Content-Language: en-US
-To:     niravkumar.l.rabara@intel.com
-Cc:     adrian.ho.yin.ng@intel.com, andrew@lunn.ch, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, netdev@vger.kernel.org,
-        p.zabel@pengutronix.de, richardcochran@gmail.com,
-        robh+dt@kernel.org, sboyd@kernel.org, wen.ping.teh@intel.com
-References: <20230618132235.728641-1-niravkumar.l.rabara@intel.com>
- <20230801010234.792557-1-niravkumar.l.rabara@intel.com>
- <20230801010234.792557-5-niravkumar.l.rabara@intel.com>
-From:   Dinh Nguyen <dinguyen@kernel.org>
-In-Reply-To: <20230801010234.792557-5-niravkumar.l.rabara@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        s=k20201202; t=1691492654;
+        bh=DvFRtMOY4iagkM51r9J4zb/PTZkURRwsD+PlGC3bhCQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=f0PqxTwgl8WsCHtX6Gsfios7cRzmexMQGyXxFqIvsasO6WhgwyKOsQIGNYUWy9Q0Q
+         WFWIZp7AoBkeuetrWWQDu3JhDAkHH+HweDSyEZWwuhKMdVJq4Nlri8/e/QvyxpLiIG
+         RTWQHAwHatWRR4/8g+/ImbUYL0euknmk67PiPnhag8u/Q988jiwJd1uCae2ysYBOR1
+         kYd2BUtnUq4ElPR8ONnIxo13uYX/dMyyV4l8vVDWu1dJV6hDkWM1bTB/JBTKdnaI82
+         tgjlVVtO7V2UeOLm/93dm00MtjQNGvwE2LW9HrzE1Zwbq8nQnYAAHYTAqWnOkBTsOQ
+         I7B40TIGjvj2Q==
+Received: from [104.132.45.110] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qTKVY-00372P-FV;
+        Tue, 08 Aug 2023 12:04:12 +0100
+Date:   Tue, 08 Aug 2023 12:04:19 +0100
+Message-ID: <871qgdre18.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/3] arm64: KVM: Support exclude_guest for Coresight trace in nVHE
+In-Reply-To: <20230804101317.460697-3-james.clark@arm.com>
+References: <20230804101317.460697-1-james.clark@arm.com>
+        <20230804101317.460697-3-james.clark@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 104.132.45.110
+X-SA-Exim-Rcpt-To: james.clark@arm.com, coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mike.leach@linaro.org, leo.yan@linaro.org, alexander.shishkin@linux.intel.com, anshuman.khandual@arm.com, robh@kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,23 +78,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen/Mike,
-
-On 7/31/23 20:02, niravkumar.l.rabara@intel.com wrote:
-> From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+On Fri, 04 Aug 2023 11:13:12 +0100,
+James Clark <james.clark@arm.com> wrote:
 > 
-> Add support for Intel's SoCFPGA Agilex5 platform. The clock manager
-> driver for the Agilex5 is very similar to the Agilex platform,we can
-> re-use most of the Agilex clock driver.
+> Currently trace will always be generated in nVHE as long as TRBE isn't
+> being used. To allow filtering out guest trace, re-apply the filter
+> rules before switching to the guest.
 > 
-> Signed-off-by: Teh Wen Ping <wen.ping.teh@intel.com>
-> Reviewed-by: Dinh Nguyen <dinguyen@kernel.org>
-> Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+> The TRFCR restore function remains the same.
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
 > ---
->   drivers/clk/socfpga/clk-agilex.c | 433 ++++++++++++++++++++++++++++++-
->   1 file changed, 431 insertions(+), 2 deletions(-)
+>  arch/arm64/kvm/debug.c             |  7 ++++
+>  arch/arm64/kvm/hyp/nvhe/debug-sr.c | 56 +++++++++++++++++++++++++++---
+>  2 files changed, 59 insertions(+), 4 deletions(-)
 > 
+> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
+> index 8725291cb00a..ebb4db20a859 100644
+> --- a/arch/arm64/kvm/debug.c
+> +++ b/arch/arm64/kvm/debug.c
+> @@ -335,10 +335,17 @@ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu)
+>  	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
+>  	    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
+>  		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
+> +	/*
+> +	 * Save TRFCR on nVHE if FEAT_TRF exists. This will be done in cases
+> +	 * where DEBUG_STATE_SAVE_TRBE doesn't completely disable trace.
+> +	 */
+> +	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceFilt_SHIFT))
+> +		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
+>  }
+>  
+>  void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
+>  {
+>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_SPE);
+>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
+> +	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
+>  }
+> diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> index 4558c02eb352..0e8c85b29b92 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> @@ -51,13 +51,17 @@ static void __debug_restore_spe(u64 pmscr_el1)
+>  	write_sysreg_s(pmscr_el1, SYS_PMSCR_EL1);
+>  }
+>  
+> -static void __debug_save_trace(u64 *trfcr_el1)
+> +/*
+> + * Save TRFCR and disable trace completely if TRBE is being used. Return true
+> + * if trace was disabled.
+> + */
+> +static bool __debug_save_trace(u64 *trfcr_el1)
+>  {
+>  	*trfcr_el1 = 0;
+>  
+>  	/* Check if the TRBE is enabled */
+>  	if (!(read_sysreg_s(SYS_TRBLIMITR_EL1) & TRBLIMITR_EL1_E))
+> -		return;
+> +		return false;
 
-If you're ok with this patch, can I take this through armsoc?
+While you're refactoring this code, please move the zeroing of
+*trfcr_el1 under the if statement.
 
-Dinh
+>  	/*
+>  	 * Prohibit trace generation while we are in guest.
+>  	 * Since access to TRFCR_EL1 is trapped, the guest can't
+> @@ -68,6 +72,8 @@ static void __debug_save_trace(u64 *trfcr_el1)
+>  	isb();
+>  	/* Drain the trace buffer to memory */
+>  	tsb_csync();
+> +
+> +	return true;
+>  }
+>  
+>  static void __debug_restore_trace(u64 trfcr_el1)
+> @@ -79,14 +85,55 @@ static void __debug_restore_trace(u64 trfcr_el1)
+>  	write_sysreg_s(trfcr_el1, SYS_TRFCR_EL1);
+>  }
+>  
+> +#if IS_ENABLED(CONFIG_PERF_EVENTS)
+
+As previously stated, just always compile this. There shouldn't be
+anything here that's so large that it becomes a candidate for
+exclusion. Hell, even the whole of NV+pKVM are permanent features,
+even of most people won't use *any* of that.
+
+> +static inline void __debug_save_trfcr(struct kvm_vcpu *vcpu)
+> +{
+> +	u64 trfcr;
+> +	struct kvm_etm_event etm_event = vcpu->arch.host_debug_state.etm_event;
+> +
+> +	/* No change if neither are excluded */
+> +	if (!etm_event.exclude_guest && !etm_event.exclude_host) {
+> +		/* Zeroing prevents restoring a stale value */
+> +		vcpu->arch.host_debug_state.trfcr_el1 = 0;
+
+I find this "zero means do nothing" part very odd. I can see it is
+already done, but I really dislike this sort of assumption to avoid
+writing to a register.
+
+I'd really prefer we track another version of TRFCR_EL1, compare host
+and guest, and decide to avoid writing if they are equal. At least, it
+would be readable.
+
+And in the end, expressing *everything* in terms of the register would
+really help, instead of the exclude_* stuff that has no place in the
+low-level arch code.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
