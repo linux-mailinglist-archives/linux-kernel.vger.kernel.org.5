@@ -2,126 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B30773EDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2BD773F73
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbjHHQh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
+        id S230488AbjHHQrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233295AbjHHQhN (ORCPT
+        with ESMTP id S230512AbjHHQqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:37:13 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D9447F5;
-        Tue,  8 Aug 2023 08:53:21 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-267fc1d776eso3255192a91.2;
-        Tue, 08 Aug 2023 08:53:21 -0700 (PDT)
+        Tue, 8 Aug 2023 12:46:38 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58514170F8
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:56:40 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so7029207a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:56:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691509999; x=1692114799;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hc7u3pVQBq46Mma3c41IRkv2aI1kzf2Sp7UqgYywek0=;
-        b=ShqHbumPVyvR7hMFmmR8pLeGldIVcepHVR/9kknDYTa4igimG/C/EulormMNMEZ5YI
-         FBq9fuODGvXdsSIYR4mcRAujDGkeJSKEErKpZrkR3fStNgX5c3h31De+knd5pNNd2fmj
-         7Q4QCat/8h8aN1l5rtVYCMUoz5+aYYTkkmjJRs6DxMybPUo2XWdH5kHgUOXOrxu7eOnl
-         pRJEKewvS195qW8N+YkKhkdnnC6pgfVzW73OHod2l/PTLV30+mwmDkY2SvvU+XoIoDg1
-         QzxuD0suwwLM5B275wdse1eXXXt7y/3G5p3SC44aNPMeKVUhDIIkCAXz0NBK0nRiHWn5
-         oJWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691509999; x=1692114799;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1691510170; x=1692114970;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Hc7u3pVQBq46Mma3c41IRkv2aI1kzf2Sp7UqgYywek0=;
-        b=ecs55SbrUho1VAzh1rvyhE+cPBJ9VewbJfxA1A6Zed4UIfkfxP+le8lx0bg6BGUcDM
-         HDH3Ci+ERH4mlCNX0QXL8ti32bx99+CLwlZU7gt2PKqQcaL5syvXDwYJQjyVhMYcMDii
-         AUHNigQyYk1qQ77pS5YDs9XXkhnDAZPC1gJ2N8oL5rAaZb/dLI2yXFNlA380t9tG5PQw
-         X4Omns2J0vtAaqJqk0inVSF940EIEyFJzilxGR69PFx5j/JmeAvpyjH1cSeJUsWMqMa1
-         phrmSponvK+TolmD1ndrIVMEaa7xqdp1fP83LG+JCvJZGXPxl5HfJnZUFUNHnDRdkNV8
-         XkcQ==
-X-Gm-Message-State: AOJu0YxXrV5sh4P6OfLeHuZ3pzLgOAJXS77PXxsPCSY+ATTre3uhEyC2
-        oxU1LuYGiTZkVo5mvQNcYoE/TIruc3QWn6s9f+kq9yWth2U=
-X-Google-Smtp-Source: AGHT+IEJ1AQvyHuiu0zGUNSGA8g43uy6P+N5S7w+frRGs89r74VrtsPl6b414NNq+Y6F9xpTgBP+L1f9pk+y28IRee4=
-X-Received: by 2002:a4a:9208:0:b0:56c:e554:d7e6 with SMTP id
- f8-20020a4a9208000000b0056ce554d7e6mr10200063ooh.3.1691483011514; Tue, 08 Aug
- 2023 01:23:31 -0700 (PDT)
+        bh=bRPNurCVUK+kZN7q7E8TsOpZ2X9nLclQ5Lcqn45M43Y=;
+        b=D3+x+5n0GK3u4IvyihWkyCDxlrk5NlbF30zhFFSecLGrMNk+OEE3v4EwF9AfA1eH28
+         aWko4PAPAhq3crmSkM4DS9FaQXVn59L/RJ2o0WbCUeXbJQD80e542cRGjBKeThWKzDp5
+         RzdGlI0QNdni3iyzCyR0dA+N850UqCvO3wH+CivA8vWzB1Ad4ShikNMWhkDhNImk++2a
+         aVGQd/lEfDlS+G0RSjnqQ3RrtwWiUX4852zTl99SWCCAvI9tdzFZa1hDYkViTWMTbPLr
+         FYbgStzldNz+GSaLyS37jAl3hfVSMLJzdvkC2z/k/Pqe/VgW1WLWi/GHMm76YEA2c5pt
+         mSSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691510170; x=1692114970;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bRPNurCVUK+kZN7q7E8TsOpZ2X9nLclQ5Lcqn45M43Y=;
+        b=ilAITqXFVU4dSf0PSK1SNapD2fDIq/3i4tztPNrBX1c7GgqX7xGEBdX93gNbH44FZD
+         wpyux/k48xJAco5Tqz0HBeYDW8FZ4q77iY7IdocU+uPQ9j010dwO9TxOIGCjEdbyKI7l
+         9BQpyJHUwElrAAwFHijrJ9/vIh+x7H2RTaE6W+ogkXLEAvImMZgL6pAm3Co9sWQk0Hj2
+         p05eU0LhshPEgBEFvDTzpEEhf3kgNoW8ZC93Ot7DEQEKsAxz/I5iYDe32hR+cAEtpMid
+         gO+KvYYwf4kv0A/Kg9FPJANDAGqLUc3WT+Ml7K0QQbheanwoWW33N/If1cFzbs+BKhtV
+         iajQ==
+X-Gm-Message-State: AOJu0Yz2L8MjDq9O5urZPyEMNNSKjgdp7Hwms6rYDjT5RNMIUklqaDcZ
+        BN+84SBwotEH56j+tJMrDai7JSbTlmZBZ3rFtTk=
+X-Google-Smtp-Source: AGHT+IFcKitgCUMDjTXmYFgGTjati7nhjKf1RmPJEXoKcYA78VEzCeeOhe2OLLR3Pt79LBJFdpGryg==
+X-Received: by 2002:a05:6512:358b:b0:4fd:d4b4:faba with SMTP id m11-20020a056512358b00b004fdd4b4fabamr7004297lfr.51.1691483164349;
+        Tue, 08 Aug 2023 01:26:04 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id t13-20020a19ad0d000000b004fbae18984dsm1787087lfc.255.2023.08.08.01.26.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 01:26:03 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 08 Aug 2023 10:25:56 +0200
+Subject: [PATCH 2/2] csky: Make pfn accessors static inlines
 MIME-Version: 1.0
-Received: by 2002:a8a:696:0:b0:4f0:1250:dd51 with HTTP; Tue, 8 Aug 2023
- 01:23:30 -0700 (PDT)
-In-Reply-To: <20230808-eingaben-lumpen-e3d227386e23@brauner>
-References: <20230806230627.1394689-1-mjguzik@gmail.com> <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
- <20230808-eingaben-lumpen-e3d227386e23@brauner>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Tue, 8 Aug 2023 10:23:30 +0200
-Message-ID: <CAGudoHF=cEvXy3v96dN_ruXHnPv33BA6fA+dCWCm-9L3xgMPNQ@mail.gmail.com>
-Subject: Re: [PATCH] fs: use __fput_sync in close(2)
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oleg@redhat.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230808-csky-virt-to-phys-v1-2-ac727f8def2f@linaro.org>
+References: <20230808-csky-virt-to-phys-v1-0-ac727f8def2f@linaro.org>
+In-Reply-To: <20230808-csky-virt-to-phys-v1-0-ac727f8def2f@linaro.org>
+To:     Vineet Gupta <vgupta@kernel.org>, Guo Ren <guoren@kernel.org>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/23, Christian Brauner <brauner@kernel.org> wrote:
-> It adds two new exports of filp_close_sync() and close_fd_sync() without
-> any users. That's not something we do and we also shouldn't encourage
-> random drivers to switch to sync behavior.
->
+Making virt_to_pfn() a static inline taking a strongly typed
+(const void *) makes the contract of a passing a pointer of that
+type to the function explicit and exposes any misuse of the
+macro virt_to_pfn() acting polymorphic and accepting many types
+such as (void *), (unitptr_t) or (unsigned long) as arguments
+without warnings.
 
-They don't need to be exported for the patch to work.
+For symmetry to the same thing with pfn_to_virt().
 
-> That rseq thing is completely orthogonal and maybe that needs to be
-> fixed and you can go and convince the glibc people to do it.
->
+In order to do this we move the virt_to_phys() and
+phys_to_virt() below the definitions of the __pa()
+and __va() macros so it compiles. The macro version was also
+able to do recursive symbol resolution.
 
-This is not a glibc problem, but rseq problem -- it should not be
-lumped into any case which uses task_work_add.
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ arch/csky/include/asm/page.h | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-> And making filp_close() fully sync again is also really not great.
-
-The patch is not doing it.
-
-> Simplicity wins out and if all codepaths share the same behavior we're
-> better off then having parts use task work and other parts just not.
->
-
-The difference is not particularly complicated.
-
-> Yes, we just did re-added the f_pos optimization because it may have had
-> an impact. And that makes more sense because that was something we had
-> changed just a few days/weeks before.
->
-
-I don't think perf tax on something becomes more sensible the longer
-it is there.
-
-> But this is over 10 year old behavior and this micro benchmarking isn't
-> a strong selling point imho. We could make close(2) go sync, sure. But
-> I'm skeptical even about this without real-world data or from a proper
-> testsuite.
->
-
-I responded to this in my mail to Eric.
-
-> (There's also a stray sysctl_fput_sync there which is scary to think that
-> we'd ever allow a sysctl that allows userspace to control how we close
-> fds.)
->
-
-This is a leftover from my tests -- I added a runtime switch so can I
-flip back and forth, most definitely not something I would expect to
-be shipped.
+diff --git a/arch/csky/include/asm/page.h b/arch/csky/include/asm/page.h
+index b23e3006a9e0..80da7e96a8fa 100644
+--- a/arch/csky/include/asm/page.h
++++ b/arch/csky/include/asm/page.h
+@@ -34,9 +34,6 @@
+ 
+ #include <linux/pfn.h>
+ 
+-#define virt_to_pfn(kaddr)      (__pa(kaddr) >> PAGE_SHIFT)
+-#define pfn_to_virt(pfn)        __va((pfn) << PAGE_SHIFT)
+-
+ #define virt_addr_valid(kaddr)  ((void *)(kaddr) >= (void *)PAGE_OFFSET && \
+ 			(void *)(kaddr) < high_memory)
+ 
+@@ -80,6 +77,16 @@ extern unsigned long va_pa_offset;
+ 
+ #define __pa_symbol(x)	__pa(RELOC_HIDE((unsigned long)(x), 0))
+ 
++static inline unsigned long virt_to_pfn(const void *kaddr)
++{
++	return __pa(kaddr) >> PAGE_SHIFT;
++}
++
++static inline void * pfn_to_virt(unsigned long pfn)
++{
++	return __va(pfn) << PAGE_SHIFT;
++}
++
+ #define MAP_NR(x)	PFN_DOWN((unsigned long)(x) - PAGE_OFFSET - \
+ 				 PHYS_OFFSET_OFFSET)
+ #define virt_to_page(x)	(mem_map + MAP_NR(x))
 
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+2.34.1
+
