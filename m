@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C627747E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCFC7748E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235391AbjHHTVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
+        id S233491AbjHHToi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236051AbjHHTVN (ORCPT
+        with ESMTP id S229882AbjHHTo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:21:13 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F8242AE0
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:44:35 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5230f8da574so3373490a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:44:35 -0700 (PDT)
+        Tue, 8 Aug 2023 15:44:26 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C9E1159A8
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:47:35 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fe4ad22e36so40081675e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:47:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691513073; x=1692117873;
+        d=linaro.org; s=google; t=1691513254; x=1692118054;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=qtIG2M/ca+5GsdX8n1RK00emvWGjV3tMf5tcX7VIHus=;
-        b=VtRLX9V6pg1MLxheMEDKqjbU4cOW4VDRLvR2z1bNJtgIf5f+c9yS7lmVmMlF7DATb7
-         497POMDL1s6JragCdo9W8n/Fcf8x8cuGFKLRB6Tsl6ZKQETm5+Ah2AyTS9XH/jW2E4pK
-         0Dm7xpwsZso0FdUYkI0WGB6Ue6+gPu4/3zD6h4JEGKz5GAFevmt998o3aC4DoV2+xqqT
-         BoYiRGNmXMaLCYq2zZrkQSce18/UGpwAJm07TLPEPEFxpdTRCf1QOU3rgV97dcmpaP3X
-         oqUSh4/yj4n4VeguRRxjc/rb5ajKWY9FOb+FA4ElF7TIyFRXpv7Wx9JW9mC+tjlQ9ZAk
-         1ExA==
+        bh=C+dlxZR3XfI563ojSxefCjRIUUjTHomDfo7z0fT83jY=;
+        b=q07fediRofco+Yvcy6U1DWzgPZnRf250OwWYV6wv7ZtUdzWbtCGuL5YVPZ6tFkh/QA
+         AccOWezxyrGXKitrrnN9zOtOTEsHWLoOjBqaPx5bDjog8cJd+PyrTg0h/myk2KT/bYKc
+         2vXYUnDKUjYCr8LIcJ+LRhoocNIH2HLEMjxQGJ680g1evwSLcZjTnHibxmZN5EDbxwJ6
+         h+LmB3Nl7A2Y1NNO79mvU6q9/mGnAlTGIcfCcZG7hLgVYTsiO2suSHFQ0C8yZOwFBaE2
+         pgpiHWx/7VQt+thH5v4yQFk+/GmlpM+nToZFxahhu7Io3ZQTzDjN7ZJawxwiip/75VpN
+         KDhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691513073; x=1692117873;
+        d=1e100.net; s=20221208; t=1691513254; x=1692118054;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qtIG2M/ca+5GsdX8n1RK00emvWGjV3tMf5tcX7VIHus=;
-        b=eCwkJGjZ8LbBNB1dhDcq//Doyt5MlWyKgKm4EuZpXR2u+WInMhNOrMlnBZIJGSDqxq
-         ZPQKoE9iirVaco4O00RUr1/zxuTR98Neg9qdDaIcrd+MVcT/qbT8dzG2NXN7VgGMLPEg
-         DGZwD9LWgtrF2ZVErLNG2o1vmLHcFym2yDJAikuxhXERLcYtFHJUJ1a2Uk++1DvqMbT1
-         NmLtWswj+9UDIUTrwLNJeZWAeomXLeMBl/LpFq3qsL5tg7vnWhrW1Z4rdmgWJ0QB/J5r
-         fq0+av9xKzNGyTqm/gf42GKWTxm2S8NWGp1GsvWEekt0AywueyNExP3f0bNEs5TAfj7Z
-         cnMw==
-X-Gm-Message-State: AOJu0YwxxbWBpUKwaeihPyMcXmNflHCybhnnepXfwD/kmZ4HvscnFAlp
-        T1kmN/p0cCRnWrup/PkaBDWoIK4rFDD/mdXbe78=
-X-Google-Smtp-Source: AGHT+IGabpvcf+YfqqvSp128b6pb/ZcVi3xmONq1O6a4S0szO5ZdOqerklrUaTjPj2ZyYc9Tu1UkPA==
-X-Received: by 2002:a2e:6817:0:b0:2b5:8a21:5627 with SMTP id c23-20020a2e6817000000b002b58a215627mr9324746lja.51.1691502403287;
-        Tue, 08 Aug 2023 06:46:43 -0700 (PDT)
+        bh=C+dlxZR3XfI563ojSxefCjRIUUjTHomDfo7z0fT83jY=;
+        b=Ry5SYSxeDqlnTp/oCkY4x9o4WPDBdB/KOjppTEllMQaZnLPbItXntr1kgjaRNwL24R
+         Xa6f58GdFCMXs4bai06WozrO1AgRCu0mAlfy6A7rXHCDD3Mc5M+F6o182yDLVOc/1CSX
+         sXHnlYjIovRn89Va1F945tDmmNt99V0EWMkGM8tcx+mD8wloHEeTNGH2MjWBtC2MS8eT
+         w+it/idInFZLd3shKMe5M65QwXVKCDGUBkX3Scj3iGdzQgFLhgp6saybDk/9vzmK15/f
+         xt9cE8nr9VSVSKYFlAdHu68RvuJ1GAjsRhkd97C4274tbiNIQCMBRj9E3zJI3BqYl+Oh
+         7eKA==
+X-Gm-Message-State: AOJu0YxgdxFnzgcuL3uEDOMvtBVX2JDBNeh4/DS8uj1dVzfioFPWdE/O
+        CX2CMLnFmr4oFNH61PLUSoZqBPfxBgfbavZwU1o=
+X-Google-Smtp-Source: AGHT+IE+SDMqqQOfzDMcBQm6Q8z18mxaHPEwNvAM53y4c2JzhwsSdcZlgBmTg4v2rNjwyQRUpQmonw==
+X-Received: by 2002:a2e:8791:0:b0:2b4:7f66:8c92 with SMTP id n17-20020a2e8791000000b002b47f668c92mr9274596lji.31.1691502410752;
+        Tue, 08 Aug 2023 06:46:50 -0700 (PDT)
 Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id u23-20020a2e8557000000b002b93d66b82asm2284493ljj.112.2023.08.08.06.46.42
+        by smtp.gmail.com with ESMTPSA id u23-20020a2e8557000000b002b93d66b82asm2284493ljj.112.2023.08.08.06.46.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 06:46:42 -0700 (PDT)
+        Tue, 08 Aug 2023 06:46:50 -0700 (PDT)
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 08 Aug 2023 15:46:31 +0200
-Subject: [PATCH 04/11] regulator: rk808: Drop useless headers
+Date:   Tue, 08 Aug 2023 15:46:37 +0200
+Subject: [PATCH 10/11] regulator: bd71828: Drop useless header
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230808-descriptors-regulator-v1-4-939b5e84dd18@linaro.org>
+Message-Id: <20230808-descriptors-regulator-v1-10-939b5e84dd18@linaro.org>
 References: <20230808-descriptors-regulator-v1-0-939b5e84dd18@linaro.org>
 In-Reply-To: <20230808-descriptors-regulator-v1-0-939b5e84dd18@linaro.org>
 To:     Tony Lindgren <tony@atomide.com>,
@@ -76,7 +76,7 @@ Cc:     linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
         Linus Walleij <linus.walleij@linaro.org>
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -85,30 +85,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RK808 is already using the proper <linux/gpio/consumer.h>
-header and includes the legacy headers <linux/gpio.h> and
-<linux/of_gpio.h> for no reason, drop the includes.
+The bd71828 includes the legacy header <linux/gpio.h> for no
+reason, drop the include. The documentation mentions GPIO but there
+is no usage of the GPIO namespace.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/regulator/rk808-regulator.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/regulator/bd71828-regulator.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/regulator/rk808-regulator.c b/drivers/regulator/rk808-regulator.c
-index 460525ed006c..e65339ef47ad 100644
---- a/drivers/regulator/rk808-regulator.c
-+++ b/drivers/regulator/rk808-regulator.c
-@@ -15,10 +15,8 @@
-  */
+diff --git a/drivers/regulator/bd71828-regulator.c b/drivers/regulator/bd71828-regulator.c
+index f3205dc9d4fc..08d4ee369287 100644
+--- a/drivers/regulator/bd71828-regulator.c
++++ b/drivers/regulator/bd71828-regulator.c
+@@ -5,7 +5,6 @@
  
  #include <linux/delay.h>
+ #include <linux/err.h>
 -#include <linux/gpio.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
--#include <linux/of_gpio.h>
- #include <linux/mfd/rk808.h>
- #include <linux/regulator/driver.h>
- #include <linux/regulator/of_regulator.h>
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
+ #include <linux/mfd/rohm-bd71828.h>
 
 -- 
 2.34.1
