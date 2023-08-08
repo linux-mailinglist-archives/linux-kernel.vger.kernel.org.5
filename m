@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E47F377475E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8090D7747AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233581AbjHHTOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
+        id S235849AbjHHTRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235372AbjHHTN5 (ORCPT
+        with ESMTP id S235991AbjHHTRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:13:57 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F7E36843
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:36:50 -0700 (PDT)
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RKtYl6h5fz1L945;
-        Tue,  8 Aug 2023 20:59:23 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
- (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 8 Aug
- 2023 21:00:33 +0800
-From:   Ruan Jinjie <ruanjinjie@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, Lee Jones <lee@kernel.org>
-CC:     <ruanjinjie@huawei.com>
-Subject: [PATCH -next] mfd: tc3589x: Remove redundant of_match_ptr()
-Date:   Tue, 8 Aug 2023 21:00:02 +0800
-Message-ID: <20230808130003.4076702-1-ruanjinjie@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 8 Aug 2023 15:17:04 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1567A3FD10
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:39:53 -0700 (PDT)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RKtWP6Q3yztRpq;
+        Tue,  8 Aug 2023 20:57:21 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.202) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 8 Aug 2023 21:00:50 +0800
+From:   Zhu Wang <wangzhu9@huawei.com>
+To:     <lee@kernel.org>, <thor.thayer@linux.intel.com>,
+        <ckeepax@opensource.cirrus.com>, <rf@opensource.cirrus.com>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>
+CC:     <wangzhu9@huawei.com>
+Subject: [PATCH -next 0/8] mfd: remove redundant of_match_ptr()
+Date:   Tue, 8 Aug 2023 21:00:15 +0800
+Message-ID: <20230808130023.202700-1-wangzhu9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemi500008.china.huawei.com (7.221.188.139)
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.202]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver depends on CONFIG_OF, it is not necessary to use
-of_match_ptr() here.
+The driver depends on CONFIG_OF, so it is not necessary to use
+of_match_ptr() here. We remove of_match_ptr() here.
 
-Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
----
- drivers/mfd/tc3589x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Zhu Wang (8):
+  mfd: rsmu_i2c: remove redundant of_match_ptr()
+  mfd: altera-a10sr: remove redundant of_match_ptr()
+  mfd: rsmu_spi: remove redundant of_match_ptr()
+  mfd: act8945a: remove redundant of_match_ptr()
+  mfd: stpmic1: remove redundant of_match_ptr()
+  mfd: hi655x-pmic: remove redundant of_match_ptr()
+  mfd: lochnagar-i2c: remove redundant of_match_ptr()
+  mfd: rn5t618: remove redundant of_match_ptr()
 
-diff --git a/drivers/mfd/tc3589x.c b/drivers/mfd/tc3589x.c
-index 16df64e3c0be..28125599fea4 100644
---- a/drivers/mfd/tc3589x.c
-+++ b/drivers/mfd/tc3589x.c
-@@ -483,7 +483,7 @@ static struct i2c_driver tc3589x_driver = {
- 	.driver = {
- 		.name	= "tc3589x",
- 		.pm	= pm_sleep_ptr(&tc3589x_dev_pm_ops),
--		.of_match_table = of_match_ptr(tc3589x_match),
-+		.of_match_table = tc3589x_match,
- 	},
- 	.probe		= tc3589x_probe,
- 	.remove		= tc3589x_remove,
+ drivers/mfd/act8945a.c      | 2 +-
+ drivers/mfd/altera-a10sr.c  | 2 +-
+ drivers/mfd/hi655x-pmic.c   | 2 +-
+ drivers/mfd/lochnagar-i2c.c | 2 +-
+ drivers/mfd/rn5t618.c       | 2 +-
+ drivers/mfd/rsmu_i2c.c      | 2 +-
+ drivers/mfd/rsmu_spi.c      | 2 +-
+ drivers/mfd/stpmic1.c       | 2 +-
+ 8 files changed, 8 insertions(+), 8 deletions(-)
+
 -- 
-2.34.1
+2.17.1
 
