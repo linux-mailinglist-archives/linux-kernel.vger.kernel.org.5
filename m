@@ -2,140 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5337377447C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C1B77490C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235657AbjHHSVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
+        id S235526AbjHHTrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235511AbjHHSVJ (ORCPT
+        with ESMTP id S235476AbjHHTra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:21:09 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A2C17012E
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:30:55 -0700 (PDT)
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4RKvbt03tMz9sTC;
-        Tue,  8 Aug 2023 15:46:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1691502378;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tJaPJCb57rFcTjifY7HDh29RsuKKFz2of9slLTwxsBc=;
-        b=H9pw2RY1RsE8VJrHAg8s6wkROee8RInItzUQQKlJrXOEKL27ySn6uRcgAmMXpMAmbAFekk
-        JcZqzY8sF/VIfy0jyU2BLM953MmfvkbyTElVh/+O2+5AqJKjQs1/TeqbH50x83bTGIBIgJ
-        Rzjmk2Z2mQLRATC/0MIAYNNwvfkOz0gGnDy7GLHsmxGbA+p/DtWp0tLHpggFuDjOqlO7Zj
-        E8jtAXBuDetiQwVlhGdUkTKPy95a4i8o8u7nadhesxaGVwgqkUhh+EU3fZXsPnj8SHVnHH
-        X9KbgAuOiEu/zDDaiNUGTElg9PjTYfD97StkO9OM4Y7eMoo8Dwl82uY5uWWZCg==
-Message-ID: <dd2ceacc-f59b-9c3c-e4ce-30b3bbd6939b@mailbox.org>
-Date:   Tue, 8 Aug 2023 15:46:14 +0200
+        Tue, 8 Aug 2023 15:47:30 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCF9124FFB
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:51:41 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99cdb0fd093so319576466b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:51:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691513500; x=1692118300;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d/kMxPLtuYtfsGSJG2tOdeZ1yEQcKsWU7BmPk/CzUa0=;
+        b=scBHgpqk7EagVLbeen3bq3bqLMXS6JxWJ/8FVfrDEPJisTI6zpOLzm0XLC+fnma2RZ
+         nw9pBeY+WE2BQvt3zlSmjS79S5FavQH1Dx16oMU7lpxImCJVmJzEZJrQPQyDnJN0VnqV
+         4eYa3S76ilL9LBoJzvto1gjtARcRndwVI7RLIElQBIWJtBXGOy+vKl08S2rlbk3hxfj4
+         UjGcjT91rlW6XFr/te7FZyYjzpR++vzdkJkQag2wYGflqN5TEAgptKu+dFR9uIdlFSko
+         jNe7i6wMgTzMGH2vIMxp/YUFW9Lkcvtr21gHAxTrl8owyn8qN49qeRzua6DsjLZDw8XD
+         Hbeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691513500; x=1692118300;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d/kMxPLtuYtfsGSJG2tOdeZ1yEQcKsWU7BmPk/CzUa0=;
+        b=au4Kl+XbsvX0zQfcbO/7nqt7BSYGnQpkLJX7MVXxmI4cXK60deWlXfgI465g4Kqb4o
+         orKVIdLZH1wvAC9TQtbbZyWQB5TPnp1b653G/rg83IOjtIadlXWI4DvSQCxX2/MjwKvF
+         Tztzg9383xCknFGrQ5sru9jSgK9L6O95IMRQbqt7ufEZhYjodtB86pmJ1CE2vPnxKrqq
+         vSz9qxGMge7f0OwlK9ED89jqn0nn/MzhXa6SwPnxET7kKTO/7ayb19jFf6X3yuF+/lUn
+         Gy/YschmgUCbUmWHlIArZb0iK3JB8aY7SD2hCyQeT8vDXvM2DUTQPHekuCXFrZrQwSlW
+         xYQw==
+X-Gm-Message-State: AOJu0YzRlw2AlYeQfbuhAHs4uk/aMyOXzzZQhH4z0KH0ALbhFraFyqXv
+        KINL+8rE1sAGjVKlCM1AzhRgAIErvyigbHfS3I8=
+X-Google-Smtp-Source: AGHT+IHWCMZNWUenzR2ow6DEw9qzbs1hN0zvPorE5eMO9zjCNiMy4ZjezjEMoOdrW0oJwauJJK4sjw==
+X-Received: by 2002:a2e:9e0c:0:b0:2b9:a6a1:f12 with SMTP id e12-20020a2e9e0c000000b002b9a6a10f12mr8506359ljk.43.1691502397847;
+        Tue, 08 Aug 2023 06:46:37 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id u23-20020a2e8557000000b002b93d66b82asm2284493ljj.112.2023.08.08.06.46.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 06:46:36 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 00/11] Regulator legacy GPIO header removal
+Date:   Tue, 08 Aug 2023 15:46:27 +0200
+Message-Id: <20230808-descriptors-regulator-v1-0-939b5e84dd18@linaro.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 03/17] drm/imagination/uapi: Add PowerVR driver UAPI
-To:     Sarah Walker <sarah.walker@imgtec.com>
-Cc:     matthew.brost@intel.com, luben.tuikov@amd.com, tzimmermann@suse.de,
-        linux-kernel@vger.kernel.org, mripard@kernel.org, afd@ti.com,
-        boris.brezillon@collabora.com, dakr@redhat.com,
-        donald.robson@imgtec.com, hns@goldelico.com,
-        christian.koenig@amd.com, faith.ekstrand@collabora.com,
-        dri-devel@lists.freedesktop.org
-References: <20230714142543.111625-1-sarah.walker@imgtec.com>
-Content-Language: en-CA
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
-In-Reply-To: <20230714142543.111625-1-sarah.walker@imgtec.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-MBO-RS-META: c3pcynk7cpw94jyg1qwudy3osh1qy5xp
-X-MBO-RS-ID: ec8b53fa39038fb6f46
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADNH0mQC/3WNQQqDMBBFryKzbkqMtUpX3qO4iGaiA2Jkpg0tk
+ rs3Fbrsbt7n/zc7CDKhwK3YgTGSUFgzlKcCxtmuEypymcFoU+lWN8qhjEzbI7Aoxum52HyqCl1
+ jL8Y73RjI243R0+vw3vvMM0muvY83sfymP2P7xxhLpZXxvq4GfbVDbbuFVsvhHHiCPqX0AYvhI
+ ou7AAAA
+To:     Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/23 16:25, Sarah Walker wrote:
-> 
-> +/**
-> + * DOC: PowerVR IOCTL CREATE_BO interface
-> + */
-> +
-> +/**
-> + * DOC: Flags for CREATE_BO
-> + *
-> + * The &struct drm_pvr_ioctl_create_bo_args.flags field is 64 bits wide and consists
-> + * of three groups of flags: creation, device mapping and CPU mapping.
-> + *
-> + * We use "device" to refer to the GPU here because of the ambiguity between
-> + * CPU and GPU in some fonts.
-> + *
-> + * Creation options
-> + *    These use the prefix ``DRM_PVR_BO_CREATE_``.
-> + *
-> + *    :ZEROED: Require the allocated buffer to be zeroed before returning. Note
-> + *      that this is an active operation, and is never zero cost. Unless it is
-> + *      explicitly required, this option should not be set.
+This removes some low hanging dangling <linux/gpio.h>
+includes.
 
-Making this optional is kind of problematic from a security standpoint (information leak, at least if the memory was previously used by a different process). See e.g. the discussion starting at https://gitlab.freedesktop.org/mesa/mesa/-/issues/9189#note_1972986 .
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Linus Walleij (11):
+      regulator: tps65910: Drop useless header
+      regulator: s2mpa01: Drop useless header
+      regulator: rpi-panel-attiny: Drop useless header
+      regulator: rk808: Drop useless headers
+      regulator: rc5t583: Drop useless header
+      regulator: mt6311: Drop useless header
+      regulator: mcp16502: Drop useless header
+      regulator: max20086: Drop useless header
+      regulator: lp8755: Drop useless header
+      regulator: bd71828: Drop useless header
+      regulator: bd71815: Drop useless header
 
-AFAICT the approach I suggested there (Clear freed memory in the background, and make it available for allocation again only once the clear has finished) isn't really possible with gem_shmem in its current state though. There seems to be ongoing work to do something like that for __GFP_ZERO in general, maybe gem_shmem could take advantage of that when it lands. I'm afraid this series can't depend on that though.
+ drivers/regulator/bd71815-regulator.c          | 1 -
+ drivers/regulator/bd71828-regulator.c          | 1 -
+ drivers/regulator/lp8755.c                     | 1 -
+ drivers/regulator/max20086-regulator.c         | 1 -
+ drivers/regulator/mcp16502.c                   | 1 -
+ drivers/regulator/mt6311-regulator.c           | 1 -
+ drivers/regulator/rc5t583-regulator.c          | 1 -
+ drivers/regulator/rk808-regulator.c            | 2 --
+ drivers/regulator/rpi-panel-attiny-regulator.c | 1 -
+ drivers/regulator/s2mpa01.c                    | 1 -
+ drivers/regulator/tps65910-regulator.c         | 1 -
+ 11 files changed, 12 deletions(-)
+---
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+change-id: 20230807-descriptors-regulator-3ed7a42fd072
 
-
-> +/**
-> + * DOC: PowerVR IOCTL VM_MAP and VM_UNMAP interfaces
-> + *
-> + * The VM UAPI allows userspace to create buffer object mappings in GPU virtual address space.
-> + *
-> + * The client is responsible for managing GPU address space. It should allocate mappings within
-> + * the heaps returned by %DRM_PVR_DEV_QUERY_HEAP_INFO_GET.
-> + *
-> + * %DRM_IOCTL_PVR_VM_MAP creates a new mapping. The client provides the target virtual address for
-> + * the mapping. Size and offset within the mapped buffer object can be specified, so the client can
-> + * partially map a buffer.
-> + *
-> + * %DRM_IOCTL_PVR_VM_UNMAP removes a mapping. The entire mapping will be removed from GPU address
-> + * space. For this reason only the start address is provided by the client.
-> + */
-
-FWIW, the amdgpu driver uses a single ioctl for VM map & unmap (plus two additional operations for partial residency). Maybe this would make sense for the PowerVR driver as well, in particular if it might support partial residency in the future.
-
-(amdgpu also uses similar multiplexer ioctls for other things such as context create/destroy/...)
-
-Just an idea, feel free to ignore.
-
-
-> +/**
-> + * DOC: Flags for SUBMIT_JOB ioctl geometry command.
-> + *
-> + * .. c:macro:: DRM_PVR_SUBMIT_JOB_GEOM_CMD_FIRST
-> + *
-> + *    Indicates if this the first command to be issued for a render.
-> + *
-> + * .. c:macro:: DRM_PVR_SUBMIT_JOB_GEOM_CMD_LAST
-
-Does user space really need to pass in the FIRST/LAST flags, can't the kernel driver determine this implicitly? What happens if user space sets these incorrectly?
-
-
-> + * .. c:macro:: DRM_PVR_SUBMIT_JOB_FRAG_CMD_PREVENT_CDM_OVERLAP
-> + *
-> + *    Disallow compute overlapped with this render.
-
-Does this affect only compute from the same context, or also from other contexts?
-
-(Similar question for DRM_PVR_SUBMIT_JOB_COMPUTE_CMD_PREVENT_ALL_OVERLAP)
-
-
-P.S. I mostly just skimmed the other patches of the series, but my impression is that the patches and code are cleanly structured and well-documented.
-
+Best regards,
 -- 
-Earthling Michel Dänzer            |                  https://redhat.com
-Libre software enthusiast          |         Mesa and Xwayland developer
+Linus Walleij <linus.walleij@linaro.org>
 
