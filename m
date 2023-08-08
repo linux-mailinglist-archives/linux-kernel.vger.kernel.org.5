@@ -2,200 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BD1774918
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2947774791
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbjHHTsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
+        id S235807AbjHHTQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbjHHTsc (ORCPT
+        with ESMTP id S235464AbjHHTQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:48:32 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C094DEA7;
-        Tue,  8 Aug 2023 09:52:59 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378Bs6Yf059357;
-        Tue, 8 Aug 2023 06:54:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691495646;
-        bh=85O1LHmFg/AJ8yaKognKgKFx1SZjvS1koBhd4R/gD6w=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=bkSh49bjXjvQxiVC9sI24Tb/WFdJvqVLySYHPdnrPSqsVT/ddYZMMdHpUWtrnQmVj
-         NpLqEufiYT2xQA5YvU0PFkaYSuYeAQKcXDIupDqlRZQUom+GZ8l9ou76UQ55ki0kvL
-         mnIhd3XDxHpFxS7KniEQNYRPjmhCU6/T8LDYxeq8=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378Bs6IT025553
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Aug 2023 06:54:06 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
- Aug 2023 06:54:04 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 8 Aug 2023 06:54:04 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378Bs4SH098556;
-        Tue, 8 Aug 2023 06:54:04 -0500
-Date:   Tue, 8 Aug 2023 17:24:03 +0530
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Kevin Hilman <khilman@kernel.org>
-CC:     Andrew Davis <afd@ti.com>, Nishanth Menon <nm@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Praneeth Bajjuri" <praneeth@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Vibhore Vardhan <vibhore@ti.com>, Georgi Vlaev <g-vlaev@ti.com>
-Subject: Re: [PATCH V6 4/4] firmware: ti_sci: Introduce system suspend resume
- support
-Message-ID: <20230808115403.dkz6ev5vc6bhcmzh@dhruva>
-References: <20230803064247.503036-1-d-gole@ti.com>
- <20230803064247.503036-5-d-gole@ti.com>
- <3882f0ac-b74c-6eb2-197c-34ca233cd7a3@ti.com>
- <20230803155541.nwsfwobfkbpefoyw@dhruva>
- <8c330bd9-5f4e-8cd0-ed02-c3a696d7473a@ti.com>
- <20230803160815.yfpkdfssv75d4inf@dhruva>
- <7ho7jifrda.fsf@baylibre.com>
+        Tue, 8 Aug 2023 15:16:11 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81E014FD5
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:38:45 -0700 (PDT)
+Received: from [192.168.0.125] (unknown [82.76.24.202])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: ehristev)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 916486607208;
+        Tue,  8 Aug 2023 12:55:18 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1691495719;
+        bh=ZHAS+3Ex6HkMzLNH4hZADNVpGBBmv0IfwABrMBgoDZ4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=PDXykDxxTHok/w0WllFQUUwwKDR3XLFKsBeEAS+S3hAVI8H3LdawLENcP0RP47T1m
+         5259KHy0EXGO3IoyKrq1WtWM1aje4aiTEOrO90WnHmdpZGKb5kvNIPRpMxLabYw586
+         2SvP9cQpK+a6grvCu+3LkOZDdqtFxfiPsIx1DVzpEsRzg4mENKitwtcg4I8uilyidV
+         zwAJZqftTGdSjz5fUm+yy9dEz4dST5wNPX+XCJ8MUuxxa66bL+KfJ/ArqRynuWxw1S
+         NawmjA/NDKGop1hYAaFN37LIwHHOGELTw4ALtwCw/G2SLC3ch32TWsxmGfPuOM9aDZ
+         s43zfGuZ/NdVw==
+Message-ID: <02dc52cd-db64-af1c-0f07-5ef76b954c75@collabora.com>
+Date:   Tue, 8 Aug 2023 14:55:15 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <7ho7jifrda.fsf@baylibre.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RESEND v4 2/2] drm/mediatek: Fix iommu fault during crtc
+ enabling
+Content-Language: en-US
+To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Alexandre Mergnat <amergnat@baylibre.com>
+Cc:     Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        Johnson Wang <johnson.wang@mediatek.com>,
+        Singo Chang <singo.chang@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>,
+        Shawn Sung <shawn.sung@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20230807015110.30579-1-jason-jh.lin@mediatek.com>
+ <20230807015110.30579-3-jason-jh.lin@mediatek.com>
+From:   Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <20230807015110.30579-3-jason-jh.lin@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kevin,
+Hi Jason,
 
-Thanks for the suggestion. I have a rough proposal inline, please can
-you take a look? I will test those changes and respin this series
-accordingly
-
-On Aug 07, 2023 at 14:57:05 -0700, Kevin Hilman wrote:
-> Dhruva Gole <d-gole@ti.com> writes:
+On 8/7/23 04:51, Jason-JH.Lin wrote:
+> The plane_state of drm_atomic_state is not sync to the mtk_plane_state
+> stored in mtk_crtc during crtc enabling.
 > 
-> > On Aug 03, 2023 at 11:00:11 -0500, Andrew Davis wrote:
-> >> On 8/3/23 10:55 AM, Dhruva Gole wrote:
-> >> > On Aug 03, 2023 at 10:26:32 -0500, Andrew Davis wrote:
-> >> > > On 8/3/23 1:42 AM, Dhruva Gole wrote:
-> >> > > > Introduce system suspend resume calls that will allow the ti_sci
-> >> > > > driver to support deep sleep low power mode when the user space issues a
-> >> > > > suspend to mem.
-> >> > > > 
-> >> > > > Also, write a ti_sci_prepare_system_suspend call to be used in the driver
-> >> > > > suspend handler to allow the system to identify the low power mode being
-> >> > > > entered and if necessary, send TISCI_MSG_PREPARE_SLEEP with information
-> >> > > > about the mode is being entered and the address for allocated memory for
-> >> > > > storing the context during Deep Sleep.
-> >> > > > 
-> >> > > > We're using "pm_suspend_target_state" to map the kernel's target suspend
-> >> > > > state to SysFW low power mode. Make sure this is available only when
-> >> > > > CONFIG_SUSPEND is enabled.
-> >> > > > 
-> >> > > > Co-developed-by: Dave Gerlach <d-gerlach@ti.com>
-> >> > > > Signed-off-by: Dave Gerlach <d-gerlach@ti.com>
-> >> > > > Signed-off-by: Vibhore Vardhan <vibhore@ti.com>
-> >> > > > Signed-off-by: Georgi Vlaev <g-vlaev@ti.com>
-> >> > > > Signed-off-by: Dhruva Gole <d-gole@ti.com>
-> >> > > > ---
-> >> > > >    drivers/firmware/ti_sci.c | 63 +++++++++++++++++++++++++++++++++++++++
-> >> > > >    1 file changed, 63 insertions(+)
-> >> > > > 
-> >> > [..snip..]
-> >> > > > +static int ti_sci_suspend(struct device *dev)
-> >> > > > +{
-> >> > > > +	struct ti_sci_info *info = dev_get_drvdata(dev);
-> >> > > > +	int ret;
-> >> > > > +
-> >> > > > +	ret = ti_sci_cmd_set_io_isolation(&info->handle, TISCI_MSG_VALUE_IO_ENABLE);
-> >> > > 
-> >> > > After this the will the IOs be in isolation? Or does the firmware wait
-> >> > > until power down begins later?
-> >> > 
-> >> >  From what I understand,
-> >> > IOs will be in isolation immediately
-> >> > 
-> >> 
-> >> That is what I understand too, so then any device that may need to do some
-> >> external communication for its suspend will not function, this must be the
-> >> last driver _suspend() the system calls, how do you enforce that?
-> >
-> > I will make use of .suspend_noirq callbacks in that case. Does that
-> > sound better, or is there anything else I may not be aware of?
+> So we need to update the mtk_plane_state stored in mtk_crtc by the
+> drm_atomic_state carried from mtk_drm_crtc_atomic_enable().
 > 
-> Using _noirq just moves the problem.  What if other drivers are also
-> using _noirq callbacks and run after the SCI driver?  You still cannot
-
-True, this thought occurred to me as well which is why I was thinking
-that moving it to ATF might be a better choice.
-
-> guarantee ordering.
+> While updating mtk_plane_state, OVL layer should be disabled when the fb
+> in plane_state of drm_atomic_state is NULL.
 > 
-> It seems to me that the IO isolation stuff is a system-wide operation,
-> and should probably be handled at the platform suspend_ops level
-> (e.g. suspend_ops->prepare_late()).   This would ensure that it runs
-
-I must have missed this approach! Are you suggesting something like what
-was done for am335?
-
-static const struct platform_suspend_ops am33xx_pm_ops
-
-have a similar code for tisci..?
-
-static const struct platform_suspend_ops tisci_pm_ops = {
-	.prepare_late = tisci_set_io_isolation
-	};
-
-And then while resuming we may want the pinctrl driver to scan for the
-wk_evt bit[0] before the isolation is disabled, so we want the
-tisci_resume/ remove isolation to be called later than that.
-
-So I a wondering if the code below makes sense?
-
-static const struct platform_suspend_ops tisci_pm_ops = {
-	.prepare_late = tisci_suspend // also includes set isolation
-	.end = tisci_resume 	// Disables isolation
-	};
-
-However a minor drawback here maybe that the serial logs on the resume
-path may not appear when using a serial console for example. However
-they should be able to easily access using dmesg.
-
-> *after* all the driver hooks (even driver _noirq hooks.) and right
-> before the full suspend (or s2idle.)
+> Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
+> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+> ---
+> Change in RESEND v4:
+> Remove redundant plane_state assigning.
+> ---
+>   drivers/gpu/drm/mediatek/mtk_drm_crtc.c  | 14 ++++++++++----
+>   drivers/gpu/drm/mediatek/mtk_drm_plane.c | 11 ++++++++---
+>   drivers/gpu/drm/mediatek/mtk_drm_plane.h |  2 ++
+>   3 files changed, 20 insertions(+), 7 deletions(-)
 > 
-> Now, all that being said, I noticed that in v7, you didn't move this to
-> _noirq, but instead suggested that this be handled by TF-A.  I suppose
-> that's an option also, but my suggestion above should work also.
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> index d40142842f85..7db4d6551da7 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -328,7 +328,7 @@ static void ddp_cmdq_cb(struct mbox_client *cl, void *mssg)
+>   }
+>   #endif
+>   
+> -static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *mtk_crtc)
+> +static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *mtk_crtc, struct drm_atomic_state *state)
+>   {
+>   	struct drm_crtc *crtc = &mtk_crtc->base;
+>   	struct drm_connector *connector;
+> @@ -405,11 +405,17 @@ static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *mtk_crtc)
+>   	/* Initially configure all planes */
+>   	for (i = 0; i < mtk_crtc->layer_nr; i++) {
+>   		struct drm_plane *plane = &mtk_crtc->planes[i];
+> -		struct mtk_plane_state *plane_state;
+> +		struct drm_plane_state *new_state;
+> +		struct mtk_plane_state *plane_state = to_mtk_plane_state(plane->state);
+>   		struct mtk_ddp_comp *comp;
+>   		unsigned int local_layer;
+>   
+> -		plane_state = to_mtk_plane_state(plane->state);
 
-Thanks for the pointer! I do believe it will make more sense to do it
-from linux itself unless we have no way to do it in linux.
+any reason why you moved the initialization of plane_state at the 
+declaration phase ?
 
-> 
-> Kevin
+> +		/* sync the new plane state from drm_atomic_state */
+> +		if (state->planes[i].ptr) {
+> +			new_state = drm_atomic_get_new_plane_state(state, state->planes[i].ptr);
+Can drm_atomic_get_new_plane_state fail ? and new_state becomes null ?
 
+I see mtk_plane_update_new_state assumes new_state being a correct 
+state/pointer.
 
-[0] Table 5-517. Description Of The Pad Configuration Register Bits
-https://www.ti.com/lit/pdf/spruid7
+Regards,
 
-NOTE: The hardware works in such a way that as soon as the IO isolation
-is disabled the wake_evt information is lost so the pinctrl-single
-driver won't be able to know what pin woke it up if we disable io
-isolation before it has the chance to look at the padconf registers
+> +			mtk_plane_update_new_state(new_state, plane_state);
+> +		}
+> +
+>   		comp = mtk_drm_ddp_comp_for_plane(crtc, plane, &local_layer);
+>   		if (comp)
+>   			mtk_ddp_comp_layer_config(comp, local_layer,
+> @@ -687,7 +693,7 @@ static void mtk_drm_crtc_atomic_enable(struct drm_crtc *crtc,
+>   		return;
+>   	}
+>   
+> -	ret = mtk_crtc_ddp_hw_init(mtk_crtc);
+> +	ret = mtk_crtc_ddp_hw_init(mtk_crtc, state);
+>   	if (ret) {
+>   		pm_runtime_put(comp->dev);
+>   		return;
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+> index b1a918ffe457..ef4460f98c07 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+> @@ -134,8 +134,8 @@ static int mtk_plane_atomic_async_check(struct drm_plane *plane,
+>   						   true, true);
+>   }
+>   
+> -static void mtk_plane_update_new_state(struct drm_plane_state *new_state,
+> -				       struct mtk_plane_state *mtk_plane_state)
+> +void mtk_plane_update_new_state(struct drm_plane_state *new_state,
+> +				struct mtk_plane_state *mtk_plane_state)
+>   {
+>   	struct drm_framebuffer *fb = new_state->fb;
+>   	struct drm_gem_object *gem;
+> @@ -146,6 +146,11 @@ static void mtk_plane_update_new_state(struct drm_plane_state *new_state,
+>   	dma_addr_t hdr_addr = 0;
+>   	unsigned int hdr_pitch = 0;
+>   
+> +	if (!fb) {
+> +		mtk_plane_state->pending.enable = false;
+> +		return;
+> +	}
+> +
+>   	gem = fb->obj[0];
+>   	mtk_gem = to_mtk_gem_obj(gem);
+>   	addr = mtk_gem->dma_addr;
+> @@ -180,7 +185,7 @@ static void mtk_plane_update_new_state(struct drm_plane_state *new_state,
+>   		       fb->format->cpp[0] * (x_offset_in_blocks + 1);
+>   	}
+>   
+> -	mtk_plane_state->pending.enable = true;
+> +	mtk_plane_state->pending.enable = new_state->visible;
+>   	mtk_plane_state->pending.pitch = pitch;
+>   	mtk_plane_state->pending.hdr_pitch = hdr_pitch;
+>   	mtk_plane_state->pending.format = format;
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.h b/drivers/gpu/drm/mediatek/mtk_drm_plane.h
+> index 99aff7da0831..0a7d70d13e43 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.h
+> @@ -46,6 +46,8 @@ to_mtk_plane_state(struct drm_plane_state *state)
+>   	return container_of(state, struct mtk_plane_state, base);
+>   }
+>   
+> +void mtk_plane_update_new_state(struct drm_plane_state *new_state,
+> +				struct mtk_plane_state *mtk_plane_state);
+>   int mtk_plane_init(struct drm_device *dev, struct drm_plane *plane,
+>   		   unsigned long possible_crtcs, enum drm_plane_type type,
+>   		   unsigned int supported_rotations, const u32 *formats,
 
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
