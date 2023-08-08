@@ -2,149 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 547297747FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0393774907
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236120AbjHHTWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40924 "EHLO
+        id S235524AbjHHTrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236213AbjHHTWD (ORCPT
+        with ESMTP id S236679AbjHHTq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:22:03 -0400
+        Tue, 8 Aug 2023 15:46:57 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7307910E9DA;
-        Tue,  8 Aug 2023 09:45:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733DC4C06D
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:50:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 04C5162438;
-        Tue,  8 Aug 2023 08:26:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CAECC433C7;
-        Tue,  8 Aug 2023 08:26:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691483201;
-        bh=1ijsJa2eh4p1IcCoOuBZVpoxzDn4f5UY3AUI/la7Uu8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z2mh4nj4UTCvyovhEk3tQD6tH0991P3wRL7uqwF0I7iL1RV1pjAIjwq6eTQ8ZJS7C
-         uyTXP7yyRpyY1wDj3M+ATiEKgwDQUeASy/5cAZe9RZlnaW/MwJ2QU2s1V92VaV74LR
-         C1TqPzCd8b4FSaY4wUlcxRcTKJ2mzBh3CYytWM/0=
-Date:   Tue, 8 Aug 2023 10:26:38 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Zhang Shurong <zhang_shurong@foxmail.com>, jgross@suse.com,
-        xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] xen: fix potential shift out-of-bounds in
- xenhcd_hub_control()
-Message-ID: <2023080845-talisman-ravage-0b58@gregkh>
-References: <tencent_15DD79B42AD8A0D64A7CDC24D4FE6C85800A@qq.com>
- <2023062628-shame-ebook-56f2@gregkh>
- <4825193.GXAFRqVoOG@localhost.localdomain>
- <tencent_942CC5C35E410E3545C2E386BE566B8B1405@qq.com>
- <2023080659-turban-exemption-1196@gregkh>
- <3481a644-1648-4fa9-86eb-2a0b86b8f47a@rowland.harvard.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3481a644-1648-4fa9-86eb-2a0b86b8f47a@rowland.harvard.edu>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BEEE62437
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:27:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAAF9C433C7;
+        Tue,  8 Aug 2023 08:27:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691483239;
+        bh=8vZjx++7vc/gL3iItvttMwpeYTizvuwArhclxzBwQt8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Q63cCxaxLP7BLXtt+k92+Za9fDEGw5P76MDkKXbe5kzu9Nn4NKj7bevIgqdXTT9Bm
+         GnX/iKMSYi1jTtZ3ecGXZtdm/FLFU17S8d2c4IXYYJzJkUqLaSAqzK8ViLThDVOfwt
+         cRHaEzRGP+UbhLEYHaPn/4eZdG/aBOdBslSFr7YQacpyU9spnI3ERPE9VOlzv8u7Cb
+         H3I2MQgc5q0OzUJI2lmtym0uxOxwPaDNAzGIx/1RhHwRc+PEoHpATQMROm35ez7qod
+         M/S5utYzPQRmgt5UYdICpWxHRrv0XsUH7t2oi1A2jzM0gIj/yAeq5BAEb+e+lMhaoi
+         PQGAIiw05BPqg==
+Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qTI3g-00365O-4h;
+        Tue, 08 Aug 2023 09:27:16 +0100
+Date:   Tue, 08 Aug 2023 09:27:20 +0100
+Message-ID: <87350uq6qf.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/3] arm64: KVM: Add support for exclude_guest and exclude_host for ETM
+In-Reply-To: <20230804101317.460697-2-james.clark@arm.com>
+References: <20230804101317.460697-1-james.clark@arm.com>
+        <20230804101317.460697-2-james.clark@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.104.136.29
+X-SA-Exim-Rcpt-To: james.clark@arm.com, coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mike.leach@linaro.org, leo.yan@linaro.org, alexander.shishkin@linux.intel.com, anshuman.khandual@arm.com, robh@kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 06, 2023 at 11:15:51AM -0400, Alan Stern wrote:
-> On Sun, Aug 06, 2023 at 04:27:27PM +0200, Greg KH wrote:
-> > On Sun, Aug 06, 2023 at 10:11:43PM +0800, Zhang Shurong wrote:
-> > > 在 2023年7月1日星期六 CST 下午11:51:43，Zhang Shurong 写道：
-> > > > 在 2023年6月26日星期一 CST 下午1:52:02，您写道：
-> > > > 
-> > > > > On Mon, Jun 26, 2023 at 07:48:05AM +0200, Jan Beulich wrote:
-> > > > > > On 25.06.2023 18:42, Zhang Shurong wrote:
-> > > > > > > --- a/drivers/usb/host/xen-hcd.c
-> > > > > > > +++ b/drivers/usb/host/xen-hcd.c
-> > > > > > > @@ -456,6 +456,8 @@ static int xenhcd_hub_control(struct usb_hcd *hcd,
-> > > > > > > __u16 typeReq, __u16 wValue,> >
-> > > > > > > 
-> > > > > > >  			info->ports[wIndex - 1].c_connection =
-> > > > 
-> > > > false;
-> > > > 
-> > > > > > >  			fallthrough;
-> > > > > > >  		
-> > > > > > >  		default:
-> > > > > > > +			if (wValue >= 32)
-> > > > > > > +				goto error;
-> > > > > > > 
-> > > > > > >  			info->ports[wIndex - 1].status &= ~(1
-> > > > 
-> > > > << wValue);
-> > > > 
-> > > > > > Even 31 is out of bounds (as in: UB) as long as it's 1 here rather
-> > > > > > than 1u.
-> > > > > 
-> > > > > Why isn't the caller fixed so this type of value could never be passed
-> > > > > to the hub_control callback?
-> > > > > 
-> > > > > thanks,
-> > > > > 
-> > > > > greg k-h
-> > > > 
-> > > > Although I'm not knowledgeable about the USB subsystem, I've observed that
-> > > > not all driver code that implements hub_control callback performs a shift
-> > > > operation on wValue, and not all shift operations among them cause
-> > > > problems. Therefore, I've decided to fix this issue within each driver
-> > > > itself.
-> > > > 
-> > > > For example, in r8a66597_hub_control, it will first check whether wValue is
-> > > > valid (always < 31) before the shift operation. In case of an invalid
-> > > > number, the code would execute the error branch instead of the shift
-> > > > operation.
-> > > > 
-> > > > switch (wValue) {
-> > > > case USB_PORT_FEAT_ENABLE:
-> > > > 	rh->port &= ~USB_PORT_STAT_POWER;
-> > > > 	break;
-> > > > case USB_PORT_FEAT_SUSPEND:
-> > > > 	break;
-> > > > case USB_PORT_FEAT_POWER:
-> > > > 	r8a66597_port_power(r8a66597, port, 0);
-> > > > 	break;
-> > > > case USB_PORT_FEAT_C_ENABLE:
-> > > > case USB_PORT_FEAT_C_SUSPEND:
-> > > > case USB_PORT_FEAT_C_CONNECTION:
-> > > > case USB_PORT_FEAT_C_OVER_CURRENT:
-> > > > case USB_PORT_FEAT_C_RESET:
-> > > > 	break;
-> > > > default:
-> > > > 	goto error;
-> > > > }
-> > > > rh->port &= ~(1 << wValue);
-> > > 
-> > > Hi there. I apologize for reaching out once more. I'm feeling a bit puzzled 
-> > > about what my next step should be. I'm unsure whether I should rewrite this 
-> > > patch or attempt to address the issue at the caller level.
-> > 
-> > Try addressing it at the caller level first please.  If that somehow
-> > does not work, then we will take a patch series that fixes all of the
-> > host controller drivers at once.
+On Fri, 04 Aug 2023 11:13:11 +0100,
+James Clark <james.clark@arm.com> wrote:
 > 
-> It's not feasible to fix all the callers, because the calls can come 
-> from userspace via usbfs.
+> Add an interface for the Coresight driver to use to set the current
+> exclude settings for the current CPU. This will be used to configure
+> TRFCR_EL1.
 
-It can?  Hm, that happens through the call in rh_call_control(), right?
-But there, we do a bunch of validation before calling hub_control() so
-why can't we do the same thing in that one place as well?  Making
-invalid requests from userspace should be disallowed (or we can catch
-this in the usbfs interface.)
+Can you start by stating the problem? There is *some* rationale in the
+cover letter, but not enough to get the full picture. Specially if you
+haven't looked at the trace subsystem in the past... 7 years or so.
 
-thanks,
+> 
+> The settings must be copied to the vCPU before each run in the same
+> way that PMU events are because the per-cpu struct isn't accessible in
+> protected mode.
 
-greg k-h
+I'm pretty sure that for protected guests, we'd like to disable
+tracing altogether (debug mode excepted).
+
+>
+> This is only needed for nVHE, otherwise it works automatically with
+
+How about hVHE, which uses VHE at EL2 only? Doesn't it require the
+same treatment?
+
+> TRFCR_EL{1,2}. Unfortunately it can't be gated on CONFIG_CORESIGHT
+> because Coresight can be built as a module. It can however be gated on
+> CONFIG_PERF_EVENTS because that is required by Coresight.
+
+Why does it need to be gated *at all*? We need this for the PMU
+because of the way we call into the perf subsystem, but I don't see
+anything like that here. In general, conditional compilation sucks,
+and I'd like to avoid it as much as possible.
+
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  arch/arm64/include/asm/kvm_host.h | 10 ++++++-
+>  arch/arm64/kvm/Makefile           |  1 +
+>  arch/arm64/kvm/arm.c              |  1 +
+>  arch/arm64/kvm/etm.c              | 48 +++++++++++++++++++++++++++++++
+>  include/kvm/etm.h                 | 43 +++++++++++++++++++++++++++
+>  5 files changed, 102 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm64/kvm/etm.c
+>  create mode 100644 include/kvm/etm.h
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index d7b1403a3fb2..f33262217c84 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -35,6 +35,7 @@
+>  #include <kvm/arm_vgic.h>
+>  #include <kvm/arm_arch_timer.h>
+>  #include <kvm/arm_pmu.h>
+> +#include <kvm/etm.h>
+>  
+>  #define KVM_MAX_VCPUS VGIC_V3_MAX_CPUS
+>  
+> @@ -500,7 +501,7 @@ struct kvm_vcpu_arch {
+>  	u8 cflags;
+>  
+>  	/* Input flags to the hypervisor code, potentially cleared after use */
+> -	u8 iflags;
+> +	u16 iflags;
+
+If you make the iflags bigger, what ripple effect does it have on the
+alignment of the other data structures? Consider reordering things if
+it helps filling holes.
+
+>  
+>  	/* State flags for kernel bookkeeping, unused by the hypervisor code */
+>  	u8 sflags;
+> @@ -541,6 +542,9 @@ struct kvm_vcpu_arch {
+>  		u64 pmscr_el1;
+>  		/* Self-hosted trace */
+>  		u64 trfcr_el1;
+> +		/* exclude_guest settings for nVHE */
+> +		struct kvm_etm_event etm_event;
+> +
+
+Spurious blank line. More importantly, how is that related to the
+trfcr_el1 field just above?
+
+>  	} host_debug_state;
+>  
+>  	/* VGIC state */
+> @@ -713,6 +717,8 @@ struct kvm_vcpu_arch {
+>  #define DEBUG_STATE_SAVE_TRBE	__vcpu_single_flag(iflags, BIT(6))
+>  /* vcpu running in HYP context */
+>  #define VCPU_HYP_CONTEXT	__vcpu_single_flag(iflags, BIT(7))
+> +/* Save TRFCR and apply exclude_guest rules */
+> +#define DEBUG_STATE_SAVE_TRFCR	__vcpu_single_flag(iflags, BIT(8))
+>  
+>  /* SVE enabled for host EL0 */
+>  #define HOST_SVE_ENABLED	__vcpu_single_flag(sflags, BIT(0))
+> @@ -1096,6 +1102,8 @@ void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu);
+>  void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr);
+>  void kvm_clr_pmu_events(u32 clr);
+>  bool kvm_set_pmuserenr(u64 val);
+> +void kvm_set_etm_events(struct perf_event_attr *attr);
+> +void kvm_clr_etm_events(void);
+>  #else
+>  static inline void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr) {}
+>  static inline void kvm_clr_pmu_events(u32 clr) {}
+> diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
+> index c0c050e53157..0faff57423c4 100644
+> --- a/arch/arm64/kvm/Makefile
+> +++ b/arch/arm64/kvm/Makefile
+> @@ -23,6 +23,7 @@ kvm-y += arm.o mmu.o mmio.o psci.o hypercalls.o pvtime.o \
+>  	 vgic/vgic-its.o vgic/vgic-debug.o
+>  
+>  kvm-$(CONFIG_HW_PERF_EVENTS)  += pmu-emul.o pmu.o
+> +kvm-$(CONFIG_PERF_EVENTS) += etm.o
+>
+>  always-y := hyp_constants.h hyp-constants.s
+>  
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index b1a9d47fb2f3..7bd5975328a3 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -952,6 +952,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>  		kvm_vgic_flush_hwstate(vcpu);
+>  
+>  		kvm_pmu_update_vcpu_events(vcpu);
+> +		kvm_etm_update_vcpu_events(vcpu);
+>  
+>  		/*
+>  		 * Ensure we set mode to IN_GUEST_MODE after we disable
+> diff --git a/arch/arm64/kvm/etm.c b/arch/arm64/kvm/etm.c
+> new file mode 100644
+> index 000000000000..359c37745de2
+> --- /dev/null
+> +++ b/arch/arm64/kvm/etm.c
+> @@ -0,0 +1,48 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +
+> +#include <linux/kvm_host.h>
+> +
+> +#include <kvm/etm.h>
+> +
+> +static DEFINE_PER_CPU(struct kvm_etm_event, kvm_etm_events);
+> +
+> +struct kvm_etm_event *kvm_get_etm_event(void)
+> +{
+> +	return this_cpu_ptr(&kvm_etm_events);
+> +}
+> +
+> +void kvm_etm_set_events(struct perf_event_attr *attr)
+> +{
+> +	struct kvm_etm_event *etm_event;
+> +
+> +	/*
+> +	 * Exclude guest option only requires extra work with nVHE.
+> +	 * Otherwise it works automatically with TRFCR_EL{1,2}
+> +	 */
+> +	if (has_vhe())
+> +		return;
+> +
+> +	etm_event = kvm_get_etm_event();
+> +
+> +	etm_event->exclude_guest = attr->exclude_guest;
+> +	etm_event->exclude_host = attr->exclude_host;
+> +	etm_event->exclude_kernel = attr->exclude_kernel;
+> +	etm_event->exclude_user = attr->exclude_user;
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_etm_set_events);
+> +
+> +void kvm_etm_clr_events(void)
+> +{
+> +	struct kvm_etm_event *etm_event;
+> +
+> +	if (has_vhe())
+> +		return;
+> +
+> +	etm_event = kvm_get_etm_event();
+> +
+> +	etm_event->exclude_guest = false;
+> +	etm_event->exclude_host = false;
+> +	etm_event->exclude_kernel = false;
+> +	etm_event->exclude_user = false;
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_etm_clr_events);
+
+Does it really need its own compilation unit if we were to build it at
+all times?
+
+> diff --git a/include/kvm/etm.h b/include/kvm/etm.h
+> new file mode 100644
+> index 000000000000..95c4809fa2b0
+> --- /dev/null
+> +++ b/include/kvm/etm.h
+> @@ -0,0 +1,43 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +
+> +#ifndef __KVM_DEBUG_H
+> +#define __KVM_DEBUG_H
+> +
+> +struct perf_event_attr;
+> +struct kvm_vcpu;
+> +
+> +#if IS_ENABLED(CONFIG_KVM) && IS_ENABLED(CONFIG_PERF_EVENTS)
+> +
+> +struct kvm_etm_event {
+> +	bool exclude_host;
+> +	bool exclude_guest;
+> +	bool exclude_kernel;
+> +	bool exclude_user;
+> +};
+> +
+> +struct kvm_etm_event *kvm_get_etm_event(void);
+> +void kvm_etm_clr_events(void);
+> +void kvm_etm_set_events(struct perf_event_attr *attr);
+> +
+> +/*
+> + * Updates the vcpu's view of the etm events for this cpu. Must be
+> + * called before every vcpu run after disabling interrupts, to ensure
+> + * that an interrupt cannot fire and update the structure.
+> + */
+> +#define kvm_etm_update_vcpu_events(vcpu)						\
+> +	do {										\
+> +		if (!has_vhe() && vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRFCR))		\
+> +			vcpu->arch.host_debug_state.etm_event = *kvm_get_etm_event();	\
+> +	} while (0)
+> +
+
+Why is it a macro and not a function, which would avoid exposing
+kvm_get_etm_event?
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
