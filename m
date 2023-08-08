@@ -2,203 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 577A4774BDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA47C774D61
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233615AbjHHU64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
+        id S231375AbjHHVxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236434AbjHHUwW (ORCPT
+        with ESMTP id S231848AbjHHVxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:52:22 -0400
-Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4FED1E4E8
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 13:36:01 -0700 (PDT)
-X-ASG-Debug-ID: 1691493207-1eb14e747a11870001-xx1T2L
-Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx2.zhaoxin.com with ESMTP id wY8k92zt97vN54cS (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Tue, 08 Aug 2023 19:13:27 +0800 (CST)
-X-Barracuda-Envelope-From: TonyWWang-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX1.zhaoxin.com
- (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Tue, 8 Aug
- 2023 19:13:27 +0800
-Received: from tony-HX002EA.zhaoxin.com (10.32.65.162) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Tue, 8 Aug
- 2023 19:13:25 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.163
-To:     <rafael@kernel.org>, <viresh.kumar@linaro.org>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <CobeChen@zhaoxin.com>, <TimGuo@zhaoxin.com>,
-        <LeoLiu-oc@zhaoxin.com>, <LindaChai@zhaoxin.com>
-Subject: [PATCH v2] cpufreq: ACPI: add ITMT support when CPPC enabled
-Date:   Tue, 8 Aug 2023 19:13:25 +0800
-X-ASG-Orig-Subj: [PATCH v2] cpufreq: ACPI: add ITMT support when CPPC enabled
-Message-ID: <20230808111325.8600-1-TonyWWang-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 8 Aug 2023 17:53:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3258D32980;
+        Tue,  8 Aug 2023 09:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691512269; x=1723048269;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=n+5QGUNq96Zzb5hprHduqLPIugcCxfucZViugpqDUbY=;
+  b=HmMki0I+vEeV2uLP0eQS9xi9POwWcqvC4egoHTgLnLIoQM84oJyNk0sj
+   5ZKw8JB31wRBIi5eg47KS7HlmLZB4HhslJYG6qG2ltaqKa+epwyDh+W0s
+   Ss6HUpiubl3A+1iNmDLT7rMFcTd5WGjbN/aAzWhRNZRgfg0aQZWc36mXp
+   OwEBOG63LTUqwajmKmOuV2hAtxeG1K5xYFH8VuyEZbCxyLedVK3UwSmOB
+   GQvZH1g/yFay/tj+fOWHTAn9SL4GiJutwdXRsBtLJY9xMYUSYE061/AT+
+   RvVzxYoal5xL8fbj2vA01iAO2BPoq0JqLOM39+kvLmUrUoVwQam/APdLq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="401755388"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="401755388"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 04:30:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="905192031"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="905192031"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 08 Aug 2023 04:30:56 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qTKvQ-0005JY-0G;
+        Tue, 08 Aug 2023 11:30:56 +0000
+Date:   Tue, 8 Aug 2023 19:30:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] usb: typec: qcom-pmic-typec: register drm_bridge
+Message-ID: <202308081918.CVuUdaXs-lkp@intel.com>
+References: <20230728110942.485358-3-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.32.65.162]
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
-X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
-X-Barracuda-Start-Time: 1691493207
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 4196
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.112474
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230728110942.485358-3-dmitry.baryshkov@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The _CPC method can get per-core highest frequency.
-The highest frequency may varies between cores which mean cores can
-running at different max frequency, so can use it as a core priority
-and give a hint to scheduler in order to put critical task to the
-higher priority core.
+Hi Dmitry,
 
-Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
----
-v1->v2: Fix build errors reported by kernel test robot
+kernel test robot noticed the following build errors:
 
- arch/x86/kernel/itmt.c         |  2 ++
- drivers/cpufreq/acpi-cpufreq.c | 59 ++++++++++++++++++++++++++++++----
- 2 files changed, 54 insertions(+), 7 deletions(-)
+[auto build test ERROR on usb/usb-linus]
+[also build test ERROR on linus/master v6.5-rc5 next-20230808]
+[cannot apply to usb/usb-testing usb/usb-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/arch/x86/kernel/itmt.c b/arch/x86/kernel/itmt.c
-index ee4fe8cdb857..b49ac8ecbbd6 100644
---- a/arch/x86/kernel/itmt.c
-+++ b/arch/x86/kernel/itmt.c
-@@ -122,6 +122,7 @@ int sched_set_itmt_support(void)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(sched_set_itmt_support);
- 
- /**
-  * sched_clear_itmt_support() - Revoke platform's support of ITMT
-@@ -181,3 +182,4 @@ void sched_set_itmt_core_prio(int prio, int cpu)
- {
- 	per_cpu(sched_core_priority, cpu) = prio;
- }
-+EXPORT_SYMBOL_GPL(sched_set_itmt_core_prio);
-diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-index b2f05d27167e..5733323e04ac 100644
---- a/drivers/cpufreq/acpi-cpufreq.c
-+++ b/drivers/cpufreq/acpi-cpufreq.c
-@@ -628,28 +628,35 @@ static int acpi_cpufreq_blacklist(struct cpuinfo_x86 *c)
- #endif
- 
- #ifdef CONFIG_ACPI_CPPC_LIB
--static u64 get_max_boost_ratio(unsigned int cpu)
-+static void cpufreq_get_core_perf(int cpu, u64 *highest_perf, u64 *nominal_perf)
- {
- 	struct cppc_perf_caps perf_caps;
--	u64 highest_perf, nominal_perf;
- 	int ret;
- 
- 	if (acpi_pstate_strict)
--		return 0;
-+		return;
- 
- 	ret = cppc_get_perf_caps(cpu, &perf_caps);
- 	if (ret) {
- 		pr_debug("CPU%d: Unable to get performance capabilities (%d)\n",
- 			 cpu, ret);
--		return 0;
-+		return;
- 	}
- 
- 	if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
--		highest_perf = amd_get_highest_perf();
-+		*highest_perf = amd_get_highest_perf();
- 	else
--		highest_perf = perf_caps.highest_perf;
-+		*highest_perf = perf_caps.highest_perf;
-+
-+	*nominal_perf = perf_caps.nominal_perf;
-+	return;
-+}
- 
--	nominal_perf = perf_caps.nominal_perf;
-+static u64 get_max_boost_ratio(unsigned int cpu)
-+{
-+	u64 highest_perf, nominal_perf;
-+
-+	cpufreq_get_core_perf(cpu, &highest_perf, &nominal_perf);
- 
- 	if (!highest_perf || !nominal_perf) {
- 		pr_debug("CPU%d: highest or nominal performance missing\n", cpu);
-@@ -663,8 +670,44 @@ static u64 get_max_boost_ratio(unsigned int cpu)
- 
- 	return div_u64(highest_perf << SCHED_CAPACITY_SHIFT, nominal_perf);
- }
-+
-+static void cpufreq_sched_itmt_work_fn(struct work_struct *work)
-+{
-+	sched_set_itmt_support();
-+}
-+
-+static DECLARE_WORK(sched_itmt_work, cpufreq_sched_itmt_work_fn);
-+
-+static void cpufreq_set_itmt_prio(int cpu)
-+{
-+	u64 highest_perf, nominal_perf;
-+	static u32 max_highest_perf = 0, min_highest_perf = U32_MAX;
-+
-+	cpufreq_get_core_perf(cpu, &highest_perf, &nominal_perf);
-+
-+	sched_set_itmt_core_prio(highest_perf, cpu);
-+
-+	if (max_highest_perf <= min_highest_perf) {
-+		if (highest_perf > max_highest_perf)
-+			max_highest_perf = highest_perf;
-+
-+		if (highest_perf < min_highest_perf)
-+			min_highest_perf = highest_perf;
-+
-+		if (max_highest_perf > min_highest_perf) {
-+			/*
-+			 * This code can be run during CPU online under the
-+			 * CPU hotplug locks, so sched_set_itmt_support()
-+			 * cannot be called from here.  Queue up a work item
-+			 * to invoke it.
-+			 */
-+			schedule_work(&sched_itmt_work);
-+		}
-+	}
-+}
- #else
- static inline u64 get_max_boost_ratio(unsigned int cpu) { return 0; }
-+static void cpufreq_set_itmt_prio(int cpu) { return; }
- #endif
- 
- static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
-@@ -870,6 +913,8 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	/* notify BIOS that we exist */
- 	acpi_processor_notify_smm(THIS_MODULE);
- 
-+	cpufreq_set_itmt_prio(cpu);
-+
- 	pr_debug("CPU%u - ACPI performance management activated.\n", cpu);
- 	for (i = 0; i < perf->state_count; i++)
- 		pr_debug("     %cP%d: %d MHz, %d mW, %d uS\n",
+url:    https://github.com/intel-lab-lkp/linux/commits/Dmitry-Baryshkov/usb-typec-altmodes-displayport-add-support-for-embedded-DP-cases/20230728-191207
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-linus
+patch link:    https://lore.kernel.org/r/20230728110942.485358-3-dmitry.baryshkov%40linaro.org
+patch subject: [PATCH v4 2/2] usb: typec: qcom-pmic-typec: register drm_bridge
+config: i386-buildonly-randconfig-r006-20230808 (https://download.01.org/0day-ci/archive/20230808/202308081918.CVuUdaXs-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20230808/202308081918.CVuUdaXs-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308081918.CVuUdaXs-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c:167:15: error: no member named 'of_node' in 'struct drm_bridge'
+           tcpm->bridge.of_node = of_get_child_by_name(tcpm->dev->of_node, "connector");
+           ~~~~~~~~~~~~ ^
+   1 error generated.
+
+
+vim +167 drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
+
+   163	
+   164	static int qcom_pmic_typec_init_drm(struct pmic_typec *tcpm)
+   165	{
+   166		tcpm->bridge.funcs = &qcom_pmic_typec_bridge_funcs;
+ > 167		tcpm->bridge.of_node = of_get_child_by_name(tcpm->dev->of_node, "connector");
+   168		tcpm->bridge.ops = DRM_BRIDGE_OP_HPD;
+   169		tcpm->bridge.type = DRM_MODE_CONNECTOR_DisplayPort;
+   170	
+   171		return devm_drm_bridge_add(tcpm->dev, &tcpm->bridge);
+   172	}
+   173	#else
+   174	static int qcom_pmic_typec_init_drm(struct pmic_typec *tcpm)
+   175	{
+   176		return 0;
+   177	}
+   178	#endif
+   179	
+
 -- 
-2.17.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
