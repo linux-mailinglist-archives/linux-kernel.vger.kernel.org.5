@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7E8774216
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E0D77425B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234726AbjHHRdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42204 "EHLO
+        id S232740AbjHHRmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234756AbjHHRck (ORCPT
+        with ESMTP id S234036AbjHHRls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:32:40 -0400
+        Tue, 8 Aug 2023 13:41:48 -0400
 Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343D6F980
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:14:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D62F238FE
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:18:29 -0700 (PDT)
 Received: from relay1-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::221])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id 53A85D2E91
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 06:29:41 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8C7E8240002;
-        Tue,  8 Aug 2023 06:29:35 +0000 (UTC)
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 6409AD2EC1
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 06:29:55 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CAD39240007;
+        Tue,  8 Aug 2023 06:29:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691476176;
+        t=1691476178;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=un3Uwaotmlox+IhpuLnflkjcgnz89/YG1Do8CcofnC8=;
-        b=m09o8WMveylXIA6+Wxh05/Wjd4mUGCqxw+Q6xeYqPZYiU3wK95n/gIcX20uwb8X9VB+Z3W
-        JcvC8NIkpn4ka2KXwDwxSs14CzsLkexWtSHmDIGcmq+DKqEj17TtpnDv/FIAFGu52e3c1S
-        efIYy+fPq4Swu5/ETkwBqP4O8+W1Q8KMUzQJn6qjZnCKbae8FzRfVfIfLtji1sx+uU0S5E
-        bPQa80hjjd2hI5OZeITss+kviY7Q9O9BfHRAQKNG5CiRFh3JpZQg4DlY3vJhLXKTlEQNCJ
-        c1b4CBWCLF02QxsC8xWdZAntPnM0EUZr9wa+JPTUqW+tcA4wRl0H7TWoqPfI8Q==
+        bh=bS+vOtPyOkEkdV/nhm5MLbH36mndj+2cFLrBIoA8aFE=;
+        b=hmZdhcJMLGN3+DbMpvMXzXuhrzlVj07IbxZyeePTN2JyLD/a4NiUtN4gIhsGaxBb2XmDnX
+        lDvW/O/OeoxxLFtu2Ox/AtXUf8XDhli58FiYcE9/ABE6BSDCTuyYUVsA9HAGkd3pXqZlda
+        jV5gb4hz3TBCnvpWHyErNG19MG20VyuvdHWEWfj4VKquO10teScjrO00EADRIUS0GAQ/Gc
+        +xEOe/SdIFXUJRHoKtwZvauUmU0RQlzxRYZxg4Vzg1Npwzma1Nq6rnJy4LFreEpdjiCCVH
+        RFc3JzffgR4WyC5JzOFJWXeIyGAwHqsIfwXo9xw5iyRm5unlW59VQRtlL0otFw==
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -44,10 +44,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Chen-Yu Tsai <wenst@chromium.org>,
         Daniel Golle <daniel@makrotopia.org>,
         =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v9 1/7] nvmem: core: Create all cells before adding the nvmem device
-Date:   Tue,  8 Aug 2023 08:29:26 +0200
-Message-Id: <20230808062932.150588-2-miquel.raynal@bootlin.com>
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: [PATCH v9 2/7] nvmem: core: Return NULL when no nvmem layout is found
+Date:   Tue,  8 Aug 2023 08:29:27 +0200
+Message-Id: <20230808062932.150588-3-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230808062932.150588-1-miquel.raynal@bootlin.com>
 References: <20230808062932.150588-1-miquel.raynal@bootlin.com>
@@ -64,44 +66,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's pack all the cells creation in one place, so they are all created
-before we add the nvmem device.
+Currently, of_nvmem_layout_get_container() returns NULL on error, or an
+error pointer if either CONFIG_NVMEM or CONFIG_OF is turned off. We
+should likely avoid this kind of mix for two reasons: to clarify the
+intend and anyway fix the !CONFIG_OF which will likely always if we use
+this helper somewhere else. Let's just return NULL when no layout is
+found, we don't need an error value here.
 
+Link: https://staticthinking.wordpress.com/2022/08/01/mixing-error-pointers-and-null/
+Fixes: 266570f496b9 ("nvmem: core: introduce NVMEM layouts")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/r/202308030002.DnSFOrMB-lkp@intel.com/
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/nvmem/core.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 3f8c7718412b..48659106a1e2 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -998,12 +998,6 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	if (rval)
- 		goto err_remove_cells;
+---
+
+Backports to stable kernels is likely not needed as I believe the error
+pointer will be discarded "magically" by the of/ code.
+---
+ include/linux/nvmem-consumer.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
+index fa030d93b768..27373024856d 100644
+--- a/include/linux/nvmem-consumer.h
++++ b/include/linux/nvmem-consumer.h
+@@ -256,7 +256,7 @@ static inline struct nvmem_device *of_nvmem_device_get(struct device_node *np,
+ static inline struct device_node *
+ of_nvmem_layout_get_container(struct nvmem_device *nvmem)
+ {
+-	return ERR_PTR(-EOPNOTSUPP);
++	return NULL;
+ }
+ #endif /* CONFIG_NVMEM && CONFIG_OF */
  
--	dev_dbg(&nvmem->dev, "Registering nvmem device %s\n", config->name);
--
--	rval = device_add(&nvmem->dev);
--	if (rval)
--		goto err_remove_cells;
--
- 	rval = nvmem_add_cells_from_fixed_layout(nvmem);
- 	if (rval)
- 		goto err_remove_cells;
-@@ -1012,6 +1006,12 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	if (rval)
- 		goto err_remove_cells;
- 
-+	dev_dbg(&nvmem->dev, "Registering nvmem device %s\n", config->name);
-+
-+	rval = device_add(&nvmem->dev);
-+	if (rval)
-+		goto err_remove_cells;
-+
- 	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_ADD, nvmem);
- 
- 	return nvmem;
 -- 
 2.34.1
 
