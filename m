@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A699C7742E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE2F774301
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235093AbjHHRv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34658 "EHLO
+        id S231603AbjHHRzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbjHHRvF (ORCPT
+        with ESMTP id S233604AbjHHRyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:51:05 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A047527575
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:22:50 -0700 (PDT)
+        Tue, 8 Aug 2023 13:54:53 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EC229459
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:24:42 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 33CFF2247B;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C2EC420018;
         Tue,  8 Aug 2023 09:15:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
         t=1691486155; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UqHXroF0EJl+GQpEdHdxmBrPdAQdE5qHCwe+sk9yKxY=;
-        b=snqUzZ/B6zgsf/a2M2yhOjHmsHNeE9mHSaQedd9HVD8zCfvICExE8fF8i2wK6Mxfya9hLZ
-        2/YPrWwNzvAADwz9fiEJCcm5eGVH4DwVehewaNCgTRA4QOA24R82BZ5h8KzZzAsfuMyASc
-        7NNIIhFghv9O3Yq9DX7O1mnhEB4tgtw=
+        bh=iRtgBAku4257SBCPX9EvO+HL6e6liwMpsxDBOvqZyE8=;
+        b=ger7pBuTrwZ1HKfT8z3sjooEkTpJe3raGS/n3xoYQLq0YXFOHoeHwbeOG6Bj+fsq/6zX54
+        E1NP09owVZGoBvJeH64xMMrenfzb0bzQiygBaUWOhWaAINnsLapt19zbZUkeg0wBX+Qq+I
+        j8LrLs0n9TeihtMldqsK9LaAO/bydwc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
         s=susede2_ed25519; t=1691486155;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UqHXroF0EJl+GQpEdHdxmBrPdAQdE5qHCwe+sk9yKxY=;
-        b=A2nzBfaKm1XJcZKFQiPgvBxqO4IyAZZq1GHglpbsmBy2zo0jaP1RAVWN0z6khC9NMN40dY
-        wK+XojC5yp1xewAA==
+        bh=iRtgBAku4257SBCPX9EvO+HL6e6liwMpsxDBOvqZyE8=;
+        b=y8Vlt3iowHtcCUjxibL0cRrP6Ih1Ml60GjqxgTHt1Yc1NMC+MzeOs2fm8IkUJeY+N/r/h1
+        l43pwJ9arV5cIGBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 256AB13451;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B4FED13451;
         Tue,  8 Aug 2023 09:15:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id pT4SCcsH0mRCEwAAMHmgww
+        id 5zvcK8sH0mRFEwAAMHmgww
         (envelope-from <dwagner@suse.de>); Tue, 08 Aug 2023 09:15:55 +0000
 From:   Daniel Wagner <dwagner@suse.de>
 To:     linux-nvme@lists.infradead.org
@@ -56,18 +56,17 @@ Cc:     linux-kernel@vger.kernel.org,
         Keith Busch <kbusch@kernel.org>,
         Sagi Grimberg <sagi@grimberg.me>,
         Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH libnvme v3 1/2] fabrics: Read the supported options lazy
-Date:   Tue,  8 Aug 2023 11:15:49 +0200
-Message-ID: <20230808091550.25349-2-dwagner@suse.de>
+Subject: [PATCH libnvme v3 2/2] fabrics: Do not pass disable_sqflow if not supported
+Date:   Tue,  8 Aug 2023 11:15:50 +0200
+Message-ID: <20230808091550.25349-3-dwagner@suse.de>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230808091550.25349-1-dwagner@suse.de>
 References: <20230808091550.25349-1-dwagner@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -76,75 +75,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sagi Grimberg <sagi@grimberg.me>
 
-Read the options in when we need the for the first time.
+Only retry a connect attempt with disable_sqflow if the kernel
+actually supports this option.
 
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Reported-by: Sagi Grimberg <sagi@grimberg.me>
 Signed-off-by: Daniel Wagner <dwagner@suse.de>
 ---
- src/nvme/fabrics.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ src/nvme/fabrics.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/src/nvme/fabrics.c b/src/nvme/fabrics.c
-index 800293e2a8e7..9725eeb3cda8 100644
+index 9725eeb3cda8..11d99580072a 100644
 --- a/src/nvme/fabrics.c
 +++ b/src/nvme/fabrics.c
-@@ -357,10 +357,18 @@ static int __add_argument(char **argstr, const char *tok, const char *arg)
- 	return 0;
- }
- 
-+static int __nvmf_supported_options(nvme_root_t r);
-+#define nvmf_check_option(r, tok)					\
-+({									\
-+	if (!(r)->options)						\
-+		__nvmf_supported_options(r);				\
-+	(r)->options->tok;						\
-+})
-+
- #define add_bool_argument(o, argstr, tok, arg)				\
- ({									\
- 	int ret;							\
--	if (r->options->tok) {						\
-+	if (nvmf_check_option(r, tok)) {				\
- 		ret = __add_bool_argument(argstr,			\
- 					  stringify(tok),		\
- 					  arg);				\
-@@ -376,7 +384,7 @@ static int __add_argument(char **argstr, const char *tok, const char *arg)
- #define add_int_argument(o, argstr, tok, arg, allow_zero) \
- ({									\
- 	int ret;							\
--	if (r->options->tok) {						\
-+	if (nvmf_check_option(r, tok)) {				\
- 		ret = __add_int_argument(argstr,			\
- 					stringify(tok),			\
- 					arg,				\
-@@ -393,7 +401,7 @@ static int __add_argument(char **argstr, const char *tok, const char *arg)
- #define add_int_or_minus_one_argument(o, argstr, tok, arg)		\
- ({									\
- 	int ret;							\
--	if (r->options->tok) {						\
-+	if (nvmf_check_option(r, tok)) {				\
- 		ret = __add_int_or_minus_one_argument(argstr,		\
- 						     stringify(tok),	\
- 						     arg);		\
-@@ -409,7 +417,7 @@ static int __add_argument(char **argstr, const char *tok, const char *arg)
- #define add_argument(r, argstr, tok, arg)				\
- ({									\
- 	int ret;							\
--	if (r->options->tok) {						\
-+	if (nvmf_check_option(r, tok)) {				\
- 		ret = __add_argument(argstr,				\
- 				     stringify(tok),			\
- 				     arg);				\
-@@ -913,9 +921,6 @@ int nvmf_add_ctrl(nvme_host_t h, nvme_ctrl_t c,
- 		free(traddr);
+@@ -1031,8 +1031,11 @@ nvme_ctrl_t nvmf_connect_disc_entry(nvme_host_t h,
+ 		return NULL;
  	}
  
--	ret = __nvmf_supported_options(h->r);
--	if (ret)
--		return ret;
- 	ret = build_options(h, c, &argstr);
- 	if (ret)
- 		return ret;
+-	if (e->treq & NVMF_TREQ_DISABLE_SQFLOW)
++	if (e->treq & NVMF_TREQ_DISABLE_SQFLOW &&
++	    nvmf_check_option(h->r, disable_sqflow))
+ 		c->cfg.disable_sqflow = true;
++	else
++		c->cfg.disable_sqflow = false;
+ 
+ 	if (e->trtype == NVMF_TRTYPE_TCP &&
+ 	    (e->treq & NVMF_TREQ_REQUIRED ||
 -- 
 2.41.0
 
