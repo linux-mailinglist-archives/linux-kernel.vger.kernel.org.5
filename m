@@ -2,98 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9E8773DC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A6D773CEF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbjHHQWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
+        id S232005AbjHHQLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbjHHQVS (ORCPT
+        with ESMTP id S231801AbjHHQJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:21:18 -0400
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C03A93EB
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:49:08 -0700 (PDT)
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6b9c82fe107so10314744a34.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:49:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691509747; x=1692114547;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=c8YDGf6Dm5bfzl8CozS5WyC56nf5MVDnOuABuB/Ukn4=;
-        b=BKYU7Z8ebPj5Cm0crAUSLxd8k4BAPWQOnnNYkT5dVDToAywpoaxl1lpe1rhStmubzx
-         p1zfItIruvsUDDGIdOqSeD2E5+nHkUOsrAU1ZpcVp+BfNe0vsiuQO5vXvJoriNG0wHIa
-         DgM96hWJe+jOd7yTr/6h/0Fl39XsU0syEijOVM9+PyS0ZqBXk6h6IOeOPQMCybI8RI+p
-         1+6kHVTc3jOwzmah8Cc3cc3f5KkMJCVYLFy35rRbhX4vLclqPVTS5N9kapdwG4cKdahU
-         w92ldh0R/wphasThhRkxo4A6DFFKKE84iy0tatguOxUDJCTOjZSyGJ9njxASYUmgwtv7
-         TUFQ==
-X-Gm-Message-State: AOJu0YxPRfMR8ORUSeAQZ1n8/gtGiflGYv2BB9L1Yonk9qp2nfspMWxx
-        5GWIT+kwwGtQJNn8rfXGq3uA5PEz3vWu1qwc82dRVAtV0XdK
-X-Google-Smtp-Source: AGHT+IFixi+1yc1yTH4mx4Xf5OrmPTh9KOmPjprukSt7oe6VTsQMsbzV/ZEEuKRqevAJ8XOFwrqB8msvNghHsdIBCpnXvQ+YzyJo
+        Tue, 8 Aug 2023 12:09:47 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0BB7AA3
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:46:32 -0700 (PDT)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RKtZ92Nd6zrSJm;
+        Tue,  8 Aug 2023 20:59:45 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.202) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 8 Aug 2023 21:00:55 +0800
+From:   Zhu Wang <wangzhu9@huawei.com>
+To:     <lee@kernel.org>, <thor.thayer@linux.intel.com>,
+        <ckeepax@opensource.cirrus.com>, <rf@opensource.cirrus.com>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>
+CC:     <wangzhu9@huawei.com>
+Subject: [PATCH -next 8/8] mfd: rn5t618: remove redundant of_match_ptr()
+Date:   Tue, 8 Aug 2023 21:00:23 +0800
+Message-ID: <20230808130023.202700-9-wangzhu9@huawei.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230808130023.202700-1-wangzhu9@huawei.com>
+References: <20230808130023.202700-1-wangzhu9@huawei.com>
 MIME-Version: 1.0
-X-Received: by 2002:a9d:63d7:0:b0:6bc:fb26:499e with SMTP id
- e23-20020a9d63d7000000b006bcfb26499emr6695466otl.2.1691499322068; Tue, 08 Aug
- 2023 05:55:22 -0700 (PDT)
-Date:   Tue, 08 Aug 2023 05:55:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003ad2bd060268e001@google.com>
-Subject: [syzbot] Monthly fs report (Aug 2023)
-From:   syzbot <syzbot+lista41a75f5a209d3d79bf1@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.202]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello fs maintainers/developers,
+The driver depends on CONFIG_OF, so it is not necessary to use
+of_match_ptr() here. We remove of_match_ptr() here.
 
-This is a 31-day syzbot report for the fs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/fs
-
-During the period, 9 new issues were detected and 1 were fixed.
-In total, 55 issues are still open and 327 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 2854    Yes   BUG: sleeping function called from invalid context in __getblk_gfp
-                  https://syzkaller.appspot.com/bug?extid=69b40dc5fd40f32c199f
-<2> 2535    Yes   general protection fault in iommu_deinit_device
-                  https://syzkaller.appspot.com/bug?extid=a8bd07230391c0c577c2
-<3> 2178    Yes   WARNING in firmware_fallback_sysfs
-                  https://syzkaller.appspot.com/bug?extid=95f2e2439b97575ec3c0
-<4> 1279    Yes   possible deadlock in input_event (2)
-                  https://syzkaller.appspot.com/bug?extid=d4c06e848a1c1f9f726f
-<5> 267     Yes   BUG: sleeping function called from invalid context in __bread_gfp
-                  https://syzkaller.appspot.com/bug?extid=5869fb71f59eac925756
-<6> 140     No    possible deadlock in evdev_pass_values (2)
-                  https://syzkaller.appspot.com/bug?extid=13d3cb2a3dc61e6092f5
-<7> 37      No    KASAN: slab-use-after-free Read in __ext4_iget
-                  https://syzkaller.appspot.com/bug?extid=5407ecf3112f882d2ef3
-<8> 21      Yes   INFO: task hung in synchronize_rcu (4)
-                  https://syzkaller.appspot.com/bug?extid=222aa26d0a5dbc2e84fe
-<9> 20      Yes   INFO: rcu detected stall in sys_clock_adjtime
-                  https://syzkaller.appspot.com/bug?extid=25b7addb06e92c482190
-
+Signed-off-by: Zhu Wang <wangzhu9@huawei.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/mfd/rn5t618.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+diff --git a/drivers/mfd/rn5t618.c b/drivers/mfd/rn5t618.c
+index 333fef8729a5..0fe616b2db8e 100644
+--- a/drivers/mfd/rn5t618.c
++++ b/drivers/mfd/rn5t618.c
+@@ -277,7 +277,7 @@ static SIMPLE_DEV_PM_OPS(rn5t618_i2c_dev_pm_ops,
+ static struct i2c_driver rn5t618_i2c_driver = {
+ 	.driver = {
+ 		.name = "rn5t618",
+-		.of_match_table = of_match_ptr(rn5t618_of_match),
++		.of_match_table = rn5t618_of_match,
+ 		.pm = &rn5t618_i2c_dev_pm_ops,
+ 	},
+ 	.probe = rn5t618_i2c_probe,
+-- 
+2.17.1
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
