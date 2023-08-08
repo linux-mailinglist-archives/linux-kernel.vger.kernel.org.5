@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 992907742B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7778A7741D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbjHHRse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34658 "EHLO
+        id S234685AbjHHR3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbjHHRsF (ORCPT
+        with ESMTP id S234537AbjHHR2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:48:05 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB2AD26326;
-        Tue,  8 Aug 2023 09:21:21 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691485930;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DoNI5v5umT0Z8D7XCCNoP2aZrQ/gIq+jzyHgWzWgdgo=;
-        b=NqxDxnpmcGRK6PtnO2RtI8BZQByg8ruKL7AL6OSKYguyFob+ikfLazgjxgzcUIJWkJhrIV
-        Yd3n5dzvSzw5eVwwC0r2HOYW6OtbKaFSRM6SpqW5HBgBtS+xwvuxk7HIponmeb+5YGaRpK
-        vmUnB89jlJlxzC0YFhTOSLlZj8RqGKax7LN8fMKvpWMl8AmHQ4jses991y5VE8KX5/bm9r
-        Q9vK4dhdNvj/zvq32GeI8WemoTegluSjDa6sohOJpDMN/IkUd9004TZI2p/1xDXw0ONEa5
-        yykhTXK511yAJf2tMDinXIC4bHb2+ZzTgMR07UtYcZ4/sDGELEpKDRe1y3Rqkw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691485930;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DoNI5v5umT0Z8D7XCCNoP2aZrQ/gIq+jzyHgWzWgdgo=;
-        b=AKO4JGVhFpvSXlHLtgexL3PAvihILrtXinYpKnJnh4vFOWYHw1/0e+Pbm0TdD8Oax1T3wG
-        mduROucX9K/ICRAg==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        dvhart@infradead.org, dave@stgolabs.net, andrealmeid@igalia.com,
-        Andrew Morton <akpm@linux-foundation.org>, urezki@gmail.com,
-        hch@infradead.org, lstoakes@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        malteskarupke@web.de
-Subject: Re: [PATCH  v2 11/14] futex: Implement FUTEX2_NUMA
-In-Reply-To: <20230808085406.GU212435@hirez.programming.kicks-ass.net>
-References: <20230807121843.710612856@infradead.org>
- <20230807123323.504975124@infradead.org> <87fs4utv6f.ffs@tglx>
- <20230808085406.GU212435@hirez.programming.kicks-ass.net>
-Date:   Tue, 08 Aug 2023 11:12:09 +0200
-Message-ID: <87y1ilsxsm.ffs@tglx>
+        Tue, 8 Aug 2023 13:28:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B5121271;
+        Tue,  8 Aug 2023 09:12:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sVOpQeHQbYuQD4XI26KPaEpE0Ea50S0OE5ZKW/Qlwrk=; b=vBY1RJPhnM/HaHosbTPNbA0y+k
+        roLU7f2LM1KWTAdAPeqZkAlhJ5Ab8Re7s0iwaZwqSZprpCBxXCMEWquufSVGSbn0jTaeOOJi9GALc
+        aL58KPV029NgS2NJcA1srEgzDTITQm2Y0zStY4InWwRK1L3x55bSR2UMgRfp6tYP4egf9saBEs105
+        pgsZlVmaxnJCiU0TqSY1IV+Gv0P9TcJ380PGW+kbQFiKsGqnUJjn8VhsDpDx9o6NUCbWY8ka4ka7l
+        dvyV3Hz16nCucR6dJTvjYIrQ3jzL2LkFW1eNkWspLGQdY93oj+Rf118Vry0KT8dX668jIw93Wa2ii
+        vW0mj53Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qTIlN-00Gbn4-GF; Tue, 08 Aug 2023 09:12:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1FF0A30003A;
+        Tue,  8 Aug 2023 11:12:25 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0748227E4826F; Tue,  8 Aug 2023 11:12:25 +0200 (CEST)
+Date:   Tue, 8 Aug 2023 11:12:24 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Meng Li <li.meng@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH V1 3/6] cpufreq: Add a notification message that the
+ highest perf has changed
+Message-ID: <20230808091224.GW212435@hirez.programming.kicks-ass.net>
+References: <20230808081001.2215240-1-li.meng@amd.com>
+ <20230808081001.2215240-4-li.meng@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230808081001.2215240-4-li.meng@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08 2023 at 10:54, Peter Zijlstra wrote:
-> On Mon, Aug 07, 2023 at 11:11:04PM +0200, Thomas Gleixner wrote:
->> On Mon, Aug 07 2023 at 14:18, Peter Zijlstra wrote:
->> >  /**
->> >   * futex_hash - Return the hash bucket in the global hash
->> >   * @key:	Pointer to the futex key for which the hash is calculated
->> > @@ -114,10 +137,29 @@ late_initcall(fail_futex_debugfs);
->> >   */
->> >  struct futex_hash_bucket *futex_hash(union futex_key *key)
->> >  {
->> > -	u32 hash = jhash2((u32 *)key, offsetof(typeof(*key), both.offset) / 4,
->> > +	u32 hash = jhash2((u32 *)key,
->> > +			  offsetof(typeof(*key), both.offset) / sizeof(u32),
->> >  			  key->both.offset);
->> > +	int node = key->both.node;
->> > +
->> > +	if (node == -1) {
->> 
->> NUMA_NO_NODE please all over the place.
->
-> Ah, so our (futex2) ABI states this needs to be -1, but in theory
-> someone could come along and change the kernel internal NUMA_NO_NODE to
-> something else.
->
-> That is, I explicitly chose not to use it. I can of course, because as
-> of now these values do match.
+On Tue, Aug 08, 2023 at 04:09:58PM +0800, Meng Li wrote:
+> Please refer to the ACPI_Spec for details on the highest
+> performance and notify events of CPPC.
 
-Fair enough, but can we at least have a proper define in the futex2 ABI
-please?
+Please summarise so that we don't get to click random links on the
+interweb just to try and make sense of things.
+
+> Signed-off-by: Meng Li <li.meng@amd.com>
+> Link: https://uefi.org/htmlspecs/AddCPI_Spec_6_4_html/08_Processor_Configuration_and_Control/declaring-processors.html?highlight=0x85#highest-performance
+> ---
+>  drivers/acpi/processor_driver.c |  6 ++++++
+>  drivers/cpufreq/cpufreq.c       | 13 +++++++++++++
+>  include/linux/cpufreq.h         |  4 ++++
+>  3 files changed, 23 insertions(+)
+> 
+> diff --git a/drivers/acpi/processor_driver.c b/drivers/acpi/processor_driver.c
+> index 4bd16b3f0781..29b2fb68a35d 100644
+> --- a/drivers/acpi/processor_driver.c
+> +++ b/drivers/acpi/processor_driver.c
+> @@ -27,6 +27,7 @@
+>  #define ACPI_PROCESSOR_NOTIFY_PERFORMANCE 0x80
+>  #define ACPI_PROCESSOR_NOTIFY_POWER	0x81
+>  #define ACPI_PROCESSOR_NOTIFY_THROTTLING	0x82
+> +#define ACPI_PROCESSOR_NOTIFY_HIGEST_PERF_CHANGED	0x85
+
+Isn't that spelled: 'highest' ?
+                        ^
+
