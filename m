@@ -2,111 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F3C774955
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4CD7747DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbjHHTvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37404 "EHLO
+        id S236031AbjHHTVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234177AbjHHTv3 (ORCPT
+        with ESMTP id S236027AbjHHTUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:51:29 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984DE54C3F;
-        Tue,  8 Aug 2023 09:57:48 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe4762173bso9734965e87.3;
-        Tue, 08 Aug 2023 09:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691513867; x=1692118667;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nFCHTtX5KsdeKY8CuzU6iN0y/8t8L576wRb5AX7KKjs=;
-        b=TB9WzhGgWK+d/4sbAUry7QK8j4V1lSYbQxHKrVuO6ZM/r5Fct1f5bOxvxWyiBEfkD+
-         N6zTICmPSkIjyR6XasEfBl8xrtErcaoC/u6xPOxT35H1jV40f85z4g6ZxYof6vaoMec1
-         +1mdww/EMFoAlWKt+lKj8xCwqBK2MrAUfZB8H8ifRetfcOvQEpEj03SC7X/jio6p529p
-         FHBcKatvur1qtbtc+XohZOwMfr/rpyK2w/s6I1QC5U8PMFdRa8fZd7HV17lwkYlgX7ol
-         yJZbooQc7WBDvZSFp8WWfI/f0ZCD44gEuHi5vcdlfGbKk7ADnJj4Io6ptDXcJ39J14e0
-         GlIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691513867; x=1692118667;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nFCHTtX5KsdeKY8CuzU6iN0y/8t8L576wRb5AX7KKjs=;
-        b=G7dApADbAzJhQGohM89qDtNVkC0q+vb6uHTcwFD8F44fVNa94lj4YdksQTGggop0xR
-         jL7TKvy+TdzPUUdcT0kkTjqrYaEsr4BLFJQKXzrbc12zsPLXU1zeDiPm2p+n8viaTw3x
-         SlP3g0LnmJGvl+oHcuuVagMj9jZ4PORzL9l3STucL6WnnlVaakYRnok5Fhw6sZDjt49Y
-         JglekGLuAnBhC306MvmXG3NePYwJ0WtG/SbNwKsayweNNw4H8iZlshUbo3E7Xceas/Yp
-         xnOkYUgDjqsrIeINwIjPw6npPdHuyk7l6IK6Zz75vjZ5QY1/vgWPtgg5yd5FksgBANSj
-         Zs2g==
-X-Gm-Message-State: AOJu0YyelIIEH0SB802rsUIHCbLqj5UQb5e68NydhB817F4wGS4jv0Zb
-        DQR30887BspfBX6FRCPCl9o2TEB72vk41MlakNPgVArz4GU=
-X-Google-Smtp-Source: AGHT+IEJtndB+TX6d+lulY9nN/dXEeKD8QPCRSZMq31M4xp63m6SJ08BwBgWPwffNQfbkUeoXy5ALYliUzjrnGvjPHA=
-X-Received: by 2002:aa7:d9c2:0:b0:522:38cb:d8cb with SMTP id
- v2-20020aa7d9c2000000b0052238cbd8cbmr8955558eds.20.1691487402502; Tue, 08 Aug
- 2023 02:36:42 -0700 (PDT)
+        Tue, 8 Aug 2023 15:20:41 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F210510817A;
+        Tue,  8 Aug 2023 09:44:02 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 32CD41F381;
+        Tue,  8 Aug 2023 09:37:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691487422; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+dwojIKMsZIfKNojdAYP/LpuQmw+6rqqzdeGXh9OKdQ=;
+        b=xNkmZedHCH4JfPl5aI/7jFcoHvCmU2Ei7iO7owXcuJIhPHMXaR9JIDbudRkrv+OpRvBT78
+        QcY9S7zG3KilNTQJsdlbMzoPhbFYNRjSDo58qiEL/KKnRHAz06+KLjpoPEh0KdB8jKpl0d
+        Paghc7ScJ479EYrBJsHB5zKlYU4EE1o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691487422;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+dwojIKMsZIfKNojdAYP/LpuQmw+6rqqzdeGXh9OKdQ=;
+        b=C9mvCUPaAa2cOnSGsmSgpsXVt5ts05YWI0vruOwxYGEk08U30pxAruMbAfjG0JtSrXhSu+
+        h+OsL5aeMUqW5DAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1E00A13451;
+        Tue,  8 Aug 2023 09:37:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JlhMB74M0mRkHQAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:37:02 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 9F88DA0769; Tue,  8 Aug 2023 11:37:01 +0200 (CEST)
+Date:   Tue, 8 Aug 2023 11:37:01 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 06/13] ubifs: have ubifs_update_time use
+ inode_update_timestamps
+Message-ID: <20230808093701.ggyj7tyqonivl7tb@quack3>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+ <20230807-mgctime-v7-6-d1dec143a704@kernel.org>
 MIME-Version: 1.0
-References: <20230808033130.2226-1-Wenhua.Lin@unisoc.com>
-In-Reply-To: <20230808033130.2226-1-Wenhua.Lin@unisoc.com>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Tue, 8 Aug 2023 17:36:05 +0800
-Message-ID: <CAAfSe-t45FeFzXKUCjOU5qoPF-rq4dzMKo-eRciw6MbLq+rNgA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] gpio: sprd: In the sleep state, the eic dbnc clk must
- be forced open
-To:     Wenhua Lin <Wenhua.Lin@unisoc.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wenhua lin <wenhua.lin1994@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807-mgctime-v7-6-d1dec143a704@kernel.org>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Aug 2023 at 11:32, Wenhua Lin <Wenhua.Lin@unisoc.com> wrote:
->
-> In the sleep state, Eic dbnc has no clock and the clk enable
+On Mon 07-08-23 15:38:37, Jeff Layton wrote:
+> In later patches, we're going to drop the "now" parameter from the
+> update_time operation. Prepare ubifs for this, by having it use the new
+> inode_update_timestamps helper.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-Does "dbnc" mean "debounce"? I suggest not using abbreviation here.
+One comment below:
 
-> of dbnc needs to be forced open, so that eic can wake up normally.
->
-> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> ---
->  drivers/gpio/gpio-eic-sprd.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
-> index 0d85d9e80848..c506cfd6df8e 100644
-> --- a/drivers/gpio/gpio-eic-sprd.c
-> +++ b/drivers/gpio/gpio-eic-sprd.c
-> @@ -23,6 +23,7 @@
->  #define SPRD_EIC_DBNC_IC               0x24
->  #define SPRD_EIC_DBNC_TRIG             0x28
->  #define SPRD_EIC_DBNC_CTRL0            0x40
-> +#define SPRD_EIC_DBNC_FORCE_CLK                0x8000
->
->  #define SPRD_EIC_LATCH_INTEN           0x0
->  #define SPRD_EIC_LATCH_INTRAW          0x4
-> @@ -213,6 +214,7 @@ static int sprd_eic_set_debounce(struct gpio_chip *chip, unsigned int offset,
->         u32 value = readl_relaxed(base + reg) & ~SPRD_EIC_DBNC_MASK;
->
->         value |= (debounce / 1000) & SPRD_EIC_DBNC_MASK;
-> +       value |= SPRD_EIC_DBNC_FORCE_CLK;
->         writel_relaxed(value, base + reg);
->
->         return 0;
-> --
-> 2.17.1
->
+> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+> index df9086b19cd0..2d0178922e19 100644
+> --- a/fs/ubifs/file.c
+> +++ b/fs/ubifs/file.c
+> @@ -1397,15 +1397,9 @@ int ubifs_update_time(struct inode *inode, struct timespec64 *time,
+>  		return err;
+>  
+>  	mutex_lock(&ui->ui_mutex);
+> -	if (flags & S_ATIME)
+> -		inode->i_atime = *time;
+> -	if (flags & S_CTIME)
+> -		inode_set_ctime_to_ts(inode, *time);
+> -	if (flags & S_MTIME)
+> -		inode->i_mtime = *time;
+> -
+> -	release = ui->dirty;
+> +	inode_update_timestamps(inode, flags);
+>  	__mark_inode_dirty(inode, I_DIRTY_SYNC);
+> +	release = ui->dirty;
+>  	mutex_unlock(&ui->ui_mutex);
+
+I think this is wrong. You need to keep sampling ui->dirty before calling
+__mark_inode_dirty(). Otherwise you could release budget for inode update
+you really need...
+
+>  	if (release)
+>  		ubifs_release_budget(c, &req);
+
+									Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
