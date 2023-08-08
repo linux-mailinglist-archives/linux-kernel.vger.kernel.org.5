@@ -2,138 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D380774A82
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D225774AAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232864AbjHHUab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
+        id S235379AbjHHUct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232184AbjHHUaQ (ORCPT
+        with ESMTP id S236464AbjHHUcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:30:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6374978B;
-        Tue,  8 Aug 2023 12:50:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D97A962BE7;
-        Tue,  8 Aug 2023 19:50:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C037C433C8;
-        Tue,  8 Aug 2023 19:50:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691524241;
-        bh=23o4ZzEMUStYgSgaOt9oeKCEbCf1O4Z/im99Zy+alUU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NHN5/BNe7uk+gjJStPa1r0uJBWX7RQ72BHLN4VAtDxfkwOsBXjBt/oKtm4yH6Grlo
-         fhark6YqZgpsQyXit/ieqssAZYv5UYbtSi63rRk+nLLw1iqN34a98ptLUGwCMy8ipJ
-         5ZcPylLEvUyEy8Tw/xqb0AtqHhVMAaDyNL9yTn8hQL2GySX1/eiqlCkrxe8EMZAvPx
-         iD6EehnsBC3KFKlbtDby1mANdsyjSX5mKWxM1At+f8/jcBnlDBXfSzAXGDPMoaqsvP
-         kVT0nGW4C3HzkfYb8julLGXNOzQjs3s8jEs+YDN1tmJ8VlxajuFADh5b9S/i79tBxM
-         S6OVl2MSfIUDg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 91963404DF; Tue,  8 Aug 2023 16:50:38 -0300 (-03)
-Date:   Tue, 8 Aug 2023 16:50:38 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Claire Jensen <cjense@google.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] perf stat: Don't display zero tool counts
-Message-ID: <ZNKcjv0PTvSIn5lb@kernel.org>
-References: <20230801205452.3380578-1-irogers@google.com>
- <ZMwUI/YtEHsO3Cc8@kernel.org>
- <ZNEFt3w/wNCvdawF@tassilo>
- <ZNFJatDztFNS90d3@kernel.org>
- <ZNFMqzSAfno/+BcV@kernel.org>
- <ZNJ9qBoBt2spEy4Y@tassilo>
+        Tue, 8 Aug 2023 16:32:22 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156D84445C;
+        Tue,  8 Aug 2023 12:56:04 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d4364cf8be3so5031061276.1;
+        Tue, 08 Aug 2023 12:56:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691524563; x=1692129363;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=shx8xzzcKiMrKveTUHLTR3Q3hB2SO4sAG3AUT0OsTBQ=;
+        b=Tx0pmOfUE84GvT8iHHKudjkY6/uU6+P0q4Vq3Fi92Ai4HjE8vjdNm/CgwD/GBUhAi4
+         H+c93rt+kOWcWN9wMelSq5gRU6D9fVm2AqUDDcLd/f+dt1P2PhYh/nN8/nXgLFdgE/fm
+         LcBdCB1rYzMM+bXvvExqt10//p1OpzjGy4gNa1eo3p/VkYal498m2r6AdeN98nyK3Kxw
+         hQmirUesK5dKLRbM2V2tfuWcSLgFoVbDFR5021fkQR46p5dkVP7IkZQU3rz5bX8GWT7n
+         dzxkxagsG9uSb+QKU8SFvyBWRbBjK+cXAAch3R03s80Er3YOi38saKC4ekEgdE5sSKo/
+         g2uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691524563; x=1692129363;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=shx8xzzcKiMrKveTUHLTR3Q3hB2SO4sAG3AUT0OsTBQ=;
+        b=GCi4CjS56WiCeHlT9fJYMn8iA3eso+bl947qAkRvWvC1qyNh8GC4cHDe7R41pU4Avx
+         heHeFZwqoVjAxV7rN5+2pQxRFbXMezi16dxkbzrWh7WAPBbmhvrzBn4V8GQ6BSpSXeo/
+         YmL8EY0835PBOlkpS1AH6Ys9EB+CzdBRwrsj0e+3oeEBHgYOl7b3dR8evNkhqSCy8ffB
+         iU1PzBlS2u4W8pBhQAyHbaVutvazW1K7Vv0K5aAzS9/DNxj/gIeYLrL2SMzDpgmtOYDC
+         BJQogWPcl9P7IgPSsrLta+7IyF8c9hVvRCMlm8pQJRBaUknA71xgVjZ7/MP+OtKLdphY
+         GP3g==
+X-Gm-Message-State: AOJu0Yybaz52HgZJVaJKA7PsRMRmZMI9/pyshvBZ6tMwJUITfSMDr9Kn
+        oqY1ItM+6QU0rWHNnbtVyrmqlCbjyVBjs2jMpZQ=
+X-Google-Smtp-Source: AGHT+IFy0BOqHaKaqCVl3Uzsyn4s5OT0PuHJ8AmLJXWxJ5buKDC2Yg9lLoFo7mpr7qLMgMD11tf3/gMK0ON3S2VlRtY=
+X-Received: by 2002:a25:5f0d:0:b0:c5d:f2af:5a24 with SMTP id
+ t13-20020a255f0d000000b00c5df2af5a24mr595770ybb.14.1691524562978; Tue, 08 Aug
+ 2023 12:56:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNJ9qBoBt2spEy4Y@tassilo>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230808104309.357852-1-usama.anjum@collabora.com>
+ <20230808104309.357852-3-usama.anjum@collabora.com> <CANaxB-ww6AcO4QThubYw62Mdeid4e3FOQAXvA_GZ=wu4J60-AQ@mail.gmail.com>
+ <624cfa26-5650-ee0d-8e0a-1d844175bcaf@collabora.com>
+In-Reply-To: <624cfa26-5650-ee0d-8e0a-1d844175bcaf@collabora.com>
+From:   Andrei Vagin <avagin@gmail.com>
+Date:   Tue, 8 Aug 2023 12:55:51 -0700
+Message-ID: <CANaxB-yhCcvc9W6POFR8SNjECeD_WNGidnuxXrHKT2if=CgyrA@mail.gmail.com>
+Subject: Re: [PATCH v27 2/6] fs/proc/task_mmu: Implement IOCTL to get and
+ optionally clear info about PTEs
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     Peter Xu <peterx@redhat.com>, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Aug 08, 2023 at 10:38:48AM -0700, Andi Kleen escreveu:
-> On Mon, Aug 07, 2023 at 04:57:31PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Mon, Aug 07, 2023 at 04:43:38PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Mon, Aug 07, 2023 at 07:54:47AM -0700, Andi Kleen escreveu:
-> > > > On Thu, Aug 03, 2023 at 05:54:59PM -0300, Arnaldo Carvalho de Melo wrote:
-> > > > > Em Tue, Aug 01, 2023 at 01:54:52PM -0700, Ian Rogers escreveu:
-> > > > > > Skip zero counts for tool events.
-> > > > > > 
-> > > > > > Reported-by: Andi Kleen <ak@linux.intel.com>
-> > > > > 
-> > > > > Andi,
-> > > > > 
-> > > > > 	Have you tested this? Can we please have your Tested-by?
-> > > > 
-> > > > I thought I had sent it earlier?
-> > > > 
-> > > > Tested-by: Andi Kleen <ak@linux.intel.com>
-> > > 
-> > > Yeah, you did it, sorry, somehow I didn't notice.
-> > > 
-> > > Applying.
-> > 
-> > Would be good to have the original link with your report and to figure
-> > out the cset that introduced the problem, so that we could have a Fixes
-> > tag to help justifying getting this into 6.5.
-> 
-> Just bisected it. The original patch was below. Remarkably it had a "Fixes"
-> tag too)
-> 
-> My report was 
-> 
-> https://lore.kernel.org/linux-perf-users/ZMlrzcVrVi1lTDmn@tassilo/
+On Tue, Aug 8, 2023 at 12:35=E2=80=AFPM Muhammad Usama Anjum
+<usama.anjum@collabora.com> wrote:
+>
+> On 8/9/23 12:21=E2=80=AFAM, Andrei Vagin wrote:
+> > On Tue, Aug 8, 2023 at 3:43=E2=80=AFAM Muhammad Usama Anjum
+> > <usama.anjum@collabora.com> wrote:
+> >
+> > ....
+> >
+> >> +static int pagemap_scan_output(unsigned long categories,
+> >> +                              struct pagemap_scan_private *p,
+> >> +                              unsigned long addr, unsigned long *end)
+> >> +{
+> >> +       unsigned long n_pages, total_pages;
+> >> +       int ret =3D 0;
+> >> +
+> >> +       if (!p->vec_buf)
+> >> +               return 0;
+> >> +
+> >> +       categories &=3D p->arg.return_mask;
+> >> +
+> >> +       n_pages =3D (*end - addr) / PAGE_SIZE;
+> >> +       if (check_add_overflow(p->found_pages, n_pages, &total_pages) =
+|| //TODO
+> >
+> > Need to fix this TODO.
+> Sorry, I forgot to remove the "//TODO". As far as I've understood, the la=
+st
+> discussion ended in keeping the check_add_overflow(). [1] I'll just remov=
+e
+> the TODO.
+>
+> https://lore.kernel.org/all/CABb0KFEfmRz+Z_-7GygTL12E5Y254dvoUfWe4uSv9-wO=
+x+Cs8w@mail.gmail.com
+>
+>
+> >
+> >> +           total_pages > p->arg.max_pages) {
+> >> +               size_t n_too_much =3D total_pages - p->arg.max_pages;
+> >> +               *end -=3D n_too_much * PAGE_SIZE;
+> >> +               n_pages -=3D n_too_much;
+> >> +               ret =3D -ENOSPC;
+> >> +       }
+> >> +
+> >> +       if (!pagemap_scan_push_range(categories, p, addr, *end)) {
+> >> +               *end =3D addr;
+> >> +               n_pages =3D 0;
+> >> +               ret =3D -ENOSPC;
+> >> +       }
+> >> +
+> >> +       p->found_pages +=3D n_pages;
+> >> +       if (ret)
+> >> +               p->walk_end_addr =3D *end;
+> >> +
+> >> +       return ret;
+> >> +}
+> >> +
+> >
+> > ...
+> >
+> >> +static long do_pagemap_scan(struct mm_struct *mm, unsigned long uarg)
+> >> +{
+> >> +       struct mmu_notifier_range range;
+> >> +       struct pagemap_scan_private p;
+> >> +       unsigned long walk_start;
+> >> +       size_t n_ranges_out =3D 0;
+> >> +       int ret;
+> >> +
+> >> +       memset(&p, 0, sizeof(p));
+> >> +       ret =3D pagemap_scan_get_args(&p.arg, uarg);
+> >> +       if (ret)
+> >> +               return ret;
+> >> +
+> >> +       p.masks_of_interest =3D MASKS_OF_INTEREST(p.arg);
+> >> +       ret =3D pagemap_scan_init_bounce_buffer(&p);
+> >> +       if (ret)
+> >> +               return ret;
+> >> +
+> >> +       /* Protection change for the range is going to happen. */
+> >> +       if (p.arg.flags & PM_SCAN_WP_MATCHING) {
+> >> +               mmu_notifier_range_init(&range, MMU_NOTIFY_PROTECTION_=
+VMA, 0,
+> >> +                                       mm, p.arg.start, p.arg.end);
+> >> +               mmu_notifier_invalidate_range_start(&range);
+> >> +       }
+> >> +
+> >> +       walk_start =3D p.arg.start;
+> >> +       for (; walk_start < p.arg.end; walk_start =3D p.arg.walk_end) =
+{
+> >> +               int n_out;
+> >> +
+> >> +               if (fatal_signal_pending(current)) {
+> >> +                       ret =3D -EINTR;
+> >> +                       break;
+> >> +               }
+> >> +
+> >> +               ret =3D mmap_read_lock_killable(mm);
+> >> +               if (ret)
+> >> +                       break;
+> >> +               ret =3D walk_page_range(mm, walk_start, p.arg.end,
+> >> +                                     &pagemap_scan_ops, &p);
+> >> +               mmap_read_unlock(mm);
+> >> +
+> >> +               n_out =3D pagemap_scan_flush_buffer(&p);
+> >> +               if (n_out < 0)
+> >> +                       ret =3D n_out;
+> >> +               else
+> >> +                       n_ranges_out +=3D n_out;
+> >> +
+> >> +               if (ret !=3D -ENOSPC || p.arg.vec_len - 1 =3D=3D 0 ||
+> >> +                   p.found_pages =3D=3D p.arg.max_pages) {
+> >> +                       p.walk_end_addr =3D p.arg.end;
+> >
+> > You should not change p.walk_end_addr If ret is ENOSPC. Pls add a test
+> > case to check this.
+> Yeah, I'm not setting walk_end_addr if ret is ENOSPC.
+>
+> I'm setting walk_end_addr only when ret =3D 0. I'd added this as a result=
+ of
+> a test case in my local test application. I can look at adding some tests
+> in pagemap_ioctl.c kselftest as well.
 
-Thanks, I did this research and bisection earlier today, some more tests
-and the result matches yours and is available at:
+I am not sure that I understand what you mean here. ENOSPC can be returned
+when the vec array is full and in this case, walk_end_addr should be
+the address when it stops scanning.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git/commit/?h=perf-tools
-
-I used that ZMlrzcVrVi1lTDmn@tassilo in the Link: tag, as Linus stated
-he prefers the discussion leading to the patch than the URL for the
-patch itself once submitted.
-
-Now I'll wait a bit till it lands in linux-next/pending-fixes to then
-send it to Linus.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/?h=pending-fixes
-
-Thanks again!
-
-- Arnaldo
-
- 
-> commit b897613510890d6e92b6a276a20f6c3d96fe90e8
-> Author: Namhyung Kim <namhyung@kernel.org>
-> Date:   Tue Dec 6 09:58:04 2022 -0800
-> 
->     perf stat: Update event skip condition for system-wide per-thread mode and merged uncore and hybrid events
-> 
->     In print_counter_aggrdata(), it skips some events that has no aggregate
->     count.  It's actually for system-wide per-thread mode and merged uncore
->     and hybrid events.
-> 
->     Let's update the condition to check them explicitly.
-> 
->     Fixes: 91f85f98da7ab8c3 ("perf stat: Display event stats using aggr counts")
+>
+> >
+> >> +                       break;
+> >> +               }
+> >> +       }
+> >> +
+> >> +       if (p.cur_buf.start !=3D p.cur_buf.end) {
+> >> +               if (copy_to_user(p.vec_out, &p.cur_buf, sizeof(p.cur_b=
+uf)))
+> >> +                       ret =3D -EFAULT;
+> >> +               else
+> >> +                       ++n_ranges_out;
+> >> +       }
+> >> +
+> >> +       /* ENOSPC signifies early stop (buffer full) from the walk. */
+> >> +       if (!ret || ret =3D=3D -ENOSPC)
+> >> +               ret =3D n_ranges_out;
+> >> +
+> >> +       p.arg.walk_end =3D p.walk_end_addr ? p.walk_end_addr : walk_st=
+art;
+> >> +       if (pagemap_scan_writeback_args(&p.arg, uarg))
+> >> +               ret =3D -EFAULT;
+> >> +
+> >> +       if (p.arg.flags & PM_SCAN_WP_MATCHING)
+> >> +               mmu_notifier_invalidate_range_end(&range);
+> >> +
+> >> +       kfree(p.vec_buf);
+> >> +       return ret;
+> >> +}
+> >
+> > Thanks,
+> > Andrei
+>
+> --
+> BR,
+> Muhammad Usama Anjum
