@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99439774ADE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0734C774AC5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234390AbjHHUgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
+        id S231529AbjHHUfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:35:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233975AbjHHUgJ (ORCPT
+        with ESMTP id S235456AbjHHUev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:36:09 -0400
+        Tue, 8 Aug 2023 16:34:51 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B3EBB;
-        Tue,  8 Aug 2023 11:55:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5F463F54;
+        Tue,  8 Aug 2023 11:55:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 73D2D6233A;
-        Tue,  8 Aug 2023 18:55:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FEEDC433C8;
-        Tue,  8 Aug 2023 18:55:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 84B0062A8E;
+        Tue,  8 Aug 2023 18:55:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36A3DC433CC;
+        Tue,  8 Aug 2023 18:55:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691520903;
-        bh=cGq7UyuItI3LQyNZ/WZHDF6Zu/PGPeSmYmwaeoufJro=;
+        s=korg; t=1691520946;
+        bh=H7/SxVtdt6ETcLDcJagedJfOp/UKYRU3lodgkBEZNL4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fDa/a3BVC/fcx0sTVaHbjGKF4nLq1S1MWOqiMfN6pqXePTNOKetq/Q4DHgoQJsNgn
-         UKy/R8RJAQVtvBaEt+LZfgClhLa1xs3IA9jUkZwXCeBCSKaTUGiFA7wKlgEsNZkP7Z
-         F98aFaYJs1+7iqNHXnHLxtmhVgrpub4f4iW029g8=
+        b=opl/eeQc52FoiGnXO9KnFt98wB15OZRiIs1p3/hzSHDm6XQN0ZwU8WpnPPfccEX5R
+         c7VcseRH2q3vauzct+oQl3eYZmNZxkUUtwesS3U5IZmHVc62P1e3yBkFiJNDkfHxJ6
+         bjSekVImo1VgvNPEENlaMC/zgh7P2YzhuOEDYXeM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
         torvalds@linux-foundation.org, stable@vger.kernel.org
 Cc:     lwn@lwn.net, jslaby@suse.cz,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 4.19.290
-Date:   Tue,  8 Aug 2023 20:54:51 +0200
-Message-ID: <2023080834-slam-igloo-9da4@gregkh>
+Subject: Re: Linux 5.4.252
+Date:   Tue,  8 Aug 2023 20:55:34 +0200
+Message-ID: <2023080815-critter-surfboard-0c0c@gregkh>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <2023080833-swivel-jokingly-be9d@gregkh>
-References: <2023080833-swivel-jokingly-be9d@gregkh>
+In-Reply-To: <2023080814-relax-divisible-dea4@gregkh>
+References: <2023080814-relax-divisible-dea4@gregkh>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -54,10 +54,10 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
-index dee993602c31..a531b208902f 100644
+index 726ac2e01b77..08e153614e09 100644
 --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
 +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
-@@ -472,16 +472,17 @@ Description:	information about CPUs heterogeneity.
+@@ -480,16 +480,17 @@ Description:	information about CPUs heterogeneity.
  		cpu_capacity: capacity of cpu#.
  
  What:		/sys/devices/system/cpu/vulnerabilities
@@ -205,10 +205,10 @@ index 2adec1e6520a..245468b0f2be 100644
     processor_mmio_stale_data.rst
 +   gather_data_sampling.rst
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 42ddd78ea001..84c34f7e8984 100644
+index 9d2185616d1a..51f845419b9c 100644
 --- a/Documentation/admin-guide/kernel-parameters.txt
 +++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1290,6 +1290,26 @@
+@@ -1336,6 +1336,26 @@
  			Format: off | on
  			default: on
  
@@ -235,14 +235,14 @@ index 42ddd78ea001..84c34f7e8984 100644
  	gcov_persist=	[GCOV] When non-zero (default), profiling data for
  			kernel modules is saved and remains accessible via
  			debugfs, even when the module is unloaded/reloaded.
-@@ -2555,22 +2575,23 @@
+@@ -2696,21 +2716,22 @@
  				Disable all optional CPU mitigations.  This
  				improves system performance, but it may also
  				expose users to several CPU vulnerabilities.
 -				Equivalent to: nopti [X86,PPC]
 +				Equivalent to: gather_data_sampling=off [X86]
  					       kpti=0 [ARM64]
--					       nospectre_v1 [PPC]
+-					       nospectre_v1 [X86,PPC]
 +					       kvm.nx_huge_pages=off [X86]
 +					       l1tf=off [X86]
 +					       mds=off [X86]
@@ -251,8 +251,7 @@ index 42ddd78ea001..84c34f7e8984 100644
 +					       no_uaccess_flush [PPC]
  					       nobp=0 [S390]
 +					       nopti [X86,PPC]
-+					       nospectre_v1 [PPC]
- 					       nospectre_v1 [X86]
++					       nospectre_v1 [X86,PPC]
  					       nospectre_v2 [X86,PPC,S390,ARM64]
 -					       spectre_v2_user=off [X86]
  					       spec_store_bypass_disable=off [X86,PPC]
@@ -269,24 +268,24 @@ index 42ddd78ea001..84c34f7e8984 100644
  				Exceptions:
  					       This does not have any effect on
 diff --git a/Makefile b/Makefile
-index 9af8ec084269..5cd8768fc083 100644
+index 0b17d6936c2f..be75dc3ae8de 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -1,7 +1,7 @@
  # SPDX-License-Identifier: GPL-2.0
- VERSION = 4
- PATCHLEVEL = 19
--SUBLEVEL = 289
-+SUBLEVEL = 290
+ VERSION = 5
+ PATCHLEVEL = 4
+-SUBLEVEL = 251
++SUBLEVEL = 252
  EXTRAVERSION =
- NAME = "People's Front"
+ NAME = Kleptomaniac Octopus
  
 diff --git a/arch/Kconfig b/arch/Kconfig
-index dd71b34fe4f5..6e77e795517d 100644
+index 2219a07dca1e..4d03616bf597 100644
 --- a/arch/Kconfig
 +++ b/arch/Kconfig
-@@ -249,6 +249,9 @@ config ARCH_HAS_FORTIFY_SOURCE
- config ARCH_HAS_SET_MEMORY
+@@ -271,6 +271,9 @@ config ARCH_HAS_UNCACHED_SEGMENT
+ 	select ARCH_HAS_DMA_PREP_COHERENT
  	bool
  
 +config ARCH_HAS_CPU_FINALIZE_INIT
@@ -322,29 +321,30 @@ index 78030d1c7e7e..000000000000
 -{
 -}
 diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 41bde0e62e90..9b075719a7d9 100644
+index a70696a95b79..2feb5dade121 100644
 --- a/arch/arm/Kconfig
 +++ b/arch/arm/Kconfig
-@@ -4,6 +4,7 @@ config ARM
- 	default y
+@@ -5,6 +5,7 @@ config ARM
+ 	select ARCH_32BIT_OFF_T
  	select ARCH_CLOCKSOURCE_DATA
- 	select ARCH_DISCARD_MEMBLOCK if !HAVE_ARCH_PFN_VALID && !KEXEC
+ 	select ARCH_HAS_BINFMT_FLAT
 +	select ARCH_HAS_CPU_FINALIZE_INIT if MMU
  	select ARCH_HAS_DEBUG_VIRTUAL if MMU
  	select ARCH_HAS_DEVMEM_IS_ALLOWED
- 	select ARCH_HAS_ELF_RANDOMIZE
+ 	select ARCH_HAS_DMA_COHERENT_TO_PFN if SWIOTLB
 diff --git a/arch/arm/include/asm/bugs.h b/arch/arm/include/asm/bugs.h
-index 73a99c72a930..21b6f742b3ba 100644
+index 97a312ba0840..fe385551edec 100644
 --- a/arch/arm/include/asm/bugs.h
 +++ b/arch/arm/include/asm/bugs.h
-@@ -1,6 +1,4 @@
+@@ -1,7 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
  /*
 - *  arch/arm/include/asm/bugs.h
 - *
   *  Copyright (C) 1995-2003 Russell King
-  *
-  * This program is free software; you can redistribute it and/or modify
-@@ -13,10 +11,8 @@
+  */
+ #ifndef __ASM_BUGS_H
+@@ -10,10 +8,8 @@
  extern void check_writebuffer_bugs(void);
  
  #ifdef CONFIG_MMU
@@ -356,11 +356,11 @@ index 73a99c72a930..21b6f742b3ba 100644
  #endif
  
 diff --git a/arch/arm/kernel/bugs.c b/arch/arm/kernel/bugs.c
-index d41d3598e5e5..e9fc25350784 100644
+index 14c8dbbb7d2d..087bce6ec8e9 100644
 --- a/arch/arm/kernel/bugs.c
 +++ b/arch/arm/kernel/bugs.c
 @@ -1,5 +1,6 @@
- // SPDX-Identifier: GPL-2.0
+ // SPDX-License-Identifier: GPL-2.0
  #include <linux/init.h>
 +#include <linux/cpu.h>
  #include <asm/bugs.h>
@@ -376,7 +376,7 @@ index d41d3598e5e5..e9fc25350784 100644
  	check_writebuffer_bugs();
  	check_other_bugs();
 diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-index 0d56b19b7511..58f63446c657 100644
+index 6a6036f16abe..72dc0ac46d6b 100644
 --- a/arch/ia64/Kconfig
 +++ b/arch/ia64/Kconfig
 @@ -8,6 +8,7 @@ menu "Processor type and features"
@@ -386,7 +386,7 @@ index 0d56b19b7511..58f63446c657 100644
 +	select ARCH_HAS_CPU_FINALIZE_INIT
  	select ARCH_MIGHT_HAVE_PC_PARPORT
  	select ARCH_MIGHT_HAVE_PC_SERIO
- 	select PCI if (!IA64_HP_SIM)
+ 	select ACPI
 diff --git a/arch/ia64/include/asm/bugs.h b/arch/ia64/include/asm/bugs.h
 deleted file mode 100644
 index 0d6b9bded56c..000000000000
@@ -414,11 +414,11 @@ index 0d6b9bded56c..000000000000
 -
 -#endif /* _ASM_IA64_BUGS_H */
 diff --git a/arch/ia64/kernel/setup.c b/arch/ia64/kernel/setup.c
-index 0e6c2d9fb498..41af687bc1dc 100644
+index bb320c6d0cc9..6700f066f59c 100644
 --- a/arch/ia64/kernel/setup.c
 +++ b/arch/ia64/kernel/setup.c
-@@ -1050,8 +1050,7 @@ cpu_init (void)
- 	platform_cpu_init();
+@@ -1073,8 +1073,7 @@ cpu_init (void)
+ 	}
  }
  
 -void __init
@@ -428,17 +428,17 @@ index 0e6c2d9fb498..41af687bc1dc 100644
  	ia64_patch_mckinley_e9((unsigned long) __start___mckinley_e9_bundles,
  			       (unsigned long) __end___mckinley_e9_bundles);
 diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 070553791e97..05b7e4cbb16e 100644
+index 6663f1741798..d84a6a63d36a 100644
 --- a/arch/m68k/Kconfig
 +++ b/arch/m68k/Kconfig
-@@ -2,6 +2,7 @@
- config M68K
- 	bool
+@@ -4,6 +4,7 @@ config M68K
  	default y
+ 	select ARCH_32BIT_OFF_T
+ 	select ARCH_HAS_BINFMT_FLAT
 +	select ARCH_HAS_CPU_FINALIZE_INIT if MMU
+ 	select ARCH_HAS_DMA_PREP_COHERENT if HAS_DMA && MMU && !COLDFIRE
  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if HAS_DMA
  	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
- 	select ARCH_NO_COHERENT_DMA_MMAP if !MMU
 diff --git a/arch/m68k/include/asm/bugs.h b/arch/m68k/include/asm/bugs.h
 deleted file mode 100644
 index 745530651e0b..000000000000
@@ -467,7 +467,7 @@ index 745530651e0b..000000000000
 -}
 -#endif
 diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index de44899c0e61..461e14f46cfe 100644
+index 528484feff80..a9ef8b6b01bc 100644
 --- a/arch/m68k/kernel/setup_mm.c
 +++ b/arch/m68k/kernel/setup_mm.c
 @@ -10,6 +10,7 @@
@@ -478,7 +478,7 @@ index de44899c0e61..461e14f46cfe 100644
  #include <linux/mm.h>
  #include <linux/sched.h>
  #include <linux/delay.h>
-@@ -526,7 +527,7 @@ static int __init proc_hardware_init(void)
+@@ -527,7 +528,7 @@ static int __init proc_hardware_init(void)
  module_init(proc_hardware_init);
  #endif
  
@@ -488,17 +488,17 @@ index de44899c0e61..461e14f46cfe 100644
  #if defined(CONFIG_FPU) && !defined(CONFIG_M68KFPU_EMU)
  	if (m68k_fputype == 0) {
 diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 8a227a80f6bd..8d1d065aac35 100644
+index 2811ecc1f3c7..a353d1d1b457 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -4,6 +4,7 @@ config MIPS
- 	default y
- 	select ARCH_BINFMT_ELF_STATE
+@@ -5,6 +5,7 @@ config MIPS
+ 	select ARCH_32BIT_OFF_T if !64BIT
+ 	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
  	select ARCH_CLOCKSOURCE_DATA
 +	select ARCH_HAS_CPU_FINALIZE_INIT
- 	select ARCH_DISCARD_MEMBLOCK
- 	select ARCH_HAS_ELF_RANDOMIZE
  	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+ 	select ARCH_SUPPORTS_UPROBES
 diff --git a/arch/mips/include/asm/bugs.h b/arch/mips/include/asm/bugs.h
 index d8ab8b7129b5..6d04d7d3a8f2 100644
 --- a/arch/mips/include/asm/bugs.h
@@ -540,7 +540,7 @@ index d8ab8b7129b5..6d04d7d3a8f2 100644
  {
  #ifdef CONFIG_64BIT
 diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 124bc842306d..b424f5e84487 100644
+index d91b772214b5..1c4114f8f9aa 100644
 --- a/arch/mips/kernel/setup.c
 +++ b/arch/mips/kernel/setup.c
 @@ -11,6 +11,8 @@
@@ -552,7 +552,7 @@ index 124bc842306d..b424f5e84487 100644
  #include <linux/ioport.h>
  #include <linux/export.h>
  #include <linux/screen_info.h>
-@@ -1108,3 +1110,14 @@ static int __init setnocoherentio(char *str)
+@@ -812,3 +814,14 @@ static int __init setnocoherentio(char *str)
  }
  early_param("nocoherentio", setnocoherentio);
  #endif
@@ -595,18 +595,15 @@ index 0a7f9db6bd1c..000000000000
 -}
 diff --git a/arch/powerpc/include/asm/bugs.h b/arch/powerpc/include/asm/bugs.h
 deleted file mode 100644
-index 42fdb73e3068..000000000000
+index 01b8f6ca4dbb..000000000000
 --- a/arch/powerpc/include/asm/bugs.h
 +++ /dev/null
-@@ -1,18 +0,0 @@
+@@ -1,15 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
 -#ifndef _ASM_POWERPC_BUGS_H
 -#define _ASM_POWERPC_BUGS_H
 -
 -/*
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * as published by the Free Software Foundation; either version
-- * 2 of the License, or (at your option) any later version.
 - */
 -
 -/*
@@ -618,13 +615,13 @@ index 42fdb73e3068..000000000000
 -
 -#endif	/* _ASM_POWERPC_BUGS_H */
 diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 1fb7b6d72baf..63e00320eb3c 100644
+index f356ee674d89..671897a680ca 100644
 --- a/arch/sh/Kconfig
 +++ b/arch/sh/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
+@@ -2,6 +2,7 @@
  config SUPERH
  	def_bool y
+ 	select ARCH_HAS_BINFMT_FLAT if !MMU
 +	select ARCH_HAS_CPU_FINALIZE_INIT
  	select ARCH_HAS_PTE_SPECIAL
  	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
@@ -727,10 +724,10 @@ index 6fbf8c80e498..386786b1594a 100644
  
  #ifdef CONFIG_SUPERH32
 diff --git a/arch/sh/kernel/idle.c b/arch/sh/kernel/idle.c
-index be616ee0cf87..5169309fdf98 100644
+index c20fc5487e05..bcb8eabd7618 100644
 --- a/arch/sh/kernel/idle.c
 +++ b/arch/sh/kernel/idle.c
-@@ -18,6 +18,7 @@
+@@ -15,6 +15,7 @@
  #include <linux/smp.h>
  #include <linux/atomic.h>
  #include <asm/pgalloc.h>
@@ -739,10 +736,10 @@ index be616ee0cf87..5169309fdf98 100644
  #include <asm/bl_bit.h>
  
 diff --git a/arch/sh/kernel/setup.c b/arch/sh/kernel/setup.c
-index b2f44eb7ce19..8ef497062350 100644
+index c25ee383cb83..2221e057e6b4 100644
 --- a/arch/sh/kernel/setup.c
 +++ b/arch/sh/kernel/setup.c
-@@ -42,6 +42,7 @@
+@@ -43,6 +43,7 @@
  #include <asm/smp.h>
  #include <asm/mmu_context.h>
  #include <asm/mmzone.h>
@@ -750,7 +747,7 @@ index b2f44eb7ce19..8ef497062350 100644
  #include <asm/sparsemem.h>
  
  /*
-@@ -361,3 +362,57 @@ int test_mode_pin(int pin)
+@@ -362,3 +363,57 @@ int test_mode_pin(int pin)
  {
  	return sh_mv.mv_mode_pins() & pin;
  }
@@ -809,17 +806,17 @@ index b2f44eb7ce19..8ef497062350 100644
 +	*p = '\0';
 +}
 diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index 426accab2a88..e231779928dd 100644
+index 8cb5bb020b4b..881f6a849148 100644
 --- a/arch/sparc/Kconfig
 +++ b/arch/sparc/Kconfig
-@@ -12,6 +12,7 @@ config 64BIT
- config SPARC
- 	bool
- 	default y
+@@ -52,6 +52,7 @@ config SPARC
+ config SPARC32
+ 	def_bool !64BIT
+ 	select ARCH_32BIT_OFF_T
 +	select ARCH_HAS_CPU_FINALIZE_INIT if !SMP
- 	select ARCH_MIGHT_HAVE_PC_PARPORT if SPARC64 && PCI
- 	select ARCH_MIGHT_HAVE_PC_SERIO
- 	select OF
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 	select GENERIC_ATOMIC64
+ 	select CLZ_TAB
 diff --git a/arch/sparc/include/asm/bugs.h b/arch/sparc/include/asm/bugs.h
 deleted file mode 100644
 index 02fa369b9c21..000000000000
@@ -845,7 +842,7 @@ index 02fa369b9c21..000000000000
 -#endif
 -}
 diff --git a/arch/sparc/kernel/setup_32.c b/arch/sparc/kernel/setup_32.c
-index 13664c377196..3ee6609e6eb5 100644
+index afe1592a6d08..4373c1d64ab8 100644
 --- a/arch/sparc/kernel/setup_32.c
 +++ b/arch/sparc/kernel/setup_32.c
 @@ -422,3 +422,10 @@ static int __init topology_init(void)
@@ -860,7 +857,7 @@ index 13664c377196..3ee6609e6eb5 100644
 +}
 +#endif
 diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 6b9938919f0b..8f0cb2809939 100644
+index c56d3526a3bd..468a5d63ef26 100644
 --- a/arch/um/Kconfig
 +++ b/arch/um/Kconfig
 @@ -5,6 +5,7 @@ menu "UML-specific options"
@@ -885,18 +882,18 @@ index 4473942a0839..000000000000
 -
 -#endif
 diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index c23f8857a798..66390c321155 100644
+index 640c8e178502..004ef4ebb57d 100644
 --- a/arch/um/kernel/um_arch.c
 +++ b/arch/um/kernel/um_arch.c
 @@ -3,6 +3,7 @@
-  * Licensed under the GPL
+  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
   */
  
 +#include <linux/cpu.h>
  #include <linux/delay.h>
  #include <linux/init.h>
  #include <linux/mm.h>
-@@ -352,7 +353,7 @@ void __init setup_arch(char **cmdline_p)
+@@ -353,7 +354,7 @@ void __init setup_arch(char **cmdline_p)
  	setup_hostinfo(host_info, sizeof host_info);
  }
  
@@ -906,18 +903,18 @@ index c23f8857a798..66390c321155 100644
  	arch_check_bugs();
  	os_check_bugs();
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index be4403a8e1b4..9fd2e3c2494a 100644
+index 6002252692af..df0a3a1b08ae 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -50,6 +50,7 @@ config X86
+@@ -60,6 +60,7 @@ config X86
  	select ARCH_CLOCKSOURCE_DATA
- 	select ARCH_DISCARD_MEMBLOCK
+ 	select ARCH_CLOCKSOURCE_INIT
  	select ARCH_HAS_ACPI_TABLE_UPGRADE	if ACPI
 +	select ARCH_HAS_CPU_FINALIZE_INIT
  	select ARCH_HAS_DEBUG_VIRTUAL
  	select ARCH_HAS_DEVMEM_IS_ALLOWED
  	select ARCH_HAS_ELF_RANDOMIZE
-@@ -2437,6 +2438,25 @@ config ARCH_ENABLE_SPLIT_PMD_PTLOCK
+@@ -2500,6 +2501,25 @@ config ARCH_ENABLE_SPLIT_PMD_PTLOCK
  	def_bool y
  	depends on X86_64 || X86_PAE
  
@@ -944,7 +941,7 @@ index be4403a8e1b4..9fd2e3c2494a 100644
  	def_bool y
  	depends on X86_64 && HUGETLB_PAGE && MIGRATION
 diff --git a/arch/x86/include/asm/bugs.h b/arch/x86/include/asm/bugs.h
-index 542509b53e0f..dd8ff1ca2aef 100644
+index 794eb2129bc6..6554ddb2ad49 100644
 --- a/arch/x86/include/asm/bugs.h
 +++ b/arch/x86/include/asm/bugs.h
 @@ -4,8 +4,6 @@
@@ -956,22 +953,125 @@ index 542509b53e0f..dd8ff1ca2aef 100644
  #if defined(CONFIG_CPU_SUP_INTEL)
  void check_mpx_erratum(struct cpuinfo_x86 *c);
  #else
+diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
+index 619c1f80a2ab..4466a47b7608 100644
+--- a/arch/x86/include/asm/cpufeature.h
++++ b/arch/x86/include/asm/cpufeature.h
+@@ -30,6 +30,8 @@ enum cpuid_leafs
+ 	CPUID_7_ECX,
+ 	CPUID_8000_0007_EBX,
+ 	CPUID_7_EDX,
++	CPUID_8000_001F_EAX,
++	CPUID_8000_0021_EAX,
+ };
+ 
+ #ifdef CONFIG_X86_FEATURE_NAMES
+@@ -88,8 +90,10 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
+ 	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 16, feature_bit) ||	\
+ 	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 17, feature_bit) ||	\
+ 	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 18, feature_bit) ||	\
++	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 19, feature_bit) ||	\
++	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 20, feature_bit) ||	\
+ 	   REQUIRED_MASK_CHECK					  ||	\
+-	   BUILD_BUG_ON_ZERO(NCAPINTS != 19))
++	   BUILD_BUG_ON_ZERO(NCAPINTS != 21))
+ 
+ #define DISABLED_MASK_BIT_SET(feature_bit)				\
+ 	 ( CHECK_BIT_IN_MASK_WORD(DISABLED_MASK,  0, feature_bit) ||	\
+@@ -111,8 +115,10 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
+ 	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 16, feature_bit) ||	\
+ 	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 17, feature_bit) ||	\
+ 	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 18, feature_bit) ||	\
++	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 19, feature_bit) ||	\
++	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 20, feature_bit) ||	\
+ 	   DISABLED_MASK_CHECK					  ||	\
+-	   BUILD_BUG_ON_ZERO(NCAPINTS != 19))
++	   BUILD_BUG_ON_ZERO(NCAPINTS != 21))
+ 
+ #define cpu_has(c, bit)							\
+ 	(__builtin_constant_p(bit) && REQUIRED_MASK_BIT_SET(bit) ? 1 :	\
 diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index bd4374f56651..5cf8dca571cf 100644
+index 3e360dc07bae..f42286e9a2b1 100644
 --- a/arch/x86/include/asm/cpufeatures.h
 +++ b/arch/x86/include/asm/cpufeatures.h
-@@ -409,5 +409,6 @@
- #define X86_BUG_MMIO_UNKNOWN		X86_BUG(26) /* CPU is too old and its MMIO Stale Data status is unknown */
- #define X86_BUG_RETBLEED		X86_BUG(27) /* CPU is affected by RETBleed */
- #define X86_BUG_EIBRS_PBRSB		X86_BUG(28) /* EIBRS is vulnerable to Post Barrier RSB Predictions */
+@@ -13,8 +13,8 @@
+ /*
+  * Defines x86 CPU feature bits
+  */
+-#define NCAPINTS			19	   /* N 32-bit words worth of info */
+-#define NBUGINTS			1	   /* N 32-bit bug flags */
++#define NCAPINTS			21	   /* N 32-bit words worth of info */
++#define NBUGINTS			2	   /* N 32-bit bug flags */
+ 
+ /*
+  * Note: If the comment begins with a quoted string, that string is used
+@@ -96,7 +96,7 @@
+ #define X86_FEATURE_SYSCALL32		( 3*32+14) /* "" syscall in IA32 userspace */
+ #define X86_FEATURE_SYSENTER32		( 3*32+15) /* "" sysenter in IA32 userspace */
+ #define X86_FEATURE_REP_GOOD		( 3*32+16) /* REP microcode works well */
+-#define X86_FEATURE_SME_COHERENT	( 3*32+17) /* "" AMD hardware-enforced cache coherency */
++/* FREE!                                ( 3*32+17) */
+ #define X86_FEATURE_LFENCE_RDTSC	( 3*32+18) /* "" LFENCE synchronizes RDTSC */
+ #define X86_FEATURE_ACC_POWER		( 3*32+19) /* AMD Accumulated Power Mechanism */
+ #define X86_FEATURE_NOPL		( 3*32+20) /* The NOPL (0F 1F) instructions */
+@@ -201,7 +201,7 @@
+ #define X86_FEATURE_INVPCID_SINGLE	( 7*32+ 7) /* Effectively INVPCID && CR4.PCIDE=1 */
+ #define X86_FEATURE_HW_PSTATE		( 7*32+ 8) /* AMD HW-PState */
+ #define X86_FEATURE_PROC_FEEDBACK	( 7*32+ 9) /* AMD ProcFeedbackInterface */
+-#define X86_FEATURE_SME			( 7*32+10) /* AMD Secure Memory Encryption */
++/* FREE!                                ( 7*32+10) */
+ #define X86_FEATURE_PTI			( 7*32+11) /* Kernel Page Table Isolation enabled */
+ #define X86_FEATURE_KERNEL_IBRS		( 7*32+12) /* "" Set/clear IBRS on kernel entry/exit */
+ #define X86_FEATURE_RSB_VMEXIT		( 7*32+13) /* "" Fill RSB on VM-Exit */
+@@ -211,7 +211,7 @@
+ #define X86_FEATURE_SSBD		( 7*32+17) /* Speculative Store Bypass Disable */
+ #define X86_FEATURE_MBA			( 7*32+18) /* Memory Bandwidth Allocation */
+ #define X86_FEATURE_RSB_CTXSW		( 7*32+19) /* "" Fill RSB on context switches */
+-#define X86_FEATURE_SEV			( 7*32+20) /* AMD Secure Encrypted Virtualization */
++/* FREE!                                ( 7*32+20) */
+ #define X86_FEATURE_USE_IBPB		( 7*32+21) /* "" Indirect Branch Prediction Barrier enabled */
+ #define X86_FEATURE_USE_IBRS_FW		( 7*32+22) /* "" Use IBRS during runtime firmware calls */
+ #define X86_FEATURE_SPEC_STORE_BYPASS_DISABLE	( 7*32+23) /* "" Disable Speculative Store Bypass. */
+@@ -375,6 +375,13 @@
+ #define X86_FEATURE_ARCH_CAPABILITIES	(18*32+29) /* IA32_ARCH_CAPABILITIES MSR (Intel) */
+ #define X86_FEATURE_SPEC_CTRL_SSBD	(18*32+31) /* "" Speculative Store Bypass Disable */
+ 
++/* AMD-defined memory encryption features, CPUID level 0x8000001f (EAX), word 19 */
++#define X86_FEATURE_SME			(19*32+ 0) /* AMD Secure Memory Encryption */
++#define X86_FEATURE_SEV			(19*32+ 1) /* AMD Secure Encrypted Virtualization */
++#define X86_FEATURE_VM_PAGE_FLUSH	(19*32+ 2) /* "" VM Page Flush MSR is supported */
++#define X86_FEATURE_SEV_ES		(19*32+ 3) /* AMD Secure Encrypted Virtualization - Encrypted State */
++#define X86_FEATURE_SME_COHERENT	(19*32+10) /* "" AMD hardware-enforced cache coherency */
++
+ /*
+  * BUG word(s)
+  */
+@@ -415,5 +422,6 @@
+ #define X86_BUG_RETBLEED		X86_BUG(26) /* CPU is affected by RETBleed */
+ #define X86_BUG_EIBRS_PBRSB		X86_BUG(27) /* EIBRS is vulnerable to Post Barrier RSB Predictions */
+ #define X86_BUG_MMIO_UNKNOWN		X86_BUG(28) /* CPU is too old and its MMIO Stale Data status is unknown */
 +#define X86_BUG_GDS			X86_BUG(29) /* CPU is affected by Gather Data Sampling */
  
  #endif /* _ASM_X86_CPUFEATURES_H */
+diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
+index a5ea841cc6d2..8453260f6d9f 100644
+--- a/arch/x86/include/asm/disabled-features.h
++++ b/arch/x86/include/asm/disabled-features.h
+@@ -84,6 +84,8 @@
+ #define DISABLED_MASK16	(DISABLE_PKU|DISABLE_OSPKE|DISABLE_LA57|DISABLE_UMIP)
+ #define DISABLED_MASK17	0
+ #define DISABLED_MASK18	0
+-#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 19)
++#define DISABLED_MASK19	0
++#define DISABLED_MASK20	0
++#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 21)
+ 
+ #endif /* _ASM_X86_DISABLED_FEATURES_H */
 diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-index 4f274d851986..51dc8201b51e 100644
+index 5ed702e2c55f..330841bad616 100644
 --- a/arch/x86/include/asm/fpu/internal.h
 +++ b/arch/x86/include/asm/fpu/internal.h
-@@ -42,7 +42,7 @@ extern int  dump_fpu(struct pt_regs *ptregs, struct user_i387_struct *fpstate);
+@@ -41,7 +41,7 @@ extern int  dump_fpu(struct pt_regs *ptregs, struct user_i387_struct *fpstate);
  extern void fpu__init_cpu(void);
  extern void fpu__init_system_xstate(void);
  extern void fpu__init_cpu_xstate(void);
@@ -981,10 +1081,10 @@ index 4f274d851986..51dc8201b51e 100644
  extern void fpu__resume_cpu(void);
  extern u64 fpu__get_supported_xfeatures_mask(void);
 diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
-index 616f8e637bc3..b51ac6eed904 100644
+index 848ce43b9040..190c5ca537e9 100644
 --- a/arch/x86/include/asm/mem_encrypt.h
 +++ b/arch/x86/include/asm/mem_encrypt.h
-@@ -80,6 +80,8 @@ early_set_memory_decrypted(unsigned long vaddr, unsigned long size) { return 0;
+@@ -77,6 +77,8 @@ early_set_memory_decrypted(unsigned long vaddr, unsigned long size) { return 0;
  static inline int __init
  early_set_memory_encrypted(unsigned long vaddr, unsigned long size) { return 0; }
  
@@ -994,10 +1094,10 @@ index 616f8e637bc3..b51ac6eed904 100644
  
  #endif	/* CONFIG_AMD_MEM_ENCRYPT */
 diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index d9c6603dcd63..efedd16231ff 100644
+index f3fa903c5b29..7137256f2c31 100644
 --- a/arch/x86/include/asm/msr-index.h
 +++ b/arch/x86/include/asm/msr-index.h
-@@ -138,6 +138,15 @@
+@@ -147,6 +147,15 @@
  						 * Not susceptible to Post-Barrier
  						 * Return Stack Buffer Predictions.
  						 */
@@ -1013,7 +1113,7 @@ index d9c6603dcd63..efedd16231ff 100644
  
  #define MSR_IA32_FLUSH_CMD		0x0000010b
  #define L1D_FLUSH			BIT(0)	/*
-@@ -156,6 +165,8 @@
+@@ -165,6 +174,8 @@
  #define MSR_IA32_MCU_OPT_CTRL		0x00000123
  #define RNGDS_MITG_DIS			BIT(0)
  #define FB_CLEAR_DIS			BIT(3)	/* CPU Fill buffer clear disable */
@@ -1022,8 +1122,51 @@ index d9c6603dcd63..efedd16231ff 100644
  
  #define MSR_IA32_SYSENTER_CS		0x00000174
  #define MSR_IA32_SYSENTER_ESP		0x00000175
+@@ -484,6 +495,7 @@
+ #define MSR_AMD64_ICIBSEXTDCTL		0xc001103c
+ #define MSR_AMD64_IBSOPDATA4		0xc001103d
+ #define MSR_AMD64_IBS_REG_COUNT_MAX	8 /* includes MSR_AMD64_IBSBRTARGET */
++#define MSR_AMD64_VM_PAGE_FLUSH		0xc001011e
+ #define MSR_AMD64_SEV			0xc0010131
+ #define MSR_AMD64_SEV_ENABLED_BIT	0
+ #define MSR_AMD64_SEV_ENABLED		BIT_ULL(MSR_AMD64_SEV_ENABLED_BIT)
+diff --git a/arch/x86/include/asm/required-features.h b/arch/x86/include/asm/required-features.h
+index 6847d85400a8..fb3d81347e33 100644
+--- a/arch/x86/include/asm/required-features.h
++++ b/arch/x86/include/asm/required-features.h
+@@ -101,6 +101,8 @@
+ #define REQUIRED_MASK16	0
+ #define REQUIRED_MASK17	0
+ #define REQUIRED_MASK18	0
+-#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 19)
++#define REQUIRED_MASK19	0
++#define REQUIRED_MASK20	0
++#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 21)
+ 
+ #endif /* _ASM_X86_REQUIRED_FEATURES_H */
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 3f182c06b305..11f09df72f51 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -663,7 +663,7 @@ static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
+ 	 *	      If BIOS has not enabled SME then don't advertise the
+ 	 *	      SME feature (set in scattered.c).
+ 	 *   For SEV: If BIOS has not enabled SEV then don't advertise the
+-	 *            SEV feature (set in scattered.c).
++	 *            SEV and SEV_ES feature (set in scattered.c).
+ 	 *
+ 	 *   In all cases, since support for SME and SEV requires long mode,
+ 	 *   don't advertise the feature under CONFIG_X86_32.
+@@ -694,6 +694,7 @@ static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
+ 		setup_clear_cpu_cap(X86_FEATURE_SME);
+ clear_sev:
+ 		setup_clear_cpu_cap(X86_FEATURE_SEV);
++		setup_clear_cpu_cap(X86_FEATURE_SEV_ES);
+ 	}
+ }
+ 
 diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 680fa070e18b..6e1acbdd27a5 100644
+index 75ca28bb267c..48ae44cf7795 100644
 --- a/arch/x86/kernel/cpu/bugs.c
 +++ b/arch/x86/kernel/cpu/bugs.c
 @@ -9,7 +9,6 @@
@@ -1266,7 +1409,7 @@ index 680fa070e18b..6e1acbdd27a5 100644
  #undef pr_fmt
  #define pr_fmt(fmt)     "Spectre V1 : " fmt
  
-@@ -2196,6 +2292,11 @@ static ssize_t retbleed_show_state(char *buf)
+@@ -2207,6 +2303,11 @@ static ssize_t retbleed_show_state(char *buf)
  	return sprintf(buf, "%s\n", retbleed_strings[retbleed_mitigation]);
  }
  
@@ -1278,7 +1421,7 @@ index 680fa070e18b..6e1acbdd27a5 100644
  static ssize_t cpu_show_common(struct device *dev, struct device_attribute *attr,
  			       char *buf, unsigned int bug)
  {
-@@ -2245,6 +2346,9 @@ static ssize_t cpu_show_common(struct device *dev, struct device_attribute *attr
+@@ -2256,6 +2357,9 @@ static ssize_t cpu_show_common(struct device *dev, struct device_attribute *attr
  	case X86_BUG_RETBLEED:
  		return retbleed_show_state(buf);
  
@@ -1288,7 +1431,7 @@ index 680fa070e18b..6e1acbdd27a5 100644
  	default:
  		break;
  	}
-@@ -2309,4 +2413,9 @@ ssize_t cpu_show_retbleed(struct device *dev, struct device_attribute *attr, cha
+@@ -2320,4 +2424,9 @@ ssize_t cpu_show_retbleed(struct device *dev, struct device_attribute *attr, cha
  {
  	return cpu_show_common(dev, attr, buf, X86_BUG_RETBLEED);
  }
@@ -1299,14 +1442,10 @@ index 680fa070e18b..6e1acbdd27a5 100644
 +}
  #endif
 diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index ec324be00603..d315e928b95c 100644
+index c8ccf5bfd534..fcfe891c1e8e 100644
 --- a/arch/x86/kernel/cpu/common.c
 +++ b/arch/x86/kernel/cpu/common.c
-@@ -13,14 +13,20 @@
- #include <linux/sched/mm.h>
- #include <linux/sched/clock.h>
- #include <linux/sched/task.h>
-+#include <linux/sched/smt.h>
+@@ -17,11 +17,16 @@
  #include <linux/init.h>
  #include <linux/kprobes.h>
  #include <linux/kgdb.h>
@@ -1323,7 +1462,7 @@ index ec324be00603..d315e928b95c 100644
  #include <asm/perf_event.h>
  #include <asm/mmu_context.h>
  #include <asm/archrandom.h>
-@@ -56,6 +62,7 @@
+@@ -57,6 +62,7 @@
  #ifdef CONFIG_X86_LOCAL_APIC
  #include <asm/uv/uv.h>
  #endif
@@ -1331,7 +1470,20 @@ index ec324be00603..d315e928b95c 100644
  
  #include "cpu.h"
  
-@@ -1040,6 +1047,12 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
+@@ -961,6 +967,12 @@ void get_cpu_cap(struct cpuinfo_x86 *c)
+ 	if (c->extended_cpuid_level >= 0x8000000a)
+ 		c->x86_capability[CPUID_8000_000A_EDX] = cpuid_edx(0x8000000a);
+ 
++	if (c->extended_cpuid_level >= 0x8000001f)
++		c->x86_capability[CPUID_8000_001F_EAX] = cpuid_eax(0x8000001f);
++
++	if (c->extended_cpuid_level >= 0x80000021)
++		c->x86_capability[CPUID_8000_0021_EAX] = cpuid_eax(0x80000021);
++
+ 	init_scattered_cpuid_features(c);
+ 	init_speculation_control(c);
+ 	init_cqm(c);
+@@ -1123,6 +1135,12 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
  #define MMIO_SBDS	BIT(2)
  /* CPU is affected by RETbleed, speculating where you would not expect it */
  #define RETBLEED	BIT(3)
@@ -1344,27 +1496,28 @@ index ec324be00603..d315e928b95c 100644
  
  static const struct x86_cpu_id cpu_vuln_blacklist[] __initconst = {
  	VULNBL_INTEL_STEPPINGS(IVYBRIDGE,	X86_STEPPING_ANY,		SRBDS),
-@@ -1052,18 +1065,20 @@ static const struct x86_cpu_id cpu_vuln_blacklist[] __initconst = {
+@@ -1135,19 +1153,21 @@ static const struct x86_cpu_id cpu_vuln_blacklist[] __initconst = {
  	VULNBL_INTEL_STEPPINGS(BROADWELL_X,	X86_STEPPING_ANY,		MMIO),
- 	VULNBL_INTEL_STEPPINGS(BROADWELL_CORE,	X86_STEPPING_ANY,		SRBDS),
- 	VULNBL_INTEL_STEPPINGS(SKYLAKE_MOBILE,	X86_STEPPING_ANY,		SRBDS | MMIO | RETBLEED),
+ 	VULNBL_INTEL_STEPPINGS(BROADWELL,	X86_STEPPING_ANY,		SRBDS),
+ 	VULNBL_INTEL_STEPPINGS(SKYLAKE_L,	X86_STEPPING_ANY,		SRBDS | MMIO | RETBLEED),
 -	VULNBL_INTEL_STEPPINGS(SKYLAKE_X,	X86_STEPPING_ANY,		MMIO | RETBLEED),
 +	VULNBL_INTEL_STEPPINGS(SKYLAKE_X,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS),
- 	VULNBL_INTEL_STEPPINGS(SKYLAKE_DESKTOP,	X86_STEPPING_ANY,		SRBDS | MMIO | RETBLEED),
--	VULNBL_INTEL_STEPPINGS(KABYLAKE_MOBILE,	X86_STEPPING_ANY,		SRBDS | MMIO | RETBLEED),
--	VULNBL_INTEL_STEPPINGS(KABYLAKE_DESKTOP,X86_STEPPING_ANY,		SRBDS | MMIO | RETBLEED),
-+	VULNBL_INTEL_STEPPINGS(KABYLAKE_MOBILE,	X86_STEPPING_ANY,		SRBDS | MMIO | RETBLEED | GDS),
-+	VULNBL_INTEL_STEPPINGS(KABYLAKE_DESKTOP,X86_STEPPING_ANY,		SRBDS | MMIO | RETBLEED | GDS),
- 	VULNBL_INTEL_STEPPINGS(CANNONLAKE_MOBILE,X86_STEPPING_ANY,		RETBLEED),
--	VULNBL_INTEL_STEPPINGS(ICELAKE_MOBILE,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED),
--	VULNBL_INTEL_STEPPINGS(ICELAKE_XEON_D,	X86_STEPPING_ANY,		MMIO),
+ 	VULNBL_INTEL_STEPPINGS(SKYLAKE,		X86_STEPPING_ANY,		SRBDS | MMIO | RETBLEED),
+-	VULNBL_INTEL_STEPPINGS(KABYLAKE_L,	X86_STEPPING_ANY,		SRBDS | MMIO | RETBLEED),
+-	VULNBL_INTEL_STEPPINGS(KABYLAKE,	X86_STEPPING_ANY,		SRBDS | MMIO | RETBLEED),
++	VULNBL_INTEL_STEPPINGS(KABYLAKE_L,	X86_STEPPING_ANY,		SRBDS | MMIO | RETBLEED | GDS),
++	VULNBL_INTEL_STEPPINGS(KABYLAKE,	X86_STEPPING_ANY,		SRBDS | MMIO | RETBLEED | GDS),
+ 	VULNBL_INTEL_STEPPINGS(CANNONLAKE_L,	X86_STEPPING_ANY,		RETBLEED),
+-	VULNBL_INTEL_STEPPINGS(ICELAKE_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED),
+-	VULNBL_INTEL_STEPPINGS(ICELAKE_D,	X86_STEPPING_ANY,		MMIO),
 -	VULNBL_INTEL_STEPPINGS(ICELAKE_X,	X86_STEPPING_ANY,		MMIO),
 -	VULNBL_INTEL_STEPPINGS(COMETLAKE,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED),
--	VULNBL_INTEL_STEPPINGS(COMETLAKE_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED),
-+	VULNBL_INTEL_STEPPINGS(ICELAKE_MOBILE,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
-+	VULNBL_INTEL_STEPPINGS(ICELAKE_XEON_D,	X86_STEPPING_ANY,		MMIO | GDS),
++	VULNBL_INTEL_STEPPINGS(ICELAKE_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
++	VULNBL_INTEL_STEPPINGS(ICELAKE_D,	X86_STEPPING_ANY,		MMIO | GDS),
 +	VULNBL_INTEL_STEPPINGS(ICELAKE_X,	X86_STEPPING_ANY,		MMIO | GDS),
 +	VULNBL_INTEL_STEPPINGS(COMETLAKE,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
+ 	VULNBL_INTEL_STEPPINGS(COMETLAKE_L,	X86_STEPPINGS(0x0, 0x0),	MMIO | RETBLEED),
+-	VULNBL_INTEL_STEPPINGS(COMETLAKE_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED),
 +	VULNBL_INTEL_STEPPINGS(COMETLAKE_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
 +	VULNBL_INTEL_STEPPINGS(TIGERLAKE_L,	X86_STEPPING_ANY,		GDS),
 +	VULNBL_INTEL_STEPPINGS(TIGERLAKE,	X86_STEPPING_ANY,		GDS),
@@ -1372,9 +1525,9 @@ index ec324be00603..d315e928b95c 100644
 -	VULNBL_INTEL_STEPPINGS(ROCKETLAKE,	X86_STEPPING_ANY,		MMIO | RETBLEED),
 +	VULNBL_INTEL_STEPPINGS(ROCKETLAKE,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS),
  	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS),
- 	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT_X,	X86_STEPPING_ANY,		MMIO),
+ 	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT_D,	X86_STEPPING_ANY,		MMIO),
  	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS),
-@@ -1186,6 +1201,16 @@ static void __init cpu_set_bug_bits(struct cpuinfo_x86 *c)
+@@ -1273,6 +1293,16 @@ static void __init cpu_set_bug_bits(struct cpuinfo_x86 *c)
  	    !(ia32_cap & ARCH_CAP_PBRSB_NO))
  		setup_force_cpu_bug(X86_BUG_EIBRS_PBRSB);
  
@@ -1391,7 +1544,7 @@ index ec324be00603..d315e928b95c 100644
  	if (cpu_matches(cpu_vuln_whitelist, NO_MELTDOWN))
  		return;
  
-@@ -1271,8 +1296,6 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
+@@ -1358,8 +1388,6 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
  
  	cpu_set_bug_bits(c);
  
@@ -1400,7 +1553,7 @@ index ec324be00603..d315e928b95c 100644
  #ifdef CONFIG_X86_32
  	/*
  	 * Regardless of whether PCID is enumerated, the SDM says
-@@ -1661,6 +1684,8 @@ void identify_secondary_cpu(struct cpuinfo_x86 *c)
+@@ -1751,6 +1779,8 @@ void identify_secondary_cpu(struct cpuinfo_x86 *c)
  	validate_apic_and_package_id(c);
  	x86_spec_ctrl_setup_ap();
  	update_srbds_msr();
@@ -1409,7 +1562,7 @@ index ec324be00603..d315e928b95c 100644
  }
  
  static __init int setup_noclflush(char *arg)
-@@ -1978,8 +2003,6 @@ void cpu_init(void)
+@@ -2049,8 +2079,6 @@ void cpu_init(void)
  	clear_all_debug_regs();
  	dbg_restore_debug_regs();
  
@@ -1418,7 +1571,7 @@ index ec324be00603..d315e928b95c 100644
  	if (is_uv_system())
  		uv_cpu_init();
  
-@@ -2043,8 +2066,6 @@ void cpu_init(void)
+@@ -2108,8 +2136,6 @@ void cpu_init(void)
  	clear_all_debug_regs();
  	dbg_restore_debug_regs();
  
@@ -1427,9 +1580,9 @@ index ec324be00603..d315e928b95c 100644
  	load_fixmap_gdt(cpu);
  }
  #endif
-@@ -2097,3 +2118,69 @@ void microcode_check(void)
- 	pr_warn("x86/CPU: CPU features have changed after loading microcode, but might not take effect.\n");
- 	pr_warn("x86/CPU: Please consider either early loading through initrd/built-in or a potential BIOS update.\n");
+@@ -2156,3 +2182,69 @@ void arch_smt_update(void)
+ 	/* Check whether IPI broadcasting can be enabled */
+ 	apic_smt_update();
  }
 +
 +void __init arch_cpu_finalize_init(void)
@@ -1498,10 +1651,10 @@ index ec324be00603..d315e928b95c 100644
 +	mem_encrypt_init();
 +}
 diff --git a/arch/x86/kernel/cpu/cpu.h b/arch/x86/kernel/cpu/cpu.h
-index 4eb9bf68b122..ca1b8bf380a2 100644
+index 4d04c127c4a7..8a64520b5310 100644
 --- a/arch/x86/kernel/cpu/cpu.h
 +++ b/arch/x86/kernel/cpu/cpu.h
-@@ -79,9 +79,11 @@ extern void detect_ht(struct cpuinfo_x86 *c);
+@@ -76,9 +76,11 @@ extern void detect_ht(struct cpuinfo_x86 *c);
  extern void check_null_seg_clears_base(struct cpuinfo_x86 *c);
  
  unsigned int aperfmperf_get_khz(int cpu);
@@ -1513,11 +1666,25 @@ index 4eb9bf68b122..ca1b8bf380a2 100644
  
  extern u64 x86_read_arch_cap_msr(void);
  
+diff --git a/arch/x86/kernel/cpu/scattered.c b/arch/x86/kernel/cpu/scattered.c
+index a03e309a0ac5..37f716eaf0e6 100644
+--- a/arch/x86/kernel/cpu/scattered.c
++++ b/arch/x86/kernel/cpu/scattered.c
+@@ -40,9 +40,6 @@ static const struct cpuid_bit cpuid_bits[] = {
+ 	{ X86_FEATURE_CPB,		CPUID_EDX,  9, 0x80000007, 0 },
+ 	{ X86_FEATURE_PROC_FEEDBACK,    CPUID_EDX, 11, 0x80000007, 0 },
+ 	{ X86_FEATURE_MBA,		CPUID_EBX,  6, 0x80000008, 0 },
+-	{ X86_FEATURE_SME,		CPUID_EAX,  0, 0x8000001f, 0 },
+-	{ X86_FEATURE_SEV,		CPUID_EAX,  1, 0x8000001f, 0 },
+-	{ X86_FEATURE_SME_COHERENT,	CPUID_EAX, 10, 0x8000001f, 0 },
+ 	{ 0, 0, 0, 0, 0 }
+ };
+ 
 diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
-index 9692ccc583bb..644372a10c89 100644
+index 17d092eb1934..5e710ad6a3c0 100644
 --- a/arch/x86/kernel/fpu/init.c
 +++ b/arch/x86/kernel/fpu/init.c
-@@ -49,7 +49,7 @@ void fpu__init_cpu(void)
+@@ -50,7 +50,7 @@ void fpu__init_cpu(void)
  	fpu__init_cpu_xstate();
  }
  
@@ -1526,7 +1693,7 @@ index 9692ccc583bb..644372a10c89 100644
  {
  	unsigned long cr0;
  	u16 fsw, fcw;
-@@ -67,7 +67,7 @@ static bool fpu__probe_without_cpuid(void)
+@@ -68,7 +68,7 @@ static bool fpu__probe_without_cpuid(void)
  	return fsw == 0 && (fcw & 0x103f) == 0x003f;
  }
  
@@ -1535,7 +1702,7 @@ index 9692ccc583bb..644372a10c89 100644
  {
  	if (!boot_cpu_has(X86_FEATURE_CPUID) &&
  	    !test_bit(X86_FEATURE_FPU, (unsigned long *)cpu_caps_cleared)) {
-@@ -297,10 +297,10 @@ static void __init fpu__init_parse_early_param(void)
+@@ -290,10 +290,10 @@ static void __init fpu__init_parse_early_param(void)
   * Called on the boot CPU once per system bootup, to set up the initial
   * FPU state that is later cloned into all processes:
   */
@@ -1549,31 +1716,43 @@ index 9692ccc583bb..644372a10c89 100644
  	/*
  	 * The FPU has to be operational for some of the
 diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 8783d065f927..1f1298f6cbc2 100644
+index 45e5ecb43393..d6a8efff9c61 100644
 --- a/arch/x86/kernel/smpboot.c
 +++ b/arch/x86/kernel/smpboot.c
-@@ -231,6 +231,7 @@ static void notrace start_secondary(void *unused)
+@@ -235,6 +235,7 @@ static void notrace start_secondary(void *unused)
  #endif
  	load_current_idt();
  	cpu_init();
 +	fpu__init_cpu();
+ 	rcu_cpu_starting(raw_smp_processor_id());
  	x86_cpuinit.early_percpu_clock_init();
  	preempt_disable();
- 	smp_callin();
+diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+index 7dec43b2c420..defae8082789 100644
+--- a/arch/x86/kvm/cpuid.h
++++ b/arch/x86/kvm/cpuid.h
+@@ -53,6 +53,7 @@ static const struct cpuid_reg reverse_cpuid[] = {
+ 	[CPUID_7_ECX]         = {         7, 0, CPUID_ECX},
+ 	[CPUID_8000_0007_EBX] = {0x80000007, 0, CPUID_EBX},
+ 	[CPUID_7_EDX]         = {         7, 0, CPUID_EDX},
++	[CPUID_8000_0021_EAX] = {0x80000021, 0, CPUID_EAX},
+ };
+ 
+ static __always_inline struct cpuid_reg x86_feature_cpuid(unsigned x86_feature)
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index ff7ec9b507e3..cdf2cb1eb923 100644
+index d152afdfa8b4..2ee3da99bc1d 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -217,6 +217,8 @@ struct kvm_stats_debugfs_item debugfs_entries[] = {
+@@ -226,6 +226,8 @@ struct kvm_stats_debugfs_item debugfs_entries[] = {
  
  u64 __read_mostly host_xcr0;
  
 +extern bool gds_ucode_mitigated(void);
 +
- static int emulator_fix_hypercall(struct x86_emulate_ctxt *ctxt);
+ struct kmem_cache *x86_fpu_cache;
+ EXPORT_SYMBOL_GPL(x86_fpu_cache);
  
- static inline void kvm_async_pf_hash_reset(struct kvm_vcpu *vcpu)
-@@ -1224,6 +1226,9 @@ u64 kvm_get_arch_capabilities(void)
+@@ -1409,6 +1411,9 @@ static u64 kvm_get_arch_capabilities(void)
  	/* Guests don't need to know "Fill buffer clear control" exists */
  	data &= ~ARCH_CAP_FB_CLEAR_CTRL;
  
@@ -1583,11 +1762,45 @@ index ff7ec9b507e3..cdf2cb1eb923 100644
  	return data;
  }
  
+diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+index 38e6798ce44f..086b274fa60f 100644
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -7,6 +7,7 @@
+ #include <linux/swapops.h>
+ #include <linux/kmemleak.h>
+ #include <linux/sched/task.h>
++#include <linux/sched/mm.h>
+ 
+ #include <asm/set_memory.h>
+ #include <asm/cpu_device_id.h>
+@@ -26,6 +27,7 @@
+ #include <asm/cpufeature.h>
+ #include <asm/pti.h>
+ #include <asm/text-patching.h>
++#include <asm/paravirt.h>
+ 
+ /*
+  * We need to define the tracepoints somewhere, and tlb.c
+@@ -735,9 +737,12 @@ void __init poking_init(void)
+ 	spinlock_t *ptl;
+ 	pte_t *ptep;
+ 
+-	poking_mm = copy_init_mm();
++	poking_mm = mm_alloc();
+ 	BUG_ON(!poking_mm);
+ 
++	/* Xen PV guests need the PGD to be pinned. */
++	paravirt_arch_dup_mmap(NULL, poking_mm);
++
+ 	/*
+ 	 * Randomize the poking address, but make sure that the following page
+ 	 * will be mapped at the same PMD. We need 2 pages, so find space for 3,
 diff --git a/arch/x86/xen/smp_pv.c b/arch/x86/xen/smp_pv.c
-index 75807c2a1e17..66f83562d329 100644
+index 928fbe63c96f..3a0a27d94c05 100644
 --- a/arch/x86/xen/smp_pv.c
 +++ b/arch/x86/xen/smp_pv.c
-@@ -27,6 +27,7 @@
+@@ -28,6 +28,7 @@
  #include <asm/desc.h>
  #include <asm/pgtable.h>
  #include <asm/cpu.h>
@@ -1595,9 +1808,9 @@ index 75807c2a1e17..66f83562d329 100644
  
  #include <xen/interface/xen.h>
  #include <xen/interface/vcpu.h>
-@@ -58,6 +59,7 @@ static void cpu_bringup(void)
- 	int cpu;
+@@ -61,6 +62,7 @@ static void cpu_bringup(void)
  
+ 	cr4_init();
  	cpu_init();
 +	fpu__init_cpu();
  	touch_softlockup_watchdog();
@@ -1628,10 +1841,10 @@ index 69b29d198249..000000000000
 -
 -#endif /* _XTENSA_BUGS_H */
 diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-index 878ed43d8753..b1bb6f43f896 100644
+index 980e9a76e172..5e0c1fd27720 100644
 --- a/drivers/base/cpu.c
 +++ b/drivers/base/cpu.c
-@@ -584,6 +584,12 @@ ssize_t __weak cpu_show_retbleed(struct device *dev,
+@@ -581,6 +581,12 @@ ssize_t __weak cpu_show_retbleed(struct device *dev,
  	return sysfs_emit(buf, "Not affected\n");
  }
  
@@ -1644,7 +1857,7 @@ index 878ed43d8753..b1bb6f43f896 100644
  static DEVICE_ATTR(meltdown, 0444, cpu_show_meltdown, NULL);
  static DEVICE_ATTR(spectre_v1, 0444, cpu_show_spectre_v1, NULL);
  static DEVICE_ATTR(spectre_v2, 0444, cpu_show_spectre_v2, NULL);
-@@ -595,6 +601,7 @@ static DEVICE_ATTR(itlb_multihit, 0444, cpu_show_itlb_multihit, NULL);
+@@ -592,6 +598,7 @@ static DEVICE_ATTR(itlb_multihit, 0444, cpu_show_itlb_multihit, NULL);
  static DEVICE_ATTR(srbds, 0444, cpu_show_srbds, NULL);
  static DEVICE_ATTR(mmio_stale_data, 0444, cpu_show_mmio_stale_data, NULL);
  static DEVICE_ATTR(retbleed, 0444, cpu_show_retbleed, NULL);
@@ -1652,7 +1865,7 @@ index 878ed43d8753..b1bb6f43f896 100644
  
  static struct attribute *cpu_root_vulnerabilities_attrs[] = {
  	&dev_attr_meltdown.attr,
-@@ -608,6 +615,7 @@ static struct attribute *cpu_root_vulnerabilities_attrs[] = {
+@@ -605,6 +612,7 @@ static struct attribute *cpu_root_vulnerabilities_attrs[] = {
  	&dev_attr_srbds.attr,
  	&dev_attr_mmio_stale_data.attr,
  	&dev_attr_retbleed.attr,
@@ -1661,7 +1874,7 @@ index 878ed43d8753..b1bb6f43f896 100644
  };
  
 diff --git a/drivers/net/xen-netback/netback.c b/drivers/net/xen-netback/netback.c
-index d2b79d7c0b88..6faf36bfdeaf 100644
+index a3078755939e..c3eadac893d8 100644
 --- a/drivers/net/xen-netback/netback.c
 +++ b/drivers/net/xen-netback/netback.c
 @@ -389,7 +389,7 @@ static void xenvif_get_requests(struct xenvif_queue *queue,
@@ -1729,10 +1942,10 @@ index 69021830f078..000000000000
 -
 -#endif	/* __ASM_GENERIC_BUGS_H */
 diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-index 12ed4cb751de..c376a59a3e42 100644
+index b42e9c413447..782491dd1999 100644
 --- a/include/linux/cpu.h
 +++ b/include/linux/cpu.h
-@@ -170,6 +170,12 @@ void arch_cpu_idle_enter(void);
+@@ -193,6 +193,12 @@ void arch_cpu_idle_enter(void);
  void arch_cpu_idle_exit(void);
  void arch_cpu_idle_dead(void);
  
@@ -1745,11 +1958,31 @@ index 12ed4cb751de..c376a59a3e42 100644
  int cpu_report_state(int cpu);
  int cpu_check_up_prepare(int cpu);
  void cpu_set_state_online(int cpu);
+diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+index 6f33a07858cf..853ab403e77b 100644
+--- a/include/linux/sched/task.h
++++ b/include/linux/sched/task.h
+@@ -53,6 +53,7 @@ extern void sched_dead(struct task_struct *p);
+ void __noreturn do_task_dead(void);
+ void __noreturn make_task_dead(int signr);
+ 
++extern void mm_cache_init(void);
+ extern void proc_caches_init(void);
+ 
+ extern void fork_init(void);
+@@ -93,7 +94,6 @@ extern long _do_fork(struct kernel_clone_args *kargs);
+ extern bool legacy_clone_args_valid(const struct kernel_clone_args *kargs);
+ extern long do_fork(unsigned long, unsigned long, unsigned long, int __user *, int __user *);
+ struct task_struct *fork_idle(int);
+-struct mm_struct *copy_init_mm(void);
+ extern pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
+ extern long kernel_wait4(pid_t, int __user *, int, struct rusage *);
+ 
 diff --git a/init/main.c b/init/main.c
-index 489a5aa7ba53..08c312abbaf1 100644
+index a17a111d9336..1db844b38810 100644
 --- a/init/main.c
 +++ b/init/main.c
-@@ -91,10 +91,8 @@
+@@ -93,10 +93,8 @@
  #include <linux/cache.h>
  #include <linux/rodata_test.h>
  #include <linux/jump_label.h>
@@ -1760,16 +1993,33 @@ index 489a5aa7ba53..08c312abbaf1 100644
  #include <asm/setup.h>
  #include <asm/sections.h>
  #include <asm/cacheflush.h>
-@@ -493,8 +491,6 @@ void __init __weak thread_stack_cache_init(void)
+@@ -504,8 +502,6 @@ void __init __weak thread_stack_cache_init(void)
  }
  #endif
  
 -void __init __weak mem_encrypt_init(void) { }
 -
- bool initcall_debug;
- core_param(initcall_debug, initcall_debug, bool, 0644);
+ void __init __weak poking_init(void) { }
  
-@@ -674,14 +670,6 @@ asmlinkage __visible void __init start_kernel(void)
+ void __init __weak pgtable_cache_init(void) { }
+@@ -567,6 +563,7 @@ static void __init mm_init(void)
+ 	init_espfix_bsp();
+ 	/* Should be run after espfix64 is set up. */
+ 	pti_init();
++	mm_cache_init();
+ }
+ 
+ void __init __weak arch_call_rest_init(void)
+@@ -627,7 +624,7 @@ asmlinkage __visible void __init start_kernel(void)
+ 	sort_main_extable();
+ 	trap_init();
+ 	mm_init();
+-
++	poking_init();
+ 	ftrace_init();
+ 
+ 	/* trace_printk can be enabled here */
+@@ -721,14 +718,6 @@ asmlinkage __visible void __init start_kernel(void)
  	 */
  	locking_selftest();
  
@@ -1784,7 +2034,7 @@ index 489a5aa7ba53..08c312abbaf1 100644
  #ifdef CONFIG_BLK_DEV_INITRD
  	if (initrd_start && !initrd_below_start_ok &&
  	    page_to_pfn(virt_to_page((void *)initrd_start)) < min_low_pfn) {
-@@ -700,6 +688,9 @@ asmlinkage __visible void __init start_kernel(void)
+@@ -745,6 +734,9 @@ asmlinkage __visible void __init start_kernel(void)
  		late_time_init();
  	sched_clock_init();
  	calibrate_delay();
@@ -1794,11 +2044,175 @@ index 489a5aa7ba53..08c312abbaf1 100644
  	pid_idr_init();
  	anon_vma_init();
  #ifdef CONFIG_X86
-@@ -726,7 +717,6 @@ asmlinkage __visible void __init start_kernel(void)
+@@ -771,9 +763,6 @@ asmlinkage __visible void __init start_kernel(void)
  	taskstats_init_early();
  	delayacct_init();
  
+-	poking_init();
 -	check_bugs();
- 
+-
  	acpi_subsystem_init();
  	arch_post_acpi_subsys_init();
+ 	sfi_init_late();
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 5b4a19682207..39134effb2bf 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2335,11 +2335,6 @@ struct task_struct *fork_idle(int cpu)
+ 	return task;
+ }
+ 
+-struct mm_struct *copy_init_mm(void)
+-{
+-	return dup_mm(NULL, &init_mm);
+-}
+-
+ /*
+  *  Ok, this is the main fork-routine.
+  *
+@@ -2710,10 +2705,27 @@ static void sighand_ctor(void *data)
+ 	init_waitqueue_head(&sighand->signalfd_wqh);
+ }
+ 
+-void __init proc_caches_init(void)
++void __init mm_cache_init(void)
+ {
+ 	unsigned int mm_size;
+ 
++	/*
++	 * The mm_cpumask is located at the end of mm_struct, and is
++	 * dynamically sized based on the maximum CPU number this system
++	 * can have, taking hotplug into account (nr_cpu_ids).
++	 */
++	mm_size = sizeof(struct mm_struct) + cpumask_size();
++
++	mm_cachep = kmem_cache_create_usercopy("mm_struct",
++			mm_size, ARCH_MIN_MMSTRUCT_ALIGN,
++			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
++			offsetof(struct mm_struct, saved_auxv),
++			sizeof_field(struct mm_struct, saved_auxv),
++			NULL);
++}
++
++void __init proc_caches_init(void)
++{
+ 	sighand_cachep = kmem_cache_create("sighand_cache",
+ 			sizeof(struct sighand_struct), 0,
+ 			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_TYPESAFE_BY_RCU|
+@@ -2731,19 +2743,6 @@ void __init proc_caches_init(void)
+ 			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
+ 			NULL);
+ 
+-	/*
+-	 * The mm_cpumask is located at the end of mm_struct, and is
+-	 * dynamically sized based on the maximum CPU number this system
+-	 * can have, taking hotplug into account (nr_cpu_ids).
+-	 */
+-	mm_size = sizeof(struct mm_struct) + cpumask_size();
+-
+-	mm_cachep = kmem_cache_create_usercopy("mm_struct",
+-			mm_size, ARCH_MIN_MMSTRUCT_ALIGN,
+-			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
+-			offsetof(struct mm_struct, saved_auxv),
+-			sizeof_field(struct mm_struct, saved_auxv),
+-			NULL);
+ 	vm_area_cachep = KMEM_CACHE(vm_area_struct, SLAB_PANIC|SLAB_ACCOUNT);
+ 	mmap_init();
+ 	nsproxy_cache_init();
+diff --git a/tools/arch/x86/include/asm/cpufeatures.h b/tools/arch/x86/include/asm/cpufeatures.h
+index 3efaf338d325..eea52cb0e6ab 100644
+--- a/tools/arch/x86/include/asm/cpufeatures.h
++++ b/tools/arch/x86/include/asm/cpufeatures.h
+@@ -13,8 +13,8 @@
+ /*
+  * Defines x86 CPU feature bits
+  */
+-#define NCAPINTS			19	   /* N 32-bit words worth of info */
+-#define NBUGINTS			1	   /* N 32-bit bug flags */
++#define NCAPINTS			20	   /* N 32-bit words worth of info */
++#define NBUGINTS			2	   /* N 32-bit bug flags */
+ 
+ /*
+  * Note: If the comment begins with a quoted string, that string is used
+@@ -96,6 +96,7 @@
+ #define X86_FEATURE_SYSCALL32		( 3*32+14) /* "" syscall in IA32 userspace */
+ #define X86_FEATURE_SYSENTER32		( 3*32+15) /* "" sysenter in IA32 userspace */
+ #define X86_FEATURE_REP_GOOD		( 3*32+16) /* REP microcode works well */
++/* FREE!                                ( 3*32+17) */
+ #define X86_FEATURE_LFENCE_RDTSC	( 3*32+18) /* "" LFENCE synchronizes RDTSC */
+ #define X86_FEATURE_ACC_POWER		( 3*32+19) /* AMD Accumulated Power Mechanism */
+ #define X86_FEATURE_NOPL		( 3*32+20) /* The NOPL (0F 1F) instructions */
+@@ -199,7 +200,7 @@
+ #define X86_FEATURE_INVPCID_SINGLE	( 7*32+ 7) /* Effectively INVPCID && CR4.PCIDE=1 */
+ #define X86_FEATURE_HW_PSTATE		( 7*32+ 8) /* AMD HW-PState */
+ #define X86_FEATURE_PROC_FEEDBACK	( 7*32+ 9) /* AMD ProcFeedbackInterface */
+-#define X86_FEATURE_SME			( 7*32+10) /* AMD Secure Memory Encryption */
++/* FREE!                                ( 7*32+10) */
+ #define X86_FEATURE_PTI			( 7*32+11) /* Kernel Page Table Isolation enabled */
+ #define X86_FEATURE_RETPOLINE		( 7*32+12) /* "" Generic Retpoline mitigation for Spectre variant 2 */
+ #define X86_FEATURE_RETPOLINE_LFENCE	( 7*32+13) /* "" Use LFENCEs for Spectre variant 2 */
+@@ -209,7 +210,7 @@
+ #define X86_FEATURE_SSBD		( 7*32+17) /* Speculative Store Bypass Disable */
+ #define X86_FEATURE_MBA			( 7*32+18) /* Memory Bandwidth Allocation */
+ #define X86_FEATURE_RSB_CTXSW		( 7*32+19) /* "" Fill RSB on context switches */
+-#define X86_FEATURE_SEV			( 7*32+20) /* AMD Secure Encrypted Virtualization */
++/* FREE!                                ( 7*32+20) */
+ #define X86_FEATURE_USE_IBPB		( 7*32+21) /* "" Indirect Branch Prediction Barrier enabled */
+ #define X86_FEATURE_USE_IBRS_FW		( 7*32+22) /* "" Use IBRS during runtime firmware calls */
+ #define X86_FEATURE_SPEC_STORE_BYPASS_DISABLE	( 7*32+23) /* "" Disable Speculative Store Bypass. */
+@@ -287,6 +288,7 @@
+ #define X86_FEATURE_RSB_VMEXIT_LITE	(11*32+17) /* "" Fill RSB on VM-Exit when EIBRS is enabled */
+ 
+ /* Intel-defined CPU features, CPUID level 0x00000007:1 (EAX), word 12 */
++#define X86_FEATURE_AVX_VNNI		(12*32+ 4) /* AVX VNNI instructions */
+ #define X86_FEATURE_AVX512_BF16		(12*32+ 5) /* AVX512 BFLOAT16 instructions */
+ 
+ /* AMD-defined CPU features, CPUID level 0x80000008 (EBX), word 13 */
+@@ -328,6 +330,7 @@
+ #define X86_FEATURE_AVIC		(15*32+13) /* Virtual Interrupt Controller */
+ #define X86_FEATURE_V_VMSAVE_VMLOAD	(15*32+15) /* Virtual VMSAVE VMLOAD */
+ #define X86_FEATURE_VGIF		(15*32+16) /* Virtual GIF */
++#define X86_FEATURE_SVME_ADDR_CHK	(15*32+28) /* "" SVME addr check */
+ 
+ /* Intel-defined CPU features, CPUID level 0x00000007:0 (ECX), word 16 */
+ #define X86_FEATURE_AVX512VBMI		(16*32+ 1) /* AVX512 Vector Bit Manipulation instructions*/
+@@ -367,6 +370,13 @@
+ #define X86_FEATURE_ARCH_CAPABILITIES	(18*32+29) /* IA32_ARCH_CAPABILITIES MSR (Intel) */
+ #define X86_FEATURE_SPEC_CTRL_SSBD	(18*32+31) /* "" Speculative Store Bypass Disable */
+ 
++/* AMD-defined memory encryption features, CPUID level 0x8000001f (EAX), word 19 */
++#define X86_FEATURE_SME			(19*32+ 0) /* AMD Secure Memory Encryption */
++#define X86_FEATURE_SEV			(19*32+ 1) /* AMD Secure Encrypted Virtualization */
++#define X86_FEATURE_VM_PAGE_FLUSH	(19*32+ 2) /* "" VM Page Flush MSR is supported */
++#define X86_FEATURE_SEV_ES		(19*32+ 3) /* AMD Secure Encrypted Virtualization - Encrypted State */
++#define X86_FEATURE_SME_COHERENT	(19*32+10) /* "" AMD hardware-enforced cache coherency */
++
+ /*
+  * BUG word(s)
+  */
+diff --git a/tools/arch/x86/include/asm/disabled-features.h b/tools/arch/x86/include/asm/disabled-features.h
+index a5ea841cc6d2..f0f935f8d917 100644
+--- a/tools/arch/x86/include/asm/disabled-features.h
++++ b/tools/arch/x86/include/asm/disabled-features.h
+@@ -84,6 +84,7 @@
+ #define DISABLED_MASK16	(DISABLE_PKU|DISABLE_OSPKE|DISABLE_LA57|DISABLE_UMIP)
+ #define DISABLED_MASK17	0
+ #define DISABLED_MASK18	0
+-#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 19)
++#define DISABLED_MASK19	0
++#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 20)
+ 
+ #endif /* _ASM_X86_DISABLED_FEATURES_H */
+diff --git a/tools/arch/x86/include/asm/required-features.h b/tools/arch/x86/include/asm/required-features.h
+index 6847d85400a8..fa5700097f64 100644
+--- a/tools/arch/x86/include/asm/required-features.h
++++ b/tools/arch/x86/include/asm/required-features.h
+@@ -101,6 +101,7 @@
+ #define REQUIRED_MASK16	0
+ #define REQUIRED_MASK17	0
+ #define REQUIRED_MASK18	0
+-#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 19)
++#define REQUIRED_MASK19	0
++#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 20)
+ 
+ #endif /* _ASM_X86_REQUIRED_FEATURES_H */
