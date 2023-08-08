@@ -2,61 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7ED97747B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4102A7743E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235906AbjHHTR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:17:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40878 "EHLO
+        id S235344AbjHHSLW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Aug 2023 14:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236085AbjHHTRQ (ORCPT
+        with ESMTP id S235356AbjHHSKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:17:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B679BFAEF5;
-        Tue,  8 Aug 2023 09:40:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A2FCE62592;
-        Tue,  8 Aug 2023 14:12:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03657C433C8;
-        Tue,  8 Aug 2023 14:12:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691503935;
-        bh=Gdw0yHvTeezw/jw3SrhRILCCcZGJNShWGWctFVDSQXw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=p9Ex+c9JWhnxp4g5gnrSMuTgVk63I4xv5r2TH8SDBw522pwboI/4X68yNbw7ZJdrw
-         soIDcT+lK+Z+EyiSDU+TyLm/7P7smOGOakAV5mgzp/IzN79had7SyduuDuhU/WRWV1
-         PvgEJcdBXCupXQWalygjRncAXxbNkd/RdsV9lkP+N5H9fMww50oBbx4JJ+dQDAclLl
-         niDLS1hPp2vqKhPYFrqPJgIA2SCQiZAZLN5YuwNt1+IDsBGxg9VAVB+mzQYKfEAQLy
-         2qam6hbntG3k4Oaz5NP6ksT2AZRZ/nwF27UMiv94/JHU4Ff5eI/7PmRaciixfwdZ0b
-         HkKl7Ht5QZLPA==
-Message-ID: <067b15a6-1db2-719b-918d-286be4966f11@kernel.org>
-Date:   Tue, 8 Aug 2023 22:12:11 +0800
+        Tue, 8 Aug 2023 14:10:47 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D251110EC;
+        Tue,  8 Aug 2023 10:13:15 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 64B66809C;
+        Tue,  8 Aug 2023 22:16:33 +0800 (CST)
+Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 8 Aug
+ 2023 22:16:33 +0800
+Received: from ubuntu.localdomain (161.142.156.69) by EXMBX068.cuchost.com
+ (172.16.6.68) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 8 Aug
+ 2023 22:16:23 +0800
+From:   Jia Jie Ho <jiajie.ho@starfivetech.com>
+To:     Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+CC:     <devicetree@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 2/2] riscv: dts: starfive - Add hwrng node for JH7110 SoC
+Date:   Tue, 8 Aug 2023 22:15:58 +0800
+Message-ID: <20230808141558.296631-3-jiajie.ho@starfivetech.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230808141558.296631-1-jiajie.ho@starfivetech.com>
+References: <20230808141558.296631-1-jiajie.ho@starfivetech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5] scsi: support packing multi-segment in UNMAP command
-Content-Language: en-US
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     jejb@linux.ibm.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230310123604.1820231-1-chao@kernel.org>
- <b53321ab-679d-e007-6407-6bd00149948e@kernel.org>
- <yq17ct0nijm.fsf@ca-mkp.ca.oracle.com>
- <f93949dd-e90f-a9bf-33b3-4f31c4328c7d@kernel.org>
- <yq1sfabni01.fsf@ca-mkp.ca.oracle.com>
- <d3c1c2cb-9076-523b-da81-a1b632b4b0f5@kernel.org>
- <yq1h6p9k4vk.fsf@ca-mkp.ca.oracle.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <yq1h6p9k4vk.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-Originating-IP: [161.142.156.69]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX068.cuchost.com
+ (172.16.6.68)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,12 +58,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/8 22:04, Martin K. Petersen wrote:
-> Been working on this series to address the reported regressions. Spent
-> quite a bit of time on it last week.
+Add hardware rng controller node for StarFive JH7110 SoC.
 
-Martin, thanks for the help. :)
+Co-developed-by: Jenny Zhang <jenny.zhang@starfivetech.com>
+Signed-off-by: Jenny Zhang <jenny.zhang@starfivetech.com>
+Signed-off-by: Jia Jie Ho <jiajie.ho@starfivetech.com>
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+---
+ arch/riscv/boot/dts/starfive/jh7110.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Could you please share the report? Maybe I can join to check it.
+diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+index 76046ca533ce..70d107bdcc10 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+@@ -848,6 +848,16 @@ sdma: dma-controller@16008000 {
+ 			#dma-cells = <2>;
+ 		};
+ 
++		rng: rng@1600c000 {
++			compatible = "starfive,jh7110-trng";
++			reg = <0x0 0x1600C000 0x0 0x4000>;
++			clocks = <&stgcrg JH7110_STGCLK_SEC_AHB>,
++				 <&stgcrg JH7110_STGCLK_SEC_MISC_AHB>;
++			clock-names = "hclk", "ahb";
++			resets = <&stgcrg JH7110_STGRST_SEC_AHB>;
++			interrupts = <30>;
++		};
++
+ 		gmac0: ethernet@16030000 {
+ 			compatible = "starfive,jh7110-dwmac", "snps,dwmac-5.20";
+ 			reg = <0x0 0x16030000 0x0 0x10000>;
+-- 
+2.34.1
 
-Thanks,
