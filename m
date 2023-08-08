@@ -2,142 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 676A17747AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BEE7743F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235831AbjHHTRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
+        id S235413AbjHHSOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbjHHTQz (ORCPT
+        with ESMTP id S235405AbjHHSNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:16:55 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708A53A682
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:39:21 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-44781abd5a8so2436570137.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:39:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691512759; x=1692117559;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7fE5Alv+EJyDTeeiRz1KQXY25Fs9lEK25v4C7UY4dNc=;
-        b=HsUT7hfPGZ2ruM0UEWI1kfUl5gPNIrXUy+235IBog+Y/bjjpcs9xUhx3/BczgwtCSk
-         dTW/x8DMglxWvv9hvZq/UM505nkEmJQYC7Al0DRcxnWbDn2NZDkDVEtnupFDCExxnCrO
-         YJKGklvKSqowqdHz/TxNSaZq/sDEQ3xa+vb+I=
+        Tue, 8 Aug 2023 14:13:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D2A1DF30
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:17:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691515072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8Z37MNTsz5IjK+Ues18YoNQH3NZHekHYWw9QPHdtWSg=;
+        b=eGhROQQpNDgQNuxZ5AZnTHd1Z/CJgNI9U/N85nPhaEs7280Fqe7vUPEwrZrn9rTEklEvYL
+        n+cjQz6+ADR2GOwrTpNoPF4xZM/UE4c/jGWshHv2lUilwZios5aW/caqiamyHyfB/N+OWy
+        ynsUbFd4Wjy6Nvc2NQ2myJWjrFrhzPE=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-31-kP707D83MT6s30yJcG5OEA-1; Tue, 08 Aug 2023 01:11:29 -0400
+X-MC-Unique: kP707D83MT6s30yJcG5OEA-1
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1bb98659f3cso35860245ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 22:11:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691512759; x=1692117559;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7fE5Alv+EJyDTeeiRz1KQXY25Fs9lEK25v4C7UY4dNc=;
-        b=JDpVZ0zywFD/+I6HDLtxiVr8MIOuogHLH+ARdNWEGylSGPS+4SgwE9s1A4RaYMiCxT
-         0GXuvOSEtRaFnX2drfwULUDvXaqTMkcdWlKIc/MVBKM+FfIaH8nwYIHyQw7QvjL+iOJ3
-         8WTclhw+ZKoQ3eUT1iVS/fZubwhejQUy7wRQmgdB3OViiTKOylhlH5gYjynR2kEFfANw
-         ft/N3pLUetKA9dYdfPoVti0h1pELYnvmIaT7fQaVpZR9QK9ani+M5AYfq7V5+wDbwSK9
-         FnpF93Xs0ZeVubFPmQeGrmtKQu3Tba59Xs4ttil7San/Q6/PpVPkhetwemJ2i/k50xAf
-         sbZw==
-X-Gm-Message-State: AOJu0YzfCeBhreKu8EIxmPL4z/H2OE4IiWcbcSu0h0PYTHYqSfEeZx35
-        DGEsekCvxBzE8mQQ1C4Be1F/FlvR3h0J0+J2k39q4Jg=
-X-Google-Smtp-Source: AGHT+IGrqJsxFZVA4udLq2W7wg4gJ19AlRklPG2DQU9S7Cmr2b/b/uTs4CtBMjEimz9dHYUJpLJFHg==
-X-Received: by 2002:a05:6a21:3391:b0:13f:b028:789c with SMTP id yy17-20020a056a21339100b0013fb028789cmr12352855pzb.5.1691471492751;
-        Mon, 07 Aug 2023 22:11:32 -0700 (PDT)
-Received: from yuanyao.c.googlers.com.com (0.223.81.34.bc.googleusercontent.com. [34.81.223.0])
-        by smtp.gmail.com with ESMTPSA id jd7-20020a170903260700b001bba27d1b65sm7881189plb.85.2023.08.07.22.11.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 22:11:32 -0700 (PDT)
-From:   Yuan Yao <yuanyaogoog@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Keiichi Watanabe <keiichiw@chromium.org>,
-        Daniel Verkamp <dverkamp@chromium.org>,
-        Takaya Saeki <takayas@chromium.org>,
-        Junichi Uekawa <uekawa@chromium.org>,
-        Yuan Yao <yuanyaogoog@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Tiwei Bie <tiwei.bie@intel.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH] virtio_ring: fix avail_wrap_counter in virtqueue_add_packed
-Date:   Tue,  8 Aug 2023 05:10:59 +0000
-Message-ID: <20230808051110.3492693-1-yuanyaogoog@chromium.org>
-X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20221208; t=1691471488; x=1692076288;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8Z37MNTsz5IjK+Ues18YoNQH3NZHekHYWw9QPHdtWSg=;
+        b=GEbVZQ9bfHPZM6cTgZLR9WWSyaVJYC32CYdW9iPnhx/SxXrzDG1eOKKqMIlhlDhso9
+         qxtEmAJGOoTlHL0fZw2IJegwuJtMf0+R/VqLFoz7jAEgLPXzQ7+nzumz5H4LqaqZl7Sr
+         27XX7dFCPXMF78v2//kIFFY+FAe6eG1c+gsl6obSGk1s6noRf9UVYckyzpv4pJd7SN/o
+         1DvKOkNUtCV3De9519FosdgDhoZu1jSe1FpN+RNc8Xi31k4Qc8keJTMvl/xJ8zWtIOev
+         POF7XMh7MQuojK7/G6BGKMjhXwTxOyxAS3erHU1kuKVfcYjp2By+FMJayL9sDrg2g5JU
+         a8Rg==
+X-Gm-Message-State: AOJu0Yx7zbs/TDff84MHI5cHbtgwszVhbD/38tvLAHCa6hP6nbCPq+O5
+        xQhEwi+FA9TwaoyHBZFuvZgUnXFagk5jBxjrMwm2KNsbm4mWJtxWpR9+JV2Sgk58d3kv7XKfVgr
+        74R16fm1m2jnUeCgVRSOtzqhY
+X-Received: by 2002:a17:902:6909:b0:1b8:9002:c9ee with SMTP id j9-20020a170902690900b001b89002c9eemr7750389plk.1.1691471488318;
+        Mon, 07 Aug 2023 22:11:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGJ4mG8T42Oe8e4gGSTRDKxIeHrCvX8GrAvrWD26t+TaJGCnz1ILtcBVualyF31Wh+2WzFmOw==
+X-Received: by 2002:a17:902:6909:b0:1b8:9002:c9ee with SMTP id j9-20020a170902690900b001b89002c9eemr7750382plk.1.1691471487992;
+        Mon, 07 Aug 2023 22:11:27 -0700 (PDT)
+Received: from smtpclient.apple ([115.96.156.158])
+        by smtp.gmail.com with ESMTPSA id i11-20020a170902eb4b00b001b9cea4e8a2sm7834747pli.293.2023.08.07.22.11.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Aug 2023 22:11:27 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.3\))
+Subject: Re: [PATCH v3] hv/hv_kvp_daemon: Add support for keyfile config based
+ connection profile in NM
+From:   Ani Sinha <anisinha@redhat.com>
+In-Reply-To: <53E9AC1D-C907-4B55-97F2-FC10DCD4D470@redhat.com>
+Date:   Tue, 8 Aug 2023 10:41:21 +0530
+Cc:     Wei Liu <wei.liu@kernel.org>, Olaf Hering <olaf@aepfle.de>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4142F3A4-8AB4-4DE2-8D03-D3A8F8776BF9@redhat.com>
+References: <1683265875-3706-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20230508095340.2ca1630f.olaf@aepfle.de>
+ <ZFknuu+f74e1zHZe@liuwe-devbox-debian-v2>
+ <20230508191246.2fcd6eb5.olaf@aepfle.de>
+ <ZFkuY4dmwiPsUJ3+@liuwe-devbox-debian-v2>
+ <20230523053627.GA10913@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <53E9AC1D-C907-4B55-97F2-FC10DCD4D470@redhat.com>
+To:     Shradha Gupta <shradhagupta@linux.microsoft.com>
+X-Mailer: Apple Mail (2.3696.120.41.1.3)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In current packed virtqueue implementation, the avail_wrap_counter won't
-flip, in the case when the driver supplies a descriptor chain with a
-length equals to the queue size; total_sg == vq->packed.vring.num.
 
-Let’s assume the following situation:
-vq->packed.vring.num=4
-vq->packed.next_avail_idx: 1
-vq->packed.avail_wrap_counter: 0
 
-Then the driver adds a descriptor chain containing 4 descriptors.
+> On 12-Jul-2023, at 12:32 PM, Ani Sinha <anisinha@redhat.com> wrote:
+>=20
+>=20
+>=20
+>> On 23-May-2023, at 11:06 AM, Shradha Gupta =
+<shradhagupta@linux.microsoft.com> wrote:
+>>=20
+>> On Mon, May 08, 2023 at 05:16:19PM +0000, Wei Liu wrote:
+>>> On Mon, May 08, 2023 at 07:12:46PM +0200, Olaf Hering wrote:
+>>>> Mon, 8 May 2023 16:47:54 +0000 Wei Liu <wei.liu@kernel.org>:
+>>>>=20
+>>>>> Olaf, is this a reviewed-by from you? :-)
+>>>>=20
+>>>> Sorry, I did not review the new functionality, just tried to make =
+sure there will be no regression for existing consumers.
+>>>=20
+>>> Okay, this is fine, too. Thank you for looking into this.
+>>>=20
+>>>=20
+>>>>=20
+>>>> Olaf
+>>>=20
+>>=20
+>> Gentle reminder.
+>>=20
+>=20
+> I have a comment about the following change:
+>=20
+> +		error =3D fprintf(nmfile, "\n[ipv4]\n");
+> +		if (error < 0)
+> +			goto setval_error;
+> +
+> +		if (new_val->dhcp_enabled) {
+> +			error =3D kvp_write_file(nmfile, "method", "", =
+"auto");
+> +			if (error < 0)
+> +				goto setval_error;
+> +		} else {
+> +			error =3D kvp_write_file(nmfile, "method", "", =
+"manual");
+> +			if (error < 0)
+> +				goto setval_error;
+> +		}
+>=20
+> I think the method equally would apply for ipv6 as it applies for =
+ipv4.=20
+> We can use =
+https://www.golinuxcloud.com/nmcli-command-examples-cheatsheet-centos-rhel=
+/#18_Disable_IPv6_Address_for_ethernet_connection_IPV6INIT as a =
+reference.=20
+> So setting the method should be common to both ipv4 and ipv6.
 
-We expect the following result with avail_wrap_counter flipped:
-vq->packed.next_avail_idx: 1
-vq->packed.avail_wrap_counter: 1
-
-But, the current implementation gives the following result:
-vq->packed.next_avail_idx: 1
-vq->packed.avail_wrap_counter: 0
-
-To reproduce the bug, you can set a packed queue size as small as
-possible, so that the driver is more likely to provide a descriptor
-chain with a length equal to the packed queue size. For example, in
-qemu run following commands:
-sudo qemu-system-x86_64 \
--enable-kvm \
--nographic \
--kernel "path/to/kernel_image" \
--m 1G \
--drive file="path/to/rootfs",if=none,id=disk \
--device virtio-blk,drive=disk \
--drive file="path/to/disk_image",if=none,id=rwdisk \
--device virtio-blk,drive=rwdisk,packed=on,queue-size=4,\
-indirect_desc=off \
--append "console=ttyS0 root=/dev/vda rw init=/bin/bash"
-
-Inside the VM, create a directory and mount the rwdisk device on it. The
-rwdisk will hang and mount operation will not complete.
-
-This commit fixes the wrap counter error by flipping the
-packed.avail_wrap_counter, when start of descriptor chain equals to the
-end of descriptor chain (head == i).
-
-Fixes: 1ce9e6055fa0 ("virtio_ring: introduce packed ring support")
-Signed-off-by: Yuan Yao <yuanyaogoog@chromium.org>
----
-
- drivers/virtio/virtio_ring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index c5310eaf8b46..da1150d127c2 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -1461,7 +1461,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
- 		}
- 	}
- 
--	if (i < head)
-+	if (i <= head)
- 		vq->packed.avail_wrap_counter ^= 1;
- 
- 	/* We're using some buffers from the free list. */
--- 
-2.41.0.640.ga95def55d0-goog
+Ping once more =E2=80=A6
+Can anyone comment on the avove and/or review the patchset?
 
