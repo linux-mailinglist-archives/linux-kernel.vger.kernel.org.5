@@ -2,72 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8BF1774A08
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F7F774A03
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbjHHUMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41776 "EHLO
+        id S231135AbjHHUKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbjHHULw (ORCPT
+        with ESMTP id S232126AbjHHUJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:11:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0784329B43;
-        Tue,  8 Aug 2023 11:36:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9B251629FE;
-        Tue,  8 Aug 2023 18:36:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40AC1C433C8;
-        Tue,  8 Aug 2023 18:36:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691519814;
-        bh=U3GsjWEyr7fqxo65LELfbO15ejz+FqYQjoBzY2ixnl8=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=C8J0qG2Fe2Nxztc255mIECqgwCJlKRibL3zGK4uVGOLp68vHywYeEH3IwCaMdZePq
-         Tsd4aCplzW8LKpO1sAQcdn2iXnybf5XN8IjJ7or2rtQ2BBModmmJ66jPp6T4Tcf7V3
-         Kkl1hO7VBWd4ash9eJo9j3QIm8JViHG6+wHQrVy0QNvudsrBAGoCNExLOm8l0TAPkz
-         12TgzkQUtSbaSumrVaxc0VOO0be5+2hT3TZoKw8DWqPE8RWqjHtvgw7C1abuLwBT3B
-         X0PwJsHJZFoXbIluUS7DvnN49Wx9SWSOGdveKFO+zQfcQp33+CvcRIe59biX4CHQ6o
-         6f21ZDjDMpYaA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Junxian Huang <huangjunxian6@hisilicon.com>
-Cc:     linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230807064228.4032536-1-huangjunxian6@hisilicon.com>
-References: <20230807064228.4032536-1-huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH for-rc] MAINTAINERS: Remove maintainer of HiSilicon RoCE
-Message-Id: <169151980721.543215.1240276394300998178.b4-ty@kernel.org>
-Date:   Tue, 08 Aug 2023 21:36:47 +0300
+        Tue, 8 Aug 2023 16:09:59 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8795444F47
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 11:39:40 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-403e7472b28so39620051cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 11:39:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1691519979; x=1692124779;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=64QCZ+lCjqLCLgWqPm6Im36kRBI6O73TOOo0qu3TAc4=;
+        b=ngl7ca+dDeOo1NbtsDWD3hb35GubXAE9bW4YU+Q9ZeNQiYlwws2AP21vm1W9mce/Yx
+         6ip0BJ/dz8OEdvpusCgK0uEuMiptwij0mmqFChb/mPzoZnydcBzqCj/wld2p+OPVf6aA
+         94cg94q9bQBcUj9Shjbi2ywkjakp+/Iuhhg8yF14oxRyg67JuNY8DDoIdat+Bb7WNm31
+         W6hOXXt1M8Bj4UHq743YLSzvXXeU4X/bf5rjjn1XoYfXfkxTdDqEX+zEwcLdcBisuwd8
+         Y3ls3blTbOZaIN0WkgM2lPu6FUW3roESHOhBLzCk9y44Sc2qYJBZ3qim4dVFt2ny3ReI
+         /GQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691519979; x=1692124779;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=64QCZ+lCjqLCLgWqPm6Im36kRBI6O73TOOo0qu3TAc4=;
+        b=Dlh1nREExJbvft/ag6JYseDjHgLfTdm8BESOAWkHNufTYu6h0I/ThFKDwzuGY7Qdwq
+         a64tF9bHGQHSIKoq+mWRGVZ3GjXzHVo2socjOeDSYZI1NH3+TLZtdqahYVmq3E1pX6BT
+         Xek1WdaIPegrOCuabe5JTqfsr32mZdD+IvE/fO6dfGtWmPQCfQDuH6xjmG1x74sBYcBG
+         lVpqB1lOezN3L714IZKv3SIgpnzUNbb7B3GmWLIhT8Sr6bFK75eYEsx/snk9B3w6KYyr
+         gPtHzuB6weBPzOEmrtFmLmOzgPRnXSRPkiOoBAjhWD4bwjLx7GM9iq+hvd/7V6gicBXl
+         kUuw==
+X-Gm-Message-State: AOJu0YwINBRInxSnSupsfxQlLyrc4xsnUzAl1bCM9m5K7eLtoyPZwCyk
+        CfTPG/HqxJcqPbx5AlTDApQq0A==
+X-Google-Smtp-Source: AGHT+IHpUQvjin0dfbxMHZFXvfs1yLMSRD2Rp9ldZKVLrYQ9K6NRMfi8+h/vzLGKDPZotUVGEmHXeg==
+X-Received: by 2002:a05:622a:1a9e:b0:405:45e2:39f9 with SMTP id s30-20020a05622a1a9e00b0040545e239f9mr682152qtc.15.1691519979699;
+        Tue, 08 Aug 2023 11:39:39 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id 16-20020a05620a071000b00765ab6d3e81sm3457218qkc.122.2023.08.08.11.39.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 11:39:39 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qTRcI-004vXr-3a;
+        Tue, 08 Aug 2023 15:39:38 -0300
+Date:   Tue, 8 Aug 2023 15:39:38 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Baolu Lu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 03/12] iommu: Remove unrecoverable fault data
+Message-ID: <ZNKL6hGRZT9qfV1K@ziepe.ca>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-4-baolu.lu@linux.intel.com>
+ <BN9PR11MB52767976314CC61A0F8BEFD08C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <faad1948-5096-c9d3-616a-cd0f0a4b5876@linux.intel.com>
+ <BN9PR11MB527614E61BC257FE113EFE358C09A@BN9PR11MB5276.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB527614E61BC257FE113EFE358C09A@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 07 Aug 2023 14:42:28 +0800, Junxian Huang wrote:
-> Haoyue no longer maintains the Hisilicon RoCE driver. So remove him
-> from MAINTAINERS.
+On Fri, Aug 04, 2023 at 03:51:30AM +0000, Tian, Kevin wrote:
+> > From: Baolu Lu <baolu.lu@linux.intel.com>
+> > Sent: Friday, August 4, 2023 10:59 AM
+> > 
+> > On 2023/8/3 15:54, Tian, Kevin wrote:
+> > >> From: Lu Baolu<baolu.lu@linux.intel.com>
+> > >> Sent: Thursday, July 27, 2023 1:48 PM
+> > >>
+> > >>   struct iommu_fault {
+> > >>   	__u32	type;
+> > >> -	__u32	padding;
+> > > this padding should be kept.
+> > >
+> > 
+> > To keep above 64-bit aligned, right?
+> > 
 > 
-> 
+> yes
 
-Applied, thanks!
+If it is not uapi we should not explicitly document padding (and __u32
+should be u32). The compiler will add it if it is necessary.
 
-[1/1] MAINTAINERS: Remove maintainer of HiSilicon RoCE
-      https://git.kernel.org/rdma/rdma/c/8e7b295da1ed05
+If the compiler isn't right for some reason then something else has
+gone wrong.
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+Jason
