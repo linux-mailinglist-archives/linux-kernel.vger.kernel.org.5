@@ -2,132 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C81F7774A24
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27364774A2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233469AbjHHUUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50474 "EHLO
+        id S234443AbjHHUVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234525AbjHHUUL (ORCPT
+        with ESMTP id S234806AbjHHUVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:20:11 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094C518C33
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 12:25:43 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9cd6a554cso94117411fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 12:25:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691522741; x=1692127541;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZWz3qQqLo6+NTjkOSd8uE4a4XgzJ8kEH78fcuevPkok=;
-        b=gg1WtVATKemk/CosT+oqfEbMRt445E08XkyuE2z2K2MPa7ahPqTMVFgmeax06Exd8y
-         hGZYkEEaP6JFDJiqM8D0UCF/oZcSKJB3EazRyWIoFBIDzyncrjU3wnuHZBFofOQZpaL4
-         GdWDmBV05Y/5f61iNYKpVHUnRSgLwcbn3JqSr8ihwoXWbwGmqy7o6n7OhpCfNG21Ly2p
-         DzRkyWtoguqSP3mF9W7iIUVcQLCC9C08BqYCmhAa2OU+kzcSLviQYoZ4IM+xjfYlftmc
-         VYT7fzljTvpyyaEY/5bwnNcNEs9DekW3Au7uMTwhwcj5Zjyc8F6vg8qKGey0f554SfoT
-         YMJg==
+        Tue, 8 Aug 2023 16:21:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E656E5593E
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 12:26:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691522789;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qOQXy1OfWlgrnfVJYJmwccjJ8wwzdh/vPU5z5GkOlHM=;
+        b=Ekotey994puFf8fMRkZeY6NdWyLwhJDcovPp1NiCehmwaFKcTPUtCFMChy4ImYVPvx2r3I
+        CqzPIYyxIBCyFOoTFrerUxJcXUBzBzLO9QRM0bKldo8zx+12k/z6kRo2DRkN6/YT300M4W
+        e/uSsrq2HMrk8P4L8TUNs7AathI+Xn8=
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
+ [209.85.166.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-339-HUlGLaaxM_KQYFX-wDTRLQ-1; Tue, 08 Aug 2023 15:26:27 -0400
+X-MC-Unique: HUlGLaaxM_KQYFX-wDTRLQ-1
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-77a1d6d2f7fso618456339f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 12:26:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691522741; x=1692127541;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZWz3qQqLo6+NTjkOSd8uE4a4XgzJ8kEH78fcuevPkok=;
-        b=AUsS7s8aLM3dQpmLfRwCxq7jNSE5Kxc8eXeQ94fADtwTNOOpVK2UpHllOVJbWTlmWo
-         VgFHegdejH49SlUpsTi7YhVke9aCtbVsg0nXvewGcONJ0LBOFiCzmk2YW8Rwq0r1H7os
-         Okmtb3xRpf7q/KEBEs/LKEbLg1HODPDV8ufLMyRcBZtKu72BAX8/cL+tHm7V/gQOM7pb
-         Oiv97jzbTOZzwVchi8YkReIr3/ItfOeh2zR/L3TxXmkyqayH+QSa5fjk6bXNNNAdgj6m
-         XpgNmTtpp+w3uAmNXXvJQrQx7XZhYoRzEQ5WdYlB5Ycfnrvnp/vwlxxy9sdCFt1cepXz
-         OXVQ==
-X-Gm-Message-State: AOJu0YxkSpKp1QPE7i1wT3anz3/G2orDIYgLorHqQ95sCJJsYcQ2QaEx
-        bRDlwUoaTuWx8JxGt5hy12yAFA==
-X-Google-Smtp-Source: AGHT+IHOpky/qe6Tx3XP5zbsSQMRA2DWMpyV8S0K8pPuXyFNWfzUl6Rsd3cg9LmpHVQUe+/RMbc84g==
-X-Received: by 2002:a2e:8893:0:b0:2b6:a5df:c7fb with SMTP id k19-20020a2e8893000000b002b6a5dfc7fbmr333200lji.26.1691522741098;
-        Tue, 08 Aug 2023 12:25:41 -0700 (PDT)
-Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id o21-20020a2e9455000000b002b9bf5b071bsm2404162ljh.20.2023.08.08.12.25.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 12:25:40 -0700 (PDT)
-Message-ID: <595198d4-eb60-4307-bfde-4e032ce7988c@linaro.org>
-Date:   Tue, 8 Aug 2023 21:25:39 +0200
+        d=1e100.net; s=20221208; t=1691522786; x=1692127586;
+        h=content-transfer-encoding:mime-version:organization:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qOQXy1OfWlgrnfVJYJmwccjJ8wwzdh/vPU5z5GkOlHM=;
+        b=bO6t3h9AsSqdaF/YtwQN+wOicCUHdfoSt7dpIxNnMPgKMjmzAeqzgW5+peUmfM/THE
+         FpMfXkFCPI2Hx7EyKCU3a1FbJ6U2L8iGKEasLiXuwstMJ+aaDXmZX5wawy5a65gSYB/6
+         N2A9RWaVkSM5iWBQRQZrrDlP/Q14pVZJcnkBsRCWtO1Ffvc+f+73k89gL2iTpitNAqbM
+         85fvFxsq8Zuhkvq5tCiTvkQKLecxud+ssEQloAb5NBUJ9fLUFaVu9JQkYJu1woWHduo8
+         Y3rWilLqIvFY7TJIfubTm0a7mk5gyI2KYWxq1DpYSONllsEmXnYVFeeqdqmwp7gNgJn9
+         9jvQ==
+X-Gm-Message-State: AOJu0YxOU+Oti60nBJvoH2DUS1DtfhYm9pO/Gul9n56jV1HFlNzgbKb6
+        O+wnTvpTlovTnvlwuIj2tT0lK2cN3XVsUYXGmLsJ7yVnAe/XoKEMlM/bKscorkkKAoiZ9SfaZZC
+        gqKr+KuCtp+vWwwTyWli6wMLPHz90XyCq
+X-Received: by 2002:a5d:8703:0:b0:783:4bc6:636e with SMTP id u3-20020a5d8703000000b007834bc6636emr560737iom.21.1691522786510;
+        Tue, 08 Aug 2023 12:26:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE6j4eQLjtlHakpjvsIeW5urMxOtXfUS2YPte21G2xG+Juk+2tMgOK5xY6ZmmtdLnt6e9PBAg==
+X-Received: by 2002:a5d:8703:0:b0:783:4bc6:636e with SMTP id u3-20020a5d8703000000b007834bc6636emr560726iom.21.1691522786254;
+        Tue, 08 Aug 2023 12:26:26 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id ga9-20020a0566381f0900b004290fd3a68dsm3404666jab.1.2023.08.08.12.26.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 12:26:25 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 13:26:24 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] vfio: align capability structures
+Message-ID: <20230808132624.6734abb6.alex.williamson@redhat.com>
+In-Reply-To: <20230808144216.2656505-1-stefanha@redhat.com>
+References: <20230808144216.2656505-1-stefanha@redhat.com>
+Organization: Red Hat
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/8] arm64: dts: qcom: sa8775p: add a node for the
- second serdes PHY
-Content-Language: en-US
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Andrew Halaney <ahalaney@redhat.com>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20230808190144.19999-1-brgl@bgdev.pl>
- <20230808190144.19999-2-brgl@bgdev.pl>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230808190144.19999-2-brgl@bgdev.pl>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8.08.2023 21:01, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Add a node for the SerDes PHY used by EMAC1 on sa8775p-ride.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On Tue,  8 Aug 2023 10:42:16 -0400
+Stefan Hajnoczi <stefanha@redhat.com> wrote:
 
-Konrad
+> The VFIO_DEVICE_GET_INFO, VFIO_DEVICE_GET_REGION_INFO, and
+> VFIO_IOMMU_GET_INFO ioctls fill in an info struct followed by capability
+> structs:
+> 
+>   +------+---------+---------+-----+
+>   | info | caps[0] | caps[1] | ... |
+>   +------+---------+---------+-----+
+> 
+> Both the info and capability struct sizes are not always multiples of
+> sizeof(u64), leaving u64 fields in later capability structs misaligned.
+> 
+> Userspace applications currently need to handle misalignment manually in
+> order to support CPU architectures and programming languages with strict
+> alignment requirements.
+> 
+> Make life easier for userspace by ensuring alignment in the kernel. This
+> is done by padding info struct definitions and by copying out zeroes
+> after capability structs that are not aligned.
+> 
+> The new layout is as follows:
+> 
+>   +------+---------+---+---------+-----+
+>   | info | caps[0] | 0 | caps[1] | ... |
+>   +------+---------+---+---------+-----+
+> 
+> In this example caps[0] has a size that is not multiples of sizeof(u64),
+> so zero padding is added to align the subsequent structure.
+> 
+> Adding zero padding between structs does not break the uapi. The memory
+> layout is specified by the info.cap_offset and caps[i].next fields
+> filled in by the kernel. Applications use these field values to locate
+> structs and are therefore unaffected by the addition of zero padding.
+> 
+> Note that code that copies out info structs with padding is updated to
+> always zero the struct and copy out as many bytes as userspace
+> requested. This makes the code shorter and avoids potential information
+> leaks by ensuring padding is initialized.
+> 
+> Originally-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+> ---
+> v2:
+> - Simplify padding approach as suggested by Alex
+> 
+>  include/uapi/linux/vfio.h        |  2 ++
+>  drivers/vfio/pci/vfio_pci_core.c | 11 ++---------
+>  drivers/vfio/vfio_iommu_type1.c  | 11 ++---------
+>  drivers/vfio/vfio_main.c         |  6 ++++++
+>  4 files changed, 12 insertions(+), 18 deletions(-)
+> 
+> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+> index 20c804bdc09c..8fe85f5c7b61 100644
+> --- a/include/uapi/linux/vfio.h
+> +++ b/include/uapi/linux/vfio.h
+> @@ -217,6 +217,7 @@ struct vfio_device_info {
+>  	__u32	num_regions;	/* Max region index + 1 */
+>  	__u32	num_irqs;	/* Max IRQ index + 1 */
+>  	__u32   cap_offset;	/* Offset within info struct of first cap */
+> +	__u32   pad;
+>  };
+>  #define VFIO_DEVICE_GET_INFO		_IO(VFIO_TYPE, VFIO_BASE + 7)
+>  
+> @@ -1304,6 +1305,7 @@ struct vfio_iommu_type1_info {
+>  #define VFIO_IOMMU_INFO_CAPS	(1 << 1)	/* Info supports caps */
+>  	__u64	iova_pgsizes;	/* Bitmap of supported page sizes */
+>  	__u32   cap_offset;	/* Offset within info struct of first cap */
+> +	__u32   pad;
+>  };
+>  
+>  /*
+> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
+> index 20d7b69ea6ff..e2ba2a350f6c 100644
+> --- a/drivers/vfio/pci/vfio_pci_core.c
+> +++ b/drivers/vfio/pci/vfio_pci_core.c
+> @@ -920,24 +920,17 @@ static int vfio_pci_ioctl_get_info(struct vfio_pci_core_device *vdev,
+>  				   struct vfio_device_info __user *arg)
+>  {
+>  	unsigned long minsz = offsetofend(struct vfio_device_info, num_irqs);
+> -	struct vfio_device_info info;
+> +	struct vfio_device_info info = {};
+>  	struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
+> -	unsigned long capsz;
+>  	int ret;
+>  
+> -	/* For backward compatibility, cannot require this */
+> -	capsz = offsetofend(struct vfio_iommu_type1_info, cap_offset);
+> -
+>  	if (copy_from_user(&info, arg, minsz))
+>  		return -EFAULT;
+>  
+>  	if (info.argsz < minsz)
+>  		return -EINVAL;
+>  
+> -	if (info.argsz >= capsz) {
+> -		minsz = capsz;
+> -		info.cap_offset = 0;
+> -	}
+> +	minsz = min_t(size_t, info.argsz, sizeof(info));
+
+Thanks for catching these, LGTM.  I'll see if anyone else offers a
+review in the next couple days and otherwise apply this and
+20230801155352.1391945-1-stefanha@redhat.com this week.  Thanks,
+
+Alex
+
+>  
+>  	info.flags = VFIO_DEVICE_FLAGS_PCI;
+>  
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index ebe0ad31d0b0..f812c475a626 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -2762,27 +2762,20 @@ static int vfio_iommu_dma_avail_build_caps(struct vfio_iommu *iommu,
+>  static int vfio_iommu_type1_get_info(struct vfio_iommu *iommu,
+>  				     unsigned long arg)
+>  {
+> -	struct vfio_iommu_type1_info info;
+> +	struct vfio_iommu_type1_info info = {};
+>  	unsigned long minsz;
+>  	struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
+> -	unsigned long capsz;
+>  	int ret;
+>  
+>  	minsz = offsetofend(struct vfio_iommu_type1_info, iova_pgsizes);
+>  
+> -	/* For backward compatibility, cannot require this */
+> -	capsz = offsetofend(struct vfio_iommu_type1_info, cap_offset);
+> -
+>  	if (copy_from_user(&info, (void __user *)arg, minsz))
+>  		return -EFAULT;
+>  
+>  	if (info.argsz < minsz)
+>  		return -EINVAL;
+>  
+> -	if (info.argsz >= capsz) {
+> -		minsz = capsz;
+> -		info.cap_offset = 0; /* output, no-recopy necessary */
+> -	}
+> +	minsz = min_t(size_t, info.argsz, sizeof(info));
+>  
+>  	mutex_lock(&iommu->lock);
+>  	info.flags = VFIO_IOMMU_INFO_PGSIZES;
+> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
+> index f0ca33b2e1df..2850478301d2 100644
+> --- a/drivers/vfio/vfio_main.c
+> +++ b/drivers/vfio/vfio_main.c
+> @@ -1172,6 +1172,9 @@ struct vfio_info_cap_header *vfio_info_cap_add(struct vfio_info_cap *caps,
+>  	void *buf;
+>  	struct vfio_info_cap_header *header, *tmp;
+>  
+> +	/* Ensure that the next capability struct will be aligned */
+> +	size = ALIGN(size, sizeof(u64));
+> +
+>  	buf = krealloc(caps->buf, caps->size + size, GFP_KERNEL);
+>  	if (!buf) {
+>  		kfree(caps->buf);
+> @@ -1205,6 +1208,9 @@ void vfio_info_cap_shift(struct vfio_info_cap *caps, size_t offset)
+>  	struct vfio_info_cap_header *tmp;
+>  	void *buf = (void *)caps->buf;
+>  
+> +	/* Capability structs should start with proper alignment */
+> +	WARN_ON(!IS_ALIGNED(offset, sizeof(u64)));
+> +
+>  	for (tmp = buf; tmp->next; tmp = buf + tmp->next - offset)
+>  		tmp->next += offset;
+>  }
+
