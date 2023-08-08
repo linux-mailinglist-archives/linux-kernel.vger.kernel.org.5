@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B110774324
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E61774304
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbjHHR52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
+        id S235110AbjHHRzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232100AbjHHR4v (ORCPT
+        with ESMTP id S229980AbjHHRy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:56:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A6B2AF13;
-        Tue,  8 Aug 2023 09:25:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Tue, 8 Aug 2023 13:54:56 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9918DA5D2;
+        Tue,  8 Aug 2023 09:24:43 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 46A6462531;
-        Tue,  8 Aug 2023 12:46:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B258C433C8;
-        Tue,  8 Aug 2023 12:46:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691498789;
-        bh=bwqg+nZJaOp58U9gLi7+hIbzVoD6HWVrHABj3u2osQ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bv6idbcnou7dvWv3pfCSTobSlZ8fXVeIw2yMmJVRggQHuTlgeo+lUsF5L8mUAfrxw
-         Fb2BkRhuXr61SboC+ZUEBawjWZCulZnmjCs4zf47NOf4EXTLrZlZdXPLIYTdZ5kBGA
-         YdPp9jZSZ0hSZQYFhhy0b4/5OT6RjvfsYvu4qaZ1cKuY54iLY8SbN3WArnkfzPxntX
-         PsuYgLY/tsgFrUsjKdyt/eicIpeXIqk1sy66Iw0BblMhZoNn9tCT4MJJr1JexQSgfA
-         dd1N2mGvCM08nCLESVFn3n3+mWH9CqCwu/xITCIqguMtve2XtiLfah+dEHIN/rNpJw
-         l1P1t+mmv4g1w==
-Date:   Tue, 8 Aug 2023 14:46:23 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Lin Ma <linma@zju.edu.cn>
-Cc:     michael.chan@broadcom.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        ajit.khaparde@broadcom.com, sriharsha.basavapatna@broadcom.com,
-        somnath.kotur@broadcom.com, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
-        louis.peens@corigine.com, yinjun.zhang@corigine.com,
-        huanhuan.wang@corigine.com, tglx@linutronix.de,
-        na.wang@corigine.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, oss-drivers@corigine.com
-Subject: Re: [PATCH net-next v2] rtnetlink: remove redundant checks for
- nlattr IFLA_BRIDGE_MODE
-Message-ID: <ZNI5H4OY1DrFOcq6@vergenet.net>
-References: <20230807091347.3804523-1-linma@zju.edu.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807091347.3804523-1-linma@zju.edu.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D810D1F45E;
+        Tue,  8 Aug 2023 12:46:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691498786; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sTTAM2ewHCdNL83Dn8kQGuHuJBbBf1ARyCINKwKh7S8=;
+        b=LGtjAWgwhvMtYdsh4CDF8bs3PBoq9wjj8RAHQINh/lmm6yUz6ZijmsHNnRqme0yIcKDnRc
+        avZxRP55eUl0waV2+YyCESxmfOvW7hc9NewyzzzhsfkpFxc77lAjN9fLnQye9M2uLhT/rg
+        8bB5FBAsWQJOlhKVBKO2P2TOQqblS7M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691498786;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sTTAM2ewHCdNL83Dn8kQGuHuJBbBf1ARyCINKwKh7S8=;
+        b=HB19ZP5A+Ezp68cGH3OplEVuBpjs1Ie0b/cj+gcQ8xZz1TUVn0/dLkDZvuWCuo5nqUzKxv
+        SkBij4uGd1YSp8Cw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9CE9D139D1;
+        Tue,  8 Aug 2023 12:46:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id LfdbJSI50mTxAgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 08 Aug 2023 12:46:26 +0000
+Date:   Tue, 08 Aug 2023 14:46:26 +0200
+Message-ID: <87o7jhhfbx.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/tegra: refactor deprecated strncpy
+In-Reply-To: <20230807-sound-pci-hda-v1-1-6d9cdcd085ca@google.com>
+References: <20230807-sound-pci-hda-v1-1-6d9cdcd085ca@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 05:13:47PM +0800, Lin Ma wrote:
-> The commit d73ef2d69c0d ("rtnetlink: let rtnl_bridge_setlink checks
-> IFLA_BRIDGE_MODE length") added the nla_len check in rtnl_bridge_setlink,
-> which is the only caller for ndo_bridge_setlink handlers defined in
-> low-level driver codes. Hence, this patch cleanups the redundant checks in
-> each ndo_bridge_setlink handler function.
+On Mon, 07 Aug 2023 19:49:28 +0200,
+Justin Stitt wrote:
 > 
-> Suggested-by: Hangbin Liu <liuhangbin@gmail.com>
-> Signed-off-by: Lin Ma <linma@zju.edu.cn>
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> 
+> A suitable replacement is `strscpy` [2] due to the fact that it
+> guarantees NUL-termination on its destination buffer argument which is
+> _not_ the case for `strncpy`!
+> 
+> It should be noted that the current implementation is unlikely to have a
+> bug because `drv_name` is a string literal with a size of 9 while
+> `card->driver` has a size of 16. However, it is probably worthwhile to
+> switch to a more robust and less ambiguous interface.
+> 
+> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+> [2]: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+> 
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Thanks, applied.
 
+
+Takashi
