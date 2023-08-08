@@ -2,88 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C6577377C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 05:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBD9773781
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 05:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbjHHDRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 23:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
+        id S230408AbjHHDRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 23:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbjHHDRE (ORCPT
+        with ESMTP id S229592AbjHHDRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 23:17:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6830FE7
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 20:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ln9p3P23Q5cQA+r9dkQJP5+/EvnF6BLwETg6xCvhWkE=; b=R5FIPgJq6zOdG/CQzwebQ4Ms/P
-        Jhu/sPlNgPitmuY1rrDtWWwFU9p2oeLEGmBjYUwu/+HRCNezUBbhlXdiyoF9KmHvakBRRNW2nWTKN
-        tUpOrkyQ4loeruCnETQ8TazT/kZk2uwHCtqXzSQXyzFeVoR/K7Z7pzhattEJ/IRJJrVTxp7JCTLBm
-        lv00soUJicxZnVJRk4Lka7t7u51BlP08u0NcTGHXxof5BxdMV+iR07sSiDmbuVsMj6dBrz7eUsGHG
-        MyxRIqHHS5dI+JHfPuzlbxXD6kY6ak4C/wyakxy0gCFwZmXJhUmUODymInYulBUDs+t9j7TdfIFN4
-        UDYfI3Tw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qTDDN-00F3a3-3o; Tue, 08 Aug 2023 03:16:57 +0000
-Date:   Tue, 8 Aug 2023 04:16:57 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: remove unneeded __meminit annotation
-Message-ID: <ZNGzqRYzC8lbLG9s@casper.infradead.org>
-References: <20230808015831.608454-1-linmiaohe@huawei.com>
- <ZNGo5Y4vQ3rQn0vf@casper.infradead.org>
- <308f326d-c7ae-be49-22af-189a81a89aa2@huawei.com>
+        Mon, 7 Aug 2023 23:17:37 -0400
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 574E6E7;
+        Mon,  7 Aug 2023 20:17:36 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0VpJIIhI_1691464649;
+Received: from 30.240.115.244(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VpJIIhI_1691464649)
+          by smtp.aliyun-inc.com;
+          Tue, 08 Aug 2023 11:17:31 +0800
+Message-ID: <19bc33e2-1f47-43d6-599c-3e48bb697f7c@linux.alibaba.com>
+Date:   Tue, 8 Aug 2023 11:17:27 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <308f326d-c7ae-be49-22af-189a81a89aa2@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [RESEND PATCH v7 0/2] ACPI: APEI: handle synchronous exceptions
+ with proper si_code
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+To:     rafael@kernel.org, wangkefeng.wang@huawei.com,
+        tanxiaofei@huawei.com, mawupeng1@huawei.com, tony.luck@intel.com,
+        naoya.horiguchi@nec.com,
+        "james.morse@arm.com" <james.morse@arm.com>
+Cc:     linux-acpi@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, justin.he@arm.com,
+        akpm@linux-foundation.org, ardb@kernel.org, ashish.kalra@amd.com,
+        baolin.wang@linux.alibaba.com, bp@alien8.de,
+        cuibixuan@linux.alibaba.com, dave.hansen@linux.intel.com,
+        jarkko@kernel.org, lenb@kernel.org, linmiaohe@huawei.com,
+        lvying6@huawei.com, xiexiuqi@huawei.com,
+        zhuo.song@linux.alibaba.com
+References: <20230606074238.97166-1-xueshuai@linux.alibaba.com>
+ <a2b16cca-5449-1d16-f49c-7b83fb45771c@linux.alibaba.com>
+ <1fe4f86e-63ce-3702-4e08-4bc0e7bb391b@linux.alibaba.com>
+Content-Language: en-US
+In-Reply-To: <1fe4f86e-63ce-3702-4e08-4bc0e7bb391b@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-11.7 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 11:08:36AM +0800, Miaohe Lin wrote:
-> On 2023/8/8 10:31, Matthew Wilcox wrote:
-> > On Tue, Aug 08, 2023 at 09:58:31AM +0800, Miaohe Lin wrote:
-> >> kswapd_stop() and kcompactd_stop() are only called when MEMORY_HOTREMOVE
-> >> is enabled. So wrap them under CONFIG_MEMORY_HOTREMOVE and further remove
-> >> __meminit annotation. No functional change intended.
-> > 
-> > I don't understand why this is an improvement.  If CONFIG_MEMORY_HOTREMOVE
-> > is disabled, the linker drops this section (... right?)  If it's enabled,
-> 
-> When CONFIG_MEMORY_HOTREMOVE is disabled, without this patch:
-> 
-> size mm/compaction.o
->    text	   data	    bss	    dec	    hex	filename
->  103164	  30873	      0	 134037	  20b95	mm/compaction.o
-> 
-> size mm/vmscan.o
->    text	   data	    bss	    dec	    hex	filename
->  158775	  49612	     64	 208451	  32e43	mm/vmscan.o
-> 
-> while with this patch:
-> 
-> size mm/compaction.o
->    text	   data	    bss	    dec	    hex	filename
->  102915	  30865	      0	 133780	  20a94	mm/compaction.o
-> 
-> size mm/vmscan.o
->    text	   data	    bss	    dec	    hex	filename
->  158534	  49604	     64	 208202	  32d4a	mm/vmscan.o
-> 
-> We can reduce each .o by ~250 bytes.
 
-But this is before the linker step!  That will be where the meminit
-sections get dropped.  Assuming they are; I haven't verified.  You need
-to compare before/after of the vmlinux, not the individual .o files.
 
+On 2023/7/10 11:15, Shuai Xue wrote:
+> 
+> 
+> On 2023/6/16 15:15, Shuai Xue wrote:
+>>
+>>
+>> On 2023/6/6 15:42, Shuai Xue wrote:
+>>> changes since v6:
+>>> - add more explicty error message suggested by Xiaofei
+>>> - pick up reviewed-by tag from Xiaofei
+>>> - pick up internal reviewed-by tag from Baolin
+>>>
+>>> changes since v5 by addressing comments from Kefeng:
+>>> - document return value of memory_failure()
+>>> - drop redundant comments in call site of memory_failure() 
+>>> - make ghes_do_proc void and handle abnormal case within it
+>>> - pick up reviewed-by tag from Kefeng Wang 
+>>>
+>>> changes since v4 by addressing comments from Xiaofei:
+>>> - do a force kill only for abnormal sync errors
+>>>
+>>> changes since v3 by addressing comments from Xiaofei:
+>>> - do a force kill for abnormal memory failure error such as invalid PA,
+>>> unexpected severity, OOM, etc
+>>> - pcik up tested-by tag from Ma Wupeng
+>>>
+>>> changes since v2 by addressing comments from Naoya:
+>>> - rename mce_task_work to sync_task_work
+>>> - drop ACPI_HEST_NOTIFY_MCE case in is_hest_sync_notify()
+>>> - add steps to reproduce this problem in cover letter
+>>>
+>>> changes since v1:
+>>> - synchronous events by notify type
+>>> - Link: https://lore.kernel.org/lkml/20221206153354.92394-3-xueshuai@linux.alibaba.com/
+>>>
+>>>
+>>> Shuai Xue (2):
+>>>   ACPI: APEI: set memory failure flags as MF_ACTION_REQUIRED on
+>>>     synchronous events
+>>>   ACPI: APEI: handle synchronous exceptions in task work
+>>>
+>>>  arch/x86/kernel/cpu/mce/core.c |   9 +--
+>>>  drivers/acpi/apei/ghes.c       | 113 ++++++++++++++++++++++-----------
+>>>  include/acpi/ghes.h            |   3 -
+>>>  mm/memory-failure.c            |  17 +----
+>>>  4 files changed, 79 insertions(+), 63 deletions(-)
+>>>
+>>
+>>
+>> Hi, Rafael,
+>>
+>> Gentle ping.
+>>
+>> Are you happy to queue this patch set or anything I can do to improve it?
+>> As @Kefeng said, this issue is met in Alibaba and Huawei products, we hope it
+>> could be fixed ASAP.
+> 
+> Hi Rafael, Tony, and Naoya,
+> 
+> Gentle ping. I am sorry to see that we have missed v6.3 and v6.4 merge window
+> since three Reviewed-by tags and one Tested-by tag.
+> 
+> Do we still need any designated APEI reviewers Reviewed-by? Could you give me your
+> Reviewed-by @Tony, and @Naoya if you are happy with the change.
+> 
+> Or Please could you Ack this change if you are happy with the proposal and the
+> change? @Rafael
+> 
+
+Hi, ALL,
+
+Gentle ping.
+
+>>
+>> Thank you.
+>>
+>> Best Regards,
+>> Shuai
