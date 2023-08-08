@@ -2,60 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E23A77366F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E158773676
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbjHHCUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 22:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
+        id S229897AbjHHCXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 22:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbjHHCUj (ORCPT
+        with ESMTP id S229502AbjHHCXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 22:20:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49BC198D
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 19:20:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 38BDE62358
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 02:20:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 886B7C433C9;
-        Tue,  8 Aug 2023 02:20:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691461221;
-        bh=kIyAQMukGXX9hkfOIlUbx01Y94cwkm21Uaczx4ozoPo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=R4+Ff2oWweI6Pxzul5oURhFvP7LdJM1JFZBYoGuJL+we1MR4sM+t+WlNoG+wW2ZPw
-         9SLsUtp4Jj+ZnHDT1LNtt3nud3r5ifP8IcUaHQwODJSzb0qIY9tFMSXmU4ZFmgyI5g
-         ke2yztGbfb2aJglQPCwUB71T1bbUcO5PN05NZVX98wykp/Ovkx39SyKhdNCQSWJlga
-         E1JOrcuBeMZjwmfFaPKxhLcY4dCTGrHTHMxArIY6PqE1+QKs1WA6RqIocVEiAZCS9T
-         rZPlqmkaUEZRJ9eMI4nA+jblkgXqCTyoHGcL3uYb0MNB2gab1M4Sz4+3IYwJ2Ys1t/
-         x1f4XgwtO8WJw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6DBA3E505D4;
-        Tue,  8 Aug 2023 02:20:21 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 7 Aug 2023 22:23:04 -0400
+Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27AA170B;
+        Mon,  7 Aug 2023 19:23:03 -0700 (PDT)
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3782J4Zq031658;
+        Tue, 8 Aug 2023 02:22:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PPS06212021; bh=AIPZU
+        svPanUaYFy4CGvgvEVpmAFpszDXG2gqN2PuzBQ=; b=UethCzakofiuKA7BWnceH
+        IJMw0tMeWg92lPunK+L74LWxfl0WMtfPhghAZCRRiFwoczIKuk32hXjBJ9PltW+O
+        Q5uGWTlAXYpdmL+klE9cZUMbh1XktSH5mbZg8Ej4LHuVgGYqRjJOAnC6MfeYtAWn
+        Vt9PVtvWdYkL+uMFuLXAjuZjCo43lXVFfw1sHLeIWtsR1WFmojbIcs1tgEtnhpAs
+        FbAD1gsWIvUDnwJ3ftVAZxqpW9L6IQHy7ixsYydsmQVquCTaox2xWWfPMmDpPi8W
+        Jc8hd/rA8fCLaHm0yE187j5zl6Zyz1eq0rqhjn0b1+dPOPYWIqJbO/YlTZhqlthY
+        A==
+Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
+        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3s9dd625hh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 08 Aug 2023 02:22:44 +0000 (GMT)
+Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 7 Aug 2023 19:22:42 -0700
+Received: from pek-lpd-ccm4.wrs.com (147.11.1.11) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 7 Aug 2023 19:22:40 -0700
+From:   <xiongwei.song@windriver.com>
+To:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <roman.gushchin@linux.dev>, <shakeelb@google.com>,
+        <muchun.song@linux.dev>, <akpm@linux-foundation.org>
+CC:     <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mm/memcontrol: add tips for kmem.slabinfo
+Date:   Tue, 8 Aug 2023 10:22:29 +0800
+Message-ID: <20230808022229.1560559-1-xiongwei.song@windriver.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v5 1/2] drivers: net: prevent tun_build_skb() to
- exceed the packet size limit
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169146122144.9822.6352423513613934358.git-patchwork-notify@kernel.org>
-Date:   Tue, 08 Aug 2023 02:20:21 +0000
-References: <20230803185947.2379988-1-andrew.kanner@gmail.com>
-In-Reply-To: <20230803185947.2379988-1-andrew.kanner@gmail.com>
-To:     Andrew Kanner <andrew.kanner@gmail.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jasowang@redhat.com, netdev@vger.kernel.org,
-        hawk@kernel.org, jbrouer@redhat.com, dsahern@gmail.com,
-        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-Proofpoint-GUID: t5m8IOcx_rEJ4vRHtZzbZNnRWl2zp0Al
+X-Proofpoint-ORIG-GUID: t5m8IOcx_rEJ4vRHtZzbZNnRWl2zp0Al
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-07_28,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ mlxlogscore=604 impostorscore=0 lowpriorityscore=0 phishscore=0
+ spamscore=0 adultscore=0 clxscore=1011 bulkscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2306200000 definitions=main-2308080020
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,33 +73,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+From: Xiongwei Song <xiongwei.song@windriver.com>
 
-This series was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+No any output from kmem.slabinfo, which is not friendly. Adding
+tips for it.
 
-On Thu,  3 Aug 2023 20:59:48 +0200 you wrote:
-> Using the syzkaller repro with reduced packet size it was discovered
-> that XDP_PACKET_HEADROOM is not checked in tun_can_build_skb(),
-> although pad may be incremented in tun_build_skb(). This may end up
-> with exceeding the PAGE_SIZE limit in tun_build_skb().
-> 
-> Jason Wang <jasowang@redhat.com> proposed to count XDP_PACKET_HEADROOM
-> always (e.g. without rcu_access_pointer(tun->xdp_prog)) in
-> tun_can_build_skb() since there's a window during which XDP program
-> might be attached between tun_can_build_skb() and tun_build_skb().
-> 
-> [...]
+Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
+---
+ mm/memcontrol.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Here is the summary with links:
-  - [net-next,v5,1/2] drivers: net: prevent tun_build_skb() to exceed the packet size limit
-    https://git.kernel.org/netdev/net/c/59eeb2329405
-  - [net-next,v5,2/2] net: core: remove unnecessary frame_sz check in bpf_xdp_adjust_tail()
-    https://git.kernel.org/netdev/net/c/d14eea09edf4
-
-You are awesome, thank you!
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e8ca4bdcb03c..58d3bd93890b 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5002,10 +5002,8 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
+ #if defined(CONFIG_MEMCG_KMEM) && (defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG))
+ static int mem_cgroup_slab_show(struct seq_file *m, void *p)
+ {
+-	/*
+-	 * Deprecated.
+-	 * Please, take a look at tools/cgroup/memcg_slabinfo.py .
+-	 */
++	seq_puts(m, "This file is deprecated.\n"
++		"Please use tools/cgroup/memcg_slabinfo.py, which is in kernel source.\n");
+ 	return 0;
+ }
+ #endif
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.37.3
 
