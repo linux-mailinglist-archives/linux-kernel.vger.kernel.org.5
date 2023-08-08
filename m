@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC4C774B9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBB5774B02
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235118AbjHHUvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38816 "EHLO
+        id S233048AbjHHUjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235466AbjHHUuj (ORCPT
+        with ESMTP id S233148AbjHHUit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:50:39 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FF144479
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:46:45 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-407db3e9669so1611cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691513202; x=1692118002;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e5cUkGvBinqrQEB7Ikj5Ug8tOjVRS6TZ8gJMeTTJk/U=;
-        b=MEkJuLCCzNqujltO/2hEBF2IZ8JWjwedY1wVwMFzuxok1cUuORptjOLuKh3jhngmbg
-         OszqqJ2FqeHwHlyz5sFzOsmGpkD/3QVma5URjR1jvw5cArnTbvACynfjopC1KnzTKMyP
-         LXtBLl+32K1Fk6s33cihV9KIyTralnRC9ZedyF08T1fha1zO1t3FCcIBW73zDo4JKWLl
-         vJ8fFQFUq8E0fvlL0hxqbxzzMtCdpELvpY0iRowFTc93kwORZVBnOlcAefdf1Jr8F9Be
-         CvcMGmnUR49gQaXX06ieIIW2SXQ7B8dXiV4ZHtlX/+YS3IaUh5D5bc+PU8DnZ2XozQpU
-         wELA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691513202; x=1692118002;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e5cUkGvBinqrQEB7Ikj5Ug8tOjVRS6TZ8gJMeTTJk/U=;
-        b=VXmerfTiXTJILZcqkFnNOUhaZhzSYqgdG7R35E9QSn1Te9oGYn5F3tHNcGxa0GJoF6
-         S88twydK0jGgw51s1fNcyofdgLA6VABJ6doOwboxCws/Y1bQjSVoinHf9B1p7Hmib2Z5
-         ldjch9WQfyzXvuKTAEUh6Re6uQw5diQI9qdoiFGhdHjCoQ7/1mPBNF/kXtYpyP4ers8x
-         q0fLnXAjWlVHXS5MaxzxfMDrFmqLhXiou+4chBP/H3XbtU2L3vhOmgMNifs6PcxxuqVa
-         q3u86VY2stvmWafRmXKzU0KcmisUS50jqq+cXCI85z0ksCABj3XFkcpRrnEYv2WVD4Hj
-         m0kA==
-X-Gm-Message-State: AOJu0YytTGWCDfZ59H7ynwT/IUflvgDkx3JW3AYLneBg8pmhCMcVgfte
-        azw1If17rXBJ/TRqdZ9TbID17+Q85Ss364AXjNQdeg==
-X-Google-Smtp-Source: AGHT+IF4HzuUwWkMUsGsweRhCwPAzuoceDkfaSL4D3AD1VB/sy6hMsEVitqG7c6zwkKT6LNm7NuGpkKpwVJ6D73FF6Q=
-X-Received: by 2002:a05:622a:11d3:b0:40f:dc70:fde2 with SMTP id
- n19-20020a05622a11d300b0040fdc70fde2mr2783qtk.26.1691513201715; Tue, 08 Aug
- 2023 09:46:41 -0700 (PDT)
+        Tue, 8 Aug 2023 16:38:49 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2A417758A
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:20:42 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 378F5h5f030864;
+        Tue, 8 Aug 2023 11:47:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        PODMain02222019; bh=enamRFxwNNWkXUDA7dzl08MLaVLqHvLONRfo2RP3k/s=; b=
+        Uh5hncoUkCW4siX1GIoA5jmqucwjEnu6mmXnnq+6QKnWEmEgxlJTxVxhEBpBKdbY
+        KiQZwoN7exjyAYQ8VIeUcpF+VdaCZhNGShtxeQPurpLb/YlUUWJ3cwoOCHyx4Rfj
+        Arew95VJCXsrxfKFxfdIpJJfXDZME/9ldJGfA07f/H6QVXWeXAF3jFkQtOIq8IXD
+        h1QUlrzCGc206T3vzz1lh9SZWZiz06/eVpHJvPn8j1RllIxZLMFeiUiF+gU/BsJM
+        cIbTCVVvzP6375TZbjAlZoM4/ZImDFFO/CwM/onAtlsHa71fhWcXosDy+JbT6oSR
+        GqdpgHleG90miPDhwCb5/Q==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhtucq-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Aug 2023 11:47:07 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 8 Aug
+ 2023 17:47:06 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Tue, 8 Aug 2023 17:47:06 +0100
+Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.64.220])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1C6B03578;
+        Tue,  8 Aug 2023 16:47:06 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 5/5] ASoC: cs35l56: Call wm_adsp_power_down() before reloading firmware
+Date:   Tue, 8 Aug 2023 17:47:02 +0100
+Message-ID: <20230808164702.21272-6-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230808164702.21272-1-rf@opensource.cirrus.com>
+References: <20230808164702.21272-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-3-rananta@google.com>
- <87tttpr6qy.wl-maz@kernel.org> <ZMgsjx8dwKd4xBGe@google.com>
- <877cqdqw12.wl-maz@kernel.org> <CAJHc60xAUVt5fbhEkOqeC-VF8SWVOt3si=1yxVVAUW=+Hu_wNg@mail.gmail.com>
- <CAJHc60zN-dc2E-fS7fuXgkrfGD9bqW6tMy2GRZxbHOeZv0ZOBw@mail.gmail.com>
- <ZNJaPxTtPRCv0HOl@google.com> <CAJHc60yiGnVc=ysdOaNemWaDpTBSk02mRLenK3sN2XtN_Cp98g@mail.gmail.com>
- <fc430350dd7d8ac664054a99f1e452c1@kernel.org>
-In-Reply-To: <fc430350dd7d8ac664054a99f1e452c1@kernel.org>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Tue, 8 Aug 2023 09:46:30 -0700
-Message-ID: <CAJHc60zspGChscVTj5K31=gzRmFu5d++FZNLz8eaZMxfOV+KAQ@mail.gmail.com>
-Subject: Re: [PATCH v7 02/12] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: -S0Cs10N98DiKe82HW-XpWhskMJfyFLR
+X-Proofpoint-ORIG-GUID: -S0Cs10N98DiKe82HW-XpWhskMJfyFLR
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 9:43=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2023-08-08 17:19, Raghavendra Rao Ananta wrote:
-> > On Tue, Aug 8, 2023 at 8:07=E2=80=AFAM Sean Christopherson <seanjc@goog=
-le.com>
-> > wrote:
-> >>
-> >> On Fri, Aug 04, 2023, Raghavendra Rao Ananta wrote:
-> >> > On Wed, Aug 2, 2023 at 4:28=E2=80=AFPM Raghavendra Rao Ananta
-> >> > <rananta@google.com> wrote:
-> >> > >
-> >> > > Sure, I'll change it to kvm_arch_flush_vm_tlbs() in v8.
-> >> > >
-> >> > While working on the renaming, I realized that since this function i=
-s
-> >> > called from kvm_main.c's kvm_flush_remote_tlbs(). Do we want to rena=
-me
-> >> > this and the other kvm_flush_*() functions that the series introduce=
-s
-> >> > to match their kvm_arch_flush_*() counterparts?
-> >>
-> >> Hmm, if we're going to rename one arch hook, then yes, I think it
-> >> makes sense to
-> >> rename all the common APIs and arch hooks to match.
-> >>
-> >> However, x86 is rife with the "remote_tlbs" nomenclature, and renaming
-> >> the common
-> >> APIs will just push the inconsistencies into x86.  While I 100% agree
-> >> that the
-> >> current naming is flawed, I am not willing to end up with x86 being
-> >> partially
-> >> converted.
-> >>
-> >> I think I'm ok renaming all of x86's many hooks?  But I'd definitely
-> >> want input
-> >> from more x86 folks, and the size and scope of this series would
-> >> explode.  Unless
-> >> Marc objects and/or has a better idea, the least awful option is
-> >> probably to ignore
-> >> the poor "remote_tlbs" naming and tackle it in a separate series.
-> >>
-> > Sure, I think it's better to do it in a separate series as well. I'm
-> > happy to carry out the task after this one gets merged. But, let's
-> > wait for Marc and others' opinion on the matter.
->
-> Yeah, let's punt that to a separate series. I'm more interested in
-> getting this code merged than in the inevitable bike-shedding that
-> will result from such a proposal.
->
-> Raghavendra, any chance you could respin the series this week?
-> I'd really like it to spend some quality time in -next...
->
-No problem. I'll send out v8 by today or tomorrow.
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
-Thank you.
-Raghavendra
-> Thanks,
->
->          M.
-> --
-> Jazz is not dead. It just smells funny...
+When cs35l56_system_resume() needs to reload firmware it should call
+wm_adsp_power_down() to put cs_dsp into a powered-down state before
+cs35l56_secure_patch() or cs35l56_patch() calls wm_adsp_power_up().
+
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs35l56.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index 094bcbd0a174..80e7fddae926 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -976,6 +976,7 @@ int cs35l56_system_resume(struct device *dev)
+ 		return ret;
+ 
+ 	cs35l56->base.fw_patched = false;
++	wm_adsp_power_down(&cs35l56->dsp);
+ 	queue_work(cs35l56->dsp_wq, &cs35l56->dsp_work);
+ 
+ 	/*
+-- 
+2.30.2
+
