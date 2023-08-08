@@ -2,95 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1420777407C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79F4773E55
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbjHHREA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
+        id S232713AbjHHQ3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjHHRDH (ORCPT
+        with ESMTP id S232583AbjHHQ1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:03:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3351119763;
-        Tue,  8 Aug 2023 09:01:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691510491; x=1723046491;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=9CE+7ZXBx0kDEsrZcd8WmXKJp5Uc9a7coM9bHeY+W38=;
-  b=NGWtKyleihfGlLsrmKwqP5TSq0taBaniKg5kzURT+NCn5VS1J2RzJGmQ
-   oDOHKeET7N0m9eMu3A8iWsFQcUGXtlVAqQj/+CdgqBd0yYF5ej66reyi+
-   GyPXjJhZ69vfm27VHdf8ktoCi1qUME3W0czGsk2WsClWbRCc32RyufLg7
-   Chf4dt7K9uTa5O+36oZ532IN7HC5jb9ygzU60H1ukU29KDt2V9nm7NakA
-   RJtduB0O7Yi/h37C5t/DRg21pb5JxeCGjk8+Sjsb57cEpTHfNh8XMVxKT
-   HfHSYykAC8zon2E7WmTO8TS50U8d5uIlGSAleorAAwtJ0nvtswxK71vYz
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="373486331"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="373486331"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 23:16:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="874608255"
-Received: from romanagn-mobl1.ger.corp.intel.com (HELO pujfalus-desk.ger.corp.intel.com) ([10.252.49.59])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 23:16:55 -0700
-From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To:     peterhuewe@gmx.de, jarkko@kernel.org
-Cc:     jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, l.sanfilippo@kunbus.com,
-        peter.ujfalusi@linux.intel.com, jsnitsel@redhat.com,
-        pmenzel@molgen.mpg.de
-Subject: [PATCH] tpm: tpm_tis: Fix UPX-i11 DMI_PRODUCT_VERSION string
-Date:   Tue,  8 Aug 2023 09:18:16 +0300
-Message-ID: <20230808061816.15695-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 8 Aug 2023 12:27:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0758E11F6C;
+        Tue,  8 Aug 2023 08:50:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F37A362401;
+        Tue,  8 Aug 2023 06:21:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38CF3C433C7;
+        Tue,  8 Aug 2023 06:20:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691475661;
+        bh=cCRD8gnBxWNfc9VwjYkdaIBzXW8V7v21L0Omu0Jdq1k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rQxBdUe/8TyTjOmMjZJdUp/7/CCa/I280HQUC9Ud7lbgAYZoSp0GmAmIZSX6NAw07
+         Cua/ZsQ1kxh5CzIG9hNw+ZLpoLLFiwSK9e46ri/juPKAaQoJg/HxzXV/RNTejNankW
+         +V19yrLSuwQ0Qxa6Gv9XIa/+QFbweoSpxJ04qpRmF8QjSUbmD85Xr7ouSlRjLOQDtJ
+         OsLyuKZJciemoceMZq7YzpRqjHKOy6j0Wj1EHZOLy5yAqckshIh+D1EAzf52CHrdV/
+         kahFHqAxE7OWy4Hti2840lk4UYi3aD3RLZd38a00dSC3LBOWtsATBvvA/qdjHg0lkB
+         uVOsFd31c8sfQ==
+Date:   Tue, 8 Aug 2023 11:50:49 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Qiang Yu <quic_qianyu@quicinc.com>
+Cc:     mani@kernel.org, quic_jhugo@quicinc.com, mhi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_cang@quicinc.com, quic_mrana@quicinc.com
+Subject: Re: [PATCH v2] mhi: host: Add standard ELF header image download
+ functionality
+Message-ID: <20230808062049.GA4990@thinkpad>
+References: <1691395192-16090-1-git-send-email-quic_qianyu@quicinc.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1691395192-16090-1-git-send-email-quic_qianyu@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch which made it to the kernel somehow lost the "01" from the
-string, making the match to not work anymore.
+On Mon, Aug 07, 2023 at 03:59:52PM +0800, Qiang Yu wrote:
+> From: Mayank Rana <quic_mrana@quicinc.com>
+> 
 
-Link: https://lore.kernel.org/lkml/20230524085844.11580-1-peter.ujfalusi@linux.intel.com/
-Fixes: edb13d7bb034 ("tpm: tpm_tis: Disable interrupts *only* for AEON UPX-i11")
----
-Hi Jarkko,
+Subject prefix should be: "bus: mhi:..."
 
-Can you send this patch for the 6.5 cycle?
-edb13d7bb034 was applied in 6.5-rc3 and I just updated my work tree to notice
-the regression.
+> Some devices (e.g. WLAN chips) are unable to handle the non-standard ELF
+> format of the FBC image and thus need special handling of the FBC image.
+> 
 
-Thank you,
-Peter
+Which WLAN chip? Is the driver for the chip already upstreamed?
 
- drivers/char/tpm/tpm_tis.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Add standard_elf_image flag which makes decision in terms of how FBC image
+> based AMSS image is being downloaded with connected endpoint.
+> FBC image is having two image combine: SBL image + AMSS image.
+> 1. FBC image download using legacy single ELF header image format:
+> - SBL image: 512KB of FBC image is downloaded using BHI.
+> - AMSS image: full FBC image is downloaded using BHIe.
+> 2. FBC image download using separate ELF header image format:
+> - SBL image: 512 KB of FBC image is downloaded using BHI.
+> - AMSS image: 512 KB onward FBC image is downloaded using BHIe.
+> There is no change for SBL image download. Although AMSS image start
+> address is end address of SBL image while using separate ELF header format.
+> 
+> Signed-off-by: Mayank Rana <quic_mrana@quicinc.com>
+> [quic_qianyu@quicinc.com: Update commit message, minor updates]
+> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+> ---
+> v1->v2: modify commit message
+> 	correct author
+> 	rebase on latest mhi-next branch, resolve conflicts
+> 
+>  drivers/bus/mhi/host/boot.c | 7 +++++++
+>  include/linux/mhi.h         | 2 ++
+>  2 files changed, 9 insertions(+)
+> 
+> diff --git a/drivers/bus/mhi/host/boot.c b/drivers/bus/mhi/host/boot.c
+> index edc0ec5..586d551 100644
+> --- a/drivers/bus/mhi/host/boot.c
+> +++ b/drivers/bus/mhi/host/boot.c
+> @@ -495,6 +495,13 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+>  	 * device transitioning into MHI READY state
+>  	 */
+>  	if (mhi_cntrl->fbc_download) {
+> +		dev_dbg(dev, "standard_elf_image: %s\n",
+> +				(mhi_cntrl->standard_elf_image ? "True" : "False"));
+> +		if (mhi_cntrl->standard_elf_image) {
 
-diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
-index ac4daaf294a3..2bb9901a329a 100644
---- a/drivers/char/tpm/tpm_tis.c
-+++ b/drivers/char/tpm/tpm_tis.c
-@@ -183,7 +183,7 @@ static const struct dmi_system_id tpm_tis_dmi_table[] = {
- 		.ident = "UPX-TGL",
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "AAEON"),
--			DMI_MATCH(DMI_PRODUCT_VERSION, "UPX-TGL"),
-+			DMI_MATCH(DMI_PRODUCT_VERSION, "UPX-TGL01"),
- 		},
- 	},
- 	{}
+Commit message is saying that the devices cannot handle non-standard ELF image.
+But this check is for standard ELF image. I'm confused.
+
+> +			fw_data = firmware->data + mhi_cntrl->sbl_size;
+> +			fw_sz = fw_sz - mhi_cntrl->sbl_size;
+> +		}
+> +
+>  		ret = mhi_alloc_bhie_table(mhi_cntrl, &mhi_cntrl->fbc_image, fw_sz);
+>  		if (ret) {
+>  			release_firmware(firmware);
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index 039943e..e065101 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -310,6 +310,7 @@ struct mhi_controller_config {
+>   * @reg_len: Length of the MHI MMIO region (required)
+>   * @fbc_image: Points to firmware image buffer
+>   * @rddm_image: Points to RAM dump buffer
+> + * @standard_elf_image: Flag to make decision about firmware download start address (optional)
+>   * @mhi_chan: Points to the channel configuration table
+>   * @lpm_chans: List of channels that require LPM notifications
+>   * @irq: base irq # to request (required)
+> @@ -456,6 +457,7 @@ struct mhi_controller {
+>  	bool bounce_buf;
+>  	bool fbc_download;
+>  	bool wake_set;
+> +	bool standard_elf_image;
+
+Which driver is making use of this flag?
+
+- Mani
+
+>  	unsigned long irq_flags;
+>  	u32 mru;
+>  };
+> -- 
+> 2.7.4
+> 
+> 
+
 -- 
-2.41.0
-
+மணிவண்ணன் சதாசிவம்
