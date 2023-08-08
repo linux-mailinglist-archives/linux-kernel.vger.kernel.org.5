@@ -2,128 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C51773FA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48E07742C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbjHHQuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
+        id S235054AbjHHRtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:49:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230512AbjHHQta (ORCPT
+        with ESMTP id S235033AbjHHRtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:49:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750744AABF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:57:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691510250; x=1723046250;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WqUbKspfNJbqE0nLiF+n9zQ92CXed0lkUH9NGnIH5hw=;
-  b=SC3kfic9a28LAx/HilnmHWZaGITda5Dt7SwxvEt8GTLUhlOVbQiqF7rD
-   RT8WUsPWWRjWi3ElaHMH1S+TdP31JjEAk0ZVi794cbOMNXYd/w4jeUvS5
-   E8G0azeoB2nY2X20meQwDlR3lNuTOB/XoTkntd1orKKeKfUU4NV/dERQn
-   Ne6HyiFH9G1C3nkiQZlDNNpw6w0Bhv1CDxcSpuIcJttK9KYcC3iDApRnu
-   JDvFOuGyPTmghKpoecPvdA+IciOgM4RjR2oC5dL2V9MqJFH/aHgkkvv7/
-   EeAF7A35uwXKvmzy1ZTcIxP6gI0sica2LWSRUv5rvZDILo1Um8t0yhHsp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="369711744"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="369711744"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 05:49:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="681226171"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="681226171"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga003.jf.intel.com with ESMTP; 08 Aug 2023 05:49:56 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qTM9q-008S3O-2i;
-        Tue, 08 Aug 2023 15:49:54 +0300
-Date:   Tue, 8 Aug 2023 15:49:54 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
-Message-ID: <ZNI58vThL83P4nRY@smile.fi.intel.com>
-References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
- <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
- <ZNEHt564a8RCLWon@alley>
- <ZNEJQkDV81KHsJq/@smile.fi.intel.com>
- <20230807222455.27874f80@gandalf.local.home>
+        Tue, 8 Aug 2023 13:49:13 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7211C902F;
+        Tue,  8 Aug 2023 09:21:54 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378CqvRG089729;
+        Tue, 8 Aug 2023 07:52:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691499177;
+        bh=oAHyNjZ4qdC82k09nVl9fcw3dWGC9wMNtP2mYp5EnBg=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=x5loM3xAJZK3TdZ20gpQPf/jYzpWvShwUK+nxQQkjkwF3cZXx3TTHkTGMe+sKL0em
+         7DCRD3knWnpzokaCJWUsMUb36WE9s2mTAn7tGnYfwyTZtmJ/v9gpyXqImCoDYOlexw
+         uG2j6oEaq/4yvHIZQsW874lET6vHffvnFO5OU+dM=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378Cqv1V084651
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Aug 2023 07:52:57 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
+ Aug 2023 07:52:57 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 8 Aug 2023 07:52:57 -0500
+Received: from [172.24.227.217] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378CqqbG121602;
+        Tue, 8 Aug 2023 07:52:53 -0500
+Message-ID: <27bdb861-64ff-b7ac-85cf-beaaaca2b704@ti.com>
+Date:   Tue, 8 Aug 2023 18:22:51 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807222455.27874f80@gandalf.local.home>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] dt-bindings: remoteproc: pru: Add Interrupt property
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>
+CC:     MD Danish Anwar <danishanwar@ti.com>, Suman Anna <s-anna@ti.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>,
+        <srk@ti.com>, <nm@ti.com>
+References: <20230807110836.2612730-1-danishanwar@ti.com>
+ <20230807-euphemism-trailing-ef4130dc7437@spud>
+ <910a4a98-712a-5517-5a5b-ffb962f83463@ti.com>
+ <20230808-unwomanly-generic-67d20f0e51cd@spud>
+ <cd74e31f-8bc6-445b-9c33-51e53a439cd2@ti.com>
+ <20230808-bazooka-uncoated-a3401d94b063@spud>
+From:   Md Danish Anwar <a0501179@ti.com>
+Organization: Texas Instruments
+In-Reply-To: <20230808-bazooka-uncoated-a3401d94b063@spud>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 10:24:55PM -0400, Steven Rostedt wrote:
-> On Mon, 7 Aug 2023 18:09:54 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Aug 07, 2023 at 05:03:19PM +0200, Petr Mladek wrote:
-> > > On Sat 2023-08-05 20:50:26, Andy Shevchenko wrote:  
-> > > > kernel.h is being used as a dump for all kinds of stuff for a long time.
-> > > > sprintf() and friends are used in many drivers without need of the full
-> > > > kernel.h dependency train with it.
-> > > > 
-> > > > Here is the attempt on cleaning it up by splitting out sprintf() and
-> > > > friends.  
+On 08/08/23 4:58 pm, Conor Dooley wrote:
+> On Tue, Aug 08, 2023 at 04:30:32PM +0530, Md Danish Anwar wrote:
+>> On 08/08/23 4:18 pm, Conor Dooley wrote:
+>>> On Tue, Aug 08, 2023 at 03:14:31PM +0530, Md Danish Anwar wrote:
+>>>> On 07/08/23 8:09 pm, Conor Dooley wrote:
+>>>>> On Mon, Aug 07, 2023 at 04:38:36PM +0530, MD Danish Anwar wrote:
+>>>>>> Add interrupts and interrupt-names protperties for PRU and RTU cores.
+>>>>>>
+>>>>>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>>>>>> ---
+>>>>>>  .../bindings/remoteproc/ti,pru-rproc.yaml     | 22 +++++++++++++++++++
+>>>>>>  1 file changed, 22 insertions(+)
+>>>>>>
+>>>>>> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+>>>>>> index cd55d80137f7..6970316943bb 100644
+>>>>>> --- a/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+>>>>>> +++ b/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+>>>>>> @@ -66,6 +66,16 @@ properties:
+>>>>>>        Should contain the name of the default firmware image
+>>>>>>        file located on the firmware search path.
+>>>>>>  
+>>>>>> +  interrupts:
+>>>>>> +    maxItems: 1
+>>>>>> +    description:
+>>>>>> +      Interrupt specifiers enable the virtio/rpmsg communication between MPU
+>>>>>> +      and the PRU/RTU cores.
+>>>>>> +
+>>>>>> +  interrupt-names:
+>>>>>> +    items:
+>>>>>> +      - const: vring
+>>>>>> +
+>>>>>>  if:
+>>>>>>    properties:
+>>>>>>      compatible:
+>>>>>> @@ -171,6 +181,9 @@ examples:
+>>>>>>                <0x22400 0x100>;
+>>>>>>          reg-names = "iram", "control", "debug";
+>>>>>>          firmware-name = "am65x-pru0_0-fw";
+>>>>>> +        interrupt-parent = <&icssg0_intc>;
+>>>>>> +        interrupts = <16 2 2>;
+>>>>>> +        interrupt-names = "vring";
+>>>>>>        };
+>>>>>
+>>>>> These examples would probably be more helpful if they used the
+>>>>> appropriate defines, no?
+>>>>>
+>>>>
+>>>> PRUSS Interrupt controller doesn't have any appropriate defines. This doesn't
+>>>> use GIC so defines from arm-gic.h can not be used here. These are specific to
+>>>> PRUSS INTC.
+>>>
+>>> I was deliberately vague in case the gic stuff applied too, but my main
+>>> question was about the standard defines used for interrupt types.
+>>>
+>>
+>> There are no standard defines for these interrupt types. However I can create a
+>> new .h file defining all the three interrupt cells and their values for both
+>> PRU and RTU cores if you think that is required. Otherwise we can go with
+>> hardcoded values.
+>>
+>> Please let me know what you think should be done here.
+> 
+> It'd be good to reference to the documentation for the cells, I don't
+> think adding a header is necessary here.
 
-...
+Sure. Then I would keep this as it is. the interrupt cell values will remain as
+it is. No change required here then. Please let me know if any other change is
+required in this patch.
 
-> > > I agree that kernel.h is not the right place. But are there any
-> > > numbers how much separate sprintf.h might safe?
-> > > Maybe, we should not reinvent the wheel and get inspired by
-> > > userspace.
-> > > 
-> > > sprintf() and friends are basic functions which most people know
-> > > from userspace. And it is pretty handy that the kernel variants
-> > > are are mostly compatible as well.
-> > > 
-> > > IMHO, it might be handful when they are also included similar way
-> > > as in userspace. From my POV printk.h is like stdio.h. And we already
-> > > have include/linux/stdarg.h where the v*print*() function might
-> > > fit nicely.
-> > > 
-> > > How does this sound, please?  
-> > 
-> > Not every user (especially _header_) wants to have printk.h included just for
-> > sprintf.h that may have nothing to do with real output. So, same reasoning
-> > from me as keeping that in kernel.h, i.e. printk.h no better.
 > 
-> If you separate out the sprintf() into its own header and still include
-> that in kernel.h, then for what you said in the other email:
-> 
-> > What to do with _headers_ that include kernel.h for no reason other than
-> > sprintf.h (as an example)? Your suggestion, please?
-> 
-> It can include sprintf.h (or printk.h or stdio.h, whatever) instead of kernel.h.
-> 
-> What's the issue?
-
-The issue is the same, printk.h brings a lot more than just s*printf().
-Why should I include it for a, let's say, single sprintf() call?
+> Thanks,
+> Conor.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks and Regards,
+Danish.
