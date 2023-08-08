@@ -2,146 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 228117748D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483A2774744
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235309AbjHHTme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45036 "EHLO
+        id S234983AbjHHTN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236765AbjHHTmK (ORCPT
+        with ESMTP id S234814AbjHHTNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:42:10 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A92C32AA6;
-        Tue,  8 Aug 2023 12:12:24 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378B0dhD122283;
-        Tue, 8 Aug 2023 06:00:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691492439;
-        bh=npvcQIk61iVMP4E04sdL7772lgYee0B0l8JQa9TMkAg=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=MEVYmDqvMP2ZABP2XQ7v6sJfRc3cFb4cd5F0KbyRB2tKHz4nsX2kt0ZF3/Xa9NHnR
-         k1iXT4+TyEW8Dl8fOr7Yg6+tBR1F1JWdXw8/Cc6lYqB4wNU+dE6O5CwUen/SzmruGx
-         rNiOG0q2hvBQCBvOjO4/WQ3as+M0xbT/leXoVHAQ=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378B0d1v027222
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Aug 2023 06:00:39 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
- Aug 2023 06:00:38 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 8 Aug 2023 06:00:38 -0500
-Received: from [172.24.227.217] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378B0XC9005497;
-        Tue, 8 Aug 2023 06:00:34 -0500
-Message-ID: <cd74e31f-8bc6-445b-9c33-51e53a439cd2@ti.com>
-Date:   Tue, 8 Aug 2023 16:30:32 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] dt-bindings: remoteproc: pru: Add Interrupt property
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-CC:     MD Danish Anwar <danishanwar@ti.com>, Suman Anna <s-anna@ti.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Tue, 8 Aug 2023 15:13:11 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A325351D3;
+        Tue,  8 Aug 2023 09:35:39 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bc512526cso855135766b.1;
+        Tue, 08 Aug 2023 09:35:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691512502; x=1692117302;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SkJoIl6bqN5V/arz35UqS7vxqymZsvhTQ0NmSaBWTpc=;
+        b=aWTCoVkGvg4zYFRtsVweX3Y1ZWkJ6IdzZGpjekBCTjqBYnGSn/T4rteLMQwje2pSpg
+         FMYUu645hm7Ud2fgruVlMuhPxHMrIHHhC7jt39y6evuTau2WHegCxIPhN0dcapaj/ruT
+         jSegFBzbnBjnbWdWU+W5BQB+FITxUDC2jCgxbVvyygOVOnrg8IWsGnFz7/INgxnkY+NK
+         8i6Qmckdneg2sdqCAzIsoZaoSAIEu5s9oPHIuEfSHNnDAQQhqXjbc8C8SZsNaHoOByC2
+         NuobX5ztpxbNBLu+F5zwefRN0/m2EY2hIKBqmmGovM8VwTvx0qmocL9o18QSBUYo7bm7
+         KUHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691512502; x=1692117302;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SkJoIl6bqN5V/arz35UqS7vxqymZsvhTQ0NmSaBWTpc=;
+        b=DnmleRf8VD7RP42jG6mlWexo+C9PpGyROXWPPy18UcUMSfuqKFIhX1coo5NuJaT/Ao
+         U0AWO6fyd/5lziBf5oCUBq4Z+M/kvgrq2zdy95ImWwdem3Hiray7gxLte/uHBI5oi9E/
+         SAKjwf9AMeb1HCVLxP1/ohIzksdTXrSwX46Gopp3pZUS9jUCKPd69RD836CuWkf/Q8ej
+         Xyl/dQIwoRRobCbQ4Fv0g5Oa276eFCH0VEM4HlBk5E4mTyRB1OWcN4R8pfKUDAZ4+e0Q
+         dN+SJxBVldgxk1R+ovIuqviddIXjpS82pOQ7GJqfvnC7ZDUCgNmR8ZvQhtPc+Rn3AC0a
+         w2bA==
+X-Gm-Message-State: AOJu0YxAS2ID7K7WQbwUmw0q/TytvsnOfE2p/461mVQy+Ydv8j4OiOHy
+        BspOwA7woG65ckmW45UythVNretWgUBwtHF4
+X-Google-Smtp-Source: AGHT+IHGGicBO6hh1cowRODMmbY3oe1devolNZrQRK4+F3jdN7CbErysf5M2mBuoBuAU0jdi9iQl5g==
+X-Received: by 2002:a05:6512:31d6:b0:4f8:7772:3dfd with SMTP id j22-20020a05651231d600b004f877723dfdmr8655721lfe.11.1691492572360;
+        Tue, 08 Aug 2023 04:02:52 -0700 (PDT)
+Received: from localhost.localdomain (83-233-6-197.cust.bredband2.com. [83.233.6.197])
+        by smtp.gmail.com with ESMTPSA id q10-20020ac246ea000000b004fbad682ffesm1826587lfo.88.2023.08.08.04.02.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 04:02:51 -0700 (PDT)
+From:   Marcus Folkesson <marcus.folkesson@gmail.com>
+To:     Marcus Folkesson <marcus.folkesson@gmail.com>,
+        Kent Gustavsson <kent@minoris.se>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>,
-        <srk@ti.com>, <nm@ti.com>
-References: <20230807110836.2612730-1-danishanwar@ti.com>
- <20230807-euphemism-trailing-ef4130dc7437@spud>
- <910a4a98-712a-5517-5a5b-ffb962f83463@ti.com>
- <20230808-unwomanly-generic-67d20f0e51cd@spud>
-From:   Md Danish Anwar <a0501179@ti.com>
-Organization: Texas Instruments
-In-Reply-To: <20230808-unwomanly-generic-67d20f0e51cd@spud>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Cosmin Tanislav <demonsingur@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Ramona Bolboaca <ramona.bolboaca@analog.com>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        William Breathitt Gray <william.gray@linaro.org>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 3/4] iio: adc: mcp3911: fix indentation
+Date:   Tue,  8 Aug 2023 13:04:31 +0200
+Message-Id: <20230808110432.240773-3-marcus.folkesson@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230808110432.240773-1-marcus.folkesson@gmail.com>
+References: <20230808110432.240773-1-marcus.folkesson@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/23 4:18 pm, Conor Dooley wrote:
-> On Tue, Aug 08, 2023 at 03:14:31PM +0530, Md Danish Anwar wrote:
->> Hi Conor,
->>
->> On 07/08/23 8:09 pm, Conor Dooley wrote:
->>> On Mon, Aug 07, 2023 at 04:38:36PM +0530, MD Danish Anwar wrote:
->>>> Add interrupts and interrupt-names protperties for PRU and RTU cores.
->>>>
->>>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
->>>> ---
->>>>  .../bindings/remoteproc/ti,pru-rproc.yaml     | 22 +++++++++++++++++++
->>>>  1 file changed, 22 insertions(+)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
->>>> index cd55d80137f7..6970316943bb 100644
->>>> --- a/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
->>>> +++ b/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
->>>> @@ -66,6 +66,16 @@ properties:
->>>>        Should contain the name of the default firmware image
->>>>        file located on the firmware search path.
->>>>  
->>>> +  interrupts:
->>>> +    maxItems: 1
->>>> +    description:
->>>> +      Interrupt specifiers enable the virtio/rpmsg communication between MPU
->>>> +      and the PRU/RTU cores.
->>>> +
->>>> +  interrupt-names:
->>>> +    items:
->>>> +      - const: vring
->>>> +
->>>>  if:
->>>>    properties:
->>>>      compatible:
->>>> @@ -171,6 +181,9 @@ examples:
->>>>                <0x22400 0x100>;
->>>>          reg-names = "iram", "control", "debug";
->>>>          firmware-name = "am65x-pru0_0-fw";
->>>> +        interrupt-parent = <&icssg0_intc>;
->>>> +        interrupts = <16 2 2>;
->>>> +        interrupt-names = "vring";
->>>>        };
->>>
->>> These examples would probably be more helpful if they used the
->>> appropriate defines, no?
->>>
->>
->> PRUSS Interrupt controller doesn't have any appropriate defines. This doesn't
->> use GIC so defines from arm-gic.h can not be used here. These are specific to
->> PRUSS INTC.
-> 
-> I was deliberately vague in case the gic stuff applied too, but my main
-> question was about the standard defines used for interrupt types.
-> 
+The file does not make use of indentation properly.
+Fix that.
 
-There are no standard defines for these interrupt types. However I can create a
-new .h file defining all the three interrupt cells and their values for both
-PRU and RTU cores if you think that is required. Otherwise we can go with
-hardcoded values.
+Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+---
 
-Please let me know what you think should be done here.
+Notes:
+    v4:
+        - New patch in this series
 
->> I think these example are OK. Please let me know if this is OK to you.
+ drivers/iio/adc/mcp3911.c | 97 ++++++++++++++++++++-------------------
+ 1 file changed, 49 insertions(+), 48 deletions(-)
 
+diff --git a/drivers/iio/adc/mcp3911.c b/drivers/iio/adc/mcp3911.c
+index 8bbf2f7c839e..8b465d2aad1a 100644
+--- a/drivers/iio/adc/mcp3911.c
++++ b/drivers/iio/adc/mcp3911.c
+@@ -33,7 +33,7 @@
+ #define MCP3911_GAIN_VAL(ch, val)      ((val << 3 * ch) & MCP3911_GAIN_MASK(ch))
+ 
+ #define MCP3911_REG_STATUSCOM		0x0a
+-#define MCP3911_STATUSCOM_DRHIZ         BIT(12)
++#define MCP3911_STATUSCOM_DRHIZ		BIT(12)
+ #define MCP3911_STATUSCOM_READ		GENMASK(7, 6)
+ #define MCP3911_STATUSCOM_CH1_24WIDTH	BIT(4)
+ #define MCP3911_STATUSCOM_CH0_24WIDTH	BIT(3)
+@@ -112,7 +112,7 @@ static int mcp3911_write(struct mcp3911 *adc, u8 reg, u32 val, u8 len)
+ }
+ 
+ static int mcp3911_update(struct mcp3911 *adc, u8 reg, u32 mask,
+-		u32 val, u8 len)
++			  u32 val, u8 len)
+ {
+ 	u32 tmp;
+ 	int ret;
+@@ -127,8 +127,8 @@ static int mcp3911_update(struct mcp3911 *adc, u8 reg, u32 mask,
+ }
+ 
+ static int mcp3911_write_raw_get_fmt(struct iio_dev *indio_dev,
+-					struct iio_chan_spec const *chan,
+-					long mask)
++				     struct iio_chan_spec const *chan,
++				     long mask)
+ {
+ 	switch (mask) {
+ 	case IIO_CHAN_INFO_SCALE:
+@@ -141,9 +141,9 @@ static int mcp3911_write_raw_get_fmt(struct iio_dev *indio_dev,
+ }
+ 
+ static int mcp3911_read_avail(struct iio_dev *indio_dev,
+-			     struct iio_chan_spec const *chan,
+-			     const int **vals, int *type, int *length,
+-			     long info)
++			      struct iio_chan_spec const *chan,
++			      const int **vals, int *type, int *length,
++			      long info)
+ {
+ 	switch (info) {
+ 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
+@@ -212,8 +212,8 @@ static int mcp3911_read_raw(struct iio_dev *indio_dev,
+ }
+ 
+ static int mcp3911_write_raw(struct iio_dev *indio_dev,
+-			    struct iio_chan_spec const *channel, int val,
+-			    int val2, long mask)
++			     struct iio_chan_spec const *channel, int val,
++			     int val2, long mask)
+ {
+ 	struct mcp3911 *adc = iio_priv(indio_dev);
+ 	int ret = -EINVAL;
+@@ -223,12 +223,12 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
+ 	case IIO_CHAN_INFO_SCALE:
+ 		for (int i = 0; i < MCP3911_NUM_SCALES; i++) {
+ 			if (val == mcp3911_scale_table[i][0] &&
+-				val2 == mcp3911_scale_table[i][1]) {
++			    val2 == mcp3911_scale_table[i][1]) {
+ 
+ 				adc->gain[channel->channel] = BIT(i);
+ 				ret = mcp3911_update(adc, MCP3911_REG_GAIN,
+-						MCP3911_GAIN_MASK(channel->channel),
+-						MCP3911_GAIN_VAL(channel->channel, i), 1);
++						     MCP3911_GAIN_MASK(channel->channel),
++						     MCP3911_GAIN_VAL(channel->channel, i), 1);
+ 			}
+ 		}
+ 		break;
+@@ -246,8 +246,8 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
+ 
+ 		/* Enable offset*/
+ 		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM,
+-				MCP3911_STATUSCOM_EN_OFFCAL,
+-				MCP3911_STATUSCOM_EN_OFFCAL, 2);
++				     MCP3911_STATUSCOM_EN_OFFCAL,
++				     MCP3911_STATUSCOM_EN_OFFCAL, 2);
+ 		break;
+ 
+ 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
+@@ -255,7 +255,7 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
+ 			if (val == mcp3911_osr_table[i]) {
+ 				val = FIELD_PREP(MCP3911_CONFIG_OSR, i);
+ 				ret = mcp3911_update(adc, MCP3911_REG_CONFIG, MCP3911_CONFIG_OSR,
+-						val, 2);
++						     val, 2);
+ 				break;
+ 			}
+ 		}
+@@ -279,7 +279,7 @@ static int mcp3911_calc_scale_table(struct mcp3911 *adc)
+ 		if (ret < 0) {
+ 			dev_err(&adc->spi->dev,
+ 				"failed to get vref voltage: %d\n",
+-			       ret);
++				ret);
+ 			return ret;
+ 		}
+ 
+@@ -305,25 +305,25 @@ static int mcp3911_calc_scale_table(struct mcp3911 *adc)
+ 	return 0;
+ }
+ 
+-#define MCP3911_CHAN(idx) {					\
+-		.type = IIO_VOLTAGE,				\
+-		.indexed = 1,					\
+-		.channel = idx,					\
+-		.scan_index = idx,				\
+-		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO), \
+-		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |	\
+-			BIT(IIO_CHAN_INFO_OFFSET) |		\
+-			BIT(IIO_CHAN_INFO_SCALE),		\
+-		.info_mask_shared_by_type_available =           \
+-			BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),	\
+-		.info_mask_separate_available =			\
+-			BIT(IIO_CHAN_INFO_SCALE),		\
+-		.scan_type = {					\
+-			.sign = 's',				\
+-			.realbits = 24,				\
+-			.storagebits = 32,			\
+-			.endianness = IIO_BE,			\
+-		},						\
++#define MCP3911_CHAN(idx) {				\
++	.type = IIO_VOLTAGE,				\
++	.indexed = 1,					\
++	.channel = idx,					\
++	.scan_index = idx,				\
++	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO), \
++	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |	\
++	BIT(IIO_CHAN_INFO_OFFSET) |			\
++	BIT(IIO_CHAN_INFO_SCALE),			\
++	.info_mask_shared_by_type_available =           \
++	BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),		\
++	.info_mask_separate_available =			\
++	BIT(IIO_CHAN_INFO_SCALE),			\
++	.scan_type = {					\
++		.sign = 's',				\
++		.realbits = 24,				\
++		.storagebits = 32,			\
++		.endianness = IIO_BE,			\
++	},						\
+ }
+ 
+ static const struct iio_chan_spec mcp3911_channels[] = {
+@@ -355,7 +355,7 @@ static irqreturn_t mcp3911_trigger_handler(int irq, void *p)
+ 	ret = spi_sync_transfer(adc->spi, xfer, ARRAY_SIZE(xfer));
+ 	if (ret < 0) {
+ 		dev_warn(&adc->spi->dev,
+-				"failed to get conversion data\n");
++			 "failed to get conversion data\n");
+ 		goto out;
+ 	}
+ 
+@@ -494,7 +494,7 @@ static int mcp3911_probe(struct spi_device *spi)
+ 			return ret;
+ 
+ 		ret = devm_add_action_or_reset(&spi->dev,
+-				mcp3911_cleanup_regulator, adc->vref);
++					       mcp3911_cleanup_regulator, adc->vref);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -517,10 +517,10 @@ static int mcp3911_probe(struct spi_device *spi)
+ 
+ 	if (device_property_read_bool(&spi->dev, "microchip,data-ready-hiz"))
+ 		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM, MCP3911_STATUSCOM_DRHIZ,
+-				0, 2);
++				     0, 2);
+ 	else
+ 		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM, MCP3911_STATUSCOM_DRHIZ,
+-				MCP3911_STATUSCOM_DRHIZ, 2);
++				     MCP3911_STATUSCOM_DRHIZ, 2);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -528,12 +528,12 @@ static int mcp3911_probe(struct spi_device *spi)
+ 	if (ret)
+ 		return ret;
+ 
+-       /* Set gain to 1 for all channels */
++	/* Set gain to 1 for all channels */
+ 	for (int i = 0; i < MCP3911_NUM_CHANNELS; i++) {
+ 		adc->gain[i] = 1;
+ 		ret = mcp3911_update(adc, MCP3911_REG_GAIN,
+-				MCP3911_GAIN_MASK(i),
+-				MCP3911_GAIN_VAL(i, 0), 1);
++				     MCP3911_GAIN_MASK(i),
++				     MCP3911_GAIN_VAL(i, 0), 1);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -550,8 +550,8 @@ static int mcp3911_probe(struct spi_device *spi)
+ 
+ 	if (spi->irq > 0) {
+ 		adc->trig = devm_iio_trigger_alloc(&spi->dev, "%s-dev%d",
+-				indio_dev->name,
+-				iio_device_id(indio_dev));
++						   indio_dev->name,
++						   iio_device_id(indio_dev));
+ 		if (!adc->trig)
+ 			return -ENOMEM;
+ 
+@@ -567,15 +567,16 @@ static int mcp3911_probe(struct spi_device *spi)
+ 		 * don't enable the interrupt to avoid extra load on the system.
+ 		 */
+ 		ret = devm_request_irq(&spi->dev, spi->irq,
+-				&iio_trigger_generic_data_rdy_poll, IRQF_NO_AUTOEN | IRQF_ONESHOT,
+-				indio_dev->name, adc->trig);
++				       &iio_trigger_generic_data_rdy_poll,
++				       IRQF_NO_AUTOEN | IRQF_ONESHOT,
++				       indio_dev->name, adc->trig);
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
+ 	ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
+-			NULL,
+-			mcp3911_trigger_handler, NULL);
++					      NULL,
++					      mcp3911_trigger_handler, NULL);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
-Thanks and Regards,
-Danish.
+2.40.1
+
