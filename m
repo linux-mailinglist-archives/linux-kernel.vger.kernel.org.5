@@ -2,194 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E0C7746BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DD977493A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbjHHTAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
+        id S231527AbjHHTub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234493AbjHHS7l (ORCPT
+        with ESMTP id S233314AbjHHTuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:59:41 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CBA84993
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:26:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691515570; x=1723051570;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=0hXL3bNKZUcCCnf12KgajAWURyJwYoWwcD9T3wCE/FM=;
-  b=gB5NaJjzBmCsGTodUy8ev0IKEfAj7ydNMAUjI/gaIlUG8fFP88J9JVo/
-   suq3VMS56MJ7bkhgKjiZqBB+JgqyeH4XYBjj9X/dpQzFU5XqYyMs7Paw8
-   LoRzM3ppptn1stmmW1prCVUHMJ0gvVRN4zuL0gO9pZ8jznPv8SMJrBBAe
-   vbeJk0NSR77y6HoPwMJ1MSZcbEsmg0P9GsIvhovTG/rYqoC6FWIUo6ley
-   /eherPAqkdrdLH8MsnlsYvDCk9nWTSQ/elCMC4xrndtMdtHH0HM3O5c/D
-   7qgPcVf7Nqu6B+Jc4rOcOaf9WKQocXBoQzLC2roKe3QeBGXXjuYVdKucI
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="374581797"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="374581797"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 09:47:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="855147485"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="855147485"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.24.100.114])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 09:47:59 -0700
-Date:   Tue, 8 Aug 2023 09:51:49 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     LKML <linux-kernel@vger.kernel.org>, iommu@lists.linux.dev,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Robin Murphy" <robin.murphy@arm.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, "Will Deacon" <will@kernel.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v12 0/8] Re-enable IDXD kernel workqueue under DMA API
-Message-ID: <20230808095149.781e88a6@jacob-builder>
-In-Reply-To: <20230802212427.1497170-1-jacob.jun.pan@linux.intel.com>
-References: <20230802212427.1497170-1-jacob.jun.pan@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 8 Aug 2023 15:50:12 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D1B53524
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:56:19 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d1c693a29a0so6762949276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:56:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691513778; x=1692118578;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zRGROs0prSq9MFh0VojzEm9/faHihdz2gNY33winOk0=;
+        b=ZwuzzdZO9kYs2Oc/mNbJfARuvGlMIC3UUvNeZoKIvfQ2VX/159UeLD1ZOmH/QRku2q
+         UdxijLS1nyzh4vJapMPxBdB8Mw0I7WhzdZN5HIP1q4KkrgtgqCuWf6ebvKHNXq6l9tGA
+         r/JobYflpqEJayDjQmiSyLfBHt9cttoaedbWNQRVokc8GdBH1nN1OhMM71m5X6bnIFOX
+         jGZafbBDftxnGbVwxScApAzdztO3THQLw8zbAAexjzipo9xfZrido1s5h4shka1W8pRA
+         mt9oD6/q/ha3W6CQK/O/WueGTnREmrbLW/46ftFn+1ehcZRoL4uLnQTtAg2+1kfrNN1r
+         1RaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691513778; x=1692118578;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zRGROs0prSq9MFh0VojzEm9/faHihdz2gNY33winOk0=;
+        b=i5YrUiXvughzVKliKIRwYOFjYaQSbkPAHOTPgTRyX3omDB9nUZl+Ex9k3fnLUTlve9
+         3rQOnk6xX1bzT8T7kbWQyPRNnsNB0Bszy6VKYrQ+3qaD5zpGkQg0JeulueeN4oSPCWVo
+         5eEbtDeUDcpANCM/xNk+LflwYVglI2bpzuV9sZxCWTcgsH9nQdurjQWEG+zT8rBB6JrV
+         ZsjiJd/YEeIyIgpJYEGFlTI00Z7nkPcw0YG2AzeZ0d9TFtRCfkFm9NKNfWYQZRICQ0od
+         /TlnRbFg8TC+8imb3bQWRR++MyvwZnYa5ycXrMWnei5wJgABZ5ynynJ0yNgsBnj0tEBA
+         221A==
+X-Gm-Message-State: AOJu0Yy0UR5Ih0eJPCncPxELX/NQYYor+LNVl1EOx3hj0wPwCkWAJd0q
+        9o2ckAjmVjGP0HO+mIlcy84UQ4zKfNq+hSWG8RA=
+X-Google-Smtp-Source: AGHT+IHvp4RVooOae7EfRvNoe9ojEueuoOpKM3VV7FgRuePNPnjR9K9MVCvuT9PpaD6qBvXfpS2T7QcKSQIpYFkLMfU=
+X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:cc03:38d0:9718:e90b])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:860e:0:b0:d5d:511b:16da with SMTP
+ id y14-20020a25860e000000b00d5d511b16damr1793ybk.2.1691513778422; Tue, 08 Aug
+ 2023 09:56:18 -0700 (PDT)
+Date:   Tue, 08 Aug 2023 09:56:16 -0700
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAK9z0mQC/x3MQQqAIBBA0avIrBPUiqSrRISMU80iC40IxLsnL
+ d/i/wyJIlOCUWSI9HDiM1ToRgDuLmwk2VeDUaZVVlnJBqU7/JJudzNKq6lHMzjbIUGNrkgrv/9 wmkv5AFb2g4hgAAAA
+X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691513776; l=2427;
+ i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
+ bh=si09L+ne/76nNtqRPQQNA8vh+v/vSOpRLqSBS/7yXBU=; b=rVdUpEz91pDMvj2lTvd62ib7crXJtBOPX1kW9foKJV39T/d9Twit/ju7Ur4Jw4tv+AsMmMlNb
+ X1Dlt6TmZSeDalyhdGjGC+BA2Yko/jKs/08sEV2wsETgddvbzoMAjbW
+X-Mailer: b4 0.12.3
+Message-ID: <20230808-i2c-amd_static-v1-1-1902f608bba1@google.com>
+Subject: [PATCH] i2c/busses: fix -Wmissing-variable-declarations
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Andi Shyti <andi.shyti@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>, Tom Rix <trix@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        llvm@lists.linux.dev, kernel test robot <lkp@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baolu/Joerg/All,
+I'm looking to enable -Wmissing-variable-declarations behind W=1. 0day
+bot spotted the following instance:
 
-Any other comments?
+  drivers/i2c/busses/i2c-amd756.c:286:20: warning: no previous extern
+  declaration for non-static variable 'amd756_smbus'
+  [-Wmissing-variable-declarations]
+  286 | struct i2c_adapter amd756_smbus = {
+      |                    ^
+  drivers/i2c/busses/i2c-amd756.c:286:1: note: declare 'static' if the
+  variable is not intended to be used outside of this translation unit
+  286 | struct i2c_adapter amd756_smbus = {
+      | ^
 
-Thanks,
+This symbol is referenced by more than one translation unit, so create
+then include the correct header for their declarations.
 
-Jacob
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/llvm/202308081000.tTL1ElTr-lkp@intel.com/
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ drivers/i2c/busses/i2c-amd756-s4882.c | 3 +--
+ drivers/i2c/busses/i2c-amd756.c       | 1 +
+ drivers/i2c/busses/i2c-amd756.h       | 3 +++
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-On Wed,  2 Aug 2023 14:24:19 -0700, Jacob Pan
-<jacob.jun.pan@linux.intel.com> wrote:
+diff --git a/drivers/i2c/busses/i2c-amd756-s4882.c b/drivers/i2c/busses/i2c-amd756-s4882.c
+index 063274388a75..8156cfc43df3 100644
+--- a/drivers/i2c/busses/i2c-amd756-s4882.c
++++ b/drivers/i2c/busses/i2c-amd756-s4882.c
+@@ -26,8 +26,7 @@
+ #include <linux/init.h>
+ #include <linux/i2c.h>
+ #include <linux/mutex.h>
+-
+-extern struct i2c_adapter amd756_smbus;
++#include "i2c-amd756.h"
+ 
+ static struct i2c_adapter *s4882_adapter;
+ static struct i2c_algorithm *s4882_algo;
+diff --git a/drivers/i2c/busses/i2c-amd756.c b/drivers/i2c/busses/i2c-amd756.c
+index ef1307a258e9..af77374d2ab3 100644
+--- a/drivers/i2c/busses/i2c-amd756.c
++++ b/drivers/i2c/busses/i2c-amd756.c
+@@ -31,6 +31,7 @@
+ #include <linux/i2c.h>
+ #include <linux/acpi.h>
+ #include <linux/io.h>
++#include "i2c-amd756.h"
+ 
+ /* AMD756 SMBus address offsets */
+ #define SMB_ADDR_OFFSET		0xE0
+diff --git a/drivers/i2c/busses/i2c-amd756.h b/drivers/i2c/busses/i2c-amd756.h
+new file mode 100644
+index 000000000000..88698266d6d8
+--- /dev/null
++++ b/drivers/i2c/busses/i2c-amd756.h
+@@ -0,0 +1,3 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <linux/i2c.h>
++extern struct i2c_adapter amd756_smbus;
 
-> Hi Joerg and all,
-> 
-> IDXD kernel work queues were disabled due to the flawed use of kernel VA
-> and SVA API.
-> Link:
-> https://lore.kernel.org/linux-iommu/20210511194726.GP1002214@nvidia.com/
-> 
-> The solution is to enable it under DMA API where IDXD shared workqueue
-> users can use ENQCMDS to submit work on buffers mapped by DMA API.
-> 
-> This patchset adds support for attaching PASID to the device's default
-> domain and the ability to allocate global PASIDs from IOMMU APIs. IDXD
-> driver can then re-enable the kernel work queues and use them under DMA
-> API.
-> 
-> This depends on the IOASID removal series. (merged)
-> https://lore.kernel.org/all/ZCaUBJvUMsJyD7EW@8bytes.org/
-> 
-> 
-> Thanks,
-> 
-> Jacob
-> 
-> ---
-> Changelog:
-> v12:
-> 	- no code change, improve commit messages and add Reviewed-by tags
-> v11:
-> 	- Rebased onto Joerg's next tree (v6.5-rc1)
-> 	- Split RIDPASID check in invalidation code into patch (6/8)
-> 	- Renamed iommu_alloc_global_pasid_dev to
-> iommu_alloc_global_pasid (2/8)
-> 	- Added WARN_ON if no dev_pasid is found during remove (7/8)
-> v10:
-> 	- Fix global PASID alloc function with device's max_pasid=0
-> v9:
-> 	- Fix an IDXD driver issue where user interrupt enable bit got
-> cleared during device enable/disable cycle. Reported and tested by
-> 	  Tony Zhu <tony.zhu@intel.com>
-> 	- Rebased to v6.4-rc7
-> v8:
-> 	- further vt-d driver refactoring (3-6) around set/remove device
-> PASID (Baolu)
-> 	- make consistent use of NO_PASID in SMMU code (Jean)
-> 	- fix off-by-one error in max PASID check (Kevin)
-> v7:
-> 	- renamed IOMMU_DEF_RID_PASID to be IOMMU_NO_PASID to be more
-> generic (Jean)
-> 	- simplify range checking for sva PASID (Baolu) 
-> v6:
-> 	- use a simplified version of vt-d driver change for
-> set_device_pasid from Baolu.
-> 	- check and rename global PASID allocation base
-> v5:
-> 	- exclude two patches related to supervisor mode, taken by VT-d
-> 	maintainer Baolu.
-> 	- move PASID range check into allocation API so that device
-> drivers only need to pass in struct device*. (Kevin)
-> 	- factor out helper functions in device-domain attach (Baolu)
-> 	- make explicit use of RID_PASID across architectures
-> v4:
-> 	- move dummy functions outside ifdef CONFIG_IOMMU_SVA (Baolu)
-> 	- dropped domain type check while disabling idxd system PASID
-> (Baolu)
-> 
-> v3:
-> 	- moved global PASID allocation API from SVA to IOMMU (Kevin)
-> 	- remove #ifdef around global PASID reservation during boot
-> (Baolu)
-> 	- remove restriction on PASID 0 allocation (Baolu)
-> 	- fix a bug in sysfs domain change when attaching devices
-> 	- clear idxd user interrupt enable bit after disabling device(
-> Fenghua) v2:
-> 	- refactored device PASID attach domain ops based on Baolu's
-> early patch
-> 	- addressed TLB flush gap
-> 	- explicitly reserve RID_PASID from SVA PASID number space
-> 	- get dma domain directly, avoid checking domain types
-> 
-> Jacob Pan (3):
->   iommu: Generalize PASID 0 for normal DMA w/o PASID
->   iommu: Move global PASID allocation from SVA to core
->   dmaengine/idxd: Re-enable kernel workqueue under DMA API
-> 
-> Lu Baolu (5):
->   iommu/vt-d: Add domain_flush_pasid_iotlb()
->   iommu/vt-d: Remove pasid_mutex
->   iommu/vt-d: Make prq draining code generic
->   iommu/vt-d: Prepare for set_dev_pasid callback
->   iommu/vt-d: Add set_dev_pasid callback for dma domain
-> 
->  drivers/dma/idxd/device.c                     |  39 ++---
->  drivers/dma/idxd/dma.c                        |   5 +-
->  drivers/dma/idxd/idxd.h                       |   9 +
->  drivers/dma/idxd/init.c                       |  54 +++++-
->  drivers/dma/idxd/sysfs.c                      |   7 -
->  .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |   2 +-
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |  16 +-
->  drivers/iommu/intel/iommu.c                   | 157 +++++++++++++++---
->  drivers/iommu/intel/iommu.h                   |   9 +
->  drivers/iommu/intel/pasid.c                   |   2 +-
->  drivers/iommu/intel/pasid.h                   |   2 -
->  drivers/iommu/intel/svm.c                     |  62 +------
->  drivers/iommu/iommu-sva.c                     |  29 ++--
->  drivers/iommu/iommu.c                         |  28 ++++
->  include/linux/iommu.h                         |  11 ++
->  15 files changed, 287 insertions(+), 145 deletions(-)
-> 
+---
+base-commit: 14f9643dc90adea074a0ffb7a17d337eafc6a5cc
+change-id: 20230808-i2c-amd_static-81e5c27a84ce
 
+Best regards,
+-- 
+Nick Desaulniers <ndesaulniers@google.com>
 
-Thanks,
-
-Jacob
