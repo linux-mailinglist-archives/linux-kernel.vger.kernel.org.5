@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70663773EB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8FB773EBF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbjHHQex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
+        id S230000AbjHHQfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232839AbjHHQd7 (ORCPT
+        with ESMTP id S233005AbjHHQeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:33:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E339087;
-        Tue,  8 Aug 2023 08:52:21 -0700 (PDT)
-Date:   Tue, 08 Aug 2023 08:44:02 -0000
+        Tue, 8 Aug 2023 12:34:12 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385A31FF3;
+        Tue,  8 Aug 2023 08:52:27 -0700 (PDT)
+Date:   Tue, 08 Aug 2023 08:44:03 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1691484243;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7bQ+cNqwpjqyQvkp57Fn3I8ulPZ5t4VRLDI6PVz9WZY=;
-        b=jzypU/oShINLODrqROfFp9wXwtmk474UpcbIP7wrWIomYOwDM4nIQaafmANDuwuY++3exl
-        rYeJEA/KuL0JDsTGlkowf9qNvrsTZ5F3pEi7nUhv2A0Z3CnMIT7gZI875acLNAt9rbsT2l
-        feWe3/jCHegzYj0e+qtiGuDGEbbx3hlxmFmWfXR381/NAaBKskdKTloAzcFtY+pBkYTL/p
-        GpnK0sNkdiUCIgx/MHkR8APKQlVLNaYc7dLJqor1rrn9pk7y0VSXAV5LJYJFaGgSLU0LIh
-        OYujXIankWbApzvF86mGWii04N4MdZ4FYAIvUVqx9Dqv4hGyWO/a4aZsqFJUFQ==
+        bh=7OnvnQWhupjYWp1MgPVjQQ6/qDtRRqdDMe5rBy72aN4=;
+        b=0xY+wkB+l1TsMEqOGglt+78JfbRTVXLbwhNiwk3q/6Y0M+F4ZaQFY0naFco1vxAct8S7do
+        b0LFN+dDNbtB6RSQpjos3jKmZLTmZ3DjM/d/O+7lPiX3OwlMgUN9E7MD3L59mYLUCgnhEB
+        CVuxatRsfxcwW5zB5dUhoAAsISjplUcl06q7zO+Z3xfaiHXi79h12vvqfZTqkQ5CJLN5T9
+        2MHzosC7NrmOzDk4w/R0bHM0/pg+6gK4OUyCJllJRO+1bcKwFJwAj4/WLyup9Bcsgs73nE
+        C8NreI0kN0Vp6vWRBiU47wsn+acLwbLNiu0s3Y7O0X5wIRVGD8aOSq2SFwFVBg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1691484243;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,23 +36,23 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7bQ+cNqwpjqyQvkp57Fn3I8ulPZ5t4VRLDI6PVz9WZY=;
-        b=V4dEGt6tvUbavlUuwUqPA1XMejpHcz5mXvkB06n+Dd+nUP9a/wb7o0NwMIY5SEtB8NIxqV
-        0dI9vprbu4jG9ADQ==
+        bh=7OnvnQWhupjYWp1MgPVjQQ6/qDtRRqdDMe5rBy72aN4=;
+        b=R0ip1rYHBfUYESlOctpK4iXatQW0xgbvJvVDPttr84ctu4GeEqC6WY8Daordl4hvRQqea0
+        K59lzXW+hXORtVDA==
 From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/boot] x86/decompressor: Avoid the need for a stack in the
- 32-bit trampoline
+Subject: [tip: x86/boot] x86/decompressor: Use standard calling convention for
+ trampoline
 Cc:     Ard Biesheuvel <ardb@kernel.org>,
         "Borislav Petkov (AMD)" <bp@alien8.de>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230807162720.545787-12-ardb@kernel.org>
-References: <20230807162720.545787-12-ardb@kernel.org>
+In-Reply-To: <20230807162720.545787-11-ardb@kernel.org>
+References: <20230807162720.545787-11-ardb@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169148424279.27769.10804321420012596024.tip-bot2@tip-bot2>
+Message-ID: <169148424322.27769.15495483249376498258.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -69,193 +69,115 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/boot branch of tip:
 
-Commit-ID:     bd328aa01ff77a45aeffea5fc4521854291db11f
-Gitweb:        https://git.kernel.org/tip/bd328aa01ff77a45aeffea5fc4521854291db11f
+Commit-ID:     918a7a04e71745e99a0efc6753e587439b794b29
+Gitweb:        https://git.kernel.org/tip/918a7a04e71745e99a0efc6753e587439b794b29
 Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Mon, 07 Aug 2023 18:27:08 +02:00
+AuthorDate:    Mon, 07 Aug 2023 18:27:07 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 07 Aug 2023 20:45:55 +02:00
+CommitterDate: Mon, 07 Aug 2023 20:43:59 +02:00
 
-x86/decompressor: Avoid the need for a stack in the 32-bit trampoline
+x86/decompressor: Use standard calling convention for trampoline
 
-The 32-bit trampoline no longer uses the stack for anything except
-performing a far return back to long mode, and preserving the caller's
-stack pointer value. Currently, the trampoline stack is placed in the
-same page that carries the trampoline code, which means this page must
-be mapped writable and executable, and the stack is therefore executable
-as well.
-
-Replace the far return with a far jump, so that the return address can
-be pre-calculated and patched into the code before it is called. This
-removes the need for a 32-bit addressable stack entirely, and in a later
-patch, this will be taken advantage of by removing writable permissions
-from (and adding executable permissions to) the trampoline code page
-when booting via the EFI stub.
-
-Note that the value of RSP still needs to be preserved explicitly across
-the switch into 32-bit mode, as the register may get truncated to 32
-bits.
+Update the trampoline code so its arguments are passed via RDI and RSI,
+which matches the ordinary SysV calling convention for x86_64. This will
+allow this code to be called directly from C.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
 Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Link: https://lore.kernel.org/r/20230807162720.545787-12-ardb@kernel.org
+Link: https://lore.kernel.org/r/20230807162720.545787-11-ardb@kernel.org
 ---
- arch/x86/boot/compressed/head_64.S    | 45 +++++++++++++++-----------
- arch/x86/boot/compressed/pgtable.h    |  4 +-
- arch/x86/boot/compressed/pgtable_64.c | 12 ++++++-
- 3 files changed, 40 insertions(+), 21 deletions(-)
+ arch/x86/boot/compressed/head_64.S | 27 +++++++++++++--------------
+ arch/x86/boot/compressed/pgtable.h |  2 +-
+ 2 files changed, 14 insertions(+), 15 deletions(-)
 
 diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index c475042..37fd7b7 100644
+index 91b5eee..c475042 100644
 --- a/arch/x86/boot/compressed/head_64.S
 +++ b/arch/x86/boot/compressed/head_64.S
-@@ -540,6 +540,7 @@ SYM_FUNC_END(.Lrelocated)
-  * trampoline memory. A non-zero second argument (ESI) means that the
-  * trampoline needs to enable 5-level paging.
+@@ -444,9 +444,9 @@ SYM_CODE_START(startup_64)
+ 	movq	%r15, %rdi
+ 	call	paging_prepare
+ 
+-	/* Save the trampoline address in RCX */
+-	movq	%rax, %rcx
+-
++	/* Pass the trampoline address and boolean flag as args #1 and #2 */
++	movq	%rax, %rdi
++	movq	%rdx, %rsi
+ 	leaq	TRAMPOLINE_32BIT_CODE_OFFSET(%rax), %rax
+ 	call	*%rax
+ 
+@@ -531,11 +531,14 @@ SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
+ SYM_FUNC_END(.Lrelocated)
+ 
+ /*
+- * This is the 32-bit trampoline that will be copied over to low memory.
++ * This is the 32-bit trampoline that will be copied over to low memory. It
++ * will be called using the ordinary 64-bit calling convention from code
++ * running in 64-bit mode.
+  *
+  * Return address is at the top of the stack (might be above 4G).
+- * ECX contains the base address of the trampoline memory.
+- * Non zero RDX means trampoline needs to enable 5-level paging.
++ * The first argument (EDI) contains the 32-bit addressable base of the
++ * trampoline memory. A non-zero second argument (ESI) means that the
++ * trampoline needs to enable 5-level paging.
   */
-+	.section ".rodata", "a", @progbits
  SYM_CODE_START(trampoline_32bit_src)
  	/*
- 	 * Preserve live 64-bit registers on the stack: this is necessary
-@@ -550,13 +551,9 @@ SYM_CODE_START(trampoline_32bit_src)
- 	pushq	%rbp
- 	pushq	%rbx
- 
--	/* Set up 32-bit addressable stack and push the old RSP value */
--	leaq	(TRAMPOLINE_32BIT_STACK_END - 8)(%rcx), %rbx
--	movq	%rsp, (%rbx)
--	movq	%rbx, %rsp
--
--	/* Take the address of the trampoline exit code */
--	leaq	.Lret(%rip), %rbx
-+	/* Preserve top half of RSP in a legacy mode GPR to avoid truncation */
-+	movq	%rsp, %rbx
-+	shrq	$32, %rbx
- 
- 	/* Switch to compatibility mode (CS.L = 0 CS.D = 1) via far return */
- 	pushq	$__KERNEL32_CS
-@@ -564,9 +561,17 @@ SYM_CODE_START(trampoline_32bit_src)
- 	pushq	%rax
- 	lretq
- 
-+	/*
-+	 * The 32-bit code below will do a far jump back to long mode and end
-+	 * up here after reconfiguring the number of paging levels. First, the
-+	 * stack pointer needs to be restored to its full 64-bit value before
-+	 * the callee save register contents can be popped from the stack.
-+	 */
- .Lret:
-+	shlq	$32, %rbx
-+	orq	%rbx, %rsp
-+
- 	/* Restore the preserved 64-bit registers */
--	movq	(%rsp), %rsp
- 	popq	%rbx
- 	popq	%rbp
- 	popq	%r15
-@@ -574,11 +579,6 @@ SYM_CODE_START(trampoline_32bit_src)
- 
- 	.code32
- 0:
--	/* Set up data and stack segments */
--	movl	$__KERNEL_DS, %eax
--	movl	%eax, %ds
--	movl	%eax, %ss
--
- 	/* Disable paging */
- 	movl	%cr0, %eax
- 	btrl	$X86_CR0_PG_BIT, %eax
-@@ -633,18 +633,26 @@ SYM_CODE_START(trampoline_32bit_src)
- 1:
- 	movl	%eax, %cr4
- 
--	/* Prepare the stack for far return to Long Mode */
--	pushl	$__KERNEL_CS
--	pushl	%ebx
--
- 	/* Enable paging again. */
- 	movl	%cr0, %eax
- 	btsl	$X86_CR0_PG_BIT, %eax
+@@ -582,7 +585,7 @@ SYM_CODE_START(trampoline_32bit_src)
  	movl	%eax, %cr0
  
--	lret
-+	/*
-+	 * Return to the 64-bit calling code using LJMP rather than LRET, to
-+	 * avoid the need for a 32-bit addressable stack. The destination
-+	 * address will be adjusted after the template code is copied into a
-+	 * 32-bit addressable buffer.
-+	 */
-+.Ljmp:	ljmpl	$__KERNEL_CS, $(.Lret - trampoline_32bit_src)
- SYM_CODE_END(trampoline_32bit_src)
+ 	/* Check what paging mode we want to be in after the trampoline */
+-	testl	%edx, %edx
++	testl	%esi, %esi
+ 	jz	1f
  
-+/*
-+ * This symbol is placed right after trampoline_32bit_src() so its address can
-+ * be used to infer the size of the trampoline code.
-+ */
-+SYM_DATA(trampoline_ljmp_imm_offset, .word  .Ljmp + 1 - trampoline_32bit_src)
-+
+ 	/* We want 5-level paging: don't touch CR3 if it already points to 5-level page tables */
+@@ -597,21 +600,17 @@ SYM_CODE_START(trampoline_32bit_src)
+ 	jz	3f
+ 2:
+ 	/* Point CR3 to the trampoline's new top level page table */
+-	leal	TRAMPOLINE_32BIT_PGTABLE_OFFSET(%ecx), %eax
++	leal	TRAMPOLINE_32BIT_PGTABLE_OFFSET(%edi), %eax
+ 	movl	%eax, %cr3
+ 3:
+ 	/* Set EFER.LME=1 as a precaution in case hypervsior pulls the rug */
+-	pushl	%ecx
+-	pushl	%edx
+ 	movl	$MSR_EFER, %ecx
+ 	rdmsr
+ 	btsl	$_EFER_LME, %eax
+ 	/* Avoid writing EFER if no change was made (for TDX guest) */
+ 	jc	1f
+ 	wrmsr
+-1:	popl	%edx
+-	popl	%ecx
+-
++1:
+ #ifdef CONFIG_X86_MCE
  	/*
-          * The trampoline code has a size limit.
-          * Make sure we fail to compile if the trampoline code grows
-@@ -652,6 +660,7 @@ SYM_CODE_END(trampoline_32bit_src)
- 	 */
- 	.org	trampoline_32bit_src + TRAMPOLINE_32BIT_CODE_SIZE
+ 	 * Preserve CR4.MCE if the kernel will enable #MC support.
+@@ -628,7 +627,7 @@ SYM_CODE_START(trampoline_32bit_src)
  
-+	.text
- SYM_FUNC_START_LOCAL_NOALIGN(.Lno_longmode)
- 	/* This isn't an x86-64 CPU, so hang intentionally, we cannot continue */
+ 	/* Enable PAE and LA57 (if required) paging modes */
+ 	orl	$X86_CR4_PAE, %eax
+-	testl	%edx, %edx
++	testl	%esi, %esi
+ 	jz	1f
+ 	orl	$X86_CR4_LA57, %eax
  1:
 diff --git a/arch/x86/boot/compressed/pgtable.h b/arch/x86/boot/compressed/pgtable.h
-index 4e8cef1..c6b0903 100644
+index 91dbb99..4e8cef1 100644
 --- a/arch/x86/boot/compressed/pgtable.h
 +++ b/arch/x86/boot/compressed/pgtable.h
-@@ -8,13 +8,13 @@
- #define TRAMPOLINE_32BIT_CODE_OFFSET	PAGE_SIZE
- #define TRAMPOLINE_32BIT_CODE_SIZE	0xA0
- 
--#define TRAMPOLINE_32BIT_STACK_END	TRAMPOLINE_32BIT_SIZE
--
- #ifndef __ASSEMBLER__
+@@ -14,7 +14,7 @@
  
  extern unsigned long *trampoline_32bit;
  
- extern void trampoline_32bit_src(void *trampoline, bool enable_5lvl);
+-extern void trampoline_32bit_src(void *return_ptr);
++extern void trampoline_32bit_src(void *trampoline, bool enable_5lvl);
  
-+extern const u16 trampoline_ljmp_imm_offset;
-+
  #endif /* __ASSEMBLER__ */
  #endif /* BOOT_COMPRESSED_PAGETABLE_H */
-diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/compressed/pgtable_64.c
-index f8092d3..5198a05 100644
---- a/arch/x86/boot/compressed/pgtable_64.c
-+++ b/arch/x86/boot/compressed/pgtable_64.c
-@@ -109,6 +109,7 @@ static unsigned long find_trampoline_placement(void)
- struct paging_config paging_prepare(void *rmode)
- {
- 	struct paging_config paging_config = {};
-+	void *tramp_code;
- 
- 	/* Initialize boot_params. Required for cmdline_find_option_bool(). */
- 	boot_params = rmode;
-@@ -148,10 +149,19 @@ struct paging_config paging_prepare(void *rmode)
- 	memset(trampoline_32bit, 0, TRAMPOLINE_32BIT_SIZE);
- 
- 	/* Copy trampoline code in place */
--	memcpy(trampoline_32bit + TRAMPOLINE_32BIT_CODE_OFFSET / sizeof(unsigned long),
-+	tramp_code = memcpy(trampoline_32bit +
-+			TRAMPOLINE_32BIT_CODE_OFFSET / sizeof(unsigned long),
- 			&trampoline_32bit_src, TRAMPOLINE_32BIT_CODE_SIZE);
- 
- 	/*
-+	 * Avoid the need for a stack in the 32-bit trampoline code, by using
-+	 * LJMP rather than LRET to return back to long mode. LJMP takes an
-+	 * immediate absolute address, which needs to be adjusted based on the
-+	 * placement of the trampoline.
-+	 */
-+	*(u32 *)(tramp_code + trampoline_ljmp_imm_offset) += (unsigned long)tramp_code;
-+
-+	/*
- 	 * The code below prepares page table in trampoline memory.
- 	 *
- 	 * The new page table will be used by trampoline code for switching
