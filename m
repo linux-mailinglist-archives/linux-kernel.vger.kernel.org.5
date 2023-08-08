@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6EA773DD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7512D773E99
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbjHHQXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:23:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
+        id S232925AbjHHQcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232577AbjHHQWB (ORCPT
+        with ESMTP id S232831AbjHHQb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:22:01 -0400
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CA79EDC;
-        Tue,  8 Aug 2023 08:49:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1691492629;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=KRC2QmTX7VAPdlYPacftr2tGKJxHpsE85DryjUqJOVk=;
-        b=QKfcTLQkVQXBTcA0qv79E6CyOi10fwQRVLPAtuMExcG99mIUACe1XBvU2bBfKQbH9OP2Ke
-        6/x17eV+ZkWyqJ+fq+0RIKrux0nPvwCorjhMFGCKlARrV/N8qaF78QTYYqP4D7gtmEWzew
-        FK2rDp619YNiOQj3hx9tzOlYxtlANJY=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>, stable@vger.kernel.org
-Subject: [PATCH] ARM: dts: exynos/i9100: Unconditionally enable LDO12
-Date:   Tue,  8 Aug 2023 13:03:41 +0200
-Message-Id: <20230808110341.57891-1-paul@crapouillou.net>
+        Tue, 8 Aug 2023 12:31:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBAB13968;
+        Tue,  8 Aug 2023 08:51:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B290624AE;
+        Tue,  8 Aug 2023 11:03:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15FDFC433C8;
+        Tue,  8 Aug 2023 11:03:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691492630;
+        bh=A+mqCpN+QuFAcnM1ap+yOp5utSXZlVUNIHG5R4odB6M=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Lik0sr/+SSNBgc79MfJ0720gb9FA9wUR4ajKbE4hlQU6LR65Rua/0DtXWZPnb1DcG
+         O8S9x3mi3rg6f3b/25KTN1yGu+//8gTrvLdJNpL6MBlgN+OL7yD/a5LCCQ7s5wRz+W
+         il/KbU0sOxJm3PI2uS15NacnsFKi4D8/aNvPGNKTSu+f1v7cEoyXzlOm9qUZGjOjBo
+         2XjDDJUpf9x71LBBoQtAEXWcTLpdyF0gxg1ikRhp+ZMePGOLAGme6a9c6PjX0IYCCl
+         sPPm2ZRYpnLlp42kQv2Vr5psLo4DHDAqcZCzE+6CtOX/1phyAG/52byRnUO6ef2GKQ
+         HrZXAh5+GT4WA==
+Message-ID: <4c0dfd1c-2b61-b954-73ad-ac8d4b82487d@kernel.org>
+Date:   Tue, 8 Aug 2023 06:03:47 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 4/5] clk: socfpga: agilex: add clock driver for the
+ Agilex5
+Content-Language: en-US
+To:     niravkumar.l.rabara@intel.com
+Cc:     adrian.ho.yin.ng@intel.com, andrew@lunn.ch, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, netdev@vger.kernel.org,
+        p.zabel@pengutronix.de, richardcochran@gmail.com,
+        robh+dt@kernel.org, sboyd@kernel.org, wen.ping.teh@intel.com
+References: <20230618132235.728641-1-niravkumar.l.rabara@intel.com>
+ <20230801010234.792557-1-niravkumar.l.rabara@intel.com>
+ <20230801010234.792557-5-niravkumar.l.rabara@intel.com>
+From:   Dinh Nguyen <dinguyen@kernel.org>
+In-Reply-To: <20230801010234.792557-5-niravkumar.l.rabara@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel hangs for a good 12 seconds without any info being printed to
-dmesg, very early in the boot process, if this regulator is not enabled.
+Hi Stephen/Mike,
 
-Force-enable it to work around this issue, until we know more about the
-underlying problem.
+On 7/31/23 20:02, niravkumar.l.rabara@intel.com wrote:
+> From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+> 
+> Add support for Intel's SoCFPGA Agilex5 platform. The clock manager
+> driver for the Agilex5 is very similar to the Agilex platform,we can
+> re-use most of the Agilex clock driver.
+> 
+> Signed-off-by: Teh Wen Ping <wen.ping.teh@intel.com>
+> Reviewed-by: Dinh Nguyen <dinguyen@kernel.org>
+> Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+> ---
+>   drivers/clk/socfpga/clk-agilex.c | 433 ++++++++++++++++++++++++++++++-
+>   1 file changed, 431 insertions(+), 2 deletions(-)
+> 
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Fixes: 8620cc2f99b7 ("ARM: dts: exynos: Add devicetree file for the Galaxy S2")
-Cc: <stable@vger.kernel.org> # v5.8+
----
- arch/arm/boot/dts/exynos4210-i9100.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+If you're ok with this patch, can I take this through armsoc?
 
-diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts/exynos4210-i9100.dts
-index a9ec1f6c1dea..a076a1dfe41f 100644
---- a/arch/arm/boot/dts/exynos4210-i9100.dts
-+++ b/arch/arm/boot/dts/exynos4210-i9100.dts
-@@ -527,6 +527,14 @@ vtcam_reg: LDO12 {
- 				regulator-name = "VT_CAM_1.8V";
- 				regulator-min-microvolt = <1800000>;
- 				regulator-max-microvolt = <1800000>;
-+
-+				/*
-+				 * Force-enable this regulator; otherwise the
-+				 * kernel hangs very early in the boot process
-+				 * for about 12 seconds, without apparent
-+				 * reason.
-+				 */
-+				regulator-always-on;
- 			};
- 
- 			vcclcd_reg: LDO13 {
--- 
-2.40.1
-
+Dinh
