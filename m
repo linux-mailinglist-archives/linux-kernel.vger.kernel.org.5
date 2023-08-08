@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91533773FEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6B8773D5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232197AbjHHQz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56000 "EHLO
+        id S232434AbjHHQQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:16:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233485AbjHHQz2 (ORCPT
+        with ESMTP id S232137AbjHHQO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:55:28 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7584918139
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:59:19 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68783004143so4193888b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:59:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691510354; x=1692115154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kVUMGFTGmIMs9gxfcxcS/lMOKLXcrXhxKdcNy5Sb/7k=;
-        b=mdOSIsrYbYx16X1+zelLlbNwqYgBYjcFRoDpV47RTqzrfDgyaG4uwQZX46/LhhssNr
-         HUaYzCe0ao687bqvvDkia6ESqGjrFsZWyvGQ/iHL5FHnio7+o+PoM2ab+q54niMUH/i8
-         VF57Gkdhsgc8zSYFPNZOZDlmB8t5FXq2rNi+2yGZZerOuhAkEa0SyxGEE3opGDr1z3BD
-         iyjSMarCHRGspFnvcIPMnNhqLZXllZPeIhNfwk4a2pIvCqQV7koKwDNVSa60ZP/0l+JY
-         6x1W0LMd8ls/oHJgOWKO0AR3ks6BMI+xk1pcRxvT9LAN6eqfInZhQ2027n/g8ziwc91i
-         dvgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510354; x=1692115154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kVUMGFTGmIMs9gxfcxcS/lMOKLXcrXhxKdcNy5Sb/7k=;
-        b=BBftR2OI4lfvmULs4abFm5dQBG98dTNNPDb2GC/RQ7d9wrHOnIz0IRkhLu5oyyIuf8
-         ufbPmWxHMXOfpFse4uio5UuClpOgsCQmeSTMsVysRqR7zV7+cbLWRg7zIdAbfH8v6Eh2
-         raPJwfLX6kAvAbAqIATZf4F+H4KNo5j4aXr7HmHKjhm/gCgwHHbMnEHnKhxpO/G2UuSl
-         tzOlJ2WSzkmayb/ohr2Qvpp/3+EX3QZwCJyZB7ecCIkt+8KHVp0K0mGWavcnOT5Nwb35
-         qilkfiC5fqKR1vqx0OCoX9Ojj8ebnMCLaHtDz5lL3udJ6iMYgMgY2z+fWT1gaHUtUOJG
-         ZxKQ==
-X-Gm-Message-State: AOJu0YzcH7QukuMsQErhNd9TlEPHw4qWFjgM4A0/l1dDJr6je1gU4Z6B
-        M1DLUEB0/qr9ojs+X2BefoE5mU48e0Y/GoDMgYYVxUHuTxUCzrWYl2s=
-X-Google-Smtp-Source: AGHT+IFi15UXHlOjBafsncghPZ+CygvrFkHgT7nBLzL88m86kzLUpO8Z8UvMrvXkkHrJrBoiNDOqbizpom1bnSTUbwg=
-X-Received: by 2002:a05:6902:30d:b0:d43:9eae:52b8 with SMTP id
- b13-20020a056902030d00b00d439eae52b8mr9684261ybs.10.1691504305098; Tue, 08
- Aug 2023 07:18:25 -0700 (PDT)
+        Tue, 8 Aug 2023 12:14:26 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AFB449B;
+        Tue,  8 Aug 2023 08:41:41 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378EJ5s0100122;
+        Tue, 8 Aug 2023 09:19:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691504345;
+        bh=bIH/ji03oG1ftTHsnzYCd9SbhQm9NI9ogdBByjAqw3g=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=CljD2Ue4/x/tDJlVbhREoZEp9Y1AwWcmprU86N4lpDflKvfbluba9cJdraFOYMKXF
+         xzcMb0sgjcJfES5Iue5IPmjsATi9OMg/mjqwDrW4sPcDVYqH6GqGuoaMdLzJJiLJku
+         n28xRCtSygaAGflOXBH7aU8BKDr51e30liNIE2V0=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378EJ5Lj032590
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Aug 2023 09:19:05 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
+ Aug 2023 09:19:05 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 8 Aug 2023 09:19:04 -0500
+Received: from [10.250.36.243] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378EJ4RE001024;
+        Tue, 8 Aug 2023 09:19:04 -0500
+Message-ID: <8f4b8276-9285-4e90-e4f0-9af4925a8634@ti.com>
+Date:   Tue, 8 Aug 2023 09:19:04 -0500
 MIME-Version: 1.0
-References: <20230703085555.30285-1-quic_mkshah@quicinc.com>
-In-Reply-To: <20230703085555.30285-1-quic_mkshah@quicinc.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 8 Aug 2023 16:17:48 +0200
-Message-ID: <CAPDyKFrp6WQYW7uKwPLrWROEiXHCjHd6Y1O9yitZ6fJE7EO7bg@mail.gmail.com>
-Subject: Re: [RESEND v4 0/3] Use PSCI OS initiated mode for sc7280
-To:     andersson@kernel.org, rafael@kernel.org
-Cc:     Maulik Shah <quic_mkshah@quicinc.com>, dianders@chromium.org,
-        swboyd@chromium.org, wingers@google.com, daniel.lezcano@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, sudeep.holla@arm.com,
-        jwerner@chromium.org, quic_lsrao@quicinc.com,
-        quic_rjendra@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 07/13] arm64: dts: ti: k3-am64: Enable OSPI nodes at
+ the board level
+Content-Language: en-US
+To:     Nishanth Menon <nm@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Dhruva Gole <d-gole@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230808133457.25060-1-afd@ti.com>
+ <20230808133457.25060-8-afd@ti.com>
+ <58daf644-7b16-4768-8885-bd60aa6c014f@ti.com>
+ <20230808141725.65r25aoot54zcwex@turbojet>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <20230808141725.65r25aoot54zcwex@turbojet>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,80 +76,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bjorn, Rafael,
+On 8/8/23 9:17 AM, Nishanth Menon wrote:
+> On 09:13-20230808, Andrew Davis wrote:
+>> On 8/8/23 8:34 AM, Andrew Davis wrote:
+>>> OSPI nodes defined in the top-level AM64 SoC dtsi files are incomplete
+>>> and may not be functional unless they are extended with pinmux and
+>>> device information.
+>>>
+>>> As the attached OSPI device is only known about at the board integration
+>>> level, these nodes should only be enabled when provided with this
+>>> information.
+>>>
+>>> Disable the OSPI nodes in the dtsi files and only enable the ones that
+>>> are actually pinned out on a given board.
+>>>
+>>> Signed-off-by: Andrew Davis <afd@ti.com>
+>>> Reviewed-by: Dhruva Gole <d-gole@ti.com>
+>>> ---
+>>
+>> Oops, I see we have a new AM64 board in -next (tqma64xxl), I can either
+>> rebase this again and enable the nodes in there. Or you can skip this
+>> and the other AM64 patch in this series and I'll resend them next cycle
+>> when that new board is settled.
+> 
+> we should respin this series taking the new boards into consideration -
+> am64 and am62 both have new boards.
+> 
 
-On Mon, 3 Jul 2023 at 10:56, Maulik Shah <quic_mkshah@quicinc.com> wrote:
->
-> This is resend of v4 with patch1 and patch2 Cced to stable kernel.
->
-> Changes in v4:
-> - Add missing s-o-b line and reviewed by in patch 1
-> - Address ulf's comments for error handling in patch 2
+No problem, v3 on the way.
 
-This has been ready to be queued for quite a while and I have been
-nagging you about it too. Sorry about that. :-)
-
-To help out, I have queued up patch 1 and patch 2 for fixes, through
-my new genpd tree [1].
-
-Bj=C3=B6rn, please pick patch3 for v6.6.
-
-Kind regards
-Uffe
-
-[1]
-git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git fixes
-
->
-> Changes in v3:
-> - Add new change to provide helper function dt_idle_pd_remove_topology()
-> - Address ulf's comments for error handling
-> - Add reviewed by ulf for devicetree change
->
-> Changes in v2:
-> - Add new change to Move enabling OSI mode after power domains creation
-> - Fix compatible string to domains-idle-states for cluster idle state.
-> - Update cover letter with some more details on OSI and PC mode
->   comparision
->
-> The dependency [2] is now merged in trustedfirmware project.
->
-> Stats comparision between OSI and PC mode are captured at [3] with
-> usecase
-> details, where during multiple CPUs online the residency in cluster idle
-> state is better with OSI and also inline with single CPU mode. In PC
-> mode
-> with multiple CPUs cluster idle state residency is dropping compare to
-> single CPU mode.
->
-> Recording of this meeting is also available at [4].
->
-> This change adds power-domains for cpuidle states to use PSCI OS
-> initiated mode for sc7280.
->
-> This change depends on external project changes [1] & [2] which are
-> under review/discussion to add PSCI os-initiated support in Arm Trusted
-> Firmware.
->
-> I can update here once the dependency are in and change is ready to
-> merge.
->
-> [1] https://review.trustedfirmware.org/q/topic:psci-osi
-> [2] https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/19487
-> [3] https://www.trustedfirmware.org/docs/PSCI-OS-initiated.pdf
-> [4] https://www.trustedfirmware.org/meetings/tf-a-technical-forum
->
-> Maulik Shah (3):
->   cpuidle: dt_idle_genpd: Add helper function to remove genpd topology
->   cpuidle: psci: Move enabling OSI mode after power domains creation
->   arm64: dts: qcom: sc7280: Add power-domains for cpuidle states
->
->  arch/arm64/boot/dts/qcom/sc7280.dtsi  | 98 ++++++++++++++++++++-------
->  drivers/cpuidle/cpuidle-psci-domain.c | 39 ++++-------
->  drivers/cpuidle/dt_idle_genpd.c       | 24 +++++++
->  drivers/cpuidle/dt_idle_genpd.h       |  7 ++
->  4 files changed, 117 insertions(+), 51 deletions(-)
->
-> --
-> 2.17.1
->
+Andrew
