@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DCC773ECC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D82BB773EB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233152AbjHHQgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:36:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
+        id S233082AbjHHQez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:34:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232829AbjHHQev (ORCPT
+        with ESMTP id S229875AbjHHQeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:34:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1C514248;
-        Tue,  8 Aug 2023 08:52:36 -0700 (PDT)
+        Tue, 8 Aug 2023 12:34:01 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF60E9089;
+        Tue,  8 Aug 2023 08:52:21 -0700 (PDT)
 Date:   Tue, 08 Aug 2023 08:44:04 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1691484245;
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uZlmaptKCOpdsLr8kN2LaHTEuYrrsk0jVhLTIREB6iU=;
-        b=K7Gl5uQI2k7waQZYAEm+Jol6ANkgkBO7D2Z3MLBviLsK8kIhT68xyQ2Xm/c4GWq3jQkj5d
-        Q7d9O+uCAE+bJtLNJXAolm/BKcpjE+9QTiL8Q4AKHj8w94wIYjCA0qQck3Z1DPkV6g+Oke
-        VHlv04afJPBWz4T4NdD7pmfU/IRxDakKtijCR+A5DlzQ5wdXq6m8LepMgOMGMaibPACGo/
-        MKQh/KOd6slxnOoUAkPTS3Qm1PlVDuEX1dqb7gvxOIzjcG2VPShcK1tfFIWvziXgSjoNEh
-        STdlTN929l8oUdzTqu3ACvCHHuBMqqcwFJrFUib5zmstepPE7suh0wAngw9Q9w==
+        bh=7UKoshY9dL4+4BhYKrhvJNIuP8h9w/AW++PipRWo5EY=;
+        b=XzKst5C9MTT8YKvHvEXbL9vq4HYDQVjvYSZ19L38i3Q+wSMyUaAkXIeXGpMnTgz1cDODrA
+        /DAil87m9M98LRKB5uteoRG9dBDDYtlBuOXCL38ttaQQBhhUZ7q4fi3PXYwbpy5Z347q5D
+        k8hs7Zedmdeujy6ekbzttpxhCTHSHxpRUCKnGNLpLjOVshS9nGE4wTsy+0VX5pZhc0FVDH
+        ObPthDx8VckRH9XGjeWRlmlxZIu7hrLVryAmJvMzAGAEek/RNr03soYx/6mf6vbtyIGlmj
+        4ZcH5d4POh4QtqvDm3QKPt5BYHuTBjHUZJ1u2KzN1T86kc+f0VF4erlNe5r+EA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1691484245;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,22 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uZlmaptKCOpdsLr8kN2LaHTEuYrrsk0jVhLTIREB6iU=;
-        b=zpXVLuKGRGdTBg8j3X+EVRvNzE7XzaN7ML21GrwpZBTkuRngPblkp4ixm326JCJJ/1p7TC
-        sbXHGSrII76gFgCA==
+        bh=7UKoshY9dL4+4BhYKrhvJNIuP8h9w/AW++PipRWo5EY=;
+        b=zzftaqtuuxaMBIHcGs+r4ugKP3dT5xabbSMARhitvkJeIj+acCSbpglFgygAYB/nSpKTrR
+        RzxPPJZk+szhWXAw==
 From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/boot] x86/decompressor: Store boot_params pointer in callee
- save register
+Subject: [tip: x86/boot] x86/efistub: Clear BSS in EFI handover protocol entrypoint
 Cc:     Ard Biesheuvel <ardb@kernel.org>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230807162720.545787-8-ardb@kernel.org>
-References: <20230807162720.545787-8-ardb@kernel.org>
+In-Reply-To: <20230807162720.545787-7-ardb@kernel.org>
+References: <20230807162720.545787-7-ardb@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169148424445.27769.5605999740207693312.tip-bot2@tip-bot2>
+Message-ID: <169148424483.27769.12149416146478802186.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -68,164 +67,97 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/boot branch of tip:
 
-Commit-ID:     8b63cba746f86a754d66e302c43209cc9b9b6e39
-Gitweb:        https://git.kernel.org/tip/8b63cba746f86a754d66e302c43209cc9b9b6e39
+Commit-ID:     d7156b986d4cc0657fa6dc05c9fcf51c3d55a0fe
+Gitweb:        https://git.kernel.org/tip/d7156b986d4cc0657fa6dc05c9fcf51c3d55a0fe
 Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Mon, 07 Aug 2023 18:27:04 +02:00
+AuthorDate:    Mon, 07 Aug 2023 18:27:03 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 07 Aug 2023 20:41:04 +02:00
+CommitterDate: Mon, 07 Aug 2023 20:40:36 +02:00
 
-x86/decompressor: Store boot_params pointer in callee save register
+x86/efistub: Clear BSS in EFI handover protocol entrypoint
 
-Instead of pushing and popping %RSI several times to preserve the struct
-boot_params pointer across the execution of the startup code, move it
-into a callee save register before the first call into C, and copy it
-back when needed.
+The so-called EFI handover protocol is value-add from the distros that
+permits a loader to simply copy a PE kernel image into memory and call
+an alternative entrypoint that is described by an embedded boot_params
+structure.
+
+Most implementations of this protocol do not bother to check the PE
+header for minimum alignment, section placement, etc, and therefore also
+don't clear the image's BSS, or even allocate enough memory for it.
+
+Allocating more memory on the fly is rather difficult, but at least
+clear the BSS region explicitly when entering in this manner, so that
+the EFI stub code does not get confused by global variables that were
+not zero-initialized correctly.
+
+When booting in mixed mode, this BSS clearing must occur before any
+global state is created, so clear it in the 32-bit asm entry point.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20230807162720.545787-8-ardb@kernel.org
+Link: https://lore.kernel.org/r/20230807162720.545787-7-ardb@kernel.org
 ---
- arch/x86/boot/compressed/head_64.S | 42 +++++++++++------------------
- 1 file changed, 16 insertions(+), 26 deletions(-)
+ arch/x86/boot/compressed/efi_mixed.S    | 14 +++++++++++++-
+ drivers/firmware/efi/libstub/x86-stub.c | 13 +++++++++++--
+ 2 files changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index a3f764d..19bf810 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -405,10 +405,14 @@ SYM_CODE_START(startup_64)
- 	lretq
- 
- .Lon_kernel_cs:
-+	/*
-+	 * RSI holds a pointer to a boot_params structure provided by the
-+	 * loader, and this needs to be preserved across C function calls. So
-+	 * move it into a callee saved register.
-+	 */
-+	movq	%rsi, %r15
- 
--	pushq	%rsi
- 	call	load_stage1_idt
--	popq	%rsi
- 
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- 	/*
-@@ -419,12 +423,10 @@ SYM_CODE_START(startup_64)
- 	 * CPUID instructions being issued, so go ahead and do that now via
- 	 * sev_enable(), which will also handle the rest of the SEV-related
- 	 * detection/setup to ensure that has been done in advance of any dependent
--	 * code.
-+	 * code. Pass the boot_params pointer as the first argument.
- 	 */
--	pushq	%rsi
--	movq	%rsi, %rdi		/* real mode address */
-+	movq	%r15, %rdi
- 	call	sev_enable
--	popq	%rsi
+diff --git a/arch/x86/boot/compressed/efi_mixed.S b/arch/x86/boot/compressed/efi_mixed.S
+index 9308b59..8a02a15 100644
+--- a/arch/x86/boot/compressed/efi_mixed.S
++++ b/arch/x86/boot/compressed/efi_mixed.S
+@@ -142,6 +142,18 @@ SYM_FUNC_END(__efi64_thunk)
+ 	.code32
+ #ifdef CONFIG_EFI_HANDOVER_PROTOCOL
+ SYM_FUNC_START(efi32_stub_entry)
++	call	1f
++1:	popl	%ecx
++
++	/* Clear BSS */
++	xorl	%eax, %eax
++	leal	(_bss - 1b)(%ecx), %edi
++	leal	(_ebss - 1b)(%ecx), %ecx
++	subl	%edi, %ecx
++	shrl	$2, %ecx
++	cld
++	rep	stosl
++
+ 	add	$0x4, %esp		/* Discard return address */
+ 	popl	%ecx
+ 	popl	%edx
+@@ -334,7 +346,7 @@ SYM_FUNC_END(efi32_pe_entry)
+ 	.org	efi32_stub_entry + 0x200
+ 	.code64
+ SYM_FUNC_START_NOALIGN(efi64_stub_entry)
+-	jmp	efi_stub_entry
++	jmp	efi_handover_entry
+ SYM_FUNC_END(efi64_stub_entry)
  #endif
  
- 	/*
-@@ -437,13 +439,10 @@ SYM_CODE_START(startup_64)
- 	 *   - Non zero RDX means trampoline needs to enable 5-level
- 	 *     paging.
- 	 *
--	 * RSI holds real mode data and needs to be preserved across
--	 * this function call.
-+	 * Pass the boot_params pointer as the first argument.
- 	 */
--	pushq	%rsi
--	movq	%rsi, %rdi		/* real mode address */
-+	movq	%r15, %rdi
- 	call	paging_prepare
--	popq	%rsi
+diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+index 3f3b3ed..9247dbc 100644
+--- a/drivers/firmware/efi/libstub/x86-stub.c
++++ b/drivers/firmware/efi/libstub/x86-stub.c
+@@ -970,12 +970,21 @@ fail:
+ }
  
- 	/* Save the trampoline address in RCX */
- 	movq	%rax, %rcx
-@@ -456,9 +455,9 @@ SYM_CODE_START(startup_64)
- 	 * because the architecture does not guarantee that GPRs will retain
- 	 * their full 64-bit values across a 32-bit mode switch.
- 	 */
-+	pushq	%r15
- 	pushq	%rbp
- 	pushq	%rbx
--	pushq	%rsi
+ #ifdef CONFIG_EFI_HANDOVER_PROTOCOL
++void efi_handover_entry(efi_handle_t handle, efi_system_table_t *sys_table_arg,
++			struct boot_params *boot_params)
++{
++	extern char _bss[], _ebss[];
++
++	memset(_bss, 0, _ebss - _bss);
++	efi_stub_entry(handle, sys_table_arg, boot_params);
++}
++
+ #ifndef CONFIG_EFI_MIXED
+-extern __alias(efi_stub_entry)
++extern __alias(efi_handover_entry)
+ void efi32_stub_entry(efi_handle_t handle, efi_system_table_t *sys_table_arg,
+ 		      struct boot_params *boot_params);
  
- 	/*
- 	 * Push the 64-bit address of trampoline_return() onto the new stack.
-@@ -475,9 +474,9 @@ SYM_CODE_START(startup_64)
- 	lretq
- trampoline_return:
- 	/* Restore live 64-bit registers */
--	popq	%rsi
- 	popq	%rbx
- 	popq	%rbp
-+	popq	%r15
- 
- 	/* Restore the stack, the 32-bit trampoline uses its own stack */
- 	leaq	rva(boot_stack_end)(%rbx), %rsp
-@@ -487,14 +486,9 @@ trampoline_return:
- 	 *
- 	 * RDI is address of the page table to use instead of page table
- 	 * in trampoline memory (if required).
--	 *
--	 * RSI holds real mode data and needs to be preserved across
--	 * this function call.
- 	 */
--	pushq	%rsi
- 	leaq	rva(top_pgtable)(%rbx), %rdi
- 	call	cleanup_trampoline
--	popq	%rsi
- 
- 	/* Zero EFLAGS */
- 	pushq	$0
-@@ -504,7 +498,6 @@ trampoline_return:
-  * Copy the compressed kernel to the end of our buffer
-  * where decompression in place becomes safe.
-  */
--	pushq	%rsi
- 	leaq	(_bss-8)(%rip), %rsi
- 	leaq	rva(_bss-8)(%rbx), %rdi
- 	movl	$(_bss - startup_32), %ecx
-@@ -512,7 +505,6 @@ trampoline_return:
- 	std
- 	rep	movsq
- 	cld
--	popq	%rsi
- 
- 	/*
- 	 * The GDT may get overwritten either during the copy we just did or
-@@ -544,30 +536,28 @@ SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
- 	shrq	$3, %rcx
- 	rep	stosq
- 
--	pushq	%rsi
- 	call	load_stage2_idt
- 
- 	/* Pass boot_params to initialize_identity_maps() */
--	movq	(%rsp), %rdi
-+	movq	%r15, %rdi
- 	call	initialize_identity_maps
--	popq	%rsi
- 
- /*
-  * Do the extraction, and jump to the new kernel..
-  */
--	pushq	%rsi			/* Save the real mode argument */
--	movq	%rsi, %rdi		/* real mode address */
-+	/* pass struct boot_params pointer */
-+	movq	%r15, %rdi
- 	leaq	boot_heap(%rip), %rsi	/* malloc area for uncompression */
- 	leaq	input_data(%rip), %rdx  /* input_data */
- 	movl	input_len(%rip), %ecx	/* input_len */
- 	movq	%rbp, %r8		/* output target address */
- 	movl	output_len(%rip), %r9d	/* decompressed length, end of relocs */
- 	call	extract_kernel		/* returns kernel entry point in %rax */
--	popq	%rsi
- 
- /*
-  * Jump to the decompressed kernel.
-  */
-+	movq	%r15, %rsi
- 	jmp	*%rax
- SYM_FUNC_END(.Lrelocated)
- 
+-extern __alias(efi_stub_entry)
++extern __alias(efi_handover_entry)
+ void efi64_stub_entry(efi_handle_t handle, efi_system_table_t *sys_table_arg,
+ 		      struct boot_params *boot_params);
+ #endif
