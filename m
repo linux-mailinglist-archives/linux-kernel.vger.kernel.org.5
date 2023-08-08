@@ -2,143 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE36B774D63
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FF2774A6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbjHHVxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55020 "EHLO
+        id S231426AbjHHU14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbjHHVxJ (ORCPT
+        with ESMTP id S233210AbjHHU1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 17:53:09 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 500E091241;
-        Tue,  8 Aug 2023 10:32:05 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id BFE2A5C009D;
-        Tue,  8 Aug 2023 13:32:04 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 08 Aug 2023 13:32:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1691515924; x=1691602324; bh=rM
-        UaHZaSAI4l93e7AeZWrkXodMmRgdTWwjGdICmzDaY=; b=QIb8cGi7i1UpCeFo5r
-        lPDUKHa3UY9ysLj4xsmXkoQgvBnocxeYG0J5izW/BE4h7jAd0iuMvoFXviIVuqjU
-        klbeJ0cZ8iy+M0HSct94mQUeO5Anw0ggFpYldatqYosC+89HxfY4nRT2YxEwZ87N
-        AUa032AxMKzHx3eOvh/u8IzjecbYVvlnIzVdGqs9PdD/Vjj0AYzNjyRK5GoGoghU
-        YzvDY5hvLZOvbYdJXEhDPqjPbnOt9pIAIj1lFWq+DPxlbT2/6y5yuaF9kWuKSexX
-        bbxGShvrwZaCorxqbR4fQ1X553N6umvdv5D2sIt373aRzFqA4rHe5VrG9ZQqBXF5
-        i56g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1691515924; x=1691602324; bh=rMUaHZaSAI4l9
-        3e7AeZWrkXodMmRgdTWwjGdICmzDaY=; b=l7U6RjUGhd233kTpEmkm+1CLdkldm
-        P/2Bkl4+Awfzq9S1G9OmEPBEy+17nWwdTGB4KB18+fV+EFau+oDwheZDXD2FyPb5
-        zSGkfWbcI5YIyZcV9ligquRd8/vW/gdugihmSiZQMDAEUQYvwv2Wb1DxOdpog+DD
-        0gnFnOGvfevxWVD0eQ+2GapGhe8QOdDe7bTDCqvje3wDMcwzlPJPFlk8NxvfsT2J
-        nXM9C0cIQjlBuspJUlHzmkjyjAvaSlO0+JvfMMdnCS3OYa7YBjKIOR2/sElWcFXe
-        O/7mfnzROWwl3puMBQXllZdeMhRIxCjAeSZvrP00SpXm8tVF6IdrW1x4A==
-X-ME-Sender: <xms:FHzSZMTGHEnq7zDK1mIf5aLNFwb-rsYwg34gMlfZrRrosCiTnUUzGA>
-    <xme:FHzSZJzVeniscGdjhruJMk1lVnAJa1Z81GpRZLlOULuY1vPspgjeAhT3JvgUQPUYB
-    RnEELaBVO9M0_eRKPk>
-X-ME-Received: <xmr:FHzSZJ1zZ9PeCvuflHXT4OGmzhHugInOtK-hxKlOQLlTyf9wKX2m4SknA5x72tgHwrUSjjRNDYUy6Fmd-rIzOIYrFVCOE58151IDrfL5HCjn>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrledvgdduudefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfhgfhffvvefuffgjkfggtgesthdtredttdertdenucfhrhhomhepufhtvghf
-    rghnucftohgvshgthhcuoehshhhrseguvghvkhgvrhhnvghlrdhioheqnecuggftrfgrth
-    htvghrnhepveelgffghfehudeitdehjeevhedthfetvdfhledutedvgeeikeeggefgudeg
-    uedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsh
-    hhrhesuggvvhhkvghrnhgvlhdrihho
-X-ME-Proxy: <xmx:FHzSZAC0ivTxstdOr3eWUaee0pkAovRjRbMc_Bvxe6iBw2ViHBBH5g>
-    <xmx:FHzSZFhoCulsZuDMQnDf0QX8RnXxp-vDECZNYiceJ-rKjCylbKZfHw>
-    <xmx:FHzSZMoZNJWXhrGmrXm5ALc1DBlfE3uRX6Hd-Vu2maNn3B-0Q3H2iw>
-    <xmx:FHzSZAozjPgXYOkeAjtH_oqX0kF4XAk7otsZsyd0Md4QNHXHdDcx_Q>
-Feedback-ID: i84614614:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 8 Aug 2023 13:32:03 -0400 (EDT)
-References: <20230728163952.4634-1-ayush.jain3@amd.com>
-User-agent: mu4e 1.10.1; emacs 28.2.50
-From:   Stefan Roesch <shr@devkernel.io>
-To:     Ayush Jain <ayush.jain3@amd.com>
-Cc:     akpm@linux-foundation.org, shuah@kernel.org,
-        pasha.tatashin@soleen.com, zhansayabagdaulet@gmail.com,
-        tyhicks@linux.microsoft.com, raghavendra.kt@amd.com,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Narasimhan.V@amd.com,
-        Santosh.Shukla@amd.com, David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v2 1/2] selftests: mm: ksm: Fix incorrect evaluation of
- parameter
-Date:   Tue, 08 Aug 2023 10:31:24 -0700
-In-reply-to: <20230728163952.4634-1-ayush.jain3@amd.com>
-Message-ID: <qvqwfs4tphip.fsf@devbig1114.prn1.facebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 16:27:37 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E41ACB76;
+        Tue,  8 Aug 2023 10:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=8iItz4fAqc9eHWlkPTlOj5+qnfmys/TzLvwC/yA08jQ=; b=EMf5xQwVyzUnLtsBrpCxqvTU0F
+        5Cvjq4BE1nyD8fihHctOb9LNCkiIVbbjd08EoEK1TXKDdnFDKsn9oAz1HBEp4coKLnxcnYtJ+Wfp0
+        TXIAc6Va1L6Da8baMlf++ElczSmxomYyZDnTD64lVhCabao/gxZ50trd64IPE1ovX1GU=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:37588 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qTQnA-0001gq-K0; Tue, 08 Aug 2023 13:46:49 -0400
+Date:   Tue, 8 Aug 2023 13:46:47 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Breno Leitao <leitao@debian.org>
+Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        io-uring@vger.kernel.org
+Message-Id: <20230808134647.3e0e702f54ef5e5b4378ff98@hugovil.com>
+In-Reply-To: <ZNJ5f1hR3cre0IPd@gmail.com>
+References: <20230808134049.1407498-1-leitao@debian.org>
+        <20230808134049.1407498-2-leitao@debian.org>
+        <20230808121323.bc144c719eba5979e161aac6@hugovil.com>
+        <ZNJ5f1hR3cre0IPd@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 1/8] net: expose sock_use_custom_sol_socket
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 8 Aug 2023 10:21:03 -0700
+Breno Leitao <leitao@debian.org> wrote:
 
-Ayush Jain <ayush.jain3@amd.com> writes:
+> Hello  Hugo,
+> 
+> On Tue, Aug 08, 2023 at 12:13:23PM -0400, Hugo Villeneuve wrote:
+> > On Tue,  8 Aug 2023 06:40:41 -0700
+> > Breno Leitao <leitao@debian.org> wrote:
+> > 
+> > > Exposing function sock_use_custom_sol_socket(), so it could be used by
+> > > io_uring subsystem.
+> > > 
+> > > This function will be used in the function io_uring_cmd_setsockopt() in
+> > > the coming patch, so, let's move it to the socket.h header file.
+> > 
+> > Hi,
+> > this description doesn't seem to match the code change below...
+> 
+> I re-read the patch comment and it seems to match what the code does,
+> so, probably this description only makes sense to me (?).
+> 
+> That said, hat have you understood from reading the description above?
+> socket.h
+> Thanks for the review,
 
-> A missing break in kms_tests leads to kselftest hang when the
-> parameter -s is used.
-> In current code flow because of missing break in -s, -t parses
-> args spilled from -s and as -t accepts only valid values as 0,1
-> so any arg in -s >1 or <0, gets in ksm_test failure
->
-> This went undetected since, before the addition of option -t,
-> the next case -M would immediately break out of the switch
-> statement but that is no longer the case
->
-> Add the missing break statement.
->
-> ----Before----
-> ./ksm_tests -H -s 100
-> Invalid merge type
->
-> ----After----
-> ./ksm_tests -H -s 100
-> Number of normal pages:    0
-> Number of huge pages:    50
-> Total size:    100 MiB
-> Total time:    0.401732682 s
-> Average speed:  248.922 MiB/s
->
-> Fixes: 07115fcc15b4 ("selftests/mm: add new selftests for KSM")
->
-> Signed-off-by: Ayush Jain <ayush.jain3@amd.com>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> ---
-> v1 -> v2
-> collect Reviewed-by from David
-> Updated Fixes tag from commit 9e7cb94ca218 to 07115fcc15b4
->
->  tools/testing/selftests/mm/ksm_tests.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/tools/testing/selftests/mm/ksm_tests.c b/tools/testing/selftests/mm/ksm_tests.c
-> index 435acebdc325..380b691d3eb9 100644
-> --- a/tools/testing/selftests/mm/ksm_tests.c
-> +++ b/tools/testing/selftests/mm/ksm_tests.c
-> @@ -831,6 +831,7 @@ int main(int argc, char *argv[])
->  				printf("Size must be greater than 0\n");
->  				return KSFT_FAIL;
->  			}
-> +			break;
->  		case 't':
->  			{
->  				int tmp = atoi(optarg);
+Hi Breno,
+your comments says "move it to the socket.h header file" but it seems
+to be moved to the net.h header file?
 
-Acked-by: Stefan Roesch <shr@devkernel.io>
+Hugo Villeneuve
+
+
+> > > ---
+> > >  include/linux/net.h | 5 +++++
+> > >  net/socket.c        | 5 -----
+> > >  2 files changed, 5 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/include/linux/net.h b/include/linux/net.h
+> > > index 41c608c1b02c..14a956e4530e 100644
+> > > --- a/include/linux/net.h
+> > > +++ b/include/linux/net.h
+> > > @@ -355,4 +355,9 @@ u32 kernel_sock_ip_overhead(struct sock *sk);
+> > >  #define MODULE_ALIAS_NET_PF_PROTO_NAME(pf, proto, name) \
+> > >  	MODULE_ALIAS("net-pf-" __stringify(pf) "-proto-" __stringify(proto) \
+> > >  		     name)
+> > > +
+> > > +static inline bool sock_use_custom_sol_socket(const struct socket *sock)
+> > > +{
+> > > +	return test_bit(SOCK_CUSTOM_SOCKOPT, &sock->flags);
+> > > +}
+> > >  #endif	/* _LINUX_NET_H */
+> > > diff --git a/net/socket.c b/net/socket.c
+> > > index 1dc23f5298ba..8df54352af83 100644
+> > > --- a/net/socket.c
+> > > +++ b/net/socket.c
+> > > @@ -2216,11 +2216,6 @@ SYSCALL_DEFINE4(recv, int, fd, void __user *, ubuf, size_t, size,
+> > >  	return __sys_recvfrom(fd, ubuf, size, flags, NULL, NULL);
+> > >  }
+> > >  
+> > > -static bool sock_use_custom_sol_socket(const struct socket *sock)
+> > > -{
+> > > -	return test_bit(SOCK_CUSTOM_SOCKOPT, &sock->flags);
+> > > -}
+> > > -
+> > >  /*
+> > >   *	Set a socket option. Because we don't know the option lengths we have
+> > >   *	to pass the user mode parameter for the protocols to sort out.
+> > > -- 
+> > > 2.34.1
+> > > 
