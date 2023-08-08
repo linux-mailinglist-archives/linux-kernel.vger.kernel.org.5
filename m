@@ -2,132 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF70774CA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD147774CD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234963AbjHHVMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53974 "EHLO
+        id S235879AbjHHVSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236639AbjHHVMQ (ORCPT
+        with ESMTP id S235944AbjHHVSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 17:12:16 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE5810DA
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:11:30 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe28e4671dso9972664e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 14:11:30 -0700 (PDT)
+        Tue, 8 Aug 2023 17:18:12 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5FB2122
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:13:28 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-563379fe16aso6292906a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 14:13:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691529088; x=1692133888;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h1R5RAuDcNFHnQizuPMLw4ddvp2/D6Ygtoh2+KaZC84=;
-        b=P0ir7ms0UHD/psQzlbfBnE6aSnmQk0XsVkcsi4yX92VZiYhQs0Mp8KQeRgzGDo4dx7
-         U4paScWKzKP2FNrEsyDlPjm6gjr7gkB/UVWS9e1AAoium4aqbHnCoO9sIcfiw52I5Wpg
-         GsvOSghr/aOfBX+l2QjlUnQXR6a2i7i+XKcQCVHidw1n/CiwhI2NWIeY1mAp2JEkKEyB
-         BtinggjGs7cd07RLHgVU/D2nbJK9Ns8pch+F37wZvKWo0krIFg3Vi9VSb4b/BaAwZO96
-         QToFQYVeY6bntPAqeuMW1UYbZZFTNolgPkM6F9EfFs4izOXArDEOpL2T+gEvJaQjF4vR
-         5o7g==
+        d=google.com; s=20221208; t=1691529208; x=1692134008;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2U8op5NWCZxGer1aWuXuZ1d6J73Ge5+Hk7EgkvJJLAs=;
+        b=EiApR7LgfgrJOIT4RH8vwTp7YvtN3WX8F65amcCZ5tUQpyv/ZsbnzElbxtLH3YiRAr
+         Xco5OB//pxBTUJ1Hz9I9wbK8VFMOtBI25Tou7znxlR4xLwF5hwG16hAzm3VNuOm7qNVv
+         RXaphvZexnvsjJwdUedz4miwZlrHjyPKGJ4tg41nXpc1Cr1tDeUR45j+cXRmHY2zeNeJ
+         aD2FSNHH9s2X0AH/332mpiw5dSfBYPcqgRab/m5d5fFkQb+ZWPzwvwukMvExFid52TaS
+         W3qOIOCRBt/UK+p15DAoWro/GC9Q6ni0EalNj49A0OSEsHwDkeyMMKxa0prAwizF/XXF
+         JV1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691529088; x=1692133888;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h1R5RAuDcNFHnQizuPMLw4ddvp2/D6Ygtoh2+KaZC84=;
-        b=R4bWknBh9gbs71mf+XHk04QoWkK/q6wQ6W6BZS57CB9DSA0MeqhLW8ofD660+tXsry
-         uOLc/HtzYHWr+ZdpWUGJBX3QYGk06nl95gv1zP8IHIlu+5E68eZq70NCHFayxVi/Hzyn
-         l2jip30oXPPbMTspMe2kjgsaKdB6yQ80V9yZaz8LmNd4JPN3Jj47sd9SAEo15x3cgn7s
-         QufQGsSJU6vn35hA+E/MjI+HJESSgxoIuDb34LiO4de1DgVVB2PomDY3eRO+M5n4165w
-         UtBrqc5JOuW64rEmbWxlJ3Y8nQyJoNGXDUd1C4qbQclnJGlBAt9uu0e7fFcYWuqnWSr3
-         SO0w==
-X-Gm-Message-State: AOJu0YxDovbciNk7fRiIP2cu8BEYf8K5bEssO9hakCGe6rtLj0NOsDCS
-        5zexDZptZIqSNNhAWFiMdCV7DNTVT9gCLGYST9w=
-X-Google-Smtp-Source: AGHT+IGYzCzaBx+RT4uIMPcpMzVvff8YWRBwXmJ34frHeKF/XozlNEO8qPoGltWMrBJecOYoNTXNsA==
-X-Received: by 2002:a2e:b005:0:b0:2ba:18e5:1063 with SMTP id y5-20020a2eb005000000b002ba18e51063mr441282ljk.50.1691529088351;
-        Tue, 08 Aug 2023 14:11:28 -0700 (PDT)
-Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id l13-20020a2e700d000000b002b9c0822951sm2395753ljc.119.2023.08.08.14.11.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 14:11:27 -0700 (PDT)
-Message-ID: <72891405-eddc-4644-88ba-bfa9baa6e62f@linaro.org>
-Date:   Tue, 8 Aug 2023 23:11:27 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/8] arm64: dts: qcom: sa8775p-ride: enable the second
- SerDes PHY
-Content-Language: en-US
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Andrew Halaney <ahalaney@redhat.com>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20230808190144.19999-1-brgl@bgdev.pl>
- <20230808190144.19999-4-brgl@bgdev.pl>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230808190144.19999-4-brgl@bgdev.pl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1691529208; x=1692134008;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2U8op5NWCZxGer1aWuXuZ1d6J73Ge5+Hk7EgkvJJLAs=;
+        b=PIWhdrFdBtr0tyYM5f8BGOevYT6kpoLKyXCqlQT5ZdOMUhe+oKZbLgGkCTHFKuSEF6
+         r8tcdgXEuM4i1EKMz3hLxjFBFyGSwFZ4NZzHRLQMwubb7R5Qg0jkdiHkhyFvLg89co06
+         2OZ6ze0ed2z4ZncrCK6jajenAap4fuhqJ9oDTfPHx/adVWywkvcX1C0VPQ7MjHlRTujx
+         3P2DATKilgoujJxSXlqQe7DGdGzqqiOjWkhxQ7YsufLBWRLyRiD0QTpgQPNwfC21+Ylf
+         sFp/kFPjXVM29n/TVRXDNQHdnwhDfezfXPJTY/34DS3xBpEz7R9BVDcD+Y1ZcYw7prXQ
+         mX8Q==
+X-Gm-Message-State: AOJu0YxrnorYsaNYEfJFDLTPHcS2s62UM1/Dclit2tNS1fb9U4iRSUax
+        Jk15kO0nuqxc9sOQ7oI2ThRKbPha1qY=
+X-Google-Smtp-Source: AGHT+IF3VhVvM3seA6Kd3G1yrwf0aF3MmO0cqr5SVZX1MHXlsabrjEav/SHlO1qK0PHGPVCVUrfGthX1EsA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:b242:0:b0:563:e937:5e87 with SMTP id
+ t2-20020a63b242000000b00563e9375e87mr12735pgo.5.1691529208021; Tue, 08 Aug
+ 2023 14:13:28 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 14:13:26 -0700
+In-Reply-To: <diqzv8dq3116.fsf@ackerleytng-ctop.c.googlers.com>
+Mime-Version: 1.0
+References: <20230718234512.1690985-13-seanjc@google.com> <diqzv8dq3116.fsf@ackerleytng-ctop.c.googlers.com>
+Message-ID: <ZNKv9ul2I7A4V7IF@google.com>
+Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ackerley Tng <ackerleytng@google.com>
+Cc:     pbonzini@redhat.com, maz@kernel.org, oliver.upton@linux.dev,
+        chenhuacai@kernel.org, mpe@ellerman.id.au, anup@brainfault.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, willy@infradead.org,
+        akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chao.p.peng@linux.intel.com,
+        tabba@google.com, jarkko@kernel.org, yu.c.zhang@linux.intel.com,
+        vannapurve@google.com, mail@maciej.szmigiero.name, vbabka@suse.cz,
+        david@redhat.com, qperret@google.com, michael.roth@amd.com,
+        wei.w.wang@intel.com, liam.merwick@oracle.com,
+        isaku.yamahata@gmail.com, kirill.shutemov@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8.08.2023 21:01, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Enable the second SerDes PHY on sa8775p-ride development board.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On Mon, Aug 07, 2023, Ackerley Tng wrote:
+> I=E2=80=99d like to propose an alternative to the refcounting approach be=
+tween
+> the gmem file and associated kvm, where we think of KVM=E2=80=99s memslot=
+s as
+> users of the gmem file.
+>=20
+> Instead of having the gmem file pin the VM (i.e. take a refcount on
+> kvm), we could let memslot take a refcount on the gmem file when the
+> memslots are configured.
+>=20
+> Here=E2=80=99s a POC patch that flips the refcounting (and modified selft=
+ests in
+> the next commit):
+> https://github.com/googleprodkernel/linux-cc/commit/7f487b029b89b9f3e9b09=
+4a721bc0772f3c8c797
+>=20
+> One side effect of having the gmem file pin the VM is that now the gmem
+> file becomes sort of a false handle on the VM:
+>=20
+> + Closing the file destroys the file pointers in the VM and invalidates
+>   the pointers
 
-Konrad
+Yeah, this is less than ideal.  But, it's also how things operate today.  K=
+VM
+doesn't hold references to VMAs or files, e.g. if userspace munmap()s memor=
+y,
+any and all SPTEs pointing at the memory are zapped.  The only difference w=
+ith
+gmem is that KVM needs to explicitly invalidate file pointers, instead of t=
+hat
+happening behind the scenes (no more VMAs to find).  Again, I agree the res=
+ulting
+code is more complex than I would prefer, but from a userspace perspective =
+I
+don't see this as problematic.
+
+> + Keeping the file open keeps the VM around in the kernel even though
+>   the VM fd may already be closed.
+
+That is perfectly ok.  There is plenty of prior art, as well as plenty of w=
+ays
+for userspace to shoot itself in the foot.  E.g. open a stats fd for a vCPU=
+ and
+the VM and all its vCPUs will be kept alive.  And conceptually it's sound,
+anything created in the scope of a VM _should_ pin the VM.
+
+> I feel that memslots form a natural way of managing usage of the gmem
+> file. When a memslot is created, it is using the file; hence we take a
+> refcount on the gmem file, and as memslots are removed, we drop
+> refcounts on the gmem file.
+
+Yes and no.  It's definitely more natural *if* the goal is to allow guest_m=
+emfd
+memory to exist without being attached to a VM.  But I'm not at all convinc=
+ed
+that we want to allow that, or that it has desirable properties.  With TDX =
+and
+SNP in particuarly, I'm pretty sure that allowing memory to outlive the VM =
+is
+very underisable (more below).
+
+> The KVM pointer is shared among all the bindings in gmem=E2=80=99s xarray=
+, and we can
+> enforce that a gmem file is used only with one VM:
+>=20
+> + When binding a memslot to the file, if a kvm pointer exists, it must
+>   be the same kvm as the one in this binding
+> + When the binding to the last memslot is removed from a file, NULL the
+>   kvm pointer.
+
+Nullifying the KVM pointer isn't sufficient, because without additional act=
+ions
+userspace could extract data from a VM by deleting its memslots and then bi=
+nding
+the guest_memfd to an attacker controlled VM.  Or more likely with TDX and =
+SNP,
+induce badness by coercing KVM into mapping memory into a guest with the wr=
+ong
+ASID/HKID.
+
+I can think of three ways to handle that:
+
+  (a) prevent a different VM from *ever* binding to the gmem instance
+  (b) free/zero physical pages when unbinding
+  (c) free/zero when binding to a different VM
+
+Option (a) is easy, but that pretty much defeats the purpose of decopuling
+guest_memfd from a VM.
+
+Option (b) isn't hard to implement, but it screws up the lifecycle of the m=
+emory,
+e.g. would require memory when a memslot is deleted.  That isn't necessaril=
+y a
+deal-breaker, but it runs counter to how KVM memlots currently operate.  Me=
+mslots
+are basically just weird page tables, e.g. deleting a memslot doesn't have =
+any
+impact on the underlying data in memory.  TDX throws a wrench in this as re=
+moving
+a page from the Secure EPT is effectively destructive to the data (can't be=
+ mapped
+back in to the VM without zeroing the data), but IMO that's an oddity with =
+TDX and
+not necessarily something we want to carry over to other VM types.
+
+There would also be performance implications (probably a non-issue in pract=
+ice),
+and weirdness if/when we get to sharing, linking and/or mmap()ing gmem.  E.=
+g. what
+should happen if the last memslot (binding) is deleted, but there outstandi=
+ng userspace
+mappings?
+
+Option (c) is better from a lifecycle perspective, but it adds its own flav=
+or of
+complexity, e.g. the performant way to reclaim TDX memory requires the TDMR
+(effectively the VM pointer), and so a deferred relcaim doesn't really work=
+ for
+TDX.  And I'm pretty sure it *can't* work for SNP, because RMP entries must=
+ not
+outlive the VM; KVM can't reuse an ASID if there are pages assigned to that=
+ ASID
+in the RMP, i.e. until all memory belonging to the VM has been fully freed.
+
+> Could binding gmem files not on creation, but at memslot configuration
+> time be sufficient and simpler?
+
+After working through the flows, I think binding on-demand would simplify t=
+he
+refcounting (stating the obvious), but complicate the lifecycle of the memo=
+ry as
+well as the contract between KVM and userspace, and would break the separat=
+ion of
+concerns between the inode (physical memory / data) and file (VM's view / m=
+appings).
