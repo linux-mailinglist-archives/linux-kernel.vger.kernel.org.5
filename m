@@ -2,219 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5CA3773F64
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B41773FCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233417AbjHHQq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
+        id S233599AbjHHQxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233413AbjHHQpd (ORCPT
+        with ESMTP id S233571AbjHHQww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:45:33 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 37AF04445C
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:56:24 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A22671515;
-        Tue,  8 Aug 2023 01:49:02 -0700 (PDT)
-Received: from [10.57.90.239] (unknown [10.57.90.239])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 32A3B3F59C;
-        Tue,  8 Aug 2023 01:48:18 -0700 (PDT)
-Message-ID: <8bef9c5a-eede-f78f-4418-da10c99a5bef@arm.com>
-Date:   Tue, 8 Aug 2023 09:48:16 +0100
+        Tue, 8 Aug 2023 12:52:52 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2533418875
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:58:27 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-40c72caec5cso290421cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:58:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691510306; x=1692115106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kCOXJYzxETCH/0UcvxLQeHGSMM7DSEXKUT9P3Dlmymo=;
+        b=XY594UEiNBVdnowDggoSTsy01/7LFkzZtWyJ0osca2l37W78HGpDPMoIqFYvu62sJ7
+         LOfIkxgpcwCQD3onyp1myYYx4Lve3r2KmyWeVl/ONp//on9vHq6TaoT1HRxeg7yP81aQ
+         +ksYegCJOmnKd67lUYkM0RkG2PmMd4VBnoIu5UVhTOrudjcC41oPzrPSb6QFq04ZBJX+
+         cRcNqLfBMqJ/ZeZVIU+igrWi+4qmnc7LSaGU81l+vIVsy3DxQImk4ymN4mEkeNE9SQgP
+         RZqjAVRhg+S9ptIeLIwgrEh//Otme/dNntvOX8Eyw6DHYPtNfeDp22XpEolICEt4/F3H
+         qkcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691510306; x=1692115106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kCOXJYzxETCH/0UcvxLQeHGSMM7DSEXKUT9P3Dlmymo=;
+        b=btqHGIkzJNhwrmCYfHpsXuYohR8sDBDkGGryVn+4x3uaOm9dth7mXZ+eoMlKh3xPgS
+         eXz18UkBLJ1I+3vl7BhQYmsfRfTIWrBvpUhySeKslpF1R4jxFfQ5mUDnjbuY5oGdLyyH
+         rLLDCWQjbvoEg1CiHUAomQd1s5OtBAkl1Nv4x5hwZjZm78dSk5/ndBTaucCGdmIsaHa6
+         ZRJ0uoskOcjP0rF0EKSXYBqLvxlaLQCjx/dEMahXLJRgOLMJsW78Us8hfj3TbeUfYuzc
+         5L72RZrw+GjgbQ5psxpRdFXkt7XUZBMU9ld2QVJMDYTDDZkcmJIEJqUS1qqW2nK4oxX1
+         UwpQ==
+X-Gm-Message-State: AOJu0Yymg9v5MwwHYIrtsBQYepfdZi90AoneF81CpiwtPS8DeL5SQB6m
+        ijemCZyVGr1yFitj4WEPevMOCQ5yOUrivO6ZpIAq+qEtR30z+rTEVqU=
+X-Google-Smtp-Source: AGHT+IEfM3zZpi2A8IEkcUU11DnAyYRP6HYaBR73Q/AKzK2pHMPvaVHfkSYylHJ4uhb2VI1kTwpMv6BetR8BNyyQJjc=
+X-Received: by 2002:ac8:5951:0:b0:403:96e3:4745 with SMTP id
+ 17-20020ac85951000000b0040396e34745mr749543qtz.20.1691484513351; Tue, 08 Aug
+ 2023 01:48:33 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH V4 1/4] arm_pmu: acpi: Refactor
- arm_spe_acpi_register_device()
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     yangyicong@huawei.com, Sami Mujawar <sami.mujawar@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-References: <20230808082247.383405-1-anshuman.khandual@arm.com>
- <20230808082247.383405-2-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20230808082247.383405-2-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CADVnQyn3UMa3Qx6cC1Rx97xLjQdG0eKsiF7oY9UR=b9vU4R-yA@mail.gmail.com>
+ <20230808055817.3979-1-me@manjusaka.me> <CANn89iKxJThy4ZVq4do6Z1bOZsRptfN6N8ydPaHQAmYKCjtOnw@mail.gmail.com>
+ <af02d2a9-4655-45a1-8c3a-d9921bfdbc35@manjusaka.me>
+In-Reply-To: <af02d2a9-4655-45a1-8c3a-d9921bfdbc35@manjusaka.me>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 8 Aug 2023 10:48:21 +0200
+Message-ID: <CANn89iKQXhqgOTkSchH6Bz-xH--pAoSyEORBtawqBTvgG+dFig@mail.gmail.com>
+Subject: Re: [PATCH v2] tracepoint: add new `tcp:tcp_ca_event` trace event
+To:     Manjusaka <me@manjusaka.me>
+Cc:     ncardwell@google.com, bpf@vger.kernel.org, davem@davemloft.net,
+        dsahern@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com, rostedt@goodmis.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-16.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/2023 09:22, Anshuman Khandual wrote:
-> Sanity checking all the GICC tables for same interrupt number, and ensuring
-> a homogeneous ACPI based machine, could be used for other platform devices
-> as well. Hence this refactors arm_spe_acpi_register_device() into a common
-> helper arm_acpi_register_pmu_device().
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Co-developed-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->   drivers/perf/arm_pmu_acpi.c | 105 ++++++++++++++++++++++--------------
->   1 file changed, 65 insertions(+), 40 deletions(-)
-> 
-> diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
-> index 90815ad762eb..72454bef2a70 100644
-> --- a/drivers/perf/arm_pmu_acpi.c
-> +++ b/drivers/perf/arm_pmu_acpi.c
-> @@ -69,6 +69,63 @@ static void arm_pmu_acpi_unregister_irq(int cpu)
->   		acpi_unregister_gsi(gsi);
->   }
->   
-> +static int __maybe_unused
-> +arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
-> +			     u16 (*parse_gsi)(struct acpi_madt_generic_interrupt *))
-> +{
-> +	int cpu, this_hetid, hetid, irq, ret;
-> +	u16 this_gsi, gsi = 0;
-> +
-> +	/*
-> +	 * Ensure that platform device must have IORESOURCE_IRQ
-> +	 * resource to hold gsi interrupt.
-> +	 */
-> +	if (pdev->num_resources != 1)
-> +		return -ENXIO;
-> +
-> +	if (pdev->resource[0].flags != IORESOURCE_IRQ)
-> +		return -ENXIO;
-> +
-> +	/*
-> +	 * Sanity check all the GICC tables for the same interrupt
-> +	 * number. For now, only support homogeneous ACPI machines.
-> +	 */
-> +	for_each_possible_cpu(cpu) {
-> +		struct acpi_madt_generic_interrupt *gicc;
-> +
-> +		gicc = acpi_cpu_get_madt_gicc(cpu);
-> +		if (gicc->header.length < len)
-> +			return gsi ? -ENXIO : 0;
-> +
-> +		this_gsi = parse_gsi(gicc);
-> +		if (!this_gsi)
-> +			return gsi ? -ENXIO : 0;
-> +
-> +		this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
-> +		if (!gsi) {
-> +			hetid = this_hetid;
-> +			gsi = this_gsi;
-> +		} else if (hetid != this_hetid || gsi != this_gsi) {
-> +			pr_warn("ACPI: %s: must be homogeneous\n", pdev->name);
-> +			return -ENXIO;
-> +		}
-> +	}
-> +
-> +	irq = acpi_register_gsi(NULL, gsi, ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_HIGH);
-> +	if (irq < 0) {
-> +		pr_warn("ACPI: %s Unable to register interrupt: %d\n", pdev->name, gsi);
-> +		return -ENXIO;
-> +	}
-> +
-> +	pdev->resource[0].start = irq;
-> +	ret = platform_device_register(pdev);
-> +	if (ret < 0) {
-> +		pr_warn("ACPI: %s: Unable to register device\n", pdev->name);
-> +		acpi_unregister_gsi(gsi);
-> +	}
-> +	return ret;
+On Tue, Aug 8, 2023 at 10:46=E2=80=AFAM Manjusaka <me@manjusaka.me> wrote:
+>
+>
+>
+> On 2023/8/8 16:26, Eric Dumazet wrote:
+> > On Tue, Aug 8, 2023 at 7:59=E2=80=AFAM Manjusaka <me@manjusaka.me> wrot=
+e:
+> >>
+> >> In normal use case, the tcp_ca_event would be changed in high frequenc=
+y.
+> >>
+> >> It's a good indicator to represent the network quanlity.
+> >
+> > quality ?
+> >
+> > Honestly, it is more about TCP stack tracing than 'network quality'
+> >
+> >>
+> >> So I propose to add a `tcp:tcp_ca_event` trace event
+> >> like `tcp:tcp_cong_state_set` to help the people to
+> >> trace the TCP connection status
+> >>
+> >> Signed-off-by: Manjusaka <me@manjusaka.me>
+> >> ---
+> >>  include/net/tcp.h          |  9 ++------
+> >>  include/trace/events/tcp.h | 45 +++++++++++++++++++++++++++++++++++++=
++
+> >>  net/ipv4/tcp_cong.c        | 10 +++++++++
+> >>  3 files changed, 57 insertions(+), 7 deletions(-)
+> >>
+> >> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> >> index 0ca972ebd3dd..a68c5b61889c 100644
+> >> --- a/include/net/tcp.h
+> >> +++ b/include/net/tcp.h
+> >> @@ -1154,13 +1154,8 @@ static inline bool tcp_ca_needs_ecn(const struc=
+t sock *sk)
+> >>         return icsk->icsk_ca_ops->flags & TCP_CONG_NEEDS_ECN;
+> >>  }
+> >>
+> >> -static inline void tcp_ca_event(struct sock *sk, const enum tcp_ca_ev=
+ent event)
+> >> -{
+> >> -       const struct inet_connection_sock *icsk =3D inet_csk(sk);
+> >> -
+> >> -       if (icsk->icsk_ca_ops->cwnd_event)
+> >> -               icsk->icsk_ca_ops->cwnd_event(sk, event);
+> >> -}
+> >> +/* from tcp_cong.c */
+> >> +void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event);
+> >>
+> >>  /* From tcp_cong.c */
+> >>  void tcp_set_ca_state(struct sock *sk, const u8 ca_state);
+> >> diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
+> >> index bf06db8d2046..b374eb636af9 100644
+> >> --- a/include/trace/events/tcp.h
+> >> +++ b/include/trace/events/tcp.h
+> >> @@ -416,6 +416,51 @@ TRACE_EVENT(tcp_cong_state_set,
+> >>                   __entry->cong_state)
+> >>  );
+> >>
+> >> +TRACE_EVENT(tcp_ca_event,
+> >> +
+> >> +       TP_PROTO(struct sock *sk, const u8 ca_event),
+> >> +
+> >> +       TP_ARGS(sk, ca_event),
+> >> +
+> >> +       TP_STRUCT__entry(
+> >> +               __field(const void *, skaddr)
+> >> +               __field(__u16, sport)
+> >> +               __field(__u16, dport)
+> >> +               __array(__u8, saddr, 4)
+> >> +               __array(__u8, daddr, 4)
+> >> +               __array(__u8, saddr_v6, 16)
+> >> +               __array(__u8, daddr_v6, 16)
+> >> +               __field(__u8, ca_event)
+> >> +       ),
+> >> +
+> >
+> > Please add the family (look at commit 3dd344ea84e1 ("net: tracepoint:
+> > exposing sk_family in all tcp:tracepoints"))
+> >
+> >
+> >
+> >> +       TP_fast_assign(
+> >> +               struct inet_sock *inet =3D inet_sk(sk);
+> >> +               __be32 *p32;
+> >> +
+> >> +               __entry->skaddr =3D sk;
+> >> +
+> >> +               __entry->sport =3D ntohs(inet->inet_sport);
+> >> +               __entry->dport =3D ntohs(inet->inet_dport);
+> >> +
+> >> +               p32 =3D (__be32 *) __entry->saddr;
+> >> +               *p32 =3D inet->inet_saddr;
+> >> +
+> >> +               p32 =3D (__be32 *) __entry->daddr;
+> >> +               *p32 =3D  inet->inet_daddr;
+> >
+> > We keep copying IPv4 addresses that might contain garbage for IPv6 sock=
+ets :/
+> >
+> >> +
+> >> +               TP_STORE_ADDRS(__entry, inet->inet_saddr, inet->inet_d=
+addr,
+> >> +                          sk->sk_v6_rcv_saddr, sk->sk_v6_daddr);
+> >
+> > I will send a cleanup, because IP_STORE_ADDRS() should really take
+> > care of all details.
+> >
+> >
+> >> +
+> >> +               __entry->ca_event =3D ca_event;
+> >> +       ),
+> >> +
+> >> +       TP_printk("sport=3D%hu dport=3D%hu saddr=3D%pI4 daddr=3D%pI4 s=
+addrv6=3D%pI6c daddrv6=3D%pI6c ca_event=3D%u",
+> >> +                 __entry->sport, __entry->dport,
+> >> +                 __entry->saddr, __entry->daddr,
+> >> +                 __entry->saddr_v6, __entry->daddr_v6,
+> >> +                 __entry->ca_event)
+> >
+> > Please print the symbol instead of numeric ca_event.
+> >
+> > Look at show_tcp_state_name() for instance.
+>
+> Thanks for the kindness code review, I still get some issue here(Sorry fo=
+r the first time to contribute):
+>
+> 1. > We keep copying IPv4 addresses that might contain garbage for IPv6 s=
+ockets :/
+>
+> I'm not getting your means, would you mean that we should only save the I=
+Pv4 Address here?
+>
+> 2. > I will send a cleanup, because IP_STORE_ADDRS() should really take c=
+are of all details.
+>
+> I think you will make the address assignment code in TP_fast_assign as a =
+new function.
+>
+> Should I submit the new change until you send the cleanup patch or I can =
+make this in my patch(cleanup the address assignment)
+>
 
-A postivie return value here could confuse the caller. Also, with my 
-comment below, we don't really need to return something from here.
-
-
-> +}
-> +
->   #if IS_ENABLED(CONFIG_ARM_SPE_PMU)
->   static struct resource spe_resources[] = {
->   	{
-> @@ -84,6 +141,11 @@ static struct platform_device spe_dev = {
->   	.num_resources = ARRAY_SIZE(spe_resources)
->   };
->   
-> +static u16 arm_spe_parse_gsi(struct acpi_madt_generic_interrupt *gicc)
-> +{
-> +	return gicc->spe_interrupt;
-> +}
-> +
->   /*
->    * For lack of a better place, hook the normal PMU MADT walk
->    * and create a SPE device if we detect a recent MADT with
-> @@ -91,47 +153,10 @@ static struct platform_device spe_dev = {
->    */
->   static void arm_spe_acpi_register_device(void)
->   {
-> -	int cpu, hetid, irq, ret;
-> -	bool first = true;
-> -	u16 gsi = 0;
-> -
-> -	/*
-> -	 * Sanity check all the GICC tables for the same interrupt number.
-> -	 * For now, we only support homogeneous ACPI/SPE machines.
-> -	 */
-> -	for_each_possible_cpu(cpu) {
-> -		struct acpi_madt_generic_interrupt *gicc;
-> -
-> -		gicc = acpi_cpu_get_madt_gicc(cpu);
-> -		if (gicc->header.length < ACPI_MADT_GICC_SPE)
-> -			return;
-> -
-> -		if (first) {
-> -			gsi = gicc->spe_interrupt;
-> -			if (!gsi)
-> -				return;
-> -			hetid = find_acpi_cpu_topology_hetero_id(cpu);
-> -			first = false;
-> -		} else if ((gsi != gicc->spe_interrupt) ||
-> -			   (hetid != find_acpi_cpu_topology_hetero_id(cpu))) {
-> -			pr_warn("ACPI: SPE must be homogeneous\n");
-> -			return;
-> -		}
-> -	}
-> -
-> -	irq = acpi_register_gsi(NULL, gsi, ACPI_LEVEL_SENSITIVE,
-> -				ACPI_ACTIVE_HIGH);
-> -	if (irq < 0) {
-> -		pr_warn("ACPI: SPE Unable to register interrupt: %d\n", gsi);
-> -		return;
-> -	}
-> -
-> -	spe_resources[0].start = irq;
-> -	ret = platform_device_register(&spe_dev);
-> -	if (ret < 0) {
-> +	int ret = arm_acpi_register_pmu_device(&spe_dev, ACPI_MADT_GICC_SPE,
-> +					       arm_spe_parse_gsi);
-> +	if (ret)
->   		pr_warn("ACPI: SPE: Unable to register device\n");
-
-With this change, a system without SPE interrupt description always
-generates the above message. Is this intended ? Could we not drop
-the above message as all the other possible error scenarios are
-reported. We could simply make the above helper void, see my comment
-above.
-
-Suzuki
-
-> -		acpi_unregister_gsi(gsi);
-> -	}
->   }
->   #else
->   static inline void arm_spe_acpi_register_device(void)
-
+Wait a bit, I am sending fixes today, so that no more copy/paste
+duplicates the issues.
