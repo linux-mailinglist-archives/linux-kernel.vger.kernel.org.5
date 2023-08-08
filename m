@@ -2,68 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D96774E19
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 00:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB4C774E29
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 00:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbjHHWPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 18:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42992 "EHLO
+        id S229567AbjHHWUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 18:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbjHHWPg (ORCPT
+        with ESMTP id S229379AbjHHWUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 18:15:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53DFE51
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 15:15:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 61FC962DA5
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 22:15:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 552F0C433C7;
-        Tue,  8 Aug 2023 22:15:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691532934;
-        bh=hlPqlxQlzDRRFtRMjpUQOwGvFZHg26ls07TFrTzOkS4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oR74k4cd44FBGrLFr9vZeD3tpDrOcq+PEeiPlDZFqLMwYXY2AHmKyOznht5KNXzt0
-         SXUfqZ3ACCn4/lfvCrMebxupp8pVFwgmpAn16mbTkk4HHh0aeXOfBBrftQys9qNave
-         zvCjvum6C7AI3j0PNTibQpt72FedazM+qREJQ7VQS7zsbwX6pFyWmwm7n3r7wEJE2l
-         fTrAtA1hNMDOuSHQhGKYjaqf7bmGj+TeDQIyW4KZpG8TfUwfjKdIjIJtdFx3yAJq9q
-         LP3zxxfCBvCARxPGWzDExD0atbc5xGS6ZY5iXNGd2p6/i2mYDL9rEXVdTEC91HktgC
-         M5X/Vr8bQCpsQ==
-Date:   Tue, 8 Aug 2023 15:15:33 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Suman Ghosh <sumang@marvell.com>
-Cc:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lcherian@marvell.com>, <jerinj@marvell.com>
-Subject: Re: [net PATCH 2/3] octeontx2-pf: Fix PFC TX scheduler free
-Message-ID: <20230808151533.3085f5f6@kernel.org>
-In-Reply-To: <20230808112708.3179218-3-sumang@marvell.com>
-References: <20230808112708.3179218-1-sumang@marvell.com>
-        <20230808112708.3179218-3-sumang@marvell.com>
+        Tue, 8 Aug 2023 18:20:17 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B4B3E51;
+        Tue,  8 Aug 2023 15:20:16 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 378LZTRW029920;
+        Tue, 8 Aug 2023 22:20:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=cFeiFE2bQfneo08sZXmlU4rceVOiF8lAvMflFgghSYA=;
+ b=Y772qmAOwTyZstHjqkN+PrUhINNK90g4y/szR1XSVqKCa1qL57ZlpfkS3AZMjcRt0gBm
+ SKJ3VRTjYD+lavIPP+379Ofqa2c47I9Hbc3Du3Vfnc1I+YIrYqC+RYicgSVn0Y+T5Y7H
+ qFD0OsbyARiH4NB7fEk+gPyK7S0pq/wO6IUexzuXqmOvwUaivIIX1QI7SEHMBkGFJi7Z
+ YQ5FeYYSf03RHxg87hF6ggs3k98FLhzR6Ju8bqEpe6LDkzL1ZelpXluukAkQScFwftqG
+ I+0vuvaqdxdhlnhP/APT9XM69yD5LMZZLvqXHNTYXp8jK1JD4HuoPzscv0t6Qs4p0nTh yA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sbe15t3gv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Aug 2023 22:20:05 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 378MK3nH008405
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 8 Aug 2023 22:20:03 GMT
+Received: from khsieh-linux1.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 8 Aug 2023 15:20:03 -0700
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+To:     <robdclark@gmail.com>, <sean@poorly.run>, <swboyd@chromium.org>,
+        <dianders@chromium.org>, <vkoul@kernel.org>, <daniel@ffwll.ch>,
+        <airlied@gmail.com>, <agross@kernel.org>,
+        <dmitry.baryshkov@linaro.org>, <andersson@kernel.org>,
+        <marijn.suijten@somainline.org>
+CC:     <quic_abhinavk@quicinc.com>, <quic_khsieh@quicinc.com>,
+        <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
+        <freedreno@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] drm/msm/dp: do not reinitialize phy unless retry during link training
+Date:   Tue, 8 Aug 2023 15:19:50 -0700
+Message-ID: <1691533190-19335-1-git-send-email-quic_khsieh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: gzQp3bhUOOE8cT_5_rB7aYq3h0djoRF9
+X-Proofpoint-ORIG-GUID: gzQp3bhUOOE8cT_5_rB7aYq3h0djoRF9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-08_20,2023-08-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=902 spamscore=0
+ lowpriorityscore=0 mlxscore=0 adultscore=0 suspectscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 clxscore=1011 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308080199
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Aug 2023 16:57:07 +0530 Suman Ghosh wrote:
-> +	for (lvl = 0; lvl < pfvf->hw.txschq_link_cfg_lvl; lvl++)
-> +		otx2_txschq_free_one(pfvf, lvl,
-> +				     pfvf->pfc_schq_list[lvl][prio]);
+DP PHY re-initialization done using dp_ctrl_reinitialize_mainlink() will
+cause PLL unlocked initially and then PLL gets locked at the end of
+initialization. PLL_UNLOCKED interrupt will fire during this time if the
+interrupt mask is enabled.
+However currently DP driver link training implementation incorrectly
+re-initializes PHY unconditionally during link training as the PHY was
+already configured in dp_ctrl_enable_mainlink_clocks().
 
+Fix this by re-initializing the PHY only if the previous link training
+failed.
 
-ERROR: modpost: "otx2_txschq_free_one" [drivers/net/ethernet/marvell/octeontx2/nic/rvu_nicvf.ko] undefined!
+[drm:dp_aux_isr] *ERROR* Unexpected DP AUX IRQ 0x01000000 when not busy
+
+Fixes: c943b4948b58 ("drm/msm/dp: add displayPort driver support")
+Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/30
+Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+---
+ drivers/gpu/drm/msm/dp/dp_ctrl.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index a7a5c7e..77a8d93 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1774,13 +1774,6 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+ 		return rc;
+ 
+ 	while (--link_train_max_retries) {
+-		rc = dp_ctrl_reinitialize_mainlink(ctrl);
+-		if (rc) {
+-			DRM_ERROR("Failed to reinitialize mainlink. rc=%d\n",
+-					rc);
+-			break;
+-		}
+-
+ 		training_step = DP_TRAINING_NONE;
+ 		rc = dp_ctrl_setup_main_link(ctrl, &training_step);
+ 		if (rc == 0) {
+@@ -1832,6 +1825,12 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+ 			/* stop link training before start re training  */
+ 			dp_ctrl_clear_training_pattern(ctrl);
+ 		}
++
++		rc = dp_ctrl_reinitialize_mainlink(ctrl);
++		if (rc) {
++			DRM_ERROR("Failed to reinitialize mainlink. rc=%d\n", rc);
++			break;
++		}
+ 	}
+ 
+ 	if (ctrl->link->sink_request & DP_TEST_LINK_PHY_TEST_PATTERN)
 -- 
-pw-bot: cr
+2.7.4
+
