@@ -2,173 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4203B7749B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E347749B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbjHHUAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
+        id S229564AbjHHUBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233633AbjHHUAe (ORCPT
+        with ESMTP id S233439AbjHHUAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:00:34 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8231F783E5
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 11:15:27 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d4ab043a856so4070654276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 11:15:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691518527; x=1692123327;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=++mpSQJ+mJn1Llix5TblC7hjUvrlCzptkSAClKDtJeM=;
-        b=G3OtkHTIKagYcq4Hh6klbBBg9XDvPJTDhiP2DKayzZrlKiY4z6n03F4p7aFg5l7dAN
-         BSc9/GLfbrfbsla9Lz2gWtlB56KkKUYTKs2bpQjGJ2R8cjlXrDO9yLnQlhAN2MMT22VF
-         RTC1Hqy2CU/1Hlrsp69JwKN0imviROiGvsiyrxyCfBQTK6x/3h0QY+vWVVeUrG/9z2YK
-         N5WbMAbizxNdQJ+NUTqJLYZU3Og67KlXNqwuf9N+bBFOZ3LrvT4JHakGQD5ipFbX599R
-         xt0yPOLFjRaqpHdiqhrX/XDohLLrIhfvLhlJVTCpt3a1SMb9xYiHNJ4YpqWAJEJ5J8Oe
-         PSQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691518527; x=1692123327;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=++mpSQJ+mJn1Llix5TblC7hjUvrlCzptkSAClKDtJeM=;
-        b=IfotFTGwYjNEj54HFNC2ZQ/NeUtDamYDFIsA8ZKWCDA085I7LLPSuy2BZVTGl3LV7U
-         NvEIbcUjdVAW4Mlxlxai9us+hNDGWrd/a6OSq2RZsBlBBkJF+iwGiJwRQvE76Mz9sGfh
-         MZhY0QYW9+hLGFkPB+IgjvTUVVJZWm7npY4HSm6+AlapUE8TjhEMNxyLxSfbE0PJIDzb
-         kU4+E/wzujtNAIDzLSvP8Nnjl8XW7fzIcLfhV2vVptBUfIsP+Pn5L9MWBsHRc2P9jFCW
-         QK7Qwg92iwl0XgbMlDnxWf+88HBuGOfOoHz91543aLZlQCXlMHmly4bEdX/m+YZ71N5N
-         MVoA==
-X-Gm-Message-State: AOJu0Yyjbr5lh+Db0yPgykCcYDDedjLzmVDJM77jJog9mz+zwyCqLXc0
-        IpxZb+3pG6W+/uKw0K3kk/bdzEGYqTYIUWxfpvM=
-X-Google-Smtp-Source: AGHT+IE3MGEXN7ItXl+piiGaEJGZkqQqvLuCBrx7bsnL2sCaX7FxIRR2YFPtOsHjhD2OjzUumMdVKWM0ziJJ8J2OScU=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:cc03:38d0:9718:e90b])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6902:181c:b0:d40:932e:f7b1 with
- SMTP id cf28-20020a056902181c00b00d40932ef7b1mr6558ybb.7.1691518526803; Tue,
- 08 Aug 2023 11:15:26 -0700 (PDT)
-Date:   Tue, 08 Aug 2023 11:15:24 -0700
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIADuG0mQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDCwML3dLc+IqS1KJcXQvzZAPDJAuguJGZElB5QVFqWmYF2Kjo2NpaAII KUV1aAAAA
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691518525; l=3445;
- i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
- bh=9XjxFoK6lbzNOvJ7p7D8sDLgGVp84//wBryTl/745d4=; b=2cBqCA5rJKD2OhqHWbQ18ZQgxbsIiae9vJN9MGnIluSnQNsC1LXgmSBJXB+nh/4nJ+RF0x8e2
- /O0cikkGsk3Ca1A6fTdsWdYtE5hKXvy2eWTlvTWhW4j8Ac7a2tHMCMT
-X-Mailer: b4 0.12.3
-Message-ID: <20230808-um_xterm-v1-1-f326e441e47f@google.com>
-Subject: [PATCH] um: fix 3 instances of -Wmissing-prototypes
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>
-Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 16:00:52 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809AF1E4EE;
+        Tue,  8 Aug 2023 11:16:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1691518568;
+        bh=omhrzCL2M1egS/LGQ2Ddjwn7iTzvxQN3JaA541Bt+h4=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=DtFDUjdg7qy0+JERnJJCZ7OMhocCBZSbmvSYK8fPvu/quZd1hwa+MOygYsgp9DQgl
+         NG7FgEBf60FWcYn2c7ticQ/9pF09m0jgTy6oKflqhUn2AaMHFX4sIxgljb8a4Z9IzR
+         UMpVGBDOAhHwW8b7xQwu772yH6yNG9Z+7KlGe+CY=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 065421281B19;
+        Tue,  8 Aug 2023 14:16:08 -0400 (EDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id gGeJ4qvip3P7; Tue,  8 Aug 2023 14:16:07 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1691518567;
+        bh=omhrzCL2M1egS/LGQ2Ddjwn7iTzvxQN3JaA541Bt+h4=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=f0ccHe6cJqUxsmc3E8FIHyLOcxTMP0Ayr1dyYPZ2ABbzsvJPMPxnbZLF0+psOCSS9
+         7Xlh5908qpFFLG7filZQ6KbwjuryxtSAuRYx9LVbJWak1Hbe3J812m9CHrz0D15FtK
+         Pj/Rtek2qdqrG+34aS34wEiXRYY3dJhLex5QJwbY=
+Received: from [IPv6:2601:5c4:4302:c21::a774] (unknown [IPv6:2601:5c4:4302:c21::a774])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 8A72D12819D2;
+        Tue,  8 Aug 2023 14:16:06 -0400 (EDT)
+Message-ID: <f95d75c513c081d5bb8b5d1fd3b0a5d5e24ab467.camel@HansenPartnership.com>
+Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation
+ reports
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Dionna Amalie Glaze <dionnaglaze@google.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>, dhowells@redhat.com,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Samuel Ortiz <sameo@rivosinc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 08 Aug 2023 14:16:04 -0400
+In-Reply-To: <CAAH4kHamob7g_+BRd0JW76cM7_vS=jzXzRjrgCPDxZ29VnzdCQ@mail.gmail.com>
+References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
+         <a507ef3302d3afff58d82528ee17e82df1f21de0.camel@HansenPartnership.com>
+         <64c5ed6eb4ca1_a88b2942a@dwillia2-xfh.jf.intel.com.notmuch>
+         <c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com>
+         <64cdb5f25c56_2138e294f1@dwillia2-xfh.jf.intel.com.notmuch>
+         <1180481830431165d49c5e64b92b81c396ebc9b1.camel@HansenPartnership.com>
+         <64d17f5728fbc_5ea6e2943f@dwillia2-xfh.jf.intel.com.notmuch>
+         <c7d6e953a4b36014ea0c7406531b24bb29d6127e.camel@HansenPartnership.com>
+         <2425e00b-defb-c12b-03e5-c3d23b30be01@linux.intel.com>
+         <64d263e44e401_2138e29486@dwillia2-xfh.jf.intel.com.notmuch>
+         <CAAH4kHamob7g_+BRd0JW76cM7_vS=jzXzRjrgCPDxZ29VnzdCQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following build errors observed from W=1 builds:
-  arch/um/drivers/xterm_kern.c:35:5: warning: no previous prototype for
-  function 'xterm_fd' [-Wmissing-prototypes]
-  35 | int xterm_fd(int socket, int *pid_out)
-     |     ^
-  arch/um/drivers/xterm_kern.c:35:1: note: declare 'static' if the
-  function is not intended to be used outside of this translation unit
-  35 | int xterm_fd(int socket, int *pid_out)
-     | ^
-     | static
-  arch/um/drivers/chan_kern.c:183:6: warning: no previous prototype for
-  function 'free_irqs' [-Wmissing-prototypes]
-  183 | void free_irqs(void)
-      |      ^
-  arch/um/drivers/chan_kern.c:183:1: note: declare 'static' if the
-  function is not intended to be used outside of this translation unit
-  183 | void free_irqs(void)
-      | ^
-      | static
-  arch/um/drivers/slirp_kern.c:18:6: warning: no previous prototype for
-  function 'slirp_init' [-Wmissing-prototypes]
-  18 | void slirp_init(struct net_device *dev, void *data)
-     |      ^
-  arch/um/drivers/slirp_kern.c:18:1: note: declare 'static' if the
-  function is not intended to be used outside of this translation unit
-  18 | void slirp_init(struct net_device *dev, void *data)
-     | ^
-     | static
+On Tue, 2023-08-08 at 09:07 -0700, Dionna Amalie Glaze wrote:
+> > 
+> > At least that was not the level of concurrency I was worried about.
+> > The sysfs approach makes it so that concurrency problem of
+> > option-writing vs report-reading is pushed to userspace.
+> > 
+> 
+> The reason I would advocate against making attestation report
+> collection single-threaded in user space at a machine level is that
+> there are new schemes of attested connections that may become the
+> basis of server handshakes. I think folks are mainly looking at this
+> from the use case of
+> 
+> 1. workload will do large amounts of work on behalf of the VM owner,
+> provided it gets a sealing key released by the VM owner once on boot
+> after proving its code identity
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202308081050.sZEw4cQ5-lkp@intel.com/
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- arch/um/drivers/slirp_kern.c      | 2 +-
- arch/um/drivers/xterm_kern.c      | 1 +
- arch/um/include/shared/irq_kern.h | 1 +
- arch/um/kernel/irq.c              | 2 --
- 4 files changed, 3 insertions(+), 3 deletions(-)
+Right, that's the case for boot time attestation.
 
-diff --git a/arch/um/drivers/slirp_kern.c b/arch/um/drivers/slirp_kern.c
-index 2d9769237f08..0a6151ee9572 100644
---- a/arch/um/drivers/slirp_kern.c
-+++ b/arch/um/drivers/slirp_kern.c
-@@ -15,7 +15,7 @@ struct slirp_init {
- 	struct arg_list_dummy_wrapper argw;  /* XXX should be simpler... */
- };
- 
--void slirp_init(struct net_device *dev, void *data)
-+static void slirp_init(struct net_device *dev, void *data)
- {
- 	struct uml_net_private *private;
- 	struct slirp_data *spri;
-diff --git a/arch/um/drivers/xterm_kern.c b/arch/um/drivers/xterm_kern.c
-index 50f11b7b4774..8011e51993d5 100644
---- a/arch/um/drivers/xterm_kern.c
-+++ b/arch/um/drivers/xterm_kern.c
-@@ -9,6 +9,7 @@
- #include <asm/irq.h>
- #include <irq_kern.h>
- #include <os.h>
-+#include "xterm.h"
- 
- struct xterm_wait {
- 	struct completion ready;
-diff --git a/arch/um/include/shared/irq_kern.h b/arch/um/include/shared/irq_kern.h
-index f2dc817abb7c..44357fa6ee29 100644
---- a/arch/um/include/shared/irq_kern.h
-+++ b/arch/um/include/shared/irq_kern.h
-@@ -76,4 +76,5 @@ static inline bool um_irq_timetravel_handler_used(void)
- }
- 
- void um_free_irq(int irq, void *dev_id);
-+void free_irqs(void);
- #endif
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index a8873d9bc28b..635d44606bfe 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -23,8 +23,6 @@
- #include <linux/time-internal.h>
- 
- 
--extern void free_irqs(void);
--
- /* When epoll triggers we do not know why it did so
-  * we can also have different IRQs for read and write.
-  * This is why we keep a small irq_reg array for each fd -
+> however I'm thinking of the case of a more user-centric use case that
+> enables service users to challenge for proof of workload identity
+> 
+> 2. workload is a server that accepts incoming connections that
+> include a hardware attestation challenge. It generates an attestation
+> report that includes the challenge as part of the connection
+> handshake
 
----
-base-commit: 14f9643dc90adea074a0ffb7a17d337eafc6a5cc
-change-id: 20230808-um_xterm-87c01b802326
+Isn't this more runtime attestation?  In which case you wouldn't use
+the boot report.  I assume someone somewhere is hacking the TPM-TLS
+protocol to also do RTMRs, but it strikes me we could just use a vTPM
+and the existing protocols.
 
-Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
+Even if you don't do anything as complex as TPM-TLS (and continuing
+runtime attestation), you can still make TLS conditioned on a private
+key released after a successful boot time attestation.  Since the boot
+evidence never changes, there's not much point doing it on each
+connection, so relying on a private key conditioned on boot evidence is
+just as good.
+
+James
 
