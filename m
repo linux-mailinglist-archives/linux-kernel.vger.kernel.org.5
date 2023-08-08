@@ -2,128 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C26E7740B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44705774257
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234020AbjHHRID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51280 "EHLO
+        id S232276AbjHHRm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234110AbjHHRHQ (ORCPT
+        with ESMTP id S229740AbjHHRlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:07:16 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959AE1BC3;
-        Tue,  8 Aug 2023 09:02:57 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3FF9421C09;
-        Tue,  8 Aug 2023 10:05:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691489158; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cOTJYjkBLnwjV/lxEVtUyReuFAMisDvl/3KW3rcsa80=;
-        b=RYwrn0fdjwhhRR7l27SfhU6sEIZlfDKsRmqY6BlBC/mbMQlEPGtvhbIdRr7h8egn/oN8yh
-        Oz6U9UuTleHENrCE1avR3NSOn0guqcLSLu7iBXijjb70nxn/BQDxhjUWhk7QvvA5/v4PB8
-        VNLrqst7KIs78O2ejOjXiqcNSNVttFQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691489158;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cOTJYjkBLnwjV/lxEVtUyReuFAMisDvl/3KW3rcsa80=;
-        b=3BwMkd6c3zAZ5/EGX3xW7irKJimW+k7SoacxDa/XvD8/WW5BAqfXsGAeW7PnSgHdphBpnB
-        7inqEIuyeW8nM7Cw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2554713451;
-        Tue,  8 Aug 2023 10:05:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9iarCIYT0mRwKwAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 10:05:58 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 9F18AA0769; Tue,  8 Aug 2023 12:05:57 +0200 (CEST)
-Date:   Tue, 8 Aug 2023 12:05:57 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 13/13] btrfs: convert to multigrain timestamps
-Message-ID: <20230808100557.dowlxz2destpseqr@quack3>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-13-d1dec143a704@kernel.org>
+        Tue, 8 Aug 2023 13:41:31 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB817238DE
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:18:19 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b9b6e943ebso82417961fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:18:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1691511458; x=1692116258;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BGR/FDAz6QwzMVqhMqlOHMf82ldcSZKkfY2QM99zIzc=;
+        b=OWmQrDL43R8nWBDtpJnlnxbVW7stxMSEXZOdVNSQn7ppLbA2weFLvS1eA8/7TmdBIY
+         5/9MaeHT7MCY3VBDQC3Dw1VeTSV5XtxpFFBnn722R7WP3SaTFSMB6gH6umfbEs9awCKA
+         Juul7kT3NPkHV7k1VjQ7xwv4ORAKOSQLWOClrJ+ipA+0w5J9j0Q6+VF/bKaM5l0wj2h5
+         uoXu41bLRJURMvu9XPu1+/u6p1ML+yI8/QySb/8b91x5s0CpjQUl1knBgRQ+gfGOqIVk
+         NCbttj9taJaYin5fKIWeIaLPRMu5SQtLiLPU/YDpu0UZ8LMSZ3O6koZldVTWw7fIWr8V
+         /UkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691511458; x=1692116258;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BGR/FDAz6QwzMVqhMqlOHMf82ldcSZKkfY2QM99zIzc=;
+        b=bzaBP/ybJylafUUu3PAtLpNonYXKY2c2yJVGNPE7K8mmi5G+PiEoTtdzO1UmD+kAXx
+         5rfuoF0zQ2IRbtliuiTwLOc+YROU4HfIYdCbSBOkVQbWZDOD1GtQLiI4hGwtZorO/++T
+         G5k6WNF7+dgxfKwwm1oYNStb3SUOeid2LyDwyggEMXYLd5h2R/tpRyCodKQI2iBGsTIi
+         lB2kCW3VpBO+lAuGz3bNRen7usqRvmxLeC0OSjt6rMe7/gnLJGD4Pk95MHbfrsZ5KU1s
+         XBZhwfh+pTBws0btFANfjyEtZfDzAluBmWymxBnOJEvKbQyFkJ6skihnMydHbx4pviUx
+         teyw==
+X-Gm-Message-State: AOJu0YyYfn0mhstjQQStyTBCPPhNGG6FC7x2oiclPI5XDgmiArq+lHXT
+        Mm8D6ZDLKnxrFodcKtvyOYGMwAp3NzJOWUaAPbk=
+X-Google-Smtp-Source: AGHT+IFzDPeVzQZoYJKpnuTnwP9ABSYbuSXkjD6PnqoZvzUu25vMVnUvTGUH/D3RmOCcWmeDluW3cg==
+X-Received: by 2002:adf:f984:0:b0:313:e391:e492 with SMTP id f4-20020adff984000000b00313e391e492mr7187996wrr.17.1691489278679;
+        Tue, 08 Aug 2023 03:07:58 -0700 (PDT)
+Received: from toaster.lan ([2a01:e0a:3c5:5fb1:efd4:f3df:2c50:1776])
+        by smtp.googlemail.com with ESMTPSA id e11-20020a5d500b000000b003143c9beeaesm13109420wrt.44.2023.08.08.03.07.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 03:07:58 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>, Da Xue <da@libre.computer>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] usb: misc: onboard_usb_hub: add gl3510 support
+Date:   Tue,  8 Aug 2023 12:07:44 +0200
+Message-Id: <20230808100746.391365-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807-mgctime-v7-13-d1dec143a704@kernel.org>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,98 +73,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 07-08-23 15:38:44, Jeff Layton wrote:
-> Enable multigrain timestamps, which should ensure that there is an
-> apparent change to the timestamp whenever it has been written after
-> being actively observed via getattr.
-> 
-> Beyond enabling the FS_MGTIME flag, this patch eliminates
-> update_time_for_write, which goes to great pains to avoid in-memory
-> stores. Just have it overwrite the timestamps unconditionally.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> Acked-by: David Sterba <dsterba@suse.com>
+This patchset adds the bindings and driver support to trigger the reset
+pin of the Genesys Logic gl3510 usb hub.
 
-Looks good to me. Feel free to add:
+Jerome Brunet (2):
+  dt-bindings: usb: add device for Genesys Logic hub gl3510
+  usb: misc: onboard_usb_hub: add Genesys Logic gl3510 hub support
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+ Documentation/devicetree/bindings/usb/genesys,gl850g.yaml | 3 ++-
+ drivers/usb/misc/onboard_usb_hub.h                        | 5 +++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-								Honza
-
-> ---
->  fs/btrfs/file.c  | 24 ++++--------------------
->  fs/btrfs/super.c |  5 +++--
->  2 files changed, 7 insertions(+), 22 deletions(-)
-> 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index d7a9ece7a40b..b9e75c9f95ac 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -1106,25 +1106,6 @@ void btrfs_check_nocow_unlock(struct btrfs_inode *inode)
->  	btrfs_drew_write_unlock(&inode->root->snapshot_lock);
->  }
->  
-> -static void update_time_for_write(struct inode *inode)
-> -{
-> -	struct timespec64 now, ctime;
-> -
-> -	if (IS_NOCMTIME(inode))
-> -		return;
-> -
-> -	now = current_time(inode);
-> -	if (!timespec64_equal(&inode->i_mtime, &now))
-> -		inode->i_mtime = now;
-> -
-> -	ctime = inode_get_ctime(inode);
-> -	if (!timespec64_equal(&ctime, &now))
-> -		inode_set_ctime_to_ts(inode, now);
-> -
-> -	if (IS_I_VERSION(inode))
-> -		inode_inc_iversion(inode);
-> -}
-> -
->  static int btrfs_write_check(struct kiocb *iocb, struct iov_iter *from,
->  			     size_t count)
->  {
-> @@ -1156,7 +1137,10 @@ static int btrfs_write_check(struct kiocb *iocb, struct iov_iter *from,
->  	 * need to start yet another transaction to update the inode as we will
->  	 * update the inode when we finish writing whatever data we write.
->  	 */
-> -	update_time_for_write(inode);
-> +	if (!IS_NOCMTIME(inode)) {
-> +		inode->i_mtime = inode_set_ctime_current(inode);
-> +		inode_inc_iversion(inode);
-> +	}
->  
->  	start_pos = round_down(pos, fs_info->sectorsize);
->  	oldsize = i_size_read(inode);
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index f1dd172d8d5b..8eda51b095c9 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -2144,7 +2144,7 @@ static struct file_system_type btrfs_fs_type = {
->  	.name		= "btrfs",
->  	.mount		= btrfs_mount,
->  	.kill_sb	= btrfs_kill_super,
-> -	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA,
-> +	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA | FS_MGTIME,
->  };
->  
->  static struct file_system_type btrfs_root_fs_type = {
-> @@ -2152,7 +2152,8 @@ static struct file_system_type btrfs_root_fs_type = {
->  	.name		= "btrfs",
->  	.mount		= btrfs_mount_root,
->  	.kill_sb	= btrfs_kill_super,
-> -	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA | FS_ALLOW_IDMAP,
-> +	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA |
-> +			  FS_ALLOW_IDMAP | FS_MGTIME,
->  };
->  
->  MODULE_ALIAS_FS("btrfs");
-> 
-> -- 
-> 2.41.0
-> 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.40.1
+
