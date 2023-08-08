@@ -2,165 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9422F7745A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87809774675
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbjHHSoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
+        id S229958AbjHHS5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233528AbjHHSoN (ORCPT
+        with ESMTP id S230390AbjHHS4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:44:13 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5CC44808
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:43:14 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58473c4f629so68638127b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691512992; x=1692117792;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OBiU5cpEymtSFa0lJKPFUvBh/2b8Gf4WF5QO44qLmLU=;
-        b=5p7S+cLnEHd/fXCmhE+uQ/kiLmkMXjGinO6FUB18zkN6dfsuuG1McKRj3ZAg6NxW66
-         jDjHe/hPVjGqq+EZGuFhiMF/oL6bFNJAqmaEMLy2KgxcdEobwXBl7MTwj4MYqUCtCnuO
-         kBAQoPTu7rsyD9UsNRnK4elMl73GZldAivfgdXvmrDH0UUhjwHzZuehUhryIccUswFoq
-         rtFN9pQMWqLZVAM3RGmuoYM5SYGYK92g8IaDPahxvKehy/aHRz0CD9MGlQPBYpUPaWYI
-         wcXKWYXO3MIMv6KrigQwwzVR7rxwYzWhdJG+d7/Y6SLxjgoWpvVa+++K5zHdf1FOG33V
-         4oNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691512992; x=1692117792;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OBiU5cpEymtSFa0lJKPFUvBh/2b8Gf4WF5QO44qLmLU=;
-        b=LZvUosmgmeaXL+7vCyPYAdgRLndHBSgmiVzcwQMOXXRiwHFB/o1I7yOOx6DTVV+8G7
-         V9IVouAPq3sTzEUxQBCrLEdxinwvrcLmI2EEp9KrW01XZfZgHN3NUYn7rXKD534mistu
-         OaKfQ1OSnnc3//9Ireqi+hEGmJmrvauRL2fisox7xAf5//zfR0eEH+slwUf+R9PwJuZV
-         NbfqSNX8VDUHU5Xr+E46fmt9nxX7VRgmjhOK26Ex/EMOsMYdgPRyjD1Xg+cO5jT17In+
-         JKCKA+IhFBPnHZEP7pGmEtFlk1DU3iSNmwKCbhsrwSg7INPSz3mnF7JIf0OgjNNfBkeD
-         z34w==
-X-Gm-Message-State: AOJu0YzzQNxkPYd4ubdz3FNW+sseshmA+QXhMUQd+pDbx3K4UkzzWhTQ
-        9jYMICTuuFAIRPXGC0LR+/5cH8Hw45Gj9xsvmws=
-X-Google-Smtp-Source: AGHT+IGjuJqezd5qjQwP0YWEA1rZcmYCDvPAP6MuVBFDZpSKoy0gNLyehpvsSCwku5oYFzZCna0CwimGyjH3LDhA6Ik=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:cc03:38d0:9718:e90b])
- (user=ndesaulniers job=sendgmr) by 2002:a25:6884:0:b0:d18:73fc:40af with SMTP
- id d126-20020a256884000000b00d1873fc40afmr1538ybc.5.1691512992070; Tue, 08
- Aug 2023 09:43:12 -0700 (PDT)
-Date:   Tue, 08 Aug 2023 09:43:09 -0700
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAJxw0mQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDCwML3Zyc5PjiksSSzGTdlFSTlJSU5GQzkyQTJaCGgqLUtMwKsGHRsbW 1AMp0+6FcAAAA
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691512990; l=3123;
- i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
- bh=ULYFBK9Xx9ov9cv3SaccplqC+dWtT9P4vNAPt+juZOk=; b=x3UcI6Ljs8gOpumBOkSLWbhNNjNfVFpG3MxM6+CcDUZTVSmRzfTmK5ZgiH48jbyCoaoSfPddQ
- sZe5t5A5r1TA2xyN5chFck1l3DgqFYfntxS8aG4Ao5mKH4wSurIR0ad
-X-Mailer: b4 0.12.3
-Message-ID: <20230808-llc_static-v1-1-c140c4c297e4@google.com>
-Subject: [PATCH] net/llc/llc_conn.c: fix 4 instances of -Wmissing-variable-declarations
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, kernel test robot <lkp@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Tue, 8 Aug 2023 14:56:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057E01D076;
+        Tue,  8 Aug 2023 10:15:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691514946; x=1723050946;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=2vauG+Tm5WOPqr7zJ++yCpHzBMQARl7yEq4Gfbv/45M=;
+  b=YzX62U2Ubl7OqLwG8cuvkY6KGiVyoSWasnj4AMchKY+fQXzRggb/j2+e
+   th3RLKj0BauXcVo1BK0QGyNJIm5koKlbjbzMpPvBI13DMCw4bvErFXQCH
+   UsiHwNsOMiweqgBza/wYikhMLG6+0WLag/Jy/U5vg+uWCwxVC9HFTRLS2
+   64sOEsXGdMbCuID0rLoUtnki7xqj1wsM5GQKJyN6xCsM0nx2BrJ7VF1UA
+   qNm6PAHKuLlpmJHST/LQrBZvyBRAucKg0PW6eDHcoH7b8Qg+gczujT1V4
+   L8L2eYpihh45/00F8jS1L1yqr9vxuMsZM5Z3E+HfNSIsiKeAvzcCTbiz5
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="374575837"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="374575837"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 09:43:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="855146884"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="855146884"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga004.jf.intel.com with ESMTP; 08 Aug 2023 09:43:21 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 8 Aug 2023 09:43:20 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 8 Aug 2023 09:43:20 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 8 Aug 2023 09:43:20 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.103)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 8 Aug 2023 09:43:20 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UPHiidA2WjOn4JAlepTKfhg6ipjicyvPKvZdUd/ewUrRsaTtj+oEuEKgg/4JjOPDIoJaTJQsxLou1jZKmL7QUDxVI6qinLzaGkPyCFyO6P68cvUppn/dxnywrpHKgNDXiErzCir1lwQSjWlf7lYjwhDbevEkxLZIKECXw/r0FW3XPhfKh7ktrqVVdPoIx9WFjwQCR6SbhklpQ0y2ihMfn1cvZGmnO9Hu6SHTM+SNU5CRvSHvPj0t7pql+cVofowOKIdOoSxleVLoGU9szQw67dh0r4wXgVRgTHDcmS/yaxjMNETOoYdA8PNlx9g41i5bPoBjJYgWVKZ6PXaiHPl8KQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yfvBpiF0nqzYe5HmmS0jDr5oNtfLCaFgQdDZFPhpDjM=;
+ b=fwQJy7QuUZDBsDJBwjbUJNqQsiCLG5LC3C0Tsf9SZICUxAR5u65AfNNqS4McbjN+PFb2KrXbrmgA/fz9Rs4q3YGivQZUOQuoRqP2h106hqp5ClOi9sVoMDFP3+g7PMLTnnxbWi3JTV0RQ+SN8cu5CaQYDpoI+wHfxo7IOxot9InOkaEGG2IAvx8dW28AIJp0c4vX0LiiB0sGdDLU+IeY7XLSxfx/amvIqUu50cgUa6jKwnm55XzTFOqyAI3zKsdp18SZhRWxU7oLbPbK1+zuVXZS38ytrYymGXEdw/6FPYeM6mqRbX3UM+UAWovAQMTs0l63URfKdaulKM8JNgL+4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by LV8PR11MB8486.namprd11.prod.outlook.com (2603:10b6:408:1e8::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Tue, 8 Aug
+ 2023 16:43:18 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::4556:2d4e:a29c:3712]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::4556:2d4e:a29c:3712%4]) with mapi id 15.20.6652.026; Tue, 8 Aug 2023
+ 16:43:18 +0000
+Date:   Tue, 8 Aug 2023 09:43:14 -0700
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     Dionna Amalie Glaze <dionnaglaze@google.com>,
+        Dan Williams <dan.j.williams@intel.com>
+CC:     Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        <dhowells@redhat.com>, Brijesh Singh <brijesh.singh@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Samuel Ortiz <sameo@rivosinc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-coco@lists.linux.dev>, <keyrings@vger.kernel.org>,
+        <x86@kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation
+ reports
+Message-ID: <64d270a2a68ce_5ea6e294f0@dwillia2-xfh.jf.intel.com.notmuch>
+References: <a507ef3302d3afff58d82528ee17e82df1f21de0.camel@HansenPartnership.com>
+ <64c5ed6eb4ca1_a88b2942a@dwillia2-xfh.jf.intel.com.notmuch>
+ <c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com>
+ <64cdb5f25c56_2138e294f1@dwillia2-xfh.jf.intel.com.notmuch>
+ <1180481830431165d49c5e64b92b81c396ebc9b1.camel@HansenPartnership.com>
+ <64d17f5728fbc_5ea6e2943f@dwillia2-xfh.jf.intel.com.notmuch>
+ <c7d6e953a4b36014ea0c7406531b24bb29d6127e.camel@HansenPartnership.com>
+ <2425e00b-defb-c12b-03e5-c3d23b30be01@linux.intel.com>
+ <64d263e44e401_2138e29486@dwillia2-xfh.jf.intel.com.notmuch>
+ <CAAH4kHamob7g_+BRd0JW76cM7_vS=jzXzRjrgCPDxZ29VnzdCQ@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAAH4kHamob7g_+BRd0JW76cM7_vS=jzXzRjrgCPDxZ29VnzdCQ@mail.gmail.com>
+X-ClientProxiedBy: MW4PR03CA0351.namprd03.prod.outlook.com
+ (2603:10b6:303:dc::26) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|LV8PR11MB8486:EE_
+X-MS-Office365-Filtering-Correlation-Id: 18e90e0d-db4c-4d40-9999-08db982e917f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YCzmZN9XbeCt+pJFt+iDXg0vkLkD7Kpmho/GNK7c1RbuMub5C8dN0FGK+QkmV70gveB2gBvu+RqCBjTWreLhfgok+3yeMZqeALkErTiYz0Sm3CMC0YGuHXpg4AlE5rUg19X/dpKTQD3SPVgC2rhymDFmIN3rAdZkOUdS/8ZTp08m0j4Yzt0IeUoANyoHo7dcLwnj+BVxk6jVgWS07Asgbw8mJ8cxfAgzJRa1PZ54xq6+2HSSFxw9u+QTR42vdsRxIIPHtJWElpDNehXWxHEVIl7c/b0gDAO3DER0tpavDyOhyO3RbeImHc3P651DwJpAhQ804Nl+JjzRcQ2F0f87zDvNp1vK6D/sRyvTKrhqHj1sxedWFaoWnzOUTqLjmF+JQw0tkVQZINw3ynxgG7iH99kPtl1mCUPSctfNA+UxgJssshLLFOH9yVr6EEJXKza3pYoih41OygOGdgB/cfTqxNeVkW3hrEWtk6f7k2fLWw3NSatCBzLS4ER9wrCCFOtx/PF0uiVmL+lvB2Z+MPG6HGlEydOLdYUMBuXwgFhpY7L2LsZT5U8ax5CmMXD9/6EMr2EWd5zkqLNcqc85lIaoXWcfcQbbZ7GTOn/w5kjfoSE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(346002)(376002)(39860400002)(396003)(366004)(186006)(1800799003)(451199021)(26005)(6506007)(9686003)(6486002)(966005)(6512007)(6666004)(478600001)(82960400001)(38100700002)(110136005)(54906003)(66476007)(66556008)(66946007)(4326008)(316002)(41300700001)(8936002)(8676002)(5660300002)(7416002)(2906002)(83380400001)(86362001)(47845007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AHU4fP3tccBKYyRxf51B/Jf0N01xiQgiQH+7k9mEXkUiq5i6mYD5Gx/PwFPF?=
+ =?us-ascii?Q?OOvHH/YS/GFXB9hSBGPGi1XRudYKzwYO//TeQ0JG7/PpPKzEDJ43giWpbXbl?=
+ =?us-ascii?Q?aPvJ4/gXjCsf+LOdsg8C9XTIWkoaRdzTvcZ0g2/6rMa785RXT4Lh7pkB7qkX?=
+ =?us-ascii?Q?QQ335Hvlw1xumvqLrwmvV0irAVaCrCeT0MM+erc3r/FkDEHWyV4TsUMDqraz?=
+ =?us-ascii?Q?pjgke+tRvAyrvMJA+1nYqwrAuW7MCIssX4BeFB96A571nhAEIiwGQx2m4xCU?=
+ =?us-ascii?Q?9UOzU55T+q1FslaECBp7hvjpbqurtGrLBNoS+nDhgHFEhK2OfD58vacHsDuZ?=
+ =?us-ascii?Q?HJC0JdfJ9QHXZjfZ2hJxL5a4tLV51UE9PfC8xCPsg92VxoYqRBG3+zRRZ2QE?=
+ =?us-ascii?Q?2ULo4AoLNPTolf8xm4b3pPJSzm0QoowxFtpsYxU1SoCU7YQ7wRanZBKa6sp0?=
+ =?us-ascii?Q?DKwvlmOwPN4dkbC6lLGdN9vtuFatRNBnWhMxvBHHwTBwHY0tyzDmhU8wIb0/?=
+ =?us-ascii?Q?9+SjXdrePvA0GDsP86t0JBamEK7P8KZoePH6OrRHvNqeDReaCEJRKuQBrsmL?=
+ =?us-ascii?Q?RM+3QRD5mcbs4WQEgpPjxdWws9Ij2SZNSsqZ0RdMlwGe6EloC71jD0CXceVZ?=
+ =?us-ascii?Q?h7tw7iUBlNC85B45La/RBehzdxfRZsdN70UgAxFTTApBPZnM5xXASjzSd3F8?=
+ =?us-ascii?Q?oKMvKap4uhOih53DLEYKE5AgDzDBux698ZRoeY0Nq4PzVpmjzW6hFeausnie?=
+ =?us-ascii?Q?+7o39jwa4SJmWpDn5shnBJCeMgoDDP5W7ynwgMJIwcpUR7nj4bgmndYz9cUI?=
+ =?us-ascii?Q?pVvEy/6S4LGHnD/+6XvAJ2ujC3yqAABqBg0FDKAX5EwNxttZK0LOvBpZgwIl?=
+ =?us-ascii?Q?KXoJ7Pb6+x7sNv8SNvmNQuRW04ZOh/oGqCaZca0tfQkzCHOD3mbAx0cVHdCB?=
+ =?us-ascii?Q?Wpp3iKbkR6i5aFyHenjL8v9Aq4dvS5DO1rSml66STFdQ8iSwWwI/BFF3F1To?=
+ =?us-ascii?Q?Y1zMEQ2uPHFhW/Y2YVfaNVkGpXfnxEAUu5q3UBcbJy2s77NhffDPAymoksK9?=
+ =?us-ascii?Q?Nwk5oj6nVz56h+I+OoahC9GXH9P8gCjBtuHQ+xGs6dSDPu+ud+YHh+tK8jJh?=
+ =?us-ascii?Q?TbXiDug3uF/pF/LPrgTWOtUsrMF/p7f48qX+iJeHJjQQuTljfaQUiIDsUqyV?=
+ =?us-ascii?Q?RddBjjsYHodZ+pVfKz74uXe4PRWXRj6Tb1AIsr/K+bkxoIcJh34CM3fByoTE?=
+ =?us-ascii?Q?fwOj48SIgTXxmumYO90E5j+d7iJKMm1M665LXbhdhImiYVRPgoKhtPZW2Dug?=
+ =?us-ascii?Q?UYLFvfIjzfMC7sH08rjQtRjF+CJErzec7fYfCWM41Ob+gKSP4gvgrfX6olxC?=
+ =?us-ascii?Q?szpjCZdPrrxBCXRztmh1jqyepI+tRezLE4g4ghQnoA4HKSHSzKjcImrbGtva?=
+ =?us-ascii?Q?iNopNRI5gEu6RaR7WfW1IcF5D8S8z4ixjF35Y8iMDXVARLTUQ7C+PammfwJ4?=
+ =?us-ascii?Q?Ro+URVUfISotaxNCkKNXkLEiTNmBzQq5XqXN3FuNosZk62FOj2Bzd74zn7ml?=
+ =?us-ascii?Q?MaLmbvwdxpPjgYvX3kUiwRgG3WyyKecfuJK6YU7hNUILRaHI/5jzK40AIz5y?=
+ =?us-ascii?Q?Ng=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18e90e0d-db4c-4d40-9999-08db982e917f
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2023 16:43:18.1502
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4/zdkV552gc6U/z0yzVT7csodXZZ6Yoli4Pe9RQhWbO971vO0HtWFt5MpFm8+Iv1gtp2T8k98DFZeZLwqeClwqoNNr39CBXE6CZQ3ONqRWk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR11MB8486
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm looking to enable -Wmissing-variable-declarations behind W=1. 0day
-bot spotted the following instances:
+Dionna Amalie Glaze wrote:
+> >
+> > At least that was not the level of concurrency I was worried about. The
+> > sysfs approach makes it so that concurrency problem of option-writing vs
+> > report-reading is pushed to userspace.
+> >
+> 
+> The reason I would advocate against making attestation report
+> collection single-threaded in user space at a machine level is that
+> there are new schemes of attested connections that may become the
+> basis of server handshakes. I think folks are mainly looking at this
+> from the use case of
+> 
+> 1. workload will do large amounts of work on behalf of the VM owner,
+> provided it gets a sealing key released by the VM owner once on boot
+> after proving its code identity
+> 
+> however I'm thinking of the case of a more user-centric use case that
+> enables service users to challenge for proof of workload identity
+> 
+> 2. workload is a server that accepts incoming connections that include
+> a hardware attestation challenge. It generates an attestation report
+> that includes the challenge as part of the connection handshake
+> 
+> This posits the existence of such an advanced user, but high security
+> applications also have users with high expectations. I want the option
+> to be open to empower more users to have access to provable workload
+> provenance, not just the VM owners that are unlocking resources.
 
-  net/llc/llc_conn.c:44:5: warning: no previous extern declaration for
-  non-static variable 'sysctl_llc2_ack_timeout'
-  [-Wmissing-variable-declarations]
-  44 | int sysctl_llc2_ack_timeout = LLC2_ACK_TIME * HZ;
-     |     ^
-  net/llc/llc_conn.c:44:1: note: declare 'static' if the variable is not
-  intended to be used outside of this translation unit
-  44 | int sysctl_llc2_ack_timeout = LLC2_ACK_TIME * HZ;
-     | ^
-  net/llc/llc_conn.c:45:5: warning: no previous extern declaration for
-  non-static variable 'sysctl_llc2_p_timeout'
-  [-Wmissing-variable-declarations]
-  45 | int sysctl_llc2_p_timeout = LLC2_P_TIME * HZ;
-     |     ^
-  net/llc/llc_conn.c:45:1: note: declare 'static' if the variable is not
-  intended to be used outside of this translation unit
-  45 | int sysctl_llc2_p_timeout = LLC2_P_TIME * HZ;
-     | ^
-  net/llc/llc_conn.c:46:5: warning: no previous extern declaration for
-  non-static variable 'sysctl_llc2_rej_timeout'
-  [-Wmissing-variable-declarations]
-  46 | int sysctl_llc2_rej_timeout = LLC2_REJ_TIME * HZ;
-     |     ^
-  net/llc/llc_conn.c:46:1: note: declare 'static' if the variable is not
-  intended to be used outside of this translation unit
-  46 | int sysctl_llc2_rej_timeout = LLC2_REJ_TIME * HZ;
-     | ^
-  net/llc/llc_conn.c:47:5: warning: no previous extern declaration for
-  non-static variable 'sysctl_llc2_busy_timeout'
-  [-Wmissing-variable-declarations]
-  47 | int sysctl_llc2_busy_timeout = LLC2_BUSY_TIME * HZ;
-     |     ^
-  net/llc/llc_conn.c:47:1: note: declare 'static' if the variable is not
-  intended to be used outside of this translation unit
-  47 | int sysctl_llc2_busy_timeout = LLC2_BUSY_TIME * HZ;
-     | ^
+I do not see sysfs precluding a use case like that. If the kernel can
+call out to userspace for TLS connection setup [1], then advanced user
+can call out to a daemon for workload provenance setup. Recall that TDX
+will round trip through the quoting enclave for these reports and,
+without measuring, that seems to have the potential to dominate the
+setup time vs the communication to ask a daemon to convey a report.
 
-These symbols are referenced by more than one translation unit, so make
-include the correct header for their declarations. Finally, sort the
-list of includes to help keep them tidy.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/llvm/202308081000.tTL1ElTr-lkp@intel.com/
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- net/llc/llc_conn.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/net/llc/llc_conn.c b/net/llc/llc_conn.c
-index d037009ee10f..0a3f5e0bec00 100644
---- a/net/llc/llc_conn.c
-+++ b/net/llc/llc_conn.c
-@@ -14,14 +14,15 @@
- 
- #include <linux/init.h>
- #include <linux/slab.h>
--#include <net/llc_sap.h>
--#include <net/llc_conn.h>
--#include <net/sock.h>
--#include <net/tcp_states.h>
--#include <net/llc_c_ev.h>
-+#include <net/llc.h>
- #include <net/llc_c_ac.h>
-+#include <net/llc_c_ev.h>
- #include <net/llc_c_st.h>
-+#include <net/llc_conn.h>
- #include <net/llc_pdu.h>
-+#include <net/llc_sap.h>
-+#include <net/sock.h>
-+#include <net/tcp_states.h>
- 
- #if 0
- #define dprintk(args...) printk(KERN_DEBUG args)
-
----
-base-commit: 14f9643dc90adea074a0ffb7a17d337eafc6a5cc
-change-id: 20230808-llc_static-de4dddcc64b4
-
-Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
-
+[1]: https://lore.kernel.org/all/168174169259.9520.1911007910797225963.stgit@91.116.238.104.host.secureserver.net/
