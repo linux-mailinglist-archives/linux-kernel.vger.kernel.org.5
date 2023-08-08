@@ -2,133 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26411773BB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9EE773B15
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbjHHPyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 11:54:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53938 "EHLO
+        id S229456AbjHHPlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 11:41:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbjHHPwT (ORCPT
+        with ESMTP id S229494AbjHHPkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:52:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200FE5267;
-        Tue,  8 Aug 2023 08:43:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691509382; x=1723045382;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=gGHlQb/8Nf65OgJQ0JggilK6QPloizVjYoHfGbMxicM=;
-  b=m5oVHB34a8PS1HTv04gZm3pjaY5Aj2DK28a3ntcL+gMXO2GMYsC/sKLD
-   y2IOnNtxi/qnPQWdzQBmub1a9WwWx8bdkuh1yDynhNNtqs0JtZ01Z64cL
-   KR4CEUCdgzb8osZ9GzqX7DEOdW/cx+oKnsBKBN5EzIqARN9QbiSW1uNUZ
-   FjCpD6NQZNUU/C1TxQHxbOt2/CUMzx6Pebjwjl++LSM9bgR9g6ZWfGkpU
-   c4nXpiUz5HOm6YZXssPnh15dY8hS4n6iBgBGN126OhLkyspeqibYiv9RP
-   4Wb3kr/zCNOx7X3JhRR/eFxSIpMsW+dGJOPTI1SmIRirzHDrd/HXSz4XP
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="457151930"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="457151930"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 02:16:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="734447395"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="734447395"
-Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
-  by fmsmga007.fm.intel.com with ESMTP; 08 Aug 2023 02:16:07 -0700
-Date:   Tue, 8 Aug 2023 17:16:06 +0800
-From:   Yuan Yao <yuan.yao@linux.intel.com>
-To:     Isaku Yamahata <isaku.yamahata@gmail.com>
-Cc:     "Huang, Kai" <kai.huang@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: Re: [PATCH 09/10] x86/virt/tdx: Wire up basic SEAMCALL functions
-Message-ID: <20230808091606.jk667prer5lmtcpm@yy-desk-7060>
-References: <cover.1689151537.git.kai.huang@intel.com>
- <41b7e5503a3e6057dc168b3c5a9693651c501d22.1689151537.git.kai.huang@intel.com>
- <20230712221510.GG3894444@ls.amr.corp.intel.com>
- <4202b26acdb3fe926dd1a9a46c2c7c35a5d85529.camel@intel.com>
- <20230713184434.GH3894444@ls.amr.corp.intel.com>
+        Tue, 8 Aug 2023 11:40:49 -0400
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1372109
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:36:28 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-4fe07f0636bso9569570e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691508891; x=1692113691;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0wSCMvsrvGtP/SRB0drN+VU/GnJ3+psGhnVmypWifVc=;
+        b=a0hkuKG/eW/8mV1nyNFIwbBQgL7FELk2fmWcaOWumd9WsY8dztDCl+YGrUcAqwBawn
+         7uhLfTqToONmup5j2gaQRfZK7utVS+WYYFGVaMnLbTXlmGIYEgPF+CaN+wAf4sJaBUjd
+         GHQJxh0Z5PR+Oef1edt9MCh6Gf8qt2GdMMyurYh81uyk6VcHbB02p/1hQ5FfjqmvGglf
+         a3a3PE2YBdJnEjBne59LviVf8s6RB36zkI5AuDaDCWYq2iT3kDE5h5SkFcmil/VBMdqW
+         dJg3e+zBZf8I+IY0bSxAmQpnG9GKgfhfOZndrtUAtQorJ6kPnIoJPrkjUOTvo7OpPUdI
+         KZOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691508891; x=1692113691;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0wSCMvsrvGtP/SRB0drN+VU/GnJ3+psGhnVmypWifVc=;
+        b=Ekw8zZs5ZHXpqyDU2PDLRK+OZi9n0g2eDpfGBrH+skcCrew4e9GkoB8giZl1waji/B
+         0+mGpSxRgoaXiS8VmCDu18WMD+LE9iK28ilmyQD2ekUMtIh2pUk1OCYjqrkWPO0SUKXx
+         kTR3CJf7yXcHj1O4xEbDaY+gUNHfCOBd9/IypMQeSH/GmB3TDHlvNYn2P98gd6W1Lt3y
+         JERckSJ5x9vh4p6ZKfeB8/DQlfwFfXYR35ox8ZalDr88qBPzCq/tq+BkSpzO8kJhX1mN
+         2hCxPQIp1fIdsxRMT1QLsZVi9GFWE+iGIv48KV/3uuGx0sbgvISsjxSlE+vxLohNJ7jG
+         4LSA==
+X-Gm-Message-State: AOJu0YxJITDfwEFgrFeyiNDyJYQUjEuzIGJhJC0jnGyc662wEA9cr5uT
+        mJpoxkCoCt37G/YO+8RJVUBz55C0ldJR7dl/vKo=
+X-Google-Smtp-Source: AGHT+IEt+Kf3mPdgxinq+Mt4SlVaTOKw94gaghcqyMPjmABWGoq+4o6zGEM2ZElSHkgdewFxWTvliA==
+X-Received: by 2002:adf:ff8c:0:b0:317:df3e:13d with SMTP id j12-20020adfff8c000000b00317df3e013dmr5441304wrr.38.1691487443405;
+        Tue, 08 Aug 2023 02:37:23 -0700 (PDT)
+Received: from [192.168.69.115] ([176.176.177.253])
+        by smtp.gmail.com with ESMTPSA id o10-20020a5d474a000000b003141a3c4353sm13073883wrs.30.2023.08.08.02.37.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 02:37:23 -0700 (PDT)
+Message-ID: <cbc22d2f-726d-86fc-1f34-c529cd91fdbe@linaro.org>
+Date:   Tue, 8 Aug 2023 11:37:20 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] mips: remove unneeded #include <asm/export.h>
+Content-Language: en-US
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+References: <20230807153243.996262-1-masahiroy@kernel.org>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230807153243.996262-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230713184434.GH3894444@ls.amr.corp.intel.com>
-User-Agent: NeoMutt/20171215
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 11:44:34AM -0700, Isaku Yamahata wrote:
-> On Thu, Jul 13, 2023 at 03:46:52AM +0000,
-> "Huang, Kai" <kai.huang@intel.com> wrote:
->
-> > On Wed, 2023-07-12 at 15:15 -0700, Isaku Yamahata wrote:
-> > > > The SEAMCALL ABI is very similar to the TDCALL ABI and leverages much
-> > > > TDCALL infrastructure.  Wire up basic functions to make SEAMCALLs for
-> > > > the basic TDX support: __seamcall(), __seamcall_ret() and
-> > > > __seamcall_saved_ret() which is for TDH.VP.ENTER leaf function.
-> > >
-> > > Hi.  __seamcall_saved_ret() uses struct tdx_module_arg as input and output.  For
-> > > KVM TDH.VP.ENTER case, those arguments are already in unsigned long
-> > > kvm_vcpu_arch::regs[].  It's silly to move those values twice.  From
-> > > kvm_vcpu_arch::regs to tdx_module_args.  From tdx_module_args to real registers.
-> > >
-> > > If TDH.VP.ENTER is the only user of __seamcall_saved_ret(), can we make it to
-> > > take unsigned long kvm_vcpu_argh::regs[NR_VCPU_REGS]?  Maybe I can make the
-> > > change with TDX KVM patch series.
-> >
-> > The assembly code assumes the second argument is a pointer to 'struct
-> > tdx_module_args'.  I don't know how can we change __seamcall_saved_ret() to
-> > achieve what you said.  We might change the kvm_vcpu_argh::regs[NR_VCPU_REGS] to
-> > match 'struct tdx_module_args''s layout and manually convert part of "regs" to
-> > the structure and pass to __seamcall_saved_ret(), but it's too hacky I suppose.
-> >
-> > This was one concern that I mentioned VP.ENTER can be implemented by KVM in its
-> > own assembly in the TDX host v12 discussion.  I kinda agree we should leverage
-> > KVM's existing kvm_vcpu_arch::regs[NR_CPU_REGS] infrastructure to minimize the
-> > code change to the KVM's common infrastructure.  If so, I guess we have to carry
-> > this memory copy burden between two structures.
-> >
-> > Btw, I do find KVM's VP.ENTER code is a little bit redundant to the common
-> > SEAMCALL assembly, which is a good reason for KVM to use __seamcall() variants
-> > for TDH.VP.ENTER.
-> >
-> > So it's a tradeoff I think.
-> >
-> > On the other hand, given CoCo VMs normally don't expose all GPRs to VMM, it's
-> > also debatable whether we should invent another infrastructure to the KVM code
-> > to handle register access of CoCo VMs too, e.g., we can catch bugs easily when
-> > KVM tries to access the registers that it shouldn't access.
->
-> Yes, we'd like to save/restore GPRs only for TDVMCALL. Otherwise skip
-> save/restore.
+On 7/8/23 17:32, Masahiro Yamada wrote:
+> There is no EXPORT_SYMBOL line there, hence #include <asm/export.h>
+> is unneeded.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>   arch/mips/kernel/octeon_switch.S | 1 -
+>   arch/mips/kernel/r2300_switch.S  | 1 -
+>   2 files changed, 2 deletions(-)
 
-And another case to save/restore GPRs: supports DEBUG TD,
-which is type of TD guest allows VMM to change its register
-context, for debugging purpose.
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
->
-> --
-> Isaku Yamahata <isaku.yamahata@gmail.com>
+
