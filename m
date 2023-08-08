@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33581774D76
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58943774D8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbjHHV5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59514 "EHLO
+        id S230231AbjHHV7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjHHV5c (ORCPT
+        with ESMTP id S229702AbjHHV7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 17:57:32 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59890EE;
-        Tue,  8 Aug 2023 14:57:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=Iw353CUGOaR9ntV/GhP6nXoYL9ZHZ1HVuitTAIcTyoA=; b=wQ6jQi1x24Y1QysBckKRqSeilr
-        hExPc9tz1kVg313OrEORcp5T7arVJJ/0mnUea8bN4R5/meR8OQ6NyBWpXdLsxqP231KRTfbBAllB6
-        fUT2mvCOXZRSLRY1LPidKNd2+orscVZV2i94XeNENT6L6eQMSdS9AEZO7CTGLbDa41hU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qTUhQ-003WUv-RA; Tue, 08 Aug 2023 23:57:08 +0200
-Date:   Tue, 8 Aug 2023 23:57:08 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Luke Lu <luke.lu@libre.computer>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>, Da Xue <da@libre.computer>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] net: phy: meson-gxl: implement meson_gxl_phy_resume()
-Message-ID: <ef7000ae-721c-49ac-b0b3-b5d94fd82a4d@lunn.ch>
-References: <20230808050016.1911447-1-da@libre.computer>
- <b8931b6c-5b35-8477-d50f-b7a43b13615f@gmail.com>
- <CAAzmgs75L6Y3PU1SF8Uvh1Z2cqt86HmaRKFn088yzRK73mfnLA@mail.gmail.com>
+        Tue, 8 Aug 2023 17:59:40 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F49E51
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:59:39 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5230df1ce4fso8182385a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 14:59:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1691531978; x=1692136778;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9vjVFfWFImhbbV+PvD1bDCoF45rIONe5KGNnouWDJ7A=;
+        b=VPeoi0aK0FbUNYIS4YhPmyNq1Ylc3RUKJ/XvDTbL16kpHv2dYA5Xba3ITMXv+tObCt
+         29+LnjVzEKb+A7Ldz1LI0DHOuDV89LEQIZETqkPtqTA1RMhcyTT1F/ZfHtSd2XCPmV3s
+         pqJ4txZx3XcR9e6yuaw16KEpNXJcz1kZFvipo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691531978; x=1692136778;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9vjVFfWFImhbbV+PvD1bDCoF45rIONe5KGNnouWDJ7A=;
+        b=kMv0/ODGoNPqkbcYNM32sKN3Bn+gK+IrozXnXGjFaAOor4TIuUQzvhrtiybsX3/mJD
+         V6UVTYYY2ZcYY7hMRrT1jj/yF936WPGykWEmU94WjvQzcSo3mbWrDcScyADJniNn+Abi
+         rI/Pln7a3m005Ixed2hQL8BW4FY6D7HPFP2KjBc2CldPXlfAa2Fx4OKeF01UbHVlf7yV
+         R+dxqHMxoivxbGeKtr1lm1NLASPFoJjXCZnTygjPXoMhcFkMb0opf9q+FBQPawLHMXH1
+         8cobLGFTWuVs/iJtZeec2zF/fwirw3g7RqWGyYkFedTOjEOTvZk8Jms4GiKF4tCRFO3k
+         HJww==
+X-Gm-Message-State: AOJu0Yy3oBeeoGXihdKRS2MQDOKg1u0udmkAtUjUucPTQC/tSEAFllyk
+        Zz8gev9f0526Pzwo1Wlz5j+IVPvRPDMqWGgVgsZGSdKd
+X-Google-Smtp-Source: AGHT+IFLCINvThEp+lkIw0+RbAXNpPCLDpIydMvfg42I9Q1Ogmzlgy1Vx0dc6FQ4/FPk2GCyb+9Okg==
+X-Received: by 2002:aa7:cb5a:0:b0:522:36f0:f1a3 with SMTP id w26-20020aa7cb5a000000b0052236f0f1a3mr968920edt.10.1691531977986;
+        Tue, 08 Aug 2023 14:59:37 -0700 (PDT)
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
+        by smtp.gmail.com with ESMTPSA id b20-20020a056402139400b00522d53bff56sm7008504edv.65.2023.08.08.14.59.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 14:59:37 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so907538466b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 14:59:37 -0700 (PDT)
+X-Received: by 2002:a17:907:7629:b0:99c:75f7:19c1 with SMTP id
+ jy9-20020a170907762900b0099c75f719c1mr684831ejc.39.1691531976818; Tue, 08 Aug
+ 2023 14:59:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAzmgs75L6Y3PU1SF8Uvh1Z2cqt86HmaRKFn088yzRK73mfnLA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <874jl945bv.fsf@meer.lwn.net>
+In-Reply-To: <874jl945bv.fsf@meer.lwn.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 8 Aug 2023 14:59:20 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wipcJKtWRtBHDDjRx7UXyZAD2eswjCiD19tuz+XwjUxhQ@mail.gmail.com>
+Message-ID: <CAHk-=wipcJKtWRtBHDDjRx7UXyZAD2eswjCiD19tuz+XwjUxhQ@mail.gmail.com>
+Subject: Re: [PATCH] docs: vfs: clean up after the iterate() removal
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > And a formal remark: Your patch misses the net / net-next annotation.
-> >
-> Not sure if we understand this correctly, do you mean the one line
-> summary of this patch?
-> or the content of the commit message that needs to improve to reflect this is an
-> ethernet/net related fix?
+On Tue, 8 Aug 2023 at 14:00, Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> If nobody objects (or beats me to it) I'll drop this into docs-next
+> shortly.
 
-https://www.kernel.org/doc/html/latest/process/maintainer-netdev.html#netdev-faq
+LGTM.
 
-	Andrew
+I did grep for old uses of iterate - including in docs - but I clearly
+only grepped for the "->iterate()" and ".iterate =" forms.
+
+            Linus
