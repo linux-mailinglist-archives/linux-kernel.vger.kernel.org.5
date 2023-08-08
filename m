@@ -2,157 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D38D773F04
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E770A7740E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233249AbjHHQk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34750 "EHLO
+        id S234106AbjHHRLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:11:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbjHHQju (ORCPT
+        with ESMTP id S234027AbjHHRLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:39:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E788A15B88;
-        Tue,  8 Aug 2023 08:54:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691510072; x=1723046072;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=skUOHDXeOlvMiLatQPrgoMDG6IJaFBnHBUC2Eu4yBRg=;
-  b=SjqGGMvDODVbGBi3q/Tz0UN2WdjUXJZZqtVpzrpWOFMGi5VVizfKsBRl
-   WpaiTehV68QxtPJX+BRvB7V+1AkO5+dFGEBg0xz3eTo/wwlVoc+Mjrzjc
-   5f7/hf+9G1sRxy9sg9x6Uo2lLNvgAetBOJbfQGXiuhcuh/GxYuYkS5TLc
-   XH/IYtrMzsGEdW1zzKuV3JYtaDB3snlkWvC7lNhsdmQJO2tLN5FtlTDVj
-   34fdp7/iaPUSI04BzmvGEH553iBhwgaJvnYYhAwQJPoh7mh7hAnhHwF4v
-   Mk4MTfi7rs5eFpGJ5RKDfECU9JqCYa+Ns8FWbUXUWJuECE8tIfDlnwNlB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="369608841"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="369608841"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 21:11:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="821202368"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="821202368"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by FMSMGA003.fm.intel.com with ESMTP; 07 Aug 2023 21:11:07 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 7 Aug 2023 21:11:07 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 7 Aug 2023 21:11:07 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.177)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 7 Aug 2023 21:11:07 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZXedRBMaKCjiOqu97Nb5jCHoLE7cDW9CjGoVVfhTmYG7CuTaIDI++f4dRxWPkZLl5ooziGaV4QhIPZwQKT77/HNaiUd5YI1LhrntQ94Kkzu0OZJVJU8Az8HF+E9qYS3XCmdl/O3tXzjABu53M+a/3QVvCnwSx9UD9uitmqGM9e+MBKy3Khc1fenhd1NjDJWHOEMhIwZXBXY9CHXBRL+cuAs+OyNQEgosgqcHhdS/RptzpuB5maXZn0XX2vHOaMRD1Ix9/VX0q8uF4bGzFOXspPGHHyT74GjxurEKLMdywgue9sIju1d5AhIKyW8Y1+4gxwFREiiz+IHjH3fvzORa8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=39Jle6tY02c9lk/gradx6wDFnhdgjeFi7ht0sSRd+Jo=;
- b=W3otYA6rw5tOulHdOCu52iaAgz6hmX2p60LOraP6vkUz4JmldMFFYe6wCPVZSZZq4gw6t87FRnOI3lbAAaAkq58A37yqo/gV3+i02RI1jQPgtokdvhhGtEvHtJ4KDCdSI864eHEyNaT31aSiMpC3EVqY8OMNNbEngChtUWmbicEfpWX0b2VLFTXDnAFK7aJTzSigRXg6ySRUFMvfrsiZoSE7IIOvowMlDX/ouVBR2sll9oOwtEcmFPZCIkK4G3yuL2EgjfoNnE1IO7OYfRNyNGxKQWE2ingpMM3Yo0LA4j4pYQIJQS1LGcflcW+lDKHOyJv2MxccAOPc/Bj9Zy04HA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
- by SN7PR11MB6703.namprd11.prod.outlook.com (2603:10b6:806:268::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26; Tue, 8 Aug
- 2023 04:11:05 +0000
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::221b:d422:710b:c9e6]) by CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::221b:d422:710b:c9e6%3]) with mapi id 15.20.6652.026; Tue, 8 Aug 2023
- 04:11:05 +0000
-Message-ID: <ebcaa6d3-a984-4916-a010-364e11e868ff@intel.com>
-Date:   Tue, 8 Aug 2023 12:10:55 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] don't use mapcount() to check large folio sharing
-To:     Yu Zhao <yuzhao@google.com>, <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, <willy@infradead.org>,
-        <vishal.moola@gmail.com>, <wangkefeng.wang@huawei.com>,
-        <minchan@kernel.org>, <david@redhat.com>, <ryan.roberts@arm.com>,
-        <shy828301@gmail.com>
-References: <20230808020917.2230692-1-fengwei.yin@intel.com>
- <CAOUHufa99BbKi3pq2xxrNEzygULE-brUELK=DLU89REW-GT-Vw@mail.gmail.com>
-Content-Language: en-US
-From:   "Yin, Fengwei" <fengwei.yin@intel.com>
-In-Reply-To: <CAOUHufa99BbKi3pq2xxrNEzygULE-brUELK=DLU89REW-GT-Vw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI1PR02CA0032.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::12) To CO1PR11MB4820.namprd11.prod.outlook.com
- (2603:10b6:303:6f::8)
+        Tue, 8 Aug 2023 13:11:15 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEBB6676AE;
+        Tue,  8 Aug 2023 09:04:40 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-63f7cd44d04so12001436d6.2;
+        Tue, 08 Aug 2023 09:04:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691510677; x=1692115477;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jQZJBbwdMv79VbdCMN0QjbjgAoPO359cdwuBvKh85WI=;
+        b=Atm0cNCk1GlLkG7LiFx+/Mdz5dHTWGk2ek2SqMSOXhVvrbscDEq+FQkFMDWIXKgNV6
+         ERwCFkAqo9i/NRQpATdzisLn8hfWYpHPFQgfoOt84f+GGGjIJU2EWnaO9BLu/SgepVJ/
+         fyJF/8DTQqyQHz66MD9U1IGkiOyg2zHlg6y7kQQtwDGPd5rvrviupgu/7jWRTz0rz6VF
+         7rnZyrRQh2qPMgUCb84dqKx56h1DloszH75NeP/PmgHS7NC3J/7nZQd1AYfK6WMlgHp7
+         dMT+1ZsPcRjIcJnd4+3D2yXCldBd9cRsPJ0nyOIuuZvYHAAM6BKv0If9QIwVB3smDBAk
+         h+xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691510677; x=1692115477;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jQZJBbwdMv79VbdCMN0QjbjgAoPO359cdwuBvKh85WI=;
+        b=KfEBL0ZeGVR0aaHMWmsyPTm9M5W68HciABj3BdtpG5WhXndCkkdC+rCv1gwzjC/ZnI
+         lj9bZ15n55R0jbjRVoQqkjQI2hBAqw+yDqDOkJcMV840ZwsjNG9LvzNesWm9Ai69X8H+
+         FiGAbIX4MxQUjaALLeePApiy2cqJXDjOavCWL6XUut16xQXQHGa3yXZGGVhnmuaGfCV0
+         s9XrxkmimwFKH2Z8B1BkuQXxEccAbu4Qe5epc1mC1DCAvQflzXzp8nhCAxqtmkh5gRmj
+         5vsN9PnpRZTTm8rpf5umgf9oJjRk/ZHEBfdPifeePXHBQd6jocmegA/HYEW+JNN3NH3V
+         iT8A==
+X-Gm-Message-State: AOJu0YwfR8hv+bTTieTs0McddoE01yv6sadvOq5FoXMvoQZEGdyanUmP
+        yEnYsMowVxsUMnbnmCrWwORuLrVjRE0=
+X-Google-Smtp-Source: AGHT+IGqkcfwv/wVSPrCaDkJmUWr81SIga2HSJ7SXZHc4bHDFHLYBQRDFKGa4z+ojFR+IudGKcfr0w==
+X-Received: by 2002:a05:6a00:194a:b0:687:596e:fa6a with SMTP id s10-20020a056a00194a00b00687596efa6amr13657629pfk.16.1691468663551;
+        Mon, 07 Aug 2023 21:24:23 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e19-20020a62aa13000000b006875df4773fsm6968856pff.163.2023.08.07.21.24.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 21:24:23 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <337d718b-e240-5d02-6a86-488ab8a0f25a@roeck-us.net>
+Date:   Mon, 7 Aug 2023 21:24:21 -0700
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|SN7PR11MB6703:EE_
-X-MS-Office365-Filtering-Correlation-Id: 914c7818-aa5a-42db-3888-08db97c57c13
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1B9zl75Q24IF8Vu3Zz2a/Fgs2Ry7Il+pvijiBG8X5bCTbGe90vVswDBYp6ulzy9xz2joEPnZQ1Z1IazUzCusEK3ZbL0a3l0Pag5eVuRqwJ+A6UCVc/Uv82/Xgbi+UifwBxrSpHmkFaCtSbEK8lVczZ+QJ9iF/nEHGi7NnSvP0SaHEw9rpHqM0LANkSGiDbUcaClTTWGorcwXzmuBjaI6U+6Aa6gTeN5qRgBAXjvCGudSlRiZvMX1zuCOpmykajltjO841up6t0fNJLO73aLxKM7hVtOgjn0UAnaETge9EIREO++W3cfg4Xwtwh3FGY4GfXCkzDqcuavkrn8DhjWFdDZ1BT80JhLb0axJIjJAs+RGCgmui+fZpn9JrJkgwuuTM+ykfiQaJJlLhTaI01p0mIJEzeGFrtSrXT2sBHFPznQlnFF7PjAOhM4+zniSU0wry7bUu5PE/8LB8EmBPkyaT65Tf5ZjfxNdvJ6FOodgv6Q+LZ34pSidKFQ3srLQ8S52zihoAvXzgs7ZFoMgziMf/cO0gGocSdxkc2G8pTAriMszUA3i4dD0q20cAGJrTha6Ttm+6DB1i94Nq5VqWdlGPH+1DdzfVIEwhMRs3NRNLJGRfzhN7oIC6PRsiVtP9wuGNvy+I3JMjp5H8shq3/LSm1AMX7TLybkhmeI3dXb6Hniw0uKhek0p8rNe5NLhtHAe
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(396003)(346002)(376002)(39860400002)(136003)(186006)(451199021)(90021799007)(1800799003)(90011799007)(8676002)(7416002)(8936002)(478600001)(5660300002)(41300700001)(31686004)(4326008)(316002)(38100700002)(66476007)(66556008)(66946007)(86362001)(26005)(6506007)(53546011)(2906002)(31696002)(82960400001)(966005)(6512007)(6666004)(6486002)(36756003)(83380400001)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VFFaTHM2ZHd6cjZkMExORGMwNHhvS2I5UU1sRzdoaVRPeVpXaWlGOVhMU1Zh?=
- =?utf-8?B?S3F3REVSdzlrbzd4c1lRSC8xNWhHT1FjeUpyVDZSWkhTKzltblJQMmJlNlRN?=
- =?utf-8?B?SzJMemcrWEMzNnJjNWRkcS9Ub210VHYvRDV0REE3Q3ZLM1BNUmZKQjdnMEcr?=
- =?utf-8?B?elV5SzgyTUNIbkVJRFZUMWZSRnhIckt3RGlLZWErMHYvT0t6bnFMMWJqeHpv?=
- =?utf-8?B?KzVnRnkxR0lXamxlSVFxNHNuOWNsRUQ0UE82b2oxaDFja2UwQkN1TW9YUWww?=
- =?utf-8?B?UjUrMXFzcDQ3am84QUJLMXdObHQzcWxlbWt4eGVyQlk5SHB3WmtDcENQSGpP?=
- =?utf-8?B?clpUQWlrZC9ONXFOL29lN2cxeTVIZmM2Skl6UjUvUzF4ZlhLNWdZZFpUZFNr?=
- =?utf-8?B?eEFzU3dqZDB1WjdRbjNnSm9MVHdTdTBSWklTcFl4bUJqZ2VmaGpuaWZraWRU?=
- =?utf-8?B?SDN5U1plZTgvN0VZaFJDM2tvMWR0UmpWRWxUZUpHL2VjTWw5eDU5UWlNSFpX?=
- =?utf-8?B?clVBcWdlWDIwZHh0OFBEaW8zdlhVU0VEc2VhbFo0S3RzblB2Ny8zQnZoVDFl?=
- =?utf-8?B?Y1NJK3ZscXFyNDRZVFozaTdqb2hkLzloNDJRdDZUUncwSVpSV29SVDFhTUVK?=
- =?utf-8?B?UndyM2g0R0JsZEdNa3owckJtZGtiY25MOU1qb1JmbW52TXFBUER2QXNZMnBY?=
- =?utf-8?B?Y3lzNGhyUlBWTndxR2VBbC92ZXdzSStsdXFHRlBNZUJqaEwvRTdISmdrd3hr?=
- =?utf-8?B?aGRhQU4xeDZ3SUVrQmZueGlUR0VrWHVYWjZFWFpPOGVnakx4dGxvTGlkK3Yw?=
- =?utf-8?B?WDR3Z2h2dGxCbFF4N0x1d2JOMUtVeXY2VWt1WUlWalFreHBNWUF5UnJTaHQ5?=
- =?utf-8?B?WnRmV1Q5ZHIvU0VySzd4OTVpdzk3bk5BWE5wUit6cUQrRUR0V1VBWVpyb09Z?=
- =?utf-8?B?RWJpZ05RRVVxV2ZtRlFjS0RKSjBMUU1KZ3F0ZVduLzFqeS95Vmo3aEYxa0dM?=
- =?utf-8?B?ekUrWUk4R1Y5R2ZEYTE4cTB4MmFKZ2JxOFB1N0ZMZDJqVEJTN0NRN2xteWor?=
- =?utf-8?B?UmFoT2xqR3pnQUdtNENlTUhxWUxIY2l6RzFLaFU0a25iR2NETXV1NC9qZHF2?=
- =?utf-8?B?a05GK0o0RklsVHA4SUdEa3ZxRkFJMGpES003TzFacnVzQW5BR0M1SDRBUUNI?=
- =?utf-8?B?NGY1QU9lZzVKd0xTV3pkaHNhR1kza240ZXlKKzVLMDM4bzZpaloxT21aMXVi?=
- =?utf-8?B?MTBtdzFzMkRPS2pkMlFvenFETHg5VkdjY1JTaVVybXFCWTZ2YjJiZVB3RWpW?=
- =?utf-8?B?SU9pQ21GcGRxVGJsbXQ4UURYWGVLcS80Y1gyRjZZVy9FeHJURmV1c2J0YVNi?=
- =?utf-8?B?cmY4QzQreVVrRjJBNStGOW1DMjQxSHhMU3kreExpWHpJMWdNRnhSZmJNRTFK?=
- =?utf-8?B?M1dqc2NYM2VQZ29TMkpxRDFqaFUyRkJITGFTcXkxMWVGcmFJV1NpZEgxckJl?=
- =?utf-8?B?VElmdVlsU3RrYTJUektyYUhGOExlQnNSOHZMUzdzbkxZZVhobWtTeStFRFEy?=
- =?utf-8?B?VE8vNFdTbGhMQ0pxeWx4S25TdnJnYkdYeFJ1SlJxRmZydFJldjUyODBJcnNq?=
- =?utf-8?B?U0ZnazlZZEJGSWxick9XbUZvNGZUU01yYmNxWjZpcEdWSWRja09vUi9IcTg0?=
- =?utf-8?B?bDBtVVJURGk2RVRLbkJrcDU5SWN5cDUrQzB6dGhZNktFdWZ3aklsOU82RnFo?=
- =?utf-8?B?Qkg3QjMrRjZCWlR2cEwzeEFXYkl4eHBaWDIveHJOYmZaaDlsTW00bHJYVDlV?=
- =?utf-8?B?ZHhuVlBmM1RBYU1CNXI2N0NiRTlOQ21CS3drd0Y3WVYxb2V6ZzZsTzIyRk9O?=
- =?utf-8?B?UGdKVWlXVldUdmdpSTFBZ3FORFJuaDFhbTJpVDM3S2Exd2lmenp5MysrMDZM?=
- =?utf-8?B?OUFtTzRJK2MvV0VHb1kzeGk0ZzZCaWp3cWp4alFsMFlLVlN4T3VZWEpQRmgr?=
- =?utf-8?B?L3Y5QlBweWpqMWR2aXd4YllSYmdjNnhNWHBna1BteFJVdGQwYnZyb3pXRVZ5?=
- =?utf-8?B?UWtpSnRFeHRycUM1UjZsTHJ1S3NoTlQ4VVU4WW9BczlCYmRuajB5K2pzT1Jm?=
- =?utf-8?B?WVJhZVhlMU9MZmRUM3FXOHJuQlRWc1RyeC9PVjBzR1JFcExUa3RCeTcyU2FN?=
- =?utf-8?B?dEE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 914c7818-aa5a-42db-3888-08db97c57c13
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2023 04:11:05.2392
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wKxqgFIovlw4d+XScEOkrBeGQPUoGEiGVENdRB2dEQVnvXDPy9sY3BOMSMJi8EDl9aSKU87S5ABXXSJwi3Owbw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6703
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Mathew McBride <matt@traverse.com.au>
+References: <20230808013157.80913-1-mark.tomlinson@alliedtelesis.co.nz>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 1/2] hwmon: Add driver for EMC181x temperature sensors
+In-Reply-To: <20230808013157.80913-1-mark.tomlinson@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -160,45 +78,443 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/7/23 18:31, Mark Tomlinson wrote:
+> This patch adds a HWMON driver for the EMC1812, EMC1813, EMC1814,
+> EMC1815 and EMC1833 temperature sensor chips from microchip. Does not
 
+Microchip
 
-On 8/8/2023 10:43 AM, Yu Zhao wrote:
-> On Mon, Aug 7, 2023 at 8:10 PM Yin Fengwei <fengwei.yin@intel.com> wrote:
->>
->> In madvise_cold_or_pageout_pte_range() and madvise_free_pte_range(),
->> folio_mapcount() is used to check whether the folio is shared. But it's
->> not correct as folio_mapcount() returns total mapcount of large folio.
->>
->> Use folio_estimated_sharers() here as the estimated number is enough.
->>
->>
->> This patchset will fix the cases:
->> User space application call madvise() with MADV_FREE, MADV_COLD and
->> MADV_PAGEOUT for specific address range. There are THP mapped to the
->> range. Without the patchset, the THP is skipped. With the patch, the
->> THP will be split and handled accordingly.
->>
->> David reported the cow self test skip some cases because of
->> MADV_PAGEOUT skip THP:
->> https://lore.kernel.org/linux-mm/9e92e42d-488f-47db-ac9d-75b24cd0d037@intel.com/T/#mbf0f2ec7fbe45da47526de1d7036183981691e81
->> and I confirmed this patchset make it work again.
->>
->>
->> Changelog from v1:
->>   - Avoid two Fixes tags make backport harder. Thank Andrew for pointing
->>     this out.
->>
->>   - Add note section to mention this is a temporary fix which is fine
->>     to reduce user-visble effects. For long term fix, we should wait for
->>     David's solution. Thank Ryan and David for pointing this out.
->>
->>   - Spell user-visible effects out. Then people could decide whether
->>     these patches are necessary for stable branch. Thank Andrew for
->>     pointing this out.
+> currently support the alert outputs.
 > 
-> LGTM, thank you.
-Thanks a lot for looking at this patchset.
 
+It doesn't support limit registers either. Odd, but I guess it is better to have
+some driver support than nothing.
 
-Regards
-Yin, Fengwei
+checkpatch --strict reports a couple of problems. Please fix.
+
+> Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+> Co-developed-by: Mathew McBride <matt@traverse.com.au>
+> Signed-off-by: Mathew McBride <matt@traverse.com.au>
+> ---
+>   drivers/hwmon/Kconfig   |  10 ++
+>   drivers/hwmon/Makefile  |   1 +
+>   drivers/hwmon/emc181x.c | 296 ++++++++++++++++++++++++++++++++++++++++
+
+Documentation missing.
+
+Also, please no wildcards in file names. EMC1833 doesn't even fit the pattern,
+and the driver doesn't support ENC18[01] or EMC181[6-9]. Use one of the chips
+as name. The datasheet says "EMC1812 family", which just as well works here.
+
+>   3 files changed, 307 insertions(+)
+>   create mode 100644 drivers/hwmon/emc181x.c
+> 
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 307477b8a371..196d91494536 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -1820,6 +1820,16 @@ config SENSORS_EMC1403
+>   	  Threshold values can be configured using sysfs.
+>   	  Data from the different diodes are accessible via sysfs.
+>   
+> +config SENSORS_EMC181X
+> +	tristate "SMSC EMC181X thermal sensor"
+
+Again, no wildcards here. Also, s/SMSC/Microchip/
+
+> +	depends on I2C
+> +	select REGMAP_I2C
+> +	help
+> +	  If you say yes here you get support for the SMSC EMC181X
+> +	  temperature monitoring chip.
+
+EMC181X does not exist. List the supported chips.
+
+> +
+> +	  Data from the different diodes are accessible via sysfs.
+
+That has no value.
+
+> +
+>   config SENSORS_EMC2103
+>   	tristate "SMSC EMC2103"
+>   	depends on I2C
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index 3f4b0fda0998..bcea887dfe17 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -69,6 +69,7 @@ obj-$(CONFIG_SENSORS_DRIVETEMP)	+= drivetemp.o
+>   obj-$(CONFIG_SENSORS_DS620)	+= ds620.o
+>   obj-$(CONFIG_SENSORS_DS1621)	+= ds1621.o
+>   obj-$(CONFIG_SENSORS_EMC1403)	+= emc1403.o
+> +obj-$(CONFIG_SENSORS_EMC181X)	+= emc181x.o
+>   obj-$(CONFIG_SENSORS_EMC2103)	+= emc2103.o
+>   obj-$(CONFIG_SENSORS_EMC2305)	+= emc2305.o
+>   obj-$(CONFIG_SENSORS_EMC6W201)	+= emc6w201.o
+> diff --git a/drivers/hwmon/emc181x.c b/drivers/hwmon/emc181x.c
+> new file mode 100644
+> index 000000000000..364d2bfb15ca
+> --- /dev/null
+> +++ b/drivers/hwmon/emc181x.c
+> @@ -0,0 +1,296 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Driver for the Microchip/SMSC EMC181x Temperature monitor
+> + *
+> + * Copyright (C) 2018-2019 Traverse Technologies
+> + * Author: Mathew McBride <matt@traverse.com.au>
+> + *
+> + * Copyright (C) 2023 Allied Telesis Labs
+> + * Author: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+> + *
+> + */
+> +
+> +#include <linux/err.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/hwmon-sysfs.h>
+
+Not needed
+
+> +#include <linux/of_device.h>
+> +#include <linux/i2c.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+
+Alphabetic order
+
+> +
+> +#define EMC1812_ID	0x81
+> +#define EMC1813_ID	0x87
+> +#define EMC1814_ID	0x84
+> +#define EMC1815_ID	0x85
+> +#define EMC1833_ID	0x83
+> +
+> +#define MICROCHIP_ID	0x54
+> +
+> +#define EMC181X_STATUS_REG	0x02
+> +#define EMC181X_CONFIG_REG	0x03
+> +#define EMC181X_DIODE_DATA_BASE	0x60
+> +#define EMC181X_PID_REG		0xfd
+> +#define EMC181X_SMSC_ID_REG	0xfe
+> +#define EMC181X_REVISION_REG	0xff
+
+Some of the above are not used. Drop unused definitions.
+
+> +
+> +/* Adjustable address type is 0x7c, 0x5c, 0x4c, 0x6c, 0x1c, 0x3c */
+> +/* Fixed address is either 0x4c or 0x45 */
+
+Irrelevant here.
+
+> +static const unsigned short emc181x_address_list[] = {
+> +	0x7c, 0x5c, 0x4c, 0x6c, 0x1c, 0x3c, 0x45, I2C_CLIENT_END
+
+Numeric order, please.
+
+> +};
+> +
+> +enum chips {
+> +	emc1812, emc1813,
+> +	emc1814, emc1815,
+> +	emc1833,
+
+One line is enough.
+
+> +};
+> +
+> +struct emc181x_data {
+> +	struct i2c_client *i2c;
+> +	enum chips type;
+> +	bool is_extended_range;
+> +};
+> +
+> +static int emc181x_read(struct device *dev, enum hwmon_sensor_types type,
+> +			u32 attr, int channel, long *val)
+> +{
+> +	struct emc181x_data *data = dev_get_drvdata(dev);
+> +	struct i2c_client *i2c = data->i2c;
+> +
+Unnecessary empty line.
+
+> +	u8 channel_reg = 0;
+> +	s32 channel_deg = 0;
+> +	s32 channel_frac = 0;
+
+No unnecessary initializations, please.
+
+> +
+> +	if (type != hwmon_temp)
+> +		return -EOPNOTSUPP;
+> +	if (channel > 4)
+> +		return -EINVAL;
+> +
+> +	channel_reg = EMC181X_DIODE_DATA_BASE + (channel * 0x02);
+> +	channel_deg = i2c_smbus_read_byte_data(i2c, channel_reg);
+> +	if (channel_deg < 0)
+> +		return channel_deg;
+> +	if (data->is_extended_range)
+> +		channel_deg -= 64;
+> +
+> +	channel_frac = i2c_smbus_read_byte_data(i2c, channel_reg + 0x01);
+> +	if (channel_frac < 0)
+> +		return channel_frac;
+> +
+The above either needs to be mutex protected, or i2c_smbus_read_word_data()
+needs to be used.
+
+> +	*val = ((channel_deg << 3) | (channel_frac >> 5)) * 125;
+> +	return 0;
+> +}
+> +
+> +static umode_t emc181x_is_visible(const void *drvdata, enum hwmon_sensor_types type,
+> +				  u32 attr, int channel)
+> +{
+> +	if (type == hwmon_temp && attr == hwmon_temp_input)
+> +		return 0444;
+> +	else
+
+else after return is pointless.
+
+> +		return 0;
+> +}
+> +
+> +static const struct hwmon_channel_info *emc1812_info[] = {
+> +	HWMON_CHANNEL_INFO(chip, HWMON_C_REGISTER_TZ),
+> +	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT, HWMON_T_INPUT),
+> +	NULL
+> +};
+> +
+> +static const struct hwmon_channel_info *emc1813_info[] = {
+> +	HWMON_CHANNEL_INFO(chip, HWMON_C_REGISTER_TZ),
+> +	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT, HWMON_T_INPUT, HWMON_T_INPUT),
+> +	NULL
+> +};
+> +
+> +static const struct hwmon_channel_info *emc1814_info[] = {
+> +	HWMON_CHANNEL_INFO(chip, HWMON_C_REGISTER_TZ),
+> +	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT, HWMON_T_INPUT, HWMON_T_INPUT,
+> +			   HWMON_T_INPUT),
+> +	NULL
+> +};
+> +
+> +static const struct hwmon_channel_info *emc1815_info[] = {
+> +	HWMON_CHANNEL_INFO(chip, HWMON_C_REGISTER_TZ),
+> +	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT, HWMON_T_INPUT, HWMON_T_INPUT,
+> +			   HWMON_T_INPUT, HWMON_T_INPUT),
+> +	NULL
+> +};
+
+Only one of those is needed. The others should be handled with
+the is_visible() function.
+
+> +
+> +static const struct hwmon_ops emc181x_ops = {
+> +	.is_visible = emc181x_is_visible,
+> +	.read = emc181x_read,
+> +};
+> +
+> +static const struct hwmon_chip_info emc181x_chip_info[] = {
+> +	[emc1812] = {
+> +		.ops = &emc181x_ops,
+> +		.info = emc1812_info,
+> +	},
+> +	[emc1813] = {
+> +		.ops = &emc181x_ops,
+> +		.info = emc1813_info,
+> +	},
+> +	[emc1814] = {
+> +		.ops = &emc181x_ops,
+> +		.info = emc1814_info,
+> +	},
+> +	[emc1815] = {
+> +		.ops = &emc181x_ops,
+> +		.info = emc1815_info,
+> +	},
+> +	[emc1833] = {
+> +		.ops = &emc181x_ops,
+> +		.info = emc1813_info,
+> +	},
+> +};
+> +
+> +static const struct i2c_device_id emc181x_i2c_id[] = {
+> +	{ "emc1812", emc1812 },
+> +	{ "emc1813", emc1813 },
+> +	{ "emc1814", emc1814 },
+> +	{ "emc1815", emc1815 },
+> +	{ "emc1833", emc1833 },
+> +	{}
+> +};
+> +
+> +MODULE_DEVICE_TABLE(i2c, emc181x_i2c_id);
+> +
+> +/* Return 0 if detection is successful, -ENODEV otherwise */
+
+... which is violated below.
+
+> +static int emc181x_i2c_detect(struct i2c_client *client,
+> +		       struct i2c_board_info *info)
+> +{
+> +	struct i2c_adapter *adapter = client->adapter;
+> +	int pid, id, rev;
+> +	const char *name;
+> +
+> +	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA |
+> +				     I2C_FUNC_SMBUS_WORD_DATA))
+
+While the driver should use I2C_FUNC_SMBUS_WORD_DATA, it currently doesn't.
+
+> +		return -ENODEV;
+> +
+> +	/* Determine the chip type */
+
+Unnecessary comment
+
+> +	id = i2c_smbus_read_byte_data(client, EMC181X_SMSC_ID_REG);
+> +	if (id < 0)
+> +		return id;
+
+-ENODEV should be returned here; if this is not an expected chip there
+may be no register at this address.
+
+> +	if (id != MICROCHIP_ID)
+> +		return -ENODEV;
+> +	pid = i2c_smbus_read_byte_data(client, EMC181X_PID_REG);
+> +	if (pid < 0)
+> +		return pid;
+> +	rev = i2c_smbus_read_byte_data(client, EMC181X_REVISION_REG);
+> +	if (rev < 0)
+> +		return rev;
+> +
+> +	switch (pid) {
+> +	case EMC1812_ID:
+> +		name = emc181x_i2c_id[emc1812].name;
+> +		break;
+> +	case EMC1813_ID:
+> +		name = emc181x_i2c_id[emc1813].name;
+> +		break;
+> +	case EMC1814_ID:
+> +		name = emc181x_i2c_id[emc1814].name;
+> +		break;
+> +	case EMC1815_ID:
+> +		name = emc181x_i2c_id[emc1815].name;
+> +		break;
+> +	case EMC1833_ID:
+> +		name = emc181x_i2c_id[emc1833].name;
+> +		break;
+> +	default:
+> +		return -ENODEV;
+> +	}
+> +	strscpy(info->type, name, I2C_NAME_SIZE);
+> +
+> +	dev_dbg(&client->dev,
+> +		"Detected device %s at 0x%02x with COMPANY: 0x%02x and PID: 0x%02x REV: 0x%02x\n",
+> +		name, client->addr, id, pid, rev);
+
+COMPANY is pretty pointless here.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int emc181x_i2c_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	struct device *hwmon_dev;
+> +	struct emc181x_data *data;
+> +	s32 regval;
+> +	u8 config;
+> +
+> +	data = devm_kzalloc(dev, sizeof(struct emc181x_data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	data->i2c = client;
+> +	if (dev_fwnode(dev)) {
+> +		data->type = (enum chips)device_get_match_data(dev);
+> +		data->is_extended_range = device_property_present(dev, "emc181x,extended-range");
+> +	} else
+> +		data->type = i2c_match_id(emc181x_i2c_id, client)->driver_data;
+> +
+> +	regval = i2c_smbus_read_byte_data(client, EMC181X_CONFIG_REG);
+> +	if (regval < 0) {
+> +		dev_dbg(dev, "Failed to read config reg %d", regval);
+> +		return regval;
+> +	}
+> +
+> +	/* By default, extended range is disabled in the EMC181X,
+> +	 * if enabled we need to set this in the CONFIG register.
+> +	 */
+
+This is not the networking subsystem. Please use standard multi-line comments.
+
+> +	config = regval & ~0x04;
+> +	if (data->is_extended_range)
+> +		config |= 0x04;
+> +
+> +	dev_dbg(dev, "EMC181X setting CONFIG to %d\n", config);
+> +	if (config != regval)
+> +		i2c_smbus_write_byte_data(client, EMC181X_CONFIG_REG, config);
+
+Error handling missing.
+
+> +
+> +	hwmon_dev = devm_hwmon_device_register_with_info(dev,
+> +			client->name,
+> +			data,
+> +			&emc181x_chip_info[data->type],
+> +			NULL);
+
+Limit the number of continuation lines to what is necessary.
+
+> +
+> +	return PTR_ERR_OR_ZERO(hwmon_dev);
+> +}
+> +
+> +static const struct of_device_id __maybe_unused emc181x_of_match[] = {
+
+Drop __maybe_unused
+
+> +	{
+> +		.compatible = "microchip,emc1812",
+> +		.data = (void *)emc1812
+> +	},
+> +	{
+> +		.compatible = "microchip,emc1813",
+> +		.data = (void *)emc1813
+> +	},
+> +	{
+> +		.compatible = "microchip,emc1814",
+> +		.data = (void *)emc1814
+> +	},
+> +	{
+> +		.compatible = "microchip,emc1815",
+> +		.data = (void *)emc1815
+> +	},
+> +	{
+> +		.compatible = "microchip,emc1833",
+> +		.data = (void *)emc1833
+> +	},
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, emc181x_of_match);
+> +
+> +static struct i2c_driver emc181x_i2c_driver = {
+> +	.driver = {
+> +		.name = "emc181x",
+> +		.of_match_table = of_match_ptr(emc181x_of_match),
+
+Drop of_match_ptr
+
+> +	},
+> +	.probe = emc181x_i2c_probe,
+> +	.id_table = emc181x_i2c_id,
+> +	.detect = emc181x_i2c_detect,
+> +	.address_list = emc181x_address_list,
+> +};
+> +
+> +module_i2c_driver(emc181x_i2c_driver);
+> +
+> +MODULE_DESCRIPTION("EMC181X Sensor Driver");
+> +MODULE_AUTHOR("Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>");
+> +MODULE_LICENSE("GPL");
+
