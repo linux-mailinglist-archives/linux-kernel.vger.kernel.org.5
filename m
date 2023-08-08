@@ -2,202 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 711D5774239
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB40773FAA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234756AbjHHRhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
+        id S233593AbjHHQuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234838AbjHHRgW (ORCPT
+        with ESMTP id S232859AbjHHQts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:36:22 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B19BC21;
-        Tue,  8 Aug 2023 09:15:53 -0700 (PDT)
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3785lw1X024740;
-        Tue, 8 Aug 2023 03:51:36 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3s9kb1yvwb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Aug 2023 03:51:35 -0400 (EDT)
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 3787pYRS028429
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Aug 2023 03:51:34 -0400
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 8 Aug 2023 03:51:33 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 8 Aug 2023 03:51:33 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Tue, 8 Aug 2023 03:51:33 -0400
-Received: from rbolboac.ad.analog.com ([10.48.65.173])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3787pN8w011820;
-        Tue, 8 Aug 2023 03:51:28 -0400
-From:   Ramona Bolboaca <ramona.bolboaca@analog.com>
-To:     <jic23@kernel.org>, <nuno.sa@analog.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Ramona Bolboaca <ramona.bolboaca@analog.com>
-Subject: [PATCH v5 1/3] iio: Add IIO_DELTA_ANGL channel type
-Date:   Tue, 8 Aug 2023 10:50:57 +0300
-Message-ID: <20230808075059.645525-2-ramona.bolboaca@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230808075059.645525-1-ramona.bolboaca@analog.com>
-References: <20230808075059.645525-1-ramona.bolboaca@analog.com>
+        Tue, 8 Aug 2023 12:49:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0344AA97
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:57:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691510136;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I61UNjTLAG95oq9qtMKUyrUKZXpIaEksaYyC4k2Zul0=;
+        b=S+vNn/VwHgDDObsrBEuoAkRq5C73RfF9vW5k5bPxiVPgOvGUYqUmbc5g/JiWdZ7Mcywdk1
+        MeeAsQ3L0etl3owJgTdQK0iZx6lrOYiBruZKhDwRJmmD7k+Rm6UhrqbW3t8kDaFVkqjef4
+        X3DcD3kpx80yyeqvR5p6mwbtuWCvCxU=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-632-jUnMZVKdMIe5m7HDZxfm5Q-1; Tue, 08 Aug 2023 03:51:07 -0400
+X-MC-Unique: jUnMZVKdMIe5m7HDZxfm5Q-1
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-56357814339so3477231a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 00:51:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691481066; x=1692085866;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I61UNjTLAG95oq9qtMKUyrUKZXpIaEksaYyC4k2Zul0=;
+        b=ZAffNVvXgWRZWVIurYw/u9EpVRULRnIsrs+ps9ZC6PS6FqjuH4Hebw5lvWyhAPxxdP
+         ILWI0sHsKPBzJRdvB32ohEKe7ssZtB9yjlc+oAojDzpVgcRGgE4wvJtY9fshBjdKqqZo
+         BIGdqW39FgVK6lnwAogpnwY41apVUnouQAHFlAs6a5P7NwHBWPJQh+w0K1AZ4IusyLba
+         gn+O+81UkrRsIYrdDQa8R8yaqpbIOGLrJ843fteQnux2+cA8YSnXtCLkDshJoPgFyIEf
+         EvzTYRcX+1dquErpLG1yuJCRsZOPBf2Z3xTjVhqApvH+McSoKP5YBjMcNrkCI65TqyXL
+         09Cw==
+X-Gm-Message-State: AOJu0YwY1qSN8dPz85QBN10SBGxDfdNtqrjFE2ncroHa+5cEUoFBV2N9
+        VNxTlekjy6dQnI8k9j8VcyjdnhvoTyByR/YU0C+R/1qcuN4Rs0ZjRFBGgh7XcnMncwPJMqK10vI
+        tOtz+t3AApCDPbV8zmteWfZVd
+X-Received: by 2002:a17:90a:1f06:b0:262:e49b:12d0 with SMTP id u6-20020a17090a1f0600b00262e49b12d0mr7464990pja.48.1691481066322;
+        Tue, 08 Aug 2023 00:51:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHTrnPTN25dJ5Xvq4lyfSvE+5LAMnJSWzkQdpqVJ6TSUnn1I/3RUmRCjFP3/Qd+tphTyy7tWw==
+X-Received: by 2002:a17:90a:1f06:b0:262:e49b:12d0 with SMTP id u6-20020a17090a1f0600b00262e49b12d0mr7464986pja.48.1691481065875;
+        Tue, 08 Aug 2023 00:51:05 -0700 (PDT)
+Received: from [10.72.12.166] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id js22-20020a17090b149600b00262e485156esm9877439pjb.57.2023.08.08.00.51.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 00:51:05 -0700 (PDT)
+Message-ID: <72db4603-e350-ac24-5819-d2519ce809b6@redhat.com>
+Date:   Tue, 8 Aug 2023 15:50:59 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: QCXNNFfBfNRx1lxItSeiGiisGoIvXKHV
-X-Proofpoint-ORIG-GUID: QCXNNFfBfNRx1lxItSeiGiisGoIvXKHV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-08_06,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 suspectscore=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
- mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2306200000 definitions=main-2308080070
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v10 00/12] ceph: support idmapped mounts
+To:     Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Cc:     brauner@kernel.org, stgraber@ubuntu.com,
+        linux-fsdevel@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230807132626.182101-1-aleksandr.mikhalitsyn@canonical.com>
+ <bcda164b-e4b7-1c16-2714-13e3c6514b47@redhat.com>
+ <CAEivzxfsj82q2x3C2U6yemB9qRrLnW+fLAAE=e7Tq-LDDfH0-g@mail.gmail.com>
+Content-Language: en-US
+From:   Xiubo Li <xiubli@redhat.com>
+In-Reply-To: <CAEivzxfsj82q2x3C2U6yemB9qRrLnW+fLAAE=e7Tq-LDDfH0-g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The delta angle is defined as a piece-wise integration of angular
-velocity data. The delta angle represents the amount of
-angular displacement between two consecutive measurements and it
-is measured in radians.
 
-In order to track the total angular displacement during a desired
-period of time, simply sum-up the delta angle samples acquired
-during that time.
+On 8/8/23 14:30, Aleksandr Mikhalitsyn wrote:
+> On Tue, Aug 8, 2023 at 2:45 AM Xiubo Li <xiubli@redhat.com> wrote:
+>> LGTM.
+>>
+>> Reviewed-by: Xiubo Li <xiubli@redhat.com>
+>>
+>> I will queue this to the 'testing' branch and then we will run ceph qa
+>> tests.
+> Thanks, Xiubo!
+>
+> JFYI: commit ordering in
+> https://github.com/ceph/ceph-client/commits/testing looks a little bit
+> weird
+> probably something got wrong during patch application to the tree.
 
-IIO currently does not offer a suitable channel type for this
-type of measurements hence this patch adds it.
+I will check it.
 
-Signed-off-by: Ramona Bolboaca <ramona.bolboaca@analog.com>
----
- Documentation/ABI/testing/sysfs-bus-iio | 22 ++++++++++++++++++++++
- drivers/iio/industrialio-core.c         |  1 +
- include/uapi/linux/iio/types.h          |  1 +
- tools/iio/iio_event_monitor.c           |  2 ++
- 4 files changed, 26 insertions(+)
+Thanks
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-index a2854dc9a839..363dd4b09930 100644
---- a/Documentation/ABI/testing/sysfs-bus-iio
-+++ b/Documentation/ABI/testing/sysfs-bus-iio
-@@ -279,6 +279,20 @@ Description:
- 		but should match other such assignments on device).
- 		Units after application of scale and offset are m/s^2.
- 
-+What:		/sys/bus/iio/devices/iio:deviceX/in_deltaangl_x_raw
-+What:		/sys/bus/iio/devices/iio:deviceX/in_deltaangl_y_raw
-+What:		/sys/bus/iio/devices/iio:deviceX/in_deltaangl_z_raw
-+KernelVersion:	6.5
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Angular displacement between two consecutive samples on x, y or
-+		z (may be arbitrarily assigned but should match other such
-+		assignments on device).
-+		In order to compute the total angular displacement during a
-+		desired period of time, the application should sum-up the delta
-+		angle samples acquired during that time.
-+		Units after application of scale and offset are radians.
-+
- What:		/sys/bus/iio/devices/iio:deviceX/in_angl_raw
- What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_raw
- KernelVersion:	4.17
-@@ -461,6 +475,7 @@ What:		/sys/bus/iio/devices/iio:deviceX/in_humidityrelative_scale
- What:		/sys/bus/iio/devices/iio:deviceX/in_velocity_sqrt(x^2+y^2+z^2)_scale
- What:		/sys/bus/iio/devices/iio:deviceX/in_illuminance_scale
- What:		/sys/bus/iio/devices/iio:deviceX/in_countY_scale
-+What:		/sys/bus/iio/devices/iio:deviceX/in_deltaangl_scale
- What:		/sys/bus/iio/devices/iio:deviceX/in_angl_scale
- What:		/sys/bus/iio/devices/iio:deviceX/in_intensity_x_scale
- What:		/sys/bus/iio/devices/iio:deviceX/in_intensity_y_scale
-@@ -1332,6 +1347,9 @@ Description:
- What:		/sys/.../iio:deviceX/bufferY/in_accel_x_en
- What:		/sys/.../iio:deviceX/bufferY/in_accel_y_en
- What:		/sys/.../iio:deviceX/bufferY/in_accel_z_en
-+What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_x_en
-+What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_y_en
-+What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_z_en
- What:		/sys/.../iio:deviceX/bufferY/in_anglvel_x_en
- What:		/sys/.../iio:deviceX/bufferY/in_anglvel_y_en
- What:		/sys/.../iio:deviceX/bufferY/in_anglvel_z_en
-@@ -1362,6 +1380,7 @@ Description:
- 		Scan element control for triggered data capture.
- 
- What:		/sys/.../iio:deviceX/bufferY/in_accel_type
-+What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_type
- What:		/sys/.../iio:deviceX/bufferY/in_anglvel_type
- What:		/sys/.../iio:deviceX/bufferY/in_magn_type
- What:		/sys/.../iio:deviceX/bufferY/in_incli_type
-@@ -1416,6 +1435,9 @@ What:		/sys/.../iio:deviceX/bufferY/in_voltage_q_index
- What:		/sys/.../iio:deviceX/bufferY/in_accel_x_index
- What:		/sys/.../iio:deviceX/bufferY/in_accel_y_index
- What:		/sys/.../iio:deviceX/bufferY/in_accel_z_index
-+What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_x_index
-+What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_y_index
-+What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_z_index
- What:		/sys/.../iio:deviceX/bufferY/in_anglvel_x_index
- What:		/sys/.../iio:deviceX/bufferY/in_anglvel_y_index
- What:		/sys/.../iio:deviceX/bufferY/in_anglvel_z_index
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index a92b8b6ad647..2e2fd0be2504 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -89,6 +89,7 @@ static const char * const iio_chan_type_name_spec[] = {
- 	[IIO_POSITIONRELATIVE]  = "positionrelative",
- 	[IIO_PHASE] = "phase",
- 	[IIO_MASSCONCENTRATION] = "massconcentration",
-+	[IIO_DELTA_ANGL] = "deltaangl",
- };
- 
- static const char * const iio_modifier_names[] = {
-diff --git a/include/uapi/linux/iio/types.h b/include/uapi/linux/iio/types.h
-index c79f2f046a0b..55666a17d311 100644
---- a/include/uapi/linux/iio/types.h
-+++ b/include/uapi/linux/iio/types.h
-@@ -47,6 +47,7 @@ enum iio_chan_type {
- 	IIO_POSITIONRELATIVE,
- 	IIO_PHASE,
- 	IIO_MASSCONCENTRATION,
-+	IIO_DELTA_ANGL,
- };
- 
- enum iio_modifier {
-diff --git a/tools/iio/iio_event_monitor.c b/tools/iio/iio_event_monitor.c
-index 0a5c2bb60030..3505450060e6 100644
---- a/tools/iio/iio_event_monitor.c
-+++ b/tools/iio/iio_event_monitor.c
-@@ -59,6 +59,7 @@ static const char * const iio_chan_type_name_spec[] = {
- 	[IIO_POSITIONRELATIVE] = "positionrelative",
- 	[IIO_PHASE] = "phase",
- 	[IIO_MASSCONCENTRATION] = "massconcentration",
-+	[IIO_DELTA_ANGL] = "deltaangl",
- };
- 
- static const char * const iio_ev_type_text[] = {
-@@ -173,6 +174,7 @@ static bool event_is_known(struct iio_event_data *event)
- 	case IIO_POSITIONRELATIVE:
- 	case IIO_PHASE:
- 	case IIO_MASSCONCENTRATION:
-+	case IIO_DELTA_ANGL:
- 		break;
- 	default:
- 		return false;
--- 
-2.34.1
+- Xiubo
+
+
+> Kind regards,
+> Alex
+>
+>> Thanks Alex.
+>>
+>> - Xiubo
+>>
+>> On 8/7/23 21:26, Alexander Mikhalitsyn wrote:
+>>> Dear friends,
+>>>
+>>> This patchset was originally developed by Christian Brauner but I'll continue
+>>> to push it forward. Christian allowed me to do that :)
+>>>
+>>> This feature is already actively used/tested with LXD/LXC project.
+>>>
+>>> Git tree (based on https://github.com/ceph/ceph-client.git testing):
+>>> v10: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v10
+>>> current: https://github.com/mihalicyn/linux/tree/fs.idmapped.ceph
+>>>
+>>> In the version 3 I've changed only two commits:
+>>> - fs: export mnt_idmap_get/mnt_idmap_put
+>>> - ceph: allow idmapped setattr inode op
+>>> and added a new one:
+>>> - ceph: pass idmap to __ceph_setattr
+>>>
+>>> In the version 4 I've reworked the ("ceph: stash idmapping in mdsc request")
+>>> commit. Now we take idmap refcounter just in place where req->r_mnt_idmap
+>>> is filled. It's more safer approach and prevents possible refcounter underflow
+>>> on error paths where __register_request wasn't called but ceph_mdsc_release_request is
+>>> called.
+>>>
+>>> Changelog for version 5:
+>>> - a few commits were squashed into one (as suggested by Xiubo Li)
+>>> - started passing an idmapping everywhere (if possible), so a caller
+>>> UID/GID-s will be mapped almost everywhere (as suggested by Xiubo Li)
+>>>
+>>> Changelog for version 6:
+>>> - rebased on top of testing branch
+>>> - passed an idmapping in a few places (readdir, ceph_netfs_issue_op_inline)
+>>>
+>>> Changelog for version 7:
+>>> - rebased on top of testing branch
+>>> - this thing now requires a new cephfs protocol extension CEPHFS_FEATURE_HAS_OWNER_UIDGID
+>>> https://github.com/ceph/ceph/pull/52575
+>>>
+>>> Changelog for version 8:
+>>> - rebased on top of testing branch
+>>> - added enable_unsafe_idmap module parameter to make idmapped mounts
+>>> work with old MDS server versions
+>>> - properly handled case when old MDS used with new kernel client
+>>>
+>>> Changelog for version 9:
+>>> - added "struct_len" field in struct ceph_mds_request_head as requested by Xiubo Li
+>>>
+>>> Changelog for version 10:
+>>> - fill struct_len field properly (use cpu_to_le32)
+>>> - add extra checks IS_CEPH_MDS_OP_NEWINODE(..) as requested by Xiubo to match
+>>>     userspace client behavior
+>>> - do not set req->r_mnt_idmap for MKSNAP operation
+>>> - atomic_open: set req->r_mnt_idmap only for CEPH_MDS_OP_CREATE as userspace client does
+>>>
+>>> I can confirm that this version passes xfstests and
+>>> tested with old MDS (without CEPHFS_FEATURE_HAS_OWNER_UIDGID)
+>>> and with recent MDS version.
+>>>
+>>> Links to previous versions:
+>>> v1: https://lore.kernel.org/all/20220104140414.155198-1-brauner@kernel.org/
+>>> v2: https://lore.kernel.org/lkml/20230524153316.476973-1-aleksandr.mikhalitsyn@canonical.com/
+>>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v2
+>>> v3: https://lore.kernel.org/lkml/20230607152038.469739-1-aleksandr.mikhalitsyn@canonical.com/#t
+>>> v4: https://lore.kernel.org/lkml/20230607180958.645115-1-aleksandr.mikhalitsyn@canonical.com/#t
+>>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v4
+>>> v5: https://lore.kernel.org/lkml/20230608154256.562906-1-aleksandr.mikhalitsyn@canonical.com/#t
+>>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v5
+>>> v6: https://lore.kernel.org/lkml/20230609093125.252186-1-aleksandr.mikhalitsyn@canonical.com/
+>>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v6
+>>> v7: https://lore.kernel.org/all/20230726141026.307690-1-aleksandr.mikhalitsyn@canonical.com/
+>>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v7
+>>> v8: https://lore.kernel.org/all/20230803135955.230449-1-aleksandr.mikhalitsyn@canonical.com/
+>>> tree: -
+>>> v9: https://lore.kernel.org/all/20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com/
+>>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v9
+>>>
+>>> Kind regards,
+>>> Alex
+>>>
+>>> Original description from Christian:
+>>> ========================================================================
+>>> This patch series enables cephfs to support idmapped mounts, i.e. the
+>>> ability to alter ownership information on a per-mount basis.
+>>>
+>>> Container managers such as LXD support sharaing data via cephfs between
+>>> the host and unprivileged containers and between unprivileged containers.
+>>> They may all use different idmappings. Idmapped mounts can be used to
+>>> create mounts with the idmapping used for the container (or a different
+>>> one specific to the use-case).
+>>>
+>>> There are in fact more use-cases such as remapping ownership for
+>>> mountpoints on the host itself to grant or restrict access to different
+>>> users or to make it possible to enforce that programs running as root
+>>> will write with a non-zero {g,u}id to disk.
+>>>
+>>> The patch series is simple overall and few changes are needed to cephfs.
+>>> There is one cephfs specific issue that I would like to discuss and
+>>> solve which I explain in detail in:
+>>>
+>>> [PATCH 02/12] ceph: handle idmapped mounts in create_request_message()
+>>>
+>>> It has to do with how to handle mds serves which have id-based access
+>>> restrictions configured. I would ask you to please take a look at the
+>>> explanation in the aforementioned patch.
+>>>
+>>> The patch series passes the vfs and idmapped mount testsuite as part of
+>>> xfstests. To run it you will need a config like:
+>>>
+>>> [ceph]
+>>> export FSTYP=ceph
+>>> export TEST_DIR=/mnt/test
+>>> export TEST_DEV=10.103.182.10:6789:/
+>>> export TEST_FS_MOUNT_OPTS="-o name=admin,secret=$password
+>>>
+>>> and then simply call
+>>>
+>>> sudo ./check -g idmapped
+>>>
+>>> ========================================================================
+>>>
+>>> Alexander Mikhalitsyn (3):
+>>>     fs: export mnt_idmap_get/mnt_idmap_put
+>>>     ceph: add enable_unsafe_idmap module parameter
+>>>     ceph: pass idmap to __ceph_setattr
+>>>
+>>> Christian Brauner (9):
+>>>     ceph: stash idmapping in mdsc request
+>>>     ceph: handle idmapped mounts in create_request_message()
+>>>     ceph: pass an idmapping to mknod/symlink/mkdir
+>>>     ceph: allow idmapped getattr inode op
+>>>     ceph: allow idmapped permission inode op
+>>>     ceph: allow idmapped setattr inode op
+>>>     ceph/acl: allow idmapped set_acl inode op
+>>>     ceph/file: allow idmapped atomic_open inode op
+>>>     ceph: allow idmapped mounts
+>>>
+>>>    fs/ceph/acl.c                 |  6 +--
+>>>    fs/ceph/crypto.c              |  2 +-
+>>>    fs/ceph/dir.c                 |  4 ++
+>>>    fs/ceph/file.c                | 11 ++++-
+>>>    fs/ceph/inode.c               | 29 +++++++------
+>>>    fs/ceph/mds_client.c          | 78 ++++++++++++++++++++++++++++++++---
+>>>    fs/ceph/mds_client.h          |  8 +++-
+>>>    fs/ceph/super.c               |  7 +++-
+>>>    fs/ceph/super.h               |  3 +-
+>>>    fs/mnt_idmapping.c            |  2 +
+>>>    include/linux/ceph/ceph_fs.h  | 10 ++++-
+>>>    include/linux/mnt_idmapping.h |  3 ++
+>>>    12 files changed, 136 insertions(+), 27 deletions(-)
+>>>
 
