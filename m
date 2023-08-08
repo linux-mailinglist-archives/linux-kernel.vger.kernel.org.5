@@ -2,85 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89ED47741FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C1D7740F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232948AbjHHRbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
+        id S234126AbjHHRNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjHHRbB (ORCPT
+        with ESMTP id S234279AbjHHRMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:31:01 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E000D8DCE3
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:13:28 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bb9e6c2a90so51074595ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:13:28 -0700 (PDT)
+        Tue, 8 Aug 2023 13:12:20 -0400
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722551BAE6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:05:12 -0700 (PDT)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1bfc2b68090so2505301fac.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:05:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691511166; x=1692115966;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h1jWjdgcMtkS8z/zWGRD8ihE010a+ozHwBFvKhqo23k=;
-        b=IQ4e883PcbGXJLGXsv6loFFcMtpXi4wjEfnh18jjRQcOLfD+VonAiUHh71MttyYU4v
-         JTeHRock/YO4o38UaKCR/vtnuxZfgm8A/bssWIiM0mHOv1vUVPpxU5vFKtQnz1Zc4InR
-         qz4Gjj0qhTnHhu+NUmmmtOY9Tw3oUvSe3AhzpqMLL/ORvLpnQ97sU/RgmJ6B6ceBR1dd
-         puhGYeZvTZdtOLTq07MH76juJnjXeRGvw7P52yiqZNyrgVsuSxGKrsbXsYIQe0asS8ke
-         /LaMNzEKhRXQo045I584fQaTWUl2oLagAesVu2cZH1rrhl00TrkdGhrva8QvIjB4wDjX
-         K+1A==
+        d=linaro.org; s=google; t=1691510706; x=1692115506;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1aaFBO37dpPCuMBG1yWUb85dTTA1EjCFwxXfWyjK7Qw=;
+        b=y63voWtx6D7gZlqFm7GmDtTJUHkJeQn+xveYreRAhMpkZB8YxjIzSMztYWtD2pXqy9
+         QRGNjZtOeHVMsC6cT0kO0V1AAwj26YwM+UAVRGvjZAhCN/XwhfpMKH5IKIQ0QJ8HshDL
+         +MBgRjLuY4Yqa1cDkMsf0Vis92uovto1nAXCwGg4ok+4ia7m6mb+9aop0i3dSNMdnM5X
+         IiWIEK4sIlVtPOynpKRcP8Jp1Ve7jGyu4mOcjquU6bBbdGe452KybS8SaQn1T2nljHDF
+         IP7szJANFzMUoktMqYEC7X71XaPt2l70A5e1dqS4XWJyYryj/RS3aLQLjDGYU04M1WoE
+         XRkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511166; x=1692115966;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h1jWjdgcMtkS8z/zWGRD8ihE010a+ozHwBFvKhqo23k=;
-        b=O5mIqz785EUHJiYeumYYZef27nS6FeL2nwoPHE1LX7O7at34Bdh6r44tGa6I0BfriQ
-         yOfw3RrTWOlmJ0LD84ScL2WxPnGXJbqBe6tvHhHo8/SuLu9T+BfJjIojIulpjNTnZ4u+
-         I396Yb5905GqBwwjQ+aNV4XuhE2blgbY2uSmZckuQRgexTq+r+zzW8L8nBr8dNXlc/Lq
-         KjsXtYXe17fNKu/i1qQxBMCJbyCRELeYkGM5Dptj1r1wg/3rQLHMpQxxG2f6wREVFb8W
-         NzQScFLFKMAckN8uZw9fVee7tOJMP4mO63NgwYw4qy+cWEI+IryoKWjkSoU6afSyUuYY
-         ZWEw==
-X-Gm-Message-State: AOJu0Yzb+ceSfe7HrAN+2MT/gkAMqea1JIXwatg2a/2oFQHGhFq427mM
-        0U32u27V/6zRZ+/1791sK74/PJhlKSsHOsUu+jPSE6CwnGzIdUgB
-X-Google-Smtp-Source: AGHT+IE/m/O86+1kRO0A1smGtafOuu/t8la0fmfi5L2yurMCmbtwgtH9QAEdX4VoPwi2Z4+7B32cwpghwJP0TuXuQTc=
-X-Received: by 2002:a25:5083:0:b0:d47:5994:c0fd with SMTP id
- e125-20020a255083000000b00d475994c0fdmr6301271ybb.49.1691485264866; Tue, 08
- Aug 2023 02:01:04 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691510706; x=1692115506;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1aaFBO37dpPCuMBG1yWUb85dTTA1EjCFwxXfWyjK7Qw=;
+        b=IIGTlXyw/oDEI4TKSMxmEWONIyFKnzPCzNmFqTLT69WzCTc7tFLprb3rac3S50Qvf0
+         8GcJ5QYjOWdtfUY/X75sTROsfNp8PLGFhMUNQ+OFmF0dQj+mk4yAzvvfz196PEM4G/C5
+         cSriWHBMl6flSR4Aho3uY+ol8SoUVT89zyPWkx/Y2KhS/4gQ3NxsC78YK5Y9Cci15hTy
+         ezi5cWz+PagwBVHeuEAc5U2wiWXtjddxiHLkbqT4qowK0MEgaxQEyeRGi4+m9whM/o2w
+         t8fVjGHCIwzNdpLF+e2MJxQSgw3hrJ6e//KGn6A6y+4H9lDh0V7a2f4ZrDhcu9YZiBfn
+         zTPQ==
+X-Gm-Message-State: AOJu0YymW2C2HVGGjpEeSkCbHvpb8F6FWHyRMUqxsT1+iF0x5QOHPIDy
+        /ixv62t+b0m+I85SvW6W0H8hF/2GY5B8WRA/mDoDtTj9ugip9zHX9ds=
+X-Google-Smtp-Source: AGHT+IFJj9e2EUCkSwSgqtF2y3ZesBe+F0eiTcoGfYJG3GoyMXdp+CIP9EhdafPQbyNW+qk99mZLa2MicI2Cz2nNz/g=
+X-Received: by 2002:a25:4ec6:0:b0:d35:9a48:51b0 with SMTP id
+ c189-20020a254ec6000000b00d359a4851b0mr7568564ybb.7.1691485293733; Tue, 08
+ Aug 2023 02:01:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230726150225.483464-1-herve.codina@bootlin.com>
- <20230726150225.483464-25-herve.codina@bootlin.com> <CACRpkdYXCQRd3ZXNGHwMaQYiJc7tGtAJnBaSh5O-8ruDAJVdiA@mail.gmail.com>
- <8f80edf2-c93d-416f-bcab-f7be3badf64a@sirena.org.uk>
-In-Reply-To: <8f80edf2-c93d-416f-bcab-f7be3badf64a@sirena.org.uk>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 8 Aug 2023 11:00:53 +0200
-Message-ID: <CACRpkdYuJ+4hccip+m9SDv63DZQ1+knFnUm431Ki-K5qi49ExQ@mail.gmail.com>
-Subject: Re: [PATCH v2 24/28] pinctrl: Add support for the Lantic PEF2256 pinmux
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20230801052321.1328225-1-harshit.m.mogalapalli@oracle.com>
+In-Reply-To: <20230801052321.1328225-1-harshit.m.mogalapalli@oracle.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 8 Aug 2023 11:00:57 +0200
+Message-ID: <CAPDyKFr9inG4dgAUYhrQOEND1Fu1CDajEPoO3W=dBRRXB=kceQ@mail.gmail.com>
+Subject: Re: [PATCH next] mmc: sunplus: Fix error handling in spmmc_drv_probe()
+To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc:     Tony Huang <tonyhuang.sunplus@gmail.com>,
+        Li-hao Kuo <lhjeff911@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dan.carpenter@linaro.org,
+        kernel-janitors@vger.kernel.org, error27@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
@@ -91,25 +70,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 3:10=E2=80=AFPM Mark Brown <broonie@kernel.org> wrot=
-e:
-> On Mon, Aug 07, 2023 at 03:05:15PM +0200, Linus Walleij wrote:
-> > On Wed, Jul 26, 2023 at 5:04=E2=80=AFPM Herve Codina <herve.codina@boot=
-lin.com> wrote:
+On Tue, 1 Aug 2023 at 07:23, Harshit Mogalapalli
+<harshit.m.mogalapalli@oracle.com> wrote:
 >
-> > > +#include "linux/bitfield.h"
+> There are few issues in spmmc_drv_probe():
 >
-> > Really? I don't think there is such a file there.
->
-> > Do you mean <linux/bitfield.h> and does this even compile?
->
-> #include "" means "try the local directory first then fall back to
-> system includes" so it'll work, it picks up extra stuff on top of what
-> <> does.  There's a stylistic issue though.
+> 1. When mmc allocation fails, goto is a no-op.
+> 2. When mmc allocation succeeds, the error paths should use goto instead
+>    of direct return.
 
-Wow that's a neat trick, I learn something new every day!
+Rather than adding a bunch of new "gotos", how about converting into
+using devm_mmc_alloc_host()?
 
-But we probably wanna be sure to get the system include.
+> 3. platform_get_irq() doesn't return zero, so '<' is sufficient.
+>
+> Fix the above issues by adding goto instead of direct return, also
+> remove NULL check in 'probe_free_host' as we changed the goto to return
+> when mmc_alloc_host() fails.
+>
+> Fixes: 4e268fed8b18 ("mmc: Add mmc driver for Sunplus SP7021")
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/all/a3829ed3-d827-4b9d-827e-9cc24a3ec3bc@moroto.mountain/
+> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 
-Yours,
-Linus Walleij
+Other than the above, this looks good to me!
+
+Kind regards
+Uffe
+
+> ---
+> This is based on static analysis with Smatch. Only compile tested.
+> ---
+>  drivers/mmc/host/sunplus-mmc.c | 41 ++++++++++++++++++++--------------
+>  1 file changed, 24 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sunplus-mmc.c b/drivers/mmc/host/sunplus-mmc.c
+> index a55a87f64d2a..21cd49be08c0 100644
+> --- a/drivers/mmc/host/sunplus-mmc.c
+> +++ b/drivers/mmc/host/sunplus-mmc.c
+> @@ -864,10 +864,8 @@ static int spmmc_drv_probe(struct platform_device *pdev)
+>         int ret = 0;
+>
+>         mmc = mmc_alloc_host(sizeof(*host), &pdev->dev);
+> -       if (!mmc) {
+> -               ret = -ENOMEM;
+> -               goto probe_free_host;
+> -       }
+> +       if (!mmc)
+> +               return -ENOMEM;
+>
+>         host = mmc_priv(mmc);
+>         host->mmc = mmc;
+> @@ -875,30 +873,40 @@ static int spmmc_drv_probe(struct platform_device *pdev)
+>         host->dma_int_threshold = 1024;
+>
+>         host->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+> -       if (IS_ERR(host->base))
+> -               return PTR_ERR(host->base);
+> +       if (IS_ERR(host->base)) {
+> +               ret = PTR_ERR(host->base);
+> +               goto probe_free_host;
+> +       }
+>
+>         host->clk = devm_clk_get(&pdev->dev, NULL);
+> -       if (IS_ERR(host->clk))
+> -               return dev_err_probe(&pdev->dev, PTR_ERR(host->clk), "clk get fail\n");
+> +       if (IS_ERR(host->clk)) {
+> +               ret = dev_err_probe(&pdev->dev, PTR_ERR(host->clk), "clk get fail\n");
+> +               goto probe_free_host;
+> +       }
+>
+>         host->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+> -       if (IS_ERR(host->rstc))
+> -               return dev_err_probe(&pdev->dev, PTR_ERR(host->rstc), "rst get fail\n");
+> +       if (IS_ERR(host->rstc)) {
+> +               ret = dev_err_probe(&pdev->dev, PTR_ERR(host->rstc), "rst get fail\n");
+> +               goto probe_free_host;
+> +       }
+>
+>         host->irq = platform_get_irq(pdev, 0);
+> -       if (host->irq <= 0)
+> -               return host->irq;
+> +       if (host->irq < 0) {
+> +               ret = host->irq;
+> +               goto probe_free_host;
+> +       }
+>
+>         ret = devm_request_threaded_irq(&pdev->dev, host->irq,
+>                                         spmmc_irq, spmmc_func_finish_req, IRQF_SHARED,
+>                         NULL, host);
+>         if (ret)
+> -               return ret;
+> +               goto probe_free_host;
+>
+>         ret = clk_prepare_enable(host->clk);
+> -       if (ret)
+> -               return dev_err_probe(&pdev->dev, ret, "failed to enable clk\n");
+> +       if (ret) {
+> +               ret = dev_err_probe(&pdev->dev, ret, "failed to enable clk\n");
+> +               goto probe_free_host;
+> +       }
+>
+>         ret = mmc_of_parse(mmc);
+>         if (ret)
+> @@ -940,8 +948,7 @@ static int spmmc_drv_probe(struct platform_device *pdev)
+>         clk_disable_unprepare(host->clk);
+>
+>  probe_free_host:
+> -       if (mmc)
+> -               mmc_free_host(mmc);
+> +       mmc_free_host(mmc);
+>
+>         return ret;
+>  }
+> --
+> 2.39.3
+>
