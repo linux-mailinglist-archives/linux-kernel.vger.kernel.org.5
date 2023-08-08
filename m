@@ -2,287 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1376F773E9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD16774079
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232974AbjHHQc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
+        id S232003AbjHHRDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232883AbjHHQbx (ORCPT
+        with ESMTP id S229527AbjHHRC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:31:53 -0400
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDE513975
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:51:49 -0700 (PDT)
-Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-48735dd1b98so1195250e0c.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:51:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google; t=1691509897; x=1692114697;
-        h=content-language:thread-index:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=v07+d2PzggtgVVsN4yxpkKD6/5zQhVAjJNvT8W/jvmQ=;
-        b=FOV+F+P+wG0myXPRt9EIkmyEkzdAo5FOtM6m5/mfe3VOLw98HV2M12fMt5thSjjrMf
-         z5u87p6jRvLN65RxLcCmC/tKQhHwB4qOkY1jPYCP9iIafZyb8kke9xlJEdjJAC2I5vGH
-         P/yPmfZCOHHVSl2tBy7D1JEtvEfZmRp06sKWIbSkpa0qGlZ/COrZvYiC4oBfxo1HyKNo
-         I2fr+i/ncsVe/ipyMw5Fj1IqJx8a3hrtCkLAWhYArpZjku8nKnFOuJ1RknklLFXBOGu6
-         qaa0W5HAvENEKma1yp0aJ6MqQwPW3IOUFKQx8pSacrhRO99dBl5qgekOMg+Efox3C/b+
-         WQqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691509897; x=1692114697;
-        h=content-language:thread-index:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v07+d2PzggtgVVsN4yxpkKD6/5zQhVAjJNvT8W/jvmQ=;
-        b=ftc/lkb5xHO8iKqNekHO8g3R84Kvs0Xm8Fp0t8vWpK1XqW2JtIZEeru7/laHaoHjmq
-         vXyXzMzUxlKw0TjUCgQEzNTKba5geEKqRo8xDYgIXH0ZaRPULJPJYlzvhWkNdDqXTce2
-         Pj3uYS3s7TuZYxbxNGbTD4untyaXx0NubOjbFSVv+iMwV9QAFg8ueRRZo9ctFuxKBN1D
-         7ppnzbwIlH72KEJGi9DGFlPrHyKrU07NonUcGX1ZmN2As/A5BbEHAV0yWHUAKAiRmTl/
-         rli3uIq7wuUz9TbVCHmsWdMI8w+4l/X0SLnqKrutIZ87Ue/7OLBEJFy0saRMFwV4hdEp
-         786w==
-X-Gm-Message-State: AOJu0Yx0xYVmJWvra2nLW78GFqnFLvIAMjAz2muhwj3s8veVqqEhs0LM
-        p1YSQXdKR4w22tJrEQPhuvfYoEoI5qdlY5yuoaY=
-X-Google-Smtp-Source: AGHT+IFMf50YKyt3KwMWRTcl1M5fifCs5xencal3lddQK6dd/DcKDeYapGb/Ty3izzFayCm0PMXa7g==
-X-Received: by 2002:a17:902:f807:b0:1bb:a771:3542 with SMTP id ix7-20020a170902f80700b001bba7713542mr9311431plb.58.1691508151897;
-        Tue, 08 Aug 2023 08:22:31 -0700 (PDT)
-Received: from DougS18 (s66-183-142-209.bc.hsia.telus.net. [66.183.142.209])
-        by smtp.gmail.com with ESMTPSA id w5-20020a1709029a8500b001b8b45b177esm9119875plp.274.2023.08.08.08.22.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Aug 2023 08:22:31 -0700 (PDT)
-From:   "Doug Smythies" <dsmythies@telus.net>
-To:     "'Rafael J. Wysocki'" <rafael@kernel.org>
-Cc:     "'Peter Zijlstra'" <peterz@infradead.org>,
-        "'LKML'" <linux-kernel@vger.kernel.org>,
-        "'Frederic Weisbecker'" <frederic@kernel.org>,
-        "'Linux PM'" <linux-pm@vger.kernel.org>,
-        "'Anna-Maria Behnsen'" <anna-maria@linutronix.de>,
-        "'Kajetan Puchalski'" <kajetan.puchalski@arm.com>,
-        "Doug Smythies" <dsmythies@telus.net>
-References: <5712331.DvuYhMxLoT@kreacher> <CAJZ5v0jTG-oqV+misnP-=W5aq0S9X631kW9EhKNEn1VJQqwL2g@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jTG-oqV+misnP-=W5aq0S9X631kW9EhKNEn1VJQqwL2g@mail.gmail.com>
-Subject: RE: [RFT][PATCH v2 0/3] cpuidle: teo: Do not check timers unconditionally every time
-Date:   Tue, 8 Aug 2023 08:22:32 -0700
-Message-ID: <002201d9ca0c$27606f70$76214e50$@telus.net>
+        Tue, 8 Aug 2023 13:02:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D0B51975C;
+        Tue,  8 Aug 2023 09:01:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DFFDD625B5;
+        Tue,  8 Aug 2023 15:23:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FF09C43391;
+        Tue,  8 Aug 2023 15:23:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691508223;
+        bh=p/gZrLJWIq9rjBprunm92rcmzahKLeL9mAVdQI8fVVo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Qy1+8nyJUvB/EfBRGU/WqIuoJPDI/GX+NItsoVvhZHjuGZEA9FNTIkvUV7wzcp/vO
+         TFiNMnr0oRvIZ+0b7CjviOqqavXvwjKOdxq4YZeMIwV/koBj/VnjyOF+3TqNTALbeo
+         khBdOOBovJ8wU9T/ByaDAqeiOEIzgqwj+HazzzSAVaIg1f7diMd02T/Tm6HL0uM5D7
+         G4g+cx4pQY84gklxi+GtRgwkx+G8OQGkSxqGhu2Xrkhz1zflarGAWb3zmpmAsMsruZ
+         YizxvcUov6ok56EnIdohnSBOUNyinKRwwx5o1/md6QfsVQoqHm7FNWAx2tbJCHzqbb
+         GBlhxdRN1uQnA==
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-52328e96869so4958090a12.1;
+        Tue, 08 Aug 2023 08:23:43 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yz5qgPBB678B9kjeSeQoYecvOWfbOo04rkaQxw6QHzkizZ3y5QX
+        NL0MYzULSfOuvMPLn2flwe5u26u6xzKKAQTokLI=
+X-Google-Smtp-Source: AGHT+IFokLhJzs0xQ2NHVRIO9yXYHKzsfvqWkhy1RiVlRicnei4YhMS57h/OcLGJhZHDLuqZXniZJtcKEiLEmfB9g90=
+X-Received: by 2002:aa7:c542:0:b0:521:8d64:df1c with SMTP id
+ s2-20020aa7c542000000b005218d64df1cmr156003edr.0.1691508221350; Tue, 08 Aug
+ 2023 08:23:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
+References: <20230724182129.843687-1-dfustini@baylibre.com> <ZM9tUFddbRUglwfG@xhacker>
+In-Reply-To: <ZM9tUFddbRUglwfG@xhacker>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 8 Aug 2023 23:23:30 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTT4pyAT5xpSAuOJ801WSk=xouv=uC0PSpHKqB3D=GxHsg@mail.gmail.com>
+Message-ID: <CAJF2gTT4pyAT5xpSAuOJ801WSk=xouv=uC0PSpHKqB3D=GxHsg@mail.gmail.com>
+Subject: Re: [PATCH] riscv: dts: change TH1520 files to dual license
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     Drew Fustini <dfustini@baylibre.com>, Fu Wei <wefu@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJ9vwxz9BM2k7TTX/nZoG5XNIBD0gJko9OgroVvOCA=
-Content-Language: en-ca
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023.08.03 14:33 Rafael wrote:
-> On Thu, Aug 3, 2023 at 11:12=E2=80=AFPM Rafael J. Wysocki =
-<rjw@rjwysocki.net> wrote:
->>
->> Hi Folks,
->>
->> This is the second iteration of:
->>
->> https://lore.kernel.org/linux-pm/4511619.LvFx2qVVIh@kreacher/
->>
->> with an additional patch.
->>
->> There are some small modifications of patch [1/3] and the new
->> patch causes governor statistics to play a role in deciding whether
->> or not to stop the scheduler tick.
->>
->> Testing would be much appreciated!
+On Sun, Aug 6, 2023 at 6:03=E2=80=AFPM Jisheng Zhang <jszhang@kernel.org> w=
+rote:
 >
-> For convenience, this series is now available in the following git =
-branch:
+> On Mon, Jul 24, 2023 at 11:21:29AM -0700, Drew Fustini wrote:
+> > Modify the SPDX-License-Identifier for dual license of GPL-2.0 OR MIT.
+> >
+> > Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> > ---
+> >  arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi | 2 +-
+> >  arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts      | 2 +-
+> >  arch/riscv/boot/dts/thead/th1520.dtsi                  | 2 +-
+> >  3 files changed, 3 insertions(+), 3 deletions(-)
+> >
+> > Jisheng Zhang and Guo Ren - I thought I would post this patch based on
+> > the discussion in the thread about the BeagleV Ahead patches.
 >
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
-> pm-cpuidle-teo
+> I need Guo's ack to this patch. Hi Guo Ren, are you OK with this patch?
+I'm okay with the dual license.
+Acked-by: Guo Ren <guoren@kernel.org>
 
-Hi Rafael,
-
-Thank you for the git branch link.
-
-I did some testing:
-
-Disclaimer: I used areas of focus derived
-from the original teo-util work last fall,
-and did not check if they were still the best
-places to look for issues.
-
-CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
-HWP: enabled
-CPU frequency scaling driver: intel_pstate
-CPU frequency scaling governor: performance
-Kernel 1: 6.5-rc4 (1000 Hz tick rate)
-Kernel 2: kernel 1 + this patch series (called "rjw")
-System is extremely idle, other than the test work.
-
-All tests were done with all idle governors:
-menu, teo, ladder, rjw.
-
-Test 1: 2 core ping pong sweep:
-
-Pass a token between 2 CPUs on 2 different cores.
-Do a variable amount of work at each stop.
-
-Purpose: To utilize the shallowest idle states
-and observe the transition from using more of 1
-idle state to another.
-
-Results:=20
-=20
-teo and rjw track fairly well, with
-rjw reducing its use of idle state 0 before
-teo as the work packet increases. The menu governor
-does best overall, but performs worse over a greater
-range of token loop times.
-
-Details (power and idle stats; times):
-http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/2-1/perf/
-http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/2-1/2-core-ping=
--pong-sweep.png
-
-Test 2: 6 core ping pong sweep:
-
-Pass a token between 6 CPUs on 6 different cores.
-Do a variable amount of work at each stop.
-
-Purpose: To utilize the midrange idle states
-and observe the transitions from between use of
-idle states.
-
-Results: There is some instability in the results
-in the early stages.
-For unknown reasons, the rjw governor sometimes works
-slower and at lower power. The condition is not 100%
-repeatable.
-
-Overall teo completed the test fastest (54.9 minutes)
-Followed by menu (56.2 minutes), then rjw (56.7 minutes),
-then ladder (58.4 minutes). teo is faster throughout the
-latter stages of the test, but at the cost of more power.
-The differences seem to be in the transition from idle
-state 1 to idle state 2 usage.
-
-Details (power and idle stats; times):
-http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/perf/
-http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/6-core-ping=
--pong-sweep.png
-http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/6-core-ping=
--pong-sweep-detail-a.png
-http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/6-core-ping=
--pong-sweep-detail-b.png
-http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/6-core-ping=
--pong-sweep-diffs.png
-
-a re-run power and idle stats, showing inconsistent behaviour.
-teo and rjw only, and no timing data:
-http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-1/perf/
-
-Test 3: sleeping ebizzy - 128 threads.
-
-Purpose: This test has given interesting results in the past.
-The test varies the sleep interval between record lookups.
-The result is varying usage of idle states.
-
-Results: It can be difficult to see any differences in
-the overall timing graph, but a graph of differences
-is revealing. teo outperforms rjw in the longer intervals
-region of the test, at the cost of more power.
-
-Details: (power and idle stats; times):
-http://smythies.com/~doug/linux/idle/teo-util2/ebizzy/perf/
-http://smythies.com/~doug/linux/idle/teo-util2/ebizzy/ebizzy-128-perf.png=
-
-http://smythies.com/~doug/linux/idle/teo-util2/ebizzy/ebizzy-128-perf-dif=
-fs.png
-
-Test 4: 2 X 2 pair token passing. Dwell test. Fast:
-
-Purpose: Dwell under one set of conditions. Observe
-noise and/or any bi-stability.
-
-Results (reference time is menu):
-rjw: 3.0723 usecs/loop average. +3.15%
-teo: 2.9917 usecs/loop average. +0.44%
-menu: 2.97845 usecs/loop average. Reference
-ladder: 4.077375 usecs/loop average. +36.9%
-
-Powers are all similar, with ladder a bit lower.
-
-Details: (power and idle stats; times):
-http://smythies.com/~doug/linux/idle/teo-util2/many-0-400000000-2/perf/
-http://smythies.com/~doug/linux/idle/teo-util2/many-0-400000000-2/times.t=
-xt
-
-Test 5: 2 X 2 pair token passing. Dwell test. Medium:
-
-Purpose: Dwell under one set of conditions. Observe
-noise and/or any bi-stability.
-
-Results (reference time is menu):
-rjw: 11.3406 usecs/loop average. -0.69%
-teo: 11.36765 usecs/loop average. -0.45%
-menu: 11.41905 usecs/loop average. reference
-ladder: 11.9535 usecs/loop average. +4.68%
-
-Powers are all similar.
-
-Details:
-http://smythies.com/~doug/linux/idle/teo-util2/many-3000-100000000-2/perf=
-/
-http://smythies.com/~doug/linux/idle/teo-util2/many-3000-100000000-2/time=
-s.txt
-
-Test 6: 2 X 2 pair token passing. Dwell test. Slow:
-
-Purpose: Dwell under one set of conditions. Observe
-noise and/or any bi-stability.
-
-Results (reference time is menu):
-rjw: 2591.70 usecs/loop average. +0.26%
-teo: 2566.34 usecs/loop average. -0.72%
-menu: 2585.00 usecs/loop average. reference
-ladder: 2635.36 usecs/loop average. +1.95%
-
-Powers are all similar, with ladder a bit lower.=20
-Due to the strong temperature to power use curve,
-a much longer dwell test would need to be run to
-be sure to get to steady state power usage.
-
-Details:
-http://smythies.com/~doug/linux/idle/teo-util2/many-1000000-342000-2/perf=
-/
-http://smythies.com/~doug/linux/idle/teo-util2/many-1000000-342000-2/time=
-s.txt
-
-Test 7: 500 low load threads.
-
-Purpose: This test has given interesting results
-in the past.
-
-500 threads at approximately 10 hertz work/sleep frequency
-and about 0.0163 load per thread, 8.15 total.
-CPUs about 32% idle.
-
-Results:
-rjw executed 0.01% faster than teo.
-rjw used 5% less energy than teo.
-
-Details:
-http://smythies.com/~doug/linux/idle/teo-util2/waiter/perf/
-http://smythies.com/~doug/linux/idle/teo-util2/waiter/times.txt
-
-Conclusions: Overall, I am not seeing a compelling reason to
-proceed with this patch set.
-
-... Doug
+>
+> Thanks
+>
+> >
+> > Message-ID:
+> > 20230722-upstream-beaglev-ahead-dts-v1-0-ccda511357f4@baylibre.com
+> >
+> > Thanks,
+> > Drew
+> >
+> > diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi b/a=
+rch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+> > index 4b0249ac710f..a802ab110429 100644
+> > --- a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+> > +++ b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+> > @@ -1,4 +1,4 @@
+> > -// SPDX-License-Identifier: GPL-2.0
+> > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> >  /*
+> >   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+> >   */
+> > diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts b/arch/r=
+iscv/boot/dts/thead/th1520-lichee-pi-4a.dts
+> > index a1248b2ee3a3..9a3884a73e13 100644
+> > --- a/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
+> > +++ b/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
+> > @@ -1,4 +1,4 @@
+> > -// SPDX-License-Identifier: GPL-2.0
+> > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> >  /*
+> >   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+> >   */
+> > diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dt=
+s/thead/th1520.dtsi
+> > index 56a73134b49e..ce708183b6f6 100644
+> > --- a/arch/riscv/boot/dts/thead/th1520.dtsi
+> > +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
+> > @@ -1,4 +1,4 @@
+> > -// SPDX-License-Identifier: GPL-2.0
+> > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> >  /*
+> >   * Copyright (C) 2021 Alibaba Group Holding Limited.
+> >   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+> > --
+> > 2.34.1
+> >
 
 
+
+--=20
+Best Regards
+ Guo Ren
