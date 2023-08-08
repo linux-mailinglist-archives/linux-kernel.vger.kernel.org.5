@@ -2,308 +2,442 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42AE2774032
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E085177415D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbjHHRAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
+        id S234408AbjHHRS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233681AbjHHQ6d (ORCPT
+        with ESMTP id S229885AbjHHRS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:58:33 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FDA55901;
-        Tue,  8 Aug 2023 09:00:09 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3786wDSB006364;
-        Tue, 8 Aug 2023 10:00:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=lD6hjJMAqN8E6FnyY2yf36/AWoZiWhCTs0fWAqCMBIg=;
- b=c9y7MzImP2y9F0OFMwN5Nf/N06h0ApmIggjNANmIOGfwpe06iggRgiiBK33RM9FdWbDb
- T3NYTo+wEZJK19BdnkRlL3hWN97U0QKPHWojJRG2yzNI+g4luXdROzgvDtZd04oq8exH
- +HtTdD0eJCrYsPPkqgJ+2o4CYgZZJ+rdrvoNtl4rk8Ih9cA8DmZeRqOl7GlYstGdF7C6
- OXP/eQKWaBlVfeOkmya0rKF7/MXgp7c2U14Xu69vTX3wHgemoVu5xqfn9SgYvVc9X1UP
- 8fmPm6w0+61Fn46fdWbWps95WCXZhb8w+eZdy6peK/RQ+IYnEXBR+nyOuuOTDqKfjcQg Fw== 
-Received: from aptaippmta01.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sbcacrtb1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Aug 2023 10:00:14 +0000
-Received: from pps.filterd (APTAIPPMTA01.qualcomm.com [127.0.0.1])
-        by APTAIPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 378A0CYs025875;
-        Tue, 8 Aug 2023 10:00:12 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTPS id 3s9fgkpa3q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 08 Aug 2023 10:00:12 +0000
-Received: from APTAIPPMTA01.qualcomm.com (APTAIPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 378A0CA7025868;
-        Tue, 8 Aug 2023 10:00:12 GMT
-Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
-        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 378A0Cnr025861;
-        Tue, 08 Aug 2023 10:00:12 +0000
-Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
-        id 4276A4C37; Tue,  8 Aug 2023 18:00:11 +0800 (CST)
-From:   Qiang Yu <quic_qianyu@quicinc.com>
-To:     mani@kernel.org, quic_jhugo@quicinc.com
-Cc:     mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-        quic_mrana@quicinc.com, Qiang Yu <quic_qianyu@quicinc.com>
-Subject: [PATCH v2] bus: mhi: host: pci_generic: Add SDX75 based modem support
-Date:   Tue,  8 Aug 2023 18:00:09 +0800
-Message-Id: <1691488809-85310-1-git-send-email-quic_qianyu@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: o0UXGTYf3JJx3F7FgGyk2IUXYRmWD09t
-X-Proofpoint-ORIG-GUID: o0UXGTYf3JJx3F7FgGyk2IUXYRmWD09t
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-08_09,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- priorityscore=1501 impostorscore=0 mlxscore=0 adultscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 lowpriorityscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308080089
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 13:18:29 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E9BF1E320;
+        Tue,  8 Aug 2023 09:07:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 948FE21E30;
+        Tue,  8 Aug 2023 10:02:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691488960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0HEDf4nPJ+iNrPUKPUVl/LvlxLOjZZAZpje52YEl2Wk=;
+        b=zp34KHdnygGkkUw1WrZLx6L90aMGe3p6SyU1Z4XKZwbj71OiVbCKm8NqgCli3bghyh6WfA
+        kiTTAKf9pEw3smNkjBO7G3rlfxkekHA4d98sI0t2U27Anh0bF0iD+NHAfSoh7Y37qh6dQg
+        RCS5eKpej8PWZuiN3BYxnBeRoQu71m4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691488960;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0HEDf4nPJ+iNrPUKPUVl/LvlxLOjZZAZpje52YEl2Wk=;
+        b=xIFFbdmF7c2Azz53cFDw3fHZsQRn1OIeCwdCvV5z4TTksaSLfy8IXpgapBsxV1A+7h/AWc
+        9+CTFjcCsgbFFuCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7A0F613451;
+        Tue,  8 Aug 2023 10:02:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9CbJHcAS0mQYKgAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 10:02:40 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 055A7A0769; Tue,  8 Aug 2023 12:02:40 +0200 (CEST)
+Date:   Tue, 8 Aug 2023 12:02:39 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 09/13] fs: add infrastructure for multigrain timestamps
+Message-ID: <20230808100239.v7c6lh5yqszercvv@quack3>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+ <20230807-mgctime-v7-9-d1dec143a704@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807-mgctime-v7-9-d1dec143a704@kernel.org>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add generic info for SDX75 based modems. SDX75 takes longer than expected
-(default, 8 seconds) to set ready after reboot. Hence add optional ready
-timeout parameter to wait enough for device ready as part of power up
-sequence.
+On Mon 07-08-23 15:38:40, Jeff Layton wrote:
+> The VFS always uses coarse-grained timestamps when updating the ctime
+> and mtime after a change. This has the benefit of allowing filesystems
+> to optimize away a lot metadata updates, down to around 1 per jiffy,
+> even when a file is under heavy writes.
+> 
+> Unfortunately, this has always been an issue when we're exporting via
+> NFSv3, which relies on timestamps to validate caches. A lot of changes
+> can happen in a jiffy, so timestamps aren't sufficient to help the
+> client decide to invalidate the cache. Even with NFSv4, a lot of
+> exported filesystems don't properly support a change attribute and are
+> subject to the same problems with timestamp granularity. Other
+> applications have similar issues with timestamps (e.g backup
+> applications).
+> 
+> If we were to always use fine-grained timestamps, that would improve the
+> situation, but that becomes rather expensive, as the underlying
+> filesystem would have to log a lot more metadata updates.
+> 
+> What we need is a way to only use fine-grained timestamps when they are
+> being actively queried.
+> 
+> POSIX generally mandates that when the the mtime changes, the ctime must
+> also change. The kernel always stores normalized ctime values, so only
+> the first 30 bits of the tv_nsec field are ever used.
+> 
+> Use the 31st bit of the ctime tv_nsec field to indicate that something
+> has queried the inode for the mtime or ctime. When this flag is set,
+> on the next mtime or ctime update, the kernel will fetch a fine-grained
+> timestamp instead of the usual coarse-grained one.
+> 
+> Filesytems can opt into this behavior by setting the FS_MGTIME flag in
+> the fstype. Filesystems that don't set this flag will continue to use
+> coarse-grained timestamps.
+> 
+> Later patches will convert individual filesystems to use the new
+> infrastructure.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
----
-v1->v2: pass appropriate timeout value to mhi_poll_reg_field
+Looks good to me. Feel free to add:
 
- drivers/bus/mhi/host/init.c        |  1 +
- drivers/bus/mhi/host/internal.h    |  2 +-
- drivers/bus/mhi/host/main.c        |  5 +++--
- drivers/bus/mhi/host/pci_generic.c | 22 ++++++++++++++++++++++
- drivers/bus/mhi/host/pm.c          | 24 +++++++++++++++++-------
- include/linux/mhi.h                |  4 ++++
- 6 files changed, 48 insertions(+), 10 deletions(-)
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
-index f78aefd..65ceac1 100644
---- a/drivers/bus/mhi/host/init.c
-+++ b/drivers/bus/mhi/host/init.c
-@@ -881,6 +881,7 @@ static int parse_config(struct mhi_controller *mhi_cntrl,
- 	if (!mhi_cntrl->timeout_ms)
- 		mhi_cntrl->timeout_ms = MHI_TIMEOUT_MS;
- 
-+	mhi_cntrl->ready_timeout_ms = config->ready_timeout_ms;
- 	mhi_cntrl->bounce_buf = config->use_bounce_buf;
- 	mhi_cntrl->buffer_len = config->buf_len;
- 	if (!mhi_cntrl->buffer_len)
-diff --git a/drivers/bus/mhi/host/internal.h b/drivers/bus/mhi/host/internal.h
-index 2e139e7..30ac415 100644
---- a/drivers/bus/mhi/host/internal.h
-+++ b/drivers/bus/mhi/host/internal.h
-@@ -321,7 +321,7 @@ int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
- 				    u32 *out);
- int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
- 				    void __iomem *base, u32 offset, u32 mask,
--				    u32 val, u32 delayus);
-+				    u32 val, u32 delayus, u32 timeout_ms);
- void mhi_write_reg(struct mhi_controller *mhi_cntrl, void __iomem *base,
- 		   u32 offset, u32 val);
- int __must_check mhi_write_reg_field(struct mhi_controller *mhi_cntrl,
-diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-index 74a7543..c0215d1 100644
---- a/drivers/bus/mhi/host/main.c
-+++ b/drivers/bus/mhi/host/main.c
-@@ -40,10 +40,11 @@ int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
- 
- int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
- 				    void __iomem *base, u32 offset,
--				    u32 mask, u32 val, u32 delayus)
-+				    u32 mask, u32 val, u32 delayus,
-+				    u32 timeout_ms)
- {
- 	int ret;
--	u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
-+	u32 out, retry = (timeout_ms * 1000) / delayus;
- 
- 	while (retry--) {
- 		ret = mhi_read_reg_field(mhi_cntrl, base, offset, mask, &out);
-diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
-index fcd80bc..9c601f0 100644
---- a/drivers/bus/mhi/host/pci_generic.c
-+++ b/drivers/bus/mhi/host/pci_generic.c
-@@ -269,6 +269,16 @@ static struct mhi_event_config modem_qcom_v1_mhi_events[] = {
- 	MHI_EVENT_CONFIG_HW_DATA(5, 2048, 101)
- };
- 
-+static const struct mhi_controller_config modem_qcom_v2_mhiv_config = {
-+	.max_channels = 128,
-+	.timeout_ms = 8000,
-+	.ready_timeout_ms = 50000,
-+	.num_channels = ARRAY_SIZE(modem_qcom_v1_mhi_channels),
-+	.ch_cfg = modem_qcom_v1_mhi_channels,
-+	.num_events = ARRAY_SIZE(modem_qcom_v1_mhi_events),
-+	.event_cfg = modem_qcom_v1_mhi_events,
-+};
-+
- static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
- 	.max_channels = 128,
- 	.timeout_ms = 8000,
-@@ -278,6 +288,16 @@ static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
- 	.event_cfg = modem_qcom_v1_mhi_events,
- };
- 
-+static const struct mhi_pci_dev_info mhi_qcom_sdx75_info = {
-+	.name = "qcom-sdx75m",
-+	.fw = "qcom/sdx75m/xbl.elf",
-+	.edl = "qcom/sdx75m/edl.mbn",
-+	.config = &modem_qcom_v2_mhiv_config,
-+	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-+	.dma_data_width = 32,
-+	.sideband_wake = false,
-+};
-+
- static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
- 	.name = "qcom-sdx65m",
- 	.fw = "qcom/sdx65m/xbl.elf",
-@@ -597,6 +617,8 @@ static const struct pci_device_id mhi_pci_id_table[] = {
- 		.driver_data = (kernel_ulong_t) &mhi_telit_fn990_info },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
- 		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0309),
-+		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx75_info },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1001), /* EM120R-GL (sdx24) */
- 		.driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1002), /* EM160R-GL (sdx24) */
-diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
-index 8a4362d..a2f2fee 100644
---- a/drivers/bus/mhi/host/pm.c
-+++ b/drivers/bus/mhi/host/pm.c
-@@ -163,6 +163,7 @@ int mhi_ready_state_transition(struct mhi_controller *mhi_cntrl)
- 	enum mhi_pm_state cur_state;
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	u32 interval_us = 25000; /* poll register field every 25 milliseconds */
-+	u32 timeout_ms;
- 	int ret, i;
- 
- 	/* Check if device entered error state */
-@@ -173,14 +174,18 @@ int mhi_ready_state_transition(struct mhi_controller *mhi_cntrl)
- 
- 	/* Wait for RESET to be cleared and READY bit to be set by the device */
- 	ret = mhi_poll_reg_field(mhi_cntrl, mhi_cntrl->regs, MHICTRL,
--				 MHICTRL_RESET_MASK, 0, interval_us);
-+				 MHICTRL_RESET_MASK, 0, interval_us,
-+				 mhi_cntrl->timeout_ms);
- 	if (ret) {
- 		dev_err(dev, "Device failed to clear MHI Reset\n");
- 		return ret;
- 	}
- 
-+	timeout_ms = mhi_cntrl->ready_timeout_ms ?
-+		mhi_cntrl->ready_timeout_ms : mhi_cntrl->timeout_ms;
- 	ret = mhi_poll_reg_field(mhi_cntrl, mhi_cntrl->regs, MHISTATUS,
--				 MHISTATUS_READY_MASK, 1, interval_us);
-+				 MHISTATUS_READY_MASK, 1, interval_us,
-+				 timeout_ms);
- 	if (ret) {
- 		dev_err(dev, "Device failed to enter MHI Ready\n");
- 		return ret;
-@@ -479,7 +484,7 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
- 
- 		/* Wait for the reset bit to be cleared by the device */
- 		ret = mhi_poll_reg_field(mhi_cntrl, mhi_cntrl->regs, MHICTRL,
--				 MHICTRL_RESET_MASK, 0, 25000);
-+				 MHICTRL_RESET_MASK, 0, 25000, mhi_cntrl->timeout_ms);
- 		if (ret)
- 			dev_err(dev, "Device failed to clear MHI Reset\n");
- 
-@@ -492,8 +497,8 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
- 		if (!MHI_IN_PBL(mhi_get_exec_env(mhi_cntrl))) {
- 			/* wait for ready to be set */
- 			ret = mhi_poll_reg_field(mhi_cntrl, mhi_cntrl->regs,
--						 MHISTATUS,
--						 MHISTATUS_READY_MASK, 1, 25000);
-+						 MHISTATUS, MHISTATUS_READY_MASK,
-+						 1, 25000, mhi_cntrl->timeout_ms);
- 			if (ret)
- 				dev_err(dev, "Device failed to enter READY state\n");
- 		}
-@@ -1111,7 +1116,8 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
- 	if (state == MHI_STATE_SYS_ERR) {
- 		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_RESET);
- 		ret = mhi_poll_reg_field(mhi_cntrl, mhi_cntrl->regs, MHICTRL,
--				 MHICTRL_RESET_MASK, 0, interval_us);
-+				 MHICTRL_RESET_MASK, 0, interval_us,
-+				 mhi_cntrl->timeout_ms);
- 		if (ret) {
- 			dev_info(dev, "Failed to reset MHI due to syserr state\n");
- 			goto error_exit;
-@@ -1202,14 +1208,18 @@ EXPORT_SYMBOL_GPL(mhi_power_down);
- int mhi_sync_power_up(struct mhi_controller *mhi_cntrl)
- {
- 	int ret = mhi_async_power_up(mhi_cntrl);
-+	u32 timeout_ms;
- 
- 	if (ret)
- 		return ret;
- 
-+	/* Some devices need more time to set ready during power up */
-+	timeout_ms = mhi_cntrl->ready_timeout_ms ?
-+		mhi_cntrl->ready_timeout_ms : mhi_cntrl->timeout_ms;
- 	wait_event_timeout(mhi_cntrl->state_event,
- 			   MHI_IN_MISSION_MODE(mhi_cntrl->ee) ||
- 			   MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
--			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
-+			   msecs_to_jiffies(timeout_ms));
- 
- 	ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
- 	if (ret)
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index e065101..129964c 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -266,6 +266,7 @@ struct mhi_event_config {
-  * struct mhi_controller_config - Root MHI controller configuration
-  * @max_channels: Maximum number of channels supported
-  * @timeout_ms: Timeout value for operations. 0 means use default
-+ * @ready_timeout_ms: Timeout value for waiting device to be ready (optional)
-  * @buf_len: Size of automatically allocated buffers. 0 means use default
-  * @num_channels: Number of channels defined in @ch_cfg
-  * @ch_cfg: Array of defined channels
-@@ -277,6 +278,7 @@ struct mhi_event_config {
- struct mhi_controller_config {
- 	u32 max_channels;
- 	u32 timeout_ms;
-+	u32 ready_timeout_ms;
- 	u32 buf_len;
- 	u32 num_channels;
- 	const struct mhi_channel_config *ch_cfg;
-@@ -331,6 +333,7 @@ struct mhi_controller_config {
-  * @pm_mutex: Mutex for suspend/resume operation
-  * @pm_lock: Lock for protecting MHI power management state
-  * @timeout_ms: Timeout in ms for state transitions
-+ * @ready_timeout_ms: Timeout in ms for waiting device to be ready (optional)
-  * @pm_state: MHI power management state
-  * @db_access: DB access states
-  * @ee: MHI device execution environment
-@@ -420,6 +423,7 @@ struct mhi_controller {
- 	struct mutex pm_mutex;
- 	rwlock_t pm_lock;
- 	u32 timeout_ms;
-+	u32 ready_timeout_ms;
- 	u32 pm_state;
- 	u32 db_access;
- 	enum mhi_ee_type ee;
+								Honza
+
+> ---
+>  fs/inode.c         | 82 ++++++++++++++++++++++++++++++++++++++++++++++++++++--
+>  fs/stat.c          | 41 +++++++++++++++++++++++++--
+>  include/linux/fs.h | 46 ++++++++++++++++++++++++++++--
+>  3 files changed, 162 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/inode.c b/fs/inode.c
+> index e50d94a136fe..f55957ac80e6 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -2118,10 +2118,52 @@ int file_remove_privs(struct file *file)
+>  }
+>  EXPORT_SYMBOL(file_remove_privs);
+>  
+> +/**
+> + * current_mgtime - Return FS time (possibly fine-grained)
+> + * @inode: inode.
+> + *
+> + * Return the current time truncated to the time granularity supported by
+> + * the fs, as suitable for a ctime/mtime change. If the ctime is flagged
+> + * as having been QUERIED, get a fine-grained timestamp.
+> + */
+> +struct timespec64 current_mgtime(struct inode *inode)
+> +{
+> +	struct timespec64 now, ctime;
+> +	atomic_long_t *pnsec = (atomic_long_t *)&inode->__i_ctime.tv_nsec;
+> +	long nsec = atomic_long_read(pnsec);
+> +
+> +	if (nsec & I_CTIME_QUERIED) {
+> +		ktime_get_real_ts64(&now);
+> +		return timestamp_truncate(now, inode);
+> +	}
+> +
+> +	ktime_get_coarse_real_ts64(&now);
+> +	now = timestamp_truncate(now, inode);
+> +
+> +	/*
+> +	 * If we've recently fetched a fine-grained timestamp
+> +	 * then the coarse-grained one may still be earlier than the
+> +	 * existing ctime. Just keep the existing value if so.
+> +	 */
+> +	ctime = inode_get_ctime(inode);
+> +	if (timespec64_compare(&ctime, &now) > 0)
+> +		now = ctime;
+> +
+> +	return now;
+> +}
+> +EXPORT_SYMBOL(current_mgtime);
+> +
+> +static struct timespec64 current_ctime(struct inode *inode)
+> +{
+> +	if (is_mgtime(inode))
+> +		return current_mgtime(inode);
+> +	return current_time(inode);
+> +}
+> +
+>  static int inode_needs_update_time(struct inode *inode)
+>  {
+>  	int sync_it = 0;
+> -	struct timespec64 now = current_time(inode);
+> +	struct timespec64 now = current_ctime(inode);
+>  	struct timespec64 ctime;
+>  
+>  	/* First try to exhaust all avenues to not sync */
+> @@ -2552,9 +2594,43 @@ EXPORT_SYMBOL(current_time);
+>   */
+>  struct timespec64 inode_set_ctime_current(struct inode *inode)
+>  {
+> -	struct timespec64 now = current_time(inode);
+> +	struct timespec64 now;
+> +	struct timespec64 ctime;
+> +
+> +	ctime.tv_nsec = READ_ONCE(inode->__i_ctime.tv_nsec);
+> +	if (!(ctime.tv_nsec & I_CTIME_QUERIED)) {
+> +		now = current_time(inode);
+>  
+> -	inode_set_ctime(inode, now.tv_sec, now.tv_nsec);
+> +		/* Just copy it into place if it's not multigrain */
+> +		if (!is_mgtime(inode)) {
+> +			inode_set_ctime_to_ts(inode, now);
+> +			return now;
+> +		}
+> +
+> +		/*
+> +		 * If we've recently updated with a fine-grained timestamp,
+> +		 * then the coarse-grained one may still be earlier than the
+> +		 * existing ctime. Just keep the existing value if so.
+> +		 */
+> +		ctime.tv_sec = inode->__i_ctime.tv_sec;
+> +		if (timespec64_compare(&ctime, &now) > 0)
+> +			return ctime;
+> +
+> +		/*
+> +		 * Ctime updates are usually protected by the inode_lock, but
+> +		 * we can still race with someone setting the QUERIED flag.
+> +		 * Try to swap the new nsec value into place. If it's changed
+> +		 * in the interim, then just go with a fine-grained timestamp.
+> +		 */
+> +		if (cmpxchg(&inode->__i_ctime.tv_nsec, ctime.tv_nsec,
+> +			    now.tv_nsec) != ctime.tv_nsec)
+> +			goto fine_grained;
+> +		inode->__i_ctime.tv_sec = now.tv_sec;
+> +		return now;
+> +	}
+> +fine_grained:
+> +	ktime_get_real_ts64(&now);
+> +	inode_set_ctime_to_ts(inode, timestamp_truncate(now, inode));
+>  	return now;
+>  }
+>  EXPORT_SYMBOL(inode_set_ctime_current);
+> diff --git a/fs/stat.c b/fs/stat.c
+> index 7644e5997035..136711ae72fb 100644
+> --- a/fs/stat.c
+> +++ b/fs/stat.c
+> @@ -26,6 +26,37 @@
+>  #include "internal.h"
+>  #include "mount.h"
+>  
+> +/**
+> + * fill_mg_cmtime - Fill in the mtime and ctime and flag ctime as QUERIED
+> + * @stat: where to store the resulting values
+> + * @request_mask: STATX_* values requested
+> + * @inode: inode from which to grab the c/mtime
+> + *
+> + * Given @inode, grab the ctime and mtime out if it and store the result
+> + * in @stat. When fetching the value, flag it as queried so the next write
+> + * will use a fine-grained timestamp.
+> + */
+> +void fill_mg_cmtime(struct kstat *stat, u32 request_mask, struct inode *inode)
+> +{
+> +	atomic_long_t *pnsec = (atomic_long_t *)&inode->__i_ctime.tv_nsec;
+> +
+> +	/* If neither time was requested, then don't report them */
+> +	if (!(request_mask & (STATX_CTIME|STATX_MTIME))) {
+> +		stat->result_mask &= ~(STATX_CTIME|STATX_MTIME);
+> +		return;
+> +	}
+> +
+> +	stat->mtime = inode->i_mtime;
+> +	stat->ctime.tv_sec = inode->__i_ctime.tv_sec;
+> +	/*
+> +	 * Atomically set the QUERIED flag and fetch the new value with
+> +	 * the flag masked off.
+> +	 */
+> +	stat->ctime.tv_nsec = atomic_long_fetch_or(I_CTIME_QUERIED, pnsec) &
+> +					~I_CTIME_QUERIED;
+> +}
+> +EXPORT_SYMBOL(fill_mg_cmtime);
+> +
+>  /**
+>   * generic_fillattr - Fill in the basic attributes from the inode struct
+>   * @idmap:		idmap of the mount the inode was found from
+> @@ -58,8 +89,14 @@ void generic_fillattr(struct mnt_idmap *idmap, u32 request_mask,
+>  	stat->rdev = inode->i_rdev;
+>  	stat->size = i_size_read(inode);
+>  	stat->atime = inode->i_atime;
+> -	stat->mtime = inode->i_mtime;
+> -	stat->ctime = inode_get_ctime(inode);
+> +
+> +	if (is_mgtime(inode)) {
+> +		fill_mg_cmtime(stat, request_mask, inode);
+> +	} else {
+> +		stat->mtime = inode->i_mtime;
+> +		stat->ctime = inode_get_ctime(inode);
+> +	}
+> +
+>  	stat->blksize = i_blocksize(inode);
+>  	stat->blocks = inode->i_blocks;
+>  
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index a83313f90fe3..455835d0e963 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1474,18 +1474,47 @@ static inline bool fsuidgid_has_mapping(struct super_block *sb,
+>  	       kgid_has_mapping(fs_userns, kgid);
+>  }
+>  
+> +struct timespec64 current_mgtime(struct inode *inode);
+>  struct timespec64 current_time(struct inode *inode);
+>  struct timespec64 inode_set_ctime_current(struct inode *inode);
+>  
+> +/*
+> + * Multigrain timestamps
+> + *
+> + * Conditionally use fine-grained ctime and mtime timestamps when there
+> + * are users actively observing them via getattr. The primary use-case
+> + * for this is NFS clients that use the ctime to distinguish between
+> + * different states of the file, and that are often fooled by multiple
+> + * operations that occur in the same coarse-grained timer tick.
+> + *
+> + * The kernel always keeps normalized struct timespec64 values in the ctime,
+> + * which means that only the first 30 bits of the value are used. Use the
+> + * 31st bit of the ctime's tv_nsec field as a flag to indicate that the value
+> + * has been queried since it was last updated.
+> + */
+> +#define I_CTIME_QUERIED		(1L<<30)
+> +
+>  /**
+>   * inode_get_ctime - fetch the current ctime from the inode
+>   * @inode: inode from which to fetch ctime
+>   *
+> - * Grab the current ctime from the inode and return it.
+> + * Grab the current ctime tv_nsec field from the inode, mask off the
+> + * I_CTIME_QUERIED flag and return it. This is mostly intended for use by
+> + * internal consumers of the ctime that aren't concerned with ensuring a
+> + * fine-grained update on the next change (e.g. when preparing to store
+> + * the value in the backing store for later retrieval).
+> + *
+> + * This is safe to call regardless of whether the underlying filesystem
+> + * is using multigrain timestamps.
+>   */
+>  static inline struct timespec64 inode_get_ctime(const struct inode *inode)
+>  {
+> -	return inode->__i_ctime;
+> +	struct timespec64 ctime;
+> +
+> +	ctime.tv_sec = inode->__i_ctime.tv_sec;
+> +	ctime.tv_nsec = inode->__i_ctime.tv_nsec & ~I_CTIME_QUERIED;
+> +
+> +	return ctime;
+>  }
+>  
+>  /**
+> @@ -2259,6 +2288,7 @@ struct file_system_type {
+>  #define FS_USERNS_MOUNT		8	/* Can be mounted by userns root */
+>  #define FS_DISALLOW_NOTIFY_PERM	16	/* Disable fanotify permission events */
+>  #define FS_ALLOW_IDMAP         32      /* FS has been updated to handle vfs idmappings. */
+> +#define FS_MGTIME		64	/* FS uses multigrain timestamps */
+>  #define FS_RENAME_DOES_D_MOVE	32768	/* FS will handle d_move() during rename() internally. */
+>  	int (*init_fs_context)(struct fs_context *);
+>  	const struct fs_parameter_spec *parameters;
+> @@ -2282,6 +2312,17 @@ struct file_system_type {
+>  
+>  #define MODULE_ALIAS_FS(NAME) MODULE_ALIAS("fs-" NAME)
+>  
+> +/**
+> + * is_mgtime: is this inode using multigrain timestamps
+> + * @inode: inode to test for multigrain timestamps
+> + *
+> + * Return true if the inode uses multigrain timestamps, false otherwise.
+> + */
+> +static inline bool is_mgtime(const struct inode *inode)
+> +{
+> +	return inode->i_sb->s_type->fs_flags & FS_MGTIME;
+> +}
+> +
+>  extern struct dentry *mount_bdev(struct file_system_type *fs_type,
+>  	int flags, const char *dev_name, void *data,
+>  	int (*fill_super)(struct super_block *, void *, int));
+> @@ -2918,6 +2959,7 @@ extern void page_put_link(void *);
+>  extern int page_symlink(struct inode *inode, const char *symname, int len);
+>  extern const struct inode_operations page_symlink_inode_operations;
+>  extern void kfree_link(void *);
+> +void fill_mg_cmtime(struct kstat *stat, u32 request_mask, struct inode *inode);
+>  void generic_fillattr(struct mnt_idmap *, u32, struct inode *, struct kstat *);
+>  void generic_fill_statx_attr(struct inode *inode, struct kstat *stat);
+>  extern int vfs_getattr_nosec(const struct path *, struct kstat *, u32, unsigned int);
+> 
+> -- 
+> 2.41.0
+> 
 -- 
-2.7.4
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
