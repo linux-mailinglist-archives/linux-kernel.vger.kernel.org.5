@@ -2,165 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 034FA773B73
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7640773B0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbjHHPu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 11:50:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
+        id S229796AbjHHPkp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Aug 2023 11:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjHHPtA (ORCPT
+        with ESMTP id S229491AbjHHPkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:49:00 -0400
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C896C10CF;
-        Tue,  8 Aug 2023 08:42:02 -0700 (PDT)
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6D2E41A11D5;
-        Tue,  8 Aug 2023 08:09:03 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 007941A11C8;
-        Tue,  8 Aug 2023 08:09:03 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 481F91800318;
-        Tue,  8 Aug 2023 14:09:01 +0800 (+08)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     frank.li@nxp.com, l.stach@pengutronix.de, shawnguo@kernel.org,
-        lpieralisi@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org
-Cc:     hongxing.zhu@nxp.com, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        linux-imx@nxp.com
-Subject: [PATCH v3 8/9] PCI: imx6: Add i.MX6SX PCIe EP support
-Date:   Tue,  8 Aug 2023 13:34:17 +0800
-Message-Id: <1691472858-9383-9-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1691472858-9383-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1691472858-9383-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 11:40:36 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7544106;
+        Tue,  8 Aug 2023 08:36:28 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 3F9E524E287;
+        Tue,  8 Aug 2023 14:12:03 +0800 (CST)
+Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 8 Aug
+ 2023 14:12:03 +0800
+Received: from ubuntu.localdomain (202.188.176.82) by EXMBX068.cuchost.com
+ (172.16.6.68) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 8 Aug
+ 2023 14:11:58 +0800
+From:   Jia Jie Ho <jiajie.ho@starfivetech.com>
+To:     Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+CC:     <devicetree@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] riscv: dts: starfive - Add crypto and DMA node for JH7110
+Date:   Tue, 8 Aug 2023 14:11:49 +0800
+Message-ID: <20230808061150.81491-2-jiajie.ho@starfivetech.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230808061150.81491-1-jiajie.ho@starfivetech.com>
+References: <20230808061150.81491-1-jiajie.ho@starfivetech.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [202.188.176.82]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX068.cuchost.com
+ (172.16.6.68)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=0.0 required=5.0 tests=RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the i.MX6SX PCIe EP support.
+Add hardware crypto module and dedicated dma controller node to StarFive
+JH7110 SoC.
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+Co-developed-by: Huan Feng <huan.feng@starfivetech.com>
+Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
+Signed-off-by: Jia Jie Ho <jiajie.ho@starfivetech.com>
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
 ---
- drivers/pci/controller/dwc/pci-imx6.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ arch/riscv/boot/dts/starfive/jh7110.dtsi | 28 ++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 9a6531ddfef2..43c5251f5160 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -48,6 +48,7 @@ enum imx6_pcie_variants {
- 	IMX6Q,
- 	IMX6Q_EP,
- 	IMX6SX,
-+	IMX6SX_EP,
- 	IMX6QP,
- 	IMX6QP_EP,
- 	IMX7D,
-@@ -362,6 +363,7 @@ static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
- 				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL, 0);
- 		break;
- 	case IMX6SX:
-+	case IMX6SX_EP:
- 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
- 				   IMX6SX_GPR12_PCIE_RX_EQ_MASK,
- 				   IMX6SX_GPR12_PCIE_RX_EQ_2);
-@@ -560,6 +562,7 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
+diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+index a608433200e8..47cd12ccc988 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+@@ -821,6 +821,34 @@ watchdog@13070000 {
+ 				 <&syscrg JH7110_SYSRST_WDT_CORE>;
+ 		};
  
- 	switch (imx6_pcie->drvdata->variant) {
- 	case IMX6SX:
-+	case IMX6SX_EP:
- 		ret = clk_prepare_enable(imx6_pcie->pcie_inbound_axi);
- 		if (ret) {
- 			dev_err(dev, "unable to enable pcie_axi clock\n");
-@@ -621,6 +624,7 @@ static void imx6_pcie_disable_ref_clk(struct imx6_pcie *imx6_pcie)
- {
- 	switch (imx6_pcie->drvdata->variant) {
- 	case IMX6SX:
-+	case IMX6SX_EP:
- 		clk_disable_unprepare(imx6_pcie->pcie_inbound_axi);
- 		break;
- 	case IMX6QP:
-@@ -718,6 +722,7 @@ static void imx6_pcie_assert_core_reset(struct imx6_pcie *imx6_pcie)
- 		reset_control_assert(imx6_pcie->apps_reset);
- 		break;
- 	case IMX6SX:
-+	case IMX6SX_EP:
- 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
- 				   IMX6SX_GPR12_PCIE_TEST_POWERDOWN,
- 				   IMX6SX_GPR12_PCIE_TEST_POWERDOWN);
-@@ -782,6 +787,7 @@ static int imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
- 		imx7d_pcie_wait_for_phy_pll_lock(imx6_pcie);
- 		break;
- 	case IMX6SX:
-+	case IMX6SX_EP:
- 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR5,
- 				   IMX6SX_GPR5_PCIE_BTNRST_RESET, 0);
- 		break;
-@@ -840,6 +846,7 @@ static void imx6_pcie_ltssm_enable(struct device *dev)
- 	case IMX6Q:
- 	case IMX6Q_EP:
- 	case IMX6SX:
-+	case IMX6SX_EP:
- 	case IMX6QP:
- 	case IMX6QP_EP:
- 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
-@@ -866,6 +873,7 @@ static void imx6_pcie_ltssm_disable(struct device *dev)
- 	case IMX6Q:
- 	case IMX6Q_EP:
- 	case IMX6SX:
-+	case IMX6SX_EP:
- 	case IMX6QP:
- 	case IMX6QP_EP:
- 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
-@@ -1198,6 +1206,7 @@ static void imx6_pcie_pm_turnoff(struct imx6_pcie *imx6_pcie)
- 	/* Others poke directly at IOMUXC registers */
- 	switch (imx6_pcie->drvdata->variant) {
- 	case IMX6SX:
-+	case IMX6SX_EP:
- 	case IMX6QP:
- 	case IMX6QP_EP:
- 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
-@@ -1361,6 +1370,7 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 
- 	switch (imx6_pcie->drvdata->variant) {
- 	case IMX6SX:
-+	case IMX6SX_EP:
- 		imx6_pcie->pcie_inbound_axi = devm_clk_get(dev,
- 							   "pcie_inbound_axi");
- 		if (IS_ERR(imx6_pcie->pcie_inbound_axi))
-@@ -1535,6 +1545,13 @@ static const struct imx6_pcie_drvdata drvdata[] = {
- 			 IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
- 		.gpr = "fsl,imx6q-iomuxc-gpr",
- 	},
-+	[IMX6SX_EP] = {
-+		.variant = IMX6SX_EP,
-+		.mode = DW_PCIE_EP_TYPE,
-+		.flags = IMX6_PCIE_FLAG_IMX6_PHY,
-+		.gpr = "fsl,imx6q-iomuxc-gpr",
-+		.epc_features = &imx6q_pcie_epc_features,
-+	},
- 	[IMX6QP] = {
- 		.variant = IMX6QP,
- 		.flags = IMX6_PCIE_FLAG_IMX6_PHY |
-@@ -1590,6 +1607,7 @@ static const struct of_device_id imx6_pcie_of_match[] = {
- 	{ .compatible = "fsl,imx6q-pcie",  .data = &drvdata[IMX6Q],  },
- 	{ .compatible = "fsl,imx6q-pcie-ep", .data = &drvdata[IMX6Q_EP], },
- 	{ .compatible = "fsl,imx6sx-pcie", .data = &drvdata[IMX6SX], },
-+	{ .compatible = "fsl,imx6sx-pcie-ep", .data = &drvdata[IMX6SX_EP], },
- 	{ .compatible = "fsl,imx6qp-pcie", .data = &drvdata[IMX6QP], },
- 	{ .compatible = "fsl,imx6qp-pcie-ep", .data = &drvdata[IMX6QP_EP], },
- 	{ .compatible = "fsl,imx7d-pcie",  .data = &drvdata[IMX7D],  },
++		crypto: crypto@16000000 {
++			compatible = "starfive,jh7110-crypto";
++			reg = <0x0 0x16000000 0x0 0x4000>;
++			clocks = <&stgcrg JH7110_STGCLK_SEC_AHB>,
++				 <&stgcrg JH7110_STGCLK_SEC_MISC_AHB>;
++			clock-names = "hclk", "ahb";
++			interrupts = <28>;
++			resets = <&stgcrg JH7110_STGRST_SEC_AHB>;
++			dmas = <&sdma 1 2>, <&sdma 0 2>;
++			dma-names = "tx", "rx";
++		};
++
++		sdma: dma@16008000 {
++			compatible = "arm,pl080", "arm,primecell";
++			arm,primecell-periphid = <0x00041080>;
++			reg = <0x0 0x16008000 0x0 0x4000>;
++			interrupts = <29>;
++			clocks = <&stgcrg JH7110_STGCLK_SEC_AHB>,
++				 <&stgcrg JH7110_STGCLK_SEC_MISC_AHB>;
++			clock-names = "hclk", "apb_pclk";
++			resets = <&stgcrg JH7110_STGRST_SEC_AHB>;
++			lli-bus-interface-ahb1;
++			mem-bus-interface-ahb1;
++			memcpy-burst-size = <256>;
++			memcpy-bus-width = <32>;
++			#dma-cells = <2>;
++		};
++
+ 		gmac0: ethernet@16030000 {
+ 			compatible = "starfive,jh7110-dwmac", "snps,dwmac-5.20";
+ 			reg = <0x0 0x16030000 0x0 0x10000>;
 -- 
 2.34.1
 
