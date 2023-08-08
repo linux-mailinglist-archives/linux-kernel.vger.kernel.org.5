@@ -2,181 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A4B773E43
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E40A774160
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232594AbjHHQ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
+        id S234415AbjHHRTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232609AbjHHQ0e (ORCPT
+        with ESMTP id S234073AbjHHRSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:26:34 -0400
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2040.outbound.protection.outlook.com [40.107.96.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEB58938
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:50:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mIU57gcA0kWyjs5pM48ctDNfb7m1Dx3d6duWFTv4U2uowE/BrkFN9fl/0/JlzfZOWMBEkxsSWusOJH+wy/6z77bBKK1hc2RRaFnozaYfSu1Wf7LH8jOMH+0Ma9EvlwZQecp8PLLYkDow615RMNncun0bwrn4uJe1OL966ALmf0OqklPqXDLcgRvSlz2g5vShNdQXscdN1FO7fZPik85B5fVqkyHjrVr9+HzEuwLyaudXekqw3i0mU7tuubQsw8JPVFZMHG7Aa9udTdsOepzSY/bvxVSwVgm/waOk8k1OfOqM17uW0XytV9JZKnz9YYsyig4drAzNRtVlq3vvZObjqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qmruztjhgbKkt+lzwC/VfUuINdUxo5OcFA2ibgJkdeQ=;
- b=EHuiDiqrT0ihNegSkyjR0AIssxObCr4RM2ZZ2VItmbY4sKidpaazkkDOCN97riaW5e5tttEfTRXGjyEkEnrYim+XMtvMF8rlItM1Siz/dyFFiy3HEaSbxQDEW1GBA+1t2SdpvPNEfjQ9XdW8Md5SObp7GooAyt6Ir4l72ST4WVyKXiVCh8UnZ5o8C7GQacwAeyM+cY1zYxOht8+tBsOy/6NDPGMghQn00/22Zdx8YhxGw71pqCUA3o1S7PehklwWk6kjqlwvYopA2b+byGFbcMymK7l1bnPebkb8ZtIaghcPCw+STt88aDu2SFkA2TYWuZUaXnRZxJaiIwiVGZi+IQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qmruztjhgbKkt+lzwC/VfUuINdUxo5OcFA2ibgJkdeQ=;
- b=RVkwCSo58g8oEdA9Zk/A59eifw1mrHjEYIllDIofxYaZ8+BzgXy9yFw6RjXSqVSdepAiOvYTkXpZQft8KPJjFQrzQlclVGe/FSsaouBMYY+S8pfjMrvUL4yoZsb7qvHkT5xCrze8LRSPJs6mx6w/j6JNaIFyPPSf2QA3wLZqNPI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by CH3PR12MB9146.namprd12.prod.outlook.com (2603:10b6:610:19c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Tue, 8 Aug
- 2023 13:16:27 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6652.026; Tue, 8 Aug 2023
- 13:16:27 +0000
-Message-ID: <bfd68941-cd10-44be-f424-5ec1ae353a2d@amd.com>
-Date:   Tue, 8 Aug 2023 15:16:22 +0200
+        Tue, 8 Aug 2023 13:18:33 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 82D282D66;
+        Tue,  8 Aug 2023 09:07:36 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378DGWi0021733;
+        Tue, 8 Aug 2023 08:16:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691500592;
+        bh=bIvQZUfUTs7cfe2MxD6gzLOpss1VlgflDBuAfiDDw28=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=e4fntY8yrfgX1M3Gv8SSeES03odglvg2KCHYUWqQSA3VSfi4FeJ4CVrIFTBOYBb3S
+         SRCKzI57LoDlwEUWYoeGwr0a0Qg+DUoxyFRgA1Cj8afQ5YW3AkJrNcjHmPfUZkzupb
+         s+M+w2b4TZ+7zdJEAEnKVXHdIrZNhAnZjqY65FFc=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378DGWGx124496
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Aug 2023 08:16:32 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
+ Aug 2023 08:16:32 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 8 Aug 2023 08:16:32 -0500
+Received: from [10.250.36.243] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378DGVcJ001287;
+        Tue, 8 Aug 2023 08:16:31 -0500
+Message-ID: <9830f204-0e4d-bfb0-aea4-9f63d3be9124@ti.com>
+Date:   Tue, 8 Aug 2023 08:16:31 -0500
+MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] drm/test: drm_exec: fix memory leak on object prepare
+Subject: Re: [PATCH 04/13] arm64: dts: ti: k3-am65: Enable OSPI nodes at the
+ board level
+To:     Jan Kiszka <jan.kiszka@siemens.com>, Dhruva Gole <d-gole@ti.com>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230802205309.257392-1-afd@ti.com>
+ <20230802205309.257392-5-afd@ti.com>
+ <bb87effc-00c3-7d97-08c9-68408f9c514c@ti.com>
+ <627ed411-a6f7-cbc9-d48f-2678bf63c609@ti.com>
+ <a274dabf-3987-0885-54f5-3bd7e7f2d1d5@siemens.com>
 Content-Language: en-US
-To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, alexander.deucher@amd.com, arthurgrillo@riseup.net
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230727231038.4943-1-dakr@redhat.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20230727231038.4943-1-dakr@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR0P281CA0249.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:af::15) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|CH3PR12MB9146:EE_
-X-MS-Office365-Filtering-Correlation-Id: 130fc9e3-bcb6-4b32-1238-08db9811abf6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OxvlM/PeyXodoDsD+DkCb4CECpvZ6EwXudLIdMmIqTPHW39slKBlw3IEGjRXkJQYFRczSgz9kevoNu9aoOzg2/x+tFPhkpFhswvjfEaw8Ex46UmInO8b3jllAwCuNYuA0JtzDEqNZA68K5APQYywlCrbgr7XTMrZo5kqr9NDzGli0EfHevoadpztbpW50n/G4691ilGH2OX1g1VmDfwf/Qh/SEG098nGZO6+3NPCU0qpNZAmtJ+Id9gdoidyIMJUUvXWCGOm4AASrGE5lmrYOxo8E1n8eVBO8aZIp2d/s4RuF4H/f8zzHTJMNZx9DvR4bqVof+lAvCCg7QxidSgB8ptTYhd9Nwd/DQCLMEJgjgNEMJUaf4oCpLYTjdEP9IVpSzlg9jQ/vADektTMH+xLLMHZ43A41hvX04/BFiDnS+Z/lpggewsGL5rzQ5Tw3efcoexmpbpR7GPTztteYgZdswVstF98sZe07GWJ1ytaUFDHiiIvGCstH+hLLsAZtTg1m3mroa8iRtzkbRfqFudEs5JnSwMn3GQTK8KI7zMTx46w5UymJ0vvWRYsPoySDdnhX3alOjE+1qSGb27rqRPnVSjXXeLCcVOOSLp6SV+/NBmzPIgR12eAYTOXza4Q4Zlb28XQNY5U8fWB2Rm/CfsMLA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(39860400002)(396003)(366004)(346002)(136003)(451199021)(186006)(1800799003)(8676002)(8936002)(5660300002)(4326008)(41300700001)(316002)(83380400001)(86362001)(31696002)(2906002)(6486002)(6512007)(6666004)(2616005)(6506007)(36756003)(66476007)(66556008)(66946007)(478600001)(31686004)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L2ZzQ1dQMVZacm5IT0JYMFAzTVlTeDdXbUNsT2dYS1Zod3pNUnBlY3BrWTA2?=
- =?utf-8?B?MDIvbjA5Ykxpbk1Ja0JZV2NXZmgyLzE4aWxxdXhmVzFhVjBTK20vL2xyejc0?=
- =?utf-8?B?THd2YnhRWHZnbFpXc0g1aWExUUNkQzl2c3F3b3BhREZmRXBKNzdkZkdDYVcr?=
- =?utf-8?B?aUpDOXdpR1k2TWc2M1JVY2FvTFJRT2JlWU5KSUJFanplVEQ1eGh0VlZiTlNq?=
- =?utf-8?B?WXl1TFlCMUNaWWRieDg0aWR4c3k2c2lwSC84d1hnbUJlTDdWMWhjYm00S1hN?=
- =?utf-8?B?V24wQU51WElNTFY3My82NFQvR0crTTZvNDVSM0JNMlBwcmI1dGRxemlvemJ6?=
- =?utf-8?B?VWNHRFF6MGJ0cHdkcnlIbTZKdHV0R2JLY3poZVAwdEdHREt5SnlJcUZxcjk4?=
- =?utf-8?B?OXBFRlhRRXA0MnZ2M3VSb3owbERyaEJPZEUydjNJbjNZY1AvOExRN2FmRUxP?=
- =?utf-8?B?TkNTeGlZZXJOMjhYM2VHUlJGMHRsSDE2TE81Wkh2TjB6K3o3cVRJNGhpcWFv?=
- =?utf-8?B?UkVoOWJkZExjN3RrU1BtTEE5b0JZVmJ6M2xNN3R2UnhmM0lpaTdrZjJFMDFa?=
- =?utf-8?B?ajFCYkZMRGgvM05wTG1vYk5MUG93bnZTOTA5ZEwrQ2l6Z2o2a3VjZGtnQlU3?=
- =?utf-8?B?L0tFUUdyb1Rldk9ERTVDZWVnWDFVM3pCNkV4OVkyU0FQd2xOUkRSamMzNy9n?=
- =?utf-8?B?YVZJWWJJVzVPOWt2Y3VOejNvTzJmQ2k5K241TjMxYUc5SFFtQ2hjbC96QU10?=
- =?utf-8?B?a3Z0RS9GRFhDUzRJbzJrcHZKWDNMUzEvYzRRTDF6UGhLa01WdG41U0h3bVpZ?=
- =?utf-8?B?a0VKVUlHWW16L1pYdXNqZkNIdXU0QTdEQ1VCRUxYZmJUb3dtcW03K0hXSmlY?=
- =?utf-8?B?L3hGU0szcW1abHB1cUFRUkRoL25IRUEyeUh3SUk4Sk55cG1pMlVqclZIeFFX?=
- =?utf-8?B?RDhLaWpaNzZ2dEJnQWxFVmhTejN5K1JJVWlkdng3QmMxbENVeEJGa0dsN01t?=
- =?utf-8?B?M2M3cmtiWGcyTlg1b2RpQ2FReUMxODNhMUNrMEdLcUo5NkR2Zzh5dXY5U1ky?=
- =?utf-8?B?SWRZa1NUQzgzNm5XbEd4NGFhYytTV1dCYTJncTVjR25hQzRPKzlaU0IyK2pE?=
- =?utf-8?B?WEJVRDJvZ09WOFhLOFBDZUxYR2xTRXltK0ZrekRoNmNxc1BpbVJDcVUxSlhZ?=
- =?utf-8?B?L2lVNUtITkdQNWdtaGk4YXhzMVhTRWxkN0RKS3Frb1hjR3FPT214WTllZ2lS?=
- =?utf-8?B?TEwzeWpBazR3bTJKQ1J2Z2NrdjY2NG53d0s2U1k0NExtakQ3Qkg3a3lvV1dy?=
- =?utf-8?B?MGp3RC9pMll1b2c3VlFUUEpLUnl0OFpNMnB5U1lXTS92NittdUtNWlorMXBV?=
- =?utf-8?B?SThoQ3ZKSy9RUm1TNFZMc0hRenlVNkpLay85bnppNHZwWURJMVRnLzFpVXZU?=
- =?utf-8?B?RDFuRVNJUk1heS90d3ZGZ1YyWCtjVVRWc09qc3VkQ0lYRlU4czZPNndtNURl?=
- =?utf-8?B?Y05Ia2luRUJLUDdKNW9mckJjWFllcFF0czVkTnFhTzVrTkt4YS9JU1lLbVRz?=
- =?utf-8?B?UHQ0ZnplN2xEay9HV3JLRU1sbG02MktRckNTcE52TlZxQVRKaFljRUhWRElH?=
- =?utf-8?B?dzVCYVN4UGh4M0FZYytFM2laRU14UHpra0pMeXlRUjBmMUdId0lvRWVKTUts?=
- =?utf-8?B?SWFYc01SN2pZakx2RjBpcjhyb1VYc29XNlZKcW5RVFRhYXc0T05MM2w0VnJJ?=
- =?utf-8?B?WS9rWkxVbVZLMVhsRkFPcnJ1UzNDMzF5SWhvMVBaK3VkdmFiWm9qdVlXZlBj?=
- =?utf-8?B?a1ViOHMzT01ENWVsTWtkWXAyZ3k1VHptZlYzQnRqOS9uT1pnTVRJSllEYUxX?=
- =?utf-8?B?cklwazM3eXVTSVV0UXNwWkRHR2lpanArbnFBVHFZK1IzQjhIbUtxU2wwelJB?=
- =?utf-8?B?LzNCYkFjd3FlMTlHSllBMVlKUXJXUENCeFZlNUNReHl4U1cvU21wT3dMQW5K?=
- =?utf-8?B?VjJwdU1hSlA4cWNDZFNJa0tJTC9zWTFZQ1hrRTh6My9nMVIwOUFzRzlEZldF?=
- =?utf-8?B?RUZOQjUyZ05HbjZ4ZnBwTXFOYkxhRGd3bEtTT2F1Q0Y4MGlneTJKUmNIaWt0?=
- =?utf-8?B?NEY0cWFpSFRZbjBwTElBS1FLQ2kwM2tvaVlkcThZVTdtV3l6TStDTkhqZWlx?=
- =?utf-8?Q?1N+TCEzoVJnD/NaOhrOZVynK47XVbfHKXPlkmsVZlMxO?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 130fc9e3-bcb6-4b32-1238-08db9811abf6
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2023 13:16:27.3204
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hlZ1SaKoxsA1lruO/FsQPE8Gg4XD3FJu6TPaUdlmL51wlUSn6hp48TTWJM2QWiDO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9146
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <a274dabf-3987-0885-54f5-3bd7e7f2d1d5@siemens.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 28.07.23 um 01:10 schrieb Danilo Krummrich:
-> drm_exec_prepare_obj() and drm_exec_prepare_array() both reserve
-> dma-fence slots and hence a dma_resv_list without ever freeing it.
->
-> Make sure to call drm_gem_private_object_fini() for each GEM object
-> passed to drm_exec_prepare_obj()/drm_exec_prepare_array() throughout the
-> test to fix this up.
->
-> While at it, remove some trailing empty lines.
->
-> Fixes: 9710631cc8f3 ("drm: add drm_exec selftests v4")
-> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+On 8/8/23 12:27 AM, Jan Kiszka wrote:
+> On 07.08.23 17:18, Andrew Davis wrote:
+>> On 8/7/23 1:16 AM, Dhruva Gole wrote:
+>>> Hi Andrew,
+>>>
+>>> On 03/08/23 02:23, Andrew Davis wrote:
+>>>> OSPI nodes defined in the top-level AM65x SoC dtsi files are incomplete
+>>>> and may not be functional unless they are extended with pinmux and
+>>>> device information.
+>>>>
+>>>> As the attached OSPI device is only known about at the board integration
+>>>> level, these nodes should only be enabled when provided with this
+>>>> information.
+>>>>
+>>>> Disable the OSPI nodes in the dtsi files and only enable the ones that
+>>>> are actually pinned out on a given board.
+>>>>
+>>>> Signed-off-by: Andrew Davis <afd@ti.com>
+>>>> ---
+>>>>    arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi | 1 +
+>>>>    arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi            | 2 ++
+>>>>    arch/arm64/boot/dts/ti/k3-am654-base-board.dts     | 1 +
+>>>>    3 files changed, 4 insertions(+)
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+>>>> b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+>>>> index e26bd988e5224..6041862d5aa75 100644
+>>>> --- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+>>>> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+>>>> @@ -593,6 +593,7 @@ adc {
+>>>>    };
+>>>>    &ospi0 {
+>>>> +    status = "okay";
+>>>
+>>> Ok, so this k3-am65-iot2050 series of DT files seem to be structured in
+>>> a bit different manner than our SKs and EVMs?
+>>>
+>>> The terminologies like advanced, advanced-m2, basic, etc. are a little
+>>> confusing to me. However, I am wondering if we don't do any status = ..
+>>> here, and rather make ospi status okays from the iot2050 dts files?
+>>>
+>>> Pardon me if I am making an invalid suggestion, I don't have much
+>>> background on these boards.
+>>>
+>>
+>> This is a valid question, and yes the IOT2050 DTS organization is
+>> slightly different than the one we use with our SK/EVMs.
+>>
+>> The way these DT files tend to work is layering more functionality
+>> or information in each file, starting with the core/most common
+>> in the base .dtsi, and ending with .dts that is specific to a given
+>> board. (In that way I would consider instances of "/delete-node/"
+>> to be an indicator of bad layering, but that is a different topic..)
+>>
+>> Any node that is only partially defined in a layer should be marked
+>> disabled, and then only enabled in the layer that finally completes
+>> the node. That is often the pinmux info at the board level.
+>>
+>> In this case, the OSPI nodes are complete after this point, there
+>> is no additional information given in the DTS files, so we can
+>> enable it here in this .dtsi file.
+>>
+> 
+> Ack, this file is the right place to enable OSPI because all our boards
+> have OSPI in use, and therefore it is configured at this common level
+> already.
+> 
+> And the reasons for delete-node is obviously that there is no dtsi file
+> that describes the AM6528 with its two cores only. If you consider that
+> bad layering, you should change your dtsi files ;). But I see no real
+> problem here, that pattern is not uncommon.
 
-Thanks, can you please rebase on current drm-misc-next and re-send.
+Yup, wasn't finger pointing, that is our layering problem. It actually
+looks like an easy fix to add an k3-am652.dtsi with only two cores, I'll
+go do that for next cycle.
 
-Thanks,
-Christian.
+Andrew
 
-> ---
->   drivers/gpu/drm/tests/drm_exec_test.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/tests/drm_exec_test.c b/drivers/gpu/drm/tests/drm_exec_test.c
-> index df31f89a7945..80761e734a15 100644
-> --- a/drivers/gpu/drm/tests/drm_exec_test.c
-> +++ b/drivers/gpu/drm/tests/drm_exec_test.c
-> @@ -118,8 +118,6 @@ static void test_duplicates(struct kunit *test)
->   	drm_exec_fini(&exec);
->   }
->   
-> -
-> -
->   static void test_prepare(struct kunit *test)
->   {
->   	struct drm_gem_object gobj = { };
-> @@ -137,6 +135,8 @@ static void test_prepare(struct kunit *test)
->   			break;
->   	}
->   	drm_exec_fini(&exec);
-> +
-> +	drm_gem_private_object_fini(&gobj);
->   }
->   
->   static void test_prepare_array(struct kunit *test)
-> @@ -156,6 +156,9 @@ static void test_prepare_array(struct kunit *test)
->   					     1);
->   	KUNIT_EXPECT_EQ(test, ret, 0);
->   	drm_exec_fini(&exec);
-> +
-> +	drm_gem_private_object_fini(&gobj1);
-> +	drm_gem_private_object_fini(&gobj2);
->   }
->   
->   static struct kunit_case drm_exec_tests[] = {
-
+> 
+> Jan
+> 
