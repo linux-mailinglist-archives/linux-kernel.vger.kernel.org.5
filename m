@@ -2,78 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4E2774D6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33581774D76
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbjHHVz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55658 "EHLO
+        id S230255AbjHHV5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjHHVz1 (ORCPT
+        with ESMTP id S229585AbjHHV5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 17:55:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1F6EE
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:55:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B093C62D86
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 21:55:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD1B4C433C8;
-        Tue,  8 Aug 2023 21:55:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691531726;
-        bh=DfGJgoICFpbwodUyconrw7br4Y/aAGzc5ytewSxQ1sU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OzJPPGPOV+tbgfBpKAWCXhCHqQLkYp/qSVn7Ph8ut4zwTxbqQ5Mvl8PpBVN5JGN2+
-         B53k0ySEc+F15n1+2eRyv/qDqJLvpen8L23BbGg+ArWPRMpo5c292tnFElyGhHsnQw
-         FnXm6Me5Q3G5v3Uk3/8+eHSVhs/Vs9U271Th0qrkA1aQ1mDWdVIXbXgGZrP2n/A/ST
-         0OohWs5TnIFvQnNrG34m8/9BKTetBq9Xbl3vI7mWHdGPvbX5j6Vn8QHrKY5pATDTY6
-         K2x75VlEe1Tke4++VcJT1VxMbW1yUICJz+ZEUVCuFtyFBDNWmmo541X2Mijk7OmVUw
-         33g84hDLwwEFQ==
-Date:   Tue, 8 Aug 2023 14:55:25 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Breno Leitao <leitao@debian.org>
-Cc:     rdunlap@infradead.org, benjamin.poirier@gmail.com,
-        davem@davemloft.net, edumazet@google.com,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH net-next v4 1/2] netconsole: Create a allocation helper
-Message-ID: <20230808145525.61840a76@kernel.org>
-In-Reply-To: <20230804124322.113506-2-leitao@debian.org>
-References: <20230804124322.113506-1-leitao@debian.org>
-        <20230804124322.113506-2-leitao@debian.org>
+        Tue, 8 Aug 2023 17:57:32 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59890EE;
+        Tue,  8 Aug 2023 14:57:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Iw353CUGOaR9ntV/GhP6nXoYL9ZHZ1HVuitTAIcTyoA=; b=wQ6jQi1x24Y1QysBckKRqSeilr
+        hExPc9tz1kVg313OrEORcp5T7arVJJ/0mnUea8bN4R5/meR8OQ6NyBWpXdLsxqP231KRTfbBAllB6
+        fUT2mvCOXZRSLRY1LPidKNd2+orscVZV2i94XeNENT6L6eQMSdS9AEZO7CTGLbDa41hU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qTUhQ-003WUv-RA; Tue, 08 Aug 2023 23:57:08 +0200
+Date:   Tue, 8 Aug 2023 23:57:08 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Luke Lu <luke.lu@libre.computer>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>, Da Xue <da@libre.computer>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] net: phy: meson-gxl: implement meson_gxl_phy_resume()
+Message-ID: <ef7000ae-721c-49ac-b0b3-b5d94fd82a4d@lunn.ch>
+References: <20230808050016.1911447-1-da@libre.computer>
+ <b8931b6c-5b35-8477-d50f-b7a43b13615f@gmail.com>
+ <CAAzmgs75L6Y3PU1SF8Uvh1Z2cqt86HmaRKFn088yzRK73mfnLA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAzmgs75L6Y3PU1SF8Uvh1Z2cqt86HmaRKFn088yzRK73mfnLA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  4 Aug 2023 05:43:20 -0700 Breno Leitao wrote:
-> +	struct netconsole_target *nt = alloc_and_init();
-> +	int err = -ENOMEM;
-> +
-> +	if (!nt)
-> +		goto fail;
+> > And a formal remark: Your patch misses the net / net-next annotation.
+> >
+> Not sure if we understand this correctly, do you mean the one line
+> summary of this patch?
+> or the content of the commit message that needs to improve to reflect this is an
+> ethernet/net related fix?
 
-No complex code in the variable init, please.
-Makes the code harder to read.
+https://www.kernel.org/doc/html/latest/process/maintainer-netdev.html#netdev-faq
 
-	struct netconsole_target *nt;
-	int err;
-
-	nt = alloc_and_init();
-	if (!nt) {
-		err = -ENOMEM;
-		goto fail;
-	}
--- 
-pw-bot: cr
+	Andrew
