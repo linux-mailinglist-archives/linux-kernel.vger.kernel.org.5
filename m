@@ -2,158 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B2C773B6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D462773B4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbjHHPuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 11:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56988 "EHLO
+        id S230118AbjHHPsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 11:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHHPsf (ORCPT
+        with ESMTP id S230078AbjHHPq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:48:35 -0400
-Received: from DEU01-FR2-obe.outbound.protection.outlook.com (mail-fr2deu01on20602.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e24::602])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5E84693;
-        Tue,  8 Aug 2023 08:41:53 -0700 (PDT)
+        Tue, 8 Aug 2023 11:46:56 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2047.outbound.protection.outlook.com [40.107.93.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F50421C;
+        Tue,  8 Aug 2023 08:41:18 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WtYu1YG1xzlW+u6tXeVQYB+PJVIxwR5fxR5b9m7/Jcx7hLWyN4cG/5BxSqYxOUKAz6j3hhvr0Ff28BskTmMAE2zD57WtUXynV+zYveFqomjq7R4/9MRCxREogJZLpCCTOPBsWyNBPere6baf31q+Y4JaXmeZHJXcJGqsspVTtj0jzeSGaU6IDsuqaeasBAJZLvrWTF5IRmDK2bU6iMtHHGm0soG3+kOkg8oB1LXykOZnKViqERTY9Zkb7aRaMRxD6MeqplzDNPNQq6+QY459XMxa76WVEQPGiBkERQo19lI+XIAzkLlcCKS26t0IgiKrnPMqXeasdvQh7D3gC7nMqg==
+ b=Tcd5UJX2KQARVu4r0qd/wajFN3RxXj+ZABJN4t7HfIkMeSp3ALCg9n3+Sq6Pj76i9Wv0nQjMDxR3CE5rXZcUr/Ba7m3ry+bFiQH8/zgSTty2UpsZRu5G6tGTyP7hB9DzA61qOtCGcGtUaDUkShSZgwna30kqPLIVybrdPnNWDHNrLkIIatsT9lrBZu63oNOlHsTfM2rrbhgsTsBfEP8RjwqwtwZjYTFgz+YeDAjC2vdeRywE9orMcwW67ZLmtL4F7GSfE8JjyeVxaDACDujUH+dmmtU7CT2GaIxm8rM2pkd65yHZVXFY2apYgb0Hn55uYAZ3MrrAKYo07XPebT01Fg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=boCy9SNgLaOWTFDQH/NLa8Tfd0p2terCm6WZR+i1ebw=;
- b=LBWty0jZQ3Kc8pTz8AWo2Kgbi4ag9hFuGeioGdH+QTAamfXCD6HFVlwphAAyxxdtEp5OFuq0DUB40lMZiZygyAUJF+ZAk5RWLcc+smAAP7pFZXnOJDNHEgUr8NuJtJdcldAb3rIdWXVyqUnf1wlcfKv4n3OEnzJY2WNKoEhnkU90V7bZf8XjyS7b/rs/wMEF9HroaSUiD8OOdEcfbDFJwio1E9SPXUOCMwSAQSydwrUV+6PpI1Kw1Gfhf1HPQgORaxfHISQ7Di4HbPjhfL2q25ICjlsZBUzQISCeV/XTzCLoAzgaIUnXdsM0k1FOvTolrP0WOaMJdIxViCcfFOVzIg==
+ bh=o1fEJWmMSkweRj171hOxDzKbe6/eaIiDsKlBNNFeg88=;
+ b=KpYNeFIQMCd2644RsrYUit+FGATWMlGOoXbImW61kUtmAHGbgZ31t48dAQHqj98XYFw4jqLArD27rVozjO6ciISdjqglpdCyCIx91OtNXcXFfmhaAwnv1F/XtYO2Mwk2aO0ngjr89m1WYBYtC8t6I85r3Kr50hFAl3yehClSu07mgSwLhT2EO2eXJOelsvKEKdFVqFD9TwNIQp8vRAD+kNZ2jRMKLzEY6ykzAfd6tvrWsZDZe09mVlYcow1rB+keGuxyd5Au0ot1h4iu7nXKpJQ0hEmzW0kDzQZ4SVy3sTQzqc1MH4nP8+9bnJvBGB95iaeqBINmasBBBcHc9quOdA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=ipetronik.com; dmarc=pass action=none
- header.from=ipetronik.com; dkim=pass header.d=ipetronik.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ipetronik.com;
- s=selector2;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=boCy9SNgLaOWTFDQH/NLa8Tfd0p2terCm6WZR+i1ebw=;
- b=PmZA4WKsc+uRPSLJKbaiWQO7wVbYBsbAvCPwdmN7ws7ZQe504u3vjtKdXIow6sE/KQA7TTj3ekQMlNq07rxAtZFjbmCPWg39zhRdXJDtBXZxMxuqt9gNNIOoE/X5NutkmYOBIt8QL83T001CWnX8xd+/XJQFbeUweyc28yr4yiNLoANBeWroonjCx8Lfb3pcT66z0YqqZW6QdC+wMvLw24Zmh9EaLUU49OWb0pao2vHyLCXfBsfydYfNAObh4lacHx/VFW2sgsoh6QsPfd8O26BveK3M3Uwr0S2S3ExhLHs30uoYVp0VRGhv+PaCP0PGYqVO2GdWedVxzXz8p72chA==
+ bh=o1fEJWmMSkweRj171hOxDzKbe6/eaIiDsKlBNNFeg88=;
+ b=OouNbW8Bvbxl1k9vhCcpgUTzoELw/kAITfxaag2ceb+7vJW+POqrx42vV63X7JNHrO+MxmwP/npUzTsrh4Mwttg8KQ9U51XkdiLe4QfSV9U+k/6BaCpvLyCmk3PXIDYXgO+OFOmRYYguqlB4JvDs7G7MwhfNv/6aMTkNnkitDDQ=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=ipetronik.com;
-Received: from BEZP281MB3205.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:28::12)
- by BEZP281MB1976.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:5b::11) with
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by IA1PR12MB8080.namprd12.prod.outlook.com (2603:10b6:208:3fd::6) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Tue, 8 Aug
- 2023 15:38:48 +0000
-Received: from BEZP281MB3205.DEUP281.PROD.OUTLOOK.COM
- ([fe80::f4f6:cb64:e0c4:ab]) by BEZP281MB3205.DEUP281.PROD.OUTLOOK.COM
- ([fe80::f4f6:cb64:e0c4:ab%2]) with mapi id 15.20.6652.026; Tue, 8 Aug 2023
- 15:38:48 +0000
-Date:   Tue, 8 Aug 2023 17:38:45 +0200
-From:   Markus =?utf-8?Q?Bl=C3=B6chl?= <markus.bloechl@ipetronik.com>
-To:     Gregory Greenman <gregory.greenman@intel.com>,
-        Luciano Coelho <luciano.coelho@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] wifi: iwlwifi: xvt: fix tx_req.data not being the last
- member of iwl_xvt_tx_mod_task_data
-Message-ID: <zwleihaxhtvxfutlncdn3euf56m5v7kjiamhobhqiuxh47zttt@mcivytuq6flb>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AS4P250CA0019.EURP250.PROD.OUTLOOK.COM
- (2603:10a6:20b:5e3::10) To BEZP281MB3205.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:28::12)
+ 2023 15:40:54 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146%7]) with mapi id 15.20.6652.026; Tue, 8 Aug 2023
+ 15:40:54 +0000
+Message-ID: <ca4c387e-77b8-4a16-94b0-b0dba2d6cbc7@amd.com>
+Date:   Tue, 8 Aug 2023 10:40:51 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V1 5/6] Documentation: amd-pstate: introduce AMD Pstate
+ Preferred Core
+Content-Language: en-US
+To:     Meng Li <li.meng@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-acpi@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>
+References: <20230808081001.2215240-1-li.meng@amd.com>
+ <20230808081001.2215240-6-li.meng@amd.com>
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <20230808081001.2215240-6-li.meng@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM6PR02CA0148.namprd02.prod.outlook.com
+ (2603:10b6:5:332::15) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BEZP281MB3205:EE_|BEZP281MB1976:EE_
-X-MS-Office365-Filtering-Correlation-Id: e2ee5e6d-e22a-4577-98f2-08db98258eac
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|IA1PR12MB8080:EE_
+X-MS-Office365-Filtering-Correlation-Id: 42f51c43-3a9d-4e77-fd0e-08db9825d9fd
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: q1EwLhHwwEgEkuphyPw+T7HYhJvPCX67N9WrX3FauVLwidZQNiKNy9kFtUKYaV+M4qSAbJuvbKfpK8H1r/h3eNOKsgno9HFAx+FAT2nMUbMTaeMyiSzGy36MshxqCIQNQVitQz95eSzAU775IAJV2jHxPLJtCF8wo0CBzD+oFS9lP1c0vPdn1m4osUpasoJrGgVdVrK1dmNtKRPdPjcRxT3vF+hKrVFR/rK77fY1pKK350KKVC+uqr7nywbzQnxz1g80gUs4DzTrll3IVC5beK3tAnSDq+zcJBIREQXIvhRXWZ1Iaz3wW2kPly/wtf9CAwoCIYvUrGEp8yHS4RfnxOIo2AQbOgLIcYQ47Bl+Fsm1uwFnFCtEe2Z5vHyB+Fl1L12sM2xXXc3jg6ZC8XD/cnGlssYZrFDXD2YIEvT4UE5cgcqhsHBGgcA4mMFH7+lNy3+nfAuVP8Oe0enNpIa6aO/VjD+XhgktyyXROqBV9Z+TPTES0gtE1unNdtPREFBtAHeUurviWTTLiKMAfHbygx3MK75AnlLRdytRFUB6A7T9tcowllSUm1XqyIG6WjOiI28lZ6qvDfhqEp1Dvubp7wu7ju2XvSd2tlzaGvXdPiFKEXgr4aB/U+14WF7BbrMSDNe7aFXGqNcnbhTmlsYYFTJ2Ab8ehF+8ZYdQoKk0lI0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BEZP281MB3205.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(7916004)(396003)(376002)(366004)(136003)(39850400004)(346002)(1800799003)(451199021)(186006)(2906002)(26005)(33716001)(38100700002)(66574015)(6506007)(8676002)(5660300002)(8936002)(83380400001)(66946007)(41300700001)(66556008)(66476007)(316002)(6512007)(86362001)(9686003)(6666004)(4326008)(110136005)(478600001)(6486002)(12101799016);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 5h/Y4g1kHrmm+l6FRxtx3iBTJYGeEw3K3r14UcB4nQLLtLCtnbIN6zyMitTVJNyTpjX4A+xgNSVgb5BjbdDy+AE9CnPlWLJ/Pnc04Hnqcm9Zr8XJ/mOtfafkh0lq0OjVOvlcEI0HHVCBIgWXhEdVJZ/CxlFb7A176pjN5ER4pUxw1izLhSQNQgnKgMHMVD93VPr29OHtSD6IrK4WxvdPS81WjD8CuEcqFzMUJCMpjDRWuSL83zHi7laVirXsdPXgi39yr7uO8gy15N90icX279/RYMZRsUVtzDFu6IUulhxpKf88L1oZWCZdvoX1EYYZONZj9i1Tjrxu1BL3w2f2m6nWVA/bJ33z0eZLGd1oFeqZPh4KA+K+onU7gK1qvp25DfMXAX9vpPAzsndKG+RFEjhI3wrkd6Te0rz9Bb2rsS5UQz5tt5fQ7GS4cFpfGBetnOf++NMaEWZYFScJrmYpzkRdaBrBwfWDjR7kffODZFgLZbBgJI45BUxrFXadBsMXJX4larmKiBWHZLH+MN3Kr+aCJI6+ZV8eoUydwkJkazWJqDZYMChgKzotSirtfwz7fpozK2SFnM03scByrBOeY8YGjZwCO61CR65HwqVk6zBq579C4Ey3n1W0rC0rhoSdEO9061wnz6nUR4X6kshpVg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(366004)(396003)(136003)(376002)(346002)(451199021)(186006)(1800799003)(8936002)(44832011)(8676002)(5660300002)(6636002)(4326008)(41300700001)(316002)(86362001)(83380400001)(31696002)(2906002)(6486002)(6512007)(6666004)(2616005)(53546011)(26005)(6506007)(36756003)(66476007)(66556008)(66946007)(478600001)(31686004)(110136005)(54906003)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MFNPOTRNNzR3WVMxaGVFSnNvNWJqNjJjeHJJUFZCYU5sYlNRcm5jdjBTaEJD?=
- =?utf-8?B?SlVzb0RvUmZNVzN1T0llWGlyRVhmaU92QTJhQ2wrSnVGZkZjWVoyK3VjMWZh?=
- =?utf-8?B?K3QvdzVMN3l3bkpaNnRLem11S1k4UTl6M3drSVZ1d2F0dktVRjVncFF3cjZr?=
- =?utf-8?B?dDdVaXErZmI2b3VlOXp4Yk00VWdNQndlVlF1MHU3M09zZkxzWVdaK256QTEz?=
- =?utf-8?B?U3dJYkRQWEF0d2F0dzZIOFBaTWpDdFhWWDByK0RXNEYwYTU4anZRU2sxdmpP?=
- =?utf-8?B?ZXFXb29lNHc1UnJiY1hCUEE0UUVycGdyaE15bDNGZmV0ekV0NjBQWWVwY3dY?=
- =?utf-8?B?eDZCSlNaazV6TG5nNjBYKytYbjcyRlhQS09qZElwZkJ3YnMvWHR5R3diMHU5?=
- =?utf-8?B?TlNVeFZ4ODBsT2xmVjBGRWhEektXSE1kZ0YyT1hNOEsxNGJ2Tlhvd2U2ZVky?=
- =?utf-8?B?cU1GYzNlWmhVVU1DVEozQTd3OTh5TXgyNUxubEpIcjI5N0hFSmt0bWR5eEdV?=
- =?utf-8?B?UnNQWXdhbUlaT0xaWVBaejdOcjJKOTdBTSs0Q0x4U2xtOGxPcVU2eUhiUmxQ?=
- =?utf-8?B?dlhrYkFXeXRUeWZYQUVMcWlvUi9wU1dydXZHSjdOd3YybEw3NDFkd1lGS2Zx?=
- =?utf-8?B?ejBQQWR3cjBqLzFwYkExMXVMSFk0L2dtdm4rK2JoOEw1Q0srTlBSV0hma1dJ?=
- =?utf-8?B?QzZVWVV2MkI5cm9tMXJ3WE1XWURyOVh0MUNwa3JJTm9jSkF5V2ZZU05wclFp?=
- =?utf-8?B?WGhhUlpkc3Z4U2pXK2luaHdhOEZnTmRXQ2FaYjJTSE00bnZoZ2hOVDJuL3d3?=
- =?utf-8?B?QWtGZGlzU09PSG5wZmh0YjE2TmVWOHpsa28wTkpxa051aysrZjlFcG16akJ2?=
- =?utf-8?B?VUdsdEtjQjg4Z0tPTG0vMkp3enNySlVRUVJjTVRJSEF1aDQxMGlGRE43dUpR?=
- =?utf-8?B?WUlOTjUzb0t1a2xDSzlpeDRMengvMTQ0dXpsVElROEFzaUZKbkZNdGc1dTJx?=
- =?utf-8?B?R2FKM3NwdFR5TE02b0NqdGI1d1hBUUh3bzlteUhBT1ZsUkdYdFZBbkdwUzZP?=
- =?utf-8?B?NGJHSCs1ckk1OUVwbUFOSTJUSFpoblNsUXZXL2szNEh1SlpyeUFVTmxVN2Zv?=
- =?utf-8?B?L21mbWdlRzQwNm9MVCtUTzhlak1kN1BFT1p0ZzFmKzcyVGUrL3NJZnhpQlM2?=
- =?utf-8?B?aVd3d096endpSW5jL3lWbGNNQzdNWXhUUThFTGxQM3JLUDZiWjU5N0lmd2h4?=
- =?utf-8?B?aHpkMXRYWlUvc0xEbmtsTnFGWEVhZCtsUnNrTjJJSzBqQ3FwY0ZRSkpiRGo3?=
- =?utf-8?B?LzdBMElxWHUyVHQ1ME1XVFlYM1FTNkRrWlcvSHg0dkEzTkMrcTRvR0NwVXpp?=
- =?utf-8?B?QlRpc1BaNFBrZE1PSENQdkh2cHdCV3MyRDVHOXRyazlEY2Z6T1hhazZFZzJi?=
- =?utf-8?B?VzBzRk41QncveWJzaGgvTGt1MnAybnI3UWZvcFB0TDVTNi80SDhrVkYwNGw0?=
- =?utf-8?B?bHNpVGhHNG9FbTZBTS8vRmhsdng4K0I0anVtMXd4MDU5Sy9EZTNkZmY2QTN6?=
- =?utf-8?B?NHU4cElvK0tYYm5ZUVpUNFRaZ3JhUk94aVBSbjNIWGFiSElsNkNUZWFpQUp6?=
- =?utf-8?B?RVdZSHRqQVVnUW9jRmJuUjY1ZkEzU2FFdzNxK09kdzA1RjhYdWFtdzYwMEtz?=
- =?utf-8?B?T3FVSTcrRHBLTWZ1bHRESFExUERhd2tqYkpoRU1iR0ZPMzRJNk4zSHZyUk9T?=
- =?utf-8?B?dUo4STY5ZjhHd2JWc0VXaUhHQm1jZFBhMFVmZXdrTVgrNzdxcjYyOHVmVUc1?=
- =?utf-8?B?Z0JESnJnMEZobWoxaGZqNnFNVE1WbW9OampvalBuVGttbmR3a2JSdjQ1Nnhp?=
- =?utf-8?B?cSszbklKU0tPSmFLdE1leWo0UGFpNUxocUxCV2Z6N1Q4bmFXVHM4SXBVZndz?=
- =?utf-8?B?UldNdWtvSU52aElHNE9nWjM0cmppOVZXL1BMRHZTUEhqRkh6bHVudVNURXU0?=
- =?utf-8?B?VTEvZ1pFNkYxV1Q3R2k2bGtMQ2tPaGxEbFg2WWVxWHRBQ0ZVMWwyWi8rcEhi?=
- =?utf-8?B?M1poS2NDNHo2bnBDUUtzKzBzL1NzT3BGaml1NUE3Umo4eGY3UUxRWVo4c3FV?=
- =?utf-8?B?bGpTT2cyVHdJWkVXTWJhT2dhM0tvdUtlU3NseDRua3lFYnFQQzR0VXRtZE1T?=
- =?utf-8?B?dVE9PQ==?=
-X-OriginatorOrg: ipetronik.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2ee5e6d-e22a-4577-98f2-08db98258eac
-X-MS-Exchange-CrossTenant-AuthSource: BEZP281MB3205.DEUP281.PROD.OUTLOOK.COM
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bDJWdHJPZllORis1Vnh5SUJBNW00OFdCaSsvaWFZWmRJcTIyTzVucWVwQmdq?=
+ =?utf-8?B?cFR6Z3ZMbi93bUJPcy9EdzNQQW5WbTlhWTNYd0lta09nRmh5YjhDV2R3RnFD?=
+ =?utf-8?B?WlU4ajUwZUJBNDU4S0dQQ3lZQ3BmT1RKSGQ3aElCTXROMWtrL2wrSXd2dmxt?=
+ =?utf-8?B?R3dJOE4rVjBpOFl0Ylk3d0JBRjFHU1BLZGtNdGg2YStaV29qeHlvZEhxL2ta?=
+ =?utf-8?B?Sng5THptRHFpN2RxVEtDb25JcjU1OHVGOXNzZkp3dXBNUTYwN3czMjJTSEwr?=
+ =?utf-8?B?WHpWdjF3cGxzOTZxb2NFalUvbHFCdFROeWdVUWExOElwZXovM1ZGc0I3TXJV?=
+ =?utf-8?B?djBHMWk3ZHVxdE5wVS90NmpETi9ieGIxZXk1dzZsU2RZY3BZeGpMVytlbGNL?=
+ =?utf-8?B?N1RSUDU2ZEM3TEJCNW1PL0tZdXJYWGVTWGJwVll5TytHbC85WW10NEl0RHdw?=
+ =?utf-8?B?MldoRmRqckkwREpLNm83aHBjek5FNkRHQWdwQTk0UWZvd04xajRseWdLZEVr?=
+ =?utf-8?B?dTV4MWw2bjBVOU1jRUlQUHpJT1M5VXRHUTloOVB5dXdKVlRUenVGVlNXNWRB?=
+ =?utf-8?B?TWJxT2lSVHQ2UytTRUtrTzYyeVZWSHVYK2wrUWkvVjl3U3lDY08weWVKRUlI?=
+ =?utf-8?B?NEJtdnBSTzNPNDJRVHF2UFJCWmU3STViN0Z2SlJ6c3pqMCsxdjFOOXdnNnR2?=
+ =?utf-8?B?b3dsRmxCVEQ0WCtVa09EcmJRa1N4RC94OXhwZ0VGTlVCdE5PUytMTDZ1OGUr?=
+ =?utf-8?B?aXF1b3F3eFhIbUV1N2FUb2tTRldCVHFDa3VqZnBRRUNzZnNqMXVKRTF2WWVs?=
+ =?utf-8?B?WnRJbWozZms5b0JRa1U4T0FlK0Evd0xvZ05jWlFMM2l3YzNXTjVmcythblIz?=
+ =?utf-8?B?aGZoQkN6NENxVk5mdHNoaWlBdk5tREgyakhXNVNnY1NnMkF2VENLTFMwWmtY?=
+ =?utf-8?B?THpibEYxYVNiQW5BaW5YVnoveFhqcFI5aWxyZ1ZUTzhEZ3ozSXVBL1Jwc0xQ?=
+ =?utf-8?B?Vkx1dWpHaEpvTXVLNHgvMERrZWNZNVlEd0NoRmhCRXFReDYyQ0RGOStTczlN?=
+ =?utf-8?B?R2YyQWJET2kzL1lOVTRCZnlDblpZMEhEcWRKZ2FtTTl1aEVrUUszY3JHMk4v?=
+ =?utf-8?B?RW5TSHNtNWp5V1Qxc3A1OFdZVUxKaUV5NHJEQjZodVRkalFxR0dSMW1rbHZS?=
+ =?utf-8?B?VWgyck5ESDlsbGI2TzBEa0VBRk1ZNVB2ZmtHckptUWFCZHcxSzFESWhQbldH?=
+ =?utf-8?B?andhY0RNa0lSMlhlRlBqM1pSTzBVVU5iTzNLTk9tY09va1pDaW5aM0ljQkNk?=
+ =?utf-8?B?R2RqcjFUMWlZd2F0eXJuSVNqME9kaEVZVFlMS1Zadzg0RWkrYjF1RUpUSkxU?=
+ =?utf-8?B?bTBOeUJKak5hWTQxMjlicVBrd2t5Ums1VnBKa3p1Y3Y2YS9ielFLVHZUNmor?=
+ =?utf-8?B?L0g3emVoVlNXNlFqdzRMaUd2dmhtZU96VjhjdVdTNkpoazhJSi9seHAwZElq?=
+ =?utf-8?B?TU5SeGE4USswaEx2RUtIWU1KY1RJTUVuSFQ2bHp3NGNwZUg5emp6L1ZpdlJC?=
+ =?utf-8?B?QXcyQ2N1UEJUR3R2S2lTTk1kSnl5NFFMYkREbnNiS0UrcnptMkJWMVpoSVRm?=
+ =?utf-8?B?K2dXNHpHODJtTGZWMlZCeFZ4T2xVSmtJQVNiMkk1cnFpMm1kNVJ3SXNjdVc4?=
+ =?utf-8?B?REZtYkdWZUt6RWNrWWNvK1B4a3BBcWVLWksrbHMwaUVmRHlxWVlETmpXWlpB?=
+ =?utf-8?B?L2VrMnZzeVpyZjA1NjllTER1TlhzejlGbm05VkY3ZStRMDJIdTdyamhkK0lq?=
+ =?utf-8?B?SjRCelY2anBiOHAyemx5a1hKRmRsaGdSU2hBaVU2TnVZZkxiRG1mQkNTYjlt?=
+ =?utf-8?B?RXk0T01odWw3VWdsUDZ0bGJrQlRKODY4K3VUVzRCTmp4TTZOcDk3Qy9rbU4r?=
+ =?utf-8?B?Qm1XZmpTeFlMRGVKZWl4a2Nqc3Q4dVhtVVkyRU9oOWJJTVo0Z0hONHBqMXk3?=
+ =?utf-8?B?b1VsUEl5VEcva0lMKytVcGlkS1BrWHRtenUxUWNlbVJtUlhNY1cvSmxwdTJF?=
+ =?utf-8?B?M2l5YTMrY24xTnpFaVUyUmZMWXB0c1B6NlZPaFZINTcxcjlWL0YvN0FmaXl6?=
+ =?utf-8?Q?0cjLj/kXyP1s7Q0kNrnCy8vpe?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 42f51c43-3a9d-4e77-fd0e-08db9825d9fd
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2023 15:38:47.9480
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2023 15:40:54.3972
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 982fe058-7d80-4936-bdfa-9bed4f9ae127
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ikAp1yVc1OHYOd+PsWXYhlmTJWz5W4upwZerk4idyMfiCChihVfZcpvlph3bIS5ucMgkoB3O8+Svv0VRSxgbI+glBudKX6aBOA4Jt26Jsm4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BEZP281MB1976
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: Q2OUxqlUA+Ys8ToMzZ6PYh+LMJNEANavIOjuqSjC6+66LqWyCJhGt62k06ZRdqWMeDnUuhUYvC5iUhefK8pIhg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8080
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/8/2023 03:10, Meng Li wrote:
+> Introduce AMD Pstate Preferred Core.
+> 
+> check preferred core state:
+> $ cat /sys/devices/system/cpu/amd-pstate/prefcore_state
+> 
+> Signed-off-by: Meng Li <li.meng@amd.com>
+> ---
+>   Documentation/admin-guide/pm/amd-pstate.rst | 55 +++++++++++++++++++++
+>   1 file changed, 55 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
+> index 1cf40f69278c..4a30cf235425 100644
+> --- a/Documentation/admin-guide/pm/amd-pstate.rst
+> +++ b/Documentation/admin-guide/pm/amd-pstate.rst
+> @@ -353,6 +353,49 @@ is activated.  In this mode, driver requests minimum and maximum performance
+>   level and the platform autonomously selects a performance level in this range
+>   and appropriate to the current workload.
+>   
+> +AMD Pstate Preferred Core
+> +=================================
+> +
+> +The core frequency is subjected to the process variation in semiconductors.
+> +Not all cores are able to reach the maximum frequency respecting the
+> +infrastructure limits. Consequently, AMD has redefined the concept of
+> +maximum frequency of a part. This means that a fraction of cores can reach
+> +maximum frequency. To find the best process scheduling policy for a given
+> +scenario, OS needs to know the core ordering informed by the platform through
+> +highest performance capability register of the CPPC interface.
+> +
+> +``AMD Pstate Preferred Core`` use ITMT arch provides functions and data structures
+> +for enabling the scheduler to favor scheduling on cores can be get a higher frequency
+> +with lower voltage under preferred core. 
 
-This patch is for backport-iwlwifi only.
-There is a violation of the "encapsulating flexible array struct" rule.
-As struct iwl_tm_mod_tx_request contains the flexible array member
-'data' it also needs to be the last member of struct
-iwl_xvt_tx_mod_task_data.  Otherwise the flexible array is no longer at
-the end of struct iwl_xvt_tx_mod_task_data but instead overlaps with
-iwl_xvt_tx_mod_task_data::completion.
+This sentence was useful for the commit message, but I don't think it 
+should be in the user facing documentation.
 
-Fixes: 3316d819dc59 ("[NOUPSTREAM] iwlwifi: xvt: fix thread completion")
-Signed-off-by: Markus Blöchl <markus.bloechl@ipetronik.com>
----
- drivers/net/wireless/intel/iwlwifi/iwl-tm-infc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> And it has the ability to dynamically
+> +change the preferred core based on the workload and platform conditions and
+> +accounting for thermals and aging.
+> +
+> +The priority metric will be initialized by the AMD Pstate driver. The AMD Pstate
+> +driver will also determine whether or not ``AMD Pstate Preferred Core`` is
+> +supported by the platform.
+> +
+> +AMD Pstate driver will provide an initial core ordering when the system boots.
+> +The platform uses the CPPC interfaces to communicate the core ranking to the
+> +operating system and scheduler to make sure that OS is choosing the cores
+> +with highest performance firstly for scheduling the process. When AMD Pstate
+> +driver receives a message with the highest performance change, it will
+> +update the core ranking and set the cpu's priority.
+> +
+> +AMD Preferred Core Switch
+> +=================================
+> +Kernel Parameters
+> +-----------------
+> +
+> +``AMD Pstate Preferred Core`` has two states: enable and disable.
+> +Enable/disable states can be chosen by different kernel parameters.
+> +Default disable ``AMD Pstate Preferred Core``.
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-tm-infc.h b/drivers/net/wireless/intel/iwlwifi/iwl-tm-infc.h
-index fa647339ff93..68b44662cd78 100644
---- a/drivers/net/wireless/intel/iwlwifi/iwl-tm-infc.h
-+++ b/drivers/net/wireless/intel/iwlwifi/iwl-tm-infc.h
-@@ -459,8 +459,8 @@ struct iwl_tm_mod_tx_request {
- struct iwl_xvt_tx_mod_task_data {
- 	__u32 lmac_id;
- 	struct iwl_xvt *xvt;
--	struct iwl_tm_mod_tx_request tx_req;
- 	struct completion *completion;
-+	struct iwl_tm_mod_tx_request tx_req;
- } __packed __aligned(4);
- 
- /*
+Why default disable?
 
-base-commit: 7a0a4e45dd7b1482c9964748d0ffb086552a9d1e
--- 
-2.41.0
+> +
+> +``amd_prefcore=enable``
+> +
+> +If ``amd_prefcore=enable`` is passed to kernel command line option
+> +then enable ``AMD Pstate Preferred Core`` if the processor and power
+> +firmware can support preferred core feature.
+
+This can be simplified as "platform can support the preferred core feature".
+
+> +
+>   User Space Interface in ``sysfs`` - General
+>   ===========================================
+>   
+> @@ -385,6 +428,18 @@ control its functionality at the system level.  They are located in the
+>           to the operation mode represented by that string - or to be
+>           unregistered in the "disable" case.
+>   
+> +``prefcore_state``
+> +	Preferred Core state of the driver: "enabled" or "disabled".
+> +
+> +	"enabled"
+> +		Enable the AMD Preferred Core.
+> +
+> +	"disabled"
+> +		Disable the AMD Preferred Core
+> +
+> +
+> +        This attribute is read-only to check the state of Preferred Core.
+
+As the attribute is read only and won't change at runtime, I don't think 
+it makes sense to include the word "state" in the sysfs file name.
+
+You can just rename it to "prefcore".
+
+> +
+>   ``cpupower`` tool support for ``amd-pstate``
+>   ===============================================
+>   
 
