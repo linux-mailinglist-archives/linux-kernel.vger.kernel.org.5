@@ -2,187 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C10D7774B08
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE36B774D63
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233420AbjHHUjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58400 "EHLO
+        id S231501AbjHHVxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236061AbjHHUiu (ORCPT
+        with ESMTP id S231659AbjHHVxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:38:50 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99DA3182E99
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:29:12 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5234dee9a44so366231a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:29:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691515751; x=1692120551;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YRTbpdHAIcRAL+8fbnX37iDC0EoRIyOQNOdvRt+62Lw=;
-        b=DjSyFc466XoPSs0e4ymkKPotfNOOJUf3A/2g6OKlGaTDH+SXaR4NO50LD/IYycgHTF
-         N9mN3rzd3YJmnjIv9fJ5OgRtc6kekPPBeKf5DMt9ndXAndHPlyx/cUClBh6XFMRqqLje
-         AM2jZaunxmXmUQM4lwfPzIKrvE0WXYl+0S7o3dRSIuANPYbwqYWHil6HtsQn9VYH7z80
-         /G0LjfAYWzzjZObiVaDalPjtPAeu+o2LKeE89g9rgNT2fHXdXNCdEiLeH3H8OCOn7AmE
-         Mtg5LGfxbYIUcT9VxoaxHAfC2AgSsv8kfzMZwyezLYE9MzugxFsDembayZDf9GZE79pr
-         IKrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691515751; x=1692120551;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YRTbpdHAIcRAL+8fbnX37iDC0EoRIyOQNOdvRt+62Lw=;
-        b=Z7w2r3urNWGa/doiwO9/vdK8ZcaipGaRmxCt6DalX1nY/xUATSjSA30dFs0FxB9cW8
-         oKHkp5aKGQIEPvUZFH4tLarjo6aUMdEOHQ8Xhfl5JjfKpvsmLg1nwF2dUJPOio5rNCTf
-         yzzPkBY65k43QhypkifFwgXlW8HK5OAUNdwDGY+5TVdok2V1H7gTp21/EQBn6DHvygK4
-         XH2wHP1y/2GPcDIP1IvAxkY62vGptNZSGAwOM1nGcG77lMbsoQ654uxBkEYNM9N3dytF
-         t5PicAoolfQV3o7ob/0D8q403IHBRrD+iDyBuFwcjFlYdACyWlbH4IKJwfic2qB3lCKc
-         c8xQ==
-X-Gm-Message-State: AOJu0YyUlQiO8+vysIGVErDUu1AoSAf1Cy4B7/IP5WiR3aKVbl734zrs
-        /aj3JyUzkdLKxjrlk6d8js/l8bjJDewQPXG7xgR0Og==
-X-Google-Smtp-Source: AGHT+IEj9jsvS5MROtkM+IvgsvU8cU1CnN/c3z5EIcbbMeYA6EJeqykx7Eu9avENEdzUbqBt4ia3FKkcPXu7iENsbGg=
-X-Received: by 2002:aa7:d84b:0:b0:523:366b:9cb4 with SMTP id
- f11-20020aa7d84b000000b00523366b9cb4mr459388eds.1.1691515751068; Tue, 08 Aug
- 2023 10:29:11 -0700 (PDT)
+        Tue, 8 Aug 2023 17:53:09 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 500E091241;
+        Tue,  8 Aug 2023 10:32:05 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id BFE2A5C009D;
+        Tue,  8 Aug 2023 13:32:04 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 08 Aug 2023 13:32:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1691515924; x=1691602324; bh=rM
+        UaHZaSAI4l93e7AeZWrkXodMmRgdTWwjGdICmzDaY=; b=QIb8cGi7i1UpCeFo5r
+        lPDUKHa3UY9ysLj4xsmXkoQgvBnocxeYG0J5izW/BE4h7jAd0iuMvoFXviIVuqjU
+        klbeJ0cZ8iy+M0HSct94mQUeO5Anw0ggFpYldatqYosC+89HxfY4nRT2YxEwZ87N
+        AUa032AxMKzHx3eOvh/u8IzjecbYVvlnIzVdGqs9PdD/Vjj0AYzNjyRK5GoGoghU
+        YzvDY5hvLZOvbYdJXEhDPqjPbnOt9pIAIj1lFWq+DPxlbT2/6y5yuaF9kWuKSexX
+        bbxGShvrwZaCorxqbR4fQ1X553N6umvdv5D2sIt373aRzFqA4rHe5VrG9ZQqBXF5
+        i56g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1691515924; x=1691602324; bh=rMUaHZaSAI4l9
+        3e7AeZWrkXodMmRgdTWwjGdICmzDaY=; b=l7U6RjUGhd233kTpEmkm+1CLdkldm
+        P/2Bkl4+Awfzq9S1G9OmEPBEy+17nWwdTGB4KB18+fV+EFau+oDwheZDXD2FyPb5
+        zSGkfWbcI5YIyZcV9ligquRd8/vW/gdugihmSiZQMDAEUQYvwv2Wb1DxOdpog+DD
+        0gnFnOGvfevxWVD0eQ+2GapGhe8QOdDe7bTDCqvje3wDMcwzlPJPFlk8NxvfsT2J
+        nXM9C0cIQjlBuspJUlHzmkjyjAvaSlO0+JvfMMdnCS3OYa7YBjKIOR2/sElWcFXe
+        O/7mfnzROWwl3puMBQXllZdeMhRIxCjAeSZvrP00SpXm8tVF6IdrW1x4A==
+X-ME-Sender: <xms:FHzSZMTGHEnq7zDK1mIf5aLNFwb-rsYwg34gMlfZrRrosCiTnUUzGA>
+    <xme:FHzSZJzVeniscGdjhruJMk1lVnAJa1Z81GpRZLlOULuY1vPspgjeAhT3JvgUQPUYB
+    RnEELaBVO9M0_eRKPk>
+X-ME-Received: <xmr:FHzSZJ1zZ9PeCvuflHXT4OGmzhHugInOtK-hxKlOQLlTyf9wKX2m4SknA5x72tgHwrUSjjRNDYUy6Fmd-rIzOIYrFVCOE58151IDrfL5HCjn>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrledvgdduudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfhgfhffvvefuffgjkfggtgesthdtredttdertdenucfhrhhomhepufhtvghf
+    rghnucftohgvshgthhcuoehshhhrseguvghvkhgvrhhnvghlrdhioheqnecuggftrfgrth
+    htvghrnhepveelgffghfehudeitdehjeevhedthfetvdfhledutedvgeeikeeggefgudeg
+    uedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsh
+    hhrhesuggvvhhkvghrnhgvlhdrihho
+X-ME-Proxy: <xmx:FHzSZAC0ivTxstdOr3eWUaee0pkAovRjRbMc_Bvxe6iBw2ViHBBH5g>
+    <xmx:FHzSZFhoCulsZuDMQnDf0QX8RnXxp-vDECZNYiceJ-rKjCylbKZfHw>
+    <xmx:FHzSZMoZNJWXhrGmrXm5ALc1DBlfE3uRX6Hd-Vu2maNn3B-0Q3H2iw>
+    <xmx:FHzSZAozjPgXYOkeAjtH_oqX0kF4XAk7otsZsyd0Md4QNHXHdDcx_Q>
+Feedback-ID: i84614614:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 8 Aug 2023 13:32:03 -0400 (EDT)
+References: <20230728163952.4634-1-ayush.jain3@amd.com>
+User-agent: mu4e 1.10.1; emacs 28.2.50
+From:   Stefan Roesch <shr@devkernel.io>
+To:     Ayush Jain <ayush.jain3@amd.com>
+Cc:     akpm@linux-foundation.org, shuah@kernel.org,
+        pasha.tatashin@soleen.com, zhansayabagdaulet@gmail.com,
+        tyhicks@linux.microsoft.com, raghavendra.kt@amd.com,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Narasimhan.V@amd.com,
+        Santosh.Shukla@amd.com, David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v2 1/2] selftests: mm: ksm: Fix incorrect evaluation of
+ parameter
+Date:   Tue, 08 Aug 2023 10:31:24 -0700
+In-reply-to: <20230728163952.4634-1-ayush.jain3@amd.com>
+Message-ID: <qvqwfs4tphip.fsf@devbig1114.prn1.facebook.com>
 MIME-Version: 1.0
-References: <20230807-arch-um-v1-1-86dbbfb59709@google.com>
- <CAGG=3QVUqVdkzBo-=vGWprPBUhuV8p3bRSx3Qsvtqx_LDct05w@mail.gmail.com> <202308071636.AF290F0@keescook>
-In-Reply-To: <202308071636.AF290F0@keescook>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Tue, 8 Aug 2023 10:28:57 -0700
-Message-ID: <CAFhGd8oSGJ5=fk58wOSgbuXX_VaP14q0Re=Xfom=rdOR6fT1rQ@mail.gmail.com>
-Subject: Re: [PATCH] um: refactor deprecated strncpy to strtomem
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Bill Wendling <morbo@google.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-hardening@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 4:40=E2=80=AFPM Kees Cook <keescook@chromium.org> wr=
-ote:
->
-> On Mon, Aug 07, 2023 at 03:36:55PM -0700, Bill Wendling wrote:
-> > On Mon, Aug 7, 2023 at 2:18=E2=80=AFPM Justin Stitt <justinstitt@google=
-.com> wrote:
-> > >
-> > > Use `strtomem` here since `console_buf` is not expected to be
-> > > NUL-terminated. We should probably also just use `MCONSOLE_MAX_DATA`
->
-> How is it known that console_buf is not a C-string?
-There are a few clues that led me to believe console_buf was not a C-string=
-:
-1)  `n =3D min((size_t) len, ARRAY_SIZE(console_buf));` means that `n`
-can be equal to size of buffer which is then subsequently filled
-entirely by the `strncpy` invocation.
-2) console_buf looks to be a circular buffer wherein once it's filled
-it starts again from the beginning.
-3) ARRAY_SIZE is used on it as opposed to strlen or something like
-that (but not sure if ARRAY_SIZE is also used on C-strings to be fair)
-4) It has `buf` in its name which I loosely associate with non
-C-strings char buffers.
 
-All in all, it looks to be a non C-string but honestly it's hard to
-tell, especially since if it IS a C-string the previous implementation
-had some bugs with strncpy I believe.
+Ayush Jain <ayush.jain3@amd.com> writes:
 
+> A missing break in kms_tests leads to kselftest hang when the
+> parameter -s is used.
+> In current code flow because of missing break in -s, -t parses
+> args spilled from -s and as -t accepts only valid values as 0,1
+> so any arg in -s >1 or <0, gets in ksm_test failure
 >
-> > > instead of using `ARRAY_SIZE()` for every iteration of the loop.
-> > >
-> > Is this change necessary? I have a general preference for ARRAY_SIZE,
-> > because a change in size is less likely to be overlooked (unless that
-> > goes against the coding standard).
+> This went undetected since, before the addition of option -t,
+> the next case -M would immediately break out of the switch
+> statement but that is no longer the case
 >
-> I would prefer this stay either ARRAY_SIZE or sizeof, as it keeps it
-> tied to the variable in question.
+> Add the missing break statement.
 >
-> >
-> > > Also mark char buffer as `__nonstring` as per Kees' suggestion here [=
-1]
-> > >
-> > > Finally, follow checkpatch's recommendation of using `min_t` over `mi=
-n`
-> > >
-> > > Link: https://github.com/KSPP/linux/issues/90 [1]
-> > > Cc: linux-hardening@vger.kernel.org
-> > > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > > ---
-> > > Notes:
-> > > I only build tested this patch.
-> > > ---
-> > >  arch/um/drivers/mconsole_kern.c | 7 ++++---
-> > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconso=
-le_kern.c
-> > > index 5026e7b9adfe..fd4c024202ae 100644
-> > > --- a/arch/um/drivers/mconsole_kern.c
-> > > +++ b/arch/um/drivers/mconsole_kern.c
-> > > @@ -4,6 +4,7 @@
-> > >   * Copyright (C) 2001 - 2008 Jeff Dike (jdike@{addtoit,linux.intel}.=
-com)
-> > >   */
-> > >
-> > > +#include "linux/compiler_attributes.h"
-> >
-> > nit: Should this include be in angle brackets?
-> >
-> > #include <linux/compiler_attributes.h>
+> ----Before----
+> ./ksm_tests -H -s 100
+> Invalid merge type
 >
-> True, though this shouldn't need to be included at all. What was
-> missing?
+> ----After----
+> ./ksm_tests -H -s 100
+> Number of normal pages:    0
+> Number of huge pages:    50
+> Total size:    100 MiB
+> Total time:    0.401732682 s
+> Average speed:  248.922 MiB/s
 >
-> >
-> > >  #include <linux/console.h>
-> > >  #include <linux/ctype.h>
-> > >  #include <linux/string.h>
-> > > @@ -554,7 +555,7 @@ struct mconsole_output {
-> > >
-> > >  static DEFINE_SPINLOCK(client_lock);
-> > >  static LIST_HEAD(clients);
-> > > -static char console_buf[MCONSOLE_MAX_DATA];
-> > > +static char console_buf[MCONSOLE_MAX_DATA] __nonstring;
-> > >
-> > >  static void console_write(struct console *console, const char *strin=
-g,
-> > >                           unsigned int len)
-> > > @@ -566,8 +567,8 @@ static void console_write(struct console *console=
-, const char *string,
-> > >                 return;
-> > >
-> > >         while (len > 0) {
-> > > -               n =3D min((size_t) len, ARRAY_SIZE(console_buf));
-> > > -               strncpy(console_buf, string, n);
-> > > +               n =3D min_t(size_t, len, MCONSOLE_MAX_DATA);
-> > > +               strtomem(console_buf, string);
-> > >                 string +=3D n;
-> > >                 len -=3D n;
-> > >
-> > >
-> > > ---
-> > > base-commit: c1a515d3c0270628df8ae5f5118ba859b85464a2
-> > > change-id: 20230807-arch-um-3ef24413427e
-> > >
-> > > Best regards,
-> > > --
-> > > Justin Stitt <justinstitt@google.com>
-> > >
+> Fixes: 07115fcc15b4 ("selftests/mm: add new selftests for KSM")
 >
-> --
-> Kees Cook
+> Signed-off-by: Ayush Jain <ayush.jain3@amd.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> ---
+> v1 -> v2
+> collect Reviewed-by from David
+> Updated Fixes tag from commit 9e7cb94ca218 to 07115fcc15b4
+>
+>  tools/testing/selftests/mm/ksm_tests.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/tools/testing/selftests/mm/ksm_tests.c b/tools/testing/selftests/mm/ksm_tests.c
+> index 435acebdc325..380b691d3eb9 100644
+> --- a/tools/testing/selftests/mm/ksm_tests.c
+> +++ b/tools/testing/selftests/mm/ksm_tests.c
+> @@ -831,6 +831,7 @@ int main(int argc, char *argv[])
+>  				printf("Size must be greater than 0\n");
+>  				return KSFT_FAIL;
+>  			}
+> +			break;
+>  		case 't':
+>  			{
+>  				int tmp = atoi(optarg);
+
+Acked-by: Stefan Roesch <shr@devkernel.io>
