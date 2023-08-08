@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D05047737B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 05:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862BA7737B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 05:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbjHHD2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 23:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49376 "EHLO
+        id S231338AbjHHD2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 23:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbjHHD2D (ORCPT
+        with ESMTP id S231533AbjHHD2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 23:28:03 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF6712D
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 20:26:47 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fe32ec7201so28435e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 20:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691465206; x=1692070006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NuB7YbnqC7c4FNO5OdgtRU4+dJJH4sy8Gmu+1ZKvXqM=;
-        b=AXuZeK3ldhdaatptZvUTwjzjLSZQOp8LYNPZ048zPT9Hf00RmeqwuH31u02hhlA7+/
-         0YogXDwAehqv5uH0vl6LQ+skudap6jxdmQ5h3DIfM4068LJxMeJmvBpY98VQAWcXY7t3
-         aZp2GtRHhhcW7bnVUN5xOxYTVt81R/+nEpCFct1aLAjt7NL5aAJ5/4fobWiAnImBwukO
-         GrC7nUo86PX0TdDGiCqYXdJUZfr91na793dHAY3b6Y5zGfVpOC5JoCQM2uoPLRBWDCOo
-         OwYB7IzEfEFWJYsQIEsMR8qvlgaQJV3Q2BN7+Yt4mI/LkBOlrXwQgkjdr7iLrAlJgKVa
-         MKCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691465206; x=1692070006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NuB7YbnqC7c4FNO5OdgtRU4+dJJH4sy8Gmu+1ZKvXqM=;
-        b=gHGkP5RyHFD60kvgPKgrj9mfDKtCH7j8qHJRXmFwIU8tE2oIjCFIGtUxZ6YHVCw0ix
-         xSG4jbHJSWu2s5ktsW/Tl8LQRGLsnTv8M5o7jGDASCDRaPX7uSh8ct7UK+ZbkfBfc72w
-         aeeND0o1Oya+kw2GJ92Q4xPS4p/2shk36FGneXwvyvgf60lA6cUV5DzLTm8jG1szR4aT
-         2yiD7Fl67fnmgz6aQzR4KYPXmqiN6cibOzLIggk6p79y51w2xrDb7GHeXqYOA4pUWbvD
-         9ATSmrsAd7T+yU6Lumcsg0lwd6smO5tQG0FHa9AU4jDbHvk7ejOdmd6qEzZm/vpvfkmz
-         rfGA==
-X-Gm-Message-State: AOJu0Yx3wbH/+N9P2UUcEf0CeWN1blVzaGWnTQzsGpbbmbO1rrNY+WAu
-        0+j/Nx5tNeSQyNRmHYzRpDIK4tguHGWDAiQdSMS4
-X-Google-Smtp-Source: AGHT+IGRFITSpr6ACBR1/rbLIy0Cxs8MPgIs2YrgQ1eiCvqppxu+V90ISFxTnFmo2ezgQvxoUn7T+ud+gaxTCqzT7sI=
-X-Received: by 2002:a05:600c:4e4b:b0:3fd:e15:6d5 with SMTP id
- e11-20020a05600c4e4b00b003fd0e1506d5mr292786wmq.2.1691465206339; Mon, 07 Aug
- 2023 20:26:46 -0700 (PDT)
+        Mon, 7 Aug 2023 23:28:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B8010F6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 20:26:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9ee8YYW05CME00ewErNo+UK3igS6KjVnj9z96msv9rA=; b=az3Vx6msxNlYZ1nos7n6Svx9AH
+        p/4XOlHlGWxK3iRcHiHgw1n+jK2cbUQLPZY7FkSSyUQ/JvyME+JSGn3mGuXDn7sLDhvp89o6cHcor
+        4+CegyF9ccoXkS8FL+QHFBeXU+DZD3a3mEbhpX7Bqd7VqLpok2TtJm7cIjRzH251AJ24IRCt6yykm
+        lIIsstxXAUtDnZgfD/+8Lkl9ENYvQhO0PZwVU8bDmhVEqpWwutNyJL26a06qw/zGqw62HXF1zswbG
+        ISkq0ueA5lvd9DzRA85O2Rov/lP8mgkaRLun+O0OrMeRYXmggp2nal6XWeI5cxiL29m7PXLxjCZcM
+        A0tkbL4g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qTDMu-00F6HF-D9; Tue, 08 Aug 2023 03:26:48 +0000
+Date:   Tue, 8 Aug 2023 04:26:48 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: remove unneeded __meminit annotation
+Message-ID: <ZNG1+PV5nG8YZDev@casper.infradead.org>
+References: <20230808015831.608454-1-linmiaohe@huawei.com>
+ <ZNGo5Y4vQ3rQn0vf@casper.infradead.org>
+ <308f326d-c7ae-be49-22af-189a81a89aa2@huawei.com>
+ <ZNGzqRYzC8lbLG9s@casper.infradead.org>
 MIME-Version: 1.0
-References: <12d34340-6c94-4bfd-aa16-3c39026070d8@paulmck-laptop> <20230728032232.816584-1-paulmck@kernel.org>
-In-Reply-To: <20230728032232.816584-1-paulmck@kernel.org>
-From:   John Stultz <jstultz@google.com>
-Date:   Mon, 7 Aug 2023 20:26:34 -0700
-Message-ID: <CANDhNCqTNNG=EVVgKruDEkbbSAArPP5=d=HsueYeScfyxQqXCA@mail.gmail.com>
-Subject: Re: [PATCH rcu 1/2] torture: Add a kthread-creation callback to _torture_create_kthread()
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNGzqRYzC8lbLG9s@casper.infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 8:22=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> This commit adds a kthread-creation callback to the
-> _torture_create_kthread() function, which allows callers of a new
-> torture_create_kthread_cb() macro to specify a function to be invoked
-> after the kthread is created but before it is awakened for the first time=
-.
->
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: John Stultz <jstultz@google.com>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: kernel-team@android.com
+On Tue, Aug 08, 2023 at 04:16:57AM +0100, Matthew Wilcox wrote:
+> On Tue, Aug 08, 2023 at 11:08:36AM +0800, Miaohe Lin wrote:
+> > On 2023/8/8 10:31, Matthew Wilcox wrote:
+> > > On Tue, Aug 08, 2023 at 09:58:31AM +0800, Miaohe Lin wrote:
+> > >> kswapd_stop() and kcompactd_stop() are only called when MEMORY_HOTREMOVE
+> > >> is enabled. So wrap them under CONFIG_MEMORY_HOTREMOVE and further remove
+> > >> __meminit annotation. No functional change intended.
+> > > 
+> > > I don't understand why this is an improvement.  If CONFIG_MEMORY_HOTREMOVE
+> > > is disabled, the linker drops this section (... right?)  If it's enabled,
+> > 
+> > When CONFIG_MEMORY_HOTREMOVE is disabled, without this patch:
+> > 
+> > size mm/compaction.o
+> >    text	   data	    bss	    dec	    hex	filename
+> >  103164	  30873	      0	 134037	  20b95	mm/compaction.o
+> > 
+> > size mm/vmscan.o
+> >    text	   data	    bss	    dec	    hex	filename
+> >  158775	  49612	     64	 208451	  32e43	mm/vmscan.o
+> > 
+> > while with this patch:
+> > 
+> > size mm/compaction.o
+> >    text	   data	    bss	    dec	    hex	filename
+> >  102915	  30865	      0	 133780	  20a94	mm/compaction.o
+> > 
+> > size mm/vmscan.o
+> >    text	   data	    bss	    dec	    hex	filename
+> >  158534	  49604	     64	 208202	  32d4a	mm/vmscan.o
+> > 
+> > We can reduce each .o by ~250 bytes.
+> 
+> But this is before the linker step!  That will be where the meminit
+> sections get dropped.  Assuming they are; I haven't verified.  You need
+> to compare before/after of the vmlinux, not the individual .o files.
 
-Thanks for improving the patch this way!
+Ah, found it:
 
-Acked-by: John Stultz <jstultz@google.com>
+#if defined(CONFIG_MEMORY_HOTPLUG)
+#define MEM_KEEP(sec)    *(.mem##sec)
+#define MEM_DISCARD(sec)
+#else
+#define MEM_KEEP(sec)
+#define MEM_DISCARD(sec) *(.mem##sec)
+#endif
+
+in include/asm-generic/vmlinux.lds.h
+
+So yeah, I think this patch is garbage.
