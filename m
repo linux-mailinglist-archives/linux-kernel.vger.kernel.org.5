@@ -2,84 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 483A2774744
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAEE7743EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234983AbjHHTN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60668 "EHLO
+        id S235373AbjHHSMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234814AbjHHTNL (ORCPT
+        with ESMTP id S235418AbjHHSL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:13:11 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A325351D3;
-        Tue,  8 Aug 2023 09:35:39 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bc512526cso855135766b.1;
-        Tue, 08 Aug 2023 09:35:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691512502; x=1692117302;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SkJoIl6bqN5V/arz35UqS7vxqymZsvhTQ0NmSaBWTpc=;
-        b=aWTCoVkGvg4zYFRtsVweX3Y1ZWkJ6IdzZGpjekBCTjqBYnGSn/T4rteLMQwje2pSpg
-         FMYUu645hm7Ud2fgruVlMuhPxHMrIHHhC7jt39y6evuTau2WHegCxIPhN0dcapaj/ruT
-         jSegFBzbnBjnbWdWU+W5BQB+FITxUDC2jCgxbVvyygOVOnrg8IWsGnFz7/INgxnkY+NK
-         8i6Qmckdneg2sdqCAzIsoZaoSAIEu5s9oPHIuEfSHNnDAQQhqXjbc8C8SZsNaHoOByC2
-         NuobX5ztpxbNBLu+F5zwefRN0/m2EY2hIKBqmmGovM8VwTvx0qmocL9o18QSBUYo7bm7
-         KUHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691512502; x=1692117302;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SkJoIl6bqN5V/arz35UqS7vxqymZsvhTQ0NmSaBWTpc=;
-        b=DnmleRf8VD7RP42jG6mlWexo+C9PpGyROXWPPy18UcUMSfuqKFIhX1coo5NuJaT/Ao
-         U0AWO6fyd/5lziBf5oCUBq4Z+M/kvgrq2zdy95ImWwdem3Hiray7gxLte/uHBI5oi9E/
-         SAKjwf9AMeb1HCVLxP1/ohIzksdTXrSwX46Gopp3pZUS9jUCKPd69RD836CuWkf/Q8ej
-         Xyl/dQIwoRRobCbQ4Fv0g5Oa276eFCH0VEM4HlBk5E4mTyRB1OWcN4R8pfKUDAZ4+e0Q
-         dN+SJxBVldgxk1R+ovIuqviddIXjpS82pOQ7GJqfvnC7ZDUCgNmR8ZvQhtPc+Rn3AC0a
-         w2bA==
-X-Gm-Message-State: AOJu0YxAS2ID7K7WQbwUmw0q/TytvsnOfE2p/461mVQy+Ydv8j4OiOHy
-        BspOwA7woG65ckmW45UythVNretWgUBwtHF4
-X-Google-Smtp-Source: AGHT+IHGGicBO6hh1cowRODMmbY3oe1devolNZrQRK4+F3jdN7CbErysf5M2mBuoBuAU0jdi9iQl5g==
-X-Received: by 2002:a05:6512:31d6:b0:4f8:7772:3dfd with SMTP id j22-20020a05651231d600b004f877723dfdmr8655721lfe.11.1691492572360;
-        Tue, 08 Aug 2023 04:02:52 -0700 (PDT)
-Received: from localhost.localdomain (83-233-6-197.cust.bredband2.com. [83.233.6.197])
-        by smtp.gmail.com with ESMTPSA id q10-20020ac246ea000000b004fbad682ffesm1826587lfo.88.2023.08.08.04.02.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 04:02:51 -0700 (PDT)
-From:   Marcus Folkesson <marcus.folkesson@gmail.com>
-To:     Marcus Folkesson <marcus.folkesson@gmail.com>,
-        Kent Gustavsson <kent@minoris.se>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        William Breathitt Gray <william.gray@linaro.org>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/4] iio: adc: mcp3911: fix indentation
-Date:   Tue,  8 Aug 2023 13:04:31 +0200
-Message-Id: <20230808110432.240773-3-marcus.folkesson@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230808110432.240773-1-marcus.folkesson@gmail.com>
-References: <20230808110432.240773-1-marcus.folkesson@gmail.com>
+        Tue, 8 Aug 2023 14:11:57 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FFF168B44;
+        Tue,  8 Aug 2023 10:15:49 -0700 (PDT)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RKr654QSJz1hwFW;
+        Tue,  8 Aug 2023 19:08:45 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.202) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 8 Aug 2023 19:11:34 +0800
+From:   Zhu Wang <wangzhu9@huawei.com>
+To:     <pavel@ucw.cz>, <lee@kernel.org>, <linux-leds@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <wangzhu9@huawei.com>
+Subject: [PATCH -next] leds: remove redundant of_match_ptr()
+Date:   Tue, 8 Aug 2023 19:11:08 +0800
+Message-ID: <20230808111108.24262-1-wangzhu9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.202]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,245 +45,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The file does not make use of indentation properly.
-Fix that.
+The driver depends on CONFIG_OF, so it is not necessary to use
+of_match_ptr() here. We remove both CONFIG_OF and of_match_ptr() here.
 
-Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+Signed-off-by: Zhu Wang <wangzhu9@huawei.com>
 ---
+ drivers/leds/leds-an30259a.c | 2 +-
+ drivers/leds/leds-aw2013.c   | 2 +-
+ drivers/leds/leds-lp5521.c   | 5 ++---
+ drivers/leds/leds-lp5523.c   | 4 +---
+ drivers/leds/leds-lp5562.c   | 4 +---
+ drivers/leds/leds-lp8501.c   | 4 +---
+ 6 files changed, 7 insertions(+), 14 deletions(-)
 
-Notes:
-    v4:
-        - New patch in this series
-
- drivers/iio/adc/mcp3911.c | 97 ++++++++++++++++++++-------------------
- 1 file changed, 49 insertions(+), 48 deletions(-)
-
-diff --git a/drivers/iio/adc/mcp3911.c b/drivers/iio/adc/mcp3911.c
-index 8bbf2f7c839e..8b465d2aad1a 100644
---- a/drivers/iio/adc/mcp3911.c
-+++ b/drivers/iio/adc/mcp3911.c
-@@ -33,7 +33,7 @@
- #define MCP3911_GAIN_VAL(ch, val)      ((val << 3 * ch) & MCP3911_GAIN_MASK(ch))
+diff --git a/drivers/leds/leds-an30259a.c b/drivers/leds/leds-an30259a.c
+index 24b1041213c2..0216afed3b6e 100644
+--- a/drivers/leds/leds-an30259a.c
++++ b/drivers/leds/leds-an30259a.c
+@@ -344,7 +344,7 @@ MODULE_DEVICE_TABLE(i2c, an30259a_id);
+ static struct i2c_driver an30259a_driver = {
+ 	.driver = {
+ 		.name = "leds-an30259a",
+-		.of_match_table = of_match_ptr(an30259a_match_table),
++		.of_match_table = an30259a_match_table,
+ 	},
+ 	.probe = an30259a_probe,
+ 	.remove = an30259a_remove,
+diff --git a/drivers/leds/leds-aw2013.c b/drivers/leds/leds-aw2013.c
+index 59765640b70f..a562c01c9775 100644
+--- a/drivers/leds/leds-aw2013.c
++++ b/drivers/leds/leds-aw2013.c
+@@ -420,7 +420,7 @@ MODULE_DEVICE_TABLE(of, aw2013_match_table);
+ static struct i2c_driver aw2013_driver = {
+ 	.driver = {
+ 		.name = "leds-aw2013",
+-		.of_match_table = of_match_ptr(aw2013_match_table),
++		.of_match_table = aw2013_match_table,
+ 	},
+ 	.probe = aw2013_probe,
+ 	.remove = aw2013_remove,
+diff --git a/drivers/leds/leds-lp5521.c b/drivers/leds/leds-lp5521.c
+index 030c040fdf6d..2ef19ad23b1d 100644
+--- a/drivers/leds/leds-lp5521.c
++++ b/drivers/leds/leds-lp5521.c
+@@ -594,18 +594,17 @@ static const struct i2c_device_id lp5521_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, lp5521_id);
  
- #define MCP3911_REG_STATUSCOM		0x0a
--#define MCP3911_STATUSCOM_DRHIZ         BIT(12)
-+#define MCP3911_STATUSCOM_DRHIZ		BIT(12)
- #define MCP3911_STATUSCOM_READ		GENMASK(7, 6)
- #define MCP3911_STATUSCOM_CH1_24WIDTH	BIT(4)
- #define MCP3911_STATUSCOM_CH0_24WIDTH	BIT(3)
-@@ -112,7 +112,7 @@ static int mcp3911_write(struct mcp3911 *adc, u8 reg, u32 val, u8 len)
- }
+-#ifdef CONFIG_OF
+ static const struct of_device_id of_lp5521_leds_match[] = {
+ 	{ .compatible = "national,lp5521", },
+ 	{},
+ };
  
- static int mcp3911_update(struct mcp3911 *adc, u8 reg, u32 mask,
--		u32 val, u8 len)
-+			  u32 val, u8 len)
- {
- 	u32 tmp;
- 	int ret;
-@@ -127,8 +127,8 @@ static int mcp3911_update(struct mcp3911 *adc, u8 reg, u32 mask,
- }
+ MODULE_DEVICE_TABLE(of, of_lp5521_leds_match);
+-#endif
++
+ static struct i2c_driver lp5521_driver = {
+ 	.driver = {
+ 		.name	= "lp5521",
+-		.of_match_table = of_match_ptr(of_lp5521_leds_match),
++		.of_match_table = of_lp5521_leds_match,
+ 	},
+ 	.probe		= lp5521_probe,
+ 	.remove		= lp5521_remove,
+diff --git a/drivers/leds/leds-lp5523.c b/drivers/leds/leds-lp5523.c
+index daa6a165fba6..38de853f9939 100644
+--- a/drivers/leds/leds-lp5523.c
++++ b/drivers/leds/leds-lp5523.c
+@@ -972,7 +972,6 @@ static const struct i2c_device_id lp5523_id[] = {
  
- static int mcp3911_write_raw_get_fmt(struct iio_dev *indio_dev,
--					struct iio_chan_spec const *chan,
--					long mask)
-+				     struct iio_chan_spec const *chan,
-+				     long mask)
- {
- 	switch (mask) {
- 	case IIO_CHAN_INFO_SCALE:
-@@ -141,9 +141,9 @@ static int mcp3911_write_raw_get_fmt(struct iio_dev *indio_dev,
- }
+ MODULE_DEVICE_TABLE(i2c, lp5523_id);
  
- static int mcp3911_read_avail(struct iio_dev *indio_dev,
--			     struct iio_chan_spec const *chan,
--			     const int **vals, int *type, int *length,
--			     long info)
-+			      struct iio_chan_spec const *chan,
-+			      const int **vals, int *type, int *length,
-+			      long info)
- {
- 	switch (info) {
- 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
-@@ -212,8 +212,8 @@ static int mcp3911_read_raw(struct iio_dev *indio_dev,
- }
+-#ifdef CONFIG_OF
+ static const struct of_device_id of_lp5523_leds_match[] = {
+ 	{ .compatible = "national,lp5523", },
+ 	{ .compatible = "ti,lp55231", },
+@@ -980,12 +979,11 @@ static const struct of_device_id of_lp5523_leds_match[] = {
+ };
  
- static int mcp3911_write_raw(struct iio_dev *indio_dev,
--			    struct iio_chan_spec const *channel, int val,
--			    int val2, long mask)
-+			     struct iio_chan_spec const *channel, int val,
-+			     int val2, long mask)
- {
- 	struct mcp3911 *adc = iio_priv(indio_dev);
- 	int ret = -EINVAL;
-@@ -223,12 +223,12 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
- 	case IIO_CHAN_INFO_SCALE:
- 		for (int i = 0; i < MCP3911_NUM_SCALES; i++) {
- 			if (val == mcp3911_scale_table[i][0] &&
--				val2 == mcp3911_scale_table[i][1]) {
-+			    val2 == mcp3911_scale_table[i][1]) {
+ MODULE_DEVICE_TABLE(of, of_lp5523_leds_match);
+-#endif
  
- 				adc->gain[channel->channel] = BIT(i);
- 				ret = mcp3911_update(adc, MCP3911_REG_GAIN,
--						MCP3911_GAIN_MASK(channel->channel),
--						MCP3911_GAIN_VAL(channel->channel, i), 1);
-+						     MCP3911_GAIN_MASK(channel->channel),
-+						     MCP3911_GAIN_VAL(channel->channel, i), 1);
- 			}
- 		}
- 		break;
-@@ -246,8 +246,8 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
+ static struct i2c_driver lp5523_driver = {
+ 	.driver = {
+ 		.name	= "lp5523x",
+-		.of_match_table = of_match_ptr(of_lp5523_leds_match),
++		.of_match_table = of_lp5523_leds_match,
+ 	},
+ 	.probe		= lp5523_probe,
+ 	.remove		= lp5523_remove,
+diff --git a/drivers/leds/leds-lp5562.c b/drivers/leds/leds-lp5562.c
+index 4565cc12cea8..39db9aeb67c5 100644
+--- a/drivers/leds/leds-lp5562.c
++++ b/drivers/leds/leds-lp5562.c
+@@ -589,19 +589,17 @@ static const struct i2c_device_id lp5562_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, lp5562_id);
  
- 		/* Enable offset*/
- 		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM,
--				MCP3911_STATUSCOM_EN_OFFCAL,
--				MCP3911_STATUSCOM_EN_OFFCAL, 2);
-+				     MCP3911_STATUSCOM_EN_OFFCAL,
-+				     MCP3911_STATUSCOM_EN_OFFCAL, 2);
- 		break;
+-#ifdef CONFIG_OF
+ static const struct of_device_id of_lp5562_leds_match[] = {
+ 	{ .compatible = "ti,lp5562", },
+ 	{},
+ };
  
- 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
-@@ -255,7 +255,7 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
- 			if (val == mcp3911_osr_table[i]) {
- 				val = FIELD_PREP(MCP3911_CONFIG_OSR, i);
- 				ret = mcp3911_update(adc, MCP3911_REG_CONFIG, MCP3911_CONFIG_OSR,
--						val, 2);
-+						     val, 2);
- 				break;
- 			}
- 		}
-@@ -279,7 +279,7 @@ static int mcp3911_calc_scale_table(struct mcp3911 *adc)
- 		if (ret < 0) {
- 			dev_err(&adc->spi->dev,
- 				"failed to get vref voltage: %d\n",
--			       ret);
-+				ret);
- 			return ret;
- 		}
+ MODULE_DEVICE_TABLE(of, of_lp5562_leds_match);
+-#endif
  
-@@ -305,25 +305,25 @@ static int mcp3911_calc_scale_table(struct mcp3911 *adc)
- 	return 0;
- }
+ static struct i2c_driver lp5562_driver = {
+ 	.driver = {
+ 		.name	= "lp5562",
+-		.of_match_table = of_match_ptr(of_lp5562_leds_match),
++		.of_match_table = of_lp5562_leds_match,
+ 	},
+ 	.probe		= lp5562_probe,
+ 	.remove		= lp5562_remove,
+diff --git a/drivers/leds/leds-lp8501.c b/drivers/leds/leds-lp8501.c
+index f11886aa8965..ac50aa88939a 100644
+--- a/drivers/leds/leds-lp8501.c
++++ b/drivers/leds/leds-lp8501.c
+@@ -380,19 +380,17 @@ static const struct i2c_device_id lp8501_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, lp8501_id);
  
--#define MCP3911_CHAN(idx) {					\
--		.type = IIO_VOLTAGE,				\
--		.indexed = 1,					\
--		.channel = idx,					\
--		.scan_index = idx,				\
--		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO), \
--		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |	\
--			BIT(IIO_CHAN_INFO_OFFSET) |		\
--			BIT(IIO_CHAN_INFO_SCALE),		\
--		.info_mask_shared_by_type_available =           \
--			BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),	\
--		.info_mask_separate_available =			\
--			BIT(IIO_CHAN_INFO_SCALE),		\
--		.scan_type = {					\
--			.sign = 's',				\
--			.realbits = 24,				\
--			.storagebits = 32,			\
--			.endianness = IIO_BE,			\
--		},						\
-+#define MCP3911_CHAN(idx) {				\
-+	.type = IIO_VOLTAGE,				\
-+	.indexed = 1,					\
-+	.channel = idx,					\
-+	.scan_index = idx,				\
-+	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO), \
-+	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |	\
-+	BIT(IIO_CHAN_INFO_OFFSET) |			\
-+	BIT(IIO_CHAN_INFO_SCALE),			\
-+	.info_mask_shared_by_type_available =           \
-+	BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),		\
-+	.info_mask_separate_available =			\
-+	BIT(IIO_CHAN_INFO_SCALE),			\
-+	.scan_type = {					\
-+		.sign = 's',				\
-+		.realbits = 24,				\
-+		.storagebits = 32,			\
-+		.endianness = IIO_BE,			\
-+	},						\
- }
+-#ifdef CONFIG_OF
+ static const struct of_device_id of_lp8501_leds_match[] = {
+ 	{ .compatible = "ti,lp8501", },
+ 	{},
+ };
  
- static const struct iio_chan_spec mcp3911_channels[] = {
-@@ -355,7 +355,7 @@ static irqreturn_t mcp3911_trigger_handler(int irq, void *p)
- 	ret = spi_sync_transfer(adc->spi, xfer, ARRAY_SIZE(xfer));
- 	if (ret < 0) {
- 		dev_warn(&adc->spi->dev,
--				"failed to get conversion data\n");
-+			 "failed to get conversion data\n");
- 		goto out;
- 	}
+ MODULE_DEVICE_TABLE(of, of_lp8501_leds_match);
+-#endif
  
-@@ -494,7 +494,7 @@ static int mcp3911_probe(struct spi_device *spi)
- 			return ret;
- 
- 		ret = devm_add_action_or_reset(&spi->dev,
--				mcp3911_cleanup_regulator, adc->vref);
-+					       mcp3911_cleanup_regulator, adc->vref);
- 		if (ret)
- 			return ret;
- 	}
-@@ -517,10 +517,10 @@ static int mcp3911_probe(struct spi_device *spi)
- 
- 	if (device_property_read_bool(&spi->dev, "microchip,data-ready-hiz"))
- 		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM, MCP3911_STATUSCOM_DRHIZ,
--				0, 2);
-+				     0, 2);
- 	else
- 		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM, MCP3911_STATUSCOM_DRHIZ,
--				MCP3911_STATUSCOM_DRHIZ, 2);
-+				     MCP3911_STATUSCOM_DRHIZ, 2);
- 	if (ret)
- 		return ret;
- 
-@@ -528,12 +528,12 @@ static int mcp3911_probe(struct spi_device *spi)
- 	if (ret)
- 		return ret;
- 
--       /* Set gain to 1 for all channels */
-+	/* Set gain to 1 for all channels */
- 	for (int i = 0; i < MCP3911_NUM_CHANNELS; i++) {
- 		adc->gain[i] = 1;
- 		ret = mcp3911_update(adc, MCP3911_REG_GAIN,
--				MCP3911_GAIN_MASK(i),
--				MCP3911_GAIN_VAL(i, 0), 1);
-+				     MCP3911_GAIN_MASK(i),
-+				     MCP3911_GAIN_VAL(i, 0), 1);
- 		if (ret)
- 			return ret;
- 	}
-@@ -550,8 +550,8 @@ static int mcp3911_probe(struct spi_device *spi)
- 
- 	if (spi->irq > 0) {
- 		adc->trig = devm_iio_trigger_alloc(&spi->dev, "%s-dev%d",
--				indio_dev->name,
--				iio_device_id(indio_dev));
-+						   indio_dev->name,
-+						   iio_device_id(indio_dev));
- 		if (!adc->trig)
- 			return -ENOMEM;
- 
-@@ -567,15 +567,16 @@ static int mcp3911_probe(struct spi_device *spi)
- 		 * don't enable the interrupt to avoid extra load on the system.
- 		 */
- 		ret = devm_request_irq(&spi->dev, spi->irq,
--				&iio_trigger_generic_data_rdy_poll, IRQF_NO_AUTOEN | IRQF_ONESHOT,
--				indio_dev->name, adc->trig);
-+				       &iio_trigger_generic_data_rdy_poll,
-+				       IRQF_NO_AUTOEN | IRQF_ONESHOT,
-+				       indio_dev->name, adc->trig);
- 		if (ret)
- 			return ret;
- 	}
- 
- 	ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
--			NULL,
--			mcp3911_trigger_handler, NULL);
-+					      NULL,
-+					      mcp3911_trigger_handler, NULL);
- 	if (ret)
- 		return ret;
- 
+ static struct i2c_driver lp8501_driver = {
+ 	.driver = {
+ 		.name	= "lp8501",
+-		.of_match_table = of_match_ptr(of_lp8501_leds_match),
++		.of_match_table = of_lp8501_leds_match,
+ 	},
+ 	.probe		= lp8501_probe,
+ 	.remove		= lp8501_remove,
 -- 
-2.40.1
+2.17.1
 
