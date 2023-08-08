@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71030773CF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E41773CD3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbjHHQMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
+        id S232031AbjHHQJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232049AbjHHQKK (ORCPT
+        with ESMTP id S231600AbjHHQIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:10:10 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C8E7AB3
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:46:37 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bc73a2b0easo13108525ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:46:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691509594; x=1692114394;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hpGMNxDDvo9T1v6v+RkICvblRXd4nkGe288y9gyoNGg=;
-        b=jh4uG5zld+1/KhFnZcfxps6aLBg2tCh6+8qLTnfA+d0SAtoX013EtubaqOibJxZ0Ud
-         RjxGEHCRwFAnE8GCUaR3CXDOfkYuhVZx7N3CX84VOqhOVyFu4hjaWwlgyPaAH849z0Ez
-         6W/hFw+A/UdUJxcSSh2mAqJL69+/Tyw71xoisxPh80B46b9c8Q1NbxvlOUhbzWPrFK1Q
-         OH9+lv7GEi2SgH0K9TIBkCYzSAa+JNJol4/u5Ld/SreEZ8xBgxXFfFLZHpOo7NCVvzfF
-         0iINnd1qktHg7Pjhz0Kk3JbWY5Qjv9tRYJlS5Vw9QbA5HVbdH0VQxwfEORiEvmMj+AOV
-         XO6g==
+        Tue, 8 Aug 2023 12:08:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8855769D
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691509542;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lr8QH1hJKMAeMGOo0M5b1qGrUuXmYrB7fQhjBLGi+k0=;
+        b=hS8SmJzWdL1TtS4tCBU18Fi8JOWmwixfEOoH8fBeuCastwR9RwVUzpweEJ4CBzm3TjjGpV
+        JgVoR6cARaf4puEcMTwdcNeeAsq/OsbJx1WzfXWgxvcgi3eVxBmMXSS92ytQmNEWrYc8DJ
+        XhYcCiccot6kDlNNrJ49sCvIfF5Nvug=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-381-CxHyW0BJOBGYZvKLEVvoFQ-1; Tue, 08 Aug 2023 10:44:19 -0400
+X-MC-Unique: CxHyW0BJOBGYZvKLEVvoFQ-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4100bd13cb7so19780961cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 07:44:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691509594; x=1692114394;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hpGMNxDDvo9T1v6v+RkICvblRXd4nkGe288y9gyoNGg=;
-        b=PM9LrDG2Mo5ZGhVpsbm67t/24s3r+xujbA+yRbbpeOe6udaJb3QC1BafDgailzEKpV
-         mnh+RlQcbYM/VRhyeV0CjumpL8jDj93a81EopdHPpcNmiLPG0zifC6ju1g5BMAIm1qA/
-         niO8mxaU8d+XxfA7gen3U4ddRnYFVh3vkKvHirsho/tRsHGFX5zfkjeHst9qX1+NYj0b
-         6a3iu4CHRsDZYI3t9F/cF0zSOKuLfhFtFHAwHZWGGupyg0R2R3nZEAkCuBZxXAwQdQBe
-         z/fZgKb3nyM/fZp1vqNVg10bddrfFaEyqazDiDUrTE14XqTwNMTOH0v7mWapSbuMm5L8
-         7ryw==
-X-Gm-Message-State: AOJu0YyCFm908dVMc2O7gIQ/aeQH/sfHlwZSnIPYjZ4HO9nQJciG9mWe
-        uOeCiIzhy9wPCFGpzOM7b5hBvtBmrcr0Y4QKRhKSRma9/XLNQi7n
-X-Google-Smtp-Source: AGHT+IEQ0B+zFHwu6lwq9ShhqNgqoAUPtqEjQdph6xX3V3JEjoRX0Qpcb7z9XgUddzrDP+CIGW7eIVIsmdM1+EjIYR4=
-X-Received: by 2002:a25:df82:0:b0:d47:4ed4:43eb with SMTP id
- w124-20020a25df82000000b00d474ed443ebmr10840010ybg.63.1691505778468; Tue, 08
- Aug 2023 07:42:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230803063703.5659-1-zhuyinbo@loongson.cn> <20230803063703.5659-3-zhuyinbo@loongson.cn>
- <4fef9725-7aea-43fb-b8ef-d20a4c6d9a68@app.fastmail.com>
-In-Reply-To: <4fef9725-7aea-43fb-b8ef-d20a4c6d9a68@app.fastmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 8 Aug 2023 16:42:22 +0200
-Message-ID: <CAPDyKFo7p=aEWWrW2OGbhN1tFjHanpqjLApzCMipdPSzE+NknQ@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] soc: loongson2_pm: add power management support
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Yinbo Zhu <zhuyinbo@loongson.cn>, Rob Herring <robh+dt@kernel.org>,
+        d=1e100.net; s=20221208; t=1691505859; x=1692110659;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lr8QH1hJKMAeMGOo0M5b1qGrUuXmYrB7fQhjBLGi+k0=;
+        b=CH0PrJTE5Gb4SbvITCMDwbC+6ANKKm8/0BdfAq1N+snTTdTL3u9ViQlZynhmuvdGxc
+         88zveJlR4TiyT3ZyCCBi/wCPRx1hyNytS8RLqWL1LvClfklqMW7HWB4Ve9gkjQ0Gq48F
+         cpCg2IPbBbwhjM5e52Da42UCMdFXDobGaTxxMwBYrKUgf7pCZa/pCwE3bxmIrPZOWx4d
+         Fe6fsl9/thsHMk2lhwf48+txi1dT3fCOjcJJQtF8p8k3DwFJ5g/4je1l5ZF/WcONQGMX
+         D1lo12B5WlhkjM72yiLRozqyn+gNdY7KNzfgC5Mmz9xbn7p/CkvPKdJBrUv3o9yt+I7n
+         sO8A==
+X-Gm-Message-State: AOJu0YyP9rMcm4OdHJnxpBlzgOXI2akSg86HgkxqG8G9HoKbXFiEJ0dW
+        v/PIWNfifgToQTRGWZ8fxTF9IzhSiizt8yA+5IH7hs23gyYDfYMUBASzIebaKby4op45vdtgi2D
+        186yNPkSJem48YT+3AlTj2WN8
+X-Received: by 2002:ac8:5902:0:b0:40f:f44f:7f79 with SMTP id 2-20020ac85902000000b0040ff44f7f79mr2455qty.16.1691505859185;
+        Tue, 08 Aug 2023 07:44:19 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG4H/PhZU/WpPuHATF0/xjAxDvtaCGT5yE9Pf+IDINKw6+ypsWmrPVAHe6GEcDu06wD1x60qw==
+X-Received: by 2002:ac8:5902:0:b0:40f:f44f:7f79 with SMTP id 2-20020ac85902000000b0040ff44f7f79mr2428qty.16.1691505858889;
+        Tue, 08 Aug 2023 07:44:18 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id l5-20020ac84a85000000b0040fdf9a53e6sm3397095qtq.82.2023.08.08.07.44.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 07:44:18 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 09:44:16 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        soc@kernel.org, Jianmin Lv <lvjianmin@loongson.cn>,
-        wanghongliang@loongson.cn, Liu Peibao <liupeibao@loongson.cn>,
-        loongson-kernel@lists.loongnix.cn, loongarch@lists.linux.dev,
-        Liu Yun <liuyun@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 0/2] net: stmmac: allow sharing MDIO lines
+Message-ID: <xfme5pgj4eqlgao3vmyg6vazaqk6qz2wq6kitgujtorouogjty@cklyof3xz2zm>
+References: <20230807193102.6374-1-brgl@bgdev.pl>
+ <54421791-75fa-4ed3-8432-e21184556cde@lunn.ch>
+ <CAMRc=Mc6COaxM6GExHF2M+=v2TBpz87RciAv=9kHr41HkjQhCg@mail.gmail.com>
+ <ZNJChfKPkAuhzDCO@shell.armlinux.org.uk>
+ <CAMRc=MczKgBFvuEanKu=mERYX-6qf7oUO2S4B53sPc+hrkYqxg@mail.gmail.com>
+ <65b53003-23cf-40fa-b9d7-f0dbb45a4cb2@lunn.ch>
+ <CAMRc=MecYHi=rPaT44kuX_XMog=uwB9imVZknSjnmTBW+fb5WQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MecYHi=rPaT44kuX_XMog=uwB9imVZknSjnmTBW+fb5WQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,98 +103,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Aug 2023 at 09:03, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Thu, Aug 3, 2023, at 08:37, Yinbo Zhu wrote:
-> > The Loongson-2's power management controller was ACPI, supports ACPI
-> > S2Idle (Suspend To Idle), ACPI S3 (Suspend To RAM), ACPI S4 (Suspend To
-> > Disk), ACPI S5 (Soft Shutdown) and supports multiple wake-up methods
-> > (USB, GMAC, PWRBTN, etc.). This driver was to add power management
-> > controller support that base on dts for Loongson-2 series SoCs.
+On Tue, Aug 08, 2023 at 04:30:05PM +0200, Bartosz Golaszewski wrote:
+> On Tue, Aug 8, 2023 at 4:25 PM Andrew Lunn <andrew@lunn.ch> wrote:
 > >
-> > Co-developed-by: Liu Yun <liuyun@loongson.cn>
-> > Signed-off-by: Liu Yun <liuyun@loongson.cn>
-> > Co-developed-by: Liu Peibao <liupeibao@loongson.cn>
-> > Signed-off-by: Liu Peibao <liupeibao@loongson.cn>
-> > Cc: soc@kernel.org
-> > Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> > Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
->
-> I'm still waiting for Ulf to take a look here to see whether
-> this should be in drivers/genpd instead, but he might still
-> be on vacation.
+> > > > On Tue, Aug 08, 2023 at 10:13:09AM +0200, Bartosz Golaszewski wrote:
+> > > > > Ok so upon some further investigation, the actual culprit is in stmmac
+> > > > > platform code - it always tries to register an MDIO bus - independent
+> > > > > of whether there is an actual mdio child node - unless the MAC is
+> > > > > marked explicitly as having a fixed-link.
+> > > > >
+> > > > > When I fixed that, MAC1's probe is correctly deferred until MAC0 has
+> > > > > created the MDIO bus.
+> > > > >
+> > > > > Even so, isn't it useful to actually reference the shared MDIO bus in some way?
+> > > > >
+> > > > > If the schematics look something like this:
+> > > > >
+> > > > > --------           -------
+> > > > > | MAC0 |--MDIO-----| PHY |
+> > > > > -------- |     |   -------
+> > > > >          |     |
+> > > > > -------- |     |   -------
+> > > > > | MAC1 |--     ----| PHY |
+> > > > > --------           -------
+> > > > >
+> > > > > Then it would make sense to model it on the device tree?
+> > > >
+> > > > So I think what you're saying is that MAC0 and MAC1's have MDIO bus
+> > > > masters, and the hardware designer decided to tie both together to
+> > > > a single set of clock and data lines, which then go to two PHYs.
+> > >
+> > > The schematics I have are not very clear on that, but now that you
+> > > mention this, it's most likely the case.
+> >
+> > I hope not. That would be very broken. As Russell pointed out, MDIO is
+> > not multi-master. You need to check with the hardware designer if the
+> > schematics are not clear.
+> 
+> Sorry, it was not very clear. It's the case that two MDIO masters
+> share the MDC and data lines.
 
-I don't think this belongs in drivers/genpd/ as it's not a genpd
-provider. Besides that, no further comments from me at this point.
+I'll make the water muddier (hopefully clearer?). I have access to the
+board schematic (not SIP/SOM stuff though), but that should help here.
 
-Kind regards
-Uffe
+MAC0 owns its own MDIO bus (we'll call it MDIO0). It is pinmuxed to
+gpio8/gpio9 for mdc/mdio. MAC1 owns its own bus (MDIO1) which is
+pinmuxed to gpio21/22.
 
->
-> A few minor comments from me in the meantime:
->
-> > +#define loongson2_pm_readw(reg)              readw(loongson2_pm.base + reg)
-> > +#define loongson2_pm_readl(reg)              readl(loongson2_pm.base + reg)
-> > +#define loongson2_pm_writew(val, reg)        writew(val, loongson2_pm.base +
-> > reg)
-> > +#define loongson2_pm_writel(val, reg)        writel(val, loongson2_pm.base +
-> > reg)
->
-> I would prefer these to be 'static inline' functions rather than
-> macros, or you can just open-code them, as each macro is only
-> used once at the moment.
->
-> > +static irqreturn_t loongson2_pm_irq_handler(int irq, void *dev_id)
-> > +{
-> > +     u16 status = loongson2_pm_readw(LOONGSON2_PM1_STS_REG);
-> > +
-> > +     if (!loongson2_pm.suspended && (status & LOONGSON2_PM1_PWRBTN_STS)) {
-> > +             pr_info("Power Button pressed...\n");
->
-> The message is probably more appropriate as a pr_debug() than
-> pr_info().
->
-> > +static int __maybe_unused loongson2_pm_suspend(struct device *dev)
-> > +{
-> > +     loongson2_pm.suspended = true;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int __maybe_unused loongson2_pm_resume(struct device *dev)
-> > +{
-> > +     loongson2_pm.suspended = false;
-> > +
-> > +     return 0;
-> > +}
-> > +static SIMPLE_DEV_PM_OPS(loongson2_pm_ops, loongson2_pm_suspend,
-> > loongson2_pm_resume);
->
-> Please change this to DEFINE_SIMPLE_DEV_PM_OPS() and remove the
-> __maybe_unused, this is what all drivers should have these days.
->
-> > +
-> > +static int loongson2_pm_probe(struct platform_device *pdev)
-> > +{
-> > +     int irq, retval;
-> > +     u64 suspend_addr;
-> > +     struct device *dev = &pdev->dev;
-> > +
-> > +     loongson2_pm.base = devm_platform_ioremap_resource(pdev, 0);
-> > +     if (IS_ERR(loongson2_pm.base))
-> > +             return PTR_ERR(loongson2_pm.base);
-> > +
-> > +     irq = platform_get_irq(pdev, 0);
-> > +     if (irq < 0)
-> > +             return irq;
-> > +
-> > +     if (!device_property_read_u64(dev, "loongson,suspend-address",
-> > &suspend_addr))
-> > +             loongson_sysconf.suspend_addr = (u64)phys_to_virt(suspend_addr);
-> > +     else
->
-> Having a custom "loongson,suspend-address" property here feels wrong
-> to me. Can't this be moved into the "regs" property that holds
-> the other mmio registers?
->
->     Arnd
+On MDIO0 there are two SGMII ethernet phys. One is connected to MAC0,
+one is connected to MAC1.
+
+MDIO1 is not connected to anything on the board. So there is only one
+MDIO master, MAC0 on MDIO0, and it manages the ethernet phy for both
+MAC0/MAC1.
+
+Does that make sense? I don't think from a hardware design standpoint
+this is violating anything, it isn't a multimaster setup on MDIO.
+
+> 
+> >
+> > > Good point, but it's worse than that: when MAC0 is unbound, it will
+> > > unregister the MDIO bus and destroy all PHY devices. These are not
+> > > refcounted so they will literally go from under MAC1. Not sure how
+> > > this can be dealt with?
+> >
+> > unbinding is not a normal operation. So i would just live with it, and
+> > if root decides to shoot herself in the foot, that is her choice.
+> >
+> 
+> I disagree. Unbinding is very much a normal operation. Less so for
+> platform devices but still, it is there for a reason and should be
+> expected to work correctly. Or at the very least not crash and burn
+> the system.
+> 
+> On the other hand, I like your approach because I may get away without
+> having to fix it. But if I were to fix it - I would reference the MDIO
+> bus from the secondary mac by phandle and count its references before
+> dropping it. :)
+> 
+> Bartosz
+> 
+
