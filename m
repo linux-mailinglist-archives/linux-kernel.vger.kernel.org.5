@@ -2,68 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D29774F9A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51814774F9C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229470AbjHHX4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 19:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41706 "EHLO
+        id S230464AbjHHX5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 19:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbjHHX4O (ORCPT
+        with ESMTP id S229791AbjHHX5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 19:56:14 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F7319A1
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 16:56:13 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-56477bea06fso4246332a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 16:56:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691538973; x=1692143773;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XgoBtS59LZuoBAyEloPvADSmnrKxGh/v4r7Okvrfr4o=;
-        b=Q6/BjIT8mjhrv07nsAbmoicM/qHEosdwfknD5hDC0C02vvZ/1F1ijLo0pMCvbgvuaJ
-         FPehy1Ab0tZr56BJl4xw6YJXPeMsDYqA/G6PU/IK2Y+P7axa5Jirw92bqk3Z0uxK14Si
-         6MUrKEbWhluUamwzEwLQ62wXmiS5bUPopiSaIFq9c8iQ/6ukqmm9bbadnll32FMJB96X
-         cLXaFhlYzBYIb0wJdq1zRYXKVSRNTLY0EqC/5EGEYC05HropJaGaiUiS4brw6U+DblUi
-         slMKXrah5BAK2kSaNWEZOQHSrfv0iH3TM2zaEgPsnX6CM8Jr0kH3SrUlN38WBn08OnQM
-         qY5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691538973; x=1692143773;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XgoBtS59LZuoBAyEloPvADSmnrKxGh/v4r7Okvrfr4o=;
-        b=Q5CsL0ATEkD40h7tER+kLZL8veF2ZS281AHtQdQFanqMYerNOzSAmIHxvEM4DHIaNd
-         Spi81T27buU3ZcH7CviJzmgDioiE/+5j/Py1aGY6t9vyHMFvJaqJMvejlAeRuNj7HAg3
-         hijEYMpuXUsj4NQhEcfr6M9EVOQ75ruOP+2lLmjdQC8HGmBcEXuWCrVmEGrZaEChb7qV
-         PqEZpHUKMt0E9n6Y4nDrhY+y3yHegUGVdgLhH1qQOLugm+B/mZttFoa0xSJZ23TzKuH9
-         luyXktIUnbXEnjGSioVl/hyzFxrlD17yupLcyXEF6iNyyDbV3O4lnab4lpGiGz/J8Ga2
-         cC7Q==
-X-Gm-Message-State: AOJu0YyRhFw9++1lrFZ3duSDLV0KRzBvYJwrtdz6FJXzku3wZf315uh0
-        L8Mcu+hjw45yStQYczsbxGHnaRyMUa8=
-X-Google-Smtp-Source: AGHT+IFCy98whUjzcexHxPN7DcnWkTBvcwwuL6i8yxqfvEo6t02c7Nz85aa9s5UPPKWZzlxIm3hK6x9XiBs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:7702:0:b0:564:9d36:f3e7 with SMTP id
- s2-20020a637702000000b005649d36f3e7mr21257pgc.0.1691538973466; Tue, 08 Aug
- 2023 16:56:13 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 16:56:11 -0700
-In-Reply-To: <ZNJSBS9w+6cS5eRM@nvidia.com>
-Mime-Version: 1.0
-References: <20230808071329.19995-1-yan.y.zhao@intel.com> <20230808071702.20269-1-yan.y.zhao@intel.com>
- <ZNI14eN4bFV5eO4W@nvidia.com> <ZNJQf1/jzEeyKaIi@google.com> <ZNJSBS9w+6cS5eRM@nvidia.com>
-Message-ID: <ZNLWG++qK1mZcEOq@google.com>
-Subject: Re: [RFC PATCH 3/3] KVM: x86/mmu: skip zap maybe-dma-pinned pages for
- NUMA migration
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Yan Zhao <yan.y.zhao@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        pbonzini@redhat.com, mike.kravetz@oracle.com, apopple@nvidia.com,
-        rppt@kernel.org, akpm@linux-foundation.org, kevin.tian@intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        Tue, 8 Aug 2023 19:57:36 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3F419A1;
+        Tue,  8 Aug 2023 16:57:35 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1qTWZt-0005i1-79; Wed, 09 Aug 2023 01:57:29 +0200
+Date:   Wed, 9 Aug 2023 01:57:29 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/7] netfilter: x_tables: refactor deprecated strncpy
+Message-ID: <20230808235729.GK9741@breakpoint.cc>
+References: <20230808-net-netfilter-v1-0-efbbe4ec60af@google.com>
+ <20230808-net-netfilter-v1-6-efbbe4ec60af@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230808-net-netfilter-v1-6-efbbe4ec60af@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,79 +49,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023, Jason Gunthorpe wrote:
-> On Tue, Aug 08, 2023 at 07:26:07AM -0700, Sean Christopherson wrote:
-> > On Tue, Aug 08, 2023, Jason Gunthorpe wrote:
-> > > On Tue, Aug 08, 2023 at 03:17:02PM +0800, Yan Zhao wrote:
-> > > > @@ -859,6 +860,21 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
-> > > >  		    !is_last_spte(iter.old_spte, iter.level))
-> > > >  			continue;
-> > > >  
-> > > > +		if (skip_pinned) {
-> > > > +			kvm_pfn_t pfn = spte_to_pfn(iter.old_spte);
-> > > > +			struct page *page = kvm_pfn_to_refcounted_page(pfn);
-> > > > +			struct folio *folio;
-> > > > +
-> > > > +			if (!page)
-> > > > +				continue;
-> > > > +
-> > > > +			folio = page_folio(page);
-> > > > +
-> > > > +			if (folio_test_anon(folio) && PageAnonExclusive(&folio->page) &&
-> > > > +			    folio_maybe_dma_pinned(folio))
-> > > > +				continue;
-> > > > +		}
-> > > > +
-> > > 
-> > > I don't get it..
-> > > 
-> > > The last patch made it so that the NUMA balancing code doesn't change
-> > > page_maybe_dma_pinned() pages to PROT_NONE
-> > > 
-> > > So why doesn't KVM just check if the current and new SPTE are the same
-> > > and refrain from invalidating if nothing changed?
-> > 
-> > Because KVM doesn't have visibility into the current and new PTEs when the zapping
-> > occurs.  The contract for invalidate_range_start() requires that KVM drop all
-> > references before returning, and so the zapping occurs before change_pte_range()
-> > or change_huge_pmd() have done antyhing.
-> > 
-> > > Duplicating the checks here seems very frail to me.
-> > 
-> > Yes, this is approach gets a hard NAK from me.  IIUC, folio_maybe_dma_pinned()
-> > can yield different results purely based on refcounts, i.e. KVM could skip pages
-> > that the primary MMU does not, and thus violate the mmu_notifier contract.  And
-> > in general, I am steadfastedly against adding any kind of heuristic to KVM's
-> > zapping logic.
-> > 
-> > This really needs to be fixed in the primary MMU and not require any direct
-> > involvement from secondary MMUs, e.g. the mmu_notifier invalidation itself needs
-> > to be skipped.
+Justin Stitt <justinstitt@google.com> wrote:
+> Prefer `strscpy` to `strncpy` for use on NUL-terminated destination
+> buffers.
 > 
-> This likely has the same issue you just described, we don't know if it
-> can be skipped until we iterate over the PTEs and by then it is too
-> late to invoke the notifier. Maybe some kind of abort and restart
-> scheme could work?
+> This fixes a potential bug due to the fact that both `t->u.user.name`
+> and `name` share the same size.
 
-Or maybe treat this as a userspace config problem?  Pinning DMA pages in a VM,
-having a fair amount of remote memory, *and* expecting NUMA balancing to do anything
-useful for that VM seems like a userspace problem.
+This replacement seems fine.
 
-Actually, does NUMA balancing even support this particular scenario?  I see this
-in do_numa_page()
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> 
+> ---
+> Here's an example of what happens when dest and src share same size:
+> |  #define MAXLEN 5
+> |  char dest[MAXLEN];
+> |  const char *src = "hello";
+> |  strncpy(dest, src, MAXLEN); // -> should use strscpy()
+> |  // dest is now not NUL-terminated
 
-	/* TODO: handle PTE-mapped THP */
-	if (PageCompound(page))
-		goto out_map;
+This can't happen here, the source string is coming from the kernel
+(xt target and matchinfo struct).
 
-and then for PG_anon_exclusive
+But, even if it would it should be fine, this function prepares
+the translated 64bit blob which gets passed to translate_table(),
+and that function has to check for '\0' presence.
 
-	 * ... For now, we only expect it to be
-	 * set on tail pages for PTE-mapped THP.
-	 */
-	PG_anon_exclusive = PG_mappedtodisk,
-
-which IIUC means zapping these pages to do migrate_on-fault will never succeed.
-
-Can we just tell userspace to mbind() the pinned region to explicitly exclude the
-VMA(s) from NUMA balancing?
+Normally it handles the native (non-compat) data originating from
+userspace, so m-->user.name can not be assumed to contain a \0.
