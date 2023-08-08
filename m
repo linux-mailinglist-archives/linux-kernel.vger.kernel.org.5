@@ -2,99 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 955D6773710
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F162F773721
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbjHHCus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 22:50:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
+        id S231262AbjHHCvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 22:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbjHHCuo (ORCPT
+        with ESMTP id S230211AbjHHCvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 22:50:44 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096F219F;
-        Mon,  7 Aug 2023 19:50:44 -0700 (PDT)
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3781i2VX006675;
-        Tue, 8 Aug 2023 02:50:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2023-03-30;
- bh=iggh4y4QTxuhyA0uRYET20kV1pGY6yQJMzn3eoXWECM=;
- b=qmTMHZHSYme6wVe7kEamVK62t8yDpOuCpynYWXrpU9MKG8WZOdqnWJyrzMz+yptjQqOX
- byrAf3IH0LlsahKu8fdBWcwjBVjK0ajmoso08EmW/nEqVtq+79q6ntATTKM1apoW6J2Q
- YV63UJS6+eEyNcue2VIr3PF491eSCclvN5bKdANgsSEqKpE6IwPXwmm/ZZmkN5/R9njP
- 28cZZLJXVYH2u0yebJd0v99g+FgqXQeBiM1dxcCm0j8O43t6RC5PlmJBCBhTzRNXJ/QM
- +i5LOOpV/bTJpD4dxYkJHMV5WRehbN6r+Bs6Bo4K8aV25aPJ12Wfj+v+gvkxYlcO47DD 0Q== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s9dbc45wn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Aug 2023 02:50:40 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3780Iret027338;
-        Tue, 8 Aug 2023 02:50:38 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3s9cv561p5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Aug 2023 02:50:38 +0000
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3782oadk010815;
-        Tue, 8 Aug 2023 02:50:38 GMT
-Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3s9cv561mp-6;
-        Tue, 08 Aug 2023 02:50:38 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Hannes Reinecke <hare@suse.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wang Jinchao <wangjinchao@xfusion.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        stone.xulei@xfusion.com
-Subject: Re: [PATCH] scsi: aic7xxx: fix firmware build fatal error
-Date:   Mon,  7 Aug 2023 22:50:31 -0400
-Message-Id: <169146270848.4040832.411550339569144039.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <ZK0XIj6XzY5MCvtd@fedora>
-References: <ZK0XIj6XzY5MCvtd@fedora>
+        Mon, 7 Aug 2023 22:51:05 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2C9170B;
+        Mon,  7 Aug 2023 19:50:56 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-584034c706dso55058107b3.1;
+        Mon, 07 Aug 2023 19:50:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691463055; x=1692067855;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=To5RXdgTZuuS1AHvSrlZPoAVtMBfYbQuZKe1V5PCHGU=;
+        b=hk+jDZrl3g+o4sMGmZCabtN/5AnLtuwYSMj/gPgSP5jEYRltMDEp8gR1KR3PAoQdbl
+         1mPD04e7QwuBYp8dQtUhan7IrsHCz9nRfLpKT2kV9/mlU+mh7iLzNzoUSrFPVWwipOD6
+         q1TBPuDV4nRSRSBp4V/lOBEhKgMReru3RolSHSEN0f12SXGiqxPgWA4lemQjUrXgfP0b
+         9eSMaS0Lrlh3Hp5R6eNkjFGOMxplIuqi6pgCBrEZ/rsfKVThX0JpHq6AykEIQJrm9ZkH
+         +wvjvoi0OZeiAqnoiw+ZytKa3+4s6OOqLNTXelwoIk85Wm8mUEBMLgOG45iVyn8pij86
+         aDKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691463055; x=1692067855;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=To5RXdgTZuuS1AHvSrlZPoAVtMBfYbQuZKe1V5PCHGU=;
+        b=bELrtQzxC4At6Lwiy4SJBZJAu4PeUCb52wVuJBJ5aXRwOzA85NN9dBfk09U3yIdPpI
+         g3oHd5bJ4kmgF4c2vF/lj+RCOD2bsPrVdJqSPFAkObA4jeb9hfHlsVbIDSrvwHvK0n+p
+         GBaeaUAjU9DgR0VNBwOS7JxWAq/9Lk8pnqDGmSbitOI7rQYQ9DkwbGuJXFmmDsmR/3Tx
+         yr/qaAwK72bLkef8wKlt+j5nm1OI0O+nSktPlQONUhNrZMfzCemAxNlofyM/hO6KzsR9
+         hiUIrIWnoUMhH0vmOjlrpRK8XIxCAW7a4FuP0kvr3spU0pXYD7wqv0Yd/fwYZOep9QAc
+         ZsTA==
+X-Gm-Message-State: AOJu0Yxkk0AfNa5PhQSeKsN8IE267GMMAsfpWGstFOoq5S0tj2NRQZrm
+        LcCp+8WOOkE4BwQOcJGzKJoYCFxWXyzhYXMBiD8=
+X-Google-Smtp-Source: AGHT+IHSbsxoEBIVRycBoxXUeft0G8ZFjbq4hkHa5qDquFTqGRH0j9u4YIDSq+t+KyYatv1w3tPVNwgPVd1vEaLOCH8=
+X-Received: by 2002:a0d:cac5:0:b0:577:d44:a163 with SMTP id
+ m188-20020a0dcac5000000b005770d44a163mr11720738ywd.6.1691463055272; Mon, 07
+ Aug 2023 19:50:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-07_28,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=908 bulkscore=0
- adultscore=0 mlxscore=0 spamscore=0 suspectscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308080023
-X-Proofpoint-ORIG-GUID: AlO43cIdIK1qjOeHbi9U2fT-8w1AABYA
-X-Proofpoint-GUID: AlO43cIdIK1qjOeHbi9U2fT-8w1AABYA
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230731071728.3493794-1-j.granados@samsung.com>
+ <ZMgpck0rjqHR74sl@bombadil.infradead.org> <ZNFlqwwvE6w6HyHl@bombadil.infradead.org>
+ <CANnsUMG3WO_19GpnsNaXPqu6eEnpBvYUpkrf1QbHwsc9wEoCZQ@mail.gmail.com> <ZNGBrkP7J2g/BAWV@bombadil.infradead.org>
+In-Reply-To: <ZNGBrkP7J2g/BAWV@bombadil.infradead.org>
+From:   Chris Maness <christopher.maness@gmail.com>
+Date:   Mon, 7 Aug 2023 19:50:44 -0700
+Message-ID: <CANnsUMGRBnatKB4-3eYjb5aG7YnXDiZG6cjuwSgtjvVF6ErJNg@mail.gmail.com>
+Subject: Re: [PATCH v2 00/14] sysctl: Add a size argument to register
+ functions in sysctl
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Alexander Aring <alex.aring@gmail.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Westphal <fw@strlen.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        Joel Granados <joel.granados@gmail.com>,
+        Joel Granados <j.granados@samsung.com>,
+        Joerg Reuter <jreuter@yaina.de>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Julian Anastasov <ja@ssi.bg>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Mat Martineau <martineau@kernel.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Simon Horman <horms@verge.net.au>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, Xin Long <lucien.xin@gmail.com>,
+        bridge@lists.linux-foundation.org, coreteam@netfilter.org,
+        josh@joshtriplett.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-wpan@vger.kernel.org, lvs-devel@vger.kernel.org,
+        mptcp@lists.linux.dev, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, rds-devel@oss.oracle.com,
+        willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 Jul 2023 16:47:30 +0800, Wang Jinchao wrote:
+I tried running the current mainline kernel (current Arch Linux) with
+simple single MUX socket (ax0) using LinFBB.  I was a happy camper as
+it seemed to work fine at first, then the system just slowed to a
+crawl.  I am wondering if any of these patches are addressing this
+behavior.  No kernel panic like before, but not what I was hoping for.
+I have also tried sixpack, and that explodes instantly the last time I
+have checked.   That goes all the way back to the v4 kernels.  v2 is
+fine there.
 
-> When building with CONFIG_AIC7XXX_BUILD_FIRMWARE=y, two fatal errors
-> are reported as shown below:
-> > aicasm_gram.tab.c:203:10: fatal error: aicasm_gram.tab.h:
-> > No such file or directory
-> > aicasm_macro_gram.tab.c:167:10: fatal error: aicasm_macro_gram.tab.h:
-> > No such file or directory
-> Fix these issues to make randconfig builds more reliable.
-> 
-> [...]
+73 de Chris KQ6UP
 
-Applied to 6.6/scsi-queue, thanks!
+On Mon, Aug 7, 2023 at 4:43=E2=80=AFPM Luis Chamberlain <mcgrof@kernel.org>=
+ wrote:
+>
+> On Mon, Aug 07, 2023 at 04:00:49PM -0700, Chris Maness wrote:
+> > When are these likely to hit the mainline release code?
+>
+> linux-next tomorrow. The first 7 patches are scheduled for mainline
+> as they were merged + tested without any hiccups. These last few patches
+> I'll wait and see. If nothing blows up on linux-next perhaps I'll
+> include them to Linux for mainline during the next merge window.
+>
+>   Luis
 
-[1/1] scsi: aic7xxx: fix firmware build fatal error
-      https://git.kernel.org/mkp/scsi/c/ec6c7c9f5fc4
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+
+--=20
+Thanks,
+Chris Maness
