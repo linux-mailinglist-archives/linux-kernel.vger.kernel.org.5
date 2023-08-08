@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F3077433C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B930774337
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbjHHR70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
+        id S233041AbjHHR7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235191AbjHHR7C (ORCPT
+        with ESMTP id S229723AbjHHR6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:59:02 -0400
+        Tue, 8 Aug 2023 13:58:38 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344F62CC49;
-        Tue,  8 Aug 2023 09:26:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582B32BC8A;
+        Tue,  8 Aug 2023 09:26:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691512012; x=1723048012;
+  t=1691511991; x=1723047991;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=T9G9Kn2Yy64VyUf7GtnFfOpnJ3qoI3E0S57PnbQfz9w=;
-  b=V1ksRFGmzFjbJsQiNxh0/I0qCGpVUC3CxC0Q2gRnFJ6MHU7unZO161+k
-   4Z6MWS+FQiH5Fy526et9OY/YIXzZVeKjT8VaGHJkRORbD0QmJh67cdw6T
-   XVYadLZHsu4K/VS5D/Uuth6QJl/Ue+LzMzIL9gCesPzlFl+CqL8iYyIM1
-   4/fDhrXMxuUV9FBsWhvWiYiVi3tTjqXbcmN0SL9qzu87oNKx+v3Y/hcQZ
-   v6oys+meLsM4JI2sHSris/9kH7HnU6qWF8O1QE4Ene20SL7OWAUXlbNC6
-   feXNOC4BilSz0gvGY3cesNyzIyw0UdFPb6trIdtFTR1pB0Y8a1mS/XIm+
+  bh=f91CxPAnd8jYoABhN6Y0bEUrupNGUDodI0gM1y7O31Y=;
+  b=ZCk+nwI71K0P+TdytxIjoUExeLBvf1bcfN4ut8zs73mt1JNZPO6eRUMe
+   bLldGwiSgnAHyJxzUPNe3Mfza4IeJnbVzvtzPDRSnoSFx1XIPbR0HZgi1
+   zW5YZibVjJL/AuTy5vSfoglkpc3rVWviSwYZ2iQqt4sgOigGC6Axgz6Hy
+   ERU0cpFI6nmXEgII45OLJ0TjH6r6RCfC7JmOIoS5OtA3smvSKKC4cQax8
+   OwuKwv4YTQdHPKXYLkcFUizZgp+D2I6KBTmyu8JJeAPyc9pLxBurUJX2H
+   nXaZBSs0pkl6FU6uHxQouVh3fnT5M8/eupOpf+1X66l4apzU670mlRVbY
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="457260962"
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="457260946"
 X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="457260962"
+   d="scan'208";a="457260946"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 09:25:31 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="821449150"
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="821449146"
 X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="821449150"
+   d="scan'208";a="821449146"
 Received: from black.fi.intel.com ([10.237.72.28])
   by FMSMGA003.fm.intel.com with ESMTP; 08 Aug 2023 09:24:55 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 42942385; Tue,  8 Aug 2023 19:28:03 +0300 (EEST)
+        id 4E5BDF4D; Tue,  8 Aug 2023 19:28:03 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -57,9 +57,9 @@ Cc:     Daniel Scally <djrscally@gmail.com>,
         Lars-Peter Clausen <lars@metafoo.de>,
         Michael Hennerich <Michael.Hennerich@analog.com>,
         Jonathan Cameron <jic23@kernel.org>
-Subject: [PATCH v1 2/6] device property: Add fwnode_property_match_property_string()
-Date:   Tue,  8 Aug 2023 19:27:56 +0300
-Message-Id: <20230808162800.61651-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 3/6] iio: frequency: adf4377: Switch to device_property_match_property_string()
+Date:   Tue,  8 Aug 2023 19:27:57 +0300
+Message-Id: <20230808162800.61651-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230808162800.61651-1-andriy.shevchenko@linux.intel.com>
 References: <20230808162800.61651-1-andriy.shevchenko@linux.intel.com>
@@ -75,84 +75,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes the users want to match the single value string property
-against an array of predefined strings. Create a helper for them.
+Replace open coded device_property_match_property_string().
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/base/property.c  | 35 +++++++++++++++++++++++++++++++++++
- include/linux/property.h | 12 ++++++++++++
- 2 files changed, 47 insertions(+)
+ drivers/iio/frequency/adf4377.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index 3bb9505f1631..8f8e2a6816bc 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -498,6 +498,41 @@ int fwnode_property_match_string(const struct fwnode_handle *fwnode,
- }
- EXPORT_SYMBOL_GPL(fwnode_property_match_string);
+diff --git a/drivers/iio/frequency/adf4377.c b/drivers/iio/frequency/adf4377.c
+index 26abecbd51e0..9284c13f1abb 100644
+--- a/drivers/iio/frequency/adf4377.c
++++ b/drivers/iio/frequency/adf4377.c
+@@ -870,7 +870,6 @@ static const struct iio_chan_spec adf4377_channels[] = {
+ static int adf4377_properties_parse(struct adf4377_state *st)
+ {
+ 	struct spi_device *spi = st->spi;
+-	const char *str;
+ 	int ret;
  
-+/**
-+ * fwnode_property_match_property_string - find a property string value in an array and return index
-+ * @fwnode: Firmware node to get the property of
-+ * @propname: Name of the property holding the string value
-+ * @array: String array to search in
-+ * @n: Size of the @array
-+ *
-+ * Find a property string value in a given @array and if it is found return
-+ * the index back.
-+ *
-+ * Return: index, starting from %0, if the string value was found in the @array (success),
-+ *	   %-ENOENT when the string value was not found in the @array,
-+ *	   %-EINVAL if given arguments are not valid,
-+ *	   %-ENODATA if the property does not have a value,
-+ *	   %-EPROTO or %-EILSEQ if the property is not a string,
-+ *	   %-ENXIO if no suitable firmware interface is present.
-+ */
-+int fwnode_property_match_property_string(const struct fwnode_handle *fwnode,
-+	const char *propname, const char * const *array, size_t n)
-+{
-+	const char *string;
-+	int ret;
-+
-+	ret = fwnode_property_read_string(fwnode, propname, &string);
-+	if (ret)
-+		return ret;
-+
-+	ret = match_string(array, n, string);
-+	if (ret < 0)
-+		ret = -ENOENT;
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(fwnode_property_match_property_string);
-+
- /**
-  * fwnode_property_get_reference_args() - Find a reference with arguments
-  * @fwnode:	Firmware node where to look for the reference
-diff --git a/include/linux/property.h b/include/linux/property.h
-index 8c3c6685a2ae..11f3ad6814f2 100644
---- a/include/linux/property.h
-+++ b/include/linux/property.h
-@@ -97,6 +97,18 @@ static inline bool device_is_compatible(const struct device *dev, const char *co
- 	return fwnode_device_is_compatible(dev_fwnode(dev), compat);
- }
+ 	st->clkin = devm_clk_get_enabled(&spi->dev, "ref_in");
+@@ -896,16 +895,13 @@ static int adf4377_properties_parse(struct adf4377_state *st)
+ 		return dev_err_probe(&spi->dev, PTR_ERR(st->gpio_enclk2),
+ 				     "failed to get the CE GPIO\n");
  
-+int fwnode_property_match_property_string(const struct fwnode_handle *fwnode,
-+					  const char *propname,
-+					  const char * const *array, size_t n);
-+
-+static inline
-+int device_property_match_property_string(const struct device *dev,
-+					  const char *propname,
-+					  const char * const *array, size_t n)
-+{
-+	return fwnode_property_match_property_string(dev_fwnode(dev), propname, array, n);
-+}
-+
- int fwnode_property_get_reference_args(const struct fwnode_handle *fwnode,
- 				       const char *prop, const char *nargs_prop,
- 				       unsigned int nargs, unsigned int index,
+-	ret = device_property_read_string(&spi->dev, "adi,muxout-select", &str);
+-	if (ret) {
+-		st->muxout_select = ADF4377_MUXOUT_HIGH_Z;
+-	} else {
+-		ret = match_string(adf4377_muxout_modes, ARRAY_SIZE(adf4377_muxout_modes), str);
+-		if (ret < 0)
+-			return ret;
+-
++	ret = device_property_match_property_string(&spi->dev, "adi,muxout-select",
++						    adf4377_muxout_modes,
++						    ARRAY_SIZE(adf4377_muxout_modes));
++	if (ret >= 0)
+ 		st->muxout_select = ret;
+-	}
++	else
++		st->muxout_select = ADF4377_MUXOUT_HIGH_Z;
+ 
+ 	return 0;
+ }
 -- 
 2.40.0.1.gaa8946217a0b
 
