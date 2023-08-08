@@ -2,68 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 215837740DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146E5773C9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbjHHRLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58810 "EHLO
+        id S231826AbjHHQID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230417AbjHHRLC (ORCPT
+        with ESMTP id S231757AbjHHQGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:11:02 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D236768B
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:04:32 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5866e5f6e40so83717b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:04:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691510670; x=1692115470;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zTo5ojti02a55E58VI3g974kVDsDFjEN9JowZT+qd/k=;
-        b=VCF7cGTRTBdD6bBrYDQakjTWFLuAi6Q+6otovhoj2gGQxOmhhxBlGC8ObWF+z9BuQN
-         O4FhbzFoV6diJ1MTsL3V4Hx0rjSK/fWc0vZWCbdftsa4EEmV2clS4Fj0B1HmRkGMQU8i
-         xH4zodw2BSDJBGY+c+F9cEw0AU9NkkCjm2tzU6ytR0yGxW2Yia2oUa4Sc3sIG0A9TJSu
-         JH9ZVB7Pmz2BqcWUBUUW3IbLiGm15mdsLV1G5lpmBxllvzc+FCFDWW6J9UTbR/C4F3My
-         NmX3+zlQrR25n3VjKUrx4xMZXCNvCXJzgQ44EdTYcXhzIPBVHPz6+2FT3FTvDwkuAQgS
-         Na2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510670; x=1692115470;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zTo5ojti02a55E58VI3g974kVDsDFjEN9JowZT+qd/k=;
-        b=DTc0oZ4T+3yFj+NVAeoP0NFt1Q7qOtrjNC9jtkYDzuBqWYupnIkpwFXG8avrZwEsI3
-         2W10OQE3Hdo2hCm8nr8hz4dCNdU5aSy/dm3J94ff4NlmzZ5LWS/DuhOlMi3Ob65X5mkq
-         VpTHUOePoIQH/doI/Dt94jUIScO1NdUyMR2ZTFIMZXRY+i+FWTzHH+2+qg6e7rlcvtyP
-         yX8UKlEU0vIJymBAyUrdxQR00KamtVtxD/QnaH2O60ua7/EmCLeEmMqQ8iIE/YouOnR5
-         slQhyIAl1mFlK7/4w2HybiZleYnY8BGu8891IzWM7m0pjMIYU04ivmh6YQJvnDIl9HaX
-         qMZw==
-X-Gm-Message-State: AOJu0YwvNUGWQuURo+i90hpbXOwM7j0ZWJAUZKdgvGJnxAZ3Vdj2cfmz
-        HSLHVAaYc7xWbsmKJS/jjIN1fX67mMM=
-X-Google-Smtp-Source: AGHT+IEdPz8huAHqBMaXUgoEqld6bpjYXBbq0y8UIRXJ9G7iWwnU0w/pw1lOLCb7FPvPaLYPGA06MiJ6a7U=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:2792:b0:267:f9ed:93b9 with SMTP id
- pw18-20020a17090b279200b00267f9ed93b9mr101702pjb.3.1691504768630; Tue, 08 Aug
- 2023 07:26:08 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 07:26:07 -0700
-In-Reply-To: <ZNI14eN4bFV5eO4W@nvidia.com>
-Mime-Version: 1.0
-References: <20230808071329.19995-1-yan.y.zhao@intel.com> <20230808071702.20269-1-yan.y.zhao@intel.com>
- <ZNI14eN4bFV5eO4W@nvidia.com>
-Message-ID: <ZNJQf1/jzEeyKaIi@google.com>
-Subject: Re: [RFC PATCH 3/3] KVM: x86/mmu: skip zap maybe-dma-pinned pages for
- NUMA migration
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Yan Zhao <yan.y.zhao@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        pbonzini@redhat.com, mike.kravetz@oracle.com, apopple@nvidia.com,
-        rppt@kernel.org, akpm@linux-foundation.org, kevin.tian@intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Tue, 8 Aug 2023 12:06:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089EF2D79;
+        Tue,  8 Aug 2023 08:45:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 38708625A1;
+        Tue,  8 Aug 2023 14:27:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D98BC433C8;
+        Tue,  8 Aug 2023 14:27:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691504860;
+        bh=CrVCLDVCrfokMZc+EOGX1Ra4qTqjJvMfTL2+V0Uv7vM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FvoVlbeN+Bj6xMvtHL+sDb40UCQVpCd1kOjZp0jZ0fMf/ITTPjauh0zEPsUL4NuSN
+         /hBDAIl764YYF+tV/mvW7ioPk9Zm0Uby2UeKjT+t4gVd5ZQploKyFRPpmrSy82ZiWn
+         fb6SETMhoMqsf0lw+F323AUwfAzPCqbrCautx+cU=
+Date:   Tue, 8 Aug 2023 16:27:37 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Souradeep Chowdhury <quic_schowdhu@quicinc.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Alex Elder <elder@ieee.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Sibi Sankar <quic_sibis@quicinc.com>,
+        Rajendra Nayak <quic_rjendra@quicinc.com>
+Subject: Re: [PATCH V26 0/3] misc: Add driver support for Data Capture and
+ Compare unit(DCC)
+Message-ID: <2023080846-important-junkyard-5433@gregkh>
+References: <cover.1691496290.git.quic_schowdhu@quicinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1691496290.git.quic_schowdhu@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,49 +61,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023, Jason Gunthorpe wrote:
-> On Tue, Aug 08, 2023 at 03:17:02PM +0800, Yan Zhao wrote:
-> > @@ -859,6 +860,21 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
-> >  		    !is_last_spte(iter.old_spte, iter.level))
-> >  			continue;
-> >  
-> > +		if (skip_pinned) {
-> > +			kvm_pfn_t pfn = spte_to_pfn(iter.old_spte);
-> > +			struct page *page = kvm_pfn_to_refcounted_page(pfn);
-> > +			struct folio *folio;
-> > +
-> > +			if (!page)
-> > +				continue;
-> > +
-> > +			folio = page_folio(page);
-> > +
-> > +			if (folio_test_anon(folio) && PageAnonExclusive(&folio->page) &&
-> > +			    folio_maybe_dma_pinned(folio))
-> > +				continue;
-> > +		}
-> > +
+On Tue, Aug 08, 2023 at 05:58:24PM +0530, Souradeep Chowdhury wrote:
+> Changes in v26
 > 
-> I don't get it..
-> 
-> The last patch made it so that the NUMA balancing code doesn't change
-> page_maybe_dma_pinned() pages to PROT_NONE
-> 
-> So why doesn't KVM just check if the current and new SPTE are the same
-> and refrain from invalidating if nothing changed?
+> * Fixed the build error in V25 of the patch series
 
-Because KVM doesn't have visibility into the current and new PTEs when the zapping
-occurs.  The contract for invalidate_range_start() requires that KVM drop all
-references before returning, and so the zapping occurs before change_pte_range()
-or change_huge_pmd() have done antyhing.
+You did not do everything I asked of for the last review, why not?
 
-> Duplicating the checks here seems very frail to me.
+I've dropped this from my review queue now.
 
-Yes, this is approach gets a hard NAK from me.  IIUC, folio_maybe_dma_pinned()
-can yield different results purely based on refcounts, i.e. KVM could skip pages
-that the primary MMU does not, and thus violate the mmu_notifier contract.  And
-in general, I am steadfastedly against adding any kind of heuristic to KVM's
-zapping logic.
-
-This really needs to be fixed in the primary MMU and not require any direct
-involvement from secondary MMUs, e.g. the mmu_notifier invalidation itself needs
-to be skipped.
+greg k-h
