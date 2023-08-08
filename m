@@ -2,233 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34320773627
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4F577362D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbjHHCD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 22:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
+        id S229599AbjHHCFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 22:05:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjHHCDz (ORCPT
+        with ESMTP id S229667AbjHHCFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 22:03:55 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A87138;
-        Mon,  7 Aug 2023 19:03:53 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3781xsnk010541;
-        Tue, 8 Aug 2023 02:03:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=LxDossKSwlJIU0cudzztIGuVUeJBaXR3bfGTOOyB8C8=;
- b=W3ZPs9zB+nsBQ4Ehh7FsUtnZa7q7OhCdoK7Sl1PpphZqKIblh+T2EmbxCYPwsJnnz/6O
- ln0aaJpXq2Ofp5x0JuOeKqIctH33u21s/ostpE+quD+bSAIvldeNWUNei7eDC484bFcs
- /kdPQQvq8i+1tf6BfmxtHJNAb8FsnIBqTg9iCRADexynY5rY1SVmbLQyBy7kqUy3kCvg
- iyI//ldp71pkwgOMnyIMZFHnQy5TGQL5Dqf+g4MAcSnFN+8dfay/P3UuDRL4OmdolbXV
- a1Bskx8cS5lhGm6zZxFFE+0771V78xOLUtjgCIQLRHdLbrkcvhkCmGL8fNQi0EQGArix Nw== 
-Received: from aptaippmta01.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sb7bb8g1b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Aug 2023 02:03:41 +0000
-Received: from pps.filterd (APTAIPPMTA01.qualcomm.com [127.0.0.1])
-        by APTAIPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37823clT018674;
-        Tue, 8 Aug 2023 02:03:38 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTPS id 3s9fgkmtt7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 08 Aug 2023 02:03:38 +0000
-Received: from APTAIPPMTA01.qualcomm.com (APTAIPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37823bh7018518;
-        Tue, 8 Aug 2023 02:03:37 GMT
-Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
-        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 37823bmw018516;
-        Tue, 08 Aug 2023 02:03:37 +0000
-Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
-        id E91344C6E; Tue,  8 Aug 2023 10:03:36 +0800 (CST)
-From:   Qiang Yu <quic_qianyu@quicinc.com>
-To:     mani@kernel.org, quic_jhugo@quicinc.com
-Cc:     mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-        quic_mrana@quicinc.com, Qiang Yu <quic_qianyu@quicinc.com>
-Subject: [PATCH] bus: mhi: host: pci_generic: Add SDX75 based modem support
-Date:   Tue,  8 Aug 2023 10:03:35 +0800
-Message-Id: <1691460215-45383-1-git-send-email-quic_qianyu@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: gb2SbNNLbgcahB7S_gX2R7j1Iwh48w7T
-X-Proofpoint-ORIG-GUID: gb2SbNNLbgcahB7S_gX2R7j1Iwh48w7T
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-07_28,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 mlxscore=0 adultscore=0 bulkscore=0 malwarescore=0
- impostorscore=0 spamscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308080016
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        Mon, 7 Aug 2023 22:05:18 -0400
+Received: from mail-yw1-x1142.google.com (mail-yw1-x1142.google.com [IPv6:2607:f8b0:4864:20::1142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020FD1705;
+        Mon,  7 Aug 2023 19:05:17 -0700 (PDT)
+Received: by mail-yw1-x1142.google.com with SMTP id 00721157ae682-584243f84eeso59049597b3.0;
+        Mon, 07 Aug 2023 19:05:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691460316; x=1692065116;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7RzX+H34O3xzBmBu0+3rDM+jp+n0dX/ef1xcfV7+pzk=;
+        b=LDmduLasP5b+0jeEmuMKEvQF92x6Py88tUoYG/tCCdPfpQui3Ul3y2hNsEuibam7AC
+         pnhv0gsdU6agub4PI9NrJRCES/CyViUfQYKHyIGf4RxOnhBmqyDx81ln8OFbhBHlKM6B
+         +rniKHXk3rcj0lCg11vZ0i4Gr4pW1UUYk55OM9NxkpdelyX775arGC8ehGHOK/3ikhgw
+         zfSrGIzVnd4moRBCWGf9FybXbnV86reaMxNtEUVH5PMvIISObJECyDD0kWy2cWPziSV/
+         5WHPD8xM6Zjvu64UNh66BwFqlQMWCnmXjbRRke/A+aFxT575udDSk4VpSNhu4Y07btFt
+         49yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691460316; x=1692065116;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7RzX+H34O3xzBmBu0+3rDM+jp+n0dX/ef1xcfV7+pzk=;
+        b=IrIkpiflBImYzq5o0ej1odU4XiwWpeiosJl/SVKCEEhdJ7PdNxcR/Pbw/v4hHPjxZv
+         Fsr4dcxaLG1yih5+uoL/K1ua5kKjA9JJWXFt6iJZp9jGAGFo5zXI/L8MgevWZCMtHs64
+         3Ar6xlVEf3J/n2MilpA/gSdhdQXD9VywVCVmdQuOFO1qK1TLQ4Dj7TWdTnkrmQCepqYY
+         ZM4nlcyg8t7hxOJ8XoOKUKErpkEDrFP/RNUiCpzeKlGILsDRB38qeVY/amWVytrjqEfR
+         TqOpAZZIC+vprWh9pDIgfW7x1xIayMTg+CFLPwcdDF8yOfb2NTTpimW96nK3B++MByec
+         Mx0w==
+X-Gm-Message-State: AOJu0YyKYfofUS2V5CXYJVqPHJaMUTv1RJrGXg93tSk+Fyvsl8oftMGu
+        AakpeOLCLd/DxXwmSJzVKwkxOuBFkFgollwTzt6J8nET7wWKW4DM
+X-Google-Smtp-Source: AGHT+IH3wQTVMPlAdfKQrwHrSOWe/aykviUtHPr9RqLJfxZQdkWi62GYi9IwnL433NDv4t0jBtNbt6KTqN7Ir5LMNnU=
+X-Received: by 2002:a0d:d48f:0:b0:56d:2afa:5801 with SMTP id
+ w137-20020a0dd48f000000b0056d2afa5801mr12663419ywd.46.1691460316133; Mon, 07
+ Aug 2023 19:05:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230807134547.2782227-1-imagedong@tencent.com>
+ <20230807134547.2782227-4-imagedong@tencent.com> <CANn89iKLXu1axtg9vMpbWv1CRYh=U_r38dJ8Q2s3togZcXqJ6Q@mail.gmail.com>
+In-Reply-To: <CANn89iKLXu1axtg9vMpbWv1CRYh=U_r38dJ8Q2s3togZcXqJ6Q@mail.gmail.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Tue, 8 Aug 2023 10:05:05 +0800
+Message-ID: <CADxym3ZogoBh0cf35463XyVHOpefTsZe1txRF5L7jNUZc9zXeA@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 3/3] net: tcp: fix unexcepted socket die when
+ snd_wnd is 0
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     ncardwell@google.com, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, dsahern@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add generic info for SDX75 based modems. SDX75 takes longer than expected
-(default, 8 seconds) to set ready after reboot. Hence add optional ready
-timeout parameter to wait enough for device ready as part of power up
-sequence.
+On Mon, Aug 7, 2023 at 10:20=E2=80=AFPM Eric Dumazet <edumazet@google.com> =
+wrote:
+>
+> On Mon, Aug 7, 2023 at 3:47=E2=80=AFPM <menglong8.dong@gmail.com> wrote:
+> >
+> > From: Menglong Dong <imagedong@tencent.com>
+> >
+> > In tcp_retransmit_timer(), a window shrunk connection will be regarded
+> > as timeout if 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX'. This is n=
+ot
+> > right all the time.
+> >
+> > The retransmits will become zero-window probes in tcp_retransmit_timer(=
+)
+> > if the 'snd_wnd=3D=3D0'. Therefore, the icsk->icsk_rto will come up to
+> > TCP_RTO_MAX sooner or later.
+> >
+> > However, the timer is not precise enough, as it base on timer wheel.
+>
+> > Sorry that I am not good at timer, but I know the concept of time-wheel=
+.
+>
+> Can you remove this line, can we keep focused on the actual patch instead=
+ ?
+>
+> Regardless of timer-wheel, a timer can be delayed under load.
+>
 
-Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
----
- drivers/bus/mhi/host/init.c        |  1 +
- drivers/bus/mhi/host/main.c        |  7 ++++++-
- drivers/bus/mhi/host/pci_generic.c | 22 ++++++++++++++++++++++
- drivers/bus/mhi/host/pm.c          |  6 +++++-
- include/linux/mhi.h                |  4 ++++
- 5 files changed, 38 insertions(+), 2 deletions(-)
+Okay!
 
-diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
-index f78aefd..65ceac1 100644
---- a/drivers/bus/mhi/host/init.c
-+++ b/drivers/bus/mhi/host/init.c
-@@ -881,6 +881,7 @@ static int parse_config(struct mhi_controller *mhi_cntrl,
- 	if (!mhi_cntrl->timeout_ms)
- 		mhi_cntrl->timeout_ms = MHI_TIMEOUT_MS;
- 
-+	mhi_cntrl->ready_timeout_ms = config->ready_timeout_ms;
- 	mhi_cntrl->bounce_buf = config->use_bounce_buf;
- 	mhi_cntrl->buffer_len = config->buf_len;
- 	if (!mhi_cntrl->buffer_len)
-diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-index 74a7543..8590926 100644
---- a/drivers/bus/mhi/host/main.c
-+++ b/drivers/bus/mhi/host/main.c
-@@ -43,8 +43,13 @@ int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
- 				    u32 mask, u32 val, u32 delayus)
- {
- 	int ret;
--	u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
-+	u32 out, retry;
-+	u32 timeout_ms = mhi_cntrl->timeout_ms;
- 
-+	if (mhi_cntrl->ready_timeout_ms && mask == MHISTATUS_READY_MASK)
-+		timeout_ms = mhi_cntrl->ready_timeout_ms;
-+
-+	retry = (timeout_ms * 1000) / delayus;
- 	while (retry--) {
- 		ret = mhi_read_reg_field(mhi_cntrl, base, offset, mask, &out);
- 		if (ret)
-diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
-index fcd80bc..9c601f0 100644
---- a/drivers/bus/mhi/host/pci_generic.c
-+++ b/drivers/bus/mhi/host/pci_generic.c
-@@ -269,6 +269,16 @@ static struct mhi_event_config modem_qcom_v1_mhi_events[] = {
- 	MHI_EVENT_CONFIG_HW_DATA(5, 2048, 101)
- };
- 
-+static const struct mhi_controller_config modem_qcom_v2_mhiv_config = {
-+	.max_channels = 128,
-+	.timeout_ms = 8000,
-+	.ready_timeout_ms = 50000,
-+	.num_channels = ARRAY_SIZE(modem_qcom_v1_mhi_channels),
-+	.ch_cfg = modem_qcom_v1_mhi_channels,
-+	.num_events = ARRAY_SIZE(modem_qcom_v1_mhi_events),
-+	.event_cfg = modem_qcom_v1_mhi_events,
-+};
-+
- static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
- 	.max_channels = 128,
- 	.timeout_ms = 8000,
-@@ -278,6 +288,16 @@ static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
- 	.event_cfg = modem_qcom_v1_mhi_events,
- };
- 
-+static const struct mhi_pci_dev_info mhi_qcom_sdx75_info = {
-+	.name = "qcom-sdx75m",
-+	.fw = "qcom/sdx75m/xbl.elf",
-+	.edl = "qcom/sdx75m/edl.mbn",
-+	.config = &modem_qcom_v2_mhiv_config,
-+	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-+	.dma_data_width = 32,
-+	.sideband_wake = false,
-+};
-+
- static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
- 	.name = "qcom-sdx65m",
- 	.fw = "qcom/sdx65m/xbl.elf",
-@@ -597,6 +617,8 @@ static const struct pci_device_id mhi_pci_id_table[] = {
- 		.driver_data = (kernel_ulong_t) &mhi_telit_fn990_info },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
- 		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0309),
-+		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx75_info },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1001), /* EM120R-GL (sdx24) */
- 		.driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1002), /* EM160R-GL (sdx24) */
-diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
-index 8a4362d..6f049e0 100644
---- a/drivers/bus/mhi/host/pm.c
-+++ b/drivers/bus/mhi/host/pm.c
-@@ -1202,14 +1202,18 @@ EXPORT_SYMBOL_GPL(mhi_power_down);
- int mhi_sync_power_up(struct mhi_controller *mhi_cntrl)
- {
- 	int ret = mhi_async_power_up(mhi_cntrl);
-+	u32 timeout_ms;
- 
- 	if (ret)
- 		return ret;
- 
-+	/* Some devices need more time to set ready during power up */
-+	timeout_ms = mhi_cntrl->ready_timeout_ms ?
-+		mhi_cntrl->ready_timeout_ms : mhi_cntrl->timeout_ms;
- 	wait_event_timeout(mhi_cntrl->state_event,
- 			   MHI_IN_MISSION_MODE(mhi_cntrl->ee) ||
- 			   MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
--			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
-+			   msecs_to_jiffies(timeout_ms));
- 
- 	ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
- 	if (ret)
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index f6de4b6..a43e5f8 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -266,6 +266,7 @@ struct mhi_event_config {
-  * struct mhi_controller_config - Root MHI controller configuration
-  * @max_channels: Maximum number of channels supported
-  * @timeout_ms: Timeout value for operations. 0 means use default
-+ * @ready_timeout_ms: Timeout value for waiting device to be ready (optional)
-  * @buf_len: Size of automatically allocated buffers. 0 means use default
-  * @num_channels: Number of channels defined in @ch_cfg
-  * @ch_cfg: Array of defined channels
-@@ -277,6 +278,7 @@ struct mhi_event_config {
- struct mhi_controller_config {
- 	u32 max_channels;
- 	u32 timeout_ms;
-+	u32 ready_timeout_ms;
- 	u32 buf_len;
- 	u32 num_channels;
- 	const struct mhi_channel_config *ch_cfg;
-@@ -326,6 +328,7 @@ struct mhi_controller_config {
-  * @pm_mutex: Mutex for suspend/resume operation
-  * @pm_lock: Lock for protecting MHI power management state
-  * @timeout_ms: Timeout in ms for state transitions
-+ * @ready_timeout_ms: Timeout in ms for waiting device to be ready (optional)
-  * @pm_state: MHI power management state
-  * @db_access: DB access states
-  * @ee: MHI device execution environment
-@@ -413,6 +416,7 @@ struct mhi_controller {
- 	struct mutex pm_mutex;
- 	rwlock_t pm_lock;
- 	u32 timeout_ms;
-+	u32 ready_timeout_ms;
- 	u32 pm_state;
- 	u32 db_access;
- 	enum mhi_ee_type ee;
--- 
-2.7.4
+> > The longer of the timer, the rougher it will be. So the timeout is not
+> > triggered after TCP_RTO_MAX, but 122877ms as I tested.
+> >
+> > Therefore, 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX' is always tru=
+e
+> > once the RTO come up to TCP_RTO_MAX, and the socket will die.
+> >
+> > Fix this by replacing the 'tcp_jiffies32' with '(u32)icsk->icsk_timeout=
+',
+> > which is exact the timestamp of the timeout. Meanwhile, using
+> > "max(tp->retrans_stamp, tp->rcv_tstamp)" as the last updated timestamp =
+in
+> > the receiving path, as "tp->rcv_tstamp" can restart from idle, then
+> > tp->rcv_tstamp could already be a long time (minutes or hours) in the
+> > past even on the first RTO.
+> >
+> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> > Link: https://lore.kernel.org/netdev/CADxym3YyMiO+zMD4zj03YPM3FBi-1LHi6=
+gSD2XT8pyAMM096pg@mail.gmail.com/
+> > Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> > ---
+> > v2:
+> > - consider the case of the connection restart from idle, as Neal commen=
+t
+> > ---
+> >  net/ipv4/tcp_timer.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
+> > index d45c96c7f5a4..e4b2d8706cae 100644
+> > --- a/net/ipv4/tcp_timer.c
+> > +++ b/net/ipv4/tcp_timer.c
+> > @@ -454,6 +454,14 @@ static void tcp_fastopen_synack_timer(struct sock =
+*sk, struct request_sock *req)
+> >                           req->timeout << req->num_timeout, TCP_RTO_MAX=
+);
+> >  }
+> >
+> > +static bool tcp_rtx_probe0_timed_out(struct sock *sk)
+> > +{
+> > +       struct tcp_sock *tp =3D tcp_sk(sk);
+> > +       u32 last_ts;
+> > +
+> > +       last_ts =3D max(tp->retrans_stamp, tp->rcv_tstamp);
+>
+> u32     retrans_stamp;  /* Timestamp of the last retransmit,
+> u32     rcv_tstamp;     /* timestamp of last received ACK (for keepalives=
+) */
+>
+> Both fields receive tcp_jiffies32 values, which wrap every 2^32 ticks.
+>
+> So max(A, B) won't work as you expect...
+>
+> You need to use before(), after() or something like that.
 
+Now I know how the before()/after() works. I thought they
+simply compared the arguments.
+
+I'll use brefore/after here instead.
+
+Thanks!
+Menglong Dong
+
+>
+> https://en.wikipedia.org/wiki/Serial_number_arithmetic#General_Solution
+>
+>
+> > +       return inet_csk(sk)->icsk_timeout - last_ts > TCP_RTO_MAX;
+> > +}
+> >
+> >  /**
+> >   *  tcp_retransmit_timer() - The TCP retransmit timeout handler
+> > @@ -519,7 +527,7 @@ void tcp_retransmit_timer(struct sock *sk)
+> >                                             tp->snd_una, tp->snd_nxt);
+> >                 }
+> >  #endif
+> > -               if (tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX) {
+> > +               if (tcp_rtx_probe0_timed_out(sk)) {
+> >                         tcp_write_err(sk);
+> >                         goto out;
+> >                 }
+> > --
+> > 2.40.1
+> >
