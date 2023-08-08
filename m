@@ -2,176 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0775A774519
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7740077475D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbjHHSgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34906 "EHLO
+        id S232855AbjHHTOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbjHHSgX (ORCPT
+        with ESMTP id S235270AbjHHTNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:36:23 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8C8347F7
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:34:28 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 9014A2001A;
-        Tue,  8 Aug 2023 08:15:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691482515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RB1vfBNcKo1SzgnEhdC16EESN0w4j0uD5BJHCDr0ghs=;
-        b=bcgCin70bsM2EI1zUa2zNT6mkPVbEvk71R21tBo0ypflNUOCe8XfUjNumUuQvTIwiXdfwl
-        QUyTr7GebJMAyfQ3aKYHwKCo0ShfgVSxtfI4nSPh+lxegI9U+JWp+jr8vn1Y4zWhiliLpv
-        pOoy39AkVp7kApnN2CLqHJKt/0LVGxg=
-Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 8 Aug 2023 15:13:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165C690A9;
+        Tue,  8 Aug 2023 09:36:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 094292C142;
-        Tue,  8 Aug 2023 08:15:14 +0000 (UTC)
-Date:   Tue, 8 Aug 2023 10:15:13 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Kees Cook <keescook@chromium.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: pstore/ram: printk: NULL characters in pstore ramoops area
-Message-ID: <ZNH5kSl-I_goJw2H@alley>
-References: <f28990eb-03bc-2259-54d0-9f2254abfe62@linux.microsoft.com>
- <d8bb1ec7-a4c5-43a2-9de0-9643a70b899f@linux.microsoft.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D0D8E62430;
+        Tue,  8 Aug 2023 08:17:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC2BCC433CB;
+        Tue,  8 Aug 2023 08:17:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691482631;
+        bh=K20OPC5mIbzsPiYWUHqX9jSEjf0CZwpl3w8OqWWhKfc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XzyFfvsqOn2SmKgAq45rOvihS03doRh6QVDx0L+nurJuDyOhD0o9FSNMIPMledtLZ
+         4yVhXcVtf+iv4AKdL45Nuk1EOLhr47xyrvoxYA4/EurbRJWZCJAme15gWcwnynYLIq
+         X0wCYloPOy0wX9q0pAOQPvWCvzQXrZTizIRlG9mY=
+Date:   Tue, 8 Aug 2023 10:17:08 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Luke Lu <luke.lu@libre.computer>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        linux-usb@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Da Xue <da@libre.computer>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: dwc3: meson-g12a: do post init to fix broken usb
+ after resumption
+Message-ID: <2023080852-estranged-limpness-aafb@gregkh>
+References: <20230808032510.31754-1-luke.lu@libre.computer>
+ <2023080851-duh-scroll-09bf@gregkh>
+ <CAAzmgs5U=BNzNNeskUMe_YEken1-CmzssRFPDCmsmar9SQo+WQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d8bb1ec7-a4c5-43a2-9de0-9643a70b899f@linux.microsoft.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAAzmgs5U=BNzNNeskUMe_YEken1-CmzssRFPDCmsmar9SQo+WQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2023-08-07 10:19:07, Vijay Balakrishna wrote:
-> I'm including my earlier email as it didn't deliver to
-> linux-kernel@vger.kernel.org due to HTML subpart.  Also sharing new findings
-> --
+On Tue, Aug 08, 2023 at 06:09:45AM +0000, Luke Lu wrote:
+> HI Greg:
 > 
-> Limiting the size of buffer exposed to record_print_text() and
-> prb_for_each_record() in kmsg_dump_get_buffer() also resolves this issue [5]
-> -- no NULL characters in pstore/ramoops memory.  The advantage is no memory
-> allocation (as done in previously shared changes [4]) which could be
-> problematic during kernel shutdown/reboot or during kexec reboot.
+> On Tue, Aug 8, 2023 at 4:56â€¯AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Tue, Aug 08, 2023 at 03:25:10AM +0000, Luke Lu wrote:
+> > > Device connected to usb otg port of GXL-based boards can not be
+> > > recognised after resumption, doesn't recover even if disconnect and
+> > > reconnect the device. dmesg shows it disconnects during resumption.
+> > >
+> > > [   41.492911] usb 1-2: USB disconnect, device number 3
+> > > [   41.499346] usb 1-2: unregistering device
+> > > [   41.511939] usb 1-2: unregistering interface 1-2:1.0
+> > >
+> > > Calling usb_post_init() will fix this issue, and it's tested and
+> > > verified on libretech's aml-s905x-cc board.
+> > >
+> > > Signed-off-by: Luke Lu <luke.lu@libre.computer>
+> >
+> > What commit id does this fix?
+> Using "git blame" to explore the history, found dwc3_meson_g12a_resume() was
+> introduced along with the file of drivers/usb/dwc3/dwc3-meson-g12a.c.
+> as Da Xue pointed out, the suspend/resume was never tested in GXL based SoC,
+> so it's broken since the beginning..
 > 
-> [5]
+> For the Fixes tag, I think it's proper to use "5b0ba0caaf3a: (usb:
+> dwc3: meson-g12a: refactor usb init)"
+> since the usb_post_init() function was introduced in this commit and
+> this patch will depend on it.
 > 
-> Author: Vijay Balakrishna <vijayb@linux.microsoft.com>
-> Date:   Sat Aug 5 18:47:27 2023 +0000
+> > Should it also go to stable kernels?
+> >
+> Yes, It would be great if the patch can go to stable tree, thanks for
+> suggesting this
+> I have it tested on 6.1-lts tree.
 > 
->     printk: limit the size of buffer exposed to record_print_text() by
-> kmsg_dump_get_buffer()
-> 
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index b82e4c3b52f4..8feec932aa35 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -3453,9 +3453,9 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper *dumper,
-> bool syslog,
->          */
->         next_seq = seq;
-> 
-> -       prb_rec_init_rd(&r, &info, buf, size);
-> 
->         len = 0;
-> +       prb_rec_init_rd(&r, &info, buf + len, (size - len) >= LOG_LINE_MAX +
-> PREFIX_MAX ? LOG_LINE_MAX + PREFIX_MAX : size - len);
->         prb_for_each_record(seq, prb, seq, &r) {
->                 if (r.info->seq >= dumper->next_seq)
->                         break;
-> @@ -3463,7 +3463,7 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper *dumper,
-> bool syslog,
->                 len += record_print_text(&r, syslog, time);
-> 
->                 /* Adjust record to store to remaining buffer space. */
-> -               prb_rec_init_rd(&r, &info, buf + len, size - len);
-> +               prb_rec_init_rd(&r, &info, buf + len, (size - len) >=
-> LOG_LINE_MAX + PREFIX_MAX ? LOG_LINE_MAX + PREFIX_MAX : size - len);
->         }
-> 
->         dumper->next_seq = next_seq;
+> Btw, I would wait for a few days for more comments and CC to stable in
+> next v2 if no objection.
 
+No worries, I'll drop this from my review queue and wait for a v2.
 
-I looks like some problems with counting data that fit into the
-buffer. I see that several fixes were added after 5.10 release.
-I wonder if they help to solve this:
+thanks,
 
-commit 89ccf18f032f26946 ("printk: fix kmsg_dump_get_buffer length calulations")
-commit f0e386ee0c0b71ea6 ("printk: fix buffer overflow potential for print_text()")
-commit 08d60e59995401105 ("printk: fix string termination for record_print_text()")
-
-All 3 commits were backported into 5.10 stable.
-
-The 2nd commit without the 3rd one might cause writing an extra "\0"
-into a wrong place.
-
-
-> On 8/3/23 16:34, Vijay Balakrishna wrote:
-> > 
-> > Hello,
-> > 
-> > We are noticing NULL characters in ramoops/pstore memory after a warm or
-> > a kexec reboot [1] in our 5.10 ARM64 product kernel after moving from
-> > 5.4 kernel.  I ruled out fs/pstore/* as the source from where NULL
-> > characters originate by adding debug code [2] and confirming from
-> > collected output [3].  Then isolated further to printk log/ring buffer
-> > area, the NULL characters were already present in buffer in
-> > kmsg_dump_get_buffer() when kmsg log lines are read.  After looking at
-> > printk merges in mainline kernel, I cherry-picked following which looked
-> > related to our 5.10 kernel and still see NULL characters.
-> > 
-> >     4260e0e5510158d704898603331e5365ebe957de printk: consolidate
-> >     kmsg_dump_get_buffer/syslog_print_all code
-> >     726b5097701a8d46f5354be780e1a11fc4ca1187 printk: refactor
-> >     kmsg_dump_get_buffer()
-> >     bb07b16c44b2c6ddbafa44bb06454719002e828e printk: limit second loop
-> >     of syslog_print_all
-
-These commits tried to reduce a code duplication between kmsg_dump
-and syslog API.
-
-> > Looking at syslog_print_all() I notice it uses a local buffer unlike
-> > kmsg_dump_get_buffer() which manipulates buffer in-place to add syslog
-> > and timestamp prefix data.
-
-syslog_print_all() gets a buffer from userspace. It can be written
-only by copy_to_user(). It allocates an extra buffer so that it could
-do all the message formatting in the kernel space.
-
-> I made changes [4] to kmsg_dump_get_buffer()
-> > to use a local buffer similar to syslog_print_all() after which I don't
-> > see NULL characters in ramoops area.  I couldn't spot any suspicious
-> > code in record_print_text() where prefix data added in-place.  I'm
-> > reaching out to both pstore/ram and printk folks for comments. I can
-> > investigate/debug further with assistance and input from you.
-
-It is more safe with the extra buffer. It is always used only
-for one message. It is possible that the NULL character was
-also written in a wrong place there. But it did not affect
-the buffer passed to kmsg_dump_get_buffer().
-
-I hope that the above three commit fixing the length calculation
-and potential buffer overflow will fix this.
-
-Anyway, thanks a lot for debugging this and providing all the details.
-
-Best Regards,
-Petr
+greg k-h
