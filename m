@@ -2,110 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 484FD77490B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFDD7743BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233268AbjHHTrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40762 "EHLO
+        id S235330AbjHHSI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235939AbjHHTrN (ORCPT
+        with ESMTP id S235311AbjHHSIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:47:13 -0400
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C92712260B;
-        Tue,  8 Aug 2023 09:51:09 -0700 (PDT)
-Received: from relay6-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::226])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id 457BBD4C69;
-        Tue,  8 Aug 2023 08:44:47 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CDBB0C0011;
-        Tue,  8 Aug 2023 08:44:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691484284;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9nUiw4hJK7/Sk678dMlTFdsFNk9UZV8JT6mDURM0k34=;
-        b=QZBb0EFgqssUT+yAxk29eDTjBMqFKHe4zPB1Smvyc+r9fR/tpmYpbax2btHCBtrJ0JveOQ
-        SLfeDDBlE9c33fmD8j8hb0+2e4T0kQOwo4HkFuefiM4/FTN3Qixx+U9a0Lr46Zpybcvhk/
-        pzfqXkJVEK6u6AuwEp9In8Fri7fCoasFyYBjwMbGHW2x81o0rcjV7vfIV/7OGspbkZCXS2
-        UrlV5ZcAPgDJe2OMs4EUsIvewgY6Zd2BHitCnMItMwzgzOZ5eNl6yKxTIuUZMuMRIDLoYX
-        ZPFdIRfr4+fIGi+NiAyTBb1Q6Kip8TN6o7JB9xQlS463pwiOEXmyVfbepPKRoA==
-Date:   Tue, 8 Aug 2023 10:44:39 +0200
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 22/28] mfd: core: Ensure disabled devices are skiped
- without aborting
-Message-ID: <20230808104439.6265cd01@bootlin.com>
-In-Reply-To: <651ad095-8753-762e-d3f0-aec74c5794c2@csgroup.eu>
-References: <20230726150225.483464-1-herve.codina@bootlin.com>
-        <20230726150225.483464-23-herve.codina@bootlin.com>
-        <651ad095-8753-762e-d3f0-aec74c5794c2@csgroup.eu>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 8 Aug 2023 14:08:32 -0400
+Received: from imap5.colo.codethink.co.uk (imap5.colo.codethink.co.uk [78.40.148.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C04A1974B;
+        Tue,  8 Aug 2023 10:03:38 -0700 (PDT)
+Received: from [134.238.52.102] (helo=[10.8.4.157])
+        by imap5.colo.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
+        id 1qTINg-00CjDa-Lk; Tue, 08 Aug 2023 09:47:56 +0100
+Message-ID: <12c1e981-b664-b80c-d0df-7e7a098e32b1@codethink.co.uk>
+Date:   Tue, 8 Aug 2023 09:47:55 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH 1/2] serial: sifive: Add suspend and resume operations
+Content-Language: en-GB
+To:     Nick Hu <nick.hu@sifive.com>, zong.li@sifive.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+References: <20230808072625.2109564-1-nick.hu@sifive.com>
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+Organization: Codethink Limited.
+In-Reply-To: <20230808072625.2109564-1-nick.hu@sifive.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Aug 2023 08:13:27 +0000
-Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+On 08/08/2023 08:26, Nick Hu wrote:
+> If the Sifive Uart is not used as the wake up source, suspend the uart
+> before the system enter the suspend state to prevent it woken up by
+> unexpected uart interrupt. Resume the uart once the system woken up.
+> 
+> Signed-off-by: Nick Hu <nick.hu@sifive.com>
+> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 
-> Le 26/07/2023 à 17:02, Herve Codina a écrit :
-> > The loop searching for a matching device based on its compatible
-> > string is aborted when a matching disabled device is found.
-> > This abort avoid to add devices as soon as one disabled device
-> > is found.  
-> 
-> s/avoid/prevents/
+^ This should be Reviewed-by, as I did review on this earlier.
 
-Yes, will be changed.
+> ---
+>   drivers/tty/serial/sifive.c | 26 ++++++++++++++++++++++++++
+>   1 file changed, 26 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/sifive.c b/drivers/tty/serial/sifive.c
+> index a19db49327e2..87994cb69007 100644
+> --- a/drivers/tty/serial/sifive.c
+> +++ b/drivers/tty/serial/sifive.c
+> @@ -1022,6 +1022,31 @@ static int sifive_serial_remove(struct platform_device *dev)
+>   	return 0;
+>   }
+>   
+> +static int sifive_serial_suspend(struct device *dev)
+> +{
+> +	int ret = 0;
+> +	struct sifive_serial_port *ssp = dev_get_drvdata(dev);
 
-> 
-> > 
-> > Continue searching for an other device instead of aborting on the
-> > first disabled one fixes the issue.
-> > 
-> > Fixes: 22380b65dc70 ("mfd: mfd-core: Ensure disabled devices are ignored without error")
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>  
-> 
-> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> 
+Minor annyonance is ordering of ssp and ret, I think the showrter one
+last is the nicest looking.
+
+> +	if (ssp && ssp->port.type != PORT_UNKNOWN)
+> +		ret = uart_suspend_port(&sifive_serial_uart_driver, &ssp->port);
+
+Do we really need a test for ssp being valid if the device is bound.
+Not sure if the port.type is also useful?
+
+> +	return ret;
+> +}
+> +
+> +static int sifive_serial_resume(struct device *dev)
+> +{
+> +	int ret = 0;
+> +	struct sifive_serial_port *ssp = dev_get_drvdata(dev);
+> +
+> +	if (ssp && ssp->port.type != PORT_UNKNOWN)
+> +		ret = uart_resume_port(&sifive_serial_uart_driver, &ssp->port);
+> +
+> +	return ret;
+> +}
+> +
+> +DEFINE_SIMPLE_DEV_PM_OPS(sifive_uart_pm_ops, sifive_serial_suspend,
+> +			 sifive_serial_resume);
+> +
+>   static const struct of_device_id sifive_serial_of_match[] = {
+>   	{ .compatible = "sifive,fu540-c000-uart0" },
+>   	{ .compatible = "sifive,uart0" },
+> @@ -1034,6 +1059,7 @@ static struct platform_driver sifive_serial_platform_driver = {
+>   	.remove		= sifive_serial_remove,
+>   	.driver		= {
+>   		.name	= SIFIVE_SERIAL_NAME,
+> +		.pm = pm_sleep_ptr(&sifive_uart_pm_ops),
+>   		.of_match_table = of_match_ptr(sifive_serial_of_match),
+>   	},
+>   };
+
+-- 
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
+
+https://www.codethink.co.uk/privacy.html
 
