@@ -2,241 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BC777358E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 02:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF34773593
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 02:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjHHAvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 20:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
+        id S230184AbjHHAwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 20:52:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjHHAu7 (ORCPT
+        with ESMTP id S229568AbjHHAwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 20:50:59 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11202170B;
-        Mon,  7 Aug 2023 17:50:57 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3780ccxa011108;
-        Tue, 8 Aug 2023 00:50:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=dq+Ac7H1VO2uWs6wuXTd+gQ6CJsKUJs85h+IpW2YRbI=;
- b=hUn3or2/X2hqdPPg4Rop39d223H9UL+ZBo8eFVCge0EkKrUOGssbAfywM0MBsuO+03yM
- 9aQmVLAjSX4p0f/YAL2b+dFtzEswM2DVGOZYqMnuwhNULaKD7DCq2jRcuHgo3WZ4G9H2
- w8f5nxtiAzUIasbPLXLSE/sOxkafZbHa+hQhcSds2l4c70++brO2BEV1im8KOUik0ETz
- IaxlX2SoMQOwTFn9DPxLjlwhfyqdaJnCi2MGf5FcapGWUZCrG9nt2qFD1dTfKpl9UKOV
- ypLCWJJrt7wbiS1XtRZqU7bBxmJT1W7JsRbJKt4U+5wJ06ujab4g4Kld9undFrSUPUcV Bw== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sb6jbrf1f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Aug 2023 00:50:25 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3780oO2H013279
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 8 Aug 2023 00:50:24 GMT
-Received: from [10.110.124.178] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 7 Aug
- 2023 17:50:23 -0700
-Message-ID: <be6ef3e4-a3d6-3af8-0a47-506e2275b40b@quicinc.com>
-Date:   Mon, 7 Aug 2023 17:50:22 -0700
+        Mon, 7 Aug 2023 20:52:38 -0400
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DC3170B;
+        Mon,  7 Aug 2023 17:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=1Z7LbxffltbPK1SHo7fxmLCfBnUSIOxwbsQyOLgeTiM=; b=CvAPVbIdkOl7UYswYzmU74xVVS
+        XyjwUWRqWPGxovxX1GsoEzR6Xa3VSDYNRmkw81fkMog8jEpL8xbYMEOWL2rruiwTQ2XbCHP9tDZ1J
+        MDrKtpx/owH55NmEOPcsFZB5Xi/vcenF8IIDF9ZGVUuyguUK/I2WMGWBtOFapIskEE7vKRfNZuPq3
+        otA2sGbIDLzwQx1PzGu9hqocdTAqJjU+7bOJ/bZrylT0owjevMf3T9t84rXIoTKEGBNbx7r5UBivQ
+        S24JILUF8XekC+4K1hSeYWl7r2YQLIDktntBUdKmRT4K26ok3Kg+mABGBlF21o9q9DvU1X6WXB2/w
+        mHLKesRg==;
+Received: from [177.45.63.19] (helo=[192.168.1.111])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qTAxZ-00FAcr-T1; Tue, 08 Aug 2023 02:52:30 +0200
+Message-ID: <c4998f14-2804-4291-efe4-f42d07cd9343@igalia.com>
+Date:   Mon, 7 Aug 2023 21:52:18 -0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v4 10/32] ASoC: qcom: Add USB backend ASoC driver for Q6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 03/14] futex: Flag conversion
 Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <srinivas.kandagatla@linaro.org>,
-        <bgoswami@quicinc.com>, <Thinh.Nguyen@synopsys.com>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-usb@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <quic_jackp@quicinc.com>, <oneukum@suse.com>,
-        <albertccwang@google.com>, <o-takashi@sakamocchi.jp>
-References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
- <20230725023416.11205-11-quic_wcheng@quicinc.com>
- <37018459-ee43-d853-1d73-3c6234a265b2@linux.intel.com>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <37018459-ee43-d853-1d73-3c6234a265b2@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: U7G8aZINZ3sI_IoYSnETSuLdn7RXEAEz
-X-Proofpoint-GUID: U7G8aZINZ3sI_IoYSnETSuLdn7RXEAEz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-07_27,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- bulkscore=0 mlxlogscore=923 priorityscore=1501 lowpriorityscore=0
- impostorscore=0 clxscore=1015 mlxscore=0 phishscore=0 adultscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308080005
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
+        dvhart@infradead.org, dave@stgolabs.net, tglx@linutronix.de,
+        Andrew Morton <akpm@linux-foundation.org>, axboe@kernel.dk,
+        urezki@gmail.com, hch@infradead.org, lstoakes@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        malteskarupke@web.de
+References: <20230807121843.710612856@infradead.org>
+ <20230807123322.952568452@infradead.org>
+From:   =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <20230807123322.952568452@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre,
+Em 07/08/2023 09:18, Peter Zijlstra escreveu:
+> Futex has 3 sets of flags:
+> 
+>   - legacy futex op bits
+>   - futex2 flags
+>   - internal flags
+> 
+> Add a few helpers to convert from the API flags into the internal
+> flags.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-On 7/25/2023 1:45 AM, Pierre-Louis Bossart wrote:
-> 
->> +struct q6usb_port_data {
->> +	struct q6afe_usb_cfg usb_cfg;
->> +	struct snd_soc_usb *usb;
->> +	struct q6usb_offload priv;
->> +	int active_idx;
-> 
-> what is an 'active_idx' ?
-> 
-> 
+Reviewed-by: André Almeida <andrealmeid@igalia.com>
 
-active_idx carries the USB sound card we're going to be offloading.
-
->> +static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb, int card_idx,
->> +			int connected)
->> +{
->> +	struct snd_soc_dapm_context *dapm;
->> +	struct q6usb_port_data *data;
->> +
->> +	dapm = snd_soc_component_get_dapm(usb->component);
->> +	data = dev_get_drvdata(usb->component->dev);
+> ---
+>   kernel/futex/futex.h    |   63 +++++++++++++++++++++++++++++++++++++++++++++---
+>   kernel/futex/syscalls.c |   24 ++++++------------
+>   kernel/futex/waitwake.c |    4 +--
+>   3 files changed, 71 insertions(+), 20 deletions(-)
 > 
-> shouldn't you test that 'dapm' and 'data' are not NULL ?
-> 
+> --- a/kernel/futex/futex.h
+> +++ b/kernel/futex/futex.h
+> @@ -5,6 +5,7 @@
+>   #include <linux/futex.h>
+>   #include <linux/rtmutex.h>
+>   #include <linux/sched/wake_q.h>
+> +#include <linux/compat.h>
+>   
+>   #ifdef CONFIG_PREEMPT_RT
+>   #include <linux/rcuwait.h>
+> @@ -16,8 +17,15 @@
+>    * Futex flags used to encode options to functions and preserve them across
+>    * restarts.
+>    */
+> +#define FLAGS_SIZE_8		0x00
+> +#define FLAGS_SIZE_16		0x01
+> +#define FLAGS_SIZE_32		0x02
+> +#define FLAGS_SIZE_64		0x03
+> +
 
-q6usb_component_probe() would be the one that registers to SOC USB to 
-add this callback.  At that time, the component's dev and dapm 
-references should be populated, so that should ensure that those are 
-valid.  However, we could see that usb->component to be NULL, as that 
-assignment happens after adding the port.  Instead I will add a check 
-for usb->component before attempting to access the dapm/data params.
+Minor nit: for consistent, I would go with SIZE_U8, instead of SIZE_8
 
-Another thing I will modify is to add a component removal callback, 
-which will remove the SOC USB port.  That will ensure that no 
-connection_cb() events are issued, so we don't run into any NULL pointer 
-issues during the remove path.
-
->> +
->> +	if (connected) {
+> +#define FLAGS_SIZE_MASK		0x03
+> +
+>   #ifdef CONFIG_MMU
+> -# define FLAGS_SHARED		0x01
+> +# define FLAGS_SHARED		0x10
+>   #else
+>   /*
+>    * NOMMU does not have per process address space. Let the compiler optimize
+> @@ -25,8 +33,57 @@
+>    */
+>   # define FLAGS_SHARED		0x00
+>   #endif
+> -#define FLAGS_CLOCKRT		0x02
+> -#define FLAGS_HAS_TIMEOUT	0x04
+> +#define FLAGS_CLOCKRT		0x20
+> +#define FLAGS_HAS_TIMEOUT	0x40
+> +#define FLAGS_NUMA		0x80
+> +
+> +/* FUTEX_ to FLAGS_ */
+> +static inline unsigned int futex_to_flags(unsigned int op)
+> +{
+> +	unsigned int flags = FLAGS_SIZE_32;
+> +
+> +	if (!(op & FUTEX_PRIVATE_FLAG))
+> +		flags |= FLAGS_SHARED;
+> +
+> +	if (op & FUTEX_CLOCK_REALTIME)
+> +		flags |= FLAGS_CLOCKRT;
+> +
+> +	return flags;
+> +}
+> +
+> +/* FUTEX2_ to FLAGS_ */
+> +static inline unsigned int futex2_to_flags(unsigned int flags2)
+> +{
+> +	unsigned int flags = flags2 & FUTEX2_SIZE_MASK;
+> +
+> +	if (!(flags2 & FUTEX2_PRIVATE))
+> +		flags |= FLAGS_SHARED;
+> +
+> +	if (flags2 & FUTEX2_NUMA)
+> +		flags |= FLAGS_NUMA;
+> +
+> +	return flags;
+> +}
+> +
+> +static inline bool futex_flags_valid(unsigned int flags)
+> +{
+> +	/* Only 64bit futexes for 64bit code */
+> +	if (!IS_ENABLED(CONFIG_64BIT) || in_compat_syscall()) {
+> +		if ((flags & FLAGS_SIZE_MASK) == FLAGS_SIZE_64)
+> +			return false;
+> +	}
+> +
+> +	/* Only 32bit futexes are implemented -- for now */
+> +	if ((flags & FLAGS_SIZE_MASK) != FLAGS_SIZE_32)
+> +		return false;
+> +
+> +	return true;
+> +} > +
+> +static inline unsigned int futex_size(unsigned int flags)
+> +{
+> +	return 1 << (flags & FLAGS_SIZE_MASK);
+> +}
+>   
+>   #ifdef CONFIG_FAIL_FUTEX
+>   extern bool should_fail_futex(bool fshared);
+> --- a/kernel/futex/syscalls.c
+> +++ b/kernel/futex/syscalls.c
+> @@ -1,6 +1,5 @@
+>   // SPDX-License-Identifier: GPL-2.0-or-later
+>   
+> -#include <linux/compat.h>
+>   #include <linux/syscalls.h>
+>   #include <linux/time_namespace.h>
+>   
+> @@ -85,15 +84,12 @@ SYSCALL_DEFINE3(get_robust_list, int, pi
+>   long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
+>   		u32 __user *uaddr2, u32 val2, u32 val3)
+>   {
+> +	unsigned int flags = futex_to_flags(op);
+>   	int cmd = op & FUTEX_CMD_MASK;
+> -	unsigned int flags = 0;
+>   
+> -	if (!(op & FUTEX_PRIVATE_FLAG))
+> -		flags |= FLAGS_SHARED;
+> -
+> -	if (op & FUTEX_CLOCK_REALTIME) {
+> -		flags |= FLAGS_CLOCKRT;
+> -		if (cmd != FUTEX_WAIT_BITSET && cmd != FUTEX_WAIT_REQUEUE_PI &&
+> +	if (flags & FLAGS_CLOCKRT) {
+> +		if (cmd != FUTEX_WAIT_BITSET &&
+> +		    cmd != FUTEX_WAIT_REQUEUE_PI &&
+>   		    cmd != FUTEX_LOCK_PI2)
+>   			return -ENOSYS;
+>   	}
+> @@ -201,21 +197,19 @@ static int futex_parse_waitv(struct fute
+>   	unsigned int i;
+>   
+>   	for (i = 0; i < nr_futexes; i++) {
+> +		unsigned int flags;
+> +
+>   		if (copy_from_user(&aux, &uwaitv[i], sizeof(aux)))
+>   			return -EFAULT;
+>   
+>   		if ((aux.flags & ~FUTEX2_VALID_MASK) || aux.__reserved)
+>   			return -EINVAL;
+>   
+> -		if (!IS_ENABLED(CONFIG_64BIT) || in_compat_syscall()) {
+> -			if ((aux.flags & FUTEX2_SIZE_MASK) == FUTEX2_SIZE_U64)
+> -				return -EINVAL;
+> -		}
+> -
+> -		if ((aux.flags & FUTEX2_SIZE_MASK) != FUTEX2_SIZE_U32)
+> +		flags = futex2_to_flags(aux.flags);
+> +		if (!futex_flags_valid(flags))
+>   			return -EINVAL;
+>   
+> -		futexv[i].w.flags = aux.flags;
+> +		futexv[i].w.flags = flags;
+>   		futexv[i].w.val = aux.val;
+>   		futexv[i].w.uaddr = aux.uaddr;
+>   		futexv[i].q = futex_q_init;
+> --- a/kernel/futex/waitwake.c
+> +++ b/kernel/futex/waitwake.c
+> @@ -419,11 +419,11 @@ static int futex_wait_multiple_setup(str
+>   	 */
+>   retry:
+>   	for (i = 0; i < count; i++) {
+> -		if ((vs[i].w.flags & FUTEX_PRIVATE_FLAG) && retry)
+> +		if (!(vs[i].w.flags & FLAGS_SHARED) && retry)
+>   			continue;
+>   
+>   		ret = get_futex_key(u64_to_user_ptr(vs[i].w.uaddr),
+> -				    !(vs[i].w.flags & FUTEX_PRIVATE_FLAG),
+> +				    vs[i].w.flags & FLAGS_SHARED,
+>   				    &vs[i].q.key, FUTEX_READ);
+>   
+>   		if (unlikely(ret))
 > 
-> this goes back to my earlier comment that you treat 'connected' as a
-> boolean.
 > 
-
-Done, changed to boolean.
-
->> +		snd_soc_dapm_enable_pin(dapm, "USB_RX_BE");
->> +		/* We only track the latest USB headset plugged in */
->> +		data->active_idx = card_idx;
->> +	} else {
->> +		snd_soc_dapm_disable_pin(dapm, "USB_RX_BE");
->> +	}
->> +	snd_soc_dapm_sync(dapm);
->> +
->> +	return 0;
->> +}
->> +
->> +static int q6usb_component_probe(struct snd_soc_component *component)
->> +{
->> +	struct q6usb_port_data *data = dev_get_drvdata(component->dev);
->> +	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
->> +
->> +	snd_soc_dapm_disable_pin(dapm, "USB_RX_BE");
->> +	snd_soc_dapm_sync(dapm);
->> +
->> +	data->usb = snd_soc_usb_add_port(component->dev, &data->priv, q6usb_alsa_connection_cb);
->> +	if (IS_ERR(data->usb)) {
->> +		dev_err(component->dev, "failed to add usb port\n");
->> +		return -ENODEV;
->> +	}
->> +
->> +	data->usb->component = component;
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct snd_soc_component_driver q6usb_dai_component = {
->> +	.probe = q6usb_component_probe,
-> 
-> erm, if you have a .probe that adds a port, don't you need a remove that
-> removes the same port, and sets the pin state as well?
-> 
-
-Will add this as mentioned above.
-
->> +	.name = "q6usb-dai-component",
->> +	.dapm_widgets = q6usb_dai_widgets,
->> +	.num_dapm_widgets = ARRAY_SIZE(q6usb_dai_widgets),
->> +	.dapm_routes = q6usb_dapm_routes,
->> +	.num_dapm_routes = ARRAY_SIZE(q6usb_dapm_routes),
->> +	.of_xlate_dai_name = q6usb_audio_ports_of_xlate_dai_name,
->> +};
->> +
->> +static int q6usb_dai_dev_probe(struct platform_device *pdev)
->> +{
->> +	struct device_node *node = pdev->dev.of_node;
->> +	struct q6usb_port_data *data;
->> +	struct device *dev = &pdev->dev;
->> +	struct of_phandle_args args;
->> +	int ret;
->> +
->> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
->> +	if (!data)
->> +		return -ENOMEM;
->> +
->> +	ret = of_property_read_u32(node, "qcom,usb-audio-intr-num",
->> +				&data->priv.intr_num);
->> +	if (ret) {
->> +		dev_err(&pdev->dev, "failed to read intr num.\n");
->> +		return ret;
->> +	}
->> +
->> +	ret = of_parse_phandle_with_fixed_args(node, "iommus", 1, 0, &args);
->> +	if (ret < 0)
->> +		data->priv.sid = -1;
->> +	else
->> +		data->priv.sid = args.args[0] & SID_MASK;
->> +
->> +	data->priv.domain = iommu_get_domain_for_dev(&pdev->dev);
->> +
->> +	data->priv.dev = dev;
->> +	dev_set_drvdata(dev, data);
->> +
->> +	ret = devm_snd_soc_register_component(dev, &q6usb_dai_component,
->> +					q6usb_be_dais, ARRAY_SIZE(q6usb_be_dais));
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	return 0;
-> 
-> return devm_snd_soc_register_component
-> 
->> +}
->> +
->> +static int q6usb_dai_dev_remove(struct platform_device *pdev)
->> +{
->> +	snd_soc_usb_remove_port(&pdev->dev);
-> 
-> that seems wrong, the port is added in the component probe, not the
-> platform device probe.
-> 
-
-Will fix this.
-
-Thanks
-Wesley Cheng
