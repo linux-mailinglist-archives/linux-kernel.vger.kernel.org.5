@@ -2,131 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D90774628
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 101F77744DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233974AbjHHSyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
+        id S235908AbjHHS3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbjHHSxj (ORCPT
+        with ESMTP id S235911AbjHHS3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:53:39 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833946349E;
-        Tue,  8 Aug 2023 10:08:29 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9e6cc93c6so90882431fa.2;
-        Tue, 08 Aug 2023 10:08:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691514508; x=1692119308;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=w+N5RxJ6j6TsIuXun+/KHtX8AkDeBPMRbGieTCGtLH0=;
-        b=UehQQQ1vXkVzZS4c2tTeWknevaOpsUVU/94XcQALmgDqehT/nQ6bN0pkXXbhP9E8wU
-         LRzirxRk13f1NSgxNY2xdwwrXqY+lL1Rfe/20336u+IyeZWwERwvS4kcw4gKms7Ow5Ep
-         x/FU0ZABxo0IoYqhJWggpjFuX32Wn1qPCvj15TIjsMttrOoN+H7xtcj3U1n5wQEJ4fpi
-         ulUgPsXD3icKTuksK3lUwlfFQ9zzYyBr9ORjYtnEzU0zo+1D2rlcCRj475F7MiPKS6Ch
-         ACuNYei0Q6IWC2qIVmOWFxqFuuBh+wWkWtARJm9JDqiLC1tYdIklOhJh/zWEHYZe72vM
-         K2Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691514508; x=1692119308;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=w+N5RxJ6j6TsIuXun+/KHtX8AkDeBPMRbGieTCGtLH0=;
-        b=ZnTou9jnVlcWpUl8QXLeRAnVil17/Amubw45L6wMtsM4QoxAiKf9bx2gXG5ItFjBt2
-         ZvJutrk7qqfvJEVKQ+KZlpctltjlnXO4WWCPEiU3yxJqdrhiay+d7ZVoEkv4mAdFLAwf
-         3m2yO1a/rVA14JTtLbDR8HsW21qW7I/p3XS6y7DwPl3Y8X7IqUrRxfymysSvXsgizAsZ
-         xR3J6hueR6bzOubhej2z6Pz6HwKO56OL/7dukPDRYUDUhJopDTQc10+DEydYBP3Epcrz
-         YL5+N/ONF6O42BD8m5WFdMLSlOanSMdE2DzJh9WaDU/JFAsixAxwblB/UNENNEZutB5m
-         m99g==
-X-Gm-Message-State: AOJu0YzkU4Rv70OFvB+DfgbAoGfggiq40yg677UZ6yiLOjl7SeMO+qCh
-        GVzVELvhZv3oZ0va4P+0gaL/FxGxL7i5LA==
-X-Google-Smtp-Source: AGHT+IEnw4US5yDsOeUor3Z8UQFq3Runobu5MxyYy8pAwDuZK8bCHEEwqGaSwHqDLwP2Hpwr5dwWHg==
-X-Received: by 2002:a1c:7211:0:b0:3fe:19cf:93ca with SMTP id n17-20020a1c7211000000b003fe19cf93camr8603683wmc.8.1691473291792;
-        Mon, 07 Aug 2023 22:41:31 -0700 (PDT)
-Received: from khadija-virtual-machine ([124.29.208.67])
-        by smtp.gmail.com with ESMTPSA id q7-20020a1cf307000000b003fa98908014sm16983211wmq.8.2023.08.07.22.41.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 22:41:31 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 10:41:29 +0500
-From:   Khadija Kamran <kamrankhadijadj@gmail.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Alison Schofield <alison.schofield@intel.com>,
-        ztarkhani@microsoft.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] lsm: add comment block for
- security_sk_classify_flow() LSM hook
-Message-ID: <ZNHVieyzjc320RXu@gmail.com>
-References: <ZNCZ4KL7TRDE9vIC@gmail.com>
- <CAHC9VhSULN1B_EjVPA5st+NhDjiUbymOwt81C4gZ9Tn4_wWpuw@mail.gmail.com>
+        Tue, 8 Aug 2023 14:29:15 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F52A249B1
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:44:54 -0700 (PDT)
+Received: from [185.238.219.21] (helo=[192.168.44.45]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qTFeQ-0003sC-03; Tue, 08 Aug 2023 07:53:02 +0200
+Message-ID: <88bb7f30-cbfe-feb4-1101-b7c98843652d@leemhuis.info>
+Date:   Tue, 8 Aug 2023 07:52:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHC9VhSULN1B_EjVPA5st+NhDjiUbymOwt81C4gZ9Tn4_wWpuw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [PATCH v2 12/32] mm/vmalloc: vmalloc_to_page() use
+ pte_offset_kernel()
+Content-Language: en-US, de-DE
+To:     Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Steven Price <steven.price@arm.com>,
+        SeongJae Park <sj@kernel.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Song Liu <song@kernel.org>,
+        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <c1c9a74a-bc5b-15ea-e5d2-8ec34bc921d@google.com>
+ <696386a-84f8-b33c-82e5-f865ed6eb39@google.com>
+ <42279f1f-7b82-40dc-8546-86171018729c@sirena.org.uk>
+ <901ae88d-ad0c-4e9d-b199-f1566cc62a00@lucifer.local>
+ <c2358f37-ebaa-44d1-b443-ff91bdedc00b@sirena.org.uk>
+ <977ddee4-35f0-fcd1-2fd-1c3057e7ea2a@google.com>
+ <fbb2b76c-bc5c-4d75-b8cd-37479de688d4@sirena.org.uk>
+ <b479b946-f052-eb75-295d-6fa7c2d8ce8e@google.com>
+ <591b5253-47f0-440c-84b6-7786ff59667d@sirena.org.uk>
+ <20230720103227.GB11034@willie-the-truck>
+ <df264993-107c-44a1-a8ff-245bce044206@sirena.org.uk>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <df264993-107c-44a1-a8ff-245bce044206@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691516694;0c6296c6;
+X-HE-SMSGID: 1qTFeQ-0003sC-03
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 07:14:45PM -0400, Paul Moore wrote:
-> On Mon, Aug 7, 2023 at 3:14 AM Khadija Kamran <kamrankhadijadj@gmail.com> wrote:
-> >
-> > security_sk_classify_flow() LSM hook has no comment block. Add a comment
-> > block with a brief description of LSM hook and its function parameters.
-> >
-> > Signed-off-by: Khadija Kamran <kamrankhadijadj@gmail.com>
-> > ---
-> > Changed in v2:
-> >  - Add parenthesis with security_sk_calssify_flow to refer to it as a
-> >    function in commit message and commit log.
-> >  - Remove an extra space in the comment block.
-> >
-> > security/security.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
+On 20.07.23 14:06, Mark Brown wrote:
+> On Thu, Jul 20, 2023 at 11:32:28AM +0100, Will Deacon wrote:
+>> On Tue, Jul 11, 2023 at 06:57:33PM +0100, Mark Brown wrote:
 > 
-> Hi Khadija,
+>>> Still investigating but I'm pretty convinced this is nothing to do with
+>>> your commit/series and is just common or garden memory corruption that
+>>> just happens to get tickled by your changes.  Sorry for the noise.
 > 
-> Thanks, but I already merged your original patch :)
+>> Did you get to the bottom of this? If not, do you have a reliable way to
+>> reproduce the problem? I don't like the sound of memory corruption :(
 > 
-> https://lore.kernel.org/linux-security-module/abe91475c7f9e3483405c6096006b2a9.paul@paul-moore.com/
+> Not to the bottom of it, but getting there - I isolated the issue to
+> something in the unregistration path for thermal zones but didn't manage
+> to figure out exactly what.
 
-Hey Paul,
+Hi Mark, just wondering did anything come out of this and is this still
+happening? I'm just wondering, as I still have this on my list of
+tracked regressions.
 
-Great. Thank you. :)
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
-Regards,
-Khadija
-
+#regzbot poke
+>  There was some indication it might be a use
+> after free but I'm not convinced.
 > 
-> > diff --git a/security/security.c b/security/security.c
-> > index d5ff7ff45b77..b76fb27a1dc6 100644
-> > --- a/security/security.c
-> > +++ b/security/security.c
-> > @@ -4396,6 +4396,13 @@ void security_sk_clone(const struct sock *sk, struct sock *newsk)
-> >  }
-> >  EXPORT_SYMBOL(security_sk_clone);
-> >
-> > +/**
-> > + * security_sk_classify_flow() - Set a flow's secid based on socket
-> > + * @sk: original socket
-> > + * @flic: target flow
-> > + *
-> > + * Set the target flow's secid to socket's secid.
-> > + */
-> >  void security_sk_classify_flow(struct sock *sk, struct flowi_common *flic)
-> >  {
-> >         call_void_hook(sk_getsecid, sk, &flic->flowic_secid);
-> > --
-> > 2.34.1
+> I have a reliable way to reproduce this if you have a pine64plus, it
+> also shows up a lot on the Libretech Tritium but not quite so reliably
+> as pine64plus since Hugh's changes.  Equally pine64plus was rock solid
+> until those so there's some timing/environment thing going on which
+> makes the issue manifest obviously, I expect you should be able to
+> trigger the issue by unregistering a thermal driver but the effects
+> might not be visible.
 > 
-> -- 
-> paul-moore.com
+> There is a change on the list to make the Allwinner SoCs not trigger the
+> issue during boot (their thermal driver refuses to register if any one
+> zone fails but most of their SoCs have multiple thermal zones with only
+> one fully described) but it needs fixing either way.
