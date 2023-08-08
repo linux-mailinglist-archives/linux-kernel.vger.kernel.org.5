@@ -2,131 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F185774B56
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABEF774D3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234937AbjHHUpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
+        id S231823AbjHHVnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234682AbjHHUoz (ORCPT
+        with ESMTP id S230369AbjHHVnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:44:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B0936872;
-        Tue,  8 Aug 2023 09:36:58 -0700 (PDT)
+        Tue, 8 Aug 2023 17:43:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F3C4AA84;
+        Tue,  8 Aug 2023 09:50:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9731C624EB;
-        Tue,  8 Aug 2023 11:47:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A44FCC433C7;
-        Tue,  8 Aug 2023 11:47:08 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CB256251D;
+        Tue,  8 Aug 2023 12:05:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B432C433C8;
+        Tue,  8 Aug 2023 12:05:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691495229;
-        bh=uVffECseHnMN3v5iLYcqI1db1hTkaBuKZvryPwhJRns=;
+        s=k20201202; t=1691496306;
+        bh=FqQvQvWBB7n2O9/25AxZN8jzB3TXyz8cjRE78d7I2dU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Znte4XL62lM+ZoiSFMMi+ZXkDB/EClSpHnqye3sCmKTMqec/e7YyJNR5+nZQoYA4l
-         scVziRZl7NQ4rsxCHgCm8Fjdc+tS10aFWvW+7wfBkws5VCdIMltVR8YdgAhNn6xXxg
-         W/WOpbeeXFXcHul+rCsI5IpteRHcJ7sHauxBB6tIkyVIIydP8dY1CISRrxBLQAcu3I
-         xJiOxeC6+pY40RCYUQF48rEFLIZZSKVgqMOzjKbXyW1bbsByzdP/LRkdU5hJJOBubd
-         wjTswi09bGo/2KsX3da1teP7sbgafryxurl2jfa+0I4Na6ni7Sed3xkrEMm8RoDlJE
-         bbaakn0Dobnvg==
-Date:   Tue, 8 Aug 2023 13:47:06 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Liao Chang <liaochang1@huawei.com>, florian.fainelli@broadcom.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, yangyicong@hisilicon.com,
-        aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        kblaiech@nvidia.com, asmaa@nvidia.com, loic.poulain@linaro.org,
-        rfoss@kernel.org, ardb@kernel.org, gcherian@marvell.com,
-        linux-i2c@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 2/9] i2c: mlxbf: Use dev_err_probe in probe function
-Message-ID: <20230808114706.g27gy3rajqvjykce@intel.intel>
-References: <20230808012954.1643834-1-liaochang1@huawei.com>
- <20230808012954.1643834-3-liaochang1@huawei.com>
- <a5b2f1a2-d509-0949-fc1d-929476c2618b@linaro.org>
- <20230808112907.4rnvmyha4v6cg5ds@intel.intel>
- <29e20953-5660-079e-2136-0962eec9cab5@linaro.org>
+        b=i4KGOdDYJ/VOTogfgIXofFaCLylKhuyVkYwcXoxkk2rR9JIdZ7D7tl7BUMeiKYBhc
+         ITk/FVbygu4H6ZQ+MU5B+uLm2reU/yfCq66kRkiELTEIerynt9hgoC6rTH9++Fm2vZ
+         /zUU7lL7fmaGcKWbiXKPBcrSgFaCMcbDQRChHaRLSL2hshZHoObydhOiFcvA/vA8Tc
+         o+RSgOoi9HPKXpIcmEQ7NsLFBGCze9t/vRP/DaUQ+v5uebcIa5aMiEz8JjSpSc56Um
+         ahJ2sNrNjBvbJ9ip05wcAdo6Bk4ifrqoIoZVj4ApHPDght/z/0i4q7JUhM8DKYhX/9
+         2q4bFx8/UV27A==
+Date:   Tue, 8 Aug 2023 13:05:02 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Yinbo Zhu <zhuyinbo@loongson.cn>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
+        loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH v3 1/2] gpio: dt-bindings: add parsing of loongson gpio
+ offset
+Message-ID: <20230808-amount-urban-9a6eb09852ca@spud>
+References: <20230807074043.31288-1-zhuyinbo@loongson.cn>
+ <20230807074043.31288-2-zhuyinbo@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="VGo5cwouHM7ppLyX"
 Content-Disposition: inline
-In-Reply-To: <29e20953-5660-079e-2136-0962eec9cab5@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230807074043.31288-2-zhuyinbo@loongson.cn>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
 
-On Tue, Aug 08, 2023 at 01:31:31PM +0200, Krzysztof Kozlowski wrote:
-> On 08/08/2023 13:29, Andi Shyti wrote:
-> > Hi Krzysztof,
-> > 
-> > On Tue, Aug 08, 2023 at 10:36:40AM +0200, Krzysztof Kozlowski wrote:
-> >> On 08/08/2023 03:29, Liao Chang wrote:
-> >>> Use the dev_err_probe function instead of dev_err in the probe function
-> >>> so that the printed messge includes the return value and also handles
-> >>> -EPROBE_DEFER nicely.
-> >>>
-> >>> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-> >>> Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> >>
-> >> ...
-> >>
-> >>> @@ -2413,10 +2399,8 @@ static int mlxbf_i2c_probe(struct platform_device *pdev)
-> >>>  	ret = devm_request_irq(dev, irq, mlxbf_i2c_irq,
-> >>>  			       IRQF_SHARED | IRQF_PROBE_SHARED,
-> >>>  			       dev_name(dev), priv);
-> >>> -	if (ret < 0) {
-> >>> -		dev_err(dev, "Cannot get irq %d\n", irq);
-> >>> -		return ret;
-> >>> -	}
-> >>> +	if (ret < 0)
-> >>> +		return dev_err_probe(dev, ret, "Cannot get irq %d\n", irq);
-> >>
-> >> I don't think this is needed:
-> >> https://lore.kernel.org/all/20230721094641.77189-1-frank.li@vivo.com/
-> > 
-> > Hmm, that's a bit borderline, I'd say. The change to
-> 
-> What's borderline exactly? devm_request_threaded_irq_probe() is coming,
-> right? If it is accepted this hunk is useless and soon should be
-> replaced with proper one.
+--VGo5cwouHM7ppLyX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Such change is out of the scope of this series, there are two
-options that I'd prefer (in the listed order):
+Hey,
 
- 1. accept the patch as it is, this patch is not sent today the
-    first time and at the current state it's correct.
- 2. not accept a change on this line
+On Mon, Aug 07, 2023 at 03:40:42PM +0800, Yinbo Zhu wrote:
+> Loongson GPIO controllers come in multiple variants that are compatible
+> except for certain register offset values. Add support in yaml file for
+> device properties allowing to specify them in DT.
+>=20
+> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+> ---
+>  .../bindings/gpio/loongson,ls-gpio.yaml       | 40 ++++++++++++++++++-
+>  1 file changed, 39 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml=
+ b/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
+> index fb86e8ce6349..fc51cf40fccd 100644
+> --- a/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
+> @@ -14,6 +14,7 @@ properties:
+>      enum:
+>        - loongson,ls2k-gpio
+>        - loongson,ls7a-gpio
+> +      - loongson,ls2k1000-gpio
 
-Replacing devm_request_irq belongs to another series and,
-besides, I don't want to ask Liao to hold on this series for such
-trivialities.
+If you're adding new compatibles that depend on the new offset
+properties to function, they could be set up with the existing
+"ls2k-gpio" as a fallback, so that further driver changes are not
+required when you add ones for the 2k500 etc.
 
-Thank you,
-Andi
+> =20
+>    reg:
+>      maxItems: 1
+> @@ -29,6 +30,33 @@ properties:
+> =20
+>    gpio-ranges: true
+> =20
+> +  loongson,gpio-conf-offset:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate this GPIO configuration register offset addre=
+ss.
+> +
+> +  loongson,gpio-out-offset:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate this GPIO output register offset address.
+> +
+> +  loongson,gpio-in-offset:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate this GPIO input register offset address.
+> +
+> +  loongson,gpio-ctrl-mode:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate this GPIO control mode, where '0' represents
+> +      bit control mode and '1' represents byte control mode.
 
-> Instead of making many trivial changes doing the same, all these series
-> should be aligned.
-> 
-> > devm_request_irq/devm_request_threaded_irq_probe seems like
-> > something for another series. But for now, I think I'll accept
-> > this as it is since it fits within the scope of this current
-> > series.
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+How is one supposed to know which of these modes to use?
+
+> +  loongson,gpio-inten-offset:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate this GPIO interrupt enable register offset
+> +      address.
+> +
+
+tbh, I want to leave the final say on this stuff to Krzysztof or Rob.
+I'm not really sure what the best way to do to support your GPIO
+controllers is & I don't understand your hardware sufficiently to come
+up with an approach that I would use had I been in your shoes.
+
+Thanks,
+Conor.
+
+>    interrupts:
+>      minItems: 1
+>      maxItems: 64
+> @@ -39,6 +67,11 @@ required:
+>    - ngpios
+>    - "#gpio-cells"
+>    - gpio-controller
+> +  - loongson,gpio-conf-offset
+> +  - loongson,gpio-in-offset
+> +  - loongson,gpio-out-offset
+> +  - loongson,gpio-ctrl-mode
+> +  - loongson,gpio-inten-offset
+>    - gpio-ranges
+>    - interrupts
+> =20
+> @@ -49,11 +82,16 @@ examples:
+>      #include <dt-bindings/interrupt-controller/irq.h>
+> =20
+>      gpio0: gpio@1fe00500 {
+> -      compatible =3D "loongson,ls2k-gpio";
+> +      compatible =3D "loongson,ls2k1000-gpio";
+>        reg =3D <0x1fe00500 0x38>;
+>        ngpios =3D <64>;
+>        #gpio-cells =3D <2>;
+>        gpio-controller;
+> +      loongson,gpio-conf-offset =3D <0>;
+> +      loongson,gpio-in-offset =3D <0x20>;
+> +      loongson,gpio-out-offset =3D <0x10>;
+> +      loongson,gpio-ctrl-mode =3D <0>;
+> +      loongson,gpio-inten-offset =3D <0x30>;
+>        gpio-ranges =3D <&pctrl 0 0 15>,
+>                      <&pctrl 16 16 15>,
+>                      <&pctrl 32 32 10>,
+> --=20
+> 2.20.1
+>=20
+
+--VGo5cwouHM7ppLyX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNIvbQAKCRB4tDGHoIJi
+0qzVAQDTrEYYtXJIrVX+bXzBCAE/J6+5fcyDn7rlFxViMi74hQD9FU+SY3Q39ORK
+uac/E7e5SnDO2YKQuf8wwOa0ZLiucwY=
+=A9r9
+-----END PGP SIGNATURE-----
+
+--VGo5cwouHM7ppLyX--
