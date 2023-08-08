@@ -2,122 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A7677448F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5897774496
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235739AbjHHSWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:22:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
+        id S235726AbjHHSX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233894AbjHHSWb (ORCPT
+        with ESMTP id S235729AbjHHSXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:22:31 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181DB7ED4
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:33:13 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 378HSE4S012620;
-        Tue, 8 Aug 2023 17:33:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=ce6KrtxW1N1M1KpdmyHfcpXsMxruBSPZBYwCMFJvTy0=;
- b=myf/rhRl+04/jXK3GAYIxFnSxfWU0sUyxnygeTCfUrXoJzV70jaM8eZfFnUeMMP+cWwW
- mPYLAhCFmRryJEemxbomsGLEo3Up6+eM9cFPlNY81KHE05zdsRX0OMoYbNLg/lVMyvAZ
- QMP+Jp4CKqzycOnhwn8zc7o0Ym1VxiAf6vuJPlxETiLwg9IZX7DNuGHoJxZzhumQrNO6
- IvGYdtHNySiy2v7XjWG3bCcnZtD9GF75ldat4paQmyhjYkgejGqx18e62lSK22ABLXY1
- FbhXmrccponDGJWtaZpH8eG6qdPECBtHXWeqIgNx9VJRvFEMmgwXIdZP6+bzFlcT70R+ vA== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sbt4t03j9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Aug 2023 17:33:10 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 378HEefF030353;
-        Tue, 8 Aug 2023 17:33:09 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sa1rn8qfs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Aug 2023 17:33:09 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 378HX72n21430984
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Aug 2023 17:33:07 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6AE9120043;
-        Tue,  8 Aug 2023 17:33:07 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4375F20040;
-        Tue,  8 Aug 2023 17:33:07 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue,  8 Aug 2023 17:33:07 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing/synthetic: use union instead of casts
-References: <20230808142148.2652883-1-svens@linux.ibm.com>
-        <20230808132726.08cabfbc@gandalf.local.home>
-Date:   Tue, 08 Aug 2023 19:33:06 +0200
-In-Reply-To: <20230808132726.08cabfbc@gandalf.local.home> (Steven Rostedt's
-        message of "Tue, 8 Aug 2023 13:27:26 -0400")
-Message-ID: <yt9dv8dpphgt.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ZZOva1gYbPQFMS-khdBW-CrOGnVEOmZ_
-X-Proofpoint-GUID: ZZOva1gYbPQFMS-khdBW-CrOGnVEOmZ_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-08_15,2023-08-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- spamscore=0 phishscore=0 mlxscore=0 adultscore=0 suspectscore=0
- clxscore=1015 malwarescore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=899 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308080156
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 14:23:38 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929B23C33;
+        Tue,  8 Aug 2023 10:35:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=XkZlvp32aRkJTNbGOKHPFPOVDj8xTKl+lMyseu9ZRpY=; b=hHzTyYqt9hPsBJ21nGtMp8MPJB
+        ycW/EtEnHqTW3Tr9GQH8pLqHCWaIpL9gfw1pFjdbzBJlreCQuHKxCtMTEtf5og5sanwk4odTkt1ni
+        74TAdCwbUC2EsUrbqGQIMlYHMlrQK3FNUNdalZj0rnfqqeiS95IshVMO/RHEL6b4YtMQ=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:37752 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qTQbZ-0001On-JD; Tue, 08 Aug 2023 13:34:50 -0400
+Date:   Tue, 8 Aug 2023 13:34:48 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Wenhua Lin <Wenhua.Lin@unisoc.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        wenhua lin <wenhua.lin1994@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Message-Id: <20230808133448.96e39db8e86a67ad7e2e5a43@hugovil.com>
+In-Reply-To: <20230808033106.2174-1-Wenhua.Lin@unisoc.com>
+References: <20230808033106.2174-1-Wenhua.Lin@unisoc.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 1/3] gpio: sprd: Modify the calculation method of eic
+ number
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steven Rostedt <rostedt@goodmis.org> writes:
+On Tue, 8 Aug 2023 11:31:06 +0800
+Wenhua Lin <Wenhua.Lin@unisoc.com> wrote:
 
-> The "dynamic" I was using wasn't about the fields were dynamic (union), but
-> because the field the offset/len combo represents is of dynamic size. It's
-> used all over the trace_events code.
->
-> I would have in include/linux/trace_events.h (right above struct trace_entry):
->
-> /* Used to find the offset and length of dynamic fields in trace events */
-> struct trace_dynamic_info {
-> #ifdef CONFIG_CPU_BIG_ENDIAN
-> 	u16 offset;
-> 	u16 len;
-> #else
-> 	u16 len;
-> 	u16 offset;
-> #endif
-> };
->
-> And then it kernel/trace/trace.h:
->
-> union trace_synthetic_field {
-> 	u8				as_u8;
-> 	u16				as_u16;
-> 	u32				as_u32;
-> 	u64				as_u64;
-> 	struct trace_dynamic_info	as_dynamic;
-> };
+> Automatic calculation through matching nodes,
+> subsequent projects can avoid modifying driver files.
+> 
+> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
+> ---
+>  drivers/gpio/gpio-eic-sprd.c | 49 +++++++++++++++++++-----------------
+>  1 file changed, 26 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
+> index 84352a6f4973..0d85d9e80848 100644
+> --- a/drivers/gpio/gpio-eic-sprd.c
+> +++ b/drivers/gpio/gpio-eic-sprd.c
+> @@ -50,10 +50,10 @@
+>  #define SPRD_EIC_SYNC_DATA		0x1c
+>  
+>  /*
+> - * The digital-chip EIC controller can support maximum 3 banks, and each bank
+> + * The digital-chip EIC controller can support maximum 8 banks, and each bank
+>   * contains 8 EICs.
+>   */
+> -#define SPRD_EIC_MAX_BANK		3
+> +#define SPRD_EIC_MAX_BANK		8
 
-Ok.
+Hi,
+it seems as tough the commit title doesn't reflect the fact that you
+not only modify the calculation method, but also the maximum number of
+banks?
 
-> I could work on the part of the trace_dynamic_info if you want.
 
-Whatever you prefer. Should i update my patch and send it again, or do
-you want to adjust it?
-
-Thanks
-Sven
+>  #define SPRD_EIC_PER_BANK_NR		8
+>  #define SPRD_EIC_DATA_MASK		GENMASK(7, 0)
+>  #define SPRD_EIC_BIT(x)			((x) & (SPRD_EIC_PER_BANK_NR - 1))
+> @@ -99,33 +99,32 @@ struct sprd_eic {
+>  
+>  struct sprd_eic_variant_data {
+>  	enum sprd_eic_type type;
+> -	u32 num_eics;
+>  };
+>  
+> +#define SPRD_EIC_VAR_DATA(soc_name)				\
+> +static const struct sprd_eic_variant_data soc_name##_eic_dbnc_data = {	\
+> +	.type = SPRD_EIC_DEBOUNCE,					\
+> +};									\
+> +									\
+> +static const struct sprd_eic_variant_data soc_name##_eic_latch_data = {	\
+> +	.type = SPRD_EIC_LATCH,						\
+> +};									\
+> +									\
+> +static const struct sprd_eic_variant_data soc_name##_eic_async_data = {	\
+> +	.type = SPRD_EIC_ASYNC,						\
+> +};									\
+> +									\
+> +static const struct sprd_eic_variant_data soc_name##_eic_sync_data = {	\
+> +	.type = SPRD_EIC_SYNC,						\
+> +}
+> +
+> +SPRD_EIC_VAR_DATA(sc9860);
+> +
+>  static const char *sprd_eic_label_name[SPRD_EIC_MAX] = {
+>  	"eic-debounce", "eic-latch", "eic-async",
+>  	"eic-sync",
+>  };
+>  
+> -static const struct sprd_eic_variant_data sc9860_eic_dbnc_data = {
+> -	.type = SPRD_EIC_DEBOUNCE,
+> -	.num_eics = 8,
+> -};
+> -
+> -static const struct sprd_eic_variant_data sc9860_eic_latch_data = {
+> -	.type = SPRD_EIC_LATCH,
+> -	.num_eics = 8,
+> -};
+> -
+> -static const struct sprd_eic_variant_data sc9860_eic_async_data = {
+> -	.type = SPRD_EIC_ASYNC,
+> -	.num_eics = 8,
+> -};
+> -
+> -static const struct sprd_eic_variant_data sc9860_eic_sync_data = {
+> -	.type = SPRD_EIC_SYNC,
+> -	.num_eics = 8,
+> -};
+>  
+>  static inline void __iomem *sprd_eic_offset_base(struct sprd_eic *sprd_eic,
+>  						 unsigned int bank)
+> @@ -583,6 +582,7 @@ static int sprd_eic_probe(struct platform_device *pdev)
+>  	struct sprd_eic *sprd_eic;
+>  	struct resource *res;
+>  	int ret, i;
+> +	u16 num_banks = 0;
+>  
+>  	pdata = of_device_get_match_data(&pdev->dev);
+>  	if (!pdata) {
+> @@ -613,12 +613,13 @@ static int sprd_eic_probe(struct platform_device *pdev)
+>  			break;
+>  
+>  		sprd_eic->base[i] = devm_ioremap_resource(&pdev->dev, res);
+> +		num_banks++;
+>  		if (IS_ERR(sprd_eic->base[i]))
+>  			return PTR_ERR(sprd_eic->base[i]);
+>  	}
+>  
+>  	sprd_eic->chip.label = sprd_eic_label_name[sprd_eic->type];
+> -	sprd_eic->chip.ngpio = pdata->num_eics;
+> +	sprd_eic->chip.ngpio = num_banks * SPRD_EIC_PER_BANK_NR;
+>  	sprd_eic->chip.base = -1;
+>  	sprd_eic->chip.parent = &pdev->dev;
+>  	sprd_eic->chip.direction_input = sprd_eic_direction_input;
+> @@ -630,10 +631,12 @@ static int sprd_eic_probe(struct platform_device *pdev)
+>  		sprd_eic->chip.set = sprd_eic_set;
+>  		fallthrough;
+>  	case SPRD_EIC_ASYNC:
+> +		fallthrough;
+>  	case SPRD_EIC_SYNC:
+>  		sprd_eic->chip.get = sprd_eic_get;
+>  		break;
+>  	case SPRD_EIC_LATCH:
+> +		fallthrough;
+>  	default:
+>  		break;
+>  	}
+> -- 
+> 2.17.1
+> 
