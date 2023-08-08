@@ -2,60 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA55773E6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C17773E61
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbjHHQ3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35984 "EHLO
+        id S232867AbjHHQ3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232530AbjHHQ2b (ORCPT
+        with ESMTP id S232747AbjHHQ2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:28:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D0311F66
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:51:02 -0700 (PDT)
+        Tue, 8 Aug 2023 12:28:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90AEA1252B;
+        Tue,  8 Aug 2023 08:51:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 171ED62513
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 13:22:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A2F9C433C7;
-        Tue,  8 Aug 2023 13:22:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5308D6148B;
+        Tue,  8 Aug 2023 13:23:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C1C5C433C8;
+        Tue,  8 Aug 2023 13:23:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691500923;
-        bh=NF5G/R0NqeQHYbKyCLsFwN904Kw6X0MLSj8fCMzbh/4=;
+        s=k20201202; t=1691501000;
+        bh=Ej5BSAcAFQoRKPEbSvr0EDDMbbunYGKnJRjORk2jT44=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ePBIfcRi49VfeipofeouYVyEl0jnR3i6+3DlVYQJBGrzqdfkftJoXoUQEYx60e+KC
-         xtvQE3P8fS8ZDhvRL3+IIlA56I4P2pKWBKY209TFAUFwLKFsgjU5edqPOg4tI92/hj
-         tojQ5/H3sKxUYEbkxiVzCchvcaDgBInIozEC1FWVajBOQwQXstV99UYKbQcZDoYwdo
-         HstWS30mqU60qO8QhDxrrMC6CI72+99JOC/YPnstBNw3oX+XcG+X+HHovX8Fupyx2G
-         VsgaNYbR+3OeRCP010Oxn1wdDXrHv1slKnMXXQLOUL2P9DCf7GCIzPLFm2sGVL4ssw
-         r9SqbgCDGIdPA==
-Date:   Tue, 8 Aug 2023 14:21:57 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
-        Sami Mujawar <sami.mujawar@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 1/4] arm_pmu: acpi: Refactor
- arm_spe_acpi_register_device()
-Message-ID: <20230808132157.GB2369@willie-the-truck>
-References: <20230803055652.1322801-1-anshuman.khandual@arm.com>
- <20230803055652.1322801-2-anshuman.khandual@arm.com>
- <89058c7c-1fed-60ea-7233-04187772a931@arm.com>
- <20230804163921.GE30679@willie-the-truck>
- <9b630f76-2f9e-fc42-012e-403f4b8c1dee@arm.com>
+        b=R/gcp1zkiO6/9zQgU4exHjrYiN/xwMjr15N8BGZNjHmqU0y8lyh09FNNyLLQUReAz
+         laXy0oBtOFI++WgrR00YOmYy674YKdd4NXIURtcrvwc+C+99DTJakcysGChJpev5Ts
+         FEEaBZD1fGL9RidM/eAE4So6BtKx5tAtx7fu9hJRvVXCNGS++8x4WQHsCIiiNDvtvf
+         YJ6QujQFKhLxa0Caa8ZZU1gj8gWMpn8MuhP8ePwDaNoZHxkoi30/gvJqR7vsSHOh3t
+         8hxJSiq5SEdlnsgrHDeC+Hw08BhYPuR2F/6cC7+PiZ94qPxE1K3007dbSxDdNpJ9wk
+         fCTnxIJwpfS/w==
+Date:   Tue, 8 Aug 2023 15:23:17 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Parker Newman <pnewman@connecttech.com>
+Cc:     Akhil R <akhilrajeev@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] i2c: tegra: Fix i2c-tegra DMA config option processing
+Message-ID: <20230808132317.e6wxml5mo4hz7fjo@intel.intel>
+References: <fcfcf9b3-c8c4-9b34-2ff8-cd60a3d490bd@connecttech.com>
+ <20230804215631.wc22pkyetsyyt5ye@intel.intel>
+ <DS7PR12MB63358D8D877BBC81BF94C53AC00FA@DS7PR12MB6335.namprd12.prod.outlook.com>
+ <eb8ceb2b-3a23-8cef-91b5-ef416fbc3594@connecttech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9b630f76-2f9e-fc42-012e-403f4b8c1dee@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <eb8ceb2b-3a23-8cef-91b5-ef416fbc3594@connecttech.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -66,54 +64,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 11:03:40AM +0530, Anshuman Khandual wrote:
-> On 8/4/23 22:09, Will Deacon wrote:
-> > On Thu, Aug 03, 2023 at 11:43:27AM +0530, Anshuman Khandual wrote:
-> >> On 8/3/23 11:26, Anshuman Khandual wrote:
-> >>> +	/*
-> >>> +	 * Sanity check all the GICC tables for the same interrupt
-> >>> +	 * number. For now, only support homogeneous ACPI machines.
-> >>> +	 */
-> >>> +	for_each_possible_cpu(cpu) {
-> >>> +		struct acpi_madt_generic_interrupt *gicc;
-> >>> +
-> >>> +		gicc = acpi_cpu_get_madt_gicc(cpu);
-> >>> +		if (gicc->header.length < len)
-> >>> +			return gsi ? -ENXIO : 0;
-> >>> +
-> >>> +		this_gsi = parse_gsi(gicc);
-> >>> +		if (!this_gsi)
-> >>> +			return gsi ? -ENXIO : 0;
+Hi Parker,
+
+On Tue, Aug 08, 2023 at 12:42:28PM +0000, Parker Newman wrote:
+> On 2023-08-06 10:21, Akhil R wrote:
 > >>
-> >> Moved parse_gsi() return code checking to its original place just to
-> >> make it similar in semantics to existing 'gicc->header.length check'.
-> >> If 'gsi' is valid i.e atleast a single cpu has been probed, return
-> >> -ENXIO indicating mismatch, otherwise just return 0.
+> >> BTW...
+> >>
+> >> On Thu, Aug 03, 2023 at 05:10:02PM +0000, Parker Newman wrote:
+> >>>
+> >>
+> >> you have a blank line here.
+> >>
+> >>> This patch fixes the Tegra DMA config option processing in the
+> >>> i2c-tegra driver.
+> >>>
+> >>> Tegra processors prior to Tegra186 used APB DMA for I2C requiring
+> >>> CONFIG_TEGRA20_APB_DMA=y while Tegra186 and later use GPC DMA
+> >>> requiring CONFIG_TEGRA186_GPC_DMA=y.
+> >>>
+> >>> The check for if the processor uses APB DMA is inverted and so the
+> >>> wrong DMA config options are checked.
+> >>>
+> >>> This means if CONFIG_TEGRA20_APB_DMA=y but
+> >> CONFIG_TEGRA186_GPC_DMA=n
+> >>> with a Tegra186 or later processor the driver will incorrectly think
+> >>> DMA is enabled and attempt to request DMA channels that will never be
+> >>> availible, leaving the driver in a perpetual EPROBE_DEFER state.
+> >>>
+> >>> Signed-off-by: Parker Newman <pnewman@connecttech.com>
+> >>
+> >> As this is a fix you also need to add
+> >>
+> >> Fixes: 48cb6356fae1 ("i2c: tegra: Add GPCDMA support")
+> >> Cc: Akhil R <akhilrajeev@nvidia.com>
+> >> Cc: <stable@vger.kernel.org> # v6.1+
+> >>
+> >> Cc'eing Akhil as well for his opinion on this.
+> > The fix looks valid to me. Must have been a typo there.
 > > 
-> > Wouldn't that still be the case without the check in this hunk? We'd run
-> > into the homogeneous check and return -ENXIO from there, no?
-> Although the return code will be the same i.e -ENXIO, but not for the same reason.
+> > Regards,
+> > Akhil
+> > 
+> Yes it appears to be a simple typo and if you have both DMA Config options 
+> set the bug would get missed. 
 > 
-> 		this_gsi = parse_gsi(gicc);
-> 		if (!this_gsi)
-> 			return gsi ? -ENXIO : 0;
-> 
-> This returns 0 when IRQ could not be parsed for the first cpu, but returns -ENXIO
-> for subsequent cpus. Although return code -ENXIO here still indicates IRQ parsing
-> to have failed.
-> 
-> 		} else if (hetid != this_hetid || gsi != this_gsi) {
-> 			pr_warn("ACPI: %s: must be homogeneous\n", pdev->name);
-> 			return -ENXIO;
-> 		} 
-> 
-> This returns -ENXIO when there is a IRQ mismatch. But if the above check is not
-> there, -ENXIO return code here could not be classified into IRQ parse problem or
-> mismatch without looking into the IRQ value.
+> I am new to the Linux mailing list, should I send a new message to 
+> stable@vger.kernel.org or CC them on this one?
 
-Sorry, but I don't understand your point here. If any of this fails, there's
-going to be some debugging needed to look at the ACPI tables; the only
-difference with my suggestion is that you'll get a message indicating that
-the devices aren't homogeneous, which I think is helpful.
+First of all... welcome to the Linux mailing list :)
 
-Will
+No need to resend, I can add it... I was hoping for an official
+ack, but as that's not coming, I will ack it
+
+Acked-by: Andi Shyti <andi.shyti@kernel.org> 
+
+Thank you Parker and wishing to see more patches from you ;)
+
+Andi
