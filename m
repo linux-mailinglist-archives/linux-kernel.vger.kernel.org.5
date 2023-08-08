@@ -2,140 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB0A773622
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 03:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34320773627
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbjHHB67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 21:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39582 "EHLO
+        id S229908AbjHHCD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 22:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjHHB66 (ORCPT
+        with ESMTP id S229587AbjHHCDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 21:58:58 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F9A10FF
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 18:58:56 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RKbtJ6BypzrRh6;
-        Tue,  8 Aug 2023 09:57:44 +0800 (CST)
-Received: from huawei.com (10.174.151.185) by canpemm500002.china.huawei.com
- (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 8 Aug
- 2023 09:58:54 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] mm: remove unneeded __meminit annotation
-Date:   Tue, 8 Aug 2023 09:58:31 +0800
-Message-ID: <20230808015831.608454-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.151.185]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 7 Aug 2023 22:03:55 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A87138;
+        Mon,  7 Aug 2023 19:03:53 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3781xsnk010541;
+        Tue, 8 Aug 2023 02:03:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=LxDossKSwlJIU0cudzztIGuVUeJBaXR3bfGTOOyB8C8=;
+ b=W3ZPs9zB+nsBQ4Ehh7FsUtnZa7q7OhCdoK7Sl1PpphZqKIblh+T2EmbxCYPwsJnnz/6O
+ ln0aaJpXq2Ofp5x0JuOeKqIctH33u21s/ostpE+quD+bSAIvldeNWUNei7eDC484bFcs
+ /kdPQQvq8i+1tf6BfmxtHJNAb8FsnIBqTg9iCRADexynY5rY1SVmbLQyBy7kqUy3kCvg
+ iyI//ldp71pkwgOMnyIMZFHnQy5TGQL5Dqf+g4MAcSnFN+8dfay/P3UuDRL4OmdolbXV
+ a1Bskx8cS5lhGm6zZxFFE+0771V78xOLUtjgCIQLRHdLbrkcvhkCmGL8fNQi0EQGArix Nw== 
+Received: from aptaippmta01.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sb7bb8g1b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Aug 2023 02:03:41 +0000
+Received: from pps.filterd (APTAIPPMTA01.qualcomm.com [127.0.0.1])
+        by APTAIPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37823clT018674;
+        Tue, 8 Aug 2023 02:03:38 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTPS id 3s9fgkmtt7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 08 Aug 2023 02:03:38 +0000
+Received: from APTAIPPMTA01.qualcomm.com (APTAIPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37823bh7018518;
+        Tue, 8 Aug 2023 02:03:37 GMT
+Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
+        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 37823bmw018516;
+        Tue, 08 Aug 2023 02:03:37 +0000
+Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
+        id E91344C6E; Tue,  8 Aug 2023 10:03:36 +0800 (CST)
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+To:     mani@kernel.org, quic_jhugo@quicinc.com
+Cc:     mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
+        quic_mrana@quicinc.com, Qiang Yu <quic_qianyu@quicinc.com>
+Subject: [PATCH] bus: mhi: host: pci_generic: Add SDX75 based modem support
+Date:   Tue,  8 Aug 2023 10:03:35 +0800
+Message-Id: <1691460215-45383-1-git-send-email-quic_qianyu@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: gb2SbNNLbgcahB7S_gX2R7j1Iwh48w7T
+X-Proofpoint-ORIG-GUID: gb2SbNNLbgcahB7S_gX2R7j1Iwh48w7T
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-07_28,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 mlxscore=0 adultscore=0 bulkscore=0 malwarescore=0
+ impostorscore=0 spamscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308080016
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kswapd_stop() and kcompactd_stop() are only called when MEMORY_HOTREMOVE
-is enabled. So wrap them under CONFIG_MEMORY_HOTREMOVE and further remove
-__meminit annotation. No functional change intended.
+Add generic info for SDX75 based modems. SDX75 takes longer than expected
+(default, 8 seconds) to set ready after reboot. Hence add optional ready
+timeout parameter to wait enough for device ready as part of power up
+sequence.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
 ---
- include/linux/compaction.h | 2 +-
- include/linux/swap.h       | 2 +-
- mm/compaction.c            | 4 +++-
- mm/vmscan.c                | 4 +++-
- 4 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/bus/mhi/host/init.c        |  1 +
+ drivers/bus/mhi/host/main.c        |  7 ++++++-
+ drivers/bus/mhi/host/pci_generic.c | 22 ++++++++++++++++++++++
+ drivers/bus/mhi/host/pm.c          |  6 +++++-
+ include/linux/mhi.h                |  4 ++++
+ 5 files changed, 38 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-index e94776496049..3dbb7eea96eb 100644
---- a/include/linux/compaction.h
-+++ b/include/linux/compaction.h
-@@ -99,7 +99,7 @@ bool compaction_zonelist_suitable(struct alloc_context *ac, int order,
- 					int alloc_flags);
+diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
+index f78aefd..65ceac1 100644
+--- a/drivers/bus/mhi/host/init.c
++++ b/drivers/bus/mhi/host/init.c
+@@ -881,6 +881,7 @@ static int parse_config(struct mhi_controller *mhi_cntrl,
+ 	if (!mhi_cntrl->timeout_ms)
+ 		mhi_cntrl->timeout_ms = MHI_TIMEOUT_MS;
  
- extern void __meminit kcompactd_run(int nid);
--extern void __meminit kcompactd_stop(int nid);
-+extern void kcompactd_stop(int nid);
- extern void wakeup_kcompactd(pg_data_t *pgdat, int order, int highest_zoneidx);
- 
- #else
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index bb5adc604144..c102587b3a86 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -437,7 +437,7 @@ static inline bool node_reclaim_enabled(void)
- void check_move_unevictable_folios(struct folio_batch *fbatch);
- 
- extern void __meminit kswapd_run(int nid);
--extern void __meminit kswapd_stop(int nid);
-+extern void kswapd_stop(int nid);
- 
- #ifdef CONFIG_SWAP
- 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index ea61922a1619..c59244d2ed5a 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -3132,11 +3132,12 @@ void __meminit kcompactd_run(int nid)
- 	}
- }
- 
-+#ifdef CONFIG_MEMORY_HOTREMOVE
- /*
-  * Called by memory hotplug when all memory in a node is offlined. Caller must
-  * be holding mem_hotplug_begin/done().
-  */
--void __meminit kcompactd_stop(int nid)
-+void kcompactd_stop(int nid)
++	mhi_cntrl->ready_timeout_ms = config->ready_timeout_ms;
+ 	mhi_cntrl->bounce_buf = config->use_bounce_buf;
+ 	mhi_cntrl->buffer_len = config->buf_len;
+ 	if (!mhi_cntrl->buffer_len)
+diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+index 74a7543..8590926 100644
+--- a/drivers/bus/mhi/host/main.c
++++ b/drivers/bus/mhi/host/main.c
+@@ -43,8 +43,13 @@ int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
+ 				    u32 mask, u32 val, u32 delayus)
  {
- 	struct task_struct *kcompactd = NODE_DATA(nid)->kcompactd;
+ 	int ret;
+-	u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
++	u32 out, retry;
++	u32 timeout_ms = mhi_cntrl->timeout_ms;
  
-@@ -3145,6 +3146,7 @@ void __meminit kcompactd_stop(int nid)
- 		NODE_DATA(nid)->kcompactd = NULL;
- 	}
- }
-+#endif
++	if (mhi_cntrl->ready_timeout_ms && mask == MHISTATUS_READY_MASK)
++		timeout_ms = mhi_cntrl->ready_timeout_ms;
++
++	retry = (timeout_ms * 1000) / delayus;
+ 	while (retry--) {
+ 		ret = mhi_read_reg_field(mhi_cntrl, base, offset, mask, &out);
+ 		if (ret)
+diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
+index fcd80bc..9c601f0 100644
+--- a/drivers/bus/mhi/host/pci_generic.c
++++ b/drivers/bus/mhi/host/pci_generic.c
+@@ -269,6 +269,16 @@ static struct mhi_event_config modem_qcom_v1_mhi_events[] = {
+ 	MHI_EVENT_CONFIG_HW_DATA(5, 2048, 101)
+ };
  
- /*
-  * It's optimal to keep kcompactd on the same CPUs as their memory, but
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 80e9a222e522..eb4db273bf7e 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -7897,11 +7897,12 @@ void __meminit kswapd_run(int nid)
- 	pgdat_kswapd_unlock(pgdat);
- }
++static const struct mhi_controller_config modem_qcom_v2_mhiv_config = {
++	.max_channels = 128,
++	.timeout_ms = 8000,
++	.ready_timeout_ms = 50000,
++	.num_channels = ARRAY_SIZE(modem_qcom_v1_mhi_channels),
++	.ch_cfg = modem_qcom_v1_mhi_channels,
++	.num_events = ARRAY_SIZE(modem_qcom_v1_mhi_events),
++	.event_cfg = modem_qcom_v1_mhi_events,
++};
++
+ static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
+ 	.max_channels = 128,
+ 	.timeout_ms = 8000,
+@@ -278,6 +288,16 @@ static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
+ 	.event_cfg = modem_qcom_v1_mhi_events,
+ };
  
-+#ifdef CONFIG_MEMORY_HOTREMOVE
- /*
-  * Called by memory hotplug when all memory in a node is offlined.  Caller must
-  * be holding mem_hotplug_begin/done().
-  */
--void __meminit kswapd_stop(int nid)
-+void kswapd_stop(int nid)
++static const struct mhi_pci_dev_info mhi_qcom_sdx75_info = {
++	.name = "qcom-sdx75m",
++	.fw = "qcom/sdx75m/xbl.elf",
++	.edl = "qcom/sdx75m/edl.mbn",
++	.config = &modem_qcom_v2_mhiv_config,
++	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
++	.dma_data_width = 32,
++	.sideband_wake = false,
++};
++
+ static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
+ 	.name = "qcom-sdx65m",
+ 	.fw = "qcom/sdx65m/xbl.elf",
+@@ -597,6 +617,8 @@ static const struct pci_device_id mhi_pci_id_table[] = {
+ 		.driver_data = (kernel_ulong_t) &mhi_telit_fn990_info },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
+ 		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
++	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0309),
++		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx75_info },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1001), /* EM120R-GL (sdx24) */
+ 		.driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1002), /* EM160R-GL (sdx24) */
+diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
+index 8a4362d..6f049e0 100644
+--- a/drivers/bus/mhi/host/pm.c
++++ b/drivers/bus/mhi/host/pm.c
+@@ -1202,14 +1202,18 @@ EXPORT_SYMBOL_GPL(mhi_power_down);
+ int mhi_sync_power_up(struct mhi_controller *mhi_cntrl)
  {
- 	pg_data_t *pgdat = NODE_DATA(nid);
- 	struct task_struct *kswapd;
-@@ -7914,6 +7915,7 @@ void __meminit kswapd_stop(int nid)
- 	}
- 	pgdat_kswapd_unlock(pgdat);
- }
-+#endif
+ 	int ret = mhi_async_power_up(mhi_cntrl);
++	u32 timeout_ms;
  
- static int __init kswapd_init(void)
- {
+ 	if (ret)
+ 		return ret;
+ 
++	/* Some devices need more time to set ready during power up */
++	timeout_ms = mhi_cntrl->ready_timeout_ms ?
++		mhi_cntrl->ready_timeout_ms : mhi_cntrl->timeout_ms;
+ 	wait_event_timeout(mhi_cntrl->state_event,
+ 			   MHI_IN_MISSION_MODE(mhi_cntrl->ee) ||
+ 			   MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
+-			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
++			   msecs_to_jiffies(timeout_ms));
+ 
+ 	ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
+ 	if (ret)
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index f6de4b6..a43e5f8 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -266,6 +266,7 @@ struct mhi_event_config {
+  * struct mhi_controller_config - Root MHI controller configuration
+  * @max_channels: Maximum number of channels supported
+  * @timeout_ms: Timeout value for operations. 0 means use default
++ * @ready_timeout_ms: Timeout value for waiting device to be ready (optional)
+  * @buf_len: Size of automatically allocated buffers. 0 means use default
+  * @num_channels: Number of channels defined in @ch_cfg
+  * @ch_cfg: Array of defined channels
+@@ -277,6 +278,7 @@ struct mhi_event_config {
+ struct mhi_controller_config {
+ 	u32 max_channels;
+ 	u32 timeout_ms;
++	u32 ready_timeout_ms;
+ 	u32 buf_len;
+ 	u32 num_channels;
+ 	const struct mhi_channel_config *ch_cfg;
+@@ -326,6 +328,7 @@ struct mhi_controller_config {
+  * @pm_mutex: Mutex for suspend/resume operation
+  * @pm_lock: Lock for protecting MHI power management state
+  * @timeout_ms: Timeout in ms for state transitions
++ * @ready_timeout_ms: Timeout in ms for waiting device to be ready (optional)
+  * @pm_state: MHI power management state
+  * @db_access: DB access states
+  * @ee: MHI device execution environment
+@@ -413,6 +416,7 @@ struct mhi_controller {
+ 	struct mutex pm_mutex;
+ 	rwlock_t pm_lock;
+ 	u32 timeout_ms;
++	u32 ready_timeout_ms;
+ 	u32 pm_state;
+ 	u32 db_access;
+ 	enum mhi_ee_type ee;
 -- 
-2.33.0
+2.7.4
 
