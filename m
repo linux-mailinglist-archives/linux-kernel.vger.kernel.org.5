@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1E3774903
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8D77743F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbjHHTqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53008 "EHLO
+        id S235433AbjHHSOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233835AbjHHTqK (ORCPT
+        with ESMTP id S234887AbjHHSNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:46:10 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D598F4A062
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:50:29 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so363a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:50:29 -0700 (PDT)
+        Tue, 8 Aug 2023 14:13:36 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DF8744A8
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:19:12 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5223910acf2so755a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:19:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691513428; x=1692118228;
+        d=google.com; s=20221208; t=1691515146; x=1692119946;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pzinFD06sv71MN9GM4RzeoEtWVC1rXxfCH6Q0NrSOUc=;
-        b=dt/NrTc/xfttG76hUhA4Z9WugXaox6Bwpf7wKbAeUus5+1leKd1miGGJn1poOZ2pka
-         1y9vwuh9lKA3vU4gWVRRpqIu9lpb5dGWZSdOS94jhzBkbrzOcwzNS1jqDlHIfnbHC4uv
-         rKOi1dlAQLV3QWX+bNJieg99OhsUrrMrP8HUZ1X1K4ZLgDvII/uzTerF+21oKQUMQ96E
-         suHHccsyuacCzOCgmrepHnmS6sO+ubJ570MBEUvrjGbqJQyMydbyAtr6SCXa3nkZH4Ro
-         3YAx/6LWe9n39ZoJvZkaaia+5Gmn9oVIsG+BKTLE8Dc+tvyVoU6myohZVF+l+4wBZcv5
-         WBrQ==
+        bh=w5tJzzmRT4rdUMQj/IcPHKZl4bEv/tjuaSpGwRsgKPk=;
+        b=ryD4F5kMCOcPdcY3gOJ06eaoqc+5ARtn7UgwyWxoiE89Bb2OvMo//rqsowOviBw2iV
+         R/JJs4PoyvTqb519HapKdLWkHu1XHVFEcLAhHjKOpuYusKx2AmtQNyYOoWsPtmFgIq1o
+         t3rfI4P8IX9DTRL957Y7V+a4f8FnN3KrqtDGTvuc+QBfoSW+Mzy4JgyJ5LxWSfjnXgmZ
+         C847Fy2ywSQ2FA2NB24LLx/sBcGNeInWgbUMo9R90ufeg1Z/0taIRcZ2Af2PgdLmIqHa
+         2Sell3+noTtH1eRM7byfI9Ow2sSshE6+zZMLQjDQCk1bvx0CfhGr93Yx7QuEg5HcqB9t
+         5Vpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691513428; x=1692118228;
+        d=1e100.net; s=20221208; t=1691515146; x=1692119946;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pzinFD06sv71MN9GM4RzeoEtWVC1rXxfCH6Q0NrSOUc=;
-        b=e1m7JSy/2zCLq67iYZ991ere7fOlds9WG14HvLsSJp3DSTS7d43ZeENwXPy3PxGsKo
-         OeuLVKCCQWtllTT0cXswj9sO3BvnQ9Q6DHHv0SaIy0QN/Lx3ckBKx/31LOcUDDNzt/VH
-         u+dFy8mEyr+4kWjEU5timVTH08oZP7f34LQJF/0Nq+NU249fZmWmwFty9HyYsYKy1PM8
-         lJBfsjp086H+qhYCCZ36u1hdKeH8QkkrEolubd4x2QyiXTy53Xouv4U6NJo468kmZ4Pf
-         41WqWGYDbwVdqT5fdei5Q08yiCN6oRKli0pVyu3CflOmiJ9+tXsvMnGhQXsDaoPzwNNd
-         mcqQ==
-X-Gm-Message-State: AOJu0YwteJ939A/Dk775VSt44lkhl97txqKi0nwwY/WHVzdGMYJd6H+F
-        XvNczXb0O+fVAkp7BCxYC7AmA4Stb+V5F+X+yGxsy2EsSNck1bDcS7U=
-X-Google-Smtp-Source: AGHT+IGkuUTVJQ/G0MgeQXfUbOK8TmkbDKDsVCMrmdluKtsbEiZZJ4lWuswPzm3mAYboVYwyJB2GlFOAJrm1Fv/LzB8=
-X-Received: by 2002:a05:600c:4e4b:b0:3fd:e15:6d5 with SMTP id
- e11-20020a05600c4e4b00b003fd0e1506d5mr309374wmq.2.1691480858460; Tue, 08 Aug
- 2023 00:47:38 -0700 (PDT)
+        bh=w5tJzzmRT4rdUMQj/IcPHKZl4bEv/tjuaSpGwRsgKPk=;
+        b=k2qrjAcRZ0Yu9oTOCJnYUVmvpk4UZgtexooIp4H1d9oTwlIPhf/+lvnVzuIMBMeCU3
+         YcHyYLwfkYKgJK2UFg0tRf7G3FUhsMea05QyY13RW+UtRuRVkZtVFQt+SQJkKU/WKIt8
+         WicutnyOuJr4lSB7JQQkftWG1F/AVRjH9z3eZpj/mZhZpmEY16v4+V9/Ax7U/n5pad1B
+         0eCyaD6rsmdOkuN1E6P3aXHPcd5yyct+gHmngYQeN9XZS+NmAHBtGypJexdz/EacXLH8
+         /yyRtVN/dVA/3XOTzimL0e6BLg/rG4W7B+8iA9ZDv0IvE2fYWrWRjeeV3IZD5Q2uf5qt
+         csQg==
+X-Gm-Message-State: AOJu0Yx7mkPJXZjSOGtmklhYI0mE4UxOZK7NOGYw88mVQa5fkmPgq+YH
+        BOibvSS2KF3r6tRqwlWcLq71NQ3MEubmySGg7ektt9//LGqT8FAeFGM=
+X-Google-Smtp-Source: AGHT+IFraQ0OcIWw4OFyPefngCmKF1+A14fe6gIk1IZceTxJUf6o9Mr0SifYlTI7pCN2/4k8cfiNcRMbcptc64cAum0=
+X-Received: by 2002:a05:600c:1f93:b0:3f7:e4d8:2569 with SMTP id
+ je19-20020a05600c1f9300b003f7e4d82569mr264291wmb.5.1691480868259; Tue, 08 Aug
+ 2023 00:47:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230807102352.4607-5-janusz.krzysztofik@linux.intel.com> <20230807102352.4607-6-janusz.krzysztofik@linux.intel.com>
-In-Reply-To: <20230807102352.4607-6-janusz.krzysztofik@linux.intel.com>
+References: <20230807102352.4607-5-janusz.krzysztofik@linux.intel.com> <20230807102352.4607-8-janusz.krzysztofik@linux.intel.com>
+In-Reply-To: <20230807102352.4607-8-janusz.krzysztofik@linux.intel.com>
 From:   David Gow <davidgow@google.com>
-Date:   Tue, 8 Aug 2023 15:47:25 +0800
-Message-ID: <CABVgOS=_rZuP5CJm2_5H27GOkvEGsJ08=qUgj6sSEQPk5ZfGkA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] kunit: Report the count of test suites in a module
+Date:   Tue, 8 Aug 2023 15:47:36 +0800
+Message-ID: <CABVgOSnjy=LCRTDHvjSUAr+SF=GKwGs7kgeYjN29xSNvG84NKg@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] kunit: Allow kunit test modules to use test filtering
 To:     Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
 Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
         linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
@@ -60,10 +60,10 @@ Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
         igt-dev@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000000b5c3706026c2980"
+        boundary="0000000000006c43d806026c8f86"
 X-Spam-Status: No, score=-16.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
         DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,277 +72,262 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000000b5c3706026c2980
+--0000000000006c43d806026c8f86
 Content-Type: text/plain; charset="UTF-8"
 
 On Mon, 7 Aug 2023 at 18:28, Janusz Krzysztofik
 <janusz.krzysztofik@linux.intel.com> wrote:
 >
-> According to KTAP specification[1], results should always start from a
-> header that provides a TAP protocol version, followed by a test plan with
-> a count of items to be executed.  That pattern should be followed at each
-> nesting level.  In the current implementation of the top-most, i.e., test
-> suite level, those rules apply only for test suites built into the kernel,
-> executed and reported on boot.  Results submitted to dmesg from kunit test
-> modules loaded later are missing those top-level headers.
+> External tools, e.g., Intel GPU tools (IGT), support execution of
+> individual selftests provided by kernel modules.  That could be also
+> applicable to kunit test modules if they provided test filtering.  But
+> test filtering is now possible only when kunit code is built into the
+> kernel.  Moreover, a filter can be specified only at boot time, then
+> reboot is required each time a different filter is needed.
 >
-> As a consequence, if a kunit test module provides more than one test suite
-> then, without the top level test plan, external tools that are parsing
-> dmesg for kunit test output are not able to tell how many test suites
-> should be expected and whether to continue parsing after complete output
-> from the first test suite is collected.
+> Build the test filtering code also when kunit is configured as a module,
+> expose test filtering functions to other kunit source files, and use them
+> in kunit module notifier callback functions.  Userspace can then reload
+> the kunit module with a value of the filter_glob parameter tuned to a
+> specific kunit test module every time it wants to limit the scope of tests
+> executed on that module load.  Make the kunit.filter* parameters visible
+> in sysfs for user convenience.
 >
-> Submit the top-level headers also from the kunit test module notifier
-> initialization callback.
->
-> v3: Fix new name of a structure moved to kunit namespace not updated in
->     executor_test functions (lkp@intel.com).
-> v2: Use kunit_exec_run_tests() (Mauro, Rae), but prevent it from
->     emitting the headers when called on load of non-test modules.
->
-> [1] https://docs.kernel.org/dev-tools/ktap.html#
+> v5: Refresh on tpp of attributes filtering fix
+> v4: Refresh on top of newly applied attributes patches and changes
+>     introdced by new versions of other patches submitted in series with
+>     this one.
+> v3: Fix CONFIG_GLOB, required by filtering functions, not selected when
+>     building as a module (lkp@intel.com).
+> v2: Fix new name of a structure moved to kunit namespace not updated
+>     across all uses (lkp@intel.com).
 >
 > Signed-off-by: Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Rae Moar <rmoar@google.com>
 > ---
 
-Thanks! This is a long overdue feature, and it seems to work well here.
+This works a treat here. It's a bit annoying to have to unload /
+reload the module to change the filter, which might be something for
+us to consider in the future (maybe via a debugfs entry?), but this is
+nevertheless an improvement.
 
 Reviewed-by: David Gow <davidgow@google.com>
 
 Cheers,
 -- David
 
-
->  include/kunit/test.h      |  8 ++++++++
->  lib/kunit/executor.c      | 42 +++++++++++++++++++++------------------
->  lib/kunit/executor_test.c | 36 ++++++++++++++++++++++-----------
->  lib/kunit/test.c          |  6 +++++-
->  4 files changed, 60 insertions(+), 32 deletions(-)
+>  include/kunit/test.h | 11 ++++++++
+>  lib/kunit/Kconfig    |  2 +-
+>  lib/kunit/executor.c | 63 ++++++++++++++++++++++++++------------------
+>  lib/kunit/test.c     | 17 ++++++++++++
+>  4 files changed, 66 insertions(+), 27 deletions(-)
 >
 > diff --git a/include/kunit/test.h b/include/kunit/test.h
-> index 011e0d6bb506c..3d002e6b252f2 100644
+> index 6a338a3267ed5..d33114097d0d0 100644
 > --- a/include/kunit/test.h
 > +++ b/include/kunit/test.h
-> @@ -256,6 +256,12 @@ struct kunit_suite {
->         int suite_init_err;
->  };
+> @@ -310,6 +310,9 @@ static inline void kunit_set_failure(struct kunit *test)
 >
-> +/* Stores an array of suites, end points one past the end */
-> +struct kunit_suite_set {
-> +       struct kunit_suite * const *start;
-> +       struct kunit_suite * const *end;
-> +};
-> +
->  /**
->   * struct kunit - represents a running instance of a test.
->   *
-> @@ -317,6 +323,8 @@ int __kunit_test_suites_init(struct kunit_suite * const * const suites, int num_
+>  bool kunit_enabled(void);
+>  const char *kunit_action(void);
+> +const char *kunit_filter_glob(void);
+> +char *kunit_filter(void);
+> +char *kunit_filter_action(void);
 >
->  void __kunit_test_suites_exit(struct kunit_suite **suites, int num_suites);
+>  void kunit_init_test(struct kunit *test, const char *name, char *log);
 >
-> +void kunit_exec_run_tests(struct kunit_suite_set *suite_set, bool builtin);
-> +
->  #if IS_BUILTIN(CONFIG_KUNIT)
->  int kunit_run_all_tests(void);
->  #else
-> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-> index dc295150c4e57..5ef90c334eb0f 100644
-> --- a/lib/kunit/executor.c
-> +++ b/lib/kunit/executor.c
-> @@ -104,13 +104,7 @@ kunit_filter_glob_tests(const struct kunit_suite *const suite, const char *test_
->  static char *kunit_shutdown;
->  core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
+> @@ -320,6 +323,14 @@ size_t kunit_suite_num_test_cases(struct kunit_suite *suite);
+>  unsigned int kunit_test_case_num(struct kunit_suite *suite,
+>                                  struct kunit_case *test_case);
 >
-> -/* Stores an array of suites, end points one past the end */
-> -struct suite_set {
-> -       struct kunit_suite * const *start;
-> -       struct kunit_suite * const *end;
-> -};
-> -
-> -static void kunit_free_suite_set(struct suite_set suite_set)
-> +static void kunit_free_suite_set(struct kunit_suite_set suite_set)
->  {
->         struct kunit_suite * const *suites;
->
-> @@ -119,16 +113,17 @@ static void kunit_free_suite_set(struct suite_set suite_set)
->         kfree(suite_set.start);
->  }
->
-> -static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
-> -                                           const char *filter_glob,
-> -                                               char *filters,
-> -                                               char *filter_action,
-> -                                           int *err)
-> +static struct kunit_suite_set
+> +struct kunit_suite_set
 > +kunit_filter_suites(const struct kunit_suite_set *suite_set,
 > +                   const char *filter_glob,
 > +                   char *filters,
 > +                   char *filter_action,
-> +                   int *err)
->  {
->         int i, j, k;
->         int filter_count = 0;
->         struct kunit_suite **copy, **copy_start, *filtered_suite, *new_filtered_suite;
-> -       struct suite_set filtered = {NULL, NULL};
-> +       struct kunit_suite_set filtered = {NULL, NULL};
->         struct kunit_glob_filter parsed_glob;
->         struct kunit_attr_filter *parsed_filters = NULL;
+> +                   int *err);
+> +void kunit_free_suite_set(struct kunit_suite_set suite_set);
+> +
+>  int __kunit_test_suites_init(struct kunit_suite * const * const suites, int num_suites);
 >
-> @@ -230,17 +225,24 @@ static void kunit_handle_shutdown(void)
+>  void __kunit_test_suites_exit(struct kunit_suite **suites, int num_suites);
+> diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
+> index 626719b95badd..68a6daec0aef1 100644
+> --- a/lib/kunit/Kconfig
+> +++ b/lib/kunit/Kconfig
+> @@ -4,7 +4,7 @@
 >
+>  menuconfig KUNIT
+>         tristate "KUnit - Enable support for unit tests"
+> -       select GLOB if KUNIT=y
+> +       select GLOB
+>         help
+>           Enables support for kernel unit tests (KUnit), a lightweight unit
+>           testing and mocking framework for the Linux kernel. These tests are
+> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> index e877c1f1e75c8..5181aa2e760b6 100644
+> --- a/lib/kunit/executor.c
+> +++ b/lib/kunit/executor.c
+> @@ -27,24 +27,37 @@ const char *kunit_action(void)
+>         return action_param;
 >  }
 >
-> -static void kunit_exec_run_tests(struct suite_set *suite_set)
-> +#endif
+> -#if IS_BUILTIN(CONFIG_KUNIT)
+> -
+>  static char *filter_glob_param;
+>  static char *filter_param;
+>  static char *filter_action_param;
+>
+> -module_param_named(filter_glob, filter_glob_param, charp, 0);
+> +module_param_named(filter_glob, filter_glob_param, charp, 0400);
+>  MODULE_PARM_DESC(filter_glob,
+>                 "Filter which KUnit test suites/tests run at boot-time, e.g. list* or list*.*del_test");
+> -module_param_named(filter, filter_param, charp, 0);
+> +module_param_named(filter, filter_param, charp, 0400);
+>  MODULE_PARM_DESC(filter,
+>                 "Filter which KUnit test suites/tests run at boot-time using attributes, e.g. speed>slow");
+> -module_param_named(filter_action, filter_action_param, charp, 0);
+> +module_param_named(filter_action, filter_action_param, charp, 0400);
+>  MODULE_PARM_DESC(filter_action,
+>                 "Changes behavior of filtered tests using attributes, valid values are:\n"
+>                 "<none>: do not run filtered tests as normal\n"
+>                 "'skip': skip all filtered tests instead so tests will appear in output\n");
+>
+> +const char *kunit_filter_glob(void)
+> +{
+> +       return filter_glob_param;
+> +}
 > +
-> +void kunit_exec_run_tests(struct kunit_suite_set *suite_set, bool builtin)
->  {
->         size_t num_suites = suite_set->end - suite_set->start;
->
-> -       pr_info("KTAP version 1\n");
-> -       pr_info("1..%zu\n", num_suites);
-> +       if (builtin || num_suites) {
-> +               pr_info("KTAP version 1\n");
-> +               pr_info("1..%zu\n", num_suites);
-> +       }
->
->         __kunit_test_suites_init(suite_set->start, num_suites);
+> +char *kunit_filter(void)
+> +{
+> +       return filter_param;
+> +}
+> +
+> +char *kunit_filter_action(void)
+> +{
+> +       return filter_action_param;
+> +}
+> +
+>  /* glob_match() needs NULL terminated strings, so we need a copy of filter_glob_param. */
+>  struct kunit_glob_filter {
+>         char *suite_glob;
+> @@ -108,10 +121,7 @@ kunit_filter_glob_tests(const struct kunit_suite *const suite, const char *test_
+>         return copy;
 >  }
 >
-> -static void kunit_exec_list_tests(struct suite_set *suite_set, bool include_attr)
-> +#if IS_BUILTIN(CONFIG_KUNIT)
-> +
-> +static void kunit_exec_list_tests(struct kunit_suite_set *suite_set,
-> +                                 bool include_attr)
+> -static char *kunit_shutdown;
+> -core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
+> -
+> -static void kunit_free_suite_set(struct kunit_suite_set suite_set)
+> +void kunit_free_suite_set(struct kunit_suite_set suite_set)
 >  {
 >         struct kunit_suite * const *suites;
->         struct kunit_case *test_case;
-> @@ -265,7 +267,9 @@ static void kunit_exec_list_tests(struct suite_set *suite_set, bool include_attr
 >
+> @@ -120,7 +130,7 @@ static void kunit_free_suite_set(struct kunit_suite_set suite_set)
+>         kfree(suite_set.start);
+>  }
+>
+> -static struct kunit_suite_set
+> +struct kunit_suite_set
+>  kunit_filter_suites(const struct kunit_suite_set *suite_set,
+>                     const char *filter_glob,
+>                     char *filters,
+> @@ -218,22 +228,6 @@ kunit_filter_suites(const struct kunit_suite_set *suite_set,
+>         return filtered;
+>  }
+>
+> -static void kunit_handle_shutdown(void)
+> -{
+> -       if (!kunit_shutdown)
+> -               return;
+> -
+> -       if (!strcmp(kunit_shutdown, "poweroff"))
+> -               kernel_power_off();
+> -       else if (!strcmp(kunit_shutdown, "halt"))
+> -               kernel_halt();
+> -       else if (!strcmp(kunit_shutdown, "reboot"))
+> -               kernel_restart(NULL);
+> -
+> -}
+> -
+> -#endif
+> -
+>  void kunit_exec_run_tests(struct kunit_suite_set *suite_set, bool builtin)
+>  {
+>         size_t num_suites = suite_set->end - suite_set->start;
+> @@ -271,6 +265,23 @@ void kunit_exec_list_tests(struct kunit_suite_set *suite_set, bool include_attr)
+>
+>  #if IS_BUILTIN(CONFIG_KUNIT)
+>
+> +static char *kunit_shutdown;
+> +core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
+> +
+> +static void kunit_handle_shutdown(void)
+> +{
+> +       if (!kunit_shutdown)
+> +               return;
+> +
+> +       if (!strcmp(kunit_shutdown, "poweroff"))
+> +               kernel_power_off();
+> +       else if (!strcmp(kunit_shutdown, "halt"))
+> +               kernel_halt();
+> +       else if (!strcmp(kunit_shutdown, "reboot"))
+> +               kernel_restart(NULL);
+> +
+> +}
+> +
 >  int kunit_run_all_tests(void)
 >  {
-> -       struct suite_set suite_set = {__kunit_suites_start, __kunit_suites_end};
-> +       struct kunit_suite_set suite_set = {
-> +               __kunit_suites_start, __kunit_suites_end,
-> +       };
->         int err = 0;
->         if (!kunit_enabled()) {
->                 pr_info("kunit: disabled\n");
-> @@ -282,7 +286,7 @@ int kunit_run_all_tests(void)
->         }
->
->         if (!action_param)
-> -               kunit_exec_run_tests(&suite_set);
-> +               kunit_exec_run_tests(&suite_set, true);
->         else if (strcmp(action_param, "list") == 0)
->                 kunit_exec_list_tests(&suite_set, false);
->         else if (strcmp(action_param, "list_attr") == 0)
-> diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
-> index 3e0a1c99cb4e8..4084071d0eb5b 100644
-> --- a/lib/kunit/executor_test.c
-> +++ b/lib/kunit/executor_test.c
-> @@ -43,8 +43,10 @@ static void parse_filter_test(struct kunit *test)
->  static void filter_suites_test(struct kunit *test)
->  {
->         struct kunit_suite *subsuite[3] = {NULL, NULL};
-> -       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-> -       struct suite_set got;
-> +       struct kunit_suite_set suite_set = {
-> +               .start = subsuite, .end = &subsuite[2],
-> +       };
-> +       struct kunit_suite_set got;
->         int err = 0;
->
->         subsuite[0] = alloc_fake_suite(test, "suite1", dummy_test_cases);
-> @@ -67,8 +69,10 @@ static void filter_suites_test(struct kunit *test)
->  static void filter_suites_test_glob_test(struct kunit *test)
->  {
->         struct kunit_suite *subsuite[3] = {NULL, NULL};
-> -       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-> -       struct suite_set got;
-> +       struct kunit_suite_set suite_set = {
-> +               .start = subsuite, .end = &subsuite[2],
-> +       };
-> +       struct kunit_suite_set got;
->         int err = 0;
->
->         subsuite[0] = alloc_fake_suite(test, "suite1", dummy_test_cases);
-> @@ -94,8 +98,10 @@ static void filter_suites_test_glob_test(struct kunit *test)
->  static void filter_suites_to_empty_test(struct kunit *test)
->  {
->         struct kunit_suite *subsuite[3] = {NULL, NULL};
-> -       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-> -       struct suite_set got;
-> +       struct kunit_suite_set suite_set = {
-> +               .start = subsuite, .end = &subsuite[2],
-> +       };
-> +       struct kunit_suite_set got;
->         int err = 0;
->
->         subsuite[0] = alloc_fake_suite(test, "suite1", dummy_test_cases);
-> @@ -144,8 +150,10 @@ static struct kunit_case dummy_attr_test_cases[] = {
->  static void filter_attr_test(struct kunit *test)
->  {
->         struct kunit_suite *subsuite[3] = {NULL, NULL};
-> -       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-> -       struct suite_set got;
-> +       struct kunit_suite_set suite_set = {
-> +               .start = subsuite, .end = &subsuite[2],
-> +       };
-> +       struct kunit_suite_set got;
->         int err = 0;
->
->         subsuite[0] = alloc_fake_suite(test, "normal_suite", dummy_attr_test_cases);
-> @@ -179,8 +187,10 @@ static void filter_attr_test(struct kunit *test)
->  static void filter_attr_empty_test(struct kunit *test)
->  {
->         struct kunit_suite *subsuite[3] = {NULL, NULL};
-> -       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-> -       struct suite_set got;
-> +       struct kunit_suite_set suite_set = {
-> +               .start = subsuite, .end = &subsuite[2],
-> +       };
-> +       struct kunit_suite_set got;
->         int err = 0;
->
->         subsuite[0] = alloc_fake_suite(test, "suite1", dummy_attr_test_cases);
-> @@ -197,8 +207,10 @@ static void filter_attr_empty_test(struct kunit *test)
->  static void filter_attr_skip_test(struct kunit *test)
->  {
->         struct kunit_suite *subsuite[2] = {NULL};
-> -       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[1]};
-> -       struct suite_set got;
-> +       struct kunit_suite_set suite_set = {
-> +               .start = subsuite, .end = &subsuite[1],
-> +       };
-> +       struct kunit_suite_set got;
->         int err = 0;
->
->         subsuite[0] = alloc_fake_suite(test, "suite", dummy_attr_test_cases);
+>         struct kunit_suite_set suite_set = {
 > diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index cb9797fa6303f..8b2808068497f 100644
+> index 5232a43737826..49698a168437a 100644
 > --- a/lib/kunit/test.c
 > +++ b/lib/kunit/test.c
-> @@ -736,7 +736,11 @@ EXPORT_SYMBOL_GPL(__kunit_test_suites_exit);
->  #ifdef CONFIG_MODULES
->  static void kunit_module_init(struct module *mod)
+> @@ -740,6 +740,17 @@ static void kunit_module_init(struct module *mod)
+>                 mod->kunit_suites, mod->kunit_suites + mod->num_kunit_suites,
+>         };
+>         const char *action = kunit_action();
+> +       int err = 0;
+> +
+> +       suite_set = kunit_filter_suites(&suite_set,
+> +                                       kunit_filter_glob() ?: "*.*",
+
+I've just learnt a new gcc extension! A bit scary, but it works on
+clang as well, so I'm fine with it.
+
+
+> +                                       kunit_filter(), kunit_filter_action(),
+> +                                       &err);
+> +       if (err)
+> +               pr_err("kunit module: error filtering suites: %d\n", err);
+> +
+> +       mod->kunit_suites = (struct kunit_suite **)suite_set.start;
+> +       mod->num_kunit_suites = suite_set.end - suite_set.start;
+>
+>         if (!action)
+>                 kunit_exec_run_tests(&suite_set, false);
+> @@ -753,11 +764,17 @@ static void kunit_module_init(struct module *mod)
+>
+>  static void kunit_module_exit(struct module *mod)
 >  {
-> -       __kunit_test_suites_init(mod->kunit_suites, mod->num_kunit_suites);
 > +       struct kunit_suite_set suite_set = {
 > +               mod->kunit_suites, mod->kunit_suites + mod->num_kunit_suites,
 > +       };
+>         const char *action = kunit_action();
+>
+>         if (!action)
+>                 __kunit_test_suites_exit(mod->kunit_suites,
+>                                          mod->num_kunit_suites);
 > +
-> +       kunit_exec_run_tests(&suite_set, false);
+> +       if (suite_set.start)
+> +               kunit_free_suite_set(suite_set);
 >  }
 >
->  static void kunit_module_exit(struct module *mod)
+>  static int kunit_module_notify(struct notifier_block *nb, unsigned long val,
 > --
 > 2.41.0
 >
 
---0000000000000b5c3706026c2980
+--0000000000006c43d806026c8f86
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -409,14 +394,14 @@ jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
 jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
 FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
 R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCDW
-39fS2BpQs3E5K678v/zRuFglL4oO6SmXBbbmJPNl9zAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA4MDgxNjUwMjhaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCC5
+OWIziW184Bl6vjbiYf7sQNq4RA2PJVRgLg8daP0XNzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA4MDgxNzE5MDZaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
 BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAlrTY4nAtEc4x9h7BsaS2
-bHMaC83AOul7DHv/3Xpp9/KZwMwjjah4yH2eFInhaKNdFdd/ea3EtyPkpTnxwL26x7yIKybqfR8y
-W/V5WTC2SKZA5jZNR6Fkwo9buvesyKNPTfZQ3ytqdQCnwFl5KWEnS8B9WCod+UyBt2L5Bs40hXqC
-a1fr/p1LbZLIn2X97yZ0+RFyw3EPYJujX0jTDt6dWadUh/7TN7/Y9LkNVd//JBLoGqUYew6RLFUs
-6g3B6F8D2NYNP7Eoh82KIqNAjI/Lo5Em2l9ZUV/zQZNdSk6tuN79mAcH+RSDq3GsI2lQrN+nslKZ
-0x/WWCHUMEH5DdhMqg==
---0000000000000b5c3706026c2980--
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAip6NzNmz8ASbzu2q3OdO
+MI5pKZiIR/bj5MKouSLsUD3imzaYM/53gi9+Bf2G9ujznRmKawjyO/AloVyBP6cdHxOKXbirgp0O
+ncJJEJT+hUzHnYX6HzUv9WKKlVxdJa/E+s8XZBMyixU1ATL9iYO1PFEaPPWtPTso/3Ciwe/sWpbO
+DM1VLsnNxvikbEdtrDUFsQQ9FcPlOjJ7usQNNpPQUJ/6vpa11aE0WgpTKXiDnsRsglHVZaZneoeK
+Z2F55L+qETNWrTqKwbPAtQxHvotvV9Fe+4ZnP/MgAzODgAZfwmeNIeCUprZTOWtWcbuTu6VjePJx
+bNIYzg09vaDLU282mA==
+--0000000000006c43d806026c8f86--
