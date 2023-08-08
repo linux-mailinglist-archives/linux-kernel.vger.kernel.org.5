@@ -2,133 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB98774349
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BFB77436E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235214AbjHHSAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33778 "EHLO
+        id S229723AbjHHSDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231340AbjHHR7m (ORCPT
+        with ESMTP id S235131AbjHHSD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:59:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53082CEDE;
-        Tue,  8 Aug 2023 09:27:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691512040; x=1723048040;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=gWwAWGglUm0bX7zbgnm6zeMnQk/P1kwlr24RlDxfY40=;
-  b=im2U57xWrm1MTPgzQZJe1GyXcXPY10iqx8PoVOYdAK8in4RWxWx2ulnP
-   hOdRZBULwZSSI1CMdyS6/sn/ET2LQmnU0pjaAChTaKAs8Em2Gy4t0oQ/+
-   wezzKH//aTVfygEVxFx2rEhMvr2yEkO2M35PmgX7Y1axwPQZFN097UsQJ
-   MJFOF9YgRwpRI7iyo/zFOHzbb3NCzQBLPjG6WjU8Ds9J2CM+UmPV6I4yN
-   9OzQSOtsLsZEOckKb4aP8nAaJg3CuopcbklUFoRO1Cz+vzhEGz2QuJg33
-   8ecdWGfPnZUC167rw4EbLYFxHYof34Ma1ySO4ijlxXQSEKrhouH4HOOhr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="457260988"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="457260988"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 09:25:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="821449262"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="821449262"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by FMSMGA003.fm.intel.com with ESMTP; 08 Aug 2023 09:24:59 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 79FAC1476; Tue,  8 Aug 2023 19:28:03 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Antoniu Miclaus <antoniu.miclaus@analog.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: [PATCH v1 6/6] iio: proximity: sx9324: Switch to device_property_match_property_string()
-Date:   Tue,  8 Aug 2023 19:28:00 +0300
-Message-Id: <20230808162800.61651-7-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20230808162800.61651-1-andriy.shevchenko@linux.intel.com>
-References: <20230808162800.61651-1-andriy.shevchenko@linux.intel.com>
+        Tue, 8 Aug 2023 14:03:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F76855913;
+        Tue,  8 Aug 2023 10:00:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F13DF6280E;
+        Tue,  8 Aug 2023 17:00:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94244C433C7;
+        Tue,  8 Aug 2023 17:00:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691514018;
+        bh=0hofmN81MoMpwp88FlVIvQqTU0H1Cfs4idCMNBbI7aA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O6lnaWYfOssnBqCAC3VTozYLRqzOLUYWgFXYhn/aphbtve+0oPl+LBiKbt3OZE9CQ
+         N5DJh3Hj5YbzunEFx8aTTDkFTpp0dqsboY5LVfkNeUO9TpOwYMD9V4nRU9BZTANi4h
+         EfxdfFjFvmYRs7vVtVP6R5uJUzYfm3EZnUWaaFtqL2XwJzOjSE4RltEJMYErf+FurQ
+         +CfSqupXOGbSS7ZR6SgGdvR5ao6zWQfBARRdxu6HyKvs+xIQRygI8JpjEi/eBJlsSR
+         AFH2mTyQ4aZe5wi57PfAqozvKhQXzsoX4xBgtG7VbXCneZz29GjcDEzBLkcp83/1i5
+         AHXli3rgpbVgA==
+Date:   Tue, 8 Aug 2023 19:00:13 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oleg@redhat.com,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 (kindof)] fs: use __fput_sync in close(2)
+Message-ID: <20230808-urgestein-kurstadt-6333ccf292eb@brauner>
+References: <20230806230627.1394689-1-mjguzik@gmail.com>
+ <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
+ <20230808-eingaben-lumpen-e3d227386e23@brauner>
+ <CAGudoHF=cEvXy3v96dN_ruXHnPv33BA6fA+dCWCm-9L3xgMPNQ@mail.gmail.com>
+ <20230808-unsensibel-scham-c61a71622ae7@brauner>
+ <CAGudoHEQ6Tq=88VKqurypjHqOzfU2eBmPts4+H8C7iNu96MRKQ@mail.gmail.com>
+ <CAGudoHGqRr_WNz86pmgK9Kmnwsox+_XXqqbp+rLW53e5t8higg@mail.gmail.com>
+ <20230808-lebst-vorgibt-75c3010b4e54@brauner>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230808-lebst-vorgibt-75c3010b4e54@brauner>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace open coded device_property_match_property_string().
+On Tue, Aug 08, 2023 at 06:30:06PM +0200, Christian Brauner wrote:
+> On Tue, Aug 08, 2023 at 05:07:22PM +0200, Mateusz Guzik wrote:
+> > I slapped the following variant just for illustration purposes.
+> > 
+> > - adds __close_fd which returns a struct file
+> > - adds __filp_close with a flag whether to fput
+> > - makes close(2) use both
+> > - transparent to everyone else
+> > 
+> > Downside is that __fput_sync still loses the assert. Instead of
+> > losing, it could perhaps be extended with a hack to check syscall
+> > number -- pass if either this is close (or binary compat close) or a
+> > kthread, BUG out otherwise. Alternatively perhaps deref could be
+> > opencoded along with a comment about real fput that this is taking
+> > place. Or maybe some other cosmetic choice.
+> > 
+> > I cannot compile-test right now, so down below is a rough copy make
+> > sure it is clear what I mean.
+> > 
+> > I feel compelled to note that simple patches get microbenchmarked all
+> > the time, with these results being the only justification provided.
+> > I'm confused why this patch is supposed to be an exception given its
+> > simplicity.
+> > 
+> > Serious justification should be expected from tough calls --
+> > complicated, invasive changes, maybe with numerous tradeoffs.
+> > 
+> > In contrast close(2) doing __fput_sync looks a clear cut thing to do,
+> > at worst one can argue which way to do it.
+> > 
+> > diff --git a/fs/file.c b/fs/file.c
+> > index 3fd003a8604f..c341b07533b0 100644
+> > --- a/fs/file.c
+> > +++ b/fs/file.c
+> > @@ -651,20 +651,30 @@ static struct file *pick_file(struct
+> > files_struct *files, unsigned fd)
+> >         return file;
+> >  }
+> > 
+> > -int close_fd(unsigned fd)
+> > +struct file *__close_fd(unsigned fd, struct file_struct *files)
+> >  {
+> > -       struct files_struct *files = current->files;
+> >         struct file *file;
+> > 
+> >         spin_lock(&files->file_lock);
+> >         file = pick_file(files, fd);
+> >         spin_unlock(&files->file_lock);
+> > +
+> > +       return file;
+> > +}
+> > +EXPORT_SYMBOL(__close_fd); /* for ksys_close() */
+> > +
+> > +int close_fd(unsigned fd)
+> > +{
+> > +       struct files_struct *files = current->files;
+> > +       struct file *file;
+> > +
+> > +       file = __close_fd(fd, files);
+> >         if (!file)
+> >                 return -EBADF;
+> > 
+> >         return filp_close(file, files);
+> >  }
+> > -EXPORT_SYMBOL(close_fd); /* for ksys_close() */
+> > +EXPORT_SYMBOL(close_fd);
+> > 
+> >  /**
+> >   * last_fd - return last valid index into fd table
+> > diff --git a/fs/file_table.c b/fs/file_table.c
+> > index fc7d677ff5ad..b7461f0b73f4 100644
+> > --- a/fs/file_table.c
+> > +++ b/fs/file_table.c
+> > @@ -463,6 +463,11 @@ void __fput_sync(struct file *file)
+> >  {
+> >         if (atomic_long_dec_and_test(&file->f_count)) {
+> >                 struct task_struct *task = current;
+> > +               /*
+> > +                * I see 2 basic options
+> > +                * 1. just remove the assert
+> > +                * 2. demand the flag *or* that the caller is close(2)
+> > +                */
+> >                 BUG_ON(!(task->flags & PF_KTHREAD));
+> >                 __fput(file);
+> >         }
+> > diff --git a/fs/open.c b/fs/open.c
+> > index e6ead0f19964..b1602307c1c3 100644
+> > --- a/fs/open.c
+> > +++ b/fs/open.c
+> > @@ -1533,7 +1533,16 @@ EXPORT_SYMBOL(filp_close);
+> >   */
+> >  SYSCALL_DEFINE1(close, unsigned int, fd)
+> >  {
+> > -       int retval = close_fd(fd);
+> > +       struct files_struct *files = current->files;
+> > +       struct file *file;
+> > +       int retval;
+> > +
+> > +       file = __close_fd(fd);
+> > +       if (!file)
+> > +               return -EBADF;
+> > +
+> > +       retval = __filp_close(file, files, false);
+> > +       __fput_sync(file);
+> > 
+> >         /* can't restart close syscall because file table entry was cleared */
+> >         if (unlikely(retval == -ERESTARTSYS ||
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index 562f2623c9c9..e64c0238a65f 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -2388,7 +2388,11 @@ static inline struct file
+> > *file_clone_open(struct file *file)
+> >  {
+> >         return dentry_open(&file->f_path, file->f_flags, file->f_cred);
+> >  }
+> > -extern int filp_close(struct file *, fl_owner_t id);
+> > +extern int __filp_close(struct file *file, fl_owner_t id, bool dofput);
+> > +static inline int filp_close(struct file *file, fl_owner_t id)
+> > +{
+> > +       return __filp_close(file, id, true);
+> > +}
+> > 
+> >  extern struct filename *getname_flags(const char __user *, int, int *);
+> >  extern struct filename *getname_uflags(const char __user *, int);
+> 
+> At least make this really dumb and obvious and keep the ugliness to
+> internal.h and open.c
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/iio/proximity/sx9324.c | 24 ++++++++++--------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/iio/proximity/sx9324.c b/drivers/iio/proximity/sx9324.c
-index 438f9c9aba6e..ac2ed2da21cc 100644
---- a/drivers/iio/proximity/sx9324.c
-+++ b/drivers/iio/proximity/sx9324.c
-@@ -888,7 +888,6 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 	char prop[] = SX9324_PROXRAW_DEF;
- 	u32 start = 0, raw = 0, pos = 0;
- 	int ret, count, ph, pin;
--	const char *res;
- 
- 	memcpy(reg_def, &sx9324_default_regs[idx], sizeof(*reg_def));
- 
-@@ -915,24 +914,21 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 		reg_def->def = raw;
- 		break;
- 	case SX9324_REG_AFE_CTRL0:
--		ret = device_property_read_string(dev,
--				"semtech,cs-idle-sleep", &res);
--		if (!ret)
--			ret = match_string(sx9324_csidle, ARRAY_SIZE(sx9324_csidle), res);
-+		ret = device_property_match_property_string(dev, "semtech,cs-idle-sleep",
-+							    sx9324_csidle,
-+							    ARRAY_SIZE(sx9324_csidle));
- 		if (ret >= 0) {
- 			reg_def->def &= ~SX9324_REG_AFE_CTRL0_CSIDLE_MASK;
- 			reg_def->def |= ret << SX9324_REG_AFE_CTRL0_CSIDLE_SHIFT;
- 		}
- 
--		ret = device_property_read_string(dev,
--				"semtech,int-comp-resistor", &res);
--		if (ret)
--			break;
--		ret = match_string(sx9324_rints, ARRAY_SIZE(sx9324_rints), res);
--		if (ret < 0)
--			break;
--		reg_def->def &= ~SX9324_REG_AFE_CTRL0_RINT_MASK;
--		reg_def->def |= ret << SX9324_REG_AFE_CTRL0_RINT_SHIFT;
-+		ret = device_property_match_property_string(dev, "semtech,int-comp-resistor",
-+							    sx9324_rints,
-+							    ARRAY_SIZE(sx9324_rints));
-+		if (ret >= 0) {
-+			reg_def->def &= ~SX9324_REG_AFE_CTRL0_RINT_MASK;
-+			reg_def->def |= ret << SX9324_REG_AFE_CTRL0_RINT_SHIFT;
-+		}
- 		break;
- 	case SX9324_REG_AFE_CTRL4:
- 	case SX9324_REG_AFE_CTRL7:
--- 
-2.40.0.1.gaa8946217a0b
-
+Sorry, I only sent a portion of the patch...
