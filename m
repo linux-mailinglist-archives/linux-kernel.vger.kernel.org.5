@@ -2,97 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 999E87744B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73287749BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235449AbjHHS1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33536 "EHLO
+        id S232509AbjHHUCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235443AbjHHS0m (ORCPT
+        with ESMTP id S233197AbjHHUCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:26:42 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFB72335B
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:41:17 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-58411e24eefso64160837b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:41:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691516477; x=1692121277;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5vSuOYJ8lgzid7qcR3Pv4QupXjq5e6/Z+W5Dx+Z51YE=;
-        b=esWesM8y33s2kyeH2UvYVGe/afZwXmOBV1q+R4RLb3ScYtHVHF7ilo653ef9JOjLO9
-         BjiMaxRAa6kEO/E7WX3e1lQj8ZTjsY8eG6bUlbZH8vipPjz9OAPHjmIDvRprvZ2V0gvK
-         WqmrgxUF4nTQERIA9kMJrNZ/lDjAtpq2b4oAQxhlT5AbANBvZpcFm80p5uVE91K5wPU3
-         kAJk5J0OtT2HPXo8KWdE3M6Obmd0PdB62SxXJFGR900fMPL1WzNkbp5ZFNbehSeqpv9l
-         FBw7DCtuSeL4ZKVtfr9QxY0fQ505E1lQZjAsBuZ0hOiESdFrZqgAz3uFfZUL6e5z2u2/
-         WbCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691516477; x=1692121277;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5vSuOYJ8lgzid7qcR3Pv4QupXjq5e6/Z+W5Dx+Z51YE=;
-        b=jLDZD7kKKjJmAL3aHasj+0UHUMRUaqXfwJ+X1rNLF8827JxLvINu0SrU5gQl0YsETD
-         Ot75r+JGmw8PjXCEJqGqpU1JgdBdtq4i/sp5a4gvEjepgHHXzL+Z/ItJsdpCaROWO1NW
-         ypkIZSNMoRuq0F7YgP5Xk+pa6/xe2z4yxe220gkkY0MaofUAgyZqGYnqs6yBp8BJChly
-         OS+qlfHHnRA9z3uKZj16jx4bzGgEtkgQ7rk0ENwfv4sFm3NYnVUkk8kRahCEpyOnnZDz
-         DvCfojg5EM5TVnqp7IRpbBonYgD9j2atnzoyqTA2G5n56P0DYhZ2ygdB6EmdOBrflfSJ
-         6hNg==
-X-Gm-Message-State: AOJu0YwMg390APV+CBMqVTPvaBsSbqbKoHoKeDJpf+kuwzvJfPNXPiti
-        Pe1pvmOhNmMgm2en0VVBk/mIXv4iWtzdSw==
-X-Google-Smtp-Source: AGHT+IFaHs7LV2J++qlIMAwQvOnlN3wBSkOzg0ctEJpNLDT1O32slLnzmFKCIBCVAJeiEoJkTtBCpg==
-X-Received: by 2002:a0d:dbd2:0:b0:583:f02e:b93e with SMTP id d201-20020a0ddbd2000000b00583f02eb93emr448950ywe.35.1691516476828;
-        Tue, 08 Aug 2023 10:41:16 -0700 (PDT)
-Received: from walt-ROG-Strix.. (99-176-3-182.lightspeed.brhmal.sbcglobal.net. [99.176.3.182])
-        by smtp.gmail.com with ESMTPSA id c190-20020a814ec7000000b005619cfb1b88sm3514501ywb.52.2023.08.08.10.41.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 10:41:16 -0700 (PDT)
-From:   Walt Holman <waltholman09@gmail.com>
-To:     tiwai@suse.de, linux-kernel@vger.kernel.org
-Cc:     Walt Holman <waltholman09@gmail.com>
-Subject: [PATCH] Add quirk for MSI Bravo B7ED digital microphone
-Date:   Tue,  8 Aug 2023 12:37:45 -0500
-Message-Id: <20230808173744.14837-1-waltholman09@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 8 Aug 2023 16:02:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C121488B03;
+        Tue,  8 Aug 2023 11:20:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691518836; x=1723054836;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cktqoN6sRZ8Mcvz8yn3Xtu3xKyhgq3NAFOvqgJPCRZg=;
+  b=Eq8VjCDqkUs+BE+BV2h8uUs/bf5gw2EKwU57k21Bjutt3HKE0ToBdXhi
+   0uBKplzWIkP4T9lB04U3PaYY6CaH8UNipTPlRoyei5zR/jUg0loTkym9s
+   zd06WTcOIBr4Wdgh/UHI1ppvVrIthUVKw6SwWncP1qoO3ifz+fTEcBPtT
+   /RCmDg+vzZFF9GuHdbJPP/viovBMpR21T27NU2unjd4eOetb4CwjkMHvU
+   abjBgtzmN5SXZaqPy2AE4usHMny71y67x0PZq4cYqkFw6nNaNHFCFKDT6
+   RTK4RrKsqoILmdVM3G1dcgK87GVmzso+kvRgr4tPeW+sfYm5mQ4kp7pA+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="373681645"
+X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
+   d="scan'208";a="373681645"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 10:38:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="708350174"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="708350174"
+Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 10:38:49 -0700
+Date:   Tue, 8 Aug 2023 10:38:48 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Claire Jensen <cjense@google.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] perf stat: Don't display zero tool counts
+Message-ID: <ZNJ9qBoBt2spEy4Y@tassilo>
+References: <20230801205452.3380578-1-irogers@google.com>
+ <ZMwUI/YtEHsO3Cc8@kernel.org>
+ <ZNEFt3w/wNCvdawF@tassilo>
+ <ZNFJatDztFNS90d3@kernel.org>
+ <ZNFMqzSAfno/+BcV@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNFMqzSAfno/+BcV@kernel.org>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 07, 2023 at 04:57:31PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Aug 07, 2023 at 04:43:38PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Mon, Aug 07, 2023 at 07:54:47AM -0700, Andi Kleen escreveu:
+> > > On Thu, Aug 03, 2023 at 05:54:59PM -0300, Arnaldo Carvalho de Melo wrote:
+> > > > Em Tue, Aug 01, 2023 at 01:54:52PM -0700, Ian Rogers escreveu:
+> > > > > Skip zero counts for tool events.
+> > > > > 
+> > > > > Reported-by: Andi Kleen <ak@linux.intel.com>
+> > > > 
+> > > > Andi,
+> > > > 
+> > > > 	Have you tested this? Can we please have your Tested-by?
+> > > 
+> > > I thought I had sent it earlier?
+> > > 
+> > > Tested-by: Andi Kleen <ak@linux.intel.com>
+> > 
+> > Yeah, you did it, sorry, somehow I didn't notice.
+> > 
+> > Applying.
+> 
+> Would be good to have the original link with your report and to figure
+> out the cset that introduced the problem, so that we could have a Fixes
+> tag to help justifying getting this into 6.5.
 
-Signed-off-by: Walt Holman <waltholman09@gmail.com>
+Just bisected it. The original patch was below. Remarkably it had a "Fixes"
+tag too)
 
----
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+My report was 
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index a2fe3bd4f9a1..1498df122f38 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -248,6 +248,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "M3402RA"),
- 		}
- 	},
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "Micro-Star International Co., Ltd."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Bravo 15 B7ED"),
-+		}
-+	},
- 	{
- 		.driver_data = &acp6x_card,
- 		.matches = {
--- 
-2.39.2
+https://lore.kernel.org/linux-perf-users/ZMlrzcVrVi1lTDmn@tassilo/
 
+commit b897613510890d6e92b6a276a20f6c3d96fe90e8
+Author: Namhyung Kim <namhyung@kernel.org>
+Date:   Tue Dec 6 09:58:04 2022 -0800
+
+    perf stat: Update event skip condition for system-wide per-thread mode and merged uncore and hybrid events
+
+    In print_counter_aggrdata(), it skips some events that has no aggregate
+    count.  It's actually for system-wide per-thread mode and merged uncore
+    and hybrid events.
+
+    Let's update the condition to check them explicitly.
+
+    Fixes: 91f85f98da7ab8c3 ("perf stat: Display event stats using aggr counts")
