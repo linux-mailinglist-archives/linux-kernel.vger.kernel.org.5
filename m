@@ -2,124 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8D6774666
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20BC17745C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbjHHSzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
+        id S233342AbjHHSqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233097AbjHHSzU (ORCPT
+        with ESMTP id S233345AbjHHSpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:55:20 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3E76D4E7
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:13:26 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 378F5h5e030864;
-        Tue, 8 Aug 2023 11:47:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        PODMain02222019; bh=DHwKlQABuWJSJlMrBP0tMZ5Qj6m10MGJY4M7p6mGmqo=; b=
-        c2D/cGWnZfcQ0Jk8sbq5M0/P0rJCE+sXAYOPOGmFcRho+lSTw1WFuLt+nV/JNjSY
-        JlaBEvrdq+3GTNQAc3SU5mUCNOleKoGqI8gvHFB90SUiCrjs3D9Y8JTqW6Cex7Xq
-        RXP1+OfBty7GPUvV4B1G9DJj9es86UMWLhvndAeTn6dWb9CzTxvxNWgcrari8HDD
-        Yngfs1BHgflsN7EAD0bhQAV4pPTRXJIKoCjrmSojfBEIVRcg+jCporpaCMwSNGQJ
-        FNmldr4+3vLZfUkORq9x59HFweD0ZEVVLI3qo5htBfYyOhqpMFsffn1AJV1Lx2UY
-        /QHj/mHz56Bf7db/5SUN2Q==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhtucq-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Aug 2023 11:47:06 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 8 Aug
- 2023 17:47:06 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Tue, 8 Aug 2023 17:47:06 +0100
-Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.64.220])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A949F15B7;
-        Tue,  8 Aug 2023 16:47:05 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 4/5] ASoC: wm_adsp: Expose the DSP power down actions as wm_adsp_power_down()
-Date:   Tue, 8 Aug 2023 17:47:01 +0100
-Message-ID: <20230808164702.21272-5-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230808164702.21272-1-rf@opensource.cirrus.com>
-References: <20230808164702.21272-1-rf@opensource.cirrus.com>
+        Tue, 8 Aug 2023 14:45:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC5C114C80;
+        Tue,  8 Aug 2023 09:47:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691513262; x=1723049262;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=ZGQhFZrF5RIdE2djNSnL4b7aQ9MR+Cp9ivABVtqJuY4=;
+  b=YSq3jPRWQzJqTajAFSNohNGdpaHmHf+fl8G90GJq4VKrEK9gMn87aP0P
+   SDJaaC6JX2YfGaTVlXKtYEHgrD1AyuIUpqN9sg5S+NzAtyUUAZktM1gRc
+   l2HIim+P2EU8x9EZguYA5HElD+zOaeQ3etv0pEIt2ysZPd5BDyylafGtX
+   iLEwYTlPWqlZkx4Berh+wO6Ow9/hRB7ZyKOZZ9KvfYkZlqAeDOsLUJjIL
+   xQGAU2V1eF+AMEm59oZgoIAvertq9s3lQoHp4kuTvqcxOXiYsnfe0roLQ
+   zmgccg/YhJHYGcBNosUaoGEDYCLDMCkgWy5V/LVrQJxdnqJ0HjsSEqOI/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="369780472"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="369780472"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 09:47:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="734628378"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="734628378"
+Received: from mtofeni-mobl.ger.corp.intel.com ([10.252.48.21])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 09:47:10 -0700
+Date:   Tue, 8 Aug 2023 19:47:08 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] PCI: Export pci_parent_bus_reset() for drivers to
+ use
+In-Reply-To: <alpine.DEB.2.21.2306200231020.14084@angie.orcam.me.uk>
+Message-ID: <6ddfb7a-2a83-cb84-ad73-9bd985652858@linux.intel.com>
+References: <alpine.DEB.2.21.2306200153110.14084@angie.orcam.me.uk> <alpine.DEB.2.21.2306200231020.14084@angie.orcam.me.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: ZAU_kgMQiXl-jgql4BPkaDIKLgpxLNZQ
-X-Proofpoint-ORIG-GUID: ZAU_kgMQiXl-jgql4BPkaDIKLgpxLNZQ
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+On Tue, 20 Jun 2023, Maciej W. Rozycki wrote:
 
-To support self-booting DSPs that operate outside of a conventional DAPM
-event life cycle expose a companion function to wm_adsp_power_up() so
-that the correct state of the DSP firmware and controls can be recorded.
+> Export pci_parent_bus_reset() so that drivers do not duplicate it.  
+> Document the interface.
+> 
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> ---
+>  drivers/pci/pci.c   |   15 ++++++++++++++-
+>  include/linux/pci.h |    1 +
+>  2 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> linux-pci-parent-bus-reset-export.diff
+> Index: linux-macro/drivers/pci/pci.c
+> ===================================================================
+> --- linux-macro.orig/drivers/pci/pci.c
+> +++ linux-macro/drivers/pci/pci.c
+> @@ -5149,7 +5149,19 @@ int pci_bridge_secondary_bus_reset(struc
+>  }
+>  EXPORT_SYMBOL_GPL(pci_bridge_secondary_bus_reset);
+>  
+> -static int pci_parent_bus_reset(struct pci_dev *dev, bool probe)
+> +/**
+> + * pci_parent_bus_reset - Reset a device via its upstream PCI bridge
+> + * @dev: Device to reset.
+> + * @probe: Only check if reset is possible if TRUE, actually reset if FALSE.
+> + *
+> + * Perform a device reset by requesting a secondary bus reset via the
+> + * device's immediate upstream PCI bridge.
 
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/wm_adsp.c | 8 +++++++-
- sound/soc/codecs/wm_adsp.h | 1 +
- 2 files changed, 8 insertions(+), 1 deletion(-)
+>  Return 0 if successful or
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 5a89abfe8784..13f500fa9a5f 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1025,6 +1025,12 @@ int wm_adsp_power_up(struct wm_adsp *dsp)
- }
- EXPORT_SYMBOL_GPL(wm_adsp_power_up);
- 
-+void wm_adsp_power_down(struct wm_adsp *dsp)
-+{
-+	cs_dsp_power_down(&dsp->cs_dsp);
-+}
-+EXPORT_SYMBOL_GPL(wm_adsp_power_down);
-+
- static void wm_adsp_boot_work(struct work_struct *work)
- {
- 	struct wm_adsp *dsp = container_of(work,
-@@ -1046,7 +1052,7 @@ int wm_adsp_early_event(struct snd_soc_dapm_widget *w,
- 		queue_work(system_unbound_wq, &dsp->boot_work);
- 		break;
- 	case SND_SOC_DAPM_PRE_PMD:
--		cs_dsp_power_down(&dsp->cs_dsp);
-+		wm_adsp_power_down(dsp);
- 		break;
- 	default:
- 		break;
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 769904d34a87..3044f964ac14 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -92,6 +92,7 @@ int wm_adsp_early_event(struct snd_soc_dapm_widget *w,
- 			struct snd_kcontrol *kcontrol, int event);
- 
- int wm_adsp_power_up(struct wm_adsp *dsp);
-+void wm_adsp_power_down(struct wm_adsp *dsp);
- 
- irqreturn_t wm_adsp2_bus_error(int irq, void *data);
- irqreturn_t wm_halo_bus_error(int irq, void *data);
+Kernel doc has Return: section for return values.
+
+> + * -ENOTTY if the reset failed or it could not have been issued in the
+> + * first place because the device is not on a secondary bus of any PCI
+> + * bridge or it wouldn't be the only device reset.  If probing, then
+> + * only verify whether it would be possible to issue a reset.
+
+I guess most of the in-depth explanation about reasons why reset 
+might not me issuable could go into the longer description block.
+
 -- 
-2.30.2
+ i.
 
+> + */
+> +int pci_parent_bus_reset(struct pci_dev *dev, bool probe)
+>  {
+>  	struct pci_dev *pdev;
+>  
+> @@ -5166,6 +5178,7 @@ static int pci_parent_bus_reset(struct p
+>  
+>  	return pci_bridge_secondary_bus_reset(dev->bus->self);
+>  }
+> +EXPORT_SYMBOL_GPL(pci_parent_bus_reset);
+>  
+>  static int pci_reset_hotplug_slot(struct hotplug_slot *hotplug, bool probe)
+>  {
+> Index: linux-macro/include/linux/pci.h
+> ===================================================================
+> --- linux-macro.orig/include/linux/pci.h
+> +++ linux-macro/include/linux/pci.h
+> @@ -1447,6 +1447,7 @@ int devm_request_pci_bus_resources(struc
+>  
+>  /* Temporary until new and working PCI SBR API in place */
+>  int pci_bridge_secondary_bus_reset(struct pci_dev *dev);
+> +int pci_parent_bus_reset(struct pci_dev *dev, bool probe);
+>  
+>  #define __pci_bus_for_each_res0(bus, res, ...)				\
+>  	for (unsigned int __b = 0;					\
+> 
