@@ -2,117 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3167747FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899DD77470D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbjHHTXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
+        id S234569AbjHHTIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236010AbjHHTWg (ORCPT
+        with ESMTP id S232367AbjHHTIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:22:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5637943CF2
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:45:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691513079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LpOwTgxUQueKTTwOJlS9a4DMbQJlgeLRkDEjrIokCAc=;
-        b=eVTfxbC36g32xFf3z0JE5AxSimNq+ut3q0sj4Ojop7ygXT6gQ3cifGcjTozEH+7343o/lx
-        8azq8J47sPuhTwERCV3mt5b6achj44QVKGQYzo63vVIiOiPg58pupq2dH8fXmBn05TyXk6
-        98ElaNHurB1CF6r91PdTNSRFyYh/UJM=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-678-x_BVl-L4N6OBZSXsqfsgqg-1; Tue, 08 Aug 2023 07:41:11 -0400
-X-MC-Unique: x_BVl-L4N6OBZSXsqfsgqg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 8 Aug 2023 15:08:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0A8D4BEB;
+        Tue,  8 Aug 2023 09:30:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CFA37381AE42;
-        Tue,  8 Aug 2023 11:41:09 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.2.16.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 462E41121314;
-        Tue,  8 Aug 2023 11:41:06 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-toolchains@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v2 1/3] compiler_types: Introduce the Clang
- __preserve_most function attribute
-References: <20230804090621.400-1-elver@google.com>
-        <87il9rgjvw.fsf@oldenburg.str.redhat.com>
-        <20230808105705.GB212435@hirez.programming.kicks-ass.net>
-Date:   Tue, 08 Aug 2023 13:41:05 +0200
-In-Reply-To: <20230808105705.GB212435@hirez.programming.kicks-ass.net> (Peter
-        Zijlstra's message of "Tue, 8 Aug 2023 12:57:05 +0200")
-Message-ID: <87pm3xhicu.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6AAF9624E6;
+        Tue,  8 Aug 2023 11:42:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F8AFC433C7;
+        Tue,  8 Aug 2023 11:42:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691494924;
+        bh=7W8arS9xc1VsyrYsfgzjRG4MftCWFePfOyZF4K36c+Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pW9seNGRY4R+UZe/yEDFe+2l2D1h1LIQb9LdZocYP0kb717N0yTUxlV35S6OgUjHp
+         8SUo26EeRVvTqvoWI2SBfckr2Ri0EcA+xycqL98KEk5aZCvtbFOXfqGxl6jvccniFN
+         8qrLIix/ofVBDvPuL+f190jlLZUUKOKPxLBUvcILbzx5+Zz3/ExRT8gsdLrhGf4ODQ
+         6LQF/BA7Re9Q8+v5jY9mpo1TNNaTTFND+P67bfIO4j/glifactZTPFQmNIEOBEBbe4
+         KfErmMg2IMP7OvtR8dSeL6QmNa5L9bhcn2r+//aC1njNAPMNeb2/8xOpE1+Vqox/En
+         wlPM9oyA/t/eQ==
+Date:   Tue, 8 Aug 2023 13:42:01 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] media: exynos4-is: fimc-is: replace duplicate pmu
+ node with phandle
+Message-ID: <20230808114201.ztr22migzzyfsfwq@intel.intel>
+References: <20230807131256.254243-1-krzysztof.kozlowski@linaro.org>
+ <20230807131256.254243-3-krzysztof.kozlowski@linaro.org>
+ <20230807231320.svssge6uymw3jiho@intel.intel>
+ <84fbcc37-d226-b637-caa1-b24ebaf03d58@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <84fbcc37-d226-b637-caa1-b24ebaf03d58@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Peter Zijlstra:
+> >> +static void __iomem *fimc_is_get_pmu_regs(struct device *dev)
+> >> +{
+> >> +	struct device_node *node;
+> >> +	void __iomem *regs;
+> >> +
+> >> +	node = of_parse_phandle(dev->of_node, "samsung,pmu-syscon", 0);
+> >> +	if (!node) {
+> >> +		dev_warn(dev, "Finding PMU node via deprecated method, update your DTB\n");
+> >> +		node = of_get_child_by_name(dev->of_node, "pmu");
+> >> +		if (!node)
+> >> +			return IOMEM_ERR_PTR(-ENODEV);
+> > 
+> > in my opinion this should be:
+> > 
+> > 		...
+> > 		if (!node)
+> > 			return IOMEM_ERR_PTR(-ENODEV);
+> > 
+> > 		dev_warn(dev, "Finding PMU node via deprecated method, update your DTB\n");
+> > 
+> > Because if you don't have both "samsung,pmu-syscon and "pmu" then
+> > the warning should not be printed and you need to return -ENODEV.
+> 
+> Why not? Warning is correct - the driver is trying to find, thus
+> continuous tense "Finding", PMU node via old method.
 
-> Now, the problem with __preserve_most is that it makes it really easy to
-> deviate from this pattern, you can trivially write a function that is
-> not a trivial wrapper and then does not show up on unwind. This might
-> indeed be a problem.
+Alright, I'll go along with what you're suggesting, but I have to
+say, I find it misleading.
 
-Backtrace generation shouldn't be impacted by a compiler implementation
-of __preserve_most__.  If unwinding implies restoring register contents,
-the question becomes whether the unwinder can be taught to do this
-natively.  For .eh_frame/PT_GNU_EH_FRAME-based unwinders and
-__preserve_most__, I think that's true because they already support
-custom ABIs (and GCC uses them for local functions).  In other cases, if
-the unwinder does not support the extra registers, then it might still
-be possible to compensate for that via code generation (e.g., setjmp
-won't be __preserve_most__, so the compiler would have to preserve
-register contents by other means, also accounting for the returns-twice
-nature, likewise for exception handling landing pads).
+From what I understand, you're requesting an update to the dtb
+because it's using deprecated methods. However, the reality might 
+be that the node is not present in any method at all.
 
-But __preserve_all__ is a completely different beast.  I *think* it is
-possible to do this with helpers (state size, state save, state restore)
-and strategically placed restores after returns-twice functions and the
-like, but people disagree.  This has come up before in the context of
-the s390x vector ABI and the desire to add new callee-saved registers.
-We just couldn't make that work at the time.  On the other hand,
-__preserve_all__ goes into the other direction (opt-in of extra saves),
-so it may be conceptually easier.
+Your statement would be accurate if you failed to find the
+previous method but then did end up finding it.
 
-Thanks,
-Florian
+Relying on the present continuous tense for clarity is a bold
+move, don't you think? :)
 
+Andi
+
+> > ... and... "*please* update your DTB", the user might get upset
+> > and out of sheer spite, decides not to do it – just because! :)
+> 
+> The message is already long enough, why making it longer? Anyone who
+> ships DTS outside of Linux kernel is doomed anyway...
+> 
+> Best regards,
+> Krzysztof
+> 
