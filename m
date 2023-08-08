@@ -2,131 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06369774C50
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5255B774C52
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235125AbjHHVEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44234 "EHLO
+        id S235897AbjHHVFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234998AbjHHVEN (ORCPT
+        with ESMTP id S234470AbjHHVEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 17:04:13 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053476A69
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:03:21 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fe655796faso4960740e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 14:03:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691528597; x=1692133397;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QHqFXZ6x0OPm4ZMw7WQeV7WZNp4cmRIh/Av5DgwSNhQ=;
-        b=GQUbyw4eRYjKwQkU5ZMU/yeNnQVDHGDQdMvp/qWJGIY57WAbwVGFi3beDujQ6DoFkD
-         deiVVsvTtEZZT6uz3lACeVQkh5886v4aLsOAyuUfgqCdxir+SLFu3rEcv/obMnTgAxV6
-         yeT6l1GhG/sudeo/uTTdKZ6jai9Xn4aKc26RgdSxgq++VhsSyRGJvplJDSb6NoUkD/GT
-         n7gasiqw7oDvjknFzGddWUp60RVM3W+FruMhz6u1/NVVghH+5FQtkH0QLVLDIku2uxVB
-         KXS6GSjqoyok0rp9k5ki1PYoDqyKfqxCOF6v9cL4guXjzVK7F5scYE3AT77rYIwvzera
-         R0dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691528597; x=1692133397;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QHqFXZ6x0OPm4ZMw7WQeV7WZNp4cmRIh/Av5DgwSNhQ=;
-        b=GbUGAMj0IU0t2Ih/SUl4Gsf9VdEOSTtKk6Dh9+Ha2kTtAZ3d8J1TFoJoGkyblpwKlH
-         6qWFmPAegUxJj2hCWYVqMkYnFT13gXYzSQw2CyfmGxNiLhOZ6EXaiqO01KAhqErUWSA2
-         57q3hDhXnI8kWObMWv5ZlkWXcjuIB7Kuxa0iNXZNbAfDe9mAwGB/XLDjR/AGnM2Ve/+A
-         scpCDj7Nyiv33DAajFPFHMaHJa3932OIQZ871LV7naqZfE5Mjbj0kxSczodK/s/vl48O
-         QaDs84C6UepicHr7xHweKr6hWvGSlxQ/lf6k92Gv0ZqChQ2tl8tdm+1+6BQ6r8WNOST6
-         c6vQ==
-X-Gm-Message-State: AOJu0YzHrToIMNDd6TYgmXpWpRwfnB7zdRUAL1I271e/HlfcHZPcW50U
-        X+8Yd7nLsh/O/PqQDIrIgjAMuQ==
-X-Google-Smtp-Source: AGHT+IFIE0Szj/KgGDm5MrS0BWlSGQSLooWZrPv7OJdSkMIOa28C2Xb44HY47TOrwSvtshviQefZoA==
-X-Received: by 2002:a2e:9d54:0:b0:2b9:dfd1:3808 with SMTP id y20-20020a2e9d54000000b002b9dfd13808mr460068ljj.25.1691528597563;
-        Tue, 08 Aug 2023 14:03:17 -0700 (PDT)
-Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id h11-20020a2eb0eb000000b002b6cc17add3sm2431483ljl.25.2023.08.08.14.03.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 14:03:17 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Tue, 08 Aug 2023 23:02:52 +0200
-Subject: [PATCH v2 14/14] drm/msm/a6xx: Poll for GBIF unhalt status in
- hw_init
+        Tue, 8 Aug 2023 17:04:45 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEEB525B
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=aKUT38crUjXmg0Sy1d6QsQX9s/3F4Tvjcy/j1c2UkrM=; b=ev12Cj6DfcUUWoSjNw/8qm2kIG
+        8gOUGDdsOZIgH13y3+SxS8el5+sRdNlLzrpKvk/wAVj/Lpy7TUPNuJM6PnALxfWyrLww9wPzjEWFb
+        /7u/P1txWtb89fY9TAMHr/855tPQv9od+8wQ2eo9OY7Czx03jL99Lz3yvKAni0ZdMOsBhmXQPzubx
+        C0tbMy+J8qJgmviIvKwiVXkek7Z+/WjcFjiQQeu5Hc3FxpTh8eJDjq/QZ9KfH24z/9WmC1CZpAaO5
+        Zsv+B97MFY2iDJZH+CYP8CZiIw+LBYMCofoKb43nzDynfwlSbwIgyfyFlHmFq1+8SUSHp8NUeLauw
+        xJoC+q6w==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qTTs0-003T7T-22;
+        Tue, 08 Aug 2023 21:04:00 +0000
+Message-ID: <7d59769d-ee06-f6e8-9570-edfa301eeef7@infradead.org>
+Date:   Tue, 8 Aug 2023 14:03:59 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] x86/linkage: Fix typo of BUILD_VDSO in asm/linkage.h
+Content-Language: en-US
+To:     Jinghao Jia <jinghao@linux.ibm.com>, linux-kernel@vger.kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com
+References: <20230808182353.76218-1-jinghao@linux.ibm.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230808182353.76218-1-jinghao@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230628-topic-a7xx_drmmsm-v2-14-1439e1b2343f@linaro.org>
-References: <20230628-topic-a7xx_drmmsm-v2-0-1439e1b2343f@linaro.org>
-In-Reply-To: <20230628-topic-a7xx_drmmsm-v2-0-1439e1b2343f@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691528566; l=1394;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=adxhdr38vQ+H8w1ud+VW4JLIkAtv3z4AL0XqkuOgPHs=;
- b=XQDGBxuHYfbbYepOx78RUkDMexkbi9oIwe5G+gOBDPTNfeODBiBmltLstJo8wG7FOZvlbmixK
- dJY8My1JyIxAjexcNUki8A3SAwf+Ej9E7lDVtfvwQXhZtaZ6C1DidhH
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some GPUs - particularly A7xx ones - are really really stubborn and
-sometimes take a longer-than-expected time to finish unhalting GBIF.
 
-Note that this is not caused by the request a few lines above.
 
-Poll for the unhalt ack to make sure we're not trying to write bits to
-an essentially dead GPU that can't receive data on its end of the bus.
-Failing to do this will result in inexplicable GMU timeouts or worse.
+On 8/8/23 11:23, Jinghao Jia wrote:
+> The BUILD_VDSO macro was incorrectly spelled as BULID_VDSO in
+> asm/linkage.h. This causes the !defined(BULID_VDSO) directive to always
+> evaluate to true.
+> 
+> Correct the spelling to BUILD_VDSO.
+> 
+> Fixes: bea75b33895f ("x86/Kconfig: Introduce function padding")
+> Signed-off-by: Jinghao Jia <jinghao@linux.ibm.com>
 
-This is a rather ugly hack which introduces a whole lot of latency.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8550-QRD
-Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org> # sm8450
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Thanks.
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 2313620084b6..11cb410e0ac7 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -1629,6 +1629,10 @@ static int hw_init(struct msm_gpu *gpu)
- 		mb();
- 	}
- 
-+	/* Some GPUs are stubborn and take their sweet time to unhalt GBIF! */
-+	if (adreno_is_a7xx(adreno_gpu) && a6xx_has_gbif(adreno_gpu))
-+		spin_until(!gpu_read(gpu, REG_A6XX_GBIF_HALT_ACK));
-+
- 	gpu_write(gpu, REG_A6XX_RBBM_SECVID_TSB_CNTL, 0);
- 
- 	if (adreno_is_a619_holi(adreno_gpu))
+> ---
+>  arch/x86/include/asm/linkage.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/linkage.h b/arch/x86/include/asm/linkage.h
+> index 0953aa32a324..97a3de7892d3 100644
+> --- a/arch/x86/include/asm/linkage.h
+> +++ b/arch/x86/include/asm/linkage.h
+> @@ -21,7 +21,7 @@
+>  #define FUNCTION_PADDING
+>  #endif
+>  
+> -#if (CONFIG_FUNCTION_ALIGNMENT > 8) && !defined(__DISABLE_EXPORTS) && !defined(BULID_VDSO)
+> +#if (CONFIG_FUNCTION_ALIGNMENT > 8) && !defined(__DISABLE_EXPORTS) && !defined(BUILD_VDSO)
+>  # define __FUNC_ALIGN		__ALIGN; FUNCTION_PADDING
+>  #else
+>  # define __FUNC_ALIGN		__ALIGN
 
 -- 
-2.41.0
-
+~Randy
