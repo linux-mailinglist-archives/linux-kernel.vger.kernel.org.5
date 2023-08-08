@@ -2,539 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C3477414A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4842774015
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234347AbjHHRRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51526 "EHLO
+        id S233871AbjHHQ7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:59:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233974AbjHHRRM (ORCPT
+        with ESMTP id S233776AbjHHQ6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:17:12 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1A971F26
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:07:00 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bc73a2b0easo13298785ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1691510818; x=1692115618;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9XlmHUeaRUsL7m/s5aynviI2pipO5mYbmIClc7cRgQ0=;
-        b=BahX5Q+gbhJfeS/GVLGEEJK2tEXrtjPjLHxhvqqABq0VnsHOEa1fguGqGkU8rlnvhh
-         Y2rdqYgtADOwlsf9Pxx/0nWsFmH/HEobrDpSv0UH71BEKUBIwZBz1FpmCM4WxTd5dv4r
-         9WIE3DEGtxbY2/BD7m/jPKhlXmcCRcLEzgt3/rpX7ec5NxZdJo2uTbM0E7ckNj50CLf/
-         5Fp5xBgUzGzFasQOTkQYzIlUFQ3oFPHxauWYD0i7IEWCG4F/yLG3kLxoPT9rmnOVsSPc
-         1U07SYJE+3q7ipr6ery4DI2hPCPKXg6fT4oKBRA/wdyCNPsPGU/i/EPM2wc/zU88HPfy
-         MJsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510818; x=1692115618;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9XlmHUeaRUsL7m/s5aynviI2pipO5mYbmIClc7cRgQ0=;
-        b=ckHnbEQEsimLOu6ySDhceutcfIWH8XfvSwAx8cDA1fYijPwDUdTrUehpppu+PGWvTL
-         bBFiBX1bGMtpGvZ1TJT7Lzw0OfXbgrLDyOu0jJU7fK6n9Y/Qh/TgFmc7NYcV7dsalneC
-         gYWXd58OWxVxgRk0f65I9mJvS50ntzKcSBek7/qis/so1TdJOBoHh+J4hsFZ86jWItGI
-         eVDzJ8UG8/Qf7W1xhqnToPjHGfSHAcDc9SYLX8bplleyjNBLdgfddti6K/sksjxlXPd6
-         XTwYpmpHskUiCx/CAPjAMhjhwQ+Ps4lB+hNGtuDUkQgjB+YWdpTetsbe+Kf7q3AL49Sr
-         Dl3A==
-X-Gm-Message-State: AOJu0YzIaPuJKWtVpuZj0qSDbm3IxbPSWtN57i0EimUY61cHvOQM046C
-        HrM578+Np7YrOxvA+gzInGxvs3i043E5p7ql2hg=
-X-Google-Smtp-Source: AGHT+IHwsRXoHKFn08OcPmdycooDY1/71tq7u8t1xFSVYxYNN+UDC9Vb8Pgycj4Y5erIS/ddW/bH7A==
-X-Received: by 2002:a54:4e06:0:b0:3a1:dd1e:a726 with SMTP id a6-20020a544e06000000b003a1dd1ea726mr11019944oiy.44.1691470342166;
-        Mon, 07 Aug 2023 21:52:22 -0700 (PDT)
-Received: from sunil-laptop ([106.51.190.143])
-        by smtp.gmail.com with ESMTPSA id e4-20020a6558c4000000b0056433b1b996sm5042200pgu.45.2023.08.07.21.52.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 21:52:21 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 10:22:10 +0530
-From:   Sunil V L <sunilvl@ventanamicro.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Anup Patel <anup@brainfault.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Haibo Xu <haibo1.xu@intel.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Atish Kumar Patra <atishp@rivosinc.com>
-Subject: Re: [RFC PATCH v1 05/21] arm64: PCI: Migrate ACPI related functions
- to pci-acpi.c
-Message-ID: <ZNHJ+lO21c+0P4WN@sunil-laptop>
-References: <20230803175916.3174453-6-sunilvl@ventanamicro.com>
- <20230807224152.GA274647@bhelgaas>
+        Tue, 8 Aug 2023 12:58:02 -0400
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on0609.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe02::609])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE75D4C2B;
+        Tue,  8 Aug 2023 08:42:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mbMxH4jVfHW26JUi/cHHV3tLN5CJCl/TTq5k0l+D5o02eFzrSqPkDebhnodhhkh3s77E39OKjjn2yktprJtDS4wZdEcxGfJlOeJorDqllF+ZNIoBSBI8PwuisIcuZ0M6DGRP5l1q46zVGOxlkDAfktf8i5vGaZ/Jn1CxBnkN687xt6zYDPC3c9WCTC8w/D4xoaJRTQv0ZRa8QrP+6dZtURO2706dAQe6yX7TIbPZIDfN6N/iGF6ctIkWWJpB7egKIkFIlIcAGkgIVfzoQholoZq5sz8W8OPhPN2ScwXkWnZzzHGzh6EeutpNoN2Lsx9lVwcdgMqCRCrNLemiswvZOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YGER//vpmB/Db5Hh+oaihr55hOfxfvaSzuO5x9zzx48=;
+ b=EW2bsVFL99VYrMy6OsDrG0HXZP7S/STkGB+rSbcT3BjgCGEREzMgNEXPopwplOT3zNu0+IkIafHVQl7EvUQw6oHZltMSqTFLVNZvPtJP4ouY0AfUItM16actxw5hV0p2c2H+Cq8O3xrwCWRyfqphGaWl9cd3SCUTsFw44zahB6YQWb6zVwIDpFpjAx3Hzb6m0ng3yM/Zmw4o1qwUBLA6b4IwSKvUU6qRcl+vmKj4CWOmLNX4Q0NnbBKQzmqfewE3LTFw4TClPteKYTxOBoM2jhRyb2plsp/wWB6lqDyAH541m4WXGGPZb96wX1TqbT8yN3Tclx8kAMcxLVeDKPtpXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YGER//vpmB/Db5Hh+oaihr55hOfxfvaSzuO5x9zzx48=;
+ b=oLPjPeN5wQZ3QKgBHTv21JzDa1CDpBuPyf/4QCTLLj5Nx2tTe2ULEjQhEDQFlI3pc8Tk6BNy2TMipleC94Xg9pl9gnJK69hNz+r8brxR7ok9IcviJIP1LlLMzfeJddEmRoRJtq69Hl1cB+SWplnvoPWbwo2Z4JdJ4Vo9XzAFpxI=
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
+ by PAXPR04MB9154.eurprd04.prod.outlook.com (2603:10a6:102:22d::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Tue, 8 Aug
+ 2023 05:02:17 +0000
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e]) by AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e%4]) with mapi id 15.20.6652.026; Tue, 8 Aug 2023
+ 05:02:17 +0000
+From:   Wei Fang <wei.fang@nxp.com>
+To:     Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+Subject: RE: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Thread-Topic: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Thread-Index: AQHZw3VFF5NSBizeREOxLxVc18wksa/XS8kAgACl6SCAAEHAAIAAOPLAgAAgSoCAAOhtQIAApJaAgAR1gPCAAExVAIAA3vKw
+Date:   Tue, 8 Aug 2023 05:02:17 +0000
+Message-ID: <AM5PR04MB313980263DAD261D114B3DA4880DA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+References: <20230731060025.3117343-1-wei.fang@nxp.com>
+ <20230802104706.5ce541e9@kernel.org>
+ <AM5PR04MB313985C61D92E183238809138808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <1bf41ea8-5131-7d54-c373-00c1fbcac095@redhat.com>
+ <AM5PR04MB31398ABF941EBDD0907E845B8808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <cc24e860-7d6f-7ec8-49cb-a49cb066f618@kernel.org>
+ <AM5PR04MB3139D8AAAB6B96B58425BBA08809A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <ba96db35-2273-9cc5-9a32-e924e8eff37c@kernel.org>
+ <AM5PR04MB313903036E0DF277FEC45722880CA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <8fd0313b-8f6f-9814-247d-c2687d053e2a@kernel.org>
+In-Reply-To: <8fd0313b-8f6f-9814-247d-c2687d053e2a@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM5PR04MB3139:EE_|PAXPR04MB9154:EE_
+x-ms-office365-filtering-correlation-id: 11b366dd-5361-478d-77f2-08db97cca33e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dHLwy/ysNUWYEONjmNo5AtgpPY/nS3kw3weEksoODSZtNYvlrh7xUD98nbhy/mwO7Vr32APklleh6nZ9g23/cnBX44sCdK9JHRJ8Hd0/VbHyqdQEr9nXD3dN0wPen2U2LFsZzmNF3v42PppIdqSUMyE6YC/EzqFMyxZRNVdBGzJ1U4CZqLqY6QMgnQGY4oUg/NZTzvwjSiouchsqDhbbLdWiVR6KDLNtzpR6aJctMJvUH3ikSLdCyvwd/FFenugG0Sk1L0J69pXRKs33M4R/+Wz9rR8nOv5OfNax/iD/On21T/LLIS6/SSI4EulxlgDdydI/vOs/4hno/hR3sHi9zEvGterqVFvFM8vgnof8HdXCGzOWJIYMDiklsWmfzqDjMTfZu1ld5mPMZFIq3yPeE+xioTm4nqQXzoGixM1t65m2w4FZoKvQuAfU6L6B41/0uveLlIfuGttSOOjG9N311HLhpNAL/rMIaaYDjVuPJcFamg1ZhIG4/18eGWCuuB+Q78VObzWgf8YmtcxJ+UYMfr4A6wBepTuvdcX4oeljzFQhsq3P/u9LgjFSn7W4tCyXIGdZQCBJsfSapoKzL603miX02OD5j2dGMEtELQkLoEBz5DHXBQs9/eydcWV6XoMIvo+WRk/gsGdnpuFj+Op3kiENPYDLZCVpuUigzOaQLSYYfpOFMbz1VRjjLOhJI63E
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(366004)(396003)(376002)(39860400002)(451199021)(1800799003)(186006)(90011799007)(90021799007)(2906002)(83380400001)(5660300002)(71200400001)(38070700005)(54906003)(110136005)(38100700002)(7696005)(64756008)(122000001)(66556008)(66476007)(66446008)(76116006)(66946007)(9686003)(33656002)(4326008)(55016003)(316002)(41300700001)(86362001)(44832011)(8676002)(8936002)(26005)(7416002)(6506007)(478600001)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YlNtczlkSWdlWVRDNGYrdmRSSzhCTEV2OWZ2bE9yWDM3RjlydHYwSFkxaXlH?=
+ =?utf-8?B?NUkyMHpNY1NNYUg4MUhNMVpmblRHbWxkd01QT2w5V2V2dEp6Nm1mTjQ2eDQ5?=
+ =?utf-8?B?aFBCeVBsSjZJQ2ZnR1pJV3FqQzhOKzhObHJQWnNzOGJtTjJtb2hueDJHbFho?=
+ =?utf-8?B?VzRwV1RmRWRpYlFjYU1OSm8yRGxhU1kvQXBSUUlBUnF1Y21pQW9DUDFBSm14?=
+ =?utf-8?B?cFdxeXM5ODFDOGFKYUFlWk9HUmcwWmhNd05jbHNNbFl1NzZJc0QrYno0Qk84?=
+ =?utf-8?B?MjBSOElCVWlRMGZwdnJxY1JpOGdvbmhBZ2ZEOWc4Wkw0d3BldDRiNklpQXZV?=
+ =?utf-8?B?ZmIzeTFtb2FpbHA5VEVPVTZWYWlGSHVHa2laNU5iMit3S3BvTUMyakMrR0gw?=
+ =?utf-8?B?T1NteWNqaWJ5YnZGK1Bkb0ZuRmdEZisyTWI1Qm1PN0c0Y1JFZlBWQ1ZBNFFx?=
+ =?utf-8?B?NmxOQkVpZ1BOOURqM1k2cDMvMTdaTmVKYjJ6RDFJV3dRS3VxSElGMkZPNHdC?=
+ =?utf-8?B?NnE1a0xWQnJIREV0N3dwNlJpMmlzOGtVL0pNWWM0QzZSWFlmMTgxNzBXYnUr?=
+ =?utf-8?B?T1hYMElNZkFqZm8rRGwrSTRHUE8vaEZ2a0ZkeUpKV1hZdXQ3RnlPTmpsV1hh?=
+ =?utf-8?B?c1ljV202YllNbDdBRnJHUzFYbTR4SG9iWi9hMkFQUnFNZXI4c3NiQlNBczEx?=
+ =?utf-8?B?T0RFWkZwMUIrMVNWSEJMTHlYSGorbTZMdjhRempLOVI4RE1FcTBXWFNFUnJa?=
+ =?utf-8?B?WUw0MjFpUWdjR0RoOVNDcXY2QnRITHFPWnZrdjdRRTV5QWMybmNLK2hUS094?=
+ =?utf-8?B?WDFtZUpjbGtZZGVVYnZxa3MwcE1DY2JYenBtaE5aT3FzYUFETVhxWUIxY00r?=
+ =?utf-8?B?WkovVTFlekZWQUtsbFA1cDVLTVhLYjA1OHpWVzhIRTJBWHkralQxQVJKV1hq?=
+ =?utf-8?B?UmJPeE95Uzh2ZzBpSVhRK09GSCtObzFKRGVNbEYvR1VxNm5ZZDU2Smxod0gz?=
+ =?utf-8?B?SzBNcGR5bVF5Y1Y4bFA0VTZXQ0ZmRm5BRktpREQ2cmxRRmp6SEk3Mm9YVzFr?=
+ =?utf-8?B?VGZMOWtuODMxSHgvOU9jY0prSkhsK2l0TGg5YzFIZVJ5Sm5pK0JhVUQvZGov?=
+ =?utf-8?B?bG81L05EdEs3QnlsUVBFL3lIK3k2Tmc1RUg5REk5Vzl3TVBLa0RreHJMVXNp?=
+ =?utf-8?B?S0pUMmlkRi94U0ZFT0wwR2pUTkMxeUZ1MW4zb2lMREt2bVpRR2JUdDR3T0JW?=
+ =?utf-8?B?RnZsVjBoZ2pkcGxOUmlodnBIb2pqY1JmYlFqNGk5cTdFZVgyWmFLWm9kRWZq?=
+ =?utf-8?B?RFFNRVM2ZU9kcFhMNnY5Y3AzbVkzVkp4U0R6cGQ5cFhOSFlNSWVybUd6b3ZV?=
+ =?utf-8?B?eFI0clZPRDFCYkxZYW00bTlEOTlTV1FSTVZRc3Yrb1ZmNy9QZyt6V2p4S1Q0?=
+ =?utf-8?B?cDRnZDRWTlhnemZRK21NVWNmb2NrMDlxSUZIQ0M5VHpaUVZ5dXEvb3Y4ZitY?=
+ =?utf-8?B?V1JoY2VPSU5IT3NTZHRNekp6U3RUT0lJQVkxMytTVWR1Y1dWQ1lYTWhDSkQ5?=
+ =?utf-8?B?NEU4dys2dmRuRU9GZ1gxdi8rbERlYm0xTG1kV2JHdlFBVmVmRHo5LzNxaGVy?=
+ =?utf-8?B?Q21uUEJVRzR1cTZDR2FkZGh0Tk5Zb08zSllTWHNqV0UvbkpCUXlnWUdjZEpp?=
+ =?utf-8?B?RzBYZmpOUDArYUVkaVVwVXUzOUFZSTRWUXJjdy9pV0JBdjRySS9PNk43dDNX?=
+ =?utf-8?B?Q2xPWmYyWkI5eTc2ZTBxU3VsYi9OSDBFQVZKWnY2T3JWU3dnUDVaS3lTSG96?=
+ =?utf-8?B?V1pkMWpSNXJzTzJESGM4eDdCMXZLSHpyN1E5MFdBZWRqT0RQa2xkd3ZWYmtI?=
+ =?utf-8?B?VngvVEIrcGloRGN3NElJTG5nK0ZZajN4RTRyZHVtVWtKUXVGQSsrVG01a3BB?=
+ =?utf-8?B?VFFhUGp0RU9Kc2ozTUlsUHEyVzhqbmo0d0lkK3dFR2UwVEFLb1A2WGZiWTQ1?=
+ =?utf-8?B?VHFqZHlaRXBFRHU3bjg5ZHRJNUlucUc1eW9rTm9HVFRTRWxBc0lIeGkrb1lF?=
+ =?utf-8?B?YzhLNTZvMDAwWkF6K0dVVUJEN29NTy8zbFRneG1kQS90Q0ZPUytLanRITFds?=
+ =?utf-8?Q?GULc=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807224152.GA274647@bhelgaas>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11b366dd-5361-478d-77f2-08db97cca33e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Aug 2023 05:02:17.0713
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IvgGxr0Iqwl5+Y6GG4Bq3MnfvV+4LQqN/ABNQMAEqoFosk1VpZsTLeyHPPgQP2SntbfRzjQhCD6G3G5l/xfZ3A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9154
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,T_SPF_PERMERROR,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 05:41:52PM -0500, Bjorn Helgaas wrote:
-> On Thu, Aug 03, 2023 at 11:29:00PM +0530, Sunil V L wrote:
-> > The functions defined in arm64 for ACPI support are required
-> > for RISC-V also. To avoid duplication, copy these functions
-> > to common location.
-> 
-> I assume this is a "move" (not a copy) and the code being moved isn't
-> being changed.
-> 
-Hi Bjorn,
-
-Thank you very much for the review!. Yes, it is a move as is. Let me
-update the commit message in next version.
-
-Thanks!
-Sunil
-> If so,
-> 
->   Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> > ---
-> >  arch/arm64/kernel/pci.c | 193 ----------------------------------------
-> >  drivers/pci/pci-acpi.c  | 182 +++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 182 insertions(+), 193 deletions(-)
-> > 
-> > diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
-> > index 2276689b5411..fd9a7bed83ce 100644
-> > --- a/arch/arm64/kernel/pci.c
-> > +++ b/arch/arm64/kernel/pci.c
-> > @@ -6,30 +6,7 @@
-> >   * Copyright (C) 2014 ARM Ltd.
-> >   */
-> >  
-> > -#include <linux/acpi.h>
-> > -#include <linux/init.h>
-> > -#include <linux/io.h>
-> > -#include <linux/kernel.h>
-> > -#include <linux/mm.h>
-> > -#include <linux/of_pci.h>
-> > -#include <linux/of_platform.h>
-> >  #include <linux/pci.h>
-> > -#include <linux/pci-acpi.h>
-> > -#include <linux/pci-ecam.h>
-> > -#include <linux/slab.h>
-> > -
-> > -#ifdef CONFIG_ACPI
-> > -/*
-> > - * Try to assign the IRQ number when probing a new device
-> > - */
-> > -int pcibios_alloc_irq(struct pci_dev *dev)
-> > -{
-> > -	if (!acpi_disabled)
-> > -		acpi_pci_irq_enable(dev);
-> > -
-> > -	return 0;
-> > -}
-> > -#endif
-> >  
-> >  /*
-> >   * raw_pci_read/write - Platform-specific PCI config space access.
-> > @@ -63,173 +40,3 @@ int pcibus_to_node(struct pci_bus *bus)
-> >  EXPORT_SYMBOL(pcibus_to_node);
-> >  
-> >  #endif
-> > -
-> > -#ifdef CONFIG_ACPI
-> > -
-> > -struct acpi_pci_generic_root_info {
-> > -	struct acpi_pci_root_info	common;
-> > -	struct pci_config_window	*cfg;	/* config space mapping */
-> > -};
-> > -
-> > -int acpi_pci_bus_find_domain_nr(struct pci_bus *bus)
-> > -{
-> > -	struct pci_config_window *cfg = bus->sysdata;
-> > -	struct acpi_device *adev = to_acpi_device(cfg->parent);
-> > -	struct acpi_pci_root *root = acpi_driver_data(adev);
-> > -
-> > -	return root->segment;
-> > -}
-> > -
-> > -int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge)
-> > -{
-> > -	struct pci_config_window *cfg;
-> > -	struct acpi_device *adev;
-> > -	struct device *bus_dev;
-> > -
-> > -	if (acpi_disabled)
-> > -		return 0;
-> > -
-> > -	cfg = bridge->bus->sysdata;
-> > -
-> > -	/*
-> > -	 * On Hyper-V there is no corresponding ACPI device for a root bridge,
-> > -	 * therefore ->parent is set as NULL by the driver. And set 'adev' as
-> > -	 * NULL in this case because there is no proper ACPI device.
-> > -	 */
-> > -	if (!cfg->parent)
-> > -		adev = NULL;
-> > -	else
-> > -		adev = to_acpi_device(cfg->parent);
-> > -
-> > -	bus_dev = &bridge->bus->dev;
-> > -
-> > -	ACPI_COMPANION_SET(&bridge->dev, adev);
-> > -	set_dev_node(bus_dev, acpi_get_node(acpi_device_handle(adev)));
-> > -
-> > -	return 0;
-> > -}
-> > -
-> > -static int pci_acpi_root_prepare_resources(struct acpi_pci_root_info *ci)
-> > -{
-> > -	struct resource_entry *entry, *tmp;
-> > -	int status;
-> > -
-> > -	status = acpi_pci_probe_root_resources(ci);
-> > -	resource_list_for_each_entry_safe(entry, tmp, &ci->resources) {
-> > -		if (!(entry->res->flags & IORESOURCE_WINDOW))
-> > -			resource_list_destroy_entry(entry);
-> > -	}
-> > -	return status;
-> > -}
-> > -
-> > -/*
-> > - * Lookup the bus range for the domain in MCFG, and set up config space
-> > - * mapping.
-> > - */
-> > -static struct pci_config_window *
-> > -pci_acpi_setup_ecam_mapping(struct acpi_pci_root *root)
-> > -{
-> > -	struct device *dev = &root->device->dev;
-> > -	struct resource *bus_res = &root->secondary;
-> > -	u16 seg = root->segment;
-> > -	const struct pci_ecam_ops *ecam_ops;
-> > -	struct resource cfgres;
-> > -	struct acpi_device *adev;
-> > -	struct pci_config_window *cfg;
-> > -	int ret;
-> > -
-> > -	ret = pci_mcfg_lookup(root, &cfgres, &ecam_ops);
-> > -	if (ret) {
-> > -		dev_err(dev, "%04x:%pR ECAM region not found\n", seg, bus_res);
-> > -		return NULL;
-> > -	}
-> > -
-> > -	adev = acpi_resource_consumer(&cfgres);
-> > -	if (adev)
-> > -		dev_info(dev, "ECAM area %pR reserved by %s\n", &cfgres,
-> > -			 dev_name(&adev->dev));
-> > -	else
-> > -		dev_warn(dev, FW_BUG "ECAM area %pR not reserved in ACPI namespace\n",
-> > -			 &cfgres);
-> > -
-> > -	cfg = pci_ecam_create(dev, &cfgres, bus_res, ecam_ops);
-> > -	if (IS_ERR(cfg)) {
-> > -		dev_err(dev, "%04x:%pR error %ld mapping ECAM\n", seg, bus_res,
-> > -			PTR_ERR(cfg));
-> > -		return NULL;
-> > -	}
-> > -
-> > -	return cfg;
-> > -}
-> > -
-> > -/* release_info: free resources allocated by init_info */
-> > -static void pci_acpi_generic_release_info(struct acpi_pci_root_info *ci)
-> > -{
-> > -	struct acpi_pci_generic_root_info *ri;
-> > -
-> > -	ri = container_of(ci, struct acpi_pci_generic_root_info, common);
-> > -	pci_ecam_free(ri->cfg);
-> > -	kfree(ci->ops);
-> > -	kfree(ri);
-> > -}
-> > -
-> > -/* Interface called from ACPI code to setup PCI host controller */
-> > -struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
-> > -{
-> > -	struct acpi_pci_generic_root_info *ri;
-> > -	struct pci_bus *bus, *child;
-> > -	struct acpi_pci_root_ops *root_ops;
-> > -	struct pci_host_bridge *host;
-> > -
-> > -	ri = kzalloc(sizeof(*ri), GFP_KERNEL);
-> > -	if (!ri)
-> > -		return NULL;
-> > -
-> > -	root_ops = kzalloc(sizeof(*root_ops), GFP_KERNEL);
-> > -	if (!root_ops) {
-> > -		kfree(ri);
-> > -		return NULL;
-> > -	}
-> > -
-> > -	ri->cfg = pci_acpi_setup_ecam_mapping(root);
-> > -	if (!ri->cfg) {
-> > -		kfree(ri);
-> > -		kfree(root_ops);
-> > -		return NULL;
-> > -	}
-> > -
-> > -	root_ops->release_info = pci_acpi_generic_release_info;
-> > -	root_ops->prepare_resources = pci_acpi_root_prepare_resources;
-> > -	root_ops->pci_ops = (struct pci_ops *)&ri->cfg->ops->pci_ops;
-> > -	bus = acpi_pci_root_create(root, root_ops, &ri->common, ri->cfg);
-> > -	if (!bus)
-> > -		return NULL;
-> > -
-> > -	/* If we must preserve the resource configuration, claim now */
-> > -	host = pci_find_host_bridge(bus);
-> > -	if (host->preserve_config)
-> > -		pci_bus_claim_resources(bus);
-> > -
-> > -	/*
-> > -	 * Assign whatever was left unassigned. If we didn't claim above,
-> > -	 * this will reassign everything.
-> > -	 */
-> > -	pci_assign_unassigned_root_bus_resources(bus);
-> > -
-> > -	list_for_each_entry(child, &bus->children, node)
-> > -		pcie_bus_configure_settings(child);
-> > -
-> > -	return bus;
-> > -}
-> > -
-> > -void pcibios_add_bus(struct pci_bus *bus)
-> > -{
-> > -	acpi_pci_add_bus(bus);
-> > -}
-> > -
-> > -void pcibios_remove_bus(struct pci_bus *bus)
-> > -{
-> > -	acpi_pci_remove_bus(bus);
-> > -}
-> > -
-> > -#endif
-> > diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> > index a05350a4e49c..d6b2d64b8237 100644
-> > --- a/drivers/pci/pci-acpi.c
-> > +++ b/drivers/pci/pci-acpi.c
-> > @@ -15,6 +15,7 @@
-> >  #include <linux/pci_hotplug.h>
-> >  #include <linux/module.h>
-> >  #include <linux/pci-acpi.h>
-> > +#include <linux/pci-ecam.h>
-> >  #include <linux/pm_runtime.h>
-> >  #include <linux/pm_qos.h>
-> >  #include <linux/rwsem.h>
-> > @@ -1517,4 +1518,185 @@ static int __init acpi_pci_init(void)
-> >  
-> >  	return 0;
-> >  }
-> > +
-> >  arch_initcall(acpi_pci_init);
-> > +
-> > +#if defined(CONFIG_ARM64)
-> > +/*
-> > + * Try to assign the IRQ number when probing a new device
-> > + */
-> > +int pcibios_alloc_irq(struct pci_dev *dev)
-> > +{
-> > +	if (!acpi_disabled)
-> > +		acpi_pci_irq_enable(dev);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +struct acpi_pci_generic_root_info {
-> > +	struct acpi_pci_root_info	common;
-> > +	struct pci_config_window	*cfg;	/* config space mapping */
-> > +};
-> > +
-> > +int acpi_pci_bus_find_domain_nr(struct pci_bus *bus)
-> > +{
-> > +	struct pci_config_window *cfg = bus->sysdata;
-> > +	struct acpi_device *adev = to_acpi_device(cfg->parent);
-> > +	struct acpi_pci_root *root = acpi_driver_data(adev);
-> > +
-> > +	return root->segment;
-> > +}
-> > +
-> > +int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge)
-> > +{
-> > +	struct pci_config_window *cfg;
-> > +	struct acpi_device *adev;
-> > +	struct device *bus_dev;
-> > +
-> > +	if (acpi_disabled)
-> > +		return 0;
-> > +
-> > +	cfg = bridge->bus->sysdata;
-> > +
-> > +	/*
-> > +	 * On Hyper-V there is no corresponding ACPI device for a root bridge,
-> > +	 * therefore ->parent is set as NULL by the driver. And set 'adev' as
-> > +	 * NULL in this case because there is no proper ACPI device.
-> > +	 */
-> > +	if (!cfg->parent)
-> > +		adev = NULL;
-> > +	else
-> > +		adev = to_acpi_device(cfg->parent);
-> > +
-> > +	bus_dev = &bridge->bus->dev;
-> > +
-> > +	ACPI_COMPANION_SET(&bridge->dev, adev);
-> > +	set_dev_node(bus_dev, acpi_get_node(acpi_device_handle(adev)));
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int pci_acpi_root_prepare_resources(struct acpi_pci_root_info *ci)
-> > +{
-> > +	struct resource_entry *entry, *tmp;
-> > +	int status;
-> > +
-> > +	status = acpi_pci_probe_root_resources(ci);
-> > +	resource_list_for_each_entry_safe(entry, tmp, &ci->resources) {
-> > +		if (!(entry->res->flags & IORESOURCE_WINDOW))
-> > +			resource_list_destroy_entry(entry);
-> > +	}
-> > +	return status;
-> > +}
-> > +
-> > +/*
-> > + * Lookup the bus range for the domain in MCFG, and set up config space
-> > + * mapping.
-> > + */
-> > +static struct pci_config_window *
-> > +pci_acpi_setup_ecam_mapping(struct acpi_pci_root *root)
-> > +{
-> > +	struct device *dev = &root->device->dev;
-> > +	struct resource *bus_res = &root->secondary;
-> > +	u16 seg = root->segment;
-> > +	const struct pci_ecam_ops *ecam_ops;
-> > +	struct resource cfgres;
-> > +	struct acpi_device *adev;
-> > +	struct pci_config_window *cfg;
-> > +	int ret;
-> > +
-> > +	ret = pci_mcfg_lookup(root, &cfgres, &ecam_ops);
-> > +	if (ret) {
-> > +		dev_err(dev, "%04x:%pR ECAM region not found\n", seg, bus_res);
-> > +		return NULL;
-> > +	}
-> > +
-> > +	adev = acpi_resource_consumer(&cfgres);
-> > +	if (adev)
-> > +		dev_info(dev, "ECAM area %pR reserved by %s\n", &cfgres,
-> > +			 dev_name(&adev->dev));
-> > +	else
-> > +		dev_warn(dev, FW_BUG "ECAM area %pR not reserved in ACPI namespace\n",
-> > +			 &cfgres);
-> > +
-> > +	cfg = pci_ecam_create(dev, &cfgres, bus_res, ecam_ops);
-> > +	if (IS_ERR(cfg)) {
-> > +		dev_err(dev, "%04x:%pR error %ld mapping ECAM\n", seg, bus_res,
-> > +			PTR_ERR(cfg));
-> > +		return NULL;
-> > +	}
-> > +
-> > +	return cfg;
-> > +}
-> > +
-> > +/* release_info: free resources allocated by init_info */
-> > +static void pci_acpi_generic_release_info(struct acpi_pci_root_info *ci)
-> > +{
-> > +	struct acpi_pci_generic_root_info *ri;
-> > +
-> > +	ri = container_of(ci, struct acpi_pci_generic_root_info, common);
-> > +	pci_ecam_free(ri->cfg);
-> > +	kfree(ci->ops);
-> > +	kfree(ri);
-> > +}
-> > +
-> > +/* Interface called from ACPI code to setup PCI host controller */
-> > +struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
-> > +{
-> > +	struct acpi_pci_generic_root_info *ri;
-> > +	struct pci_bus *bus, *child;
-> > +	struct acpi_pci_root_ops *root_ops;
-> > +	struct pci_host_bridge *host;
-> > +
-> > +	ri = kzalloc(sizeof(*ri), GFP_KERNEL);
-> > +	if (!ri)
-> > +		return NULL;
-> > +
-> > +	root_ops = kzalloc(sizeof(*root_ops), GFP_KERNEL);
-> > +	if (!root_ops) {
-> > +		kfree(ri);
-> > +		return NULL;
-> > +	}
-> > +
-> > +	ri->cfg = pci_acpi_setup_ecam_mapping(root);
-> > +	if (!ri->cfg) {
-> > +		kfree(ri);
-> > +		kfree(root_ops);
-> > +		return NULL;
-> > +	}
-> > +
-> > +	root_ops->release_info = pci_acpi_generic_release_info;
-> > +	root_ops->prepare_resources = pci_acpi_root_prepare_resources;
-> > +	root_ops->pci_ops = (struct pci_ops *)&ri->cfg->ops->pci_ops;
-> > +	bus = acpi_pci_root_create(root, root_ops, &ri->common, ri->cfg);
-> > +	if (!bus)
-> > +		return NULL;
-> > +
-> > +	/* If we must preserve the resource configuration, claim now */
-> > +	host = pci_find_host_bridge(bus);
-> > +	if (host->preserve_config)
-> > +		pci_bus_claim_resources(bus);
-> > +
-> > +	/*
-> > +	 * Assign whatever was left unassigned. If we didn't claim above,
-> > +	 * this will reassign everything.
-> > +	 */
-> > +	pci_assign_unassigned_root_bus_resources(bus);
-> > +
-> > +	list_for_each_entry(child, &bus->children, node)
-> > +		pcie_bus_configure_settings(child);
-> > +
-> > +	return bus;
-> > +}
-> > +
-> > +void pcibios_add_bus(struct pci_bus *bus)
-> > +{
-> > +	acpi_pci_add_bus(bus);
-> > +}
-> > +
-> > +void pcibios_remove_bus(struct pci_bus *bus)
-> > +{
-> > +	acpi_pci_remove_bus(bus);
-> > +}
-> > +
-> > +#endif
-> > -- 
-> > 2.39.2
-> > 
-> > 
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+PiA+IEZvciBYRFBfUkVESVJFQ1QsIHRoZSBwZXJmb3JtYW5jZSBzaG93IGFzIGZvbGxvdy4NCj4g
+PiByb290QGlteDhtcGV2azp+IyAuL3hkcF9yZWRpcmVjdCBldGgxIGV0aDAgUmVkaXJlY3Rpbmcg
+ZnJvbSBldGgxDQo+ID4gKGlmaW5kZXggMzsgZHJpdmVyIHN0X2dtYWMpIHRvIGV0aDAgKGlmaW5k
+ZXggMjsgZHJpdmVyIGZlYykNCj4gDQo+IFRoaXMgaXMgbm90IGV4YWN0bHkgdGhlIHNhbWUgYXMg
+WERQX1RYIHNldHVwIGFzIGhlcmUgeW91IGNob29zZSB0byByZWRpcmVjdA0KPiBiZXR3ZWVuIGV0
+aDEgKGRyaXZlciBzdF9nbWFjKSBhbmQgdG8gZXRoMCAoZHJpdmVyIGZlYykuDQo+IA0KPiBJIHdv
+dWxkIGxpa2UgdG8gc2VlIGV0aDAgdG8gZXRoMCBYRFBfUkVESVJFQ1QsIHNvIHdlIGNhbiBjb21w
+YXJlIHRvDQo+IFhEUF9UWCBwZXJmb3JtYW5jZS4NCj4gU29ycnkgZm9yIGFsbCB0aGUgcmVxdWVz
+dHMsIGJ1dCBjYW4geW91IHByb3ZpZGUgdGhvc2UgbnVtYmVycz8NCj4gDQoNCk9oLCBzb3JyeSwg
+SSB0aG91Z2h0IHdoYXQgeW91IHdhbnRlZCB3ZXJlIFhEUF9SRURJUkVDVCByZXN1bHRzIGZvciBk
+aWZmZXJlbnQNCk5JQ3MuIEJlbG93IGlzIHRoZSByZXN1bHQgb2YgWERQX1JFRElSRUNUIG9uIHRo
+ZSBzYW1lIE5JQy4NCnJvb3RAaW14OG1wZXZrOn4jIC4veGRwX3JlZGlyZWN0IGV0aDAgZXRoMA0K
+UmVkaXJlY3RpbmcgZnJvbSBldGgwIChpZmluZGV4IDI7IGRyaXZlciBmZWMpIHRvIGV0aDAgKGlm
+aW5kZXggMjsgZHJpdmVyIGZlYykNClN1bW1hcnkgICAgICAgIDIzMiwzMDIgcngvcyAgICAgICAg
+MCBlcnIsZHJvcC9zICAgICAgMjMyLDM0NCB4bWl0L3MNClN1bW1hcnkgICAgICAgIDIzNCw1Nzkg
+cngvcyAgICAgICAgMCBlcnIsZHJvcC9zICAgICAgMjM0LDU3NyB4bWl0L3MNClN1bW1hcnkgICAg
+ICAgIDIzNSw1NDggcngvcyAgICAgICAgMCBlcnIsZHJvcC9zICAgICAgMjM1LDU0OSB4bWl0L3MN
+ClN1bW1hcnkgICAgICAgIDIzNCw3MDQgcngvcyAgICAgICAgMCBlcnIsZHJvcC9zICAgICAgMjM0
+LDcwMyB4bWl0L3MNClN1bW1hcnkgICAgICAgIDIzNSw1MDQgcngvcyAgICAgICAgMCBlcnIsZHJv
+cC9zICAgICAgMjM1LDUwNCB4bWl0L3MNClN1bW1hcnkgICAgICAgIDIzNSwyMjMgcngvcyAgICAg
+ICAgMCBlcnIsZHJvcC9zICAgICAgMjM1LDIyNCB4bWl0L3MNClN1bW1hcnkgICAgICAgIDIzNCw1
+MDkgcngvcyAgICAgICAgMCBlcnIsZHJvcC9zICAgICAgMjM0LDUwNyB4bWl0L3MNClN1bW1hcnkg
+ICAgICAgIDIzNSw0ODEgcngvcyAgICAgICAgMCBlcnIsZHJvcC9zICAgICAgMjM1LDQ4MiB4bWl0
+L3MNClN1bW1hcnkgICAgICAgIDIzNCw2ODQgcngvcyAgICAgICAgMCBlcnIsZHJvcC9zICAgICAg
+MjM0LDY4MyB4bWl0L3MNClN1bW1hcnkgICAgICAgIDIzNSw1MjAgcngvcyAgICAgICAgMCBlcnIs
+ZHJvcC9zICAgICAgMjM1LDUyMCB4bWl0L3MNClN1bW1hcnkgICAgICAgIDIzNSw0NjEgcngvcyAg
+ICAgICAgMCBlcnIsZHJvcC9zICAgICAgMjM1LDQ2MSB4bWl0L3MNClN1bW1hcnkgICAgICAgIDIz
+NCw2MjcgcngvcyAgICAgICAgMCBlcnIsZHJvcC9zICAgICAgMjM0LDYyNyB4bWl0L3MNClN1bW1h
+cnkgICAgICAgIDIzNSw2MTEgcngvcyAgICAgICAgMCBlcnIsZHJvcC9zICAgICAgMjM1LDYxMSB4
+bWl0L3MNCiAgUGFja2V0cyByZWNlaXZlZCAgICA6IDMsMDUzLDc1Mw0KICBBdmVyYWdlIHBhY2tl
+dHMvcyAgIDogMjM0LDkwNA0KICBQYWNrZXRzIHRyYW5zbWl0dGVkIDogMywwNTMsNzkyDQogIEF2
+ZXJhZ2UgdHJhbnNtaXQvcyAgOiAyMzQsOTA3DQo+IA0KPiBJJ20gcHV6emxlZCB0aGF0IG1vdmlu
+ZyB0aGUgTU1JTyB3cml0ZSBpc24ndCBjaGFuZ2UgcGVyZm9ybWFuY2UuDQo+IA0KPiBDYW4geW91
+IHBsZWFzZSB2ZXJpZnkgdGhhdCB0aGUgcGFja2V0IGdlbmVyYXRvciBtYWNoaW5lIGlzIHNlbmRp
+bmcgbW9yZQ0KPiBmcmFtZSB0aGFuIHRoZSBzeXN0ZW0gY2FuIGhhbmRsZT8NCj4gDQo+IChtZWFu
+aW5nIHRoZSBwa3RnZW5fc2FtcGxlMDNfYnVyc3Rfc2luZ2xlX2Zsb3cuc2ggc2NyaXB0IGZhc3Qg
+ZW5vdWdoPykNCj4gDQoNClRoYW5rcyB2ZXJ5IG11Y2ghDQpZb3UgcmVtaW5kIG1lLCBJIGFsd2F5
+cyBzdGFydGVkIHRoZSBwa3RnZW4gc2NyaXB0IGZpcnN0IGFuZCB0aGVuIHJhbiB0aGUgeGRwMg0K
+cHJvZ3JhbSBpbiB0aGUgcHJldmlvdXMgdGVzdHMuIFNvIEkgc2F3IHRoZSB0cmFuc21pdCBzcGVl
+ZCBvZiB0aGUgZ2VuZXJhdG9yDQp3YXMgYWx3YXlzIGdyZWF0ZXIgdGhhbiB0aGUgc3BlZWQgb2Yg
+WERQX1RYIHdoZW4gSSBzdG9wcGVkIHRoZSBzY3JpcHQuIEJ1dA0KYWN0dWFsbHksIHRoZSByZWFs
+LXRpbWUgdHJhbnNtaXQgc3BlZWQgb2YgdGhlIGdlbmVyYXRvciB3YXMgZGVncmFkZWQgdG8gYXMN
+CmVxdWFsIHRvIHRoZSBzcGVlZCBvZiBYRFBfVFguDQoNClNvIEkgdHVybmVkIG9mZiB0aGUgcngg
+ZnVuY3Rpb24gb2YgdGhlIGdlbmVyYXRvciBpbiBjYXNlIG9mIGluY3JlYXNpbmcgdGhlIENQVQ0K
+bG9hZGluZyBvZiB0aGUgZ2VuZXJhdG9yIGR1ZSB0byB0aGUgcmV0dXJuZWQgdHJhZmZpYyBmcm9t
+IHhkcDIuIEFuZCBJIHRlc3RlZA0KdGhlIHBlcmZvcm1hbmNlIGFnYWluLiBCZWxvdyBhcmUgdGhl
+IHJlc3VsdHMuDQoNClJlc3VsdCAxOiBjdXJyZW50IG1ldGhvZA0Kcm9vdEBpbXg4bXBldms6fiMg
+Li94ZHAyIGV0aDANCnByb3RvIDE3OiAgICAgMzI2NTM5IHBrdC9zDQpwcm90byAxNzogICAgIDMy
+NjQ2NCBwa3Qvcw0KcHJvdG8gMTc6ICAgICAzMjY1MjggcGt0L3MNCnByb3RvIDE3OiAgICAgMzI2
+NDY1IHBrdC9zDQpwcm90byAxNzogICAgIDMyNjU1MCBwa3Qvcw0KDQpSZXN1bHQgMjogc3luY19k
+bWFfbGVuIG1ldGhvZA0Kcm9vdEBpbXg4bXBldms6fiMgLi94ZHAyIGV0aDANCnByb3RvIDE3OiAg
+ICAgMzUzOTE4IHBrdC9zDQpwcm90byAxNzogICAgIDM1MjkyMyBwa3Qvcw0KcHJvdG8gMTc6ICAg
+ICAzNTM5MDAgcGt0L3MNCnByb3RvIDE3OiAgICAgMzUyNjcyIHBrdC9zDQpwcm90byAxNzogICAg
+IDM1MzkxMiBwa3Qvcw0KDQpOb3RlOiB0aGUgc3BlZWQgb2YgdGhlIGdlbmVyYXRvciBpcyBhYm91
+dCA5MzUzOTdwcHMuDQoNCkNvbXBhcmVkIHJlc3VsdCAxIHdpdGggcmVzdWx0IDIuIFRoZSAic3lu
+Y19kbWFfbGVuIiBtZXRob2QgYWN0dWFsbHkgaW1wcm92ZXMNCnRoZSBwZXJmb3JtYW5jZSBvZiBY
+RFBfVFgsIHNvIHRoZSBjb25jbHVzaW9uIGZyb20gdGhlIHByZXZpb3VzIHRlc3RzIGlzICppbmNv
+cnJlY3QqLg0KSSdtIHNvIHNvcnJ5IGZvciB0aGF0LiA6KA0KDQpJbiBhZGRpdGlvbiwgSSBhbHNv
+IHRyaWVkIHRoZSAiZG1hX3N5bmNfbGVuIiArIG5vdCB1c2UgeGRwX2NvbnZlcnRfYnVmZl90b19m
+cmFtZSgpDQptZXRob2QsIHRoZSBwZXJmb3JtYW5jZSBoYXMgYmVlbiBmdXJ0aGVyIGltcHJvdmVk
+LiBCZWxvdyBpcyB0aGUgcmVzdWx0Lg0KDQpSZXN1bHQgMzogc3luY19kbWFfbGVuICsgbm90IHVz
+ZSB4ZHBfY29udmVydF9idWZmX3RvX2ZyYW1lKCkgbWV0aG9kDQpyb290QGlteDhtcGV2azp+IyAu
+L3hkcDIgZXRoMA0KcHJvdG8gMTc6ICAgICAzNjkyNjEgcGt0L3MNCnByb3RvIDE3OiAgICAgMzY5
+MjY3IHBrdC9zDQpwcm90byAxNzogICAgIDM2OTIwNiBwa3Qvcw0KcHJvdG8gMTc6ICAgICAzNjky
+MTQgcGt0L3MNCnByb3RvIDE3OiAgICAgMzY5MTI2IHBrdC9zDQoNClRoZXJlZm9yZSwgSSdtIGlu
+dGVuZCB0byB1c2UgdGhlICJkbWFfc3luY19sZW4iKyBub3QgdXNlIHhkcF9jb252ZXJ0X2J1ZmZf
+dG9fZnJhbWUoKQ0KbWV0aG9kIGluIHRoZSBWNSBwYXRjaC4gVGhhbmsgeW91IGFnYWluLCBKZXNw
+ZXIgYW5kIEpha3ViLiBZb3UgcmVhbGx5IGhlbHBlZCBtZSBhIGxvdC4gOikNCg0K
