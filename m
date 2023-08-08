@@ -2,60 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F65774E9F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 00:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FB1774EA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 00:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231650AbjHHWtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 18:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
+        id S231652AbjHHWtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 18:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbjHHWtQ (ORCPT
+        with ESMTP id S229884AbjHHWty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 18:49:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797ECE72;
-        Tue,  8 Aug 2023 15:48:56 -0700 (PDT)
+        Tue, 8 Aug 2023 18:49:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163341FD8;
+        Tue,  8 Aug 2023 15:49:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FAE262DFE;
-        Tue,  8 Aug 2023 22:48:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24EE7C433C7;
-        Tue,  8 Aug 2023 22:48:54 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D8AD662E00;
+        Tue,  8 Aug 2023 22:49:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12891C433C7;
+        Tue,  8 Aug 2023 22:49:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691534934;
-        bh=YiBtVFQUNG8GVyERTFX35x1DFW/bnSp8S24/0nVDADU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lPUBCFyLunCojxi/KiHqmoqVrukLhYgZEz1ef1kae+KVInb+8aoBjEEhfgHX6ZEFD
-         tdlzNNjwR3zI6oxm0BTfzEumakEFdrLOOeJmHmsyR87kbOcRxykEm50NpXkkfqb/dy
-         FlvLUZKPCyS4REUbO8kgVU2AmFioGmODnnaBrGbjrq+HfJGUuPl8q321x4nSINsQll
-         snAmEd/KDGcmvZqR/gUwN7XNf1HOALUO8NAZmIpV7hRZm5ypX4kZnp6WflGVWJFqm2
-         BnNx0u20xW3J8S1QSS3UNJ4pvK40WlZS+5zb0aM3bGcz01AH0k2iTpUR3Nt8cdm5B3
-         aYh2wWKc/Jj9w==
-Date:   Tue, 8 Aug 2023 15:48:53 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-Cc:     <vkoul@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <michal.simek@amd.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <pabeni@redhat.com>,
-        <linux@armlinux.org.uk>, <dmaengine@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <git@amd.com>
-Subject: Re: [PATCH net-next v5 10/10] net: axienet: Introduce dmaengine
- support
-Message-ID: <20230808154853.0fafa7fc@kernel.org>
-In-Reply-To: <1691387509-2113129-11-git-send-email-radhey.shyam.pandey@amd.com>
-References: <1691387509-2113129-1-git-send-email-radhey.shyam.pandey@amd.com>
-        <1691387509-2113129-11-git-send-email-radhey.shyam.pandey@amd.com>
+        s=k20201202; t=1691534952;
+        bh=vazB5ubdA1Xae9qWpSwshgsUyH+SQh5z62VSNnbq7aA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=oaoP151C3Thr8C+TVhNJJF3Uh7I/I/tkRw6LH57T6uC4CJ45XHol+7CqPzxhm41CM
+         h5Xb2UYDOJWFnQiSYOOkEa78Y7NXBjVXizlET2owFcyktNZluqVlGgXH7dL1F0QFv3
+         7eY4AXTwgWjB2yzyjqQVJ2izoI7f/p3hVDiH+91W6kMI7DL2lTzp8vJDbWECaSUr+k
+         3QO/856nhXkzPj8XLzpqIJdk3w4EPwhL8Nfp69hN2JfGKs4S4g+JRl0onx/XNNWkm7
+         rgZ9C3vwbB1JBhwRwteiZXb5je6FJ3PEwWmRbMRAazUgz3kshmF5NI90KLYDhllBqP
+         ZEufbfeSWwzyQ==
+Date:   Tue, 8 Aug 2023 17:49:10 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Verma, Achal" <a-verma1@ti.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof Wilczy_ski <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [EXTERNAL] Re: [PATCH] PCI: cadence: Set the AFS bit in Device
+ Capabilities 2 Register
+Message-ID: <20230808224910.GA334895@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c95cd3e2-8cc0-cc65-9d62-2edb23adc292@ti.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,99 +60,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Aug 2023 11:21:49 +0530 Radhey Shyam Pandey wrote:
-> +struct axi_skbuff {
-> +	struct scatterlist sgl[MAX_SKB_FRAGS + 1];
-> +	struct dma_async_tx_descriptor *desc;
-> +	dma_addr_t dma_address;
-> +	struct sk_buff *skb;
-> +	struct list_head lh;
-> +	int sg_len;
-> +} __packed;
+On Fri, Aug 04, 2023 at 01:22:56PM +0530, Verma, Achal wrote:
+> On 8/2/2023 9:49 PM, Bjorn Helgaas wrote:
+> > In subject, "Advertise ARI Forwarding Supported".
+> Ok
+> > 
+> > It's not obvious that "AFS" refers to ARI Forwarding Supported, and
+> > the bit name is enough; we don't need to know that it's in Dev Cap 2.
+> > "Advertise" shows that we're just *advertising* the functionality, not
+> > *enabling* it.
+> > 
+> > On Wed, Aug 02, 2023 at 04:00:59PM +0530, Achal Verma wrote:
+> > > J7 PCIe Root Complex has ARI Forwarding Support, means supporting
+> > > forwarding of TLPs addressed to functions with function number greater than
+> > > 7 but some PCIe instances on J7 have this bit cleared which results in
+> > > failure of forwarding of TLPs destined for function number > 7.
+> > > Setting the AFS bit in Device Capabilities 2 Register explicitly, resolves
+> > > the issue and leads to successful access to function number > 7.
+> > 
+> > s/AFS/ARI Forwarding Supported/
+> > 
+> > > Some observations:
+> > > 1. J7200-EVB has single PCIe instance(PCIe1) for which ARIFwd bit is not
+> > >     set. Enumeration gracefully fails for funciton number greater than 7 but
+> > >     later read/write access to these funcitons results in a crash.
+> > 
+> > By "ARIFwd bit" here, I assume you mean PCI_EXP_DEVCAP2_ARI in the Root
+> > Port?  Maybe you can use the #define to make this more greppable.
+> > 
+> will replace with PCI_EXP_DEVCAP2_ARI
+> > s/funciton/function/ (twice)
+> > 
+> > If we don't enumerate function numbers greater than 7, we shouldn't
+> > have pci_dev structs for them, so why are there later read/write
+> > config accesses to them?
+> > 
+> > If the Root Port doesn't advertise ARI Forwarding Supported,
+> > bridge->ari_enabled will not be set, and we shouldn't even try to
+> > enumerate functions greater than 7.  So it's not that enumeration
+> > *fails*; it just doesn't happen at all.
+> > 
+> > > 2. On J721E-EVB, PCIe1 instance has ARIFwd bit set while it is cleared for
+> > >     PCIe0 instance. This issue combined with errata i2086
+> > >     (Unsupported Request (UR) Response Results in External Abort) results in
+> > >     SERROR while scanning multi-function endpoint device.
+> > 
+> > Is the SERROR when scanning under PCIe0 or under PCIe1?
+> > 
+> > I'm not clear on what's happening here:
+> > 
+> >    1) Root Port advertises PCI_EXP_DEVCAP2_ARI, we set
+> >       bridge->ari_enabled and scan functions > 7, we do a config read
+> >       to function 8, get a UR response (as expected during enumeration)
+> >       and that results in SERROR?
+> > 
+> >    2) Root Port *doesn't* advertise PCI_EXP_DEVCAP2_ARI, we don't set
+> >       bridge->ari_enabled, so we don't try config read to function 8,
+> >       and something blows up later?
+> > 
+> >    3) Something else?
+> > 
+> Hello Bjorn,
+> 
+> There are multiple issues which are leading to different behavior on
+> different platforms.
+> 
+> 1. PCI_EXP_DEVCAP2_ARI is not set.
+> 
+> Consider scenario:
+> J7200 (RC) --- J721E (EP with 1 PF and 4 VFs)
+> 
+> PF enumerates successfully on J7200 but bringing up 4 associated VFs (echo 4
+> > /sys/bus/pci/devices/<device>/sriov_numvfs) doesn't workout. First VF gets
+> devfn = 6 and then +1 for next one on wards. 6 and 7 are setup fine but 8
+> and 9 fails and UR is received while accessing them. Accessing VFs > 7
+> doesn't go through the ARI support check and directly calls
+> pci_setup_device(). So, since PCI_EXP_DEVCAP2_ARI is not set, unable to
+> access VFs > 7.
+> 
+> do_serror+0x34/0x88
+> el1_error+0x8c/0x10c
+> pci_generic_config_read+0x90/0xd0
+> cdns_ti_pcie_config_read+0x14/0x28
+> pci_bus_read_config_word+0x78/0xd0
+> __pci_bus_find_cap_start+0x2c/0x78
+> pci_find_capability+0x38/0x90
+> set_pcie_port_type+0x2c/0x150
+> pci_setup_device+0x90/0x728
+> pci_iov_add_virtfn+0xe4/0x2e0
+> sriov_enable+0x1f0/0x440
+> pci_sriov_configure_simple+0x34/0x80
+> sriov_numvfs_store+0xa4/0x190
 
-Why __packed?
+Thanks!  Obviously you should make the Root Port advertise
+PCI_EXP_DEVCAP2_ARI if you want to use that functionality.
 
-> +static netdev_tx_t
-> +axienet_start_xmit_dmaengine(struct sk_buff *skb, struct net_device *ndev)
-> +{
-> +	struct dma_async_tx_descriptor *dma_tx_desc = NULL;
-> +	struct axienet_local *lp = netdev_priv(ndev);
-> +	u32 app[DMA_NUM_APP_WORDS] = {0};
-> +	struct axi_skbuff *axi_skb;
-> +	u32 csum_start_off;
-> +	u32 csum_index_off;
-> +	int sg_len;
-> +	int ret;
-> +
-> +	sg_len = skb_shinfo(skb)->nr_frags + 1;
-> +	axi_skb = kmem_cache_zalloc(lp->skb_cache, GFP_KERNEL);
-> +	if (!axi_skb)
-> +		return NETDEV_TX_BUSY;
+But I think the fact that we add a device with fn > 7 when ARI is not
+enabled is also an underlying defect in iov.c.  
 
-Drop on error, you're not stopping the queue correctly, just drop,
-return OK and avoid bugs.
+sriov_init() already checks whether ARI is enabled, and I think we
+should probably remember that somewhere and use it in
+pci_iov_add_virtfn() to avoid adding VFs with fn > 7.
 
-> +static inline int axienet_init_dmaengine(struct net_device *ndev)
-
-Why inline? Please remove the spurious inline annotations.
-
-> +{
-> +	struct axienet_local *lp = netdev_priv(ndev);
-> +	int i, ret;
-> +
-> +	lp->tx_chan = dma_request_chan(lp->dev, "tx_chan0");
-> +	if (IS_ERR(lp->tx_chan)) {
-> +		ret = PTR_ERR(lp->tx_chan);
-> +		return dev_err_probe(lp->dev, ret, "No Ethernet DMA (TX) channel found\n");
-> +	}
-> +
-> +	lp->rx_chan = dma_request_chan(lp->dev, "rx_chan0");
-> +	if (IS_ERR(lp->rx_chan)) {
-> +		ret = PTR_ERR(lp->rx_chan);
-> +		dev_err_probe(lp->dev, ret, "No Ethernet DMA (RX) channel found\n");
-> +		goto err_dma_request_rx;
-
-name labels after the target, not the source. Makes it a ton easier 
-to maintain sanity when changing the code later.
-
-> +	}
-> +
-> +	lp->skb_cache = kmem_cache_create("ethernet", sizeof(struct axi_skbuff),
-> +					  0, 0, NULL);
-
-Why create a cache ?
-Isn't it cleaner to create a fake ring buffer of sgl? Most packets will
-not have MAX_SKB_FRAGS of memory. On a ring buffer you can use only as
-many sg entries as the packet requires. Also no need to alloc/free.
-
-> +	if (!lp->skb_cache) {
-> +		ret =  -ENOMEM;
-
-double space, please fix everywhere
-
-> +		goto err_kmem;
-
-> @@ -2140,6 +2432,31 @@ static int axienet_probe(struct platform_device *pdev)
->  		}
->  		netif_napi_add(ndev, &lp->napi_rx, axienet_rx_poll);
->  		netif_napi_add(ndev, &lp->napi_tx, axienet_tx_poll);
-> +	} else {
-> +		struct xilinx_vdma_config cfg;
-> +		struct dma_chan *tx_chan;
-> +
-> +		lp->eth_irq = platform_get_irq_optional(pdev, 0);
-
-This can't fail?
-
-> +		tx_chan = dma_request_chan(lp->dev, "tx_chan0");
-> +
-> +		if (IS_ERR(tx_chan)) {
-
-no empty lines between call and its error check, please fix thru out
-
-> +			ret = PTR_ERR(tx_chan);
-> +			dev_err_probe(lp->dev, ret, "No Ethernet DMA (TX) channel found\n");
-> +			goto cleanup_clk;
-> +		}
--- 
-pw-bot: cr
+Bjorn
