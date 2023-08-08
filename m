@@ -2,71 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 473AF773BA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73268773C25
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbjHHPxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 11:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
+        id S231558AbjHHQAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:00:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbjHHPv7 (ORCPT
+        with ESMTP id S231415AbjHHP7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:51:59 -0400
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C347E5246;
-        Tue,  8 Aug 2023 08:42:53 -0700 (PDT)
-Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-79aeb0a4665so1606925241.1;
-        Tue, 08 Aug 2023 08:42:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691509026; x=1692113826;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6UZdpxVqC4w8SgYwxIIci9xl2Bf47JDQV85VclFbqpI=;
-        b=DX05ZENrxsPC/aV+iC0MNe7iC17rhR7d//ZdC/DNe+CI9XBzA08O5aEVkpJ/oXRCdE
-         MCFPv1qbb2Fu9V+Be+1YiMon3Lcfc6fVcCTonrk69jJtccvDnnNBFdarsc43UZ7igo3T
-         phf8H8WQpO0CfgtzFUnAlTxlykTSAva3e9q9qjZbQ7PCPSrZvhOYYiKK3wAt+uDZw2OV
-         WgDcz9Z6yvZG7zR2AS9G8jGhl8eKDVv9JeAlIEUV0/fw99iQquAxSADGBtCJyeQixSrv
-         Iu+61fnFId9kIA3pXWrQdMHv15x21aIh5rDPE4Q4x6HAA1uECeW/khJ3F6kEWZFFYYCM
-         3Q+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691509026; x=1692113826;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6UZdpxVqC4w8SgYwxIIci9xl2Bf47JDQV85VclFbqpI=;
-        b=GYp7BtaLovUp7CzNt8XQRE9Bi4EGMZ86WYBEA2zO4n0yxRsBDnKhF9fhv0swEi0nDL
-         835W6nzf2nrPSArF/8dzQ4LDJjGoXqzNAn4i7C+yns7UCjQmqdJBdyWBkpGhVoTUy0OY
-         2SbwXRUkUol2nJSPUTiCgMxbDjYeZw1JBA7+0bE28bKg85/HZkXm4AADiZM75ZF5nL10
-         wGWivsDbMgKNNcatvZb6f6sZAxgecx7KixX+jkc2WF2UF7qcRd/N/3hgkU4jZPfYjKbf
-         phqr75+6bwkmehMc0JzecOqf+CCj2QrL5+lDGF93tZpW7woU5uYiI06mP+QCJWz4ATZa
-         f8yw==
-X-Gm-Message-State: AOJu0YzASlnRz58/Xe2apPkZYzaom3405HQqyX6eketLKC4aKV7GC4nW
-        hpDmKOKJBh9JPcy033nHe0M6Kum3Wxqbi4EnnrxA0fKciVs=
-X-Google-Smtp-Source: AGHT+IESdVEsqxHWv36mSPE2xSm44bTfNsv0VW30tGUiq1wIqd/3P7m20V/7spsJpfosdCF5KO5qIjyYlfkiZ4d2sFE=
-X-Received: by 2002:a4a:918b:0:b0:56d:10bb:c2d2 with SMTP id
- d11-20020a4a918b000000b0056d10bbc2d2mr180377ooh.0.1691507243556; Tue, 08 Aug
- 2023 08:07:23 -0700 (PDT)
+        Tue, 8 Aug 2023 11:59:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2926B6193;
+        Tue,  8 Aug 2023 08:44:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691509465; x=1723045465;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=lrqv/GIWOhqlKti0m89si+0W9scikKwya4doCUCJVuY=;
+  b=U1QeypCU6NUZLvcIRsQaQDtpp1SsvQtTbZIIPBkyEZV2rTrBeSvApUkI
+   iW8yMELmM2OSbeDLkdnVteZUd5lwnaiNyLRsiyUglzF4wg4ivXtMgtW78
+   LcALFWjz9agF7jp4e6xp6iqN7nkb+2b54ZJTEKmRR0OSquprqJf7qQ4oV
+   lbT9E1f24fRVNfMIPZly+3/MO8cEmpK54zbvspvzCvdD5NGDuxghXscfo
+   avS40bHMxaNUR6JOc6ou1xhdZiwCjBT1s+gdhOGb5Dwmoedk5dKeMH6Cp
+   cEqSA9jgpkmsLKzIvYkECROtBx4n/WeEAhbdabmVJkDkkOBS2Moj45XO2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="457237908"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="457237908"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 08:08:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="724954310"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="724954310"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga007.jf.intel.com with ESMTP; 08 Aug 2023 08:08:14 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 8 Aug 2023 08:08:13 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 8 Aug 2023 08:08:13 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 8 Aug 2023 08:08:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cin3Csb1VLeoalANNwi35ka147VuHL4Y7Mb+hxvIoY67EO+Lc5XnOV1skBptRUyfp6+QW+diBaaJov8PMrzqhr2Wk49ZJgSEhBwekZXqOKC0VkFdC7+2YQbW3TEYxukGg+kCv5KsbkPgS0r/WPgm+cxXbRBUNJr44EePsyVycc5MJ5jgIsA9QoZWE+Sh8hezi7UQQCxViMvdo2miyrrtqRPG49UStISf9OpLUpnOJ5S8ANauP2GGYYb6j6CxwujSNkXNe29OkmM06TOzVMxih4CtVrPb32rjUBGT+NOuLU6tvmdx398vo9M4Epc20jOwzGLQkcY+pS1GGkQWqa7pDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3ovr26nTSUrKGGSWlTKBNXw5KTPSF7aR29JCDL0fCRQ=;
+ b=m/OnDjxtu2VEXPfE5heXjZIcqtVLX36p6IFextg2HmCo72AzWLtLoK8SITiYxoum7NQe/SYDI+Dvn97CF9aqNrENLdqGHrH/VMZxVVQpVTiUUwHzHMtaAU6jZGiTF/Z8R7Qygo9mebBxYU/vl4l2zKwICNNjez/VJnP1+EO0kyktYH8rce18T3gvtMEKpdskX/SIPgG8r4QUDpF38hZBJiuHZ3pjZaCbIX8aLPvRbjO81ufyrsNZX5n0BYeGU8jpOQVktUTPl1RSZMCMg31hRdKxVn8/rnb+B0ySPpLQIVxmJbPZ6Rhc9lmW39DwARaUjHAYd70v1ZCumw8eKrZXKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+ by SA1PR11MB8374.namprd11.prod.outlook.com (2603:10b6:806:385::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Tue, 8 Aug
+ 2023 15:08:11 +0000
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::94f8:4717:4e7c:2c6b]) by PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::94f8:4717:4e7c:2c6b%6]) with mapi id 15.20.6652.026; Tue, 8 Aug 2023
+ 15:08:11 +0000
+Message-ID: <9fa7222b-311d-a00b-29e5-15e1a7d241ea@intel.com>
+Date:   Tue, 8 Aug 2023 23:08:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v5 05/19] KVM:x86: Initialize kvm_caps.supported_xss
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+CC:     <pbonzini@redhat.com>, <peterz@infradead.org>,
+        <john.allen@amd.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rick.p.edgecombe@intel.com>,
+        <chao.gao@intel.com>, <binbin.wu@linux.intel.com>
+References: <20230803042732.88515-1-weijiang.yang@intel.com>
+ <20230803042732.88515-6-weijiang.yang@intel.com>
+ <ZM1HODB6No0XArEq@google.com>
+From:   "Yang, Weijiang" <weijiang.yang@intel.com>
+In-Reply-To: <ZM1HODB6No0XArEq@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR01CA0159.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:28::15) To PH0PR11MB4965.namprd11.prod.outlook.com
+ (2603:10b6:510:34::7)
 MIME-Version: 1.0
-Received: by 2002:a8a:696:0:b0:4f0:1250:dd51 with HTTP; Tue, 8 Aug 2023
- 08:07:22 -0700 (PDT)
-In-Reply-To: <CAGudoHEQ6Tq=88VKqurypjHqOzfU2eBmPts4+H8C7iNu96MRKQ@mail.gmail.com>
-References: <20230806230627.1394689-1-mjguzik@gmail.com> <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
- <20230808-eingaben-lumpen-e3d227386e23@brauner> <CAGudoHF=cEvXy3v96dN_ruXHnPv33BA6fA+dCWCm-9L3xgMPNQ@mail.gmail.com>
- <20230808-unsensibel-scham-c61a71622ae7@brauner> <CAGudoHEQ6Tq=88VKqurypjHqOzfU2eBmPts4+H8C7iNu96MRKQ@mail.gmail.com>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Tue, 8 Aug 2023 17:07:22 +0200
-Message-ID: <CAGudoHGqRr_WNz86pmgK9Kmnwsox+_XXqqbp+rLW53e5t8higg@mail.gmail.com>
-Subject: [PATCH v2 (kindof)] fs: use __fput_sync in close(2)
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oleg@redhat.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|SA1PR11MB8374:EE_
+X-MS-Office365-Filtering-Correlation-Id: ca9d4545-18ac-4d23-270b-08db982147fd
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8Di581F98zi2V1Uel+/Aovu/ArB0DNQZNkLbFZSo3cR9T1Iin+AaO4MyHIEFN6XSEraB9FtgiVZ0jenj6qcZ5nV1/g5o7GvG/WwjUTfzOj71BUb/04U2caeS2PpQym1ir2o4uN/8TymWtPPuwS6W4k2+XBDka3kba+qx0wAJxxVdMUqL0+JDurqzIobZemUOMdCHazQWWmOHCSQ2OB8avzLMe5EXuoUsgpYcpL825qYj0OCzu0BjSyBlMnuC1Gm1S4T3/AzkGkCvnjo4gk7WjseB8bo4woQs+5cZGAWLn4TYyuVPSzf3YA7j4pZbmu+aedLvTqfpcuSan7vfVF9kZ7gfoOLlkKKDLsoM0fILhE10yU9oIjv+oEzjLvko9ZG3E2sghtowNy1E7NwQ8C5vAXyOCoKMMn1iIIdCS1qLjUZTIHHYU6ejHCWeMVRnEAylRHfxte1FG6u7JnJQWIuYMmZOYHZ8Px+MyVovhVC0KdiMEkH44bAuv/WwmFTtiG78FVnkuw0OhGXFnqS4cOYWRGNQ666guhWI/TbC4MDwXfLZ5yeFrqnuBcJEL3Sc1d60xth+rEhNimc6Ob3SjyWXpawaechLgpUmzHQLcuGd9TsLpdKwd3/sF4tPxAxiPEQFCHqgS+uddMyY/RTx8X4PmQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(136003)(346002)(366004)(39860400002)(396003)(451199021)(1800799003)(186006)(2616005)(6512007)(6506007)(6666004)(6486002)(478600001)(86362001)(26005)(36756003)(82960400001)(53546011)(31696002)(5660300002)(6916009)(316002)(66556008)(66946007)(41300700001)(4326008)(8936002)(66476007)(8676002)(38100700002)(2906002)(31686004)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VHRvOC9mZGxaYXdjcmxZVjRSY3pVU3pPZnFCSi96ZnhuWWtTTys4SGVmZ2tI?=
+ =?utf-8?B?aGZybStQdGwwc1g3ZDRDL3JQcWdrWXk1NExTWUpQVlpua1pHZ0YyUmxzS3Zi?=
+ =?utf-8?B?eXBneGZzNHA3NGtRUGEyZitOQ0tocG5udGhrUWhVMC9QTE5Cbk5MbklFcHVa?=
+ =?utf-8?B?ZmZ1cjJhTlU3SVlGVTIrWTNLcGh4aGt0WjBwQ3QzMW5oT0J6Q2x0SStmMnlj?=
+ =?utf-8?B?cnAydlBlSkhSTytyV1lOYVo5eVNCQ2xTVFp4RGYyRUxzbVo4STZudy9qSUtX?=
+ =?utf-8?B?ay9zUnVhT21SZDNHVjlQazBWdmhIcVdmK3hVR0dySlk1Ti9EVjF1WnZYTVph?=
+ =?utf-8?B?YzlwaUY1TWppNUgwUUxPV216NDdKN0J5MVoycmhaRWtPdWVXanJkQVlUdno5?=
+ =?utf-8?B?UFhxek9RRllaM1R3bS9WcXRKWC9TZkJSWGpoRHNJZWdRdXh1RW0wK3dTbWdZ?=
+ =?utf-8?B?VXpNelVXMDhQdkRHU1M4YnBBb0MxTTg0eTdKUFdidkdMZW5leC9GcnVPZ3pK?=
+ =?utf-8?B?S3M5VnpsdzRSSjZocGRmcHZpK29YWHkwL0xyaFN3aXlQSWczVVZKdUE0THBE?=
+ =?utf-8?B?aVVvQkpPNHVwY0drQU9XbG1FRnV6VHVnT0tqeEh3R3dsbFFjSmw5Z0d6Rlhu?=
+ =?utf-8?B?ekYyZWRENzdYeWUvbFh5YjFlbFpzUnVJZGlrMUNzVmdnTVVRb3FGbVZlSDFS?=
+ =?utf-8?B?RFhhNmtKb1Z1VEt6dzZ5NUtTRDBmRGdNbi83bElMaWt3NmZlTktWNGVWM2xF?=
+ =?utf-8?B?VnZ1czRDRUZxZVhXZEQ3VDBaZnJoLy9sTUdjTktuOUhEWUVHeENLMnNvRTZR?=
+ =?utf-8?B?andhaE15Q25CU1ZQNjk0QkRvWkhpdTRvdC8zMHI5Q2IxOG1XNWlvWGd1K3hX?=
+ =?utf-8?B?N3UybE1nWDBXQVNMQ3ArMXFublAzV2ttSzhTZ1MxeU9hT1dqQWZaUTU0d01t?=
+ =?utf-8?B?SFhPWTUyTXVDN3JxZ08yMUUvemRMaU4rN25naWc4dXlMa1dINVNLYVJoMFJ1?=
+ =?utf-8?B?NERuOWorMzFHL2dNRWZZZm9ITkEyakJZTDJXOEF3UWRDVEdOMlJZZllHV3dl?=
+ =?utf-8?B?NU1FZWFsZ0hyaTBDR3hncHpZaGo2RGk3R2tTbWhYWW1TcHQvUnNHNmwvNnRi?=
+ =?utf-8?B?aG1mOFNERW9HK0lRQU9WYXRiUkhnNlV2SU5GbG9SN3psOVo0Qmp6M01DMVFR?=
+ =?utf-8?B?QTBlY3BUcDJDU1kzdnE5aWhEVms0LzJhS0JmbWpmZDgvdDFBUS83Q1VZUlJC?=
+ =?utf-8?B?b3ljajJMSFZpTzNsaGovSk5JWTd2TUFkbW5NOVhpZG1XMFFtdWxLYzkzNEMv?=
+ =?utf-8?B?YUsrQUJUaFAzUkNvRURIYzk3bDJ1RlhQT2pZNVViRjkwM0dSeVgwejQ0NUx6?=
+ =?utf-8?B?WXBtYWcrYk9DcURITHpqVXVmTUs4K0ZoaGNvclBCa0JqUlQ1cnQySExoQVZv?=
+ =?utf-8?B?SFlDaXc2ZHZaMHptYzNEZUJ2bTRMQytyQ1QvdU04S0Z1UFhiamZzSzk1d2da?=
+ =?utf-8?B?aDBWQU5PNmtKaGxEakJxbDBkT28yOXZnTWZmNC9KcEROVDl5Nng0S1E4N3hB?=
+ =?utf-8?B?cm9xWWVvTTl2L1l0R09PQ2cycEdBTDNXTkhsNFEvNGlUMW5OeFUvWFRvK3RE?=
+ =?utf-8?B?bG1VYk1WT3p4d0ZLS0FoVDFTdUJkWkwxUGJxNW9nZkNYcWFtU2tWa3lqa1M5?=
+ =?utf-8?B?SmJtSGdYVmZMdjlsOEtJWUQ3TkEvZVdGdC9XUEsrWHR0amFXVFNIeXR3SlVX?=
+ =?utf-8?B?YTVpQTVzQ0d3Z2NsT2ZheldLQVhNcmlBcHc4Q01vTFM2ZmlsYVkzNHFzTThk?=
+ =?utf-8?B?VGU5WE1HN05ZS1BWQ2NtQnpBaFlQWFcrbURScEtsa0FLRzduR3QxNHNNL0h4?=
+ =?utf-8?B?ZFp4and3eTFnbzVaTW1SN2JNTXR2OGpiK0YyVjFKR3k3YzcycEZib0twMEJ5?=
+ =?utf-8?B?bE5WVXpMUmk1TmRZQlh4eVFFT2tnT2JwZk5TYjhTb1E3MnI5eXE0R21JNUxE?=
+ =?utf-8?B?SGdNRXpxTDZ1ZzcrNlo0OFJtOHFVSXo1SEFnMUtIa0VVQTZZSUFDb2dpTVoz?=
+ =?utf-8?B?WHBJREkvWms4NEF4aGRDb3MwUUV1L2gzenl0OXdhVE1Rb0UyRWk4K1lQczRi?=
+ =?utf-8?B?YWJRRE1XZXkzR3Q2SzZheXM5eHR0S2FjNklnY1EzNkhpVzFLblU2dFpLVDgr?=
+ =?utf-8?B?YWc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca9d4545-18ac-4d23-270b-08db982147fd
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2023 15:08:11.3792
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7Zsg1+h7+UUN2bUsdIo2y/6nr6fTZOE5ZwI+i31HfKB7ADwobfXeZJgN+2Xx+kRrdMAKyPmN2r5MIbD7N6RgiQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8374
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,126 +162,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I slapped the following variant just for illustration purposes.
+On 8/5/2023 2:45 AM, Sean Christopherson wrote:
+> On Thu, Aug 03, 2023, Yang Weijiang wrote:
+>> Set kvm_caps.supported_xss to host_xss && KVM XSS mask.
+>> host_xss contains the host supported xstate feature bits for thread
+>> context switch, KVM_SUPPORTED_XSS includes all KVM enabled XSS feature
+>> bits, the operation result represents all KVM supported feature bits.
+>> Since the result is subset of host_xss, the related XSAVE-managed MSRs
+>> are automatically swapped for guest and host when vCPU exits to
+>> userspace.
+>>
+>> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+>> ---
+>>   arch/x86/kvm/vmx/vmx.c | 1 -
+>>   arch/x86/kvm/x86.c     | 6 +++++-
+>>   2 files changed, 5 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>> index 0ecf4be2c6af..c8d9870cfecb 100644
+>> --- a/arch/x86/kvm/vmx/vmx.c
+>> +++ b/arch/x86/kvm/vmx/vmx.c
+>> @@ -7849,7 +7849,6 @@ static __init void vmx_set_cpu_caps(void)
+>>   		kvm_cpu_cap_set(X86_FEATURE_UMIP);
+>>   
+>>   	/* CPUID 0xD.1 */
+>> -	kvm_caps.supported_xss = 0;
+> Dropping this code in *this* patch is wrong, this belong in whatever patch(es) adds
+> IBT and SHSTK support in VMX.
+>
+> And that does matter because it means this common patch can be carried wih SVM
+> support without breaking VMX.
+OK, I'll dropping this line for VMX/SVM in CET feature bits enabling patch.
+>>   	if (!cpu_has_vmx_xsaves())
+>>   		kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
+>>   
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 5d6d6fa33e5b..e9f3627d5fdd 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -225,6 +225,8 @@ static struct kvm_user_return_msrs __percpu *user_return_msrs;
+>>   				| XFEATURE_MASK_BNDCSR | XFEATURE_MASK_AVX512 \
+>>   				| XFEATURE_MASK_PKRU | XFEATURE_MASK_XTILE)
+>>   
+>> +#define KVM_SUPPORTED_XSS     0
+>> +
+>>   u64 __read_mostly host_efer;
+>>   EXPORT_SYMBOL_GPL(host_efer);
+>>   
+>> @@ -9498,8 +9500,10 @@ static int __kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
+>>   
+>>   	rdmsrl_safe(MSR_EFER, &host_efer);
+>>   
+>> -	if (boot_cpu_has(X86_FEATURE_XSAVES))
+>> +	if (boot_cpu_has(X86_FEATURE_XSAVES)) {
+>>   		rdmsrl(MSR_IA32_XSS, host_xss);
+>> +		kvm_caps.supported_xss = host_xss & KVM_SUPPORTED_XSS;
+>> +	}
+> Can you opportunistically (in this patch) hoist this above EFER so that XCR0 and
+> XSS are colocated?  I.e. end up with this:
+>
+> 	if (boot_cpu_has(X86_FEATURE_XSAVE)) {
+> 		host_xcr0 = xgetbv(XCR_XFEATURE_ENABLED_MASK);
+> 		kvm_caps.supported_xcr0 = host_xcr0 & KVM_SUPPORTED_XCR0;
+> 	}
+> 	if (boot_cpu_has(X86_FEATURE_XSAVES)) {
+> 		rdmsrl(MSR_IA32_XSS, host_xss);
+> 		kvm_caps.supported_xss = host_xss & KVM_SUPPORTED_XSS;
+> 	}
+>
+> 	rdmsrl_safe(MSR_EFER, &host_efer);
+Will change it, thanks!
 
-- adds __close_fd which returns a struct file
-- adds __filp_close with a flag whether to fput
-- makes close(2) use both
-- transparent to everyone else
-
-Downside is that __fput_sync still loses the assert. Instead of
-losing, it could perhaps be extended with a hack to check syscall
-number -- pass if either this is close (or binary compat close) or a
-kthread, BUG out otherwise. Alternatively perhaps deref could be
-opencoded along with a comment about real fput that this is taking
-place. Or maybe some other cosmetic choice.
-
-I cannot compile-test right now, so down below is a rough copy make
-sure it is clear what I mean.
-
-I feel compelled to note that simple patches get microbenchmarked all
-the time, with these results being the only justification provided.
-I'm confused why this patch is supposed to be an exception given its
-simplicity.
-
-Serious justification should be expected from tough calls --
-complicated, invasive changes, maybe with numerous tradeoffs.
-
-In contrast close(2) doing __fput_sync looks a clear cut thing to do,
-at worst one can argue which way to do it.
-
-diff --git a/fs/file.c b/fs/file.c
-index 3fd003a8604f..c341b07533b0 100644
---- a/fs/file.c
-+++ b/fs/file.c
-@@ -651,20 +651,30 @@ static struct file *pick_file(struct
-files_struct *files, unsigned fd)
-        return file;
- }
-
--int close_fd(unsigned fd)
-+struct file *__close_fd(unsigned fd, struct file_struct *files)
- {
--       struct files_struct *files = current->files;
-        struct file *file;
-
-        spin_lock(&files->file_lock);
-        file = pick_file(files, fd);
-        spin_unlock(&files->file_lock);
-+
-+       return file;
-+}
-+EXPORT_SYMBOL(__close_fd); /* for ksys_close() */
-+
-+int close_fd(unsigned fd)
-+{
-+       struct files_struct *files = current->files;
-+       struct file *file;
-+
-+       file = __close_fd(fd, files);
-        if (!file)
-                return -EBADF;
-
-        return filp_close(file, files);
- }
--EXPORT_SYMBOL(close_fd); /* for ksys_close() */
-+EXPORT_SYMBOL(close_fd);
-
- /**
-  * last_fd - return last valid index into fd table
-diff --git a/fs/file_table.c b/fs/file_table.c
-index fc7d677ff5ad..b7461f0b73f4 100644
---- a/fs/file_table.c
-+++ b/fs/file_table.c
-@@ -463,6 +463,11 @@ void __fput_sync(struct file *file)
- {
-        if (atomic_long_dec_and_test(&file->f_count)) {
-                struct task_struct *task = current;
-+               /*
-+                * I see 2 basic options
-+                * 1. just remove the assert
-+                * 2. demand the flag *or* that the caller is close(2)
-+                */
-                BUG_ON(!(task->flags & PF_KTHREAD));
-                __fput(file);
-        }
-diff --git a/fs/open.c b/fs/open.c
-index e6ead0f19964..b1602307c1c3 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -1533,7 +1533,16 @@ EXPORT_SYMBOL(filp_close);
-  */
- SYSCALL_DEFINE1(close, unsigned int, fd)
- {
--       int retval = close_fd(fd);
-+       struct files_struct *files = current->files;
-+       struct file *file;
-+       int retval;
-+
-+       file = __close_fd(fd);
-+       if (!file)
-+               return -EBADF;
-+
-+       retval = __filp_close(file, files, false);
-+       __fput_sync(file);
-
-        /* can't restart close syscall because file table entry was cleared */
-        if (unlikely(retval == -ERESTARTSYS ||
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 562f2623c9c9..e64c0238a65f 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2388,7 +2388,11 @@ static inline struct file
-*file_clone_open(struct file *file)
- {
-        return dentry_open(&file->f_path, file->f_flags, file->f_cred);
- }
--extern int filp_close(struct file *, fl_owner_t id);
-+extern int __filp_close(struct file *file, fl_owner_t id, bool dofput);
-+static inline int filp_close(struct file *file, fl_owner_t id)
-+{
-+       return __filp_close(file, id, true);
-+}
-
- extern struct filename *getname_flags(const char __user *, int, int *);
- extern struct filename *getname_uflags(const char __user *, int);
