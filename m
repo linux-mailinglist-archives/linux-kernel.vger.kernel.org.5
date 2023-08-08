@@ -2,128 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CC6774D86
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE16F774B7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbjHHV6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
+        id S234930AbjHHUsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbjHHV6G (ORCPT
+        with ESMTP id S234407AbjHHUsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 17:58:06 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E593A68F;
-        Tue,  8 Aug 2023 09:39:25 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 313B020317;
-        Tue,  8 Aug 2023 09:32:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691487147; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=URemeKpdb8J18iMONbqIB4P02haKyRX6mS8Xu4Mgmc8=;
-        b=kAP4/qU3eebbLi9EbGgoNiblqEAMz2n9d8dDZjEU/zYHxmh4xQUAW4aRmDsDFAo1LDW4XS
-        Jz3jziQyqFQJ2OS6XJQCmcd5h9qdcD3Byn8qpddgol9CAV8ew1WhVYDKOVKgTmZrEM14u3
-        +VucJ+n1ddguqczAaW5Ki56KFXcMMvI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691487147;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=URemeKpdb8J18iMONbqIB4P02haKyRX6mS8Xu4Mgmc8=;
-        b=zakAo2cWrWyYBcipF4rIUwLGrOqm5ZeFyaCmUH+fTkQWLNKyEQyre7V0L+jFNWPtWdDjYF
-        EO0z/Yllpo+E3ODA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1EA0313451;
-        Tue,  8 Aug 2023 09:32:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id uyF3B6sL0mR7GwAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:32:27 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 82443A0769; Tue,  8 Aug 2023 11:32:26 +0200 (CEST)
-Date:   Tue, 8 Aug 2023 11:32:26 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
-Message-ID: <20230808093226.bq2qfxv5npckk643@quack3>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
+        Tue, 8 Aug 2023 16:48:20 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6C741239
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:40:57 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b9a828c920so90575501fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691512855; x=1692117655;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4uTsNkzMlGNumI6E4N2sbj8WhFeiKobXXpi0Tum0hp4=;
+        b=KB5LRjMqcPqagKTu+LyjFpj0i0umv/vJuab8H42NAsC6tfPj69xReExd40/CAbv2cb
+         c3wK/97cCWrjbAFDoM83aY1GjyXZVh0uU9OT3qpPAebjFSjgV9/qLpMKVWx8PxvgQg43
+         IPjmmHbr6Rjs7Rp1WMZRjOyn8rlaZHidj+T7SldMO2R82pAK2yADo/OIq1d55qLAmuyt
+         bZiSEPf6VHoyypGkxubZ6/j/Cq48J+934FrWl9UJy1x+zquLguQhqhxTHecre2yLDUr2
+         dsVRGuKbB/iwDBbRGi5tCeV8hhxPwRZvpQ4pT0FT0ceRl1HvnaP2/CcT8BDMvaP8AhTB
+         nKzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691512855; x=1692117655;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4uTsNkzMlGNumI6E4N2sbj8WhFeiKobXXpi0Tum0hp4=;
+        b=L7pAJqCgV/UEh9EtMywWWZClwMIZJZyp/4FKEPhSBX2Nq4Wdgm/pP7HUReW+Oi6r8M
+         YfBcludEXaChlizMPgGqR6HD9wslasrLi3xBnRQiRkpLCxxQkFFkvw0ti4uoYXIvciZC
+         N1IO/DMPg11GK4RBz6imMiQ0+Qj2DBzfDn5TBkJZPpzn8lIL+F7poeW6QDGhKkYKspia
+         wIYncjsc15T+Z2OUKO4mzdcF5HoPdxeVNn/1GXg1wKEklDd642oaLZ22d4s15dR4+pkT
+         9MiF7XQEbWuphxTvmRjtZgxrJHkjPB4acIrWm93dCsTgbX/oZCoQoFiVcH4d4HCtX/np
+         uXqw==
+X-Gm-Message-State: AOJu0YwAjs4KslFZXJrXihUAM/FlPAQVX/Ugd/zQCFQ/tbKPYPQHTjkG
+        hvWy4NSOJDQgx0UUFRpXtFW8dmC24mOCgR4b5pk=
+X-Google-Smtp-Source: AGHT+IES5amA4SDlpCkbvTEDM6S0+rLZht3qutP1HCZ45dXQD1IYG/yvCBi5SrhtOxK+41I3d98chg==
+X-Received: by 2002:a2e:805a:0:b0:2b9:ee3e:240b with SMTP id p26-20020a2e805a000000b002b9ee3e240bmr9312875ljg.41.1691487151244;
+        Tue, 08 Aug 2023 02:32:31 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id b22-20020a2e9896000000b002b9f0b25ff6sm2196530ljj.4.2023.08.08.02.32.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 02:32:30 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 08 Aug 2023 11:32:30 +0200
+Subject: [PATCH] openrisc: Make pfn accessors statics inlines
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230808-virt-to-phys-openrisc-v1-1-b2c16cf000a8@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAK0L0mQC/x3MMQqAMAxA0atIZgO1RSheRRykppqlLYmIIr27x
+ fEN/7+gJEwKU/eC0MXKOTUMfQfhWNNOyFszWGOd8cbjxXLimbEcj2IulIQ1oI/RjME6t1KE1ha
+ hyPf/nZdaPyHMl5RnAAAA
+To:     Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>
+Cc:     linux-openrisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,55 +75,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 07-08-23 15:38:36, Jeff Layton wrote:
-> In later patches, we're going to drop the "now" parameter from the
-> update_time operation. Fix fat_update_time to fetch its own timestamp.
-> It turns out that this is easily done by just passing a NULL timestamp
-> pointer to fat_update_time.
-             ^^^ fat_truncate_time()
+Making virt_to_pfn() a static inline taking a strongly typed
+(const void *) makes the contract of a passing a pointer of that
+type to the function explicit and exposes any misuse of the
+macro virt_to_pfn() acting polymorphic and accepting many types
+such as (void *), (unitptr_t) or (unsigned long) as arguments
+without warnings.
 
-> Also, it may be that things have changed by the time we get to calling
-> fat_update_time after checking inode_needs_update_time. Ensure that we
-> attempt the i_version bump if any of the S_* flags besides S_ATIME are
-> set.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+For symmetry, do the same with pfn_to_virt().
 
-Looks good. Feel free to add:
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ arch/openrisc/include/asm/page.h | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+diff --git a/arch/openrisc/include/asm/page.h b/arch/openrisc/include/asm/page.h
+index 52b0d7e76446..bb044c4aa93b 100644
+--- a/arch/openrisc/include/asm/page.h
++++ b/arch/openrisc/include/asm/page.h
+@@ -72,8 +72,15 @@ typedef struct page *pgtable_t;
+ #define __va(x) ((void *)((unsigned long)(x) + PAGE_OFFSET))
+ #define __pa(x) ((unsigned long) (x) - PAGE_OFFSET)
+ 
+-#define virt_to_pfn(kaddr)      (__pa(kaddr) >> PAGE_SHIFT)
+-#define pfn_to_virt(pfn)        __va((pfn) << PAGE_SHIFT)
++static inline unsigned long virt_to_pfn(const void *kaddr)
++{
++	return __pa(kaddr) >> PAGE_SHIFT;
++}
++
++static inline void * pfn_to_virt(unsigned long pfn)
++{
++	return __va(pfn) << PAGE_SHIFT;
++}
+ 
+ #define virt_to_page(addr) \
+ 	(mem_map + (((unsigned long)(addr)-PAGE_OFFSET) >> PAGE_SHIFT))
 
-								Honza
+---
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+change-id: 20230808-virt-to-phys-openrisc-8ff05c233aef
 
-> ---
->  fs/fat/misc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/fat/misc.c b/fs/fat/misc.c
-> index 67006ea08db6..8cab87145d63 100644
-> --- a/fs/fat/misc.c
-> +++ b/fs/fat/misc.c
-> @@ -347,14 +347,14 @@ int fat_update_time(struct inode *inode, struct timespec64 *now, int flags)
->  		return 0;
->  
->  	if (flags & (S_ATIME | S_CTIME | S_MTIME)) {
-> -		fat_truncate_time(inode, now, flags);
-> +		fat_truncate_time(inode, NULL, flags);
->  		if (inode->i_sb->s_flags & SB_LAZYTIME)
->  			dirty_flags |= I_DIRTY_TIME;
->  		else
->  			dirty_flags |= I_DIRTY_SYNC;
->  	}
->  
-> -	if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
-> +	if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && inode_maybe_inc_iversion(inode, false))
->  		dirty_flags |= I_DIRTY_SYNC;
->  
->  	__mark_inode_dirty(inode, dirty_flags);
-> 
-> -- 
-> 2.41.0
-> 
+Best regards,
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Linus Walleij <linus.walleij@linaro.org>
+
