@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B333774913
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F3C774955
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbjHHTsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52634 "EHLO
+        id S231815AbjHHTvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232849AbjHHTsJ (ORCPT
+        with ESMTP id S234177AbjHHTv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:48:09 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03DA74D23D;
-        Tue,  8 Aug 2023 09:52:30 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9c55e0fbeso91203741fa.2;
-        Tue, 08 Aug 2023 09:52:29 -0700 (PDT)
+        Tue, 8 Aug 2023 15:51:29 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984DE54C3F;
+        Tue,  8 Aug 2023 09:57:48 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe4762173bso9734965e87.3;
+        Tue, 08 Aug 2023 09:57:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691513547; x=1692118347;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4GZEtgKcvcc8+oIk59W0NrrRnhk8BlCIE1dNVvTtSjk=;
-        b=aQV+jZ4uj/9HDShaRtKJhaVlG7NDnXkPWz+5lh6k1U7V6YXP1LZqKDACAZ7Cw1JIbG
-         5AfiSMw21R8XHEKo7X2cGGS/K19ButihYopcdNFxz6ljc+NV2mdK7zGDnPjoRt6BlDt7
-         6vaz7SkwtSO1aAObyjlVm59tIWenREC7iNdhIo26RQwlnIZVXRWuxNHoXS1ya3d2aMaJ
-         /m48WuwDvpJBQ71gYH0PFFHRs6eHO3LXiBjgJyTxla7YwtsC3uNhuaZ8nRrjGgiDVejP
-         Rn1TUvMIlKz1684Br0Cf0zYIFaMdZK8MV2FAaniS8Un7AEThLj9Z1g1X0WHIrAPtmic9
-         pnCw==
+        d=gmail.com; s=20221208; t=1691513867; x=1692118667;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=nFCHTtX5KsdeKY8CuzU6iN0y/8t8L576wRb5AX7KKjs=;
+        b=TB9WzhGgWK+d/4sbAUry7QK8j4V1lSYbQxHKrVuO6ZM/r5Fct1f5bOxvxWyiBEfkD+
+         N6zTICmPSkIjyR6XasEfBl8xrtErcaoC/u6xPOxT35H1jV40f85z4g6ZxYof6vaoMec1
+         +1mdww/EMFoAlWKt+lKj8xCwqBK2MrAUfZB8H8ifRetfcOvQEpEj03SC7X/jio6p529p
+         FHBcKatvur1qtbtc+XohZOwMfr/rpyK2w/s6I1QC5U8PMFdRa8fZd7HV17lwkYlgX7ol
+         yJZbooQc7WBDvZSFp8WWfI/f0ZCD44gEuHi5vcdlfGbKk7ADnJj4Io6ptDXcJ39J14e0
+         GlIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691513547; x=1692118347;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4GZEtgKcvcc8+oIk59W0NrrRnhk8BlCIE1dNVvTtSjk=;
-        b=dPE8QAveMYZVppEz0OD81mFvCeb8byv7CpG/3MNrP3FNXvZnv9z20o7gthb27JeaxL
-         4kAR9JZrEjfTL11eorpD+UzCJcnhAUlBjWopAmHv+DhF+TJsRwoKZ/gupFAhpQG9dnev
-         wPHIeEeNVnpf5fGV7OZ4DHw++LQRMkC9d/g/dvNGr2hkUcG7hlYOoPr3v3Wu1iGZcq47
-         U4xU5f0JegVcFxE39qr6LdRH33S8eE8F9yyVtUeMMOKa/V9s88+l7xge17549sqgqyy9
-         LpHTcCVEv/WPMr/0k+JSKxPh/g4me2b8kmQs4XKwLij+eqNmgN1fL+WTDwL5LHbz6ci3
-         xW7g==
-X-Gm-Message-State: AOJu0Yzw3y5Btl8aB9BNQoJO8klJEN/r4IKTVbAi/dq3cLdnEX75WnfL
-        J7lP8OUzIioHzZwkVU1tvfd6ulgvor+tu2+p
-X-Google-Smtp-Source: AGHT+IFYYU0MR/Zcqb6+J48CUkgoJvTqm8kc0Jcx/tngfuJAbIwWw7yERBewTaL/SuluU9Sy9QSbtA==
-X-Received: by 2002:aa7:cd5a:0:b0:523:363e:f6e3 with SMTP id v26-20020aa7cd5a000000b00523363ef6e3mr5195385edw.15.1691487332516;
-        Tue, 08 Aug 2023 02:35:32 -0700 (PDT)
-Received: from skbuf ([188.27.184.201])
-        by smtp.gmail.com with ESMTPSA id i22-20020a50fc16000000b005232e637c24sm3676212edr.84.2023.08.08.02.35.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 02:35:32 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 12:35:29 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Daniel Golle <daniel@makrotopia.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: dsa: mt7530: improve and relax PHY driver
- dependency
-Message-ID: <20230808093529.yeatw7tsecgo6ikx@skbuf>
-References: <3ae907b7b60792e36bc5292c2e0bab74f84285e7.1691246642.git.daniel@makrotopia.org>
+        d=1e100.net; s=20221208; t=1691513867; x=1692118667;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nFCHTtX5KsdeKY8CuzU6iN0y/8t8L576wRb5AX7KKjs=;
+        b=G7dApADbAzJhQGohM89qDtNVkC0q+vb6uHTcwFD8F44fVNa94lj4YdksQTGggop0xR
+         jL7TKvy+TdzPUUdcT0kkTjqrYaEsr4BLFJQKXzrbc12zsPLXU1zeDiPm2p+n8viaTw3x
+         SlP3g0LnmJGvl+oHcuuVagMj9jZ4PORzL9l3STucL6WnnlVaakYRnok5Fhw6sZDjt49Y
+         JglekGLuAnBhC306MvmXG3NePYwJ0WtG/SbNwKsayweNNw4H8iZlshUbo3E7Xceas/Yp
+         xnOkYUgDjqsrIeINwIjPw6npPdHuyk7l6IK6Zz75vjZ5QY1/vgWPtgg5yd5FksgBANSj
+         Zs2g==
+X-Gm-Message-State: AOJu0YyelIIEH0SB802rsUIHCbLqj5UQb5e68NydhB817F4wGS4jv0Zb
+        DQR30887BspfBX6FRCPCl9o2TEB72vk41MlakNPgVArz4GU=
+X-Google-Smtp-Source: AGHT+IEJtndB+TX6d+lulY9nN/dXEeKD8QPCRSZMq31M4xp63m6SJ08BwBgWPwffNQfbkUeoXy5ALYliUzjrnGvjPHA=
+X-Received: by 2002:aa7:d9c2:0:b0:522:38cb:d8cb with SMTP id
+ v2-20020aa7d9c2000000b0052238cbd8cbmr8955558eds.20.1691487402502; Tue, 08 Aug
+ 2023 02:36:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3ae907b7b60792e36bc5292c2e0bab74f84285e7.1691246642.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230808033130.2226-1-Wenhua.Lin@unisoc.com>
+In-Reply-To: <20230808033130.2226-1-Wenhua.Lin@unisoc.com>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Tue, 8 Aug 2023 17:36:05 +0800
+Message-ID: <CAAfSe-t45FeFzXKUCjOU5qoPF-rq4dzMKo-eRciw6MbLq+rNgA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] gpio: sprd: In the sleep state, the eic dbnc clk must
+ be forced open
+To:     Wenhua Lin <Wenhua.Lin@unisoc.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wenhua lin <wenhua.lin1994@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,50 +74,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 05, 2023 at 03:45:36PM +0100, Daniel Golle wrote:
-> Different MT7530 variants require different PHY drivers.
-> Use 'imply' instead of 'select' to relax the dependency on the PHY
-> driver, and choose the appropriate driver.
-> 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+On Tue, 8 Aug 2023 at 11:32, Wenhua Lin <Wenhua.Lin@unisoc.com> wrote:
+>
+> In the sleep state, Eic dbnc has no clock and the clk enable
+
+Does "dbnc" mean "debounce"? I suggest not using abbreviation here.
+
+> of dbnc needs to be forced open, so that eic can wake up normally.
+>
+> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
 > ---
->  drivers/net/dsa/Kconfig | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/dsa/Kconfig b/drivers/net/dsa/Kconfig
-> index 3ed5391bb18d6..f8c1d73b251d0 100644
-> --- a/drivers/net/dsa/Kconfig
-> +++ b/drivers/net/dsa/Kconfig
-> @@ -37,7 +37,6 @@ config NET_DSA_LANTIQ_GSWIP
->  config NET_DSA_MT7530
->  	tristate "MediaTek MT7530 and MT7531 Ethernet switch support"
->  	select NET_DSA_TAG_MTK
-> -	select MEDIATEK_GE_PHY
->  	imply NET_DSA_MT7530_MDIO
->  	imply NET_DSA_MT7530_MMIO
->  	help
-> @@ -49,6 +48,7 @@ config NET_DSA_MT7530
->  config NET_DSA_MT7530_MDIO
->  	tristate "MediaTek MT7530 MDIO interface driver"
->  	depends on NET_DSA_MT7530
-> +	imply MEDIATEK_GE_PHY
->  	select PCS_MTK_LYNXI
->  	help
->  	  This enables support for the MediaTek MT7530 and MT7531 switch
-> @@ -60,6 +60,7 @@ config NET_DSA_MT7530_MMIO
->  	tristate "MediaTek MT7530 MMIO interface driver"
->  	depends on NET_DSA_MT7530
->  	depends on HAS_IOMEM
-> +	imply MEDIATEK_GE_SOC_PHY
->  	help
->  	  This enables support for the built-in Ethernet switch found
->  	  in the MediaTek MT7988 SoC.
-> -- 
-> 2.41.0
-
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-
-But I did a tree-wide search for "imply .*_PHY" and I didn't find any
-other usage patterns, so I'm adding all phylib maintainers to make sure
-that the practice isn't discouraged. If not, I guess it should be used
-more often with internal PHYs for which the driver is known.
+>  drivers/gpio/gpio-eic-sprd.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
+> index 0d85d9e80848..c506cfd6df8e 100644
+> --- a/drivers/gpio/gpio-eic-sprd.c
+> +++ b/drivers/gpio/gpio-eic-sprd.c
+> @@ -23,6 +23,7 @@
+>  #define SPRD_EIC_DBNC_IC               0x24
+>  #define SPRD_EIC_DBNC_TRIG             0x28
+>  #define SPRD_EIC_DBNC_CTRL0            0x40
+> +#define SPRD_EIC_DBNC_FORCE_CLK                0x8000
+>
+>  #define SPRD_EIC_LATCH_INTEN           0x0
+>  #define SPRD_EIC_LATCH_INTRAW          0x4
+> @@ -213,6 +214,7 @@ static int sprd_eic_set_debounce(struct gpio_chip *chip, unsigned int offset,
+>         u32 value = readl_relaxed(base + reg) & ~SPRD_EIC_DBNC_MASK;
+>
+>         value |= (debounce / 1000) & SPRD_EIC_DBNC_MASK;
+> +       value |= SPRD_EIC_DBNC_FORCE_CLK;
+>         writel_relaxed(value, base + reg);
+>
+>         return 0;
+> --
+> 2.17.1
+>
