@@ -2,249 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27364774A2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBC9774A29
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234443AbjHHUVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
+        id S234231AbjHHUVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234806AbjHHUVA (ORCPT
+        with ESMTP id S234016AbjHHUUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:21:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E656E5593E
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 12:26:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691522789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qOQXy1OfWlgrnfVJYJmwccjJ8wwzdh/vPU5z5GkOlHM=;
-        b=Ekotey994puFf8fMRkZeY6NdWyLwhJDcovPp1NiCehmwaFKcTPUtCFMChy4ImYVPvx2r3I
-        CqzPIYyxIBCyFOoTFrerUxJcXUBzBzLO9QRM0bKldo8zx+12k/z6kRo2DRkN6/YT300M4W
-        e/uSsrq2HMrk8P4L8TUNs7AathI+Xn8=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-339-HUlGLaaxM_KQYFX-wDTRLQ-1; Tue, 08 Aug 2023 15:26:27 -0400
-X-MC-Unique: HUlGLaaxM_KQYFX-wDTRLQ-1
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-77a1d6d2f7fso618456339f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 12:26:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691522786; x=1692127586;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qOQXy1OfWlgrnfVJYJmwccjJ8wwzdh/vPU5z5GkOlHM=;
-        b=bO6t3h9AsSqdaF/YtwQN+wOicCUHdfoSt7dpIxNnMPgKMjmzAeqzgW5+peUmfM/THE
-         FpMfXkFCPI2Hx7EyKCU3a1FbJ6U2L8iGKEasLiXuwstMJ+aaDXmZX5wawy5a65gSYB/6
-         N2A9RWaVkSM5iWBQRQZrrDlP/Q14pVZJcnkBsRCWtO1Ffvc+f+73k89gL2iTpitNAqbM
-         85fvFxsq8Zuhkvq5tCiTvkQKLecxud+ssEQloAb5NBUJ9fLUFaVu9JQkYJu1woWHduo8
-         Y3rWilLqIvFY7TJIfubTm0a7mk5gyI2KYWxq1DpYSONllsEmXnYVFeeqdqmwp7gNgJn9
-         9jvQ==
-X-Gm-Message-State: AOJu0YxOU+Oti60nBJvoH2DUS1DtfhYm9pO/Gul9n56jV1HFlNzgbKb6
-        O+wnTvpTlovTnvlwuIj2tT0lK2cN3XVsUYXGmLsJ7yVnAe/XoKEMlM/bKscorkkKAoiZ9SfaZZC
-        gqKr+KuCtp+vWwwTyWli6wMLPHz90XyCq
-X-Received: by 2002:a5d:8703:0:b0:783:4bc6:636e with SMTP id u3-20020a5d8703000000b007834bc6636emr560737iom.21.1691522786510;
-        Tue, 08 Aug 2023 12:26:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE6j4eQLjtlHakpjvsIeW5urMxOtXfUS2YPte21G2xG+Juk+2tMgOK5xY6ZmmtdLnt6e9PBAg==
-X-Received: by 2002:a5d:8703:0:b0:783:4bc6:636e with SMTP id u3-20020a5d8703000000b007834bc6636emr560726iom.21.1691522786254;
-        Tue, 08 Aug 2023 12:26:26 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id ga9-20020a0566381f0900b004290fd3a68dsm3404666jab.1.2023.08.08.12.26.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 12:26:25 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 13:26:24 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] vfio: align capability structures
-Message-ID: <20230808132624.6734abb6.alex.williamson@redhat.com>
-In-Reply-To: <20230808144216.2656505-1-stefanha@redhat.com>
-References: <20230808144216.2656505-1-stefanha@redhat.com>
-Organization: Red Hat
+        Tue, 8 Aug 2023 16:20:50 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEEDA6AB0;
+        Tue,  8 Aug 2023 12:26:51 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 752E76016E;
+        Tue,  8 Aug 2023 21:26:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1691522799; bh=42Ov8jrdWSouqXJnDzfdWxBesTTZMngT6wAy2edAW/w=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=E9hNIjarZwig6adv0rcta4RJ24zoCbOYC/g7Gf4o1c4zg2Kr4JpxkCEPhBkbit9UE
+         ZkJnHdyKGMqapeAqMoaZrlncClCAAG+h4Ime3ZfV9VTZrmvmxICm8uKKHTHAG8I4Cf
+         OksjKB/F/ZFoAJOH2XQNujeIDSLjjDNm2qcSCQlotRRqr4dHnugtFmSxgSfr7m/Kq0
+         rQdiE+Kbz/QQWnPTOiSdrnfBXUjU6praYDZphGoZ4optoejIZwIli70nnPaYMttbCD
+         NcGeU+Qq+qkCKEfg2/LBp+ZY73kFjI6/zmH79DI1O/04zPu2qUpERhhT+w1/hCAaRQ
+         TsovLiRX9dtug==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id e3CtfOAwfMdD; Tue,  8 Aug 2023 21:26:36 +0200 (CEST)
+Received: from [192.168.1.6] (unknown [94.250.191.183])
+        by domac.alu.hr (Postfix) with ESMTPSA id 6CAD46015F;
+        Tue,  8 Aug 2023 21:26:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1691522796; bh=42Ov8jrdWSouqXJnDzfdWxBesTTZMngT6wAy2edAW/w=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=pGaNmvMEH4k+VJqZzWBluvDX2OkmL7ZytZAuuKwGVMDdOlnGV7PZA29V0IAVsA6xr
+         /JlrKKECBLrY7m3fiY4lWYeU+Ucpr7uK2q/aa2tj8zB0fIX+IpdHGzjcXsfMaDTQoC
+         8rPGqsoldTV3dRsDY//Oi5+QH0iKWOX4yQhIZDXLhhZlwi4KC5plobP+CE9TMBLHR8
+         AphrCDIWKrI5ZQdOU6cK3YBRbhMRXqixizNXvNCYQo1Q+JXebzHsSFPrrrlOFNeTFa
+         XrgKPguPHnDd7f/A/y7YTWnshbB4TJnYLvkAUYk/v9NFdOb+ZytpkU1PhSN7lTP4sN
+         wd6jl2PAPokcw==
+Message-ID: <dc641c92-38c2-4aa6-71d7-b30064c38d55@alu.unizg.hr>
+Date:   Tue, 8 Aug 2023 21:26:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 4.14 1/1] test_firmware: fix the memory leaks with the
+ reqs buffer
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russell.h.weight@intel.com>,
+        Tianfei Zhang <tianfei.zhang@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
+        Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>
+References: <20230804170017.92671-1-mirsad.todorovac@alu.unizg.hr>
+ <2023080705-poet-nickname-5e08@gregkh>
+ <a9e443c7-c7b5-63ce-08d9-5604ac545bf6@alu.unizg.hr>
+ <2023080802-moonrise-cascade-a4c0@gregkh>
+ <1269af66-bd86-0fab-e4ec-968f14371279@alu.unizg.hr>
+ <2023080817-why-shawl-8ac1@gregkh>
+Content-Language: en-US
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <2023080817-why-shawl-8ac1@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  8 Aug 2023 10:42:16 -0400
-Stefan Hajnoczi <stefanha@redhat.com> wrote:
 
-> The VFIO_DEVICE_GET_INFO, VFIO_DEVICE_GET_REGION_INFO, and
-> VFIO_IOMMU_GET_INFO ioctls fill in an info struct followed by capability
-> structs:
-> 
->   +------+---------+---------+-----+
->   | info | caps[0] | caps[1] | ... |
->   +------+---------+---------+-----+
-> 
-> Both the info and capability struct sizes are not always multiples of
-> sizeof(u64), leaving u64 fields in later capability structs misaligned.
-> 
-> Userspace applications currently need to handle misalignment manually in
-> order to support CPU architectures and programming languages with strict
-> alignment requirements.
-> 
-> Make life easier for userspace by ensuring alignment in the kernel. This
-> is done by padding info struct definitions and by copying out zeroes
-> after capability structs that are not aligned.
-> 
-> The new layout is as follows:
-> 
->   +------+---------+---+---------+-----+
->   | info | caps[0] | 0 | caps[1] | ... |
->   +------+---------+---+---------+-----+
-> 
-> In this example caps[0] has a size that is not multiples of sizeof(u64),
-> so zero padding is added to align the subsequent structure.
-> 
-> Adding zero padding between structs does not break the uapi. The memory
-> layout is specified by the info.cap_offset and caps[i].next fields
-> filled in by the kernel. Applications use these field values to locate
-> structs and are therefore unaffected by the addition of zero padding.
-> 
-> Note that code that copies out info structs with padding is updated to
-> always zero the struct and copy out as many bytes as userspace
-> requested. This makes the code shorter and avoids potential information
-> leaks by ensuring padding is initialized.
-> 
-> Originally-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
-> ---
-> v2:
-> - Simplify padding approach as suggested by Alex
-> 
->  include/uapi/linux/vfio.h        |  2 ++
->  drivers/vfio/pci/vfio_pci_core.c | 11 ++---------
->  drivers/vfio/vfio_iommu_type1.c  | 11 ++---------
->  drivers/vfio/vfio_main.c         |  6 ++++++
->  4 files changed, 12 insertions(+), 18 deletions(-)
-> 
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 20c804bdc09c..8fe85f5c7b61 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -217,6 +217,7 @@ struct vfio_device_info {
->  	__u32	num_regions;	/* Max region index + 1 */
->  	__u32	num_irqs;	/* Max IRQ index + 1 */
->  	__u32   cap_offset;	/* Offset within info struct of first cap */
-> +	__u32   pad;
->  };
->  #define VFIO_DEVICE_GET_INFO		_IO(VFIO_TYPE, VFIO_BASE + 7)
->  
-> @@ -1304,6 +1305,7 @@ struct vfio_iommu_type1_info {
->  #define VFIO_IOMMU_INFO_CAPS	(1 << 1)	/* Info supports caps */
->  	__u64	iova_pgsizes;	/* Bitmap of supported page sizes */
->  	__u32   cap_offset;	/* Offset within info struct of first cap */
-> +	__u32   pad;
->  };
->  
->  /*
-> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-> index 20d7b69ea6ff..e2ba2a350f6c 100644
-> --- a/drivers/vfio/pci/vfio_pci_core.c
-> +++ b/drivers/vfio/pci/vfio_pci_core.c
-> @@ -920,24 +920,17 @@ static int vfio_pci_ioctl_get_info(struct vfio_pci_core_device *vdev,
->  				   struct vfio_device_info __user *arg)
->  {
->  	unsigned long minsz = offsetofend(struct vfio_device_info, num_irqs);
-> -	struct vfio_device_info info;
-> +	struct vfio_device_info info = {};
->  	struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
-> -	unsigned long capsz;
->  	int ret;
->  
-> -	/* For backward compatibility, cannot require this */
-> -	capsz = offsetofend(struct vfio_iommu_type1_info, cap_offset);
-> -
->  	if (copy_from_user(&info, arg, minsz))
->  		return -EFAULT;
->  
->  	if (info.argsz < minsz)
->  		return -EINVAL;
->  
-> -	if (info.argsz >= capsz) {
-> -		minsz = capsz;
-> -		info.cap_offset = 0;
-> -	}
-> +	minsz = min_t(size_t, info.argsz, sizeof(info));
 
-Thanks for catching these, LGTM.  I'll see if anyone else offers a
-review in the next couple days and otherwise apply this and
-20230801155352.1391945-1-stefanha@redhat.com this week.  Thanks,
+On 8/8/23 09:35, Greg Kroah-Hartman wrote:
+> On Tue, Aug 08, 2023 at 08:24:43AM +0200, Mirsad Todorovac wrote:
+>> On 8/8/23 06:28, Greg Kroah-Hartman wrote:
+>>> On Mon, Aug 07, 2023 at 08:28:04PM +0200, Mirsad Todorovac wrote:
+>>>> On 8/7/23 11:15, Greg Kroah-Hartman wrote:
+>>>>> On Fri, Aug 04, 2023 at 07:00:18PM +0200, Mirsad Todorovac wrote:
+>>>>>> [ commit be37bed754ed90b2655382f93f9724b3c1aae847 upstream ]
+>>>>>>
+>>>>>> Dan Carpenter spotted that test_fw_config->reqs will be leaked if
+>>>>>> trigger_batched_requests_store() is called two or more times.
+>>>>>> The same appears with trigger_batched_requests_async_store().
+>>>>>>
+>>>>>> This bug wasn't triggered by the tests, but observed by Dan's visual
+>>>>>> inspection of the code.
+>>>>>>
+>>>>>> The recommended workaround was to return -EBUSY if test_fw_config->reqs
+>>>>>> is already allocated.
+>>>>>>
+>>>>>> Fixes: c92316bf8e94 ("test_firmware: add batched firmware tests")
+>>>>>> Cc: Luis Chamberlain <mcgrof@kernel.org>
+>>>>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>>>> Cc: Russ Weight <russell.h.weight@intel.com>
+>>>>>> Cc: Tianfei Zhang <tianfei.zhang@intel.com>
+>>>>>> Cc: Shuah Khan <shuah@kernel.org>
+>>>>>> Cc: Colin Ian King <colin.i.king@gmail.com>
+>>>>>> Cc: Randy Dunlap <rdunlap@infradead.org>
+>>>>>> Cc: linux-kselftest@vger.kernel.org
+>>>>>> Cc: stable@vger.kernel.org # v4.14
+>>>>>> Suggested-by: Dan Carpenter <error27@gmail.com>
+>>>>>> Suggested-by: Takashi Iwai <tiwai@suse.de>
+>>>>>> Link: https://lore.kernel.org/r/20230509084746.48259-2-mirsad.todorovac@alu.unizg.hr
+>>>>>> Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+>>>>>>
+>>>>>> [ This fix is applied against the 4.14 stable branch. There are no changes to the ]
+>>>>>> [ fix in code when compared to the upstread, only the reformatting for backport.  ]
+>>>>>
+>>>>> Thanks for all of these, now queued up.
+>>>>
+>>>> No problem, I should have done it right the first time to reduce your load.
+>>>>
+>>>> I really believe that backporting bug fix patches is important because many systems
+>>>> cannot upgrade because of the legacy apps and hardware, to state the obvious.
+>>>
+>>> What "legacy apps" rely on a specific kernel version?
+>>
+>> Hi, Mr. Greg,
+>>
+>> Actually, in our particular case, it was the Eprints that required old mysql on Debian stretch
+>> rather than MariaDB that came with Buster. So, the release required particular kernel version (4.9).
+> 
+> So what happens when this kernel becomes end-of-life?
 
-Alex
+I guess by now I could maintain the 4.19 line, with the bug fixes and the security fixes,
+but it would impose significant overhead to already overwhelmed IT department.
 
->  
->  	info.flags = VFIO_DEVICE_FLAGS_PCI;
->  
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index ebe0ad31d0b0..f812c475a626 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -2762,27 +2762,20 @@ static int vfio_iommu_dma_avail_build_caps(struct vfio_iommu *iommu,
->  static int vfio_iommu_type1_get_info(struct vfio_iommu *iommu,
->  				     unsigned long arg)
->  {
-> -	struct vfio_iommu_type1_info info;
-> +	struct vfio_iommu_type1_info info = {};
->  	unsigned long minsz;
->  	struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
-> -	unsigned long capsz;
->  	int ret;
->  
->  	minsz = offsetofend(struct vfio_iommu_type1_info, iova_pgsizes);
->  
-> -	/* For backward compatibility, cannot require this */
-> -	capsz = offsetofend(struct vfio_iommu_type1_info, cap_offset);
-> -
->  	if (copy_from_user(&info, (void __user *)arg, minsz))
->  		return -EFAULT;
->  
->  	if (info.argsz < minsz)
->  		return -EINVAL;
->  
-> -	if (info.argsz >= capsz) {
-> -		minsz = capsz;
-> -		info.cap_offset = 0; /* output, no-recopy necessary */
-> -	}
-> +	minsz = min_t(size_t, info.argsz, sizeof(info));
->  
->  	mutex_lock(&iommu->lock);
->  	info.flags = VFIO_IOMMU_INFO_PGSIZES;
-> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-> index f0ca33b2e1df..2850478301d2 100644
-> --- a/drivers/vfio/vfio_main.c
-> +++ b/drivers/vfio/vfio_main.c
-> @@ -1172,6 +1172,9 @@ struct vfio_info_cap_header *vfio_info_cap_add(struct vfio_info_cap *caps,
->  	void *buf;
->  	struct vfio_info_cap_header *header, *tmp;
->  
-> +	/* Ensure that the next capability struct will be aligned */
-> +	size = ALIGN(size, sizeof(u64));
-> +
->  	buf = krealloc(caps->buf, caps->size + size, GFP_KERNEL);
->  	if (!buf) {
->  		kfree(caps->buf);
-> @@ -1205,6 +1208,9 @@ void vfio_info_cap_shift(struct vfio_info_cap *caps, size_t offset)
->  	struct vfio_info_cap_header *tmp;
->  	void *buf = (void *)caps->buf;
->  
-> +	/* Capability structs should start with proper alignment */
-> +	WARN_ON(!IS_ALIGNED(offset, sizeof(u64)));
-> +
->  	for (tmp = buf; tmp->next; tmp = buf + tmp->next - offset)
->  		tmp->next += offset;
->  }
+I could use the same config and produce the same kernel, but w/o the testing as it would
+happen w the distro kernels.
 
+>> Of course, we can upgrade to any mainline kernel, but that is no longer a tested distro kernel,
+>> and faults would be blamed on me entirely. Plus the overhead of regular patching ...
+> 
+> You should be doing regular patching for any LTS kernel as well, right?
+> Same for testing, there should not be any difference in testing any
+> kernel update be it on a LTS branch, or between major versions.
+
+Sure, but apt-get dist-upgrade is easier than rebuilding the kernel. I say, we'd have to
+get the necessary "blessings" to make this routine or procedure. Now we have the machines
+that could build a recent kernel in less than an hour, but it wasn't always so :-)
+
+We still do not have a twin test server for each single one of our production releases.
+
+> anyway, good luck!
+
+Thanks, I think we'll need it.
+
+Kind regards,
+Mirsad Todorovac
