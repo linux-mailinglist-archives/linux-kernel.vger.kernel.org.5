@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A0F774B37
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CACC9774A90
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbjHHUnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
+        id S233213AbjHHUbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236181AbjHHUmo (ORCPT
+        with ESMTP id S232500AbjHHUbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:42:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B6F30649;
-        Tue,  8 Aug 2023 09:31:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691512295; x=1723048295;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3kMxtGAvDPkK4F3TpfsG8UCh09kcYntOEJTiDXbHYrs=;
-  b=PXJIoTOyp0tkdAjaq7sdDUtXLR3OzHC5hKL8ygeHxVPEypDz6JRiKxKr
-   psAyCD3E6FxGfw82DpAJE8fEMVPA/hAuu2t1WPvgp8ykT4BYxcvtH7jG5
-   du8gkXLjop1rlS+qhHROhBuADNnLd5bv1PtHbiGNmvZP9hn2fwn/R1zjO
-   8RGkX8odhDyAg9aqe5V1Kk2IOPgEbORQoMjmG6F53cCkebY8sFEXCc13G
-   +YDR3JNyCFaq4/k/cbuBSri6tpqNAicZqbCOgRHB/yhQqcEt8li8ijkg4
-   mflbhY4nQezcYZq8SSgH5nrfTmRZEhezVLt01GTbp0X3FBnv77ujAGiln
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="401778751"
+        Tue, 8 Aug 2023 16:31:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E533CD0C;
+        Tue,  8 Aug 2023 09:41:42 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="374494036"
 X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="401778751"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 06:09:41 -0700
+   d="scan'208";a="374494036"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 06:22:59 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="1062012420"
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="796728549"
 X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="1062012420"
+   d="scan'208";a="796728549"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP; 08 Aug 2023 06:09:39 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 08 Aug 2023 06:22:56 -0700
 Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qTMSv-0097tU-2f;
-        Tue, 08 Aug 2023 16:09:37 +0300
-Date:   Tue, 8 Aug 2023 16:09:37 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Florian Fainelli <florian.fainelli@broadcom.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 2/2] pinctrl: nsp-gpio:  Silence probe deferral messages
-Message-ID: <ZNI+kdwRpeFLOQVq@smile.fi.intel.com>
-References: <20230807213022.1862903-1-florian.fainelli@broadcom.com>
- <20230807213022.1862903-3-florian.fainelli@broadcom.com>
+        (envelope-from <andy@kernel.org>)
+        id 1qTMfm-009Zhn-1L;
+        Tue, 08 Aug 2023 16:22:54 +0300
+Date:   Tue, 8 Aug 2023 16:22:54 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Wenhua Lin <Wenhua.Lin@unisoc.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wenhua lin <wenhua.lin1994@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Subject: Re: [PATCH 2/3] gpio: sprd: In the sleep state, the eic dbnc clk
+ must be forced open
+Message-ID: <ZNJBrnKGVGXaFAtc@smile.fi.intel.com>
+References: <20230808033130.2226-1-Wenhua.Lin@unisoc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230807213022.1862903-3-florian.fainelli@broadcom.com>
+In-Reply-To: <20230808033130.2226-1-Wenhua.Lin@unisoc.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 02:30:22PM -0700, Florian Fainelli wrote:
-> We can have gpiochip_add_data() return -EPROBE_DEFER which will make
-> us produce the "unable to add GPIO chip" message which is confusing.
-> Use dev_err_probe() to silence probe deferral messages.
+On Tue, Aug 08, 2023 at 11:31:30AM +0800, Wenhua Lin wrote:
+> In the sleep state, Eic dbnc has no clock and the clk enable
 
-The same.
+Comma is not needed here.
+
+> of dbnc needs to be forced open, so that eic can wake up normally.
+
+...
+
+> +#define SPRD_EIC_DBNC_FORCE_CLK		0x8000
+
+BIT(15) ?
 
 -- 
 With Best Regards,
