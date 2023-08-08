@@ -2,66 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A30774F8A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2236F774F8C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbjHHXrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 19:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
+        id S229542AbjHHXsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 19:48:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjHHXrp (ORCPT
+        with ESMTP id S229903AbjHHXsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 19:47:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C457F0
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 16:47:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 20D1B62E4B
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 23:47:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81503C433D9
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 23:47:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691538463;
-        bh=389UaCJRCPWbGhB538d72pDJuAiVDJ/Ht7Zki/SMrHw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Z7Ax2CJ1h6ttitp46s+XIWct3qdaEHuFoRUIICdcSOQfk5ZGeIoHwmYAcxnTg3nGZ
-         zLzKcMgvEebiIhvKgbEytj99g/mj94rgeGhh1vL/KRSmVyg6JtwbzlBukKkVGFN327
-         On7fungrwYtaOW6Hod6BYnuyzfzNyETzGUHgCfty1Km/V4DeRjdB4B6VapNdI/4Mho
-         kEyK7ZKcLJO7Ulr248KHrhE4L6AHfDjqRN4w/a9mlBMYIH56LJ7bn/w4K5S981dip7
-         GbzyTd6ddQAsTD+9f/NjoRozXmEHh7CTEFsm6jtKSf01ea3P7grGxW/3d06E8xKEXx
-         x+eBNwKsq+x/A==
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-99c47ef365cso919805066b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 16:47:43 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxfsnZir6uChwIEfRyWb+QFkrftFpD3jaeoJLedPYnLP8CHqyTh
-        mEeH7L2dK0B2nOA1WNVkRk5zzXrKKrJpMEJO7kY=
-X-Google-Smtp-Source: AGHT+IF8GwQocRR0UF6D0EtxHHZUG5eeMP9PHbArq+HL2uAklIhtaIJ4aeif2R8AnJ7MNJZXVG3HcpN5x1NgHJP3sqs=
-X-Received: by 2002:a17:906:84:b0:99b:674c:44eb with SMTP id
- 4-20020a170906008400b0099b674c44ebmr945758ejc.9.1691538461697; Tue, 08 Aug
- 2023 16:47:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230725132246.817726-1-alexghiti@rivosinc.com>
- <CAJF2gTRm59RAJvSf=L2uqbb3rHnANVheO+yLqrJGuVBh1w8Oug@mail.gmail.com> <ZMtv5+ut5z3pjlFJ@atctrx.andestech.com>
-In-Reply-To: <ZMtv5+ut5z3pjlFJ@atctrx.andestech.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 9 Aug 2023 07:47:30 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRfaHngCtLmuQY967qo_kpitKqYXxDA5bA3FaF5kWz8Mg@mail.gmail.com>
-Message-ID: <CAJF2gTRfaHngCtLmuQY967qo_kpitKqYXxDA5bA3FaF5kWz8Mg@mail.gmail.com>
-Subject: Re: [PATCH -fixes] riscv: Implement flush_cache_vmap()
-To:     dylan <dylan@andestech.com>
-Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Tue, 8 Aug 2023 19:48:22 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DECFF0
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 16:48:21 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-687167290fbso6824358b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 16:48:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691538501; x=1692143301;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=D2YnROpvUkDVkcj2rtSrEnyN7qYS/S3plRfhiHd5mcc=;
+        b=6P2ISKH9dvBzrmFMwwWEjDe2KAlrgm7n3Rw9Zs+PD42odg66V+LxrZ02Ue8LMdiYul
+         oWEUtT2q5ZOWeg6+4OIbliz12nv6mqaJ2+ThsfUOp7RCVT1OBUkYjffdzH7nZ88cKLC/
+         cNFeOXcl1+we7dDpCA6swxOHdcqUe7TJFTqs0lRwXcNua58vKB4tlYbk+VYpDkjUaGsC
+         DVeyLt7jtkIy5AyihK80tD5eKIIe/TAF5t7O0uJPh0HHrh0N+cTyd6p9CYSX9F6+UGbq
+         uhEY1Vt1ZEnz58dxntnxZNVUaNPGBklzd8xOWA4zdJfyZw3OqGMPkPPrDd7jjj2TKYk0
+         xBqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691538501; x=1692143301;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D2YnROpvUkDVkcj2rtSrEnyN7qYS/S3plRfhiHd5mcc=;
+        b=aCcTGYOF/Q5eNOYvfvLbPpQdv4NDVJrtwskz842PmVq5GsdvX62Lp5rVS5dZtFvyjn
+         tG0zab6xdN8IAOTRuq5Sihe4auXsS/0853YKI4dFBaqcL0oGMgHYrWCXrh2UOUJ9tPUP
+         wIdGdatfmfN3njesWnuLEZ0D9sG9yYJhVUK+panLhhg1NucO5r09t+M8cjL95CutexPa
+         Y9Gyh7WgGIvcgHeuGH6mQfBbUjOsPbqwfikVSKSV+vTw8qmSHNLeOJuvF3JeYl9xevLp
+         OkHTZ/UWIzhVEVLnKmTerNFlM0xKPIANqlMuq5XjoqQifYgaTbPZz7NQIN562/edgb1P
+         1yug==
+X-Gm-Message-State: AOJu0Yx2TqQS+B66/Vk8Ztj5ua+xKOo4OS7hGDCI0/a1GB55p7sDjrLJ
+        W6NNtMMToIsI7RI1n+cMb1J4tyHihOU=
+X-Google-Smtp-Source: AGHT+IFB+E74GSS+aNsfmXDJZDbtqZmI75nMIS02+u3DXfr2Yncv2vuU3JtqszWWUbFToboGSQ6t0IzWQN4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:179b:b0:686:2ad5:d132 with SMTP id
+ s27-20020a056a00179b00b006862ad5d132mr26585pfg.5.1691538500779; Tue, 08 Aug
+ 2023 16:48:20 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 16:48:19 -0700
+In-Reply-To: <20230808164532.09337d49@ake-x260>
+Mime-Version: 1.0
+References: <20230807062611.12596-1-ake@igel.co.jp> <43c18a3d57305cf52a1c3643fa8f714ae3769551.camel@redhat.com>
+ <20230808164532.09337d49@ake-x260>
+Message-ID: <ZNLUQ6ZtugOjmlZR@google.com>
+Subject: Re: [RFC PATCH] KVM: x86: inhibit APICv upon detecting direct APIC
+ access from L2
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ake Koomsin <ake@igel.co.jp>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,109 +73,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 5:14=E2=80=AFPM dylan <dylan@andestech.com> wrote:
+On Tue, Aug 08, 2023, Ake Koomsin wrote:
+> On Mon, 07 Aug 2023 17:00:58 +0300
+> Maxim Levitsky <mlevitsk@redhat.com> wrote:
+>  
+> > Is there a good reason why KVM doesn't expose APIC memslot to a
+> > nested guest? While nested guest runs, the L1's APICv is "inhibited"
+> > effectively anyway, so writes to this memslot should update APIC
+> > registers and be picked up by APICv hardware when L1 resumes
+> > execution.
+> > 
+> > Since APICv alows itself to be inhibited due to other reasons, it
+> > means that just like AVIC, it should be able to pick up arbitrary
+> > changes to APIC registers which happened while it was inhibited, just
+> > like AVIC does.
+> > 
+> > I'll take a look at the code to see if APICv does this (I know AVIC's
+> > code much better that APICv's)
+> > 
+> > Is there a reproducer for this bug?
 >
-> On Sun, Jul 30, 2023 at 01:08:17AM -0400, Guo Ren wrote:
-> > On Tue, Jul 25, 2023 at 9:22=E2=80=AFAM Alexandre Ghiti <alexghiti@rivo=
-sinc.com> wrote:
-> > >
-> > > The RISC-V kernel needs a sfence.vma after a page table modification:=
- we
-> > > used to rely on the vmalloc fault handling to emit an sfence.vma, but
-> > > commit 7d3332be011e ("riscv: mm: Pre-allocate PGD entries for
-> > > vmalloc/modules area") got rid of this path for 64-bit kernels, so no=
-w we
-> > > need to explicitly emit a sfence.vma in flush_cache_vmap().
-> > >
-> > > Note that we don't need to implement flush_cache_vunmap() as the gene=
-ric
-> > > code should emit a flush tlb after unmapping a vmalloc region.
-> > >
-> > > Fixes: 7d3332be011e ("riscv: mm: Pre-allocate PGD entries for vmalloc=
-/modules area")
-> > > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > > ---
-> > >  arch/riscv/include/asm/cacheflush.h | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > >
-> > > diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/include=
-/asm/cacheflush.h
-> > > index 8091b8bf4883..b93ffddf8a61 100644
-> > > --- a/arch/riscv/include/asm/cacheflush.h
-> > > +++ b/arch/riscv/include/asm/cacheflush.h
-> > > @@ -37,6 +37,10 @@ static inline void flush_dcache_page(struct page *=
-page)
-> > >  #define flush_icache_user_page(vma, pg, addr, len) \
-> > >         flush_icache_mm(vma->vm_mm, 0)
-> > >
-> > > +#ifdef CONFIG_64BIT
-> > > +#define flush_cache_vmap(start, end)   flush_tlb_kernel_range(start,=
- end)
-> > Sorry, I couldn't agree with the above in a PIPT cache machine. It's
-> > not worth for.
-> >
-> > It would reduce the performance of vmap_pages_range,
-> > ioremap_page_range ... API, which may cause some drivers' performance
-> > issues when they install/uninstall memory frequently.
-> >
->
-> Hi All,
->
-> I think functional correctness should be more important than system perfo=
-rmance
-> in this case. The "preventive" SFENCE.VMA became necessary due to the RIS=
-C-V
-> specification allowing invalidation entries to be cached in the TLB.
->
-> The problem[1] we are currently encountering is caused by not updating th=
-e TLB
-> after the page table is created, and the solution to this problem can onl=
-y be
-> solved by updating the TLB immediately after the page table is created.
->
-> There are currently two possible approaches to flush TLB:
-> 1. Flush TLB in flush_cache_vmap()
-> 2. Flush TLB in arch_sync_kernel_mappings()
->
-> But I'm not quite sure if it's a good idea to operate on the TLB inside f=
-lush_cache_vmap().
-> The name of this function indicates that it should be related to cache op=
-erations, maybe
-> it would be more appropriate to do TLB flush in arch_sync_kernel_mappings=
-()?
->
-> [1]: http://lists.infradead.org/pipermail/linux-riscv/2023-August/037503.=
-html
-Not all machines need it, and some CPUs prevent PTE.V=3D0 into TLB
-during PTW, which is stronger than ISA's requirement.
+> The idea from step 6 to step 10 is to start BitVisor first, and start Linux on
+> top of it. You can adjust the step as you like. Feel free to ask me anything
+> regarding reproducing the problem with BitVisor if the giving steps are not
+> sufficient.
 
-So could we put an errata alternative here?
+Thank you for the detailed repro steps!  However, it's likely going to be O(weeks)
+before anyone is able to look at this in detail given the extensive repro steps.
+If you have bandwidth, it's probably worth trying to reproduce the problem in a
+KVM selftest (or a KVM-Unit-Test), e.g. create a nested VM, send an IPI from L2,
+and see if it gets routed correctly.  This purely a suggestion to try and get a
+faster fix, it's by no means necessary.
 
->
-> Best regards,
-> Dylan
->
-> > > +#endif
-> > > +
-> > >  #ifndef CONFIG_SMP
-> > >
-> > >  #define flush_icache_all() local_flush_icache_all()
-> > > --
-> > > 2.39.2
-> > >
-> >
-> >
-> > --
-> > Best Regards
-> >  Guo Ren
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+Actually, typing that out raises a question (or two).  What APICv VMCS control
+settings does BitVisor use?  E.g. is BitVisor enabling APICv for its VM (L2)?
+If so, what values for the APIC access page and vAPIC page are shoved into
+BitVisor's VMCS?
 
+> The problem does not happen when enable_apicv=N. Note that SMP bringup with
+> enable_apicv=N can fail. This is another problem. We don't have to worry about
+> this for now. Linux seems to have no delay between INIT DEASSERT and SIPI during
+> its SMP bringup. This can easily makes INIT and SIPI pending together resultling
+> in signal lost.
+> 
+> I admit that my knowledge on KVM and APICv is very limited. I may misunderstand
+> the problem. If you don't mind, would it be possible for you to guide me which
+> code path should I pay attention to? I would love to learn to find out the
+> actual cause of the problem.
 
-
---=20
-Best Regards
- Guo Ren
+KVM *should* emulate the APIC MMIO access from L2.  The call stack should reach
+apic_mmio_write(), and assuming it's an ICR write, KVM should send an IPI.
