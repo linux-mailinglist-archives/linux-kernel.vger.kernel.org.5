@@ -2,178 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0C977419A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D483B77434F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbjHHRYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42246 "EHLO
+        id S235216AbjHHSBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234480AbjHHRXl (ORCPT
+        with ESMTP id S235213AbjHHSAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:23:41 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799221EF72;
-        Tue,  8 Aug 2023 09:09:54 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso9496472e87.1;
-        Tue, 08 Aug 2023 09:09:54 -0700 (PDT)
+        Tue, 8 Aug 2023 14:00:35 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69581C9719
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:27:48 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-346434c7793so5896045ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:27:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691510967; x=1692115767;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Qc9TaZ0YZxfr2ijk4qJEfWVJCx/zM4Mwpq5TAaoTRE=;
-        b=RFgjI424/B1J8d6fEQU85hdFR29a2/jvGuzeKNbrcbA2Kz+4Z4+3nkGWGw1SIKjUnl
-         XfQEwoKbPHyPc3IMihHxdlHz4D1RSKgM1PZ+ik2B3T2OqH3aM1CQCVkFcrn+8qCM6LfA
-         48wihyD2GoNsnhjaeEyD7JRgKohwaBlqzUJ5bVpefjLB/qok90Cxn9nQMmvSD31xdFcA
-         /ghsCcLoOrE0ncMr0yGRr7gZv6ejow98BpmWYVuf/eBxkFQMOsrRHOdOndCaIsI7l9kG
-         pp75lojReKqQcHxFA+B7/KiBd5qDmAexqF5KNnN2J81xB2QWRO/TphBxM/JWW8b7K4Rk
-         raoQ==
+        d=bytedance.com; s=google; t=1691512019; x=1692116819;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=if5VWB18nVWwRp6UCb6aPEiH47g9I/o9CGJnGCggs6I=;
+        b=hPgKz4XWyhF3t8fmcL2+99Ym5WHR7ZzpXcGZ89RjjncHO70wbnXdSY7rYyTrwrlf5K
+         EKBerWSiNt0oh9ccgjT1Jr64tUCaRk204/lUaEJrIf3ReaC1839jBn001jtGpANexZsW
+         3R0hphL1MN5TL2aDZ2d8CoVR97n/MnxOn5cdxm3+L9ofWWSRO4RVnQv+Ah2KW6v7KsVm
+         VXYHjCUSMBZklf8uBgOTGei/B5YqDF5D8gnbZ7LeUPpakdFZTZSO7Whu+k1o40iu1SEl
+         foMUNI/scIIR9OCDHcew/CKOqSgHalc1o+ofVOvc/bs07VIKntticUdFaCuTb+9TP9tW
+         OelQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510967; x=1692115767;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Qc9TaZ0YZxfr2ijk4qJEfWVJCx/zM4Mwpq5TAaoTRE=;
-        b=cXBmYIlt0u7Yg1U79aobcPFBRuhoGHXXU97V+Q9TPoOKbx3j2jCZ5Kls9mnJSmQniA
-         XbI7nWAT0IkQvSlpK0c4QwPitVpFF2zFRDigJEpWjscUHue+XqoX0MC8v+RGiQO/4McO
-         gVemFCHUFEdkp19z9pBY5OkJfMQC3hxjlgqx4MI8PKTeueMnMk1jhzJr/99f6NspK/Ce
-         kkLfBvLhHR3cv/N5Ei1kmAEFH/d/mAsFRKwGcOmnpakr28Vzb1nWOdSXvRtZd4Il/5wL
-         3797rADOv7uXtym0T9SkfFf1oHFTBYtG7GxUvvRVZRvx5Mx/N9JHcTJ0XOvhl2xV8sfK
-         hHdg==
-X-Gm-Message-State: AOJu0YxyuZnNfYfhyw/OoE2OG+z8dSXyK84yti0xxSgYXy7sbMwVKdQY
-        XL7O5TONi3OT2Um+tAaaEKgJhCYw6Yg5pI3X
-X-Google-Smtp-Source: AGHT+IGwh13bXO1PdIDK9A2IeD+OcpE7lGUQqZmmNhhWKV9U7iMTXE1/H8R9JVCPsPxdCaTWb6BaTg==
-X-Received: by 2002:a2e:3208:0:b0:2b9:ad7d:a144 with SMTP id y8-20020a2e3208000000b002b9ad7da144mr8929317ljy.11.1691479226041;
-        Tue, 08 Aug 2023 00:20:26 -0700 (PDT)
-Received: from gmail.com (83-233-6-197.cust.bredband2.com. [83.233.6.197])
-        by smtp.gmail.com with ESMTPSA id z22-20020a2e8856000000b002b95eb96ab7sm2210306ljj.18.2023.08.08.00.20.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 00:20:25 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 09:22:24 +0200
-From:   Marcus Folkesson <marcus.folkesson@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Kent Gustavsson <kent@minoris.se>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        William Breathitt Gray <william.gray@linaro.org>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] iio: adc: mcp3911: add support for the whole
- MCP39xx family
-Message-ID: <ZNHtMBG4yHpgL1kj@gmail.com>
-References: <20230807071831.4152183-1-marcus.folkesson@gmail.com>
- <20230807071831.4152183-2-marcus.folkesson@gmail.com>
- <ZNETcVNsEmvK0KKH@smile.fi.intel.com>
+        d=1e100.net; s=20221208; t=1691512019; x=1692116819;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=if5VWB18nVWwRp6UCb6aPEiH47g9I/o9CGJnGCggs6I=;
+        b=LG1LVS4uuwRC5clHlVd3kiuOZ6bYGALPx+jDvDZ9toebiUleS29dAv8cqZe8wzNzCR
+         DLFGVW2PHawVxlP1Vl6/S10DFQ8esR4+xpdPXdj/Y3Jj2JdM4/ZP4ONV/oxYR1+L2crT
+         +/pmZSeiVJ33dAm3+4NNQyCGbDpxcmk5PxFHDMHK9p5A7yOBH8jORMTq7rspWfOY8h84
+         j7aDSDLSs/1b9BPEXbx3CszVrASiE9xn/3LdqyYxcgi9jb7LXyw+xF3dLwEY05rez75l
+         gqOcqhRVV0yBfdSvMOW6Aq+iGOYJecgrhiXmDt/O4Xn+Vsi2GLnGYoLTPbWHeTecHX4B
+         yw+g==
+X-Gm-Message-State: AOJu0YyLnxKwSfbrQxZo45x+u31DKtMpCnaSxXuDU44s4GEJHW7WbYyN
+        AnLohn4r0Ax3mLP6AXMgXP076LT1bI3LpSdYAro=
+X-Google-Smtp-Source: AGHT+IGrIAD/R1XG8iT7hZdid4m31qfruz9y309af9L0+sAELwy0z1r+YzLKvbiH8nyqlY1j6mrYWw==
+X-Received: by 2002:a92:2802:0:b0:349:7518:4877 with SMTP id l2-20020a922802000000b0034975184877mr3215795ilf.0.1691479385787;
+        Tue, 08 Aug 2023 00:23:05 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id s15-20020a63af4f000000b00564ca424f79sm4948391pgo.48.2023.08.08.00.22.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 00:23:05 -0700 (PDT)
+Message-ID: <0fdb926c-0d61-d81f-1a52-4ef634b51804@bytedance.com>
+Date:   Tue, 8 Aug 2023 15:22:51 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="9iQz+m/6foi59TLA"
-Content-Disposition: inline
-In-Reply-To: <ZNETcVNsEmvK0KKH@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v4 45/48] mm: shrinker: make global slab shrink lockless
+Content-Language: en-US
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
+        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
+        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
+        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
+        gregkh@linuxfoundation.org, muchun.song@linux.dev,
+        simon.horman@corigine.com, dlemoal@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
+ <20230807110936.21819-46-zhengqi.arch@bytedance.com>
+ <ZNGnSbiPN0lDLpSW@dread.disaster.area>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <ZNGnSbiPN0lDLpSW@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Dave,
 
---9iQz+m/6foi59TLA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2023/8/8 10:24, Dave Chinner wrote:
+> On Mon, Aug 07, 2023 at 07:09:33PM +0800, Qi Zheng wrote:
+>> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+>> index eb342994675a..f06225f18531 100644
+>> --- a/include/linux/shrinker.h
+>> +++ b/include/linux/shrinker.h
+>> @@ -4,6 +4,8 @@
+>>   
+>>   #include <linux/atomic.h>
+>>   #include <linux/types.h>
+>> +#include <linux/refcount.h>
+>> +#include <linux/completion.h>
+>>   
+>>   #define SHRINKER_UNIT_BITS	BITS_PER_LONG
+>>   
+>> @@ -87,6 +89,10 @@ struct shrinker {
+>>   	int seeks;	/* seeks to recreate an obj */
+>>   	unsigned flags;
+>>   
+>> +	refcount_t refcount;
+>> +	struct completion done;
+>> +	struct rcu_head rcu;
+> 
+> Documentation, please. What does the refcount protect, what does the
+> completion provide, etc.
 
-On Mon, Aug 07, 2023 at 06:53:21PM +0300, Andy Shevchenko wrote:
-> On Mon, Aug 07, 2023 at 09:18:31AM +0200, Marcus Folkesson wrote:
-> > Microchip does have many similar chips, add support for those.
-> >=20
-> > The new supported chips are:
-> >   - microchip,mcp3910
-> >   - microchip,mcp3912
-> >   - microchip,mcp3913
-> >   - microchip,mcp3914
-> >   - microchip,mcp3918
-> >   - microchip,mcp3919
->=20
-> ...
->=20
-> > +#define MCP3910_STATUSCOM_DRHIZ         BIT(20)
->=20
-> Is it deliberately using spaces? If so, why?
+How about the following:
 
-No, probably due to my with my new vim setup..
+	/*
+	 * reference count of this shrinker, holding this can guarantee
+	 * that the shrinker will not be released.
+	 */
+	refcount_t refcount;
+	/*
+	 * Wait for shrinker::refcount to reach 0, that is, no shrinker
+	 * is running or will run again.
+	 */
+	struct completion done;
 
->=20
-> ...
->=20
-> > +static int mcp3910_get_osr(struct mcp3911 *adc, int *val)
-> > +{
-> > +	int ret, osr;
-> > +
-> > +	ret =3D mcp3911_read(adc, MCP3910_REG_CONFIG0, val, 3);
->=20
-> > +	osr =3D FIELD_GET(MCP3910_CONFIG0_OSR, *val);
-> > +	*val =3D 32 << osr;
-> > +	return ret;
->=20
-> I believe this is wrong order. Or bad code. The rule of thumb is not poll=
-ute
-> the output variable if we know the error happened.
->=20
-> Same applies to another function.
->=20
-> > +}
->=20
-> ...
->=20
-> > -	ret =3D mcp3911_config(adc);
-> > +	ret =3D device_property_read_u32(&adc->spi->dev, "microchip,device-ad=
-dr", &adc->dev_addr);
->=20
-> Why not spi->dev? Ditto for other uses like this.
+> 
+>> +
+>>   	void *private_data;
+>>   
+>>   	/* These are for internal use */
+>> @@ -120,6 +126,17 @@ struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...);
+>>   void shrinker_register(struct shrinker *shrinker);
+>>   void shrinker_free(struct shrinker *shrinker);
+>>   
+>> +static inline bool shrinker_try_get(struct shrinker *shrinker)
+>> +{
+>> +	return refcount_inc_not_zero(&shrinker->refcount);
+>> +}
+>> +
+>> +static inline void shrinker_put(struct shrinker *shrinker)
+>> +{
+>> +	if (refcount_dec_and_test(&shrinker->refcount))
+>> +		complete(&shrinker->done);
+>> +}
+>> +
+>>   #ifdef CONFIG_SHRINKER_DEBUG
+>>   extern int __printf(2, 3) shrinker_debugfs_rename(struct shrinker *shrinker,
+>>   						  const char *fmt, ...);
+>> diff --git a/mm/shrinker.c b/mm/shrinker.c
+>> index 1911c06b8af5..d318f5621862 100644
+>> --- a/mm/shrinker.c
+>> +++ b/mm/shrinker.c
+>> @@ -2,6 +2,7 @@
+>>   #include <linux/memcontrol.h>
+>>   #include <linux/rwsem.h>
+>>   #include <linux/shrinker.h>
+>> +#include <linux/rculist.h>
+>>   #include <trace/events/vmscan.h>
+>>   
+>>   #include "internal.h"
+>> @@ -577,33 +578,42 @@ unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup *memcg,
+>>   	if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
+>>   		return shrink_slab_memcg(gfp_mask, nid, memcg, priority);
+>>   
+>> -	if (!down_read_trylock(&shrinker_rwsem))
+>> -		goto out;
+>> -
+>> -	list_for_each_entry(shrinker, &shrinker_list, list) {
+>> +	rcu_read_lock();
+>> +	list_for_each_entry_rcu(shrinker, &shrinker_list, list) {
+>>   		struct shrink_control sc = {
+>>   			.gfp_mask = gfp_mask,
+>>   			.nid = nid,
+>>   			.memcg = memcg,
+>>   		};
+>>   
+>> +		if (!shrinker_try_get(shrinker))
+>> +			continue;
+>> +
+>> +		/*
+>> +		 * We can safely unlock the RCU lock here since we already
+>> +		 * hold the refcount of the shrinker.
+>> +		 */
+>> +		rcu_read_unlock();
+>> +
+>>   		ret = do_shrink_slab(&sc, shrinker, priority);
+>>   		if (ret == SHRINK_EMPTY)
+>>   			ret = 0;
+>>   		freed += ret;
+>> +
+>>   		/*
+>> -		 * Bail out if someone want to register a new shrinker to
+>> -		 * prevent the registration from being stalled for long periods
+>> -		 * by parallel ongoing shrinking.
+>> +		 * This shrinker may be deleted from shrinker_list and freed
+>> +		 * after the shrinker_put() below, but this shrinker is still
+>> +		 * used for the next traversal. So it is necessary to hold the
+>> +		 * RCU lock first to prevent this shrinker from being freed,
+>> +		 * which also ensures that the next shrinker that is traversed
+>> +		 * will not be freed (even if it is deleted from shrinker_list
+>> +		 * at the same time).
+>>   		 */
+> 
+> This needs to be moved to the head of the function, and document
+> the whole list walk, get, put and completion parts of the algorithm
+> that make it safe. There's more to this than "we hold a reference
+> count", especially the tricky "we might see the shrinker before it
+> is fully initialised" case....
 
-After all, I think it is better to stick sith adc->spi-dev to be
-consistent with the rest of the probe function. Change to spi->dev
-should probably be a seperate patch.
-Do you agree?
+How about moving these documents to before list_for_each_entry_rcu(),
+and then go to the head of shrink_slab_memcg() to explain the memcg
+slab shrink case.
 
->=20
-> --=20
-> With Best Regards,
-> Andy Shevchenko
->=20
->=20
+> 
+> 
+> .....
+>>   void shrinker_free(struct shrinker *shrinker)
+>>   {
+>>   	struct dentry *debugfs_entry = NULL;
+>> @@ -686,9 +712,18 @@ void shrinker_free(struct shrinker *shrinker)
+>>   	if (!shrinker)
+>>   		return;
+>>   
+>> +	if (shrinker->flags & SHRINKER_REGISTERED) {
+>> +		shrinker_put(shrinker);
+>> +		wait_for_completion(&shrinker->done);
+>> +	}
+> 
+> Needs a comment explaining why we need to wait here...
 
---9iQz+m/6foi59TLA
-Content-Type: application/pgp-signature; name="signature.asc"
+/*
+  * Wait for all lookups of the shrinker to complete, after that, no
+  * shrinker is running or will run again, then we can safely free
+  * the structure where the shrinker is located, such as super_block
+  * etc.
+  */
 
------BEGIN PGP SIGNATURE-----
+>> +
+>>   	down_write(&shrinker_rwsem);
+>>   	if (shrinker->flags & SHRINKER_REGISTERED) {
+>> -		list_del(&shrinker->list);
+>> +		/*
+>> +		 * Lookups on the shrinker are over and will fail in the future,
+>> +		 * so we can now remove it from the lists and free it.
+>> +		 */
+> 
+> .... rather than here after the wait has been done and provided the
+> guarantee that no shrinker is running or will run again...
 
-iQIzBAEBCAAdFiEEBVGi6LZstU1kwSxliIBOb1ldUjIFAmTR7SsACgkQiIBOb1ld
-UjKmLhAAmVbkmMJoLp/7/9BSuDNad52Q4sV0eiG2cYqHMn/ZFLdVISQmtYDtbPAd
-Kb2Co//QorEr0UeoxEKqOqkWOn1VhLHhP7wne2EosuVWZtW0f1t+wBx89NkMcr4O
-PwVZbSjPeOy7ZYqAk9av0pYugdW4H1dRCvivY9FsB653tuOQ3R+jetOxn0pWou06
-mCfA0jtBVFptfKjTuifEsPuGqJS4g20yyfMuDMOBhOA6362ShAV/vlq/EUr3c+C9
-f5t3MfCfYXrC/8tOI4DDzZ8VlFCDmEbPdAwjaOvaEJLh+enC4Yjh/kS3B6IryOGM
-VUatDrmCg1/vSrtBHCLsysC2ZPep1Liz+tthDwNB68KPlOiugQd1NN1LoO1mb3Jn
-khDZUdB9CEAJvSzA6sx3ZtehW7iKIrPCuc8EY9NClbHd63Q4hkXXXvbWzFSEr6Vv
-+/Fkg8WA4rfTjq1oOHsna2CNiHsb+xpbhoSPV4Y5qRpKsNQOSB74T8aU+YDxYDmy
-fhvC/d0aKPFcInIZaforvFOP4AAFgsDtYKNSI64qkiR4DjCe4+s0HsVNxWqFgjcg
-EZMzT8iuaZ4sFuNmlqskhQgqj/b+iN7vA/kaSztrnOlx6Ir5+uOk7dyHD+walUJs
-j+LuiTv4faZM22I4+J8df8ORUoLhj2r9nhggYg6zIXox04Bbu4s=
-=B4Sa
------END PGP SIGNATURE-----
+With the above comment, how about simplifying the comment here to the
+following:
 
---9iQz+m/6foi59TLA--
+/*
+  * Now we can safely remove it from the shrinker_list and free it.
+  */
+
+Thanks,
+Qi
+
+> 
+> -Dave.
