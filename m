@@ -2,180 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D72D774F5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983B8774F69
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbjHHXiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 19:38:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
+        id S231169AbjHHXit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 19:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjHHXiY (ORCPT
+        with ESMTP id S230345AbjHHXir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 19:38:24 -0400
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695F7DC
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 16:38:23 -0700 (PDT)
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3a5ad07254cso9617777b6e.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 16:38:23 -0700 (PDT)
+        Tue, 8 Aug 2023 19:38:47 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF21919AD
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 16:38:44 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fe21e7f3d1so10265257e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 16:38:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691537923; x=1692142723;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ytXUrmbGQxZiuOxpE+msM3CEna+MU5lJ9nyaPjsP9xk=;
+        b=j9yslVGNbpSB21NuQJW5m7eziuPW6xLOT4dplz83lZBdkqWUXBXFwtJq9J3ReD2vXe
+         cDo90KAdx+vU2Ho9h7Sg9hYFidDbxObD+JuJ32zBBTe1+Qf143wQy7w380NOFO84wkB/
+         PX2HTp9Z6TGX6v00P+59LqHp0q3y61nnmvag+cLR29+zH69JfhIl8wmi2AhrY9bdvNFW
+         3HwQ+j2AIkiCA+VxE5x0bWZ7XnasMChQIzBDyPjjxaZqv5xFWlJVjEDoUePh9pHzrPT5
+         MXXRjfFi6FwRoAiKhvm5DK6/JUp+LcuZh9gik8TBPUMVCybPh3Mb7eMKgMWYbDYysGbR
+         jiqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691537902; x=1692142702;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oEJn6Pyjr7q36TqDIr0AkC8WD8+EGugxwkFsN3YngW4=;
-        b=gjpC6Gzq+PIg9Btb4SRbN29OF60474X2Rga3HFEOvao8FxmM9j420n14dZ6yjL6k8F
-         lZK+sBgeS8GD2QsNfFZcxtMjtRBQxbdzua/IcYOI/+cM281NSNsh0PzNyBam6doMmZgk
-         lPM8JTG/fFYzJ5enOu6bkU0b2ZJP53aViRKMnPQd4pKlmZkU8R2vlSHlRu9mp73Nxd1c
-         EQRyI4lUk8XRfp9OKFM7ZzJ9faq5XCEqW3YgU5oWWEUF4LUohQOAtVEZB7bgIIPWlkaL
-         DqOcWjwVvnTTB6UwuX0ODIEg83ekck1zeJ7GEqWYvtywtm1Dv4tyj63BQl3+x8QnqZiR
-         Rh6A==
-X-Gm-Message-State: AOJu0Ywzff/xH64DCaAwO32+w3n8cKbazx+9+noURoINGrMEODEN6cx0
-        U5BYdxriV9YP4w307K1CnIi59BsfUqyzmBCBLxBZF3Fbn3mL
-X-Google-Smtp-Source: AGHT+IGvU2CUQkDT3s6yLU4tJr6xbIZbK0c8PtuhI2xZpWAwMaxJ8QGcYwNJJG4Cx3DpOjsIsNvGCR7/dFAj6tHIsiUQgUgisak3
+        d=1e100.net; s=20221208; t=1691537923; x=1692142723;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ytXUrmbGQxZiuOxpE+msM3CEna+MU5lJ9nyaPjsP9xk=;
+        b=Y6dzTagI+hbLVWjzCHzrszj7BH8w7/TPGMaLyK6c1GS+RN8qw/KsMuJc7OYbnSnCOI
+         QsLWzC7CqxUeQS4nyTp9JCX6oNk26V15Vp7p0K0UYFjEUfEScnzbPN4zr0NjOMGjb3q0
+         eX7SPGQ8sSv7EB/djZYAg9iETm//MPm3HamjPMuMkFKcpwbuaI748ANMv/+ARpWMckhW
+         XmPR88mOcTpOz3N/fzDRZUFw8S3f2Uv6g2MnulEtRAaH4tlWiUK82pKl/jhG8BFypn/V
+         645ZAp21I1HuqG+HPGXXkI/a0TEdeq/1Vwdowffpqrog3pWjFLAjMofUQVf0I/KRrKhk
+         gpBA==
+X-Gm-Message-State: AOJu0YwT6EoUVBoncH2eD5u+hcZRkTv+zd81iuDvR6g/yQHSsU3T+CHE
+        aodhE1LBew7fO/rTrkG80rVpIw==
+X-Google-Smtp-Source: AGHT+IEz2HLegPfNAvYDjru2oYALXto+xH1zIrH/qlyKsAvXOSr8mUzHzieHiA/n7ZyHAF7HlA38yw==
+X-Received: by 2002:a05:6512:1142:b0:4fe:3724:fdb1 with SMTP id m2-20020a056512114200b004fe3724fdb1mr581477lfg.41.1691537922833;
+        Tue, 08 Aug 2023 16:38:42 -0700 (PDT)
+Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
+        by smtp.gmail.com with ESMTPSA id v24-20020ac25598000000b004fe1d770527sm2031871lfg.309.2023.08.08.16.38.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 16:38:42 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH v10 0/2] Add Novatek NT36xxx touchscreen driver
+Date:   Wed, 09 Aug 2023 01:38:27 +0200
+Message-Id: <20230808-topic-nt36xxx-v10-0-dd135dfa0b5e@linaro.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:180f:b0:3a6:feb1:bb83 with SMTP id
- bh15-20020a056808180f00b003a6feb1bb83mr679585oib.3.1691537902775; Tue, 08 Aug
- 2023 16:38:22 -0700 (PDT)
-Date:   Tue, 08 Aug 2023 16:38:22 -0700
-In-Reply-To: <20230808232313.2035-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d1c439060271db4a@google.com>
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in btrfs_open_devices
-From:   syzbot <syzbot+26860029a4d562566231@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPPR0mQC/zWNwQrDIBAFfyV47oZVE5Ge+h+lB2M2UZJo0LQII
+ f9eKfQ4A/PeyTIlT5ndm5Ml+vjsY6jA8dYw60yYCfxYBRMoJGrUcMTdWwiHVKUUMB0f0apu7A2
+ x2gwmEwzJBOtqFd7rWuWeaPLl9/J8VZ5S3OBwicx/GjkKLQSXKFqlei2Bw+LiunD+mDfj19bGj
+ V3XF9p0nH2wAAAA
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Del Regno <angelogioacchino.delregno@collabora.com>,
+        Henrik Rydberg <rydberg@bitmath.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dang Huynh <danct12@riseup.net>,
+        Amit Pundir <amit.pundir@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691537921; l=3972;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=D0PAwR5df/bodweenMRrHccWIEO0AX2dl/LrswhguEA=;
+ b=A+GD6Np4uWEw02CMd+pHwDQctaPQNQGE8ae9ceGFSo2nPDhLj330j7O1/OUxpQWY28ub+WTaR
+ 0B5L+jzNsmOBSrZXJCsQ2+/7gdU3ZVbfW/speE6aXu3Hqia4UctkWaJ
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+I am taking over this series from Angelo, as he's moved on to other
+things, but there are still devices out there (and being made)
+utilizing this class of ICs.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: use-after-free Read in btrfs_mount_root
+This patch series has been tested against the following devices:
+ - Sony Xperia 10        (SDM630 Ganges Kirin)
+ - Sony Xperia 10 Plus   (SDM636 Ganges Mermaid)
 
-==================================================================
-BUG: KASAN: use-after-free in btrfs_mount_root+0xf1b/0xf70 fs/btrfs/super.c:1539
-Read of size 8 at addr ffff8880636d1110 by task syz-executor.2/5580
+Changes in v2:
+- Fixed sparse warnings from lkp kernel test robot
 
-CPU: 1 PID: 5580 Comm: syz-executor.2 Not tainted 6.5.0-rc5-next-20230807-syzkaller-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- btrfs_mount_root+0xf1b/0xf70 fs/btrfs/super.c:1539
- legacy_get_tree+0x109/0x220 fs/fs_context.c:611
- vfs_get_tree+0x88/0x350 fs/super.c:1544
- fc_mount fs/namespace.c:1112 [inline]
- vfs_kern_mount.part.0+0xcb/0x170 fs/namespace.c:1142
- vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
- btrfs_mount+0x292/0xb10 fs/btrfs/super.c:1586
- legacy_get_tree+0x109/0x220 fs/fs_context.c:611
- vfs_get_tree+0x88/0x350 fs/super.c:1544
- do_new_mount fs/namespace.c:3335 [inline]
- path_mount+0x1492/0x1ed0 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount fs/namespace.c:3861 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fa214e7e1ea
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fa215c9aee8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fa215c9af80 RCX: 00007fa214e7e1ea
-RDX: 00000000200051c0 RSI: 0000000020005200 RDI: 00007fa215c9af40
-RBP: 00000000200051c0 R08: 00007fa215c9af80 R09: 0000000001000008
-R10: 0000000001000008 R11: 0000000000000246 R12: 0000000020005200
-R13: 00007fa215c9af40 R14: 00000000000051ab R15: 0000000020000280
- </TASK>
+Changes in v3 (as requested by Dmitry Torokhov):
+- Using shorthand u16/u32 (sorry for the overlook!)
+- Now using more input and touchscreen APIs
+- Fixed useless workqueue involvements
+- Removed useless locking
+- Switched reads and writes to use regmap
+- Moved header contents to nt36xxx.c
+- Fixed reset gpio handling
+- Other cleanups
+- P.S.: Thanks, Dmitry!
 
-The buggy address belongs to the physical page:
-page:ffffea00018db440 refcount:0 mapcount:0 mapping:0000000000000000 index:0x4 pfn:0x636d1
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000000 0000000000000000 ffffffff00000201 0000000000000000
-raw: 0000000000000004 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 2, migratetype Unmovable, gfp_mask 0x102000(__GFP_NOWARN|__GFP_HARDWALL), pid 5580, tgid 5579 (syz-executor.2), ts 76159898184, free_ts 76159901250
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2d2/0x350 mm/page_alloc.c:1567
- prep_new_page mm/page_alloc.c:1574 [inline]
- get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3253
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4509
- alloc_pages+0x1a9/0x270 mm/mempolicy.c:2298
- __stack_depot_save+0x3c2/0x510 lib/stackdepot.c:410
- kasan_save_stack+0x43/0x50 mm/kasan/common.c:46
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x15e/0x1b0 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
- list_lru_destroy mm/list_lru.c:598 [inline]
- list_lru_destroy+0x153/0x700 mm/list_lru.c:589
- deactivate_locked_super+0xb2/0x170 fs/super.c:338
- btrfs_mount_root+0x625/0xf70 fs/btrfs/super.c:1534
- legacy_get_tree+0x109/0x220 fs/fs_context.c:611
- vfs_get_tree+0x88/0x350 fs/super.c:1544
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1158 [inline]
- free_unref_page_prepare+0x508/0xb90 mm/page_alloc.c:2380
- free_unref_page+0x33/0x3b0 mm/page_alloc.c:2475
- __stack_depot_save+0x193/0x510 lib/stackdepot.c:443
- kasan_save_stack+0x43/0x50 mm/kasan/common.c:46
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x15e/0x1b0 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
- list_lru_destroy mm/list_lru.c:598 [inline]
- list_lru_destroy+0x153/0x700 mm/list_lru.c:589
- deactivate_locked_super+0xb2/0x170 fs/super.c:338
- btrfs_mount_root+0x625/0xf70 fs/btrfs/super.c:1534
- legacy_get_tree+0x109/0x220 fs/fs_context.c:611
- vfs_get_tree+0x88/0x350 fs/super.c:1544
- fc_mount fs/namespace.c:1112 [inline]
- vfs_kern_mount.part.0+0xcb/0x170 fs/namespace.c:1142
- vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
+Changes in v4:
+- Fixed regmap read length for CRC_ERR_FLAG final check
+- Fixed YAML binding, as requested by Krzysztof Kozlowski
 
-Memory state around the buggy address:
- ffff8880636d1000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8880636d1080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff8880636d1100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                         ^
- ffff8880636d1180: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8880636d1200: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
+Changes in v5:
+- Replaced subsystem maintainer's name with .. mine,
+  usage of additionalProperties to unevaluatedProperties
+  and a typo fix for reset-gpios as per Rob Herring's review
+- Changed compatible string as per Krzysztof K. request
+- Renamed the novatek,nt36xxx.yaml file to just nt36xxx.yaml
+  in order to now reflect the driver name instead of the DT
+  compatible
+- Fixed blank line at EOF
 
+Changes in v6:
+- Removed include of_gpio.h, added mod_devicetable.h and
+  gpio/consumer.h
+- Added kerneldoc to relevant functions/enum
+- Used traditional patterns for error checking where possible
+- Documented calls to usleep/msleep
+- Using be16_to_cpu / get_unaligned_be16 where possible
+- Added helper for CRC error check on retrieved buffer
+- Decreased indentation in the CRC reboot recovery function
+- Removed instances of error code sum
+- Dropped all likely/unlikely optimization as per request
+- Removed redundant reset_gpio checks
+- Dropped of_match_ptr and ifdefs for CONFIG_OF
 
-Tested on:
+Changes in v7:
+- Fixed typo in nt36xxx.c
 
-commit:         f7dc24b3 Add linux-next specific files for 20230807
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=121811fda80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d7847c9dca13d6c5
-dashboard link: https://syzkaller.appspot.com/bug?extid=26860029a4d562566231
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=163b52eda80000
+Changes in v8:
+- Fixed typo reset-gpio -> reset-gpios in dt-bindings
+
+Changes in v9:
+- Includes are now sorted
+- Used proposed sizeof variable instead of sizeof type
+- Fixed a return value check for common pattern
+- Added NULL check to devm_kasprintf call
+- Returning ret on probe function to be consistent
+
+Changes in v10:
+- Take over this series from Angelo
+- Update Angelo's e-mail address
+- Rebase over linux-next
+- Pick up tags
+- Drop patch adding novatek vendor prefix (it's already there)
+- Reword the bindings title and commit title (bindings describe the
+  hardware yada yada)
+- Solve trivial checkpatch warnings
+- Adapt to i2c_probe arguments changing since 2020
+- Open-code nt36xxx_mem_map assignments
+- Make inline hex lowercase
+- Indent nt36xxx_trim_table with tabs
+- Add "-i2c" suffix to the compatible, as these chips also can be
+  connected over SPI, keep bindings reviews in good faith
+- Don't duplicate enum/struct definitions in .c and .h (how did that go
+  unnoticed)
+- Fix a couple typos
+- Use pm_ptr()
+- Use consistent whitespacing for defines
+- Remove unused defines
+- Include nt36xxx.h from nt36xxx.c (........)
+- Re-tested on a Sony Xperia 10
+Link to v9: https://lore.kernel.org/linux-input/20201028221302.66583-1-kholk11@gmail.com/
+
+--
+2.28.0
+
+---
+AngeloGioacchino Del Regno (2):
+      dt-bindings: touchscreen: Add binding for Novatek NT36xxx ICs
+      Input: Add Novatek NT36xxx touchscreen driver
+
+ .../bindings/input/touchscreen/nt36xxx.yaml        |  59 ++
+ drivers/input/touchscreen/Kconfig                  |  12 +
+ drivers/input/touchscreen/Makefile                 |   1 +
+ drivers/input/touchscreen/nt36xxx.c                | 847 +++++++++++++++++++++
+ drivers/input/touchscreen/nt36xxx.h                |  89 +++
+ 5 files changed, 1008 insertions(+)
+---
+base-commit: 71cd4fc492ec41e4acd85e98bbf7a13753fc1e03
+change-id: 20230808-topic-nt36xxx-a41d0c64d5ae
+
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
