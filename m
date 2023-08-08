@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD6A77494F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F35D7743B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233681AbjHHTv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
+        id S235259AbjHHSIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233209AbjHHTvE (ORCPT
+        with ESMTP id S235313AbjHHSIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:51:04 -0400
+        Tue, 8 Aug 2023 14:08:10 -0400
 Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69ABC550E3
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:57:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFE663D56
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:09:22 -0700 (PDT)
 Received: from relay1-d.mail.gandi.net (unknown [217.70.183.193])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id 7F47ED2EAB
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 06:29:44 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4DAC0240009;
-        Tue,  8 Aug 2023 06:29:38 +0000 (UTC)
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 93E0AD2E95
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 06:29:42 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 639C324000B;
+        Tue,  8 Aug 2023 06:29:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691476179;
+        t=1691476180;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=X3Zr5zi6oiutEUY5SskrgH9VYy6BX6UnhftLaueXlCU=;
-        b=nfxXacI46SMugrnbW8CpNixY6lUc08T2a/xyLcq9Vbw+tn1Imt9HYCNQFEQH2GV2DLKAjo
-        cpfn/Ytaf3rWv0B9CCRTjwtiNscMlZkMztS7liNYaXudaLaiMbXul36dryAWNh56IIkbYF
-        et65n1hyiqIq0hnUVPp2RYYbPoN4F55hO4t3+gRHjzmL3ZrLMo9P42BLsXHAKnISBbKDeK
-        q5/Eh1jKAVJowXOedYJMuyfuqEfcre+PHdzYJD7+PFFnDEdq2bsvJzo/AmlP+Jg+t5QxlC
-        +bjNRQp0wKEGLJhylvVpzCDK3aqz+p//qXYWZ/7PdrGAqgR3wk7QX6i8QEskkw==
+        bh=4uLCgToS16/0CGtApzHhwLVg0LDST2ybBj3RK0mHpVg=;
+        b=a9ZoX82PEUVHuMLJ0ldJ9i/mxqfnVpm1OrRlYhfL5hdvTMGCNJ3vlzlbTvfBB+Z0BRxNoN
+        ZjRs6//ZPBhxsmuTU5eDY/PfMQxnOgFBZ/E9S0MK0tRPIJWRVDYNBnBICVwNivvdqml5XH
+        4WU216O0Ih81RT1CePWzoQl3a9OEvLnPwbvCJCCfhvlIvUSwHtqiF9VMRSOmT1qs2T8NYT
+        YyFu8UJGL7GPelBSOvrCeASSbS9r6EtXx0AB8D68ryeqPE0lidf6diLIY8pn3NdJDNjqq9
+        lOkQag55axHHLt+Y0Eqo7nk/nqNqil6LUQ6Kfv/N2F7iHTW9ubz2+8D6ECxKZg==
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -45,9 +45,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Daniel Golle <daniel@makrotopia.org>,
         =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
         Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v9 3/7] nvmem: core: Do not open-code existing functions
-Date:   Tue,  8 Aug 2023 08:29:28 +0200
-Message-Id: <20230808062932.150588-4-miquel.raynal@bootlin.com>
+Subject: [PATCH v9 4/7] nvmem: core: Notify when a new layout is registered
+Date:   Tue,  8 Aug 2023 08:29:29 +0200
+Message-Id: <20230808062932.150588-5-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230808062932.150588-1-miquel.raynal@bootlin.com>
 References: <20230808062932.150588-1-miquel.raynal@bootlin.com>
@@ -64,30 +64,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use of_nvmem_layout_get_container() instead of hardcoding it.
+Tell listeners a new layout was introduced and is now available.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/nvmem/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/nvmem/core.c           | 4 ++++
+ include/linux/nvmem-consumer.h | 2 ++
+ 2 files changed, 6 insertions(+)
 
 diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 48659106a1e2..257328887263 100644
+index 257328887263..4fb6d4d7fe40 100644
 --- a/drivers/nvmem/core.c
 +++ b/drivers/nvmem/core.c
-@@ -786,10 +786,10 @@ EXPORT_SYMBOL_GPL(nvmem_layout_unregister);
+@@ -772,12 +772,16 @@ int __nvmem_layout_register(struct nvmem_layout *layout, struct module *owner)
+ 	list_add(&layout->node, &nvmem_layouts);
+ 	spin_unlock(&nvmem_layout_lock);
  
- static struct nvmem_layout *nvmem_layout_get(struct nvmem_device *nvmem)
++	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_LAYOUT_ADD, layout);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(__nvmem_layout_register);
+ 
+ void nvmem_layout_unregister(struct nvmem_layout *layout)
  {
--	struct device_node *layout_np, *np = nvmem->dev.of_node;
-+	struct device_node *layout_np;
- 	struct nvmem_layout *l, *layout = ERR_PTR(-EPROBE_DEFER);
++	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_LAYOUT_REMOVE, layout);
++
+ 	spin_lock(&nvmem_layout_lock);
+ 	list_del(&layout->node);
+ 	spin_unlock(&nvmem_layout_lock);
+diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
+index 27373024856d..4523e4e83319 100644
+--- a/include/linux/nvmem-consumer.h
++++ b/include/linux/nvmem-consumer.h
+@@ -43,6 +43,8 @@ enum {
+ 	NVMEM_REMOVE,
+ 	NVMEM_CELL_ADD,
+ 	NVMEM_CELL_REMOVE,
++	NVMEM_LAYOUT_ADD,
++	NVMEM_LAYOUT_REMOVE,
+ };
  
--	layout_np = of_get_child_by_name(np, "nvmem-layout");
-+	layout_np = of_nvmem_layout_get_container(nvmem);
- 	if (!layout_np)
- 		return NULL;
- 
+ #if IS_ENABLED(CONFIG_NVMEM)
 -- 
 2.34.1
 
