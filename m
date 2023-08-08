@@ -2,152 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 489E8774731
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28400774747
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234754AbjHHTLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
+        id S235260AbjHHTNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234429AbjHHTKl (ORCPT
+        with ESMTP id S230322AbjHHTNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:10:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA5ADE9E6;
-        Tue,  8 Aug 2023 09:32:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 827D362456;
-        Tue,  8 Aug 2023 16:31:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BFB7C433C7;
-        Tue,  8 Aug 2023 16:31:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691512307;
-        bh=i13P5MPqrTGWCc+X/5J6OL6JOdO6y17/4r5Ys53Uur0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sUMo/ilNQjbTst5YG3/9ijxPs5mOI9ZLOnEjxhzeCm7KVteaFEsYSUu5F6P5kCu+c
-         cDaMjxIKKwWidt/oceJJBCYnV4cFJKtfctLYSJ4ksPmAW/mb38/qSvKosaEX4A4AjN
-         CJHDCGGD7KwDVjPZfJb+G4cSKBX6ud/7sUKmGVrFJHLfmwsYj9VVWTHu9mNAOWjzdW
-         AKx8NFq+92kLHrAdr4HfDc3o4JkeKHf6cNUluVZhfJcInujueS73luI8vViMDUBWyO
-         mRE2WFQtt7XWsExLES5NjKAfQgypy4Ibl5O1/3olZO1Bx3mrMHCF1On6OrRysXMZRm
-         JHDn+8ZoDXNMw==
-Date:   Tue, 8 Aug 2023 10:32:50 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Kees Cook <keescook@chromium.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
-Subject: Re: [PATCH v2] netfilter: ebtables: fix fortify warnings
-Message-ID: <ZNJuMoe37L02TP20@work>
-References: <20230808133038.771316-1-gongruiqi@huaweicloud.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230808133038.771316-1-gongruiqi@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Tue, 8 Aug 2023 15:13:16 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B86351F0
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:35:42 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-586a5ac5c29so54240347b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:35:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691512507; x=1692117307;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=nTM81EZMZbsGROKqkK+2bQm1mxf+detNdwYuQiVhiKI=;
+        b=NLhu0LP53J4D4l9J4feCfPU5/l3uqoArpZHJ0ECEL6xFUd0tcpgZfboT0p/kOcrv1i
+         XurwyVIyJVvh9OLoEaf6pP9EgBzqx+ayApgGh3mgBpvOf8w6olcj27SbvaSxITbSMqMN
+         CgZIpuMxyfhJyCSjXwTvGkaVdAxYLJF3xZxoaQMDQ1UZxjr4Q22jzvvMcQCFf6tLqeH7
+         1dEKTsxQeURWUr5SVN0EFpwesJP3bx+hG1gUlPCXdsSwapIam0tuneLG1tBKmOCqJyjW
+         1Y55eWM+4i5zr9j8RJ8Sbzv34OO4Vxei1vpJY8o02jLQT9JQrGXhAGl7FUdxFgOn6p1t
+         BbFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691512507; x=1692117307;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nTM81EZMZbsGROKqkK+2bQm1mxf+detNdwYuQiVhiKI=;
+        b=cbqSFftGilq4Mfhh9gWH8To4NIHJXK/Ula15B4W1yrwXxrPZt7KzcJP80lpr8LGXMF
+         3Sj6aKQBJ9ViKqL9VuJ9e9HSErOUy25zVUeLY1si1CRevkv7wPwS5gHDkvY7BHGNaMwS
+         HUsuBeScsNp4BlxPFSBLS6giGNdHNg17+PCNXjD2gITluykHkrB8MZixnf5pZ9EDfVD1
+         XPw7QlnR8q/LeBCqamOOca30/wekKm7fBjHZhaJqZRTRbwGFzz2k+EIvQw79WiDQLR0L
+         Pe39lU+l+/IurC0sqo1A8Agj1HEBhgkMG83mDJmzsvdp7FFzZFN5jpiX3dIA1YefF1sg
+         iBbg==
+X-Gm-Message-State: AOJu0YxzxLFGrPetn6ffFB2vNTbCzeBYZAb92wwEX+sm3u5EVg36Cnno
+        dY77uyLE4BbA7NXPV9au6o8C4YDXQQAXlAQtf8o=
+X-Google-Smtp-Source: AGHT+IGra8Wwc+HhL5o0pTOnXN44VrV3kTC7GbKyzGjGnaN9IQv8EY6FCqvWavWJO404OgNolWFZn+285BMePOXRcxo=
+X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:cc03:38d0:9718:e90b])
+ (user=ndesaulniers job=sendgmr) by 2002:a81:764a:0:b0:586:b4e9:753 with SMTP
+ id j10-20020a81764a000000b00586b4e90753mr2137ywk.4.1691512507357; Tue, 08 Aug
+ 2023 09:35:07 -0700 (PDT)
+Date:   Tue, 08 Aug 2023 09:35:00 -0700
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIALNu0mQC/3XMwQoCIRSF4VcZ7jrD0Sht1XvEEKJX50KNg4oUg
+ ++ezb7lf+B8G2RMhBmuwwYJK2WKSw9xGMDOZgnIyPUGwYXkiiuWKNv6yMUUskyeFJdndNbgBfp lTejpvXP3qfdMucT02fU6/tY/UB3ZyLSXzmrtjEd1CzGGJx5tfMHUWvsClxODhakAAAA=
+X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691512501; l=3558;
+ i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
+ bh=0g7k5Ub/PaWtkHDnipVyOF/RYqCFfg6Kly4NdhVJ1+4=; b=Ug/yXmBRV7rjndULD++FZYy1jLinoPsNkkAK8t9L3JV7U5XhMf8DHNpIh7iNPIn8X5mPxvKoJ
+ dRaQj3ShdkZADTxwuBmiZkSOcXfBMna7SC6UFCfavkMC+GX9BFqJcFd
+X-Mailer: b4 0.12.3
+Message-ID: <20230808-riscv_static-v2-1-2a1e2d2c7a4f@google.com>
+Subject: [PATCH v2] riscv: mm: fix 2 instances of -Wmissing-variable-declarations
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, kernel test robot <lkp@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 09:30:38PM +0800, GONG, Ruiqi wrote:
-> From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
-> 
-> When compiling with gcc 13 and CONFIG_FORTIFY_SOURCE=y, the following
-> warning appears:
-> 
-> In function ‘fortify_memcpy_chk’,
->     inlined from ‘size_entry_mwt’ at net/bridge/netfilter/ebtables.c:2118:2:
-> ./include/linux/fortify-string.h:592:25: error: call to ‘__read_overflow2_field’
-> declared with attribute warning: detected read beyond size of field (2nd parameter);
-> maybe use struct_group()? [-Werror=attribute-warning]
->   592 |                         __read_overflow2_field(q_size_field, size);
->       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> The compiler is complaining:
-> 
-> memcpy(&offsets[1], &entry->watchers_offset,
->                        sizeof(offsets) - sizeof(offsets[0]));
-> 
-> where memcpy reads beyong &entry->watchers_offset to copy
-> {watchers,target,next}_offset altogether into offsets[]. Silence the
-> warning by wrapping these three up via struct_group().
-> 
-> Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
-> ---
-> 
-> v2: fix HDRTEST error by replacing struct_group() with __struct_group(),
-> since it's a uapi header.
-> 
->  include/uapi/linux/netfilter_bridge/ebtables.h | 14 ++++++++------
->  net/bridge/netfilter/ebtables.c                |  3 +--
->  2 files changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/uapi/linux/netfilter_bridge/ebtables.h b/include/uapi/linux/netfilter_bridge/ebtables.h
-> index a494cf43a755..b0caad82b693 100644
-> --- a/include/uapi/linux/netfilter_bridge/ebtables.h
-> +++ b/include/uapi/linux/netfilter_bridge/ebtables.h
-> @@ -182,12 +182,14 @@ struct ebt_entry {
->  	unsigned char sourcemsk[ETH_ALEN];
->  	unsigned char destmac[ETH_ALEN];
->  	unsigned char destmsk[ETH_ALEN];
-> -	/* sizeof ebt_entry + matches */
-> -	unsigned int watchers_offset;
-> -	/* sizeof ebt_entry + matches + watchers */
-> -	unsigned int target_offset;
-> -	/* sizeof ebt_entry + matches + watchers + target */
-> -	unsigned int next_offset;
-> +	__struct_group(/* no tag */, offsets, /* no attrs */,
-> +		/* sizeof ebt_entry + matches */
-> +		unsigned int watchers_offset;
-> +		/* sizeof ebt_entry + matches + watchers */
-> +		unsigned int target_offset;
-> +		/* sizeof ebt_entry + matches + watchers + target */
-> +		unsigned int next_offset;
-> +	);
->  	unsigned char elems[0] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
->  };
->  
-> diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
-> index 757ec46fc45a..5ec66b1ebb64 100644
-> --- a/net/bridge/netfilter/ebtables.c
-> +++ b/net/bridge/netfilter/ebtables.c
-> @@ -2115,8 +2115,7 @@ static int size_entry_mwt(const struct ebt_entry *entry, const unsigned char *ba
->  		return ret;
->  
->  	offsets[0] = sizeof(struct ebt_entry); /* matches come first */
-> -	memcpy(&offsets[1], &entry->watchers_offset,
-> -			sizeof(offsets) - sizeof(offsets[0]));
-> +	memcpy(&offsets[1], &entry->offsets, sizeof(offsets) - sizeof(offsets[0]));
-							^^^^^^^^^^^^
-You now can replace this ____________________________________|
-with just `sizeof(entry->offsets)`
+I'm looking to enable -Wmissing-variable-declarations behind W=1. 0day
+bot spotted the following instance in ARCH=riscv builds:
 
-With that change you can add my
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+  arch/riscv/mm/init.c:276:7: warning: no previous extern declaration
+  for non-static variable 'trampoline_pg_dir'
+  [-Wmissing-variable-declarations]
+  276 | pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+      |       ^
+  arch/riscv/mm/init.c:276:1: note: declare 'static' if the variable is
+  not intended to be used outside of this translation unit
+  276 | pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+      | ^
+  arch/riscv/mm/init.c:279:7: warning: no previous extern declaration
+  for non-static variable 'early_pg_dir'
+  [-Wmissing-variable-declarations]
+  279 | pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+      |       ^
+  arch/riscv/mm/init.c:279:1: note: declare 'static' if the variable is
+  not intended to be used outside of this translation unit
+  279 | pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+      | ^
 
-Thank you
---
-Gustavo
+These symbols are referenced by more than one translation unit, so make
+sure they're both declared and include the correct header for their
+declarations. Finally, sort the list of includes to help keep them tidy.
 
->  
->  	if (state->buf_kern_start) {
->  		buf_start = state->buf_kern_start + state->buf_kern_offset;
-> -- 
-> 2.41.0
-> 
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/llvm/202308081000.tTL1ElTr-lkp@intel.com/
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+Changes in v2:
+- Forward declare early_pg_dir, too.
+- Remove declaration of early_pg_dir from arch/riscv/mm/kasan_init.c.
+- Link to v1: https://lore.kernel.org/r/20230808-riscv_static-v1-1-9f3dc99dafe8@google.com
+---
+ arch/riscv/include/asm/pgtable.h | 2 ++
+ arch/riscv/mm/init.c             | 9 +++++----
+ arch/riscv/mm/kasan_init.c       | 1 -
+ 3 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 75970ee2bda2..b5680c940c1e 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -188,6 +188,8 @@ extern struct pt_alloc_ops pt_ops __initdata;
+ #define PAGE_KERNEL_IO		__pgprot(_PAGE_IOREMAP)
+ 
+ extern pgd_t swapper_pg_dir[];
++extern pgd_t trampoline_pg_dir[];
++extern pgd_t early_pg_dir[];
+ 
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ static inline int pmd_present(pmd_t pmd)
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 9ce504737d18..cc0e06b4f223 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -26,12 +26,13 @@
+ #include <linux/kfence.h>
+ 
+ #include <asm/fixmap.h>
+-#include <asm/tlbflush.h>
+-#include <asm/sections.h>
+-#include <asm/soc.h>
+ #include <asm/io.h>
+-#include <asm/ptdump.h>
+ #include <asm/numa.h>
++#include <asm/pgtable.h>
++#include <asm/ptdump.h>
++#include <asm/sections.h>
++#include <asm/soc.h>
++#include <asm/tlbflush.h>
+ 
+ #include "../kernel/head.h"
+ 
+diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+index 8fc0efcf905c..a01bc15dce24 100644
+--- a/arch/riscv/mm/kasan_init.c
++++ b/arch/riscv/mm/kasan_init.c
+@@ -22,7 +22,6 @@
+  * region is not and then we have to go down to the PUD level.
+  */
+ 
+-extern pgd_t early_pg_dir[PTRS_PER_PGD];
+ pgd_t tmp_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+ p4d_t tmp_p4d[PTRS_PER_P4D] __page_aligned_bss;
+ pud_t tmp_pud[PTRS_PER_PUD] __page_aligned_bss;
+
+---
+base-commit: 14f9643dc90adea074a0ffb7a17d337eafc6a5cc
+change-id: 20230808-riscv_static-348036edcae7
+
+Best regards,
+-- 
+Nick Desaulniers <ndesaulniers@google.com>
+
