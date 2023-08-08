@@ -2,157 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B48E07742C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F487773F74
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235054AbjHHRtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:49:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49032 "EHLO
+        id S233484AbjHHQsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235033AbjHHRtN (ORCPT
+        with ESMTP id S233540AbjHHQrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:49:13 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7211C902F;
-        Tue,  8 Aug 2023 09:21:54 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378CqvRG089729;
-        Tue, 8 Aug 2023 07:52:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691499177;
-        bh=oAHyNjZ4qdC82k09nVl9fcw3dWGC9wMNtP2mYp5EnBg=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=x5loM3xAJZK3TdZ20gpQPf/jYzpWvShwUK+nxQQkjkwF3cZXx3TTHkTGMe+sKL0em
-         7DCRD3knWnpzokaCJWUsMUb36WE9s2mTAn7tGnYfwyTZtmJ/v9gpyXqImCoDYOlexw
-         uG2j6oEaq/4yvHIZQsW874lET6vHffvnFO5OU+dM=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378Cqv1V084651
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Aug 2023 07:52:57 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
- Aug 2023 07:52:57 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 8 Aug 2023 07:52:57 -0500
-Received: from [172.24.227.217] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378CqqbG121602;
-        Tue, 8 Aug 2023 07:52:53 -0500
-Message-ID: <27bdb861-64ff-b7ac-85cf-beaaaca2b704@ti.com>
-Date:   Tue, 8 Aug 2023 18:22:51 +0530
+        Tue, 8 Aug 2023 12:47:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE43170E4
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:56:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691510161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=dTX14N9/0e74HCqepsk/apUoVl7UMygGmrFkx9a+jkY=;
+        b=bbw6aQvcJ1WGsFmBDJg7vT/z0ZO4QuOThL6SYL5tQcEWsXSscyIY7GW9TA6HsivCgI5E/p
+        VwdFMcDWGTk3jrwymV9BajcARr441gFcxymswt6n1P1KWxnl2NfqfuvpA/sT25U7Duw5Yd
+        pZGhmCeIGxVXZZS4Ty0mGN8HklMAmA4=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-179-Zm8CYJDlO7ixagSsCGnqDA-1; Tue, 08 Aug 2023 08:53:17 -0400
+X-MC-Unique: Zm8CYJDlO7ixagSsCGnqDA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8305C3C11C68;
+        Tue,  8 Aug 2023 12:53:17 +0000 (UTC)
+Received: from pasta.redhat.com (unknown [10.45.225.145])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B0DBE2026D4B;
+        Tue,  8 Aug 2023 12:53:16 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] gfs2 fixes
+Date:   Tue,  8 Aug 2023 14:53:15 +0200
+Message-Id: <20230808125315.1727575-1-agruenba@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] dt-bindings: remoteproc: pru: Add Interrupt property
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-CC:     MD Danish Anwar <danishanwar@ti.com>, Suman Anna <s-anna@ti.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>,
-        <srk@ti.com>, <nm@ti.com>
-References: <20230807110836.2612730-1-danishanwar@ti.com>
- <20230807-euphemism-trailing-ef4130dc7437@spud>
- <910a4a98-712a-5517-5a5b-ffb962f83463@ti.com>
- <20230808-unwomanly-generic-67d20f0e51cd@spud>
- <cd74e31f-8bc6-445b-9c33-51e53a439cd2@ti.com>
- <20230808-bazooka-uncoated-a3401d94b063@spud>
-From:   Md Danish Anwar <a0501179@ti.com>
-Organization: Texas Instruments
-In-Reply-To: <20230808-bazooka-uncoated-a3401d94b063@spud>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/23 4:58 pm, Conor Dooley wrote:
-> On Tue, Aug 08, 2023 at 04:30:32PM +0530, Md Danish Anwar wrote:
->> On 08/08/23 4:18 pm, Conor Dooley wrote:
->>> On Tue, Aug 08, 2023 at 03:14:31PM +0530, Md Danish Anwar wrote:
->>>> On 07/08/23 8:09 pm, Conor Dooley wrote:
->>>>> On Mon, Aug 07, 2023 at 04:38:36PM +0530, MD Danish Anwar wrote:
->>>>>> Add interrupts and interrupt-names protperties for PRU and RTU cores.
->>>>>>
->>>>>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
->>>>>> ---
->>>>>>  .../bindings/remoteproc/ti,pru-rproc.yaml     | 22 +++++++++++++++++++
->>>>>>  1 file changed, 22 insertions(+)
->>>>>>
->>>>>> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
->>>>>> index cd55d80137f7..6970316943bb 100644
->>>>>> --- a/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
->>>>>> +++ b/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
->>>>>> @@ -66,6 +66,16 @@ properties:
->>>>>>        Should contain the name of the default firmware image
->>>>>>        file located on the firmware search path.
->>>>>>  
->>>>>> +  interrupts:
->>>>>> +    maxItems: 1
->>>>>> +    description:
->>>>>> +      Interrupt specifiers enable the virtio/rpmsg communication between MPU
->>>>>> +      and the PRU/RTU cores.
->>>>>> +
->>>>>> +  interrupt-names:
->>>>>> +    items:
->>>>>> +      - const: vring
->>>>>> +
->>>>>>  if:
->>>>>>    properties:
->>>>>>      compatible:
->>>>>> @@ -171,6 +181,9 @@ examples:
->>>>>>                <0x22400 0x100>;
->>>>>>          reg-names = "iram", "control", "debug";
->>>>>>          firmware-name = "am65x-pru0_0-fw";
->>>>>> +        interrupt-parent = <&icssg0_intc>;
->>>>>> +        interrupts = <16 2 2>;
->>>>>> +        interrupt-names = "vring";
->>>>>>        };
->>>>>
->>>>> These examples would probably be more helpful if they used the
->>>>> appropriate defines, no?
->>>>>
->>>>
->>>> PRUSS Interrupt controller doesn't have any appropriate defines. This doesn't
->>>> use GIC so defines from arm-gic.h can not be used here. These are specific to
->>>> PRUSS INTC.
->>>
->>> I was deliberately vague in case the gic stuff applied too, but my main
->>> question was about the standard defines used for interrupt types.
->>>
->>
->> There are no standard defines for these interrupt types. However I can create a
->> new .h file defining all the three interrupt cells and their values for both
->> PRU and RTU cores if you think that is required. Otherwise we can go with
->> hardcoded values.
->>
->> Please let me know what you think should be done here.
-> 
-> It'd be good to reference to the documentation for the cells, I don't
-> think adding a header is necessary here.
+Hi Linus,
 
-Sure. Then I would keep this as it is. the interrupt cell values will remain as
-it is. No change required here then. Please let me know if any other change is
-required in this patch.
+please consider pulling the following two gfs2 fixes.
 
-> 
-> Thanks,
-> Conor.
+Thanks,
+Andreas
 
--- 
-Thanks and Regards,
-Danish.
+The following changes since commit 94c76955e86a5a4f16a1d690b66dcc268c156e6a:
+
+  Merge tag 'gfs2-v6.4-rc5-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2 (2023-07-04 11:45:16 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v6.4-fixes
+
+for you to fetch changes up to 0be8432166a61abc537e1247e530f4b85970b56b:
+
+  gfs2: Don't use filemap_splice_read (2023-08-07 18:42:04 +0200)
+
+----------------------------------------------------------------
+gfs2 fixes
+
+- Fix a freeze consistency check in gfs2_trans_add_meta().
+
+- Don't use filemap_splice_read as it can cause deadlocks on gfs2.
+
+----------------------------------------------------------------
+Andreas Gruenbacher (1):
+      gfs2: Fix freeze consistency check in gfs2_trans_add_meta
+
+Bob Peterson (1):
+      gfs2: Don't use filemap_splice_read
+
+ fs/gfs2/file.c  |  4 ++--
+ fs/gfs2/trans.c | 14 ++++++++++----
+ 2 files changed, 12 insertions(+), 6 deletions(-)
+
