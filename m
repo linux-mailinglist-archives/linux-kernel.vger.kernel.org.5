@@ -2,103 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 862BA7737B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 05:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4347737BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 05:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbjHHD2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 23:28:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49304 "EHLO
+        id S230184AbjHHD2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 23:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbjHHD2F (ORCPT
+        with ESMTP id S229961AbjHHD2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 23:28:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B8010F6
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 20:26:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9ee8YYW05CME00ewErNo+UK3igS6KjVnj9z96msv9rA=; b=az3Vx6msxNlYZ1nos7n6Svx9AH
-        p/4XOlHlGWxK3iRcHiHgw1n+jK2cbUQLPZY7FkSSyUQ/JvyME+JSGn3mGuXDn7sLDhvp89o6cHcor
-        4+CegyF9ccoXkS8FL+QHFBeXU+DZD3a3mEbhpX7Bqd7VqLpok2TtJm7cIjRzH251AJ24IRCt6yykm
-        lIIsstxXAUtDnZgfD/+8Lkl9ENYvQhO0PZwVU8bDmhVEqpWwutNyJL26a06qw/zGqw62HXF1zswbG
-        ISkq0ueA5lvd9DzRA85O2Rov/lP8mgkaRLun+O0OrMeRYXmggp2nal6XWeI5cxiL29m7PXLxjCZcM
-        A0tkbL4g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qTDMu-00F6HF-D9; Tue, 08 Aug 2023 03:26:48 +0000
-Date:   Tue, 8 Aug 2023 04:26:48 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: remove unneeded __meminit annotation
-Message-ID: <ZNG1+PV5nG8YZDev@casper.infradead.org>
-References: <20230808015831.608454-1-linmiaohe@huawei.com>
- <ZNGo5Y4vQ3rQn0vf@casper.infradead.org>
- <308f326d-c7ae-be49-22af-189a81a89aa2@huawei.com>
- <ZNGzqRYzC8lbLG9s@casper.infradead.org>
+        Mon, 7 Aug 2023 23:28:25 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9C91BF2
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 20:27:43 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe32ec7201so28545e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 20:27:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691465261; x=1692070061;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tiGQp3FsAI04kcNtST/Tl1pJkj2vxq4v0LWaXPyZsOc=;
+        b=pTn2KPnbpACRR1QoEDcr3ERxsHMj/OGG5vXUuUYjUIU9vaSomJncuphTCfIQ+V2jnF
+         tuxaRrPri4lngxFMKN+lzupIJKyPzJY6nWDPXUBV3uZJyHiN061bifLJJKL1mEdh4Zc/
+         1ZZZfF3vN5E4yc269EtGzxSwcgvKeTBrxeUQoDw0m5pTsHk06h6+eeSczXGA3bnEew9v
+         Nh5ds2u/V4BlrnZURcfuVZBtEJpP1qpOo/czVYss5a/IuZ1SGP4k1se4KCifowq+EIOT
+         fEnIu8rxXpbrKg4BgZkCbUGUYIVm5vkOz5UeICXSIJN5mKqoA8F8hwA46l7UAQu6fidZ
+         6c5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691465261; x=1692070061;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tiGQp3FsAI04kcNtST/Tl1pJkj2vxq4v0LWaXPyZsOc=;
+        b=JZtKS4L0TiWnQSLyYajJGdp5+lnQULTss/8jRtd6Fwp3mNDLyJ7jgpol85bFVjqOj8
+         JNbyoKWDlHDahkmSZpMWmU0R1ym8geX/arIUUby0HfpJM4P22pK/1IP8g1PMYpUpYNYY
+         9QxJaUjk0MAaKv3NbZt9g0qne1s84qElhEI+c3LVLjWiP3qsmKeFe5Ndikqj3DGoosFj
+         Oucvxpweyxx/+pnUjsXSqk2cydQtUPHhy43gkOPWlfZijQf4iV2lA/HT5tV0dcTXSRq/
+         /Ce3S7sfYk4MpVZ2mQ5TGq7jSe5lWteGlSNhKpJziS3BYSM4ARoRXdedAd6rvl5jp9cL
+         YSYQ==
+X-Gm-Message-State: AOJu0Yy8eqZHuwuGPNb5pt9xFfFjpnJjluZVzBvZh2QD/pUh8/1auXSy
+        5AxWBz07+HhbmljS/+Ilpb7+1Q/OZ2NQEQI0ryIw
+X-Google-Smtp-Source: AGHT+IHNklvPNz0M4NW5KZIZXX2bW3bL4rd8brH9A51j5QvubhasYCcxYJoodGdcImm/oRHisG2hKp4tUyZlyR0ad8Q=
+X-Received: by 2002:a05:600c:1d88:b0:3f7:e463:a0d6 with SMTP id
+ p8-20020a05600c1d8800b003f7e463a0d6mr296502wms.0.1691465261438; Mon, 07 Aug
+ 2023 20:27:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNGzqRYzC8lbLG9s@casper.infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <12d34340-6c94-4bfd-aa16-3c39026070d8@paulmck-laptop> <20230728032232.816584-2-paulmck@kernel.org>
+In-Reply-To: <20230728032232.816584-2-paulmck@kernel.org>
+From:   John Stultz <jstultz@google.com>
+Date:   Mon, 7 Aug 2023 20:27:29 -0700
+Message-ID: <CANDhNCpCrwbMp8oTwvTab+-Q1b52zJvMuZiV9LW-bP2Zgqqyhg@mail.gmail.com>
+Subject: Re: [PATCH rcu 2/2] torture: Add lock_torture writer_fifo module parameter
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        kernel-team@android.com, Davidlohr Bueso <dave@stgolabs.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 04:16:57AM +0100, Matthew Wilcox wrote:
-> On Tue, Aug 08, 2023 at 11:08:36AM +0800, Miaohe Lin wrote:
-> > On 2023/8/8 10:31, Matthew Wilcox wrote:
-> > > On Tue, Aug 08, 2023 at 09:58:31AM +0800, Miaohe Lin wrote:
-> > >> kswapd_stop() and kcompactd_stop() are only called when MEMORY_HOTREMOVE
-> > >> is enabled. So wrap them under CONFIG_MEMORY_HOTREMOVE and further remove
-> > >> __meminit annotation. No functional change intended.
-> > > 
-> > > I don't understand why this is an improvement.  If CONFIG_MEMORY_HOTREMOVE
-> > > is disabled, the linker drops this section (... right?)  If it's enabled,
-> > 
-> > When CONFIG_MEMORY_HOTREMOVE is disabled, without this patch:
-> > 
-> > size mm/compaction.o
-> >    text	   data	    bss	    dec	    hex	filename
-> >  103164	  30873	      0	 134037	  20b95	mm/compaction.o
-> > 
-> > size mm/vmscan.o
-> >    text	   data	    bss	    dec	    hex	filename
-> >  158775	  49612	     64	 208451	  32e43	mm/vmscan.o
-> > 
-> > while with this patch:
-> > 
-> > size mm/compaction.o
-> >    text	   data	    bss	    dec	    hex	filename
-> >  102915	  30865	      0	 133780	  20a94	mm/compaction.o
-> > 
-> > size mm/vmscan.o
-> >    text	   data	    bss	    dec	    hex	filename
-> >  158534	  49604	     64	 208202	  32d4a	mm/vmscan.o
-> > 
-> > We can reduce each .o by ~250 bytes.
-> 
-> But this is before the linker step!  That will be where the meminit
-> sections get dropped.  Assuming they are; I haven't verified.  You need
-> to compare before/after of the vmlinux, not the individual .o files.
+On Thu, Jul 27, 2023 at 8:22=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+>
+> This commit adds a module parameter that causes the locktorture writer
+> to run at real-time priority.
+>
+> To use it:
+> insmod /lib/modules/torture.ko random_shuffle=3D1
+> insmod /lib/modules/locktorture.ko torture_type=3Dmutex_lock rt_boost=3D1=
+ rt_boost_factor=3D50 nested_locks=3D3 writer_fifo=3D1
+>                                                                          =
+                               ^^^^^^^^^^^^^
+>
+> A predecessor to this patch has been helpful to uncover issues with the
+> proxy-execution series.
+>
+> [ paulmck: Remove locktorture-specific code from kernel/torture.c. ]
 
-Ah, found it:
+Thanks again for improving this!  I've switched over to your version
+here in my test tree.
 
-#if defined(CONFIG_MEMORY_HOTPLUG)
-#define MEM_KEEP(sec)    *(.mem##sec)
-#define MEM_DISCARD(sec)
-#else
-#define MEM_KEEP(sec)
-#define MEM_DISCARD(sec) *(.mem##sec)
-#endif
+Acked-by: John Stultz <jstultz@google.com>
 
-in include/asm-generic/vmlinux.lds.h
-
-So yeah, I think this patch is garbage.
+thanks
+-john
