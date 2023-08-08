@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E053774ACD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DEB774A7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbjHHUfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
+        id S233217AbjHHU3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbjHHUfg (ORCPT
+        with ESMTP id S232941AbjHHU3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:35:36 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818731A776;
-        Tue,  8 Aug 2023 10:06:13 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C086D40E01A2;
-        Tue,  8 Aug 2023 14:37:46 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id iOGadB4WTIeI; Tue,  8 Aug 2023 14:37:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691505464; bh=RnwN9On2kYCW9ShSPXeXJUgGMNKP19hlGSAZXu85hPs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y4p2yn7OdX7hMDsJj4EtycNDY6a31nhcuq2+a4boa3uEI9pAGgLL+NRqzROGW7As2
-         sCalnbdyOMBQSfGrgWpCpaPODC+vFyIfYZWv7Yb7vJXbEuBRxZewPSroaQVQ6+hDHi
-         xUekxj+dT14iNrNH3slTZ3RidWswTCUmt5qTfu/eKQ35sm6YEDOpMgnJZS1Q7c5jra
-         p7+VfswwxMwhXMwYxuXLObkGLFKGqxitXZtRFTQ0E+BLfp+UqwFpIsUlDYQX3MJWy0
-         zd4SRELRdlLQvqoXXcrzITnDT9DmW98ISESR1MxY+5Vy7CbCx9yugzuS9FTFP/YkJe
-         yWJOD872Uy5HnE+zxIawqIsUpdoIvpaAPD04AZAbDuimDEVVOQz0+xnVqya79Evp42
-         LJv2p08WgoOy9X3lHzEx7IkR6M6Yjw+ugAmhyST4AC3SI7geotDbdIRv2ZwjZt5zGE
-         mvobHNL8TkjiJwqzESJE1PyMsbuQbYzsFT2PnnYMVK2C+B/CrbLf3dsSmK6Lc3jePc
-         DoMd6azNkmC7N7A6jqp9qKboRb5loWxnDMjrhJURRsy/kT4/CFSTB6yriWAKARC72X
-         eitHrwaaRyFkJGKf4UkpvK28jzztjirgKMUUy4E/l203eTbUOBj9UuknVaY2HS5oJZ
-         jkFgqKizq+zLbJ+iXexP0daY=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C5ABE40E01A3;
-        Tue,  8 Aug 2023 14:37:35 +0000 (UTC)
-Date:   Tue, 8 Aug 2023 16:37:35 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <yazen.ghannam@amd.com>
-Cc:     "Limonciello, Mario" <mario.limonciello@amd.com>,
-        linux-edac@vger.kernel.org, hdegoede@redhat.com,
-        markgross@kernel.org, platform-driver-x86@vger.kernel.org,
-        "Luck, Tony" <tony.luck@intel.com>, linux-kernel@vger.kernel.org,
-        avadhut.naik@amd.com
-Subject: Re: [PATCH 1/2] platform/x86/amd: Introduce AMD Address Translation
- Library
-Message-ID: <20230808143735.GDZNJTL0DlJd3225db@fat_crate.local>
-References: <20230802185504.606855-1-yazen.ghannam@amd.com>
- <20230802185504.606855-2-yazen.ghannam@amd.com>
- <58934edf-4fad-48e0-bc5d-62712b11e607@amd.com>
- <894b3737-1a0a-4139-9c73-686a95481795@amd.com>
- <B3BE6B56-FBAB-4878-A45D-E95AFAC86AB1@alien8.de>
- <f989cd56-a066-409a-8d82-40d0bc6ff89b@amd.com>
- <20230808142007.GCZNJPFy8PqTJgTAN5@fat_crate.local>
- <a62282e0-3784-4d96-b632-fdd6d2627ca3@amd.com>
+        Tue, 8 Aug 2023 16:29:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490B31D474;
+        Tue,  8 Aug 2023 10:17:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691515046; x=1723051046;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=zJqEmuXZRFYwNy3i9MPLkKcjIG6qYzI1X7jD3nxkn2c=;
+  b=G3GYYpSZUsVd6h4r0Aa7Asfu6mVcK89Tqc2FXqJ7h5EgT9dBVskoX49s
+   n1cu3u65KdbhhpoTF97Mo6WLoW3fNdKHKIv8WUkiAwg16zHaRTCxYTGbH
+   1IXmCHgwopAMczejc2Y7+Hz9mRe9wf8Xf3UitBsOKaf1DBRrJ4BKxx6Fi
+   GDXMerUH8GFse1DYFkshg1tqmyxmzhKZ71a2nEeS4mEak3bBFnGhQ9rKY
+   3UTojXyvAvlZPn3aHr8/osCvGXGChkOMNnSb9d8Kyk77txXhrJryOu83f
+   VTbo2qqnsi9/AAI/nYh93vd4bF7QI6PrA4+3zBfJZzJLmrWBAC5VTtX/F
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="360970374"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="360970374"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 09:24:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="845525001"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="845525001"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 08 Aug 2023 09:24:55 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 35C26133; Tue,  8 Aug 2023 19:28:03 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Antoniu Miclaus <antoniu.miclaus@analog.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: [PATCH v1 1/6] device property: Use fwnode_property_string_array_count()
+Date:   Tue,  8 Aug 2023 19:27:55 +0300
+Message-Id: <20230808162800.61651-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+In-Reply-To: <20230808162800.61651-1-andriy.shevchenko@linux.intel.com>
+References: <20230808162800.61651-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <a62282e0-3784-4d96-b632-fdd6d2627ca3@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,26 +75,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 10:28:51AM -0400, Yazen Ghannam wrote:
-> Because this isn't intended to be only for MCA errors. The translation code
-> is related to the AMD Data Fabric. And it'll be a common back-end for memory
-> errors coming from MCA and CXL.
+Use fwnode_property_string_array_count() instead of open coded variant.
 
-But EDAC is not only about memory errors. Why not extend this into
-something which does other RAS functionality instead of doing a second
-one which is more or less related?
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/base/property.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-mce_amd is already loaded on the system, why add a second module if it
-can be part of the first one just the same?
-
-Strictly speaking, this all should've been drivers/ras/ from the very
-beginning and all EDAC should move there but that's going to be madness
-to do now.
-
-Thx.
-
+diff --git a/drivers/base/property.c b/drivers/base/property.c
+index 8c40abed7852..3bb9505f1631 100644
+--- a/drivers/base/property.c
++++ b/drivers/base/property.c
+@@ -473,7 +473,7 @@ int fwnode_property_match_string(const struct fwnode_handle *fwnode,
+ 	const char **values;
+ 	int nval, ret;
+ 
+-	nval = fwnode_property_read_string_array(fwnode, propname, NULL, 0);
++	nval = fwnode_property_string_array_count(fwnode, propname);
+ 	if (nval < 0)
+ 		return nval;
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.40.0.1.gaa8946217a0b
 
-https://people.kernel.org/tglx/notes-about-netiquette
