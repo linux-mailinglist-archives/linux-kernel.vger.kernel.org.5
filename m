@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E925774330
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 455E37742BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235174AbjHHR63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
+        id S235039AbjHHRtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235169AbjHHR6B (ORCPT
+        with ESMTP id S234921AbjHHRsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:58:01 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC79C1564;
-        Tue,  8 Aug 2023 09:26:11 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BE33040E019E;
-        Tue,  8 Aug 2023 12:10:43 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id l7qeyE9fTRly; Tue,  8 Aug 2023 12:10:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691496640; bh=Yyb9lJPqZ0admMIXFo2/2Rag2tQt+j4FUnO9ttD70gk=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=A1f25q4q1uJiOFvsLjYheE8rZWEX4+Q/HQszn6Oq3QZfDdsulLZwUrsiC79WRgdQ6
-         kQySYNlUqLjqRUDdoquepfUO4xWaOYCNjtG2CJiM4K4ZZzWW3HGq5rOFx4rQiskxZc
-         3cC9MDJ/BCqyPTC/A/bf0IeAdCkdNX0LmhhRKKfZ7d/FW8cqfXCme8TUccbT7NIUFP
-         2KP9Smb5cTSGatMBihnI0DViLi9QiJ/Mo0Rqv4Oon1IkyzlzS0wwJ3MTM86zF0M7vj
-         sJKWp5d0V/XZ1x/yRj4D954OK98HHQz7kux4E6cW/PHcRs3c6VsvMtj3EvwMTnt30l
-         mKllBRkbwkf+I48vSIp29F/iuOf1R+FWi2Lp6cWoAaYr2xdhxqaaOOP4DFp7ZjIGKJ
-         rYsno5L0eOLsJLaeifgFBXiMXEioujwr6iusUlugKSsP8M2fRUwioBMqAygMzjyRyw
-         QzIM5zbKUPWwexcyLSRfOlJUYwdvAkszpT0DqVByMvqOScGX36ILFMqro2NNaHcMn7
-         NiRSnxeNEvXrN8+tYQklND9Ym5OQCL7479dbskbuSJhfVxlzwvpBj543imwD7Krj5u
-         Zj/fJHucjLBUmlFLguBBN5n8FTJLdJIhBOpyp8YED55iF/EYWAD8QaXJsv8TeMcK5g
-         YVFnKf1OhQ85Ch03ZKa8Y8ac=
-Received: from [127.0.0.1] (unknown [46.114.213.25])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 67A1640E0195;
-        Tue,  8 Aug 2023 12:10:31 +0000 (UTC)
-Date:   Tue, 08 Aug 2023 14:10:09 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Limonciello, Mario" <mario.limonciello@amd.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        linux-edac@vger.kernel.org, hdegoede@redhat.com,
-        markgross@kernel.org, platform-driver-x86@vger.kernel.org,
-        "Luck, Tony" <tony.luck@intel.com>
-CC:     linux-kernel@vger.kernel.org, avadhut.naik@amd.com
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_1/2=5D_platform/x86/amd=3A_Int?= =?US-ASCII?Q?roduce_AMD_Address_Translation_Library?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <894b3737-1a0a-4139-9c73-686a95481795@amd.com>
-References: <20230802185504.606855-1-yazen.ghannam@amd.com> <20230802185504.606855-2-yazen.ghannam@amd.com> <58934edf-4fad-48e0-bc5d-62712b11e607@amd.com> <894b3737-1a0a-4139-9c73-686a95481795@amd.com>
-Message-ID: <B3BE6B56-FBAB-4878-A45D-E95AFAC86AB1@alien8.de>
+        Tue, 8 Aug 2023 13:48:52 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B383C25ED1;
+        Tue,  8 Aug 2023 09:21:42 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6874d1c8610so4229937b3a.0;
+        Tue, 08 Aug 2023 09:21:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691511672; x=1692116472;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dQjuyyNTy33tUChendA12c1wzE5rL9uSYQp+xAh/JHk=;
+        b=oWVgu9FnRlZjuS3BL5oIvNY6f7zFl1L1NND+TyyByiDK7tpbp4Qa55TbCQ5IO/iv85
+         ILSMg6DUOmdq3uhQ9fkfbLvPbh1L9ShW7sv89RVJN+9k8M179GvyEFtr38vI1lr+99lp
+         YnUdXM5NmleR0BBhqaD3VGDv+T+8zho3LyfvZOKkJRFa0gibQl2gxZWbLZ69K3AKNlZ9
+         82FhqBz9KXn53zaxFT7A2kvaYb9n4h2k57ZPmfa3aye5CHMPpGiIY/8DzwEq3KUKX9+8
+         HWB0y8l8WWaw7z0NOMEukwZPp2xV/9eQ/VXuGU2s3zM1vpDQVe0xcTElMcWOd6WOGJlt
+         fA0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691511672; x=1692116472;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dQjuyyNTy33tUChendA12c1wzE5rL9uSYQp+xAh/JHk=;
+        b=TyWbjgMCsj4qTLNmpEhGVU+kwcGLA+9gIEYePV04YwsJCrPo1HmquEFbRYZrOwHi+A
+         rjVPmQa61savDTdcNFKWVZPgj/3ceg0J4rurOiorUgQYiRR3oMjZ3n+odFihfS3iojFl
+         +B3f5+9zINZAFb57xecx6JI60csg9BPMpewwPeW9A1L53W0Il2M1i5GuJqVuk4XMB1vF
+         HyjexBBuUxbg2SOafVpi5KBYRogh6e11nUsAUlddkXiPS3eqNCzoc7m4irywhTPrVi/J
+         Ash11yUYecxo5AnTxE+Zyj6/RZldy6kLZh4aVtNK/4eTvEJw4ta6VJKr0H1u3LErt5ki
+         qLOA==
+X-Gm-Message-State: AOJu0Yz3qR4bS2w6sL9ZGfAAb34xq43hrO7AQJYDqvBxOYwxqWq5RUrm
+        F9wnYahjVW+6lASkii6jAyPZO05AoPnS3VG4idXHMVie1sS8Cg==
+X-Google-Smtp-Source: AGHT+IGy4BAla9+7n6rMgv5yJV+FaEmRuLNz3pCHRXSde5Fw0n8+lLXxJ1cce3w4g+PuJhKuaFIiaJlvsSpVq52hH3w=
+X-Received: by 2002:a05:6870:5494:b0:1ba:2c95:a168 with SMTP id
+ f20-20020a056870549400b001ba2c95a168mr13750691oan.35.1691496643494; Tue, 08
+ Aug 2023 05:10:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20230808022229.1560559-1-xiongwei.song@windriver.com> <ZNGsz3FC6q/jJ0+Z@casper.infradead.org>
+In-Reply-To: <ZNGsz3FC6q/jJ0+Z@casper.infradead.org>
+From:   Xiongwei Song <sxwjean@gmail.com>
+Date:   Tue, 8 Aug 2023 20:10:19 +0800
+Message-ID: <CAEVVKH8yxY7bbSS4i10rFBT6uq1x99n+R2=SEs73uvWr0zMXyw@mail.gmail.com>
+Subject: Re: [PATCH] mm/memcontrol: add tips for kmem.slabinfo
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     xiongwei.song@windriver.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, akpm@linux-foundation.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On August 8, 2023 5:17:33 AM GMT+02:00, "Limonciello, Mario" <mario=2Elimon=
-ciello@amd=2Ecom> wrote:
->Given it's 'library code' to be used by a bunch of things and also want t=
-o be able to use a module, what about putting it in lib/?  There's plenty o=
-f library code there as tristate=2E
+On Tue, Aug 8, 2023 at 10:47=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Tue, Aug 08, 2023 at 10:22:29AM +0800, xiongwei.song@windriver.com wro=
+te:
+> > From: Xiongwei Song <xiongwei.song@windriver.com>
+> >
+> > No any output from kmem.slabinfo, which is not friendly. Adding
+> > tips for it.
+>
+> What happens to tools which look in this file?
 
-It is x86-specific so not in there=2E Also, it might be used by multiple t=
-hings so you want it as a separate "translation" service which is called by=
- other modules=2E
+I thought the mem_cgroup_slab_show() function should be removed or
+provide some useful info.
 
-Thx=2E
-
---=20
-Sent from a small device: formatting sucks and brevity is inevitable=2E 
+Thanks.
+>
