@@ -2,123 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 079CD773FF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAEE0773C7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbjHHQ5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35676 "EHLO
+        id S231756AbjHHQGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233245AbjHHQ4n (ORCPT
+        with ESMTP id S231415AbjHHQF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:56:43 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D2BA286
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:59:55 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 837582031A;
-        Tue,  8 Aug 2023 09:59:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691488750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tv+ZghxAfCxLOqZPv3CyvrkPVy+sfVKBpO+7ooghzNk=;
-        b=zmsfjY6MRT3flhWagijVnhr8jPGbN3zAgkpJOfcsB4bcaAR7mhSQRwNNq6n+ky5zdSzqQ+
-        yumoGduk17gLNstsul9Ieau2UP+QMgym7MBEws4DCxT2VNx4275QZxd97z80ftLG+SsHTr
-        GBn20N5Wlc8XSE3UfXVhtUHkLvb2BdQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691488750;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tv+ZghxAfCxLOqZPv3CyvrkPVy+sfVKBpO+7ooghzNk=;
-        b=KWaTPpkpsC9NB1tTzYPgMjlapotcodSopYQoVZ0P7r4c7NN+Xny4dVC8VbjSvYXtiWj2YY
-        iopgwM1rVG4IlICw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 38A2113451;
-        Tue,  8 Aug 2023 09:59:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id pPQqDe4R0mT/JwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 08 Aug 2023 09:59:10 +0000
-Message-ID: <df1b15c3-e665-e23b-a4f9-cc554352eda8@suse.cz>
-Date:   Tue, 8 Aug 2023 11:59:09 +0200
+        Tue, 8 Aug 2023 12:05:27 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CDE2D71
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:45:28 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fe48a2801bso9602769e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691509527; x=1692114327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oj2ai9zvS+9QZOskCM8RXfhgWWD2kjSbmwS4f6JevAw=;
+        b=NvlUqdxNvIetH93wvK+sVx+G2EsRHuY8anUrshSQZtUqZxcDQ8A9D+ML55pMPRa5+5
+         cVRAY/RRvU9ZlCaU7iOe1zeC9lG0gDTNrknBnvuiiEnN0GKdKTkS57/7/xdytt7/ny3d
+         c2aRtmxok6N2UjCVTCsNPMpBGPHudeglvQYffLmCN9NJgkPXyvlzoDG2Wb6wKnde7dJv
+         yiQEt/IlfYO1Rsko+FJPDrv5oA5YirE0W9zxzVZUidncsqY8Hc48OVfDjzO2Uhq9k2dK
+         rTjgfI/8eQxTbDBnKk188bOIYcRIUjLbpmETd0phDXBJa9DtOjMNOkvc9bOZcScd3nEG
+         4wlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691509527; x=1692114327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oj2ai9zvS+9QZOskCM8RXfhgWWD2kjSbmwS4f6JevAw=;
+        b=NVeMsCytmkr/EqPOmt37AhwZwOTH51S+csR0TPb90GB+kNbErRsO0C3713PlntfNLn
+         EQrMyEGtobbOZUFqvq6p74hhX/3VjT+PdaBZ9DtdAlmU9yg0c945qQA0z9NSdkmSRVC/
+         NvAfxgaxG+oZJw6CwDRkNvA3oNNfGF7sDNQSZfZYE4uet8rOoXzYFGpJnNJwAREaTZg4
+         iYk01HqvGxDHin4Iy8sAvzEgy7VEJ9KIHWkg1uIM3vaR7lJukfX5ZzzGwCF8Bzm9Sfsm
+         U3QNh2NiK2IOrMGAtsgiNZkpLZfanUEaAr1AJ+kjQIesi7CtyNOocNHWwSYM80TwZ+pH
+         93qQ==
+X-Gm-Message-State: AOJu0YzNXrmcjxCDuMZzHnp4N2CO4dZzsBwEM9PyyfmyQ8VXiYgM7kRq
+        TSwy7FGUbsx4KPd11JdLODbUJ0iptEd93f30lC03ufi5xKo=
+X-Google-Smtp-Source: AGHT+IFfju5o1lWIv3wyfHE+qyETz1vJSnBk2q+GZQ6BY2VK2b4Baqqt+9vLWQ3xkBaRGglOIQJ0QqulvLM+5Af0FWA=
+X-Received: by 2002:a17:906:109b:b0:99b:d977:c00c with SMTP id
+ u27-20020a170906109b00b0099bd977c00cmr10395304eju.45.1691488763617; Tue, 08
+ Aug 2023 02:59:23 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [RFC 2/2] mm/slub: prefer NUMA locality over slight memory saving
- on NUMA machines
-Content-Language: en-US
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Rientjes <rientjes@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Feng Tang <feng.tang@intel.com>,
-        "Sang, Oliver" <oliver.sang@intel.com>,
-        Jay Patel <jaypatel@linux.ibm.com>,
-        Binder Makin <merimus@google.com>, aneesh.kumar@linux.ibm.com,
-        tsahu@linux.ibm.com, piyushs@linux.ibm.com, fengwei.yin@intel.com,
-        ying.huang@intel.com, lkp <lkp@intel.com>,
-        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20230723190906.4082646-1-42.hyeyoo@gmail.com>
- <20230723190906.4082646-3-42.hyeyoo@gmail.com>
- <1f88aff2-8027-1020-71b2-6a6528f82207@suse.cz>
- <CAB=+i9R52jLzD9eAMxhRTMHTFDmAGPDPcD0pwCxxDwq5yFZbxQ@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAB=+i9R52jLzD9eAMxhRTMHTFDmAGPDPcD0pwCxxDwq5yFZbxQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <1691401475-3796-1-git-send-email-hyeongtak.ji@gmail.com> <20230807181409.97310-1-sj@kernel.org>
+In-Reply-To: <20230807181409.97310-1-sj@kernel.org>
+From:   =?UTF-8?B?7KeA7ZiV7YOB?= <hyeongtak.ji@gmail.com>
+Date:   Tue, 8 Aug 2023 18:59:13 +0900
+Message-ID: <CAFY0u4Q32yX+O57D+Eh_x6yVwQv2EcqvuxtQxG1msd8RqQy0zQ@mail.gmail.com>
+Subject: Re: [PATCH] mm/damon: Prevent unnecessary age reset for regions
+To:     SeongJae Park <sj@kernel.org>
+Cc:     akpm@linux-foundation.org, damon@lists.linux.dev,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Hyeongtak Ji <hyeongtak.ji@sk.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/23 10:39, Hyeonggon Yoo wrote:
-> On Thu, Aug 3, 2023 at 11:54 PM Vlastimil Babka <vbabka@suse.cz> wrote:
->>
-> 
-> Thank you for looking at it!
-> 
-> Yeah, it was a PoC for what I thought "oh, it might be useful"
-> and definitely I will try to measure it.
-> 
->> We could also postpone this until we have tried the percpu arrays
->> improvements discussed at LSF/MM.
-> 
-> Possibly, but can you please share your plans/opinions on it?
+Hello,
 
-Here's the very first attempt :)
-https://lore.kernel.org/linux-mm/20230808095342.12637-7-vbabka@suse.cz/
+Thank you for your review. I really appreciate it.
 
-> I think one possible way is simply to allow the cpu freelist to be
-> mixed by objects from different slabs
+On Tue, Aug 8, 2023 at 3:14=E2=80=AFAM SeongJae Park <sj@kernel.org> wrote:
+>
+> Hi Hyeongtak,
+>
+>
+> Thank you for this patch!
+>
+> On Mon, 7 Aug 2023 18:44:35 +0900 Hyeongtak Ji <hyeongtak.ji@gmail.com> w=
+rote:
+>
+> > DAMON resets the age of each region after applying each scheme,
+> > regardless of whether the scheme has been successfully applied.
+> >
+> > This patch adds a simple condition to prevent the age of regions from
+> > being reset when schemes have not been actually applied.
+>
+> We consider applying the action as making a change to the region, and hen=
+ce
+> reset the age to zero.  Even if the action was not completely applied,
+> that might be enough to make some change to the region.  The behavior is =
+also
+> to limit a scheme too repeatedly and frequently applied to a region.
 
-I didn't try that way, might be much trickier than it looks.
+This is what I have totally overlooked.
 
-> if we want to minimize changes, Or introduce a per cpu array similar
-> to what SLAB does now.
+>
+> So, this is not a bug but an intended behavior, and I think this change m=
+ight
+> not what really necessary.
 
-Yes.
+Now I understand that this patch is not necessary.
 
-> And one thing I'm having difficulty understanding is - what is the
-> mind behind/or impact of managing objects
-> on a slab basis, other than avoiding array queues in 2007?
+>
+> Is there a specific use case that this change is needed?  If so, I think =
+we can
+> think about extending the interface to support the case.
 
-"The mind" is Christoph's so I'll leave that question to him :)
+Not for now, but if I find any use cases for this situation, I will
+let you know.
+
+>
+>
+> Thanks,
+> SJ
+>
