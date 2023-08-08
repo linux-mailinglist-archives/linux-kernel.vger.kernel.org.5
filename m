@@ -2,137 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F59774295
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9A7773DC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234970AbjHHRqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54474 "EHLO
+        id S229638AbjHHQWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:22:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234805AbjHHRpm (ORCPT
+        with ESMTP id S232507AbjHHQUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:45:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E62125EF4;
-        Tue,  8 Aug 2023 09:20:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B0E1C62584;
-        Tue,  8 Aug 2023 13:48:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFF99C433C7;
-        Tue,  8 Aug 2023 13:48:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691502502;
-        bh=78w+7dkfFtK7dL4kn2g0lfF/02wfP7Nhon1XKyRpSpE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Avjv6yfyDTyTM0f83g7YdgTrvEheCdOzZFbRLI5TlArHSsiy7fQZyhEDoP4wkigkg
-         F2ySJsiwEn+KHyuYpMlJttGnzEMfMBO4bdzAOzLsECgctWBblbE3+YeiMBYswKZ92O
-         1+ie9OHQacqMABW9oYstbWc42TRWrM2e4fEB5QjvwFomAEeG6TJoGmTg+0ukMnnJOC
-         4/chym1Q/BNYwAjNkd7uaPStqk49zlvi5VsIZbnB9NfmRwTOom/hrOvc/2inQ4cFJM
-         QovfYpYbJnlJloPZ8SLxGTXDSGCfL/qBYmfNj2oxBIO3P9GLQUbjYOD6HN8a1Qu6L6
-         jxQlSi7SUZC8g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5D5E0404DF; Tue,  8 Aug 2023 10:48:19 -0300 (-03)
-Date:   Tue, 8 Aug 2023 10:48:19 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Ivan Babrou <ivan@cloudflare.com>
-Cc:     Ian Rogers <irogers@google.com>, linux-perf-users@vger.kernel.org,
-        kernel-team@cloudflare.com, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH] perf script: print cgroup on the same line as comm
-Message-ID: <ZNJHo+1vhHbd65C0@kernel.org>
-References: <CABWYdi2MwP1u5V+RCpvSjqazo7rS9h_oZoJN6o0UoWFdSQNOyQ@mail.gmail.com>
- <ZNJGunGxqspEB5iC@kernel.org>
+        Tue, 8 Aug 2023 12:20:31 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557BB93D7;
+        Tue,  8 Aug 2023 08:49:05 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378Dn4Sc092506;
+        Tue, 8 Aug 2023 08:49:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691502544;
+        bh=/diXiEy5Rar3GP8DL1v0Kz97W27qEYMY8d8jEN9wuNI=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=xQc13KDzs4rY/5Yh0KhwxXxbTGu21K+p5MPQfIpXeULdCoaHjZ3C7H+tWKqs+R0a/
+         mPYU2n776xTrRr9yuKjigGyTYSX2EeQK6t5eKP/GEMnTRBnX7fDvB3OHKaI15O1I7h
+         kAGsMc6e+6/GT6gmAtQpO08ULv0a/IqbxsVx8T3Y=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378Dn4Jp003971
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Aug 2023 08:49:04 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
+ Aug 2023 08:49:04 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 8 Aug 2023 08:49:03 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378Dn31e046024;
+        Tue, 8 Aug 2023 08:49:03 -0500
+Date:   Tue, 8 Aug 2023 08:49:03 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Dhruva Gole <d-gole@ti.com>
+CC:     Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-omap@vger.kernel.org>,
+        "Kevin Hilman" <khilman@baylibre.com>, Vignesh R <vigneshr@ti.com>,
+        Georgi Vlaev <g-vlaev@ti.com>
+Subject: Re: [PATCH V7 2/4] firmware: ti_sci: Add support for querying the
+ firmware caps
+Message-ID: <20230808134903.vqrq7wxsgg5id4dj@crewmate>
+References: <20230804115037.754994-1-d-gole@ti.com>
+ <20230804115037.754994-3-d-gole@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZNJGunGxqspEB5iC@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230804115037.754994-3-d-gole@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Aug 08, 2023 at 10:44:26AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Mon, Aug 07, 2023 at 11:02:01AM -0700, Ivan Babrou escreveu:
-> > On Fri, Jul 28, 2023 at 10:57 AM Ian Rogers <irogers@google.com> wrote:
-> > > On Fri, Jul 28, 2023 at 10:42 AM Ivan Babrou <ivan@cloudflare.com> wrote:
-> > > > On Mon, Jul 17, 2023 at 5:07 PM Ivan Babrou <ivan@cloudflare.com> wrote:
-> > > > > Commit 3fd7a168bf51 ("perf script: Add 'cgroup' field for output")
-> > > > > added support for printing cgroup path in perf script output.
+On 17:20-20230804, Dhruva Gole wrote:
+> From: Georgi Vlaev <g-vlaev@ti.com>
 > 
-> > > > > It was okay if you didn't want any stacks:
-> 
-> > > > >     $ sudo perf script --comms jpegtran:23f4bf -F comm,tid,cpu,time,cgroup
-> > > > >     jpegtran:23f4bf 3321915 [013] 404718.587488:  /idle.slice/polish.service
-> > > > >     jpegtran:23f4bf 3321915 [031] 404718.592073:  /idle.slice/polish.service
-> 
-> > > > > With stacks it gets messier as cgroup is printed after the stack:
-> 
-> > > > >     $ perf script --comms jpegtran:23f4bf -F comm,tid,cpu,time,cgroup,ip,sym
-> > > > >     jpegtran:23f4bf 3321915 [013] 404718.587488:
-> > > > >                     5c554 compress_output
-> > > > >                     570d9 jpeg_finish_compress
-> > > > >                     3476e jpegtran_main
-> > > > >                     330ee jpegtran::main
-> > > > >                     326e2 core::ops::function::FnOnce::call_once (inlined)
-> > > > >                     326e2 std::sys_common::backtrace::__rust_begin_short_backtrace
-> > > > >     /idle.slice/polish.service
-> > > > >     jpegtran:23f4bf 3321915 [031] 404718.592073:
-> > > > >                     8474d jsimd_encode_mcu_AC_first_prepare_sse2.PADDING
-> > > > >                 55af68e62fff [unknown]
-> > > > >     /idle.slice/polish.service
-> > > > >
-> > > > > Let's instead print cgroup on the same line as comm:
-> > > > >
-> > > > >     $ perf script --comms jpegtran:23f4bf -F comm,tid,cpu,time,cgroup,ip,sym
-> > > > >     jpegtran:23f4bf 3321915 [013] 404718.587488:  /idle.slice/polish.service
-> > > > >                     5c554 compress_output
-> > > > >                     570d9 jpeg_finish_compress
-> > > > >                     3476e jpegtran_main
-> > > > >                     330ee jpegtran::main
-> > > > >                     326e2 core::ops::function::FnOnce::call_once (inlined)
-> > > > >                     326e2 std::sys_common::backtrace::__rust_begin_short_backtrace
-> > > > >
-> > > > >     jpegtran:23f4bf 3321915 [031] 404718.592073:  /idle.slice/polish.service
-> > > > >                     8474d jsimd_encode_mcu_AC_first_prepare_sse2.PADDING
-> > > > >                 55af68e62fff [unknown]
-> > > > >
-> > > > > Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
-> > > > > Fixes: 3fd7a168bf51 ("perf script: Add 'cgroup' field for output")
-> 
-> > > This change makes sense to me. Namhyung, wdyt?
->  
-> > Hi Namhyung,
-> > 
-> > This is a really trivial patch and it would be good to get a word from you.
-> 
-> Hi, this solves the case for cgroup and I think it should be merged, but
-> what about the other fields that are being printed after the callchain
-> gets printed?
-> 
-> I looked and we would have to introduce a __sample__fprintf_sym that
-> didn't call sample__fprintf_callchain and use it in perf script's
-> process_event() then later call sample__fprintf_callchain after all the
-> fields that print on the same line.
+[...]
 
-Nah, or simply moving sample__fprintf_sym() to the end of that function.
+> +	/*
+> +	 * fw_caps 1st bit is used to check Generic capability. Other than
+> +	 * that the 1:4 bits are used for various LPM capabilities.
+> +	 * The API is buggy on SYSFW 9.00 and below, on some devices.
+> +	 * Hence, to avoid any sort of bugs arising due to garbage values
+> +	 * Let's allow the fw_caps to be set to whatever the firmware
+> +	 * says only on devices listed under has_lpm. These devices should
+> +	 * have lpm features tested and implemented in the firmware
+> +	 * and only then should they be added to has_lpm struct.
+> +	 * Otherwise, set the value to 1 that is the default.
+> +	 */
+> +	if (fw_caps && soc_device_match(has_lpm))
+> +		*fw_caps = resp->fw_caps;
+> +	else
+> +		*fw_caps = resp->fw_caps & MSG_FLAG_CAPS_GENERIC;
 
-- Arnaldo
- 
-> Anyway, Namhyung, can I have your Acked-by for this patch to move things
-> forward at least for cgroups?
+Fix your firmware please. drop the has_lpm stuff.. that is what caps is
+for.
+
+As part of ti_sci_setup_ops you get info where you can check ABI version
+where this is valid and which is not, ti_sci_msg_cmd_query_fw_caps can
+be populated based on that check. That is the reason info is passed to
+setup_ops and why we have ABI IDs in the first place.
+
+[...]
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
