@@ -2,214 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B343774517
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33698774657
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbjHHSgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34832 "EHLO
+        id S233739AbjHHSzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233183AbjHHSgU (ORCPT
+        with ESMTP id S232399AbjHHSym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:36:20 -0400
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73DB15C90;
-        Tue,  8 Aug 2023 09:41:43 -0700 (PDT)
-Received: from i53875a28.versanet.de ([83.135.90.40] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1qTKzY-0007r7-Mx; Tue, 08 Aug 2023 13:35:12 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Thomas McKahan <tmckahan@singleboardsolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] arm64: dts: rockchip: Add NanoPC T6
-Date:   Tue, 08 Aug 2023 13:35:11 +0200
-Message-ID: <1770215.VLH7GnMWUR@diego>
-In-Reply-To: <20230808002751.00001385@singleboardsolutions.com>
-References: <20230802051441.3106-1-tmckahan@singleboardsolutions.com>
- <f49a803f-9ff4-794e-265b-a98e3711cca8@linaro.org>
- <20230808002751.00001385@singleboardsolutions.com>
+        Tue, 8 Aug 2023 14:54:42 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E20F272B
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:12:14 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bc1c1c68e2so37789975ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:12:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691514734; x=1692119534;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5IWEsqywMt/WOI78SzJ+zQvaFQxja+IqU7fjbphfZ/o=;
+        b=K7ivBC018mliJWzfdGCFI9IQd7LqmnS4jYZb5jWgiRAmyW+QCyvJbyZFqCeXLFzg9e
+         ttwViLXfuaCdizVR+IVTMAPVk4Ky4OWkPEnAssdC+EHsrSFauND6rmbe0lLurL7Yq4zn
+         F3FuNCXfO8S7Bp5a5ZXuZya4Bn1ikXSbTgcJttOzRoeFIdnm8zd5C6658+XniRcGQ2UN
+         JpuZpnO854Y9dOyNeEVSOB/Qzqscc5DfRbWx4EgyfcWJwYVwZxVG8KXj9qEk41MjSY4t
+         Uzn0JZOZXRx/YmJJXcJOrp2ZEHC2qYMZB3BuSULcFsOuDBtbodf5SH3DORSRNryY+jTy
+         milA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691514734; x=1692119534;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5IWEsqywMt/WOI78SzJ+zQvaFQxja+IqU7fjbphfZ/o=;
+        b=ToyPJ0ISybw8Yn+Fw3vl8yb/YxWSPXb9/4sQw4ASWt0Tjz+8rnqiAU0bZDhV6OkLir
+         dAp5GkDGKelBGsO+NKk8R9oOp7I3xOlhx60NZ+fdXH4ybZjbKz/dI1W7BjbGkjtwN5Pk
+         0N8rWKOpZJc6UB9z7vaYQDKccihroTf3YmEvEJDHfEk+hIMMkgBp0o4aKl3k/rt7+LWU
+         0dwgVD4gm7o6xGCdJXFjmp3HCAN5CRdejPu52b2QB8myA67WdjEH64AZCBm9K2eXsJUL
+         HzzljvmG4iRgV8H175fRKmQMDzbQFFWgNVqvgtHpGOF+tjJMBF+nZRbx9+5ZbNNR3SsW
+         3TgQ==
+X-Gm-Message-State: AOJu0Yy1/wQr2sIW4Db6GEoaalv8PFpsI8/4gEtyS1bWIlV2ecOEDcKa
+        UqQ+KkfftzWQ0Nq6P5H0jS087Gs1/sLu1T1bQwCUdtGYMEs=
+X-Google-Smtp-Source: AGHT+IEykXvUXCW1LzJ4s24YcqCGuDQiEsKW84AVe1hkX2Re0gQn/7zFIHe61Egx3zCEoeIj57kmzYpJwePXeTmOUrA=
+X-Received: by 2002:a05:6870:6389:b0:1bb:739c:9e2b with SMTP id
+ t9-20020a056870638900b001bb739c9e2bmr13945010oap.57.1691494714117; Tue, 08
+ Aug 2023 04:38:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_PASS,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+References: <20230807130108.853357011@linutronix.de> <20230807135027.429700142@linutronix.de>
+In-Reply-To: <20230807135027.429700142@linutronix.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 8 Aug 2023 14:37:58 +0300
+Message-ID: <CAHp75VdbrvK4iPVuGP+Se+RgKUrwEh9VuLCN9Rn_yXJ5Z_u=4A@mail.gmail.com>
+Subject: Re: [patch 19/53] x86/mpparse: Remove the physid_t bitmap wrapper
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Feng Tang <feng.tang@intel.com>,
+        Andy Shevchenko <andy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, 8. August 2023, 06:32:45 CEST schrieb Thomas McKahan:
-> On Mon, 7 Aug 2023 08:44:40 +0200
-> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-> 
-> > On 02/08/2023 07:14, Thomas McKahan wrote:
-> > > Add the NanoPC T6, a single board computer from FriendlyElec based on
-> > > the RK3588.
-> > > 
-> > > Initial device tree supports debug UART, SD, eMMC, PCIe 3, PMIC,
-> > > and 40 pin GPIO assignments.
-> > > 
-> > > Signed-off-by: Thomas McKahan <tmckahan@singleboardsolutions.com>
-> > > ---
-> > >  arch/arm64/boot/dts/rockchip/Makefile         |   1 +
-> > >  .../boot/dts/rockchip/rk3588-nanopc-t6.dts    | 845 ++++++++++++++++++
-> > >  2 files changed, 846 insertions(+)
-> > >  create mode 100644 arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-> > > index 1ebbb3e9c2f9..e7728007fd1b 100644
-> > > --- a/arch/arm64/boot/dts/rockchip/Makefile
-> > > +++ b/arch/arm64/boot/dts/rockchip/Makefile
-> > > @@ -100,6 +100,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-rock-3a.dtb
-> > >  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-edgeble-neu6a-io.dtb
-> > >  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-edgeble-neu6b-io.dtb
-> > >  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-evb1-v10.dtb
-> > > +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-nanopc-t6.dtb
-> > >  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-rock-5b.dtb
-> > >  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-indiedroid-nova.dtb
-> > >  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-khadas-edge2.dtb
-> > > diff --git a/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-> > > new file mode 100644
-> > > index 000000000000..2362da2c53d9
-> > > --- /dev/null
-> > > +++ b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-> > > @@ -0,0 +1,845 @@
-> > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > > +/*
-> > > + * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
-> > > + * Copyright (c) 2023 Thomas McKahan
-> > > + *
-> > > + */
-> > > +
-> > > +/dts-v1/;
-> > > +
-> > > +#include <dt-bindings/gpio/gpio.h>
-> > > +#include <dt-bindings/pinctrl/rockchip.h>
-> > > +#include <dt-bindings/usb/pd.h>
-> > > +#include "rk3588.dtsi"
-> > > +
-> > > +/ {
-> > > +	model = "FriendlyElec NanoPC-T6";
-> > > +	compatible = "friendlyarm,nanopc-t6", "rockchip,rk3588";
-> > > +
-> 
-> ...
-> 
-> > > +&spi2 {
-> > > +	status = "okay";
-> > > +	assigned-clocks = <&cru CLK_SPI2>;
-> > > +	assigned-clock-rates = <200000000>;
-> > > +	pinctrl-names = "default";
-> > > +	pinctrl-0 = <&spi2m2_cs0 &spi2m2_pins>;
-> > > +	num-cs = <1>;
-> > > +
-> > > +	pmic@0 {
-> > > +		compatible = "rockchip,rk806";
-> > > +		spi-max-frequency = <1000000>;
-> > > +		reg = <0x0>;
-> > > +
-> > > +		interrupt-parent = <&gpio0>;
-> > > +		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-> > > +
-> > > +		pinctrl-names = "default";
-> > > +		pinctrl-0 = <&pmic_pins>, <&rk806_dvs1_null>,
-> > > +			    <&rk806_dvs2_null>, <&rk806_dvs3_null>;
-> > > +
-> > > +		vcc1-supply = <&vcc4v0_sys>;
-> > > +		vcc2-supply = <&vcc4v0_sys>;
-> > > +		vcc3-supply = <&vcc4v0_sys>;
-> > > +		vcc4-supply = <&vcc4v0_sys>;
-> > > +		vcc5-supply = <&vcc4v0_sys>;
-> > > +		vcc6-supply = <&vcc4v0_sys>;
-> > > +		vcc7-supply = <&vcc4v0_sys>;
-> > > +		vcc8-supply = <&vcc4v0_sys>;
-> > > +		vcc9-supply = <&vcc4v0_sys>;
-> > > +		vcc10-supply = <&vcc4v0_sys>;
-> > > +		vcc11-supply = <&vcc_2v0_pldo_s3>;
-> > > +		vcc12-supply = <&vcc4v0_sys>;
-> > > +		vcc13-supply = <&vcc_1v1_nldo_s3>;
-> > > +		vcc14-supply = <&vcc_1v1_nldo_s3>;
-> > > +		vcca-supply = <&vcc4v0_sys>;
-> > > +
-> > > +		gpio-controller;
-> > > +		#gpio-cells = <2>;
-> > > +
-> > > +		rk806_dvs1_null: dvs1-null-pins {
-> > > +			pins = "gpio_pwrctrl2";
-> > > +			function = "pin_fun0";
-> > > +		};
-> > > +
-> > > +		rk806_dvs2_null: dvs2-null-pins {
-> > > +			pins = "gpio_pwrctrl2";
-> > > +			function = "pin_fun0";
-> > > +		};
-> > > +
-> > > +		rk806_dvs3_null: dvs3-null-pins {
-> > > +			pins = "gpio_pwrctrl3";
-> > > +			function = "pin_fun0";
-> > > +		};
-> > > +
-> > > +		regulators {
-> > > +			vdd_gpu_s0: vdd_gpu_mem_s0: dcdc-reg1 {
-> > > +				regulator-boot-on;  
-> > 
-> > Boolean properties are not first, but last. regulator-name is the first
-> > one. This odd style...
-> > 
-> 
-> I agree, however it seems the norm in Rockchip devices. This will
-> become an outlier in Rockchip but fall in line with the general case.
-> I'll put it in V2 with the other mentioned fixes unless a conflicting 
-> opinion is expressed. 
+On Mon, Aug 7, 2023 at 4:53=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de>=
+ wrote:
+>
+> physid_t is a wrapper around bitmap. Just remove the onion layer and use
+> bitmap functionality directly.
 
-I definitly do prefer regulator-name to be the first regulator-* (same as
-compatible for regular nodes) and I think generally I do catch outliers
-in this .
+...
 
-But for the rest of the propeties I guess it's different. While true I
-followed a scheme of booleans at the bottom in the past, going with
-"name at the top, rest alphabetically" is way easier to explain to people.
+>  #include <linux/clockchips.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/memblock.h>
 
-[normal nodes should do: {compatible, regs, interrupts, ..alphabetical..,
-  status} of course ]
+> +#include <linux/bitmap.h>
 
-And of course regulator nodes are generally in board-files not in central
-soc dtsis and if needed I'll also just move things around when applying ;-).
+Hmm... What is the ordering here? Reversed xmas tree?
+Otherwise wouldn't it be better to put this before clockchips.h?
 
+>  #include <linux/ftrace.h>
+>  #include <linux/ioport.h>
+>  #include <linux/export.h>
 
-Heiko
-
-
-> 
-> > > +				regulator-min-microvolt = <550000>;
-> > > +				regulator-max-microvolt = <950000>;
-> > > +				regulator-ramp-delay = <12500>;
-> > > +				regulator-name = "vdd_gpu_s0";
-> > > +				regulator-enable-ramp-delay = <400>;
-> > > +
-> > > +				regulator-state-mem {
-> > > +					regulator-off-in-suspend;
-> > > +				};
-> > > +			};  
-> > 
-> > 
-> > 
-> > Best regards,
-> > Krzysztof
-> > 
-> 
-> Best Regards,
-> Thomas
-> 
-
-
-
-
+--=20
+With Best Regards,
+Andy Shevchenko
