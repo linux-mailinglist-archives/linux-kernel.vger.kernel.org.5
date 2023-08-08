@@ -2,73 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B93773F24
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BBC773F40
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbjHHQnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58578 "EHLO
+        id S232883AbjHHQou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233105AbjHHQmz (ORCPT
+        with ESMTP id S233273AbjHHQoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:42:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C4516576
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:55:29 -0700 (PDT)
+        Tue, 8 Aug 2023 12:44:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E70691BF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:56:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C6F9624C5
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 11:06:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85065C433C7;
-        Tue,  8 Aug 2023 11:06:40 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 81A2C624AD
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 11:10:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19FC2C433C8;
+        Tue,  8 Aug 2023 11:10:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691492800;
-        bh=CrPhcJN57rukfXen+rigaSrwqRSJXsMXj2YdkDgwiGA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NRYvRuUiRxyVy/3To0iBa2lls0LagkDuRwFtnHv2Bxdz+vCKK07I5JbUzE0vh1D1T
-         qAMjURW8XftDij3qDaXfxJP6hzTndfo3UtfKs1XSJb2sHzRukzxGAVUPnJWd6sr5JO
-         kJG3LDKiq7lWOt6T5c7WmLgaJ8/TkmtfbiNvNlue66REmBXb/Q/7CP2lG14aGo0KbI
-         6uen60MaB8Z5oybh7OVuV1+UzRSUO0WPd8RCCxi4jmCCT0upPEOw7sd1dY9kQjwzP0
-         bYculYqLVMG38kAykCzmQt/yBKBjNNDjXIZvYIgY4TzIlwgW1LY7nWPSfR1VYR/lM9
-         Xl5bNj1BBoH5A==
-Received: from [104.132.45.110] (helo=wait-a-minute.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1qTKXu-00373o-4P;
-        Tue, 08 Aug 2023 12:06:38 +0100
-Date:   Tue, 08 Aug 2023 12:06:45 +0100
-Message-ID: <87zg31pzcq.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        s=k20201202; t=1691493011;
+        bh=19pV4hQvMhWN4VhmYApfZmIgWsEXTM2Lh3IfDUNTGGA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iCQDO9G8ji1H+6GdiGshIIyY4PytBWNaJy2SZxah+iwRTvhxCieLi7wxdr1fUBO3B
+         tsrUCanSGrqSArW8VW68g3Xk6dzzFT32odY1shRfrCFiFh/5L93oIhAWyCmr5VNBxs
+         CIBlDYyCYnFIzsilA1myxnXm3XhD2LILC2lqswJjBhGdsLXcsD0z8UO8Hp6WVNA4wv
+         Hm++fKFFoFtq1LZZo6cPi32s8mJ0sc8jRYvjRPiSGWY33q13ERcM8/fBpi6nvZbqB7
+         N2gKTebQyZWb++hTRe22D2/OQo7EEDPa5TBzeR5j87vg6+eCMhPHSuaEvo54YYMgOJ
+         OwMDKNeyY7eNg==
+Date:   Tue, 8 Aug 2023 12:09:57 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     Will Deacon <will@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Steven Price <steven.price@arm.com>,
+        SeongJae Park <sj@kernel.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Axel Rasmussen <axelrasmussen@google.com>,
         Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] coresight: Support exclude_guest with Feat_TRF and nVHE
-In-Reply-To: <a80bdc12-96f9-bdf4-8253-bf0ea305e00d@arm.com>
-References: <20230804101317.460697-1-james.clark@arm.com>
-        <86edki62vz.wl-maz@kernel.org>
-        <a80bdc12-96f9-bdf4-8253-bf0ea305e00d@arm.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 104.132.45.110
-X-SA-Exim-Rcpt-To: suzuki.poulose@arm.com, james.clark@arm.com, coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, oliver.upton@linux.dev, james.morse@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mike.leach@linaro.org, leo.yan@linaro.org, alexander.shishkin@linux.intel.com, anshuman.khandual@arm.com, robh@kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Song Liu <song@kernel.org>,
+        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 12/32] mm/vmalloc: vmalloc_to_page() use
+ pte_offset_kernel()
+Message-ID: <59946f0b-2a31-4bb2-a5a5-a051f3978c26@sirena.org.uk>
+References: <42279f1f-7b82-40dc-8546-86171018729c@sirena.org.uk>
+ <901ae88d-ad0c-4e9d-b199-f1566cc62a00@lucifer.local>
+ <c2358f37-ebaa-44d1-b443-ff91bdedc00b@sirena.org.uk>
+ <977ddee4-35f0-fcd1-2fd-1c3057e7ea2a@google.com>
+ <fbb2b76c-bc5c-4d75-b8cd-37479de688d4@sirena.org.uk>
+ <b479b946-f052-eb75-295d-6fa7c2d8ce8e@google.com>
+ <591b5253-47f0-440c-84b6-7786ff59667d@sirena.org.uk>
+ <20230720103227.GB11034@willie-the-truck>
+ <df264993-107c-44a1-a8ff-245bce044206@sirena.org.uk>
+ <88bb7f30-cbfe-feb4-1101-b7c98843652d@leemhuis.info>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eZf2JqvLz6LnNLGw"
+Content-Disposition: inline
+In-Reply-To: <88bb7f30-cbfe-feb4-1101-b7c98843652d@leemhuis.info>
+X-Cookie: You need not be present to win.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -79,59 +100,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 05 Aug 2023 11:28:39 +0100,
-Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
-> 
-> Hi Marc
-> 
-> On 04/08/2023 20:09, Marc Zyngier wrote:
-> > On Fri, 04 Aug 2023 11:13:10 +0100,
-> > James Clark <james.clark@arm.com> wrote:
-> >> 
-> >> Hi,
-> >> 
-> >> I'm looking for help in testing this and for feedback on whether it's
-> >> useful to anyone. Testing it requires hardware that has Feat_TRF (v8.4)
-> >> but no TRBE. This is because TRBE usage is disabled in nVHE guests.
-> >> 
-> >> I don't currently have any access to any hardware, and the FVP model
-> >> can only do self hosted trace using TRBE.
-> >> 
-> >> Currently with nVHE you would always get trace from guests, and
-> >> filtering out isn't possible without this patchset. In comparison, with
-> >> VHE guests, they never generate guest trace without [1]. I think the
-> >> existence of trace rather than lack of could suggest that this change is
-> >> less useful than [1]. Also the restricted set of hardware that it works
-> >> on supports that too.
-> > 
-> > It'd be nice to have some sort of feature parity, but it seems like a
-> > vanishingly small target of users having access to an ETM sink.
-> > 
-> >> 
-> >> Apart from compilation and checking that the exclude guest settings
-> >> are correctly programmed on guest switch, this is untested by me.
-> > 
-> > I'll have a look at the series, but none of my HW fits in this
-> > description (my ARMv8.4+ boxes don't have any form of tracing).
-> 
-> While I have your attention, we have another series that manages the
-> trace filtering for Guests on VHE, completely within the Coresight etm4x
-> driver here [0]. I personally think, it is good to have the guest
-> filtering for both nVHE and VHE under the KVM control, like we do
-> in this series. I would like your opinion on this.
 
-I just quickly reviewed the first two patches of the nVHE series, and
-I think the shape is a bit wrong. I can absolutely see the interest of
-preventing extra tracing when a guest is running, but the way this is
-currently plugged makes it hard to reason about it.
+--eZf2JqvLz6LnNLGw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> [0] https://lkml.kernel.org/r/20230804085219.260790-1-james.clark@arm.com
+On Tue, Aug 08, 2023 at 07:52:43AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
 
-I'll try to have a look at that one later.
+> Hi Mark, just wondering did anything come out of this and is this still
+> happening? I'm just wondering, as I still have this on my list of
+> tracked regressions.
 
-Thanks,
+It's fixed.
 
-	M.
+--eZf2JqvLz6LnNLGw
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Without deviation from the norm, progress is not possible.
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTSIoUACgkQJNaLcl1U
+h9BB9gf8D/0tBbXWlvputjizTyP1NhPhcuKIekWzHEv5JO2TVYu3O1C0SiegHl+5
+L5yPFNALZklT8IjxaY309Fs2oSMY9sETOZGYuMUvPW3Imn2q82NQf/UIxEy6SRAI
+W1dmnrXqgMqeJ+njvCeFHoIrTW2B3LvXMaGet06Ju2LPQDnHCRYr9TEAIUYtsvau
+a09b83gbjcqwxfwoIGpw8K9/kAVPCBNNKg/6GTpxpqSR2Q9UBM4Y/JYsMnc7l/i0
+zBDLETGSBpc5WIgUdJ2nfEacA86G8RTDML9FJlqk5vgrgggb1OFnlsmV48ylrLI3
+BgXHZ5r1q+F935f9OM+x8BvoeESSyg==
+=ff0m
+-----END PGP SIGNATURE-----
+
+--eZf2JqvLz6LnNLGw--
