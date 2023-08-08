@@ -2,75 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D16A7742E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A4C774143
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235113AbjHHRv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
+        id S234295AbjHHRRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234984AbjHHRvR (ORCPT
+        with ESMTP id S234335AbjHHRRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:51:17 -0400
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCCAB5E94
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:23:00 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-4fe0a3377bfso2405319e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:23:00 -0700 (PDT)
+        Tue, 8 Aug 2023 13:17:01 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D85471F0D
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:06:56 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-58969d4f1b6so16245477b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:06:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691510815; x=1692115615;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EyDtqRMa+XeuHmfOHzoFQ2EBCRcPgUdz7VrLow00vho=;
+        b=YFM9I4RT+07tXlEF/uDhTPtxhf7u6ZIa/DMEUQx7roPSkrnhbpRS5oDl7m9b0uCKda
+         PVpStqqpcm4fnVP+t1Ei99YZTG242Vwtmvm7CkWJ3ZNuUxDkH5qftEyNtD92Vq3ZouS+
+         78HUAYGnQPCsXmugHZAa8DNsmJTI70G4JKgEjQ4qtVfiHTnOODbcHMqrC7h9zY01iQbu
+         jHtsKg5Dc3+WhJioeGfTh6vCj5Uvt41W0XHOPc4K0hRpPNKOSXz078IumK6B7BcCc9/M
+         Oce52zl/S+tiXrA12qRvf2HMSjcxTlmrhkCnlTwSYG7QDMcu7Lbo5krF5qoozQNdkASQ
+         Hz+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511733; x=1692116533;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CIJajdd4Yc3wo/yJr5hUql5qY0jUL0/PgHadt/NVtZQ=;
-        b=YiN8ubnr3RQJdDtrdPUDu4WUxfV6c36iMFSNgwnY/f0sqnio0XsnumiLTuIk3qse6j
-         4YdDHLw1qjHv+cRLGccEpSNSddNSoEuqOytlc18xHc/QBjnAyfGTFc84PfRjo4w7XhnY
-         1HQ1VbNMkdFil4wgSci2eyjA7+LeeZWyWFCdIEK6X4PJbf6ZwLGT1MRcyoi48y+5qX7W
-         i0d+7Na+1AIWR/D9EEbZ6oX/QU7qKR+z2EJ/MglyLR3kbF4tvSlpIs2ggYoNEB6o9vDy
-         UoUzq+a/RNSVkegcRfn6GXrAlHT1ejyxNBkjviLxwClSDysk7rV/micxOfKTPm2ousUI
-         J3hQ==
-X-Gm-Message-State: ABy/qLaGEqa8I/cg8yLEjOOND21b6h3apcVSpI2S5NGg6FRsb2bUrMKs
-        ueC8GaYkwrwH6sYLbjkmAw80zgXczGs=
-X-Google-Smtp-Source: APBJJlEoiyO37RduZ7UBE8MsP6lQX9+dGJ+PMsujgLSdn/gByNmxC9FfTmJiAV5YnY2h1CjgpXWYlA==
-X-Received: by 2002:a05:600c:32af:b0:3fb:aadc:41dc with SMTP id t47-20020a05600c32af00b003fbaadc41dcmr25000550wmp.4.1691491817395;
-        Tue, 08 Aug 2023 03:50:17 -0700 (PDT)
-Received: from [192.168.64.157] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
-        by smtp.gmail.com with ESMTPSA id m9-20020adfe0c9000000b003145559a691sm13581437wri.41.2023.08.08.03.50.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 03:50:16 -0700 (PDT)
-Message-ID: <14286c1a-b6cd-24bb-0f9c-7943c97b8304@grimberg.me>
-Date:   Tue, 8 Aug 2023 13:50:11 +0300
+        d=1e100.net; s=20221208; t=1691510815; x=1692115615;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EyDtqRMa+XeuHmfOHzoFQ2EBCRcPgUdz7VrLow00vho=;
+        b=HaBSz3yf6xVsiuThp2U8BpmiawxYiH9xpYYmzWrPLvms8muy7osPxFLuDiZuaphmfl
+         xix2NKSxgOtvtCselkHLAkybG53g1U6z6cSeGuztlFisFYlFvlaJADWxsS6gh3YdrYxQ
+         W5Zfe9Ax3B5GUxUzKUm0in9GGGJ7uKXUJPi5Rvio1tXJSI+uWF1BgriaMZJtW1QyBwY+
+         dYEQ2wperFFnIiefjN5i4vfyQ2sCocYIVeei0+KE9NQiCfjckgLDpkg6TSUtgqXR2mNT
+         iI216JMV/XzXn2I5sBx2cVCGDxEibhjg4mJ34vc7Pp9QIDmCb4GooNVcqBsNG659bxve
+         E7QA==
+X-Gm-Message-State: AOJu0Ywr9voGHon9sbwPwWKeWViGN6GI3vaxaOgFQat22G1iC+/00sX9
+        AnGddqfrfnUiprcmjIA3Dq+S992c7vBv+iHE6ZS5IqAM4QjnyVSA
+X-Google-Smtp-Source: AGHT+IEyc7HHsMlkF2r9nll2T0yEWZZ5v0pKzIcru7d42nj6cqrIRE36KBIE7qFz1IaWZ2c38uHVZnZYbGIn7T2NF0c=
+X-Received: by 2002:a25:8d12:0:b0:d1d:514e:27c6 with SMTP id
+ n18-20020a258d12000000b00d1d514e27c6mr10881786ybl.6.1691492001963; Tue, 08
+ Aug 2023 03:53:21 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH libnvme v3 2/2] fabrics: Do not pass disable_sqflow if not
- supported
-Content-Language: en-US
-To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Caleb Sander <csander@purestorage.com>,
-        Keith Busch <kbusch@kernel.org>
-References: <20230808091550.25349-1-dwagner@suse.de>
- <20230808091550.25349-3-dwagner@suse.de>
-From:   Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <20230808091550.25349-3-dwagner@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <bf912d5f5e74b43903a84262565f564bfe0fed7e.1691047370.git.michal.simek@amd.com>
+In-Reply-To: <bf912d5f5e74b43903a84262565f564bfe0fed7e.1691047370.git.michal.simek@amd.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 8 Aug 2023 12:52:46 +0200
+Message-ID: <CAPDyKFoQk+ETga2za3=pLdN+btKsy6tx70o3wsZGZFQ0XWmEVg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mmc: arasan,sdci: Add power-domains and
+ iommus properties
+To:     Michal Simek <michal.simek@amd.com>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-mmc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Sagi Grimberg <sagi@grimberg.me>
+On Thu, 3 Aug 2023 at 09:23, Michal Simek <michal.simek@amd.com> wrote:
+>
+> ZynqMP SDHCI Arasan IP core has own power domain and also iommu ID that's
+> why describe optional power-domains and iommus properties.
+>
+> Signed-off-by: Michal Simek <michal.simek@amd.com>
 
-You can make the patch from you, you are sending it after all..
+Applied for next, thanks!
 
-> Only retry a connect attempt with disable_sqflow if the kernel
-> actually supports this option.
+Kind regards
+Uffe
 
-commit msg needs update.
+
+> ---
+>
+>  Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
+> index a6c19a6cc99e..3e99801f77d2 100644
+> --- a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
+> @@ -160,6 +160,12 @@ properties:
+>      description:
+>        The MIO bank number in which the command and data lines are configured.
+>
+> +  iommus:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+>  dependencies:
+>    '#clock-cells': [ clock-output-names ]
+>
+> --
+> 2.36.1
+>
