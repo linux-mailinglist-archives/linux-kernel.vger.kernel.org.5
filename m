@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4347737BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 05:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B068A773B1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbjHHD2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 23:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49468 "EHLO
+        id S229640AbjHHPm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 11:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbjHHD2Z (ORCPT
+        with ESMTP id S229885AbjHHPlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 23:28:25 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9C91BF2
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 20:27:43 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe32ec7201so28545e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 20:27:42 -0700 (PDT)
+        Tue, 8 Aug 2023 11:41:35 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 590922108
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 20:29:36 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe11652b64so8046419e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 20:29:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691465261; x=1692070061;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tiGQp3FsAI04kcNtST/Tl1pJkj2vxq4v0LWaXPyZsOc=;
-        b=pTn2KPnbpACRR1QoEDcr3ERxsHMj/OGG5vXUuUYjUIU9vaSomJncuphTCfIQ+V2jnF
-         tuxaRrPri4lngxFMKN+lzupIJKyPzJY6nWDPXUBV3uZJyHiN061bifLJJKL1mEdh4Zc/
-         1ZZZfF3vN5E4yc269EtGzxSwcgvKeTBrxeUQoDw0m5pTsHk06h6+eeSczXGA3bnEew9v
-         Nh5ds2u/V4BlrnZURcfuVZBtEJpP1qpOo/czVYss5a/IuZ1SGP4k1se4KCifowq+EIOT
-         fEnIu8rxXpbrKg4BgZkCbUGUYIVm5vkOz5UeICXSIJN5mKqoA8F8hwA46l7UAQu6fidZ
-         6c5g==
+        d=libre.computer; s=google; t=1691465374; x=1692070174;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w2a2fi6fo8O2qphEYAkmBRgnh3Id5Qk5HANh3JTmLrk=;
+        b=Hv0EkMFwuoyzbj7wybAw2sah1r5PcEsI9FNN9nLIlvkNEpHSFHw4jcZKq/NkXGTw6z
+         H42R1MPcMSc8IIbKlAyXG1c0yacNizA221RfmnShj84TS/hy3iWPjxmdPyQv7ZxU8TG7
+         hpT6Z4tY0EZoJoyg6WfiTFEaPLh6C+jhz6GHGqJVIafQ68XNayOBx0xe/m5BsTf3D1HI
+         j/rN/NYIuWU98uIvWBgGI0u17/cRIekusBpWhj45eIhdqLWoop2D5lE7uBdJ1OaeFKnx
+         SQMjWMbfBsMbDrTnG5IAIcQnZd+a+ujSMOvp0lA9QUDdDk24tLRY/H73PpTXxQW61bd9
+         Xujg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691465261; x=1692070061;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tiGQp3FsAI04kcNtST/Tl1pJkj2vxq4v0LWaXPyZsOc=;
-        b=JZtKS4L0TiWnQSLyYajJGdp5+lnQULTss/8jRtd6Fwp3mNDLyJ7jgpol85bFVjqOj8
-         JNbyoKWDlHDahkmSZpMWmU0R1ym8geX/arIUUby0HfpJM4P22pK/1IP8g1PMYpUpYNYY
-         9QxJaUjk0MAaKv3NbZt9g0qne1s84qElhEI+c3LVLjWiP3qsmKeFe5Ndikqj3DGoosFj
-         Oucvxpweyxx/+pnUjsXSqk2cydQtUPHhy43gkOPWlfZijQf4iV2lA/HT5tV0dcTXSRq/
-         /Ce3S7sfYk4MpVZ2mQ5TGq7jSe5lWteGlSNhKpJziS3BYSM4ARoRXdedAd6rvl5jp9cL
-         YSYQ==
-X-Gm-Message-State: AOJu0Yy8eqZHuwuGPNb5pt9xFfFjpnJjluZVzBvZh2QD/pUh8/1auXSy
-        5AxWBz07+HhbmljS/+Ilpb7+1Q/OZ2NQEQI0ryIw
-X-Google-Smtp-Source: AGHT+IHNklvPNz0M4NW5KZIZXX2bW3bL4rd8brH9A51j5QvubhasYCcxYJoodGdcImm/oRHisG2hKp4tUyZlyR0ad8Q=
-X-Received: by 2002:a05:600c:1d88:b0:3f7:e463:a0d6 with SMTP id
- p8-20020a05600c1d8800b003f7e463a0d6mr296502wms.0.1691465261438; Mon, 07 Aug
- 2023 20:27:41 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691465374; x=1692070174;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w2a2fi6fo8O2qphEYAkmBRgnh3Id5Qk5HANh3JTmLrk=;
+        b=Qgq+86ExftfNr1gLnjLYgdiJhS4RZUQ+M8/N+yIZ2TnnFK27R1/ISpeYNqEip9hXGR
+         sj3cbxPMPCDjzzNqfVQb3NGLaiQxoHGJUsm9msKF2tWBLx0oj9tPQp/PovJaEFjFMY9q
+         zHG45NGiPjFLyAjpoN8I7miy9GCcJRVXwh+DGtcBp9Pemc9RJnCQb6oGmIWRPOcUaymB
+         2SB7y8SZIx/fu2/2xTEK62hp3ymot2VzISX5R/JLfRv320V8tlE45VqFka8NkgxUbmdq
+         j4RIKko8Rp7Y6vqOGytxe44Eph0jr3KuiI+95d7/iaSTevz5IN6syL5GlBw2eVb/eFRu
+         HSBg==
+X-Gm-Message-State: AOJu0YyW8j8nCcvlbgWITal97EO8sg5wfPGewK5kDzyD3rW+jnU0jWeS
+        Irg8yR9McCKP/X3rLRWdEQjP5g==
+X-Google-Smtp-Source: AGHT+IHUJlcYJA5OEaih3/uCPH2RSh8acayw3bMZ9xFGDbb2rx6os6/zhDaz9FaWTAYH/lOAbrlTdA==
+X-Received: by 2002:a05:6512:34c2:b0:4fd:fe8f:4108 with SMTP id w2-20020a05651234c200b004fdfe8f4108mr6732753lfr.62.1691465374338;
+        Mon, 07 Aug 2023 20:29:34 -0700 (PDT)
+Received: from bear.local ([69.165.74.129])
+        by smtp.gmail.com with ESMTPSA id a3-20020a056512020300b004fcdd81355csm1715321lfo.269.2023.08.07.20.29.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 20:29:34 -0700 (PDT)
+From:   Luke Lu <luke.lu@libre.computer>
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        linux-usb@vger.kernel.org, linux-amlogic@lists.infradead.org
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Da Xue <da@libre.computer>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Luke Lu <luke.lu@libre.computer>
+Subject: [PATCH] usb: dwc3: meson-g12a: do post init to fix broken usb after resumption
+Date:   Tue,  8 Aug 2023 03:25:10 +0000
+Message-Id: <20230808032510.31754-1-luke.lu@libre.computer>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <12d34340-6c94-4bfd-aa16-3c39026070d8@paulmck-laptop> <20230728032232.816584-2-paulmck@kernel.org>
-In-Reply-To: <20230728032232.816584-2-paulmck@kernel.org>
-From:   John Stultz <jstultz@google.com>
-Date:   Mon, 7 Aug 2023 20:27:29 -0700
-Message-ID: <CANDhNCpCrwbMp8oTwvTab+-Q1b52zJvMuZiV9LW-bP2Zgqqyhg@mail.gmail.com>
-Subject: Re: [PATCH rcu 2/2] torture: Add lock_torture writer_fifo module parameter
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        kernel-team@android.com, Davidlohr Bueso <dave@stgolabs.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 8:22=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
->
-> This commit adds a module parameter that causes the locktorture writer
-> to run at real-time priority.
->
-> To use it:
-> insmod /lib/modules/torture.ko random_shuffle=3D1
-> insmod /lib/modules/locktorture.ko torture_type=3Dmutex_lock rt_boost=3D1=
- rt_boost_factor=3D50 nested_locks=3D3 writer_fifo=3D1
->                                                                          =
-                               ^^^^^^^^^^^^^
->
-> A predecessor to this patch has been helpful to uncover issues with the
-> proxy-execution series.
->
-> [ paulmck: Remove locktorture-specific code from kernel/torture.c. ]
+Device connected to usb otg port of GXL-based boards can not be
+recognised after resumption, doesn't recover even if disconnect and
+reconnect the device. dmesg shows it disconnects during resumption.
 
-Thanks again for improving this!  I've switched over to your version
-here in my test tree.
+[   41.492911] usb 1-2: USB disconnect, device number 3
+[   41.499346] usb 1-2: unregistering device
+[   41.511939] usb 1-2: unregistering interface 1-2:1.0
 
-Acked-by: John Stultz <jstultz@google.com>
+Calling usb_post_init() will fix this issue, and it's tested and
+verified on libretech's aml-s905x-cc board.
 
-thanks
--john
+Signed-off-by: Luke Lu <luke.lu@libre.computer>
+---
+ drivers/usb/dwc3/dwc3-meson-g12a.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/usb/dwc3/dwc3-meson-g12a.c b/drivers/usb/dwc3/dwc3-meson-g12a.c
+index e99c7489dba0..2c07c038b584 100644
+--- a/drivers/usb/dwc3/dwc3-meson-g12a.c
++++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
+@@ -926,6 +926,12 @@ static int __maybe_unused dwc3_meson_g12a_resume(struct device *dev)
+ 			return ret;
+ 	}
+ 
++	if (priv->drvdata->usb_post_init) {
++		ret = priv->drvdata->usb_post_init(priv);
++		if (ret)
++			return ret;
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+2.40.1
+
