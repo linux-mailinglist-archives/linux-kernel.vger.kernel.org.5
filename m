@@ -2,161 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9934D774175
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C496477417B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234452AbjHHRVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
+        id S234246AbjHHRWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234228AbjHHRUs (ORCPT
+        with ESMTP id S234496AbjHHRV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:20:48 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB84783EA
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:08:28 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5861116fd74so56188017b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:08:28 -0700 (PDT)
+        Tue, 8 Aug 2023 13:21:59 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C395A1F425;
+        Tue,  8 Aug 2023 09:08:59 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-40fd2de0ddcso45218321cf.2;
+        Tue, 08 Aug 2023 09:08:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691510880; x=1692115680;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vgs4Fm92pOwgiTtgi3t0TURwZ645hXw810Qm9YB3fW0=;
-        b=1zWyWbnBevP6AnHvWYDpz4fJJdYAMoauIzciKtQnY6PlehU2/ShRLFy26ni3eWxPJL
-         Sz0gYFhnaOWI6iN93LDJbs5W5ROTqKNFy8SnJG3U3ByIgIC/iAYvobjthTq1mVbzkZn5
-         GWu79Tnot5+yMgONDB1oup8BhRJ2zsiqH4tw7AiAYJpUk+MZfO1X0GXF7CRMkKpw/GJh
-         4JzJRwnF/DiFMv1tkbu9WVXSI8AxU196bKO5T7zipAFfDFy7DMtFbXU0PWZoSqaYGz8o
-         rCJpENlhq7XYfgBiGiF7Ss2oeFo0gy1XNlFt02JFyD1/tbES/U7CcsVn0I0NCJ8XKO4o
-         UeBg==
+        d=gmail.com; s=20221208; t=1691510905; x=1692115705;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=48Zr0S4HamHQ25B/ZcGiUlOHiVUQn60xnNnJqEoGB1g=;
+        b=JvkLENHhdLHitguTVndQo+Wr6y6smRZatMAMwb6JxbSV7NhD0CVj7kKkWmkzKyzgNa
+         2PGV+DuFYf0sB0LR0/6M0iXTCJO5mhPDTfzuVQSrfH2k+JmZjh4w2mz6MZ9AV2YWtQUS
+         i8jtN99Yliqz73z8K+g6cibuHQ7yQ/G10eLdBvoDbT2YzdgIkq2FWa9eQzIEIuAz+OYH
+         sk7/q+MrZNNETDrlUVorLTbXBYM8XQ3xMBdtrOJN0AnFk3KtLZsC5dz6yQ/lL8vz+7Ak
+         z6qp+FBNqiW7K046JYgY8orcbx1moP6ZnwdgY5dAEDWvCRnhR7X09OpuPbaLkrabRKwM
+         zUsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510880; x=1692115680;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vgs4Fm92pOwgiTtgi3t0TURwZ645hXw810Qm9YB3fW0=;
-        b=PJqMCGPAFjiNwby6442y/d/AyP1cj6MxHL5Vlr02fSOmmczD/ZlkWTYCqaebmNpVB8
-         nIOcp6+ETSoj8p+orYjrXgO9gn4R+PQpc8TZH+dBJvkDAHGIbFxuRaLBSAsnIHbxYZY9
-         GEBSAe7zB9d4KAHwiVS7bBi8M77cPsQVmVL8r/saVnv/ohcBWx/eiprv0+wvc4uGm15D
-         /DUMnnvYaPfY+WtjWGdPSvwgwdYW6AqXdNLTHPKOlMOU9VuEs0a3xfWgNkz8QfcXUWmB
-         qJVlexN/fGFwbV+0eb8dThyaVLMdmrxQ9OpunAfZTMcqBttAYejGIQOcVByHHsDBJ0Ry
-         MTBQ==
-X-Gm-Message-State: AOJu0YxDNw2+UxROQRQmZqRnYYhPniB7Cs8SXoNz+hnZ32jcbnMGNwYE
-        IIMaQr9/a4H4jrRJ1t37FI0FrKxSpEei48bb+FoHDCcuYMPZ8OMiwPQ=
-X-Google-Smtp-Source: AGHT+IEUOZn+oWGOzEe6eb18PD1LJbJH+AEz15hO43+Evd9T1seVx+elc0H04Xz8tIq6S3q/dujX/7mkZrhXRTgW+JU=
-X-Received: by 2002:a05:6358:c19:b0:139:e3a4:7095 with SMTP id
- f25-20020a0563580c1900b00139e3a47095mr14782675rwj.7.1691503762572; Tue, 08
- Aug 2023 07:09:22 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691510905; x=1692115705;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=48Zr0S4HamHQ25B/ZcGiUlOHiVUQn60xnNnJqEoGB1g=;
+        b=iMja/yMh/xJHfH5Ixzd7sT4T2VH0bKQgaPWWTCLyzBSHMTOUXDLBdoYOxl6zegAaTl
+         iUcO+Qm9eW7aX/rGheF0Zl5dFDLpN8veU5cQd7zh15zrBt7ntXA83EN/DqRPXVLZOmyB
+         5cj38DdeVaV2JFYWPegvZPmJfolT256IgUyQbrPAIDRilqTaEpF1cgFRPUTRufBJghrO
+         ULARfEezyXMx8xaPBH1htwMsBk4un01TIN5uKGteDQOEl8Lg9eZ1grItC4Dm1bqr9nbB
+         ZAY9FEhSLJusOWyS6kI558xroJEYZtHuKJe2eOV3/nvBuszC+zCWtu6hBHPhvSTtzaOJ
+         yg7w==
+X-Gm-Message-State: AOJu0YyaK8aC3kFCG+9v0EZdLsErndg1If7n9TOW0vLH7qzWo+zv2SnB
+        Fz0cFpp93stVclGoiKJk3LhZ9gAUMoU=
+X-Google-Smtp-Source: AGHT+IESQe9cH3KsW8id9Jt2E6ZI5IOmRvTdvT6o7AOiAAijF/LX8I1T0u+zM/+wGnc7xY7smSLJ0g==
+X-Received: by 2002:a05:6e02:156c:b0:345:8373:bf68 with SMTP id k12-20020a056e02156c00b003458373bf68mr16083383ilu.25.1691503810854;
+        Tue, 08 Aug 2023 07:10:10 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id gt23-20020a0566382dd700b0042b37dda71asm3097171jab.136.2023.08.08.07.10.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 07:10:10 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <eced746a-1181-bd8f-6828-4a4eeb79727c@roeck-us.net>
+Date:   Tue, 8 Aug 2023 07:10:08 -0700
 MIME-Version: 1.0
-References: <20230807193102.6374-1-brgl@bgdev.pl> <54421791-75fa-4ed3-8432-e21184556cde@lunn.ch>
- <CAMRc=Mc6COaxM6GExHF2M+=v2TBpz87RciAv=9kHr41HkjQhCg@mail.gmail.com> <ZNJChfKPkAuhzDCO@shell.armlinux.org.uk>
-In-Reply-To: <ZNJChfKPkAuhzDCO@shell.armlinux.org.uk>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 8 Aug 2023 16:09:11 +0200
-Message-ID: <CAMRc=MczKgBFvuEanKu=mERYX-6qf7oUO2S4B53sPc+hrkYqxg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] net: stmmac: allow sharing MDIO lines
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>,
+        Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        krzysztof.kozlowski+dt@linaro.org,
         Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        linux-hwmon@vger.kernel.org,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230802193155.2170935-1-Naresh.Solanki@9elements.com>
+ <20230808-stand-cheddar-b76b0b7509a0@spud>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v3 1/3] dt-bindings: hwmon: Add Infineon TDA38640
+In-Reply-To: <20230808-stand-cheddar-b76b0b7509a0@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 3:26=E2=80=AFPM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Tue, Aug 08, 2023 at 10:13:09AM +0200, Bartosz Golaszewski wrote:
-> > Ok so upon some further investigation, the actual culprit is in stmmac
-> > platform code - it always tries to register an MDIO bus - independent
-> > of whether there is an actual mdio child node - unless the MAC is
-> > marked explicitly as having a fixed-link.
-> >
-> > When I fixed that, MAC1's probe is correctly deferred until MAC0 has
-> > created the MDIO bus.
-> >
-> > Even so, isn't it useful to actually reference the shared MDIO bus in s=
-ome way?
-> >
-> > If the schematics look something like this:
-> >
-> > --------           -------
-> > | MAC0 |--MDIO-----| PHY |
-> > -------- |     |   -------
-> >          |     |
-> > -------- |     |   -------
-> > | MAC1 |--     ----| PHY |
-> > --------           -------
-> >
-> > Then it would make sense to model it on the device tree?
->
-> So I think what you're saying is that MAC0 and MAC1's have MDIO bus
-> masters, and the hardware designer decided to tie both together to
-> a single set of clock and data lines, which then go to two PHYs.
+On 8/8/23 04:46, Conor Dooley wrote:
+> On Wed, Aug 02, 2023 at 09:31:51PM +0200, Naresh Solanki wrote:
+>> From: Patrick Rudolph <patrick.rudolph@9elements.com>
+>>
+>> The TDA38640 chip has different output control mechanisms depending on
+>> its mode of operation. When the chip is in SVID mode, only
+>> hardware-based output control is supported via ENABLE pin. However, when
+>> it operates in PMBus mode, software control works perfectly.
+>>
+>> To enable software control as a workaround in SVID mode, add the DT
+>> property 'infineon,en-svid-control'. This property will enable the
+>> workaround, which utilizes ENABLE pin polarity flipping for output when
+>> the chip is in SVID mode.
+> 
+> Why do you need a custom property for this? How come it is not possible
+> to determine what bus you are on?
+> 
 
-The schematics I have are not very clear on that, but now that you
-mention this, it's most likely the case.
+That is not the point. Yes, it can be detected if the control method is
+PMBus or SVID. However, in SVID mode, SVID is supposed to control the
+output, not PMBUs. This is bypassed by controlling the polarity of the
+(physical) output enable signal. We do _not_ want this enabled automatically
+in SVID mode. Its side effects on random boards using this chip are unknown.
+Thus, this needs a property which specifically enables this functionality
+for users who _really_ need to use it and (hopefully) know what they are
+doing.
 
->
-> In that case, I would strongly advise only registering one MDIO bus,
-> and avoid registering the second one - thereby preventing any issues
-> caused by both MDIO bus masters trying to talk at the same time.
->
+Guenter
 
-I sent a patch for that earlier today.
 
-> The PHYs should be populated in firmware on just one of the buses.
->
-> You will also need to ensure that whatever registers the bus does
-> make sure that the clocks necessary for communicating on the bus
-> are under control of the MDIO bus code and not the ethernet MAC
-> code. We've run into problems in the past where this has not been
-> the case, and it means - taking your example above - that when MAC1
-> wants to talk to its PHY, if MAC0 isn't alive it can't.
+> Thanks,
+> Conor.
+> 
+>>
+>> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+>> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+>> ---
+>>   .../hwmon/pmbus/infineon,tda38640.yaml        | 51 +++++++++++++++++++
+>>   .../devicetree/bindings/trivial-devices.yaml  |  2 -
+>>   2 files changed, 51 insertions(+), 2 deletions(-)
+>>   create mode 100644 Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
+>> new file mode 100644
+>> index 000000000000..c5924ddf1b47
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
+>> @@ -0,0 +1,51 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +
+>> +$id: http://devicetree.org/schemas/hwmon/pmbus/infineon,tda38640.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Infineon TDA38640 Synchronous Buck Regulator with SVID and I2C
+>> +
+>> +maintainers:
+>> +  - Naresh Solanki <naresh.solanki@9elements.com>
+>> +
+>> +description: |
+>> +  The Infineon TDA38640 is a 40A Single-voltage Synchronous Buck
+>> +  Regulator with SVID and I2C designed for Industrial use.
+>> +
+>> +  Datasheet: https://www.infineon.com/dgdl/Infineon-TDA38640-0000-DataSheet-v02_04-EN.pdf?fileId=8ac78c8c80027ecd018042f2337f00c9
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - infineon,tda38640
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  infineon,en-svid-control:
+>> +    description: |
+>> +      When enabled, it allows the chip to utilize workaround for
+>> +      software control of output when operating in SVID mode where
+>> +      hardware-based output control is the default behavior.
+>> +    type: boolean
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    i2c {
+>> +        #address-cells = <1>;
+>> +        #size-cells = <0>;
+>> +
+>> +        tda38640@40 {
+>> +            compatible = "infineon,tda38640";
+>> +            reg = <0x40>;
+>> +        };
+>> +    };
+>> +
+>> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+>> index 40bc475ee7e1..86c7d34f63bf 100644
+>> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+>> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+>> @@ -151,8 +151,6 @@ properties:
+>>             - infineon,slb9645tt
+>>               # Infineon SLB9673 I2C TPM 2.0
+>>             - infineon,slb9673
+>> -            # Infineon TDA38640 Voltage Regulator
+>> -          - infineon,tda38640
+>>               # Infineon TLV493D-A1B6 I2C 3D Magnetic Sensor
+>>             - infineon,tlv493d-a1b6
+>>               # Infineon Multi-phase Digital VR Controller xdpe11280
+>>
+>> base-commit: cb7022b8976e3c4d12cea2e7bb820a2944e2fd7b
+>> -- 
+>> 2.41.0
+>>
 
-Good point, but it's worse than that: when MAC0 is unbound, it will
-unregister the MDIO bus and destroy all PHY devices. These are not
-refcounted so they will literally go from under MAC1. Not sure how
-this can be dealt with?
-
->
-> So just be aware of the clocking situation and make sure that your
-> MDIO bus code is managing the clocks necessary for the MDIO bus
-> master to work.
-
-Doesn't seem like stmmac is ready for it as it is now so this is going
-to be fun...
-
-Bartosz
-
->
-> In regard to sharing of the MDIO bus signals between two bus
-> masters, I do not believe that is permissible - there's no
-> collision detection in hardware like there is on I=E6=B6=8E. So
-> having two MDIO bus masters talking at the same time would
-> end up corrupting the MDC (clock) and MDIO (data) signals if
-> both were active at the same time.
->
