@@ -2,114 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28862773F1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55368773FDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233297AbjHHQna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
+        id S233718AbjHHQyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:54:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbjHHQmi (ORCPT
+        with ESMTP id S233654AbjHHQxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:42:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 142021655A;
-        Tue,  8 Aug 2023 08:55:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691510124; x=1723046124;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=n1Msk62xu+U/2i8oJmw01jY05sFs/JrR7DH8MV3GHPs=;
-  b=ORZ+D49z9sv2aH5G42g9nIrix9X2cgGmyTJ4Bl2+LhxKMpczVnVeiqYU
-   bp6ry9i1ngVoYhNdVq02CQrmWCme9/BMSxrTNH8rjai9J/aBELx3W6iDJ
-   Q0UlQvSQWOJrO07VBBmNoXzaw7r/Hw9fXQQGl6H6iQLTin7jQapkkFncN
-   Dgp1Akviyn2G+OTMuHlvFB1WdxI09ZcBqAlwNdDTcUBsotTLccxo/t2hI
-   PBz/eL1RfSrJ51WnM+AxIWETU+eaD0q4i8rcCGyji+EchJBtpo/MUWQv1
-   arBJCXpIvZ3LtV98wU/fHW8VgwkXY6DY/ccNUo59hE0sioJcyxVzFf50n
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="369646759"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="369646759"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 00:42:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="874625381"
-Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 00:42:43 -0700
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     pbonzini@redhat.com, seanjc@google.com, mike.kravetz@oracle.com,
-        apopple@nvidia.com, jgg@nvidia.com, rppt@kernel.org,
-        akpm@linux-foundation.org, kevin.tian@intel.com,
-        Yan Zhao <yan.y.zhao@intel.com>
-Subject: [RFC PATCH 2/3] mm: don't set PROT_NONE to maybe-dma-pinned pages for NUMA-migrate purpose
-Date:   Tue,  8 Aug 2023 15:15:46 +0800
-Message-Id: <20230808071546.20173-1-yan.y.zhao@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230808071329.19995-1-yan.y.zhao@intel.com>
-References: <20230808071329.19995-1-yan.y.zhao@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 12:53:46 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBAB4FB0E;
+        Tue,  8 Aug 2023 08:58:48 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id ADBD066071E9;
+        Tue,  8 Aug 2023 08:21:20 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1691479281;
+        bh=UXRcgMncZj39YeKfwT0rE7PfhMSJQ8L3/sbxhBni15s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NK7ESBq/vynUZ0Aazs9Dv3B48dz4zwMylbAeXJWVjgbX0SRVb4XVKHmOK689nJcsI
+         940GrX/OyXYwglHIez6BsuJ5SnoypyDdhvMlC2dh48xqc5re0LuN0wGfHbaZu7yjPw
+         ihmKR3w23weg0AxJVQWy/DWUzflpbA+9m4O40mHmqts6OB7F45jYaok7FmOlO6nfGK
+         Tvd8zy79/WYRbfuW2OXi7nNEf15+GwtJLaA96nzjdh7VWWlo1DZgC2A17iqiEiWYMP
+         9Xwp9XM2n/jZgg/P/NiZ4YaVImnQoV7VHCDvuGCqKp5cnDSEr2bq3xsXFSnIGHnAx8
+         kMbkoFMYZdQ7g==
+Date:   Tue, 8 Aug 2023 09:21:17 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Danilo Krummrich <dakr@redhat.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, tzimmermann@suse.de,
+        mripard@kernel.org, corbet@lwn.net, christian.koenig@amd.com,
+        bskeggs@redhat.com, Liam.Howlett@oracle.com,
+        matthew.brost@intel.com, alexdeucher@gmail.com, ogabbay@kernel.org,
+        bagasdotme@gmail.com, willy@infradead.org, jason@jlekstrand.net,
+        donald.robson@imgtec.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH drm-misc-next v9 01/11] drm/gem: fix lockdep check for
+ dma-resv lock
+Message-ID: <20230808092117.7f7fdef9@collabora.com>
+In-Reply-To: <20230803165238.8798-2-dakr@redhat.com>
+References: <20230803165238.8798-1-dakr@redhat.com>
+        <20230803165238.8798-2-dakr@redhat.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't set PROT_NONE for exclusive anonymas and maybe-dma-pinned pages for
-NUMA migration purpose.
+On Thu,  3 Aug 2023 18:52:20 +0200
+Danilo Krummrich <dakr@redhat.com> wrote:
 
-For exclusive anonymas and page_maybe_dma_pinned() pages, NUMA-migration
-will eventually drop migration of those pages in try_to_migrate_one().
-(i.e. after -EBUSY returned in page_try_share_anon_rmap()).
+> When no custom lock is set to protect a GEMs GPUVA list, lockdep checks
+> should fall back to the GEM objects dma-resv lock. With the current
+> implementation we're setting the lock_dep_map of the GEM objects 'resv'
+> pointer (in case no custom lock_dep_map is set yet) on
+> drm_gem_private_object_init().
+> 
+> However, the GEM objects 'resv' pointer might still change after
+> drm_gem_private_object_init() is called, e.g. through
+> ttm_bo_init_reserved(). This can result in the wrong lock being tracked.
+> 
+> To fix this, call dma_resv_held() directly from
+> drm_gem_gpuva_assert_lock_held() and fall back to the GEMs lock_dep_map
+> pointer only if an actual custom lock is set.
+> 
+> Fixes: e6303f323b1a ("drm: manager to keep track of GPUs VA mappings")
+> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
 
-So, skip setting PROT_NONE to those kind of pages earlier in
-change_protection_range() phase to avoid later futile page faults,
-detections, and restoration to original PTEs/PMDs.
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
-Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
----
- mm/huge_memory.c | 5 +++++
- mm/mprotect.c    | 5 +++++
- 2 files changed, 10 insertions(+)
+but I'm wondering if it wouldn't be a good thing to add a
+drm_gem_set_resv() helper, so the core can control drm_gem_object::resv
+re-assignments (block them if it's happening after the GEM has been
+exposed to the outside world or update auxiliary data if it's happening
+before that).
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index eb3678360b97..a71cf686e3b2 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1875,6 +1875,11 @@ int change_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 			goto unlock;
- 
- 		page = pmd_page(*pmd);
-+
-+		if (PageAnon(page) && PageAnonExclusive(page) &&
-+		    page_maybe_dma_pinned(page))
-+			goto unlock;
-+
- 		toptier = node_is_toptier(page_to_nid(page));
- 		/*
- 		 * Skip scanning top tier node if normal numa
-diff --git a/mm/mprotect.c b/mm/mprotect.c
-index cb99a7d66467..a1f63df34b86 100644
---- a/mm/mprotect.c
-+++ b/mm/mprotect.c
-@@ -146,6 +146,11 @@ static long change_pte_range(struct mmu_gather *tlb,
- 				nid = page_to_nid(page);
- 				if (target_node == nid)
- 					continue;
-+
-+				if (PageAnon(page) && PageAnonExclusive(page) &&
-+				    page_maybe_dma_pinned(page))
-+					continue;
-+
- 				toptier = node_is_toptier(nid);
- 
- 				/*
--- 
-2.17.1
+> ---
+>  include/drm/drm_gem.h | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
+> index c0b13c43b459..bc9f6aa2f3fe 100644
+> --- a/include/drm/drm_gem.h
+> +++ b/include/drm/drm_gem.h
+> @@ -551,15 +551,17 @@ int drm_gem_evict(struct drm_gem_object *obj);
+>   * @lock: the lock used to protect the gpuva list. The locking primitive
+>   * must contain a dep_map field.
+>   *
+> - * Call this if you're not proctecting access to the gpuva list
+> - * with the dma-resv lock, otherwise, drm_gem_gpuva_init() takes care
+> - * of initializing lock_dep_map for you.
+> + * Call this if you're not proctecting access to the gpuva list with the
+> + * dma-resv lock, but with a custom lock.
+>   */
+>  #define drm_gem_gpuva_set_lock(obj, lock) \
+> -	if (!(obj)->gpuva.lock_dep_map) \
+> +	if (!WARN((obj)->gpuva.lock_dep_map, \
+> +		  "GEM GPUVA lock should be set only once.")) \
+>  		(obj)->gpuva.lock_dep_map = &(lock)->dep_map
+>  #define drm_gem_gpuva_assert_lock_held(obj) \
+> -	lockdep_assert(lock_is_held((obj)->gpuva.lock_dep_map))
+> +	lockdep_assert((obj)->gpuva.lock_dep_map ? \
+> +		       lock_is_held((obj)->gpuva.lock_dep_map) : \
+> +		       dma_resv_held((obj)->resv))
+>  #else
+>  #define drm_gem_gpuva_set_lock(obj, lock) do {} while (0)
+>  #define drm_gem_gpuva_assert_lock_held(obj) do {} while (0)
+> @@ -573,11 +575,12 @@ int drm_gem_evict(struct drm_gem_object *obj);
+>   *
+>   * Calling this function is only necessary for drivers intending to support the
+>   * &drm_driver_feature DRIVER_GEM_GPUVA.
+> + *
+> + * See also drm_gem_gpuva_set_lock().
+>   */
+>  static inline void drm_gem_gpuva_init(struct drm_gem_object *obj)
+>  {
+>  	INIT_LIST_HEAD(&obj->gpuva.list);
+> -	drm_gem_gpuva_set_lock(obj, &obj->resv->lock.base);
+>  }
+>  
+>  /**
 
