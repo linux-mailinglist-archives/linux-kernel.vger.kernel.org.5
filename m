@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 855E0773EF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A4E773DE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233215AbjHHQjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48124 "EHLO
+        id S230059AbjHHQYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233011AbjHHQi5 (ORCPT
+        with ESMTP id S229840AbjHHQWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:38:57 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DCB3A4DF;
-        Tue,  8 Aug 2023 08:54:10 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37858eka010911;
-        Tue, 8 Aug 2023 08:32:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Ub00QPPpk/iL7zcoQhlqqhUzZpIWn5fLPHHt0AbE4WQ=;
- b=Mb9y5DBEtG42ZQ1OsA6AVslg9FTOzLa/z/YnwK/+Wug/7oRDhRpYg32ue7zITP3Yzhxn
- CrVFYHqrF0UIWCb4lktbxn0RDiGbljSDQsGPZkG1fS1SDjfgiGbb9KctbjHxx/54el1q
- AVpYyQsEkYsNsAwvYFYXW+ik7KbsilCIjEdGRWhaBaTSvZ4vzQ4AJ4TGuPc3w2oIIhFU
- vVCC1TKr+zgt2dutGQ6uhSUK0uD0BoGpC3jpKU3eAAiUtqwt57mLZTkGTRIoZySAd1t7
- hyV1ekD1hpSBERevrYRl1fRT+WuEDIXcUmP2TnPNpzPji0WaMfKGbA+2jSTBRx5kopkL 6w== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sbcacrn0p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Aug 2023 08:32:31 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3788WU28012945
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 8 Aug 2023 08:32:30 GMT
-Received: from [10.216.8.0] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 8 Aug
- 2023 01:32:24 -0700
-Message-ID: <dc800b15-e35d-207b-73a8-9a3d2261f4f5@quicinc.com>
-Date:   Tue, 8 Aug 2023 14:02:21 +0530
+        Tue, 8 Aug 2023 12:22:42 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB4E7A25A
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:49:28 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bcae8c4072so3899849a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:49:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1691509762; x=1692114562;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UMc/79F+2XKuxYwXqrQoYwy2p4KTqDsJfOhydisLsjE=;
+        b=aAW8PoHqmlsuVoxEg4DCItGWrWcOs5LP+gQlE3x2RMXc8huziD8LDKmCptwS3vtaXG
+         R1fND4xLHokMhy/le+hHFoqY/RE+zWkl5Y7DYB1fufC2fExdYHf+9Hwx/o1dPRBRz4tF
+         gU2YlfstPleFEE1fXtlhvphgT+EjuPtcsx1KM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691509762; x=1692114562;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UMc/79F+2XKuxYwXqrQoYwy2p4KTqDsJfOhydisLsjE=;
+        b=DKrpUoGjwH41noq8vJ3Vi414A3gtm/UMmaxbUH9Vnp7TDiXo6ipgEHJ9cPirwY5EzH
+         74yW42oHCG5aXQJ84nnpgm4hmzv8MECDYqIF9Ro9cKEGAvEbbgW5LaXy6Nueu2bTtlZD
+         d40nnOoXa08QpBtu8vQ4HFn1yKcvqIOBmtAfGLfDnjkl8ViMEN/VgDqThsdtidstDkny
+         HUx1xMf34iRpTxPrhlsa9KlKMRPmowGoLcAOSW+WT3eQE9MX+s3KZDBOtsX6ycx0l+Qw
+         yBUPyDa7w2uZswzNyuxbTFNzmz9u6oefAyPbG+bHpf4aJVWUtB9Ik7tXS+XK4CBMzIKl
+         Ld+w==
+X-Gm-Message-State: AOJu0YzXtbdzDgRAxxnu68nioBYLf1axziQhEk5TFJKOHeDTzs/iSnTH
+        ziWqvjhG+HkHFArPC6q+FZnKAB0Zr261wSSuZXRN
+X-Google-Smtp-Source: AGHT+IFH6xfQHdPraKgebydn6lkYt5QjWzWOu1zAuEH/23RdqhZJy/MAxmfPRk4wtNOeYQ4DQrs16g==
+X-Received: by 2002:a17:902:7245:b0:1b5:2fdf:5bd8 with SMTP id c5-20020a170902724500b001b52fdf5bd8mr12580530pll.8.1691483595962;
+        Tue, 08 Aug 2023 01:33:15 -0700 (PDT)
+Received: from yuanyao.c.googlers.com.com (0.223.81.34.bc.googleusercontent.com. [34.81.223.0])
+        by smtp.gmail.com with ESMTPSA id b1-20020a170903228100b001b7fd27144dsm8340168plh.40.2023.08.08.01.33.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 01:33:15 -0700 (PDT)
+From:   Yuan Yao <yuanyaogoog@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Junichi Uekawa <uekawa@chromium.org>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        Takaya Saeki <takayas@chromium.org>,
+        Keiichi Watanabe <keiichiw@chromium.org>,
+        Yuan Yao <yuanyaogoog@chromium.org>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Tiwei Bie <tiwei.bie@intel.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH] virtio_ring: fix avail_wrap_counter in virtqueue_add_packed
+Date:   Tue,  8 Aug 2023 08:32:27 +0000
+Message-ID: <20230808083257.3777012-1-yuanyaogoog@chromium.org>
+X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.1
-Subject: Re: [PATCH v10 06/11] usb: dwc3: qcom: Refactor IRQ handling in QCOM
- Glue driver
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Johan Hovold <johan@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>
-References: <20230727223307.8096-1-quic_kriskura@quicinc.com>
- <20230727223307.8096-7-quic_kriskura@quicinc.com>
- <pyxerd3lirbh2p43m74ohwocjjb7uh56xxmaxbrkay3svossik@ksd3yojw5wgr>
-Content-Language: en-US
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <pyxerd3lirbh2p43m74ohwocjjb7uh56xxmaxbrkay3svossik@ksd3yojw5wgr>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 77Zs1XQU6JxIJkvWcShiIMdEHzrE2gaC
-X-Proofpoint-ORIG-GUID: 77Zs1XQU6JxIJkvWcShiIMdEHzrE2gaC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-08_06,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- priorityscore=1501 impostorscore=0 mlxscore=0 adultscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 lowpriorityscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308080076
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -95,89 +76,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  +
->> +enum dwc3_qcom_phy_irq_identifier {
->> +	HS_PHY_IRQ = 0,
->> +	DP_HS_PHY_IRQ,
->> +	DM_HS_PHY_IRQ,
->> +	SS_PHY_IRQ,
->>   };
-> 
-> This enum is unused.
-> 
+In current packed virtqueue implementation, the avail_wrap_counter won't
+flip, in the case when the driver supplies a descriptor chain with a
+length equals to the queue size; total_sg == vq->packed.vring.num.
 
-Hi Bjorn,
+Let’s assume the following situation:
+vq->packed.vring.num=4
+vq->packed.next_avail_idx: 1
+vq->packed.avail_wrap_counter: 0
 
-  I didn't use the enum directly, but used its members in the 
-get_port_irq call below.
+Then the driver adds a descriptor chain containing 4 descriptors.
 
-> [..]
->> +static int dwc3_get_acpi_index(const struct dwc3_acpi_pdata *pdata, int irq_index)
->> +{
->> +	int acpi_index = -1;
->> +
->> +	if (!pdata)
->> +		return -1;
->> +
->> +	if (irq_index == DP_HS_PHY_IRQ)
->> +		acpi_index = pdata->dp_hs_phy_irq_index;
->> +	else if (irq_index == DM_HS_PHY_IRQ)
->> +		acpi_index = pdata->dm_hs_phy_irq_index;
->> +	else if (irq_index == SS_PHY_IRQ)
->> +		acpi_index = pdata->ss_phy_irq_index;
-> 
-> It looks favourable to put these in an array, instead of having to pull
-> them out of 4 different variables conditionally.
-> 
->> +
->> +	return acpi_index;
->> +}
->> +
->> +static int dwc3_get_port_irq(struct platform_device *pdev, u8 port_index)
->> +{
->> +	struct dwc3_qcom *qcom = platform_get_drvdata(pdev);
->> +	bool is_mp_supported = (qcom->data->num_ports > 1) ? true : false;
->> +	const struct dwc3_acpi_pdata *pdata = qcom->acpi_pdata;
->> +	char *disp_name;
->> +	int acpi_index;
->> +	char *dt_name;
->> +	int ret;
->> +	int irq;
->> +	int i;
->> +
->> +	/*
->> +	 * We need to read only DP/DM/SS IRQ's here.
->> +	 * So loop over from 1->3 and accordingly modify respective phy_irq[].
->> +	 */
->> +	for (i = 1; i < MAX_PHY_IRQ; i++) {
->> +
->> +		if (!is_mp_supported && (port_index == 0)) {
->> +			if (i == DP_HS_PHY_IRQ) {
->> +				dt_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
->> +					"dp_hs_phy_irq");
->> +				disp_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
->> +					"qcom_dwc3 DP_HS");
->> +			} else if (i == DM_HS_PHY_IRQ) {
->> +				dt_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
->> +					"dm_hs_phy_irq");
->> +				disp_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
->> +					"qcom_dwc3 DM_HS");
->> +			} else if (i == SS_PHY_IRQ) {
->> +				dt_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
->> +					"ss_phy_irq");
->> +				disp_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
->> +					"qcom_dwc3 SS");
-Bjorn, Konrad,
+We expect the following result with avail_wrap_counter flipped:
+vq->packed.next_avail_idx: 1
+vq->packed.avail_wrap_counter: 1
 
-If we are to remove this repetitive loops, we might need to make a 2D 
-array for all of Dp/Dm/Ss interrutps and make a global array of names to 
-be used for irq lookup and use them to reduce the if-else-if stuff here. 
-If that is fine, I can make those changes, else I would like to stick to 
-this approach for now because if we don't add the global array of names, 
-prepping them seperately for dp/dm/ss would again lead us to making 
-if-else loops like above.
+But, the current implementation gives the following result:
+vq->packed.next_avail_idx: 1
+vq->packed.avail_wrap_counter: 0
 
-Please let me know your thoughts on this.
+To reproduce the bug, you can set a packed queue size as small as
+possible, so that the driver is more likely to provide a descriptor
+chain with a length equal to the packed queue size. For example, in
+qemu run following commands:
+sudo qemu-system-x86_64 \
+-enable-kvm \
+-nographic \
+-kernel "path/to/kernel_image" \
+-m 1G \
+-drive file="path/to/rootfs",if=none,id=disk \
+-device virtio-blk,drive=disk \
+-drive file="path/to/disk_image",if=none,id=rwdisk \
+-device virtio-blk,drive=rwdisk,packed=on,queue-size=4,\
+indirect_desc=off \
+-append "console=ttyS0 root=/dev/vda rw init=/bin/bash"
 
-Regards,
-Krishna,
+Inside the VM, create a directory and mount the rwdisk device on it. The
+rwdisk will hang and mount operation will not complete.
+
+This commit fixes the wrap counter error by flipping the
+packed.avail_wrap_counter, when start of descriptor chain equals to the
+end of descriptor chain (head == i).
+
+Fixes: 1ce9e6055fa0 ("virtio_ring: introduce packed ring support")
+Signed-off-by: Yuan Yao <yuanyaogoog@chromium.org>
+Acked-by: Jason Wang <jasowang@redhat.com>
+---
+
+ drivers/virtio/virtio_ring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index c5310eaf8b46..da1150d127c2 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -1461,7 +1461,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+ 		}
+ 	}
+ 
+-	if (i < head)
++	if (i <= head)
+ 		vq->packed.avail_wrap_counter ^= 1;
+ 
+ 	/* We're using some buffers from the free list. */
+-- 
+2.41.0.640.ga95def55d0-goog
+
