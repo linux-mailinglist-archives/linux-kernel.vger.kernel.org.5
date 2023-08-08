@@ -2,133 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D35237741FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1897740E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbjHHRbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47654 "EHLO
+        id S231649AbjHHRLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbjHHRas (ORCPT
+        with ESMTP id S231573AbjHHRLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:30:48 -0400
-Received: from mail-oi1-x24a.google.com (mail-oi1-x24a.google.com [IPv6:2607:f8b0:4864:20::24a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85B58DCD0
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:13:19 -0700 (PDT)
-Received: by mail-oi1-x24a.google.com with SMTP id 5614622812f47-3a1c2d69709so10459480b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:13:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691511156; x=1692115956;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BaiJ+rWGolW4ovI22gadBn2AFu8/7ikdaAkBdyz0qCk=;
-        b=Y0vPhLHCDOVmbRlPiMRlxigWmq+iVX9ybHKXxo1uC8+MlKGzliduvDev6X6k5Okqjd
-         9W6gq5be5vIE1tNzno16uDH/fleOOUuHDvg7FrXFnHYjdQNUDFSCj6i8oQAPwbCzGwp9
-         Pg4X41YFC9RgSbxKLF5Vi5UJ3GY/waHbmhVPZ0FucV7ra5NqzGsVjeLDpjAxlzmP9OV0
-         1dfl9tdmn2xaJ1QBTL/q6/JBz2D1ehSWW/Ifuf1DjxH0+lXMxYqgl2DZLFwTQODAWP2x
-         kH5nImhE3/AT8oNfcu4pijOXT4eKRQioIfIriqO9H86EACWVN3PXx9JgejvEmeP1ORs+
-         lIOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511156; x=1692115956;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BaiJ+rWGolW4ovI22gadBn2AFu8/7ikdaAkBdyz0qCk=;
-        b=IimVgAgwEgq/WncFnrB4IW76019X7KF4mC5VqEJuvPe4wIGz1zAMfxAYOsRhND/nCb
-         Fd5J2I6C2TFzo9cwZSYnGo832Ct+VCRR6u+4or7tv/auKUFwxQs1k27lvrWimKObFHkI
-         e7oY9HhxbJatiYBGGNGhSVhN6eu26pkobOJ4Ys7ZOs5vrfQApcTU8laK7SY7d1N+XPoG
-         rMIAcGu4cfGyNA+IAQqsQmwT9Dg2xOwtbdFsypSrIs8k7yEAqHqMNEN8anQR4zTF+ElE
-         tgJRrN8Emvm6deZonbRd5NbJdq2F3jXCjMGvh235QNL61C01y+w72agNiRQ1SoyGCETF
-         5Flg==
-X-Gm-Message-State: AOJu0Yw+xx4wMKVhK89cd5lQC3tyd6XEKKJiNWRsTPcJ4DYFnhWto1ZJ
-        AAsoBhfSGzDqDAsy/W4m3TWRZSuNmao=
-X-Google-Smtp-Source: AGHT+IG5/N2ZE1Ejorc8NLEsKzeCITxV+EG+130yb+21WD/iP5VWmZCCV6UyxFu6UTgxWYvax2jHbb68fQQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:3c11:0:b0:564:179a:d5cb with SMTP id
- j17-20020a633c11000000b00564179ad5cbmr56114pga.8.1691507265754; Tue, 08 Aug
- 2023 08:07:45 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 08:07:43 -0700
-In-Reply-To: <CAJHc60zN-dc2E-fS7fuXgkrfGD9bqW6tMy2GRZxbHOeZv0ZOBw@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-3-rananta@google.com>
- <87tttpr6qy.wl-maz@kernel.org> <ZMgsjx8dwKd4xBGe@google.com>
- <877cqdqw12.wl-maz@kernel.org> <CAJHc60xAUVt5fbhEkOqeC-VF8SWVOt3si=1yxVVAUW=+Hu_wNg@mail.gmail.com>
- <CAJHc60zN-dc2E-fS7fuXgkrfGD9bqW6tMy2GRZxbHOeZv0ZOBw@mail.gmail.com>
-Message-ID: <ZNJaPxTtPRCv0HOl@google.com>
-Subject: Re: [PATCH v7 02/12] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 13:11:05 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C8067691
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:04:34 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5B1121F853;
+        Tue,  8 Aug 2023 15:08:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691507331; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tWcv16REQqHhPYwN0ug3QkMuy7/75HPhpbQTjYO3Z7Q=;
+        b=w4qehdrYb5omMlVFfcrdUyXjnBMrr8yT00CU44ryYSj84vzc1fmI59dlRuJXtFPUGxJFhm
+        GOrWu85ocY0Vi44NjEo+W4YV4MZTRQA1NFkYtJz942FnpMENYJpDfAzWElbzbyjpqtvYhM
+        hzv7DMyTaqYjApsEorce9U8VYb8UiFw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691507331;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tWcv16REQqHhPYwN0ug3QkMuy7/75HPhpbQTjYO3Z7Q=;
+        b=2TXngQdyVXn/f+KSSeli81VcHWr4fxTMxkKg6zvUyCvB/CRJCToVIMb+F9pTwTd4S0Asv2
+        mJxxhM7EYUfgahAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1DC37139D1;
+        Tue,  8 Aug 2023 15:08:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id jEd2BoNa0mSESQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 08 Aug 2023 15:08:51 +0000
+Message-ID: <e4344207-4236-aeb7-5d51-91e3c65451d8@suse.cz>
+Date:   Tue, 8 Aug 2023 17:08:50 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [RFC v1 4/5] maple_tree: avoid bulk alloc/free to use percpu
+ array more
+Content-Language: en-US
+To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        Peng Zhang <zhangpeng.00@bytedance.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Matthew Wilcox <willy@infradead.org>
+References: <20230808095342.12637-7-vbabka@suse.cz>
+ <20230808095342.12637-11-vbabka@suse.cz>
+ <853af8fa-0cef-b00b-3fd6-9780a2008050@bytedance.com>
+ <20230808142945.tulcze5bjg5ciftk@revolver>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20230808142945.tulcze5bjg5ciftk@revolver>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023, Raghavendra Rao Ananta wrote:
-> On Wed, Aug 2, 2023 at 4:28=E2=80=AFPM Raghavendra Rao Ananta
-> <rananta@google.com> wrote:
-> >
-> > Sure, I'll change it to kvm_arch_flush_vm_tlbs() in v8.
-> >
-> While working on the renaming, I realized that since this function is
-> called from kvm_main.c's kvm_flush_remote_tlbs(). Do we want to rename
-> this and the other kvm_flush_*() functions that the series introduces
-> to match their kvm_arch_flush_*() counterparts?
+On 8/8/23 16:29, Liam R. Howlett wrote:
+> * Peng Zhang <zhangpeng.00@bytedance.com> [230808 07:17]:
+>> 
+>> 
+>> 在 2023/8/8 17:53, Vlastimil Babka 写道:
+>> > Using bulk alloc/free on a cache with percpu array should not be
+>> > necessary and the bulk alloc actually bypasses the array (the prefill
+>> > functionality currently relies on this).
+>> > 
+>> > The simplest change is just to convert the respective maple tree
+>> > wrappers to do a loop of normal alloc/free.
+>> > ---
+>> >   lib/maple_tree.c | 11 +++++++++--
+>> >   1 file changed, 9 insertions(+), 2 deletions(-)
+>> > 
+>> > diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+>> > index 1196d0a17f03..7a8e7c467d7c 100644
+>> > --- a/lib/maple_tree.c
+>> > +++ b/lib/maple_tree.c
+>> > @@ -161,12 +161,19 @@ static inline struct maple_node *mt_alloc_one(gfp_t gfp)
+>> >   static inline int mt_alloc_bulk(gfp_t gfp, size_t size, void **nodes)
+>> >   {
+>> > -	return kmem_cache_alloc_bulk(maple_node_cache, gfp, size, nodes);
+>> > +	int allocated = 0;
+>> > +	for (size_t i = 0; i < size; i++) {
+>> > +		nodes[i] = kmem_cache_alloc(maple_node_cache, gfp);
+>> > +		if (nodes[i])
+>> If the i-th allocation fails, node[i] will be NULL. This is wrong. We'd
+>> better guarantee that mt_alloc_bulk() allocates completely successfully,
+>> or returns 0. The following cases are not allowed:
+>> nodes: [addr1][addr2][NULL][addr3].
 
-Hmm, if we're going to rename one arch hook, then yes, I think it makes sen=
-se to
-rename all the common APIs and arch hooks to match.
+Thanks, indeed. I guess it should just break; in case of failure and return
+how many allocations succeeded so far.
 
-However, x86 is rife with the "remote_tlbs" nomenclature, and renaming the =
-common
-APIs will just push the inconsistencies into x86.  While I 100% agree that =
-the
-current naming is flawed, I am not willing to end up with x86 being partial=
-ly
-converted.
+But note this is a really a quick RFC proof of concept hack. I'd expect if
+the whole idea is deemed as good, the maple tree node handling could be
+redesigned (simplified?) around it and maybe there's no mt_alloc_bulk()
+anymore as a result?
 
-I think I'm ok renaming all of x86's many hooks?  But I'd definitely want i=
-nput
-from more x86 folks, and the size and scope of this series would explode.  =
-Unless
-Marc objects and/or has a better idea, the least awful option is probably t=
-o ignore
-the poor "remote_tlbs" naming and tackle it in a separate series.
+> Thanks for pointing this out Peng.
+> 
+> We can handle a lower number than requested being returned, but we
+> cannot handle the sparse data.
+> 
+> The kmem_cache_alloc_bulk() can return a failure today - leaving the
+> array to be cleaned by the caller, so if this is changed to a full
+> success or full fail, then we will also have to change the caller to
+> handle whatever state is returned if it differs from
+> kmem_cache_alloc_bulk().
+> 
+> It might be best to return the size already allocated when a failure is
+> encountered. This will make the caller, mas_alloc_nodes(), request more
+> nodes.  Only in the case of zero allocations would this be seen as an
+> OOM event.
+> 
+> Vlastimil, Is the first kmem_cache_alloc() call failing a possibility?
 
-Sorry for not noticiing this earlier, I didn't realize just how much x86 us=
-es
-remote_tlbs.
+Sure, if there's no memory, it can fail. In practice if gfp is one that
+allows reclaim, it will ultimately be the "too small to fail" allocation on
+the page allocator level. But there are exceptions, like having received a
+fatal signal, IIRC :)
 
-> (spiraling more into this, we also have the 'remote_tlb_flush_requests' a=
-nd
-> 'remote_tlb_flush' stats)
+> If so, what should be the corrective action?
 
-Regardless of what we decide for the APIs, definitely leave the stats alone=
-.  The
-names are ABI.  We could preserve the names and changes the struct fields, =
-but that
-would be a net negative IMO.
+Depends on your context, if you can pass on -ENOMEM to the caller, or need
+to succeed.
+
+>> > +			allocated++;
+>> > +	}
+>> > +	return allocated;
+>> >   }
+>> >   static inline void mt_free_bulk(size_t size, void __rcu **nodes)
+>> >   {
+>> > -	kmem_cache_free_bulk(maple_node_cache, size, (void **)nodes);
+>> > +	for (size_t i = 0; i < size; i++)
+>> > +		kmem_cache_free(maple_node_cache, nodes[i]);
+>> >   }
+>> >   static void mt_free_rcu(struct rcu_head *head)
+
