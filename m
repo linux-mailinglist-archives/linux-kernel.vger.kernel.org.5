@@ -2,123 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5C377448C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A7677448F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbjHHSWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:22:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46634 "EHLO
+        id S235739AbjHHSWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235439AbjHHSVZ (ORCPT
+        with ESMTP id S233894AbjHHSWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:21:25 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E218F012
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:31:48 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-c647150c254so163846276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691515908; x=1692120708;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JK8CUncptgcyNF0cGkjEA8kKWV78TabfUcMXlDPGaN4=;
-        b=a6Ag7VXjAsl8cBU4aYzrmGp+LGdAmWWFvill0aLl/BfUEGAMo9Fps6frvQLeqjIuhD
-         XlN66q+gi938xPlgkBioE+6G5T8Ol4cL8eHouqLBmXJDKJ4ofNgNbEyzFQgfwJN5wX5h
-         FYDm9fsDAdaSMZe+FiluFtG/hjeKkEawL1za/6eCiRJN35Mc4LW12k1s0m1xOYJ896S1
-         ajizwbTiIXVwvKayvFjResg+QbJFi5sSjCD3RDXK0Aed9+bvab3RpQkJ1elmdhgv05Su
-         a8qNKNMfPEzvEjf8JDTmpmBChnLwWPeqN8Nh96D4P3CNaUchJtCcdF9/W/qDduK8As2c
-         UF0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691515908; x=1692120708;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JK8CUncptgcyNF0cGkjEA8kKWV78TabfUcMXlDPGaN4=;
-        b=Hn7t6NMV3fI/8E76nTjMQhfSes1OpncmXJymwpyJtxb2O15DJhTy7Up1KkB4JIwVcV
-         6PkneZYcOb6ad/BWbnxlTPflXJKeyB8P50RTxqsdvNEQ3zMAFHuxukFSVj+XSSSU/eYo
-         jYIGwsUnj/nTk+C9qxDB+LZhtbMd88gfydcl+IyUnstdvN99WW2VkMMtMfDr3b67K55F
-         XNlhKv9xhS/sYigiHRcUBc2NIVhq+4ureLtO98r8f7Q/f93rTLb2OjBBY05K+RJ8zZ1Y
-         RXMy0ULijWWHg5NsLgZwciGYKIDrj/otWx/RAAjpt8uZW9oTWyD2AwA+LLxZLP8d2ODJ
-         GDYw==
-X-Gm-Message-State: AOJu0YyiTigjgeQiyOsj99nEB7uc6E2OnIfzpZelhbRuiL9u6Jca9Ax+
-        zbO6lodW6BTnJNxhH0AguWEVQwRB0D/t69HJeCw=
-X-Google-Smtp-Source: AGHT+IFuIZZ9U+HFkMO58uj8HDjeBgI0ZQAsk0P/vzaZPrJxYj2UOeQKD8aOt/SMEl5gPv9zleDrc3PVPpUJ3i0n+p8=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:cc03:38d0:9718:e90b])
- (user=ndesaulniers job=sendgmr) by 2002:a25:590:0:b0:ceb:324c:ba8e with SMTP
- id 138-20020a250590000000b00ceb324cba8emr7568ybf.4.1691515908064; Tue, 08 Aug
- 2023 10:31:48 -0700 (PDT)
-Date:   Tue, 08 Aug 2023 10:31:45 -0700
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAB80mQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDCwML3dLc+IL8opL47NSiPF2zNMNUc2Nz47TUJFMloJaCotS0zAqwcdG xtbUAp63nSF4AAAA=
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691515906; l=1516;
- i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
- bh=wd2IgnzJebaakuklw0wfvUJX4iZiu7mdNDFHD+AAxrI=; b=nwemPY1tE0AdQPYAgJzWaeXtnN2spPLRAwSR5RGznOobwW8wki4Ug95D04bQMIQZ3m3VbdjLh
- iHtBufNW+DbALPRP0+Qd07XoJ9pW2Z1jMIj5ZXyXQVKXAMHML1aY8z8
-X-Mailer: b4 0.12.3
-Message-ID: <20230808-um_port_kern-v1-1-867351f32af9@google.com>
-Subject: [PATCH] um: port_kern: fix -Wmissing-variable-declarations
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>
-Cc:     Nathan Chancellor <nathan@kernel.org>, Tom Rix <trix@redhat.com>,
-        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, kernel test robot <lkp@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 14:22:31 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181DB7ED4
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:33:13 -0700 (PDT)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 378HSE4S012620;
+        Tue, 8 Aug 2023 17:33:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=ce6KrtxW1N1M1KpdmyHfcpXsMxruBSPZBYwCMFJvTy0=;
+ b=myf/rhRl+04/jXK3GAYIxFnSxfWU0sUyxnygeTCfUrXoJzV70jaM8eZfFnUeMMP+cWwW
+ mPYLAhCFmRryJEemxbomsGLEo3Up6+eM9cFPlNY81KHE05zdsRX0OMoYbNLg/lVMyvAZ
+ QMP+Jp4CKqzycOnhwn8zc7o0Ym1VxiAf6vuJPlxETiLwg9IZX7DNuGHoJxZzhumQrNO6
+ IvGYdtHNySiy2v7XjWG3bCcnZtD9GF75ldat4paQmyhjYkgejGqx18e62lSK22ABLXY1
+ FbhXmrccponDGJWtaZpH8eG6qdPECBtHXWeqIgNx9VJRvFEMmgwXIdZP6+bzFlcT70R+ vA== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sbt4t03j9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Aug 2023 17:33:10 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 378HEefF030353;
+        Tue, 8 Aug 2023 17:33:09 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sa1rn8qfs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Aug 2023 17:33:09 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 378HX72n21430984
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Aug 2023 17:33:07 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6AE9120043;
+        Tue,  8 Aug 2023 17:33:07 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4375F20040;
+        Tue,  8 Aug 2023 17:33:07 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue,  8 Aug 2023 17:33:07 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing/synthetic: use union instead of casts
+References: <20230808142148.2652883-1-svens@linux.ibm.com>
+        <20230808132726.08cabfbc@gandalf.local.home>
+Date:   Tue, 08 Aug 2023 19:33:06 +0200
+In-Reply-To: <20230808132726.08cabfbc@gandalf.local.home> (Steven Rostedt's
+        message of "Tue, 8 Aug 2023 13:27:26 -0400")
+Message-ID: <yt9dv8dpphgt.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ZZOva1gYbPQFMS-khdBW-CrOGnVEOmZ_
+X-Proofpoint-GUID: ZZOva1gYbPQFMS-khdBW-CrOGnVEOmZ_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-08_15,2023-08-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ spamscore=0 phishscore=0 mlxscore=0 adultscore=0 suspectscore=0
+ clxscore=1015 malwarescore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=899 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308080156
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm looking to enable -Wmissing-variable-declarations behind W=1. 0day
-bot spotted the following instance:
+Steven Rostedt <rostedt@goodmis.org> writes:
 
-  arch/um/drivers/port_kern.c:147:14: warning: no previous extern
-  declaration for non-static variable 'port_work'
-  [-Wmissing-variable-declarations]
-  DECLARE_WORK(port_work, port_work_proc);
-               ^
-  arch/um/drivers/port_kern.c:147:1: note: declare 'static' if the
-  variable is not intended to be used outside of this translation unit
-  DECLARE_WORK(port_work, port_work_proc);
-  ^
+> The "dynamic" I was using wasn't about the fields were dynamic (union), but
+> because the field the offset/len combo represents is of dynamic size. It's
+> used all over the trace_events code.
+>
+> I would have in include/linux/trace_events.h (right above struct trace_entry):
+>
+> /* Used to find the offset and length of dynamic fields in trace events */
+> struct trace_dynamic_info {
+> #ifdef CONFIG_CPU_BIG_ENDIAN
+> 	u16 offset;
+> 	u16 len;
+> #else
+> 	u16 len;
+> 	u16 offset;
+> #endif
+> };
+>
+> And then it kernel/trace/trace.h:
+>
+> union trace_synthetic_field {
+> 	u8				as_u8;
+> 	u16				as_u16;
+> 	u32				as_u32;
+> 	u64				as_u64;
+> 	struct trace_dynamic_info	as_dynamic;
+> };
 
-This symbol is not referenced by more than one translation unit, so give
-it static storage.
+Ok.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/llvm/202308081050.sZEw4cQ5-lkp@intel.com/
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- arch/um/drivers/port_kern.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> I could work on the part of the trace_dynamic_info if you want.
 
-diff --git a/arch/um/drivers/port_kern.c b/arch/um/drivers/port_kern.c
-index efa8b7304090..c52b3ff3c092 100644
---- a/arch/um/drivers/port_kern.c
-+++ b/arch/um/drivers/port_kern.c
-@@ -144,7 +144,7 @@ static void port_work_proc(struct work_struct *unused)
- 	local_irq_restore(flags);
- }
- 
--DECLARE_WORK(port_work, port_work_proc);
-+static DECLARE_WORK(port_work, port_work_proc);
- 
- static irqreturn_t port_interrupt(int irq, void *data)
- {
+Whatever you prefer. Should i update my patch and send it again, or do
+you want to adjust it?
 
----
-base-commit: 14f9643dc90adea074a0ffb7a17d337eafc6a5cc
-change-id: 20230808-um_port_kern-6f1e7373feb5
-
-Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
-
+Thanks
+Sven
