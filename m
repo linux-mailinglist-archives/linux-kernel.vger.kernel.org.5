@@ -2,122 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA52774847
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EE67746F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235954AbjHHTaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46604 "EHLO
+        id S234137AbjHHTH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232848AbjHHT34 (ORCPT
+        with ESMTP id S232380AbjHHTHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:29:56 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A41810F5;
-        Tue,  8 Aug 2023 12:05:31 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378C6R0B080107;
-        Tue, 8 Aug 2023 07:06:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691496387;
-        bh=qkIndM7dqcJoDWN+Ry0lMJkHswMCbqKil4C/JiFX1xk=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=G5TzuTIsOcgLcSnabX2mnWZhKv7YMOqnEH1j4v65YqD22/djndK3yyl54TX1BKBtM
-         nw7i3QTWOl0fGwdAN1jFRyZ4zn5m8busG9IIjDfmvaFt7GFzDTEupkbVTE1dckAgF9
-         61lDQaeHrXTMfhAYSBujwcJ09TuOvxyt/FOLpSu0=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378C6REa049555
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Aug 2023 07:06:27 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
- Aug 2023 07:06:26 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 8 Aug 2023 07:06:26 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378C6QRG031642;
-        Tue, 8 Aug 2023 07:06:26 -0500
-Date:   Tue, 8 Aug 2023 07:06:26 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Hari Nagalla <hnagalla@ti.com>
-CC:     <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
-        <p.zabel@pengutronix.de>, <martyn.welch@collabora.com>,
-        <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v5 0/5] TI K3 M4F support on AM64x and AM62x SoCs
-Message-ID: <20230808120626.bfw5hl6hzszhccsg@spectrum>
-References: <20230808044529.25925-1-hnagalla@ti.com>
+        Tue, 8 Aug 2023 15:07:36 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E06132CF;
+        Tue,  8 Aug 2023 09:29:38 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-63ce8bea776so33642706d6.0;
+        Tue, 08 Aug 2023 09:29:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691512153; x=1692116953;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f5jWDe5wn3rMqNcO4b1gbGyhh2S63llVj6tRKZkmEkI=;
+        b=nClH4hqUumhc5ncPR9uFyByCM7+yqL2gwOXGECS46FF8ujEELgbfd4uWIiHhBoFNIL
+         4yh+nl4uQZH7DRUO57TRW3uBOKWYno1/+Sd/gNr7y/TXi2GSZCNvHlaIwzsFgYHQWLoy
+         lF+Y185xvk02OEoe66FXDKrKZcdzFCpwg6RISl7S6w4nEgyVsL1o8Fk/pJSfgw61O8jV
+         d2eqqsKXFS9/QUm3Fvx9lCagHdooxEYFI8ZGhO24usFkYUUn89xr7tjy3TEmNj11F5Dq
+         1lj5NQjGC0nTu5CCaf1dpwfQeZxiGc5ZS6WXPaA6y4poTI44Ep13/OHQ0V66DrhAS9b4
+         3EBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691512153; x=1692116953;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f5jWDe5wn3rMqNcO4b1gbGyhh2S63llVj6tRKZkmEkI=;
+        b=f9oR5zNoeXCRH8BO+p7LZJb+EHGD0bpjW5F2bn6SzWJ+eEW386R4F9B9z5F2Fcw0cH
+         MiIpoxP65EnyjzbmAcjXYhFkZ4f5HmZBIRk0SSnKclyh+jLnbQg3A1K9Cun4oa+3CaQP
+         EeqrElRAvnSlu7Q887jhVesYdDUSzZcNf97ZEIfiRI36PilZe+drPZQDa1fGj5YumzM2
+         BXOQAKZ+jxWBa63jRj56121NQ1wLwEL3k6/3SMKlm6IrP1ybd97usJWx0JgTmnOx70R/
+         UmpFNMvK9fcpUKuSgnVJJLL6LYt8jEg0f5DTOGjKFQlI5UxUdp83a1/QtskKMpkdYOKB
+         Ft9w==
+X-Gm-Message-State: AOJu0YwUdWHRP8KpFfa9hDJvFqWlp5U+EWO6HZTTXrgQOPhAs9pTgMVg
+        kn4g7xi0Ue1VvcfVPEwYahoajeKjRyl5ZzAkEN+UjJOdwow=
+X-Google-Smtp-Source: AGHT+IEZFGI/rIxXz15siVfjvagtds6b5btNLG1LoGhGH29pxEDr1Yukfrn12+OLzkInX/pKT4mqPFAjHOhXMPGhKwQ=
+X-Received: by 2002:a05:6870:c6a2:b0:1bf:1a58:c4f with SMTP id
+ cv34-20020a056870c6a200b001bf1a580c4fmr15623793oab.55.1691496528336; Tue, 08
+ Aug 2023 05:08:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230808044529.25925-1-hnagalla@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230808022229.1560559-1-xiongwei.song@windriver.com>
+ <ZNG9vwg1K6fn1SvN@P9FQF9L96D> <ZNHu8m3h3ckn+HeI@dhcp22.suse.cz>
+In-Reply-To: <ZNHu8m3h3ckn+HeI@dhcp22.suse.cz>
+From:   Xiongwei Song <sxwjean@gmail.com>
+Date:   Tue, 8 Aug 2023 20:08:26 +0800
+Message-ID: <CAEVVKH-+L8O_wyzj7nueSPN7c0wbG0iUrM61hYXQOm7R7KCjiw@mail.gmail.com>
+Subject: Re: [PATCH] mm/memcontrol: add tips for kmem.slabinfo
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        xiongwei.song@windriver.com, hannes@cmpxchg.org,
+        shakeelb@google.com, muchun.song@linux.dev,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23:45-20230807, Hari Nagalla wrote:
-> The following series introduces K3 M4F remoteproc driver support for
-> AM64x and AM62x SoC families. These SoCs have a ARM Cortex M4F core in
-> the MCU voltage domain. For safety oriented applications, this core is
-> operated independently with out any IPC to other cores on the SoC.
-> However, for non safety applications, some customers use it as a remote
-> processor and so linux remote proc support is extended to the M4F core.
-> 
-> See AM64x Technical Reference Manual (SPRUIM2C – SEPTEMBER 2021) for
-> further details: https://www.ti.com/lit/pdf/SPRUIM2
-> 
-> Hari Nagalla (3):
->   dt-bindings: remoteproc: k3-m4f: Add K3 AM64x SoCs
->   arm64: dts: ti: k3-am62 : Add M4F remote proc node
->   arm64: dts: ti: k3-am64 : Add M4F remote proc node
-> 
-> Martyn Welch (2):
->   remoteproc: k3: Split out functions common with M4 driver
->   remoteproc: k3-m4: Add a remoteproc driver for M4F subsystem
-> 
->  .../bindings/remoteproc/ti,k3-m4f-rproc.yaml  | 136 ++++
->  arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi       |  12 +
->  .../arm64/boot/dts/ti/k3-am62x-sk-common.dtsi |  19 +
->  arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi       |  12 +
->  arch/arm64/boot/dts/ti/k3-am642-evm.dts       |  18 +
->  arch/arm64/boot/dts/ti/k3-am642-sk.dts        |  18 +
->  drivers/remoteproc/Kconfig                    |  13 +
->  drivers/remoteproc/Makefile                   |   3 +-
->  drivers/remoteproc/ti_k3_common.c             | 513 +++++++++++++++
->  drivers/remoteproc/ti_k3_common.h             | 108 ++++
->  drivers/remoteproc/ti_k3_dsp_remoteproc.c     | 598 +-----------------
->  drivers/remoteproc/ti_k3_m4_remoteproc.c      | 333 ++++++++++
->  12 files changed, 1213 insertions(+), 570 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
->  create mode 100644 drivers/remoteproc/ti_k3_common.c
->  create mode 100644 drivers/remoteproc/ti_k3_common.h
->  create mode 100644 drivers/remoteproc/ti_k3_m4_remoteproc.c
+On Tue, Aug 8, 2023 at 3:30=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Mon 07-08-23 20:59:59, Roman Gushchin wrote:
+> > On Tue, Aug 08, 2023 at 10:22:29AM +0800, xiongwei.song@windriver.com w=
+rote:
+> > > From: Xiongwei Song <xiongwei.song@windriver.com>
+> > >
+> > > No any output from kmem.slabinfo, which is not friendly. Adding
+> > > tips for it.
+> > >
+> > > Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
+> > > ---
+> > >  mm/memcontrol.c | 6 ++----
+> > >  1 file changed, 2 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > index e8ca4bdcb03c..58d3bd93890b 100644
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@ -5002,10 +5002,8 @@ static ssize_t memcg_write_event_control(struc=
+t kernfs_open_file *of,
+> > >  #if defined(CONFIG_MEMCG_KMEM) && (defined(CONFIG_SLAB) || defined(C=
+ONFIG_SLUB_DEBUG))
+> > >  static int mem_cgroup_slab_show(struct seq_file *m, void *p)
+> > >  {
+> > > -   /*
+> > > -    * Deprecated.
+> > > -    * Please, take a look at tools/cgroup/memcg_slabinfo.py .
+> > > -    */
+> > > +   seq_puts(m, "This file is deprecated.\n"
+> > > +           "Please use tools/cgroup/memcg_slabinfo.py, which is in k=
+ernel source.\n");
+> >
+> > It'll break the ABI.
+>
+> Agreed
+>
+> > The only possible option here is to use WARN_ON_ONCE(), which will prin=
+t once to dmesg.
+> > But honestly I'm not sure we need it.
+>
+> There are systems with panic_on_warn configured. I do not think we want
+> those to go down just becasue some random tool tries to read this file.
 
-Please keep the device tree seperate from driver changes.
-ordering of patches should be:
-a) binding
-b) driver updates
-c) mark device tree changes in the same series (if you are posting) as
-"DONOTMERGE" to help driver maintainers understand that the dts come in
-via SoC tree (most maintainers do not need this, but it keeps things
-sane and adjust your expectation that this will hit the same window as
-the driver changes).
+Thank you for the comments.
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+> --
+> Michal Hocko
+> SUSE Labs
+>
