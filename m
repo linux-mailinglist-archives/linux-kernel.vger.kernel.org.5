@@ -2,146 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51DD977493A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3B87745EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbjHHTub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36528 "EHLO
+        id S229786AbjHHSsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233314AbjHHTuM (ORCPT
+        with ESMTP id S229463AbjHHSsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:50:12 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D1B53524
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:56:19 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d1c693a29a0so6762949276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:56:19 -0700 (PDT)
+        Tue, 8 Aug 2023 14:48:22 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE74134DDA
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:57:24 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9bf52cd08so91792841fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:57:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691513778; x=1692118578;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zRGROs0prSq9MFh0VojzEm9/faHihdz2gNY33winOk0=;
-        b=ZwuzzdZO9kYs2Oc/mNbJfARuvGlMIC3UUvNeZoKIvfQ2VX/159UeLD1ZOmH/QRku2q
-         UdxijLS1nyzh4vJapMPxBdB8Mw0I7WhzdZN5HIP1q4KkrgtgqCuWf6ebvKHNXq6l9tGA
-         r/JobYflpqEJayDjQmiSyLfBHt9cttoaedbWNQRVokc8GdBH1nN1OhMM71m5X6bnIFOX
-         jGZafbBDftxnGbVwxScApAzdztO3THQLw8zbAAexjzipo9xfZrido1s5h4shka1W8pRA
-         mt9oD6/q/ha3W6CQK/O/WueGTnREmrbLW/46ftFn+1ehcZRoL4uLnQTtAg2+1kfrNN1r
-         1RaA==
+        d=linux-foundation.org; s=google; t=1691513843; x=1692118643;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=q0vkAwW5QpFto/3iZxXs952JhEe8qRWUMMxPi+R76PM=;
+        b=Ti59RVScMXl0b2HRtWL9NR9N3UiedxQG42PHAAGR0PGFWlQQUt+tGNRI0X9mu+n40h
+         G3Ndk39+FM1fHRD5fDeUqSdHgN56hQ+v26g+yWm8KCcZ/4WtnYhkDbL91yXA7zNfcOcr
+         5m2DaGGEVY22xXcLuyTBDsgQ0bKK0PO8/2th4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691513778; x=1692118578;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zRGROs0prSq9MFh0VojzEm9/faHihdz2gNY33winOk0=;
-        b=i5YrUiXvughzVKliKIRwYOFjYaQSbkPAHOTPgTRyX3omDB9nUZl+Ex9k3fnLUTlve9
-         3rQOnk6xX1bzT8T7kbWQyPRNnsNB0Bszy6VKYrQ+3qaD5zpGkQg0JeulueeN4oSPCWVo
-         5eEbtDeUDcpANCM/xNk+LflwYVglI2bpzuV9sZxCWTcgsH9nQdurjQWEG+zT8rBB6JrV
-         ZsjiJd/YEeIyIgpJYEGFlTI00Z7nkPcw0YG2AzeZ0d9TFtRCfkFm9NKNfWYQZRICQ0od
-         /TlnRbFg8TC+8imb3bQWRR++MyvwZnYa5ycXrMWnei5wJgABZ5ynynJ0yNgsBnj0tEBA
-         221A==
-X-Gm-Message-State: AOJu0Yy0UR5Ih0eJPCncPxELX/NQYYor+LNVl1EOx3hj0wPwCkWAJd0q
-        9o2ckAjmVjGP0HO+mIlcy84UQ4zKfNq+hSWG8RA=
-X-Google-Smtp-Source: AGHT+IHvp4RVooOae7EfRvNoe9ojEueuoOpKM3VV7FgRuePNPnjR9K9MVCvuT9PpaD6qBvXfpS2T7QcKSQIpYFkLMfU=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:cc03:38d0:9718:e90b])
- (user=ndesaulniers job=sendgmr) by 2002:a25:860e:0:b0:d5d:511b:16da with SMTP
- id y14-20020a25860e000000b00d5d511b16damr1793ybk.2.1691513778422; Tue, 08 Aug
- 2023 09:56:18 -0700 (PDT)
-Date:   Tue, 08 Aug 2023 09:56:16 -0700
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAK9z0mQC/x3MQQqAIBBA0avIrBPUiqSrRISMU80iC40IxLsnL
- d/i/wyJIlOCUWSI9HDiM1ToRgDuLmwk2VeDUaZVVlnJBqU7/JJudzNKq6lHMzjbIUGNrkgrv/9 wmkv5AFb2g4hgAAAA
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691513776; l=2427;
- i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
- bh=si09L+ne/76nNtqRPQQNA8vh+v/vSOpRLqSBS/7yXBU=; b=rVdUpEz91pDMvj2lTvd62ib7crXJtBOPX1kW9foKJV39T/d9Twit/ju7Ur4Jw4tv+AsMmMlNb
- X1Dlt6TmZSeDalyhdGjGC+BA2Yko/jKs/08sEV2wsETgddvbzoMAjbW
-X-Mailer: b4 0.12.3
-Message-ID: <20230808-i2c-amd_static-v1-1-1902f608bba1@google.com>
-Subject: [PATCH] i2c/busses: fix -Wmissing-variable-declarations
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Andi Shyti <andi.shyti@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>, Tom Rix <trix@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        llvm@lists.linux.dev, kernel test robot <lkp@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1691513843; x=1692118643;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q0vkAwW5QpFto/3iZxXs952JhEe8qRWUMMxPi+R76PM=;
+        b=LYqMLV3gujjLf6/VzQU+RawRbMuBYRHhK3NzSoTwCexFpFTw1RIObg9AK0Ki47nUw+
+         b5o3wqOZ9jWZZdwnZKWMB4Y+rIBK/6lqwcHvpU3MkEaw48a1t1fLjGEZ5Tjo+9Nj+o4v
+         80jBwDf+XYwNP9FGWh94Ud1zR+mCAZM72cySOWCd7tE/SoFUTZ0ZrjGfn//404mXoyW3
+         v3A1fbrYGGMHbZ6/GHy01sDg6M4rK2JJd4y1o98R08lpJenTWu228EK2VEuwzpQEcllo
+         eCyO4Ffioy9LqRmJyCkCgBhyLcmaKIQoG7PiZQcf4GMXclaQPAj0ZpgS0fehz31ClI4X
+         6qYA==
+X-Gm-Message-State: AOJu0Yx7Ggh849i5kXo5ZYJUB1tmZBcSQFIJ3+9B05qNoXBmtmyMtpIn
+        GyeGJjp3StmQT9uxdndhj02GJhKfZqYG9DuvGWcV/w==
+X-Google-Smtp-Source: AGHT+IEN7OLHJcJ5ed4Y9AVkMVCgkfWuTjGQ5NtJMqykq5SWctp+nzrBh6PgqIXzb/cfPKbFLuchhQ==
+X-Received: by 2002:a2e:9c91:0:b0:2b5:9f54:e290 with SMTP id x17-20020a2e9c91000000b002b59f54e290mr101252lji.0.1691513842706;
+        Tue, 08 Aug 2023 09:57:22 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id p3-20020a2ea403000000b002b9db7df0dasm2362398ljn.8.2023.08.08.09.57.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 09:57:21 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-4fe10f0f4d1so9760853e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:57:21 -0700 (PDT)
+X-Received: by 2002:a05:6512:3b21:b0:4f8:e4e9:499e with SMTP id
+ f33-20020a0565123b2100b004f8e4e9499emr79202lfv.12.1691513841300; Tue, 08 Aug
+ 2023 09:57:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230806230627.1394689-1-mjguzik@gmail.com> <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
+In-Reply-To: <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 8 Aug 2023 09:57:04 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whk-8Pv5YXH4jNfyAf2xiQCGCUVyBWw71qJEafn4mT6vw@mail.gmail.com>
+Message-ID: <CAHk-=whk-8Pv5YXH4jNfyAf2xiQCGCUVyBWw71qJEafn4mT6vw@mail.gmail.com>
+Subject: Re: [PATCH] fs: use __fput_sync in close(2)
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Mateusz Guzik <mjguzik@gmail.com>, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        oleg@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Christian Brauner <brauner@kernel.org>
+Content-Type: multipart/mixed; boundary="000000000000a6196606026c4195"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm looking to enable -Wmissing-variable-declarations behind W=1. 0day
-bot spotted the following instance:
+--000000000000a6196606026c4195
+Content-Type: text/plain; charset="UTF-8"
 
-  drivers/i2c/busses/i2c-amd756.c:286:20: warning: no previous extern
-  declaration for non-static variable 'amd756_smbus'
-  [-Wmissing-variable-declarations]
-  286 | struct i2c_adapter amd756_smbus = {
-      |                    ^
-  drivers/i2c/busses/i2c-amd756.c:286:1: note: declare 'static' if the
-  variable is not intended to be used outside of this translation unit
-  286 | struct i2c_adapter amd756_smbus = {
-      | ^
+On Mon, 7 Aug 2023 at 22:57, Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> Taking a quick look at the history it appears that fput was always
+> synchronous [..]
 
-This symbol is referenced by more than one translation unit, so create
-then include the correct header for their declarations.
+Indeed. Synchronous used to be the only case.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/llvm/202308081000.tTL1ElTr-lkp@intel.com/
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- drivers/i2c/busses/i2c-amd756-s4882.c | 3 +--
- drivers/i2c/busses/i2c-amd756.c       | 1 +
- drivers/i2c/busses/i2c-amd756.h       | 3 +++
- 3 files changed, 5 insertions(+), 2 deletions(-)
+The reason it's async now is because several drivers etc do the final
+close from nasty contexts, so 'fput()' needed to be async for the
+general case.
 
-diff --git a/drivers/i2c/busses/i2c-amd756-s4882.c b/drivers/i2c/busses/i2c-amd756-s4882.c
-index 063274388a75..8156cfc43df3 100644
---- a/drivers/i2c/busses/i2c-amd756-s4882.c
-+++ b/drivers/i2c/busses/i2c-amd756-s4882.c
-@@ -26,8 +26,7 @@
- #include <linux/init.h>
- #include <linux/i2c.h>
- #include <linux/mutex.h>
--
--extern struct i2c_adapter amd756_smbus;
-+#include "i2c-amd756.h"
- 
- static struct i2c_adapter *s4882_adapter;
- static struct i2c_algorithm *s4882_algo;
-diff --git a/drivers/i2c/busses/i2c-amd756.c b/drivers/i2c/busses/i2c-amd756.c
-index ef1307a258e9..af77374d2ab3 100644
---- a/drivers/i2c/busses/i2c-amd756.c
-+++ b/drivers/i2c/busses/i2c-amd756.c
-@@ -31,6 +31,7 @@
- #include <linux/i2c.h>
- #include <linux/acpi.h>
- #include <linux/io.h>
-+#include "i2c-amd756.h"
- 
- /* AMD756 SMBus address offsets */
- #define SMB_ADDR_OFFSET		0xE0
-diff --git a/drivers/i2c/busses/i2c-amd756.h b/drivers/i2c/busses/i2c-amd756.h
-new file mode 100644
-index 000000000000..88698266d6d8
---- /dev/null
-+++ b/drivers/i2c/busses/i2c-amd756.h
-@@ -0,0 +1,3 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#include <linux/i2c.h>
-+extern struct i2c_adapter amd756_smbus;
+> All 3 issues taken together says that a synchronous fput is a
+> loaded foot gun that must be used very carefully.   That said
+> close(2) does seem to be a reliably safe place to be synchronous.
 
----
-base-commit: 14f9643dc90adea074a0ffb7a17d337eafc6a5cc
-change-id: 20230808-i2c-amd_static-81e5c27a84ce
+Yes.
 
-Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
+That said, I detest Mateusz' patch. I hate these kinds of "do
+different things based on flags" interfaces. Particularly when it
+spreads out like this.
 
+So I do like having close() be synchronous, because we actually do
+have correctness issues wrt the close having completed properly by the
+time we return to user space, so we have that "task_work_add()" there
+that will force the synchronization anyway before we return.
+
+So the system call case is indeed a special case. Arguably
+close_range() could be too, but honestly, once you start doing ranges
+of file descriptors, you are (a) doint something fairly unusual, and
+(b) the "queue them up on the task work" might actually be a *good*
+thing.
+
+It's definitely not a good thing for the single-fd-close case, though.
+
+But even if we want to do this - and I have absolutely no objections
+to it conceptually as per above - we need to be a lot more surgical
+about it, and not pass stupid flags around.
+
+Here's a TOTALLY UNTESTED(!) patch that I think effectively does what
+Mateusz wants done, but does it all within just fs/open.c and only for
+the obvious context of the close() system call itself.
+
+All it needs is to just split out the "flush" part from filp_close(),
+and we already had all the other infrastructure for this operation.
+
+Mateusz, two questions:
+
+ (a) does this patch work for you?
+
+ (b) do you have numbers for this all?
+
+and if it all looks good I have no problems with this kind of much
+more targeted and obvious patch.
+
+Again: TOTALLY UNTESTED. It looks completely obvious, but mistakes happen.
+
+             Linus
+
+--000000000000a6196606026c4195
+Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
+Content-Disposition: attachment; filename="patch.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ll2jn96d0>
+X-Attachment-Id: f_ll2jn96d0
+
+IGZzL29wZW4uYyB8IDIyICsrKysrKysrKysrKysrKysrKystLS0KIDEgZmlsZSBjaGFuZ2VkLCAx
+OSBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2ZzL29wZW4uYyBi
+L2ZzL29wZW4uYwppbmRleCBlNmVhZDBmMTk5NjQuLjVmZTQyN2U4Njg1YyAxMDA2NDQKLS0tIGEv
+ZnMvb3Blbi5jCisrKyBiL2ZzL29wZW4uYwpAQCAtMTUwMyw3ICsxNTAzLDcgQEAgU1lTQ0FMTF9E
+RUZJTkUyKGNyZWF0LCBjb25zdCBjaGFyIF9fdXNlciAqLCBwYXRobmFtZSwgdW1vZGVfdCwgbW9k
+ZSkKICAqICJpZCIgaXMgdGhlIFBPU0lYIHRocmVhZCBJRC4gV2UgdXNlIHRoZQogICogZmlsZXMg
+cG9pbnRlciBmb3IgdGhpcy4uCiAgKi8KLWludCBmaWxwX2Nsb3NlKHN0cnVjdCBmaWxlICpmaWxw
+LCBmbF9vd25lcl90IGlkKQorc3RhdGljIGludCBmaWxwX2ZsdXNoKHN0cnVjdCBmaWxlICpmaWxw
+LCBmbF9vd25lcl90IGlkKQogewogCWludCByZXR2YWwgPSAwOwogCkBAIC0xNTIwLDEwICsxNTIw
+LDE1IEBAIGludCBmaWxwX2Nsb3NlKHN0cnVjdCBmaWxlICpmaWxwLCBmbF9vd25lcl90IGlkKQog
+CQlkbm90aWZ5X2ZsdXNoKGZpbHAsIGlkKTsKIAkJbG9ja3NfcmVtb3ZlX3Bvc2l4KGZpbHAsIGlk
+KTsKIAl9Ci0JZnB1dChmaWxwKTsKIAlyZXR1cm4gcmV0dmFsOwogfQogCitpbnQgZmlscF9jbG9z
+ZShzdHJ1Y3QgZmlsZSAqZmlscCwgZmxfb3duZXJfdCBpZCkKK3sKKwlpbnQgcmV0dmFsID0gZmls
+cF9mbHVzaChmaWxwLCBpZCk7CisJZnB1dChmaWxwKTsKKwlyZXR1cm4gcmV0dmFsOworfQogRVhQ
+T1JUX1NZTUJPTChmaWxwX2Nsb3NlKTsKIAogLyoKQEAgLTE1MzMsNyArMTUzOCwxOCBAQCBFWFBP
+UlRfU1lNQk9MKGZpbHBfY2xvc2UpOwogICovCiBTWVNDQUxMX0RFRklORTEoY2xvc2UsIHVuc2ln
+bmVkIGludCwgZmQpCiB7Ci0JaW50IHJldHZhbCA9IGNsb3NlX2ZkKGZkKTsKKwlzdHJ1Y3QgZmls
+ZSAqZmlsZSA9IGNsb3NlX2ZkX2dldF9maWxlKGZkKTsKKwlpbnQgcmV0dmFsOworCisJaWYgKCFm
+aWxlKQorCQlyZXR1cm4gLUVCQURGOworCXJldHZhbCA9IGZpbHBfZmx1c2goZmlsZSwgY3VycmVu
+dC0+ZmlsZXMpOworCisJLyoKKwkgKiBXZSdyZSByZXR1cm5pbmcgdG8gdXNlciBzcGFjZS4gRG9u
+J3QgYm90aGVyCisJICogd2l0aCBhbnkgZGVsYXllZCBmcHV0KCkgY2FzZXMuCisJICovCisJX19m
+cHV0X3N5bmMoZmlsZSk7CiAKIAkvKiBjYW4ndCByZXN0YXJ0IGNsb3NlIHN5c2NhbGwgYmVjYXVz
+ZSBmaWxlIHRhYmxlIGVudHJ5IHdhcyBjbGVhcmVkICovCiAJaWYgKHVubGlrZWx5KHJldHZhbCA9
+PSAtRVJFU1RBUlRTWVMgfHwK
+--000000000000a6196606026c4195--
