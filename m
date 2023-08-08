@@ -2,104 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CAC1774963
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2A677459A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbjHHTx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:53:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37392 "EHLO
+        id S230297AbjHHSnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbjHHTxp (ORCPT
+        with ESMTP id S229735AbjHHSn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:53:45 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293AE13945C;
-        Tue,  8 Aug 2023 11:03:59 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe2ba3e260so57075665e9.2;
-        Tue, 08 Aug 2023 11:03:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691517837; x=1692122637;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3PeSe/GO6oNsx5WYr31WDuJ/pxid985m44XnUTfQZDY=;
-        b=raYj3mFjJsVhqvQ2f6HG1Vqk1ialYg9hZ0Sl14PNuTYzOhaWbxr7fsByS81K/vP4zz
-         4zD/2v+WpXJoh3wbm1o7iLY513lrSL/KxTJmqOTsmpoXNyhoXYPTsYMTUohiYtSJxHB1
-         w0UTeruOXN54m6UqHXHpkFZc2XuEv8CxUPQ88Q+ESs0MA502075bcGrTkOMJ4y63uDbQ
-         j/YX070Ud7/NHXUxLUmwolZT6oACdPScPmgT5CuR6iupKcW8l6bMlPexVG/lBBcs8rSj
-         v3gzl8cgYk4/Suob6BnNcgKfRUtwNoLNFVqaLkJr1RN9A35hss37i71N0SMbO4qEMRVG
-         dSew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691517837; x=1692122637;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3PeSe/GO6oNsx5WYr31WDuJ/pxid985m44XnUTfQZDY=;
-        b=I+tuAMHBU4jFpowlJw5VO/TiU5ddNQseIRziiAJbZwV++WGKhCO5KBk/FdE5ZX208b
-         uFu2n2j07YmN599KAR0N06QJsrJHCPwvu7dzNsIx9ZV0KEUgE1slgKArE2FBzplchvfw
-         r9RRjoGVmYxTHpAJxkeLo77mO1KYTNweE2CQUYVN7iR8rK1KXkmllOnYdoz9niiayVuv
-         nkkCHh+hkhj2WMJpFhhXI0Ok7ts4ejiBnez+p1zGSF7aBpibTZfvRa9Zm5pAeI99gYCz
-         3juAj3Z9yYw0uUsvcubLLTyfwtp/duH7cFv11wu3XxxFQfmTGrBFgL+1ysdvWVexr3FA
-         JG9Q==
-X-Gm-Message-State: AOJu0Ywv4navyIZGNheLI0cwtYdJp2+Xwk1epOZEAlLqKqEEB6WKOgwH
-        zCAoD3gOlF3589rSC6n0LLqY7oki6oU=
-X-Google-Smtp-Source: AGHT+IGx8qpA8w2DCmIxsFRx1ZOpbeX44oV+zA8r9kZ2Jq+OZ4V6CmfzvpDQTtZ+ULkzH9Mu8g7QLA==
-X-Received: by 2002:a05:6512:310c:b0:4fb:2c1e:4e03 with SMTP id n12-20020a056512310c00b004fb2c1e4e03mr6752682lfb.32.1691477570248;
-        Mon, 07 Aug 2023 23:52:50 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:16f8:1500::5? (dc78bmyyyyyyyyyyyyyct-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::5])
-        by smtp.gmail.com with ESMTPSA id h25-20020a197019000000b004fe1fc5d0e3sm1752524lfc.206.2023.08.07.23.52.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 23:52:49 -0700 (PDT)
-Message-ID: <8410ca04-71f1-ab16-76b9-0ebe07065a15@gmail.com>
-Date:   Tue, 8 Aug 2023 09:52:48 +0300
+        Tue, 8 Aug 2023 14:43:28 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB91387D3
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:37:51 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4396C21B9D;
+        Tue,  8 Aug 2023 07:09:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691478554; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UqHXroF0EJl+GQpEdHdxmBrPdAQdE5qHCwe+sk9yKxY=;
+        b=SPkzLMFoMYQVFRBS+m5ctBCNQBVnQaSth4BNFuJth9DzXG5o+wfOzK9riRinpOR2pqhq+T
+        K7gKxpokIKcYk8z6u90kVMaz+TSTHuAt8f/bb2JA7evvy2x6wK7BwJl2gQWXXkedAOa3D0
+        88LL4iMmrcr7sQQ5amcddbEbAdswwAA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691478554;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UqHXroF0EJl+GQpEdHdxmBrPdAQdE5qHCwe+sk9yKxY=;
+        b=t2QEvqsRlxTYwQ8fhoFUVUtDzkBSp8XVSKi1f58iPWFKBDZwvrP847wpQwaYBQK8qOyNan
+        bmiJnNbStw8lJpBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3590013451;
+        Tue,  8 Aug 2023 07:09:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id EZbkDBrq0WRoVgAAMHmgww
+        (envelope-from <dwagner@suse.de>); Tue, 08 Aug 2023 07:09:14 +0000
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Caleb Sander <csander@purestorage.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH libnvme v2 1/2] fabrics: Read the supported options lazy
+Date:   Tue,  8 Aug 2023 09:09:06 +0200
+Message-ID: <20230808070907.18834-2-dwagner@suse.de>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230808070907.18834-1-dwagner@suse.de>
+References: <20230808070907.18834-1-dwagner@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] dt-bindings: iio: rohm,bu27010: add missing vdd-supply to
- example
-Content-Language: en-US, en-GB
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230808063223.80431-1-krzysztof.kozlowski@linaro.org>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20230808063223.80431-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/23 09:32, Krzysztof Kozlowski wrote:
-> Bindings require vdd-supply but the example DTS was missing one.  This
-> fixes dt_binding_check error:
-> 
->    Documentation/devicetree/bindings/iio/light/rohm,bu27010.example.dtb: light-sensor@38: 'vdd-supply' is a required property
-> 
-> Fixes: ae8c47c51e5c ("dt-bindings: iio: ROHM BU27010 RGBC + flickering sensor")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-Ah. Added supply to required ones when you pointed out it should be - 
-and obviously didn't fix the example :/
+Read the options in when we need the for the first time.
 
-Thanks a lot for fixing it!
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+ src/nvme/fabrics.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-Reviewed-by: Matti Vaittinen <mazziesaccount@gmail.com>
-
+diff --git a/src/nvme/fabrics.c b/src/nvme/fabrics.c
+index 800293e2a8e7..9725eeb3cda8 100644
+--- a/src/nvme/fabrics.c
++++ b/src/nvme/fabrics.c
+@@ -357,10 +357,18 @@ static int __add_argument(char **argstr, const char *tok, const char *arg)
+ 	return 0;
+ }
+ 
++static int __nvmf_supported_options(nvme_root_t r);
++#define nvmf_check_option(r, tok)					\
++({									\
++	if (!(r)->options)						\
++		__nvmf_supported_options(r);				\
++	(r)->options->tok;						\
++})
++
+ #define add_bool_argument(o, argstr, tok, arg)				\
+ ({									\
+ 	int ret;							\
+-	if (r->options->tok) {						\
++	if (nvmf_check_option(r, tok)) {				\
+ 		ret = __add_bool_argument(argstr,			\
+ 					  stringify(tok),		\
+ 					  arg);				\
+@@ -376,7 +384,7 @@ static int __add_argument(char **argstr, const char *tok, const char *arg)
+ #define add_int_argument(o, argstr, tok, arg, allow_zero) \
+ ({									\
+ 	int ret;							\
+-	if (r->options->tok) {						\
++	if (nvmf_check_option(r, tok)) {				\
+ 		ret = __add_int_argument(argstr,			\
+ 					stringify(tok),			\
+ 					arg,				\
+@@ -393,7 +401,7 @@ static int __add_argument(char **argstr, const char *tok, const char *arg)
+ #define add_int_or_minus_one_argument(o, argstr, tok, arg)		\
+ ({									\
+ 	int ret;							\
+-	if (r->options->tok) {						\
++	if (nvmf_check_option(r, tok)) {				\
+ 		ret = __add_int_or_minus_one_argument(argstr,		\
+ 						     stringify(tok),	\
+ 						     arg);		\
+@@ -409,7 +417,7 @@ static int __add_argument(char **argstr, const char *tok, const char *arg)
+ #define add_argument(r, argstr, tok, arg)				\
+ ({									\
+ 	int ret;							\
+-	if (r->options->tok) {						\
++	if (nvmf_check_option(r, tok)) {				\
+ 		ret = __add_argument(argstr,				\
+ 				     stringify(tok),			\
+ 				     arg);				\
+@@ -913,9 +921,6 @@ int nvmf_add_ctrl(nvme_host_t h, nvme_ctrl_t c,
+ 		free(traddr);
+ 	}
+ 
+-	ret = __nvmf_supported_options(h->r);
+-	if (ret)
+-		return ret;
+ 	ret = build_options(h, c, &argstr);
+ 	if (ret)
+ 		return ret;
 -- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
+2.41.0
 
