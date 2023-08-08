@@ -2,259 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5DA7747D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3097748EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235853AbjHHTUd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Aug 2023 15:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
+        id S235458AbjHHTpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232478AbjHHTUI (ORCPT
+        with ESMTP id S235315AbjHHToq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:20:08 -0400
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D1445F41;
-        Tue,  8 Aug 2023 09:44:16 -0700 (PDT)
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3a751bd3372so678596b6e.0;
-        Tue, 08 Aug 2023 09:44:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691513038; x=1692117838;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c7fJlZqm7SkL8DNK44l2eawprG/x5eTjs6OofI30rbg=;
-        b=Sn2q+VtCrP+bW3KNjMoMmt4G2r6bBaDP4NWL40tZNZxjNVt7Sy4WkGtwpp6fnE3ErH
-         RYdOSJdTjlDJe5FbBGjx0/SQIVYxXdDRczcK6BW2LQ1qP4drey/saQ9If/4G5Q1McXL7
-         mB2E5y/8j7O7BwEzJC7CLFhZ73oHjbgb2RIC1eMBHUfil+rNVxSLensVTcqIBGRYxT94
-         FnonEgRSPN34BlpVO2PQyhpHpAYb0UlTVoU96jjDAx++dbITSnd7c+eVpu1sloPlhtWa
-         KRBSJSR8IgXHBCvoa2zyt0lF1aNZQsRWStzc7SzZ5I8iVN92oMOuRBKB5Z9h5vkLe9qf
-         2/tg==
-X-Gm-Message-State: AOJu0YyGTzvkYJz/ET1R6+3uL0JQMiPC2dKQWozn08r38Ej0EH9+W3ta
-        SU5SyzBw1jXDgNcoXOsBvpve9yLzV/bpI0XtYsNkV0jF
-X-Google-Smtp-Source: AGHT+IFP2RLwXNB86i9yjvF4iWGgJA1+zfLkLjE3JrAyQhuMst/saVIe9OyEzX/Ag/dc4w4ADX/Vo+2RYmxh/hifuMc=
-X-Received: by 2002:a05:6808:150a:b0:394:25b9:db19 with SMTP id
- u10-20020a056808150a00b0039425b9db19mr296085oiw.2.1691513038157; Tue, 08 Aug
- 2023 09:43:58 -0700 (PDT)
+        Tue, 8 Aug 2023 15:44:46 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A8F117A02
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:48:07 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 378GfYwE012826;
+        Tue, 8 Aug 2023 11:47:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        PODMain02222019; bh=Mt28dTgZ7PN6kO/FpAGHcn+lAjxM4yoMpXnoYmoEICM=; b=
+        oPIzpcGViEhf22/FDG+vD+CfVPnzGYPiXgctTKouarGtNDf6G2s3sLxE5s72H2Ef
+        bpm1w1jZOwk5mLqZgXOePSh/DcFG4n+TsefJhSugbBEuvVsX7ZaFlmV4Vk7jCWT7
+        4bI+6Ki1oGnbl7ZPY5sK2DwgFJvnviWgJMB4x2cyxBdtmhZ/q7CyPSYW87ZA5XoA
+        f92toe1BTCFqlixXNH8M9SIDZou9IOMteAIk4SPW9Nc6a4j0DPHS/e1oliqS0gwE
+        drYNJZdfgTEsYT7FbFhyqoxp5vCOiyxbK6PPTW3CPd1mVD1+iacz1HAbh6Q09T/k
+        CB/WncpoeOiz/AgOz9LiOQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhtucr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Aug 2023 11:47:06 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 8 Aug
+ 2023 17:47:04 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Tue, 8 Aug 2023 17:47:04 +0100
+Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.64.220])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A41F515B7;
+        Tue,  8 Aug 2023 16:47:04 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 1/5] ASoC: cs35l56: Avoid uninitialized variable in cs35l56_set_asp_slot_positions()
+Date:   Tue, 8 Aug 2023 17:46:58 +0100
+Message-ID: <20230808164702.21272-2-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230808164702.21272-1-rf@opensource.cirrus.com>
+References: <20230808164702.21272-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-References: <5712331.DvuYhMxLoT@kreacher> <CAJZ5v0jTG-oqV+misnP-=W5aq0S9X631kW9EhKNEn1VJQqwL2g@mail.gmail.com>
- <002201d9ca0c$27606f70$76214e50$@telus.net>
-In-Reply-To: <002201d9ca0c$27606f70$76214e50$@telus.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 8 Aug 2023 18:43:45 +0200
-Message-ID: <CAJZ5v0gYsH9EKgCO_LESuvd0dcOJLgPrWeN=6V-bY4gq-w1oyA@mail.gmail.com>
-Subject: Re: [RFT][PATCH v2 0/3] cpuidle: teo: Do not check timers
- unconditionally every time
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Kajetan Puchalski <kajetan.puchalski@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: 5TEVI71sAI4bd-azc_I1dsY-qWuAlvMR
+X-Proofpoint-ORIG-GUID: 5TEVI71sAI4bd-azc_I1dsY-qWuAlvMR
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 5:22 PM Doug Smythies <dsmythies@telus.net> wrote:
->
-> On 2023.08.03 14:33 Rafael wrote:
-> > On Thu, Aug 3, 2023 at 11:12 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> >>
-> >> Hi Folks,
-> >>
-> >> This is the second iteration of:
-> >>
-> >> https://lore.kernel.org/linux-pm/4511619.LvFx2qVVIh@kreacher/
-> >>
-> >> with an additional patch.
-> >>
-> >> There are some small modifications of patch [1/3] and the new
-> >> patch causes governor statistics to play a role in deciding whether
-> >> or not to stop the scheduler tick.
-> >>
-> >> Testing would be much appreciated!
-> >
-> > For convenience, this series is now available in the following git branch:
-> >
-> > git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
-> > pm-cpuidle-teo
->
-> Hi Rafael,
->
-> Thank you for the git branch link.
->
-> I did some testing:
->
-> Disclaimer: I used areas of focus derived
-> from the original teo-util work last fall,
-> and did not check if they were still the best
-> places to look for issues.
->
-> CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
-> HWP: enabled
-> CPU frequency scaling driver: intel_pstate
-> CPU frequency scaling governor: performance
-> Kernel 1: 6.5-rc4 (1000 Hz tick rate)
-> Kernel 2: kernel 1 + this patch series (called "rjw")
-> System is extremely idle, other than the test work.
->
-> All tests were done with all idle governors:
-> menu, teo, ladder, rjw.
->
-> Test 1: 2 core ping pong sweep:
->
-> Pass a token between 2 CPUs on 2 different cores.
-> Do a variable amount of work at each stop.
->
-> Purpose: To utilize the shallowest idle states
-> and observe the transition from using more of 1
-> idle state to another.
->
-> Results:
->
-> teo and rjw track fairly well, with
-> rjw reducing its use of idle state 0 before
-> teo as the work packet increases. The menu governor
-> does best overall, but performs worse over a greater
-> range of token loop times.
->
-> Details (power and idle stats; times):
-> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/2-1/perf/
-> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/2-1/2-core-ping-pong-sweep.png
->
-> Test 2: 6 core ping pong sweep:
->
-> Pass a token between 6 CPUs on 6 different cores.
-> Do a variable amount of work at each stop.
->
-> Purpose: To utilize the midrange idle states
-> and observe the transitions from between use of
-> idle states.
->
-> Results: There is some instability in the results
-> in the early stages.
-> For unknown reasons, the rjw governor sometimes works
-> slower and at lower power. The condition is not 100%
-> repeatable.
->
-> Overall teo completed the test fastest (54.9 minutes)
-> Followed by menu (56.2 minutes), then rjw (56.7 minutes),
-> then ladder (58.4 minutes). teo is faster throughout the
-> latter stages of the test, but at the cost of more power.
-> The differences seem to be in the transition from idle
-> state 1 to idle state 2 usage.
->
-> Details (power and idle stats; times):
-> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/perf/
-> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/6-core-ping-pong-sweep.png
-> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/6-core-ping-pong-sweep-detail-a.png
-> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/6-core-ping-pong-sweep-detail-b.png
-> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/6-core-ping-pong-sweep-diffs.png
->
-> a re-run power and idle stats, showing inconsistent behaviour.
-> teo and rjw only, and no timing data:
-> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-1/perf/
->
-> Test 3: sleeping ebizzy - 128 threads.
->
-> Purpose: This test has given interesting results in the past.
-> The test varies the sleep interval between record lookups.
-> The result is varying usage of idle states.
->
-> Results: It can be difficult to see any differences in
-> the overall timing graph, but a graph of differences
-> is revealing. teo outperforms rjw in the longer intervals
-> region of the test, at the cost of more power.
->
-> Details: (power and idle stats; times):
-> http://smythies.com/~doug/linux/idle/teo-util2/ebizzy/perf/
-> http://smythies.com/~doug/linux/idle/teo-util2/ebizzy/ebizzy-128-perf.png
-> http://smythies.com/~doug/linux/idle/teo-util2/ebizzy/ebizzy-128-perf-diffs.png
->
-> Test 4: 2 X 2 pair token passing. Dwell test. Fast:
->
-> Purpose: Dwell under one set of conditions. Observe
-> noise and/or any bi-stability.
->
-> Results (reference time is menu):
-> rjw: 3.0723 usecs/loop average. +3.15%
-> teo: 2.9917 usecs/loop average. +0.44%
-> menu: 2.97845 usecs/loop average. Reference
-> ladder: 4.077375 usecs/loop average. +36.9%
->
-> Powers are all similar, with ladder a bit lower.
->
-> Details: (power and idle stats; times):
-> http://smythies.com/~doug/linux/idle/teo-util2/many-0-400000000-2/perf/
-> http://smythies.com/~doug/linux/idle/teo-util2/many-0-400000000-2/times.txt
->
-> Test 5: 2 X 2 pair token passing. Dwell test. Medium:
->
-> Purpose: Dwell under one set of conditions. Observe
-> noise and/or any bi-stability.
->
-> Results (reference time is menu):
-> rjw: 11.3406 usecs/loop average. -0.69%
-> teo: 11.36765 usecs/loop average. -0.45%
-> menu: 11.41905 usecs/loop average. reference
-> ladder: 11.9535 usecs/loop average. +4.68%
->
-> Powers are all similar.
->
-> Details:
-> http://smythies.com/~doug/linux/idle/teo-util2/many-3000-100000000-2/perf/
-> http://smythies.com/~doug/linux/idle/teo-util2/many-3000-100000000-2/times.txt
->
-> Test 6: 2 X 2 pair token passing. Dwell test. Slow:
->
-> Purpose: Dwell under one set of conditions. Observe
-> noise and/or any bi-stability.
->
-> Results (reference time is menu):
-> rjw: 2591.70 usecs/loop average. +0.26%
-> teo: 2566.34 usecs/loop average. -0.72%
-> menu: 2585.00 usecs/loop average. reference
-> ladder: 2635.36 usecs/loop average. +1.95%
->
-> Powers are all similar, with ladder a bit lower.
-> Due to the strong temperature to power use curve,
-> a much longer dwell test would need to be run to
-> be sure to get to steady state power usage.
->
-> Details:
-> http://smythies.com/~doug/linux/idle/teo-util2/many-1000000-342000-2/perf/
-> http://smythies.com/~doug/linux/idle/teo-util2/many-1000000-342000-2/times.txt
->
-> Test 7: 500 low load threads.
->
-> Purpose: This test has given interesting results
-> in the past.
->
-> 500 threads at approximately 10 hertz work/sleep frequency
-> and about 0.0163 load per thread, 8.15 total.
-> CPUs about 32% idle.
->
-> Results:
-> rjw executed 0.01% faster than teo.
-> rjw used 5% less energy than teo.
->
-> Details:
-> http://smythies.com/~doug/linux/idle/teo-util2/waiter/perf/
-> http://smythies.com/~doug/linux/idle/teo-util2/waiter/times.txt
+Re-implement setting of ASP TDM slots so that only the common loop to
+build the register word is factored out.
 
-Thanks a lot for doing this work, much appreciated!
+The original cs35l56_set_asp_slot_positions() had an apparent
+uninitialized variable if the passed register address was neither of the
+ASP slot registers. In fact this would never happen because the calling
+code passed valid registers.
 
-> Conclusions: Overall, I am not seeing a compelling reason to
-> proceed with this patch set.
+While it's trivial to initialize the variable or add a default case,
+actually the only common code was the loop at the end of the function,
+which simply manipulates some mask values and is identical for either
+register. Factoring out the regmap_write() didn't really gain anything.
 
-On the other hand, if there is a separate compelling reason to do
-that, it doesn't appear to lead to a major regression.
+So instead re-implement the code to replace the original function with
+cs35l56_make_tdm_config_word() that only does the loop, and change the
+calling code to call regmap_write() directly.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs35l56.c | 24 ++++++++----------------
+ 1 file changed, 8 insertions(+), 16 deletions(-)
+
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index 19b6b4fbe5de..be400208205a 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -358,22 +358,11 @@ static int cs35l56_asp_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int f
+ 	return 0;
+ }
+ 
+-static void cs35l56_set_asp_slot_positions(struct cs35l56_private *cs35l56,
+-					   unsigned int reg, unsigned long mask)
++static unsigned int cs35l56_make_tdm_config_word(unsigned int reg_val, unsigned long mask)
+ {
+-	unsigned int reg_val, channel_shift;
++	unsigned int channel_shift;
+ 	int bit_num;
+ 
+-	/* Init all slots to 63 */
+-	switch (reg) {
+-	case CS35L56_ASP1_FRAME_CONTROL1:
+-		reg_val = 0x3f3f3f3f;
+-		break;
+-	case CS35L56_ASP1_FRAME_CONTROL5:
+-		reg_val = 0x3f3f3f;
+-		break;
+-	}
+-
+ 	/* Enable consecutive TX1..TXn for each of the slots set in mask */
+ 	channel_shift = 0;
+ 	for_each_set_bit(bit_num, &mask, 32) {
+@@ -382,7 +371,7 @@ static void cs35l56_set_asp_slot_positions(struct cs35l56_private *cs35l56,
+ 		channel_shift += 8;
+ 	}
+ 
+-	regmap_write(cs35l56->base.regmap, reg, reg_val);
++	return reg_val;
+ }
+ 
+ static int cs35l56_asp_dai_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+@@ -418,8 +407,11 @@ static int cs35l56_asp_dai_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx
+ 	if (rx_mask == 0)
+ 		rx_mask = 0xf;	// ASPTX1..TX4 in slots 0..3
+ 
+-	cs35l56_set_asp_slot_positions(cs35l56, CS35L56_ASP1_FRAME_CONTROL1, rx_mask);
+-	cs35l56_set_asp_slot_positions(cs35l56, CS35L56_ASP1_FRAME_CONTROL5, tx_mask);
++	/* Default unused slots to 63 */
++	regmap_write(cs35l56->base.regmap, CS35L56_ASP1_FRAME_CONTROL1,
++		     cs35l56_make_tdm_config_word(0x3f3f3f3f, rx_mask));
++	regmap_write(cs35l56->base.regmap, CS35L56_ASP1_FRAME_CONTROL5,
++		     cs35l56_make_tdm_config_word(0x3f3f3f, tx_mask));
+ 
+ 	dev_dbg(cs35l56->base.dev, "tdm slot width: %u count: %u tx_mask: %#x rx_mask: %#x\n",
+ 		cs35l56->asp_slot_width, cs35l56->asp_slot_count, tx_mask, rx_mask);
+-- 
+2.30.2
+
