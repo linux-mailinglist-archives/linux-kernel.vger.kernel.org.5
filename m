@@ -2,91 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4C277444D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5E0774946
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235582AbjHHSQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:16:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
+        id S233500AbjHHTuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234476AbjHHSQM (ORCPT
+        with ESMTP id S234016AbjHHTu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:16:12 -0400
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F717A1E3;
-        Tue,  8 Aug 2023 10:22:46 -0700 (PDT)
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id 6BCF385027;
-        Tue,  8 Aug 2023 12:14:32 +0200 (CEST)
-From:   =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-To:     Robert Jarzmik <robert.jarzmik@free.fr>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
-        =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-hardening@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        afaerber@suse.de
-Subject: [PATCH v4 8/8] MAINTAINERS: add myself as Marvell PXA1908 maintainer
-Date:   Tue,  8 Aug 2023 12:13:06 +0200
-Message-ID: <20230808101313.13081-1-duje.mihanovic@skole.hr>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230807-pxa1908-lkml-v4-0-cb387d73b452@skole.hr>
-References: <20230807-pxa1908-lkml-v4-0-cb387d73b452@skole.hr>
+        Tue, 8 Aug 2023 15:50:29 -0400
+Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F2852E9B
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:56:57 -0700 (PDT)
+Received: from relay8-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::228])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 76CD6D5BAA
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:17:00 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7E6DC1BF204;
+        Tue,  8 Aug 2023 10:16:51 +0000 (UTC)
+Message-ID: <5681817e-2751-0166-b823-df03aebedf9f@ghiti.fr>
+Date:   Tue, 8 Aug 2023 12:16:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/1] riscv: Implement arch_sync_kernel_mappings() for
+ "preventive" TLB flush
+To:     Dylan Jhong <dylan@andestech.com>, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, ajones@ventanamicro.com,
+        alexghiti@rivosinc.com, anup@brainfault.org, rppt@kernel.org,
+        samuel@sholland.org, panqinglin2020@iscas.ac.cn,
+        sergey.matyukevich@syntacore.com, maz@kernel.org,
+        linux-riscv@lists.infradead.org, conor.dooley@microchip.com,
+        linux-kernel@vger.kernel.org
+Cc:     ycliang@andestech.com, x5710999x@gmail.com, tim609@andestech.com
+References: <20230807082305.198784-1-dylan@andestech.com>
+ <20230807082305.198784-2-dylan@andestech.com>
+Content-Language: en-US
+From:   Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20230807082305.198784-2-dylan@andestech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-GND-Sasl: alex@ghiti.fr
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as the maintainer for Marvell PXA1908 SoC support.
+Hi Dylan,
 
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+On 07/08/2023 10:23, Dylan Jhong wrote:
+> Since RISC-V is a microarchitecture that allows caching invalid entries in the TLB,
+> it is necessary to issue a "preventive" SFENCE.VMA to ensure that each core obtains
+> the correct kernel mapping.
+>
+> The patch implements TLB flushing in arch_sync_kernel_mappings(), ensuring that kernel
+> page table mappings created via vmap/vmalloc() are updated before switching MM.
+>
+> Signed-off-by: Dylan Jhong <dylan@andestech.com>
+> ---
+>   arch/riscv/include/asm/page.h |  2 ++
+>   arch/riscv/mm/tlbflush.c      | 12 ++++++++++++
+>   2 files changed, 14 insertions(+)
+>
+> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+> index b55ba20903ec..6c86ab69687e 100644
+> --- a/arch/riscv/include/asm/page.h
+> +++ b/arch/riscv/include/asm/page.h
+> @@ -21,6 +21,8 @@
+>   #define HPAGE_MASK              (~(HPAGE_SIZE - 1))
+>   #define HUGETLB_PAGE_ORDER      (HPAGE_SHIFT - PAGE_SHIFT)
+>   
+> +#define ARCH_PAGE_TABLE_SYNC_MASK	PGTBL_PTE_MODIFIED
+> +
+>   /*
+>    * PAGE_OFFSET -- the first address of the first page of memory.
+>    * When not using MMU this corresponds to the first free page in
+> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> index 77be59aadc73..d63364948c85 100644
+> --- a/arch/riscv/mm/tlbflush.c
+> +++ b/arch/riscv/mm/tlbflush.c
+> @@ -149,3 +149,15 @@ void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>   	__flush_tlb_range(vma->vm_mm, start, end - start, PMD_SIZE);
+>   }
+>   #endif
+> +
+> +/*
+> + * Since RISC-V is a microarchitecture that allows caching invalid entries in the TLB,
+> + * it is necessary to issue a "preventive" SFENCE.VMA to ensure that each core obtains
+> + * the correct kernel mapping. arch_sync_kernel_mappings() will ensure that kernel
+> + * page table mappings created via vmap/vmalloc() are updated before switching MM.
+> + */
+> +void arch_sync_kernel_mappings(unsigned long start, unsigned long end)
+> +{
+> +	if (start < VMALLOC_END && end > VMALLOC_START)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0f966f05fb0d..6f5233f3904b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2299,6 +2299,15 @@ F:	drivers/irqchip/irq-mvebu-*
- F:	drivers/pinctrl/mvebu/
- F:	drivers/rtc/rtc-armada38x.c
- 
-+ARM/Marvell PXA1908 SOC support
-+M:	Duje Mihanović <duje.mihanovic@skole.hr>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Maintained
-+T:	git https://gitlab.com/LegoLivesMatter/linux
-+F:	arch/arm64/boot/dts/marvell/pxa1908*
-+F:	drivers/clk/mmp/clk-of-pxa1908.c
-+F:	include/dt-bindings/clock/marvell,pxa1908.h
-+
- ARM/Mediatek RTC DRIVER
- M:	Eddie Huang <eddie.huang@mediatek.com>
- M:	Sean Wang <sean.wang@mediatek.com>
--- 
-2.41.0
 
+This test is too restrictive, it should catch the range [MODULES_VADDR;  
+MODULES_END[ too, sorry I did not notice that at first.
+
+
+> +		flush_tlb_all();
+> +}
+> \ No newline at end of file
+
+
+I have to admit that I *think* both your patch and mine are wrong: one 
+of the problem that led to the removal of vmalloc_fault() is the 
+possibility for tracing functions to actually allocate vmalloc regions 
+in the vmalloc page fault path, which could give rise to nested 
+exceptions (see 
+https://lore.kernel.org/lkml/20200508144043.13893-1-joro@8bytes.org/).
+
+Here, everytime we allocate a vmalloc region, we send an IPI. If a 
+vmalloc allocation happens in this path (if it is traced for example), 
+it will give rise to an IPI...and so on.
+
+So I came to the conclusion that the only way to actually fix this issue 
+is by resolving the vmalloc faults very early in the page fault path (by 
+emitting a sfence.vma on uarch that cache invalid entries), before the 
+kernel stack is even accessed. That's the best solution since it would 
+completely remove all the preventive sfence.vma in 
+flush_cache_vmap()/arch_sync_kernel_mappings(), we would rely on 
+faulting which I assume should not happen a lot (?).
+
+I'm implementing this solution, but I'm pretty sure it won't be ready 
+for 6.5. In the meantime, we need either your patch or mine to fix your 
+issue...
 
