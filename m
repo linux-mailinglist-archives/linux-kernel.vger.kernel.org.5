@@ -2,225 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7906477480A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C31774AF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbjHHTYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35848 "EHLO
+        id S233824AbjHHUit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231809AbjHHTYb (ORCPT
+        with ESMTP id S230410AbjHHUi3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:24:31 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272F016D0F2;
-        Tue,  8 Aug 2023 12:21:28 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d5eeb722a82so143040276.0;
-        Tue, 08 Aug 2023 12:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691522487; x=1692127287;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=diySgYB/+o5ldcXShApfWPeWlXdCLBpgzXr+03nag2s=;
-        b=aI86kVcP5RX4GTYucp3JU2R1gispSFteGcvwqhB5v+uYh7lcaprwx/MvsiOux+7dVV
-         FFTmPer/GsrHdWL9j/bC/KWEeoGTrZpUO47fwt/mV+10/Hu3EKMNvfEBqSbXbB00sYoR
-         hRX5bHwEgspX/uOCtN77niYpyyOiMriJM0k5xj+6ISQ3+EXFKDYoML2VRJ1K4vfPoP85
-         BSEDZ7jJ2ZRd1COxOLZZ9aTxlVrNmDjU7uJ7dYXmEyYsU5u8s79gWzDLoFdCjAfDOJwq
-         PO6pjyJaiVBjmwDI63B0SRwDiN/KKCjI8gtWXmhsACnd6YuRIplqMyjIm3yJMQzZz+YL
-         e6LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691522487; x=1692127287;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=diySgYB/+o5ldcXShApfWPeWlXdCLBpgzXr+03nag2s=;
-        b=GmbKAGog9a3FtxS35aPx1HGMUtiUeYhBqb75eikpgEPjGuvacKtkfY2cZ8DjDWkApa
-         AKb5g5n863fJ8Kvve3U9rIjnuQ6xgRYWqvH4y4kN4PUQC9y+oQvrHLcWie08f3AZJPUq
-         eCHgONeIY2OwLusi/4eSWK00d/ADVeuu86s06Pwitqwi27Vhinm1uHdiIm37GrogT4sn
-         qUQzJjU9RonkUkwhFPTu/IRjOKCSwerlIwvkWdHaw0rKSYWMsFIcnGgRYtQB9u9F4PJO
-         uUIo9XEJ8zLYjSZG/WIi6pqJp8JsVurbTGVpRQWSpp8GTmDZ5COcwNpTK3Z5fyWL9pqh
-         JSdQ==
-X-Gm-Message-State: AOJu0YwEWrzG6rtEJWUnF63B7B4CPFUxJCL2SVOQvdRF+RB8YJPj756j
-        tNRpLnHZrTB8k4T8LKOFACpzrTtBbcl406CkJ6w=
-X-Google-Smtp-Source: AGHT+IG5d90bapjIOlJBGA8irxOFPeCaIv3uCJP0B3jPOYPbIPyqiMre2cM/diK+xvgImaerO4LitHR/iRqNuHbzkeQ=
-X-Received: by 2002:a25:aaaa:0:b0:d43:a0d8:8db4 with SMTP id
- t39-20020a25aaaa000000b00d43a0d88db4mr11596435ybi.11.1691522486684; Tue, 08
- Aug 2023 12:21:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230808104309.357852-1-usama.anjum@collabora.com> <20230808104309.357852-3-usama.anjum@collabora.com>
-In-Reply-To: <20230808104309.357852-3-usama.anjum@collabora.com>
-From:   Andrei Vagin <avagin@gmail.com>
-Date:   Tue, 8 Aug 2023 12:21:10 -0700
-Message-ID: <CANaxB-ww6AcO4QThubYw62Mdeid4e3FOQAXvA_GZ=wu4J60-AQ@mail.gmail.com>
-Subject: Re: [PATCH v27 2/6] fs/proc/task_mmu: Implement IOCTL to get and
- optionally clear info about PTEs
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     Peter Xu <peterx@redhat.com>, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 16:38:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6184C1D3F9
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:17:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691515024; x=1723051024;
+  h=date:from:to:cc:subject:message-id;
+  bh=R/bQd/NTu9mTJRL3t8ZoAtMW3Kd7Ius7gMGzWp7rRAM=;
+  b=QBT/9PZ2oWc+BJAr8BBU48lLOCTsCUCMZEula95xwx8++SjwRifwlkpB
+   Xf85O97F9vAtorty6QApFIWrtPyq5k+GoeKvnp1jlo8/ELnf9n/0FIJdT
+   2URoKtOiWCH9wGqbkMO2jAi8ocsvfM5EUWklA0SgUwkUS/wjAlsW5C8yX
+   qu02CoeqsSgehw5HdIlnWh6wOAtX7O+qsjSWqWXhymdV7Qhgn789M0vcR
+   zXm5qCPNNnUGLSHJR3zR9QqXM878/24dzE27icL/thtGTl+lfaBCWZnTX
+   DgesL/U8knjOFbEl8z+wEHhfAfUgF1wJ0ZK20H2HEvtnVZkY0hxQI/nWq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="360806177"
+X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
+   d="scan'208";a="360806177"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 21:32:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="731227696"
+X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
+   d="scan'208";a="731227696"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 07 Aug 2023 21:32:41 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qTEOe-00055u-15;
+        Tue, 08 Aug 2023 04:32:40 +0000
+Date:   Tue, 08 Aug 2023 12:31:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ bee6cf1a80b54548a039e224c651bb15b644a480
+Message-ID: <202308081252.3h1ErTUL-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 3:43=E2=80=AFAM Muhammad Usama Anjum
-<usama.anjum@collabora.com> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: bee6cf1a80b54548a039e224c651bb15b644a480  x86/sev: Do not try to parse for the CC blob on non-AMD hardware
 
-....
+elapsed time: 727m
 
-> +static int pagemap_scan_output(unsigned long categories,
-> +                              struct pagemap_scan_private *p,
-> +                              unsigned long addr, unsigned long *end)
-> +{
-> +       unsigned long n_pages, total_pages;
-> +       int ret =3D 0;
-> +
-> +       if (!p->vec_buf)
-> +               return 0;
-> +
-> +       categories &=3D p->arg.return_mask;
-> +
-> +       n_pages =3D (*end - addr) / PAGE_SIZE;
-> +       if (check_add_overflow(p->found_pages, n_pages, &total_pages) || =
-//TODO
+configs tested: 38
+configs skipped: 89
 
-Need to fix this TODO.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> +           total_pages > p->arg.max_pages) {
-> +               size_t n_too_much =3D total_pages - p->arg.max_pages;
-> +               *end -=3D n_too_much * PAGE_SIZE;
-> +               n_pages -=3D n_too_much;
-> +               ret =3D -ENOSPC;
-> +       }
-> +
-> +       if (!pagemap_scan_push_range(categories, p, addr, *end)) {
-> +               *end =3D addr;
-> +               n_pages =3D 0;
-> +               ret =3D -ENOSPC;
-> +       }
-> +
-> +       p->found_pages +=3D n_pages;
-> +       if (ret)
-> +               p->walk_end_addr =3D *end;
-> +
-> +       return ret;
-> +}
-> +
+tested configs:
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230807   gcc  
+i386         buildonly-randconfig-r005-20230807   gcc  
+i386         buildonly-randconfig-r006-20230807   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230807   gcc  
+i386                 randconfig-i002-20230807   gcc  
+i386                 randconfig-i003-20230807   gcc  
+i386                 randconfig-i004-20230807   gcc  
+i386                 randconfig-i005-20230807   gcc  
+i386                 randconfig-i006-20230807   gcc  
+i386                 randconfig-i011-20230807   clang
+i386                 randconfig-i012-20230807   clang
+i386                 randconfig-i013-20230807   clang
+i386                 randconfig-i014-20230807   clang
+i386                 randconfig-i015-20230807   clang
+i386                 randconfig-i016-20230807   clang
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230807   gcc  
+x86_64       buildonly-randconfig-r002-20230807   gcc  
+x86_64       buildonly-randconfig-r003-20230807   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230807   clang
+x86_64               randconfig-x002-20230807   clang
+x86_64               randconfig-x003-20230807   clang
+x86_64               randconfig-x004-20230807   clang
+x86_64               randconfig-x005-20230807   clang
+x86_64               randconfig-x006-20230807   clang
+x86_64               randconfig-x011-20230807   gcc  
+x86_64               randconfig-x012-20230807   gcc  
+x86_64               randconfig-x013-20230807   gcc  
+x86_64               randconfig-x014-20230807   gcc  
+x86_64               randconfig-x015-20230807   gcc  
+x86_64               randconfig-x016-20230807   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
-...
-
-> +static long do_pagemap_scan(struct mm_struct *mm, unsigned long uarg)
-> +{
-> +       struct mmu_notifier_range range;
-> +       struct pagemap_scan_private p;
-> +       unsigned long walk_start;
-> +       size_t n_ranges_out =3D 0;
-> +       int ret;
-> +
-> +       memset(&p, 0, sizeof(p));
-> +       ret =3D pagemap_scan_get_args(&p.arg, uarg);
-> +       if (ret)
-> +               return ret;
-> +
-> +       p.masks_of_interest =3D MASKS_OF_INTEREST(p.arg);
-> +       ret =3D pagemap_scan_init_bounce_buffer(&p);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /* Protection change for the range is going to happen. */
-> +       if (p.arg.flags & PM_SCAN_WP_MATCHING) {
-> +               mmu_notifier_range_init(&range, MMU_NOTIFY_PROTECTION_VMA=
-, 0,
-> +                                       mm, p.arg.start, p.arg.end);
-> +               mmu_notifier_invalidate_range_start(&range);
-> +       }
-> +
-> +       walk_start =3D p.arg.start;
-> +       for (; walk_start < p.arg.end; walk_start =3D p.arg.walk_end) {
-> +               int n_out;
-> +
-> +               if (fatal_signal_pending(current)) {
-> +                       ret =3D -EINTR;
-> +                       break;
-> +               }
-> +
-> +               ret =3D mmap_read_lock_killable(mm);
-> +               if (ret)
-> +                       break;
-> +               ret =3D walk_page_range(mm, walk_start, p.arg.end,
-> +                                     &pagemap_scan_ops, &p);
-> +               mmap_read_unlock(mm);
-> +
-> +               n_out =3D pagemap_scan_flush_buffer(&p);
-> +               if (n_out < 0)
-> +                       ret =3D n_out;
-> +               else
-> +                       n_ranges_out +=3D n_out;
-> +
-> +               if (ret !=3D -ENOSPC || p.arg.vec_len - 1 =3D=3D 0 ||
-> +                   p.found_pages =3D=3D p.arg.max_pages) {
-> +                       p.walk_end_addr =3D p.arg.end;
-
-You should not change p.walk_end_addr If ret is ENOSPC. Pls add a test
-case to check this.
-
-> +                       break;
-> +               }
-> +       }
-> +
-> +       if (p.cur_buf.start !=3D p.cur_buf.end) {
-> +               if (copy_to_user(p.vec_out, &p.cur_buf, sizeof(p.cur_buf)=
-))
-> +                       ret =3D -EFAULT;
-> +               else
-> +                       ++n_ranges_out;
-> +       }
-> +
-> +       /* ENOSPC signifies early stop (buffer full) from the walk. */
-> +       if (!ret || ret =3D=3D -ENOSPC)
-> +               ret =3D n_ranges_out;
-> +
-> +       p.arg.walk_end =3D p.walk_end_addr ? p.walk_end_addr : walk_start=
-;
-> +       if (pagemap_scan_writeback_args(&p.arg, uarg))
-> +               ret =3D -EFAULT;
-> +
-> +       if (p.arg.flags & PM_SCAN_WP_MATCHING)
-> +               mmu_notifier_invalidate_range_end(&range);
-> +
-> +       kfree(p.vec_buf);
-> +       return ret;
-> +}
-
-Thanks,
-Andrei
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
