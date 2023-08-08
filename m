@@ -2,281 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F1277467C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9087774728
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbjHHS5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
+        id S235045AbjHHTKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:10:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234867AbjHHS5L (ORCPT
+        with ESMTP id S233973AbjHHTJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:57:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3731D3FA
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:17:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691515024; x=1723051024;
-  h=date:from:to:cc:subject:message-id;
-  bh=T+O0D2jg/XZ91+6dzsOol+OcNtKaDrVfDmrRlyURUPw=;
-  b=PeRNLSj/f4JMB2NojkyNuTwhn6F2qGwlyMP1QJUAXLiMd8SpFIQ4/JGV
-   xQi4vFwY1qpYCjMMNCvRl1Au93ye82rZ5By+ziBcyT0zigdp1QCRLpsbh
-   FkwUgmUS0NltTJ+cLpk8UDhWEKfCzg66+Cl2QRVrdNd6k5fUPP+OsGf5n
-   L1QCdZx2S5YPjD9c3DwChOhf+lOGaf+kuU92u1+ooF1CITFC9/Ng6BlzR
-   D9zJCBQV4CDI08aYRf7tSJCtnj9yJrA5Sm7pQir+n2Y+LL9Z4BJzBOncD
-   xolaaujaoC7hcM7F5Na/AGqX3kFTNA9d+ClihVDhoWIkumLnxKbYqVqlf
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="360806180"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="360806180"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 21:32:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="731227695"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="731227695"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 07 Aug 2023 21:32:41 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qTEOe-000563-1K;
-        Tue, 08 Aug 2023 04:32:40 +0000
-Date:   Tue, 08 Aug 2023 12:31:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:testing/fam01-next20230731] BUILD REGRESSION
- 83c48427efe530e35feb57e55873e5e7dda20cbe
-Message-ID: <202308081237.0dXVRoH5-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 8 Aug 2023 15:09:42 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374E967F0;
+        Tue,  8 Aug 2023 09:31:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1691469624;
+        bh=iPSr/ASAjYvgb6RftdXqdhWqOLirl2mfmvwZjh9Uq7A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aATJUpCOJNTGlQUrivd/UwybA2i1onLSK5fAwtNIr17BfPqaExv2ErUCKavMXeEBI
+         SZB+PQaHu5Hc5wG7YdzfR0r8O5pkFCr3FSvjtE3GyPn/TbmPAQAqbr2g14WbEqlt0r
+         LMKppEeOSMdO0TjNQ9oO5qI5qFFG5uNXJJkI64U6Dt6JYzSfQIn2t3XWhQaswQNzWU
+         poFaLTy7dtzB+KW1jzMbef0ZSmHx5ltFrGOCiaCUKVmGOSzw0HnXS2wlyx/9SCGEou
+         vVGANawUqUp/fHL4hgL556w1jXwUZ8a1ikSWDMU5c32yA8hicJ7djybGs8x13zkd1g
+         CwfK3E+TwXz8A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RKgTz44wGz4wjG;
+        Tue,  8 Aug 2023 14:40:23 +1000 (AEST)
+Date:   Tue, 8 Aug 2023 14:40:20 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Eric DeVolder <eric.devolder@oracle.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>
+Subject: linux-next: build failure after merge of the mm tree
+Message-ID: <20230808144020.538cdab8@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/Y.ZH866Yy2hMCsnmzV9L5k=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/fam01-next20230731
-branch HEAD: 83c48427efe530e35feb57e55873e5e7dda20cbe  bnxt_en: Fix W=stringop-overflow warning in bnxt_dcb.c
+--Sig_/Y.ZH866Yy2hMCsnmzV9L5k=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Error/Warning reports:
+Hi all,
 
-https://lore.kernel.org/oe-kbuild-all/202308010320.Wqt7lyc4-lkp@intel.com
+After merging the mm tree, today's linux-next build (powerpc
+ppc44x_defconfig) failed like this:
 
-Error/Warning: (recently discovered and may have been fixed)
+In file included from kernel/crash_core.c:23:
+kernel/kexec_internal.h:11:54: warning: 'struct kexec_segment' declared ins=
+ide parameter list will not be visible outside of this definition or declar=
+ation
+   11 | int kimage_load_segment(struct kimage *image, struct kexec_segment =
+*segment);
+      |                                                      ^~~~~~~~~~~~~
+kernel/crash_core.c:321:40: warning: 'struct crash_mem' declared inside par=
+ameter list will not be visible outside of this definition or declaration
+  321 | int crash_prepare_elf64_headers(struct crash_mem *mem, int need_ker=
+nel_map,
+      |                                        ^~~~~~~~~
+kernel/crash_core.c: In function 'crash_prepare_elf64_headers':
+kernel/crash_core.c:334:23: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  334 |         nr_phdr +=3D mem->nr_ranges;
+      |                       ^~
+In file included from include/vdso/const.h:5,
+                 from include/linux/const.h:4,
+                 from include/linux/bits.h:5,
+                 from include/linux/ratelimit_types.h:5,
+                 from include/linux/printk.h:9,
+                 from include/asm-generic/bug.h:22,
+                 from arch/powerpc/include/asm/bug.h:116,
+                 from include/linux/bug.h:5,
+                 from arch/powerpc/include/asm/cmpxchg.h:8,
+                 from arch/powerpc/include/asm/atomic.h:11,
+                 from include/linux/atomic.h:7,
+                 from include/linux/mm_types_task.h:13,
+                 from include/linux/mm_types.h:5,
+                 from include/linux/buildid.h:5,
+                 from kernel/crash_core.c:7:
+kernel/crash_core.c:346:32: error: 'ELF_CORE_HEADER_ALIGN' undeclared (firs=
+t use in this function)
+  346 |         elf_sz =3D ALIGN(elf_sz, ELF_CORE_HEADER_ALIGN);
+      |                                ^~~~~~~~~~~~~~~~~~~~~
+include/uapi/linux/const.h:32:50: note: in definition of macro '__ALIGN_KER=
+NEL_MASK'
+   32 | #define __ALIGN_KERNEL_MASK(x, mask)    (((x) + (mask)) & ~(mask))
+      |                                                  ^~~~
+include/linux/align.h:8:33: note: in expansion of macro '__ALIGN_KERNEL'
+    8 | #define ALIGN(x, a)             __ALIGN_KERNEL((x), (a))
+      |                                 ^~~~~~~~~~~~~~
+kernel/crash_core.c:346:18: note: in expansion of macro 'ALIGN'
+  346 |         elf_sz =3D ALIGN(elf_sz, ELF_CORE_HEADER_ALIGN);
+      |                  ^~~~~
+kernel/crash_core.c:346:32: note: each undeclared identifier is reported on=
+ly once for each function it appears in
+  346 |         elf_sz =3D ALIGN(elf_sz, ELF_CORE_HEADER_ALIGN);
+      |                                ^~~~~~~~~~~~~~~~~~~~~
+include/uapi/linux/const.h:32:50: note: in definition of macro '__ALIGN_KER=
+NEL_MASK'
+   32 | #define __ALIGN_KERNEL_MASK(x, mask)    (((x) + (mask)) & ~(mask))
+      |                                                  ^~~~
+include/linux/align.h:8:33: note: in expansion of macro '__ALIGN_KERNEL'
+    8 | #define ALIGN(x, a)             __ALIGN_KERNEL((x), (a))
+      |                                 ^~~~~~~~~~~~~~
+kernel/crash_core.c:346:18: note: in expansion of macro 'ALIGN'
+  346 |         elf_sz =3D ALIGN(elf_sz, ELF_CORE_HEADER_ALIGN);
+      |                  ^~~~~
+kernel/crash_core.c:396:28: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  396 |         for (i =3D 0; i < mem->nr_ranges; i++) {
+      |                            ^~
+kernel/crash_core.c:397:29: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  397 |                 mstart =3D mem->ranges[i].start;
+      |                             ^~
+kernel/crash_core.c:398:27: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  398 |                 mend =3D mem->ranges[i].end;
+      |                           ^~
+kernel/crash_core.c: At top level:
+kernel/crash_core.c:420:36: warning: 'struct crash_mem' declared inside par=
+ameter list will not be visible outside of this definition or declaration
+  420 | int crash_exclude_mem_range(struct crash_mem *mem,
+      |                                    ^~~~~~~~~
+kernel/crash_core.c: In function 'crash_exclude_mem_range':
+kernel/crash_core.c:427:28: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  427 |         for (i =3D 0; i < mem->nr_ranges; i++) {
+      |                            ^~
+kernel/crash_core.c:428:28: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  428 |                 start =3D mem->ranges[i].start;
+      |                            ^~
+kernel/crash_core.c:429:26: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  429 |                 end =3D mem->ranges[i].end;
+      |                          ^~
+kernel/crash_core.c:444:28: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  444 |                         mem->ranges[i].start =3D 0;
+      |                            ^~
+kernel/crash_core.c:445:28: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  445 |                         mem->ranges[i].end =3D 0;
+      |                            ^~
+kernel/crash_core.c:446:36: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  446 |                         if (i < mem->nr_ranges - 1) {
+      |                                    ^~
+kernel/crash_core.c:448:52: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  448 |                                 for (j =3D i; j < mem->nr_ranges - =
+1; j++) {
+      |                                                    ^~
+kernel/crash_core.c:449:44: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  449 |                                         mem->ranges[j].start =3D
+      |                                            ^~
+kernel/crash_core.c:450:52: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  450 |                                                 mem->ranges[j+1].st=
+art;
+      |                                                    ^~
+kernel/crash_core.c:451:44: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  451 |                                         mem->ranges[j].end =3D
+      |                                            ^~
+kernel/crash_core.c:452:60: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  452 |                                                         mem->ranges=
+[j+1].end;
+      |                                                            ^~
+kernel/crash_core.c:461:36: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  461 |                                 mem->nr_ranges--;
+      |                                    ^~
+kernel/crash_core.c:464:28: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  464 |                         mem->nr_ranges--;
+      |                            ^~
+kernel/crash_core.c:470:28: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  470 |                         mem->ranges[i].end =3D p_start - 1;
+      |                            ^~
+kernel/crash_core.c:474:28: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  474 |                         mem->ranges[i].end =3D p_start - 1;
+      |                            ^~
+kernel/crash_core.c:476:28: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  476 |                         mem->ranges[i].start =3D p_end + 1;
+      |                            ^~
+kernel/crash_core.c:485:21: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  485 |         if (i =3D=3D mem->max_nr_ranges - 1)
+      |                     ^~
+kernel/crash_core.c:490:20: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  490 |         if (j < mem->nr_ranges) {
+      |                    ^~
+kernel/crash_core.c:492:29: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  492 |                 for (i =3D mem->nr_ranges - 1; i >=3D j; i--)
+      |                             ^~
+kernel/crash_core.c:493:28: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  493 |                         mem->ranges[i + 1] =3D mem->ranges[i];
+      |                            ^~
+kernel/crash_core.c:493:49: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  493 |                         mem->ranges[i + 1] =3D mem->ranges[i];
+      |                                                 ^~
+kernel/crash_core.c:496:12: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  496 |         mem->ranges[j].start =3D temp_range.start;
+      |            ^~
+kernel/crash_core.c:497:12: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  497 |         mem->ranges[j].end =3D temp_range.end;
+      |            ^~
+kernel/crash_core.c:498:12: error: invalid use of undefined type 'struct cr=
+ash_mem'
+  498 |         mem->nr_ranges++;
+      |            ^~
 
-arch/arc/include/asm/io.h:150:9: warning: array subscript 0 is outside array bounds of 'void[0]' [-Warray-bounds]
-arch/parisc/mm/init.c:285:46: warning: array subscript -269484032 is outside array bounds of 'char[2147483647]' [-Warray-bounds]
-arch/sparc/kernel/irq_32.c:258:14: error: array subscript [16, 79] is outside array bounds of 'struct tt_entry[1]' [-Werror=array-bounds]
-arch/sparc/mm/init_64.c:3073:31: error: array subscript -1 is outside array bounds of 'char[]' [-Werror=array-bounds]
-arch/x86/include/asm/string_32.h:150:25: warning: '__builtin_memcpy' writing 255 bytes into a region of size 129 [-Wstringop-overflow=]
-drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_dpia.c:427:17: warning: 'dp_decide_lane_settings' accessing 4 bytes in a region of size 1 [-Wstringop-overflow=]
-drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c:504:25: warning: 'dp_decide_lane_settings' accessing 4 bytes in a region of size 1 [-Wstringop-overflow=]
-drivers/net/ethernet/microchip/sparx5/sparx5_psfp.c:167:31: warning: array subscript 4 is above array bounds of 'const struct sparx5_psfp_gce[4]' [-Warray-bounds]
-include/asm-generic/bitops/generic-non-atomic.h:128:27: warning: array subscript 1 is outside array bounds of 'struct cpumask[1]' [-Warray-bounds]
-include/asm-generic/io.h:116:16: warning: array subscript 0 is outside array bounds of 'const volatile void[0]' [-Warray-bounds]
-include/asm-generic/io.h:150:38: warning: array subscript 0 is outside array bounds of 'volatile void[0]' [-Warray-bounds]
-include/linux/iio/buffer.h:42:46: warning: array subscript 'int64_t {aka long long int}[0]' is partly outside array bounds of 's16[1]' {aka 'short int[1]'} [-Warray-bounds]
-include/linux/list.h:73:19: warning: array subscript 0 is outside array bounds of 'struct list_head[0]' [-Warray-bounds]
+I am not sure exactly which commit caused but I have revreted these
+for today:
 
-Error/Warning ids grouped by kconfigs:
+  6a41fd4665e6 ("x86/crash: optimize CPU changes")
+  add3b7e011e9 ("crash: change crash_prepare_elf64_headers() to for_each_po=
+ssible_cpu()")
+  4a7eed40a7bc ("crash: hotplug support for kexec_load()")
+  8ce41bc6b147 ("x86/crash: add x86 crash hotplug support")
+  2b765af0c14f ("crash: memory and CPU hotplug sysfs attributes")
+  36d2b573329b ("kexec: exclude elfcorehdr from the segment digest")
+  ccfe0040500f ("crash: add generic infrastructure for crash hotplug suppor=
+t")
+  626775922a57 ("crash: move a few code bits to setup support of crash hotp=
+lug")
 
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- arc-allyesconfig
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- arc-randconfig-r043-20230807
-|   `-- arch-arc-include-asm-io.h:warning:array-subscript-is-outside-array-bounds-of-void
-|-- arm-allmodconfig
-|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- arm-allyesconfig
-|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- arm64-allyesconfig
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- i386-allyesconfig
-|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- i386-buildonly-randconfig-r004-20230807
-|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-writing-bytes-into-a-region-of-size
-|-- m68k-allmodconfig
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- m68k-allyesconfig
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- mips-allmodconfig
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- mips-allyesconfig
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- openrisc-randconfig-r023-20230807
-|   |-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-const-volatile-void
-|   `-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-volatile-void
-|-- parisc-allyesconfig
-|   |-- arch-parisc-mm-init.c:warning:array-subscript-is-outside-array-bounds-of-char
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- parisc-defconfig
-|   `-- arch-parisc-mm-init.c:warning:array-subscript-is-outside-array-bounds-of-char
-|-- parisc64-defconfig
-|   `-- arch-parisc-mm-init.c:warning:array-subscript-is-outside-array-bounds-of-char
-|-- powerpc-allmodconfig
-|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- riscv-allmodconfig
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- riscv-allyesconfig
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- riscv-randconfig-r004-20230807
-|   `-- include-asm-generic-bitops-generic-non-atomic.h:warning:array-subscript-is-outside-array-bounds-of-struct-cpumask
-|-- s390-allmodconfig
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- s390-allyesconfig
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- sh-allmodconfig
-|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
-|   |-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|   `-- include-linux-list.h:warning:array-subscript-is-outside-array-bounds-of-struct-list_head
-|-- sparc-allyesconfig
-|   |-- arch-sparc-mm-init_64.c:error:array-subscript-is-outside-array-bounds-of-char
-|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- sparc-defconfig
-|   |-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-const-volatile-void
-|   `-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-volatile-void
-|-- sparc-randconfig-r026-20230807
-|   |-- arch-sparc-kernel-irq_32.c:error:array-subscript-is-outside-array-bounds-of-struct-tt_entry
-|   |-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-const-volatile-void
-|   `-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-volatile-void
-|-- um-randconfig-r014-20230807
-|   |-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-const-volatile-void
-|   `-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-volatile-void
-|-- x86_64-allyesconfig
-|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
-|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
-|-- x86_64-buildonly-randconfig-r002-20230807
-|   `-- include-linux-list.h:warning:array-subscript-is-outside-array-bounds-of-struct-list_head
-`-- xtensa-randconfig-r024-20230807
-    |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training_dpia.c:warning:dp_decide_lane_settings-accessing-bytes-in-a-region-of-size
-    `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training_fixed_vs_pe_retimer.c:warning:dp_decide_lane_settings-accessing-bytes-in-a-region-of-size
+--=20
+Cheers,
+Stephen Rothwell
 
-elapsed time: 725m
+--Sig_/Y.ZH866Yy2hMCsnmzV9L5k=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-configs tested: 105
-configs skipped: 6
+-----BEGIN PGP SIGNATURE-----
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r002-20230807   gcc  
-arc                  randconfig-r043-20230807   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r032-20230807   clang
-arm                  randconfig-r046-20230807   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r016-20230807   clang
-arm64                randconfig-r036-20230807   gcc  
-csky                                defconfig   gcc  
-hexagon              randconfig-r031-20230807   clang
-hexagon              randconfig-r041-20230807   clang
-hexagon              randconfig-r045-20230807   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230807   gcc  
-i386         buildonly-randconfig-r005-20230807   gcc  
-i386         buildonly-randconfig-r006-20230807   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230807   gcc  
-i386                 randconfig-i002-20230807   gcc  
-i386                 randconfig-i003-20230807   gcc  
-i386                 randconfig-i004-20230807   gcc  
-i386                 randconfig-i005-20230807   gcc  
-i386                 randconfig-i006-20230807   gcc  
-i386                 randconfig-i011-20230807   clang
-i386                 randconfig-i012-20230807   clang
-i386                 randconfig-i013-20230807   clang
-i386                 randconfig-i014-20230807   clang
-i386                 randconfig-i015-20230807   clang
-i386                 randconfig-i016-20230807   clang
-i386                 randconfig-r006-20230807   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r001-20230807   gcc  
-loongarch            randconfig-r034-20230807   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r011-20230807   gcc  
-openrisc             randconfig-r023-20230807   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r013-20230807   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r004-20230807   gcc  
-riscv                randconfig-r042-20230807   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r021-20230807   clang
-s390                 randconfig-r044-20230807   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r015-20230807   gcc  
-sh                   randconfig-r025-20230807   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r026-20230807   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r014-20230807   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230807   gcc  
-x86_64       buildonly-randconfig-r002-20230807   gcc  
-x86_64       buildonly-randconfig-r003-20230807   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230807   clang
-x86_64               randconfig-x002-20230807   clang
-x86_64               randconfig-x003-20230807   clang
-x86_64               randconfig-x004-20230807   clang
-x86_64               randconfig-x005-20230807   clang
-x86_64               randconfig-x006-20230807   clang
-x86_64               randconfig-x011-20230807   gcc  
-x86_64               randconfig-x012-20230807   gcc  
-x86_64               randconfig-x013-20230807   gcc  
-x86_64               randconfig-x014-20230807   gcc  
-x86_64               randconfig-x015-20230807   gcc  
-x86_64               randconfig-x016-20230807   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r024-20230807   gcc  
-xtensa               randconfig-r033-20230807   gcc  
-xtensa               randconfig-r035-20230807   gcc  
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTRxzQACgkQAVBC80lX
+0GwDRQgAl8aFvNP0KFSs6mhbEeUzdhslz1rfQ6LplWOEcEA6PzesrIJK5f68OLzR
+lIGFgnAqIGPEgoWB6d0fMWcLcr18Hh/8B+UzWmLiLCCDI1g5ldI01YUcboqIKQfo
+HMIMaosoFBBFopf/68e6xkAcshaWduOaq2zDg7Bvkan7/HRst2o/4iKqYZtKkYha
+xlcrNyGmctJCiIIgCwoKq1dcHU5GTmR09nMRmTYl0juvWzsdV90/zRYdQ1bbcfwn
+rhsBwc8MSqtcXWNYLE4/2YVTTeTsJkkhfmIv6DVfRkNYX/Nftrt67pE4cFefXqEZ
+rKxVcmMqyuueGt0N+ehVg+h2slsdTQ==
+=jNf+
+-----END PGP SIGNATURE-----
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--Sig_/Y.ZH866Yy2hMCsnmzV9L5k=--
