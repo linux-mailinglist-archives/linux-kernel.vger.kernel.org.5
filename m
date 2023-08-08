@@ -2,116 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2860774322
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6EA773DD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232686AbjHHR50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50876 "EHLO
+        id S232073AbjHHQXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231529AbjHHR4n (ORCPT
+        with ESMTP id S232577AbjHHQWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:56:43 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737DDBF573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:25:37 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe2a116565so87175e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:25:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691511927; x=1692116727;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lwAW4asVrEkUVVSKI2WNTJmzRtpxh5nDYHP0xuDjc0s=;
-        b=xu/5HACllOhBYFuj3JchAnkZdzTuqlD35oZrtpM3qCDnIjwmCvCZSxkyJbkalZ9nTE
-         5LaFtS56p4mG4rYiSrW2bTHccn8yys9u82MtU0lQ86KrdhA7ibF+CruTW86UZyxp3JXm
-         UziNamr3brMAcCPCWR6cYhlUriyogeM5mNeBzHx3FfLBlLYKnfd1oYLY0iJKMGPPfz7k
-         /Vju2LSQi31NZRWAvODXu9rTut1Uu6SotyaThLhqcSDJLlpLBhRxsuJ+5UAZH+7TjBwT
-         6ZoOUDxAg2CfhT3B0C4KBDr8eITKh0C7VpSDSGi1u3bSuQ0XVdzTeQ4LazztBTXMDe8R
-         9Hxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511927; x=1692116727;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lwAW4asVrEkUVVSKI2WNTJmzRtpxh5nDYHP0xuDjc0s=;
-        b=NASPpcwYcp6GRLVDZ0Vb0Biy+0yw2yZ5lYBqky7rZPPjd2nDxNeSutnVYm5qXVgurz
-         g4NSF87xClRnI6laIf2TZ6+IzItPfajgULcIefTez9XSWt7X/eXtQHWsN9nr3eEC2Vjm
-         452Jp5ho9IG7uBEJ5/l4h2clcIA7hpp5yU2euBabqsEIyXBXu7wVF2o9OG3ujr1HAVNo
-         EcYYJq1RgPcWQkizqgxdowf5OBFE6osGYXiUObC+R2S0loOZs6TGgamSbTD91mEGyBjL
-         ZyTQMBbjVgC0V8UQcgQvegaosDFRIzMi5qktW5K2k37OnOjPpDB47P8E+zzhj8pocVaX
-         oh4w==
-X-Gm-Message-State: AOJu0YylYW8LoWBpsSgJfC27vynmY5QImhFLc59gXigf2oGxestRwnoJ
-        lLVHkmHdT9DIi605c294IScE9DAMTpy8bHT/KjEIOg==
-X-Google-Smtp-Source: AGHT+IGCuc1ECA/DdvhuJs8hrdI6B0b0q+56VMbNGS79u6n7XtDIRdL1Iu+hAqJPTrb26LRWfquYy88hAzXnhi0ISBA=
-X-Received: by 2002:a50:f61b:0:b0:523:193b:5587 with SMTP id
- c27-20020a50f61b000000b00523193b5587mr283949edn.6.1691492435497; Tue, 08 Aug
- 2023 04:00:35 -0700 (PDT)
+        Tue, 8 Aug 2023 12:22:01 -0400
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CA79EDC;
+        Tue,  8 Aug 2023 08:49:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1691492629;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=KRC2QmTX7VAPdlYPacftr2tGKJxHpsE85DryjUqJOVk=;
+        b=QKfcTLQkVQXBTcA0qv79E6CyOi10fwQRVLPAtuMExcG99mIUACe1XBvU2bBfKQbH9OP2Ke
+        6/x17eV+ZkWyqJ+fq+0RIKrux0nPvwCorjhMFGCKlARrV/N8qaF78QTYYqP4D7gtmEWzew
+        FK2rDp619YNiOQj3hx9tzOlYxtlANJY=
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>, stable@vger.kernel.org
+Subject: [PATCH] ARM: dts: exynos/i9100: Unconditionally enable LDO12
+Date:   Tue,  8 Aug 2023 13:03:41 +0200
+Message-Id: <20230808110341.57891-1-paul@crapouillou.net>
 MIME-Version: 1.0
-References: <00000000000069948205f7fb357f@google.com> <000000000000a9bf5106026705ec@google.com>
-In-Reply-To: <000000000000a9bf5106026705ec@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Tue, 8 Aug 2023 13:00:23 +0200
-Message-ID: <CANp29Y6M-CU+eqUFqN3Rkf2iba7upqsLvnHNNyMmhd4JFdH-8A@mail.gmail.com>
-Subject: Re: [syzbot] [fat?] possible deadlock in do_user_addr_fault
-To:     syzbot <syzbot+278098b0faaf0595072b@syzkaller.appspotmail.com>
-Cc:     linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-16.0 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 12:42=E2=80=AFPM syzbot
-<syzbot+278098b0faaf0595072b@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit ff84772fd45d486e4fc78c82e2f70ce5333543e6
-> Author: Sungjong Seo <sj1557.seo@samsung.com>
-> Date:   Fri Jul 14 08:43:54 2023 +0000
->
->     exfat: release s_lock before calling dir_emit()
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D16623aa9a8=
-0000
-> start commit:   f8dba31b0a82 Merge tag 'asym-keys-fix-for-linus-v6.4-rc5'=
- ..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D3c980bfe8b399=
-968
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D278098b0faaf059=
-5072b
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D144ccf79280=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D135fab7928000=
-0
->
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
->
-> #syz fix: exfat: release s_lock before calling dir_emit()
+The kernel hangs for a good 12 seconds without any info being printed to
+dmesg, very early in the boot process, if this regulator is not enabled.
 
-Seems reasonable.
-#syz fix: exfat: release s_lock before calling dir_emit()
+Force-enable it to work around this issue, until we know more about the
+underlying problem.
 
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgi=
-d/syzkaller-bugs/000000000000a9bf5106026705ec%40google.com.
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Fixes: 8620cc2f99b7 ("ARM: dts: exynos: Add devicetree file for the Galaxy S2")
+Cc: <stable@vger.kernel.org> # v5.8+
+---
+ arch/arm/boot/dts/exynos4210-i9100.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts/exynos4210-i9100.dts
+index a9ec1f6c1dea..a076a1dfe41f 100644
+--- a/arch/arm/boot/dts/exynos4210-i9100.dts
++++ b/arch/arm/boot/dts/exynos4210-i9100.dts
+@@ -527,6 +527,14 @@ vtcam_reg: LDO12 {
+ 				regulator-name = "VT_CAM_1.8V";
+ 				regulator-min-microvolt = <1800000>;
+ 				regulator-max-microvolt = <1800000>;
++
++				/*
++				 * Force-enable this regulator; otherwise the
++				 * kernel hangs very early in the boot process
++				 * for about 12 seconds, without apparent
++				 * reason.
++				 */
++				regulator-always-on;
+ 			};
+ 
+ 			vcclcd_reg: LDO13 {
+-- 
+2.40.1
+
