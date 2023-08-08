@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E57C27743F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A66977453E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235263AbjHHSOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50366 "EHLO
+        id S230093AbjHHSjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235292AbjHHSNi (ORCPT
+        with ESMTP id S231928AbjHHSi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:13:38 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BE3744B7
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:19:14 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5222c5d71b8so8255310a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:19:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1691515148; x=1692119948;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+LPhKJdQTcwFoDItceYL3qjZJlSnPxbCU8xvPi+Vd8A=;
-        b=a7Y7Uja51LpOnsbvN2jw/j0zaBQumTDCa3kDQPJebVDIhi71lEgwqgRZg2v1lUeAov
-         GjAQpU1TASBkwKved/eg0zQ3Fts5ESw//r2XleDJ91OfhWRiLeI8bEdvbI1JduXN33Nw
-         6qBxd8Febunk14JGeFM93LdBvrXvf6iR88sqI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691515148; x=1692119948;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+LPhKJdQTcwFoDItceYL3qjZJlSnPxbCU8xvPi+Vd8A=;
-        b=e87gSdoyxfEHeBXq5zhBq3S3FZBiCUnGiVGDtbA2bEc45DHj1ozsI+rfyHmbyYLGFN
-         VhK2TpIrJpLdhEvB2sbBJjS6XRZwdBSv8wSrOiWcIxjYYr9roWubvPKGvHN0nPavTHiI
-         i/0drRIlu+kMfH14/vmdAYHvgKfl9DrkhHeM54RvORtj60bBuMz15kqpsRGcc/JNsCjn
-         hYuSi4p7LxqqBg9uW3/v3OpdPGkI8ZveeDgLUelDDScZil+tgUU0RtS+zx4ADXs2gbrj
-         dCPGXthYtk5ltnFix+1BrGoZoJwVAKOy7XO/8XMum0UVri6LPUzTTDl7Zvubbg2MIL2K
-         HA4w==
-X-Gm-Message-State: AOJu0YzCskYt/FeDEriZdwzKVDNkZSpLkEUz9dj4d7/T6kccwVNHP3xl
-        jHkxLUUBo/ofh6sxS310cCKv6svuDXVHjAi2+NVbiNkB
-X-Google-Smtp-Source: AGHT+IFAzWoc0IDS581pyP5K0bq7Rd9AC4vVbef/hJ0W/NAonpQyDTOli00KoSkj7Kn3ST670yGuhg==
-X-Received: by 2002:aa7:d052:0:b0:523:95e:c2c0 with SMTP id n18-20020aa7d052000000b00523095ec2c0mr308166edo.42.1691515148174;
-        Tue, 08 Aug 2023 10:19:08 -0700 (PDT)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id c18-20020aa7c752000000b0052228721f84sm6969393eds.77.2023.08.08.10.19.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 10:19:07 -0700 (PDT)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5222c5d71b8so8255290a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:19:07 -0700 (PDT)
-X-Received: by 2002:aa7:d6c6:0:b0:523:1ce9:1f41 with SMTP id
- x6-20020aa7d6c6000000b005231ce91f41mr435083edr.18.1691515146925; Tue, 08 Aug
- 2023 10:19:06 -0700 (PDT)
+        Tue, 8 Aug 2023 14:38:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3457075868
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:20:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 83D66618D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 17:20:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D1EDC433C7;
+        Tue,  8 Aug 2023 17:20:32 +0000 (UTC)
+Date:   Tue, 8 Aug 2023 13:20:30 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>
+Subject: Re: BUG: KASAN: slab-out-of-bounds in print_synth_event+0xa68/0xa78
+Message-ID: <20230808132030.4ddfc90f@gandalf.local.home>
+In-Reply-To: <yt9dzg31ppzy.fsf@linux.ibm.com>
+References: <yt9dsf8zfhw8.fsf@linux.ibm.com>
+        <20230807215310.068fce2f@gandalf.local.home>
+        <yt9da5v1rhqd.fsf@linux.ibm.com>
+        <20230808061423.0a12980f@gandalf.local.home>
+        <yt9dzg31ppzy.fsf@linux.ibm.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20230806230627.1394689-1-mjguzik@gmail.com> <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
- <CAHk-=whk-8Pv5YXH4jNfyAf2xiQCGCUVyBWw71qJEafn4mT6vw@mail.gmail.com> <CAGudoHE5UDj0Y7fY=gicOq8Je=e1MX+5VWo04qoDRpHRG03fFg@mail.gmail.com>
-In-Reply-To: <CAGudoHE5UDj0Y7fY=gicOq8Je=e1MX+5VWo04qoDRpHRG03fFg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 8 Aug 2023 10:18:50 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj+Uu+=iUZLc+MfOBKgRoyM56c0z0ustZKru0We9os63A@mail.gmail.com>
-Message-ID: <CAHk-=wj+Uu+=iUZLc+MfOBKgRoyM56c0z0ustZKru0We9os63A@mail.gmail.com>
-Subject: Re: [PATCH] fs: use __fput_sync in close(2)
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oleg@redhat.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Aug 2023 at 10:10, Mateusz Guzik <mjguzik@gmail.com> wrote:
->
-> Few hours ago I sent another version which very closely resembles what
-> you did :)
-> 2 main differences:
-> - i somehow missed close_fd_get_file so I hacked my own based on close_fd
-> - you need to whack the kthread assert in __fput_sync
+On Tue, 08 Aug 2023 16:28:49 +0200
+Sven Schnelle <svens@linux.ibm.com> wrote:
 
-Good call on teh __fput_sync() test.
+> Steven Rostedt <rostedt@goodmis.org> writes:
+> 
+> >> I think the problem is that the code assigns data_offset with:
+> >> 
+> >> *(u32 *)&entry->fields[*n_u64] = data_offset;
+> >> 
+> >> but reads it with:
+> >> 
+> >> offset = (u32)entry->fields[n_u64];
+> >> 
+> >> which works on LE, but not BE.  
+> >
+> > Ah, that makes sense. I didn't realize (or forgot) that s390 was BE. My
+> > PowerPC box that was BE died years ago, and I have stopped testing BE ever
+> > since :-(  
+> 
+> Ok. If you want something for testing BE i could provide you with an
+> s390 linux image + the commandline to run that within qemu. Linux on
+> s390 is not much different than other platforms, but you would need an
+> s390 cross-compiler.
 
-That BUG_ON() made sense ten years ago when this was all re-organized,
-not so much now.
+That's fine. I have you to test the BE code ;-)
 
-> I'm offended you ask, it's all in my opening e-mail.
+> >> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+> >> index d6a70aff2410..1f8fe7f2b5b2 100644
+> >> --- a/kernel/trace/trace_events_synth.c
+> >> +++ b/kernel/trace/trace_events_synth.c
+> >> @@ -125,9 +125,22 @@ static bool synth_event_match(const char *system, const char *event,
+> >>  		(!system || strcmp(system, SYNTH_SYSTEM) == 0);
+> >>  }
+> >>  
+> >> +struct synth_trace_data {
+> >> +	u16 len;
+> >> +	u16 offset;
+> >> +};  
+> >
+> > This is actually common throughout the tracing code (as all dynamic fields
+> > have this). We should probably make this more generic than just for
+> > synthetic events. Although, that would probably break BE user space. Hmm,
+> > we could have it be:  
+> 
+> I'm not familiar with the ftrace code, so I think i would need some more
+> time to find all the other locations. Therefore i updated the patch to move
+> the structure declaration to trace.h and sent that as a first step.
 
-Heh. I wasn't actually cc'd on that, so I'm going by context and then
-peeking at web links..
+It's been on my todo list for sometime. Maybe I should just go and do that
+part.
 
-             Linus
+-- Steve
