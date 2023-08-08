@@ -2,214 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A61CE773E05
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEAD7774244
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232441AbjHHQZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37994 "EHLO
+        id S231326AbjHHRjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbjHHQXc (ORCPT
+        with ESMTP id S234837AbjHHRij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:23:32 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2050.outbound.protection.outlook.com [40.107.8.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0819DA5D5;
-        Tue,  8 Aug 2023 08:49:42 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PFVJ/PJj0mzAKx3ZhMSAkQarkrr8zS2UthbUiIfuat0fofATmoNNA+EHkCbgYCFMk3AIQnBN2jPrStdZOXXGF8Vga8Su6i4SBkqHjTJeKoJn0qG4Hy/F4CGQlZeEtm8Vj/4kDTIn5H1bSeud2A4KtoSjZP7z4K+W1chpP6eSxpvvg2yMQDlvAzSoZTbROImjUt8i5FjfmJIInLV+DnI09/K/Uqx0psq1NL89s6Tnh1EzVqL2baFka72/p3dGM3XnLZtyJR8CuAbXHfNzl+40W/xx8AZMvnvMxLOsdGsxYNHNxa2NRCsU767wylKFDfEZ5StzcQqZy54+OxTl9NXx+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GaZ8kdL2DH/R1TC+obkBOuo0JpRLQmhtmZ9fGfd6LP8=;
- b=j/u2hfbOlV9ou3oWwHThXizxvGF4BXoNG9AJlr9CF5rUZIuT+x7T/dJX7CRul4u/O8M7s3wqWG3CygvDLHlEH2Cih3Pz1Vw0tSpVALSWQm6688kqwd0QZPXtMpUC2UmJt0JV/Ow+kuRt2TQpqeFDFre3K8r6wC6snOAjARUUGYYbS+w9LgIMajnIfopb6zD7HoIQ/W2d56W7uhqHSjq+WqVLlxQOo4uP+ef2DMNaRqQrkvJXASi/KYSyWfW096wey6Cmgw7WTUh5gzVkVCk286ivCyFlPnkvVEK0K1y3Ew26UzBQD5Ebs9B0scQPCJRE0kqmm8lTSZpKlA/P/MNNGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GaZ8kdL2DH/R1TC+obkBOuo0JpRLQmhtmZ9fGfd6LP8=;
- b=uIeUaHoD4rIXq+rFQZrr8vDV+YsI1jeF9fRzkoMatWsNuxpXjD33ONUW+XpXXUlrpaZju7S+oN/9pjdCTDhrwgYGiAVyi8/oOfyhCBpkXBGHDsLytvWbUXBHa2o1VcwIJ46GMb7ml5CdFdYIpyWBpa40ub5n2FOBUi+C80xFWbtnOenz61HRixeFtqz1xrJIzac1ERDQv4nYhZcn16b+ajoHcOizVAm/+KZpY0XOtGimA8jgtXPsYeemchyJb39dlHGIsPBliAJfgSloE80IS3IZqH4B5Q70zKi9+EyveiPGDSWxTNV2Xi00ofBVckUWmHZPlcI0G3m9HOgIUUo6Vg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AM0PR0402MB3395.eurprd04.prod.outlook.com
- (2603:10a6:208:1a::16) by PR3PR04MB7403.eurprd04.prod.outlook.com
- (2603:10a6:102:8b::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Tue, 8 Aug
- 2023 12:13:05 +0000
-Received: from AM0PR0402MB3395.eurprd04.prod.outlook.com
- ([fe80::da23:cf17:3db5:8010]) by AM0PR0402MB3395.eurprd04.prod.outlook.com
- ([fe80::da23:cf17:3db5:8010%3]) with mapi id 15.20.6652.026; Tue, 8 Aug 2023
- 12:13:05 +0000
-Message-ID: <4e1e380d-4d36-7d02-618d-0298f5e62ff6@suse.com>
-Date:   Tue, 8 Aug 2023 14:13:02 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 03/10] mlx4: Replace the mlx4_interface.event
- callback with a notifier
-Content-Language: en-US
-To:     Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc:     tariqt@nvidia.com, yishaih@nvidia.com, leon@kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jgg@ziepe.ca, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230804150527.6117-1-petr.pavlu@suse.com>
- <20230804150527.6117-4-petr.pavlu@suse.com>
- <72a98e55-46b0-66d6-b4b3-4f6d14e1fd7b@linux.dev>
-From:   Petr Pavlu <petr.pavlu@suse.com>
-In-Reply-To: <72a98e55-46b0-66d6-b4b3-4f6d14e1fd7b@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VI1PR09CA0094.eurprd09.prod.outlook.com
- (2603:10a6:803:78::17) To AM0PR0402MB3395.eurprd04.prod.outlook.com
- (2603:10a6:208:1a::16)
+        Tue, 8 Aug 2023 13:38:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6DB421F
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:16:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691511318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rDuO9bhbYkQmnoJmdA06h2aMhfAOsX8hw8Z40IIdVdQ=;
+        b=C2qPf0LSiyEYp5d+q9cx8+gBzpv78wN/x08yZcmwrJ/vES0/7ILBpeMVYyGYBvLoc4zy/m
+        ObgEGTfdwmTFEG9ZfMB+0cqFL/PoIp+nwXYvm7p9OvIffKx78CcNT0zeWPCuvLJsbPfyoi
+        YE3L7rvXp5u69cQLHXKaj7rvSfI+FTU=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-12-OpYBHDcLNZKt_tI3qtx3qg-1; Tue, 08 Aug 2023 08:14:02 -0400
+X-MC-Unique: OpYBHDcLNZKt_tI3qtx3qg-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2b9aa4db031so58847271fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 05:14:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691496841; x=1692101641;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rDuO9bhbYkQmnoJmdA06h2aMhfAOsX8hw8Z40IIdVdQ=;
+        b=jHJduErLXkgYIGsbEYzCU9yfhiAuyO9cd58yWBx4iedeUWJ/THyDQcDM24JrTyPzv9
+         OquZYuXmCrW5tRtqrH2xRnGxlGhOViI0mHB0Ml5SXIVc5dhW6C8t5eQzjxcjYJHc7Cq7
+         aaf4EinYbratNMFfZ+3C0/IsQsLrmR2dNSmIspaMIO+1vqIHVCiLn/9Z8OeBFg/EN+aZ
+         9TYJaXymSzUMwYRP7ZD+4BG54i0UxXw1+BGbmf2UZtjvoNLoz6bnDgFyc9nlSAQssqlJ
+         qxMhHzxvNO9MBBs41NGBSqoWYMyM73bSur42oJ2nheiGTB/WgQu68HytaetbTg1HMxAg
+         /MKQ==
+X-Gm-Message-State: AOJu0Yzfl/I1Sm+z7Yca/9XM27FBW9VIgtd6KZX7QIP04CZMKPPFbjT6
+        OF965ZZjhBXhrHgkK8X/uCEGCleSPZDOE50M2OEHQe/7dicCxfZTvAL57D80ij02uDE5cZueLpG
+        zWDOCvZTh235C9y6ZC+q7k2I2vEX8b1aoN64ToiED
+X-Received: by 2002:a2e:8884:0:b0:2b9:4413:864e with SMTP id k4-20020a2e8884000000b002b94413864emr8771803lji.53.1691496841064;
+        Tue, 08 Aug 2023 05:14:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG00dtg78xBWNPk1NuFuyep1trDdeEvs4ECjrJZuNImsJLQBbQZ4eZdAKc/+97p72TE9mUQKtvCTnAVcwA5V28=
+X-Received: by 2002:a2e:8884:0:b0:2b9:4413:864e with SMTP id
+ k4-20020a2e8884000000b002b94413864emr8771790lji.53.1691496840716; Tue, 08 Aug
+ 2023 05:14:00 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR0402MB3395:EE_|PR3PR04MB7403:EE_
-X-MS-Office365-Filtering-Correlation-Id: 96e6ca64-ca95-48f3-490b-08db9808d1d4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6kgU24+ikETaVg3WicHn8Y2+CNdfxxqRo0ZrmkOx9mm3fnTnRQUAqVI+Y0RL7MPnLdbv0NzED40QqGuTG68rzOIPhlQW5EoWhdfHTx8KSN3nsqp1ymcQiZ0TNhCN2mkjR+6HX0aYncm7yoIpShkwTWzUZ1Fl453jebEZ/ZpD/O3pD1Ys56AtO1TfUC6vpzhFGSHNiQSi3s9GMBLxOYqZlKSuYRLh2IF8OAyUbY1VC+x30IFUdzWy5j12gAZCTmROTIVyqRnyavM3GAh9eD9FUctV1LvC3JLQV4tJgx97mLWzuFo/FNwIuP3XF1M6iSIhqBGvtwfLF+jhYHmfRsAONfPJQMy7Mmykb2US0p5LxaGhY5Zsdg557DIwYm8hJ433soMZHaZF/r13BMVc+BMfTSdcG71Ss+ZugXpwJiZUBAAD9MPzA8EKlF7V7iHdn1+qj4KLABeNn/LzDeH6q74Xw91xRsZoxBsAW7BTMIjBJYkAtIAJBRA5OmCz0qbHyI3anbyxGWfZ1H7VeFA6e32EnbtOpzM+3/1yiNDJcNMIc8tLsXgeN1l3vGe/DjwKyrB4C5dTBbokyjyIpfaT0jzjhdgamO2cmoutWVeIeYzaFDVjr3PhgzflVBc1O3sewRRjxkbuu1JXs2CwvHxqzKUIQA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR0402MB3395.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(39860400002)(366004)(376002)(346002)(136003)(451199021)(1800799003)(186006)(44832011)(7416002)(8676002)(8936002)(5660300002)(4326008)(6916009)(41300700001)(316002)(86362001)(83380400001)(31696002)(2906002)(6512007)(6666004)(6486002)(2616005)(26005)(6506007)(53546011)(55236004)(36756003)(66556008)(66476007)(66946007)(478600001)(31686004)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eHJLeEVOeVJydXR4aFBER2dYdW9UVndCY2ZtZEUvQWNQemhUSmxwNFUyemhq?=
- =?utf-8?B?UnJsYVhPVmd5cGtnSEJNakVEcFlVQ1FpSVVDOUt2MDErZGxvQm1CNTRQd1Ft?=
- =?utf-8?B?WVpvWFB2emFVNnVPSmE3MUN4Z1E0ZWlTQ09DcGNVK3ZlbWsvbTlUYm5Tb2Vi?=
- =?utf-8?B?ajZLc0todzVHMHk2Kys5ei9UaTA4aTVXREZpci9abi9NTm5mVHprcHhqbDR0?=
- =?utf-8?B?NXBVRGpnVEIrWEhzbG5YbUJxeWtGR3dIRXNkQm1sb3J6QldKOWlqb1gyVVpm?=
- =?utf-8?B?SGdMTUgyUmJiZDhrNVliSzZwUnlCSTZjZUoxRTYxNHZEdHNtQitDeUQzbHhR?=
- =?utf-8?B?ejhMczhKRmpXaTZycmF2M1JhMnJwb3FmUEdmaDRHL2tGOFpqR0NpeDl5UEZX?=
- =?utf-8?B?Y1VRaHc1d3VQblBLNTZNMEE5dFF3OFFtSDhiMG12VzNUZlIzUklibS9mUlJP?=
- =?utf-8?B?THVuQlNWa0sySWY3QktmbHcwT1dqMW5BWnVxcEdnNzJoKzNVNXZBRjJ1UVdt?=
- =?utf-8?B?M3BHaDVJallKWlpBYllRdkhUSkxJVjlnT0RON1JKTURHdlFFb1ZpK1NVWGRO?=
- =?utf-8?B?NWlHTWVlWFlWbDgyUEZOWHRRaEx6SW9sS0RFU0ZjRm16Y0psOFdma2NYQnVt?=
- =?utf-8?B?K2Uyc0ZQNVFGL2NPK2wwZS9rd2VnQ2prcW9oYTJ4dHRqb3pRZXVrNXZjNmQ2?=
- =?utf-8?B?WURlekJDOXdQQWZqQXRaeURKNGVKOTk0dTdxMCtWUDlma2pqNGNZUnpGbHI3?=
- =?utf-8?B?ZVRpS0JpUk9vdVN1ZzlZaHIyRzV3SkRMdzFxMnlLOUFlaDczZVNndlFmcUdP?=
- =?utf-8?B?cjJXNkJUbjlMTjRZaWRoeXFxNzgrUDQ3RElhMGJwSGtQTDgyYitWcTlObUIx?=
- =?utf-8?B?L2UwdHpBazBjbXJJZTNQSnpienlkVm1tZkx2OXFGSGlCRW96dU0vOFIzNTVz?=
- =?utf-8?B?QzVGdzIraVc2SkJ2VmNOUjZTV09rVmtJaDk1L3ZVK2VnME95S0dhVU5nSTFn?=
- =?utf-8?B?UTF5dnA1N3NocVFZdEJIeXI4d3orMzZZSkJXT01ESng1V2pDL2tSTzBYemlM?=
- =?utf-8?B?ajJaRDJ4VE9GRkJMT1NHU2srclVocmt4bWFHWmxJRXhGa3RZL3k3S2dIM3Vo?=
- =?utf-8?B?QXo2S3pNYmt0UGRNNjNVdDc5RFczdFlJT050YWlzU09NVy9xbXRJVEJ1Z1hJ?=
- =?utf-8?B?UXpEYkJIMUovNjNEakluU0VEU2kwRThOS0NLRUo3U3E5VGRZZnJqTDBvNXhZ?=
- =?utf-8?B?anc5UGdRbis0ekVIaU9wVkMrRkJFcFFIdzRVeUFsQ1RZWUw3NU5NMFFFczFB?=
- =?utf-8?B?TllPWGE2c05YSWpDM2NMTmNQNHpkNGNpNFp6b0ZqM21QMWNDNlNRaFdMUFov?=
- =?utf-8?B?eHN1a2ZBc2VTZjJFTHhoZFBkamJNaDAzelE1OE5rM1F1bGRlZFR1YXNrMlJu?=
- =?utf-8?B?Rno2akIxeXAwRlNzZU1LU3h6TVdvWjlNdmdlSnA4NUFYbHRxQXdyRkkrZ285?=
- =?utf-8?B?dnpWanEwWU5hQk5NY1VzbXo3MC9sNFFqbWRiS1RKSDdjSlo4U1NIWCt2cWI4?=
- =?utf-8?B?R1g2TWVtQk1MVURldnhjTEZzanpwUkdDcjdRUHN0Y1BCS2xaN2JUS0NSMis4?=
- =?utf-8?B?TDA2Ylp6UDg5akVjMVJrZk43ZXVKanZ4MWlJSkFNZmNUUDFHVUpjMXRBVVd6?=
- =?utf-8?B?MXVoK05vMmZUc256dVhtWlliNXc0eDlqUkFmRktQL1JKcVdDcFRzRHBEU1lY?=
- =?utf-8?B?dGF3eDVmSlFOc3UyeFlWU2JqYVVSaGsycWRpNHdzZ1Qra3dob1ZoNmdlL3g2?=
- =?utf-8?B?NW5GQ0tjSTlyenpqcGRPRXpIN0ppTkpTb2JzTjBaaFl0V2U4eDJMM1ZDS1Bz?=
- =?utf-8?B?SVBGYlhGTUpQOTRueEtTS25Pdkh6QXhUaElwM2lmOHUxQXZtS2k0N256Sklk?=
- =?utf-8?B?RTNuRjFEQ1hxc2Z2TEVJRjhWYkZrKzRFRlMvQUNxV2NWUzM0TUUrWHQ3eHhu?=
- =?utf-8?B?UU9GWW9PVGIxTjEyM2Y5UGVhalkwMFNTS050b1JJcEFkNUhKNGZxM214OWVz?=
- =?utf-8?B?TkFKZHlNdHA5R0RKYmhYSVpkcmZpY0RSNFZUMGVveTJtWmNlblFVVFhqWTRn?=
- =?utf-8?Q?0iG+zkHPvwyxfvMnBo2d8aDEq?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96e6ca64-ca95-48f3-490b-08db9808d1d4
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR0402MB3395.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2023 12:13:05.1905
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pAyIIlCdDEF4WAqBNx3khivA0Wf6++MxZrI+fux5UkEneiPTD/qMg2O53T5P0QcZ7qLIyb3BXzX6s69QwEA+qA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7403
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230627132323.115440-1-andrealmeid@igalia.com> <ZMz3IXIzXS5gNK3G@phenom.ffwll.local>
+In-Reply-To: <ZMz3IXIzXS5gNK3G@phenom.ffwll.local>
+From:   Sebastian Wick <sebastian.wick@redhat.com>
+Date:   Tue, 8 Aug 2023 14:13:49 +0200
+Message-ID: <CA+hFU4wbn=efbS10c14A9sLTf9GYJ_O12kowh76ELLdo2+x5fA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] drm/doc: Document DRM device reset expectations
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        pierre-eric.pelloux-prayer@amd.com,
+        Simon Ser <contact@emersion.fr>,
+        Rob Clark <robdclark@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Daniel Stone <daniel@fooishbar.org>,
+        =?UTF-8?B?TWFyZWsgT2zFocOhaw==?= <maraeo@gmail.com>,
+        Dave Airlie <airlied@gmail.com>,
+        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        =?UTF-8?Q?Timur_Krist=C3=B3f?= <timur.kristof@gmail.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/23 16:29, Zhu Yanjun wrote:
-> 在 2023/8/4 23:05, Petr Pavlu 写道:
->> Use a notifier to implement mlx4_dispatch_event() in preparation to
->> switch mlx4_en and mlx4_ib to be an auxiliary device.
->>
->> A problem is that if the mlx4_interface.event callback was replaced with
->> something as mlx4_adrv.event then the implementation of
->> mlx4_dispatch_event() would need to acquire a lock on a given device
->> before executing this callback. That is necessary because otherwise
->> there is no guarantee that the associated driver cannot get unbound when
->> the callback is running. However, taking this lock is not possible
->> because mlx4_dispatch_event() can be invoked from the hardirq context.
->> Using an atomic notifier allows the driver to accurately record when it
->> wants to receive these events and solves this problem.
->>
->> A handler registration is done by both mlx4_en and mlx4_ib at the end of
->> their mlx4_interface.add callback. This matches the current situation
->> when mlx4_add_device() would enable events for a given device
->> immediately after this callback, by adding the device on the
->> mlx4_priv.list.
->>
->> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
->> Tested-by: Leon Romanovsky <leon@kernel.org>
->> ---
->>   drivers/infiniband/hw/mlx4/main.c            | 41 +++++++++++++-------
->>   drivers/infiniband/hw/mlx4/mlx4_ib.h         |  2 +
->>   drivers/net/ethernet/mellanox/mlx4/en_main.c | 25 ++++++++----
->>   drivers/net/ethernet/mellanox/mlx4/intf.c    | 24 ++++++++----
->>   drivers/net/ethernet/mellanox/mlx4/main.c    |  2 +
->>   drivers/net/ethernet/mellanox/mlx4/mlx4.h    |  2 +
->>   drivers/net/ethernet/mellanox/mlx4/mlx4_en.h |  2 +
->>   include/linux/mlx4/driver.h                  |  8 +++-
->>   8 files changed, 76 insertions(+), 30 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
->> index 7dd70d778b6b..458b4b11dffa 100644
->> --- a/drivers/infiniband/hw/mlx4/main.c
->> +++ b/drivers/infiniband/hw/mlx4/main.c
->> @@ -82,6 +82,8 @@ static const char mlx4_ib_version[] =
->>   static void do_slave_init(struct mlx4_ib_dev *ibdev, int slave, int do_init);
->>   static enum rdma_link_layer mlx4_ib_port_link_layer(struct ib_device *device,
->>   						    u32 port_num);
->> +static int mlx4_ib_event(struct notifier_block *this, unsigned long event,
->> +			 void *ptr);
->>   
->>   static struct workqueue_struct *wq;
->>   
->> @@ -2836,6 +2838,12 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
->>   				do_slave_init(ibdev, j, 1);
->>   		}
->>   	}
->> +
->> +	/* register mlx4 core notifier */
->> +	ibdev->mlx_nb.notifier_call = mlx4_ib_event;
->> +	err = mlx4_register_event_notifier(dev, &ibdev->mlx_nb);
->> +	WARN(err, "failed to register mlx4 event notifier (%d)", err);
->> +
->>   	return ibdev;
->>   
->>   err_notif:
->> @@ -2953,6 +2961,8 @@ static void mlx4_ib_remove(struct mlx4_dev *dev, void *ibdev_ptr)
->>   	int p;
->>   	int i;
->>   
->> +	mlx4_unregister_event_notifier(dev, &ibdev->mlx_nb);
->> +
->>   	mlx4_foreach_port(i, dev, MLX4_PORT_TYPE_IB)
->>   		devlink_port_type_clear(mlx4_get_devlink_port(dev, i));
->>   	ibdev->ib_active = false;
->> @@ -3173,11 +3183,14 @@ void mlx4_sched_ib_sl2vl_update_work(struct mlx4_ib_dev *ibdev,
->>   	}
->>   }
->>   
->> -static void mlx4_ib_event(struct mlx4_dev *dev, void *ibdev_ptr,
->> -			  enum mlx4_dev_event event, unsigned long param)
->> +static int mlx4_ib_event(struct notifier_block *this,
->> +			 unsigned long event /*mlx4_dev_event*/, void *ptr)
-> 
-> /*mlx4_dev_event*/ should be removed?
+On Fri, Aug 4, 2023 at 3:03=E2=80=AFPM Daniel Vetter <daniel@ffwll.ch> wrot=
+e:
+>
+> On Tue, Jun 27, 2023 at 10:23:23AM -0300, Andr=C3=A9 Almeida wrote:
+> > Create a section that specifies how to deal with DRM device resets for
+> > kernel and userspace drivers.
+> >
+> > Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+> > Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
+> > ---
+> >
+> > v4: https://lore.kernel.org/lkml/20230626183347.55118-1-andrealmeid@iga=
+lia.com/
+> >
+> > Changes:
+> >  - Grammar fixes (Randy)
+> >
+> >  Documentation/gpu/drm-uapi.rst | 68 ++++++++++++++++++++++++++++++++++
+> >  1 file changed, 68 insertions(+)
+> >
+> > diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-uap=
+i.rst
+> > index 65fb3036a580..3cbffa25ed93 100644
+> > --- a/Documentation/gpu/drm-uapi.rst
+> > +++ b/Documentation/gpu/drm-uapi.rst
+> > @@ -285,6 +285,74 @@ for GPU1 and GPU2 from different vendors, and a th=
+ird handler for
+> >  mmapped regular files. Threads cause additional pain with signal
+> >  handling as well.
+> >
+> > +Device reset
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +
+> > +The GPU stack is really complex and is prone to errors, from hardware =
+bugs,
+> > +faulty applications and everything in between the many layers. Some er=
+rors
+> > +require resetting the device in order to make the device usable again.=
+ This
+> > +sections describes the expectations for DRM and usermode drivers when =
+a
+> > +device resets and how to propagate the reset status.
+> > +
+> > +Kernel Mode Driver
+> > +------------------
+> > +
+> > +The KMD is responsible for checking if the device needs a reset, and t=
+o perform
+> > +it as needed. Usually a hang is detected when a job gets stuck executi=
+ng. KMD
+> > +should keep track of resets, because userspace can query any time abou=
+t the
+> > +reset stats for an specific context. This is needed to propagate to th=
+e rest of
+> > +the stack that a reset has happened. Currently, this is implemented by=
+ each
+> > +driver separately, with no common DRM interface.
+> > +
+> > +User Mode Driver
+> > +----------------
+> > +
+> > +The UMD should check before submitting new commands to the KMD if the =
+device has
+> > +been reset, and this can be checked more often if the UMD requires it.=
+ After
+> > +detecting a reset, UMD will then proceed to report it to the applicati=
+on using
+> > +the appropriate API error code, as explained in the section below abou=
+t
+> > +robustness.
+> > +
+> > +Robustness
+> > +----------
+> > +
+> > +The only way to try to keep an application working after a reset is if=
+ it
+> > +complies with the robustness aspects of the graphical API that it is u=
+sing.
+> > +
+> > +Graphical APIs provide ways to applications to deal with device resets=
+. However,
+> > +there is no guarantee that the app will use such features correctly, a=
+nd the
+> > +UMD can implement policies to close the app if it is a repeating offen=
+der,
+>
+> Not sure whether this one here is due to my input, but s/UMD/KMD. Repeat
+> offender killing is more a policy where the kernel enforces policy, and n=
+o
+> longer up to userspace to dtrt (because very clearly userspace is not
+> really doing the right thing anymore when it's just hanging the gpu in an
+> endless loop). Also maybe tune it down further to something like "the
+> kernel driver may implemnent ..."
+>
+> In my opinion the umd shouldn't implement these kind of magic guesses, th=
+e
+> entire point of robustness apis is to delegate responsibility for
+> correctly recovering to the application. And the kernel is left with
+> enforcing fair resource usage policies (which eventually might be a
+> cgroups limit on how much gpu time you're allowed to waste with gpu
+> resets).
 
-The comment was meant to indicate the actual type of the event. I can
-remove it.
+Killing apps that the kernel thinks are misbehaving really doesn't
+seem like a good idea to me. What if the process is a service getting
+restarted after getting killed? What if killing that process leaves
+the system in a bad state?
 
-Thanks,
-Petr
+Can't the kernel provide some information to user space so that e.g.
+systemd can handle those situations?
+
+> > +likely in a broken loop. This is done to ensure that it does not keep =
+blocking
+> > +the user interface from being correctly displayed. This should be done=
+ even if
+> > +the app is correct but happens to trigger some bug in the hardware/dri=
+ver.
+> > +
+> > +OpenGL
+> > +~~~~~~
+> > +
+> > +Apps using OpenGL should use the available robust interfaces, like the
+> > +extension ``GL_ARB_robustness`` (or ``GL_EXT_robustness`` for OpenGL E=
+S). This
+> > +interface tells if a reset has happened, and if so, all the context st=
+ate is
+> > +considered lost and the app proceeds by creating new ones. If it is po=
+ssible to
+> > +determine that robustness is not in use, the UMD will terminate the ap=
+p when a
+> > +reset is detected, giving that the contexts are lost and the app won't=
+ be able
+> > +to figure this out and recreate the contexts.
+> > +
+> > +Vulkan
+> > +~~~~~~
+> > +
+> > +Apps using Vulkan should check for ``VK_ERROR_DEVICE_LOST`` for submis=
+sions.
+> > +This error code means, among other things, that a device reset has hap=
+pened and
+> > +it needs to recreate the contexts to keep going.
+> > +
+> > +Reporting causes of resets
+> > +--------------------------
+> > +
+> > +Apart from propagating the reset through the stack so apps can recover=
+, it's
+> > +really useful for driver developers to learn more about what caused th=
+e reset in
+> > +first place. DRM devices should make use of devcoredump to store relev=
+ant
+> > +information about the reset, so this information can be added to user =
+bug
+> > +reports.
+>
+> Since we do not seem to have a solid consensus in the community about
+> non-robust userspace, maybe we could just document that lack of consensus
+> to unblock this patch? Something like this:
+>
+> Non-Robust Userspace
+> --------------------
+>
+> Userspace that doesn't support robust interfaces (like an non-robust
+> OpenGL context or API without any robustness support like libva) leave th=
+e
+> robustness handling entirely to the userspace driver. There is no strong
+> community consensus on what the userspace driver should do in that case,
+> since all reasonable approaches have some clear downsides.
+>
+> With the s/UMD/KMD/ further up and maybe something added to record the
+> non-robustness non-consensus:
+>
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>
+> Cheers, Daniel
+>
+>
+>
+> > +
+> >  .. _drm_driver_ioctl:
+> >
+> >  IOCTL Support on Device Nodes
+> > --
+> > 2.41.0
+> >
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+>
+
