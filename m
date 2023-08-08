@@ -2,268 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB40773FAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF727741AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233593AbjHHQuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
+        id S234594AbjHHRZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232859AbjHHQts (ORCPT
+        with ESMTP id S234403AbjHHRZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:49:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0344AA97
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:57:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691510136;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I61UNjTLAG95oq9qtMKUyrUKZXpIaEksaYyC4k2Zul0=;
-        b=S+vNn/VwHgDDObsrBEuoAkRq5C73RfF9vW5k5bPxiVPgOvGUYqUmbc5g/JiWdZ7Mcywdk1
-        MeeAsQ3L0etl3owJgTdQK0iZx6lrOYiBruZKhDwRJmmD7k+Rm6UhrqbW3t8kDaFVkqjef4
-        X3DcD3kpx80yyeqvR5p6mwbtuWCvCxU=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-632-jUnMZVKdMIe5m7HDZxfm5Q-1; Tue, 08 Aug 2023 03:51:07 -0400
-X-MC-Unique: jUnMZVKdMIe5m7HDZxfm5Q-1
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-56357814339so3477231a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 00:51:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691481066; x=1692085866;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I61UNjTLAG95oq9qtMKUyrUKZXpIaEksaYyC4k2Zul0=;
-        b=ZAffNVvXgWRZWVIurYw/u9EpVRULRnIsrs+ps9ZC6PS6FqjuH4Hebw5lvWyhAPxxdP
-         ILWI0sHsKPBzJRdvB32ohEKe7ssZtB9yjlc+oAojDzpVgcRGgE4wvJtY9fshBjdKqqZo
-         BIGdqW39FgVK6lnwAogpnwY41apVUnouQAHFlAs6a5P7NwHBWPJQh+w0K1AZ4IusyLba
-         gn+O+81UkrRsIYrdDQa8R8yaqpbIOGLrJ843fteQnux2+cA8YSnXtCLkDshJoPgFyIEf
-         EvzTYRcX+1dquErpLG1yuJCRsZOPBf2Z3xTjVhqApvH+McSoKP5YBjMcNrkCI65TqyXL
-         09Cw==
-X-Gm-Message-State: AOJu0YwY1qSN8dPz85QBN10SBGxDfdNtqrjFE2ncroHa+5cEUoFBV2N9
-        VNxTlekjy6dQnI8k9j8VcyjdnhvoTyByR/YU0C+R/1qcuN4Rs0ZjRFBGgh7XcnMncwPJMqK10vI
-        tOtz+t3AApCDPbV8zmteWfZVd
-X-Received: by 2002:a17:90a:1f06:b0:262:e49b:12d0 with SMTP id u6-20020a17090a1f0600b00262e49b12d0mr7464990pja.48.1691481066322;
-        Tue, 08 Aug 2023 00:51:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHTrnPTN25dJ5Xvq4lyfSvE+5LAMnJSWzkQdpqVJ6TSUnn1I/3RUmRCjFP3/Qd+tphTyy7tWw==
-X-Received: by 2002:a17:90a:1f06:b0:262:e49b:12d0 with SMTP id u6-20020a17090a1f0600b00262e49b12d0mr7464986pja.48.1691481065875;
-        Tue, 08 Aug 2023 00:51:05 -0700 (PDT)
-Received: from [10.72.12.166] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id js22-20020a17090b149600b00262e485156esm9877439pjb.57.2023.08.08.00.51.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 00:51:05 -0700 (PDT)
-Message-ID: <72db4603-e350-ac24-5819-d2519ce809b6@redhat.com>
-Date:   Tue, 8 Aug 2023 15:50:59 +0800
+        Tue, 8 Aug 2023 13:25:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41CE2026B;
+        Tue,  8 Aug 2023 09:10:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B779761034;
+        Tue,  8 Aug 2023 07:51:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0CD2C433C8;
+        Tue,  8 Aug 2023 07:51:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691481075;
+        bh=zYWbFm1/5e8c6yGDQtvPeFqNeW0eye+n0KrF9/tpOdg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GORxKpn1qyJyRQAUVa0NRqqSh8gH5UfcYN0OvvFB7FG/dfmcImQ+icgXX1KJg9jQl
+         rMBpdeKHebLqlWNag/1Y8MPpXj51WDMPpuTS1kcKVx+gdFVbxVDDkmU1+rve/8FZZO
+         Owc4ILSLZbL016K2AMJJOYtePbeaIxDNzGDIYifvaf6te/4W+wqZbVZGFnb05Mb6Is
+         pU2EuXskXyLHnNmmCgrMUJbRokD3hCAKXv0uQDSNRYSxi+IlEovYeaA/+9/183/1WB
+         ChrUYpmF6JDWPaJXyYo7j8Fcjg4u92dc6mwNX8OCHEmvcRq43cjqJDjQxVCQHnA+bZ
+         7RIbDMbII6Srg==
+Date:   Tue, 8 Aug 2023 13:21:03 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Qiang Yu <quic_qianyu@quicinc.com>
+Cc:     quic_jhugo@quicinc.com, mhi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_cang@quicinc.com, quic_mrana@quicinc.com
+Subject: Re: [PATCH] bus: mhi: host: pci_generic: Add SDX75 based modem
+ support
+Message-ID: <20230808075103.GD4990@thinkpad>
+References: <1691460215-45383-1-git-send-email-quic_qianyu@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v10 00/12] ceph: support idmapped mounts
-To:     Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Cc:     brauner@kernel.org, stgraber@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230807132626.182101-1-aleksandr.mikhalitsyn@canonical.com>
- <bcda164b-e4b7-1c16-2714-13e3c6514b47@redhat.com>
- <CAEivzxfsj82q2x3C2U6yemB9qRrLnW+fLAAE=e7Tq-LDDfH0-g@mail.gmail.com>
-Content-Language: en-US
-From:   Xiubo Li <xiubli@redhat.com>
-In-Reply-To: <CAEivzxfsj82q2x3C2U6yemB9qRrLnW+fLAAE=e7Tq-LDDfH0-g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <1691460215-45383-1-git-send-email-quic_qianyu@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 08, 2023 at 10:03:35AM +0800, Qiang Yu wrote:
+> Add generic info for SDX75 based modems. SDX75 takes longer than expected
+> (default, 8 seconds) to set ready after reboot. Hence add optional ready
+> timeout parameter to wait enough for device ready as part of power up
+> sequence.
+> 
+> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+> ---
+>  drivers/bus/mhi/host/init.c        |  1 +
+>  drivers/bus/mhi/host/main.c        |  7 ++++++-
+>  drivers/bus/mhi/host/pci_generic.c | 22 ++++++++++++++++++++++
+>  drivers/bus/mhi/host/pm.c          |  6 +++++-
+>  include/linux/mhi.h                |  4 ++++
+>  5 files changed, 38 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
+> index f78aefd..65ceac1 100644
+> --- a/drivers/bus/mhi/host/init.c
+> +++ b/drivers/bus/mhi/host/init.c
+> @@ -881,6 +881,7 @@ static int parse_config(struct mhi_controller *mhi_cntrl,
+>  	if (!mhi_cntrl->timeout_ms)
+>  		mhi_cntrl->timeout_ms = MHI_TIMEOUT_MS;
+>  
+> +	mhi_cntrl->ready_timeout_ms = config->ready_timeout_ms;
+>  	mhi_cntrl->bounce_buf = config->use_bounce_buf;
+>  	mhi_cntrl->buffer_len = config->buf_len;
+>  	if (!mhi_cntrl->buffer_len)
+> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+> index 74a7543..8590926 100644
+> --- a/drivers/bus/mhi/host/main.c
+> +++ b/drivers/bus/mhi/host/main.c
+> @@ -43,8 +43,13 @@ int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
+>  				    u32 mask, u32 val, u32 delayus)
+>  {
+>  	int ret;
+> -	u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
+> +	u32 out, retry;
+> +	u32 timeout_ms = mhi_cntrl->timeout_ms;
+>  
+> +	if (mhi_cntrl->ready_timeout_ms && mask == MHISTATUS_READY_MASK)
+> +		timeout_ms = mhi_cntrl->ready_timeout_ms;
 
-On 8/8/23 14:30, Aleksandr Mikhalitsyn wrote:
-> On Tue, Aug 8, 2023 at 2:45 AM Xiubo Li <xiubli@redhat.com> wrote:
->> LGTM.
->>
->> Reviewed-by: Xiubo Li <xiubli@redhat.com>
->>
->> I will queue this to the 'testing' branch and then we will run ceph qa
->> tests.
-> Thanks, Xiubo!
->
-> JFYI: commit ordering in
-> https://github.com/ceph/ceph-client/commits/testing looks a little bit
-> weird
-> probably something got wrong during patch application to the tree.
+Instead of handling the timeout inside mhi_poll_reg_field(), you should pass the
+appropriate timeout value to this function.
 
-I will check it.
+> +
+> +	retry = (timeout_ms * 1000) / delayus;
+>  	while (retry--) {
+>  		ret = mhi_read_reg_field(mhi_cntrl, base, offset, mask, &out);
+>  		if (ret)
+> diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
+> index fcd80bc..9c601f0 100644
+> --- a/drivers/bus/mhi/host/pci_generic.c
+> +++ b/drivers/bus/mhi/host/pci_generic.c
+> @@ -269,6 +269,16 @@ static struct mhi_event_config modem_qcom_v1_mhi_events[] = {
+>  	MHI_EVENT_CONFIG_HW_DATA(5, 2048, 101)
+>  };
+>  
+> +static const struct mhi_controller_config modem_qcom_v2_mhiv_config = {
+> +	.max_channels = 128,
+> +	.timeout_ms = 8000,
+> +	.ready_timeout_ms = 50000,
+> +	.num_channels = ARRAY_SIZE(modem_qcom_v1_mhi_channels),
+> +	.ch_cfg = modem_qcom_v1_mhi_channels,
+> +	.num_events = ARRAY_SIZE(modem_qcom_v1_mhi_events),
+> +	.event_cfg = modem_qcom_v1_mhi_events,
+> +};
+> +
+>  static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
+>  	.max_channels = 128,
+>  	.timeout_ms = 8000,
+> @@ -278,6 +288,16 @@ static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
+>  	.event_cfg = modem_qcom_v1_mhi_events,
+>  };
+>  
+> +static const struct mhi_pci_dev_info mhi_qcom_sdx75_info = {
+> +	.name = "qcom-sdx75m",
+> +	.fw = "qcom/sdx75m/xbl.elf",
+> +	.edl = "qcom/sdx75m/edl.mbn",
+> +	.config = &modem_qcom_v2_mhiv_config,
+> +	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+> +	.dma_data_width = 32,
+> +	.sideband_wake = false,
+> +};
+> +
+>  static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
+>  	.name = "qcom-sdx65m",
+>  	.fw = "qcom/sdx65m/xbl.elf",
+> @@ -597,6 +617,8 @@ static const struct pci_device_id mhi_pci_id_table[] = {
+>  		.driver_data = (kernel_ulong_t) &mhi_telit_fn990_info },
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
+>  		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0309),
+> +		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx75_info },
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1001), /* EM120R-GL (sdx24) */
+>  		.driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1002), /* EM160R-GL (sdx24) */
+> diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
+> index 8a4362d..6f049e0 100644
+> --- a/drivers/bus/mhi/host/pm.c
+> +++ b/drivers/bus/mhi/host/pm.c
+> @@ -1202,14 +1202,18 @@ EXPORT_SYMBOL_GPL(mhi_power_down);
+>  int mhi_sync_power_up(struct mhi_controller *mhi_cntrl)
+>  {
+>  	int ret = mhi_async_power_up(mhi_cntrl);
+> +	u32 timeout_ms;
+>  
+>  	if (ret)
+>  		return ret;
+>  
+> +	/* Some devices need more time to set ready during power up */
+> +	timeout_ms = mhi_cntrl->ready_timeout_ms ?
+> +		mhi_cntrl->ready_timeout_ms : mhi_cntrl->timeout_ms;
 
-Thanks
+Since you are using this extended timeout value in a couple of places (not just
+for checking READY_STATE), it is better to use the existing "timeout_ms"
+parameter.
 
-- Xiubo
+- Mani
 
+>  	wait_event_timeout(mhi_cntrl->state_event,
+>  			   MHI_IN_MISSION_MODE(mhi_cntrl->ee) ||
+>  			   MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
+> -			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
+> +			   msecs_to_jiffies(timeout_ms));
+>  
+>  	ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
+>  	if (ret)
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index f6de4b6..a43e5f8 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -266,6 +266,7 @@ struct mhi_event_config {
+>   * struct mhi_controller_config - Root MHI controller configuration
+>   * @max_channels: Maximum number of channels supported
+>   * @timeout_ms: Timeout value for operations. 0 means use default
+> + * @ready_timeout_ms: Timeout value for waiting device to be ready (optional)
+>   * @buf_len: Size of automatically allocated buffers. 0 means use default
+>   * @num_channels: Number of channels defined in @ch_cfg
+>   * @ch_cfg: Array of defined channels
+> @@ -277,6 +278,7 @@ struct mhi_event_config {
+>  struct mhi_controller_config {
+>  	u32 max_channels;
+>  	u32 timeout_ms;
+> +	u32 ready_timeout_ms;
+>  	u32 buf_len;
+>  	u32 num_channels;
+>  	const struct mhi_channel_config *ch_cfg;
+> @@ -326,6 +328,7 @@ struct mhi_controller_config {
+>   * @pm_mutex: Mutex for suspend/resume operation
+>   * @pm_lock: Lock for protecting MHI power management state
+>   * @timeout_ms: Timeout in ms for state transitions
+> + * @ready_timeout_ms: Timeout in ms for waiting device to be ready (optional)
+>   * @pm_state: MHI power management state
+>   * @db_access: DB access states
+>   * @ee: MHI device execution environment
+> @@ -413,6 +416,7 @@ struct mhi_controller {
+>  	struct mutex pm_mutex;
+>  	rwlock_t pm_lock;
+>  	u32 timeout_ms;
+> +	u32 ready_timeout_ms;
+>  	u32 pm_state;
+>  	u32 db_access;
+>  	enum mhi_ee_type ee;
+> -- 
+> 2.7.4
+> 
 
-> Kind regards,
-> Alex
->
->> Thanks Alex.
->>
->> - Xiubo
->>
->> On 8/7/23 21:26, Alexander Mikhalitsyn wrote:
->>> Dear friends,
->>>
->>> This patchset was originally developed by Christian Brauner but I'll continue
->>> to push it forward. Christian allowed me to do that :)
->>>
->>> This feature is already actively used/tested with LXD/LXC project.
->>>
->>> Git tree (based on https://github.com/ceph/ceph-client.git testing):
->>> v10: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v10
->>> current: https://github.com/mihalicyn/linux/tree/fs.idmapped.ceph
->>>
->>> In the version 3 I've changed only two commits:
->>> - fs: export mnt_idmap_get/mnt_idmap_put
->>> - ceph: allow idmapped setattr inode op
->>> and added a new one:
->>> - ceph: pass idmap to __ceph_setattr
->>>
->>> In the version 4 I've reworked the ("ceph: stash idmapping in mdsc request")
->>> commit. Now we take idmap refcounter just in place where req->r_mnt_idmap
->>> is filled. It's more safer approach and prevents possible refcounter underflow
->>> on error paths where __register_request wasn't called but ceph_mdsc_release_request is
->>> called.
->>>
->>> Changelog for version 5:
->>> - a few commits were squashed into one (as suggested by Xiubo Li)
->>> - started passing an idmapping everywhere (if possible), so a caller
->>> UID/GID-s will be mapped almost everywhere (as suggested by Xiubo Li)
->>>
->>> Changelog for version 6:
->>> - rebased on top of testing branch
->>> - passed an idmapping in a few places (readdir, ceph_netfs_issue_op_inline)
->>>
->>> Changelog for version 7:
->>> - rebased on top of testing branch
->>> - this thing now requires a new cephfs protocol extension CEPHFS_FEATURE_HAS_OWNER_UIDGID
->>> https://github.com/ceph/ceph/pull/52575
->>>
->>> Changelog for version 8:
->>> - rebased on top of testing branch
->>> - added enable_unsafe_idmap module parameter to make idmapped mounts
->>> work with old MDS server versions
->>> - properly handled case when old MDS used with new kernel client
->>>
->>> Changelog for version 9:
->>> - added "struct_len" field in struct ceph_mds_request_head as requested by Xiubo Li
->>>
->>> Changelog for version 10:
->>> - fill struct_len field properly (use cpu_to_le32)
->>> - add extra checks IS_CEPH_MDS_OP_NEWINODE(..) as requested by Xiubo to match
->>>     userspace client behavior
->>> - do not set req->r_mnt_idmap for MKSNAP operation
->>> - atomic_open: set req->r_mnt_idmap only for CEPH_MDS_OP_CREATE as userspace client does
->>>
->>> I can confirm that this version passes xfstests and
->>> tested with old MDS (without CEPHFS_FEATURE_HAS_OWNER_UIDGID)
->>> and with recent MDS version.
->>>
->>> Links to previous versions:
->>> v1: https://lore.kernel.org/all/20220104140414.155198-1-brauner@kernel.org/
->>> v2: https://lore.kernel.org/lkml/20230524153316.476973-1-aleksandr.mikhalitsyn@canonical.com/
->>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v2
->>> v3: https://lore.kernel.org/lkml/20230607152038.469739-1-aleksandr.mikhalitsyn@canonical.com/#t
->>> v4: https://lore.kernel.org/lkml/20230607180958.645115-1-aleksandr.mikhalitsyn@canonical.com/#t
->>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v4
->>> v5: https://lore.kernel.org/lkml/20230608154256.562906-1-aleksandr.mikhalitsyn@canonical.com/#t
->>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v5
->>> v6: https://lore.kernel.org/lkml/20230609093125.252186-1-aleksandr.mikhalitsyn@canonical.com/
->>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v6
->>> v7: https://lore.kernel.org/all/20230726141026.307690-1-aleksandr.mikhalitsyn@canonical.com/
->>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v7
->>> v8: https://lore.kernel.org/all/20230803135955.230449-1-aleksandr.mikhalitsyn@canonical.com/
->>> tree: -
->>> v9: https://lore.kernel.org/all/20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com/
->>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v9
->>>
->>> Kind regards,
->>> Alex
->>>
->>> Original description from Christian:
->>> ========================================================================
->>> This patch series enables cephfs to support idmapped mounts, i.e. the
->>> ability to alter ownership information on a per-mount basis.
->>>
->>> Container managers such as LXD support sharaing data via cephfs between
->>> the host and unprivileged containers and between unprivileged containers.
->>> They may all use different idmappings. Idmapped mounts can be used to
->>> create mounts with the idmapping used for the container (or a different
->>> one specific to the use-case).
->>>
->>> There are in fact more use-cases such as remapping ownership for
->>> mountpoints on the host itself to grant or restrict access to different
->>> users or to make it possible to enforce that programs running as root
->>> will write with a non-zero {g,u}id to disk.
->>>
->>> The patch series is simple overall and few changes are needed to cephfs.
->>> There is one cephfs specific issue that I would like to discuss and
->>> solve which I explain in detail in:
->>>
->>> [PATCH 02/12] ceph: handle idmapped mounts in create_request_message()
->>>
->>> It has to do with how to handle mds serves which have id-based access
->>> restrictions configured. I would ask you to please take a look at the
->>> explanation in the aforementioned patch.
->>>
->>> The patch series passes the vfs and idmapped mount testsuite as part of
->>> xfstests. To run it you will need a config like:
->>>
->>> [ceph]
->>> export FSTYP=ceph
->>> export TEST_DIR=/mnt/test
->>> export TEST_DEV=10.103.182.10:6789:/
->>> export TEST_FS_MOUNT_OPTS="-o name=admin,secret=$password
->>>
->>> and then simply call
->>>
->>> sudo ./check -g idmapped
->>>
->>> ========================================================================
->>>
->>> Alexander Mikhalitsyn (3):
->>>     fs: export mnt_idmap_get/mnt_idmap_put
->>>     ceph: add enable_unsafe_idmap module parameter
->>>     ceph: pass idmap to __ceph_setattr
->>>
->>> Christian Brauner (9):
->>>     ceph: stash idmapping in mdsc request
->>>     ceph: handle idmapped mounts in create_request_message()
->>>     ceph: pass an idmapping to mknod/symlink/mkdir
->>>     ceph: allow idmapped getattr inode op
->>>     ceph: allow idmapped permission inode op
->>>     ceph: allow idmapped setattr inode op
->>>     ceph/acl: allow idmapped set_acl inode op
->>>     ceph/file: allow idmapped atomic_open inode op
->>>     ceph: allow idmapped mounts
->>>
->>>    fs/ceph/acl.c                 |  6 +--
->>>    fs/ceph/crypto.c              |  2 +-
->>>    fs/ceph/dir.c                 |  4 ++
->>>    fs/ceph/file.c                | 11 ++++-
->>>    fs/ceph/inode.c               | 29 +++++++------
->>>    fs/ceph/mds_client.c          | 78 ++++++++++++++++++++++++++++++++---
->>>    fs/ceph/mds_client.h          |  8 +++-
->>>    fs/ceph/super.c               |  7 +++-
->>>    fs/ceph/super.h               |  3 +-
->>>    fs/mnt_idmapping.c            |  2 +
->>>    include/linux/ceph/ceph_fs.h  | 10 ++++-
->>>    include/linux/mnt_idmapping.h |  3 ++
->>>    12 files changed, 136 insertions(+), 27 deletions(-)
->>>
-
+-- 
+மணிவண்ணன் சதாசிவம்
