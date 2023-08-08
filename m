@@ -2,88 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C35CF7749B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8AB7744D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233896AbjHHUB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49996 "EHLO
+        id S235806AbjHHS3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:29:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbjHHUBq (ORCPT
+        with ESMTP id S235369AbjHHS3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:01:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88527810DE;
-        Tue,  8 Aug 2023 11:17:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691518667; x=1723054667;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=f91rR6f/4Edvrb7hPV3707WcDUjqWofH1o8H8I62aAs=;
-  b=hIX7P10whAD6hILEHhMj5Gy2SlW/H9qZDZpGiCSAxPmTF1IR+lHMv9g2
-   fNXcoyZJeXerb7GdGMl8KrD/K1IVEO2b1zmvaEmGScEtTFBOXHsstcl/w
-   3OmrDkZH6zzqoD1b2bQMkr4cb5cDak/SKQoBRLremnpLZH9G+0WDfzW1U
-   AUDeNwAWBGdvoWiYMlpfTdavxMsaeVxWwxC2+jnCN5pEHJZBI0ssAZMJQ
-   +soi1Fi4aYLUrICZLJF6eGaUBnDdm9PEZhSnVXqUaPslNZGt7Oxazy1Qd
-   3GN3H1Fe3FXlIrv210vnPc4tr0KRNQJgKe8csjKRt2ZaMvuF/r/lzI4G/
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="437268539"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="437268539"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 10:44:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="801407277"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="801407277"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
-  by fmsmga004.fm.intel.com with ESMTP; 08 Aug 2023 10:44:09 -0700
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     hdegoede@redhat.com, markgross@kernel.org
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH] platform/x86: ISST: Reduce noise for missing numa information in logs
-Date:   Tue,  8 Aug 2023 10:43:59 -0700
-Message-Id: <20230808174359.50602-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.40.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 14:29:11 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89174249B4;
+        Tue,  8 Aug 2023 10:44:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=uRe5DA9n4TN682/6jFN0fFTDiTtPa18+87Bw4kABhag=; b=hs7mTCGFDV/WgN6iXONJ7w//Zs
+        gaSTUd9xKLWA+1GsyzR53kHsFCzcRGYd8tjSaMFKsa3azSRk/5vuIsMKbBUYETOhZdpKnn/Sj2+IU
+        xXkhGewhQ+MQayPwOYCYxf072D7YI6Ke+iJ7Bl2WcPU8XFy/oNEmgkmdpnFsjhrQc0DU=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:52066 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qTQl9-0001cX-1e; Tue, 08 Aug 2023 13:44:43 -0400
+Date:   Tue, 8 Aug 2023 13:44:42 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Wenhua Lin <Wenhua.Lin@unisoc.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        wenhua lin <wenhua.lin1994@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Message-Id: <20230808134442.75bb6f04b5612c07d3b7d731@hugovil.com>
+In-Reply-To: <20230808033106.2174-1-Wenhua.Lin@unisoc.com>
+References: <20230808033106.2174-1-Wenhua.Lin@unisoc.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 1/3] gpio: sprd: Modify the calculation method of eic
+ number
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On platforms with no numa support and with several CPUs, logs have lots
-of noise for message "Fail to get numa node for CPU:.."
+On Tue, 8 Aug 2023 11:31:06 +0800
+Wenhua Lin <Wenhua.Lin@unisoc.com> wrote:
 
-Change pr_info() to pr_info_once() as one print is enough to show the
-issue.
+> Automatic calculation through matching nodes,
+> subsequent projects can avoid modifying driver files.
+> 
+> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
+> ---
+>  drivers/gpio/gpio-eic-sprd.c | 49 +++++++++++++++++++-----------------
+>  1 file changed, 26 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
+> index 84352a6f4973..0d85d9e80848 100644
+> --- a/drivers/gpio/gpio-eic-sprd.c
+> +++ b/drivers/gpio/gpio-eic-sprd.c
+> @@ -50,10 +50,10 @@
+>  #define SPRD_EIC_SYNC_DATA		0x1c
+>  
+>  /*
+> - * The digital-chip EIC controller can support maximum 3 banks, and each bank
+> + * The digital-chip EIC controller can support maximum 8 banks, and each bank
+>   * contains 8 EICs.
+>   */
+> -#define SPRD_EIC_MAX_BANK		3
+> +#define SPRD_EIC_MAX_BANK		8
+>  #define SPRD_EIC_PER_BANK_NR		8
+>  #define SPRD_EIC_DATA_MASK		GENMASK(7, 0)
+>  #define SPRD_EIC_BIT(x)			((x) & (SPRD_EIC_PER_BANK_NR - 1))
+> @@ -99,33 +99,32 @@ struct sprd_eic {
+>  
+>  struct sprd_eic_variant_data {
+>  	enum sprd_eic_type type;
+> -	u32 num_eics;
+>  };
+>  
+> +#define SPRD_EIC_VAR_DATA(soc_name)				\
+> +static const struct sprd_eic_variant_data soc_name##_eic_dbnc_data = {	\
+> +	.type = SPRD_EIC_DEBOUNCE,					\
+> +};									\
+> +									\
+> +static const struct sprd_eic_variant_data soc_name##_eic_latch_data = {	\
+> +	.type = SPRD_EIC_LATCH,						\
+> +};									\
+> +									\
+> +static const struct sprd_eic_variant_data soc_name##_eic_async_data = {	\
+> +	.type = SPRD_EIC_ASYNC,						\
+> +};									\
+> +									\
+> +static const struct sprd_eic_variant_data soc_name##_eic_sync_data = {	\
+> +	.type = SPRD_EIC_SYNC,						\
+> +}
+> +
+> +SPRD_EIC_VAR_DATA(sc9860);
+> +
+>  static const char *sprd_eic_label_name[SPRD_EIC_MAX] = {
+>  	"eic-debounce", "eic-latch", "eic-async",
+>  	"eic-sync",
+>  };
+>  
+> -static const struct sprd_eic_variant_data sc9860_eic_dbnc_data = {
+> -	.type = SPRD_EIC_DEBOUNCE,
+> -	.num_eics = 8,
+> -};
+> -
+> -static const struct sprd_eic_variant_data sc9860_eic_latch_data = {
+> -	.type = SPRD_EIC_LATCH,
+> -	.num_eics = 8,
+> -};
+> -
+> -static const struct sprd_eic_variant_data sc9860_eic_async_data = {
+> -	.type = SPRD_EIC_ASYNC,
+> -	.num_eics = 8,
+> -};
+> -
+> -static const struct sprd_eic_variant_data sc9860_eic_sync_data = {
+> -	.type = SPRD_EIC_SYNC,
+> -	.num_eics = 8,
+> -};
+>  
+>  static inline void __iomem *sprd_eic_offset_base(struct sprd_eic *sprd_eic,
+>  						 unsigned int bank)
+> @@ -583,6 +582,7 @@ static int sprd_eic_probe(struct platform_device *pdev)
+>  	struct sprd_eic *sprd_eic;
+>  	struct resource *res;
+>  	int ret, i;
+> +	u16 num_banks = 0;
+>  
+>  	pdata = of_device_get_match_data(&pdev->dev);
+>  	if (!pdata) {
+> @@ -613,12 +613,13 @@ static int sprd_eic_probe(struct platform_device *pdev)
+>  			break;
+>  
+>  		sprd_eic->base[i] = devm_ioremap_resource(&pdev->dev, res);
+> +		num_banks++;
+>  		if (IS_ERR(sprd_eic->base[i]))
+>  			return PTR_ERR(sprd_eic->base[i]);
+>  	}
+>  
+>  	sprd_eic->chip.label = sprd_eic_label_name[sprd_eic->type];
+> -	sprd_eic->chip.ngpio = pdata->num_eics;
+> +	sprd_eic->chip.ngpio = num_banks * SPRD_EIC_PER_BANK_NR;
+>  	sprd_eic->chip.base = -1;
+>  	sprd_eic->chip.parent = &pdev->dev;
+>  	sprd_eic->chip.direction_input = sprd_eic_direction_input;
+> @@ -630,10 +631,12 @@ static int sprd_eic_probe(struct platform_device *pdev)
+>  		sprd_eic->chip.set = sprd_eic_set;
+>  		fallthrough;
+>  	case SPRD_EIC_ASYNC:
+> +		fallthrough;
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
- drivers/platform/x86/intel/speed_select_if/isst_if_common.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi,
+this probably should go in a separate patch as a fix or an
+improvement with proper comments explaining the reason?
 
-diff --git a/drivers/platform/x86/intel/speed_select_if/isst_if_common.c b/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
-index 1f59ac55c5f7..a95004e3d80b 100644
---- a/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
-+++ b/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
-@@ -335,8 +335,8 @@ static struct pci_dev *_isst_if_get_pci_dev(int cpu, int bus_no, int dev, int fn
- 
- 		node = dev_to_node(&_pci_dev->dev);
- 		if (node == NUMA_NO_NODE) {
--			pr_info("Fail to get numa node for CPU:%d bus:%d dev:%d fn:%d\n",
--				cpu, bus_no, dev, fn);
-+			pr_info_once("Fail to get numa node for CPU:%d bus:%d dev:%d fn:%d\n",
-+				     cpu, bus_no, dev, fn);
- 			continue;
- 		}
- 
--- 
-2.41.0
+>  	case SPRD_EIC_SYNC:
+>  		sprd_eic->chip.get = sprd_eic_get;
+>  		break;
+>  	case SPRD_EIC_LATCH:
+> +		fallthrough;
 
+ditto.
+
+Hugo Villeneuve
+
+
+>  	default:
+>  		break;
+>  	}
+> -- 
+> 2.17.1
+> 
