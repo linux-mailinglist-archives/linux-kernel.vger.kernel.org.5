@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C40DA773F5D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB42F773EDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbjHHQqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
+        id S233014AbjHHQhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233405AbjHHQpS (ORCPT
+        with ESMTP id S233273AbjHHQhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:45:18 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B971B5584
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:56:20 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99cdb0fd093so312055066b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:56:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691510156; x=1692114956;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=150u+BhP6BAs6NxISp4qHIiyuoHr72iFboBWpKqesUg=;
-        b=SFKWmMW4ECYSAAMr2SkJ/Y1oVvXuzuvm+2kg27kpDMJPCyuNsK2eZB5y6vQnxEpva9
-         MaNkky6iDjs5wwuSgRJeV4Niwv01BlOJ0u8vZsdSQJNUfm8gueWpUMBtz8TqDQ/LWJn7
-         /1gqz/4vDcKxBWgNsB9umPtrRBZWwucpreeJ6Q/5xu5LTqUQ7gks8hdg4FvKpXjgxCVp
-         wnkTA1l0aAW2xwW4xmp2PM9/3v1yOGfI6DKxK/LAKDb5huDxCcq4eQMhyo9eViogF32D
-         pDPrEsc0XQAqLaZ/htewWkZDrGn8Isj/zYBtaWN2ZV0gAz/0VNJfbl+HXa6UnIUxq6Fu
-         RO2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510156; x=1692114956;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=150u+BhP6BAs6NxISp4qHIiyuoHr72iFboBWpKqesUg=;
-        b=Q6gGLEQrePqqwNIS9MIXvgJWhq8oyUSuZchnPaICX67uXDaEoxeb/+SbMQR1D5KN3U
-         H6/I1teuKavQFOCWLfM3emaAFmQ/9310q+5fa2jb+viyC3F5u0o3clHsDxuSGhXyEWnX
-         Y3sn7WcNtDWMx1YKy+eEk0BIDVAXyBZydgQvKOSZfO5PJI+uS2fOffZ5JN9yToMAklzL
-         INLId8Rp9+WEzs31wZSpqNm71eKvLQjuFYifuJi9kcqR0l2OT3ZDoROthBnG7n3sWOu1
-         yqiLibqK6e8Gih+gxOU7JYBCFK66P1EI0YLDSS+V+I+Agqg90TFbCA1ZAlHgoBm9DC4G
-         iLtw==
-X-Gm-Message-State: AOJu0YzVMsC4f5cc1xsJJr/eBUN6rAvDV+V1mPk2p4IVH90ojRDI6hPA
-        FON5rYYDU/G2OghaeR/PTWia+z8OiGnBnLSI/Hs=
-X-Google-Smtp-Source: AGHT+IFjOxwT+CSt1CS60ZwMIloyErxqwz//Hr9K+lx3WcJtISD2rmCwVBfVqbazUt7D1JRPYcoWIg==
-X-Received: by 2002:a05:6512:3122:b0:4fb:987b:ec3c with SMTP id p2-20020a056512312200b004fb987bec3cmr7993527lfd.56.1691488166692;
-        Tue, 08 Aug 2023 02:49:26 -0700 (PDT)
-Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id v14-20020ac2592e000000b004edc72be17csm1813263lfi.2.2023.08.08.02.49.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 02:49:26 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Tue, 08 Aug 2023 11:49:19 +0200
-Subject: [PATCH] MAINTAINERS: Update Konrad Dybcio's e-mail address
+        Tue, 8 Aug 2023 12:37:11 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2FAA47EE
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:53:19 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BB09221C21;
+        Tue,  8 Aug 2023 09:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691488432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X+E0unmCYoA/5q96uLhFby2/QU/JbMexzKmCXmErmbw=;
+        b=JuHIK5yA07vWudODvORFefuFMGecT3WRUyFcG8HubBRT64OpJEFUdDEl52fFQ6gz4H90kv
+        ISXwJNf7MbV3Wd1UHDOlLh6ux3vyjmJtY8aOpXZlfV2j0fAloFWTumEgSdimGKJIpjMF0J
+        glyqRd0MduDW1F5GfTB24ayFXh4xtUo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691488432;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X+E0unmCYoA/5q96uLhFby2/QU/JbMexzKmCXmErmbw=;
+        b=8lR8OBOOUrNsZP5iXkEKBSPRcGaYP8iGo6k7WS/5Qv5TNNAqaGgIxraAPd11BDjhyHllGM
+        Q5rHU4gmYa6PUnDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8F110139E9;
+        Tue,  8 Aug 2023 09:53:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id +FJRIrAQ0mSBJQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 08 Aug 2023 09:53:52 +0000
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: [RFC v1 1/5] mm, slub: fix bulk alloc and free stats
+Date:   Tue,  8 Aug 2023 11:53:44 +0200
+Message-ID: <20230808095342.12637-8-vbabka@suse.cz>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230808095342.12637-7-vbabka@suse.cz>
+References: <20230808095342.12637-7-vbabka@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230808-topic-maintainers_korg-v1-1-e61c2bc98b2b@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAJ4P0mQC/x2N0QrCMAxFf2Xk2UJdUau/IiJtF7fgTEcyRRj79
- 4U93Idz4XAWUBRChVuzgOCPlCobHA8NlCFxj446Y2h9G3z00c11ouI+iXi2oejzXaV3XQn5jDF
- cy+kCJuek6LIkLoPp/B1HOyfBF/332v2xrhuthhktfQAAAA==
-To:     linux-kernel@vger.kernel.org,
-        Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691488165; l=1267;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=vMpzcCDAb75QhHPPNPls71TKzNwpHNQ020eqmLgjbAQ=;
- b=OGe7Ti5YDWSwjzm0n5v8Hgew8pktx6u6dKuV61+3DvgaE8rWb/b5mruxvms5p5fQgqIFaAirv
- rQp7YkWVTOMCBzh6h9vEfjy8nxprthNMfPz8qIsExKdDhFzo8HWgl3d
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -80,42 +78,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's been quite a while since I obtained a @korg email, it's high time
-to update the maintainers entry to reflect that.
+The SLUB sysfs stats enabled CONFIG_SLUB_STATS have two deficiencies
+identified wrt bulk alloc/free operations:
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+- Bulk allocations from cpu freelist are not counted. Add the
+  ALLOC_FASTPATH counter there.
+
+- Bulk fastpath freeing will count a list of multiple objects with a
+  single FREE_FASTPATH inc. Add a stat_add() variant to count them all.
+
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/slub.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 84944571d1b1..b26ed5b87dfd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2525,7 +2525,7 @@ F:	arch/arm64/boot/dts/qcom/sdm845-cheza*
- ARM/QUALCOMM SUPPORT
- M:	Andy Gross <agross@kernel.org>
- M:	Bjorn Andersson <andersson@kernel.org>
--M:	Konrad Dybcio <konrad.dybcio@linaro.org>
-+M:	Konrad Dybcio <konradybcio@kernel.org>
- L:	linux-arm-msm@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git
-@@ -17618,7 +17618,7 @@ F:	include/uapi/drm/qaic_accel.h
+diff --git a/mm/slub.c b/mm/slub.c
+index e3b5d5c0eb3a..a9437d48840c 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -341,6 +341,14 @@ static inline void stat(const struct kmem_cache *s, enum stat_item si)
+ #endif
+ }
  
- QUALCOMM CORE POWER REDUCTION (CPR) AVS DRIVER
- M:	Bjorn Andersson <andersson@kernel.org>
--M:	Konrad Dybcio <konrad.dybcio@linaro.org>
-+M:	Konrad Dybcio <konradybcio@kernel.org>
- L:	linux-pm@vger.kernel.org
- L:	linux-arm-msm@vger.kernel.org
- S:	Maintained
-
----
-base-commit: 71cd4fc492ec41e4acd85e98bbf7a13753fc1e03
-change-id: 20230808-topic-maintainers_korg-dc3b6e839c57
-
-Best regards,
++static inline void stat_add(const struct kmem_cache *s, enum stat_item si, int v)
++{
++#ifdef CONFIG_SLUB_STATS
++	raw_cpu_add(s->cpu_slab->stat[si], v);
++#endif
++}
++
++
+ /*
+  * Tracks for which NUMA nodes we have kmem_cache_nodes allocated.
+  * Corresponds to node_state[N_NORMAL_MEMORY], but can temporarily
+@@ -3776,7 +3784,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+ 
+ 		local_unlock(&s->cpu_slab->lock);
+ 	}
+-	stat(s, FREE_FASTPATH);
++	stat_add(s, FREE_FASTPATH, cnt);
+ }
+ #else /* CONFIG_SLUB_TINY */
+ static void do_slab_free(struct kmem_cache *s,
+@@ -3978,6 +3986,7 @@ static inline int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
+ 		c->freelist = get_freepointer(s, object);
+ 		p[i] = object;
+ 		maybe_wipe_obj_freeptr(s, p[i]);
++		stat(s, ALLOC_FASTPATH);
+ 	}
+ 	c->tid = next_tid(c->tid);
+ 	local_unlock_irqrestore(&s->cpu_slab->lock, irqflags);
 -- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
+2.41.0
 
