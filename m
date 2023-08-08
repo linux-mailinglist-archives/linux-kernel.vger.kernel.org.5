@@ -2,188 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5897774496
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E78E774499
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235726AbjHHSX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46674 "EHLO
+        id S235762AbjHHSYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235729AbjHHSXi (ORCPT
+        with ESMTP id S235348AbjHHSXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:23:38 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929B23C33;
-        Tue,  8 Aug 2023 10:35:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=XkZlvp32aRkJTNbGOKHPFPOVDj8xTKl+lMyseu9ZRpY=; b=hHzTyYqt9hPsBJ21nGtMp8MPJB
-        ycW/EtEnHqTW3Tr9GQH8pLqHCWaIpL9gfw1pFjdbzBJlreCQuHKxCtMTEtf5og5sanwk4odTkt1ni
-        74TAdCwbUC2EsUrbqGQIMlYHMlrQK3FNUNdalZj0rnfqqeiS95IshVMO/RHEL6b4YtMQ=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:37752 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qTQbZ-0001On-JD; Tue, 08 Aug 2023 13:34:50 -0400
-Date:   Tue, 8 Aug 2023 13:34:48 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Wenhua Lin <Wenhua.Lin@unisoc.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        wenhua lin <wenhua.lin1994@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Message-Id: <20230808133448.96e39db8e86a67ad7e2e5a43@hugovil.com>
-In-Reply-To: <20230808033106.2174-1-Wenhua.Lin@unisoc.com>
-References: <20230808033106.2174-1-Wenhua.Lin@unisoc.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 8 Aug 2023 14:23:40 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 548347EF3
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:35:11 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-563fbc76454so6002857a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:35:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691516111; x=1692120911;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CbNixERlHqS43p9WnetIfE1bwp3ZFaI202y6cxjDISk=;
+        b=BtYnibgAq7g0L/okVpcz1sm6OulXBZOLXW68YAi0kE94x5HCN7bWDWiYRWfi91svGo
+         Xc79qQ233j8gXgGltAV/J8/uXgNtnFjybeQZD1f/61BdCanNXGvF03sIBuo0PLfw2n8V
+         M74JpyhSFxtW15aRUBl8P3VcNB0wjFg/9n39VGQsWXzGFLdytSDGhhjl7u1Z6CtvJuZN
+         /eAqJk8ulH9QCYWJViD5t8z1c0a8y4LlJj9wtw/p4CWVORUdKTqp/wxHXBJvv2h+a/vL
+         8rWrgpPqCe+14Q5CE8cj3cirPO2rMueXgtfqCD0+VzHSYfmiNnwNXQhCV4TlIpQyV+Ie
+         Hl0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691516111; x=1692120911;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CbNixERlHqS43p9WnetIfE1bwp3ZFaI202y6cxjDISk=;
+        b=CfUIPfBKiOq5ei0nd4eYfv9LNGteUNTA51We+W5OMprmEmlGK5BnXgHhzLe2gvkgwy
+         GzyxmdD2CS4q3nULwjHxLjqYKJ2ZTi1CdJMrlLTeT34JjqUZUKXUOHJU0VEtwiN4ybCA
+         99RylgtCXyF+Ub1EFVZYLjp9/CxidC0i19eZkVioYC3jntWEgCgejAuOAku4CqyTzLIz
+         /5/U4DFl1wzyoa19mct7m0gfqXyzgAoPDqJYkTVQKmZiylBMtIPan3GMiFABela92LS3
+         K0O5S+CphefJ0ZInsfTb0Ok40iN6F8MewW/q+KlNz+3mLJiSiVcHGLv7Xjc6IALCO5dk
+         bUmw==
+X-Gm-Message-State: AOJu0YwHW+8lGMSu0QzTBzK3H3AQgO8Ur/gAFUJ5r4wlKRq1IBtyEbe+
+        aUdVsP4o09FgHU69JQgFzuuNw5I=
+X-Google-Smtp-Source: AGHT+IHneZnuNzdmec4p8IMznIadt3gvRYK8ETNwHwQuhWBeUw0E2l7zTwuivbDYUrt8/txQeEEsw9g=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:3443:0:b0:564:41a2:8d5a with SMTP id
+ b64-20020a633443000000b0056441a28d5amr732pga.11.1691516110738; Tue, 08 Aug
+ 2023 10:35:10 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 10:35:08 -0700
+In-Reply-To: <20230808134049.1407498-1-leitao@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
+References: <20230808134049.1407498-1-leitao@debian.org>
+Message-ID: <ZNJ8zGcYClv/VCwG@google.com>
+Subject: Re: [PATCH v2 0/8] io_uring: Initial support for {s,g}etsockopt commands
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Breno Leitao <leitao@debian.org>
+Cc:     axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        io-uring@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH 1/3] gpio: sprd: Modify the calculation method of eic
- number
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Aug 2023 11:31:06 +0800
-Wenhua Lin <Wenhua.Lin@unisoc.com> wrote:
-
-> Automatic calculation through matching nodes,
-> subsequent projects can avoid modifying driver files.
+On 08/08, Breno Leitao wrote:
+> This patchset adds support for getsockopt (SOCKET_URING_OP_GETSOCKOPT)
+> and setsockopt (SOCKET_URING_OP_SETSOCKOPT) in io_uring commands.
+> SOCKET_URING_OP_SETSOCKOPT implements generic case, covering all levels
+> nad optnames. On the other hand, SOCKET_URING_OP_GETSOCKOPT just
+> implements level SOL_SOCKET case, which seems to be the
+> most common level parameter for get/setsockopt(2).
 > 
-> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> ---
->  drivers/gpio/gpio-eic-sprd.c | 49 +++++++++++++++++++-----------------
->  1 file changed, 26 insertions(+), 23 deletions(-)
+> struct proto_ops->setsockopt() uses sockptr instead of userspace
+> pointers, which makes it easy to bind to io_uring. Unfortunately
+> proto_ops->getsockopt() callback uses userspace pointers, except for
+> SOL_SOCKET, which is handled by sk_getsockopt(). Thus, this patchset
+> leverages sk_getsockopt() to imlpement the SOCKET_URING_OP_GETSOCKOPT
+> case.
 > 
-> diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
-> index 84352a6f4973..0d85d9e80848 100644
-> --- a/drivers/gpio/gpio-eic-sprd.c
-> +++ b/drivers/gpio/gpio-eic-sprd.c
-> @@ -50,10 +50,10 @@
->  #define SPRD_EIC_SYNC_DATA		0x1c
->  
->  /*
-> - * The digital-chip EIC controller can support maximum 3 banks, and each bank
-> + * The digital-chip EIC controller can support maximum 8 banks, and each bank
->   * contains 8 EICs.
->   */
-> -#define SPRD_EIC_MAX_BANK		3
-> +#define SPRD_EIC_MAX_BANK		8
-
-Hi,
-it seems as tough the commit title doesn't reflect the fact that you
-not only modify the calculation method, but also the maximum number of
-banks?
-
-
->  #define SPRD_EIC_PER_BANK_NR		8
->  #define SPRD_EIC_DATA_MASK		GENMASK(7, 0)
->  #define SPRD_EIC_BIT(x)			((x) & (SPRD_EIC_PER_BANK_NR - 1))
-> @@ -99,33 +99,32 @@ struct sprd_eic {
->  
->  struct sprd_eic_variant_data {
->  	enum sprd_eic_type type;
-> -	u32 num_eics;
->  };
->  
-> +#define SPRD_EIC_VAR_DATA(soc_name)				\
-> +static const struct sprd_eic_variant_data soc_name##_eic_dbnc_data = {	\
-> +	.type = SPRD_EIC_DEBOUNCE,					\
-> +};									\
-> +									\
-> +static const struct sprd_eic_variant_data soc_name##_eic_latch_data = {	\
-> +	.type = SPRD_EIC_LATCH,						\
-> +};									\
-> +									\
-> +static const struct sprd_eic_variant_data soc_name##_eic_async_data = {	\
-> +	.type = SPRD_EIC_ASYNC,						\
-> +};									\
-> +									\
-> +static const struct sprd_eic_variant_data soc_name##_eic_sync_data = {	\
-> +	.type = SPRD_EIC_SYNC,						\
-> +}
-> +
-> +SPRD_EIC_VAR_DATA(sc9860);
-> +
->  static const char *sprd_eic_label_name[SPRD_EIC_MAX] = {
->  	"eic-debounce", "eic-latch", "eic-async",
->  	"eic-sync",
->  };
->  
-> -static const struct sprd_eic_variant_data sc9860_eic_dbnc_data = {
-> -	.type = SPRD_EIC_DEBOUNCE,
-> -	.num_eics = 8,
-> -};
-> -
-> -static const struct sprd_eic_variant_data sc9860_eic_latch_data = {
-> -	.type = SPRD_EIC_LATCH,
-> -	.num_eics = 8,
-> -};
-> -
-> -static const struct sprd_eic_variant_data sc9860_eic_async_data = {
-> -	.type = SPRD_EIC_ASYNC,
-> -	.num_eics = 8,
-> -};
-> -
-> -static const struct sprd_eic_variant_data sc9860_eic_sync_data = {
-> -	.type = SPRD_EIC_SYNC,
-> -	.num_eics = 8,
-> -};
->  
->  static inline void __iomem *sprd_eic_offset_base(struct sprd_eic *sprd_eic,
->  						 unsigned int bank)
-> @@ -583,6 +582,7 @@ static int sprd_eic_probe(struct platform_device *pdev)
->  	struct sprd_eic *sprd_eic;
->  	struct resource *res;
->  	int ret, i;
-> +	u16 num_banks = 0;
->  
->  	pdata = of_device_get_match_data(&pdev->dev);
->  	if (!pdata) {
-> @@ -613,12 +613,13 @@ static int sprd_eic_probe(struct platform_device *pdev)
->  			break;
->  
->  		sprd_eic->base[i] = devm_ioremap_resource(&pdev->dev, res);
-> +		num_banks++;
->  		if (IS_ERR(sprd_eic->base[i]))
->  			return PTR_ERR(sprd_eic->base[i]);
->  	}
->  
->  	sprd_eic->chip.label = sprd_eic_label_name[sprd_eic->type];
-> -	sprd_eic->chip.ngpio = pdata->num_eics;
-> +	sprd_eic->chip.ngpio = num_banks * SPRD_EIC_PER_BANK_NR;
->  	sprd_eic->chip.base = -1;
->  	sprd_eic->chip.parent = &pdev->dev;
->  	sprd_eic->chip.direction_input = sprd_eic_direction_input;
-> @@ -630,10 +631,12 @@ static int sprd_eic_probe(struct platform_device *pdev)
->  		sprd_eic->chip.set = sprd_eic_set;
->  		fallthrough;
->  	case SPRD_EIC_ASYNC:
-> +		fallthrough;
->  	case SPRD_EIC_SYNC:
->  		sprd_eic->chip.get = sprd_eic_get;
->  		break;
->  	case SPRD_EIC_LATCH:
-> +		fallthrough;
->  	default:
->  		break;
->  	}
-> -- 
-> 2.17.1
+> In order to support BPF hooks, I modified the hooks to use  sockptr, so,
+> it is flexible enough to accept user or kernel pointers for
+> optval/optlen.
 > 
+> PS1: For getsockopt command, the optlen field is not a userspace
+> pointers, but an absolute value, so this is slightly different from
+> getsockopt(2) behaviour. The new optlen value is returned in cqe->res.
+> 
+> PS2: The userspace pointers need to be alive until the operation is
+> completed.
+> 
+> These changes were tested with a new test[1] in liburing. On the BPF
+> side, I tested that no regression was introduced by running "test_progs"
+> self test using "sockopt" test case.
+> 
+> [1] Link: https://github.com/leitao/liburing/blob/getsock/test/socket-getsetsock-cmd.c
+> 
+> RFC -> V1:
+> 	* Copy user memory at io_uring subsystem, and call proto_ops
+> 	  callbacks using kernel memory
+> 	* Implement all the cases for SOCKET_URING_OP_SETSOCKOPT
+
+I did a quick pass, will take a close look later today. So far everything makes
+sense to me.
+
+Should we properly test it as well?
+We have tools/testing/selftests/bpf/prog_tests/sockopt.c which does
+most of the sanity checks, but it uses regular socket/{g,s}etsockopt
+syscalls. Seems like it should be pretty easy to extend this with
+io_uring path? tools/testing/selftests/net/io_uring_zerocopy_tx.c
+already implements minimal wrappers which we can most likely borrow.
