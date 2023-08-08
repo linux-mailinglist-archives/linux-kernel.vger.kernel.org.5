@@ -2,127 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA4A7741CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9934D774175
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234643AbjHHR2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
+        id S234452AbjHHRVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234537AbjHHR2J (ORCPT
+        with ESMTP id S234228AbjHHRUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:28:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B08120D31;
-        Tue,  8 Aug 2023 09:12:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691511129; x=1723047129;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=a5Pu3te7+j3RrMvIgzbzB1S8YTDD+wuRl/+kr86b66k=;
-  b=aBP+M7ABiZJCUQs7jUGR34jdzHc+a8fI8LAXlKnMyFWCK8jHEgI+nxf9
-   4aBl9t+Ys7bUSw1soiWAG+s1WO14AuyZWzXwPJQ0vzFLEgIDJxh419uln
-   70Kg+RVEeDwJ9pCXvWuEeOyZfKkBc7MZlIcM+txcwudriZXiFx7FIMc7i
-   z6i/Ymbp17Ym/4OD9rFHA5ZnE01mTytc1SickX0X4oI711noaR9QH5hPc
-   qL8ndxI1W15wYhziU33UQhhGQbtZDe6DEq5af/0ETg0DG8LtGKg++uH5B
-   Hw4LsR49smx0/QDhb3m1k6kv3w9LbpnChpJAaIlpa4YFDmrUN96UYxm+l
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="355767105"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="355767105"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 07:08:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="845490938"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="845490938"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP; 08 Aug 2023 07:08:07 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qTNNV-00B7YT-1f;
-        Tue, 08 Aug 2023 17:08:05 +0300
-Date:   Tue, 8 Aug 2023 17:08:05 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Marcus Folkesson <marcus.folkesson@gmail.com>
-Cc:     Kent Gustavsson <kent@minoris.se>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
+        Tue, 8 Aug 2023 13:20:48 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB84783EA
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:08:28 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5861116fd74so56188017b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691510880; x=1692115680;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vgs4Fm92pOwgiTtgi3t0TURwZ645hXw810Qm9YB3fW0=;
+        b=1zWyWbnBevP6AnHvWYDpz4fJJdYAMoauIzciKtQnY6PlehU2/ShRLFy26ni3eWxPJL
+         Sz0gYFhnaOWI6iN93LDJbs5W5ROTqKNFy8SnJG3U3ByIgIC/iAYvobjthTq1mVbzkZn5
+         GWu79Tnot5+yMgONDB1oup8BhRJ2zsiqH4tw7AiAYJpUk+MZfO1X0GXF7CRMkKpw/GJh
+         4JzJRwnF/DiFMv1tkbu9WVXSI8AxU196bKO5T7zipAFfDFy7DMtFbXU0PWZoSqaYGz8o
+         rCJpENlhq7XYfgBiGiF7Ss2oeFo0gy1XNlFt02JFyD1/tbES/U7CcsVn0I0NCJ8XKO4o
+         UeBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691510880; x=1692115680;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vgs4Fm92pOwgiTtgi3t0TURwZ645hXw810Qm9YB3fW0=;
+        b=PJqMCGPAFjiNwby6442y/d/AyP1cj6MxHL5Vlr02fSOmmczD/ZlkWTYCqaebmNpVB8
+         nIOcp6+ETSoj8p+orYjrXgO9gn4R+PQpc8TZH+dBJvkDAHGIbFxuRaLBSAsnIHbxYZY9
+         GEBSAe7zB9d4KAHwiVS7bBi8M77cPsQVmVL8r/saVnv/ohcBWx/eiprv0+wvc4uGm15D
+         /DUMnnvYaPfY+WtjWGdPSvwgwdYW6AqXdNLTHPKOlMOU9VuEs0a3xfWgNkz8QfcXUWmB
+         qJVlexN/fGFwbV+0eb8dThyaVLMdmrxQ9OpunAfZTMcqBttAYejGIQOcVByHHsDBJ0Ry
+         MTBQ==
+X-Gm-Message-State: AOJu0YxDNw2+UxROQRQmZqRnYYhPniB7Cs8SXoNz+hnZ32jcbnMGNwYE
+        IIMaQr9/a4H4jrRJ1t37FI0FrKxSpEei48bb+FoHDCcuYMPZ8OMiwPQ=
+X-Google-Smtp-Source: AGHT+IEUOZn+oWGOzEe6eb18PD1LJbJH+AEz15hO43+Evd9T1seVx+elc0H04Xz8tIq6S3q/dujX/7mkZrhXRTgW+JU=
+X-Received: by 2002:a05:6358:c19:b0:139:e3a4:7095 with SMTP id
+ f25-20020a0563580c1900b00139e3a47095mr14782675rwj.7.1691503762572; Tue, 08
+ Aug 2023 07:09:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230807193102.6374-1-brgl@bgdev.pl> <54421791-75fa-4ed3-8432-e21184556cde@lunn.ch>
+ <CAMRc=Mc6COaxM6GExHF2M+=v2TBpz87RciAv=9kHr41HkjQhCg@mail.gmail.com> <ZNJChfKPkAuhzDCO@shell.armlinux.org.uk>
+In-Reply-To: <ZNJChfKPkAuhzDCO@shell.armlinux.org.uk>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 8 Aug 2023 16:09:11 +0200
+Message-ID: <CAMRc=MczKgBFvuEanKu=mERYX-6qf7oUO2S4B53sPc+hrkYqxg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] net: stmmac: allow sharing MDIO lines
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        William Breathitt Gray <william.gray@linaro.org>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/4] iio: adc: mcp3911: simplify usage of spi->dev in
- probe function
-Message-ID: <ZNJMReTpBOQ9FA2p@smile.fi.intel.com>
-References: <20230808110432.240773-1-marcus.folkesson@gmail.com>
- <20230808110432.240773-2-marcus.folkesson@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230808110432.240773-2-marcus.folkesson@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 01:04:30PM +0200, Marcus Folkesson wrote:
-> Replace the usage of adc->spi->dev with spi->dev to make the code prettier.
+On Tue, Aug 8, 2023 at 3:26=E2=80=AFPM Russell King (Oracle)
+<linux@armlinux.org.uk> wrote:
+>
+> On Tue, Aug 08, 2023 at 10:13:09AM +0200, Bartosz Golaszewski wrote:
+> > Ok so upon some further investigation, the actual culprit is in stmmac
+> > platform code - it always tries to register an MDIO bus - independent
+> > of whether there is an actual mdio child node - unless the MAC is
+> > marked explicitly as having a fixed-link.
+> >
+> > When I fixed that, MAC1's probe is correctly deferred until MAC0 has
+> > created the MDIO bus.
+> >
+> > Even so, isn't it useful to actually reference the shared MDIO bus in s=
+ome way?
+> >
+> > If the schematics look something like this:
+> >
+> > --------           -------
+> > | MAC0 |--MDIO-----| PHY |
+> > -------- |     |   -------
+> >          |     |
+> > -------- |     |   -------
+> > | MAC1 |--     ----| PHY |
+> > --------           -------
+> >
+> > Then it would make sense to model it on the device tree?
+>
+> So I think what you're saying is that MAC0 and MAC1's have MDIO bus
+> masters, and the hardware designer decided to tie both together to
+> a single set of clock and data lines, which then go to two PHYs.
 
-Suggested-by: ?
+The schematics I have are not very clear on that, but now that you
+mention this, it's most likely the case.
 
-> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+>
+> In that case, I would strongly advise only registering one MDIO bus,
+> and avoid registering the second one - thereby preventing any issues
+> caused by both MDIO bus masters trying to talk at the same time.
+>
 
-...
+I sent a patch for that earlier today.
 
-> -	adc->vref = devm_regulator_get_optional(&adc->spi->dev, "vref");
-> +	adc->vref = devm_regulator_get_optional(&spi->dev, "vref");
+> The PHYs should be populated in firmware on just one of the buses.
+>
+> You will also need to ensure that whatever registers the bus does
+> make sure that the clocks necessary for communicating on the bus
+> are under control of the MDIO bus code and not the ethernet MAC
+> code. We've run into problems in the past where this has not been
+> the case, and it means - taking your example above - that when MAC1
+> wants to talk to its PHY, if MAC0 isn't alive it can't.
 
-Why not
+Good point, but it's worse than that: when MAC0 is unbound, it will
+unregister the MDIO bus and destroy all PHY devices. These are not
+refcounted so they will literally go from under MAC1. Not sure how
+this can be dealt with?
 
-	struct device *dev = &spi->dev;
+>
+> So just be aware of the clocking situation and make sure that your
+> MDIO bus code is managing the clocks necessary for the MDIO bus
+> master to work.
 
-and all the rest accordingly?
+Doesn't seem like stmmac is ready for it as it is now so this is going
+to be fun...
 
->  	if (IS_ERR(adc->vref)) {
->  		if (PTR_ERR(adc->vref) == -ENODEV) {
->  			adc->vref = NULL;
->  		} else {
-> -			dev_err(&adc->spi->dev,
-> +			dev_err(&spi->dev,
->  				"failed to get regulator (%ld)\n",
->  				PTR_ERR(adc->vref));
->  			return PTR_ERR(adc->vref);
+Bartosz
 
-Actually, you may first to switch to dev_err_probe() with the above introduced
-
-	struct device *dev = &spi->dev;
-	...
-			return dev_err_probe(dev, PTR_ERR(adc->vref),
-					     "failed to get regulator\n",
-
-and in the second patch do what you are doing here.
-
-Will be much less changes and neater code at the end.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>
+> In regard to sharing of the MDIO bus signals between two bus
+> masters, I do not believe that is permissible - there's no
+> collision detection in hardware like there is on I=E6=B6=8E. So
+> having two MDIO bus masters talking at the same time would
+> end up corrupting the MDC (clock) and MDIO (data) signals if
+> both were active at the same time.
+>
