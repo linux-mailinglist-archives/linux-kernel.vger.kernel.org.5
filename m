@@ -2,139 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E932774ABF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FE1774AE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235343AbjHHUeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
+        id S235453AbjHHUhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234196AbjHHUed (ORCPT
+        with ESMTP id S235235AbjHHUhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:34:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94D51F402
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 13:01:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691524881; x=1723060881;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=u8vJmlLxjcWBeg1tEpWJSCR97H61L5sN6qPegFM1vlc=;
-  b=Gv+9e7LvZE4CEpSf0YVxhRLyGWEmEE3EwnFyQ8AQOO7PEEDZ2f2wrYrL
-   PC6WIoyQ3BA0NJA389Led4sVf56jEUpL8HzyJsweQAfS7DPQ5bA4S1bMB
-   Ib9LV92bomhGfG4Ik8/IFnW+BJD+F0cu4tU7mFLt03H376r/c6MALABCS
-   1FPBCNk5zDNH5A9tw+uF5lp3+6uH3XaY2O+etZ8bldvGNzJ/SasfYVnlM
-   4j04K/cKhEjaKfqgMC0Ord9PnEDVbROXEaGf96BWFBdM2KFzZ12ethoas
-   AH61PKGYSIEreee48dm5yCZIF9/4WyGnJve6xgG3Z7ybh3jlo201sV9dd
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="401902300"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="401902300"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 13:01:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="855232391"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="855232391"
-Received: from vevladis-mobl.ccr.corp.intel.com (HELO box.shutemov.name) ([10.252.49.245])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 13:01:16 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id AA4F410A12B; Tue,  8 Aug 2023 23:01:11 +0300 (+03)
-Date:   Tue, 8 Aug 2023 23:01:11 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Jun Nakajima <jun.nakajima@intel.com>, x86@kernel.org,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/tdx: Mark TSC reliable
-Message-ID: <20230808200111.nz74tmschph435ri@box>
-References: <20230808162320.27297-1-kirill.shutemov@linux.intel.com>
- <ecc11d54-6aaa-f755-9436-ae15b94fb627@intel.com>
+        Tue, 8 Aug 2023 16:37:20 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686437EFD
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 13:05:05 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-40a47e8e38dso11791cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 13:05:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691525104; x=1692129904;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=A3Gse/n1KcESVWhM7B7IDywbevkkJ8BX6XkqzvAh2wo=;
+        b=h8CiTiA6oKfcPqnb/eqNMeSqNLiCOaqNFez8+Yi+QiIgsfxaNoRzSX2cNlNFaBDTTe
+         tzcRf8KweTwO0zkVmd/rgBAGEbu2QxslkUsoI3YKuQ6IqWcdhjcM1Ij9vyiToE4x9VfT
+         WjgWRuvhRH5cmPucD+OlPbphWq27dCD4iHPYn024y85zR35FKQiCWbu4mc6zz3AJ9a57
+         qIS7cMPDA3DxGRdBE7eeNwlJDeMPV1+k7IIiAM8cUuXFEjbsC8SWoJtzt8wYoBrUtmdg
+         fVXf0+JpGrdKfe+NYxVBSFh8EjYp3eF+uYe+9nkdPwAYuwg7YXNlCBbEFxeZzAlmkBSQ
+         l5hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691525104; x=1692129904;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=A3Gse/n1KcESVWhM7B7IDywbevkkJ8BX6XkqzvAh2wo=;
+        b=YkTZEMObtUT8l7gXosNJvzANQWqJb80/PDJVScheBK01hZvZpFfBe7l30UrzhLG14n
+         Vj/0e9TIDza8tCVoh1x3jGBSuXkvK7Sbyo3IdOP3NOL4mJgeWcG16tqppHPUjB3mBZvT
+         3wff5UJEZGMRho7f3CTuDe+wJ72BSm25OQbyrLgIFfcuDtyLfr3KnM1tpAlLOsH0zAkP
+         xyWllYioVbEUX5tLC0uj4DjbzeJz81IasI3FjFrAq/8AqF75FE+XQF0zngV6pFZsE1fw
+         voy+PGDrDFMiVt/O9V6pxYSpVjuzIaqHzKYqD0MaIhUW2T1J314lviBMNozMMksPUK2C
+         vjYg==
+X-Gm-Message-State: AOJu0YznLMnGHBUWi2y2MnQ1fQITMdDNzeOCQkmfWMUcaHGOG0T3VbYB
+        ae97S5plAdzV9D+thPnBie38XPB9jvyopNXinobbvA==
+X-Google-Smtp-Source: AGHT+IGNBE6dFnyFADf1Zm7XSPB1CUPxxwK5Lk++7K/zWHyetI7bdc4dFgm5ZygS1qde1KTXi7lUYgHUEzLhJ2FPsoE=
+X-Received: by 2002:ac8:5b85:0:b0:40f:d387:65d0 with SMTP id
+ a5-20020ac85b85000000b0040fd38765d0mr82670qta.16.1691525104516; Tue, 08 Aug
+ 2023 13:05:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ecc11d54-6aaa-f755-9436-ae15b94fb627@intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
+ <a507ef3302d3afff58d82528ee17e82df1f21de0.camel@HansenPartnership.com>
+ <64c5ed6eb4ca1_a88b2942a@dwillia2-xfh.jf.intel.com.notmuch>
+ <c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com>
+ <64cdb5f25c56_2138e294f1@dwillia2-xfh.jf.intel.com.notmuch>
+ <1180481830431165d49c5e64b92b81c396ebc9b1.camel@HansenPartnership.com>
+ <64d17f5728fbc_5ea6e2943f@dwillia2-xfh.jf.intel.com.notmuch>
+ <c7d6e953a4b36014ea0c7406531b24bb29d6127e.camel@HansenPartnership.com>
+ <2425e00b-defb-c12b-03e5-c3d23b30be01@linux.intel.com> <64d263e44e401_2138e29486@dwillia2-xfh.jf.intel.com.notmuch>
+ <CAAH4kHamob7g_+BRd0JW76cM7_vS=jzXzRjrgCPDxZ29VnzdCQ@mail.gmail.com>
+ <f95d75c513c081d5bb8b5d1fd3b0a5d5e24ab467.camel@HansenPartnership.com>
+ <CAAH4kHYJrKPgWXn7+G_sZXoAs8fq2sDEyT-tyECPthdaaoXyDw@mail.gmail.com> <9c9c62f9243595a1faa3b0745fa8a1f8f018d9b8.camel@HansenPartnership.com>
+In-Reply-To: <9c9c62f9243595a1faa3b0745fa8a1f8f018d9b8.camel@HansenPartnership.com>
+From:   Dionna Amalie Glaze <dionnaglaze@google.com>
+Date:   Tue, 8 Aug 2023 13:04:53 -0700
+Message-ID: <CAAH4kHYLPP5ehLBDkXxJQmnuFTjjRp+1tON5T9HqSxCvD1mSxA@mail.gmail.com>
+Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation reports
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>, dhowells@redhat.com,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Samuel Ortiz <sameo@rivosinc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 10:13:05AM -0700, Dave Hansen wrote:
-> On 8/8/23 09:23, Kirill A. Shutemov wrote:
-> ...
-> > On the other hand, other clock sources (such as HPET, ACPI timer,
-> > APIC, etc.) necessitate VM exits to implement, resulting in more 
-> > fluctuating measurements compared to TSC. Thus, those clock sources
-> > are not effective for calibrating TSC.
-> 
-> Do we need to do anything to _those_ to mark them as slightly stinky?
+> Trusting the vTPM is a one time thing.  Once trust in the TPM is
+> established, you don't need to be worried about replay and you can just
+> use standard TPM primitives for everything onward, even when doing
+> point in time runtime attestation.
+>
 
-I don't know what the rules here. As far as I can see, all other clock
-sources relevant for TDX guest have lower rating. I guess we are fine?
+It's a one time thing for who? It seems like you're still only looking
+at the 1. use case and not the 2. use case. Every different person
+establishing a connection with the service will need to independently
+establish trust in the TPM.
 
-There's notable exception to the rating order is kvmclock which is higher
-than tsc. It has to be disabled, but it is not clear to me how. This topic
-is related to how we are going to filter allowed devices/drivers, so I
-would postpone the decision until we settle on wider filtering schema.
-
-> > In TD guests, TSC is virtualized by the TDX module, which ensures:
-> > 
-> >   - Virtual TSC values are consistent among all the TD’s VCPUs;
-> >   - Monotonously incrementing for any single VCPU;
-> >   - The frequency is determined by TD configuration. The host TSC is
-> >     invariant on platforms where TDX is available.
-> 
-> I take it this is carved in stone in the TDX specs somewhere.  A
-> reference would be nice.
-
-TDX Module 1.0 spec:
-
-	5.3.5. Time Stamp Counter (TSC)
-
-	TDX provides a trusted virtual TSC to the guest TDs. TSC value is
-	monotonously incrementing, starting from 0 on TD initialization by the
-	host VMM. The deviation between virtual TSC values read by each VCPU is
-	small.
-
-	A guest TD should disable mechanisms that are used in non-trusted
-	environment, which attempt to synchronize TSC between VCPUs, and should
-	not revert to using untrusted time mechanisms.
-
-...
-
-	13.13.1. TSC Virtualization
-
-	For virtual time stamp counter (TSC) values read by guest TDs, the Intel
-	TDX module is designed to achieve the following:
-
-	• Virtual TSC values are consistent among all the TD’s VCPUs at
-	  the level supported by the CPU, see below.
-	• The virtual TSC value for any single VCPU is monotonously
-	  incrementing (except roll over from 264-1 to 0).
-	• The virtual TSC frequency is determined by TD configuration.
-
-...
-
-> We've got VMWare and Hyper-V code basically doing the same thing today.
-> So TDX is in kinda good company.  But this still makes me rather
-> nervous.  Do you have any encouraging words about how unlikely future
-> hardware is to screw this up, especially as TDX-supporting hardware gets
-> more diverse?
-
-Wording in the spec looks okay to me. We can only hope that implementation
-going to be sane.
 
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+-Dionna Glaze, PhD (she/her)
