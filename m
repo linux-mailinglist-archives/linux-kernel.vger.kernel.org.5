@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8AD774AFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B88774AC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232658AbjHHUjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36076 "EHLO
+        id S231588AbjHHUew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232449AbjHHUir (ORCPT
+        with ESMTP id S233444AbjHHUeh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:38:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D5E1D440;
-        Tue,  8 Aug 2023 10:17:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691515026; x=1723051026;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=z0djTuDWk/WTSJDq7GK/SXVY7dhJ+rAGjZzYyz+3t38=;
-  b=n8Up+kcd74nr/Kkv9dEKky5yYigAGcgk3Dwgsk/ZwiWnmrjJsftI/BHA
-   43ttEsA5tQySGj/cAusu1FFKU143+y/6xNf1i78+4x9LpUrhqK/SZgeAH
-   6UPz2S6cvxEJ+ll/hakef6fU1P846lFQb34mxgjztaytsMwbAVXRoIG+7
-   mgvwrCugoutOnfBg2PqriA2su+rJIbFtiG+5NIdnJyiVj083J9+sfJqPF
-   3n8Mj/DRJ9YXSh0f7A7PPJ/eLwgN6YV6ZV2mBqQdPX9Q//VqOab6veNG5
-   ydH0jKMwLTa9G97OSatjkkuuS6YCoXpWKqCMDaVtkiPbFKE2Sw5eItJw0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="360920023"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="360920023"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 07:01:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="905221802"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="905221802"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP; 08 Aug 2023 07:01:02 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qTNGe-00Asa2-1p;
-        Tue, 08 Aug 2023 17:01:00 +0300
-Date:   Tue, 8 Aug 2023 17:01:00 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-gpio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: regression from commit b0ce9ce408b6 ("gpiolib: Do not unexport
- GPIO on freeing")
-Message-ID: <ZNJKnLN7qVBacsRk@smile.fi.intel.com>
-References: <20230808102828.4a9eac09@dellmb>
+        Tue, 8 Aug 2023 16:34:37 -0400
+X-Greylist: delayed 4200 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Aug 2023 13:01:33 PDT
+Received: from 16.mo584.mail-out.ovh.net (16.mo584.mail-out.ovh.net [188.165.55.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303CC1E4E8
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 13:01:31 -0700 (PDT)
+Received: from director11.ghost.mail-out.ovh.net (unknown [10.109.143.18])
+        by mo584.mail-out.ovh.net (Postfix) with ESMTP id C46AA26303
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:05:51 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-r24nl (unknown [10.110.208.139])
+        by director11.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 0D0131FEDA;
+        Tue,  8 Aug 2023 14:05:50 +0000 (UTC)
+Received: from etezian.org ([37.59.142.98])
+        by ghost-submission-6684bf9d7b-r24nl with ESMTPSA
+        id p6TOOr5L0mRSfwAABv3+PA
+        (envelope-from <andi@etezian.org>); Tue, 08 Aug 2023 14:05:50 +0000
+Authentication-Results: garm.ovh; auth=pass (GARM-98R002ea6cfa5e-e7a3-4ddd-a662-71fb8ba569fb,
+                    BF609BDBD26D07B0CC1BA23A42D268122251ED8C) smtp.auth=andi@etezian.org
+X-OVh-ClientIp: 130.25.194.249
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Laxman Dewangan <ldewangan@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Parker Newman <pnewman@connecttech.com>
+Cc:     Andi Shyti <andi.shyti@kernel.org>
+Subject: Re: [PATCH] i2c: tegra: Fix i2c-tegra DMA config option processing
+Date:   Tue,  8 Aug 2023 16:05:31 +0200
+Message-Id: <169150348680.2625585.8234375076796870663.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <fcfcf9b3-c8c4-9b34-2ff8-cd60a3d490bd@connecttech.com>
+References: <fcfcf9b3-c8c4-9b34-2ff8-cd60a3d490bd@connecttech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230808102828.4a9eac09@dellmb>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Ovh-Tracer-Id: 5458081274953468487
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrledvgdejudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfgggtgfesthekredtredtjeenucfhrhhomheptehnughiucfuhhihthhiuceorghnughirdhshhihthhisehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnhepveevieffieefgfefuddvteelffeuhfelffejteejuddvveekveehvdejgeefteevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpudeftddrvdehrdduleegrddvgeelpdefjedrheelrddugedvrdelkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoegrnhguihesvghtvgiiihgrnhdrohhrgheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehkeegpdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 10:28:28AM +0200, Marek Behún wrote:
-> Hi,
+Hi
+
+On Thu, 03 Aug 2023 17:10:02 +0000, Parker Newman wrote:
+> This patch fixes the Tegra DMA config option processing in the
+> i2c-tegra driver.
 > 
-> the commit b0ce9ce408b6 ("gpiolib: Do not unexport GPIO on freeing")
+> Tegra processors prior to Tegra186 used APB DMA for I2C requiring
+> CONFIG_TEGRA20_APB_DMA=y while Tegra186 and later use GPC DMA requiring
+> CONFIG_TEGRA186_GPC_DMA=y.
 > 
->   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b0ce9ce408b6
-> 
-> causes a regression on my mvebu arm board (haven't tested on other
-> systems), wherein if I export a GPIO to sysfs and then unexport it, it
-> does not disasppear from the /sys/class/gpio directory, and subsequent
-> writes to the export and unexport files for the gpio fail.
+> [...]
 
-Thank you for the report. I'll look into this ASAP.
+With the Fixes tag added, applied to i2c/andi-for-current on
 
--- 
-With Best Regards,
-Andy Shevchenko
+https://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
 
+Please note that this patch may still undergo further evaluation
+and the final decision will be made in collaboration with
+Wolfram.
 
+Thank you,
+Andi
+
+Patches applied
+===============
+[1/1] i2c: tegra: Fix i2c-tegra DMA config option processing
+      commit: fc9a464f3d9a2a361e8bcb960345270a9dc46054
