@@ -2,137 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE9E774051
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3736E77432D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233983AbjHHRBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49682 "EHLO
+        id S234061AbjHHR6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:58:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233736AbjHHRBB (ORCPT
+        with ESMTP id S233926AbjHHR52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:01:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A90B8682;
-        Tue,  8 Aug 2023 09:00:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 575C462544;
-        Tue,  8 Aug 2023 13:32:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31B3AC433C8;
-        Tue,  8 Aug 2023 13:32:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691501527;
-        bh=xTIkYrBHz5+6SzO4pB3IGPq/HC4uBhzgU7+be7OH9VU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dZpEWm+PTm9uFdGmOoy5ygSH3XOPg6Y5ZyF0Ulu0M0HE1hTyuXrVvdG9f3BOamM/W
-         3m8sLzVajCx1eYX5lZ3b30+sYKYXM3u0ewDW4+nd1xPBNtK65Jo8h2yyJ+inwyMHGs
-         w2WK+YR84CUHGvViczIvWnkEgwBIt6jA9UIpd40G6jrmvqJVOK9KewB009NnSwZCHe
-         FuqGamjpS7LjpwZz+GvSUYyUZWQ2PfS5KwB+UQ3reJTzCdmZf4c/JSvS6NM2uliol5
-         LUwdEFraQwdTOXt7nGBplT/LAucUY6qUfKgCd/hdf4oAwdV56AZjsHCGIqFzd81wlg
-         GdbWrpF/FvN3g==
-Date:   Tue, 8 Aug 2023 15:31:56 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Scott Mayhew <smayhew@redhat.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Subject: Re: [PATCH v9] vfs, security: Fix automount superblock LSM init
- problem, preventing NFS sb sharing
-Message-ID: <20230808-erdaushub-sanieren-2bd8d7e0a286@brauner>
-References: <20230808-master-v9-1-e0ecde888221@kernel.org>
+        Tue, 8 Aug 2023 13:57:28 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA07C20BA
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:26:05 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so868369066b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:26:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691511952; x=1692116752;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BBFUcCspHh6dxdrkfuuOEO6juHB5MNMMgkhIdl8JPKw=;
+        b=homzsOJkinUB3qVwUrTTFxw1/RpACqzVep0SsNJHtOKJXEsgMIJlWZPGKF2u+/Qudt
+         EqFOvvrhwg5ZtNAKAkQshc8YqKuLnTXwvMPiTZ/jr7FQ6SrIVl2HvEnoFSc7myZKCpPD
+         +i5nUKAxhrVsxz67fjNklieainsBdZuMpStpbWkZUMrxxyGbiPF+Jgnlb9zpyJz/McNQ
+         HbWLqsTJdOleEUyClMFsQcaUKaBg8rOYqcHMkRkMze3cOQTejpVXWP3eDCKJmnONmQDg
+         4dn3Z78OF6ggxOWZkHlOUi4CZnpL7FJSsLBTtyaL8s7zMTvdi41cyi+qaN6OH1ilFzm3
+         DUOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691511952; x=1692116752;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BBFUcCspHh6dxdrkfuuOEO6juHB5MNMMgkhIdl8JPKw=;
+        b=YWRKbxcU4G0A7pbMAY+Uxt/8ESjfkid4CfBPRkN+wIXYyYvoOXeaE6mtkElPM5fWHO
+         p5RDeBzGnj0cr3ze7BAx5tEfsN/egXYn4K4tRwVbf3BrtnV1W1Lk76vuGGzbY+FHYrR8
+         srxPJhGFj91WZlNaFYlDjZQM/aREhy8rJWmL8L0aCnZlk/HMvzsDC0B5QeISYRxjPUfb
+         yh59ZwrwUBdYDiIcQUV9+lwwp4T0XYHcIlNHc8Mo+oJNYhj1HUuYs6a+dWVM0maonkZt
+         u7k9OVu0++WLjV4O7A0BjRafcDQ+9Sa/bObpeVZuAMgOPP+RxBrjNaBB7N3yM1dc7liP
+         Rm2Q==
+X-Gm-Message-State: AOJu0YxB0xDWYoKaIE8n0wMHin8Tw/u7N5uudvXgoB5Uv1sk80DxXOqK
+        0pJY1En8JRvz8gDlU9WKgIpyVfGOOdSfMhZMBlk=
+X-Google-Smtp-Source: AGHT+IHk2BvRm8j1jnDKBgP6SoHnZU3IlkoOaxXADvivuxuFYKi60dVBzJbBLV6p4YhMvkK40qUjlQ==
+X-Received: by 2002:a1c:4c12:0:b0:3fc:7eb:1119 with SMTP id z18-20020a1c4c12000000b003fc07eb1119mr8203000wmf.15.1691501567467;
+        Tue, 08 Aug 2023 06:32:47 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id v3-20020a05600c214300b003fe407ca05bsm15171974wml.37.2023.08.08.06.32.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 06:32:47 -0700 (PDT)
+Message-ID: <3fe9526f-6ef0-29bf-e45d-3e4eb6ba162a@linaro.org>
+Date:   Tue, 8 Aug 2023 15:32:44 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230808-master-v9-1-e0ecde888221@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v4] arm64: defconfig: Enable TI PRUSS
+Content-Language: en-US
+To:     MD Danish Anwar <danishanwar@ti.com>, nm@ti.com, vigneshr@ti.com
+Cc:     Peng Fan <peng.fan@nxp.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>, srk@ti.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-omap@vger.kernel.org,
+        Christian Gmeiner <christian.gmeiner@gmail.com>
+References: <20230808130131.3081482-1-danishanwar@ti.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230808130131.3081482-1-danishanwar@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 07:34:20AM -0400, Jeff Layton wrote:
-> From: David Howells <dhowells@redhat.com>
+On 08/08/2023 15:01, MD Danish Anwar wrote:
+> The Programmable Realtime Unit - Industrial Communication Subsystem
+> (PRU-ICSS) known as PRUSS, is a low-latency microcontroller subsystem
+> used for industrial networking and other hard real-time functions in
+> the TI K3 SoCs such as AM654x, AM64x.
 > 
-> When NFS superblocks are created by automounting, their LSM parameters
-> aren't set in the fs_context struct prior to sget_fc() being called,
-> leading to failure to match existing superblocks.
+> AM654x-EVM, AM64xx-EVM, and iot2050 use the PRUSS driver.
 > 
-> This bug leads to messages like the following appearing in dmesg when
-> fscache is enabled:
-> 
->     NFS: Cache volume key already in use (nfs,4.2,2,108,106a8c0,1,,,,100000,100000,2ee,3a98,1d4c,3a98,1)
-> 
-> Fix this by adding a new LSM hook to load fc->security for submount
-> creation.
-> 
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> Fixes: 9bc61ab18b1d ("vfs: Introduce fs_context, switch vfs_kern_mount() to it.")
-> Fixes: 779df6a5480f ("NFS: Ensure security label is set for root inode)
-> Tested-by: Jeff Layton <jlayton@kernel.org>
-> Reviewed-by: Jeff Layton <jlayton@kernel.org>
-> Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-> Acked-by: "Christian Brauner (Microsoft)" <brauner@kernel.org>
-> Link: https://lore.kernel.org/r/165962680944.3334508.6610023900349142034.stgit@warthog.procyon.org.uk/ # v1
-> Link: https://lore.kernel.org/r/165962729225.3357250.14350728846471527137.stgit@warthog.procyon.org.uk/ # v2
-> Link: https://lore.kernel.org/r/165970659095.2812394.6868894171102318796.stgit@warthog.procyon.org.uk/ # v3
-> Link: https://lore.kernel.org/r/166133579016.3678898.6283195019480567275.stgit@warthog.procyon.org.uk/ # v4
-> Link: https://lore.kernel.org/r/217595.1662033775@warthog.procyon.org.uk/ # v5
+> Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
 > ---
-> ver #2)
-> - Added Smack support
-> - Made LSM parameter extraction dependent on reference != NULL.
-> 
-> ver #3)
-> - Made LSM parameter extraction dependent on fc->purpose ==
->    FS_CONTEXT_FOR_SUBMOUNT.  Shouldn't happen on FOR_RECONFIGURE.
-> 
-> ver #4)
-> - When doing a FOR_SUBMOUNT mount, don't set the root label in SELinux or Smack.
-> 
-> ver #5)
-> - Removed unused variable.
-> - Only allocate smack_mnt_opts if we're dealing with a submount.
-> 
-> ver #6)
-> - Rebase onto v6.5.0-rc4
-> - Link to v6: https://lore.kernel.org/r/20230802-master-v6-1-45d48299168b@kernel.org
-> 
-> ver #7)
-> - Drop lsm_set boolean
-> - Link to v7: https://lore.kernel.org/r/20230804-master-v7-1-5d4e48407298@kernel.org
-> 
-> ver #8)
-> - Remove spurious semicolon in smack_fs_context_init
-> - Make fs_context_init take a superblock as reference instead of dentry
-> - WARN_ON_ONCE's when fc->purpose != FS_CONTEXT_FOR_SUBMOUNT
-> - Call the security hook from fs_context_for_submount instead of alloc_fs_context
-> - Link to v8: https://lore.kernel.org/r/20230807-master-v8-1-54e249595f10@kernel.org
-> 
-> ver #9)
-> - rename *_fs_context_init to *_fs_context_submount
-> - remove checks for FS_CONTEXT_FOR_SUBMOUNT and NULL reference pointers
-> - fix prototype on smack_fs_context_submount
 
-Thanks, this looks good from my perspective. If it looks fine to LSM
-folks as well I can put it with the rest of the super work for this
-cycle or it can go through the LSM tree.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
+
