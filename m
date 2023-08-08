@@ -2,74 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDBDC774932
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B501774456
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbjHHTt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
+        id S233921AbjHHSR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232771AbjHHTtm (ORCPT
+        with ESMTP id S235348AbjHHSQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:49:42 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030CA5091B
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:55:02 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51d95aed33aso7837986a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:55:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691513700; x=1692118500;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gMnxgsCoh82ZoNEGZ3gXMUz0wSz2MoqQmZYxTHk1iuo=;
-        b=Ax5iQxbOYK94IiFMubdclYKqkilZ9vXSGbsTfFA9MRShWWaN4RT389Z6LSNSksyj7X
-         4o4Ad4B46tTAGtnVHPcdPBIbgIJj2iHAVSD7Ugt1SAKohSEztNTJKbfozqOsRB35CGDv
-         Kmp3wn7Q7ngptEidv2EmxdNBMgh3NQu3UOOJcgKD/1xl3DfJetkr21fSMHn+eQPQQP3K
-         yobrKBPCdzt0+sPO1JZ62TiaHq7ztADz13DZgeUb0Mk2rKLw7xZOSqe6DysAdSXOUeEZ
-         PETzGqHDdOVThPs3ziNGX/ic30q5Tmx5ZzuLKGDaxozoBFZjns5YLrhN9OLFAUDyQMwC
-         tq2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691513700; x=1692118500;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gMnxgsCoh82ZoNEGZ3gXMUz0wSz2MoqQmZYxTHk1iuo=;
-        b=fTzjXj6Ekq0kxbFqSSYyBhjGZWux2u4kE5B1xQHFDTWZNbV+XFgCjbI3rdyXBKhILz
-         CVOsMg49qRftb9KhyTDPPnXU8kreHntVGa+aMLS5FVSwOQycS8BXhiWu9nGLS9UFzVm9
-         ovxECdLrn0wQ51yvvcDB6wTwqEU1ajMuJzBeO2o2z42L5cb0L1835e2dOTqhYK2N3Y/9
-         1L8eHe9m2pAPcxIzdqteJy2iaKnR7SvzHKqsohYRWh57zGObPOrtmTP82Esk3Jt8Z6cL
-         sC7aNI23vjvwCjdALmdVHl4JnFWWPHJBc+vg8ifqRhe5290ZCX0moI57Ro2S+qAHpZkd
-         DABw==
-X-Gm-Message-State: AOJu0YxFkvF5iJo16Ly0Eo7EYZp3pI5w0r0rlVOILYQmR0I2YeUgl+n8
-        8zhWz/KaQylwNCFHP5Rvez1/83UlldtyUC7334M=
-X-Google-Smtp-Source: AGHT+IGh6quNsM0lZU6+CofawmyTZRbZPfDUraQexF9fMQWdjRw/ox0syxTlOeazcQZlc3UFNsK4eQ==
-X-Received: by 2002:adf:dfc8:0:b0:317:f1dc:36ed with SMTP id q8-20020adfdfc8000000b00317f1dc36edmr2849673wrn.47.1691487575619;
-        Tue, 08 Aug 2023 02:39:35 -0700 (PDT)
-Received: from [192.168.69.115] ([176.176.177.253])
-        by smtp.gmail.com with ESMTPSA id o10-20020a5d474a000000b003141a3c4353sm13080004wrs.30.2023.08.08.02.39.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 02:39:35 -0700 (PDT)
-Message-ID: <794d4bfc-2404-9f4f-4a00-f5edf44a3f5a@linaro.org>
-Date:   Tue, 8 Aug 2023 11:39:31 +0200
+        Tue, 8 Aug 2023 14:16:25 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98D47C72D;
+        Tue,  8 Aug 2023 10:23:08 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3789ib6f033387;
+        Tue, 8 Aug 2023 04:44:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691487877;
+        bh=x4KzLhx5BX2F6004xNI9OIlMNZqfZlvnhOagsXCzdtc=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=DyIPmv9YiZPXPAz7XX1maF9evUxrDOSm5qnFSSLtrSTjKjqh8xPPoMJ0K4HFqdh7A
+         3dCpiq3h9ojI1G3y+s1+9Ium3bhM/a4eTDjRvu2ArylSDrqhS4QWeqcPP0vTHiw0oB
+         WADKKshywpgMkgsrkftsRjWv9GLp8U57ZPeZUobY=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3789ibUJ001331
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Aug 2023 04:44:37 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
+ Aug 2023 04:44:37 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 8 Aug 2023 04:44:37 -0500
+Received: from [172.24.227.217] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3789iWPm001940;
+        Tue, 8 Aug 2023 04:44:33 -0500
+Message-ID: <910a4a98-712a-5517-5a5b-ffb962f83463@ti.com>
+Date:   Tue, 8 Aug 2023 15:14:31 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH 3/3] mips: remove <asm/export.h>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] dt-bindings: remoteproc: pru: Add Interrupt property
 Content-Language: en-US
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-References: <20230807153243.996262-1-masahiroy@kernel.org>
- <20230807153243.996262-3-masahiroy@kernel.org>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20230807153243.996262-3-masahiroy@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+To:     Conor Dooley <conor@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>
+CC:     Suman Anna <s-anna@ti.com>, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>,
+        <srk@ti.com>, <nm@ti.com>
+References: <20230807110836.2612730-1-danishanwar@ti.com>
+ <20230807-euphemism-trailing-ef4130dc7437@spud>
+From:   Md Danish Anwar <a0501179@ti.com>
+Organization: Texas Instruments
+In-Reply-To: <20230807-euphemism-trailing-ef4130dc7437@spud>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,18 +76,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/23 17:32, Masahiro Yamada wrote:
-> All *.S files under arch/mips/ have been converted to include
-> <linux/export.h> instead of <asm/export.h>.
-> 
-> Remove <asm/export.h>.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->   arch/mips/include/asm/Kbuild | 1 -
->   1 file changed, 1 deletion(-)
+Hi Conor,
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+On 07/08/23 8:09 pm, Conor Dooley wrote:
+> On Mon, Aug 07, 2023 at 04:38:36PM +0530, MD Danish Anwar wrote:
+>> Add interrupts and interrupt-names protperties for PRU and RTU cores.
+>>
+>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>> ---
+>>  .../bindings/remoteproc/ti,pru-rproc.yaml     | 22 +++++++++++++++++++
+>>  1 file changed, 22 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+>> index cd55d80137f7..6970316943bb 100644
+>> --- a/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+>> +++ b/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+>> @@ -66,6 +66,16 @@ properties:
+>>        Should contain the name of the default firmware image
+>>        file located on the firmware search path.
+>>  
+>> +  interrupts:
+>> +    maxItems: 1
+>> +    description:
+>> +      Interrupt specifiers enable the virtio/rpmsg communication between MPU
+>> +      and the PRU/RTU cores.
+>> +
+>> +  interrupt-names:
+>> +    items:
+>> +      - const: vring
+>> +
+>>  if:
+>>    properties:
+>>      compatible:
+>> @@ -171,6 +181,9 @@ examples:
+>>                <0x22400 0x100>;
+>>          reg-names = "iram", "control", "debug";
+>>          firmware-name = "am65x-pru0_0-fw";
+>> +        interrupt-parent = <&icssg0_intc>;
+>> +        interrupts = <16 2 2>;
+>> +        interrupt-names = "vring";
+>>        };
+> 
+> These examples would probably be more helpful if they used the
+> appropriate defines, no?
+> 
 
+PRUSS Interrupt controller doesn't have any appropriate defines. This doesn't
+use GIC so defines from arm-gic.h can not be used here. These are specific to
+PRUSS INTC.
 
+I think these example are OK. Please let me know if this is OK to you.
+
+>>  
+>>        rtu0_0: rtu@4000 {
+>> @@ -180,6 +193,9 @@ examples:
+>>                <0x23400 0x100>;
+>>          reg-names = "iram", "control", "debug";
+>>          firmware-name = "am65x-rtu0_0-fw";
+>> +        interrupt-parent = <&icssg0_intc>;
+>> +        interrupts = <20 4 4>;
+>> +        interrupt-names = "vring";
+>>        };
+>>  
+>>        tx_pru0_0: txpru@a000 {
+>> @@ -198,6 +214,9 @@ examples:
+>>                <0x24400 0x100>;
+>>          reg-names = "iram", "control", "debug";
+>>          firmware-name = "am65x-pru0_1-fw";
+>> +        interrupt-parent = <&icssg0_intc>;
+>> +        interrupts = <18 3 3>;
+>> +        interrupt-names = "vring";
+>>        };
+>>  
+>>        rtu0_1: rtu@6000 {
+>> @@ -207,6 +226,9 @@ examples:
+>>                <0x23c00 0x100>;
+>>          reg-names = "iram", "control", "debug";
+>>          firmware-name = "am65x-rtu0_1-fw";
+>> +        interrupt-parent = <&icssg0_intc>;
+>> +        interrupts = <22 5 5>;
+>> +        interrupt-names = "vring";
+>>        };
+>>  
+>>        tx_pru0_1: txpru@c000 {
+>> -- 
+>> 2.34.1
+>>
+
+-- 
+Thanks and Regards,
+Danish.
