@@ -2,178 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D2C774ED9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 748DE774EE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbjHHXAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 19:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58400 "EHLO
+        id S231134AbjHHXCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 19:02:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjHHXAj (ORCPT
+        with ESMTP id S229686AbjHHXCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 19:00:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD7E19A1;
-        Tue,  8 Aug 2023 16:00:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E106462DF0;
-        Tue,  8 Aug 2023 23:00:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40E44C433C9;
-        Tue,  8 Aug 2023 23:00:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691535637;
-        bh=1+fp21MqF6KntDdFbgZ1oMwBrAWE3yROyeT/Yf4gLaA=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=HV74zwmQ9KMzQVRuCI4qOWFBpxm1whPstAE6VTcXGI27a836eve4BHUhDQ6ZFrC0a
-         BQ4Mkjy1mkMXU2VdMCDfg7ic7NBPPKveWSt4+lVQuUQKm2MoLKFcUA8DB5oH33kLfM
-         L/DcI98+DBMx3Rc84SFCnwXVlbwP64W1fvJM75p8D41letvCfh9GRvKmNGXOfXq60G
-         F3uOq1RfFPgi0Vw0EO+rfzD6MQTLqEYpaPz05J9cLCA/pU222VzXpYyCc60BKB6vUq
-         VlZVnAzr7GmDDSZlpeNu1h+pHGpjZRNhYCeOE51giyiD8OmL2jIpFVLOQUBjwQyo2n
-         2GqkwP7vVLt1w==
-Date:   Tue, 08 Aug 2023 16:00:36 -0700
-From:   Kees Cook <kees@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
-CC:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Kees Cook <keescook@chromium.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
-Subject: Re: [PATCH v2] netfilter: ebtables: fix fortify warnings
-User-Agent: K-9 Mail for Android
-In-Reply-To: <ZNJuMoe37L02TP20@work>
-References: <20230808133038.771316-1-gongruiqi@huaweicloud.com> <ZNJuMoe37L02TP20@work>
-Message-ID: <45DEF7A6-093D-4517-8CD8-D86D1671BE48@kernel.org>
+        Tue, 8 Aug 2023 19:02:35 -0400
+Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC3C101
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 16:02:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
+        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
+        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+        :List-Post:List-Owner:List-Archive;
+        bh=ZDALvFIak3dkZOLuYlAfhCehu+RJYBfHhd0fnnY5iiM=; b=lQmkV5otXwlM+J8rAPsEoNdtCF
+        xoZwrZIr017/bMTJyGOmuYGk8HEv+3Wvj5QSDylQVNIa9czH2B8sVY9zAk9hn/ExIi7rZHK4pJCfh
+        8t+BzfDUpkjH60ulN6vn9LJLnxlNr82hUwc4ON+R4qSOZEvUIBPcf+jOZgkrhbWhDU60WZjztd1Kh
+        z5rGNuwFfK4hgnFUy6JZR02eghvMqR8eKk/p3cwmWbrv0BlFX3iHSRwAsv9WeECDl04JwVqlqfsHT
+        Z67ih3nULPu7qYiohBTtz8cCzV9FdOGR5c4HgBcI3JhcGSBDZyBIZBFSMvE7dFEMkOkjrfyKMft+0
+        H+TwAbqg==;
+Received: from dg by mx.treblig.org with local (Exim 4.94.2)
+        (envelope-from <dg@treblig.org>)
+        id 1qTViY-005rPc-MU; Tue, 08 Aug 2023 23:02:22 +0000
+Date:   Tue, 8 Aug 2023 23:02:22 +0000
+From:   "Dr. David Alan Gilbert" <linux@treblig.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        sam@ravnborg.org, benh@kernel.crashing.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] powerpc: Use shared font data
+Message-ID: <ZNLJfgD5HDz3yief@gallifrey>
+References: <20230807010721.799613-1-linux@treblig.org>
+ <828497a6-80c2-329f-8b47-2311bf08943d@infradead.org>
+ <ZNJ7QzfA/GSgahmf@gallifrey>
+ <8599e99b-ad80-abf8-ad40-4cb8262f047a@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <8599e99b-ad80-abf8-ad40-4cb8262f047a@infradead.org>
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
+X-Uptime: 23:01:22 up 33 days,  8:32,  1 user,  load average: 0.04, 0.04, 0.00
+User-Agent: Mutt/2.0.5 (2021-01-21)
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On August 8, 2023 9:32:50 AM PDT, "Gustavo A=2E R=2E Silva" <gustavoars@ker=
-nel=2Eorg> wrote:
->On Tue, Aug 08, 2023 at 09:30:38PM +0800, GONG, Ruiqi wrote:
->> From: "GONG, Ruiqi" <gongruiqi1@huawei=2Ecom>
->>=20
->> When compiling with gcc 13 and CONFIG_FORTIFY_SOURCE=3Dy, the following
->> warning appears:
->>=20
->> In function =E2=80=98fortify_memcpy_chk=E2=80=99,
->>     inlined from =E2=80=98size_entry_mwt=E2=80=99 at net/bridge/netfilt=
-er/ebtables=2Ec:2118:2:
->> =2E/include/linux/fortify-string=2Eh:592:25: error: call to =E2=80=98__=
-read_overflow2_field=E2=80=99
->> declared with attribute warning: detected read beyond size of field (2n=
-d parameter);
->> maybe use struct_group()? [-Werror=3Dattribute-warning]
->>   592 |                         __read_overflow2_field(q_size_field, si=
-ze);
->>       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~
->>=20
->> The compiler is complaining:
->>=20
->> memcpy(&offsets[1], &entry->watchers_offset,
->>                        sizeof(offsets) - sizeof(offsets[0]));
->>=20
->> where memcpy reads beyong &entry->watchers_offset to copy
->> {watchers,target,next}_offset altogether into offsets[]=2E Silence the
->> warning by wrapping these three up via struct_group()=2E
->>=20
->> Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei=2Ecom>
->> ---
->>=20
->> v2: fix HDRTEST error by replacing struct_group() with __struct_group()=
-,
->> since it's a uapi header=2E
->>=20
->>  include/uapi/linux/netfilter_bridge/ebtables=2Eh | 14 ++++++++------
->>  net/bridge/netfilter/ebtables=2Ec                |  3 +--
->>  2 files changed, 9 insertions(+), 8 deletions(-)
->>=20
->> diff --git a/include/uapi/linux/netfilter_bridge/ebtables=2Eh b/include=
-/uapi/linux/netfilter_bridge/ebtables=2Eh
->> index a494cf43a755=2E=2Eb0caad82b693 100644
->> --- a/include/uapi/linux/netfilter_bridge/ebtables=2Eh
->> +++ b/include/uapi/linux/netfilter_bridge/ebtables=2Eh
->> @@ -182,12 +182,14 @@ struct ebt_entry {
->>  	unsigned char sourcemsk[ETH_ALEN];
->>  	unsigned char destmac[ETH_ALEN];
->>  	unsigned char destmsk[ETH_ALEN];
->> -	/* sizeof ebt_entry + matches */
->> -	unsigned int watchers_offset;
->> -	/* sizeof ebt_entry + matches + watchers */
->> -	unsigned int target_offset;
->> -	/* sizeof ebt_entry + matches + watchers + target */
->> -	unsigned int next_offset;
->> +	__struct_group(/* no tag */, offsets, /* no attrs */,
->> +		/* sizeof ebt_entry + matches */
->> +		unsigned int watchers_offset;
->> +		/* sizeof ebt_entry + matches + watchers */
->> +		unsigned int target_offset;
->> +		/* sizeof ebt_entry + matches + watchers + target */
->> +		unsigned int next_offset;
->> +	);
->>  	unsigned char elems[0] __attribute__ ((aligned (__alignof__(struct eb=
-t_replace))));
->>  };
+* Randy Dunlap (rdunlap@infradead.org) wrote:
+> 
+> 
+> On 8/8/23 10:28, Dr. David Alan Gilbert wrote:
+> > * Randy Dunlap (rdunlap@infradead.org) wrote:
+> >> Hi--
+> >>
+> >> On 8/6/23 18:07, linux@treblig.org wrote:
+> >>> From: "Dr. David Alan Gilbert" <linux@treblig.org>
+> >>>
+> >>> PowerPC has a 'btext' font used for the console which is almost identical
+> >>> to the shared font_sun8x16, so use it rather than duplicating the data.
+> >>>
+> >>> They were actually identical until about a decade ago when
+> >>>    commit bcfbeecea11c ("drivers: console: font_: Change a glyph from
+> >>>                         "broken bar" to "vertical line"")
+> >>>
+> >>> which changed the | in the shared font to be a solid
+> >>> bar rather than a broken bar.  That's the only difference.
+> >>>
+> >>> This was originally spotted by PMD which noticed that sparc does
+> >>> the same thing with the same data, and they also share a bunch
+> >>> of functions to manipulate the data.  I've previously posted a near
+> >>> identical patch for sparc.
+> >>>
+> >>> One difference I notice in PowerPC is that there are a bunch of compile
+> >>> options for the .c files for the early code to avoid a bunch of security
+> >>> compilation features;  it's not clear to me if this is a problem for
+> >>> this font data.
+> >>>
+> >>> Tested very lightly with a boot without FS in qemu.
+> >>>
+> >>> v2
+> >>>   Added 'select FONT_SUPPORT' (to stop modconfig causing the font to be
+> >>>    linked into a module rather than the main kernel)
+> >>>   Added 'select FONTS' to satisfy requirements in lib/fonts
+> >>>
+> >>> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+> >>> ---
+> >>>  arch/powerpc/Kconfig.debug  |   3 +
+> >>>  arch/powerpc/kernel/btext.c | 360 +-----------------------------------
+> >>>  2 files changed, 9 insertions(+), 354 deletions(-)
+> >>>
+> >>> diff --git a/arch/powerpc/Kconfig.debug b/arch/powerpc/Kconfig.debug
+> >>> index 2a54fadbeaf51..521c4baf30e88 100644
+> >>> --- a/arch/powerpc/Kconfig.debug
+> >>> +++ b/arch/powerpc/Kconfig.debug
+> >>> @@ -147,6 +147,9 @@ config BDI_SWITCH
+> >>>  config BOOTX_TEXT
+> >>>  	bool "Support for early boot text console (BootX or OpenFirmware only)"
+> >>>  	depends on PPC_BOOK3S
+> >>> +	select FONT_SUN8x16
+> >>> +	select FONT_SUPPORT
+> >>> +	select FONTS
+> >>>  	help
+> >>>  	  Say Y here to see progress messages from the boot firmware in text
+> >>>  	  mode. Requires either BootX or Open Firmware.
+> >>
+> >> kconfig tells me:
+> >>
+> >> WARNING: unmet direct dependencies detected for FONTS
+> >>   Depends on [n]: FONT_SUPPORT [=y] && (FRAMEBUFFER_CONSOLE [=n] || STI_CONSOLE [=n])
+> >>   Selected by [y]:
+> >>   - BOOTX_TEXT [=y] && PPC_BOOK3S [=y]
+> >>
+> >> WARNING: unmet direct dependencies detected for FONT_SUN8x16
+> >>   Depends on [n]: FONT_SUPPORT [=y] && FRAMEBUFFER_CONSOLE [=n] && (!SPARC && FONTS [=y] || SPARC)
+> >>   Selected by [y]:
+> >>   - BOOTX_TEXT [=y] && PPC_BOOK3S [=y]
+> >>
+> >> because FONTS depends on FRAMEBUFFER_CONSOLE || STI_CONSOLE and neither of those is set.
+> > 
+> > I'm not getting the warnings in the v2, with a few configs; what command
+> > are using?
+> > 
+> 
+> My 'make' build target is either pp32_randconfig or ppc64_randconfig.
+> I see kconfig warnings in > 50% of the randconfigs. (small sample size,
+> around 20)
 
-Actually, looking at what size_entry_mwt() is doing, I think you probably =
-DO want a tag for this and to use a real structure for the manipulations in=
-stead of doing array indexing? I dunno=2E This is a weird function! :)
+Thanks, that triggers it for me; I'll have a discussion with it....
 
--Kees
+Dave
 
->> =20
->> diff --git a/net/bridge/netfilter/ebtables=2Ec b/net/bridge/netfilter/e=
-btables=2Ec
->> index 757ec46fc45a=2E=2E5ec66b1ebb64 100644
->> --- a/net/bridge/netfilter/ebtables=2Ec
->> +++ b/net/bridge/netfilter/ebtables=2Ec
->> @@ -2115,8 +2115,7 @@ static int size_entry_mwt(const struct ebt_entry =
-*entry, const unsigned char *ba
->>  		return ret;
->> =20
->>  	offsets[0] =3D sizeof(struct ebt_entry); /* matches come first */
->> -	memcpy(&offsets[1], &entry->watchers_offset,
->> -			sizeof(offsets) - sizeof(offsets[0]));
->> +	memcpy(&offsets[1], &entry->offsets, sizeof(offsets) - sizeof(offsets=
-[0]));
->							^^^^^^^^^^^^
->You now can replace this ____________________________________|
->with just `sizeof(entry->offsets)`
->
->With that change you can add my
->Reviewed-by: Gustavo A=2E R=2E Silva <gustavoars@kernel=2Eorg>
->
->Thank you
->--
->Gustavo
->
->> =20
->>  	if (state->buf_kern_start) {
->>  		buf_start =3D state->buf_kern_start + state->buf_kern_offset;
->> --=20
->> 2=2E41=2E0
->>=20
-
-
---=20
-Kees Cook
+> 
+> > I'm tempted to change the FONT_SUN8x16 dependency line to have
+> > SPARC||BOOTX_TEXT or SPARC||POWERPC  and drop the 'select FONTS' I
+> > added.
+> > 
+> > Dave
+> > 
+> >>
+> >> -- 
+> >> ~Randy
+> 
+> -- 
+> ~Randy
+-- 
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
