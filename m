@@ -2,103 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9713F773EE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56FF773FFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232429AbjHHQii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:38:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38852 "EHLO
+        id S233794AbjHHQ6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:58:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232294AbjHHQhp (ORCPT
+        with ESMTP id S232768AbjHHQ5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:37:45 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09D414FC9
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:53:37 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-522ab557632so7759764a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:53:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691510016; x=1692114816;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aScjTZP/j4eF5nEY5ptSyTPcH9eKHlG6UgnJ/+6xLjo=;
-        b=nESm3dstvv4+h2yK3mV7sgtTB97KPUaH1sWkyIuOay8fjRF91wQ3gSxlPvosuHxTjf
-         NbXvwztiGkkPQAh9LRT08CuQs5J43nNPT2mDGZlZW7tqoFItrSFsVJFdTyVAWOq+AtU5
-         VEieBXERJiYZiiaV2aZ7NLwXd2QP0t0ho27464pzJx3XhE9WnCclrwQ+c7xPxxhcgJr/
-         nzc+13mc1NWCNy6Q9rONJ86qrtZ6yWLAfVGJJ3CXBn7TXexFNg6zSNix5AcsociIj/+h
-         lGU7rxGf8D9m0hzemzJ8ADiJyS6T2HXE9FOWiFT7BUo9q5YWMN5gnZY+rBbn7sXSpFtR
-         xpxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510016; x=1692114816;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aScjTZP/j4eF5nEY5ptSyTPcH9eKHlG6UgnJ/+6xLjo=;
-        b=InEp9lTJen7fDdu2D2YBnmj/xcWtJ57HdasExcsXuRv9sa3i12ozZ4b+PaXxv4ZhV7
-         uhbzweibpBa7wl2OmZyJPFQTNFVN0hQdpImxP+uTtfHU5oHmIl++vT9HiBCCOK9IVTh5
-         L5m+XdM76l50f9vGWER9Pggngq8Ggo/ucLbFKJ6X2/SCTZ+73D2CkC8D1rHR0r7O3jYc
-         3HphbJJfjjxk5DQ/Sq3i3A1pOHAyyTCuePKGAyAq8ZW89erThEKwXFGwq3Yk0cWyM+Vv
-         dt0E5gcWzRzLmWmqkgBXNrf5V0TeketgPPJ5wtlSsM2h/aKklQXgy0d+KKtIXvY/NjX6
-         vD3g==
-X-Gm-Message-State: AOJu0YyPlcblLbweztQvfcFAn4Q80a9vuwofmxMKf+KVOHTZ6fIXXImE
-        35CypV9e6e8By/aw8kjxVC+J3zomSUq7ThxUVI4=
-X-Google-Smtp-Source: AGHT+IFUhtTnBdD3FE71/pNMOY1Y6z9Jbo+5Bg4ogyJrOop4Rz6UyiKZoppLw28xBiaeF1YEdhU0VQ==
-X-Received: by 2002:a17:906:3f4f:b0:99b:5a73:4d09 with SMTP id f15-20020a1709063f4f00b0099b5a734d09mr10065794ejj.43.1691474274417;
-        Mon, 07 Aug 2023 22:57:54 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id gs10-20020a170906f18a00b0097404f4a124sm6146765ejb.2.2023.08.07.22.57.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 22:57:53 -0700 (PDT)
-Message-ID: <d28cf9c5-b914-053a-76df-c15e191c042d@linaro.org>
-Date:   Tue, 8 Aug 2023 07:57:52 +0200
+        Tue, 8 Aug 2023 12:57:22 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338C94C38;
+        Tue,  8 Aug 2023 08:42:34 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 044825C01BA;
+        Tue,  8 Aug 2023 01:59:23 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 08 Aug 2023 01:59:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1691474362; x=
+        1691560762; bh=DViu5+0VvFfaGHH4bzT/NrPHRN0WXpyoHKoK6Q4aOkI=; b=k
+        5wQGPWUw4F7d0kNcULOsKRRvNERd+x8S3N/Gzh/ouKapiXE8gTWvy6iPORO0R1ho
+        8Vk5IeLuF6xTYi+QAIZXJFf2j9a9ygFnOVGnVAn+WgEfNwlSVXfgo39kJEjvf5Xa
+        jCdqj306zdf1JecU7gm5Htq93lNVnhpEUCQBL4CWiRAf2d7s3g9FAQXh5BJXpUJn
+        MMVo1l+yk4KBUF+Qfcl2i0a3ELjijJQKd1fOPdQjplLRm2vnvAmER9MBZjnMq2+2
+        I69EJmofA4RDgcOpatHODOn6zMgK33Mvd3cGZWRsO+ElIR7REV8GNXFPEdM2SmUY
+        e5IbrVupJpClUXi1KIiQw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1691474362; x=
+        1691560762; bh=DViu5+0VvFfaGHH4bzT/NrPHRN0WXpyoHKoK6Q4aOkI=; b=k
+        Ovmb2E8ZAuPC+h1pMiB3lK4QJ5WhxflTLs+Ad4JUxasXzZQzvrteJzw60xPyZncT
+        lSLiiaFsz3A/0fOVEupPP/mgpuQNzPWVuVMkUGYzUGDp8GN/o0SyOwYepo8K5XQ+
+        lFFQFDaNmlJtd8KUUeGrIi6d0866WigMF339l/i5jM3Bkt9nToQwQJRcfCBr6RCN
+        e01tOKfudxUsxf7qfAGPiCakk3sx5cdTLneCUs5zfqEUZ8fIMz3W454TaMXag0CW
+        1ZCzE2D61SC/xrfb/DhcUtbR4jzzRblGmM7vZ27ruEBt/7FaZzJH/4xpzcOZbGxt
+        N0lqpl13oBdHlMQVKz7zw==
+X-ME-Sender: <xms:utnRZBmAiPKwNTgpZEZiHeDu_knbVl_F6AxC-nV0NzKcqdkprMbEJw>
+    <xme:utnRZM0cN_Q8uiG3EhaEoVjnGMwULTzlUJtBz1sbste0oH5l2ZWy-0fKYS3Mb2hnb
+    v51mPxpVf3H_ExfpHY>
+X-ME-Received: <xmr:utnRZHrJs8luwdOd8P7K-5CamtmRUWj5Iv2eR_voaHWFGOeITBw3StjPVH4gbMHhT4qFgO0mcw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrledugdellecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestdekre
+    dtredttdenucfhrhhomhepofgrnhhjuhhsrghkrgcuoehmvgesmhgrnhhjuhhsrghkrgdr
+    mhgvqeenucggtffrrghtthgvrhhnpeeuhfejieefgedvvdeuhffhvedvjeegkeejveeihf
+    egueethfevfeeikedvvdffgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+    mhgrihhlfhhrohhmpehmvgesmhgrnhhjuhhsrghkrgdrmhgv
+X-ME-Proxy: <xmx:utnRZBnR6zWGVBJ4I24iveAG8ubLjxMsI3XVUxTs3XefEuuAHefDNw>
+    <xmx:utnRZP1BlID-dPisFNsBApjThwf_hUZxY68W-YYJfs5Dkqs8YguGOg>
+    <xmx:utnRZAsDjK6aOnLmSFgAzG0tBG0dB5LNeWFmAdebYyBXY27SE5z8Yw>
+    <xmx:utnRZIvuJCkm_lRvHB9jIqSW6ohjUnYcqHiqmOOdkPh_E8atcK-0JQ>
+Feedback-ID: i3ea9498d:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 8 Aug 2023 01:59:18 -0400 (EDT)
+From:   Manjusaka <me@manjusaka.me>
+To:     ncardwell@google.com
+Cc:     bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
+        edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, me@manjusaka.me,
+        mhiramat@kernel.org, netdev@vger.kernel.org, pabeni@redhat.com,
+        rostedt@goodmis.org
+Subject: [PATCH v2] tracepoint: add new `tcp:tcp_ca_event` trace event
+Date:   Tue,  8 Aug 2023 05:58:18 +0000
+Message-Id: <20230808055817.3979-1-me@manjusaka.me>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <CADVnQyn3UMa3Qx6cC1Rx97xLjQdG0eKsiF7oY9UR=b9vU4R-yA@mail.gmail.com>
+References: <CADVnQyn3UMa3Qx6cC1Rx97xLjQdG0eKsiF7oY9UR=b9vU4R-yA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 2/2] arm64: dts: rockchip: Add NanoPC T6
-Content-Language: en-US
-To:     Thomas McKahan <tmckahan@singleboardsolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230802051441.3106-1-tmckahan@singleboardsolutions.com>
- <20230802051441.3106-3-tmckahan@singleboardsolutions.com>
- <f49a803f-9ff4-794e-265b-a98e3711cca8@linaro.org>
- <20230808002751.00001385@singleboardsolutions.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230808002751.00001385@singleboardsolutions.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/2023 06:32, Thomas McKahan wrote:
->>> +
->>> +		regulators {
->>> +			vdd_gpu_s0: vdd_gpu_mem_s0: dcdc-reg1 {
->>> +				regulator-boot-on;  
->>
->> Boolean properties are not first, but last. regulator-name is the first
->> one. This odd style...
->>
-> 
-> I agree, however it seems the norm in Rockchip devices. This will
-> become an outlier in Rockchip but fall in line with the general case.
-> I'll put it in V2 with the other mentioned fixes unless a conflicting 
-> opinion is expressed. 
+In normal use case, the tcp_ca_event would be changed in high frequency.
 
-OK, no need to change then.
+It's a good indicator to represent the network quanlity.
 
-Best regards,
-Krzysztof
+So I propose to add a `tcp:tcp_ca_event` trace event
+like `tcp:tcp_cong_state_set` to help the people to
+trace the TCP connection status
+
+Signed-off-by: Manjusaka <me@manjusaka.me>
+---
+ include/net/tcp.h          |  9 ++------
+ include/trace/events/tcp.h | 45 ++++++++++++++++++++++++++++++++++++++
+ net/ipv4/tcp_cong.c        | 10 +++++++++
+ 3 files changed, 57 insertions(+), 7 deletions(-)
+
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 0ca972ebd3dd..a68c5b61889c 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -1154,13 +1154,8 @@ static inline bool tcp_ca_needs_ecn(const struct sock *sk)
+ 	return icsk->icsk_ca_ops->flags & TCP_CONG_NEEDS_ECN;
+ }
+ 
+-static inline void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event)
+-{
+-	const struct inet_connection_sock *icsk = inet_csk(sk);
+-
+-	if (icsk->icsk_ca_ops->cwnd_event)
+-		icsk->icsk_ca_ops->cwnd_event(sk, event);
+-}
++/* from tcp_cong.c */
++void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event);
+ 
+ /* From tcp_cong.c */
+ void tcp_set_ca_state(struct sock *sk, const u8 ca_state);
+diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
+index bf06db8d2046..b374eb636af9 100644
+--- a/include/trace/events/tcp.h
++++ b/include/trace/events/tcp.h
+@@ -416,6 +416,51 @@ TRACE_EVENT(tcp_cong_state_set,
+ 		  __entry->cong_state)
+ );
+ 
++TRACE_EVENT(tcp_ca_event,
++
++	TP_PROTO(struct sock *sk, const u8 ca_event),
++
++	TP_ARGS(sk, ca_event),
++
++	TP_STRUCT__entry(
++		__field(const void *, skaddr)
++		__field(__u16, sport)
++		__field(__u16, dport)
++		__array(__u8, saddr, 4)
++		__array(__u8, daddr, 4)
++		__array(__u8, saddr_v6, 16)
++		__array(__u8, daddr_v6, 16)
++		__field(__u8, ca_event)
++	),
++
++	TP_fast_assign(
++		struct inet_sock *inet = inet_sk(sk);
++		__be32 *p32;
++
++		__entry->skaddr = sk;
++
++		__entry->sport = ntohs(inet->inet_sport);
++		__entry->dport = ntohs(inet->inet_dport);
++
++		p32 = (__be32 *) __entry->saddr;
++		*p32 = inet->inet_saddr;
++
++		p32 = (__be32 *) __entry->daddr;
++		*p32 =  inet->inet_daddr;
++
++		TP_STORE_ADDRS(__entry, inet->inet_saddr, inet->inet_daddr,
++			   sk->sk_v6_rcv_saddr, sk->sk_v6_daddr);
++
++		__entry->ca_event = ca_event;
++	),
++
++	TP_printk("sport=%hu dport=%hu saddr=%pI4 daddr=%pI4 saddrv6=%pI6c daddrv6=%pI6c ca_event=%u",
++		  __entry->sport, __entry->dport,
++		  __entry->saddr, __entry->daddr,
++		  __entry->saddr_v6, __entry->daddr_v6,
++		  __entry->ca_event)
++);
++
+ #endif /* _TRACE_TCP_H */
+ 
+ /* This part must be outside protection */
+diff --git a/net/ipv4/tcp_cong.c b/net/ipv4/tcp_cong.c
+index 1b34050a7538..fb7ec6ebbbd0 100644
+--- a/net/ipv4/tcp_cong.c
++++ b/net/ipv4/tcp_cong.c
+@@ -34,6 +34,16 @@ struct tcp_congestion_ops *tcp_ca_find(const char *name)
+ 	return NULL;
+ }
+ 
++void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event)
++{
++	const struct inet_connection_sock *icsk = inet_csk(sk);
++
++	trace_tcp_ca_event(sk, (u8)event);
++
++	if (icsk->icsk_ca_ops->cwnd_event)
++		icsk->icsk_ca_ops->cwnd_event(sk, event);
++}
++
+ void tcp_set_ca_state(struct sock *sk, const u8 ca_state)
+ {
+ 	struct inet_connection_sock *icsk = inet_csk(sk);
+-- 
+2.34.1
 
