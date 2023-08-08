@@ -2,105 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BD4773E7D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145937742EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbjHHQbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42560 "EHLO
+        id S230391AbjHHRwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:52:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232804AbjHHQ3Q (ORCPT
+        with ESMTP id S235077AbjHHRvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:29:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963B267C9;
-        Tue,  8 Aug 2023 08:51:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7869362465;
-        Tue,  8 Aug 2023 08:41:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27ACAC433C7;
-        Tue,  8 Aug 2023 08:40:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691484061;
-        bh=RjjLIZx13CGvW7yRw5fcqlfFcSXMiUPH+D4rU4Q5+yE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dJws1KGbdsfqt5t/8dMXBjYgLaYDm3LH6+rT5yxV2F9sPa6RnrvPRJHd9ec77cSFN
-         U6s96DlFfpOIHxAwaDZRg2oZs311bmSJMW3Liu7KACwt1cvy6oDd4KnHBXyL2JtCBv
-         EGbgv55m9VJ88VoICbQWsGjDy+VIARxqvq0wrfawShr4jrmSozzhRxZcBA/TGegKfF
-         GYeCBVjP4OR6dHXFtonstOfp3/aZ7EniKB0dqYfbF5KZ1ZP4dp1Dx5J5Vll0DYSjtD
-         VxnVed8sRrJPOV1ewTxARGkKKE2DNw0ZuKs3JXljsys75qypPSmKsPMHC/jsLWWREt
-         c6YAJn8Hj+0nQ==
-Date:   Tue, 8 Aug 2023 10:40:57 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oleg@redhat.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] fs: use __fput_sync in close(2)
-Message-ID: <20230808-unsensibel-scham-c61a71622ae7@brauner>
-References: <20230806230627.1394689-1-mjguzik@gmail.com>
- <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
- <20230808-eingaben-lumpen-e3d227386e23@brauner>
- <CAGudoHF=cEvXy3v96dN_ruXHnPv33BA6fA+dCWCm-9L3xgMPNQ@mail.gmail.com>
+        Tue, 8 Aug 2023 13:51:19 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677779EDB
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:23:01 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5230f8da574so3345914a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:23:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691511764; x=1692116564;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aLgiueEbzobtzFNNJX0j8sjbY7XP7Xp1Qtkd3nfwoTQ=;
+        b=onsVEaUaP10UOYReNFOX0pIw9Z10L/wk/AgW570MTXMwplc4ITtz90qKdJgoxCbEXQ
+         WuuHKEwQiMw+SbQX1oE79FH4WGb+7k+j11nYS0wny1XAMNNbH11KC453d23dBszkjq6y
+         mNYWHlmUuGyb64iQvw9fj/djB9IBNGMb3TmIMKB6XcbnvJXmqiKMJt5Raxtgfp77dJIK
+         rabwFX79CcdYCMu+mLgd24b0CzzedGa6mHuq8U0O8MDKKs3yllmyC2SRzb5czmJkAOMK
+         jbIW633o2MV6J7AL+cb7x1ra8TVEtWB2pBRY5VgStLmg/lzq+pEQDPNhAo4Df30Aa7F+
+         r80w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691511764; x=1692116564;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aLgiueEbzobtzFNNJX0j8sjbY7XP7Xp1Qtkd3nfwoTQ=;
+        b=GrCk2qwdstZgk45bCKDqvupxKE8QMlfEeI5iTpTfL1TdNCoYtMjQcH6Y7w0ywbpznD
+         J+tvJHY6h547S6Qtr+IB9qmvXbbIpbLjDftDLfqP+RpmWkiUHSUHHm0br/Gy1ido8ciW
+         wKe/gRLJsGvsCuhYdzK6aSu6U0O6ycfVhWyWWA3cYlyOyYOc3xVNCZJRiOLD7Pon1Lsp
+         +PsuM34bod/TwPTbr9bGeAuU28tOOWJr2ZSiwlwn1aDQ5i9+UP/UAvIwSg/8QeYYKy1X
+         ufjWVLmAUVh+G9ClrzUpVBMfaTgojfYxW46x+FDXt/kf2JxcffJjL11pHFYKfXVcX1fq
+         NoGw==
+X-Gm-Message-State: AOJu0YzR1hy138hKMgcW5ILAs7plbY1dO7gSG8GFPnIM611A2e2C4iXA
+        NT3eotXIZv9C+Hb3JTmY5EcV6W4/0YSm3vwYvnY=
+X-Google-Smtp-Source: AGHT+IEWQUg1f+i6vP131s3YZltVSNob4tEp+mlNSTLfxjenmEfAb4fXWkyZNoHuGpYubcPeVCW7qw==
+X-Received: by 2002:a05:6512:32d1:b0:4fe:c53:1824 with SMTP id f17-20020a05651232d100b004fe0c531824mr7666076lfg.40.1691484059954;
+        Tue, 08 Aug 2023 01:40:59 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id q15-20020ac2528f000000b004fbab80ecefsm1806634lfm.145.2023.08.08.01.40.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 01:40:59 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 08 Aug 2023 10:40:58 +0200
+Subject: [PATCH] microblaze: Make virt_to_pfn() a static inline
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAGudoHF=cEvXy3v96dN_ruXHnPv33BA6fA+dCWCm-9L3xgMPNQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230808-virt-to-phys-microblaze-v1-1-e6df710fe0a1@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAJn/0WQC/x3MTQ5AMBBA4avIrE1SJYKriEXVlElQmYr4ibtrL
+ L/Few8EEqYATfKA0MGB/RqRpQnYyawjIQ/RoJXOVaUqPFh23D1u0xVwYSu+n81NWBg3ON1bV5c
+ WYr0JOT7/c9u97wf8si/5aQAAAA==
+To:     Michal Simek <monstr@monstr.eu>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > And making filp_close() fully sync again is also really not great.
-> 
-> The patch is not doing it.
+Making virt_to_pfn() a static inline taking a strongly typed
+(const void *) makes the contract of a passing a pointer of that
+type to the function explicit and exposes any misuse of the
+macro virt_to_pfn() acting polymorphic and accepting many types
+such as (void *), (unitptr_t) or (unsigned long) as arguments
+without warnings.
 
-No, but you were referencing the proposed patch as an alternative in
-your commit message.
+Move the function down in the file so __pa() exists in our
+scope, and it compiles. This in turn requires moving __pa()
+as it depends on __virt_to_phys() that was below. (Lazy macro
+evaluation conflicts with strict function ordering.)
 
-> > Yes, we just did re-added the f_pos optimization because it may have had
-> > an impact. And that makes more sense because that was something we had
-> > changed just a few days/weeks before.
-> >
-> 
-> I don't think perf tax on something becomes more sensible the longer
-> it is there.
+Make a symmetric change to pfn_to_virt() so we have type
+checking both ways.
 
-One does need to answer the question why it does suddenly become
-relevant after all these years though.
+Due to this the <asm/page.h> file being included into some
+assembly files, some further inclusion guards are needed
+to make sure assembly keeps compiling.
 
-The original discussion was triggered by fifo ordering in task work
-which led to a noticable regression and why it was ultimately reverted.
-The sync proposal for fput() was an orthogonal proposal and the
-conclusion was that it wasn't safe generally
-https://lore.kernel.org/all/20150905051915.GC22011@ZenIV.linux.org.uk
-even though it wasn't a direct response to the patch you linked.
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ arch/microblaze/include/asm/page.h | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
 
-Sure, for f_pos it was obvious when and how that happend. Here? It needs
-a bit more justification.
+diff --git a/arch/microblaze/include/asm/page.h b/arch/microblaze/include/asm/page.h
+index 337f23eabc71..86a4ce07c192 100644
+--- a/arch/microblaze/include/asm/page.h
++++ b/arch/microblaze/include/asm/page.h
+@@ -99,9 +99,6 @@ extern int page_is_ram(unsigned long pfn);
+ # define phys_to_pfn(phys)	(PFN_DOWN(phys))
+ # define pfn_to_phys(pfn)	(PFN_PHYS(pfn))
+ 
+-# define virt_to_pfn(vaddr)	(phys_to_pfn((__pa(vaddr))))
+-# define pfn_to_virt(pfn)	__va(pfn_to_phys((pfn)))
+-
+ #  define virt_to_page(kaddr)	(pfn_to_page(__pa(kaddr) >> PAGE_SHIFT))
+ #  define page_to_virt(page)   __va(page_to_pfn(page) << PAGE_SHIFT)
+ #  define page_to_phys(page)     (page_to_pfn(page) << PAGE_SHIFT)
+@@ -109,11 +106,6 @@ extern int page_is_ram(unsigned long pfn);
+ #  define ARCH_PFN_OFFSET	(memory_start >> PAGE_SHIFT)
+ # endif /* __ASSEMBLY__ */
+ 
+-#define	virt_addr_valid(vaddr)	(pfn_valid(virt_to_pfn(vaddr)))
+-
+-# define __pa(x)	__virt_to_phys((unsigned long)(x))
+-# define __va(x)	((void *)__phys_to_virt((unsigned long)(x)))
+-
+ /* Convert between virtual and physical address for MMU. */
+ /* Handle MicroBlaze processor with virtual memory. */
+ #define __virt_to_phys(addr) \
+@@ -125,6 +117,25 @@ extern int page_is_ram(unsigned long pfn);
+ #define tovirt(rd, rs) \
+ 	addik rd, rs, (CONFIG_KERNEL_START - CONFIG_KERNEL_BASE_ADDR)
+ 
++#ifndef __ASSEMBLY__
++
++# define __pa(x)	__virt_to_phys((unsigned long)(x))
++# define __va(x)	((void *)__phys_to_virt((unsigned long)(x)))
++
++static inline unsigned long virt_to_pfn(const void *vaddr)
++{
++	return phys_to_pfn(__pa(vaddr));
++}
++
++static inline const void *pfn_to_virt(unsigned long pfn)
++{
++	return __va(pfn_to_phys((pfn)));
++}
++
++#define	virt_addr_valid(vaddr)	(pfn_valid(virt_to_pfn(vaddr)))
++
++#endif /* __ASSEMBLY__ */
++
+ #define TOPHYS(addr)  __virt_to_phys(addr)
+ 
+ #endif /* __KERNEL__ */
 
-If you care about it enough send a patch that just makes close(2) go
-sync. We'll stuff it in a branch and we'll see what LKP has to say about
-it or whether this gets lost in noise. I really don't think letting
-micro-benchmarks become a decisive factor for code churn is a good
-idea.
+---
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+change-id: 20230808-virt-to-phys-microblaze-4afdf2bcf96c
 
-And fwiw, yes, maybe the difference between close(2) and other parts
-doesn't matter for you but for use mortals that maintain a bunch more
-then just a few lines of code in file.c if you have a tiny collection of
-differences in behavior everywhere it adds up. The fact that you think
-it's irrelevant doesn't mean we have that luxury.
+Best regards,
+-- 
+Linus Walleij <linus.walleij@linaro.org>
 
-That's not to say your patches haven't been useful. Not at all. The
-close_range() tweak was very much appreciated and that f_pos thing was
-good to fix as well.
