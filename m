@@ -2,81 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B06E773C0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6B3773B76
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbjHHP7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 11:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        id S230257AbjHHPvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 11:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjHHP6H (ORCPT
+        with ESMTP id S229801AbjHHPtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:58:07 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F0EC5FE7
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:44:09 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 378DGsdq021901;
-        Tue, 8 Aug 2023 08:22:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=PODMain02222019; bh=yX8DnYk3BVeWpcG
-        AIMVMRJsotzjWI/Bb34cGaeA99JA=; b=pbE43Jn0xoFFLYef9e+nUmNHCAGMire
-        jFowRHZzif1rDo8aS0DpwHjrFFQICuX4BZ6vioXNRmmQ85DuqVLpOsUWIEAEUt7W
-        27pbjdTdFKsvUoop24BQ8V5kjzuXd/ehhybhl3TI+4Eg3nnnFQyNFmluTDXmFxRC
-        Hxwwb1qxs7P+NAmeR7rxS1/2fRjOru1VTx8QDVuI5l/HWznDsCjkFbvyM0Ps7EK9
-        GsNhvk/XibffVcQxaQtowaI/Za22gDbJeNOfRAaWfxSlzWQrYbX8nP6lQq/S0mH0
-        M5ZmuQp2T5KCuWucY2cKq0fPK9ctbhphRNtjSEyVPa+Q0Fw1paYbQ7A==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhtmap-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Aug 2023 08:22:37 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 8 Aug
- 2023 14:22:35 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Tue, 8 Aug 2023 14:22:35 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 47C2415B4;
-        Tue,  8 Aug 2023 13:22:35 +0000 (UTC)
-Date:   Tue, 8 Aug 2023 13:22:35 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Zhu Wang <wangzhu9@huawei.com>
-CC:     <lee@kernel.org>, <thor.thayer@linux.intel.com>,
-        <rf@opensource.cirrus.com>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next 7/8] mfd: lochnagar-i2c: remove redundant
- of_match_ptr()
-Message-ID: <20230808132235.GV103419@ediswmail.ad.cirrus.com>
-References: <20230808130023.202700-1-wangzhu9@huawei.com>
- <20230808130023.202700-8-wangzhu9@huawei.com>
+        Tue, 8 Aug 2023 11:49:13 -0400
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF371FCD;
+        Tue,  8 Aug 2023 08:42:07 -0700 (PDT)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5232d593646so4480642a12.0;
+        Tue, 08 Aug 2023 08:42:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691509275; x=1692114075;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ChPT/lHzXHpKHyXlCB2W1LoY3mnd1UwLMSxiYiQjKmg=;
+        b=Aq0HpdvkekfQbw+pkrnpkt0EUqI2o9wYwT779VYgsIebtZ323pxA6fUaihE2No2Ojq
+         W+eHddT/Cjqr7KndK6kk7jMXK25ESTvHK3ysjzsCh5Jtf2p9o0Uw6ITaTpWtPuAUtejm
+         1B4K776/QDeS5jATJ6wdyf9Ec5ZGmqxHCm+OS/hojhjIrwCqo/B4HS9erRyY/HYjeuea
+         Sa6P0gFa3Fbm1EBj6eJf1d+/5txs1pLbAIZKAMAz80zPvwZXSgT8V2B0bLagraQxyGbF
+         FTyiJ8vobs7KBmAV/Ybuwklvhx9wquFj3MrPO2J3nl48A7j9flOZc0B4ty6gnOfz+u4C
+         HT2g==
+X-Gm-Message-State: AOJu0Yw8iWUPcnIcnQoeBnZc5XwHH7eX3ZwUHposQ6766q/FczVlOHWH
+        ERLrGmt4N6zSeBnJSY87Rf/50b+YRNQ=
+X-Google-Smtp-Source: AGHT+IEtMdELcO0r2mho0d8dPID1Lr2S9Ywk3n1aEbs+vzrbTUu1jEy7bEX0QBvnj23d6IU/jIcNYQ==
+X-Received: by 2002:a17:907:770b:b0:99b:ce9c:a94a with SMTP id kw11-20020a170907770b00b0099bce9ca94amr12488319ejc.4.1691502063751;
+        Tue, 08 Aug 2023 06:41:03 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-018.fbsv.net. [2a03:2880:31ff:12::face:b00c])
+        by smtp.gmail.com with ESMTPSA id h23-20020a1709067cd700b00992f309cfe8sm6775236ejp.178.2023.08.08.06.41.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 06:41:03 -0700 (PDT)
+From:   Breno Leitao <leitao@debian.org>
+To:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org
+Subject: [PATCH v2 1/8] net: expose sock_use_custom_sol_socket
+Date:   Tue,  8 Aug 2023 06:40:41 -0700
+Message-Id: <20230808134049.1407498-2-leitao@debian.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230808134049.1407498-1-leitao@debian.org>
+References: <20230808134049.1407498-1-leitao@debian.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230808130023.202700-8-wangzhu9@huawei.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: hop1fWz66tOv6XkO_jQM_jbmIQJI8c8z
-X-Proofpoint-ORIG-GUID: hop1fWz66tOv6XkO_jQM_jbmIQJI8c8z
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 09:00:22PM +0800, Zhu Wang wrote:
-> The driver depends on CONFIG_OF, so it is not necessary to use
-> of_match_ptr() here. We remove of_match_ptr() here.
-> 
-> Signed-off-by: Zhu Wang <wangzhu9@huawei.com>
-> ---
+Exposing function sock_use_custom_sol_socket(), so it could be used by
+io_uring subsystem.
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+This function will be used in the function io_uring_cmd_setsockopt() in
+the coming patch, so, let's move it to the socket.h header file.
 
-Thanks,
-Charles
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ include/linux/net.h | 5 +++++
+ net/socket.c        | 5 -----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/net.h b/include/linux/net.h
+index 41c608c1b02c..14a956e4530e 100644
+--- a/include/linux/net.h
++++ b/include/linux/net.h
+@@ -355,4 +355,9 @@ u32 kernel_sock_ip_overhead(struct sock *sk);
+ #define MODULE_ALIAS_NET_PF_PROTO_NAME(pf, proto, name) \
+ 	MODULE_ALIAS("net-pf-" __stringify(pf) "-proto-" __stringify(proto) \
+ 		     name)
++
++static inline bool sock_use_custom_sol_socket(const struct socket *sock)
++{
++	return test_bit(SOCK_CUSTOM_SOCKOPT, &sock->flags);
++}
+ #endif	/* _LINUX_NET_H */
+diff --git a/net/socket.c b/net/socket.c
+index 1dc23f5298ba..8df54352af83 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -2216,11 +2216,6 @@ SYSCALL_DEFINE4(recv, int, fd, void __user *, ubuf, size_t, size,
+ 	return __sys_recvfrom(fd, ubuf, size, flags, NULL, NULL);
+ }
+ 
+-static bool sock_use_custom_sol_socket(const struct socket *sock)
+-{
+-	return test_bit(SOCK_CUSTOM_SOCKOPT, &sock->flags);
+-}
+-
+ /*
+  *	Set a socket option. Because we don't know the option lengths we have
+  *	to pass the user mode parameter for the protocols to sort out.
+-- 
+2.34.1
+
