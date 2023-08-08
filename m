@@ -2,90 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2F27744F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1F77744F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235925AbjHHScn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S235947AbjHHSdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235920AbjHHSc2 (ORCPT
+        with ESMTP id S235734AbjHHSdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:32:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435BF29548;
-        Tue,  8 Aug 2023 10:53:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CEE5862969;
-        Tue,  8 Aug 2023 17:53:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3198C433C7;
-        Tue,  8 Aug 2023 17:53:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691517225;
-        bh=52uuc7Z3oG44JhgCXUWkJJMkWiyyCz5MqyQlwm3ryjw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=JiUdYj2WirrDHKt96EqhE6PM8xFosleaDS0TTqKtyCpJICVs9RXRrglRQlWQlQLh1
-         q2ORi0c4kMujJs2N2BQYB7e9VTJGYT9YFEoS5iTUcTyErESs4+d/fEtUr2/rzvvke1
-         mLterVBl54Q/FQG4l3DO5DLhrOeU4wJFnFhtUdio3tfmnAUudxSFJqdaSElOP7Yqnx
-         +ylNAScvNwsI/ZPDp/CtSx0B+xyok8xPr3Qmhbk7/M4VDqNqn99Mql4xas9hmxDbFp
-         YS17Q16WIxjh27MldGYFNgWunkgLHtrCEZDmu4Cfb9akbgOg72e1z1ZAmvLWX/KNsK
-         ykkro310otfyQ==
-Message-ID: <b34493f8-2b13-4582-9834-a1ebbe9ae836@kernel.org>
-Date:   Tue, 8 Aug 2023 19:53:39 +0200
+        Tue, 8 Aug 2023 14:33:13 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5EF1193C
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:54:59 -0700 (PDT)
+Received: from [185.238.219.14] (helo=[192.168.44.45]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qTQv0-0004FA-Vs; Tue, 08 Aug 2023 19:54:55 +0200
+Message-ID: <47437162-e1bd-58c1-9f34-ca4b661c3e34@leemhuis.info>
+Date:   Tue, 8 Aug 2023 19:54:53 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] arm64: defconfig: Enable TI PRUSS
-Content-Language: en-US
-To:     MD Danish Anwar <danishanwar@ti.com>, nm@ti.com, vigneshr@ti.com
-Cc:     Peng Fan <peng.fan@nxp.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>, srk@ti.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-omap@vger.kernel.org,
-        Christian Gmeiner <christian.gmeiner@gmail.com>
-References: <20230808130131.3081482-1-danishanwar@ti.com>
-From:   Konrad Dybcio <konradybcio@kernel.org>
-In-Reply-To: <20230808130131.3081482-1-danishanwar@ti.com>
+Subject: Re: Regression fix not progressing towards mainline/stable
+Content-Language: en-US, de-DE
+To:     =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Cc:     sound-open-firmware@alsa-project.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        Alsa-devel <alsa-devel@alsa-project.org>
+References: <661fcece-a83c-cb24-1b37-5d8693b1fb94@leemhuis.info>
+ <98188012-8e07-4bb1-be1c-04d6c0f5260a@linux.intel.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <98188012-8e07-4bb1-be1c-04d6c0f5260a@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691517299;48c2aee2;
+X-HE-SMSGID: 1qTQv0-0004FA-Vs
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8.08.2023 15:01, MD Danish Anwar wrote:
-> The Programmable Realtime Unit - Industrial Communication Subsystem
-> (PRU-ICSS) known as PRUSS, is a low-latency microcontroller subsystem
-> used for industrial networking and other hard real-time functions in
-> the TI K3 SoCs such as AM654x, AM64x.
-> 
-> AM654x-EVM, AM64xx-EVM, and iot2050 use the PRUSS driver.
-> 
-> Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
-> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-> ---
-> Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
-> 
-> Changes from v3 to v4:
-> *) Rebased on the latest next-20230808 linux-next.
-> *) Modified commit-message to add details on PRUSS driver and the SoCs
->    supported. (address comments from v2 - Konard's and v3 - Nishanth's)
-Thanks a lot, sounds like it's a cool piece of hardware!
+On 08.08.23 13:03, Péter Ujfalusi wrote:
+> On 08/08/2023 09:10, Thorsten Leemhuis wrote:
+>>
+>> I'm talking about about the fix "ASoC: SOF: intel: hda: Clean up link
+>> DMA for IPC3 during stop" for this ticket:
+>> https://github.com/thesofproject/linux/issues/4455
+>>
+>> Two more tickets about it:
+>> https://github.com/thesofproject/linux/issues/4482
+>> https://bugzilla.kernel.org/show_bug.cgi?id=217673
+>>
+>> It seems the fix is ready and reviewed for two weeks now,  [...]
+>
+> We take regressions (and user reports) seriously and trying our best to
+> provide fixes asap.
+> We do prioritize bug fixes over features but in this case for some
+> reason the review process took longer than it usually does and the patch
+> has not been sent upstream. [...]
 
-Reviewed-by: Konrad Dybcio <konradybcio@kernel.org>
+Happens, thx for taking care of it!
 
-Konrad
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
