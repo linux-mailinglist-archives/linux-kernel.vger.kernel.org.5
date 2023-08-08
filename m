@@ -2,135 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AF17744DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F00777471E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbjHHS3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
+        id S234910AbjHHTJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235958AbjHHS32 (ORCPT
+        with ESMTP id S234814AbjHHTJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:29:28 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 034EF25B22
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:45:43 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23AA411FB;
-        Tue,  8 Aug 2023 07:02:46 -0700 (PDT)
-Received: from debian.lan?044arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3973F3F64C;
-        Tue,  8 Aug 2023 07:02:03 -0700 (PDT)
-From:   Jon Mason <jon.mason@arm.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/fb-helper: move zeroing code to drm_fb_helper_fill_var
-Date:   Tue,  8 Aug 2023 09:01:52 -0500
-Message-Id: <20230808140152.3605346-1-jon.mason@arm.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 8 Aug 2023 15:09:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029D32FA31
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:31:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D254762456
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:05:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8B41C433CA
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:05:01 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="jowMggc4"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1691503497;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=chf8FUmzD77OYzSkcoByYk3SJOxrgbPfjK0UO5OV0XE=;
+        b=jowMggc457l0w5P0KjjSAX4WEd2PHPOQ/ugvjwZM4d9jjUo3AgCCdFObT4lYdxZ/fNChGJ
+        Czv1p/IIe8jBX0xX3/KoV5kpXXIwypzkMPHzu93xxbk7gRepmjckmzFC77pbMomHe/S10l
+        jXKYkxyJIOHDLU4zkOlWVy0GBjO5FYI=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 79122d4b (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
+        for <linux-kernel@vger.kernel.org>;
+        Tue, 8 Aug 2023 14:04:56 +0000 (UTC)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-56d0f4180bbso3821945eaf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 07:04:56 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxtUbPFq56uDNw4Cg5Gi9DQyByRSv1aDtdpWDDCSAZa6FfRG2iI
+        zAjbKohMdHyQctSbeWEOh3bBmRDEgIfDp0KMG/8=
+X-Google-Smtp-Source: AGHT+IEAD7iSH8TL9w+ZLrmt0lZOmt9AR135oiy5wGsx3EMERX18Ewt2k2oSj+UeztzUAJxcUXcGWhV5bLsIAv+szTY=
+X-Received: by 2002:a05:6358:2611:b0:135:96fa:bff3 with SMTP id
+ l17-20020a056358261100b0013596fabff3mr10294439rwc.4.1691503493824; Tue, 08
+ Aug 2023 07:04:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230808062658.391595-1-jstultz@google.com> <20230808062658.391595-2-jstultz@google.com>
+ <20230808103637.GA212435@hirez.programming.kicks-ass.net>
+In-Reply-To: <20230808103637.GA212435@hirez.programming.kicks-ass.net>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Tue, 8 Aug 2023 16:03:09 +0200
+X-Gmail-Original-Message-ID: <CAHmME9oB1PisGNqFTkE3M3YT1Q_bezS39s_xc9x4GkY87PtFtQ@mail.gmail.com>
+Message-ID: <CAHmME9oB1PisGNqFTkE3M3YT1Q_bezS39s_xc9x4GkY87PtFtQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH 1/3] test-ww_mutex: Use prng instead of rng to avoid
+ hangs at bootup
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     John Stultz <jstultz@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joelaf@google.com>,
+        Li Zhijian <zhijianx.li@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__fill_var is used by both drm_fb_helper_check_var and
-drm_fb_helper_fill_var.  In drm_fb_helper_check_var, it is possible that
-some of the variables in fb_info->var which are currently being zero'ed
-have pre-existing values.  Zeroing these causes some fb tests to fail
-with (from the Xorg.log):
+Hi Peter, John,
 
-[     9.897] (II) Module fbdevhw: vendor="X.Org Foundation"
-[     9.897]    compiled for 1.21.1.8, module version = 0.0.2
-[     9.897]    ABI class: X.Org Video Driver, version 25.2
-[     9.898] (II) FBDEV(0): using default device
-[     9.901] (==) FBDEV(0): Depth 24, (==) framebuffer bpp 32
-[     9.902] (==) FBDEV(0): RGB weight 888
-[     9.902] (==) FBDEV(0): Default visual is TrueColor
-[     9.902] (==) FBDEV(0): Using gamma correction (1.0, 1.0, 1.0)
-[     9.902] (II) FBDEV(0): hardware: virtio_gpudrmfb (video memory:
-4000kB)
-[     9.902] (DB) xf86MergeOutputClassOptions unsupported bus type 0
-[     9.903] (II) FBDEV(0): checking modes against framebuffer device...
-[     9.904] (II) FBDEV(0):     mode "640x480" test failed
-[     9.904] (II) FBDEV(0):     mode "640x480" test failed
-[     9.904] (II) FBDEV(0):     mode "640x480" test failed
-[     9.904] (II) FBDEV(0):     mode "640x480" test failed
-[     9.904] (II) FBDEV(0):     mode "640x480" not found
-[     9.904] (II) FBDEV(0): checking modes against monitor...
-[     9.905] (II) FBDEV(0): Virtual size is 1280x800 (pitch 1280)
-[     9.905] (**) FBDEV(0):  Built-in mode "current"
-[     9.905] (==) FBDEV(0): DPI set to (96, 96)
+On Tue, Aug 8, 2023 at 12:36=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Tue, Aug 08, 2023 at 06:26:41AM +0000, John Stultz wrote:
+> > Booting w/ qemu without kvm, I noticed we'd sometimes seem to get
+> > stuck in get_random_u32_below(). This seems potentially to be
+> > entropy exhaustion (with the test module linked statically, it
+> > runs pretty early in the bootup).
+> >
+> > I'm not 100% sure on this, but this patch switches to use the
+> > prng instead since we don't need true randomness, just mixed up
+> > orders for testing ww_mutex lock acquisitions.
+> >
+> > With this patch, I no longer see hangs in get_random_u32_below()
+> >
+> > Feedback would be appreciated!
+>
+> Jason, I thought part of the 'recent' random rework was avoiding the
+> exhaustion problem, could you please give an opinion on the below?
 
-Previously, these values were not modified.  Moving the zero'ing of the
-variables to drm_fb_helper_fill_var resolves the issue.
+Thanks for looping me in. I actually can't reproduce this. I'm using a
+minimal config and using QEMU without KVM. The RNG doesn't initialize
+until much later on in the boot process, expectedly, yet
+get_random_u32_below() does _not_ hang in my trials. And indeed it's
+designed to never hang, since that would create boot deadlocks. So I'm
+not sure why you're seeing a hang.
 
-Fixes: ee4cce0a8f03 ("drm/fb-helper: fix input validation gaps in check_var")
-Signed-off-by: Jon Mason <jon.mason@arm.com>
----
- drivers/gpu/drm/drm_fb_helper.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+It is worth noting that in those early boot test-case scenarios,
+before the RNG initializes, get_random_u32_below() will be somewhat
+slower than it normally is, and also slower than prandom_u32_state().
+(But only in this early boot scenario edge case; this isn't a general
+statement about speed.) It's possible that in your QEMU machine,
+things are slow enough that you're simply noticing the difference. On
+my system, however, I replaced `get_random_u32_below()` with `static
+u32 x; return ++x % ceil;` and I didn't see any difference running it
+under TCG -- it took about 7 seconds either way.
 
-diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
-index 61a5d450cc20..8e1cba064a75 100644
---- a/drivers/gpu/drm/drm_fb_helper.c
-+++ b/drivers/gpu/drm/drm_fb_helper.c
-@@ -1190,8 +1190,6 @@ static void drm_fb_helper_fill_pixel_fmt(struct fb_var_screeninfo *var,
- static void __fill_var(struct fb_var_screeninfo *var, struct fb_info *info,
- 		       struct drm_framebuffer *fb)
- {
--	int i;
--
- 	var->xres_virtual = fb->width;
- 	var->yres_virtual = fb->height;
- 	var->accel_flags = 0;
-@@ -1199,15 +1197,6 @@ static void __fill_var(struct fb_var_screeninfo *var, struct fb_info *info,
- 
- 	var->height = info->var.height;
- 	var->width = info->var.width;
--
--	var->left_margin = var->right_margin = 0;
--	var->upper_margin = var->lower_margin = 0;
--	var->hsync_len = var->vsync_len = 0;
--	var->sync = var->vmode = 0;
--	var->rotate = 0;
--	var->colorspace = 0;
--	for (i = 0; i < 4; i++)
--		var->reserved[i] = 0;
- }
- 
- /**
-@@ -1701,6 +1690,7 @@ static void drm_fb_helper_fill_var(struct fb_info *info,
- {
- 	struct drm_framebuffer *fb = fb_helper->fb;
- 	const struct drm_format_info *format = fb->format;
-+	int i;
- 
- 	switch (format->format) {
- 	case DRM_FORMAT_C1:
-@@ -1718,6 +1708,14 @@ static void drm_fb_helper_fill_var(struct fb_info *info,
- 	info->pseudo_palette = fb_helper->pseudo_palette;
- 	info->var.xoffset = 0;
- 	info->var.yoffset = 0;
-+	info->var.left_margin = info->var.right_margin = 0;
-+	info->var.upper_margin = info->var.lower_margin = 0;
-+	info->var.hsync_len = info->var.vsync_len = 0;
-+	info->var.sync = info->var.vmode = 0;
-+	info->var.rotate = 0;
-+	info->var.colorspace = 0;
-+	for (i = 0; i < 4; i++)
-+		info->var.reserved[i] = 0;
- 	__fill_var(&info->var, info, fb);
- 	info->var.activate = FB_ACTIVATE_NOW;
- 
--- 
-2.30.2
+So, from my perspective, you shouldn't see any hang. That function
+never blocks. I'm happy to look more into what's happening on your end
+though. Maybe share your .config and qemu command line and I'll see if
+I can repro?
 
+Jason
