@@ -2,196 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2947774791
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC60774660
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235807AbjHHTQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
+        id S233990AbjHHSzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235464AbjHHTQL (ORCPT
+        with ESMTP id S233272AbjHHSzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:16:11 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81E014FD5
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:38:45 -0700 (PDT)
-Received: from [192.168.0.125] (unknown [82.76.24.202])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: ehristev)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 916486607208;
-        Tue,  8 Aug 2023 12:55:18 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691495719;
-        bh=ZHAS+3Ex6HkMzLNH4hZADNVpGBBmv0IfwABrMBgoDZ4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=PDXykDxxTHok/w0WllFQUUwwKDR3XLFKsBeEAS+S3hAVI8H3LdawLENcP0RP47T1m
-         5259KHy0EXGO3IoyKrq1WtWM1aje4aiTEOrO90WnHmdpZGKb5kvNIPRpMxLabYw586
-         2SvP9cQpK+a6grvCu+3LkOZDdqtFxfiPsIx1DVzpEsRzg4mENKitwtcg4I8uilyidV
-         zwAJZqftTGdSjz5fUm+yy9dEz4dST5wNPX+XCJ8MUuxxa66bL+KfJ/ArqRynuWxw1S
-         NawmjA/NDKGop1hYAaFN37LIwHHOGELTw4ALtwCw/G2SLC3ch32TWsxmGfPuOM9aDZ
-         s43zfGuZ/NdVw==
-Message-ID: <02dc52cd-db64-af1c-0f07-5ef76b954c75@collabora.com>
-Date:   Tue, 8 Aug 2023 14:55:15 +0300
+        Tue, 8 Aug 2023 14:55:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D15565F87D
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:09:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691514542;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IcoJJyPlaY9qGuPjkOscHYRCk2xomxp+tZRbf9NDd6M=;
+        b=avwz/xZMkjdLbjhGmTA4m/bbUD6FSABrHrPpr1qJwl91lhReX4yIkgoG8k4OXfCuxKv81x
+        pT+vvDC847wEfN9vSslLj2ETskkSi70Qsmya4lrJ0vBbI/jGvgo2MO2BLiobc7yGXjk7rU
+        dbwfqkG6zGEyi+twya95HnWWAiOrakY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-576-7ZqijftWMCWuDAdQWtcejg-1; Tue, 08 Aug 2023 08:01:08 -0400
+X-MC-Unique: 7ZqijftWMCWuDAdQWtcejg-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-99c0fb2d4b0so418895166b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 05:01:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691496068; x=1692100868;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IcoJJyPlaY9qGuPjkOscHYRCk2xomxp+tZRbf9NDd6M=;
+        b=hchMAPQ0xECIpEwvq19xL7Wkl8Y/o7VMutmvWM8b3MzxtxAiojqQ7s7ISg5d1bXfaJ
+         WZY1tyrlOQUSa7h8o7Bc5nIAsnDyUy9Sa8NxOr70udoEStsMZsTWeYKHWLf6MuRIlCf9
+         6CZrWNFk8kcmNWvrA0o5OaipTN1qb8YNcCOhhFFb3YGJEdgPIKHCPwWhw3buQJ7+1+9m
+         L7WG64PeJzY8t0epDB0bVyEziqjeXeK3MD3/fTfji2ynJXiN3kDni9/Wz/oOTq5aRfdD
+         qUjyEPAMcvkrW67PQ1MC5xzzTIdO+2KGNxtguEjP/EUqeeyhGT1wzgIGNJxG95ViQfk0
+         s87g==
+X-Gm-Message-State: AOJu0Yz9gqI/GZpXtQXrEJR6f5LoLzthunNZ0nmjaDsQBnbVI6Ex9+PD
+        8tginieFxLqBDclKc12BwnL9twL9dEMGBUQ6ztoGR8oZHy2knABvoHk5J7FIqFO3Ub7lg55bTI/
+        EWGozsPLng174GwC/Zh8hcfWL
+X-Received: by 2002:a17:906:10cb:b0:99b:574f:d201 with SMTP id v11-20020a17090610cb00b0099b574fd201mr12542750ejv.40.1691496067598;
+        Tue, 08 Aug 2023 05:01:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IExprTRWssJI7svYIKpAk9QD7eZgNMMaCHszU1opQzSkcMk4JdoidE7FYhHnoUzGicOwYlHMA==
+X-Received: by 2002:a17:906:10cb:b0:99b:574f:d201 with SMTP id v11-20020a17090610cb00b0099b574fd201mr12542716ejv.40.1691496067077;
+        Tue, 08 Aug 2023 05:01:07 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id lg12-20020a170906f88c00b00992ca779f42sm6538145ejb.97.2023.08.08.05.01.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 05:01:06 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id C9617D255EA; Tue,  8 Aug 2023 14:01:04 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Albert Huang <huangjie.albert@bytedance.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     Albert Huang <huangjie.albert@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Kees Cook <keescook@chromium.org>,
+        Richard Gobert <richardbgobert@gmail.com>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
+Subject: Re: [RFC v3 Optimizing veth xsk performance 0/9]
+In-Reply-To: <20230808031913.46965-1-huangjie.albert@bytedance.com>
+References: <20230808031913.46965-1-huangjie.albert@bytedance.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 08 Aug 2023 14:01:04 +0200
+Message-ID: <87v8dpbv5r.fsf@toke.dk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH RESEND v4 2/2] drm/mediatek: Fix iommu fault during crtc
- enabling
-Content-Language: en-US
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Alexandre Mergnat <amergnat@baylibre.com>
-Cc:     Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20230807015110.30579-1-jason-jh.lin@mediatek.com>
- <20230807015110.30579-3-jason-jh.lin@mediatek.com>
-From:   Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <20230807015110.30579-3-jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+Albert Huang <huangjie.albert@bytedance.com> writes:
 
-On 8/7/23 04:51, Jason-JH.Lin wrote:
-> The plane_state of drm_atomic_state is not sync to the mtk_plane_state
-> stored in mtk_crtc during crtc enabling.
-> 
-> So we need to update the mtk_plane_state stored in mtk_crtc by the
-> drm_atomic_state carried from mtk_drm_crtc_atomic_enable().
-> 
-> While updating mtk_plane_state, OVL layer should be disabled when the fb
-> in plane_state of drm_atomic_state is NULL.
-> 
-> Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> ---
-> Change in RESEND v4:
-> Remove redundant plane_state assigning.
-> ---
->   drivers/gpu/drm/mediatek/mtk_drm_crtc.c  | 14 ++++++++++----
->   drivers/gpu/drm/mediatek/mtk_drm_plane.c | 11 ++++++++---
->   drivers/gpu/drm/mediatek/mtk_drm_plane.h |  2 ++
->   3 files changed, 20 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> index d40142842f85..7db4d6551da7 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -328,7 +328,7 @@ static void ddp_cmdq_cb(struct mbox_client *cl, void *mssg)
->   }
->   #endif
->   
-> -static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *mtk_crtc)
-> +static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *mtk_crtc, struct drm_atomic_state *state)
->   {
->   	struct drm_crtc *crtc = &mtk_crtc->base;
->   	struct drm_connector *connector;
-> @@ -405,11 +405,17 @@ static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *mtk_crtc)
->   	/* Initially configure all planes */
->   	for (i = 0; i < mtk_crtc->layer_nr; i++) {
->   		struct drm_plane *plane = &mtk_crtc->planes[i];
-> -		struct mtk_plane_state *plane_state;
-> +		struct drm_plane_state *new_state;
-> +		struct mtk_plane_state *plane_state = to_mtk_plane_state(plane->state);
->   		struct mtk_ddp_comp *comp;
->   		unsigned int local_layer;
->   
-> -		plane_state = to_mtk_plane_state(plane->state);
+> AF_XDP is a kernel bypass technology that can greatly improve performance.
+> However,for virtual devices like veth,even with the use of AF_XDP sockets,
+> there are still many additional software paths that consume CPU resources. 
+> This patch series focuses on optimizing the performance of AF_XDP sockets 
+> for veth virtual devices. Patches 1 to 4 mainly involve preparatory work. 
+> Patch 5 introduces tx queue and tx napi for packet transmission, while 
+> patch 8 primarily implements batch sending for IPv4 UDP packets, and patch 9
+> add support for AF_XDP tx need_wakup feature. These optimizations significantly
+> reduce the software path and support checksum offload.
+>
+> I tested those feature with
+> A typical topology is shown below:
+> client(send):                                        server:(recv)
+> veth<-->veth-peer                                    veth1-peer<--->veth1
+>   1       |                                                  |   7
+>           |2                                                6|
+>           |                                                  |
+>         bridge<------->eth0(mlnx5)- switch -eth1(mlnx5)<--->bridge1
+>                   3                    4                 5    
+>              (machine1)                              (machine2)    
 
-any reason why you moved the initialization of plane_state at the 
-declaration phase ?
+I definitely applaud the effort to improve the performance of af_xdp
+over veth, this is something we have flagged as in need of improvement
+as well.
 
-> +		/* sync the new plane state from drm_atomic_state */
-> +		if (state->planes[i].ptr) {
-> +			new_state = drm_atomic_get_new_plane_state(state, state->planes[i].ptr);
-Can drm_atomic_get_new_plane_state fail ? and new_state becomes null ?
+However, looking through your patch series, I am less sure that the
+approach you're taking here is the right one.
 
-I see mtk_plane_update_new_state assumes new_state being a correct 
-state/pointer.
+AFAIU (speaking about the TX side here), the main difference between
+AF_XDP ZC and the regular transmit mode is that in the regular TX mode
+the stack will allocate an skb to hold the frame and push that down the
+stack. Whereas in ZC mode, there's a driver NDO that gets called
+directly, bypassing the skb allocation entirely.
 
-Regards,
+In this series, you're implementing the ZC mode for veth, but the driver
+code ends up allocating an skb anyway. Which seems to be a bit of a
+weird midpoint between the two modes, and adds a lot of complexity to
+the driver that (at least conceptually) is mostly just a
+reimplementation of what the stack does in non-ZC mode (allocate an skb
+and push it through the stack).
 
-> +			mtk_plane_update_new_state(new_state, plane_state);
-> +		}
-> +
->   		comp = mtk_drm_ddp_comp_for_plane(crtc, plane, &local_layer);
->   		if (comp)
->   			mtk_ddp_comp_layer_config(comp, local_layer,
-> @@ -687,7 +693,7 @@ static void mtk_drm_crtc_atomic_enable(struct drm_crtc *crtc,
->   		return;
->   	}
->   
-> -	ret = mtk_crtc_ddp_hw_init(mtk_crtc);
-> +	ret = mtk_crtc_ddp_hw_init(mtk_crtc, state);
->   	if (ret) {
->   		pm_runtime_put(comp->dev);
->   		return;
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-> index b1a918ffe457..ef4460f98c07 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-> @@ -134,8 +134,8 @@ static int mtk_plane_atomic_async_check(struct drm_plane *plane,
->   						   true, true);
->   }
->   
-> -static void mtk_plane_update_new_state(struct drm_plane_state *new_state,
-> -				       struct mtk_plane_state *mtk_plane_state)
-> +void mtk_plane_update_new_state(struct drm_plane_state *new_state,
-> +				struct mtk_plane_state *mtk_plane_state)
->   {
->   	struct drm_framebuffer *fb = new_state->fb;
->   	struct drm_gem_object *gem;
-> @@ -146,6 +146,11 @@ static void mtk_plane_update_new_state(struct drm_plane_state *new_state,
->   	dma_addr_t hdr_addr = 0;
->   	unsigned int hdr_pitch = 0;
->   
-> +	if (!fb) {
-> +		mtk_plane_state->pending.enable = false;
-> +		return;
-> +	}
-> +
->   	gem = fb->obj[0];
->   	mtk_gem = to_mtk_gem_obj(gem);
->   	addr = mtk_gem->dma_addr;
-> @@ -180,7 +185,7 @@ static void mtk_plane_update_new_state(struct drm_plane_state *new_state,
->   		       fb->format->cpp[0] * (x_offset_in_blocks + 1);
->   	}
->   
-> -	mtk_plane_state->pending.enable = true;
-> +	mtk_plane_state->pending.enable = new_state->visible;
->   	mtk_plane_state->pending.pitch = pitch;
->   	mtk_plane_state->pending.hdr_pitch = hdr_pitch;
->   	mtk_plane_state->pending.format = format;
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.h b/drivers/gpu/drm/mediatek/mtk_drm_plane.h
-> index 99aff7da0831..0a7d70d13e43 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.h
-> @@ -46,6 +46,8 @@ to_mtk_plane_state(struct drm_plane_state *state)
->   	return container_of(state, struct mtk_plane_state, base);
->   }
->   
-> +void mtk_plane_update_new_state(struct drm_plane_state *new_state,
-> +				struct mtk_plane_state *mtk_plane_state);
->   int mtk_plane_init(struct drm_device *dev, struct drm_plane *plane,
->   		   unsigned long possible_crtcs, enum drm_plane_type type,
->   		   unsigned int supported_rotations, const u32 *formats,
+So my question is, why not optimise the non-zc path in the stack instead
+of implementing the zc logic for veth? It seems to me that it would be
+quite feasible to apply the same optimisations (bulking, and even GRO)
+to that path and achieve the same benefits, without having to add all
+this complexity to the veth driver?
+
+-Toke
 
