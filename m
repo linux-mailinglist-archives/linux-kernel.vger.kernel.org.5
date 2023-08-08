@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE2F774301
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E35773F3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbjHHRzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50888 "EHLO
+        id S233100AbjHHQoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233604AbjHHRyx (ORCPT
+        with ESMTP id S233001AbjHHQnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:54:53 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EC229459
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:24:42 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C2EC420018;
-        Tue,  8 Aug 2023 09:15:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1691486155; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iRtgBAku4257SBCPX9EvO+HL6e6liwMpsxDBOvqZyE8=;
-        b=ger7pBuTrwZ1HKfT8z3sjooEkTpJe3raGS/n3xoYQLq0YXFOHoeHwbeOG6Bj+fsq/6zX54
-        E1NP09owVZGoBvJeH64xMMrenfzb0bzQiygBaUWOhWaAINnsLapt19zbZUkeg0wBX+Qq+I
-        j8LrLs0n9TeihtMldqsK9LaAO/bydwc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1691486155;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iRtgBAku4257SBCPX9EvO+HL6e6liwMpsxDBOvqZyE8=;
-        b=y8Vlt3iowHtcCUjxibL0cRrP6Ih1Ml60GjqxgTHt1Yc1NMC+MzeOs2fm8IkUJeY+N/r/h1
-        l43pwJ9arV5cIGBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B4FED13451;
-        Tue,  8 Aug 2023 09:15:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5zvcK8sH0mRFEwAAMHmgww
-        (envelope-from <dwagner@suse.de>); Tue, 08 Aug 2023 09:15:55 +0000
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Caleb Sander <csander@purestorage.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH libnvme v3 2/2] fabrics: Do not pass disable_sqflow if not supported
-Date:   Tue,  8 Aug 2023 11:15:50 +0200
-Message-ID: <20230808091550.25349-3-dwagner@suse.de>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230808091550.25349-1-dwagner@suse.de>
-References: <20230808091550.25349-1-dwagner@suse.de>
+        Tue, 8 Aug 2023 12:43:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FDE891A8;
+        Tue,  8 Aug 2023 08:55:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691510154; x=1723046154;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=e71Q+6dkdo7GKNkQOotvTjy2V6wO+hHkaKK74hljBDQ=;
+  b=F89qZTFWqrse8lWvaZYNaA5Pj3PQv5jEq2TlITz9BCp7hUlKHMCQZUiD
+   OgRB50SUNq5FXyKyXwD8Qa5wWqp3lsi08VI4lEExvaR5jQYPn69l83TxX
+   MoZgE/aNjgkfWx/nCPyL9uDMyWgt+GQNV4jXco9Jjz+EolYYYZfdF14+n
+   gsoRCIwPdPsgRKRmOOpIqbL1kP1jXXnQe3UD55lqog6MXcTsCGITnD+BE
+   s1J5Bwc1UhLamLRdkNsCiSbq+I2o3La/DLZvKGJN2t1hcKKzLsYgxDKaV
+   MqiaDQBYqo9xhnTfy3nJNbRgwDy2J0pB8cic/3SUrRMQZ1RS507rscotb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="437097728"
+X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
+   d="scan'208";a="437097728"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 02:16:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="977776785"
+X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
+   d="scan'208";a="977776785"
+Received: from mtofeni-mobl.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.48.21])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 02:16:36 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+Cc:     Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 0/7] selftests/resctrl: Rework benchmark command handling
+Date:   Tue,  8 Aug 2023 12:16:18 +0300
+Message-Id: <20230808091625.12760-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+The benchmark command handling (-b) in resctrl selftests is overly
+complicated code. This series turns the benchmark command immutable to
+preserve it for all selftests and improves benchmark command related
+error handling.
 
-Only retry a connect attempt with disable_sqflow if the kernel
-actually supports this option.
+This series also ends up removing the strcpy() calls which were pointed
+out earlier.
 
-Reported-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
- src/nvme/fabrics.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Ilpo Järvinen (7):
+  selftests/resctrl: Ensure the benchmark commands fits to its array
+  selftests/resctrl: Correct benchmark command help
+  selftests/resctrl: Remove bw_report and bm_type from main()
+  selftests/resctrl: Simplify span lifetime
+  selftests/resctrl: Use pointers to build benchmark cmd and make it
+    const
+  selftests/resctrl: remove ben_count variable
+  selftests/resctrl: Cleanup benchmark argument parsing
 
-diff --git a/src/nvme/fabrics.c b/src/nvme/fabrics.c
-index 9725eeb3cda8..11d99580072a 100644
---- a/src/nvme/fabrics.c
-+++ b/src/nvme/fabrics.c
-@@ -1031,8 +1031,11 @@ nvme_ctrl_t nvmf_connect_disc_entry(nvme_host_t h,
- 		return NULL;
- 	}
- 
--	if (e->treq & NVMF_TREQ_DISABLE_SQFLOW)
-+	if (e->treq & NVMF_TREQ_DISABLE_SQFLOW &&
-+	    nvmf_check_option(h->r, disable_sqflow))
- 		c->cfg.disable_sqflow = true;
-+	else
-+		c->cfg.disable_sqflow = false;
- 
- 	if (e->trtype == NVMF_TRTYPE_TCP &&
- 	    (e->treq & NVMF_TREQ_REQUIRED ||
+ tools/testing/selftests/resctrl/cache.c       |  5 +-
+ tools/testing/selftests/resctrl/cat_test.c    | 13 +--
+ tools/testing/selftests/resctrl/cmt_test.c    | 32 +++++--
+ tools/testing/selftests/resctrl/mba_test.c    |  4 +-
+ tools/testing/selftests/resctrl/mbm_test.c    |  7 +-
+ tools/testing/selftests/resctrl/resctrl.h     | 22 +++--
+ .../testing/selftests/resctrl/resctrl_tests.c | 88 ++++++++-----------
+ tools/testing/selftests/resctrl/resctrl_val.c | 10 ++-
+ 8 files changed, 98 insertions(+), 83 deletions(-)
+
 -- 
-2.41.0
+2.30.2
 
