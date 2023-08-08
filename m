@@ -2,154 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E249E773FA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E57773FDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233581AbjHHQuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
+        id S233728AbjHHQyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233542AbjHHQtf (ORCPT
+        with ESMTP id S233660AbjHHQxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:49:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499D017A83;
-        Tue,  8 Aug 2023 08:57:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Tue, 8 Aug 2023 12:53:51 -0400
+X-Greylist: delayed 123 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Aug 2023 08:58:49 PDT
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1BB4FB11;
+        Tue,  8 Aug 2023 08:58:49 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8E93040E01A7;
+        Tue,  8 Aug 2023 15:58:15 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 6Xj84UAznqw9; Tue,  8 Aug 2023 15:58:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1691510293; bh=DCkALUn2a0fRPRuE1oEWiAP6SlTKCTfiUiAf37W0FBc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DKap3it59CcLf6kyeH9uTtkNrsK6AkvlvneSS9U51eiKy2h32T+0Chyu79W6SgQxY
+         bcvKjf6cHRFCNRr8tbKHfffuu74JIXxzgpslxJBOBH5Kb3sKtXBQuqmCSZq8+Sc72M
+         JIxutB7g4UtC6hs792WKljoOzTwfqcKriyEQN2h7ad4BGrhWbdBtS/4G6Z34YiWVHb
+         tZfSlWzS4gct1YoYzpJYJBm7npRBloxqzrxw1/9JY84yGtGKyU/t+t3XeNIheHYcX4
+         dZkkpfBbC0qUD9bghD06lPLNcJnk3QmY3V6S2WyaCFqKY8LeKXl+aSvePF5yetFucp
+         TDr3Rb4rpCbCTHpLbA9oc474ZeXkdAYGjEuZj9/3edI24boQ1wNMJfJmW4k6eRI76X
+         2gXdn8jPGWvG59Oyldz6p0m18WZkWD7IqH81aR9B3OvoUdgIl24krapeIIL+GoQymn
+         JHn8kXJrrhTktKr7C3Bp7BPWrfhN5AApwAMVFDyrkXC3nTN7bT79wkNx6zVBk6tpAA
+         EVaj8nm4UXi5vmNZZ0kqUecXoq6W/yfdXWHkx6Jhev8XrHfxj1TTDfbwd4rBUuttJN
+         evTbM6zCavGG41TqtGfuER8Xh5y3GYcZ6ufBcjlFzIEePX6YyIfNZs+J9emuOE1mhC
+         VVv6A8HS/9BM7YI1ncpW2JL0=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1067862129;
-        Tue,  8 Aug 2023 15:56:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D403C433C7;
-        Tue,  8 Aug 2023 15:56:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691510200;
-        bh=CYAIN+hBluNNXel12E9YVQxbYaxz9CVWUE5nfKL6+7k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=HU3OlAtQ4k5a78DUGRFzHViT3BFA0n8uq26wIwdKsK8JoV0uKMiVMfwATnthIPWKR
-         AGQKAOsCr9glJ92tHpxRKk7UtjG+jfg5byfGwtCjoziA/Asjss9FOHndgXyDEBBXGF
-         bQ76F9cnbgFF1GQLncbdCjulv/b0RskJKgM8miGw4/8kEL7iF/lgyeuqnaC8XUzARz
-         XMVyi+k6Lfyhs2SU/xKvhoh76SxsP2UYtSTInLUzJxXHwYjiG5y/6IbLd2hPeRmd/R
-         hlbwugFanGIyJnWfxDeSetdMU8QbEFFmwwBuKYg2V85akWu8m87NuJt71TvGRArL3z
-         3IdLh5Q/0gwJQ==
-Date:   Tue, 8 Aug 2023 10:56:38 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Thippeswamy Havalige <thippeswamy.havalige@amd.com>
-Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        bhelgaas@google.com, krzysztof.kozlowski@linaro.org,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        lpieralisi@kernel.org, bharat.kumar.gogada@amd.com,
-        michal.simek@amd.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] PCI: xilinx-nwl: Remove unnecessary code which
- updates primary,secondary and sub-ordinate bus numbers.
-Message-ID: <20230808155638.GA313716@bhelgaas>
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8D5BC40E01A4;
+        Tue,  8 Aug 2023 15:58:04 +0000 (UTC)
+Date:   Tue, 8 Aug 2023 17:58:03 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     "Limonciello, Mario" <mario.limonciello@amd.com>,
+        linux-edac@vger.kernel.org, hdegoede@redhat.com,
+        markgross@kernel.org, platform-driver-x86@vger.kernel.org,
+        "Luck, Tony" <tony.luck@intel.com>, linux-kernel@vger.kernel.org,
+        avadhut.naik@amd.com
+Subject: Re: [PATCH 1/2] platform/x86/amd: Introduce AMD Address Translation
+ Library
+Message-ID: <20230808155803.GFZNJmCx15MGlDPVkp@fat_crate.local>
+References: <20230802185504.606855-1-yazen.ghannam@amd.com>
+ <20230802185504.606855-2-yazen.ghannam@amd.com>
+ <58934edf-4fad-48e0-bc5d-62712b11e607@amd.com>
+ <894b3737-1a0a-4139-9c73-686a95481795@amd.com>
+ <B3BE6B56-FBAB-4878-A45D-E95AFAC86AB1@alien8.de>
+ <f989cd56-a066-409a-8d82-40d0bc6ff89b@amd.com>
+ <20230808142007.GCZNJPFy8PqTJgTAN5@fat_crate.local>
+ <a62282e0-3784-4d96-b632-fdd6d2627ca3@amd.com>
+ <20230808143735.GDZNJTL0DlJd3225db@fat_crate.local>
+ <b5609e88-2bdb-44ad-8a3a-b61196ee540a@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230808103733.93707-1-thippeswamy.havalige@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <b5609e88-2bdb-44ad-8a3a-b61196ee540a@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 04:07:30PM +0530, Thippeswamy Havalige wrote:
-> The primary,secondary and sub-ordinate bus number registers are updated by
-> Linux PCI core, so remove code which updates repective fields of type 1
-> header 18th offset of Root Port configuration space.
+On Tue, Aug 08, 2023 at 11:18:07AM -0400, Yazen Ghannam wrote:
+> I think it would be better to avoid dependencies between independent things.
 
-Whoever applies this, please:
+If they really are independent then I guess. Not that it all ends up in
+a twisty dependency where you wish you should've merged the two
+together. So think about all deps before you design this - it needs to
+handle all cases without hackery.
 
-  - Drop period from subject line
-  - Add space after comma
-  - s/repective/respective/
-  - Fix up "18th"; I suppose this refers to the 18h offset, but the
-    reference is too low-level and probably unnecessary since we
-    already listed the affected registers
+> For example, amd_smn_read() is mostly used in amd64_edac. EDAC was the
+> original user of SMN accesses, and all the SMN stuff could have been
+> included in EDAC. However, SMN is not specifically for EDAC, so it was added
+> to amd_nb.c to be commonly available. Currently, SMN accesses are done in
+> other modules. I don't think it would have been a good idea to force other
+> modules or subsystems to require EDAC to be used.
 
-> Signed-off-by: Thippeswamy Havalige <thippeswamy.havalige@amd.com>
-> Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>
-> ---
-> changes in v2:
-> - Code increasing ECAM Size value is added into a seperate patch.
-> - Modified commit messages.
-> changes in v1:
-> - Modified commit messages.
-> ---
->  drivers/pci/controller/pcie-xilinx-nwl.c | 16 ++--------------
->  1 file changed, 2 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c b/drivers/pci/controller/pcie-xilinx-nwl.c
-> index 176686b..a73554e 100644
-> --- a/drivers/pci/controller/pcie-xilinx-nwl.c
-> +++ b/drivers/pci/controller/pcie-xilinx-nwl.c
-> @@ -165,8 +165,6 @@ struct nwl_pcie {
->  	u32 ecam_size;
->  	int irq_intx;
->  	int irq_misc;
-> -	u32 ecam_value;
+What does that have to do with this? SMN access is generic and should be
+in amd_nb.c as it is needed by other stuff. EDAC, RAS, whatever are all
+users of that thing.
 
-The removal of "ecam_value" has nothing to do with the PCI core; it
-seems more related to the NWL_ECAM_VALUE_DEFAULT change, and I would
-either squash it into that patch or make it a separate "no functional
-change" cleanup patch.
+> This is my reasoning for a separate, independent module for the translation.
+> EDAC is the first user of this. But there will be future code that can
+> leverage this, like CXL, and even the MCE subsystem. And, yes, mce_amd may
+> be already loaded, but this isn't a given. A person may want MCE and CXL
+> support without wanting to use EDAC.
 
-> -	u8 last_busno;
->  	struct nwl_msi msi;
->  	struct irq_domain *legacy_irq_domain;
->  	struct clk *clk;
-> @@ -625,7 +623,7 @@ static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
->  {
->  	struct device *dev = pcie->dev;
->  	struct platform_device *pdev = to_platform_device(dev);
-> -	u32 breg_val, ecam_val, first_busno = 0;
-> +	u32 breg_val, ecam_val;
->  	int err;
->  
->  	breg_val = nwl_bridge_readl(pcie, E_BREG_CAPABILITIES) & BREG_PRESENT;
-> @@ -675,7 +673,7 @@ static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
->  			  E_ECAM_CR_ENABLE, E_ECAM_CONTROL);
->  
->  	nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, E_ECAM_CONTROL) |
-> -			  (pcie->ecam_value << E_ECAM_SIZE_SHIFT),
-> +			  (NWL_ECAM_VALUE_DEFAULT << E_ECAM_SIZE_SHIFT),
->  			  E_ECAM_CONTROL);
->  
->  	nwl_bridge_writel(pcie, lower_32_bits(pcie->phys_ecam_base),
-> @@ -683,15 +681,6 @@ static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
->  	nwl_bridge_writel(pcie, upper_32_bits(pcie->phys_ecam_base),
->  			  E_ECAM_BASE_HI);
->  
-> -	/* Get bus range */
-> -	ecam_val = nwl_bridge_readl(pcie, E_ECAM_CONTROL);
-> -	pcie->last_busno = (ecam_val & E_ECAM_SIZE_LOC) >> E_ECAM_SIZE_SHIFT;
-> -	/* Write primary, secondary and subordinate bus numbers */
-> -	ecam_val = first_busno;
-> -	ecam_val |= (first_busno + 1) << 8;
-> -	ecam_val |= (pcie->last_busno << E_ECAM_SIZE_SHIFT);
-> -	writel(ecam_val, (pcie->ecam_base + PCI_PRIMARY_BUS));
-> -
->  	if (nwl_pcie_link_up(pcie))
->  		dev_info(dev, "Link is UP\n");
->  	else
-> @@ -792,7 +781,6 @@ static int nwl_pcie_probe(struct platform_device *pdev)
->  	pcie = pci_host_bridge_priv(bridge);
->  
->  	pcie->dev = dev;
-> -	pcie->ecam_value = NWL_ECAM_VALUE_DEFAULT;
->  
->  	err = nwl_pcie_parse_dt(pcie, pdev);
->  	if (err) {
-> -- 
-> 1.8.3.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Is that a real use case or just a hypothetical thing?
+
+> Furthermore, some things using the translation will be built-in, so the
+> translation module will need to be built-in.
+
+This sounds weird.
+
+> I agree. And I don't think much of the existing things in EDAC should be
+> moved out. But this is new code, so there's an opportunity to have it in a
+> more appropriate place.
+>
+> And, thinking on it more, this could be another example for future "common
+> RAS" functionality. Isn't that why the CEC is in drivers/ras?
+
+It is there because it doesn't need EDAC at all. If your translation
+doesn't need EDAC and EDAC is going to be only a user of it, then good.
+
+But if you're going to have to need the MCA error decoded by EDAC and
+then the error translation done by this thing, then you'd need to
+synchronize between the two. I'm not saying it is impossible - it should
+be well thought out first though before you go coding.
+
+> It seems like things go into EDAC because it's thought of as the de
+> facto RAS location.  But why have something in EDAC if it doesn't
+> provide EDAC functionality?  Other RAS things, like AER, APEI, etc.,
+> don't live in EDAC.
+
+AER is part of PCI so we haven't considereed tying it into EDAC. And
+there wasn't any desire to do so.
+
+As to APEI, there's ghes_edac...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
