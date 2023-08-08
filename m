@@ -2,130 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99409774247
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C79774050
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234873AbjHHRjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
+        id S233978AbjHHRBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234738AbjHHRiu (ORCPT
+        with ESMTP id S233712AbjHHRBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:38:50 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02BD3AAE
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:17:03 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2680182bc21so3144442a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691511375; x=1692116175;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HvqYw50hA3eg6fTEyMxs963EOcH3mDmkMLxwXE575wg=;
-        b=JEefN6JD6Q5vbzcjj8+Ur3NiD+Nmiwe/DoogdJeJlM5QDkICh6xOKeYpt0AfqPMgWY
-         /kTegZtgG6IRhag0cI/K6AATs4rV98bau0LOpZUPcOezcamFFVXLBUNf7jMiIxdFSCkL
-         q/PREVBboJUA8qIlnO/fN4QKI4RomvC7hBhik=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511375; x=1692116175;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HvqYw50hA3eg6fTEyMxs963EOcH3mDmkMLxwXE575wg=;
-        b=jL81Fj5uIjfwdolEa+ukvbmvIWF7ixqxHQVNaxOMaosJJdz0RBROVg1ZStgTHJ3OVT
-         Tp0pMpWMvxDRRQEfiiIECvY9Nkb5c5ilr1FQ5Q4Vh9jTrQ538wdlIDhaEPk8m/HgZ29x
-         gaV8L8ZpCvYenQdsOWkjINHADwjkj8nG76ZRQdC+22uOydS9VejpgaiJt/vweEiMNJ8N
-         RvFfIsAyBQHffwMSCMNh1idsuSfKjqs+FVBh+0XEtDdmpTuo2DsZDhRhiTYril5otp07
-         D0jA/aez+t7tKD281ZauB7Jf8EEZ0HpfnuU9VT3N49Ve8tLk907mIoXy/tHV2FadTekK
-         mD9w==
-X-Gm-Message-State: AOJu0Ywqk9ZWwpo7NgZZQ6m3VoVZnLc4A5LqU5Ypkff+q3Jtu8vqEvDe
-        +qOJqRRfQOLQypu4jF5Wj/7Kzow9wnmGv0UefJI=
-X-Google-Smtp-Source: AGHT+IEr4kRNf11XniaflwZ5G4MFT6CEIrEsTvEvbpcV/reJoBZs+xiAbEYbAhT6n5rT/1rjg8mLWA==
-X-Received: by 2002:a05:6a20:6a10:b0:13d:ee19:7725 with SMTP id p16-20020a056a206a1000b0013dee197725mr12015955pzk.12.1691480036426;
-        Tue, 08 Aug 2023 00:33:56 -0700 (PDT)
-Received: from localhost (97.176.124.34.bc.googleusercontent.com. [34.124.176.97])
-        by smtp.gmail.com with UTF8SMTPSA id i5-20020a170902eb4500b001b04c2023e3sm8161899pli.218.2023.08.08.00.33.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 00:33:55 -0700 (PDT)
-From:   Hsin-Te Yuan <yuanhsinte@chromium.org>
-X-Google-Original-From: Hsin-Te Yuan <yuanhsinte@google.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Hsin-Te Yuan <yuanhsinte@google.com>
-Subject: [PATCH v2] arm64: dts: mt8195-cherry-tomato: change watchdog reset boot flow
-Date:   Tue,  8 Aug 2023 07:33:07 +0000
-Message-ID: <20230808073342.1054762-1-yuanhsinte@google.com>
-X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
+        Tue, 8 Aug 2023 13:01:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EAA8685;
+        Tue,  8 Aug 2023 09:00:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 85C99623A0;
+        Tue,  8 Aug 2023 07:35:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 607DBC433C8;
+        Tue,  8 Aug 2023 07:35:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691480120;
+        bh=2X/NGOteLx4UL3AZkQJT72BA3+ipWBqs7JqK5Lor0b8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Su9ocHgjU00cWfZv6OLYZoas6jUlRqbWOEtcbT1kZAr/ElT/82cIeISg8oVmdK5fL
+         j8w/eEwG/vrvr4fk9sP8HvryDnGXUuXUcABLYP68xSlz7J6p8mli5w2jy6aQjoIFiC
+         80rf2TYDsg8WV2Ye4sT6LmGwDeF+MX56LM7BaMnA=
+Date:   Tue, 8 Aug 2023 09:35:17 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russell.h.weight@intel.com>,
+        Tianfei Zhang <tianfei.zhang@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
+        Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH v3 4.14 1/1] test_firmware: fix the memory leaks with the
+ reqs buffer
+Message-ID: <2023080817-why-shawl-8ac1@gregkh>
+References: <20230804170017.92671-1-mirsad.todorovac@alu.unizg.hr>
+ <2023080705-poet-nickname-5e08@gregkh>
+ <a9e443c7-c7b5-63ce-08d9-5604ac545bf6@alu.unizg.hr>
+ <2023080802-moonrise-cascade-a4c0@gregkh>
+ <1269af66-bd86-0fab-e4ec-968f14371279@alu.unizg.hr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1269af66-bd86-0fab-e4ec-968f14371279@alu.unizg.hr>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The external output reset signal was originally disabled and sent from
-firmware. However, an unfixed bug in the firmware on tomato prevents
-the signal from being sent, causing the device to fail to boot. To fix
-this, enable external output reset signal to allow the device to reboot
-normally.
+On Tue, Aug 08, 2023 at 08:24:43AM +0200, Mirsad Todorovac wrote:
+> On 8/8/23 06:28, Greg Kroah-Hartman wrote:
+> > On Mon, Aug 07, 2023 at 08:28:04PM +0200, Mirsad Todorovac wrote:
+> > > On 8/7/23 11:15, Greg Kroah-Hartman wrote:
+> > > > On Fri, Aug 04, 2023 at 07:00:18PM +0200, Mirsad Todorovac wrote:
+> > > > > [ commit be37bed754ed90b2655382f93f9724b3c1aae847 upstream ]
+> > > > > 
+> > > > > Dan Carpenter spotted that test_fw_config->reqs will be leaked if
+> > > > > trigger_batched_requests_store() is called two or more times.
+> > > > > The same appears with trigger_batched_requests_async_store().
+> > > > > 
+> > > > > This bug wasn't triggered by the tests, but observed by Dan's visual
+> > > > > inspection of the code.
+> > > > > 
+> > > > > The recommended workaround was to return -EBUSY if test_fw_config->reqs
+> > > > > is already allocated.
+> > > > > 
+> > > > > Fixes: c92316bf8e94 ("test_firmware: add batched firmware tests")
+> > > > > Cc: Luis Chamberlain <mcgrof@kernel.org>
+> > > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > > Cc: Russ Weight <russell.h.weight@intel.com>
+> > > > > Cc: Tianfei Zhang <tianfei.zhang@intel.com>
+> > > > > Cc: Shuah Khan <shuah@kernel.org>
+> > > > > Cc: Colin Ian King <colin.i.king@gmail.com>
+> > > > > Cc: Randy Dunlap <rdunlap@infradead.org>
+> > > > > Cc: linux-kselftest@vger.kernel.org
+> > > > > Cc: stable@vger.kernel.org # v4.14
+> > > > > Suggested-by: Dan Carpenter <error27@gmail.com>
+> > > > > Suggested-by: Takashi Iwai <tiwai@suse.de>
+> > > > > Link: https://lore.kernel.org/r/20230509084746.48259-2-mirsad.todorovac@alu.unizg.hr
+> > > > > Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+> > > > > 
+> > > > > [ This fix is applied against the 4.14 stable branch. There are no changes to the ]
+> > > > > [ fix in code when compared to the upstread, only the reformatting for backport.  ]
+> > > > 
+> > > > Thanks for all of these, now queued up.
+> > > 
+> > > No problem, I should have done it right the first time to reduce your load.
+> > > 
+> > > I really believe that backporting bug fix patches is important because many systems
+> > > cannot upgrade because of the legacy apps and hardware, to state the obvious.
+> > 
+> > What "legacy apps" rely on a specific kernel version?
+> 
+> Hi, Mr. Greg,
+> 
+> Actually, in our particular case, it was the Eprints that required old mysql on Debian stretch
+> rather than MariaDB that came with Buster. So, the release required particular kernel version (4.9).
 
-Signed-off-by: Hsin-Te Yuan <yuanhsinte@google.com>
----
+So what happens when this kernel becomes end-of-life?
 
-Changes in v2:
-- Limit the effect only on tomato.
+> Of course, we can upgrade to any mainline kernel, but that is no longer a tested distro kernel,
+> and faults would be blamed on me entirely. Plus the overhead of regular patching ...
 
- arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts | 4 ++++
- 3 files changed, 12 insertions(+)
+You should be doing regular patching for any LTS kernel as well, right?
+Same for testing, there should not be any difference in testing any
+kernel update be it on a LTS branch, or between major versions.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
-index 2d5e8f371b6de..a82d716f10d44 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
-@@ -23,3 +23,7 @@ &sound {
- &ts_10 {
- 	status = "okay";
- };
-+
-+&watchdog {
-+	/delete-property/ mediatek,disable-extrst;
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
-index 2586c32ce6e6f..2fe20e0dad836 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
-@@ -43,3 +43,7 @@ &sound {
- &ts_10 {
- 	status = "okay";
- };
-+
-+&watchdog {
-+	/delete-property/ mediatek,disable-extrst;
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
-index f54f9477b99da..dd294ca98194c 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
-@@ -44,3 +44,7 @@ &sound {
- &ts_10 {
- 	status = "okay";
- };
-+
-+&watchdog {
-+	/delete-property/ mediatek,disable-extrst;
-+};
--- 
-2.41.0.640.ga95def55d0-goog
+anyway, good luck!
 
+greg k-h
