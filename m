@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9EE7745F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B95B7747C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233184AbjHHStl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33628 "EHLO
+        id S236064AbjHHTTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbjHHStV (ORCPT
+        with ESMTP id S233988AbjHHTSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:49:21 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95E26E9E;
-        Tue,  8 Aug 2023 10:01:19 -0700 (PDT)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 378Co9RM027282;
-        Tue, 8 Aug 2023 18:20:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=qK+bLNEf/yd307CslLlG3mAR8/FcQJFZFqOUnUtJAh8=; b=L4
-        8PETXXDAlTQ+H366hlsEfdOGvtNU+zzJ6h55/fP9lJKsbGfZIJYcRMQW7hKX6iJR
-        CCU0MSVXQs1yVZAqh9QbeRADS6jcybVcUl4pnaGsMbcFFZ/NOZnuWGWVizSL9zNi
-        l+giYVqIUQNbKk0elPGuqSLL3UPfm8hfhOl/ZOfe10rZdk8kHzHkv6ure/d9ujgh
-        lkATtkmE6s8rXip/W4l0PWogfDff4ju31yptYqsTHsmEI9Ph7XLdO+j9PSc+8/Yc
-        8QZ5ig9LmEbrLS8aMYhgw4PfBhH5U0fEAMs0cQEmv3yuitI6QZDrDGUWfSNj7Eh7
-        SNveOMC4Mf4GMkTPZ97A==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sbp2d95fu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Aug 2023 18:20:43 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 85C10100062;
-        Tue,  8 Aug 2023 18:20:42 +0200 (CEST)
-Received: from Webmail-eu.st.com (eqndag1node4.st.com [10.75.129.133])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7DDBC236928;
-        Tue,  8 Aug 2023 18:20:42 +0200 (CEST)
-Received: from localhost (10.201.20.168) by EQNDAG1NODE4.st.com
- (10.75.129.133) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 8 Aug
- 2023 18:20:42 +0200
-From:   Valentin Caron <valentin.caron@foss.st.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Jiri Slaby <jirislaby@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Valentin Caron <valentin.caron@foss.st.com>
-Subject: [PATCH v2 6/6] serial: stm32: synchronize RX DMA channel in shutdown
-Date:   Tue, 8 Aug 2023 18:19:06 +0200
-Message-ID: <20230808161906.178996-7-valentin.caron@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230808161906.178996-1-valentin.caron@foss.st.com>
-References: <20230808161906.178996-1-valentin.caron@foss.st.com>
+        Tue, 8 Aug 2023 15:18:38 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0C73CD32
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:41:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691512912; x=1723048912;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0z1l/njVD+UEzwVIY4bLXSqHss3Uzx8s2RCDApioNEA=;
+  b=Wwd84tJMgkhhVANO2Sd9wBfweXP3Lu2kFmcGRUc4IJLat7EJyexeu+Cf
+   lQs1LC0wwpnRzS25DrNA8r5cRoY9LkIYQfEGbxpHL+TJczxviNhRoboS+
+   Y6HxFwE226HLAzLVtGFpeT3h+vH8R/eIDXKqXO6ZIMReGs4mLfUq6Rt5k
+   iOmyjzPL+Nxrt6kKSM8r6dqElywEOUWWu9SQXmx6L4m46gLTylpd1z7PL
+   gcAdU8/CLiibkr9ikvfBEcN0+y2/B4h8VUu69LfxAQUmJyxy366mQiVP8
+   QhiJ9MF1kPlItWpMONcB5gRYnnu7bdiqGrT4IVCFijsem9WYf+FNCBXYV
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="374551726"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="374551726"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 09:23:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="977932468"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="977932468"
+Received: from vevladis-mobl.ccr.corp.intel.com (HELO box.shutemov.name) ([10.252.49.245])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 09:23:27 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id E348C10A12B; Tue,  8 Aug 2023 19:23:24 +0300 (+03)
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>, x86@kernel.org,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCH] x86/tdx: Mark TSC reliable
+Date:   Tue,  8 Aug 2023 19:23:20 +0300
+Message-ID: <20230808162320.27297-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.201.20.168]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To EQNDAG1NODE4.st.com
- (10.75.129.133)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-08_15,2023-08-08_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+In x86 virtualization environments, including TDX, RDTSC instruction is
+handled without causing a VM exit, resulting in minimal overhead and
+jitters. On the other hand, other clock sources (such as HPET, ACPI
+timer, APIC, etc.) necessitate VM exits to implement, resulting in more
+fluctuating measurements compared to TSC. Thus, those clock sources are
+not effective for calibrating TSC.
 
-In shutdown, RX DMA channel is terminated. If the DMA RX callback is
-scheduled but not yet executed, while a new RX DMA transfer is started, the
-callback can be executed, and then disturb the ongoing RX DMA transfer.
-To avoid such a case, call dmaengine_synchronize in shutdown, after the
-DMA RX channel is terminated.
+In TD guests, TSC is virtualized by the TDX module, which ensures:
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+  - Virtual TSC values are consistent among all the TD’s VCPUs;
+  - Monotonously incrementing for any single VCPU;
+  - The frequency is determined by TD configuration. The host TSC is
+    invariant on platforms where TDX is available.
+
+Use TSC as the only reliable clock source in TD guests, bypassing
+unstable calibration.
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- drivers/tty/serial/stm32-usart.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/x86/coco/tdx/tdx.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 8fc0526be898..5e9cf0c48813 100644
---- a/drivers/tty/serial/stm32-usart.c
-+++ b/drivers/tty/serial/stm32-usart.c
-@@ -1123,8 +1123,10 @@ static void stm32_usart_shutdown(struct uart_port *port)
- 		dev_err(port->dev, "Transmission is not complete\n");
+diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+index 1d6b863c42b0..1583ec64d92e 100644
+--- a/arch/x86/coco/tdx/tdx.c
++++ b/arch/x86/coco/tdx/tdx.c
+@@ -769,6 +769,9 @@ void __init tdx_early_init(void)
  
- 	/* Disable RX DMA. */
--	if (stm32_port->rx_ch)
-+	if (stm32_port->rx_ch) {
- 		stm32_usart_rx_dma_terminate(stm32_port);
-+		dmaengine_synchronize(stm32_port->rx_ch);
-+	}
+ 	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
  
- 	/* flush RX & TX FIFO */
- 	if (ofs->rqr != UNDEF_REG)
++	/* TSC is the only reliable clock in TDX guest */
++	setup_force_cpu_cap(X86_FEATURE_TSC_RELIABLE);
++
+ 	cc_vendor = CC_VENDOR_INTEL;
+ 	tdx_parse_tdinfo(&cc_mask);
+ 	cc_set_mask(cc_mask);
 -- 
-2.25.1
+2.41.0
 
