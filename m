@@ -2,130 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E4677445B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B78A7744A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235046AbjHHSR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48806 "EHLO
+        id S235798AbjHHSY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234765AbjHHSQx (ORCPT
+        with ESMTP id S235732AbjHHSY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:16:53 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5631795BA;
-        Tue,  8 Aug 2023 10:24:03 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-56c8757d45bso3893638eaf.2;
-        Tue, 08 Aug 2023 10:24:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691515442; x=1692120242;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ydoHcaR3qJjLpJCuAxkO8+WkH13peeHQF52+Jhcd9Uk=;
-        b=YfUg7ZQjJ6Yrr5NI1qwvSf+/2KGuJCwneosLI1dKkfmo5X+mo0e3b2klj2v9dEkm+h
-         9Id72xB06SRDia4snQqWhxgvje7TQ6ANQNRdvVUd4XTQGD45iXMjIbfQ90qEBa0FGZ5V
-         i7zwUauzHYT5+uy9v1/Zm0EVr7Um0CnTU4XsG5goTpvijq4sYM4pF1S/VcZcPOyyDnIp
-         k0XPpnvDJlqOgVkxaTEdYip2EMi4VEzm5F9Im/94hkuzzZphAIQhNpZT+pP229xjx6YZ
-         bLbIzHgh3sTnogp9VNrNif0KcSOxyBlckHTdrw4vwxoJITYUslkUH7P2EHGlHxsD8/S6
-         fE3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691515442; x=1692120242;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ydoHcaR3qJjLpJCuAxkO8+WkH13peeHQF52+Jhcd9Uk=;
-        b=lVQwEEHQ95WMMxQw20/Ook1LBPVS4DxpulQrhdQrbb4B7JhM8steyXkwM6q1yH0epJ
-         BfwnS4LMyWeBHWAVrBWMWQOcXl8LiVGROK/RM2AY6dSSva+mQQjIttUPLJv0H/FGg+/u
-         A/r6pOG1HfPbEtYP1lvP13qYHw9kgmJgmo9cI7vJIf/5YpGkXQm6fhBkIiA+KickmvCQ
-         c6fhN1TixQgUv3+TWXmLZdmQUwxaQyprVT2DvnGA3z+IXeQpaOoOwWV69bEFserX4Vzr
-         dsItr1f+AP/q81JRpTQdE+JIZWldxOECN1ZLhdSwRwIh/U8wJJJCvzdBmQybcPrznvke
-         Icpw==
-X-Gm-Message-State: AOJu0YwcMT+DU4cLZrlP6A5qPbd5gfjECERc6mDLpdE/XiokmkeM+3/j
-        Yl45+uNer25gVm6RTed0mEFACDQfp7DO+caoYWc=
-X-Google-Smtp-Source: AGHT+IGujJKZVxfuBSumANHeQtD4AJazgpH0Y35rD479qEKO12ConAjCMLJIM8/YPQjtfSh9cedT45IFTBGhOu2o/c8=
-X-Received: by 2002:a4a:3818:0:b0:56c:e856:8b2c with SMTP id
- c24-20020a4a3818000000b0056ce8568b2cmr478061ooa.9.1691515442300; Tue, 08 Aug
- 2023 10:24:02 -0700 (PDT)
+        Tue, 8 Aug 2023 14:24:27 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E0422939;
+        Tue,  8 Aug 2023 10:36:41 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3787rlQd016340;
+        Tue, 8 Aug 2023 12:35:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=S
+        FGoGQF0C9qXyiJopwjeKvCq6hbbNcK+s9km7aBZz3I=; b=EzUr0HvM3svlCTI+q
+        omUKy+3vswT7UduKZ93S2mRWf/BeEpICadFT+SPlE+/gH7dEsB0UsmOg/7VPRz7z
+        1NRdkXoGbgMCr9OuHICFzq0ZdO6+aqB2VmPXTvZ3PTMqcJZlhWkidcMXWftqnp9h
+        1wNXbnQmvIHAcSLWOa01OfxMA/XJiHfBMPf+Om9wVadBVH5vDRrJZhsfxXJWAbMK
+        pFsKu/q84/1iZA3BCeSL20+0TAS2I8oZO4rULaKTHMekpsV9r1fSkXN4gIHcC1ZD
+        XYX8W3/yHAPE9Uf3cD+eWhDAiJtRsldQ0BiKfQDkqtHMEJXt7x3OcqgO8O+hIVly
+        kKbxA==
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sb7vt9aeq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Aug 2023 12:35:53 -0500 (CDT)
+Received: from m0077473.ppops.net (m0077473.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.22/8.17.1.22) with ESMTP id 378HWrRL002574;
+        Tue, 8 Aug 2023 12:35:52 -0500
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sb7vt9aek-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Aug 2023 12:35:52 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 8 Aug
+ 2023 18:35:50 +0100
+Received: from aus-sw-rshr002.ad.cirrus.com (141.131.215.158) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Tue, 8 Aug 2023 18:35:50 +0100
+Received: by aus-sw-rshr002.ad.cirrus.com (Postfix, from userid 46936)
+        id D50464C0AF4; Tue,  8 Aug 2023 17:35:49 +0000 (UTC)
+From:   James Ogletree <james.ogletree@cirrus.com>
+To:     <dmitry.torokhov@gmail.com>
+CC:     James Ogletree <james.ogletree@cirrus.com>,
+        Fred Treven <fred.treven@cirrus.com>,
+        Ben Bright <ben.bright@cirrus.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Lee Jones" <lee@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        "Jeff LaBundy" <jeff@labundy.com>, Peng Fan <peng.fan@nxp.com>,
+        Eddie James <eajames@linux.ibm.com>,
+        Jean Delvare <jdelvare@suse.de>, Arnd Bergmann <arnd@arndb.de>,
+        Markus Schneider-Pargmann <msp@baylibre.com>,
+        Jacky Bai <ping.bai@nxp.com>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Randy Dunlap <rdunlap@infradead.org>, <patches@cirrus.com>,
+        <linux-input@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] dt-bindings: input: cirrus,cs40l50: Support for CS40L50
+Date:   Tue, 8 Aug 2023 17:25:06 +0000
+Message-ID: <20230808172511.665787-1-james.ogletree@cirrus.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a8a:129a:0:b0:4f0:1250:dd51 with HTTP; Tue, 8 Aug 2023
- 10:24:01 -0700 (PDT)
-In-Reply-To: <CAHk-=wj+Uu+=iUZLc+MfOBKgRoyM56c0z0ustZKru0We9os63A@mail.gmail.com>
-References: <20230806230627.1394689-1-mjguzik@gmail.com> <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
- <CAHk-=whk-8Pv5YXH4jNfyAf2xiQCGCUVyBWw71qJEafn4mT6vw@mail.gmail.com>
- <CAGudoHE5UDj0Y7fY=gicOq8Je=e1MX+5VWo04qoDRpHRG03fFg@mail.gmail.com> <CAHk-=wj+Uu+=iUZLc+MfOBKgRoyM56c0z0ustZKru0We9os63A@mail.gmail.com>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Tue, 8 Aug 2023 19:24:01 +0200
-Message-ID: <CAGudoHE=jJ+MKduj9-95Nk8_F=fkv2P+akftvFw1fVr46jm8ng@mail.gmail.com>
-Subject: Re: [PATCH] fs: use __fput_sync in close(2)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oleg@redhat.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: UaHV3jza62hB14GT43L7KvQrMmoK1oNG
+X-Proofpoint-ORIG-GUID: lV9hA8TFxvFocJQC1Gy628cGDSA5DhUC
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> On Tue, 8 Aug 2023 at 10:10, Mateusz Guzik <mjguzik@gmail.com> wrote:
->>
->> Few hours ago I sent another version which very closely resembles what
->> you did :)
->> 2 main differences:
->> - i somehow missed close_fd_get_file so I hacked my own based on close_fd
->> - you need to whack the kthread assert in __fput_sync
->
-> Good call on teh __fput_sync() test.
->
-> That BUG_ON() made sense ten years ago when this was all re-organized,
-> not so much now.
->
+Introduce device tree bindings for the initial commit
+of the CS40L50 driver.
 
-Christian proposes a dedicated routine, I have 0 opinion, you guys
-sort it out ;)
+Change-Id: I95369831f947cb32a0a80e81923fd28ace888481
+Signed-off-by: James Ogletree <james.ogletree@cirrus.com>
+---
+ .../bindings/input/cirrus,cs40l50.yaml        | 77 +++++++++++++++++++
+ MAINTAINERS                                   |  9 +++
+ 2 files changed, 86 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/cirrus,cs40l50.yaml
 
->> I'm offended you ask, it's all in my opening e-mail.
->
-> Heh. I wasn't actually cc'd on that, so I'm going by context and then
-> peeking at web links..
->
-
-Here it is again with some typos fixed and slightly reworded, not
-necessarily with quality of English improved. Feel free to quote in
-whatever extent in your commit message (including none).
-
-[quote]
-fs: use __fput_sync in close(2)
-
-close(2) is a special case which guarantees a shallow kernel stack,
-making delegation to task_work machinery unnecessary. Said delegation is
-problematic as it involves atomic ops and interrupt masking trips, none
-of which are cheap on x86-64. Forcing close(2) to do it looks like an
-oversight in the original work.
-
-Moreover presence of CONFIG_RSEQ adds an additional overhead as fput()
--> task_work_add(..., TWA_RESUME) -> set_notify_resume() makes the
-thread returning to userspace land in resume_user_mode_work(), where
-rseq_handle_notify_resume takes a SMAP round-trip if rseq is enabled for
-the thread (and it is by default with contemporary glibc).
-
-Sample result when benchmarking open1_processes -t 1 from will-it-scale
-(that's an open + close loop) + tmpfs on /tmp, running on the Sapphire
-Rapid CPU (ops/s):
-stock+RSEQ:     1329857
-stock-RSEQ:     1421667 (+7%)
-patched:        1523521 (+14.5% / +7%) (with / without rseq)
-
-Patched result is the same regardless of rseq as the codepath is avoided.
-[/quote]
-
+diff --git a/Documentation/devicetree/bindings/input/cirrus,cs40l50.yaml b/Documentation/devicetree/bindings/input/cirrus,cs40l50.yaml
+new file mode 100644
+index 000000000000..5437c6beb1b3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/cirrus,cs40l50.yaml
+@@ -0,0 +1,77 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/cirrus,cs40l50.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Cirrus Logic CS40L50 Advanced Haptic Driver
++
++maintainers:
++  - James Ogletree <james.ogletree@cirrus.com>
++
++description:
++  CS40L50 is a Haptic Driver with Waveform Memory DSP
++  and Closed-Loop Algorithms
++
++properties:
++  compatible:
++    enum:
++      - cirrus,cs40l50
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  reset-gpios:
++    maxItems: 1
++
++  VA-supply:
++    description: Regulator for analog voltage
++
++  VP-supply:
++    description: Regulator for peak voltage
++
++  VIO-supply:
++    description: Regulator for digital IO voltage
++
++  cirrus,external-boost:
++    description:
++      Bypass the CS40L50 boost converter.
++
++      The amplifier on CS40L50 can be powered internally through the boost
++      converter, or else can be powered using an external supply. If an
++      external VA supply is used, the boost converter must be bypassed.
++    type: boolean
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - reset-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/input/input.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      cs40l50@34 {
++        compatible = "cirrus,cs40l50";
++        reg = <0x34>;
++        interrupt-parent = <&gpio>;
++        interrupts = <113 IRQ_TYPE_LEVEL_LOW>;
++        reset-gpios = <&gpio 112 GPIO_ACTIVE_LOW>;
++        VA-supply = <&dummy_vreg>;
++        VP-supply = <&dummy_vreg>;
++        VIO-supply = <&dummy_vreg>;
++        cirrus,external-boost;
++      };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 54ef320bb689..016e5ff3b831 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2081,6 +2081,15 @@ F:	arch/arm/boot/compressed/misc-ep93xx.h
+ F:	arch/arm/mach-ep93xx/
+ F:	drivers/iio/adc/ep93xx_adc.c
+ 
++CIRRUS LOGIC HAPTICS DRIVER
++M:	James Ogletree <james.ogletree@cirrus.com>
++M:	Fred Treven <fred.treven@cirrus.com>
++M:	Ben Bright <ben.bright@cirrus.com>
++L:	patches@Qopensource.cirrus.com
++S:	Supported
++T:	git https://github.com/CirrusLogic/linux-drivers.git
++F:	Documentation/devicetree/bindings/input/cirrus,cs40l50.yaml
++
+ ARM/CLKDEV SUPPORT
+ M:	Russell King <linux@armlinux.org.uk>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+2.25.1
+
