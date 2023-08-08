@@ -2,109 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3249774D21
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A373774D2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbjHHVhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        id S229946AbjHHVl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjHHVhX (ORCPT
+        with ESMTP id S229663AbjHHVlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 17:37:23 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19232E0;
-        Tue,  8 Aug 2023 14:37:23 -0700 (PDT)
-Date:   Tue, 08 Aug 2023 21:37:21 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691530641;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Tue, 8 Aug 2023 17:41:25 -0400
+Received: from out-85.mta1.migadu.com (out-85.mta1.migadu.com [95.215.58.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD2D115
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:41:24 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 14:41:17 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1691530882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kDkO5o+VYKafXt0UwqB1zta1+/jE80vGFNHWvcTQRJc=;
-        b=ISC+yFDJob9FQbdVKs6ZOLY6p/81fKqvBu/A8G1EW2fqdcD+L2+cMBHe2AC+GnIL0o3SEx
-        U2wM8pUWDq/Coq6mDIKBwLFlszhLIg+TB1O7iCH4x2T+2RpZbFInzUWE5GfyrihX+vOkR8
-        n5PMmFoYzIXJA/zyJwanQCwv8cUkPRcv4jXDsLNeklnwRiGDpf+6dR8dAbn5D+9A+y+g+c
-        S0waETU7+f9o9l+hdq3k5saVoMwtKKvk/xcbeEwj71qMBEvPYJ7r0vv1ieGWClnrx/xX8F
-        uRCT1IdNcv2v/FjTAATkM01Os05mYsr0knuXfvjHP7n9LmqCC0wgBeCDbqtJ8w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691530641;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kDkO5o+VYKafXt0UwqB1zta1+/jE80vGFNHWvcTQRJc=;
-        b=F9L1p5UJXsZ08eUfBLWiTvcPY+syiMCsT7uKiyLpS+9p7Lbo4GWe/lVHLb+4tDKU8J7jNd
-        rjc2YGywYSpjF5AQ==
-From:   "tip-bot2 for Jinghao Jia" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/linkage: Fix typo of BUILD_VDSO in asm/linkage.h
-Cc:     Jinghao Jia <jinghao@linux.ibm.com>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Randy Dunlap <rdunlap@infradead.org>, <stable@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230808182353.76218-1-jinghao@linux.ibm.com>
-References: <20230808182353.76218-1-jinghao@linux.ibm.com>
+        bh=AeZ7s6x1uY9uLLgPEKePTpY7Hc8NdT1d3h6FH62iSdU=;
+        b=Q8FfEmQrr6r1Emfrl4MzABCnQMHP5x/GtRz5z6fxBN6ZH41i5Jrd0/qiMiYHDDXV90213G
+        yZ4eTOwIZwhA6LoXPoF+zhR7S0872dQBt+L3Z0AURGFl9zS52+uJK2CO22NoyyqKKvZDkp
+        U8qF2DeyvCL6E8aCVGzVF0rJrjcg5y0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Chuyi Zhou <zhouchuyi@bytedance.com>, hannes@cmpxchg.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        muchun.song@linux.dev, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wuyun.abel@bytedance.com,
+        robin.lu@bytedance.com
+Subject: Re: [RFC PATCH 1/2] mm, oom: Introduce bpf_select_task
+Message-ID: <ZNK2fUmIfawlhuEY@P9FQF9L96D>
+References: <20230804093804.47039-1-zhouchuyi@bytedance.com>
+ <20230804093804.47039-2-zhouchuyi@bytedance.com>
+ <ZMzhDFhvol2VQBE4@dhcp22.suse.cz>
+ <dfbf05d1-daff-e855-f4fd-e802614b79c4@bytedance.com>
+ <ZMz+aBHFvfcr0oIe@dhcp22.suse.cz>
+ <866462cf-6045-6239-6e27-45a733aa7daa@bytedance.com>
+ <ZNCXgsZL7bKsCEBM@dhcp22.suse.cz>
+ <ZNEpsUFgKFIAAgrp@P9FQF9L96D.lan>
+ <ZNH6X/2ZZ0quKSI6@dhcp22.suse.cz>
 MIME-Version: 1.0
-Message-ID: <169153064106.27769.9957898091293450936.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZNH6X/2ZZ0quKSI6@dhcp22.suse.cz>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Tue, Aug 08, 2023 at 10:18:39AM +0200, Michal Hocko wrote:
+> On Mon 07-08-23 10:28:17, Roman Gushchin wrote:
+> > On Mon, Aug 07, 2023 at 09:04:34AM +0200, Michal Hocko wrote:
+> > > On Mon 07-08-23 10:21:09, Chuyi Zhou wrote:
+> > > > 
+> > > > 
+> > > > 在 2023/8/4 21:34, Michal Hocko 写道:
+> > > > > On Fri 04-08-23 21:15:57, Chuyi Zhou wrote:
+> > > > > [...]
+> > > > > > > +	switch (bpf_oom_evaluate_task(task, oc, &points)) {
+> > > > > > > +		case -EOPNOTSUPP: break; /* No BPF policy */
+> > > > > > > +		case -EBUSY: goto abort; /* abort search process */
+> > > > > > > +		case 0: goto next; /* ignore process */
+> > > > > > > +		default: goto select; /* note the task */
+> > > > > > > +	}
+> > 
+> > To be honest, I can't say I like it. IMO it's not really using the full bpf
+> > potential and is too attached to the current oom implementation.
+> 
+> TBH I am not sure we are able to come up with an interface that would
+> ise the full BPF potential at this stage and I strongly believe that we
+> should start by something that is good enough.
+> 
+> > First, I'm a bit concerned about implicit restrictions we apply to bpf programs
+> > which will be executed potentially thousands times under a very heavy memory
+> > pressure. We will need to make sure that they don't allocate (much) memory, don't
+> > take any locks which might deadlock with other memory allocations etc.
+> > It will potentially require hard restrictions on what these programs can and can't
+> > do and this is something that the bpf community will have to maintain long-term.
+> 
+> Right, BPF callbacks operating under OOM situations will be really
+> constrained but this is more or less by definition. Isn't it?
 
-Commit-ID:     7324f74d39531262b8e362f228b46512e6bee632
-Gitweb:        https://git.kernel.org/tip/7324f74d39531262b8e362f228b46512e6bee632
-Author:        Jinghao Jia <jinghao@linux.ibm.com>
-AuthorDate:    Tue, 08 Aug 2023 14:23:53 -04:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Tue, 08 Aug 2023 23:13:17 +02:00
+What do you mean?
+In general, the bpf community is trying to make it as generic as possible and
+adding new and new features. Bpf programs are not as constrained as they were
+when it's all started.
 
-x86/linkage: Fix typo of BUILD_VDSO in asm/linkage.h
+> 
+> > Second, if we're introducing bpf here (which I'm not yet convinced),
+> > IMO we should use it in a more generic and expressive way.
+> > Instead of adding hooks into the existing oom killer implementation, we can call
+> > a bpf program before invoking the in-kernel oom killer and let it do whatever
+> > it takes to free some memory. E.g. we can provide it with an API to kill individual
+> > tasks as well as all tasks in a cgroup.
+> > This approach is more generic and will allow to solve certain problems which
+> > can't be solved by the current oom killer, e.g. deleting files from a tmpfs
+> > instead of killing tasks.
+> 
+> The aim of this proposal is to lift any heavy lifting steming from
+> iterating tasks or cgroups which those BPF might need to make a
+> decision. There are other ways of course and provide this iteration
+> functionality as library functions but my BPF experience is very limited
+> to say how easy is that.
+> 
+> > So I think the alternative approach is to provide some sort of an interface to
+> > pre-select oom victims in advance. E.g. on memcg level it can look like:
+> > 
+> > echo PID >> memory.oom.victim_proc
+> 
+> this is just a terrible interface TBH. Pids are very volatile objects.
+> At the time oom killer reads this pid it might be a completely different
+> process.
 
-The BUILD_VDSO macro was incorrectly spelled as BULID_VDSO in
-asm/linkage.h. This causes the !defined(BULID_VDSO) directive to always
-evaluate to true.
+Well, we already have cgroup.procs interface, which works ok.
+Obviously if the task is dead (or is actually killed in a result of oom),
+it's pid is removed from the list.
 
-Correct the spelling to BUILD_VDSO.
+> 
+> > If the list is empty, the default oom killer is invoked.
+> > If there are tasks, the first one is killed on OOM.
+> > A similar interface can exist to choose between sibling cgroups:
+> > 
+> > echo CGROUP_NAME >> memory.oom.victim_cgroup
+> 
+> Slightly less volatile but not much better either.
+> 
+> > This is just a rough idea.
+> 
+> I am pretty sure that both policies could be implemetd by the proposed
+> BPF interface though if you want something like that.
 
-Fixes: bea75b33895f ("x86/Kconfig: Introduce function padding")
-Signed-off-by: Jinghao Jia <jinghao@linux.ibm.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: <stable@kernel.org>
-Link: https://lore.kernel.org/r/20230808182353.76218-1-jinghao@linux.ibm.com
----
- arch/x86/include/asm/linkage.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+As I said, I'm pretty concerned about how reliable (and effective) it will be.
+I'm not convinced that executing a generic bpf program from the oom context
+is safe (and we're talking about executing it potentially thousands of times).
+If we're going this way, we need an explicit acknowledge from the bpf
+community and a long-term agreement on how we'll keep thing safe.
 
-diff --git a/arch/x86/include/asm/linkage.h b/arch/x86/include/asm/linkage.h
-index 0953aa3..97a3de7 100644
---- a/arch/x86/include/asm/linkage.h
-+++ b/arch/x86/include/asm/linkage.h
-@@ -21,7 +21,7 @@
- #define FUNCTION_PADDING
- #endif
- 
--#if (CONFIG_FUNCTION_ALIGNMENT > 8) && !defined(__DISABLE_EXPORTS) && !defined(BULID_VDSO)
-+#if (CONFIG_FUNCTION_ALIGNMENT > 8) && !defined(__DISABLE_EXPORTS) && !defined(BUILD_VDSO)
- # define __FUNC_ALIGN		__ALIGN; FUNCTION_PADDING
- #else
- # define __FUNC_ALIGN		__ALIGN
+It would be also nice to come up with some practical examples of bpf programs.
+What are meaningful scenarios which can be covered with the proposed approach
+and are not covered now with oom_score_adj.
+
+Thanks!
