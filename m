@@ -2,185 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AA6774A65
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E3A774CA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbjHHU0h convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Aug 2023 16:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45110 "EHLO
+        id S236364AbjHHVNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbjHHU0T (ORCPT
+        with ESMTP id S235296AbjHHVN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:26:19 -0400
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77001222E7;
-        Tue,  8 Aug 2023 12:39:34 -0700 (PDT)
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6bcde3d8657so338632a34.0;
-        Tue, 08 Aug 2023 12:39:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691523574; x=1692128374;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        Tue, 8 Aug 2023 17:13:29 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D91473FC;
+        Tue,  8 Aug 2023 12:43:05 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe1d462762so51337415e9.0;
+        Tue, 08 Aug 2023 12:43:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691523783; x=1692128583;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=c58ks/9Dr1zfmu2zS+3clcM4+/iOwxmZoLK5TyGbzOA=;
-        b=KjWNRRrDvLJVFG/WPtWQrgIe+2J3lMSHdk7DQPU0u2i/GiLspYK3VrZqZ4q3m5CBrA
-         gwTxHNn1ZpYfTtp/dNwQPDgivO9PNzSSbzh9UdyO4qP9FDf5RkoYKOt+vBRmtoAKSTwf
-         /tvo27UY0QusBrOPZo1QaCG9Iso1i0zboccH6b3FpRJ6+sdeoPr7Hl/T69wgpPTkRLtQ
-         12+CWaX8lj8lk3I5lXAQsb7MlGVVZSgSfx216v60LD04n9rxvtO4y8m3xyUoEI3AmwTc
-         A5Qei6rq73DDk2JNrj+Vtcj4Qi/Pn+StHb0DlR/QDIl2pMt9gCMMoI2NZrm6N/Vu6Pxe
-         inEQ==
-X-Gm-Message-State: AOJu0YypN3cZGe8CEfpUvVH/bk8AqdZU64GPdUnd14hnqOkvMsUxmsBI
-        eROwG4f60p7b9EWTXbE4D8FiUdboR7TgSxw9i58=
-X-Google-Smtp-Source: AGHT+IGqqLxXoaFah+KuxrNf99luNlzlovc9mCHxcHPECaaaLauzdCLB9tuj6JZkAHUTjO61utQXwNJuomt3rbEABi4=
-X-Received: by 2002:a4a:a64a:0:b0:56c:484a:923d with SMTP id
- j10-20020a4aa64a000000b0056c484a923dmr786914oom.1.1691523573721; Tue, 08 Aug
- 2023 12:39:33 -0700 (PDT)
+        bh=cOolvKmjNbA3psrGMAp+3ipqqGdZ/BVnezDxpZWH8ms=;
+        b=HC9tZ1QtSi5ORdON+XMHnl2vCZ6cJogJ8xaGHcBU0vDyWWpj9nX+I8TxYJ0iBuqeAs
+         0KjHFKewwDIkng9wdW7Z9W0q7murFn3rqAHU9n40ahS3m5Hga3FlZsa7aN2hSziKE/E+
+         ielv5q6faWE7fRi0aovuTUAEGAIKaByelW2Lq6b4BxJEIhJpqlNBiW4+ng7uJnh5dLLe
+         njufyxgs9w+y/4MCEWbhprLvcQz71kzfXI7og601cU7QmPGzzgW/XaT6K8JJ5TF7nvu+
+         epUjRvgm6+00D2argBvHWJrLPUrdlfJay1W8CMfmaMkrSwzqWksI7/X5rXM+iccb2ost
+         gSRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691523783; x=1692128583;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cOolvKmjNbA3psrGMAp+3ipqqGdZ/BVnezDxpZWH8ms=;
+        b=KxsJ2B0lWadLiGFNzEqiRk16J77/MUCspbg9wiVtCFom6b2EO0bra8eLodvNySQfv8
+         8IwXh1RY07oLX0uUvYlFRlk/A85UUqhs4Rn/HGOxnzPOEiLIo7ug/AumgRH8tjzVGUTk
+         yfn0Xb1mRZr9J/1PlqF9CbaJfpQhIoj1HdkdQ9kaSjZJ3mm1WfhT9UXpu0rouE5F/ixC
+         kcM/N1+ByQ5jQTDdLe+mJIsmgpiyjvQA2Bpmnu0moXaaR8vb+JjhGW3QLOMiBjETZ1ML
+         t+Z3tpWEdQVyJJGq5XXLRXJnm23ABbEHVRV783TZATkQbUgxHRw0SvF2Qz18xZ1ZQv8L
+         9aSA==
+X-Gm-Message-State: AOJu0Yyuvx428Y3PthND87Le/PED1kFypy3b76GHWZ+bkzlbN0BIdjqm
+        9KV8qThJrPWbs3XQOXRRuEpsd/3OtMK6nlIkVB8=
+X-Google-Smtp-Source: AGHT+IH63RiCGVaJ+XGcErXY3rfQFL9fz6CdslQk4F3i+XRxMUcLBRkelsoaCKiCvoxb6Qp1HbLTJw==
+X-Received: by 2002:a05:600c:2215:b0:3fc:5a3:367c with SMTP id z21-20020a05600c221500b003fc05a3367cmr621098wml.32.1691523783245;
+        Tue, 08 Aug 2023 12:43:03 -0700 (PDT)
+Received: from mmaatuq-HP-Laptop-15-dy2xxx ([2001:8f8:1163:15aa:8c5a:b813:cec2:4273])
+        by smtp.gmail.com with ESMTPSA id v20-20020a7bcb54000000b003fbfef555d2sm19090487wmj.23.2023.08.08.12.43.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 12:43:02 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 23:42:58 +0400
+From:   Mahmoud Matook <mahmoudmatook.mm@gmail.com>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     mickflemm@gmail.com, mcgrof@kernel.org, kvalo@kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        mahmoudmatook.mm@gmail.com
+Subject: Re: [PATCH] ath5k: fix WARNING opportunity for swap.
+Message-ID: <20230808194258.ocxnmqwzqlr6jpe4@mmaatuq-HP-Laptop-15-dy2xxx>
+Mail-Followup-To: Jiri Slaby <jirislaby@kernel.org>, mickflemm@gmail.com,
+        mcgrof@kernel.org, kvalo@kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20230807201057.340371-1-mahmoudmatook.mm@gmail.com>
+ <92a26f67-1b24-ea35-2f39-7c0b75027617@kernel.org>
 MIME-Version: 1.0
-References: <20230808192713.329414-1-helgaas@kernel.org>
-In-Reply-To: <20230808192713.329414-1-helgaas@kernel.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 8 Aug 2023 21:39:22 +0200
-Message-ID: <CAJZ5v0jc5dn+6WtH6O30EeJfGDLewiLaAY9YJEAO6d_n+Uv7ig@mail.gmail.com>
-Subject: Re: [PATCH] PCI: acpiphp: Log more slot and notification details
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Igor Mammedov <imammedo@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Woody Suwalski <terraluna977@gmail.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92a26f67-1b24-ea35-2f39-7c0b75027617@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 9:27 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> From: Bjorn Helgaas <bhelgaas@google.com>
->
-> When registering an acpiphp slot, log the slot name in the same style as
-> pciehp and include the PCI bus/device and whether a device is present or
-> the slot is empty.
->
-> When handling an ACPI notification, log the PCI bus/device and notification
-> type.
->
-> Sample dmesg log diff:
->
->     ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
->   - acpiphp: Slot [3] registered
->   - acpiphp: Slot [4] registered
->     PCI host bridge to bus 0000:00
->     pci 0000:00:03.0: [8086:100e] type 00 class 0x020000
->     <ACPI Device Check notification>
->     pci 0000:00:04.0: [8086:100e] type 00 class 0x020000
->
->     ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
->   + acpiphp: pci 0000:00:03 Slot(3) registered (enabled)
->   + acpiphp: pci 0000:00:04 Slot(4) registered (empty)
->     PCI host bridge to bus 0000:00
->     pci 0000:00:03.0: [8086:100e] type 00 class 0x020000
->     <ACPI Device Check notification>
->   + acpiphp: pci 0000:00:04 Slot(4) Device Check
->     pci 0000:00:04.0: [8086:100e] type 00 class 0x020000
->
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
->  drivers/pci/hotplug/acpiphp_core.c |  4 ----
->  drivers/pci/hotplug/acpiphp_glue.c | 23 +++++++++++++++++++++--
->  2 files changed, 21 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/pci/hotplug/acpiphp_core.c b/drivers/pci/hotplug/acpiphp_core.c
-> index c02257f4b61c..19d47607d009 100644
-> --- a/drivers/pci/hotplug/acpiphp_core.c
-> +++ b/drivers/pci/hotplug/acpiphp_core.c
-> @@ -282,8 +282,6 @@ int acpiphp_register_hotplug_slot(struct acpiphp_slot *acpiphp_slot,
->                 goto error_slot;
->         }
->
-> -       pr_info("Slot [%s] registered\n", slot_name(slot));
-> -
->         return 0;
->  error_slot:
->         kfree(slot);
-> @@ -296,8 +294,6 @@ void acpiphp_unregister_hotplug_slot(struct acpiphp_slot *acpiphp_slot)
->  {
->         struct slot *slot = acpiphp_slot->slot;
->
-> -       pr_info("Slot [%s] unregistered\n", slot_name(slot));
-> -
->         pci_hp_deregister(&slot->hotplug_slot);
->         kfree(slot);
->  }
-> diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
-> index 328d1e416014..eeca2753a5c7 100644
-> --- a/drivers/pci/hotplug/acpiphp_glue.c
-> +++ b/drivers/pci/hotplug/acpiphp_glue.c
-> @@ -25,7 +25,7 @@
->   *    bus. It loses the refcount when the driver unloads.
->   */
->
-> -#define pr_fmt(fmt) "acpiphp_glue: " fmt
-> +#define pr_fmt(fmt) "acpiphp: " fmt
->
->  #include <linux/module.h>
->
-> @@ -333,6 +333,12 @@ static acpi_status acpiphp_add_context(acpi_handle handle, u32 lvl, void *data,
->                                        &val, 60*1000))
->                 slot->flags |= SLOT_ENABLED;
->
-> +       if (slot->slot)
-> +               pr_info("pci %04x:%02x:%02x Slot(%s) registered (%s)\n",
-> +                       pci_domain_nr(slot->bus), slot->bus->number,
-> +                       slot->device, slot_name(slot->slot),
-> +                       slot->flags & SLOT_ENABLED ? "enabled" : "empty");
-> +
->         return AE_OK;
->  }
->
-> @@ -351,8 +357,13 @@ static void cleanup_bridge(struct acpiphp_bridge *bridge)
->                         acpi_unlock_hp_context();
->                 }
->                 slot->flags |= SLOT_IS_GOING_AWAY;
-> -               if (slot->slot)
-> +               if (slot->slot) {
-> +                       pr_info("pci %04x:%02x:%02x Slot(%s) unregistered\n",
-> +                               pci_domain_nr(slot->bus), slot->bus->number,
-> +                               slot->device, slot_name(slot->slot));
-> +
->                         acpiphp_unregister_hotplug_slot(slot);
-> +               }
->         }
->
->         mutex_lock(&bridge_mutex);
-> @@ -793,6 +804,14 @@ static void hotplug_event(u32 type, struct acpiphp_context *context)
->
->         pci_lock_rescan_remove();
->
-> +       pr_info("pci %04x:%02x:%02x Slot(%s) %s\n",
-> +               pci_domain_nr(slot->bus), slot->bus->number,
-> +               slot->device, slot_name(slot->slot),
-> +               type == ACPI_NOTIFY_BUS_CHECK ? "Bus Check" :
-> +               type == ACPI_NOTIFY_DEVICE_CHECK ? "Device Check" :
-> +               type == ACPI_NOTIFY_EJECT_REQUEST ? "Eject Request" :
-> +               "Notification");
-> +
+On 08/08, Jiri Slaby wrote:
 
-pr_debug() perhaps?
+> On 07. 08. 23, 22:10, Mahmoud Maatuq wrote:
+> > coccinielle reported the following:
+> > ./drivers/net/wireless/ath/ath5k/phy.c:1573:25-26: WARNING opportunity for swap()
+> 
+> 
+> OK, once again:
+> https://lore.kernel.org/all/0c3acbd4-6ab2-5cc5-6293-54e30093cce2@kernel.org/
 
-On systems that don't have any hotplug problems these messages will
-just be filling the kernel log unnecessarily.
 
->         switch (type) {
->         case ACPI_NOTIFY_BUS_CHECK:
->                 /* bus re-enumerate */
-> --
+I had a look at the commit history, to see why the original developer 
+didn't use sort() function, and name the array variable sort but found
+nothing. 
+I have some doubts that he might did that intentionally, so not to call
+sort() function for such small array and avoid the cost of context
+switching.
+
+
+> > Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+> > ---
+> >   drivers/net/wireless/ath/ath5k/phy.c | 5 +----
+> >   1 file changed, 1 insertion(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/net/wireless/ath/ath5k/phy.c b/drivers/net/wireless/ath/ath5k/phy.c
+> > index 5797ef9c73d7..f87eb684f223 100644
+> > --- a/drivers/net/wireless/ath/ath5k/phy.c
+> > +++ b/drivers/net/wireless/ath/ath5k/phy.c
+> > @@ -1562,16 +1562,13 @@ static s16
+> >   ath5k_hw_get_median_noise_floor(struct ath5k_hw *ah)
+> >   {
+> >   	s16 sort[ATH5K_NF_CAL_HIST_MAX];
+> > -	s16 tmp;
+> >   	int i, j;
+> >   	memcpy(sort, ah->ah_nfcal_hist.nfval, sizeof(sort));
+> >   	for (i = 0; i < ATH5K_NF_CAL_HIST_MAX - 1; i++) {
+> >   		for (j = 1; j < ATH5K_NF_CAL_HIST_MAX - i; j++) {
+> >   			if (sort[j] > sort[j - 1]) {
+> > -				tmp = sort[j];
+> > -				sort[j] = sort[j - 1];
+> > -				sort[j - 1] = tmp;
+> > +				swap(sort[j], sort[j - 1]);
+> >   			}
+> >   		}
+> >   	}
+> 
+> -- 
+> js
+> suse labs
