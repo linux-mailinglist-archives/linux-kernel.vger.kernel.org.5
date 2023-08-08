@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9779E773F72
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C51773FA6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbjHHQrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
+        id S231224AbjHHQuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233463AbjHHQqe (ORCPT
+        with ESMTP id S230512AbjHHQta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:46:34 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D117170EF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:56:39 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-348c7075afcso149575ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:56:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691510169; x=1692114969;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4QGjHzRfbCCkNjNIAknClWHbX+0mqrJSn4alogR9LmE=;
-        b=7MXOeO2AWpO2Bt6uM26Wb5bSSJjj69QW3nmy0ryfflb8lDjuv8OPqrg6l69DaSgIOw
-         CPdcV1FBsPTp8gxa97IpgskNzVBk3yTT99f1u+WWiN5a7hQnwC9HIxUQCK0CahLRIanT
-         7TlG+cQ89/OU9wG3RCTwLpv2UcnzGkXAfCqSsy8tK19mOwGpZECxLys0UjsZ/ZBKbwwr
-         l7lzIZuEtVeViwYbhYdr/aLIy6czbUkA2DHEkxanIpQODbC2MmVKOmtbw39YVUDfyrCF
-         j5BBlgg1jvtfSvlyV6lo1LJZb0WvmaRt6BycLrBvh0RgwApM4L797o9EWj3V8J6PjUG8
-         Nllg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510169; x=1692114969;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4QGjHzRfbCCkNjNIAknClWHbX+0mqrJSn4alogR9LmE=;
-        b=ezLh2r1q+R9f2BQNdCmg0t5j4QjKLFiX+7WkBuJIEOn71HE9orZ2IV6DSQlNnI9f1D
-         yz1xudvNBhstavU+A9/KHTckTR09U1dhiezTnmaxreYe+tJm078vhgFyxdMAJr3VJzmn
-         5dQtCwYDdOhKgJd79FOnFkqEVpcBU3iqu5j38zkIv/M5jUTAoX5uW9h+Ee+XxOVm+dP2
-         hHn8Wkx/u0rGIbIJ4xCIk6flfnJupvCPqg1NaxiJVk24xFr2+cQss9SV/Lf4CPeNeYxQ
-         yDliTE695/jqPpaL/EhLhO0w1yFKMyBGf3q+XCU35p/rA9SFm8tJhinwTesRd7Dog3Ns
-         qcxQ==
-X-Gm-Message-State: AOJu0YxXCG9vRj9JYp6Jd2VWve43wcqD5MxSvPmDzXQYTEjjsHu82QCI
-        8jBVttzmLBXLaQ8PG5hoacMLWTxppxFuvRVIwirJCV+d8R8S/0Dyj5G2Mg==
-X-Google-Smtp-Source: AGHT+IEcS2KttxAPl/PPlr9cHN2Zs39UZYwywvRTTc3RHtQ/HQ3pnOJ/bgTkgnT/sABlEgq3j7CobXhoy9f1jtaGAKI=
-X-Received: by 2002:a05:622a:1456:b0:3fa:45ab:22a5 with SMTP id
- v22-20020a05622a145600b003fa45ab22a5mr631672qtx.27.1691498976444; Tue, 08 Aug
- 2023 05:49:36 -0700 (PDT)
+        Tue, 8 Aug 2023 12:49:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750744AABF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:57:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691510250; x=1723046250;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WqUbKspfNJbqE0nLiF+n9zQ92CXed0lkUH9NGnIH5hw=;
+  b=SC3kfic9a28LAx/HilnmHWZaGITda5Dt7SwxvEt8GTLUhlOVbQiqF7rD
+   RT8WUsPWWRjWi3ElaHMH1S+TdP31JjEAk0ZVi794cbOMNXYd/w4jeUvS5
+   E8G0azeoB2nY2X20meQwDlR3lNuTOB/XoTkntd1orKKeKfUU4NV/dERQn
+   Ne6HyiFH9G1C3nkiQZlDNNpw6w0Bhv1CDxcSpuIcJttK9KYcC3iDApRnu
+   JDvFOuGyPTmghKpoecPvdA+IciOgM4RjR2oC5dL2V9MqJFH/aHgkkvv7/
+   EeAF7A35uwXKvmzy1ZTcIxP6gI0sica2LWSRUv5rvZDILo1Um8t0yhHsp
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="369711744"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="369711744"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 05:49:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="681226171"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="681226171"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP; 08 Aug 2023 05:49:56 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qTM9q-008S3O-2i;
+        Tue, 08 Aug 2023 15:49:54 +0300
+Date:   Tue, 8 Aug 2023 15:49:54 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
+Message-ID: <ZNI58vThL83P4nRY@smile.fi.intel.com>
+References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
+ <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
+ <ZNEHt564a8RCLWon@alley>
+ <ZNEJQkDV81KHsJq/@smile.fi.intel.com>
+ <20230807222455.27874f80@gandalf.local.home>
 MIME-Version: 1.0
-References: <20230808115835.2862058-1-imagedong@tencent.com> <20230808115835.2862058-4-imagedong@tencent.com>
-In-Reply-To: <20230808115835.2862058-4-imagedong@tencent.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 8 Aug 2023 14:49:25 +0200
-Message-ID: <CANn89iK16069CvbA+p=WyZVYftvHs=FviQp1GSWUTG2ihRfKDA@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 3/3] net: tcp: fix unexcepted socket die when
- snd_wnd is 0
-To:     menglong8.dong@gmail.com
-Cc:     ncardwell@google.com, davem@davemloft.net, kuba@kernel.org,
-        pabeni@redhat.com, dsahern@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, flyingpeng@tencent.com,
-        Menglong Dong <imagedong@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-16.0 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807222455.27874f80@gandalf.local.home>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,100 +75,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 1:59=E2=80=AFPM <menglong8.dong@gmail.com> wrote:
->
-> From: Menglong Dong <imagedong@tencent.com>
->
-> In tcp_retransmit_timer(), a window shrunk connection will be regarded
-> as timeout if 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX'. This is not
-> right all the time.
->
-> The retransmits will become zero-window probes in tcp_retransmit_timer()
-> if the 'snd_wnd=3D=3D0'. Therefore, the icsk->icsk_rto will come up to
-> TCP_RTO_MAX sooner or later.
->
-> However, the timer can be delayed and be triggered after 122877ms, not
-> TCP_RTO_MAX, as I tested.
->
-> Therefore, 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX' is always true
-> once the RTO come up to TCP_RTO_MAX, and the socket will die.
->
-> Fix this by replacing the 'tcp_jiffies32' with '(u32)icsk->icsk_timeout',
-> which is exact the timestamp of the timeout. Meanwhile, using the later
-> one of tp->retrans_stamp and tp->rcv_tstamp as the last updated timestamp
-> in the receiving path, as "tp->rcv_tstamp" can restart from idle, then
-> tp->rcv_tstamp could already be a long time (minutes or hours) in the
-> past even on the first RTO.
->
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Link: https://lore.kernel.org/netdev/CADxym3YyMiO+zMD4zj03YPM3FBi-1LHi6gS=
-D2XT8pyAMM096pg@mail.gmail.com/
-> Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> ---
-> v3:
-> - use after() instead of max() in tcp_rtx_probe0_timed_out()
-> v2:
-> - consider the case of the connection restart from idle, as Neal comment
-> ---
->  net/ipv4/tcp_timer.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
-> index d45c96c7f5a4..f30d1467771c 100644
-> --- a/net/ipv4/tcp_timer.c
-> +++ b/net/ipv4/tcp_timer.c
-> @@ -454,6 +454,18 @@ static void tcp_fastopen_synack_timer(struct sock *s=
-k, struct request_sock *req)
->                           req->timeout << req->num_timeout, TCP_RTO_MAX);
->  }
->
-> +static bool tcp_rtx_probe0_timed_out(struct sock *sk)
+On Mon, Aug 07, 2023 at 10:24:55PM -0400, Steven Rostedt wrote:
+> On Mon, 7 Aug 2023 18:09:54 +0300
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > On Mon, Aug 07, 2023 at 05:03:19PM +0200, Petr Mladek wrote:
+> > > On Sat 2023-08-05 20:50:26, Andy Shevchenko wrote:  
+> > > > kernel.h is being used as a dump for all kinds of stuff for a long time.
+> > > > sprintf() and friends are used in many drivers without need of the full
+> > > > kernel.h dependency train with it.
+> > > > 
+> > > > Here is the attempt on cleaning it up by splitting out sprintf() and
+> > > > friends.  
 
-const struct sock *sk
+...
 
-> +{
-> +       struct tcp_sock *tp =3D tcp_sk(sk);
+> > > I agree that kernel.h is not the right place. But are there any
+> > > numbers how much separate sprintf.h might safe?
+> > > Maybe, we should not reinvent the wheel and get inspired by
+> > > userspace.
+> > > 
+> > > sprintf() and friends are basic functions which most people know
+> > > from userspace. And it is pretty handy that the kernel variants
+> > > are are mostly compatible as well.
+> > > 
+> > > IMHO, it might be handful when they are also included similar way
+> > > as in userspace. From my POV printk.h is like stdio.h. And we already
+> > > have include/linux/stdarg.h where the v*print*() function might
+> > > fit nicely.
+> > > 
+> > > How does this sound, please?  
+> > 
+> > Not every user (especially _header_) wants to have printk.h included just for
+> > sprintf.h that may have nothing to do with real output. So, same reasoning
+> > from me as keeping that in kernel.h, i.e. printk.h no better.
+> 
+> If you separate out the sprintf() into its own header and still include
+> that in kernel.h, then for what you said in the other email:
+> 
+> > What to do with _headers_ that include kernel.h for no reason other than
+> > sprintf.h (as an example)? Your suggestion, please?
+> 
+> It can include sprintf.h (or printk.h or stdio.h, whatever) instead of kernel.h.
+> 
+> What's the issue?
 
-const struct tcp_sock *tp =3D tcp_sk(sk);
+The issue is the same, printk.h brings a lot more than just s*printf().
+Why should I include it for a, let's say, single sprintf() call?
 
-> +       u32 timeout_ts, rtx_ts, rcv_ts;
-> +
-> +       rtx_ts =3D tp->retrans_stamp;
-> +       rcv_ts =3D tp->rcv_tstamp;
-> +       timeout_ts =3D after(rtx_ts, rcv_ts) ? rtx_ts : rcv_ts;
-> +       timeout_ts +=3D TCP_RTO_MAX;
+-- 
+With Best Regards,
+Andy Shevchenko
 
-If we are concerned with a socket dying too soon, I would suggest
-adding 2*TCP_RTO_MAX instead of TCP_RTO_MAX
 
-When a receiver is OOMing, it is possible the ACK RWIN 0 can not be sent al=
-l,
-so tp->rcv_tstamp will not be refreshed. Or ACK could be lost in the
-network path.
-
-This also suggests the net_dbg_ratelimited("Peer %pI4:%u/%u
-unexpectedly shrunk window %u:%u (repaired)\n"...) messages
-are slightly wrong, because they could be printed even if we did not
-receive a new ACK packet from the remote peer.
-
-Perhaps we should change them to include delays (how long @skb stayed
-in rtx queue, how old is the last ACK we received)
-
-> +
-> +       return after(inet_csk(sk)->icsk_timeout, timeout_ts);
-> +}
->
->  /**
->   *  tcp_retransmit_timer() - The TCP retransmit timeout handler
-> @@ -519,7 +531,7 @@ void tcp_retransmit_timer(struct sock *sk)
->                                             tp->snd_una, tp->snd_nxt);
->                 }
->  #endif
-> -               if (tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX) {
-> +               if (tcp_rtx_probe0_timed_out(sk)) {
->                         tcp_write_err(sk);
->                         goto out;
->                 }
-> --
-> 2.40.1
->
