@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A38774AD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94808774ACB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235462AbjHHUgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
+        id S232297AbjHHUfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233192AbjHHUfr (ORCPT
+        with ESMTP id S235514AbjHHUfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:35:47 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE03165060
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:14:56 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58419550c3aso53884657b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:14:56 -0700 (PDT)
+        Tue, 8 Aug 2023 16:35:37 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804BC6EE88
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:15:14 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d074da73c3eso5389855276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:15:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691514896; x=1692119696;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=aqkrOktIR1lETMTWBm5xIeJf9PjPMAED8VAbt11S0ko=;
-        b=BjxXsVQyq6Kk7NLHxPXlJbIvmoLKGSzDyrShyA9qqwn54c59rPrH7AFMhL3vdhmF4Z
-         +sB/FGUncUE2UOvlXj3gD8siD3LAaqDGz8TAupKaqIx9lBAgrtHCjc5BeByGnQdycknS
-         p88EnfxIHxRaqwGPZheoLXnSbF5J7w76/2LzDJ4zGt+hQzh48vbcWarMqC03lnHX3CcK
-         +1+KNwRzb/DtolH7b2Vh0mVTZxFFQPcnx3LotvA/zGxjxsrXgHkTEj2AyY2XIGM1EPT6
-         tGx3Rk+qP3m7LYdH65s2GPxaiq6425qBuITd0q4sP0dgJxDN4bQuC49+my6ckvIcJEQ4
-         k4VA==
+        d=google.com; s=20221208; t=1691514914; x=1692119714;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fCG4B237jlLOlgd06dSBd3YRjuMxdikxPYPDrhwm5iw=;
+        b=7C2lcn96rDD8uHyYxwlOuYSB6tJWNGn1sDDVV0eISte0YEVmg+BB/EDclewqkCypbk
+         2E3O+JjH3MYoC1zBEtoh/02QmkV6yQQFDvTnr9J4deVfvAEp9HmNeUDl+xW4mpSrilTp
+         2KIKs4IuGI2PysYkT1VrX1CLcb867IXsTdWuRy3scxRSjClA0vnfy5RO6Ad4Hw13GqqY
+         bYkn67krN9aZhvErOVy84FixBNa4MIgTE1INV5kka2mZvqb3XeI88boYcRuHJY8RUlcZ
+         UiWlVjXZZHErhjO5rKlZXVM7ZjsUbObp0I+yvvFC67IcAOhS5qBjNzYBSnR4L5CF6MxX
+         VLBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691514896; x=1692119696;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aqkrOktIR1lETMTWBm5xIeJf9PjPMAED8VAbt11S0ko=;
-        b=aImACnCOgzZlRC6/eoYGMFcFyUn+Fs8hgp34ZG8LHaTuJFm+xh4p/chCm1RLn0oY0X
-         8ZYWUNm0XrDU3oTyGykBc1gZ0l7+ZUBVkQYufYF/ZZSny7LMRQHY6BtshCj+MnBLKp1v
-         DxK89fGN/eq8k64rW816x3Eow7zMSQ+wAFddwAfqXisJwKo56IZj+tX+i6qrQN7waNts
-         hAUw2pSlObq/h8kggOMb8Lqn54yS2B9g0BTChtvKIRPuD9fSNpxx/p4E+2RtidFWxHVs
-         sBYspMBeH4Z58G3xcb54UrsxtGY1rTsBAGY5Nr68ADTrAtVy9tADDspJ0prp2q/AVRa3
-         2Odg==
-X-Gm-Message-State: AOJu0Yw1Pezcf15W7NqHTpRItjJe9wK+GP64dgpXtu5EIQqldC1cPrDA
-        oLzgrH7c1UFkPUzFPFu6ykDMeUsT62/Z
-X-Google-Smtp-Source: AGHT+IHTdnoNRIRWWu8AlkQ0wSc0RDHpXiBAyp6iP3lVobNNN6cJwX8hzYT6lhshrprEzNrxkfmKQGmpHiBW
+        d=1e100.net; s=20221208; t=1691514914; x=1692119714;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fCG4B237jlLOlgd06dSBd3YRjuMxdikxPYPDrhwm5iw=;
+        b=TngTKZ8oVFEURpGzxdZj7WaqdjrZjMpy52d23igVq3NP6ctKNwOrfg9BCZIG984p9u
+         SCrZZeX42KHZumpvddfESL9nsjFBiZ+jEBUOk78afrsf996sDSQAnVhr2foi3esZQrGj
+         p2REMAPkpUDxIg97N0IQrqQ4prEQhgEvW3HoFXdIu9whgzbW4DbdPyzSZ9J4gXlgLzHh
+         s4rJXRRyrFKkX0aD/yswklHW+4YJy9Tf7RoO1ZteCRtAtpoSl17e4yUgvTnfrmhC1gpK
+         NdCuVXZ4i55Bxys1hjn1wEeAThSGk3+QPUcOQ73AKKCUZtEpSID6zxnjBi+rzLg7Ljp2
+         30AQ==
+X-Gm-Message-State: AOJu0YwLui3ThIot7miId73tSGHF2U9+LOkuD3YRIid/Nm5dv2+Ze+QM
+        Q6OtIeLyLKnZzcNQA9AK1y1mKom8xM4C
+X-Google-Smtp-Source: AGHT+IFGeT5c0NHUdPNrkQ55mUsPESfCUtj6//PDUdYu98m/zuJKM1UFdBQT/UoJ6wlhteXfP+Mk5ZXZe9Gw
 X-Received: from mshavit.ntc.corp.google.com ([2401:fa00:95:20c:986a:71d7:3b1e:ac1d])
- (user=mshavit job=sendgmr) by 2002:a81:ad4e:0:b0:576:8cb6:62a9 with SMTP id
- l14-20020a81ad4e000000b005768cb662a9mr4750ywk.6.1691514895956; Tue, 08 Aug
- 2023 10:14:55 -0700 (PDT)
-Date:   Wed,  9 Aug 2023 01:11:56 +0800
+ (user=mshavit job=sendgmr) by 2002:a05:6902:690:b0:d46:45a1:b775 with SMTP id
+ i16-20020a056902069000b00d4645a1b775mr3143ybt.3.1691514913790; Tue, 08 Aug
+ 2023 10:15:13 -0700 (PDT)
+Date:   Wed,  9 Aug 2023 01:12:00 +0800
+In-Reply-To: <20230808171446.2187795-1-mshavit@google.com>
 Mime-Version: 1.0
+References: <20230808171446.2187795-1-mshavit@google.com>
 X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-Message-ID: <20230808171446.2187795-1-mshavit@google.com>
-Subject: [PATCH v5 0/9] Refactor the SMMU's CD table ownership
+Message-ID: <20230809011204.v5.4.I5aa89c849228794a64146cfe86df21fb71629384@changeid>
+Subject: [PATCH v5 4/9] iommu/arm-smmu-v3: move stall_enabled to the cd table
 From:   Michael Shavit <mshavit@google.com>
 To:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
@@ -60,94 +62,100 @@ Cc:     will@kernel.org, robin.murphy@arm.com, nicolinc@nvidia.com,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A domain can be attached to multiple masters with different
+master->stall_enabled values. The stall bit of a CD entry should follow
+master->stall_enabled and has an inverse relationship with the
+STE.S1STALLD bit.
 
-Hi all,
+The stall_enabled bit does not depend on any property of the domain, so
+move it out of the arm_smmu_domain struct.  Move it to the CD table
+struct so that it can fully describe how CD entries should be written to
+it.
 
-This series refactors stage 1 domains so that they describe a single CD
-entry. These entries are now inserted into a CD table that is owned by
-the arm_smmu_master instead of the domain.
-This is conceptually cleaner and unblocks other features, such as
-attaching domains with PASID (for unmanaged/dma domains).
-
-This patch series was originally part of a larger patch series that
-implemented the set_dev_pasid callback for non-SVA domains but is now
-split into a distinct series.
-
-This patch series is also available on gerrit with Jean's SMMU test
-engine patches cherry-picked on top for testing:
-https://linux-review.googlesource.com/c/linux/kernel/git/torvalds/linux/+/24742/8
-
-Thanks,
-Michael Shavit
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Reviewed-by: Nicolin Chen <nicolinc@nvidia.com>
+Signed-off-by: Michael Shavit <mshavit@google.com>
+---
 
 Changes in v5:
-- Clear the 0th CD entry when the domain is detached. Not clearing it
-  caused a bug in arm_smmu_write_ctx_desc which doesn't expect the entry
-  to already be set.
-- Fix an issue where cd_table.installed wasn't correctly updated.
-- Added commit to clean-up now unused master parameter in
-  arm_smmu_domain_finalise
-- Link to v4: https://lore.kernel.org/all/20230802163328.2623773-1-mshavit@google.com/
-
-Changes in v4:
-- Added comment about the cd_table's dependency on the iommu core's
-  group mutex.
-- Narrowed the range of code for which the domain's init_mutex is held
-  on attach since it now only protects the arm_smmu_domain_finalise
-  call.
-- Link to v3: https://lore.kernel.org/all/20230801183845.4026101-1-mshavit@google.com/
-
-Changes in v3:
-- Add a helper to write a CD to all masters that a domain is attached
-  to.
-- Fixed an issue where an arm_smmu_write_ctx_desc error return wasn't
-  correctly handled by its caller.
-- Flip the cd_table.installed bit back off when table is detached
-- re-order the commit later in the series since flipping the installed
-  bit to off isn't obvious when the cd_table is still shared by multiple
-  masters.
-- Link to v2: https://lore.kernel.org/all/20230731104833.800114-1-mshavit@google.com/
+- Reword commit
 
 Changes in v2:
-- Allocate CD table when it's first needed instead of on probe.
-- Minor changes
-- Added commit to rename remaining usages of cdcfg to cd_table
-- Link to v1: https://lore.kernel.org/all/20230727182647.4106140-1-mshavit@google.com/#r
+- Use a bitfield instead of a bool for stall_enabled
 
-Changes in v1:
-- Replace s1_cfg with arm_smmu_ctx_desc_cfg representing the CD table
-- Assume that the CD table is owned by the SMMU master for most
-  operations. This is forward-compatible with the nested patch series as
-  these operations wouldn't be called when the installed CD table comes
-  from nested domains.
-- Split off as a distinct patch series from https://lore.kernel.org/all/20230621063825.268890-1-mshavit@google.com/
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 8 ++++----
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h | 3 ++-
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-Michael Shavit (9):
-  iommu/arm-smmu-v3: Move ctx_desc out of s1_cfg
-  iommu/arm-smmu-v3: Replace s1_cfg with cdtab_cfg
-  iommu/arm-smmu-v3: Encapsulate ctx_desc_cfg init in alloc_cd_tables
-  iommu/arm-smmu-v3: move stall_enabled to the cd table
-  iommu/arm-smmu-v3: Refactor write_ctx_desc
-  iommu/arm-smmu-v3: Move CD table to arm_smmu_master
-  iommu/arm-smmu-v3: Cleanup arm_smmu_domain_finalise
-  iommu/arm-smmu-v3: Skip cd sync if CD table isn't active
-  iommu/arm-smmu-v3: Rename cdcfg to cd_table
-
- .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  33 ++-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 255 +++++++++---------
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  22 +-
- 3 files changed, 161 insertions(+), 149 deletions(-)
-
-
-base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index fe4b19c3b8dee..c01023404c26c 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -1114,7 +1114,7 @@ int arm_smmu_write_ctx_desc(struct arm_smmu_domain *smmu_domain, int ssid,
+ 			FIELD_PREP(CTXDESC_CD_0_ASID, cd->asid) |
+ 			CTXDESC_CD_0_V;
+ 
+-		if (smmu_domain->stall_enabled)
++		if (smmu_domain->cd_table.stall_enabled)
+ 			val |= CTXDESC_CD_0_S;
+ 	}
+ 
+@@ -1141,6 +1141,7 @@ static int arm_smmu_alloc_cd_tables(struct arm_smmu_domain *smmu_domain,
+ 	struct arm_smmu_device *smmu = smmu_domain->smmu;
+ 	struct arm_smmu_ctx_desc_cfg *cdcfg = &smmu_domain->cd_table;
+ 
++	cdcfg->stall_enabled = master->stall_enabled;
+ 	cdcfg->max_cds_bits = master->ssid_bits;
+ 	max_contexts = 1 << cdcfg->max_cds_bits;
+ 
+@@ -2121,8 +2122,6 @@ static int arm_smmu_domain_finalise_s1(struct arm_smmu_domain *smmu_domain,
+ 	if (ret)
+ 		goto out_unlock;
+ 
+-	smmu_domain->stall_enabled = master->stall_enabled;
+-
+ 	ret = arm_smmu_alloc_cd_tables(smmu_domain, master);
+ 	if (ret)
+ 		goto out_free_asid;
+@@ -2461,7 +2460,8 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
+ 		ret = -EINVAL;
+ 		goto out_unlock;
+ 	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1 &&
+-		   smmu_domain->stall_enabled != master->stall_enabled) {
++		   smmu_domain->cd_table.stall_enabled !=
++			   master->stall_enabled) {
+ 		ret = -EINVAL;
+ 		goto out_unlock;
+ 	}
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+index 35a93e8858872..05b1f0ee60808 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+@@ -597,6 +597,8 @@ struct arm_smmu_ctx_desc_cfg {
+ 	unsigned int			num_l1_ents;
+ 	/* log2 of the maximum number of CDs supported by this table */
+ 	u8				max_cds_bits;
++	/* Whether CD entries in this table have the stall bit set. */
++	u8				stall_enabled:1;
+ };
+ 
+ struct arm_smmu_s2_cfg {
+@@ -714,7 +716,6 @@ struct arm_smmu_domain {
+ 	struct mutex			init_mutex; /* Protects smmu pointer */
+ 
+ 	struct io_pgtable_ops		*pgtbl_ops;
+-	bool				stall_enabled;
+ 	atomic_t			nr_ats_masters;
+ 
+ 	enum arm_smmu_domain_stage	stage;
 -- 
 2.41.0.640.ga95def55d0-goog
 
