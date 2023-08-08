@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD69A773EA4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A219773E96
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbjHHQd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41300 "EHLO
+        id S232828AbjHHQcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232915AbjHHQcc (ORCPT
+        with ESMTP id S232804AbjHHQbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:32:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6459831024;
-        Tue,  8 Aug 2023 08:52:00 -0700 (PDT)
-Date:   Tue, 08 Aug 2023 08:44:05 -0000
+        Tue, 8 Aug 2023 12:31:13 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E221395E;
+        Tue,  8 Aug 2023 08:51:43 -0700 (PDT)
+Date:   Tue, 08 Aug 2023 08:44:06 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691484245;
+        s=2020; t=1691484246;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1Or2b4Na7nTw1tFARkW7WHc5iPHSvRQThhKn5LYONTM=;
-        b=4NL+DV5vu25vxrX4bhBaUbqNa71x3FmcliKVnGMT97x4jXpiBkwE9RgChbeLJq7UXX1SwT
-        MmMyAzPtXh0BWeRJVoROfxUe+G5IFOvYbl0Q/f/ly0EJYyQ57KpuBgR8/8gwOa68lUQ8e9
-        NH1vbh3WyQ76BV56nN23QhSEdrOS1tVbP5oJy9aMyDmyL2zBfYuvYPRFvm2DI/eDh4akj2
-        faiAuII503BMMZd1UOy2ubLT100+JmlfUs8N2WIhfQCzK22ZjVjbTJxHItSRbTGvuKVpD7
-        VcGBH74bGmUiU7dEWUX+q2V8vcF3VXuACuvYUrYwxw1D3DLs00tLWgr6kVTeWQ==
+        bh=4FdDYtj/PJTr7QNgxSySfERBaEeNWE+ml2AZNGkpXbs=;
+        b=ex4e7Eltn1BuyK7KcsAk2jqK1UANcMjkFY9c4723AIBVHfksLOnOsonUQZcHDNuX7wPfYL
+        xcHHxVGCDH2ZcYYCnHmqlP4zfqfCcnWQyBkHgGIVmseRLc1MdzH3HFtmQya3jgh5OGur6S
+        W9XkqG+xrYlWFUWGKIO36Y8NpqF2rgKwAaeYmBXg/TOUTo72HB3/PfS1doA/K5oWa0smXx
+        c6oZjCsbIqVVI5EC79lE3KcP1+yZ6CZKjc1I+U3NXMAPi4/x5HQgsBJs1dP/SJGyo2RmOZ
+        BCG+HLow7lA507/mQUFystNS82WSeTeYz9jUoOw5VJCGHGEeNtMsg8PmUKXolw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691484245;
+        s=2020e; t=1691484246;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1Or2b4Na7nTw1tFARkW7WHc5iPHSvRQThhKn5LYONTM=;
-        b=CQdYCbv3nTcsptwwHFCOTaadktKENjEER7AMBALs4c+aFCNgUH081TDUFwK4EiNzPdoDOM
-        TxBZM6HkxdWG+HDQ==
+        bh=4FdDYtj/PJTr7QNgxSySfERBaEeNWE+ml2AZNGkpXbs=;
+        b=FPz1UJY9TaCx3LFikMhIFzIAtmDjHI1DOdzf5piECiKyMaG0HAyfsSO2qaffF52WjeTXbz
+        fYyQIreY85oOE+DA==
 From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/boot] x86/decompressor: Avoid magic offsets for EFI
- handover entrypoint
+Subject: [tip: x86/boot] x86/efistub: Branch straight to kernel entry point
+ from C code
 Cc:     Ard Biesheuvel <ardb@kernel.org>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230807162720.545787-6-ardb@kernel.org>
-References: <20230807162720.545787-6-ardb@kernel.org>
+In-Reply-To: <20230807162720.545787-4-ardb@kernel.org>
+References: <20230807162720.545787-4-ardb@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169148424523.27769.14326172898952623288.tip-bot2@tip-bot2>
+Message-ID: <169148424606.27769.13302670504473669940.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -68,119 +68,73 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/boot branch of tip:
 
-Commit-ID:     12792064587623065250069d1df980e2c9ac3e67
-Gitweb:        https://git.kernel.org/tip/12792064587623065250069d1df980e2c9ac3e67
+Commit-ID:     d2d7a54f69b67cd0a30e0ebb5307cb2de625baac
+Gitweb:        https://git.kernel.org/tip/d2d7a54f69b67cd0a30e0ebb5307cb2de625baac
 Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Mon, 07 Aug 2023 18:27:02 +02:00
+AuthorDate:    Mon, 07 Aug 2023 18:27:00 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 07 Aug 2023 20:39:00 +02:00
+CommitterDate: Mon, 07 Aug 2023 20:36:06 +02:00
 
-x86/decompressor: Avoid magic offsets for EFI handover entrypoint
+x86/efistub: Branch straight to kernel entry point from C code
 
-The native 32-bit or 64-bit EFI handover protocol entrypoint offset
-relative to the respective startup_32/64 address is described in
-boot_params as handover_offset, so that the special Linux/x86 aware EFI
-loader can find it there.
-
-When mixed mode is enabled, this single field has to describe this
-offset for both the 32-bit and 64-bit entrypoints, so their respective
-relative offsets have to be identical. Given that startup_32 and
-startup_64 are 0x200 bytes apart, and the EFI handover entrypoint
-resides at a fixed offset, the 32-bit and 64-bit versions of those
-entrypoints must be exactly 0x200 bytes apart as well.
-
-Currently, hard-coded fixed offsets are used to ensure this, but it is
-sufficient to emit the 64-bit entrypoint 0x200 bytes after the 32-bit
-one, wherever it happens to reside. This allows this code (which is now
-EFI mixed mode specific) to be moved into efi_mixed.S and out of the
-startup code in head_64.S.
+Instead of returning to the calling code in assembler that does nothing
+more than perform an indirect call with the boot_params pointer in
+register ESI/RSI, perform the jump directly from the EFI stub C code.
+This will allow the asm entrypoint code to be dropped entirely in
+subsequent patches.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20230807162720.545787-6-ardb@kernel.org
+Link: https://lore.kernel.org/r/20230807162720.545787-4-ardb@kernel.org
 ---
- arch/x86/boot/compressed/efi_mixed.S | 20 +++++++++++++++++++-
- arch/x86/boot/compressed/head_64.S   | 18 ------------------
- 2 files changed, 19 insertions(+), 19 deletions(-)
+ drivers/firmware/efi/libstub/x86-stub.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/boot/compressed/efi_mixed.S b/arch/x86/boot/compressed/efi_mixed.S
-index dcc562c..9308b59 100644
---- a/arch/x86/boot/compressed/efi_mixed.S
-+++ b/arch/x86/boot/compressed/efi_mixed.S
-@@ -140,6 +140,16 @@ SYM_FUNC_START(__efi64_thunk)
- SYM_FUNC_END(__efi64_thunk)
+diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+index 220be75..40a10db 100644
+--- a/drivers/firmware/efi/libstub/x86-stub.c
++++ b/drivers/firmware/efi/libstub/x86-stub.c
+@@ -290,7 +290,7 @@ adjust_memory_range_protection(unsigned long start, unsigned long size)
+ #define TRAMPOLINE_PLACEMENT_BASE ((128 - 8)*1024)
+ #define TRAMPOLINE_PLACEMENT_SIZE (640*1024 - (128 - 8)*1024)
  
- 	.code32
-+#ifdef CONFIG_EFI_HANDOVER_PROTOCOL
-+SYM_FUNC_START(efi32_stub_entry)
-+	add	$0x4, %esp		/* Discard return address */
-+	popl	%ecx
-+	popl	%edx
-+	popl	%esi
-+	jmp	efi32_entry
-+SYM_FUNC_END(efi32_stub_entry)
-+#endif
+-void startup_32(struct boot_params *boot_params);
++extern const u8 startup_32[], startup_64[];
+ 
+ static void
+ setup_memory_protection(unsigned long image_base, unsigned long image_size)
+@@ -803,10 +803,19 @@ static efi_status_t exit_boot(struct boot_params *boot_params, void *handle)
+ 	return EFI_SUCCESS;
+ }
+ 
++static void __noreturn enter_kernel(unsigned long kernel_addr,
++				    struct boot_params *boot_params)
++{
++	/* enter decompressed kernel with boot_params pointer in RSI/ESI */
++	asm("jmp *%0"::"r"(kernel_addr), "S"(boot_params));
++
++	unreachable();
++}
 +
  /*
-  * EFI service pointer must be in %edi.
-  *
-@@ -220,7 +230,7 @@ SYM_FUNC_END(efi_enter32)
-  * stub may still exit and return to the firmware using the Exit() EFI boot
-  * service.]
+- * On success, we return the address of startup_32, which has potentially been
+- * relocated by efi_relocate_kernel.
+- * On failure, we exit to the firmware via efi_exit instead of returning.
++ * On success, this routine will jump to the relocated image directly and never
++ * return.  On failure, it will exit to the firmware via efi_exit() instead of
++ * returning.
   */
--SYM_FUNC_START(efi32_entry)
-+SYM_FUNC_START_LOCAL(efi32_entry)
- 	call	1f
- 1:	pop	%ebx
+ asmlinkage unsigned long efi_main(efi_handle_t handle,
+ 				  efi_system_table_t *sys_table_arg,
+@@ -950,7 +959,10 @@ asmlinkage unsigned long efi_main(efi_handle_t handle,
+ 		goto fail;
+ 	}
  
-@@ -320,6 +330,14 @@ SYM_FUNC_START(efi32_pe_entry)
- 	RET
- SYM_FUNC_END(efi32_pe_entry)
- 
-+#ifdef CONFIG_EFI_HANDOVER_PROTOCOL
-+	.org	efi32_stub_entry + 0x200
-+	.code64
-+SYM_FUNC_START_NOALIGN(efi64_stub_entry)
-+	jmp	efi_stub_entry
-+SYM_FUNC_END(efi64_stub_entry)
-+#endif
+-	return bzimage_addr;
++	if (IS_ENABLED(CONFIG_X86_64))
++		bzimage_addr += startup_64 - startup_32;
 +
- 	.section ".rodata"
- 	/* EFI loaded image protocol GUID */
- 	.balign 4
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index e688020..a3f764d 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -294,17 +294,6 @@ SYM_FUNC_START(startup_32)
- 	lret
- SYM_FUNC_END(startup_32)
- 
--#if IS_ENABLED(CONFIG_EFI_MIXED) && IS_ENABLED(CONFIG_EFI_HANDOVER_PROTOCOL)
--	.org 0x190
--SYM_FUNC_START(efi32_stub_entry)
--	add	$0x4, %esp		/* Discard return address */
--	popl	%ecx
--	popl	%edx
--	popl	%esi
--	jmp	efi32_entry
--SYM_FUNC_END(efi32_stub_entry)
--#endif
--
- 	.code64
- 	.org 0x200
- SYM_CODE_START(startup_64)
-@@ -542,13 +531,6 @@ trampoline_return:
- 	jmp	*%rax
- SYM_CODE_END(startup_64)
- 
--#if IS_ENABLED(CONFIG_EFI_MIXED) && IS_ENABLED(CONFIG_EFI_HANDOVER_PROTOCOL)
--	.org 0x390
--SYM_FUNC_START(efi64_stub_entry)
--	jmp	efi_stub_entry
--SYM_FUNC_END(efi64_stub_entry)
--#endif
--
- 	.text
- SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
++	enter_kernel(bzimage_addr, boot_params);
+ fail:
+ 	efi_err("efi_main() failed!\n");
  
