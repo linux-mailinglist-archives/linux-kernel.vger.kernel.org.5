@@ -2,123 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 243A57743DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CC97743C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235408AbjHHSLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50380 "EHLO
+        id S235364AbjHHSJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235378AbjHHSKl (ORCPT
+        with ESMTP id S235292AbjHHSJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:10:41 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F9E1BAE5
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:13:05 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3110ab7110aso5153930f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:13:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=libre.computer; s=google; t=1691514784; x=1692119584;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wYPXrTj0ac3/TbvRu9WrEZ10bFywEsKaB4qoBFTir7E=;
-        b=A5HHa47LuBlyQT5CZO8LKtXoptTPXL+CNL0aeCwjZ3TZsGgjfeggKRn8qi8oqnFVzP
-         H8HdeQsondiDt9lIqw0XCPyX48bKWuaRWe09Uhb97b1tKaXObTtlT1Un3dV0AVNk43BQ
-         YGgXdcsQfliK9+Y8dlniOmcRJ/ZVkEZBVGbU7jZ52Ky8d83vbt6sQhnPqhiOn4aDZ7jH
-         ngNRrj+wEoJn6tMrx8ZQywZSOs697eh1h/N/viD98CDhjlpnhDfRYlA6hkCBjE6ZOvvK
-         hcDxWiXw2RE0/h6jgLLkdN4fH8681/gMrDSiJLyoKLi2uz7vhoSLgNqXWO8poobOb+EB
-         BD1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691514784; x=1692119584;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wYPXrTj0ac3/TbvRu9WrEZ10bFywEsKaB4qoBFTir7E=;
-        b=JCYhTlCMeH7xP95D1t15uv2C0EqrMb3XKh7qLc07iVGaLYi3lM+MvNpTdxURXUy35b
-         AkJCqUIpavFx/XlrGiQrHHHpztgL711mD/c7bxAzmZKwJFtCYqQSL/cy2enbCn7RbbtC
-         hRRM5tD9BhXL135lYiTC1RK5ac3ffvInbAtZqVzkKtn44uu9pclp1bx2ZTB573yalgY2
-         51GE3N/FfgPFt7Ktk0x5L4A2QlVcZpxL/H1l74uAXGRQw4AdRZFvurSlZkSqRrGdc9Kn
-         CE77G4vpL+K5JI2BFm/NqbLU6511z25SId6/9Tx+6LjaIBEOIMCRF2n6tZaIOK1dTWA5
-         DwbA==
-X-Gm-Message-State: AOJu0YzAQc+gntwzazU4+JCAmoFQglvEAeedOeNhE5QvMfn6gYEfAspq
-        B74FKQGqxtw5fK02+VXzAMuEeJWKznp1I03Gr+mbOAEDis8Ii3gJV0GpCfnEuBQ=
-X-Google-Smtp-Source: AGHT+IGwJkEwmhGtX5OwedSjwf3ch9f4Rn33ZkTyBMpaVuhixVe3FEg1sM8V6DxiweX0z+J81sYoBkLLrAGCleGW+tw=
-X-Received: by 2002:a2e:87c6:0:b0:2b6:e2aa:8fc2 with SMTP id
- v6-20020a2e87c6000000b002b6e2aa8fc2mr6824193ljj.46.1691474997354; Mon, 07 Aug
- 2023 23:09:57 -0700 (PDT)
+        Tue, 8 Aug 2023 14:09:23 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BC81B528
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:11:16 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RKjSt1MjkzrSMp;
+        Tue,  8 Aug 2023 14:09:34 +0800 (CST)
+Received: from [10.174.151.185] (10.174.151.185) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 8 Aug 2023 14:10:44 +0800
+Subject: Re: [PATCH] mm: remove unneeded __meminit annotation
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230808015831.608454-1-linmiaohe@huawei.com>
+ <ZNGo5Y4vQ3rQn0vf@casper.infradead.org>
+ <308f326d-c7ae-be49-22af-189a81a89aa2@huawei.com>
+ <ZNGzqRYzC8lbLG9s@casper.infradead.org>
+ <ZNG1+PV5nG8YZDev@casper.infradead.org>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <68b73067-59bf-e25f-448f-79ec60fc6639@huawei.com>
+Date:   Tue, 8 Aug 2023 14:10:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20230808032510.31754-1-luke.lu@libre.computer> <2023080851-duh-scroll-09bf@gregkh>
-In-Reply-To: <2023080851-duh-scroll-09bf@gregkh>
-From:   Luke Lu <luke.lu@libre.computer>
-Date:   Tue, 8 Aug 2023 06:09:45 +0000
-Message-ID: <CAAzmgs5U=BNzNNeskUMe_YEken1-CmzssRFPDCmsmar9SQo+WQ@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: meson-g12a: do post init to fix broken usb
- after resumption
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-usb@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Da Xue <da@libre.computer>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <ZNG1+PV5nG8YZDev@casper.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.151.185]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Greg:
+On 2023/8/8 11:26, Matthew Wilcox wrote:
+> On Tue, Aug 08, 2023 at 04:16:57AM +0100, Matthew Wilcox wrote:
+>> On Tue, Aug 08, 2023 at 11:08:36AM +0800, Miaohe Lin wrote:
+>>> On 2023/8/8 10:31, Matthew Wilcox wrote:
+>>>> On Tue, Aug 08, 2023 at 09:58:31AM +0800, Miaohe Lin wrote:
+>>>>> kswapd_stop() and kcompactd_stop() are only called when MEMORY_HOTREMOVE
+>>>>> is enabled. So wrap them under CONFIG_MEMORY_HOTREMOVE and further remove
+>>>>> __meminit annotation. No functional change intended.
+>>>>
+>>>> I don't understand why this is an improvement.  If CONFIG_MEMORY_HOTREMOVE
+>>>> is disabled, the linker drops this section (... right?)  If it's enabled,
+>>>
+>>> When CONFIG_MEMORY_HOTREMOVE is disabled, without this patch:
+>>>
+>>> size mm/compaction.o
+>>>    text	   data	    bss	    dec	    hex	filename
+>>>  103164	  30873	      0	 134037	  20b95	mm/compaction.o
+>>>
+>>> size mm/vmscan.o
+>>>    text	   data	    bss	    dec	    hex	filename
+>>>  158775	  49612	     64	 208451	  32e43	mm/vmscan.o
+>>>
+>>> while with this patch:
+>>>
+>>> size mm/compaction.o
+>>>    text	   data	    bss	    dec	    hex	filename
+>>>  102915	  30865	      0	 133780	  20a94	mm/compaction.o
+>>>
+>>> size mm/vmscan.o
+>>>    text	   data	    bss	    dec	    hex	filename
+>>>  158534	  49604	     64	 208202	  32d4a	mm/vmscan.o
+>>>
+>>> We can reduce each .o by ~250 bytes.
+>>
+>> But this is before the linker step!  That will be where the meminit
+>> sections get dropped.  Assuming they are; I haven't verified.  You need
+>> to compare before/after of the vmlinux, not the individual .o files.
 
-On Tue, Aug 8, 2023 at 4:56=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Aug 08, 2023 at 03:25:10AM +0000, Luke Lu wrote:
-> > Device connected to usb otg port of GXL-based boards can not be
-> > recognised after resumption, doesn't recover even if disconnect and
-> > reconnect the device. dmesg shows it disconnects during resumption.
-> >
-> > [   41.492911] usb 1-2: USB disconnect, device number 3
-> > [   41.499346] usb 1-2: unregistering device
-> > [   41.511939] usb 1-2: unregistering interface 1-2:1.0
-> >
-> > Calling usb_post_init() will fix this issue, and it's tested and
-> > verified on libretech's aml-s905x-cc board.
-> >
-> > Signed-off-by: Luke Lu <luke.lu@libre.computer>
->
-> What commit id does this fix?
-Using "git blame" to explore the history, found dwc3_meson_g12a_resume() wa=
-s
-introduced along with the file of drivers/usb/dwc3/dwc3-meson-g12a.c.
-as Da Xue pointed out, the suspend/resume was never tested in GXL based SoC=
-,
-so it's broken since the beginning..
+When CONFIG_MEMORY_HOTREMOVE is disabled, without patch:
 
-For the Fixes tag, I think it's proper to use "5b0ba0caaf3a: (usb:
-dwc3: meson-g12a: refactor usb init)"
-since the usb_post_init() function was introduced in this commit and
-this patch will depend on it.
+size vmlinux
+   text	   data	    bss	    dec	    hex	filename
+70648396	21668938	17985540	110302874	693169a	vmlinux
 
-> Should it also go to stable kernels?
->
-Yes, It would be great if the patch can go to stable tree, thanks for
-suggesting this
-I have it tested on 6.1-lts tree.
+while with patch:
 
-Btw, I would wait for a few days for more comments and CC to stable in
-next v2 if no objection.
+size vmlinux
+   text	   data	    bss	    dec	    hex	filename
+70648128	21668938	17985540	110302606	693158e	vmlinux
 
-> thanks,
->
-> greg k-h
+vmlinux is still reduced by 268 bytes.
 
-Luke
+> 
+> Ah, found it:
+> 
+> #if defined(CONFIG_MEMORY_HOTPLUG)
+> #define MEM_KEEP(sec)    *(.mem##sec)
+> #define MEM_DISCARD(sec)
+> #else
+> #define MEM_KEEP(sec)
+> #define MEM_DISCARD(sec) *(.mem##sec)
+> #endif
+> 
+> in include/asm-generic/vmlinux.lds.h
+
+When CONFIG_MEMORY_HOTREMOVE is disabled, without this patch, kswapd_stop() and kcompactd_stop()
+are dropped after system init.
+
+But no insist in this patch.
+
+Thanks for your comment.
+
