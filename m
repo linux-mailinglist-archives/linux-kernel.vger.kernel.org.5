@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D27774E9A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 00:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813A9774E9C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 00:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbjHHWsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 18:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
+        id S231784AbjHHWsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 18:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbjHHWsl (ORCPT
+        with ESMTP id S231543AbjHHWsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 18:48:41 -0400
-Received: from mail-oa1-x49.google.com (mail-oa1-x49.google.com [IPv6:2001:4860:4864:20::49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948F1129
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 15:48:40 -0700 (PDT)
-Received: by mail-oa1-x49.google.com with SMTP id 586e51a60fabf-1bf00c27c39so10387690fac.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 15:48:40 -0700 (PDT)
+        Tue, 8 Aug 2023 18:48:42 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947C5E40
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 15:48:41 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5896bdb0b18so6726827b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 15:48:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691534920; x=1692139720;
+        d=google.com; s=20221208; t=1691534921; x=1692139721;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pvwje1x+fgK9E9IR7qsfn31Dc5XiXldAZ1Fo1xHQpAo=;
-        b=ZowPnFVAEOQu1o/+XzT8fcaX6DHlVccwrE7gGNHkAx3YDdV+D3o7fUpYyj/vi1Ct5Q
-         +QYJDWnAhftWiK8EgTciXmjxfJNfL1DHfcE3o+XOVVHbUUBr2oc33L84fXDKdg0spibe
-         GZ5bqdG9qrHx/UtSzbaBTMqp6lQxfoXnPa2UM0vLrI7Zb2YiefFjL0pSu/+rNaKy1wlN
-         XhfOQJjCKLo/y7i/PPyKhKK6HKjXtVSpBWc22UEpkQAx89z/FVCmSvgnGCxbk5FjWRbD
-         QKj317GKJBKiDYTXPzGM5v1TxwYmVWI7QXAAaldoX9Tx9r5cTrpz+UfvZC+saxnSr//L
-         67Hg==
+        bh=G9OF2QFsiP3MkrzN4gKJO5o0WhLZ6LzcN9E8K6dc8dQ=;
+        b=Tk5sym5cRDFSry8K+vc1HytKkY3IbV6iZulQcdqzajiE0IVk3xAlVvRndUZmAf1bym
+         qmBA/CUFS/PGUXiFjGhkccdVwoX3zHUdcOMoLvXMMUMjR8yufvUM3BMxdbZVUZUBohHJ
+         XDd0dKfCAqHUdAGRMbnyrr4FGDyVDAC1FubuFJd7iCMUjnLDpsu9n3DTiB9Phq8Qvf0E
+         q8U2keEGG0MEUAozFw72uG4Zvu2LbBhukIi5JUVz+Vr+B72eM5IBoS4QlmZ4vDb1Wq63
+         DfyTE1Qq1a9iFWqR253R9wuYjfP9rEWY7oXwiicHyPCLs7WfdwbOq9mI2Yx1daOUKLxs
+         Jqyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691534920; x=1692139720;
+        d=1e100.net; s=20221208; t=1691534921; x=1692139721;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pvwje1x+fgK9E9IR7qsfn31Dc5XiXldAZ1Fo1xHQpAo=;
-        b=d0MEXhZKswMYt5S7gGd9B5+otvxvpdcwmUUVPWDgBbByboLkj5ViNiS0VVuwvLMG3P
-         LRsgXgkOU7qtbss8CgCVhJKMkaAwqnwZA3JVoc2y2EBDSs81mAoF3GB6E028NPIpNlYu
-         9MKRnwVWpOVNqeXtPyKlLDgVWebxgFm6U/AlR1ZHHKQT2XdsPYNmdFp6tar3Q8V5mP1T
-         yzUkboTYLFdY3g+haDAsYog4MOyO7dNojKzYJsVR4InSmOhqk0NVWYbsVmxCKHRh4Duz
-         khTTT+VODN4/qQEHPwSY3vUx+GHT8iaO4Bb97//XHlY7pyLVr7wNLYFqZEhpyNXT6H8J
-         qnTA==
-X-Gm-Message-State: AOJu0Yz0zu7NuhF6KhYok2iqW7gqhEjaeAM/fb6y/JKPIrcWAjMgIaqo
-        zuPDA2PdbYviInMAjgzLY60ZLQCLwRnyi5BS5w==
-X-Google-Smtp-Source: AGHT+IFfTapulzyD7mF8uId+U6qhT9W1jzh/xLHutjoQ+baESmwt1nASohgDjGgqfc8DbSFYevzOUew1G7Fcn9bwfg==
+        bh=G9OF2QFsiP3MkrzN4gKJO5o0WhLZ6LzcN9E8K6dc8dQ=;
+        b=RGWseE8WH9ty8XoRVNKIP4khdqOo8ONFN0Rq1kWL7oxzbqiS1DQXKllmDDuEZMnQJB
+         SMhmDNyXKTL1Vh7dN6FRUdJbyvhd+wW8qTqgMZETQUPSosfMpBMHc4DzR6BjgLs8NYB6
+         SQlFbRfL6TV01tXroNtL+lkjTPeENidvZvVMkcXYjMLESBHMH2t5K4vJScZvAWsQCBNp
+         ySWw47uGBjnHIRJRZJ3Bny8sxPm9obH55M7df9rjwud060pC2RaMeiw3p2vHEgKAAY6h
+         bMqKe/BM9ryNGkZIEj1KnUH6IiGPpQlB6izbddOtRSJhVT/QLK0Cpihhixv00yEDSuoB
+         nwjg==
+X-Gm-Message-State: AOJu0YxAm/CKZWw1eZhDfciKAqvrO67leLZO0pnK4GBwgaarVAC+EX5j
+        X2RdP/JrCTDCLAxOtXMDmrtAdexflIGkFMQIUw==
+X-Google-Smtp-Source: AGHT+IGCyJW7+H01CcBpmwMLWO4IJOM2JRZefUJenQ9SapEIQSusWKx57m2Q2rpVYsPLUriKIRjxQtAgRFf96MgkCg==
 X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6870:5b03:b0:1bf:a06f:ce6f with
- SMTP id ds3-20020a0568705b0300b001bfa06fce6fmr315997oab.9.1691534919982; Tue,
- 08 Aug 2023 15:48:39 -0700 (PDT)
-Date:   Tue, 08 Aug 2023 22:48:11 +0000
+ (user=justinstitt job=sendgmr) by 2002:a81:b61a:0:b0:586:e91a:46c2 with SMTP
+ id u26-20020a81b61a000000b00586e91a46c2mr107296ywh.4.1691534920928; Tue, 08
+ Aug 2023 15:48:40 -0700 (PDT)
+Date:   Tue, 08 Aug 2023 22:48:12 +0000
 In-Reply-To: <20230808-net-netfilter-v1-0-efbbe4ec60af@google.com>
 Mime-Version: 1.0
 References: <20230808-net-netfilter-v1-0-efbbe4ec60af@google.com>
 X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691534912; l=1616;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691534912; l=1134;
  i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=epcsNlzjLL3K9DAOvrsRp37/1eZVu8TeiuJpMs34l/Q=; b=L1P2cQc3z99LSWR/qio44oxncmlWLIBSvxY6HOu5W2BRo4B41BhDGwuAbcow63n2hPhRjceUI
- 9E5bGIoGP2nDYAORkqUToKLoCEdCN/nRopReeZhHhL/7pSX4tiOQrrn
+ bh=Bp+w2rTLNgdzNlxLi9FLD4utZ4QUqpPxaPIds7U/AGY=; b=odK4V1dqN6Y308K04MH8d/MRrkeaDSd1rELzLfU+7SDbRdFBl0nXUSsw+H9Y12YsVkVDC43lj
+ zmYSndS5Js/Dv3+IClsSCDsbs7OJ2vOQ6onFe43X7Ff2wDY/LO6DwG0
 X-Mailer: b4 0.12.3
-Message-ID: <20230808-net-netfilter-v1-6-efbbe4ec60af@google.com>
-Subject: [PATCH 6/7] netfilter: x_tables: refactor deprecated strncpy
+Message-ID: <20230808-net-netfilter-v1-7-efbbe4ec60af@google.com>
+Subject: [PATCH 7/7] netfilter: xtables: refactor deprecated strncpy
 From:   Justin Stitt <justinstitt@google.com>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
@@ -82,52 +82,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prefer `strscpy` to `strncpy` for use on NUL-terminated destination
-buffers.
+Prefer `strscpy` as it's a more robust interface.
 
-This fixes a potential bug due to the fact that both `t->u.user.name`
-and `name` share the same size.
+There may have existed a bug here due to both `tbl->repl.name` and
+`info->name` having a size of 32 as defined below:
+|  #define XT_TABLE_MAXNAMELEN 32
+
+This may lead to buffer overreads in some situations -- `strscpy` solves
+this by guaranteeing NUL-termination of the dest buffer.
 
 Signed-off-by: Justin Stitt <justinstitt@google.com>
 
 ---
-Here's an example of what happens when dest and src share same size:
-|  #define MAXLEN 5
-|  char dest[MAXLEN];
-|  const char *src = "hello";
-|  strncpy(dest, src, MAXLEN); // -> should use strscpy()
-|  // dest is now not NUL-terminated
+Note: build tested only
 ---
- net/netfilter/x_tables.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ net/netfilter/xt_repldata.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
-index 470282cf3fae..714a38ec9055 100644
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -768,7 +768,7 @@ void xt_compat_match_from_user(struct xt_entry_match *m, void **dstptr,
- 	m->u.user.match_size = msize;
- 	strscpy(name, match->name, sizeof(name));
- 	module_put(match->me);
--	strncpy(m->u.user.name, name, sizeof(m->u.user.name));
-+	strscpy(m->u.user.name, name, sizeof(m->u.user.name));
- 
- 	*size += off;
- 	*dstptr += msize;
-@@ -1148,7 +1148,7 @@ void xt_compat_target_from_user(struct xt_entry_target *t, void **dstptr,
- 	t->u.user.target_size = tsize;
- 	strscpy(name, target->name, sizeof(name));
- 	module_put(target->me);
--	strncpy(t->u.user.name, name, sizeof(t->u.user.name));
-+	strscpy(t->u.user.name, name, sizeof(t->u.user.name));
- 
- 	*size += off;
- 	*dstptr += tsize;
-@@ -2014,4 +2014,3 @@ static void __exit xt_fini(void)
- 
- module_init(xt_init);
- module_exit(xt_fini);
--
+diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
+index 68ccbe50bb1e..63869fd0ec57 100644
+--- a/net/netfilter/xt_repldata.h
++++ b/net/netfilter/xt_repldata.h
+@@ -29,7 +29,7 @@
+ 	if (tbl == NULL) \
+ 		return NULL; \
+ 	term = (struct type##_error *)&(((char *)tbl)[term_offset]); \
+-	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
++	strscpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
+ 	*term = (struct type##_error)typ2##_ERROR_INIT;  \
+ 	tbl->repl.valid_hooks = hook_mask; \
+ 	tbl->repl.num_entries = nhooks + 1; \
 
 -- 
 2.41.0.640.ga95def55d0-goog
