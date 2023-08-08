@@ -2,100 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A07B77415F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD8A773E5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234348AbjHHRTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
+        id S232873AbjHHQ3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233929AbjHHRSc (ORCPT
+        with ESMTP id S232749AbjHHQ2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:18:32 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D251E324
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:07:33 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe0d5f719dso9667715e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:07:33 -0700 (PDT)
+        Tue, 8 Aug 2023 12:28:39 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D831D12527;
+        Tue,  8 Aug 2023 08:51:04 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6bc9811558cso4837756a34.0;
+        Tue, 08 Aug 2023 08:51:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691510846; x=1692115646;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Vsp33dBf7UhgamzOkYxOzQdC3CHLd9zXwnmRE8U0OWI=;
-        b=BLh7lEZEWXDgnTC3aiMQjivhLA7hRBL1fFgDETled3wHSjm6Uy95V9IBLIlpoXdZf0
-         kdQ5UzbfgeYOhG0Dpqt1/pOIcz3MtnVpgvAO9Ch3MnrHg94V9q16H024NtGnfTBrUswo
-         6FgYwj3IvRWBLskujW5zEaPNHdINOe8/JSBeSi0fdHRXRgH71ceyRT9541xyKc7aZEl+
-         VQ3SIcS68jjGYFDaljVvla3EAtTS/snK/3ety8i/5pzsG9Zu7CtmuGFXPOe7mq8cbQ8C
-         QbPZ1OV6k+992cFmAcd4TdP0Slj0lydmz0IFcggcVxDeanLu7SWQbGTO1uC9bdLnQbop
-         mZ9Q==
+        d=gmail.com; s=20221208; t=1691509859; x=1692114659;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HB3IbLDDH4dHIpXftssp7QgZTWqPnFJDBjmyEtR5DK4=;
+        b=duoUumTVjOyL7tQbqKRPwotvWXD9hEObA/wDR9lEWvDc9PT7DHoWcCW9bC5LB9Df+r
+         VlggSUAHtrhWQsRQNw6UtfvBpQZZzj4znYfu+7r+0hjjietfNsufaw6WVgQrItTatLY8
+         4pffBit6ABC2QFlCUUtZ14/uRg6ll5NBNkSuMcPxA7C4cfuDrqAnYiivguifhBlCkmm5
+         GmyCNbHQ4L7xOwG5MtU4jeDlNwlsxob3DQ/gNnhZdY3c3E9ZUQB2Kx9BCl9Sg4Rn0+mF
+         i2xyzZoMVSdZU3Q9fsQpBOMOWazMdiSSEjmyfEOi23ujxAIvY9iMV5NB0OKrH853pNvn
+         Ncjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510846; x=1692115646;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vsp33dBf7UhgamzOkYxOzQdC3CHLd9zXwnmRE8U0OWI=;
-        b=L1LxSURAd+raXrYfsG3EM2eYd/H0CyudJ4d4T0Mq1dUfAt0omDqkYoqR06309Qpk42
-         2OaEeYwuHsS6u3pUe7FSHrMRpsG177k7SF680DSd6GQ9X9m5gkRl2UXLTfrVKrHA5HPv
-         r9JRKsBVAEvd4+f36Y+WYm7ID5hwYtiZVtagHoUOqbizfSOEdXYP+IFLLYvQU0Weock7
-         R+iFXQBvY1x1R94a8UpJ7gwwWhpKyczjWA+BsnYLhlTXcKsP2EM5zMVCjTF2/Ulsb+gY
-         xdzFkukKGl90uQ1oDjng/Z9pddi+9Q1VBiduRRS0c4EVcPvUbsf7aYWfTUFlJ56dMPBD
-         AzSw==
-X-Gm-Message-State: AOJu0YyZqf2Qb3urmOM0WGS78GygdSfTanNaA3+Z+Hu0sYTBB5xLNu+j
-        FspIESrvmROX5oxlmZIdWUW7z6kl/78HSrwemTw=
-X-Google-Smtp-Source: AGHT+IHJ3hZ82wubWYBzU8TJVHIOBqyUG04wm6z7DeM5yDPFDtsTGPypfW+gUnZ0OMkFJqxWx8oYeQ==
-X-Received: by 2002:a2e:7e0b:0:b0:2b6:ed80:15d1 with SMTP id z11-20020a2e7e0b000000b002b6ed8015d1mr8862529ljc.24.1691506333010;
-        Tue, 08 Aug 2023 07:52:13 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id v8-20020a170906180800b009934855d8f1sm6817973eje.34.2023.08.08.07.52.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 07:52:12 -0700 (PDT)
-Message-ID: <65a57225-43d5-fdfa-c12d-3f33f8e535be@linaro.org>
-Date:   Tue, 8 Aug 2023 16:52:10 +0200
+        d=1e100.net; s=20221208; t=1691509859; x=1692114659;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HB3IbLDDH4dHIpXftssp7QgZTWqPnFJDBjmyEtR5DK4=;
+        b=JxFlCIfuWcfAjXYVtE4JHhqgfsFbtixLlDcrAuM2WtJLz9DGBACs55IZjdCrEU/yfm
+         pRICT2fWT1j/bGOitHGGlJmJ+klc/TDKr7zGU+Ylv1LDCgaRtknc4cDQJk3urYIP4ESI
+         42PrhLkdbDdKKGYtDwCtMyW4HokQ118klqWa1dFeeoJtiwei5AF2GHg5jTVqZF9JHlG1
+         D9yVSiLNLflMOPou34q5bCG5x+raY0HMdTJ9sP9IxhN5jGl0NxebJmwYxWYiXyV8DDJ8
+         36kg5xojaFK4ub0UvYyi0PAXf0SxeHihB3c3czsI/4A/XZr8iGyYL5zDVO9MFbb9tUnK
+         kstg==
+X-Gm-Message-State: AOJu0YztFOaCs53ig7DNNfmRHqUInWlLLaOS+1rCEeNrRjogYkU3TE87
+        FVX33YNhQwxnZwhOuCNURgf/4UitnrIwwg0wkI3a0HqA
+X-Google-Smtp-Source: AGHT+IHYs2UczeXJuZ1GHWZCjGOfnzcKmZaaEwYQYwNVRvre0QM6ozs9r+lDjtt+Z/nAxw598+97/YKCN9PRlnTUol4=
+X-Received: by 2002:a25:69c7:0:b0:d3b:3baf:2db2 with SMTP id
+ e190-20020a2569c7000000b00d3b3baf2db2mr10633275ybc.51.1691506390104; Tue, 08
+ Aug 2023 07:53:10 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [EXT] Re: [PATCH v4 4/7] arm64: dts: imx93-11x11-evk: added nxp
- secure enclave fw
-Content-Language: en-US
-To:     Pankaj Gupta <pankaj.gupta@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "clin@suse.com" <clin@suse.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "pierre.gondois@arm.com" <pierre.gondois@arm.com>,
-        Jacky Bai <ping.bai@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        Wei Fang <wei.fang@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Bough Chen <haibo.chen@nxp.com>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Gaurav Jain <gaurav.jain@nxp.com>,
-        "alexander.stein@ew.tq-group.com" <alexander.stein@ew.tq-group.com>,
-        Sahil Malhotra <sahil.malhotra@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Varun Sethi <V.Sethi@nxp.com>
-References: <20230712121219.2654234-1-pankaj.gupta@nxp.com>
- <20230712121219.2654234-5-pankaj.gupta@nxp.com>
- <29cb4426-a15e-7186-1713-427f749bc187@linaro.org>
- <DU2PR04MB863043CFB54E4CF2C5F34B65950DA@DU2PR04MB8630.eurprd04.prod.outlook.com>
- <DU2PR04MB8630F001B107D331F9F5DE1E950DA@DU2PR04MB8630.eurprd04.prod.outlook.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <DU2PR04MB8630F001B107D331F9F5DE1E950DA@DU2PR04MB8630.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+References: <20230804180529.2483231-1-aleksander.lobakin@intel.com>
+ <20230804180529.2483231-6-aleksander.lobakin@intel.com> <692d71dc8068b3d27aba39d7141c811755965786.camel@gmail.com>
+ <601c0203-ee5f-03a3-e9dd-fdb241f3bcdc@intel.com> <CAKgT0Uc0pLzaOfqFbvd9jFErAbTbsUMNNw5e_XY5NfCnO0=g0g@mail.gmail.com>
+ <ca096c35-6ce4-6c1d-7e26-a017348f6ece@intel.com>
+In-Reply-To: <ca096c35-6ce4-6c1d-7e26-a017348f6ece@intel.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Tue, 8 Aug 2023 07:52:32 -0700
+Message-ID: <CAKgT0UcZspvhYcfiKs90snAfwwb+CMn-vhA62XcSTRiV0BfOqw@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 5/6] page_pool: add a lockdep check for
+ recycling in hardirq
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -103,110 +83,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/2023 13:49, Pankaj Gupta wrote:
-> 
-> 
->> -----Original Message-----
->> From: Pankaj Gupta
->> Sent: Tuesday, August 8, 2023 5:04 PM
->> To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>;
->> shawnguo@kernel.org; s.hauer@pengutronix.de; kernel@pengutronix.de;
->> clin@suse.com; conor+dt@kernel.org; pierre.gondois@arm.com; Jacky Bai
->> <ping.bai@nxp.com>; Clark Wang <xiaoning.wang@nxp.com>; Wei Fang
->> <wei.fang@nxp.com>; Peng Fan <peng.fan@nxp.com>; Bough Chen
->> <haibo.chen@nxp.com>; festevam@gmail.com; dl-linux-imx <linux-
->> imx@nxp.com>; davem@davemloft.net; robh+dt@kernel.org;
->> krzysztof.kozlowski+dt@linaro.org; linux-arm-kernel@lists.infradead.org;
->> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Gaurav Jain
->> <gaurav.jain@nxp.com>; alexander.stein@ew.tq-group.com; Sahil Malhotra
->> <sahil.malhotra@nxp.com>; Aisheng Dong <aisheng.dong@nxp.com>; Varun
->> Sethi <V.Sethi@nxp.com>
->> Subject: RE: [EXT] Re: [PATCH v4 4/7] arm64: dts: imx93-11x11-evk: added
->> nxp secure enclave fw
->>
->>
->>
->>> -----Original Message-----
->>> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>> Sent: Thursday, July 13, 2023 12:38 AM
->>> To: Pankaj Gupta <pankaj.gupta@nxp.com>; shawnguo@kernel.org;
->>> s.hauer@pengutronix.de; kernel@pengutronix.de; clin@suse.com;
->>> conor+dt@kernel.org; pierre.gondois@arm.com; Jacky Bai
->>> <ping.bai@nxp.com>; Clark Wang <xiaoning.wang@nxp.com>; Wei Fang
->>> <wei.fang@nxp.com>; Peng Fan <peng.fan@nxp.com>; Bough Chen
->>> <haibo.chen@nxp.com>; festevam@gmail.com; dl-linux-imx <linux-
->>> imx@nxp.com>; davem@davemloft.net; robh+dt@kernel.org;
->>> krzysztof.kozlowski+dt@linaro.org;
->>> linux-arm-kernel@lists.infradead.org;
->>> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Gaurav Jain
->>> <gaurav.jain@nxp.com>; alexander.stein@ew.tq-group.com; Sahil Malhotra
->>> <sahil.malhotra@nxp.com>; Aisheng Dong <aisheng.dong@nxp.com>;
->> Varun
->>> Sethi <V.Sethi@nxp.com>
->>> Subject: [EXT] Re: [PATCH v4 4/7] arm64: dts: imx93-11x11-evk: added
->>> nxp secure enclave fw
->>>
->>> Caution: This is an external email. Please take care when clicking
->>> links or opening attachments. When in doubt, report the message using
->>> the 'Report this email' button
->>>
->>>
->>> On 12/07/2023 14:12, Pankaj Gupta wrote:
->>>> Added support for NXP secure enclave called EdgeLock Enclave
->>>> firmware
->>>> (se-fw) for imx93-11x11-evk.
->>>>
->>>> Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
->>>> ---
->>>>  arch/arm64/boot/dts/freescale/imx93.dtsi | 11 ++++++++++-
->>>>  1 file changed, 10 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi
->>>> b/arch/arm64/boot/dts/freescale/imx93.dtsi
->>>> index 8643612ace8c..2b0f901d2709 100644
->>>> --- a/arch/arm64/boot/dts/freescale/imx93.dtsi
->>>> +++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
->>>> @@ -1,6 +1,6 @@
->>>>  // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
->>>>  /*
->>>> - * Copyright 2022 NXP
->>>> + * Copyright 2022-2023 NXP
->>>>   */
->>>>
->>>>  #include <dt-bindings/clock/imx93-clock.h> @@ -863,5 +863,14 @@
->>>> ddr-pmu@4e300dc0 {
->>>>                       reg = <0x4e300dc0 0x200>;
->>>>                       interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
->>>>               };
->>>> +
->>>> +             ele_fw: se-fw {
->>>> +                     compatible = "fsl,imx93-ele";
->>>> +                     mboxes = <&s4muap 0 0 &s4muap 1 0>;
->>>
->>> This should be two entries.
->>>
->>>> +                     mbox-names = "tx", "rx";
->>>> +                     fsl,mu-did = <3>;
->>>> +                     fsl,mu-id = <2>;
->>>
->>> Drop both. Since you put it into the DTSI, it means it is compatible specific.
->> [Pankaj] Removed the above three entries.
-> 
-> 
-> [Pankaj] Correction: 
-> I missed to note that in our up-coming SoC(s), there will be multiple MU(s):
-> Those can only be identified using mu_id. Hence, following two only, will be removed:
-> +                     mbox-names = "tx", "rx";
-> +                     fsl,mu-did = <3>;
+On Tue, Aug 8, 2023 at 6:59=E2=80=AFAM Alexander Lobakin
+<aleksander.lobakin@intel.com> wrote:
+>
+> From: Alexander Duyck <alexander.duyck@gmail.com>
+> Date: Tue, 8 Aug 2023 06:45:26 -0700
+>
+> > On Tue, Aug 8, 2023 at 6:16=E2=80=AFAM Alexander Lobakin
+> > <aleksander.lobakin@intel.com> wrote:
+> >>
+> >> From: Alexander H Duyck <alexander.duyck@gmail.com>
+> >> Date: Mon, 07 Aug 2023 07:48:54 -0700
+> >>
+> >>> On Fri, 2023-08-04 at 20:05 +0200, Alexander Lobakin wrote:
+> >>>> From: Jakub Kicinski <kuba@kernel.org>
+> >>>>
+> >>>> Page pool use in hardirq is prohibited, add debug checks
+> >>>> to catch misuses. IIRC we previously discussed using
+> >>>> DEBUG_NET_WARN_ON_ONCE() for this, but there were concerns
+> >>>> that people will have DEBUG_NET enabled in perf testing.
+> >>>> I don't think anyone enables lockdep in perf testing,
+> >>>> so use lockdep to avoid pushback and arguing :)
+> >>>>
+> >>>> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> >>>> Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+> >>>> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> >>>> ---
+> >>>>  include/linux/lockdep.h | 7 +++++++
+> >>>>  net/core/page_pool.c    | 2 ++
+> >>>>  2 files changed, 9 insertions(+)
+> >>>>
+> >>>> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> >>>> index 310f85903c91..dc2844b071c2 100644
+> >>>> --- a/include/linux/lockdep.h
+> >>>> +++ b/include/linux/lockdep.h
+> >>>> @@ -625,6 +625,12 @@ do {                                           =
+                         \
+> >>>>      WARN_ON_ONCE(__lockdep_enabled && !this_cpu_read(hardirq_contex=
+t)); \
+> >>>>  } while (0)
+> >>>>
+> >>>> +#define lockdep_assert_no_hardirq()                                =
+ \
+> >>>> +do {                                                               =
+         \
+> >>>> +    WARN_ON_ONCE(__lockdep_enabled && (this_cpu_read(hardirq_contex=
+t) || \
+> >>>> +                                       !this_cpu_read(hardirqs_enab=
+led))); \
+> >>>> +} while (0)
+> >>>> +
+> >>>>  #define lockdep_assert_preemption_enabled()                        =
+ \
+> >>>>  do {                                                               =
+         \
+> >>>>      WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)   &&             =
+ \
+> >>>> @@ -659,6 +665,7 @@ do {                                            =
+                         \
+> >>>>  # define lockdep_assert_irqs_enabled() do { } while (0)
+> >>>>  # define lockdep_assert_irqs_disabled() do { } while (0)
+> >>>>  # define lockdep_assert_in_irq() do { } while (0)
+> >>>> +# define lockdep_assert_no_hardirq() do { } while (0)
+> >>>>
+> >>>>  # define lockdep_assert_preemption_enabled() do { } while (0)
+> >>>>  # define lockdep_assert_preemption_disabled() do { } while (0)
+> >>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> >>>> index 03ad74d25959..77cb75e63aca 100644
+> >>>> --- a/net/core/page_pool.c
+> >>>> +++ b/net/core/page_pool.c
+> >>>> @@ -587,6 +587,8 @@ static __always_inline struct page *
+> >>>>  __page_pool_put_page(struct page_pool *pool, struct page *page,
+> >>>>                   unsigned int dma_sync_size, bool allow_direct)
+> >>>>  {
+> >>>> +    lockdep_assert_no_hardirq();
+> >>>> +
+> >>>>      /* This allocator is optimized for the XDP mode that uses
+> >>>>       * one-frame-per-page, but have fallbacks that act like the
+> >>>>       * regular page allocator APIs.
+> >>>
+> >>> So two points.
+> >>>
+> >>> First could we look at moving this inside the if statement just befor=
+e
+> >>> we return the page, as there isn't a risk until we get into that path
+> >>> of needing a lock.
+> >>>
+> >>> Secondly rather than returning an error is there any reason why we
+> >>> couldn't just look at not returning page and instead just drop into t=
+he
+> >>> release path which wouldn't take the locks in the first place? Either
+> >>
+> >> That is exception path to quickly catch broken drivers and fix them, w=
+hy
+> >> bother? It's not something we have to live with.
+> >
+> > My concern is that the current "fix" consists of stalling a Tx ring.
+> > We need to have a way to allow forward progress when somebody mixes
+> > xdp_frame and skb traffic as I suspect we will end up with a number of
+> > devices doing this since they cannot handle recycling the pages in
+> > hardirq context.
+>
+> You could've seen that several vendors already disabled recycling XDP
+> buffers when in hardirq (=3D netpoll) in their drivers. hardirq is in
+> general not for networking-related operations.
 
-Which SoC? How the bindings are going to look like for that SoC? What is
-mu-did in such case and how does it relate to different mailboxes? Why
-it cannot be inferred from compatible?
+The whole idea behind the netpoll cleanup is to get the Tx buffers out
+of the way so that we can transmit even after the system has crashed.
+The idea isn't to transmit XDP buffers, but to get the buffers out of
+the way in the cases where somebody is combining both xdp_frame and
+sk_buff on the same queue due to a limited number of rings being
+present on the device.
 
-BTW, responding three weeks after my review does not help your case. I
-totally loose the context. Of course you can reply even after 1 year,
-it's your right, but it does not help the discussion.
+My concern is that at some point in the near future somebody is going
+to have a system crash and instead of being able to get the crash log
+message out via their netconsole it is going to get cut off because
+the driver stopped cleaning the Tx ring because somebody was also
+using it as an XDP redirect destination.
 
-Best regards,
-Krzysztof
+> >
+> > The only reason why the skbs don't have the problem is that they are
+> > queued and then cleaned up in the net_tx_action. That is why I wonder
+> > if we shouldn't look at adding some sort of support for doing
+> > something like that with xdp_frame as well. Something like a
+> > dev_kfree_pp_page_any to go along with the dev_kfree_skb_any.
+>
+> I still don't get why we may need to clean XDP buffers in hardirq, maybe
+> someone could give me some links to read why we may need this and how
+> that happens? netpoll is a very specific thing for some debug
+> operations, isn't it? XDP shouldn't in general be enabled when this
+> happens, should it?
 
+I think I kind of explained it above. It isn't so much about cleaning
+the XDP buffers as getting them off of the ring and out of the way. If
+we block a Tx queue because of an XDP buffer then we cannot use that
+Tx queue. I would be good with us just deferring the cleanup like we
+do with an sk_buff in dev_kfree_skb_irq, the only issue is we don't
+have the ability to put them on a queue since they don't have
+prev/next pointers.
+
+I suppose an alternative to cleaning them might be to make a mandatory
+requirement that you cannot support netpoll and mix xdp_frame and
+sk_buff on the same queue. If we enforced that then my concern about
+them blocking a queue would be addressed.
+
+> (unrelated: 6:58 AM West Coast, you use to wake up early or traveling?
+>  :D)
+
+I am usually up pretty early, especially this time of year. Sunrise
+here is 6AM and I am usually up a little before that.. :)
