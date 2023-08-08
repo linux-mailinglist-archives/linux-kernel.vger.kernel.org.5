@@ -2,67 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD16774079
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F36A773F96
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbjHHRDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
+        id S232455AbjHHQtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjHHRC7 (ORCPT
+        with ESMTP id S232062AbjHHQss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:02:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D0B51975C;
-        Tue,  8 Aug 2023 09:01:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DFFDD625B5;
-        Tue,  8 Aug 2023 15:23:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FF09C43391;
-        Tue,  8 Aug 2023 15:23:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691508223;
-        bh=p/gZrLJWIq9rjBprunm92rcmzahKLeL9mAVdQI8fVVo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Qy1+8nyJUvB/EfBRGU/WqIuoJPDI/GX+NItsoVvhZHjuGZEA9FNTIkvUV7wzcp/vO
-         TFiNMnr0oRvIZ+0b7CjviOqqavXvwjKOdxq4YZeMIwV/koBj/VnjyOF+3TqNTALbeo
-         khBdOOBovJ8wU9T/ByaDAqeiOEIzgqwj+HazzzSAVaIg1f7diMd02T/Tm6HL0uM5D7
-         G4g+cx4pQY84gklxi+GtRgwkx+G8OQGkSxqGhu2Xrkhz1zflarGAWb3zmpmAsMsruZ
-         YizxvcUov6ok56EnIdohnSBOUNyinKRwwx5o1/md6QfsVQoqHm7FNWAx2tbJCHzqbb
-         GBlhxdRN1uQnA==
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-52328e96869so4958090a12.1;
-        Tue, 08 Aug 2023 08:23:43 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz5qgPBB678B9kjeSeQoYecvOWfbOo04rkaQxw6QHzkizZ3y5QX
-        NL0MYzULSfOuvMPLn2flwe5u26u6xzKKAQTokLI=
-X-Google-Smtp-Source: AGHT+IFokLhJzs0xQ2NHVRIO9yXYHKzsfvqWkhy1RiVlRicnei4YhMS57h/OcLGJhZHDLuqZXniZJtcKEiLEmfB9g90=
-X-Received: by 2002:aa7:c542:0:b0:521:8d64:df1c with SMTP id
- s2-20020aa7c542000000b005218d64df1cmr156003edr.0.1691508221350; Tue, 08 Aug
- 2023 08:23:41 -0700 (PDT)
+        Tue, 8 Aug 2023 12:48:48 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC444447B;
+        Tue,  8 Aug 2023 08:57:16 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe4762173bso9624702e87.3;
+        Tue, 08 Aug 2023 08:57:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691510195; x=1692114995;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EKR/mQxiWCp6UmZoc/ZIdm/CvMRbYORnLL2Bmf5WunY=;
+        b=iTep3vMy6Z8EHVl1pNEMn2tN+1w99+9Dgp6gAbfQO3hye73jDjBdCub0T2zqH9X7hD
+         noYURqNZ/iggYzokFPQFPUCJ+YaRsqyljdSvL3znPKS9FmhZ4/OkbBbZv2jVRlYmiEP1
+         vkTgmujWH7QdPoYhDSHUmN3kGqsy8spVGBdMriHHT+TIm6srxytss76c0BZzpd6eTVYo
+         HChuERSTjv7yicIqn3TmG7rfgl/GFLAbQZagCVVkY4E6/7GnxAYyCw9v+QUTQVxJUtle
+         NPW60gvllRzBqLHk9eOWD9RR52y7u8XOeCw6JWaKtqPMSAX5Yy2L1FzRT8dsoy+RWVd9
+         s0rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691510195; x=1692114995;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EKR/mQxiWCp6UmZoc/ZIdm/CvMRbYORnLL2Bmf5WunY=;
+        b=iz8fRiVPO5DYbcN1sqJmxrj6kfRfx2EHmXaZk4Hrzcy5rCVxguA5Bx7IlP+v2qP/br
+         UfmQVQiAboVgOGnLH2A4L0Ex7e0slkv9IoPkfy0+EGjO162zMQbxk27vCnJ/m1klKU1R
+         nAvREpSNg+FCVqeFJuOE8azncNSLAYzRxLdfjDkfzwRtjd6j7z3kSuQSA/KUYyWhhvVz
+         uL3zS3pqakebLxYFkLq2eZ1Lrr8r9yp3BJroA0bXyMa6ixfXq8k3kTI1VScAKXJah9c0
+         qzUu6qjMAeoYVfYCL74ggVClc1sAg/QdbENhzhW3cr93yoyim+BPjQgVwVcRi5Jw7CGs
+         BOTA==
+X-Gm-Message-State: AOJu0Yyrnnet/IFtl8CTde8u6iirhZCeAVTOI7MsdYEd/vO5nZ4rCEZO
+        wkJmwng9pTni8IvLVu8t3YkLG43UTdFaW//T
+X-Google-Smtp-Source: AGHT+IFnYhIzaS3Y+KcV0Lrw6qJXYUrYWCoAb9tRY2N+65/72vnKp1uSD5k97nShAi0GFBixW7Zi2Q==
+X-Received: by 2002:a05:6512:3b0a:b0:4fe:3f2:2efc with SMTP id f10-20020a0565123b0a00b004fe03f22efcmr11495192lfv.0.1691508221319;
+        Tue, 08 Aug 2023 08:23:41 -0700 (PDT)
+Received: from localhost (0x934e1fc8.cust.fastspeed.dk. [147.78.31.200])
+        by smtp.gmail.com with ESMTPSA id a3-20020a056512020300b004fcdd81355csm1920516lfo.269.2023.08.08.08.23.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 08:23:40 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 17:23:38 +0200
+From:   Joel Granados <joel.granados@gmail.com>
+To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Cc:     mcgrof@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Kees Cook <keescook@chromium.org>,
+        "D. Wythe" <alibuda@linux.alibaba.com>, mptcp@lists.linux.dev,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Paolo Abeni <pabeni@redhat.com>, coreteam@netfilter.org,
+        Jan Karcher <jaka@linux.ibm.com>,
+        Alexander Aring <alex.aring@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        bridge@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        Joerg Reuter <jreuter@yaina.de>, Julian Anastasov <ja@ssi.bg>,
+        David Ahern <dsahern@kernel.org>,
+        netfilter-devel@vger.kernel.org, Wen Gu <guwen@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        linux-wpan@vger.kernel.org, lvs-devel@vger.kernel.org,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-sctp@vger.kernel.org, Tony Lu <tonylu@linux.alibaba.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Florian Westphal <fw@strlen.de>, willy@infradead.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-rdma@vger.kernel.org, Roopa Prabhu <roopa@nvidia.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Simon Horman <horms@verge.net.au>,
+        Mat Martineau <martineau@kernel.org>, josh@joshtriplett.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Eric Dumazet <edumazet@google.com>, linux-hams@vger.kernel.org,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Xin Long <lucien.xin@gmail.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com
+Subject: Re: [PATCH v2 11/14] networking: Update to register_net_sysctl_sz
+Message-ID: <20230808152338.aoubpvauxpcuwfuz@localhost>
+References: <20230731071728.3493794-1-j.granados@samsung.com>
+ <20230731071728.3493794-12-j.granados@samsung.com>
+ <CGME20230808112110eucas1p1332795fa88d771ac3f05825f33052cf9@eucas1p1.samsung.com>
+ <22e0e672-f9f6-6afe-6ce6-63de264e7b6d@intel.com>
 MIME-Version: 1.0
-References: <20230724182129.843687-1-dfustini@baylibre.com> <ZM9tUFddbRUglwfG@xhacker>
-In-Reply-To: <ZM9tUFddbRUglwfG@xhacker>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 8 Aug 2023 23:23:30 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTT4pyAT5xpSAuOJ801WSk=xouv=uC0PSpHKqB3D=GxHsg@mail.gmail.com>
-Message-ID: <CAJF2gTT4pyAT5xpSAuOJ801WSk=xouv=uC0PSpHKqB3D=GxHsg@mail.gmail.com>
-Subject: Re: [PATCH] riscv: dts: change TH1520 files to dual license
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Drew Fustini <dfustini@baylibre.com>, Fu Wei <wefu@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ry2jlv6i2gzplzus"
+Content-Disposition: inline
+In-Reply-To: <22e0e672-f9f6-6afe-6ce6-63de264e7b6d@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,75 +117,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 6, 2023 at 6:03=E2=80=AFPM Jisheng Zhang <jszhang@kernel.org> w=
-rote:
->
-> On Mon, Jul 24, 2023 at 11:21:29AM -0700, Drew Fustini wrote:
-> > Modify the SPDX-License-Identifier for dual license of GPL-2.0 OR MIT.
-> >
-> > Signed-off-by: Drew Fustini <dfustini@baylibre.com>
-> > ---
-> >  arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi | 2 +-
-> >  arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts      | 2 +-
-> >  arch/riscv/boot/dts/thead/th1520.dtsi                  | 2 +-
-> >  3 files changed, 3 insertions(+), 3 deletions(-)
-> >
-> > Jisheng Zhang and Guo Ren - I thought I would post this patch based on
-> > the discussion in the thread about the BeagleV Ahead patches.
->
-> I need Guo's ack to this patch. Hi Guo Ren, are you OK with this patch?
-I'm okay with the dual license.
-Acked-by: Guo Ren <guoren@kernel.org>
 
->
-> Thanks
->
-> >
-> > Message-ID:
-> > 20230722-upstream-beaglev-ahead-dts-v1-0-ccda511357f4@baylibre.com
-> >
-> > Thanks,
-> > Drew
-> >
-> > diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi b/a=
-rch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > index 4b0249ac710f..a802ab110429 100644
-> > --- a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > +++ b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > @@ -1,4 +1,4 @@
-> > -// SPDX-License-Identifier: GPL-2.0
-> > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> >  /*
-> >   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> >   */
-> > diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts b/arch/r=
-iscv/boot/dts/thead/th1520-lichee-pi-4a.dts
-> > index a1248b2ee3a3..9a3884a73e13 100644
-> > --- a/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
-> > +++ b/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
-> > @@ -1,4 +1,4 @@
-> > -// SPDX-License-Identifier: GPL-2.0
-> > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> >  /*
-> >   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> >   */
-> > diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dt=
-s/thead/th1520.dtsi
-> > index 56a73134b49e..ce708183b6f6 100644
-> > --- a/arch/riscv/boot/dts/thead/th1520.dtsi
-> > +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
-> > @@ -1,4 +1,4 @@
-> > -// SPDX-License-Identifier: GPL-2.0
-> > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> >  /*
-> >   * Copyright (C) 2021 Alibaba Group Holding Limited.
-> >   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> > --
-> > 2.34.1
-> >
+--ry2jlv6i2gzplzus
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Aug 08, 2023 at 01:20:36PM +0200, Przemek Kitszel wrote:
+> On 7/31/23 09:17, Joel Granados wrote:
+> > Move from register_net_sysctl to register_net_sysctl_sz for all the
+> > networking related files. Do this while making sure to mirror the NULL
+> > assignments with a table_size of zero for the unprivileged users.
+> >=20
+> > We need to move to the new function in preparation for when we change
+> > SIZE_MAX to ARRAY_SIZE() in the register_net_sysctl macro. Failing to do
+> > so would erroneously allow ARRAY_SIZE() to be called on a pointer. We
+> > hold off the SIZE_MAX to ARRAY_SIZE change until we have migrated all
+> > the relevant net sysctl registering functions to register_net_sysctl_sz
+> > in subsequent commits.
+> >=20
+> > An additional size function was added to the following files in order to
+> > calculate the size of an array that is defined in another file:
+> >      include/net/ipv6.h
+> >      net/ipv6/icmp.c
+> >      net/ipv6/route.c
 
+=2E..
+
+> > diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+> > index 64e873f5895f..51c6cdae8723 100644
+> > --- a/net/ipv6/route.c
+> > +++ b/net/ipv6/route.c
+> > @@ -6447,14 +6447,19 @@ struct ctl_table * __net_init ipv6_route_sysctl=
+_init(struct net *net)
+> >   		table[8].data =3D &net->ipv6.sysctl.ip6_rt_min_advmss;
+> >   		table[9].data =3D &net->ipv6.sysctl.ip6_rt_gc_min_interval;
+> >   		table[10].data =3D &net->ipv6.sysctl.skip_notify_on_dev_down;
+> > -
+> > -		/* Don't export sysctls to unprivileged users */
+> > -		if (net->user_ns !=3D &init_user_ns)
+> > -			table[1].procname =3D NULL;
+Here I remove the setting of the procname to NULL for ipv6 sysctl
+registers in route.c and I do not replace that assignment anywhere.
+This means that we will export sysctls to unprivilged users for ipv6.
+I'll correct this in V3.
+
+> >   	}
+> >   	return table;
+> >   }
+> > +
+> > +size_t ipv6_route_sysctl_table_size(struct net *net)
+> > +{
+> > +	/* Don't export sysctls to unprivileged users */
+> > +	if (net->user_ns !=3D &init_user_ns)
+> > +		return 0;
+> > +
+> > +	return ARRAY_SIZE(ipv6_route_table_template);
+> > +}
+> >   #endif
+> >   static int __net_init ip6_route_net_init(struct net *net)
 
 --=20
-Best Regards
- Guo Ren
+
+Joel Granados
+
+--ry2jlv6i2gzplzus
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmTSXfgACgkQupfNUreW
+QU9uhwv/YNoyTbkHH/5RMLpQdKDepd7w6f8Rtax3cD35VYfVbj2aNFy9lcELq0sL
+WWEkcnq1tZav3I+it4as5M7BUfGePS1Zj/D2OYSS7sR0ehwJMaO19qvfuGLiQLP9
+XQe6cyy071sk9U5fxmpZkZgfKtldzchYMt1GluPzw0/a1CRkUlQqaDkHS0/hiOAn
+JCY8mDLWC5DZwVZjz1Ai3UZ3lSIoxFqZbIk8IWpB6E6r9j+ulQUBw6CnYpSu8HMg
+JNHA2wqyYaNLKxwQzSDhG3E0AaK59dPzneyrLVRnpJhc4yMFY+yDSPAzAZTgr1Ny
++/lASH2c7d0obmafitPwIOhxg7xPPnp+AYKDP65ZMGp0olUCNYKqUhF0Mc8sWq75
+1kzOSul2jqUCTCkODYWut1aoqApizX5phuRCj/wCorVWBazLV7J9fDNopmAtmTYY
+MKPmbbgWQdQHKDCEN7aSL5GGY51bp1dl4M0G+rkmW3RXRPl1OJLTsxP6Vk7ZizpE
+4CYHvD9R
+=8NUh
+-----END PGP SIGNATURE-----
+
+--ry2jlv6i2gzplzus--
