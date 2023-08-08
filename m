@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A58177379B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 05:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556BE77379F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 05:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjHHDVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 23:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45848 "EHLO
+        id S230404AbjHHDWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 23:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbjHHDVG (ORCPT
+        with ESMTP id S231204AbjHHDV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 23:21:06 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047281729
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 20:21:05 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-53482b44007so3016567a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 20:21:05 -0700 (PDT)
+        Mon, 7 Aug 2023 23:21:28 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B821BF5
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 20:21:12 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bba04b9df3so45869755ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 20:21:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691464864; x=1692069664;
+        d=bytedance.com; s=google; t=1691464872; x=1692069672;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ICV3oSZrEepyfkdFh294C2oc/HDgt3q4tnvL6u1XOSo=;
-        b=lutZ0A2WljE0PHMq69IriO2rZ3mTGdwt4yVVFZOwx7KaXGHtsYthZEnorDptzuoR9Z
-         3bTfCPeVS8fpSvafHRcMLxrDNgnA2loby72Wgu9cfloNQRxmHCbPK3vKdpTZfK8jUlmF
-         7p0hYB/3nnDjWEtIceXVAL8kl4qqmuLDT5CgZQQRARE9KRnFvExGQzyuneXXfHttAgdL
-         zsKB0Oh+uxe0BPwxqJaQMOPzn/nTgtz9LdZMlVg0RTJdKhq0bRAT7rJsnC7zn+ynGm5n
-         Lymc0VkgXf3C5i+q0ZNqVquZH5V2gVRVSKb9Yn7GpEFzEVlv3u68qZNnVPavuo/G/XFK
-         RNwQ==
+        bh=vNrm/+UjyC6jP3361KhAbnju37DBvc3v6PBY22LsM1M=;
+        b=khfL3k+d/CGznwaO5bu9+cRGuRQ6fYxlH9gn4KFfrTBbf9tNYQ6PkS2QLz2ndsXr7u
+         ZZFyAYrq4pkWZ2egL0T8+F1oRE2BdqG2AchQKzk5rpmHiJn7brKTCQ8ATfQT7sFIWFge
+         +wJcsLzJca4mkXRRBfJXZfKyNTBPlv+eL9czPa03R4sohsTcUYnfsQxbhSXxU25FemRt
+         iejLrUhpyeo72CMnzwLsp9SuIrXP3m4KaE4DHI1lDQX6YY5lFuWPo3Vo9fSW3SuO+lAg
+         gxB6SIK1coQKqnReEqyCG/Z1l38wetEMXmr5Avzcf+u4KBASxQT7KEpJWvcaZOhS10vC
+         fb8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691464864; x=1692069664;
+        d=1e100.net; s=20221208; t=1691464872; x=1692069672;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ICV3oSZrEepyfkdFh294C2oc/HDgt3q4tnvL6u1XOSo=;
-        b=OqbWEPWagk7j7me7n4HvNtO0vOTtZbHqulCu8PGlR4gJ7tWy+doWvPAMKrLIHwWde8
-         wK8gnkDxy6c9ZBoKlWPV6DltHAG4aC6BHNuQuNHqBFHY03tbaJn8zwuLz3ekXQNznojE
-         25/IaMNvpv4junlTnmmZ0TTA1J+tu7lj4MlaWY17j8PJhCnchdcYRVIjfTryk8zw3U/b
-         pW2RKqU2KkavmrfXsG0sg6aH5eRAPlzPUdZoCXmxVHa6KbuhLZpA9bsRNvXj1YcWd39h
-         IaGqmv8l5RbTtRMHQPIUR8wrzQ7kzC9albHhPUafURtLwkFsxUPmduhkUaXoi7KdeImJ
-         fr5Q==
-X-Gm-Message-State: AOJu0YwYrKRa849FSqDMigPx3vEG013aFqpbfwX6McIQ8h8sovGNQQMQ
-        A/wDReLqryiH2Z2c3968wD4uAg==
-X-Google-Smtp-Source: AGHT+IF76sZiV7Ae2VDxsLeP3TXhil8es9a99enu8nvMpK1GwLMowzM4hBRaMRVwS8bSHHASr/moLg==
-X-Received: by 2002:a05:6a21:2713:b0:133:2974:d31a with SMTP id rm19-20020a056a21271300b001332974d31amr8482956pzb.17.1691464864453;
-        Mon, 07 Aug 2023 20:21:04 -0700 (PDT)
+        bh=vNrm/+UjyC6jP3361KhAbnju37DBvc3v6PBY22LsM1M=;
+        b=IL9/TDscc15cJUqsiI109PGIQxKuybvEbLZxx4RtkUSaieN6R9mWBk7sP0IgmAmRl5
+         3i8pyr0wcwFCFoj/e/H3a9HXmjJ63PN0FQoBv3xTecfjI+SzEfzuoL1apXQAfPpTCDxq
+         z01oT9dta/a4/80/2icWLgNVmujoDpG5UVhe4NrccWIzQMjPMILgKnbqVc1hb0i78fqk
+         oz/IEYSi2ZgHJoKn/Trutlth6rrezWn0L5qq+LkBc5rQRc5Cvzy/hPR3w4CGs3CLBEDP
+         YJHRIBdmSNv1reZU2EOoNlQ6PdFMTl8Hs3auY70RSw8MaFqo48uFE/EnZVaz1OU2Los7
+         e9Vg==
+X-Gm-Message-State: AOJu0YwxrylECoJ+mGIpZG5Fy0qriRSCJEKqRe1yliGlX38shn51NUyI
+        OQ62vP7UEWWJmWbVjMWPrnKRvQ==
+X-Google-Smtp-Source: AGHT+IEf+1UGY33nl/NwIi62HwrnmxDbqQr/9EwPpV2GjIISAPneNKJbTvSnXmVCy/syiT18tgdayw==
+X-Received: by 2002:a17:902:6909:b0:1b8:9461:6729 with SMTP id j9-20020a170902690900b001b894616729mr10585584plk.2.1691464871774;
+        Mon, 07 Aug 2023 20:21:11 -0700 (PDT)
 Received: from C02FG34NMD6R.bytedance.net ([2408:8656:30f8:e020::b])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902c10d00b001b896686c78sm7675800pli.66.2023.08.07.20.20.59
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902c10d00b001b896686c78sm7675800pli.66.2023.08.07.20.21.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 20:21:04 -0700 (PDT)
+        Mon, 07 Aug 2023 20:21:11 -0700 (PDT)
 From:   Albert Huang <huangjie.albert@bytedance.com>
 To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
         pabeni@redhat.com
@@ -69,9 +69,9 @@ Cc:     Albert Huang <huangjie.albert@bytedance.com>,
         "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
         "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
-Subject: [RFC v3 Optimizing veth xsk performance 6/9] veth: add ndo_xsk_wakeup callback for veth
-Date:   Tue,  8 Aug 2023 11:19:10 +0800
-Message-Id: <20230808031913.46965-7-huangjie.albert@bytedance.com>
+Subject: [RFC v3 Optimizing veth xsk performance 7/9] sk_buff: add destructor_arg_xsk_pool for zero copy
+Date:   Tue,  8 Aug 2023 11:19:11 +0800
+Message-Id: <20230808031913.46965-8-huangjie.albert@bytedance.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20230808031913.46965-1-huangjie.albert@bytedance.com>
 References: <20230808031913.46965-1-huangjie.albert@bytedance.com>
@@ -87,71 +87,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add ndo_xsk_wakeup callback for veth, this is used to
-wakeup napi tx.
+this member is add for dummy dev to suppot zero copy
 
 Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
 ---
- drivers/net/veth.c | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ include/linux/skbuff.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 28b891dd8dc9..ac78d6a87416 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -1805,6 +1805,44 @@ static void veth_set_rx_headroom(struct net_device *dev, int new_hr)
- 	rcu_read_unlock();
- }
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 16a49ba534e4..db999056022e 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -592,6 +592,8 @@ struct skb_shared_info {
+ 	/* Intermediate layers must ensure that destructor_arg
+ 	 * remains valid until skb destructor */
+ 	void *		destructor_arg;
++	/* just for dummy device xsk zero copy */
++	void		*destructor_arg_xsk_pool;
  
-+static void veth_xsk_remote_trigger_napi(void *info)
-+{
-+	struct veth_sq *sq = info;
-+
-+	napi_schedule(&sq->xdp_napi);
-+}
-+
-+static int veth_xsk_wakeup(struct net_device *dev, u32 qid, u32 flag)
-+{
-+	struct veth_priv *priv;
-+	struct veth_sq *sq;
-+	u32 last_cpu, cur_cpu;
-+
-+	if (!netif_running(dev))
-+		return -ENETDOWN;
-+
-+	if (qid >= dev->real_num_rx_queues)
-+		return -EINVAL;
-+
-+	priv = netdev_priv(dev);
-+	sq = &priv->sq[qid];
-+
-+	if (napi_if_scheduled_mark_missed(&sq->xdp_napi))
-+		return 0;
-+
-+	last_cpu = sq->xsk.last_cpu;
-+	cur_cpu = get_cpu();
-+
-+	/*  raise a napi */
-+	if (last_cpu == cur_cpu)
-+		napi_schedule(&sq->xdp_napi);
-+	else
-+		smp_call_function_single(last_cpu, veth_xsk_remote_trigger_napi, sq, true);
-+
-+	put_cpu();
-+	return 0;
-+}
-+
- static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 			struct netlink_ext_ack *extack)
- {
-@@ -2019,6 +2057,7 @@ static const struct net_device_ops veth_netdev_ops = {
- 	.ndo_set_rx_headroom	= veth_set_rx_headroom,
- 	.ndo_bpf		= veth_xdp,
- 	.ndo_xdp_xmit		= veth_ndo_xdp_xmit,
-+	.ndo_xsk_wakeup		= veth_xsk_wakeup,
- 	.ndo_get_peer_dev	= veth_peer_dev,
- };
- 
+ 	/* must be last field, see pskb_expand_head() */
+ 	skb_frag_t	frags[MAX_SKB_FRAGS];
 -- 
 2.20.1
 
