@@ -2,68 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E5C7745B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F557747E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233119AbjHHSpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:45:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40242 "EHLO
+        id S236083AbjHHTVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232409AbjHHSoZ (ORCPT
+        with ESMTP id S236097AbjHHTUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:44:25 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D1A3D1A7;
-        Tue,  8 Aug 2023 09:41:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=8W7ui4/ArngIuKAXYPl2b6CpuAAumlmrDpsvogYUsJU=;
-        t=1691512888; x=1692722488; b=VqHkCl1ozxULWVA3NeNtibulfF/v8/0ZJ4d8FbBCzmZrndj
-        QuU6ZxSQNzyaNHCKkC+9bqzTppTjUs/gA/DTwFH3Chyelyx0Mup2YtSq0NoCJpy247wVeDtbV6YiF
-        8pBcVUOHDa3dHVhrxwehEzNJT3/ZeJTSShsvRetlkwDP+t/UTyU/ZO/TeG/psnCwm1DGqrL3BwAJK
-        beH/W7GdiIa7r3Tk80xl/aKU1ffWrTF6DlOo+r2u8J4rloxkuUPRP7D+nvjhlnfYMmZYGlmyO2kdx
-        Z/KkXLstdRkVZ2L5ncH/6j6kp5Df3wGaa8eehvR8ZR6lxZabqZGBikzlkpxdfOcg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.96)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1qTI0x-00CQmg-1I;
-        Tue, 08 Aug 2023 10:24:27 +0200
-Message-ID: <cdf75cdfeb3640e7096940b3f15a8cd86bf5451e.camel@sipsolutions.net>
-Subject: Re: [PATCH] mac80211: mesh: Remove unused function declaration
- mesh_ids_set_default()
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Yue Haibing <yuehaibing@huawei.com>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        nbd@nbd.name, pagadala.yesu.anjaneyulu@intel.com
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 08 Aug 2023 10:24:26 +0200
-In-Reply-To: <20230731140712.1204-1-yuehaibing@huawei.com>
-References: <20230731140712.1204-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 8 Aug 2023 15:20:44 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1509D59C7
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:44:07 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe1a17f983so50053705e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691513045; x=1692117845;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=J6m3K/inEtRmdGEBBt/pEMpMfJWtxVrjJEBC47w+pHA=;
+        b=Q66y5OsqazL/NZP2PQHViU2OkzU5RD4Gz4TC2r1C2MSl5aRgpQ7mAowcG2C/sJYMnd
+         NxiFGQZCB1GL0dTMMLRlnr4A/MkxQnf0BbJz6d6Naa8LQEMwcxD3Lky9torH292+rpcv
+         O7dpfE8eNeEJJt1U02MDJIfZhj9uJgxtLMepu5FAFSebfHsNYpt7rZQ7bK9X/6Qds7mg
+         XLIDNi1Jt9E1zZHg9NE4T0XlLXqPFvoMWit7w85sKkf2MTxxs4Se3+AUu7Phy1KejlAb
+         Sx5TEyzWqzdxMQSvuaM9FwMMTgh84dNS+2CNnAsY8nbi3RTwUCJ/gbwcP1rRdTnZ1Z1j
+         Dnow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691513045; x=1692117845;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J6m3K/inEtRmdGEBBt/pEMpMfJWtxVrjJEBC47w+pHA=;
+        b=HJRea8AleOU0cEbR8oGynHd3pdYBIlg2ILfxLrUutPLXIj1FHDvJ5rtLhcCDNujQYY
+         hWKZZ5rQYifQg7gx/ZOdyjc5eegQLaYGSMVeIxMhkKZVXePv0nyn9UsRWf8X3IJnMarq
+         uYCUvTemXcMSmsxCdedHxOk753BOQF2LhmEvhseL9VB+0g/uFmguk8pBIyHZKSyhxIMP
+         IkUvMD/AscR7DQ11fMcbAshE5ZiuhkOfkjIjrrTkF8nX3N7iBoBKBL8UqTGHbHu2CAeH
+         tP1VrjumIs1n+qGf8I+p/ngMcr6DpwT3twnL6PN83IL6ja6TLUWVp6NaI9zRHhBKrhvj
+         3hfg==
+X-Gm-Message-State: AOJu0YySWSfBWnpSXOUZylxV6DBIAhs5viJt6EuvxR5DVjRnH/lg2FQK
+        tvwBw0fu94Qm+V8OFMmMYwixLzT+LAKsE8c7zNE=
+X-Google-Smtp-Source: AGHT+IHxDCh1uiQfUmmrydV7nAhXgfZ1Kwvcz0RMY0OKmPWNtnQhD201bB37ZY0n1WH7gHW98TyYVg==
+X-Received: by 2002:a05:6512:ad5:b0:4fb:9050:1d92 with SMTP id n21-20020a0565120ad500b004fb90501d92mr8131994lfu.51.1691483163361;
+        Tue, 08 Aug 2023 01:26:03 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id t13-20020a19ad0d000000b004fbae18984dsm1787087lfc.255.2023.08.08.01.26.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 01:26:02 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 08 Aug 2023 10:25:55 +0200
+Subject: [PATCH 1/2] csky: Cast argument to virt_to_pfn() to (void *)
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230808-csky-virt-to-phys-v1-1-ac727f8def2f@linaro.org>
+References: <20230808-csky-virt-to-phys-v1-0-ac727f8def2f@linaro.org>
+In-Reply-To: <20230808-csky-virt-to-phys-v1-0-ac727f8def2f@linaro.org>
+To:     Vineet Gupta <vgupta@kernel.org>, Guo Ren <guoren@kernel.org>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-07-31 at 22:07 +0800, Yue Haibing wrote:
-> Commit ccf80ddfe492 ("mac80211: mesh function and data structures definit=
-ions")
-> introducted this but never implemented.
->=20
+The virt_to_pfn() function takes a (void *) as argument, fix
+this up to avoid exploiting the unintended polymorphism of
+virt_to_pfn.
 
-Btw, are you detecting these with some kind of tool? Having the tool
-would probably be more useful than you sending all these patches all the
-time ...
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ arch/arc/include/asm/page.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-johannes
+diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
+index e43fe27ec54d..02b53ad811fb 100644
+--- a/arch/arc/include/asm/page.h
++++ b/arch/arc/include/asm/page.h
+@@ -108,7 +108,7 @@ extern int pfn_valid(unsigned long pfn);
+ 
+ #else /* CONFIG_HIGHMEM */
+ 
+-#define ARCH_PFN_OFFSET		virt_to_pfn(CONFIG_LINUX_RAM_BASE)
++#define ARCH_PFN_OFFSET		virt_to_pfn((void *)CONFIG_LINUX_RAM_BASE)
+ 
+ #endif /* CONFIG_HIGHMEM */
+ 
+
+-- 
+2.34.1
+
