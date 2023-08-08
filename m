@@ -2,71 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FE8774F3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026D1774F40
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbjHHXUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 19:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36506 "EHLO
+        id S230088AbjHHXVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 19:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjHHXUh (ORCPT
+        with ESMTP id S229931AbjHHXVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 19:20:37 -0400
-Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C2A19AF;
-        Tue,  8 Aug 2023 16:20:36 -0700 (PDT)
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id 5916758730BD3; Wed,  9 Aug 2023 01:20:34 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id 5716D60C2FC35;
-        Wed,  9 Aug 2023 01:20:34 +0200 (CEST)
-Date:   Wed, 9 Aug 2023 01:20:34 +0200 (CEST)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     Justin Stitt <justinstitt@google.com>
-cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/7] netfilter: xtables: refactor deprecated strncpy
-In-Reply-To: <20230808-net-netfilter-v1-7-efbbe4ec60af@google.com>
-Message-ID: <35rnr776-4ssp-314r-0473-p19q3r880ps1@vanv.qr>
-References: <20230808-net-netfilter-v1-0-efbbe4ec60af@google.com> <20230808-net-netfilter-v1-7-efbbe4ec60af@google.com>
-User-Agent: Alpine 2.26 (LSU 649 2022-06-02)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 19:21:01 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB7619BC
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 16:21:00 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-585fb08172bso74060457b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 16:21:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691536859; x=1692141659;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h31RifgLdWj/uBkkEanO2XNAftVRa4x/sEAr5Du6O7s=;
+        b=3HkpHRvUGz0wWRT9OA2Ov4hn6J6IuWP0KypK80EvpNWkaxvw5xrqpgKSc6cN/pQUeS
+         BTy0QrS4OgiVI2hc16+7oGnfLI3JzDXO3tZCfX3Ga31R7/IEG9HQVP49xveMYR2Sy096
+         t+cBlH5TzUA4S+paOIda4LbGc2Mp/7c3DM7mNrOQuHOZ1W0Zhu/4Z4QjMaZuOF6vlKYt
+         rJ3Wfol3W8ZzlZQEZ4/84C3qOsIssVV4BC+kcMmhQ28SBdY+slKFRYau7RtFnSaRpGUR
+         y3JbWRiPUgHG0pZlHoQ8PusqX5v0e3hDdT90UCtfbztjJo/RI5+6Waht9EJSCMWPjTTM
+         mEHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691536859; x=1692141659;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h31RifgLdWj/uBkkEanO2XNAftVRa4x/sEAr5Du6O7s=;
+        b=eSP5oaBRGMYLb2zBCnRkL9GcdKnZHwG+YUD1E2Hcc56X3sfzn9hbDKY4p2OkazjxtR
+         8KGKrmfiTw/OUUhSNGhvgRoVpkarqfZ0c4FB2GsFyNPX8tpBLtg0Cv88CYabaXHM8khx
+         TVCupjmha+wBqSRDhzPhO0NbvFWKn8LuhWdyIPsX6VBIg2SyeddzYDH9I9OggZD1cho0
+         cJRSPRjvrPnfJ3omVTWbooEpyS2FbQxvJIPzWvt/H8kU2sgmOHbZhkVOo+5c1cVYKvig
+         a9fIBHxhnWk5Zqd9I9m8G1Rh3MoOf+srmK3Ibxg7skmCSIS2qVppQu2/0tQ95uSCcFBd
+         /azA==
+X-Gm-Message-State: AOJu0Yy3Tn3O1EHTip50YWIkXyT2lojfnEUKgoXVGVCxPhOL7+J6vp8h
+        +ajhdylj4rQtkMzy0ozZ4koWTdEowXs=
+X-Google-Smtp-Source: AGHT+IFacH1gV3EFOlAiXA5r13GnRn0tz4keJlj3GrBkHHQsxR2ixuO7JpkZvWdwq6OLOMIvvXHRz6bdj+I=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:b707:0:b0:586:a689:eb69 with SMTP id
+ v7-20020a81b707000000b00586a689eb69mr25680ywh.2.1691536859434; Tue, 08 Aug
+ 2023 16:20:59 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue,  8 Aug 2023 16:20:57 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
+Message-ID: <20230808232057.2498287-1-seanjc@google.com>
+Subject: [PATCH] KVM: x86: Remove WARN sanity check on hypervisor timer vs.
+ UNINITIALIZED vCPU
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yikebaer Aizezi <yikebaer61@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Drop the WARN in KVM_RUN that asserts that KVM isn't using the hypervisor
+timer, a.k.a. the VMX preemption timer, for a vCPU that is in the
+UNINITIALIZIED activity state.  The intent of the WARN is to sanity check
+that KVM won't drop a timer interrupt due to an unexpected transition to
+UNINITIALIZED, but unfortunately userspace can use various ioctl()s to
+force the unexpected state.
 
-On Wednesday 2023-08-09 00:48, Justin Stitt wrote:
+Drop the sanity check instead of switching from the hypervisor timer to a
+software based timer, as the only reason to switch to a software timer
+when a vCPU is blocking is to ensure the timer interrupt wakes the vCPU,
+but said interrupt isn't a valid wake event for vCPUs in UNINITIALIZED
+state *and* the interrupt will be dropped in the end.
 
->Prefer `strscpy` as it's a more robust interface.
->
->There may have existed a bug here due to both `tbl->repl.name` and
->`info->name` having a size of 32 as defined below:
->|  #define XT_TABLE_MAXNAMELEN 32
->
->This may lead to buffer overreads in some situations -- `strscpy` solves
->this by guaranteeing NUL-termination of the dest buffer.
+Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
+Closes: https://lore.kernel.org/all/CALcu4rbFrU4go8sBHk3FreP+qjgtZCGcYNpSiEXOLm==qFv7iQ@mail.gmail.com
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/x86.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-It generally will not lead to overreads.
-xt not only deals with strings on its own turf, it even takes
-them from userspace-provided buffers, which means extra scrutiny is
-absolutely required. Done in places like
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index a6b9bea62fb8..fa7eeb45b8e3 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11091,12 +11091,17 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+ 			r = -EINTR;
+ 			goto out;
+ 		}
++
+ 		/*
+-		 * It should be impossible for the hypervisor timer to be in
+-		 * use before KVM has ever run the vCPU.
++		 * Don't bother switching APIC timer emulation from the
++		 * hypervisor timer to the software timer, the only way for the
++		 * APIC timer to be active is if userspace stuffed vCPU state,
++		 * i.e. put the vCPU into a nonsensical state.  Only an INIT
++		 * will transition the vCPU out of UNINITIALIZED (without more
++		 * state stuffing from userspace), which will reset the local
++		 * APIC and thus smother the timer anyways, i.e. the APIC timer
++		 * IRQ(s) will be dropped no matter what.
+ 		 */
+-		WARN_ON_ONCE(kvm_lapic_hv_timer_in_use(vcpu));
+-
+ 		kvm_vcpu_srcu_read_unlock(vcpu);
+ 		kvm_vcpu_block(vcpu);
+ 		kvm_vcpu_srcu_read_lock(vcpu);
 
-x_tables.c:     if (strnlen(name, XT_EXTENSION_MAXNAMELEN) == XT_EXTENSION_MAXNAMELEN)
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
+-- 
+2.41.0.640.ga95def55d0-goog
 
-
-(Which is not to say the strncpy->strscpy mop-up is bad.)
