@@ -2,134 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDA27742E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF42774268
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235103AbjHHRvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43458 "EHLO
+        id S234852AbjHHRoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230452AbjHHRvF (ORCPT
+        with ESMTP id S234799AbjHHRoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:51:05 -0400
-Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847EEB4F3A;
-        Tue,  8 Aug 2023 09:22:51 -0700 (PDT)
-Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1ba5cda3530so4607646fac.3;
-        Tue, 08 Aug 2023 09:22:51 -0700 (PDT)
+        Tue, 8 Aug 2023 13:44:04 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7A0662D
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:19:43 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-4475d891d0eso10718137.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:19:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691511749; x=1692116549;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
+        d=linaro.org; s=google; t=1691511536; x=1692116336;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GCxwlyhJ8vXEVNF+yz9sQrPr3bcnp/8Z+q3sGhYbKzY=;
-        b=eyYEBmT8U9BS0g9YiDGnxXjtGCDVRksgzluqxEPtICdyaVdggKOALR63x2PcECwMqD
-         5MoUQi8ERs4RlPVnesDEPYSjONko7qcfZsBrumb9x1K1/UMqvjU26Ho3PAwaGMrqkdsh
-         ScPN/kEIF334KbdDY43rB1lWj1V2DpiRtRIlglLsvSyhGOtWHH4uZ5qZfSAujgW1vZQ3
-         wGm3VnLKKWDjf9nVgnyUjvaCfERuKMc0GG8YbfU9/RuaYpguciP86d5QB2kAR0uTTagt
-         8fxrg3rNl05BnC8H+imitZHN34Es5Hhjc+bJqnaV/XPK1IrQNBZJcvojPsbgPpxcMcCz
-         2eQQ==
+        bh=czs5FLmho01QLwa901GjqRSik4ONk7iijh3u8NKJArY=;
+        b=HBPBd+vzaR3aP/oSd9Io6BFjBkqIef3U/57d0AzrbiJjgWGwbKJ8Vik3tNpo7+yNUA
+         zJo6+/UktRBTGYGrRKOJl24yzssI4CNE36gO8I0CyUD7ijDG/y1GU3QBIrqfLK79S9n+
+         0CIP+uqvGJF2/HYwNGn4gmFxzMEual6Bg6O0HjbkuCth2M+cYXGIvs8GsYCSqroGo9zI
+         JBD5HBLNrfl1PZoHfc/Va52TzfnHysngr7uFspg5+9BQyCT4zPvOm3ZdMLPM+6JW0c1K
+         jxlHt0Xb326wMIYXIwAhNmjU+Xn2uhBPY5uLIjjJBvlOiIxiTSLaFY2s54MTL1WYotHr
+         l2SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511749; x=1692116549;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
+        d=1e100.net; s=20221208; t=1691511536; x=1692116336;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GCxwlyhJ8vXEVNF+yz9sQrPr3bcnp/8Z+q3sGhYbKzY=;
-        b=mEqKU1IdgBfyNl3nJ6i5LmvNUWZWX6OPVsq16dBm+KPlSxwbVh8bvGkVG5oyr9oc7C
-         9xlv4NG0DIN3a0zRu4cZ4JIw8WrknQLkJl2Pbjhk2UCd1TwuMmCwbzcJKcC9DZ4dedTx
-         SWG2JvBQrvW2dpGEJJ7Cru9vGumjtQgeEbvGXMhf5Pl3yDUPkQsY8MQmcQ8b+Uqzxd7+
-         D5wlBgWHMSz8pRqynJxaBXTRuOl6368guFB7s+XDhJeW2BL81LSk3KmtfkGfCLYN85Hb
-         tbDWukcrhFivCsIMZtPefX96OBVre4D8S+fjNyP3q10E+y6CM34NMHar2hUE+C0hXHz/
-         Q0rA==
-X-Gm-Message-State: AOJu0YzL3KroaHJUozzC5NGGeeiKF092qAv0lcJqbHRirFK2BO7flWOT
-        mjWq3YIKCkxLVXbMMzcZoeHAmn1mRgTWyvBAVEiv8Ihf/wE=
-X-Google-Smtp-Source: AGHT+IGOOwkdjvLToEWmeAFn8PNhrCDb0D7BXur/JKENEzDLzdhvPs+JtGOveAYXQ4R3LxtNi3mUSqHtZes+Z+zHw9s=
-X-Received: by 2002:a05:6870:612b:b0:1bd:55be:5880 with SMTP id
- s43-20020a056870612b00b001bd55be5880mr14170980oae.42.1691486507460; Tue, 08
- Aug 2023 02:21:47 -0700 (PDT)
+        bh=czs5FLmho01QLwa901GjqRSik4ONk7iijh3u8NKJArY=;
+        b=ZRDdBiCagMKEeqryw/6x9//zJLs9JlMRlsrAQiP9WkZsKluXTwW/vn2Dar/EYtkQMA
+         ZpqnUB3bvoIVq6fUeKYSzK/GGI2RPXIZgOsZlYV+HaFtkwggBj9CQSeViabNlbpReKaB
+         u+vafuVne0hlsOv9zmfw6vd1uaL9Ly8yEGx04Q+6FxZoyNlwUgJH/13iENkefdzQiGq8
+         XjKkJnm8lDd5dAZeLucn4yPinsqSHlHNhjfkz4ye6ZooxwDBSBFZQL95zcfz/mm6fH3r
+         ++8ycOuQK+RPhdeCqieLjbzWc+6iKGotq3KO4K4pCTvgJ41EOCHsxwPGA1ihaYAXkjBu
+         VAKg==
+X-Gm-Message-State: AOJu0YznYQ3A7g8TfoaxZwdfT2+cWSZBmlJqdg+fYmxjijaYHOf7U4vB
+        yzouDXPn1SsXPjHuMsLAA/cTvA+OJ6tWOA+i+iw5qdqIXXGOhKH4bO8=
+X-Google-Smtp-Source: AGHT+IHmsYhhTMQA8QWVnEJgqgdgilOlaBxIemkx0xK04YjnhMHfG6KL7pFK7r+wL4NOpFmKd9ZI1l5xuVudgAueyCI=
+X-Received: by 2002:a25:e0cd:0:b0:d4d:fea4:fb5b with SMTP id
+ x196-20020a25e0cd000000b00d4dfea4fb5bmr7659878ybg.31.1691486896076; Tue, 08
+ Aug 2023 02:28:16 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a8a:696:0:b0:4f0:1250:dd51 with HTTP; Tue, 8 Aug 2023
- 02:21:46 -0700 (PDT)
-In-Reply-To: <20230808-unsensibel-scham-c61a71622ae7@brauner>
-References: <20230806230627.1394689-1-mjguzik@gmail.com> <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
- <20230808-eingaben-lumpen-e3d227386e23@brauner> <CAGudoHF=cEvXy3v96dN_ruXHnPv33BA6fA+dCWCm-9L3xgMPNQ@mail.gmail.com>
- <20230808-unsensibel-scham-c61a71622ae7@brauner>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Tue, 8 Aug 2023 11:21:46 +0200
-Message-ID: <CAGudoHEQ6Tq=88VKqurypjHqOzfU2eBmPts4+H8C7iNu96MRKQ@mail.gmail.com>
-Subject: Re: [PATCH] fs: use __fput_sync in close(2)
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oleg@redhat.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20230803054544.22007-1-wenchao.chen@unisoc.com>
+In-Reply-To: <20230803054544.22007-1-wenchao.chen@unisoc.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 8 Aug 2023 11:27:40 +0200
+Message-ID: <CAPDyKFrb_nH7w8Wjz3oxJ6Vj30W4-U=k2ST8O7aib_kSHBjsFw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: queue: replace immediate with hsq->depth
+To:     Wenchao Chen <wenchao.chen@unisoc.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wenchao.chen666@gmail.com, zhenxiong.lai@unisoc.com,
+        chunyan.zhang@unisoc.com, yuelin.tang@unisoc.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/23, Christian Brauner <brauner@kernel.org> wrote:
->> I don't think perf tax on something becomes more sensible the longer
->> it is there.
+On Thu, 3 Aug 2023 at 07:46, Wenchao Chen <wenchao.chen@unisoc.com> wrote:
 >
-> One does need to answer the question why it does suddenly become
-> relevant after all these years though.
+> Hsq is similar to cqe, using hsq->depth to represent
+> the maximum processing capacity of hsq. We can adjust
+> hsq->depth according to the actual situation.
+
+Sorry, but I don't quite follow here.
+
+Are you planning to update the host->hsq_depth dynamically from somewhere?
+
+Kind regards
+Uffe
+
 >
-
-There is some work I'm considering doing, but before that happens I'm
-sanity checking performance of various syscalls and I keep finding
-problems, some of which are trivially avoidable.
-
-I'm genuinely confused with the strong opposition to the very notion
-of making close(2) a special case (which I consider conceptually
-trivial), but as you noted below I'm not ultimately the person on the
-hook for any problems.
-
-> The original discussion was triggered by fifo ordering in task work
-> which led to a noticable regression and why it was ultimately reverted.
-> The sync proposal for fput() was an orthogonal proposal and the
-> conclusion was that it wasn't safe generally
-> https://lore.kernel.org/all/20150905051915.GC22011@ZenIV.linux.org.uk
-> even though it wasn't a direct response to the patch you linked.
+> Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+> ---
+>  drivers/mmc/core/queue.c   | 6 +-----
+>  drivers/mmc/host/mmc_hsq.c | 1 +
+>  drivers/mmc/host/mmc_hsq.h | 7 +++++++
+>  include/linux/mmc/host.h   | 1 +
+>  4 files changed, 10 insertions(+), 5 deletions(-)
 >
-
-Ok, I missed this e-mail. It further discourages patching filp_close,
-but does not make an argument against *just* close(2) rolling with
-sync which is what I'm proposing.
-
-> If you care about it enough send a patch that just makes close(2) go
-> sync.
-
-But this is precisely what the submitted patch is doing. It adds
-file_fput_sync, then adds close_fd_sync which is the only consumer and
-only makes close(2) use it. *nobody* else has sync added.
-
-One can argue the way this is sorted out is crap and I'm not going to
-defend it. I am saying making *just* close(2) roll with sync is very
-easy, there are numerous ways to do it and anyone involved with
-maintaining vfs can write their own variant in minutes. Basically I
-don't see *technical* problems here.
-
-> We'll stuff it in a branch and we'll see what LKP has to say about
-> it or whether this gets lost in noise. I really don't think letting
-> micro-benchmarks become a decisive factor for code churn is a good
-> idea.
+> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+> index b396e3900717..a0a2412f62a7 100644
+> --- a/drivers/mmc/core/queue.c
+> +++ b/drivers/mmc/core/queue.c
+> @@ -260,11 +260,7 @@ static blk_status_t mmc_mq_queue_rq(struct blk_mq_hw_ctx *hctx,
+>                 }
+>                 break;
+>         case MMC_ISSUE_ASYNC:
+> -               /*
+> -                * For MMC host software queue, we only allow 2 requests in
+> -                * flight to avoid a long latency.
+> -                */
+> -               if (host->hsq_enabled && mq->in_flight[issue_type] > 2) {
+> +               if (host->hsq_enabled && mq->in_flight[issue_type] > host->hsq_depth) {
+>                         spin_unlock_irq(&mq->lock);
+>                         return BLK_STS_RESOURCE;
+>                 }
+> diff --git a/drivers/mmc/host/mmc_hsq.c b/drivers/mmc/host/mmc_hsq.c
+> index 424dc7b07858..7b3952721c17 100644
+> --- a/drivers/mmc/host/mmc_hsq.c
+> +++ b/drivers/mmc/host/mmc_hsq.c
+> @@ -337,6 +337,7 @@ int mmc_hsq_init(struct mmc_hsq *hsq, struct mmc_host *mmc)
+>         hsq->mmc = mmc;
+>         hsq->mmc->cqe_private = hsq;
+>         mmc->cqe_ops = &mmc_hsq_ops;
+> +       mmc->hsq_depth = HSQ_MAX_DEPTH;
 >
-
-That would be nice. Given the patch is already doing what you asked,
-can you just take it as is?
-
-I'll note though what I mentioned elsewhere
-(https://lore.kernel.org/all/CAGudoHEG7vtCRWjn0yR5LMUsaw3KJANfa+Hkke9gy0imXQz6tg@mail.gmail.com/):
-can they make sure to whack CONFIG_RANDOMIZE_KSTACK_OFFSET=y from
-their kernel config? It is an *optional* measure and it comes at a
-massive premium, so single-threaded changes are easily diminished.
-
--- 
-Mateusz Guzik <mjguzik gmail.com>
+>         for (i = 0; i < HSQ_NUM_SLOTS; i++)
+>                 hsq->tag_slot[i] = HSQ_INVALID_TAG;
+> diff --git a/drivers/mmc/host/mmc_hsq.h b/drivers/mmc/host/mmc_hsq.h
+> index 1808024fc6c5..795f6b9421d7 100644
+> --- a/drivers/mmc/host/mmc_hsq.h
+> +++ b/drivers/mmc/host/mmc_hsq.h
+> @@ -5,6 +5,13 @@
+>  #define HSQ_NUM_SLOTS  64
+>  #define HSQ_INVALID_TAG        HSQ_NUM_SLOTS
+>
+> +/*
+> + * For MMC host software queue, we usually allow 2 requests in
+> + * flight to avoid a long latency. But we can adjust hsq->depth
+> + * according to the actual situation.
+> + */
+> +#define HSQ_MAX_DEPTH  2
+> +
+>  struct hsq_slot {
+>         struct mmc_request *mrq;
+>  };
+> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+> index 461d1543893b..1fd8b1dd8698 100644
+> --- a/include/linux/mmc/host.h
+> +++ b/include/linux/mmc/host.h
+> @@ -520,6 +520,7 @@ struct mmc_host {
+>
+>         /* Host Software Queue support */
+>         bool                    hsq_enabled;
+> +       int                     hsq_depth;
+>
+>         u32                     err_stats[MMC_ERR_MAX];
+>         unsigned long           private[] ____cacheline_aligned;
+> --
+> 2.17.1
+>
