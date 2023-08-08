@@ -2,116 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE132773BD2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F24773C39
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbjHHP4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 11:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
+        id S229459AbjHHQC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbjHHPyU (ORCPT
+        with ESMTP id S230519AbjHHQAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:54:20 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5F859D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:43:32 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-98377c5d53eso804236366b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:43:32 -0700 (PDT)
+        Tue, 8 Aug 2023 12:00:51 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30F46591
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:44:41 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-585ff234cd1so62808717b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:44:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691509394; x=1692114194;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FFQCxsSM2uVo6fho+aJ/OGP5I8Vv4VqgpwCByYL+BHc=;
-        b=grgSO98QbHiSVMn+ahaSj7ZfcqJi9juMLcxRMLCjiDrEpIhya2vxIriGWCtyczXfys
-         VgIhNw6dWXrRmyiDdbaMUMLBhFzYU4hwC31uzSDngyBkc78rLNk54t8zw3r72FhwSHlo
-         dhuMkgKvTxcWpD0Q7ltdYFtfuXYiMS5rzKy9oLQVoJH89Omrv5pLII0Y2hQApRslgyRP
-         P5w/547UkuUQKfcBGxU0Ms54OMt2ErZY9bsdy4aioTxzF+fJCcIC3vHOD7/gAc9+96et
-         gFqOXwh54aPrsymf7iSDNyntGW4DddQvauGAKhCwmKlY3oyPtQDfD6HzwaiUlpVUqE8+
-         CGMQ==
+        d=ziepe.ca; s=google; t=1691509481; x=1692114281;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gL2omywPOVNbKUeglpeFfHMIDiTEoGuel7UocewbmbM=;
+        b=Y5pGSIX8l61nN2OL7dTwr28SKWMTzn7RyyuQyDiha4JhzeBLT9iJp+zsYvddYop045
+         YeOfNbwyDDgXHUCzH5VpxI7FbszD6n2av6Uuy4FaIF2xqFVysw/j/ARMlrtHGCLLAyk7
+         LyP8v7Xg+x9bpMbF2IdkOBswjKf2n1LsBRKclZiOjjrsB5E4ZM1KbVAaWYHDw/f0yLeN
+         rRmXaz+8T/dHwIkLdb1HK6XjLgFQBNC/MRtxLa0pXnhj7Ev5DjRAA4WFgP077drZoLnU
+         ewleoiSxw7g3KroLrlfX6tyo4Hb3W0bqw/m6gpbdArFh8lblji2yhPx6y+4HAyHHcKH9
+         +GLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691509394; x=1692114194;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FFQCxsSM2uVo6fho+aJ/OGP5I8Vv4VqgpwCByYL+BHc=;
-        b=HA9PnLxqtL9hCkQivYzXLzliL7KwarWkRVlf/SE0PXpKZznmmPc+VSOkbnxK4QtlA9
-         aX4Zmf/lAulQIZWtDS/9O1z4j5MJ0qwuu5nRkK5yOa+udwyjiY0pUORJuQvgoZClrM/e
-         NBHpnkLAlNS9sswcW7r7lv/qC2ZGcTsL0sRmFnRjxMDKUHzYzLG+9U/FMNlhxwkl45OM
-         Fa8MKMFd7h9/3lIkkMJxh8j94nQMYmbqstIBEwH82sRGNJxBRpKyW63LtwWw9WzWpYCQ
-         MAKreQc+drE3nzc0EskE5KnMBLcw2oUxWBMcimpf6tYUI691CucdoyQ1EruHyzl+LOD4
-         Tpcg==
-X-Gm-Message-State: AOJu0Yyu/bu9+b9SIPxVhfSBbCBE24LddoePChG3+3FNQIMfMNn8IzBI
-        pRfQF4GH+Tl/+glJiXIx1iXGYpOqDDaNwq0UA0c=
-X-Google-Smtp-Source: AGHT+IGHV9+UYzYvn5Ls/Ez67OotAAo6suz5ZNdonadR1VetzpLzmLYFNFXgqtoLI29IJKXXrA9EdA==
-X-Received: by 2002:a17:906:220e:b0:99c:7333:199d with SMTP id s14-20020a170906220e00b0099c7333199dmr11376507ejs.30.1691507449835;
-        Tue, 08 Aug 2023 08:10:49 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id y25-20020a1709063a9900b0099bc80d5575sm6773608ejd.200.2023.08.08.08.10.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 08:10:49 -0700 (PDT)
-Message-ID: <f7f9b3a6-7ba3-3ac1-eb8f-4973d31690f4@linaro.org>
-Date:   Tue, 8 Aug 2023 17:10:46 +0200
+        d=1e100.net; s=20221208; t=1691509481; x=1692114281;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gL2omywPOVNbKUeglpeFfHMIDiTEoGuel7UocewbmbM=;
+        b=fCy2iVJr36u55hLB2oNVkaboLvCmsi7Kr2AgWskNtocv/frm6sOJMehOI+/+ev4sD5
+         RfoymiBRNLAPfCxUaf9rbRQ8hKn0YDVjt/3elOGsBbxAQNZ0GEcD8p4Akfmx2nHw6KeW
+         pBL1p3bmG6OOVOGY3Fbg7u1VvfwvDi64q2mmpVwr+Kmzm+maK3gXISmGnNGmlMnVzpOz
+         vmVnwIwCivVTG9W4TDzfc0h9PtrVxd7jILS9ZWbFxiIxnK5kJ9GAUyLgZ0ps3j4P1US4
+         TbmkJL4Oena+WNrHuiRg/Mhh0Tvc/XO8jInthCxJfwGldMr5Xhudlzb9KWPD74nLx07O
+         bOcw==
+X-Gm-Message-State: AOJu0YxTVYFVjhbJn/880LpnZ6kfbxe2LA5gel5oRU6NJgADwcy0/uSh
+        VnXwetmKRV2Mj/v9vWVhEDXWRf5x41kxVsqrfcg=
+X-Google-Smtp-Source: AGHT+IHgfILa7agMZ6r8NdDf08gKAYAowHDrZpHWJkfH8WLRw020X3h5zqhAKbPn1XmQpt9bdUdJBA==
+X-Received: by 2002:a0c:a9ca:0:b0:62f:f2f0:2af3 with SMTP id c10-20020a0ca9ca000000b0062ff2f02af3mr10760271qvb.41.1691507955581;
+        Tue, 08 Aug 2023 08:19:15 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id h3-20020a05620a13e300b007659935ce64sm3349304qkl.71.2023.08.08.08.19.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 08:19:15 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qTOUM-004d8H-L0;
+        Tue, 08 Aug 2023 12:19:14 -0300
+Date:   Tue, 8 Aug 2023 12:19:14 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Tina Zhang <tina.zhang@intel.com>
+Cc:     Kevin Tian <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Michael Shavit <mshavit@google.com>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] iommu: Support mm PASID 1:n with sva domains
+Message-ID: <ZNJc8r1eeQZ8GqxY@ziepe.ca>
+References: <20230808074944.7825-1-tina.zhang@intel.com>
+ <20230808074944.7825-5-tina.zhang@intel.com>
+ <ZNJbaiTDG+YTgpDP@ziepe.ca>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 6/6] dt-bindings: arm-smmu: Fix MSM8998 clocks
- description
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Imran Khan <kimran@codeaurora.org>,
-        Rajendra Nayak <quic_rjendra@quicinc.com>,
-        Joonwoo Park <joonwoop@codeaurora.org>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev
-References: <20230531-topic-8998_mmssclk-v2-0-34273e275c51@linaro.org>
- <20230531-topic-8998_mmssclk-v2-6-34273e275c51@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230531-topic-8998_mmssclk-v2-6-34273e275c51@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNJbaiTDG+YTgpDP@ziepe.ca>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/2023 11:44, Konrad Dybcio wrote:
-> MSM8998 was abusingly referencing one of the internal bus clocks, that
-> were recently dropped from Linux (because the original implementation
-> did not make much sense), circumventing the interconnect framework.
+On Tue, Aug 08, 2023 at 12:12:42PM -0300, Jason Gunthorpe wrote:
 
-Please mention here that effectively you are dropping bus-mm clock and
-the rest is the same as before. It's not possible to figure this out
-from the diff alone.
+> Lets please rework this function into two parts
+> 
+> The first should be 'iommu_sva_alloc_domain()'
+> 
+> It should do the list searching and user management. The usual
+> 'iommu_domain_free()' should be modified to clean it up.
+ 
+I suppose we can't quite do this fully since the domain allocation
+needs to use set_dev_pasid to detect compatability :( This is a
+similar problem we had with iommufd too.
 
-With updated commit msg.
+Still, the 'alloc and set_dev_pasid' should be in one function and it
+should be undone with iommu_detach_device_pasid() and
+iommu_domain_free().
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+The helper bind/unbind functions should wrapper that sequence.
 
-
-Best regards,
-Krzysztof
-
+Jason
