@@ -2,107 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AE577364A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A18E773658
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjHHCLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 22:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
+        id S230365AbjHHCMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 22:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjHHCL3 (ORCPT
+        with ESMTP id S230319AbjHHCMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 22:11:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6ED19B6;
-        Mon,  7 Aug 2023 19:11:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691460682; x=1722996682;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=d3VIX2xY+fu1wWsahOfoN14pobtO1cM2MgEWqpBvgLY=;
-  b=EuJd4qa0AAArhVMsFAlVuljUHzrNuN+NCuFOvd/FratfgL2JETvU6eCh
-   qg6KhSCb58AqZmPXhmlnGTLUklrJP7iYSWSXQYEQRj7TcTSSk+e0wJc+m
-   JURZuL/L5ni+vhYi93jQ0OaAWfp8hWPV15Xe0MPextHEwx2/gBdsKQHPx
-   12/mcxBQm0bm7Olx+egeufVxqoqMDaxF/ysXGR2cqJc/UB5n5PAPL8Hvp
-   iQzc2W1QdyXnuBwG/qtj/XSzk3PlTQcOZVp0R3aZ0IrVRgu1tzPhbFvzG
-   dsZRTrN9URLfshzRnuKIzObcL+fm3PdBJpkYAg1HUJIQWN7+NgtF1ONx1
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="373453596"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="373453596"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 19:11:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="977689411"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="977689411"
-Received: from fyin-dev.sh.intel.com ([10.239.159.32])
-  by fmsmga006.fm.intel.com with ESMTP; 07 Aug 2023 19:11:18 -0700
-From:   Yin Fengwei <fengwei.yin@intel.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, akpm@linux-foundation.org,
-        willy@infradead.org, vishal.moola@gmail.com,
-        wangkefeng.wang@huawei.com, minchan@kernel.org, yuzhao@google.com,
-        david@redhat.com, ryan.roberts@arm.com, shy828301@gmail.com
-Cc:     fengwei.yin@intel.com
-Subject: [PATCH v2 3/3] madvise:madvise_free_pte_range(): don't use mapcount() against large folio for sharing check
-Date:   Tue,  8 Aug 2023 10:09:17 +0800
-Message-Id: <20230808020917.2230692-4-fengwei.yin@intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230808020917.2230692-1-fengwei.yin@intel.com>
-References: <20230808020917.2230692-1-fengwei.yin@intel.com>
+        Mon, 7 Aug 2023 22:12:13 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB311721
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 19:12:06 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-268299d5d9fso2644707a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 19:12:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1691460726; x=1692065526;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=S5nJ90Y7HkcDKRE+pcPu5keZJ+24iVkBC6PdC2b5uJ0=;
+        b=AFt/VuazRx0w4Tn1IU2JUHjsvK9//KmKNKOzUsMjyPWc+WauQSv5qCgAlx5y8wlPIL
+         hZ4kYEryWxLgRLeYaQj4xKQmbz2+fwGFdpiEnUYFWB8cS1WKDsqaNRvUwjpvdhEE1wqM
+         Pa0gWwQ1zRdGeKwMXonsis/5aIvId3dvX65TjmeUK6fHIDfWZQ6NWrHdG0BFjSgBlwHn
+         EPCT/fdxzOXvB1URY1V13teKkeQnNqcDN6h4mKjIkvEjRefZqSa/0jDLGkSWo+riYILJ
+         5YWVtmGXaJL6ouBig0rvs/QbDa4KngUZ9XItmSUyw062F/G/EjTZcECBZuQiNzd7pFh2
+         XSVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691460726; x=1692065526;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S5nJ90Y7HkcDKRE+pcPu5keZJ+24iVkBC6PdC2b5uJ0=;
+        b=IFot7adffzNd5pGx/wu0G4DSCDBtN2i7ipuY/+k5UPsAJ+qjVegZbjsi+7/ZVNJ9Lq
+         cNnHoxQ74WiuQqHGI5m/vHTjlAOVhOhFttOv7U7RgtlfrjzSY81pfbZzC8r0XO281jEF
+         r0IoiOLBKqvvsBBcChiwD0Kg/STWlvO/yN+88TY9eSoVl4O8j6hNwDPmxT5M5czkZLf8
+         rffuluiEyroFt9xMXsBqRTLhbTOPOam0ugx1Qn/zZu8QAaqLwhhrv/lk9eOD/pF1L6H8
+         z1WPdxoaODv2Rgx7HyWz/pDLoKia53N8TgqJyoRiyeYOqlnCmHORU2l5Mtuq7gvLq4Yw
+         PDZg==
+X-Gm-Message-State: AOJu0Yz4ge4t5ScvOUOiVR9f+ZG1V862Lyc8maLayhk67UktYeTWl9Qy
+        R9dTlq7MwDkiDhOJUjiIIvvpjA==
+X-Google-Smtp-Source: AGHT+IHE8FO8RAjHks3Izbxy+yXIAOFeIsxej7SyncoSZwq8TiDh2J09MxtXtA2ffdHhYGJ2WNjVaA==
+X-Received: by 2002:a17:90a:ad90:b0:25e:d013:c22c with SMTP id s16-20020a17090aad9000b0025ed013c22cmr8256877pjq.47.1691460726140;
+        Mon, 07 Aug 2023 19:12:06 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-166-213.pa.nsw.optusnet.com.au. [49.180.166.213])
+        by smtp.gmail.com with ESMTPSA id jv14-20020a17090b31ce00b00263e4dc33aasm9313956pjb.11.2023.08.07.19.12.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 19:12:05 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qTCCY-002WbH-25;
+        Tue, 08 Aug 2023 12:12:02 +1000
+Date:   Tue, 8 Aug 2023 12:12:02 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
+        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
+        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
+        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
+        gregkh@linuxfoundation.org, muchun.song@linux.dev,
+        simon.horman@corigine.com, dlemoal@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [PATCH v4 44/48] mm: shrinker: add a secondary array for
+ shrinker_info::{map, nr_deferred}
+Message-ID: <ZNGkcp3Dh8hOiFpk@dread.disaster.area>
+References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
+ <20230807110936.21819-45-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807110936.21819-45-zhengqi.arch@bytedance.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 98b211d6415f ("madvise: convert madvise_free_pte_range() to use a
-folio") replaced the page_mapcount() with folio_mapcount() to check
-whether the folio is shared by other mapping.
+On Mon, Aug 07, 2023 at 07:09:32PM +0800, Qi Zheng wrote:
+> Currently, we maintain two linear arrays per node per memcg, which are
+> shrinker_info::map and shrinker_info::nr_deferred. And we need to resize
+> them when the shrinker_nr_max is exceeded, that is, allocate a new array,
+> and then copy the old array to the new array, and finally free the old
+> array by RCU.
+> 
+> For shrinker_info::map, we do set_bit() under the RCU lock, so we may set
+> the value into the old map which is about to be freed. This may cause the
+> value set to be lost. The current solution is not to copy the old map when
+> resizing, but to set all the corresponding bits in the new map to 1. This
+> solves the data loss problem, but bring the overhead of more pointless
+> loops while doing memcg slab shrink.
+> 
+> For shrinker_info::nr_deferred, we will only modify it under the read lock
+> of shrinker_rwsem, so it will not run concurrently with the resizing. But
+> after we make memcg slab shrink lockless, there will be the same data loss
+> problem as shrinker_info::map, and we can't work around it like the map.
+> 
+> For such resizable arrays, the most straightforward idea is to change it
+> to xarray, like we did for list_lru [1]. We need to do xa_store() in the
+> list_lru_add()-->set_shrinker_bit(), but this will cause memory
+> allocation, and the list_lru_add() doesn't accept failure. A possible
+> solution is to pre-allocate, but the location of pre-allocation is not
+> well determined.
 
-It's not correct for large folios. folio_mapcount() returns the total
-mapcount of large folio which is not suitable to detect whether the folio
-is shared.
+So you implemented a two level array that preallocates leaf
+nodes to work around it? It's remarkable complex for what it does,
+I can't help but think a radix tree using a special holder for
+nr_deferred values of zero would end up being simpler...
 
-Use folio_estimated_sharers() which returns a estimated number of shares.
-That means it's not 100% correct. It should be OK for madvise case here.
+> Therefore, this commit chooses to introduce a secondary array for
+> shrinker_info::{map, nr_deferred}, so that we only need to copy this
+> secondary array every time the size is resized. Then even if we get the
+> old secondary array under the RCU lock, the found map and nr_deferred are
+> also true, so no data is lost.
 
-User-visible effects is that the THP is skipped when user call madvise.
-But the correct behavior is THP should be split and processed then.
+I don't understand what you are trying to describe here. If we get
+the old array, then don't we get either a stale nr_deferred value,
+or the update we do gets lost because the next shrinker lookup will
+find the new array and os the deferred value stored to the old one
+is never seen again?
 
-NOTE: this change is a temporary fix to reduce the user-visible effects
-before the long term fix from David is ready.
+> 
+> [1]. https://lore.kernel.org/all/20220228122126.37293-13-songmuchun@bytedance.com/
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+.....
+> diff --git a/mm/shrinker.c b/mm/shrinker.c
+> index a27779ed3798..1911c06b8af5 100644
+> --- a/mm/shrinker.c
+> +++ b/mm/shrinker.c
+> @@ -12,15 +12,50 @@ DECLARE_RWSEM(shrinker_rwsem);
+>  #ifdef CONFIG_MEMCG
+>  static int shrinker_nr_max;
+>  
+> -/* The shrinker_info is expanded in a batch of BITS_PER_LONG */
+> -static inline int shrinker_map_size(int nr_items)
+> +static inline int shrinker_unit_size(int nr_items)
+>  {
+> -	return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
+> +	return (DIV_ROUND_UP(nr_items, SHRINKER_UNIT_BITS) * sizeof(struct shrinker_info_unit *));
+>  }
+>  
+> -static inline int shrinker_defer_size(int nr_items)
+> +static inline void shrinker_unit_free(struct shrinker_info *info, int start)
+>  {
+> -	return (round_up(nr_items, BITS_PER_LONG) * sizeof(atomic_long_t));
+> +	struct shrinker_info_unit **unit;
+> +	int nr, i;
+> +
+> +	if (!info)
+> +		return;
+> +
+> +	unit = info->unit;
+> +	nr = DIV_ROUND_UP(info->map_nr_max, SHRINKER_UNIT_BITS);
+> +
+> +	for (i = start; i < nr; i++) {
+> +		if (!unit[i])
+> +			break;
+> +
+> +		kvfree(unit[i]);
+> +		unit[i] = NULL;
+> +	}
+> +}
+> +
+> +static inline int shrinker_unit_alloc(struct shrinker_info *new,
+> +				       struct shrinker_info *old, int nid)
+> +{
+> +	struct shrinker_info_unit *unit;
+> +	int nr = DIV_ROUND_UP(new->map_nr_max, SHRINKER_UNIT_BITS);
+> +	int start = old ? DIV_ROUND_UP(old->map_nr_max, SHRINKER_UNIT_BITS) : 0;
+> +	int i;
+> +
+> +	for (i = start; i < nr; i++) {
+> +		unit = kvzalloc_node(sizeof(*unit), GFP_KERNEL, nid);
 
-Fixes: 98b211d6415f ("madvise: convert madvise_free_pte_range() to use a folio")
-Cc: stable@vger.kernel.org
-Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
-Reviewed-by: Yu Zhao <yuzhao@google.com>
-Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
----
- mm/madvise.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+A unit is 576 bytes. Why is this using kvzalloc_node()?
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 49af35e2d99a..4dded5d27e7e 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -683,7 +683,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
- 		if (folio_test_large(folio)) {
- 			int err;
- 
--			if (folio_mapcount(folio) != 1)
-+			if (folio_estimated_sharers(folio) != 1)
- 				break;
- 			if (!folio_trylock(folio))
- 				break;
+> +		if (!unit) {
+> +			shrinker_unit_free(new, start);
+> +			return -ENOMEM;
+> +		}
+> +
+> +		new->unit[i] = unit;
+> +	}
+> +
+> +	return 0;
+>  }
+>  
+>  void free_shrinker_info(struct mem_cgroup *memcg)
+> @@ -32,6 +67,7 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+>  	for_each_node(nid) {
+>  		pn = memcg->nodeinfo[nid];
+>  		info = rcu_dereference_protected(pn->shrinker_info, true);
+> +		shrinker_unit_free(info, 0);
+>  		kvfree(info);
+>  		rcu_assign_pointer(pn->shrinker_info, NULL);
+>  	}
+
+Why is this safe? The info and maps are looked up by RCU, so why is
+freeing them without a RCU grace period expiring safe?
+
+Yes, it was safe to do this when it was all under a semaphore, but
+now the lookup and use is under RCU, so this freeing isn't
+serialised against lookups anymore...
+
+
+> @@ -40,28 +76,27 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+>  int alloc_shrinker_info(struct mem_cgroup *memcg)
+>  {
+>  	struct shrinker_info *info;
+> -	int nid, size, ret = 0;
+> -	int map_size, defer_size = 0;
+> +	int nid, ret = 0;
+> +	int array_size = 0;
+>  
+>  	down_write(&shrinker_rwsem);
+> -	map_size = shrinker_map_size(shrinker_nr_max);
+> -	defer_size = shrinker_defer_size(shrinker_nr_max);
+> -	size = map_size + defer_size;
+> +	array_size = shrinker_unit_size(shrinker_nr_max);
+>  	for_each_node(nid) {
+> -		info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
+> -		if (!info) {
+> -			free_shrinker_info(memcg);
+> -			ret = -ENOMEM;
+> -			break;
+> -		}
+> -		info->nr_deferred = (atomic_long_t *)(info + 1);
+> -		info->map = (void *)info->nr_deferred + defer_size;
+> +		info = kvzalloc_node(sizeof(*info) + array_size, GFP_KERNEL, nid);
+> +		if (!info)
+> +			goto err;
+>  		info->map_nr_max = shrinker_nr_max;
+> +		if (shrinker_unit_alloc(info, NULL, nid))
+> +			goto err;
+
+That's going to now do a lot of small memory allocation when we have
+lots of shrinkers active....
+
+> @@ -150,17 +175,34 @@ static int expand_shrinker_info(int new_id)
+>  	return ret;
+>  }
+>  
+> +static inline int shriner_id_to_index(int shrinker_id)
+
+shrinker_id_to_index
+
+> +{
+> +	return shrinker_id / SHRINKER_UNIT_BITS;
+> +}
+> +
+> +static inline int shriner_id_to_offset(int shrinker_id)
+
+shrinker_id_to_offset
+
+> +{
+> +	return shrinker_id % SHRINKER_UNIT_BITS;
+> +}
+
+....
+> @@ -209,26 +251,31 @@ static long xchg_nr_deferred_memcg(int nid, struct shrinker *shrinker,
+>  				   struct mem_cgroup *memcg)
+>  {
+>  	struct shrinker_info *info;
+> +	struct shrinker_info_unit *unit;
+>  
+>  	info = shrinker_info_protected(memcg, nid);
+> -	return atomic_long_xchg(&info->nr_deferred[shrinker->id], 0);
+> +	unit = info->unit[shriner_id_to_index(shrinker->id)];
+> +	return atomic_long_xchg(&unit->nr_deferred[shriner_id_to_offset(shrinker->id)], 0);
+>  }
+>  
+>  static long add_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
+>  				  struct mem_cgroup *memcg)
+>  {
+>  	struct shrinker_info *info;
+> +	struct shrinker_info_unit *unit;
+>  
+>  	info = shrinker_info_protected(memcg, nid);
+> -	return atomic_long_add_return(nr, &info->nr_deferred[shrinker->id]);
+> +	unit = info->unit[shriner_id_to_index(shrinker->id)];
+> +	return atomic_long_add_return(nr, &unit->nr_deferred[shriner_id_to_offset(shrinker->id)]);
+>  }
+>  
+>  void reparent_shrinker_deferred(struct mem_cgroup *memcg)
+>  {
+> -	int i, nid;
+> +	int nid, index, offset;
+>  	long nr;
+>  	struct mem_cgroup *parent;
+>  	struct shrinker_info *child_info, *parent_info;
+> +	struct shrinker_info_unit *child_unit, *parent_unit;
+>  
+>  	parent = parent_mem_cgroup(memcg);
+>  	if (!parent)
+> @@ -239,9 +286,13 @@ void reparent_shrinker_deferred(struct mem_cgroup *memcg)
+>  	for_each_node(nid) {
+>  		child_info = shrinker_info_protected(memcg, nid);
+>  		parent_info = shrinker_info_protected(parent, nid);
+> -		for (i = 0; i < child_info->map_nr_max; i++) {
+> -			nr = atomic_long_read(&child_info->nr_deferred[i]);
+> -			atomic_long_add(nr, &parent_info->nr_deferred[i]);
+> +		for (index = 0; index < shriner_id_to_index(child_info->map_nr_max); index++) {
+> +			child_unit = child_info->unit[index];
+> +			parent_unit = parent_info->unit[index];
+> +			for (offset = 0; offset < SHRINKER_UNIT_BITS; offset++) {
+> +				nr = atomic_long_read(&child_unit->nr_deferred[offset]);
+> +				atomic_long_add(nr, &parent_unit->nr_deferred[offset]);
+> +			}
+>  		}
+>  	}
+>  	up_read(&shrinker_rwsem);
+> @@ -407,7 +458,7 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+>  {
+>  	struct shrinker_info *info;
+>  	unsigned long ret, freed = 0;
+> -	int i;
+> +	int offset, index = 0;
+>  
+>  	if (!mem_cgroup_online(memcg))
+>  		return 0;
+> @@ -419,56 +470,63 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+>  	if (unlikely(!info))
+>  		goto unlock;
+>  
+> -	for_each_set_bit(i, info->map, info->map_nr_max) {
+> -		struct shrink_control sc = {
+> -			.gfp_mask = gfp_mask,
+> -			.nid = nid,
+> -			.memcg = memcg,
+> -		};
+> -		struct shrinker *shrinker;
+> +	for (; index < shriner_id_to_index(info->map_nr_max); index++) {
+> +		struct shrinker_info_unit *unit;
+
+This adds another layer of indent to shrink_slab_memcg(). Please
+factor it first so that the code ends up being readable. Doing that
+first as a separate patch will also make the actual algorithm
+changes in this patch be much more obvious - this huge hunk of
+diff is pretty much impossible to review...
+
+-Dave.
 -- 
-2.39.2
-
+Dave Chinner
+david@fromorbit.com
