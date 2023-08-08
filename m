@@ -2,115 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 755E577451F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793B5774789
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbjHHShP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52220 "EHLO
+        id S231145AbjHHTP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbjHHSgy (ORCPT
+        with ESMTP id S235772AbjHHTPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:36:54 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C9D111F7A;
-        Tue,  8 Aug 2023 09:28:58 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bba04b9df3so51305595ad.0;
-        Tue, 08 Aug 2023 09:28:58 -0700 (PDT)
+        Tue, 8 Aug 2023 15:15:22 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E0E3C237
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:38:12 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bf3f59905so857006666b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691512091; x=1692116891;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691512689; x=1692117489;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=n17U5qh0OrK3kvBv9V9L+D0ClJ7otAlPJK+8puyUKR0=;
-        b=op5CWRxvHjjyEtH3oLTE+U9+SdV4muy6/SahtYDfPvEw7u7NCepCKVp4NvTaueKPBY
-         DXR02edJ/mpI7koxuloBEu5VhrqBG7s0PV4u3njEhKiEBoet+IvTeexpCZfPfXCasMqF
-         oC8MXWdotPpTILLtEp4leXwUSQzmosI67ghXcBrus2OsUR331ISsDWo7eVHMZGQ31nig
-         cLl/BLQPTM+DtOOM23qw2NLnpTMsGiPctZj+X8Bu6Mgy1qwpXzxq+YVjPMVaDQ4VNdNg
-         CDCctlX7pActT8jlkHPq4I0Otu11HlWkbn0M4PerKJ0zzzlcaqFwRfM074WVMZugSik3
-         j9mQ==
+        bh=bKnU9SGNhRXh7JQMi9LxA4Fhq6dBeuKxy6dhRmxZasE=;
+        b=NdgbgFeopdFc9nyErGg9Tfd0ZjMqxt9PQjlMFDNqcn7e6e9meyZLkpuFjFmQUJB5AH
+         0eerYrqXvyOIcBmrxg3EUoUtOBRRtMmBBAG1Bv2PJDK2L9DiXS6P6tJGFk5Syqo29NsQ
+         /V9TlsBKlZDHhX0HTyWhEaZC9LgeUhXKBD8SiCc53KtfSOlFCE6b04l2Zl8Ijlk86whI
+         iT/NkUTm3bhG1TSJiV52Vtbxwn1jDPxVHz3aCd3qicRn+qRSG7nEQKmTTaN9jxL2rwur
+         KQy7+Zw4OeGdmOc6O3tLl57Fjfv7LKaWZgluvYzjJ668CXoD+jngSBcoZD2H9YnKMaBX
+         IDOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691512091; x=1692116891;
+        d=1e100.net; s=20221208; t=1691512689; x=1692117489;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n17U5qh0OrK3kvBv9V9L+D0ClJ7otAlPJK+8puyUKR0=;
-        b=AkW7DQi/fbKA828RLfr5Io45pR5oEPH+jwKFrpaHaElCfjY8f9HLZ+WRuV7xV+xMc4
-         aRsNJFBPOq659Hh4M3XYwdETDpgdNQNtBjenMXKk8LkVXaeupMbXr5oDPXJCNyopEyNd
-         fXxX9JkEcCDBTHPz7eA96m0C2rId8fRLlrOnCFvdb8gc6XfN5jLpGhvnTsmh2PpXrJ7w
-         1PHh1Faf7mqjc+Ev850/5wfDEIqUeTXNcAOM6kKRRy37fRXTdSQ08VPrRzfTtFa7hzvL
-         mSf3N5mSav1HJydpEwlxuMKasiCFga1vGj0mFBNNXgNqGBwp4SiGboaNADbbq2wgMBmG
-         N3vw==
-X-Gm-Message-State: AOJu0YzBJf+uHc1/OcfUTfctAke2QVqYyz89NZMCBlHJifRl+UApaUKZ
-        HYTBvqpkQQi2dBvxcw10PTorp4MEdLGiL9Mhrd4XsO3aVeI=
-X-Google-Smtp-Source: AGHT+IG30KmbMbbDaYtdMmOkxgv/uetQA+YC5M2Co9rM0xOLArq1znaHye1BkMKO/WBSoz7ZRimYeFGXyPEKt5HXhuA=
-X-Received: by 2002:a05:6870:c1cc:b0:1bb:89b1:77b7 with SMTP id
- i12-20020a056870c1cc00b001bb89b177b7mr15189629oad.16.1691496560111; Tue, 08
- Aug 2023 05:09:20 -0700 (PDT)
+        bh=bKnU9SGNhRXh7JQMi9LxA4Fhq6dBeuKxy6dhRmxZasE=;
+        b=lrbrT0yD3x9fulN7rYpmy8IjCqB4N0dNJCWXxgsocIshEEo3rKrocqrtewvsGmyRuk
+         MCSmamqRlZdVP4MeWo/6mvaVT56UQ8qtyO9OQFQIZjbxFqSSNzNujUs4riGAMA7DE5F7
+         /+3RhBc2jUud7zZqBFPT12n7Kdz6G0P5ecT1Bv8hmFOiZ1j2ovhBsDG+2Fp4dEZnzIo/
+         lYN6zd+BfTDD1dwhMQgPuzcSOqfb7xTQNlEDv3uYdShsuDGX4Ex7NIG8XUfbopaR31v+
+         JYBYsv2fmkZ1b6OWR9JFOAYybBlbV1/aRC8NiEhvww+4loV1tvud5kRRJlRnkxE8L6w3
+         A8vA==
+X-Gm-Message-State: AOJu0YxYfSrzSL04VsDSF8H/jNdJqXlylPawRz8c+bsGLIrmlLI2nvXi
+        Kf3mTYU+GyTHHXybeXQFSpgUHbg9gYjnPJlH+t5/OM5pVKhHML8fY82PQA==
+X-Google-Smtp-Source: AGHT+IElsjRa0J9HS7/2fBL75dvvl+iEtaAG/dD+slb4YkABigiWTNAI/wFojzqI+f99ltDUHAchU06wTWaLFbBWBQc=
+X-Received: by 2002:a2e:a0cc:0:b0:2b9:b066:66a4 with SMTP id
+ f12-20020a2ea0cc000000b002b9b06666a4mr9299821ljm.4.1691497023708; Tue, 08 Aug
+ 2023 05:17:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230808022229.1560559-1-xiongwei.song@windriver.com> <ZNG9vwg1K6fn1SvN@P9FQF9L96D>
-In-Reply-To: <ZNG9vwg1K6fn1SvN@P9FQF9L96D>
-From:   Xiongwei Song <sxwjean@gmail.com>
-Date:   Tue, 8 Aug 2023 20:08:57 +0800
-Message-ID: <CAEVVKH-hdpVwLZMzW41fvvwUDGAYpsUHwfOf=_VM9OuDrmmkcg@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcontrol: add tips for kmem.slabinfo
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     xiongwei.song@windriver.com, hannes@cmpxchg.org, mhocko@kernel.org,
-        shakeelb@google.com, muchun.song@linux.dev,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20230807193507.6488-1-brgl@bgdev.pl> <20230807193507.6488-6-brgl@bgdev.pl>
+ <siqiyihftz3musfjulpcqunhgi7npftumrfwfyh2pqnlx6zeb7@rrpwmkvjshfb>
+ <da679b5e-6712-4849-b29c-6aa42022abc4@lunn.ch> <ld2j4llgfba6j43gesqxs6wz2baucka5scbj4nef5ehbex2cmt@d4dxsqp2vuoj>
+In-Reply-To: <ld2j4llgfba6j43gesqxs6wz2baucka5scbj4nef5ehbex2cmt@d4dxsqp2vuoj>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 8 Aug 2023 14:16:50 +0200
+Message-ID: <CAMRc=MdLky5sUbdFGFc+as906kr-J_XDmKmYtBBCHvETvqtAQA@mail.gmail.com>
+Subject: Re: [PATCH 5/9] arm64: dts: qcom: sa8775p-ride: move the reset-gpios
+ property of the PHY
+To:     Andrew Halaney <ahalaney@redhat.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 12:00=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
-x.dev> wrote:
+On Tue, Aug 8, 2023 at 12:27=E2=80=AFAM Andrew Halaney <ahalaney@redhat.com=
+> wrote:
 >
-> On Tue, Aug 08, 2023 at 10:22:29AM +0800, xiongwei.song@windriver.com wro=
-te:
-> > From: Xiongwei Song <xiongwei.song@windriver.com>
+> On Mon, Aug 07, 2023 at 11:51:40PM +0200, Andrew Lunn wrote:
+> > > > I have proposed a solution for this problem in 2020 but it never go=
+t
+> > > > upstream. Now we have a workaround in place which allows us to hard=
+-code
+> > > > the PHY id in the compatible property, thus skipping the ID scannin=
+g).
+> > >
+> > > nitpicky, but I think that already existed at that time :D
 > >
-> > No any output from kmem.slabinfo, which is not friendly. Adding
-> > tips for it.
+> > Yes, it has been there are long long time. It is however only in the
+> > last 5 years of so has it been seen as a solution to the chicken egg
+> > problem.
 > >
-> > Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
-> > ---
-> >  mm/memcontrol.c | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
+> > > >           sgmii_phy: phy@8 {
+> > > > +                 compatible =3D "ethernet-phy-id0141.0dd4";
+> > > >                   reg =3D <0x8>;
+> > > >                   device_type =3D "ethernet-phy";
+> > > > +                 reset-gpios =3D <&pmm8654au_2_gpios 8 GPIO_ACTIVE=
+_LOW>;
+> > > > +                 reset-deassert-us =3D <70000>;
+> > >
+> > > Doesn't this need reset-assert-us?
 > >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index e8ca4bdcb03c..58d3bd93890b 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -5002,10 +5002,8 @@ static ssize_t memcg_write_event_control(struct =
-kernfs_open_file *of,
-> >  #if defined(CONFIG_MEMCG_KMEM) && (defined(CONFIG_SLAB) || defined(CON=
-FIG_SLUB_DEBUG))
-> >  static int mem_cgroup_slab_show(struct seq_file *m, void *p)
-> >  {
-> > -     /*
-> > -      * Deprecated.
-> > -      * Please, take a look at tools/cgroup/memcg_slabinfo.py .
-> > -      */
-> > +     seq_puts(m, "This file is deprecated.\n"
-> > +             "Please use tools/cgroup/memcg_slabinfo.py, which is in k=
-ernel source.\n");
+> > If i remember correctly, there is a default value if DT does not
+> > provide one.
+> >
 >
-> It'll break the ABI.
-> The only possible option here is to use WARN_ON_ONCE(), which will print =
-once to dmesg.
-> But honestly I'm not sure we need it.
+> I've been trying to make sure I view devicetree properties as an OS
+> agnostic ABI lately, with that in mind...
+>
+> The dt-binding says this for ethernet-phy:
+>
+>   reset-assert-us:
+>     description:
+>       Delay after the reset was asserted in microseconds. If this
+>       property is missing the delay will be skipped.
+>
+> If the hardware needs a delay I think we should encode it based on that
+> description, else we risk it starting to look like a unit impulse!
+>
 
-Ok, thanks for the comments.
+Please note that the mdio-level delay properties are not the same as
+the ones on the PHY levels.
 
->
-> Thanks!
->
+reset-delay-us - this is the delay BEFORE *DEASSERTING* the reset line
+reset-post-delay-us - this is the delay AFTER *DEASSERTING* the reset line
+
+On PHY level we have:
+
+reset-assert-us - AFTER *ASSERTING*
+reset-deassert-us - AFTER *DEASSERTING*
+
+There never has been any reset-assert delay on that line before. It
+doesn't look like we need a delay BEFORE deasserting the line, do we?
+
+Bart
