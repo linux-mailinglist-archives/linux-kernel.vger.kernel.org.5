@@ -2,66 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A9A774537
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676A17747AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbjHHSid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:38:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
+        id S235831AbjHHTRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232653AbjHHSiP (ORCPT
+        with ESMTP id S230463AbjHHTQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:38:15 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BD3122609
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:51:27 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-cfcebc33d04so5851875276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:51:27 -0700 (PDT)
+        Tue, 8 Aug 2023 15:16:55 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708A53A682
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:39:21 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-44781abd5a8so2436570137.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:39:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1691513478; x=1692118278;
+        d=chromium.org; s=google; t=1691512759; x=1692117559;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=babUiTuTO3XII8RrX4Z4hMs56Oti8JO2J40Ktf1kYkA=;
-        b=Wo81nnqHn1n2mtZlqJocCex/W0I68S4Mt/SbC7c9bDH+T2DAT2TRQThtjq1lehtZAj
-         RJQuMgLcrCq5lPe5zhM0V2RVLnpSGqbnkUrC8lJifFuLcHtUn1cW49dWKoSSBLqL8TTv
-         H2bpZ0c/w+ldCGlUo5Or2uZdEU5Ac61sH/2kvhbKczGVOdl1e6uxyJ0O1HKZCYamVXki
-         FoYrgg89EAGBErR9M2Ey42fk98KqDexZ9VVNGuM68ebf8eg0vkq/iNIjBzDenH09IBqu
-         D3YKM6BD1ib3jV31u9OAZ6SMSle/W4rOwVuHdEodglT4d/kWe2L3rSv2KGUDZ69AqHS7
-         BGGA==
+        bh=7fE5Alv+EJyDTeeiRz1KQXY25Fs9lEK25v4C7UY4dNc=;
+        b=HsUT7hfPGZ2ruM0UEWI1kfUl5gPNIrXUy+235IBog+Y/bjjpcs9xUhx3/BczgwtCSk
+         dTW/x8DMglxWvv9hvZq/UM505nkEmJQYC7Al0DRcxnWbDn2NZDkDVEtnupFDCExxnCrO
+         YJKGklvKSqowqdHz/TxNSaZq/sDEQ3xa+vb+I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691513478; x=1692118278;
+        d=1e100.net; s=20221208; t=1691512759; x=1692117559;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=babUiTuTO3XII8RrX4Z4hMs56Oti8JO2J40Ktf1kYkA=;
-        b=il6JdXOtjFu8BxRhqGxeUEaCyqrh928JCOLCz8aCHlpaH/QInpNp+eWmc8T7IQ4n8i
-         Cvw1a6x/uNZFcOod4aFyygRN3IJGcjAWkrKUKMzd3lj7u9BodEpE8NBK457+EJr4pRNb
-         1ULK9MrrigEp7eixCC/lcro9Coz3XzhvI7aiBGXNMI37WwzFf4/ILfKoFeNqmp50qbmZ
-         X/wyTz3Pls7q7Bch3muEMa9WMaxwkM3O9nZEQ2eibmSNJrLhMpH24fTlDcd3U9MvT3/X
-         cmx9fgJp/a14TG6CYWls0ch5QdFFRaw1rt242jxgl0jNOIkqs4W19hH7tEVn7tT3MyYe
-         4UYw==
-X-Gm-Message-State: AOJu0YwSjFPdUS/TnRXeWQo0pHdQ4VdCgWNWCzDbMZGndYVNY7ytv+pR
-        I6RtpvonjFXIUgj5F27g4Qnph4hnN5RGGM9RWjI=
-X-Google-Smtp-Source: AGHT+IFaXi9wHjqFoxKys/6UFY5qNlD7CLWDafnLI9w3DlsPiqN5DMlgGYl4JYbjmS0etpmgbEqP0A==
-X-Received: by 2002:a17:903:22cd:b0:1b9:f7dc:b4f6 with SMTP id y13-20020a17090322cd00b001b9f7dcb4f6mr11455373plg.44.1691470322938;
-        Mon, 07 Aug 2023 21:52:02 -0700 (PDT)
-Received: from Vincent-X1Extreme-TW.. (111-251-205-117.dynamic-ip.hinet.net. [111.251.205.117])
-        by smtp.gmail.com with ESMTPSA id u5-20020a17090282c500b001b7f40a8959sm7837131plz.76.2023.08.07.21.52.01
+        bh=7fE5Alv+EJyDTeeiRz1KQXY25Fs9lEK25v4C7UY4dNc=;
+        b=JDpVZ0zywFD/+I6HDLtxiVr8MIOuogHLH+ARdNWEGylSGPS+4SgwE9s1A4RaYMiCxT
+         0GXuvOSEtRaFnX2drfwULUDvXaqTMkcdWlKIc/MVBKM+FfIaH8nwYIHyQw7QvjL+iOJ3
+         8WTclhw+ZKoQ3eUT1iVS/fZubwhejQUy7wRQmgdB3OViiTKOylhlH5gYjynR2kEFfANw
+         ft/N3pLUetKA9dYdfPoVti0h1pELYnvmIaT7fQaVpZR9QK9ani+M5AYfq7V5+wDbwSK9
+         FnpF93Xs0ZeVubFPmQeGrmtKQu3Tba59Xs4ttil7San/Q6/PpVPkhetwemJ2i/k50xAf
+         sbZw==
+X-Gm-Message-State: AOJu0YzfCeBhreKu8EIxmPL4z/H2OE4IiWcbcSu0h0PYTHYqSfEeZx35
+        DGEsekCvxBzE8mQQ1C4Be1F/FlvR3h0J0+J2k39q4Jg=
+X-Google-Smtp-Source: AGHT+IGrqJsxFZVA4udLq2W7wg4gJ19AlRklPG2DQU9S7Cmr2b/b/uTs4CtBMjEimz9dHYUJpLJFHg==
+X-Received: by 2002:a05:6a21:3391:b0:13f:b028:789c with SMTP id yy17-20020a056a21339100b0013fb028789cmr12352855pzb.5.1691471492751;
+        Mon, 07 Aug 2023 22:11:32 -0700 (PDT)
+Received: from yuanyao.c.googlers.com.com (0.223.81.34.bc.googleusercontent.com. [34.81.223.0])
+        by smtp.gmail.com with ESMTPSA id jd7-20020a170903260700b001bba27d1b65sm7881189plb.85.2023.08.07.22.11.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 21:52:02 -0700 (PDT)
-From:   Vincent Chen <vincent.chen@sifive.com>
-To:     daniel.lezcano@linaro.org, tglx@linutronix.de, palmer@dabbelt.com,
-        paul.walmsley@sifive.com
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        vincent.chen@sifive.com
-Subject: [PATCH] [RFC PATCH v1] clocksource: entend the max_delta_ns of timer-riscv andtimer-clint to ULONG_MAX
-Date:   Tue,  8 Aug 2023 12:51:45 +0800
-Message-Id: <20230808045145.3552312-1-vincent.chen@sifive.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 07 Aug 2023 22:11:32 -0700 (PDT)
+From:   Yuan Yao <yuanyaogoog@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Keiichi Watanabe <keiichiw@chromium.org>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        Takaya Saeki <takayas@chromium.org>,
+        Junichi Uekawa <uekawa@chromium.org>,
+        Yuan Yao <yuanyaogoog@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Tiwei Bie <tiwei.bie@intel.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH] virtio_ring: fix avail_wrap_counter in virtqueue_add_packed
+Date:   Tue,  8 Aug 2023 05:10:59 +0000
+Message-ID: <20230808051110.3492693-1-yuanyaogoog@chromium.org>
+X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,52 +76,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincentc Chen <vincent.chen@sifive.com>
+In current packed virtqueue implementation, the avail_wrap_counter won't
+flip, in the case when the driver supplies a descriptor chain with a
+length equals to the queue size; total_sg == vq->packed.vring.num.
 
-When registering the riscv-timer or clint-timer as a clock_event device,
-the driver needs to specify the value of max_delta_ticks. This value
-directly influences the max_delta_ns, which signifies the maximum time
-interval for configuring subsequent clock events. Currently, both
-riscv-timer and clint-timer are set with a max_delta_ticks value of
-0x7fff_ffff. When the timer operates at a high frequency, such as 1GHz,
-this causes the system only can sleep for a short time. For the 1GHz
-case, the sleep cannot exceed two seconds. To address this limitation,
-refer to other timer implementations to extend it to 2^(bit-width of the
-timer) - 1. Because the bit-width of $mtimecmp is 64bit, so this value
-becomes ULONG_MAX (0xffff_ffff_ffff_ffff).
+Let’s assume the following situation:
+vq->packed.vring.num=4
+vq->packed.next_avail_idx: 1
+vq->packed.avail_wrap_counter: 0
 
-Signed-off-by: Vincentc Chen <vincent.chen@sifive.com>
+Then the driver adds a descriptor chain containing 4 descriptors.
+
+We expect the following result with avail_wrap_counter flipped:
+vq->packed.next_avail_idx: 1
+vq->packed.avail_wrap_counter: 1
+
+But, the current implementation gives the following result:
+vq->packed.next_avail_idx: 1
+vq->packed.avail_wrap_counter: 0
+
+To reproduce the bug, you can set a packed queue size as small as
+possible, so that the driver is more likely to provide a descriptor
+chain with a length equal to the packed queue size. For example, in
+qemu run following commands:
+sudo qemu-system-x86_64 \
+-enable-kvm \
+-nographic \
+-kernel "path/to/kernel_image" \
+-m 1G \
+-drive file="path/to/rootfs",if=none,id=disk \
+-device virtio-blk,drive=disk \
+-drive file="path/to/disk_image",if=none,id=rwdisk \
+-device virtio-blk,drive=rwdisk,packed=on,queue-size=4,\
+indirect_desc=off \
+-append "console=ttyS0 root=/dev/vda rw init=/bin/bash"
+
+Inside the VM, create a directory and mount the rwdisk device on it. The
+rwdisk will hang and mount operation will not complete.
+
+This commit fixes the wrap counter error by flipping the
+packed.avail_wrap_counter, when start of descriptor chain equals to the
+end of descriptor chain (head == i).
+
+Fixes: 1ce9e6055fa0 ("virtio_ring: introduce packed ring support")
+Signed-off-by: Yuan Yao <yuanyaogoog@chromium.org>
 ---
- drivers/clocksource/timer-clint.c | 2 +-
- drivers/clocksource/timer-riscv.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
-index 9a55e733ae99..09fd292eb83d 100644
---- a/drivers/clocksource/timer-clint.c
-+++ b/drivers/clocksource/timer-clint.c
-@@ -131,7 +131,7 @@ static int clint_timer_starting_cpu(unsigned int cpu)
- 	struct clock_event_device *ce = per_cpu_ptr(&clint_clock_event, cpu);
+ drivers/virtio/virtio_ring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index c5310eaf8b46..da1150d127c2 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -1461,7 +1461,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+ 		}
+ 	}
  
- 	ce->cpumask = cpumask_of(cpu);
--	clockevents_config_and_register(ce, clint_timer_freq, 100, 0x7fffffff);
-+	clockevents_config_and_register(ce, clint_timer_freq, 100, ULONG_MAX);
+-	if (i < head)
++	if (i <= head)
+ 		vq->packed.avail_wrap_counter ^= 1;
  
- 	enable_percpu_irq(clint_timer_irq,
- 			  irq_get_trigger_type(clint_timer_irq));
-diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/timer-riscv.c
-index da3071b387eb..b25c91d41968 100644
---- a/drivers/clocksource/timer-riscv.c
-+++ b/drivers/clocksource/timer-riscv.c
-@@ -94,7 +94,7 @@ static int riscv_timer_starting_cpu(unsigned int cpu)
- 	ce->irq = riscv_clock_event_irq;
- 	if (riscv_timer_cannot_wake_cpu)
- 		ce->features |= CLOCK_EVT_FEAT_C3STOP;
--	clockevents_config_and_register(ce, riscv_timebase, 100, 0x7fffffff);
-+	clockevents_config_and_register(ce, riscv_timebase, 100, ULONG_MAX);
- 
- 	enable_percpu_irq(riscv_clock_event_irq,
- 			  irq_get_trigger_type(riscv_clock_event_irq));
+ 	/* We're using some buffers from the free list. */
 -- 
-2.34.1
+2.41.0.640.ga95def55d0-goog
 
