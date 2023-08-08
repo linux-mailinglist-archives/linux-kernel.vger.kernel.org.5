@@ -2,130 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AB8774253
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54982774276
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234886AbjHHRlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42872 "EHLO
+        id S232066AbjHHRpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjHHRlZ (ORCPT
+        with ESMTP id S229810AbjHHRpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:41:25 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F91E238C7
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:18:15 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so807237066b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:18:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691511458; x=1692116258;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ybSaKnH3U1PUxa94j8TvSQvCpscNikWjtLAxZuswTqA=;
-        b=G9DMJ7PQfZIHZEL6tKAAlox8l+YcuBVl2LvLOeerxJoH9qIS3tnpmU8v64pNs15ZYR
-         68/S74gQLe7LXsCErNhcGmxy/m4BS1dYCgqEG4GLHw/HErsR5VX676Bo/ulPdrDc0lot
-         Q1CNXo7c+dyXeZ5sXgW2MK/YaRGCpr2+vbGDD13znMlYvT2zsl1vb0ANUOLHQSrLABnT
-         BDfqflYj7UFKiHB9RIJnH7C8qoNGT6LedyV2vHvxsrS8YuGoNQUw2c05XYiR9VNKkuvX
-         APkilcTwWvGszLQ0+HV7TkhyVd264ReNah1J6tFGCg2ssXS3wx7PlxKmLb5f/7EP3ril
-         KCbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511458; x=1692116258;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ybSaKnH3U1PUxa94j8TvSQvCpscNikWjtLAxZuswTqA=;
-        b=XthpeEKKKt4Bm2N+WP2RcWqBQndDyIuYvQPB6FIcLxRR7CTe354rPtS4o5Py6Kw8D4
-         g60jRsPmEdfk8udyyDlFWORlKWFAzEREsyJcUequ6G7uEmL9eqGxv0swwp8L69Ys8Ddn
-         sAu8r8s+RK00a1dNuySSRUHdLMl7UVW1nOiiUOWc4jQ8hVOAebA5O8PtYKvHCtFbvkoa
-         Tx1yM8ZR/noultaTr6A1JEseMGajmTPwRb7aoYP+q5zAZVjPC2kkqpHcDXiMXDFFuqmI
-         UuDo95/8UDkVc0UvUBkcdrZza63coIl9kY6biy6RkyTxs8z8xIhh8KREN9NSEwkI+vEq
-         OgxA==
-X-Gm-Message-State: AOJu0YyR+aBVqZeD+QDn0aNTbsViIUbCTUTLDoX5kjJuf+CGC0LhMQC9
-        3q62uANA5YAhnZkjSDBSr8sAsw==
-X-Google-Smtp-Source: AGHT+IHy3b88rrWSRN1JLxN3DzDvkBHUqN01Uo4RsZimAWEYCJuL9axBSLSlB1r3TamXnnz8rJDfuA==
-X-Received: by 2002:a17:906:1091:b0:99b:ca24:ce33 with SMTP id u17-20020a170906109100b0099bca24ce33mr61823eju.31.1691511457715;
-        Tue, 08 Aug 2023 09:17:37 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id p4-20020a170906614400b00984822540c9sm6920839ejl.96.2023.08.08.09.17.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 09:17:37 -0700 (PDT)
-Message-ID: <921291bc-f1ac-bcec-718b-f3674668a715@linaro.org>
-Date:   Tue, 8 Aug 2023 18:17:34 +0200
+        Tue, 8 Aug 2023 13:45:18 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398EC25B3E;
+        Tue,  8 Aug 2023 09:20:32 -0700 (PDT)
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 378DH73K008247;
+        Tue, 8 Aug 2023 18:19:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=NnwPmcg
+        lrq4+tukAQnH18ZnoSzsFYIrbdbKThdZsRx0=; b=sYd0E9sZMiBeOUEHZQZfNz2
+        32FWwUMNCEGOqKnuonvkwYRPNxZqi41OYZVESk7FIAnpIIdY1Q112aPrMtUeldCb
+        n9lbhEOKA8u2x0ZSP+hpglfpPdtLgQbsSczicLSv7Imc37RXYXPwC+/XI25dcPfV
+        YvQWz7BCHMKYXJxFHF8E77lmAm+OZF0zHJLxTSbusgmRHCfH+K0Wg0a5dZpW3q8n
+        ivrteF26v3exqjxYmbIcfu+RsYisUp+YtxLIrYRDmbVG1c98b6RVSaCSxZru5nQb
+        SVgA+H9cnsMvzZguxTZ16LFzfTAcfhl0JuP7y/MtK8aCGaoGdmx0S5nFpqxOogA=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sbjfn2n45-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Aug 2023 18:19:39 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 67F0F100061;
+        Tue,  8 Aug 2023 18:19:37 +0200 (CEST)
+Received: from Webmail-eu.st.com (eqndag1node4.st.com [10.75.129.133])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8FA61235F2C;
+        Tue,  8 Aug 2023 18:19:37 +0200 (CEST)
+Received: from localhost (10.201.20.168) by EQNDAG1NODE4.st.com
+ (10.75.129.133) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 8 Aug
+ 2023 18:19:37 +0200
+From:   Valentin Caron <valentin.caron@foss.st.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Jiri Slaby <jirislaby@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Valentin Caron <valentin.caron@foss.st.com>
+Subject: [PATCH v2 0/6] serial: stm32: improve DMA pause and resume
+Date:   Tue, 8 Aug 2023 18:19:00 +0200
+Message-ID: <20230808161906.178996-1-valentin.caron@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v13 03/10] dt-bindings: opp: v2-qcom-level: Document CPR3
- open/closed loop volt adjustment
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Niklas Cassel <nks@flawful.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Robert Marko <robimarko@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>
-References: <20230217-topic-cpr3h-v13-0-d01cff1c54cf@linaro.org>
- <20230217-topic-cpr3h-v13-3-d01cff1c54cf@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230217-topic-cpr3h-v13-3-d01cff1c54cf@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.168]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To EQNDAG1NODE4.st.com
+ (10.75.129.133)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-08_15,2023-08-08_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/2023 14:37, Konrad Dybcio wrote:
-> CPR3 and newer can be fed per-OPP voltage adjustment values for both
-> open- and closed-loop paths to make better decisions about settling
-> on the final voltage offset target. Document these properties.
-> 
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> Tested-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  .../devicetree/bindings/opp/opp-v2-qcom-level.yaml         | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/opp/opp-v2-qcom-level.yaml b/Documentation/devicetree/bindings/opp/opp-v2-qcom-level.yaml
-> index a30ef93213c0..b203ea01b17a 100644
-> --- a/Documentation/devicetree/bindings/opp/opp-v2-qcom-level.yaml
-> +++ b/Documentation/devicetree/bindings/opp/opp-v2-qcom-level.yaml
-> @@ -34,6 +34,20 @@ patternProperties:
->          minItems: 1
->          maxItems: 2
->  
-> +      qcom,opp-cloop-vadj:
-> +        description: |
-> +          An array of per-thread values representing the closed-loop
-> +          voltage adjustment value associated with this OPP node.
-> +        $ref: /schemas/types.yaml#/definitions/int32-array
+This series improves DMA management in stm32-usart driver.
 
-I assume negative values are accepted on purpose.
+It is not recommended to switch DMAT and DMAR bits when a DMA transfer
+is in progress. This is going to be replaced by dmaengine_pause or
+dmaengine_resume.
 
-Adding these to example would be useful. Anyway:
+stm32_usart_rx_dma_pause, stm32_usart_rx_dma_resume, stm32_usart_tx_dma_pause
+and stm32_usart_tx_dma_resume functions, are all redirected to a single function,
+called "stm32_usart_dma_pause_resume", that has been created to simplify dma
+pause/resume.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Since v1:
+- Add my Signed-off in Amelie's patch.
 
-Best regards,
-Krzysztof
+Amelie Delaunay (1):
+  serial: stm32: synchronize RX DMA channel in shutdown
+
+Valentin Caron (5):
+  serial: stm32: avoid clearing DMAT bit during transfer
+  serial: stm32: use DMAT as a configuration bit
+  serial: stm32: modify parameter and rename stm32_usart_rx_dma_enabled
+  serial: stm32: group dma pause/resume error handling into single
+    function
+  serial: stm32: replace access to DMAR bit by dmaengine_pause/resume
+
+ drivers/tty/serial/stm32-usart.c | 307 ++++++++++++++++++-------------
+ drivers/tty/serial/stm32-usart.h |   1 +
+ 2 files changed, 185 insertions(+), 123 deletions(-)
+
+-- 
+2.25.1
 
