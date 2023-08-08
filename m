@@ -2,245 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 425EA773C8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0825E774354
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbjHHQHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
+        id S232077AbjHHSBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:01:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbjHHQFw (ORCPT
+        with ESMTP id S231202AbjHHSBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:05:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB3B10CA;
-        Tue,  8 Aug 2023 08:45:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BC10624BA;
-        Tue,  8 Aug 2023 10:59:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD1D6C433C7;
-        Tue,  8 Aug 2023 10:59:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691492381;
-        bh=VotGcBSEYZDEARbAEuumU9Pwvb8zJMGSKr4IEav+kbc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vI5llFbvkjg587mNFW4eWev9eaAoawqlJIG+0KeGyknUR52Pd3WRfHl3qep8ewm5W
-         3zX8CuIHMFwiG+nuof9hVPTD7dx4m1lYRjFN1ze56kO2+ZeWe4a6tQkta/gRNtZLup
-         Tqk3OgBvICnhGJJVLyYWoGOufdapycC6Jn3bSwxAftEllsicTuMlAd3aLEr47kEJpk
-         1s2vzLKRzK8vi7bcuDjQaUlEe4SNp0Lsmj/WQceyDwaFlvQeCI5XYUa+pQtZ1E4ceP
-         UQzhVOOnlY0v53suZiNbBU7eLg8xGNan6f0V2cX6UhzVglz2PaIv6Xp+JdbvkR1GmX
-         eoK/ytAIKn8LA==
-Date:   Tue, 8 Aug 2023 16:29:28 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Qiang Yu <quic_qianyu@quicinc.com>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>, quic_jhugo@quicinc.com,
-        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-        quic_mrana@quicinc.com
-Subject: Re: [PATCH] bus: mhi: host: pci_generic: Add SDX75 based modem
- support
-Message-ID: <20230808105928.GF4990@thinkpad>
-References: <1691460215-45383-1-git-send-email-quic_qianyu@quicinc.com>
- <20230808075103.GD4990@thinkpad>
- <be205d43-b558-47eb-0250-b7415474b6e9@quicinc.com>
+        Tue, 8 Aug 2023 14:01:13 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02B8125A7
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:28:05 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6bcf2fd5d69so2287950a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:28:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691512047; x=1692116847;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Klg6b7rTmA3/2CEHhPBL9kFFomypTM/SqIrAORONAmA=;
+        b=aSCd+qmDR+iqLjSsbcpR0i+1cat5I/c/QurT8nyWGf6ZUPQKbrpPPAOe/TjQ/dpuJd
+         nty+7k87HH79TwC3ikZDqIm9FSvMuIiAPXwdtJoAZKh8GVOWJG+60jkCreR2uUT4x8Yw
+         zEJF5XyismnDKmqAGY4Y8doOmLtuIv8EbZHGbASqPe6VQpZhbLeoskCmaLN2CES8AjeC
+         UF4AsC5CSfMIvJzoUa7NudbnjqszA/1pEFEjr7rWV7AUXe9hoVFuh/MKIMu0cdlJvBtd
+         HxvKCKdnKIXSWkYeHO6zzbJLNOUeF7YEhG9LqDna382HTQ4E3MKuKu+GXK0GdJyMBOCL
+         E5qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691512047; x=1692116847;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Klg6b7rTmA3/2CEHhPBL9kFFomypTM/SqIrAORONAmA=;
+        b=ADLVFtFt8M64lsdmDPhSelI5Ii0msD7Amb0Sn5cRSl9V5Pc720FgfgQZuy7iKfGM8w
+         aKWX5ZXUNA91QcabgTbg7NsCES/Bz528/pGr0UCeRMi0tip7OBfwxdmbWLxj4g2tTHw5
+         hmbQsiSUi1CKQGqBm38miHS7ih2NpmP7kmwReQVtSDjSw1E7uD/gev0PnUkENVM3MjNX
+         ZYKpSSpFk9scN3mjOiknHdeRQJ/wXyO7ehVHXbwUqsSSZSIxv0wdkJ6wSyX0lN6zLDmZ
+         XPtG9UXrt/oWDYGbWZFEZoS6AwPRwg31pbk3YgKh34CdOceP8b7zX2ofcU6/5b7g6ngg
+         PSVQ==
+X-Gm-Message-State: AOJu0YyAiD1nQcZ7/+CJDUBYrLPMClpEyCuga/Tx48yaI4rqtpCSlu2X
+        cmdxQNtb+Mel5qA9XUMVUtxO6p6QHkfhoWe9rjEU/W4o66xBWt5E3g4=
+X-Google-Smtp-Source: AGHT+IFyFm7A28IM+G0on9OcPQxQMVC4tFTmtVJz+gYpID8XubCbPflmb8sfgiBS79hEh9WW2BWOpIws/LS1JffnNds=
+X-Received: by 2002:a05:6358:419b:b0:134:ca8a:7486 with SMTP id
+ w27-20020a056358419b00b00134ca8a7486mr11887238rwc.28.1691492428398; Tue, 08
+ Aug 2023 04:00:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <be205d43-b558-47eb-0250-b7415474b6e9@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <cover.1689802933.git.daniel@makrotopia.org> <1ce5f56df546cec25ef741f381286f1d7c33d000.1689802933.git.daniel@makrotopia.org>
+ <CAPDyKFqhZtCHVmCNnm_Qm7X+=GtJY8uNJOWOgZXuTTVEw0msNA@mail.gmail.com> <ZNGULFxXpLT7zn35@makrotopia.org>
+In-Reply-To: <ZNGULFxXpLT7zn35@makrotopia.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 8 Aug 2023 12:59:52 +0200
+Message-ID: <CAPDyKFrpWgA=e-FSoKfYhWSOq5m5_pHjxgzaGeOFHFhU_mcmNw@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/6] mmc: block: set fwnode of disk devices
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Jan Kara <jack@suse.cz>, Damien Le Moal <dlemoal@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>, Min Li <min15.li@samsung.com>,
+        Christian Loehle <CLoehle@hyperstone.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Yeqi Fu <asuk4.q@gmail.com>, Avri Altman <avri.altman@wdc.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ye Bin <yebin10@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 04:53:32PM +0800, Qiang Yu wrote:
-> 
-> On 8/8/2023 3:51 PM, Manivannan Sadhasivam wrote:
-> > On Tue, Aug 08, 2023 at 10:03:35AM +0800, Qiang Yu wrote:
-> > > Add generic info for SDX75 based modems. SDX75 takes longer than expected
-> > > (default, 8 seconds) to set ready after reboot. Hence add optional ready
-> > > timeout parameter to wait enough for device ready as part of power up
-> > > sequence.
-> > > 
-> > > Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
-> > > ---
-> > >   drivers/bus/mhi/host/init.c        |  1 +
-> > >   drivers/bus/mhi/host/main.c        |  7 ++++++-
-> > >   drivers/bus/mhi/host/pci_generic.c | 22 ++++++++++++++++++++++
-> > >   drivers/bus/mhi/host/pm.c          |  6 +++++-
-> > >   include/linux/mhi.h                |  4 ++++
-> > >   5 files changed, 38 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
-> > > index f78aefd..65ceac1 100644
-> > > --- a/drivers/bus/mhi/host/init.c
-> > > +++ b/drivers/bus/mhi/host/init.c
-> > > @@ -881,6 +881,7 @@ static int parse_config(struct mhi_controller *mhi_cntrl,
-> > >   	if (!mhi_cntrl->timeout_ms)
-> > >   		mhi_cntrl->timeout_ms = MHI_TIMEOUT_MS;
-> > > +	mhi_cntrl->ready_timeout_ms = config->ready_timeout_ms;
-> > >   	mhi_cntrl->bounce_buf = config->use_bounce_buf;
-> > >   	mhi_cntrl->buffer_len = config->buf_len;
-> > >   	if (!mhi_cntrl->buffer_len)
-> > > diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-> > > index 74a7543..8590926 100644
-> > > --- a/drivers/bus/mhi/host/main.c
-> > > +++ b/drivers/bus/mhi/host/main.c
-> > > @@ -43,8 +43,13 @@ int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
-> > >   				    u32 mask, u32 val, u32 delayus)
-> > >   {
-> > >   	int ret;
-> > > -	u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
-> > > +	u32 out, retry;
-> > > +	u32 timeout_ms = mhi_cntrl->timeout_ms;
-> > > +	if (mhi_cntrl->ready_timeout_ms && mask == MHISTATUS_READY_MASK)
-> > > +		timeout_ms = mhi_cntrl->ready_timeout_ms;
-> > Instead of handling the timeout inside mhi_poll_reg_field(), you should pass the
-> > appropriate timeout value to this function.
-> OK, will do.
-> > 
-> > > +
-> > > +	retry = (timeout_ms * 1000) / delayus;
-> > >   	while (retry--) {
-> > >   		ret = mhi_read_reg_field(mhi_cntrl, base, offset, mask, &out);
-> > >   		if (ret)
-> > > diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
-> > > index fcd80bc..9c601f0 100644
-> > > --- a/drivers/bus/mhi/host/pci_generic.c
-> > > +++ b/drivers/bus/mhi/host/pci_generic.c
-> > > @@ -269,6 +269,16 @@ static struct mhi_event_config modem_qcom_v1_mhi_events[] = {
-> > >   	MHI_EVENT_CONFIG_HW_DATA(5, 2048, 101)
-> > >   };
-> > > +static const struct mhi_controller_config modem_qcom_v2_mhiv_config = {
-> > > +	.max_channels = 128,
-> > > +	.timeout_ms = 8000,
-> > > +	.ready_timeout_ms = 50000,
-> > > +	.num_channels = ARRAY_SIZE(modem_qcom_v1_mhi_channels),
-> > > +	.ch_cfg = modem_qcom_v1_mhi_channels,
-> > > +	.num_events = ARRAY_SIZE(modem_qcom_v1_mhi_events),
-> > > +	.event_cfg = modem_qcom_v1_mhi_events,
-> > > +};
-> > > +
-> > >   static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
-> > >   	.max_channels = 128,
-> > >   	.timeout_ms = 8000,
-> > > @@ -278,6 +288,16 @@ static const struct mhi_controller_config modem_qcom_v1_mhiv_config = {
-> > >   	.event_cfg = modem_qcom_v1_mhi_events,
-> > >   };
-> > > +static const struct mhi_pci_dev_info mhi_qcom_sdx75_info = {
-> > > +	.name = "qcom-sdx75m",
-> > > +	.fw = "qcom/sdx75m/xbl.elf",
-> > > +	.edl = "qcom/sdx75m/edl.mbn",
-> > > +	.config = &modem_qcom_v2_mhiv_config,
-> > > +	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-> > > +	.dma_data_width = 32,
-> > > +	.sideband_wake = false,
-> > > +};
-> > > +
-> > >   static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
-> > >   	.name = "qcom-sdx65m",
-> > >   	.fw = "qcom/sdx65m/xbl.elf",
-> > > @@ -597,6 +617,8 @@ static const struct pci_device_id mhi_pci_id_table[] = {
-> > >   		.driver_data = (kernel_ulong_t) &mhi_telit_fn990_info },
-> > >   	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
-> > >   		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
-> > > +	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0309),
-> > > +		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx75_info },
-> > >   	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1001), /* EM120R-GL (sdx24) */
-> > >   		.driver_data = (kernel_ulong_t) &mhi_quectel_em1xx_info },
-> > >   	{ PCI_DEVICE(PCI_VENDOR_ID_QUECTEL, 0x1002), /* EM160R-GL (sdx24) */
-> > > diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
-> > > index 8a4362d..6f049e0 100644
-> > > --- a/drivers/bus/mhi/host/pm.c
-> > > +++ b/drivers/bus/mhi/host/pm.c
-> > > @@ -1202,14 +1202,18 @@ EXPORT_SYMBOL_GPL(mhi_power_down);
-> > >   int mhi_sync_power_up(struct mhi_controller *mhi_cntrl)
-> > >   {
-> > >   	int ret = mhi_async_power_up(mhi_cntrl);
-> > > +	u32 timeout_ms;
-> > >   	if (ret)
-> > >   		return ret;
-> > > +	/* Some devices need more time to set ready during power up */
-> > > +	timeout_ms = mhi_cntrl->ready_timeout_ms ?
-> > > +		mhi_cntrl->ready_timeout_ms : mhi_cntrl->timeout_ms;
-> > Since you are using this extended timeout value in a couple of places (not just
-> > for checking READY_STATE), it is better to use the existing "timeout_ms"
-> > parameter.
-> > 
-> > - Mani
-> 
-> We use ready_timeout_ms here is because READY_STATE is polled in a
-> workqueue,  in parallel with waiting valid EE.
-> 
-> That means we start to wait valid EE and poll ready like at same time
-> instead of starting to wait EE after ready state.
-> 
-> Thus the total time it takes to wait valid EE is about the time for polling
-> ready.
-> 
+On Tue, 8 Aug 2023 at 03:02, Daniel Golle <daniel@makrotopia.org> wrote:
+>
+> Hi Ulf,
+>
+> thank you for reviewing and suggesting ways to improve this series!
+>
+> On Mon, Aug 07, 2023 at 03:48:31PM +0200, Ulf Hansson wrote:
+> > On Thu, 20 Jul 2023 at 00:02, Daniel Golle <daniel@makrotopia.org> wrote:
+> > >
+> > > Set fwnode of disk devices to 'block', 'boot0' and 'boot1' subnodes of
+> > > the mmc-card. This is done in preparation for having the eMMC act as
+> > > NVMEM provider.
+> >
+> > Sorry, but I don't quite understand what you are trying to do here.
+> > Maybe you should re-order the patches in the series so it becomes
+> > clear why this is needed?
+> >
+> > Moreover, I don't see any DT docs being updated as a part of the
+> > series, which looks like it is needed too. That would also help to
+> > understand what you are proposing, I think.
+>
+> I've prepared a tree on Github which now also includes commits adding
+> dt-bindings for block devices and partitions, so they can be referenced
+> as nvmem-cells provider.
+>
+> The dt-schema addition supposedly explaining this specific patch:
+>
+> https://github.com/dangowrt/linux/commit/b399a758f0e1c444ae9443dc80902a30de54af09
+>
+> The whole tree:
+>
+> https://github.com/dangowrt/linux/commits/for-nvmem-next
 
-Yes, but why can't you still increase "timeout_ms" for SDX75 and use the same?
+Thanks for sharing. However, allow people to review, I suggest you
+post a new version with the updated DT bindings included.
 
-Btw, please do not send another version while the discussion is going on for the
-current one.
+The point is, we really need confirmation from the DT maintainers -
+otherwise this is simply a no go.
 
-- Mani
+>
+> Most comments have been addressed, however, I still depend on using
+> either a class_interface *or* adding calls to add/remove the NVMEM
+> representation of a block device to block/genhd.c as well as
+> block/partitions/core.c, simply because afaik there isn't any better
+> way for in-kernel users of block devices to be notified about the
+> creation or removal of a block device.
 
-> > >   	wait_event_timeout(mhi_cntrl->state_event,
-> > >   			   MHI_IN_MISSION_MODE(mhi_cntrl->ee) ||
-> > >   			   MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
-> > > -			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
-> > > +			   msecs_to_jiffies(timeout_ms));
-> > >   	ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
-> > >   	if (ret)
-> > > diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> > > index f6de4b6..a43e5f8 100644
-> > > --- a/include/linux/mhi.h
-> > > +++ b/include/linux/mhi.h
-> > > @@ -266,6 +266,7 @@ struct mhi_event_config {
-> > >    * struct mhi_controller_config - Root MHI controller configuration
-> > >    * @max_channels: Maximum number of channels supported
-> > >    * @timeout_ms: Timeout value for operations. 0 means use default
-> > > + * @ready_timeout_ms: Timeout value for waiting device to be ready (optional)
-> > >    * @buf_len: Size of automatically allocated buffers. 0 means use default
-> > >    * @num_channels: Number of channels defined in @ch_cfg
-> > >    * @ch_cfg: Array of defined channels
-> > > @@ -277,6 +278,7 @@ struct mhi_event_config {
-> > >   struct mhi_controller_config {
-> > >   	u32 max_channels;
-> > >   	u32 timeout_ms;
-> > > +	u32 ready_timeout_ms;
-> > >   	u32 buf_len;
-> > >   	u32 num_channels;
-> > >   	const struct mhi_channel_config *ch_cfg;
-> > > @@ -326,6 +328,7 @@ struct mhi_controller_config {
-> > >    * @pm_mutex: Mutex for suspend/resume operation
-> > >    * @pm_lock: Lock for protecting MHI power management state
-> > >    * @timeout_ms: Timeout in ms for state transitions
-> > > + * @ready_timeout_ms: Timeout in ms for waiting device to be ready (optional)
-> > >    * @pm_state: MHI power management state
-> > >    * @db_access: DB access states
-> > >    * @ee: MHI device execution environment
-> > > @@ -413,6 +416,7 @@ struct mhi_controller {
-> > >   	struct mutex pm_mutex;
-> > >   	rwlock_t pm_lock;
-> > >   	u32 timeout_ms;
-> > > +	u32 ready_timeout_ms;
-> > >   	u32 pm_state;
-> > >   	u32 db_access;
-> > >   	enum mhi_ee_type ee;
-> > > -- 
-> > > 2.7.4
-> > > 
-> 
+Okay, so that needs further discussions then. I will try to chim in.
 
--- 
-மணிவண்ணன் சதாசிவம்
+[...]
+
+Kind regards
+Uffe
