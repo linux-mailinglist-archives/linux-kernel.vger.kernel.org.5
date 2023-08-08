@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F28B3774788
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728D87747B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbjHHTP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33306 "EHLO
+        id S235888AbjHHTRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235764AbjHHTPW (ORCPT
+        with ESMTP id S236004AbjHHTRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:15:22 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E574047ED
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:38:11 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Tue, 8 Aug 2023 15:17:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D5AFAEF0;
+        Tue,  8 Aug 2023 09:40:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CD944223FF;
-        Tue,  8 Aug 2023 07:09:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1691478554; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H/YLVCeWbOC5zGBWs9MF5sPBcfnhYRaJ1x4BlOnFxS4=;
-        b=H4NZ7LtnOgJiK5ddlmJrLoNZSVL7aFBE6PT6hVKwRTOyoH6kgjQW5PDRYhRhJKToFK2s+L
-        BnlnH1QTgJWTcu6cG2tA+VO6ErhNTRlpC2u7VuqtjGrEiu6JmXnGoNey7Hhfy06UxpOvcB
-        Zvy9Jd6pTYvaG88JNLGMFxNz625jtQs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1691478554;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H/YLVCeWbOC5zGBWs9MF5sPBcfnhYRaJ1x4BlOnFxS4=;
-        b=GfdwtYY+4z9vNKfS4ZmQ3lWCstnHBH9VZ/RJrOH9ct/6oXyYz+c85qWgEKfkDR2Epl1KD3
-        moV1z0LeV++M7GBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BFDFE13451;
-        Tue,  8 Aug 2023 07:09:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id FUWULhrq0WRvVgAAMHmgww
-        (envelope-from <dwagner@suse.de>); Tue, 08 Aug 2023 07:09:14 +0000
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Caleb Sander <csander@purestorage.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH libnvme v2 2/2] fabrics: Do not pass disable_sqflow if not supported
-Date:   Tue,  8 Aug 2023 09:09:07 +0200
-Message-ID: <20230808070907.18834-3-dwagner@suse.de>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230808070907.18834-1-dwagner@suse.de>
-References: <20230808070907.18834-1-dwagner@suse.de>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D8C92623E8;
+        Tue,  8 Aug 2023 07:14:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C036C433C7;
+        Tue,  8 Aug 2023 07:14:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691478844;
+        bh=JbqXnIWrhvRK/1VedLU0rkf4ac3M8lve+ZdK83upX3s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=moDdluEutiSAWzxfn3EQ4PLVJ3yFae5/MaJPjCRjcvChu+Zzgi6gLb3emqsDZtt5+
+         3rh4iFtv9GwYcBjym5ZiRUF7Kpc0/xEyy7AsdXWKxBhwW36mTXsvZ5RRNCrvl+0Agv
+         t6ZDVlYY8vBpkRq4BqulZ5aoiqUvvCZ4wQhM12XlGyXgs5hFanhwUI5ZJRpNiF5zBB
+         XBzrsOX437OFtMaukrBO98qPcjeA/Oxm9sz1WC/z0bVDgNjGD8nQpQUpOQOGH7C/Nw
+         BMvszDYySSkk2CZJnCuTA75QZMsX7YK2a6RtGIA47/3OhHjirYGw5YWTfS0cLwNqIq
+         jAaweAciLz4IQ==
+Date:   Tue, 8 Aug 2023 08:13:59 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Jia Jie Ho <jiajie.ho@starfivetech.com>
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] riscv: dts: starfive - Add crypto and trng node
+Message-ID: <20230808-despair-calm-40ca60de2afb@spud>
+References: <20230808061150.81491-1-jiajie.ho@starfivetech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="PomhQBfiuNGfjeLQ"
+Content-Disposition: inline
+In-Reply-To: <20230808061150.81491-1-jiajie.ho@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
 
-Only retry a connect attempt with disable_sqflow if the kernel
-actually supports this option.
+--PomhQBfiuNGfjeLQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
- src/nvme/fabrics.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Tue, Aug 08, 2023 at 02:11:48PM +0800, Jia Jie Ho wrote:
+> The following patches add hardware cryptographic and trng module nodes
+> to JH7110 dts. Patches have been tested on VisionFive2 board.
+>=20
+> Best regards,
+> Jia Jie
+>=20
+> Jia Jie Ho (2):
+>   riscv: dts: starfive - Add crypto and DMA node for JH7110
 
-diff --git a/src/nvme/fabrics.c b/src/nvme/fabrics.c
-index 9725eeb3cda8..f0e85d3b766d 100644
---- a/src/nvme/fabrics.c
-+++ b/src/nvme/fabrics.c
-@@ -1043,7 +1043,8 @@ nvme_ctrl_t nvmf_connect_disc_entry(nvme_host_t h,
- 	if (!ret)
- 		return c;
- 
--	if (errno == EINVAL && c->cfg.disable_sqflow) {
-+	if (errno == EINVAL && c->cfg.disable_sqflow &&
-+	    nvmf_check_option(h->r, disable_sqflow)) {
- 		errno = 0;
- 		/* disable_sqflow is unrecognized option on older kernels */
- 		nvme_msg(h->r, LOG_INFO, "failed to connect controller, "
--- 
-2.41.0
+>   riscv: dts: starfive - Add hwrng node for JH7110 SoC
 
+I only got one patch, where is the other?
+
+--PomhQBfiuNGfjeLQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNHrNAAKCRB4tDGHoIJi
+0nfxAQDxMCy1nMLMOOxrNbqguwHV91F4BpZ9+JdAKtsnKC9RlgEAitOeXozvIkSa
+3fvAp6UpdtjkfDJJdq5/41c70FXLmQ8=
+=YX3x
+-----END PGP SIGNATURE-----
+
+--PomhQBfiuNGfjeLQ--
