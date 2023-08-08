@@ -2,132 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1B6774E85
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 00:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49FC774E8C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 00:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbjHHWpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 18:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41618 "EHLO
+        id S231301AbjHHWsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 18:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjHHWpF (ORCPT
+        with ESMTP id S230173AbjHHWsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 18:45:05 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46A97100;
-        Tue,  8 Aug 2023 15:45:04 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1052)
-        id ACC3A20FC0D2; Tue,  8 Aug 2023 15:45:03 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com ACC3A20FC0D2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1691534703;
-        bh=sVCat3a1M7KHdlESd70oA1x2KXrxJ+56GtFSeTDlhcM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IKGEzYVtmP2d5RXQGvuDn1I/QZ4sOzZi4K/A2GFZ2iulDRvmRtjOIZiRVuMKczceS
-         0CiDLnNBQ2LUBMhDJBdn1PQPlunEfC8CXQzTGInv/hBg/Ilpo2DmC4rg8xJgCfKGlU
-         /LGb9xCJTxmrboncvvC5Grxc+B/9dleXOZ5FNzVQ=
-Date:   Tue, 8 Aug 2023 15:45:03 -0700
-From:   Fan Wu <wufan@linux.microsoft.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Mike Snitzer <snitzer@kernel.org>, corbet@lwn.net,
-        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
-        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
-        agk@redhat.com, eparis@redhat.com, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, audit@vger.kernel.org,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [RFC PATCH v10 11/17] dm-verity: consume root hash digest and
- signature data via LSM hook
-Message-ID: <20230808224503.GA20095@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1687986571-16823-1-git-send-email-wufan@linux.microsoft.com>
- <1687986571-16823-12-git-send-email-wufan@linux.microsoft.com>
- <ZKgm+ffQbdDTxrg9@redhat.com>
- <20230712034319.GA17642@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <CAHC9VhQFxqcfgR0acgdiXKP9LT1KLgGjZd-QHs6O1dEex31HEQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhQFxqcfgR0acgdiXKP9LT1KLgGjZd-QHs6O1dEex31HEQ@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 18:48:35 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1333C114
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 15:48:34 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-583312344e7so77595457b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 15:48:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691534913; x=1692139713;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=w6IYf4nshxor0R0BfWz4JihwJzXUnsgpsQ8Bx+FCm50=;
+        b=v/F4rK8C1c6Y8YTaAeOsPAc5rlC8DfTsdhN2NcOQy8xZRaoS9cvitj9HgolcvWE5XN
+         ZCiP+oEC5RA+WP6fZlEU1CnM2RNWG7JAxRMbaAZFn9uJ6EZdyRVTLnMIFZmpJ0leHpqh
+         7spA+UxF93A8SpFyC9uM2L+GVmrc2Oz7NekmEKSBkf/D0u4FLjt9CTUbtd+8gtFhaZz7
+         k18znWmvXCXpii8KvsTYg2aJQtU0osYwWxLYMWbgCMw6nzwrDCkx//Fl2Uaf3ok/PA19
+         fBUF7829XdzW7mM47blfRSu0JxMy05t+IbWe2W6Sq0zG9sswyCnMVFGIHsZd252DX9zq
+         QYqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691534913; x=1692139713;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w6IYf4nshxor0R0BfWz4JihwJzXUnsgpsQ8Bx+FCm50=;
+        b=E/ue6+Tg18UFnxxIQesTGemDiM8Q2dgbcMNCXWEMup+9IowZ4EmSFH9bcNqkWb5xc3
+         kpLEBIWxpTO4QNvbliU14EN4SOYTHcTU9TfRuleSthI/78vD1VUqOGMkW9FmuMrULQoG
+         ZqpPoHDjKoe+Xx2UKobITmUV0Ls5viPj92QQT/7yHq8zeEU8MS2wSQl1kuS2pJk7F5dT
+         BQwporcJ5enaLlzxWlHV9cI/l0TxpbkYy/fBQdnLRo+b/CaX9TbqbZYLP8wW7cNGtoxh
+         Fw50dAkTVSP/wqo31uRC5aCOQIa4i9Y/UUj90Vq1eOYfefoCC/i1Z/nDrNggOi3eYwKZ
+         LGUg==
+X-Gm-Message-State: AOJu0Yz5OfuF4TfLQs3Q059quA1O0iWqsA0i7pJV12JbwJeYf+E2qn8d
+        OttLJdm+RcuQW+wIsZIMpHERSKC+Livwqay02w==
+X-Google-Smtp-Source: AGHT+IGCKCpjw+qQSDFPyaaHwnCmIRgOXWU0/CPaXzJcAH1H2D2px83oqOo3PmhmQlTBWJHjAd9H6SpIq9/Lr6ycUw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:aa0b:0:b0:586:4eae:b942 with SMTP
+ id i11-20020a81aa0b000000b005864eaeb942mr25570ywh.4.1691534913334; Tue, 08
+ Aug 2023 15:48:33 -0700 (PDT)
+Date:   Tue, 08 Aug 2023 22:48:05 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIACXG0mQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDCwNz3bzUEhBOy8wpSS3SNTEwMjcytExKMks1VwLqKShKTcusAJsXHVt bCwBxh7PoXwAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691534912; l=1704;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=ZOPiCy7w2pT1kz3c5DhiCZiV+zTmBFI8xyOrhaHPkq8=; b=35hLj7PJ6DP6/IdiB2Ylc5Y2G6xQ/3oI1SXKLWZ4BpDIns5/qOxf/7y6WjAKgN2o0Nv1hmmKZ
+ 7RXdFr4FcSnA1LghMYnhNj8402rOA1pYEJ9KZdZBr1W0Mso8AV+M+KL
+X-Mailer: b4 0.12.3
+Message-ID: <20230808-net-netfilter-v1-0-efbbe4ec60af@google.com>
+Subject: [PATCH 0/7] netfilter: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 04:43:48PM -0400, Paul Moore wrote:
-> On Tue, Jul 11, 2023 at 11:43???PM Fan Wu <wufan@linux.microsoft.com> wrote:
-> > On Fri, Jul 07, 2023 at 10:53:45AM -0400, Mike Snitzer wrote:
-> 
-> ...
-> 
-> > > Both of your calls to security_bdev_setsecurity() to set your blobs in
-> > > the bdev are suspect because you're doing so from the verity_ctr().
-> > > The mapped_device has 2 dm_table slots (active and inactive).  The
-> > > verity_ctr() becomes part of the inactive slot, there is an extra step
-> > > to bind the inactive table to the active table.
-> > >
-> > > This leads to you changing the blobs in the global bdev _before_ the
-> > > table is actually active.  It is possible that the inactive table will
-> > > simply be removed and the DM verity device put back in service;
-> > > leaving your blob(s) in the bdev inconsistent.
-> > >
-> > > This issue has parallels to how we need to defer changing the global
-> > > queue_limits associated with a request_queue until _after_ all table
-> > > loading is settled and then the update is done just before resuming
-> > > the DM device (mapped_device) -- see dm_table_set_restrictions().
-> > >
-> > > Unfortunately, this feels like it may require a new hook in the
-> > > target_type struct (e.g. ->finalize())
-> >
-> > Thanks for pointing out this issue. We were calling security_bdev_setsecurity()
-> > because the roothash signature data is only available in verity_ctr()
-> > and it is discarded after verity_ctr() finishes.
-> > After digging deeper into the table_load, I realized that we were indeed
-> > wrong here.
-> >
-> > Based on my understanding of your suggestion, it seems that the correct
-> > approach would be to save the roothash signature into the struct dm_target
-> 
-Sorry for the delay in responding. It took me a while to test out the design idea
-suggested by Mike.
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-The current implementation is indeed incorrect. However, I've been able to develop
-a working prototype that addresses the problem identified in the existing implementation.
-I still need some additional time to fine-tune and clean up the prototype.
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on its destination buffer argument which is
+_not_ the case for `strncpy`!
 
-My goal is to have everything ready and send it out next month.
+This series of patches aims to swap out `strncpy` for more robust and
+less ambiguous interfaces like `strscpy` and `strtomem`. This patch
+series, if applied in its entirety, removes most if not all instances of
+`strncpy` in the `net/netfilter` directory.
 
-> Would you be doing this with a LSM hook, or would this live in the
-> device mapper layer?
-> 
-In my implemention, it is a new hook in the device mapper layer. 
-The hook is triggered just before activating an inactive table of a mapped device.
-So in our case, we use the hook to attached the dm-verity's roothash metadata
-to the block_device struct of mapped device.
+[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+[2]: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
 
-> > and then invoke security_bdev_setsecurity() before activating
-> > the inactive table in the __bind function (where dm_table_set_restrictions is called).
-> >
-> > To facilitate this process, it seems appropriate to introduce a new hook
-> > called finalize() within the struct target_type. This hook would enable
-> > targets to define tasks that need to be completed before activating
-> > a new table.
-> >
-> > In our specific case, we would add a finalize hook to the dm-verity module,
-> > allowing us to call security_bdev_setsecurity() and associate the roothash
-> > information in the struct dm_target with the struct block_device of
-> > the struct mapped_device. Is this correct?
-> 
-> Where would the finalize() hook be called?
+Link: https://github.com/KSPP/linux/issues/90
+---
+Justin Stitt (7):
+      netfilter: ipset: refactor deprecated strncpy
+      netfilter: nf_tables: refactor deprecated strncpy
+      netfilter: nf_tables: refactor deprecated strncpy
+      netfilter: nft_meta: refactor deprecated strncpy
+      netfilter: nft_osf: refactor deprecated strncpy to strscpy
+      netfilter: x_tables: refactor deprecated strncpy
+      netfilter: xtables: refactor deprecated strncpy
 
-It is in the __bind function in drivers/md/dm.c, calling just before 
-rcu_assign_pointer(md->map, (void *)t) which activates the inactive table.
+ net/netfilter/ipset/ip_set_core.c | 10 +++++-----
+ net/netfilter/nft_ct.c            |  2 +-
+ net/netfilter/nft_fib.c           |  2 +-
+ net/netfilter/nft_meta.c          |  6 +++---
+ net/netfilter/nft_osf.c           |  6 +++---
+ net/netfilter/x_tables.c          |  5 ++---
+ net/netfilter/xt_repldata.h       |  2 +-
+ 7 files changed, 16 insertions(+), 17 deletions(-)
+---
+base-commit: 14f9643dc90adea074a0ffb7a17d337eafc6a5cc
+change-id: 20230807-net-netfilter-4027219bb6e7
 
--Fan
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
