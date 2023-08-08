@@ -2,109 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0189F774950
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7495774984
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234048AbjHHTvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
+        id S231880AbjHHT5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233034AbjHHTvV (ORCPT
+        with ESMTP id S234643AbjHHT5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:51:21 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689D612CB9
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:58:35 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bf3f59905so859681766b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:58:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1691513914; x=1692118714;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VA7k4XuYhqMiq1aimPn7yYHaKH+IPXSpGngvmVHTGB4=;
-        b=kLnB/DoXe2Xz6oH6jxLFmgDw/TohfIRJVLYMirFgc6pVjzpXl7GtFr7apQCoehnwxN
-         NGVv4/rQl8U9uqPaonJ9VHlAJTeW12qLyfKgJVkBjvNWsgJS66wS55WXily1PAXdtNUi
-         2CeU7q5LTeHpWNgYOn0v5creZ80ukBvAtWzeVExsOogd++h4S+3Y+CUc3rszH0prduj3
-         G6oOHFWUEvZ44fKSb8xeiENNd60D7qn099KFPDLAsqsRBZVQ6IhVVjA/8eHVKIdweLTp
-         5Zoy+b0VpDQDLupWAKS/GEXTcRWmHSOmyOus3T7lv74uCwbZvDOvbXXo3SQNlXmsM6et
-         DVcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691513914; x=1692118714;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VA7k4XuYhqMiq1aimPn7yYHaKH+IPXSpGngvmVHTGB4=;
-        b=S0aSNgVME8dWexNiX2TraOf1FLMDwYnfQx/S1UcUaEfbNFdU0I/HKeGFBhF6oJTTNI
-         14g2vSFot9jsiPDPdnWkXAh34yCRppNH7j88pYgqK/7wmzGT0+f304RwAH1+UHBPC7rI
-         FMkiLLNlCvyIkBdoWpC3mfxpLavVdLAIGksE0Y652cPM4Fp8wl1ONjDLmntwf++IfZeq
-         L6sP+OXFkmcZH2+3opSIEkbRt3tQCXJXKogNhBBrz07tkjEqPhUeFu1fphmrIXO9qEZg
-         UKorvE88IVCH3hry/Run8A/JJeoEFGuVLRD5jf0YOTFGyMe8fGxOTuKV5w2b2d37TWLo
-         7oiQ==
-X-Gm-Message-State: AOJu0YzWtOrTV1/IhbRmbIysUZ49ppZ0if6BgzfvB0r5YOKtV7dWUaOi
-        30O0e6Frh4iRm3wmKS2IEoRtP4VpZ2nJflTmPkqfOJ2A
-X-Google-Smtp-Source: AGHT+IGI3NvWLARIAIJ806WzFo1Gu4YYpyDDo+Y24Lhf1uUKTQCBoWPTHY8UkO7PvmeembXLpAFOxg==
-X-Received: by 2002:a17:906:2081:b0:993:e752:1a70 with SMTP id 1-20020a170906208100b00993e7521a70mr11879972ejq.19.1691472062881;
-        Mon, 07 Aug 2023 22:21:02 -0700 (PDT)
-Received: from [10.0.2.15] ([82.78.167.79])
-        by smtp.gmail.com with ESMTPSA id k18-20020a17090666d200b00992f2befcbcsm6125952ejp.180.2023.08.07.22.21.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 22:21:02 -0700 (PDT)
-Message-ID: <745d818d-fbfe-da02-b98d-bd7b2c5059ed@tuxon.dev>
-Date:   Tue, 8 Aug 2023 08:21:00 +0300
+        Tue, 8 Aug 2023 15:57:03 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8E7E71;
+        Tue,  8 Aug 2023 11:11:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=IoPG8dlq66hTDTyIAklTpnQJayP5s9nIcHgBjUiFzms=; b=PK3ngQv9XY2IpbxEjhZYvjXt+O
+        J7dw0mhRVV5RJAv+RHwrmcOaei/zzeQWajwiRw+yrKX7QOW1JFFztjBim5wrzs5J+aeWqyR5qCN5c
+        FmMvMB7tsPZXmwPBNcMeaZU9ny/HYhsTjlyUWQjXPJaOxZEFQEf/EdOV66r8r+ujroiYcBEE0SnCd
+        aZgpj7HvvH9CC48v0wDJlYZT78ciEkg6e1mxBpIYcKJUote/5b5d40Ikdlbx3ujA8Dqmrc+nPoTe/
+        mIgzsLJrGa6Ryz0iQIsUgWnbMhPTAlp3KzdT35PRli7KzQBZBqhPxxTLJdYI3MZt9bTVQLfaliNV6
+        4oshYdaA==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qTFDZ-001l3h-0Z;
+        Tue, 08 Aug 2023 05:25:17 +0000
+Message-ID: <124ef4a7-cc9a-e12c-7903-3ffefc374c65@infradead.org>
+Date:   Mon, 7 Aug 2023 22:25:16 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] MAINTAINERS: update Claudiu Beznea's email address
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     nicolas.ferre@microchip.com, conor.dooley@microchip.com,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, maz@kernel.org, srinivas.kandagatla@linaro.org,
-        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-        sre@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
-        alsa-devel@alsa-project.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230804050007.235799-1-claudiu.beznea@tuxon.dev>
- <20230807122508.403c1972@kernel.org>
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] SPARC: Fix parport_pc support for 32-bit platforms
 Content-Language: en-US
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20230807122508.403c1972@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, sparclinux@vger.kernel.org,
+        linux-parport@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <alpine.DEB.2.21.2306190121540.14084@angie.orcam.me.uk>
+ <aa528a08-c099-6a7d-32e9-7072ce91bff3@infradead.org>
+In-Reply-To: <aa528a08-c099-6a7d-32e9-7072ce91bff3@infradead.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM28,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+Is there some way to have this build fix merged?
+Thanks.
 
 
-On 07.08.2023 22:25, Jakub Kicinski wrote:
-> On Fri,  4 Aug 2023 08:00:07 +0300 Claudiu Beznea wrote:
->> Update MAINTAINERS entries with a valid email address as the Microchip
->> one is no longer valid.
+On 6/18/23 18:08, Randy Dunlap wrote:
+> 
+> 
+> On 6/18/23 18:01, Maciej W. Rozycki wrote:
+>> For 32-bit SPARC platforms PC-style parallel ports are only available as 
+>> PCI options.  Adjust <asm/parport.h> accordingly, fixing build errors:
 >>
->> Acked-by: Conor Dooley <conor.dooley@microchip.com>
->> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
+>> sparc-linux-gnu-ld: drivers/parport/parport_pc.o: in function `ecpp_remove':
+>> parport_pc.c:(.text+0x8f0): undefined reference to `ebus_dma_irq_enable'
+>> sparc-linux-gnu-ld: parport_pc.c:(.text+0x8f8): undefined reference to `ebus_dma_unregister'
+>> sparc-linux-gnu-ld: drivers/parport/parport_pc.o: in function `parport_pc_fifo_write_block_dma':
+>> parport_pc.c:(.text+0x1430): undefined reference to `ebus_dma_enable'
+>> sparc-linux-gnu-ld: parport_pc.c:(.text+0x1444): undefined reference to `ebus_dma_prepare'
+>> sparc-linux-gnu-ld: parport_pc.c:(.text+0x14e4): undefined reference to `ebus_dma_enable'
+>> sparc-linux-gnu-ld: parport_pc.c:(.text+0x14f4): undefined reference to `ebus_dma_request'
+>> sparc-linux-gnu-ld: parport_pc.c:(.text+0x1584): undefined reference to `ebus_dma_enable'
+>> sparc-linux-gnu-ld: parport_pc.c:(.text+0x1594): undefined reference to `ebus_dma_residue'
+>> sparc-linux-gnu-ld: parport_pc.c:(.text+0x1608): undefined reference to `ebus_dma_enable'
+>> sparc-linux-gnu-ld: parport_pc.c:(.text+0x1618): undefined reference to `ebus_dma_residue'
+>> sparc-linux-gnu-ld: drivers/parport/parport_pc.o: in function `ecpp_probe':
+>> parport_pc.c:(.text+0x33a0): undefined reference to `ebus_dma_register'
+>> sparc-linux-gnu-ld: parport_pc.c:(.text+0x33b8): undefined reference to `ebus_dma_irq_enable'
+>> sparc-linux-gnu-ld: parport_pc.c:(.text+0x34b0): undefined reference to `ebus_dma_irq_enable'
+>> sparc-linux-gnu-ld: parport_pc.c:(.text+0x34bc): undefined reference to `ebus_dma_unregister'
+>>
+>> Reported-by: Randy Dunlap <rdunlap@infradead.org> 
+>> Closes: https://lore.kernel.org/r/20230406160548.25721-1-rdunlap@infradead.org/
+>> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+>> Fixes: 66bcd06099bb ("parport_pc: Also enable driver for PCI systems")
+>> Cc: stable@vger.kernel.org # v5.18+
 > 
-> Thanks for updating the email!
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 > 
-> A bit of a cross-tree change. Is there anyone in particular that you'd
-> expect to apply it?
+> Thanks for fixing this.
+> 
+>> ---
+> 
+>> Changes from v1:
+>>
+>> - Wrap `dma_spin_lock' into HAS_DMA to fix a "'dma_spin_lock' defined but 
+>>   not used" warning.  I think it's slightly cleaner this way compared to 
+>>   wrapping the whole part into CONFIG_SPARC64, as this better reflects the 
+>>   structure of the dependencies here.  It also follows the structure of 
+>>   parport_pc.c, which likewise has `parport_pc_fifo_write_block_dma' put 
+>>   into CONFIG_PARPORT_PC_FIFO and then HAS_DMA conditionals.
+>>
+>> - Add Reported-by tag.
+>> ---
+>>  arch/sparc/include/asm/parport.h |    7 +++++--
+>>  1 file changed, 5 insertions(+), 2 deletions(-)
+>>
+>> linux-sparc32-parport-pc.diff
+>> Index: linux-macro/arch/sparc/include/asm/parport.h
+>> ===================================================================
+>> --- linux-macro.orig/arch/sparc/include/asm/parport.h
+>> +++ linux-macro/arch/sparc/include/asm/parport.h
+>> @@ -19,9 +19,11 @@
+>>   * While sparc64 doesn't have an ISA DMA API, we provide something that looks
+>>   * close enough to make parport_pc happy
+>>   */
+>> +#ifdef CONFIG_SPARC64
+>>  #define HAS_DMA
+>> +#endif
+>>  
+>> -#ifdef CONFIG_PARPORT_PC_FIFO
+>> +#if defined(CONFIG_PARPORT_PC_FIFO) && defined(HAS_DMA)
+>>  static DEFINE_SPINLOCK(dma_spin_lock);
+>>  
+>>  #define claim_dma_lock() \
+>> @@ -249,7 +251,8 @@ static struct platform_driver ecpp_drive
+>>  
+>>  static int parport_pc_find_nonpci_ports(int autoirq, int autodma)
+>>  {
+>> -	return platform_driver_register(&ecpp_driver);
+>> +	return (IS_ENABLED(CONFIG_SPARC64) &&
+>> +		platform_driver_register(&ecpp_driver));
+>>  }
+>>  
+>>  #endif /* !(_ASM_SPARC64_PARPORT_H */
+> 
 
-No.
-
-> If nobody speaks up we can pick it up in networking
-> and send to Linus on Thu.
-
-That would be good.
-
-Thank you,
-Claudiu Beznea
+-- 
+~Randy
