@@ -2,184 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2C5774D56
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DD8774D5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbjHHVtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39622 "EHLO
+        id S230211AbjHHVwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbjHHVtp (ORCPT
+        with ESMTP id S229513AbjHHVwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 17:49:45 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0778110D1
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:49:44 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9c55e0fbeso95333021fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 14:49:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=libre.computer; s=google; t=1691531382; x=1692136182;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9qYerQWFf1ix5KHtY99MS4jSB8DQAs9co/lnQIZ+dhI=;
-        b=FrNaFxjlwpRFm2ZaqTEVKKumXjnd7ComOOWOZmrjXYgDYMvEXazM7CCXphzVh1/C/K
-         NP5sjTK0dIQm0/9wGmf7nEwDV7Xk8f+T97AbHbMm4JkjPDfbkskBicWsAACfRTGKUHkG
-         zuC69RP3+07PAyZhrHIpT6PPZ98X9xyJu+2DEkSGWP1HRqHeQ1YU8pWInTUVhylbG2g4
-         bzAC745EN5wdU3rCMBBBZT6q6cD2O+q2EGddA4xv+55YkHsb2lE90EoPvp2S73b9Wgfa
-         bcZc3s1S6HVntugMBSpBUNjQUovF4F1LmIketV9E5WzR9zdf+AT9GddV1aRJ5XYi7wY+
-         qtzw==
+        Tue, 8 Aug 2023 17:52:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB7DB1
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:52:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691531524;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=irFVMLOEn+k+XTN2GD/NILLHK1tPorHJ0UIXqR+CLE8=;
+        b=MnQLxKIcgHYqCf/Bvcyc/cDFYDd7gsCAhTskm5rGhX44+2jCyebom0vn27kOJu34Z3MtmD
+        vwOqDxxR8EFoX6xQFRNPwCka2zfMncbR3oZ/Yl6n8kdMy2wcUm9kbaFvALS61REVnJO3YM
+        E6dviSuLwl/bOXSRgVpQVKwKzq6PRM8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-144-I7sEjPC9PIGsngqnW1pwsg-1; Tue, 08 Aug 2023 17:52:02 -0400
+X-MC-Unique: I7sEjPC9PIGsngqnW1pwsg-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-5223bdb71e5so4072813a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 14:52:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691531382; x=1692136182;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9qYerQWFf1ix5KHtY99MS4jSB8DQAs9co/lnQIZ+dhI=;
-        b=je+qXxxP2QwqBg3gmekJTTnxPC1nNyKkvWoAQM5ahPkfLscySlebkxbN/QJdbOdZs1
-         jRxWdrv4x+BAtR3N+6ZWb8n6l6uwsf38vm+KqXHIkLugE5YdunhJxm3L8U9ceSsZ17go
-         oU35pLG3lkf5Zp4nz/fXwYZu2k6F4sfySCqkxoyZ84WzvhImXdr7hIBJqmM/9apJl2L7
-         8VURNCXFeU4NEjceGMjFaTgixU7dszerqUkaOpGKUnvX5ruIEzsRasLI8dMU62Y5JYRZ
-         ZxYQJLcCyfncU4zAGrrarXza04ckY//8iYWkmNhQcm58mpezYSsrOLMtcfH8nByTjC/I
-         9+rw==
-X-Gm-Message-State: AOJu0Yy6A4bGSWbwkSf1AaKusMLU4atSQq0KpQtTONDUe/b090w/5rBZ
-        kz4kWRxYTlmo8WLWz2MA85XHTqvzSoOeXZs9q69g9Q==
-X-Google-Smtp-Source: AGHT+IH2g37CljZBjyKryUTqwvcCbghj2op+ujnMBCmtdJr8xIQF/zKIPIsTftv+x+by2YvZLpwCGXHcH4ENvmiFF18=
-X-Received: by 2002:a2e:9b86:0:b0:2b9:e501:a6a6 with SMTP id
- z6-20020a2e9b86000000b002b9e501a6a6mr563511lji.30.1691531381689; Tue, 08 Aug
- 2023 14:49:41 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691531521; x=1692136321;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=irFVMLOEn+k+XTN2GD/NILLHK1tPorHJ0UIXqR+CLE8=;
+        b=C+NVi5e6wU+Xshk8F+MzFBG1V3/ueQmH1mnSyewZYUh3XZCInWfkReEa7/csNRgvuG
+         z9101d1dOuJ2e18pDhm3psQtXQ45qZHVdRqMEdtP1IwZ+SPo8RYRNQyPsn1gyXdGvlDp
+         8sdZ9Bx5IPMNMR7nOczrgu9fb6Uvz6DS0mS1szlQE9kkyxcjbIl87SFWS1z7sOz1ntyf
+         DCjkSGIVjzRUP9f2JNTRSceGI9bRi/RmGzCMsUFcgyuB2a75WDYHolg6d33oTZgXaE1G
+         E2uU2qDDPYQLnjWiaQBPP662BDWFeJffCaaOic22fGH+O6zo55PvxmPvbBTIkvzpbBNj
+         GNNw==
+X-Gm-Message-State: AOJu0YzybOttiXIhuVZJS7S26gNipF8a11f4qKcCjJeba5XXZjg3JV+9
+        viPuwKh0Pt3mT85jGs2X50C50fC4YUD9cU6XA2Ene6UtG+mXpkAEzoQ5YhgdnKA0iLBKDI6mjoi
+        t1qZ4LCmuVyvNnhNpN5dIkcIg
+X-Received: by 2002:a05:6402:10cd:b0:521:8777:b00d with SMTP id p13-20020a05640210cd00b005218777b00dmr735713edu.15.1691531521386;
+        Tue, 08 Aug 2023 14:52:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFp6xNb3mk5D2sUVhHwLaXBN7n7DkWJKbPENHa7ETzVmYnMJpETNbtu2qnaUFQ5qMoVwUymgA==
+X-Received: by 2002:a05:6402:10cd:b0:521:8777:b00d with SMTP id p13-20020a05640210cd00b005218777b00dmr735704edu.15.1691531521107;
+        Tue, 08 Aug 2023 14:52:01 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id r14-20020aa7da0e000000b0052286e8dee1sm7176742eds.76.2023.08.08.14.52.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 14:52:00 -0700 (PDT)
+Message-ID: <1ea7e949-e05b-985c-bb0c-6d0b00bb8b5f@redhat.com>
+Date:   Tue, 8 Aug 2023 23:51:59 +0200
 MIME-Version: 1.0
-References: <20230808050016.1911447-1-da@libre.computer> <b8931b6c-5b35-8477-d50f-b7a43b13615f@gmail.com>
-In-Reply-To: <b8931b6c-5b35-8477-d50f-b7a43b13615f@gmail.com>
-From:   Luke Lu <luke.lu@libre.computer>
-Date:   Tue, 8 Aug 2023 21:49:30 +0000
-Message-ID: <CAAzmgs75L6Y3PU1SF8Uvh1Z2cqt86HmaRKFn088yzRK73mfnLA@mail.gmail.com>
-Subject: Re: [PATCH v3] net: phy: meson-gxl: implement meson_gxl_phy_resume()
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Da Xue <da@libre.computer>, Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] hp-bioscfg: Update string length calculation
+To:     Jorge Lopez <jorgealtxwork@gmail.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas@t-8ch.de, ilpo.jarvinen@linux.intel.com,
+        dan.carpenter@linaro.org
+References: <20230801191629.45942-1-jorge.lopez2@hp.com>
+ <4ab55129-d35c-fea5-0c59-5183928d55d1@redhat.com>
+ <CAOOmCE_DGqUh3+8LmrX2_7eTeDG_7p7-JKN7Q2syvDQu60UWmQ@mail.gmail.com>
+Content-Language: en-US, nl
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAOOmCE_DGqUh3+8LmrX2_7eTeDG_7p7-JKN7Q2syvDQu60UWmQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Heiner Kallweit:
+Hi,
 
-On Tue, Aug 8, 2023 at 6:42=E2=80=AFAM Heiner Kallweit <hkallweit1@gmail.co=
-m> wrote:
->
-> On 08.08.2023 07:00, Da Xue wrote:
-> > After suspend and resume, the meson GXL internal PHY config needs to
->
-> To avoid misunderstandings:
-> You mean suspend/resume just of the PHY, or of the system?
->
-We found this issue during the test of whole system
-suspend/resume(including ethernet/network),
-so it's more proper to interpret as "the system" here
+On 8/8/23 22:25, Jorge Lopez wrote:
+> Hi Hans,
+> 
+> On Mon, Aug 7, 2023 at 6:28 AM Hans de Goede <hdegoede@redhat.com> wrote:
 
-> Description sounds like this patch is a fix and should go to stable.
-I agree it's worth the effort to push the patch to stable tree, but
-found a conflict with
-commit 69ff53e4a4c9 ("net: phy: meson-gxl: use MMD access dummy stubs
-for GXL, internal PHY")
-It will prevent maintainers doing a clean cherry-pick, we can slightly
-rework the patch and
-send it to the stable tree separately once this patch is accepted by mainli=
-ne.
+<snip>
 
-> So add a Fixes tag.
-Sure, as the issue is introduced with first resume(), so will add
-Fixes: 7334b3e47aee ("net: phy: Add Meson GXL Internal PHY driver")
+>> 3. ordered_list_data->elements_size is set but never validated. You should compare elem after the loop with ordered_list_data->elements_size and make sure they match. IOW verify that 0-(ordered_list_data->elements_size-1) entries of the ordered_list_data->elements[] array have been filled.
+> 
+> ordered_list_data->elements_size is checked against MAX_ELEMENTS_SIZE
+> and not against the number of elements in the array.  Initially, size
+> value was reported (sysfs) but after a couple reviews, size was
+> removed from being reported (sysfs).  size value will be determined by
+> the application when it enumerates the values reported in elements.
 
-> And a formal remark: Your patch misses the net / net-next annotation.
->
-Not sure if we understand this correctly, do you mean the one line
-summary of this patch?
-or the content of the commit message that needs to improve to reflect this =
-is an
-ethernet/net related fix?
+Right, but after splitting the string on commas there should be ordered_list_data->elements_size entries, right ? So we should verify that. Also what if the string after splitting has more entries then MAX_ELEMENTS_SIZE, then currently the code will overflow the array, so the loop splitting the string on commas should ensure that MAX_ELEMENTS_SIZE is not exceeded.
 
-I'd appreciate if you can explain a little bit more, so we can better
-fix this, thanks
+>>
+>> 4. For specific values of eloc the code expects the current order_obj[elem] to be either an integer or a string, but this is not validated. Please validate that order_obj[elem].type matches with what is expected (string or int) for the current value of eloc.
+> 
+> The purpose for 'eloc' is  to help skip reading values such
+> ORD_LIST_ELEMENTS and PREREQUISITES when ORD_LIST_ELEMENTS and/or
+> PREREQUISITES_SIZE values are zero.
+> Normally, 'eloc' and 'elem' are the same.
 
-> > be initialized again, otherwise the carrier cannot be found:
-> >
-> >       eth0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc mq state
-> >               DOWN group default qlen 1000
-> >
-> > After the patch, resume:
-> >
-> >       eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state U=
-P
-> >               group default qlen 1000
-> >
-> > Signed-off-by: Luke Lu <luke.lu@libre.computer>
-> > Signed-off-by: Da Xue <da@libre.computer>
-> > ---
-> > Changes since v2:
-> >  - fix missing parameter of genphy_resume()
-> >
-> > Changes since v1:
-> >  - call generic genphy_resume()
-> > ---
-> >  drivers/net/phy/meson-gxl.c | 14 +++++++++++++-
-> >  1 file changed, 13 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/phy/meson-gxl.c b/drivers/net/phy/meson-gxl.c
-> > index bb9b33b6bce2..bbad26b7c5a1 100644
-> > --- a/drivers/net/phy/meson-gxl.c
-> > +++ b/drivers/net/phy/meson-gxl.c
-> > @@ -132,6 +132,18 @@ static int meson_gxl_config_init(struct phy_device=
- *phydev)
-> >       return 0;
-> >  }
-> >
-> > +static int meson_gxl_phy_resume(struct phy_device *phydev)
-> > +{
-> > +     int ret;
-> > +
-> > +     genphy_resume(phydev);
->
-> Return value of this function should be checked.
->
-will fix in v4
+Never mind what I meant to say is that you should to a check like this:
 
-> > +     ret =3D meson_gxl_config_init(phydev);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >  /* This function is provided to cope with the possible failures of thi=
-s phy
-> >   * during aneg process. When aneg fails, the PHY reports that aneg is =
-done
-> >   * but the value found in MII_LPA is wrong:
-> > @@ -196,7 +208,7 @@ static struct phy_driver meson_gxl_phy[] =3D {
-> >               .config_intr    =3D smsc_phy_config_intr,
-> >               .handle_interrupt =3D smsc_phy_handle_interrupt,
-> >               .suspend        =3D genphy_suspend,
-> > -             .resume         =3D genphy_resume,
-> > +             .resume         =3D meson_gxl_phy_resume,
-> >               .read_mmd       =3D genphy_read_mmd_unsupported,
-> >               .write_mmd      =3D genphy_write_mmd_unsupported,
-> >       }, {
->
+                /* Check that both expected and read object type match */
+                if (expected_order_types[eloc] != order_obj[elem].type) {
+                        pr_err("Error expected type %d for elem %d, but got type %d instead\n"
+                               expected_order_types[eloc], elem, order_obj[elem].type);
+                        return -EIO;
+                }
+
+But I see now that that check is already there.
+
+Regards,
+
+Hans
+
+
