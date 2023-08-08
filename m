@@ -2,711 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDDA774AEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10D7774B08
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235604AbjHHUif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48242 "EHLO
+        id S233420AbjHHUjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235455AbjHHUiW (ORCPT
+        with ESMTP id S236061AbjHHUiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:38:22 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C88C71F00
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:17:30 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bb9e6c2a90so51669815ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:17:30 -0700 (PDT)
+        Tue, 8 Aug 2023 16:38:50 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99DA3182E99
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:29:12 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5234dee9a44so366231a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:29:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691515050; x=1692119850;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PTkENYGPmzjdiIFnG45MMUhD/vw36zV8iF42kP92NGA=;
-        b=u70aK3DY5uQsEnA875Chu3DLfScGtPYBtnDnbtBUcVBSBU4hE2pWhz4KmFUsQcRkhL
-         6NIx+29my3hiWHjUyLEKVAcNYsYtHt7Q9LNYLT2GepVtFcxjLryQ5GuQSZzIBa9NOBiv
-         u6iGjPzjV/4sELBw5pUWUmusLMmrFEkRtPaSAgtnmdN/3+hTjsNDymVkybMNWWtOh6cN
-         CfnyLww8ILRlT1G5GYo3jvsEZu/TAo149VPZTWTuhcqzHjxdL/AusIU3M29bMVSGqrpN
-         6dCPkFASOGqJmnHg0foIdch/02SVbbELLkwALHOJQEY+j2BuA0KaZdhaerYUFMh/WShL
-         WS+A==
+        d=google.com; s=20221208; t=1691515751; x=1692120551;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YRTbpdHAIcRAL+8fbnX37iDC0EoRIyOQNOdvRt+62Lw=;
+        b=DjSyFc466XoPSs0e4ymkKPotfNOOJUf3A/2g6OKlGaTDH+SXaR4NO50LD/IYycgHTF
+         N9mN3rzd3YJmnjIv9fJ5OgRtc6kekPPBeKf5DMt9ndXAndHPlyx/cUClBh6XFMRqqLje
+         AM2jZaunxmXmUQM4lwfPzIKrvE0WXYl+0S7o3dRSIuANPYbwqYWHil6HtsQn9VYH7z80
+         /G0LjfAYWzzjZObiVaDalPjtPAeu+o2LKeE89g9rgNT2fHXdXNCdEiLeH3H8OCOn7AmE
+         Mtg5LGfxbYIUcT9VxoaxHAfC2AgSsv8kfzMZwyezLYE9MzugxFsDembayZDf9GZE79pr
+         IKrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691515050; x=1692119850;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PTkENYGPmzjdiIFnG45MMUhD/vw36zV8iF42kP92NGA=;
-        b=BYKnFWxcuQ2A22dddA+6p2+oSkCW6WQdl2HBKAoEtssMn6tC5t3pOM/hxTNXdcjndC
-         td6mOeRktIPHqBhUrrYDNsffY2Hn42/Iux+LO6LamwWJymMSO7bK7bGn8UMMQF/dgnsM
-         hCjt6Ia19MpzWs5++qm3he3uh7I4SO/KKhrKS3KwG+1tna7YB60apRxPqvzmOqaU31Y9
-         Ho4mPGdYR34ZODkV628AYeZ3kb8BigMuF2RGG/e8RBv90KLFPtrQ7BONjoVquY2IPkr3
-         sX1ao0Autdt8EQ8/wLCzrIEWxg8PX45oS9lFNoVrqJB8iRiEFA+iinfGy5ZXE5c+VnqM
-         Cvhw==
-X-Gm-Message-State: AOJu0YwGSvk+bs5YfbguPJPzEEoFvH5Bq5i5Du4uv8XHAFmw2qT014tB
-        XQAgr0UBiCbS8OAXSR9r7Oxs1zXtAVVsa5g+hLPCRQ==
-X-Google-Smtp-Source: AGHT+IGstG9D/oK8ZoDkD1QmTqpqQoA/lhezzql77t5a/bOLmYmGyqFtPinqudSAJGqnwL8QyCYeM7tPX0P0jx61Wc4=
-X-Received: by 2002:a17:902:6b49:b0:1b8:b41a:d4be with SMTP id
- g9-20020a1709026b4900b001b8b41ad4bemr349968plt.10.1691515049626; Tue, 08 Aug
- 2023 10:17:29 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691515751; x=1692120551;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YRTbpdHAIcRAL+8fbnX37iDC0EoRIyOQNOdvRt+62Lw=;
+        b=Z7w2r3urNWGa/doiwO9/vdK8ZcaipGaRmxCt6DalX1nY/xUATSjSA30dFs0FxB9cW8
+         oKHkp5aKGQIEPvUZFH4tLarjo6aUMdEOHQ8Xhfl5JjfKpvsmLg1nwF2dUJPOio5rNCTf
+         yzzPkBY65k43QhypkifFwgXlW8HK5OAUNdwDGY+5TVdok2V1H7gTp21/EQBn6DHvygK4
+         XH2wHP1y/2GPcDIP1IvAxkY62vGptNZSGAwOM1nGcG77lMbsoQ654uxBkEYNM9N3dytF
+         t5PicAoolfQV3o7ob/0D8q403IHBRrD+iDyBuFwcjFlYdACyWlbH4IKJwfic2qB3lCKc
+         c8xQ==
+X-Gm-Message-State: AOJu0YyUlQiO8+vysIGVErDUu1AoSAf1Cy4B7/IP5WiR3aKVbl734zrs
+        /aj3JyUzkdLKxjrlk6d8js/l8bjJDewQPXG7xgR0Og==
+X-Google-Smtp-Source: AGHT+IEj9jsvS5MROtkM+IvgsvU8cU1CnN/c3z5EIcbbMeYA6EJeqykx7Eu9avENEdzUbqBt4ia3FKkcPXu7iENsbGg=
+X-Received: by 2002:aa7:d84b:0:b0:523:366b:9cb4 with SMTP id
+ f11-20020aa7d84b000000b00523366b9cb4mr459388eds.1.1691515751068; Tue, 08 Aug
+ 2023 10:29:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230808082738.122804-1-krzysztof.kozlowski@linaro.org> <20230808082738.122804-12-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230808082738.122804-12-krzysztof.kozlowski@linaro.org>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Tue, 8 Aug 2023 12:17:18 -0500
-Message-ID: <CAPLW+4mViV_aGxQmRHQayhGhztu4SkN+7gAd4Jo6cdMC-RM9ng@mail.gmail.com>
-Subject: Re: [PATCH 11/11] dt-bindings: clock: samsung: remove define with
- number of clocks
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
+References: <20230807-arch-um-v1-1-86dbbfb59709@google.com>
+ <CAGG=3QVUqVdkzBo-=vGWprPBUhuV8p3bRSx3Qsvtqx_LDct05w@mail.gmail.com> <202308071636.AF290F0@keescook>
+In-Reply-To: <202308071636.AF290F0@keescook>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Tue, 8 Aug 2023 10:28:57 -0700
+Message-ID: <CAFhGd8oSGJ5=fk58wOSgbuXX_VaP14q0Re=Xfom=rdOR6fT1rQ@mail.gmail.com>
+Subject: Re: [PATCH] um: refactor deprecated strncpy to strtomem
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Bill Wendling <morbo@google.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-hardening@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Aug 2023 at 11:23, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+On Mon, Aug 7, 2023 at 4:40=E2=80=AFPM Kees Cook <keescook@chromium.org> wr=
+ote:
 >
-> Number of clocks supported by Linux drivers might vary - sometimes we
-> add new clocks, not exposed previously.  Therefore this number of clocks
-> should not be in the bindings, because otherwise we should not change
-> it.  Remove it entirely from the bindings, once Linux drivers stopped
-> using them.
+> On Mon, Aug 07, 2023 at 03:36:55PM -0700, Bill Wendling wrote:
+> > On Mon, Aug 7, 2023 at 2:18=E2=80=AFPM Justin Stitt <justinstitt@google=
+.com> wrote:
+> > >
+> > > Use `strtomem` here since `console_buf` is not expected to be
+> > > NUL-terminated. We should probably also just use `MCONSOLE_MAX_DATA`
 >
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
+> How is it known that console_buf is not a C-string?
+There are a few clues that led me to believe console_buf was not a C-string=
+:
+1)  `n =3D min((size_t) len, ARRAY_SIZE(console_buf));` means that `n`
+can be equal to size of buffer which is then subsequently filled
+entirely by the `strncpy` invocation.
+2) console_buf looks to be a circular buffer wherein once it's filled
+it starts again from the beginning.
+3) ARRAY_SIZE is used on it as opposed to strlen or something like
+that (but not sure if ARRAY_SIZE is also used on C-strings to be fair)
+4) It has `buf` in its name which I loosely associate with non
+C-strings char buffers.
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+All in all, it looks to be a non C-string but honestly it's hard to
+tell, especially since if it IS a C-string the previous implementation
+had some bugs with strncpy I believe.
 
->  include/dt-bindings/clock/exynos3250.h        | 18 --------
->  include/dt-bindings/clock/exynos4.h           |  5 ---
->  include/dt-bindings/clock/exynos5250.h        |  3 --
->  include/dt-bindings/clock/exynos5260-clk.h    | 25 -----------
->  include/dt-bindings/clock/exynos5410.h        |  2 -
->  include/dt-bindings/clock/exynos5420.h        |  3 --
->  include/dt-bindings/clock/exynos5433.h        | 42 -------------------
->  include/dt-bindings/clock/exynos7885.h        |  4 --
->  include/dt-bindings/clock/exynos850.h         | 10 -----
->  .../dt-bindings/clock/samsung,exynosautov9.h  | 18 --------
->  10 files changed, 130 deletions(-)
 >
-> diff --git a/include/dt-bindings/clock/exynos3250.h b/include/dt-bindings/clock/exynos3250.h
-> index fe8214017b46..cc7268151843 100644
-> --- a/include/dt-bindings/clock/exynos3250.h
-> +++ b/include/dt-bindings/clock/exynos3250.h
-> @@ -256,12 +256,6 @@
->  #define CLK_SCLK_UART2                 248
->  #define CLK_SCLK_MMC2                  249
+> > > instead of using `ARRAY_SIZE()` for every iteration of the loop.
+> > >
+> > Is this change necessary? I have a general preference for ARRAY_SIZE,
+> > because a change in size is less likely to be overlooked (unless that
+> > goes against the coding standard).
+>
+> I would prefer this stay either ARRAY_SIZE or sizeof, as it keeps it
+> tied to the variable in question.
+>
+> >
+> > > Also mark char buffer as `__nonstring` as per Kees' suggestion here [=
+1]
+> > >
+> > > Finally, follow checkpatch's recommendation of using `min_t` over `mi=
+n`
+> > >
+> > > Link: https://github.com/KSPP/linux/issues/90 [1]
+> > > Cc: linux-hardening@vger.kernel.org
+> > > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > > ---
+> > > Notes:
+> > > I only build tested this patch.
+> > > ---
+> > >  arch/um/drivers/mconsole_kern.c | 7 ++++---
+> > >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconso=
+le_kern.c
+> > > index 5026e7b9adfe..fd4c024202ae 100644
+> > > --- a/arch/um/drivers/mconsole_kern.c
+> > > +++ b/arch/um/drivers/mconsole_kern.c
+> > > @@ -4,6 +4,7 @@
+> > >   * Copyright (C) 2001 - 2008 Jeff Dike (jdike@{addtoit,linux.intel}.=
+com)
+> > >   */
+> > >
+> > > +#include "linux/compiler_attributes.h"
+> >
+> > nit: Should this include be in angle brackets?
+> >
+> > #include <linux/compiler_attributes.h>
+>
+> True, though this shouldn't need to be included at all. What was
+> missing?
+>
+> >
+> > >  #include <linux/console.h>
+> > >  #include <linux/ctype.h>
+> > >  #include <linux/string.h>
+> > > @@ -554,7 +555,7 @@ struct mconsole_output {
+> > >
+> > >  static DEFINE_SPINLOCK(client_lock);
+> > >  static LIST_HEAD(clients);
+> > > -static char console_buf[MCONSOLE_MAX_DATA];
+> > > +static char console_buf[MCONSOLE_MAX_DATA] __nonstring;
+> > >
+> > >  static void console_write(struct console *console, const char *strin=
+g,
+> > >                           unsigned int len)
+> > > @@ -566,8 +567,8 @@ static void console_write(struct console *console=
+, const char *string,
+> > >                 return;
+> > >
+> > >         while (len > 0) {
+> > > -               n =3D min((size_t) len, ARRAY_SIZE(console_buf));
+> > > -               strncpy(console_buf, string, n);
+> > > +               n =3D min_t(size_t, len, MCONSOLE_MAX_DATA);
+> > > +               strtomem(console_buf, string);
+> > >                 string +=3D n;
+> > >                 len -=3D n;
+> > >
+> > >
+> > > ---
+> > > base-commit: c1a515d3c0270628df8ae5f5118ba859b85464a2
+> > > change-id: 20230807-arch-um-3ef24413427e
+> > >
+> > > Best regards,
+> > > --
+> > > Justin Stitt <justinstitt@google.com>
+> > >
 >
-> -/*
-> - * Total number of clocks of main CMU.
-> - * NOTE: Must be equal to last clock ID increased by one.
-> - */
-> -#define CLK_NR_CLKS                    250
-> -
->  /*
->   * CMU DMC
->   */
-> @@ -283,12 +277,6 @@
->  #define CLK_DIV_DMCP                   19
->  #define CLK_DIV_DMCD                   20
->
-> -/*
-> - * Total number of clocks of main CMU.
-> - * NOTE: Must be equal to last clock ID increased by one.
-> - */
-> -#define NR_CLKS_DMC                    21
-> -
->  /*
->   * CMU ISP
->   */
-> @@ -344,10 +332,4 @@
->  #define CLK_ASYNCAXIM                  46
->  #define CLK_SCLK_MPWM_ISP              47
->
-> -/*
-> - * Total number of clocks of CMU_ISP.
-> - * NOTE: Must be equal to last clock ID increased by one.
-> - */
-> -#define NR_CLKS_ISP                    48
-> -
->  #endif /* _DT_BINDINGS_CLOCK_SAMSUNG_EXYNOS3250_CLOCK_H */
-> diff --git a/include/dt-bindings/clock/exynos4.h b/include/dt-bindings/clock/exynos4.h
-> index acbfbab875ec..4ebff79ed9e2 100644
-> --- a/include/dt-bindings/clock/exynos4.h
-> +++ b/include/dt-bindings/clock/exynos4.h
-> @@ -239,9 +239,6 @@
->  #define CLK_DIV_GDR            460
->  #define CLK_DIV_CORE2          461
->
-> -/* must be greater than maximal clock id */
-> -#define CLK_NR_CLKS            462
-> -
->  /* Exynos4x12 ISP clocks */
->  #define CLK_ISP_FIMC_ISP                1
->  #define CLK_ISP_FIMC_DRC                2
-> @@ -275,6 +272,4 @@
->  #define CLK_ISP_DIV_MCUISP0            29
->  #define CLK_ISP_DIV_MCUISP1            30
->
-> -#define CLK_NR_ISP_CLKS                        31
-> -
->  #endif /* _DT_BINDINGS_CLOCK_EXYNOS_4_H */
-> diff --git a/include/dt-bindings/clock/exynos5250.h b/include/dt-bindings/clock/exynos5250.h
-> index 4680da7357d3..2337c028bbe1 100644
-> --- a/include/dt-bindings/clock/exynos5250.h
-> +++ b/include/dt-bindings/clock/exynos5250.h
-> @@ -177,7 +177,4 @@
->  #define CLK_MOUT_MPLL          1029
->  #define CLK_MOUT_VPLLSRC       1030
->
-> -/* must be greater than maximal clock id */
-> -#define CLK_NR_CLKS            1031
-> -
->  #endif /* _DT_BINDINGS_CLOCK_EXYNOS_5250_H */
-> diff --git a/include/dt-bindings/clock/exynos5260-clk.h b/include/dt-bindings/clock/exynos5260-clk.h
-> index 98a58cbd81b2..dfde40ea40f0 100644
-> --- a/include/dt-bindings/clock/exynos5260-clk.h
-> +++ b/include/dt-bindings/clock/exynos5260-clk.h
-> @@ -137,8 +137,6 @@
->  #define PHYCLK_USBHOST20_PHY_CLK48MOHCI                        122
->  #define PHYCLK_USBDRD30_UDRD30_PIPE_PCLK               123
->  #define PHYCLK_USBDRD30_UDRD30_PHYCLOCK                        124
-> -#define TOP_NR_CLK                                     125
-> -
->
->  /* List Of Clocks For CMU_EGL */
->
-> @@ -153,8 +151,6 @@
->  #define EGL_DOUT_ACLK_EGL                              9
->  #define EGL_DOUT_EGL2                                  10
->  #define EGL_DOUT_EGL1                                  11
-> -#define EGL_NR_CLK                                     12
-> -
->
->  /* List Of Clocks For CMU_KFC */
->
-> @@ -168,8 +164,6 @@
->  #define KFC_DOUT_KFC_ATCLK                             8
->  #define KFC_DOUT_KFC2                                  9
->  #define KFC_DOUT_KFC1                                  10
-> -#define KFC_NR_CLK                                     11
-> -
->
->  /* List Of Clocks For CMU_MIF */
->
-> @@ -200,8 +194,6 @@
->  #define MIF_CLK_INTMEM                                 25
->  #define MIF_SCLK_LPDDR3PHY_WRAP_U1                     26
->  #define MIF_SCLK_LPDDR3PHY_WRAP_U0                     27
-> -#define MIF_NR_CLK                                     28
-> -
->
->  /* List Of Clocks For CMU_G3D */
->
-> @@ -211,8 +203,6 @@
->  #define G3D_DOUT_ACLK_G3D                              4
->  #define G3D_CLK_G3D_HPM                                        5
->  #define G3D_CLK_G3D                                    6
-> -#define G3D_NR_CLK                                     7
-> -
->
->  /* List Of Clocks For CMU_AUD */
->
-> @@ -231,8 +221,6 @@
->  #define AUD_SCLK_AUD_UART                              13
->  #define AUD_SCLK_PCM                                   14
->  #define AUD_SCLK_I2S                                   15
-> -#define AUD_NR_CLK                                     16
-> -
->
->  /* List Of Clocks For CMU_MFC */
->
-> @@ -241,8 +229,6 @@
->  #define MFC_CLK_MFC                                    3
->  #define MFC_CLK_SMMU2_MFCM1                            4
->  #define MFC_CLK_SMMU2_MFCM0                            5
-> -#define MFC_NR_CLK                                     6
-> -
->
->  /* List Of Clocks For CMU_GSCL */
->
-> @@ -272,8 +258,6 @@
->  #define GSCL_CLK_SMMU3_MSCL1                           24
->  #define GSCL_SCLK_CSIS1_WRAP                           25
->  #define GSCL_SCLK_CSIS0_WRAP                           26
-> -#define GSCL_NR_CLK                                    27
-> -
->
->  /* List Of Clocks For CMU_FSYS */
->
-> @@ -295,8 +279,6 @@
->  #define FSYS_CLK_SMMU_RTIC                             16
->  #define FSYS_PHYCLK_USBDRD30                           17
->  #define FSYS_PHYCLK_USBHOST20                          18
-> -#define FSYS_NR_CLK                                    19
-> -
->
->  /* List Of Clocks For CMU_PERI */
->
-> @@ -366,8 +348,6 @@
->  #define PERI_SCLK_SPDIF                                        64
->  #define PERI_SCLK_I2S                                  65
->  #define PERI_SCLK_PCM1                                 66
-> -#define PERI_NR_CLK                                    67
-> -
->
->  /* List Of Clocks For CMU_DISP */
->
-> @@ -406,8 +386,6 @@
->  #define DISP_CLK_DP                                    33
->  #define DISP_SCLK_PIXEL                                        34
->  #define DISP_MOUT_HDMI_PHY_PIXEL_USER                  35
-> -#define DISP_NR_CLK                                    36
-> -
->
->  /* List Of Clocks For CMU_G2D */
->
-> @@ -423,8 +401,6 @@
->  #define G2D_CLK_SMMU_SSS                               10
->  #define G2D_CLK_SMMU_MDMA                              11
->  #define G2D_CLK_SMMU3_G2D                              12
-> -#define G2D_NR_CLK                                     13
-> -
->
->  /* List Of Clocks For CMU_ISP */
->
-> @@ -461,6 +437,5 @@
->  #define ISP_SCLK_SPI0_EXT                              31
->  #define ISP_SCLK_SPI1_EXT                              32
->  #define ISP_SCLK_UART_EXT                              33
-> -#define ISP_NR_CLK                                     34
->
->  #endif
-> diff --git a/include/dt-bindings/clock/exynos5410.h b/include/dt-bindings/clock/exynos5410.h
-> index 86c2ad56c5ef..7a1a93f8df6c 100644
-> --- a/include/dt-bindings/clock/exynos5410.h
-> +++ b/include/dt-bindings/clock/exynos5410.h
-> @@ -61,6 +61,4 @@
->  #define CLK_USBD301            367
->  #define CLK_SSS                        471
->
-> -#define CLK_NR_CLKS            512
-> -
->  #endif /* _DT_BINDINGS_CLOCK_EXYNOS_5410_H */
-> diff --git a/include/dt-bindings/clock/exynos5420.h b/include/dt-bindings/clock/exynos5420.h
-> index 9fffc6ceaadd..73e82527a9e9 100644
-> --- a/include/dt-bindings/clock/exynos5420.h
-> +++ b/include/dt-bindings/clock/exynos5420.h
-> @@ -271,7 +271,4 @@
->  #define CLK_DOUT_PCLK_DREX0    798
->  #define CLK_DOUT_PCLK_DREX1    799
->
-> -/* must be greater than maximal clock id */
-> -#define CLK_NR_CLKS            800
-> -
->  #endif /* _DT_BINDINGS_CLOCK_EXYNOS_5420_H */
-> diff --git a/include/dt-bindings/clock/exynos5433.h b/include/dt-bindings/clock/exynos5433.h
-> index 25ffa53573a5..d12c1a963fa1 100644
-> --- a/include/dt-bindings/clock/exynos5433.h
-> +++ b/include/dt-bindings/clock/exynos5433.h
-> @@ -188,8 +188,6 @@
->  #define CLK_SCLK_ISP_SPI0_CAM1         252
->  #define CLK_SCLK_HDMI_SPDIF_DISP       253
->
-> -#define TOP_NR_CLK                     254
-> -
->  /* CMU_CPIF */
->  #define CLK_FOUT_MPHY_PLL              1
->
-> @@ -200,8 +198,6 @@
->  #define CLK_SCLK_MPHY_PLL              11
->  #define CLK_SCLK_UFS_MPHY              11
->
-> -#define CPIF_NR_CLK                    12
-> -
->  /* CMU_MIF */
->  #define CLK_FOUT_MEM0_PLL              1
->  #define CLK_FOUT_MEM1_PLL              2
-> @@ -396,8 +392,6 @@
->  #define CLK_SCLK_BUS_PLL_APOLLO                199
->  #define CLK_SCLK_BUS_PLL_ATLAS         200
->
-> -#define MIF_NR_CLK                     201
-> -
->  /* CMU_PERIC */
->  #define CLK_PCLK_SPI2                  1
->  #define CLK_PCLK_SPI1                  2
-> @@ -468,8 +462,6 @@
->  #define CLK_DIV_SCLK_SCI               70
->  #define CLK_DIV_SCLK_SC_IN             71
->
-> -#define PERIC_NR_CLK                   72
-> -
->  /* CMU_PERIS */
->  #define CLK_PCLK_HPM_APBIF             1
->  #define CLK_PCLK_TMU1_APBIF            2
-> @@ -513,8 +505,6 @@
->  #define CLK_SCLK_ANTIRBK_CNT           40
->  #define CLK_SCLK_OTP_CON               41
->
-> -#define PERIS_NR_CLK                   42
-> -
->  /* CMU_FSYS */
->  #define CLK_MOUT_ACLK_FSYS_200_USER    1
->  #define CLK_MOUT_SCLK_MMC2_USER                2
-> @@ -621,8 +611,6 @@
->  #define CLK_SCLK_USBDRD30              114
->  #define CLK_PCIE                       115
->
-> -#define FSYS_NR_CLK                    116
-> -
->  /* CMU_G2D */
->  #define CLK_MUX_ACLK_G2D_266_USER      1
->  #define CLK_MUX_ACLK_G2D_400_USER      2
-> @@ -653,8 +641,6 @@
->  #define CLK_PCLK_G2D                   25
->  #define CLK_PCLK_SMMU_G2D              26
->
-> -#define G2D_NR_CLK                     27
-> -
->  /* CMU_DISP */
->  #define CLK_FOUT_DISP_PLL                              1
->
-> @@ -771,8 +757,6 @@
->  #define CLK_PHYCLK_MIPIDPHY0_BITCLKDIV8_PHY            114
->  #define CLK_PHYCLK_MIPIDPHY0_RXCLKESC0_PHY             115
->
-> -#define DISP_NR_CLK                                    116
-> -
->  /* CMU_AUD */
->  #define CLK_MOUT_AUD_PLL_USER                          1
->  #define CLK_MOUT_SCLK_AUD_PCM                          2
-> @@ -824,8 +808,6 @@
->  #define CLK_SCLK_I2S_BCLK                              46
->  #define CLK_SCLK_AUD_I2S                               47
->
-> -#define AUD_NR_CLK                                     48
-> -
->  /* CMU_BUS{0|1|2} */
->  #define CLK_DIV_PCLK_BUS_133                           1
->
-> @@ -840,8 +822,6 @@
->  #define CLK_ACLK_BUS2BEND_400                          9  /* Only CMU_BUS2 */
->  #define CLK_ACLK_BUS2RTND_400                          10 /* Only CMU_BUS2 */
->
-> -#define BUSx_NR_CLK                                    11
-> -
->  /* CMU_G3D */
->  #define CLK_FOUT_G3D_PLL                               1
->
-> @@ -865,8 +845,6 @@
->  #define CLK_PCLK_SYSREG_G3D                            18
->  #define CLK_SCLK_HPM_G3D                               19
->
-> -#define G3D_NR_CLK                                     20
-> -
->  /* CMU_GSCL */
->  #define CLK_MOUT_ACLK_GSCL_111_USER                    1
->  #define CLK_MOUT_ACLK_GSCL_333_USER                    2
-> @@ -898,8 +876,6 @@
->  #define CLK_PCLK_SMMU_GSCL1                            27
->  #define CLK_PCLK_SMMU_GSCL2                            28
->
-> -#define GSCL_NR_CLK                                    29
-> -
->  /* CMU_APOLLO */
->  #define CLK_FOUT_APOLLO_PLL                            1
->
-> @@ -935,8 +911,6 @@
->  #define CLK_SCLK_HPM_APOLLO                            29
->  #define CLK_SCLK_APOLLO                                        30
->
-> -#define APOLLO_NR_CLK                                  31
-> -
->  /* CMU_ATLAS */
->  #define CLK_FOUT_ATLAS_PLL                             1
->
-> @@ -981,8 +955,6 @@
->  #define CLK_ATCLK                                      38
->  #define CLK_SCLK_ATLAS                                 39
->
-> -#define ATLAS_NR_CLK                                   40
-> -
->  /* CMU_MSCL */
->  #define CLK_MOUT_SCLK_JPEG_USER                                1
->  #define CLK_MOUT_ACLK_MSCL_400_USER                    2
-> @@ -1016,8 +988,6 @@
->  #define CLK_PCLK_SMMU_JPEG                             28
->  #define CLK_SCLK_JPEG                                  29
->
-> -#define MSCL_NR_CLK                                    30
-> -
->  /* CMU_MFC */
->  #define CLK_MOUT_ACLK_MFC_400_USER                     1
->
-> @@ -1040,8 +1010,6 @@
->  #define CLK_PCLK_SMMU_MFC_1                            17
->  #define CLK_PCLK_SMMU_MFC_0                            18
->
-> -#define MFC_NR_CLK                                     19
-> -
->  /* CMU_HEVC */
->  #define CLK_MOUT_ACLK_HEVC_400_USER                    1
->
-> @@ -1064,8 +1032,6 @@
->  #define CLK_PCLK_SMMU_HEVC_1                           17
->  #define CLK_PCLK_SMMU_HEVC_0                           18
->
-> -#define HEVC_NR_CLK                                    19
-> -
->  /* CMU_ISP */
->  #define CLK_MOUT_ACLK_ISP_DIS_400_USER                 1
->  #define CLK_MOUT_ACLK_ISP_400_USER                     2
-> @@ -1147,8 +1113,6 @@
->  #define CLK_SCLK_PIXELASYNCS_ISPC                      76
->  #define CLK_SCLK_PIXELASYNCM_ISPC                      77
->
-> -#define ISP_NR_CLK                                     78
-> -
->  /* CMU_CAM0 */
->  #define CLK_PHYCLK_RXBYTEECLKHS0_S4_PHY                        1
->  #define CLK_PHYCLK_RXBYTEECLKHS0_S2A_PHY               2
-> @@ -1285,8 +1249,6 @@
->  #define CLK_SCLK_PIXELASYNCM_LITE_C_INIT               132
->  #define CLK_SCLK_PIXELASYNCS_LITE_C_INIT               133
->
-> -#define CAM0_NR_CLK                                    134
-> -
->  /* CMU_CAM1 */
->  #define CLK_PHYCLK_RXBYTEECLKHS0_S2B                   1
->
-> @@ -1404,12 +1366,8 @@
->  #define CLK_ATCLK_ISP                                  111
->  #define CLK_SCLK_ISP_CA5                               112
->
-> -#define CAM1_NR_CLK                                    113
-> -
->  /* CMU_IMEM */
->  #define CLK_ACLK_SLIMSSS               2
->  #define CLK_PCLK_SLIMSSS               35
->
-> -#define IMEM_NR_CLK                    36
-> -
->  #endif /* _DT_BINDINGS_CLOCK_EXYNOS5433_H */
-> diff --git a/include/dt-bindings/clock/exynos7885.h b/include/dt-bindings/clock/exynos7885.h
-> index 8256e7430b63..255e3aa94323 100644
-> --- a/include/dt-bindings/clock/exynos7885.h
-> +++ b/include/dt-bindings/clock/exynos7885.h
-> @@ -69,7 +69,6 @@
->  #define CLK_GOUT_FSYS_MMC_EMBD         58
->  #define CLK_GOUT_FSYS_MMC_SDIO         59
->  #define CLK_GOUT_FSYS_USB30DRD         60
-> -#define TOP_NR_CLK                     61
->
->  /* CMU_CORE */
->  #define CLK_MOUT_CORE_BUS_USER                 1
-> @@ -86,7 +85,6 @@
->  #define CLK_GOUT_TREX_P_CORE_CCLK_P_CORE       12
->  #define CLK_GOUT_TREX_P_CORE_PCLK              13
->  #define CLK_GOUT_TREX_P_CORE_PCLK_P_CORE       14
-> -#define CORE_NR_CLK                            15
->
->  /* CMU_PERI */
->  #define CLK_MOUT_PERI_BUS_USER         1
-> @@ -132,7 +130,6 @@
->  #define CLK_GOUT_SYSREG_PERI_PCLK      41
->  #define CLK_GOUT_WDT0_PCLK             42
->  #define CLK_GOUT_WDT1_PCLK             43
-> -#define PERI_NR_CLK                    44
->
->  /* CMU_FSYS */
->  #define CLK_MOUT_FSYS_BUS_USER         1
-> @@ -146,6 +143,5 @@
->  #define CLK_GOUT_MMC_EMBD_SDCLKIN      8
->  #define CLK_GOUT_MMC_SDIO_ACLK         9
->  #define CLK_GOUT_MMC_SDIO_SDCLKIN      10
-> -#define FSYS_NR_CLK                    11
->
->  #endif /* _DT_BINDINGS_CLOCK_EXYNOS_7885_H */
-> diff --git a/include/dt-bindings/clock/exynos850.h b/include/dt-bindings/clock/exynos850.h
-> index afacba338c91..3090e09c9a55 100644
-> --- a/include/dt-bindings/clock/exynos850.h
-> +++ b/include/dt-bindings/clock/exynos850.h
-> @@ -88,7 +88,6 @@
->  #define CLK_MOUT_G3D_SWITCH            76
->  #define CLK_GOUT_G3D_SWITCH            77
->  #define CLK_DOUT_G3D_SWITCH            78
-> -#define TOP_NR_CLK                     79
->
->  /* CMU_APM */
->  #define CLK_RCO_I3C_PMIC               1
-> @@ -115,7 +114,6 @@
->  #define CLK_GOUT_GPIO_ALIVE_PCLK       22
->  #define CLK_GOUT_PMU_ALIVE_PCLK                23
->  #define CLK_GOUT_SYSREG_APM_PCLK       24
-> -#define APM_NR_CLK                     25
->
->  /* CMU_AUD */
->  #define CLK_DOUT_AUD_AUDIF             1
-> @@ -179,7 +177,6 @@
->  #define IOCLK_AUDIOCDCLK6              59
->  #define TICK_USB                       60
->  #define CLK_GOUT_AUD_CMU_AUD_PCLK      61
-> -#define AUD_NR_CLK                     62
->
->  /* CMU_CMGP */
->  #define CLK_RCO_CMGP                   1
-> @@ -197,7 +194,6 @@
->  #define CLK_GOUT_CMGP_USI1_IPCLK       13
->  #define CLK_GOUT_CMGP_USI1_PCLK                14
->  #define CLK_GOUT_SYSREG_CMGP_PCLK      15
-> -#define CMGP_NR_CLK                    16
->
->  /* CMU_G3D */
->  #define CLK_FOUT_G3D_PLL               1
-> @@ -212,7 +208,6 @@
->  #define CLK_GOUT_G3D_BUSD_CLK          10
->  #define CLK_GOUT_G3D_BUSP_CLK          11
->  #define CLK_GOUT_G3D_SYSREG_PCLK       12
-> -#define G3D_NR_CLK                     13
->
->  /* CMU_HSI */
->  #define CLK_MOUT_HSI_BUS_USER          1
-> @@ -231,7 +226,6 @@
->  #define CLK_GOUT_HSI_PPMU_ACLK         14
->  #define CLK_GOUT_HSI_PPMU_PCLK         15
->  #define CLK_GOUT_HSI_CMU_HSI_PCLK      16
-> -#define HSI_NR_CLK                     17
->
->  /* CMU_IS */
->  #define CLK_MOUT_IS_BUS_USER           1
-> @@ -257,7 +251,6 @@
->  #define CLK_GOUT_IS_SYSMMU_IS0_CLK     21
->  #define CLK_GOUT_IS_SYSMMU_IS1_CLK     22
->  #define CLK_GOUT_IS_SYSREG_PCLK                23
-> -#define IS_NR_CLK                      24
->
->  /* CMU_MFCMSCL */
->  #define CLK_MOUT_MFCMSCL_MFC_USER              1
-> @@ -275,7 +268,6 @@
->  #define CLK_GOUT_MFCMSCL_PPMU_PCLK             13
->  #define CLK_GOUT_MFCMSCL_SYSMMU_CLK            14
->  #define CLK_GOUT_MFCMSCL_SYSREG_PCLK           15
-> -#define MFCMSCL_NR_CLK                         16
->
->  /* CMU_PERI */
->  #define CLK_MOUT_PERI_BUS_USER         1
-> @@ -312,7 +304,6 @@
->  #define CLK_GOUT_UART_PCLK             32
->  #define CLK_GOUT_WDT0_PCLK             33
->  #define CLK_GOUT_WDT1_PCLK             34
-> -#define PERI_NR_CLK                    35
->
->  /* CMU_CORE */
->  #define CLK_MOUT_CORE_BUS_USER         1
-> @@ -329,7 +320,6 @@
->  #define CLK_GOUT_SSS_PCLK              12
->  #define CLK_GOUT_GPIO_CORE_PCLK                13
->  #define CLK_GOUT_SYSREG_CORE_PCLK      14
-> -#define CORE_NR_CLK                    15
->
->  /* CMU_DPU */
->  #define CLK_MOUT_DPU_USER              1
-> diff --git a/include/dt-bindings/clock/samsung,exynosautov9.h b/include/dt-bindings/clock/samsung,exynosautov9.h
-> index 42133af6d6b9..3065375c2d8b 100644
-> --- a/include/dt-bindings/clock/samsung,exynosautov9.h
-> +++ b/include/dt-bindings/clock/samsung,exynosautov9.h
-> @@ -166,16 +166,12 @@
->  #define GOUT_CLKCMU_PERIC1_IP          248
->  #define GOUT_CLKCMU_PERIS_BUS          249
->
-> -#define TOP_NR_CLK                     250
-> -
->  /* CMU_BUSMC */
->  #define CLK_MOUT_BUSMC_BUS_USER                1
->  #define CLK_DOUT_BUSMC_BUSP            2
->  #define CLK_GOUT_BUSMC_PDMA0_PCLK      3
->  #define CLK_GOUT_BUSMC_SPDMA_PCLK      4
->
-> -#define BUSMC_NR_CLK                   5
-> -
->  /* CMU_CORE */
->  #define CLK_MOUT_CORE_BUS_USER         1
->  #define CLK_DOUT_CORE_BUSP             2
-> @@ -183,8 +179,6 @@
->  #define CLK_GOUT_CORE_CCI_PCLK         4
->  #define CLK_GOUT_CORE_CMU_CORE_PCLK    5
->
-> -#define CORE_NR_CLK                    6
-> -
->  /* CMU_FSYS0 */
->  #define CLK_MOUT_FSYS0_BUS_USER                1
->  #define CLK_MOUT_FSYS0_PCIE_USER       2
-> @@ -226,8 +220,6 @@
->  #define CLK_GOUT_FSYS0_PCIE_GEN3A_4L_CLK               35
->  #define CLK_GOUT_FSYS0_PCIE_GEN3B_4L_CLK               36
->
-> -#define FSYS0_NR_CLK                   37
-> -
->  /* CMU_FSYS1 */
->  #define FOUT_MMC_PLL                           1
->
-> @@ -251,8 +243,6 @@
->  #define CLK_GOUT_FSYS1_USB30_0_ACLK            17
->  #define CLK_GOUT_FSYS1_USB30_1_ACLK            18
->
-> -#define FSYS1_NR_CLK                           19
-> -
->  /* CMU_FSYS2 */
->  #define CLK_MOUT_FSYS2_BUS_USER                1
->  #define CLK_MOUT_FSYS2_UFS_EMBD_USER   2
-> @@ -262,8 +252,6 @@
->  #define CLK_GOUT_FSYS2_UFS_EMBD1_ACLK  6
->  #define CLK_GOUT_FSYS2_UFS_EMBD1_UNIPRO        7
->
-> -#define FSYS2_NR_CLK                   8
-> -
->  /* CMU_PERIC0 */
->  #define CLK_MOUT_PERIC0_BUS_USER       1
->  #define CLK_MOUT_PERIC0_IP_USER                2
-> @@ -308,8 +296,6 @@
->  #define CLK_GOUT_PERIC0_PCLK_10                42
->  #define CLK_GOUT_PERIC0_PCLK_11                43
->
-> -#define PERIC0_NR_CLK                  44
-> -
->  /* CMU_PERIC1 */
->  #define CLK_MOUT_PERIC1_BUS_USER       1
->  #define CLK_MOUT_PERIC1_IP_USER                2
-> @@ -354,14 +340,10 @@
->  #define CLK_GOUT_PERIC1_PCLK_10                42
->  #define CLK_GOUT_PERIC1_PCLK_11                43
->
-> -#define PERIC1_NR_CLK                  44
-> -
->  /* CMU_PERIS */
->  #define CLK_MOUT_PERIS_BUS_USER                1
->  #define CLK_GOUT_SYSREG_PERIS_PCLK     2
->  #define CLK_GOUT_WDT_CLUSTER0          3
->  #define CLK_GOUT_WDT_CLUSTER1          4
->
-> -#define PERIS_NR_CLK                   5
-> -
->  #endif /* _DT_BINDINGS_CLOCK_EXYNOSAUTOV9_H */
 > --
-> 2.34.1
->
+> Kees Cook
