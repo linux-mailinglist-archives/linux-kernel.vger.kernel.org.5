@@ -2,177 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AC0774576
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A18427744EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233959AbjHHSml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60692 "EHLO
+        id S235916AbjHHSbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232140AbjHHSmU (ORCPT
+        with ESMTP id S231886AbjHHSb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:42:20 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978303213B;
-        Tue,  8 Aug 2023 09:33:06 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id DD6C222481;
-        Tue,  8 Aug 2023 09:26:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691486813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b3NxAQUEhhiHtmalxt25UQpIEh3A8DobG2qOMrP77WQ=;
-        b=AoaZr4oK+uPjgRe+H1N/P4OqdxMzaLQwACpyg7af2LxycPofpRJURn7+dS209wAPqvb2Pa
-        pyguefJyN0BETiXosk+qeiLcs65x2b42r4Xs2kf58Hhxb2lmpsj3DMEMMNaki6d405++FY
-        0hRnLs55sh8fmVIdow8NkLHWnHGd+BI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691486813;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b3NxAQUEhhiHtmalxt25UQpIEh3A8DobG2qOMrP77WQ=;
-        b=fxL/rpYwL46zGUX+wz6hOBohbpcZSktGMd5XhY0mnCjlb5Vurz5pFf3PTuD19V4sOSJ9Wo
-        YCByPZ22Ze/c5AAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A3130139E9;
-        Tue,  8 Aug 2023 09:26:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 4HStJ10K0mRsGAAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:26:53 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 1DB1BA0769; Tue,  8 Aug 2023 11:26:53 +0200 (CEST)
-Date:   Tue, 8 Aug 2023 11:26:53 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 04/13] btrfs: have it use inode_update_timestamps
-Message-ID: <20230808092653.ma6d72b4xwa3jk3f@quack3>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-4-d1dec143a704@kernel.org>
+        Tue, 8 Aug 2023 14:31:28 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656FEB5E81;
+        Tue,  8 Aug 2023 10:51:58 -0700 (PDT)
+Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RKnsX1tKMzVk6Z;
+        Tue,  8 Aug 2023 17:27:44 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 8 Aug 2023 17:29:37 +0800
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
+CC:     <fweisbec@gmail.com>, <mingo@elte.hu>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <zhengyejian1@huawei.com>
+Subject: [PATCH] tracing: Fix memleak due to race between current_tracer and trace
+Date:   Tue, 8 Aug 2023 17:29:05 +0800
+Message-ID: <20230808092905.2936459-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807-mgctime-v7-4-d1dec143a704@kernel.org>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.175.61]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 07-08-23 15:38:35, Jeff Layton wrote:
-> In later patches, we're going to drop the "now" argument from the
-> update_time operation. Have btrfs_update_time use the new
-> inode_update_timestamps helper to fetch a new timestamp and update it
-> properly.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Kmemleak report a leak in graph_trace_open():
 
-Nice cleanup! Feel free to add:
+  unreferenced object 0xffff0040b95f4a00 (size 128):
+    comm "cat", pid 204981, jiffies 4301155872 (age 99771.964s)
+    hex dump (first 32 bytes):
+      e0 05 e7 b4 ab 7d 00 00 0b 00 01 00 00 00 00 00 .....}..........
+      f4 00 01 10 00 a0 ff ff 00 00 00 00 65 00 10 00 ............e...
+    backtrace:
+      [<000000005db27c8b>] kmem_cache_alloc_trace+0x348/0x5f0
+      [<000000007df90faa>] graph_trace_open+0xb0/0x344
+      [<00000000737524cd>] __tracing_open+0x450/0xb10
+      [<0000000098043327>] tracing_open+0x1a0/0x2a0
+      [<00000000291c3876>] do_dentry_open+0x3c0/0xdc0
+      [<000000004015bcd6>] vfs_open+0x98/0xd0
+      [<000000002b5f60c9>] do_open+0x520/0x8d0
+      [<00000000376c7820>] path_openat+0x1c0/0x3e0
+      [<00000000336a54b5>] do_filp_open+0x14c/0x324
+      [<000000002802df13>] do_sys_openat2+0x2c4/0x530
+      [<0000000094eea458>] __arm64_sys_openat+0x130/0x1c4
+      [<00000000a71d7881>] el0_svc_common.constprop.0+0xfc/0x394
+      [<00000000313647bf>] do_el0_svc+0xac/0xec
+      [<000000002ef1c651>] el0_svc+0x20/0x30
+      [<000000002fd4692a>] el0_sync_handler+0xb0/0xb4
+      [<000000000c309c35>] el0_sync+0x160/0x180
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+The root cause is descripted as follows:
 
-								Honza
+  __tracing_open() {  // 1. File 'trace' is being opened;
+    ...
+    *iter->trace = *tr->current_trace;  // 2. Tracer 'function_graph' is
+                                        //    currently set;
+    ...
+    iter->trace->open(iter);  // 3. Call graph_trace_open() here,
+                              //    and memory are allocated in it;
+    ...
+  }
 
-> ---
->  fs/btrfs/inode.c | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 29a20f828dda..d52e7d64570a 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -6068,14 +6068,7 @@ static int btrfs_update_time(struct inode *inode, struct timespec64 *now,
->  	if (btrfs_root_readonly(root))
->  		return -EROFS;
->  
-> -	if (flags & S_VERSION)
-> -		dirty |= inode_maybe_inc_iversion(inode, dirty);
-> -	if (flags & S_CTIME)
-> -		inode_set_ctime_to_ts(inode, *now);
-> -	if (flags & S_MTIME)
-> -		inode->i_mtime = *now;
-> -	if (flags & S_ATIME)
-> -		inode->i_atime = *now;
-> +	dirty = inode_update_timestamps(inode, flags);
->  	return dirty ? btrfs_dirty_inode(BTRFS_I(inode)) : 0;
->  }
->  
-> 
-> -- 
-> 2.41.0
-> 
+  s_start() {  // 4. The opened file is being read;
+    ...
+    *iter->trace = *tr->current_trace;  // 5. If tracer is switched to
+                                        //    'nop' or others, then memory
+                                        //    in step 3 are leaked!!!
+    ...
+  }
+
+To fix it, in s_start(), close tracer before switching then reopen the
+new tracer after switching.
+
+Fixes: d7350c3f4569 ("tracing/core: make the read callbacks reentrants")
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+---
+ kernel/trace/trace.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index b8870078ef58..d50a0227baa3 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -4213,8 +4213,15 @@ static void *s_start(struct seq_file *m, loff_t *pos)
+ 	 * will point to the same string as current_trace->name.
+ 	 */
+ 	mutex_lock(&trace_types_lock);
+-	if (unlikely(tr->current_trace && iter->trace->name != tr->current_trace->name))
++	if (unlikely(tr->current_trace && iter->trace->name != tr->current_trace->name)) {
++		/* Close iter->trace before switching to the new current tracer */
++		if (iter->trace->close)
++			iter->trace->close(iter);
+ 		*iter->trace = *tr->current_trace;
++		/* Reopen the new current tracer */
++		if (iter->trace->open)
++			iter->trace->open(iter);
++	}
+ 	mutex_unlock(&trace_types_lock);
+ 
+ #ifdef CONFIG_TRACER_MAX_TRACE
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.25.1
+
