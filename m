@@ -2,168 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 449FB77355D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 02:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B86773582
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 02:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbjHHA36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 20:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
+        id S229445AbjHHAqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 20:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjHHA3z (ORCPT
+        with ESMTP id S229545AbjHHAqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 20:29:55 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2050.outbound.protection.outlook.com [40.107.223.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B0110F7
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 17:29:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fcgvjWnzbAtKzXZX37WrW1xkstwQNVnojak1hNhRLKrfZ3FqQFpQf74iZk4SHBYp/oJbsXFFkKbxSHFaT5H4mLEx55vvNCFlVeLavjQFD1BrElgXZgMpUhFiattNEOhjPdLVKpK+du1znlB3ZMsIsyNFnjQcCMGJjAk95gneqREKgPq91xu3odH1Cz9l8NchouoFo11CrGSq9VAsbJvtiey0N8oYAHBqjbS2CoaelOGoWdxT3tZ3Gg3cC5c+CMzVLUQByVVUGC16pexvu7aCK2EO6F/UN4wK9il6ninhhnu1xKbHlb6xbtKXceSJGcHDXDiqPQCTCsdeJjARSuVMyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pQCYAf2GHWfMYiZEWRyX+8EtwJ1150SxaRena4BiZvQ=;
- b=S5qih8jDxMRQw3lVyaLt8k69SZE6ct2Qu5C0jAWdsEtDkdTvLCwyxyBih8YnG+KiQ4Ksi8DX6xpxMs9hphFHsGRTjO2DGoMZQGXqRmXGFJ/0S9J9LLk74xktaADB+PjnAb4U9Ve7NlIurkBCHYH8sUIkwonq+uKkMhMKh/p0enK0DufNTq45ZLIpKIxZpBQhU9Q4MmgZbf3RIgZ1+3d7uGv8vahON+uDaVaVL00KbtKXY1gAdff4xu6Al8g3JwqsyMODL+upGDTYRnG9LyZonaNoPfl/9K+qS+oOPQkFUWELuApCs7Ix0AR/BhGhtDfnllwGwTnK4Bm+N4+YIQPPpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pQCYAf2GHWfMYiZEWRyX+8EtwJ1150SxaRena4BiZvQ=;
- b=DCSFCxw6motkq95gr1l2xzDYfYCJmwqefyd8U1tyBv+6Urji0fLGqelJkGRZ5K9HPjFbQEc+uS3Xo+M0atwUcVpnRXDmauuZfl0Qi/05SNlXaoBsPNjngRTfCg2Dgss0PBXpx84w5ZlyTjwF/WlAijVV8hj8sZ+ETUu/axoB0Js6tATD1hfpJ4JeoPGNH63A48HOxS89lFgclwSud/631WPAQGMjaBNlbSgw+9p728GrAZdf5X4hDTZAQrPA5GSV6D3arOL1C6a+rbeiFn3V3GOZbPl65n3AmU8AFtArLUZH+X6UBuXQClrKAbqmzTQyqtq42fE+in25k8xpR6Bdgw==
-Received: from CY5PR15CA0055.namprd15.prod.outlook.com (2603:10b6:930:1b::18)
- by SN7PR12MB6791.namprd12.prod.outlook.com (2603:10b6:806:268::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Tue, 8 Aug
- 2023 00:29:48 +0000
-Received: from CY4PEPF0000E9D9.namprd05.prod.outlook.com
- (2603:10b6:930:1b:cafe::a8) by CY5PR15CA0055.outlook.office365.com
- (2603:10b6:930:1b::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26 via Frontend
- Transport; Tue, 8 Aug 2023 00:29:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CY4PEPF0000E9D9.mail.protection.outlook.com (10.167.241.77) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6652.20 via Frontend Transport; Tue, 8 Aug 2023 00:29:51 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 7 Aug 2023
- 17:29:40 -0700
-Received: from [10.110.48.28] (10.126.230.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Mon, 7 Aug 2023
- 17:29:39 -0700
-Message-ID: <118d69d1-f70f-4f55-afbe-e3fc940de805@nvidia.com>
-Date:   Mon, 7 Aug 2023 17:29:38 -0700
+        Mon, 7 Aug 2023 20:46:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F23F1729
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 17:45:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691455515;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sGJFayB7bCVn9/1N40kGbarhDrToVdrzWQTJfbXai58=;
+        b=fMNH5UN2dF594MkgE5+1z2oo0uiWgP7tgQdaxaq7kFOKK6hQ2OmzUymrkq1GgeDPUNLhqR
+        WzCKduH7nCkgLVbMLJxx1K4t0p7SBDR59C2A55r5H8TUYDqpUax6ipwrct0rBXtfA3D6hA
+        yKF7wAhDnz6QCGfO/qvboLnPs+Rzalg=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-37-mo-ZCOFZPLe2m9K3sqQxGA-1; Mon, 07 Aug 2023 20:45:13 -0400
+X-MC-Unique: mo-ZCOFZPLe2m9K3sqQxGA-1
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-686c06b9338so3590525b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 17:45:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691455512; x=1692060312;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sGJFayB7bCVn9/1N40kGbarhDrToVdrzWQTJfbXai58=;
+        b=XHK1d8DxhJScM4KttgxU1X0QBumO15dSh4Ay2rjjiJ9Q0W/G39DEHOLwfcIiS+DtBV
+         kRjoCT7fXuIW/Q5MCqg5a+FkUO7KYf36NSCqUjd8fKjIxwtf18AvMc36mweU0ydshuxs
+         6fJeODUyCQ/u0TGnojo9nZMgQ6MfwWpHa0avtsCQZoqPBE8KX6QTjfeQSepyUMs1OI/w
+         UwaM+rOThr8KRED6KNUmuR4pcZm5YRSXcyzEyZ2UNzJsjvKlc5mAWBKT1oL5bXGTVeTx
+         u182u291uZv6eSkgXhr1DF5oy8Z7LUTczPFc70/dr4/So5Bv4rgM9iB1KYtpmteEwHFY
+         pWaQ==
+X-Gm-Message-State: AOJu0YyHJv9XfFTztJdkXZEvU+hJnBfexkLtUNbW8y0ZSH4rpVV8B4Ju
+        XsHF1mJlLiKuaLl1u6d4sAihyON7AAPklaoD9QmGMDmv813JA60pqHl9LCCvlD5A4QH0JMRpW4s
+        F5lRhdT0t0Saqc8lTv5ntjU+r
+X-Received: by 2002:a05:6a00:2d0d:b0:682:95ab:32f with SMTP id fa13-20020a056a002d0d00b0068295ab032fmr8840870pfb.1.1691455512455;
+        Mon, 07 Aug 2023 17:45:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFPkg2N/6rv8StSTvx9osL3J8Biz7ajOJBmiOw02E0b1JL6aepB6QDRdOjdXV+aH+upMyu4Nw==
+X-Received: by 2002:a05:6a00:2d0d:b0:682:95ab:32f with SMTP id fa13-20020a056a002d0d00b0068295ab032fmr8840855pfb.1.1691455512062;
+        Mon, 07 Aug 2023 17:45:12 -0700 (PDT)
+Received: from [10.72.112.77] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id s18-20020aa78292000000b0064928cb5f03sm6770401pfm.69.2023.08.07.17.45.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 17:45:11 -0700 (PDT)
+Message-ID: <bcda164b-e4b7-1c16-2714-13e3c6514b47@redhat.com>
+Date:   Tue, 8 Aug 2023 08:45:05 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 04/32] mm/pgtable: allow pte_offset_map[_lock]() to
- fail
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v10 00/12] ceph: support idmapped mounts
 Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Yongqin Liu <yongqin.liu@linaro.org>
-CC:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Mike Rapoport" <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Steven Price <steven.price@arm.com>,
-        SeongJae Park <sj@kernel.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Song Liu <song@kernel.org>,
-        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <c1c9a74a-bc5b-15ea-e5d2-8ec34bc921d@google.com>
- <2929bfd-9893-a374-e463-4c3127ff9b9d@google.com>
- <CAMSo37X5GzFmqNAtABuibmMAF7t=_5SYCipMPZ-TB+uEMYkSUA@mail.gmail.com>
- <ZMPLFqJ192j0loCV@casper.infradead.org>
- <da591261-26f1-5cf7-1435-a98ae21f5141@google.com>
- <CAMSo37UxxZ6dc9cY=TArOP01jTuBHuLT1BGv0d=y_hJA1_7Zvw@mail.gmail.com>
- <ZM6BuZ+hNkhwkJn5@casper.infradead.org>
-From:   John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <ZM6BuZ+hNkhwkJn5@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Cc:     brauner@kernel.org, stgraber@ubuntu.com,
+        linux-fsdevel@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230807132626.182101-1-aleksandr.mikhalitsyn@canonical.com>
+From:   Xiubo Li <xiubli@redhat.com>
+In-Reply-To: <20230807132626.182101-1-aleksandr.mikhalitsyn@canonical.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.230.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D9:EE_|SN7PR12MB6791:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5fd9ea6e-f2a9-452e-4b35-08db97a69454
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9fRF0wjQmlNCSDFo/pH220x3PES1EHZ1K6npMKv5KMw52Qd1FGHe/1Sx+N8VJCbbcwLwqf3uWLz8SYmqNsiAdHWN38zV+T5vyIy17YP8AirTOCNeE0wBCfypo2JXhCsl2SmcuZkiDQ6OgaXLRBrSJ46Hy5Gko0H1m6JPpDDSmzTXOjF4N4gwZgdbs+6t2slOaIXcy/UzZQUMvy+lsrrMOBNB/kYQpUOa+K5/XJNtCfKV+ERGss6vGEldbnFOHhWFQVJ2lrWgHdS7RWQkRizkU6p8pP6ouiat/7AcnUcYIz8A4N+b4ob+CXK1UfGSzHAq2HOpQ2Yc8+T9ee2xyQT8F1G7TFmF55ga/5360Oh42eejyzRcIpPRORnmJqh81wlNtEQXQ5lYfgWLF/hlDruN2+7QiH2A3wT7A1qTNuGSB/GxujPqmcWoLY8v8lMShHO6qnTRayh/rREeY/GfP6PRQTrATY/WlXp3TqgDmn17ZyVDvWJlVUVZgj3oZiRxba4/8/sbZmQJvPF+/GwC1s18GHu+Uul5mAcUVVQlsnsJEYKAhAkPyPoDItAwHxrMeSlrfdDBgL63mCmvg3Ao12YBRVNnUF9NS79PgyT5aPVVSM/AxbzcU6ghsjSIQY7nXf2BviZqIizUf/VPdpF8e8gVtZyEmmKRSvdS8uyhygLmyJOz8wStbXmJ9YgDLokj9OaFUrgAAB65DyETWrsPlxzzHBUcLFED2ZLVSLupTkmfCWyoLDyGXqzsDQ95W8Bv9RAlmG0xTntWAwhskFVZArbyQ3keDpwWtwB5s3m4EVd1zBbClsLQnMkOHO7Hl7mpb/RGciomYDB8RFCL3pBRTgi+GXAwd4sCRZrRlCxQ0+Qbwxuos2J6wTwuT7pbKMVbl6hH
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(346002)(39860400002)(396003)(90011799007)(451199021)(90021799007)(186006)(82310400008)(1800799003)(40470700004)(46966006)(36840700001)(7636003)(40480700001)(2616005)(40460700003)(86362001)(966005)(478600001)(82740400003)(31696002)(26005)(36756003)(53546011)(41300700001)(356005)(4744005)(5660300002)(16576012)(8936002)(316002)(7416002)(8676002)(7406005)(54906003)(110136005)(2906002)(4326008)(70586007)(16526019)(336012)(70206006)(83380400001)(47076005)(36860700001)(31686004)(426003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2023 00:29:51.1037
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5fd9ea6e-f2a9-452e-4b35-08db97a69454
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D9.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6791
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/23 10:07, Matthew Wilcox wrote:
-...
->> Sorry, I am not able to give any explanation here,
->> I am not familiar with the pvrsrvkm source, I just use it to have one
->> working AOSP build.
->>
->> here is the source file where pte_offset_map_lock is called,
->>      https://android-git.linaro.org/kernel/omap-modules.git/tree/pvr/services4/srvkm/env/linux/osfunc.c?h=android-mainline#n3508
->> in case you could know something with a quick look.
-> 
-> Isn't this just get_user_pages()?
+LGTM.
 
+Reviewed-by: Xiubo Li <xiubli@redhat.com>
 
-Or even just follow_page(), which looks like a nearly perfect drop-in
-replacement, especially since that android link also says, "The page in
-question must be present (i.e. no fault handling required)".
+I will queue this to the 'testing' branch and then we will run ceph qa 
+tests.
 
+Thanks Alex.
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+- Xiubo
+
+On 8/7/23 21:26, Alexander Mikhalitsyn wrote:
+> Dear friends,
+>
+> This patchset was originally developed by Christian Brauner but I'll continue
+> to push it forward. Christian allowed me to do that :)
+>
+> This feature is already actively used/tested with LXD/LXC project.
+>
+> Git tree (based on https://github.com/ceph/ceph-client.git testing):
+> v10: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v10
+> current: https://github.com/mihalicyn/linux/tree/fs.idmapped.ceph
+>
+> In the version 3 I've changed only two commits:
+> - fs: export mnt_idmap_get/mnt_idmap_put
+> - ceph: allow idmapped setattr inode op
+> and added a new one:
+> - ceph: pass idmap to __ceph_setattr
+>
+> In the version 4 I've reworked the ("ceph: stash idmapping in mdsc request")
+> commit. Now we take idmap refcounter just in place where req->r_mnt_idmap
+> is filled. It's more safer approach and prevents possible refcounter underflow
+> on error paths where __register_request wasn't called but ceph_mdsc_release_request is
+> called.
+>
+> Changelog for version 5:
+> - a few commits were squashed into one (as suggested by Xiubo Li)
+> - started passing an idmapping everywhere (if possible), so a caller
+> UID/GID-s will be mapped almost everywhere (as suggested by Xiubo Li)
+>
+> Changelog for version 6:
+> - rebased on top of testing branch
+> - passed an idmapping in a few places (readdir, ceph_netfs_issue_op_inline)
+>
+> Changelog for version 7:
+> - rebased on top of testing branch
+> - this thing now requires a new cephfs protocol extension CEPHFS_FEATURE_HAS_OWNER_UIDGID
+> https://github.com/ceph/ceph/pull/52575
+>
+> Changelog for version 8:
+> - rebased on top of testing branch
+> - added enable_unsafe_idmap module parameter to make idmapped mounts
+> work with old MDS server versions
+> - properly handled case when old MDS used with new kernel client
+>
+> Changelog for version 9:
+> - added "struct_len" field in struct ceph_mds_request_head as requested by Xiubo Li
+>
+> Changelog for version 10:
+> - fill struct_len field properly (use cpu_to_le32)
+> - add extra checks IS_CEPH_MDS_OP_NEWINODE(..) as requested by Xiubo to match
+>    userspace client behavior
+> - do not set req->r_mnt_idmap for MKSNAP operation
+> - atomic_open: set req->r_mnt_idmap only for CEPH_MDS_OP_CREATE as userspace client does
+>
+> I can confirm that this version passes xfstests and
+> tested with old MDS (without CEPHFS_FEATURE_HAS_OWNER_UIDGID)
+> and with recent MDS version.
+>
+> Links to previous versions:
+> v1: https://lore.kernel.org/all/20220104140414.155198-1-brauner@kernel.org/
+> v2: https://lore.kernel.org/lkml/20230524153316.476973-1-aleksandr.mikhalitsyn@canonical.com/
+> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v2
+> v3: https://lore.kernel.org/lkml/20230607152038.469739-1-aleksandr.mikhalitsyn@canonical.com/#t
+> v4: https://lore.kernel.org/lkml/20230607180958.645115-1-aleksandr.mikhalitsyn@canonical.com/#t
+> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v4
+> v5: https://lore.kernel.org/lkml/20230608154256.562906-1-aleksandr.mikhalitsyn@canonical.com/#t
+> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v5
+> v6: https://lore.kernel.org/lkml/20230609093125.252186-1-aleksandr.mikhalitsyn@canonical.com/
+> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v6
+> v7: https://lore.kernel.org/all/20230726141026.307690-1-aleksandr.mikhalitsyn@canonical.com/
+> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v7
+> v8: https://lore.kernel.org/all/20230803135955.230449-1-aleksandr.mikhalitsyn@canonical.com/
+> tree: -
+> v9: https://lore.kernel.org/all/20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com/
+> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v9
+>
+> Kind regards,
+> Alex
+>
+> Original description from Christian:
+> ========================================================================
+> This patch series enables cephfs to support idmapped mounts, i.e. the
+> ability to alter ownership information on a per-mount basis.
+>
+> Container managers such as LXD support sharaing data via cephfs between
+> the host and unprivileged containers and between unprivileged containers.
+> They may all use different idmappings. Idmapped mounts can be used to
+> create mounts with the idmapping used for the container (or a different
+> one specific to the use-case).
+>
+> There are in fact more use-cases such as remapping ownership for
+> mountpoints on the host itself to grant or restrict access to different
+> users or to make it possible to enforce that programs running as root
+> will write with a non-zero {g,u}id to disk.
+>
+> The patch series is simple overall and few changes are needed to cephfs.
+> There is one cephfs specific issue that I would like to discuss and
+> solve which I explain in detail in:
+>
+> [PATCH 02/12] ceph: handle idmapped mounts in create_request_message()
+>
+> It has to do with how to handle mds serves which have id-based access
+> restrictions configured. I would ask you to please take a look at the
+> explanation in the aforementioned patch.
+>
+> The patch series passes the vfs and idmapped mount testsuite as part of
+> xfstests. To run it you will need a config like:
+>
+> [ceph]
+> export FSTYP=ceph
+> export TEST_DIR=/mnt/test
+> export TEST_DEV=10.103.182.10:6789:/
+> export TEST_FS_MOUNT_OPTS="-o name=admin,secret=$password
+>
+> and then simply call
+>
+> sudo ./check -g idmapped
+>
+> ========================================================================
+>
+> Alexander Mikhalitsyn (3):
+>    fs: export mnt_idmap_get/mnt_idmap_put
+>    ceph: add enable_unsafe_idmap module parameter
+>    ceph: pass idmap to __ceph_setattr
+>
+> Christian Brauner (9):
+>    ceph: stash idmapping in mdsc request
+>    ceph: handle idmapped mounts in create_request_message()
+>    ceph: pass an idmapping to mknod/symlink/mkdir
+>    ceph: allow idmapped getattr inode op
+>    ceph: allow idmapped permission inode op
+>    ceph: allow idmapped setattr inode op
+>    ceph/acl: allow idmapped set_acl inode op
+>    ceph/file: allow idmapped atomic_open inode op
+>    ceph: allow idmapped mounts
+>
+>   fs/ceph/acl.c                 |  6 +--
+>   fs/ceph/crypto.c              |  2 +-
+>   fs/ceph/dir.c                 |  4 ++
+>   fs/ceph/file.c                | 11 ++++-
+>   fs/ceph/inode.c               | 29 +++++++------
+>   fs/ceph/mds_client.c          | 78 ++++++++++++++++++++++++++++++++---
+>   fs/ceph/mds_client.h          |  8 +++-
+>   fs/ceph/super.c               |  7 +++-
+>   fs/ceph/super.h               |  3 +-
+>   fs/mnt_idmapping.c            |  2 +
+>   include/linux/ceph/ceph_fs.h  | 10 ++++-
+>   include/linux/mnt_idmapping.h |  3 ++
+>   12 files changed, 136 insertions(+), 27 deletions(-)
+>
 
