@@ -2,134 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 729B8774800
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1317747BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235184AbjHHTXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46732 "EHLO
+        id S236032AbjHHTSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236065AbjHHTWl (ORCPT
+        with ESMTP id S235955AbjHHTSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:22:41 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92D4112450;
-        Tue,  8 Aug 2023 09:46:56 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id C629A5C00A8;
-        Tue,  8 Aug 2023 04:02:50 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 08 Aug 2023 04:02:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1691481770; x=1691568170; bh=Sp
-        DaR7i7R4jir2nSPb/IHojOH5Ejtlxz8VTxnsIiQQk=; b=u1WnBMVQOTf7j2DlqH
-        /nYYDrjfRUTMffWJ8BIV7YS24zwiW9W0RRF3o3CL4JKi2qGC8rvLgRvMRd9/fHzF
-        uYd2g9YO1XEnHdE2xeCbytYU0FMD6ubMau7/vUPlZZv4Oa1Hja81+lFmfG8a+pfc
-        pOqL4ZBI/0+Uv6M+JyC0OViuEcP8GD1x+S+qm4jZDdE58CUw4FTxl27AtFn1HwxP
-        2jxIDy54npwmdEnmzo6GPH8RwKcRUZKr3dKq+N5vsNP5Ljuw1SY96wjCCqkbIR+B
-        9DtOGa5deMfh1drSGYrFh0//dR+6TSQHpqi3DYH4uupn1ejCZCB6jR9H9PNX5Xne
-        GyYA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1691481770; x=1691568170; bh=SpDaR7i7R4jir
-        2nSPb/IHojOH5Ejtlxz8VTxnsIiQQk=; b=zWLIdpSZsxtisBULh8uXVlRFlu6qp
-        XXrfhIYdOxptbOZWeZ7AyNSw9jHHPqXxaWnRfp69spGesEh1f+VPfyu1Gu+K+e0x
-        bx4dEm6RLNxRxgAMQmnKcXkcilesOhgr2GrTGPXoPE50cacPXjgo2sJ7anCsPO5V
-        qqONvsaKfA6SeFQecwJMY3bO0wJmliqH46TYlVDcxWZyIcI8RJnbSSc5KRPlOqkP
-        jplqfzih/6UAwsWXM2KhnkCVKsVlUJmIL1qAaj1uPlimIxGVE7P/4kn55LI5vIO1
-        tJ/qt8hRtYi3YvhKRKkeGhWpu8P5P9huq/T5aXCnPE5DgrtGvU9DJVpeg==
-X-ME-Sender: <xms:qfbRZAN7Xzc2QVQNe3RR9hkT5kntAlldaYM19biukw0ctjUkGyMH1g>
-    <xme:qfbRZG8u5qSny_ilsAUiJpx_Qura8bPrx7u6_RmSDTG5apIveOjryu6UINn6GBmNM
-    E8u7bmLxqoteOILyFI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrledvucetufdoteggodetrfdotffvucfrrh
-    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
-    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
-    epofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehrnhguuceu
-    vghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvghrnh
-    epffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdekteffnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhguse
-    grrhhnuggsrdguvg
-X-ME-Proxy: <xmx:qfbRZHTXbQtlGgZHHSSK2s1fBItgMX9sBz9bDdqBFDuuCsvSib8_2w>
-    <xmx:qfbRZItgKgnv6MUZLnvBCMPoRMpbaS_dUvNzUEZhhQiExf1TzmH36g>
-    <xmx:qfbRZIfBL8Ba75mhLTIwVS-UyRe-0yPKfnobdC0-u4TeVp8Rqz1uDQ>
-    <xmx:qvbRZH9CKXpnY4c2xq1_9N_PKt94GE6ipExDqivnjuKReWBxgaHFcA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 1DCE8B60089; Tue,  8 Aug 2023 04:02:49 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
-Mime-Version: 1.0
-Message-Id: <487477f3-9708-4a28-a4fa-0c652353467b@app.fastmail.com>
-In-Reply-To: <20230808072501.3393-1-Wenhua.Lin@unisoc.com>
-References: <20230808072501.3393-1-Wenhua.Lin@unisoc.com>
-Date:   Tue, 08 Aug 2023 10:02:28 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Wenhua Lin" <Wenhua.Lin@unisoc.com>,
-        "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
-        "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
-        "Samuel Holland" <samuel@sholland.org>,
-        "Robert Jarzmik" <robert.jarzmik@free.fr>,
-        "Mattijs Korpershoek" <mkorpershoek@baylibre.com>,
-        "Bartosz Golaszewski" <bartosz.golaszewski@linaro.org>,
-        "Orson Zhai" <orsonzhai@gmail.com>,
-        "Baolin Wang" <baolin.wang@linux.alibaba.com>,
-        "Chunyan Zhang" <zhang.lyra@gmail.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "wenhua lin" <wenhua.lin1994@gmail.com>,
-        "Xiongpeng Wu" <xiongpeng.wu@unisoc.com>
-Subject: Re: [PATCH] input: keyboard: Add sprd-keypad driver
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,T_SPF_TEMPERROR,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 15:18:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23AC1FF61F;
+        Tue,  8 Aug 2023 09:41:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691512868; x=1723048868;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ySK3NlCA6fyTM7xr3G84YaQjAx5GVDZt2tqPMcZ+1SA=;
+  b=BgXxXFNIe0dCMecngDK4Ac/z0xwyw49iWzN8VpZnAFyRc1iKPV0JlQkS
+   TDEQUY9cdi0enw/3W/Y0cAQGo9H30JflspDMFeL3kCDopuLkf4deIVFDk
+   vzoqghi0hLtgCG7iRkGcea9sG9QTAq0C+KXvAXAcyHpD0tURqh7Klypmz
+   nvAafrrOcOROn5TZuMm85AFHmm8Y1qmtk30QqsAwEfZq1o0PhpIQ6pGP4
+   4Od4px0EUwajpX8jSR/MIGl1ZfaM83jnCxSvq19IFOsPKK9oD1TWHmeYs
+   UmDGEC4vAIcaM9BO23UMvIss7bzd5lTHd4JAumUlb+D67e1d93U07Hget
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="374428090"
+X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
+   d="scan'208";a="374428090"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 01:03:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="760808069"
+X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
+   d="scan'208";a="760808069"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 08 Aug 2023 01:03:50 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qTHh1-0005DS-0c;
+        Tue, 08 Aug 2023 08:03:51 +0000
+Date:   Tue, 8 Aug 2023 16:03:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v2] Makefile.extrawarn: enable
+ -Wmissing-variable-declarations for W=1
+Message-ID: <202308081508.EI3CRzQo-lkp@intel.com>
+References: <20230807-missing_proto-v2-1-3ae2e188bb0c@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807-missing_proto-v2-1-3ae2e188bb0c@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023, at 09:25, Wenhua Lin wrote:
-> Add matrix keypad driver, support matrix keypad function.
->
-> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
+Hi Nick,
 
-Looks fine to me, just one minor thing to remember:
+kernel test robot noticed the following build errors:
 
-> +static int __maybe_unused sprd_keypad_resume(struct device *dev)
-> +{
-> +	struct sprd_keypad_data *data = dev_get_drvdata(dev);
-> +	int ret = 0;
-> +
-> +	if (!device_may_wakeup(dev)) {
-> +		ret = sprd_keypad_enable(data);
-> +		if (ret)
-> +			return ret;
-> +		ret = sprd_keypad_hw_init(data);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static SIMPLE_DEV_PM_OPS(sprd_keypad_pm_ops,
-> +			sprd_keypad_suspend, sprd_keypad_resume);
-> +
+[auto build test ERROR on 52a93d39b17dc7eb98b6aa3edb93943248e03b2f]
 
-SIMPLE_DEV_PM_OPS() is deprecated, please use the new
-DEFINE_SIMPLE_DEV_PM_OPS() for all new drivers, and
-remove the __maybe_unused annotation that is no longer
-needed with that.
+url:    https://github.com/intel-lab-lkp/linux/commits/Nick-Desaulniers/Makefile-extrawarn-enable-Wmissing-variable-declarations-for-W-1/20230808-005859
+base:   52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+patch link:    https://lore.kernel.org/r/20230807-missing_proto-v2-1-3ae2e188bb0c%40google.com
+patch subject: [PATCH v2] Makefile.extrawarn: enable -Wmissing-variable-declarations for W=1
+config: arm64-randconfig-r013-20230807 (https://download.01.org/0day-ci/archive/20230808/202308081508.EI3CRzQo-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230808/202308081508.EI3CRzQo-lkp@intel.com/reproduce)
 
-With that addressed (for the driver in general, I know nothing
-about the drivers/input specifics)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308081508.EI3CRzQo-lkp@intel.com/
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+All errors (new ones prefixed by >>):
 
-     Arnd
+   In file included from lib/test_bitops.c:9:
+   In file included from include/linux/module.h:13:
+   In file included from include/linux/stat.h:19:
+   In file included from include/linux/time.h:60:
+   In file included from include/linux/time32.h:13:
+   In file included from include/linux/timex.h:67:
+   In file included from arch/arm64/include/asm/timex.h:8:
+   In file included from arch/arm64/include/asm/arch_timer.h:18:
+   In file included from include/linux/smp.h:110:
+   In file included from include/linux/preempt.h:79:
+   In file included from arch/arm64/include/asm/preempt.h:6:
+   In file included from include/linux/thread_info.h:60:
+   In file included from arch/arm64/include/asm/thread_info.h:18:
+>> arch/arm64/include/asm/stack_pointer.h:8:24: error: no previous extern declaration for non-static variable 'current_stack_pointer' [-Werror,-Wmissing-variable-declarations]
+       8 | register unsigned long current_stack_pointer asm ("sp");
+         |                        ^
+   arch/arm64/include/asm/stack_pointer.h:8:10: note: declare 'static' if the variable is not intended to be used outside of this translation unit
+       8 | register unsigned long current_stack_pointer asm ("sp");
+         |          ^
+   1 error generated.
+
+
+vim +/current_stack_pointer +8 arch/arm64/include/asm/stack_pointer.h
+
+a9ea0017ebe888 Mark Rutland 2016-11-03  4  
+a9ea0017ebe888 Mark Rutland 2016-11-03  5  /*
+a9ea0017ebe888 Mark Rutland 2016-11-03  6   * how to get the current stack pointer from C
+a9ea0017ebe888 Mark Rutland 2016-11-03  7   */
+a9ea0017ebe888 Mark Rutland 2016-11-03 @8  register unsigned long current_stack_pointer asm ("sp");
+a9ea0017ebe888 Mark Rutland 2016-11-03  9  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
