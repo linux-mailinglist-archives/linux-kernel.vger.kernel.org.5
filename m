@@ -2,139 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55368773FDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0C977419A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233718AbjHHQyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
+        id S231273AbjHHRYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233654AbjHHQxq (ORCPT
+        with ESMTP id S234480AbjHHRXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:53:46 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBAB4FB0E;
-        Tue,  8 Aug 2023 08:58:48 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id ADBD066071E9;
-        Tue,  8 Aug 2023 08:21:20 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691479281;
-        bh=UXRcgMncZj39YeKfwT0rE7PfhMSJQ8L3/sbxhBni15s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NK7ESBq/vynUZ0Aazs9Dv3B48dz4zwMylbAeXJWVjgbX0SRVb4XVKHmOK689nJcsI
-         940GrX/OyXYwglHIez6BsuJ5SnoypyDdhvMlC2dh48xqc5re0LuN0wGfHbaZu7yjPw
-         ihmKR3w23weg0AxJVQWy/DWUzflpbA+9m4O40mHmqts6OB7F45jYaok7FmOlO6nfGK
-         Tvd8zy79/WYRbfuW2OXi7nNEf15+GwtJLaA96nzjdh7VWWlo1DZgC2A17iqiEiWYMP
-         9Xwp9XM2n/jZgg/P/NiZ4YaVImnQoV7VHCDvuGCqKp5cnDSEr2bq3xsXFSnIGHnAx8
-         kMbkoFMYZdQ7g==
-Date:   Tue, 8 Aug 2023 09:21:17 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, tzimmermann@suse.de,
-        mripard@kernel.org, corbet@lwn.net, christian.koenig@amd.com,
-        bskeggs@redhat.com, Liam.Howlett@oracle.com,
-        matthew.brost@intel.com, alexdeucher@gmail.com, ogabbay@kernel.org,
-        bagasdotme@gmail.com, willy@infradead.org, jason@jlekstrand.net,
-        donald.robson@imgtec.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-doc@vger.kernel.org,
+        Tue, 8 Aug 2023 13:23:41 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799221EF72;
+        Tue,  8 Aug 2023 09:09:54 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso9496472e87.1;
+        Tue, 08 Aug 2023 09:09:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691510967; x=1692115767;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Qc9TaZ0YZxfr2ijk4qJEfWVJCx/zM4Mwpq5TAaoTRE=;
+        b=RFgjI424/B1J8d6fEQU85hdFR29a2/jvGuzeKNbrcbA2Kz+4Z4+3nkGWGw1SIKjUnl
+         XfQEwoKbPHyPc3IMihHxdlHz4D1RSKgM1PZ+ik2B3T2OqH3aM1CQCVkFcrn+8qCM6LfA
+         48wihyD2GoNsnhjaeEyD7JRgKohwaBlqzUJ5bVpefjLB/qok90Cxn9nQMmvSD31xdFcA
+         /ghsCcLoOrE0ncMr0yGRr7gZv6ejow98BpmWYVuf/eBxkFQMOsrRHOdOndCaIsI7l9kG
+         pp75lojReKqQcHxFA+B7/KiBd5qDmAexqF5KNnN2J81xB2QWRO/TphBxM/JWW8b7K4Rk
+         raoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691510967; x=1692115767;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+Qc9TaZ0YZxfr2ijk4qJEfWVJCx/zM4Mwpq5TAaoTRE=;
+        b=cXBmYIlt0u7Yg1U79aobcPFBRuhoGHXXU97V+Q9TPoOKbx3j2jCZ5Kls9mnJSmQniA
+         XbI7nWAT0IkQvSlpK0c4QwPitVpFF2zFRDigJEpWjscUHue+XqoX0MC8v+RGiQO/4McO
+         gVemFCHUFEdkp19z9pBY5OkJfMQC3hxjlgqx4MI8PKTeueMnMk1jhzJr/99f6NspK/Ce
+         kkLfBvLhHR3cv/N5Ei1kmAEFH/d/mAsFRKwGcOmnpakr28Vzb1nWOdSXvRtZd4Il/5wL
+         3797rADOv7uXtym0T9SkfFf1oHFTBYtG7GxUvvRVZRvx5Mx/N9JHcTJ0XOvhl2xV8sfK
+         hHdg==
+X-Gm-Message-State: AOJu0YxyuZnNfYfhyw/OoE2OG+z8dSXyK84yti0xxSgYXy7sbMwVKdQY
+        XL7O5TONi3OT2Um+tAaaEKgJhCYw6Yg5pI3X
+X-Google-Smtp-Source: AGHT+IGwh13bXO1PdIDK9A2IeD+OcpE7lGUQqZmmNhhWKV9U7iMTXE1/H8R9JVCPsPxdCaTWb6BaTg==
+X-Received: by 2002:a2e:3208:0:b0:2b9:ad7d:a144 with SMTP id y8-20020a2e3208000000b002b9ad7da144mr8929317ljy.11.1691479226041;
+        Tue, 08 Aug 2023 00:20:26 -0700 (PDT)
+Received: from gmail.com (83-233-6-197.cust.bredband2.com. [83.233.6.197])
+        by smtp.gmail.com with ESMTPSA id z22-20020a2e8856000000b002b95eb96ab7sm2210306ljj.18.2023.08.08.00.20.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 00:20:25 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 09:22:24 +0200
+From:   Marcus Folkesson <marcus.folkesson@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Kent Gustavsson <kent@minoris.se>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Cosmin Tanislav <demonsingur@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Ramona Bolboaca <ramona.bolboaca@analog.com>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v9 01/11] drm/gem: fix lockdep check for
- dma-resv lock
-Message-ID: <20230808092117.7f7fdef9@collabora.com>
-In-Reply-To: <20230803165238.8798-2-dakr@redhat.com>
-References: <20230803165238.8798-1-dakr@redhat.com>
-        <20230803165238.8798-2-dakr@redhat.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+Subject: Re: [PATCH v3 2/2] iio: adc: mcp3911: add support for the whole
+ MCP39xx family
+Message-ID: <ZNHtMBG4yHpgL1kj@gmail.com>
+References: <20230807071831.4152183-1-marcus.folkesson@gmail.com>
+ <20230807071831.4152183-2-marcus.folkesson@gmail.com>
+ <ZNETcVNsEmvK0KKH@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="9iQz+m/6foi59TLA"
+Content-Disposition: inline
+In-Reply-To: <ZNETcVNsEmvK0KKH@smile.fi.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  3 Aug 2023 18:52:20 +0200
-Danilo Krummrich <dakr@redhat.com> wrote:
 
-> When no custom lock is set to protect a GEMs GPUVA list, lockdep checks
-> should fall back to the GEM objects dma-resv lock. With the current
-> implementation we're setting the lock_dep_map of the GEM objects 'resv'
-> pointer (in case no custom lock_dep_map is set yet) on
-> drm_gem_private_object_init().
-> 
-> However, the GEM objects 'resv' pointer might still change after
-> drm_gem_private_object_init() is called, e.g. through
-> ttm_bo_init_reserved(). This can result in the wrong lock being tracked.
-> 
-> To fix this, call dma_resv_held() directly from
-> drm_gem_gpuva_assert_lock_held() and fall back to the GEMs lock_dep_map
-> pointer only if an actual custom lock is set.
-> 
-> Fixes: e6303f323b1a ("drm: manager to keep track of GPUs VA mappings")
-> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+--9iQz+m/6foi59TLA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+On Mon, Aug 07, 2023 at 06:53:21PM +0300, Andy Shevchenko wrote:
+> On Mon, Aug 07, 2023 at 09:18:31AM +0200, Marcus Folkesson wrote:
+> > Microchip does have many similar chips, add support for those.
+> >=20
+> > The new supported chips are:
+> >   - microchip,mcp3910
+> >   - microchip,mcp3912
+> >   - microchip,mcp3913
+> >   - microchip,mcp3914
+> >   - microchip,mcp3918
+> >   - microchip,mcp3919
+>=20
+> ...
+>=20
+> > +#define MCP3910_STATUSCOM_DRHIZ         BIT(20)
+>=20
+> Is it deliberately using spaces? If so, why?
 
-but I'm wondering if it wouldn't be a good thing to add a
-drm_gem_set_resv() helper, so the core can control drm_gem_object::resv
-re-assignments (block them if it's happening after the GEM has been
-exposed to the outside world or update auxiliary data if it's happening
-before that).
+No, probably due to my with my new vim setup..
 
-> ---
->  include/drm/drm_gem.h | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
-> index c0b13c43b459..bc9f6aa2f3fe 100644
-> --- a/include/drm/drm_gem.h
-> +++ b/include/drm/drm_gem.h
-> @@ -551,15 +551,17 @@ int drm_gem_evict(struct drm_gem_object *obj);
->   * @lock: the lock used to protect the gpuva list. The locking primitive
->   * must contain a dep_map field.
->   *
-> - * Call this if you're not proctecting access to the gpuva list
-> - * with the dma-resv lock, otherwise, drm_gem_gpuva_init() takes care
-> - * of initializing lock_dep_map for you.
-> + * Call this if you're not proctecting access to the gpuva list with the
-> + * dma-resv lock, but with a custom lock.
->   */
->  #define drm_gem_gpuva_set_lock(obj, lock) \
-> -	if (!(obj)->gpuva.lock_dep_map) \
-> +	if (!WARN((obj)->gpuva.lock_dep_map, \
-> +		  "GEM GPUVA lock should be set only once.")) \
->  		(obj)->gpuva.lock_dep_map = &(lock)->dep_map
->  #define drm_gem_gpuva_assert_lock_held(obj) \
-> -	lockdep_assert(lock_is_held((obj)->gpuva.lock_dep_map))
-> +	lockdep_assert((obj)->gpuva.lock_dep_map ? \
-> +		       lock_is_held((obj)->gpuva.lock_dep_map) : \
-> +		       dma_resv_held((obj)->resv))
->  #else
->  #define drm_gem_gpuva_set_lock(obj, lock) do {} while (0)
->  #define drm_gem_gpuva_assert_lock_held(obj) do {} while (0)
-> @@ -573,11 +575,12 @@ int drm_gem_evict(struct drm_gem_object *obj);
->   *
->   * Calling this function is only necessary for drivers intending to support the
->   * &drm_driver_feature DRIVER_GEM_GPUVA.
-> + *
-> + * See also drm_gem_gpuva_set_lock().
->   */
->  static inline void drm_gem_gpuva_init(struct drm_gem_object *obj)
->  {
->  	INIT_LIST_HEAD(&obj->gpuva.list);
-> -	drm_gem_gpuva_set_lock(obj, &obj->resv->lock.base);
->  }
->  
->  /**
+>=20
+> ...
+>=20
+> > +static int mcp3910_get_osr(struct mcp3911 *adc, int *val)
+> > +{
+> > +	int ret, osr;
+> > +
+> > +	ret =3D mcp3911_read(adc, MCP3910_REG_CONFIG0, val, 3);
+>=20
+> > +	osr =3D FIELD_GET(MCP3910_CONFIG0_OSR, *val);
+> > +	*val =3D 32 << osr;
+> > +	return ret;
+>=20
+> I believe this is wrong order. Or bad code. The rule of thumb is not poll=
+ute
+> the output variable if we know the error happened.
+>=20
+> Same applies to another function.
+>=20
+> > +}
+>=20
+> ...
+>=20
+> > -	ret =3D mcp3911_config(adc);
+> > +	ret =3D device_property_read_u32(&adc->spi->dev, "microchip,device-ad=
+dr", &adc->dev_addr);
+>=20
+> Why not spi->dev? Ditto for other uses like this.
 
+After all, I think it is better to stick sith adc->spi-dev to be
+consistent with the rest of the probe function. Change to spi->dev
+should probably be a seperate patch.
+Do you agree?
+
+>=20
+> --=20
+> With Best Regards,
+> Andy Shevchenko
+>=20
+>=20
+
+--9iQz+m/6foi59TLA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEBVGi6LZstU1kwSxliIBOb1ldUjIFAmTR7SsACgkQiIBOb1ld
+UjKmLhAAmVbkmMJoLp/7/9BSuDNad52Q4sV0eiG2cYqHMn/ZFLdVISQmtYDtbPAd
+Kb2Co//QorEr0UeoxEKqOqkWOn1VhLHhP7wne2EosuVWZtW0f1t+wBx89NkMcr4O
+PwVZbSjPeOy7ZYqAk9av0pYugdW4H1dRCvivY9FsB653tuOQ3R+jetOxn0pWou06
+mCfA0jtBVFptfKjTuifEsPuGqJS4g20yyfMuDMOBhOA6362ShAV/vlq/EUr3c+C9
+f5t3MfCfYXrC/8tOI4DDzZ8VlFCDmEbPdAwjaOvaEJLh+enC4Yjh/kS3B6IryOGM
+VUatDrmCg1/vSrtBHCLsysC2ZPep1Liz+tthDwNB68KPlOiugQd1NN1LoO1mb3Jn
+khDZUdB9CEAJvSzA6sx3ZtehW7iKIrPCuc8EY9NClbHd63Q4hkXXXvbWzFSEr6Vv
++/Fkg8WA4rfTjq1oOHsna2CNiHsb+xpbhoSPV4Y5qRpKsNQOSB74T8aU+YDxYDmy
+fhvC/d0aKPFcInIZaforvFOP4AAFgsDtYKNSI64qkiR4DjCe4+s0HsVNxWqFgjcg
+EZMzT8iuaZ4sFuNmlqskhQgqj/b+iN7vA/kaSztrnOlx6Ir5+uOk7dyHD+walUJs
+j+LuiTv4faZM22I4+J8df8ORUoLhj2r9nhggYg6zIXox04Bbu4s=
+=B4Sa
+-----END PGP SIGNATURE-----
+
+--9iQz+m/6foi59TLA--
