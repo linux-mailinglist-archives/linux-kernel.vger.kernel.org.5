@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1367748E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3167747FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236571AbjHHToE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42614 "EHLO
+        id S233448AbjHHTXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:23:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbjHHTnv (ORCPT
+        with ESMTP id S236010AbjHHTWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:43:51 -0400
+        Tue, 8 Aug 2023 15:22:36 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
         by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5637943CF2
         for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:45:18 -0700 (PDT)
