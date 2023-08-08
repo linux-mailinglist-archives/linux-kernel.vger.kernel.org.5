@@ -2,80 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DDD774D69
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4E2774D6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232672AbjHHVyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55310 "EHLO
+        id S229867AbjHHVz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232346AbjHHVxw (ORCPT
+        with ESMTP id S229585AbjHHVz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 17:53:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5005526A1
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:53:29 -0700 (PDT)
+        Tue, 8 Aug 2023 17:55:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1F6EE
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:55:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0465662AD4
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 21:53:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70B0DC433C7;
-        Tue,  8 Aug 2023 21:53:26 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B093C62D86
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 21:55:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD1B4C433C8;
+        Tue,  8 Aug 2023 21:55:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691531607;
-        bh=I2xqrp9av+1xeJT8Kmq2kU10XMExkt2v69dFZYUIZpQ=;
+        s=k20201202; t=1691531726;
+        bh=DfGJgoICFpbwodUyconrw7br4Y/aAGzc5ytewSxQ1sU=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=l35dmb8PlbHycZIoyCvoxj32aEA07dxo3H4AogNszsGFgn5lJTPerJHn0A2LA5TC/
-         7BfCFKemVVIQHwTTc+BKqvYGtVOe5WywBkjeTT2MqH2Eihs98M9yZv9ltkV2KApFo0
-         scXN+es15O749bbRAuOxyQzpeHylaQXX9PuSLr8bSoyJjMa18fSsg+2nWp6yZaIlN0
-         VM3hNDF9Afedopm5hrhoU1Y3SuhC88gX0XCIShnoeEvmj6Vg2JVOTGByIRfakF5QN/
-         mhCUvJYWo0xTGzc3WkTvHefTQSTrnatVsrK7kt7vJHdH9rWIV11KLGxYEpiUvMb8QE
-         0StOPVuV+2JIg==
-Date:   Tue, 8 Aug 2023 14:53:25 -0700
+        b=OzJPPGPOV+tbgfBpKAWCXhCHqQLkYp/qSVn7Ph8ut4zwTxbqQ5Mvl8PpBVN5JGN2+
+         B53k0ySEc+F15n1+2eRyv/qDqJLvpen8L23BbGg+ArWPRMpo5c292tnFElyGhHsnQw
+         FnXm6Me5Q3G5v3Uk3/8+eHSVhs/Vs9U271Th0qrkA1aQ1mDWdVIXbXgGZrP2n/A/ST
+         0OohWs5TnIFvQnNrG34m8/9BKTetBq9Xbl3vI7mWHdGPvbX5j6Vn8QHrKY5pATDTY6
+         K2x75VlEe1Tke4++VcJT1VxMbW1yUICJz+ZEUVCuFtyFBDNWmmo541X2Mijk7OmVUw
+         33g84hDLwwEFQ==
+Date:   Tue, 8 Aug 2023 14:55:25 -0700
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Ioana Ciornei <ciorneiioana@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Andre Edich <andre.edich@microchip.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Divya Koppera <Divya.Koppera@microchip.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Marek Vasut <marex@denx.de>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Mathias Kresin <dev@kresin.me>,
-        Maxim Kochetkov <fido_max@inbox.ru>,
-        Michael Walle <michael@walle.cc>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Nisar Sayed <Nisar.Sayed@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Willy Liu <willy.liu@realtek.com>,
-        Yuiko Oshino <yuiko.oshino@microchip.com>
-Subject: Re: [PATCH] net: phy: Don't disable irqs on shutdown if WoL is
- enabled
-Message-ID: <20230808145325.343c5098@kernel.org>
-In-Reply-To: <20230804071757.383971-1-u.kleine-koenig@pengutronix.de>
-References: <20230804071757.383971-1-u.kleine-koenig@pengutronix.de>
+To:     Breno Leitao <leitao@debian.org>
+Cc:     rdunlap@infradead.org, benjamin.poirier@gmail.com,
+        davem@davemloft.net, edumazet@google.com,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH net-next v4 1/2] netconsole: Create a allocation helper
+Message-ID: <20230808145525.61840a76@kernel.org>
+In-Reply-To: <20230804124322.113506-2-leitao@debian.org>
+References: <20230804124322.113506-1-leitao@debian.org>
+        <20230804124322.113506-2-leitao@debian.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,58 +57,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  4 Aug 2023 09:17:57 +0200 Uwe Kleine-K=C3=B6nig wrote:
-> Most PHYs signal WoL using an interrupt. So disabling interrupts breaks
-> WoL at least on PHYs covered by the marvell driver. So skip disabling
-> irqs on shutdown if WoL is enabled.
->=20
-> While at it also explain the motivation that irqs are disabled at all.
->=20
-> Fixes: e2f016cf7751 ("net: phy: add a shutdown procedure")
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-
-What do we do with this one? It sounded like Russell was leaning
-towards a revert?
-
-FTR original report:
-https://lore.kernel.org/all/20230803181640.yzxsk2xphwryxww4@pengutronix.de/
-
-> while I'm not sure that disabling interrupts is a good idea in general,
-> this change at least should fix the WoL case. Note that this change is
-> only compile tested as next doesn't boot on my test machine (because of
-> https://git.kernel.org/linus/b3574f579ece24439c90e9a179742c61205fbcfa)
-> and 6.1 (which is the other kernel I have running) doesn't know about
-> .wol_enabled. I don't want to delay this fix until I bisected this new
-> issue.
->=20
-> Assuming this patch is eligible for backporting to stable, maybe point
-> out that it depends on v6.5-rc1~163^2~286^2~2 ("net: phy: Allow drivers
-> to always call into ->suspend()"). Didn't try to backport that.
->=20
-> Best regards
-> Uwe
->=20
->  drivers/net/phy/phy_device.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->=20
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> index 61921d4dbb13..6d1526bdd1d7 100644
-> --- a/drivers/net/phy/phy_device.c
-> +++ b/drivers/net/phy/phy_device.c
-> @@ -3340,6 +3340,15 @@ static void phy_shutdown(struct device *dev)
->  	if (phydev->state =3D=3D PHY_READY || !phydev->attached_dev)
->  		return;
-> =20
-> +	/* Most phys signal WoL via the irq line. So for these irqs shouldn't be
-> +	 * disabled.
-> +	 */
-> +	if (phydev->wol_enabled)
-> +		return;
+On Fri,  4 Aug 2023 05:43:20 -0700 Breno Leitao wrote:
+> +	struct netconsole_target *nt = alloc_and_init();
+> +	int err = -ENOMEM;
 > +
-> +	/* On shutdown disable irqs to prevent an irq storm on systems where the
-> +	 * irq line is shared by several devices.
-> +	 */
->  	phy_disable_interrupts(phydev);
->  }
-> =20
+> +	if (!nt)
+> +		goto fail;
 
+No complex code in the variable init, please.
+Makes the code harder to read.
+
+	struct netconsole_target *nt;
+	int err;
+
+	nt = alloc_and_init();
+	if (!nt) {
+		err = -ENOMEM;
+		goto fail;
+	}
+-- 
+pw-bot: cr
