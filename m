@@ -2,89 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25DF0774250
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 568B677427F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234760AbjHHRle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36372 "EHLO
+        id S234036AbjHHRqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:46:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231238AbjHHRlK (ORCPT
+        with ESMTP id S232070AbjHHRpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:41:10 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EB4358B
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:18:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B75AD21B1D;
-        Tue,  8 Aug 2023 09:09:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1691485767; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VWySdREPI5hHmHNzsFw3MuXRmrs7v8ANmnLx+oatmfQ=;
-        b=zc83YCep0zi5/UZgrI7JZrCkXhjnJplzmjgMZUbbyF+0iK4Q81RRyCUIlvy3RjuHN4YxZE
-        Lb8+CQWqbAJ3T3rEIlpl1DiICzG6tR3GG3fTwMXyns50bsSaw6PQ63OPjhejxGDMUeR810
-        5Oeaur7O5BAYisP3FEwgcypj0CHPDys=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1691485767;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VWySdREPI5hHmHNzsFw3MuXRmrs7v8ANmnLx+oatmfQ=;
-        b=JJCqGQ2R7fLgP93TPNpnGAFSXzkFPOeTsvsapWVKcpSCzjdvTQUl/S4joX2lvsQuCOEsrC
-        V3bEF8kghZe5MtDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A9AA313451;
-        Tue,  8 Aug 2023 09:09:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UKhmKUcG0mQvEAAAMHmgww
-        (envelope-from <dwagner@suse.de>); Tue, 08 Aug 2023 09:09:27 +0000
-Date:   Tue, 8 Aug 2023 11:09:27 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Caleb Sander <csander@purestorage.com>,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH libnvme v2 2/2] fabrics: Do not pass disable_sqflow if
- not supported
-Message-ID: <u7asjmkjqxs6edpj2eg6zw6tuo6zypoyzpjcjyj722f2ol6r4h@6m6npperooul>
-References: <20230808070907.18834-1-dwagner@suse.de>
- <20230808070907.18834-3-dwagner@suse.de>
- <e33c1a36-2b8e-8331-5f36-54dc47ab02d1@grimberg.me>
+        Tue, 8 Aug 2023 13:45:30 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E9125ED5;
+        Tue,  8 Aug 2023 09:20:39 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RKnQh6vVcz67tKy;
+        Tue,  8 Aug 2023 17:07:56 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 8 Aug
+ 2023 10:11:44 +0100
+Date:   Tue, 8 Aug 2023 10:11:43 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Wenhua Lin <Wenhua.Lin@unisoc.com>
+CC:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Samuel Holland <samuel@sholland.org>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        "Mattijs Korpershoek" <mkorpershoek@baylibre.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        "Baolin Wang" <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        wenhua lin <wenhua.lin1994@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Subject: Re: [PATCH 1/2] devicetree: bindings: Add keypad driver
+ ducumentation
+Message-ID: <20230808101143.00007bb4@Huawei.com>
+In-Reply-To: <20230808072252.3229-1-Wenhua.Lin@unisoc.com>
+References: <20230808072252.3229-1-Wenhua.Lin@unisoc.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e33c1a36-2b8e-8331-5f36-54dc47ab02d1@grimberg.me>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 11:47:14AM +0300, Sagi Grimberg wrote:
-> I think you want to check this before the initial call
-> and avoid the retry altogether.
-> --
-> -       if (e->treq & NVMF_TREQ_DISABLE_SQFLOW)
-> +       if (e->treq & NVMF_TREQ_DISABLE_SQFLOW &&
-> +           nvmf_check_option(h->r, disable_sqflow))
->                 c->cfg.disable_sqflow = true;
-> +       else
-> +               c->cfg.disable_sqflow = false;
-> 
->         if (e->trtype == NVMF_TRTYPE_TCP &&
->             (e->treq & NVMF_TREQ_REQUIRED ||
+On Tue, 8 Aug 2023 15:22:52 +0800
+Wenhua Lin <Wenhua.Lin@unisoc.com> wrote:
 
-Yep, makes sense.
+> Add keypad driver ducumentation.
+
+documentation
+
+Though naming convention for dt-bindings patches does not look like
+this. Take a look at what has been accepted as bindings recently.
+Also you aren't going to get much review of this without cc'ing the
+dt list and maintainers.
+
+> 
+> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
+> ---
+>  .../bindings/input/sprd-keypad.yaml           | 76 +++++++++++++++++++
+>  1 file changed, 76 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/sprd-keypad.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/input/sprd-keypad.yaml b/Documentation/devicetree/bindings/input/sprd-keypad.yaml
+> new file mode 100644
+> index 000000000000..51710e1eb389
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/sprd-keypad.yaml
+> @@ -0,0 +1,76 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright 2023 Unisoc Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/sprd-keypad.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Device-Tree bindings for GPIO attached keys
+
+Seems rather more specific than that!
+
+> +
+> +maintainers:
+> +  - Orson Zhai <orsonzhai@gmail.com>
+> +  - Baolin Wang <baolin.wang7@gmail.com>
+> +  - Chunyan Zhang <zhang.lyra@gmail.com>
+> +
+> +description: |
+> +    Keypad controller is used to interface a SoC with a matrix-keypad device.
+> +    The keypad controller supports multiple row and column lines.
+> +    A key can be placed at each intersection of a unique row and a unique column.
+> +    The keypad controller can sense a key-press and key-release and report the
+> +    event using a interrupt to the cpu.
+
+CPU
+
+> +
+> +properties:
+> +    compatible:
+> +    const: sprd,sc9860-keypad
+
+Make sure you follow the guidance on test building your binding and example.
+See Documentation/devicetree/bindings/writing-bindings.rst and submitting-patches.rst
+
+This has a lot of issues covered by that document.
+
+> +
+> +    reg:
+> +        maxItems: 1
+> +
+> +    interrupts:
+> +        maxItems: 1
+> +
+> +    keypad,num-rows:
+> +    description: Number of row lines connected to the keypad controller.
+> +
+> +    keypad,num-columns:
+> +    description: Number of column lines connected to the keypad.
+> +
+> +    debounce-interval:
+> +    description:
+> +        Debouncing interval time in milliseconds. If not specified defaults to 5.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +    default: 5
+> +
+> +    linux,keymap:
+> +    description: An array of packed 1-cell entries containing the equivalent
+> +        of row, column and linux key-code. The 32-bit big endian cell is packed.
+> +
+> +required:
+> +        - compatible
+> +        - reg
+> +        - keypad,num-rows
+> +        - keypad,num-columns
+> +        - linux,keymap
+> +
+> +unevaluatedProperties: false
+> +
+> +
+> +examples:
+> +  - |
+> +	keypad@40250000 {
+> +		compatible = "sprd,sc9860-keypad";
+> +		reg = 	<0x40250000 0x1000>;
+> +		interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&aonapb_gate CLK_KPD_EB>,
+> +			<&aonapb_gate CLK_KPD_RTC_EB>;
+> +		clock-names = "enable", "rtc";
+> +		keypad,num-rows= <3>;
+> +		keypad,num-columns = <3>;
+> +		debounce-interval = <5>;
+> +		linux,keymap = < 0x00000001
+> +				 0x01000002
+> +				 0x00020003>;
+> +		status = "okay";
+
+Status shouldn't be in an example.  Formatting wrong.
+IF your binding example doesn't build (this won't) then it won't be accepted
+by the dt-binding maintainers and their review is needed for it to be
+merged.  
+
+Jonathan
+
+
+> +	};
+> +...
+
