@@ -2,87 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1614A7743D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7ED97747B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235387AbjHHSKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:10:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
+        id S235906AbjHHTR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235347AbjHHSKW (ORCPT
+        with ESMTP id S236085AbjHHTRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:10:22 -0400
-Received: from mail.toke.dk (mail.toke.dk [IPv6:2a0c:4d80:42:2001::664])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78001160AE9;
-        Tue,  8 Aug 2023 10:13:12 -0700 (PDT)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
-        t=1691503677; bh=JCNxuh7snRK2UxJGDtGrIxZbmzWs6fAjEgbNbIIekR8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=wizfIvOD0Xel224akMYsYN2NAFu/z8AWfHMpuPb6xqrHKSjejQhOalNbVLjtbrCvP
-         c/aGldFz6MmxcsAfpne4d1lPZMY5f4Q/fjdw8DbX+hZDhU6PMxEAVGjU+8EELiNb8G
-         I22pBkwsDBQra2XKcWihEUdCelKCVxrhBya0JIT8K2CM0+E5qkPWTo10SgRv+kQCxl
-         MDGnO7O3lTfIiw+QV4cPlUNCkLrwxLBLw6mEuH1EYp3yJostPLnyrgB0V9IoJIC4Lv
-         WlBoU3ytvhzutDC9N8uf9oLhudBBgN9xbctm9hlvPHkcylTGWurHQbxeXMHo1Ixzn/
-         fHNcREXn8JrUg==
-To:     Fedor Pchelkin <pchelkin@ispras.ru>, Kalle Vallo <kvalo@kernel.org>
-Cc:     Fedor Pchelkin <pchelkin@ispras.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Senthil Balasubramanian <senthilkumar@atheros.com>,
-        "John W. Linville" <linville@tuxdriver.com>,
-        Vasanthakumar Thiagarajan <vasanth@atheros.com>,
-        Sujith <Sujith.Manoharan@atheros.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        lvc-project@linuxtesting.org,
-        syzbot+f2cb6e0ffdb961921e4d@syzkaller.appspotmail.com,
-        Hillf Danton <hdanton@sina.com>
-Subject: Re: [PATCH v3 2/2] wifi: ath9k: protect WMI command response buffer
- replacement with a lock
-In-Reply-To: <20230425192607.18015-2-pchelkin@ispras.ru>
-References: <20230425192607.18015-1-pchelkin@ispras.ru>
- <20230425192607.18015-2-pchelkin@ispras.ru>
-Date:   Tue, 08 Aug 2023 16:07:57 +0200
-X-Clacks-Overhead: GNU Terry Pratchett
-Message-ID: <87bkfhbpaa.fsf@toke.dk>
+        Tue, 8 Aug 2023 15:17:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B679BFAEF5;
+        Tue,  8 Aug 2023 09:40:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A2FCE62592;
+        Tue,  8 Aug 2023 14:12:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03657C433C8;
+        Tue,  8 Aug 2023 14:12:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691503935;
+        bh=Gdw0yHvTeezw/jw3SrhRILCCcZGJNShWGWctFVDSQXw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=p9Ex+c9JWhnxp4g5gnrSMuTgVk63I4xv5r2TH8SDBw522pwboI/4X68yNbw7ZJdrw
+         soIDcT+lK+Z+EyiSDU+TyLm/7P7smOGOakAV5mgzp/IzN79had7SyduuDuhU/WRWV1
+         PvgEJcdBXCupXQWalygjRncAXxbNkd/RdsV9lkP+N5H9fMww50oBbx4JJ+dQDAclLl
+         niDLS1hPp2vqKhPYFrqPJgIA2SCQiZAZLN5YuwNt1+IDsBGxg9VAVB+mzQYKfEAQLy
+         2qam6hbntG3k4Oaz5NP6ksT2AZRZ/nwF27UMiv94/JHU4Ff5eI/7PmRaciixfwdZ0b
+         HkKl7Ht5QZLPA==
+Message-ID: <067b15a6-1db2-719b-918d-286be4966f11@kernel.org>
+Date:   Tue, 8 Aug 2023 22:12:11 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5] scsi: support packing multi-segment in UNMAP command
+Content-Language: en-US
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     jejb@linux.ibm.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230310123604.1820231-1-chao@kernel.org>
+ <b53321ab-679d-e007-6407-6bd00149948e@kernel.org>
+ <yq17ct0nijm.fsf@ca-mkp.ca.oracle.com>
+ <f93949dd-e90f-a9bf-33b3-4f31c4328c7d@kernel.org>
+ <yq1sfabni01.fsf@ca-mkp.ca.oracle.com>
+ <d3c1c2cb-9076-523b-da81-a1b632b4b0f5@kernel.org>
+ <yq1h6p9k4vk.fsf@ca-mkp.ca.oracle.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <yq1h6p9k4vk.fsf@ca-mkp.ca.oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fedor Pchelkin <pchelkin@ispras.ru> writes:
+On 2023/8/8 22:04, Martin K. Petersen wrote:
+> Been working on this series to address the reported regressions. Spent
+> quite a bit of time on it last week.
 
-> If ath9k_wmi_cmd() has exited with a timeout, it is possible that during
-> next ath9k_wmi_cmd() call the wmi_rsp callback for previous wmi command
-> writes to new wmi->cmd_rsp_buf and makes a completion. This results in an
-> invalid ath9k_wmi_cmd() return value.
->
-> Move the replacement of WMI command response buffer and length under
-> wmi_lock. Note that last_seq_id value is updated there, too.
->
-> Thus, the buffer cannot be written to by a belated wmi_rsp callback
-> because that path is properly rejected by the last_seq_id check.
->
-> Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
->
-> Fixes: fb9987d0f748 ("ath9k_htc: Support for AR9271 chipset.")
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+Martin, thanks for the help. :)
 
-Given that the previous patch resets the last_seq_id to 0 on timeout
-under the lock, I don't think this patch is strictly necessary anymore.
-However, it doesn't hurt either, and I actually think moving the update
-of the rsp buf into ath9k_wmi_cmd_issue() aids readability, so:
+Could you please share the report? Maybe I can join to check it.
 
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@toke.dk>
+Thanks,
