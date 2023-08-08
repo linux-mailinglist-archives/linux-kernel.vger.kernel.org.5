@@ -2,140 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D2C77419F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9067741A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234561AbjHHRZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36648 "EHLO
+        id S234583AbjHHRZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234314AbjHHRZV (ORCPT
+        with ESMTP id S234374AbjHHRZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:25:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8722025F;
-        Tue,  8 Aug 2023 09:10:55 -0700 (PDT)
+        Tue, 8 Aug 2023 13:25:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAEF020268;
+        Tue,  8 Aug 2023 09:10:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CCE3C6249F;
-        Tue,  8 Aug 2023 11:21:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2BF3C433C8;
-        Tue,  8 Aug 2023 11:21:26 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B1594624CB;
+        Tue,  8 Aug 2023 11:23:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B46A2C433C7;
+        Tue,  8 Aug 2023 11:23:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691493689;
-        bh=e8JSSUEtITPhq0JIZhNW72QrDWLk51aA2iMyz+d3IoY=;
+        s=k20201202; t=1691493786;
+        bh=uf47QcqVVednoTyXP/D1xitpSzvvxXjJ0RJvfi2KsoE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gskj/JtqlzaqRkheKEHTymW3IV8FZygZbtB9F9f/IH4+WygzuZZvUqMRmdvqSQg6m
-         D929oAyHtmZcegCTsOh025NcQImy8Im5Nk0Gln9HihQfs4CpxRWQ5zSxg7L4vZyOHY
-         6BVkOlSSNHhunzy0cU3OKbkRfukOwv+ghLnPkUZz3WPQQl91JbSMKRzt2rfN5LPETy
-         JBouZp7ZI7R5xGsqRqN35gcFBrI8Pxf70UenAHsm08kM/zHrBMZzjeZR+ouednh9se
-         NL238Q8xF1G+Rrk29spdXvj9ov8H87QqM6I6+KPOzpGhhYzU4tUuunFyOEEf7JV8mS
-         XsXcbXgS5owPA==
-Date:   Tue, 8 Aug 2023 12:21:24 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bruno.thomsen@gmail.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Subject: Re: [PATCH 1/2] dt-bindings: rtc: add properties to set
- battery-related functions
-Message-ID: <20230808-capsize-deodorize-5776d3dbb192@spud>
-References: <20230802191153.952667-1-hugo@hugovil.com>
- <20230802191153.952667-2-hugo@hugovil.com>
+        b=qUUbmI60+gD371c+d5N6y7GEIlxhTL0jSQyQgcYZy3sb7K6SacbY+7NvuHjoVNSG1
+         WH9DqltMiROF3+twdf6p73ddnb2Hw1KfAOzYZq7P/mUBKFcJRIHAxz5oDTRh6uRDG1
+         TPuI/NpY6bBziU+F/N9X+5SEFAHG9X7/3exDlA9fquqR8UEUHsaDjTl5Fd9wohD2fm
+         VvyD37kojpCZemPC8cz1YSFCefwhsCxqSgTemzzGGFp8fFIvl22H3vYxRz5t9boOgf
+         cMoT5j2g8ZycnSQVVbwH+GIFmJpU8n8pV+3y/uNyXtdfoy9cRqxaxjkaZBDXs2VFs2
+         qDtayNRcM9nIg==
+Date:   Tue, 8 Aug 2023 13:22:59 +0200
+From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] PCI: dwc: Provide deinit callback for i.MX
+Message-ID: <ZNIlk8YgUevE7kTH@lpieralisi>
+References: <20230712-pci-imx-regulator-cleanup-v2-1-3b1f6e9d26bc@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3UflZlgy4WxKN7bd"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230802191153.952667-2-hugo@hugovil.com>
+In-Reply-To: <20230712-pci-imx-regulator-cleanup-v2-1-3b1f6e9d26bc@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---3UflZlgy4WxKN7bd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hey Hugo,
-
-On Wed, Aug 02, 2023 at 03:11:52PM -0400, Hugo Villeneuve wrote:
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
->=20
-> These properties can be defined in the board's device tree to set the
-> default power-on values for battery-related functions.
->=20
-> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On Wed, Jul 12, 2023 at 12:02:57PM +0100, Mark Brown wrote:
+> The i.MX integration for the DesignWare PCI controller has a _host_exit()
+> operation which undoes everything that the _host_init() operation does but
+> does not wire this up as the host_deinit callback for the core, or call it
+> in any path other than suspend. This means that if we ever unwind the
+> initial probe of the device, for example because it fails, the regulator
+> core complains that the regulators for the device were left enabled:
+> 
+> imx6q-pcie 33800000.pcie: iATU: unroll T, 4 ob, 4 ib, align 64K, limit 16G
+> imx6q-pcie 33800000.pcie: Phy link never came up
+> imx6q-pcie 33800000.pcie: Phy link never came up
+> imx6q-pcie: probe of 33800000.pcie failed with error -110
+> ------------[ cut here ]------------
+> WARNING: CPU: 2 PID: 46 at drivers/regulator/core.c:2396 _regulator_put+0x110/0x128
+> 
+> Wire up the callback so that the core can clean up after itself.
+> 
+> Reviewed-by: Richard Zhu <hongxing.zhu@nxp.com>
+> Tested-by: Fabio Estevam <festevam@gmail.com>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 > ---
->  .../devicetree/bindings/rtc/rtc.yaml          | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentati=
-on/devicetree/bindings/rtc/rtc.yaml
-> index efb66df82782..0217d229e3fa 100644
-> --- a/Documentation/devicetree/bindings/rtc/rtc.yaml
-> +++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
-> @@ -26,6 +26,25 @@ properties:
->        0: not chargeable
->        1: chargeable
-> =20
-> +  battery-low-detect:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1]
-> +    description: |
-> +      For RTC devices supporting a backup battery/supercap, this flag ca=
-n be
-> +      used to configure the battery low detection reporting function:
-> +      0: disabled
-> +      1: enabled
-> +
-> +  battery-switch-over:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1]
-> +    description: |
-> +      For RTC devices supporting a backup battery/supercap, this flag ca=
-n be
-> +      used to configure the battery switch over when the main voltage so=
-urce is
-> +      turned off:
-> +      0: disabled
-> +      1: enabled
+> Changes in v2:
+> - Rebase onto v6.5-rc1.
+> - Link to v1: https://lore.kernel.org/r/20230703-pci-imx-regulator-cleanup-v1-1-b6c050ae2bad@kernel.org
+> ---
+>  drivers/pci/controller/dwc/pci-imx6.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Why are these implemented as enums? This seems to fall into the category
-of using DT to determine software policy - why's it not sufficient to
-have boolean properties that indicate hardware support and let the software
-decide what to do with them?
+Applied to controller/dwc, thanks.
 
-Thanks,
-Conor.
+Lorenzo
 
-> +
->    quartz-load-femtofarads:
->      description:
->        The capacitive load of the quartz(x-tal), expressed in femto
-> --=20
-> 2.30.2
->=20
-
---3UflZlgy4WxKN7bd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNIlNAAKCRB4tDGHoIJi
-0v7jAP9rQLVFgVSILfg0Xk+EmhkACUJNVyd8hQdU1ezTUvBj7AD/Z8+0R8K2LBP2
-8GPSlFPex9mmVsq3YSnvJeUGR3KgpA8=
-=I2L7
------END PGP SIGNATURE-----
-
---3UflZlgy4WxKN7bd--
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 27aaa2a6bf39..a18c20085e94 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -1040,6 +1040,7 @@ static void imx6_pcie_host_exit(struct dw_pcie_rp *pp)
+>  
+>  static const struct dw_pcie_host_ops imx6_pcie_host_ops = {
+>  	.host_init = imx6_pcie_host_init,
+> +	.host_deinit = imx6_pcie_host_exit,
+>  };
+>  
+>  static const struct dw_pcie_ops dw_pcie_ops = {
+> 
+> ---
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> change-id: 20230703-pci-imx-regulator-cleanup-a17c8fd15ec5
+> 
+> Best regards,
+> -- 
+> Mark Brown <broonie@kernel.org>
+> 
