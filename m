@@ -2,152 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4638A7747E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F5E774823
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234740AbjHHTVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
+        id S234245AbjHHT0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235941AbjHHTU4 (ORCPT
+        with ESMTP id S234702AbjHHT0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:20:56 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8E342077
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:44:15 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 378EdFmj011937;
-        Tue, 8 Aug 2023 14:48:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=uXoTIO+5lwwtLlN/NRmd7fRlIP3awliY1hCQo+5CJpg=;
- b=RmOHVCDgux0tuhpNl182ovuUmY0CEHj+JeRmPHCLXJuXHmUKmrsrleHJLaIOAk221Ywc
- 8ni/AWwerAQvnkHADEYVja5+INMlCFVIG4OCvCWTBNjb4Bof1wWpF6M6iTsMUbPxMG4A
- I+U0UY8qq9TidAoLvnvVDFBfcqWRKZ+SiAL/uwjqmNJWeo1tG7bhbHONzoi76PqMC/7/
- yKxyco4Zr22KaUHB7/QIlg3dxVDQQ9PX04L4jlhZMACN+veJvqfotb8/dsfF7ib5g3Cx
- A5jRG4zh67rLK5dAIMOA1XldbeMrSGBJ0ojUxWtaxhXJxmkPNY2LBUOw0XlKXciClcP9 iA== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sbqhd0gp3-9
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Aug 2023 14:48:18 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 378DTkni030379;
-        Tue, 8 Aug 2023 14:28:52 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sa1rn7a1s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Aug 2023 14:28:52 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 378ESosT57737656
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Aug 2023 14:28:50 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B9FA2004B;
-        Tue,  8 Aug 2023 14:28:50 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0DD5820040;
-        Tue,  8 Aug 2023 14:28:50 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue,  8 Aug 2023 14:28:49 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>
-Subject: Re: BUG: KASAN: slab-out-of-bounds in print_synth_event+0xa68/0xa78
-References: <yt9dsf8zfhw8.fsf@linux.ibm.com>
-        <20230807215310.068fce2f@gandalf.local.home>
-        <yt9da5v1rhqd.fsf@linux.ibm.com>
-        <20230808061423.0a12980f@gandalf.local.home>
-Date:   Tue, 08 Aug 2023 16:28:49 +0200
-In-Reply-To: <20230808061423.0a12980f@gandalf.local.home> (Steven Rostedt's
-        message of "Tue, 8 Aug 2023 06:14:23 -0400")
-Message-ID: <yt9dzg31ppzy.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Tue, 8 Aug 2023 15:26:37 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5864812C05;
+        Tue,  8 Aug 2023 11:50:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Q+WYnEhAPaxnloJWO3VZQkptgMclca2jZyZdbgJ+fmQ=; b=sq9khFkBu8IaoEGIQ4wXS5w3Cj
+        R1KhG6JLfEwAJ3USVYGl2rqt/NEVP9VT1FyaFRB6qsnwGIkFR2JczufeMpNqENoZ8sdwwDBSoy/B/
+        NeWTcXbhfc+HmyhYvYvnMqHiDXSZiRYTh/nKOZKHXXExgPBJtcSk9ardpaEEKHAgQRtZomwHwmMyp
+        9i4Tf2aG2C1ixQTLBI5DwnNVsN/N6AUUq6mCItrJZOMA8WVtOzEustLwiu8+CZiD22ISYXT5B9m8g
+        U1my0/K8R8WdGmFxlMgEihkOnJDGhOOnBKohBYcTlDM8cLy/7uH4SryKKUKKMXvrDNIRMUoAaOnAo
+        e4cuxqZQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33368)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qTNjD-0008Ly-2A;
+        Tue, 08 Aug 2023 15:30:31 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qTNjB-0008Ax-Q9; Tue, 08 Aug 2023 15:30:29 +0100
+Date:   Tue, 8 Aug 2023 15:30:29 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 0/2] net: stmmac: allow sharing MDIO lines
+Message-ID: <ZNJRhSwu3rJl2Pkj@shell.armlinux.org.uk>
+References: <20230807193102.6374-1-brgl@bgdev.pl>
+ <54421791-75fa-4ed3-8432-e21184556cde@lunn.ch>
+ <CAMRc=Mc6COaxM6GExHF2M+=v2TBpz87RciAv=9kHr41HkjQhCg@mail.gmail.com>
+ <ZNJChfKPkAuhzDCO@shell.armlinux.org.uk>
+ <CAMRc=MczKgBFvuEanKu=mERYX-6qf7oUO2S4B53sPc+hrkYqxg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: MQ2oNIwm26m3lXZtDPQWMaYVT-WiGGxZ
-X-Proofpoint-GUID: MQ2oNIwm26m3lXZtDPQWMaYVT-WiGGxZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-08_12,2023-08-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- malwarescore=0 clxscore=1011 priorityscore=1501 adultscore=0
- lowpriorityscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308080130
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MczKgBFvuEanKu=mERYX-6qf7oUO2S4B53sPc+hrkYqxg@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steven Rostedt <rostedt@goodmis.org> writes:
+On Tue, Aug 08, 2023 at 04:09:11PM +0200, Bartosz Golaszewski wrote:
+> On Tue, Aug 8, 2023 at 3:26 PM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Tue, Aug 08, 2023 at 10:13:09AM +0200, Bartosz Golaszewski wrote:
+> > > Ok so upon some further investigation, the actual culprit is in stmmac
+> > > platform code - it always tries to register an MDIO bus - independent
+> > > of whether there is an actual mdio child node - unless the MAC is
+> > > marked explicitly as having a fixed-link.
+> > >
+> > > When I fixed that, MAC1's probe is correctly deferred until MAC0 has
+> > > created the MDIO bus.
+> > >
+> > > Even so, isn't it useful to actually reference the shared MDIO bus in some way?
+> > >
+> > > If the schematics look something like this:
+> > >
+> > > --------           -------
+> > > | MAC0 |--MDIO-----| PHY |
+> > > -------- |     |   -------
+> > >          |     |
+> > > -------- |     |   -------
+> > > | MAC1 |--     ----| PHY |
+> > > --------           -------
+> > >
+> > > Then it would make sense to model it on the device tree?
+> >
+> > So I think what you're saying is that MAC0 and MAC1's have MDIO bus
+> > masters, and the hardware designer decided to tie both together to
+> > a single set of clock and data lines, which then go to two PHYs.
+> 
+> The schematics I have are not very clear on that, but now that you
+> mention this, it's most likely the case.
+> 
+> >
+> > In that case, I would strongly advise only registering one MDIO bus,
+> > and avoid registering the second one - thereby preventing any issues
+> > caused by both MDIO bus masters trying to talk at the same time.
+> >
+> 
+> I sent a patch for that earlier today.
+> 
+> > The PHYs should be populated in firmware on just one of the buses.
+> >
+> > You will also need to ensure that whatever registers the bus does
+> > make sure that the clocks necessary for communicating on the bus
+> > are under control of the MDIO bus code and not the ethernet MAC
+> > code. We've run into problems in the past where this has not been
+> > the case, and it means - taking your example above - that when MAC1
+> > wants to talk to its PHY, if MAC0 isn't alive it can't.
+> 
+> Good point, but it's worse than that: when MAC0 is unbound, it will
+> unregister the MDIO bus and destroy all PHY devices. These are not
+> refcounted so they will literally go from under MAC1. Not sure how
+> this can be dealt with?
 
->> I think the problem is that the code assigns data_offset with:
->> 
->> *(u32 *)&entry->fields[*n_u64] = data_offset;
->> 
->> but reads it with:
->> 
->> offset = (u32)entry->fields[n_u64];
->> 
->> which works on LE, but not BE.
->
-> Ah, that makes sense. I didn't realize (or forgot) that s390 was BE. My
-> PowerPC box that was BE died years ago, and I have stopped testing BE ever
-> since :-(
+That has been a problem in the past, where a MII bus has been
+registered by a driver, and then because its probe defers, the MII
+bus gets torn down.
 
-Ok. If you want something for testing BE i could provide you with an
-s390 linux image + the commandline to run that within qemu. Linux on
-s390 is not much different than other platforms, but you would need an
-s390 cross-compiler.
+The "simple" solution to this is... try to avoid registering the MII
+bus until you're sure that the probing will not defer. It is far from
+perfect, since there's still the opportunity to unbind the driver
+causing the MII bus to vanish along with the PHYs.
 
->> 
->> I'm currently preparing the patch below, which also makes the code a bit
->> easier to read. I'm still seeing no stack traces, but at least the
->> random memory reads are gone and no KASAN warning anymore. I'll
->> continue fixing and sent a full patch as soon as everything is fixed.
->> 
->> >From 82fc673f0d3b6031b760b4217bebdb1047119041 Mon Sep 17 00:00:00 2001  
->> From: Sven Schnelle <svens@linux.ibm.com>
->> Date: Tue, 8 Aug 2023 11:35:12 +0200
->> Subject: [PATCH] tracing/synthetic: use union instead of casts
->> 
->> The current code uses a lot of casts to access the fields
->> member in struct synth_trace_events with different sizes.
->> This makes the code hard to read, and had already introduced
->> an endianess bug. Use a union and struct instead.
->> 
->> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
->> ---
->>  kernel/trace/trace_events_synth.c | 100 +++++++++++++++---------------
->>  1 file changed, 50 insertions(+), 50 deletions(-)
->> 
->> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
->> index d6a70aff2410..1f8fe7f2b5b2 100644
->> --- a/kernel/trace/trace_events_synth.c
->> +++ b/kernel/trace/trace_events_synth.c
->> @@ -125,9 +125,22 @@ static bool synth_event_match(const char *system, const char *event,
->>  		(!system || strcmp(system, SYNTH_SYSTEM) == 0);
->>  }
->>  
->> +struct synth_trace_data {
->> +	u16 len;
->> +	u16 offset;
->> +};
->
-> This is actually common throughout the tracing code (as all dynamic fields
-> have this). We should probably make this more generic than just for
-> synthetic events. Although, that would probably break BE user space. Hmm,
-> we could have it be:
+I have mentioned trying to address the issue of PHY drivers being
+unbound in the past, and there's been some improvements with that,
+but if the phy_device vanishes while something is using it, it
+certainly will not end well. phylib is not the only case of this,
+there are numerous instances of it. One of the recent ones that
+I happened to be reminded of today is the pcs-rzn1-miic thing...
+If you have a look at miic_create() and consider what would happen
+if:
 
-I'm not familiar with the ftrace code, so I think i would need some more
-time to find all the other locations. Therefore i updated the patch to move
-the structure declaration to trace.h and sent that as a first step.
+        if (!pdev || !platform_get_drvdata(pdev))
+                return ERR_PTR(-EPROBE_DEFER);
 
-Thanks,
-Sven
+ ... another thread ended up executing miic_remove() for this
+    platform device at this very point ...
+
+        miic_port = kzalloc(sizeof(*miic_port), GFP_KERNEL);
+        if (!miic_port)
+                return ERR_PTR(-ENOMEM);
+
+        miic = platform_get_drvdata(pdev);
+        device_link_add(dev, miic->dev, DL_FLAG_AUTOREMOVE_CONSUMER);
+
+The devm allocation for "miic" would be freed, so either miic
+ends up a stale pointer if it happened after this point, or
+if miic_remove() completes, then platform_get_drvdata() returns
+NULL and we oops the kernel here.
+
+It's an unlikely race, but it's still a race. Sadly, the kernel
+is getting riddled with things like this. I used to point these
+things out, but having been shouted down many times I've given
+up raising it.
+
+Another example is the direct rendering manager bridge code
+(drm_bridge).
+
+I suggest a similar approach to not caring too much about this
+for your own sanity... providing it doesn't actually cause a
+problem!
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
