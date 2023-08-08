@@ -2,771 +2,613 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 948AE773FE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2A1773E85
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233747AbjHHQzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
+        id S232880AbjHHQbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232706AbjHHQyb (ORCPT
+        with ESMTP id S232882AbjHHQ35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:54:31 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2053.outbound.protection.outlook.com [40.107.215.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9005A8C1D;
-        Tue,  8 Aug 2023 08:59:01 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bdvqlWVn4rx6fdSChwSDS80SApKj8AnayLCdAneXgkO01PkJxPo+nXeojuQAbqUAueTIWeXSMfjQpsowmH2vbPEpF4qiUqmZacyDRCXusijHc+rLxck5pmB+b3l73RC2KTbY9a7wbmYaNcvNQFVGwkdq5Bj0Xz+4rLIayz2tDtIjjl5ZCfwcSAmveQfy3/C5wDA1ziHR/rvGXaG9/P35cDQCW+Yr5xUXdGA07yr98GNgQYm/lNrNnkSZANWCZYj8Q5w9l35P5RNqtCT6Xj89j29JrOz9FAQyE1ubyId9A4PF20ZKGyLM1z6sJkEnM6jOCdHLBurwrVhEpURcfXTwuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XWr8jTfWsy6xSvWGJxkUGtIEPXRjjlOKDZ4q4guGqFs=;
- b=GFYH481nS6BC1CZdP9J6MWpfqVCg/mZbCUzqJoAMq85uN8TYdLgvvqsqXfa4vRwdE06/pY3gQQY55mL4SETxgO3lb/+o0e2C+yLqnsX7BlhQt+lNgB4CCOkaQX3nYoEEh+rziOq4BwwBM1QDCHBQtgon8LQju6oJtRaAyysewdJtY5wk/ZGBIN+dLMz7n9AGrkOU2ukoixAem7LuQXHheXMiokhfSj6aNw8vdOr6Ky98Onv/ojv8Zo13/VT4uaYzgtpiYV6REE7XYkQG7TZ2DVkOtxzUb5Bd2dtQqrzm3co5KsIUQMvmAuWmMCpx8Mqgr49Kuy5PL/WNcRtyidGkvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
- (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=wiwynn.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XWr8jTfWsy6xSvWGJxkUGtIEPXRjjlOKDZ4q4guGqFs=;
- b=Czgp3BrHLI680SpamWiEXuVeMIiadsWRpkuWu7NHYZE2ocJgIk0pjDCSmQitHX/X8Ik/Xe4PeTStrSkeeD+bIBja0UaUqmR/1AEhVWX5kX72ukGSPvtXxpHXWq286GvtRSUnilbWsUVMIO2PnACSBSXviS79Fxo5hM4FjeQdX/NZEH+8zoAv8gHua6otY2wN5pM6pNPL6I35vEtuNXTe0x6SDJfqT4DVRcn9enUF7fAdXpCki2BgWESUDH1R4FzY9XJVpmmXFxlHUw+Ja1tPyOfgv2wb1oe4d+WYZ9QpTLHMcq7q2fzMiTkhWbRnlSwy4bKM8j8PZb4Fu1F2EwhqfQ==
-Received: from SG2PR06CA0195.apcprd06.prod.outlook.com (2603:1096:4:1::27) by
- TYZPR04MB6810.apcprd04.prod.outlook.com (2603:1096:400:333::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6652.25; Tue, 8 Aug 2023 08:43:00 +0000
-Received: from HK3PEPF0000021F.apcprd03.prod.outlook.com
- (2603:1096:4:1:cafe::4b) by SG2PR06CA0195.outlook.office365.com
- (2603:1096:4:1::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27 via Frontend
- Transport; Tue, 8 Aug 2023 08:43:00 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
- smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
-Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
- designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.20.1.79; helo=localhost.localdomain;
-Received: from localhost.localdomain (211.20.1.79) by
- HK3PEPF0000021F.mail.protection.outlook.com (10.167.8.41) with Microsoft SMTP
- Server id 15.20.6652.19 via Frontend Transport; Tue, 8 Aug 2023 08:42:59
- +0000
-From:   Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-To:     patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
-Cc:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 2/2] ARM: dts: aspeed: yosemitev4: add Facebook Yosemite 4 BMC
-Date:   Tue,  8 Aug 2023 16:42:46 +0800
-Message-Id: <20230808084248.1415678-3-Delphine_CC_Chiu@wiwynn.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230808084248.1415678-1-Delphine_CC_Chiu@wiwynn.com>
-References: <20230808084248.1415678-1-Delphine_CC_Chiu@wiwynn.com>
+        Tue, 8 Aug 2023 12:29:57 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C753C67F9;
+        Tue,  8 Aug 2023 08:51:30 -0700 (PDT)
+Date:   Tue, 08 Aug 2023 08:43:57 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691484238;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z4L0V7zsovLFqT9e22rSUqe5hLjILCGS57KgfybV0XE=;
+        b=W5Np0jrKt2A4jWsDcGm6faRQJRjiv9FL0Wd8Kzi/3wPsLC7BDqIoTdlvAJhbED5HgJ0L0N
+        /nphD6FVWwgM74Zh5hpKCOOtRvFlPGyLpytaX9QIq9+bQbJ1ACb0PsDu3HNS4HEa6nEwK7
+        y03Dv4p7bpR31PqL7i0i4dy2urFUxOo+uKTacxPZ8oXBFLieUhycWDCBxLkIsVyEjslr8U
+        quIYEx9kVaftEtxgiLVqA1Bu0xKxsKV67c2eTLWqLPROSGxNVr7BJXHkScfHcYfGcLZyIQ
+        Ezt9Y56foxxqvTYiCvumIy3etIfz/cbPIDljArYaw0zrfcNwvBnpq6aYzObL4g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691484238;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z4L0V7zsovLFqT9e22rSUqe5hLjILCGS57KgfybV0XE=;
+        b=bjQBBkamETGizNLVJ4Gq9fVx/h6+Mul7I43YVeitVPazT/Mfn6utr4d1kgHPsJ5o6lEGDF
+        A+pXCAPwnT/53hDA==
+From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/boot] x86/efistub: Avoid legacy decompressor when doing EFI boot
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230807162720.545787-24-ardb@kernel.org>
+References: <20230807162720.545787-24-ardb@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK3PEPF0000021F:EE_|TYZPR04MB6810:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: efeed7ec-de3a-4d96-92e8-08db97eb7894
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7j9hYTJ+8nUPuwZtCTGa2XHokaVVuBsuyf+Tb6jcwSbhPsFdjsffPBeYLm0vRy8jDGpxyPnRVvhcarHYer4TIpnFBGy4rdrODt8ZhX4sGhUe56PwLlHF9pXLiSd8Idzyg3UyQMqyFYl7t2hucK2iEW9RuyJmopCvuAjN7AfLstzwa7Aw3fF9HX4ujtq1z250oBfNM7bwHFD8ONBzEgsZLjvhkvyYmREQ//PBQELM7xcHoMz+SKDIe9vD8NzKhWV44EPtEUaA/ykb2XEfE0qa4kx+3U0AGvO+OtisfTm6dfDq132Bsk6ZPWMuzRQs9D3mqf6Ahb9c6Wi4qq1NlAhGomquL/46VBLfHTsVMx+2Hd2HWZ2/3cDPGcOjoAadEnZd9V536aMsvpb1DLatR7xt+ab+hHmdI66QjUGsctZ/ftzPX96TvequtNVDgTe/P7mg9s7iGLcPXuyaaI7kabioaSxatKcrNWszUNsu2ikFEtGUBtJ0jr6swM/8YcTQ1y6tIfhF3G0oACLcxYXSn2r0LmgGEt0SbbUOB1ul5j6ZBINL2aYh/Vec9B0pTY7w1y2wStTKBrgStsSN15EVz9aoIoRWZsn7cVeHLKm7Yz8oGVkf1YCQaafLrchauTuxY4lWtlb9WI+oLNf2cZblYJHoe6UkOwMFmZmVXb9uaY3MZzbzzzCR3kobAKuKJ12z0RHPghQ7tS6poA/La62umDN+zw==
-X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230028)(6069001)(4636009)(376002)(39850400004)(136003)(346002)(396003)(47680400002)(186006)(1800799003)(451199021)(82310400008)(46966006)(36840700001)(4326008)(2906002)(47076005)(70206006)(70586007)(9316004)(6486002)(336012)(6666004)(36860700001)(7416002)(5660300002)(41300700001)(316002)(8936002)(36736006)(8676002)(30864003)(40480700001)(81166007)(356005)(956004)(2616005)(110136005)(478600001)(82740400003)(36756003)(26005)(6506007)(1076003)(86362001)(6512007);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2023 08:42:59.6824
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: efeed7ec-de3a-4d96-92e8-08db97eb7894
-X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource: HK3PEPF0000021F.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR04MB6810
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <169148423751.27769.9827651921586829906.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add linux device tree entry related to
-Yosemite 4 specific devices connected to BMC SoC.
+The following commit has been merged into the x86/boot branch of tip:
 
-Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+Commit-ID:     a1b87d54f4e45ff5e0d081fb1d9db3bf1a8fb39a
+Gitweb:        https://git.kernel.org/tip/a1b87d54f4e45ff5e0d081fb1d9db3bf1a8fb39a
+Author:        Ard Biesheuvel <ardb@kernel.org>
+AuthorDate:    Mon, 07 Aug 2023 18:27:20 +02:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Mon, 07 Aug 2023 21:07:43 +02:00
+
+x86/efistub: Avoid legacy decompressor when doing EFI boot
+
+The bare metal decompressor code was never really intended to run in a
+hosted environment such as the EFI boot services, and does a few things
+that are becoming problematic in the context of EFI boot now that the
+logo requirements are getting tighter: EFI executables will no longer be
+allowed to consist of a single executable section that is mapped with
+read, write and execute permissions if they are intended for use in a
+context where Secure Boot is enabled (and where Microsoft's set of
+certificates is used, i.e., every x86 PC built to run Windows).
+
+To avoid stepping on reserved memory before having inspected the E820
+tables, and to ensure the correct placement when running a kernel build
+that is non-relocatable, the bare metal decompressor moves its own
+executable image to the end of the allocation that was reserved for it,
+in order to perform the decompression in place. This means the region in
+question requires both write and execute permissions, which either need
+to be given upfront (which EFI will no longer permit), or need to be
+applied on demand using the existing page fault handling framework.
+
+However, the physical placement of the kernel is usually randomized
+anyway, and even if it isn't, a dedicated decompression output buffer
+can be allocated anywhere in memory using EFI APIs when still running in
+the boot services, given that EFI support already implies a relocatable
+kernel. This means that decompression in place is never necessary, nor
+is moving the compressed image from one end to the other.
+
+Since EFI already maps all of memory 1:1, it is also unnecessary to
+create new page tables or handle page faults when decompressing the
+kernel. That means there is also no need to replace the special
+exception handlers for SEV. Generally, there is little need to do
+any of the things that the decompressor does beyond
+
+- initialize SEV encryption, if needed,
+- perform the 4/5 level paging switch, if needed,
+- decompress the kernel
+- relocate the kernel
+
+So do all of this from the EFI stub code, and avoid the bare metal
+decompressor altogether.
+
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20230807162720.545787-24-ardb@kernel.org
 ---
-Changelog:
-v7 - Revise changelog format
-v6 - Change project name from yosemitev4 to yosemite4
-v5 - Revise rtc setting
-   - Remove duplicated multi-master setting
-v3 - Revise the bootargs to stdout-path
-   - Revise i2c devices
-v2 - Revise the DTS node name
----
- arch/arm/boot/dts/aspeed/Makefile             |   1 +
- .../aspeed/aspeed-bmc-facebook-yosemite4.dts  | 633 ++++++++++++++++++
- 2 files changed, 634 insertions(+)
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+ arch/x86/boot/compressed/Makefile       |   5 +-
+ arch/x86/boot/compressed/efi_mixed.S    |  55 +--------
+ arch/x86/boot/compressed/head_32.S      |  13 +--
+ arch/x86/boot/compressed/head_64.S      |  27 +----
+ arch/x86/include/asm/efi.h              |   7 +-
+ arch/x86/include/asm/sev.h              |   2 +-
+ drivers/firmware/efi/libstub/x86-stub.c | 166 +++++++++--------------
+ 7 files changed, 84 insertions(+), 191 deletions(-)
 
-diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
-index c68984322a86..5b9264b823f3 100644
---- a/arch/arm/boot/dts/aspeed/Makefile
-+++ b/arch/arm/boot/dts/aspeed/Makefile
-@@ -26,6 +26,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-bmc-facebook-wedge400.dtb \
- 	aspeed-bmc-facebook-yamp.dtb \
- 	aspeed-bmc-facebook-yosemitev2.dtb \
-+	aspeed-bmc-facebook-yosemite4.dtb \
- 	aspeed-bmc-ibm-bonnell.dtb \
- 	aspeed-bmc-ibm-everest.dtb \
- 	aspeed-bmc-ibm-rainier.dtb \
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-new file mode 100644
-index 000000000000..0791dea588b2
---- /dev/null
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-@@ -0,0 +1,633 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+// Copyright 2022 Facebook Inc.
-+
-+/dts-v1/;
-+#include "aspeed-g6.dtsi"
-+#include <dt-bindings/gpio/aspeed-gpio.h>
-+#include <dt-bindings/leds/leds-pca955x.h>
-+#include <dt-bindings/i2c/i2c.h>
-+
-+/ {
-+	model = "Facebook Yosemite 4 BMC";
-+	compatible = "facebook,yosemite4-bmc", "aspeed,ast2600";
-+
-+	aliases {
-+		serial4 = &uart5;
-+		serial5 = &uart6;
-+		serial6 = &uart7;
-+		serial7 = &uart8;
-+		serial8 = &uart9;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial4:57600n8";
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x80000000 0x80000000>;
-+	};
-+
-+	iio-hwmon {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc0 0>, <&adc0 1>, <&adc0 2>, <&adc0 3>,
-+				<&adc0 4>, <&adc0 5>, <&adc0 6>, <&adc0 7>,
-+				<&adc1 0>, <&adc1 1>;
-+	};
-+};
-+
-+&uart1 {
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	status = "okay";
-+};
-+
-+&uart3 {
-+	status = "okay";
-+};
-+
-+&uart4 {
-+	status = "okay";
-+};
-+
-+&uart5 {
-+	status = "okay";
-+};
-+
-+&uart6 {
-+	status = "okay";
-+};
-+
-+&uart7 {
-+	status = "okay";
-+};
-+
-+&uart8 {
-+	status = "okay";
-+};
-+
-+&uart9 {
-+	status = "okay";
-+};
-+
-+&wdt1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_wdtrst1_default>;
-+	aspeed,reset-type = "soc";
-+	aspeed,external-signal;
-+	aspeed,ext-push-pull;
-+	aspeed,ext-active-high;
-+	aspeed,ext-pulse-duration = <256>;
-+};
-+
-+&mac2 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rmii3_default>;
-+	no-hw-checksum;
-+	use-ncsi;
-+	mlx,multi-host;
-+	ncsi-ctrl,start-redo-probe;
-+	ncsi-ctrl,no-channel-monitor;
-+	ncsi-package = <1>;
-+	ncsi-channel = <1>;
-+	ncsi-rexmit = <1>;
-+	ncsi-timeout = <2>;
-+};
-+
-+&mac3 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rmii4_default>;
-+	no-hw-checksum;
-+	use-ncsi;
-+	mlx,multi-host;
-+	ncsi-ctrl,start-redo-probe;
-+	ncsi-ctrl,no-channel-monitor;
-+	ncsi-package = <1>;
-+	ncsi-channel = <1>;
-+	ncsi-rexmit = <1>;
-+	ncsi-timeout = <2>;
-+};
-+
-+&fmc {
-+	status = "okay";
-+	flash@0 {
-+		status = "okay";
-+		m25p,fast-read;
-+		label = "bmc";
-+		spi-rx-bus-width = <4>;
-+		spi-max-frequency = <50000000>;
-+#include "openbmc-flash-layout-64.dtsi"
-+	};
-+	flash@1 {
-+		status = "okay";
-+		m25p,fast-read;
-+		label = "bmc2";
-+		spi-rx-bus-width = <4>;
-+		spi-max-frequency = <50000000>;
-+	};
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+	mctp-controller;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+	mctp-controller;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+	mctp-controller;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c3 {
-+	status = "okay";
-+	mctp-controller;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c4 {
-+	status = "okay";
-+	mctp-controller;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c5 {
-+	status = "okay";
-+	mctp-controller;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c6 {
-+	status = "okay";
-+	mctp-controller;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c7 {
-+	status = "okay";
-+	mctp-controller;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c8 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+	i2c-mux@70 {
-+		compatible = "nxp,pca9544";
-+		idle-state = <0>;
-+		i2c-mux-idle-disconnect;
-+		reg = <0x70>;
-+	};
-+};
-+
-+&i2c9 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+	i2c-mux@71 {
-+		compatible = "nxp,pca9544";
-+		idle-state = <0>;
-+		i2c-mux-idle-disconnect;
-+		reg = <0x71>;
-+	};
-+};
-+
-+&i2c10 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+};
-+
-+&i2c11 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+	power-sensor@10 {
-+		compatible = "adi, adm1272";
-+		reg = <0x10>;
-+	};
-+
-+	power-sensor@12 {
-+		compatible = "adi, adm1272";
-+		reg = <0x12>;
-+	};
-+
-+	gpio@20 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x20>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	gpio@21 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x21>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	gpio@22 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x22>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	gpio@23 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x23>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	temperature-sensor@48 {
-+		compatible = "ti,tmp75";
-+		reg = <0x48>;
-+	};
-+
-+	temperature-sensor@49 {
-+		compatible = "ti,tmp75";
-+		reg = <0x49>;
-+	};
-+
-+	temperature-sensor@4a {
-+		compatible = "ti,tmp75";
-+		reg = <0x4a>;
-+	};
-+
-+	temperature-sensor@4b {
-+		compatible = "ti,tmp75";
-+		reg = <0x4b>;
-+	};
-+
-+	eeprom@54 {
-+		compatible = "atmel,24c256";
-+		reg = <0x54>;
-+	};
-+};
-+
-+&i2c12 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+
-+	temperature-sensor@48 {
-+		compatible = "ti,tmp75";
-+		reg = <0x48>;
-+	};
-+
-+	eeprom@50 {
-+		compatible = "atmel,24c128";
-+		reg = <0x50>;
-+	};
-+
-+	rtc@6f {
-+		compatible = "nuvoton,nct3018y";
-+		reg = <0x6f>;
-+	};
-+};
-+
-+&i2c13 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+};
-+
-+&i2c14 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+	adc@1d {
-+		compatible = "ti,adc128d818";
-+		reg = <0x1d>;
-+		ti,mode = /bits/ 8 <2>;
-+	};
-+
-+	adc@35 {
-+		compatible = "ti,adc128d818";
-+		reg = <0x35>;
-+		ti,mode = /bits/ 8 <2>;
-+	};
-+
-+	adc@37 {
-+		compatible = "ti,adc128d818";
-+		reg = <0x37>;
-+		ti,mode = /bits/ 8 <2>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "ti,ina230";
-+		reg = <0x40>;
-+	};
-+
-+	power-sensor@41 {
-+		compatible = "ti,ina230";
-+		reg = <0x41>;
-+	};
-+
-+	power-sensor@42 {
-+		compatible = "ti,ina230";
-+		reg = <0x42>;
-+	};
-+
-+	power-sensor@41 {
-+		compatible = "ti,ina230";
-+		reg = <0x43>;
-+	};
-+
-+	power-sensor@44 {
-+		compatible = "ti,ina230";
-+		reg = <0x44>;
-+	};
-+
-+	temperature-sensor@4e {
-+		compatible = "ti,tmp75";
-+		reg = <0x4e>;
-+	};
-+
-+	temperature-sensor@4f {
-+		compatible = "ti,tmp75";
-+		reg = <0x4f>;
-+	};
-+
-+	eeprom@51 {
-+		compatible = "atmel,24c128";
-+		reg = <0x51>;
-+	};
-+
-+	i2c-mux@71 {
-+		compatible = "nxp,pca9846";
-+		idle-state = <0>;
-+		i2c-mux-idle-disconnect;
-+		reg = <0x71>;
-+
-+		i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			adc@1f {
-+				compatible = "ti,adc128d818";
-+				reg = <0x1f>;
-+				ti,mode = /bits/ 8 <2>;
-+			};
-+
-+			pwm@20{
-+				compatible = "max31790";
-+				reg = <0x20>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			gpio@22{
-+				compatible = "ti,tca6424";
-+				reg = <0x22>;
-+			};
-+
-+			pwm@23{
-+				compatible = "max31790";
-+				reg = <0x23>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			adc@33 {
-+				compatible = "maxim,max11615";
-+				reg = <0x33>;
-+			};
-+
-+			eeprom@52 {
-+				compatible = "atmel,24c128";
-+				reg = <0x52>;
-+			};
-+
-+			gpio@61 {
-+				compatible = "nxp,pca9552";
-+				reg = <0x61>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				gpio-controller;
-+				#gpio-cells = <2>;
-+			};
-+		};
-+
-+		i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			adc@1f {
-+				compatible = "ti,adc128d818";
-+				reg = <0x1f>;
-+				ti,mode = /bits/ 8 <2>;
-+			};
-+
-+			pwm@20{
-+				compatible = "max31790";
-+				reg = <0x20>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			gpio@22{
-+				compatible = "ti,tca6424";
-+				reg = <0x22>;
-+			};
-+
-+			pwm@23{
-+				compatible = "max31790";
-+				reg = <0x23>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			adc@33 {
-+				compatible = "maxim,max11615";
-+				reg = <0x33>;
-+			};
-+
-+			eeprom@52 {
-+				compatible = "atmel,24c128";
-+				reg = <0x52>;
-+			};
-+
-+			gpio@61 {
-+				compatible = "nxp,pca9552";
-+				reg = <0x61>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				gpio-controller;
-+				#gpio-cells = <2>;
-+			};
-+		};
-+	};
-+
-+	i2c-mux@73 {
-+		compatible = "nxp,pca9544";
-+		idle-state = <0>;
-+		i2c-mux-idle-disconnect;
-+		reg = <0x73>;
-+
-+		i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			adc@35 {
-+				compatible = "maxim,max11617";
-+				reg = <0x35>;
-+			};
-+		};
-+
-+		i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			adc@35 {
-+				compatible = "maxim,max11617";
-+				reg = <0x35>;
-+			};
-+		};
-+	};
-+};
-+
-+&i2c15 {
-+	status = "okay";
-+	mctp-controller;
-+	multi-master;
-+	bus-frequency = <400000>;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	i2c-mux@72 {
-+		compatible = "nxp,pca9544";
-+		idle-state = <0>;
-+		i2c-mux-idle-disconnect;
-+		reg = <0x72>;
-+	};
-+};
-+
-+&adc0 {
-+	ref_voltage = <2500>;
-+	status = "okay";
-+	pinctrl-0 = <&pinctrl_adc0_default &pinctrl_adc1_default
-+			&pinctrl_adc2_default &pinctrl_adc3_default
-+			&pinctrl_adc4_default &pinctrl_adc5_default
-+			&pinctrl_adc6_default &pinctrl_adc7_default>;
-+};
-+
-+&adc1 {
-+	ref_voltage = <2500>;
-+	status = "okay";
-+	pinctrl-0 = <&pinctrl_adc8_default &pinctrl_adc9_default>;
-+};
-+
-+
-+&ehci0 {
-+	status = "okay";
-+};
-+
-+&ehci1 {
-+	status = "okay";
-+};
-+
-+&uhci {
-+	status = "okay";
-+};
--- 
-2.25.1
-
+diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+index 40d2ff5..71fc531 100644
+--- a/arch/x86/boot/compressed/Makefile
++++ b/arch/x86/boot/compressed/Makefile
+@@ -74,6 +74,11 @@ LDFLAGS_vmlinux += -z noexecstack
+ ifeq ($(CONFIG_LD_IS_BFD),y)
+ LDFLAGS_vmlinux += $(call ld-option,--no-warn-rwx-segments)
+ endif
++ifeq ($(CONFIG_EFI_STUB),y)
++# ensure that the static EFI stub library will be pulled in, even if it is
++# never referenced explicitly from the startup code
++LDFLAGS_vmlinux += -u efi_pe_entry
++endif
+ LDFLAGS_vmlinux += -T
+ 
+ hostprogs	:= mkpiggy
+diff --git a/arch/x86/boot/compressed/efi_mixed.S b/arch/x86/boot/compressed/efi_mixed.S
+index 8a02a15..f4e22ef 100644
+--- a/arch/x86/boot/compressed/efi_mixed.S
++++ b/arch/x86/boot/compressed/efi_mixed.S
+@@ -269,10 +269,6 @@ SYM_FUNC_START_LOCAL(efi32_entry)
+ 	jmp	startup_32
+ SYM_FUNC_END(efi32_entry)
+ 
+-#define ST32_boottime		60 // offsetof(efi_system_table_32_t, boottime)
+-#define BS32_handle_protocol	88 // offsetof(efi_boot_services_32_t, handle_protocol)
+-#define LI32_image_base		32 // offsetof(efi_loaded_image_32_t, image_base)
+-
+ /*
+  * efi_status_t efi32_pe_entry(efi_handle_t image_handle,
+  *			       efi_system_table_32_t *sys_table)
+@@ -280,8 +276,6 @@ SYM_FUNC_END(efi32_entry)
+ SYM_FUNC_START(efi32_pe_entry)
+ 	pushl	%ebp
+ 	movl	%esp, %ebp
+-	pushl	%eax				// dummy push to allocate loaded_image
+-
+ 	pushl	%ebx				// save callee-save registers
+ 	pushl	%edi
+ 
+@@ -290,48 +284,8 @@ SYM_FUNC_START(efi32_pe_entry)
+ 	movl	$0x80000003, %eax		// EFI_UNSUPPORTED
+ 	jnz	2f
+ 
+-	call	1f
+-1:	pop	%ebx
+-
+-	/* Get the loaded image protocol pointer from the image handle */
+-	leal	-4(%ebp), %eax
+-	pushl	%eax				// &loaded_image
+-	leal	(loaded_image_proto - 1b)(%ebx), %eax
+-	pushl	%eax				// pass the GUID address
+-	pushl	8(%ebp)				// pass the image handle
+-
+-	/*
+-	 * Note the alignment of the stack frame.
+-	 *   sys_table
+-	 *   handle             <-- 16-byte aligned on entry by ABI
+-	 *   return address
+-	 *   frame pointer
+-	 *   loaded_image       <-- local variable
+-	 *   saved %ebx		<-- 16-byte aligned here
+-	 *   saved %edi
+-	 *   &loaded_image
+-	 *   &loaded_image_proto
+-	 *   handle             <-- 16-byte aligned for call to handle_protocol
+-	 */
+-
+-	movl	12(%ebp), %eax			// sys_table
+-	movl	ST32_boottime(%eax), %eax	// sys_table->boottime
+-	call	*BS32_handle_protocol(%eax)	// sys_table->boottime->handle_protocol
+-	addl	$12, %esp			// restore argument space
+-	testl	%eax, %eax
+-	jnz	2f
+-
+ 	movl	8(%ebp), %ecx			// image_handle
+ 	movl	12(%ebp), %edx			// sys_table
+-	movl	-4(%ebp), %esi			// loaded_image
+-	movl	LI32_image_base(%esi), %esi	// loaded_image->image_base
+-	leal	(startup_32 - 1b)(%ebx), %ebp	// runtime address of startup_32
+-	/*
+-	 * We need to set the image_offset variable here since startup_32() will
+-	 * use it before we get to the 64-bit efi_pe_entry() in C code.
+-	 */
+-	subl	%esi, %ebp			// calculate image_offset
+-	movl	%ebp, (image_offset - 1b)(%ebx)	// save image_offset
+ 	xorl	%esi, %esi
+ 	jmp	efi32_entry			// pass %ecx, %edx, %esi
+ 						// no other registers remain live
+@@ -350,15 +304,6 @@ SYM_FUNC_START_NOALIGN(efi64_stub_entry)
+ SYM_FUNC_END(efi64_stub_entry)
+ #endif
+ 
+-	.section ".rodata"
+-	/* EFI loaded image protocol GUID */
+-	.balign 4
+-SYM_DATA_START_LOCAL(loaded_image_proto)
+-	.long	0x5b1b31a1
+-	.word	0x9562, 0x11d2
+-	.byte	0x8e, 0x3f, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b
+-SYM_DATA_END(loaded_image_proto)
+-
+ 	.data
+ 	.balign	8
+ SYM_DATA_START_LOCAL(efi32_boot_gdt)
+diff --git a/arch/x86/boot/compressed/head_32.S b/arch/x86/boot/compressed/head_32.S
+index 3af4a38..1cfe980 100644
+--- a/arch/x86/boot/compressed/head_32.S
++++ b/arch/x86/boot/compressed/head_32.S
+@@ -84,19 +84,6 @@ SYM_FUNC_START(startup_32)
+ 
+ #ifdef CONFIG_RELOCATABLE
+ 	leal	startup_32@GOTOFF(%edx), %ebx
+-
+-#ifdef CONFIG_EFI_STUB
+-/*
+- * If we were loaded via the EFI LoadImage service, startup_32() will be at an
+- * offset to the start of the space allocated for the image. efi_pe_entry() will
+- * set up image_offset to tell us where the image actually starts, so that we
+- * can use the full available buffer.
+- *	image_offset = startup_32 - image_base
+- * Otherwise image_offset will be zero and has no effect on the calculations.
+- */
+-	subl    image_offset@GOTOFF(%edx), %ebx
+-#endif
+-
+ 	movl	BP_kernel_alignment(%esi), %eax
+ 	decl	%eax
+ 	addl    %eax, %ebx
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index 28f4605..bf4a10a 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -146,19 +146,6 @@ SYM_FUNC_START(startup_32)
+ 
+ #ifdef CONFIG_RELOCATABLE
+ 	movl	%ebp, %ebx
+-
+-#ifdef CONFIG_EFI_STUB
+-/*
+- * If we were loaded via the EFI LoadImage service, startup_32 will be at an
+- * offset to the start of the space allocated for the image. efi_pe_entry will
+- * set up image_offset to tell us where the image actually starts, so that we
+- * can use the full available buffer.
+- *	image_offset = startup_32 - image_base
+- * Otherwise image_offset will be zero and has no effect on the calculations.
+- */
+-	subl    rva(image_offset)(%ebp), %ebx
+-#endif
+-
+ 	movl	BP_kernel_alignment(%esi), %eax
+ 	decl	%eax
+ 	addl	%eax, %ebx
+@@ -335,20 +322,6 @@ SYM_CODE_START(startup_64)
+ 	/* Start with the delta to where the kernel will run at. */
+ #ifdef CONFIG_RELOCATABLE
+ 	leaq	startup_32(%rip) /* - $startup_32 */, %rbp
+-
+-#ifdef CONFIG_EFI_STUB
+-/*
+- * If we were loaded via the EFI LoadImage service, startup_32 will be at an
+- * offset to the start of the space allocated for the image. efi_pe_entry will
+- * set up image_offset to tell us where the image actually starts, so that we
+- * can use the full available buffer.
+- *	image_offset = startup_32 - image_base
+- * Otherwise image_offset will be zero and has no effect on the calculations.
+- */
+-	movl    image_offset(%rip), %eax
+-	subq	%rax, %rbp
+-#endif
+-
+ 	movl	BP_kernel_alignment(%rsi), %eax
+ 	decl	%eax
+ 	addq	%rax, %rbp
+diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
+index 8b4be7c..b0994ae 100644
+--- a/arch/x86/include/asm/efi.h
++++ b/arch/x86/include/asm/efi.h
+@@ -90,6 +90,8 @@ static inline void efi_fpu_end(void)
+ }
+ 
+ #ifdef CONFIG_X86_32
++#define EFI_X86_KERNEL_ALLOC_LIMIT		(SZ_512M - 1)
++
+ #define arch_efi_call_virt_setup()					\
+ ({									\
+ 	efi_fpu_begin();						\
+@@ -103,8 +105,7 @@ static inline void efi_fpu_end(void)
+ })
+ 
+ #else /* !CONFIG_X86_32 */
+-
+-#define EFI_LOADER_SIGNATURE	"EL64"
++#define EFI_X86_KERNEL_ALLOC_LIMIT		EFI_ALLOC_LIMIT
+ 
+ extern asmlinkage u64 __efi_call(void *fp, ...);
+ 
+@@ -218,6 +219,8 @@ efi_status_t efi_set_virtual_address_map(unsigned long memory_map_size,
+ 
+ #ifdef CONFIG_EFI_MIXED
+ 
++#define EFI_ALLOC_LIMIT		(efi_is_64bit() ? ULONG_MAX : U32_MAX)
++
+ #define ARCH_HAS_EFISTUB_WRAPPERS
+ 
+ static inline bool efi_is_64bit(void)
+diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+index b97d239..5b4a1ce 100644
+--- a/arch/x86/include/asm/sev.h
++++ b/arch/x86/include/asm/sev.h
+@@ -164,6 +164,7 @@ static __always_inline void sev_es_nmi_complete(void)
+ 		__sev_es_nmi_complete();
+ }
+ extern int __init sev_es_efi_map_ghcbs(pgd_t *pgd);
++extern void sev_enable(struct boot_params *bp);
+ 
+ static inline int rmpadjust(unsigned long vaddr, bool rmp_psize, unsigned long attrs)
+ {
+@@ -218,6 +219,7 @@ static inline void sev_es_ist_exit(void) { }
+ static inline int sev_es_setup_ap_jump_table(struct real_mode_header *rmh) { return 0; }
+ static inline void sev_es_nmi_complete(void) { }
+ static inline int sev_es_efi_map_ghcbs(pgd_t *pgd) { return 0; }
++static inline void sev_enable(struct boot_params *bp) { }
+ static inline int pvalidate(unsigned long vaddr, bool rmp_psize, bool validate) { return 0; }
+ static inline int rmpadjust(unsigned long vaddr, bool rmp_psize, unsigned long attrs) { return 0; }
+ static inline void setup_ghcb(void) { }
+diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+index b4685da..e976288 100644
+--- a/drivers/firmware/efi/libstub/x86-stub.c
++++ b/drivers/firmware/efi/libstub/x86-stub.c
+@@ -15,17 +15,14 @@
+ #include <asm/setup.h>
+ #include <asm/desc.h>
+ #include <asm/boot.h>
++#include <asm/kaslr.h>
+ #include <asm/sev.h>
+ 
+ #include "efistub.h"
+ #include "x86-stub.h"
+ 
+-/* Maximum physical address for 64-bit kernel with 4-level paging */
+-#define MAXMEM_X86_64_4LEVEL (1ull << 46)
+-
+ const efi_system_table_t *efi_system_table;
+ const efi_dxe_services_table_t *efi_dxe_table;
+-u32 image_offset __section(".data");
+ static efi_loaded_image_t *image = NULL;
+ static efi_memory_attribute_protocol_t *memattr;
+ 
+@@ -287,28 +284,6 @@ void efi_adjust_memory_range_protection(unsigned long start,
+ 	}
+ }
+ 
+-extern const u8 startup_32[], startup_64[];
+-
+-static void
+-setup_memory_protection(unsigned long image_base, unsigned long image_size)
+-{
+-#ifdef CONFIG_64BIT
+-	if (image_base != (unsigned long)startup_32)
+-		efi_adjust_memory_range_protection(image_base, image_size);
+-#else
+-	/*
+-	 * Clear protection flags on a whole range of possible
+-	 * addresses used for KASLR. We don't need to do that
+-	 * on x86_64, since KASLR/extraction is performed after
+-	 * dedicated identity page tables are built and we only
+-	 * need to remove possible protection on relocated image
+-	 * itself disregarding further relocations.
+-	 */
+-	efi_adjust_memory_range_protection(LOAD_PHYSICAL_ADDR,
+-					   KERNEL_IMAGE_SIZE - LOAD_PHYSICAL_ADDR);
+-#endif
+-}
+-
+ static void setup_unaccepted_memory(void)
+ {
+ 	efi_guid_t mem_acceptance_proto = OVMF_SEV_MEMORY_ACCEPTANCE_PROTOCOL_GUID;
+@@ -334,9 +309,7 @@ static void setup_unaccepted_memory(void)
+ 
+ static const efi_char16_t apple[] = L"Apple";
+ 
+-static void setup_quirks(struct boot_params *boot_params,
+-			 unsigned long image_base,
+-			 unsigned long image_size)
++static void setup_quirks(struct boot_params *boot_params)
+ {
+ 	efi_char16_t *fw_vendor = (efi_char16_t *)(unsigned long)
+ 		efi_table_attr(efi_system_table, fw_vendor);
+@@ -345,9 +318,6 @@ static void setup_quirks(struct boot_params *boot_params,
+ 		if (IS_ENABLED(CONFIG_APPLE_PROPERTIES))
+ 			retrieve_apple_device_properties(boot_params);
+ 	}
+-
+-	if (IS_ENABLED(CONFIG_EFI_DXE_MEM_ATTRIBUTES))
+-		setup_memory_protection(image_base, image_size);
+ }
+ 
+ /*
+@@ -500,7 +470,6 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
+ 	}
+ 
+ 	image_base = efi_table_attr(image, image_base);
+-	image_offset = (void *)startup_32 - image_base;
+ 
+ 	status = efi_allocate_pages(sizeof(struct boot_params),
+ 				    (unsigned long *)&boot_params, ULONG_MAX);
+@@ -804,6 +773,61 @@ static bool have_unsupported_snp_features(void)
+ 	return false;
+ }
+ 
++static void efi_get_seed(void *seed, int size)
++{
++	efi_get_random_bytes(size, seed);
++
++	/*
++	 * This only updates seed[0] when running on 32-bit, but in that case,
++	 * seed[1] is not used anyway, as there is no virtual KASLR on 32-bit.
++	 */
++	*(unsigned long *)seed ^= kaslr_get_random_long("EFI");
++}
++
++static void error(char *str)
++{
++	efi_warn("Decompression failed: %s\n", str);
++}
++
++static efi_status_t efi_decompress_kernel(unsigned long *kernel_entry)
++{
++	unsigned long virt_addr = LOAD_PHYSICAL_ADDR;
++	unsigned long addr, alloc_size, entry;
++	efi_status_t status;
++	u32 seed[2] = {};
++
++	/* determine the required size of the allocation */
++	alloc_size = ALIGN(max_t(unsigned long, output_len, kernel_total_size),
++			   MIN_KERNEL_ALIGN);
++
++	if (IS_ENABLED(CONFIG_RANDOMIZE_BASE) && !efi_nokaslr) {
++		u64 range = KERNEL_IMAGE_SIZE - LOAD_PHYSICAL_ADDR - kernel_total_size;
++
++		efi_get_seed(seed, sizeof(seed));
++
++		virt_addr += (range * seed[1]) >> 32;
++		virt_addr &= ~(CONFIG_PHYSICAL_ALIGN - 1);
++	}
++
++	status = efi_random_alloc(alloc_size, CONFIG_PHYSICAL_ALIGN, &addr,
++				  seed[0], EFI_LOADER_CODE,
++				  EFI_X86_KERNEL_ALLOC_LIMIT);
++	if (status != EFI_SUCCESS)
++		return status;
++
++	entry = decompress_kernel((void *)addr, virt_addr, error);
++	if (entry == ULONG_MAX) {
++		efi_free(alloc_size, addr);
++		return EFI_LOAD_ERROR;
++	}
++
++	*kernel_entry = addr + entry;
++
++	efi_adjust_memory_range_protection(addr, kernel_total_size);
++
++	return EFI_SUCCESS;
++}
++
+ static void __noreturn enter_kernel(unsigned long kernel_addr,
+ 				    struct boot_params *boot_params)
+ {
+@@ -823,10 +847,9 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
+ 			       struct boot_params *boot_params)
+ {
+ 	efi_guid_t guid = EFI_MEMORY_ATTRIBUTE_PROTOCOL_GUID;
+-	unsigned long bzimage_addr = (unsigned long)startup_32;
+-	unsigned long buffer_start, buffer_end;
+ 	struct setup_header *hdr = &boot_params->hdr;
+ 	const struct linux_efi_initrd *initrd = NULL;
++	unsigned long kernel_entry;
+ 	efi_status_t status;
+ 
+ 	efi_system_table = sys_table_arg;
+@@ -855,60 +878,6 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
+ 		goto fail;
+ 	}
+ 
+-	/*
+-	 * If the kernel isn't already loaded at a suitable address,
+-	 * relocate it.
+-	 *
+-	 * It must be loaded above LOAD_PHYSICAL_ADDR.
+-	 *
+-	 * The maximum address for 64-bit is 1 << 46 for 4-level paging. This
+-	 * is defined as the macro MAXMEM, but unfortunately that is not a
+-	 * compile-time constant if 5-level paging is configured, so we instead
+-	 * define our own macro for use here.
+-	 *
+-	 * For 32-bit, the maximum address is complicated to figure out, for
+-	 * now use KERNEL_IMAGE_SIZE, which will be 512MiB, the same as what
+-	 * KASLR uses.
+-	 *
+-	 * Also relocate it if image_offset is zero, i.e. the kernel wasn't
+-	 * loaded by LoadImage, but rather by a bootloader that called the
+-	 * handover entry. The reason we must always relocate in this case is
+-	 * to handle the case of systemd-boot booting a unified kernel image,
+-	 * which is a PE executable that contains the bzImage and an initrd as
+-	 * COFF sections. The initrd section is placed after the bzImage
+-	 * without ensuring that there are at least init_size bytes available
+-	 * for the bzImage, and thus the compressed kernel's startup code may
+-	 * overwrite the initrd unless it is moved out of the way.
+-	 */
+-
+-	buffer_start = ALIGN(bzimage_addr - image_offset,
+-			     hdr->kernel_alignment);
+-	buffer_end = buffer_start + hdr->init_size;
+-
+-	if ((buffer_start < LOAD_PHYSICAL_ADDR)				     ||
+-	    (IS_ENABLED(CONFIG_X86_32) && buffer_end > KERNEL_IMAGE_SIZE)    ||
+-	    (IS_ENABLED(CONFIG_X86_64) && buffer_end > MAXMEM_X86_64_4LEVEL) ||
+-	    (image_offset == 0)) {
+-		extern char _bss[];
+-
+-		status = efi_relocate_kernel(&bzimage_addr,
+-					     (unsigned long)_bss - bzimage_addr,
+-					     hdr->init_size,
+-					     hdr->pref_address,
+-					     hdr->kernel_alignment,
+-					     LOAD_PHYSICAL_ADDR);
+-		if (status != EFI_SUCCESS) {
+-			efi_err("efi_relocate_kernel() failed!\n");
+-			goto fail;
+-		}
+-		/*
+-		 * Now that we've copied the kernel elsewhere, we no longer
+-		 * have a set up block before startup_32(), so reset image_offset
+-		 * to zero in case it was set earlier.
+-		 */
+-		image_offset = 0;
+-	}
+-
+ #ifdef CONFIG_CMDLINE_BOOL
+ 	status = efi_parse_options(CONFIG_CMDLINE);
+ 	if (status != EFI_SUCCESS) {
+@@ -926,6 +895,12 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
+ 		}
+ 	}
+ 
++	status = efi_decompress_kernel(&kernel_entry);
++	if (status != EFI_SUCCESS) {
++		efi_err("Failed to decompress kernel\n");
++		goto fail;
++	}
++
+ 	/*
+ 	 * At this point, an initrd may already have been loaded by the
+ 	 * bootloader and passed via bootparams. We permit an initrd loaded
+@@ -965,7 +940,7 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
+ 
+ 	setup_efi_pci(boot_params);
+ 
+-	setup_quirks(boot_params, bzimage_addr, buffer_end - buffer_start);
++	setup_quirks(boot_params);
+ 
+ 	setup_unaccepted_memory();
+ 
+@@ -975,12 +950,15 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
+ 		goto fail;
+ 	}
+ 
+-	efi_5level_switch();
++	/*
++	 * Call the SEV init code while still running with the firmware's
++	 * GDT/IDT, so #VC exceptions will be handled by EFI.
++	 */
++	sev_enable(boot_params);
+ 
+-	if (IS_ENABLED(CONFIG_X86_64))
+-		bzimage_addr += startup_64 - startup_32;
++	efi_5level_switch();
+ 
+-	enter_kernel(bzimage_addr, boot_params);
++	enter_kernel(kernel_entry, boot_params);
+ fail:
+ 	efi_err("efi_stub_entry() failed!\n");
+ 
