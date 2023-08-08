@@ -2,107 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15899773C22
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74228773B79
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbjHHQAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
+        id S230270AbjHHPv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 11:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbjHHP6z (ORCPT
+        with ESMTP id S230115AbjHHPtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:58:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837896190
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:44:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691509464; x=1723045464;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=QyCWV3QjNzfUnZv2+pg0lwlA/f/GlJHPMfP1AGZDu20=;
-  b=cdAp/QXu7EOHDXNk1zCAjB874QpoTGzcRcpf3+IqKPi9LsZD3wphD9ya
-   ++V5byB3ZenF73md0W4KOfIr1pBGavrTDDsTelbc0Bh1a7Er8iJUHJ8ba
-   13vxzk8akpHrIRmd0oMPQ1/Mjx6so37xeCpqXUyWk/R2EPA97V+vvGlEs
-   4MlXtj/kt321OYzMqqUv1ByBKWfP0erpg9CwKCepMOTSpyiNa5cQVrXh4
-   i3IwI3tXNrGUGbDkd3o7jLrs+cODMWlcYxGZzbnbVZc90M1oRnQbY0mph
-   LwXcx4S4WVLPH3IB25YGN3iDvC1jPa8VI3mcLI88KIaaawFjwA+VrfGoN
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="457230501"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="457230501"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 07:46:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="855118140"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="855118140"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 08 Aug 2023 07:46:00 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qTNyB-0005P6-0p;
-        Tue, 08 Aug 2023 14:45:59 +0000
-Date:   Tue, 8 Aug 2023 22:45:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Guo Ren <guoren@linux.alibaba.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>
-Subject: arch/riscv/include/asm/syscall.h:87 syscall_handler() warn:
- inconsistent indenting
-Message-ID: <202308082206.4tGQS0Nb-lkp@intel.com>
+        Tue, 8 Aug 2023 11:49:45 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474091FD0
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:42:13 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RKxDf1TT8zNmsB;
+        Tue,  8 Aug 2023 22:59:46 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 8 Aug
+ 2023 23:03:14 +0800
+From:   Yue Haibing <yuehaibing@huawei.com>
+To:     <agk@redhat.com>, <snitzer@kernel.org>, <dm-devel@redhat.com>,
+        <heinzm@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <yuehaibing@huawei.com>
+Subject: [PATCH -next] dm: Remove unused declaration dm_get_rq_mapinfo()
+Date:   Tue, 8 Aug 2023 23:03:01 +0800
+Message-ID: <20230808150301.45196-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   14f9643dc90adea074a0ffb7a17d337eafc6a5cc
-commit: f0bddf50586da81360627a772be0e355b62f071e riscv: entry: Convert to generic entry
-date:   5 months ago
-config: riscv-randconfig-m031-20230808 (https://download.01.org/0day-ci/archive/20230808/202308082206.4tGQS0Nb-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230808/202308082206.4tGQS0Nb-lkp@intel.com/reproduce)
+Commit ae6ad75e5c3c ("dm: remove unused dm_get_rq_mapinfo()")
+removed the implementation but leave declaration.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308082206.4tGQS0Nb-lkp@intel.com/
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+---
+ include/linux/device-mapper.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-New smatch warnings:
-arch/riscv/include/asm/syscall.h:87 syscall_handler() warn: inconsistent indenting
-
-Old smatch warnings:
-arch/riscv/kernel/traps.c:327 is_valid_bugaddr() warn: unsigned 'pc' is never less than zero.
-
-vim +87 arch/riscv/include/asm/syscall.h
-
-    76	
-    77	typedef long (*syscall_t)(ulong, ulong, ulong, ulong, ulong, ulong, ulong);
-    78	static inline void syscall_handler(struct pt_regs *regs, ulong syscall)
-    79	{
-    80		syscall_t fn;
-    81	
-    82	#ifdef CONFIG_COMPAT
-    83		if ((regs->status & SR_UXL) == SR_UXL_32)
-    84			fn = compat_sys_call_table[syscall];
-    85		else
-    86	#endif
-  > 87			fn = sys_call_table[syscall];
-    88	
-    89		regs->a0 = fn(regs->orig_a0, regs->a1, regs->a2,
-    90			      regs->a3, regs->a4, regs->a5, regs->a6);
-    91	}
-    92	
-
+diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
+index 69d0435c7ebb..5bc69c6a64e0 100644
+--- a/include/linux/device-mapper.h
++++ b/include/linux/device-mapper.h
+@@ -502,7 +502,6 @@ int dm_post_suspending(struct dm_target *ti);
+ int dm_noflush_suspending(struct dm_target *ti);
+ void dm_accept_partial_bio(struct bio *bio, unsigned int n_sectors);
+ void dm_submit_bio_remap(struct bio *clone, struct bio *tgt_clone);
+-union map_info *dm_get_rq_mapinfo(struct request *rq);
+ 
+ #ifdef CONFIG_BLK_DEV_ZONED
+ struct dm_report_zones_args {
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
