@@ -2,264 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E107773F2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13AC5773F45
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233337AbjHHQoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58650 "EHLO
+        id S233344AbjHHQpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233257AbjHHQnG (ORCPT
+        with ESMTP id S232505AbjHHQoS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:43:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B51E3DE16;
-        Tue,  8 Aug 2023 08:55:32 -0700 (PDT)
+        Tue, 8 Aug 2023 12:44:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3169184;
+        Tue,  8 Aug 2023 08:56:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0F86062417;
-        Tue,  8 Aug 2023 07:38:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9956C433C8;
-        Tue,  8 Aug 2023 07:38:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 649B76241E;
+        Tue,  8 Aug 2023 07:40:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0A0AC433C7;
+        Tue,  8 Aug 2023 07:40:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691480332;
-        bh=HP04k5RE6tmL8YfqaYIvxohfsPa4cIoduNsbpyZY+mE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=hoQSjJRO2XzOl9BTizJHrMD94xDv/fcF1uiFy+nAMhV7MW2pkIkfZ8dcVqt9jmQ2v
-         pLK2FUIINaPaPi95yqos5Rdurl2QdXG/c5lgx4SHR689ObMOnzsXY45pgSikruLshK
-         8+r/M4z2YAcbONomCFr+qa3dY+z9KJvypo29c8HZjMVDF+tlKawosPK6xQgFvNVnoH
-         kp7eTv74CISzjgMhnB36t/PAc6irvMVf0yOtMvnT15q4obAvQTmrgwVVueRuwkHtX6
-         ftDJ5aZ1hfhg7aK+P/wsmh6mxME+EA11MvVOGwJ6bFenvmblxf8KhRN9dcO6lQNeXp
-         /ZczUneRpP+Dg==
-Message-ID: <0248d597-b72a-5b7c-63a4-6d72384f9854@kernel.org>
-Date:   Tue, 8 Aug 2023 09:38:48 +0200
+        s=k20201202; t=1691480403;
+        bh=eeHnU9sbaREHfqMBo/78Xdyc8QmRfoP3LwM2oF3Vyok=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z+hgCruQm2uu/S7DddPGDxVKQgZvYiSoMBPLPwLN1VBSNtr1u+085A9QUxiiQx+JK
+         ihi46jANzuFJVh09X1hBEsF3bxP2GSt83pj3cuGRAyOe9h6LM9eXBxkutgo1IgrvDL
+         f3yo2TgB2qyRua3/sXAXbwzhVMdhV8sqzKqIYPA1Xj8Or1oo37VODb2bCuePorzrNF
+         34O/jZcESdCYCDASlx6PMDnfLROZAlprRs/E8YvlwqZEn0AIsxOIgA0BRAWg72/yUq
+         jVSwW/JCR38PnZWOuHI+BA/nUboHh4EBAouw3W1ljvmg6T6MCcVWNqxKj3/kHuX5QR
+         g9kS4Mu6EAj8A==
+Date:   Tue, 8 Aug 2023 08:39:58 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v2 09/10] dt-bindings: net: snps,dwmac: add per
+ channel irq support
+Message-ID: <20230808-clapper-corncob-0af7afa65752@spud>
+References: <20230807164151.1130-1-jszhang@kernel.org>
+ <20230807164151.1130-10-jszhang@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] hwmon: Add driver for EMC181x temperature sensors
-Content-Language: en-US
-To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        Mathew McBride <matt@traverse.com.au>
-References: <20230808013157.80913-1-mark.tomlinson@alliedtelesis.co.nz>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <20230808013157.80913-1-mark.tomlinson@alliedtelesis.co.nz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="KvLkMguropyELtMw"
+Content-Disposition: inline
+In-Reply-To: <20230807164151.1130-10-jszhang@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/2023 03:31, Mark Tomlinson wrote:
-> This patch adds a HWMON driver for the EMC1812, EMC1813, EMC1814,
-> EMC1815 and EMC1833 temperature sensor chips from microchip. Does not
-> currently support the alert outputs.
-> 
-> Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-> Co-developed-by: Mathew McBride <matt@traverse.com.au>
-> Signed-off-by: Mathew McBride <matt@traverse.com.au>
 
-The order of these tags is clearly not correct. It says Mathew is
-sending, but you are not Mathew?
+--KvLkMguropyELtMw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Aug 08, 2023 at 12:41:50AM +0800, Jisheng Zhang wrote:
+> The IP supports per channel interrupt, add support for this usage case.
+>=20
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 > ---
->  drivers/hwmon/Kconfig   |  10 ++
->  drivers/hwmon/Makefile  |   1 +
->  drivers/hwmon/emc181x.c | 296 ++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 307 insertions(+)
->  create mode 100644 drivers/hwmon/emc181x.c
+>  .../devicetree/bindings/net/snps,dwmac.yaml   | 33 +++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Docu=
+mentation/devicetree/bindings/net/snps,dwmac.yaml
+> index 5d81042f5634..5a63302ad200 100644
+> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> @@ -109,6 +109,7 @@ properties:
+>        - description: The interrupt that occurs when Rx exits the LPI sta=
+te
+>        - description: The interrupt that occurs when Safety Feature Corre=
+ctible Errors happen
+>        - description: The interrupt that occurs when Safety Feature Uncor=
+rectible Errors happen
+> +      - description: All of the rx/tx per-channel interrupts
+> =20
+>    interrupt-names:
+>      minItems: 1
+> @@ -118,6 +119,38 @@ properties:
+>        - const: eth_lpi
+>        - const: sfty_ce
+>        - const: sfty_ue
+> +      - const: rx0
+> +      - const: rx1
+> +      - const: rx2
+> +      - const: rx3
+> +      - const: rx4
+> +      - const: rx5
+> +      - const: rx6
+> +      - const: rx7
+> +      - const: rx8
+> +      - const: rx9
+> +      - const: rx10
+> +      - const: rx11
+> +      - const: rx12
+> +      - const: rx13
+> +      - const: rx14
+> +      - const: rx15
+> +      - const: tx0
+> +      - const: tx1
+> +      - const: tx2
+> +      - const: tx3
+> +      - const: tx4
+> +      - const: tx5
+> +      - const: tx6
+> +      - const: tx7
+> +      - const: tx8
+> +      - const: tx9
+> +      - const: tx10
+> +      - const: tx11
+> +      - const: tx12
+> +      - const: tx13
+> +      - const: tx14
+> +      - const: tx15
 
-...
+I don't think Rob's comment about having added 2 interrupts but 32
+interrupt names has been resolved.
+Did you actually test putting this many interrupts into a node?
+AFAICT, any more than 6 will cause complaints.
 
-> +
-> +static const struct i2c_device_id emc181x_i2c_id[] = {
-> +	{ "emc1812", emc1812 },
-> +	{ "emc1813", emc1813 },
-> +	{ "emc1814", emc1814 },
-> +	{ "emc1815", emc1815 },
-> +	{ "emc1833", emc1833 },
-> +	{}
-> +};
-> +
-> +MODULE_DEVICE_TABLE(i2c, emc181x_i2c_id);
+Thanks,
+Conor.
 
-Keep the entire table next to OF device ID table.
+--KvLkMguropyELtMw
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +
-> +/* Return 0 if detection is successful, -ENODEV otherwise */
-> +static int emc181x_i2c_detect(struct i2c_client *client,
-> +		       struct i2c_board_info *info)
-> +{
-> +	struct i2c_adapter *adapter = client->adapter;
-> +	int pid, id, rev;
-> +	const char *name;
-> +
-> +	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA |
-> +				     I2C_FUNC_SMBUS_WORD_DATA))
-> +		return -ENODEV;
-> +
-> +	/* Determine the chip type */
-> +	id = i2c_smbus_read_byte_data(client, EMC181X_SMSC_ID_REG);
-> +	if (id < 0)
-> +		return id;
-> +	if (id != MICROCHIP_ID)
-> +		return -ENODEV;
-> +	pid = i2c_smbus_read_byte_data(client, EMC181X_PID_REG);
-> +	if (pid < 0)
-> +		return pid;
-> +	rev = i2c_smbus_read_byte_data(client, EMC181X_REVISION_REG);
-> +	if (rev < 0)
-> +		return rev;
-> +
-> +	switch (pid) {
-> +	case EMC1812_ID:
-> +		name = emc181x_i2c_id[emc1812].name;
-> +		break;
-> +	case EMC1813_ID:
-> +		name = emc181x_i2c_id[emc1813].name;
-> +		break;
-> +	case EMC1814_ID:
-> +		name = emc181x_i2c_id[emc1814].name;
-> +		break;
-> +	case EMC1815_ID:
-> +		name = emc181x_i2c_id[emc1815].name;
-> +		break;
-> +	case EMC1833_ID:
-> +		name = emc181x_i2c_id[emc1833].name;
-> +		break;
-> +	default:
-> +		return -ENODEV;
-> +	}
-> +	strscpy(info->type, name, I2C_NAME_SIZE);
-> +
-> +	dev_dbg(&client->dev,
-> +		"Detected device %s at 0x%02x with COMPANY: 0x%02x and PID: 0x%02x REV: 0x%02x\n",
-> +		name, client->addr, id, pid, rev);
+-----BEGIN PGP SIGNATURE-----
 
-If you have detection, why not using it for device matching? All devices
-should be OF-compatible with one fallback.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNHxTgAKCRB4tDGHoIJi
+0onpAPsG6snh0PH1bQ597oct8Uh4jQLMK5o7U0UogD2+jX8qKQD+Mew24QNaxdd5
+CIffFZC7Y1NgpuTfzG6Dej4xrzYwBAU=
+=WzEI
+-----END PGP SIGNATURE-----
 
-> +
-> +	return 0;
-> +}
-> +
-> +static int emc181x_i2c_probe(struct i2c_client *client)
-> +{
-> +	struct device *dev = &client->dev;
-> +	struct device *hwmon_dev;
-> +	struct emc181x_data *data;
-> +	s32 regval;
-> +	u8 config;
-> +
-> +	data = devm_kzalloc(dev, sizeof(struct emc181x_data), GFP_KERNEL);
-
-sizeof(*)
-
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->i2c = client;
-> +	if (dev_fwnode(dev)) {
-> +		data->type = (enum chips)device_get_match_data(dev);
-> +		data->is_extended_range = device_property_present(dev, "emc181x,extended-range");
-> +	} else
-> +		data->type = i2c_match_id(emc181x_i2c_id, client)->driver_data;
-
-Please run scripts/checkpatch.pl and fix reported warnings. Some
-warnings can be ignored, but the code here looks like it needs a fix.
-Feel free to get in touch if the warning is not clear.
-
-> +
-> +	regval = i2c_smbus_read_byte_data(client, EMC181X_CONFIG_REG);
-> +	if (regval < 0) {
-> +		dev_dbg(dev, "Failed to read config reg %d", regval);
-> +		return regval;
-> +	}
-> +
-> +	/* By default, extended range is disabled in the EMC181X,
-
-/*
- *
-...
-
-> +	 * if enabled we need to set this in the CONFIG register.
-> +	 */
-> +	config = regval & ~0x04;
-> +	if (data->is_extended_range)
-> +		config |= 0x04;
-> +
-> +	dev_dbg(dev, "EMC181X setting CONFIG to %d\n", config);
-> +	if (config != regval)
-> +		i2c_smbus_write_byte_data(client, EMC181X_CONFIG_REG, config);
-> +
-> +	hwmon_dev = devm_hwmon_device_register_with_info(dev,
-> +			client->name,
-> +			data,
-> +			&emc181x_chip_info[data->type],
-> +			NULL);
-> +
-> +	return PTR_ERR_OR_ZERO(hwmon_dev);
-> +}
-> +
-> +static const struct of_device_id __maybe_unused emc181x_of_match[] = {
-> +	{
-> +		.compatible = "microchip,emc1812",
-
-Bindings go before the user.
-
-> +		.data = (void *)emc1812
-> +	},
-> +	{
-> +		.compatible = "microchip,emc1813",
-> +		.data = (void *)emc1813
-> +	},
-> +	{
-> +		.compatible = "microchip,emc1814",
-> +		.data = (void *)emc1814
-> +	},
-> +	{
-> +		.compatible = "microchip,emc1815",
-> +		.data = (void *)emc1815
-> +	},
-> +	{
-> +		.compatible = "microchip,emc1833",
-> +		.data = (void *)emc1833
-> +	},
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, emc181x_of_match);
-> +
-> +static struct i2c_driver emc181x_i2c_driver = {
-> +	.driver = {
-> +		.name = "emc181x",
-> +		.of_match_table = of_match_ptr(emc181x_of_match),
-> +	},
-
-Drop of_match_ptr(). This will cause warnings.
-
-
-> +	.probe = emc181x_i2c_probe,
-> +	.id_table = emc181x_i2c_id,
-> +	.detect = emc181x_i2c_detect,
-> +	.address_list = emc181x_address_list,
-> +};
-> +
-> +module_i2c_driver(emc181x_i2c_driver);
-> +
-> +MODULE_DESCRIPTION("EMC181X Sensor Driver");
-> +MODULE_AUTHOR("Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>");
-> +MODULE_LICENSE("GPL");
-
-Best regards,
-Krzysztof
-
+--KvLkMguropyELtMw--
