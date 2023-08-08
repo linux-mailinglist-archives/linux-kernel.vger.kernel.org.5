@@ -2,220 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24849774CB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA5F774B70
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236331AbjHHVO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36360 "EHLO
+        id S234645AbjHHUrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235963AbjHHVOe (ORCPT
+        with ESMTP id S234557AbjHHUr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 17:14:34 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2073.outbound.protection.outlook.com [40.107.243.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BC6A267;
-        Tue,  8 Aug 2023 13:24:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c3hKAfkm6pBkFrPKceCtirzrWGU6CWE9qHO2GgrUKAw413kec3eS1aoJpVHicIqiYsxPLoVceiVHOMFokIVplpl1iespawausnZ8q5J6Agg3z5GtXBjVCLDC7aCpP/vTyigwtCXav/i1vpxE0K/JOGe+OtX8TN9YeMGJUCcBygREv04RQMXv2F21Q+3Ke85k9XOBlonVAWVyd1zG/LsfgH1DasULPbeIEDvNt69kDeTEh4+Rxyro04/wXjdqIYPVqJaDra8mQU5xvSjAe5ObwroO4UvlTWa0DycPla0FK9MEiDg363i0sv3oJ8kMz5oY5Kxk8uadyZ9D5y02fEjfrg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Hnt9pQO0sp6L/frjpiGpoz6jLhNjj3IELdVXRo3+VL4=;
- b=HXpQJNwUyuDyr7GCSBTMGskVXJNLHJLeqhBdATVWdeadPzSL4Wy6j/aJnSahtkI2kkOTuhjh596J2ckGX5fX5dAsyMPcyrtyY3vrCn2LyVTDv+YdvQjZULq7Rfp5jwg2p+2/L0CI7EEQl91Zj4HBwNLEJDUIRD3wnzhr6Sj0uqp0ax9FbyWHXP+M2mG8Y7k3NgHx3XhzafCW0UMJzBU/2EMdsICB3euPRBJ4tcCg/dCUN85qGWRnA6QL8O7xzshBydCVJbdUcZADAtzum/aQIY4Gd3ZvQR8R2LnD5T9FpCnJAEBSBGrpc8orirWuH973E+6r5AyzWhH8dzGvOUDsSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hnt9pQO0sp6L/frjpiGpoz6jLhNjj3IELdVXRo3+VL4=;
- b=ftX/xlH6M7TWspHjGlkHlYvT5sbgOeUa8kbmLXpcbnGSHWq39HvrUbfETXmj4tvgSfzqOaWE49vlRJYNMFbAJygW5w9QxeRtE1ECHxMf0FUonI1NA+bheESJXbpQwM30q102xoaDvbrNmn6vMHS9P0uizMiv0MugKO+iN1D7pdR2DCUb4z/FGJ7IkRyqHdfgGOvueQf1+m+tmidI49qkdwKHqc2f8vhExRXKSJeU0RrLL6ZM111BhM3GDVwyLHl/GST9kDlk/jNaR+snKaVpk6xFArMutMs0/ABMOUz0/6GlAmTeF/gN0KxH4aqV7aa5RfRfGVATxikXEfPAKTzIWA==
-Received: from BN9PR12MB5068.namprd12.prod.outlook.com (2603:10b6:408:135::21)
- by PH7PR12MB5808.namprd12.prod.outlook.com (2603:10b6:510:1d4::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Tue, 8 Aug
- 2023 20:24:46 +0000
-Received: from BN9PR12MB5068.namprd12.prod.outlook.com
- ([fe80::acc8:7a8:c30d:eec8]) by BN9PR12MB5068.namprd12.prod.outlook.com
- ([fe80::acc8:7a8:c30d:eec8%7]) with mapi id 15.20.6652.026; Tue, 8 Aug 2023
- 20:24:46 +0000
-From:   Liming Sun <limings@nvidia.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Adrian Hunter <adrian.hunter@intel.com>,
-        David Thompson <davthompson@nvidia.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6] mmc: sdhci-of-dwcmshc: Add runtime PM operations
-Thread-Topic: [PATCH v6] mmc: sdhci-of-dwcmshc: Add runtime PM operations
-Thread-Index: AQHZxyuq+HOsHtVXXkaFYWsKN9h+fa/gKjSAgAA5XSCAAA5rAIAAbBeA
-Date:   Tue, 8 Aug 2023 20:24:46 +0000
-Message-ID: <BN9PR12MB5068255F69BCD64A0E95914FD30DA@BN9PR12MB5068.namprd12.prod.outlook.com>
-References: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
- <20230804233015.173957-1-limings@nvidia.com>
- <CAPDyKFprnX=37FDdBxiNyyr5X_6zpp87Kt7o1hxdRePZhMJO4A@mail.gmail.com>
- <BN9PR12MB506823B5AF3069C0C8350BE9D30DA@BN9PR12MB5068.namprd12.prod.outlook.com>
- <CAPDyKFq+S544LFH_fMNucd8B8mrV9ORbL+v05q2EnWtgg+8ggA@mail.gmail.com>
-In-Reply-To: <CAPDyKFq+S544LFH_fMNucd8B8mrV9ORbL+v05q2EnWtgg+8ggA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR12MB5068:EE_|PH7PR12MB5808:EE_
-x-ms-office365-filtering-correlation-id: da9e41d5-4cbb-485f-4ab0-08db984d81fc
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TggOzQ9s6aJgjB9wXEfK++G5v5V4OPtLksd/G4374a4m9NUuMoor8Wund6TpJKU0rxPxXzcNns7g/re8Bxp5pvtLNh9ImKeUKA2oktpDMVHgyDD7HR/0Xz6jRJBNqvhqJeQ1TVTXACuHNcH5jMJZ3OG7FZiWjYzdYZ1Mm7njCguZFErYKqcBNCAgTJ/YzSCQMzmP6aTuKsRmRQfeXAcY5u+BowsoN82mSm+8nHHst7Ra3Fm++iKrN1M0D6VlLf58mvysEQjqUlpt2SVQncjudTyV6r8no7TFX7B3X32RAiD6ErWYxdJfRNCBZmnKdOCqXt8/EjzyPmhYCsJerhkmQS8a3TkTOqH7u6jWVKStlm5vtDwtGOGZmLTTxtEZYpJ9DyLfvD3RwtC22zn2HIyqMMNIk1h/vp+L9HQ9NGtXAXP/Uu7f6BaYNgkHmJw3KYJLtggvveUpzoFGmwOuTOwtRmeA5IDf90ZcDVoW80J5uttlTgwDJ4A/gcqy8YXBc1hPA5+tm32EdmghysU0qERMmR7Tlpq1iKtwDvPKP8XfJ0wu60Dqxu5TYWkyle7/uB/qzNSjbMK39mhOHS04nwMTNLPl9TMf1LkFsTwXZJhG/tOgl/PmBVkM0wlZhcEtyZzXaR0hNO2+I8S8Y+BCs5i16Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5068.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(346002)(39860400002)(376002)(136003)(186006)(1800799003)(451199021)(83380400001)(55016003)(6916009)(2906002)(54906003)(4326008)(316002)(5660300002)(8936002)(38070700005)(66446008)(64756008)(8676002)(66946007)(52536014)(76116006)(66476007)(38100700002)(66556008)(71200400001)(33656002)(478600001)(122000001)(86362001)(9686003)(7696005)(26005)(41300700001)(6506007)(53546011)(133343001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OGx6QlNNSkZWblhMRms1SEZZeCs0VGdaMyt5UlpvWU1VU2lTSjA0WU9EK1Bu?=
- =?utf-8?B?Z2EydG1Da050dVlsdFJVV2E5eVVkN25NVHpFTGJITTNPUS9DSEtIQjN3cTlU?=
- =?utf-8?B?WTVOVjFWc3FCQ2VDVzcrTmtjY3paQkJUT0RlTEI4SHlPczcwQ1ViQUJqa1Z4?=
- =?utf-8?B?K01WWUJXV1UweExOem0rakNyNlh6cnB2Qm9xaFRYdkM1dHRYUGc3d1RacW4w?=
- =?utf-8?B?SDYzUnBvN2FaM2pBZjMxRDdZd2VwOHIwNkRvam9KcFQzSjllQjdTeHBiQzFk?=
- =?utf-8?B?b3lyUUpEMng3OWNiY0RZWXZkQnd5OVErZ0FWNmVoSEMrMUdBVTI3SXRsOGtR?=
- =?utf-8?B?VzZTUUgyaWZXaFFabnZPWEJ4NEg4R2xEei9hNVdPazRETVNzcGkvM2tZSFox?=
- =?utf-8?B?SGdBUDZHY3FlWHZySlFTVjF5OWJHSldhU21USmlxViszdWlXNmZSSVZqZldZ?=
- =?utf-8?B?RGRNMDNZRU54cFJQUVFOQVZXVmJOY2x4L1VkRy91R2ovVytVVjBoSmdQVnJR?=
- =?utf-8?B?YzhQOHBSVW9OWWVFTDZhZnYxMm1IWXJsQXFNc3U2MjE1eGc4YnJzWHU1V1JH?=
- =?utf-8?B?dzk4bU1xcjlqa0pLTEM0MTNjWFZ5TnNITWVjYWdXTFZYU0kvQTM1NjhHYkNL?=
- =?utf-8?B?U0NROE50WHhrdUlYcVFwYlNLdGFSTW02TlU4dy9pYVg4bFdOaDFHMmxxUEZz?=
- =?utf-8?B?UmkzYVhLZmp1WkI2L0RNdnlTcjFHUUkrc1dZZ085bys2N0RCdVlxUVMxVDFF?=
- =?utf-8?B?eGlIWnpGbitPOEhOOFlnd1pwSHFTdENrZm05YThneU8rTGM5YVhwRlpCSllR?=
- =?utf-8?B?UklTRVhjbWtRVVl1ZEY3ZWFObXArVXJEWGgvLzNuTXNiTXdFNDFwTFppbjNP?=
- =?utf-8?B?RmQzN3BITCt6dkpPN05MSWoyVTI4WjQ4RStTbC8xZDQwdlMrdU9ZUHkzclNn?=
- =?utf-8?B?QTJJTVpPWEtOUERDZ2MxT1BVMjF4bUxlaDdhaTRpZ1huaGgvQnYxMk8zeElr?=
- =?utf-8?B?OTRmVGdydVNqZlpQY0JLemxabnJMYjRqZjk2Q2pnZDRjcE9peU8wNlNURFAz?=
- =?utf-8?B?SndUVzZFbG5WN3Fidk01MjVaNDE0czVpbE9YMUFXYmxXQ3hqT1RLcVhVSENG?=
- =?utf-8?B?OW91cHp3U05qcG5QdXZJdUUzL0E5bTE5L1FCa2NGeDZuZExCUXU3aXRTZDFr?=
- =?utf-8?B?ZkxSeTV2Z2pYWnprZXhmZlh2Yk5jM092WUxwejd5SDhyUmNsZm1obTNZRzNJ?=
- =?utf-8?B?OUlGcG5ZcjJ3MVRUMWhiaDlhMTl0RlR3NzVHaVJRSkJXUmhKV0hsaVVxdXow?=
- =?utf-8?B?STl4eXAxRTkyZkZuLzAyQm9idjNYOFZPVGQ0NW9rL01PUHBVUEJvU2RRaTJx?=
- =?utf-8?B?S1kxT3Qyak1DV2tVbitmSVZjTkVkQXgra011eGEwZ0F4aGFYNmZ1YmErZEh2?=
- =?utf-8?B?QmZYbTZwblpLMUhaN3VrL3lpcE8xTXl4Y2VFVHN1WXFWTGNEWGJ4Q2FWRzRL?=
- =?utf-8?B?eXhPcFVzNGdtbUh0SHVDNFZocHhROFNKYlNLYXVLSTU0Q0Q1Mkhqa1ZWUzlC?=
- =?utf-8?B?cnExMmdZcUxyWk1ITXBkMGg3OWtIcEFkajRJQjdKb2ExRHg1Z1VacTlEcG5X?=
- =?utf-8?B?RGZxNFhMWmE4aEYrTFl3OFRXUmE3a3dVYVdTUFM1NzNVTEluTG0rbjFPZGhl?=
- =?utf-8?B?SjgyOGFlS29oaU9ZVmkyM3JtdlZNdWExWWp4cE5hb29RckFvKy9iQ21TV2k0?=
- =?utf-8?B?TG1ZYVZZVDN3OGsxcGhWMXBxTzcyT1lMaGNOZURmWDhXMEY1ZThUblY3K2Jv?=
- =?utf-8?B?T2REOXNZaDVYZmNMcEpPMXgrVDBlM2dEdnFUYTdHTGJIdnVmRW0yTDlJMzV6?=
- =?utf-8?B?R0UvUFc3NCtKS1pKNHAzbmhSb3ptcXVITUhDV0phQTJidlRsQ3N3S0xPSkp2?=
- =?utf-8?B?VWl2YVpUOUZyMDV5WDgwL3lxODFyZHJrSmdxWHRIR0tPem9QTUg5NjcyR1Zw?=
- =?utf-8?B?SFRmSHZteERuUXZBR0YzL3ZZT0ZSZ05FVEwxSWwya3JRMWo4NTRrWUl3dXJW?=
- =?utf-8?B?TTJBb1YwMVFmc1pqYjdkSjB1eGdWU2VxYnI3VENXdzVyMDVUUjQxWkVTdFEv?=
- =?utf-8?Q?HZGg=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 8 Aug 2023 16:47:27 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E706E8A6F;
+        Tue,  8 Aug 2023 13:26:06 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe2d152f62so10087187e87.0;
+        Tue, 08 Aug 2023 13:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691526365; x=1692131165;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GzQthcTYYC1HexdHWuevRI13uEmJKTZWWaC343YuPRA=;
+        b=hf/mYwff/XYaIN0MlyrvC+XLWNtxbERCkoz+I0Lz7l+1rVci9fa4tVgrLmyiG/c2ng
+         kEkVGKJev8QiiFkHp/07J3LY+EH5uv87cnJu7wC4hngd0T9i6U93qurJ+k5+7eXNRCH3
+         3A6YeoU5ciwlxZzPTgBcDzKQVN1bLQCj/lZF7X1gLtGBZ1EUbWF2LLQhKZwFH8fLIbDP
+         GdKe7GG13dU8Smrou4bGlZKxuk/QXgK8VfcAAUQteyN0WHvOPIrO/WU6boT90kIBLHEd
+         gadFoWrvQtzqf4m4c3tiTb37j0wZxit6M4zMN7Yl8hh5IUC+eTgSXsmJs2Pm1Ex2r0oj
+         Ld0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691526365; x=1692131165;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GzQthcTYYC1HexdHWuevRI13uEmJKTZWWaC343YuPRA=;
+        b=KHVAavZHepwutZktfovI3JgpbX29lOmKpvloFdbWaivhcn3QToy+UGI5IZPihRNSQw
+         a20UCeHQAe4AAmhlF0THPLZn6O+vMnaBrnmS5T9829MgZSBddFKRvgVGzaR5I6jefEM+
+         Icv7hu3176UlpkJrGbf1lJZHfen7+NYMDoPOrjaTUnOL0asci2A/VECEzoHEeSQYctVQ
+         bTS3kyYRZ3+23SsrcfhXCGZuQoifki++mVhjzWJkIluMgWsDBBKt1ceh96nIvRBQjmr5
+         Y4OxdYCHFKyO5MGwguqdntd0KqZWQEy0OMrrGAH5zywJhoez/EKtBmhkfX8WPkR+grYZ
+         uehQ==
+X-Gm-Message-State: AOJu0YyAGVDilFUx+laLQn3C5EIntTM9E4ARjJYkCGH1+Kc+fXlUnMqx
+        Kq8HqNqSS4NUzY0d4eyHfes2AVzqPTzhKTqz4Zo=
+X-Google-Smtp-Source: AGHT+IGyOTmS47kqyS0agL6RbmqWZCvy5I956BNMw2QxRqanogavZ0IkZ+k04yOQL9p5FlVXRDWzTqsf7WEWzjk3lkE=
+X-Received: by 2002:a05:6512:2037:b0:4fd:da65:d10 with SMTP id
+ s23-20020a056512203700b004fdda650d10mr390968lfs.36.1691526364831; Tue, 08 Aug
+ 2023 13:26:04 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5068.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: da9e41d5-4cbb-485f-4ab0-08db984d81fc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Aug 2023 20:24:46.3283
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zD/KEFKm8t3oBBjcQJs8WrEa55apO9KCOMciwr+Lu0D5W/ppL9PFzURyOXckmQdV0FDE4br/5Uln7jrFgVyb0w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5808
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+References: <20230801191629.45942-1-jorge.lopez2@hp.com> <4ab55129-d35c-fea5-0c59-5183928d55d1@redhat.com>
+In-Reply-To: <4ab55129-d35c-fea5-0c59-5183928d55d1@redhat.com>
+From:   Jorge Lopez <jorgealtxwork@gmail.com>
+Date:   Tue, 8 Aug 2023 15:25:04 -0500
+Message-ID: <CAOOmCE_DGqUh3+8LmrX2_7eTeDG_7p7-JKN7Q2syvDQu60UWmQ@mail.gmail.com>
+Subject: Re: [PATCH] hp-bioscfg: Update string length calculation
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas@t-8ch.de, ilpo.jarvinen@linux.intel.com,
+        dan.carpenter@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVWxmIEhhbnNzb24gPHVs
-Zi5oYW5zc29uQGxpbmFyby5vcmc+DQo+IFNlbnQ6IFR1ZXNkYXksIEF1Z3VzdCA4LCAyMDIzIDk6
-NTcgQU0NCj4gVG86IExpbWluZyBTdW4gPGxpbWluZ3NAbnZpZGlhLmNvbT4NCj4gQ2M6IEFkcmlh
-biBIdW50ZXIgPGFkcmlhbi5odW50ZXJAaW50ZWwuY29tPjsgRGF2aWQgVGhvbXBzb24NCj4gPGRh
-dnRob21wc29uQG52aWRpYS5jb20+OyBTaGF3biBMaW4gPHNoYXduLmxpbkByb2NrLWNoaXBzLmNv
-bT47IGxpbnV4LQ0KPiBtbWNAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJu
-ZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjZdIG1tYzogc2RoY2ktb2YtZHdjbXNoYzog
-QWRkIHJ1bnRpbWUgUE0gb3BlcmF0aW9ucw0KPiANCj4gT24gVHVlLCA4IEF1ZyAyMDIzIGF0IDE1
-OjIxLCBMaW1pbmcgU3VuIDxsaW1pbmdzQG52aWRpYS5jb20+IHdyb3RlOg0KPiA+DQo+ID4NCj4g
-Pg0KPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IFVsZiBIYW5z
-c29uIDx1bGYuaGFuc3NvbkBsaW5hcm8ub3JnPg0KPiA+ID4gU2VudDogVHVlc2RheSwgQXVndXN0
-IDgsIDIwMjMgNTo0MCBBTQ0KPiA+ID4gVG86IExpbWluZyBTdW4gPGxpbWluZ3NAbnZpZGlhLmNv
-bT4NCj4gPiA+IENjOiBBZHJpYW4gSHVudGVyIDxhZHJpYW4uaHVudGVyQGludGVsLmNvbT47IERh
-dmlkIFRob21wc29uDQo+ID4gPiA8ZGF2dGhvbXBzb25AbnZpZGlhLmNvbT47IFNoYXduIExpbiA8
-c2hhd24ubGluQHJvY2stY2hpcHMuY29tPjsNCj4gbGludXgtDQo+ID4gPiBtbWNAdmdlci5rZXJu
-ZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+ID4gPiBTdWJqZWN0OiBSZTog
-W1BBVENIIHY2XSBtbWM6IHNkaGNpLW9mLWR3Y21zaGM6IEFkZCBydW50aW1lIFBNDQo+IG9wZXJh
-dGlvbnMNCj4gPiA+DQo+ID4gPiBPbiBTYXQsIDUgQXVnIDIwMjMgYXQgMDE6MzAsIExpbWluZyBT
-dW4gPGxpbWluZ3NAbnZpZGlhLmNvbT4gd3JvdGU6DQo+ID4gPiA+DQo+ID4gPiA+IFRoaXMgY29t
-bWl0IGltcGxlbWVudHMgdGhlIHJ1bnRpbWUgUE0gb3BlcmF0aW9ucyB0byBkaXNhYmxlIGVNTUMN
-Cj4gPiA+ID4gY2FyZCBjbG9jayB3aGVuIGlkbGUuDQo+ID4gPiA+DQo+ID4gPiA+IFJldmlld2Vk
-LWJ5OiBEYXZpZCBUaG9tcHNvbiA8ZGF2dGhvbXBzb25AbnZpZGlhLmNvbT4NCj4gPiA+ID4gU2ln
-bmVkLW9mZi1ieTogTGltaW5nIFN1biA8bGltaW5nc0BudmlkaWEuY29tPg0KPiA+ID4gPiAtLS0N
-Cj4gPiA+ID4gdjUtPnY2Og0KPiA+ID4gPiAgICAgLSBBZGRyZXNzIEFkcmlhbidzIG1vcmUgY29t
-bWVudHMgYW5kIGFkZCBjb29yZGluYXRpb24gYmV0d2Vlbg0KPiA+ID4gPiAgICAgICBydW50aW1l
-IFBNIGFuZCBzeXN0ZW0gUE07DQo+ID4gPiA+IHY0LT52NToNCj4gPiA+ID4gICAgIC0gQWRkcmVz
-cyBBZHJpYW4ncyBjb21tZW50IHRvIG1vdmUgdGhlIHBtX2VuYWJsZSB0byB0aGUgZW5kIHRvDQo+
-ID4gPiA+ICAgICAgIGF2b2lkIHJhY2U7DQo+ID4gPiA+IHYzLT52NDoNCj4gPiA+ID4gICAgIC0g
-Rml4IGNvbXBpbGluZyByZXBvcnRlZCBieSAna2VybmVsIHRlc3Qgcm9ib3QnOw0KPiA+ID4gPiB2
-Mi0+djM6DQo+ID4gPiA+ICAgICAtIFJldmlzZSB0aGUgY29tbWl0IG1lc3NhZ2U7DQo+ID4gPiA+
-IHYxLT52MjoNCj4gPiA+ID4gICAgIFVwZGF0ZXMgZm9yIGNvbW1lbnRzIGZyb20gVWxmOg0KPiA+
-ID4gPiAgICAgLSBNYWtlIHRoZSBydW50aW1lIFBNIGxvZ2ljIGdlbmVyaWMgZm9yIHNkaGNpLW9m
-LWR3Y21zaGM7DQo+ID4gPiA+IHYxOiBJbml0aWFsIHZlcnNpb24uDQo+ID4gPiA+IC0tLQ0KPiA+
-ID4gPiAgZHJpdmVycy9tbWMvaG9zdC9zZGhjaS1vZi1kd2Ntc2hjLmMgfCA3Mg0KPiA+ID4gKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKy0NCj4gPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCA3MCBp
-bnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiA+ID4gPg0KPiA+ID4gPiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9tbWMvaG9zdC9zZGhjaS1vZi1kd2Ntc2hjLmMNCj4gYi9kcml2ZXJzL21tYy9o
-b3N0L3NkaGNpLQ0KPiA+ID4gb2YtZHdjbXNoYy5jDQo+ID4gPiA+IGluZGV4IGU2OGNkODc5OThj
-OC4uYWFmNjYzNThmNjI2IDEwMDY0NA0KPiA+ID4gPiAtLS0gYS9kcml2ZXJzL21tYy9ob3N0L3Nk
-aGNpLW9mLWR3Y21zaGMuYw0KPiA+ID4gPiArKysgYi9kcml2ZXJzL21tYy9ob3N0L3NkaGNpLW9m
-LWR3Y21zaGMuYw0KPiA+ID4gPiBAQCAtMTUsNiArMTUsNyBAQA0KPiA+ID4gPiAgI2luY2x1ZGUg
-PGxpbnV4L21vZHVsZS5oPg0KPiA+ID4gPiAgI2luY2x1ZGUgPGxpbnV4L29mLmg+DQo+ID4gPiA+
-ICAjaW5jbHVkZSA8bGludXgvb2ZfZGV2aWNlLmg+DQo+ID4gPiA+ICsjaW5jbHVkZSA8bGludXgv
-cG1fcnVudGltZS5oPg0KPiA+ID4gPiAgI2luY2x1ZGUgPGxpbnV4L3Jlc2V0Lmg+DQo+ID4gPiA+
-ICAjaW5jbHVkZSA8bGludXgvc2l6ZXMuaD4NCj4gPiA+ID4NCj4gPiA+ID4gQEAgLTU0OCw5ICs1
-NDksMTMgQEAgc3RhdGljIGludCBkd2Ntc2hjX3Byb2JlKHN0cnVjdA0KPiBwbGF0Zm9ybV9kZXZp
-Y2UNCj4gPiA+ICpwZGV2KQ0KPiA+ID4gPg0KPiA+ID4gPiAgICAgICAgIGhvc3QtPm1tYy0+Y2Fw
-cyB8PSBNTUNfQ0FQX1dBSVRfV0hJTEVfQlVTWTsNCj4gPiA+ID4NCj4gPiA+ID4gKyAgICAgICBw
-bV9ydW50aW1lX2dldF9ub3Jlc3VtZShkZXYpOw0KPiA+ID4gPiArICAgICAgIHBtX3J1bnRpbWVf
-c2V0X2FjdGl2ZShkZXYpOw0KPiA+ID4gPiArICAgICAgIHBtX3J1bnRpbWVfZW5hYmxlKGRldik7
-DQo+ID4gPiA+ICsNCj4gPiA+ID4gICAgICAgICBlcnIgPSBzZGhjaV9zZXR1cF9ob3N0KGhvc3Qp
-Ow0KPiA+ID4gPiAgICAgICAgIGlmIChlcnIpDQo+ID4gPiA+IC0gICAgICAgICAgICAgICBnb3Rv
-IGVycl9jbGs7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICBnb3RvIGVycl9ycG07DQo+ID4gPiA+
-DQo+ID4gPiA+ICAgICAgICAgaWYgKHJrX3ByaXYpDQo+ID4gPiA+ICAgICAgICAgICAgICAgICBk
-d2Ntc2hjX3JrMzV4eF9wb3N0aW5pdChob3N0LCBwcml2KTsNCj4gPiA+ID4gQEAgLTU1OSwxMCAr
-NTY0LDE1IEBAIHN0YXRpYyBpbnQgZHdjbXNoY19wcm9iZShzdHJ1Y3QNCj4gcGxhdGZvcm1fZGV2
-aWNlDQo+ID4gPiAqcGRldikNCj4gPiA+ID4gICAgICAgICBpZiAoZXJyKQ0KPiA+ID4gPiAgICAg
-ICAgICAgICAgICAgZ290byBlcnJfc2V0dXBfaG9zdDsNCj4gPiA+ID4NCj4gPiA+ID4gKyAgICAg
-ICBwbV9ydW50aW1lX3B1dF9zeW5jKGRldik7DQo+ID4gPiA+ICsNCj4gPiA+DQo+ID4gPiBUaGUg
-YXN5bmMgcG1fcnVudGltZV9wdXQoKSBpcyBwcm9iYWJseSBzdWZmaWNpZW50IC0gYW5kIGl0IHdv
-dWxkIGFsbG93DQo+ID4gPiB0aGUgcHJvYmUgdG8gY29tcGxldGUgYSBiaXQgInNvb25lciIuDQo+
-ID4NCj4gPiBTdXJlLCB3aWxsIHRlc3QgYW5kIHVwZGF0ZSB0aGUgbGluZSBpbiB2Ny4NCj4gPg0K
-PiA+ID4NCj4gPiA+ID4gICAgICAgICByZXR1cm4gMDsNCj4gPiA+ID4NCj4gPiA+ID4gIGVycl9z
-ZXR1cF9ob3N0Og0KPiA+ID4gPiAgICAgICAgIHNkaGNpX2NsZWFudXBfaG9zdChob3N0KTsNCj4g
-PiA+ID4gK2Vycl9ycG06DQo+ID4gPiA+ICsgICAgICAgcG1fcnVudGltZV9kaXNhYmxlKGRldik7
-DQo+ID4gPiA+ICsgICAgICAgcG1fcnVudGltZV9wdXRfbm9pZGxlKGRldik7DQo+ID4gPiA+ICBl
-cnJfY2xrOg0KPiA+ID4gPiAgICAgICAgIGNsa19kaXNhYmxlX3VucHJlcGFyZShwbHRmbV9ob3N0
-LT5jbGspOw0KPiA+ID4gPiAgICAgICAgIGNsa19kaXNhYmxlX3VucHJlcGFyZShwcml2LT5idXNf
-Y2xrKTsNCj4gPiA+ID4gQEAgLTYwNiw2ICs2MTYsMTIgQEAgc3RhdGljIGludCBkd2Ntc2hjX3N1
-c3BlbmQoc3RydWN0IGRldmljZSAqZGV2KQ0KPiA+ID4gPiAgICAgICAgIGlmIChyZXQpDQo+ID4g
-PiA+ICAgICAgICAgICAgICAgICByZXR1cm4gcmV0Ow0KPiA+ID4gPg0KPiA+ID4gPiArICAgICAg
-IHJldCA9IHBtX3J1bnRpbWVfZm9yY2Vfc3VzcGVuZChkZXYpOw0KPiA+ID4NCj4gPiA+IENhbiBk
-d2Ntc2hjX3N1c3BlbmQoKSBiZSBjYWxsZWQgZm9yIGEgZGV2aWNlIHRoYXQgbWF5IGJlIGF0dGFj
-aGVkIHRvDQo+ID4gPiB0aGUgQUNQSSBQTSBkb21haW4/DQo+ID4NCj4gPiBCbHVlRmllbGQgU29D
-IGlzIHRoZSBvbmx5IGNoaXAgdGhhdCB1c2VzIEFDUEkgaW4gdGhpcyBkcml2ZXIgZm9yIG5vdyBh
-bmQgaXQNCj4gZG9lc24ndCBzdXBwb3J0IFN5c3RlbSBTbGVlcC4gVGh1cywgdGhlIGR3Y21zaGNf
-c3VzcGVuZCgpIHdvbid0IGJlIGNhbGxlZC4NCj4gQnV0IEkgZ3Vlc3MgaXQgbWlnaHQgYmUgcG9z
-c2libGUgd2hlbiBvdGhlciBuZXcgY2hpcCBzdXBwb3J0IGlzIGFkZGVkIGludG8gdGhpcw0KPiBk
-cml2ZXIuIElzIGl0IGEgY29uY2Vybj8NCj4gDQo+IFRoZSBBQ1BJIFBNIGRvbWFpbiBkb2Vzbid0
-IHN1cHBvcnQgZHJpdmVycyB1c2luZw0KPiBwbV9ydW50aW1lX2ZvcmNlX3N1c3BlbmR8cmVzdW1l
-KCkuIFVubGVzcyB0aGF0IGhhcyBiZWVuIGNoYW5nZWQNCj4gd2l0aG91dCBtZSBrbm93aW5nIGFi
-b3V0IGl0Lg0KPiANCj4gQW55d2F5LCBpdCBsb29rcyBsaWtlIGl0IHNob3VsZG4ndCBiZSBhIHBy
-b2JsZW0gYXQgdGhpcyBwb2ludC4gV2UgY2FuDQo+IGFsc28gYWRkIHNlcGFyYXRlIGNhbGxiYWNr
-cyBmb3Igb3RoZXIgU29DcywgaWYgdGhhdCBjb21lcyBpbnRvIHBsYXkNCj4gZ29pbmcgZm9yd2Fy
-ZC4NCg0KVGhhbmtzLiBTbyBubyBmdXJ0aGVyIGNoYW5nZXMgZm9yIG5vdy4NClBvc3RlZCB2NyAo
-Zm9yIHRoZSBvdGhlciBjb21tZW50KS4NCg0KPiANCj4gWy4uLl0NCj4gDQo+IEtpbmQgcmVnYXJk
-cw0KPiBVZmZlDQo=
+Hi Hans,
+
+On Mon, Aug 7, 2023 at 6:28=E2=80=AFAM Hans de Goede <hdegoede@redhat.com> =
+wrote:
+>
+> Hi Jorge,
+>
+> On 8/1/23 21:16, Jorge Lopez wrote:
+> > Replace method how the string length is calculated.
+> > Removed unused variable 'size'
+> >
+> > Signed-off-by: Jorge Lopez <jorge.lopez2@hp.com>
+>
+> While reviewing this I have noticed that the parsing of ORD_LIST_ELEMENTS
+> in hp_populate_ordered_list_elements_from_package() seems to be quite bug=
+gy:
+>
+> 1. Normally str_value and value_len get set for string type package eleme=
+nts by:
+>
+>                 case ACPI_TYPE_STRING:
+>                         if (elem !=3D PREREQUISITES && elem !=3D ORD_LIST=
+_ELEMENTS) {
+>                                 ret =3D hp_convert_hexstr_to_str(order_ob=
+j[elem].string.pointer,
+>                                                                order_obj[=
+elem].string.length,
+>                                                                &str_value=
+, &value_len);
+>                                 if (ret)
+>                                         continue;
+>                         }
+>                         break;
+>
+> But notice how the  hp_convert_hexstr_to_str() call gets stepped when
+> elem =3D=3D ORD_LIST_ELEMENTS .
+>
+> Yes when next dealing with ORD_LIST_ELEMENTS the never updated str_value =
+and value_len
+> get used:
+>
+>                 switch (eloc) {
+>                 ...
+>                 case ORD_LIST_ELEMENTS:
+>                         /*
+>                          * Ordered list data is stored in hex and comma s=
+eparated format
+>                          * Convert the data and split it to show each ele=
+ment
+>                          */
+>                         ret =3D hp_convert_hexstr_to_str(str_value, value=
+_len, &tmpstr, &tmp_len);
+>                         if (ret)
+>                                 goto exit_list;
+>
+> So that does not seem right.
+
+I will investigate.
+
+>
+> 2. ordered_list_data->elements[0] never gets filled when there actually i=
+s a comma in
+>    the ordered-list, iow when there is more then 1 element:
+>
+>                         part_tmp =3D tmpstr;
+>                         part =3D strsep(&part_tmp, COMMA_SEP);
+>                         if (!part)
+>                                 strscpy(ordered_list_data->elements[0],
+>                                         tmpstr,
+>                                         sizeof(ordered_list_data->element=
+s[0]));
+>
+>                         for (elem =3D 1; elem < MAX_ELEMENTS_SIZE && part=
+; elem++) {
+>                                 strscpy(ordered_list_data->elements[elem]=
+,
+>                                         part,
+>                                         sizeof(ordered_list_data->element=
+s[elem]));
+>                                 part =3D strsep(&part_tmp, SEMICOLON_SEP)=
+;
+>                         }
+>
+> Notice how the for starts at elem =3D 1, so if part is not NULL (and it i=
+s never NULL for the first call strsep will always return tmpstr) then orde=
+red_list_data->elements[0] never gets filled.
+>
+
+I will investigate and make the necessary corrections.
+
+> 3. ordered_list_data->elements_size is set but never validated. You shoul=
+d compare elem after the loop with ordered_list_data->elements_size and mak=
+e sure they match. IOW verify that 0-(ordered_list_data->elements_size-1) e=
+ntries of the ordered_list_data->elements[] array have been filled.
+
+ordered_list_data->elements_size is checked against MAX_ELEMENTS_SIZE
+and not against the number of elements in the array.  Initially, size
+value was reported (sysfs) but after a couple reviews, size was
+removed from being reported (sysfs).  size value will be determined by
+the application when it enumerates the values reported in elements.
+
+>
+> 4. For specific values of eloc the code expects the current order_obj[ele=
+m] to be either an integer or a string, but this is not validated. Please v=
+alidate that order_obj[elem].type matches with what is expected (string or =
+int) for the current value of eloc.
+
+The purpose for 'eloc' is  to help skip reading values such
+ORD_LIST_ELEMENTS and PREREQUISITES when ORD_LIST_ELEMENTS and/or
+PREREQUISITES_SIZE values are zero.
+Normally, 'eloc' and 'elem' are the same.
+
+>
+> This all makes me wonder if this specific code-path has been tested ?  Pl=
+ease make sure to test this specific code-path.
+>
+This code path was tested previously.  I will make sure the path is
+tested in deeper detail.
+
+
+
+> Regards,
+>
+> Hans
+>
+>
+>
+>
+>
+> >
+> > ---
+> > Based on the latest platform-drivers-x86.git/for-next
+> > ---
+> >  drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c | 6 ++----
+> >  1 file changed, 2 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c=
+ b/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
+> > index cffc1c9ba3e7..b19644ed12e0 100644
+> > --- a/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
+> > +++ b/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
+> > @@ -258,13 +258,11 @@ static int hp_populate_ordered_list_elements_from=
+_package(union acpi_object *ord
+> >                               eloc++;
+> >                       break;
+> >               case ORD_LIST_ELEMENTS:
+> > -                     size =3D ordered_list_data->elements_size;
+> > -
+> >                       /*
+> >                        * Ordered list data is stored in hex and comma s=
+eparated format
+> >                        * Convert the data and split it to show each ele=
+ment
+> >                        */
+> > -                     ret =3D hp_convert_hexstr_to_str(str_value, value=
+_len, &tmpstr, &tmp_len);
+> > +                     ret =3D hp_convert_hexstr_to_str(str_value, strle=
+n(str_value), &tmpstr, &tmp_len);
+> >                       if (ret)
+> >                               goto exit_list;
+> >
+> > @@ -279,7 +277,7 @@ static int hp_populate_ordered_list_elements_from_p=
+ackage(union acpi_object *ord
+> >                               strscpy(ordered_list_data->elements[olist=
+_elem],
+> >                                       part,
+> >                                       sizeof(ordered_list_data->element=
+s[olist_elem]));
+> > -                             part =3D strsep(&part_tmp, SEMICOLON_SEP)=
+;
+> > +                             part =3D strsep(&part_tmp, COMMA_SEP);
+> >                       }
+> >
+> >                       kfree(str_value);
+>
