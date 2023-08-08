@@ -2,116 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1E4774467
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675107745DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235607AbjHHSSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47150 "EHLO
+        id S231928AbjHHSrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235593AbjHHSRs (ORCPT
+        with ESMTP id S234197AbjHHSq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:17:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9D7196A9;
-        Tue,  8 Aug 2023 10:25:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F8D262428;
-        Tue,  8 Aug 2023 07:49:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1BBAC433C7;
-        Tue,  8 Aug 2023 07:49:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691480996;
-        bh=x1L13VddAI4iND15BaelnnmmeBPHY/Ut6c6CffPYejo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tV3hmWG/B0VINsfhJbi/OUjzXjGcKtG+i/5D8B04z3sfEmpOS/chk6SPInE+KOrf5
-         43c6v4OEPDA4EDB31bnTmMioFmC26aAP065HMEpce9lcV/vzbrjfywRWMjdOHWiFjD
-         a7moskD64pT3hF2VK/WxHFf344tQ6Xxi2V6qiSQ478BLNebYjY4j2zvvDzoHRKQcZc
-         IN2NVA9QEFDNy6hH3bVhZVhuwb/m+zDCMMO/uz3k/6r7eaiAhYhmhzfjxZRevsvYV9
-         DHnJ60gOoex7zvaM0smXDXfvuggoiWPqMyATXtIHUg++a/wkxntKcJqppP0ec9gW+g
-         smw5NYwFhcviQ==
-Date:   Tue, 8 Aug 2023 08:49:49 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc:     Robert Jarzmik <robert.jarzmik@free.fr>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-hardening@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        afaerber@suse.de
-Subject: Re: [PATCH v4 3/8] dt-bindings: clock: Add Marvell PXA1908 clock
- bindings
-Message-ID: <20230808-equator-professor-fcc4564b4ef5@spud>
-References: <20230807-pxa1908-lkml-v4-0-cb387d73b452@skole.hr>
- <20230807-pxa1908-lkml-v4-3-cb387d73b452@skole.hr>
+        Tue, 8 Aug 2023 14:46:57 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F1918851
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:53:21 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-55bac17b442so4347607a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:53:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20221208.gappssmtp.com; s=20221208; t=1691513600; x=1692118400;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=5gVaSTYejp99j2UgPSGmR/5wX1Q1ia2oLZnesCpWyfk=;
+        b=5kLaOvMqnlNmeIpacSpIa2NWJbpOYlZESfjtUwCQv19yf4oL/5SP94VAl/CfSyHNHk
+         usbySMXbEwrMgGSjrZ54UkTiy5yKiPN4M5HyKMMaHqoHVLt+VNOmKL3nKJV6G7hcitJk
+         s2mEQX3UUmdUqs2xGt2JF1xxkNyNcOc5G3NZMaHcKrX1893BWny0ypKIGd9EMCRuboJu
+         Rjm48FDrn9Saxwnv/Z0UCwaTntJbmiIqplHAlnXthvd8+EjVbuEmJaYz1eJUO5vCyCSl
+         zvvX1a5EFKF3y1I5mWdE8rJPpU7tOly/LzuegSXd2aaVJvCm18ktBWQI0KLql9kiehW9
+         rq2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691513600; x=1692118400;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5gVaSTYejp99j2UgPSGmR/5wX1Q1ia2oLZnesCpWyfk=;
+        b=kMHUcXWLP58e3NCyfwkXMz5Z45SgRjkcV91pW/UJVD2w44FnNkXG6cvWu9JtbwDN/5
+         chIcqd6/F9tglnGhutyJ64kKtWXtbMhGg1I7rNfQpVILSA31W5DZQMQquqLAlPvpiXs3
+         Kmre27RP+9++gHx1pTGIzbiMC+Pj4NCUa30B382MovFWMrszRONRlZ4KpXbVAQSxR0YB
+         +PWs+taYvIz5LvfD6CjaFBlJwMfgYmXNDJw1gw0AydHxc3etiJTlNzUwYnv5qgQd4XV2
+         d6i2e2VKxXEOb+rhpN2sYbbWgqaqx1VyOh8vO/Nz2eDeupZvlBrd6gr83xywX5/BRxqi
+         XbWQ==
+X-Gm-Message-State: AOJu0Yx3hSFnz2rQruhN7SCVC/tklI3jU2A/XLBV3VrHbqJRFV9cwY6u
+        kxR8ebZL1/37POgP79Y8TH3VLcdPCb/JoIx6fE0=
+X-Google-Smtp-Source: AGHT+IFAVyiXcimI9tXWuEj4R9mV4WwBOWaAXHFFMihxNpDn6eurFOXPD6dXxTtApytWiEcQwiKdmw==
+X-Received: by 2002:a17:902:e546:b0:1b8:a697:3719 with SMTP id n6-20020a170902e54600b001b8a6973719mr14036571plf.25.1691481003938;
+        Tue, 08 Aug 2023 00:50:03 -0700 (PDT)
+Received: from ?IPV6:2400:4050:a840:1e00:78d2:b862:10a7:d486? ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
+        by smtp.gmail.com with ESMTPSA id a7-20020a170902ecc700b001bba7aab822sm8261067plh.5.2023.08.08.00.50.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 00:50:03 -0700 (PDT)
+Message-ID: <bbf345f8-3476-4b0f-ab79-0cab3db73472@daynix.com>
+Date:   Tue, 8 Aug 2023 16:50:01 +0900
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="DKM1rJC+2OjonCQb"
-Content-Disposition: inline
-In-Reply-To: <20230807-pxa1908-lkml-v4-3-cb387d73b452@skole.hr>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Akihiko Odaki <akihiko.odaki@daynix.com>
+Subject: Re: [PATCH] ASoC: amd: acp3x-rt5682-max9836: Configure jack as not
+ detecting Line Out
+To:     Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        alsa-devel@alsa-project.org
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+References: <20230805162216.441410-1-alpernebiyasak@gmail.com>
+Content-Language: en-US
+In-Reply-To: <20230805162216.441410-1-alpernebiyasak@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023/08/06 1:22, Alper Nebi Yasak wrote:
+> The RT5682, RT1015 and RT1015p codecs used in this driver do not seem
+> capable of distinguishing Line Out connections from Headphone, but
+> the driver configures its jack object as if it can. Remove the wrong
+> value from the jack creation call to avoid any confusion.
+> 
+> Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
 
---DKM1rJC+2OjonCQb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Aug 07, 2023 at 05:42:37PM +0200, Duje Mihanovi=C4=87 wrote:
-> diff --git a/include/dt-bindings/clock/marvell,pxa1908.h b/include/dt-bin=
-dings/clock/marvell,pxa1908.h
-> new file mode 100644
-> index 000000000000..0c1f328bf534
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/marvell,pxa1908.h
-> +#define PXA1908_CLK_PLL4VCODIV3		38
-> +#define PXA1908_MPMU_NR_CLKS		38
-
-> +#define PXA1908_CLK_TWSI3		18
-> +#define PXA1908_APBC_NR_CLKS		50
-
-> +#define PXA1908_CLK_AICER		3
-> +#define PXA1908_APBCP_NR_CLKS		50
-
-> +#define PXA1908_CLK_DVC_DFC_DEBUG	16
-> +#define PXA1908_APMU_NR_CLKS		50
-
-How are these "NR_CLKS" things helpful to the binding?
-
---DKM1rJC+2OjonCQb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNHznQAKCRB4tDGHoIJi
-0tB0AP9WB00bkGFDXnoTipCneTMFFJkNGIcCMim70YGs/PIdNwEAgsNY8BDOP/Mj
-dOmMDYrhdbMiafUMA6dZgar9DVSQfww=
-=Oy5S
------END PGP SIGNATURE-----
-
---DKM1rJC+2OjonCQb--
+Reviewed-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+Tested-by: Akihiko Odaki <akihiko.odaki@daynix.com>
