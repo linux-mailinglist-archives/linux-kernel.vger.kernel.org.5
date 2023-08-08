@@ -2,163 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 748DE774EE4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C22774EFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbjHHXCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 19:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
+        id S230101AbjHHXJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 19:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbjHHXCf (ORCPT
+        with ESMTP id S229487AbjHHXJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 19:02:35 -0400
-Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC3C101
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 16:02:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
-        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
-        :List-Post:List-Owner:List-Archive;
-        bh=ZDALvFIak3dkZOLuYlAfhCehu+RJYBfHhd0fnnY5iiM=; b=lQmkV5otXwlM+J8rAPsEoNdtCF
-        xoZwrZIr017/bMTJyGOmuYGk8HEv+3Wvj5QSDylQVNIa9czH2B8sVY9zAk9hn/ExIi7rZHK4pJCfh
-        8t+BzfDUpkjH60ulN6vn9LJLnxlNr82hUwc4ON+R4qSOZEvUIBPcf+jOZgkrhbWhDU60WZjztd1Kh
-        z5rGNuwFfK4hgnFUy6JZR02eghvMqR8eKk/p3cwmWbrv0BlFX3iHSRwAsv9WeECDl04JwVqlqfsHT
-        Z67ih3nULPu7qYiohBTtz8cCzV9FdOGR5c4HgBcI3JhcGSBDZyBIZBFSMvE7dFEMkOkjrfyKMft+0
-        H+TwAbqg==;
-Received: from dg by mx.treblig.org with local (Exim 4.94.2)
-        (envelope-from <dg@treblig.org>)
-        id 1qTViY-005rPc-MU; Tue, 08 Aug 2023 23:02:22 +0000
-Date:   Tue, 8 Aug 2023 23:02:22 +0000
-From:   "Dr. David Alan Gilbert" <linux@treblig.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        sam@ravnborg.org, benh@kernel.crashing.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] powerpc: Use shared font data
-Message-ID: <ZNLJfgD5HDz3yief@gallifrey>
-References: <20230807010721.799613-1-linux@treblig.org>
- <828497a6-80c2-329f-8b47-2311bf08943d@infradead.org>
- <ZNJ7QzfA/GSgahmf@gallifrey>
- <8599e99b-ad80-abf8-ad40-4cb8262f047a@infradead.org>
+        Tue, 8 Aug 2023 19:09:28 -0400
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6344D101;
+        Tue,  8 Aug 2023 16:09:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1691536168; x=1723072168;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CxwShjiY+qcUUzYsoIsbNHrtfeKMUk7hbr/kxYUQ0M4=;
+  b=GUCH/gI/UWUzftRoaawMfL/5qJ9txNNLRnOpjbpIdFkzN4RpypBk4YjI
+   y0XK3A8u1QLJ6RbR7Mf5aRqiXT/550Fmwx/V6rw2TNDHF/vLRjykcRsCz
+   3aft9eydh+1vHzZXlPzpsyoTMqNk4YGXrcAVbGc75mt64HW3YnTeBGZgz
+   M=;
+X-IronPort-AV: E=Sophos;i="6.01,157,1684800000"; 
+   d="scan'208";a="351487948"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-32fb4f1a.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 23:09:26 +0000
+Received: from EX19MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2b-m6i4x-32fb4f1a.us-west-2.amazon.com (Postfix) with ESMTPS id C9AF9C04A2;
+        Tue,  8 Aug 2023 23:09:24 +0000 (UTC)
+Received: from EX19D019UWB002.ant.amazon.com (10.13.139.149) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 8 Aug 2023 23:09:23 +0000
+Received: from EX19MTAUEC001.ant.amazon.com (10.252.135.222) by
+ EX19D019UWB002.ant.amazon.com (10.13.139.149) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 8 Aug 2023 23:09:23 +0000
+Received: from u7187ce7291cc57.ant.amazon.com (10.187.170.38) by
+ mail-relay.amazon.com (10.252.135.200) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Tue, 8 Aug 2023 23:09:21 +0000
+From:   Tahsin Erdogan <trdgn@amazon.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+CC:     Tahsin Erdogan <trdgn@amazon.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3] tun: avoid high-order page allocation for packet header
+Date:   Tue, 8 Aug 2023 16:09:19 -0700
+Message-ID: <20230808230920.1944738-1-trdgn@amazon.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <8599e99b-ad80-abf8-ad40-4cb8262f047a@infradead.org>
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
-X-Uptime: 23:01:22 up 33 days,  8:32,  1 user,  load average: 0.04, 0.04, 0.00
-User-Agent: Mutt/2.0.5 (2021-01-21)
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Randy Dunlap (rdunlap@infradead.org) wrote:
-> 
-> 
-> On 8/8/23 10:28, Dr. David Alan Gilbert wrote:
-> > * Randy Dunlap (rdunlap@infradead.org) wrote:
-> >> Hi--
-> >>
-> >> On 8/6/23 18:07, linux@treblig.org wrote:
-> >>> From: "Dr. David Alan Gilbert" <linux@treblig.org>
-> >>>
-> >>> PowerPC has a 'btext' font used for the console which is almost identical
-> >>> to the shared font_sun8x16, so use it rather than duplicating the data.
-> >>>
-> >>> They were actually identical until about a decade ago when
-> >>>    commit bcfbeecea11c ("drivers: console: font_: Change a glyph from
-> >>>                         "broken bar" to "vertical line"")
-> >>>
-> >>> which changed the | in the shared font to be a solid
-> >>> bar rather than a broken bar.  That's the only difference.
-> >>>
-> >>> This was originally spotted by PMD which noticed that sparc does
-> >>> the same thing with the same data, and they also share a bunch
-> >>> of functions to manipulate the data.  I've previously posted a near
-> >>> identical patch for sparc.
-> >>>
-> >>> One difference I notice in PowerPC is that there are a bunch of compile
-> >>> options for the .c files for the early code to avoid a bunch of security
-> >>> compilation features;  it's not clear to me if this is a problem for
-> >>> this font data.
-> >>>
-> >>> Tested very lightly with a boot without FS in qemu.
-> >>>
-> >>> v2
-> >>>   Added 'select FONT_SUPPORT' (to stop modconfig causing the font to be
-> >>>    linked into a module rather than the main kernel)
-> >>>   Added 'select FONTS' to satisfy requirements in lib/fonts
-> >>>
-> >>> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
-> >>> ---
-> >>>  arch/powerpc/Kconfig.debug  |   3 +
-> >>>  arch/powerpc/kernel/btext.c | 360 +-----------------------------------
-> >>>  2 files changed, 9 insertions(+), 354 deletions(-)
-> >>>
-> >>> diff --git a/arch/powerpc/Kconfig.debug b/arch/powerpc/Kconfig.debug
-> >>> index 2a54fadbeaf51..521c4baf30e88 100644
-> >>> --- a/arch/powerpc/Kconfig.debug
-> >>> +++ b/arch/powerpc/Kconfig.debug
-> >>> @@ -147,6 +147,9 @@ config BDI_SWITCH
-> >>>  config BOOTX_TEXT
-> >>>  	bool "Support for early boot text console (BootX or OpenFirmware only)"
-> >>>  	depends on PPC_BOOK3S
-> >>> +	select FONT_SUN8x16
-> >>> +	select FONT_SUPPORT
-> >>> +	select FONTS
-> >>>  	help
-> >>>  	  Say Y here to see progress messages from the boot firmware in text
-> >>>  	  mode. Requires either BootX or Open Firmware.
-> >>
-> >> kconfig tells me:
-> >>
-> >> WARNING: unmet direct dependencies detected for FONTS
-> >>   Depends on [n]: FONT_SUPPORT [=y] && (FRAMEBUFFER_CONSOLE [=n] || STI_CONSOLE [=n])
-> >>   Selected by [y]:
-> >>   - BOOTX_TEXT [=y] && PPC_BOOK3S [=y]
-> >>
-> >> WARNING: unmet direct dependencies detected for FONT_SUN8x16
-> >>   Depends on [n]: FONT_SUPPORT [=y] && FRAMEBUFFER_CONSOLE [=n] && (!SPARC && FONTS [=y] || SPARC)
-> >>   Selected by [y]:
-> >>   - BOOTX_TEXT [=y] && PPC_BOOK3S [=y]
-> >>
-> >> because FONTS depends on FRAMEBUFFER_CONSOLE || STI_CONSOLE and neither of those is set.
-> > 
-> > I'm not getting the warnings in the v2, with a few configs; what command
-> > are using?
-> > 
-> 
-> My 'make' build target is either pp32_randconfig or ppc64_randconfig.
-> I see kconfig warnings in > 50% of the randconfigs. (small sample size,
-> around 20)
+When GSO is not enabled and a packet is transmitted via writev(), all
+payload is treated as header which requires a contiguous memory allocation.
+This allocation request is harder to satisfy, and may even fail if there is
+enough fragmentation.
 
-Thanks, that triggers it for me; I'll have a discussion with it....
+Note that sendmsg() code path limits the linear copy length, so this change
+makes writev() and sendmsg() more consistent.
 
-Dave
+Signed-off-by: Tahsin Erdogan <trdgn@amazon.com>
+---
+v3: rebase to latest net-next
+v2: replace linear == 0 with !linear
+v1: https://lore.kernel.org/all/20230726030936.1587269-1-trdgn@amazon.com/
+ drivers/net/tun.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> 
-> > I'm tempted to change the FONT_SUN8x16 dependency line to have
-> > SPARC||BOOTX_TEXT or SPARC||POWERPC  and drop the 'select FONTS' I
-> > added.
-> > 
-> > Dave
-> > 
-> >>
-> >> -- 
-> >> ~Randy
-> 
-> -- 
-> ~Randy
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 5beb6b5dd7e5..53d19c958a20 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1523,7 +1523,7 @@ static struct sk_buff *tun_alloc_skb(struct tun_file *tfile,
+ 	int err;
+ 
+ 	/* Under a page?  Don't bother with paged skb. */
+-	if (prepad + len < PAGE_SIZE || !linear)
++	if (prepad + len < PAGE_SIZE)
+ 		linear = len;
+ 
+ 	if (len - linear > MAX_SKB_FRAGS * (PAGE_SIZE << PAGE_ALLOC_COSTLY_ORDER))
+@@ -1913,6 +1913,9 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
+ 			 */
+ 			zerocopy = false;
+ 		} else {
++			if (!linear)
++				linear = min_t(size_t, good_linear, copylen);
++
+ 			skb = tun_alloc_skb(tfile, align, copylen, linear,
+ 					    noblock);
+ 		}
 -- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+2.41.0
+
