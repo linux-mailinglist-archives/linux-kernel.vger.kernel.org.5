@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 711A8773EC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCC4773EC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbjHHQfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
+        id S233026AbjHHQfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232972AbjHHQeb (ORCPT
+        with ESMTP id S232906AbjHHQea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:34:31 -0400
+        Tue, 8 Aug 2023 12:34:30 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E62090AE
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:52:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F01B990AD
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:52:31 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5CA9E2248A;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7C5062248B;
         Tue,  8 Aug 2023 09:53:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1691488433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=i6TQwXZ4v9nk5j9z/G1P0QjfrlA/rpwYdzHk2PVBTRo=;
-        b=sMK735vGrxWU1VYbx6RUmceJoQbzNocoGXJWDnHnQMuYYl5OwU3eFj+3qgZ8Ba0mFBaNLq
-        Oq7pXw3+pm/6X820956mlj1IpRt+1zQo128JYQOLdIXM+09UMZwOMLvmaDtJEvC7VeLAxw
-        oWjOyz1mC/TZfMdOelpD4y7kBG9k37Q=
+        bh=19m9+YAryd9zQqOJKLPS0ScJg55yhuc9Zn7O2SmAkY8=;
+        b=0ypz/M4hFEYVg3RIkyKTZpGOtO0OELdvePk4KsvNp0QXKtSQ1NTkwvJ6x9bkVpsk5ACEo+
+        VdhEFCaw7TRHrCXiaOhP4fR0hWTfeBY2vexIA+Fg3uiY/xr+RGb+kCzEL8ZCXD6x0fD/My
+        6dCsKBwvmBeEB1+gOW5PonTGZTXEndk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1691488433;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=i6TQwXZ4v9nk5j9z/G1P0QjfrlA/rpwYdzHk2PVBTRo=;
-        b=qySqY3LEh48iTLSTZF1kLGV3kFsl/U5DLBfmwlVvoTvtGqeP3Z4gT7neP5svnR3Q21mOnH
-        hlN2F/r3TLQ+AODw==
+        bh=19m9+YAryd9zQqOJKLPS0ScJg55yhuc9Zn7O2SmAkY8=;
+        b=gHwsy0hibpgfl2awLPIMsMc4dKqncic8vqqIN/UioyCepHOo4bgnZRyoxdFoRXKIOTGPXa
+        oVyI5GXsppN4AdBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2649513451;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 53972139E9;
         Tue,  8 Aug 2023 09:53:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id AFq7CLEQ0mSBJQAAMHmgww
+        id eKi8E7EQ0mSBJQAAMHmgww
         (envelope-from <vbabka@suse.cz>); Tue, 08 Aug 2023 09:53:53 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
@@ -60,9 +60,9 @@ Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
         Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, patches@lists.linux.dev,
         Vlastimil Babka <vbabka@suse.cz>
-Subject: [RFC v1 4/5] maple_tree: avoid bulk alloc/free to use percpu array more
-Date:   Tue,  8 Aug 2023 11:53:47 +0200
-Message-ID: <20230808095342.12637-11-vbabka@suse.cz>
+Subject: [RFC v1 5/5] maple_tree: replace preallocation with slub percpu array prefill
+Date:   Tue,  8 Aug 2023 11:53:48 +0200
+Message-ID: <20230808095342.12637-12-vbabka@suse.cz>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230808095342.12637-7-vbabka@suse.cz>
 References: <20230808095342.12637-7-vbabka@suse.cz>
@@ -78,42 +78,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using bulk alloc/free on a cache with percpu array should not be
-necessary and the bulk alloc actually bypasses the array (the prefill
-functionality currently relies on this).
+With the percpu array we can try not doing the preallocations in maple
+tree, and instead make sure the percpu array is prefilled, and using
+GFP_ATOMIC in places that relied on the preallocation (in case we miss
+or fail trylock on the array), i.e. mas_store_prealloc(). For now simply
+add __GFP_NOFAIL there as well.
 
-The simplest change is just to convert the respective maple tree
-wrappers to do a loop of normal alloc/free.
+First I tried to change mas_node_count_gfp() to not preallocate anything
+anywhere, but that lead to warns and panics, even though the other
+caller mas_node_count() uses GFP_NOWAIT | __GFP_NOWARN so it has no
+guarantees... So I changed just mas_preallocate(). I let it still to
+truly preallocate a single node, but maybe it's not necessary?
 ---
- lib/maple_tree.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ lib/maple_tree.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/lib/maple_tree.c b/lib/maple_tree.c
-index 1196d0a17f03..7a8e7c467d7c 100644
+index 7a8e7c467d7c..5a209d88c318 100644
 --- a/lib/maple_tree.c
 +++ b/lib/maple_tree.c
-@@ -161,12 +161,19 @@ static inline struct maple_node *mt_alloc_one(gfp_t gfp)
+@@ -5534,7 +5534,12 @@ void mas_store_prealloc(struct ma_state *mas, void *entry)
  
- static inline int mt_alloc_bulk(gfp_t gfp, size_t size, void **nodes)
- {
--	return kmem_cache_alloc_bulk(maple_node_cache, gfp, size, nodes);
-+	int allocated = 0;
-+	for (size_t i = 0; i < size; i++) {
-+		nodes[i] = kmem_cache_alloc(maple_node_cache, gfp);
-+		if (nodes[i])
-+			allocated++;
-+	}
-+	return allocated;
+ 	mas_wr_store_setup(&wr_mas);
+ 	trace_ma_write(__func__, mas, 0, entry);
++
++retry:
+ 	mas_wr_store_entry(&wr_mas);
++	if (unlikely(mas_nomem(mas, GFP_ATOMIC | __GFP_NOFAIL)))
++		goto retry;
++
+ 	MAS_WR_BUG_ON(&wr_mas, mas_is_err(mas));
+ 	mas_destroy(mas);
  }
- 
- static inline void mt_free_bulk(size_t size, void __rcu **nodes)
+@@ -5550,9 +5555,10 @@ EXPORT_SYMBOL_GPL(mas_store_prealloc);
+ int mas_preallocate(struct ma_state *mas, gfp_t gfp)
  {
--	kmem_cache_free_bulk(maple_node_cache, size, (void **)nodes);
-+	for (size_t i = 0; i < size; i++)
-+		kmem_cache_free(maple_node_cache, nodes[i]);
- }
+ 	int ret;
++	int count = 1 + mas_mt_height(mas) * 3;
  
- static void mt_free_rcu(struct rcu_head *head)
+-	mas_node_count_gfp(mas, 1 + mas_mt_height(mas) * 3, gfp);
+-	mas->mas_flags |= MA_STATE_PREALLOC;
++	mas_node_count_gfp(mas, 1, gfp);
++	kmem_cache_prefill_percpu_array(maple_node_cache, count, gfp);
+ 	if (likely(!mas_is_err(mas)))
+ 		return 0;
+ 
 -- 
 2.41.0
 
