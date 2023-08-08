@@ -2,127 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9F5774E04
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 00:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02866774E0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 00:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbjHHWJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 18:09:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
+        id S231634AbjHHWKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 18:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231530AbjHHWJf (ORCPT
+        with ESMTP id S232043AbjHHWK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 18:09:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DEEE64
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 15:08:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691532528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Flz2QBTccsxoey25RxtTx/5hBDUCLeV9Z2hlojIPFFo=;
-        b=Enn6Qbh2WJ12eb8ezUIYCJeFyNLYULGRip0EJ15dG92Wc2qKEgQB6BhwwWV1ojeTYUp0ev
-        AAEqFCJhj9M0JScAL/SNdGStzQhBapwT/sougvZ/REL3Qz3PVUrkN3D+QTyR+80Nq+hTth
-        Y/bhHd9JYeblpujAfJrbgB8hGiRDScw=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-393-mq0JE_2XNbWCUMgu0X1PCQ-1; Tue, 08 Aug 2023 18:08:47 -0400
-X-MC-Unique: mq0JE_2XNbWCUMgu0X1PCQ-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-76c888cc6cdso677413685a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 15:08:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691532527; x=1692137327;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Flz2QBTccsxoey25RxtTx/5hBDUCLeV9Z2hlojIPFFo=;
-        b=V0hQ6bx5SbWv9vqQjnI6Lhtt12Ftm5s3QfikhStxwXrdlyjUanwdg/vx6jxHey9jL5
-         GEGxPzsi0NtFG15jJN/+GzHcgNhYyMMwzcMuqb1VKPWHPi60Ca1qhgZ8Nj9X4A9ITmQa
-         PtmD9jogDAYeFbe0OE41r2tgFu28EfF2oaa79a84QIYUNrhXfTcjLrQ+IIrQu1nssjS5
-         ctCB1G6BmQMNMxX3slZu0oiT1eWOpKDPVXNJCyxkrB/xlMr/sJTu7jt+BmN4lEdbQqdY
-         k6NF8ZVgiOPSR7kjFrexybHZLSli649GdmDpZv5BsyJ5MvR5hh2oCzqaPIuot7Xhx4fu
-         RNyg==
-X-Gm-Message-State: AOJu0Yy9OGH2egsYgY4iOT3PevycO9P8jmOKliCTRAM11AsTVb0W+YI2
-        +q4HRjTcFmx1bGkq+m3Nbu3WPhKhRAOW0b8RdFx/JJRsYXsB3DrKAn4OFoKHPgSiIyZblLP/M9Y
-        B/I/FqlxfjAo8xQyKp2wEyIZl
-X-Received: by 2002:a05:620a:2887:b0:765:874f:bd78 with SMTP id j7-20020a05620a288700b00765874fbd78mr1267635qkp.0.1691532527116;
-        Tue, 08 Aug 2023 15:08:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHEwD6r4Q/U9ptZw615hbG6h8Qqng+cLfnMRelRqVbSluN1hOYOG0F+SC/VQyf7P+6K/U677w==
-X-Received: by 2002:a05:620a:2887:b0:765:874f:bd78 with SMTP id j7-20020a05620a288700b00765874fbd78mr1267623qkp.0.1691532526899;
-        Tue, 08 Aug 2023 15:08:46 -0700 (PDT)
-Received: from ?IPv6:2600:4040:5c7d:5f00::feb? ([2600:4040:5c7d:5f00::feb])
-        by smtp.gmail.com with ESMTPSA id b8-20020a05620a126800b0076c84240467sm3536896qkl.52.2023.08.08.15.08.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 15:08:46 -0700 (PDT)
-Message-ID: <f9452c1fa9081ae44bb76eec48c6debd81ee0db7.camel@redhat.com>
-Subject: Re: [PATCH] Revert "Input: synaptics - enable InterTouch for the
- ThinkPad P1 G3"
-From:   Lyude Paul <lyude@redhat.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Sebastian Wick <sebastian.wick@redhat.com>,
-        Aman Dhoot <amandhoot12@gmail.com>,
-        Mark Pearson <markpearson@lenovo.com>,
-        Raul Rangel <rrangel@chromium.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andrew Duggan <aduggan@synaptics.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 08 Aug 2023 18:08:45 -0400
-In-Reply-To: <ZNK8aG/y4ol7MXVp@google.com>
-References: <20230808152817.304836-1-sebastian.wick@redhat.com>
-         <f13f4ff7d46ecf887ca652b664860c4e07ec8b73.camel@redhat.com>
-         <ZNK8aG/y4ol7MXVp@google.com>
-Organization: Red Hat Inc.
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.3 (3.48.3-1.fc38) 
+        Tue, 8 Aug 2023 18:10:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89912E72
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 15:10:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 29CE862DAB
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 22:10:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 830B9C433CA;
+        Tue,  8 Aug 2023 22:10:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691532626;
+        bh=ElzwQNB5k4o9+Lw4DzC4a7QoKVmgp4dLbavyMvqdX4o=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=HaEtjISl7bsUid68IEO4GasfSC01wI2nfCS5A1XTvlxVsyFHrOezgLr5URdJhgUvv
+         u+Rntsk+AJIQgNnZR/cll7sPy4C0gFohNytM5SGE3MkDMtm+Czipr+PEyww9ALVkxK
+         077GFkbV0lq/yrYPouoEUYwp7Yk1EcoPnyv1F4CCk93T9x+EQEQh2zIff00b+4wk3r
+         hwA5hYyHFVfZN4KFvH2H4vDdTmXog7P/B7vfCbgE1hjyxyy3EHKIbn/PvGx1ZNNtHp
+         EXX0pFAN0un/m3EXCVPTnxnLROfJ/P2CSQ9dFse9hYN3fh8ui12PNrQMXY74QBBduZ
+         P5bjSyqXDp0jg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 677DBC64459;
+        Tue,  8 Aug 2023 22:10:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v2 00/10] net: fs_enet: Driver cleanup
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169153262641.13746.13289621238747032969.git-patchwork-notify@kernel.org>
+Date:   Tue, 08 Aug 2023 22:10:26 +0000
+References: <cover.1691155346.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1691155346.git.christophe.leroy@csgroup.eu>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     davem@davemloft.net, kuba@kernel.org, pantelis.antoniou@gmail.com,
+        edumazet@google.com, pabeni@redhat.com, mpe@ellerman.id.au,
+        npiggin@gmail.com, robh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-08-08 at 15:06 -0700, Dmitry Torokhov wrote:
-> On Tue, Aug 08, 2023 at 05:49:23PM -0400, Lyude Paul wrote:
-> > Hm, This looks fine to me (if not as a final fix, certainly as a workar=
-ound)
-> >=20
-> > Reviewed-by: Lyude Paul <lyude@redhat.com>
-> >=20
-> > However, this is definitely something we probably should try to fix at =
-some
-> > point - as I imagine this must be happening because something regarding=
- how
-> > clicks are reported must have changed again. Andrew, do you have any id=
-ea?
->=20
-> I would like to understand more about this. Is this with newer/older
-> BIOS, or another hardware revision of the product, or something else?
+Hello:
 
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-oops, somehow when typing that response I totally forgot I was responding t=
-o a
-revert ._., which changes everything
+On Fri,  4 Aug 2023 15:30:10 +0200 you wrote:
+> Over the years, platform and driver initialisation have evolved into
+> more generic ways, and driver or platform specific stuff has gone
+> away, leaving stale objects behind.
+> 
+> This series aims at cleaning all that up for fs_enet ethernet driver.
+> 
+> Changes in v2:
+> - Remove a trailing whitespace in the old struct moved in patch 7.
+> - Include powerpc people and list that I forgot when sending v1
+> (and Rob as expected by Patchwork for patch 6, not sure why)
+> 
+> [...]
 
-so yes - we should definitely look into this a bit more, I still have acces=
-s
-to this machine so I'll try to take a look tomorrow and see what's up
->=20
-> Lyude, do you still have access to the unit you originally developed
-> the original change for? Is the behavior broken there as well?
->=20
-> Thanks.
->=20
+Here is the summary with links:
+  - [net-next,v2,01/10] net: fs_enet: Remove set but not used variable
+    https://git.kernel.org/netdev/net-next/c/78d3902795f0
+  - [net-next,v2,02/10] net: fs_enet: Fix address space and base types mismatches
+    https://git.kernel.org/netdev/net-next/c/ae9e78a9dc88
+  - [net-next,v2,03/10] net: fs_enet: Remove fs_get_id()
+    https://git.kernel.org/netdev/net-next/c/26bbbef8ff40
+  - [net-next,v2,04/10] net: fs_enet: Remove unused fields in fs_platform_info struct
+    https://git.kernel.org/netdev/net-next/c/caaf482e2654
+  - [net-next,v2,05/10] net: fs_enet: Remove has_phy field in fs_platform_info struct
+    https://git.kernel.org/netdev/net-next/c/9359a48c65a3
+  - [net-next,v2,06/10] net: fs_enet: Remove stale prototypes from fsl_soc.c
+    https://git.kernel.org/netdev/net-next/c/62e106c802c5
+  - [net-next,v2,07/10] net: fs_enet: Move struct fs_platform_info into fs_enet.h
+    https://git.kernel.org/netdev/net-next/c/7a76918371fe
+  - [net-next,v2,08/10] net: fs_enet: Don't include fs_enet_pd.h when not needed
+    https://git.kernel.org/netdev/net-next/c/33deffc9f19f
+  - [net-next,v2,09/10] net: fs_enet: Remove linux/fs_enet_pd.h
+    https://git.kernel.org/netdev/net-next/c/7149b38dc7cb
+  - [net-next,v2,10/10] net: fs_enet: Use cpm_muram_xxx() functions instead of cpm_dpxxx() macros
+    https://git.kernel.org/netdev/net-next/c/5e6cb39a256d
 
---=20
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
