@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7DA773EE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59BEA773CAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbjHHQjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
+        id S231902AbjHHQIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233184AbjHHQiW (ORCPT
+        with ESMTP id S231788AbjHHQG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:38:22 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BF914FF5
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:53:53 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d13e0bfbbcfso8332696276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691510032; x=1692114832;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8lD/uFf0wow5CQnaoK2oNS4fXZVxBqZ6WPF6m6974ic=;
-        b=ArDDN7pLuXPLHQ30g4xEDnUkE7Uw9izurs54AGGl7KC+KWM+bhUxBIXjpwDHjTPO4V
-         +J4QNNN+0Yqph8LjEHVkRIgnCE9KlzUDBaky+Wifufa3wAzHGqoyD4EbEWEjxu24Bz3S
-         ylitbuUv7Iond3fviQHfCXCFDTMg6q4CDMGLLCc39IBC9FTQgeTNLfCZb4Erm+ysE9pb
-         BU/fWfBJ6P+y9pK4d0d3zfMNJvWRW3j/L7NAgbyDr0HfnIC9dpDEOz7xCMXczHyF+i0c
-         9ftwOLbu0ivYBILAciu77SgRiyZN5x/8uLCdq5kY9Kt9MmRHePZGR3HIp/TnPCV4Jzes
-         mCig==
+        Tue, 8 Aug 2023 12:06:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9001B7294
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:45:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691509516;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ovtijMkVZJcNyWwGdwYpTKXzS+g6b+kiQjjytk2RPVY=;
+        b=ag27Iot782JzPsDN/1528jL/7UowJMJkyckBSrt9PQpHQayjBQ3FjsC81TW6mAFwI21/j8
+        a2Et2xjMlfHivrILGktXBJQuohVZtWFE1og1n2RIwOZWoTKsbtelLj2mMWatrSRJb9jlkE
+        PElCWBnh/TvdIT8DrWmdb1bPLZewOg8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-381-tAbgtqP0OVieX9BuODYuOQ-1; Tue, 08 Aug 2023 11:28:25 -0400
+X-MC-Unique: tAbgtqP0OVieX9BuODYuOQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fe603e8054so10761285e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:28:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510032; x=1692114832;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8lD/uFf0wow5CQnaoK2oNS4fXZVxBqZ6WPF6m6974ic=;
-        b=HYPOJ1W++isNTB5tha1BgnG2suqRMGon9zvaEb9f8bSn+Vs7wKv00IupxLbQTO0sIA
-         AOby6aYRl3v9savdTIpMdXSRZaQmBkKETJ/+ud7LjKn6HohcKFvJk2CcBXleMd+Tg6bj
-         N3P6CCFX+LKpY+u9GRwwZ9DLGOIHq2O5K+Yvzj7747XlWGysWEEM5t+0LVkuzJ96dyb1
-         8wg6AGNrQXM3FftQWpMD2K90BdRenfLdyfR4mCmQHEt1DMJHfCK3hfXixxdno7eIjMw9
-         ykX/uLAlkUisfSsc9ShedSIBquywFJuTHuHM27H0xiq7544/L2DPdah+CJQDxkyozlHm
-         r0qw==
-X-Gm-Message-State: AOJu0YyfCTE7PMEtSQCy0G6KcqoXyQzfpxVadss1qeB1KOi5DmCV3ZMD
-        NtKnXpFmXAaVs8MaXo9IoGePOa83Nm9IothBe3/60b80oxw=
-X-Google-Smtp-Source: AGHT+IHIUVZJ/nIc/PQpNO8vLS/kFvAT1qhSoXUuIxgrtCAvvHN92UdSpESsLnSJlhh1n5DzvC73oCMwFPZeuLKkFE4=
-X-Received: by 2002:a05:6871:5225:b0:1b0:4349:b825 with SMTP id
- ht37-20020a056871522500b001b04349b825mr9736850oac.21.1691508352081; Tue, 08
- Aug 2023 08:25:52 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691508504; x=1692113304;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ovtijMkVZJcNyWwGdwYpTKXzS+g6b+kiQjjytk2RPVY=;
+        b=NVbwxZ9Gim7C4CKtzwnJ4bK+8FELj6Ub+lmgIuaIyOGxAHklCt2bYrbq9aVsKE2Uad
+         heLgJXfACplNbvh/snFkUPEHbSf9cd90e8teEI1iXgzNaqWDQsmPp6A/lRSQoMjn0kC4
+         Ql2wEloVv9I6clZEE1gYbHo9TD5sfF8unUU75sgBVv3VeM3vDMFySo4y9gYtTyUKalrr
+         /hRRj1ufUkbGHa3V8TWbyciuz4QSD3QhEyTLFbh6+ZhmyoDOLgE4puh/HbSP4eyQ0/F8
+         0+OPFkKQLL7W4g1WTsvkwZNoFmwO9Jl2JTHKx17fTpGsHQuIux1lGbxpD6AXJ1fOhrHW
+         CjtA==
+X-Gm-Message-State: AOJu0Yy8+2Xy8TCTVEuGdJ1GktiRbJQpJAwaPhOL7IsNpOcqj7tmMtzU
+        mFYAKbu+tv1F7wYP0y+TZpbqu0+NVUanNf9qqwU3Augb7xQ+hyiZMq1x8HqZ2kGRKgf6veHFXBc
+        M6zibrMSzRPVsD3FbDW4Gkl9OHqYScv9gF30=
+X-Received: by 2002:a1c:7709:0:b0:3fd:2d35:b96a with SMTP id t9-20020a1c7709000000b003fd2d35b96amr102420wmi.39.1691508504445;
+        Tue, 08 Aug 2023 08:28:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHpjCsZBjfXVVTdr/mD2H5KTLL1a+85ecgKiTnGDZwLvm+HvJjLR1xXBAXKwqaq7o3OdaJVVg==
+X-Received: by 2002:a1c:7709:0:b0:3fd:2d35:b96a with SMTP id t9-20020a1c7709000000b003fd2d35b96amr102406wmi.39.1691508504123;
+        Tue, 08 Aug 2023 08:28:24 -0700 (PDT)
+Received: from toolbox.fritz.box ([2001:9e8:8994:f500:1291:b1be:fd68:2988])
+        by smtp.gmail.com with ESMTPSA id z10-20020a05600c220a00b003fba6a0c881sm18602959wml.43.2023.08.08.08.28.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 08:28:23 -0700 (PDT)
+From:   Sebastian Wick <sebastian.wick@redhat.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Aman Dhoot <amandhoot12@gmail.com>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Mark Pearson <markpearson@lenovo.com>,
+        Raul Rangel <rrangel@chromium.org>,
+        Lyude Paul <lyude@redhat.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Revert "Input: synaptics - enable InterTouch for the ThinkPad P1 G3"
+Date:   Tue,  8 Aug 2023 17:28:15 +0200
+Message-ID: <20230808152817.304836-1-sebastian.wick@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Received: by 2002:ac9:5f85:0:b0:4e5:e74a:3a76 with HTTP; Tue, 8 Aug 2023
- 08:25:51 -0700 (PDT)
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Tue, 8 Aug 2023 17:25:51 +0200
-Message-ID: <CAGudoHGyo4WPjXLfhzCOn1gK6nvx2U1Z=Dh4xcBw6yXZ30p-AA@mail.gmail.com>
-Subject: hardening and other opts in kernel config used for benchmarking?
-To:     ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
-Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This reverts commit 7984b43542070f5888546d95b48003c4a8af7c0f to make the
+touchpad usable again.
 
-I have no idea who should be in To: or Cc:, I grabbed names from an
-e-mail I got regarding one of previous changes.
+Tapping does not generate any events for user space and moving the
+cursor is janky. Disabling InterTouch fixes those issues.
 
-Recently I benchmarked a change which added unconditional file
-position locking and found a minor regression from it (with profiler
-output to justify it):
-https://lore.kernel.org/linux-fsdevel/CAHk-=whJtLkYwEFTS9LcRiMjSqq_xswDeXo7hYNWT0Em6nL4Sw@mail.gmail.com/T/#m7c0cd6e913c6295732daea3c88f502bd4724ffb3
+Signed-off-by: Sebastian Wick <sebastian.wick@redhat.com>
+---
+ drivers/input/mouse/synaptics.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-However, according to Christian the change was benchmarked by your
-machinery and no difference was found.
-
-I briefly poked around and found that used configs have:
-CONFIG_RANDOMIZE_KSTACK_OFFSET=y
-
-This is an optional and very expensive hardening feature, my question
-is if it was enabled on purpose. The cost comes from adding rdtsc to
-every syscall.
-
-Looking at the rest of the config you have a mixed bag (e.g., hardened
-usercopy but *no* init_on_alloc) so I genuinely don't know.
-
-Given the high cost of the opt I would suggest removing it, as it
-avoidably muddles the waters for single-threaded changes (one way or
-the other -- slowdowns can hide and speed ups go unnoticed).
-
-I did not review the whole config.
-
-Any comments? :)
-
-Thanks,
+diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+index ada299ec5bba..0e01df88cf69 100644
+--- a/drivers/input/mouse/synaptics.c
++++ b/drivers/input/mouse/synaptics.c
+@@ -182,7 +182,6 @@ static const char * const smbus_pnp_ids[] = {
+ 	"LEN0099", /* X1 Extreme Gen 1 / P1 Gen 1 */
+ 	"LEN009b", /* T580 */
+ 	"LEN0402", /* X1 Extreme Gen 2 / P1 Gen 2 */
+-	"LEN040f", /* P1 Gen 3 */
+ 	"LEN200f", /* T450s */
+ 	"LEN2044", /* L470  */
+ 	"LEN2054", /* E480 */
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+2.41.0
+
