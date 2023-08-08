@@ -2,106 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3FA773DBA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89209774029
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231828AbjHHQVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43790 "EHLO
+        id S233907AbjHHQ7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:59:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231706AbjHHQTg (ORCPT
+        with ESMTP id S232295AbjHHQ6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:19:36 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57DA9011
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:48:57 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9b5ee9c5aso93554281fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:48:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691509736; x=1692114536;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k0zLEburh9ZFfE548pNOj7q2UOj2GGR4k/WQno4jj70=;
-        b=jdvJRDwKm2gcnBDRl4o5xnvg3QUYH+E4SgORVNfOBD2j77DIz7H9HwmE+MxErQRoPD
-         oA+pe67shBFRawNfMu78CxLeS/sNa5P1T1TapiY0EzuaWCr6LQ2CZo3xxtbHfGiFqXMJ
-         PlK6BmCJicukU4c9sb7vysJZgXk3a9hl5zCLPH4zK4Izxtdetu4q6EuKQtVhtJNEfLMk
-         qW8CnorK6KRk5fzVq758jsVWLwCWQhiNI0vOGJSh38zdE4cVfLRVedm0uCJLvCjLWoZl
-         WJbjrGgP7rPKjjcnBeD3B9QelLW7+lUII1uGxvV5ARh6cXt8sp0E8mOLuNsgkxYm23hF
-         Ornw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691509736; x=1692114536;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k0zLEburh9ZFfE548pNOj7q2UOj2GGR4k/WQno4jj70=;
-        b=RZwHxhHaeGLoDNKwaG3ZIcNC7GFG+miimu5x3NFxhFTVBMAEoGHOt97KTvFVtBu/Yh
-         warwftWDRl3W72RSiQ9sUbgSTXEZ3JhxMoyypwhmI90S1B0E4k9S/NYS44AbSLT5GX33
-         C11uxT6Ehoz1ZziDZDh1FrAtP6+NpX3zxEKyzjhN7VzvFqMmFRVbKySY+3OKMdSi67wd
-         upz0chhAaIF8UMKmdVxhhCBXofnm9BiJHR9XbxrNrGIxXAJ2QQxhrmuBBkj/mwbk8U+y
-         YHVNSo5u2zTkUw3tTUx5I0T/7Wp1HdazIULN9ArqltJZZoVahghLEbnTScpaOcjFnfg4
-         C9kw==
-X-Gm-Message-State: AOJu0Yyh/cRAePCiqb/rwBMlcujZbMEpZrCukSc5SWpfQOQY8juntyIK
-        kH0MxnZvbYB/eUhJ7r4H3oeWpUfHrdOvQoR4qf4=
-X-Google-Smtp-Source: AGHT+IENaoLogdmwEquxviK7pRALZnOeydEhILSaohDlqrXatiaCu5M9MfM3jQOl2xSE+z2HLZbssA==
-X-Received: by 2002:a05:600c:2213:b0:3fe:2b76:3d7 with SMTP id z19-20020a05600c221300b003fe2b7603d7mr9376833wml.10.1691487533357;
-        Tue, 08 Aug 2023 02:38:53 -0700 (PDT)
-Received: from [192.168.69.115] ([176.176.177.253])
-        by smtp.gmail.com with ESMTPSA id e13-20020a05600c218d00b003fe2bea77ccsm13219267wme.5.2023.08.08.02.38.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 02:38:53 -0700 (PDT)
-Message-ID: <60ac32e8-5fea-84d4-ff3f-f09e6f8ad499@linaro.org>
-Date:   Tue, 8 Aug 2023 11:38:49 +0200
+        Tue, 8 Aug 2023 12:58:11 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE85D524C;
+        Tue,  8 Aug 2023 08:42:55 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0F7CB21AAC;
+        Tue,  8 Aug 2023 09:39:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691487544; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PVeErVjOshT1HL9BKit56tV7zQvJsI4KiQWED3rMFuk=;
+        b=Ih/dtuDlLjuehwLx/dl1alOHiAbINBHhQjqICxdO8QzvDNyayDD12QEIdQQqzzznj7Q14P
+        c5hv8MUHhglxrWQtTaFcAIVopxDABjqy/dP+ec5Lv+rEt0nndTNahsaoLReC2CFkrCP+64
+        W8/atfzAfsnelhickcggtSiPj4yTuJM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691487544;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PVeErVjOshT1HL9BKit56tV7zQvJsI4KiQWED3rMFuk=;
+        b=j1Qrid+U1SfmOjtDLooGt12t1hCG9o0NAGXfAvVFTMysCO70VmrTAY263EbPzLWm1azsyz
+        yYZCAZd1ftjgXqAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ECC6813451;
+        Tue,  8 Aug 2023 09:39:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Oj7GOTcN0mRIHgAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:39:03 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 732A5A0769; Tue,  8 Aug 2023 11:39:03 +0200 (CEST)
+Date:   Tue, 8 Aug 2023 11:39:03 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 07/13] xfs: have xfs_vn_update_time gets its own
+ timestamp
+Message-ID: <20230808093903.2cg5wwbwbvflkeph@quack3>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+ <20230807-mgctime-v7-7-d1dec143a704@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH 2/3] mips: replace #include <asm/export.h> with #include
- <linux/export.h>
-Content-Language: en-US
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-References: <20230807153243.996262-1-masahiroy@kernel.org>
- <20230807153243.996262-2-masahiroy@kernel.org>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20230807153243.996262-2-masahiroy@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807-mgctime-v7-7-d1dec143a704@kernel.org>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/23 17:32, Masahiro Yamada wrote:
-> Commit ddb5cdbafaaa ("kbuild: generate KSYMTAB entries by modpost")
-> deprecated <asm/export.h>, which is now a wrapper of <linux/export.h>.
+On Mon 07-08-23 15:38:38, Jeff Layton wrote:
+> In later patches we're going to drop the "now" parameter from the
+> update_time operation. Prepare XFS for this by reworking how it fetches
+> timestamps and sets them in the inode. Ensure that we update the ctime
+> even if only S_MTIME is set.
 > 
-> Replace #include <asm/export.h> with #include <linux/export.h>.
-> 
-> After all the <asm/export.h> lines are converted, <asm/export.h> and
-> <asm-generic/export.h> will be removed.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 > ---
+>  fs/xfs/xfs_iops.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
 > 
->   arch/mips/cavium-octeon/octeon-memcpy.S | 2 +-
->   arch/mips/kernel/mcount.S               | 2 +-
->   arch/mips/kernel/r2300_fpu.S            | 2 +-
->   arch/mips/kernel/r4k_fpu.S              | 2 +-
->   arch/mips/lib/csum_partial.S            | 2 +-
->   arch/mips/lib/memcpy.S                  | 2 +-
->   arch/mips/lib/memset.S                  | 2 +-
->   arch/mips/lib/strncpy_user.S            | 2 +-
->   arch/mips/lib/strnlen_user.S            | 2 +-
->   arch/mips/mm/page-funcs.S               | 2 +-
->   arch/mips/mm/tlb-funcs.S                | 2 +-
->   11 files changed, 11 insertions(+), 11 deletions(-)
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index 731f45391baa..72d18e7840f5 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -1037,6 +1037,7 @@ xfs_vn_update_time(
+>  	int			log_flags = XFS_ILOG_TIMESTAMP;
+>  	struct xfs_trans	*tp;
+>  	int			error;
+> +	struct timespec64	now = current_time(inode);
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+No need to fetch current_time() here where you overwrite it just a bit
+later...
 
+> @@ -1056,12 +1057,15 @@ xfs_vn_update_time(
+>  		return error;
+>  
+>  	xfs_ilock(ip, XFS_ILOCK_EXCL);
+> -	if (flags & S_CTIME)
+> -		inode_set_ctime_to_ts(inode, *now);
+> +	if (flags & (S_CTIME|S_MTIME))
+> +		now = inode_set_ctime_current(inode);
+> +	else
+> +		now = current_time(inode);
+> +
+>  	if (flags & S_MTIME)
+> -		inode->i_mtime = *now;
+> +		inode->i_mtime = now;
+>  	if (flags & S_ATIME)
+> -		inode->i_atime = *now;
+> +		inode->i_atime = now;
+>  
+>  	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
+>  	xfs_trans_log_inode(tp, ip, log_flags);
+
+Otherwise the patch looks good to me so feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
