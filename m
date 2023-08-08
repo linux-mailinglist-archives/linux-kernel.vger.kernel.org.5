@@ -2,246 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA5F774B70
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1623E774CB4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234645AbjHHUrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39026 "EHLO
+        id S236420AbjHHVOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234557AbjHHUr1 (ORCPT
+        with ESMTP id S236381AbjHHVO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:47:27 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E706E8A6F;
-        Tue,  8 Aug 2023 13:26:06 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe2d152f62so10087187e87.0;
-        Tue, 08 Aug 2023 13:26:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691526365; x=1692131165;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GzQthcTYYC1HexdHWuevRI13uEmJKTZWWaC343YuPRA=;
-        b=hf/mYwff/XYaIN0MlyrvC+XLWNtxbERCkoz+I0Lz7l+1rVci9fa4tVgrLmyiG/c2ng
-         kEkVGKJev8QiiFkHp/07J3LY+EH5uv87cnJu7wC4hngd0T9i6U93qurJ+k5+7eXNRCH3
-         3A6YeoU5ciwlxZzPTgBcDzKQVN1bLQCj/lZF7X1gLtGBZ1EUbWF2LLQhKZwFH8fLIbDP
-         GdKe7GG13dU8Smrou4bGlZKxuk/QXgK8VfcAAUQteyN0WHvOPIrO/WU6boT90kIBLHEd
-         gadFoWrvQtzqf4m4c3tiTb37j0wZxit6M4zMN7Yl8hh5IUC+eTgSXsmJs2Pm1Ex2r0oj
-         Ld0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691526365; x=1692131165;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GzQthcTYYC1HexdHWuevRI13uEmJKTZWWaC343YuPRA=;
-        b=KHVAavZHepwutZktfovI3JgpbX29lOmKpvloFdbWaivhcn3QToy+UGI5IZPihRNSQw
-         a20UCeHQAe4AAmhlF0THPLZn6O+vMnaBrnmS5T9829MgZSBddFKRvgVGzaR5I6jefEM+
-         Icv7hu3176UlpkJrGbf1lJZHfen7+NYMDoPOrjaTUnOL0asci2A/VECEzoHEeSQYctVQ
-         bTS3kyYRZ3+23SsrcfhXCGZuQoifki++mVhjzWJkIluMgWsDBBKt1ceh96nIvRBQjmr5
-         Y4OxdYCHFKyO5MGwguqdntd0KqZWQEy0OMrrGAH5zywJhoez/EKtBmhkfX8WPkR+grYZ
-         uehQ==
-X-Gm-Message-State: AOJu0YyAGVDilFUx+laLQn3C5EIntTM9E4ARjJYkCGH1+Kc+fXlUnMqx
-        Kq8HqNqSS4NUzY0d4eyHfes2AVzqPTzhKTqz4Zo=
-X-Google-Smtp-Source: AGHT+IGyOTmS47kqyS0agL6RbmqWZCvy5I956BNMw2QxRqanogavZ0IkZ+k04yOQL9p5FlVXRDWzTqsf7WEWzjk3lkE=
-X-Received: by 2002:a05:6512:2037:b0:4fd:da65:d10 with SMTP id
- s23-20020a056512203700b004fdda650d10mr390968lfs.36.1691526364831; Tue, 08 Aug
- 2023 13:26:04 -0700 (PDT)
+        Tue, 8 Aug 2023 17:14:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B66EF08;
+        Tue,  8 Aug 2023 13:25:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E447662972;
+        Tue,  8 Aug 2023 20:25:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 642B0C433C7;
+        Tue,  8 Aug 2023 20:25:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691526321;
+        bh=smwaBn/3bhNSBudLMySHNd7VdPh0ay51eRzjOUAiv8k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z7qPau380MtqBH1YfBjf3ydSe5ZPYOXHkvrPUe9NueiqGF06irfTF61HfBlWIgEFM
+         Xene2NE0cZsbfc2/THaiH2McN+fJdiUtfouEeeC+uTCqNKj3ibgNrxGiBbpzXM2Rfr
+         SLP2dNBoB4rAy2dAR+EjA+W5kuwIc3bsOHQmGjDMAjdbaal6lB4m2K1kA6RktTFbmO
+         02t7XsWWSbtTXvIUWrk8iMcnEOIvFO7Y/cWPTnAO+6lk64SAs11bpXJ/uRCtzNh6CR
+         cFThQj0MCTV2OyT9PlJbicNhDswQ0VbfX2XhKiU6rRGAMW/+MAkZniDHdnmuLuo+LK
+         255m/CZ2eUo6w==
+Date:   Tue, 8 Aug 2023 21:25:11 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v3 00/36] arm64/gcs: Provide support for GCS in userspace
+Message-ID: <f279ec25-e1c7-48e6-bd9d-5c753e829aad@sirena.org.uk>
+References: <20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org>
+ <20230801141319.GC26253@willie-the-truck>
+ <09b7a94d-cc88-4372-85de-52db26bc2daf@sirena.org.uk>
+ <20230808133857.GC2369@willie-the-truck>
 MIME-Version: 1.0
-References: <20230801191629.45942-1-jorge.lopez2@hp.com> <4ab55129-d35c-fea5-0c59-5183928d55d1@redhat.com>
-In-Reply-To: <4ab55129-d35c-fea5-0c59-5183928d55d1@redhat.com>
-From:   Jorge Lopez <jorgealtxwork@gmail.com>
-Date:   Tue, 8 Aug 2023 15:25:04 -0500
-Message-ID: <CAOOmCE_DGqUh3+8LmrX2_7eTeDG_7p7-JKN7Q2syvDQu60UWmQ@mail.gmail.com>
-Subject: Re: [PATCH] hp-bioscfg: Update string length calculation
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas@t-8ch.de, ilpo.jarvinen@linux.intel.com,
-        dan.carpenter@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2iuCE+Z3sT2tGztq"
+Content-Disposition: inline
+In-Reply-To: <20230808133857.GC2369@willie-the-truck>
+X-Cookie: You need not be present to win.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
 
-On Mon, Aug 7, 2023 at 6:28=E2=80=AFAM Hans de Goede <hdegoede@redhat.com> =
-wrote:
->
-> Hi Jorge,
->
-> On 8/1/23 21:16, Jorge Lopez wrote:
-> > Replace method how the string length is calculated.
-> > Removed unused variable 'size'
-> >
-> > Signed-off-by: Jorge Lopez <jorge.lopez2@hp.com>
->
-> While reviewing this I have noticed that the parsing of ORD_LIST_ELEMENTS
-> in hp_populate_ordered_list_elements_from_package() seems to be quite bug=
-gy:
->
-> 1. Normally str_value and value_len get set for string type package eleme=
-nts by:
->
->                 case ACPI_TYPE_STRING:
->                         if (elem !=3D PREREQUISITES && elem !=3D ORD_LIST=
-_ELEMENTS) {
->                                 ret =3D hp_convert_hexstr_to_str(order_ob=
-j[elem].string.pointer,
->                                                                order_obj[=
-elem].string.length,
->                                                                &str_value=
-, &value_len);
->                                 if (ret)
->                                         continue;
->                         }
->                         break;
->
-> But notice how the  hp_convert_hexstr_to_str() call gets stepped when
-> elem =3D=3D ORD_LIST_ELEMENTS .
->
-> Yes when next dealing with ORD_LIST_ELEMENTS the never updated str_value =
-and value_len
-> get used:
->
->                 switch (eloc) {
->                 ...
->                 case ORD_LIST_ELEMENTS:
->                         /*
->                          * Ordered list data is stored in hex and comma s=
-eparated format
->                          * Convert the data and split it to show each ele=
-ment
->                          */
->                         ret =3D hp_convert_hexstr_to_str(str_value, value=
-_len, &tmpstr, &tmp_len);
->                         if (ret)
->                                 goto exit_list;
->
-> So that does not seem right.
+--2iuCE+Z3sT2tGztq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I will investigate.
+On Tue, Aug 08, 2023 at 02:38:58PM +0100, Will Deacon wrote:
 
->
-> 2. ordered_list_data->elements[0] never gets filled when there actually i=
-s a comma in
->    the ordered-list, iow when there is more then 1 element:
->
->                         part_tmp =3D tmpstr;
->                         part =3D strsep(&part_tmp, COMMA_SEP);
->                         if (!part)
->                                 strscpy(ordered_list_data->elements[0],
->                                         tmpstr,
->                                         sizeof(ordered_list_data->element=
-s[0]));
->
->                         for (elem =3D 1; elem < MAX_ELEMENTS_SIZE && part=
-; elem++) {
->                                 strscpy(ordered_list_data->elements[elem]=
-,
->                                         part,
->                                         sizeof(ordered_list_data->element=
-s[elem]));
->                                 part =3D strsep(&part_tmp, SEMICOLON_SEP)=
-;
->                         }
->
-> Notice how the for starts at elem =3D 1, so if part is not NULL (and it i=
-s never NULL for the first call strsep will always return tmpstr) then orde=
-red_list_data->elements[0] never gets filled.
->
+> But seriously, I think the question is more about what this brings us
+> *on top of* SCS, since for the forseeable future folks that care about
+> this stuff (like Android) will be using SCS. GCS on its own doesn't make
+> sense to me, given the recompilation effort to remove SCS and the lack
+> of hardware, so then you have to look at what it brings in addition to
+> GCS and balance that against the performance cost.
 
-I will investigate and make the necessary corrections.
+> Given that, is anybody planning to ship a distribution with this enabled?
 
-> 3. ordered_list_data->elements_size is set but never validated. You shoul=
-d compare elem after the loop with ordered_list_data->elements_size and mak=
-e sure they match. IOW verify that 0-(ordered_list_data->elements_size-1) e=
-ntries of the ordered_list_data->elements[] array have been filled.
+I'm not sure that your assumption that the only people would would
+consider deploying this are those who have deployed SCS is a valid one,
+SCS users are definitely part of the mix but GCS is expected to be much
+more broadly applicable.  As you say SCS is very invasive, requires a
+rebuild of everything with different code generated and as Szabolcs
+outlined has ABI challenges for general distros.  Any code built (or
+JITed) with anything other than clang is going to require some explicit
+support to do SCS (eg, the kernel's SCS support does nothing for
+assembly code) and there's a bunch of runtime support.  It's very much a
+specialist feature, mainly practical in well controlled somewhat
+vertical systems - I've not seen any suggestion that general purpose
+distros are considering using it.
 
-ordered_list_data->elements_size is checked against MAX_ELEMENTS_SIZE
-and not against the number of elements in the array.  Initially, size
-value was reported (sysfs) but after a couple reviews, size was
-removed from being reported (sysfs).  size value will be determined by
-the application when it enumerates the values reported in elements.
+In contrast in the case of GCS one of the nice features is that for most
+code it's very much non-invasive, much less so than things like PAC/BTI
+and SCS, which means that the audience is much wider than it is for SCS
+- it's a *much* easier sell for general purpose distros to enable GCS
+than to enable SCS.  For the majority of programs all the support that
+is needed is in the kernel and libgcc/libc, there's no impact on the
+code generation.  There are no extra instructions in the normal flow
+which will impact systems without the feature, and there are no extra
+registers in use, so even if the binaries are run on a system without
+GCS or for some reason someone decides that it's best to turn the
+feature off on a system that is capable of using it the fact that it's
+just using the existing bl/ret pairs means that there is minimal
+overhead.  This all means that it's much more practical to deploy in
+general purpose distros.  On the other hand when active it affects all
+code, this improves coverage but the improved coverage can be a worry.
 
->
-> 4. For specific values of eloc the code expects the current order_obj[ele=
-m] to be either an integer or a string, but this is not validated. Please v=
-alidate that order_obj[elem].type matches with what is expected (string or =
-int) for the current value of eloc.
+I can see that systems that have gone through all the effort of enabling
+SCS might not rush to implement GCS, though there should be no harm in
+having the two features running side by side beyond the doubled memory
+requirements so you can at least have a transition plan (GCS does have
+some allowances which enable hardware to mitigate some of the memory
+bandwidth requirements at least).  You do still get the benefit of the
+additional hardware protections GCS offers, and the coverage of all
+branch and ret instructions will be of interest both for security and
+for unwinders.  It's definitely offers less of an incremental
+improvement on top of SCS than it is without SCS though.
 
-The purpose for 'eloc' is  to help skip reading values such
-ORD_LIST_ELEMENTS and PREREQUISITES when ORD_LIST_ELEMENTS and/or
-PREREQUISITES_SIZE values are zero.
-Normally, 'eloc' and 'elem' are the same.
+GCS and SCS are comparable features in terms of the protection they aim
+to add but their system integration impacts are different.
 
->
-> This all makes me wonder if this specific code-path has been tested ?  Pl=
-ease make sure to test this specific code-path.
->
-This code path was tested previously.  I will make sure the path is
-tested in deeper detail.
+> If not, why are we bothering? If so, how much of that distribution has
+> been brought up and how does the "dynamic linker or other startup code"
+> decide what to do?
 
+There is active interest in the x86 shadow stack support from distros,
+GCS is a lot earlier on in the process but isn't fundamentally different
+so it is expected that this will translate.  There is also a chicken and
+egg thing where upstream support gates a lot of people's interest, what
+people will consider carrying out of tree is different to what they'll
+enable.  Architecture specific feedback on the implementation can also
+be fed back into the still ongoing review of the ABI that is being
+established for x86, there will doubtless be pushback about variations
+between architectures from userspace people.
 
+The userspace decision about enablement will primarily be driven by an
+ELF marking which the dynamic linker looks at to determine if the
+binaries it is loading can support GCS, a later dlopen() can either
+refuse to load an additional library if the process currently has GCS
+enabled, ignore the issue and hope things work out (there's a good
+chance they will but obviously that's not safe) or (more complicatedly)
+go round all the threads and disable GCS before proceeding.  The main
+reason any sort of rebuild is required for most code is to add the ELF
+marking, there will be a compiler option to select it.  Static binaries
+should know if everything linked into them is GCS compatible and enable
+GCS if appropriate in their startup code.
 
-> Regards,
->
-> Hans
->
->
->
->
->
-> >
-> > ---
-> > Based on the latest platform-drivers-x86.git/for-next
-> > ---
-> >  drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c=
- b/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
-> > index cffc1c9ba3e7..b19644ed12e0 100644
-> > --- a/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
-> > +++ b/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
-> > @@ -258,13 +258,11 @@ static int hp_populate_ordered_list_elements_from=
-_package(union acpi_object *ord
-> >                               eloc++;
-> >                       break;
-> >               case ORD_LIST_ELEMENTS:
-> > -                     size =3D ordered_list_data->elements_size;
-> > -
-> >                       /*
-> >                        * Ordered list data is stored in hex and comma s=
-eparated format
-> >                        * Convert the data and split it to show each ele=
-ment
-> >                        */
-> > -                     ret =3D hp_convert_hexstr_to_str(str_value, value=
-_len, &tmpstr, &tmp_len);
-> > +                     ret =3D hp_convert_hexstr_to_str(str_value, strle=
-n(str_value), &tmpstr, &tmp_len);
-> >                       if (ret)
-> >                               goto exit_list;
-> >
-> > @@ -279,7 +277,7 @@ static int hp_populate_ordered_list_elements_from_p=
-ackage(union acpi_object *ord
-> >                               strscpy(ordered_list_data->elements[olist=
-_elem],
-> >                                       part,
-> >                                       sizeof(ordered_list_data->element=
-s[olist_elem]));
-> > -                             part =3D strsep(&part_tmp, SEMICOLON_SEP)=
-;
-> > +                             part =3D strsep(&part_tmp, COMMA_SEP);
-> >                       }
-> >
-> >                       kfree(str_value);
->
+The majority of the full distro work at this point is on the x86 side
+given the hardware availability, we are looking at that within Arm of
+course.  I'm not aware of any huge blockers we have encountered thus
+far.
+
+It is fair to say that there's less active interest on the arm64 side
+since as you say the feature is quite a way off making it's way into
+hardware, though there are also long lead times on getting the full
+software stack to end users and kernel support becomes a blocker for
+the userspace stack.
+
+> After the mess we had with BTI and mprotect(), I'm hesitant to merge
+> features like this without knowing that the ABI can stand real code.
+
+The equivalent x86 feature is in current hardware[1], there has been
+some distro work (I believe one of the issues x86 has had is coping with
+a distro which shipped an early out of tree ABI, that experience has
+informed the current ABI which as the cover letter says we are following
+closely).  AIUI the biggest blocker on userspace work for x86 right now
+is landing the kernel side of things so that everyone else has a stable
+ABI to work from and don't need to carry out of tree patches, I've heard
+frustration expressed at the deployment being held up.  IIRC Fedora were
+on the leading edge in terms of active interest, they tend to be given
+that they're one of the most quickly iterating distros. =20
+
+This definitely does rely fairly heavily on the x86 experience for
+confidence in the ABI, and to be honest one of the big unknowns at this
+point is if you or Catalin will have opinions on how things are being
+done.
+
+[1] https://edc.intel.com/content/www/us/en/design/ipla/software-developmen=
+t-platforms/client/platforms/alder-lake-desktop/12th-generation-intel-core-=
+processors-datasheet-volume-1-of-2/009/shadow-stack/
+
+--2iuCE+Z3sT2tGztq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTSpKYACgkQJNaLcl1U
+h9Bm7wf/TWEY6FZexKo9ZslcLVc8FfZTGr2JbqBTjc0hIyi6JIvIUPaBtV8B4GKh
+aJOvjQlkWGfIrVsezaRToCVgoxhsnRmsKCDr1gABiWQuJDCL5mLR1BRMF6XfJC+g
+FANZz3+vabPD5HlypgtGUsdgtm1d3vPwRnOcI1XK5ARt53I+3Wbd1Gc/Kzsv8qz2
+KmEbIIR0tk/KpUJwAokBaHnsH6pnZKxUDy0Ei3i9zFBtcRjqWOJSgjJ0fKKscJQa
+uIKhZ7no7GVtdNnfO1XBllyefendmwyKNc9QdFsNgE3WgXy2iiaMbWmp4JJU6GHr
+BamhHq9n+PvDZVvrISCsTZxmnjcGVg==
+=YAxR
+-----END PGP SIGNATURE-----
+
+--2iuCE+Z3sT2tGztq--
