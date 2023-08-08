@@ -2,94 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82702774720
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B094774738
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234967AbjHHTJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:09:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52574 "EHLO
+        id S233624AbjHHTLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231851AbjHHTJY (ORCPT
+        with ESMTP id S230397AbjHHTL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:09:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47B12FA38;
-        Tue,  8 Aug 2023 09:31:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 97B7D62424;
-        Tue,  8 Aug 2023 08:13:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DAD3C433C8;
-        Tue,  8 Aug 2023 08:13:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691482389;
-        bh=y9XQVThjRdhnGyExHEkcXNTzSHvlo6PxeDKLk8WgPzg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DIPAb16r3NVZMlvqlGWqbF1dusRG9lwMbTXvdQAlXGLm//GPyvpBG25v/bx6MbmcA
-         EB5+aUg7di9BV2xC9Dt5ZrkA54aFLOU8M9G27QaQ9QI9ZIDGtJoJqUuCJdxkSSi3gG
-         s09IBVgT0lEGBvOoHK138BVBgFJM0d6oKcgCBhER3bMFtypKwUDC836pyCY7vr0r98
-         2sZ0YgYqIRHNA5+rib+iM3VPLZSKt4RdLTP4DByxgxGOzrDR5/OLxeJgIDNiI0+92h
-         aIE1GtTc6G5DinMaG64cC6Kp4lHyTU27k+eVHLJXMV3eLKo+O/MQjrqW++MWil8h+z
-         c1uGwyLLBIhZQ==
-Date:   Tue, 8 Aug 2023 10:13:04 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oleg@redhat.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] fs: use __fput_sync in close(2)
-Message-ID: <20230808-eingaben-lumpen-e3d227386e23@brauner>
-References: <20230806230627.1394689-1-mjguzik@gmail.com>
- <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
+        Tue, 8 Aug 2023 15:11:29 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD90D31018
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:33:10 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6bb07d274feso4825148a34.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691512364; x=1692117164;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GFaCPHe174CVGEE8zH9Ahbm1V8fDZn/hHt9ByI29bII=;
+        b=xpxuUzoNiwS4nE334fmSiwp7P75jSG9xDNu5MfxY+1Q5ohkvkrOYHvj5b0SsKqYSuo
+         lg25mZqZB8X3BZ6CZfz0AWg0Oi/F6VQj9n9Dzf8ILOgTiKmaxXdia19fQuFAy+LoBxLF
+         OCO9aEvfSPY2+lhkrBkv9+TzcSIFo6vb44jB2W1wH3sInPbxEznQ0KqZKqaD3NEwrHej
+         aV+0fIwg6SiNqqstHNtItYIi8NL2WF/K0rwvZfGg9Xy8e1NAi04zqKhbKk82R/pvjrOe
+         GBXSNdy1himxSJCBE1fGlr6ACQNitZI0NHHqMcX1YzfCBf1Hxb5GgfUfEiPYBdwacWBQ
+         866g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691512364; x=1692117164;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GFaCPHe174CVGEE8zH9Ahbm1V8fDZn/hHt9ByI29bII=;
+        b=BaeEDJJAT3Wdn0m0jaxMnjjB3oxRN6qf+LqRdF81UicNsu8ckrjye3hJ3s6732U3wk
+         VbRpC5xHi0pwzTOrh5OIZgC1Gj4BnvdDx7QrXlMGTAUt5scqIkAyLu/1GRlLv4GKD5R/
+         OJ9jz527sB52H/WVwI0AsoxLaLlkRh/uum64/qPWl6zbYRuiwu58icovM1aH92R14YBY
+         cBKomORcxTbYpyuNhSFNgRfJWtCxNCuqLRck39b17k3XuCLtKRpf0e0B02+o1XiaenBT
+         9abBZv6LqUqaCTdUgiP/8YOea0FgcSE0lSvNPqLpp8IE2oRFIgRojUi/TIi4gRxRP2iC
+         7Mgg==
+X-Gm-Message-State: AOJu0YyXbrzFNvL9XRLH2tYIdsg+/XNyDNqUzjG8DduHjGmysEHbgEtL
+        QGH1MAWX/uNs+U8QFWVNVaZ2hzBoPeWVxvL983wNVLOlTFMwBPyq7jR1Kw==
+X-Google-Smtp-Source: AGHT+IHJBjMCQdov9YPeDDL3pj/hzheBYljv6pXkkWjpc+VqMX3zeR6MAG9XffwSYmTvNmQRvGVPCfEVk5oblz/k9hQ=
+X-Received: by 2002:a67:d095:0:b0:444:e9a0:13f7 with SMTP id
+ s21-20020a67d095000000b00444e9a013f7mr5544633vsi.5.1691482400513; Tue, 08 Aug
+ 2023 01:13:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230807193102.6374-1-brgl@bgdev.pl> <54421791-75fa-4ed3-8432-e21184556cde@lunn.ch>
+In-Reply-To: <54421791-75fa-4ed3-8432-e21184556cde@lunn.ch>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 8 Aug 2023 10:13:09 +0200
+Message-ID: <CAMRc=Mc6COaxM6GExHF2M+=v2TBpz87RciAv=9kHr41HkjQhCg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] net: stmmac: allow sharing MDIO lines
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Are there any real world gains if close(2) is the only place this
-> optimization can be applied?  Is the added maintenance burden worth the
-> speed up?
+On Mon, Aug 7, 2023 at 9:50=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Mon, Aug 07, 2023 at 09:31:00PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Two MACs may share MDIO lines to the PHYs. Let's allow that in the
+> > stmmac driver by providing a new device-tree property allowing one MAC
+> > node to reference the MDIO bus defined on a second MAC node.
+>
+> I don't understand why this is needed. phy-handle can point to a phy
+> on any MDIO bus. So it is no problem for one MAC to point to the other
+> MACs MDIO bus as is.
+>
+> You do sometimes get into ordering problems, especially if MAC0 is
+> pointing to a PHY on MAC1 MDIO bus. But MAC0 should get a
+> -EPROBE_DEFER, MAC1 then probes, creating its MDIO bus and the two
+> PHYs on it, and then later MAC0 is probes again and is successful.
+>
+>      Andrew
 
-Tbh, none of this patch makes me exited.
+Ok so upon some further investigation, the actual culprit is in stmmac
+platform code - it always tries to register an MDIO bus - independent
+of whether there is an actual mdio child node - unless the MAC is
+marked explicitly as having a fixed-link.
 
-It adds two new exports of filp_close_sync() and close_fd_sync() without
-any users. That's not something we do and we also shouldn't encourage
-random drivers to switch to sync behavior.
+When I fixed that, MAC1's probe is correctly deferred until MAC0 has
+created the MDIO bus.
 
-That rseq thing is completely orthogonal and maybe that needs to be
-fixed and you can go and convince the glibc people to do it.
+Even so, isn't it useful to actually reference the shared MDIO bus in some =
+way?
 
-And making filp_close() fully sync again is also really not great.
-Simplicity wins out and if all codepaths share the same behavior we're
-better off then having parts use task work and other parts just not.
+If the schematics look something like this:
 
-Yes, we just did re-added the f_pos optimization because it may have had
-an impact. And that makes more sense because that was something we had
-changed just a few days/weeks before.
+--------           -------
+| MAC0 |--MDIO-----| PHY |
+-------- |     |   -------
+         |     |
+-------- |     |   -------
+| MAC1 |--     ----| PHY |
+--------           -------
 
-But this is over 10 year old behavior and this micro benchmarking isn't
-a strong selling point imho. We could make close(2) go sync, sure. But
-I'm skeptical even about this without real-world data or from a proper
-testsuite.
+Then it would make sense to model it on the device tree?
 
-(There's also a stray sysctl_fput_sync there which is scary to think that
-we'd ever allow a sysctl that allows userspace to control how we close
-fds.)
+Anyway, this can be discussed later, I will drop this for now and send
+a fix for stmmac mdio code instead to get this upstream.
 
-> Unless you can find some real world performance gains this looks like
-> a bad idea.
-
-I agree.
+Bart
