@@ -2,152 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EED774009
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B30773EDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233725AbjHHQ6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54882 "EHLO
+        id S233045AbjHHQh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233712AbjHHQ5n (ORCPT
+        with ESMTP id S233295AbjHHQhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:57:43 -0400
-Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2049.outbound.protection.outlook.com [40.107.12.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728724487;
-        Tue,  8 Aug 2023 08:41:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=So3h4Cbm1t3xR8OVeMaOcRuENQ15ov21BdSlS0XnZCvafwYCv7q0zZLMKr7URauqDSBVLlJ5zeH5kaOy6AGH0fnC/8Xb4LKA4+0fST9Mpqfl7Tz0Bx7njKX42UTh5rIcFpEr8JJQd3D4SJMuoVgkjW62sTKu4IhY9IioIvxFJczWoBD//aeNHl0zH66z4lH2MkJ8cYFrXJLvVQrQTcRVWki1H8gHD3tP9GhDBvBoAyl4mlPgc864iPiRvmwbXiep5qgF02tIN3OGS1SOzNqV2Exw8UAcO8UHUnhveoS5200bol6UVioWCQI7KZlYiMvyFkV+u97EERveUs20rhwZkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ATg+SZLlfBEpiTAS0IMVsxiLhcLARH5H5wo5nfSJ/Io=;
- b=EM+vJKA4g7Ca+xesIrdh62pQcjP94F2k59C+XCD5A7qL7QUuZLWAW4DgSMfc6IqpMS76n4SQVPbHq45RCELTfxGyEBvJS3nFwJNMQ981Xoukpw6U1zOHLfRxCxIxBQtpN4GJ11wJFO2GH4/766/0zoEDdMJmrK9vKiN98RrQfYgf73QTigrphBbdgRin8jZY4jW6bLNfzDW/iZhhf3ueMFKUFtcmWVR8uaOTsob8GFmp7tmfzH8SaLwAuKuDNbGOBEW0UfdfeKfEobzGZ616dpmzeR6UGRqgn9MJRSMDnzGToacUBeh7U38uuvyFalbZc0zLr0Wk5U/7eVRIspM85w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ATg+SZLlfBEpiTAS0IMVsxiLhcLARH5H5wo5nfSJ/Io=;
- b=lCbybCsbnxi3kDQTbzTLt0Ha6AowWSzTbkf+C0eCdiGgf0xZDSaqKPdfGmzUigpUNq/aWs01VINwra6SSAoD7TT0nvio+eM6+VB4plfJDRDq475wv30cJo84r+SF6adclAVhQLefKH54Ztla2uttqzw6Pr2YcgQ2f78Lcn+xaDU0/OZoAAde7WAyowixFRLFpUkvbTJlTlIN1ZBlCIWYRAa9KVcpfKVNKbgWpUUd3lJNDmcvAYVgDG7aCPrmk0BSqAhvDlVauxMTMdCWe/WQ/p2nATjP8MRbtrkCjIBucX5/So+y/SjZtT1gaNOtjHkMAPyuuYTLHj7pbOS8rEzg2Q==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PAZP264MB2415.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1f1::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Tue, 8 Aug
- 2023 08:17:02 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::2820:d3a6:1cdf:c60e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::2820:d3a6:1cdf:c60e%6]) with mapi id 15.20.6652.026; Tue, 8 Aug 2023
- 08:17:01 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 25/28] MAINTAINERS: Add the Lantiq PEF2256 driver entry
-Thread-Topic: [PATCH v2 25/28] MAINTAINERS: Add the Lantiq PEF2256 driver
- entry
-Thread-Index: AQHZv9Ju/UNBTldwcEK857iq3KR/uq/gIcSA
-Date:   Tue, 8 Aug 2023 08:17:01 +0000
-Message-ID: <5aea6971-1ada-aa16-91b3-843fe258b6d6@csgroup.eu>
-References: <20230726150225.483464-1-herve.codina@bootlin.com>
- <20230726150225.483464-26-herve.codina@bootlin.com>
-In-Reply-To: <20230726150225.483464-26-herve.codina@bootlin.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PAZP264MB2415:EE_
-x-ms-office365-filtering-correlation-id: b21c0e04-0ff2-47f1-0831-08db97e7d7be
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: S3Vv5IRTSsrnI09zcAurFZ9hz3t9tSUudfODp1OH0bwyONkvviFG5SvjEfNtd3T1YvovY+0KiWopynff7Nd23Qx4evDBV3pzw8meD2hmLpErf5mAP8KxcLZmQKBOtKy7Q5W2ArsCQS46GaEMrpZWOJo1nu2a9RDxzeBXjs7yz809tmsa8AByeIcipHMgYuBuvytYTrikqGiZ6f8/VWZ0/KJCWF/t8C62t1yEFET5/2Nt4OoKXUjsZbEGWBgMi6dVjpUHnBAIlSu4pa9aCxDrfuEXRQFqedRxEflLbiKe1QtyJzWUliSeENXYe/+Rtl36SpXAo9US8i+TPW5h2JVVbYnTs5FPASuPd6/+F3OARa84WzfAZnx7D8FSpBf5gC2WBRY2L+Fm3BLbh8FkVaf1MwQj2cxnWqiMPWS87Cug0ptdE4XfXHe3w+P3gGY+4KmFTzp04MN9vVFirauyvgSHGYOA3NCZj7PGdhlf8aSs2KCcu42MFfEgrwvspuwMiNs3GTqXawaOhSR9u3tskDeVMCo8c9+pebNE2Ku8hOrPOPRzUt6C/CZgYTAO9HlzGjrbqvU0kdZDs7VT71JfkxNTltuZq6TIdBMb6ZPDXm+A3NnYlrC6I+uRxwfmCXgG7Hk3GeBp3nC4ZTWLWMT3JNHXQdzillZ0Pm0hYY79t3/Lk3mt2wEGl1Zmm9nVo3IfiNa2zPD2fVNOA4kk0ODP4Uds+n/ZTKdF2R4P/QKeV9HWfc4VhIX3qbFjqMqzzsHGAcXUdP6rJZNJwW2Ux7ZOLIlmYw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(136003)(346002)(396003)(39850400004)(366004)(376002)(186006)(1800799003)(90021799007)(90011799007)(451199021)(2616005)(26005)(6506007)(6512007)(71200400001)(6486002)(31686004)(122000001)(921005)(478600001)(110136005)(54906003)(38100700002)(36756003)(66476007)(66556008)(66946007)(91956017)(66446008)(76116006)(64756008)(4326008)(316002)(41300700001)(8936002)(8676002)(5660300002)(38070700005)(7406005)(44832011)(7416002)(4744005)(2906002)(31696002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YXYrOG1mb1ZwN0pOWkVHZ29ZcUlOZ25ZWGZibzNUcElxbGMxNXo2MFVKYytj?=
- =?utf-8?B?U0xNMk91MFNjV3R6aHducCtVY1o0aTRySFFMQ3FWa1ZoNlQwSzVaMVpmbXEy?=
- =?utf-8?B?OS9lVUVmWEtUSXZWZk05L09mZGIra3NJam1FTG1CdlczY1NObU5ISk1yem9G?=
- =?utf-8?B?WlFZS2VjNEo5cWpLS09sNFJsU2szcmZydUtid1lCRXlncGcxbkN4SElPM3Z3?=
- =?utf-8?B?Q1h4SGxjNk9Kb1lFUnlkTEU0VHFUQ2lpWHlzQWszeHBxVG1aU0tGQjZLTmg3?=
- =?utf-8?B?V0JvU3grUm9XemkzMGdBcmVxK1BVbEREd2RJZnFQSHFtTW5PQTdtd3RXVklC?=
- =?utf-8?B?RGxiVjFxYlNwRzg1NGFoVDM0VXIyNXZuSnc5L3V3QUtVdi9qWjF5MDZTZVpN?=
- =?utf-8?B?c21tdmJ1L21jZGlEZDk4Vm93aXNiclViaGMzZ3RaVHNPdkNZT0FjaW1ub3Fr?=
- =?utf-8?B?dHBTaklDNm1FZ2FhMFlTR2xBdGhyeFRsR1ZKMzNBbTh3U0U1alE4Nzk3cVpK?=
- =?utf-8?B?bFk3YTB4bmN2K3VWaDliYUd3NTFQemdYajhOS3BNQTZGQUI2RWc0eWtpWmpG?=
- =?utf-8?B?OTV1dkdwSDhOUzBjbFlacnJpZTlHTm1yNVY1c2RTdGluaStvZy9odmV6bnpl?=
- =?utf-8?B?OGUzbHdSTFRjYkpaYVF3eFpRbXlhcFdsQ0FvMDc5c2V2cnBVV2o2a1cxR2Fl?=
- =?utf-8?B?MTh3NXlwaXdldWwzSU16VjhRYUwxcUdnS0lMZFVaVjh3TUVMc1ptcDJPWVVm?=
- =?utf-8?B?Z3lQc3RjQ1R3anErRjZXK3Awb01QbmRqdjBoTU1QREQ2cGQ2TzRmM1lLQTU0?=
- =?utf-8?B?Z1NhWk1hNGZ1c2MzV05KNGdsR0VXOWJWVi90c1VyWjlrUjMraWhQRUJGT2kw?=
- =?utf-8?B?U2k4d0x3Q1F2NTRoS3R4V0Z6UFB3Ny91NHh3Wis1YzB4VFA3SE1IaUM5N0l3?=
- =?utf-8?B?cUMzY2t6dTNlSkZPalpJV1JVbytqVVd6QTdBV0VGSTlQNmpaRjRpUGRRMEhO?=
- =?utf-8?B?dUVxT0FBdkpLczkyQjBlSVRDQWgxVXlSSGlJTXlUdVFiMkZUaU5NMHlxM3Jr?=
- =?utf-8?B?VXpNWndNQmQ4a1I3Y3hJVWZ5MlBqQ0YwTWtSWUhMVTNGUzF3eHVmbkdoNHNn?=
- =?utf-8?B?c3c1OW5IKzRMcXJIb25LR0YvSXNFWmxQVW1Jcm1nVjJ6SHl0WldrUjRGTkRC?=
- =?utf-8?B?TGZVbFFKQWNCakN6N2kzdlR3N3R6bEd3RTcxbCt0RFduL2p1UTlXd1ZHN29n?=
- =?utf-8?B?akpCdHFlUkl6YzhuUUJUUlovaFIzUmJDMGw3TjJnMFA1ZEVLTGs5NlVHaVhV?=
- =?utf-8?B?Tlc5VG1jSERIVHZWcmF4d2dWeWFuYlBSMjBWOXgyY05BSzF1bUNaWVBlNWw5?=
- =?utf-8?B?cmUwd0JEaDBEQ3hHbDlKL2JOdjBWRlcwdGtkeERtZ3dyOVg2SE01MXRqUmJp?=
- =?utf-8?B?YzZTaTZBVWI0TktSTEMwaFB4dnUrZDI2aVRpK1E0WXpXVXBMUkowSmNxMXds?=
- =?utf-8?B?aHQvTE9mZUJNL3hUSTM4cTU4Y3VYbVNFR0p3aDlLd2t1UERzSGFhZStvUlhE?=
- =?utf-8?B?TDErQ1VseWwxS2RBYU9ucDl6TkRaQ09PaGtoWXd6TlQrTFh6R3lHWFpvZUdx?=
- =?utf-8?B?ckdCYks3YWF4eXpJUkx5cXBCc0ZuY3ROdHNkRGFvZzZxMEMwVnE2Sll5ZW4y?=
- =?utf-8?B?NGR4VWdGT0haNGdIbUdaTHNzdnJBM2tNMEh3ZFFiSXFLWkI4ZEpGYlFmem56?=
- =?utf-8?B?NTZLYit0UlFnRXVjRzhnZTh4aXZzZlFZOFRkYnFJY3F4TFFDNzVndVRxL3Fh?=
- =?utf-8?B?K2l6QmJlZlpYU2RkbktxRWRQcUR1MmdkTnNiemZZTUpGMHRBMGoyMjZFcUsx?=
- =?utf-8?B?TnJTL3p0OHR2MGl0QW4xcE5ja3Q2YzFYU2w5anczOTdpb0Z3UDNwSkpIN3pp?=
- =?utf-8?B?Rkd1c2hJdVBKRUVRRmljYXdqRFM5Njg1Uk05dHZWYTA5MTZkQWlUNXdKUFho?=
- =?utf-8?B?N2lRenhWdmRWdEhSQjlPY3BNaVJOZk1hbFNkWExVYXloL3J6NlkvQzVvTElm?=
- =?utf-8?B?TmpxejBYTVpWRm0ycDNGY0w3aWN4Sm5pZjlGRlJIMFNjajgyOWkwbWphYTNo?=
- =?utf-8?Q?36MWc/GSci/Tgo0GD9F8eIISY?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <EFD78C4DC505954A9FE35BB820042761@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Tue, 8 Aug 2023 12:37:13 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D9447F5;
+        Tue,  8 Aug 2023 08:53:21 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-267fc1d776eso3255192a91.2;
+        Tue, 08 Aug 2023 08:53:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691509999; x=1692114799;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hc7u3pVQBq46Mma3c41IRkv2aI1kzf2Sp7UqgYywek0=;
+        b=ShqHbumPVyvR7hMFmmR8pLeGldIVcepHVR/9kknDYTa4igimG/C/EulormMNMEZ5YI
+         FBq9fuODGvXdsSIYR4mcRAujDGkeJSKEErKpZrkR3fStNgX5c3h31De+knd5pNNd2fmj
+         7Q4QCat/8h8aN1l5rtVYCMUoz5+aYYTkkmjJRs6DxMybPUo2XWdH5kHgUOXOrxu7eOnl
+         pRJEKewvS195qW8N+YkKhkdnnC6pgfVzW73OHod2l/PTLV30+mwmDkY2SvvU+XoIoDg1
+         QzxuD0suwwLM5B275wdse1eXXXt7y/3G5p3SC44aNPMeKVUhDIIkCAXz0NBK0nRiHWn5
+         oJWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691509999; x=1692114799;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Hc7u3pVQBq46Mma3c41IRkv2aI1kzf2Sp7UqgYywek0=;
+        b=ecs55SbrUho1VAzh1rvyhE+cPBJ9VewbJfxA1A6Zed4UIfkfxP+le8lx0bg6BGUcDM
+         HDH3Ci+ERH4mlCNX0QXL8ti32bx99+CLwlZU7gt2PKqQcaL5syvXDwYJQjyVhMYcMDii
+         AUHNigQyYk1qQ77pS5YDs9XXkhnDAZPC1gJ2N8oL5rAaZb/dLI2yXFNlA380t9tG5PQw
+         X4Omns2J0vtAaqJqk0inVSF940EIEyFJzilxGR69PFx5j/JmeAvpyjH1cSeJUsWMqMa1
+         phrmSponvK+TolmD1ndrIVMEaa7xqdp1fP83LG+JCvJZGXPxl5HfJnZUFUNHnDRdkNV8
+         XkcQ==
+X-Gm-Message-State: AOJu0YxXrV5sh4P6OfLeHuZ3pzLgOAJXS77PXxsPCSY+ATTre3uhEyC2
+        oxU1LuYGiTZkVo5mvQNcYoE/TIruc3QWn6s9f+kq9yWth2U=
+X-Google-Smtp-Source: AGHT+IEJ1AQvyHuiu0zGUNSGA8g43uy6P+N5S7w+frRGs89r74VrtsPl6b414NNq+Y6F9xpTgBP+L1f9pk+y28IRee4=
+X-Received: by 2002:a4a:9208:0:b0:56c:e554:d7e6 with SMTP id
+ f8-20020a4a9208000000b0056ce554d7e6mr10200063ooh.3.1691483011514; Tue, 08 Aug
+ 2023 01:23:31 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: b21c0e04-0ff2-47f1-0831-08db97e7d7be
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Aug 2023 08:17:01.5661
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XXNXglXVkTk4SGwfrbxXeNsUBfnF/vHDhFrg/9FxGjiP4p+7fvNx3Jb1nierCJXvlOIMz7D5RxBMvKFNGGAQpPVEcBDpHCHveXovw0EN+Z4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAZP264MB2415
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+Received: by 2002:a8a:696:0:b0:4f0:1250:dd51 with HTTP; Tue, 8 Aug 2023
+ 01:23:30 -0700 (PDT)
+In-Reply-To: <20230808-eingaben-lumpen-e3d227386e23@brauner>
+References: <20230806230627.1394689-1-mjguzik@gmail.com> <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
+ <20230808-eingaben-lumpen-e3d227386e23@brauner>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Tue, 8 Aug 2023 10:23:30 +0200
+Message-ID: <CAGudoHF=cEvXy3v96dN_ruXHnPv33BA6fA+dCWCm-9L3xgMPNQ@mail.gmail.com>
+Subject: Re: [PATCH] fs: use __fput_sync in close(2)
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oleg@redhat.com,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -155,22 +73,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCkxlIDI2LzA3LzIwMjMgw6AgMTc6MDIsIEhlcnZlIENvZGluYSBhIMOpY3JpdMKgOg0KPiBB
-ZnRlciBjb250cmlidXRpbmcgdGhlIGRyaXZlciwgYWRkIG15c2VsZiBhcyB0aGUgbWFpbnRhaW5l
-ciBmb3IgdGhlDQo+IExhbnRpcSBQRUYyMjU2IGRyaXZlci4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6
-IEhlcnZlIENvZGluYSA8aGVydmUuY29kaW5hQGJvb3RsaW4uY29tPg0KDQpSZXZpZXdlZC1ieTog
-Q2hyaXN0b3BoZSBMZXJveSA8Y2hyaXN0b3BoZS5sZXJveUBjc2dyb3VwLmV1Pg0KDQo+IC0tLQ0K
-PiAgIE1BSU5UQUlORVJTIHwgOSArKysrKysrKysNCj4gICAxIGZpbGUgY2hhbmdlZCwgOSBpbnNl
-cnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvTUFJTlRBSU5FUlMgYi9NQUlOVEFJTkVSUw0K
-PiBpbmRleCAxNDA0MWQ5MGY5YzguLjA3YTdkOWZjYTNjNCAxMDA2NDQNCj4gLS0tIGEvTUFJTlRB
-SU5FUlMNCj4gKysrIGIvTUFJTlRBSU5FUlMNCj4gQEAgLTExNzc2LDYgKzExNzc2LDE1IEBAIFM6
-CU1haW50YWluZWQNCj4gICBGOglhcmNoL21pcHMvbGFudGlxDQo+ICAgRjoJZHJpdmVycy9zb2Mv
-bGFudGlxDQo+ICAgDQo+ICtMQU5USVEgUEVGMjI1NiBEUklWRVINCj4gK006CUhlcnZlIENvZGlu
-YSA8aGVydmUuY29kaW5hQGJvb3RsaW4uY29tPg0KPiArUzoJTWFpbnRhaW5lZA0KPiArRjoJRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC9sYW50aXEscGVmMjI1Ni55YW1sDQo+
-ICtGOglkcml2ZXJzL25ldC93YW4vZnJhbWVyL3BlZjIyNTYvDQo+ICtGOglkcml2ZXJzL3BpbmN0
-cmwvcGluY3RybC1wZWYyMjU2LXJlZ3MuaA0KPiArRjoJZHJpdmVycy9waW5jdHJsL3BpbmN0cmwt
-cGVmMjI1Ni5jDQo+ICtGOglpbmNsdWRlL2xpbnV4L2ZyYW1lci9wZWYyMjU2LmgNCj4gKw0KPiAg
-IExBU0kgNTNjNzAwIGRyaXZlciBmb3IgUEFSSVNDDQo+ICAgTToJIkphbWVzIEUuSi4gQm90dG9t
-bGV5IiA8SmFtZXMuQm90dG9tbGV5QEhhbnNlblBhcnRuZXJzaGlwLmNvbT4NCj4gICBMOglsaW51
-eC1zY3NpQHZnZXIua2VybmVsLm9yZw0K
+On 8/8/23, Christian Brauner <brauner@kernel.org> wrote:
+> It adds two new exports of filp_close_sync() and close_fd_sync() without
+> any users. That's not something we do and we also shouldn't encourage
+> random drivers to switch to sync behavior.
+>
+
+They don't need to be exported for the patch to work.
+
+> That rseq thing is completely orthogonal and maybe that needs to be
+> fixed and you can go and convince the glibc people to do it.
+>
+
+This is not a glibc problem, but rseq problem -- it should not be
+lumped into any case which uses task_work_add.
+
+> And making filp_close() fully sync again is also really not great.
+
+The patch is not doing it.
+
+> Simplicity wins out and if all codepaths share the same behavior we're
+> better off then having parts use task work and other parts just not.
+>
+
+The difference is not particularly complicated.
+
+> Yes, we just did re-added the f_pos optimization because it may have had
+> an impact. And that makes more sense because that was something we had
+> changed just a few days/weeks before.
+>
+
+I don't think perf tax on something becomes more sensible the longer
+it is there.
+
+> But this is over 10 year old behavior and this micro benchmarking isn't
+> a strong selling point imho. We could make close(2) go sync, sure. But
+> I'm skeptical even about this without real-world data or from a proper
+> testsuite.
+>
+
+I responded to this in my mail to Eric.
+
+> (There's also a stray sysctl_fput_sync there which is scary to think that
+> we'd ever allow a sysctl that allows userspace to control how we close
+> fds.)
+>
+
+This is a leftover from my tests -- I added a runtime switch so can I
+flip back and forth, most definitely not something I would expect to
+be shipped.
+
+-- 
+Mateusz Guzik <mjguzik gmail.com>
