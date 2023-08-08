@@ -2,399 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C6777418E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD5F7740B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234520AbjHHRXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56758 "EHLO
+        id S234056AbjHHRI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbjHHRXS (ORCPT
+        with ESMTP id S234214AbjHHRH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:23:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D577D786
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:09:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691510922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aVuCFjdJcVT8JMbGrbvzk+njXdiWTuw1wj4t/nxixDc=;
-        b=FvkAPhiRI1hBZmIynKhGZUcIvaTfJ6ag7cWytZ5WXPwoHyXFpnB2e8IStNt5t9kjreeeYi
-        JmG6zzChJo18qvhTUJkO8oxffr3N51zbCiVSwuaEN/0R3yPcseDdMA5cvt6Tkl++I4LVIX
-        bQC1tjYsWr5SDz4JUClQEVphjhytQA0=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-442-cLMNZ69JN1-c1tSadmFgEQ-1; Tue, 08 Aug 2023 08:06:02 -0400
-X-MC-Unique: cLMNZ69JN1-c1tSadmFgEQ-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4fe0e1dfdbaso5469374e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 05:06:01 -0700 (PDT)
+        Tue, 8 Aug 2023 13:07:29 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0620E2D57
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:03:06 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so865224366b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:03:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691510558; x=1692115358;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6VxlsPWdBTPAUvYb7Kun1tKN0ClHERPlCGEFAPO7bek=;
+        b=ZqvE3lLhESTBhGm+jVDTnEgTEIX+EDZld+hz0ehTlRbQYZcJ5shcjcEC6h6IImHmts
+         D6U5FOHgDGjVkXxJ57QJYGP36rbtkR7yF2JSTo7OGximvwW7TiuZcWsJHr0yq4mbhmaK
+         i/aJejHxo6NBiP3DGiAGJa1G1C8aoYwA3B7SUWm8V3vyNbiF8B553yjK6YwyUh409Bdq
+         jVPdwH+bFMCHVzaadAFklJhfrokYqBxaUP+IMApnRxwqBCRa2DjTqWy7QLOO24N8IjTH
+         T6WZn1vsNfDjP+gr/c3i25m4C+FrHX7ivu3nYRYkrpy4s4dQP39345bpzbASvtD0tj14
+         mv7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691496360; x=1692101160;
+        d=1e100.net; s=20221208; t=1691510558; x=1692115358;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aVuCFjdJcVT8JMbGrbvzk+njXdiWTuw1wj4t/nxixDc=;
-        b=Q9oX1v6OH/xtoRkZqhEXrOd3BTf/o/JzxljgWYwHbTuQZDY+iu5NBC2jUAiuFpmWrP
-         eSBYH0X49LTOWLUPnX1qG1W0X0gnNRxbqc2d1d+B04jwvk/PY+F+FeBqqQn1B2oidPTJ
-         aIv6n9vOsEB78xX+MrIkNaBXptd2qsqLpw+dxNX1PzJajJq4LN+uZr84rZVNwlEwJqQl
-         RCAh2nYY9e7Ly0bs/9rbPUVcJ8zZg4OEWlm0QD2Dp9gcdpP04ajzZ0aG/m6aL03clVyu
-         UqwsuX7cSXpIlLMT1mwXGnHEMZMoA+sxgqFSLahxaVjimGRkO8XtjfpfM+vGW87TwUGF
-         bUAg==
-X-Gm-Message-State: AOJu0Yz3KfVmVxwvX3nP+nNi7QcVb6wUIQYv/3vOmK8OxBYebzGauRh1
-        zlj4Zwg4ZX3R/06SLcPXm4aHl2o3XD7rOL5YnBlOTt3wx/seLlxvu6QDgW8Dl71DSWcrNzQMtDJ
-        P0KSjyFe38nnP2xXstu6h/t5EumpZk8Adkhs8J8YL
-X-Received: by 2002:a05:6512:31c7:b0:4fd:fc36:68a2 with SMTP id j7-20020a05651231c700b004fdfc3668a2mr7965616lfe.1.1691496360154;
-        Tue, 08 Aug 2023 05:06:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGhnLeTE8WqeViIx7SXQVaYVyeppCRK13xcg7l4wcYFiSlrkv0ka6P5Z6WrJPz7QaVdDhqAj2JKI7NLgZNtbmc=
-X-Received: by 2002:a05:6512:31c7:b0:4fd:fc36:68a2 with SMTP id
- j7-20020a05651231c700b004fdfc3668a2mr7965593lfe.1.1691496359781; Tue, 08 Aug
- 2023 05:05:59 -0700 (PDT)
+        bh=6VxlsPWdBTPAUvYb7Kun1tKN0ClHERPlCGEFAPO7bek=;
+        b=ObPH8aXIpIilsrI74QTZcgjHixw+zemMDf5OGZgXdYcfLwr27eZmcFMKzCRAG+GfP1
+         PAxWlR/l0I/tBdrXk1OwrPXWk2dpHsA1e/3BzqPPUb92nyOA0p7QIzuwaeHpkwaCKtre
+         AKgbyQkOQ9o24bxC2B08XyTTMrq7wtBpWV/nd8MLwTgTiuE0+6I54ca0H41cLd5S7aDm
+         MhAfAb9oQcnWFWa9rRLQydZURSlyweSx865AJFHk/h7/dehytHoKLkwhTADCkdQZCozl
+         /TFmDNXj8gUOsMOw8XXpC3/f3lTE9SMWrA5J73Kwbr+sWbnUols4Z2FkTN0krbRsJm0W
+         wZPQ==
+X-Gm-Message-State: AOJu0YyLuQYXMBe8GK/ROatNE4XuGj1RQEpVJEtySRki6ZayJkVCS8t6
+        4WBAvPM4oiA+8ny4o6YWGOGVVUMXQbWToFKUteNRoDZIPFJZJQ==
+X-Google-Smtp-Source: AGHT+IFJxFw11piHdQ5PI9U2WJIIc/+c38Pseu7O4O5J602XrFi/HqPWExd1zSzBT69vUcuwSJ38XgGzvfxwECyMXmk=
+X-Received: by 2002:a05:6512:3c8b:b0:4f8:67aa:4f03 with SMTP id
+ h11-20020a0565123c8b00b004f867aa4f03mr9348992lfv.1.1691496376797; Tue, 08 Aug
+ 2023 05:06:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230728-solid-fill-v5-0-053dbefa909c@quicinc.com>
- <20230728-solid-fill-v5-1-053dbefa909c@quicinc.com> <CA+hFU4ywNbK77Nj+AVkRbgnomyP-YHhP6pKvNhFG-6HXwAY=Yw@mail.gmail.com>
- <71e9cc67-3aed-f1b7-33b7-1bf9faa0d6ae@quicinc.com>
-In-Reply-To: <71e9cc67-3aed-f1b7-33b7-1bf9faa0d6ae@quicinc.com>
-From:   Sebastian Wick <sebastian.wick@redhat.com>
-Date:   Tue, 8 Aug 2023 14:05:48 +0200
-Message-ID: <CA+hFU4wJ5xtVT_Yunc7r7c9eKaGus0Ew1_XnoDg1vMQRF0OQ0w@mail.gmail.com>
-Subject: Re: [PATCH RFC v5 01/10] drm: Introduce pixel_source DRM plane property
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        quic_abhinavk@quicinc.com, ppaalanen@gmail.com,
-        contact@emersion.fr, laurent.pinchart@ideasonboard.com,
-        ville.syrjala@linux.intel.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        wayland-devel@lists.freedesktop.org
+References: <20230808095342.12637-7-vbabka@suse.cz> <20230808095342.12637-9-vbabka@suse.cz>
+In-Reply-To: <20230808095342.12637-9-vbabka@suse.cz>
+From:   Pedro Falcato <pedro.falcato@gmail.com>
+Date:   Tue, 8 Aug 2023 13:06:04 +0100
+Message-ID: <CAKbZUD1v1xXB-sPknsVhVVa812TG6YffoVU+3r59NY7r3t=fmQ@mail.gmail.com>
+Subject: Re: [RFC v1 2/5] mm, slub: add opt-in slub_percpu_array
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 7:52=E2=80=AFPM Jessica Zhang <quic_jesszhan@quicinc=
-.com> wrote:
+On Tue, Aug 8, 2023 at 10:54=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
 >
+> kmem_cache_setup_percpu_array() will allocate a per-cpu array for
+> caching alloc/free objects of given size for the cache. The cache
+> has to be created with SLAB_NO_MERGE flag.
 >
+> The array is filled by freeing. When empty for alloc or full for
+> freeing, it's simply bypassed by the operation, there's currently no
+> batch freeing/allocations.
 >
-> On 8/4/2023 6:15 AM, Sebastian Wick wrote:
-> > On Fri, Jul 28, 2023 at 7:03=E2=80=AFPM Jessica Zhang <quic_jesszhan@qu=
-icinc.com> wrote:
-> >>
-> >> Add support for pixel_source property to drm_plane and related
-> >> documentation. In addition, force pixel_source to
-> >> DRM_PLANE_PIXEL_SOURCE_FB in DRM_IOCTL_MODE_SETPLANE as to not break
-> >> legacy userspace.
-> >>
-> >> This enum property will allow user to specify a pixel source for the
-> >> plane. Possible pixel sources will be defined in the
-> >> drm_plane_pixel_source enum.
-> >>
-> >> The current possible pixel sources are DRM_PLANE_PIXEL_SOURCE_NONE and
-> >> DRM_PLANE_PIXEL_SOURCE_FB with *_PIXEL_SOURCE_FB being the default val=
-ue.
-> >>
-> >> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> >> ---
-> >>   drivers/gpu/drm/drm_atomic_state_helper.c |  1 +
-> >>   drivers/gpu/drm/drm_atomic_uapi.c         |  4 ++
-> >>   drivers/gpu/drm/drm_blend.c               | 85 +++++++++++++++++++++=
-++++++++++
-> >>   drivers/gpu/drm/drm_plane.c               |  3 ++
-> >>   include/drm/drm_blend.h                   |  2 +
-> >>   include/drm/drm_plane.h                   | 21 ++++++++
-> >>   6 files changed, 116 insertions(+)
-> >>
-> >> diff --git a/drivers/gpu/drm/drm_atomic_state_helper.c b/drivers/gpu/d=
-rm/drm_atomic_state_helper.c
-> >> index 784e63d70a42..01638c51ce0a 100644
-> >> --- a/drivers/gpu/drm/drm_atomic_state_helper.c
-> >> +++ b/drivers/gpu/drm/drm_atomic_state_helper.c
-> >> @@ -252,6 +252,7 @@ void __drm_atomic_helper_plane_state_reset(struct =
-drm_plane_state *plane_state,
-> >>
-> >>          plane_state->alpha =3D DRM_BLEND_ALPHA_OPAQUE;
-> >>          plane_state->pixel_blend_mode =3D DRM_MODE_BLEND_PREMULTI;
-> >> +       plane_state->pixel_source =3D DRM_PLANE_PIXEL_SOURCE_FB;
-> >>
-> >>          if (plane->color_encoding_property) {
-> >>                  if (!drm_object_property_get_default_value(&plane->ba=
-se,
-> >> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_a=
-tomic_uapi.c
-> >> index d867e7f9f2cd..454f980e16c9 100644
-> >> --- a/drivers/gpu/drm/drm_atomic_uapi.c
-> >> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
-> >> @@ -544,6 +544,8 @@ static int drm_atomic_plane_set_property(struct dr=
-m_plane *plane,
-> >>                  state->src_w =3D val;
-> >>          } else if (property =3D=3D config->prop_src_h) {
-> >>                  state->src_h =3D val;
-> >> +       } else if (property =3D=3D plane->pixel_source_property) {
-> >> +               state->pixel_source =3D val;
-> >>          } else if (property =3D=3D plane->alpha_property) {
-> >>                  state->alpha =3D val;
-> >>          } else if (property =3D=3D plane->blend_mode_property) {
-> >> @@ -616,6 +618,8 @@ drm_atomic_plane_get_property(struct drm_plane *pl=
-ane,
-> >>                  *val =3D state->src_w;
-> >>          } else if (property =3D=3D config->prop_src_h) {
-> >>                  *val =3D state->src_h;
-> >> +       } else if (property =3D=3D plane->pixel_source_property) {
-> >> +               *val =3D state->pixel_source;
-> >>          } else if (property =3D=3D plane->alpha_property) {
-> >>                  *val =3D state->alpha;
-> >>          } else if (property =3D=3D plane->blend_mode_property) {
-> >> diff --git a/drivers/gpu/drm/drm_blend.c b/drivers/gpu/drm/drm_blend.c
-> >> index 6e74de833466..c500310a3d09 100644
-> >> --- a/drivers/gpu/drm/drm_blend.c
-> >> +++ b/drivers/gpu/drm/drm_blend.c
-> >> @@ -185,6 +185,21 @@
-> >>    *              plane does not expose the "alpha" property, then thi=
-s is
-> >>    *              assumed to be 1.0
-> >>    *
-> >> + * pixel_source:
-> >> + *     pixel_source is set up with drm_plane_create_pixel_source_prop=
-erty().
-> >> + *     It is used to toggle the active source of pixel data for the p=
-lane.
-> >> + *     The plane will only display data from the set pixel_source -- =
-any
-> >> + *     data from other sources will be ignored.
-> >> + *
-> >> + *     Possible values:
-> >> + *
-> >> + *     "NONE":
-> >> + *             No active pixel source.
-> >> + *             Committing with a NONE pixel source will disable the p=
-lane.
-> >> + *
-> >> + *     "FB":
-> >> + *             Framebuffer source set by the "FB_ID" property.
-> >> + *
-> >>    * Note that all the property extensions described here apply either=
- to the
-> >>    * plane or the CRTC (e.g. for the background color, which currently=
- is not
-> >>    * exposed and assumed to be black).
-> >> @@ -615,3 +630,73 @@ int drm_plane_create_blend_mode_property(struct d=
-rm_plane *plane,
-> >>          return 0;
-> >>   }
-> >>   EXPORT_SYMBOL(drm_plane_create_blend_mode_property);
-> >> +
-> >> +/**
-> >> + * drm_plane_create_pixel_source_property - create a new pixel source=
- property
-> >> + * @plane: DRM plane
-> >> + * @extra_sources: Bitmask of additional supported pixel_sources for =
-the driver.
-> >> + *                DRM_PLANE_PIXEL_SOURCE_FB always be enabled as a su=
-pported
-> >> + *                source.
-> >> + *
-> >> + * This creates a new property describing the current source of pixel=
- data for the
-> >> + * plane. The pixel_source will be initialized as DRM_PLANE_PIXEL_SOU=
-RCE_FB by default.
-> >> + *
-> >> + * Drivers can set a custom default source by overriding the pixel_so=
-urce value in
-> >> + * drm_plane_funcs.reset()
-> >> + *
-> >> + * The property is exposed to userspace as an enumeration property ca=
-lled
-> >> + * "pixel_source" and has the following enumeration values:
-> >> + *
-> >> + * "NONE":
-> >> + *      No active pixel source
-> >> + *
-> >> + * "FB":
-> >> + *     Framebuffer pixel source
-> >> + *
-> >> + * Returns:
-> >> + * Zero on success, negative errno on failure.
-> >> + */
-> >> +int drm_plane_create_pixel_source_property(struct drm_plane *plane,
-> >> +                                          unsigned long extra_sources=
-)
-> >> +{
-> >> +       struct drm_device *dev =3D plane->dev;
-> >> +       struct drm_property *prop;
-> >> +       static const struct drm_prop_enum_list enum_list[] =3D {
-> >> +               { DRM_PLANE_PIXEL_SOURCE_NONE, "NONE" },
-> >> +               { DRM_PLANE_PIXEL_SOURCE_FB, "FB" },
-> >> +       };
-> >> +       static const unsigned int valid_source_mask =3D BIT(DRM_PLANE_=
-PIXEL_SOURCE_FB);
-> >> +       int i;
-> >> +
-> >> +       /* FB is supported by default */
-> >> +       unsigned long supported_sources =3D extra_sources | BIT(DRM_PL=
-ANE_PIXEL_SOURCE_FB);
-> >
-> > The DRM_PLANE_PIXEL_SOURCE_NONE property should also be enabled by
-> > default and in the valid_source_mask.
+> The locking is copied from the page allocator's pcplists, based on
+> embedded spin locks. Interrupts are not disabled, only preemption (cpu
+> migration on RT). Trylock is attempted to avoid deadlock due to
+> an intnerrupt, trylock failure means the array is bypassed.
 >
-> Hi Sebastian,
+> Sysfs stat counters alloc_cpu_cache and free_cpu_cache count operations
+> that used the percpu array.
 >
-> Acked.
+> Bulk allocation bypasses the array, bulk freeing does not.
 >
->
-> > In a later patch you implement
-> > the DRM_PLANE_PIXEL_SOURCE_NONE logic in drm core so everyone gets the
-> > enum value for free. Might want to pull that logic into its own patch
-> > and move it before this one.
->
-> Can you elaborate on this? Are you referring to the "Loosen FB atomic
-> checks" patch?
->
-> Not sure why it would make sense to loosen the checks before non-FB
-> pixel sources are introduced.
+> kmem_cache_prefill_percpu_array() can be called to ensure the array on
+> the current cpu to at least the given number of objects. However this is
+> only opportunistic as there's no cpu pinning and the trylocks may always
+> fail. Therefore allocations cannot rely on the array for success even
+> after the prefill. But misses should be rare enough that e.g. GFP_ATOMIC
+> allocations should be acceptable after the refill.
+> The operation is currently not optimized.
 
-Mh, yeah, but just adding the enum value which is not hooked up is not
-good either. Both should probably happen in the same patch.
+As I asked on IRC, I'm curious about three questions:
 
-> Thanks,
+1) How does this affect SLUB's anti-queueing ideas?
+
+2) Since this is so similar to SLAB's caching, is it realistic to make
+this opt-out instead?
+
+3) What performance difference do you expect/see from benchmarks?
+
+> More TODO/FIXMEs:
 >
-> Jessica Zhang
+> - NUMA awareness - preferred node currently ignored, __GFP_THISNODE not
+>   honored
+> - slub_debug - will not work for allocations from the array. Normally in
+>   SLUB implementation the slub_debug kills all fast paths, but that
+>   could lead to depleting the reserves if we ignore the prefill and use
+>   GFP_ATOMIC. Needs more thought.
+> ---
+>  include/linux/slab.h     |   4 +
+>  include/linux/slub_def.h |  10 ++
+>  mm/slub.c                | 210 ++++++++++++++++++++++++++++++++++++++-
+>  3 files changed, 223 insertions(+), 1 deletion(-)
 >
-> >
-> >> +
-> >> +       if (WARN_ON(supported_sources & ~valid_source_mask))
-> >> +               return -EINVAL;
-> >> +
-> >> +       prop =3D drm_property_create(dev, DRM_MODE_PROP_ENUM | DRM_MOD=
-E_PROP_ATOMIC, "pixel_source",
-> >> +                       hweight32(supported_sources));
-> >> +
-> >> +       if (!prop)
-> >> +               return -ENOMEM;
-> >> +
-> >> +       for (i =3D 0; i < ARRAY_SIZE(enum_list); i++) {
-> >> +               int ret;
-> >> +
-> >> +               if (!test_bit(enum_list[i].type, &supported_sources))
-> >> +                       continue;
-> >> +
-> >> +               ret =3D drm_property_add_enum(prop, enum_list[i].type,=
- enum_list[i].name);
-> >> +               if (ret) {
-> >> +                       drm_property_destroy(dev, prop);
-> >> +
-> >> +                       return ret;
-> >> +               }
-> >> +       }
-> >> +
-> >> +       drm_object_attach_property(&plane->base, prop, DRM_PLANE_PIXEL=
-_SOURCE_FB);
-> >> +       plane->pixel_source_property =3D prop;
-> >> +
-> >> +       return 0;
-> >> +}
-> >> +EXPORT_SYMBOL(drm_plane_create_pixel_source_property);
-> >> diff --git a/drivers/gpu/drm/drm_plane.c b/drivers/gpu/drm/drm_plane.c
-> >> index 24e7998d1731..f342cf15412b 100644
-> >> --- a/drivers/gpu/drm/drm_plane.c
-> >> +++ b/drivers/gpu/drm/drm_plane.c
-> >> @@ -987,6 +987,9 @@ int drm_mode_setplane(struct drm_device *dev, void=
- *data,
-> >>                  return -ENOENT;
-> >>          }
-> >>
-> >> +       if (plane->state && plane->state->pixel_source !=3D DRM_PLANE_=
-PIXEL_SOURCE_FB)
-> >> +               plane->state->pixel_source =3D DRM_PLANE_PIXEL_SOURCE_=
-FB;
-> >> +
-> >>          if (plane_req->fb_id) {
-> >>                  fb =3D drm_framebuffer_lookup(dev, file_priv, plane_r=
-eq->fb_id);
-> >>                  if (!fb) {
-> >> diff --git a/include/drm/drm_blend.h b/include/drm/drm_blend.h
-> >> index 88bdfec3bd88..122bbfbaae33 100644
-> >> --- a/include/drm/drm_blend.h
-> >> +++ b/include/drm/drm_blend.h
-> >> @@ -58,4 +58,6 @@ int drm_atomic_normalize_zpos(struct drm_device *dev=
-,
-> >>                                struct drm_atomic_state *state);
-> >>   int drm_plane_create_blend_mode_property(struct drm_plane *plane,
-> >>                                           unsigned int supported_modes=
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index 848c7c82ad5a..f6c91cbc1544 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -196,6 +196,8 @@ struct kmem_cache *kmem_cache_create_usercopy(const c=
+har *name,
+>  void kmem_cache_destroy(struct kmem_cache *s);
+>  int kmem_cache_shrink(struct kmem_cache *s);
+>
+> +int kmem_cache_setup_percpu_array(struct kmem_cache *s, unsigned int cou=
+nt);
+> +
+>  /*
+>   * Please use this macro to create slab caches. Simply specify the
+>   * name of the structure and maybe some flags that are listed above.
+> @@ -494,6 +496,8 @@ void kmem_cache_free(struct kmem_cache *s, void *objp=
 );
-> >> +int drm_plane_create_pixel_source_property(struct drm_plane *plane,
-> >> +                                          unsigned long extra_sources=
-);
-> >>   #endif
-> >> diff --git a/include/drm/drm_plane.h b/include/drm/drm_plane.h
-> >> index 51291983ea44..89508b4dea4a 100644
-> >> --- a/include/drm/drm_plane.h
-> >> +++ b/include/drm/drm_plane.h
-> >> @@ -40,6 +40,12 @@ enum drm_scaling_filter {
-> >>          DRM_SCALING_FILTER_NEAREST_NEIGHBOR,
-> >>   };
-> >>
-> >> +enum drm_plane_pixel_source {
-> >> +       DRM_PLANE_PIXEL_SOURCE_NONE,
-> >> +       DRM_PLANE_PIXEL_SOURCE_FB,
-> >> +       DRM_PLANE_PIXEL_SOURCE_MAX
-> >> +};
-> >> +
-> >>   /**
-> >>    * struct drm_plane_state - mutable plane state
-> >>    *
-> >> @@ -116,6 +122,14 @@ struct drm_plane_state {
-> >>          /** @src_h: height of visible portion of plane (in 16.16) */
-> >>          uint32_t src_h, src_w;
-> >>
-> >> +       /**
-> >> +        * @pixel_source:
-> >> +        *
-> >> +        * Source of pixel information for the plane. See
-> >> +        * drm_plane_create_pixel_source_property() for more details.
-> >> +        */
-> >> +       enum drm_plane_pixel_source pixel_source;
-> >> +
-> >>          /**
-> >>           * @alpha:
-> >>           * Opacity of the plane with 0 as completely transparent and =
-0xffff as
-> >> @@ -699,6 +713,13 @@ struct drm_plane {
-> >>           */
-> >>          struct drm_plane_state *state;
-> >>
-> >> +       /*
-> >> +        * @pixel_source_property:
-> >> +        * Optional pixel_source property for this plane. See
-> >> +        * drm_plane_create_pixel_source_property().
-> >> +        */
-> >> +       struct drm_property *pixel_source_property;
-> >> +
-> >>          /**
-> >>           * @alpha_property:
-> >>           * Optional alpha property for this plane. See
-> >>
-> >> --
-> >> 2.41.0
-> >>
-> >
+>  void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p);
+>  int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size=
+, void **p);
 >
+> +int kmem_cache_prefill_percpu_array(struct kmem_cache *s, unsigned int c=
+ount, gfp_t gfp);
+> +
+>  static __always_inline void kfree_bulk(size_t size, void **p)
+>  {
+>         kmem_cache_free_bulk(NULL, size, p);
+> diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
+> index deb90cf4bffb..c85434668419 100644
+> --- a/include/linux/slub_def.h
+> +++ b/include/linux/slub_def.h
+> @@ -13,8 +13,10 @@
+>  #include <linux/local_lock.h>
+>
+>  enum stat_item {
+> +       ALLOC_PERCPU_CACHE,     /* Allocation from percpu array cache */
+>         ALLOC_FASTPATH,         /* Allocation from cpu slab */
+>         ALLOC_SLOWPATH,         /* Allocation by getting a new cpu slab *=
+/
+> +       FREE_PERCPU_CACHE,      /* Free to percpu array cache */
+>         FREE_FASTPATH,          /* Free to cpu slab */
+>         FREE_SLOWPATH,          /* Freeing not to cpu slab */
+>         FREE_FROZEN,            /* Freeing to frozen slab */
+> @@ -66,6 +68,13 @@ struct kmem_cache_cpu {
+>  };
+>  #endif /* CONFIG_SLUB_TINY */
+>
+> +struct slub_percpu_array {
+> +       spinlock_t lock;
 
+Since this is a percpu array, you probably want to avoid a lock here.
+An idea would be to have some sort of bool accessing;
+and then doing:
+
+preempt_disable();
+WRITE_ONCE(accessing, 1);
+
+/* doing pcpu array stuff */
+WRITE_ONCE(accessing, 0);
+preempt_enable();
+
+which would avoid the atomic in a fast path while still giving you
+safety on IRQ paths. Although reclamation gets harder as you stop
+being able to reclaim these pcpu arrays from other CPUs.
+
+--=20
+Pedro
