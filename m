@@ -2,93 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A84C9773BE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B48F773B97
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbjHHP5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 11:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
+        id S230347AbjHHPxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 11:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbjHHP4J (ORCPT
+        with ESMTP id S229802AbjHHPvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:56:09 -0400
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC98B5B90
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:43:48 -0700 (PDT)
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6bb31e13a13so10337116a34.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:43:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691509390; x=1692114190;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=try7kLiqOvWBbDWNv3AsjzJNZ1pHNvllo2yNmM+PfCo=;
-        b=MV3piaglikqG3GzGlYutjPVHeGXBQ3Tr8lmQZckO55SUNadSGDZZAP5gvlBnijO4Dm
-         GpXKVSyCLsSnfdppTEvYP8zOMzeXqXp2SL5CqDnj74zS2taw/7DVHz9QkJySIYk3jvV0
-         pNwfOQ45OyDIN1NGAghjx+iJ2c+hFR77iA5MAnjGwVSCGBFBCFc0vYOIuDFpyt8+F5yS
-         wjiiFvEK3bk1rPozgMKBGTVIVLvUHMQb9sDjJEQC3af6HxY1VzXq20kZ94gWaYw9aXCB
-         Iliw1YDAlhHwBI7c3Qigar1aVcUPteVF9K3ihnSDK7bJ8GpNPIkAqx9zrHLX28bwD1r2
-         GFBg==
-X-Gm-Message-State: AOJu0YyFb/QoYGF4rAG3mpBJy03CVYA8MCoQWjBg6Mi21CBzKOa+2z2Z
-        lghGnqvOLvCoNXnubgvwy32sVIg8vK9C7UpMIWEvicBMTK4m
-X-Google-Smtp-Source: AGHT+IHVxzz7rv3Yc6Ex9nVZyfccRlIl4YuPHqh33kxidSRG2ZsY/cJC8dt7jVr/W6xkY4FX1aCJajbFNScBQQQ0cLLlU2M2U+jQ
+        Tue, 8 Aug 2023 11:51:15 -0400
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on20605.outbound.protection.outlook.com [IPv6:2a01:111:f400:7ea9::605])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34ED1980
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:42:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dclpPfKY+wFMcpAfC8a0pEjjY5+N5oMVi2K1QTKWAB+l9QcTB1FofE4Z3ojzZxUXZ68t6nylth5XuY5p08FL+X+c3EHQTCCxPGes2qWiYC3nT5BN8nLI0hTF/G9Bno5q+I/07qXRv6U+hzHmSVZ3mGSqz7UfRXdZuJhw2wK5pDL5DVaD+XomdR6Oqq2WHhNV1/yQg/nMHGcX9IPg7Eezc1BCneVY6SdUO3f/blE/rP66Htii3lTHipFhezvqfKaqZNsTIp5lNp4P1c8WGz+J3rEtIWgMKugtPA8f+e1R7ytVHnRP2dg2cIBmENwke+9h6zn+EpeDROWv27lnoPLJjw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sNP6R8X4hTuDoO7vL6CSKYK+xa8NvcH6JmVdtNr54n8=;
+ b=hcTd0bcC0Gyb2g3TyCvT1wo/qLL83oU4ZVTTu50CJCo4g9xOyt167UAZMVmOx9uoD4HGib+2RDUWKsukYBGMOoIbWSC18QMeCY01S6ytdm93L9L8ZvYqkznfxndK8V6sa9/GzZijKtlXzkFzYOLxWOxnWGk6vBzg1/WkMM95sjbCUujnJwbiFK0/5581V2ayPcnwmgUFERC/fiGAs0V3y2TP4smUaNwg1ud8pOrIht0TEN8jT/HMV4eJJxsJP8hx8a6XZ3BJEDis8yQZD6uuSmn1kqod3N9iP54dFlWl5oSawKEYnlneJWDG3JkoyjOS5b1SyXY3zglXxPA2QTWrDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sNP6R8X4hTuDoO7vL6CSKYK+xa8NvcH6JmVdtNr54n8=;
+ b=aMTG3GrR7FKDWMW3O6k/P5taBgfTPI5y6J6UBSbMC2JOLH+xAy+lXjeglWgzNPrTagpeCLOVkzhpsojFlhrOn2cIgLOrqMGL2tBzuLEqxwvuL+ATreU7QimCsNbven1MGNDnN1qnxyFDBrqDdXYxS4grbF+ZuOUkJpinri5WxjU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by SJ0PR12MB5421.namprd12.prod.outlook.com (2603:10b6:a03:3bb::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26; Tue, 8 Aug
+ 2023 13:56:02 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6652.026; Tue, 8 Aug 2023
+ 13:56:02 +0000
+Message-ID: <ad26d275-4373-429f-ecaa-3e35978f1fb0@amd.com>
+Date:   Tue, 8 Aug 2023 15:55:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v6 3/4] drm: Expand max DRM device number to full
+ MINORBITS
+Content-Language: en-US
+To:     Simon Ser <contact@emersion.fr>
+Cc:     =?UTF-8?Q?Micha=c5=82_Winiarski?= <michal.winiarski@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        James Zhu <James.Zhu@amd.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Emil Velikov <emil.l.velikov@gmail.com>
+References: <20230724211428.3831636-1-michal.winiarski@intel.com>
+ <20230724211428.3831636-4-michal.winiarski@intel.com>
+ <83s0YPWEdYE6C2a8pa6UAa3EaWZ2zG-q7IL9M-y6W1ucF9V54VnZtigKj3BGKUA2FZpIrs0VVxmpHO2RAhs_FdOnss9vNLQNSHySY8uH7YA=@emersion.fr>
+ <69801f61-37b0-3e46-cbef-31ff80ae9a34@amd.com>
+ <TAdBP5BOy3cy7VnUb4t7ZkDOMK6wI_gPCjXanItN3TOsA1TbSk_6yrlcPTqvk3AZjamo96yHlEhjpfNUPFF6tA_9K8iRoie3h_z5Jf6zNtc=@emersion.fr>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <TAdBP5BOy3cy7VnUb4t7ZkDOMK6wI_gPCjXanItN3TOsA1TbSk_6yrlcPTqvk3AZjamo96yHlEhjpfNUPFF6tA_9K8iRoie3h_z5Jf6zNtc=@emersion.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR2P281CA0131.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:9e::14) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:c794:b0:1ba:7bf5:67cd with SMTP id
- dy20-20020a056870c79400b001ba7bf567cdmr16115130oab.11.1691502890465; Tue, 08
- Aug 2023 06:54:50 -0700 (PDT)
-Date:   Tue, 08 Aug 2023 06:54:50 -0700
-In-Reply-To: <0000000000009393ba059691c6a3@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ec3e1f060269b476@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in j1939_session_get_by_addr
-From:   syzbot <syzbot+d9536adc269404a984f8@syzkaller.appspotmail.com>
-To:     Jose.Abreu@synopsys.com, arvid.brodin@alten.se,
-        davem@davemloft.net, dvyukov@google.com,
-        ilias.apalodimas@linaro.org, joabreu@synopsys.com,
-        jose.abreu@synopsys.com, kernel@pengutronix.de,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
-        nogikh@google.com, robin@protonic.nl, socketcan@hartkopp.net,
-        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SJ0PR12MB5421:EE_
+X-MS-Office365-Filtering-Correlation-Id: f085530a-e6ff-4464-6791-08db9817336f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tib5wzkBUpx+wq+nMbONk4v3h8pkd1jj6u5/CfopWpJaoi6AkdDXLvITCThfqxcCq8Di/NkJtrBMRTBzIMc2VteGkApV62/IvUpQuS20YCHiIzl2kIUYFbwzfSXJLC8tFpXwxSSfXsEabkwgwyHgnJTUNdFQp8BB9iDsAiN3QOOxn2oLQPd1WkQxWznGlj8PTDyG9cZk7dZw9Bi8YgXGXEk6QnycHT4jpOj4xVSLprilxfJvHXp7HwOZQRHr/Gf9DkBUmk33v/qZlR7w2g2cTo+zL1AyZWlvuuKHZQxFKWTKGTviJBTX7xKRv1lvsBPgyEuilutCUBe/YpbbgrevjIotieCvFM5hhbKteR6G6K8zmXEMTQESgpf1v49jv/+QNKM6/CbovmVkiRExQwDy4wHYlf6c3YvYzDgJCS3+XfPwnJALpmQknKPy9nHVLFPn7RPX0mEPu9vwM9KHKofJLMfe3YFexXjGonr6JSZnSH5BdLGZHdDLjdxqe/YbQ3FtEVBfHWgit4zI0pMv36jj7ppxUI2KAhSlmjzFtG10H05QeOh23mT0ZZKRcMtUZJBk0YIX3iM7bYCaueVXJ82bdMVdUZwSajdfbuBtXWWqRj1QY+vMVqtIOWJgwaTgFiqZsGaCq8GwWTcyM2rKPV5rBA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39860400002)(396003)(346002)(376002)(136003)(186006)(1800799003)(451199021)(6666004)(31686004)(2616005)(54906003)(4326008)(6916009)(8936002)(316002)(8676002)(7416002)(5660300002)(66476007)(66556008)(66946007)(38100700002)(4744005)(478600001)(31696002)(6486002)(86362001)(2906002)(6512007)(41300700001)(6506007)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?azNpL2o1Rk1KdFRjUG9nMnhoSk11ajRhSkVVajdNZTlnTlVKTmloYUFtbGh6?=
+ =?utf-8?B?aUd2ZUxQMXlNSGVBckQrUGtJc0I1ZS9pTDU3czdZVkVYb2ZHOGUyNS9UbGox?=
+ =?utf-8?B?K0oxMG1RRjN5bzdIbk1Tc0hydmU5WDNHU0NpdExIaEUyWnVxRkhZeDdEb2hI?=
+ =?utf-8?B?aVkxNXc5TDhDVmRKQ2ZNY1p2eXZwTlorT1pJR29iNHlBMk9XU1RRcFlFVVYx?=
+ =?utf-8?B?MVNLVHVKMVBXM2hoM0ZFKzY0K1RuR1lORGVtaGI2MDV4UHpFNmwrTCtqZWRz?=
+ =?utf-8?B?VFRId09xWEZnNnFIOHVpSEd0VHkvSTlsZFFla2dRQVBLNTBQV0hLcHpEQkp4?=
+ =?utf-8?B?UWprWjZJTURmNHdxSW96dkU0MzVta3lsUUVRUmU4WnlrcDZuUXRIOVJMY21E?=
+ =?utf-8?B?bWhva3hCbzg3RE40ZGkyL3VXR1ZZNjBTdkorZWZaeGM1VHROWUJjbDJkTGJK?=
+ =?utf-8?B?TGxXWWlRNWo2S1FxNG05MW11RUY2RWtLaHAwWmhTNGFhVXpZOGo2NDUyQ0t6?=
+ =?utf-8?B?TU9qM0FYTVVid29sSDMySEdSWjVqU2xCY0p5VFdqSktlc2JKMlJ4c1NEVE5l?=
+ =?utf-8?B?clVXOXVQaVVxWVpsR2JYSDNZSGxWOWxKN25ZTjl5UHloTC9ocldaTzA5Wmhj?=
+ =?utf-8?B?SW9OK2tCdnhjRkc2MmUvelB1a3NjaFl2dEt0aHFtVVc1MG9EUFZGd0xIT3pQ?=
+ =?utf-8?B?c3g1SUozcUJmUG9yTDYwL2UzU3lnU0VzK2J2SThJV2R5TlJZdEJ5aS9MbWh0?=
+ =?utf-8?B?cEhvV2p2VUtjMnFaa0drQmtGWGlac3dVVDlvbExQNnpXM0piY0NPU05SR1Ns?=
+ =?utf-8?B?bW1SWDhiRUwwRXM5dWNpMlRRYkZpOFVqUFdyUjFkckd5dkUwQWczd01qckh1?=
+ =?utf-8?B?U2hoMmNIWWFMOWVUQ3dLTitoSjVvY252RmZQc3RZempzdlIyakg2aWpHNWI0?=
+ =?utf-8?B?elI2QmhxQmY5cHR2K3dWZ0I2V0tkaXJvZnplaXA5K0lEOGM3S0ZKRG4vT1Zi?=
+ =?utf-8?B?RWV2b0JUemw5MlJqYTVFUkpEU1FsTkMwV0JEaEpYdm9TQmtHUGpCR0hvY0RQ?=
+ =?utf-8?B?aGtNd0NGSmtSODFFMXBsbSttQXJvVzZjeGU1ZmcxR1FZeUpscVN5QURyeGlB?=
+ =?utf-8?B?enpkODVNOE5la3h4TUZ2SDIzTnZnN3RHMDZmU0tvZVUwU25rUHd4SWpLR0E5?=
+ =?utf-8?B?ck5lYW5McnllU0VXVDg0T1pnNmhBQk8rU3hSUW03SUgwWlhkWlV4dzl2Ui9w?=
+ =?utf-8?B?UkUvNFRHMW5YYnhEdmFGM1lnK1IzZ0hCSFR1U25FdVVsaVRJanhLb09Lem80?=
+ =?utf-8?B?cElGcmRkS3YrM1ZzK0E0K1dPRzg2NjVTdXc2REZGTEFCTUoyTXFUSmFSLzNP?=
+ =?utf-8?B?bWtwckZUeXR6N1dCV2R0UHEwTE9LeVVoajZ2VDMrMVBtZXAvOTBCZWdrNmNu?=
+ =?utf-8?B?bThsZGZ2dk9uSjR1QTRyd3Z1ZWthRmlrdlhFWE91ZGdpUDNUcWJhd1g5WEFV?=
+ =?utf-8?B?ZG9RdWk2bUdLYWs5Yk8rVEJQcWpISEowVDcwSnRPdGZlVzBJOEdZcHpPREVt?=
+ =?utf-8?B?L0g5TTJvR1dkQ0ZsZTJpSG9Nb0prbzcvYXJzYVpQeG1JZTJxbzlxWis4Ykt0?=
+ =?utf-8?B?NW5zUUErWlRGUVZCQ25TOGZ4WU5BTTBOWkp6Witaa2lVT21UZmN1eFZtMktB?=
+ =?utf-8?B?eDV1Um1hUEhHaUV2cStFTzg0V0RHN0dFaFpSNU9Ram5pL3JiaWorcFR0U3k4?=
+ =?utf-8?B?U1FBcGIvb2YrTTd2KzErd2pCNnhJejFGOUtad1Rtc2QvZXR2U3d6NVBwS3lZ?=
+ =?utf-8?B?YXhlak1tMzZNbkRZemFlenZiQytwMWhyNUc3MmNyMkNKaUlQQzIyS2FxMzdR?=
+ =?utf-8?B?S2lmWjQvY084WTFUaW5zSkM1dGxST0JSaldDL3orZC8wbDF4Y2djUkpJOUV6?=
+ =?utf-8?B?Q0RSWjZtWTRFLy9XRTF2LzM3WTBvUFhEKzY1SVdxbENPNVd2cWJTd0R4R0E0?=
+ =?utf-8?B?OFRKZXlyN1psUm1ENDI1amE4dytTNGNacWJxK1Qyc0Y2STNUUnRhK1dQekVo?=
+ =?utf-8?B?ZFB5WWNRRmwyTU42QnJRRkZJSWw3WmE2Q0w0MTZLY3pIcTRWYlM1V3hIdDJM?=
+ =?utf-8?B?Y0xLeDVMN2FEakd0TkpnR3RXN1ZJdWZtNmZaMkpGY1VzOWNOdVkzbDl5NU5C?=
+ =?utf-8?Q?veaPBXnoOIkRjJc6UwJR5jL8tDJPcOlM5iH1ajVxbYuD?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f085530a-e6ff-4464-6791-08db9817336f
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2023 13:56:02.0070
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eYgmixIhzTLHf5Z7i5Upf3gzFlrztsCI4og5VBgTlNcjmlF0ZN9sHXZJsMgnPjyt
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5421
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This bug is marked as fixed by commit:
-can: j1939: transport: make sure the aborted session will be
+Am 28.07.23 um 16:22 schrieb Simon Ser:
+> On Thursday, July 27th, 2023 at 14:01, Christian König <christian.koenig@amd.com> wrote:
+>
+>>> We do need patches to stop trying to infer the node type from the minor
+>>> in libdrm, though. Emil has suggested using sysfs, which we already do
+>>> in a few places in libdrm.
+>> That sounds like a really good idea to me as well.
+>>
+>> But what do we do with DRM_MAX_MINOR? Change it or keep it and say apps
+>> should use drmGetDevices2() like Emil suggested?
+> DRM_MAX_MINOR has been bumped to 64 now.
+>
+> With the new minor allocation scheme, DRM_MAX_MINOR is meaningless
+> because there is no "max minor per type" concept anymore: the minor no
+> longer contains the type.
+>
+> So I'd suggest leaving it as-is (so that old apps still continue to
+> work on systems with < 64 devices like they do today) and mark it as
+> deprecated.
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+Sounds like a plan to me.
 
-#syz fix: exact-commit-title
-
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
-
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=d9536adc269404a984f8
-
----
-[1] I expect the commit to be present in:
-
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+Regards,
+Christian.
