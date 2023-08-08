@@ -2,75 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 675107745DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A751777438B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbjHHSrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:47:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
+        id S233970AbjHHSH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234197AbjHHSq5 (ORCPT
+        with ESMTP id S235296AbjHHSG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:46:57 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F1918851
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:53:21 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-55bac17b442so4347607a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:53:21 -0700 (PDT)
+        Tue, 8 Aug 2023 14:06:59 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D81E1A76A
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:06:05 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6872c60b572so1285113b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:06:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20221208.gappssmtp.com; s=20221208; t=1691513600; x=1692118400;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5gVaSTYejp99j2UgPSGmR/5wX1Q1ia2oLZnesCpWyfk=;
-        b=5kLaOvMqnlNmeIpacSpIa2NWJbpOYlZESfjtUwCQv19yf4oL/5SP94VAl/CfSyHNHk
-         usbySMXbEwrMgGSjrZ54UkTiy5yKiPN4M5HyKMMaHqoHVLt+VNOmKL3nKJV6G7hcitJk
-         s2mEQX3UUmdUqs2xGt2JF1xxkNyNcOc5G3NZMaHcKrX1893BWny0ypKIGd9EMCRuboJu
-         Rjm48FDrn9Saxwnv/Z0UCwaTntJbmiIqplHAlnXthvd8+EjVbuEmJaYz1eJUO5vCyCSl
-         zvvX1a5EFKF3y1I5mWdE8rJPpU7tOly/LzuegSXd2aaVJvCm18ktBWQI0KLql9kiehW9
-         rq2g==
+        d=bytedance.com; s=google; t=1691514364; x=1692119164;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wpg6aIffbYjICJhycB3Bph3fxU0UaKYZ32RPKTrhmtc=;
+        b=KFK+MC57B3uiLosW3SdFwcKptcKj4Gco/4CR7gSSoL5Q/glH979KjUn3QAKGl8AOkV
+         QMGrsB49N6yPSOe4+GSgLUitjSB+QpdoIhYXN+tP/U/0pnQJ4WDYDvh7BcDQqueYbBOU
+         OXbn9hxooRxN5FeGjCP2qmAnUJ2pzjmuC2Dfiq64HQ6MtpkAhf2AS6xo5Vkpichy2G1p
+         0T5zmUJ0f87ItP7yvuIcUk2SkMtLGYJs3Rg50FYqT7ENTvo/j2H++fFTMswQhEUYhMWK
+         Z07r+ghbooFxc3Ze8QYxMOGU54QzQtHeZgRPC+ZFi3hzhdCOwnX+GgIZXRhV7t+HTmv4
+         IVtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691513600; x=1692118400;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1691514364; x=1692119164;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5gVaSTYejp99j2UgPSGmR/5wX1Q1ia2oLZnesCpWyfk=;
-        b=kMHUcXWLP58e3NCyfwkXMz5Z45SgRjkcV91pW/UJVD2w44FnNkXG6cvWu9JtbwDN/5
-         chIcqd6/F9tglnGhutyJ64kKtWXtbMhGg1I7rNfQpVILSA31W5DZQMQquqLAlPvpiXs3
-         Kmre27RP+9++gHx1pTGIzbiMC+Pj4NCUa30B382MovFWMrszRONRlZ4KpXbVAQSxR0YB
-         +PWs+taYvIz5LvfD6CjaFBlJwMfgYmXNDJw1gw0AydHxc3etiJTlNzUwYnv5qgQd4XV2
-         d6i2e2VKxXEOb+rhpN2sYbbWgqaqx1VyOh8vO/Nz2eDeupZvlBrd6gr83xywX5/BRxqi
-         XbWQ==
-X-Gm-Message-State: AOJu0Yx3hSFnz2rQruhN7SCVC/tklI3jU2A/XLBV3VrHbqJRFV9cwY6u
-        kxR8ebZL1/37POgP79Y8TH3VLcdPCb/JoIx6fE0=
-X-Google-Smtp-Source: AGHT+IFAVyiXcimI9tXWuEj4R9mV4WwBOWaAXHFFMihxNpDn6eurFOXPD6dXxTtApytWiEcQwiKdmw==
-X-Received: by 2002:a17:902:e546:b0:1b8:a697:3719 with SMTP id n6-20020a170902e54600b001b8a6973719mr14036571plf.25.1691481003938;
-        Tue, 08 Aug 2023 00:50:03 -0700 (PDT)
-Received: from ?IPV6:2400:4050:a840:1e00:78d2:b862:10a7:d486? ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
-        by smtp.gmail.com with ESMTPSA id a7-20020a170902ecc700b001bba7aab822sm8261067plh.5.2023.08.08.00.50.02
+        bh=wpg6aIffbYjICJhycB3Bph3fxU0UaKYZ32RPKTrhmtc=;
+        b=ISheiowjsCCLZGAt92WzZLVYMlIC71Y77y62IphyM+42LudtkZkEUHtjzV0IFy/Kch
+         09aixT2qgfnYtEcmAWSuq+KD+ctAjBe2/sPu51JFrgNZtuoSiWAW0U1ZnHBh2LHFb4ef
+         0QBAqoldp6niuh16c6zJZus7kqH+p+g/zyBC9k67AHy79HTWVAFJl1pVUs3FhHCcHHKH
+         SqRkbWc4bppi2ZKb6jkA77Uy+cgIBp3+kC3NlLESFFVNto7k8ulGhmud7fHZTd1haK9O
+         MCd6nHJoCHHFSzuJFyvdCy9YBoxywCGFdM9JPzDY6C2iDvr+FwodQ4yzRJzfuqRetusm
+         KC8w==
+X-Gm-Message-State: AOJu0Ywa8XhpC5p5pMxiMNFM6OEHU9cRwmrW3Zzh9JuSpDM4Hy530Ymp
+        s4416Ez2SneSfgn2N+Ry+6mz3wygaK2Pn7WzgEg=
+X-Google-Smtp-Source: APBJJlEd8UgUmVjTGODajLkItGQ9rG+lZy4ypLT00ATvxhzy6MYHUWJPNACQWVHeXI8Weqa+eylbDA==
+X-Received: by 2002:a17:90a:6c97:b0:263:730b:f568 with SMTP id y23-20020a17090a6c9700b00263730bf568mr25207579pjj.3.1691481032358;
+        Tue, 08 Aug 2023 00:50:32 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id u4-20020a17090a410400b00263154aab24sm7244870pjf.57.2023.08.08.00.50.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 00:50:03 -0700 (PDT)
-Message-ID: <bbf345f8-3476-4b0f-ab79-0cab3db73472@daynix.com>
-Date:   Tue, 8 Aug 2023 16:50:01 +0900
+        Tue, 08 Aug 2023 00:50:31 -0700 (PDT)
+Message-ID: <5757e341-b261-14de-e052-46606d530460@bytedance.com>
+Date:   Tue, 8 Aug 2023 15:50:18 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Akihiko Odaki <akihiko.odaki@daynix.com>
-Subject: Re: [PATCH] ASoC: amd: acp3x-rt5682-max9836: Configure jack as not
- detecting Line Out
-To:     Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-        alsa-devel@alsa-project.org
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-References: <20230805162216.441410-1-alpernebiyasak@gmail.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v4 46/48] mm: shrinker: make memcg slab shrink lockless
 Content-Language: en-US
-In-Reply-To: <20230805162216.441410-1-alpernebiyasak@gmail.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
+        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
+        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
+        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
+        gregkh@linuxfoundation.org, muchun.song@linux.dev,
+        simon.horman@corigine.com, dlemoal@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
+ <20230807110936.21819-47-zhengqi.arch@bytedance.com>
+ <ZNGr+1orhHaBORJG@dread.disaster.area>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <ZNGr+1orhHaBORJG@dread.disaster.area>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,13 +93,202 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/08/06 1:22, Alper Nebi Yasak wrote:
-> The RT5682, RT1015 and RT1015p codecs used in this driver do not seem
-> capable of distinguishing Line Out connections from Headphone, but
-> the driver configures its jack object as if it can. Remove the wrong
-> value from the jack creation call to avoid any confusion.
-> 
-> Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
+Hi Dave,
 
-Reviewed-by: Akihiko Odaki <akihiko.odaki@daynix.com>
-Tested-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+On 2023/8/8 10:44, Dave Chinner wrote:
+> On Mon, Aug 07, 2023 at 07:09:34PM +0800, Qi Zheng wrote:
+>> Like global slab shrink, this commit also uses refcount+RCU method to make
+>> memcg slab shrink lockless.
+> 
+> This patch does random code cleanups amongst the actual RCU changes.
+> Can you please move the cleanups to a spearate patch to reduce the
+> noise in this one?
+
+Sure, will do.
+
+> 
+>> diff --git a/mm/shrinker.c b/mm/shrinker.c
+>> index d318f5621862..fee6f62904fb 100644
+>> --- a/mm/shrinker.c
+>> +++ b/mm/shrinker.c
+>> @@ -107,6 +107,12 @@ static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+>>   					 lockdep_is_held(&shrinker_rwsem));
+>>   }
+>>   
+>> +static struct shrinker_info *shrinker_info_rcu(struct mem_cgroup *memcg,
+>> +					       int nid)
+>> +{
+>> +	return rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
+>> +}
+> 
+> This helper doesn't add value. It doesn't tell me that
+> rcu_read_lock() needs to be held when it is called, for one....
+
+How about adding a comment or an assertion here?
+
+> 
+>>   static int expand_one_shrinker_info(struct mem_cgroup *memcg, int new_size,
+>>   				    int old_size, int new_nr_max)
+>>   {
+>> @@ -198,7 +204,7 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
+>>   		struct shrinker_info_unit *unit;
+>>   
+>>   		rcu_read_lock();
+>> -		info = rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
+>> +		info = shrinker_info_rcu(memcg, nid);
+> 
+> ... whilst the original code here was obviously correct.
+> 
+>>   		unit = info->unit[shriner_id_to_index(shrinker_id)];
+>>   		if (!WARN_ON_ONCE(shrinker_id >= info->map_nr_max)) {
+>>   			/* Pairs with smp mb in shrink_slab() */
+>> @@ -211,7 +217,7 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
+>>   
+>>   static DEFINE_IDR(shrinker_idr);
+>>   
+>> -static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+>> +static int shrinker_memcg_alloc(struct shrinker *shrinker)
+> 
+> Cleanups in a separate patch.
+
+OK.
+
+> 
+>> @@ -253,10 +258,15 @@ static long xchg_nr_deferred_memcg(int nid, struct shrinker *shrinker,
+>>   {
+>>   	struct shrinker_info *info;
+>>   	struct shrinker_info_unit *unit;
+>> +	long nr_deferred;
+>>   
+>> -	info = shrinker_info_protected(memcg, nid);
+>> +	rcu_read_lock();
+>> +	info = shrinker_info_rcu(memcg, nid);
+>>   	unit = info->unit[shriner_id_to_index(shrinker->id)];
+>> -	return atomic_long_xchg(&unit->nr_deferred[shriner_id_to_offset(shrinker->id)], 0);
+>> +	nr_deferred = atomic_long_xchg(&unit->nr_deferred[shriner_id_to_offset(shrinker->id)], 0);
+>> +	rcu_read_unlock();
+>> +
+>> +	return nr_deferred;
+>>   }
+> 
+> This adds two rcu_read_lock() sections to every call to
+> do_shrink_slab(). It's not at all clear ifrom any of the other code
+> that do_shrink_slab() now has internal rcu_read_lock() sections....
+
+The xchg_nr_deferred_memcg() will only be called in shrink_slab_memcg(),
+so other code doesn't need to know that information?
+
+> 
+>> @@ -464,18 +480,23 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+>>   	if (!mem_cgroup_online(memcg))
+>>   		return 0;
+>>   
+>> -	if (!down_read_trylock(&shrinker_rwsem))
+>> -		return 0;
+>> -
+>> -	info = shrinker_info_protected(memcg, nid);
+>> +again:
+>> +	rcu_read_lock();
+>> +	info = shrinker_info_rcu(memcg, nid);
+>>   	if (unlikely(!info))
+>>   		goto unlock;
+>>   
+>> -	for (; index < shriner_id_to_index(info->map_nr_max); index++) {
+>> +	if (index < shriner_id_to_index(info->map_nr_max)) {
+>>   		struct shrinker_info_unit *unit;
+>>   
+>>   		unit = info->unit[index];
+>>   
+>> +		/*
+>> +		 * The shrinker_info_unit will not be freed, so we can
+>> +		 * safely release the RCU lock here.
+>> +		 */
+>> +		rcu_read_unlock();
+> 
+> Why - what guarantees that the shrinker_info_unit exists at this
+> point? We hold no reference to it, we hold no reference to any
+> shrinker, etc. What provides this existence guarantee?
+
+The shrinker_info_unit is never freed unless the memcg is destroyed.
+Here we hold the refcount of this memcg (mem_cgroup_iter() -->
+css_tryget()), so the shrinker_info_unit will not be freed.
+
+> 
+>> +
+>>   		for_each_set_bit(offset, unit->map, SHRINKER_UNIT_BITS) {
+>>   			struct shrink_control sc = {
+>>   				.gfp_mask = gfp_mask,
+>> @@ -485,12 +506,14 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+>>   			struct shrinker *shrinker;
+>>   			int shrinker_id = calc_shrinker_id(index, offset);
+>>   
+>> +			rcu_read_lock();
+>>   			shrinker = idr_find(&shrinker_idr, shrinker_id);
+>> -			if (unlikely(!shrinker || !(shrinker->flags & SHRINKER_REGISTERED))) {
+>> -				if (!shrinker)
+>> -					clear_bit(offset, unit->map);
+>> +			if (unlikely(!shrinker || !shrinker_try_get(shrinker))) {
+>> +				clear_bit(offset, unit->map);
+>> +				rcu_read_unlock();
+>>   				continue;
+>>   			}
+>> +			rcu_read_unlock();
+>>   
+>>   			/* Call non-slab shrinkers even though kmem is disabled */
+>>   			if (!memcg_kmem_online() &&
+>> @@ -523,15 +546,20 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+>>   					set_shrinker_bit(memcg, nid, shrinker_id);
+>>   			}
+>>   			freed += ret;
+>> -
+>> -			if (rwsem_is_contended(&shrinker_rwsem)) {
+>> -				freed = freed ? : 1;
+>> -				goto unlock;
+>> -			}
+>> +			shrinker_put(shrinker);
+> 
+> Ok, so why is this safe to call without holding the rcu read lock?
+> The global shrinker has to hold the rcu_read_lock() whilst calling
+> shrinker_put() to guarantee the validity of the list next pointer,
+> but we don't hold off RCU here so what guarantees a racing global
+> shrinker walk doesn't trip over this shrinker_put() call dropping
+> the refcount to zero and freeing occuring in a different context...
+
+This will not be a problem, even if shrinker::refcount is reduced to
+0 here, the racing global shrinker walk already holds the rcu lock.
+
+         shrink_slab            shrink_slab_memcg
+         ===========            =================
+
+         rcu_read_lock()
+         shrinker_put()
+                                shrinker_put()
+
+And in shrink_slab_memcg(), the shrinker is not required to traverse the
+next bit in the shrinker_info_unit::map, so there is no need to hold the
+rcu lock to ensure the existence of this shrinker.
+
+> 
+> 
+>> +		/*
+>> +		 * We have already exited the read-side of rcu critical section
+>> +		 * before calling do_shrink_slab(), the shrinker_info may be
+>> +		 * released in expand_one_shrinker_info(), so reacquire the
+>> +		 * shrinker_info.
+>> +		 */
+>> +		index++;
+>> +		goto again;
+> 
+> With that, what makes the use of shrinker_info in
+> xchg_nr_deferred_memcg() in do_shrink_slab() coherent and valid?
+
+Holding rcu lock can ensure that the old shrinker_info will not be
+freed, and the shrinker_info_unit::nr_deferred can also be indexed from
+the old shrinker_info::unit[x], so the updated nr_deferred will not be
+lost.
+
+Thanks,
+Qi
+
+> 
+> -Dave.
