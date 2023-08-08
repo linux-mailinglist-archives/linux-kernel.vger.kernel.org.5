@@ -2,47 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 597C6774835
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF26977483B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236029AbjHHT2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
+        id S235938AbjHHT3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbjHHT2U (ORCPT
+        with ESMTP id S235809AbjHHT2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:28:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93223601B2;
-        Tue,  8 Aug 2023 11:54:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1DCBB62A8B;
-        Tue,  8 Aug 2023 18:54:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E3A1C433C9;
-        Tue,  8 Aug 2023 18:54:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691520895;
-        bh=Tva3sV+Sb4bKIlR0C21mv1I3xm+vmjnDE7AvhFyXpKQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=A0Nwfb9prNmU9Iqqtjw34msKGJpwVDYG5fQ/50zh6LaMzL5c3muf8vtfDm8gj/uBV
-         dSfYrKOwZwkpFg8jo78cuV9/rk8fpnDBFOZv4GBA1x2/g43fxhN0xnmS9AQVNtF8LL
-         8iRhVVvwJ3uyh/iIIcnZt5U/z/XoFnylneARFKIQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Linux 4.19.290
-Date:   Tue,  8 Aug 2023 20:54:50 +0200
-Message-ID: <2023080833-swivel-jokingly-be9d@gregkh>
-X-Mailer: git-send-email 2.41.0
+        Tue, 8 Aug 2023 15:28:37 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A53A62D07
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 11:55:17 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691520915;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jk/7O+KQ8PabwPvLbA1rFu4Gg/yku8mgTP5GC7VSBN4=;
+        b=kioYb7IrEe6W/xySAiJPXqnt7NcAsAc4sBQocV6Impf4P5wYMx7Mhde2rhJqiqS3DUP41U
+        fO2o+Z2cHmpmAqKnwg3d4QqqAjw+3/+IF3qHIXE86qlgFb5pZTne4LhQipFsCjQX7WKkNU
+        45b+mkGuraxLZYNvIvxOr4PS2M5vKHdZanm7rjYNzlahBoeKF90Qpjj8N+ne6o+da2ctd+
+        y/3pjGNbH0mF1BNU4m5QoR0DLMfqtKKvJT1F2Ke1Awkq29uqppvSGdCHBbnk68x8KXl0vM
+        hBZusVXniqSjWxYdxVufgqdluCUXDAJ5cYTx35u1QEa/9aeyXZioD0evPXzOOA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691520915;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jk/7O+KQ8PabwPvLbA1rFu4Gg/yku8mgTP5GC7VSBN4=;
+        b=TnxQGSKzznGVYxYQU3UZ7DbZW7P1aGh51eWqQg1hgFlv9wqIwRjQksD49eQ2B+VAIFt0rr
+        m6N2MwoCjwgpbNCA==
+To:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Cc:     andrew.cooper3@citrix.com, arjan@linux.intel.com, jgross@suse.com,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        pbonzini@redhat.com, peter@keresztesschmidt.de,
+        peterz@infradead.org, thomas.lendacky@amd.com, wei.liu@kernel.org,
+        x86@kernel.org, qiuxu.zhuo@intel.com
+Subject: Re: [patch V3 45/60] x86/apic: Sanitize APID ID range validation
+In-Reply-To: <20230808133407.10901-1-qiuxu.zhuo@intel.com>
+References: <20230801103817.624346203@linutronix.de>
+ <20230808133407.10901-1-qiuxu.zhuo@intel.com>
+Date:   Tue, 08 Aug 2023 20:55:15 +0200
+Message-ID: <87msz1l5yk.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,116 +59,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------------------
-Note, PLEASE TEST this kernel if you are on the 4.19.y tree before using
-it in a real workload.  This was a quick release due to the obvious
-security fixes in it, and as such, it has not had very much testing "in
-the wild".  Please let us know of any problems seen.  Also note that the
-user/kernel api for the new security mitigations might be changing over
-time, so do not get used to them being fixed in stone just yet.
------------------
+On Tue, Aug 08 2023 at 21:34, Qiuxu Zhuo wrote:
+>> From: Thomas Gleixner <tglx@linutronix.de>
+>> ...
+>> Subject: [patch V3 45/60] x86/apic: Sanitize APID ID range validation
+>> Now that everything has apic::max_apic_id set and the eventual update for
+>> the x2APIC case is in place, switch the apic_id_valid() helper to use
+>> apic::max_apic_id and remove the apic::apic_id_valid() callback.
+>> 
+>
+> This patch removes default_apic_id_valid() and all references to it.
+> So may also need to remove the useless declaration of
+> "extern int default_apic_id_valid(u32 apicid)"
+> from arch/x86/include/asm/apic.h?
 
-I'm announcing the release of the 4.19.290 kernel.
-
-All users of the 4.19 kernel series must upgrade.
-
-The updated 4.19.y git tree can be found at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.19.y
-and can be browsed at the normal kernel.org git web browser:
-	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
-
-thanks,
-
-greg k-h
-
-------------
-
- Documentation/ABI/testing/sysfs-devices-system-cpu         |   11 
- Documentation/admin-guide/hw-vuln/gather_data_sampling.rst |  109 ++++++
- Documentation/admin-guide/hw-vuln/index.rst                |    1 
- Documentation/admin-guide/kernel-parameters.txt            |   39 +-
- Makefile                                                   |    2 
- arch/Kconfig                                               |    3 
- arch/alpha/include/asm/bugs.h                              |   20 -
- arch/arm/Kconfig                                           |    1 
- arch/arm/include/asm/bugs.h                                |    4 
- arch/arm/kernel/bugs.c                                     |    3 
- arch/ia64/Kconfig                                          |    1 
- arch/ia64/include/asm/bugs.h                               |   20 -
- arch/ia64/kernel/setup.c                                   |    3 
- arch/m68k/Kconfig                                          |    1 
- arch/m68k/include/asm/bugs.h                               |   21 -
- arch/m68k/kernel/setup_mm.c                                |    3 
- arch/mips/Kconfig                                          |    1 
- arch/mips/include/asm/bugs.h                               |   17 -
- arch/mips/kernel/setup.c                                   |   13 
- arch/parisc/include/asm/bugs.h                             |   20 -
- arch/powerpc/include/asm/bugs.h                            |   18 -
- arch/sh/Kconfig                                            |    1 
- arch/sh/include/asm/bugs.h                                 |   78 ----
- arch/sh/include/asm/processor.h                            |    2 
- arch/sh/kernel/idle.c                                      |    1 
- arch/sh/kernel/setup.c                                     |   55 +++
- arch/sparc/Kconfig                                         |    1 
- arch/sparc/include/asm/bugs.h                              |   18 -
- arch/sparc/kernel/setup_32.c                               |    7 
- arch/um/Kconfig                                            |    1 
- arch/um/include/asm/bugs.h                                 |    7 
- arch/um/kernel/um_arch.c                                   |    3 
- arch/x86/Kconfig                                           |   20 +
- arch/x86/include/asm/bugs.h                                |    2 
- arch/x86/include/asm/cpufeatures.h                         |    1 
- arch/x86/include/asm/fpu/internal.h                        |    2 
- arch/x86/include/asm/mem_encrypt.h                         |    2 
- arch/x86/include/asm/msr-index.h                           |   11 
- arch/x86/kernel/cpu/bugs.c                                 |  209 +++++++++----
- arch/x86/kernel/cpu/common.c                               |  117 ++++++-
- arch/x86/kernel/cpu/cpu.h                                  |    2 
- arch/x86/kernel/fpu/init.c                                 |    8 
- arch/x86/kernel/smpboot.c                                  |    1 
- arch/x86/kvm/x86.c                                         |    5 
- arch/x86/xen/smp_pv.c                                      |    2 
- arch/xtensa/include/asm/bugs.h                             |   18 -
- drivers/base/cpu.c                                         |    8 
- drivers/net/xen-netback/netback.c                          |   15 
- include/asm-generic/bugs.h                                 |   11 
- include/linux/cpu.h                                        |    6 
- init/main.c                                                |   16 
- 51 files changed, 579 insertions(+), 362 deletions(-)
-
-Daniel Sneddon (4):
-      x86/speculation: Add Gather Data Sampling mitigation
-      x86/speculation: Add force option to GDS mitigation
-      x86/speculation: Add Kconfig option for GDS
-      KVM: Add GDS_NO support to KVM
-
-Dave Hansen (1):
-      Documentation/x86: Fix backwards on/off logic about YMM support
-
-Greg Kroah-Hartman (2):
-      x86: fix backwards merge of GDS/SRSO bit
-      Linux 4.19.290
-
-Juergen Gross (1):
-      x86/xen: Fix secondary processors' FPU initialization
-
-Ross Lagerwall (1):
-      xen/netback: Fix buffer overrun triggered by unusual packet
-
-Thomas Gleixner (15):
-      init: Provide arch_cpu_finalize_init()
-      x86/cpu: Switch to arch_cpu_finalize_init()
-      ARM: cpu: Switch to arch_cpu_finalize_init()
-      ia64/cpu: Switch to arch_cpu_finalize_init()
-      m68k/cpu: Switch to arch_cpu_finalize_init()
-      mips/cpu: Switch to arch_cpu_finalize_init()
-      sh/cpu: Switch to arch_cpu_finalize_init()
-      sparc/cpu: Switch to arch_cpu_finalize_init()
-      um/cpu: Switch to arch_cpu_finalize_init()
-      init: Remove check_bugs() leftovers
-      init: Invoke arch_cpu_finalize_init() earlier
-      init, x86: Move mem_encrypt_init() into arch_cpu_finalize_init()
-      x86/fpu: Remove cpuinfo argument from init functions
-      x86/fpu: Mark init functions __init
-      x86/fpu: Move FPU initialization into arch_cpu_finalize_init()
-
+Yes. Seems I missed that.
