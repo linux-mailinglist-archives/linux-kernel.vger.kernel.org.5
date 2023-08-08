@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB641773EE1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39035773D2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233191AbjHHQi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52500 "EHLO
+        id S232260AbjHHQO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230112AbjHHQhf (ORCPT
+        with ESMTP id S232130AbjHHQNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:37:35 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB9235DD2;
-        Tue,  8 Aug 2023 08:53:33 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id d75a77b69052e-409ae93bbd0so45243531cf.0;
-        Tue, 08 Aug 2023 08:53:33 -0700 (PDT)
+        Tue, 8 Aug 2023 12:13:08 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC02D7EC5
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:47:14 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99357737980so848116666b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:47:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691510010; x=1692114810;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KJWy+tJMk/yVxxPHZgp8luxcV72VDkPKoVCNkbs0Mm4=;
-        b=QqyBIsoGfHcI2+n7JORCPEeAd6pcqG+RXncLfJlBtyFMrqZNdxdLdG4+0snGfHzkxz
-         GbncN4Oyv9AhSlpymx5tMpUGioIJqr37aZAztroaI5AAXiguKElnqcxy/9riD+xrEjeU
-         fW91nw/1q80rY/43sowkNmkYOS12F3WtOI+1+gmxzBpQu7ojovAl/f34I40N9gYBFMVu
-         trrcwAnB/2Sh1SiHmv2vniFYOAU7btMb5EO9XHudsRkheXb4EroKdcouHO+7R4hncvtF
-         JqHuEac8CsjGks6SiML1UP07k5pkcuZGFAYKc55y6pR/N5fG/a8apZYTSKVeQBSbsIq/
-         u7BQ==
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691509633; x=1692114433;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ie3WcAqbCuJwn+bSe+8uiPLhrE9XYV8epIzLQ3pbcL4=;
+        b=vr81aoTYCnVftLlvwc8eEqGW2PKR2AJvxKFAJwSRtDiOD6hSFoy2VjX9y6DAQkvZs+
+         /0kChAVrTq8dN3ruHgKOST1WpvDV1XMSjb9M6o3P2kpmPFOqES0AxQ/bZ8MV2l7UXmUT
+         huQC/hCpjO9FLTAC9fXDpkQsv6x+yI8EISREb4aX+bZDFGugkTfEIgkwH/clYJ3GswdC
+         Ad8/BZsbtoRnwCBWh2Pfm6mugS6Egb8GGTot/IZTxk7dv83Ryeiv+fXpnUMYyqGuFGbC
+         ZXWe4hzkzFeznu0hCu5JHfPv4/+pnFvrTe/w4Ff9pHJLADZ7LUcamJP7jB5xtitVIzdP
+         SM4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510010; x=1692114810;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KJWy+tJMk/yVxxPHZgp8luxcV72VDkPKoVCNkbs0Mm4=;
-        b=aw9sa0Maotppyf14W1PHL0oqesYYD9NNErkfwK57eV+nXFVw0AYrK566dfpDxWrlMw
-         mS/QAg6dO8ZfT8OCkSygUdXAt0JiLVRZ0eDV+iTijWcx9AUZt8xTI9qShlzBHAEHj59q
-         u7QkzU/SmLCJpBj2wDjHS4kuAf4HZM3YptyUVUpN1L4wdpk+62BJFRCTHU6d6ZoF+D1v
-         TSXtgTY60SFOZyNrZO3ayQIEF6hLHvRlVTTGx9FJ8OokRjetvSjvq91XaTpKDEPLASD8
-         XxSwW/UwYW5qGDqdcuoyg2lIxkj9n1Qni3jT/p/nKpNY9ZC5j/ZirZ7P4CEL7okGCEvy
-         KPbA==
-X-Gm-Message-State: AOJu0YzsDLJq72lzAZuETcuSvW1f3RH/ZHKTh3dVWYIiw5tCA0Fh5W1V
-        owEqbFgeU8G1vRMBULsjYqjHu6obzSVQxkzFeqQ=
-X-Google-Smtp-Source: AGHT+IH2PEPPJhTYnufeBrdq+vFubKxaYk2WH1aj/WI60sCiidy3AczfPWpvvzGx5zpLmHTLgrsiLg==
-X-Received: by 2002:a05:6a00:80a:b0:668:711a:7d93 with SMTP id m10-20020a056a00080a00b00668711a7d93mr11559484pfk.19.1691495956858;
-        Tue, 08 Aug 2023 04:59:16 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.11])
-        by smtp.gmail.com with ESMTPSA id j22-20020a63e756000000b00563b36264besm6484136pgk.85.2023.08.08.04.59.14
+        d=1e100.net; s=20221208; t=1691509633; x=1692114433;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ie3WcAqbCuJwn+bSe+8uiPLhrE9XYV8epIzLQ3pbcL4=;
+        b=iMeILgKvIbbWb1BUKh89tJV7+ZfO73tYFo9Pz9TPF9bssGadcgL4GIF7LQITzs/j+P
+         TnTN9bdQjDBUgg9enYUFu68C5y4j8KBjUk/qkFNLLmzRYJ40zeo0J5cAwaAy6DAVx9QL
+         qZP3jo5zlYqHFJ9NOEqMBG+xGFSUqTGFSOu2e3UH6e0K/LwwNYGMI4Dy8oHjqB/7pE0p
+         viz+8GJXTcrOJJiwJ0LsnmxnTYhBx1o0Gbil1aL6nVQQdpyL+xWcRrqxiyq/qbwpiHUc
+         amd51iNVn7fGmz0Nvk2vry4TqX24GUeTFFa93CrnLzAjC5Ojb++lTHSxV1VGURnK6EBE
+         Cq/w==
+X-Gm-Message-State: AOJu0YwbEP4VLr6CmbuYHA+vJmlFM63Qnekic0D3KiB5oYOlKmnwgc7H
+        8MAmZXgbYhtUEdBSmqZLRg0K0PIDN6aAy4liaRORUw==
+X-Google-Smtp-Source: AGHT+IGUZorkCi64YkQRQ50LyONGuQyCaMkyjeEos2tgFQ6faizt7lG2rcTuyHFQW//RTS5PrFhblA==
+X-Received: by 2002:adf:ea11:0:b0:313:f1c8:a968 with SMTP id q17-20020adfea11000000b00313f1c8a968mr8055326wrm.2.1691496185883;
+        Tue, 08 Aug 2023 05:03:05 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:6a08:bcc0:ae83:e1dc])
+        by smtp.gmail.com with ESMTPSA id v8-20020adfe4c8000000b00317046f21f9sm13499726wrm.114.2023.08.08.05.03.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 04:59:16 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: imagedong@tencent.com
-To:     edumazet@google.com, ncardwell@google.com
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        dsahern@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, flyingpeng@tencent.com,
-        Menglong Dong <imagedong@tencent.com>
-Subject: [PATCH net-next v3 3/3] net: tcp: fix unexcepted socket die when snd_wnd is 0
-Date:   Tue,  8 Aug 2023 19:58:35 +0800
-Message-Id: <20230808115835.2862058-4-imagedong@tencent.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230808115835.2862058-1-imagedong@tencent.com>
-References: <20230808115835.2862058-1-imagedong@tencent.com>
+        Tue, 08 Aug 2023 05:03:05 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Andrew Halaney <ahalaney@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH net-next] net: stmmac: don't create the MDIO bus if there's no mdio node on DT
+Date:   Tue,  8 Aug 2023 14:02:54 +0200
+Message-Id: <20230808120254.11653-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,73 +78,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <imagedong@tencent.com>
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-In tcp_retransmit_timer(), a window shrunk connection will be regarded
-as timeout if 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX'. This is not
-right all the time.
+The stmmac_dt_phy() function that parses the device-tree node of the MAC
+and allocates the MDIO and PHY resources misses one use-case: when the
+MAC doesn't have a fixed link but also doesn't define its own mdio bus
+on the device tree and instead shares the MDIO lines with a different
+MAC with its PHY phandle reaching over into a different node.
 
-The retransmits will become zero-window probes in tcp_retransmit_timer()
-if the 'snd_wnd==0'. Therefore, the icsk->icsk_rto will come up to
-TCP_RTO_MAX sooner or later.
+As this function could also use some more readability, rework it to
+handle this use-case and simplify the code.
 
-However, the timer can be delayed and be triggered after 122877ms, not
-TCP_RTO_MAX, as I tested.
-
-Therefore, 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX' is always true
-once the RTO come up to TCP_RTO_MAX, and the socket will die.
-
-Fix this by replacing the 'tcp_jiffies32' with '(u32)icsk->icsk_timeout',
-which is exact the timestamp of the timeout. Meanwhile, using the later
-one of tp->retrans_stamp and tp->rcv_tstamp as the last updated timestamp
-in the receiving path, as "tp->rcv_tstamp" can restart from idle, then
-tp->rcv_tstamp could already be a long time (minutes or hours) in the
-past even on the first RTO.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Link: https://lore.kernel.org/netdev/CADxym3YyMiO+zMD4zj03YPM3FBi-1LHi6gSD2XT8pyAMM096pg@mail.gmail.com/
-Signed-off-by: Menglong Dong <imagedong@tencent.com>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
-v3:
-- use after() instead of max() in tcp_rtx_probe0_timed_out()
-v2:
-- consider the case of the connection restart from idle, as Neal comment
----
- net/ipv4/tcp_timer.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ .../ethernet/stmicro/stmmac/stmmac_platform.c | 26 +++++++++----------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
-index d45c96c7f5a4..f30d1467771c 100644
---- a/net/ipv4/tcp_timer.c
-+++ b/net/ipv4/tcp_timer.c
-@@ -454,6 +454,18 @@ static void tcp_fastopen_synack_timer(struct sock *sk, struct request_sock *req)
- 			  req->timeout << req->num_timeout, TCP_RTO_MAX);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+index be8e79c7aa34..91844673df43 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+@@ -320,12 +320,14 @@ static int stmmac_mtl_setup(struct platform_device *pdev,
+ static int stmmac_dt_phy(struct plat_stmmacenet_data *plat,
+ 			 struct device_node *np, struct device *dev)
+ {
+-	bool mdio = !of_phy_is_fixed_link(np);
+ 	static const struct of_device_id need_mdio_ids[] = {
+ 		{ .compatible = "snps,dwc-qos-ethernet-4.10" },
+ 		{},
+ 	};
+ 
++	if (of_phy_is_fixed_link(np))
++		return 0;
++
+ 	if (of_match_node(need_mdio_ids, np)) {
+ 		plat->mdio_node = of_get_child_by_name(np, "mdio");
+ 	} else {
+@@ -340,20 +342,18 @@ static int stmmac_dt_phy(struct plat_stmmacenet_data *plat,
+ 		}
+ 	}
+ 
+-	if (plat->mdio_node) {
+-		dev_dbg(dev, "Found MDIO subnode\n");
+-		mdio = true;
+-	}
++	if (!plat->mdio_node)
++		return 0;
+ 
+-	if (mdio) {
+-		plat->mdio_bus_data =
+-			devm_kzalloc(dev, sizeof(struct stmmac_mdio_bus_data),
+-				     GFP_KERNEL);
+-		if (!plat->mdio_bus_data)
+-			return -ENOMEM;
++	dev_dbg(dev, "Found MDIO subnode\n");
+ 
+-		plat->mdio_bus_data->needs_reset = true;
+-	}
++	plat->mdio_bus_data = devm_kzalloc(dev,
++					   sizeof(struct stmmac_mdio_bus_data),
++					   GFP_KERNEL);
++	if (!plat->mdio_bus_data)
++		return -ENOMEM;
++
++	plat->mdio_bus_data->needs_reset = true;
+ 
+ 	return 0;
  }
- 
-+static bool tcp_rtx_probe0_timed_out(struct sock *sk)
-+{
-+	struct tcp_sock *tp = tcp_sk(sk);
-+	u32 timeout_ts, rtx_ts, rcv_ts;
-+
-+	rtx_ts = tp->retrans_stamp;
-+	rcv_ts = tp->rcv_tstamp;
-+	timeout_ts = after(rtx_ts, rcv_ts) ? rtx_ts : rcv_ts;
-+	timeout_ts += TCP_RTO_MAX;
-+
-+	return after(inet_csk(sk)->icsk_timeout, timeout_ts);
-+}
- 
- /**
-  *  tcp_retransmit_timer() - The TCP retransmit timeout handler
-@@ -519,7 +531,7 @@ void tcp_retransmit_timer(struct sock *sk)
- 					    tp->snd_una, tp->snd_nxt);
- 		}
- #endif
--		if (tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX) {
-+		if (tcp_rtx_probe0_timed_out(sk)) {
- 			tcp_write_err(sk);
- 			goto out;
- 		}
 -- 
-2.40.1
+2.39.2
 
