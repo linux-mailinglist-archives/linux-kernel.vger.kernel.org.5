@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B04977370B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8584B773713
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbjHHCuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 22:50:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
+        id S229897AbjHHCu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 22:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231128AbjHHCt7 (ORCPT
+        with ESMTP id S230318AbjHHCut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 22:49:59 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 765EBE5A
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 19:49:56 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-407db3e9669so102231cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 19:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691462995; x=1692067795;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6RSNnQZT08dQdFVE5RJv/G+IJCRbc3TJGyCsrhcpmdQ=;
-        b=a272jKXZUQokY6L5C0Br3ocABCJ+A8NpiSSqAW2ukctHWiYUg0oPKJ+vgx0NyQAwv2
-         UKQDyT/D5JaOlhyZlhwe/G7vvSnImf0tKcfkclJhEKEzV6GEr7q+JBN8MxUO7P9r913M
-         uI+NpMpW3CMQ9TtTqVY509r87gnSnsvdAVwRDCljGI3WsvByZB2H6f4qwRj/RotvSktg
-         n33C1JWAuTsjt7/yM1TrXoyLh3SF/AoKIUPQxtQ8dWgMYhIkOZpoQWzmZ72g46myu1b6
-         MvfVM6rFEPbilLDFeGW1Gt9RNnEsYUZ/Q63C54Az3wdihv5Q6BKRqdaVa8N0hz7NDLwD
-         inzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691462995; x=1692067795;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6RSNnQZT08dQdFVE5RJv/G+IJCRbc3TJGyCsrhcpmdQ=;
-        b=NloRtV6WE2vi/U9HEQILUSjA9A4AMZn3JYuNhQPq1sqKBtfEj7yEfnxJ6nR6QKo11I
-         r8mSQFmQSx0TwATaRMvDYyRVnT2wWBwfBEcAY2HOCgKyu+7K9N28vHHqrzWnH42ykvbE
-         Ef0xe1XeMZzHwp2diKaZthH7Fn9HuxZ2gTvSL3KtmBG2wWSvIdZLTOJjcnK1uiRYkzOo
-         qRp82mGiI4LtkrIkEvTb/O3+oq8shh0EYbRJOKASohyVRbtzCFI/gC+Yplu6PyUT0smI
-         JQ1KVYgvnxSVilVRlmb8iDc40MDTAV9/j6eJECyxoB+9ZJVxhgSIzISSfziHNfQy56yw
-         VXzg==
-X-Gm-Message-State: AOJu0Yw9vW2i2qwXg1irUP4frV3WZ3RaB1cppfV+sD7HLoSf5pZgfFUt
-        C0/KHzRXkfwoi4cbwDg1azfwUbI5EUwAfwVwE1pqzrQIKGWVhMLkZBOsSw==
-X-Google-Smtp-Source: AGHT+IFvXwWNd1BMS+iG4q7Z3meYuXCiDq9AoY3zcgK3v7qramlFnSOemTPJKu+4UN/Xp/QO5nOMIVY1TX40Y3Ro7hQ=
-X-Received: by 2002:ac8:5c53:0:b0:403:b1e5:bcae with SMTP id
- j19-20020ac85c53000000b00403b1e5bcaemr749780qtj.10.1691462995526; Mon, 07 Aug
- 2023 19:49:55 -0700 (PDT)
+        Mon, 7 Aug 2023 22:50:49 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26AA10C0;
+        Mon,  7 Aug 2023 19:50:47 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3781jD6I011184;
+        Tue, 8 Aug 2023 02:50:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2023-03-30;
+ bh=iacwFyTqZfahHyyEkmBoZR5f7zZK+DDgWiccFC0bGF0=;
+ b=lfK73tl1ZVp+JX1rnC5iaeJZIsQglPeInVdZV6A3vTgTEDkIBFeKLgi3c/p7SGvuQBI6
+ oFoq4KK6tbz1rixkYda7PEYO3UVeuQgzfSgxnMz8j3o6GzjuoNfP+0QCJMjWyKH/0fIY
+ jje5ziJ2Dlaiw9Scwz17ZpJHSFimwVbLJ2q2XSc9ZQfAgshOVmQfdv7yw926+tBVKT8i
+ kuj1PrOkWbZb3jlmebnScbaS0yc79lBd8YxbYgkeAOMBq12Y3MYhrC3luMYBunnOorsg
+ IrtQdDovLF9PjncZTJSzcAfxhXvsJ76NCd2Cym/Awt96TK1rk2Bu+YPA6kXZgpNYXEg4 SA== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s9eyuc491-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Aug 2023 02:50:38 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37806DoV027337;
+        Tue, 8 Aug 2023 02:50:37 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3s9cv561nh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Aug 2023 02:50:37 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3782oade010815;
+        Tue, 8 Aug 2023 02:50:37 GMT
+Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3s9cv561mp-3;
+        Tue, 08 Aug 2023 02:50:36 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     andersson@kernel.org, konrad.dybcio@linaro.org, jejb@linux.ibm.com,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] scsi: ufs: qcom: Add interconnect support
+Date:   Mon,  7 Aug 2023 22:50:28 -0400
+Message-Id: <169146270858.4040832.9863920717883598606.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230731145020.41262-1-manivannan.sadhasivam@linaro.org>
+References: <20230731145020.41262-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-References: <20230808020917.2230692-1-fengwei.yin@intel.com> <20230808020917.2230692-3-fengwei.yin@intel.com>
-In-Reply-To: <20230808020917.2230692-3-fengwei.yin@intel.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Mon, 7 Aug 2023 20:49:19 -0600
-Message-ID: <CAOUHufZnYk5BtTB9Cm0Jnf_KJPXdsLD4H7Fd4wdxP2Rm+QW+Ag@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] madvise:madvise_free_huge_pmd(): don't use
- mapcount() against large folio for sharing check
-To:     Yin Fengwei <fengwei.yin@intel.com>, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, willy@infradead.org,
-        vishal.moola@gmail.com, wangkefeng.wang@huawei.com,
-        minchan@kernel.org, david@redhat.com, ryan.roberts@arm.com,
-        shy828301@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-07_28,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=696 bulkscore=0
+ adultscore=0 mlxscore=0 spamscore=0 suspectscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308080023
+X-Proofpoint-GUID: _Tev_mNlBygBktnZapHAtMHG0n4HQkRT
+X-Proofpoint-ORIG-GUID: _Tev_mNlBygBktnZapHAtMHG0n4HQkRT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 8:11=E2=80=AFPM Yin Fengwei <fengwei.yin@intel.com> =
-wrote:
->
-> Commit fc986a38b670 ("mm: huge_memory: convert madvise_free_huge_pmd to
-> use a folio") replaced the page_mapcount() with folio_mapcount() to check
-> whether the folio is shared by other mapping.
->
-> It's not correct for large folios. folio_mapcount() returns the total
-> mapcount of large folio which is not suitable to detect whether the folio
-> is shared.
->
-> Use folio_estimated_sharers() which returns a estimated number of shares.
-> That means it's not 100% correct. It should be OK for madvise case here.
->
-> User-visible effects is that the THP is skipped when user call madvise.
-> But the correct behavior is THP should be split and processed then.
->
-> NOTE: this change is a temporary fix to reduce the user-visible effects
-> before the long term fix from David is ready.
->
-> Fixes: fc986a38b670 ("mm: huge_memory: convert madvise_free_huge_pmd to u=
-se a folio")
-> Cc: stable@vger.kernel.org
+On Mon, 31 Jul 2023 20:20:18 +0530, Manivannan Sadhasivam wrote:
 
-Andrew, this one isn't really a bug fix but an optimization, so please
-feel free to drop the Fixes and Cc tags above. (It seems to me it
-doesn't hurt for stable to take it though.)
+> This series adds interconnect support to Qcom UFS driver. Interconnect support
+> is added to Qcom UFS driver for scaling the interconnect path dynamically. This
+> is required to avoid boot crash in recent SoCs and also to save power during
+> runtime. More information is available in patch 2/2.
+> 
+> Credits
+> =======
+> 
+> [...]
 
-Thank you.
+Applied to 6.6/scsi-queue, thanks!
 
+[1/2] scsi: ufs: core: Add enums for UFS lanes
+      https://git.kernel.org/mkp/scsi/c/e0d01da2cb0f
+[2/2] scsi: ufs: qcom: Add support for scaling interconnects
+      https://git.kernel.org/mkp/scsi/c/03ce80a1bb86
 
-> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
-> Reviewed-by: Yu Zhao <yuzhao@google.com>
-> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->  mm/huge_memory.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 154c210892a1..0b709d2c46c6 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -1612,7 +1612,7 @@ bool madvise_free_huge_pmd(struct mmu_gather *tlb, =
-struct vm_area_struct *vma,
->          * If other processes are mapping this folio, we couldn't discard
->          * the folio unless they all do MADV_FREE so let's skip the folio=
-.
->          */
-> -       if (folio_mapcount(folio) !=3D 1)
-> +       if (folio_estimated_sharers(folio) !=3D 1)
->                 goto out;
->
->         if (!folio_trylock(folio))
-> --
-> 2.39.2
->
+-- 
+Martin K. Petersen	Oracle Linux Engineering
