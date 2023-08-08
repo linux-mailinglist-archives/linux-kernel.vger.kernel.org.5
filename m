@@ -2,118 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7F9774787
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FD0774897
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbjHHTPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
+        id S236216AbjHHTfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235759AbjHHTPW (ORCPT
+        with ESMTP id S236215AbjHHTfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:15:22 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EAB03C22D
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:38:11 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so870076266b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:38:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691512673; x=1692117473;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rq9CGfMIPSDr9ZlL/JERcR7sYpgjvn+r29Kl2qTSWpE=;
-        b=khS11bjZmNIvPBUsXn03/vAuc/rMsMsRLjvdhE+aGwPrW6uuH6ypaIQLLzgLmnqnDQ
-         +3uWuon3U30HBMW9zd4R+rOWLafpCLmzrtfgJPM/2Fr2mruytA3sU3fEL3OXQFNkYuWQ
-         FFZEpOd57OjDX+/j4yszfjTutM2noIxpfUENgTtG9i1NWNjRzKlGilTKGf7Es/E81Fuo
-         6VJTGAqkgjeJQhFRZxMX2oesin3ke0C0XE/a8K5R4N7X8U6RG29JkFQEmPKGWNRWgiSY
-         cQo4L6zbvNdTWGueflica8eAV2kJguUjhZoAMHsXGQ6aXRAbl/qxaik1C+1qvKUVgA4w
-         Hf3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691512673; x=1692117473;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rq9CGfMIPSDr9ZlL/JERcR7sYpgjvn+r29Kl2qTSWpE=;
-        b=HMgXHFd7VNVVkrArJ8MMzf2R+tnCRUsKtvYh/su5mwnUJ7aj7b1QlIwDyjBjF8e/Of
-         TYp1UGCga8by04dDB1JcSXad1ahvWY9yVoDyakNO1Lto0aDtOlOrjfkyDiqt/pEZMLL8
-         JVA0oaRmy/QOLUuiVwIu6byn1qOUFEVX7jSCmGoQVNAJn3md0b1fGMfJWl1swbUTWETl
-         L8nB7A0s5BEaaoq4NPK/uXb0YTscsSNFBu/mOYTOLzmcmaqqPZTp1AHUkpNANDdDVpHu
-         bfXm5cn5+VL3NwdQx4/6ejo8IYXcYSX+jjEF6K68loFdoOLDvOhlhc8xd1I9EdbCBgZD
-         zgGA==
-X-Gm-Message-State: AOJu0YzPkRHmVHjzB9miHOb3mjHGJtS0LjGn/BjNqwDSreMrBmjeMRSb
-        BnnzI0Q9GbfXguvQb03CNuU4Dr+Y5lIr9j9Aht0=
-X-Google-Smtp-Source: AGHT+IHxzkAXBfNJDNcknbZH6tlIYjJNFyXEZDfCnRpxQMJVfuN4V6svYqKu4KC6ef0+KBpYIwyrmA==
-X-Received: by 2002:a2e:9f4b:0:b0:2b9:3db7:322f with SMTP id v11-20020a2e9f4b000000b002b93db7322fmr8508153ljk.18.1691492178941;
-        Tue, 08 Aug 2023 03:56:18 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id o12-20020a05600c378c00b003fd2e89620asm17797634wmr.40.2023.08.08.03.56.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 03:56:18 -0700 (PDT)
-Message-ID: <d7cc1aec-17be-502d-47c1-3163a2766ee4@linaro.org>
-Date:   Tue, 8 Aug 2023 12:56:16 +0200
+        Tue, 8 Aug 2023 15:35:32 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9CE29459;
+        Tue,  8 Aug 2023 12:00:07 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378AvQC0121589;
+        Tue, 8 Aug 2023 05:57:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691492246;
+        bh=+wmWtx1vKl7gTF/aouUyV7Zp6iwajQ3qDPiq69+61co=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=blwxyIQeOu924/GLkem29ZkB+K4mvw1Bvg6lKpXES5j/qowDDUL/RgDh7yRlNcxBe
+         1uXQ5wLwTHMNn7yjECtEtpHSUTalQNu2fhxHnmOpL9c0KHsyNopryddJqrqPp8EVEF
+         ggzkmGfAIfeVaYhCYMEZIzh5t/eAyllZS9IUwIWM=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378AvQoL021326
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Aug 2023 05:57:26 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
+ Aug 2023 05:57:26 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 8 Aug 2023 05:57:26 -0500
+Received: from [172.24.227.217] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378AvL8F038075;
+        Tue, 8 Aug 2023 05:57:21 -0500
+Message-ID: <5ca41ad1-4f42-f71a-4b5f-f2b6def42cb1@ti.com>
+Date:   Tue, 8 Aug 2023 16:27:20 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 11/11] dt-bindings: clock: samsung: remove define with
- number of clocks
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] dt-bindings: remoteproc: pru: Add Interrupt property
 Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>
+CC:     Suman Anna <s-anna@ti.com>, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20230808082738.122804-1-krzysztof.kozlowski@linaro.org>
- <20230808082738.122804-12-krzysztof.kozlowski@linaro.org>
- <20230808-scarcity-sprung-c0c2abc2971f@spud>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230808-scarcity-sprung-c0c2abc2971f@spud>
-Content-Type: text/plain; charset=UTF-8
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>,
+        <srk@ti.com>, <nm@ti.com>
+References: <20230807110836.2612730-1-danishanwar@ti.com>
+ <20230807-euphemism-trailing-ef4130dc7437@spud>
+ <910a4a98-712a-5517-5a5b-ffb962f83463@ti.com>
+ <1ade44f5-b3d1-dcde-6819-9e944f3b115d@linaro.org>
+From:   Md Danish Anwar <a0501179@ti.com>
+Organization: Texas Instruments
+In-Reply-To: <1ade44f5-b3d1-dcde-6819-9e944f3b115d@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/2023 12:53, Conor Dooley wrote:
-> On Tue, Aug 08, 2023 at 10:27:38AM +0200, Krzysztof Kozlowski wrote:
->> Number of clocks supported by Linux drivers might vary - sometimes we
->> add new clocks, not exposed previously.  Therefore this number of clocks
->> should not be in the bindings, because otherwise we should not change
->> it.
+On 08/08/23 3:48 pm, Krzysztof Kozlowski wrote:
+> On 08/08/2023 11:44, Md Danish Anwar wrote:
+>>>>    properties:
+>>>>      compatible:
+>>>> @@ -171,6 +181,9 @@ examples:
+>>>>                <0x22400 0x100>;
+>>>>          reg-names = "iram", "control", "debug";
+>>>>          firmware-name = "am65x-pru0_0-fw";
+>>>> +        interrupt-parent = <&icssg0_intc>;
+>>>> +        interrupts = <16 2 2>;
+>>>> +        interrupt-names = "vring";
+>>>>        };
+>>>
+>>> These examples would probably be more helpful if they used the
+>>> appropriate defines, no?
+>>>
+>>
+>> PRUSS Interrupt controller doesn't have any appropriate defines. This doesn't
+>> use GIC so defines from arm-gic.h can not be used here. These are specific to
+>> PRUSS INTC.
+>>
+>> I think these example are OK. Please let me know if this is OK to you.
 > 
-> This sentence reads super awkwardly, not by any means important to
-> change, but I'd likely word it "Therefore these numbers of clocks should
-> not be in the bindings, as that prevents changing them".
-
-That's better, thanks.
-
+> But isn't "2" type of the interrupt?
 > 
->> Remove it entirely from the bindings, once Linux drivers stopped
->> using them.
+> Best regards,
+> Krzysztof
 > 
-> I figure there are no consumers in other projects then? If so,
 
-Difficult to say, nothing known to me. Anyway these are not clock IDs,
-so if anyone actually relied on number of clocks in the bindings, they
-would have trouble in the first place.
+As per the description of interrupts property in ti,pruss-intc.yaml [1]
 
+Cell 1 is PRU System event number, cell 2 is PRU channel and cell 3 is PRU
+host_event (target). None of them is type of interrupt. So that's why they all
+are hardcoded. I don't think we can use IRQ_TYPE macros here.
 
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+[1]
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml#:~:text=const%3A%203-,description%3A%20%7C,-Client%20users%20shall
 
-
-Best regards,
-Krzysztof
-
+-- 
+Thanks and Regards,
+Danish.
