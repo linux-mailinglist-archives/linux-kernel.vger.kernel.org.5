@@ -2,73 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FD67747F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3548774395
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236103AbjHHTWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53344 "EHLO
+        id S235262AbjHHSHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236198AbjHHTWB (ORCPT
+        with ESMTP id S235396AbjHHSHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:22:01 -0400
-X-Greylist: delayed 2978 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Aug 2023 09:45:44 PDT
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707E810E9D1;
-        Tue,  8 Aug 2023 09:45:44 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E14CA40E0195;
-        Tue,  8 Aug 2023 14:20:22 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id HuT5X_6YHG5g; Tue,  8 Aug 2023 14:20:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691504421; bh=Ja/4Je+eQgflIPt0xBBlPFb2JkS0+HhGaeLu0Idap6o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U1SjwFKpQtDG5Qh7oIa3iME7IroVA+8T10PvQZHUUqAtxqdnLOVc2MQDG4JB1jpZT
-         gKykGZhQn2JZ9G/0Ncw8EfTy5rYEyUSznPl7lrOc4IJ1bfEBAdsSZ06aCgTcf8xKBr
-         scvAmXm96mihB3D0klClpiJHyYCPkiErUjBOansPrh+DBDFi+YqLVbk/wyIvhLqzYp
-         hLNtH0wimamG0TVvOWOL5tjPoAMUVLstyfzLjuCXNdF1P3R2bxgxtAN4sCUHp+6b0D
-         qotyPf84fVzrKhUiX0MivWmUGgB1PnMPtuRpMHzeEzPg88cVerUb9cAomVUoZoOeoF
-         u59MsfV241sDqEYUrkXatwWEr4KrBhxEvV7gP0Nl+wjveRve69qa4XOffEmbPPnuc6
-         4LZY7U60JwXokXFhkGyV26ypAHMMyRKgL2+sytv7InAhg81GavOCpvFziYfmbhCYss
-         0mtmBwpE+CE9p4EuPmHRBsvTHCb4JKlTLBc6fggqvHVvanIM6rUH76+BNwDS4mQ+bN
-         gXqMFohgHGEzHnbKsay1bRGfggNsPY97AO9qqRXiewZEZRpJPoba2S6cs0v5rvrOKk
-         uuxNk0e8pYKcr0m4wrX/OkueOQCCa/7YzGhidZ1WJXtroJwS6FyBxnZ4IE0X6rSU7R
-         m6n1b+yARY+iSUe2ebx8/YP4=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E3C2940E01A2;
-        Tue,  8 Aug 2023 14:20:11 +0000 (UTC)
-Date:   Tue, 8 Aug 2023 16:20:07 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <yazen.ghannam@amd.com>
-Cc:     "Limonciello, Mario" <mario.limonciello@amd.com>,
-        linux-edac@vger.kernel.org, hdegoede@redhat.com,
-        markgross@kernel.org, platform-driver-x86@vger.kernel.org,
-        "Luck, Tony" <tony.luck@intel.com>, linux-kernel@vger.kernel.org,
-        avadhut.naik@amd.com
-Subject: Re: [PATCH 1/2] platform/x86/amd: Introduce AMD Address Translation
- Library
-Message-ID: <20230808142007.GCZNJPFy8PqTJgTAN5@fat_crate.local>
-References: <20230802185504.606855-1-yazen.ghannam@amd.com>
- <20230802185504.606855-2-yazen.ghannam@amd.com>
- <58934edf-4fad-48e0-bc5d-62712b11e607@amd.com>
- <894b3737-1a0a-4139-9c73-686a95481795@amd.com>
- <B3BE6B56-FBAB-4878-A45D-E95AFAC86AB1@alien8.de>
- <f989cd56-a066-409a-8d82-40d0bc6ff89b@amd.com>
+        Tue, 8 Aug 2023 14:07:12 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151A861B2F;
+        Tue,  8 Aug 2023 10:07:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=1eMz8Kx1EHbpbcwhOQKyLVqRjaGKTaNj4sW/uynWnl8=; b=nejMPi3VM7ofMENIN8bhAEJL07
+        R1JLkq+Z0e+Vvd3amNjdds5KLa/IkvIBpX/KZhrsGzbSHj/Jpm8DHhBojZxbdLdU2XbGa8Ca9S0Cs
+        WFv1W+lkAfog6/kxtpgQlcebGAxCSMz4Gni1CCitszWFXF4f8IxW2G0nJ4D4I9d5w4tw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qTNeM-003TSm-VY; Tue, 08 Aug 2023 16:25:30 +0200
+Date:   Tue, 8 Aug 2023 16:25:30 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 0/2] net: stmmac: allow sharing MDIO lines
+Message-ID: <65b53003-23cf-40fa-b9d7-f0dbb45a4cb2@lunn.ch>
+References: <20230807193102.6374-1-brgl@bgdev.pl>
+ <54421791-75fa-4ed3-8432-e21184556cde@lunn.ch>
+ <CAMRc=Mc6COaxM6GExHF2M+=v2TBpz87RciAv=9kHr41HkjQhCg@mail.gmail.com>
+ <ZNJChfKPkAuhzDCO@shell.armlinux.org.uk>
+ <CAMRc=MczKgBFvuEanKu=mERYX-6qf7oUO2S4B53sPc+hrkYqxg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f989cd56-a066-409a-8d82-40d0bc6ff89b@amd.com>
+In-Reply-To: <CAMRc=MczKgBFvuEanKu=mERYX-6qf7oUO2S4B53sPc+hrkYqxg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,25 +69,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 10:07:19AM -0400, Yazen Ghannam wrote:
-> But just because there's existing vendor-specific code in arch/x86 doesn't
-> necessarily mean we should keep adding to it. So is this okay?
+> > On Tue, Aug 08, 2023 at 10:13:09AM +0200, Bartosz Golaszewski wrote:
+> > > Ok so upon some further investigation, the actual culprit is in stmmac
+> > > platform code - it always tries to register an MDIO bus - independent
+> > > of whether there is an actual mdio child node - unless the MAC is
+> > > marked explicitly as having a fixed-link.
+> > >
+> > > When I fixed that, MAC1's probe is correctly deferred until MAC0 has
+> > > created the MDIO bus.
+> > >
+> > > Even so, isn't it useful to actually reference the shared MDIO bus in some way?
+> > >
+> > > If the schematics look something like this:
+> > >
+> > > --------           -------
+> > > | MAC0 |--MDIO-----| PHY |
+> > > -------- |     |   -------
+> > >          |     |
+> > > -------- |     |   -------
+> > > | MAC1 |--     ----| PHY |
+> > > --------           -------
+> > >
+> > > Then it would make sense to model it on the device tree?
+> >
+> > So I think what you're saying is that MAC0 and MAC1's have MDIO bus
+> > masters, and the hardware designer decided to tie both together to
+> > a single set of clock and data lines, which then go to two PHYs.
+> 
+> The schematics I have are not very clear on that, but now that you
+> mention this, it's most likely the case.
 
-I'd say since it is not so close to the arch/ part, drivers/ras/ is more
-fitting IMO. Just like mce_amd is in drivers/edac/.
+I hope not. That would be very broken. As Russell pointed out, MDIO is
+not multi-master. You need to check with the hardware designer if the
+schematics are not clear.
 
-Which reminds me: why aren't you adding it to
+> Good point, but it's worse than that: when MAC0 is unbound, it will
+> unregister the MDIO bus and destroy all PHY devices. These are not
+> refcounted so they will literally go from under MAC1. Not sure how
+> this can be dealt with?
 
-drivers/edac/mce_amd.c
+unbinding is not a normal operation. So i would just live with it, and
+if root decides to shoot herself in the foot, that is her choice.
 
-?
-
-That is an MCE decoder *already*.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+   Andrew
