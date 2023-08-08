@@ -2,108 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1510E7735D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 03:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1767735D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 03:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbjHHBW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 21:22:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57292 "EHLO
+        id S230506AbjHHB17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 21:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbjHHBWy (ORCPT
+        with ESMTP id S229651AbjHHB15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 21:22:54 -0400
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A55D10D1;
-        Mon,  7 Aug 2023 18:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1691457774; x=1722993774;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=wNYE27ZB1EWXGF/Ha4qX3HRIwcK9JvWd3lFyQTsSKgg=;
-  b=cl+vK4YT5SDpT8vrQrZe8vjWftIZf1iyInq0zlJBEmwoJ70Q0lT55EW4
-   yFMYWz3SezMzp9y7OOmPtAzqiNUsJnRk+udLddYu+h/EblFqs6AmLGPsj
-   y8SOGVrWwsRmazKbVKrha7W6UmJbM0ntQy0ebxXVVTTpuBvYxPMsqn/MZ
-   k=;
-X-IronPort-AV: E=Sophos;i="6.01,263,1684800000"; 
-   d="scan'208";a="231166607"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-26a610d2.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 01:22:54 +0000
-Received: from EX19MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2b-m6i4x-26a610d2.us-west-2.amazon.com (Postfix) with ESMTPS id D5A9F40D5E;
-        Tue,  8 Aug 2023 01:22:52 +0000 (UTC)
-Received: from EX19D019UWA001.ant.amazon.com (10.13.139.95) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 8 Aug 2023 01:22:51 +0000
-Received: from EX19D019UWA004.ant.amazon.com (10.13.139.126) by
- EX19D019UWA001.ant.amazon.com (10.13.139.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 8 Aug 2023 01:22:51 +0000
-Received: from EX19D019UWA004.ant.amazon.com ([fe80::445f:a79:89eb:e469]) by
- EX19D019UWA004.ant.amazon.com ([fe80::445f:a79:89eb:e469%5]) with mapi id
- 15.02.1118.030; Tue, 8 Aug 2023 01:22:51 +0000
-From:   "Erdogan, Tahsin" <trdgn@amazon.com>
-To:     "edumazet@google.com" <edumazet@google.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2] tun: avoid high-order page allocation for packet
- header
-Thread-Topic: [PATCH v2] tun: avoid high-order page allocation for packet
- header
-Thread-Index: AQHZyZbZ6WJcwoAIkUqYVVMSFYLvKg==
-Date:   Tue, 8 Aug 2023 01:22:51 +0000
-Message-ID: <1327499ea2f2b43c9de485435e028797198ea2aa.camel@amazon.com>
-References: <20230731230736.109216-1-trdgn@amazon.com>
-         <CANn89iLV0iEeQy19wn+Vfmhpgr6srVpf3L+oBvuDyLRQXfoMug@mail.gmail.com>
-         <CANn89iLghUDUSbNv-QOgyJ4dv5DhXGL60caeuVMnHW4HZQVJmg@mail.gmail.com>
-In-Reply-To: <CANn89iLghUDUSbNv-QOgyJ4dv5DhXGL60caeuVMnHW4HZQVJmg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.187.171.26]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7172709B2759A140BBD0900A0CB3A09E@amazon.com>
-Content-Transfer-Encoding: base64
+        Mon, 7 Aug 2023 21:27:57 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4ECBD9;
+        Mon,  7 Aug 2023 18:27:55 -0700 (PDT)
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RKb7s41HCztS2g;
+        Tue,  8 Aug 2023 09:24:25 +0800 (CST)
+Received: from [10.67.110.108] (10.67.110.108) by
+ kwepemi500012.china.huawei.com (7.221.188.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 8 Aug 2023 09:27:52 +0800
+Message-ID: <e555c513-2102-3e0b-275c-e605eab8c49d@huawei.com>
+Date:   Tue, 8 Aug 2023 09:27:51 +0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH 8/9] i2c: imx-lpi2c: Use dev_err_probe in probe function
+To:     Andi Shyti <andi.shyti@kernel.org>
+CC:     <florian.fainelli@broadcom.com>,
+        <bcm-kernel-feedback-list@broadcom.com>, <rjui@broadcom.com>,
+        <sbranden@broadcom.com>, <yangyicong@hisilicon.com>,
+        <aisheng.dong@nxp.com>, <shawnguo@kernel.org>,
+        <s.hauer@pengutronix.de>, <kernel@pengutronix.de>,
+        <festevam@gmail.com>, <linux-imx@nxp.com>, <kblaiech@nvidia.com>,
+        <asmaa@nvidia.com>, <loic.poulain@linaro.org>, <rfoss@kernel.org>,
+        <ardb@kernel.org>, <gcherian@marvell.com>,
+        <linux-i2c@vger.kernel.org>,
+        <linux-rpi-kernel@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+References: <20230802095737.3957587-1-liaochang1@huawei.com>
+ <20230802095737.3957587-9-liaochang1@huawei.com>
+ <20230804221644.cqmoin6u22mxvouk@intel.intel>
+ <758b882e-31a5-1f73-7fd2-945a8a2e9558@huawei.com>
+ <20230807081725.fmjvdp3gxjs2ijee@intel.intel>
+ <042c6eb7-cf31-79e1-51c7-c229e2582c0c@huawei.com>
+ <20230807115503.u7qrtmt23vzosehr@intel.intel>
+From:   "Liao, Chang" <liaochang1@huawei.com>
+In-Reply-To: <20230807115503.u7qrtmt23vzosehr@intel.intel>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.108]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500012.china.huawei.com (7.221.188.12)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIzLTA4LTAxIGF0IDEyOjE2ICswMjAwLCBFcmljIER1bWF6ZXQgd3JvdGU6DQo+
-IE9uIFR1ZSwgQXVnIDEsIDIwMjMgYXQgMTE6MzfigK9BTSBFcmljIER1bWF6ZXQgPGVkdW1hemV0
-QGdvb2dsZS5jb20+DQo+IHdyb3RlOg0KPiA+IE9uIFR1ZSwgQXVnIDEsIDIwMjMgYXQgMTowN+KA
-r0FNIFRhaHNpbiBFcmRvZ2FuIDx0cmRnbkBhbWF6b24uY29tPg0KPiA+IHdyb3RlOg0KPiA+ID4g
-V2hlbiBHU08gaXMgbm90IGVuYWJsZWQgYW5kIGEgcGFja2V0IGlzIHRyYW5zbWl0dGVkIHZpYSB3
-cml0ZXYoKSwNCj4gPiA+IGFsbA0KPiA+ID4gcGF5bG9hZCBpcyB0cmVhdGVkIGFzIGhlYWRlciB3
-aGljaCByZXF1aXJlcyBhIGNvbnRpZ3VvdXMgbWVtb3J5DQo+ID4gPiBhbGxvY2F0aW9uLg0KPiA+
-ID4gVGhpcyBhbGxvY2F0aW9uIHJlcXVlc3QgaXMgaGFyZGVyIHRvIHNhdGlzZnksIGFuZCBtYXkg
-ZXZlbiBmYWlsDQo+ID4gPiBpZiB0aGVyZSBpcw0KPiA+ID4gZW5vdWdoIGZyYWdtZW50YXRpb24u
-DQo+ID4gPiANCj4gPiA+IE5vdGUgdGhhdCBzZW5kbXNnKCkgY29kZSBwYXRoIGxpbWl0cyB0aGUg
-bGluZWFyIGNvcHkgbGVuZ3RoLCBzbw0KPiA+ID4gdGhpcyBjaGFuZ2UNCj4gPiA+IG1ha2VzIHdy
-aXRldigpIGFuZCBzZW5kbXNnKCkgbW9yZSBjb25zaXN0ZW50Lg0KPiA+ID4gDQo+ID4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBUYWhzaW4gRXJkb2dhbiA8dHJkZ25AYW1hem9uLmNvbT4NCj4gPiA+IC0tLQ0K
-PiA+IA0KPiA+IEkgd2lsbCBoYXZlIHRvIHR3ZWFrIG9uZSBleGlzdGluZyBwYWNrZXRkcmlsbCB0
-ZXN0LCBub3RoaW5nIG1ham9yLg0KPiA+IA0KPiA+IFRlc3RlZC1ieTogRXJpYyBEdW1hemV0IDxl
-ZHVtYXpldEBnb29nbGUuY29tPg0KPiA+IFJldmlld2VkLWJ5OiBFcmljIER1bWF6ZXQgPGVkdW1h
-emV0QGdvb2dsZS5jb20+DQo+IA0KPiBJIGhhdmUgdG8gdGFrZSB0aGlzIGJhY2ssIHNvcnJ5Lg0K
-PiANCj4gV2UgbmVlZCB0byBjaGFuZ2UgYWxsb2Nfc2tiX3dpdGhfZnJhZ3MoKSBhbmQgdHVuLmMg
-dG8gYXR0ZW1wdA0KPiBoaWdoLW9yZGVyIGFsbG9jYXRpb25zLA0KPiBvdGhlcndpc2UgdHVuIHVz
-ZXJzIHNlbmRpbmcgdmVyeSBsYXJnZSBidWZmZXJzIHdpbGwgcmVncmVzcy4NCj4gKEV2ZW4gaWYg
-dGhpcyBfY291bGRfIGZhaWwgYXMgeW91IHBvaW50ZWQgb3V0IGlmIG1lbW9yeSBpcw0KPiB0aWdo
-dC9mcmFnbWVudGVkKQ0KPiANCj4gSSBhbSB3b3JraW5nIHRvIG1ha2UgdGhlIGNoYW5nZSBpbiBh
-bGxvY19za2Jfd2l0aF9mcmFncygpIGFuZCBpbiB0dW4sDQo+IHdlIGNhbiBhcHBseSB5b3VyIHBh
-dGNoIGFmdGVyIHRoaXMgcHJlcmVxLg0KDQpIaSBFcmljLCBJIGJlbGlldmUgeW91ciBjaGFuZ2Vz
-IGFyZSBtZXJnZWQuIEFyZSB3ZSBnb29kIHRvIGFwcGx5IG15DQpwYXRjaCBuZXh0Pw0K
+
+
+在 2023/8/7 19:55, Andi Shyti 写道:
+> On Mon, Aug 07, 2023 at 06:44:23PM +0800, Liao, Chang wrote:
+>> Hi, Andi
+>>
+>> 在 2023/8/7 16:17, Andi Shyti 写道:
+>>> On Mon, Aug 07, 2023 at 10:13:30AM +0800, Liao, Chang wrote:
+>>>> Hi, Andi
+>>>>
+>>>> 在 2023/8/5 6:16, Andi Shyti 写道:
+>>>>> On Wed, Aug 02, 2023 at 05:57:36PM +0800, Liao Chang wrote:
+>>>>>> Use the dev_err_probe function instead of dev_err in the probe function
+>>>>>> so that the printed messge includes the return value and also handles
+>>>>>> -EPROBE_DEFER nicely.
+>>>>>>
+>>>>>> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+>>>>>> ---
+>>>>>>  drivers/i2c/busses/i2c-imx-lpi2c.c | 12 ++++--------
+>>>>>>  1 file changed, 4 insertions(+), 8 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
+>>>>>> index c3287c887c6f..bfa788b3775b 100644
+>>>>>> --- a/drivers/i2c/busses/i2c-imx-lpi2c.c
+>>>>>> +++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
+>>>>>> @@ -569,10 +569,8 @@ static int lpi2c_imx_probe(struct platform_device *pdev)
+>>>>>>  		sizeof(lpi2c_imx->adapter.name));
+>>>>>>  
+>>>>>>  	ret = devm_clk_bulk_get_all(&pdev->dev, &lpi2c_imx->clks);
+>>>>>> -	if (ret < 0) {
+>>>>>> -		dev_err(&pdev->dev, "can't get I2C peripheral clock, ret=%d\n", ret);
+>>>>>> -		return ret;
+>>>>>> -	}
+>>>>>> +	if (ret < 0)
+>>>>>> +		return dev_err_probe(&pdev->dev, ret, "can't get I2C peripheral clock\n");
+>>>>>
+>>>>> you cut on this because the line was going over 100 characters? :)
+>>>>>
+>>>>> In theory you shouldn't change the print message when doing such
+>>>>> changes and you can still split it as:
+>>>>>
+>>>>> 		return dev_err_probe(&pdev->dev, ret,
+>>>>> 				     "can't get I2C peripheral clock, ret=%d\n",
+>>>>> 				     ret);
+>>>>>
+>>>>> and you're even within the 80 characters.
+>>>>
+>>>> Since dev_err_probe always print the second parameter that happens to be the return value,
+>>>> I remove the "ret=%d" from the original message to avoid a redundant error message.
+>>>>
+>>>> So is it better to keep the original message unchanged, even though dev_err_probe also prints
+>>>> the return error value? Or is it better to make this change so that all error messages printed
+>>>> in the probe function include the return value in a consistent style?
+>>>
+>>> yes, you are right! Then please ignore this comment, but...
+>>>
+>>>>>   	ret = devm_request_irq(&pdev->dev, irq, lpi2c_imx_isr, 0,
+>>>>>   		pdev->name, lpi2c_imx);
+>>>>> - 	if (ret) {
+>>>>> - 		dev_err(&pdev->dev, "can't claim irq %d\n", irq);
+>>>>> - 		return ret;
+>>>>> - 	}
+>>>>> + 	if (ret)
+>>>>> + 		return dev_err_probe(&pdev->dev, ret, "can't claim irq %d\n", irq);
+>>>
+>>> please make it coherent to this second part, as well, where the
+>>> error number is printed.
+>>
+>> Do you mean to convert it to the following?
+>>
+>>     if (ret)
+>>         return dev_err_probe(&pdev->dev, ret, "can't claim irq\n");
+>>
+>> I understand that the style of error message printed by dev_err_probe is like
+>> "error [ERRNO]: [customized message]", the [ERRNO] comes from 2nd parameter,
+>> [customized message] comes from 3rd paramter, if the original [customized message]it
+>> also print ERRNO, i intend to remove it in this patch, otherwise, I will just keep it.
+>> In the above code, [customized message] intend to print irq but return value, so it is
+>> better to keep the original message, right?
+> 
+> sorry... I just got confused and read wrong the code. Please
+> ignore my comments on this patch, you are right here. Feel free
+> to add.
+
+Thanks, I will add a bit more information to explain the changes made in these patches in v3.
+
+> 
+> Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
+> 
+> Andi
+
+-- 
+BR
+Liao, Chang
