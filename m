@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B72AD7744C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216587747FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235838AbjHHS2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
+        id S236081AbjHHTXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:23:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235793AbjHHS1u (ORCPT
+        with ESMTP id S235929AbjHHTXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:27:50 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94EE2A9E96
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:46:21 -0700 (PDT)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RKtWT4CXdzNn1w;
-        Tue,  8 Aug 2023 20:57:25 +0800 (CST)
+        Tue, 8 Aug 2023 15:23:30 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E97268EF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:49:28 -0700 (PDT)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RKtWV2bdXztS1t;
+        Tue,  8 Aug 2023 20:57:26 +0800 (CST)
 Received: from ubuntu1804.huawei.com (10.67.174.202) by
  dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 8 Aug 2023 21:00:53 +0800
+ 15.1.2507.27; Tue, 8 Aug 2023 21:00:54 +0800
 From:   Zhu Wang <wangzhu9@huawei.com>
 To:     <lee@kernel.org>, <thor.thayer@linux.intel.com>,
         <ckeepax@opensource.cirrus.com>, <rf@opensource.cirrus.com>,
         <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>
 CC:     <wangzhu9@huawei.com>
-Subject: [PATCH -next 5/8] mfd: stpmic1: remove redundant of_match_ptr()
-Date:   Tue, 8 Aug 2023 21:00:20 +0800
-Message-ID: <20230808130023.202700-6-wangzhu9@huawei.com>
+Subject: [PATCH -next 6/8] mfd: hi655x-pmic: remove redundant of_match_ptr()
+Date:   Tue, 8 Aug 2023 21:00:21 +0800
+Message-ID: <20230808130023.202700-7-wangzhu9@huawei.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230808130023.202700-1-wangzhu9@huawei.com>
 References: <20230808130023.202700-1-wangzhu9@huawei.com>
@@ -39,9 +39,9 @@ X-Originating-IP: [10.67.174.202]
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggpeml500025.china.huawei.com (7.185.36.35)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -53,22 +53,22 @@ of_match_ptr() here. We remove of_match_ptr() here.
 
 Signed-off-by: Zhu Wang <wangzhu9@huawei.com>
 ---
- drivers/mfd/stpmic1.c | 2 +-
+ drivers/mfd/hi655x-pmic.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/stpmic1.c b/drivers/mfd/stpmic1.c
-index 3cc7492f828f..c5128fe96cc7 100644
---- a/drivers/mfd/stpmic1.c
-+++ b/drivers/mfd/stpmic1.c
-@@ -219,7 +219,7 @@ MODULE_DEVICE_TABLE(of, stpmic1_of_match);
- static struct i2c_driver stpmic1_driver = {
- 	.driver = {
- 		.name = "stpmic1",
--		.of_match_table = of_match_ptr(stpmic1_of_match),
-+		.of_match_table = stpmic1_of_match,
- 		.pm = pm_sleep_ptr(&stpmic1_pm),
+diff --git a/drivers/mfd/hi655x-pmic.c b/drivers/mfd/hi655x-pmic.c
+index 98ae40ee3f05..91807431a1d6 100644
+--- a/drivers/mfd/hi655x-pmic.c
++++ b/drivers/mfd/hi655x-pmic.c
+@@ -162,7 +162,7 @@ MODULE_DEVICE_TABLE(of, hi655x_pmic_match);
+ static struct platform_driver hi655x_pmic_driver = {
+ 	.driver	= {
+ 		.name =	"hi655x-pmic",
+-		.of_match_table = of_match_ptr(hi655x_pmic_match),
++		.of_match_table = hi655x_pmic_match,
  	},
- 	.probe = stpmic1_probe,
+ 	.probe  = hi655x_pmic_probe,
+ 	.remove = hi655x_pmic_remove,
 -- 
 2.17.1
 
