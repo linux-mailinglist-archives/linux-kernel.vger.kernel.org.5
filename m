@@ -2,84 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0EFD774146
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 635797741C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234340AbjHHRRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:17:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        id S234647AbjHHR2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234389AbjHHRRI (ORCPT
+        with ESMTP id S234580AbjHHR1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:17:08 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EBB8B71F27;
-        Tue,  8 Aug 2023 09:07:00 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378CPU0g010517;
-        Tue, 8 Aug 2023 07:25:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691497530;
-        bh=nUpsYfRlwTK66Cbczjo0J+0DAcGJ+e7VyMZ9U21DaGA=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=l4vjFrusoQBw6tu2thnaTH9B6Hanl0+3l2k0uxERS+JxTn/UlQ/hdnbl0s1I9lQUF
-         QtgYBpjLQVhq1uumQnXrc2dR134Lz28kEwZS8h1TpsKIqHga8u0IMrMII9Whnj89X6
-         oz/54sB82cA/GN9+F4mKBkJUrnaOt6MuQvrjLb7g=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378CPUgC059124
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Aug 2023 07:25:30 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
- Aug 2023 07:25:29 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 8 Aug 2023 07:25:29 -0500
-Received: from [10.249.48.175] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378CPTm1095997;
-        Tue, 8 Aug 2023 07:25:29 -0500
-Message-ID: <b9fa7346-9e99-12dd-501d-263e4a561fde@ti.com>
-Date:   Tue, 8 Aug 2023 07:25:29 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] remoteproc: core: Honor device tree /alias entries when
- assigning IDs
-Content-Language: en-US
-To:     Nishanth Menon <nm@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Kevin Cahalan <kevinacahalan@gmail.com>
-References: <20230807140247.956255-1-nm@ti.com>
-From:   Hari Nagalla <hnagalla@ti.com>
-In-Reply-To: <20230807140247.956255-1-nm@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        Tue, 8 Aug 2023 13:27:42 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE72EBB7;
+        Tue,  8 Aug 2023 09:11:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=dP3kh+kDx9zElDDDoC7PRVq68biyXb2WGj3LyKhU5Rs=; b=oK5r0qn1HYBL65s1wkMyqZfKO/
+        iRpuXeV0rC2jL8bkDzFW4w36CsFD5Kjy1iDR27NDMB5DLI1OMckuCxwqJXjDWrVKcgj0bf4QwPSIb
+        s2PaB/GZIgfq3/08OsvQhDip/ufHuVE8YnsHFrWvMdpkvOHyjapupfetwCmnGKd6fr80=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:53646 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qTLmH-0004IO-Qo; Tue, 08 Aug 2023 08:25:34 -0400
+Date:   Tue, 8 Aug 2023 08:25:33 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bruno.thomsen@gmail.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Message-Id: <20230808082533.b608c9a2a4bd922920643c4b@hugovil.com>
+In-Reply-To: <20230808-capsize-deodorize-5776d3dbb192@spud>
+References: <20230802191153.952667-1-hugo@hugovil.com>
+        <20230802191153.952667-2-hugo@hugovil.com>
+        <20230808-capsize-deodorize-5776d3dbb192@spud>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 1/2] dt-bindings: rtc: add properties to set
+ battery-related functions
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/23 09:02, Nishanth Menon wrote:
-> Assign remoteproc device IDs based on device tree /aliases entries if
-> present, falling back to the existing numbering scheme if there is no
-> /aliases entry (which includes when the system isn't booted using DT)
-> or a numbering conflict. If the alias node is not present, the driver
-> behaves as before.
+On Tue, 8 Aug 2023 12:21:24 +0100
+Conor Dooley <conor@kernel.org> wrote:
+
+> Hey Hugo,
 > 
-> Cc: Robert Nelson<robertcnelson@gmail.com>
-> Reported-by: Kevin Cahalan<kevinacahalan@gmail.com>
-> Signed-off-by: Nishanth Menon<nm@ti.com>
-> ---
-Reviewed-by: Hari Nagalla <hnagalla@ti.com>
+> On Wed, Aug 02, 2023 at 03:11:52PM -0400, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > These properties can be defined in the board's device tree to set the
+> > default power-on values for battery-related functions.
+> > 
+> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > ---
+> >  .../devicetree/bindings/rtc/rtc.yaml          | 19 +++++++++++++++++++
+> >  1 file changed, 19 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> > index efb66df82782..0217d229e3fa 100644
+> > --- a/Documentation/devicetree/bindings/rtc/rtc.yaml
+> > +++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> > @@ -26,6 +26,25 @@ properties:
+> >        0: not chargeable
+> >        1: chargeable
+> >  
+> > +  battery-low-detect:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum: [0, 1]
+> > +    description: |
+> > +      For RTC devices supporting a backup battery/supercap, this flag can be
+> > +      used to configure the battery low detection reporting function:
+> > +      0: disabled
+> > +      1: enabled
+> > +
+> > +  battery-switch-over:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum: [0, 1]
+> > +    description: |
+> > +      For RTC devices supporting a backup battery/supercap, this flag can be
+> > +      used to configure the battery switch over when the main voltage source is
+> > +      turned off:
+> > +      0: disabled
+> > +      1: enabled
+> 
+> Why are these implemented as enums? This seems to fall into the category
+> of using DT to determine software policy - why's it not sufficient to
+> have boolean properties that indicate hardware support and let the software
+> decide what to do with them?
+
+Hi Conor,
+the reason is that I based the new properties on the existing property
+"aux-voltage-chargeable":
+
+-------------------
+ aux-voltage-chargeable:
+    $ref: /schemas/types.yaml#/definitions/uint32
+    enum: [0, 1]
+    description: |
+      Tells whether the battery/supercap of the RTC (if any) is
+      chargeable or not:
+      0: not chargeable
+      1: chargeable
+-------------------
+
+I agree with you that a boolean would be more appropriate. Should I
+also submit a (separate) patch to fix the "aux-voltage-chargeable"
+property to a boolean?
+
+Hugo.
+
+
+> Thanks,
+> Conor.
+> 
+> > +
+> >    quartz-load-femtofarads:
+> >      description:
+> >        The capacitive load of the quartz(x-tal), expressed in femto
+> > -- 
+> > 2.30.2
+> > 
