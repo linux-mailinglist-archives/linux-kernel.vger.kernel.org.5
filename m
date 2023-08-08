@@ -2,417 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A069773C02
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E01773B3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbjHHP7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 11:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37034 "EHLO
+        id S230041AbjHHPqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 11:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbjHHP5n (ORCPT
+        with ESMTP id S229436AbjHHPpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:57:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF165FD3;
-        Tue,  8 Aug 2023 08:44:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691509445; x=1723045445;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zyD+ajr6NN5YlOrvbgVfRuP+pFxH01sxrRC+U5rKAek=;
-  b=IP4UgZl6i5jKSc+djele6I0GX5nIWR0QxnCHFcMhartue2thUALn7nu9
-   Qce+gCP3D9D9r8YdJjes327rWdgXQ8JvlKWKZey3XAr1p6Aapf1IEQqeY
-   Wf8/vFGIY42lX6cJYK219SUKUhX4SN4wFMmVr4/sQSVo5VLS4vv2IWJ4Y
-   otuPF4dhjNdTEey8+Kp6t6wY+hoD1a8Tl5dAWziqhD0U9EChtLDbqyZeE
-   gW1jpUID+qj51ghSOh4Pk/Z92PtFjNf8IGFezevo8dK2NyWvTgpg8nfxd
-   QnuQKNd/+pARJIsRtutBIyAO9CM+xfzO8Pc8XdEqhwo9iP9xjnMraCYzl
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="457213606"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="457213606"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 06:51:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="905219727"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="905219727"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP; 08 Aug 2023 06:51:42 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qTN7c-00AYjE-0P;
-        Tue, 08 Aug 2023 16:51:40 +0300
-Date:   Tue, 8 Aug 2023 16:51:39 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Wenhua Lin <Wenhua.Lin@unisoc.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Samuel Holland <samuel@sholland.org>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wenhua lin <wenhua.lin1994@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Subject: Re: [PATCH] input: keyboard: Add sprd-keypad driver
-Message-ID: <ZNJIa+CbmvDuKq2L@smile.fi.intel.com>
-References: <20230808072501.3393-1-Wenhua.Lin@unisoc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230808072501.3393-1-Wenhua.Lin@unisoc.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 8 Aug 2023 11:45:10 -0400
+Received: from smtp.uniroma2.it (smtp.uniroma2.it [160.80.6.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353753A98;
+        Tue,  8 Aug 2023 08:40:37 -0700 (PDT)
+Received: from smtpauth-2019-1.uniroma2.it (smtpauth-2019-1.uniroma2.it [160.80.5.46])
+        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 378Dq6vp018430;
+        Tue, 8 Aug 2023 15:52:13 +0200
+Received: from lubuntu-18.04 (unknown [160.80.103.126])
+        by smtpauth-2019-1.uniroma2.it (Postfix) with ESMTPSA id 47D7A1208B1;
+        Tue,  8 Aug 2023 15:52:02 +0200 (CEST)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=uniroma2.it;
+        s=ed201904; t=1691502722; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZYJ2Hbc6jQGJN61PVddVdQYgnFTt3pXorVwXhXM9k0w=;
+        b=dFaSqe5C6cG5BeVyTeXP0E+57SwBzb9/aX0Ui4GDgADgSrlfQee5GMOG9j/9aVNMzmKBb0
+        5rp66vkqjBRFBdBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniroma2.it; s=rsa201904;
+        t=1691502722; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZYJ2Hbc6jQGJN61PVddVdQYgnFTt3pXorVwXhXM9k0w=;
+        b=NJJzP625Sm/qY8uuK5i+R5ihru0V0zf7NB0bVCHU1KZSlMuN9hgPbtMy8NaqPpfWy+Zr0Y
+        dCO82WwDHF182M7aeEV5h9d0Z8TZBCsqMD7WfATeFfQDs0iZ8is3Gfx6pWFpbZ/KqJSouQ
+        AWHAHab+fbzEPZDDc3ysNFb7DTcE8b2Lo4FJojR7YgM7AmdkkDGwC25oo3TjPQ/9JcSaNj
+        n0VwS9k5K2A/E6lONczelVK7WgOrniQp/l6OydXESXV7N5WbjN7fZ/Rv7SysARYbvLHJT9
+        fUbz3Qp3a5t/ooH2ej0uAkEa1paYxztDEj+2DA4KWri+vfByCM2vbVwivtbzoQ==
+Date:   Tue, 8 Aug 2023 15:52:01 +0200
+From:   Andrea Mayer <andrea.mayer@uniroma2.it>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
+        Andrea Mayer <andrea.mayer@uniroma2.it>
+Subject: Re: [net-next 1/2] seg6: add NEXT-C-SID support for SRv6 End.X
+ behavior
+Message-Id: <20230808155201.d80cead76984031211da396b@uniroma2.it>
+In-Reply-To: <ZM4Ff0Rk2SBiDdC0@Laptop-X1>
+References: <20230731175117.17376-1-andrea.mayer@uniroma2.it>
+        <20230731175117.17376-2-andrea.mayer@uniroma2.it>
+        <ZMtztGiOWV6bqCLg@Laptop-X1>
+        <20230804144118.a52808dc5fecda09751fae9d@uniroma2.it>
+        <ZM4Ff0Rk2SBiDdC0@Laptop-X1>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-2.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 03:25:01PM +0800, Wenhua Lin wrote:
-> Add matrix keypad driver, support matrix keypad function.
-
-Bindings should be prerequisite to this, meaning this has to be a series of
-two patches.
-
-...
-
-> +	help
-> +	  Keypad controller is used to interface a SoC with a matrix-keypad device,
-> +	  The keypad controller supports multiple row and column lines.
-> +	  Say Y if you want to use the SPRD keyboard.
-> +	  Say M if you want to use the SPRD keyboard on SoC as module.
-
-What will be the module name?
-
-...
-
->  obj-$(CONFIG_KEYBOARD_ST_KEYSCAN)	+= st-keyscan.o
->  obj-$(CONFIG_KEYBOARD_SUN4I_LRADC)	+= sun4i-lradc-keys.o
->  obj-$(CONFIG_KEYBOARD_SUNKBD)		+= sunkbd.o
-> +obj-$(CONFIG_KEYBOARD_SPRD)		+= sprd_keypad.o
-
-Are you sure it's ordered correctly?
-
->  obj-$(CONFIG_KEYBOARD_TC3589X)		+= tc3589x-keypad.o
->  obj-$(CONFIG_KEYBOARD_TEGRA)		+= tegra-kbc.o
->  obj-$(CONFIG_KEYBOARD_TM2_TOUCHKEY)	+= tm2-touchkey.o
-
-...
-
-> +/*
-> + * Copyright (C) 2018 Spreadtrum Communications Inc.
-> + */
-
-A single line
-
-...
-
-Missing bits.h at least.
-Revisit you header inclusion block to add exactly what you are using.
-
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/input/matrix_keypad.h>
-> +#include <linux/io.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/clk.h>
-
-> +#include <linux/of.h>
-
-Why?
-
-> +#include <linux/input.h>
-
-Order please?
-
-...
-
-> +#define SPRD_KPD_CTRL			0x0
-> +#define SPRD_KPD_INT_EN			0x4
-> +#define SPRD_KPD_INT_RAW_STATUS		0x8
-> +#define SPRD_KPD_INT_MASK_STATUS	0xc
-
-Use fixed width for register offset, like 0x00.
-
-...
-
-> +#define SPRD_DEF_LONG_KEY_MS		1000
-
-	(1 * MSEC_PER_SEC)
-
-?
-
-...
-
-> +struct sprd_keypad_data {
-> +	u32 rows_en; /* enabled rows bits */
-> +	u32 cols_en; /* enabled cols bits */
-
-Why not bitmaps?
-
-> +	u32 num_rows;
-> +	u32 num_cols;
-> +	u32 capabilities;
-> +	u32 debounce_ms;
-> +	void __iomem *base;
-> +	struct input_dev *input_dev;
-> +	struct clk *enable;
-> +	struct clk *rtc;
-> +};
-
-...
-
-> +	/*
-
-> +	 * y(ms) = (x + 1) * array_size
-> +	 *		/ (32.768 / (clk_div_num + 1))
-
-One line.
-
-+	 * Where:
-
-> +	 * y means time in ms
-> +	 * x means counter
-> +	 * array_size equal to rows * columns
-> +	 * clk_div_num is devider to keypad source clock
-> +	 **/
-
-Single asterisk is enough.
-
-...
-
-> +	value = value / (1000 * array_size *
-
-value /= ... ?
-
-MSEC_PER_SEC ?
-
-> +			(SPRD_DEF_DIV_CNT + 1));
-
-One line.
-
-...
-
-> +	if (value >= 1)
-> +		value -= 1;
-
-	if (value)
-		value--;
-
-...
-
-> +	value = (((data->rows_en << SPRD_KPD_ROWS_SHIFT)
-> +		| (data->cols_en << SPRD_KPD_COLS_SHIFT))
-> +		& (SPRD_KPD_ROWS_MSK | SPRD_KPD_COLS_MSK))
-> +		| SPRD_KPD_EN | SPRD_KPD_SLEEP_EN;
-
-Move | & etc on previous lines respectively.
-
-...
-
-> +static int __maybe_unused sprd_keypad_suspend(struct device *dev)
-
-No __maybe_unused.
-
-...
-
-> +static int __maybe_unused sprd_keypad_resume(struct device *dev)
-
-Ditto.
-
-...
-
-> +static SIMPLE_DEV_PM_OPS(sprd_keypad_pm_ops,
-> +			sprd_keypad_suspend, sprd_keypad_resume);
-
-Use new DEFINE_*() PM macro.
-
-...
-
-> +static int sprd_keypad_parse_dt(struct device *dev)
-
-dt -> fw
-
-...
-
-> +	if (data->num_rows > SPRD_KPD_ROWS_MAX
-> +		|| data->num_cols > SPRD_KPD_COLS_MAX) {
-
-Move the || to the previous line.
-
-> +		dev_err(dev, "invalid num_rows or num_cols\n");
-> +		return -EINVAL;
-> +	}
-
-...
-
-> +	ret = of_property_read_u32(np, "debounce-interval", &data->debounce_ms);
-
-device_property_...()
-
-> +	if (ret) {
-> +		data->debounce_ms = 5;
-
-> +		dev_warn(dev, "parse debounce-interval failed.\n");
-
-Why do we need this message?
-
-> +	}
-
-...
-
-> +	if (of_get_property(np, "linux,repeat", NULL))
-> +		data->capabilities |= SPRD_CAP_REPEAT;
-> +	if (of_get_property(np, "sprd,support_long_key", NULL))
-> +		data->capabilities |= SPRD_CAP_LONG_KEY;
-> +	if (of_get_property(np, "wakeup-source", NULL))
-> +		data->capabilities |= SPRD_CAP_WAKEUP;
-
-device_property_*()
-
-And I'm wondering if input subsystem already does this for you.
-
-...
-
-> +	data->enable = devm_clk_get(dev, "enable");
-> +	if (IS_ERR(data->enable)) {
-> +		if (PTR_ERR(data->enable) != -EPROBE_DEFER)
-> +			dev_err(dev, "get enable clk failed.\n");
-> +		return PTR_ERR(data->enable);
-> +	}
-> +
-> +	data->rtc = devm_clk_get(dev, "rtc");
-> +	if (IS_ERR(data->rtc)) {
-> +		if (PTR_ERR(data->enable) != -EPROBE_DEFER)
-> +			dev_err(dev, "get rtc clk failed.\n");
-> +		return PTR_ERR(data->rtc);
-> +	}
-
-Why not bulk?
-Why not _enabled() variant?
-
-> +	return 0;
-> +}
-
-...
-
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	data->base = devm_ioremap_resource(&pdev->dev, res);
-
-devm_platform_ioremap_resource()
-
-> +	if (IS_ERR(data->base)) {
-
-> +		dev_err(&pdev->dev, "ioremap resource failed.\n");
-
-Dup message.
-
-> +		ret =  PTR_ERR(data->base);
-> +		goto err_free;
-> +	}
-
-...
-
-> +	data->input_dev = devm_input_allocate_device(&pdev->dev);
-> +	if (IS_ERR(data->input_dev)) {
-> +		dev_err(&pdev->dev, "alloc input dev failed.\n");
-> +		ret =  PTR_ERR(data->input_dev);
-
-Too many spaces.
-
-> +		goto err_free;
-
-Here and elsewhere in ->probe() use return dev_err_probe() approach as Dmitry
-nowadays is okay with that.
-
-> +	}
-
-...
-
-> +	ret = matrix_keypad_build_keymap(NULL, NULL, data->num_rows,
-> +					 data->num_cols, NULL, data->input_dev);
-
-Reindent this to be split logically.
-
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "keypad build keymap failed.\n");
-> +		goto err_free;
-> +	}
-
-...
-
-> +	irq = platform_get_irq(pdev, 0);
-> +	if (irq < 0) {
-
-> +		dev_err(&pdev->dev, "platform get irq failed.\n");
-
-Dup message.
-
-> +		goto clk_free;
-> +	}
-
-...
-
-> +clk_free:
-> +	sprd_keypad_disable(data);
-
-See above how this can be avoided.
-
-...
-
-> +err_free:
-> +	devm_kfree(&pdev->dev, data);
-
-Huh?!
-
-> +	return ret;
-
-...
-
-> +static const struct of_device_id sprd_keypad_match[] = {
-> +	{ .compatible = "sprd,sc9860-keypad", },
-> +	{},
-
-No comma for the terminator.
-
-> +};
-
-...
-
-> +static struct platform_driver sprd_keypad_driver = {
-> +	.driver = {
-> +		.name = "sprd-keypad",
-
-> +		.owner = THIS_MODULE,
-
-~15 years this is not needed.
-Where did you get this code from? Time machine?
-
-> +		.of_match_table = sprd_keypad_match,
-> +		.pm = &sprd_keypad_pm_ops,
-> +	},
-> +	.probe = sprd_keypad_probe,
-> +	.remove = sprd_keypad_remove,
-> +};
-
-> +
-
-No need to have this blank line.
-
-> +module_platform_driver(sprd_keypad_driver);
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+On Sat, 5 Aug 2023 16:17:03 +0800
+Hangbin Liu <liuhangbin@gmail.com> wrote:
+
+> On Fri, Aug 04, 2023 at 02:41:18PM +0200, Andrea Mayer wrote:
+> > Hi Hangbin,
+> > thanks for your time. Please see below.
+> > 
+> > On Thu, 3 Aug 2023 17:30:28 +0800
+> > Hangbin Liu <liuhangbin@gmail.com> wrote:
+> > 
+> > > On Mon, Jul 31, 2023 at 07:51:16PM +0200, Andrea Mayer wrote:
+> > > > +/* Processing of SRv6 End, End.X, and End.T behaviors can be extended through
+> > > > + * the flavors framework. These behaviors must report the subset of (flavor)
+> > > > + * operations they currently implement. In this way, if a user specifies a
+> > > > + * flavor combination that is not supported by a given End* behavior, the
+> > > > + * kernel refuses to instantiate the tunnel reporting the error.
+> > > > + */
+> > > > +static int seg6_flv_supp_ops_by_action(int action, __u32 *fops)
+> > > > +{
+> > > > +	switch (action) {
+> > > > +	case SEG6_LOCAL_ACTION_END:
+> > > > +		*fops = SEG6_LOCAL_END_FLV_SUPP_OPS;
+> > > > +		break;
+> > > > +	case SEG6_LOCAL_ACTION_END_X:
+> > > > +		*fops = SEG6_LOCAL_END_X_FLV_SUPP_OPS;
+> > > > +		break;
+> > > > +	default:
+> > > > +		return -EOPNOTSUPP;
+> > > > +	}
+> > > > +
+> > > > +	return 0;
+> > > >  }
+> > > >  
+> > > 
+> > > ...
+> > > 
+> > > > @@ -2070,7 +2131,8 @@ static int parse_nla_flavors(struct nlattr **attrs, struct seg6_local_lwt *slwt,
+> > > >  {
+> > > >  	struct seg6_flavors_info *finfo = &slwt->flv_info;
+> > > >  	struct nlattr *tb[SEG6_LOCAL_FLV_MAX + 1];
+> > > > -	unsigned long fops;
+> > > > +	int action = slwt->action;
+> > > > +	__u32 fops, supp_fops = 0;
+> > > >  	int rc;
+> > > >  
+> > > >  	rc = nla_parse_nested_deprecated(tb, SEG6_LOCAL_FLV_MAX,
+> > > > @@ -2086,7 +2148,8 @@ static int parse_nla_flavors(struct nlattr **attrs, struct seg6_local_lwt *slwt,
+> > > >  		return -EINVAL;
+> > > >  
+> > > >  	fops = nla_get_u32(tb[SEG6_LOCAL_FLV_OPERATION]);
+> > > > -	if (fops & ~SEG6_LOCAL_FLV_SUPP_OPS) {
+> > > > +	rc = seg6_flv_supp_ops_by_action(action, &supp_fops);
+> > > > +	if (rc < 0 || !supp_fops || (fops & ~supp_fops)) {
+> > > 
+> > > if rc == 0, the supp_fops won't be 0.
+> > > 
+> > 
+> > Yes, you're right.
+> > 
+> > In this patch, supp_fops is always set properly when rc == 0.
+> > Since seg6_flv_supp_ops_by_action() should be extended in the event that other
+> > behaviors receive flavors support, I added this check in case the "supp_fops"
+> > field was set incorrectly or not set at all.
+> > Note that supp_fops == 0 must be considered an inadmissible value.
+> > 
+> > 
+> > So, I think we have two possibilities:
+> >   i) remove this "defensive" check, assuming that supp_fops will always be set
+> >      correctly by seg6_flv_supp_ops_by_action() (when rc == 0, like in this
+> >      patch); 
+> >  ii) improve the check by explicitly indicating with a pr_warn_once, for
+> >      example, the condition that is occurring is unexpected.
+> > 
+> > for (ii), something like this:
+> > 
+> > parse_nla_flavors(...)
+> > {
+> >     [...]
+> >     supp_fops = 0;
+> >     [...]
+> > 
+> >     rc = seg6_flv_supp_ops_by_action(action, &supp_fops);
+> >     if (!rc && !supp_fops) {
+> >    	 /* supported flavors mask cannot be zero as it is considered to
+> >    	  * be invalid.
+> >    	  */
+> >    	 pr_warn_once("seg6local: invalid Flavor operation(s)");
+> >    	 return -EINVAL;
+> >     }
+> 
+> Do you mean there is a possibility *in future* that the supp_fops could be 0
+> with rc == 0? If yes, this check would make sense(although we can add this
+> check when it's true). If not. I don't see a need to have this check.
+> 
+> And some static analysis tool would report warn for this code.
+> 
+
+Good points, thanks.
+There is no possibility at the moment that supp_fops could be 0 with rc == 0.
+That check is going to be removed in v2.
+
+> Thanks
+> Hangbin
+
+Ciao,
+Andrea
+
+> > 
+> >     fops = nla_get_u32(tb[SEG6_LOCAL_FLV_OPERATION]);
+> >     if (rc < 0 || (fops & ~supp_fops)) {
+> >    	 NL_SET_ERR_MSG(extack, "Unsupported Flavor operation(s)");
+> >    	 return -EOPNOTSUPP;
+> >     }
+> > 
+> >     finfo->flv_ops = fops;
+> > 
+> >     [...]
+> > }
+> > 
+> > parse_nla_flavors() is called in the control path so another check would not
+> > hit performance. I am more inclined to consider solution (ii).
+> > 
+> > What do you think?
+> > 
+> > > Thanks
+> > > Hangbin
+> > 
+> > Ciao,
+> > Andrea
