@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC45F773FB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98FD774226
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233618AbjHHQvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44186 "EHLO
+        id S232224AbjHHRf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232268AbjHHQuV (ORCPT
+        with ESMTP id S234812AbjHHRfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:50:21 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034365B82
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:57:39 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-686bc261111so4146634b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:57:38 -0700 (PDT)
+        Tue, 8 Aug 2023 13:35:06 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643D0222F6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:15:17 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bf9252eddso873541866b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:15:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691510236; x=1692115036;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HgLj5lJm/YlQTDQrMQmu7EQz+g/56XiBYKu9c5USBBQ=;
-        b=l9FLOcGyyragSw5CavQBI9HwVzTfvBjosjXxXTk+2HaIFvpWTQlaIfbojPGXmt39zm
-         jc7vlTgizdQDe7rZmUoSXn6onz0oXMRHaH/tNle/fUI+4CeKI+ASg3rnNX+2cgRpl7HJ
-         WRYB4yCrcwU+rKBHugOI7qZmR78fj6pj5dqBwgkNlYRMXs4Kznb48SB71m4mzdKW7RGr
-         UnH3RNfKBaIK0SMUtjizpCcSRw329cR+kjXCThfa4LL2spgfBnrcCuDLAQr+Dx9pB3/y
-         4N+S7JvO9cgk6U5h2m/TCtpxlhie7ed4u9RY5oZ2eIM7JofplyE5yzf3GoUUtlA5UA+K
-         8glw==
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691511302; x=1692116102;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ir2LJjZwabuF9C6QsJfPbcf5sMfeQJgiQaLcKB1+XvI=;
+        b=DnFNdTJjYVPZQED43aWmmGTzddhchrom1zutV/842MMojbY9Uj7DB6Xy/+FUUaBj+E
+         0OcFmjMC6UdL690MIaJicg9HQl8l7b3HR1rAsic84dLK8g/z0mgcdqA14Sb9wcXUoXvk
+         db2qZz6iTRZJ1FzHcBvadtrqLhjSXT4215K/GYg0sVp1knza1mlQCmJfhTnokkgraEC3
+         GZVjImvFA3xgABFilgiz3GkJLVQKXb391w3lFKDFRUxIQYaK1bW2CU9kaNauq9r3yB30
+         QtrY8q/oUcUVa56VxNsp5mpg4Hpo107MaxwZMxIaDp893oNbMxC869ri0Hqm1izJiJHI
+         dUGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510236; x=1692115036;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HgLj5lJm/YlQTDQrMQmu7EQz+g/56XiBYKu9c5USBBQ=;
-        b=kIWOozHhInU+18FqPW4i7G1eAShUzmjHXfcP0ZeJfWt5Q5FWhMdkMCNIhznDNDaSVV
-         qwolYvMnoG1vgLwzwGhHxV3PY/p9yX3iph+N7kQf/QYGLSQkRdq0EjSwqYh9QRQLO1W0
-         r8Ex7Nj084VT1ub9nZ0s10zfMttleorVjxM+sRWhfs2Jh1vcoHxfboi9iKc1eQ6i6MWk
-         ob18yP23iz7eJ1o4zhZcCn9ExNN0P65yaqaTYSWZC9s5f+VsD+M9QKZVr56GinBJbE1p
-         5mahsyao6dAyH4cxWrN8ElLEPEyRRwfSvlynQeN8TdSAHt2CRWGeSlfUasgu7uK74SNT
-         xzxQ==
-X-Gm-Message-State: AOJu0Yw9sFPraDsYsFWeAmEpkH3szMhCRxErR+3LiU1i8zPF7aOUQWVL
-        b9ATaUOP/Enre72Pzwn3o8dxwhUxDDo=
-X-Google-Smtp-Source: AGHT+IHavzgGepi9NgzaLKaMkuJ49G6QrqbYLK5SHsTYIkHV/oIL1YFNYDPD5wNeoFg4EzLxcMdVGg==
-X-Received: by 2002:a05:6870:e410:b0:1bf:1c49:7453 with SMTP id n16-20020a056870e41000b001bf1c497453mr13036985oag.51.1691499918964;
-        Tue, 08 Aug 2023 06:05:18 -0700 (PDT)
-Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
-        by smtp.gmail.com with ESMTPSA id eb18-20020a056870a89200b001bf3942ea12sm6067502oab.1.2023.08.08.06.05.16
+        d=1e100.net; s=20221208; t=1691511302; x=1692116102;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ir2LJjZwabuF9C6QsJfPbcf5sMfeQJgiQaLcKB1+XvI=;
+        b=QftiEgdx950KdewxV4hZRcw9uP6hT+rtajFTjbBYqogsGm5LNtO16Tfzu9bmeG+PBN
+         81rXqz8h2BeJOKJ1Ikw23z3CRbKE3HU2d/wsid49HKb0YmdFLAHhkOvwC0XRJ1oQ+5Vk
+         FHj5rqSpjHiwmoLwtf9Bc0J8Sx7TV1Rpq/3hL3jWa+6queddWTcM4dq0zTqRilm4FD87
+         2rI9pP2wD7KaiL3fD4zg+3Nbo3aCy23AxEZiHDFQqm6dqsoFkE/iBs828RVNQQKq1Wxx
+         blaDkbrYiOWVng4pGmK5kAfYTmPRp/dbNn5eILxPzf2BnqtNQFi/E0Cmy9pku8uWI/OJ
+         i7UQ==
+X-Gm-Message-State: AOJu0YxvhfEhFkG8PIwY3qayaZVYN7n4urw/bgd9opXemH/QSHr7zZ0t
+        AY5/THrHmBzN3plCHplRxQmNHuFU04lIUeSTi0s=
+X-Google-Smtp-Source: AGHT+IHNPbQ5CqkafPiCZwOmZc651VJ17pY+C/qulLlrMSB5Qb3JQwe7oMYPbndENgFd6K1WsXwgFQ==
+X-Received: by 2002:a7b:c3d2:0:b0:3fe:6640:f536 with SMTP id t18-20020a7bc3d2000000b003fe6640f536mr898522wmj.40.1691500031334;
+        Tue, 08 Aug 2023 06:07:11 -0700 (PDT)
+Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
+        by smtp.gmail.com with ESMTPSA id u3-20020adfed43000000b0031759e6b43fsm13703777wro.39.2023.08.08.06.07.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 06:05:18 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 10:05:12 -0300
-From:   Alexon Oliveira <alexondunkan@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH v2] staging: vme_user: fix alignment of open parenthesis
- and deleted trailing spaces
-Message-ID: <ZNI9iGbPjgHLUaGG@alolivei-thinkpadt480s.gru.csb>
-References: <ZNFXMrtqSWvZv+rl@alolivei-thinkpadt480s.gru.csb>
- <2023080840-passenger-sierra-55ef@gregkh>
+        Tue, 08 Aug 2023 06:07:10 -0700 (PDT)
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH -fixes] riscv: Do not allow vmap pud mappings for 3-level page table
+Date:   Tue,  8 Aug 2023 15:07:09 +0200
+Message-Id: <20230808130709.1502614-1-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023080840-passenger-sierra-55ef@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,60 +70,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 06:33:07AM +0200, Greg KH wrote:
-> On Mon, Aug 07, 2023 at 05:42:26PM -0300, Alexon Oliveira wrote:
-> > Fixed all CHECK: Alignment should match open parenthesis
-> > and deleted the trailing whitespaces as reported by
-> > checkpatch to adhere to the Linux kernel coding-style
-> > guidelines.
-> > 
-> > Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
-> > ---
-> > 
-> > Changes in v2:
-> > - Fixed changelog, noted by Greg KH
-> > 
-> >  drivers/staging/vme_user/vme.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
-> > index 977c81e2f3c7..741593d75a63 100644
-> > --- a/drivers/staging/vme_user/vme.c
-> > +++ b/drivers/staging/vme_user/vme.c
-> > @@ -563,7 +563,7 @@ EXPORT_SYMBOL(vme_master_request);
-> >   *         returned.
-> >   */
-> >  int vme_master_set(struct vme_resource *resource, int enabled,
-> > -		   unsigned long long vme_base, unsigned long long size, 
-> > +		   unsigned long long vme_base, unsigned long long size,
-> >  		   u32 aspace, u32 cycle, u32 dwidth)
-> 
-> I think the confusion here is that my tree does NOT look like your tree
-> at all right now.  If I try to apply this patch, I get:
-> 
-> 	checking file drivers/staging/vme_user/vme.c
-> 	Hunk #1 FAILED at 563.
-> 	Hunk #2 FAILED at 614.
-> 	Hunk #3 FAILED at 1045.
-> 	Hunk #4 FAILED at 1841.
-> 	4 out of 4 hunks FAILED
-> 
-> So please, rebase your tree against my staging.git on git.kernel.org
-> tree, the staging-next branch, and then resend the patches from that.
-> 
+The vmalloc_fault() path was removed and to avoid syncing the vmalloc PGD
+mappings, they are now preallocated. But if the kernel can use a PUD
+mapping (which in sv39 is actually a PGD mapping) for large vmalloc
+allocation, it will free the current unused preallocated PGD mapping and
+install a new leaf one. Since there is no sync anymore, some page tables
+lack this new mapping and that triggers a panic.
 
-Hmm, ACK. I always rebase before commit a new patch, but doing like
-this:
+So only allow PUD mappings for sv48 and sv57.
 
-$ git fetch origin
-$ git rebase -i origin/staging-testing
+Fixes: 7d3332be011e ("riscv: mm: Pre-allocate PGD entries for vmalloc/modules area")
+Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+---
+ arch/riscv/include/asm/vmalloc.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-I'll do it as you instructed.
+diff --git a/arch/riscv/include/asm/vmalloc.h b/arch/riscv/include/asm/vmalloc.h
+index 58d3e447f191..924d01b56c9a 100644
+--- a/arch/riscv/include/asm/vmalloc.h
++++ b/arch/riscv/include/asm/vmalloc.h
+@@ -3,12 +3,14 @@
+ 
+ #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+ 
++extern bool pgtable_l4_enabled, pgtable_l5_enabled;
++
+ #define IOREMAP_MAX_ORDER (PUD_SHIFT)
+ 
+ #define arch_vmap_pud_supported arch_vmap_pud_supported
+ static inline bool arch_vmap_pud_supported(pgprot_t prot)
+ {
+-	return true;
++	return pgtable_l4_enabled || pgtable_l5_enabled;
+ }
+ 
+ #define arch_vmap_pmd_supported arch_vmap_pmd_supported
+-- 
+2.39.2
 
-> thanks,
-> 
-> greg k-h
-
-Thank you.
-
-Alexon Oliveira
