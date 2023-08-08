@@ -2,112 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 079597743F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCEB774900
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbjHHSO3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Aug 2023 14:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59526 "EHLO
+        id S234369AbjHHTq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231528AbjHHSN5 (ORCPT
+        with ESMTP id S232114AbjHHTp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:13:57 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C66E8CA8;
-        Tue,  8 Aug 2023 10:19:39 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id D4BB824E269;
-        Tue,  8 Aug 2023 14:12:36 +0800 (CST)
-Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 8 Aug
- 2023 14:12:36 +0800
-Received: from ubuntu.localdomain (202.188.176.82) by EXMBX068.cuchost.com
- (172.16.6.68) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 8 Aug
- 2023 14:11:58 +0800
-From:   Jia Jie Ho <jiajie.ho@starfivetech.com>
-To:     Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-CC:     <devicetree@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/2] riscv: dts: starfive - Add crypto and DMA node for JH7110
-Date:   Tue, 8 Aug 2023 14:11:49 +0800
-Message-ID: <20230808061150.81491-2-jiajie.ho@starfivetech.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230808061150.81491-1-jiajie.ho@starfivetech.com>
-References: <20230808061150.81491-1-jiajie.ho@starfivetech.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [202.188.176.82]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX068.cuchost.com
- (172.16.6.68)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 15:45:59 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1706D16AD7;
+        Tue,  8 Aug 2023 09:49:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id ECB2920312;
+        Tue,  8 Aug 2023 06:12:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691475177; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q3MK00CjNLL1ZfC7N82ZXn6nuzBSj9WikxOJJsXFTxE=;
+        b=u/kVXQ5FVsYn7MZJ9wIBDd56TjoPXUGOCVloXV5y/fMdjLGy9XPhw+Baps0z87S9QSXjQe
+        iQnYprmoLqI/vk29lirFO0Btc3Ghgiex8OvPVdfdtcOZCzj02W5HPCqEU275jHuVf/DlEe
+        HtNJ/BlgevNI+zKARShyWpMiPwqTJp4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691475177;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q3MK00CjNLL1ZfC7N82ZXn6nuzBSj9WikxOJJsXFTxE=;
+        b=taJEEMQZ6yC504W4FpkfK/uGxk8QYw9Aw5SkOR06WzsekQaMPRhPx942c7UdLNawT6gGhx
+        ec7f12QLRBZgPQDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A90EA139D1;
+        Tue,  8 Aug 2023 06:12:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8BVUKOnc0WT5PgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 08 Aug 2023 06:12:57 +0000
+Date:   Tue, 08 Aug 2023 08:12:57 +0200
+Message-ID: <87il9qhxjq.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     "Jarkko Sakkinen" <jarkko@kernel.org>
+Cc:     "Takashi Iwai" <tiwai@suse.de>, "Peter Huewe" <peterhuewe@gmx.de>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tpm/tpm_tis: Disable interrupts for Lenovo Thinkpad E14 Gen 2 and 13s-IML
+In-Reply-To: <CUMJWFCIG9EI.13F7LU8TYAUE1@seitikki>
+References: <20230807140125.18486-1-tiwai@suse.de>
+        <CUMJWFCIG9EI.13F7LU8TYAUE1@seitikki>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add hardware crypto module and dedicated dma controller node to StarFive
-JH7110 SoC.
+On Mon, 07 Aug 2023 21:14:20 +0200,
+Jarkko Sakkinen wrote:
+> 
+> On Mon Aug 7, 2023 at 2:01 PM UTC, Takashi Iwai wrote:
+> > Like other Lenovo laptops, Thinkpad E14 Gen 2 and Thinkpad 13s-IML
+> > also require to disable the tpm_tis interrupts for avoiding a boot
+> > hang.
+> >
+> > Fixes: e644b2f498d2 ("tpm, tpm_tis: Enable interrupt test")
+> > Cc: <stable@vger.kernel.org> # v6.4+
+> > Link: https://bugzilla.suse.com/show_bug.cgi?id=1213779
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> >
+> > ---
+> >  drivers/char/tpm/tpm_tis.c | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> >
+> > diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
+> > index a98773ac2e55..0633823dc515 100644
+> > --- a/drivers/char/tpm/tpm_tis.c
+> > +++ b/drivers/char/tpm/tpm_tis.c
+> > @@ -130,6 +130,22 @@ static const struct dmi_system_id tpm_tis_dmi_table[] = {
+> >  			DMI_MATCH(DMI_PRODUCT_NAME, "Laptop (13th Gen Intel Core)"),
+> >  		},
+> >  	},
+> > +	{
+> > +		.callback = tpm_tis_disable_irq,
+> > +		.ident = "ThinkPad E14 Gen 2",
+> > +		.matches = {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> > +			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad E14 Gen 2"),
+> > +		},
+> > +	},
+> > +	{
+> > +		.callback = tpm_tis_disable_irq,
+> > +		.ident = "ThinkBook 13s-IML",
+> > +		.matches = {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> > +			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo ThinkBook 13s-IML"),
+> > +		},
+> > +	},
+> >  	{
+> >  		.callback = tpm_tis_disable_irq,
+> >  		.ident = "ThinkPad T490s",
+> > -- 
+> > 2.35.3
+> 
+> As almost all issues are with Lenovo, I would instead just put:
+> 
+> 	{
+> 		.callback = tpm_tis_disable_irq,
+> 		.matches = {
+> 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> 		},
+> 	},
+> 
+> And delete the existing entries with vendor as "LENOVO".
 
-Co-developed-by: Huan Feng <huan.feng@starfivetech.com>
-Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
-Signed-off-by: Jia Jie Ho <jiajie.ho@starfivetech.com>
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
----
- arch/riscv/boot/dts/starfive/jh7110.dtsi | 28 ++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+Yeah, that will relieve pains better, too.
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index a608433200e8..47cd12ccc988 100644
---- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -821,6 +821,34 @@ watchdog@13070000 {
- 				 <&syscrg JH7110_SYSRST_WDT_CORE>;
- 		};
- 
-+		crypto: crypto@16000000 {
-+			compatible = "starfive,jh7110-crypto";
-+			reg = <0x0 0x16000000 0x0 0x4000>;
-+			clocks = <&stgcrg JH7110_STGCLK_SEC_AHB>,
-+				 <&stgcrg JH7110_STGCLK_SEC_MISC_AHB>;
-+			clock-names = "hclk", "ahb";
-+			interrupts = <28>;
-+			resets = <&stgcrg JH7110_STGRST_SEC_AHB>;
-+			dmas = <&sdma 1 2>, <&sdma 0 2>;
-+			dma-names = "tx", "rx";
-+		};
-+
-+		sdma: dma@16008000 {
-+			compatible = "arm,pl080", "arm,primecell";
-+			arm,primecell-periphid = <0x00041080>;
-+			reg = <0x0 0x16008000 0x0 0x4000>;
-+			interrupts = <29>;
-+			clocks = <&stgcrg JH7110_STGCLK_SEC_AHB>,
-+				 <&stgcrg JH7110_STGCLK_SEC_MISC_AHB>;
-+			clock-names = "hclk", "apb_pclk";
-+			resets = <&stgcrg JH7110_STGRST_SEC_AHB>;
-+			lli-bus-interface-ahb1;
-+			mem-bus-interface-ahb1;
-+			memcpy-burst-size = <256>;
-+			memcpy-bus-width = <32>;
-+			#dma-cells = <2>;
-+		};
-+
- 		gmac0: ethernet@16030000 {
- 			compatible = "starfive,jh7110-dwmac", "snps,dwmac-5.20";
- 			reg = <0x0 0x16030000 0x0 0x10000>;
--- 
-2.34.1
 
+thanks,
+
+Takashi
