@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8298774C29
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6DC774C38
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234339AbjHHVDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
+        id S234511AbjHHVDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 17:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234996AbjHHVDB (ORCPT
+        with ESMTP id S235476AbjHHVDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 17:03:01 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086955FAA3
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 11:07:43 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-563df158ecaso4405735a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 11:07:42 -0700 (PDT)
+        Tue, 8 Aug 2023 17:03:33 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BC361B2B
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 11:07:57 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6bc9811558cso4958027a34.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 11:07:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1691518062; x=1692122862;
-        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Cgfqg6RwVdXgz8LstCOaZqvVTg8ku19ZrypcUCEQH+Y=;
-        b=Wp7Ag97fQE6PLyXPMs/aWg4rrofagjhBAU7WjGvFBH8lwUhrR1po99EvY/ukF8NJdq
-         Hh2udhjxhTxxEpZIDvi5LiTDfBd4PuOLzl4kPX/ZG00YAVqNIl+pMSMMiTKCdXbySFms
-         9aXGPZUwW4lyUGfJAELc0kdNIXIMCWngQ2Da4=
+        d=broadcom.com; s=google; t=1691518065; x=1692122865;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jr7eeMrhMHNXLnU7V2QQtNuOjjvfDHQR3QActoGOG6M=;
+        b=DK0Rd019raYmV63KsZkpFmUe2cAHR9TaWNx+J+tXAf8FRlqWq1ucdR9XgCRzW/H72N
+         jdjq2nCCXLwx3MH6k2BfUMkqnQfL4M0j7iHtuc9lmMBq3CDdwcItljyQbp64NM73DKIL
+         CuUqKWS4+uRKDzHU94qI7piOvsvgHNRwaAJHQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691518062; x=1692122862;
-        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Cgfqg6RwVdXgz8LstCOaZqvVTg8ku19ZrypcUCEQH+Y=;
-        b=KQFvzdvGaKtfiFHckRUaoUwmN8bDmOvuWg1xUkAo+5Hpj9HjE1okWf07O83EdVuDtP
-         9B2JzQ+ROC6LAJFgdpJ0S3WOnsCisNSD37haw4mdtpN1vBY40UBH3tvKiJxekzyYNZja
-         IensrHInibB1x5lbsIBzhVHxnbJRZxWLaXxHU8n3mTBzP8pcsQobiHZIsgm4XscHaQYB
-         hkzR049Q7LjZuPQ4jKacX4vHtammrSdxZuinZlEmIfvgVG96IWpftqWtJNEPhHhoLq0O
-         hjhXkDHDL8sM2JldPoO9/4qtzT+MYsxFs04a70JpqZyWWFumLd0eHsvESce0tmJiHaNu
-         JgOg==
-X-Gm-Message-State: AOJu0YzEZ+o5WTCUiFuHUMSYqAgnnlbIdA0wU8nFTbdggwmTOkeMue0a
-        I3feYN1gJ5W77dHEx0b3aLXrIgYPoRBBYL0shngmAhMULsFbipBXeNbk31LhGtV4bpKM85iUO+P
-        1ZfFQ2Mcqc+XhZlx7zQjaFIEnsXlOE04yoOFSwjzIZmzWBJtOkXn4SO98LicXO0JJo+pumGsG2Q
-        GVz/gmMCeCljvpO4z7lw==
-X-Google-Smtp-Source: AGHT+IFfhRgfmTAtb5nQGeKRLsr4Vg8mas3RqU2DvFEUxhkuDZD2VFd7+TJbwHybJqvbfLzJ3powIQ==
-X-Received: by 2002:a05:6a20:7d86:b0:13f:1116:d267 with SMTP id v6-20020a056a207d8600b0013f1116d267mr303112pzj.48.1691518062141;
-        Tue, 08 Aug 2023 11:07:42 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691518065; x=1692122865;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jr7eeMrhMHNXLnU7V2QQtNuOjjvfDHQR3QActoGOG6M=;
+        b=EIGID6NmUuBzlxJGMa5Pthn9dEdKUJ/B8B7owMsk77YCZkkyVzb+EpzxCFG5uwsDx3
+         kTI+G8Fj3KlnzYmM3+h65sUGHiAjITA6JWGwldmacy212KiXwREAxO7wX3IWtIHGHcDa
+         4vMvd+Sbuhiam+2zjxZsRl73gACqezonve3MUYYqA/p0AmICZKDzbg650vEuYNzq1VYz
+         HHtjkO2MOty+DgMec9LaBZROhs8mWnQCWupDPEmvWrPp4a3+qU51gWX74TqZpetVglfg
+         VbXW0lyU74Ss+7JQXTpxXhp4gX+KlIHgeZqRfQ2/DjyiluCSWcCFIBCLP0/gWlu/CpOA
+         ULlQ==
+X-Gm-Message-State: AOJu0Yy7K4cBygnX2UccCSFSjlMU/bEgEga04AaixZyzedHWPotlG2qH
+        UcNC6hjTFPrQY2y8m32l2J/4eXezYLcoC68AMcqzc4QULu2JHtvp451OSQ9CQMo3ycJ+gYrEvPM
+        1p4YEkvsQo+hHpk9Og0R1xYir820+wPXhE24lC1Oq6LSu2dZJDovcwD0ba0RH8AK94R247e51yH
+        hDNwu759pXAwvKyU1JYA==
+X-Google-Smtp-Source: AGHT+IHhuLVnRDcSLumPi/Vg9K+zEDpXV3RU7k2bFPzcwng+pZLPPiRcpPbJoVnq/6ZMFpj1DNEsXw==
+X-Received: by 2002:a05:6870:4396:b0:1a6:c968:4a15 with SMTP id r22-20020a056870439600b001a6c9684a15mr422733oah.4.1691518065147;
+        Tue, 08 Aug 2023 11:07:45 -0700 (PDT)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id y28-20020a637d1c000000b00564beacbd20sm6683067pgc.74.2023.08.08.11.07.40
+        by smtp.gmail.com with ESMTPSA id y28-20020a637d1c000000b00564beacbd20sm6683067pgc.74.2023.08.08.11.07.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 11:07:41 -0700 (PDT)
+        Tue, 08 Aug 2023 11:07:44 -0700 (PDT)
 From:   Florian Fainelli <florian.fainelli@broadcom.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
@@ -59,46 +59,59 @@ Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
         linux-gpio@vger.kernel.org (open list:PIN CONTROL SUBSYSTEM),
         linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM IPROC ARM
         ARCHITECTURE)
-Subject: [PATCH 0/2 v2] pinctrl: bcm: Use dev_err_probe()
-Date:   Tue,  8 Aug 2023 11:07:31 -0700
-Message-Id: <20230808180733.2081353-1-florian.fainelli@broadcom.com>
+Subject: [PATCH 2/2 v2] pinctrl: nsp-gpio:  Silence probe deferral messages
+Date:   Tue,  8 Aug 2023 11:07:33 -0700
+Message-Id: <20230808180733.2081353-3-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230808180733.2081353-1-florian.fainelli@broadcom.com>
+References: <20230808180733.2081353-1-florian.fainelli@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000003e860a06026d3d1f"
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_NO_TEXT,
+        boundary="0000000000006ce8f106026d3ded"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000003e860a06026d3d1f
+--0000000000006ce8f106026d3ded
 Content-Transfer-Encoding: 8bit
 
-These two drivers were giving "unable to add GPIO chip data" which
-was slightly concerning but did not have any functional impact.
+We can have gpiochip_add_data() return -EPROBE_DEFER which will make
+us produce the "unable to add GPIO chip" message which is confusing.
+Use dev_err_probe() to silence probe deferral messages.
 
-Changes in v2:
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+---
+ drivers/pinctrl/bcm/pinctrl-nsp-gpio.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-- return from dev_err_probe() directly (Andy)
-
-Florian Fainelli (2):
-  pinctrl: iproc-gpio: Silence probe deferral messages
-  pinctrl: nsp-gpio:  Silence probe deferral messages
-
- drivers/pinctrl/bcm/pinctrl-iproc-gpio.c | 6 ++----
- drivers/pinctrl/bcm/pinctrl-nsp-gpio.c   | 6 ++----
- 2 files changed, 4 insertions(+), 8 deletions(-)
-
+diff --git a/drivers/pinctrl/bcm/pinctrl-nsp-gpio.c b/drivers/pinctrl/bcm/pinctrl-nsp-gpio.c
+index 5045a7e57f1d..7fecd0a10cd1 100644
+--- a/drivers/pinctrl/bcm/pinctrl-nsp-gpio.c
++++ b/drivers/pinctrl/bcm/pinctrl-nsp-gpio.c
+@@ -686,10 +686,8 @@ static int nsp_gpio_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ret = devm_gpiochip_add_data(dev, gc, chip);
+-	if (ret < 0) {
+-		dev_err(dev, "unable to add GPIO chip\n");
+-		return ret;
+-	}
++	if (ret < 0)
++		return dev_err_probe(dev, ret, "unable to add GPIO chip\n");
+ 
+ 	ret = nsp_gpio_register_pinconf(chip);
+ 	if (ret) {
 -- 
 2.34.1
 
 
---0000000000003e860a06026d3d1f
+--0000000000006ce8f106026d3ded
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -169,14 +182,14 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIEh/CtpOemAyeAHQ
-ZVK4jfJWsV/eseBfR5t3DlmoiP5GMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDgwODE4MDc0MlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHEt0PFLf1urd19E
+1ziQonDn5JCgCetAjguPgxwshuyTMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDgwODE4MDc0NVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCV9QRVywXq04qEw5bOsPWo1g/6VFGYFMBC
-HwXPFypVrtS9iELGGpztgLz6wmVFxTTX3P2wBnuOocFIBRCGA1u0w99qZVAkUkEIHegSy3TvaNkl
-L/cfvT64NO4uC2bk2JeLIyVVz/AFcih8VmwCSGjKKYOl6QxbKnUXPXgloHNHebTXT4z6tctxg8gL
-b5NVZpPytujx7OgYUf2yRt++tw9RBuGUtq2PKXMVPcIiVthu7H+d+R3Hj1xyWK4qobhDs6rFFIag
-52b5kHoTQVPU6icqVmWIxcLVggYaUvPJDW5nuaNMzXurPawMdPT19W25YWZcGrWul0XGeP4GnGUc
-dHyd
---0000000000003e860a06026d3d1f--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQClLpwMIz7RSJdTKD0aRc2OEgawrnGnvFJM
+P8X0kl1Ecb9eaGDb1BtlP0LaqAqCkSzp5MVukBeukDDZ4stj5AwjWDycyz/fSjrNsXkyUlOUzerX
+JmJd90NMsMP2E8DV9YUjq4eZc6WeVwaSrOunfe3N3dL0VikgxqjaL0Noyrr1uVzSTaIYwaaj3lRR
+PZSadHmUDNr/uQZ4NZoGffu0Coi3w9JzaMMGBM6XefAJDSXwXBM3oJua6HQAvcVQ2lVXmo4nXyiv
+aduh8rE3VzYtpCuA/1klC2QAfNkxadvX2YIpFEOdUR5z7kAWijIj+Lgxz0fDAELpIm+P+ch0x/3x
+U/62
+--0000000000006ce8f106026d3ded--
