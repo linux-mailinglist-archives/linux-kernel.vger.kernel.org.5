@@ -2,112 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8277744AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1311774764
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235478AbjHHS0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
+        id S235679AbjHHTOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235361AbjHHS0J (ORCPT
+        with ESMTP id S234188AbjHHTOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:26:09 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7176B23373
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:41:22 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RKtMX0KczzNmyf;
-        Tue,  8 Aug 2023 20:50:32 +0800 (CST)
-Received: from localhost.localdomain (10.50.163.32) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 8 Aug 2023 20:54:00 +0800
-From:   Yicong Yang <yangyicong@huawei.com>
-To:     <jonathan.cameron@huawei.com>, <will@kernel.org>,
-        <mark.rutland@arm.com>
-CC:     <hejunhao3@huawei.com>, <prime.zeng@hisilicon.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <yangyicong@hisilicon.com>
-Subject: [PATCH] drivers/perf: hisi: Schedule perf session according to locality
-Date:   Tue, 8 Aug 2023 20:51:47 +0800
-Message-ID: <20230808125147.2080-1-yangyicong@huawei.com>
-X-Mailer: git-send-email 2.31.0
+        Tue, 8 Aug 2023 15:14:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919D436871
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:36:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 122A86253F
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 12:57:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B7EDC433C8;
+        Tue,  8 Aug 2023 12:57:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691499430;
+        bh=S0FBs7xD3Rf0XgcDIGN+SZnoxzu5hScAnRLm9gSsKfo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ALuJOr5zjEN0HXUfZj23CYhl/qslnq1Ul9nu3AiwMPIfPvJxHwRaegVzju60uur8J
+         bxVTyQn9a7pQID1YwvQ3TVHiikXZM1AmhN5BNVELbwnMc8OTuZ1NsJNERgjxihgX2S
+         pKSUqZ5hvzW9S9flCMuRgZKlCnC3T/DVApS/RFXg3p5EDvA7MYF1/bWBt8TT3PvvlH
+         Dgo/3KPmI7ch1A15zpeyGO1dvP81nxbIj6IiYRwEDWpWh8fVHB6LXElveU+E4tgvd3
+         EAQMYZQwCf7CrbdlXAhZm1vtzl98mEbsXttJ17Er5BgOz1bwuD+EObjpfj7EPhBtRF
+         9XR+xjzLgvYWw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Weidong Wang <wangweidong.a@awinic.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: codecs: aw88261: avoid uninitialized variable warning
+Date:   Tue,  8 Aug 2023 14:56:54 +0200
+Message-Id: <20230808125703.1611325-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.50.163.32]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yicong Yang <yangyicong@hisilicon.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-The PCIe PMUs locate on different NUMA node but currently we don't
-consider it and likely stack all the sessions on the same CPU:
+aw88261_reg_update() returns an unintialized error code in the
+success path:
 
-[root@localhost tmp]# cat /sys/devices/hisi_pcie*/cpumask
-0
-0
-0
-0
-0
-0
+sound/soc/codecs/aw88261.c:651:7: error: variable 'ret' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
+                if (aw_dev->prof_cur != aw_dev->prof_index) {
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sound/soc/codecs/aw88261.c:660:9: note: uninitialized use occurs here
+        return ret;
+               ^~~
+sound/soc/codecs/aw88261.c:651:3: note: remove the 'if' if its condition is always true
+                if (aw_dev->prof_cur != aw_dev->prof_index) {
+                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This can be optimize a bit to use a local CPU for the PMU.
+Return zero instead here.
 
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+Fixes: 028a2ae256916 ("ASoC: codecs: Add aw88261 amplifier driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/perf/hisilicon/hisi_pcie_pmu.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ sound/soc/codecs/aw88261.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-index e10fc7cb9493..60ecf469782b 100644
---- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-@@ -665,7 +665,7 @@ static int hisi_pcie_pmu_online_cpu(unsigned int cpu, struct hlist_node *node)
- 	struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node, struct hisi_pcie_pmu, node);
- 
- 	if (pcie_pmu->on_cpu == -1) {
--		pcie_pmu->on_cpu = cpu;
-+		pcie_pmu->on_cpu = cpumask_local_spread(0, dev_to_node(&pcie_pmu->pdev->dev));
- 		WARN_ON(irq_set_affinity(pcie_pmu->irq, cpumask_of(cpu)));
+diff --git a/sound/soc/codecs/aw88261.c b/sound/soc/codecs/aw88261.c
+index 82923b454dd47..6e2266b713862 100644
+--- a/sound/soc/codecs/aw88261.c
++++ b/sound/soc/codecs/aw88261.c
+@@ -652,6 +652,8 @@ static int aw88261_reg_update(struct aw88261 *aw88261, bool force)
+ 			ret = aw88261_dev_fw_update(aw88261);
+ 			if (ret)
+ 				return ret;
++		} else {
++			ret = 0;
+ 		}
  	}
  
-@@ -676,14 +676,23 @@ static int hisi_pcie_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
- {
- 	struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node, struct hisi_pcie_pmu, node);
- 	unsigned int target;
-+	cpumask_t mask;
-+	int numa_node;
- 
- 	/* Nothing to do if this CPU doesn't own the PMU */
- 	if (pcie_pmu->on_cpu != cpu)
- 		return 0;
- 
- 	pcie_pmu->on_cpu = -1;
--	/* Choose a new CPU from all online cpus. */
--	target = cpumask_any_but(cpu_online_mask, cpu);
-+
-+	/* Choose a local CPU from all online cpus. */
-+	numa_node = dev_to_node(&pcie_pmu->pdev->dev);
-+	if (cpumask_and(&mask, cpumask_of_node(numa_node), cpu_online_mask) &&
-+	    cpumask_andnot(&mask, &mask, cpumask_of(cpu)))
-+		target = cpumask_any(&mask);
-+	else
-+		target = cpumask_any_but(cpu_online_mask, cpu);
-+
- 	if (target >= nr_cpu_ids) {
- 		pci_err(pcie_pmu->pdev, "There is no CPU to set\n");
- 		return 0;
 -- 
-2.24.0
+2.39.2
 
