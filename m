@@ -2,149 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E718773BAF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D389773B74
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbjHHPx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 11:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
+        id S230235AbjHHPvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 11:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbjHHPwG (ORCPT
+        with ESMTP id S229513AbjHHPtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:52:06 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2A81FFF;
-        Tue,  8 Aug 2023 08:42:56 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A5D3C22487;
-        Tue,  8 Aug 2023 09:45:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691487959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4oOLWl4gstb/E24tmA8lOZvGXU8EGsCYOGiZDuV9ojs=;
-        b=lLrE4gVbl4Ys56f43Fm5p3Xgc+uttQq5Le5SAj/AGsdOsCPxyBSWC2O0IpSl0k3K+hnRZK
-        ZBv1ebXrfaExZ7cDvXNGrjZ6xpFGOMKiAeCI9qKY/Q/IKCJ9cx1Ukr/WgtZ76IUDmcLKuU
-        KNpTUoI2LFAiLqt+xbns1Pf6Aruyr0s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691487959;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4oOLWl4gstb/E24tmA8lOZvGXU8EGsCYOGiZDuV9ojs=;
-        b=siRsNQ5xaJJdg8UEXv1F6ndcrBP+WFiABqKYf3mt6YpMrLfp0SJdDJiIz6//upEoYljBFS
-        Iao2lSywwi36fkCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 925BB139E9;
-        Tue,  8 Aug 2023 09:45:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 65qtI9cO0mTCIQAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:45:59 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 07563A0769; Tue,  8 Aug 2023 11:45:59 +0200 (CEST)
-Date:   Tue, 8 Aug 2023 11:45:58 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 08/13] fs: drop the timespec64 argument from
- update_time
-Message-ID: <20230808094558.fgogaxmgtbstbij3@quack3>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-8-d1dec143a704@kernel.org>
+        Tue, 8 Aug 2023 11:49:05 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359C349D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:42:04 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-40ddc558306so44151161cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:42:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691509311; x=1692114111;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0ubqfsmYb7V02nf1U7/39ZUb74vPvlvUEXZk/eI/cgk=;
+        b=se8C7+QuObYNgMHvYrvHsORdOr2GC2WMBnfGJ1Sd/clqfyghHeV87cVlXL1Lg1VOvi
+         w+OgzklSG5Yo0wM7VCnRv5bNc4cMbBK0i5y8nwwlTllA7g3YQsBeHW6Q1RmpNcTKh6VY
+         C6q1l4uWUERQ5AYLWOlWMUAkPN8+tyTKPdtdzbHqepCJYUEzgWLDeq/MD+loapF39TYK
+         iyvJJFjqyIsF9kvH5FZgDgAPKnT3D8uIAJRl/0C5rDQKdhadGp7/X+PtO+dFxT5Q5/LP
+         lx6aNjeZgAKAHVma9ty8ztbfGUwYBUcspvjKVnUAOG2RRWz8CNw3CKtLrE60Kz/J1Pgl
+         NZ2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691509311; x=1692114111;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0ubqfsmYb7V02nf1U7/39ZUb74vPvlvUEXZk/eI/cgk=;
+        b=QzhBhm4dgRoHV02WZBvwv3W9qFjumYEhPPNG80y6iKqOM180JoZyxJuPPax2t29N1E
+         rYpcj7PROsKdlkbMSJJ43Bd3JCNSaWqX+sY6jgjQ5Coh8bN9T8J5CBmxyJ42QCqGKKTC
+         9L/urrITIrlQRKtG0+ANydk8moGZ0oJCpfOaioLQgxNlk0+SUiLD7tEDpx4jYJ+wvwod
+         iDVyCveXePdpjhXF3spxRQrAny3C7awePXCkadsSEHKFDGcsK+BwpB4DbdwPWxhQF3Xl
+         MHHA/gI8houDMEcgKYuA9gUN4zaRy52V+sW3Fznqa5pOKj3JWqj3Z+i2I1xzLNgThTPK
+         eWzQ==
+X-Gm-Message-State: AOJu0YxvDGFaBwD0ZgzFusMZGOW+pgOCL/sX2pUc1J/PhNxfVFD8ZvMH
+        Gemb9poCprqaZwQygDB/Ndyb9EpdIw/2wyjxuIDkOiV1ZL79Vac/MdI=
+X-Google-Smtp-Source: AGHT+IHSHduNAZhtuWl0717SI9PBFnzbesbPZPWpUKYUXoQcp0TJmbb1ePGniPOczgezUXb2rRF/CgEe7L4IP+lhQpc=
+X-Received: by 2002:a25:b87:0:b0:d4a:4b59:367e with SMTP id
+ 129-20020a250b87000000b00d4a4b59367emr8892048ybl.38.1691490522681; Tue, 08
+ Aug 2023 03:28:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807-mgctime-v7-8-d1dec143a704@kernel.org>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20230721101349.12387-1-victorshihgli@gmail.com> <20230721101349.12387-5-victorshihgli@gmail.com>
+In-Reply-To: <20230721101349.12387-5-victorshihgli@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 8 Aug 2023 12:28:06 +0200
+Message-ID: <CAPDyKFrmwct=b6angucfrKOXneZXe+_2KQ4f--OQEoKD=fc5hg@mail.gmail.com>
+Subject: Re: [PATCH V9 04/23] mmc: core: Extend support for mmc regulators
+ with a vqmmc2
+To:     Victor Shih <victorshihgli@gmail.com>
+Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
+        HL.Liu@genesyslogic.com.tw, Greg.tu@genesyslogic.com.tw,
+        takahiro.akashi@linaro.org, dlunev@chromium.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 07-08-23 15:38:39, Jeff Layton wrote:
-> Now that all of the update_time operations are prepared for it, we can
-> drop the timespec64 argument from the update_time operation. Do that and
-> remove it from some associated functions like inode_update_time and
-> inode_needs_update_time.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+On Fri, 21 Jul 2023 at 12:14, Victor Shih <victorshihgli@gmail.com> wrote:
+>
+> From: Ulf Hansson <ulf.hansson@linaro.org>
+>
+> Updates in V4:
+>  - Moved the voltage defines into this patch.
+>
+> Update in previous version:
 
-Looks good to me. Feel free to add:
+Please drop the version information from the commit message.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> To allow an additional external regulator to be controlled by an mmc host
+> driver, let's add support for a vqmmc2 regulator to the mmc core.
+>
+> For an SD UHS-II interface the vqmmc2 regulator may correspond to the so
+> called vdd2 supply, as described by the SD spec. Initially, only 1.8V is
+> needed, hence limit the new helper function, mmc_regulator_set_vqmmc2() to
+> this too.
+>
+> Note that, to allow for flexibility mmc host drivers need to manage the
+> enable/disable of the vqmmc2 regulator themselves, while the regulator is
+> looked up through the common mmc_regulator_get_supply().
+>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+[...]
+
+Kind regards
+Uffe
