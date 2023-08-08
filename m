@@ -2,140 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C06773C21
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465D3773BFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbjHHQAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
+        id S231400AbjHHP6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 11:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230373AbjHHP6t (ORCPT
+        with ESMTP id S229774AbjHHP5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:58:49 -0400
-Received: from mail-ot1-x364.google.com (mail-ot1-x364.google.com [IPv6:2607:f8b0:4864:20::364])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E836189
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:44:23 -0700 (PDT)
-Received: by mail-ot1-x364.google.com with SMTP id 46e09a7af769-6bd0a0a675dso457812a34.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:44:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=libre.computer; s=google; t=1691509460; x=1692114260;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MkyQ6QEBJ5R+A4KzXauS14DJOe2NQamik93pPPAJ9ek=;
-        b=kW1hXpMI+oS0W4xi2vS/augcBsN81pJ7H4T6YgBkm9izpcMbwq7spbsxOx2cgnx1cL
-         YYsRTlhokZZCaLoDDA/Vp3p4xD/YAyJSopBMqjSrs/wT4Af/HCdWON38vwvUmmzbz7AT
-         vC9uV60VvwUI2zkiNYYwfb5+2dg3+llNcmQht6bNQj8tzXqkB6plkIhRa57TFte6ciLe
-         IqMvxnvMkHY/1uxeY7a5AEcvviROVlsKorv0hYw9t8sKHPahkCCDoTliYDvui20Wj2Df
-         pTxqG0RHxQiqncUjgnr51SLVxuljgQN0m9p1X3bUHbBb1L+OdRBwWoNszV1GhU3ngh3N
-         ynQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691509460; x=1692114260;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MkyQ6QEBJ5R+A4KzXauS14DJOe2NQamik93pPPAJ9ek=;
-        b=LX92vduVXBMxRJnIsXJIWkVNJIclSAG9HJEDn0tF8JUlE1x2TiksC6NkslcOSI5J6S
-         OoUBek9d7rHkLHO7UVsk31uvZi6CT890nIMKm6bY/5Wg9Td7Qy+7XMsAKVcbiS/8QcQo
-         Rz0xx0bLBtiKZxZpBSGszF8BIT4j2w5dNCsCh65a81xjy27KsV9Gqb9TycnNcxZRt5Y8
-         N1ve6gqT6lN7pMyndA2wa6ogE0fo5UNoyDxRvXzONx3dZ++wFZGdjTe3kzVs9T4eOpi/
-         D7LjIO6SlQzg9xMB3on3AOF9EUEwMw259HNEueSq2J7GzyryoeR9aZEv6Gx1b5lJ5WOH
-         Cg0g==
-X-Gm-Message-State: AOJu0YyGLjc9HNdAkLEhNRCqQYZ/3S7dYhyVZneWbqNN2RpgHNCiJv7k
-        G3g8w7wR0ubry786YOe7IgYkKOHi79Dg1BOWKOVCrYuZHiLZ
-X-Google-Smtp-Source: AGHT+IGOiebSl22GAJa1Vqszzuk5r+Le/tkscMQwKLAbyswQsnfaT24eZusPYQGYRv08JMU2SVc/f7X59f9M
-X-Received: by 2002:a1f:c1d8:0:b0:487:1962:7495 with SMTP id r207-20020a1fc1d8000000b0048719627495mr6886859vkf.1.1691470841920;
-        Mon, 07 Aug 2023 22:00:41 -0700 (PDT)
-Received: from dxue-amd-5700g.libretech.co ([72.76.64.93])
-        by smtp-relay.gmail.com with ESMTPS id c11-20020a02a40b000000b0042911ed0da5sm584619jal.11.2023.08.07.22.00.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 22:00:41 -0700 (PDT)
-X-Relaying-Domain: libre.computer
-From:   Da Xue <da@libre.computer>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Da Xue <da@libre.computer>, Luke Lu <luke.lu@libre.computer>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] net: phy: meson-gxl: implement meson_gxl_phy_resume()
-Date:   Tue,  8 Aug 2023 01:00:15 -0400
-Message-Id: <20230808050016.1911447-1-da@libre.computer>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 8 Aug 2023 11:57:31 -0400
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F075FC4;
+        Tue,  8 Aug 2023 08:44:02 -0700 (PDT)
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DA7D11A11C0;
+        Tue,  8 Aug 2023 08:09:00 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A0C781A1B45;
+        Tue,  8 Aug 2023 08:09:00 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 074B41800318;
+        Tue,  8 Aug 2023 14:08:58 +0800 (+08)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     frank.li@nxp.com, l.stach@pengutronix.de, shawnguo@kernel.org,
+        lpieralisi@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     hongxing.zhu@nxp.com, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        linux-imx@nxp.com
+Subject: [PATCH v3 6/9] arm: dts: nxp: Add i.MX7D PCIe EP support
+Date:   Tue,  8 Aug 2023 13:34:15 +0800
+Message-Id: <1691472858-9383-7-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1691472858-9383-1-git-send-email-hongxing.zhu@nxp.com>
+References: <1691472858-9383-1-git-send-email-hongxing.zhu@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After suspend and resume, the meson GXL internal PHY config needs to
-be initialized again, otherwise the carrier cannot be found:
+Add i.MX7D PCIe EP support.
 
-	eth0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc mq state
-		DOWN group default qlen 1000
-
-After the patch, resume:
-
-	eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
-		group default qlen 1000
-
-Signed-off-by: Luke Lu <luke.lu@libre.computer>
-Signed-off-by: Da Xue <da@libre.computer>
+Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
 ---
-Changes since v2:
- - fix missing parameter of genphy_resume()
+ arch/arm/boot/dts/nxp/imx/imx7d.dtsi | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-Changes since v1:
- - call generic genphy_resume()
----
- drivers/net/phy/meson-gxl.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/phy/meson-gxl.c b/drivers/net/phy/meson-gxl.c
-index bb9b33b6bce2..bbad26b7c5a1 100644
---- a/drivers/net/phy/meson-gxl.c
-+++ b/drivers/net/phy/meson-gxl.c
-@@ -132,6 +132,18 @@ static int meson_gxl_config_init(struct phy_device *phydev)
- 	return 0;
- }
+diff --git a/arch/arm/boot/dts/nxp/imx/imx7d.dtsi b/arch/arm/boot/dts/nxp/imx/imx7d.dtsi
+index 4b94b8afb55d..135684f17a20 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx7d.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx7d.dtsi
+@@ -156,6 +156,33 @@ pcie: pcie@33800000 {
+ 			fsl,imx7d-pcie-phy = <&pcie_phy>;
+ 			status = "disabled";
+ 		};
++
++		pcie_ep: pcie-ep@33800000 {
++			compatible = "fsl,imx7d-pcie-ep";
++			reg = <0x33800000 0x4000>,
++			      <0x40000000 0x10000000>;
++			reg-names = "dbi", "addr_space";
++			num-lanes = <1>;
++			clocks = <&clks IMX7D_PCIE_CTRL_ROOT_CLK>,
++				 <&clks IMX7D_PLL_ENET_MAIN_100M_CLK>,
++				 <&clks IMX7D_PCIE_PHY_ROOT_CLK>;
++			clock-names = "pcie", "pcie_bus", "pcie_phy";
++			assigned-clocks = <&clks IMX7D_PCIE_CTRL_ROOT_SRC>,
++					  <&clks IMX7D_PCIE_PHY_ROOT_SRC>;
++			assigned-clock-parents = <&clks IMX7D_PLL_ENET_MAIN_250M_CLK>,
++						 <&clks IMX7D_PLL_ENET_MAIN_100M_CLK>;
++
++			fsl,max-link-speed = <2>;
++			power-domains = <&pgc_pcie_phy>;
++			resets = <&src IMX7_RESET_PCIEPHY>,
++				 <&src IMX7_RESET_PCIE_CTRL_APPS_EN>,
++				 <&src IMX7_RESET_PCIE_CTRL_APPS_TURNOFF>;
++			reset-names = "pciephy", "apps", "turnoff";
++			fsl,imx7d-pcie-phy = <&pcie_phy>;
++			num-ib-windows = <4>;
++			num-ob-windows = <4>;
++			status = "disabled";
++		};
+ 	};
+ };
  
-+static int meson_gxl_phy_resume(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	genphy_resume(phydev);
-+	ret = meson_gxl_config_init(phydev);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
- /* This function is provided to cope with the possible failures of this phy
-  * during aneg process. When aneg fails, the PHY reports that aneg is done
-  * but the value found in MII_LPA is wrong:
-@@ -196,7 +208,7 @@ static struct phy_driver meson_gxl_phy[] = {
- 		.config_intr	= smsc_phy_config_intr,
- 		.handle_interrupt = smsc_phy_handle_interrupt,
- 		.suspend        = genphy_suspend,
--		.resume         = genphy_resume,
-+		.resume         = meson_gxl_phy_resume,
- 		.read_mmd	= genphy_read_mmd_unsupported,
- 		.write_mmd	= genphy_write_mmd_unsupported,
- 	}, {
 -- 
-2.40.1
+2.34.1
 
