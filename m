@@ -2,88 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 004D27741EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5CB77404A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234704AbjHHRaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:30:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
+        id S233965AbjHHRBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234567AbjHHR3t (ORCPT
+        with ESMTP id S233709AbjHHRBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:29:49 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6541D8C0BB
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:12:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=84aIMxuVFMuTd09rn/TyCy86mewE5GkRaaZb1AsVDgI=; b=vk+6fgxzWR2B1EmxvLOAFtvmir
-        k75qjCf+u5+2qJJ7uQe/zZAZeeGWnR7LZRSxEbKRd43EKEl4gP3uYV/PaiPj4moYnNq/WPX56LK04
-        WimWRtOSS+aaXET2ulvLEnlpDb12Be/6V3tqI80xS52L3vktG2YDX6qqNxkC4mxvLhAk=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:39724 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qTLdr-000461-Oq; Tue, 08 Aug 2023 08:16:53 -0400
-Date:   Tue, 8 Aug 2023 08:16:51 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Message-Id: <20230808081651.0d8573551f87de016c018529@hugovil.com>
-In-Reply-To: <20230808020555.658430-1-linmiaohe@huawei.com>
-References: <20230808020555.658430-1-linmiaohe@huawei.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Tue, 8 Aug 2023 13:01:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0191D422A;
+        Tue,  8 Aug 2023 09:00:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B34062526;
+        Tue,  8 Aug 2023 12:22:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAC44C433C8;
+        Tue,  8 Aug 2023 12:22:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691497376;
+        bh=dhLlrUwCQzvrRjQ5imxEgR6Ov8s1gSR9MYGmH4eHroU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=inb2pUnlNEEJgy4+g5toDu6y1uAJzpYq7fGl7Yj5xlru9xEmVuqqiIgunYaYHPZU+
+         mTXTJzGyG32X+d0k4NQAWhwxfMhLY4lxHSGNVN39C1cryrCRDtLExinq9sRWFreoU8
+         Z1fuCZaj5xrM3r+I1Rsr0kiR+PHPeFLJzGQMvnED75JEkphMueQJ2ZXogCRisv/bXU
+         BqtytwaE30LlME+Xoq4BDRh/wq/wydL5Y/MBr5khnGgZR9LjKxNr6xkNAgWcwTkb40
+         Fi6pxDrjA6iYVRzTgzuUdAQd7a6WHwNyuY9eobLIp1kI0QA38nvgyCCipraZrbqPNq
+         L34Q36eKS0Obg==
+Message-ID: <529218f6-2871-79a2-42bb-8f7886ae12c3@kernel.org>
+Date:   Tue, 8 Aug 2023 15:22:49 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [EXTERNAL] Re: [PATCH v2 0/5] Introduce IEP driver and packet
+ timestamping support
+Content-Language: en-US
+To:     Md Danish Anwar <a0501179@ti.com>, Conor Dooley <conor@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, nm@ti.com, srk@ti.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230807110048.2611456-1-danishanwar@ti.com>
+ <20230808-unnerving-press-7b61f9c521dc@spud>
+ <1c8e5369-648e-98cb-cb14-08d700a38283@ti.com>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <1c8e5369-648e-98cb-cb14-08d700a38283@ti.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH] mm/page_alloc: remove unneeded current_order check
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Aug 2023 10:05:55 +0800
-Miaohe Lin <linmiaohe@huawei.com> wrote:
 
-> current_order is guaranteed to '>=' min_order while min_order always '>='
-> order. So current_order must be '>=' order.
+
+On 08/08/2023 15:18, Md Danish Anwar wrote:
+> On 08/08/23 5:38 pm, Conor Dooley wrote:
+>> On Mon, Aug 07, 2023 at 04:30:43PM +0530, MD Danish Anwar wrote:
+>>> This series introduces Industrial Ethernet Peripheral (IEP) driver to
+>>> support timestamping of ethernet packets and thus support PTP and PPS
+>>> for PRU ICSSG ethernet ports.
+>>>
+>>> This series also adds 10M full duplex support for ICSSG ethernet driver.
+>>>
+>>> There are two IEP instances. IEP0 is used for packet timestamping while IEP1
+>>> is used for 10M full duplex support.
+>>>
+>>> This is v2 of the series [v1]. It addresses comments made on [v1].
+>>> This series is based on linux-next(#next-20230807). 
+>>>
+>>> Changes from v1 to v2:
+>>> *) Addressed Simon's comment to fix reverse xmas tree declaration. Some APIs
+>>>    in patch 3 and 4 were not following reverse xmas tree variable declaration.
+>>>    Fixed it in this version.
+>>> *) Addressed Conor's comments and removed unsupported SoCs from compatible
+>>>    comment in patch 1. 
+>>
+>> I'm sorry I missed responding there before you sent v2, it was a bank
+>> holiday yesterday. I'm curious why you removed them, rather than just
+>> added them with a fallback to the ti,am654-icss-iep compatible, given
+>> your comment that "the same compatible currently works for all these
+>> 3 SoCs".
 > 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  mm/page_alloc.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> I removed them as currently the driver is being upstreamed only for AM654x,
+> once I start up-streaming the ICSSG driver for AM64 and any other SoC. I will
+> add them here. If at that time we are still using same compatible, then I will
+> modify the comment otherwise add new compatible.
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 96b7c1a7d1f2..d37ec87515d0 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -2072,8 +2072,7 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype,
->  		 * allocation falls back into a different pageblock than this
->  		 * one, it won't cause permanent fragmentation.
->  		 */
-> -		if (!can_steal && start_migratetype == MIGRATE_MOVABLE
-> -					&& current_order > order)
-> +		if (!can_steal && start_migratetype == MIGRATE_MOVABLE)
->  			goto find_smallest;
+> As of now, I don't see the need of adding other SoCs in iep binding as IEP
+> driver up-streaming is only planned for AM654x as of now.
 
-Hi,
-if my analysis is correct, min_order can be initialized to the value of
-order before the loop begins.
+But, is there any difference in IEP hardware/driver for the other SoCs?
+AFAIK the same IP is used on all SoCs.
 
-In that case, in the last loop iteration, current_order will be
-equal to min_order and also to order. The condition 'current_order >
-order' will evaluate to false, and the 'if' block should not be
-executed?
+If there is no hardware/code change then we don't need to introduce a new compatible.
+The comment for all SoCs can already be there right from the start.
 
-Hugo.
+-- 
+cheers,
+-roger
