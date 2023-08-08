@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3548774395
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F141774520
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235262AbjHHSHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:07:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41560 "EHLO
+        id S232695AbjHHShg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235396AbjHHSHM (ORCPT
+        with ESMTP id S234230AbjHHShI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:07:12 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151A861B2F;
-        Tue,  8 Aug 2023 10:07:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=1eMz8Kx1EHbpbcwhOQKyLVqRjaGKTaNj4sW/uynWnl8=; b=nejMPi3VM7ofMENIN8bhAEJL07
-        R1JLkq+Z0e+Vvd3amNjdds5KLa/IkvIBpX/KZhrsGzbSHj/Jpm8DHhBojZxbdLdU2XbGa8Ca9S0Cs
-        WFv1W+lkAfog6/kxtpgQlcebGAxCSMz4Gni1CCitszWFXF4f8IxW2G0nJ4D4I9d5w4tw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qTNeM-003TSm-VY; Tue, 08 Aug 2023 16:25:30 +0200
-Date:   Tue, 8 Aug 2023 16:25:30 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 0/2] net: stmmac: allow sharing MDIO lines
-Message-ID: <65b53003-23cf-40fa-b9d7-f0dbb45a4cb2@lunn.ch>
-References: <20230807193102.6374-1-brgl@bgdev.pl>
- <54421791-75fa-4ed3-8432-e21184556cde@lunn.ch>
- <CAMRc=Mc6COaxM6GExHF2M+=v2TBpz87RciAv=9kHr41HkjQhCg@mail.gmail.com>
- <ZNJChfKPkAuhzDCO@shell.armlinux.org.uk>
- <CAMRc=MczKgBFvuEanKu=mERYX-6qf7oUO2S4B53sPc+hrkYqxg@mail.gmail.com>
+        Tue, 8 Aug 2023 14:37:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD6B11F79
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691512086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=rdR/nWVu06E+qaDd21vThD7HnAhSxkVHgZWXT66GKkM=;
+        b=Lfyb+qry2FT1+ixwQ5tbKwXnA4ofoGY5TgGyiuxqECQ/RONb7ZIqudvb9FxyoyV3d3U/s9
+        hCmA+Tnhqar6EtXZlEwtN2nj5nLe+gMBDuxZwM1qTTl0u0XJPiGdF5B9O4tRkt3eGd8Glz
+        TpimB9852M9M6xv7YskEHYqgQAxGz/8=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-553-Vj3WET0WNfCb3PiJIYC3fw-1; Tue, 08 Aug 2023 10:27:12 -0400
+X-MC-Unique: Vj3WET0WNfCb3PiJIYC3fw-1
+Received: by mail-yb1-f197.google.com with SMTP id 3f1490d57ef6-d4db064e4e2so3554564276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 07:27:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691504831; x=1692109631;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rdR/nWVu06E+qaDd21vThD7HnAhSxkVHgZWXT66GKkM=;
+        b=LyeXm2QQT+YXHX6lJV2ZWcPWpQG0HBWFuTZ4MP6epsCh0nYipHqQfNCsFMnixEyGG9
+         yceH05EzWCGis8DZ0vgsC5xMzSMM330q3HlZr8622NAfFFWbFtEU1qw+cxORsUmHzLgU
+         hy9hdLgJeRGH1kgL9iKMcRb1Tsdy0YnFyqk30ZSGY39MbP6HgzteuSQjBWgrrIKFtAo4
+         abq4mJXzygGoriP6jdlFv3YrSH0BKNApzOA4RIuiv9ffr/+XqGqvRxRDt5pw8V4VFCaS
+         ZwE9Ol8aZT+Asg7U6fDXVq3mR520v9suJXoMeFiIndhs5GrJNxnwy2ESIv6sEvAsi13D
+         9DbQ==
+X-Gm-Message-State: AOJu0YxkATTkmyUty0JiV3eXksLApQguj/ulvPA5iCBkpTEA7H/dxofc
+        KNyu/QwCZkVV1m0c6H0LmKhOprwGC9RLUCuf8JYNW3QUyX2081jA8XUBuSbYIKP0hl2QEIuoaW6
+        JHFNazXFGRMnk25C6HZy8TI8B
+X-Received: by 2002:a25:aa31:0:b0:ced:6134:7606 with SMTP id s46-20020a25aa31000000b00ced61347606mr13222320ybi.30.1691504831616;
+        Tue, 08 Aug 2023 07:27:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFYUnMBFGOvVTn0B2fVJuWFGk0rbvX7MlTI9s+MDkABAAgnqZK/6AMRAo9gbZmrxokTCuY6Gg==
+X-Received: by 2002:a25:aa31:0:b0:ced:6134:7606 with SMTP id s46-20020a25aa31000000b00ced61347606mr13222304ybi.30.1691504831336;
+        Tue, 08 Aug 2023 07:27:11 -0700 (PDT)
+Received: from brian-x1.redhat.com (c-73-214-169-22.hsd1.pa.comcast.net. [73.214.169.22])
+        by smtp.gmail.com with ESMTPSA id y9-20020a259c89000000b00c71e4833957sm2713058ybo.63.2023.08.08.07.27.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 07:27:10 -0700 (PDT)
+From:   Brian Masney <bmasney@redhat.com>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] scsi: ufs: convert probe to use dev_err_probe()
+Date:   Tue,  8 Aug 2023 10:26:48 -0400
+Message-ID: <20230808142650.1713432-1-bmasney@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMRc=MczKgBFvuEanKu=mERYX-6qf7oUO2S4B53sPc+hrkYqxg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > On Tue, Aug 08, 2023 at 10:13:09AM +0200, Bartosz Golaszewski wrote:
-> > > Ok so upon some further investigation, the actual culprit is in stmmac
-> > > platform code - it always tries to register an MDIO bus - independent
-> > > of whether there is an actual mdio child node - unless the MAC is
-> > > marked explicitly as having a fixed-link.
-> > >
-> > > When I fixed that, MAC1's probe is correctly deferred until MAC0 has
-> > > created the MDIO bus.
-> > >
-> > > Even so, isn't it useful to actually reference the shared MDIO bus in some way?
-> > >
-> > > If the schematics look something like this:
-> > >
-> > > --------           -------
-> > > | MAC0 |--MDIO-----| PHY |
-> > > -------- |     |   -------
-> > >          |     |
-> > > -------- |     |   -------
-> > > | MAC1 |--     ----| PHY |
-> > > --------           -------
-> > >
-> > > Then it would make sense to model it on the device tree?
-> >
-> > So I think what you're saying is that MAC0 and MAC1's have MDIO bus
-> > masters, and the hardware designer decided to tie both together to
-> > a single set of clock and data lines, which then go to two PHYs.
-> 
-> The schematics I have are not very clear on that, but now that you
-> mention this, it's most likely the case.
+The following two log messages are shown on bootup due to an
+-EPROBE_DEFER when booting on a Qualcomm sa8775p development board:
 
-I hope not. That would be very broken. As Russell pointed out, MDIO is
-not multi-master. You need to check with the hardware designer if the
-schematics are not clear.
+    ufshcd-qcom 1d84000.ufs: ufshcd_variant_hba_init: variant qcom init
+        failed err -517
+    ufshcd-qcom 1d84000.ufs: Initialization failed
 
-> Good point, but it's worse than that: when MAC0 is unbound, it will
-> unregister the MDIO bus and destroy all PHY devices. These are not
-> refcounted so they will literally go from under MAC1. Not sure how
-> this can be dealt with?
+This patch series converts the relevant two probe functions over to use
+dev_err_probe() so that these messages are not shown on bootup.
 
-unbinding is not a normal operation. So i would just live with it, and
-if root decides to shoot herself in the foot, that is her choice.
+Brian Masney (2):
+  scsi: ufs: core: convert to dev_err_probe() in hba_init
+  scsi: ufs: host: convert to dev_err_probe() in pltfrm_init
 
-   Andrew
+ drivers/ufs/core/ufshcd.c        | 17 +++++++++--------
+ drivers/ufs/host/ufshcd-pltfrm.c |  2 +-
+ 2 files changed, 10 insertions(+), 9 deletions(-)
+
+-- 
+2.41.0
+
