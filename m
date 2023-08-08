@@ -2,89 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B88774AC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E421774A9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231588AbjHHUew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
+        id S232301AbjHHUc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233444AbjHHUeh (ORCPT
+        with ESMTP id S231134AbjHHUbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:34:37 -0400
-X-Greylist: delayed 4200 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Aug 2023 13:01:33 PDT
-Received: from 16.mo584.mail-out.ovh.net (16.mo584.mail-out.ovh.net [188.165.55.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303CC1E4E8
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 13:01:31 -0700 (PDT)
-Received: from director11.ghost.mail-out.ovh.net (unknown [10.109.143.18])
-        by mo584.mail-out.ovh.net (Postfix) with ESMTP id C46AA26303
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:05:51 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-r24nl (unknown [10.110.208.139])
-        by director11.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 0D0131FEDA;
-        Tue,  8 Aug 2023 14:05:50 +0000 (UTC)
-Received: from etezian.org ([37.59.142.98])
-        by ghost-submission-6684bf9d7b-r24nl with ESMTPSA
-        id p6TOOr5L0mRSfwAABv3+PA
-        (envelope-from <andi@etezian.org>); Tue, 08 Aug 2023 14:05:50 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-98R002ea6cfa5e-e7a3-4ddd-a662-71fb8ba569fb,
-                    BF609BDBD26D07B0CC1BA23A42D268122251ED8C) smtp.auth=andi@etezian.org
-X-OVh-ClientIp: 130.25.194.249
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Laxman Dewangan <ldewangan@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Parker Newman <pnewman@connecttech.com>
-Cc:     Andi Shyti <andi.shyti@kernel.org>
-Subject: Re: [PATCH] i2c: tegra: Fix i2c-tegra DMA config option processing
-Date:   Tue,  8 Aug 2023 16:05:31 +0200
-Message-Id: <169150348680.2625585.8234375076796870663.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <fcfcf9b3-c8c4-9b34-2ff8-cd60a3d490bd@connecttech.com>
-References: <fcfcf9b3-c8c4-9b34-2ff8-cd60a3d490bd@connecttech.com>
+        Tue, 8 Aug 2023 16:31:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172064AA9A;
+        Tue,  8 Aug 2023 09:50:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E1446259B;
+        Tue,  8 Aug 2023 14:22:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38757C433C8;
+        Tue,  8 Aug 2023 14:22:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691504572;
+        bh=BoGZL15qINg92iX5GzpIYjPkRrdnPmg9jKUou+Jzouk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ta/lRXrtw7X135/22WFEcwjVzLrKE5yQB+5gr7xclahM8A9Lueh96MhshT1fVEA8b
+         bNRgDfCoOVe02L4toTo6oFg/cmFPOwr8V2T9MIUu7RoMDvOqdZ/0DjTDK42ClIXNQn
+         rrygqvHN9T4oZx0Kly93o9GAYfwITMRnQ+MS09+UlSg9/I7osHpOma/SgFUenCYOzC
+         A7IiZo+EdzWHW6AV8IVvppp98GQoI5WoIjnUi9E+VL/184Jwd40frtCo5eJtQOF3qs
+         1cU0Wk2ukrPW1rNLCjnf60SKUjUg6yiYlZa750yuW+PIEaI8vx4I6VlQrlfG3oZkln
+         BRCIdj0t21C3g==
+Date:   Tue, 8 Aug 2023 15:22:46 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 04/11] regulator: rk808: Drop useless headers
+Message-ID: <78af1ca5-12c9-4c12-a08d-6ce2df29ff60@sirena.org.uk>
+References: <20230808-descriptors-regulator-v1-0-939b5e84dd18@linaro.org>
+ <20230808-descriptors-regulator-v1-4-939b5e84dd18@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 5458081274953468487
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrledvgdejudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfgggtgfesthekredtredtjeenucfhrhhomheptehnughiucfuhhihthhiuceorghnughirdhshhihthhisehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnhepveevieffieefgfefuddvteelffeuhfelffejteejuddvveekveehvdejgeefteevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpudeftddrvdehrdduleegrddvgeelpdefjedrheelrddugedvrdelkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoegrnhguihesvghtvgiiihgrnhdrohhrgheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehkeegpdhmohguvgepshhmthhpohhuth
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="02s0islE/xNt6q2j"
+Content-Disposition: inline
+In-Reply-To: <20230808-descriptors-regulator-v1-4-939b5e84dd18@linaro.org>
+X-Cookie: Beware of low-flying butterflies.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
 
-On Thu, 03 Aug 2023 17:10:02 +0000, Parker Newman wrote:
-> This patch fixes the Tegra DMA config option processing in the
-> i2c-tegra driver.
-> 
-> Tegra processors prior to Tegra186 used APB DMA for I2C requiring
-> CONFIG_TEGRA20_APB_DMA=y while Tegra186 and later use GPC DMA requiring
-> CONFIG_TEGRA186_GPC_DMA=y.
-> 
-> [...]
+--02s0islE/xNt6q2j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-With the Fixes tag added, applied to i2c/andi-for-current on
+On Tue, Aug 08, 2023 at 03:46:31PM +0200, Linus Walleij wrote:
+> The RK808 is already using the proper <linux/gpio/consumer.h>
+> header and includes the legacy headers <linux/gpio.h> and
+> <linux/of_gpio.h> for no reason, drop the includes.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
+This doesn't apply against current code, please check and resend.
 
-Please note that this patch may still undergo further evaluation
-and the final decision will be made in collaboration with
-Wolfram.
+--02s0islE/xNt6q2j
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thank you,
-Andi
+-----BEGIN PGP SIGNATURE-----
 
-Patches applied
-===============
-[1/1] i2c: tegra: Fix i2c-tegra DMA config option processing
-      commit: fc9a464f3d9a2a361e8bcb960345270a9dc46054
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTST7UACgkQJNaLcl1U
+h9BCWQf/f1t9dZeSv6IT+0vb+00EGsLxELQMnJFIxNYkecL+4eTfiotF+Xg5YzH/
+4dEUdEx4lsQOrH4mCYLm1ndKhwFLTCC1ElqJI4rmdvDeMePJXUCbndA/qz/pNOwc
+cpUUqlCBr5qhP35uksyfRyYkk9gclBGhbEQ4xva3IewZCq4UiL6FiW8zFw/MHbc5
+/LI9IdCzBPbgmI5cw3gf5D3u7dxkgz5BKKditUYJ5gE+3f9Jnk+g13cZY23idjzT
+wIWe+RH8yjoUdA8ahzLJtR47zZsNeas5mhLncA3jqFVD+XafqKzubgtqa9JNcWj2
+to9N+Oej2TNpi7y/5AuwJ6BCp+AzbQ==
+=1iIc
+-----END PGP SIGNATURE-----
+
+--02s0islE/xNt6q2j--
