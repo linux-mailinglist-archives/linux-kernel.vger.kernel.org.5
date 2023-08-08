@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 554A57740A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE8C77412E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjHHRHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44216 "EHLO
+        id S234268AbjHHRPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233977AbjHHRGb (ORCPT
+        with ESMTP id S234101AbjHHRPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:06:31 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430085F860;
-        Tue,  8 Aug 2023 09:02:44 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id CBBB967373; Tue,  8 Aug 2023 18:01:41 +0200 (CEST)
-Date:   Tue, 8 Aug 2023 18:01:41 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     hch@lst.de, clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+26860029a4d562566231@syzkaller.appspotmail.com>
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in
- btrfs_open_devices
-Message-ID: <20230808160141.GA15875@lst.de>
-References: <0000000000007921d606025b6ad6@google.com> <000000000000094846060260e710@google.com> <20230808-zentimeter-kappen-5da1e70c5535@brauner>
+        Tue, 8 Aug 2023 13:15:08 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856336BD3B;
+        Tue,  8 Aug 2023 09:06:15 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qTPAq-0007Wz-1J;
+        Tue, 08 Aug 2023 16:03:08 +0000
+Date:   Tue, 8 Aug 2023 17:02:55 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/8] mtd: ubi: allow UBI volumes to provide NVMEM
+Message-ID: <cover.1691510312.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230808-zentimeter-kappen-5da1e70c5535@brauner>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,GB_FAKE_RF_SHORT,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, probably.  The lifetimes looked fishy to me to start with, but
-this might have made things worse.
+The series is a follow-up and contains all patches of the previous
+series "mtd: ubi: behave like a good MTD citizen"[1] which was meant in
+preparation for implementing the NVMEM provider.
 
-On Tue, Aug 08, 2023 at 05:50:02PM +0200, Christian Brauner wrote:
-> On Mon, Aug 07, 2023 at 08:24:36PM -0700, syzbot wrote:
-> > syzbot has bisected this issue to:
-> > 
-> > commit 066d64b26a21a5b5c500a30f27f3e4b1959aac9e
-> > Author: Christoph Hellwig <hch@lst.de>
-> > Date:   Wed Aug 2 15:41:23 2023 +0000
-> > 
-> >     btrfs: open block devices after superblock creation
-> > 
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15493371a80000
-> > start commit:   f7dc24b34138 Add linux-next specific files for 20230807
-> > git tree:       linux-next
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=17493371a80000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=13493371a80000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=d7847c9dca13d6c5
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=26860029a4d562566231
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=179704c9a80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17868ba9a80000
-> > 
-> > Reported-by: syzbot+26860029a4d562566231@syzkaller.appspotmail.com
-> > Fixes: 066d64b26a21 ("btrfs: open block devices after superblock creation")
-> > 
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> 
-> I think the issue might be that before your patch the lifetime of:
-> @device was aligned with @device->s_fs_info but now that you're dropping
-> the uuid mutex after btrfs_scan_one_device() that isn't true anymore. So
-> it feels like:
-> 
-> P1                                       P2
-> lock_uuid_mutex;
-> device = btrfs_scan_one_device();
-> fs_devices = device->fs_devices;
-> unlock_uuid_mutex;
->                                          // earlier mount that gets cleaned up
->                                          lock_uuid_mutex; 
-> 					 btrfs_close_devices(fs_devices);
->                                          unlock_uuid_mutex;
-> 
-> lock_uuid_mutex;
-> btrfs_open_devices(fs_devices); // UAF
-> unlock_uuid_mutex;
-> 
-> But I'm not entirely sure.
----end quoted text---
+The goal is to support embedded Linux devices which got NVMEM bits
+stored inside a UBI volume. Representing the UBI volume in the Device
+Tree, adding a phandle to be referenced by NVMEM consumers allows such
+devices to come up with their correct MAC addresses and device-specific
+Wi-Fi calibration data loaded.
+
+In order to be available for other drivers, attaching UBI devices has
+to be moved from late_initcall (which is too late for other drivers) to
+happen earlier. As an alternative to the existing kernel cmdline
+parameter the Device Tree property 'compatible = "linux,ubi";' inside
+an MTD partition can be used to have that MTD device attached as UBI
+device. MTD partitions which serve as UBI devices may have a "volumes"
+firmware subnode with volumes which may be compatible with
+"nvmem-cells".
+
+In this way, other drivers (think: Ethernet, Wi-Fi) can resolve and
+acquire NVMEM bits using the usual device tree phandle, just this time
+the NVMEM content is read from a UBI volume.
+
+[1]: https://patchwork.ozlabs.org/project/linux-mtd/list/?series=353177&state=%2A&archive=both
+
+Changes since v2:
+ * include dt-bindings additions
+
+Changes since v1:
+ * include patch to fix exiting Kconfig formatting issues
+ * fix typo and indentation in Kconfig
+
+Daniel Golle (8):
+  dt-bindings: mtd: add basic bindings for UBI
+  dt-bindings: mtd: nvmem-cells: allow UBI volumes to provide NVMEM
+  mtd: ubi: block: don't return on error when removing
+  mtd: ubi: block: use notifier to create ubiblock from parameter
+  mtd: ubi: attach MTD partition from device-tree
+  mtd: ubi: introduce pre-removal notification for UBI volumes
+  mtd: ubi: populate ubi volume fwnode
+  mtd: ubi: provide NVMEM layer over UBI volumes
+
+ .../bindings/mtd/partitions/linux,ubi.yaml    |  66 ++++++
+ .../bindings/mtd/partitions/nvmem-cells.yaml  |   5 +-
+ .../bindings/mtd/partitions/ubi-volume.yaml   |  35 ++++
+ drivers/mtd/ubi/Kconfig                       |  12 ++
+ drivers/mtd/ubi/Makefile                      |   1 +
+ drivers/mtd/ubi/block.c                       | 186 ++++++++++-------
+ drivers/mtd/ubi/build.c                       | 160 +++++++++++----
+ drivers/mtd/ubi/cdev.c                        |   4 +-
+ drivers/mtd/ubi/nvmem.c                       | 189 ++++++++++++++++++
+ drivers/mtd/ubi/ubi.h                         |   6 +-
+ drivers/mtd/ubi/vmt.c                         |  32 +++
+ include/linux/mtd/ubi.h                       |   2 +
+ 12 files changed, 578 insertions(+), 120 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+ create mode 100644 drivers/mtd/ubi/nvmem.c
+
+-- 
+2.41.0
