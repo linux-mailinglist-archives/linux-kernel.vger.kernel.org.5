@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86303774E98
+	by mail.lfdr.de (Postfix) with ESMTP id D034C774E99
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 00:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbjHHWso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 18:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47544 "EHLO
+        id S231636AbjHHWsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 18:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbjHHWsi (ORCPT
+        with ESMTP id S231374AbjHHWsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 18:48:38 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57419129
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 15:48:37 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-56942442eb0so73698087b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 15:48:37 -0700 (PDT)
+        Tue, 8 Aug 2023 18:48:39 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632B8114
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 15:48:38 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5868992ddd4so73884587b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 15:48:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691534916; x=1692139716;
+        d=google.com; s=20221208; t=1691534917; x=1692139717;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pWB/bxoqLSL/ZtMTZ8dV/jChYqo6p+fCOGWCHHtspAU=;
-        b=l0+YZUWT9MVORUoAKyZtIiSvH9yjrNYKYquI4h6G3Bw2EZqzd31uHqgRU63WUeJiTY
-         CpJguIuWZtSwCxzXZL7m605eZS8Es5f38S3flkVmk3kM8LB0HvSqtkdI1c7Z2AyBkGtq
-         5NfO/1zVNGQ5YGvx0dhjCckfQkOwM8SuFYDezhYuUQtB+xJ3JKUpKSCYccD2Z2qKxi22
-         OO6RsTdtADjOReVX0UY1bUfshvROIJWuQWuJYZtqakkYY3FJ3grYtZbKyVjGMV37v+ur
-         OCp34anb+2N2Kvfjr0/rniDTTRMNJAKTjeHOC8KCmX2XwY+Iinw733StNw48QbzrItoa
-         QVdw==
+        bh=+19GBVsvDAVjAStBWUAxMG4PPU/OGJ0H5JL5ZuTDef8=;
+        b=33XuWQ+JZacYiunpRf/VpLL+ieGu6gFKhP/kfQt/A/PUBZLTtlxm2/2ie17ypqdLXY
+         XZ7+ymtQ1v237YLPLscwE4bYYZtLPGAUnvBPdCwgT4CADDloYMGmBTI1DA7qAvS1R5dj
+         X5875/w1a0yhqtAQvxC6fc6uFKRhNLsFUanyAesrsxo13nRi2pfWJejJ9tJxOcxd8dpF
+         ueY3fqdWb4iOeEX+HcwPaNrfJYa2/TrdvsAEOpb205dHLWqEOgdL1jjKWHfUJjZd2v2z
+         9oPx/UHQiuz+JRfRFEOY0zAGyBLscrLc721CcjSFpnolkANjOiG1ia1lj7+HQvcd3e7U
+         YNig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691534916; x=1692139716;
+        d=1e100.net; s=20221208; t=1691534917; x=1692139717;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pWB/bxoqLSL/ZtMTZ8dV/jChYqo6p+fCOGWCHHtspAU=;
-        b=em/zvKz9GkJL/QyW47ByBpiAx2cMB2fSpvpNxEPSLy1yJkObECY5I4/2VJpfEukkH7
-         kntZe4p6N3c+wEr2kGaz5h5iOlwPxJ4N9Bp0vWSjby9Ldhlk44GvMqwqMsTtmBuL2ZCE
-         jvN78yuM7Oh9ndb4peABjLMKvO6PhyuNZXWK4OHj7FwTZhzY7lA/3O9sRqt7x7bcVoI2
-         kReH9BXrSzmEyX2L8IKvQBF0NUWaon9MBDiINRJxUyiRYNhsEJehiifNTyAvR33OAJUq
-         Z7W6shj+EzjQVG0HRdUANlcsinZK/rY3pKGLEjFOpjY4U/Ta4vXofqYQrmpBgAcDfJx1
-         ZmUw==
-X-Gm-Message-State: AOJu0YyuwfhohN7Q+zn6FYSx51Dgq0bWRbbBwgauDLbhK63upDbGhhU2
-        KiEdKloQKEXl8pxhcDW99fHVlxG/d2wl4meFqA==
-X-Google-Smtp-Source: AGHT+IEZqIi+KfXakktMR77yvcqvv7E79OwhtWF6B0zRs21LhdiLRA3ymZOhLEcubECjKuLZCFe6Vy5Az1cpq5gVng==
+        bh=+19GBVsvDAVjAStBWUAxMG4PPU/OGJ0H5JL5ZuTDef8=;
+        b=EiBOr7pdpsruiBl6gfbfn+i3EqRSuBW/cr6s54cGSgsjtiE6DmVWlrcEs3Lc1SPjNa
+         UhhdgGS/OD03bRnR5xDZQCtjo2Qi0buq7EAt7wl0RHG82nPoJsjGJXXPnCJZwoKORvfr
+         rQXM8/1QNXDHZ4h4QkRp2iVWZujbJpTgoJ1BeLdqOEAdK0Ytaa4XKPO9AnL15BSyQnHs
+         GCHU9UA8D7yGhRMCNPXq8Ja+spx5DB6p0CVW/bGzIgKiVxbha78OdF6mkh13jXIRZ3yq
+         90Fb3PQI6TAobTCI2oscYHkOBkI5gPSgE8sAJUURPL2j6um0D8Ko+34wO8z70D6xT6Bq
+         yaKA==
+X-Gm-Message-State: AOJu0YwOx3Wn2fK212k02MSVYYb4up/LNsOmwSgZ+AotJMrICCWZ1Q5S
+        oSYnTY4pc1OQ5iy7dE9go6jfKQO4OJu1dQymGw==
+X-Google-Smtp-Source: AGHT+IFmi1uCoUT8+dYsT7cZBMlrh5k6XVkXA76elJmMnRkNeuD4fuUb4fXU9XUyJeJrtDUUPIvD3QYnLXeDP+3YLw==
 X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a81:ae05:0:b0:579:f832:74b with SMTP
- id m5-20020a81ae05000000b00579f832074bmr22779ywh.10.1691534916696; Tue, 08
- Aug 2023 15:48:36 -0700 (PDT)
-Date:   Tue, 08 Aug 2023 22:48:08 +0000
+ (user=justinstitt job=sendgmr) by 2002:a81:414c:0:b0:583:a3c1:6b5a with SMTP
+ id f12-20020a81414c000000b00583a3c16b5amr23219ywk.4.1691534917623; Tue, 08
+ Aug 2023 15:48:37 -0700 (PDT)
+Date:   Tue, 08 Aug 2023 22:48:09 +0000
 In-Reply-To: <20230808-net-netfilter-v1-0-efbbe4ec60af@google.com>
 Mime-Version: 1.0
 References: <20230808-net-netfilter-v1-0-efbbe4ec60af@google.com>
 X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691534912; l=968;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691534912; l=1607;
  i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=ql8BKCTJsc3POKLEq/ADab6DF9AYOTL/azd4EamUBcI=; b=P3R80qBBGIzHAbifBNpGmUCEncCAPqmEwus6LSS+QDg9lMvg2IHe2edYrrt/QOZp2p4frMdd+
- ACoDi+vL9tDBW4ezE6keUa+9XyhIWr0M32IT7a0qKJXdIEfk7Y9a0tM
+ bh=GBQjyBthg5dmrMfaCEkr5QXSIAmXCZ5owhSbCo8Ik6c=; b=l4qPLd4+/BNAz/Lm7D/syXKR78TObwPJdYwbnpE7ksVaBVJA3lf0WqxSNnU3hcPfzO6VTlbM+
+ dgb9SEDK59NATnse+FDklDxWNo24X2WOTSFQSKlQggwoEor3t6oFjrl
 X-Mailer: b4 0.12.3
-Message-ID: <20230808-net-netfilter-v1-3-efbbe4ec60af@google.com>
-Subject: [PATCH 3/7] netfilter: nf_tables: refactor deprecated strncpy
+Message-ID: <20230808-net-netfilter-v1-4-efbbe4ec60af@google.com>
+Subject: [PATCH 4/7] netfilter: nft_meta: refactor deprecated strncpy
 From:   Justin Stitt <justinstitt@google.com>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
@@ -81,33 +81,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prefer `strscpy` over `strncpy`.
+Prefer `strscpy` to `strncpy` since it's more robust and less ambiguous.
 
 Signed-off-by: Justin Stitt <justinstitt@google.com>
 
 ---
 Note:
-`strscpy` is generally preferred to `strncpy` for use on NUL-terminated
-destination strings. In this case, however, it is hard for me to tell if
-the dest buffer wants to be NUL-terminated or not. If NUL-termination is
-not needed behavior here, let's use `strtomem`.
+I wasn't able to tell what the expected size of
+`out->rtnl_link_ops->kind` is. If it is less than or equal to `IFNAMSIZ`
+then there was no bug present and a bug present otherwise. Nonetheless,
+let's swap over to strscpy.
 ---
- net/netfilter/nft_fib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nft_meta.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/netfilter/nft_fib.c b/net/netfilter/nft_fib.c
-index 6e049fd48760..f1a3692f2dbd 100644
---- a/net/netfilter/nft_fib.c
-+++ b/net/netfilter/nft_fib.c
-@@ -150,7 +150,7 @@ void nft_fib_store_result(void *reg, const struct nft_fib *priv,
- 		if (priv->flags & NFTA_FIB_F_PRESENT)
- 			*dreg = !!dev;
- 		else
--			strncpy(reg, dev ? dev->name : "", IFNAMSIZ);
-+			strscpy(reg, dev ? dev->name : "", IFNAMSIZ);
+diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
+index 8fdc7318c03c..de8ced05a273 100644
+--- a/net/netfilter/nft_meta.c
++++ b/net/netfilter/nft_meta.c
+@@ -185,12 +185,12 @@ static noinline bool nft_meta_get_eval_kind(enum nft_meta_keys key,
+ 	case NFT_META_IIFKIND:
+ 		if (!in || !in->rtnl_link_ops)
+ 			return false;
+-		strncpy((char *)dest, in->rtnl_link_ops->kind, IFNAMSIZ);
++		strscpy((char *)dest, in->rtnl_link_ops->kind, IFNAMSIZ);
+ 		break;
+ 	case NFT_META_OIFKIND:
+ 		if (!out || !out->rtnl_link_ops)
+ 			return false;
+-		strncpy((char *)dest, out->rtnl_link_ops->kind, IFNAMSIZ);
++		strscpy((char *)dest, out->rtnl_link_ops->kind, IFNAMSIZ);
  		break;
  	default:
- 		WARN_ON_ONCE(1);
+ 		return false;
+@@ -206,7 +206,7 @@ static void nft_meta_store_ifindex(u32 *dest, const struct net_device *dev)
+ 
+ static void nft_meta_store_ifname(u32 *dest, const struct net_device *dev)
+ {
+-	strncpy((char *)dest, dev ? dev->name : "", IFNAMSIZ);
++	strscpy((char *)dest, dev ? dev->name : "", IFNAMSIZ);
+ }
+ 
+ static bool nft_meta_store_iftype(u32 *dest, const struct net_device *dev)
 
 -- 
 2.41.0.640.ga95def55d0-goog
