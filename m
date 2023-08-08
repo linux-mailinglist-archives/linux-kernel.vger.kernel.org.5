@@ -2,185 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E41773CD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4687D773C5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbjHHQJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
+        id S231704AbjHHQEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbjHHQIW (ORCPT
+        with ESMTP id S231612AbjHHQDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:08:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8855769D
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:46:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691509542;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lr8QH1hJKMAeMGOo0M5b1qGrUuXmYrB7fQhjBLGi+k0=;
-        b=hS8SmJzWdL1TtS4tCBU18Fi8JOWmwixfEOoH8fBeuCastwR9RwVUzpweEJ4CBzm3TjjGpV
-        JgVoR6cARaf4puEcMTwdcNeeAsq/OsbJx1WzfXWgxvcgi3eVxBmMXSS92ytQmNEWrYc8DJ
-        XhYcCiccot6kDlNNrJ49sCvIfF5Nvug=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-381-CxHyW0BJOBGYZvKLEVvoFQ-1; Tue, 08 Aug 2023 10:44:19 -0400
-X-MC-Unique: CxHyW0BJOBGYZvKLEVvoFQ-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4100bd13cb7so19780961cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 07:44:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691505859; x=1692110659;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lr8QH1hJKMAeMGOo0M5b1qGrUuXmYrB7fQhjBLGi+k0=;
-        b=CH0PrJTE5Gb4SbvITCMDwbC+6ANKKm8/0BdfAq1N+snTTdTL3u9ViQlZynhmuvdGxc
-         88zveJlR4TiyT3ZyCCBi/wCPRx1hyNytS8RLqWL1LvClfklqMW7HWB4Ve9gkjQ0Gq48F
-         cpCg2IPbBbwhjM5e52Da42UCMdFXDobGaTxxMwBYrKUgf7pCZa/pCwE3bxmIrPZOWx4d
-         Fe6fsl9/thsHMk2lhwf48+txi1dT3fCOjcJJQtF8p8k3DwFJ5g/4je1l5ZF/WcONQGMX
-         D1lo12B5WlhkjM72yiLRozqyn+gNdY7KNzfgC5Mmz9xbn7p/CkvPKdJBrUv3o9yt+I7n
-         sO8A==
-X-Gm-Message-State: AOJu0YyP9rMcm4OdHJnxpBlzgOXI2akSg86HgkxqG8G9HoKbXFiEJ0dW
-        v/PIWNfifgToQTRGWZ8fxTF9IzhSiizt8yA+5IH7hs23gyYDfYMUBASzIebaKby4op45vdtgi2D
-        186yNPkSJem48YT+3AlTj2WN8
-X-Received: by 2002:ac8:5902:0:b0:40f:f44f:7f79 with SMTP id 2-20020ac85902000000b0040ff44f7f79mr2455qty.16.1691505859185;
-        Tue, 08 Aug 2023 07:44:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG4H/PhZU/WpPuHATF0/xjAxDvtaCGT5yE9Pf+IDINKw6+ypsWmrPVAHe6GEcDu06wD1x60qw==
-X-Received: by 2002:ac8:5902:0:b0:40f:f44f:7f79 with SMTP id 2-20020ac85902000000b0040ff44f7f79mr2428qty.16.1691505858889;
-        Tue, 08 Aug 2023 07:44:18 -0700 (PDT)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id l5-20020ac84a85000000b0040fdf9a53e6sm3397095qtq.82.2023.08.08.07.44.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 07:44:18 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 09:44:16 -0500
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 0/2] net: stmmac: allow sharing MDIO lines
-Message-ID: <xfme5pgj4eqlgao3vmyg6vazaqk6qz2wq6kitgujtorouogjty@cklyof3xz2zm>
-References: <20230807193102.6374-1-brgl@bgdev.pl>
- <54421791-75fa-4ed3-8432-e21184556cde@lunn.ch>
- <CAMRc=Mc6COaxM6GExHF2M+=v2TBpz87RciAv=9kHr41HkjQhCg@mail.gmail.com>
- <ZNJChfKPkAuhzDCO@shell.armlinux.org.uk>
- <CAMRc=MczKgBFvuEanKu=mERYX-6qf7oUO2S4B53sPc+hrkYqxg@mail.gmail.com>
- <65b53003-23cf-40fa-b9d7-f0dbb45a4cb2@lunn.ch>
- <CAMRc=MecYHi=rPaT44kuX_XMog=uwB9imVZknSjnmTBW+fb5WQ@mail.gmail.com>
+        Tue, 8 Aug 2023 12:03:23 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2045.outbound.protection.outlook.com [40.107.94.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5600BC;
+        Tue,  8 Aug 2023 08:45:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pbg0xGOCYYTawii4xH2zWytnxeWIPFTrt4kDMug8QmW+Lri65lprNxPSXB0tJJt8arzlRxmy2KWXI8QeGw2oNoQBqqvuS+FAWQOt5ia4D9K50siG7gV88v5oHCpAHAChalO9cwPqwECFmpywGEEGwcHvGzScoHV50rnPENyBDc9aGqHgcy7XbE3jqWTsLgG9r72ahXO+s/FZmVSUlS4udcxxpIhYgU3AoWHTzsYRwO37hRzKl2Hj2guB+BmLBVQeonUhgI9gkE3My8IuIm/RB3GmADVbryN4b8etLLTvjlqwyFZBI+AKSV5XGZhirvzTMG1A2Jd7s9eXIw8azCW6Aw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7guSE/On/Af6MDAkEypPOZndSAV8AV2RCD5K0lnYs+Y=;
+ b=QZXri4XWZ9TYZ59S1m5e6gYAWxEEQueOb2nYI4vAZsK1hvfDz7UpI/0cf97ZSXyJvNBtlppTjzDc88BZNBtes9GRV6MUrSEl9dgTFh/u9z0LbwwIusYr53pirR/Mg1VZvtf+omnBtW7IaxPX28Y+aAxDOIWWT34VgZVo+QlAmA3eRGdK6j+X+ha+eFK0hjrtA+asKr+Y0Y3ppWy8VSYs6S3mYYpSOmyWbdnsx8O1S9WRKSxVjBHnDoOQFXe477iSVt1mkPvfD/gk8xef6h/R5kvJupgKfgbg3MxmIypnnS0n4I37vNDWNhpI4yxQG02M7fAdUFOpp6l0fNCo9I1QXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7guSE/On/Af6MDAkEypPOZndSAV8AV2RCD5K0lnYs+Y=;
+ b=SjHt1r0MOAszMQxKSR5S+6l3VUa1SsTkCi8DGmf1ZDuWdlpI/cK8U6dlhxsQmLRIwUBv+eoTQOb+br2b7c9/Kw5aJ+y0g/YCB3LQz5LmwHu2jCdaOfH5uNPXxhQQgv57Y7i5IMFzEKQPpyfv5+bjP7wyASxuiiqP7+qrPsOHPIYO3lqPy+/F3obb80ns/ZX7cerpSOrJwcayDhtjGKcuIu/2NrEHgmCRchFr1HgRey7wiWrd/Y8oWnD9cxyC8kA1Bo/n9H+jDyhsY/HjRIM0fPz/p0I0yDEksmsh2Dws4iLozDLdh6K/6RKp4b/UVdxlHeFrJ9NrimyihAMP0YbTAQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ DM6PR12MB4401.namprd12.prod.outlook.com (2603:10b6:5:2a9::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6652.27; Tue, 8 Aug 2023 14:45:37 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::c166:b535:d93:641e]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::c166:b535:d93:641e%4]) with mapi id 15.20.6652.026; Tue, 8 Aug 2023
+ 14:45:37 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
+        linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        "Zach O'Keefe" <zokeefe@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 5/7] mm: thp: split huge page to any lower order pages.
+Date:   Tue, 08 Aug 2023 10:45:34 -0400
+X-Mailer: MailMate (1.14r5964)
+Message-ID: <A6C02D09-CD3A-4F12-89D6-F1F4B03C177A@nvidia.com>
+In-Reply-To: <b545cac8-76f7-e3c3-0e1c-3cb922c9c9ae@redhat.com>
+References: <20230329011712.3242298-1-zi.yan@sent.com>
+ <20230329011712.3242298-6-zi.yan@sent.com>
+ <b545cac8-76f7-e3c3-0e1c-3cb922c9c9ae@redhat.com>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_B9F89779-6ED9-4666-9B7F-FF6FF172146B_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: MN2PR10CA0025.namprd10.prod.outlook.com
+ (2603:10b6:208:120::38) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MecYHi=rPaT44kuX_XMog=uwB9imVZknSjnmTBW+fb5WQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|DM6PR12MB4401:EE_
+X-MS-Office365-Filtering-Correlation-Id: d1530fa2-a290-4caa-b353-08db981e20c4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EjPZGAvBBJ4IkJ+tPLobVY2xBO0feHIOzJf8fWW5MZ0KkXXLKHu+VyOnjtgn1UJ+oj1LQM4liFckjZJoi3zSXMlZHyrsGWbXqI47QmIe8P/qxAD6Zb5oox9x8ctH91WBlxSrDj/A0lFe4/ri1JO1SetvtKxCMPbO9WFNR3zB7HMqUv9ncVhhTLQZtdQ4dZ+ltW5KTqNBJOh+WdUgEum718J/5nFXvjVVmJWAJTOYWnL6xUpNYmgjiDgwOoHxpic9dsum5f1wsa4uPdk1SQzf3zX4ncGJEteJc99gO0Xcr5nqOcY5797DDuuhcSLSYqaqm+hfRlfwdGwG49tjgPbsH3tgNwWJWVrDCNQ19Q0p4flApe8rLw+auufOMC7YgXgVia77E0SmCkzoN9D18J8oJzpVcWGbosipZOkcNOtcozMMbuoTJ5HNJnKg9mel5v0rrg77hmVLXLGVh+Gg+CA6f5ySU1i1rv0WKexarifpw7A7Q0IbZOf+lvE7HHktMkTJVUaY3v6Qu3O7j7q1SgBjhBmf8YZrTMbfvxmc+Xe3ZJYN5A4EedvCvmfW2g67kv9EZErm2uxIwt3vt2/4Kup1+YgBKbjBlGANDZzfklntCdbeKVyXnOr2tFKBWtbZUGcccdFx5QOL4h9KXcLoRELTisz2PpOMOdskXEst8etAzEg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(346002)(376002)(136003)(39860400002)(451199021)(186006)(1800799003)(2616005)(6512007)(36756003)(4326008)(316002)(6916009)(38100700002)(54906003)(6506007)(6666004)(86362001)(66946007)(6486002)(66556008)(66476007)(33656002)(478600001)(53546011)(26005)(8936002)(235185007)(41300700001)(8676002)(2906002)(83380400001)(7416002)(5660300002)(14583001)(72826004)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tuveEswnXg7Dip2wkuPSJYG9qjPDc08i+8pMq7gJwPM09clFY4haVSnTPzr7?=
+ =?us-ascii?Q?wyRqzVVMTb52/ECnztJjRzgl5YXERbZAd/3bBFONAP8ShDSqN9eaIXdY7aN9?=
+ =?us-ascii?Q?F8I+wL9Jqihy9/DBBS19+kHMv3WpFTDlf6Jvvjl86D70SYvQWeUliFvO3EAc?=
+ =?us-ascii?Q?rE98GThgpsHPC+0/wBvgCgFsbYY72XtjPJ03SIGif2o05aqOtYdx1V4X0KJE?=
+ =?us-ascii?Q?ZJ9N7v6ielO5ev8s1+t7Sb+vTF2Q4n7gDwtd6CZepBWPZ+eDqg7e/gEJpf4M?=
+ =?us-ascii?Q?xNp57HE+ZjNN6jMB+NjL8oDpL6DSzRMBXVQZSO1LR7xpRJfnuvilEMVIpN/a?=
+ =?us-ascii?Q?sYRsIJigVFOjMmZaKeUeTcIUQWwMBgrF6lXJR2cFuEGMDS7ALDrRmQ7GsIHK?=
+ =?us-ascii?Q?1XAbSZhoEAb0RLib5OzkfcFXCqAxLPdPxih9BoPJpKx01AkbKanvDqaE3Wwi?=
+ =?us-ascii?Q?edUxOid0jL2iA3KtAGUZcdj9XtjGX7+yJjO4/vA3Inpc6nlS3AvQmRqusJum?=
+ =?us-ascii?Q?uFKS85oRCREvASpqbHdKxDEorWJQ4WDzDL9CLo7ESWI/gyKn7lULX2eAoSPX?=
+ =?us-ascii?Q?0okoJ5DG1CwJjJbUgYFO8wiIZL4sHecw6tVBn2wdvC8MY7jZ1w/eNlhntLG3?=
+ =?us-ascii?Q?F4t6qNnz6vjXy/44V2sNlLQyK7Csq8x90IPzZJIB19ySOpIRed+8BNIwbowC?=
+ =?us-ascii?Q?/XzKdNJLhyQKN8wgi3yFg6gtvjvjxyJQBzUqjaZnGLfnnb4dWzflOYjYNFm5?=
+ =?us-ascii?Q?IhUM39wO4xvfw+6hkJYNFdOiv1k3hq0qH2VyrWTQzBUnSQjrdJUwASdemRqc?=
+ =?us-ascii?Q?jCvlspl3ttVBYe3PD73FhEkTNqNAERAxFIwIaQU0JeMT+WOwxpiHhrh7doqU?=
+ =?us-ascii?Q?hmSlXCQ/1I77WoGrNGheuOsrXkaEVoCNjgTbUOj8ITb171aIL+Pfxup1e+yr?=
+ =?us-ascii?Q?WCIKuKBlcaVtYj9sGJw2ZkbkzCnRyTK+Yzm5bsjUVJe70XnOZ1oQwNcjh/Xm?=
+ =?us-ascii?Q?DQVaS5mND+nzEKku7vmICPOfVsg2S6ZeLf121VJjhvaTC0I8WOzzs3QiSqyT?=
+ =?us-ascii?Q?pa6HEq1NoLKAPIurpmBvKF3J1/PNHxh8eyDLwma2UpAKCOKtmCjOsRkqDD85?=
+ =?us-ascii?Q?7UYcvnLgAcK+lF/e644hHeShSQ5SYNuetoqY876X9duAte0C+s5roNC3/Nfr?=
+ =?us-ascii?Q?S/tUKXs6hpHFMNhG8LKbV/iBQ43mupoOnY6UwQggkEcZmU2VAssw/ZihLgGq?=
+ =?us-ascii?Q?AE4cTBqVNljKHZXBNjf5DKqkXIKShkXwT355b9U0kqDP2iK4T5iSOa7lsio7?=
+ =?us-ascii?Q?ygeG4WsqE6So5zu656ady/M95+cmmntypghfnF2Ng6+mVaZMRudoIyc87Me+?=
+ =?us-ascii?Q?bWI9x1BPJfzKeoZys+sfNacwy50KBbdrwITKGyS+Vx1PJ3Exv2v/sfefDDKk?=
+ =?us-ascii?Q?N9jwA0eLfKgOM9oCmUlLnqlggeizN+9CE0txHulBXkWMRJnaQK7XtHbKry10?=
+ =?us-ascii?Q?sr9tYdEBv0rOYt/2N1ccoodq4NCfb91Og7B9f+4RWw3X+6Fjc5OwO8inbS6w?=
+ =?us-ascii?Q?eQX7mZelLtptZZOShmou75fr6LT2cyp9FgN7xxeR?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1530fa2-a290-4caa-b353-08db981e20c4
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2023 14:45:37.1009
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iodjFmPTfQBDhiYxms/d8me/hcArJh4gUqFUSbz42B5/3JqJbwDL2KePPQkSzxfL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4401
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 04:30:05PM +0200, Bartosz Golaszewski wrote:
-> On Tue, Aug 8, 2023 at 4:25 PM Andrew Lunn <andrew@lunn.ch> wrote:
-> >
-> > > > On Tue, Aug 08, 2023 at 10:13:09AM +0200, Bartosz Golaszewski wrote:
-> > > > > Ok so upon some further investigation, the actual culprit is in stmmac
-> > > > > platform code - it always tries to register an MDIO bus - independent
-> > > > > of whether there is an actual mdio child node - unless the MAC is
-> > > > > marked explicitly as having a fixed-link.
-> > > > >
-> > > > > When I fixed that, MAC1's probe is correctly deferred until MAC0 has
-> > > > > created the MDIO bus.
-> > > > >
-> > > > > Even so, isn't it useful to actually reference the shared MDIO bus in some way?
-> > > > >
-> > > > > If the schematics look something like this:
-> > > > >
-> > > > > --------           -------
-> > > > > | MAC0 |--MDIO-----| PHY |
-> > > > > -------- |     |   -------
-> > > > >          |     |
-> > > > > -------- |     |   -------
-> > > > > | MAC1 |--     ----| PHY |
-> > > > > --------           -------
-> > > > >
-> > > > > Then it would make sense to model it on the device tree?
-> > > >
-> > > > So I think what you're saying is that MAC0 and MAC1's have MDIO bus
-> > > > masters, and the hardware designer decided to tie both together to
-> > > > a single set of clock and data lines, which then go to two PHYs.
-> > >
-> > > The schematics I have are not very clear on that, but now that you
-> > > mention this, it's most likely the case.
-> >
-> > I hope not. That would be very broken. As Russell pointed out, MDIO is
-> > not multi-master. You need to check with the hardware designer if the
-> > schematics are not clear.
-> 
-> Sorry, it was not very clear. It's the case that two MDIO masters
-> share the MDC and data lines.
+--=_MailMate_B9F89779-6ED9-4666-9B7F-FF6FF172146B_=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I'll make the water muddier (hopefully clearer?). I have access to the
-board schematic (not SIP/SOM stuff though), but that should help here.
+On 8 Aug 2023, at 5:01, David Hildenbrand wrote:
 
-MAC0 owns its own MDIO bus (we'll call it MDIO0). It is pinmuxed to
-gpio8/gpio9 for mdc/mdio. MAC1 owns its own bus (MDIO1) which is
-pinmuxed to gpio21/22.
+> On 29.03.23 03:17, Zi Yan wrote:
+>> From: Zi Yan <ziy@nvidia.com>
+>>
+>> To split a THP to any lower order pages, we need to reform THPs on
+>> subpages at given order and add page refcount based on the new page
+>> order. Also we need to reinitialize page_deferred_list after removing
+>> the page from the split_queue, otherwise a subsequent split will see
+>> list corruption when checking the page_deferred_list again.
+>>
+>> It has many uses, like minimizing the number of pages after
+>> truncating a huge pagecache page. For anonymous THPs, we can only spli=
+t
+>> them to order-0 like before until we add support for any size anonymou=
+s
+>> THPs.
+>>
+>
+> Because I'm currently looking into something that would also not be com=
+patible with order-1 for now:
+>
+> You should make it clear that order-1 is not supported, like:
+>
+> "mm: thp: split huge page to any lower order pages (except order 1)"
+>
+> And clarify in the subject why that is the case.
 
-On MDIO0 there are two SGMII ethernet phys. One is connected to MAC0,
-one is connected to MAC1.
+Sure.
 
-MDIO1 is not connected to anything on the board. So there is only one
-MDIO master, MAC0 on MDIO0, and it manages the ethernet phy for both
-MAC0/MAC1.
+I will add below to the commit message and the comment of
+split_huge_page_to_list_to_order():
 
-Does that make sense? I don't think from a hardware design standpoint
-this is violating anything, it isn't a multimaster setup on MDIO.
+Order-1 folio is not supported because _deferred_list, which is used by
+partially mapped folios, is stored in subpage 2 and an order-1 folio only=
 
-> 
-> >
-> > > Good point, but it's worse than that: when MAC0 is unbound, it will
-> > > unregister the MDIO bus and destroy all PHY devices. These are not
-> > > refcounted so they will literally go from under MAC1. Not sure how
-> > > this can be dealt with?
-> >
-> > unbinding is not a normal operation. So i would just live with it, and
-> > if root decides to shoot herself in the foot, that is her choice.
-> >
-> 
-> I disagree. Unbinding is very much a normal operation. Less so for
-> platform devices but still, it is there for a reason and should be
-> expected to work correctly. Or at the very least not crash and burn
-> the system.
-> 
-> On the other hand, I like your approach because I may get away without
-> having to fix it. But if I were to fix it - I would reference the MDIO
-> bus from the secondary mac by phandle and count its references before
-> dropping it. :)
-> 
-> Bartosz
-> 
+has subpage 0 and 1.
 
+
+--
+Best Regards,
+Yan, Zi
+
+--=_MailMate_B9F89779-6ED9-4666-9B7F-FF6FF172146B_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmTSVQ4PHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUANcP/3yZuiZWzhU5HjmynjKBIMR7eGcLOBQ5fRvR
+FhT7g5vFE7BRQwY3mMomckjStXE6Xiy4BLL5m/VkYv8m/Xnf7M49tjlmPBZJYOvT
+/X29IvRo1iJLXUYRUOaDmMlkcblpcwIGdKNmYsVSMsMrmeKyYds8nMP/8R0W+oJP
+g5U5hndjPq2tNI6w7Ca5cyIfXek9wRebEmtovybk8tNw/uaRVj046L82Oo63hiYj
+czzjV61LvBd82Zu5VKBHwqHVcSfAIct3fkt6aOJscFANeUsQl3EYiOofAzDyEGq+
+L5tVe9EDSt+pH9UHvnuThrhttEKdkHFZHnzeUcrRQjCB7EQotdMNxwB7ZfOJ4LVc
+Hlg/PfV2+aODadmjtcOg0dhBppRV6z7JwZI+oCTRDWpmNID0eNvVlz5Z2Z2/JxY4
+8LKZ4//7Q7XWTGBwj9P7o6jtDUd8yflhP1dTBofafBPQldknWxj90P5OUgomF4bE
+O6r0Gri8Xla1jJLx4tIJ2CYO/cgCNtSaIFXEWVFp/tKJJQX5SLKyckNbvEODLZdJ
+Rz1Nqb6zu3yhMpZTgE/Kznkj+AVPcI8f9SMGvAy85dcdzWFPgNMx5z0qkgwUF6MG
+LK1OyDN708foIYISU8AaiekagwwkkDKQaxysWhCRf7ylc0qyBz3O8vzQog3Dg2AO
+eIbafFJL
+=2pY6
+-----END PGP SIGNATURE-----
+
+--=_MailMate_B9F89779-6ED9-4666-9B7F-FF6FF172146B_=--
