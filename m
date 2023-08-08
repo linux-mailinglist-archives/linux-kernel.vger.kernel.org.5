@@ -2,293 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A751777438B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8A47746FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233970AbjHHSH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
+        id S234482AbjHHTIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235296AbjHHSG7 (ORCPT
+        with ESMTP id S231995AbjHHTH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:06:59 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D81E1A76A
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:06:05 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6872c60b572so1285113b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:06:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691514364; x=1692119164;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wpg6aIffbYjICJhycB3Bph3fxU0UaKYZ32RPKTrhmtc=;
-        b=KFK+MC57B3uiLosW3SdFwcKptcKj4Gco/4CR7gSSoL5Q/glH979KjUn3QAKGl8AOkV
-         QMGrsB49N6yPSOe4+GSgLUitjSB+QpdoIhYXN+tP/U/0pnQJ4WDYDvh7BcDQqueYbBOU
-         OXbn9hxooRxN5FeGjCP2qmAnUJ2pzjmuC2Dfiq64HQ6MtpkAhf2AS6xo5Vkpichy2G1p
-         0T5zmUJ0f87ItP7yvuIcUk2SkMtLGYJs3Rg50FYqT7ENTvo/j2H++fFTMswQhEUYhMWK
-         Z07r+ghbooFxc3Ze8QYxMOGU54QzQtHeZgRPC+ZFi3hzhdCOwnX+GgIZXRhV7t+HTmv4
-         IVtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691514364; x=1692119164;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wpg6aIffbYjICJhycB3Bph3fxU0UaKYZ32RPKTrhmtc=;
-        b=ISheiowjsCCLZGAt92WzZLVYMlIC71Y77y62IphyM+42LudtkZkEUHtjzV0IFy/Kch
-         09aixT2qgfnYtEcmAWSuq+KD+ctAjBe2/sPu51JFrgNZtuoSiWAW0U1ZnHBh2LHFb4ef
-         0QBAqoldp6niuh16c6zJZus7kqH+p+g/zyBC9k67AHy79HTWVAFJl1pVUs3FhHCcHHKH
-         SqRkbWc4bppi2ZKb6jkA77Uy+cgIBp3+kC3NlLESFFVNto7k8ulGhmud7fHZTd1haK9O
-         MCd6nHJoCHHFSzuJFyvdCy9YBoxywCGFdM9JPzDY6C2iDvr+FwodQ4yzRJzfuqRetusm
-         KC8w==
-X-Gm-Message-State: AOJu0Ywa8XhpC5p5pMxiMNFM6OEHU9cRwmrW3Zzh9JuSpDM4Hy530Ymp
-        s4416Ez2SneSfgn2N+Ry+6mz3wygaK2Pn7WzgEg=
-X-Google-Smtp-Source: APBJJlEd8UgUmVjTGODajLkItGQ9rG+lZy4ypLT00ATvxhzy6MYHUWJPNACQWVHeXI8Weqa+eylbDA==
-X-Received: by 2002:a17:90a:6c97:b0:263:730b:f568 with SMTP id y23-20020a17090a6c9700b00263730bf568mr25207579pjj.3.1691481032358;
-        Tue, 08 Aug 2023 00:50:32 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id u4-20020a17090a410400b00263154aab24sm7244870pjf.57.2023.08.08.00.50.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 00:50:31 -0700 (PDT)
-Message-ID: <5757e341-b261-14de-e052-46606d530460@bytedance.com>
-Date:   Tue, 8 Aug 2023 15:50:18 +0800
+        Tue, 8 Aug 2023 15:07:57 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03D031C0A;
+        Tue,  8 Aug 2023 09:30:00 -0700 (PDT)
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3785lw1Y024740;
+        Tue, 8 Aug 2023 03:51:38 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3s9kb1yvwp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Aug 2023 03:51:38 -0400 (EDT)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 3787pbs8028447
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Aug 2023 03:51:37 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Tue, 8 Aug 2023 03:51:36 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Tue, 8 Aug 2023 03:51:36 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Tue, 8 Aug 2023 03:51:36 -0400
+Received: from rbolboac.ad.analog.com ([10.48.65.173])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3787pN8x011820;
+        Tue, 8 Aug 2023 03:51:29 -0400
+From:   Ramona Bolboaca <ramona.bolboaca@analog.com>
+To:     <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Ramona Bolboaca <ramona.bolboaca@analog.com>
+Subject: [PATCH v5 2/3] iio: Add IIO_DELTA_VELOCITY channel type
+Date:   Tue, 8 Aug 2023 10:50:58 +0300
+Message-ID: <20230808075059.645525-3-ramona.bolboaca@analog.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230808075059.645525-1-ramona.bolboaca@analog.com>
+References: <20230808075059.645525-1-ramona.bolboaca@analog.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v4 46/48] mm: shrinker: make memcg slab shrink lockless
-Content-Language: en-US
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
-        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
-        gregkh@linuxfoundation.org, muchun.song@linux.dev,
-        simon.horman@corigine.com, dlemoal@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
- <20230807110936.21819-47-zhengqi.arch@bytedance.com>
- <ZNGr+1orhHaBORJG@dread.disaster.area>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <ZNGr+1orhHaBORJG@dread.disaster.area>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: gK0YNr61qDXQ4cGrP3A75IUDw1kv_s1s
+X-Proofpoint-ORIG-GUID: gK0YNr61qDXQ4cGrP3A75IUDw1kv_s1s
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-08_06,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 mlxlogscore=999
+ priorityscore=1501 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
+ mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2306200000 definitions=main-2308080070
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+The delta velocity is defined as a piece-wise integration of
+acceleration data. The delta velocity represents the linear velocity
+change between two consecutive measurements and it
+is measured in m / s (meters per second).
 
-On 2023/8/8 10:44, Dave Chinner wrote:
-> On Mon, Aug 07, 2023 at 07:09:34PM +0800, Qi Zheng wrote:
->> Like global slab shrink, this commit also uses refcount+RCU method to make
->> memcg slab shrink lockless.
-> 
-> This patch does random code cleanups amongst the actual RCU changes.
-> Can you please move the cleanups to a spearate patch to reduce the
-> noise in this one?
+In order to track the total linear velocity change during a desired
+period of time, simply sum-up the delta velocity samples acquired
+during that time.
 
-Sure, will do.
+IIO currently does not offer a suitable channel type for this
+type of measurements hence this patch adds it.
 
-> 
->> diff --git a/mm/shrinker.c b/mm/shrinker.c
->> index d318f5621862..fee6f62904fb 100644
->> --- a/mm/shrinker.c
->> +++ b/mm/shrinker.c
->> @@ -107,6 +107,12 @@ static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
->>   					 lockdep_is_held(&shrinker_rwsem));
->>   }
->>   
->> +static struct shrinker_info *shrinker_info_rcu(struct mem_cgroup *memcg,
->> +					       int nid)
->> +{
->> +	return rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
->> +}
-> 
-> This helper doesn't add value. It doesn't tell me that
-> rcu_read_lock() needs to be held when it is called, for one....
+Signed-off-by: Ramona Bolboaca <ramona.bolboaca@analog.com>
+---
+ Documentation/ABI/testing/sysfs-bus-iio | 23 +++++++++++++++++++++++
+ drivers/iio/industrialio-core.c         |  1 +
+ include/uapi/linux/iio/types.h          |  1 +
+ tools/iio/iio_event_monitor.c           |  2 ++
+ 4 files changed, 27 insertions(+)
 
-How about adding a comment or an assertion here?
+diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+index 363dd4b09930..59968b745518 100644
+--- a/Documentation/ABI/testing/sysfs-bus-iio
++++ b/Documentation/ABI/testing/sysfs-bus-iio
+@@ -293,6 +293,21 @@ Description:
+ 		angle samples acquired during that time.
+ 		Units after application of scale and offset are radians.
+ 
++What:		/sys/bus/iio/devices/iio:deviceX/in_deltavelocity_x_raw
++What:		/sys/bus/iio/devices/iio:deviceX/in_deltavelocity_y_raw
++What:		/sys/bus/iio/devices/iio:deviceX/in_deltavelocity_z_raw
++KernelVersion:	6.5
++Contact:	linux-iio@vger.kernel.org
++Description:
++		The linear velocity change between two consecutive samples on x,
++		y or z (may be arbitrarily assigned but should match other such
++		assignments on device).
++		In order to compute the total linear velocity change during a
++		desired period of time, the application should sum-up the delta
++		velocity samples acquired during that time.
++		Units after application of scale and offset are meters per
++		second.
++
+ What:		/sys/bus/iio/devices/iio:deviceX/in_angl_raw
+ What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_raw
+ KernelVersion:	4.17
+@@ -476,6 +491,7 @@ What:		/sys/bus/iio/devices/iio:deviceX/in_velocity_sqrt(x^2+y^2+z^2)_scale
+ What:		/sys/bus/iio/devices/iio:deviceX/in_illuminance_scale
+ What:		/sys/bus/iio/devices/iio:deviceX/in_countY_scale
+ What:		/sys/bus/iio/devices/iio:deviceX/in_deltaangl_scale
++What:		/sys/bus/iio/devices/iio:deviceX/in_deltavelocity_scale
+ What:		/sys/bus/iio/devices/iio:deviceX/in_angl_scale
+ What:		/sys/bus/iio/devices/iio:deviceX/in_intensity_x_scale
+ What:		/sys/bus/iio/devices/iio:deviceX/in_intensity_y_scale
+@@ -1350,6 +1366,9 @@ What:		/sys/.../iio:deviceX/bufferY/in_accel_z_en
+ What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_x_en
+ What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_y_en
+ What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_z_en
++What:		/sys/.../iio:deviceX/bufferY/in_deltavelocity_x_en
++What:		/sys/.../iio:deviceX/bufferY/in_deltavelocity_y_en
++What:		/sys/.../iio:deviceX/bufferY/in_deltavelocity_z_en
+ What:		/sys/.../iio:deviceX/bufferY/in_anglvel_x_en
+ What:		/sys/.../iio:deviceX/bufferY/in_anglvel_y_en
+ What:		/sys/.../iio:deviceX/bufferY/in_anglvel_z_en
+@@ -1381,6 +1400,7 @@ Description:
+ 
+ What:		/sys/.../iio:deviceX/bufferY/in_accel_type
+ What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_type
++What:		/sys/.../iio:deviceX/bufferY/in_deltavelocity_type
+ What:		/sys/.../iio:deviceX/bufferY/in_anglvel_type
+ What:		/sys/.../iio:deviceX/bufferY/in_magn_type
+ What:		/sys/.../iio:deviceX/bufferY/in_incli_type
+@@ -1438,6 +1458,9 @@ What:		/sys/.../iio:deviceX/bufferY/in_accel_z_index
+ What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_x_index
+ What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_y_index
+ What:		/sys/.../iio:deviceX/bufferY/in_deltaangl_z_index
++What:		/sys/.../iio:deviceX/bufferY/in_deltavelocity_x_index
++What:		/sys/.../iio:deviceX/bufferY/in_deltavelocity_y_index
++What:		/sys/.../iio:deviceX/bufferY/in_deltavelocity_z_index
+ What:		/sys/.../iio:deviceX/bufferY/in_anglvel_x_index
+ What:		/sys/.../iio:deviceX/bufferY/in_anglvel_y_index
+ What:		/sys/.../iio:deviceX/bufferY/in_anglvel_z_index
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index 2e2fd0be2504..ba694b049629 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -90,6 +90,7 @@ static const char * const iio_chan_type_name_spec[] = {
+ 	[IIO_PHASE] = "phase",
+ 	[IIO_MASSCONCENTRATION] = "massconcentration",
+ 	[IIO_DELTA_ANGL] = "deltaangl",
++	[IIO_DELTA_VELOCITY] = "deltavelocity",
+ };
+ 
+ static const char * const iio_modifier_names[] = {
+diff --git a/include/uapi/linux/iio/types.h b/include/uapi/linux/iio/types.h
+index 55666a17d311..9a341bd07702 100644
+--- a/include/uapi/linux/iio/types.h
++++ b/include/uapi/linux/iio/types.h
+@@ -48,6 +48,7 @@ enum iio_chan_type {
+ 	IIO_PHASE,
+ 	IIO_MASSCONCENTRATION,
+ 	IIO_DELTA_ANGL,
++	IIO_DELTA_VELOCITY,
+ };
+ 
+ enum iio_modifier {
+diff --git a/tools/iio/iio_event_monitor.c b/tools/iio/iio_event_monitor.c
+index 3505450060e6..7e6761612246 100644
+--- a/tools/iio/iio_event_monitor.c
++++ b/tools/iio/iio_event_monitor.c
+@@ -60,6 +60,7 @@ static const char * const iio_chan_type_name_spec[] = {
+ 	[IIO_PHASE] = "phase",
+ 	[IIO_MASSCONCENTRATION] = "massconcentration",
+ 	[IIO_DELTA_ANGL] = "deltaangl",
++	[IIO_DELTA_VELOCITY] = "deltavelocity",
+ };
+ 
+ static const char * const iio_ev_type_text[] = {
+@@ -175,6 +176,7 @@ static bool event_is_known(struct iio_event_data *event)
+ 	case IIO_PHASE:
+ 	case IIO_MASSCONCENTRATION:
+ 	case IIO_DELTA_ANGL:
++	case IIO_DELTA_VELOCITY:
+ 		break;
+ 	default:
+ 		return false;
+-- 
+2.34.1
 
-> 
->>   static int expand_one_shrinker_info(struct mem_cgroup *memcg, int new_size,
->>   				    int old_size, int new_nr_max)
->>   {
->> @@ -198,7 +204,7 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
->>   		struct shrinker_info_unit *unit;
->>   
->>   		rcu_read_lock();
->> -		info = rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
->> +		info = shrinker_info_rcu(memcg, nid);
-> 
-> ... whilst the original code here was obviously correct.
-> 
->>   		unit = info->unit[shriner_id_to_index(shrinker_id)];
->>   		if (!WARN_ON_ONCE(shrinker_id >= info->map_nr_max)) {
->>   			/* Pairs with smp mb in shrink_slab() */
->> @@ -211,7 +217,7 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
->>   
->>   static DEFINE_IDR(shrinker_idr);
->>   
->> -static int prealloc_memcg_shrinker(struct shrinker *shrinker)
->> +static int shrinker_memcg_alloc(struct shrinker *shrinker)
-> 
-> Cleanups in a separate patch.
-
-OK.
-
-> 
->> @@ -253,10 +258,15 @@ static long xchg_nr_deferred_memcg(int nid, struct shrinker *shrinker,
->>   {
->>   	struct shrinker_info *info;
->>   	struct shrinker_info_unit *unit;
->> +	long nr_deferred;
->>   
->> -	info = shrinker_info_protected(memcg, nid);
->> +	rcu_read_lock();
->> +	info = shrinker_info_rcu(memcg, nid);
->>   	unit = info->unit[shriner_id_to_index(shrinker->id)];
->> -	return atomic_long_xchg(&unit->nr_deferred[shriner_id_to_offset(shrinker->id)], 0);
->> +	nr_deferred = atomic_long_xchg(&unit->nr_deferred[shriner_id_to_offset(shrinker->id)], 0);
->> +	rcu_read_unlock();
->> +
->> +	return nr_deferred;
->>   }
-> 
-> This adds two rcu_read_lock() sections to every call to
-> do_shrink_slab(). It's not at all clear ifrom any of the other code
-> that do_shrink_slab() now has internal rcu_read_lock() sections....
-
-The xchg_nr_deferred_memcg() will only be called in shrink_slab_memcg(),
-so other code doesn't need to know that information?
-
-> 
->> @@ -464,18 +480,23 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
->>   	if (!mem_cgroup_online(memcg))
->>   		return 0;
->>   
->> -	if (!down_read_trylock(&shrinker_rwsem))
->> -		return 0;
->> -
->> -	info = shrinker_info_protected(memcg, nid);
->> +again:
->> +	rcu_read_lock();
->> +	info = shrinker_info_rcu(memcg, nid);
->>   	if (unlikely(!info))
->>   		goto unlock;
->>   
->> -	for (; index < shriner_id_to_index(info->map_nr_max); index++) {
->> +	if (index < shriner_id_to_index(info->map_nr_max)) {
->>   		struct shrinker_info_unit *unit;
->>   
->>   		unit = info->unit[index];
->>   
->> +		/*
->> +		 * The shrinker_info_unit will not be freed, so we can
->> +		 * safely release the RCU lock here.
->> +		 */
->> +		rcu_read_unlock();
-> 
-> Why - what guarantees that the shrinker_info_unit exists at this
-> point? We hold no reference to it, we hold no reference to any
-> shrinker, etc. What provides this existence guarantee?
-
-The shrinker_info_unit is never freed unless the memcg is destroyed.
-Here we hold the refcount of this memcg (mem_cgroup_iter() -->
-css_tryget()), so the shrinker_info_unit will not be freed.
-
-> 
->> +
->>   		for_each_set_bit(offset, unit->map, SHRINKER_UNIT_BITS) {
->>   			struct shrink_control sc = {
->>   				.gfp_mask = gfp_mask,
->> @@ -485,12 +506,14 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
->>   			struct shrinker *shrinker;
->>   			int shrinker_id = calc_shrinker_id(index, offset);
->>   
->> +			rcu_read_lock();
->>   			shrinker = idr_find(&shrinker_idr, shrinker_id);
->> -			if (unlikely(!shrinker || !(shrinker->flags & SHRINKER_REGISTERED))) {
->> -				if (!shrinker)
->> -					clear_bit(offset, unit->map);
->> +			if (unlikely(!shrinker || !shrinker_try_get(shrinker))) {
->> +				clear_bit(offset, unit->map);
->> +				rcu_read_unlock();
->>   				continue;
->>   			}
->> +			rcu_read_unlock();
->>   
->>   			/* Call non-slab shrinkers even though kmem is disabled */
->>   			if (!memcg_kmem_online() &&
->> @@ -523,15 +546,20 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
->>   					set_shrinker_bit(memcg, nid, shrinker_id);
->>   			}
->>   			freed += ret;
->> -
->> -			if (rwsem_is_contended(&shrinker_rwsem)) {
->> -				freed = freed ? : 1;
->> -				goto unlock;
->> -			}
->> +			shrinker_put(shrinker);
-> 
-> Ok, so why is this safe to call without holding the rcu read lock?
-> The global shrinker has to hold the rcu_read_lock() whilst calling
-> shrinker_put() to guarantee the validity of the list next pointer,
-> but we don't hold off RCU here so what guarantees a racing global
-> shrinker walk doesn't trip over this shrinker_put() call dropping
-> the refcount to zero and freeing occuring in a different context...
-
-This will not be a problem, even if shrinker::refcount is reduced to
-0 here, the racing global shrinker walk already holds the rcu lock.
-
-         shrink_slab            shrink_slab_memcg
-         ===========            =================
-
-         rcu_read_lock()
-         shrinker_put()
-                                shrinker_put()
-
-And in shrink_slab_memcg(), the shrinker is not required to traverse the
-next bit in the shrinker_info_unit::map, so there is no need to hold the
-rcu lock to ensure the existence of this shrinker.
-
-> 
-> 
->> +		/*
->> +		 * We have already exited the read-side of rcu critical section
->> +		 * before calling do_shrink_slab(), the shrinker_info may be
->> +		 * released in expand_one_shrinker_info(), so reacquire the
->> +		 * shrinker_info.
->> +		 */
->> +		index++;
->> +		goto again;
-> 
-> With that, what makes the use of shrinker_info in
-> xchg_nr_deferred_memcg() in do_shrink_slab() coherent and valid?
-
-Holding rcu lock can ensure that the old shrinker_info will not be
-freed, and the shrinker_info_unit::nr_deferred can also be indexed from
-the old shrinker_info::unit[x], so the updated nr_deferred will not be
-lost.
-
-Thanks,
-Qi
-
-> 
-> -Dave.
