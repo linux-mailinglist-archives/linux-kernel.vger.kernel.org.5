@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C79774050
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BE1773F26
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233978AbjHHRBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
+        id S233324AbjHHQns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233712AbjHHRBA (ORCPT
+        with ESMTP id S233210AbjHHQm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:01:00 -0400
+        Tue, 8 Aug 2023 12:42:58 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EAA8685;
-        Tue,  8 Aug 2023 09:00:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3AC1657A;
+        Tue,  8 Aug 2023 08:55:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 85C99623A0;
-        Tue,  8 Aug 2023 07:35:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 607DBC433C8;
-        Tue,  8 Aug 2023 07:35:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691480120;
-        bh=2X/NGOteLx4UL3AZkQJT72BA3+ipWBqs7JqK5Lor0b8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Su9ocHgjU00cWfZv6OLYZoas6jUlRqbWOEtcbT1kZAr/ElT/82cIeISg8oVmdK5fL
-         j8w/eEwG/vrvr4fk9sP8HvryDnGXUuXUcABLYP68xSlz7J6p8mli5w2jy6aQjoIFiC
-         80rf2TYDsg8WV2Ye4sT6LmGwDeF+MX56LM7BaMnA=
-Date:   Tue, 8 Aug 2023 09:35:17 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc:     linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russell.h.weight@intel.com>,
-        Tianfei Zhang <tianfei.zhang@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
-        Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH v3 4.14 1/1] test_firmware: fix the memory leaks with the
- reqs buffer
-Message-ID: <2023080817-why-shawl-8ac1@gregkh>
-References: <20230804170017.92671-1-mirsad.todorovac@alu.unizg.hr>
- <2023080705-poet-nickname-5e08@gregkh>
- <a9e443c7-c7b5-63ce-08d9-5604ac545bf6@alu.unizg.hr>
- <2023080802-moonrise-cascade-a4c0@gregkh>
- <1269af66-bd86-0fab-e4ec-968f14371279@alu.unizg.hr>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BF71262415;
+        Tue,  8 Aug 2023 07:35:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 497D9C433C7;
+        Tue,  8 Aug 2023 07:35:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691480151;
+        bh=ggJxxHrpO5MN3RQIEaFOMF+tpJRgPPk/jwHSNu2FkOA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=CcRZf88ia64ohD7SbYh76bcOiLJpVBY+fAcN8ukqtuX6uiolV1mGeCNsiYOtRPtcJ
+         +iWcOkn+K0g47lRrOS1cVV40+k9Oyi7Zafe0hF3w6wzHM6Hdw8o4eyhBUFd46zW2iE
+         oCS51eoYIOJpJqnAedYI/7Dv9rsPycTKRGGM3fmDyawCeKjAPe591k0Ex2dBkwkE12
+         ATybmCxHTUBKajxOvaHs7FnCQCWt9rnQjfj3nYbAkaSsl/J4mF45Zv5OWwwx15XY5w
+         2a8Imgm8pbHwpTZCWQYWT6BCoMkDevW6NsQ6xsfrMC+mIWLt4Ex1G6JOPCK/DRWG8E
+         mbPLImdCOrkqA==
+Message-ID: <298675a5-7c42-fecb-f79d-652b4d485c4c@kernel.org>
+Date:   Tue, 8 Aug 2023 09:35:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1269af66-bd86-0fab-e4ec-968f14371279@alu.unizg.hr>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 2/2] dt-bindings: hwmon: add EMC181x
+To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Mathew McBride <matt@traverse.com.au>
+References: <20230808013157.80913-1-mark.tomlinson@alliedtelesis.co.nz>
+ <20230808013157.80913-2-mark.tomlinson@alliedtelesis.co.nz>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <20230808013157.80913-2-mark.tomlinson@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,64 +61,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 08:24:43AM +0200, Mirsad Todorovac wrote:
-> On 8/8/23 06:28, Greg Kroah-Hartman wrote:
-> > On Mon, Aug 07, 2023 at 08:28:04PM +0200, Mirsad Todorovac wrote:
-> > > On 8/7/23 11:15, Greg Kroah-Hartman wrote:
-> > > > On Fri, Aug 04, 2023 at 07:00:18PM +0200, Mirsad Todorovac wrote:
-> > > > > [ commit be37bed754ed90b2655382f93f9724b3c1aae847 upstream ]
-> > > > > 
-> > > > > Dan Carpenter spotted that test_fw_config->reqs will be leaked if
-> > > > > trigger_batched_requests_store() is called two or more times.
-> > > > > The same appears with trigger_batched_requests_async_store().
-> > > > > 
-> > > > > This bug wasn't triggered by the tests, but observed by Dan's visual
-> > > > > inspection of the code.
-> > > > > 
-> > > > > The recommended workaround was to return -EBUSY if test_fw_config->reqs
-> > > > > is already allocated.
-> > > > > 
-> > > > > Fixes: c92316bf8e94 ("test_firmware: add batched firmware tests")
-> > > > > Cc: Luis Chamberlain <mcgrof@kernel.org>
-> > > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > Cc: Russ Weight <russell.h.weight@intel.com>
-> > > > > Cc: Tianfei Zhang <tianfei.zhang@intel.com>
-> > > > > Cc: Shuah Khan <shuah@kernel.org>
-> > > > > Cc: Colin Ian King <colin.i.king@gmail.com>
-> > > > > Cc: Randy Dunlap <rdunlap@infradead.org>
-> > > > > Cc: linux-kselftest@vger.kernel.org
-> > > > > Cc: stable@vger.kernel.org # v4.14
-> > > > > Suggested-by: Dan Carpenter <error27@gmail.com>
-> > > > > Suggested-by: Takashi Iwai <tiwai@suse.de>
-> > > > > Link: https://lore.kernel.org/r/20230509084746.48259-2-mirsad.todorovac@alu.unizg.hr
-> > > > > Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-> > > > > 
-> > > > > [ This fix is applied against the 4.14 stable branch. There are no changes to the ]
-> > > > > [ fix in code when compared to the upstread, only the reformatting for backport.  ]
-> > > > 
-> > > > Thanks for all of these, now queued up.
-> > > 
-> > > No problem, I should have done it right the first time to reduce your load.
-> > > 
-> > > I really believe that backporting bug fix patches is important because many systems
-> > > cannot upgrade because of the legacy apps and hardware, to state the obvious.
-> > 
-> > What "legacy apps" rely on a specific kernel version?
+On 08/08/2023 03:31, Mark Tomlinson wrote:
+> The EMC181x range are I2C temperature sensors with a varying number of
+> sensors in each device. Each has one internal sensor, and one to four
+> external sensor diodes.
 > 
-> Hi, Mr. Greg,
+> The default range is from 0°C to +127°C, but can be extended to -64°C to
+> +191°C.
 > 
-> Actually, in our particular case, it was the Eprints that required old mysql on Debian stretch
-> rather than MariaDB that came with Buster. So, the release required particular kernel version (4.9).
+> Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
 
-So what happens when this kernel becomes end-of-life?
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
 
-> Of course, we can upgrade to any mainline kernel, but that is no longer a tested distro kernel,
-> and faults would be blamed on me entirely. Plus the overhead of regular patching ...
+You missed at least DT list (maybe more), so this won't be tested by
+automated tooling. Performing review on untested code might be a waste
+of time, thus I will skip this patch entirely till you follow the
+process allowing the patch to be tested.
 
-You should be doing regular patching for any LTS kernel as well, right?
-Same for testing, there should not be any difference in testing any
-kernel update be it on a LTS branch, or between major versions.
+Please kindly resend and include all necessary To/Cc entries.
 
-anyway, good luck!
+Limited review follows:
 
-greg k-h
+> ---
+>  .../bindings/hwmon/microchip,emc181x.yaml     | 45 +++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/microchip,emc181x.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/microchip,emc181x.yaml b/Documentation/devicetree/bindings/hwmon/microchip,emc181x.yaml
+> new file mode 100644
+> index 000000000000..5967f98ad7ba
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/microchip,emc181x.yaml
+> @@ -0,0 +1,45 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +
+
+Drop blank line.
+
+> +$id: http://devicetree.org/schemas/hwmon/microchip,emc181x.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip EMC1812/EMC1813/EMC1814/EMC1815/EMC1833 temperature sensors
+> +
+> +maintainers:
+> +  - Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - microchip,emc1812
+> +      - microchip,emc1813
+> +      - microchip,emc1814
+> +      - microchip,emc1815
+> +      - microchip,emc1833
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  emc181x,extended-range:
+
+Incorrect vendor prefix.
+
+> +    description: Allow for reading of extended temperature range (-64-192C)
+
+And why would we disallow it otherwise?
+
+Missing type... so this wasn't even tested.
+
+> +
+> +
+
+Just one blank line.
+
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        temperature-sensor@7c {
+> +            compatible = "microchip,emc1812";
+> +            reg = <0x7c>;
+
+Include optional properties in the example as well.
+
+Best regards,
+Krzysztof
+
