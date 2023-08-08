@@ -2,178 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A86773769
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 05:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C6577377C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 05:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbjHHDNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 23:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
+        id S230517AbjHHDRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 23:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231148AbjHHDNA (ORCPT
+        with ESMTP id S229982AbjHHDRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 23:13:00 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2047.outbound.protection.outlook.com [40.107.94.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B870E7;
-        Mon,  7 Aug 2023 20:12:57 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z82k2cXZuEdxRZDNC7SY+5pHFh6EfvrGZO7XDv48W+RAyvfcne3ZLlxk7mhlZWBtxmbDJZybaB3X+ZbexK2Iup+muIKLqgvmifxPAeAIMW31U/If/t4w6dFS2E0Tqs4drk/yRQEn9xgg3mmI8xtv2N2e+DPafwovsaQrPw3JVDHKQLOSDLSSRjAP2dz350OvCSgATQdcF2FY/7iziph/UgSwlDXvuRN4BdwGLOITUNV2i5bgJ1/22kQ8BCXzjzSGAP4+HoivUAweRkZVoPKOV8PkqKzAM7hbW3S4CxvqzDi8eTNR6vpXHUmHBcsrhZdCj4hkqjRQ6BEt91FH/QfSjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eALnJYcGKflQ/kh5eX2J9rbfxsXpouoABpu2G9OAQlQ=;
- b=nUsb4uVSpLuS1KNCQDLHX516pu1y/ClrnX+08wV5MlJJdAhjslw10RvPjV66WR0mcjc8VrbNk2kGRcd8Yqyzm2klY2g7YA2r3lEyznJnncH2yGdkHWUGy1s1lR4vZBxx02qeCnUUSy10B8b4F4QzzwHxhn8FMERGenIpf+C5OuR48YMicEJ3rNRE8Azk+h8eySohU2XPi/jiDklt0nUn4HklW+JwNIDArNy5W9dSAhqygotoxuuezxPbXkzh6v6z6Q0hIDkxPcLK/Q4ZyFV9H3Vv2C28A0UhhsIKLxJzhF4Sh0ZB+nLj79o3TAAEN6nqfRhXClJN5wtbfiIYEooCuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eALnJYcGKflQ/kh5eX2J9rbfxsXpouoABpu2G9OAQlQ=;
- b=eHTzMFFp63WQpdluivgRIWmX6XwuEzvPeBq+vOP6ciM7aaKNVmX6/W+juPHrOwgZHLdbP/wToUbeitOiKc/yH/vejXFtxyE0gvU8rftheC6EZpCE/LH4jiFJlm2w/UGw8kQxYLTIygcb4wjJG/MphQ9HLoJ8IHKA2mEjeBWP1k9o+geIaqN7Fi8POD2kANRxZ0q/tfMiFIVA1lpfc7ymemf86EqLrqVxX+c1tIoOX86xmrPVvgXRGfsuClbrzww8YqsmiccLItxEtQq+Y9fsw1WMsjZWx09KaBhN0q1P5BxUWmBmcZ6t3W3xlUQSdjUvnMfu2i1St3IeOPZ5eOjIlA==
-Received: from PH0PR07CA0060.namprd07.prod.outlook.com (2603:10b6:510:e::35)
- by SN7PR12MB6689.namprd12.prod.outlook.com (2603:10b6:806:273::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Tue, 8 Aug
- 2023 03:12:51 +0000
-Received: from SN1PEPF000252A0.namprd05.prod.outlook.com
- (2603:10b6:510:e:cafe::e1) by PH0PR07CA0060.outlook.office365.com
- (2603:10b6:510:e::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27 via Frontend
- Transport; Tue, 8 Aug 2023 03:12:54 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SN1PEPF000252A0.mail.protection.outlook.com (10.167.242.7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6652.19 via Frontend Transport; Tue, 8 Aug 2023 03:12:54 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 7 Aug 2023
- 20:12:41 -0700
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Mon, 7 Aug 2023
- 20:12:40 -0700
-Received: from Asurada-Nvidia (10.127.8.11) by mail.nvidia.com (10.129.68.10)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Mon, 7 Aug 2023 20:12:39 -0700
-Date:   Mon, 7 Aug 2023 20:12:37 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     "Liu, Yi L" <yi.l.liu@intel.com>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
-Subject: Re: [PATCH v4 09/12] iommu/vt-d: Add iotlb flush for nested domain
-Message-ID: <ZNGypUee/U9d68TZ@Asurada-Nvidia>
-References: <20230724111335.107427-1-yi.l.liu@intel.com>
- <20230724111335.107427-10-yi.l.liu@intel.com>
- <BN9PR11MB527690EBAA872A16AE8926F88C0BA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <DS0PR11MB7529F4D4DABBE29E9B7BF5C9C30CA@DS0PR11MB7529.namprd11.prod.outlook.com>
+        Mon, 7 Aug 2023 23:17:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6830FE7
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 20:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ln9p3P23Q5cQA+r9dkQJP5+/EvnF6BLwETg6xCvhWkE=; b=R5FIPgJq6zOdG/CQzwebQ4Ms/P
+        Jhu/sPlNgPitmuY1rrDtWWwFU9p2oeLEGmBjYUwu/+HRCNezUBbhlXdiyoF9KmHvakBRRNW2nWTKN
+        tUpOrkyQ4loeruCnETQ8TazT/kZk2uwHCtqXzSQXyzFeVoR/K7Z7pzhattEJ/IRJJrVTxp7JCTLBm
+        lv00soUJicxZnVJRk4Lka7t7u51BlP08u0NcTGHXxof5BxdMV+iR07sSiDmbuVsMj6dBrz7eUsGHG
+        MyxRIqHHS5dI+JHfPuzlbxXD6kY6ak4C/wyakxy0gCFwZmXJhUmUODymInYulBUDs+t9j7TdfIFN4
+        UDYfI3Tw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qTDDN-00F3a3-3o; Tue, 08 Aug 2023 03:16:57 +0000
+Date:   Tue, 8 Aug 2023 04:16:57 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: remove unneeded __meminit annotation
+Message-ID: <ZNGzqRYzC8lbLG9s@casper.infradead.org>
+References: <20230808015831.608454-1-linmiaohe@huawei.com>
+ <ZNGo5Y4vQ3rQn0vf@casper.infradead.org>
+ <308f326d-c7ae-be49-22af-189a81a89aa2@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DS0PR11MB7529F4D4DABBE29E9B7BF5C9C30CA@DS0PR11MB7529.namprd11.prod.outlook.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF000252A0:EE_|SN7PR12MB6689:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2cda00ae-25f4-468f-55de-08db97bd5b9c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: n0WLcyo5yUAUJhOWtpYtkCmk/TN7egcaFnOw0k/NZsHIkIYqnHYPBUpbgXbAJjQ0a5qpR8apH7LJe2ZLKZZhSWhQ1J2P1Z99WyX9FAU+RmWDs58t60Fekfkeb+iMfCaAdehzRsyZNoBTREmxD+70E8LkkyiVD7Cm0zkiEQVi8uJCx7KaKNaF74nvL5YAT90s5az7JL5B68VEGVMI5kZS4uiqMdkxSDx5Rr3vLIYuqEENs/iL9EFv578TDSCaJ+eW1sFyY3xwGZbs9/H9NqR1qnrl/tFWKw+0msPvsSMRZvzD+ZP+mtoPbXXdV3fdu5DpPppfKQhtK6MuhWDPExSLm9sZiSrSQqMLt5NLwqCzIJK5DyvKwf4vapfAyrlBbO3F0atTMDulSQqtPNpkv+7AKWmtInHXPZYqrzdXssqIft6p6Y7P0GSansUPej5ZvvSk1su9FiK+IzLF6sE5cyD0is1Qh+CnEEJXCcBECacB5AWm1z2J7WAI2RPfWWJAehxhvPoefk96n2U0uhLFMFgL9h9OeWuirUlkKdyG+qg0IqPx9Y/3ro/azBZ/bKFU0aijaieNCo1/hl7ZCJ2nG2v5Km6ce/av1Ci89LGgWuHac91pOrLr0DpQslu3uVS6+qtjE0/0Dm6IhOGD54PqtLbUdbn0ZQpa/h4WoIX/w1cBWZ3N8hvyE686Vx9GEUr4ZGDjspoUjEfFY+Ys6rjc2WAyng1xLEKN6mRnomAnkrKpUehsDMqM8VyB78vVF4terAt17E6CNmUAKz+SZJVTgim0Mauw/GAAYjigBHgimI9RGkspGuPNRNIpjwNFMd1ZOs2N
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(396003)(136003)(39860400002)(451199021)(82310400008)(186006)(1800799003)(90011799007)(90021799007)(40470700004)(46966006)(36840700001)(70206006)(4326008)(6916009)(41300700001)(316002)(2906002)(54906003)(478600001)(9686003)(26005)(336012)(7416002)(8676002)(8936002)(70586007)(5660300002)(426003)(47076005)(83380400001)(86362001)(36860700001)(40460700003)(40480700001)(356005)(7636003)(55016003)(82740400003)(33716001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2023 03:12:54.3236
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2cda00ae-25f4-468f-55de-08db97bd5b9c
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF000252A0.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6689
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <308f326d-c7ae-be49-22af-189a81a89aa2@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 03:08:29PM +0000, Liu, Yi L wrote:
-> > > From: Liu, Yi L <yi.l.liu@intel.com>
-> > > Sent: Monday, July 24, 2023 7:14 PM
-> > >
-> > > +static int intel_nested_cache_invalidate_user(struct iommu_domain
-> > > *domain,
-> > > +                                         void *user_data)
-> > > +{
-> > > +   struct iommu_hwpt_vtd_s1_invalidate_desc *req = user_data;
-> > > +   struct iommu_hwpt_vtd_s1_invalidate *inv_info = user_data;
-> > > +   struct dmar_domain *dmar_domain = to_dmar_domain(domain);
-> > > +   unsigned int entry_size = inv_info->entry_size;
-> > > +   u64 uptr = inv_info->inv_data_uptr;
-> > > +   u64 nr_uptr = inv_info->entry_nr_uptr;
-> > > +   struct device_domain_info *info;
-> > > +   u32 entry_nr, index;
-> > > +   unsigned long flags;
-> > > +   int ret = 0;
-> > > +
-> > > +   if (get_user(entry_nr, (uint32_t __user *)u64_to_user_ptr(nr_uptr)))
-> > > +           return -EFAULT;
-> > > +
-> > > +   for (index = 0; index < entry_nr; index++) {
-> > > +           ret = copy_struct_from_user(req, sizeof(*req),
-> > > +                                       u64_to_user_ptr(uptr + index *
-> > > entry_size),
-> > > +                                       entry_size);
-> >
-> > If continuing this direction then the driver should also check minsz etc.
-> > for struct iommu_hwpt_vtd_s1_invalidate and iommu_hwpt_vtd_s1_invalidate_desc
-> > since they are uAPI and subject to change.
+On Tue, Aug 08, 2023 at 11:08:36AM +0800, Miaohe Lin wrote:
+> On 2023/8/8 10:31, Matthew Wilcox wrote:
+> > On Tue, Aug 08, 2023 at 09:58:31AM +0800, Miaohe Lin wrote:
+> >> kswapd_stop() and kcompactd_stop() are only called when MEMORY_HOTREMOVE
+> >> is enabled. So wrap them under CONFIG_MEMORY_HOTREMOVE and further remove
+> >> __meminit annotation. No functional change intended.
+> > 
+> > I don't understand why this is an improvement.  If CONFIG_MEMORY_HOTREMOVE
+> > is disabled, the linker drops this section (... right?)  If it's enabled,
 > 
-> Then needs to define size in the uapi data structure, and copy size first and
-> check minsz before going forward. How about the structures for hwpt alloc
-> like struct iommu_hwpt_vtd_s1? Should check minsz for them as well?
+> When CONFIG_MEMORY_HOTREMOVE is disabled, without this patch:
+> 
+> size mm/compaction.o
+>    text	   data	    bss	    dec	    hex	filename
+>  103164	  30873	      0	 134037	  20b95	mm/compaction.o
+> 
+> size mm/vmscan.o
+>    text	   data	    bss	    dec	    hex	filename
+>  158775	  49612	     64	 208451	  32e43	mm/vmscan.o
+> 
+> while with this patch:
+> 
+> size mm/compaction.o
+>    text	   data	    bss	    dec	    hex	filename
+>  102915	  30865	      0	 133780	  20a94	mm/compaction.o
+> 
+> size mm/vmscan.o
+>    text	   data	    bss	    dec	    hex	filename
+>  158534	  49604	     64	 208202	  32d4a	mm/vmscan.o
+> 
+> We can reduce each .o by ~250 bytes.
 
-Assuming that every uAPI data structure needs a min_size, we can
-either add a structure holding all min_sizes like iommufd main.c
-or have another xx_min_len in iommu_/domain_ops.
+But this is before the linker step!  That will be where the meminit
+sections get dropped.  Assuming they are; I haven't verified.  You need
+to compare before/after of the vmlinux, not the individual .o files.
 
-Currently, we have the union of structures in iommu.h and also a
-xx_data_len in iommu_ops. So, neither of the two places seem to
-be optimal from my p.o.v... any suggestion?
-
-Also, alloc allows data_len=0, so a min_size check will be only
-applied to data_len > 0 case.
-
-Thanks
-Nic
