@@ -2,114 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A27774204
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2080A7742B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234567AbjHHRcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
+        id S235031AbjHHRsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234743AbjHHRbV (ORCPT
+        with ESMTP id S233374AbjHHRsJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:31:21 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B038DCF8
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:13:35 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-63cfd6e3835so33685966d6.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:13:35 -0700 (PDT)
+        Tue, 8 Aug 2023 13:48:09 -0400
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F19626334
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:21:23 -0700 (PDT)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-686bea20652so5787542b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:21:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691511174; x=1692115974;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691511354; x=1692116154;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bR2OPalgZgFVCbBNZrCKIT8XHg7hgxmL/4fBXTDwklA=;
-        b=mb4dt+yLCabjSk8pFaNFvc4Kfd9lB4Ioai2ytwRsoOme7yXn2D/yX6yogN3IHDLDD0
-         YfdCU9LM0oKsK2/iWugjAeLnXmm7PRfoRJJedX0vDYaqvQx8aqXgRYw/0ZAxZobJrskr
-         eHa1mvzJDYtAJyxrHL/pKZw6aRcaWZg6MuN+w=
+        bh=KmZq8plralUfhUCeO0zuZ8rV58wpzJBRG27vY2vs6cs=;
+        b=RfihZwL6tKt82lhRziXpbXT/22S5aN11oOExm3W5s9xa6xis43pMBYrEVEfIqdKSdm
+         6s3UwKTHqqS4vO0E7a77MMHayav9u6u0n5fpYkOU4U9rLMHtwlxhFTW2oqqgOA2bSFeZ
+         p5rSnlYtLZipHIEbHXB7nzyWWevGv2jEoS1VmHB5nENfq5Z1TpVRLFf/rIq4HTQj+qT3
+         BBkK9ITK5Qt/DhDgSxajpLYWDvrPnN6OXR87SYvw6tda3j8gLGRFVcRlOXTtKRTtvYwp
+         mF05ZSL+4+rqSqj5u9o90YXKR/9LjjpgkmN8eK2ELp2BPLWZbQwcUAaH9cEJxiXMUFxN
+         N+gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511174; x=1692115974;
+        d=1e100.net; s=20221208; t=1691511354; x=1692116154;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bR2OPalgZgFVCbBNZrCKIT8XHg7hgxmL/4fBXTDwklA=;
-        b=B6ZJeTWOnxA9hH/zx9D5ZuIDA24a153rLkDZGNX7EH4ht5N7Ck2eSZH/xXD9StOeWu
-         POngZT2L5UtxQsckNfdOCeCyyLPNQWZB8a0gzSxQo79UDqi3YmmQnnJ+vUA3TU/SS9e1
-         y/s2NSr2s8Tr61af+Yj74x0rzhqbj9jBb8cYl2gOQzAOdPQzNvmnKsUoJNDyhdyFWIcP
-         39uLsPmAsiIk0vmm3DoztbMSlR75wMbtsqb3PxYjjxLRBr3YfmsVEwrlsgJXlvyViNB9
-         3EYNFLWtfd6XYiBC5PpmsUZmwNuiEtuqR06wXovvbeLfCjAGcJfjPBlbUlGIEuchxvPJ
-         TR+g==
-X-Gm-Message-State: AOJu0YyAD7Qu/ueg8HaP3F110LXCzuEFmDI9Tdai2F8E/46L2ZxPVUWC
-        oGp49cTW8EH4J1MzVM5hP7dRtkaErr0aDn020sqstjHrcRCL49uidxU=
-X-Google-Smtp-Source: AGHT+IGwh0ywunatAy5MeeHk5SP91VnhUNy/5ce/vmlO7FYlLbSHZH+fvMcUcYsWZGLmPuJjjJUiwXexkRhSyiHdIdI=
-X-Received: by 2002:a17:90a:d50d:b0:268:ee6:6bdf with SMTP id
- t13-20020a17090ad50d00b002680ee66bdfmr9968391pju.47.1691504978388; Tue, 08
- Aug 2023 07:29:38 -0700 (PDT)
+        bh=KmZq8plralUfhUCeO0zuZ8rV58wpzJBRG27vY2vs6cs=;
+        b=Qpz8qJcdQwIcz212E/cJ/rvqHSsI496epLGqlTgVanyq1IJealwgRgjci6pS6tgnTe
+         FxVBKbku0h/teqNE68A0EfIwIMqchgItcUzhUE4NjLStPrPvoGnJs6AsRb8HrKbQcc9+
+         vs0SCTOjEmfOgCPQ6IrPMkl34BlAiAKv/EwYrKYzQ1REIzyJQrmSwhfxDXJycQSrqbDr
+         uNDpeXg5ynMkato2BMN3xCKG3TTM7eN3f0ZiFI8AiIdX0QOEUCIIVaqdzVQ28XC6YZ3J
+         bbKPMGCy7IvWyhgOMs6Ax+IjAnKoQ0tVlsFxFQ/PQaeaHrL0DAyQD01vPS2EQuvwukf2
+         4gJQ==
+X-Gm-Message-State: AOJu0YwPGclBNZWO+lPGx33puZaAlCgqrZfRVvX7X3K2YpHYENI0okxf
+        KY7t1JqQV6MZTrO4UBBBWjOgs1vN13qJU8DUHGhACg/z3JjS4C2TDaE=
+X-Google-Smtp-Source: AGHT+IGKZbzqHtAQeH+ERa/8lc1KwqmrCEauq29EtyhIWFzJmE3Z/R6hI/O84pNycisvdvGnKhmQiTpqB01gZJI0Wxg=
+X-Received: by 2002:a1f:bdd1:0:b0:471:8787:2c6c with SMTP id
+ n200-20020a1fbdd1000000b0047187872c6cmr4968353vkf.6.1691505016313; Tue, 08
+ Aug 2023 07:30:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <169139090386.324433.6412259486776991296.stgit@devnote2>
-In-Reply-To: <169139090386.324433.6412259486776991296.stgit@devnote2>
-From:   Florent Revest <revest@chromium.org>
-Date:   Tue, 8 Aug 2023 16:29:27 +0200
-Message-ID: <CABRcYmLYyohzVBzg-maoAwaFwj6VanWiAiv5GQnpagn2-ZDoRQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/6] bpf: fprobe: rethook: Use ftrace_regs instead
- of pt_regs
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
+References: <20230807193102.6374-1-brgl@bgdev.pl> <54421791-75fa-4ed3-8432-e21184556cde@lunn.ch>
+ <CAMRc=Mc6COaxM6GExHF2M+=v2TBpz87RciAv=9kHr41HkjQhCg@mail.gmail.com>
+ <ZNJChfKPkAuhzDCO@shell.armlinux.org.uk> <CAMRc=MczKgBFvuEanKu=mERYX-6qf7oUO2S4B53sPc+hrkYqxg@mail.gmail.com>
+ <65b53003-23cf-40fa-b9d7-f0dbb45a4cb2@lunn.ch>
+In-Reply-To: <65b53003-23cf-40fa-b9d7-f0dbb45a4cb2@lunn.ch>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 8 Aug 2023 16:30:05 +0200
+Message-ID: <CAMRc=MecYHi=rPaT44kuX_XMog=uwB9imVZknSjnmTBW+fb5WQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] net: stmmac: allow sharing MDIO lines
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 8:48=E2=80=AFAM Masami Hiramatsu (Google)
-<mhiramat@kernel.org> wrote:
+On Tue, Aug 8, 2023 at 4:25=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
 >
-> Florent, feel free to add your rethook for arm64, but please do not remov=
-e
-> kretprobe trampoline yet. It is another discussion point. We may be possi=
-ble
-> to use ftrace_regs for kretprobe by ftrace_partial_regs() but kretprobe
-> allows nest probe. (maybe we can skip that case?)
+> > > On Tue, Aug 08, 2023 at 10:13:09AM +0200, Bartosz Golaszewski wrote:
+> > > > Ok so upon some further investigation, the actual culprit is in stm=
+mac
+> > > > platform code - it always tries to register an MDIO bus - independe=
+nt
+> > > > of whether there is an actual mdio child node - unless the MAC is
+> > > > marked explicitly as having a fixed-link.
+> > > >
+> > > > When I fixed that, MAC1's probe is correctly deferred until MAC0 ha=
+s
+> > > > created the MDIO bus.
+> > > >
+> > > > Even so, isn't it useful to actually reference the shared MDIO bus =
+in some way?
+> > > >
+> > > > If the schematics look something like this:
+> > > >
+> > > > --------           -------
+> > > > | MAC0 |--MDIO-----| PHY |
+> > > > -------- |     |   -------
+> > > >          |     |
+> > > > -------- |     |   -------
+> > > > | MAC1 |--     ----| PHY |
+> > > > --------           -------
+> > > >
+> > > > Then it would make sense to model it on the device tree?
+> > >
+> > > So I think what you're saying is that MAC0 and MAC1's have MDIO bus
+> > > masters, and the hardware designer decided to tie both together to
+> > > a single set of clock and data lines, which then go to two PHYs.
+> >
+> > The schematics I have are not very clear on that, but now that you
+> > mention this, it's most likely the case.
+>
+> I hope not. That would be very broken. As Russell pointed out, MDIO is
+> not multi-master. You need to check with the hardware designer if the
+> schematics are not clear.
 
-Ack :)
+Sorry, it was not very clear. It's the case that two MDIO masters
+share the MDC and data lines.
 
->  arch/Kconfig                    |    1 +
->  arch/arm64/include/asm/ftrace.h |   11 ++++++
->  arch/loongarch/Kconfig          |    1 +
->  arch/s390/Kconfig               |    1 +
->  arch/x86/Kconfig                |    1 +
->  arch/x86/kernel/rethook.c       |    9 +++--
->  include/linux/fprobe.h          |    4 +-
->  include/linux/ftrace.h          |   56 ++++++++++++++++++-----------
->  include/linux/rethook.h         |   11 +++---
->  kernel/kprobes.c                |    9 ++++-
->  kernel/trace/Kconfig            |    9 ++++-
->  kernel/trace/bpf_trace.c        |   14 +++++--
->  kernel/trace/fprobe.c           |    8 ++--
->  kernel/trace/rethook.c          |   16 ++++----
->  kernel/trace/trace_fprobe.c     |   76 ++++++++++++++++++++++++---------=
-------
->  kernel/trace/trace_probe_tmpl.h |    2 +
->  lib/test_fprobe.c               |   10 +++--
->  samples/fprobe/fprobe_example.c |    4 +-
+>
+> > Good point, but it's worse than that: when MAC0 is unbound, it will
+> > unregister the MDIO bus and destroy all PHY devices. These are not
+> > refcounted so they will literally go from under MAC1. Not sure how
+> > this can be dealt with?
+>
+> unbinding is not a normal operation. So i would just live with it, and
+> if root decides to shoot herself in the foot, that is her choice.
+>
 
-I believe that Documentation/trace/fprobe.rst should also be modified
-following the API change
+I disagree. Unbinding is very much a normal operation. Less so for
+platform devices but still, it is there for a reason and should be
+expected to work correctly. Or at the very least not crash and burn
+the system.
+
+On the other hand, I like your approach because I may get away without
+having to fix it. But if I were to fix it - I would reference the MDIO
+bus from the secondary mac by phandle and count its references before
+dropping it. :)
+
+Bartosz
