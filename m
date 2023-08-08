@@ -2,150 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4792774A68
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104B2774A8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbjHHU13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
+        id S230042AbjHHUbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233851AbjHHU0z (ORCPT
+        with ESMTP id S232467AbjHHUbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:26:55 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4767DB2;
-        Tue,  8 Aug 2023 12:44:08 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3784jZS3035097;
-        Mon, 7 Aug 2023 23:45:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691469935;
-        bh=8TvvH3vVLz1caYe+mRMACPv8Abe/WkjKw7gend+67a8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=phSki+lTpB9e7K5VsheydqQ+iQPxhARIo3FEn3Q3tErZkOOg5xeT6cguMwm5T89Sj
-         TzGnue+VjDak0RCZBY9iFe1SCT8U0tF7DH1VSTopUC7qIBFXreI1CgCFe/E3k2VskW
-         vJgeKiaOYYzYz5bs2unjVq+/135RFxpIuCewwjt0=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3784jZ3J073754
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Aug 2023 23:45:35 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
- Aug 2023 23:45:34 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 7 Aug 2023 23:45:34 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3784jYps098643;
-        Mon, 7 Aug 2023 23:45:34 -0500
-From:   Hari Nagalla <hnagalla@ti.com>
-To:     <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
-        <p.zabel@pengutronix.de>, <martyn.welch@collabora.com>,
-        <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>
-Subject: [PATCH v5 2/5] arm64: dts: ti: k3-am62 : Add M4F remote proc node
-Date:   Mon, 7 Aug 2023 23:45:26 -0500
-Message-ID: <20230808044529.25925-3-hnagalla@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230808044529.25925-1-hnagalla@ti.com>
-References: <20230808044529.25925-1-hnagalla@ti.com>
+        Tue, 8 Aug 2023 16:31:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725B044F40;
+        Tue,  8 Aug 2023 09:46:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D341623E7;
+        Tue,  8 Aug 2023 04:56:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 393F5C433C8;
+        Tue,  8 Aug 2023 04:56:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691470569;
+        bh=ELUfEuvS0j0li9IwceiGdgjft+KJVK1MZXLiEqWDXgQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tOLjsR8EoLIrFIkrhqY+hMx2irKxdw3xXoiBl8ZTHwejVBTh13wWBuAFxjtCiOxkv
+         NyzK3gV6wML/xQAxvyzP3pAI14lV13JPbBVPR4kxFBhhf1GFadlSkNvgEdZ4vKVhvX
+         fxYOlrCsxgQnHQwDJuVu2nocarwz6dSOgVR6FCNg=
+Date:   Tue, 8 Aug 2023 06:56:06 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Luke Lu <luke.lu@libre.computer>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        linux-usb@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Da Xue <da@libre.computer>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: dwc3: meson-g12a: do post init to fix broken usb
+ after resumption
+Message-ID: <2023080851-duh-scroll-09bf@gregkh>
+References: <20230808032510.31754-1-luke.lu@libre.computer>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230808032510.31754-1-luke.lu@libre.computer>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AM62x SoCs of the TI K3 family have a Cortex M4F core in the MCU
-domain. This core can be used by non safety applications as a remote
-processor. When used as a remote processor with virtio/rpmessage IPC,
-two carveout reserved memory nodes are needed. The first region is used
-as a DMA pool for the rproc device, and the second region will furnish
-the static carveout regions for the firmware memory.
+On Tue, Aug 08, 2023 at 03:25:10AM +0000, Luke Lu wrote:
+> Device connected to usb otg port of GXL-based boards can not be
+> recognised after resumption, doesn't recover even if disconnect and
+> reconnect the device. dmesg shows it disconnects during resumption.
+> 
+> [   41.492911] usb 1-2: USB disconnect, device number 3
+> [   41.499346] usb 1-2: unregistering device
+> [   41.511939] usb 1-2: unregistering interface 1-2:1.0
+> 
+> Calling usb_post_init() will fix this issue, and it's tested and
+> verified on libretech's aml-s905x-cc board.
+> 
+> Signed-off-by: Luke Lu <luke.lu@libre.computer>
 
-The current carveout addresses and sizes are defined statically for
-each rproc device. The M4F processor do not have an MMU, and as such
-require the exact memory used by the firmware to be set-aside.
+What commit id does this fix?  Should it also go to stable kernels?
 
-Signed-off-by: Hari Nagalla <hnagalla@ti.com>
----
-Changes in v5:
- - Add the M4F device tree node patches to the patch list 
+thanks,
 
- arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi       | 12 ++++++++++++
- .../arm64/boot/dts/ti/k3-am62x-sk-common.dtsi | 19 +++++++++++++++++++
- 2 files changed, 31 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi
-index 80a3e1db26a9..4b55df1da751 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi
-@@ -171,4 +171,16 @@ mcu_mcan1: can@4e18000 {
- 		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
- 		status = "disabled";
- 	};
-+
-+	mcu_m4fss: m4fss@5000000 {
-+		compatible = "ti,am64-m4fss";
-+		reg = <0x00 0x5000000 0x00 0x30000>,
-+		<0x00 0x5040000 0x00 0x10000>;
-+		reg-names = "iram", "dram";
-+		ti,sci = <&dmsc>;
-+		ti,sci-dev-id = <9>;
-+		ti,sci-proc-ids = <0x18 0xff>;
-+		resets = <&k3_reset 9 1>;
-+		firmware-name = "am62-mcu-m4f0_0-fw";
-+	};
- };
-diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-index 34c8ffc553ec..ffca61fcf9ba 100644
---- a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-@@ -47,6 +47,18 @@ ramoops@9ca00000 {
- 			pmsg-size = <0x8000>;
- 		};
- 
-+		mcu_m4fss_dma_memory_region: m4f-dma-memory@9cb00000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0x9cb00000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		mcu_m4fss_memory_region: m4f-memory@9cc00000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0x9cc00000 0x00 0xe00000>;
-+			no-map;
-+		};
-+
- 		secure_tfa_ddr: tfa@9e780000 {
- 			reg = <0x00 0x9e780000 0x00 0x80000>;
- 			alignment = <0x1000>;
-@@ -362,6 +374,13 @@ mbox_m4_0: mbox-m4-0 {
- 	};
- };
- 
-+&mcu_m4fss {
-+	mboxes = <&mailbox0_cluster0>, <&mbox_m4_0>;
-+	memory-region = <&mcu_m4fss_dma_memory_region>,
-+			<&mcu_m4fss_memory_region>;
-+	sram = <&oc_sram>;
-+};
-+
- &usbss0 {
- 	status = "okay";
- 	ti,vbus-divider;
--- 
-2.34.1
-
+greg k-h
