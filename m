@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F95E774706
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBDA9774749
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233599AbjHHTIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39932 "EHLO
+        id S235316AbjHHTNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233984AbjHHTIM (ORCPT
+        with ESMTP id S232012AbjHHTNS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:08:12 -0400
+        Tue, 8 Aug 2023 15:13:18 -0400
 Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0308FD5499;
-        Tue,  8 Aug 2023 09:30:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E26C90B6;
+        Tue,  8 Aug 2023 09:35:44 -0700 (PDT)
 Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 378A7xBg025591;
-        Tue, 8 Aug 2023 04:27:17 -0700
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 378A7a2E025348;
+        Tue, 8 Aug 2023 04:27:23 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=yUuQs+1cimYfaSecOSS1NNBW9GTRLCPRzuAJhuYqaI4=;
- b=FHdzMLir97d1Y5F5tXmoEB0u54UWipRYKeW4m8r6UE8BIF7AYM/n5Y62DmFtZF1WQW0L
- On92kM5oLgpeAf76iH3O/Wpoede4R5pMEjYuT0cgegE5W/TKvZBID8JqdwmuupLq7M3/
- EIHL7/6zcsmq/2Mm+otX73t6ahkhvEXNiq0vU7EyvInsexoqTIdBUY7EdjU5KKtgWBsQ
- bTmkbNrKxhVd+6pFkJNo7ZyZkjbQ+E05mn+xZc8RFQkweED9kZ0JiRdycPmei9M3jJbY
- dQcsq7sX6Z0DUl2IqTGpHTnbki+IqlABr4+fpI4QrOZq9R+IpSWQEMcgtwSnvKtNZdm0 wg== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=pfpt0220;
+ bh=XByIP5J2zsR9geHAsK/CerIO4PGvyKW3M+zGye7jZX0=;
+ b=b74fqsCcinabAizFq6litCed7y3LGuFuq0WjC8AlunabRKiTWk4D6O2wr4DEtURcUNYc
+ K+TRXAw0oGd/lQEP6b4bh8OqoXFa/Vm698dvrMiR0jlmdGqZ4+ewyinEZvn/PRft8PUJ
+ jFXEbvuQIoyW5C1+CO4go5Sx3WywQfIcHz4xGLLQZi3BKjnVn1gJZK7Y7F6fUX/vwkFQ
+ HlpurUH5boGkjFZic8QMt4INX2CENHXtzNPRte1Awhhj+tW1n07lvtn5LxeOoa39KrJL
+ KAz0LS+2OvarQX6OmcALO/D4w7/oPyh00SrnVpu5W8GmV2BYEMnZO5oZ6psU+6asl8mX QQ== 
 Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3sbkntg7kq-1
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3sbkntg7m3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 08 Aug 2023 04:27:17 -0700
+        Tue, 08 Aug 2023 04:27:23 -0700
 Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
  (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 8 Aug
- 2023 04:27:15 -0700
+ 2023 04:27:21 -0700
 Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
  (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 8 Aug 2023 04:27:15 -0700
+ Transport; Tue, 8 Aug 2023 04:27:21 -0700
 Received: from localhost.localdomain (unknown [10.28.36.166])
-        by maili.marvell.com (Postfix) with ESMTP id 2363F3F703F;
-        Tue,  8 Aug 2023 04:27:10 -0700 (PDT)
+        by maili.marvell.com (Postfix) with ESMTP id E49255B6945;
+        Tue,  8 Aug 2023 04:27:16 -0700 (PDT)
 From:   Suman Ghosh <sumang@marvell.com>
 To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
         <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
@@ -46,15 +47,17 @@ To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
         <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <lcherian@marvell.com>, <jerinj@marvell.com>
 CC:     Suman Ghosh <sumang@marvell.com>
-Subject: [net PATCH 0/3] Fix PFC related issues
-Date:   Tue, 8 Aug 2023 16:57:05 +0530
-Message-ID: <20230808112708.3179218-1-sumang@marvell.com>
+Subject: [net PATCH 1/3] octeontx2-pf: Update PFC configuration
+Date:   Tue, 8 Aug 2023 16:57:06 +0530
+Message-ID: <20230808112708.3179218-2-sumang@marvell.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230808112708.3179218-1-sumang@marvell.com>
+References: <20230808112708.3179218-1-sumang@marvell.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: E9kyjF0bgSJ7rbYkqhIWk7x7Czl2Xcnh
-X-Proofpoint-ORIG-GUID: E9kyjF0bgSJ7rbYkqhIWk7x7Czl2Xcnh
+X-Proofpoint-GUID: U_RTILSdDK6FK-52pNCIXQUTiIX5Mh88
+X-Proofpoint-ORIG-GUID: U_RTILSdDK6FK-52pNCIXQUTiIX5Mh88
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-08-08_09,2023-08-08_01,2023-05-22_02
@@ -68,26 +71,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset fixes multiple PFC related issues related to Octeon.
+As of now we are creating/deleting Tx schedulers when user is
+setting PFC on/off. The problem is if we have a running traffic on
+the interface and as we are updating the sq->smq mapping on the fly,
+we might loose completion interrupt for some packets. As a result of
+that a watchdog reset is hit from BQL.
+This patch solves the issue by simply calling interface off/on APIs
+which will reconfigure all the queues. We might loss the running traffic
+momentarily but that should be fine.
 
-Patch #1: octeontx2-pf: Update PFC configuration
+Fixes: 99c969a83d82 ("octeontx2-pf: Add egress PFC support")
+Signed-off-by: Suman Ghosh <sumang@marvell.com>
+---
+ .../net/ethernet/marvell/octeontx2/nic/otx2_dcbnl.c  | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-Patch #2: octeontx2-pf: Fix PFC TX scheduler free
-
-Patch #3: octeontx2-af: CN10KB: fix PFC configuration
-
-Hariprasad Kelam (1):
-  octeontx2-af: CN10KB: fix PFC configuration
-
-Suman Ghosh (2):
-  octeontx2-pf: Update PFC configuration
-  octeontx2-pf: Fix PFC TX scheduler free
-
- .../net/ethernet/marvell/octeontx2/af/rpm.c   | 17 ++++++------
- .../ethernet/marvell/octeontx2/af/rvu_reg.c   |  4 +--
- .../marvell/octeontx2/nic/otx2_dcbnl.c        | 27 ++++++-------------
- 3 files changed, 19 insertions(+), 29 deletions(-)
-
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_dcbnl.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_dcbnl.c
+index ccaf97bb1ce0..d54edfa8fcc9 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_dcbnl.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_dcbnl.c
+@@ -406,6 +406,7 @@ static int otx2_dcbnl_ieee_getpfc(struct net_device *dev, struct ieee_pfc *pfc)
+ static int otx2_dcbnl_ieee_setpfc(struct net_device *dev, struct ieee_pfc *pfc)
+ {
+ 	struct otx2_nic *pfvf = netdev_priv(dev);
++	bool if_up = netif_running(dev);
+ 	int err;
+ 
+ 	/* Save PFC configuration to interface */
+@@ -426,14 +427,9 @@ static int otx2_dcbnl_ieee_setpfc(struct net_device *dev, struct ieee_pfc *pfc)
+ 	if (err)
+ 		return err;
+ 
+-	/* Request Per channel Bpids */
+-	if (pfc->pfc_en)
+-		otx2_nix_config_bp(pfvf, true);
+-
+-	err = otx2_pfc_txschq_update(pfvf);
+-	if (err) {
+-		dev_err(pfvf->dev, "%s failed to update TX schedulers\n", __func__);
+-		return err;
++	if (if_up) {
++		otx2_stop(dev);
++		otx2_open(dev);
+ 	}
+ 
+ 	return 0;
 -- 
 2.25.1
 
