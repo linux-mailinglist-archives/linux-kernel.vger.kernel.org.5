@@ -2,56 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6ED9774054
+	by mail.lfdr.de (Postfix) with ESMTP id 7F124774053
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233769AbjHHRBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49718 "EHLO
+        id S233529AbjHHRBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233754AbjHHRBC (ORCPT
+        with ESMTP id S233828AbjHHRBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:01:02 -0400
+        Tue, 8 Aug 2023 13:01:01 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461628690;
-        Tue,  8 Aug 2023 09:00:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8768681;
+        Tue,  8 Aug 2023 09:00:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3C2FD624C3;
-        Tue,  8 Aug 2023 11:09:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7956BC433C9;
-        Tue,  8 Aug 2023 11:09:00 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 396B8624C2;
+        Tue,  8 Aug 2023 11:12:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87B77C433C7;
+        Tue,  8 Aug 2023 11:12:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691492941;
-        bh=t5keYJaEqeaKp0mlDUXsYS276GlhxU47w2DsH4m0WSQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aGfhd3qPUfmNl6GWDoGyXHJhdpsdWij0VZ0SJo3PJM4CLiYU2Eux/iXMmmjm0/xS1
-         j3iCUOwr1aqrioS0wSPNIEEzGYgBy5UObE6GB7CHi+PCSTE/AV+OqEj8VLWe8swVMV
-         a2Si78opzwY+ceZMGZYHlu3LQOhop8JFQc4Y97dj7LjOsJAHGOzSNyEK0Fm9niPPM2
-         /AObOrFinhcL7QulHGNcASebLzL/qGZuWQuqzstnqpi2DhkIkjsupePHs1+K1TFoCJ
-         2f5dFA1g9xcZgRUdVbB0qr1WD+3EJKGzTFyVDE6MTt8c7QMTMGkjY4dEMTWTO5mLeb
-         pZgL3POCeFHlg==
-Date:   Tue, 8 Aug 2023 05:10:04 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Waqar Hameed <waqar.hameed@axis.com>,
-        Kees Cook <keescook@chromium.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
-Subject: Re: [PATCH RFC] iio: irsd200: fix -Warray-bounds bug in
- irsd200_trigger_handler
-Message-ID: <ZNIijIoh/famqTDl@work>
-References: <20230808083719.280777-1-gongruiqi@huaweicloud.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230808083719.280777-1-gongruiqi@huaweicloud.com>
+        s=k20201202; t=1691493129;
+        bh=1QMm2qYYenzfqrS9JtfJhviMwybOhFCTNjTSNEl8Uq4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Pac1+sdY1mCBsPtQKAp6KfSZke3+ZBoIRZKAq4FOZYbRqr3J1FmN1eYHV24JD+vWP
+         8rXqfnrUS7PT+9ReDUlUeSB3dy8aNma2jcigPfN1Xc7fVYYRfv0ja/Ce83eULQnwpb
+         XViufpw39qsVaOpRvFR8jsCujgepLFVxZ+Su+ULX8NTvV/OGwHjSvwsrKjv5tERC+X
+         BmvFyy5T3jDSNAh6afNl3pVM3QRaYoA+s5iqziwsiQjlcxAHGyso1yzzbzqNGvIa3i
+         n77zRhws7zWBAx27h8GEQwAmQE0Ss/XkGz1YXHZuN2REA6IA8apT+hhHu6ElBm+Csk
+         hrRwlqbGY3yjw==
+Received: from [104.132.45.110] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qTKdC-00377i-VX;
+        Tue, 08 Aug 2023 12:12:07 +0100
+Date:   Tue, 08 Aug 2023 12:12:13 +0100
+Message-ID: <87y1ilpz3m.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anup Patel <anup@brainfault.org>
+Cc:     oliver.upton@linux.dev, xiaobo55x@gmail.com,
+        ajones@ventanamicro.com, seanjc@google.com,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Shuah Khan <shuah@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Like Xu <likexu@tencent.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Colton Lewis <coltonlewis@google.com>, kvm@vger.kernel.org,
+        Haibo Xu <haibo1.xu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev
+Subject: Re: [PATCH v6 00/13] RISCV: Add KVM_GET_REG_LIST API
+In-Reply-To: <CAAhSdy0yug=J0nxnnPoLYL=0MiT0w6qgPYOcv0QwMRe+fsQn8Q@mail.gmail.com>
+References: <cover.1690273969.git.haibo1.xu@intel.com>
+        <CAAhSdy0yug=J0nxnnPoLYL=0MiT0w6qgPYOcv0QwMRe+fsQn8Q@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 104.132.45.110
+X-SA-Exim-Rcpt-To: anup@brainfault.org, oliver.upton@linux.dev, xiaobo55x@gmail.com, ajones@ventanamicro.com, seanjc@google.com, pbonzini@redhat.com, corbet@lwn.net, atishp@atishpatra.org, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, shuah@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, ricarkol@google.com, vannapurve@google.com, likexu@tencent.com, vipinsh@google.com, dmatlack@google.com, coltonlewis@google.com, kvm@vger.kernel.org, haibo1.xu@intel.com, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -62,64 +89,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 04:37:19PM +0800, GONG, Ruiqi wrote:
-> From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
-> 
-> When compiling with gcc 13 with -Warray-bounds enabled:
-> 
-> In file included from drivers/iio/proximity/irsd200.c:15:
-> In function ‘iio_push_to_buffers_with_timestamp’,
->     inlined from ‘irsd200_trigger_handler’ at drivers/iio/proximity/irsd200.c:770:2:
-> ./include/linux/iio/buffer.h:42:46: error: array subscript ‘int64_t {aka long long int}[0]’
-> is partly outside array bounds of ‘s16[1]’ {aka ‘short int[1]’} [-Werror=array-bounds=]
->    42 |                 ((int64_t *)data)[ts_offset] = timestamp;
->       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
-> drivers/iio/proximity/irsd200.c: In function ‘irsd200_trigger_handler’:
-> drivers/iio/proximity/irsd200.c:763:13: note: object ‘buf’ of size 2
->   763 |         s16 buf = 0;
->       |             ^~~
-> 
-> The problem seems to be that irsd200_trigger_handler() is taking a s16
-> variable as an int64_t buffer. Fix it by extending the buffer to 64 bits.
+On Mon, 07 Aug 2023 04:48:33 +0100,
+Anup Patel <anup@brainfault.org> wrote:
+>=20
+> Hi Marc, Hi Oliver,
+>=20
+> On Tue, Jul 25, 2023 at 2:05=E2=80=AFPM Haibo Xu <haibo1.xu@intel.com> wr=
+ote:
+> >
+> > KVM_GET_REG_LIST will dump all register IDs that are available to
+> > KVM_GET/SET_ONE_REG and It's very useful to identify some platform
+> > regression issue during VM migration.
+> >
+> > Patch 1-7 re-structured the get-reg-list test in aarch64 to make some
+> > of the code as common test framework that can be shared by riscv.
+> >
+> > Patch 8 move reject_set check logic to a function so as to check for
+> > different errno for different registers.
+> > Patch 9 move finalize_vcpu back to run_test so that riscv can implement
+> > its specific operation.
+> > Patch 10 change to do the get/set operation only on present-blessed lis=
+t.
+> > Patch 11 add the skip_set facilities so that riscv can skip set operati=
+on
+> > on some registers.
+> > Patch 12 enabled the KVM_GET_REG_LIST API in riscv.
+> > patch 13 added the corresponding kselftest for checking possible
+> > register regressions.
+> >
+> > The get-reg-list kvm selftest was ported from aarch64 and tested with
+> > Linux v6.5-rc3 on a Qemu riscv64 virt machine.
+> >
+> > ---
+> > Changed since v5:
+> >   * Rebase to v6.5-rc3
+> >   * Minor fix for Andrew's comments
+> >
+> > Andrew Jones (7):
+> >   KVM: arm64: selftests: Replace str_with_index with strdup_printf
+> >   KVM: arm64: selftests: Drop SVE cap check in print_reg
+> >   KVM: arm64: selftests: Remove print_reg's dependency on vcpu_config
+> >   KVM: arm64: selftests: Rename vcpu_config and add to kvm_util.h
+> >   KVM: arm64: selftests: Delete core_reg_fixup
+> >   KVM: arm64: selftests: Split get-reg-list test code
+> >   KVM: arm64: selftests: Finish generalizing get-reg-list
+> >
+> > Haibo Xu (6):
+> >   KVM: arm64: selftests: Move reject_set check logic to a function
+> >   KVM: arm64: selftests: Move finalize_vcpu back to run_test
+> >   KVM: selftests: Only do get/set tests on present blessed list
+> >   KVM: selftests: Add skip_set facility to get_reg_list test
+> >   KVM: riscv: Add KVM_GET_REG_LIST API support
+> >   KVM: riscv: selftests: Add get-reg-list test
+>=20
+> Are you okay for this series to go through the KVM RISC-V tree ?
 
-Thanks for working on this!
+Sure, seems fine from my point of view. But please put it on an
+immutable topic branch so that we can also merge it in the arm64 tree,
+should we need to resolve any conflicts.
 
-> 
-> Link: https://github.com/KSPP/linux/issues/331
-> Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
+Thanks,
 
-Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+	M.
 
---
-Gustavo
-
-> ---
-> 
-> RFC: It's a preliminary patch since I'm not familiar with this hardware.
-> Further comments/reviews are needed about whether this fix is correct,
-> or we should use iio_push_to_buffers() instead of the *_with_timestamp()
-> version.
-> 
->  drivers/iio/proximity/irsd200.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iio/proximity/irsd200.c b/drivers/iio/proximity/irsd200.c
-> index 5bd791b46d98..34c479881bdf 100644
-> --- a/drivers/iio/proximity/irsd200.c
-> +++ b/drivers/iio/proximity/irsd200.c
-> @@ -759,10 +759,10 @@ static irqreturn_t irsd200_trigger_handler(int irq, void *pollf)
->  {
->  	struct iio_dev *indio_dev = ((struct iio_poll_func *)pollf)->indio_dev;
->  	struct irsd200_data *data = iio_priv(indio_dev);
-> -	s16 buf = 0;
-> +	int64_t buf = 0;
->  	int ret;
->  
-> -	ret = irsd200_read_data(data, &buf);
-> +	ret = irsd200_read_data(data, (s16 *)&buf);
->  	if (ret)
->  		goto end;
->  
-> -- 
-> 2.41.0
-> 
+--=20
+Without deviation from the norm, progress is not possible.
