@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80962773663
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E146F773668
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbjHHCO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 22:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
+        id S229723AbjHHCRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 22:17:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbjHHCOz (ORCPT
+        with ESMTP id S229470AbjHHCRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 22:14:55 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9A643FA;
-        Mon,  7 Aug 2023 19:14:54 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 3782EUGt8012061, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 3782EUGt8012061
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Tue, 8 Aug 2023 10:14:30 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 8 Aug 2023 10:14:46 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 8 Aug 2023 10:14:46 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
- RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
- 15.01.2375.007; Tue, 8 Aug 2023 10:14:46 +0800
-From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
-        <stanley_chang@realtek.com>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v1 RESEND] usb: dwc3: core: configure TX/RX threshold for DWC3_IP
-Thread-Topic: [PATCH v1 RESEND] usb: dwc3: core: configure TX/RX threshold for
- DWC3_IP
-Thread-Index: AQHZyQKVd0xYvrabgkGdq1Xn2zdTCK/e97YAgACyGAA=
-Date:   Tue, 8 Aug 2023 02:14:46 +0000
-Message-ID: <796aa899992e4301a341a95f74d6f988@realtek.com>
-References: <20230807074131.27355-1-stanley_chang@realtek.com>
- <20230807233538.4vnycx5dej3nw2ak@synopsys.com>
-In-Reply-To: <20230807233538.4vnycx5dej3nw2ak@synopsys.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.190.159]
-x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 7 Aug 2023 22:17:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9D2183;
+        Mon,  7 Aug 2023 19:17:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 93CB562377;
+        Tue,  8 Aug 2023 02:17:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EEB8C433C8;
+        Tue,  8 Aug 2023 02:16:59 +0000 (UTC)
+Date:   Mon, 7 Aug 2023 22:16:58 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Florian Weimer <fweimer@redhat.com>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] compiler_types: Introduce the Clang
+ __preserve_most function attribute
+Message-ID: <20230807221658.1d65ee28@gandalf.local.home>
+In-Reply-To: <20230807123137.GA564305@hirez.programming.kicks-ass.net>
+References: <20230804090621.400-1-elver@google.com>
+        <87il9rgjvw.fsf@oldenburg.str.redhat.com>
+        <20230807123137.GA564305@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,17 +67,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgVGhpbmgsDQoNCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZHdjMy9jb3JlLmMgYi9k
-cml2ZXJzL3VzYi9kd2MzL2NvcmUuYyBpbmRleA0KPiA+IGY2Njg5YjczMTcxOC4uYTBhNTRlNWM0
-YWQ5IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvdXNiL2R3YzMvY29yZS5jDQo+ID4gKysrIGIv
-ZHJpdmVycy91c2IvZHdjMy9jb3JlLmMNCj4gPiBAQCAtMTI2Miw2ICsxMjYyLDM5IEBAIHN0YXRp
-YyBpbnQgZHdjM19jb3JlX2luaXQoc3RydWN0IGR3YzMgKmR3YykNCj4gPiAgICAgICAgICAgICAg
-IH0NCj4gPiAgICAgICB9DQo+ID4NCj4gPiArICAgICBpZiAoRFdDM19JUF9JUyhEV0MzKSkgew0K
-PiA+ICsgICAgICAgICAgICAgdTggcnhfdGhyX251bSA9IGR3Yy0+cnhfdGhyX251bV9wa3RfcHJk
-Ow0KPiA+ICsgICAgICAgICAgICAgdTggcnhfbWF4YnVyc3QgPSBkd2MtPnJ4X21heF9idXJzdF9w
-cmQ7DQo+ID4gKyAgICAgICAgICAgICB1OCB0eF90aHJfbnVtID0gZHdjLT50eF90aHJfbnVtX3Br
-dF9wcmQ7DQo+ID4gKyAgICAgICAgICAgICB1OCB0eF9tYXhidXJzdCA9IGR3Yy0+dHhfbWF4X2J1
-cnN0X3ByZDsNCj4gDQo+IFRoZXNlIGFyZSBtZWFudCBmb3IgcGVyaW9kaWMgc2V0dGluZ3MuIFlv
-dSdyZSBvdmVybG9hZGluZyB0aGVtIGZvcg0KPiBub24tcGVyaW9kaWMgc2V0dGluZ3MuDQo+IA0K
-SSB3aWxsIGFkZCBuZXcgcHJvcGVydHkgZm9yIG5vbi1wZXJpb2RpYyBzZXR0aW5ncy4NCg0KVGhh
-bmtzLA0KU3RhbmxleQ0K
+On Mon, 7 Aug 2023 14:31:37 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
+
+> > that this is not a compilation for a module.  Otherwise modules built
+> > with a compiler with __preserve_most__ attribute support are
+> > incompatible with kernels built with a compiler without that attribute.  
+> 
+> We have a metric ton of options that can break module ABI. If you're
+> daft enough to not build with the exact same compiler and .config you
+> get to keep the pieces.
+
+I believe there's enough checks for various compiler options in order to
+enable features during the build that trying to load a module built with
+another compiler is pretty much guaranteed to fail today.
+
+-- Steve
