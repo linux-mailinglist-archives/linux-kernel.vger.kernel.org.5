@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE2B774908
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484FD77490B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232459AbjHHTrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:47:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53152 "EHLO
+        id S233268AbjHHTrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236707AbjHHTq7 (ORCPT
+        with ESMTP id S235939AbjHHTrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:46:59 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308C94C07B
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:50:57 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bfcf4c814so860823866b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691513455; x=1692118255;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sQgrfQw0P6pTmKNcUIhzKP/rgp8qN+H1U22DXchyEX8=;
-        b=ZOFyNE+ty10UCoRS0Y18vaTBm0DCmXV0QIDPOX/RKxcTUhgyKOJFalFUfTWnJJp+IP
-         nhdXzQSkoeX8fJXTCz8ZrEE2jB5+Ct28xpC1mj2cUEoKSDwFpwq7kjPU2iD/rAq1zngp
-         ke8aFBq1bkgxzoiRqtfBqBTPq8XMxer2SX/m6VCV95gyJO8m4KLt64soJ9Qt2pQQrLye
-         mF403RqSXZ7GobUULx1o+2ggaCpOyW3KovZdEk8U4VTF+6hgmjGfSJyt229w/EfL6XRi
-         siJC52iFtGVlRQUGe6ubkgfpEIVYJzwcODsLm3vmWBgzN2ubIz4NT8IR1U8GkjjIemTz
-         n08g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691513455; x=1692118255;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sQgrfQw0P6pTmKNcUIhzKP/rgp8qN+H1U22DXchyEX8=;
-        b=RywFTwuZSCyx8F5lKHgm5rXW2fFlALxoDoARsZSqTCCTeMaeZOKifPWrLYz3mdLx+H
-         ykAmicOgNUnZwXHpsHkl71uQFcZhcCIvfkNGeu8VYCnKSQFRIWwvp1VxMFMEWEvvx06F
-         NJqjk4w06UG5ALuS7B//0C4Oh04kPeam7KXxNrtmoOjn1bCjJPSifMfisnJuo82L0+Se
-         OiMA0541dpPUXTwRFHe8wKLn42z2/VGr32/pjEj+ZbTPP0u9vazzTGpnyLDelsmCJOrm
-         fovZARxULLal16cbJdUziVAzEH7Fb0FmOKKbd8tNC3qzR3MFLS1vleUYUCSNq1RVcRi8
-         KYWg==
-X-Gm-Message-State: AOJu0YxunO6txGfeA46F2FwV3kS8eQTUz67sm7q9hprZ+3k78uVJ1UGv
-        FilAKTAFFv6Dh3yq8QLCstuT3CoOlW2tGobOSrE=
-X-Google-Smtp-Source: AGHT+IHOV1+SwptyB2y6PObKLYIfXb0SnPIa+qNzfFQDPldY+tNhzDRnIS3lyd9q6xt4sZxlqEOpfw==
-X-Received: by 2002:a17:906:84:b0:99c:980:d551 with SMTP id 4-20020a170906008400b0099c0980d551mr10554435ejc.50.1691483778414;
-        Tue, 08 Aug 2023 01:36:18 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id k2-20020a1709063fc200b00993470682e5sm6344518ejj.32.2023.08.08.01.36.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 01:36:17 -0700 (PDT)
-Message-ID: <ada9eaab-3ba7-3a14-5e33-5344d0511a60@linaro.org>
-Date:   Tue, 8 Aug 2023 10:36:15 +0200
+        Tue, 8 Aug 2023 15:47:13 -0400
+Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C92712260B;
+        Tue,  8 Aug 2023 09:51:09 -0700 (PDT)
+Received: from relay6-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::226])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 457BBD4C69;
+        Tue,  8 Aug 2023 08:44:47 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CDBB0C0011;
+        Tue,  8 Aug 2023 08:44:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1691484284;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9nUiw4hJK7/Sk678dMlTFdsFNk9UZV8JT6mDURM0k34=;
+        b=QZBb0EFgqssUT+yAxk29eDTjBMqFKHe4zPB1Smvyc+r9fR/tpmYpbax2btHCBtrJ0JveOQ
+        SLfeDDBlE9c33fmD8j8hb0+2e4T0kQOwo4HkFuefiM4/FTN3Qixx+U9a0Lr46Zpybcvhk/
+        pzfqXkJVEK6u6AuwEp9In8Fri7fCoasFyYBjwMbGHW2x81o0rcjV7vfIV/7OGspbkZCXS2
+        UrlV5ZcAPgDJe2OMs4EUsIvewgY6Zd2BHitCnMItMwzgzOZ5eNl6yKxTIuUZMuMRIDLoYX
+        ZPFdIRfr4+fIGi+NiAyTBb1Q6Kip8TN6o7JB9xQlS463pwiOEXmyVfbepPKRoA==
+Date:   Tue, 8 Aug 2023 10:44:39 +0200
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 22/28] mfd: core: Ensure disabled devices are skiped
+ without aborting
+Message-ID: <20230808104439.6265cd01@bootlin.com>
+In-Reply-To: <651ad095-8753-762e-d3f0-aec74c5794c2@csgroup.eu>
+References: <20230726150225.483464-1-herve.codina@bootlin.com>
+        <20230726150225.483464-23-herve.codina@bootlin.com>
+        <651ad095-8753-762e-d3f0-aec74c5794c2@csgroup.eu>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 4/9] i2c: hisi: Use dev_err_probe in probe function
-Content-Language: en-US
-To:     Liao Chang <liaochang1@huawei.com>, andi.shyti@kernel.org,
-        florian.fainelli@broadcom.com, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        yangyicong@hisilicon.com, aisheng.dong@nxp.com,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, kblaiech@nvidia.com,
-        asmaa@nvidia.com, loic.poulain@linaro.org, rfoss@kernel.org,
-        ardb@kernel.org, gcherian@marvell.com
-Cc:     linux-i2c@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20230808012954.1643834-1-liaochang1@huawei.com>
- <20230808012954.1643834-5-liaochang1@huawei.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230808012954.1643834-5-liaochang1@huawei.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/2023 03:29, Liao Chang wrote:
-> Use the dev_err_probe function instead of dev_err in the probe function
-> so that the printed messge includes the return value and also handles
-> -EPROBE_DEFER nicely.
-> 
-> Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
-> Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> ---
->  drivers/i2c/busses/i2c-hisi.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-hisi.c b/drivers/i2c/busses/i2c-hisi.c
-> index e067671b3ce2..6fc8d6fa43b6 100644
-> --- a/drivers/i2c/busses/i2c-hisi.c
-> +++ b/drivers/i2c/busses/i2c-hisi.c
-> @@ -462,18 +462,14 @@ static int hisi_i2c_probe(struct platform_device *pdev)
->  	hisi_i2c_disable_int(ctlr, HISI_I2C_INT_ALL);
->  
->  	ret = devm_request_irq(dev, ctlr->irq, hisi_i2c_irq, 0, "hisi-i2c", ctlr);
-> -	if (ret) {
-> -		dev_err(dev, "failed to request irq handler, ret = %d\n", ret);
-> -		return ret;
-> -	}
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "failed to request irq handler\n");
+On Tue, 8 Aug 2023 08:13:27 +0000
+Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
 
-I don't think this is needed:
-https://lore.kernel.org/all/20230721094641.77189-1-frank.li@vivo.com/
+> Le 26/07/2023 à 17:02, Herve Codina a écrit :
+> > The loop searching for a matching device based on its compatible
+> > string is aborted when a matching disabled device is found.
+> > This abort avoid to add devices as soon as one disabled device
+> > is found.  
+> 
+> s/avoid/prevents/
 
-Best regards,
-Krzysztof
+Yes, will be changed.
+
+> 
+> > 
+> > Continue searching for an other device instead of aborting on the
+> > first disabled one fixes the issue.
+> > 
+> > Fixes: 22380b65dc70 ("mfd: mfd-core: Ensure disabled devices are ignored without error")
+> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>  
+> 
+> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> 
 
