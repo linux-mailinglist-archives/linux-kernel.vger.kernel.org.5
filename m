@@ -2,125 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F00777471E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DB277473F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234910AbjHHTJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52532 "EHLO
+        id S232342AbjHHTMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234814AbjHHTJU (ORCPT
+        with ESMTP id S234971AbjHHTLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:09:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029D32FA31
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:31:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D254762456
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:05:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8B41C433CA
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 14:05:01 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="jowMggc4"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1691503497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=chf8FUmzD77OYzSkcoByYk3SJOxrgbPfjK0UO5OV0XE=;
-        b=jowMggc457l0w5P0KjjSAX4WEd2PHPOQ/ugvjwZM4d9jjUo3AgCCdFObT4lYdxZ/fNChGJ
-        Czv1p/IIe8jBX0xX3/KoV5kpXXIwypzkMPHzu93xxbk7gRepmjckmzFC77pbMomHe/S10l
-        jXKYkxyJIOHDLU4zkOlWVy0GBjO5FYI=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 79122d4b (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
-        for <linux-kernel@vger.kernel.org>;
-        Tue, 8 Aug 2023 14:04:56 +0000 (UTC)
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-56d0f4180bbso3821945eaf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 07:04:56 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxtUbPFq56uDNw4Cg5Gi9DQyByRSv1aDtdpWDDCSAZa6FfRG2iI
-        zAjbKohMdHyQctSbeWEOh3bBmRDEgIfDp0KMG/8=
-X-Google-Smtp-Source: AGHT+IEAD7iSH8TL9w+ZLrmt0lZOmt9AR135oiy5wGsx3EMERX18Ewt2k2oSj+UeztzUAJxcUXcGWhV5bLsIAv+szTY=
-X-Received: by 2002:a05:6358:2611:b0:135:96fa:bff3 with SMTP id
- l17-20020a056358261100b0013596fabff3mr10294439rwc.4.1691503493824; Tue, 08
- Aug 2023 07:04:53 -0700 (PDT)
+        Tue, 8 Aug 2023 15:11:46 -0400
+X-Greylist: delayed 1802 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Aug 2023 09:33:37 PDT
+Received: from mail.toke.dk (mail.toke.dk [IPv6:2a0c:4d80:42:2001::664])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D773103C;
+        Tue,  8 Aug 2023 09:33:37 -0700 (PDT)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
+        t=1691503571; bh=DO+diXcZ9utTjLCydk3zF1T+72EgE+BXHMNyOGRq6Ag=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Ufsvvw3XC+ndybpKuDXPhTRnlV6E36AEoC6EXNd+4roQ2Jp/HEutKL5Nny90eexIl
+         8iqgnPGKQs5VN8ciMrQ5/h4EptP8dN+TV0EGxphvodVJCGK2SLyrUZi1H4l5QMHepM
+         2lT+STOPbPw19sL/dqJCQ5ZHC0EHX+7NrLyLcA+jyQmVELEjeKJCDVwSYRU4s38U83
+         lHQPU5zX5Jluu00S52QeTfYOQU8xASQaPu796EbxAPZUgWCS/sy73wvscKGss1Sk5d
+         9ob6Ai26rmgSuYxEstT2KrPzEof1DzBrHu9Tkt9YR6Ulzah58YZEdAcqwbE3BAy3xO
+         wwL5gVq1sTMCQ==
+To:     Fedor Pchelkin <pchelkin@ispras.ru>, Kalle Vallo <kvalo@kernel.org>
+Cc:     Fedor Pchelkin <pchelkin@ispras.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Senthil Balasubramanian <senthilkumar@atheros.com>,
+        "John W. Linville" <linville@tuxdriver.com>,
+        Vasanthakumar Thiagarajan <vasanth@atheros.com>,
+        Sujith <Sujith.Manoharan@atheros.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        lvc-project@linuxtesting.org,
+        syzbot+f2cb6e0ffdb961921e4d@syzkaller.appspotmail.com,
+        Hillf Danton <hdanton@sina.com>
+Subject: Re: [PATCH v3 1/2] wifi: ath9k: fix races between ath9k_wmi_cmd and
+ ath9k_wmi_ctrl_rx
+In-Reply-To: <20230425192607.18015-1-pchelkin@ispras.ru>
+References: <20230425192607.18015-1-pchelkin@ispras.ru>
+Date:   Tue, 08 Aug 2023 16:06:07 +0200
+X-Clacks-Overhead: GNU Terry Pratchett
+Message-ID: <87edkdbpdc.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20230808062658.391595-1-jstultz@google.com> <20230808062658.391595-2-jstultz@google.com>
- <20230808103637.GA212435@hirez.programming.kicks-ass.net>
-In-Reply-To: <20230808103637.GA212435@hirez.programming.kicks-ass.net>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Tue, 8 Aug 2023 16:03:09 +0200
-X-Gmail-Original-Message-ID: <CAHmME9oB1PisGNqFTkE3M3YT1Q_bezS39s_xc9x4GkY87PtFtQ@mail.gmail.com>
-Message-ID: <CAHmME9oB1PisGNqFTkE3M3YT1Q_bezS39s_xc9x4GkY87PtFtQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/3] test-ww_mutex: Use prng instead of rng to avoid
- hangs at bootup
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     John Stultz <jstultz@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joelaf@google.com>,
-        Li Zhijian <zhijianx.li@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter, John,
+Fedor Pchelkin <pchelkin@ispras.ru> writes:
 
-On Tue, Aug 8, 2023 at 12:36=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
+> Currently, the synchronization between ath9k_wmi_cmd() and
+> ath9k_wmi_ctrl_rx() is exposed to a race condition which, although being
+> rather unlikely, can lead to invalid behaviour of ath9k_wmi_cmd().
 >
-> On Tue, Aug 08, 2023 at 06:26:41AM +0000, John Stultz wrote:
-> > Booting w/ qemu without kvm, I noticed we'd sometimes seem to get
-> > stuck in get_random_u32_below(). This seems potentially to be
-> > entropy exhaustion (with the test module linked statically, it
-> > runs pretty early in the bootup).
-> >
-> > I'm not 100% sure on this, but this patch switches to use the
-> > prng instead since we don't need true randomness, just mixed up
-> > orders for testing ww_mutex lock acquisitions.
-> >
-> > With this patch, I no longer see hangs in get_random_u32_below()
-> >
-> > Feedback would be appreciated!
+> Consider the following scenario:
 >
-> Jason, I thought part of the 'recent' random rework was avoiding the
-> exhaustion problem, could you please give an opinion on the below?
+> CPU0					CPU1
+>
+> ath9k_wmi_cmd(...)
+>   mutex_lock(&wmi->op_mutex)
+>   ath9k_wmi_cmd_issue(...)
+>   wait_for_completion_timeout(...)
+>   ---
+>   timeout
+>   ---
+> 					/* the callback is being processed
+> 					 * before last_seq_id became zero
+> 					 */
+> 					ath9k_wmi_ctrl_rx(...)
+> 					  spin_lock_irqsave(...)
+> 					  /* wmi->last_seq_id check here
+> 					   * doesn't detect timeout yet
+> 					   */
+> 					  spin_unlock_irqrestore(...)
+>   /* last_seq_id is zeroed to
+>    * indicate there was a timeout
+>    */
+>   wmi->last_seq_id =3D 0
+>   mutex_unlock(&wmi->op_mutex)
+>   return -ETIMEDOUT
+>
+> ath9k_wmi_cmd(...)
+>   mutex_lock(&wmi->op_mutex)
+>   /* the buffer is replaced with
+>    * another one
+>    */
+>   wmi->cmd_rsp_buf =3D rsp_buf
+>   wmi->cmd_rsp_len =3D rsp_len
+>   ath9k_wmi_cmd_issue(...)
+>     spin_lock_irqsave(...)
+>     spin_unlock_irqrestore(...)
+>   wait_for_completion_timeout(...)
+> 					/* the continuation of the
+> 					 * callback left after the first
+> 					 * ath9k_wmi_cmd call
+> 					 */
+> 					  ath9k_wmi_rsp_callback(...)
+> 					    /* copying data designated
+> 					     * to already timeouted
+> 					     * WMI command into an
+> 					     * inappropriate wmi_cmd_buf
+> 					     */
+> 					    memcpy(...)
+> 					    complete(&wmi->cmd_wait)
+>   /* awakened by the bogus callback
+>    * =3D> invalid return result
+>    */
+>   mutex_unlock(&wmi->op_mutex)
+>   return 0
+>
+> To fix this, update last_seq_id on timeout path inside ath9k_wmi_cmd()
+> under the wmi_lock. Move ath9k_wmi_rsp_callback() under wmi_lock inside
+> ath9k_wmi_ctrl_rx() so that the wmi->cmd_wait can be completed only for
+> initially designated wmi_cmd call, otherwise the path would be rejected
+> with last_seq_id check.
+>
+> Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+>
+> Fixes: fb9987d0f748 ("ath9k_htc: Support for AR9271 chipset.")
+> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
 
-Thanks for looping me in. I actually can't reproduce this. I'm using a
-minimal config and using QEMU without KVM. The RNG doesn't initialize
-until much later on in the boot process, expectedly, yet
-get_random_u32_below() does _not_ hang in my trials. And indeed it's
-designed to never hang, since that would create boot deadlocks. So I'm
-not sure why you're seeing a hang.
+Alright, finally took the time to dig into this and convince myself that
+the fix if correct. Sorry for taking so long!
 
-It is worth noting that in those early boot test-case scenarios,
-before the RNG initializes, get_random_u32_below() will be somewhat
-slower than it normally is, and also slower than prandom_u32_state().
-(But only in this early boot scenario edge case; this isn't a general
-statement about speed.) It's possible that in your QEMU machine,
-things are slow enough that you're simply noticing the difference. On
-my system, however, I replaced `get_random_u32_below()` with `static
-u32 x; return ++x % ceil;` and I didn't see any difference running it
-under TCG -- it took about 7 seconds either way.
-
-So, from my perspective, you shouldn't see any hang. That function
-never blocks. I'm happy to look more into what's happening on your end
-though. Maybe share your .config and qemu command line and I'll see if
-I can repro?
-
-Jason
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@toke.dk>
