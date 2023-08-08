@@ -2,126 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B08774151
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82FA773FB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234370AbjHHRSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
+        id S233631AbjHHQvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234123AbjHHRRt (ORCPT
+        with ESMTP id S232684AbjHHQuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:17:49 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 032AB1DCAF;
-        Tue,  8 Aug 2023 09:07:16 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378DRloi024385;
-        Tue, 8 Aug 2023 08:27:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691501267;
-        bh=6xAGgK/MigkE5KWfV/hAVgjmFCVnQ7u5G9JT9oYRb0I=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=j7+wuQPIf1bix76cCyniysJ7WM5rU85RS8WNoC/DkeQlZDsmy9kj82VQJlaqgbOSB
-         yKhUZsX4fXjbRH9aLJvL4O3ESz42CIq3WkSIpVHlz/dE3QdRWAcmlmKnWjDFD1VNjb
-         T0AUZaYl57LMGv6aCxTnYY4YFTB/7TRK9+Zh4rHs=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378DRl3j109453
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Aug 2023 08:27:47 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
- Aug 2023 08:27:47 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 8 Aug 2023 08:27:47 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378DRlWd054823;
-        Tue, 8 Aug 2023 08:27:47 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Francesco Dolcini <francesco@dolcini.it>
-CC:     Nishanth Menon <nm@ti.com>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/4] arm64: dts: ti: Enable Audio on Verdin AM62
-Date:   Tue, 8 Aug 2023 08:27:46 -0500
-Message-ID: <169150111130.1366102.11500838433744762037.b4-ty@ti.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230807202159.13095-1-francesco@dolcini.it>
-References: <20230807202159.13095-1-francesco@dolcini.it>
+        Tue, 8 Aug 2023 12:50:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FFB17AB0;
+        Tue,  8 Aug 2023 08:57:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691510261; x=1723046261;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=r2RdCw5wubTueAn5TyePX68lTy4zhxglWW/YYBYn2F8=;
+  b=fXPPDsE+Dv2iP12TPlWJ4/cXrF1J3okUv7MSZvukF0uIGSpnLPsN8BAO
+   V7Zy0hKW1GLUUz0BZyfHsQJe0yu62kiqNNXSRNf4QT4tjE+/mKRZBCiTV
+   ksA8sjLW1vGPOQhOMUtI5gI/v70e3ttNNkVuqmAViqRUFZ7BrrOxPjEtD
+   fdrN4xDxs1VZ/lgvT//fXZ5zWly//9lTXTGnJs/fHeChp4NC6ZdCS3F/b
+   Q76NudFvGXpRCD8m0NWNMQDb4g+4BrJe5tZob1xu6P2uqNs10qbbZtqsI
+   X6UXg5o4unPGwIgr/ViMOuzbj+cOwtKuzlZys0qBFKihK20BIlGVE+Xlk
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="369719978"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="369719978"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 06:28:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="801324246"
+X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
+   d="scan'208";a="801324246"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP; 08 Aug 2023 06:28:18 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qTMky-009lKr-1p;
+        Tue, 08 Aug 2023 16:28:16 +0300
+Date:   Tue, 8 Aug 2023 16:28:16 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Wenhua Lin <Wenhua.Lin@unisoc.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Samuel Holland <samuel@sholland.org>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wenhua lin <wenhua.lin1994@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Subject: Re: [PATCH 1/2] devicetree: bindings: Add keypad driver ducumentation
+Message-ID: <ZNJC8OVzJEQyQugF@smile.fi.intel.com>
+References: <20230808072252.3229-1-Wenhua.Lin@unisoc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230808072252.3229-1-Wenhua.Lin@unisoc.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Francesco Dolcini,
+On Tue, Aug 08, 2023 at 03:22:52PM +0800, Wenhua Lin wrote:
+> Add keypad driver ducumentation.
 
-On Mon, 07 Aug 2023 22:21:55 +0200, Francesco Dolcini wrote:
-> From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> 
-> Add AM62x AUDIO_REFCLKx to AM62x SoC dtsi, and after doing it, enable audio
-> support for Toradex Verdin AM62.
-> 
-> DT bindings updates, related to the audio codec used here, are already merged
-> in next [2][3].
-> 
-> [...]
+Why am I Cc'ed to this? I'm not a DT person to review this...
 
-Note: wlf,wm8904 converted to yaml and #sound-dai-cells fixup are
-present in linux-next next-20230808 tag, and the dtbs_checks is clean
-there. while the syscon cleanups need to take place, the expectation
-is that the changes for syscon should keep this node and driver
-functional. if anything changes, please let me know and we can take
-appropriate measures.
+...
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+> +		reg = 	<0x40250000 0x1000>;
 
-[1/4] arm64: dts: ti: k3-am62: Enable AUDIO_REFCLKx
-      commit: 6111ac92f93415eaa680e7ef43ee4fa78b1eb7f2
-[2/4] arm64: dts: ti: verdin-am62: Set I2S_1 MCLK rate
-      commit: 0bf6d62cb5173d85113f4f759cad3191845e15fa
-[3/4] arm64: dts: ti: verdin-am62: dev: add sound card
-      commit: c90658201cbeb7aae072ab3da4e255f47d9e25b3
-[4/4] arm64: dts: ti: verdin-am62: dahlia: add sound card
-      commit: f5bf894c865b26ea8ec43186e87bb08d092b6fa1
+TAB and space mix
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+With Best Regards,
+Andy Shevchenko
+
 
