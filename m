@@ -2,102 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC9A774B1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6828774B03
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjHHUlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35392 "EHLO
+        id S233316AbjHHUjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231917AbjHHUk4 (ORCPT
+        with ESMTP id S233983AbjHHUiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:40:56 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CA146B9;
-        Tue,  8 Aug 2023 13:12:06 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-307d58b3efbso4665694f8f.0;
-        Tue, 08 Aug 2023 13:12:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691525525; x=1692130325;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HTKjeSdXeNLUVbHpZpaI+0otxc5jI/cV2lsa+kaijXI=;
-        b=gGfPMZAyUzn4eRSNEtWO9UXo0D1Aw6jZ+nKryC0dAMuc8u6wBBo0eeOcrADx6fUkll
-         M1sL0Mf9f3CN0+anjB7mumxHL7QT993mviPz/0EC26f0mQu6T4vj7BgtsPDBIbmduA6j
-         K1y2UPFgQ11/+8GfsjTcXyNdorTwhGz1O8DJsvF0iflkXkgwKJlZbpZRRKr9/6+z+ogP
-         gMjF/t3fgtHk1Yterrb6ZDqPVnDy8b+BoIdhKp9G9HSOv0FosvhHRgNAAPavWpU+yq4R
-         eUMBTMCuYqn0CxR95jqLu2UvxAVXaANi9G5+24oO2WeilcTrqgTJi/oMEzblL4kq8iKT
-         EgMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691525525; x=1692130325;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HTKjeSdXeNLUVbHpZpaI+0otxc5jI/cV2lsa+kaijXI=;
-        b=eIDYv2xWlYjhaZOzvDY0JrE7dDrM9Tr1lNZoNtLCPuGHMcqE1Dro8h0XJBgvpqBL7i
-         pH+kkYPchdtWUop2rmGSqW2/24waVLfe+VAVjX8E8Lwq731pbINFXX9pFk26gq+6L9yM
-         utB/fimqesQ6lmXYkYW16Np4rRYsX5dpW+D7UpdgQS27tnUZlJi+5cIVpPe9YrZpzFbY
-         7YtDXGxtgZCS6liJI+klKjwlmzSezEI5XfzY53601knIfnJ9JrmN0A0IH+VJ8BEAJhyb
-         JijoFCxuB99dU40zdTgS7TpzpOZxA6PICsZxV/BLGbpJHZ05bJCwQID1i7JMg6NxbnD2
-         rBoA==
-X-Gm-Message-State: AOJu0Yz6CC6KXnIU8cnB0ruTVOIgOxeAQ/NYSdD44YNlIxrQi0k3s6F4
-        dX/O9LadycY4OgI80aBzdq8=
-X-Google-Smtp-Source: AGHT+IHSFsB+PJqEIEWPmewue88hEkwpFNUyrLVFd1aweDslbMbifQibxZD79shizKSd2tQQpG0hDg==
-X-Received: by 2002:adf:db4d:0:b0:317:5b99:d3d8 with SMTP id f13-20020adfdb4d000000b003175b99d3d8mr374051wrj.20.1691525524933;
-        Tue, 08 Aug 2023 13:12:04 -0700 (PDT)
-Received: from localhost ([2a02:168:633b:1:9d6a:15a4:c7d1:a0f0])
-        by smtp.gmail.com with ESMTPSA id c17-20020adfe711000000b00317afc7949csm14452247wrm.50.2023.08.08.13.12.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 13:12:04 -0700 (PDT)
-From:   =?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack3000@gmail.com>
-To:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     =?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack3000@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Simon Brand <simon.brand@postadigitale.de>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH] TIOCSTI: Document CAP_SYS_ADMIN behaviour in Kconfig
-Date:   Tue,  8 Aug 2023 22:11:12 +0200
-Message-ID: <20230808201115.23993-1-gnoack3000@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 8 Aug 2023 16:38:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD91525F
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 13:07:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691525233;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=URef7vegGsa2wnoaw1VuQcviklx9DOBuGXAqweG7Q+o=;
+        b=E3+qDPvYMvUuDLBPLPdlydYFnc8zMCSgfvjRc94wL0Wy/XZACAd2GeVeeI4l8yaKOiEJhN
+        SSOuaznYUntA8DsqOiwUtNP4+yk90AdyW73hB0J/SLzZHy6dZWn7P35HfsSyC2OPjZSkx3
+        1QxEyMwqmDA8Oi72jn1xK+PKRWGKlMk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-480-sl0LyO7YNBeAhvxsMKKR6A-1; Tue, 08 Aug 2023 16:07:05 -0400
+X-MC-Unique: sl0LyO7YNBeAhvxsMKKR6A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0CB8F101A528;
+        Tue,  8 Aug 2023 20:07:04 +0000 (UTC)
+Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A040F2026D4B;
+        Tue,  8 Aug 2023 20:07:03 +0000 (UTC)
+From:   Jeff Moyer <jmoyer@redhat.com>
+To:     Breno Leitao <leitao@debian.org>
+Cc:     Hugo Villeneuve <hugo@hugovil.com>, sdf@google.com,
+        axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        io-uring@vger.kernel.org
+Subject: Re: [PATCH v2 1/8] net: expose sock_use_custom_sol_socket
+References: <20230808134049.1407498-1-leitao@debian.org>
+        <20230808134049.1407498-2-leitao@debian.org>
+        <20230808121323.bc144c719eba5979e161aac6@hugovil.com>
+        <ZNJ5f1hR3cre0IPd@gmail.com>
+X-PGP-KeyID: 1F78E1B4
+X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
+Date:   Tue, 08 Aug 2023 16:12:51 -0400
+In-Reply-To: <ZNJ5f1hR3cre0IPd@gmail.com> (Breno Leitao's message of "Tue, 8
+        Aug 2023 10:21:03 -0700")
+Message-ID: <x495y5p47jw.fsf@segfault.boston.devel.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clarifies that the LEGACY_TIOCSTI setting is safe to turn off even
-when running BRLTTY, as it was introduced in commit 690c8b804ad2
-("TIOCSTI: always enable for CAP_SYS_ADMIN").
+Breno Leitao <leitao@debian.org> writes:
 
-Signed-off-by: Günther Noack <gnoack3000@gmail.com>
----
- drivers/tty/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
+> Hello  Hugo,
+>
+> On Tue, Aug 08, 2023 at 12:13:23PM -0400, Hugo Villeneuve wrote:
+>> On Tue,  8 Aug 2023 06:40:41 -0700
+>> Breno Leitao <leitao@debian.org> wrote:
+>> 
+>> > Exposing function sock_use_custom_sol_socket(), so it could be used by
+>> > io_uring subsystem.
+>> > 
+>> > This function will be used in the function io_uring_cmd_setsockopt() in
+>> > the coming patch, so, let's move it to the socket.h header file.
+>> 
+>> Hi,
+>> this description doesn't seem to match the code change below...
+>
+> I re-read the patch comment and it seems to match what the code does,
+> so, probably this description only makes sense to me (?).
+>
+> That said, hat have you understood from reading the description above?
 
-diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
-index 341abaed4ce..069de553127 100644
---- a/drivers/tty/Kconfig
-+++ b/drivers/tty/Kconfig
-@@ -164,6 +164,9 @@ config LEGACY_TIOCSTI
- 	  userspace depends on this functionality to continue operating
- 	  normally.
- 
-+	  Processes which run with CAP_SYS_ADMIN, such as BRLTTY, can
-+	  use TIOCSTI even when this is set to N.
-+
- 	  This functionality can be changed at runtime with the
- 	  dev.tty.legacy_tiocsti sysctl. This configuration option sets
- 	  the default value of the sysctl.
--- 
-2.41.0
+The comment states the function prototype is moving to socket.h, but the
+patch puts it in net.h.
+
+Cheers,
+Jeff
+
+>
+> Thanks for the review,
+>
+>> > ---
+>> >  include/linux/net.h | 5 +++++
+>> >  net/socket.c        | 5 -----
+>> >  2 files changed, 5 insertions(+), 5 deletions(-)
+>> > 
+>> > diff --git a/include/linux/net.h b/include/linux/net.h
+>> > index 41c608c1b02c..14a956e4530e 100644
+>> > --- a/include/linux/net.h
+>> > +++ b/include/linux/net.h
+>> > @@ -355,4 +355,9 @@ u32 kernel_sock_ip_overhead(struct sock *sk);
+>> >  #define MODULE_ALIAS_NET_PF_PROTO_NAME(pf, proto, name) \
+>> >  	MODULE_ALIAS("net-pf-" __stringify(pf) "-proto-" __stringify(proto) \
+>> >  		     name)
+>> > +
+>> > +static inline bool sock_use_custom_sol_socket(const struct socket *sock)
+>> > +{
+>> > +	return test_bit(SOCK_CUSTOM_SOCKOPT, &sock->flags);
+>> > +}
+>> >  #endif	/* _LINUX_NET_H */
+>> > diff --git a/net/socket.c b/net/socket.c
+>> > index 1dc23f5298ba..8df54352af83 100644
+>> > --- a/net/socket.c
+>> > +++ b/net/socket.c
+>> > @@ -2216,11 +2216,6 @@ SYSCALL_DEFINE4(recv, int, fd, void __user *, ubuf, size_t, size,
+>> >  	return __sys_recvfrom(fd, ubuf, size, flags, NULL, NULL);
+>> >  }
+>> >  
+>> > -static bool sock_use_custom_sol_socket(const struct socket *sock)
+>> > -{
+>> > -	return test_bit(SOCK_CUSTOM_SOCKOPT, &sock->flags);
+>> > -}
+>> > -
+>> >  /*
+>> >   *	Set a socket option. Because we don't know the option lengths we have
+>> >   *	to pass the user mode parameter for the protocols to sort out.
+>> > -- 
+>> > 2.34.1
+>> > 
 
