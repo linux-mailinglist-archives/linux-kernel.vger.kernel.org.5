@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 000B8774F4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B66E774F4E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 01:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229643AbjHHXbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 19:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32952 "EHLO
+        id S229726AbjHHXbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 19:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbjHHXbh (ORCPT
+        with ESMTP id S230320AbjHHXbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 19:31:37 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE711BCC
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 16:31:37 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-563fbc76454so6293527a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 16:31:37 -0700 (PDT)
+        Tue, 8 Aug 2023 19:31:40 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522A01BCD
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 16:31:39 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5840614b13cso7578307b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 16:31:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691537497; x=1692142297;
+        d=google.com; s=20221208; t=1691537498; x=1692142298;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=day2+XW8RNdkVZC5xrvfHTk42KwCQcUIyqc4gEqLSPk=;
-        b=KR0TDrHUGRkU5sCJhgnR/IvHk8gAPINBHbsFHJdpt/LWT6W+Dnr4Yc/dJ/CKxYuTRz
-         9j0x9w4/IQfZHkOzP2tWAhpGro6FVGLG4AAHwjbaahf2O1DJXmPnLwbfZ0IJbyeIOFXS
-         Bpm79BecHUnxxXSRWRYjCmDOBzIn+fUUWYt3NvaOOz9ifbCh7rOSLkY7kg4KhnCpZPrb
-         GogsfXiO+N7op2GMIAE6yQYuIvmue1RWAcS9SZtxhHftQ/6lORgpH9z/rpoG1E/mvfjp
-         DAMQMI4zOXtwzjRNEw/u8Z1DlxyQmlQSZeZ3u1D7PBNkZpSAm6WyvGNb6zq65bfYawj/
-         m7+g==
+        bh=EPD874mS5DFXE7q5j+htsJnjyxr2fxrlyK2awIJE77s=;
+        b=R6PS/UbuTNwK6Pgw8wERz7SV4Dg22YULDLQo8LtM+HTNtZYY/ALRYoF7v2KmpB39wG
+         3AtZw/QwqNGD62fZhjLEMGB3+DqX4TBsuqgZILHFEATsLvU8ZfRjBiDePZ7x1yfPXWUQ
+         OQIzS4qi5WK96rqoXWdEeGNQyTO4JSMEEKj7uqb7L3Yg/ACbTAms16AKjUx1voI0NI6L
+         kNblvkQlYadYGbc67cuMFXt7P8WNsc+MX3enJC5TxAkVpZl087+nrZJ8tEIWEqVcAmw9
+         nKuSHSwaxw8wETYMS0wyjqVz+AU+DvYO4kOCKTJ7gVo/euvqkqSBl7W/n2I2v0JD2RpT
+         kvnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691537497; x=1692142297;
+        d=1e100.net; s=20221208; t=1691537498; x=1692142298;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=day2+XW8RNdkVZC5xrvfHTk42KwCQcUIyqc4gEqLSPk=;
-        b=c6u3aX3vFpc0zVbM93ilZEdlvpoKVtKPnNpToJrr/ebwTBb+NhyA+yJLlRN1rQsEce
-         Jbhn82kc8Y9OMFi64pN3ejEl2FTQqhBAwKUIS/fgpAqmZa5H4HN+Mns9ekSdZsxi4Fkl
-         RJ7K1A93ztkNXArRWLssY6WxWDdlAiydaDgfU6eXdETqferDdiEgZtwU88f7xG7kblUG
-         JvilCIMUBAbyMFKxwDMb7Rvpbdp4RJRow3LvhXJZHXBg2bJ0Op0nVelBqlLvcYORLVWy
-         v6hFffCtjWbEmX48L2EIG2+hRIYCQoF1vEisOGS056Hj15tK/He82QSQ7XhozmG+aPYM
-         BRTA==
-X-Gm-Message-State: AOJu0YyI4rbIjVo3rc1UvU2JxfVESeMfUb0M8MexMdjFhnHYwNA75TZE
-        xh0gCjLEt1R6TrJzyDMgDlMaCJwuYBw=
-X-Google-Smtp-Source: AGHT+IHAY8TY7N6IaKGIUPURwq8foE2MqhUfIQb0pL4n4R44D3WSamPDhP9iirQ7wpJgBbXoYynBsGEMHSg=
+        bh=EPD874mS5DFXE7q5j+htsJnjyxr2fxrlyK2awIJE77s=;
+        b=Ca+XG9nAnLZg+X6Sj/gh5bcW3AtFpvxJtk3680xr7pRqBDUz/Rd0iYNwxlT1TbjTdg
+         yHZsGwXp6DxYdRO9VkxkOj2KP3QjCdCTNicfpaxAGQogov5ywdq5kEZge1prS8Gw1o76
+         PvIjekVWEoKwuJHFs04F+acPZ4PoSWfbVDUw2eujlzloflxetLKGaig8XV1jRSOsrpgO
+         byfoktLPTXI17A4zO3fbYhTI5KpBHez1DumrfdWhfctmD5k70RPgYJeFk5orEVM9SS5j
+         BGyQgKEBkR7lb2zXWtoeyP3wOTRWeQo5I44zo2jtvtfuOJZEQVqGRPjz83H0k6mHeQZt
+         FlgQ==
+X-Gm-Message-State: AOJu0YxmhH8q5mf1sJbfag2qVvppUVBYxKexv/cAv5iwmmij5+OMANcL
+        2lh2gmd04w1yWHftbZd3GmbxbRNxabw=
+X-Google-Smtp-Source: AGHT+IF8AouhVr9UyFX4qHC+5TY3Ir6STkDAWiVLmV/MkbxJxSGeuqg95HvOZJgp6pY3rDvitVEzPjzR+pQ=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:6f0a:0:b0:563:dced:3f35 with SMTP id
- k10-20020a636f0a000000b00563dced3f35mr20610pgc.4.1691537496734; Tue, 08 Aug
- 2023 16:31:36 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a81:b707:0:b0:56c:ed45:442c with SMTP id
+ v7-20020a81b707000000b0056ced45442cmr34413ywh.5.1691537498667; Tue, 08 Aug
+ 2023 16:31:38 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  8 Aug 2023 16:31:31 -0700
+Date:   Tue,  8 Aug 2023 16:31:32 -0700
 In-Reply-To: <20230808233132.2499764-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230808233132.2499764-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-Message-ID: <20230808233132.2499764-2-seanjc@google.com>
-Subject: [PATCH 1/2] KVM: SVM: Take and hold ir_list_lock when updating vCPU's
- Physical ID entry
+Message-ID: <20230808233132.2499764-3-seanjc@google.com>
+Subject: [PATCH 2/2] KVM: SVM: Set target pCPU during IRTE update if target
+ vCPU is running
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -69,133 +69,98 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hoist the acquisition of ir_list_lock from avic_update_iommu_vcpu_affinity()
-to its two callers, avic_vcpu_load() and avic_vcpu_put(), specifically to
-encapsulate the write to the vCPU's entry in the AVIC Physical ID table.
-This will allow a future fix to pull information from the Physical ID entry
-when updating the IRTE, without potentially consuming stale information,
-i.e. without racing with the vCPU being (un)loaded.
+Update the target pCPU for IOMMU doorbells when updating IRTE routing if
+KVM is actively running the associated vCPU.  KVM currently only updates
+the pCPU when loading the vCPU (via avic_vcpu_load()), and so doorbell
+events will be delivered to the wrong pCPU until the vCPU goes through a
+put+load cycle (which might very well "never" happen for the lifetime of
+the VM), ultimately resulting in lost IRQs in the guest.
 
-Add a comment to call out that ir_list_lock does NOT protect against
-multiple writers, specifically that reading the Physical ID entry in
-avic_vcpu_put() outside of the lock is safe.
+To avoid inserting a stale pCPU, e.g. due to racing between updating IRTE
+routing and vCPU load/put, get the pCPU information from the vCPU's
+Physical APIC ID table entry (a.k.a. avic_physical_id_cache in KVM) and
+update the IRTE while holding ir_list_lock.  Add comments with --verbose
+enabled to explain exactly what is and isn't protected by ir_list_lock.
 
-To preserve some semblance of independence from ir_list_lock, keep the
-READ_ONCE() in avic_vcpu_load() even though acuiring the spinlock
-effectively ensures the load(s) will be generated after acquiring the
-lock.
-
+Fixes: 411b44ba80ab ("svm: Implements update_pi_irte hook to setup posted interrupt")
+Reported-by: dengqiao.joey <dengqiao.joey@bytedance.com>
 Cc: stable@vger.kernel.org
+Cc: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
+Cc: Joao Martins <joao.m.martins@oracle.com>
+Cc: Maxim Levitsky <mlevitsk@redhat.com>
+Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/avic.c | 31 +++++++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+ arch/x86/kvm/svm/avic.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
 diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-index cfc8ab773025..8e041b215ddb 100644
+index 8e041b215ddb..2092db892d7d 100644
 --- a/arch/x86/kvm/svm/avic.c
 +++ b/arch/x86/kvm/svm/avic.c
-@@ -986,10 +986,11 @@ static inline int
- avic_update_iommu_vcpu_affinity(struct kvm_vcpu *vcpu, int cpu, bool r)
- {
+@@ -791,6 +791,7 @@ static int svm_ir_list_add(struct vcpu_svm *svm, struct amd_iommu_pi_data *pi)
  	int ret = 0;
--	unsigned long flags;
+ 	unsigned long flags;
  	struct amd_svm_iommu_ir *ir;
- 	struct vcpu_svm *svm = to_svm(vcpu);
++	u64 entry;
  
-+	lockdep_assert_held(&svm->ir_list_lock);
+ 	/**
+ 	 * In some cases, the existing irte is updated and re-set,
+@@ -824,6 +825,18 @@ static int svm_ir_list_add(struct vcpu_svm *svm, struct amd_iommu_pi_data *pi)
+ 	ir->data = pi->ir_data;
+ 
+ 	spin_lock_irqsave(&svm->ir_list_lock, flags);
 +
- 	if (!kvm_arch_has_assigned_device(vcpu->kvm))
- 		return 0;
- 
-@@ -997,19 +998,15 @@ avic_update_iommu_vcpu_affinity(struct kvm_vcpu *vcpu, int cpu, bool r)
- 	 * Here, we go through the per-vcpu ir_list to update all existing
- 	 * interrupt remapping table entry targeting this vcpu.
- 	 */
--	spin_lock_irqsave(&svm->ir_list_lock, flags);
--
- 	if (list_empty(&svm->ir_list))
--		goto out;
-+		return 0;
- 
- 	list_for_each_entry(ir, &svm->ir_list, node) {
- 		ret = amd_iommu_update_ga(cpu, r, ir->data);
- 		if (ret)
--			break;
-+			return ret;
- 	}
--out:
--	spin_unlock_irqrestore(&svm->ir_list_lock, flags);
--	return ret;
-+	return 0;
- }
- 
- void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
-@@ -1017,6 +1014,7 @@ void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 	u64 entry;
- 	int h_physical_id = kvm_cpu_get_apicid(cpu);
- 	struct vcpu_svm *svm = to_svm(vcpu);
-+	unsigned long flags;
- 
- 	lockdep_assert_preemption_disabled();
- 
-@@ -1033,6 +1031,8 @@ void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
++	/*
++	 * Update the target pCPU for IOMMU doorbells if the vCPU is running.
++	 * If the vCPU is NOT running, i.e. is blocking or scheduled out, KVM
++	 * will update the pCPU info when the vCPU awkened and/or scheduled in.
++	 * See also avic_vcpu_load().
++	 */
++	entry = READ_ONCE(*(svm->avic_physical_id_cache));
++	if (entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK)
++		amd_iommu_update_ga(entry & AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK,
++				    true, pi->ir_data);
++
+ 	list_add(&ir->node, &svm->ir_list);
+ 	spin_unlock_irqrestore(&svm->ir_list_lock, flags);
+ out:
+@@ -1031,6 +1044,13 @@ void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
  	if (kvm_vcpu_is_blocking(vcpu))
  		return;
  
-+	spin_lock_irqsave(&svm->ir_list_lock, flags);
-+
- 	entry = READ_ONCE(*(svm->avic_physical_id_cache));
- 	WARN_ON_ONCE(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK);
- 
-@@ -1042,25 +1042,40 @@ void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 
- 	WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
- 	avic_update_iommu_vcpu_affinity(vcpu, h_physical_id, true);
-+
-+	spin_unlock_irqrestore(&svm->ir_list_lock, flags);
- }
- 
- void avic_vcpu_put(struct kvm_vcpu *vcpu)
- {
- 	u64 entry;
- 	struct vcpu_svm *svm = to_svm(vcpu);
-+	unsigned long flags;
- 
- 	lockdep_assert_preemption_disabled();
- 
 +	/*
-+	 * Note, reading the Physical ID entry outside of ir_list_lock is safe
-+	 * as only the pCPU that has loaded (or is loading) the vCPU is allowed
-+	 * to modify the entry, and preemption is disabled.  I.e. the vCPU
-+	 * can't be scheduled out and thus avic_vcpu_{put,load}() can't run
-+	 * recursively.
++	 * Grab the per-vCPU interrupt remapping lock even if the VM doesn't
++	 * _currently_ have assigned devices, as that can change.  Holding
++	 * ir_list_lock ensures that either svm_ir_list_add() will consume
++	 * up-to-date entry information, or that this task will wait until
++	 * svm_ir_list_add() completes to set the new target pCPU.
 +	 */
- 	entry = READ_ONCE(*(svm->avic_physical_id_cache));
+ 	spin_lock_irqsave(&svm->ir_list_lock, flags);
  
- 	/* Nothing to do if IsRunning == '0' due to vCPU blocking. */
+ 	entry = READ_ONCE(*(svm->avic_physical_id_cache));
+@@ -1067,6 +1087,14 @@ void avic_vcpu_put(struct kvm_vcpu *vcpu)
  	if (!(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK))
  		return;
  
-+	spin_lock_irqsave(&svm->ir_list_lock, flags);
-+
++	/*
++	 * Take and hold the per-vCPU interrupt remapping lock while updating
++	 * the Physical ID entry even though the lock doesn't protect against
++	 * multiple writers (see above).  Holding ir_list_lock ensures that
++	 * either svm_ir_list_add() will consume up-to-date entry information,
++	 * or that this task will wait until svm_ir_list_add() completes to
++	 * mark the vCPU as not running.
++	 */
+ 	spin_lock_irqsave(&svm->ir_list_lock, flags);
+ 
  	avic_update_iommu_vcpu_affinity(vcpu, -1, 0);
- 
- 	entry &= ~AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
- 	WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
-+
-+	spin_unlock_irqrestore(&svm->ir_list_lock, flags);
-+
- }
- 
- void avic_refresh_virtual_apic_mode(struct kvm_vcpu *vcpu)
 -- 
 2.41.0.640.ga95def55d0-goog
 
