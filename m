@@ -2,202 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1939B774117
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925D17741D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234143AbjHHROj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
+        id S233852AbjHHR3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbjHHROC (ORCPT
+        with ESMTP id S231879AbjHHR22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:14:02 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 115311C11A
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:05:50 -0700 (PDT)
-Received: (qmail 161982 invoked by uid 1000); 8 Aug 2023 11:05:14 -0400
-Date:   Tue, 8 Aug 2023 11:05:14 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Zhang Shurong <zhang_shurong@foxmail.com>, jgross@suse.com,
-        xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] xen: fix potential shift out-of-bounds in
- xenhcd_hub_control()
-Message-ID: <ccb08027-6836-4207-969b-fd0cf63e9faf@rowland.harvard.edu>
-References: <tencent_15DD79B42AD8A0D64A7CDC24D4FE6C85800A@qq.com>
- <2023062628-shame-ebook-56f2@gregkh>
- <4825193.GXAFRqVoOG@localhost.localdomain>
- <tencent_942CC5C35E410E3545C2E386BE566B8B1405@qq.com>
- <2023080659-turban-exemption-1196@gregkh>
- <3481a644-1648-4fa9-86eb-2a0b86b8f47a@rowland.harvard.edu>
- <2023080845-talisman-ravage-0b58@gregkh>
+        Tue, 8 Aug 2023 13:28:28 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBB021261
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:12:18 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so11039a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691511102; x=1692115902;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vQN2WrIQDnKqqepfQOzswIPO1pOEXGaui58WV1ZpQ54=;
+        b=c88i9im1qDuzlpThXlYvdLHv7FQlBybyP8QDn63NzICff5nODd2KYKfnfAV6HAYfE6
+         hpZXA/CdbonpP0mMEw8L+8/xJXoIpN37e6zo79HYKPRgydyMMiDbeBYp2F8Dz8XuEkcM
+         mTj7MRkFloKW39nQND0369tEXX9RMDhUsm7RoxB8mKopppIRulzjHX7PYXm9N0U2QAwc
+         iMGpVdOut9/iXwedpzJmMR8EIcsMWSTsn2kUuFpt6b6pw80zE2mYoPWaWv5ZCIG/I4AX
+         mM85qpAKHI+vMaoJH2rV5qqj5seCimYA3Phgg/uPfujb4TFcTd6m+g6ekHnMXvD0rPK2
+         tQhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691511102; x=1692115902;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vQN2WrIQDnKqqepfQOzswIPO1pOEXGaui58WV1ZpQ54=;
+        b=UpzO3BBGB7yZfgOztCwtIpPWYbHZyiB67QkYmkjIJfwt2HTnUWn6rY72MkgMcWKAxZ
+         a58mu1aHM1FVlSvr8tEHsP7Q+rp1j/h39fvJoiPZdU18HdwL4ozCWpUGjnvQ/lQ6VQAh
+         Sy0jcHW2T6siUhdM5Ifw8vonME7g45xIZex5QtYEWOnpTDseB0lE6te1dkvikQfJWO7h
+         HslKM7mMlbgGKU9Ne5VNnyrqDpElrHuwOv1FTssvG7jKwXeiPjiI0edNJC89vbygYPVe
+         /5LqLnW3lNnvGKY/JEgz/tt+D47tmQ+uXo/cdvcg4sOxjIuhg7bpYSeWLUZ7DbD+xm2a
+         yTsw==
+X-Gm-Message-State: AOJu0Yxv+o/TOm+CSJF14uBXTsqdUcdh15BLiIQnif7cUKgDV2flUS4t
+        V4K0F/YYiQx2lhEt61nQLQNaijB5Cf5168NuMkE=
+X-Google-Smtp-Source: AGHT+IFjcCWkNLtd9+huFXphMmx84LzMQOGNVdG/8yC7bNAWF+WydiqZ3qQOP21ujscxDIahjIMkBA==
+X-Received: by 2002:a17:907:2cea:b0:993:f127:2391 with SMTP id hz10-20020a1709072cea00b00993f1272391mr90854ejc.32.1691507137196;
+        Tue, 08 Aug 2023 08:05:37 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id m17-20020a170906235100b00985bdb7dd5fsm6659807eja.201.2023.08.08.08.05.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 08:05:36 -0700 (PDT)
+Message-ID: <91f57b0d-a6e9-c039-40b6-0a1a9af5f7a0@linaro.org>
+Date:   Tue, 8 Aug 2023 17:05:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2023080845-talisman-ravage-0b58@gregkh>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/2] gpio: dt-bindings: add parsing of loongson gpio
+ offset
+Content-Language: en-US
+To:     Yinbo Zhu <zhuyinbo@loongson.cn>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
+        loongson-kernel@lists.loongnix.cn
+References: <20230807074043.31288-1-zhuyinbo@loongson.cn>
+ <20230807074043.31288-2-zhuyinbo@loongson.cn>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230807074043.31288-2-zhuyinbo@loongson.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 10:26:38AM +0200, Greg KH wrote:
-> On Sun, Aug 06, 2023 at 11:15:51AM -0400, Alan Stern wrote:
-> > On Sun, Aug 06, 2023 at 04:27:27PM +0200, Greg KH wrote:
-> > > On Sun, Aug 06, 2023 at 10:11:43PM +0800, Zhang Shurong wrote:
-> > > > 在 2023年7月1日星期六 CST 下午11:51:43，Zhang Shurong 写道：
-> > > > > 在 2023年6月26日星期一 CST 下午1:52:02，您写道：
-> > > > > 
-> > > > > > On Mon, Jun 26, 2023 at 07:48:05AM +0200, Jan Beulich wrote:
-> > > > > > > On 25.06.2023 18:42, Zhang Shurong wrote:
-> > > > > > > > --- a/drivers/usb/host/xen-hcd.c
-> > > > > > > > +++ b/drivers/usb/host/xen-hcd.c
-> > > > > > > > @@ -456,6 +456,8 @@ static int xenhcd_hub_control(struct usb_hcd *hcd,
-> > > > > > > > __u16 typeReq, __u16 wValue,> >
-> > > > > > > > 
-> > > > > > > >  			info->ports[wIndex - 1].c_connection =
-> > > > > 
-> > > > > false;
-> > > > > 
-> > > > > > > >  			fallthrough;
-> > > > > > > >  		
-> > > > > > > >  		default:
-> > > > > > > > +			if (wValue >= 32)
-> > > > > > > > +				goto error;
-> > > > > > > > 
-> > > > > > > >  			info->ports[wIndex - 1].status &= ~(1
-> > > > > 
-> > > > > << wValue);
-> > > > > 
-> > > > > > > Even 31 is out of bounds (as in: UB) as long as it's 1 here rather
-> > > > > > > than 1u.
-> > > > > > 
-> > > > > > Why isn't the caller fixed so this type of value could never be passed
-> > > > > > to the hub_control callback?
-> > > > > > 
-> > > > > > thanks,
-> > > > > > 
-> > > > > > greg k-h
-> > > > > 
-> > > > > Although I'm not knowledgeable about the USB subsystem, I've observed that
-> > > > > not all driver code that implements hub_control callback performs a shift
-> > > > > operation on wValue, and not all shift operations among them cause
-> > > > > problems. Therefore, I've decided to fix this issue within each driver
-> > > > > itself.
-> > > > > 
-> > > > > For example, in r8a66597_hub_control, it will first check whether wValue is
-> > > > > valid (always < 31) before the shift operation. In case of an invalid
-> > > > > number, the code would execute the error branch instead of the shift
-> > > > > operation.
-> > > > > 
-> > > > > switch (wValue) {
-> > > > > case USB_PORT_FEAT_ENABLE:
-> > > > > 	rh->port &= ~USB_PORT_STAT_POWER;
-> > > > > 	break;
-> > > > > case USB_PORT_FEAT_SUSPEND:
-> > > > > 	break;
-> > > > > case USB_PORT_FEAT_POWER:
-> > > > > 	r8a66597_port_power(r8a66597, port, 0);
-> > > > > 	break;
-> > > > > case USB_PORT_FEAT_C_ENABLE:
-> > > > > case USB_PORT_FEAT_C_SUSPEND:
-> > > > > case USB_PORT_FEAT_C_CONNECTION:
-> > > > > case USB_PORT_FEAT_C_OVER_CURRENT:
-> > > > > case USB_PORT_FEAT_C_RESET:
-> > > > > 	break;
-> > > > > default:
-> > > > > 	goto error;
-> > > > > }
-> > > > > rh->port &= ~(1 << wValue);
-> > > > 
-> > > > Hi there. I apologize for reaching out once more. I'm feeling a bit puzzled 
-> > > > about what my next step should be. I'm unsure whether I should rewrite this 
-> > > > patch or attempt to address the issue at the caller level.
-> > > 
-> > > Try addressing it at the caller level first please.  If that somehow
-> > > does not work, then we will take a patch series that fixes all of the
-> > > host controller drivers at once.
-> > 
-> > It's not feasible to fix all the callers, because the calls can come 
-> > from userspace via usbfs.
+On 07/08/2023 09:40, Yinbo Zhu wrote:
+> Loongson GPIO controllers come in multiple variants that are compatible
+> except for certain register offset values. Add support in yaml file for
+> device properties allowing to specify them in DT.
 > 
-> It can?  Hm, that happens through the call in rh_call_control(), right?
-> But there, we do a bunch of validation before calling hub_control() so
-> why can't we do the same thing in that one place as well?  Making
-> invalid requests from userspace should be disallowed (or we can catch
-> this in the usbfs interface.)
+> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+> ---
+>  .../bindings/gpio/loongson,ls-gpio.yaml       | 40 ++++++++++++++++++-
+>  1 file changed, 39 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml b/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
+> index fb86e8ce6349..fc51cf40fccd 100644
+> --- a/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
+> @@ -14,6 +14,7 @@ properties:
+>      enum:
+>        - loongson,ls2k-gpio
+>        - loongson,ls7a-gpio
+> +      - loongson,ls2k1000-gpio
+>  
+>    reg:
+>      maxItems: 1
+> @@ -29,6 +30,33 @@ properties:
+>  
+>    gpio-ranges: true
+>  
+> +  loongson,gpio-conf-offset:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate this GPIO configuration register offset address.
+> +
+> +  loongson,gpio-out-offset:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate this GPIO output register offset address.
+> +
+> +  loongson,gpio-in-offset:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate this GPIO input register offset address.
+> +
+> +  loongson,gpio-ctrl-mode:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate this GPIO control mode, where '0' represents
+> +      bit control mode and '1' represents byte control mode.
 
-Yes, we could filter these things out at either spot.
+I have no clue what does it mean. Is it only 0 or 1? Then it should be
+enum or even bool.
 
-But that's not the best approach.  The reason xen-hcd.c needs this 
-change in the first place is because the code is buggy, and the change 
-does not fix the real bug.
+> +
+> +  loongson,gpio-inten-offset:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate this GPIO interrupt enable register offset
+> +      address.
+> +
+>    interrupts:
+>      minItems: 1
+>      maxItems: 64
+> @@ -39,6 +67,11 @@ required:
+>    - ngpios
+>    - "#gpio-cells"
+>    - gpio-controller
+> +  - loongson,gpio-conf-offset
+> +  - loongson,gpio-in-offset
+> +  - loongson,gpio-out-offset
+> +  - loongson,gpio-ctrl-mode
+> +  - loongson,gpio-inten-offset
 
-Section 11.24.2.2 (CLEAR PORT FEATURE) of the USB-2 spec says:
+No, you cannot add them as required to every other device. First, there
+is no single need. Second, it breaks the ABI.
 
-        It is a Request Error if wValue is not a feature selector listed 
-        in Table 11-17, if wIndex specifies a port that does not exist,
-        or if wLength is not as specified above.
+>    - gpio-ranges
+>    - interrupts
+>  
+> @@ -49,11 +82,16 @@ examples:
+>      #include <dt-bindings/interrupt-controller/irq.h>
+>  
+>      gpio0: gpio@1fe00500 {
+> -      compatible = "loongson,ls2k-gpio";
+> +      compatible = "loongson,ls2k1000-gpio";
+>        reg = <0x1fe00500 0x38>;
+>        ngpios = <64>;
+>        #gpio-cells = <2>;
+>        gpio-controller;
+> +      loongson,gpio-conf-offset = <0>;
+> +      loongson,gpio-in-offset = <0x20>;
+> +      loongson,gpio-out-offset = <0x10>;
+> +      loongson,gpio-ctrl-mode = <0>;
+> +      loongson,gpio-inten-offset = <0x30>;
 
-xenhcd_hub_control() validates wIndex but not wValue.  (In theory we 
-should validate wLength also, but in practice it doesn't matter.)  
-Here's an example from the code:
+I still think that you just embed the programming model into properties,
+instead of using dedicated compatible for different blocks. It could be
+fine, although I would prefer to check it with your DTS.
 
-	case ClearPortFeature:
-		if (!wIndex || wIndex > ports)
-			goto error;
+Where is your DTS?
 
-		switch (wValue) {
-		case USB_PORT_FEAT_SUSPEND:
-			xenhcd_rhport_resume(info, wIndex);
-			break;
-		case USB_PORT_FEAT_POWER:
-			xenhcd_rhport_power_off(info, wIndex);
-			break;
-		case USB_PORT_FEAT_ENABLE:
-			xenhcd_rhport_disable(info, wIndex);
-			break;
-		case USB_PORT_FEAT_C_CONNECTION:
-			info->ports[wIndex - 1].c_connection = false;
-		default:
-			info->ports[wIndex - 1].status &= ~(1 << wValue);
+Best regards,
+Krzysztof
 
-This line is wrong, and not just because wValue might be too large.  The 
-only status bits that should be manipulated are the ones controlling 
-features the driver actually implements.  Not random bits passed in by 
-the caller!
-
-			break;
-		}
-		break;
-
-So here's what the code _should_ look like (just the end part):
-
-		case USB_PORT_FEAT_C_CONNECTION:
-			info->ports[wIndex - 1].c_connection = false;
-			fallthrough;
-		case USB_PORT_FEAT_C_RESET:
-		case USB_PORT_FEAT_C_ENABLE:
-		case USB_PORT_FEAT_C_SUSPEND:
-			info->ports[wIndex - 1].status &= ~(1 << wValue);
-			break;
-		default:
-			goto error;
-		}
-		break;
-
-(Perhaps also include USB_PORT_FEAT_C_OVER_CURRENT and 
-USB_PORT_FEAT_INDICATOR, depending on whether the driver supports them.)
-
-This way the driver does the right thing in all cases and it never runs 
-the risk of a shift amount being too big.  The other HCD drivers are 
-written this way.
-
-Similar reasoning applies to the SetPortFeature section.
-
-Alan Stern
