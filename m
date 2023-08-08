@@ -2,177 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A077741CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819067741E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234661AbjHHR2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:28:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38570 "EHLO
+        id S234649AbjHHRaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231816AbjHHR1z (ORCPT
+        with ESMTP id S234386AbjHHR3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:27:55 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F310020D14
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:12:01 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-977e0fbd742so805767966b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:12:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691511072; x=1692115872;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SQTPnoKiIFHGykdzh3Jg/xVXffznXdQisKSdG+HDZEk=;
-        b=UY+tMYPPaPbmoC1eP8biGMO+E7XNPbqkwfRZgB9XTgWGH6hVXvULUmcaKqC7RHSZ+j
-         Lzr/5VVtvRxRXrhISu7ImbFJhTa9Cj92vkOvCQCf8XtA0k4gRyxK8GKIxle7jZTqv9rT
-         ExWjYlxagbvpwf+NBaQktBwdiRNyeA/yHOLfzDkGc5OcLtEiaJgSfl3MMMIyXdS0ovZh
-         pv+FIo+s1TwBUom53oDs4eKTvRkHxe0/UZnccGayHwiakO7y/vOxRWHz8Ut45il/sqkG
-         wXB9Fc2V4HipuI19W/JPfX5nSTAp771Q+ek38hM6YfXEUfO+KNyVCwfI/8tKulM/CC5M
-         3yTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511072; x=1692115872;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SQTPnoKiIFHGykdzh3Jg/xVXffznXdQisKSdG+HDZEk=;
-        b=VPBZgakHUCPVF6NCyIXVFDHw+vRm02nOp2Hgvtt4ZQJztw3+StX8RKjGEBvRwJ8Cv7
-         b23UAISX4u8t27reYRkeFg4cUuFW7I6Wwv/gB5rDNqOlpS3v9ztl1nvZf1qPFmHLRCbW
-         6EtImhIKDeVSzsYWUGRvVCrqijQWyyf2NPaI/GJwf99igihCXepys5fNvOldMFhpmGhk
-         LzJT2jE23TLUQ6wQWiMwph4sDjVKOy34snIyRJvXHLWUll/sZMdnL6aZJHe+g+vUdOWs
-         KEqKzitC8Syh2XgKQp1va//MxZVpdYhc+musZAsgI1nmCckIbbtthLMXxapNy5xfbfEB
-         Pa6g==
-X-Gm-Message-State: AOJu0YyMWr25eluNlaaQ+rmCfYRZE5DVkkrcwNAYYJ9J1eUTezSE9nKN
-        DtO6x1nFCXeNfGDRpAWzx7MNkQ==
-X-Google-Smtp-Source: AGHT+IEMsESLGQkXQx+kpgO+wxI+wDiplVtQniuxW5Cvb6B2vzZsyVQqK7MvxwG7hiy813KQia7yyA==
-X-Received: by 2002:a17:906:5350:b0:993:eef2:5d59 with SMTP id j16-20020a170906535000b00993eef25d59mr83612ejo.0.1691511072541;
-        Tue, 08 Aug 2023 09:11:12 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id rk22-20020a170907215600b00982a92a849asm6884385ejb.91.2023.08.08.09.11.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 09:11:12 -0700 (PDT)
-Message-ID: <0c444142-3623-fa15-4bf6-df57d9804fdf@linaro.org>
-Date:   Tue, 8 Aug 2023 18:11:10 +0200
+        Tue, 8 Aug 2023 13:29:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E63D8C0B7
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:12:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5690662526
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 16:12:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9789FC433C8;
+        Tue,  8 Aug 2023 16:12:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691511134;
+        bh=3dtzfUCD+LNNd3R69riKgojTMmB3iwvo7xJjgLrGkV8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q34GiRU8y8r2pRb0qHmcFZnOhscY+xDmlIhH4L0ZUdaIi96k4MWtFeaF6KVLQsIf5
+         m0QmQWwAZrGpPjOcunyJx/WxYukvd54B282f21cpE2jLkclk0ekzlUvBUBcJZmsLvq
+         qdQO9uVszwltdLW8tltgXFkKVPceYj1CZze8+KlaywbUxg9fYeEbEXuAP+p0swyE8+
+         1ejWJW9Y2WKOG8euvAgq4ji6Vu4W6ylOYb694tlUBBBD1240Wtqgmuvjy7Bb7fgaGc
+         lKRcSMIF+6pIZ+GuYZ6P4rKeBks4z/XTR0AsBK/2Qo13ldQcq3kDbvV8EmbG9VGrSj
+         RbTA3xdakPSaQ==
+Date:   Tue, 8 Aug 2023 17:12:09 +0100
+From:   Will Deacon <will@kernel.org>
+To:     zhurui <zhurui3@huawei.com>
+Cc:     Nicolin Chen <nicolinc@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Tomas Krcka <krckatom@amazon.de>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: Re: [PATCH v2 1/1] iommu/arm-smmu-v3: Fix error case of range command
+Message-ID: <20230808161208.GA2890@willie-the-truck>
+References: <1690784482-30028-1-git-send-email-wangwudi@hisilicon.com>
+ <20230801085504.GA26130@willie-the-truck>
+ <27c895b8-1fb0-be88-8bc3-878d754684c8@huawei.com>
+ <d5fc1f72-7428-4fef-d868-d06b85add635@huawei.com>
+ <20230804165225.GF30679@willie-the-truck>
+ <ZM1DqxXcBT2SOs8/@Asurada-Nvidia>
+ <015b4573-9d74-451b-8028-a1050ade7019@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: Add board id for lazor/limozeen
-Content-Language: en-US
-To:     Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     dianders@chromium.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20230802095753.13644-1-sheng-liang.pan@quanta.corp-partner.google.com>
- <20230802175628.3.Ie77732a87ab53d21bac47db309b75a796fa19337@changeid>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230802175628.3.Ie77732a87ab53d21bac47db309b75a796fa19337@changeid>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <015b4573-9d74-451b-8028-a1050ade7019@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/2023 11:57, Sheng-Liang Pan wrote:
-> add BRD_ID(0, Z, 0) = 10 for new board with ALC5682i-VS
+On Sun, Aug 06, 2023 at 01:28:04PM +0800, zhurui wrote:
+> On 2023/8/5 2:30, Nicolin Chen wrote:
+> > On Fri, Aug 04, 2023 at 05:52:25PM +0100, Will Deacon wrote:
+> >> On Fri, Aug 04, 2023 at 05:31:20PM +0800, zhurui wrote:
+> >>> When tg != 0 but ttl, scale, num all 0 in a range tlbi command, it
+> >>> is reserved and will cause the CERROR_ILL error. This case means
+> >>> that the size to be invalidated is only one page size, and the
+> >>> range invalidation is meaningless here. So we set tg to 0 in this
+> >>> case to do an non-range invalidation instead.
+> > 
+> >>> @@ -1930,6 +1927,12 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
+> >>>                         num = (num_pages >> scale) & CMDQ_TLBI_RANGE_NUM_MAX;
+> >>>                         cmd->tlbi.num = num - 1;
+> >>>
+> >>> +                       /* Prevent error caused by one page tlbi with leaf 0 */
+> >>> +                       if (scale == 0 && num == 1 && cmd->tlbi.leaf == 0)
+> >>> +                               cmd->tlbi.tg = 0;
+> >>
+> >> This should only be true for the last iteration, right (i.e. when num_pages
+> >> == 1)? In which case, I'd prefer to leave the old code as-is and just add:
+> >>
+> >>         /* Single-page leaf invalidation requires a TG field of 0 */
+> >>         if (num_pages == 1 && !cmd->tlbi.leaf)
+> >>                 cmd->tlbi.tg = 0;To Will and Nicolin,
 > 
-> Signed-off-by: Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>
-> ---
-> 
->  arch/arm64/boot/dts/qcom/Makefile             |  5 ++
->  ...sc7180-trogdor-lazor-limozeen-nots-r10.dts | 39 +++++++++++++
->  .../sc7180-trogdor-lazor-limozeen-nots-r9.dts |  4 +-
->  .../sc7180-trogdor-lazor-limozeen-r10.dts     | 55 +++++++++++++++++++
->  .../qcom/sc7180-trogdor-lazor-limozeen-r9.dts |  4 +-
->  .../dts/qcom/sc7180-trogdor-lazor-r10-kb.dts  | 33 +++++++++++
->  .../dts/qcom/sc7180-trogdor-lazor-r10-lte.dts | 37 +++++++++++++
->  .../dts/qcom/sc7180-trogdor-lazor-r10.dts     | 29 ++++++++++
->  .../dts/qcom/sc7180-trogdor-lazor-r9-kb.dts   |  4 +-
->  .../dts/qcom/sc7180-trogdor-lazor-r9-lte.dts  |  4 +-
->  .../boot/dts/qcom/sc7180-trogdor-lazor-r9.dts |  4 +-
->  11 files changed, 208 insertions(+), 10 deletions(-)
->  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r10.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> index 337abc4ceb17..73e745fb1ff0 100644
-> --- a/arch/arm64/boot/dts/qcom/Makefile
-> +++ b/arch/arm64/boot/dts/qcom/Makefile
-> @@ -109,11 +109,16 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r3-lte.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r9.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r9-kb.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r9-lte.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r10.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r10-kb.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r10-lte.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-r4.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-r9.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-r10.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r4.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r5.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r9.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r10.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pazquel-lte-parade.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pazquel-lte-ti.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pazquel-parade.dtb
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts
-> new file mode 100644
-> index 000000000000..63602feceea6
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts
-> @@ -0,0 +1,39 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Google Lazor Limozeen board device tree source
-> + *
-> + * Copyright 2021 Google LLC.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "sc7180.dtsi"
-> +#include "sc7180-trogdor-parade-ps8640.dtsi"
-> +#include "sc7180-trogdor-lazor.dtsi"
-> +#include "sc7180-trogdor-lte-sku.dtsi"
-> +
-> +/ {
-> +	model = "Google Lazor Limozeen without Touchscreen (rev10+, rt5682s)";
-> +	compatible = "google,lazor-sku6", "google,lazor-sku18", "qcom,sc7180";
-> +};
-> +
-> +/delete-node/&ap_ts;
-> +
-> +&panel {
-> +	compatible = "edp-panel";
-> +};
-> +
-> +&sdhc_2 {
-> +	status = "okay";
-> +};
-> +
-> +&alc5682 {
-> +	compatible = "realtek,rt5682s";
-> +	realtek,dmic1-clk-pin = <2>;
-> +	realtek,dmic-clk-rate-hz = <2048000>;
-> +};
-> +
-> +&sound {
+> Not only the last iteration, it's the result of __ffs function. For example, if
+> numpages is 33, then the value of __ffs(num_pages) is 0, so the value of scale
+> is also 0. The value of num depends on CMDQ_TLBI_RANGE_NUM_MAX. That is, the
+> maximum value of num is 31. Therefore, the final value of num is 1.
+> So, if consider CMDQ_TLBI_RANGE_NUM_MAX, there will be some case not the last
+> one page but the beginning pages. That's why I use scale and num as conditions,
+> not num_pages. Then I should reassign tg based on the result.
 
-Overrides are ordered by name.
+Yes, thanks, you're quite right. I'm not sure what I was thinking!
 
-Best regards,
-Krzysztof
-
+Will
