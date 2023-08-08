@@ -2,133 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F64B774803
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7906477480A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236247AbjHHTYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35802 "EHLO
+        id S230226AbjHHTYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235636AbjHHTXv (ORCPT
+        with ESMTP id S231809AbjHHTYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:23:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE571316B8
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 12:16:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691522207; x=1723058207;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=eek10/BmlgFBkU1EuTCLDzKtX91GjRYQjMrJpBVmYmw=;
-  b=P4vde8YV6zd0+2uaHycwc3dXKeW4wWcgI6LRaDlguPgl4xeJznY6TCra
-   SJkBNmqQ6MI7RbdL1g+0scXInUI/lzBgH4CdF3nCGp8chgWoOfX76MafA
-   vIDiJJtITJ1O3OtM7xpe9Ix7Ht2vezimfNsUhXNsG92jardPIXdJZKHH3
-   ZTuI9mq5XyGwZu+eD8VH9ghmkKLJJFQrVT1PoyigkOZ1xiLRZKqdO1Eiu
-   fmwb5ojSUfDAB1DQpMCQ0SsgOdBDyQm3oIprWzWUPdbBJmZQSOxiX23C9
-   E4g5s0FDx1S+SJa+lF6b4iHtkDMl8kdP5S90xrf0cKwgr3EmNXYcmxHCC
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="373710767"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="373710767"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 12:16:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="801445413"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="801445413"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 08 Aug 2023 12:16:10 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qTSBd-0005Yi-38;
-        Tue, 08 Aug 2023 19:16:09 +0000
-Date:   Wed, 9 Aug 2023 03:15:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: include/linux/compiler_types.h:319:45: error: call to
- '__compiletime_assert_242' declared with attribute error: BUILD_BUG_ON
- failed: FIX_KMAP_SLOTS > PTRS_PER_PTE
-Message-ID: <202308090326.y25drfEn-lkp@intel.com>
+        Tue, 8 Aug 2023 15:24:31 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272F016D0F2;
+        Tue,  8 Aug 2023 12:21:28 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d5eeb722a82so143040276.0;
+        Tue, 08 Aug 2023 12:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691522487; x=1692127287;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=diySgYB/+o5ldcXShApfWPeWlXdCLBpgzXr+03nag2s=;
+        b=aI86kVcP5RX4GTYucp3JU2R1gispSFteGcvwqhB5v+uYh7lcaprwx/MvsiOux+7dVV
+         FFTmPer/GsrHdWL9j/bC/KWEeoGTrZpUO47fwt/mV+10/Hu3EKMNvfEBqSbXbB00sYoR
+         hRX5bHwEgspX/uOCtN77niYpyyOiMriJM0k5xj+6ISQ3+EXFKDYoML2VRJ1K4vfPoP85
+         BSEDZ7jJ2ZRd1COxOLZZ9aTxlVrNmDjU7uJ7dYXmEyYsU5u8s79gWzDLoFdCjAfDOJwq
+         PO6pjyJaiVBjmwDI63B0SRwDiN/KKCjI8gtWXmhsACnd6YuRIplqMyjIm3yJMQzZz+YL
+         e6LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691522487; x=1692127287;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=diySgYB/+o5ldcXShApfWPeWlXdCLBpgzXr+03nag2s=;
+        b=GmbKAGog9a3FtxS35aPx1HGMUtiUeYhBqb75eikpgEPjGuvacKtkfY2cZ8DjDWkApa
+         AKb5g5n863fJ8Kvve3U9rIjnuQ6xgRYWqvH4y4kN4PUQC9y+oQvrHLcWie08f3AZJPUq
+         eCHgONeIY2OwLusi/4eSWK00d/ADVeuu86s06Pwitqwi27Vhinm1uHdiIm37GrogT4sn
+         qUQzJjU9RonkUkwhFPTu/IRjOKCSwerlIwvkWdHaw0rKSYWMsFIcnGgRYtQB9u9F4PJO
+         uUIo9XEJ8zLYjSZG/WIi6pqJp8JsVurbTGVpRQWSpp8GTmDZ5COcwNpTK3Z5fyWL9pqh
+         JSdQ==
+X-Gm-Message-State: AOJu0YwEWrzG6rtEJWUnF63B7B4CPFUxJCL2SVOQvdRF+RB8YJPj756j
+        tNRpLnHZrTB8k4T8LKOFACpzrTtBbcl406CkJ6w=
+X-Google-Smtp-Source: AGHT+IG5d90bapjIOlJBGA8irxOFPeCaIv3uCJP0B3jPOYPbIPyqiMre2cM/diK+xvgImaerO4LitHR/iRqNuHbzkeQ=
+X-Received: by 2002:a25:aaaa:0:b0:d43:a0d8:8db4 with SMTP id
+ t39-20020a25aaaa000000b00d43a0d88db4mr11596435ybi.11.1691522486684; Tue, 08
+ Aug 2023 12:21:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230808104309.357852-1-usama.anjum@collabora.com> <20230808104309.357852-3-usama.anjum@collabora.com>
+In-Reply-To: <20230808104309.357852-3-usama.anjum@collabora.com>
+From:   Andrei Vagin <avagin@gmail.com>
+Date:   Tue, 8 Aug 2023 12:21:10 -0700
+Message-ID: <CANaxB-ww6AcO4QThubYw62Mdeid4e3FOQAXvA_GZ=wu4J60-AQ@mail.gmail.com>
+Subject: Re: [PATCH v27 2/6] fs/proc/task_mmu: Implement IOCTL to get and
+ optionally clear info about PTEs
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     Peter Xu <peterx@redhat.com>, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Tue, Aug 8, 2023 at 3:43=E2=80=AFAM Muhammad Usama Anjum
+<usama.anjum@collabora.com> wrote:
 
-FYI, the error/warning still remains.
+....
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   02aee814d37c563e24b73bcd0f9cb608fbd403d4
-commit: 39cac191ff37939544af80d5d2af6b870fd94c9b arc/mm/highmem: Use generic kmap atomic implementation
-date:   2 years, 9 months ago
-config: arc-randconfig-r031-20230808 (https://download.01.org/0day-ci/archive/20230809/202308090326.y25drfEn-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230809/202308090326.y25drfEn-lkp@intel.com/reproduce)
+> +static int pagemap_scan_output(unsigned long categories,
+> +                              struct pagemap_scan_private *p,
+> +                              unsigned long addr, unsigned long *end)
+> +{
+> +       unsigned long n_pages, total_pages;
+> +       int ret =3D 0;
+> +
+> +       if (!p->vec_buf)
+> +               return 0;
+> +
+> +       categories &=3D p->arg.return_mask;
+> +
+> +       n_pages =3D (*end - addr) / PAGE_SIZE;
+> +       if (check_add_overflow(p->found_pages, n_pages, &total_pages) || =
+//TODO
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308090326.y25drfEn-lkp@intel.com/
+Need to fix this TODO.
 
-All errors (new ones prefixed by >>):
+> +           total_pages > p->arg.max_pages) {
+> +               size_t n_too_much =3D total_pages - p->arg.max_pages;
+> +               *end -=3D n_too_much * PAGE_SIZE;
+> +               n_pages -=3D n_too_much;
+> +               ret =3D -ENOSPC;
+> +       }
+> +
+> +       if (!pagemap_scan_push_range(categories, p, addr, *end)) {
+> +               *end =3D addr;
+> +               n_pages =3D 0;
+> +               ret =3D -ENOSPC;
+> +       }
+> +
+> +       p->found_pages +=3D n_pages;
+> +       if (ret)
+> +               p->walk_end_addr =3D *end;
+> +
+> +       return ret;
+> +}
+> +
 
-   In file included from <command-line>:
-   arch/arc/mm/highmem.c: In function 'kmap_init':
->> include/linux/compiler_types.h:319:45: error: call to '__compiletime_assert_242' declared with attribute error: BUILD_BUG_ON failed: FIX_KMAP_SLOTS > PTRS_PER_PTE
-     319 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:300:25: note: in definition of macro '__compiletime_assert'
-     300 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:319:9: note: in expansion of macro '_compiletime_assert'
-     319 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^~~~~~~~~~~~~~~~
-   arch/arc/mm/highmem.c:69:9: note: in expansion of macro 'BUILD_BUG_ON'
-      69 |         BUILD_BUG_ON(FIX_KMAP_SLOTS > PTRS_PER_PTE);
-         |         ^~~~~~~~~~~~
+...
 
+> +static long do_pagemap_scan(struct mm_struct *mm, unsigned long uarg)
+> +{
+> +       struct mmu_notifier_range range;
+> +       struct pagemap_scan_private p;
+> +       unsigned long walk_start;
+> +       size_t n_ranges_out =3D 0;
+> +       int ret;
+> +
+> +       memset(&p, 0, sizeof(p));
+> +       ret =3D pagemap_scan_get_args(&p.arg, uarg);
+> +       if (ret)
+> +               return ret;
+> +
+> +       p.masks_of_interest =3D MASKS_OF_INTEREST(p.arg);
+> +       ret =3D pagemap_scan_init_bounce_buffer(&p);
+> +       if (ret)
+> +               return ret;
+> +
+> +       /* Protection change for the range is going to happen. */
+> +       if (p.arg.flags & PM_SCAN_WP_MATCHING) {
+> +               mmu_notifier_range_init(&range, MMU_NOTIFY_PROTECTION_VMA=
+, 0,
+> +                                       mm, p.arg.start, p.arg.end);
+> +               mmu_notifier_invalidate_range_start(&range);
+> +       }
+> +
+> +       walk_start =3D p.arg.start;
+> +       for (; walk_start < p.arg.end; walk_start =3D p.arg.walk_end) {
+> +               int n_out;
+> +
+> +               if (fatal_signal_pending(current)) {
+> +                       ret =3D -EINTR;
+> +                       break;
+> +               }
+> +
+> +               ret =3D mmap_read_lock_killable(mm);
+> +               if (ret)
+> +                       break;
+> +               ret =3D walk_page_range(mm, walk_start, p.arg.end,
+> +                                     &pagemap_scan_ops, &p);
+> +               mmap_read_unlock(mm);
+> +
+> +               n_out =3D pagemap_scan_flush_buffer(&p);
+> +               if (n_out < 0)
+> +                       ret =3D n_out;
+> +               else
+> +                       n_ranges_out +=3D n_out;
+> +
+> +               if (ret !=3D -ENOSPC || p.arg.vec_len - 1 =3D=3D 0 ||
+> +                   p.found_pages =3D=3D p.arg.max_pages) {
+> +                       p.walk_end_addr =3D p.arg.end;
 
-vim +/__compiletime_assert_242 +319 include/linux/compiler_types.h
+You should not change p.walk_end_addr If ret is ENOSPC. Pls add a test
+case to check this.
 
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  305  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  306  #define _compiletime_assert(condition, msg, prefix, suffix) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  307  	__compiletime_assert(condition, msg, prefix, suffix)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  308  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  309  /**
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  310   * compiletime_assert - break build and emit msg if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  311   * @condition: a compile-time constant condition to check
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  312   * @msg:       a message to emit if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  313   *
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  314   * In tradition of POSIX assert, this macro will break the build if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  315   * supplied condition is *false*, emitting the supplied error message if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  316   * compiler has support to do so.
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  317   */
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  318  #define compiletime_assert(condition, msg) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21 @319  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  320  
+> +                       break;
+> +               }
+> +       }
+> +
+> +       if (p.cur_buf.start !=3D p.cur_buf.end) {
+> +               if (copy_to_user(p.vec_out, &p.cur_buf, sizeof(p.cur_buf)=
+))
+> +                       ret =3D -EFAULT;
+> +               else
+> +                       ++n_ranges_out;
+> +       }
+> +
+> +       /* ENOSPC signifies early stop (buffer full) from the walk. */
+> +       if (!ret || ret =3D=3D -ENOSPC)
+> +               ret =3D n_ranges_out;
+> +
+> +       p.arg.walk_end =3D p.walk_end_addr ? p.walk_end_addr : walk_start=
+;
+> +       if (pagemap_scan_writeback_args(&p.arg, uarg))
+> +               ret =3D -EFAULT;
+> +
+> +       if (p.arg.flags & PM_SCAN_WP_MATCHING)
+> +               mmu_notifier_invalidate_range_end(&range);
+> +
+> +       kfree(p.vec_buf);
+> +       return ret;
+> +}
 
-:::::: The code at line 319 was first introduced by commit
-:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
-
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Andrei
