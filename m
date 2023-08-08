@@ -2,120 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7337743FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6592774710
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbjHHSOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
+        id S233688AbjHHTJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234387AbjHHSOC (ORCPT
+        with ESMTP id S233282AbjHHTIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:14:02 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A006574AE2
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:19:41 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99c93638322so13685966b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 10:19:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691515179; x=1692119979;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6UQwIyuye8mYS0km2qczmsMo0G4UsG0TMMEf3YJ5cAk=;
-        b=JUSFCrEIpTfNvOMEa49N7Dy9hsxrZY4z8VghqVRotvCENVvzlHS9drdidc/PTm6ERR
-         BcWKASzGGUg+24QPWD0hhYPlxFmcRlhMNFx+7zixtkpzARMDsP0h5MmYP070wYdp1bfm
-         3GVv9u7esmw6+w8nxQsZX3n8dpfgYjEcmcfeWoo4Nd8k6Z590aLCOeza3PYYHxiOZUQw
-         Ke4XysHe4uKVMkC1ItlvDRJFaN6YuNb+VtQ+KlVSsuIN+2+iZYjlzcqxTvGfMv97P0Vk
-         i/dBiEUVSgPJpa7v8vKIBoDfNCKHeTrZbKIVTy/BuJ8C1UKBV2WE4kINa1g8OxXKXiwm
-         Fiiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691515179; x=1692119979;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6UQwIyuye8mYS0km2qczmsMo0G4UsG0TMMEf3YJ5cAk=;
-        b=T1PTDVSGXMjw7tNR05YXDW7lAIJQLZp2UVyoIGWB2mvV0BGH2WMLbeswOQTnprTI84
-         ow/FIZS5dS4EgGRvV3lnzLYAt6GNH3j6EOa1NkFJij6vDgRREhdPTAn+6dCU0nHJyCiO
-         9SPzSPcJIcsTM+v2iC2YWdwg8QRa+/dLU1FzhblB9+k8YeejKNmgQEXEtd8Y49jLAies
-         4BCF81k/tzY3Dgx9H6WhbVNZVK83m1jRzLTmKz5lVfBXuoGJirxDcN6buWimHTJiIupw
-         eaf/Awg/syn4Qdvq3t0rahuUP3JGUIGIwFNqDEJgcb4noSe8GT5/tBIeLtFECtvBITa8
-         0ybA==
-X-Gm-Message-State: AOJu0Yzii4vtZgObD69KaSvhxy4g34ZMKzGxFJ5OuBjBtnjoR/CFkfW0
-        2Iht22n+O78BIRa5XF5ZMTvIGS3KHcI7jMWTX6A=
-X-Google-Smtp-Source: AGHT+IEAWtqj6IGMQaxg9T1mvEziRnQ63AxagirqrvclWjlQA6LYi5Gwjfcee2RpFhk/TpTKnyzDKg==
-X-Received: by 2002:a5d:5265:0:b0:317:5dcc:b7d4 with SMTP id l5-20020a5d5265000000b003175dccb7d4mr7125084wrc.33.1691490380266;
-        Tue, 08 Aug 2023 03:26:20 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id d18-20020adffbd2000000b003176c6e87b1sm13123307wrs.81.2023.08.08.03.26.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 03:26:19 -0700 (PDT)
-Message-ID: <d8e79173-1f73-0ae1-f698-90cd551dde1a@linaro.org>
-Date:   Tue, 8 Aug 2023 12:26:17 +0200
+        Tue, 8 Aug 2023 15:08:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E67E67C7
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:30:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2052D62497
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:30:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04B69C433C8;
+        Tue,  8 Aug 2023 10:30:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691490626;
+        bh=SPAy6eRxInTV27hAHN7hrh7bz66HIoGmfibRbIsJlNc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FN8Qv+wGJ57hL9moCI/O2xbu0fndzE0Ij633wrVw1sF8XAkrm7oPOuhyPHLBmFlUa
+         CyWLXKylcYhDReLRicHZOX5u7c7VM1OVpFziFL5SrY3nfCXBzuy90MPhtR4dR7QQIH
+         buhwz3JAOi8QViIKQ/Uo3817x5FR2MHZudYhrk24D//c6Bxx3IyhhKg+v26lWf5YTL
+         E5RAmfVK/dRdB0qW2xUbTaMWY0WXEf05IV7ZE9sNxLtq+H+DAsMPQx7TKJY3WODbRi
+         QywJrqDQRRw9GR1tCzHVdnsTxEoj4E7VPYr6SdWl1BqT7hB0QuzCztIvdgLFgoDW2i
+         CNdO8u5/tUs9A==
+Date:   Tue, 8 Aug 2023 11:30:22 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Vincent Chen <vincent.chen@sifive.com>
+Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [RFC PATCH v1] clocksource: entend the max_delta_ns of
+ timer-riscv andtimer-clint to ULONG_MAX
+Message-ID: <20230808-essay-paprika-886382801149@spud>
+References: <20230808045145.3552312-1-vincent.chen@sifive.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] dt-bindings: media: Add bindings for Imagination E5010
- JPEG Encoder driver
-Content-Language: en-US
-To:     Devarsh Thakkar <devarsht@ti.com>, mchehab@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     praneeth@ti.com, nm@ti.com, vigneshr@ti.com, a-bhatia1@ti.com,
-        j-luthra@ti.com, b-brnich@ti.com, detheridge@ti.com,
-        p-mantena@ti.com, vijayp@ti.com
-References: <20230726162615.1270075-1-devarsht@ti.com>
- <b6bddd59-ac78-3f75-828e-cff54766fc72@linaro.org>
- <8fef77fb-d3bf-eab1-0734-919ebf2e61af@ti.com>
- <50d97c30-4926-0bbf-1209-dfd25043e359@ti.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <50d97c30-4926-0bbf-1209-dfd25043e359@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="v7X+xlEC8KdFDfPN"
+Content-Disposition: inline
+In-Reply-To: <20230808045145.3552312-1-vincent.chen@sifive.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/2023 12:20, Devarsh Thakkar wrote:
->>>> +properties:
->>>> +  compatible:
->>>> +    const: img,e5010-jpeg-enc
->>>
->>> Your description suggests that this is part of TI SoC. Pretty often
->>> licensed blocks cannot be used on their own and need some
->>> customizations. Are you sure your block does not need any customization
->>> thus no dedicated compatible is needed?
->>>
->>
->> There is a wrapper for interfacing this core with TI SoC, I will recheck this
->> interfacing but I believe nothing changes from programming perspective as
->> there is 1-to-1 maintained between the clocks and signals w.r.t actual E5010
->> core.
->>
-> 
-> Just to add to above, on a second thought we think it would be  better to
-> still have a separate compatible for TI as you suggested (since we have a
-> wrapper) so that it allows any customization needed for future. So compatible
-> enum would look like :
-> 
->     oneOf:
->       - items:
->         - const: ti,e5010-jpeg-enc
->         - const: img,e5010-jpeg-enc
->       - const: img,e5010-jpeg-enc
-> 
-> Thanks for the suggestion.
 
-Yeah, it's fine, assuming block can be used as img,e5010-jpeg-enc on its
-own.
+--v7X+xlEC8KdFDfPN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best regards,
-Krzysztof
+Hey Vincent,
 
+On Tue, Aug 08, 2023 at 12:51:45PM +0800, Vincent Chen wrote:
+> From: Vincentc Chen <vincent.chen@sifive.com>
+>=20
+> When registering the riscv-timer or clint-timer as a clock_event device,
+> the driver needs to specify the value of max_delta_ticks. This value
+> directly influences the max_delta_ns, which signifies the maximum time
+> interval for configuring subsequent clock events. Currently, both
+> riscv-timer and clint-timer are set with a max_delta_ticks value of
+> 0x7fff_ffff. When the timer operates at a high frequency, such as 1GHz,
+> this causes the system only can sleep for a short time. For the 1GHz
+> case, the sleep cannot exceed two seconds. To address this limitation,
+> refer to other timer implementations to extend it to 2^(bit-width of the
+> timer) - 1. Because the bit-width of $mtimecmp is 64bit, so this value
+> becomes ULONG_MAX (0xffff_ffff_ffff_ffff).
+
+You've marked this as RFC - what is it that you are unsure about that
+prevents this from being a regular patch?
+
+Thanks,
+Conor.
+
+>=20
+> Signed-off-by: Vincentc Chen <vincent.chen@sifive.com>
+> ---
+>  drivers/clocksource/timer-clint.c | 2 +-
+>  drivers/clocksource/timer-riscv.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/time=
+r-clint.c
+> index 9a55e733ae99..09fd292eb83d 100644
+> --- a/drivers/clocksource/timer-clint.c
+> +++ b/drivers/clocksource/timer-clint.c
+> @@ -131,7 +131,7 @@ static int clint_timer_starting_cpu(unsigned int cpu)
+>  	struct clock_event_device *ce =3D per_cpu_ptr(&clint_clock_event, cpu);
+> =20
+>  	ce->cpumask =3D cpumask_of(cpu);
+> -	clockevents_config_and_register(ce, clint_timer_freq, 100, 0x7fffffff);
+> +	clockevents_config_and_register(ce, clint_timer_freq, 100, ULONG_MAX);
+> =20
+>  	enable_percpu_irq(clint_timer_irq,
+>  			  irq_get_trigger_type(clint_timer_irq));
+> diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/time=
+r-riscv.c
+> index da3071b387eb..b25c91d41968 100644
+> --- a/drivers/clocksource/timer-riscv.c
+> +++ b/drivers/clocksource/timer-riscv.c
+> @@ -94,7 +94,7 @@ static int riscv_timer_starting_cpu(unsigned int cpu)
+>  	ce->irq =3D riscv_clock_event_irq;
+>  	if (riscv_timer_cannot_wake_cpu)
+>  		ce->features |=3D CLOCK_EVT_FEAT_C3STOP;
+> -	clockevents_config_and_register(ce, riscv_timebase, 100, 0x7fffffff);
+> +	clockevents_config_and_register(ce, riscv_timebase, 100, ULONG_MAX);
+> =20
+>  	enable_percpu_irq(riscv_clock_event_irq,
+>  			  irq_get_trigger_type(riscv_clock_event_irq));
+> --=20
+> 2.34.1
+>=20
+>=20
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+--v7X+xlEC8KdFDfPN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNIZOwAKCRB4tDGHoIJi
+0nffAP9yFlzcoMd/80yugZDiFMKJu81C1XRHyWzdM7qZjTPZlgD/cVQNjuhSeQi1
+qt5EOYcb1Z26fPlCBy5mcjcsBxSunQc=
+=nO0O
+-----END PGP SIGNATURE-----
+
+--v7X+xlEC8KdFDfPN--
