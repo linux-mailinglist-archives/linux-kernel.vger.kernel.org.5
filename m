@@ -2,238 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E47F773CE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB976774365
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232062AbjHHQLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57012 "EHLO
+        id S233926AbjHHSDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 14:03:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231229AbjHHQJa (ORCPT
+        with ESMTP id S229643AbjHHSDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:09:30 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C820E7698
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:46:27 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-765a7768f1dso500534685a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20221208.gappssmtp.com; s=20221208; t=1691509586; x=1692114386;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wVHMVd+UGwwv1IwoHwspyTOxr+24lKkFzSE6HxNFPxg=;
-        b=PD5Cs1sWTduCp0au/NwavUT4K6vUxOrJppGjOpK47lvCU3lq/Tzsg4wSrGFr4nrTSe
-         OfOgGvBBLwJhLiDgoNa9xgNTey2Vcst+VXgr/sXZd8EokZqpbe9pNUJFw5lEgJ5gMlXz
-         TPBrUuaFkiQCsIk0C3Bkqu5cbjTZEuEQB2EGNmGhSmTHkboslwYrYkYVVEi1qia+U5UC
-         qWRDus5zthpbvY3sYZO2qeZWytHmbVL72vVSJ2BzvD3m4WAg1AW797TtxcL3zaVhSuJV
-         2SeXLy3P4Ub/2qS8pgxzOt+5WO3J5UgVuT647CZaUDZEs5wI3a+AZ2dGJS/ld+BVbRLx
-         Hldg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691509586; x=1692114386;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wVHMVd+UGwwv1IwoHwspyTOxr+24lKkFzSE6HxNFPxg=;
-        b=NeJfS2aXbOXt34wSgf62OSp83oL789WNHFlsrqdVYa5CX0LOZWo0eOBTHCHycb8rWu
-         Zl+5zHpus0PsNwUE0SZDFs6zt+E588dQzOAXeODDoXkhkeyhJmpHTDkCL6WhAvBM5EsB
-         TYhlz1FQhOAFpBxGj0z1cTGzvEY5NWYB5UHdnBU2aj9rKfnbEXOkbxFUC3OLL53z7/g7
-         vh1FUUIumQP2PUxUE+3jBVdUxmtL+MI1O7OAC3CLPwGyt1UhbBvmODoPFW9fSus82UFT
-         iGrf64DbQ4gSsS0gRH18McUf38e3xvISQGZpChwg7VOmunXnJsqIx73ERcA6d1lKxxR+
-         Ud+w==
-X-Gm-Message-State: AOJu0YzYNO+MyblbMT3zb77nmnoGoLt8psbdTU9ir25oBsJwHtSLxxsT
-        daJmX5sev0HcIUcTtngvCoocqjDaG6sirJTYMjFk+Q==
-X-Google-Smtp-Source: AGHT+IGV7Oh2ytm8+Qvna1OQK456rf+196h62YyEq/DjjvdcQNWEMSEIT0ycw0yXF1es5dvZSiBYvA==
-X-Received: by 2002:a05:6a20:394a:b0:10c:7c72:bdf9 with SMTP id r10-20020a056a20394a00b0010c7c72bdf9mr11951154pzg.29.1691480742019;
-        Tue, 08 Aug 2023 00:45:42 -0700 (PDT)
-Received: from ake-x260 (napt.igel.co.jp. [219.106.231.132])
-        by smtp.gmail.com with ESMTPSA id t7-20020aa79387000000b00687087d3647sm7641915pfe.142.2023.08.08.00.45.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 00:45:41 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 16:45:32 +0900
-From:   Ake Koomsin <ake@igel.co.jp>
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Subject: Re: [RFC PATCH] KVM: x86: inhibit APICv upon detecting direct APIC
- access from L2
-Message-ID: <20230808164532.09337d49@ake-x260>
-In-Reply-To: <43c18a3d57305cf52a1c3643fa8f714ae3769551.camel@redhat.com>
-References: <20230807062611.12596-1-ake@igel.co.jp>
-        <43c18a3d57305cf52a1c3643fa8f714ae3769551.camel@redhat.com>
-Organization: igel
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 8 Aug 2023 14:03:09 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9C2E43CD27;
+        Tue,  8 Aug 2023 09:41:48 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1331D75;
+        Tue,  8 Aug 2023 00:46:25 -0700 (PDT)
+Received: from a077893.blr.arm.com (unknown [10.162.40.16])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D96723F6C4;
+        Tue,  8 Aug 2023 00:45:39 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Al.Grant@arm.com, Anshuman Khandual <anshuman.khandual@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] coresight: etm: Make cycle count threshold user configurable
+Date:   Tue,  8 Aug 2023 13:15:33 +0530
+Message-Id: <20230808074533.380537-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 07 Aug 2023 17:00:58 +0300
-Maxim Levitsky <mlevitsk@redhat.com> wrote:
-=20
-> Is there a good reason why KVM doesn't expose APIC memslot to a
-> nested guest? While nested guest runs, the L1's APICv is "inhibited"
-> effectively anyway, so writes to this memslot should update APIC
-> registers and be picked up by APICv hardware when L1 resumes
-> execution.
->=20
-> Since APICv alows itself to be inhibited due to other reasons, it
-> means that just like AVIC, it should be able to pick up arbitrary
-> changes to APIC registers which happened while it was inhibited, just
-> like AVIC does.
->=20
-> I'll take a look at the code to see if APICv does this (I know AVIC's
-> code much better that APICv's)
->=20
-> Is there a reproducer for this bug?
->=20
-> Best regards,
-> 	Maxim Levitsky
+Cycle counting is enabled, when requested and supported but with a default
+threshold value ETM_CYC_THRESHOLD_DEFAULT i.e 0x100 getting into TRCCCCTLR,
+representing the minimum interval between cycle count trace packets.
 
-=46rom reading old commits (3a2936dedd20 and 1313cc2bd8f6), I interprete that
-current KVM implementation does not expect direct APIC access from L2 guest=
-s.
-I assume that there might be some challenging implementation issues.
+This makes cycle threshold user configurable, from the user space via perf
+event attributes. Although it falls back using ETM_CYC_THRESHOLD_DEFAULT,
+in case no explicit request. As expected it creates a sysfs file as well.
 
-To reproduce the problem, we need to run a micro hypervisor named BitVisor =
-on
-KVM. This hypervisor, when running on real machine, lets its guest access
-physical APIC directly. As BitVisor intends to run on real machine, when ru=
-nning
-under KVM, it conceals all KVM related features reported through CPUID. The=
- L2
-guest will initialize and run as if it runs on a physical machine. We also =
-need
-an Intel machine that support APICv. (I test on Intel 13th machine. The pro=
-blem
-should also be reproducible on Intel 12th machine). Current BitVisor's SVM
-implementations always monitor MMIO access so we cannot reproduce the probl=
-em.
+/sys/bus/event_source/devices/cs_etm/format/cc_threshold
 
-BitVisor VMX implementation under UEFI environment by default hooks the APIC
-access during initialization. The purpose of this APIC access hook is to
-bootstrap AP processors during UEFI ExitBootServices. When booting a guest =
-OS,
-the firmware sends INIT signal during ExitBootServices. BitVisor then boots=
-trap
-AP processors, put them to guest mode, and unhook APIC access. After this,
-the guest can now access APIC memory directly.
+New 'cc_threshold' uses 'event->attr.config3' as no more space is available
+in 'event->attr.config1' or 'event->attr.config2'.
 
-As far as I understand the KVM implemntation, when BitVisor still hooks APIC
-access, EPT_VIOLATION occurs when L2 guest accesses APIC page. The EPT_VIOL=
-ATION
-is then forwarded to BitVisor. BitVisor eventually accesses APIC on behalf =
-of
-the L2 guest. In this case, APICv works properly because the access is from=
- L1.
-After BitVisor unhooks the APIC page, the first access to APIC from the L2 =
-guest
-goes to EPT_VIOLATION handling path. This handling path marks the APIC page=
- with
-a reserved flag, and causes the access to retry eventually. Subsequent acce=
-sses
-are then handled in EPT_MISCONFIG path, emulating the MMIO access. Interrupt
-seems to disappear after this.
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: James Clark <james.clark@arm.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: coresight@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+Changes in V2:
 
-Here is the steps to reproduce the problem.
+- s/treshhold/threshhold
 
-1) hg clone http://hg.code.sf.net/p/bitvisor/code bitvisor-code
+Changes in V1:
 
-2) Enter the cloned directory and type 'make' (No need to worry about warni=
-ngs
-   at the moment. The default configuration is good enough to reproduce the
-   problem). We now have bitvisor.elf after the compilation.
+https://lore.kernel.org/all/20230804044720.1478900-1-anshuman.khandual@arm.com/
 
-3) Enter boot/uefi-boot, and type 'make' to compile the UEFI bootloader. We
-   need mingw for this. We now have loadvmm.efi after the compilation.
+ Documentation/trace/coresight/coresight.rst        |  2 ++
+ drivers/hwtracing/coresight/coresight-etm-perf.c   |  2 ++
+ drivers/hwtracing/coresight/coresight-etm4x-core.c | 12 ++++++++++--
+ 3 files changed, 14 insertions(+), 2 deletions(-)
 
-4) Put bitvisor.elf and loadvmm.efi to together in a folder. The folder
-   is going to look like the following:
-   ~/x86_test
-   =E2=94=9C=E2=94=80=E2=94=80 bitvisor.elf
-   =E2=94=94=E2=94=80=E2=94=80 loadvmm.efi
+diff --git a/Documentation/trace/coresight/coresight.rst b/Documentation/trace/coresight/coresight.rst
+index 4a71ea6cb390..a698b07206b5 100644
+--- a/Documentation/trace/coresight/coresight.rst
++++ b/Documentation/trace/coresight/coresight.rst
+@@ -624,6 +624,8 @@ They are also listed in the folder /sys/bus/event_source/devices/cs_etm/format/
+    * - timestamp
+      - Session local version of the system wide setting: :ref:`ETMv4_MODE_TIMESTAMP
+        <coresight-timestamp>`
++   * - cc_threshold
++     - Cycle count threshold value
+ 
+ How to use the STM module
+ -------------------------
+diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+index 5ca6278baff4..09f75dffae60 100644
+--- a/drivers/hwtracing/coresight/coresight-etm-perf.c
++++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+@@ -68,6 +68,7 @@ PMU_FORMAT_ATTR(preset,		"config:0-3");
+ PMU_FORMAT_ATTR(sinkid,		"config2:0-31");
+ /* config ID - set if a system configuration is selected */
+ PMU_FORMAT_ATTR(configid,	"config2:32-63");
++PMU_FORMAT_ATTR(cc_threshold,	"config3:0-11");
+ 
+ 
+ /*
+@@ -101,6 +102,7 @@ static struct attribute *etm_config_formats_attr[] = {
+ 	&format_attr_preset.attr,
+ 	&format_attr_configid.attr,
+ 	&format_attr_branch_broadcast.attr,
++	&format_attr_cc_threshold.attr,
+ 	NULL,
+ };
+ 
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+index 9d186af81ea0..a353c0784bab 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -644,7 +644,7 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
+ 	struct etmv4_config *config = &drvdata->config;
+ 	struct perf_event_attr *attr = &event->attr;
+ 	unsigned long cfg_hash;
+-	int preset;
++	int preset, cc_threshold;
+ 
+ 	/* Clear configuration from previous run */
+ 	memset(config, 0, sizeof(struct etmv4_config));
+@@ -667,7 +667,15 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
+ 	if (attr->config & BIT(ETM_OPT_CYCACC)) {
+ 		config->cfg |= TRCCONFIGR_CCI;
+ 		/* TRM: Must program this for cycacc to work */
+-		config->ccctlr = ETM_CYC_THRESHOLD_DEFAULT;
++		cc_threshold = attr->config3 & ETM_CYC_THRESHOLD_MASK;
++		if (cc_threshold) {
++			if (cc_threshold < drvdata->ccitmin)
++				config->ccctlr = drvdata->ccitmin;
++			else
++				config->ccctlr = cc_threshold;
++		} else {
++			config->ccctlr = ETM_CYC_THRESHOLD_DEFAULT;
++		}
+ 	}
+ 	if (attr->config & BIT(ETM_OPT_TS)) {
+ 		/*
+-- 
+2.25.1
 
-5) Run the following qemu command. Replace UEFI firmware path and other
-   parameters as you prefer. Make sure -smp 2 is there. Otherwise, there wi=
-ll be
-   no INIT signal during UEFI ExitBootServices. (I use QEMU 8.0.3)
-
-qemu-system-x86_64 -cpu host -enable-kvm -bios /usr/share/edk2-ovmf/OVMF_CO=
-DE.fd \
--drive file=3Dfat:rw:~/x86_test/,format=3Draw \
--cdrom ~/Downloads/Fedora-Workstation-Live-x86_64-38-1.6.iso \
--M q35 -m 8192 -smp 2 -serial stdio
-
-6) During the launch, enter the bios config by hitting esc key repeatedly.
-   Then, select 'Boot Manager' and choose 'EFI Internel Shell' to enter the
-   UEFI shell.
-
-7) The directory we specify in the command should be at fs0. Type 'fs0:' in
-   the shell.
-
-8) Type 'loadvmm.efi' to load BitVisor. We should see the following message
-
-Loading ...............................................................
-Starting BitVisor...
-Copyright (c) 2007, 2008 University of Tsukuba
-All rights reserved.
-ACPI DMAR not found.
-FACS address 0x7FBDD000
-Module not found.
-Processor 0 (BSP)
-ooooooooooooooooooooooooooooooooooooooooooooooooooo
-...
-MCFG [0] 0000:00-FF (B0000000,10000000)
-Starting a virtual machine.
-
-9) We should now return to the shell. Right now we are running as a L2 gues=
-t.
-
-10) Next is to boot Linux from the live cd or your prefered method. We can =
-see
-    the panic related to "panic - not syncing: IO-APIC + timer doesn't work=
-!".
-    The panic can be reproduced quite easy. Even though, it happens to pass=
- to
-    timer check, or you specify 'no_timer_check' boot parameter, it will st=
-all
-    during SMP bringup.
-
-The idea from step 6 to step 10 is to start BitVisor first, and start Linux=
- on
-top of it. You can adjust the step as you like. Feel free to ask me anything
-regarding reproducing the problem with BitVisor if the giving steps are not
-sufficient.
-
-The problem does not happen when enable_apicv=3DN. Note that SMP bringup wi=
-th
-enable_apicv=3DN can fail. This is another problem. We don't have to worry =
-about
-this for now. Linux seems to have no delay between INIT DEASSERT and SIPI d=
-uring
-its SMP bringup. This can easily makes INIT and SIPI pending together resul=
-tling
-in signal lost.
-
-I admit that my knowledge on KVM and APICv is very limited. I may misunders=
-tand
-the problem. If you don't mind, would it be possible for you to guide me wh=
-ich
-code path should I pay attention to? I would love to learn to find out the
-actual cause of the problem.
-
-
-Best Regards
-Ake Koomsin
