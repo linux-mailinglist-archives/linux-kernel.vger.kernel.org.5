@@ -2,248 +2,494 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0601D773DA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219B7773F67
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbjHHQUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48730 "EHLO
+        id S233466AbjHHQqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbjHHQSf (ORCPT
+        with ESMTP id S230231AbjHHQpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:18:35 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432D910D4
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:48:44 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a0c:5a83:9201:1300:c39b:5cf0:4d57:ce7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: rcn)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 29B4066071EE;
-        Tue,  8 Aug 2023 10:55:50 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691488550;
-        bh=YoAY9Fw/9c6MO4ZIunTXxK9WxUDg1XM2ZcHTlhXdURE=;
-        h=From:To:Cc:Subject:References:In-reply-to:Date:From;
-        b=mwdnbXehlEpzg7R2KR4tUl44XSUn7006sUv9sHuEGDqfG3qRAjZvk+tlu3f/jURb+
-         cqToTLsYTT+W/3DTCDfSZNeibTZTZQx0RVqUW00H1oxd6XqpGu+sN2bKH+sGlbwu8X
-         kJ4tauJeWcF3D4RAmq4QLYDpD6T1gnHOtB9SPW25A+tQdzvSXv6BxjDkB9o9YQDP8R
-         +7FixGgo/B3w2XAChcsYeu7oH7t1K/7v+M69LuEbvjcHur8Bc36TlXRJkx24JdEgPG
-         nzvH6sFAdr4ietd3J2LSmP6zThzv+dWi/r3FHC9qIhs8zwaLb7ALR27aolP/SnxbXl
-         IbFn4S/3zsWYg==
-From:   Ricardo =?utf-8?Q?Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>
-To:     Nikolai Kondrashov <spbnick@gmail.com>, kernelci@lists.linux.dev,
-        gregkh@linuxfoundation.org, thorsten@leemhuis.info,
-        regressions@lists.linux.dev
-Cc:     kernel@collabora.com, linux-kernel@vger.kernel.org,
-        Gustavo Padovan <gustavo.padovan@collabora.com>,
-        Shreeya Patel <shreeya.patel@collabora.com>
-Subject: Re: Kernel regression tracking/reporting initiatives and KCIDB
-References: <874jljhtmj.fsf@rcn-XPS-13-9305.i-did-not-set--mail-host-address--so-tickle-me> <f40c35d3-5558-6a46-4ad4-1631ca9e1805@gmail.com>
-In-reply-to: <f40c35d3-5558-6a46-4ad4-1631ca9e1805@gmail.com>
-Date:   Tue, 08 Aug 2023 11:55:47 +0200
-Message-ID: <87v8dphn8c.fsf@rcn-XPS-13-9305.i-did-not-set--mail-host-address--so-tickle-me>
+        Tue, 8 Aug 2023 12:45:36 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BD9C24445B
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:56:23 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1840152B;
+        Tue,  8 Aug 2023 02:59:09 -0700 (PDT)
+Received: from [10.1.31.53] (C02Z41KALVDN.cambridge.arm.com [10.1.31.53])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0C1E43F59C;
+        Tue,  8 Aug 2023 02:58:24 -0700 (PDT)
+Message-ID: <21711a17-9c93-7f8d-8f81-7069389ee4ad@arm.com>
+Date:   Tue, 8 Aug 2023 10:58:23 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v4 2/5] mm: LARGE_ANON_FOLIO for improved performance
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     "Yin, Fengwei" <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230726095146.2826796-1-ryan.roberts@arm.com>
+ <20230726095146.2826796-3-ryan.roberts@arm.com>
+ <c02a95e9-b728-ad64-6942-f23dbd66af0c@arm.com>
+ <CAOUHufaHH3Ctu3JRHSbmebHJ7XPnBEWTQ4mwOo+MGXU9yKvwbA@mail.gmail.com>
+ <5e595904-3dca-0e15-0769-7ed10975fd0d@arm.com>
+ <b936041c-08a7-e844-19e7-eafc4ddf63b9@redhat.com>
+ <CAOUHufafd4GNna2GKdSyQdW6CLVh0gxhNgeOc6t+ZOphwgw7tw@mail.gmail.com>
+ <259ad8fc-c12b-69b9-ba16-adb9e3e6d672@redhat.com>
+ <CAOUHufbbrDrSv2Ak0tyyaw7qrekkQ-p2vjCqWsXFG7b-+EP=5g@mail.gmail.com>
+ <0d502268-ebdc-8462-d88c-e6a41578d9ae@redhat.com>
+ <60070B7E-5DC2-4CE1-8089-1A05DDDABA4C@nvidia.com>
+ <5781b962-9e0b-1f61-7eb7-9621ace76d90@intel.com>
+ <9f27bf92-baab-11e2-0618-6fc6f5da1d38@arm.com>
+ <26024E94-5CC2-46A2-A6AA-6CC9440F97BB@nvidia.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <26024E94-5CC2-46A2-A6AA-6CC9440F97BB@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikolai,
+On 07/08/2023 19:10, Zi Yan wrote:
+> On 7 Aug 2023, at 13:45, Ryan Roberts wrote:
+> 
+>> On 05/08/2023 03:50, Yin, Fengwei wrote:
+>>>
+>>>
+>>> On 8/5/2023 5:58 AM, Zi Yan wrote:
+>>>> On 4 Aug 2023, at 17:30, David Hildenbrand wrote:
+>>>>
+>>>>> On 04.08.23 23:26, Yu Zhao wrote:
+>>>>>> On Fri, Aug 4, 2023 at 3:13 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>>>
+>>>>>>> On 04.08.23 23:00, Yu Zhao wrote:
+>>>>>>>> On Fri, Aug 4, 2023 at 2:23 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>>>>>
+>>>>>>>>> On 04.08.23 10:27, Ryan Roberts wrote:
+>>>>>>>>>> On 04/08/2023 00:50, Yu Zhao wrote:
+>>>>>>>>>>> On Thu, Aug 3, 2023 at 6:43 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>>>>>>>
+>>>>>>>>>>>> + Kirill
+>>>>>>>>>>>>
+>>>>>>>>>>>> On 26/07/2023 10:51, Ryan Roberts wrote:
+>>>>>>>>>>>>> Introduce LARGE_ANON_FOLIO feature, which allows anonymous memory to be
+>>>>>>>>>>>>> allocated in large folios of a determined order. All pages of the large
+>>>>>>>>>>>>> folio are pte-mapped during the same page fault, significantly reducing
+>>>>>>>>>>>>> the number of page faults. The number of per-page operations (e.g. ref
+>>>>>>>>>>>>> counting, rmap management lru list management) are also significantly
+>>>>>>>>>>>>> reduced since those ops now become per-folio.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> The new behaviour is hidden behind the new LARGE_ANON_FOLIO Kconfig,
+>>>>>>>>>>>>> which defaults to disabled for now; The long term aim is for this to
+>>>>>>>>>>>>> defaut to enabled, but there are some risks around internal
+>>>>>>>>>>>>> fragmentation that need to be better understood first.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> When enabled, the folio order is determined as such: For a vma, process
+>>>>>>>>>>>>> or system that has explicitly disabled THP, we continue to allocate
+>>>>>>>>>>>>> order-0. THP is most likely disabled to avoid any possible internal
+>>>>>>>>>>>>> fragmentation so we honour that request.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> Otherwise, the return value of arch_wants_pte_order() is used. For vmas
+>>>>>>>>>>>>> that have not explicitly opted-in to use transparent hugepages (e.g.
+>>>>>>>>>>>>> where thp=madvise and the vma does not have MADV_HUGEPAGE), then
+>>>>>>>>>>>>> arch_wants_pte_order() is limited to 64K (or PAGE_SIZE, whichever is
+>>>>>>>>>>>>> bigger). This allows for a performance boost without requiring any
+>>>>>>>>>>>>> explicit opt-in from the workload while limitting internal
+>>>>>>>>>>>>> fragmentation.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> If the preferred order can't be used (e.g. because the folio would
+>>>>>>>>>>>>> breach the bounds of the vma, or because ptes in the region are already
+>>>>>>>>>>>>> mapped) then we fall back to a suitable lower order; first
+>>>>>>>>>>>>> PAGE_ALLOC_COSTLY_ORDER, then order-0.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> ...
+>>>>>>>>>>>>
+>>>>>>>>>>>>> +#define ANON_FOLIO_MAX_ORDER_UNHINTED \
+>>>>>>>>>>>>> +             (ilog2(max_t(unsigned long, SZ_64K, PAGE_SIZE)) - PAGE_SHIFT)
+>>>>>>>>>>>>> +
+>>>>>>>>>>>>> +static int anon_folio_order(struct vm_area_struct *vma)
+>>>>>>>>>>>>> +{
+>>>>>>>>>>>>> +     int order;
+>>>>>>>>>>>>> +
+>>>>>>>>>>>>> +     /*
+>>>>>>>>>>>>> +      * If THP is explicitly disabled for either the vma, the process or the
+>>>>>>>>>>>>> +      * system, then this is very likely intended to limit internal
+>>>>>>>>>>>>> +      * fragmentation; in this case, don't attempt to allocate a large
+>>>>>>>>>>>>> +      * anonymous folio.
+>>>>>>>>>>>>> +      *
+>>>>>>>>>>>>> +      * Else, if the vma is eligible for thp, allocate a large folio of the
+>>>>>>>>>>>>> +      * size preferred by the arch. Or if the arch requested a very small
+>>>>>>>>>>>>> +      * size or didn't request a size, then use PAGE_ALLOC_COSTLY_ORDER,
+>>>>>>>>>>>>> +      * which still meets the arch's requirements but means we still take
+>>>>>>>>>>>>> +      * advantage of SW optimizations (e.g. fewer page faults).
+>>>>>>>>>>>>> +      *
+>>>>>>>>>>>>> +      * Finally if thp is enabled but the vma isn't eligible, take the
+>>>>>>>>>>>>> +      * arch-preferred size and limit it to ANON_FOLIO_MAX_ORDER_UNHINTED.
+>>>>>>>>>>>>> +      * This ensures workloads that have not explicitly opted-in take benefit
+>>>>>>>>>>>>> +      * while capping the potential for internal fragmentation.
+>>>>>>>>>>>>> +      */
+>>>>>>>>>>>>> +
+>>>>>>>>>>>>> +     if ((vma->vm_flags & VM_NOHUGEPAGE) ||
+>>>>>>>>>>>>> +         test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags) ||
+>>>>>>>>>>>>> +         !hugepage_flags_enabled())
+>>>>>>>>>>>>> +             order = 0;
+>>>>>>>>>>>>> +     else {
+>>>>>>>>>>>>> +             order = max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_ORDER);
+>>>>>>>>>>>>> +
+>>>>>>>>>>>>> +             if (!hugepage_vma_check(vma, vma->vm_flags, false, true, true))
+>>>>>>>>>>>>> +                     order = min(order, ANON_FOLIO_MAX_ORDER_UNHINTED);
+>>>>>>>>>>>>> +     }
+>>>>>>>>>>>>> +
+>>>>>>>>>>>>> +     return order;
+>>>>>>>>>>>>> +}
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> Hi All,
+>>>>>>>>>>>>
+>>>>>>>>>>>> I'm writing up the conclusions that we arrived at during discussion in the THP
+>>>>>>>>>>>> meeting yesterday, regarding linkage with exiting THP ABIs. It would be great if
+>>>>>>>>>>>> I can get explicit "agree" or disagree + rationale from at least David, Yu and
+>>>>>>>>>>>> Kirill.
+>>>>>>>>>>>>
+>>>>>>>>>>>> In summary; I think we are converging on the approach that is already coded, but
+>>>>>>>>>>>> I'd like confirmation.
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> The THP situation today
+>>>>>>>>>>>> -----------------------
+>>>>>>>>>>>>
+>>>>>>>>>>>>     - At system level: THP can be set to "never", "madvise" or "always"
+>>>>>>>>>>>>     - At process level: THP can be "never" or "defer to system setting"
+>>>>>>>>>>>>     - At VMA level: no-hint, MADV_HUGEPAGE, MADV_NOHUGEPAGE
+>>>>>>>>>>>>
+>>>>>>>>>>>> That gives us this table to describe how a page fault is handled, according to
+>>>>>>>>>>>> process state (columns) and vma flags (rows):
+>>>>>>>>>>>>
+>>>>>>>>>>>>                    | never     | madvise   | always
+>>>>>>>>>>>> ----------------|-----------|-----------|-----------
+>>>>>>>>>>>> no hint         | S         | S         | THP>S
+>>>>>>>>>>>> MADV_HUGEPAGE   | S         | THP>S     | THP>S
+>>>>>>>>>>>> MADV_NOHUGEPAGE | S         | S         | S
+>>>>>>>>>>>>
+>>>>>>>>>>>> Legend:
+>>>>>>>>>>>> S       allocate single page (PTE-mapped)
+>>>>>>>>>>>> LAF     allocate lage anon folio (PTE-mapped)
+>>>>>>>>>>>> THP     allocate THP-sized folio (PMD-mapped)
+>>>>>>>>>>>>>          fallback (usually because vma size/alignment insufficient for folio)
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> Principles for Large Anon Folios (LAF)
+>>>>>>>>>>>> --------------------------------------
+>>>>>>>>>>>>
+>>>>>>>>>>>> David tells us there are use cases today (e.g. qemu live migration) which use
+>>>>>>>>>>>> MADV_NOHUGEPAGE to mean "don't fill any PTEs that are not explicitly faulted"
+>>>>>>>>>>>> and these use cases will break (i.e. functionally incorrect) if this request is
+>>>>>>>>>>>> not honoured.
+>>>>>>>>>>>
+>>>>>>>>>>> I don't remember David saying this. I think he was referring to UFFD,
+>>>>>>>>>>> not MADV_NOHUGEPAGE, when discussing what we need to absolutely
+>>>>>>>>>>> respect.
+>>>>>>>>>>
+>>>>>>>>>> My understanding was that MADV_NOHUGEPAGE was being applied to regions *before*
+>>>>>>>>>> UFFD was being registered, and the app relied on MADV_NOHUGEPAGE to not back any
+>>>>>>>>>> unfaulted pages. It's not completely clear to me how not honouring
+>>>>>>>>>> MADV_NOHUGEPAGE would break things though. David?
+>>>>>>>>>
+>>>>>>>>> Sorry, I'm still lagging behind on some threads.
+>>>>>>>>>
+>>>>>>>>> Imagine the following for VM postcopy live migration:
+>>>>>>>>>
+>>>>>>>>> (1) Set MADV_NOHUGEPAGE on guest memory and discard all memory (e.g.,
+>>>>>>>>>        MADV_DONTNEED), to start with a clean slate.
+>>>>>>>>> (2) Migrates some pages during precopy from the source and stores them
+>>>>>>>>>        into guest memory on the destination. Some of the memory locations
+>>>>>>>>>        will have pages populated.
+>>>>>>>>> (3) At some point, decide to enable postcopy: enable userfaultfd on
+>>>>>>>>>        guest memory.
+>>>>>>>>> (4) Discard *selected* pages again that have been dirtied in the
+>>>>>>>>>        meantime on the source. These are pages that have been migrated
+>>>>>>>>>        previously.
+>>>>>>>>> (5) Start running the VM on the destination.
+>>>>>>>>> (6) Anything that's not populated will trigger userfaultfd missing
+>>>>>>>>>        faults. Then, you can request them from the source and place them.
+>>>>>>>>>
+>>>>>>>>> Assume you would populate more than required during 2), you can end up
+>>>>>>>>> not getting userfaultfd faults during 4) and corrupt your guest state.
+>>>>>>>>> It works if during (2) you migrated all guest memory, or if during 4)
+>>>>>>>>> you zap everything that still needs migr
+>>>>>>>>
+>>>>>>>> I see what you mean now. Thanks.
+>>>>>>>>
+>>>>>>>> Yes, in this case we have to interpret MADV_NOHUGEPAGE as nothing >4KB.
+>>
+>> I'm glad we have agreement on this.
+>>
+>> In some threads Yu has been talking about this series in the short term, vs long
+>> term roadmap; so to be clear, I interpret this as meaning we must consider that
+>> MADV_NOHUGEPAGE means nothing bigger than order-0 both in the context of this
+>> series and for the long term - that's behavior that user space depends upon.
+>>
+>> I think we should also apply the same logic to system/process THP mode =
+>> "never", even if the vma does not have MADV_NOHUGEPAGE. If the user has
+>> explicitly set "never" on the system or process, that means "nothing bigger than
+>> order-0". Shout if you disagree.
+>>
+>>>>>>>
+>>>>>>> Note that it's still even unclear to me why we want to *not* call these
+>>>>>>> things THP. It would certainly make everything less confusing if we call
+>>>>>>> them THP, but with additional attributes.
+>>
+>> I think I've stated in the past that I don't have a strong opinion on what we
+>> call them. But I do think you make a convincing argument for calling them after
+>> THP. Regardless, I'd rather agree on a name up front, before this initial series
+>> goes in - it's always better to be consistent across all the commit messages and
+>> comments to make things more grepable.
+>>
+>> The only concrete objection I remember hearing to a name with "THP" in the title
+>> was that there are stats (meminfo, vmstats, etc) that count THPs and this
+>> becomes confusing if those counters now only mean a subset of THPs. But that
+>> feels like a small issue in the scheme of things.
+>>
+>>>>>>>
+>>>>>>> I think that is one of the first things we should figure out because it
+>>>>>>> also indirectly tells us what all these toggles mean and how/if we
+>>>>>>> should redefine them (and if they even apply).
+>>>>>>>
+>>>>>>> Currently THP == PMD size
+>>>>>>>
+>>>>>>> In 2016, Hugh already envisioned PUD/PGD THP (see 49920d28781d ("mm:
+>>>>>>> make transparent hugepage size public")) when he explicitly exposed
+>>>>>>> "hpage_pmd_size". Not "hpage_size".
+>>>>>>>
+>>>>>>> For hugetlb on arm64 we already support various sizes that are < PMD
+>>>>>>> size and *not* call them differently. It's a huge(tlb) page. Sometimes
+>>>>>>> we refer to them as cont-PTE hugetlb pages.
+>>>>>>>
+>>>>>>>
+>>>>>>> So, nowadays we do have "PMD-sized THP", someday we might have
+>>>>>>> "PUD-sized THP". Can't we come up with a name to describe sub-PMD THP?
+>>
+>> I think one subtle difference is that these sub-PMD THPs, likely won't always
+>> have a single size.
+>>
+>>>>>>>
+>>>>>>> Is it really of value if we invent a new term for them? Yes, I was not
+>>>>>>> enjoying "Flexible THP".
+>>
+>> How about "variable-order THP"? Or "SW THP" vs "HW THP"?
+> 
+> variable-order THP sounds good to me.
+> 
+> One question I have is that although Ryan is only working on sub-PMD THPs,
+> do we want to plan for sub-PUD THPs now? Like are sub-PUD THPs variable-order
+> THPs? And leave TODOs and comments like "variable-order THPs can be bigger than
+> PMD and smaller than PUD in the future"? Maybe sub-PUD THPs are still too far
+> to consider it for now. Just think out loud.
 
-Thanks for the comprehensive answer, see my comments below,
+I'm not personally planning to do any work here. Such a thing would need similar
+but separate implementation IMHO, since you would be working at the PMD level
+not the PTE level.
 
-On vie, ago 04 2023 at 19:06:26, Nikolai Kondrashov <spbnick@gmail.com> wrote:
-> I tried to review these efforts last year:
-> https://archive.fosdem.org/2022/schedule/event/masking_known_issues_across_six_kernel_ci_systems/
+Then there is the question of what the benefit would be. My working assumption
+would be that you will not be getting any further HW benefits until its big
+enough for a PUD. And the SW costs of allocating such a large contig block would
+very likely outweigh the benefits of a few less page faults; you're surely
+better off allocating multiple PMD-sized THPs?
 
-That's a good summary, and it's nice to see an unbiased analysis of the
-current state of the art and what could be improved. I think we agree in
-most of the points.
+> 
+> 
+>>
+>>>>>>>
+>>>>>>>
+>>>>>>> Once we figured that out, we should figure out if MADV_HUGEPAGE meant
+>>>>>>> "only PMD-sized THP" or anything else?
+>>>>>>>
+>>>>>>> Also, we can then figure out if MADV_NOHUGEPAGE meant "only PMD-sized
+>>>>>>> THP" or anything else?
+>>
+>> Based on the existing user space expectation that MADV_NOHUGEPAGE means "nothing
+>> bigger than order-0" I'm not sure how we could ever decide MADV_NOHUGEPAGE means
+>> anything different? This feels set in stone to me.
+>>
+>>>>>>>
+>>>>>>>
+>>>>>>> The simplest approach to me would be "they imply any THP, and once we
+>>>>>>> need more tunables we might add some", similar to what Kirill also raised.
+>>
+>> Agreed.
+>>
+>>>>>>>
+>>>>>>>
+>>>>>>> Again, it's all unclear to me at this point and I'm happy to hear
+>>>>>>> opinions, because I really don't know.
+>>>>>>
+>>>>>> I agree these points require more discussion. But I don't think we
+>>>>>> need to conclude them now, unless they cause correctness issues like
+>>>>>> ignoring MADV_NOHUGEPAGE would. My concern is that if we decide to go
+>>>>>> with "they imply any THP" and *expose this to userspace now*, we might
+>>>>>> regret later.
+>>>>>
+>>>>> If we don't think they are THP, probably MADV_NOHUGEPAGE should not apply and we should be ready to find other ways to deal with the mess we eventually create. If we want to go down that path, sure.
+>>>>>
+>>>>> If they are THP, to me there is not really a question if MADV_NOHUGEPAGE applies to them or not. Unless we want to build a confusing piece of software ;)
+>>>>
+>>>> I think it is good to call them THP, since they are transparent huge (>order-0) pages.
+>>>> But the concern is that before we have a reasonable management policy for order>0 &&
+>>>> order<9 THPs, mixing them with existing order-9 THP might give user unexpected
+>>>> performance outcome. Unless we are sure they will always performance improvement,
+>>>> we might repeat the old THP path, namely users begin to disable THP by default
+>>>> to avoid unexpected performance hiccup. That is the reason Yu wants to separate
+>>>> LAF from THP at the moment.
+>>
+>> (for the purposes of this; LAF="sub-PMD THP", THP="PMD-size THP", we treat them
+>> both as forms of THP)...
+>>
+>> How about this for a strawman:
+>>
+>> When introducing LAF we can either use an opt-in or an opt-out model. The opt-in
+>> model would require a new ABI from day 1 (something I think there is concensus
+>> that we do not want to do) and would prevent apps from automatically getting
+>> benefit. So I don't like that model.
+>>
+>> If going with the opt-out model, we already have an opt-out mechanism
+>> (thp="never" and MADV_NOHUGEPAGE) that we can piggyback. But that mechanism
+>> doesn't give us all the control we would like for benchmarking/characterizing
+>> the interactions between LAF/THP for different workloads. Ideally we need a way
+>> to enable THP while keeping LAF disabled and enable LAF while keeping THP disabled.
+>>
+>> Can we do this with debugfs? I think controls in there can come and go without
+>> too much concern about back-compat?
+> 
+> Is debugfs always available on all distros? For system without debugfs, user is
+> going to lose control of LAF. IMHO, the two knobs below can live in
+> /sys/kernel/mm/transparent_hugepage/ and could be in sync with "enabled" once
+> we think LAF is well studied and goes along well with existing PMD THPs,
+> namely when setting "always", "madvise", or "never" to "enabled", "laf_enabled"
+> is set to the same value.
 
-> At this moment KCIDB submitters can send data linking a particular test or
-> build result to an issue and its category (kernel/test/framework). We can
-> generate notifications on e.g. a new issue being found by CI system
-> (maintainers) in a particular repo/branch. There's no support on dashboards
-> yet, and I'm yet to push for integration with particular CI systems.
->
-> Here's the full announcement with examples:
-> https://lore.kernel.org/kernelci/182b43fa-0261-11b7-2edb-f379a669bc28@redhat.com/
+I really don't want to add any sysfs knobs until we properly understand what we
+need/want. I couldn't tell you what the availability of debugfs is like across
+all distros though; certainly its available on Ubuntu and userdebug builds of
+Android.
 
-What's the current status of this? Have any of the CI systems provided a
-set of issues and incidents yet?
+Yu suggested another policy [1], which would allow us to disable THP while
+keeping LAF enabled (but not the other way around) without having to add any
+knobs, so perhaps that's the way to go. It does assume its safe to use LAF when
+thp=never though. (Copying here for completeness):
 
-I like the solution to bring CI-specific patterns and definitions into a
-CI-agnostic aggregator like KCIDB. I'm not familiar with the KCIDB
-schemas so I'm not aware of the different ways that each individual CI
-system chooses to define their test results.
+                | prctl/fw  | sysfs     | sysfs     | sysfs
+                | disable   | never     | madvise   | always
+----------------|-----------|-----------|-----------|-----------
+no hint         | S         | LAF>S     | LAF>S     | THP>LAF>S
+MADV_HUGEPAGE   | S         | LAF>S     | THP>LAF>S | THP>LAF>S
+MADV_NOHUGEPAGE | S         | S         | S         | S
 
-A different approach could be to define a standard way to report CI test
-results that every CI system could adhere to, but I guess that task
-could become way too expensive. I think defining some common
-abstractions is definitely possible and the way you did it is a good
-start. Hopefully it can be extended if needed.
+Where "prctl/fw disable" trumps the sysfs setting.
 
->  > - is it possible that the test failed because of an infrastructure
->  >    error?
->
-> Not sure how to approach this in KCIDB. How do you (plan to) do it?
 
-In general, we can tell certain common errors very clearly by parsing
-the test log. We had prior experience running tests in different
-platforms in Collabora's LAVA lab so we were familiar with the most
-frequent types of infrastructure errors seen there: assorted network
-errors, failure to mount an NFS volume, failure to find the ramdisk,
-etc.
+[1] https://lore.kernel.org/linux-mm/20469f02-d62d-d925-3536-d6a1f1099fda@arm.com/
 
-We define a set of strings to match against:
-https://gitlab.collabora.com/kernel/kernelci-regressions-tracker/-/blob/main/configs/logs-string-match.yaml
-and we keep adding to the list when we found new patterns
+> 
+>>
+>> Perhaps 2 controls:
+>>
+>> laf_enable=0|1
+>>   enable/disable LAF independently of THP
+>>   default=1
+>>
+>> laf_max_order=N
+>>   applies to both LAF and THP
+>>   when max_order < PMD-order, THP acts like thp="never"
+>>   puts a ceiling on folio order allocated by LAF
+>>   default=PMD-order
+> 
+> I think it is better to keep it independent of PMD THP. Just make
+> laf_max_order can never be bigger than PMD-order. Later, when we understand
+> the performance impact of mixing LAF with PMD THP, we can lift this limit
+> to allow laf_max_order to be any possible page order.
+> 
+>>
+>> This gives:
+>>
+>>
+>> laf_enable=1, laf_max_order=PMD-order (LAF+THP):
+>>
+>>                 | never     | madvise   | always
+>> ----------------|-----------|-----------|-----------
+>> no hint         | S         | LAF>S     | THP>LAF>S
+>> MADV_HUGEPAGE   | S         | THP>LAF>S | THP>LAF>S
+>> MADV_NOHUGEPAGE | S         | S         | S
+>>
+>>
+>> laf_enable=0, laf_max_order=PMD-order (THP only):
+>>
+>>                 | never     | madvise   | always
+>> ----------------|-----------|-----------|-----------
+>> no hint         | S         | S         | THP>S
+>> MADV_HUGEPAGE   | S         | THP>S     | THP>S
+>> MADV_NOHUGEPAGE | S         | S         | S
+>>
+>>
+>> laf_enable=1, laf_max_order=(PMD-order - 1) (LAF only):
+>>
+>>                 | never     | madvise   | always
+>> ----------------|-----------|-----------|-----------
+>> no hint         | S         | LAF>S     | LAF>S
+>> MADV_HUGEPAGE   | S         | LAF>S     | LAF>S
+>> MADV_NOHUGEPAGE | S         | S         | S
+>>
+>>
+>> This would allow us to get something into the kernel that would allow people to
+>> more broadly characterize different workloads under THP, LAF, THP+LAF, which
+>> would give us a better understanding of if/how we want to design ABIs for the
+>> long term.
+>>
+>>
+>>>>
+>>>> Maybe call it THP (experimental) for now and merge it to THP when we have a stable
+>>>> policy. For knobs, we might add "any-order" to the existing "never", "madvise"
+>>>> and another interface to specify max hinted order (enforcing <9) for "any-order".
+>>>> Later, we can allow users to specify any max hinted order, including 9. Just an
+>>>> idea.
+>>> I suspect that all the config knobs (enable/disable mixing mode, define "any-order"
+>>> or "specific-order") will be exist long term. Because there are always new workloads
+>>> need be tuned against these configs.
+>>>
+>>>
+>>> Regards
+>>> Yin, Fengwei
+>>>
+>>>>
+>>>>
+>>>> --
+>>>> Best Regards,
+>>>> Yan, Zi
+> 
+> 
+> --
+> Best Regards,
+> Yan, Zi
 
-At some point we'd like to use a similar approach, although automatized,
-to detect frequent patterns in test outputs so that a regression
-analyzer can match test results with known issues to avoid excessive
-report duplication and also to do a first-stage tagging and triaging of
-regressions.
-
->  > - does the test fail consistently since that commit or does it show
->  >    unstable results?
->
-> This is a difficult thing to properly figure out in KCIDB, because it
-> aggregates data from multiple CI systems. A single CI system can assume that
-> earlier results for a branch correspond to earlier commits. However, because
-> different CI systems test at different speeds, KCIDB cannot make that
-> assumption. Commits and their testing results can come in any order. So we
-> cannot draw these kinds of conclusions based on time alone.
-
-Couldn't the results be filtered by CI-system origin so they can be
-analyzed without the noise of results from other origins? I was thinking
-about filtering the results by CI origin and then sorting them by
-date. But, as I said, I'm not familiar with the KCIDB schema so I
-wouldn't really know how to navigate through the results.
-
-I can check the code to find the schema definitions but I was wondering
-if there's a quick way to visualize the raw test results data and the
-relationships between them.
-
-> The only way KCIDB can make this work correctly is by correlating with actual
-> git history, following the commit graph.
-
-I think this might depend on the context that we have for every test
-result. That could be different depending on the data origin, but in our
-case, when checking the recent history of a KernelCI test we took
-advantage of the fact that KernelCI builds progress linearly (new builds
-are always newer versions of old builds, AFAICT), so we built the
-queries around that and we don't have to do any processing of the git
-repos to fetch the list of test runs of a particular test configuration
-after the last failed run:
-https://gitlab.collabora.com/kernel/kernelci-regressions-tracker/-/blob/main/common/analysis.py#L27
-
-For other systems this will be different, of course. But the key idea is
-that we might be able to get to the same point using different paths,
-maybe simpler.
-
-> E.g. on the dashboard of a particular test result, display graphs of this
-> test's results over time: overall, and for
-> architecture/compiler/config/repo/branch of this test run. And something
-> similar for test views on revision/checkout/build dashboards.
-
-Yes, we have similar visions about how the dashboard
-features. Unfortunately, a proper dashboard would be a key part of the
-solution but it looks like it's still pretty far away in the future.
-
-> BTW, a couple Mercurial folks approached me after the talk above, saying that
-> they're working on supporting storing test results in history so they could do
-> a similar kind of correlation and reasoning. So the idea is in the air.
-
-This is very interesting. I think one thing we're missing from git is
-a standard way to keep commits metadata that won't be tied to specific
-refs (ie. metadata that could be linked to a commit even if it gets
-rebased).
-There's plenty of commit metadata scattered all over the kernel commit
-logs in the form of tags, and then anyone can write tools on top of that
-to find relationships between commits, patches and tests, but that's
-kind of suboptimal. Having proper support for that in the repo would
-make a huge difference in how the repo data is used, beyond tracking code
-changes.
-
-> This is what the KCIDB issue-linking support described above is working
-> towards. Next step is to build a triaging system linking issues to build/test
-> results automatically, based on patterns submitted by both CI systems, via the
-> regular submission interface, and humans, via a dedicated UI.
->
-> Patterns would specify which issue (bug URL) they're matching and include
-> basic things like test name, architecture, hardware, and so on, but also
-> patterns to find in e.g. test output files, logs, or in dmesg.
->
-> That should answer questions of whether a test or a build exhibit a particular
-> issue seen before.
-
-This is a good approach, and it could tie in with what I mentioned above
-about log parsing and identifying similar issues from their test log
-outputs.
-
-> One comment regarding the prototype you shared is that it's quite verbose and
-> it's difficult to put together a feeling of what's been happening from
-> overabundance of textual information. I think a visual touch could help here.
-
-I agree, this started as an experiment and it shows. Having a nice and
-flexible html output was never the main requirement.
-
-> E.g. drawing a timeline of test results, pointing particular events (first
-> failed, first passed, stability and so on) along its length.
->
-> So instead of this:
->
->  > first failed: today (2023-08-02)
->  >
->  >     kernel: chromeos-stable-20230802.0
->  >     commit: 5c04267bed569d41aea3940402c7ce8cf975a5fe
->  >
->  > most recent fail: today (2023-08-02)
->  >
->  >     kernel: chromeos-stable-20230802.0
->  >     commit: 5c04267bed569d41aea3940402c7ce8cf975a5fe
->  >
->  > last passed: 1 day ago (2023-08-01)
->  >
->  >     kernel: chromeos-stable-20230801.1
->  >     commit: cd496545d91d820441277cd6a855b9af725fdb8a
->
-> Something like this (roughly):
->
->               |
-> 2023-08-02   F - last FAIL
->               F
->               |
->               P
->               F
->               |
-> 2023-08-02   F - first FAIL
->               |
-> 2023-08-01   P - last PASS
->               |
->               P
-
-That's absolutely right. We have the data, I just wish I had the webdev
-chops to do that XD. Although we could probably give it a try now that
-the feature set is mostly stable.
-
-Thanks for the detailed answers and your insights. It's great to see we
-share many points of view. Now that we know there's a long road ahead
-it's time to draw an initial roadmap and see how far it can get us.
-
-So, what would you recommend we can start with KCIDB? Would there be a
-way for us to consume the data, even if it's only partially, to
-experiment and get some ideas about what to do next? Would you rather
-have these features implemented as part of KCIDB itself?
-
-Cheers,
-Ricardo
