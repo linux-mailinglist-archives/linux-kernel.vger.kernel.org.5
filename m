@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BCB774040
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BB97740A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233942AbjHHRBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43660 "EHLO
+        id S233973AbjHHRGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233896AbjHHRAa (ORCPT
+        with ESMTP id S230008AbjHHRFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:00:30 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201726EA1
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:00:39 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe1344b707so9166979e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:00:39 -0700 (PDT)
+        Tue, 8 Aug 2023 13:05:53 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8897F5FDD9
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:02:29 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-63d0228d32bso33317396d6.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:02:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691510404; x=1692115204;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RE7wtMExHdhFwKLLqjqt4LfjR7+37ThDsOcCDy3qTQQ=;
-        b=PwDjsnZPpEOON21XmhMp+u0sisjWLyBSPad9QxaLPGHW7nSgAhPQ1LjU8UOwI1vfor
-         45ifcbnWH1NYoLzcAuTvGv4NZkjNtXLa5B6BV17UibKiSQyTh8i/wDL3p27vY8Fzo7LU
-         2DEQiC1nO0B/mkA/afSZBymtADJ2geddDbPz+lpTZHxbRYPlKJt/uJyqkdm0ZOS0AgRE
-         dqIS/yf3dlUwkL0lvfcDs237LoV3SHlzAVxCBlRku/R4G1vjxTgUuTCzfA7xkw1lOL54
-         7mdiOer0rm7E2e6f1jzUu1hGB8TrtXdhr+55sG74Fhwm+KDUGQGjkteDF4AXRAFFw/fg
-         sv2g==
+        d=google.com; s=20221208; t=1691510510; x=1692115310;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9SVrz+NVnSrV/fLNgs83Potq7jZtIyWv2wx5nvF6Lpk=;
+        b=wsIgw4ttZUc2vvn2tUt++rZEm50ULJebTCU/roVp/5gOMExAdK5YJUbFsyMFKAUtj/
+         sr7CZ18c5XSrJK4tPJJbP6Kb20ZUlQj/Cc9jH+WdEWSp0tlUSPulflq3S3Zfd2Cp6gZv
+         BRryW682w6jq2nH7wDUUO+5FPFTKvwSOXupphetV0nv90l4FpNzkOwz3cCp6vyhv1V+u
+         t4wcmyk/N6PwdmGIAEOIWHTOf3T6hAfh+bDOgVs7IdgDFIKpGV1rfn7gcGpFUKCCyuEL
+         I3fM8Kg75g229/2XxbmG5oQKnX/KZ2rJrHsG7nE34vt5cj4kTkXW+5cIyQ5Fqx8lH8ha
+         ++rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510404; x=1692115204;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RE7wtMExHdhFwKLLqjqt4LfjR7+37ThDsOcCDy3qTQQ=;
-        b=AZ5G99jH1G9ZUZFbP/+p9yS+9OPshqm4ica+vM0/POU7Vo5uwjPA51+QwH/OtMPGXu
-         DDY3MkQGEw1ChHI40BEPOR1G4YC5Zae1CitC6tfjyGMavCQdCv99oZZcwiH+tLx4zeBL
-         +6DY0w9c9N0bg9iaaA8uDDtb49JJbDjlfxV7IaOoBU1dqydJOPtZra1pTotAS26vYtGd
-         wkYyG0VB7i4p7hxhvbcbIFqAYX9wjK9ScNhfgPf4NFhtORdUMqdC5hqVjldyqxG6ELiB
-         ph+KXn6Zw/piOHF49+HEZocmHfzPhD/dPSKteuNLxWxQst5pYqh5mTpc/mgT4r3tRgAN
-         Kz1A==
-X-Gm-Message-State: AOJu0YwtHa6XSDD2wZe/CYhXCYQg/oqmkbs9oNqmfmvvH3+bTJSgvPtR
-        YTu2cHmLRMySXxZHxZY1rvUV+w==
-X-Google-Smtp-Source: AGHT+IHbksfzqPLdhw5/yCLJTbCZEOgLAM2KQI/YGEb2WX3hUJsxDJkD4J/0HYLK1y1YsVgSMdIzhA==
-X-Received: by 2002:ac2:4850:0:b0:4fe:56d8:631d with SMTP id 16-20020ac24850000000b004fe56d8631dmr8327458lfy.25.1691510404500;
-        Tue, 08 Aug 2023 09:00:04 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id j18-20020aa7c0d2000000b0052239012c65sm6837797edp.82.2023.08.08.09.00.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 09:00:03 -0700 (PDT)
-Message-ID: <f85df327-c321-8c1e-2043-c60210fbed56@linaro.org>
-Date:   Tue, 8 Aug 2023 18:00:01 +0200
+        d=1e100.net; s=20221208; t=1691510510; x=1692115310;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9SVrz+NVnSrV/fLNgs83Potq7jZtIyWv2wx5nvF6Lpk=;
+        b=G5oTfree7tvTUaGWA9v0hJl8M8vYLS8rLWGaZ0YGsMuwmyPIp13o3FnaN4AJHtl51I
+         MA2a40h1EuaJ+DusP2VP5RiR4LU3nflNTjw6AXLo2Yzi40UkY7PRIUbYBmoyD1M1d9Z0
+         v4iKuhqQbhIyPKCrmFogoZnRmwQ4Hgyw08fMyx8SdFDFIrU1rgGfN5DOTnDHVB1KNTVz
+         5EXNNNVR//gm9xUzJZ4wRyC4t2bfQ3HERg3FvnWIOy0ufwQ/6SLl69s1uXKN3m2A9RXo
+         jNIpcXv8h9A4L05B1olDlAb29mCCsddjjMwqMyqhNHjuto9wwp7OvOMOHDd5IlesNsZr
+         ke5w==
+X-Gm-Message-State: AOJu0YwagT22sQhoFLu01aRV7VetnL1xNnZLyn7MlzVoOjR3IgQLj+Jl
+        2L/PiGF/0g4l96Cn37YZ8Q0pN/LZy8shEVnjHM3u+g==
+X-Google-Smtp-Source: AGHT+IEWL1NjJ+f3UbcEnHpd+p9HtzfqD1pbPZcbHwcCifQ34YXnu5z/ZhJnwwwJtLOgDxMScUlGimbd5BfqxWBRgII=
+X-Received: by 2002:a0c:edca:0:b0:631:f9ad:1d43 with SMTP id
+ i10-20020a0cedca000000b00631f9ad1d43mr9972971qvr.14.1691510509757; Tue, 08
+ Aug 2023 09:01:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 3/3] i3c: ast2600: Add reset deassertion for global
- registers
-Content-Language: en-US
-To:     Dylan Hung <dylan_hung@aspeedtech.com>, jk@codeconstruct.com.au,
-        alexandre.belloni@bootlin.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        joel@jms.id.au, andrew@aj.id.au, p.zabel@pengutronix.de,
-        linux-i3c@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     BMC-SW@aspeedtech.com, kobedylan@gmail.com
-References: <20230808154241.749641-1-dylan_hung@aspeedtech.com>
- <20230808154241.749641-4-dylan_hung@aspeedtech.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230808154241.749641-4-dylan_hung@aspeedtech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+References: <20230807-missing_proto-v2-1-3ae2e188bb0c@google.com> <202308081508.EI3CRzQo-lkp@intel.com>
+In-Reply-To: <202308081508.EI3CRzQo-lkp@intel.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 8 Aug 2023 09:01:38 -0700
+Message-ID: <CAKwvOdnDEaZt-mD2PvMDmCY1WyaqtrH+oM3M5JgZaiOOWA_0YQ@mail.gmail.com>
+Subject: Re: [PATCH v2] Makefile.extrawarn: enable -Wmissing-variable-declarations
+ for W=1
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Cc:     Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,45 +75,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/2023 17:42, Dylan Hung wrote:
-> Add missing reset deassertion of the I3C global control registers.
-> 
-> Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
-> ---
->  drivers/i3c/master/ast2600-i3c-master.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/i3c/master/ast2600-i3c-master.c b/drivers/i3c/master/ast2600-i3c-master.c
-> index 09ed19d489e9..5d9d060134e0 100644
-> --- a/drivers/i3c/master/ast2600-i3c-master.c
-> +++ b/drivers/i3c/master/ast2600-i3c-master.c
-> @@ -11,6 +11,7 @@
->  #include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
-> +#include <linux/reset.h>
->  
->  #include "dw-i3c-master.h"
->  
-> @@ -128,6 +129,7 @@ static int ast2600_i3c_probe(struct platform_device *pdev)
->  	struct device_node *np = pdev->dev.of_node;
->  	struct of_phandle_args gspec;
->  	struct ast2600_i3c *i3c;
-> +	struct reset_control *rst;
->  	int rc;
->  
->  	i3c = devm_kzalloc(&pdev->dev, sizeof(*i3c), GFP_KERNEL);
-> @@ -156,6 +158,13 @@ static int ast2600_i3c_probe(struct platform_device *pdev)
->  		dev_err(&pdev->dev, "invalid sda-pullup value %d\n",
->  			i3c->sda_pullup);
->  
-> +	rst = devm_reset_control_get_shared(&pdev->dev, "global_rst");
-> +	if (IS_ERR(rst)) {
-> +		dev_err(&pdev->dev, "missing of invalid reset entry");
-> +		return PTR_ERR(rst);
+On Tue, Aug 8, 2023 at 1:03=E2=80=AFAM kernel test robot <lkp@intel.com> wr=
+ote:
+>
+> Hi Nick,
+>
+> kernel test robot noticed the following build errors:
+>
+> [auto build test ERROR on 52a93d39b17dc7eb98b6aa3edb93943248e03b2f]
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Nick-Desaulniers/M=
+akefile-extrawarn-enable-Wmissing-variable-declarations-for-W-1/20230808-00=
+5859
+> base:   52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+> patch link:    https://lore.kernel.org/r/20230807-missing_proto-v2-1-3ae2=
+e188bb0c%40google.com
+> patch subject: [PATCH v2] Makefile.extrawarn: enable -Wmissing-variable-d=
+eclarations for W=3D1
+> config: arm64-randconfig-r013-20230807 (https://download.01.org/0day-ci/a=
+rchive/20230808/202308081508.EI3CRzQo-lkp@intel.com/config)
+> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git =
+4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> reproduce: (https://download.01.org/0day-ci/archive/20230808/202308081508=
+.EI3CRzQo-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202308081508.EI3CRzQo-lkp=
+@intel.com/
+>
+> All errors (new ones prefixed by >>):
+>
+>    In file included from lib/test_bitops.c:9:
+>    In file included from include/linux/module.h:13:
+>    In file included from include/linux/stat.h:19:
+>    In file included from include/linux/time.h:60:
+>    In file included from include/linux/time32.h:13:
+>    In file included from include/linux/timex.h:67:
+>    In file included from arch/arm64/include/asm/timex.h:8:
+>    In file included from arch/arm64/include/asm/arch_timer.h:18:
+>    In file included from include/linux/smp.h:110:
+>    In file included from include/linux/preempt.h:79:
+>    In file included from arch/arm64/include/asm/preempt.h:6:
+>    In file included from include/linux/thread_info.h:60:
+>    In file included from arch/arm64/include/asm/thread_info.h:18:
+> >> arch/arm64/include/asm/stack_pointer.h:8:24: error: no previous extern=
+ declaration for non-static variable 'current_stack_pointer' [-Werror,-Wmis=
+sing-variable-declarations]
+>        8 | register unsigned long current_stack_pointer asm ("sp");
+>          |                        ^
+>    arch/arm64/include/asm/stack_pointer.h:8:10: note: declare 'static' if=
+ the variable is not intended to be used outside of this translation unit
+>        8 | register unsigned long current_stack_pointer asm ("sp");
+>          |          ^
 
-return dev_err_probe
+I actually don't think that either compiler should warn for variables
+with register storage.  I spoke briefly with some GCC folks on IRC and
+the initial assesment was agreed.  I've filed
+- https://github.com/llvm/llvm-project/issues/64509
+- https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D110947
 
-Best regards,
-Krzysztof
+Also, I've received 3 emails from zero day; this is expected as the
+tree is not W=3D1 clean (actually, I think Arnd has been a lot of
+cleanup around these groups of warnings, so I take that back).  What's
+more curious to me is that none are GCC builds. I wonder if 0day bot
+team is only testing W=3D1 with clang and not GCC?  That would seem like
+perhaps the bar is higher for LLVM?
 
+Masahiro, Nathan,
+What are your thoughts on how to proceed here? Do we need the tree to
+be free of warnings before it can be added to W=3D1? Hopefully not; I
+would think that's the criteria for promoting a warning from being
+hidden behind W=3D1 to being on by default in the top level Makefile.
+What are your thoughts?
+
+>    1 error generated.
+>
+>
+> vim +/current_stack_pointer +8 arch/arm64/include/asm/stack_pointer.h
+>
+> a9ea0017ebe888 Mark Rutland 2016-11-03  4
+> a9ea0017ebe888 Mark Rutland 2016-11-03  5  /*
+> a9ea0017ebe888 Mark Rutland 2016-11-03  6   * how to get the current stac=
+k pointer from C
+> a9ea0017ebe888 Mark Rutland 2016-11-03  7   */
+> a9ea0017ebe888 Mark Rutland 2016-11-03 @8  register unsigned long current=
+_stack_pointer asm ("sp");
+> a9ea0017ebe888 Mark Rutland 2016-11-03  9
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+
+
+
+--=20
+Thanks,
+~Nick Desaulniers
