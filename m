@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A87773648
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20AE577364A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbjHHCLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 22:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43290 "EHLO
+        id S230308AbjHHCLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 22:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjHHCLI (ORCPT
+        with ESMTP id S229566AbjHHCL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 22:11:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5CD170B;
-        Mon,  7 Aug 2023 19:11:07 -0700 (PDT)
+        Mon, 7 Aug 2023 22:11:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6ED19B6;
+        Mon,  7 Aug 2023 19:11:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691460668; x=1722996668;
+  t=1691460682; x=1722996682;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=F3oORw0alZIlqdHjL/85Fxei/Bpe8d1CgQMNfWf9J+M=;
-  b=mIQNCeW2k5AHYKQUqOV4Wy4/T4s1ba03EWASwQQQIXl8J/DAcH0v76tD
-   ZhVWN40u77qMXYG6cJMpZRf1TMz7+SsY+QcXTNI8632jjM7xMz7SHpb39
-   vXgQ9Ba3jKt0/xEnHoyFBxIwrA7XNONSVZA2uQnBXFUG3k+C9+HG1GG7J
-   Jwwqx6tTAZfZ/xw1mtyKLScDN/3mS7VGXZL7O0lhd8I9PImB/H0xqG7A7
-   rcsvqB32Z1uSkEYW8mkGvRn7xJikVHRw3hk4v6JLeMh4W1b3A4LZ1p/r2
-   bpjfIsA/QO0hufw23pU/UwuRqQadG5bOsFOLSqdFkhPRYIrTkW7tOi+gF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="374371058"
+  bh=d3VIX2xY+fu1wWsahOfoN14pobtO1cM2MgEWqpBvgLY=;
+  b=EuJd4qa0AAArhVMsFAlVuljUHzrNuN+NCuFOvd/FratfgL2JETvU6eCh
+   qg6KhSCb58AqZmPXhmlnGTLUklrJP7iYSWSXQYEQRj7TcTSSk+e0wJc+m
+   JURZuL/L5ni+vhYi93jQ0OaAWfp8hWPV15Xe0MPextHEwx2/gBdsKQHPx
+   12/mcxBQm0bm7Olx+egeufVxqoqMDaxF/ysXGR2cqJc/UB5n5PAPL8Hvp
+   iQzc2W1QdyXnuBwG/qtj/XSzk3PlTQcOZVp0R3aZ0IrVRgu1tzPhbFvzG
+   dsZRTrN9URLfshzRnuKIzObcL+fm3PdBJpkYAg1HUJIQWN7+NgtF1ONx1
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="373453596"
 X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="374371058"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 19:11:07 -0700
+   d="scan'208";a="373453596"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 19:11:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="681051006"
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="977689411"
 X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="681051006"
+   d="scan'208";a="977689411"
 Received: from fyin-dev.sh.intel.com ([10.239.159.32])
-  by orsmga003.jf.intel.com with ESMTP; 07 Aug 2023 19:11:03 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 07 Aug 2023 19:11:18 -0700
 From:   Yin Fengwei <fengwei.yin@intel.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         stable@vger.kernel.org, akpm@linux-foundation.org,
@@ -46,9 +46,9 @@ To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         wangkefeng.wang@huawei.com, minchan@kernel.org, yuzhao@google.com,
         david@redhat.com, ryan.roberts@arm.com, shy828301@gmail.com
 Cc:     fengwei.yin@intel.com
-Subject: [PATCH v2 2/3] madvise:madvise_free_huge_pmd(): don't use mapcount() against large folio for sharing check
-Date:   Tue,  8 Aug 2023 10:09:16 +0800
-Message-Id: <20230808020917.2230692-3-fengwei.yin@intel.com>
+Subject: [PATCH v2 3/3] madvise:madvise_free_pte_range(): don't use mapcount() against large folio for sharing check
+Date:   Tue,  8 Aug 2023 10:09:17 +0800
+Message-Id: <20230808020917.2230692-4-fengwei.yin@intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230808020917.2230692-1-fengwei.yin@intel.com>
 References: <20230808020917.2230692-1-fengwei.yin@intel.com>
@@ -56,16 +56,16 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit fc986a38b670 ("mm: huge_memory: convert madvise_free_huge_pmd to
-use a folio") replaced the page_mapcount() with folio_mapcount() to check
+Commit 98b211d6415f ("madvise: convert madvise_free_pte_range() to use a
+folio") replaced the page_mapcount() with folio_mapcount() to check
 whether the folio is shared by other mapping.
 
 It's not correct for large folios. folio_mapcount() returns the total
@@ -81,28 +81,28 @@ But the correct behavior is THP should be split and processed then.
 NOTE: this change is a temporary fix to reduce the user-visible effects
 before the long term fix from David is ready.
 
-Fixes: fc986a38b670 ("mm: huge_memory: convert madvise_free_huge_pmd to use a folio")
+Fixes: 98b211d6415f ("madvise: convert madvise_free_pte_range() to use a folio")
 Cc: stable@vger.kernel.org
 Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
 Reviewed-by: Yu Zhao <yuzhao@google.com>
 Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- mm/huge_memory.c | 2 +-
+ mm/madvise.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 154c210892a1..0b709d2c46c6 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1612,7 +1612,7 @@ bool madvise_free_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 	 * If other processes are mapping this folio, we couldn't discard
- 	 * the folio unless they all do MADV_FREE so let's skip the folio.
- 	 */
--	if (folio_mapcount(folio) != 1)
-+	if (folio_estimated_sharers(folio) != 1)
- 		goto out;
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 49af35e2d99a..4dded5d27e7e 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -683,7 +683,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+ 		if (folio_test_large(folio)) {
+ 			int err;
  
- 	if (!folio_trylock(folio))
+-			if (folio_mapcount(folio) != 1)
++			if (folio_estimated_sharers(folio) != 1)
+ 				break;
+ 			if (!folio_trylock(folio))
+ 				break;
 -- 
 2.39.2
 
