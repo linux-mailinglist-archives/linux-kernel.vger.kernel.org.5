@@ -2,127 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2FE774530
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5DA7747D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232540AbjHHSiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:38:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
+        id S235853AbjHHTUd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Aug 2023 15:20:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232502AbjHHShd (ORCPT
+        with ESMTP id S232478AbjHHTUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:37:33 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B902192DD
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:43:42 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2E351D75;
-        Tue,  8 Aug 2023 09:44:19 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 219BD3F64C;
-        Tue,  8 Aug 2023 09:43:30 -0700 (PDT)
-Message-ID: <80ead8ee-4dbe-7b3c-44f5-944073a2a39d@arm.com>
-Date:   Tue, 8 Aug 2023 17:43:28 +0100
+        Tue, 8 Aug 2023 15:20:08 -0400
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D1445F41;
+        Tue,  8 Aug 2023 09:44:16 -0700 (PDT)
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3a751bd3372so678596b6e.0;
+        Tue, 08 Aug 2023 09:44:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691513038; x=1692117838;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c7fJlZqm7SkL8DNK44l2eawprG/x5eTjs6OofI30rbg=;
+        b=Sn2q+VtCrP+bW3KNjMoMmt4G2r6bBaDP4NWL40tZNZxjNVt7Sy4WkGtwpp6fnE3ErH
+         RYdOSJdTjlDJe5FbBGjx0/SQIVYxXdDRczcK6BW2LQ1qP4drey/saQ9If/4G5Q1McXL7
+         mB2E5y/8j7O7BwEzJC7CLFhZ73oHjbgb2RIC1eMBHUfil+rNVxSLensVTcqIBGRYxT94
+         FnonEgRSPN34BlpVO2PQyhpHpAYb0UlTVoU96jjDAx++dbITSnd7c+eVpu1sloPlhtWa
+         KRBSJSR8IgXHBCvoa2zyt0lF1aNZQsRWStzc7SzZ5I8iVN92oMOuRBKB5Z9h5vkLe9qf
+         2/tg==
+X-Gm-Message-State: AOJu0YyGTzvkYJz/ET1R6+3uL0JQMiPC2dKQWozn08r38Ej0EH9+W3ta
+        SU5SyzBw1jXDgNcoXOsBvpve9yLzV/bpI0XtYsNkV0jF
+X-Google-Smtp-Source: AGHT+IFP2RLwXNB86i9yjvF4iWGgJA1+zfLkLjE3JrAyQhuMst/saVIe9OyEzX/Ag/dc4w4ADX/Vo+2RYmxh/hifuMc=
+X-Received: by 2002:a05:6808:150a:b0:394:25b9:db19 with SMTP id
+ u10-20020a056808150a00b0039425b9db19mr296085oiw.2.1691513038157; Tue, 08 Aug
+ 2023 09:43:58 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/1] iommu/arm-smmu-v3: Fix error case of range command
-Content-Language: en-GB
-To:     Will Deacon <will@kernel.org>
-Cc:     zhurui <zhurui3@huawei.com>, Nicolin Chen <nicolinc@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Tomas Krcka <krckatom@amazon.de>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-References: <1690784482-30028-1-git-send-email-wangwudi@hisilicon.com>
- <20230801085504.GA26130@willie-the-truck>
- <27c895b8-1fb0-be88-8bc3-878d754684c8@huawei.com>
- <d5fc1f72-7428-4fef-d868-d06b85add635@huawei.com>
- <20230804165225.GF30679@willie-the-truck> <ZM1DqxXcBT2SOs8/@Asurada-Nvidia>
- <015b4573-9d74-451b-8028-a1050ade7019@huawei.com>
- <661a7bb5-99e1-de16-d860-0cd17f7a0470@arm.com>
- <20230808162409.GB2890@willie-the-truck>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20230808162409.GB2890@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <5712331.DvuYhMxLoT@kreacher> <CAJZ5v0jTG-oqV+misnP-=W5aq0S9X631kW9EhKNEn1VJQqwL2g@mail.gmail.com>
+ <002201d9ca0c$27606f70$76214e50$@telus.net>
+In-Reply-To: <002201d9ca0c$27606f70$76214e50$@telus.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 8 Aug 2023 18:43:45 +0200
+Message-ID: <CAJZ5v0gYsH9EKgCO_LESuvd0dcOJLgPrWeN=6V-bY4gq-w1oyA@mail.gmail.com>
+Subject: Re: [RFT][PATCH v2 0/3] cpuidle: teo: Do not check timers
+ unconditionally every time
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/2023 5:24 pm, Will Deacon wrote:
-> Hi Robin,
-> 
-> On Mon, Aug 07, 2023 at 08:20:45PM +0100, Robin Murphy wrote:
->> On 2023-08-06 06:28, zhurui wrote:
->>> On 2023/8/5 2:30, Nicolin Chen wrote:
->>>> On Fri, Aug 04, 2023 at 05:52:25PM +0100, Will Deacon wrote:
->>>>> On Fri, Aug 04, 2023 at 05:31:20PM +0800, zhurui wrote:
->>>>>> When tg != 0 but ttl, scale, num all 0 in a range tlbi command, it
->>>>>> is reserved and will cause the CERROR_ILL error. This case means
->>>>>> that the size to be invalidated is only one page size, and the
->>>>>> range invalidation is meaningless here. So we set tg to 0 in this
->>>>>> case to do an non-range invalidation instead.
->>>>
->>>>>> @@ -1930,6 +1927,12 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
->>>>>>                           num = (num_pages >> scale) & CMDQ_TLBI_RANGE_NUM_MAX;
->>>>>>                           cmd->tlbi.num = num - 1;
->>>>>>
->>>>>> +                       /* Prevent error caused by one page tlbi with leaf 0 */
->>>>>> +                       if (scale == 0 && num == 1 && cmd->tlbi.leaf == 0)
->>>>>> +                               cmd->tlbi.tg = 0;
->>>>>
->>>>> This should only be true for the last iteration, right (i.e. when num_pages
->>>>> == 1)? In which case, I'd prefer to leave the old code as-is and just add:
->>>>>
->>>>>           /* Single-page leaf invalidation requires a TG field of 0 */
->>>>>           if (num_pages == 1 && !cmd->tlbi.leaf)
->>>>>                   cmd->tlbi.tg = 0;To Will and Nicolin,
->>>
->>> Not only the last iteration, it's the result of __ffs function. For example, if
->>> numpages is 33, then the value of __ffs(num_pages) is 0, so the value of scale
->>> is also 0. The value of num depends on CMDQ_TLBI_RANGE_NUM_MAX. That is, the
->>> maximum value of num is 31. Therefore, the final value of num is 1.
->>> So, if consider CMDQ_TLBI_RANGE_NUM_MAX, there will be some case not the last
->>> one page but the beginning pages. That's why I use scale and num as conditions,
->>> not num_pages. Then I should reassign tg based on the result.
->>
->> Yeah, I'd rather not downgrade to a non-range invalidate since that
->> complicates the reasoning for the errata affecting those. If the size of the
->> invalidation is equal to TG then it can only represent a single last-level
->> page, i.e. TTL=3, thus if it does warrant handling here then indeed
->> rearranging to base the condition on num_pages as well ought to suffice.
->> However, this is all still begging the question of where and why we're doing
->> a *non-leaf* invalidation that isn't aligned to the size of a table, because
->> that in itself doesn't make a whole heap of sense - my hunch is that that
->> wants figuring out and could probably be fixed at the source.
-> 
-> Isn't that described above because we're using CMDQ_TLBI_RANGE_NUM_MAX
-> to break up the range into separate commands?
+On Tue, Aug 8, 2023 at 5:22 PM Doug Smythies <dsmythies@telus.net> wrote:
+>
+> On 2023.08.03 14:33 Rafael wrote:
+> > On Thu, Aug 3, 2023 at 11:12 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> >>
+> >> Hi Folks,
+> >>
+> >> This is the second iteration of:
+> >>
+> >> https://lore.kernel.org/linux-pm/4511619.LvFx2qVVIh@kreacher/
+> >>
+> >> with an additional patch.
+> >>
+> >> There are some small modifications of patch [1/3] and the new
+> >> patch causes governor statistics to play a role in deciding whether
+> >> or not to stop the scheduler tick.
+> >>
+> >> Testing would be much appreciated!
+> >
+> > For convenience, this series is now available in the following git branch:
+> >
+> > git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+> > pm-cpuidle-teo
+>
+> Hi Rafael,
+>
+> Thank you for the git branch link.
+>
+> I did some testing:
+>
+> Disclaimer: I used areas of focus derived
+> from the original teo-util work last fall,
+> and did not check if they were still the best
+> places to look for issues.
+>
+> CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
+> HWP: enabled
+> CPU frequency scaling driver: intel_pstate
+> CPU frequency scaling governor: performance
+> Kernel 1: 6.5-rc4 (1000 Hz tick rate)
+> Kernel 2: kernel 1 + this patch series (called "rjw")
+> System is extremely idle, other than the test work.
+>
+> All tests were done with all idle governors:
+> menu, teo, ladder, rjw.
+>
+> Test 1: 2 core ping pong sweep:
+>
+> Pass a token between 2 CPUs on 2 different cores.
+> Do a variable amount of work at each stop.
+>
+> Purpose: To utilize the shallowest idle states
+> and observe the transition from using more of 1
+> idle state to another.
+>
+> Results:
+>
+> teo and rjw track fairly well, with
+> rjw reducing its use of idle state 0 before
+> teo as the work packet increases. The menu governor
+> does best overall, but performs worse over a greater
+> range of token loop times.
+>
+> Details (power and idle stats; times):
+> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/2-1/perf/
+> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/2-1/2-core-ping-pong-sweep.png
+>
+> Test 2: 6 core ping pong sweep:
+>
+> Pass a token between 6 CPUs on 6 different cores.
+> Do a variable amount of work at each stop.
+>
+> Purpose: To utilize the midrange idle states
+> and observe the transitions from between use of
+> idle states.
+>
+> Results: There is some instability in the results
+> in the early stages.
+> For unknown reasons, the rjw governor sometimes works
+> slower and at lower power. The condition is not 100%
+> repeatable.
+>
+> Overall teo completed the test fastest (54.9 minutes)
+> Followed by menu (56.2 minutes), then rjw (56.7 minutes),
+> then ladder (58.4 minutes). teo is faster throughout the
+> latter stages of the test, but at the cost of more power.
+> The differences seem to be in the transition from idle
+> state 1 to idle state 2 usage.
+>
+> Details (power and idle stats; times):
+> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/perf/
+> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/6-core-ping-pong-sweep.png
+> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/6-core-ping-pong-sweep-detail-a.png
+> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/6-core-ping-pong-sweep-detail-b.png
+> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-2/6-core-ping-pong-sweep-diffs.png
+>
+> a re-run power and idle stats, showing inconsistent behaviour.
+> teo and rjw only, and no timing data:
+> http://smythies.com/~doug/linux/idle/teo-util2/ping-sweep/6-1/perf/
+>
+> Test 3: sleeping ebizzy - 128 threads.
+>
+> Purpose: This test has given interesting results in the past.
+> The test varies the sleep interval between record lookups.
+> The result is varying usage of idle states.
+>
+> Results: It can be difficult to see any differences in
+> the overall timing graph, but a graph of differences
+> is revealing. teo outperforms rjw in the longer intervals
+> region of the test, at the cost of more power.
+>
+> Details: (power and idle stats; times):
+> http://smythies.com/~doug/linux/idle/teo-util2/ebizzy/perf/
+> http://smythies.com/~doug/linux/idle/teo-util2/ebizzy/ebizzy-128-perf.png
+> http://smythies.com/~doug/linux/idle/teo-util2/ebizzy/ebizzy-128-perf-diffs.png
+>
+> Test 4: 2 X 2 pair token passing. Dwell test. Fast:
+>
+> Purpose: Dwell under one set of conditions. Observe
+> noise and/or any bi-stability.
+>
+> Results (reference time is menu):
+> rjw: 3.0723 usecs/loop average. +3.15%
+> teo: 2.9917 usecs/loop average. +0.44%
+> menu: 2.97845 usecs/loop average. Reference
+> ladder: 4.077375 usecs/loop average. +36.9%
+>
+> Powers are all similar, with ladder a bit lower.
+>
+> Details: (power and idle stats; times):
+> http://smythies.com/~doug/linux/idle/teo-util2/many-0-400000000-2/perf/
+> http://smythies.com/~doug/linux/idle/teo-util2/many-0-400000000-2/times.txt
+>
+> Test 5: 2 X 2 pair token passing. Dwell test. Medium:
+>
+> Purpose: Dwell under one set of conditions. Observe
+> noise and/or any bi-stability.
+>
+> Results (reference time is menu):
+> rjw: 11.3406 usecs/loop average. -0.69%
+> teo: 11.36765 usecs/loop average. -0.45%
+> menu: 11.41905 usecs/loop average. reference
+> ladder: 11.9535 usecs/loop average. +4.68%
+>
+> Powers are all similar.
+>
+> Details:
+> http://smythies.com/~doug/linux/idle/teo-util2/many-3000-100000000-2/perf/
+> http://smythies.com/~doug/linux/idle/teo-util2/many-3000-100000000-2/times.txt
+>
+> Test 6: 2 X 2 pair token passing. Dwell test. Slow:
+>
+> Purpose: Dwell under one set of conditions. Observe
+> noise and/or any bi-stability.
+>
+> Results (reference time is menu):
+> rjw: 2591.70 usecs/loop average. +0.26%
+> teo: 2566.34 usecs/loop average. -0.72%
+> menu: 2585.00 usecs/loop average. reference
+> ladder: 2635.36 usecs/loop average. +1.95%
+>
+> Powers are all similar, with ladder a bit lower.
+> Due to the strong temperature to power use curve,
+> a much longer dwell test would need to be run to
+> be sure to get to steady state power usage.
+>
+> Details:
+> http://smythies.com/~doug/linux/idle/teo-util2/many-1000000-342000-2/perf/
+> http://smythies.com/~doug/linux/idle/teo-util2/many-1000000-342000-2/times.txt
+>
+> Test 7: 500 low load threads.
+>
+> Purpose: This test has given interesting results
+> in the past.
+>
+> 500 threads at approximately 10 hertz work/sleep frequency
+> and about 0.0163 load per thread, 8.15 total.
+> CPUs about 32% idle.
+>
+> Results:
+> rjw executed 0.01% faster than teo.
+> rjw used 5% less energy than teo.
+>
+> Details:
+> http://smythies.com/~doug/linux/idle/teo-util2/waiter/perf/
+> http://smythies.com/~doug/linux/idle/teo-util2/waiter/times.txt
 
-Not really, because if we're doing a genuine non-leaf invalidation of a 
-table then it should be a block-aligned range that ought to fit in a 
-single command and should certainly never involve a single-granule 
-remainder. If we're doing non-leaf invalidations of things that 
-logically don't need to be non-leaf, making them leaf would be the even 
-better option.
+Thanks a lot for doing this work, much appreciated!
 
-> Do you mind if I queue the patch as-is for now? I don't think the driver
-> should be emitting illegal commands, and v2 of the patch does seem like
-> the obvious thing to do.
+> Conclusions: Overall, I am not seeing a compelling reason to
+> proceed with this patch set.
 
-TBH I'd rather you just drop my patch if it's proven problematic, and 
-I'll take another crack at it soon. The potential problems we introduce 
-by using non-range invalidates on errata-affected MMU-700 revisions are 
-worse than the almost-entirely-theoretical one I was trying to address.
-
-Cheers,
-Robin.
+On the other hand, if there is a separate compelling reason to do
+that, it doesn't appear to lead to a major regression.
