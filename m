@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA47C774D61
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 23:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F185774B56
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231375AbjHHVxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 17:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
+        id S234937AbjHHUpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbjHHVxH (ORCPT
+        with ESMTP id S234682AbjHHUoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 17:53:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3258D32980;
-        Tue,  8 Aug 2023 09:31:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691512269; x=1723048269;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=n+5QGUNq96Zzb5hprHduqLPIugcCxfucZViugpqDUbY=;
-  b=HmMki0I+vEeV2uLP0eQS9xi9POwWcqvC4egoHTgLnLIoQM84oJyNk0sj
-   5ZKw8JB31wRBIi5eg47KS7HlmLZB4HhslJYG6qG2ltaqKa+epwyDh+W0s
-   Ss6HUpiubl3A+1iNmDLT7rMFcTd5WGjbN/aAzWhRNZRgfg0aQZWc36mXp
-   OwEBOG63LTUqwajmKmOuV2hAtxeG1K5xYFH8VuyEZbCxyLedVK3UwSmOB
-   GQvZH1g/yFay/tj+fOWHTAn9SL4GiJutwdXRsBtLJY9xMYUSYE061/AT+
-   RvVzxYoal5xL8fbj2vA01iAO2BPoq0JqLOM39+kvLmUrUoVwQam/APdLq
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="401755388"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="401755388"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 04:30:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="905192031"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="905192031"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 08 Aug 2023 04:30:56 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qTKvQ-0005JY-0G;
-        Tue, 08 Aug 2023 11:30:56 +0000
-Date:   Tue, 8 Aug 2023 19:30:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tue, 8 Aug 2023 16:44:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B0936872;
+        Tue,  8 Aug 2023 09:36:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9731C624EB;
+        Tue,  8 Aug 2023 11:47:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A44FCC433C7;
+        Tue,  8 Aug 2023 11:47:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691495229;
+        bh=uVffECseHnMN3v5iLYcqI1db1hTkaBuKZvryPwhJRns=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Znte4XL62lM+ZoiSFMMi+ZXkDB/EClSpHnqye3sCmKTMqec/e7YyJNR5+nZQoYA4l
+         scVziRZl7NQ4rsxCHgCm8Fjdc+tS10aFWvW+7wfBkws5VCdIMltVR8YdgAhNn6xXxg
+         W/WOpbeeXFXcHul+rCsI5IpteRHcJ7sHauxBB6tIkyVIIydP8dY1CISRrxBLQAcu3I
+         xJiOxeC6+pY40RCYUQF48rEFLIZZSKVgqMOzjKbXyW1bbsByzdP/LRkdU5hJJOBubd
+         wjTswi09bGo/2KsX3da1teP7sbgafryxurl2jfa+0I4Na6ni7Sed3xkrEMm8RoDlJE
+         bbaakn0Dobnvg==
+Date:   Tue, 8 Aug 2023 13:47:06 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Liao Chang <liaochang1@huawei.com>, florian.fainelli@broadcom.com,
+        rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, yangyicong@hisilicon.com,
+        aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        kblaiech@nvidia.com, asmaa@nvidia.com, loic.poulain@linaro.org,
+        rfoss@kernel.org, ardb@kernel.org, gcherian@marvell.com,
+        linux-i2c@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] usb: typec: qcom-pmic-typec: register drm_bridge
-Message-ID: <202308081918.CVuUdaXs-lkp@intel.com>
-References: <20230728110942.485358-3-dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH v3 2/9] i2c: mlxbf: Use dev_err_probe in probe function
+Message-ID: <20230808114706.g27gy3rajqvjykce@intel.intel>
+References: <20230808012954.1643834-1-liaochang1@huawei.com>
+ <20230808012954.1643834-3-liaochang1@huawei.com>
+ <a5b2f1a2-d509-0949-fc1d-929476c2618b@linaro.org>
+ <20230808112907.4rnvmyha4v6cg5ds@intel.intel>
+ <29e20953-5660-079e-2136-0962eec9cab5@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230728110942.485358-3-dmitry.baryshkov@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <29e20953-5660-079e-2136-0962eec9cab5@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+Hi Krzysztof,
 
-kernel test robot noticed the following build errors:
+On Tue, Aug 08, 2023 at 01:31:31PM +0200, Krzysztof Kozlowski wrote:
+> On 08/08/2023 13:29, Andi Shyti wrote:
+> > Hi Krzysztof,
+> > 
+> > On Tue, Aug 08, 2023 at 10:36:40AM +0200, Krzysztof Kozlowski wrote:
+> >> On 08/08/2023 03:29, Liao Chang wrote:
+> >>> Use the dev_err_probe function instead of dev_err in the probe function
+> >>> so that the printed messge includes the return value and also handles
+> >>> -EPROBE_DEFER nicely.
+> >>>
+> >>> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+> >>> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+> >>
+> >> ...
+> >>
+> >>> @@ -2413,10 +2399,8 @@ static int mlxbf_i2c_probe(struct platform_device *pdev)
+> >>>  	ret = devm_request_irq(dev, irq, mlxbf_i2c_irq,
+> >>>  			       IRQF_SHARED | IRQF_PROBE_SHARED,
+> >>>  			       dev_name(dev), priv);
+> >>> -	if (ret < 0) {
+> >>> -		dev_err(dev, "Cannot get irq %d\n", irq);
+> >>> -		return ret;
+> >>> -	}
+> >>> +	if (ret < 0)
+> >>> +		return dev_err_probe(dev, ret, "Cannot get irq %d\n", irq);
+> >>
+> >> I don't think this is needed:
+> >> https://lore.kernel.org/all/20230721094641.77189-1-frank.li@vivo.com/
+> > 
+> > Hmm, that's a bit borderline, I'd say. The change to
+> 
+> What's borderline exactly? devm_request_threaded_irq_probe() is coming,
+> right? If it is accepted this hunk is useless and soon should be
+> replaced with proper one.
 
-[auto build test ERROR on usb/usb-linus]
-[also build test ERROR on linus/master v6.5-rc5 next-20230808]
-[cannot apply to usb/usb-testing usb/usb-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Such change is out of the scope of this series, there are two
+options that I'd prefer (in the listed order):
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Dmitry-Baryshkov/usb-typec-altmodes-displayport-add-support-for-embedded-DP-cases/20230728-191207
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-linus
-patch link:    https://lore.kernel.org/r/20230728110942.485358-3-dmitry.baryshkov%40linaro.org
-patch subject: [PATCH v4 2/2] usb: typec: qcom-pmic-typec: register drm_bridge
-config: i386-buildonly-randconfig-r006-20230808 (https://download.01.org/0day-ci/archive/20230808/202308081918.CVuUdaXs-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230808/202308081918.CVuUdaXs-lkp@intel.com/reproduce)
+ 1. accept the patch as it is, this patch is not sent today the
+    first time and at the current state it's correct.
+ 2. not accept a change on this line
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308081918.CVuUdaXs-lkp@intel.com/
+Replacing devm_request_irq belongs to another series and,
+besides, I don't want to ask Liao to hold on this series for such
+trivialities.
 
-All errors (new ones prefixed by >>):
+Thank you,
+Andi
 
->> drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c:167:15: error: no member named 'of_node' in 'struct drm_bridge'
-           tcpm->bridge.of_node = of_get_child_by_name(tcpm->dev->of_node, "connector");
-           ~~~~~~~~~~~~ ^
-   1 error generated.
-
-
-vim +167 drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
-
-   163	
-   164	static int qcom_pmic_typec_init_drm(struct pmic_typec *tcpm)
-   165	{
-   166		tcpm->bridge.funcs = &qcom_pmic_typec_bridge_funcs;
- > 167		tcpm->bridge.of_node = of_get_child_by_name(tcpm->dev->of_node, "connector");
-   168		tcpm->bridge.ops = DRM_BRIDGE_OP_HPD;
-   169		tcpm->bridge.type = DRM_MODE_CONNECTOR_DisplayPort;
-   170	
-   171		return devm_drm_bridge_add(tcpm->dev, &tcpm->bridge);
-   172	}
-   173	#else
-   174	static int qcom_pmic_typec_init_drm(struct pmic_typec *tcpm)
-   175	{
-   176		return 0;
-   177	}
-   178	#endif
-   179	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Instead of making many trivial changes doing the same, all these series
+> should be aligned.
+> 
+> > devm_request_irq/devm_request_threaded_irq_probe seems like
+> > something for another series. But for now, I think I'll accept
+> > this as it is since it fits within the scope of this current
+> > series.
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
