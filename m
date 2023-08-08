@@ -2,60 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 771AE77475A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BD1774918
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235525AbjHHTOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:14:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
+        id S233020AbjHHTsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbjHHTNx (ORCPT
+        with ESMTP id S231232AbjHHTsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:13:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447C5F1DA5;
-        Tue,  8 Aug 2023 09:36:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7209A624E7;
-        Tue,  8 Aug 2023 11:47:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 862FAC433C8;
-        Tue,  8 Aug 2023 11:47:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691495223;
-        bh=fsKdjuu1D9SXsD/rabsdXdoZeYRFssXezltWuSzdU6Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uT15AzUXG4SSVrwWwG7RVftiqLMX1mFVZjr8iQCIomfGTWXxZWZ61YyCupj82IU6R
-         wSOONNdw4uMFZiUlTDTFbPO821VYPpppz+Tdpaeb9lGf3+pDQpIHtbMT4ClfT6R27A
-         L+xKH3RKiY3NOA8v4HQc1w71115obvSLl1xAh0WITFPtdvVKUclJy8e0QK+o8vUvYc
-         8PEE6jNs2r5/RVZo70o++qRzhdSMtRoH6wNHCzOfCJBRZTGxUPCuq8zzKcRA438MOB
-         A04X27o1cI+nHRggTZcsxozZtIyEZV0C/SIDbLuF9ZxetDo2UVDuMKsxOMSR5gU+uP
-         lxn+58xw9mPZQ==
-Date:   Tue, 8 Aug 2023 12:46:59 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        krzysztof.kozlowski+dt@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] dt-bindings: hwmon: Add Infineon TDA38640
-Message-ID: <20230808-stand-cheddar-b76b0b7509a0@spud>
-References: <20230802193155.2170935-1-Naresh.Solanki@9elements.com>
+        Tue, 8 Aug 2023 15:48:32 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C094DEA7;
+        Tue,  8 Aug 2023 09:52:59 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378Bs6Yf059357;
+        Tue, 8 Aug 2023 06:54:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691495646;
+        bh=85O1LHmFg/AJ8yaKognKgKFx1SZjvS1koBhd4R/gD6w=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=bkSh49bjXjvQxiVC9sI24Tb/WFdJvqVLySYHPdnrPSqsVT/ddYZMMdHpUWtrnQmVj
+         NpLqEufiYT2xQA5YvU0PFkaYSuYeAQKcXDIupDqlRZQUom+GZ8l9ou76UQ55ki0kvL
+         mnIhd3XDxHpFxS7KniEQNYRPjmhCU6/T8LDYxeq8=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378Bs6IT025553
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Aug 2023 06:54:06 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
+ Aug 2023 06:54:04 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 8 Aug 2023 06:54:04 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378Bs4SH098556;
+        Tue, 8 Aug 2023 06:54:04 -0500
+Date:   Tue, 8 Aug 2023 17:24:03 +0530
+From:   Dhruva Gole <d-gole@ti.com>
+To:     Kevin Hilman <khilman@kernel.org>
+CC:     Andrew Davis <afd@ti.com>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Praneeth Bajjuri" <praneeth@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Vibhore Vardhan <vibhore@ti.com>, Georgi Vlaev <g-vlaev@ti.com>
+Subject: Re: [PATCH V6 4/4] firmware: ti_sci: Introduce system suspend resume
+ support
+Message-ID: <20230808115403.dkz6ev5vc6bhcmzh@dhruva>
+References: <20230803064247.503036-1-d-gole@ti.com>
+ <20230803064247.503036-5-d-gole@ti.com>
+ <3882f0ac-b74c-6eb2-197c-34ca233cd7a3@ti.com>
+ <20230803155541.nwsfwobfkbpefoyw@dhruva>
+ <8c330bd9-5f4e-8cd0-ed02-c3a696d7473a@ti.com>
+ <20230803160815.yfpkdfssv75d4inf@dhruva>
+ <7ho7jifrda.fsf@baylibre.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wOzG1MUcVESOEa63"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230802193155.2170935-1-Naresh.Solanki@9elements.com>
+In-Reply-To: <7ho7jifrda.fsf@baylibre.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,130 +78,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Kevin,
 
---wOzG1MUcVESOEa63
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for the suggestion. I have a rough proposal inline, please can
+you take a look? I will test those changes and respin this series
+accordingly
 
-On Wed, Aug 02, 2023 at 09:31:51PM +0200, Naresh Solanki wrote:
-> From: Patrick Rudolph <patrick.rudolph@9elements.com>
->=20
-> The TDA38640 chip has different output control mechanisms depending on
-> its mode of operation. When the chip is in SVID mode, only
-> hardware-based output control is supported via ENABLE pin. However, when
-> it operates in PMBus mode, software control works perfectly.
->=20
-> To enable software control as a workaround in SVID mode, add the DT
-> property 'infineon,en-svid-control'. This property will enable the
-> workaround, which utilizes ENABLE pin polarity flipping for output when
-> the chip is in SVID mode.
+On Aug 07, 2023 at 14:57:05 -0700, Kevin Hilman wrote:
+> Dhruva Gole <d-gole@ti.com> writes:
+> 
+> > On Aug 03, 2023 at 11:00:11 -0500, Andrew Davis wrote:
+> >> On 8/3/23 10:55 AM, Dhruva Gole wrote:
+> >> > On Aug 03, 2023 at 10:26:32 -0500, Andrew Davis wrote:
+> >> > > On 8/3/23 1:42 AM, Dhruva Gole wrote:
+> >> > > > Introduce system suspend resume calls that will allow the ti_sci
+> >> > > > driver to support deep sleep low power mode when the user space issues a
+> >> > > > suspend to mem.
+> >> > > > 
+> >> > > > Also, write a ti_sci_prepare_system_suspend call to be used in the driver
+> >> > > > suspend handler to allow the system to identify the low power mode being
+> >> > > > entered and if necessary, send TISCI_MSG_PREPARE_SLEEP with information
+> >> > > > about the mode is being entered and the address for allocated memory for
+> >> > > > storing the context during Deep Sleep.
+> >> > > > 
+> >> > > > We're using "pm_suspend_target_state" to map the kernel's target suspend
+> >> > > > state to SysFW low power mode. Make sure this is available only when
+> >> > > > CONFIG_SUSPEND is enabled.
+> >> > > > 
+> >> > > > Co-developed-by: Dave Gerlach <d-gerlach@ti.com>
+> >> > > > Signed-off-by: Dave Gerlach <d-gerlach@ti.com>
+> >> > > > Signed-off-by: Vibhore Vardhan <vibhore@ti.com>
+> >> > > > Signed-off-by: Georgi Vlaev <g-vlaev@ti.com>
+> >> > > > Signed-off-by: Dhruva Gole <d-gole@ti.com>
+> >> > > > ---
+> >> > > >    drivers/firmware/ti_sci.c | 63 +++++++++++++++++++++++++++++++++++++++
+> >> > > >    1 file changed, 63 insertions(+)
+> >> > > > 
+> >> > [..snip..]
+> >> > > > +static int ti_sci_suspend(struct device *dev)
+> >> > > > +{
+> >> > > > +	struct ti_sci_info *info = dev_get_drvdata(dev);
+> >> > > > +	int ret;
+> >> > > > +
+> >> > > > +	ret = ti_sci_cmd_set_io_isolation(&info->handle, TISCI_MSG_VALUE_IO_ENABLE);
+> >> > > 
+> >> > > After this the will the IOs be in isolation? Or does the firmware wait
+> >> > > until power down begins later?
+> >> > 
+> >> >  From what I understand,
+> >> > IOs will be in isolation immediately
+> >> > 
+> >> 
+> >> That is what I understand too, so then any device that may need to do some
+> >> external communication for its suspend will not function, this must be the
+> >> last driver _suspend() the system calls, how do you enforce that?
+> >
+> > I will make use of .suspend_noirq callbacks in that case. Does that
+> > sound better, or is there anything else I may not be aware of?
+> 
+> Using _noirq just moves the problem.  What if other drivers are also
+> using _noirq callbacks and run after the SCI driver?  You still cannot
 
-Why do you need a custom property for this? How come it is not possible
-to determine what bus you are on?
+True, this thought occurred to me as well which is why I was thinking
+that moving it to ATF might be a better choice.
 
-Thanks,
-Conor.
+> guarantee ordering.
+> 
+> It seems to me that the IO isolation stuff is a system-wide operation,
+> and should probably be handled at the platform suspend_ops level
+> (e.g. suspend_ops->prepare_late()).   This would ensure that it runs
 
->=20
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
-> ---
->  .../hwmon/pmbus/infineon,tda38640.yaml        | 51 +++++++++++++++++++
->  .../devicetree/bindings/trivial-devices.yaml  |  2 -
->  2 files changed, 51 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/pmbus/infineo=
-n,tda38640.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38=
-640.yaml b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.=
-yaml
-> new file mode 100644
-> index 000000000000..c5924ddf1b47
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
-> @@ -0,0 +1,51 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +
-> +$id: http://devicetree.org/schemas/hwmon/pmbus/infineon,tda38640.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Infineon TDA38640 Synchronous Buck Regulator with SVID and I2C
-> +
-> +maintainers:
-> +  - Naresh Solanki <naresh.solanki@9elements.com>
-> +
-> +description: |
-> +  The Infineon TDA38640 is a 40A Single-voltage Synchronous Buck
-> +  Regulator with SVID and I2C designed for Industrial use.
-> +
-> +  Datasheet: https://www.infineon.com/dgdl/Infineon-TDA38640-0000-DataSh=
-eet-v02_04-EN.pdf?fileId=3D8ac78c8c80027ecd018042f2337f00c9
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - infineon,tda38640
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  infineon,en-svid-control:
-> +    description: |
-> +      When enabled, it allows the chip to utilize workaround for
-> +      software control of output when operating in SVID mode where
-> +      hardware-based output control is the default behavior.
-> +    type: boolean
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        tda38640@40 {
-> +            compatible =3D "infineon,tda38640";
-> +            reg =3D <0x40>;
-> +        };
-> +    };
-> +
-> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Doc=
-umentation/devicetree/bindings/trivial-devices.yaml
-> index 40bc475ee7e1..86c7d34f63bf 100644
-> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
-> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-> @@ -151,8 +151,6 @@ properties:
->            - infineon,slb9645tt
->              # Infineon SLB9673 I2C TPM 2.0
->            - infineon,slb9673
-> -            # Infineon TDA38640 Voltage Regulator
-> -          - infineon,tda38640
->              # Infineon TLV493D-A1B6 I2C 3D Magnetic Sensor
->            - infineon,tlv493d-a1b6
->              # Infineon Multi-phase Digital VR Controller xdpe11280
->=20
-> base-commit: cb7022b8976e3c4d12cea2e7bb820a2944e2fd7b
-> --=20
-> 2.41.0
->=20
+I must have missed this approach! Are you suggesting something like what
+was done for am335?
 
---wOzG1MUcVESOEa63
-Content-Type: application/pgp-signature; name="signature.asc"
+static const struct platform_suspend_ops am33xx_pm_ops
 
------BEGIN PGP SIGNATURE-----
+have a similar code for tisci..?
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNIrMwAKCRB4tDGHoIJi
-0oihAQDj+TOikxFnTJr9hRj3GdkLvkr1bJiGSGFjK1mCCOJCbAEA3Dq+TaOnDgP+
-M79wjQU9b0QTgFchLF7bORvLXSTn1QI=
-=mWrL
------END PGP SIGNATURE-----
+static const struct platform_suspend_ops tisci_pm_ops = {
+	.prepare_late = tisci_set_io_isolation
+	};
 
---wOzG1MUcVESOEa63--
+And then while resuming we may want the pinctrl driver to scan for the
+wk_evt bit[0] before the isolation is disabled, so we want the
+tisci_resume/ remove isolation to be called later than that.
+
+So I a wondering if the code below makes sense?
+
+static const struct platform_suspend_ops tisci_pm_ops = {
+	.prepare_late = tisci_suspend // also includes set isolation
+	.end = tisci_resume 	// Disables isolation
+	};
+
+However a minor drawback here maybe that the serial logs on the resume
+path may not appear when using a serial console for example. However
+they should be able to easily access using dmesg.
+
+> *after* all the driver hooks (even driver _noirq hooks.) and right
+> before the full suspend (or s2idle.)
+> 
+> Now, all that being said, I noticed that in v7, you didn't move this to
+> _noirq, but instead suggested that this be handled by TF-A.  I suppose
+> that's an option also, but my suggestion above should work also.
+
+Thanks for the pointer! I do believe it will make more sense to do it
+from linux itself unless we have no way to do it in linux.
+
+> 
+> Kevin
+
+
+[0] Table 5-517. Description Of The Pad Configuration Register Bits
+https://www.ti.com/lit/pdf/spruid7
+
+NOTE: The hardware works in such a way that as soon as the IO isolation
+is disabled the wake_evt information is lost so the pinctrl-single
+driver won't be able to know what pin woke it up if we disable io
+isolation before it has the chance to look at the padconf registers
+
+-- 
+Best regards,
+Dhruva Gole <d-gole@ti.com>
