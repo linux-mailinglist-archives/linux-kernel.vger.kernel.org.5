@@ -2,140 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0FB7742F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA427741AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235121AbjHHRx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
+        id S234508AbjHHRZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231982AbjHHRxE (ORCPT
+        with ESMTP id S234417AbjHHRZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:53:04 -0400
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D780429B5D;
-        Tue,  8 Aug 2023 09:23:36 -0700 (PDT)
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-31765aee31bso4407799f8f.1;
-        Tue, 08 Aug 2023 09:23:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511776; x=1692116576;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Evi9zaaIocUJUljhUqjZf7aG4nW/p3HKqWc5e4qc1/c=;
-        b=lD9mAXwki50v5R4shgAO1eWV6+duHpa3z72W63T7UURzzxtw3HoaFXmxhgceq6d7FT
-         q7QMebiG8AHcS1p6i/B0zGbry6Gp/YEFrtKAUzPdclXOfk8h/tgW1VQ+8x4o7J0GHXve
-         LXGmBh8JBE8yAkCwAQcIno4ShJJtcF26kmLq1bVkwv4vxQE368eYHIJywEd9IR3x0SdV
-         AiJq2ikEthR2wECttUhEjMf1mX5dUuWOYpVXPzFfwE/iWv6amFPW9/XBVgzsYAHzEon4
-         ZWW/+sWxUHHyxlOr7NwDHktMHE/brgKXLPb09e+epZo32UBm1yqYlHCa5o7AUyHW4OAG
-         8zgQ==
-X-Gm-Message-State: AOJu0Yx4BO3TxX9eF4R6aGXjrCgpMirBYdzlwbS2IyPskoPDLucjHL7f
-        p4FLyEKCFx2cGKEhc3OpbJith4rK6nMObA==
-X-Google-Smtp-Source: AGHT+IF+kwB5pVAkz6onSyAIl+T5+1+ttJMPZ4G+vAb/sWRvLXfUO1y6Zyhx90T3HXmclZ/857Yrnw==
-X-Received: by 2002:a17:906:3046:b0:992:6064:f32b with SMTP id d6-20020a170906304600b009926064f32bmr11160819ejd.46.1691502071224;
-        Tue, 08 Aug 2023 06:41:11 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-020.fbsv.net. [2a03:2880:31ff:14::face:b00c])
-        by smtp.gmail.com with ESMTPSA id d11-20020a170906c20b00b00992d70f8078sm6731416ejz.106.2023.08.08.06.41.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 06:41:10 -0700 (PDT)
-From:   Breno Leitao <leitao@debian.org>
-To:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org
-Subject: [PATCH v2 6/8] bpf: Leverage sockptr_t in BPF setsockopt hook
-Date:   Tue,  8 Aug 2023 06:40:46 -0700
-Message-Id: <20230808134049.1407498-7-leitao@debian.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230808134049.1407498-1-leitao@debian.org>
-References: <20230808134049.1407498-1-leitao@debian.org>
+        Tue, 8 Aug 2023 13:25:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5934220270
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:10:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CD31962577
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 13:41:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81A8BC433C8;
+        Tue,  8 Aug 2023 13:41:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691502082;
+        bh=hwWwIFOKy4UXJwpOTDB59h5Fiq2GMxp0VRzPBzBvVKc=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=B/hsdE4x3isQatcGEmZzVRLyMDcHXqL9Tj1zZJmvXFWfiInx3TmpxytEILOBWqdTb
+         w93Z8PKOHgQZgRrh8n7g2kEPdP4uKXW6UmKWjG/HR4oW8ISgJBaxt8dMSp1j6pM3Pn
+         y5MiVdtlHRXDd5YsYPCCc8LEY5Y5ZxX4aS/1p+XkHNjVIbt/RHt3icex4cNVzFfz28
+         2+nCJllCygIKpVmVkOsS4WpvguEXllfRhcsZT+PF3OhXVoyAuRIE5DSeCcvO6pVqqX
+         uhhp0PfA18ZelOlXID/56DK1uOtLa2xcsT1rkw9wsnVUf/yvTGLnAnlEagaCMz4efI
+         XI8+Sw8mBPmCA==
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Ruan Jinjie <ruanjinjie@huawei.com>
+In-Reply-To: <20230807134127.2380390-1-ruanjinjie@huawei.com>
+References: <20230807134127.2380390-1-ruanjinjie@huawei.com>
+Subject: Re: [PATCH -next] regulator: rpi-panel-attiny-regulator: Remove
+ redundant of_match_ptr()
+Message-Id: <169150208122.40651.11560815070971961815.b4-ty@kernel.org>
+Date:   Tue, 08 Aug 2023 14:41:21 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move BPF setsockopt hook (__cgroup_bpf_run_filter_setsockopt()) to use
-sockptr instead of user pointers. This brings flexibility to the
-function, since it could be called with userspace or kernel pointers.
+On Mon, 07 Aug 2023 21:41:27 +0800, Ruan Jinjie wrote:
+> The driver depends on CONFIG_OF, so it is not necessary to use
+> of_match_ptr() here, and __maybe_unused can also be removed.
+> 
+> Even for drivers that do not depend on CONFIG_OF, it's almost always
+> better to leave out the of_match_ptr(), since the only thing it can
+> possibly do is to save a few bytes of .text if a driver can be used both
+> with and without it.
+> 
+> [...]
 
-This also aligns with the getsockopt() counterpart, which is now using
-sockptr_t types.
+Applied to
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- include/linux/bpf-cgroup.h | 2 +-
- kernel/bpf/cgroup.c        | 5 +++--
- net/socket.c               | 2 +-
- 3 files changed, 5 insertions(+), 4 deletions(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index d16cb99fd4f1..5e3419eb267a 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -137,7 +137,7 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
- 				   enum cgroup_bpf_attach_type atype);
- 
- int __cgroup_bpf_run_filter_setsockopt(struct sock *sock, int *level,
--				       int *optname, char __user *optval,
-+				       int *optname, sockptr_t optval,
- 				       int *optlen, char **kernel_optval);
- 
- int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index ebc8c58f7e46..f0dedd4f7f2e 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1785,7 +1785,7 @@ static bool sockopt_buf_allocated(struct bpf_sockopt_kern *ctx,
- }
- 
- int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
--				       int *optname, char __user *optval,
-+				       int *optname, sockptr_t optval,
- 				       int *optlen, char **kernel_optval)
- {
- 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-@@ -1808,7 +1808,8 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 
- 	ctx.optlen = *optlen;
- 
--	if (copy_from_user(ctx.optval, optval, min(*optlen, max_optlen)) != 0) {
-+	if (copy_from_sockptr(ctx.optval, optval,
-+			      min(*optlen, max_optlen))) {
- 		ret = -EFAULT;
- 		goto out;
- 	}
-diff --git a/net/socket.c b/net/socket.c
-index c686c6e89441..b7d22633995a 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -2241,7 +2241,7 @@ int __sys_setsockopt(int fd, int level, int optname, char __user *user_optval,
- 
- 	if (!in_compat_syscall())
- 		err = BPF_CGROUP_RUN_PROG_SETSOCKOPT(sock->sk, &level, &optname,
--						     user_optval, &optlen,
-+						     optval, &optlen,
- 						     &kernel_optval);
- 	if (err < 0)
- 		goto out_put;
--- 
-2.34.1
+Thanks!
+
+[1/1] regulator: rpi-panel-attiny-regulator: Remove redundant of_match_ptr()
+      commit: 200ee464f7a9a4e8d7a51a2083b28cf240e7cb91
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
