@@ -2,109 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3317A774BCE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E166774BD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231953AbjHHUzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
+        id S235850AbjHHU6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235021AbjHHUzf (ORCPT
+        with ESMTP id S230323AbjHHU5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:55:35 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BAF43A91
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 13:44:07 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-790dcf48546so38564239f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 13:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1691527446; x=1692132246;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Rjv8XIJqffOkKpyD7dykI7sGXhmoGCSRZKfdAmqWIW8=;
-        b=XMLm8Vt+Alntw+x3XwstRjO4/8p7+j5rftUaBVS44dgGBGtV2/ERFPJBSnLIi+yOWQ
-         DDRqu//Q3ZaKBf7UTGPcnN9mTRD+RCpmeTREphyqI6yANvi4bsSeffcVG+6MoTZgV9Ur
-         uEJ8pSxVKym1aYP3YzUiQU+j8XA1yF0iryqGg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691527446; x=1692132246;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rjv8XIJqffOkKpyD7dykI7sGXhmoGCSRZKfdAmqWIW8=;
-        b=TSiMNRURAPumvtHstBSKyr/1R6dUgMAC5Hw/Edsm8DboYF9DlY5xMk+Yr6loyVQMkO
-         9UU08uJJn0YdhMn3osWY1LO1e1++fwVaagMoqaTXKTOBm6DKByAfH0vhnsrAYMEjN2Gy
-         K7V3YWfyM5zeOw0jbPLyJEZqsloLQLKESE5etIjBfbSwVwG0ciPgJl2BlAwc8eXorXBk
-         ZDPTv6xuw7TxhZ0wIvma8X+QUMZg6Jxy8X6T488s0cplsol8abmQEJ793qf1dsXULq8+
-         twghpHSdHFepLmDK6b0wZBVZ53DnU7tczPGc2DaMNowbaWEiRwBbSqQIo7oG5jeENn7v
-         SitQ==
-X-Gm-Message-State: AOJu0YwKhsD40S0mk5ous+BqrimRQlghsRRXAKyviFO05FsR1dWCqlX8
-        KS8Kz8BSvj81Ufi3IVc4ipF9KQ==
-X-Google-Smtp-Source: AGHT+IFJfvWoVvPgmusc54DOL0NDBOmrgtKVAa7yCf/zmoS8y2tSADL1GPkwyJ8VfLnyse3zjqERkw==
-X-Received: by 2002:a05:6602:29c7:b0:780:d6ef:160 with SMTP id z7-20020a05660229c700b00780d6ef0160mr1133187ioq.1.1691527445894;
-        Tue, 08 Aug 2023 13:44:05 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id x19-20020a5d9913000000b007836a9ca101sm3890696iol.22.2023.08.08.13.44.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 13:44:05 -0700 (PDT)
-Message-ID: <c1971f70-6c1d-4cd5-e130-ff948942f5b3@linuxfoundation.org>
-Date:   Tue, 8 Aug 2023 14:44:04 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/4] RSEQ selftests updates
-Content-Language: en-US
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230515135801.15220-1-mathieu.desnoyers@efficios.com>
- <fd64bf35-8e18-8da7-d83c-882fdc60a87d@efficios.com>
- <f0fdf470-f25d-b51f-8a2d-f891ea7b94b1@linuxfoundation.org>
- <4fb64f73-12eb-d6a6-6f84-97e6195d7a5b@efficios.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <4fb64f73-12eb-d6a6-6f84-97e6195d7a5b@efficios.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 16:57:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F758684
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 13:50:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691527834; x=1723063834;
+  h=date:from:to:cc:subject:message-id;
+  bh=aJxnbcCC+LdOITOPKsi57rvLb2y0AI4RU5qTEVtD1t8=;
+  b=fG6GtgtD3OzsnIo9//auhAzSWonfkgeiMsd3AkOnYzCj2RP+2ClrbqiU
+   cKpmGXN5gX8u1VIKChlXj873GyrwilsejfVyW20OSJZ7vjUjd3y82WZzT
+   dV+/aHd2uA9t2kjPp3fOQFMkKgs1dLh1fy3WzpyD1a4GO3VTFdgFdhnVV
+   JkcHzl8o586717s5U0bdxBEdG0r0pe9n4Te6mdgk4M4wJDFXtT/HVxJKk
+   k+yGbLfP4YA0D6fgNvDpm4SRHVuvhxAacU9IYvaAZ8yxTrNo2ok/59puv
+   uNIbjl4t7ugo93At9kUkMRNmsWgiKGmF6lCyF8QPZkRuwIoRj3dCWlnZa
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="361069764"
+X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
+   d="scan'208";a="361069764"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 13:50:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="845650426"
+X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
+   d="scan'208";a="845650426"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 08 Aug 2023 13:50:12 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qTTee-0005bk-0v;
+        Tue, 08 Aug 2023 20:50:12 +0000
+Date:   Wed, 09 Aug 2023 04:49:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/boot] BUILD SUCCESS
+ a1b87d54f4e45ff5e0d081fb1d9db3bf1a8fb39a
+Message-ID: <202308090418.HGtYc90h-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/23 13:38, Mathieu Desnoyers wrote:
-> On 8/7/23 14:53, Shuah Khan wrote:
->> On 6/6/23 07:36, Mathieu Desnoyers wrote:
->>> Hi Peter,
->>>
->>> Can you queue those fixes through your tree ?
->>>
->>
->>
->> Peter, Mathieu,
->>
->> Doesn't look like this series has been pickedup?
-> 
-> Not AFAIK. Peter, if you have this somewhere in your tip queue, please let us know.
-> 
->>
->> I can take these in for 6.6-rc1 if there are no dependencies
->> on other trees.
-> 
-> It should not have dependencies with other trees.
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
+branch HEAD: a1b87d54f4e45ff5e0d081fb1d9db3bf1a8fb39a  x86/efistub: Avoid legacy decompressor when doing EFI boot
 
-Applied to linux-kselftest next for Linux 6.6-rc1.
+elapsed time: 721m
 
-thanks,
--- Shuah
+configs tested: 93
+configs skipped: 4
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r023-20230808   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r003-20230808   gcc  
+arc                  randconfig-r043-20230808   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r006-20230808   gcc  
+arm                  randconfig-r011-20230808   clang
+arm                  randconfig-r012-20230808   clang
+arm                  randconfig-r046-20230808   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r016-20230808   gcc  
+csky                 randconfig-r033-20230808   gcc  
+hexagon              randconfig-r015-20230808   clang
+hexagon              randconfig-r041-20230808   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230808   clang
+i386         buildonly-randconfig-r005-20230808   clang
+i386         buildonly-randconfig-r006-20230808   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i006-20230808   clang
+i386                 randconfig-i011-20230808   gcc  
+i386                 randconfig-i012-20230808   gcc  
+i386                 randconfig-i013-20230808   gcc  
+i386                 randconfig-i014-20230808   gcc  
+i386                 randconfig-i015-20230808   gcc  
+i386                 randconfig-i016-20230808   gcc  
+i386                 randconfig-r012-20230808   gcc  
+i386                 randconfig-r014-20230808   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r032-20230808   gcc  
+loongarch            randconfig-r034-20230808   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r024-20230808   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r004-20230808   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r016-20230808   gcc  
+parisc               randconfig-r026-20230808   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r001-20230808   clang
+powerpc              randconfig-r013-20230808   gcc  
+powerpc              randconfig-r022-20230808   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r014-20230808   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r011-20230808   gcc  
+sh                               allmodconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64              randconfig-r025-20230808   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r015-20230808   clang
+um                   randconfig-r021-20230808   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230808   clang
+x86_64       buildonly-randconfig-r002-20230808   clang
+x86_64       buildonly-randconfig-r003-20230808   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r002-20230808   clang
+x86_64               randconfig-x006-20230808   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r005-20230808   gcc  
+xtensa               randconfig-r031-20230808   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
