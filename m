@@ -2,91 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9EE773B15
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFD6773B5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbjHHPlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 11:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        id S229798AbjHHPtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 11:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbjHHPkt (ORCPT
+        with ESMTP id S230079AbjHHPrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:40:49 -0400
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1372109
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:36:28 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-4fe07f0636bso9569570e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:36:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691508891; x=1692113691;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0wSCMvsrvGtP/SRB0drN+VU/GnJ3+psGhnVmypWifVc=;
-        b=a0hkuKG/eW/8mV1nyNFIwbBQgL7FELk2fmWcaOWumd9WsY8dztDCl+YGrUcAqwBawn
-         7uhLfTqToONmup5j2gaQRfZK7utVS+WYYFGVaMnLbTXlmGIYEgPF+CaN+wAf4sJaBUjd
-         GHQJxh0Z5PR+Oef1edt9MCh6Gf8qt2GdMMyurYh81uyk6VcHbB02p/1hQ5FfjqmvGglf
-         a3a3PE2YBdJnEjBne59LviVf8s6RB36zkI5AuDaDCWYq2iT3kDE5h5SkFcmil/VBMdqW
-         dJg3e+zBZf8I+IY0bSxAmQpnG9GKgfhfOZndrtUAtQorJ6kPnIoJPrkjUOTvo7OpPUdI
-         KZOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691508891; x=1692113691;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0wSCMvsrvGtP/SRB0drN+VU/GnJ3+psGhnVmypWifVc=;
-        b=Ekw8zZs5ZHXpqyDU2PDLRK+OZi9n0g2eDpfGBrH+skcCrew4e9GkoB8giZl1waji/B
-         0+mGpSxRgoaXiS8VmCDu18WMD+LE9iK28ilmyQD2ekUMtIh2pUk1OCYjqrkWPO0SUKXx
-         kTR3CJf7yXcHj1O4xEbDaY+gUNHfCOBd9/IypMQeSH/GmB3TDHlvNYn2P98gd6W1Lt3y
-         JERckSJ5x9vh4p6ZKfeB8/DQlfwFfXYR35ox8ZalDr88qBPzCq/tq+BkSpzO8kJhX1mN
-         2hCxPQIp1fIdsxRMT1QLsZVi9GFWE+iGIv48KV/3uuGx0sbgvISsjxSlE+vxLohNJ7jG
-         4LSA==
-X-Gm-Message-State: AOJu0YxJITDfwEFgrFeyiNDyJYQUjEuzIGJhJC0jnGyc662wEA9cr5uT
-        mJpoxkCoCt37G/YO+8RJVUBz55C0ldJR7dl/vKo=
-X-Google-Smtp-Source: AGHT+IEt+Kf3mPdgxinq+Mt4SlVaTOKw94gaghcqyMPjmABWGoq+4o6zGEM2ZElSHkgdewFxWTvliA==
-X-Received: by 2002:adf:ff8c:0:b0:317:df3e:13d with SMTP id j12-20020adfff8c000000b00317df3e013dmr5441304wrr.38.1691487443405;
-        Tue, 08 Aug 2023 02:37:23 -0700 (PDT)
-Received: from [192.168.69.115] ([176.176.177.253])
-        by smtp.gmail.com with ESMTPSA id o10-20020a5d474a000000b003141a3c4353sm13073883wrs.30.2023.08.08.02.37.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 02:37:23 -0700 (PDT)
-Message-ID: <cbc22d2f-726d-86fc-1f34-c529cd91fdbe@linaro.org>
-Date:   Tue, 8 Aug 2023 11:37:20 +0200
+        Tue, 8 Aug 2023 11:47:48 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98801449C;
+        Tue,  8 Aug 2023 08:41:42 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RKp5s6P0yz6H8xJ;
+        Tue,  8 Aug 2023 17:38:25 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 8 Aug
+ 2023 10:43:23 +0100
+Date:   Tue, 8 Aug 2023 10:43:23 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Masahisa Kojima <masahisa.kojima@linaro.org>
+CC:     Ard Biesheuvel <ardb@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        "Sumit Garg" <sumit.garg@linaro.org>,
+        <linux-kernel@vger.kernel.org>, <op-tee@lists.trustedfirmware.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-efi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v8 3/5] efi: Add tee-based EFI variable driver
+Message-ID: <20230808104323.000016d3@Huawei.com>
+In-Reply-To: <20230807025343.1939-4-masahisa.kojima@linaro.org>
+References: <20230807025343.1939-1-masahisa.kojima@linaro.org>
+        <20230807025343.1939-4-masahisa.kojima@linaro.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] mips: remove unneeded #include <asm/export.h>
-Content-Language: en-US
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-References: <20230807153243.996262-1-masahiroy@kernel.org>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20230807153243.996262-1-masahiroy@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/23 17:32, Masahiro Yamada wrote:
-> There is no EXPORT_SYMBOL line there, hence #include <asm/export.h>
-> is unneeded.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->   arch/mips/kernel/octeon_switch.S | 1 -
->   arch/mips/kernel/r2300_switch.S  | 1 -
->   2 files changed, 2 deletions(-)
+On Mon,  7 Aug 2023 11:53:40 +0900
+Masahisa Kojima <masahisa.kojima@linaro.org> wrote:
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+> When the flash is not owned by the non-secure world, accessing the EFI
+> variables is straightforward and done via EFI Runtime Variable Services.
+> In this case, critical variables for system integrity and security
+> are normally stored in the dedicated secure storage and only accessible
+> from the secure world.
+> 
+> On the other hand, the small embedded devices don't have the special
+> dedicated secure storage. The eMMC device with an RPMB partition is
+> becoming more common, we can use an RPMB partition to store the
+> EFI Variables.
+> 
+> The eMMC device is typically owned by the non-secure world(linux in
+> this case). There is an existing solution utilizing eMMC RPMB partition
+> for EFI Variables, it is implemented by interacting with
+> TEE(OP-TEE in this case), StandaloneMM(as EFI Variable Service Pseudo TA),
+> eMMC driver and tee-supplicant. The last piece is the tee-based
+> variable access driver to interact with TEE and StandaloneMM.
+> 
+> So let's add the kernel functions needed.
+> 
+> This feature is implemented as a kernel module.
+> StMM PTA has TA_FLAG_DEVICE_ENUM_SUPP flag when registered to OP-TEE
+> so that this tee_stmm_efi module is probed after tee-supplicant starts,
+> since "SetVariable" EFI Runtime Variable Service requires to
+> interact with tee-supplicant.
+> 
+> Acked-by: Sumit Garg <sumit.garg@linaro.org>
+> Co-developed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
 
+I'm going to point out some stuff in here about the use of globals
+etc which wouldn't be acceptable in many subsystems.  However, it's
+up to the relevant maintainers on whether they want that stuff cleaned
+up or not.
+
+Other than that, this looks fine to me, but I'm reluctant to give an RB
+with those globals in place.
+
+Jonathan
+
+> diff --git a/drivers/firmware/efi/stmm/tee_stmm_efi.c b/drivers/firmware/efi/stmm/tee_stmm_efi.c
+> new file mode 100644
+> index 000000000000..e03475966dc1
+> --- /dev/null
+> +++ b/drivers/firmware/efi/stmm/tee_stmm_efi.c
+> @@ -0,0 +1,612 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + *  EFI variable service via TEE
+> + *
+> + *  Copyright (C) 2022 Linaro
+> + */
+> +
+> +#include <linux/efi.h>
+> +#include <linux/kernel.h>
+> +#include <linux/slab.h>
+> +#include <linux/tee.h>
+> +#include <linux/tee_drv.h>
+> +#include <linux/ucs2_string.h>
+> +#include "mm_communication.h"
+> +
+> +static struct efivars tee_efivars;
+> +static struct efivar_operations tee_efivar_ops;
+
+Hmm. Globals.  Never a good thing to see in a driver, but from a quick
+look it seems the various efi callbacks take no useful parameters
+that would let us do the usual embedded structure and container_of
+tricks.  So whilst I'd like to see that fixed, it's not my subsystem
+and it would be a non trivial amount of work.
+
+> +
+> +static size_t max_buffer_size; /* comm + var + func + data */
+> +static size_t max_payload_size; /* func + data */
+> +
+> +struct tee_stmm_efi_private {
+> +	struct tee_context *ctx;
+> +	u32 session;
+> +	struct device *dev;
+> +};
+> +
+> +static struct tee_stmm_efi_private pvt_data;
+
+...
+> +
+> +static int tee_stmm_efi_probe(struct device *dev)
+> +{
+> +	struct tee_ioctl_open_session_arg sess_arg;
+> +	efi_status_t ret;
+> +	int rc;
+> +
+> +	/* Open context with TEE driver */
+
+My natural aversion to comments as things that bit rot applies here.
+Fairly obvious this opens the context from the function name, so not
+sure the comment adds anything.
+
+> +	pvt_data.ctx = tee_client_open_context(NULL, tee_ctx_match, NULL, NULL);
+> +	if (IS_ERR(pvt_data.ctx))
+> +		return -ENODEV;
 
