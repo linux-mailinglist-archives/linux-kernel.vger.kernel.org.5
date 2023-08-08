@@ -2,113 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CCF773640
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6771E773646
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 04:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbjHHCJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 22:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
+        id S230245AbjHHCLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 22:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjHHCJU (ORCPT
+        with ESMTP id S229566AbjHHCK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 22:09:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF7BE9;
-        Mon,  7 Aug 2023 19:09:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 387026236E;
-        Tue,  8 Aug 2023 02:09:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEFA9C433C7;
-        Tue,  8 Aug 2023 02:09:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691460558;
-        bh=K3rT1tMnJnj38jr/g9b0xYkr68We3HjPQOUUOlFXffQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kfyzdKVH4OgGOyi5OtD6F24v25o2XDZ5m6SvveMEOszRKEfZZ9SylUaGPkfodN407
-         7/mPqRmYpPbp2dPcTKlrEIJC1Zv5LRh+2JzB18DxJOynATxXwotatsdvn/NN5ZyIbh
-         xI+yzS42slBVvOmIzuzIZ6xOpvVg9Aci3OwoLZalL/uth32GZhSMU/Wd7rI2yT3/O0
-         8Adq7sCyzqTTK9WNmXggxjvLnQQRycaDNcLAjqz5Xumgx4CBBdd3EH6PcwJH0/qRJv
-         JwU8b8s4wpS/lSbZzxiGwrvY+tzvlO3JN8W9VVJoIsZYauX65nm8kTPwSMSOK7oodS
-         bvwbazvAzKZwg==
-Date:   Mon, 7 Aug 2023 19:09:14 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Joel Granados <joel.granados@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Kees Cook <keescook@chromium.org>,
-        "D. Wythe" <alibuda@linux.alibaba.com>, mptcp@lists.linux.dev,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Paolo Abeni <pabeni@redhat.com>, coreteam@netfilter.org,
-        Jan Karcher <jaka@linux.ibm.com>,
-        Alexander Aring <alex.aring@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        bridge@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        Joerg Reuter <jreuter@yaina.de>, Julian Anastasov <ja@ssi.bg>,
-        David Ahern <dsahern@kernel.org>,
-        netfilter-devel@vger.kernel.org, Wen Gu <guwen@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        linux-wpan@vger.kernel.org, lvs-devel@vger.kernel.org,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-sctp@vger.kernel.org, Tony Lu <tonylu@linux.alibaba.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Florian Westphal <fw@strlen.de>, willy@infradead.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-rdma@vger.kernel.org, Roopa Prabhu <roopa@nvidia.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Simon Horman <horms@verge.net.au>,
-        Mat Martineau <martineau@kernel.org>, josh@joshtriplett.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Eric Dumazet <edumazet@google.com>, linux-hams@vger.kernel.org,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Xin Long <lucien.xin@gmail.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        Joel Granados <j.granados@samsung.com>
-Subject: Re: [PATCH v2 00/14] sysctl: Add a size argument to register
- functions in sysctl
-Message-ID: <20230807190914.4ff3eb36@kernel.org>
-In-Reply-To: <ZNFlqwwvE6w6HyHl@bombadil.infradead.org>
-References: <20230731071728.3493794-1-j.granados@samsung.com>
-        <ZMgpck0rjqHR74sl@bombadil.infradead.org>
-        <ZNFlqwwvE6w6HyHl@bombadil.infradead.org>
+        Mon, 7 Aug 2023 22:10:58 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25A81711;
+        Mon,  7 Aug 2023 19:10:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691460653; x=1722996653;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=I0sX9zQ55/pnapaBgwBXw+8hFPy7SpHzYq+j/u0jVVw=;
+  b=joHMlYxPWu5ShZUS3ILS82ZCwlpnmi4lVi9vegrtgdysZxfHyxdrnQ/D
+   BgazzmrzTSeruioIdqjDbJ2m+SurGkS8iPoZpMBmyTePexgZhwskY8B11
+   Bxlp/KKRbOgkunLaSF338P+TrHTdOD7+AZZ24CkASRQF7dx/gxMbMbQaW
+   lh/TR72cOLj2VtPBe6gKCDuhvLP+CUuDM9qfZQewLtP9+Dqu6XPwdZEFm
+   waVmeP0UbDZ7ekGPUU4LU4CqPQuMvAhd6afKPDBwDH/gUgCPHoiu4Cq1i
+   IzZCjUIH3facI05fgHwNFaPgUMSbD7KQ16NKzkoVtir5m45n8/rgufyY/
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="373453505"
+X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
+   d="scan'208";a="373453505"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 19:10:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="977689341"
+X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
+   d="scan'208";a="977689341"
+Received: from fyin-dev.sh.intel.com ([10.239.159.32])
+  by fmsmga006.fm.intel.com with ESMTP; 07 Aug 2023 19:10:49 -0700
+From:   Yin Fengwei <fengwei.yin@intel.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, akpm@linux-foundation.org,
+        willy@infradead.org, vishal.moola@gmail.com,
+        wangkefeng.wang@huawei.com, minchan@kernel.org, yuzhao@google.com,
+        david@redhat.com, ryan.roberts@arm.com, shy828301@gmail.com
+Cc:     fengwei.yin@intel.com
+Subject: [PATCH v2 1/3] madvise:madvise_cold_or_pageout_pte_range(): don't use mapcount() against large folio for sharing check
+Date:   Tue,  8 Aug 2023 10:09:15 +0800
+Message-Id: <20230808020917.2230692-2-fengwei.yin@intel.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230808020917.2230692-1-fengwei.yin@intel.com>
+References: <20230808020917.2230692-1-fengwei.yin@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Aug 2023 14:44:11 -0700 Luis Chamberlain wrote:
-> > This is looking great thanks, I've taken the first 7 patches above
-> > to sysctl-next to get more exposure / testing and since we're already
-> > on rc4.  
-> 
-> Ok I havent't heard much more feedback from networking folks
+Commit 07e8c82b5eff ("madvise: convert madvise_cold_or_pageout_pte_range()
+to use folios") replaced the page_mapcount() with folio_mapcount() to
+check whether the folio is shared by other mapping.
 
-What did you expect to hear from us?
+It's not correct for large folio. folio_mapcount() returns the total
+mapcount of large folio which is not suitable to detect whether the folio
+is shared.
 
-My only comment is to merge the internal prep changes in and then send
-us the networking changes in the next release cycle.
+Use folio_estimated_sharers() which returns a estimated number of shares.
+That means it's not 100% correct. It should be OK for madvise case here.
+
+User-visible effects is that the THP is skipped when user call madvise.
+But the correct behavior is THP should be split and processed then.
+
+NOTE: this change is a temporary fix to reduce the user-visible effects
+before the long term fix from David is ready.
+
+Fixes: 07e8c82b5eff ("madvise: convert madvise_cold_or_pageout_pte_range() to use folios")
+Cc: stable@vger.kernel.org
+Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
+Reviewed-by: Yu Zhao <yuzhao@google.com>
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+---
+ mm/madvise.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 1d7933933e31..49af35e2d99a 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -383,7 +383,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+ 		folio = pfn_folio(pmd_pfn(orig_pmd));
+ 
+ 		/* Do not interfere with other mappings of this folio */
+-		if (folio_mapcount(folio) != 1)
++		if (folio_estimated_sharers(folio) != 1)
+ 			goto huge_unlock;
+ 
+ 		if (pageout_anon_only_filter && !folio_test_anon(folio))
+@@ -459,7 +459,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+ 		if (folio_test_large(folio)) {
+ 			int err;
+ 
+-			if (folio_mapcount(folio) != 1)
++			if (folio_estimated_sharers(folio) != 1)
+ 				break;
+ 			if (pageout_anon_only_filter && !folio_test_anon(folio))
+ 				break;
+-- 
+2.39.2
+
