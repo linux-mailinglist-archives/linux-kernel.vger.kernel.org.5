@@ -2,260 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9881D774189
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5440F774037
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234504AbjHHRXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:23:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42246 "EHLO
+        id S233299AbjHHRAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230417AbjHHRWp (ORCPT
+        with ESMTP id S233910AbjHHQ7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:22:45 -0400
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E957D7A5
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:09:28 -0700 (PDT)
-Received: from relay1-d.mail.gandi.net (unknown [217.70.183.193])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id AF130D2EBB
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 06:29:47 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DBBD3240002;
-        Tue,  8 Aug 2023 06:29:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691476184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0vlOW+m6/kgqn3cxpsCF/6Z4kqpXbg8aetH5L3Z+xlI=;
-        b=iGc2YmhmqE/9pFacAlXbsSl1cEtqhFZPhTuggjUxgr/Z9u1JwecUCV+uGcyN34M3PKAkFb
-        I07Uy10PS0y4HtlAEgonl+2DnXhN/pT8ccl2dTOSmNAtGswabVUHNVQ7wsf+nwA457WSLv
-        s7mFrI4hml6cuTzyyJmen/Rb43kxc662ZQQcHtdsfRwqfD+kGaHH+zGJ9GLLL2o6v7Ni7w
-        njMsZIFKjtNi8o+5aWtUWLDlvfd3VqSDDOs/k3UBFkxWVL84YtfLTQfy6rav44DHqEX/o2
-        Q81GfG8+gXqHTOMvMFhD73wFUFdR2VMxWd7DhKzjebQpG3zGE3LNtkoXQ5RYdw==
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Michael Walle <michael@walle.cc>,
-        <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v9 7/7] nvmem: core: Expose cells through sysfs
-Date:   Tue,  8 Aug 2023 08:29:32 +0200
-Message-Id: <20230808062932.150588-8-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230808062932.150588-1-miquel.raynal@bootlin.com>
-References: <20230808062932.150588-1-miquel.raynal@bootlin.com>
+        Tue, 8 Aug 2023 12:59:46 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115675593C
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:00:24 -0700 (PDT)
+Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com [209.85.128.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id C9313417C2
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 06:31:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1691476267;
+        bh=fRoLFKuBBTsM517w9bYkoh1sgHovrVmkfaDshlCShZM=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=I5lwIlvWtZR5iJ6jrrhoRW9SJ9BpjIu4idjHy7/LKnlYWXVZlWxLK2JprhNSrwcdc
+         A3I1IsrK/dh8cg2FRQMjLUO51WWDf2GRET880qX0aKOxpGqExcZfIVI5ibR8QqOOgf
+         Uh1N06CjQsWsAP5sez3Z+qQ11yQd/vxVR7PSwDkt2HadKO2LuPk+Fooo0pp4UdMLsX
+         lDHztyonuZR0enr1AHX2fxB0FaLtsmT+83DNrDrXKw7Vys/SaQRezI8mJ1YIUhSQSr
+         1cuk33saVsUsv+Wcfb7Pt1zfz/6EAzMMsHGjrfjxjlrWBskiwqgc1ENEGLh1JbL3sM
+         CODWrJWnVCAkw==
+Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-5897d05e878so1377537b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 23:31:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691476267; x=1692081067;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fRoLFKuBBTsM517w9bYkoh1sgHovrVmkfaDshlCShZM=;
+        b=f20Hitmh5UmUl7g5mbn+veAAN23ajMmJVLg5DLkcYUv7oXaV+vf7KjTw1ec3Bgcb/j
+         DK1nZ2J8kZdej0GAXZHRqlMnV6C5hPbUKZl4xLEwS3U0gh+NKU8HIzh/z70UV4ytytpj
+         in82emy8e9Ig2v98W9TjeIplvNNpli2goqRn7HVqL7yaXn4+dLqOa+uwhvPkvsqyOROg
+         A0lcAOU+qvOIxP0LIZ6DbrKt+q1gkze8JT3G2QGVfgwkgYiTpa8iuyOC8HdKYpR3KWaR
+         7iMBmOw14vjGOuvJ9wyvBCWde5pE0kDt3XpWLDhdrgeqac0Ts3330cbgN50zZTBVzU5Z
+         esqA==
+X-Gm-Message-State: AOJu0Yz+Jk+uTAnw/NBjTQ9wWXsoNnzHbo/psIwOqV6mnXpQy7ftYGaf
+        dhQ2Wl566bTEumXJsUHu7cIqspFkHmxGN/wOPmUyFLb9V1MHjyIbwnxdhkBK7I7hXSPE1dmttAx
+        rNO/J7XYyywHBKjzkSQoHsGnLrizHx9OvqZK99PnxoanrTaOaSl9XgGBI8A==
+X-Received: by 2002:a25:268f:0:b0:d4c:68e5:5570 with SMTP id m137-20020a25268f000000b00d4c68e55570mr7846782ybm.48.1691476266844;
+        Mon, 07 Aug 2023 23:31:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGwgegBcG0PLkwntZqyHsHxqEwR19Z2SwJMc9z/Zu9iGs9cziLRAd6UnhZdujCeMEvoa17cPh7cDj36FGOBC7k=
+X-Received: by 2002:a25:268f:0:b0:d4c:68e5:5570 with SMTP id
+ m137-20020a25268f000000b00d4c68e55570mr7846767ybm.48.1691476266550; Mon, 07
+ Aug 2023 23:31:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230807132626.182101-1-aleksandr.mikhalitsyn@canonical.com> <bcda164b-e4b7-1c16-2714-13e3c6514b47@redhat.com>
+In-Reply-To: <bcda164b-e4b7-1c16-2714-13e3c6514b47@redhat.com>
+From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Date:   Tue, 8 Aug 2023 08:30:55 +0200
+Message-ID: <CAEivzxfsj82q2x3C2U6yemB9qRrLnW+fLAAE=e7Tq-LDDfH0-g@mail.gmail.com>
+Subject: Re: [PATCH v10 00/12] ceph: support idmapped mounts
+To:     Xiubo Li <xiubli@redhat.com>
+Cc:     brauner@kernel.org, stgraber@ubuntu.com,
+        linux-fsdevel@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The binary content of nvmem devices is available to the user so in the
-easiest cases, finding the content of a cell is rather easy as it is
-just a matter of looking at a known and fixed offset. However, nvmem
-layouts have been recently introduced to cope with more advanced
-situations, where the offset and size of the cells is not known in
-advance or is dynamic. When using layouts, more advanced parsers are
-used by the kernel in order to give direct access to the content of each
-cell, regardless of its position/size in the underlying
-device. Unfortunately, these information are not accessible by users,
-unless by fully re-implementing the parser logic in userland.
+On Tue, Aug 8, 2023 at 2:45=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wrote:
+>
+> LGTM.
+>
+> Reviewed-by: Xiubo Li <xiubli@redhat.com>
+>
+> I will queue this to the 'testing' branch and then we will run ceph qa
+> tests.
 
-Let's expose the cells and their content through sysfs to avoid these
-situations. Of course the relevant NVMEM sysfs Kconfig option must be
-enabled for this support to be available.
+Thanks, Xiubo!
 
-Not all nvmem devices expose cells. Indeed, the .bin_attrs attribute
-group member will be filled at runtime only when relevant and will
-remain empty otherwise. In this case, as the cells attribute group will
-be empty, it will not lead to any additional folder/file creation.
+JFYI: commit ordering in
+https://github.com/ceph/ceph-client/commits/testing looks a little bit
+weird
+probably something got wrong during patch application to the tree.
 
-Exposed cells are read-only. There is, in practice, everything in the
-core to support a write path, but as I don't see any need for that, I
-prefer to keep the interface simple (and probably safer). The interface
-is documented as being in the "testing" state which means we can later
-add a write attribute if though relevant.
+Kind regards,
+Alex
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/nvmem/core.c | 117 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 117 insertions(+)
-
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 32d9973df90b..11b9e5cc0b45 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -43,6 +43,7 @@ struct nvmem_device {
- 	struct gpio_desc	*wp_gpio;
- 	struct nvmem_layout	*layout;
- 	void *priv;
-+	bool			sysfs_cells_populated;
- };
- 
- #define to_nvmem_device(d) container_of(d, struct nvmem_device, dev)
-@@ -327,6 +328,43 @@ static umode_t nvmem_bin_attr_is_visible(struct kobject *kobj,
- 	return nvmem_bin_attr_get_umode(nvmem);
- }
- 
-+static struct nvmem_cell *nvmem_create_cell(struct nvmem_cell_entry *entry,
-+					    const char *id, int index);
-+
-+static ssize_t nvmem_cell_attr_read(struct file *filp, struct kobject *kobj,
-+				    struct bin_attribute *attr, char *buf,
-+				    loff_t pos, size_t count)
-+{
-+	struct nvmem_cell_entry *entry;
-+	struct nvmem_cell *cell = NULL;
-+	size_t cell_sz, read_len;
-+	void *content;
-+
-+	entry = attr->private;
-+	cell = nvmem_create_cell(entry, entry->name, 0);
-+	if (IS_ERR(cell))
-+		return PTR_ERR(cell);
-+
-+	if (!cell)
-+		return -EINVAL;
-+
-+	content = nvmem_cell_read(cell, &cell_sz);
-+	if (IS_ERR(content)) {
-+		read_len = PTR_ERR(content);
-+		goto destroy_cell;
-+	}
-+
-+	read_len = min_t(unsigned int, cell_sz - pos, count);
-+	memcpy(buf, content + pos, read_len);
-+	kfree(content);
-+
-+destroy_cell:
-+	kfree_const(cell->id);
-+	kfree(cell);
-+
-+	return read_len;
-+}
-+
- /* default read/write permissions */
- static struct bin_attribute bin_attr_rw_nvmem = {
- 	.attr	= {
-@@ -348,11 +386,21 @@ static const struct attribute_group nvmem_bin_group = {
- 	.is_bin_visible = nvmem_bin_attr_is_visible,
- };
- 
-+/* Cell attributes will be dynamically allocated */
-+static struct attribute_group nvmem_cells_group = {
-+	.name		= "cells",
-+};
-+
- static const struct attribute_group *nvmem_dev_groups[] = {
- 	&nvmem_bin_group,
- 	NULL,
- };
- 
-+static const struct attribute_group *nvmem_cells_groups[] = {
-+	&nvmem_cells_group,
-+	NULL,
-+};
-+
- static struct bin_attribute bin_attr_nvmem_eeprom_compat = {
- 	.attr	= {
- 		.name	= "eeprom",
-@@ -408,6 +456,69 @@ static void nvmem_sysfs_remove_compat(struct nvmem_device *nvmem,
- 		device_remove_bin_file(nvmem->base_dev, &nvmem->eeprom);
- }
- 
-+static int nvmem_dev_populate_sysfs_cells(struct device *dev, void *data)
-+{
-+	struct nvmem_device *nvmem = to_nvmem_device(dev);
-+	struct bin_attribute **cells_attrs, *attrs;
-+	struct nvmem_cell_entry *entry;
-+	unsigned int ncells = 0, i = 0;
-+	int ret = 0;
-+
-+	mutex_lock(&nvmem_mutex);
-+
-+	if (list_empty(&nvmem->cells) || nvmem->sysfs_cells_populated) {
-+		nvmem_cells_group.bin_attrs = NULL;
-+		goto unlock_mutex;
-+	}
-+
-+	/* Allocate an array of attributes with a sentinel */
-+	ncells = list_count_nodes(&nvmem->cells);
-+	cells_attrs = devm_kcalloc(&nvmem->dev, ncells + 1,
-+				   sizeof(struct bin_attribute *), GFP_KERNEL);
-+	if (!cells_attrs) {
-+		ret = -ENOMEM;
-+		goto unlock_mutex;
-+	}
-+
-+	attrs = devm_kcalloc(&nvmem->dev, ncells, sizeof(struct bin_attribute), GFP_KERNEL);
-+	if (!attrs) {
-+		ret = -ENOMEM;
-+		goto unlock_mutex;
-+	}
-+
-+	/* Initialize each attribute to take the name and size of the cell */
-+	list_for_each_entry(entry, &nvmem->cells, node) {
-+		sysfs_bin_attr_init(&attrs[i]);
-+		attrs[i].attr.name = devm_kasprintf(&nvmem->dev, GFP_KERNEL,
-+						    "%s@%x", entry->name,
-+						    entry->offset);
-+		attrs[i].attr.mode = 0444;
-+		attrs[i].size = entry->bytes;
-+		attrs[i].read = &nvmem_cell_attr_read;
-+		attrs[i].private = entry;
-+		if (!attrs[i].attr.name) {
-+			ret = -ENOMEM;
-+			goto unlock_mutex;
-+		}
-+
-+		cells_attrs[i] = &attrs[i];
-+		i++;
-+	}
-+
-+	nvmem_cells_group.bin_attrs = cells_attrs;
-+
-+	ret = devm_device_add_groups(&nvmem->dev, nvmem_cells_groups);
-+	if (ret)
-+		goto unlock_mutex;
-+
-+	nvmem->sysfs_cells_populated = true;
-+
-+unlock_mutex:
-+	mutex_unlock(&nvmem_mutex);
-+
-+	return ret;
-+}
-+
- #else /* CONFIG_NVMEM_SYSFS */
- 
- static int nvmem_sysfs_setup_compat(struct nvmem_device *nvmem,
-@@ -2193,6 +2304,12 @@ static int nvmem_notifier_call(struct notifier_block *notifier,
- 	if (ret)
- 		return notifier_from_errno(ret);
- 
-+#ifdef CONFIG_NVMEM_SYSFS
-+	ret = nvmem_for_each_dev(nvmem_dev_populate_sysfs_cells);
-+	if (ret)
-+		return notifier_from_errno(ret);
-+#endif
-+
- 	return NOTIFY_OK;
- }
- 
--- 
-2.34.1
-
+>
+> Thanks Alex.
+>
+> - Xiubo
+>
+> On 8/7/23 21:26, Alexander Mikhalitsyn wrote:
+> > Dear friends,
+> >
+> > This patchset was originally developed by Christian Brauner but I'll co=
+ntinue
+> > to push it forward. Christian allowed me to do that :)
+> >
+> > This feature is already actively used/tested with LXD/LXC project.
+> >
+> > Git tree (based on https://github.com/ceph/ceph-client.git testing):
+> > v10: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v10
+> > current: https://github.com/mihalicyn/linux/tree/fs.idmapped.ceph
+> >
+> > In the version 3 I've changed only two commits:
+> > - fs: export mnt_idmap_get/mnt_idmap_put
+> > - ceph: allow idmapped setattr inode op
+> > and added a new one:
+> > - ceph: pass idmap to __ceph_setattr
+> >
+> > In the version 4 I've reworked the ("ceph: stash idmapping in mdsc requ=
+est")
+> > commit. Now we take idmap refcounter just in place where req->r_mnt_idm=
+ap
+> > is filled. It's more safer approach and prevents possible refcounter un=
+derflow
+> > on error paths where __register_request wasn't called but ceph_mdsc_rel=
+ease_request is
+> > called.
+> >
+> > Changelog for version 5:
+> > - a few commits were squashed into one (as suggested by Xiubo Li)
+> > - started passing an idmapping everywhere (if possible), so a caller
+> > UID/GID-s will be mapped almost everywhere (as suggested by Xiubo Li)
+> >
+> > Changelog for version 6:
+> > - rebased on top of testing branch
+> > - passed an idmapping in a few places (readdir, ceph_netfs_issue_op_inl=
+ine)
+> >
+> > Changelog for version 7:
+> > - rebased on top of testing branch
+> > - this thing now requires a new cephfs protocol extension CEPHFS_FEATUR=
+E_HAS_OWNER_UIDGID
+> > https://github.com/ceph/ceph/pull/52575
+> >
+> > Changelog for version 8:
+> > - rebased on top of testing branch
+> > - added enable_unsafe_idmap module parameter to make idmapped mounts
+> > work with old MDS server versions
+> > - properly handled case when old MDS used with new kernel client
+> >
+> > Changelog for version 9:
+> > - added "struct_len" field in struct ceph_mds_request_head as requested=
+ by Xiubo Li
+> >
+> > Changelog for version 10:
+> > - fill struct_len field properly (use cpu_to_le32)
+> > - add extra checks IS_CEPH_MDS_OP_NEWINODE(..) as requested by Xiubo to=
+ match
+> >    userspace client behavior
+> > - do not set req->r_mnt_idmap for MKSNAP operation
+> > - atomic_open: set req->r_mnt_idmap only for CEPH_MDS_OP_CREATE as user=
+space client does
+> >
+> > I can confirm that this version passes xfstests and
+> > tested with old MDS (without CEPHFS_FEATURE_HAS_OWNER_UIDGID)
+> > and with recent MDS version.
+> >
+> > Links to previous versions:
+> > v1: https://lore.kernel.org/all/20220104140414.155198-1-brauner@kernel.=
+org/
+> > v2: https://lore.kernel.org/lkml/20230524153316.476973-1-aleksandr.mikh=
+alitsyn@canonical.com/
+> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v2
+> > v3: https://lore.kernel.org/lkml/20230607152038.469739-1-aleksandr.mikh=
+alitsyn@canonical.com/#t
+> > v4: https://lore.kernel.org/lkml/20230607180958.645115-1-aleksandr.mikh=
+alitsyn@canonical.com/#t
+> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v4
+> > v5: https://lore.kernel.org/lkml/20230608154256.562906-1-aleksandr.mikh=
+alitsyn@canonical.com/#t
+> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v5
+> > v6: https://lore.kernel.org/lkml/20230609093125.252186-1-aleksandr.mikh=
+alitsyn@canonical.com/
+> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v6
+> > v7: https://lore.kernel.org/all/20230726141026.307690-1-aleksandr.mikha=
+litsyn@canonical.com/
+> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v7
+> > v8: https://lore.kernel.org/all/20230803135955.230449-1-aleksandr.mikha=
+litsyn@canonical.com/
+> > tree: -
+> > v9: https://lore.kernel.org/all/20230804084858.126104-1-aleksandr.mikha=
+litsyn@canonical.com/
+> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v9
+> >
+> > Kind regards,
+> > Alex
+> >
+> > Original description from Christian:
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > This patch series enables cephfs to support idmapped mounts, i.e. the
+> > ability to alter ownership information on a per-mount basis.
+> >
+> > Container managers such as LXD support sharaing data via cephfs between
+> > the host and unprivileged containers and between unprivileged container=
+s.
+> > They may all use different idmappings. Idmapped mounts can be used to
+> > create mounts with the idmapping used for the container (or a different
+> > one specific to the use-case).
+> >
+> > There are in fact more use-cases such as remapping ownership for
+> > mountpoints on the host itself to grant or restrict access to different
+> > users or to make it possible to enforce that programs running as root
+> > will write with a non-zero {g,u}id to disk.
+> >
+> > The patch series is simple overall and few changes are needed to cephfs=
+.
+> > There is one cephfs specific issue that I would like to discuss and
+> > solve which I explain in detail in:
+> >
+> > [PATCH 02/12] ceph: handle idmapped mounts in create_request_message()
+> >
+> > It has to do with how to handle mds serves which have id-based access
+> > restrictions configured. I would ask you to please take a look at the
+> > explanation in the aforementioned patch.
+> >
+> > The patch series passes the vfs and idmapped mount testsuite as part of
+> > xfstests. To run it you will need a config like:
+> >
+> > [ceph]
+> > export FSTYP=3Dceph
+> > export TEST_DIR=3D/mnt/test
+> > export TEST_DEV=3D10.103.182.10:6789:/
+> > export TEST_FS_MOUNT_OPTS=3D"-o name=3Dadmin,secret=3D$password
+> >
+> > and then simply call
+> >
+> > sudo ./check -g idmapped
+> >
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> > Alexander Mikhalitsyn (3):
+> >    fs: export mnt_idmap_get/mnt_idmap_put
+> >    ceph: add enable_unsafe_idmap module parameter
+> >    ceph: pass idmap to __ceph_setattr
+> >
+> > Christian Brauner (9):
+> >    ceph: stash idmapping in mdsc request
+> >    ceph: handle idmapped mounts in create_request_message()
+> >    ceph: pass an idmapping to mknod/symlink/mkdir
+> >    ceph: allow idmapped getattr inode op
+> >    ceph: allow idmapped permission inode op
+> >    ceph: allow idmapped setattr inode op
+> >    ceph/acl: allow idmapped set_acl inode op
+> >    ceph/file: allow idmapped atomic_open inode op
+> >    ceph: allow idmapped mounts
+> >
+> >   fs/ceph/acl.c                 |  6 +--
+> >   fs/ceph/crypto.c              |  2 +-
+> >   fs/ceph/dir.c                 |  4 ++
+> >   fs/ceph/file.c                | 11 ++++-
+> >   fs/ceph/inode.c               | 29 +++++++------
+> >   fs/ceph/mds_client.c          | 78 ++++++++++++++++++++++++++++++++--=
+-
+> >   fs/ceph/mds_client.h          |  8 +++-
+> >   fs/ceph/super.c               |  7 +++-
+> >   fs/ceph/super.h               |  3 +-
+> >   fs/mnt_idmapping.c            |  2 +
+> >   include/linux/ceph/ceph_fs.h  | 10 ++++-
+> >   include/linux/mnt_idmapping.h |  3 ++
+> >   12 files changed, 136 insertions(+), 27 deletions(-)
+> >
+>
