@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C6B774249
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3378E7741FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234874AbjHHRkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
+        id S232048AbjHHRbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232306AbjHHRju (ORCPT
+        with ESMTP id S230371AbjHHRaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:39:50 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BD883E1
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:17:24 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9a2033978so90744501fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:17:24 -0700 (PDT)
+        Tue, 8 Aug 2023 13:30:55 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B8C8DCDA;
+        Tue,  8 Aug 2023 09:13:24 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99bcc0adab4so849862966b.2;
+        Tue, 08 Aug 2023 09:13:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691511392; x=1692116192;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OSNGkojbT+FsqpoKjJ9301dnAVYJ8YQV267IqvAEoPU=;
-        b=grRAz6Jxfh2Nt12MkkdB9M0JiRacmg5Z22mgVg/5AHqDqncatY04PICZWinW0soI3L
-         DwxSVN1Z9JUYvn/mGHjgL+8u1g1svmlG1hpcBZV+G4pJ7fM8PTZ5Rrb2ly77ejhUcoOf
-         ibF71MyySfxTP3/UwvHeUG31o29YwwnU6TVP8IWocPH7cJtqJs/M6nK3tgSXlSJQAclf
-         iMjQbtP86tfRy7zjs7leEG9DzdnCn2swJKrzVOJd2cpvFhPFVp/HUYAAcDhtT4OPGJyZ
-         lw7FEghTHtYwczirHiArYYA/XoL1YA7tYgCmyaGpx6S7gYCPTW4s1KW6Lsw6LJ0cQHkx
-         mYHg==
+        d=gmail.com; s=20221208; t=1691511158; x=1692115958;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=urR17NXXORwlJc/4xV0du1ERMO9/hff0y5pQAkxNBf4=;
+        b=OYnOe/MvzzbujQUxN1S0npvgjNC03GtAFcOicE9asTr7vN4yIjwc25N1DAxNt8dver
+         HZHWymiBrLQsmbwVPyt2b1T9Q8axUkAtPLG7Mg7fCfcYpUROYXXoUumAEFsyEn/7rUP8
+         dmVgtZwxVZlUgETSzADUhbgI9JCbRwzerXz0OSlGPQIf70u9ZcZbYmkL4isvH9zBGbMe
+         ZCehQkzQ0mY2UUdDoVVQ07vfmzezqh1wuuc2LWX4unLiv7EaqZwXjst9Uo41vYq15Yhn
+         UYUdCKX2em6d2HahLXKAusHJE46DdBEMh1N8n1T8/H8vkyScBY5a/TpHwWWB0Duj0z/K
+         Dr6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511392; x=1692116192;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OSNGkojbT+FsqpoKjJ9301dnAVYJ8YQV267IqvAEoPU=;
-        b=DjCeqoRJ/q2f4+NBrn8pe9SvfUvy8tMmqjYBM0OSdCS5vXdl516mt2TtOwwK+1JSO4
-         qHr0Axwc/7r5HU9bXvejSe9/bItnxGvMXuOk5vFGTUWqTu7e8OwtG0Bfz9Fp8vrQ4dpf
-         jYXI1YxTBOGNxNgsN7VAWX2QIytAPk2N+k8rB1cvnuKEYc+wfx6/uAJ+GyiLPlL4Ytww
-         uPgIrNduU558yvA2XJjUUZkTW4YKINC8Jkrcgcw8EV37CO4kD2VOwX3F/qUbKJWp3f+M
-         2C3WPtXNQVZZia1A+zTMzaRHIvG9jZgA4kD9atKxAiYriR1+BZXBzWMZoh7iMXqbiZXK
-         dsBA==
-X-Gm-Message-State: AOJu0Ywlqr7NTLwcERug+TajgS5iEfSvrqLAn8Hs7mWMgCvqNFOLbavs
-        wdB63b9BtQlzHu/DxTTzGvKZ3umXMEf6s4HcB8s=
-X-Google-Smtp-Source: AGHT+IGBUM9Eb5+0TWgDLF8LmOhVhKOR18zw7z8Wucg5zDszfG4kbd1nLl37Ej26nZOXcXHoLMXtdA==
-X-Received: by 2002:a1c:4b0b:0:b0:3fe:2b8c:9f00 with SMTP id y11-20020a1c4b0b000000b003fe2b8c9f00mr8459725wma.24.1691476346737;
-        Mon, 07 Aug 2023 23:32:26 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id z22-20020a1c4c16000000b003fbb25da65bsm12705726wmf.30.2023.08.07.23.32.25
+        d=1e100.net; s=20221208; t=1691511158; x=1692115958;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=urR17NXXORwlJc/4xV0du1ERMO9/hff0y5pQAkxNBf4=;
+        b=klRZAQtHkKKfePDsEj+oRlb4IYYFaC9AjKcL3ax+AuyLvsOn/KJdb0UsPZoygKoiro
+         guZuC8fj9KMVRbQyComDqCzzOtMmzcYCIvPD0HtdQUuPxgV6l6Wq+7iIHhrkO32+Uf9p
+         4uUgmmhPtHFakBwODOQUXfICkYFK3xI+O2Dy/exKrw5m5X6YnUsvr9oCUt1Gy1ZvTgee
+         js0ABa8r4b2mSAnoH9ch9YDGxX+NR9ODQ86hfn+3vGZLPgNeDU7/jyTk1v2pQ3FbC7gB
+         3i4p6R8bR94FeQf0Sg4MthrinYyGjoPnOrZ2zY7kieQDSVYVIifKYNipqSyfZVlIoZp+
+         aA6A==
+X-Gm-Message-State: AOJu0YypzN51J+CJ2IoGKeb3/AitUpypWd6Dg7Ko1YfycDikCM0xKXZC
+        3mw8tqK/lIpo2KqTsiL5FhkXANB2KMELQJbR
+X-Google-Smtp-Source: AGHT+IEk2GZHsfbq4NRBC+hd8CRYTMqVTpZAo8FgFYwPwTkChWOvxklnvB8Kw3achB7XNCG4HVqIZQ==
+X-Received: by 2002:a17:906:3009:b0:99c:5623:a2f1 with SMTP id 9-20020a170906300900b0099c5623a2f1mr9683792ejz.48.1691476217677;
+        Mon, 07 Aug 2023 23:30:17 -0700 (PDT)
+Received: from ?IPv6:2003:f6:ef09:a500:ffed:38f8:59e7:f38e? (p200300f6ef09a500ffed38f859e7f38e.dip0.t-ipconnect.de. [2003:f6:ef09:a500:ffed:38f8:59e7:f38e])
+        by smtp.gmail.com with ESMTPSA id y16-20020a170906525000b0099bd046170fsm6136063ejm.104.2023.08.07.23.30.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 23:32:26 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        Mon, 07 Aug 2023 23:30:17 -0700 (PDT)
+Message-ID: <2df639c71d3a6e876efddd5ba18c56ca68a4ccaa.camel@gmail.com>
+Subject: Re: [PATCH] iio: admv1013: add mixer_vgate corner cases
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>, jic23@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-iio@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] dt-bindings: iio: rohm,bu27010: add missing vdd-supply to example
-Date:   Tue,  8 Aug 2023 08:32:23 +0200
-Message-Id: <20230808063223.80431-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+Date:   Tue, 08 Aug 2023 08:32:51 +0200
+In-Reply-To: <20230807143806.6954-1-antoniu.miclaus@analog.com>
+References: <20230807143806.6954-1-antoniu.miclaus@analog.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,28 +73,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bindings require vdd-supply but the example DTS was missing one.  This
-fixes dt_binding_check error:
+On Mon, 2023-08-07 at 17:38 +0300, Antoniu Miclaus wrote:
+> Include the corner cases in the computation of the MIXER_VGATE register
+> value.
+>=20
+> According to the datasheet: The MIXER_VGATE values follows the VCM such
+> as, that for a 0V to 1.8V VCM, MIXER_VGATE =3D 23.89 VCM + 81, and for a =
+>
+> 1.8V to 2.6V VCM, MIXER_VGATE =3D 23.75 VCM + 1.25.
+>=20
+> Fixes: da35a7b526d9 ("iio: frequency: admv1013: add support for ADMV1013"=
+)
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+> ---
 
-  Documentation/devicetree/bindings/iio/light/rohm,bu27010.example.dtb: light-sensor@38: 'vdd-supply' is a required property
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
 
-Fixes: ae8c47c51e5c ("dt-bindings: iio: ROHM BU27010 RGBC + flickering sensor")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- Documentation/devicetree/bindings/iio/light/rohm,bu27010.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/iio/light/rohm,bu27010.yaml b/Documentation/devicetree/bindings/iio/light/rohm,bu27010.yaml
-index 8376d64a641a..bed42d5d0d94 100644
---- a/Documentation/devicetree/bindings/iio/light/rohm,bu27010.yaml
-+++ b/Documentation/devicetree/bindings/iio/light/rohm,bu27010.yaml
-@@ -45,5 +45,6 @@ examples:
-       light-sensor@38 {
-         compatible = "rohm,bu27010";
-         reg = <0x38>;
-+        vdd-supply = <&vdd>;
-       };
-     };
--- 
-2.34.1
+> =C2=A0drivers/iio/frequency/admv1013.c | 4 ++--
+> =C2=A01 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/iio/frequency/admv1013.c
+> b/drivers/iio/frequency/admv1013.c
+> index 9bf8337806fc..df29f1216b9a 100644
+> --- a/drivers/iio/frequency/admv1013.c
+> +++ b/drivers/iio/frequency/admv1013.c
+> @@ -348,9 +348,9 @@ static int admv1013_update_mixer_vgate(struct
+> admv1013_state *st)
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0vcm =3D regulator_get_vol=
+tage(st->reg);
+> =C2=A0
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (vcm < 1800000)
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (vcm <=3D 1800000)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0mixer_vgate =3D (2389 * vcm / 1000000 + 8100) / 100=
+;
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else if (vcm > 1800000 && vcm =
+< 2600000)
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else if (vcm > 1800000 && vcm =
+<=3D 2600000)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0mixer_vgate =3D (2375 * vcm / 1000000 + 125) / 100;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0return -EINVAL;
 
