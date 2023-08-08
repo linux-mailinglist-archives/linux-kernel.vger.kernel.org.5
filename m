@@ -2,176 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B6C774705
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4638A7747E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233937AbjHHTIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52598 "EHLO
+        id S234740AbjHHTVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233682AbjHHTIJ (ORCPT
+        with ESMTP id S235941AbjHHTU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:08:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8876E2E7C0
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:29:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691512107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VbnqxuiXQisIH6XjOaSNew/BEqT5g+My50f9mjhVZsE=;
-        b=U8NT8QTbRWLw4wCzNeKKKwDbBep8isdQZsVWTJ2PP87DLuQoFvp9yZc/EG7vKOfrOpUWXi
-        VKpkszChy3r/WZrmkucHd69B59MMb9qQDIzTxGmwGeYHJGFGMCCCEHbN3Isj4ciBZb1B04
-        58og/f4mNqwgnHpqDTH71Ye7emM8yDQ=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-445-mUz3mpGQP1y1yL028-ZWew-1; Tue, 08 Aug 2023 10:27:31 -0400
-X-MC-Unique: mUz3mpGQP1y1yL028-ZWew-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-63d41d15574so64658646d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 07:27:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691504850; x=1692109650;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VbnqxuiXQisIH6XjOaSNew/BEqT5g+My50f9mjhVZsE=;
-        b=Q8DN/uB21V3rum385xVsfAXyu5VIN6fTvotUY2s6GNyU+bZpoQqTKxIqlroUvpDTdu
-         VsZEGTZm/s/ui/2DBi5IutaXwf1GflCR9YcqHSwhIGb3Zmq217cDgG7QhDVBP6lGBJRC
-         G279tz4fsDZYndi3WRzUybCvZDQxbeZhHmayshyXN+8D8yAKxDDj1bhEYmS+IH+QgbbF
-         UaqWPomgDIGbL29VtQTzuUPmcqdjOi3vupI5wHayovbSgQCo9ViC8lgn/hoHSrQB8HE9
-         A0BCXcEh1k/tmcShupTjAgDt80bR4th4LqrWK1J6TE7JJ7sm9fXHZK6YV3fzIyZEWZw6
-         TVyQ==
-X-Gm-Message-State: AOJu0Yxgho11xEmMXo0rjafP1ca9fDbxAn6/FKKhOJDtE+MzFAZ1cYU0
-        GAtxIxSBNPkZZ4N/RttBbYqGq0P5WPSWQ/9HqKdA8VrmXX7vaV2EskNSm6RDvP//Y9dsEfgTImb
-        AGIM5GJYG/2j3s5KSrVxkZoB1Iyvgk5fF
-X-Received: by 2002:a0c:e1d4:0:b0:63c:ff08:20f1 with SMTP id v20-20020a0ce1d4000000b0063cff0820f1mr13380072qvl.10.1691504850373;
-        Tue, 08 Aug 2023 07:27:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGvKElmz3eZY2ly9zcbNbNf3JHFZdq6y/SHJi6VaPpXTDEO5rg1+t529/wj3RWJcJY8dNswzQ==
-X-Received: by 2002:a0c:e1d4:0:b0:63c:ff08:20f1 with SMTP id v20-20020a0ce1d4000000b0063cff0820f1mr13380045qvl.10.1691504850119;
-        Tue, 08 Aug 2023 07:27:30 -0700 (PDT)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id h18-20020a0cf212000000b005dd8b9345b4sm3680637qvk.76.2023.08.08.07.27.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 07:27:29 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 09:27:27 -0500
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 5/9] arm64: dts: qcom: sa8775p-ride: move the reset-gpios
- property of the PHY
-Message-ID: <xklkqdodcho4du26mvds4bxrevvwiaftnu7gu2ukchczd7hgcb@ry3dhjnoprgh>
-References: <20230807193507.6488-1-brgl@bgdev.pl>
- <20230807193507.6488-6-brgl@bgdev.pl>
- <siqiyihftz3musfjulpcqunhgi7npftumrfwfyh2pqnlx6zeb7@rrpwmkvjshfb>
- <da679b5e-6712-4849-b29c-6aa42022abc4@lunn.ch>
- <ld2j4llgfba6j43gesqxs6wz2baucka5scbj4nef5ehbex2cmt@d4dxsqp2vuoj>
- <CAMRc=MdLky5sUbdFGFc+as906kr-J_XDmKmYtBBCHvETvqtAQA@mail.gmail.com>
+        Tue, 8 Aug 2023 15:20:56 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8E342077
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:44:15 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 378EdFmj011937;
+        Tue, 8 Aug 2023 14:48:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=uXoTIO+5lwwtLlN/NRmd7fRlIP3awliY1hCQo+5CJpg=;
+ b=RmOHVCDgux0tuhpNl182ovuUmY0CEHj+JeRmPHCLXJuXHmUKmrsrleHJLaIOAk221Ywc
+ 8ni/AWwerAQvnkHADEYVja5+INMlCFVIG4OCvCWTBNjb4Bof1wWpF6M6iTsMUbPxMG4A
+ I+U0UY8qq9TidAoLvnvVDFBfcqWRKZ+SiAL/uwjqmNJWeo1tG7bhbHONzoi76PqMC/7/
+ yKxyco4Zr22KaUHB7/QIlg3dxVDQQ9PX04L4jlhZMACN+veJvqfotb8/dsfF7ib5g3Cx
+ A5jRG4zh67rLK5dAIMOA1XldbeMrSGBJ0ojUxWtaxhXJxmkPNY2LBUOw0XlKXciClcP9 iA== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sbqhd0gp3-9
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Aug 2023 14:48:18 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 378DTkni030379;
+        Tue, 8 Aug 2023 14:28:52 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sa1rn7a1s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Aug 2023 14:28:52 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 378ESosT57737656
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Aug 2023 14:28:50 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B9FA2004B;
+        Tue,  8 Aug 2023 14:28:50 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0DD5820040;
+        Tue,  8 Aug 2023 14:28:50 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue,  8 Aug 2023 14:28:49 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>
+Subject: Re: BUG: KASAN: slab-out-of-bounds in print_synth_event+0xa68/0xa78
+References: <yt9dsf8zfhw8.fsf@linux.ibm.com>
+        <20230807215310.068fce2f@gandalf.local.home>
+        <yt9da5v1rhqd.fsf@linux.ibm.com>
+        <20230808061423.0a12980f@gandalf.local.home>
+Date:   Tue, 08 Aug 2023 16:28:49 +0200
+In-Reply-To: <20230808061423.0a12980f@gandalf.local.home> (Steven Rostedt's
+        message of "Tue, 8 Aug 2023 06:14:23 -0400")
+Message-ID: <yt9dzg31ppzy.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MdLky5sUbdFGFc+as906kr-J_XDmKmYtBBCHvETvqtAQA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: MQ2oNIwm26m3lXZtDPQWMaYVT-WiGGxZ
+X-Proofpoint-GUID: MQ2oNIwm26m3lXZtDPQWMaYVT-WiGGxZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-08_12,2023-08-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ malwarescore=0 clxscore=1011 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308080130
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 02:16:50PM +0200, Bartosz Golaszewski wrote:
-> On Tue, Aug 8, 2023 at 12:27 AM Andrew Halaney <ahalaney@redhat.com> wrote:
-> >
-> > On Mon, Aug 07, 2023 at 11:51:40PM +0200, Andrew Lunn wrote:
-> > > > > I have proposed a solution for this problem in 2020 but it never got
-> > > > > upstream. Now we have a workaround in place which allows us to hard-code
-> > > > > the PHY id in the compatible property, thus skipping the ID scanning).
-> > > >
-> > > > nitpicky, but I think that already existed at that time :D
-> > >
-> > > Yes, it has been there are long long time. It is however only in the
-> > > last 5 years of so has it been seen as a solution to the chicken egg
-> > > problem.
-> > >
-> > > > >           sgmii_phy: phy@8 {
-> > > > > +                 compatible = "ethernet-phy-id0141.0dd4";
-> > > > >                   reg = <0x8>;
-> > > > >                   device_type = "ethernet-phy";
-> > > > > +                 reset-gpios = <&pmm8654au_2_gpios 8 GPIO_ACTIVE_LOW>;
-> > > > > +                 reset-deassert-us = <70000>;
-> > > >
-> > > > Doesn't this need reset-assert-us?
-> > >
-> > > If i remember correctly, there is a default value if DT does not
-> > > provide one.
-> > >
-> >
-> > I've been trying to make sure I view devicetree properties as an OS
-> > agnostic ABI lately, with that in mind...
-> >
-> > The dt-binding says this for ethernet-phy:
-> >
-> >   reset-assert-us:
-> >     description:
-> >       Delay after the reset was asserted in microseconds. If this
-> >       property is missing the delay will be skipped.
-> >
-> > If the hardware needs a delay I think we should encode it based on that
-> > description, else we risk it starting to look like a unit impulse!
-> >
-> 
-> Please note that the mdio-level delay properties are not the same as
-> the ones on the PHY levels.
-> 
-> reset-delay-us - this is the delay BEFORE *DEASSERTING* the reset line
-> reset-post-delay-us - this is the delay AFTER *DEASSERTING* the reset line
-> 
-> On PHY level we have:
-> 
-> reset-assert-us - AFTER *ASSERTING*
-> reset-deassert-us - AFTER *DEASSERTING*
-> 
-> There never has been any reset-assert delay on that line before. It
-> doesn't look like we need a delay BEFORE deasserting the line, do we?
-> 
+Steven Rostedt <rostedt@goodmis.org> writes:
 
-The MDIO reset-delay-us happens "before deassert"/"after assert", so to
-make things a proper move here I think it needs a resrt-assert, otherwise
-behavior with respect to reset timing is definitely changed from this
-patch!
+>> I think the problem is that the code assigns data_offset with:
+>> 
+>> *(u32 *)&entry->fields[*n_u64] = data_offset;
+>> 
+>> but reads it with:
+>> 
+>> offset = (u32)entry->fields[n_u64];
+>> 
+>> which works on LE, but not BE.
+>
+> Ah, that makes sense. I didn't realize (or forgot) that s390 was BE. My
+> PowerPC box that was BE died years ago, and I have stopped testing BE ever
+> since :-(
 
-Here's a trimmed version of the reset handling in mdio_bus.c to back
-that up:
+Ok. If you want something for testing BE i could provide you with an
+s390 linux image + the commandline to run that within qemu. Linux on
+s390 is not much different than other platforms, but you would need an
+s390 cross-compiler.
 
-	/* assert bus level PHY GPIO reset */
-	gpiod = devm_gpiod_get_optional(&bus->dev, "reset", GPIOD_OUT_HIGH);
-    ...
-	} else	if (gpiod) {
-		bus->reset_gpiod = gpiod;
-		fsleep(bus->reset_delay_us);
-		gpiod_set_value_cansleep(gpiod, 0);
-		if (bus->reset_post_delay_us > 0)
-			fsleep(bus->reset_post_delay_us);
-	}
+>> 
+>> I'm currently preparing the patch below, which also makes the code a bit
+>> easier to read. I'm still seeing no stack traces, but at least the
+>> random memory reads are gone and no KASAN warning anymore. I'll
+>> continue fixing and sent a full patch as soon as everything is fixed.
+>> 
+>> >From 82fc673f0d3b6031b760b4217bebdb1047119041 Mon Sep 17 00:00:00 2001  
+>> From: Sven Schnelle <svens@linux.ibm.com>
+>> Date: Tue, 8 Aug 2023 11:35:12 +0200
+>> Subject: [PATCH] tracing/synthetic: use union instead of casts
+>> 
+>> The current code uses a lot of casts to access the fields
+>> member in struct synth_trace_events with different sizes.
+>> This makes the code hard to read, and had already introduced
+>> an endianess bug. Use a union and struct instead.
+>> 
+>> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+>> ---
+>>  kernel/trace/trace_events_synth.c | 100 +++++++++++++++---------------
+>>  1 file changed, 50 insertions(+), 50 deletions(-)
+>> 
+>> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+>> index d6a70aff2410..1f8fe7f2b5b2 100644
+>> --- a/kernel/trace/trace_events_synth.c
+>> +++ b/kernel/trace/trace_events_synth.c
+>> @@ -125,9 +125,22 @@ static bool synth_event_match(const char *system, const char *event,
+>>  		(!system || strcmp(system, SYNTH_SYSTEM) == 0);
+>>  }
+>>  
+>> +struct synth_trace_data {
+>> +	u16 len;
+>> +	u16 offset;
+>> +};
+>
+> This is actually common throughout the tracing code (as all dynamic fields
+> have this). We should probably make this more generic than just for
+> synthetic events. Although, that would probably break BE user space. Hmm,
+> we could have it be:
 
-so its assert reset, sleep reset_delay_us, deassert, sleep
-reset_post_delay_us for the MDIO case.
+I'm not familiar with the ftrace code, so I think i would need some more
+time to find all the other locations. Therefore i updated the patch to move
+the structure declaration to trace.h and sent that as a first step.
 
 Thanks,
-Andrew
-
+Sven
