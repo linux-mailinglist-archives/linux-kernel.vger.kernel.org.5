@@ -2,84 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2DA774A4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01652774A4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbjHHUYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
+        id S232653AbjHHUYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234668AbjHHUYY (ORCPT
+        with ESMTP id S231400AbjHHUYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:24:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE7CFAB0;
-        Tue,  8 Aug 2023 12:35:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5701062B76;
-        Tue,  8 Aug 2023 19:35:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BE6FC433C8;
-        Tue,  8 Aug 2023 19:35:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691523331;
-        bh=nFKrvD+coJjNEf+lNj7pLiF4D1tHak7/3eeLoE0MEj4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=BoxiUVrNFftgw6LZCJI294+Gjvs2VPYqD4VfXiBT820A8fQ5hVMqN7awlMjQG8uZp
-         z0Fl9GGiEss02oeHSfDH9IjuEpvU77p1lCd2VlOD6vsUj2SrqolM8jBJ5pOzPe30N0
-         WTNjWrTuYSg7IySQeImKHPNlNiaz7OEY+0CCu8tB0GcRSTJINkr7VvRK4h0WZVNglP
-         We44v3SHontu8qg0inm72O1RIksbDunTm2IuqNzcSqTwuE4xGnVTIvPLFxehYskGsH
-         iEV1RPaP/ArG/C8MkDVsKMGWmU1AKP3ca/3Yc7wejZwgRRSOKvY53b0b4dw5X1p6OO
-         /rQhAwJvrSFEQ==
-Date:   Tue, 8 Aug 2023 14:35:29 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Igor Mammedov <imammedo@redhat.com>, linux-kernel@vger.kernel.org,
-        terraluna977@gmail.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, mst@redhat.com, rafael@kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH 1/1] PCI: acpiphp:: use
- pci_assign_unassigned_bridge_resources() only if bus->self not NULL
-Message-ID: <20230808193529.GA330050@bhelgaas>
+        Tue, 8 Aug 2023 16:24:25 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4558A1E580;
+        Tue,  8 Aug 2023 12:35:34 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-348de515667so24883875ab.1;
+        Tue, 08 Aug 2023 12:35:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691523333; x=1692128133;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7lr2Tw1pBIEBd4A2jz9qfgPa+zTpz46GsU3Cc2P9Qiw=;
+        b=TfFmb4+w8wUjJVAaoG6NdNMXu6LRtIh2fyDTb/NVf+3ndz0iVWo91M9+f+XLvU7N5c
+         xBpk726RKEnfPbb7BNs7MWM+M0mo5zkUjEyEzXbIqjY1ikMEi5bGq9sfXXNBB4AynQyw
+         fBGbGf/iPoFjue3sl+vQOuU/UJlkjsE0v+eaO6IaPFkqRV3/H9hryWyHzJwfV+3cUHnP
+         LtHRshfoFzgWU285pXfrdUGHUQ7nCsWWtNe+eDSkLXQJ+yDvYO6XXfrNzQS1if9bzGbn
+         yvDqadupeKrz/3ty8BgWInOsKecuegv5plvUS8zuL8ngWosliNSXNDCmIDP/l2ICBq8j
+         SqBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691523333; x=1692128133;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7lr2Tw1pBIEBd4A2jz9qfgPa+zTpz46GsU3Cc2P9Qiw=;
+        b=JmP5sbk4egVKD05Jk3odIYETOpzzkmeZy3aYVUDaLTO86+QTm4b3wS+oHRp0Tpe35q
+         RsTcbr0/8pIrWgSWdeA6fFU6WIdDV6HJaNFXHheCnriEwLSS5eYS/LYeP7ZG0DGm39L2
+         27/m4X3l/mTaLq9IkJHeE+yYyzP4bP7F4n5SA9xnf/+O6efZp5uStq7p4wJCPujmWl02
+         sOJ/47lMSB6ABlg61nEbLQtBOjvKWARscqqw/CUvKU8xTqqfle4YasVOaWF6/Hx60esQ
+         IEf+P0UnBdh8Jn2eAC/XotjkTK/o6nlmEm1iw5F2Fe+ewUp9X+J0ihpuvGYB9UmffxjN
+         dAHg==
+X-Gm-Message-State: AOJu0YzxhNuOC7x7xyxHotJc+2UcQwSalvPCh0FlmUKnO5lTvUcfGfR/
+        vqCrafpoPoSO6y7LRpc86XI=
+X-Google-Smtp-Source: AGHT+IEC8uP96mIEHvvBS2fpsKgrxek20+6aNRA2xV1GDmBsvLonjo08tHrkkJDdsdONMrS+JyRRuw==
+X-Received: by 2002:a05:6e02:1c28:b0:348:ec07:9dfa with SMTP id m8-20020a056e021c2800b00348ec079dfamr764409ilh.14.1691523333274;
+        Tue, 08 Aug 2023 12:35:33 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id ep19-20020a0566384e1300b0042bb1779c18sm3294123jab.151.2023.08.08.12.35.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 12:35:32 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <c46e24e0-b054-e59f-34bc-e5ddcb93b6d8@roeck-us.net>
+Date:   Tue, 8 Aug 2023 12:35:30 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ku2hdnc2wixu5ygnwvtzbti3ujgkcte7fluvypno2zufnqqzt5@5ip4ndk4ha5l>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Huibin Shi <henrys@silicom-usa.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Henry Shi <henryshi2018@gmail.com>,
+        "hbshi69@hotmail.com" <hbshi69@hotmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "markgross@kernel.org" <markgross@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
+Cc:     "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
+        Wen Wang <wenw@silicom-usa.com>
+References: <20230718160104.2716-1-henryshi2018@gmail.com>
+ <fb62b2e7-7c7c-dc2e-768d-3393f151eb32@wanadoo.fr>
+ <PA4PR04MB92225B65A45868A9CBE25B999A06A@PA4PR04MB9222.eurprd04.prod.outlook.com>
+ <8686c5c3-81b0-278f-d81b-0c906bac62a8@roeck-us.net>
+ <PA4PR04MB922285C2DC1BB0BDBDD602B39A0DA@PA4PR04MB9222.eurprd04.prod.outlook.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] Add Silicom Platform Driver
+In-Reply-To: <PA4PR04MB922285C2DC1BB0BDBDD602B39A0DA@PA4PR04MB9222.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 11:25:06AM +0200, Michal Koutný wrote:
-> Hello.
+On 8/8/23 12:19, Huibin Shi wrote:
+> Guenter,
 > 
-> On Wed, Jul 26, 2023 at 02:35:18PM +0200, Igor Mammedov <imammedo@redhat.com> wrote:
-> > The issue was discovered on Dell Inspiron 7352/0W6WV0 laptop with
-> > following sequence:
-> >    1. suspend to RAM
-> >    2. wake up with the same backtrace being observed:
-> >    3. 2nd suspend to RAM attempt makes laptop freeze
+> Here is the implementation of  devm_kmemdup(), *src is the extra argument
 > 
-> My Dell laptop suffers this since v6.5-rc1.
-> I've found this thread because of the same call stack triggering the
-> NULL ptr dereference I captured on my machine.
+> void *devm_kmemdup(struct device *dev, const void *src, size_t len, gfp_t gfp)
+> {
+> 	void *p;
 > 
-> I applied this patch and resume works as before and I have observed no
-> issues during typical usage.
+> 	p = devm_kmalloc(dev, len, gfp);
+> 	if (p)
+> 		memcpy(p, src, len);
 > 
-> I'd be glad if a fix like this makes it into the next -rc.
-> Feel free to add
+> 	return p;
+> }
 > 
-> Tested-by: Michal Koutný <mkoutny@suse.com>
 
-Added tested-by for both you and Woody, thank you very much!  This
-should appear in -rc6.
+So you don't want to use devm_kmemdup() because of its 'src' argument, and instead
+re-implement it locally by using devm_kzalloc() followed by memcpy() ? Really ?
 
-Bjorn
+Guenter
+
