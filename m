@@ -2,83 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D52774B79
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61580774AD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbjHHUsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38998 "EHLO
+        id S235802AbjHHUgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235224AbjHHUsN (ORCPT
+        with ESMTP id S233824AbjHHUfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:48:13 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7C83A68E
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:39:25 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A87EE20314;
-        Tue,  8 Aug 2023 07:09:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1691478553; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=oqNU0bW80Dtqeb91FmOO4Mk+HjGPIZ7T1eI+iwui6SM=;
-        b=DCktnY6KCstWrmt3OnfxTsTVf2DiwYuplbDv7dT9YfoTyhnyaV5xFYXI4l+KFUzYTdI6dp
-        WtY0P/0Qmq/en4wqZZ5I+yzMqOa00zxx/e7COYby0UyZLbFsQck5xW1qVdi30NL+D35ObH
-        k0ikM0Lx/A4kmsy63hEGXfo9oZ5iAwQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1691478553;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=oqNU0bW80Dtqeb91FmOO4Mk+HjGPIZ7T1eI+iwui6SM=;
-        b=AzFfnm7NETDBIMbrAbyRx3SQXkoCjxWeByGu/HqgMLHwu8fpJP7d/pxdea2uoEsBjtsbe4
-        2ehDzR90s5vh+VDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9AF2F13451;
-        Tue,  8 Aug 2023 07:09:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id j/XMJBnq0WRZVgAAMHmgww
-        (envelope-from <dwagner@suse.de>); Tue, 08 Aug 2023 07:09:13 +0000
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Caleb Sander <csander@purestorage.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH libnvme v2 0/2] Do not pass disable_sqflow if not supported
-Date:   Tue,  8 Aug 2023 09:09:05 +0200
-Message-ID: <20230808070907.18834-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.41.0
+        Tue, 8 Aug 2023 16:35:46 -0400
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C4E270D
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 10:06:25 -0700 (PDT)
+Received: from SHSQR01.spreadtrum.com (localhost [127.0.0.2] (may be forged))
+        by SHSQR01.spreadtrum.com with ESMTP id 3787NRFW028631
+        for <linux-kernel@vger.kernel.org>; Tue, 8 Aug 2023 15:23:27 +0800 (+08)
+        (envelope-from Wenhua.Lin@unisoc.com)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 3787MuLc026831;
+        Tue, 8 Aug 2023 15:22:56 +0800 (+08)
+        (envelope-from Wenhua.Lin@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx06.spreadtrum.com [10.0.1.11])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RKl3L3dTlz2NsJlw;
+        Tue,  8 Aug 2023 15:21:02 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx06.spreadtrum.com
+ (10.0.1.11) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Tue, 8 Aug 2023
+ 15:22:54 +0800
+From:   Wenhua Lin <Wenhua.Lin@unisoc.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Samuel Holland <samuel@sholland.org>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+CC:     <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        wenhua lin <wenhua.lin1994@gmail.com>,
+        Wenhua Lin <Wenhua.Lin@unisoc.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Subject: [PATCH 1/2] devicetree: bindings: Add keypad driver ducumentation
+Date:   Tue, 8 Aug 2023 15:22:52 +0800
+Message-ID: <20230808072252.3229-1-Wenhua.Lin@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx06.spreadtrum.com (10.0.1.11)
+X-MAIL: SHSQR01.spreadtrum.com 3787MuLc026831
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Follow up on the discussion in [1]
+Add keypad driver ducumentation.
 
-[1] https://lore.kernel.org/linux-nvme/676b7c2b-7bcf-6138-0229-389ed9efaa92@grimberg.me/
+Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
+---
+ .../bindings/input/sprd-keypad.yaml           | 76 +++++++++++++++++++
+ 1 file changed, 76 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/sprd-keypad.yaml
 
-Sagi Grimberg (2):
-  fabrics: Read the supported options lazy
-  fabrics: Do not pass disable_sqflow if not supported
-
- src/nvme/fabrics.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/input/sprd-keypad.yaml b/Documentation/devicetree/bindings/input/sprd-keypad.yaml
+new file mode 100644
+index 000000000000..51710e1eb389
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/sprd-keypad.yaml
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright 2023 Unisoc Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/sprd-keypad.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Device-Tree bindings for GPIO attached keys
++
++maintainers:
++  - Orson Zhai <orsonzhai@gmail.com>
++  - Baolin Wang <baolin.wang7@gmail.com>
++  - Chunyan Zhang <zhang.lyra@gmail.com>
++
++description: |
++    Keypad controller is used to interface a SoC with a matrix-keypad device.
++    The keypad controller supports multiple row and column lines.
++    A key can be placed at each intersection of a unique row and a unique column.
++    The keypad controller can sense a key-press and key-release and report the
++    event using a interrupt to the cpu.
++
++properties:
++    compatible:
++    const: sprd,sc9860-keypad
++
++    reg:
++        maxItems: 1
++
++    interrupts:
++        maxItems: 1
++
++    keypad,num-rows:
++    description: Number of row lines connected to the keypad controller.
++
++    keypad,num-columns:
++    description: Number of column lines connected to the keypad.
++
++    debounce-interval:
++    description:
++        Debouncing interval time in milliseconds. If not specified defaults to 5.
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++    default: 5
++
++    linux,keymap:
++    description: An array of packed 1-cell entries containing the equivalent
++        of row, column and linux key-code. The 32-bit big endian cell is packed.
++
++required:
++        - compatible
++        - reg
++        - keypad,num-rows
++        - keypad,num-columns
++        - linux,keymap
++
++unevaluatedProperties: false
++
++
++examples:
++  - |
++	keypad@40250000 {
++		compatible = "sprd,sc9860-keypad";
++		reg = 	<0x40250000 0x1000>;
++		interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&aonapb_gate CLK_KPD_EB>,
++			<&aonapb_gate CLK_KPD_RTC_EB>;
++		clock-names = "enable", "rtc";
++		keypad,num-rows= <3>;
++		keypad,num-columns = <3>;
++		debounce-interval = <5>;
++		linux,keymap = < 0x00000001
++				 0x01000002
++				 0x00020003>;
++		status = "okay";
++	};
++...
 -- 
-2.41.0
+2.17.1
 
