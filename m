@@ -2,55 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6B6773D4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71030773CF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232382AbjHHQPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52622 "EHLO
+        id S231671AbjHHQMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:12:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232227AbjHHQNu (ORCPT
+        with ESMTP id S232049AbjHHQKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:13:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994217EE4
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:47:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691509632;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=G/Wcq4VEvq4uSxoCQf62Pp1qKouxx6WZ7LG7H8kY9Sw=;
-        b=QWFVcgYphp9jpqSOTlspWWlDwvGgRWoyR2E4Dd+McXtoRrbDiVGCbvuOkLKL8sbUXTbGlc
-        HvrIJ0Y+MwnboMpHIohEmNG5Gz/+5blZjxGpkbLUzP9J4IA4wLFo16XXUAHceM6ZZWF/jX
-        ImIsLrdoHTHriAdGOCCZcxkzOHWcOWg=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-319-3geoceO5PPy_N5G8IsdDgA-1; Tue, 08 Aug 2023 10:42:39 -0400
-X-MC-Unique: 3geoceO5PPy_N5G8IsdDgA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4DD592A5957A;
-        Tue,  8 Aug 2023 14:42:39 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BE5771121315;
-        Tue,  8 Aug 2023 14:42:38 +0000 (UTC)
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        linux-kernel@vger.kernel.org, Stefan Hajnoczi <stefanha@redhat.com>
-Subject: [PATCH v2] vfio: align capability structures
-Date:   Tue,  8 Aug 2023 10:42:16 -0400
-Message-ID: <20230808144216.2656505-1-stefanha@redhat.com>
+        Tue, 8 Aug 2023 12:10:10 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C8E7AB3
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:46:37 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bc73a2b0easo13108525ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691509594; x=1692114394;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=hpGMNxDDvo9T1v6v+RkICvblRXd4nkGe288y9gyoNGg=;
+        b=jh4uG5zld+1/KhFnZcfxps6aLBg2tCh6+8qLTnfA+d0SAtoX013EtubaqOibJxZ0Ud
+         RjxGEHCRwFAnE8GCUaR3CXDOfkYuhVZx7N3CX84VOqhOVyFu4hjaWwlgyPaAH849z0Ez
+         6W/hFw+A/UdUJxcSSh2mAqJL69+/Tyw71xoisxPh80B46b9c8Q1NbxvlOUhbzWPrFK1Q
+         OH9+lv7GEi2SgH0K9TIBkCYzSAa+JNJol4/u5Ld/SreEZ8xBgxXFfFLZHpOo7NCVvzfF
+         0iINnd1qktHg7Pjhz0Kk3JbWY5Qjv9tRYJlS5Vw9QbA5HVbdH0VQxwfEORiEvmMj+AOV
+         XO6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691509594; x=1692114394;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hpGMNxDDvo9T1v6v+RkICvblRXd4nkGe288y9gyoNGg=;
+        b=PM9LrDG2Mo5ZGhVpsbm67t/24s3r+xujbA+yRbbpeOe6udaJb3QC1BafDgailzEKpV
+         mnh+RlQcbYM/VRhyeV0CjumpL8jDj93a81EopdHPpcNmiLPG0zifC6ju1g5BMAIm1qA/
+         niO8mxaU8d+XxfA7gen3U4ddRnYFVh3vkKvHirsho/tRsHGFX5zfkjeHst9qX1+NYj0b
+         6a3iu4CHRsDZYI3t9F/cF0zSOKuLfhFtFHAwHZWGGupyg0R2R3nZEAkCuBZxXAwQdQBe
+         z/fZgKb3nyM/fZp1vqNVg10bddrfFaEyqazDiDUrTE14XqTwNMTOH0v7mWapSbuMm5L8
+         7ryw==
+X-Gm-Message-State: AOJu0YyCFm908dVMc2O7gIQ/aeQH/sfHlwZSnIPYjZ4HO9nQJciG9mWe
+        uOeCiIzhy9wPCFGpzOM7b5hBvtBmrcr0Y4QKRhKSRma9/XLNQi7n
+X-Google-Smtp-Source: AGHT+IEQ0B+zFHwu6lwq9ShhqNgqoAUPtqEjQdph6xX3V3JEjoRX0Qpcb7z9XgUddzrDP+CIGW7eIVIsmdM1+EjIYR4=
+X-Received: by 2002:a25:df82:0:b0:d47:4ed4:43eb with SMTP id
+ w124-20020a25df82000000b00d474ed443ebmr10840010ybg.63.1691505778468; Tue, 08
+ Aug 2023 07:42:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+References: <20230803063703.5659-1-zhuyinbo@loongson.cn> <20230803063703.5659-3-zhuyinbo@loongson.cn>
+ <4fef9725-7aea-43fb-b8ef-d20a4c6d9a68@app.fastmail.com>
+In-Reply-To: <4fef9725-7aea-43fb-b8ef-d20a4c6d9a68@app.fastmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 8 Aug 2023 16:42:22 +0200
+Message-ID: <CAPDyKFo7p=aEWWrW2OGbhN1tFjHanpqjLApzCMipdPSzE+NknQ@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] soc: loongson2_pm: add power management support
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Yinbo Zhu <zhuyinbo@loongson.cn>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        soc@kernel.org, Jianmin Lv <lvjianmin@loongson.cn>,
+        wanghongliang@loongson.cn, Liu Peibao <liupeibao@loongson.cn>,
+        loongson-kernel@lists.loongnix.cn, loongarch@lists.linux.dev,
+        Liu Yun <liuyun@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,165 +74,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The VFIO_DEVICE_GET_INFO, VFIO_DEVICE_GET_REGION_INFO, and
-VFIO_IOMMU_GET_INFO ioctls fill in an info struct followed by capability
-structs:
+On Thu, 3 Aug 2023 at 09:03, Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Thu, Aug 3, 2023, at 08:37, Yinbo Zhu wrote:
+> > The Loongson-2's power management controller was ACPI, supports ACPI
+> > S2Idle (Suspend To Idle), ACPI S3 (Suspend To RAM), ACPI S4 (Suspend To
+> > Disk), ACPI S5 (Soft Shutdown) and supports multiple wake-up methods
+> > (USB, GMAC, PWRBTN, etc.). This driver was to add power management
+> > controller support that base on dts for Loongson-2 series SoCs.
+> >
+> > Co-developed-by: Liu Yun <liuyun@loongson.cn>
+> > Signed-off-by: Liu Yun <liuyun@loongson.cn>
+> > Co-developed-by: Liu Peibao <liupeibao@loongson.cn>
+> > Signed-off-by: Liu Peibao <liupeibao@loongson.cn>
+> > Cc: soc@kernel.org
+> > Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> > Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+>
+> I'm still waiting for Ulf to take a look here to see whether
+> this should be in drivers/genpd instead, but he might still
+> be on vacation.
 
-  +------+---------+---------+-----+
-  | info | caps[0] | caps[1] | ... |
-  +------+---------+---------+-----+
+I don't think this belongs in drivers/genpd/ as it's not a genpd
+provider. Besides that, no further comments from me at this point.
 
-Both the info and capability struct sizes are not always multiples of
-sizeof(u64), leaving u64 fields in later capability structs misaligned.
+Kind regards
+Uffe
 
-Userspace applications currently need to handle misalignment manually in
-order to support CPU architectures and programming languages with strict
-alignment requirements.
-
-Make life easier for userspace by ensuring alignment in the kernel. This
-is done by padding info struct definitions and by copying out zeroes
-after capability structs that are not aligned.
-
-The new layout is as follows:
-
-  +------+---------+---+---------+-----+
-  | info | caps[0] | 0 | caps[1] | ... |
-  +------+---------+---+---------+-----+
-
-In this example caps[0] has a size that is not multiples of sizeof(u64),
-so zero padding is added to align the subsequent structure.
-
-Adding zero padding between structs does not break the uapi. The memory
-layout is specified by the info.cap_offset and caps[i].next fields
-filled in by the kernel. Applications use these field values to locate
-structs and are therefore unaffected by the addition of zero padding.
-
-Note that code that copies out info structs with padding is updated to
-always zero the struct and copy out as many bytes as userspace
-requested. This makes the code shorter and avoids potential information
-leaks by ensuring padding is initialized.
-
-Originally-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
----
-v2:
-- Simplify padding approach as suggested by Alex
-
- include/uapi/linux/vfio.h        |  2 ++
- drivers/vfio/pci/vfio_pci_core.c | 11 ++---------
- drivers/vfio/vfio_iommu_type1.c  | 11 ++---------
- drivers/vfio/vfio_main.c         |  6 ++++++
- 4 files changed, 12 insertions(+), 18 deletions(-)
-
-diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-index 20c804bdc09c..8fe85f5c7b61 100644
---- a/include/uapi/linux/vfio.h
-+++ b/include/uapi/linux/vfio.h
-@@ -217,6 +217,7 @@ struct vfio_device_info {
- 	__u32	num_regions;	/* Max region index + 1 */
- 	__u32	num_irqs;	/* Max IRQ index + 1 */
- 	__u32   cap_offset;	/* Offset within info struct of first cap */
-+	__u32   pad;
- };
- #define VFIO_DEVICE_GET_INFO		_IO(VFIO_TYPE, VFIO_BASE + 7)
- 
-@@ -1304,6 +1305,7 @@ struct vfio_iommu_type1_info {
- #define VFIO_IOMMU_INFO_CAPS	(1 << 1)	/* Info supports caps */
- 	__u64	iova_pgsizes;	/* Bitmap of supported page sizes */
- 	__u32   cap_offset;	/* Offset within info struct of first cap */
-+	__u32   pad;
- };
- 
- /*
-diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-index 20d7b69ea6ff..e2ba2a350f6c 100644
---- a/drivers/vfio/pci/vfio_pci_core.c
-+++ b/drivers/vfio/pci/vfio_pci_core.c
-@@ -920,24 +920,17 @@ static int vfio_pci_ioctl_get_info(struct vfio_pci_core_device *vdev,
- 				   struct vfio_device_info __user *arg)
- {
- 	unsigned long minsz = offsetofend(struct vfio_device_info, num_irqs);
--	struct vfio_device_info info;
-+	struct vfio_device_info info = {};
- 	struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
--	unsigned long capsz;
- 	int ret;
- 
--	/* For backward compatibility, cannot require this */
--	capsz = offsetofend(struct vfio_iommu_type1_info, cap_offset);
--
- 	if (copy_from_user(&info, arg, minsz))
- 		return -EFAULT;
- 
- 	if (info.argsz < minsz)
- 		return -EINVAL;
- 
--	if (info.argsz >= capsz) {
--		minsz = capsz;
--		info.cap_offset = 0;
--	}
-+	minsz = min_t(size_t, info.argsz, sizeof(info));
- 
- 	info.flags = VFIO_DEVICE_FLAGS_PCI;
- 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index ebe0ad31d0b0..f812c475a626 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -2762,27 +2762,20 @@ static int vfio_iommu_dma_avail_build_caps(struct vfio_iommu *iommu,
- static int vfio_iommu_type1_get_info(struct vfio_iommu *iommu,
- 				     unsigned long arg)
- {
--	struct vfio_iommu_type1_info info;
-+	struct vfio_iommu_type1_info info = {};
- 	unsigned long minsz;
- 	struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
--	unsigned long capsz;
- 	int ret;
- 
- 	minsz = offsetofend(struct vfio_iommu_type1_info, iova_pgsizes);
- 
--	/* For backward compatibility, cannot require this */
--	capsz = offsetofend(struct vfio_iommu_type1_info, cap_offset);
--
- 	if (copy_from_user(&info, (void __user *)arg, minsz))
- 		return -EFAULT;
- 
- 	if (info.argsz < minsz)
- 		return -EINVAL;
- 
--	if (info.argsz >= capsz) {
--		minsz = capsz;
--		info.cap_offset = 0; /* output, no-recopy necessary */
--	}
-+	minsz = min_t(size_t, info.argsz, sizeof(info));
- 
- 	mutex_lock(&iommu->lock);
- 	info.flags = VFIO_IOMMU_INFO_PGSIZES;
-diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-index f0ca33b2e1df..2850478301d2 100644
---- a/drivers/vfio/vfio_main.c
-+++ b/drivers/vfio/vfio_main.c
-@@ -1172,6 +1172,9 @@ struct vfio_info_cap_header *vfio_info_cap_add(struct vfio_info_cap *caps,
- 	void *buf;
- 	struct vfio_info_cap_header *header, *tmp;
- 
-+	/* Ensure that the next capability struct will be aligned */
-+	size = ALIGN(size, sizeof(u64));
-+
- 	buf = krealloc(caps->buf, caps->size + size, GFP_KERNEL);
- 	if (!buf) {
- 		kfree(caps->buf);
-@@ -1205,6 +1208,9 @@ void vfio_info_cap_shift(struct vfio_info_cap *caps, size_t offset)
- 	struct vfio_info_cap_header *tmp;
- 	void *buf = (void *)caps->buf;
- 
-+	/* Capability structs should start with proper alignment */
-+	WARN_ON(!IS_ALIGNED(offset, sizeof(u64)));
-+
- 	for (tmp = buf; tmp->next; tmp = buf + tmp->next - offset)
- 		tmp->next += offset;
- }
--- 
-2.41.0
-
+>
+> A few minor comments from me in the meantime:
+>
+> > +#define loongson2_pm_readw(reg)              readw(loongson2_pm.base + reg)
+> > +#define loongson2_pm_readl(reg)              readl(loongson2_pm.base + reg)
+> > +#define loongson2_pm_writew(val, reg)        writew(val, loongson2_pm.base +
+> > reg)
+> > +#define loongson2_pm_writel(val, reg)        writel(val, loongson2_pm.base +
+> > reg)
+>
+> I would prefer these to be 'static inline' functions rather than
+> macros, or you can just open-code them, as each macro is only
+> used once at the moment.
+>
+> > +static irqreturn_t loongson2_pm_irq_handler(int irq, void *dev_id)
+> > +{
+> > +     u16 status = loongson2_pm_readw(LOONGSON2_PM1_STS_REG);
+> > +
+> > +     if (!loongson2_pm.suspended && (status & LOONGSON2_PM1_PWRBTN_STS)) {
+> > +             pr_info("Power Button pressed...\n");
+>
+> The message is probably more appropriate as a pr_debug() than
+> pr_info().
+>
+> > +static int __maybe_unused loongson2_pm_suspend(struct device *dev)
+> > +{
+> > +     loongson2_pm.suspended = true;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int __maybe_unused loongson2_pm_resume(struct device *dev)
+> > +{
+> > +     loongson2_pm.suspended = false;
+> > +
+> > +     return 0;
+> > +}
+> > +static SIMPLE_DEV_PM_OPS(loongson2_pm_ops, loongson2_pm_suspend,
+> > loongson2_pm_resume);
+>
+> Please change this to DEFINE_SIMPLE_DEV_PM_OPS() and remove the
+> __maybe_unused, this is what all drivers should have these days.
+>
+> > +
+> > +static int loongson2_pm_probe(struct platform_device *pdev)
+> > +{
+> > +     int irq, retval;
+> > +     u64 suspend_addr;
+> > +     struct device *dev = &pdev->dev;
+> > +
+> > +     loongson2_pm.base = devm_platform_ioremap_resource(pdev, 0);
+> > +     if (IS_ERR(loongson2_pm.base))
+> > +             return PTR_ERR(loongson2_pm.base);
+> > +
+> > +     irq = platform_get_irq(pdev, 0);
+> > +     if (irq < 0)
+> > +             return irq;
+> > +
+> > +     if (!device_property_read_u64(dev, "loongson,suspend-address",
+> > &suspend_addr))
+> > +             loongson_sysconf.suspend_addr = (u64)phys_to_virt(suspend_addr);
+> > +     else
+>
+> Having a custom "loongson,suspend-address" property here feels wrong
+> to me. Can't this be moved into the "regs" property that holds
+> the other mmio registers?
+>
+>     Arnd
