@@ -2,115 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0972C77413C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA806774164
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbjHHRRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:17:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42706 "EHLO
+        id S234421AbjHHRTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234203AbjHHRQg (ORCPT
+        with ESMTP id S231899AbjHHRS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:16:36 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916251D444
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:06:43 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe2a116565so85395e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:06:43 -0700 (PDT)
+        Tue, 8 Aug 2023 13:18:56 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454F48CA8
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:07:45 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-407db3e9669so288521cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:07:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691510792; x=1692115592;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=en4BANwXReNJdtVv23CMrzP6JO/+20SEX8H3hOTpv5o=;
-        b=myWSq4lPvBKhbe4+zSbtARG2ka8adzgpdxrGR/PkL7IS+S1OubWLaJ3PjZLNvhJy5F
-         Xxx8J5Do9SX4jKy9jMtYoXQrT2tMTOGGb6tx6htlzAflRvPrEIFTF/Rmk7QkwR5YHGVz
-         JdV8msNkCSWWUevTqzOhoHQTZQ8lZPprWLFxllO+tDH/UFYWNkyGoBNXkX3fHO4R3QoI
-         UPXOREvlo7HlTAfGM9pYpPVCmPupS5fK7rQia78bAJZZd9jL9iiHNDB6uwYHKN2q2Ybo
-         9cJPjGl9yg5d/Rgfc2HxZcto8aGFRA7PmIARN2MFk+wkNjx0zxZ4fN/yRC31aiKkjhas
-         6gLQ==
+        d=google.com; s=20221208; t=1691510863; x=1692115663;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8KJ5t+CiuSqsFYkiJ2Ez3PlStQR/yi3Jik6zirchtNg=;
+        b=3rruu8VuQ6sEnx24V6i4EeBKQXuAYJ3UJoVV/TwptPF1nnHVWsrENT6C/rgoUsFLpE
+         u2ZH6Mm2HudmF4Tq+4yZJMk2KulpkkZh60w6a+vnXK4a1OYH4JSUo2PdGAxHIrbuHrOM
+         FCL1WDxv2EL9XJPzMm0P4NU77fqKLaU6dWV+qvWA3MSmdC4/XAPy86kEj3PV1pntJle2
+         BCcQWfjCyWxvFx+H9XOnpKQeGwMIm409WshtOtmW5iWsWxkCSH/wS39fwcjRsbcE03NF
+         zdZFukacIMYWAolIqT5GLdX8hyytJeXHnAiJgJ43z+vbPgvMGz5v0BXHYxMeXUnBpcfw
+         OJpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510792; x=1692115592;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=en4BANwXReNJdtVv23CMrzP6JO/+20SEX8H3hOTpv5o=;
-        b=c7DEgnalaHVlfPCpz3/erveXh9uIsw95SRGlYVUrWz5MrIRjGuzfY1hBFHqYSHn3LA
-         dlky1WsiVXATs8m6x1wLEbbNlcVfNeamLB/zH816xIqjC2TxtkdnJz6au7CTM5qaGcgy
-         7ARPHkRcUgsc6eTFhx9y2RRztzW4fgKMYK8RdADUVuyQBkaaDwps6M+SS1Om1ryg+o6Y
-         n2L3XcB279yRl4cHEgnCR3j8BvdJC5iAA6jDbbUwzfX7BISx9hn4sv65JbjDfvhJbw+y
-         XUaei4m0I67Gbqx4zhuly7Zq776eioJ1FzQjiD+kUGHgX/5cwMMFb1hzdT2YthWS7xxJ
-         j7ZQ==
-X-Gm-Message-State: AOJu0YyLApgKBkIWe8uIUDH7W7hHmXIIeWwoFVg9j4N4AmKkJcf8z2yD
-        S48cYQ67tEri3bIkxbQ91f++Ggb2sY4NKEL+7xWBmg==
-X-Google-Smtp-Source: AGHT+IEyE8ErD7uTJxSl5pOL1gNwgH/rpoc3NrRUJbIX+CCqivojjSoogbdUBi8R44J+rqzNlPOm0e/5+oOFVS4Mew4=
-X-Received: by 2002:a05:600c:6023:b0:3f1:70d1:21a6 with SMTP id
- az35-20020a05600c602300b003f170d121a6mr311208wmb.0.1691510792379; Tue, 08 Aug
- 2023 09:06:32 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691510863; x=1692115663;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8KJ5t+CiuSqsFYkiJ2Ez3PlStQR/yi3Jik6zirchtNg=;
+        b=G1INspTI3dkJg8IuSq8Mh3vU7JnNf7RNUR7L81DT5pkhmergn4nmwvKXQfynJlyKjC
+         fiQxmsknRYelLQgOu2Zcj2YiMTNQNPNMg/13+GJ0UqvSImIEHf6sP20xkZqrON382THw
+         80gwW8VZQYCCORBqwLZh+6WnXlX9rjMBhL+u32o33vmof5APO8OAzsSGO34AzuhTn1ps
+         SDnui0RaABq6aVkgQCJZEZx9PfA7XA1O7Kng3zwv9i3TWYX6chuxhP4dZh+Yy8oH3lFx
+         4TGmfq6PEI3Jv82KF8zlsgkYawiNlZm1w7xtdtDjkZ21CSWQsMgZAfMtANwYrqL8RTjJ
+         sw9w==
+X-Gm-Message-State: AOJu0Yyt/I4esIdMVRMic+50sxGQ3PqpLwIZkUjY7+j4L1ZPG1sPOZCF
+        V3WwkaK/+B8pYegUqIr7nJOBL2C35noEaT5F9kJimlSi0SHF0O+CKIw=
+X-Google-Smtp-Source: AGHT+IHt6voO9BYVJcWdEkniRLCcqBRLef735ePpp1tfW1zNahlgGDA7vGpo612clikAIgeIZaaP9JI5rM3a1iauBbg=
+X-Received: by 2002:ac8:5b08:0:b0:403:b1d0:2f0a with SMTP id
+ m8-20020ac85b08000000b00403b1d02f0amr746939qtw.28.1691510863628; Tue, 08 Aug
+ 2023 09:07:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <0000000000000e4cc105ff68937b@google.com> <000000000000166f9e06025c8139@google.com>
-In-Reply-To: <000000000000166f9e06025c8139@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Tue, 8 Aug 2023 18:06:20 +0200
-Message-ID: <CANp29Y7q49HBoV+_xD1wpztUGDu4ykEFb-2H-d71rZAkY=M67A@mail.gmail.com>
-Subject: Re: [syzbot] [modules?] KASAN: invalid-access Read in init_module_from_file
-To:     syzbot <syzbot+e3705186451a87fd93b8@syzkaller.appspotmail.com>
-Cc:     bpf@vger.kernel.org, chris@chrisdown.name, linan122@huawei.com,
-        linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
-        llvm@lists.linux.dev, mcgrof@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, song@kernel.org,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com
+References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
+ <a507ef3302d3afff58d82528ee17e82df1f21de0.camel@HansenPartnership.com>
+ <64c5ed6eb4ca1_a88b2942a@dwillia2-xfh.jf.intel.com.notmuch>
+ <c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com>
+ <64cdb5f25c56_2138e294f1@dwillia2-xfh.jf.intel.com.notmuch>
+ <1180481830431165d49c5e64b92b81c396ebc9b1.camel@HansenPartnership.com>
+ <64d17f5728fbc_5ea6e2943f@dwillia2-xfh.jf.intel.com.notmuch>
+ <c7d6e953a4b36014ea0c7406531b24bb29d6127e.camel@HansenPartnership.com>
+ <2425e00b-defb-c12b-03e5-c3d23b30be01@linux.intel.com> <64d263e44e401_2138e29486@dwillia2-xfh.jf.intel.com.notmuch>
+In-Reply-To: <64d263e44e401_2138e29486@dwillia2-xfh.jf.intel.com.notmuch>
+From:   Dionna Amalie Glaze <dionnaglaze@google.com>
+Date:   Tue, 8 Aug 2023 09:07:32 -0700
+Message-ID: <CAAH4kHamob7g_+BRd0JW76cM7_vS=jzXzRjrgCPDxZ29VnzdCQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation reports
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        dhowells@redhat.com, Brijesh Singh <brijesh.singh@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Samuel Ortiz <sameo@rivosinc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 12:09=E2=80=AFAM syzbot
-<syzbot+e3705186451a87fd93b8@syzkaller.appspotmail.com> wrote:
 >
-> syzbot suspects this issue was fixed by commit:
+> At least that was not the level of concurrency I was worried about. The
+> sysfs approach makes it so that concurrency problem of option-writing vs
+> report-reading is pushed to userspace.
 >
-> commit 125bfc7cd750e68c99f1d446e2c22abea08c237f
-> Author: Li Nan <linan122@huawei.com>
-> Date:   Fri Jun 9 09:43:20 2023 +0000
->
->     md/raid10: fix the condition to call bio_end_io_acct()
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D15c26ba9a8=
-0000
-> start commit:   a901a3568fd2 Merge tag 'iomap-6.5-merge-1' of git://git.k=
-e..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Df5e1158c5b2f8=
-3bb
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3De3705186451a87f=
-d93b8
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12518548a80=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D124ccf70a8000=
-0
->
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
->
-> #syz fix: md/raid10: fix the condition to call bio_end_io_acct()
 
-No, that's unrelated.
+The reason I would advocate against making attestation report
+collection single-threaded in user space at a machine level is that
+there are new schemes of attested connections that may become the
+basis of server handshakes. I think folks are mainly looking at this
+from the use case of
 
-Most likely it's due to https://github.com/google/syzkaller/issues/4117
-TL;DR: for bugs that only existed for a very short time syzbot is
-having problems differentiating between revisions where the bug is not
-yet introduced and where it's already fixed.
+1. workload will do large amounts of work on behalf of the VM owner,
+provided it gets a sealing key released by the VM owner once on boot
+after proving its code identity
 
+however I'm thinking of the case of a more user-centric use case that
+enables service users to challenge for proof of workload identity
+
+2. workload is a server that accepts incoming connections that include
+a hardware attestation challenge. It generates an attestation report
+that includes the challenge as part of the connection handshake
+
+This posits the existence of such an advanced user, but high security
+applications also have users with high expectations. I want the option
+to be open to empower more users to have access to provable workload
+provenance, not just the VM owners that are unlocking resources.
+
+> For example, take the following script:
 >
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
+> $ cat -n get_report
+>      1  #!/bin/bash
+>      2  tsm=/sys/class/tsm/tsm0
+>      3  echo $1 > ${tsm}/privlevel
+>      4  echo $2 > ${tsm}/format
+>      5  echo "hex encoded attestation report for: $(cat ${tsm}/provider)"
+>      6  xxd -p -c 0 -r ${tsm}/report
 >
+> The kernel handles the concurrency of line 6 where it synchronizes
+> against new writes to the options for the duration of emitting a
+> coherent report. However, if you do:
+>
+> $ get_report 2 extended > reportA & get_report 0 default > reportB
+>
+> ...there is race between those invocations to set the options and read
+> the report.
+>
+> So to solve that concurrency problem userspace needs to be well behaved
+> and only have one thread at a time configuring the options and reading
+> out the report before the next agent is allowed to proceed. There are
+> several ways to do that, but the kernel only guarantees that the state
+> of the options is snapshotted for the duration of 6.
+
+
+
+-- 
+-Dionna Glaze, PhD (she/her)
