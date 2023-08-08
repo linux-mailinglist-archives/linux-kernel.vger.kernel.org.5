@@ -2,348 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CBA774B2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A375D774A1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231917AbjHHUmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54918 "EHLO
+        id S230075AbjHHUS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbjHHUls (ORCPT
+        with ESMTP id S234700AbjHHUSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:41:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AAE78DCCF;
-        Tue,  8 Aug 2023 10:31:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691515897; x=1723051897;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=eqRRMLl2kIoz0ZwHwY02c6d7SX45/i2Q/jssTnU7/tA=;
-  b=JmKkWqIA0/GVc8tGbrgwAMTXe8xpEcUH9BPs/q6KFqCy17gspPRcU9tt
-   gHlw+wnwJLuV7Fodg4OpAbUUhbXXGYvgMawZB0jgDcA5Yvy5kLOug2/46
-   Drnu0Y0q0WoBxUaHzPyD1X1+sRwWPtSCjrzGb6T3B+DJhtF7PTnp0DAs+
-   gZWErGyyoNJ6gj0lgdg63WDAHo1C4HC6xV4LEY9DsD2E8TGRdiRL/2+Uu
-   fvoc+gNnp7IbctTqsqUp1GU48AF/HESn37ajJl7Ww8s83XJwCv6n/Rwyu
-   Wc8soxrGVCoNx0rTaLysemGQZFFmuVcUK4eW6ONkxk2b+0ej9NFqagzDG
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="434581748"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="434581748"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 23:25:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="734376741"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="734376741"
-Received: from dmi-pnp-i7.sh.intel.com ([10.239.159.155])
-  by fmsmga007.fm.intel.com with ESMTP; 07 Aug 2023 23:25:07 -0700
-From:   Dapeng Mi <dapeng1.mi@linux.intel.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <likexu@tencent.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Lv Zhiyuan <zhiyuan.lv@intel.com>,
-        Yang Weijiang <weijiang.yang@intel.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>
-Subject: [PATCH RFV v2 00/13] Enable fixed counter 3 and topdown perf metrics for vPMU
-Date:   Tue,  8 Aug 2023 14:30:58 +0800
-Message-Id: <20230808063111.1870070-1-dapeng1.mi@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 8 Aug 2023 16:18:45 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 41ADA59B3;
+        Tue,  8 Aug 2023 12:23:09 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3786Wk7Z062958;
+        Tue, 8 Aug 2023 01:32:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691476366;
+        bh=m/z+ZEorE7Nb1tbGH4kNDp3mTcCQejFrJD/Y819NZo4=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=VdhOLCEYcaI1faJJZCkJxVg5Zr21yp0BB6AhS/mt61R/IK5fYk59ewVEAzaaNsBoM
+         GW+W+FCKr4LqUgtvMMvQXNkhOkHNjnouCFFU7Rz4GH4hySjag/xbX812oIA0jKYVck
+         3Ptw5d6S8WxaZ5gJVtRfx8wyENS7rsgEk6t/nDlI=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3786WjGo120625
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Aug 2023 01:32:45 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
+ Aug 2023 01:32:45 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 8 Aug 2023 01:32:45 -0500
+Received: from [172.24.227.112] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3786WduE080841;
+        Tue, 8 Aug 2023 01:32:40 -0500
+Message-ID: <958bd2bc-4f82-fe42-264d-01a6bcb65990@ti.com>
+Date:   Tue, 8 Aug 2023 12:02:38 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 5/6] arm64: dts: ti: k3-am625-beagleplay: Add HDMI
+ support
+Content-Language: en-US
+To:     Aradhya Bhatia <a-bhatia1@ti.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Francesco Dolcini <francesco@dolcini.it>
+CC:     Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Rahul T R <r-ravikumar@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>, Jai Luthra <j-luthra@ti.com>
+References: <20230807153307.22174-1-a-bhatia1@ti.com>
+ <20230807153307.22174-6-a-bhatia1@ti.com>
+From:   Jayesh Choudhary <j-choudhary@ti.com>
+In-Reply-To: <20230807153307.22174-6-a-bhatia1@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TopDown Microarchitecture Analysis (TMA) Method is a structured
-analysis methodology to identify critical performance bottlenecks in
-out-of-order processors. The details about topdown metrics support on
-Intel processors can be found in section "Performance Metrics" of Intel's
-SDM Volume 3[1]. Kernel enabling code has also been merged, see
-patchset[2] to learn more about the feature.
-
-The TMA method is quite powerful and efficient to help developers to
-identify the performance bottleneck in the program. The TMA method has
-been integrated into multiple performance analysis tools, such as perf,
-Vtune. Developers can leverage TMA method to analyze their program's
-performance bottleneck easily with these tools and improve their program's
-performance. TMA method is becoming the most widely used performance
-analysis method on x86 platform. Currently the TMA method has been
-supported fairly well on Native, but it's still not supported in Guest
-environment. Since the environment difference between Host and Guest,
-even same program may show different performance bottleneck between Guest
-and Host. Obviously, the most straightforward and best method to
-profiling Guest performance bottleneck is to run the TMA method in Guest
-directly. So supporting topdown perf metrics in Guest becomes a real and
-important requirement and we hope this patchset can mitigate this gap.
-
-Like Xu posted a patch series to support guest Topdown[3], the patchset
-creates a group of topdown metric events in KVM by binding to fixed counter
-3 to obtain hardware values and the guest value of PERF_METRICS MSR is
-assembled based on the count of grouped metric events.
-
-This patchset improves Like's proposal, it leverages mature vPMU PMC
-emulation framework and current perf topdown metric handling logic to
-support guest topdown metrics feature.
-
-In current perf logic, an events group is required to handle the topdown
-metrics profiling, and the events group couples a slots event which
-acts events group leader and multiple metric events. To coordinate with
-the perf topdown metrics handing logic and reduce the code changes in
-KVM, we choose to follow current mature vPMU PMC emulation framework. The
-only difference is that we need to create a events group for fixed
-counter 3 and manipulate FIXED_CTR3 and PERF_METRICS MSRS together
-instead of a single event and only manipulating FIXED_CTR3 MSR.
-
-When guest writes PERF_METRICS MSR at first, KVM would create an event
-group which couples a slots event and a virtual metrics event. In this
-event group, slots event claims the fixed counter 3 HW resource and acts
-as group leader which is required by perf system. The virtual metrics
-event claims the PERF_METRICS MSR. This event group is just like the perf
-metrics events group on host and is scheduled by host perf system.
-
-In this proposal, the count of slots event is calculated and emulated
-on host and returned to guest just like other normal counters, but there
-is a difference for the metrics event processing. KVM doesn't calculate
-the real count of topdown metrics, it just stores the raw data of
-PERF_METRICS MSR and directly returnthe stored raw data to guest. Thus,
-guest can get the real HW PERF_METRICS data and guarantee the calculation
-accuracy of topdown metrics.
-
-Comparing with Like's patchset, this proposal brings two benefits.
-
-1. Reduce the created perf events number
-   Like's patchset needs to create 4 (Ice Lake) or 8 (Sapphire Rapids)
-   metric events, whereas this patchset only needs to create 1 metric
-   event.
-
-2. Increase the accuracy of metric calculation
-   Like's patchset needs to do twice metric count conversion. The first
-   conversion happens on perf system, perf topdown metrics handling
-   logic reads the metric percentage from PERF_METRICS MSR and times with
-   elapsed slots count and obtains the metric count. The second conversion
-   happens on KVM, KVM needs to convert the metric count back to metric
-   percentage by using metric count divide elapsed slots again and then
-   assembles the 4 or 8 metric percentage values to the virtual
-   PERF_METRICS MSR and return to Guest at last. Considering each metric
-   percentage in PERF_METRICS MSR is represented with only 8 bits, the
-   twice conversions (once multiplication and once division) definitely
-   cause accuracy loss in theory. Since this patchset directly returns
-   the raw data of PERF_METRICS MSR to guest, it won't have any accuracy
-   loss.
-
-The patchset is rebased on latest kvm-x86/next branch and it is tested
-on both Host and Guest (SPR Platform) with below perf commands. The 'foo'
-is a backend-bound benchmark. We can see the output of perf commands are
-quite close between host and guest.
-
-1. perf stat ./foo
-
-Host outputs:
-
- Performance counter stats for '/home/sdp/work/foo/foo':
-
-         26,525.25 msec task-clock                       #    1.000 CPUs utilized
-                 9      context-switches                 #    0.339 /sec
-                 2      cpu-migrations                   #    0.075 /sec
-                51      page-faults                      #    1.923 /sec
-   125,330,033,745      cycles                           #    4.725 GHz
-   238,172,965,287      instructions                     #    1.90  insn per cycle
-    44,904,300,430      branches                         #    1.693 G/sec
-        69,299,003      branch-misses                    #    0.15% of all branches
-   751,979,445,222      TOPDOWN.SLOTS                    #     59.2 %  tma_backend_bound
-                                                  #     38.0 %  tma_retiring
-                                                  #      0.8 %  tma_bad_speculation
-                                                  #      1.9 %  tma_frontend_bound
-   286,047,083,084      topdown-retiring
-    14,744,695,003      topdown-fe-bound
-   445,289,789,131      topdown-be-bound
-     5,897,878,000      topdown-bad-spec
-       138,674,397      INT_MISC.UOP_DROPPING            #    5.228 M/sec
-
-      26.528600835 seconds time elapsed
-
-      26.527849000 seconds user
-       0.000000000 seconds sys
-
-Guest outputs:
-
-  Performance counter stats for '/home/pnp/foo/foo':
-
-         29,051.43 msec task-clock                       #    1.000 CPUs utilized
-                10      context-switches                 #    0.344 /sec
-                 0      cpu-migrations                   #    0.000 /sec
-                51      page-faults                      #    1.756 /sec
-   125,337,801,996      cycles                           #    4.314 GHz
-   238,139,676,030      instructions                     #    1.90  insn per cycle
-    44,897,906,380      branches                         #    1.545 G/sec
-        69,402,326      branch-misses                    #    0.15% of all branches
-   752,022,710,490      TOPDOWN.SLOTS                    #     58.4 %  tma_backend_bound
-                                                  #     37.6 %  tma_retiring
-                                                  #      1.2 %  tma_bad_speculation
-                                                  #      2.7 %  tma_frontend_bound
-   283,114,432,184      topdown-retiring
-    20,643,760,680      topdown-fe-bound
-   439,417,191,619      topdown-be-bound
-     8,847,326,005      topdown-bad-spec
-       138,873,309      INT_MISC.UOP_DROPPING            #    4.780 M/sec
-
-      29.058833449 seconds time elapsed
-
-      29.048761000 seconds user
-       0.004003000 seconds sys
-
-2. perf stat -e slots ./foo
-
-Host outputs:
-
- Performance counter stats for '/home/sdp/work/foo/foo':
-
-   713,292,346,950      slots
-
-      25.472861484 seconds time elapsed
-
-      25.470978000 seconds user
-       0.000000000 seconds sys
-
-Guest outputs:
-
- Performance counter stats for '/home/pnp/foo/foo':
-
-   713,286,331,824      slots
-
-      25.264007882 seconds time elapsed
-
-      25.259790000 seconds user
-       0.004002000 seconds sys
-
-3.
-echo 0 > /proc/sys/kernel/nmi_watchdog
-echo 25 > /proc/sys/kernel/perf_cpu_time_max_percent
-echo 100000 > /proc/sys/kernel/perf_event_max_sample_rate
-echo 0 > /proc/sys/kernel/perf_cpu_time_max_percent
-perf record -e slots ./foo && perf report
-
-Host outputs:
-
-# Total Lost Samples: 0
-#
-# Samples: 109K of event 'slots'
-# Event count (approx.): 715723903347
-#
-# Overhead  Command  Shared Object     Symbol
-# ........  .......  ................  ..................................
-#
-    74.83%  foo      libc.so.6         [.] __random
-     7.22%  foo      foo               [.] qux
-     7.07%  foo      libc.so.6         [.] __random_r
-     5.40%  foo      foo               [.] main
-     1.82%  foo      foo               [.] bar
-     1.75%  foo      foo               [.] random@plt
-     1.73%  foo      foo               [.] foo
-     0.02%  foo      [kernel.vmlinux]  [k] arch_asym_cpu_priority
 
 
-Guest outputs:
+On 07/08/23 21:03, Aradhya Bhatia wrote:
+> From: Nishanth Menon <nm@ti.com>
+> 
+> The DSS outputs DPI signals via its second video port (VP2). The DPI
+> output from DSS is 24 bits (RGB888) and is forwarded to an HDMI
+> transmitter (ITE-IT66121) on the BeaglePlay platform. For audio output,
+> BeaglePlay uses mcasp1.
+> 
+> Add pinmux info for DSS DPI signals.
+> 
+> Further, add support for HDMI audio and video output.
+> 
+> Signed-off-by: Nishanth Menon <nm@ti.com>
+> [a-bhatia1: Edit sound node properties and HDMI node and label names]
+> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
+> ---
+>   .../arm64/boot/dts/ti/k3-am625-beagleplay.dts | 158 ++++++++++++++++++
+>   1 file changed, 158 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+> index e07ddff22e07..582410be9570 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+> @@ -192,6 +192,34 @@ usr: button-usr {
+>   
+>   	};
+>   
+> +	hdmi0: connector-hdmi {
+> +		compatible = "hdmi-connector";
+> +		label = "hdmi";
+> +		type = "a";
+> +		port {
+> +			hdmi_connector_in: endpoint {
+> +				remote-endpoint = <&it66121_out>;
+> +			};
+> +		};
+> +	};
+> +
+> +	sound {
+> +		compatible = "simple-audio-card";
+> +		simple-audio-card,name = "it66121 HDMI";
+> +		simple-audio-card,format = "i2s";
+> +		simple-audio-card,bitclock-master = <&hdmi_dailink_master>;
+> +		simple-audio-card,frame-master = <&hdmi_dailink_master>;
+> +
+> +		hdmi_dailink_master: simple-audio-card,cpu {
+> +			sound-dai = <&mcasp1>;
+> +			system-clock-direction-out;
+> +		};
+> +
+> +		simple-audio-card,codec {
+> +			sound-dai = <&it66121>;
+> +		};
+> +	};
+> +
+>   	/* Workaround for errata i2329 - just use mdio bitbang */
+>   	mdio0: mdio {
+>   		compatible = "virtual,mdio-gpio";
+> @@ -422,6 +450,57 @@ pmic_irq_pins_default: pmic-irq-default-pins {
+>   			AM62X_IOPAD(0x01f4, PIN_INPUT_PULLUP, 0) /* (D16) EXTINTn */
+>   		>;
+>   	};
+> +
+> +	hdmi_gpio_pins_default: hdmi-gpio-default-pins {
+> +		pinctrl-single,pins = <
+> +			AM62X_IOPAD(0x0094, PIN_INPUT_PULLUP | PIN_DEBOUNCE_CONF6, 7) /* (N20) GPMC0_BE1n.GPIO0_36 */
+> +			AM62X_IOPAD(0x0054, PIN_OUTPUT_PULLUP, 7) /* (P21) GPMC0_AD6.GPIO0_21 */
+> +		>;
+> +	};
+> +
+> +	mcasp_hdmi_pins_default: mcasp-hdmi-default-pins {
+> +		pinctrl-single,pins = <
+> +			AM62X_IOPAD(0x0090, PIN_INPUT, 2) /* (M24) GPMC0_BE0n_CLE.MCASP1_ACLKX */
+> +			AM62X_IOPAD(0x0098, PIN_INPUT, 2) /* (U23) GPMC0_WAIT0.MCASP1_AFSX */
+> +			AM62X_IOPAD(0x008c, PIN_OUTPUT, 2) /* (L25) GPMC0_WEn.MCASP1_AXR0 */
+> +			AM62X_IOPAD(0x0088, PIN_INPUT, 2) /* (L24) GPMC0_OEn_REn.MCASP1_AXR1 */
+> +			AM62X_IOPAD(0x0084, PIN_INPUT, 2) /* (L23) GPMC0_ADVn_ALE.MCASP1_AXR2 */
+> +			AM62X_IOPAD(0x007c, PIN_INPUT, 2) /* (P25) GPMC0_CLK.MCASP1_AXR3 */
+> +		>;
+> +	};
+> +
+> +	dss0_pins_default: dss0-default-pins {
+> +		pinctrl-single,pins = <
+> +			AM62X_IOPAD(0x0100, PIN_OUTPUT, 0) /* (AC25) VOUT0_VSYNC */
+> +			AM62X_IOPAD(0x00f8, PIN_OUTPUT, 0) /* (AB24) VOUT0_HSYNC */
+> +			AM62X_IOPAD(0x0104, PIN_OUTPUT, 0) /* (AC24) VOUT0_PCLK */
+> +			AM62X_IOPAD(0x00fc, PIN_OUTPUT, 0) /* (Y20) VOUT0_DE */
+> +			AM62X_IOPAD(0x00b8, PIN_OUTPUT, 0) /* (U22) VOUT0_DATA0 */
+> +			AM62X_IOPAD(0x00bc, PIN_OUTPUT, 0) /* (V24) VOUT0_DATA1 */
+> +			AM62X_IOPAD(0x00c0, PIN_OUTPUT, 0) /* (W25) VOUT0_DATA2 */
+> +			AM62X_IOPAD(0x00c4, PIN_OUTPUT, 0) /* (W24) VOUT0_DATA3 */
+> +			AM62X_IOPAD(0x00c8, PIN_OUTPUT, 0) /* (Y25) VOUT0_DATA4 */
+> +			AM62X_IOPAD(0x00cc, PIN_OUTPUT, 0) /* (Y24) VOUT0_DATA5 */
+> +			AM62X_IOPAD(0x00d0, PIN_OUTPUT, 0) /* (Y23) VOUT0_DATA6 */
+> +			AM62X_IOPAD(0x00d4, PIN_OUTPUT, 0) /* (AA25) VOUT0_DATA7 */
+> +			AM62X_IOPAD(0x00d8, PIN_OUTPUT, 0) /* (V21) VOUT0_DATA8 */
+> +			AM62X_IOPAD(0x00dc, PIN_OUTPUT, 0) /* (W21) VOUT0_DATA9 */
+> +			AM62X_IOPAD(0x00e0, PIN_OUTPUT, 0) /* (V20) VOUT0_DATA10 */
+> +			AM62X_IOPAD(0x00e4, PIN_OUTPUT, 0) /* (AA23) VOUT0_DATA11 */
+> +			AM62X_IOPAD(0x00e8, PIN_OUTPUT, 0) /* (AB25) VOUT0_DATA12 */
+> +			AM62X_IOPAD(0x00ec, PIN_OUTPUT, 0) /* (AA24) VOUT0_DATA13 */
+> +			AM62X_IOPAD(0x00f0, PIN_OUTPUT, 0) /* (Y22) VOUT0_DATA14 */
+> +			AM62X_IOPAD(0x00f4, PIN_OUTPUT, 0) /* (AA21) VOUT0_DATA15 */
+> +			AM62X_IOPAD(0x005c, PIN_OUTPUT, 1) /* (R24) GPMC0_AD8.VOUT0_DATA16 */
+> +			AM62X_IOPAD(0x0060, PIN_OUTPUT, 1) /* (R25) GPMC0_AD9.VOUT0_DATA17 */
+> +			AM62X_IOPAD(0x0064, PIN_OUTPUT, 1) /* (T25) GPMC0_AD10.VOUT0_DATA18 */
+> +			AM62X_IOPAD(0x0068, PIN_OUTPUT, 1) /* (R21) GPMC0_AD11.VOUT0_DATA19 */
+> +			AM62X_IOPAD(0x006c, PIN_OUTPUT, 1) /* (T22) GPMC0_AD12.VOUT0_DATA20 */
+> +			AM62X_IOPAD(0x0070, PIN_OUTPUT, 1) /* (T24) GPMC0_AD13.VOUT0_DATA21 */
+> +			AM62X_IOPAD(0x0074, PIN_OUTPUT, 1) /* (U25) GPMC0_AD14.VOUT0_DATA22 */
+> +			AM62X_IOPAD(0x0078, PIN_OUTPUT, 1) /* (U24) GPMC0_AD15.VOUT0_DATA23 */
+> +		>;
+> +	};
+>   };
+>   
+>   &mcu_pmx0 {
+> @@ -670,6 +749,46 @@ &main_i2c2 {
+>   	pinctrl-0 = <&i2c2_1v8_pins_default>;
+>   	clock-frequency = <100000>;
+>   	status = "okay";
+> +
+> +	it66121: bridge-hdmi@4c {
+> +		compatible = "ite,it66121";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&hdmi_gpio_pins_default>;
+> +		reg = <0x4c>;
+> +
+> +		#sound-dai-cells = <0>;
+> +
+> +		interrupt-parent = <&main_gpio0>;
+> +		interrupts = <36 IRQ_TYPE_EDGE_FALLING>;
+> +
+> +		vcn33-supply = <&vdd_3v3>;
+> +		vcn18-supply = <&buck2_reg>;
+> +		vrf12-supply = <&buck3_reg>;
+> +
 
-# Total Lost Samples: 0
-#
-# Samples: 7K of event 'slots'
-# Event count (approx.): 24532005986
-#
-# Overhead  Command  Shared Object     Symbol
-# ........  .......  ................  ....................
-#
-    75.21%  foo      libc.so.6         [.] __random
-     7.19%  foo      libc.so.6         [.] __random_r
-     7.12%  foo      foo               [.] qux
-     5.21%  foo      foo               [.] main
-     1.90%  foo      foo               [.] foo
-     1.81%  foo      foo               [.] bar
-     1.56%  foo      foo               [.] random@plt
-     0.00%  perf-ex  [kernel.vmlinux]  [k] native_write_msr
+Fix unnecessary line breaks in this node.
 
+> +		reset-gpios = <&main_gpio0 21 GPIO_ACTIVE_LOW>;
+> +
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			port@0 {
+> +				reg = <0>;
+> +
+> +				it66121_in: endpoint {
+> +					bus-width = <24>;
+> +					remote-endpoint = <&dpi1_out>;
+> +				};
+> +			};
+> +
+> +			port@1 {
+> +				reg = <1>;
+> +
+> +				it66121_out: endpoint {
+> +					remote-endpoint = <&hdmi_connector_in>;
+> +				};
+> +			};
+> +		};
+> +	};
+>   };
+>   
+>   &main_i2c3 {
+> @@ -756,3 +875,42 @@ &main_uart6 {
+>   	pinctrl-0 = <&wifi_debug_uart_pins_default>;
+>   	status = "okay";
+>   };
+> +
+> +&dss {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&dss0_pins_default>;
+> +};
+> +
+> +&dss_ports {
+> +	/* VP2: DPI Output */
+> +	port@1 {
+> +		reg = <1>;
+> +
+> +		dpi1_out: endpoint {
+> +			remote-endpoint = <&it66121_in>;
+> +		};
+> +	};
+> +};
+> +
+> +&mcasp1 {
+> +	status = "okay";
+> +	#sound-dai-cells = <0>;
+> +
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&mcasp_hdmi_pins_default>;
+> +
+> +	auxclk-fs-ratio = <2177>;
+> +
+> +	op-mode = <0>;          /* MCASP_IIS_MODE */
+> +	tdm-slots = <2>;
+> +
 
-To support the guest topdown metrics feature, we have to do several
-fundamental changes for perf system and vPMU code, we tried to avoid
-these changes AMAP, but it seems it's inevitable. If you have any idea,
-please suggest.
+Fix unnecessary line breaks in this node.
 
-The fundamental changes:
-1. perf/core: Add function perf_event_create_group_kernel_counters()
-   Add a new API to create group events from kernel space
-2. perf/core: Add new function perf_event_topdown_metrics()
-   Add a new API to update topdown metrics values
-3. perf/x86/intel: Handle KVM virtual metrics event in perf system
-   Add virtual metrics event processing logic in topdown metrics
-processing code
-4. KVM: x86/pmu: Extend pmc_reprogram_counter() to create group events
-   Extend pmc_reprogram_counter() to be capable to create group events
-instead of just single event
-
-References:
-[1]: Intel 64 and IA-32 Architectures Software Developer Manual
- Combined Volumes: 1, 2A, 2B, 2C, 2D, 3A, 3B, 3C, 3D, and 4
-https://cdrdv2.intel.com/v1/dl/getContent/671200
-[2]: perf/x86/intel: Support TopDown metrics on Ice Lake
-https://lwn.net/ml/linux-kernel/20191203141212.7704-1-kan.liang@linux.intel.com/
-[3]: KVM: x86/pmu: Enable Fixed Counter3 and Topdown Perf Metrics
-https://lwn.net/ml/linux-kernel/20221212125844.41157-1-likexu@tencent.com/
-
-Dapeng Mi (13):
-  KVM: x86/pmu: Add Intel CPUID-hinted TopDown slots event
-  KVM: x86/pmu: Support PMU fixed counter 3
-  perf/core: Add function perf_event_group_leader_check()
-  perf/core: Add function perf_event_move_group()
-  perf/core: Add function perf_event_create_group_kernel_counters()
-  perf/x86: Fix typos and inconsistent indents in perf_event header
-  perf/x86: Add constraint for guest perf metrics event
-  perf/core: Add new function perf_event_topdown_metrics()
-  perf/x86/intel: Handle KVM virtual metrics event in perf system
-  KVM: x86/pmu: Extend pmc_reprogram_counter() to create group events
-  KVM: x86/pmu: Support topdown perf metrics feature
-  KVM: x86/pmu: Handle PERF_METRICS overflow
-  KVM: x86/pmu: Expose Topdown in MSR_IA32_PERF_CAPABILITIES
-
- arch/x86/events/intel/core.c      |  72 +++++--
- arch/x86/events/perf_event.h      |  10 +-
- arch/x86/include/asm/kvm_host.h   |  19 +-
- arch/x86/include/asm/perf_event.h |  21 +-
- arch/x86/kvm/pmu.c                | 142 +++++++++++--
- arch/x86/kvm/pmu.h                |  50 ++++-
- arch/x86/kvm/svm/pmu.c            |   2 +
- arch/x86/kvm/vmx/capabilities.h   |   1 +
- arch/x86/kvm/vmx/pmu_intel.c      |  67 ++++++
- arch/x86/kvm/vmx/vmx.c            |   2 +
- arch/x86/kvm/vmx/vmx.h            |   5 +
- arch/x86/kvm/x86.c                |   5 +-
- include/linux/perf_event.h        |  19 ++
- kernel/events/core.c              | 326 ++++++++++++++++++++----------
- 14 files changed, 590 insertions(+), 151 deletions(-)
-
-
-base-commit: 240f736891887939571854bd6d734b6c9291f22e
--- 
-2.34.1
-
+> +	serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
+> +	       1 0 0 0
+> +	       0 0 0 0
+> +	       0 0 0 0
+> +	       0 0 0 0
+> +	>;
+> +	tx-num-evt = <32>;
+> +	rx-num-evt = <32>;
+> +};
