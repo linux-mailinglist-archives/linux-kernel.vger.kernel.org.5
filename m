@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C5977483A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0EB774829
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232418AbjHHT2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 15:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
+        id S233927AbjHHT1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236173AbjHHT20 (ORCPT
+        with ESMTP id S233284AbjHHT1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 15:28:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B2463D42;
-        Tue,  8 Aug 2023 11:55:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DDEB962A68;
-        Tue,  8 Aug 2023 18:55:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77698C433C8;
-        Tue,  8 Aug 2023 18:55:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691520941;
-        bh=xdoAQE4gvzbaXW7o5SJ9HdR0FcwDH36dp+qmn+f4fo8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gq4NafKKliHvETbjjE8/CokMXDjhlDKsd+DZt2GFBq4oCaFlOfSbY4n/YZWvrpQXo
-         F1usTtCvSybe8lcgahbjyVlTxBz/rpZjfWoTkLBdTMx7KDC3wQK2gIePqEg9XI8TPv
-         Af8diQebYZb4p6jNbBE7XdrGDblaqa2lIO1jwqkVHKzpf42BH1E6f3tQuD5QzMsRiO
-         vA+8CyFpu9maED4iiI9lBeNwBmnil/mA2WKi8cLs5olS10arMvC+RPGU1PJCQ4QOvg
-         FMbBQjA0lYN0kFLXmtPNlqeyv1Aa9/NoqxLnkM5Llk7MCUzERIWa3hOVT+f/o0gO3F
-         7/fek79Q79nRw==
-Date:   Tue, 8 Aug 2023 21:55:34 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Petr Pavlu <petr.pavlu@suse.com>
-Cc:     tariqt@nvidia.com, yishaih@nvidia.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        jgg@ziepe.ca, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 02/10] mlx4: Rename member mlx4_en_dev.nb to
- netdev_nb
-Message-ID: <20230808185534.GH94631@unreal>
-References: <20230804150527.6117-1-petr.pavlu@suse.com>
- <20230804150527.6117-3-petr.pavlu@suse.com>
+        Tue, 8 Aug 2023 15:27:33 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC33A6968E
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 11:55:53 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691520952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NB5qZGpXRGcSb+6tiRNnG9E39TwT1cI9hCXxzJHa6XY=;
+        b=o+DwbdteHjion+dhZM9uhBd7MpPgvAL9b8vmyVoPQVh2G8YZ5l1R2Do9ICQMGB0k1rnb2+
+        66l8/GpLMVEe5vVx8mYyQQvoLAy9094AqXbcepZUWeeobywlIrcIiIF/o1JD87pOAkWAX6
+        7AY9JwDkDJAc7dIehRDcQLbVnccqzx2n3J8yPnzzYMmdHdK9ry7F6xWqxJfAhitey9WriC
+        btNcq3SKk7nUobP8WDzSHaIU8bjy1vCzPWsSm7CDutCXTqpt6Rs3rih99NeFdExW0IOu3Y
+        Jt0fX3L7+DEUgBaTtix1jxpoG2bdgaSpMA2T9Nc1W7UyIyC7hQ1Mg4eV/npWRQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691520952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NB5qZGpXRGcSb+6tiRNnG9E39TwT1cI9hCXxzJHa6XY=;
+        b=PsVIuA126MCf+/qlCoUnDHutTJ7iwySHlww3JenOYZ/dhUgScPgmovdTgwYXIgWa5NQpHb
+        0Wb79xid6wsUnCCw==
+To:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Juergen Gross <jgross@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Feng Tang <feng.tang@intel.com>,
+        Andy Shevchenko <andy@infradead.org>
+Subject: Re: [patch 00/53] x86/topology: The final installment
+In-Reply-To: <a08e9457-cb8f-6b57-8f4d-4a1f856ce60e@citrix.com>
+References: <20230807130108.853357011@linutronix.de>
+ <8d650d5c-e7b8-99c3-e561-3d177e6189bd@suse.com>
+ <a08e9457-cb8f-6b57-8f4d-4a1f856ce60e@citrix.com>
+Date:   Tue, 08 Aug 2023 20:55:52 +0200
+Message-ID: <87jzu5l5xj.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804150527.6117-3-petr.pavlu@suse.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 05:05:19PM +0200, Petr Pavlu wrote:
-> Rename the mlx4_en_dev.nb notifier_block member to netdev_nb in
-> preparation to add a mlx4 core notifier_block.
-> 
-> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
-> Tested-by: Leon Romanovsky <leon@kernel.org>
-> ---
->  drivers/net/ethernet/mellanox/mlx4/en_main.c   | 14 +++++++-------
->  drivers/net/ethernet/mellanox/mlx4/en_netdev.c |  2 +-
->  drivers/net/ethernet/mellanox/mlx4/mlx4_en.h   |  2 +-
->  3 files changed, 9 insertions(+), 9 deletions(-)
-> 
+On Tue, Aug 08 2023 at 12:20, Andrew Cooper wrote:
+> On 08/08/2023 8:40 am, Juergen Gross wrote:
+>> Tested on an Intel system with Xen:
+>>
+>> - PV dom0 is working fine. I couldn't test physical cpu hotplug, but
+>> removing
+>> =C2=A0 and then re-adding vcpus to dom0 worked.
+>
+> It turns out that physical CPU hotplug with XenPV is broken in at least
+> two ways.
+>
+> It's dom0 (not Xen) that gets the hot-unplug event, after which the Xen
+> code in Linux succumbs to a preempt-check failure while trying to
+> offline the vCPU that aliases the pCPU wanting to go offline.
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+That should be gone by now :)
