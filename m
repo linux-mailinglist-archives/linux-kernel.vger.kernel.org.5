@@ -2,170 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BCF773F5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDA27742E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbjHHQqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 12:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58138 "EHLO
+        id S235103AbjHHRvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:51:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjHHQpN (ORCPT
+        with ESMTP id S230452AbjHHRvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 12:45:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2AA344440;
-        Tue,  8 Aug 2023 08:56:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691510176; x=1723046176;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=eS3xaEQETdnX0id0plDDqxuTUi6pNiapMx6PcVlFMtc=;
-  b=H76t9h1XzxnuLIgpJ4HJbS40SyZN7Av/VsjN6/2CfZOSHQemyiNMlvuB
-   ZwQz4zhLAPc7s2mKrEmPF4CfQ2SAfut+BkelM1GNAn5oy3PMFODz/XW0t
-   +mikEuwlQBelPzSOsyk+HlsQM3e0S2ZbzZ08q6CGPP6xxG0kaeGJol9uW
-   01XHUwwU8uajx8rusljptRylGIqN0gdaofh7EN7d9+QP6zY0WQtWicpP1
-   enXBovuJYXuOYmQovWBMmdRNepBjBXp+NUqfoFVLNtNZBVEL1eFfT/rdZ
-   P2dOGwOZn/+no8aG9xGwa8ochfEg7iYGm4DkTCJ6X1lfz58PTmANxrsbz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="437097970"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="437097970"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 02:17:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="977776978"
-X-IronPort-AV: E=Sophos;i="6.01,263,1684825200"; 
-   d="scan'208";a="977776978"
-Received: from mtofeni-mobl.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.48.21])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 02:17:08 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-kernel@vger.kernel.org
-Cc:     Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 7/7] selftests/resctrl: Cleanup benchmark argument parsing
-Date:   Tue,  8 Aug 2023 12:16:25 +0300
-Message-Id: <20230808091625.12760-8-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230808091625.12760-1-ilpo.jarvinen@linux.intel.com>
-References: <20230808091625.12760-1-ilpo.jarvinen@linux.intel.com>
+        Tue, 8 Aug 2023 13:51:05 -0400
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847EEB4F3A;
+        Tue,  8 Aug 2023 09:22:51 -0700 (PDT)
+Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1ba5cda3530so4607646fac.3;
+        Tue, 08 Aug 2023 09:22:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691511749; x=1692116549;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GCxwlyhJ8vXEVNF+yz9sQrPr3bcnp/8Z+q3sGhYbKzY=;
+        b=eyYEBmT8U9BS0g9YiDGnxXjtGCDVRksgzluqxEPtICdyaVdggKOALR63x2PcECwMqD
+         5MoUQi8ERs4RlPVnesDEPYSjONko7qcfZsBrumb9x1K1/UMqvjU26Ho3PAwaGMrqkdsh
+         ScPN/kEIF334KbdDY43rB1lWj1V2DpiRtRIlglLsvSyhGOtWHH4uZ5qZfSAujgW1vZQ3
+         wGm3VnLKKWDjf9nVgnyUjvaCfERuKMc0GG8YbfU9/RuaYpguciP86d5QB2kAR0uTTagt
+         8fxrg3rNl05BnC8H+imitZHN34Es5Hhjc+bJqnaV/XPK1IrQNBZJcvojPsbgPpxcMcCz
+         2eQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691511749; x=1692116549;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GCxwlyhJ8vXEVNF+yz9sQrPr3bcnp/8Z+q3sGhYbKzY=;
+        b=mEqKU1IdgBfyNl3nJ6i5LmvNUWZWX6OPVsq16dBm+KPlSxwbVh8bvGkVG5oyr9oc7C
+         9xlv4NG0DIN3a0zRu4cZ4JIw8WrknQLkJl2Pbjhk2UCd1TwuMmCwbzcJKcC9DZ4dedTx
+         SWG2JvBQrvW2dpGEJJ7Cru9vGumjtQgeEbvGXMhf5Pl3yDUPkQsY8MQmcQ8b+Uqzxd7+
+         D5wlBgWHMSz8pRqynJxaBXTRuOl6368guFB7s+XDhJeW2BL81LSk3KmtfkGfCLYN85Hb
+         tbDWukcrhFivCsIMZtPefX96OBVre4D8S+fjNyP3q10E+y6CM34NMHar2hUE+C0hXHz/
+         Q0rA==
+X-Gm-Message-State: AOJu0YzL3KroaHJUozzC5NGGeeiKF092qAv0lcJqbHRirFK2BO7flWOT
+        mjWq3YIKCkxLVXbMMzcZoeHAmn1mRgTWyvBAVEiv8Ihf/wE=
+X-Google-Smtp-Source: AGHT+IGOOwkdjvLToEWmeAFn8PNhrCDb0D7BXur/JKENEzDLzdhvPs+JtGOveAYXQ4R3LxtNi3mUSqHtZes+Z+zHw9s=
+X-Received: by 2002:a05:6870:612b:b0:1bd:55be:5880 with SMTP id
+ s43-20020a056870612b00b001bd55be5880mr14170980oae.42.1691486507460; Tue, 08
+ Aug 2023 02:21:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Received: by 2002:a8a:696:0:b0:4f0:1250:dd51 with HTTP; Tue, 8 Aug 2023
+ 02:21:46 -0700 (PDT)
+In-Reply-To: <20230808-unsensibel-scham-c61a71622ae7@brauner>
+References: <20230806230627.1394689-1-mjguzik@gmail.com> <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
+ <20230808-eingaben-lumpen-e3d227386e23@brauner> <CAGudoHF=cEvXy3v96dN_ruXHnPv33BA6fA+dCWCm-9L3xgMPNQ@mail.gmail.com>
+ <20230808-unsensibel-scham-c61a71622ae7@brauner>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Tue, 8 Aug 2023 11:21:46 +0200
+Message-ID: <CAGudoHEQ6Tq=88VKqurypjHqOzfU2eBmPts4+H8C7iNu96MRKQ@mail.gmail.com>
+Subject: Re: [PATCH] fs: use __fput_sync in close(2)
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oleg@redhat.com,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Benchmark argument is handled by custom argument parsing code which is
-more complicated than it needs to be.
+On 8/8/23, Christian Brauner <brauner@kernel.org> wrote:
+>> I don't think perf tax on something becomes more sensible the longer
+>> it is there.
+>
+> One does need to answer the question why it does suddenly become
+> relevant after all these years though.
+>
 
-Process benchmark argument within the normal getopt() handling and drop
-entirely unnecessary ben_ind and has_ben variables. If -b is not given,
-setup the default benchmark command right after the switch statement
-and make -b to goto over it while it terminates the getopt() loop.
+There is some work I'm considering doing, but before that happens I'm
+sanity checking performance of various syscalls and I keep finding
+problems, some of which are trivially avoidable.
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- .../testing/selftests/resctrl/resctrl_tests.c | 56 +++++++++----------
- 1 file changed, 25 insertions(+), 31 deletions(-)
+I'm genuinely confused with the strong opposition to the very notion
+of making close(2) a special case (which I consider conceptually
+trivial), but as you noted below I'm not ultimately the person on the
+hook for any problems.
 
-diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-index 81c2ed299e6f..a437aaa69cc5 100644
---- a/tools/testing/selftests/resctrl/resctrl_tests.c
-+++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-@@ -173,25 +173,27 @@ static void run_cat_test(int cpu_no, int no_of_bits)
- 
- int main(int argc, char **argv)
- {
--	bool has_ben = false, mbm_test = true, mba_test = true, cmt_test = true;
--	int c, cpu_no = 1, argc_new = argc, i, no_of_bits = 0;
-+	bool mbm_test = true, mba_test = true, cmt_test = true;
-+	int c, cpu_no = 1, i, no_of_bits = 0;
- 	const char *benchmark_cmd[BENCHMARK_ARGS];
--	int ben_ind, tests = 0;
- 	bool cat_test = true;
-+	int tests = 0;
- 
--	for (i = 0; i < argc; i++) {
--		if (strcmp(argv[i], "-b") == 0) {
--			ben_ind = i + 1;
--			argc_new = ben_ind - 1;
--			has_ben = true;
--			break;
--		}
--	}
--
--	while ((c = getopt(argc_new, argv, "ht:b:n:p:")) != -1) {
-+	while ((c = getopt(argc, argv, "ht:b:n:p:")) != -1) {
- 		char *token;
- 
- 		switch (c) {
-+		case 'b':
-+			optind--;			/* Back to optarg */
-+			if (argc - optind >= BENCHMARK_ARGS - 1)
-+				ksft_exit_fail_msg("Too long benchmark command");
-+
-+			/* Extract benchmark command from command line. */
-+			for (i = 0; i < argc - optind; i++)
-+				benchmark_cmd[i] = argv[i + optind];
-+			benchmark_cmd[i] = NULL;
-+
-+			goto last_arg;
- 		case 't':
- 			token = strtok(optarg, ",");
- 
-@@ -241,6 +243,16 @@ int main(int argc, char **argv)
- 		}
- 	}
- 
-+	/* If no benchmark is given by "-b" argument, use fill_buf. */
-+	benchmark_cmd[0] = "fill_buf";
-+	benchmark_cmd[1] = DEFAULT_SPAN_STR;
-+	benchmark_cmd[2] = "1";
-+	benchmark_cmd[3] = "0";
-+	benchmark_cmd[4] = "false";
-+	benchmark_cmd[5] = NULL;
-+
-+last_arg:
-+
- 	ksft_print_header();
- 
- 	/*
-@@ -251,24 +263,6 @@ int main(int argc, char **argv)
- 	if (geteuid() != 0)
- 		return ksft_exit_skip("Not running as root. Skipping...\n");
- 
--	if (has_ben) {
--		if (argc - ben_ind >= BENCHMARK_ARGS - 1)
--			ksft_exit_fail_msg("Too long benchmark command");
--
--		/* Extract benchmark command from command line. */
--		for (i = 0; i < argc - ben_ind; i++)
--			benchmark_cmd[i] = argv[i + ben_ind];
--		benchmark_cmd[i] = NULL;
--	} else {
--		/* If no benchmark is given by "-b" argument, use fill_buf. */
--		benchmark_cmd[0] = "fill_buf";
--		benchmark_cmd[1] = DEFAULT_SPAN_STR;
--		benchmark_cmd[2] = "1";
--		benchmark_cmd[3] = "0";
--		benchmark_cmd[4] = "false";
--		benchmark_cmd[5] = NULL;
--	}
--
- 	if (!check_resctrlfs_support())
- 		return ksft_exit_skip("resctrl FS does not exist. Enable X86_CPU_RESCTRL config option.\n");
- 
+> The original discussion was triggered by fifo ordering in task work
+> which led to a noticable regression and why it was ultimately reverted.
+> The sync proposal for fput() was an orthogonal proposal and the
+> conclusion was that it wasn't safe generally
+> https://lore.kernel.org/all/20150905051915.GC22011@ZenIV.linux.org.uk
+> even though it wasn't a direct response to the patch you linked.
+>
+
+Ok, I missed this e-mail. It further discourages patching filp_close,
+but does not make an argument against *just* close(2) rolling with
+sync which is what I'm proposing.
+
+> If you care about it enough send a patch that just makes close(2) go
+> sync.
+
+But this is precisely what the submitted patch is doing. It adds
+file_fput_sync, then adds close_fd_sync which is the only consumer and
+only makes close(2) use it. *nobody* else has sync added.
+
+One can argue the way this is sorted out is crap and I'm not going to
+defend it. I am saying making *just* close(2) roll with sync is very
+easy, there are numerous ways to do it and anyone involved with
+maintaining vfs can write their own variant in minutes. Basically I
+don't see *technical* problems here.
+
+> We'll stuff it in a branch and we'll see what LKP has to say about
+> it or whether this gets lost in noise. I really don't think letting
+> micro-benchmarks become a decisive factor for code churn is a good
+> idea.
+>
+
+That would be nice. Given the patch is already doing what you asked,
+can you just take it as is?
+
+I'll note though what I mentioned elsewhere
+(https://lore.kernel.org/all/CAGudoHEG7vtCRWjn0yR5LMUsaw3KJANfa+Hkke9gy0imXQz6tg@mail.gmail.com/):
+can they make sure to whack CONFIG_RANDOMIZE_KSTACK_OFFSET=y from
+their kernel config? It is an *optional* measure and it comes at a
+massive premium, so single-threaded changes are easily diminished.
+
 -- 
-2.30.2
-
+Mateusz Guzik <mjguzik gmail.com>
