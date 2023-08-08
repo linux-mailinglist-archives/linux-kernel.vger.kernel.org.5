@@ -2,171 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA1A77449B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A61377487E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235775AbjHHSYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
+        id S236328AbjHHTde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235454AbjHHSYG (ORCPT
+        with ESMTP id S236300AbjHHTdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:24:06 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0938C222D7;
-        Tue,  8 Aug 2023 10:36:05 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-26928c430b2so2365317a91.0;
-        Tue, 08 Aug 2023 10:36:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691516164; x=1692120964;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K93XONmDEi8X/W9eYSAr8AD1FRn4ePqFJmaPb6kjhvc=;
-        b=TJeyNxoZV4eMzr09+2+Qc8m0d2uvGSpmF8etZ24xecjXCG/3CkjUFxo6thUhhRMUmp
-         BY56TxpfXeCJ3ONPeB8q1VWa4x3IGlqTyX0Xnc0UiebYhKVVCtqrgIyZzOEns3Wg1c7R
-         JpSGKSZ7Qj/epN8ssc6lYkPQosdMpTYO6wMPMdhP24W+rBjPq9ZbYmOwpHE13gGY1OJ3
-         6tZwc4A8uISUqXDk+6S7gvxvCHFEmREHPY19fqY27NCQYAgn4vbN6qXIz+lLNpqRMHzz
-         PeVMRJfxcURU+2sM18M7QfijGpvhrqvzwkq5jiUJjQ/QEK1v1O6PRo+GWLxt7dGvA5EX
-         Q3Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691516164; x=1692120964;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K93XONmDEi8X/W9eYSAr8AD1FRn4ePqFJmaPb6kjhvc=;
-        b=Lblkq7z5biWfzUmHIrNS9d1IfFBBEpHkveZj9/WPoOV2IBubWAf1v1aCChrMN+/V4L
-         uaae0h7Bj51xsEa41zr0zHtrNLdPggXOolQujVICwLe9xOP3Iy+oD9hK3+CxG/IUaNGR
-         kRH3x8SsO+npqAfMKPt1ESVBrdB95B+tBjkEKFZPmjjyx8ceNsiERQHTPAPA0zV0vAg2
-         glezpOwFaYwmsl81HdJ15nkOMGw9C6vMU1ZRqx/cPNrtQnSagAbIG7wy/Kt6hgKq4p/q
-         N9f4N8ruMlcyAKhPMWQESFMbf79AayDKQ3qpv2N/6y/J9fYq1f1gV3X5r/deg1xaj4qw
-         8MLg==
-X-Gm-Message-State: AOJu0Yz707iHS4IKTspsLnHgsecmzCBYS93G3BDZK6LFO+qnATNSYa6O
-        XvJSRg3ZSZU/7Tb5gUmKcgJu5MiS5IAAnNK1wRA=
-X-Google-Smtp-Source: AGHT+IFOXT/qmKdZXY2Lf+S+rrdfbZAjoh5vfaGE1XAD8It9lpANzelVL8FBdDRuOOXKQ8BzeJs9avflTU6jby7fhxY=
-X-Received: by 2002:a17:90a:6aca:b0:268:a691:412f with SMTP id
- b10-20020a17090a6aca00b00268a691412fmr214311pjm.39.1691516164160; Tue, 08 Aug
- 2023 10:36:04 -0700 (PDT)
+        Tue, 8 Aug 2023 15:33:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88336222CE;
+        Tue,  8 Aug 2023 10:36:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 27E1F62788;
+        Tue,  8 Aug 2023 17:36:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE0D4C433CA;
+        Tue,  8 Aug 2023 17:36:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691516162;
+        bh=hcG4JmKbckgBfZQK+co26W7c8YuOsWmymvwei5Re2CI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SPUyRYpGDpWAlgSxVECNisRsgXC4PoBQ+eBMJhF7XdSHKz2E9gBDN+Pxg0lP0wU1V
+         2lCOH7/ZROGbo7lJNKqYS9RJlrtdSi9smaFktr90RigvyiEvGzVVCm5dpND2jX22zd
+         8NJKXEoMaFZb9ccH0lYCgytrz67B6xoVVUNH/0MfOlPmA9ff8GSUu0D/loc0LbmkgX
+         wNwJDJeQdfQz9XhnL0oGLvCMPPRiQd6RTV+g/iirsuTEYGJPIEE0QWR9N45M7bNEso
+         7KlV8wPWejHTzbQnemdbRMBwAH5SjYxixq07kmZCGvgWl5oaC4UBaneWhn3o4DZsUy
+         Dg2hwoKZa706w==
+Date:   Tue, 8 Aug 2023 19:35:58 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Mateusz Guzik <mjguzik@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oleg@redhat.com,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH] fs: use __fput_sync in close(2)
+Message-ID: <20230808-divers-verehren-02abcc37fe60@brauner>
+References: <20230806230627.1394689-1-mjguzik@gmail.com>
+ <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
+ <CAHk-=whk-8Pv5YXH4jNfyAf2xiQCGCUVyBWw71qJEafn4mT6vw@mail.gmail.com>
+ <CAGudoHE5UDj0Y7fY=gicOq8Je=e1MX+5VWo04qoDRpHRG03fFg@mail.gmail.com>
+ <CAHk-=wj+Uu+=iUZLc+MfOBKgRoyM56c0z0ustZKru0We9os63A@mail.gmail.com>
+ <CAGudoHE=jJ+MKduj9-95Nk8_F=fkv2P+akftvFw1fVr46jm8ng@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230804180529.2483231-1-aleksander.lobakin@intel.com>
- <20230804180529.2483231-6-aleksander.lobakin@intel.com> <692d71dc8068b3d27aba39d7141c811755965786.camel@gmail.com>
- <601c0203-ee5f-03a3-e9dd-fdb241f3bcdc@intel.com> <CAKgT0Uc0pLzaOfqFbvd9jFErAbTbsUMNNw5e_XY5NfCnO0=g0g@mail.gmail.com>
- <ca096c35-6ce4-6c1d-7e26-a017348f6ece@intel.com> <CAKgT0UcZspvhYcfiKs90snAfwwb+CMn-vhA62XcSTRiV0BfOqw@mail.gmail.com>
- <8ee66e8f-cada-b492-d23f-e4e15cfef868@intel.com>
-In-Reply-To: <8ee66e8f-cada-b492-d23f-e4e15cfef868@intel.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Tue, 8 Aug 2023 10:35:27 -0700
-Message-ID: <CAKgT0Ud0GFNW8cc+uxaVCEBn-A09SG-4GYNtE6zsCVpfA5HRFA@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 5/6] page_pool: add a lockdep check for
- recycling in hardirq
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="ooa7r4rkjff7kak6"
+Content-Disposition: inline
+In-Reply-To: <CAGudoHE=jJ+MKduj9-95Nk8_F=fkv2P+akftvFw1fVr46jm8ng@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 8:06=E2=80=AFAM Alexander Lobakin
-<aleksander.lobakin@intel.com> wrote:
->
-> From: Alexander Duyck <alexander.duyck@gmail.com>
-> Date: Tue, 8 Aug 2023 07:52:32 -0700
->
-> > On Tue, Aug 8, 2023 at 6:59=E2=80=AFAM Alexander Lobakin
-> > <aleksander.lobakin@intel.com> wrote:
-> >>
-> >> From: Alexander Duyck <alexander.duyck@gmail.com>
-> >> Date: Tue, 8 Aug 2023 06:45:26 -0700
->
-> [...]
->
-> >>>>> Secondly rather than returning an error is there any reason why we
-> >>>>> couldn't just look at not returning page and instead just drop into=
- the
-> >>>>> release path which wouldn't take the locks in the first place? Eith=
-er
-> >>>>
-> >>>> That is exception path to quickly catch broken drivers and fix them,=
- why
-> >>>> bother? It's not something we have to live with.
-> >>>
-> >>> My concern is that the current "fix" consists of stalling a Tx ring.
-> >>> We need to have a way to allow forward progress when somebody mixes
-> >>> xdp_frame and skb traffic as I suspect we will end up with a number o=
-f
-> >>> devices doing this since they cannot handle recycling the pages in
-> >>> hardirq context.
-> >>
-> >> You could've seen that several vendors already disabled recycling XDP
-> >> buffers when in hardirq (=3D netpoll) in their drivers. hardirq is in
-> >> general not for networking-related operations.
-> >
-> > The whole idea behind the netpoll cleanup is to get the Tx buffers out
-> > of the way so that we can transmit even after the system has crashed.
-> > The idea isn't to transmit XDP buffers, but to get the buffers out of
-> > the way in the cases where somebody is combining both xdp_frame and
-> > sk_buff on the same queue due to a limited number of rings being
-> > present on the device.
->
-> I see now, thanks a lot!
->
-> >
-> > My concern is that at some point in the near future somebody is going
-> > to have a system crash and instead of being able to get the crash log
-> > message out via their netconsole it is going to get cut off because
-> > the driver stopped cleaning the Tx ring because somebody was also
-> > using it as an XDP redirect destination.
-> >
-> >>>
-> >>> The only reason why the skbs don't have the problem is that they are
-> >>> queued and then cleaned up in the net_tx_action. That is why I wonder
-> >>> if we shouldn't look at adding some sort of support for doing
-> >>> something like that with xdp_frame as well. Something like a
-> >>> dev_kfree_pp_page_any to go along with the dev_kfree_skb_any.
-> >>
-> >> I still don't get why we may need to clean XDP buffers in hardirq, may=
-be
-> >> someone could give me some links to read why we may need this and how
-> >> that happens? netpoll is a very specific thing for some debug
-> >> operations, isn't it? XDP shouldn't in general be enabled when this
-> >> happens, should it?
-> >
-> > I think I kind of explained it above. It isn't so much about cleaning
-> > the XDP buffers as getting them off of the ring and out of the way. If
-> > we block a Tx queue because of an XDP buffer then we cannot use that
-> > Tx queue. I would be good with us just deferring the cleanup like we
-> > do with an sk_buff in dev_kfree_skb_irq, the only issue is we don't
-> > have the ability to put them on a queue since they don't have
-> > prev/next pointers.
-> >
-> > I suppose an alternative to cleaning them might be to make a mandatory
-> > requirement that you cannot support netpoll and mix xdp_frame and
-> > sk_buff on the same queue. If we enforced that then my concern about
-> > them blocking a queue would be addressed.
->
-> I'm leaning more towards this one TBH. I don't feel sole netpoll as
-> a solid argument for introducing XDP frame deferred queues :s
 
-That was kind of my line of thought as well. That is why I was
-thinking that instead of bothering with a queue it might work just as
-well to just throw all recycling out the window and just call put_page
-if we are dealing with XDP in netpoll and just force it into the free
-path. Then it becomes more of an "_any" type handler.
+--ooa7r4rkjff7kak6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+
+> you guys sort it out ;)
+
+You're all driving me nuts. ;)
+Fixed patch appended and put on vfs.misc for testing...
+@Linus, you ok with the appended thing?
+
+--ooa7r4rkjff7kak6
+Content-Type: text/x-diff; charset=utf-8
+Content-Disposition: attachment;
+	filename="0001-fs-use-__fput_sync-in-close-2.patch"
+
+From 9b0919d12c74b3de6c23c52dc5b3d6ffd24fecee Mon Sep 17 00:00:00 2001
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 8 Aug 2023 19:26:35 +0200
+Subject: [PATCH] fs: use __fput_sync in close(2)
+
+close(2) is a special case which guarantees a shallow kernel stack,
+making delegation to task_work machinery unnecessary. Said delegation is
+problematic as it involves atomic ops and interrupt masking trips, none
+of which are cheap on x86-64. Forcing close(2) to do it looks like an
+oversight in the original work.
+
+Moreover presence of CONFIG_RSEQ adds an additional overhead as fput()
+-> task_work_add(..., TWA_RESUME) -> set_notify_resume() makes the
+thread returning to userspace land in resume_user_mode_work(), where
+rseq_handle_notify_resume takes a SMAP round-trip if rseq is enabled for
+the thread (and it is by default with contemporary glibc).
+
+Sample result when benchmarking open1_processes -t 1 from will-it-scale
+(that's an open + close loop) + tmpfs on /tmp, running on the Sapphire
+Rapid CPU (ops/s):
+stock+RSEQ:     1329857
+stock-RSEQ:     1421667 (+7%)
+patched:        1523521 (+14.5% / +7%) (with / without rseq)
+
+Patched result is the same regardless of rseq as the codepath is avoided.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+ fs/file_table.c |  5 +----
+ fs/open.c       | 27 ++++++++++++++++++++++++---
+ 2 files changed, 25 insertions(+), 7 deletions(-)
+
+diff --git a/fs/file_table.c b/fs/file_table.c
+index fc7d677ff5ad..ee21b3da9d08 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -461,11 +461,8 @@ void fput(struct file *file)
+  */
+ void __fput_sync(struct file *file)
+ {
+-	if (atomic_long_dec_and_test(&file->f_count)) {
+-		struct task_struct *task = current;
+-		BUG_ON(!(task->flags & PF_KTHREAD));
++	if (atomic_long_dec_and_test(&file->f_count))
+ 		__fput(file);
+-	}
+ }
+ 
+ EXPORT_SYMBOL(fput);
+diff --git a/fs/open.c b/fs/open.c
+index e6ead0f19964..1f5b3a5f7f18 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -1503,7 +1503,7 @@ SYSCALL_DEFINE2(creat, const char __user *, pathname, umode_t, mode)
+  * "id" is the POSIX thread ID. We use the
+  * files pointer for this..
+  */
+-int filp_close(struct file *filp, fl_owner_t id)
++static int filp_flush(struct file *filp, fl_owner_t id)
+ {
+ 	int retval = 0;
+ 
+@@ -1520,10 +1520,18 @@ int filp_close(struct file *filp, fl_owner_t id)
+ 		dnotify_flush(filp, id);
+ 		locks_remove_posix(filp, id);
+ 	}
+-	fput(filp);
+ 	return retval;
+ }
+ 
++int filp_close(struct file *filp, fl_owner_t id)
++{
++	int retval;
++
++	retval = filp_flush(filp, id);
++	fput(filp);
++
++	return retval;
++}
+ EXPORT_SYMBOL(filp_close);
+ 
+ /*
+@@ -1533,7 +1541,20 @@ EXPORT_SYMBOL(filp_close);
+  */
+ SYSCALL_DEFINE1(close, unsigned int, fd)
+ {
+-	int retval = close_fd(fd);
++	int retval;
++	struct file *file;
++
++	file = close_fd_get_file(fd);
++	if (!file)
++		return -EBADF;
++
++	retval = filp_flush(file, current->files);
++
++	/*
++	 * We're returning to user space. Don't bother
++	 * with any delayed fput() cases.
++	 */
++	__fput_sync(file);
+ 
+ 	/* can't restart close syscall because file table entry was cleared */
+ 	if (unlikely(retval == -ERESTARTSYS ||
+-- 
+2.34.1
+
+
+--ooa7r4rkjff7kak6--
