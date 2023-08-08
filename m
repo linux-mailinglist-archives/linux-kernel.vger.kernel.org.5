@@ -2,127 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 307A777410C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A532A774128
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234168AbjHHROK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39494 "EHLO
+        id S234253AbjHHRPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 13:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234166AbjHHRNO (ORCPT
+        with ESMTP id S234222AbjHHROy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:13:14 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7811FEB;
-        Tue,  8 Aug 2023 09:05:36 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3a5a7e7cd61so3453b6e.0;
-        Tue, 08 Aug 2023 09:05:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691510734; x=1692115534;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=fzo2iEFDqjoKe2itTMhBe9POlM72/0NxEjlqkxD4yos=;
-        b=hw+egfc2PQOt5QpwbC8cssCgppxquQz04Bh4CeMRWhFMrFfN/so4LLPArgM6yEOz6z
-         IKsX3eB9ACQ/Uu2A+HBt6KT2AUI9HfY+7Hnswa1k4evelaK5gn0FR7KN8eRxhmDxSoLH
-         Zv3xdoAfuCfvX+GiJ/tZpT/vHGQ0GEP8GeDE/hGwAAOwBRqGlqQcXcZr9QzxBhGrahH8
-         9FVCYuXzNd98T+cOCMV1W63T4FVJOOWD44zWS41ZuxB9hFoeVE+Z25InGnABIHWiTNrB
-         uu1cSxZPdBXFl+yVi1oCjQIrfJCUOg/2TAvvw6ZNmEuo6j188tmMqegfIwn830C7PPRZ
-         ESMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510734; x=1692115534;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fzo2iEFDqjoKe2itTMhBe9POlM72/0NxEjlqkxD4yos=;
-        b=eMKzuDdgwvgvrA1NvH9c7A+e4YZaasa6lHdsLq/B0VE+VPU5q9erj3PutGgj8T//x8
-         E+bNAYtXTdtrdSakqBzvzpKGnTo1lRE1mpnXU4fUAgMDHF+ym7e6aDkpqSfYgS6M67AC
-         5GAp2LWUrgLe8sIOHbKDhVfVQASwyjtvn8tyTAGSqZ+e5Svo/CT0BaDWtc+0dzNV/7rL
-         RMy80gFBYz1H2O6GJ+4YL0EVkWmTOg4BUPQL8F7XH19yuEsqI6QeRMTCgVxVQvXUiXbO
-         5r8kkexBT8lGO71RWv7v/hIWbl9bSKjbnlBxOzSPzbxH+oqPX4nTmb9LcWF0S9l/a8gn
-         cZug==
-X-Gm-Message-State: AOJu0Yw3PJ37//UfN9TIB6BJpFRjXjhU7aGO80Hrvb9ZisTKSUrR1zvU
-        bRH7tx7nPtVv5pqMWv/Yxi7OzD7OlEDOkwlpqrk=
-X-Google-Smtp-Source: AGHT+IE2hLN6Y11fMODLcfJGKbsNaQN0QJkyBsZgrNCuKEKiq7TSCLBxpdnFM3YHKgDmZZ0WHdo1jVeyR8NNQpSVD38=
-X-Received: by 2002:a05:6808:1827:b0:3a4:4993:eef9 with SMTP id
- bh39-20020a056808182700b003a44993eef9mr9067286oib.28.1691510733916; Tue, 08
- Aug 2023 09:05:33 -0700 (PDT)
+        Tue, 8 Aug 2023 13:14:54 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F43FB2AC;
+        Tue,  8 Aug 2023 09:06:10 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qTPDM-0007ca-10;
+        Tue, 08 Aug 2023 16:05:44 +0000
+Date:   Tue, 8 Aug 2023 17:05:36 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 8/8] mtd: ubi: provide NVMEM layer over UBI volumes
+Message-ID: <1cf385cf00ef8dc918060f56b129061662656287.1691510312.git.daniel@makrotopia.org>
+References: <cover.1691510312.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-Received: by 2002:a8a:129a:0:b0:4f0:1250:dd51 with HTTP; Tue, 8 Aug 2023
- 09:05:33 -0700 (PDT)
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Tue, 8 Aug 2023 18:05:33 +0200
-Message-ID: <CAGudoHF_Y0shcU+AMRRdN5RQgs9L_HHvBH8D4K=7_0X72kYy2g@mail.gmail.com>
-Subject: new_inode_pseudo vs locked inode->i_state = 0
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1691510312.git.daniel@makrotopia.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+In an ideal world we would like UBI to be used where ever possible on a
+NAND chip. And with UBI support in ARM Trusted Firmware and U-Boot it
+is possible to achieve an (almost-)all-UBI flash layout. Hence the need
+for a way to also use UBI volumes to store board-level constants, such
+as MAC addresses and calibration data of wireless interfaces.
 
-new_inode_pseudo is:
-        struct inode *inode = alloc_inode(sb);
+Add UBI volume NVMEM driver module exposing UBI volumes as NVMEM
+providers. Allow UBI devices to have a "volumes" firmware subnode with
+volumes which may be compatible with "nvmem-cells".
+Access to UBI volumes via the NVMEM interface at this point is
+read-only, and it is slow, opening and closing the UBI volume for each
+access due to limitations of the NVMEM provider API.
 
-	if (inode) {
-		spin_lock(&inode->i_lock);
-		inode->i_state = 0;
-		spin_unlock(&inode->i_lock);
-	}
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/mtd/ubi/Kconfig  |  12 +++
+ drivers/mtd/ubi/Makefile |   1 +
+ drivers/mtd/ubi/nvmem.c  | 189 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 202 insertions(+)
+ create mode 100644 drivers/mtd/ubi/nvmem.c
 
-I'm trying to understand:
-1. why is it zeroing i_state (as opposed to have it happen in inode_init_always)
-2. why is zeroing taking place with i_lock held
-
-The inode is freshly allocated, not yet added to the hash -- I would
-expect that nobody else can see it.
-
-Moreover, another consumer of alloc_inode zeroes without bothering to
-lock -- see iget5_locked:
-[snip]
-	struct inode *new = alloc_inode(sb);
-
-		if (new) {
-			new->i_state = 0;
-[/snip]
-
-I tried to find justification for it in git, the pre-history-wipe repo
-(git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git)
-says it came in "Import 2.1.45pre1" in 1997. This is where my digging
-stopped.
-
-As is, I strongly suspect this is a leftover waiting for clean up.
-Moving i_state = 0 back to inode_init_always would result in a few
-simplifications in the area. I'm happy to make them, provided this is
-indeed safe.
-
-If the lock is required, then it should be added to iget5_locked?
-
-UNRELATED:
-
-While here, new_inode starts with: spin_lock_prefetch(&sb->s_inode_list_lock)
-
-This was also *way* back in a huge commit, since the line was only
-getting patched to remain compilable.
-
-This is the only remaining spin_lock_prefetch use in the tree.
-
-I don't know the original justification nor whether it made sense at
-the time, this is definitely problematic today in the rather heavy
-multicore era -- there is tons of work happening between the prefetch
-and actually take the s_inode_list_lock lock, meaning if there is
-contention, the cacheline is going to be marked invalid by the time
-spin_lock on it is called. But then this only adds to cacheline
-bouncing.
-
-Personally I would just remove this line without even trying to benchmark.
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index 2ed77b7b3fcb5..45d939bbfa853 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -104,4 +104,16 @@ config MTD_UBI_BLOCK
+ 
+ 	   If in doubt, say "N".
+ 
++config MTD_UBI_NVMEM
++	tristate "UBI virtual NVMEM"
++	default n
++	depends on NVMEM
++	help
++	   This option enabled an additional driver exposing UBI volumes as NVMEM
++	   providers, intended for platforms where UBI is part of the firmware
++	   specification and used to store also e.g. MAC addresses or board-
++	   specific Wi-Fi calibration data.
++
++	   If in doubt, say "N".
++
+ endif # MTD_UBI
+diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
+index 543673605ca72..4b51aaf00d1a2 100644
+--- a/drivers/mtd/ubi/Makefile
++++ b/drivers/mtd/ubi/Makefile
+@@ -7,3 +7,4 @@ ubi-$(CONFIG_MTD_UBI_FASTMAP) += fastmap.o
+ ubi-$(CONFIG_MTD_UBI_BLOCK) += block.o
+ 
+ obj-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
++obj-$(CONFIG_MTD_UBI_NVMEM) += nvmem.o
+diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
+new file mode 100644
+index 0000000000000..dd7cc6afb8d00
+--- /dev/null
++++ b/drivers/mtd/ubi/nvmem.c
+@@ -0,0 +1,189 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2023 Daniel Golle <daniel@makrotopia.org>
++ */
++
++/* UBI NVMEM provider */
++#include "ubi.h"
++#include <linux/nvmem-provider.h>
++
++/* List of all NVMEM devices */
++static LIST_HEAD(nvmem_devices);
++static DEFINE_MUTEX(devices_mutex);
++
++struct ubi_nvmem {
++	struct nvmem_device *nvmem;
++	int ubi_num;
++	int vol_id;
++	int usable_leb_size;
++	struct list_head list;
++};
++
++static int ubi_nvmem_reg_read(void *priv, unsigned int from,
++			      void *val, size_t bytes)
++{
++	struct ubi_nvmem *unv = priv;
++	struct ubi_volume_desc *desc;
++	int err = 0, lnum, offs, bytes_left;
++	size_t to_read;
++
++	desc = ubi_open_volume(unv->ubi_num, unv->vol_id, UBI_READONLY);
++	if (IS_ERR(desc))
++		return PTR_ERR(desc);
++
++	lnum = div_u64_rem(from, unv->usable_leb_size, &offs);
++	bytes_left = bytes;
++	while (bytes_left) {
++		to_read = unv->usable_leb_size - offs;
++
++		if (to_read > bytes_left)
++			to_read = bytes_left;
++
++		err = ubi_read(desc, lnum, val, offs, to_read);
++		if (err)
++			break;
++
++		lnum += 1;
++		offs = 0;
++		bytes_left -= to_read;
++		val += to_read;
++	}
++	ubi_close_volume(desc);
++
++	if (err)
++		return err;
++
++	return bytes_left == 0 ? 0 : -EIO;
++}
++
++static int ubi_nvmem_add(struct ubi_volume_info *vi)
++{
++	struct nvmem_config config = {};
++	struct ubi_nvmem *unv;
++	int ret;
++
++	if (!device_is_compatible(vi->dev, "nvmem-cells"))
++		return 0;
++
++	unv = kzalloc(sizeof(struct ubi_nvmem), GFP_KERNEL);
++	if (!unv)
++		return -ENOMEM;
++
++	config.id = NVMEM_DEVID_NONE;
++	config.dev = vi->dev;
++	config.name = dev_name(vi->dev);
++	config.owner = THIS_MODULE;
++	config.priv = unv;
++	config.reg_read = ubi_nvmem_reg_read;
++	config.size = vi->usable_leb_size * vi->size;
++	config.word_size = 1;
++	config.stride = 1;
++	config.read_only = true;
++	config.root_only = true;
++	config.ignore_wp = true;
++	config.of_node = dev_of_node(vi->dev);
++
++	if (!config.of_node)
++		config.no_of_node = true;
++
++	unv->ubi_num = vi->ubi_num;
++	unv->vol_id = vi->vol_id;
++	unv->usable_leb_size = vi->usable_leb_size;
++	unv->nvmem = nvmem_register(&config);
++	if (IS_ERR(unv->nvmem)) {
++		/* Just ignore if there is no NVMEM support in the kernel */
++		if (PTR_ERR(unv->nvmem) == -EOPNOTSUPP)
++			ret = 0;
++		else
++			ret = dev_err_probe(vi->dev, PTR_ERR(unv->nvmem),
++					    "Failed to register NVMEM device\n");
++
++		kfree(unv);
++		return ret;
++	}
++
++	mutex_lock(&devices_mutex);
++	list_add_tail(&unv->list, &nvmem_devices);
++	mutex_unlock(&devices_mutex);
++
++	return 0;
++}
++
++static void ubi_nvmem_remove(struct ubi_volume_info *vi)
++{
++	struct ubi_nvmem *unv_c, *unv = NULL;
++
++	mutex_lock(&devices_mutex);
++	list_for_each_entry(unv_c, &nvmem_devices, list)
++		if (unv_c->ubi_num == vi->ubi_num && unv_c->vol_id == vi->vol_id) {
++			unv = unv_c;
++			break;
++		}
++
++	if (!unv) {
++		mutex_unlock(&devices_mutex);
++		return;
++	}
++
++	list_del(&unv->list);
++	mutex_unlock(&devices_mutex);
++	nvmem_unregister(unv->nvmem);
++	kfree(unv);
++}
++
++/**
++ * nvmem_notify - UBI notification handler.
++ * @nb: registered notifier block
++ * @l: notification type
++ * @ns_ptr: pointer to the &struct ubi_notification object
++ */
++static int nvmem_notify(struct notifier_block *nb, unsigned long l,
++			 void *ns_ptr)
++{
++	struct ubi_notification *nt = ns_ptr;
++
++	switch (l) {
++	case UBI_VOLUME_RESIZED:
++		ubi_nvmem_remove(&nt->vi);
++		fallthrough;
++	case UBI_VOLUME_ADDED:
++		ubi_nvmem_add(&nt->vi);
++		break;
++	case UBI_VOLUME_SHUTDOWN:
++		ubi_nvmem_remove(&nt->vi);
++		break;
++	default:
++		break;
++	}
++	return NOTIFY_OK;
++}
++
++static struct notifier_block nvmem_notifier = {
++	.notifier_call = nvmem_notify,
++};
++
++static int __init ubi_nvmem_init(void)
++{
++	return ubi_register_volume_notifier(&nvmem_notifier, 0);
++}
++
++static void __exit ubi_nvmem_exit(void)
++{
++	struct ubi_nvmem *unv, *tmp;
++
++	mutex_lock(&devices_mutex);
++	list_for_each_entry_safe(unv, tmp, &nvmem_devices, list) {
++		nvmem_unregister(unv->nvmem);
++		list_del(&unv->list);
++		kfree(unv);
++	}
++	mutex_unlock(&devices_mutex);
++
++	ubi_unregister_volume_notifier(&nvmem_notifier);
++}
++
++module_init(ubi_nvmem_init);
++module_exit(ubi_nvmem_exit);
++MODULE_DESCRIPTION("NVMEM layer over UBI volumes");
++MODULE_AUTHOR("Daniel Golle");
++MODULE_LICENSE("GPL");
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+2.41.0
