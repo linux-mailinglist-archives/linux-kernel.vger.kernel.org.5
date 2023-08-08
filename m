@@ -2,258 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D225774AAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE7A774AAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235379AbjHHUct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36784 "EHLO
+        id S234237AbjHHUdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236464AbjHHUcW (ORCPT
+        with ESMTP id S234444AbjHHUc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:32:22 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156D84445C;
-        Tue,  8 Aug 2023 12:56:04 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d4364cf8be3so5031061276.1;
-        Tue, 08 Aug 2023 12:56:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691524563; x=1692129363;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=shx8xzzcKiMrKveTUHLTR3Q3hB2SO4sAG3AUT0OsTBQ=;
-        b=Tx0pmOfUE84GvT8iHHKudjkY6/uU6+P0q4Vq3Fi92Ai4HjE8vjdNm/CgwD/GBUhAi4
-         H+c93rt+kOWcWN9wMelSq5gRU6D9fVm2AqUDDcLd/f+dt1P2PhYh/nN8/nXgLFdgE/fm
-         LcBdCB1rYzMM+bXvvExqt10//p1OpzjGy4gNa1eo3p/VkYal498m2r6AdeN98nyK3Kxw
-         hQmirUesK5dKLRbM2V2tfuWcSLgFoVbDFR5021fkQR46p5dkVP7IkZQU3rz5bX8GWT7n
-         dzxkxagsG9uSb+QKU8SFvyBWRbBjK+cXAAch3R03s80Er3YOi38saKC4ekEgdE5sSKo/
-         g2uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691524563; x=1692129363;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=shx8xzzcKiMrKveTUHLTR3Q3hB2SO4sAG3AUT0OsTBQ=;
-        b=GCi4CjS56WiCeHlT9fJYMn8iA3eso+bl947qAkRvWvC1qyNh8GC4cHDe7R41pU4Avx
-         heHeFZwqoVjAxV7rN5+2pQxRFbXMezi16dxkbzrWh7WAPBbmhvrzBn4V8GQ6BSpSXeo/
-         YmL8EY0835PBOlkpS1AH6Ys9EB+CzdBRwrsj0e+3oeEBHgYOl7b3dR8evNkhqSCy8ffB
-         iU1PzBlS2u4W8pBhQAyHbaVutvazW1K7Vv0K5aAzS9/DNxj/gIeYLrL2SMzDpgmtOYDC
-         BJQogWPcl9P7IgPSsrLta+7IyF8c9hVvRCMlm8pQJRBaUknA71xgVjZ7/MP+OtKLdphY
-         GP3g==
-X-Gm-Message-State: AOJu0Yybaz52HgZJVaJKA7PsRMRmZMI9/pyshvBZ6tMwJUITfSMDr9Kn
-        oqY1ItM+6QU0rWHNnbtVyrmqlCbjyVBjs2jMpZQ=
-X-Google-Smtp-Source: AGHT+IFy0BOqHaKaqCVl3Uzsyn4s5OT0PuHJ8AmLJXWxJ5buKDC2Yg9lLoFo7mpr7qLMgMD11tf3/gMK0ON3S2VlRtY=
-X-Received: by 2002:a25:5f0d:0:b0:c5d:f2af:5a24 with SMTP id
- t13-20020a255f0d000000b00c5df2af5a24mr595770ybb.14.1691524562978; Tue, 08 Aug
- 2023 12:56:02 -0700 (PDT)
+        Tue, 8 Aug 2023 16:32:29 -0400
+Received: from icts-p-cavuit-1.kulnet.kuleuven.be (icts-p-cavuit-1.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A6B65B3
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 12:56:46 -0700 (PDT)
+X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: F404F2005A.A3714
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-ceifnet-smtps-0.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:144:242:ac11:2f])
+        by icts-p-cavuit-1.kulnet.kuleuven.be (Postfix) with ESMTP id F404F2005A;
+        Tue,  8 Aug 2023 21:56:41 +0200 (CEST)
+BCmilterd-Mark-Subject: no
+BCmilterd-Errors: 
+BCmilterd-Report: SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_SIGNED#0.00
+X-CAV-Cluster: smtps
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
+        s=cav; t=1691524601;
+        bh=YcH4Fg8CUorp1vXIDgTjg2krAfCLOYoN7h6ArsaNswo=;
+        h=From:To:Cc:Subject:Date;
+        b=Czh0JcdLmMopZXkc9Kcmzs4UT1Kln8gnXzSMQTp5IUm4ZyNNwYYJnGYDwwXyGnbv/
+         nis0Waq0F1zBXDh7mvZV8YqmdZmC9QBxTOjhR3D7OadboMslO7s8LQG3l5BkMnTcgf
+         4+qmPugUs3xr0jlMJRxGLN5Ik6kc8oJRrZe0kljE=
+Received: from localhost.localdomain (rrcs-24-123-120-98.central.biz.rr.com [24.123.120.98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by icts-p-ceifnet-smtps-0.kuleuven.be (Postfix) with ESMTPSA id 39D54D4F7B7AA;
+        Tue,  8 Aug 2023 21:56:38 +0200 (CEST)
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+To:     linux-kernel@vger.kernel.org, dave.hansen@linux.intel.com,
+        luto@kernel.org, peterz@infradead.org, mingo@redhat.com
+Cc:     x86@kernel.org, bp@alien8.de, tglx@linutronix.de, hpa@zytor.com,
+        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+Subject: [PATCH RESEND] x86/pti: Fix kernel warnings for pti= and nopti cmdline options.
+Date:   Tue,  8 Aug 2023 12:56:15 -0700
+Message-Id: <20230808195615.9795-1-jo.vanbulck@cs.kuleuven.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230808104309.357852-1-usama.anjum@collabora.com>
- <20230808104309.357852-3-usama.anjum@collabora.com> <CANaxB-ww6AcO4QThubYw62Mdeid4e3FOQAXvA_GZ=wu4J60-AQ@mail.gmail.com>
- <624cfa26-5650-ee0d-8e0a-1d844175bcaf@collabora.com>
-In-Reply-To: <624cfa26-5650-ee0d-8e0a-1d844175bcaf@collabora.com>
-From:   Andrei Vagin <avagin@gmail.com>
-Date:   Tue, 8 Aug 2023 12:55:51 -0700
-Message-ID: <CANaxB-yhCcvc9W6POFR8SNjECeD_WNGidnuxXrHKT2if=CgyrA@mail.gmail.com>
-Subject: Re: [PATCH v27 2/6] fs/proc/task_mmu: Implement IOCTL to get and
- optionally clear info about PTEs
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     Peter Xu <peterx@redhat.com>, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 12:35=E2=80=AFPM Muhammad Usama Anjum
-<usama.anjum@collabora.com> wrote:
->
-> On 8/9/23 12:21=E2=80=AFAM, Andrei Vagin wrote:
-> > On Tue, Aug 8, 2023 at 3:43=E2=80=AFAM Muhammad Usama Anjum
-> > <usama.anjum@collabora.com> wrote:
-> >
-> > ....
-> >
-> >> +static int pagemap_scan_output(unsigned long categories,
-> >> +                              struct pagemap_scan_private *p,
-> >> +                              unsigned long addr, unsigned long *end)
-> >> +{
-> >> +       unsigned long n_pages, total_pages;
-> >> +       int ret =3D 0;
-> >> +
-> >> +       if (!p->vec_buf)
-> >> +               return 0;
-> >> +
-> >> +       categories &=3D p->arg.return_mask;
-> >> +
-> >> +       n_pages =3D (*end - addr) / PAGE_SIZE;
-> >> +       if (check_add_overflow(p->found_pages, n_pages, &total_pages) =
-|| //TODO
-> >
-> > Need to fix this TODO.
-> Sorry, I forgot to remove the "//TODO". As far as I've understood, the la=
-st
-> discussion ended in keeping the check_add_overflow(). [1] I'll just remov=
-e
-> the TODO.
->
-> https://lore.kernel.org/all/CABb0KFEfmRz+Z_-7GygTL12E5Y254dvoUfWe4uSv9-wO=
-x+Cs8w@mail.gmail.com
->
->
-> >
-> >> +           total_pages > p->arg.max_pages) {
-> >> +               size_t n_too_much =3D total_pages - p->arg.max_pages;
-> >> +               *end -=3D n_too_much * PAGE_SIZE;
-> >> +               n_pages -=3D n_too_much;
-> >> +               ret =3D -ENOSPC;
-> >> +       }
-> >> +
-> >> +       if (!pagemap_scan_push_range(categories, p, addr, *end)) {
-> >> +               *end =3D addr;
-> >> +               n_pages =3D 0;
-> >> +               ret =3D -ENOSPC;
-> >> +       }
-> >> +
-> >> +       p->found_pages +=3D n_pages;
-> >> +       if (ret)
-> >> +               p->walk_end_addr =3D *end;
-> >> +
-> >> +       return ret;
-> >> +}
-> >> +
-> >
-> > ...
-> >
-> >> +static long do_pagemap_scan(struct mm_struct *mm, unsigned long uarg)
-> >> +{
-> >> +       struct mmu_notifier_range range;
-> >> +       struct pagemap_scan_private p;
-> >> +       unsigned long walk_start;
-> >> +       size_t n_ranges_out =3D 0;
-> >> +       int ret;
-> >> +
-> >> +       memset(&p, 0, sizeof(p));
-> >> +       ret =3D pagemap_scan_get_args(&p.arg, uarg);
-> >> +       if (ret)
-> >> +               return ret;
-> >> +
-> >> +       p.masks_of_interest =3D MASKS_OF_INTEREST(p.arg);
-> >> +       ret =3D pagemap_scan_init_bounce_buffer(&p);
-> >> +       if (ret)
-> >> +               return ret;
-> >> +
-> >> +       /* Protection change for the range is going to happen. */
-> >> +       if (p.arg.flags & PM_SCAN_WP_MATCHING) {
-> >> +               mmu_notifier_range_init(&range, MMU_NOTIFY_PROTECTION_=
-VMA, 0,
-> >> +                                       mm, p.arg.start, p.arg.end);
-> >> +               mmu_notifier_invalidate_range_start(&range);
-> >> +       }
-> >> +
-> >> +       walk_start =3D p.arg.start;
-> >> +       for (; walk_start < p.arg.end; walk_start =3D p.arg.walk_end) =
-{
-> >> +               int n_out;
-> >> +
-> >> +               if (fatal_signal_pending(current)) {
-> >> +                       ret =3D -EINTR;
-> >> +                       break;
-> >> +               }
-> >> +
-> >> +               ret =3D mmap_read_lock_killable(mm);
-> >> +               if (ret)
-> >> +                       break;
-> >> +               ret =3D walk_page_range(mm, walk_start, p.arg.end,
-> >> +                                     &pagemap_scan_ops, &p);
-> >> +               mmap_read_unlock(mm);
-> >> +
-> >> +               n_out =3D pagemap_scan_flush_buffer(&p);
-> >> +               if (n_out < 0)
-> >> +                       ret =3D n_out;
-> >> +               else
-> >> +                       n_ranges_out +=3D n_out;
-> >> +
-> >> +               if (ret !=3D -ENOSPC || p.arg.vec_len - 1 =3D=3D 0 ||
-> >> +                   p.found_pages =3D=3D p.arg.max_pages) {
-> >> +                       p.walk_end_addr =3D p.arg.end;
-> >
-> > You should not change p.walk_end_addr If ret is ENOSPC. Pls add a test
-> > case to check this.
-> Yeah, I'm not setting walk_end_addr if ret is ENOSPC.
->
-> I'm setting walk_end_addr only when ret =3D 0. I'd added this as a result=
- of
-> a test case in my local test application. I can look at adding some tests
-> in pagemap_ioctl.c kselftest as well.
+Parse the pti= and nopti cmdline options using early_param to fix 'Unknown
+kernel command line parameters "nopti", will be passed to user space'
+warnings in the kernel log when nopti or pti= are passed to the kernel
+cmdline on x86 platforms. Additionally allow the kernel to warn for
+malformed pti= options.
 
-I am not sure that I understand what you mean here. ENOSPC can be returned
-when the vec array is full and in this case, walk_end_addr should be
-the address when it stops scanning.
+Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+---
 
->
-> >
-> >> +                       break;
-> >> +               }
-> >> +       }
-> >> +
-> >> +       if (p.cur_buf.start !=3D p.cur_buf.end) {
-> >> +               if (copy_to_user(p.vec_out, &p.cur_buf, sizeof(p.cur_b=
-uf)))
-> >> +                       ret =3D -EFAULT;
-> >> +               else
-> >> +                       ++n_ranges_out;
-> >> +       }
-> >> +
-> >> +       /* ENOSPC signifies early stop (buffer full) from the walk. */
-> >> +       if (!ret || ret =3D=3D -ENOSPC)
-> >> +               ret =3D n_ranges_out;
-> >> +
-> >> +       p.arg.walk_end =3D p.walk_end_addr ? p.walk_end_addr : walk_st=
-art;
-> >> +       if (pagemap_scan_writeback_args(&p.arg, uarg))
-> >> +               ret =3D -EFAULT;
-> >> +
-> >> +       if (p.arg.flags & PM_SCAN_WP_MATCHING)
-> >> +               mmu_notifier_invalidate_range_end(&range);
-> >> +
-> >> +       kfree(p.vec_buf);
-> >> +       return ret;
-> >> +}
-> >
-> > Thanks,
-> > Andrei
->
-> --
-> BR,
-> Muhammad Usama Anjum
+Resending this as I haven't heard back yet. I'd be happy to incorporate any
+feedback.
+
+Also adding test output before/after patch for reference:
+
+dmesg | grep -e "page tables isolation" -e "Command line" \
+             -e "Malformed" -e "Unknown kernel command line parameters" \
+             && cat /sys/devices/system/cpu/vulnerabilities/meltdown
+
+Before patch
+============
+
+KERNEL_CMDLINE="nopti"
+ [    0.000000] Command line: root=/dev/vda console=ttyS0 nopti
+ [    0.009875] Kernel/User page tables isolation: disabled on command line.
+ [    0.021498] Unknown kernel command line parameters "nopti", will be passed to user space.
+ Vulnerable
+
+KERNEL_CMDLINE="pti=off"
+ [    0.000000] Command line: root=/dev/vda console=ttyS0 pti=off
+ [    0.009564] Kernel/User page tables isolation: disabled on command line.
+ [    0.019542] Unknown kernel command line parameters "pti=off", will be passed to user space.
+ Vulnerable
+
+KERNEL_CMDLINE="pti=invalid"
+ [    0.000000] Command line: root=/dev/vda console=ttyS0 pti=invalid
+ [    0.021409] Unknown kernel command line parameters "pti=invalid", will be passed to user space.
+ [    0.022411] Kernel/User page tables isolation: enabled
+ Mitigation: PTI
+
+After patch
+===========
+
+KERNEL_CMDLINE="nopti"
+ [    0.000000] Command line: root=/dev/vda console=ttyS0 nopti
+ [    0.009775] Kernel/User page tables isolation: disabled on command line.
+ Vulnerable
+
+KERNEL_CMDLINE="pti=off"
+ [    0.000000] Command line: root=/dev/vda console=ttyS0 pti=off
+ [    0.009879] Kernel/User page tables isolation: disabled on command line.
+ Vulnerable
+
+KERNEL_CMDLINE="pti=invalid"
+ [    0.000000] Command line: root=/dev/vda console=ttyS0 pti=invalid
+ [    0.000000] Malformed early option 'pti'
+ [    0.020892] Kernel/User page tables isolation: enabled
+ Mitigation: PTI
+
+
+ arch/x86/mm/pti.c | 56 +++++++++++++++++++++++------------------------
+ 1 file changed, 27 insertions(+), 29 deletions(-)
+
+diff --git a/arch/x86/mm/pti.c b/arch/x86/mm/pti.c
+index 78414c6d1..ea5841cf9 100644
+--- a/arch/x86/mm/pti.c
++++ b/arch/x86/mm/pti.c
+@@ -69,6 +69,7 @@ static void __init pti_print_if_secure(const char *reason)
+ 		pr_info("%s\n", reason);
+ }
+ 
++/* Assume mode is auto unless overridden via cmdline below */
+ static enum pti_mode {
+ 	PTI_AUTO = 0,
+ 	PTI_FORCE_OFF,
+@@ -77,50 +78,47 @@ static enum pti_mode {
+ 
+ void __init pti_check_boottime_disable(void)
+ {
+-	char arg[5];
+-	int ret;
+-
+-	/* Assume mode is auto unless overridden. */
+-	pti_mode = PTI_AUTO;
+-
+ 	if (hypervisor_is_type(X86_HYPER_XEN_PV)) {
+ 		pti_mode = PTI_FORCE_OFF;
+ 		pti_print_if_insecure("disabled on XEN PV.");
+ 		return;
+ 	}
+ 
+-	ret = cmdline_find_option(boot_command_line, "pti", arg, sizeof(arg));
+-	if (ret > 0)  {
+-		if (ret == 3 && !strncmp(arg, "off", 3)) {
+-			pti_mode = PTI_FORCE_OFF;
+-			pti_print_if_insecure("disabled on command line.");
+-			return;
+-		}
+-		if (ret == 2 && !strncmp(arg, "on", 2)) {
+-			pti_mode = PTI_FORCE_ON;
+-			pti_print_if_secure("force enabled on command line.");
+-			goto enable;
+-		}
+-		if (ret == 4 && !strncmp(arg, "auto", 4)) {
+-			pti_mode = PTI_AUTO;
+-			goto autosel;
+-		}
+-	}
+-
+-	if (cmdline_find_option_bool(boot_command_line, "nopti") ||
+-	    cpu_mitigations_off()) {
++	if (pti_mode == PTI_FORCE_OFF || cpu_mitigations_off()) {
+ 		pti_mode = PTI_FORCE_OFF;
+ 		pti_print_if_insecure("disabled on command line.");
+ 		return;
+ 	}
+ 
+-autosel:
+-	if (!boot_cpu_has_bug(X86_BUG_CPU_MELTDOWN))
++	if (pti_mode == PTI_AUTO && !boot_cpu_has_bug(X86_BUG_CPU_MELTDOWN))
+ 		return;
+-enable:
++
++	if (pti_mode == PTI_FORCE_ON)
++		pti_print_if_secure("force enabled on command line.");
+ 	setup_force_cpu_cap(X86_FEATURE_PTI);
+ }
+ 
++static int __init pti_parse_cmdline(char *arg)
++{
++	if (!strcmp(arg, "off"))
++		pti_mode = PTI_FORCE_OFF;
++	else if (!strcmp(arg, "on"))
++		pti_mode = PTI_FORCE_ON;
++	else if (!strcmp(arg, "auto"))
++		pti_mode = PTI_AUTO;
++	else
++		return -EINVAL;
++	return 0;
++}
++early_param("pti", pti_parse_cmdline);
++
++static int __init pti_parse_cmdline_nopti(char *arg)
++{
++	pti_mode = PTI_FORCE_OFF;
++	return 0;
++}
++early_param("nopti", pti_parse_cmdline_nopti);
++
+ pgd_t __pti_set_user_pgtbl(pgd_t *pgdp, pgd_t pgd)
+ {
+ 	/*
+
+base-commit: 1399419a8db7b3d6083b47062358d95dc8ec9663
+-- 
+2.25.1
+
