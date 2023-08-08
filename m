@@ -2,175 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE42774EB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 00:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B02774EB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 00:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjHHWye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 18:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
+        id S230527AbjHHW4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 18:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbjHHWyC (ORCPT
+        with ESMTP id S229943AbjHHW4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 18:54:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25A61982;
-        Tue,  8 Aug 2023 15:54:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4002C62DEE;
-        Tue,  8 Aug 2023 22:54:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CC9CC433C8;
-        Tue,  8 Aug 2023 22:54:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691535240;
-        bh=S1YyyKsi4PMJ1YeMq4VI9CGk5TcWYpFJDARF/6lAgcE=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=Jztk+FrWloB1ICOuUWZ4Y7ESx72xfy5uLlMPr+puXMbdhni+b8KIQqN5g+ysW6/6X
-         ME68n6TIAz/wg9+X8jcmgLhpw/h3LBhGVK6oB8sr+ycCNPcC8NWCb9vlQ0jtD/65LJ
-         wC6zjTvNwbuJD3QxjnmSfzsf+qom5hvKeaRSZCSKE9CQq+/7fV3VMC35Wp/FRcKmGj
-         8nUPWZ0K6vBv5gsTBzWKhmrrt2XNq5/GkxfOZ1SaUC+oEJtqMZut+hsuVZXEUbTVBr
-         3cKkJlyLXdFaxvZoC9bFFqVi1DBfOP98UbOqpSvuAkLcZHtjPxO97TMptuwjKbk65b
-         yFRGxwmtDcm5A==
-Date:   Tue, 08 Aug 2023 15:53:59 -0700
-From:   Kees Cook <kees@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
-CC:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Kees Cook <keescook@chromium.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
-Subject: Re: [PATCH v2] netfilter: ebtables: fix fortify warnings
-User-Agent: K-9 Mail for Android
-In-Reply-To: <ZNJuMoe37L02TP20@work>
-References: <20230808133038.771316-1-gongruiqi@huaweicloud.com> <ZNJuMoe37L02TP20@work>
-Message-ID: <5E8E0F9C-EE3F-4B0D-B827-DC47397E2A4A@kernel.org>
+        Tue, 8 Aug 2023 18:56:16 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84ABF1982;
+        Tue,  8 Aug 2023 15:56:14 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378MtmE6052417;
+        Tue, 8 Aug 2023 17:55:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691535348;
+        bh=gn/RlHO0agg8ZMQ2jXn9GbN0dKI57+e4J4guDc2I+a4=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=raCDqDMQwtc2aZBfj+fjR7CYJzw97gNMMvJQ/27XZEFsPHTAJIr+52L/deBtei6Po
+         wgQr+OnNQKYDlRV1UK/czkH8bxCsIaGNZQSntBf6vdsU77+xGFDz64t3VkFjrJCp7i
+         jS6sXORfWX4oZgDBarJEVuIRSwRx1/OdavkE7wRA=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378Mtmw8013590
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Aug 2023 17:55:48 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
+ Aug 2023 17:55:47 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 8 Aug 2023 17:55:47 -0500
+Received: from [10.24.69.141] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378MtfSI033110;
+        Tue, 8 Aug 2023 17:55:42 -0500
+Message-ID: <fcf19efc-2e3c-1b5d-37c2-ddd1d8b4981a@ti.com>
+Date:   Wed, 9 Aug 2023 04:25:41 +0530
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v8 00/16] CSI2RX support on J721E and AM62
+Content-Language: en-US
+To:     Jai Luthra <j-luthra@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Benoit Parrot <bparrot@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>, <nm@ti.com>,
+        <devarsht@ti.com>
+References: <20230731-upstream_csi-v8-0-fb7d3661c2c9@ti.com>
+From:   Vaishnav Achath <vaishnav.a@ti.com>
+In-Reply-To: <20230731-upstream_csi-v8-0-fb7d3661c2c9@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On August 8, 2023 9:32:50 AM PDT, "Gustavo A=2E R=2E Silva" <gustavoars@ker=
-nel=2Eorg> wrote:
->On Tue, Aug 08, 2023 at 09:30:38PM +0800, GONG, Ruiqi wrote:
->> From: "GONG, Ruiqi" <gongruiqi1@huawei=2Ecom>
->>=20
->> When compiling with gcc 13 and CONFIG_FORTIFY_SOURCE=3Dy, the following
->> warning appears:
->>=20
->> In function =E2=80=98fortify_memcpy_chk=E2=80=99,
->>     inlined from =E2=80=98size_entry_mwt=E2=80=99 at net/bridge/netfilt=
-er/ebtables=2Ec:2118:2:
->> =2E/include/linux/fortify-string=2Eh:592:25: error: call to =E2=80=98__=
-read_overflow2_field=E2=80=99
->> declared with attribute warning: detected read beyond size of field (2n=
-d parameter);
->> maybe use struct_group()? [-Werror=3Dattribute-warning]
->>   592 |                         __read_overflow2_field(q_size_field, si=
-ze);
->>       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~
->>=20
->> The compiler is complaining:
->>=20
->> memcpy(&offsets[1], &entry->watchers_offset,
->>                        sizeof(offsets) - sizeof(offsets[0]));
->>=20
->> where memcpy reads beyong &entry->watchers_offset to copy
->> {watchers,target,next}_offset altogether into offsets[]=2E Silence the
->> warning by wrapping these three up via struct_group()=2E
->>=20
->> Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei=2Ecom>
->> ---
->>=20
->> v2: fix HDRTEST error by replacing struct_group() with __struct_group()=
-,
->> since it's a uapi header=2E
->>=20
->>  include/uapi/linux/netfilter_bridge/ebtables=2Eh | 14 ++++++++------
->>  net/bridge/netfilter/ebtables=2Ec                |  3 +--
->>  2 files changed, 9 insertions(+), 8 deletions(-)
->>=20
->> diff --git a/include/uapi/linux/netfilter_bridge/ebtables=2Eh b/include=
-/uapi/linux/netfilter_bridge/ebtables=2Eh
->> index a494cf43a755=2E=2Eb0caad82b693 100644
->> --- a/include/uapi/linux/netfilter_bridge/ebtables=2Eh
->> +++ b/include/uapi/linux/netfilter_bridge/ebtables=2Eh
->> @@ -182,12 +182,14 @@ struct ebt_entry {
->>  	unsigned char sourcemsk[ETH_ALEN];
->>  	unsigned char destmac[ETH_ALEN];
->>  	unsigned char destmsk[ETH_ALEN];
->> -	/* sizeof ebt_entry + matches */
->> -	unsigned int watchers_offset;
->> -	/* sizeof ebt_entry + matches + watchers */
->> -	unsigned int target_offset;
->> -	/* sizeof ebt_entry + matches + watchers + target */
->> -	unsigned int next_offset;
->> +	__struct_group(/* no tag */, offsets, /* no attrs */,
->> +		/* sizeof ebt_entry + matches */
->> +		unsigned int watchers_offset;
->> +		/* sizeof ebt_entry + matches + watchers */
->> +		unsigned int target_offset;
->> +		/* sizeof ebt_entry + matches + watchers + target */
->> +		unsigned int next_offset;
->> +	);
->>  	unsigned char elems[0] __attribute__ ((aligned (__alignof__(struct eb=
-t_replace))));
 
-While we're here, can we drop this [0] in favor of []?
+On 31/07/23 13:59, Jai Luthra wrote:
+> Hi,
+> 
+> This series adds support for CSI2 capture on J721E. It includes some
+> fixes to the Cadence CSI2RX driver, and adds the TI CSI2RX wrapper driver.
+> 
+> This is a V8 of the below V7 series,
+> https://lore.kernel.org/all/20230314115516.667-1-vaishnav.a@ti.com/
+> 
+> Since Pratyush moved out of TI, Vaishnav & I have been working on
+> this driver, and I will be maintaining it upstream.
+> 
+> J721E CSI2RX driver can also be extended to support multi-stream
+> capture, filtering different CSI Virtual Channels (VC) or Data Types
+> (DT) to different DMA channels. A WIP series based on v7 is available
+> for reference at https://github.com/jailuthra/linux/commits/csi_multi_wip
+> 
+> I will rebase the multi-stream patches on the current series (v8) and
+> post them as RFC in the coming weeks.
+> 
+> Testing logs: https://gist.github.com/jailuthra/eaeb3af3c65b67e1bc0d5db28180131d
+> 
 
--Kees
+Hi Jai,
 
->>  };
->> =20
->> diff --git a/net/bridge/netfilter/ebtables=2Ec b/net/bridge/netfilter/e=
-btables=2Ec
->> index 757ec46fc45a=2E=2E5ec66b1ebb64 100644
->> --- a/net/bridge/netfilter/ebtables=2Ec
->> +++ b/net/bridge/netfilter/ebtables=2Ec
->> @@ -2115,8 +2115,7 @@ static int size_entry_mwt(const struct ebt_entry =
-*entry, const unsigned char *ba
->>  		return ret;
->> =20
->>  	offsets[0] =3D sizeof(struct ebt_entry); /* matches come first */
->> -	memcpy(&offsets[1], &entry->watchers_offset,
->> -			sizeof(offsets) - sizeof(offsets[0]));
->> +	memcpy(&offsets[1], &entry->offsets, sizeof(offsets) - sizeof(offsets=
-[0]));
->							^^^^^^^^^^^^
->You now can replace this ____________________________________|
->with just `sizeof(entry->offsets)`
->
->With that change you can add my
->Reviewed-by: Gustavo A=2E R=2E Silva <gustavoars@kernel=2Eorg>
->
->Thank you
->--
->Gustavo
->
->> =20
->>  	if (state->buf_kern_start) {
->>  		buf_start =3D state->buf_kern_start + state->buf_kern_offset;
->> --=20
->> 2=2E41=2E0
->>=20
+Thank you for the series,
 
+Tested the series for capture with OV5640 (LI-OV5640 module) on J721E EVM,
+Logs and captured images available here:
+https://gist.github.com/vaishnavachath/0b70bc5aaef6a3a88be4900979c788d6
 
---=20
-Kees Cook
+Tested-by: Vaishnav Achath <vaishnav.a@ti.com>
+
+Thanks and Regards,
+Vaishnav
+
+> Signed-off-by: Jai Luthra <j-luthra@ti.com>
+> ---
+> 
+> Range-diff from v7 -> v8: http://0x0.st/H21u.diff
+> 
+> New Patches:
+> [01/16]	   Export v4l2_subdev_link_validate_get_format() helper
+> [03-04/16] Add new compatible for TI-specific SoC intergration of the
+>            Cadence CSI2RX bridge IP
+> [14/16]    Add support for RAW8 and RAW10 formats in Cadence CSI2RX
+> 
+> For [07/16] media: cadence: csi2rx: Add get_fmt and set_fmt pad ops:
+> - Use active subdev state to use v4l2_subdev_get_fmt
+> - Propagate formats from sink to source pads
+> - Drop Laurent's R-by because of the above changes
+> 
+> For [08/16] media: cadence: csi2rx: Configure DPHY using link freq:
+> - Drop original patch in-lieu of already merged
+>   https://lore.kernel.org/linux-media/20230523085626.3295-5-jack.zhu@starfivetech.com/
+> - Add a new patch to configure DPHY using link_freq control from the
+>   source
+> 
+> For [10/16] media: cadence: csi2rx: Set the STOP bit when stopping a stream:
+> - Fix bug where intention was to wait till stream status is idle, i.e.
+>   STREAM_STATUS[31] -> 0 - but we were instead checking the opposite
+> 
+> For [15/16] media: dt-bindings: Add DT bindings for TI J721E CSI2RX driver:
+> - Drop "Device Tree Bindings" from title
+> - Rename "Wrapper" to "Shim" in title as that is the name referred in
+>   the TRM and other places
+> - Update maintainer to myself
+> - Drop items from compatible as only a single element is present
+> - Rename compatible to "ti,j721e-csi2rx-shim" to distinguish from the
+>   SoC-specific CSI2RX bridge compatible
+> 
+> For [16/16] media: ti: Add CSI2RX support for J721E:
+> - Move after dt-bindings to keep the series bisectable
+> - Rename compatible to "ti,j721e-csi2rx-shim" to distinguish from the
+>   SoC-specific CSI2RX bridge compatible
+> - Make myself the Maintainer
+> - Support RAW8 and RAW10 formats, and setting the pixel-unwrap size on
+>   SHIM (RAW10 is stored in 16-bit containers, while RAW8 in 8-bit containers)
+> - Fix enum_fmt_vid_cap() to respect CAP_IO_MC and only list pixelformats
+>   matching the mbus formats set on the subdev.
+> - Fix enum_framesizes() to stop enumerating more than a single framesize
+>   (reject non-zero fsize->index)
+> - Simplify notifier bound fucntion to use v4l2_create_fwnode_links_to_pad()
+>   and inline the video_register() method
+> - Add support for draining the DMA with an extra buffer, to get rid of
+>   stale data in the pipeline on stream stop (or when frames start
+>   getting dropped due to load)
+> - Queue all available buffers to DMAEngine in the callback, also use a
+>   separate "submitted" queue to track all buffers submitted to DMA
+> - Use video_device_pipeline_start() instead of media_pipeline_start()
+> - Drop support for VB_READ
+> - Print issues in link validation as DEBUG instead of ERROR
+> - s/async_subdev/async_connection
+> 
+> For [v7 13/13] media: dt-bindings: Convert Cadence CSI2RX binding to YAML:
+>  - Drop patch in-lieu of
+>    https://lore.kernel.org/linux-media/20230523085626.3295-2-jack.zhu@starfivetech.com/
+> 
+> ---
+> Jai Luthra (4):
+>       media: subdev: Export get_format helper for link validation
+>       media: dt-bindings: cadence-csi2rx: Add TI compatible string
+>       media: cadence: Add support for TI SoCs
+>       media: cadence: csi2rx: Support RAW8 and RAW10 formats
+> 
+> Pratyush Yadav (12):
+>       media: dt-bindings: Make sure items in data-lanes are unique
+>       media: cadence: csi2rx: Unregister v4l2 async notifier
+>       media: cadence: csi2rx: Cleanup media entity properly
+>       media: cadence: csi2rx: Add get_fmt and set_fmt pad ops
+>       media: cadence: csi2rx: Configure DPHY using link freq
+>       media: cadence: csi2rx: Soft reset the streams before starting capture
+>       media: cadence: csi2rx: Set the STOP bit when stopping a stream
+>       media: cadence: csi2rx: Fix stream data configuration
+>       media: cadence: csi2rx: Populate subdev devnode
+>       media: cadence: csi2rx: Add link validation
+>       media: dt-bindings: Add TI J721E CSI2RX
+>       media: ti: Add CSI2RX support for J721E
+> 
+>  .../devicetree/bindings/media/cdns,csi2rx.yaml     |    1 +
+>  .../bindings/media/ti,j721e-csi2rx-shim.yaml       |  100 ++
+>  .../bindings/media/video-interfaces.yaml           |    1 +
+>  MAINTAINERS                                        |    7 +
+>  drivers/media/platform/cadence/cdns-csi2rx.c       |  217 +++-
+>  drivers/media/platform/ti/Kconfig                  |   12 +
+>  drivers/media/platform/ti/Makefile                 |    1 +
+>  drivers/media/platform/ti/j721e-csi2rx/Makefile    |    2 +
+>  .../media/platform/ti/j721e-csi2rx/j721e-csi2rx.c  | 1127 ++++++++++++++++++++
+>  drivers/media/v4l2-core/v4l2-subdev.c              |    8 +-
+>  include/media/v4l2-subdev.h                        |   12 +
+>  11 files changed, 1478 insertions(+), 10 deletions(-)
+> ---
+> base-commit: ec89391563792edd11d138a853901bce76d11f44
+> change-id: 20230727-upstream_csi-acbeabe038d8
+> 
+> Best regards,
