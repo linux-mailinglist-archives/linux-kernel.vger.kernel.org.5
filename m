@@ -2,111 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF0B774A6C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D380774A82
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 22:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233356AbjHHU20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 16:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36014 "EHLO
+        id S232864AbjHHUab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 16:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233149AbjHHU2M (ORCPT
+        with ESMTP id S232184AbjHHUaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:28:12 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84ABAD3B
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 12:47:01 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fe2a116565so1215e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 12:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691524020; x=1692128820;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=opx92wdxHaEdCsoUx6blD14y3bUm677W/w8y424CFjM=;
-        b=rOdHMRfqmfxmekOtBHPFVbgPOuNJNj5P2YoTVPabafvcaxty7pOH0fYkqEOnrtdUqf
-         uXDmE9Mm1PW/hJRyHan+cG1C+KM5HGSk8KmZ9VFqMjW54smM9iXYgQAQ9z0szl7xS/YA
-         WPQKoyk0PCaN1JSt1tm276qno6VoBU+VDXUb9XapvrcECevONoesnk7Adc4Xnay3Qc4A
-         BcJ8314cxeyRxoC7ddlsN0jvPltfQCPy3NImI1HkPi/hZArVg+rKP2kA2LiA8/R299Dj
-         uLs1BcNO8F1e2Zjmu8Q5gTkCwd+F5NGpBCk6hFJj4zfpZEh3C1mPWxM1zVk+zPFQQPkB
-         WQyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691524020; x=1692128820;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=opx92wdxHaEdCsoUx6blD14y3bUm677W/w8y424CFjM=;
-        b=UtDwKEhLpANGWEb28eh8z6hcYBvc1LbAu/rz8Y9wDclHCIDQvrF1meIpKrlmPjC6Z0
-         u1ZlaltgdJlBGzM8/LN3nbTwVXGIqdO89JjwRRv7JLNKEVNF1Q15kR3oiiXDnH7cPD8u
-         ECs+LMfJw404vo++i5Lf6Z7YHo+gHKDMyC0UaBtHY3ud447R4a8RwyBkuRDSKDgxGWQI
-         NAUEsTlK9h4VO14bIESh8e05Sdk5aKbcFetcoOmLVhZUVEPjUREi6pWl09uLD5RYfwi2
-         rgwmg/sAmEPbjrsAy0lgzSUH0RWMIGVqJpnlq5XwecwFWHI/1MjlCeScWppNif23HPST
-         v3YQ==
-X-Gm-Message-State: AOJu0Yxox4d2+lsPCciYvX3qXRpDK/wsILJBCuAeMQxl4d5tRAtpeaq6
-        UunQKf98pnFyZs/U6d5SgXHhojlh/DJGluzFzleu
-X-Google-Smtp-Source: AGHT+IG8xLolBhXWUX3nVCcnA9akVpaFxYzlaEiiOSqMAM/nMgPpHPDyJhLIo165i3vd9p0baWneMPB8lp6e6Jtn0S0=
-X-Received: by 2002:a05:600c:3c8a:b0:3fc:75d:8f85 with SMTP id
- bg10-20020a05600c3c8a00b003fc075d8f85mr28835wmb.6.1691524020350; Tue, 08 Aug
- 2023 12:47:00 -0700 (PDT)
+        Tue, 8 Aug 2023 16:30:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6374978B;
+        Tue,  8 Aug 2023 12:50:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D97A962BE7;
+        Tue,  8 Aug 2023 19:50:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C037C433C8;
+        Tue,  8 Aug 2023 19:50:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691524241;
+        bh=23o4ZzEMUStYgSgaOt9oeKCEbCf1O4Z/im99Zy+alUU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NHN5/BNe7uk+gjJStPa1r0uJBWX7RQ72BHLN4VAtDxfkwOsBXjBt/oKtm4yH6Grlo
+         fhark6YqZgpsQyXit/ieqssAZYv5UYbtSi63rRk+nLLw1iqN34a98ptLUGwCMy8ipJ
+         5ZcPylLEvUyEy8Tw/xqb0AtqHhVMAaDyNL9yTn8hQL2GySX1/eiqlCkrxe8EMZAvPx
+         iD6EehnsBC3KFKlbtDby1mANdsyjSX5mKWxM1At+f8/jcBnlDBXfSzAXGDPMoaqsvP
+         kVT0nGW4C3HzkfYb8julLGXNOzQjs3s8jEs+YDN1tmJ8VlxajuFADh5b9S/i79tBxM
+         S6OVl2MSfIUDg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 91963404DF; Tue,  8 Aug 2023 16:50:38 -0300 (-03)
+Date:   Tue, 8 Aug 2023 16:50:38 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Claire Jensen <cjense@google.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] perf stat: Don't display zero tool counts
+Message-ID: <ZNKcjv0PTvSIn5lb@kernel.org>
+References: <20230801205452.3380578-1-irogers@google.com>
+ <ZMwUI/YtEHsO3Cc8@kernel.org>
+ <ZNEFt3w/wNCvdawF@tassilo>
+ <ZNFJatDztFNS90d3@kernel.org>
+ <ZNFMqzSAfno/+BcV@kernel.org>
+ <ZNJ9qBoBt2spEy4Y@tassilo>
 MIME-Version: 1.0
-References: <20230808062658.391595-1-jstultz@google.com> <20230808062658.391595-2-jstultz@google.com>
- <20230808103637.GA212435@hirez.programming.kicks-ass.net> <CAHmME9oB1PisGNqFTkE3M3YT1Q_bezS39s_xc9x4GkY87PtFtQ@mail.gmail.com>
- <CANDhNCokP08r=NvDhepPsazQtck+LtW+KPbYVE1wc0r=tnm+Vg@mail.gmail.com>
-In-Reply-To: <CANDhNCokP08r=NvDhepPsazQtck+LtW+KPbYVE1wc0r=tnm+Vg@mail.gmail.com>
-From:   John Stultz <jstultz@google.com>
-Date:   Tue, 8 Aug 2023 12:46:48 -0700
-Message-ID: <CANDhNCq8TdsL3k9Tn6SPpG9aKydHa=D_jG+29AoZLAmbJd=A9g@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/3] test-ww_mutex: Use prng instead of rng to avoid
- hangs at bootup
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joelaf@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNJ9qBoBt2spEy4Y@tassilo>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 11:20=E2=80=AFAM John Stultz <jstultz@google.com> wr=
-ote:
-> On Tue, Aug 8, 2023 at 7:05=E2=80=AFAM Jason A. Donenfeld <Jason@zx2c4.co=
-m> wrote:
-> > So, from my perspective, you shouldn't see any hang. That function
-> > never blocks. I'm happy to look more into what's happening on your end
-> > though. Maybe share your .config and qemu command line and I'll see if
-> > I can repro?
->
-> Yeah, it may just be that the real RNG is slow enough that I'm hitting
-> the hung task watchdog?
-> (I'm running with 64 cpus, so the test is trying to use 128 threads
-> all hitting get_random_u32_below over and over to create their own
-> random order of 16 locks)
+Em Tue, Aug 08, 2023 at 10:38:48AM -0700, Andi Kleen escreveu:
+> On Mon, Aug 07, 2023 at 04:57:31PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Mon, Aug 07, 2023 at 04:43:38PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Em Mon, Aug 07, 2023 at 07:54:47AM -0700, Andi Kleen escreveu:
+> > > > On Thu, Aug 03, 2023 at 05:54:59PM -0300, Arnaldo Carvalho de Melo wrote:
+> > > > > Em Tue, Aug 01, 2023 at 01:54:52PM -0700, Ian Rogers escreveu:
+> > > > > > Skip zero counts for tool events.
+> > > > > > 
+> > > > > > Reported-by: Andi Kleen <ak@linux.intel.com>
+> > > > > 
+> > > > > Andi,
+> > > > > 
+> > > > > 	Have you tested this? Can we please have your Tested-by?
+> > > > 
+> > > > I thought I had sent it earlier?
+> > > > 
+> > > > Tested-by: Andi Kleen <ak@linux.intel.com>
+> > > 
+> > > Yeah, you did it, sorry, somehow I didn't notice.
+> > > 
+> > > Applying.
+> > 
+> > Would be good to have the original link with your report and to figure
+> > out the cset that introduced the problem, so that we could have a Fixes
+> > tag to help justifying getting this into 6.5.
+> 
+> Just bisected it. The original patch was below. Remarkably it had a "Fixes"
+> tag too)
+> 
+> My report was 
+> 
+> https://lore.kernel.org/linux-perf-users/ZMlrzcVrVi1lTDmn@tassilo/
 
-Just following up on this point, I went through and disabled all the
-hung task and delay detection (and pushed the rcu stall boundary up to
-two minutes), and indeed the test did complete without actually
-hanging. However, the test took something like 90 seconds to finish
-using the get_random_u32_below() calls, whereas with this patch it
-finishes in ~18s.
+Thanks, I did this research and bisection earlier today, some more tests
+and the result matches yours and is available at:
 
-So indeed it's not blocking, just not fast enough to avoid the hung
-task watchdogs in this admittedly contrived case (though one that has
-been helpful in uncovering issues with proposed scheduler changes) .
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git/commit/?h=perf-tools
 
-I'll try to rework the commit message so the above is clear and resubmit.
+I used that ZMlrzcVrVi1lTDmn@tassilo in the Link: tag, as Linus stated
+he prefers the discussion leading to the patch than the URL for the
+patch itself once submitted.
 
-thanks
--john
+Now I'll wait a bit till it lands in linux-next/pending-fixes to then
+send it to Linus.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/?h=pending-fixes
+
+Thanks again!
+
+- Arnaldo
+
+ 
+> commit b897613510890d6e92b6a276a20f6c3d96fe90e8
+> Author: Namhyung Kim <namhyung@kernel.org>
+> Date:   Tue Dec 6 09:58:04 2022 -0800
+> 
+>     perf stat: Update event skip condition for system-wide per-thread mode and merged uncore and hybrid events
+> 
+>     In print_counter_aggrdata(), it skips some events that has no aggregate
+>     count.  It's actually for system-wide per-thread mode and merged uncore
+>     and hybrid events.
+> 
+>     Let's update the condition to check them explicitly.
+> 
+>     Fixes: 91f85f98da7ab8c3 ("perf stat: Display event stats using aggr counts")
