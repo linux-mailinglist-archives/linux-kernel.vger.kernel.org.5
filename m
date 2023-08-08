@@ -2,66 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56706774178
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0BB4773D82
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233771AbjHHRVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53896 "EHLO
+        id S232480AbjHHQSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234314AbjHHRV0 (ORCPT
+        with ESMTP id S232598AbjHHQRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:21:26 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739DE7A0D2
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:08:43 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6b9a2416b1cso4981839a34.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:08:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691510892; x=1692115692;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=W8Rz6JdKJggB+vk185UWqplO5cbUsTa+J+i5abU5jbw=;
-        b=QqncR2KeBXwVe/6BF3RIyBw9ujC3+Io2BO3EtgVSrHXcm3gwZFr8Gr+2ibIfKVTHtD
-         x5Npgu6qRS0yoTUwKQR1wpaRhoE72hcoVLf0CsqAv/tPAttb5LTVAxdDbbc44BLHy+YR
-         0/vCpA4EqE/m/y5YJY18psQicGMwBgbwqfTCgNqWfM9rZjOQIvJmYtWaK6OiloL9h3lz
-         ZQxWrgJzYRIRLcYt1VCVPlz5qFEPnnIhk3+08HM2BEtJ9PnZ+oxbnyM6dcXRr6bs/QeZ
-         TiEQFPhlNn4/BF0Plad/QWlre3OcpxP2WzxHs4PJxP7dbKyJGyfdwS0Aj489TwgOTby9
-         EmWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510892; x=1692115692;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W8Rz6JdKJggB+vk185UWqplO5cbUsTa+J+i5abU5jbw=;
-        b=LEqY5eNIgVtQk6hi8LJ/Wee+ak9OBkfyw49rSU558hjHTnab2UXh9JtvbcfOFaScmj
-         nPonRQg4xKSJD4EK1fiOWh/0n+DRm9F7de8j/MThCCEGInZ4+pr61XxN5E5tYj1fqpfu
-         31YF8+scmL/lLpBzSrDrArMSbJRO4ssS67/Ah/+kFZ/ioyp8qgoifmUg5N0VtVO+AMpy
-         Q7CCMUamDuRePM105CNgeLUBZfWZ7iLlyE4ts6s191qYaN3r2nGYJqqkU375ECCW83vs
-         dNXepbFzk+iNvih8bShfYKkMB2NRXuaXj7KENa5V9TfAa5C+i5/Xzgn9zYpfY3K5sspS
-         WUtg==
-X-Gm-Message-State: AOJu0YzwU0aJyrpNWdmAVpZvUwgdreGozFw+sF2/Td2YV/0fOWtEgJKG
-        JT5Gtbo+Mnekb6Z4U5b5+bjN6JfqiJkmi6AhIG/1oDeF7DD4RWlgMfhEjA==
-X-Google-Smtp-Source: AGHT+IHd0ipN+K4djTCXtDOyfu+VTZpMjc2BHQ17nfPiSRQDUouO0mBCgRT9q8s21lVndeT3Y2wJvRIbhS8rd5n7No0=
-X-Received: by 2002:a25:8d8e:0:b0:d3c:58ef:ef7b with SMTP id
- o14-20020a258d8e000000b00d3c58efef7bmr11095979ybl.6.1691506710111; Tue, 08
- Aug 2023 07:58:30 -0700 (PDT)
+        Tue, 8 Aug 2023 12:17:20 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C09A93C06;
+        Tue,  8 Aug 2023 08:48:24 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8Cxrus0WNJkk_ESAA--.39249S3;
+        Tue, 08 Aug 2023 22:59:00 +0800 (CST)
+Received: from openarena.loongson.cn (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxJ80zWNJk4DNPAA--.1524S2;
+        Tue, 08 Aug 2023 22:58:59 +0800 (CST)
+From:   Sui Jingfeng <suijingfeng@loongson.cn>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Cc:     linux-pci@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Subject: [PATCH] PCI/VGA: Make the vga_is_firmware_default() less arch-independent
+Date:   Tue,  8 Aug 2023 22:58:59 +0800
+Message-Id: <20230808145859.1590625-1-suijingfeng@loongson.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230731064746.2717684-1-peng.fan@oss.nxp.com>
-In-Reply-To: <20230731064746.2717684-1-peng.fan@oss.nxp.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 8 Aug 2023 16:57:54 +0200
-Message-ID: <CAPDyKFqvP71ZDcamFo5AijhTXEJKHUPNE=-dOvXYw3pr4XxK6A@mail.gmail.com>
-Subject: Re: [PATCH V3 0/8] genpd: imx: relocate scu-pd and misc update
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8DxJ80zWNJk4DNPAA--.1524S2
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW3Ww1fGrW7ZF15ur4kAw18WFX_yoW3CF4kpF
+        WfJFWfKFs8Gr4fJrZrGF48Xw1rZrsY9FW8KFW7A3Z3Ja43urykur1FyFZ0qryfJ397Jw4f
+        KF42yrn5GFsrXFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU90b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVWxJr0_GcWln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y
+        6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+        vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_
+        Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
+        AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
+        cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
+        IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVj
+        vjDU0xZFpf9x07jepB-UUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,65 +61,249 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 at 08:43, Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
->
-> From: Peng Fan <peng.fan@nxp.com>
->
-> V3:
->  return -EBUSY instead of return 0 in patch 4
->
-> V2:
-> Move drivers/firmware/imx/scu-pd.c to drivers/genpd/imx
->
-> This patchset is to upstream NXP downstream scu-pd driver patches.
-> patch is to relocate scu-pd to genpd
-> patch 2,3 is to support more PDs
-> patch 4 is to not power off console when no console suspend
-> patch 5 is to suppress bind
-> patch 6 is to make genpd align with HW state
-> patch 7 is to support LP mode in runtime suspend, OFF mode in system suspend.
-> patch 8 is to change init level to avoid uneccessary defer probe
->
-> V1:
-> This patchset is to upstream NXP downstream scu-pd driver patches.
-> patch 1,2 is to support more PDs
-> patch 3 is to not power off console when no console suspend
-> patch 4 is to suppress bind
-> patch 5 is to make genpd align with HW state
-> patch 6 is to support LP mode in runtime suspend, OFF mode in system suspend.
-> patch 7 is to change init level to avoid uneccessary defer probe
->
-> Dong Aisheng (1):
->   genpd: imx: scu-pd: change init level to subsys_initcall
->
-> Peng Fan (7):
->   genpd: imx: relocate scu-pd under genpd
->   genpd: imx: scu-pd: enlarge PD range
->   genpd: imx: scu-pd: add more PDs
->   genpd: imx: scu-pd: do not power off console if no_console_suspend
->   genpd: imx: scu-pd: Suppress bind attrs
->   genpd: imx: scu-pd: initialize is_off according to HW state
->   genpd: imx: scu-pd: add multi states support
->
->  drivers/firmware/imx/Makefile            |   1 -
->  drivers/genpd/imx/Makefile               |   1 +
->  drivers/{firmware => genpd}/imx/scu-pd.c | 193 +++++++++++++++++++++--
->  3 files changed, 183 insertions(+), 12 deletions(-)
->  rename drivers/{firmware => genpd}/imx/scu-pd.c (70%)
->
+Currently, the vga_is_firmware_default() function works only on x86 and
+IA64 architectures, but it is a no-op on ARM64, PPC, RISC-V, etc. This
+patch completes the implementation by tracking the firmware framebuffer's
+address range. The added code is trying to identify the VRAM aperture that
+contains the firmware framebuffer. Once found, related information about
+the VRAM aperture will be tracked.
 
-Moving this to the new genpd subsystem makes sense to me.
+Note that we need to identify the VRAM aperture before it get moved. We
+achieve this by using DECLARE_PCI_FIXUP_CLASS_HEADER(), which ensures that
+vga_arb_firmware_fb_addr_tracker() gets called before PCI resource
+allocation. Once we found the VRAM aperture that contains firmware fb, we
+are able to monitor the address changes of it. If the VRAM aperture of the
+primary GPU do moved, we will update our cached firmware framebuffer's
+address range accordingly. This approach overcomes the VRAM bar relocation
+issue successfully. Hence, this patch make the vga_is_firmware_default()
+function works on whatever arch that has UEFI GOP support, including x86
+and IA64. But, at the first step, we make it available only on platforms
+which PCI resource relocation do happens. Once provided method proved to
+be effective and reliable, it can be expanded to other arch easily.
 
-Even if we can't get the whole series ready for v6.6, we can certainly
-pick patch1. Either we can funnel this via my new genpd tree [1] or if
-Shawn picks it up. If the latter, Shawn needs to merge my immutable
-branch [2] before applying. I am fine either way.
+This patch is tested on
+1) LS3A5000+LS7A2000 and LS3A5000+LS7A1000 platform.
+2) Intel i3-8100 CPU + H110 D4L motherboard with triple video cards:
 
-Kind regards
-Uffe
+$ lspci | grep VGA
 
-[1]
-git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git next
+Intel Corporation CoffeeLake-S GT2 [UHD Graphics 630]
+Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere [Radeon RX 470] (rev cf)
+ASPEED Technology, Inc. ASPEED Graphics Family (rev 52)
 
-[2]
-git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git genpd_create_dir
+Note that on x86, in order to testing the new approach this patch provided,
+we remove the vga_arb_get_fb_range_from_screen_info() call in
+vga_is_firmware_default() function, as following.
+
+-#if defined(CONFIG_X86) || defined(CONFIG_IA64)
+-       ret = vga_arb_get_fb_range_from_screen_info(&fb_start, &fb_end);
+-#else
+        ret = vga_arb_get_fb_range_from_tracker(&fb_start, &fb_end);
+-#endif
+
+It is just that we don't observe the case which VRAM Bar of VGA compatible
+controller moves, so there just no need to unify it. But on LoongArch,
+the VRAM Bar of AMDGPU do moves.
+
+v2:
+	* Fix test robot warnnings and fix typos
+
+v3:
+	* Fix linkage problems if the global screen_info is not exported
+
+Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+---
+ drivers/pci/vgaarb.c | 154 ++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 139 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/pci/vgaarb.c b/drivers/pci/vgaarb.c
+index 5a696078b382..e0919a70af3e 100644
+--- a/drivers/pci/vgaarb.c
++++ b/drivers/pci/vgaarb.c
+@@ -61,6 +61,92 @@ static bool vga_arbiter_used;
+ static DEFINE_SPINLOCK(vga_lock);
+ static DECLARE_WAIT_QUEUE_HEAD(vga_wait_queue);
+ 
++static struct firmware_fb_tracker {
++	/* The PCI(e) device who owns the firmware framebuffer */
++	struct pci_dev *pdev;
++	/* The index of the VRAM Bar */
++	unsigned int bar;
++	/* Firmware fb's offset from the VRAM aperture start */
++	resource_size_t offset;
++	/* The firmware fb's size, in bytes */
++	resource_size_t size;
++
++	/* Firmware fb's address range, suffer from change */
++	resource_size_t start;
++	resource_size_t end;
++} firmware_fb;
++
++/*
++ * Get the physical address range that the firmware framebuffer occupies.
++ *
++ * The global screen_info is arch-specific; it will not be exported if the
++ * CONFIG_EFI is not selected on Arm64. Hence, CONFIG_EFI is chosen as
++ * compile-time conditional to suppress linkage problems. This guard can be
++ * removed if the global screen_info became arch-independent one day.
++ */
++static bool vga_arb_get_fb_range_from_screen_info(resource_size_t *start,
++						  resource_size_t *end)
++{
++	resource_size_t fb_start = 0;
++	resource_size_t fb_size = 0;
++	resource_size_t fb_end;
++
++#if defined(CONFIG_EFI)
++	fb_start = screen_info.lfb_base;
++	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
++		fb_start |= (u64)screen_info.ext_lfb_base << 32;
++
++	fb_size = screen_info.lfb_size;
++#endif
++
++	/* No firmware framebuffer support */
++	if (!fb_start || !fb_size)
++		return false;
++
++	fb_end = fb_start + fb_size - 1;
++
++	*start = fb_start;
++	*end = fb_end;
++
++	return true;
++}
++
++static bool vga_arb_get_fb_range_from_tracker(resource_size_t *start,
++					      resource_size_t *end)
++{
++	struct pci_dev *pdev = firmware_fb.pdev;
++	resource_size_t new_vram_base;
++	resource_size_t new_fb_start;
++	resource_size_t old_fb_start;
++	resource_size_t old_fb_end;
++
++	/*
++	 * No firmware framebuffer support or no aperture that contains the
++	 * firmware FB is found. In this case, the firmware_fb.pdev will be
++	 * NULL. We will return immediately.
++	 */
++	if (!pdev)
++		return false;
++
++	new_vram_base = pdev->resource[firmware_fb.bar].start;
++	new_fb_start = new_vram_base + firmware_fb.offset;
++	old_fb_start = firmware_fb.start;
++	old_fb_end = firmware_fb.end;
++
++	if (new_fb_start != old_fb_start) {
++		firmware_fb.start = new_fb_start;
++		firmware_fb.end = new_fb_start + firmware_fb.size - 1;
++		vgaarb_dbg(&pdev->dev,
++			   "[0x%llx, 0x%llx] -> [0x%llx, 0x%llx]\n",
++			   (u64)old_fb_start, (u64)old_fb_end,
++			   (u64)firmware_fb.start, (u64)firmware_fb.end);
++	}
++
++	*start = firmware_fb.start;
++	*end = firmware_fb.end;
++
++	return true;
++}
+ 
+ static const char *vga_iostate_to_str(unsigned int iostate)
+ {
+@@ -543,20 +629,21 @@ void vga_put(struct pci_dev *pdev, unsigned int rsrc)
+ }
+ EXPORT_SYMBOL(vga_put);
+ 
++/* Select the device owning the boot framebuffer if there is one */
+ static bool vga_is_firmware_default(struct pci_dev *pdev)
+ {
+-#if defined(CONFIG_X86) || defined(CONFIG_IA64)
+-	u64 base = screen_info.lfb_base;
+-	u64 size = screen_info.lfb_size;
+ 	struct resource *r;
+-	u64 limit;
++	resource_size_t fb_start;
++	resource_size_t fb_end;
++	bool ret;
+ 
+-	/* Select the device owning the boot framebuffer if there is one */
+-
+-	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
+-		base |= (u64)screen_info.ext_lfb_base << 32;
+-
+-	limit = base + size;
++#if defined(CONFIG_X86) || defined(CONFIG_IA64)
++	ret = vga_arb_get_fb_range_from_screen_info(&fb_start, &fb_end);
++#else
++	ret = vga_arb_get_fb_range_from_tracker(&fb_start, &fb_end);
++#endif
++	if (!ret)
++		return false;
+ 
+ 	/* Does firmware framebuffer belong to us? */
+ 	pci_dev_for_each_resource(pdev, r) {
+@@ -566,12 +653,10 @@ static bool vga_is_firmware_default(struct pci_dev *pdev)
+ 		if (!r->start || !r->end)
+ 			continue;
+ 
+-		if (base < r->start || limit >= r->end)
+-			continue;
+-
+-		return true;
++		if (fb_start >= r->start && fb_end <= r->end)
++			return true;
+ 	}
+-#endif
++
+ 	return false;
+ }
+ 
+@@ -1555,3 +1640,42 @@ static int __init vga_arb_device_init(void)
+ 	return rc;
+ }
+ subsys_initcall_sync(vga_arb_device_init);
++
++static void vga_arb_firmware_fb_addr_tracker(struct pci_dev *pdev)
++{
++	resource_size_t fb_start;
++	resource_size_t fb_end;
++	unsigned int i;
++
++	/* Already found the pdev which has firmware framebuffer ownership */
++	if (firmware_fb.pdev)
++		return;
++
++	if (!vga_arb_get_fb_range_from_screen_info(&fb_start, &fb_end))
++		return;
++
++	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
++		struct resource *ap = &pdev->resource[i];
++
++		if (resource_type(ap) != IORESOURCE_MEM)
++			continue;
++
++		if (!ap->start || !ap->end)
++			continue;
++
++		if (ap->start <= fb_start && fb_end <= ap->end) {
++			firmware_fb.pdev = pdev;
++			firmware_fb.bar = i;
++			firmware_fb.size = fb_end - fb_start + 1;
++			firmware_fb.offset = fb_start - ap->start;
++			firmware_fb.start = fb_start;
++			firmware_fb.end = fb_end;
++
++			vgaarb_dbg(&pdev->dev,
++				   "BAR %u contains firmware FB\n", i);
++			break;
++		}
++	}
++}
++DECLARE_PCI_FIXUP_CLASS_HEADER(PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_DISPLAY_VGA,
++			       8, vga_arb_firmware_fb_addr_tracker);
+-- 
+2.34.1
+
