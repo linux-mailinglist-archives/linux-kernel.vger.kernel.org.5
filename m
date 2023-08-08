@@ -2,155 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F71C773B53
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD50773C05
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 17:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbjHHPsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 11:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40878 "EHLO
+        id S231429AbjHHP73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 11:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbjHHPr1 (ORCPT
+        with ESMTP id S230299AbjHHP6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:47:27 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB2D10C0;
-        Tue,  8 Aug 2023 08:41:32 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id F125A3200906;
-        Tue,  8 Aug 2023 09:46:05 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 08 Aug 2023 09:46:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1691502365; x=1691588765; bh=QCX/lpfXwJ5z0pSWhPcBrqLzzwFNbbABXjK
-        ojnNk55A=; b=iDzl4ABAxMRM9X/i6koq5ZbUzWXbe9LzbrZAIxzX+cb6szPrCcQ
-        THyakH0okjmXwZAL7f9WOa3F6XbffGdSy3qdvZxJplREiPRmpCkj3BLlCeYEHSCP
-        Bj/KNmQNLXWcGMLlD0YGuGaaM0rw0bNvfh4G5XBN07rZrD3+xO4rYgaWnvZC93uA
-        65tbwHRL9Ef2AsCWWChos13pW9a4OFLZRVYbdtVgspv/2tvlSUaXrucuEDuGWrUR
-        gJZckq3LePJdWDZoE+oO3fvqigBxNt9I5E7ID/PjdQ2sJVYm+wyzXwUGFJtcX9SN
-        k8WU0LXJnUBacFFywxNOi67mewEHMUBTfyw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1691502365; x=1691588765; bh=QCX/lpfXwJ5z0pSWhPcBrqLzzwFNbbABXjK
-        ojnNk55A=; b=m+0uuOPj8DzZFQauay0myP3ngR+pxV68xX3itgWvbpw0uI7V5fC
-        HDeEk7v3dtDZzbKchxhT5j3fFtiw4bl4QVuM6p/p28GaEMy6Yg0KinVVLUn15Tic
-        cZ+UBJ2zIxFjVpG3w//acLwNDEQxb/Vv7+PlhjSpQTv9lPcqwKnfPtXDZgaKp71D
-        QjlPhp9BrnzlINKuisfQ4R7ORzXRfFH+mpEmsmVqhht3zW/f+wbKAIxh544er92k
-        9QUnNdVQu+bEHGkKU01h3j4GYGTblgDnC+VnQf98B0/JuERLqdJf7dr8K1EDZGm2
-        aKjsq36wVxB4rOe+PwtSfCB6a4+urkHoK6A==
-X-ME-Sender: <xms:G0fSZCdWAFkJZrFe2FTFPv3hpC8M5SlrEYjdTDyqJi2XYgy7-4FXpw>
-    <xme:G0fSZMPUdbhRVRKklMvcSS5C8ht5I_wdt40kiw3viLPtin-pRLxvNh2hD9rlSghLn
-    sKgXoh4vazVX9upJOg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrledvgdeijecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgfekueelgeeigefhudduledtkeefffejueelheelfedutedttdfgveeufeef
-    ieegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:G0fSZDghd5wQbVZ8EdKhEfd-jHfxsmr1j9wGiZ174Ohs8LAoWDt8VA>
-    <xmx:G0fSZP_gFBuSKNoV9BlTrCBqoRTNcC6is7IiyN7CKJnKy8qyO3g8BA>
-    <xmx:G0fSZOuqYBPQedoW5Ouh9pVTyYN8FPXXMnxuj_pfeMFgOOfAJ0jqxA>
-    <xmx:HUfSZAJLDRrcSoLfW8aqhOdectWfFwB346rzaGubRotAzDaZltuUAw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 430EDB6008D; Tue,  8 Aug 2023 09:46:03 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
-Mime-Version: 1.0
-Message-Id: <d025d95e-b12e-4502-b3fe-dc03d5ec831d@app.fastmail.com>
-In-Reply-To: <CACRpkdYisteBTk9DOeCZiCeH5hJW87O-m+zsWAU7uwg7ud=ZYw@mail.gmail.com>
-References: <20230808-virt-to-phys-mips-v1-1-af6fcd45ed31@linaro.org>
- <CACRpkdYisteBTk9DOeCZiCeH5hJW87O-m+zsWAU7uwg7ud=ZYw@mail.gmail.com>
-Date:   Tue, 08 Aug 2023 15:45:41 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Linus Walleij" <linus.walleij@linaro.org>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Florian Fainelli" <f.fainelli@gmail.com>,
-        "Baoquan He" <bhe@redhat.com>,
-        "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Drop virt_to_phys define to self
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 8 Aug 2023 11:58:01 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7B85FE4
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:44:08 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b962c226ceso93352321fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 08:44:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691509447; x=1692114247;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mXrzYWYweDcdHrf5UFjLFPgu3A2nA2Ia2fp24TPU+2A=;
+        b=em0cv0h/lQDx0YperzwvClLTD7o0T3uCzFzfERurmeNPkJ1E//4/X09K8ZM1NQHnq4
+         bQ4ZP8RaGCJ/TRGkrjdN7tlNA4QytAwxLerpYSIl0ye9s21WWw19kIQv9zrRanFJiMuG
+         aclVYABNoNR4DKy+m1KyPaPLr/1p55qwVhBUuPUrWGRzh6L1bE2u3rhnVoTuoo6J87TC
+         fTC2DD1fq85Aq8kFRK6pIviu0QFXy4twswVZM1z7MMs0pOOHHN7BljMhmu55uwmDR49V
+         FhC9Lc3R7WJ7GKlmpBV0NsX65F96Q9l6QTQdIXZpNhtGPHvTWaFD3YMoZZvURRUiZfwi
+         9cHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691509447; x=1692114247;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mXrzYWYweDcdHrf5UFjLFPgu3A2nA2Ia2fp24TPU+2A=;
+        b=AQqKq50GTOAYouYdcfxj5l8FP6YGn4BZskFgLHj3jNJs4okqjBuhwiAgeT737vUdto
+         4NeUgVsTraE8jr8TZIzYeBnf1UrmA7U0c35ObLikgxqTWOKlWd5hlD/2XnjOfBKEXzA0
+         MX4816K5gQXM60lJMqiGDY7vYGhv8fIzRwJ+G4RlQ+7HKT1YX62bCVlB2cJ7Y/u0pyjU
+         VdGDKY4tMxfKlc5JlWdW3H6sBQhkVox5mLQU0A3i3786VfgUIpVXv+e6AgFKgfaw/cW7
+         weMsMckfiwidU5kdZjZlnhr9tEQ3dICiXROsDkRQkoGw/B72ZsvDtloNFLnKekXqcn3f
+         zTAA==
+X-Gm-Message-State: AOJu0YyM4+suBGh2m0rxr/6AuzneP53g5eDft61DxHT4BQDHprAJu7jf
+        xDf48/g3zZPT3PLWxlEflwsDl09+6KwWS3vzHPE=
+X-Google-Smtp-Source: AGHT+IEowhkuCmUF+r4Qwu7Ea/j6SLAKl0ohXdiWZmoM/iU49rY/8TQNDS4E142VCQ8PM8iR2Ecgeg==
+X-Received: by 2002:a2e:90c4:0:b0:2b9:615b:39a9 with SMTP id o4-20020a2e90c4000000b002b9615b39a9mr8639502ljg.52.1691502399150;
+        Tue, 08 Aug 2023 06:46:39 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id u23-20020a2e8557000000b002b93d66b82asm2284493ljj.112.2023.08.08.06.46.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 06:46:38 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 08 Aug 2023 15:46:28 +0200
+Subject: [PATCH 01/11] regulator: tps65910: Drop useless header
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230808-descriptors-regulator-v1-1-939b5e84dd18@linaro.org>
+References: <20230808-descriptors-regulator-v1-0-939b5e84dd18@linaro.org>
+In-Reply-To: <20230808-descriptors-regulator-v1-0-939b5e84dd18@linaro.org>
+To:     Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023, at 15:12, Linus Walleij wrote:
-> On Tue, Aug 8, 2023 at 11:29=E2=80=AFAM Linus Walleij <linus.walleij@l=
-inaro.org> wrote:
->
->> The function virt_to_phys was defined to virt_to_phys and then
->> implemented right below.
->>
->> I can't understand why, just drop it and let the actual function
->> slot in.
->>
->> Fixes: dfad83cb7193 ("MIPS: Add support for CONFIG_DEBUG_VIRTUAL")
->> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
->> ---
->>  arch/mips/include/asm/io.h | 1 -
->>  1 file changed, 1 deletion(-)
->>
->> diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
->> index affd21e9c20b..18ed44843541 100644
->> --- a/arch/mips/include/asm/io.h
->> +++ b/arch/mips/include/asm/io.h
->> @@ -111,7 +111,6 @@ extern phys_addr_t __virt_to_phys(volatile const =
-void *x);
->>  #define __virt_to_phys(x)      __virt_to_phys_nodebug(x)
->>  #endif
->>
->> -#define virt_to_phys virt_to_phys
->>  static inline phys_addr_t virt_to_phys(const volatile void *x)
->>  {
->>         return __virt_to_phys(x);
->
-> Just have to CC Arnd on this because I never feel I understand this
-> properly.
->
-> Normally you would do this so as to override the default virt_to_phys()
-> from include/asm-generic/io.h, but we do not seem to be using it here?
+The TPS65910 includes the legacy header <linux/gpio.h> for no
+reason, drop the include.
 
-Correct. In linux-next, we have converted arch/sh to use
-include/asm-generic/io.h, so arch/mips is now the last one
-to not use it.=20
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ drivers/regulator/tps65910-regulator.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-I see that Jiaxun Yang posted a patch for this in May and it looked
-like it should finally work [1], but there seems to still be something
-missing.
+diff --git a/drivers/regulator/tps65910-regulator.c b/drivers/regulator/tps65910-regulator.c
+index 2a0965ba1570..3a3027e0b94e 100644
+--- a/drivers/regulator/tps65910-regulator.c
++++ b/drivers/regulator/tps65910-regulator.c
+@@ -17,7 +17,6 @@
+ #include <linux/regulator/driver.h>
+ #include <linux/regulator/machine.h>
+ #include <linux/slab.h>
+-#include <linux/gpio.h>
+ #include <linux/mfd/tps65910.h>
+ #include <linux/regulator/of_regulator.h>
+ 
 
-> Further right below we are implementing phys_to_virt() with no
-> corresponding define, so in any case this needs to go or that one
-> needs a define.
->
-> That said they seem like a good candidate to replace with the
-> generic variant because the content is the same sans some debug
-> hacks that I doubt are still needed.
+-- 
+2.34.1
 
-I think the ARCH_HAS_DEBUG_VIRTUAL option is useful in
-general, I'd rather move that into the common code if
-we were to unify it.
-
-For the moment, I'd suggest we leave the #define in place
-here in order to finish the patch that starts using the
-asm-generic header, and then we can look into using more
-of the generic code.
-
-       Arnd
-
-[1] https://lore.kernel.org/linux-mips/20230519195135.79600-1-jiaxun.yan=
-g@flygoat.com/
