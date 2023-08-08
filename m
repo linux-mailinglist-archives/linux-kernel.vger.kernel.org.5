@@ -2,149 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA777745A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 20:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C180277499D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 21:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbjHHSom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 14:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
+        id S232228AbjHHT6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 15:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233802AbjHHSoL (ORCPT
+        with ESMTP id S230361AbjHHTvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 14:44:11 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4614A1558D;
-        Tue,  8 Aug 2023 09:40:13 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 378CaIN5068834;
-        Tue, 8 Aug 2023 07:36:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691498178;
-        bh=3hSAAtFdQ/105wifDbT6bIs+ir+qYDjjLCrmTGs7Z1o=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=Rcx9vaEnILLhkC3B9hzEUK2foLJmPTNEvoEdk/LAOh0NbBxi2CEmd3/aZfQm4lZ2P
-         oNp5vJCWu1U+p3RYi/dimEbU9XzUQHneN/xSTw23IAmJek9lPNU1nR9+9kmDVu018Q
-         D3hbEXl0jNiqwu+CLWxUVJ+PWh0mTXGk3sboSAuk=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 378CaISm018836
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Aug 2023 07:36:18 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 8
- Aug 2023 07:36:18 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 8 Aug 2023 07:36:18 -0500
-Received: from [172.24.227.217] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 378CaC1W125832;
-        Tue, 8 Aug 2023 07:36:12 -0500
-Message-ID: <8bb5a1eb-3912-c418-88fe-b3d8870e7157@ti.com>
-Date:   Tue, 8 Aug 2023 18:06:11 +0530
+        Tue, 8 Aug 2023 15:51:38 -0400
+Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05573135F0F;
+        Tue,  8 Aug 2023 09:57:55 -0700 (PDT)
+Received: from relay2-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::222])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 2919AC4F6F;
+        Tue,  8 Aug 2023 12:44:32 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BC59B40005;
+        Tue,  8 Aug 2023 12:44:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1691498643;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4VsXgiFeGCwctw33tvlO+OJIRCKXH9pfrdYm5pUg+10=;
+        b=GRQ/f78ytohavDBOJJZfQD2OO97lRvj9U7X0rBSay38cQ5rJLFpnjTbGt2LxT+N/rqD/ar
+        r1PqKeGt/GoKxa5rv991ilYQw9KNXM1wxbnqxSWI5ktgNNm1ZwnQHYV5rZV+DKUj90tMKL
+        hxGCKblwxaiSFTblHOq2gKujdvxugWIVGa/o5GomHkTw9/HpllTT4Rb9b5fShCa5eO4Yrk
+        oIwFeRACS1CSoygAxhSl0L19fYqRmtrTPkzwJdIunJxCPaRU9rw+uJAYLG2kIvZuASVIXr
+        IirB6E8SOchNcKG2J4sxRP60FBfRzMxn40/0L7xkw/DI/7+hmkCZrR266CTaAA==
+Date:   Tue, 8 Aug 2023 14:44:01 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Anvesh Jain P <quic_ajainp@quicinc.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Venkata Rao Kakani <quic_vkakani@quicinc.com>
+Subject: Re: [PATCH] rtc: rtc-pm8xxx: control default alarm wake up capability
+Message-ID: <2023080812440141f41605@mail.local>
+References: <20230801114549.26956-1-quic_ajainp@quicinc.com>
+ <20230801124056fc665814@mail.local>
+ <93722831-dc83-8ea3-4af9-33eaefcf81be@quicinc.com>
+ <202308011934080c7083b9@mail.local>
+ <43055e2f-963c-a738-964e-d483c751d913@quicinc.com>
+ <20230803133940eef87e40@mail.local>
+ <20230803134029e0470f25@mail.local>
+ <3e88342b-0faa-aca5-118a-6e9ac6955298@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 0/5] Introduce IEP driver and packet timestamping
- support
-Content-Language: en-US
-To:     Roger Quadros <rogerq@kernel.org>, Conor Dooley <conor@kernel.org>,
-        MD Danish Anwar <danishanwar@ti.com>
-CC:     Randy Dunlap <rdunlap@infradead.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230807110048.2611456-1-danishanwar@ti.com>
- <20230808-unnerving-press-7b61f9c521dc@spud>
- <1c8e5369-648e-98cb-cb14-08d700a38283@ti.com>
- <529218f6-2871-79a2-42bb-8f7886ae12c3@kernel.org>
-From:   Md Danish Anwar <a0501179@ti.com>
-Organization: Texas Instruments
-In-Reply-To: <529218f6-2871-79a2-42bb-8f7886ae12c3@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e88342b-0faa-aca5-118a-6e9ac6955298@quicinc.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/23 5:52 pm, Roger Quadros wrote:
+On 07/08/2023 10:26:37+0530, Anvesh Jain P wrote:
 > 
 > 
-> On 08/08/2023 15:18, Md Danish Anwar wrote:
->> On 08/08/23 5:38 pm, Conor Dooley wrote:
->>> On Mon, Aug 07, 2023 at 04:30:43PM +0530, MD Danish Anwar wrote:
->>>> This series introduces Industrial Ethernet Peripheral (IEP) driver to
->>>> support timestamping of ethernet packets and thus support PTP and PPS
->>>> for PRU ICSSG ethernet ports.
->>>>
->>>> This series also adds 10M full duplex support for ICSSG ethernet driver.
->>>>
->>>> There are two IEP instances. IEP0 is used for packet timestamping while IEP1
->>>> is used for 10M full duplex support.
->>>>
->>>> This is v2 of the series [v1]. It addresses comments made on [v1].
->>>> This series is based on linux-next(#next-20230807). 
->>>>
->>>> Changes from v1 to v2:
->>>> *) Addressed Simon's comment to fix reverse xmas tree declaration. Some APIs
->>>>    in patch 3 and 4 were not following reverse xmas tree variable declaration.
->>>>    Fixed it in this version.
->>>> *) Addressed Conor's comments and removed unsupported SoCs from compatible
->>>>    comment in patch 1. 
->>>
->>> I'm sorry I missed responding there before you sent v2, it was a bank
->>> holiday yesterday. I'm curious why you removed them, rather than just
->>> added them with a fallback to the ti,am654-icss-iep compatible, given
->>> your comment that "the same compatible currently works for all these
->>> 3 SoCs".
->>
->> I removed them as currently the driver is being upstreamed only for AM654x,
->> once I start up-streaming the ICSSG driver for AM64 and any other SoC. I will
->> add them here. If at that time we are still using same compatible, then I will
->> modify the comment otherwise add new compatible.
->>
->> As of now, I don't see the need of adding other SoCs in iep binding as IEP
->> driver up-streaming is only planned for AM654x as of now.
-> 
-> But, is there any difference in IEP hardware/driver for the other SoCs?
-> AFAIK the same IP is used on all SoCs.
-> 
-> If there is no hardware/code change then we don't need to introduce a new compatible.
-> The comment for all SoCs can already be there right from the start.
-> 
+> On 8/3/2023 7:10 PM, Alexandre Belloni wrote:
+> > On 03/08/2023 15:39:41+0200, Alexandre Belloni wrote:
+> > > On 03/08/2023 19:01:51+0530, Anvesh Jain P wrote:
+> > > > 
+> > > > 
+> > > > On 8/2/2023 1:04 AM, Alexandre Belloni wrote:
+> > > > > On 01/08/2023 18:18:46+0530, Anvesh Jain P wrote:
+> > > > > > In automotive systems, RTC should not wake up the device when it is parked
+> > > > > > or when it is garage to avoid leakage current. providing a control from
+> > > > > > device tree to avoid RTC wake up based on the use case is reason for this
+> > > > > > patch.
+> > > > > > 
+> > > > > 
+> > > > > Then simply avoid providing an IRQ or setting an alarm.
+> > > > The purpose of the change is just to block alarms/notifications waking up
+> > > > the target when it is in Suspend2ram(low power) mode.
+> > > > if we disable IRQ, alarms/notifications won't come even when the target is
+> > > > in active mode.
+> > > > This change will just stop the wake up capability of the alarm when target
+> > > > is in suspend 2 ram mode based on flag passed from device tree.
+> > > > Use case of this patch is,
+> > > > In mobile targets where alarms / notifications will need to wake up the
+> > > > target when there is a reminder as per user expectation.
+> > > > where as in automotive targets, when driver is not in Car and target is in
+> > > > suspend state, alarms/notifications would have no meaning and waking up the
+> > > > target of no use as there is no user to attend the message. hence blocking
+> > > > them in automotive use cases based on device tree is the use of this patch.
+> > > 
+> > > Simply remove the alarm before going to suspend, this is a userspace
+> > > policy, it has nothing to do in the device or kernel.
+> > s/device/device tree/ obviously.
+> > 
+> How to remove from userspace?, if we remove all alarms from userspace, will
+> the alarms expiring after wake up would be restored while target resumes
+> from suspend 2 ram?
+> The change would not change alarms behavior. it blocks all notifications
+> causing wake up if "disable-alarm-wakeup" property defined in device tree.
+> if it is not defined, current behavior of alarm won't change.
 
-There is no code change. The same compatible is used for other SoCs. Even if
-the code is same I was thinking to keep the compatible as below now
+The goal of the RTC alarm is to wakeup or poweron. If you don't want to
+wakeup, you simply don't set an alarm. If it is already set, then you
+simply unset it. If you want an application to do something at a
+particular time, I hope you are not using the rtc but a timer with
+TIMER_ABSTIME. This will do exactly what you want.
 
-- ti,am654-icss-iep   # for K3 AM65x SoCs
-
-and once other SoCs are introduced, I will just modify the comment,
-
-- ti,am654-icss-iep   # for K3 AM65x, AM64x SoCs
-
-But we can also keep the all SoCs in comment right from start as well. I am
-fine with both.
-
-Conor / Roger, Please let me know which approach should I go with in next revision?
+> > > 
+> > > > > 
+> > > > > > On 8/1/2023 6:10 PM, Alexandre Belloni wrote:
+> > > > > > > On 01/08/2023 17:15:49+0530, Anvesh Jain P wrote:
+> > > > > > > > Enable & disable rtc alarm wake up capability based on
+> > > > > > > > default parameter passed from device tree.
+> > > > > > > > 
+> > > > > > > 
+> > > > > > > I see what you are doing but not why this is necessary, NAK.
+> > > > > > > 
+> > > > > > > > Signed-off-by: Venkata Rao Kakani <quic_vkakani@quicinc.com>
+> > > > > > > > Signed-off-by: Anvesh Jain P <quic_ajainp@quicinc.com>
+> > > > > > > > ---
+> > > > > > > >     drivers/rtc/rtc-pm8xxx.c | 3 +++
+> > > > > > > >     1 file changed, 3 insertions(+)
+> > > > > > > > 
+> > > > > > > > diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
+> > > > > > > > index f6b779c12ca7..bed57be602b6 100644
+> > > > > > > > --- a/drivers/rtc/rtc-pm8xxx.c
+> > > > > > > > +++ b/drivers/rtc/rtc-pm8xxx.c
+> > > > > > > > @@ -523,6 +523,9 @@ static int pm8xxx_rtc_probe(struct platform_device *pdev)
+> > > > > > > >     	if (rc)
+> > > > > > > >     		return rc;
+> > > > > > > > +	if (of_property_read_bool(pdev->dev.of_node, "disable-alarm-wakeup"))
+> > > > > > > > +		device_set_wakeup_capable(&pdev->dev, false);
+> > > > > > > > +
+> > > > > > > >     	rc = dev_pm_set_wake_irq(&pdev->dev, rtc_dd->alarm_irq);
+> > > > > > > >     	if (rc)
+> > > > > > > >     		return rc;
+> > > > > > > > 
+> > > > > > > > base-commit: 0a8db05b571ad5b8d5c8774a004c0424260a90bd
+> > > > > > > > -- 
+> > > > > > > > 2.17.1
+> > > > > > > > 
+> > > > > > > 
+> > > > > 
+> > > 
+> > > -- 
+> > > Alexandre Belloni, co-owner and COO, Bootlin
+> > > Embedded Linux and Kernel engineering
+> > > https://bootlin.com
+> > 
 
 -- 
-Thanks and Regards,
-Danish.
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
