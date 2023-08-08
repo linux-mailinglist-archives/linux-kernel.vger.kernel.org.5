@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFA8774338
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 19:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA55773E6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 18:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbjHHR7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 13:59:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
+        id S229987AbjHHQ3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 12:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234136AbjHHR6k (ORCPT
+        with ESMTP id S232530AbjHHQ2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:58:40 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9362BC8C
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 09:26:32 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bfcf4c814so857605666b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 09:26:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1691511970; x=1692116770;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=mFOhD8TvrN3kEaAYXPGjF3oU27kR58bUIX2cHeJs6g4=;
-        b=PZLSpR69RMBQyilZN2WmQD85JwYyqFvemcw58IiL6phq8DwXJNn6TnYWSif4ZBBdCZ
-         /dnV779vGXfcFqnwyx98kqmow3wJEE0xdMvtDohKjHkPJ0MnWVm4Tl7e+WMtitbRENh2
-         d7ASRcWyi0T8sn38pHp7/LwwcUw/j2jMXnhI+Hf4HVYj5DeBUMdEBJlRnKWzM2dFGy7F
-         BUIccnQbTkQr39WKkcY2nilILPybuiDEFfs9nf3gmGgla9t2sScCljGJT8IaaHErAEqu
-         FbdVtT+QYRExmQb1mW0+GzWYx6PjnkaZvBreOvHkWCN1Wdoipijh847EQdaAovMmXtWw
-         dbvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511970; x=1692116770;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mFOhD8TvrN3kEaAYXPGjF3oU27kR58bUIX2cHeJs6g4=;
-        b=Gr7vLPi4CooMm7DKtI1yANYZbveMhPHRyPRSocMtrMRooPmfWIrhI2cfuWUBXQlwFq
-         Bm/COWtXF7kn0fqHJYBuGChdPm5bELCApH8vQq32m/as5JdgJCAtVJWfsFMpqtF6i6IF
-         34TenjNdVZoFceVtoUOgvJXq/XV2s2/lFT3EkfaSXWGdeRq5FSHopWDG/6ZU+PJPJIMg
-         TAPUISwrP1akbWgXgzSOGpdf1p2YldzgsVaTo/XUZ7DXy/YzQzn7dMqw5CQWmGUUFKwR
-         Z37ZmpuG70aGcqCIz0yBhbb4R2dk1UU9taKU77Mtqf/NHObUkQb82ebms7TIDWAh9Yx/
-         PHmw==
-X-Gm-Message-State: AOJu0YyLRlL+SkvfFzIpA2fSIEPguGWRuYSyNK7QdUAM3j4HhH+LdmEE
-        U4IrDCIA/U6DRKJXdXY1TKzyk4xZ280nLPbPTmA=
-X-Google-Smtp-Source: AGHT+IFozB535bQ3dsOdzC8ibC2SVAdeAA6xH1Rr7AndjIWl+K+Gm3Yi/Og8fGDBzvdPVLlNGUdwCw==
-X-Received: by 2002:a05:6000:1247:b0:317:f4c2:a99d with SMTP id j7-20020a056000124700b00317f4c2a99dmr2600500wrx.53.1691501231461;
-        Tue, 08 Aug 2023 06:27:11 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:efd4:f3df:2c50:1776])
-        by smtp.gmail.com with ESMTPSA id r2-20020a5d4942000000b003063a92bbf5sm13729592wrs.70.2023.08.08.06.27.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 06:27:11 -0700 (PDT)
-References: <20230731042807.1322972-1-wenst@chromium.org>
-User-agent: mu4e 1.8.13; emacs 28.2
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Chen-Yu Tsai <wenst@chromium.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: meson: meson8b: Simplify notifier clock lookup
-Date:   Tue, 08 Aug 2023 15:21:46 +0200
-In-reply-to: <20230731042807.1322972-1-wenst@chromium.org>
-Message-ID: <1jpm3xoea9.fsf@starbuckisacylon.baylibre.com>
+        Tue, 8 Aug 2023 12:28:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D0311F66
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 08:51:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 171ED62513
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 13:22:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A2F9C433C7;
+        Tue,  8 Aug 2023 13:22:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691500923;
+        bh=NF5G/R0NqeQHYbKyCLsFwN904Kw6X0MLSj8fCMzbh/4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ePBIfcRi49VfeipofeouYVyEl0jnR3i6+3DlVYQJBGrzqdfkftJoXoUQEYx60e+KC
+         xtvQE3P8fS8ZDhvRL3+IIlA56I4P2pKWBKY209TFAUFwLKFsgjU5edqPOg4tI92/hj
+         tojQ5/H3sKxUYEbkxiVzCchvcaDgBInIozEC1FWVajBOQwQXstV99UYKbQcZDoYwdo
+         HstWS30mqU60qO8QhDxrrMC6CI72+99JOC/YPnstBNw3oX+XcG+X+HHovX8Fupyx2G
+         VsgaNYbR+3OeRCP010Oxn1wdDXrHv1slKnMXXQLOUL2P9DCf7GCIzPLFm2sGVL4ssw
+         r9SqbgCDGIdPA==
+Date:   Tue, 8 Aug 2023 14:21:57 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
+        Sami Mujawar <sami.mujawar@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 1/4] arm_pmu: acpi: Refactor
+ arm_spe_acpi_register_device()
+Message-ID: <20230808132157.GB2369@willie-the-truck>
+References: <20230803055652.1322801-1-anshuman.khandual@arm.com>
+ <20230803055652.1322801-2-anshuman.khandual@arm.com>
+ <89058c7c-1fed-60ea-7233-04187772a931@arm.com>
+ <20230804163921.GE30679@willie-the-truck>
+ <9b630f76-2f9e-fc42-012e-403f4b8c1dee@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9b630f76-2f9e-fc42-012e-403f4b8c1dee@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 07, 2023 at 11:03:40AM +0530, Anshuman Khandual wrote:
+> On 8/4/23 22:09, Will Deacon wrote:
+> > On Thu, Aug 03, 2023 at 11:43:27AM +0530, Anshuman Khandual wrote:
+> >> On 8/3/23 11:26, Anshuman Khandual wrote:
+> >>> +	/*
+> >>> +	 * Sanity check all the GICC tables for the same interrupt
+> >>> +	 * number. For now, only support homogeneous ACPI machines.
+> >>> +	 */
+> >>> +	for_each_possible_cpu(cpu) {
+> >>> +		struct acpi_madt_generic_interrupt *gicc;
+> >>> +
+> >>> +		gicc = acpi_cpu_get_madt_gicc(cpu);
+> >>> +		if (gicc->header.length < len)
+> >>> +			return gsi ? -ENXIO : 0;
+> >>> +
+> >>> +		this_gsi = parse_gsi(gicc);
+> >>> +		if (!this_gsi)
+> >>> +			return gsi ? -ENXIO : 0;
+> >>
+> >> Moved parse_gsi() return code checking to its original place just to
+> >> make it similar in semantics to existing 'gicc->header.length check'.
+> >> If 'gsi' is valid i.e atleast a single cpu has been probed, return
+> >> -ENXIO indicating mismatch, otherwise just return 0.
+> > 
+> > Wouldn't that still be the case without the check in this hunk? We'd run
+> > into the homogeneous check and return -ENXIO from there, no?
+> Although the return code will be the same i.e -ENXIO, but not for the same reason.
+> 
+> 		this_gsi = parse_gsi(gicc);
+> 		if (!this_gsi)
+> 			return gsi ? -ENXIO : 0;
+> 
+> This returns 0 when IRQ could not be parsed for the first cpu, but returns -ENXIO
+> for subsequent cpus. Although return code -ENXIO here still indicates IRQ parsing
+> to have failed.
+> 
+> 		} else if (hetid != this_hetid || gsi != this_gsi) {
+> 			pr_warn("ACPI: %s: must be homogeneous\n", pdev->name);
+> 			return -ENXIO;
+> 		} 
+> 
+> This returns -ENXIO when there is a IRQ mismatch. But if the above check is not
+> there, -ENXIO return code here could not be classified into IRQ parse problem or
+> mismatch without looking into the IRQ value.
 
-On Mon 31 Jul 2023 at 12:27, Chen-Yu Tsai <wenst@chromium.org> wrote:
+Sorry, but I don't understand your point here. If any of this fails, there's
+going to be some debugging needed to look at the ACPI tables; the only
+difference with my suggestion is that you'll get a message indicating that
+the devices aren't homogeneous, which I think is helpful.
 
-> The driver registers a clock notifier by first getting the name of one
-> of its clocks it just registered, then uses the name to look up the
-> clock. The lookup is not needed, since each clock provider already
-> has a clock attached to it. Use that instead to get rid of a
-> __clk_lookup() call.
->
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> ---
-> Found this could be simplified while looking through some clk core code.
->
->
->  drivers/clk/meson/meson8b.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
->
-> diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
-> index 827e78fb16a8..c4336ac012bf 100644
-> --- a/drivers/clk/meson/meson8b.c
-> +++ b/drivers/clk/meson/meson8b.c
-> @@ -3793,7 +3793,6 @@ static void __init meson8b_clkc_init_common(struct device_node *np,
->  {
->  	struct meson8b_clk_reset *rstc;
->  	struct device_node *parent_np;
-> -	const char *notifier_clk_name;
->  	struct clk *notifier_clk;
->  	struct regmap *map;
->  	int i, ret;
-> @@ -3847,9 +3846,7 @@ static void __init meson8b_clkc_init_common(struct device_node *np,
->  	 * tricky programming sequence will be handled by the forthcoming
->  	 * coordinated clock rates mechanism once that feature is released.
->  	 */
-> -	notifier_clk_name = clk_hw_get_name(&meson8b_cpu_scale_out_sel.hw);
-> -	notifier_clk = __clk_lookup(notifier_clk_name);
-> -	ret = clk_notifier_register(notifier_clk, &meson8b_cpu_nb_data.nb);
-> +	ret = clk_notifier_register(meson8b_cpu_scale_out_sel.hw.clk, &meson8b_cpu_nb_data.nb);
-
-Hi Chen-Yu,
-
-Your patch seems valid, as CCF stands right now.
-
-However, I believe there is a will to drop the 'struct clk' instance that
-automatically gets created with each 'struct clk_hw'. This change would
-not help going in this direction
-
-Stephen, what do you think ? 
-
->  	if (ret) {
->  		pr_err("%s: failed to register the CPU clock notifier\n",
->  		       __func__);
-
+Will
