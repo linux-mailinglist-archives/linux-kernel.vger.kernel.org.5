@@ -2,321 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2337477626D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E491776214
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231615AbjHIO11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
+        id S232029AbjHIOKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbjHIO1Y (ORCPT
+        with ESMTP id S229978AbjHIOKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:27:24 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972C01FC2
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:27:22 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99bdf08860dso212064766b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 07:27:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1691591241; x=1692196041;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=g0tf3b81o/i4i891zt2ZuwmEYtGObIVT0rQr20cIgmM=;
-        b=ka2t9rwhuAQFn95vz4kMDFZ3Q0eynbfttN8bDW66C67GMafoIikGXJ/U6LIv/FqASv
-         8x76Ej9IXjNbiueHSKNX/n9CkGxHbuHmOydy//zzt6B2nHcfLaEXwrFZ7z/AGGxnyXj8
-         d41x/u4f3HPrDeYk/ZcDzJQwSFFbBUyUb8OKOqVCShZ/j3I/+rZW0LIEsiyc2Z8U19Gz
-         Qcuu4ta9WCYEJqaKhLAkax4wXHiRX4QJkr5LYmAfp/t3h2Ur5oe3dyGWKHQTYZYHj3nu
-         JsV2FzwTRfcN8gu3BI9Q6KG3x82+AaGVKxWCu02OjnrF0AHTc9c7g1KjXUmM0ufeDmb2
-         Ui6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691591241; x=1692196041;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g0tf3b81o/i4i891zt2ZuwmEYtGObIVT0rQr20cIgmM=;
-        b=SpeVwZ9NiacRGqYELy5Xbk7YN1OAjAf5XKiXQ+jUHXBqBIUvNzW1XVcrrNaVhF6Xo+
-         U6sT9yRMAAWw4+L3RWHjfD3rk3eb+6AM9nbaGDgX9k54HSbPLOYVwQcC/biXI+fubcV0
-         JDKKS/SnwEN8roI4steog2l6GkSjfypmMiKHsllQHFlLBw8+S7X4K3xQ1PeTfbdFtu+e
-         eD+deFcjWHWDAUxNW4VJGAAz6q8LYtZoBwdmQLdcJK7O65gs/7h274KCKZc24Gp0Vp1o
-         Jv/N6VokSzAKrXpw1Ww6Mux35ejJeXWWUBHVizG8pp2FvgD/xW01TwoXuplfCnQQ6MAi
-         tfBA==
-X-Gm-Message-State: AOJu0YyQgR784SDbmoij1igih7ODI4MNlbopEX8rTzt85hiSbpvfYIiA
-        FaLvO9Ip+Uc97yWlKlZT78XOTg==
-X-Google-Smtp-Source: AGHT+IGtEaU2vZG7J/NZdgzh5skjfNjX0nguXNiqv05n6QVi+LMT+9D9Pw3d6uTPTxMnIXT31iEWaQ==
-X-Received: by 2002:a17:906:d54a:b0:978:8979:c66c with SMTP id cr10-20020a170906d54a00b009788979c66cmr13470340ejc.18.1691591240937;
-        Wed, 09 Aug 2023 07:27:20 -0700 (PDT)
-Received: from localhost ([194.62.217.2])
-        by smtp.gmail.com with ESMTPSA id h4-20020aa7c944000000b0052369aa9956sm733683edt.26.2023.08.09.07.27.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 07:27:20 -0700 (PDT)
-References: <20230710074642.683831-1-aliceryhl@google.com>
-User-agent: mu4e 1.10.5; emacs 28.2.50
-From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Subject: Re: [PATCH v1] rust: add improved version of
- `ForeignOwnable::borrow_mut`
-Date:   Wed, 09 Aug 2023 16:09:12 +0200
-In-reply-to: <20230710074642.683831-1-aliceryhl@google.com>
-Message-ID: <87r0octho8.fsf@metaspace.dk>
+        Wed, 9 Aug 2023 10:10:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86DE1FC2;
+        Wed,  9 Aug 2023 07:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691590212; x=1723126212;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=Nn3twXiN8qvEZrC0KbH/uEh931DqwD4kXNP0CV/tOOQ=;
+  b=imIp+bqQ22NDsfImlMO7fTbv1M/REQRyWpDjhjS4bZuBxuaLaHPRnssh
+   NDVoJMiNGC5+1p4HPzoee4XepVHDptDhE94S6nk66obDSHg9qMDtuRxX3
+   drEbKQXhb2MiFAfT4pVt95Oug/X4kIhOC1jKz9URmNaqv1IVyLC0I1kOc
+   oP44cBh+z/tm6zTjq0fBauqJghbXZkHJ5yXwqmfoIN7DepjMsWy4o98/p
+   crDhmGPofZI0HJei7AY0wfcj1c9IDB/fgAykVsmBeRpvUXWpCtod1TLbG
+   gQEx14cF+o8oguVP7lHVL4vSaoqh0gvgZdoO9N3LGXRopXWXx77cbmEmq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="370033250"
+X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
+   d="scan'208";a="370033250"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 07:10:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="821868063"
+X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
+   d="scan'208";a="821868063"
+Received: from cvogler-mobl1.ger.corp.intel.com ([10.252.40.229])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 07:10:09 -0700
+Date:   Wed, 9 Aug 2023 17:10:07 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>
+cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-pci@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Sui Jingfeng <suijingfeng@loongson.cn>
+Subject: Re: [PATCH v2 04/11] PCI/VGA: Drop the inline in the
+ vga_update_device_decodes() function.
+In-Reply-To: <20230808223412.1743176-5-sui.jingfeng@linux.dev>
+Message-ID: <28d94a7-ca19-6646-ce61-f0fec06e8bf2@linux.intel.com>
+References: <20230808223412.1743176-1-sui.jingfeng@linux.dev> <20230808223412.1743176-5-sui.jingfeng@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 9 Aug 2023, Sui Jingfeng wrote:
 
-Alice Ryhl <aliceryhl@google.com> writes:
+> From: Sui Jingfeng <suijingfeng@loongson.cn>
+> 
+> The vga_update_device_decodes() function is not performance-critical.
+> So drop the inline. This patch also makes the parameter consistent with
+> the argument, using the 'unsigned int' type instead of the 'signed' type
+> to store the decode.
 
-> Previously, the `ForeignOwnable` trait had a method called `borrow_mut`
-> that was intended to provide mutable access to the inner value. However,
-> the method accidentally made it possible to change the address of the
-> object being modified, which usually isn't what we want. (And when we
-> want that, it can be done by calling `from_foreign` and `into_foreign`,
-> like how the old `borrow_mut` was implemented.)
->
-> In this patch, we introduce an alternate definition of `borrow_mut` that
-> solves the previous problem. Conceptually, given a pointer type `P` that
-> implements `ForeignOwnable`, the `borrow_mut` method gives you the same
-> kind of access as an `&mut P` would, except that it does not let you
-> change the pointer `P` itself.
->
-> This is analogous to how the existing `borrow` method provides the same
-> kind of access to the inner value as an `&P`.
->
-> Note that for types like `Arc`, having an `&mut Arc<T>` only gives you
-> immutable access to the inner `T`. This is because mutable references
-> assume exclusive access, but there might be other handles to the same
-> reference counted value, so the access isn't exclusive. The `Arc` type
-> implements this by making `borrow_mut` return the same type as `borrow`.
->
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+Use imperative form, Don't start with "This patch" but directly what 
+follows after those words.
+ 
+> Change the second argument of the vga_update_device_decodes() function
+> to 'unsigned int' type.
+
+Somehow it feels all these 3 changes should be in separate patches, I 
+don't see how they're related at all with each other other than they touch 
+roughly the same area.
+
+-- 
+ i.
+
+> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
 > ---
->
-> This patch depends on https://lore.kernel.org/all/20230706094615.3080784-1-aliceryhl@google.com/
->
->  rust/kernel/sync/arc.rs | 31 +++++++++-----
->  rust/kernel/types.rs    | 93 ++++++++++++++++++++++++++++++-----------
->  2 files changed, 89 insertions(+), 35 deletions(-)
->  
-> diff --git a/rust/kernel/types.rs b/rust/kernel/types.rs
-> index d479f8da8f38..1c2fb36906b6 100644
-> --- a/rust/kernel/types.rs
-> +++ b/rust/kernel/types.rs
-> @@ -20,66 +20,111 @@
->  /// This trait is meant to be used in cases when Rust objects are stored in C objects and
->  /// eventually "freed" back to Rust.
->  pub trait ForeignOwnable: Sized {
-> -    /// Type of values borrowed between calls to [`ForeignOwnable::into_foreign`] and
-> -    /// [`ForeignOwnable::from_foreign`].
-> +    /// Type used to immutably borrow a value that is currently foreign-owned.
->      type Borrowed<'a>;
->  
-> +    /// Type used to mutably borrow a value that is currently foreign-owned.
-> +    type BorrowedMut<'a>;
-> +
->      /// Converts a Rust-owned object to a foreign-owned one.
->      ///
->      /// The foreign representation is a pointer to void.
->      fn into_foreign(self) -> *const core::ffi::c_void;
->  
-> -    /// Borrows a foreign-owned object.
-> -    ///
-> -    /// # Safety
-> -    ///
-> -    /// `ptr` must have been returned by a previous call to [`ForeignOwnable::into_foreign`] for
-> -    /// which a previous matching [`ForeignOwnable::from_foreign`] hasn't been called yet.
-> -    unsafe fn borrow<'a>(ptr: *const core::ffi::c_void) -> Self::Borrowed<'a>;
-> -
->      /// Converts a foreign-owned object back to a Rust-owned one.
->      ///
->      /// # Safety
->      ///
-> -    /// `ptr` must have been returned by a previous call to [`ForeignOwnable::into_foreign`] for
-> -    /// which a previous matching [`ForeignOwnable::from_foreign`] hasn't been called yet.
-> -    /// Additionally, all instances (if any) of values returned by [`ForeignOwnable::borrow`] for
-> -    /// this object must have been dropped.
-> +    /// The provided pointer must have been returned by a previous call to [`into_foreign`], and it
-> +    /// must not be passed to `from_foreign` more than once.
-> +    ///
-> +    /// [`into_foreign`]: Self::into_foreign
->      unsafe fn from_foreign(ptr: *const core::ffi::c_void) -> Self;
-> +
-> +    /// Borrows a foreign-owned object immutably.
-> +    ///
-> +    /// This method provides a way to access a foreign-owned value from Rust immutably. It provides
-> +    /// you with exactly the same abilities as an `&Self` when the value is Rust-owned.
-> +    ///
-> +    /// # Safety
-> +    ///
-> +    /// The provided pointer must have been returned by a previous call to [`into_foreign`], and if
-> +    /// the pointer is ever passed to [`from_foreign`], then that call must happen after the end of
-> +    /// the lifetime 'a.
-> +    ///
-> +    /// [`into_foreign`]: Self::into_foreign
-> +    /// [`from_foreign`]: Self::from_foreign
-> +    unsafe fn borrow<'a>(ptr: *const core::ffi::c_void) -> Self::Borrowed<'a>;
-> +
-> +    /// Borrows a foreign-owned object mutably.
-> +    ///
-> +    /// This method provides a way to access a foreign-owned value from Rust mutably. It provides
-> +    /// you with exactly the same abilities as an `&mut Self` when the value is Rust-owned, except
-> +    /// that this method does not let you swap the foreign-owned object for another. (That is, it
-> +    /// does not let you change the address of the void pointer that the foreign code is storing.)
-
-How about this:
-
-"For a smart pointer P<T> this method provides mutable access to T if
-&mut P<T> would allow mutable access to T. Otherwise it provides
-immutable access to T."
-
-The point is that the method provides access to the pointee, not the
-smart pointer itself. In fact it is perfectly fine to do a mem::swawp()
-for the pointee in the case of Box and depending on interpretation the
-sentence "does not let you swap the foreign-owned object for another" is
-confusing.
-
-> +    ///
-> +    /// Note that for types like [`Arc`], an `&mut Arc<T>` only gives you immutable access to the
-> +    /// inner value, so this method also only provides immutable access in that case.
-> +    ///
-> +    /// In the case of `Box<T>`, this method gives you the ability to modify the inner `T`, but it
-> +    /// does not let you change the box itself. That is, you cannot change which allocation the box
-> +    /// points at.
-> +    ///
-> +    /// # Safety
-> +    ///
-> +    /// The provided pointer must have been returned by a previous call to [`into_foreign`], and if
-> +    /// the pointer is ever passed to [`from_foreign`], then that call must happen after the end of
-> +    /// the lifetime 'a.
-> +    ///
-> +    /// The lifetime 'a must not overlap with the lifetime of any other call to [`borrow`] or
-> +    /// `borrow_mut` on the same object.
-> +    ///
-> +    /// [`into_foreign`]: Self::into_foreign
-> +    /// [`from_foreign`]: Self::from_foreign
-> +    /// [`borrow`]: Self::borrow
-> +    /// [`Arc`]: crate::sync::Arc
-> +    unsafe fn borrow_mut<'a>(ptr: *const core::ffi::c_void) -> Self::BorrowedMut<'a>;
+>  drivers/pci/vgaarb.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/pci/vgaarb.c b/drivers/pci/vgaarb.c
+> index 8742a51d450f..dc10a262fb5e 100644
+> --- a/drivers/pci/vgaarb.c
+> +++ b/drivers/pci/vgaarb.c
+> @@ -860,24 +860,24 @@ static bool vga_arbiter_del_pci_device(struct pci_dev *pdev)
+>  	return ret;
 >  }
 >  
->  impl<T: 'static> ForeignOwnable for Box<T> {
->      type Borrowed<'a> = &'a T;
-> +    type BorrowedMut<'a> = &'a mut T;
+> -/* this is called with the lock */
+> -static inline void vga_update_device_decodes(struct vga_device *vgadev,
+> -					     int new_decodes)
+> +/* This is called with the lock */
+> +static void vga_update_device_decodes(struct vga_device *vgadev,
+> +				      unsigned int new_decodes)
+>  {
+>  	struct device *dev = &vgadev->pdev->dev;
+> -	int old_decodes, decodes_removed, decodes_unlocked;
+> +	unsigned int old_decodes = vgadev->decodes;
+> +	unsigned int decodes_removed = ~new_decodes & old_decodes;
+> +	unsigned int decodes_unlocked = vgadev->locks & decodes_removed;
 >  
->      fn into_foreign(self) -> *const core::ffi::c_void {
->          Box::into_raw(self) as _
->      }
+> -	old_decodes = vgadev->decodes;
+> -	decodes_removed = ~new_decodes & old_decodes;
+> -	decodes_unlocked = vgadev->locks & decodes_removed;
+>  	vgadev->decodes = new_decodes;
 >  
-> -    unsafe fn borrow<'a>(ptr: *const core::ffi::c_void) -> &'a T {
-> -        // SAFETY: The safety requirements for this function ensure that the object is still alive,
-> -        // so it is safe to dereference the raw pointer.
-> -        // The safety requirements of `from_foreign` also ensure that the object remains alive for
-> -        // the lifetime of the returned value.
-> -        unsafe { &*ptr.cast() }
-> -    }
-> -
->      unsafe fn from_foreign(ptr: *const core::ffi::c_void) -> Self {
->          // SAFETY: The safety requirements of this function ensure that `ptr` comes from a previous
->          // call to `Self::into_foreign`.
->          unsafe { Box::from_raw(ptr as _) }
->      }
-> +
-> +    unsafe fn borrow<'a>(ptr: *const core::ffi::c_void) -> &'a T {
-> +        // SAFETY: The safety requirements of this method ensure that the object remains alive and
-> +        // immutable for the duration of 'a.
-> +        unsafe { &*ptr.cast() }
-> +    }
-> +
-> +    unsafe fn borrow_mut<'a>(ptr: *const core::ffi::c_void) -> &'a mut T {
-> +        // SAFETY: The safety requirements of this method ensure that the pointer is valid and that
-> +        // nothing else will access the value for the duration of 'a.
-> +        unsafe { &mut *ptr.cast_mut().cast() }
-> +    }
->  }
+> -	vgaarb_info(dev, "changed VGA decodes: olddecodes=%s,decodes=%s:owns=%s\n",
+> -		vga_iostate_to_str(old_decodes),
+> -		vga_iostate_to_str(vgadev->decodes),
+> -		vga_iostate_to_str(vgadev->owns));
+> +	vgaarb_info(dev,
+> +		    "VGA decodes changed: olddecodes=%s,decodes=%s:owns=%s\n",
+> +		    vga_iostate_to_str(old_decodes),
+> +		    vga_iostate_to_str(vgadev->decodes),
+> +		    vga_iostate_to_str(vgadev->owns));
 >  
->  impl ForeignOwnable for () {
->      type Borrowed<'a> = ();
-> +    type BorrowedMut<'a> = ();
->  
->      fn into_foreign(self) -> *const core::ffi::c_void {
->          core::ptr::NonNull::dangling().as_ptr()
->      }
->  
-> -    unsafe fn borrow<'a>(_: *const core::ffi::c_void) -> Self::Borrowed<'a> {}
-> -
->      unsafe fn from_foreign(_: *const core::ffi::c_void) -> Self {}
-> +
-> +    unsafe fn borrow<'a>(_: *const core::ffi::c_void) -> Self::Borrowed<'a> {}
-> +    unsafe fn borrow_mut<'a>(_: *const core::ffi::c_void) -> Self::BorrowedMut<'a> {}
->  }
->  
->  /// Runs a cleanup function/closure when dropped.
->
-> diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
-> index 172f563976a9..f152a562c9c3 100644
-> --- a/rust/kernel/sync/arc.rs
-> +++ b/rust/kernel/sync/arc.rs
-> @@ -232,26 +232,35 @@ pub fn ptr_eq(this: &Self, other: &Self) -> bool {
->  
->  impl<T: 'static> ForeignOwnable for Arc<T> {
->      type Borrowed<'a> = ArcBorrow<'a, T>;
-> +    // Mutable access to the `Arc` does not give any extra abilities over
-> +    // immutable access.
-> +    type BorrowedMut<'a> = ArcBorrow<'a, T>;
->  
->      fn into_foreign(self) -> *const core::ffi::c_void {
->          ManuallyDrop::new(self).ptr.as_ptr() as _
->      }
->  
-> -    unsafe fn borrow<'a>(ptr: *const core::ffi::c_void) -> ArcBorrow<'a, T> {
-> -        // SAFETY: By the safety requirement of this function, we know that `ptr` came from
-> -        // a previous call to `Arc::into_foreign`.
-> -        let inner = NonNull::new(ptr as *mut ArcInner<T>).unwrap();
-> -
-> -        // SAFETY: The safety requirements of `from_foreign` ensure that the object remains alive
-> -        // for the lifetime of the returned value.
-> -        unsafe { ArcBorrow::new(inner) }
-> -    }
-> -
->      unsafe fn from_foreign(ptr: *const core::ffi::c_void) -> Self {
->          // SAFETY: By the safety requirement of this function, we know that `ptr` came from
->          // a previous call to `Arc::into_foreign`, which guarantees that `ptr` is valid and
->          // holds a reference count increment that is transferrable to us.
-> -        unsafe { Self::from_inner(NonNull::new(ptr as _).unwrap()) }
-> +        unsafe { Self::from_inner(NonNull::new_unchecked(ptr as _)) }
->      }
-> +
-> +    unsafe fn borrow<'a>(ptr: *const core::ffi::c_void) -> ArcBorrow<'a, T> {
-> +        // SAFETY: By the safety requirement of this function, we know that `ptr` came from
-> +        // a previous call to `Arc::into_foreign`.
-> +        let inner = unsafe { NonNull::new_unchecked(ptr as *mut ArcInner<T>) };
-> +
-> +        // SAFETY: The safety requirements ensure that we will not give up our
-> +        // foreign-owned refcount while the `ArcBorrow` is still live.
-> +        unsafe { ArcBorrow::new(inner) }
-> +    }
-> +
-> +    unsafe fn borrow_mut<'a>(ptr: *const core::ffi::c_void) -> ArcBorrow<'a, T> {
-> +        // SAFETY: The safety requirements for `borrow_mut` are a superset of the safety
-> +        // requirements for `borrow`.
-> +        unsafe { Self::borrow(ptr) }
-> +    }
-
-I am not sure this makes sense. How about splitting the trait in two,
-immutable and mutable and only implementing the immutable one or Arc?
-
-Best regards,
-Andreas
-
+> -	/* if we removed locked decodes, lock count goes to zero, and release */
+> +	/* If we removed locked decodes, lock count goes to zero, and release */
+>  	if (decodes_unlocked) {
+>  		if (decodes_unlocked & VGA_RSRC_LEGACY_IO)
+>  			vgadev->io_lock_cnt = 0;
+> 
