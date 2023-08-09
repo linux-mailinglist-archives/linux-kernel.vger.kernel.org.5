@@ -2,49 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC07775402
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB51775419
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbjHIHXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 03:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45062 "EHLO
+        id S231800AbjHIH2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 03:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230498AbjHIHXc (ORCPT
+        with ESMTP id S231708AbjHIH2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 03:23:32 -0400
+        Wed, 9 Aug 2023 03:28:00 -0400
 Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6630D172A;
-        Wed,  9 Aug 2023 00:23:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A51FF271C;
+        Wed,  9 Aug 2023 00:27:22 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id D3A978105;
-        Wed,  9 Aug 2023 07:23:31 +0000 (UTC)
-Date:   Wed, 9 Aug 2023 10:23:30 +0300
+        by muru.com (Postfix) with ESMTPS id 1819D8105;
+        Wed,  9 Aug 2023 07:27:22 +0000 (UTC)
+Date:   Wed, 9 Aug 2023 10:27:20 +0300
 From:   Tony Lindgren <tony@atomide.com>
-To:     Kevin Hilman <khilman@kernel.org>
-Cc:     Dhruva Gole <d-gole@ti.com>, Andrew Davis <afd@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>,
-        Praneeth Bajjuri <praneeth@ti.com>,
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Dhruva Gole <d-gole@ti.com>, linux-omap@vger.kernel.org,
         Dave Gerlach <d-gerlach@ti.com>,
-        Vibhore Vardhan <vibhore@ti.com>, Georgi Vlaev <g-vlaev@ti.com>
-Subject: Re: [PATCH V6 4/4] firmware: ti_sci: Introduce system suspend resume
- support
-Message-ID: <20230809072330.GB11676@atomide.com>
-References: <20230803064247.503036-1-d-gole@ti.com>
- <20230803064247.503036-5-d-gole@ti.com>
- <3882f0ac-b74c-6eb2-197c-34ca233cd7a3@ti.com>
- <20230803155541.nwsfwobfkbpefoyw@dhruva>
- <8c330bd9-5f4e-8cd0-ed02-c3a696d7473a@ti.com>
- <20230803160815.yfpkdfssv75d4inf@dhruva>
- <7ho7jifrda.fsf@baylibre.com>
- <20230808115403.dkz6ev5vc6bhcmzh@dhruva>
- <7httt9dq2x.fsf@baylibre.com>
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Keerthy <j-keerthy@ti.com>, Kevin Hilman <khilman@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/3] bus: ti-sysc: Fix build warning for 64-bit build
+Message-ID: <20230809072720.GC11676@atomide.com>
+References: <20230804103859.57458-1-tony@atomide.com>
+ <20230805051753.vpwhg52zttpbbntx@dhruva>
+ <20230805172325.4vjb4lb3vtu3dgfe@commodity>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7httt9dq2x.fsf@baylibre.com>
+In-Reply-To: <20230805172325.4vjb4lb3vtu3dgfe@commodity>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -54,16 +45,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Kevin Hilman <khilman@kernel.org> [230809 00:20]:
-> To me, it sounds like you might want to use ->resume_early() or maybe
-> ->resume_noirq() in the pinctrl driver for this so that IO isolation can
-> be disabled sooner?
+* Nishanth Menon <nm@ti.com> [230805 17:23]:
+> On 10:47-20230805, Dhruva Gole wrote:
+> > On Aug 04, 2023 at 13:38:57 +0300, Tony Lindgren wrote:
+> > >  	match = soc_device_match(sysc_soc_match);
+> > >  	if (match && match->data)
+> > > -		sysc_soc->soc = (int)match->data;
+> > > +		sysc_soc->soc = (unsigned long)match->data;
+> > 
+> > Reviewed-by: Dhruva Gole <d-gole@ti.com>
+> 
+> Dumb q: is'nt this an enum? Is it better to cast it as (enum
+> sysc_soc)match->data ?
 
-For calls that need to happen just before the SoC is disabled or first
-thing on resume path, cpu_cluster_pm_enter() and cpu_cluster_pm_exit()
-notifiers work nice and allow distributing the code across the related
-SoC specific code and device drivers. See for example the usage in
-drivers/irqchip/irq-gic.c for CPU_CLUSTER_PM_ENTER.
+Good idea, will update.
 
 Regards,
 
