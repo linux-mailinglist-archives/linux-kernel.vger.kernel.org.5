@@ -2,102 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27917775255
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 07:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A814D77525B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 07:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbjHIFpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 01:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49260 "EHLO
+        id S229585AbjHIFrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 01:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230355AbjHIFpU (ORCPT
+        with ESMTP id S229468AbjHIFrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 01:45:20 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD57A1FC3;
-        Tue,  8 Aug 2023 22:45:11 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3795j5EH022413;
-        Wed, 9 Aug 2023 00:45:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691559905;
-        bh=zEcuKzS0gCAty82D73zHMICONifLrgF5S7N1zElgfXc=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=oR8Tf+jkfquSs0pm02VJK2TZzb2lyZGwzeF+LEzlhX1maqCW9QfoDwsep2zf47EFO
-         gW+1QhfKi+lDdcPAAkX+eelJYpkiWZVtTlwWOppr9Wz4GXTkvDIR2JIF4fIc8zhOyw
-         GzcmZZpKMspp3lMYa1fWGOk5DKB/PRGywvUIKc48=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3795j4eN088292
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Aug 2023 00:45:05 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
- Aug 2023 00:45:04 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 9 Aug 2023 00:45:04 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3795j3Pt063775;
-        Wed, 9 Aug 2023 00:45:03 -0500
-Date:   Wed, 9 Aug 2023 11:15:02 +0530
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Florian Fainelli <florian.fainelli@broadcom.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
+        Wed, 9 Aug 2023 01:47:13 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4EC1BF0
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 22:47:13 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bba04b9df3so56059795ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 22:47:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1691560033; x=1692164833;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YCeIptmtpKy5q98QjD4SUtd19PTpMTjSWPCM/pRkRaI=;
+        b=haeX18sUQdxxqI7SQwmn8SHKct03Vake+IzrKwZQdTEOTgqFjhH0yzb6gVvecUp++M
+         LMJV1cVhnL5cBk05TA0BuUeVgPeqBBT5xVYYg8Fmt6oC4KEFpsb20dfFQp1sUhdBnv+U
+         Agka3B9ydKgYsr/ueR6T9DXKuK4mFb7fnEgx45MrDCaANoCelYzVXJwVJd52Zm6ffFeo
+         vlwzfD2WG7skOwNLlyX+ou/s/8GC3sc0bR5XFkYBOl3Ac4CqFz3U8O83n9htUtpGlbxX
+         5MHrYLjZAe/fPUGNNnFPHYXY6gLf92Ljy74BtQmvCjyQU740MtA8mhZgL163A/u/3c14
+         57jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691560033; x=1692164833;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YCeIptmtpKy5q98QjD4SUtd19PTpMTjSWPCM/pRkRaI=;
+        b=PeP+RERTwuUOfFE7rt+FQ5USZCuHdbzMP4wrm77jG7d29o0YebHHx2BdQJxthWgSjX
+         FY/orVW+bqf/nc7plaTm8x2NDVUjI22ONNe7ja4Qk0QFxuFvEBIEepWqqJTcjc3C0XDQ
+         2B9aO5crZ2XrcIK/oK7pJHv5Dvyrt9PxKCPzA3e4s5YrNICgrtlp3UwAUDfb1BDlGG9D
+         iGbBwfTYU8Hyi70n7+wHBPAaghxyX17qyOqjjNQSmx6xtD31B83tOsrwRP/jSMJGuY1q
+         gdhs701SWoC+JElDBoPgJC1tpj0rIM9JFQxbIAugxiG4MTfJ2G0i91CaA/zUeRHnJWcS
+         SFmQ==
+X-Gm-Message-State: AOJu0YyKGv64zIJg2oWnWby91ns3fYqaBPu9BKB6wnObhBQrg7WvCLXY
+        vdeW6OSOfjzI+UiI3/AVuswESA==
+X-Google-Smtp-Source: AGHT+IFrTYPQ+5b8uQBjS2fcGKsPAzUjAy1/yAOVWR8AwSQ1NP6723J3EcH5VFWoXC6GPw4jT3aUkA==
+X-Received: by 2002:a17:903:230d:b0:1bb:a85c:23cc with SMTP id d13-20020a170903230d00b001bba85c23ccmr2339537plh.15.1691560032814;
+        Tue, 08 Aug 2023 22:47:12 -0700 (PDT)
+Received: from sunil-laptop ([106.51.83.242])
+        by smtp.gmail.com with ESMTPSA id r14-20020a170902be0e00b001bb381b8260sm10098918pls.100.2023.08.08.22.47.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 22:47:12 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 11:17:02 +0530
+From:   Sunil V L <sunilvl@ventanamicro.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Atish Kumar Patra <atishp@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Will Deacon <will@kernel.org>, Haibo Xu <haibo1.xu@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 0/2 v2] pinctrl: bcm: Use dev_err_probe()
-Message-ID: <20230809054502.c5ujbw67o3qyq7oc@dhruva>
-References: <20230808180733.2081353-1-florian.fainelli@broadcom.com>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Anup Patel <anup@brainfault.org>, Len Brown <lenb@kernel.org>
+Subject: Re: [RFC PATCH v1 20/21] RISC-V: ACPI: Create PLIC platform device
+Message-ID: <ZNMoVgO7mEDV07OJ@sunil-laptop>
+References: <20230803175916.3174453-1-sunilvl@ventanamicro.com>
+ <20230803175916.3174453-21-sunilvl@ventanamicro.com>
+ <20230808-chalice-easing-1369c7386082@spud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230808180733.2081353-1-florian.fainelli@broadcom.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230808-chalice-easing-1369c7386082@spud>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 08, 2023 at 11:07:31 -0700, Florian Fainelli wrote:
-> These two drivers were giving "unable to add GPIO chip data" which
-> was slightly concerning but did not have any functional impact.
-> 
-> Changes in v2:
-> 
-> - return from dev_err_probe() directly (Andy)
+Hi Conor,
 
-For the series,
-
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-
+On Tue, Aug 08, 2023 at 09:41:45AM +0100, Conor Dooley wrote:
+> On Thu, Aug 03, 2023 at 11:29:15PM +0530, Sunil V L wrote:
+> > Since PLIC needs to be a platform device
 > 
-> Florian Fainelli (2):
->   pinctrl: iproc-gpio: Silence probe deferral messages
->   pinctrl: nsp-gpio:  Silence probe deferral messages
+> For the unwashed, why does the PLCI need to be a platform device?
+> (And while you're at that, please try to make use of the extra ~20
+> characters per line that you can use here.)
+>
+Sure, let me add more details and use extra characters.
+ 
+> > probe the
+> > MADT and create platform devices for each PLIC in the
+> > system. Use software node framework for the fwnode
+> > which allows to create properties and hence the
+> > actual irqchip driver doesn't need to do anything
+> > different for ACPI vs DT.
+> > 
+> > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> > Co-developed-by: Haibo Xu <haibo1.xu@intel.com>
+> > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
 > 
->  drivers/pinctrl/bcm/pinctrl-iproc-gpio.c | 6 ++----
->  drivers/pinctrl/bcm/pinctrl-nsp-gpio.c   | 6 ++----
->  2 files changed, 4 insertions(+), 8 deletions(-)
+> > +static struct fwnode_handle *acpi_plic_create_fwnode(struct acpi_madt_plic *plic)
+> > +{
+> > +	struct fwnode_handle *fwnode, *parent_fwnode;
+> > +	struct riscv_irqchip_list *plic_element;
+> > +	struct software_node_ref_args *refs;
+> > +	struct property_entry props[8] = {};
+> > +	int nr_contexts;
+> > +
+> > +	props[0] = PROPERTY_ENTRY_U32("riscv,gsi-base", plic->gsi_base);
+> > +	props[1] = PROPERTY_ENTRY_U32("riscv,ndev", plic->num_irqs);
+> > +	props[2] = PROPERTY_ENTRY_U32("riscv,max_prio", plic->max_prio);
 > 
-> -- 
-> 2.34.1
+> My OCD wants to know why this gets an _ but the others have a -.
 > 
+It should be -. But with Marc's recommendation, this is no longer
+required.
 
-
-
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+Thanks!
+Sunil
