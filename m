@@ -2,102 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 041E7775085
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 03:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE407750C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 04:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbjHIBtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 21:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
+        id S230022AbjHICNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 22:13:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbjHIBtF (ORCPT
+        with ESMTP id S229780AbjHICNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 21:49:05 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2409FF3
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 18:49:05 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RLCdl1Yycz4f3pqr
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 09:48:59 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDnCW6M8NJk7QYSAQ--.39503S2;
-        Wed, 09 Aug 2023 09:49:01 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
-        mgorman@techsingularity.net, david@redhat.com, willy@infradead.org
-Cc:     shikemeng@huaweicloud.com
-Subject: [PATCH] mm/compaction: remove unused parameter pgdata of fragmentation_score_wmark
-Date:   Wed,  9 Aug 2023 17:49:10 +0800
-Message-Id: <20230809094910.3092446-1-shikemeng@huaweicloud.com>
+        Tue, 8 Aug 2023 22:13:37 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318151BCD;
+        Tue,  8 Aug 2023 19:13:36 -0700 (PDT)
+Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RLD8k2zPxzrSXp;
+        Wed,  9 Aug 2023 10:12:22 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 9 Aug 2023 10:13:33 +0800
+From:   Jijie Shao <shaojijie@huawei.com>
+To:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>
+CC:     <shenjian15@huawei.com>, <wangjie125@huawei.com>,
+        <liuyonglong@huawei.com>, <chenhao418@huawei.com>,
+        <shaojijie@huawei.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: [PATCH net] net: hns3: fix strscpy causing content truncation issue
+Date:   Wed, 9 Aug 2023 10:09:02 +0800
+Message-ID: <20230809020902.1941471-1-shaojijie@huawei.com>
 X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDnCW6M8NJk7QYSAQ--.39503S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tryfGw18Zw43WFW7urWxWFg_yoW8Gryrpw
-        10qFWFq3WYq3W5GryFvw4IgayrAF4Iqay7Xw4qqrZ7JF15KanYvFy7try293y8X34jgryx
-        ta9Fga45Jay7AFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
-        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
-        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
-        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
-        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
-        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
-        YI8I648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
-        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7sRi
-        Pl1DUUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.2]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Parameter pgdat is not used in fragmentation_score_wmark. Just remove it.
+From: Hao Chen <chenhao418@huawei.com>
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+hns3_dbg_fill_content()/hclge_dbg_fill_content() is aim to integrate some
+items to a string for content, and we add '\n' and '\0' in the last
+two bytes of content.
+
+strscpy() will add '\0' in the last byte of destination buffer(one of
+items), it result in finishing content print ahead of schedule and some
+dump content truncation.
+
+One Error log shows as below:
+cat mac_list/uc
+UC MAC_LIST:
+
+Expected:
+UC MAC_LIST:
+FUNC_ID  MAC_ADDR            STATE
+pf       00:2b:19:05:03:00   ACTIVE
+
+The destination buffer is length-bounded and not required to be
+NUL-terminated, so just change strscpy() to memcpy() to fix it.
+
+Fixes: 1cf3d5567f27 ("net: hns3: fix strncpy() not using dest-buf length as length issue")
+Signed-off-by: Hao Chen <chenhao418@huawei.com>
+Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 ---
- mm/compaction.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c         | 4 ++--
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index ea61922a1619..38c8d216c6a3 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -2142,7 +2142,7 @@ static unsigned int fragmentation_score_node(pg_data_t *pgdat)
- 	return score;
- }
- 
--static unsigned int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
-+static unsigned int fragmentation_score_wmark(bool low)
- {
- 	unsigned int wmark_low;
- 
-@@ -2162,7 +2162,7 @@ static bool should_proactive_compact_node(pg_data_t *pgdat)
- 	if (!sysctl_compaction_proactiveness || kswapd_is_running(pgdat))
- 		return false;
- 
--	wmark_high = fragmentation_score_wmark(pgdat, false);
-+	wmark_high = fragmentation_score_wmark(false);
- 	return fragmentation_score_node(pgdat) > wmark_high;
- }
- 
-@@ -2201,7 +2201,7 @@ static enum compact_result __compact_finished(struct compact_control *cc)
- 			return COMPACT_PARTIAL_SKIPPED;
- 
- 		score = fragmentation_score_zone(cc->zone);
--		wmark_low = fragmentation_score_wmark(pgdat, true);
-+		wmark_low = fragmentation_score_wmark(true);
- 
- 		if (score > wmark_low)
- 			ret = COMPACT_CONTINUE;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
+index 52546f625c8b..f276b5ecb431 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
+@@ -464,9 +464,9 @@ static void hns3_dbg_fill_content(char *content, u16 len,
+ 		if (result) {
+ 			if (item_len < strlen(result[i]))
+ 				break;
+-			strscpy(pos, result[i], strlen(result[i]));
++			memcpy(pos, result[i], strlen(result[i]));
+ 		} else {
+-			strscpy(pos, items[i].name, strlen(items[i].name));
++			memcpy(pos, items[i].name, strlen(items[i].name));
+ 		}
+ 		pos += item_len;
+ 		len -= item_len;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+index 409db2e70965..0fb2eaee3e8a 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+@@ -111,9 +111,9 @@ static void hclge_dbg_fill_content(char *content, u16 len,
+ 		if (result) {
+ 			if (item_len < strlen(result[i]))
+ 				break;
+-			strscpy(pos, result[i], strlen(result[i]));
++			memcpy(pos, result[i], strlen(result[i]));
+ 		} else {
+-			strscpy(pos, items[i].name, strlen(items[i].name));
++			memcpy(pos, items[i].name, strlen(items[i].name));
+ 		}
+ 		pos += item_len;
+ 		len -= item_len;
 -- 
 2.30.0
 
