@@ -2,244 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBDB776944
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC090776951
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbjHITyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33044 "EHLO
+        id S231314AbjHIT5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231314AbjHITx5 (ORCPT
+        with ESMTP id S231961AbjHIT5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:53:57 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9281121;
-        Wed,  9 Aug 2023 12:53:55 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 379JgVhm017716;
-        Wed, 9 Aug 2023 19:53:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=NVTquuvX9dsflLTtBwvvwzl0i+D4hoEfcRmwtYlvu/4=;
- b=R3m3JvUAYDR5YwMGD3yy6tNv/md0nsdn5LRIIg5PT6LUWPMt8AW/g1gaOWQiCejoPSSi
- hfj8fhGST8Axt6fSCCxv5t242iip6rJeUIOE08yPd5kNKJ9Geu263pr5T2V7YmS9T2+P
- BILo3QyyBP5KcVSosyNys5DPnFKVgXqHKUzbeCRTSm/R2VptW6arEZiOgacwiMjahT0W
- GujeqPNS0vkbcKUqx6+3wLqK9NJDO4K+lsiSCCBvxcEewA0vPG5bDY+Oe9mrRQ747YQX
- PfuGbdiu26vNIg4xH8o0EeHujQI/VSTcnaJtI3qwlOhL++3VcCmvLQAwQcQgpvJNlMIG JA== 
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3scgvagmps-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 19:53:48 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 379I8lMY015354;
-        Wed, 9 Aug 2023 19:53:47 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sb3f34ucd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 19:53:47 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 379JriiD16777886
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Aug 2023 19:53:44 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9E23A2004B;
-        Wed,  9 Aug 2023 19:53:44 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 89B5120040;
-        Wed,  9 Aug 2023 19:53:42 +0000 (GMT)
-Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.61.3.84])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Aug 2023 19:53:42 +0000 (GMT)
-From:   Nayna Jain <nayna@linux.ibm.com>
-To:     linux-integrity@vger.kernel.org
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        Paul Moore <paul@paul-moore.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>
-Subject: [PATCH v2 6/6] integrity: PowerVM support for loading third party code signing keys
-Date:   Wed,  9 Aug 2023 15:53:15 -0400
-Message-Id: <20230809195315.1085656-7-nayna@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20230809195315.1085656-1-nayna@linux.ibm.com>
-References: <20230809195315.1085656-1-nayna@linux.ibm.com>
+        Wed, 9 Aug 2023 15:57:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A27AE45
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 12:57:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691611023;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lPHMyNLDaR02OzBYjtsZg32Ipz1ZGWqu3H9EpNDtpVY=;
+        b=AYaCDGENVhamJK6THYn3HFObFEzfRBtqBSfOcqgqe6oocy67kgiS3yB/lQ+dh3FjTeq3EV
+        oqdBXOKguPwr78zzFKffLqGIJ5Fqbyk454H79sjHZjairPdwbc8kUrunq7pXkC16k2ZsFK
+        oNLZGH3QK4St5ZwQcInlZRMcNgHZKXY=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-696-OufXsl7KOnKvPeJ5U-PtcQ-1; Wed, 09 Aug 2023 15:57:01 -0400
+X-MC-Unique: OufXsl7KOnKvPeJ5U-PtcQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-993831c639aso15229266b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 12:57:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691611020; x=1692215820;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lPHMyNLDaR02OzBYjtsZg32Ipz1ZGWqu3H9EpNDtpVY=;
+        b=cMrfKKaT+CRNh/GJqjns68mrt1hdimVKvhkGvU5LPi2cDT4DUG+Yl7fq/kp2f9pGKp
+         NepFuhPjX8HDOYqmUhUjfTDOYJho5UiNw4J/ESf+dh9AVqpbE8j5PAwsOp3fqPDddEJR
+         nEmUg6KUDpaTu8G2FWvtmOuWZ64LfStiQ/9kRa5aRxg3Bey7kvi49+IsYV+ovpxz1yQn
+         9jvfSZPgQx3rU3m5sU+ZOtvHpliJUnsy9MjLqKnB92xwf1OH4ZOm5cpvz4Vxk/3IsKeg
+         8/lnfwRsfbu0NLUgbgjfWvIbz5DaySo5tI6BrTEIl7Rq3zZUShiqP2hrNxEbBrJ6/Ild
+         5uKA==
+X-Gm-Message-State: AOJu0YyRIX4NNBEKvwpO/sdG8L6ToEPBbzirg27KmYPKrZOP6/A2k2i/
+        pyy67BqIHUjsIQMMLjg7gE44sG5tJg9GFaV+sonbo2Vo0NfMiWJzmVWKxePzkhpmJE5Psixyds/
+        arU/e+xy+SbQ132tYf+ABIW+h
+X-Received: by 2002:aa7:c687:0:b0:522:4cd7:efb0 with SMTP id n7-20020aa7c687000000b005224cd7efb0mr187058edq.17.1691611020248;
+        Wed, 09 Aug 2023 12:57:00 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEGaR9QteGG4w7+R1wWFEtO29lCW4h18/v7EOASdFBQBSeGo9W7bZNifqMJ8jVFEdUuyohnvA==
+X-Received: by 2002:aa7:c687:0:b0:522:4cd7:efb0 with SMTP id n7-20020aa7c687000000b005224cd7efb0mr187048edq.17.1691611019960;
+        Wed, 09 Aug 2023 12:56:59 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id z22-20020a170906715600b0098cf565d98asm8329947ejj.22.2023.08.09.12.56.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 12:56:59 -0700 (PDT)
+Message-ID: <d10e5e17-920d-de61-b6a5-bfd8acb6fa04@redhat.com>
+Date:   Wed, 9 Aug 2023 21:56:58 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: eOTOhSqbVFQUPJe-VBabWmBWWQz5HpZO
-X-Proofpoint-ORIG-GUID: eOTOhSqbVFQUPJe-VBabWmBWWQz5HpZO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-09_17,2023-08-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- mlxscore=0 bulkscore=0 phishscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 suspectscore=0 impostorscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308090171
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] platform/x86: dell-sysman: Fix reference leak
+Content-Language: en-US, nl
+To:     Armin Wolf <W_Armin@gmx.de>, prasanth.ksr@dell.com,
+        markgross@kernel.org
+Cc:     Dell.Client.Kernel@dell.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230805053610.7106-1-W_Armin@gmx.de>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230805053610.7106-1-W_Armin@gmx.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On secure boot enabled PowerVM LPAR, third party code signing keys are
-needed during early boot to verify signed third party modules. These
-third party keys are stored in moduledb object in the Platform
-KeyStore(PKS).
+Hi,
 
-Load third party code signing keys onto .secondary_trusted_keys keyring.
+On 8/5/23 07:36, Armin Wolf wrote:
+> If a duplicate attribute is found using kset_find_obj(),
+> a reference to that attribute is returned. This means
+> that we need to dispose it accordingly. Use kobject_put()
+> to dispose the duplicate attribute in such a case.
+> 
+> Compile-tested only.
+> 
+> Fixes: e8a60aa7404b ("platform/x86: Introduce support for Systems Management Driver over WMI for Dell Systems")
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 
-Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
----
- certs/system_keyring.c                        | 23 +++++++++++++++++++
- include/keys/system_keyring.h                 |  7 ++++++
- security/integrity/integrity.h                |  1 +
- .../platform_certs/keyring_handler.c          |  8 +++++++
- .../platform_certs/keyring_handler.h          |  5 ++++
- .../integrity/platform_certs/load_powerpc.c   | 18 ++++++++++++++-
- 6 files changed, 61 insertions(+), 1 deletion(-)
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-diff --git a/certs/system_keyring.c b/certs/system_keyring.c
-index b348e0898d34..3435d4936fb2 100644
---- a/certs/system_keyring.c
-+++ b/certs/system_keyring.c
-@@ -396,3 +396,26 @@ void __init set_platform_trusted_keys(struct key *keyring)
- 	platform_trusted_keys = keyring;
- }
- #endif
-+
-+void __init add_to_secondary_keyring(const char *source, const void *data,
-+				     size_t len)
-+{
-+	key_ref_t key;
-+	key_perm_t perm;
-+	int rc = 0;
-+
-+	perm = (KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_VIEW;
-+
-+	key = key_create_or_update(make_key_ref(secondary_trusted_keys, 1),
-+				   "asymmetric",
-+				   NULL, data, len, perm,
-+				   KEY_ALLOC_NOT_IN_QUOTA);
-+	if (IS_ERR(key)) {
-+		rc = PTR_ERR(key);
-+		pr_err("Problem loading X.509 certificate %d\n", rc);
-+	} else {
-+		pr_notice("Loaded X.509 cert '%s'\n",
-+			  key_ref_to_ptr(key)->description);
-+		key_ref_put(key);
-+	}
-+}
-diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
-index 7e2583208820..4188f75d1bac 100644
---- a/include/keys/system_keyring.h
-+++ b/include/keys/system_keyring.h
-@@ -50,9 +50,16 @@ int restrict_link_by_digsig_builtin_and_secondary(struct key *keyring,
- 						  const struct key_type *type,
- 						  const union key_payload *payload,
- 						  struct key *restriction_key);
-+void __init add_to_secondary_keyring(const char *source, const void *data,
-+				     size_t len);
-+
- #else
- #define restrict_link_by_builtin_and_secondary_trusted restrict_link_by_builtin_trusted
- #define restrict_link_by_digsig_builtin_and_secondary restrict_link_by_digsig_builtin
-+void __init add_to_secondary_keyring(const char *source, const void *data,
-+				     size_t len)
-+{
-+}
- #endif
- 
- #ifdef CONFIG_INTEGRITY_MACHINE_KEYRING
-diff --git a/security/integrity/integrity.h b/security/integrity/integrity.h
-index d7553c93f5c0..efaa2eb789ad 100644
---- a/security/integrity/integrity.h
-+++ b/security/integrity/integrity.h
-@@ -228,6 +228,7 @@ static inline int __init integrity_load_cert(const unsigned int id,
- {
- 	return 0;
- }
-+
- #endif /* CONFIG_INTEGRITY_SIGNATURE */
- 
- #ifdef CONFIG_INTEGRITY_ASYMMETRIC_KEYS
-diff --git a/security/integrity/platform_certs/keyring_handler.c b/security/integrity/platform_certs/keyring_handler.c
-index 586027b9a3f5..13ea17207902 100644
---- a/security/integrity/platform_certs/keyring_handler.c
-+++ b/security/integrity/platform_certs/keyring_handler.c
-@@ -78,6 +78,14 @@ __init efi_element_handler_t get_handler_for_ca_keys(const efi_guid_t *sig_type)
- 	return NULL;
- }
- 
-+__init efi_element_handler_t get_handler_for_code_signing_keys(const efi_guid_t *sig_type)
-+{
-+	if (efi_guidcmp(*sig_type, efi_cert_x509_guid) == 0)
-+		return add_to_secondary_keyring;
-+
-+	return NULL;
-+}
-+
- /*
-  * Return the appropriate handler for particular signature list types found in
-  * the UEFI dbx and MokListXRT tables.
-diff --git a/security/integrity/platform_certs/keyring_handler.h b/security/integrity/platform_certs/keyring_handler.h
-index 6f15bb4cc8dc..f92895cc50f6 100644
---- a/security/integrity/platform_certs/keyring_handler.h
-+++ b/security/integrity/platform_certs/keyring_handler.h
-@@ -34,6 +34,11 @@ efi_element_handler_t get_handler_for_mok(const efi_guid_t *sig_type);
-  */
- efi_element_handler_t get_handler_for_ca_keys(const efi_guid_t *sig_type);
- 
-+/*
-+ * Return the handler for particular signature list types for code signing keys.
-+ */
-+efi_element_handler_t get_handler_for_code_signing_keys(const efi_guid_t *sig_type);
-+
- /*
-  * Return the handler for particular signature list types found in the dbx.
-  */
-diff --git a/security/integrity/platform_certs/load_powerpc.c b/security/integrity/platform_certs/load_powerpc.c
-index 6263ce3b3f1e..32c4e5fbf0fb 100644
---- a/security/integrity/platform_certs/load_powerpc.c
-+++ b/security/integrity/platform_certs/load_powerpc.c
-@@ -59,7 +59,7 @@ static __init void *get_cert_list(u8 *key, unsigned long keylen, u64 *size)
- static int __init load_powerpc_certs(void)
- {
- 	void *db = NULL, *dbx = NULL, *data = NULL;
--	void *trustedca = NULL;
-+	void *trustedca = NULL, *moduledb = NULL;
- 	u64 dsize = 0;
- 	u64 offset = 0;
- 	int rc = 0;
-@@ -137,6 +137,22 @@ static int __init load_powerpc_certs(void)
- 		kfree(data);
- 	}
- 
-+	data = get_cert_list("moduledb", 9,  &dsize);
-+	if (!data) {
-+		pr_info("Couldn't get moduledb list from firmware\n");
-+	} else if (IS_ERR(data)) {
-+		rc = PTR_ERR(data);
-+		pr_err("Error reading moduledb from firmware: %d\n", rc);
-+	} else {
-+		extract_esl(moduledb, data, dsize, offset);
-+
-+		rc = parse_efi_signature_list("powerpc:moduledb", moduledb, dsize,
-+					      get_handler_for_code_signing_keys);
-+		if (rc)
-+			pr_err("Couldn't parse moduledb signatures: %d\n", rc);
-+		kfree(data);
-+	}
-+
- 	return rc;
- }
- late_initcall(load_powerpc_certs);
--- 
-2.31.1
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
+> ---
+>  drivers/platform/x86/dell/dell-wmi-sysman/sysman.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
+> index b68dd11cb892..b929b4f82420 100644
+> --- a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
+> +++ b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
+> @@ -393,6 +393,7 @@ static int init_bios_attributes(int attr_type, const char *guid)
+>  	struct kobject *attr_name_kobj; //individual attribute names
+>  	union acpi_object *obj = NULL;
+>  	union acpi_object *elements;
+> +	struct kobject *duplicate;
+>  	struct kset *tmp_set;
+>  	int min_elements;
+> 
+> @@ -451,9 +452,11 @@ static int init_bios_attributes(int attr_type, const char *guid)
+>  		else
+>  			tmp_set = wmi_priv.main_dir_kset;
+> 
+> -		if (kset_find_obj(tmp_set, elements[ATTR_NAME].string.pointer)) {
+> -			pr_debug("duplicate attribute name found - %s\n",
+> -				elements[ATTR_NAME].string.pointer);
+> +		duplicate = kset_find_obj(tmp_set, elements[ATTR_NAME].string.pointer);
+> +		if (duplicate) {
+> +			pr_debug("Duplicate attribute name found - %s\n",
+> +				 elements[ATTR_NAME].string.pointer);
+> +			kobject_put(duplicate);
+>  			goto nextobj;
+>  		}
+> 
+> --
+> 2.39.2
+> 
 
