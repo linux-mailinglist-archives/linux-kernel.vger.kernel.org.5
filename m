@@ -2,171 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E17776436
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C6D77643C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233656AbjHIPlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45760 "EHLO
+        id S233660AbjHIPmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232964AbjHIPlX (ORCPT
+        with ESMTP id S233605AbjHIPmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:41:23 -0400
-Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D1C9211C;
-        Wed,  9 Aug 2023 08:41:22 -0700 (PDT)
+        Wed, 9 Aug 2023 11:42:35 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA37E7F;
+        Wed,  9 Aug 2023 08:42:35 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe167d4a18so65595665e9.0;
+        Wed, 09 Aug 2023 08:42:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1691595682; x=1723131682;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=PXQIZ+fPIH3bc8gxDN+g8b0rmUv7zu4isFxQBbk0R64=;
-  b=hkVOwlaKEEbp4TzWr9POvR/BIfcNwXKxEIiCTwzFe9xDBhJz917GaiG1
-   4D7EAnf8M2iXkrHewCgzfyD1JZ0ROtyLUygbB3INUH3HonfP8s0M9r/Kl
-   cLe/PM/lnCKodvwZ+ILTuZ/b12p9/BNOpbY4QHLCDm+r32ohJpWglh0tN
-   Q=;
-X-IronPort-AV: E=Sophos;i="6.01,159,1684800000"; 
-   d="scan'208";a="147543119"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 15:41:20 +0000
-Received: from EX19MTAUWB002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com (Postfix) with ESMTPS id B516146BA6;
-        Wed,  9 Aug 2023 15:41:17 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 9 Aug 2023 15:41:16 +0000
-Received: from 88665a182662.ant.amazon.com (10.106.100.32) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 9 Aug 2023 15:41:13 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.com>
-To:     <horms@kernel.org>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <kuniyu@amazon.com>, <linux-kernel@vger.kernel.org>,
-        <lkp@intel.com>, <llvm@lists.linux.dev>, <nathan@kernel.org>,
-        <ndesaulniers@google.com>, <netdev@vger.kernel.org>,
-        <pabeni@redhat.com>, <trix@redhat.com>
-Subject: Re: [PATCH] net/llc/llc_conn.c: fix 4 instances of -Wmissing-variable-declarations
-Date:   Wed, 9 Aug 2023 08:41:04 -0700
-Message-ID: <20230809154104.64963-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <ZNONx8N1/NFqmP6b@vergenet.net>
-References: <ZNONx8N1/NFqmP6b@vergenet.net>
+        d=gmail.com; s=20221208; t=1691595753; x=1692200553;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OyZNEgArShADQF9PvMzNpSn4eyGg1gUeWUuFAHYPIIc=;
+        b=U2G50LDm2r3hBiOOTBh+mEYkReDXT9VmOUo8QvYZDTsYxdt3A3HrUzdH4u9yYaD2to
+         2Eyl+/A13HoPXcDYgC9XXf7J4f0w4Iu5wGyaf/He4O/PSu1ZBkCSX9eBx6xvy9l3UgN8
+         wIvfJZQJ7v7JKtejHBgBiWz7LemS+McjSGmhQPbauobiBtJcOr9jHu0gupzsZk7zq2hK
+         kFko1iaJOXGd3Fg+lGcEBHanlniEx9MQpSq7i3ri4gFFNDmrZtLfTdjc7mEn/aTX0pL5
+         cHGzCu0aBZqovPGa0L+l3xJU7RohXb6fICDiVKUxyaOBGgk/EQwRGOWaHenZBqk5tjXU
+         hSow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691595753; x=1692200553;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OyZNEgArShADQF9PvMzNpSn4eyGg1gUeWUuFAHYPIIc=;
+        b=bWDfX3fjGhrmX0L2TRqA709Cv/YCJk4H4MOw3P44E+tlW3oCz52IxtsKQAxxyPe7WA
+         Dg/qjd+jc7aPP3XYTOGWTr/PHkvSTg/jtOzrseDRhVTIPA7xumTdxEeK5V8gTKd8syWf
+         cOP5Rz8U0rZiFfayM+rStRYohsYTvj65XTHrbbaz/EzwP9AyWwqtdAFfpGcmGidytd1O
+         GbUMu3/wIGklLK1WgKQNsx84rh5ss9vimHIxc2aaoBEWPOrNbWlWf6DYJVKcPLjaJbLx
+         JXERal4fLQ9BgVEz3kMA9aR2xkINNfg/MMflNpNc5B5VrLdAsrY+M1EC3qKuPn6UUnDX
+         kq6Q==
+X-Gm-Message-State: AOJu0Yze3ICmQhiggfWOjmJv9WLcvXLvgwuQ90T+dDEfLiaRsyxXNAtF
+        nzBmy0vpsnrtF1xJ4Jg70JbTXrMxChRxsw==
+X-Google-Smtp-Source: AGHT+IE6f00sGS03vtl8WnoLUu/HwU4lXGGrrbsBQ9ZtumkQc2d4KbMY8YJWW9U6q2xkdTVxwRbYAQ==
+X-Received: by 2002:a1c:790d:0:b0:3fe:4e4e:beeb with SMTP id l13-20020a1c790d000000b003fe4e4ebeebmr2627300wme.38.1691595753349;
+        Wed, 09 Aug 2023 08:42:33 -0700 (PDT)
+Received: from localhost.localdomain ([92.85.190.61])
+        by smtp.gmail.com with ESMTPSA id f21-20020a1c6a15000000b003fc02218d6csm2296527wmc.25.2023.08.09.08.42.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 08:42:32 -0700 (PDT)
+From:   Andrei Coardos <aboutphysycs@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-tegra@vger.kernel.org, ac100@lists.launchpad.net
+Cc:     gregkh@linuxfoundation.org, marvin24@gmx.de, alex@shruggie.ro,
+        Andrei Coardos <aboutphysycs@gmail.com>
+Subject: [PATCH] staging: nvec: paz00: remove unneeded call to platform_set_drvdata()
+Date:   Wed,  9 Aug 2023 18:42:11 +0300
+Message-Id: <20230809154211.15741-1-aboutphysycs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.106.100.32]
-X-ClientProxiedBy: EX19D039UWA002.ant.amazon.com (10.13.139.32) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Horman <horms@kernel.org>
-Date: Wed, 9 Aug 2023 14:59:51 +0200
-> + Kuniyuki Iwashima
+This function call was found to be unnecessary as there is no equivalent
+platform_get_drvdata() call to access the private data of the driver. Also,
+the private data is defined in this driver, so there is no risk of it being
+accessed outside of this driver file.
 
-Thanks Simon.
+Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+---
+ drivers/staging/nvec/nvec_paz00.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-> 
-> On Tue, Aug 08, 2023 at 09:43:09AM -0700, Nick Desaulniers wrote:
-> > I'm looking to enable -Wmissing-variable-declarations behind W=1. 0day
-> > bot spotted the following instances:
-> > 
-> >   net/llc/llc_conn.c:44:5: warning: no previous extern declaration for
-> >   non-static variable 'sysctl_llc2_ack_timeout'
-> >   [-Wmissing-variable-declarations]
-> >   44 | int sysctl_llc2_ack_timeout = LLC2_ACK_TIME * HZ;
-> >      |     ^
-> >   net/llc/llc_conn.c:44:1: note: declare 'static' if the variable is not
-> >   intended to be used outside of this translation unit
-> >   44 | int sysctl_llc2_ack_timeout = LLC2_ACK_TIME * HZ;
-> >      | ^
-> >   net/llc/llc_conn.c:45:5: warning: no previous extern declaration for
-> >   non-static variable 'sysctl_llc2_p_timeout'
-> >   [-Wmissing-variable-declarations]
-> >   45 | int sysctl_llc2_p_timeout = LLC2_P_TIME * HZ;
-> >      |     ^
-> >   net/llc/llc_conn.c:45:1: note: declare 'static' if the variable is not
-> >   intended to be used outside of this translation unit
-> >   45 | int sysctl_llc2_p_timeout = LLC2_P_TIME * HZ;
-> >      | ^
-> >   net/llc/llc_conn.c:46:5: warning: no previous extern declaration for
-> >   non-static variable 'sysctl_llc2_rej_timeout'
-> >   [-Wmissing-variable-declarations]
-> >   46 | int sysctl_llc2_rej_timeout = LLC2_REJ_TIME * HZ;
-> >      |     ^
-> >   net/llc/llc_conn.c:46:1: note: declare 'static' if the variable is not
-> >   intended to be used outside of this translation unit
-> >   46 | int sysctl_llc2_rej_timeout = LLC2_REJ_TIME * HZ;
-> >      | ^
-> >   net/llc/llc_conn.c:47:5: warning: no previous extern declaration for
-> >   non-static variable 'sysctl_llc2_busy_timeout'
-> >   [-Wmissing-variable-declarations]
-> >   47 | int sysctl_llc2_busy_timeout = LLC2_BUSY_TIME * HZ;
-> >      |     ^
-> >   net/llc/llc_conn.c:47:1: note: declare 'static' if the variable is not
-> >   intended to be used outside of this translation unit
-> >   47 | int sysctl_llc2_busy_timeout = LLC2_BUSY_TIME * HZ;
-> >      | ^
-> > 
-> > These symbols are referenced by more than one translation unit, so make
-> > include the correct header for their declarations. Finally, sort the
-> > list of includes to help keep them tidy.
-> > 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/llvm/202308081000.tTL1ElTr-lkp@intel.com/
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> 
-> Reviewed-by: Simon Horman <horms@kernel.org>
+diff --git a/drivers/staging/nvec/nvec_paz00.c b/drivers/staging/nvec/nvec_paz00.c
+index 55d59840fca4..9c01c51f0ab5 100644
+--- a/drivers/staging/nvec/nvec_paz00.c
++++ b/drivers/staging/nvec/nvec_paz00.c
+@@ -53,8 +53,6 @@ static int nvec_paz00_probe(struct platform_device *pdev)
+ 	led->cdev.flags |= LED_CORE_SUSPENDRESUME;
+ 	led->nvec = nvec;
+ 
+-	platform_set_drvdata(pdev, led);
+-
+ 	ret = devm_led_classdev_register(&pdev->dev, &led->cdev);
+ 	if (ret < 0)
+ 		return ret;
+-- 
+2.34.1
 
-Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-
-Thanks!
-
-> 
-> > ---
-> >  net/llc/llc_conn.c | 11 ++++++-----
-> >  1 file changed, 6 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/net/llc/llc_conn.c b/net/llc/llc_conn.c
-> > index d037009ee10f..0a3f5e0bec00 100644
-> > --- a/net/llc/llc_conn.c
-> > +++ b/net/llc/llc_conn.c
-> > @@ -14,14 +14,15 @@
-> >  
-> >  #include <linux/init.h>
-> >  #include <linux/slab.h>
-> > -#include <net/llc_sap.h>
-> > -#include <net/llc_conn.h>
-> > -#include <net/sock.h>
-> > -#include <net/tcp_states.h>
-> > -#include <net/llc_c_ev.h>
-> > +#include <net/llc.h>
-> >  #include <net/llc_c_ac.h>
-> > +#include <net/llc_c_ev.h>
-> >  #include <net/llc_c_st.h>
-> > +#include <net/llc_conn.h>
-> >  #include <net/llc_pdu.h>
-> > +#include <net/llc_sap.h>
-> > +#include <net/sock.h>
-> > +#include <net/tcp_states.h>
-> >  
-> >  #if 0
-> >  #define dprintk(args...) printk(KERN_DEBUG args)
-> > 
-> > ---
-> > base-commit: 14f9643dc90adea074a0ffb7a17d337eafc6a5cc
-> > change-id: 20230808-llc_static-de4dddcc64b4
-> > 
-> > Best regards,
-> > -- 
-> > Nick Desaulniers <ndesaulniers@google.com>
