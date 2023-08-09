@@ -2,134 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F81776972
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEAB877697A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232924AbjHIUFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 16:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
+        id S231287AbjHIUHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 16:07:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbjHIUFC (ORCPT
+        with ESMTP id S230182AbjHIUHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 16:05:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B02310D4;
-        Wed,  9 Aug 2023 13:05:02 -0700 (PDT)
-Date:   Wed, 09 Aug 2023 20:05:00 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691611500;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Wed, 9 Aug 2023 16:07:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D381910C4
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 13:06:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691611578;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jfwImcTI7YaZYZrzmlihZWVOTd+VrMC3wiA0U3w+xDg=;
-        b=g02pWa5rGxq/IhPWRz5L5ginA7VzCbT5kMA6ml4aKruJfyPUO5IVwevFZUM0MiJQy7EKOz
-        0EInhxfs35m4cl1A6E8cHCPUUgnh0xDPEgpoG/P+sP8/JCYG/bIfgHF8LuYj5ovPOtkclB
-        lDHriQcjdf+5Zdno2JVQ3wEcac3C9f+NbwFItBcnYVhJNxswBC2ezKQJPJx0AUP+P5Iovm
-        n4ImEQWufpCbZHnkwUzwwZb+IUKCLqS3iIsfol2Xca2h8tcUyl4j0jvobA+HQORrqjVqjP
-        d/ZbKtwQlXnA4MNGgZf350HKu8qkfdImvKiq3H8sIsPuvLNNNmJgSxO2knn6lw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691611500;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jfwImcTI7YaZYZrzmlihZWVOTd+VrMC3wiA0U3w+xDg=;
-        b=SGWljJYDSoa0ShuDlRHzeOMG35gvbEfXvvegN45Tl1jO/i/7tkYZLaD41/wEnA0zcyewWW
-        idgxnEOyBSdsTqBQ==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] x86/cpu: Fix Crestmont uarch
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230807150405.757666627@infradead.org>
-References: <20230807150405.757666627@infradead.org>
+        bh=kPyCucPVFGj6QF7MZvc8reErfptibCTxehFLBybRkOk=;
+        b=PaPD7k02rWaZwNINCrRKIgiGv0sTObNULSSOK/SYKwUSlla9auFZhuD1KUXnp6sTVWxDZJ
+        gEyC0IM12Twy9llkEBPYh9qACbB8d/dhjfWHOJE1H7A9TS9fcIdoiaKvjPBuPMupbzWnB3
+        Y0S5DC3Wu1NMbVjS2Jz9jQLc0ahRCks=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-677-lksnElIQOTumO9dx9SZTxQ-1; Wed, 09 Aug 2023 16:06:16 -0400
+X-MC-Unique: lksnElIQOTumO9dx9SZTxQ-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-99c0bd2ca23so12985566b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 13:06:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691611575; x=1692216375;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kPyCucPVFGj6QF7MZvc8reErfptibCTxehFLBybRkOk=;
+        b=IVaCysQw2eBrAkVT2I9usVBiMuUZp7AaLVMrtwxy/rP/3XK2QI7iG2OCYAIk+UwvCW
+         CZ59UlmUlHx/cC6fHGkhSlpfx9YuI7FSker4Co8X67Zg3b+NF5LSLfNPGP/wcD4FrnBl
+         X4woHwv66/f2bDFP6Lo6VasuvLjoywIVT2DhEDKhTRyHf7T1A/1ZdK64i7HFjAaG6jfe
+         Dp0jBGiYOsKYZPXfNqSzeWp4WHCN7tnHO2p09D+wwqgF0j7roZdgxdkJk1Sht1Y6VHAI
+         fkE2MbZiZqiV69v3gEIkinWdxkpPS0WXFyHk9hwGWc+W1MSER296EJUtyk/2XakZNGnX
+         Nxzw==
+X-Gm-Message-State: AOJu0Yx22h6FFaKtgzAINw4nZNOL5qvLpFrNc9OJjeA4UEQOu+DDWI3B
+        Heg6m13V7FFSlE/HXyRTEsfTb6JQJ1S/MzCLRcXdtBuijvPH5BJEd6/Tn6lUVUVdgAhc/CWXWBx
+        1gyT5zvkspl6D8+O3Exxaqftf
+X-Received: by 2002:a17:906:209d:b0:992:ef60:ab0d with SMTP id 29-20020a170906209d00b00992ef60ab0dmr89035ejq.69.1691611575711;
+        Wed, 09 Aug 2023 13:06:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE47+r0VzKLVYJAIlh2fZlpopHjQ+mNGORZXqPkiSa9aTPhEt4cWQKO1R2PoZk9n5xeRM91Sw==
+X-Received: by 2002:a17:906:209d:b0:992:ef60:ab0d with SMTP id 29-20020a170906209d00b00992ef60ab0dmr89027ejq.69.1691611575433;
+        Wed, 09 Aug 2023 13:06:15 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id mc23-20020a170906eb5700b0098e78ff1a87sm8315081ejb.120.2023.08.09.13.06.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 13:06:14 -0700 (PDT)
+Message-ID: <a06595ce-2a83-94b2-eb97-962b27025ef8@redhat.com>
+Date:   Wed, 9 Aug 2023 22:06:10 +0200
 MIME-Version: 1.0
-Message-ID: <169161150022.27769.13986653864659019340.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 0/2] fix logical errors for BX-59A
+Content-Language: en-US, nl
+To:     xingtong_wu@163.com, andriy.shevchenko@linux.intel.com
+Cc:     ilpo.jarvinen@linux.intel.com, markgross@kernel.org,
+        xingtong.wu@siemens.com, lee@kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gerd.haeussler.ext@siemens.com, tobias.schaffner@siemens.com,
+        lkp@intel.com
+References: <ZNEUHo0fR280O4mN@smile.fi.intel.com>
+ <20430802173515.2363-1-xingtong_wu@163.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20430802173515.2363-1-xingtong_wu@163.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+Hi,
 
-Commit-ID:     0cfd8fbadd6833d243c9a9d8649ba4a9f4361c93
-Gitweb:        https://git.kernel.org/tip/0cfd8fbadd6833d243c9a9d8649ba4a9f4361c93
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 07 Aug 2023 14:38:08 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 09 Aug 2023 21:51:06 +02:00
+On 8/2/43 19:35, xingtong_wu@163.com wrote:
+> From: "xingtong.wu" <xingtong.wu@siemens.com>
+> 
+> changes since v2:
+>  - Collect tag "Reviewed-by" in changelog
+>  - Delete blank line between tags block "Closes" and "Signed-off-by"
+> 
+> changes since v1:
+>  - Improve the changelog to make things clear
+> 
+> These are rather simple patches fixing logical errors in Siemens
+> IPC drivers.
+> 
+> xingtong.wu (2):
+>   platform/x86/siemens: simatic-ipc: fix logical error for BX-59A
+>   platform/x86/siemens: simatic-ipc-batt: fix logical error for BX-59A
+> 
+>  drivers/platform/x86/siemens/simatic-ipc-batt.c | 3 ++-
+>  drivers/platform/x86/siemens/simatic-ipc.c      | 2 +-
+>  2 files changed, 3 insertions(+), 2 deletions(-)
 
-x86/cpu: Fix Crestmont uarch
 
-Sierra Forest and Grand Ridge are both E-core only using Crestmont
-micro-architecture, They fit the pre-existing naming scheme prefectly
-fine, adhere to it.
+Thank you for your patch-series, I've applied the series to my
+review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20230807150405.757666627@infradead.org
----
- arch/x86/include/asm/intel-family.h                         | 5 ++---
- drivers/edac/i10nm_base.c                                   | 2 +-
- drivers/platform/x86/intel/speed_select_if/isst_if_common.c | 2 +-
- 3 files changed, 4 insertions(+), 5 deletions(-)
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
-index 4041326..49d40ee 100644
---- a/arch/x86/include/asm/intel-family.h
-+++ b/arch/x86/include/asm/intel-family.h
-@@ -155,9 +155,8 @@
- 
- #define INTEL_FAM6_ATOM_GRACEMONT	0xBE /* Alderlake N */
- 
--#define INTEL_FAM6_SIERRAFOREST_X	0xAF
--
--#define INTEL_FAM6_GRANDRIDGE		0xB6
-+#define INTEL_FAM6_ATOM_CRESTMONT_X	0xAF /* Sierra Forest */
-+#define INTEL_FAM6_ATOM_CRESTMONT	0xB6 /* Grand Ridge */
- 
- /* Xeon Phi */
- 
-diff --git a/drivers/edac/i10nm_base.c b/drivers/edac/i10nm_base.c
-index a897b6a..5abf997 100644
---- a/drivers/edac/i10nm_base.c
-+++ b/drivers/edac/i10nm_base.c
-@@ -906,7 +906,7 @@ static const struct x86_cpu_id i10nm_cpuids[] = {
- 	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(SAPPHIRERAPIDS_X,	X86_STEPPINGS(0x0, 0xf), &spr_cfg),
- 	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(EMERALDRAPIDS_X,	X86_STEPPINGS(0x0, 0xf), &spr_cfg),
- 	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(GRANITERAPIDS_X,	X86_STEPPINGS(0x0, 0xf), &gnr_cfg),
--	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(SIERRAFOREST_X,	X86_STEPPINGS(0x0, 0xf), &gnr_cfg),
-+	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(ATOM_CRESTMONT_X,	X86_STEPPINGS(0x0, 0xf), &gnr_cfg),
- 	{}
- };
- MODULE_DEVICE_TABLE(x86cpu, i10nm_cpuids);
-diff --git a/drivers/platform/x86/intel/speed_select_if/isst_if_common.c b/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
-index 1f59ac5..47e5a94 100644
---- a/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
-+++ b/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
-@@ -720,7 +720,7 @@ static struct miscdevice isst_if_char_driver = {
- 
- static const struct x86_cpu_id hpm_cpu_ids[] = {
- 	X86_MATCH_INTEL_FAM6_MODEL(GRANITERAPIDS_X,	NULL),
--	X86_MATCH_INTEL_FAM6_MODEL(SIERRAFOREST_X,	NULL),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_CRESTMONT_X,	NULL),
- 	{}
- };
- 
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
