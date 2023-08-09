@@ -2,195 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4687752EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 08:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4533D7752F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 08:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbjHIGdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 02:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37834 "EHLO
+        id S231137AbjHIGim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 02:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjHIGdO (ORCPT
+        with ESMTP id S229445AbjHIGil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 02:33:14 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B1A10DC
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 23:33:13 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe5c0e57d2so23690805e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 23:33:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691562792; x=1692167592;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cfnpEIEDyi/TCsipFM/QmhqQBbx+uk+HPM/v/YS7T88=;
-        b=NcTsez+m7D5lIPteEJnBGPXksQ+Xa69Z0EeFej10ob3Rx7TSTL/+92lEoA5VYQ1ZkR
-         Ycgd4RoO2hSf4k+DU5e1sbSjd11P0v1ZAePhCTAjzSbjDtLVy0XUyyXNScBDcvPxD5UA
-         vS3jpNRfqNxnpiVHAoos2u123/eyvAuVHP/t5E946iOUHszwfH1Q0jtghl3aMxMWjuoa
-         7E9toOBHl2bvCQMmJZaVsCeV15c3VkpkNW6whMQgA0MhPENXCmKdyb6RfdlYmQ7OfcMA
-         UtT3vEd3mrCtYyWsuc2Yd4KStandA2CIcoscxXDZgTKIjAXXoN2CJMOIdcj/7tsie+fl
-         3Iyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691562792; x=1692167592;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cfnpEIEDyi/TCsipFM/QmhqQBbx+uk+HPM/v/YS7T88=;
-        b=SDm+hY/vE6xeN0jK9V1w1AyV/b+MEkMDzVcAdk07Jl5/xNt7RzQkOGRu1yMIrpn39Z
-         INpgix5MpmElUQNti9Jlk3vY8n7vm3/qAiLFaTDDlXovVK9XNfDznww/u6SeMZje2SGG
-         RHqQBHCfDIHjR1Ucwh2UvxurtEmANMkM6mPCbe59emZonLayVGPTy/qFClDvNw9ZCnih
-         d4YuQMNQecscTJ7A6SKdiLm5xZ9YkN3Xd7qXe4MYzxenFlrFfjvqI2u1vQCCAeDcmoTp
-         t7S4m6qxVBTyOeIOSqlNA7kVyiSFvkMNptjzOBd0CJvzp1bXXYim/szhmZ9lGcjmg85h
-         4s0g==
-X-Gm-Message-State: AOJu0Yy+QBfsNLEhI7wAwY74SF8+o5iteNfslwxUDaeaykUYLqgxSgyc
-        9wymOw4JWFoCFlaUt/SNgsOc3A==
-X-Google-Smtp-Source: AGHT+IH+d3WmUb7ILr+M11EJlBVVeYtF/bjjpHcQlJAkEG1LP74eG+zgdbAQJoYgT+SRAG/CBLiUdg==
-X-Received: by 2002:a05:600c:ca:b0:3fb:b05d:f27c with SMTP id u10-20020a05600c00ca00b003fbb05df27cmr1319420wmm.34.1691562791763;
-        Tue, 08 Aug 2023 23:33:11 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id g8-20020a7bc4c8000000b003fe505319ffsm917652wmk.18.2023.08.08.23.33.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 23:33:11 -0700 (PDT)
-Message-ID: <3bbd635f-85a6-9031-3264-e5209f8bc44f@linaro.org>
-Date:   Wed, 9 Aug 2023 08:33:09 +0200
+        Wed, 9 Aug 2023 02:38:41 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7951BFF;
+        Tue,  8 Aug 2023 23:38:39 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3796Y1QG027697;
+        Wed, 9 Aug 2023 01:34:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691562841;
+        bh=HfZIu7ucENKKJyiRVjl8TEZiwO3S69Lhhxi6s6qnyJ4=;
+        h=Date:Subject:From:To:CC:References:In-Reply-To;
+        b=EVeH0HXIPD4HhuSNWiMt4cTOBMy15trZOjgr/UlIVkIjRS2HL2wws6jme2NwSNt3f
+         uZSxCxOqcNiR3KcLDNlb4HEHf/SEDKNeaXSUOw4sDYvjkwBTEh5/0qo4YyaAN23S7e
+         oMmDW6AscIqZOncQ2DIZ1+zz9WOtHvYTnn6b9DwY=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3796Y1oQ088084
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Aug 2023 01:34:01 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
+ Aug 2023 01:33:59 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 9 Aug 2023 01:33:59 -0500
+Received: from [172.24.227.217] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3796XrbF018885;
+        Wed, 9 Aug 2023 01:33:54 -0500
+Message-ID: <34784261-bb31-9c58-de5e-ee64c85d9d11@ti.com>
+Date:   Wed, 9 Aug 2023 12:03:53 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] arm64: dts: imx8m-venice: Pass "brcm,bcm4329-fmac"
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 0/5] Introduce IEP driver and packet timestamping
+ support
 Content-Language: en-US
-To:     Tim Harvey <tharvey@gateworks.com>,
-        Fabio Estevam <festevam@gmail.com>
-Cc:     shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@denx.de>
-References: <20230806233333.815702-1-festevam@gmail.com>
- <CAJ+vNU0cDTGHoqJMDdwea48RSaETyvsg2NXCcEE3FBNr4-ckvg@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CAJ+vNU0cDTGHoqJMDdwea48RSaETyvsg2NXCcEE3FBNr4-ckvg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+From:   Md Danish Anwar <a0501179@ti.com>
+To:     Conor Dooley <conor@kernel.org>, Roger Quadros <rogerq@kernel.org>
+CC:     MD Danish Anwar <danishanwar@ti.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230807110048.2611456-1-danishanwar@ti.com>
+ <20230808-unnerving-press-7b61f9c521dc@spud>
+ <1c8e5369-648e-98cb-cb14-08d700a38283@ti.com>
+ <529218f6-2871-79a2-42bb-8f7886ae12c3@kernel.org>
+ <8bb5a1eb-3912-c418-88fe-b3d8870e7157@ti.com>
+ <20230808-nutmeg-mashing-543b41e56aa1@spud>
+ <1182349e-3531-c3b2-e457-4aad2595fa71@ti.com>
+Organization: Texas Instruments
+In-Reply-To: <1182349e-3531-c3b2-e457-4aad2595fa71@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/08/2023 01:52, Tim Harvey wrote:
-> On Sun, Aug 6, 2023 at 4:33 PM Fabio Estevam <festevam@gmail.com> wrote:
+Hi Conor,
+
+On 09/08/23 10:31 am, Md Danish Anwar wrote:
+> On 08/08/23 6:15 pm, Conor Dooley wrote:
+>> On Tue, Aug 08, 2023 at 06:06:11PM +0530, Md Danish Anwar wrote:
+>>> On 08/08/23 5:52 pm, Roger Quadros wrote:
+>>>>
+>>>>
+>>>> On 08/08/2023 15:18, Md Danish Anwar wrote:
+>>>>> On 08/08/23 5:38 pm, Conor Dooley wrote:
+>>>>>> On Mon, Aug 07, 2023 at 04:30:43PM +0530, MD Danish Anwar wrote:
+>>>>>>> This series introduces Industrial Ethernet Peripheral (IEP) driver to
+>>>>>>> support timestamping of ethernet packets and thus support PTP and PPS
+>>>>>>> for PRU ICSSG ethernet ports.
+>>>>>>>
+>>>>>>> This series also adds 10M full duplex support for ICSSG ethernet driver.
+>>>>>>>
+>>>>>>> There are two IEP instances. IEP0 is used for packet timestamping while IEP1
+>>>>>>> is used for 10M full duplex support.
+>>>>>>>
+>>>>>>> This is v2 of the series [v1]. It addresses comments made on [v1].
+>>>>>>> This series is based on linux-next(#next-20230807). 
+>>>>>>>
+>>>>>>> Changes from v1 to v2:
+>>>>>>> *) Addressed Simon's comment to fix reverse xmas tree declaration. Some APIs
+>>>>>>>    in patch 3 and 4 were not following reverse xmas tree variable declaration.
+>>>>>>>    Fixed it in this version.
+>>>>>>> *) Addressed Conor's comments and removed unsupported SoCs from compatible
+>>>>>>>    comment in patch 1. 
+>>>>>>
+>>>>>> I'm sorry I missed responding there before you sent v2, it was a bank
+>>>>>> holiday yesterday. I'm curious why you removed them, rather than just
+>>>>>> added them with a fallback to the ti,am654-icss-iep compatible, given
+>>>>>> your comment that "the same compatible currently works for all these
+>>>>>> 3 SoCs".
+>>>>>
+>>>>> I removed them as currently the driver is being upstreamed only for AM654x,
+>>>>> once I start up-streaming the ICSSG driver for AM64 and any other SoC. I will
+>>>>> add them here. If at that time we are still using same compatible, then I will
+>>>>> modify the comment otherwise add new compatible.
+>>>>>
+>>>>> As of now, I don't see the need of adding other SoCs in iep binding as IEP
+>>>>> driver up-streaming is only planned for AM654x as of now.
+>>>>
+>>>> But, is there any difference in IEP hardware/driver for the other SoCs?
+>>>> AFAIK the same IP is used on all SoCs.
+>>>>
+>>>> If there is no hardware/code change then we don't need to introduce a new compatible.
+>>>> The comment for all SoCs can already be there right from the start.
+>>>>
+>>>
+>>> There is no code change. The same compatible is used for other SoCs. Even if
+>>> the code is same I was thinking to keep the compatible as below now
+>>>
+>>> - ti,am654-icss-iep   # for K3 AM65x SoCs
+>>>
+>>> and once other SoCs are introduced, I will just modify the comment,
+>>>
+>>> - ti,am654-icss-iep   # for K3 AM65x, AM64x SoCs
+>>>
+>>> But we can also keep the all SoCs in comment right from start as well. I am
+>>> fine with both.
 >>
->> From: Fabio Estevam <festevam@denx.de>
+>>> Conor / Roger, Please let me know which approach should I go with in next revision?
 >>
->> Pass "brcm,bcm4329-fmac" to fix the following schema warnings:
->>
->> imx8mp-venice-gw74xx.dtb: wifi@0: compatible: 'oneOf' conditional failed, one must be fixed:
->>         ['cypress,cyw4373-fmac'] is too short
->>         'cypress,cyw4373-fmac' is not one of ['brcm,bcm4329-fmac', 'pci14e4,43dc', 'pci14e4,4464', 'pci14e4,4488', 'pci14e4,4425', 'pci14e4,4433']
->>         from schema $id: http://devicetree.org/schemas/net/wireless/brcm,bcm4329-fmac.yaml#
->>
->> imx8mn-venice-gw7902.dtb: wifi@0: compatible: 'oneOf' conditional failed, one must be fixed:
->>         ['brcm,bcm43455-fmac'] is too short
->>         'brcm,bcm43455-fmac' is not one of ['brcm,bcm4329-fmac', 'pci14e4,43dc', 'pci14e4,4464', 'pci14e4,4488', 'pci14e4,4425', 'pci14e4,4433']
->>         from schema $id: http://devicetree.org/schemas/net/wireless/brcm,bcm4329-fmac.yaml#
->>
->> Signed-off-by: Fabio Estevam <festevam@denx.de>
->> ---
->>  arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts | 2 +-
->>  arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts | 2 +-
->>  arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts | 2 +-
->>  arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts | 2 +-
->>  4 files changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
->> index 21d7b16d6f84..cde29aa1a0a2 100644
->> --- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
->> +++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
->> @@ -801,7 +801,7 @@ &usdhc1 {
->>         status = "okay";
->>
->>         wifi@0 {
->> -               compatible = "brcm,bcm43455-fmac";
->> +               compatible = "brcm,bcm43455-fmac", "brcm,bcm4329-fmac";
->>                 reg = <0>;
->>         };
->>  };
->> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
->> index 964cc4fc2ddf..0bff7a6fdca6 100644
->> --- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
->> +++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
->> @@ -726,7 +726,7 @@ &usdhc2 {
->>         status = "okay";
->>
->>         wifi@0 {
->> -               compatible = "brcm,bcm43455-fmac";
->> +               compatible = "brcm,bcm43455-fmac", "brcm,bcm4329-fmac";
->>                 reg = <0>;
->>         };
->>  };
->> diff --git a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
->> index 3ac011bbc025..9a36edc60394 100644
->> --- a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
->> +++ b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
->> @@ -679,7 +679,7 @@ &usdhc2 {
->>         status = "okay";
->>
->>         wifi@0 {
->> -               compatible = "brcm,bcm43455-fmac";
->> +               compatible = "brcm,bcm43455-fmac", "brcm,bcm4329-fmac";
->>                 reg = <0>;
->>         };
->>  };
->> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
->> index 3473423ac939..faa370a5885f 100644
->> --- a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
->> +++ b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
->> @@ -737,7 +737,7 @@ &usdhc1 {
->>         status = "okay";
->>
->>         wifi@0 {
->> -               compatible = "cypress,cyw4373-fmac";
->> +               compatible = "cypress,cyw4373-fmac", "brcm,bcm4329-fmac";
->>                 reg = <0>;
->>         };
->>  };
->> --
->> 2.34.1
->>
+>> IMO, "ti,am564-icss-iep" goes in the driver and the other SoCs get
+>> specific compatibles in the binding with "ti,am564-icss-iep" as a
+>> fallback.
 > 
-> Fabio,
+> Sure. Then as for now, "ti,am654-icss-iep" goes in the driver, I will keep the
+> dt binding compatible as below (as it was earlier in v1.)
 > 
-> Thank you for your continued efforts to squash out all these
-> dt-binding warnings/issues.
+> - ti,am654-icss-iep   # for K3 AM65x, J721E and AM64x SoCs
 > 
-> Can you explain what the difference is in the dt-binding yaml between
-> compatible/oneOf/items/{enum,const} and compatible/oneOf/enum? The
-
-items defines a list. items with enum and const, defines a list of two
-items, where first is an enum (so oneOf few) and second is fixed.
-
-compatible/oneOf/enum is not a list. Or you could look at it as
-one-element-list.
-
-
-> first list for Documentation/devicetree/bindings/net/wireless/brcm,bcm4329-fmac.yaml
-> has a much larger set of enums including the bcm43455 on these boards
-> but the second set of enums has a much more limited set.
-
-What's the question here? Both define different things. One defines
-compatible devices with some model, second defines just some devices.
-
-
-> There is no
-> driver code to look at for this because it is bound via SDIO device
-> id's instead of the dt compatible property.
+> When new SoCs are introduced I can add specific bindings for them with
+> "ti,am654-icss-iep" being the fallback.
 > 
-> Best regards,
-> 
-> Tim
 
-Best regards,
-Krzysztof
+I checked internally and IEP hardware / driver is same across all TI K3 SoCs.
+Compatible "ti,am654-icss-iep" will be same for all SoCs. I don't think we need
+to introduce different compatibles for different SoCs in future as they will be
+using same hardware / driver. For now I will have below as compatible in dt
+bindings. This will not change in future. When new SoCs are added, they can
+just use this compatible itself. The driver will always use "ti,am654-icss-iep"
+as compatible.
 
+	- ti,am654-icss-iep   # for all TI K3 SoCs
+
+-- 
+Thanks and Regards,
+Danish.
