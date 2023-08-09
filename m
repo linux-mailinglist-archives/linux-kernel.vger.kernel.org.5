@@ -2,119 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBBC776ADD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B4D776ADF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231915AbjHIVUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 17:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
+        id S231954AbjHIVUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 17:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjHIVUV (ORCPT
+        with ESMTP id S230501AbjHIVUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 17:20:21 -0400
-Received: from progateway7-pub.mail.pro1.eigbox.com (gproxy5-pub.mail.unifiedlayer.com [67.222.38.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF3010DC
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:20:20 -0700 (PDT)
-Received: from cmgw13.mail.unifiedlayer.com (unknown [10.0.90.128])
-        by progateway7.mail.pro1.eigbox.com (Postfix) with ESMTP id 27BDF10044427
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 21:20:18 +0000 (UTC)
-Received: from box5620.bluehost.com ([162.241.219.59])
-        by cmsmtp with ESMTP
-        id TqbKqBzz0sBigTqbKqUhBl; Wed, 09 Aug 2023 21:20:18 +0000
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.4 cv=Ub+U9IeN c=1 sm=1 tr=0 ts=64d40312
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10:nop_charset_1 a=UttIx32zK-AA:10:nop_rcvd_month_year
- a=-Ou01B_BuAIA:10:endurance_base64_authed_username_1 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10:nop_charset_2
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=OmflWR9Rs/Kj5bBm24+p4pzVYIwYRLMaHAWgfu4vcFw=; b=lMioxHZmL8MnCd4xQGm6CWpjJh
-        6GWJU3zvG4xnIcVZqL8PiVc9RYPdb4kPNZZ1mrr/i9kIyyAheVEJv2790Vi8J9qaPmQPEISgjoxVk
-        rU1qQ3RW5es3NoKgkK1oEjCBJNM+NijzICGStMsoMa4PjWxXhe+RIH063dE2ifk7pKsdcszQlLM70
-        fmI1G0Fl5RkO+boWCs1vhet1IuvMzW8PdYCqvcmfn4pXzJdrgP6R0EW4l3a81t8XYK8LkFT8AXUOS
-        eydO17FycC7qmHDpX6r2oJw6wyW2w35BKkR9BQN6c45JTrOWpoP9vdJ8towchLQDod4EjgmpJpfRu
-        f6mWfF5A==;
-Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:51250 helo=[10.0.1.47])
-        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <re@w6rz.net>)
-        id 1qTqbJ-000lRu-0y;
-        Wed, 09 Aug 2023 15:20:17 -0600
-Subject: Re: [PATCH 6.4 000/165] 6.4.10-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20230809103642.720851262@linuxfoundation.org>
-In-Reply-To: <20230809103642.720851262@linuxfoundation.org>
-From:   Ron Economos <re@w6rz.net>
-Message-ID: <0d356b19-37b0-8bd5-1119-6b0d53b0e644@w6rz.net>
-Date:   Wed, 9 Aug 2023 14:20:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 9 Aug 2023 17:20:46 -0400
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5551724;
+        Wed,  9 Aug 2023 14:20:45 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 5DF4E218;
+        Wed,  9 Aug 2023 21:20:44 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5DF4E218
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1691616044; bh=D3OCzS/TjQzlx859sDe4uhCo8ItizHSPamS05kU7M/E=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=NXwT7fNZt30FAE6/rsWNAIxKfZAnHdE0QNzpPAfTcuuLXJv/8sSeNpRi/YYa5NjJC
+         JPc/pZIj2m1/iKfmCA6z6g2y88sFf4ZH/bH/4XDB2qcRK5jWAwzLmabxM5iXzuAYwc
+         gdH4oIFqQIHil75Is17wCUwIlXkrwODoldc2N5n5BFNAkaN5JRNZKvsISIklyJvP2F
+         4+b3s2bgvKX3Qdk1NsvqoUWqBFM5kFpduA+bStZQdIeCWxvmzzb6PeCz24WoTHyNsu
+         hckvkWe4mo+JyUGpbBEyCK3lFgQYmdeewhQkWR1ZSjYdvGexm2T+wCrOys5KDkkoTp
+         DAFJ4ZWqDCc4Q==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Petr Tesarik <petrtesarik@huaweicloud.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        James Seo <james@equiv.tech>,
+        James Clark <james.clark@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "moderated list:XEN HYPERVISOR ARM" <xen-devel@lists.xenproject.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:XEN SWIOTLB SUBSYSTEM" <iommu@lists.linux.dev>,
+        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+Subject: Re: [PATCH v7 9/9] swiotlb: search the software IO TLB only if the
+ device makes use of it
+In-Reply-To: <adea71bd1fa8660d4c3157a562431ad8127016d4.1690871004.git.petr.tesarik.ext@huawei.com>
+References: <cover.1690871004.git.petr.tesarik.ext@huawei.com>
+ <adea71bd1fa8660d4c3157a562431ad8127016d4.1690871004.git.petr.tesarik.ext@huawei.com>
+Date:   Wed, 09 Aug 2023 15:20:43 -0600
+Message-ID: <87a5uz3ob8.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 73.162.232.9
-X-Source-L: No
-X-Exim-ID: 1qTqbJ-000lRu-0y
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:51250
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/23 3:38 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.10 release.
-> There are 165 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.10-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Petr Tesarik <petrtesarik@huaweicloud.com> writes:
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+> From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+>
+> Skip searching the software IO TLB if a device has never used it, making
+> sure these devices are not affected by the introduction of multiple IO TLB
+> memory pools.
+>
+> Additional memory barrier is required to ensure that the new value of the
+> flag is visible to other CPUs after mapping a new bounce buffer. For
+> efficiency, the flag check should be inlined, and then the memory barrier
+> must be moved to is_swiotlb_buffer(). However, it can replace the existing
+> barrier in swiotlb_find_pool(), because all callers use is_swiotlb_buffer()
+> first to verify that the buffer address belongs to the software IO TLB.
+>
+> Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> ---
 
-Tested-by: Ron Economos <re@w6rz.net>
+Excuse me if this is a silly question, but I'm not able to figure it out
+on my own...
 
+>  include/linux/device.h  |  2 ++
+>  include/linux/swiotlb.h |  7 ++++++-
+>  kernel/dma/swiotlb.c    | 14 ++++++--------
+>  3 files changed, 14 insertions(+), 9 deletions(-)
+>
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index 5fd89c9d005c..6fc808d22bfd 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -628,6 +628,7 @@ struct device_physical_location {
+>   * @dma_io_tlb_mem: Software IO TLB allocator.  Not for driver use.
+>   * @dma_io_tlb_pools:	List of transient swiotlb memory pools.
+>   * @dma_io_tlb_lock:	Protects changes to the list of active pools.
+> + * @dma_uses_io_tlb: %true if device has used the software IO TLB.
+>   * @archdata:	For arch-specific additions.
+>   * @of_node:	Associated device tree node.
+>   * @fwnode:	Associated device node supplied by platform firmware.
+> @@ -737,6 +738,7 @@ struct device {
+>  #ifdef CONFIG_SWIOTLB_DYNAMIC
+>  	struct list_head dma_io_tlb_pools;
+>  	spinlock_t dma_io_tlb_lock;
+> +	bool dma_uses_io_tlb;
+
+You add this new member here, fine...
+
+>  #endif
+>  	/* arch specific additions */
+>  	struct dev_archdata	archdata;
+> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> index 8371c92a0271..b4536626f8ff 100644
+> --- a/include/linux/swiotlb.h
+> +++ b/include/linux/swiotlb.h
+> @@ -172,8 +172,13 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+>  	if (!mem)
+>  		return false;
+>  
+> -	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC))
+> +	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC)) {
+> +		/* Pairs with smp_wmb() in swiotlb_find_slots() and
+> +		 * swiotlb_dyn_alloc(), which modify the RCU lists.
+> +		 */
+> +		smp_rmb();
+>  		return swiotlb_find_pool(dev, paddr);
+> +	}
+>  	return paddr >= mem->defpool.start && paddr < mem->defpool.end;
+>  }
+>  
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index adf80dec42d7..d7eac84f975b 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -730,7 +730,7 @@ static void swiotlb_dyn_alloc(struct work_struct *work)
+>  
+>  	add_mem_pool(mem, pool);
+>  
+> -	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
+> +	/* Pairs with smp_rmb() in is_swiotlb_buffer(). */
+>  	smp_wmb();
+>  }
+>  
+> @@ -764,11 +764,6 @@ struct io_tlb_pool *swiotlb_find_pool(struct device *dev, phys_addr_t paddr)
+>  	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
+>  	struct io_tlb_pool *pool;
+>  
+> -	/* Pairs with smp_wmb() in swiotlb_find_slots() and
+> -	 * swiotlb_dyn_alloc(), which modify the RCU lists.
+> -	 */
+> -	smp_rmb();
+> -
+>  	rcu_read_lock();
+>  	list_for_each_entry_rcu(pool, &mem->pools, node) {
+>  		if (paddr >= pool->start && paddr < pool->end)
+> @@ -813,6 +808,7 @@ void swiotlb_dev_init(struct device *dev)
+>  #ifdef CONFIG_SWIOTLB_DYNAMIC
+>  	INIT_LIST_HEAD(&dev->dma_io_tlb_pools);
+>  	spin_lock_init(&dev->dma_io_tlb_lock);
+> +	dev->dma_uses_io_tlb = false;
+
+...here you initialize it, fine...
+
+>  #endif
+>  }
+>  
+> @@ -1157,9 +1153,11 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+>  	list_add_rcu(&pool->node, &dev->dma_io_tlb_pools);
+>  	spin_unlock_irqrestore(&dev->dma_io_tlb_lock, flags);
+>  
+> -	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
+> -	smp_wmb();
+>  found:
+> +	dev->dma_uses_io_tlb = true;
+> +	/* Pairs with smp_rmb() in is_swiotlb_buffer() */
+> +	smp_wmb();
+> +
+
+...and here you set it if swiotlb is used.
+
+But, as far as I can tell, you don't actually *use* this field anywhere.
+What am I missing?
+
+Thanks,
+
+jon
