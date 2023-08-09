@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B9C776821
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09C8776825
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbjHITMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41164 "EHLO
+        id S233425AbjHITMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233405AbjHITMc (ORCPT
+        with ESMTP id S233336AbjHITMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:12:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A98210B;
-        Wed,  9 Aug 2023 12:12:19 -0700 (PDT)
-Date:   Wed, 09 Aug 2023 19:12:17 -0000
+        Wed, 9 Aug 2023 15:12:33 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DC026AA;
+        Wed,  9 Aug 2023 12:12:20 -0700 (PDT)
+Date:   Wed, 09 Aug 2023 19:12:18 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1691608338;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=YGt04ExDD90fkwtK9eQG4guWZCoYCrl9GUzAoXCPlKs=;
-        b=bXpUWSfhkL00gEE2YindtaTf+1y9FCu2c2LcUwvOxO0H2A52BbaUbOivX3dSB1/1PHzETH
-        vKgJMa1d2qelFKQXJOPZVaqqIfqAEUabpGGCtTjDkCzAfszXRSAvg+g25sq39OgaOemRGb
-        f8lJIvv50lgNrKPTceM9x9FYPiVPxn3sinM9OUaKvopHhHE08DHs4mNoOrCNolevX1i316
-        NWjc59wqzARwzJeXdpWMwuiUowVC0HnsWRsOtIwPYG0xWIimikjpeZPK4GEp0ceV/lqdwF
-        rTi6NrvLnqmtN963pfNs8/jsO+Yy7ehlaPkFmN8d5kOmzuE8joXX6KbyjP+u4A==
+        bh=IlvMJImXp1UiDP7wWCjAb8dUqStq8eiLDbhNGbXbIa8=;
+        b=j88JgOldlk/lXrWObcfLukTz6hC7ceChRnz9BiIlNIp4OynvYGOGEl2U06+K2I/edOmrBQ
+        hWKr3FWlmnhB2Liv19mOLqqGKUhWOGG29DOsHkiKpyB4/U5GbfBtN/Yd+Z7FUZaHDLNWh0
+        v5LJ5wvY/LmWmC8rkNJPrFlu4eSNjWOlsX5HruH8egX+ruy1/bfwC43QOxAF3F6FYQDX2z
+        5Rd6TH8PtC/a83TjVVI6qUEsq2mV9tUBijVEzP/MkLrJHEK8iBC/23LVmkcagOViUTb8S4
+        OTJiPHZZxBDHqSXK5JidkowkHdl6YPlPYZXykcX57Psp1let7khLM8kLZkvohQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1691608338;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=YGt04ExDD90fkwtK9eQG4guWZCoYCrl9GUzAoXCPlKs=;
-        b=ZWM/ZF8FDRTsrqgWn/v0LmAPDRZ6Ees9SR0gCa53ufd+tfTE+IsSqk2XdsUd7+PKKX+pFQ
-        4kn6yb61q2QFjqCA==
+        bh=IlvMJImXp1UiDP7wWCjAb8dUqStq8eiLDbhNGbXbIa8=;
+        b=nQ8qDthmg+nQ6QMKtyQ9n8Lcp9YEPbySqpdkanQsK4hrTwJhwfTFpIVaI4ywAU9ltqJhih
+        UaYMvGHmV6xsCWCQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/ioapic/32: Decrapify phys_id_present_map operation
+Subject: [tip: x86/apic] x86/apic: Nuke apic::apicid_to_cpu_present()
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
@@ -48,7 +48,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Juergen Gross <jgross@suse.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169160833776.27769.15048619665774499729.tip-bot2@tip-bot2>
+Message-ID: <169160833825.27769.2020302245860583591.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -65,24 +65,20 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/apic branch of tip:
 
-Commit-ID:     9faee3ecbfedebc6cdd0d96bfb2788ad8d62ef7e
-Gitweb:        https://git.kernel.org/tip/9faee3ecbfedebc6cdd0d96bfb2788ad8d62ef7e
+Commit-ID:     9a2a637af06621e69893e5d5cde3c0eba5aeba0f
+Gitweb:        https://git.kernel.org/tip/9a2a637af06621e69893e5d5cde3c0eba5aeba0f
 Author:        Thomas Gleixner <tglx@linutronix.de>
 AuthorDate:    Tue, 08 Aug 2023 15:03:59 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
 CommitterDate: Wed, 09 Aug 2023 11:58:26 -07:00
 
-x86/ioapic/32: Decrapify phys_id_present_map operation
+x86/apic: Nuke apic::apicid_to_cpu_present()
 
-The operation to set the IOAPIC ID in phys_id_present_map is as convoluted
-as it can be.
+This is only used on 32bit and is a wrapper around
+physid_set_mask_of_physid() in all 32bit APIC drivers.
 
-  1) Allocate a bitmap of 32byte size on the stack
-  2) Zero the bitmap and set the IOAPIC ID bit
-  3) Or the temporary bitmap over phys_id_present_map
-
-The same functionality can be achieved by setting the IOAPIC ID bit
-directly in the phys_id_present_map.
+Remove the callback and use physid_set_mask_of_physid() in the code
+directly,
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
@@ -91,24 +87,181 @@ Tested-by: Michael Kelley <mikelley@microsoft.com>
 Tested-by: Sohil Mehta <sohil.mehta@intel.com>
 Tested-by: Juergen Gross <jgross@suse.com> # Xen PV (dom0 and unpriv. guest)
 ---
- arch/x86/kernel/apic/io_apic.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ arch/x86/include/asm/apic.h           |  1 -
+ arch/x86/kernel/apic/apic_flat_64.c   |  2 --
+ arch/x86/kernel/apic/apic_noop.c      |  1 -
+ arch/x86/kernel/apic/apic_numachip.c  |  2 --
+ arch/x86/kernel/apic/bigsmp_32.c      |  1 -
+ arch/x86/kernel/apic/io_apic.c        | 11 +++++------
+ arch/x86/kernel/apic/probe_32.c       |  1 -
+ arch/x86/kernel/apic/x2apic_cluster.c |  1 -
+ arch/x86/kernel/apic/x2apic_phys.c    |  1 -
+ arch/x86/kernel/apic/x2apic_uv_x.c    |  1 -
+ arch/x86/xen/apic.c                   |  1 -
+ 11 files changed, 5 insertions(+), 18 deletions(-)
 
+diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
+index f8a3631..3932089 100644
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -304,7 +304,6 @@ struct apic {
+ 	void	(*ioapic_phys_id_map)(physid_mask_t *phys_map, physid_mask_t *retmap);
+ 	void	(*setup_apic_routing)(void);
+ 	int	(*cpu_present_to_apicid)(int mps_cpu);
+-	void	(*apicid_to_cpu_present)(int phys_apicid, physid_mask_t *retmap);
+ 	int	(*phys_pkg_id)(int cpuid_apic, int index_msb);
+ 
+ 	u32	(*get_apic_id)(unsigned long x);
+diff --git a/arch/x86/kernel/apic/apic_flat_64.c b/arch/x86/kernel/apic/apic_flat_64.c
+index 4ddced9..803cf01 100644
+--- a/arch/x86/kernel/apic/apic_flat_64.c
++++ b/arch/x86/kernel/apic/apic_flat_64.c
+@@ -103,7 +103,6 @@ static struct apic apic_flat __ro_after_init = {
+ 	.ioapic_phys_id_map		= NULL,
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+-	.apicid_to_cpu_present		= NULL,
+ 	.phys_pkg_id			= flat_phys_pkg_id,
+ 
+ 	.get_apic_id			= flat_get_apic_id,
+@@ -181,7 +180,6 @@ static struct apic apic_physflat __ro_after_init = {
+ 	.ioapic_phys_id_map		= NULL,
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+-	.apicid_to_cpu_present		= NULL,
+ 	.phys_pkg_id			= flat_phys_pkg_id,
+ 
+ 	.get_apic_id			= flat_get_apic_id,
+diff --git a/arch/x86/kernel/apic/apic_noop.c b/arch/x86/kernel/apic/apic_noop.c
+index dee9e9c..8cab632 100644
+--- a/arch/x86/kernel/apic/apic_noop.c
++++ b/arch/x86/kernel/apic/apic_noop.c
+@@ -96,7 +96,6 @@ struct apic apic_noop __ro_after_init = {
+ 	.ioapic_phys_id_map		= default_ioapic_phys_id_map,
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+-	.apicid_to_cpu_present		= physid_set_mask_of_physid,
+ 
+ 	.phys_pkg_id			= noop_phys_pkg_id,
+ 
+diff --git a/arch/x86/kernel/apic/apic_numachip.c b/arch/x86/kernel/apic/apic_numachip.c
+index d96d74c..8f57155 100644
+--- a/arch/x86/kernel/apic/apic_numachip.c
++++ b/arch/x86/kernel/apic/apic_numachip.c
+@@ -255,7 +255,6 @@ static const struct apic apic_numachip1 __refconst = {
+ 	.ioapic_phys_id_map		= NULL,
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+-	.apicid_to_cpu_present		= NULL,
+ 	.phys_pkg_id			= numachip_phys_pkg_id,
+ 
+ 	.get_apic_id			= numachip1_get_apic_id,
+@@ -299,7 +298,6 @@ static const struct apic apic_numachip2 __refconst = {
+ 	.ioapic_phys_id_map		= NULL,
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+-	.apicid_to_cpu_present		= NULL,
+ 	.phys_pkg_id			= numachip_phys_pkg_id,
+ 
+ 	.get_apic_id			= numachip2_get_apic_id,
+diff --git a/arch/x86/kernel/apic/bigsmp_32.c b/arch/x86/kernel/apic/bigsmp_32.c
+index c688af4..099611e 100644
+--- a/arch/x86/kernel/apic/bigsmp_32.c
++++ b/arch/x86/kernel/apic/bigsmp_32.c
+@@ -103,7 +103,6 @@ static struct apic apic_bigsmp __ro_after_init = {
+ 	.ioapic_phys_id_map		= bigsmp_ioapic_phys_id_map,
+ 	.setup_apic_routing		= bigsmp_setup_apic_routing,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+-	.apicid_to_cpu_present		= physid_set_mask_of_physid,
+ 	.phys_pkg_id			= bigsmp_phys_pkg_id,
+ 
+ 	.get_apic_id			= bigsmp_get_apic_id,
 diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
-index 8c47099..ff2d27e 100644
+index a8b329a..8c47099 100644
 --- a/arch/x86/kernel/apic/io_apic.c
 +++ b/arch/x86/kernel/apic/io_apic.c
-@@ -1511,12 +1511,9 @@ void __init setup_ioapic_ids_from_mpc_nocheck(void)
- 			physid_set(i, phys_id_present_map);
+@@ -1512,11 +1512,10 @@ void __init setup_ioapic_ids_from_mpc_nocheck(void)
  			ioapics[ioapic_idx].mp_config.apicid = i;
  		} else {
--			physid_mask_t tmp;
--
--			physid_set_mask_of_physid(mpc_ioapic_id(ioapic_idx), &tmp);
- 			apic_printk(APIC_VERBOSE, "Setting %d in the phys_id_present_map\n",
- 				    mpc_ioapic_id(ioapic_idx));
--			physids_or(phys_id_present_map, phys_id_present_map, tmp);
-+			physid_set(mpc_ioapic_id(ioapic_idx), phys_id_present_map);
+ 			physid_mask_t tmp;
+-			apic->apicid_to_cpu_present(mpc_ioapic_id(ioapic_idx),
+-						    &tmp);
+-			apic_printk(APIC_VERBOSE, "Setting %d in the "
+-					"phys_id_present_map\n",
+-					mpc_ioapic_id(ioapic_idx));
++
++			physid_set_mask_of_physid(mpc_ioapic_id(ioapic_idx), &tmp);
++			apic_printk(APIC_VERBOSE, "Setting %d in the phys_id_present_map\n",
++				    mpc_ioapic_id(ioapic_idx));
+ 			physids_or(phys_id_present_map, phys_id_present_map, tmp);
  		}
  
- 		/*
+@@ -2546,7 +2545,7 @@ static int io_apic_get_unique_id(int ioapic, int apic_id)
+ 		apic_id = i;
+ 	}
+ 
+-	apic->apicid_to_cpu_present(apic_id, &tmp);
++	physid_set_mask_of_physid(apic_id, &tmp);
+ 	physids_or(apic_id_map, apic_id_map, tmp);
+ 
+ 	if (reg_00.bits.ID != apic_id) {
+diff --git a/arch/x86/kernel/apic/probe_32.c b/arch/x86/kernel/apic/probe_32.c
+index 68fc220..c6c3a4b 100644
+--- a/arch/x86/kernel/apic/probe_32.c
++++ b/arch/x86/kernel/apic/probe_32.c
+@@ -60,7 +60,6 @@ static struct apic apic_default __ro_after_init = {
+ 	.ioapic_phys_id_map		= default_ioapic_phys_id_map,
+ 	.setup_apic_routing		= setup_apic_flat_routing,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+-	.apicid_to_cpu_present		= physid_set_mask_of_physid,
+ 	.phys_pkg_id			= default_phys_pkg_id,
+ 
+ 	.get_apic_id			= default_get_apic_id,
+diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
+index 931e0b9..a8e7a8f 100644
+--- a/arch/x86/kernel/apic/x2apic_cluster.c
++++ b/arch/x86/kernel/apic/x2apic_cluster.c
+@@ -249,7 +249,6 @@ static struct apic apic_x2apic_cluster __ro_after_init = {
+ 	.ioapic_phys_id_map		= NULL,
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+-	.apicid_to_cpu_present		= NULL,
+ 	.phys_pkg_id			= x2apic_phys_pkg_id,
+ 
+ 	.get_apic_id			= x2apic_get_apic_id,
+diff --git a/arch/x86/kernel/apic/x2apic_phys.c b/arch/x86/kernel/apic/x2apic_phys.c
+index c3c2e98..5ac2129 100644
+--- a/arch/x86/kernel/apic/x2apic_phys.c
++++ b/arch/x86/kernel/apic/x2apic_phys.c
+@@ -168,7 +168,6 @@ static struct apic apic_x2apic_phys __ro_after_init = {
+ 	.ioapic_phys_id_map		= NULL,
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+-	.apicid_to_cpu_present		= NULL,
+ 	.phys_pkg_id			= x2apic_phys_pkg_id,
+ 
+ 	.get_apic_id			= x2apic_get_apic_id,
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index ab17e58..d6b98bc 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -840,7 +840,6 @@ static struct apic apic_x2apic_uv_x __ro_after_init = {
+ 	.ioapic_phys_id_map		= NULL,
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+-	.apicid_to_cpu_present		= NULL,
+ 	.phys_pkg_id			= uv_phys_pkg_id,
+ 
+ 	.get_apic_id			= x2apic_get_apic_id,
+diff --git a/arch/x86/xen/apic.c b/arch/x86/xen/apic.c
+index 1ff8f75..426f4a0 100644
+--- a/arch/x86/xen/apic.c
++++ b/arch/x86/xen/apic.c
+@@ -152,7 +152,6 @@ static struct apic xen_pv_apic = {
+ 	.ioapic_phys_id_map		= default_ioapic_phys_id_map, /* Used on 32-bit */
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= xen_cpu_present_to_apicid,
+-	.apicid_to_cpu_present		= physid_set_mask_of_physid, /* Used on 32-bit */
+ 	.phys_pkg_id			= xen_phys_pkg_id, /* detect_ht */
+ 
+ 	.get_apic_id 			= xen_get_apic_id,
