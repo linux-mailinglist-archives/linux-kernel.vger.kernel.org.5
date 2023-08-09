@@ -2,112 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A42776B04
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB42B776B0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbjHIVeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 17:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
+        id S232186AbjHIVh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 17:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231251AbjHIVeJ (ORCPT
+        with ESMTP id S231251AbjHIVh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 17:34:09 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5981718
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:34:08 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-5234b80e9b6so232580a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 14:34:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1691616846; x=1692221646;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2iIlg09/o+V9YySZ28EHl+yYYW7hFmteKq8vY4umYpI=;
-        b=U1T2v1Fw9lLzHXJCG1ro/qy7iG/FamiILIXkTj7K4+sWR2ZTGr9oAeCbZB2DMOQbIK
-         zWdXrZfBUt3HxpV/BG04yVUpGx7WGopeLaEg7NAUnJ+SUZDTqeJXM5DHBeosIxGlQ5Ry
-         meR6H4oYjTmYJMpnrRL4lkTm52eR9nqM/dHeQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691616846; x=1692221646;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2iIlg09/o+V9YySZ28EHl+yYYW7hFmteKq8vY4umYpI=;
-        b=F5/KM+T6tXFdzf9331LF9qSSs2J6E6Bku376YbdCOamss0hnx+j+Z6w92zBbr5ZvpW
-         nwO/TZFvmekg22C88zMjf2P/ww/z8OU95clOaTNQizvuY1V644ZfKqI6Q1qAe6H73fik
-         a5MsYHqnvTwsFoEY9dK7VlGpw6G5DXAzmnSEfMR/H+/hYWlEITjBqUM0IMWBqK7Xe5Sf
-         hk5k/QEdc66go2xnkP59pPDmY6LAtEhedyeL7lLaDcmBgwKiab+tMshWpFGk1eKNQdIF
-         tgxzBCOuwhwiXGT87zsiHRj0B3yNYhcWrb/KReUzItUTpssiTbLLdPiwWAxvR0y29O1C
-         tawA==
-X-Gm-Message-State: AOJu0YyM1arzl/8AvZ9ZcWfuS+Ebtugj1KTbUnIRrHLVq5mbewSQemnz
-        QZ76BaGJrwwJautlds59lr/KJqcf/1ydcc/0gNe0zuxB
-X-Google-Smtp-Source: AGHT+IGPwpwusPfnixwv+lZNpZ9WY0LvxrDquezBWvFiCoQ1Uo2IjCXYWl5Xr3JNBvIqHFQh29HMtQ==
-X-Received: by 2002:a17:906:8a45:b0:99c:7134:ab6e with SMTP id gx5-20020a1709068a4500b0099c7134ab6emr299968ejc.38.1691616846394;
-        Wed, 09 Aug 2023 14:34:06 -0700 (PDT)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id qx22-20020a170906fcd600b0099cd008c1a4sm31752ejb.136.2023.08.09.14.34.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 14:34:06 -0700 (PDT)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-99bfcf4c814so42676166b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 14:34:05 -0700 (PDT)
-X-Received: by 2002:a17:906:304e:b0:99b:d4f5:a518 with SMTP id
- d14-20020a170906304e00b0099bd4f5a518mr311174ejd.13.1691616845596; Wed, 09 Aug
- 2023 14:34:05 -0700 (PDT)
+        Wed, 9 Aug 2023 17:37:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75201BCF;
+        Wed,  9 Aug 2023 14:37:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4527664364;
+        Wed,  9 Aug 2023 21:37:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8D91C433C8;
+        Wed,  9 Aug 2023 21:37:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691617046;
+        bh=9qPuQzBmdbGwMNrRlFUGd+Pi8pcueWOYHNimZFJXi2c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JV2nBNuOF3tp7mq2BscW1kFHEyvKNfFZVD6jBkHRuAwH7pRFtXEfNuFbBswtWfw+C
+         +75lmYRrfdjwAGlDgNQ1GoKTAkKVsrx4lywAftjdiSCTj/mNe8q0Uy+ag4RxlrpGC3
+         VItdTXJTSOv3Ad+HyX77jMP3mPYmOXBz4HQaUAfFH2E3NX91/it2SzETfgY6UMqHS5
+         6Z2wZwkHd4UZkCPZWxJG7aK1FHvyHs1eCVCMxPn7nWx8Xacql9DAVb1KjUF9aMP7EL
+         Dg+fU27o6pTM0jYFpeuenOy82Ffw8FEuL+U+J0TZsS0Per30bJSytFXBU0OL6eCIB/
+         YDPSmfyezGEqQ==
+Date:   Wed, 9 Aug 2023 22:37:20 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     MD Danish Anwar <danishanwar@ti.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, nm@ti.com, srk@ti.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 1/5] dt-bindings: net: Add ICSS IEP
+Message-ID: <20230809-cardboard-falsify-6cc9c09d8577@spud>
+References: <20230809114906.21866-1-danishanwar@ti.com>
+ <20230809114906.21866-2-danishanwar@ti.com>
 MIME-Version: 1.0
-References: <20230809202356.357339-1-andrew.cooper3@citrix.com>
-In-Reply-To: <20230809202356.357339-1-andrew.cooper3@citrix.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 9 Aug 2023 14:33:48 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiic4XViHp0=0pjLnQALRpfda+naY0ysZdK6Fia86hh2w@mail.gmail.com>
-Message-ID: <CAHk-=wiic4XViHp0=0pjLnQALRpfda+naY0ysZdK6Fia86hh2w@mail.gmail.com>
-Subject: Re: [PATCH] x86/AMD: Fix ASM constraints in amd_clear_divider()
-To:     Andrew Cooper <andrew.cooper3@citrix.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="03Hx+6F635l/g8Vg"
+Content-Disposition: inline
+In-Reply-To: <20230809114906.21866-2-danishanwar@ti.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Aug 2023 at 13:24, Andrew Cooper <andrew.cooper3@citrix.com> wrote:
->
-> DIV writes its results into %eax and %edx, meaning that they need to be output
-> constraints too.  It happens to be benign in this case as the registers don't
-> change value, but the compiler should still know.
->
-> Fixes: 77245f1c3c64 ("x86/CPU/AMD: Do not leak quotient data after a division by 0")
 
-As mentioned earlier (html, not on list), I think it was intentional
-and this "fix" doesn't really fix anything.
+--03Hx+6F635l/g8Vg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-A comment might be good, of course, if this really bothers somebody.
+Hey,
 
-That said, if the code wanted to be *really* clever, it could have done
+On Wed, Aug 09, 2023 at 05:19:02PM +0530, MD Danish Anwar wrote:
+> Add DT binding documentation for ICSS IEP module.
+>=20
+> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+> ---
+>  .../devicetree/bindings/net/ti,icss-iep.yaml  | 37 +++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/ti,icss-iep.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/ti,icss-iep.yaml b/Doc=
+umentation/devicetree/bindings/net/ti,icss-iep.yaml
+> new file mode 100644
+> index 000000000000..adae240cfd53
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/ti,icss-iep.yaml
+> @@ -0,0 +1,37 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/ti,icss-iep.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Texas Instruments ICSS Industrial Ethernet Peripheral (IEP) module
 
-        asm volatile(ALTERNATIVE("", "div %0", X86_BUG_DIV0)
-                     :: "a" (1), "d" (0));
+Does the module here refer to the hw component or to the linux kernel
+module?
 
-instead. One less register used, and the same "no change to register
-state" approach.
+> +
+> +maintainers:
+> +  - Md Danish Anwar <danishanwar@ti.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,am654-icss-iep   # for all TI K3 SoCs
 
-Of course, who knows what early-out algorithm the divider uses, and
-maybe it's cheaper to do 0/1 than it is to do 1/1. Not that I think we
-should care. The main reason to be cute here would be just to be cute.
+*sigh* Please at least give me a chance to reply to the conversation on
+the previous versions of the series before sending more, that's the
+second time with this series :/
+Right now this looks worse to me than what we started with given the
+comment is even broader. I have not changed my mind re: what I said on
+the previous version.
 
-That said, if you were to use this pattern in *real* code (as opposed
-to in that function that will never be called in reality because
-nobody divides by zero in real code), the register clobbers might be
-useful just to make sure the compiler doesn't re-use a zero register
-content that is then behind the latency of the dummy divide. But
-again, this particular code really doesn't _matter_ in that sense.
+Thanks,
+Conor.
 
-               Linus
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +    description: phandle to the IEP source clock
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    icssg0_iep0: iep@2e000 {
+> +        compatible =3D "ti,am654-icss-iep";
+> +        reg =3D <0x2e000 0x1000>;
+> +        clocks =3D <&icssg0_iepclk_mux>;
+> +    };
+> --=20
+> 2.34.1
+>=20
+
+--03Hx+6F635l/g8Vg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNQHEAAKCRB4tDGHoIJi
+0prnAP98Ul51Huk5I/s+3dku6NL7+ZhlDyE/ty6iIxYKwUJhrwD/UkHvU0wCVJ0b
+qxRow4PAxLFJsy54Ob7bPKeaxaWo4gI=
+=BxI+
+-----END PGP SIGNATURE-----
+
+--03Hx+6F635l/g8Vg--
