@@ -2,138 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A814D77525B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 07:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603E777525C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 07:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbjHIFrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 01:47:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52240 "EHLO
+        id S230255AbjHIFrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 01:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHIFrN (ORCPT
+        with ESMTP id S229468AbjHIFrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 01:47:13 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4EC1BF0
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 22:47:13 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bba04b9df3so56059795ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 22:47:13 -0700 (PDT)
+        Wed, 9 Aug 2023 01:47:46 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA011BF2
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 22:47:46 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-79a00f74a92so1894208241.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 22:47:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1691560033; x=1692164833;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YCeIptmtpKy5q98QjD4SUtd19PTpMTjSWPCM/pRkRaI=;
-        b=haeX18sUQdxxqI7SQwmn8SHKct03Vake+IzrKwZQdTEOTgqFjhH0yzb6gVvecUp++M
-         LMJV1cVhnL5cBk05TA0BuUeVgPeqBBT5xVYYg8Fmt6oC4KEFpsb20dfFQp1sUhdBnv+U
-         Agka3B9ydKgYsr/ueR6T9DXKuK4mFb7fnEgx45MrDCaANoCelYzVXJwVJd52Zm6ffFeo
-         vlwzfD2WG7skOwNLlyX+ou/s/8GC3sc0bR5XFkYBOl3Ac4CqFz3U8O83n9htUtpGlbxX
-         5MHrYLjZAe/fPUGNNnFPHYXY6gLf92Ljy74BtQmvCjyQU740MtA8mhZgL163A/u/3c14
-         57jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691560033; x=1692164833;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1691560065; x=1692164865;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YCeIptmtpKy5q98QjD4SUtd19PTpMTjSWPCM/pRkRaI=;
-        b=PeP+RERTwuUOfFE7rt+FQ5USZCuHdbzMP4wrm77jG7d29o0YebHHx2BdQJxthWgSjX
-         FY/orVW+bqf/nc7plaTm8x2NDVUjI22ONNe7ja4Qk0QFxuFvEBIEepWqqJTcjc3C0XDQ
-         2B9aO5crZ2XrcIK/oK7pJHv5Dvyrt9PxKCPzA3e4s5YrNICgrtlp3UwAUDfb1BDlGG9D
-         iGbBwfTYU8Hyi70n7+wHBPAaghxyX17qyOqjjNQSmx6xtD31B83tOsrwRP/jSMJGuY1q
-         gdhs701SWoC+JElDBoPgJC1tpj0rIM9JFQxbIAugxiG4MTfJ2G0i91CaA/zUeRHnJWcS
-         SFmQ==
-X-Gm-Message-State: AOJu0YyKGv64zIJg2oWnWby91ns3fYqaBPu9BKB6wnObhBQrg7WvCLXY
-        vdeW6OSOfjzI+UiI3/AVuswESA==
-X-Google-Smtp-Source: AGHT+IFrTYPQ+5b8uQBjS2fcGKsPAzUjAy1/yAOVWR8AwSQ1NP6723J3EcH5VFWoXC6GPw4jT3aUkA==
-X-Received: by 2002:a17:903:230d:b0:1bb:a85c:23cc with SMTP id d13-20020a170903230d00b001bba85c23ccmr2339537plh.15.1691560032814;
-        Tue, 08 Aug 2023 22:47:12 -0700 (PDT)
-Received: from sunil-laptop ([106.51.83.242])
-        by smtp.gmail.com with ESMTPSA id r14-20020a170902be0e00b001bb381b8260sm10098918pls.100.2023.08.08.22.47.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 22:47:12 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 11:17:02 +0530
-From:   Sunil V L <sunilvl@ventanamicro.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Atish Kumar Patra <atishp@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Will Deacon <will@kernel.org>, Haibo Xu <haibo1.xu@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Anup Patel <anup@brainfault.org>, Len Brown <lenb@kernel.org>
-Subject: Re: [RFC PATCH v1 20/21] RISC-V: ACPI: Create PLIC platform device
-Message-ID: <ZNMoVgO7mEDV07OJ@sunil-laptop>
-References: <20230803175916.3174453-1-sunilvl@ventanamicro.com>
- <20230803175916.3174453-21-sunilvl@ventanamicro.com>
- <20230808-chalice-easing-1369c7386082@spud>
+        bh=CBLwxu6RYThOPPkkhftSaHaz4S+8BmxS9YaXuc86KFk=;
+        b=stTWLXEu8wC6U7FPxhdve1jfeBZsyNvTpiOBh5eVf4eP+dWy29hRzi1XPR0hlS75Lx
+         LMqZtQ1CAbb1AR/nvsmWujjIORMF2/EzNRdIS4RXttwv8QZvo0XcIT9n8gzIJe4v1ONs
+         OdJ6CBIRmoEd9+XXN6V3Zfw9Wdn4sYTwONkpNW/lDftSJkXle1oa+YkEw3zsSBE4il5j
+         Y39ECNj/5se9obsALwgDz4Baewve5gWAjvI+bA9LUd5OMwcP2HgrzyBhLDi+BiTG49pM
+         eFS75Xk3B2B79x1hkahpa57yttr5qVDTwIohhJqvZRoc1ypZlmGlkcNMQSWMzglaSmWu
+         TBpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691560065; x=1692164865;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CBLwxu6RYThOPPkkhftSaHaz4S+8BmxS9YaXuc86KFk=;
+        b=bFOKdCuUWItI0G+fG3XtPuGkNJD+chZKqDKaxAg/PAkPh4hNWGXREANWM7RBsko807
+         pCxRs9ghUvr8mJ8gB35a+MJAzJfAw3nBOMeG2FUCEpUY6/t9psNX1TCPy/yVTg6QKinq
+         NYUk/Or9oYcm7i1pjRhOuzCFpItHT7616axe3St+srRkIYCnJXDskAhmcTxNMybGEmJv
+         K0Ai/Vb+O1ic1BYNOhydvqIQH+TkbQ97wXm3zSKyhV3V5cWe8xOSnadvHuf6mHenpCkY
+         NWWYuXXfM9e8bYRJmkRfYD+DFHzceLqd+RAnqKCBqyVjrAKAvZiZ6aJ4m0FBEBbq74Vp
+         dA3Q==
+X-Gm-Message-State: AOJu0Yyt1dJgxus+R/qUwQXTNj7LtLDajKSvt0DmInZY/tWxB2puaEfp
+        MLk6gI0MfVaPyPFQCOVfAOs1c5EQHtDseYUSNaI=
+X-Google-Smtp-Source: AGHT+IFK/kLitKRAXtzX4cGkYGLlfe7kOFdY9ILd29NBdnbjrFS44Phs7iBA/1Sfl3aLRlv1t0uASXocPtU0QlgNutg=
+X-Received: by 2002:a67:fe4c:0:b0:443:6c53:e26b with SMTP id
+ m12-20020a67fe4c000000b004436c53e26bmr2002986vsr.10.1691560065096; Tue, 08
+ Aug 2023 22:47:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230808-chalice-easing-1369c7386082@spud>
+References: <20230807122233.28563-1-yangyicong@huawei.com> <ZNL9s92HjLy+MZTw@localhost>
+In-Reply-To: <ZNL9s92HjLy+MZTw@localhost>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Wed, 9 Aug 2023 13:47:31 +0800
+Message-ID: <CAGsJ_4z5kYWOa2L+BHypM4S6W_UhUfUe3wo2rwiy0u7Hf1Q5pw@mail.gmail.com>
+Subject: Re: [PATCH] perf/smmuv3: Add platform id table for module auto loading
+To:     Liang Li <liliang6@email.cn>
+Cc:     Yicong Yang <yangyicong@huawei.com>, will@kernel.org,
+        mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, jonathan.cameron@huawei.com,
+        linuxarm@huawei.com, yangyicong@hisilicon.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
-
-On Tue, Aug 08, 2023 at 09:41:45AM +0100, Conor Dooley wrote:
-> On Thu, Aug 03, 2023 at 11:29:15PM +0530, Sunil V L wrote:
-> > Since PLIC needs to be a platform device
-> 
-> For the unwashed, why does the PLCI need to be a platform device?
-> (And while you're at that, please try to make use of the extra ~20
-> characters per line that you can use here.)
+On Wed, Aug 9, 2023 at 1:01=E2=80=AFPM Liang Li <liliang6@email.cn> wrote:
 >
-Sure, let me add more details and use extra characters.
- 
-> > probe the
-> > MADT and create platform devices for each PLIC in the
-> > system. Use software node framework for the fwnode
-> > which allows to create properties and hence the
-> > actual irqchip driver doesn't need to do anything
-> > different for ACPI vs DT.
-> > 
-> > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> > Co-developed-by: Haibo Xu <haibo1.xu@intel.com>
-> > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> 
-> > +static struct fwnode_handle *acpi_plic_create_fwnode(struct acpi_madt_plic *plic)
-> > +{
-> > +	struct fwnode_handle *fwnode, *parent_fwnode;
-> > +	struct riscv_irqchip_list *plic_element;
-> > +	struct software_node_ref_args *refs;
-> > +	struct property_entry props[8] = {};
-> > +	int nr_contexts;
-> > +
-> > +	props[0] = PROPERTY_ENTRY_U32("riscv,gsi-base", plic->gsi_base);
-> > +	props[1] = PROPERTY_ENTRY_U32("riscv,ndev", plic->num_irqs);
-> > +	props[2] = PROPERTY_ENTRY_U32("riscv,max_prio", plic->max_prio);
-> 
-> My OCD wants to know why this gets an _ but the others have a -.
-> 
-It should be -. But with Marc's recommendation, this is no longer
-required.
+> On 2023-08-07 20:22, Yicong Yang <yangyicong@huawei.com> wrote:
+> > From: Yicong Yang <yangyicong@hisilicon.com>
+> >
+> > On ACPI based system the device is probed by the name directly. If the
+> > driver is configured as module it can only be loaded manually. Add the
+> > platform id table as well as the module alias then the driver will be
+> > loaded automatically by the udev or others once the device added.
+> >
+>
+> Please consider revise the long log to clearly express the purpose of the
+> changes in this patch:
+>
+> - What's the exact issue the patch is addressing
+> - Why the changes in this patch can fix the issue or make something worki=
+ng
+> - Consider impact of the changes introduced by this patch
+>
+> These info may help reviewers and maintainers .. and yourself on code mer=
+ge.
 
-Thanks!
-Sunil
+years ago, i found a good doc regarding this,
+https://wiki.archlinux.org/title/Modalias
+
+guess it is because /lib/modules/$(uname -r)/modules.alias fails to contain=
+ smmu
+driver without the MODULE_DEVICE_TABLE, isn't it, yicong=EF=BC=9F
+
+>
+> Regards.
+>
+
+Thanks
+Barry
