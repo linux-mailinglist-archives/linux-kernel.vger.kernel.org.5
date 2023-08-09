@@ -2,148 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E57B0776396
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED0277639D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbjHIPSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
+        id S230270AbjHIPWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbjHIPSD (ORCPT
+        with ESMTP id S229585AbjHIPW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:18:03 -0400
-Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B45DCFE;
-        Wed,  9 Aug 2023 08:18:02 -0700 (PDT)
-Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
-        by mail.parknet.co.jp (Postfix) with ESMTPSA id E5C652055FA4;
-        Thu, 10 Aug 2023 00:18:01 +0900 (JST)
-Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
-        by ibmpc.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379FI0T9218787
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 00:18:01 +0900
-Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
-        by devron.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379FI0wR202859
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 00:18:00 +0900
-Received: (from hirofumi@localhost)
-        by devron.myhome.or.jp (8.17.2/8.17.2/Submit) id 379FHvZ4202846;
-        Thu, 10 Aug 2023 00:17:57 +0900
-From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>,
-        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
-In-Reply-To: <20230809150041.452w7gucjmvjnvbg@quack3> (Jan Kara's message of
-        "Wed, 9 Aug 2023 17:00:41 +0200")
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
-        <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
-        <87msz08vc7.fsf@mail.parknet.co.jp>
-        <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org>
-        <878rak8hia.fsf@mail.parknet.co.jp>
-        <20230809150041.452w7gucjmvjnvbg@quack3>
-Date:   Thu, 10 Aug 2023 00:17:57 +0900
-Message-ID: <87v8do6y8q.fsf@mail.parknet.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Wed, 9 Aug 2023 11:22:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D55D1
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:21:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691594501;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uRLJpwAQImdZYLqf6+rAi+eBbt4cPSvZ88BbNM5QqeY=;
+        b=FPBP/Km483TeYSvVMUXRFVi5n7k3k3Gal6p8IOQqvuAH95sSAgmatC3Pvx47B2wrl0TjR3
+        S/yhj689Y07HRVSOY1erPLKSEGo50/vhDOnmLqVux5rKBb7Qx8T8JrCmpm4UgLAsRfzcto
+        uZSkHNUmxivUKnuj8Vwk2IN1Vgo9x2c=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-204-3cdCFMemNKiz-_i2dRaBNQ-1; Wed, 09 Aug 2023 11:21:39 -0400
+X-MC-Unique: 3cdCFMemNKiz-_i2dRaBNQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3178532c6c8so3488122f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:21:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691594498; x=1692199298;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uRLJpwAQImdZYLqf6+rAi+eBbt4cPSvZ88BbNM5QqeY=;
+        b=ehiXVjTJ0OZXn6ygAIO6FyT19h2bIBw4+S526IFjLqH2wX87va0DcfQA5oy1+HOLFq
+         +19WhTiS8T69BMfVpHB2TyTg4xrgy0t0ErYSdBCD/7x8v3J8If9lP2hUdRYIgCK6vHr9
+         joZ6mpjuwSjPDuWMTqcdDvLGpn4HTU4vNVXzi73vvpswLRiqXU+l9g8dgG3Ymw6Dl0dt
+         xaKeafvPywCHQSqy38GrvfG3RQ5YWhiUR9psON8hnLOfrlg8IvPYJ46BNA9fZqQRhbRp
+         xjSNl1qEjayqADA8Lr+kHHtw1bxlOZpl/l60vJlH+ICiQZiS4FO29fxjKsiAivwIN38Z
+         6qrg==
+X-Gm-Message-State: AOJu0Yw03ZCRgJbxk9DFK4BB9oia6xCMZysdKe9O3ldj2/NY7X8HgmuW
+        Gt3+ZPgR+vcEglKUw2UG3puKEW7fVrkcDI4HOYfG4fDmlqSr2DfGp86Ey+r+gw3efwWmPYGyGLT
+        +EVV7mbdfrPHQoTNBgesNSChnurlMynHKPcLzRzln08X21u6ajPWScGiyba2diSX4eoMzVCAccp
+        Dv/C1/55DU
+X-Received: by 2002:a5d:400a:0:b0:317:df3a:d030 with SMTP id n10-20020a5d400a000000b00317df3ad030mr1832528wrp.14.1691594498060;
+        Wed, 09 Aug 2023 08:21:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHJ5OocP2Pv7SfIK1ucnKM27UrtTBpt4d6kaJHmI9cKjORA04ME3ujpoMomk5YvDcT4gPElcg==
+X-Received: by 2002:a5d:400a:0:b0:317:df3a:d030 with SMTP id n10-20020a5d400a000000b00317df3ad030mr1832502wrp.14.1691594497683;
+        Wed, 09 Aug 2023 08:21:37 -0700 (PDT)
+Received: from vschneid.remote.csb ([93.186.150.163])
+        by smtp.gmail.com with ESMTPSA id 17-20020a05600c021100b003fe1c332810sm2297841wmi.33.2023.08.09.08.21.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 08:21:37 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com
+Cc:     peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/9] sched: Simplify ttwu()
+In-Reply-To: <20230801211812.101069260@infradead.org>
+References: <20230801204121.929256934@infradead.org>
+ <20230801211812.101069260@infradead.org>
+Date:   Wed, 09 Aug 2023 16:21:36 +0100
+Message-ID: <xhsmh4jl8ckcf.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jan Kara <jack@suse.cz> writes:
-
-> Since you are talking past one another with Jeff let me chime in here :). I
-> think you are worried about this hunk:
-
-Right.
-
-> -	if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
-> +	if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && inode_maybe_inc_iversion(inode, false))
->  		dirty_flags |= I_DIRTY_SYNC;
+On 01/08/23 22:41, Peter Zijlstra wrote:
+> Use guards to reduce gotos and simplify control flow.
 >
-> which makes the 'flags' test pass even if we just modified ctime or mtime.
-> But do note the second part of the if - inode_maybe_inc_iversion() - so we
-> are going to mark the inode dirty with I_DIRTY_SYNC only if someone queried
-> iversion since the last time we have incremented it.
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  kernel/sched/core.c |  221 +++++++++++++++++++++++++---------------------------
+>  1 file changed, 109 insertions(+), 112 deletions(-)
 >
-> So this hunk is not really changing how inode is marked dirty, it only
-> changes how often we check whether iversion needs increment and that should
-> be fine (and desirable). Hence lazytime isn't really broken by this in any
-> way.
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -3706,14 +3706,14 @@ ttwu_stat(struct task_struct *p, int cpu
+>               struct sched_domain *sd;
+>
+>               __schedstat_inc(p->stats.nr_wakeups_remote);
+> -		rcu_read_lock();
+> +
+> +		guard(rcu)();
 
-OK. However, then it doesn't explain what I asked. This is not same with
-generic_update_time(), only FAT does.
+This isn't strictly equivalent, right? AFAICT that pushes the
+rcu_read_unlock() further down than it currently is - not a big deal, but
+indentation aside scoped_guard() would preserve that.
 
-If thinks it is right thing, why generic_update_time() doesn't? I said
-first reply, this was from generic_update_time(). (Or I'm misreading
-updated generic_update_time()?)
-
-Thanks.
--- 
-OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
