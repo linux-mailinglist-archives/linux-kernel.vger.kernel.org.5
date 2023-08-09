@@ -2,97 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3767752E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 08:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4687752EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 08:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbjHIGbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 02:31:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
+        id S230051AbjHIGdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 02:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbjHIGbN (ORCPT
+        with ESMTP id S229658AbjHIGdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 02:31:13 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17ACB10DC
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 23:31:12 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RLKsy1hLWzmV69;
-        Wed,  9 Aug 2023 14:29:58 +0800 (CST)
-Received: from [10.67.102.169] (10.67.102.169) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 9 Aug 2023 14:31:09 +0800
-CC:     <yangyicong@hisilicon.com>, <will@kernel.org>,
-        <mark.rutland@arm.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <jonathan.cameron@huawei.com>,
-        <linuxarm@huawei.com>
-Subject: Re: [PATCH] perf/smmuv3: Add platform id table for module auto
- loading
-To:     Barry Song <21cnbao@gmail.com>, Liang Li <liliang6@email.cn>
-References: <20230807122233.28563-1-yangyicong@huawei.com>
- <ZNL9s92HjLy+MZTw@localhost>
- <CAGsJ_4z5kYWOa2L+BHypM4S6W_UhUfUe3wo2rwiy0u7Hf1Q5pw@mail.gmail.com>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <23fe3d9a-cb4d-3479-0581-eefec193bc72@huawei.com>
-Date:   Wed, 9 Aug 2023 14:31:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Wed, 9 Aug 2023 02:33:14 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B1A10DC
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 23:33:13 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe5c0e57d2so23690805e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 23:33:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691562792; x=1692167592;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cfnpEIEDyi/TCsipFM/QmhqQBbx+uk+HPM/v/YS7T88=;
+        b=NcTsez+m7D5lIPteEJnBGPXksQ+Xa69Z0EeFej10ob3Rx7TSTL/+92lEoA5VYQ1ZkR
+         Ycgd4RoO2hSf4k+DU5e1sbSjd11P0v1ZAePhCTAjzSbjDtLVy0XUyyXNScBDcvPxD5UA
+         vS3jpNRfqNxnpiVHAoos2u123/eyvAuVHP/t5E946iOUHszwfH1Q0jtghl3aMxMWjuoa
+         7E9toOBHl2bvCQMmJZaVsCeV15c3VkpkNW6whMQgA0MhPENXCmKdyb6RfdlYmQ7OfcMA
+         UtT3vEd3mrCtYyWsuc2Yd4KStandA2CIcoscxXDZgTKIjAXXoN2CJMOIdcj/7tsie+fl
+         3Iyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691562792; x=1692167592;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cfnpEIEDyi/TCsipFM/QmhqQBbx+uk+HPM/v/YS7T88=;
+        b=SDm+hY/vE6xeN0jK9V1w1AyV/b+MEkMDzVcAdk07Jl5/xNt7RzQkOGRu1yMIrpn39Z
+         INpgix5MpmElUQNti9Jlk3vY8n7vm3/qAiLFaTDDlXovVK9XNfDznww/u6SeMZje2SGG
+         RHqQBHCfDIHjR1Ucwh2UvxurtEmANMkM6mPCbe59emZonLayVGPTy/qFClDvNw9ZCnih
+         d4YuQMNQecscTJ7A6SKdiLm5xZ9YkN3Xd7qXe4MYzxenFlrFfjvqI2u1vQCCAeDcmoTp
+         t7S4m6qxVBTyOeIOSqlNA7kVyiSFvkMNptjzOBd0CJvzp1bXXYim/szhmZ9lGcjmg85h
+         4s0g==
+X-Gm-Message-State: AOJu0Yy+QBfsNLEhI7wAwY74SF8+o5iteNfslwxUDaeaykUYLqgxSgyc
+        9wymOw4JWFoCFlaUt/SNgsOc3A==
+X-Google-Smtp-Source: AGHT+IH+d3WmUb7ILr+M11EJlBVVeYtF/bjjpHcQlJAkEG1LP74eG+zgdbAQJoYgT+SRAG/CBLiUdg==
+X-Received: by 2002:a05:600c:ca:b0:3fb:b05d:f27c with SMTP id u10-20020a05600c00ca00b003fbb05df27cmr1319420wmm.34.1691562791763;
+        Tue, 08 Aug 2023 23:33:11 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id g8-20020a7bc4c8000000b003fe505319ffsm917652wmk.18.2023.08.08.23.33.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 23:33:11 -0700 (PDT)
+Message-ID: <3bbd635f-85a6-9031-3264-e5209f8bc44f@linaro.org>
+Date:   Wed, 9 Aug 2023 08:33:09 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAGsJ_4z5kYWOa2L+BHypM4S6W_UhUfUe3wo2rwiy0u7Hf1Q5pw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] arm64: dts: imx8m-venice: Pass "brcm,bcm4329-fmac"
+Content-Language: en-US
+To:     Tim Harvey <tharvey@gateworks.com>,
+        Fabio Estevam <festevam@gmail.com>
+Cc:     shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@denx.de>
+References: <20230806233333.815702-1-festevam@gmail.com>
+ <CAJ+vNU0cDTGHoqJMDdwea48RSaETyvsg2NXCcEE3FBNr4-ckvg@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAJ+vNU0cDTGHoqJMDdwea48RSaETyvsg2NXCcEE3FBNr4-ckvg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.102.169]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Barry, Liang,
-
-On 2023/8/9 13:47, Barry Song wrote:
-> On Wed, Aug 9, 2023 at 1:01 PM Liang Li <liliang6@email.cn> wrote:
+On 09/08/2023 01:52, Tim Harvey wrote:
+> On Sun, Aug 6, 2023 at 4:33 PM Fabio Estevam <festevam@gmail.com> wrote:
 >>
->> On 2023-08-07 20:22, Yicong Yang <yangyicong@huawei.com> wrote:
->>> From: Yicong Yang <yangyicong@hisilicon.com>
->>>
->>> On ACPI based system the device is probed by the name directly. If the
->>> driver is configured as module it can only be loaded manually. Add the
->>> platform id table as well as the module alias then the driver will be
->>> loaded automatically by the udev or others once the device added.
->>>
+>> From: Fabio Estevam <festevam@denx.de>
 >>
->> Please consider revise the long log to clearly express the purpose of the
->> changes in this patch:
+>> Pass "brcm,bcm4329-fmac" to fix the following schema warnings:
 >>
->> - What's the exact issue the patch is addressing
->> - Why the changes in this patch can fix the issue or make something working
->> - Consider impact of the changes introduced by this patch
+>> imx8mp-venice-gw74xx.dtb: wifi@0: compatible: 'oneOf' conditional failed, one must be fixed:
+>>         ['cypress,cyw4373-fmac'] is too short
+>>         'cypress,cyw4373-fmac' is not one of ['brcm,bcm4329-fmac', 'pci14e4,43dc', 'pci14e4,4464', 'pci14e4,4488', 'pci14e4,4425', 'pci14e4,4433']
+>>         from schema $id: http://devicetree.org/schemas/net/wireless/brcm,bcm4329-fmac.yaml#
 >>
->> These info may help reviewers and maintainers .. and yourself on code merge.
+>> imx8mn-venice-gw7902.dtb: wifi@0: compatible: 'oneOf' conditional failed, one must be fixed:
+>>         ['brcm,bcm43455-fmac'] is too short
+>>         'brcm,bcm43455-fmac' is not one of ['brcm,bcm4329-fmac', 'pci14e4,43dc', 'pci14e4,4464', 'pci14e4,4488', 'pci14e4,4425', 'pci14e4,4433']
+>>         from schema $id: http://devicetree.org/schemas/net/wireless/brcm,bcm4329-fmac.yaml#
+>>
+>> Signed-off-by: Fabio Estevam <festevam@denx.de>
+>> ---
+>>  arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts | 2 +-
+>>  arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts | 2 +-
+>>  arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts | 2 +-
+>>  arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts | 2 +-
+>>  4 files changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+>> index 21d7b16d6f84..cde29aa1a0a2 100644
+>> --- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+>> +++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+>> @@ -801,7 +801,7 @@ &usdhc1 {
+>>         status = "okay";
+>>
+>>         wifi@0 {
+>> -               compatible = "brcm,bcm43455-fmac";
+>> +               compatible = "brcm,bcm43455-fmac", "brcm,bcm4329-fmac";
+>>                 reg = <0>;
+>>         };
+>>  };
+>> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
+>> index 964cc4fc2ddf..0bff7a6fdca6 100644
+>> --- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
+>> +++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
+>> @@ -726,7 +726,7 @@ &usdhc2 {
+>>         status = "okay";
+>>
+>>         wifi@0 {
+>> -               compatible = "brcm,bcm43455-fmac";
+>> +               compatible = "brcm,bcm43455-fmac", "brcm,bcm4329-fmac";
+>>                 reg = <0>;
+>>         };
+>>  };
+>> diff --git a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+>> index 3ac011bbc025..9a36edc60394 100644
+>> --- a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+>> +++ b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+>> @@ -679,7 +679,7 @@ &usdhc2 {
+>>         status = "okay";
+>>
+>>         wifi@0 {
+>> -               compatible = "brcm,bcm43455-fmac";
+>> +               compatible = "brcm,bcm43455-fmac", "brcm,bcm4329-fmac";
+>>                 reg = <0>;
+>>         };
+>>  };
+>> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
+>> index 3473423ac939..faa370a5885f 100644
+>> --- a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
+>> +++ b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
+>> @@ -737,7 +737,7 @@ &usdhc1 {
+>>         status = "okay";
+>>
+>>         wifi@0 {
+>> -               compatible = "cypress,cyw4373-fmac";
+>> +               compatible = "cypress,cyw4373-fmac", "brcm,bcm4329-fmac";
+>>                 reg = <0>;
+>>         };
+>>  };
+>> --
+>> 2.34.1
+>>
 > 
-> years ago, i found a good doc regarding this,
-> https://wiki.archlinux.org/title/Modalias
+> Fabio,
 > 
-> guess it is because /lib/modules/$(uname -r)/modules.alias fails to contain smmu
-> driver without the MODULE_DEVICE_TABLE, isn't it, yicong？
+> Thank you for your continued efforts to squash out all these
+> dt-binding warnings/issues.
+> 
+> Can you explain what the difference is in the dt-binding yaml between
+> compatible/oneOf/items/{enum,const} and compatible/oneOf/enum? The
 
-Yes I think it's the reason. I didn't find summary in kernel docs for the modalias
-as well as the uevent mechanism. Arch wiki has a well illustration for the modalias
-and suse[1] describes how this is used by the udev for module auto loading.
+items defines a list. items with enum and const, defines a list of two
+items, where first is an enum (so oneOf few) and second is fixed.
 
-For my case I'm using a ACPI based arm64 server and after booting the arm_smmuv3_pmu.ko
-is not auto loaded by the udevd since we aren't providing this information. In order
-to support this we need to provide this MODULE_DEVICE_TABLE() when the smmu pmu added
-as a platform device, then the userspace udev can know which module to load after the
-device is added.
+compatible/oneOf/enum is not a list. Or you could look at it as
+one-element-list.
 
-[1] https://documentation.suse.com/sles/15-SP1/html/SLES-all/cha-udev.html#sec-udev-drivers
 
-Thanks.
+> first list for Documentation/devicetree/bindings/net/wireless/brcm,bcm4329-fmac.yaml
+> has a much larger set of enums including the bcm43455 on these boards
+> but the second set of enums has a much more limited set.
+
+What's the question here? Both define different things. One defines
+compatible devices with some model, second defines just some devices.
+
+
+> There is no
+> driver code to look at for this because it is bound via SDIO device
+> id's instead of the dt compatible property.
+> 
+> Best regards,
+> 
+> Tim
+
+Best regards,
+Krzysztof
+
