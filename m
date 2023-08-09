@@ -2,132 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E14F776015
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02584776019
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbjHINAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 09:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45050 "EHLO
+        id S232239AbjHINAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 09:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjHINAh (ORCPT
+        with ESMTP id S232103AbjHINAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 09:00:37 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADD11FF5;
-        Wed,  9 Aug 2023 06:00:36 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3176a439606so5207615f8f.3;
-        Wed, 09 Aug 2023 06:00:36 -0700 (PDT)
+        Wed, 9 Aug 2023 09:00:47 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFDE2103
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:00:47 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99357737980so981332766b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 06:00:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691586035; x=1692190835;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zloZVxNaHrnYHPz3REtAzM9yYHyeZJvdcxZLzgQr6lQ=;
-        b=csJ/pk4GqVFJrM4T0wSW1bliXiqXohqbgBFPHMzJpDgvzAxzSTa+/ifV6yfQNpXArq
-         R42ryRFhkIAhNdktL2V3V6l2pXhS9PvukqeYBou3lvyPRJ5MJROBD2J5Vp7SV7cPwChe
-         rMFSYw1gHyW75hwO8ylWPxbxPhOvkC6ldMc8EdAOIYkPxMrnz+XCd3TAo1VHZB6Ut3S/
-         0rgb+IEGU/N1mvpRuthOoDsCAYJyQZzyWDdqOzNP7ddJd2j06j4QmcjIzoZMHhLFLQBB
-         6LOrR6ZjnA9mW81ciJm1qX5LqbOAsNxx/Z+ilTz7NviplBpQWkr8J9TMPiknQIkOlhHo
-         DsjA==
+        d=linaro.org; s=google; t=1691586045; x=1692190845;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BkQfk41wpqfjz+mLvTVXwnfN3tFzJusZiA/ZzblZA/c=;
+        b=JOt/neGsXumf2WLwlF0maWpAxYugaJRAPqX2QsPsvyHfvEorQnvr2rifTBwv0cxtYt
+         OK/482mz0avRMRrBF7JmOgcLMPsmGgRPTB5plHb+b1/whOCnWs5CAf++wq3rCa9F6k3L
+         XMXUEu+L85QAl34800PQFNkBIB+OiX0duWdMqPg2UUBVigdodRQphjXlXpJYZyhDKX8r
+         k5Sg24NFQb8BL9eTraIpLvpYqzOCmDE1nIIgOIpt/T+DuF0VosMneN4Hx6sY8LKhM+pT
+         QPMdzI9YPaDPkFCFLHV2wtnam9AVovJuKgZHI226oYAhei4exylUorWsXSLTku0TBS6M
+         J7ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691586035; x=1692190835;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zloZVxNaHrnYHPz3REtAzM9yYHyeZJvdcxZLzgQr6lQ=;
-        b=idoPZB1DKbTU5gldmUGo+UBL53XFm0dlcBEcqsYth26kePefebF39tP5SMG2gBb6RK
-         RUeRN+x/atYfyLYkgOh0AVEeEzkxhNy9UqsYiX9gJL32wSoGR6aQuBiP84/iO+P34w+g
-         8i8KhLH02zE60ia3dOKx2HyD2cc36SKf3J/b6BucFnEEaNUmP85+cJADrAvygTuDM/4B
-         y29aWwUvegS/585tDosOg+xU8PweF2t86/bI28fYG9V78OuEF6mH1kAvdM/yc1B+9WZ2
-         qEgyJS7/sW0bJushmJ7TB/YTlI9jWlgT8f2UYD9N9E80BrEMJDxu0loIw88SvCui4Kgn
-         /Bnw==
-X-Gm-Message-State: AOJu0YwubfW79etbDaaHawwRbvU6P2YBziDXaSGWoLddAuyE4FUjQ2bF
-        VKKhs3LJG6ObcaS+8jndnaQ=
-X-Google-Smtp-Source: AGHT+IHujO9QbdFycDXQ+aeoydvaWfWjdr8SFFtfvRbYeyGnkceJLASmfJlRbG7tFeMkvkLnzXz9LA==
-X-Received: by 2002:adf:f608:0:b0:317:7441:1a4 with SMTP id t8-20020adff608000000b00317744101a4mr1964638wrp.29.1691586034572;
-        Wed, 09 Aug 2023 06:00:34 -0700 (PDT)
-Received: from suse.localnet (host-95-233-25-82.retail.telecomitalia.it. [95.233.25.82])
-        by smtp.gmail.com with ESMTPSA id x10-20020a5d490a000000b00317ab75748bsm16694129wrq.49.2023.08.09.06.00.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 06:00:33 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH] Documentation/page_tables: Add info about MMU/TLB and Page Faults
-Date:   Wed, 09 Aug 2023 15:00:31 +0200
-Message-ID: <3770829.kQq0lBPeGt@suse>
-In-Reply-To: <20230807105010.GK2607694@kernel.org>
-References: <20230728120054.12306-1-fmdefrancesco@gmail.com>
- <20230807105010.GK2607694@kernel.org>
+        d=1e100.net; s=20221208; t=1691586045; x=1692190845;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BkQfk41wpqfjz+mLvTVXwnfN3tFzJusZiA/ZzblZA/c=;
+        b=eFXRwS1eP1Kq4523fmtSeod4DpJI13xSyABr56nQijN9xm1Y6m3b3sJoN31dxuneXI
+         IoKNvk2oNRINPY2iuYGy20Qu/HV0N2MNfN615Kf7Odh9+tfoi2tDCdMgsgTEPV98JV1c
+         xNDhBaPXNrfv0Zf8Pvr//BYyDFR5/JYZEyzZMvHzz4AO/kl0xykgNpSh0L4Zlcj20YHN
+         Z1Sr/n0bJo3rRovgW0OpQ/SDgAqspFIrwqjZfzpQWhXSxoXDYVOb8DZWvCdoHjBf8rnB
+         zGg8NUUmEENzZhpPDuzSzg766nvN0J8zGuN+iyFN8+J8CSCb6NGvdkAVkhiJB0Ks/8Mr
+         67vA==
+X-Gm-Message-State: AOJu0Yz2T7DI7TxZqnc4sfRnHUWks74AjIDl1wYqPRwb6V05Vw5NHmtB
+        R/uJMysIaOVRxNcFoNeY0/4b0w==
+X-Google-Smtp-Source: AGHT+IG/xFtqsZIi/wA1IMhYIyCrPe8A6tlho6R+B+aFuU7npNcg9qbHmJn2OSrG0KdQ6W7qc2IZ4g==
+X-Received: by 2002:a17:907:77c8:b0:99b:f8e7:130f with SMTP id kz8-20020a17090777c800b0099bf8e7130fmr2114166ejc.15.1691586045471;
+        Wed, 09 Aug 2023 06:00:45 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id bw5-20020a170906c1c500b00988f168811bsm8049495ejb.135.2023.08.09.06.00.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 06:00:45 -0700 (PDT)
+Message-ID: <f9a8897e-301e-9d69-be59-a5aa9290f01b@linaro.org>
+Date:   Wed, 9 Aug 2023 15:00:41 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/2] gpio: dt-bindings: add parsing of loongson gpio
+ offset
+To:     Yinbo Zhu <zhuyinbo@loongson.cn>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
+        loongson-kernel@lists.loongnix.cn
+References: <20230807074043.31288-1-zhuyinbo@loongson.cn>
+ <20230807074043.31288-2-zhuyinbo@loongson.cn>
+ <91f57b0d-a6e9-c039-40b6-0a1a9af5f7a0@linaro.org>
+ <78c5a043-3e2a-48d6-88bd-2f91cc6d1347@loongson.cn>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <78c5a043-3e2a-48d6-88bd-2f91cc6d1347@loongson.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On luned=EC 7 agosto 2023 12:50:10 CEST Mike Rapoport wrote:
-> Hi Fabio,
->=20
-> On Fri, Jul 28, 2023 at 01:53:01PM +0200, Fabio M. De Francesco wrote:
-> > Extend page_tables.rst by adding a section about the role of MMU and TLB
-> > in translating between virtual addresses and physical page frames.
-> > Furthermore explain the concept behind Page Faults and how the Linux
-> > kernel handles TLB misses. Finally briefly explain how and why to disab=
-le
-> > the page faults handler.
-> >=20
-> > [snip]
-> >
-> > +MMU, TLB, and Page Faults
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> > +
-> > +The `Memory Management Unit (MMU)` is a hardware component that handles
-> > virtual +to physical address translations. It may use relatively small
-> > caches in hardware +called `Translation Lookaside Buffers (TLBs)` and=20
-`Page
-> > Walk Caches` to speed up +these translations.
-> > +
-> > +When a process wants to access a memory location, the CPU provides a
-> > virtual
-> > +address to the MMU, which then uses the MMU to check access permission=
-s=20
-and
-> > +dirty bits, and if possible it resolves the physical address and conse=
-nts
-> > the +requested type of access to the corresponding physical address.
->=20
-> Essentially any access to a memory location involves the translation from
-> virtual to physical, not only when processes access memory.
+On 09/08/2023 09:28, Yinbo Zhu wrote:
+>>
+>>>     - gpio-ranges
+>>>     - interrupts
+>>>   
+>>> @@ -49,11 +82,16 @@ examples:
+>>>       #include <dt-bindings/interrupt-controller/irq.h>
+>>>   
+>>>       gpio0: gpio@1fe00500 {
+>>> -      compatible = "loongson,ls2k-gpio";
+>>> +      compatible = "loongson,ls2k1000-gpio";
+>>>         reg = <0x1fe00500 0x38>;
+>>>         ngpios = <64>;
+>>>         #gpio-cells = <2>;
+>>>         gpio-controller;
+>>> +      loongson,gpio-conf-offset = <0>;
+>>> +      loongson,gpio-in-offset = <0x20>;
+>>> +      loongson,gpio-out-offset = <0x10>;
+>>> +      loongson,gpio-ctrl-mode = <0>;
+>>> +      loongson,gpio-inten-offset = <0x30>;
+>>
+>> I still think that you just embed the programming model into properties,
+>> instead of using dedicated compatible for different blocks. It could be
+>> fine, although I would prefer to check it with your DTS
+> 
+> Okay, I got it,  and if I understand correctly, you seem to agree with
+> me adding attributes like this.
+> 
+> And, if using this method that programming model into dts properites,
+> then when adding a new platform's GPIO,  there is no longer a need to
+> modify the driver because gpio controller is compatible and different
+> platform can use a same compatible.
 
-Mike,
+Uhu, so there we are. You use this method now to avoid new compatibles.
+No, therefore I do not agree.
 
-I'm cutting everything from here on because I agree with your comments, so =
-I=20
-could just write a long list of 'I agree', 'I understand' and the like. I w=
-ant=20
-to avoid readers from the aforementioned list :-)
+> 
+>>
+>> Where is your DTS?
+> 
+> 
+> Sorry, the dts containing gpio nodes are only available in the product
+> code and have not been sent to the community yet.
 
-I think (actually, I hope) that I have understood everything correctly. I w=
-ill=20
-send a new version with the necessary corrections by the end of this week.
+Does not help to convince us, but it is your right. With this and above
+explanation, my answer is no - NAK.
 
-Thanks again for your comments and suggestions.
-
-=46abio
-
+Best regards,
+Krzysztof
 
