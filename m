@@ -2,115 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B80C877613A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441A977613C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbjHINgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 09:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46506 "EHLO
+        id S230364AbjHINgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 09:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjHINgb (ORCPT
+        with ESMTP id S230319AbjHINgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 09:36:31 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C861986
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:36:30 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9124B5C0135;
-        Wed,  9 Aug 2023 09:36:27 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 09 Aug 2023 09:36:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1691588187; x=1691674587; bh=3msJaR5UXBLEoKC1HXIH2RtyP/pUMBgvaBb
-        jwAf59DQ=; b=tXn5xruIL2ZWBIL+b/oduuBk+e8qnkdtDb4USof3cljLWqAcPfQ
-        ML0TZbP9FLtBiOlaBdEruMwN7SRE/ot5fj7w9Eer0HyDE4QFAFyaruLNRsr1B2RQ
-        cUqAYz7MNIVy1VTacX82SyQ97DVW4ELs/yT3+ttAyF0499IIBEPO+LGxWSGMz9my
-        BV8Ec/wqBuED3TkSLK/5Fp2K8SnI5VktbbDtI74Ey654us5o4wh5OkeLEdMy/YjN
-        7fTniGBLzqSpHhUKhuuHv5iGRfLlgH0f8dCPMsVH1D9rz1HNUbpf7wnGM/O/Xd3Y
-        IsRDYRUa817ub1msfWZOxnyJZgIBfoJoAIg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1691588187; x=1691674587; bh=3msJaR5UXBLEoKC1HXIH2RtyP/pUMBgvaBb
-        jwAf59DQ=; b=B8Y1wPkIrwz9wCwtgZC8ks1X8dcR//B5L4dPMtbSxacmki1+5lt
-        FkMUZzIu6i3zuXuwdIWMtpVgx/P70TvCY14lr0Zw8DU28p95F+a/YaJ8j3NY4yQR
-        dYZQYre++R7JTvXb3k8oRM48cAm7GbsDLMjXnlK8Uz7Reo0skA5hwgfFqMYXQqXv
-        SjX1qmwGyxNzNMUgqQxTyVXyp17jZomWD1iQYgxSwN+EyheEZuDqEP317MagtXi2
-        N/dm+HTu23ZDECKdTomeRHLfIUczfdd1/Yix+3eI1wk2KkUtvVpvkLVqngcfX6J4
-        2C06ot7BCz+wv+XuHVWW6dXJFJ+/QCmlyLw==
-X-ME-Sender: <xms:WpbTZI0awJeeoOruYStqDGtlN_LmZS2tF2CNPt7ilqTqSbKD69YmEQ>
-    <xme:WpbTZDEYmDwKIZazTpgljzGu13IDpMnigC10j2lyIGAzBbMj_JDNftqJC6vznNKuM
-    k3LSb2vHUXL7KBiVjo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrleeggdeigecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgfekueelgeeigefhudduledtkeefffejueelheelfedutedttdfgveeufeef
-    ieegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:WpbTZA6rCjUKLUrF3LKbyYBXe5n7r9r_5MjP1bJlF_TjKgPB7NoAvw>
-    <xmx:WpbTZB3VBEXRyvYO_e6G5ahCiezY03ALoFGGZhNFGjwOBHSDTUgSrA>
-    <xmx:WpbTZLGPhpOm2VF8YWbftR8orvd7vnFngaCnEHpk1LVUbnoDCjnBXQ>
-    <xmx:W5bTZCB3HR6xM4_HZ_UKOpJgqKz-xs4lDwe7QhNCsYmmS-FaChmKnQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id CD8E1B60089; Wed,  9 Aug 2023 09:36:26 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
-Mime-Version: 1.0
-Message-Id: <eeeef65a-fbf9-403f-8541-5169b06976d7@app.fastmail.com>
-In-Reply-To: <66ca8677-6a8d-c2f6-f215-a49ae7248458@csgroup.eu>
-References: <20230809131024.2039647-1-arnd@kernel.org>
- <66ca8677-6a8d-c2f6-f215-a49ae7248458@csgroup.eu>
-Date:   Wed, 09 Aug 2023 15:35:46 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Christophe Leroy" <christophe.leroy@csgroup.eu>,
-        "Arnd Bergmann" <arnd@kernel.org>,
-        "Michael Ellerman" <mpe@ellerman.id.au>
-Cc:     "Nicholas Piggin" <npiggin@gmail.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Jiri Slaby" <jirislaby@kernel.org>,
-        "Maninder Singh" <maninder1.s@samsung.com>,
-        "Hugh Dickins" <hughd@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "Nathan Lynch" <nathanl@linux.ibm.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] powerpc: mark more local variables as volatile
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Wed, 9 Aug 2023 09:36:36 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527382126
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:36:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qvJyCH4RyOSoeLiwVOcFHSz0PusREL+nD+CkI4y87o0=; b=g4f26sN20pF8NWW2GiDjX1P+tH
+        Z8I0clKJy8ygqtG2dnXvZok8vA8MZKTDv7RasgfJQKl5D57T7E/pC8peqUPnWX+iMW3Zw6d8vG059
+        VsvSDXuf7UhpsT/4VgP0uXzuD6cMhdRJOOCVHfOcRHQAUQ2EM9tT0NrcZ51NqR0ftUXp1JwpQPRwM
+        CuSLHFfBrIkpLSU+q3mdn72t77M/RZ5euJ9392dF31TPkjmiKOQd7v3xqUU0w5Tg2okzMHGPYMGXm
+        UPZ+Jf6U3/gEvmoAAaKqNnLsjs9QDzyOp2GbXxot1FF6JGIKF0mtOnxzQ8lwR8tREfzmLb3StBJ2N
+        fifHRTug==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qTjMK-005fPF-27;
+        Wed, 09 Aug 2023 13:36:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CDF9F30003A;
+        Wed,  9 Aug 2023 15:36:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B2ECF20208EAB; Wed,  9 Aug 2023 15:36:19 +0200 (CEST)
+Date:   Wed, 9 Aug 2023 15:36:19 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andrew.Cooper3@citrix.com
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        jpoimboe@kernel.org, gregkh@linuxfoundation.org,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [RFC][PATCH 11/17] x86/cpu: Remove all SRSO interface nonsense
+Message-ID: <20230809133619.GL212435@hirez.programming.kicks-ass.net>
+References: <20230809071218.000335006@infradead.org>
+ <20230809072201.192502969@infradead.org>
+ <64f94037-d370-aa83-f8d8-ae827f606f60@citrix.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64f94037-d370-aa83-f8d8-ae827f606f60@citrix.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023, at 15:17, Christophe Leroy wrote:
-> Le 09/08/2023 =C3=A0 15:10, Arnd Bergmann a =C3=A9crit=C2=A0:
->> From: Arnd Bergmann <arnd@arndb.de>
->>=20
->> A while ago I created a2305e3de8193 ("powerpc: mark local variables
->> around longjmp as volatile") in order to allow building powerpc with
->> -Wextra enabled on gcc-11.
->
-> Should this be explained in=20
-> https://docs.kernel.org/process/volatile-considered-harmful.html ?
->
+On Wed, Aug 09, 2023 at 02:10:42PM +0100, Andrew.Cooper3@citrix.com wrote:
+> On 09/08/2023 8:12 am, Peter Zijlstra wrote:
+> > Now that retbleed can do all that the srso knob did, and without the
+> > dubious interactions with retbleed selections, remove it.
+> >
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> >  arch/x86/kernel/cpu/bugs.c |  188 ++-------------------------------------------
+> >  drivers/base/cpu.c         |    8 -
+> >  include/linux/cpu.h        |    2 
+> >  3 files changed, 10 insertions(+), 188 deletions(-)
+> 
+> Not all of this can go, because ...
+> 
+> > --- a/arch/x86/kernel/cpu/bugs.c
+> > +++ b/arch/x86/kernel/cpu/bugs.c
+> > ...
+> > -static void __init srso_select_mitigation(void)
+> > -{
+> > -	bool has_microcode;
+> > -
+> > -	if (!boot_cpu_has_bug(X86_BUG_SRSO) || cpu_mitigations_off())
+> > -		goto pred_cmd;
+> > -
+> > -	/*
+> > -	 * The first check is for the kernel running as a guest in order
+> > -	 * for guests to verify whether IBPB is a viable mitigation.
+> > -	 */
+> > -	has_microcode = boot_cpu_has(X86_FEATURE_IBPB_BRTYPE) || cpu_has_ibpb_brtype_microcode();
+> > -	if (!has_microcode) {
+> > -		pr_warn("IBPB-extending microcode not applied!\n");
+> > -		pr_warn(SRSO_NOTICE);
+> > -	} else {
+> > -		/*
+> > -		 * Enable the synthetic (even if in a real CPUID leaf)
+> > -		 * flags for guests.
+> > -		 */
+> > -		setup_force_cpu_cap(X86_FEATURE_IBPB_BRTYPE);
+> > -		setup_force_cpu_cap(X86_FEATURE_SBPB);
+> 
+> ... these (minus the virt bug caused by probing for microcode behaviour
+> even when virtualised, and the enumeration bug caused by ignoring
+> synthesis if host mitigations are off) are necessary for KVM.
+> 
+> https://www.amd.com/content/dam/amd/en/documents/corporate/cr/speculative-return-stack-overflow-whitepaper.pdf
+> 
+> and here's one I prepared earlier
+> https://xenbits.xen.org/gitweb/?p=xen.git;a=commitdiff;h=2280b0ee2aed6e0fd4af3fa31bf99bc04d038bfe
+> 
+> but these bits need to get into guests for the guests to be able to
+> figure out what to do.
 
-My feeling is that these two files are special enough that we
-don't have to worry about it in general, there is only one other
-caller of setjmp in the kernel, and the setjmp() man page
-explicitly mentions this problem and the workaround.
+Patch 6 adds these feature bits to retbleed_select_mitigation().
 
-     Arnd
+
