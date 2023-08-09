@@ -2,118 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4FF77560D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 630EB77560F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbjHIJDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 05:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40696 "EHLO
+        id S231451AbjHIJDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 05:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjHIJDA (ORCPT
+        with ESMTP id S231508AbjHIJDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 05:03:00 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D361FCD;
-        Wed,  9 Aug 2023 02:03:00 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37990QBt002136;
-        Wed, 9 Aug 2023 09:02:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=APN9R81y1vkzZ+bon6ieesrBDLEA2EFWpxUvuuoF+0E=;
- b=MeL0oUWa+w34dUaK4XODCPFKM9LHZg178MZjPkEwqzLNTpmLnMZ5aYiHLePNMA73lnPw
- EekK4UpHgPuXf+mhOd3v6WdE7vZSYNo2G4QLU1JA3JfhuYsZfVATWBXV/+loRlUchKRg
- Lp0WDBrS+/f//8VkS+nZyILhCn5EvIrdcY4v7ZcgMt8uIwYB70pQCoRbzV0UtJIG935D
- BaVpK88LOdsTsedhQbs+qmRKCAUB7u0UMVHLWsVlmVQYfsmQKc3dp2tvnoL9XaBwBNDb
- uyU2OzVKpTuXbD1eEma4ayUSgkQPKXCyWi+NrA+zuAoTXje+1szuZH23codLk8zX/WVj 5A== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sc0050wv7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 09:02:44 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37992h3V026256
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 9 Aug 2023 09:02:43 GMT
-Received: from [10.204.118.225] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 9 Aug
- 2023 02:02:40 -0700
-Message-ID: <42f78c02-1ddc-cf1c-694f-abf9059dfb60@quicinc.com>
-Date:   Wed, 9 Aug 2023 14:32:37 +0530
+        Wed, 9 Aug 2023 05:03:16 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF231FDE
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 02:03:13 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mtapsc-3-E2PvGH_dN_qFLXu5QR-fLA-1; Wed, 09 Aug 2023 10:03:09 +0100
+X-MC-Unique: E2PvGH_dN_qFLXu5QR-fLA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 9 Aug
+ 2023 10:03:05 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Wed, 9 Aug 2023 10:03:05 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>
+CC:     Mateusz Guzik <mjguzik@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oleg@redhat.com" <oleg@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: RE: [PATCH v2 (kindof)] fs: use __fput_sync in close(2)
+Thread-Topic: [PATCH v2 (kindof)] fs: use __fput_sync in close(2)
+Thread-Index: AQHZyjf9/+BpaDZOA0md/r6gL7olr6/hq0VA
+Date:   Wed, 9 Aug 2023 09:03:05 +0000
+Message-ID: <760ee963ce814021ab64e1ec9fee6477@AcuMS.aculab.com>
+References: <20230806230627.1394689-1-mjguzik@gmail.com>
+ <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
+ <20230808-eingaben-lumpen-e3d227386e23@brauner>
+ <CAGudoHF=cEvXy3v96dN_ruXHnPv33BA6fA+dCWCm-9L3xgMPNQ@mail.gmail.com>
+ <20230808-unsensibel-scham-c61a71622ae7@brauner>
+ <CAGudoHEQ6Tq=88VKqurypjHqOzfU2eBmPts4+H8C7iNu96MRKQ@mail.gmail.com>
+ <CAGudoHGqRr_WNz86pmgK9Kmnwsox+_XXqqbp+rLW53e5t8higg@mail.gmail.com>
+ <20230808-lebst-vorgibt-75c3010b4e54@brauner>
+ <CAHk-=wiyeMKrvU5GdjekSF65KS=i3hKzfJ1qe2Xja42K+qOd2w@mail.gmail.com>
+In-Reply-To: <CAHk-=wiyeMKrvU5GdjekSF65KS=i3hKzfJ1qe2Xja42K+qOd2w@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] Revert "Revert "wifi: ath11k: Enable threaded NAPI""
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-To:     Johan Hovold <johan+linaro@kernel.org>,
-        Kalle Valo <kvalo@kernel.org>
-CC:     Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230809073432.4193-1-johan+linaro@kernel.org>
-From:   Manikanta Pubbisetty <quic_mpubbise@quicinc.com>
-In-Reply-To: <20230809073432.4193-1-johan+linaro@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: uzOrskq2NaRDOacIBiyeeIdxixkzHzf-
-X-Proofpoint-GUID: uzOrskq2NaRDOacIBiyeeIdxixkzHzf-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-09_07,2023-08-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- malwarescore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
- bulkscore=0 mlxscore=0 adultscore=0 phishscore=0 clxscore=1011
- mlxlogscore=780 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308090079
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/2023 1:04 PM, Johan Hovold wrote:
-> This reverts commit d265ebe41c911314bd273c218a37088835959fa1.
-> 
-> Disabling threaded NAPI causes the Lenovo ThinkPad X13s to hang (e.g. no
-> more interrupts received) almost immediately during RX.
-> 
-> Apparently something broke since commit 13aa2fb692d3 ("wifi: ath11k:
-> Enable threaded NAPI") so that a simple revert is no longer possible.
-> 
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMDggQXVndXN0IDIwMjMgMTg6MDUNCi4uLg0K
+PiAgICAgICAgIHJldHVybiBfX2ZpbHBfY2xvc2UoZmlscCwgaWQsIHRydWUpOw0KPiANCj4gYW5k
+IHRoZXJlIGlzIHplcm8gY2x1ZSBhYm91dCB3aGF0IHRoZSBoZWNrICd0cnVlJyBtZWFucy4NCj4g
+DQo+IEF0IGxlYXN0IHRoZW4gdGhlICJiZWhhdmlvciBmbGFncyIgYXJlIG5hbWVkIGJpdG1hc2tz
+LCB0aGluZ3MgbWFrZQ0KPiAqc2Vuc2UqLiBCdXQgd2UgaGF2ZSB0b28gbWFueSBvZiB0aGVzZSBi
+b29sZWFuIGFyZ3VtZW50cy4NCg0KQW5kIG1ha2UgdGhlIHVzdWFsIGNhc2UgMC4NCg0KSSB3YXMg
+Y2hhc2luZyB0aHJvdWdoIHNvbWUgY29kZSB0aGF0IGhhcyBhIGZsYWcgZm9yIGENCmNvbmRpdGlv
+bmFsIGxvY2suDQpIb3dldmVyIGlzIHdhcyAnTkVFRF9UT19MT0NLJyBub3QgJ0FMUkVBRFlfTE9D
+S0VEJy4NCihicGYgY2FsbGluZyBpbiB3aXRoIHRoZSBzb2NrZXQgbG9ja2VkKS4NCg0KQXMgd2Vs
+bCBhcyBtYWtpbmcgdGhlIGNvZGUgaGFyZGVyIHRvIHJlYWQgaXQgaXMgYW4gYWNjaWRlbnQNCmp1
+c3Qgd2FpdGluZyB0byBoYXBwZW4uDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3Mg
+TGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQ
+VCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-This is getting as weird as it would get :)
-
-> As commit d265ebe41c91 ("Revert "wifi: ath11k: Enable threaded NAPI"")
-> does not address the underlying issue reported with QCN9074, it seems we
-> need to reenable threaded NAPI before fixing both bugs properly.
-> 
-
-It seems that the revert has actually solved the issue reported with 
-QCN9074.
-
-https://bugzilla.kernel.org/show_bug.cgi?id=217536
-
-We were trying to reproduce the problem on X86+QCN9074 (with threaded 
-NAPI) from quite some time, but there is no repro yet.
-
-Actually, enabling/disabling threaded NAPI is a simple affair; I'm 
-wondering to hear that interrupts are blocked due  to not having 
-threaded NAPI.
-
-What is the chip that Lenovo Thinkpad X13s is having?
-
-Thanks,
-Manikanta
