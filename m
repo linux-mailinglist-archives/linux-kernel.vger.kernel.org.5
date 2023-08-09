@@ -2,394 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BDB7756BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790D57756C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbjHIJ5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 05:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59430 "EHLO
+        id S232156AbjHIJ5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 05:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjHIJ5a (ORCPT
+        with ESMTP id S232146AbjHIJ5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 05:57:30 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4C21FCA
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 02:57:28 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fe1fc8768aso63586865e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 02:57:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691575047; x=1692179847;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/rmEnk1g8Unm9TjBDd1nYGxjvPpnWaZtUFtYH71EmO0=;
-        b=zrFX/lyuS1Z8xnbtzpce6hDvet9q21gy05mTvo4dzgluuV4jCIVRZIwM8DpAqVr0je
-         SpPAtnaNykmtJAJskcZE1CjzOBYUYMDZ4MPRS0Mpph+AF3KqGHKMcljIjwkmtyXpgac/
-         qbfOnGiT2TIUCvLuGutLmvJSBHRHdDBrWmIZIg0067XZT0qzwS/luicPD1WTBZzYLK09
-         OmJww5lDhce1XMbLUtQfPE67fvA7nvDB938XQm5cXu8jkz3BJaCoIrt+FPTK/bSeFgXh
-         iYyN0BSUyxlTNCJrYNUrkJ9H9vnqvb9Blzx7BBJVUyomhmeDTTGbUu66BxxipYS/U7w+
-         dbbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691575047; x=1692179847;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/rmEnk1g8Unm9TjBDd1nYGxjvPpnWaZtUFtYH71EmO0=;
-        b=RbYQCKwLXkagQUPbMXN3X7nY0ZbeooOe8qqWZ+dOQ2J+IJI+g4SmyvyZYZ8i0hGTL9
-         rLP/MwEWVE5aBn/R79xQADCbrhiFAyJgCw7TD4I1JsqraJfUgc0x6FWX6jeDiZcfk0ce
-         hCUVFMtRjhB36mNRLUirjsFpHi2Mv1dwiDebVeDD9bwUtU9hOxRndE6MZp49VXTDsMlJ
-         v/pnoFGmCFVbNLLI8d8SdPMprwWJMsp39UwuvBzmK+E0Xzwi0Kivlyxm4mJGt/a7W8Bi
-         BD6ZxwHlWLeVlIAYUSMSg2aaxsMLPzhLsnJ2e8KtYvE+vqXjxvQTQ1q3MXjdoqb64CvA
-         ZhxA==
-X-Gm-Message-State: AOJu0YxTBq8WUDHmZA8zeo70kJIDbtEla2Zjo2CJ8IpY/hZLqRN09lWB
-        Gh+g301ztJIPJUMOa7VImG8heA==
-X-Google-Smtp-Source: AGHT+IHn+CGz9CoURGc+L1iYofdZgIMRwp6uPgN5OhPNo0J4iMMDCIEPm6uBtj2a9yAjeaEWUXS37g==
-X-Received: by 2002:a05:600c:210:b0:3fe:ad3:b066 with SMTP id 16-20020a05600c021000b003fe0ad3b066mr1884370wmi.41.1691575046903;
-        Wed, 09 Aug 2023 02:57:26 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:9c:201:9ce0:327a:6e5a:3533])
-        by smtp.gmail.com with ESMTPSA id h18-20020a1ccc12000000b003fbd9e390e1sm1479988wmb.47.2023.08.09.02.57.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 02:57:25 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 11:57:19 +0200
-From:   Marco Elver <elver@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] list_debug: Introduce CONFIG_DEBUG_LIST_MINIMAL
-Message-ID: <ZNNi/4L1mD8XPNix@elver.google.com>
-References: <20230808102049.465864-1-elver@google.com>
- <20230808102049.465864-3-elver@google.com>
- <202308081424.1DC7AA4AE3@keescook>
- <CANpmjNM3rc8ih7wvFc2GLuMDLpWcdA8uWfut-5tOajqtVG952A@mail.gmail.com>
+        Wed, 9 Aug 2023 05:57:40 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741801FDE;
+        Wed,  9 Aug 2023 02:57:39 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3799WPpA019243;
+        Wed, 9 Aug 2023 09:57:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=fVpgZKslMcyy352rXxoKVRWUIDnDc472zh70Y9sLZgk=;
+ b=d4Maz9dq4SjgkOTMh2RTqY13cOKTAQs8oueOBSPBMnLZ5spYWEKo/FlK1apofX7D4STP
+ KjymAC3tcisMx2NVwreuPp0jnu/b8yRLxRK//LJ5gdcKCx0bk5e/8xQu16XS8+r674CL
+ i5znt2G23mHVjUpH7CKwWACD9c0TXkkNZ7j8Lq4ZZvkW8WiAJzt5PTbngkodRGuoAg13
+ 05aZD0ilcOoqTz2mT2E/t4hXbg9CMvZsALLUlPISD6CQxS8bY3ayCjx0UO3IWxxb0YjM
+ 0fUJcIGsczxcu5n52FM+pyulKdFQrq/Jy6zIvgOLeaTuaw8A8O/E3z6CxOyiOpjddPX9 lw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sc6k588t0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Aug 2023 09:57:33 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3799vWRb025929
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 9 Aug 2023 09:57:32 GMT
+Received: from [10.79.198.201] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 9 Aug
+ 2023 02:57:28 -0700
+Message-ID: <2e9c9e03-bc25-9c37-2a91-0fbf75d500a4@quicinc.com>
+Date:   Wed, 9 Aug 2023 15:27:25 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNM3rc8ih7wvFc2GLuMDLpWcdA8uWfut-5tOajqtVG952A@mail.gmail.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] pinctrl: qcom: Add intr_target_width field to support
+ increased number of interrupt targets
+Content-Language: en-US
+To:     Andrew Halaney <ahalaney@redhat.com>,
+        Bjorn Andersson <andersson@kernel.org>
+CC:     <agross@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_ppareek@quicinc.com>,
+        <psodagud@quicinc.com>, <quic_kprasan@quicinc.com>,
+        <quic_ymg@quicinc.com>, Bjorn Andersson <quic_bjorande@quicinc.com>
+References: <20230718064246.12429-1-quic_ninanaik@quicinc.com>
+ <fskuol2q4wbfilrz3x3dcmikhjgfsajgnuqjnp4petxr2ne6at@zfnonisxnjh3>
+ <pdag3mk5fru4x7zc3lljrt3mlg2g2pa6l6h7l6fyd6n2kjydli@yvxpnjelwfns>
+From:   Ninad Naik <quic_ninanaik@quicinc.com>
+In-Reply-To: <pdag3mk5fru4x7zc3lljrt3mlg2g2pa6l6h7l6fyd6n2kjydli@yvxpnjelwfns>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: wOVM9lJuCgmwe85pme1p7db5VnxWtSxy
+X-Proofpoint-ORIG-GUID: wOVM9lJuCgmwe85pme1p7db5VnxWtSxy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-09_08,2023-08-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 priorityscore=1501
+ impostorscore=0 suspectscore=0 clxscore=1011 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308090087
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 09:35AM +0200, Marco Elver wrote:
 
-> > I'd really like to get away from calling this "DEBUG", since it's used
-> > more for hardening (CONFIG_LIST_HARDENED?). Will Deacon spent some time
-> > making this better a while back, but the series never landed. Do you
-> > have a bit of time to look through it?
-> >
-> > https://github.com/KSPP/linux/issues/10
-> > https://lore.kernel.org/lkml/20200324153643.15527-1-will@kernel.org/
+
+On 8/9/2023 2:36 AM, Andrew Halaney wrote:
+> On Tue, Jul 18, 2023 at 08:32:59AM -0700, Bjorn Andersson wrote:
+>> On Tue, Jul 18, 2023 at 12:12:46PM +0530, Ninad Naik wrote:
+>>> SA8775 and newer target have added support for an increased number of
+>>> interrupt targets. To implement this change, the intr_target field, which
+>>> is used to configure the interrupt target in the interrupt configuration
+>>> register is increased from 3 bits to 4 bits.
+>>>
+>>> In accordance to these updates, a new intr_target_width member is
+>>> introduced in msm_pingroup structure. This member stores the value of
+>>> width of intr_target field in the interrupt configuration register. This
+>>> value is used to dynamically calculate and generate mask for setting the
+>>> intr_target field. By default, this mask is set to 3 bit wide, to ensure
+>>> backward compatibility with the older targets.
+>>>
+>>> Changes in v2 :
+>>> -----------------
+>>> - Changed initial definition of intr_target_mask variable to use GENMASK().
+>>> - Update commit subject appropiately.
+>>> - Add Fixes tag.
+>>> - v1 : https://lore.kernel.org/all/20230714061010.15817-1-quic_ninanaik@quicinc.com/
+>>
+>> Thanks for adding a good changelog, very much appreciated. The changelog
+>> should be added below the '---' line though, as it typically don't add
+>> value to the git history (except drivers/gpu/* which wants it here...).
+>>
+>> Perhaps Linus can drop it as he applies the patch, no need to resubmit
+>> unless he ask you to.
+>>
+>> Thanks,
+>> Bjorn
+>>
 > 
-> I'm fine renaming this one. But there are other issues that Will's
-> series solves, which I don't want this series to depend on. We can try
-> to sort them out separately.
+> Gentle ping on this one... but then I realized that linusw isn't CC'ed
+> on this patch directly, and I'm unsure of what the workflow is for
+> pinctrl. ./scripts/get_maintainer.pl shows he should have been in the CC
+> list ideally :)
 > 
-> The main problem here is that DEBUG_LIST has been designed to be
-> friendly for debugging (incl. checking poison values and NULL). Some
-> kernel devs may still want that, but for production use is pointless
-> and wasteful.
+> Maybe send a v3 with the changelog dropped from the actual message (i.e.
+> follow Bjorn's advice), and make sure to include the folks
+> get_maintainer tells you to so this gets picked up (or maybe just saying
+> Linus' name will make him appear out of the woodworks if we're lucky):
+My bad on this one, I'll immediately send a v3 along with addressing the 
+changelog suggestion mentioned by Bjorn.
 > 
-> So what I can propose is to introduce CONFIG_LIST_HARDENED that
-> doesn't depend on CONFIG_DEBUG_LIST, but instead selects it, because
-> we still use that code to produce a report.
-
-How about the below?
-
-We'll add CONFIG_HARDEN_LIST (in Kconfig.hardening), which is
-independent of CONFIG_DEBUG_LIST. For the implementation it selects
-DEBUG_LIST, but irrelevant for users.
-
-This will get us the best of both worlds: a version for hardening that
-should remain as fast as possible, and one for debugging with better
-reports.
-
------- >8 ------
-
-From: Marco Elver <elver@google.com>
-Date: Thu, 27 Jul 2023 22:19:02 +0200
-Subject: [PATCH v4 3/3] list: Introduce CONFIG_HARDEN_LIST
-
-Numerous production kernel configs (see [1, 2]) are choosing to enable
-CONFIG_DEBUG_LIST, which is also being recommended by KSPP for hardened
-configs [3]. The motivation behind this is that the option can be used
-as a security hardening feature (e.g. CVE-2019-2215 and CVE-2019-2025
-are mitigated by the option [4]).
-
-The feature has never been designed with performance in mind, yet common
-list manipulation is happening across hot paths all over the kernel.
-
-Introduce CONFIG_HARDEN_LIST, which performs list pointer checking
-inline, and only upon list corruption calls the reporting slow path.
-
-To generate optimal machine code with CONFIG_HARDEN_LIST:
-
-  1. Elide checking for pointer values which upon dereference would
-     result in an immediate access fault -- therefore "minimal" checks.
-     The trade-off is lower-quality error reports.
-
-  2. Use the newly introduced __preserve_most function attribute
-     (available with Clang, but not yet with GCC) to minimize the code
-     footprint for calling the reporting slow path. As a result,
-     function size of callers is reduced by avoiding saving registers
-     before calling the rarely called reporting slow path.
-
-     Note that all TUs in lib/Makefile already disable function tracing,
-     including list_debug.c, and __preserve_most's implied notrace has
-     no effect in this case.
-
-  3. Because the inline checks are a subset of the full set of checks in
-     __list_*_valid_or_report(), always return false if the inline
-     checks failed.  This avoids redundant compare and conditional
-     branch right after return from the slow path.
-
-As a side-effect of the checks being inline, if the compiler can prove
-some condition to always be true, it can completely elide some checks.
-
-Running netperf with CONFIG_HARDEN_LIST (using a Clang compiler with
-"preserve_most") shows throughput improvements, in my case of ~7% on
-average (up to 20-30% on some test cases).
-
-Link: https://r.android.com/1266735 [1]
-Link: https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/blob/main/config [2]
-Link: https://kernsec.org/wiki/index.php/Kernel_Self_Protection_Project/Recommended_Settings [3]
-Link: https://googleprojectzero.blogspot.com/2019/11/bad-binder-android-in-wild-exploit.html [4]
-Signed-off-by: Marco Elver <elver@google.com>
----
-v4:
-* Rename to CONFIG_HARDEN_LIST, which can independently be selected from
-  CONFIG_DEBUG_LIST.
-
-v3:
-* Rename ___list_*_valid() to __list_*_valid_or_report().
-* More comments.
-
-v2:
-* Note that lib/Makefile disables function tracing for everything and
-  __preserve_most's implied notrace is a noop here.
----
- arch/arm64/kvm/hyp/nvhe/list_debug.c |  2 +
- include/linux/list.h                 | 64 +++++++++++++++++++++++++---
- lib/Kconfig.debug                    | 12 ++++--
- lib/list_debug.c                     |  2 +
- security/Kconfig.hardening           | 14 ++++++
- 5 files changed, 84 insertions(+), 10 deletions(-)
-
-diff --git a/arch/arm64/kvm/hyp/nvhe/list_debug.c b/arch/arm64/kvm/hyp/nvhe/list_debug.c
-index 16266a939a4c..46a2d4f2b3c6 100644
---- a/arch/arm64/kvm/hyp/nvhe/list_debug.c
-+++ b/arch/arm64/kvm/hyp/nvhe/list_debug.c
-@@ -26,6 +26,7 @@ static inline __must_check bool nvhe_check_data_corruption(bool v)
- 
- /* The predicates checked here are taken from lib/list_debug.c. */
- 
-+__list_valid_slowpath
- bool __list_add_valid_or_report(struct list_head *new, struct list_head *prev,
- 				struct list_head *next)
- {
-@@ -37,6 +38,7 @@ bool __list_add_valid_or_report(struct list_head *new, struct list_head *prev,
- 	return true;
- }
- 
-+__list_valid_slowpath
- bool __list_del_entry_valid_or_report(struct list_head *entry)
- {
- 	struct list_head *prev, *next;
-diff --git a/include/linux/list.h b/include/linux/list.h
-index 130c6a1bb45c..1c7f70b7cc7a 100644
---- a/include/linux/list.h
-+++ b/include/linux/list.h
-@@ -39,38 +39,90 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
- }
- 
- #ifdef CONFIG_DEBUG_LIST
-+
-+#ifdef CONFIG_HARDEN_LIST
-+# define __list_valid_slowpath __cold __preserve_most
-+#else
-+# define __list_valid_slowpath
-+#endif
-+
- /*
-  * Performs the full set of list corruption checks before __list_add().
-  * On list corruption reports a warning, and returns false.
-  */
--extern bool __list_add_valid_or_report(struct list_head *new,
--				       struct list_head *prev,
--				       struct list_head *next);
-+extern bool __list_valid_slowpath __list_add_valid_or_report(struct list_head *new,
-+							     struct list_head *prev,
-+							     struct list_head *next);
- 
- /*
-  * Performs list corruption checks before __list_add(). Returns false if a
-  * corruption is detected, true otherwise.
-+ *
-+ * With CONFIG_HARDEN_LIST set, performs minimal list integrity checking (that
-+ * do not result in a fault) inline, and only if a corruption is detected calls
-+ * the reporting function __list_add_valid_or_report().
-  */
- static __always_inline bool __list_add_valid(struct list_head *new,
- 					     struct list_head *prev,
- 					     struct list_head *next)
- {
--	return __list_add_valid_or_report(new, prev, next);
-+	bool ret = true;
-+
-+	if (IS_ENABLED(CONFIG_HARDEN_LIST)) {
-+		/*
-+		 * With the hardening version, elide checking if next and prev
-+		 * are NULL, since the immediate dereference of them below would
-+		 * result in a fault if NULL.
-+		 *
-+		 * With the reduced set of checks, we can afford to inline the
-+		 * checks, which also gives the compiler a chance to elide some
-+		 * of them completely if they can be proven at compile-time. If
-+		 * one of the pre-conditions does not hold, the slow-path will
-+		 * show a report which pre-condition failed.
-+		 */
-+		if (likely(next->prev == prev && prev->next == next && new != prev && new != next))
-+			return true;
-+		ret = false;
-+	}
-+
-+	ret &= __list_add_valid_or_report(new, prev, next);
-+	return ret;
- }
- 
- /*
-  * Performs the full set of list corruption checks before __list_del_entry().
-  * On list corruption reports a warning, and returns false.
-  */
--extern bool __list_del_entry_valid_or_report(struct list_head *entry);
-+extern bool __list_valid_slowpath __list_del_entry_valid_or_report(struct list_head *entry);
- 
- /*
-  * Performs list corruption checks before __list_del_entry(). Returns false if a
-  * corruption is detected, true otherwise.
-+ *
-+ * With CONFIG_HARDEN_LIST set, performs minimal list integrity checking (that
-+ * do not result in a fault) inline, and only if a corruption is detected calls
-+ * the reporting function __list_del_entry_valid_or_report().
-  */
- static __always_inline bool __list_del_entry_valid(struct list_head *entry)
- {
--	return __list_del_entry_valid_or_report(entry);
-+	bool ret = true;
-+
-+	if (IS_ENABLED(CONFIG_HARDEN_LIST)) {
-+		struct list_head *prev = entry->prev;
-+		struct list_head *next = entry->next;
-+
-+		/*
-+		 * With the hardening version, elide checking if next and prev
-+		 * are NULL, LIST_POISON1 or LIST_POISON2, since the immediate
-+		 * dereference of them below would result in a fault.
-+		 */
-+		if (likely(prev->next == entry && next->prev == entry))
-+			return true;
-+		ret = false;
-+	}
-+
-+	ret &= __list_del_entry_valid_or_report(entry);
-+	return ret;
- }
- #else
- static inline bool __list_add_valid(struct list_head *new,
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index fbc89baf7de6..6b0de78fb2da 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1672,11 +1672,15 @@ config HAVE_DEBUG_BUGVERBOSE
- menu "Debug kernel data structures"
- 
- config DEBUG_LIST
--	bool "Debug linked list manipulation"
--	depends on DEBUG_KERNEL || BUG_ON_DATA_CORRUPTION
-+	bool "Debug linked list manipulation" if !HARDEN_LIST
-+	depends on DEBUG_KERNEL || BUG_ON_DATA_CORRUPTION || HARDEN_LIST
- 	help
--	  Enable this to turn on extended checks in the linked-list
--	  walking routines.
-+	  Enable this to turn on extended checks in the linked-list walking
-+	  routines.
-+
-+	  If you care about performance, you should enable CONFIG_HARDEN_LIST
-+	  instead.  This option alone trades better quality error reports for
-+	  worse performance, and is more suitable for debugging.
- 
- 	  If unsure, say N.
- 
-diff --git a/lib/list_debug.c b/lib/list_debug.c
-index 2def33b1491f..0ff547910dd0 100644
---- a/lib/list_debug.c
-+++ b/lib/list_debug.c
-@@ -17,6 +17,7 @@
-  * attempt).
-  */
- 
-+__list_valid_slowpath
- bool __list_add_valid_or_report(struct list_head *new, struct list_head *prev,
- 				struct list_head *next)
- {
-@@ -39,6 +40,7 @@ bool __list_add_valid_or_report(struct list_head *new, struct list_head *prev,
- }
- EXPORT_SYMBOL(__list_add_valid_or_report);
- 
-+__list_valid_slowpath
- bool __list_del_entry_valid_or_report(struct list_head *entry)
- {
- 	struct list_head *prev, *next;
-diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
-index 0f295961e773..a8aef895f13d 100644
---- a/security/Kconfig.hardening
-+++ b/security/Kconfig.hardening
-@@ -279,6 +279,20 @@ config ZERO_CALL_USED_REGS
- 
- endmenu
- 
-+menu "Hardening of kernel data structures"
-+
-+config HARDEN_LIST
-+	bool "Check integrity of linked list manipulation"
-+	select DEBUG_LIST
-+	help
-+	  Minimal integrity checking in the linked-list manipulation routines
-+	  to catch memory corruptions that are not guaranteed to result in an
-+	  immediate access fault.
-+
-+	  If unsure, say N.
-+
-+endmenu
-+
- config CC_HAS_RANDSTRUCT
- 	def_bool $(cc-option,-frandomize-layout-seed-file=/dev/null)
- 	# Randstruct was first added in Clang 15, but it isn't safe to use until
--- 
-2.41.0.640.ga95def55d0-goog
-
+>      ahalaney@fedora ~/git/linux-next (git)-[7de73ad15b73] % b4 am 20230718064246.12429-1-quic_ninanaik@quicinc.com
+>      Grabbing thread from lore.kernel.org/all/20230718064246.12429-1-quic_ninanaik@quicinc.com/t.mbox.gz
+>      Analyzing 3 messages in the thread
+>      Checking attestation on all messages, may take a moment...
+>      ---
+>        ✓ [PATCH v2] pinctrl: qcom: Add intr_target_width field to support increased number of interrupt targets
+>        ---
+>        ✓ Signed: DKIM/quicinc.com
+>      ---
+>      Total patches: 1
+>      ---
+>       Link: https://lore.kernel.org/r/20230718064246.12429-1-quic_ninanaik@quicinc.com
+>       Base: applies clean to current tree
+>             git checkout -b v2_20230718_quic_ninanaik_quicinc_com HEAD
+>             git am ./v2_20230718_quic_ninanaik_pinctrl_qcom_add_intr_target_width_field_to_support_increased_number_of_in.mbx
+>      ahalaney@fedora ~/git/linux-next (git)-[7de73ad15b73] % ./scripts/get_maintainer.pl ./v2_20230718_quic_ninanaik_pinctrl_qcom_add_intr_target_width_field_to_support_increased_number_of_in.mbx
+>      Andy Gross <agross@kernel.org> (maintainer:ARM/QUALCOMM SUPPORT)
+>      Bjorn Andersson <andersson@kernel.org> (maintainer:ARM/QUALCOMM SUPPORT)
+>      Konrad Dybcio <konrad.dybcio@linaro.org> (maintainer:ARM/QUALCOMM SUPPORT,blamed_fixes:1/1=100%)
+>      Linus Walleij <linus.walleij@linaro.org> (maintainer:PIN CONTROL SUBSYSTEM,blamed_fixes:1/1=100%)
+>      Bartosz Golaszewski <bartosz.golaszewski@linaro.org> (blamed_fixes:1/1=100%)
+>      Yadu MG <quic_ymg@quicinc.com> (blamed_fixes:1/1=100%)
+>      Prasad Sodagudi <quic_psodagud@quicinc.com> (blamed_fixes:1/1=100%)
+>      linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT)
+>      linux-gpio@vger.kernel.org (open list:PIN CONTROL SUBSYSTEM)
+>      linux-kernel@vger.kernel.org (open list)
+>      ahalaney@fedora ~/git/linux-next (git)-[7de73ad15b73] %
+> 
+> I'm eager to get this fix in so I can describe a missing IRQ or two
+> wrt ethernet GPIOs and submit that without stating the dependency
+> on this fix! :)
+> 
+> Thanks,
+> Andrew
+> 
+Thanks,
+Ninad
