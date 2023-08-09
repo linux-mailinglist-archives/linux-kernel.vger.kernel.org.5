@@ -2,157 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A817750D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 04:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4918D7750D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 04:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbjHICPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 22:15:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
+        id S229947AbjHICPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 22:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjHICPI (ORCPT
+        with ESMTP id S229674AbjHICPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 22:15:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA68E1BDA
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 19:14:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691547263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QSwkRG8bcSleBdtSsjCnyBmp/8Y+sHuiXOKQQOlQtH4=;
-        b=WnzLQHsd7uNV/mInjNmcgWwQEaaqMqkhL+Q107HLGkQxwVk+E14r9nXvBDSaoKZqojPxDe
-        bBNsRJqoffpb6Jizzm1e8sJSbD5PzZGvcLIfGXyRBI/JhxsbdJP8Klkiw4P+vk0kjVQl0r
-        +dkCqWxK7VGWw0LjZUJ6ab14NaHa8/k=
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
- [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-371-5fwvUZTtMJeHDZxbD_W5lg-1; Tue, 08 Aug 2023 22:14:21 -0400
-X-MC-Unique: 5fwvUZTtMJeHDZxbD_W5lg-1
-Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1b0812d43a0so597717fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 19:14:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691547261; x=1692152061;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QSwkRG8bcSleBdtSsjCnyBmp/8Y+sHuiXOKQQOlQtH4=;
-        b=dFc0LrQprMs9CqGnkc3Wbbm2DVSObRM1LEPTfAs7XL03ee32d3gBqsivnQdLqWe26R
-         qdB2KWtFZMTOYsbcyLtH9Flpz88ELwpi63B95tr6E3n+YkAat9lLPWBw9AsQOB0Jm2Yc
-         9NgVctX+dNVJD3zMUjmG6LdQ0tP1ziWazSpt7bOoczSuCz93aPqV63H+xSW02zkFm4Mg
-         t50d7I+nutIAp03kSVOlCZHGCNDLlXqH0o0miTVJn+Y19AuhFnFwtaY0+lNa4zhaf2Us
-         tfeyCWF0/8GoL2VW9p5fHGrEggJg06X9L8LFW1kkCGOfwTujn8Y/SzJPhf0T3EI5pzkc
-         NP2Q==
-X-Gm-Message-State: AOJu0YyEgv2SRvyg14A8BBynm4qyKFGSkdZ33GKCEC5njkl/7pumrmTY
-        BzrZFMbFmo6ngyc6tf6fS8fs1W15HqPjRftyQ8c1TJINpGSdeo2+2meIRlGD7Tjjj1s/sY46D4y
-        qN5H2/W8MjztJxxRl/bBY05R1
-X-Received: by 2002:a05:6870:b6a9:b0:1bf:1c49:749c with SMTP id cy41-20020a056870b6a900b001bf1c49749cmr8730778oab.13.1691547260770;
-        Tue, 08 Aug 2023 19:14:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEHlHClRw7hdQrrpejz4vuDyEoE85EOUKHc1btv2W4ZMe793U+R5Uo/+moePgCrObCJ/o3ANw==
-X-Received: by 2002:a05:6870:b6a9:b0:1bf:1c49:749c with SMTP id cy41-20020a056870b6a900b001bf1c49749cmr8730768oab.13.1691547260529;
-        Tue, 08 Aug 2023 19:14:20 -0700 (PDT)
-Received: from localhost.localdomain ([2804:431:c7ec:e667:6b7d:ed55:c363:a088])
-        by smtp.gmail.com with ESMTPSA id v10-20020a4a8c4a000000b0054fba751207sm6475518ooj.47.2023.08.08.19.14.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 19:14:20 -0700 (PDT)
-From:   Leonardo Bras <leobras@redhat.com>
-To:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Leonardo Bras <leobras@redhat.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Guo Ren <guoren@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [RFC PATCH v4 5/5] riscv/cmpxchg: Implement xchg for variables of size 1 and 2
-Date:   Tue,  8 Aug 2023 23:13:10 -0300
-Message-ID: <20230809021311.1390578-7-leobras@redhat.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230809021311.1390578-2-leobras@redhat.com>
-References: <20230809021311.1390578-2-leobras@redhat.com>
+        Tue, 8 Aug 2023 22:15:37 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A391FF5;
+        Tue,  8 Aug 2023 19:15:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1691547314;
+        bh=WwhPpUPIIJ1F0bzlOpEW0k9XGC15BGNZygV8v9njSAE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FzAQ4+AeQxDY6ihN3HVgV1vJKNN6sy3W7x/3QDDV8wpqpi8jgllQsMvLvBmQAuOXX
+         /Wkt3zh+fv1tgX4QVNPMlQaHoUhFSE9WcTpe+wsweOi8gQR6MNT4Ebv77U7Ewt0q9n
+         X/JXDfMIzIY5+7JHmkNz6YtZSvsC/i8kPx6CMoZizupybRpS4fGP5CZZrllajw2fQ/
+         a0EEWiBbh8NBswd4rESwQ4R1+EUv5HdTOcSKLjHjg1qVVACYLOcT/vhCnH02fhw9N6
+         e+grgUiMeBE6RTinHaA1TJemgHTolPP7Mob2Ck94o2ajtL1t4a9HVKxLFT68KcZQ9I
+         t3W6eoxsn2nBg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RLDD069zFz4wqX;
+        Wed,  9 Aug 2023 12:15:12 +1000 (AEST)
+Date:   Wed, 9 Aug 2023 12:15:11 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Petr Pavlu <petr.pavlu@suse.com>
+Subject: linux-next: manual merge of the tip tree with Linus' tree
+Message-ID: <20230809121511.683222bc@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/x4+GA/H3iTCwCxkB3mEt39H";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xchg for variables of size 1-byte and 2-bytes is not yet available for
-riscv, even though its present in other architectures such as arm64 and
-x86. This could lead to not being able to implement some locking mechanisms
-or requiring some rework to make it work properly.
+--Sig_/x4+GA/H3iTCwCxkB3mEt39H
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Implement 1-byte and 2-bytes xchg in order to achieve parity with other
-architectures.
+Hi all,
 
-Signed-off-by: Leonardo Bras <leobras@redhat.com>
----
- arch/riscv/include/asm/cmpxchg.h | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+Today's linux-next merge of the tip tree got conflicts in:
 
-diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
-index cfada8a7cfd2..1640308f3c4d 100644
---- a/arch/riscv/include/asm/cmpxchg.h
-+++ b/arch/riscv/include/asm/cmpxchg.h
-@@ -11,6 +11,31 @@
- #include <asm/barrier.h>
- #include <asm/fence.h>
- 
-+#define __arch_xchg_masked(prepend, append, r, p, n)			\
-+({									\
-+	u32 *__ptr32b = (u32 *)((ulong)(p) & ~0x3);			\
-+	ulong __s = ((ulong)(p) & (0x4 - sizeof(*p))) * BITS_PER_BYTE;	\
-+	ulong __mask = GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)	\
-+			<< __s;						\
-+	ulong __newx = (ulong)(n) << __s;				\
-+	ulong __retx;							\
-+	ulong __rc;							\
-+									\
-+	__asm__ __volatile__ (						\
-+	       prepend							\
-+	       "0:	lr.w %0, %2\n"					\
-+	       "	and  %1, %0, %z4\n"				\
-+	       "	or   %1, %1, %z3\n"				\
-+	       "	sc.w %1, %1, %2\n"				\
-+	       "	bnez %1, 0b\n"					\
-+	       append							\
-+	       : "=&r" (__retx), "=&r" (__rc), "+A" (*(__ptr32b))	\
-+	       : "rJ" (__newx), "rJ" (~__mask)				\
-+	       : "memory");						\
-+									\
-+	r = (__typeof__(*(p)))((__retx & __mask) >> __s);		\
-+})
-+
- #define __arch_xchg(sfx, prepend, append, r, p, n)			\
- ({									\
- 	__asm__ __volatile__ (						\
-@@ -27,7 +52,13 @@
- 	__typeof__(*(ptr)) __new = (new);				\
- 	__typeof__(*(ptr)) __ret;					\
- 	__typeof__(ptr) __ptr = (ptr);					\
-+									\
- 	switch (sizeof(*__ptr)) {					\
-+	case 1:								\
-+	case 2:								\
-+		__arch_xchg_masked(prepend, append,			\
-+				   __ret, __ptr, __new);		\
-+		break;							\
- 	case 4:								\
- 		__arch_xchg(".w" sfx, prepend, append,			\
- 			      __ret, __ptr, __new);			\
--- 
-2.41.0
+  arch/x86/include/asm/processor.h
+  arch/x86/kernel/vmlinux.lds.S
+  arch/x86/lib/retpoline.S
 
+between commits:
+
+  fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
+  3bbbe97ad83d ("x86/srso: Add a forgotten NOENDBR annotation")
+
+from Linus' tree and commits:
+
+  566ffa3ae964 ("x86/cpu: Fix amd_check_microcode() declaration")
+  973ab2d61f33 ("x86/retpoline,kprobes: Fix position of thunk sections with=
+ CONFIG_LTO_CLANG")
+  029239c5b0e6 ("x86/retpoline,kprobes: Skip optprobe check for indirect ju=
+mps with retpolines and IBT")
+
+from the tip tree.
+
+I fixed it up (I think - see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/x86/include/asm/processor.h
+index 7c67db7c9f53,36d52075fdad..000000000000
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@@ -682,11 -682,11 +682,13 @@@ extern u16 get_llc_id(unsigned int cpu)
+  #ifdef CONFIG_CPU_SUP_AMD
+  extern u32 amd_get_nodes_per_socket(void);
+  extern u32 amd_get_highest_perf(void);
+ +extern bool cpu_has_ibpb_brtype_microcode(void);
++ extern void amd_check_microcode(void);
+  #else
+  static inline u32 amd_get_nodes_per_socket(void)	{ return 0; }
+  static inline u32 amd_get_highest_perf(void)		{ return 0; }
+ +static inline bool cpu_has_ibpb_brtype_microcode(void)	{ return false; }
++ static inline void amd_check_microcode(void)		{ }
+  #endif
+ =20
+  extern unsigned long arch_align_stack(unsigned long sp);
+diff --cc arch/x86/kernel/vmlinux.lds.S
+index e76813230192,dd5b0a68cf84..000000000000
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@@ -133,28 -133,12 +133,26 @@@ SECTION
+  		KPROBES_TEXT
+  		SOFTIRQENTRY_TEXT
+  #ifdef CONFIG_RETPOLINE
+- 		__indirect_thunk_start =3D .;
+- 		*(.text.__x86.indirect_thunk)
+- 		*(.text.__x86.return_thunk)
+- 		__indirect_thunk_end =3D .;
+ -		*(.text..__x86.*)
+++		*(.text..__x86.indirect_thunk)
+++		*(.text..__x86.return_thunk)
+  #endif
+  		STATIC_CALL_TEXT
+ =20
+  		ALIGN_ENTRY_TEXT_BEGIN
+ +#ifdef CONFIG_CPU_SRSO
+- 		*(.text.__x86.rethunk_untrain)
+++		*(.text..__x86.rethunk_untrain)
+ +#endif
+ +
+  		ENTRY_TEXT
+ +
+ +#ifdef CONFIG_CPU_SRSO
+ +		/*
+ +		 * See the comment above srso_untrain_ret_alias()'s
+ +		 * definition.
+ +		 */
+ +		. =3D srso_untrain_ret_alias | (1 << 2) | (1 << 8) | (1 << 14) | (1 << =
+20);
+- 		*(.text.__x86.rethunk_safe)
+++		*(.text..__x86.rethunk_safe)
+ +#endif
+  		ALIGN_ENTRY_TEXT_END
+  		*(.gnu.warning)
+ =20
+diff --cc arch/x86/lib/retpoline.S
+index 2cff585f22f2,3bea96341d00..000000000000
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@@ -11,9 -11,8 +11,9 @@@
+  #include <asm/unwind_hints.h>
+  #include <asm/percpu.h>
+  #include <asm/frame.h>
+ +#include <asm/nops.h>
+ =20
+- 	.section .text.__x86.indirect_thunk
++ 	.section .text..__x86.indirect_thunk
+ =20
+ =20
+  .macro POLINE reg
+@@@ -132,47 -131,7 +132,47 @@@ SYM_CODE_END(__x86_indirect_jump_thunk_
+   */
+  #ifdef CONFIG_RETHUNK
+ =20
+ +/*
+ + * srso_untrain_ret_alias() and srso_safe_ret_alias() are placed at
+ + * special addresses:
+ + *
+ + * - srso_untrain_ret_alias() is 2M aligned
+ + * - srso_safe_ret_alias() is also in the same 2M page but bits 2, 8, 14
+ + * and 20 in its virtual address are set (while those bits in the
+ + * srso_untrain_ret_alias() function are cleared).
+ + *
+ + * This guarantees that those two addresses will alias in the branch
+ + * target buffer of Zen3/4 generations, leading to any potential
+ + * poisoned entries at that BTB slot to get evicted.
+ + *
+ + * As a result, srso_safe_ret_alias() becomes a safe return.
+ + */
+ +#ifdef CONFIG_CPU_SRSO
+- 	.section .text.__x86.rethunk_untrain
+++	.section .text..__x86.rethunk_untrain
+ +
+ +SYM_START(srso_untrain_ret_alias, SYM_L_GLOBAL, SYM_A_NONE)
+ +	ANNOTATE_NOENDBR
+ +	ASM_NOP2
+ +	lfence
+ +	jmp __x86_return_thunk
+ +SYM_FUNC_END(srso_untrain_ret_alias)
+ +__EXPORT_THUNK(srso_untrain_ret_alias)
+ +
+- 	.section .text.__x86.rethunk_safe
+++	.section .text..__x86.rethunk_safe
+ +#endif
+ +
+ +/* Needs a definition for the __x86_return_thunk alternative below. */
+ +SYM_START(srso_safe_ret_alias, SYM_L_GLOBAL, SYM_A_NONE)
+ +#ifdef CONFIG_CPU_SRSO
+ +	add $8, %_ASM_SP
+ +	UNWIND_HINT_FUNC
+ +#endif
+ +	ANNOTATE_UNRET_SAFE
+ +	ret
+ +	int3
+ +SYM_FUNC_END(srso_safe_ret_alias)
+ +
+- 	.section .text.__x86.return_thunk
++ 	.section .text..__x86.return_thunk
+ =20
+  /*
+   * Safety details here pertain to the AMD Zen{1,2} microarchitecture:
+
+--Sig_/x4+GA/H3iTCwCxkB3mEt39H
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTS9q8ACgkQAVBC80lX
+0GzdOwf/X9HFMeVhGA7dhzn2I8yOdafOMdBkjuyBInYjUNuHzKCPxn7pjk3DH/aj
+QrxNuxMhd5Nwn1tiPjZsvXDpH5TNf2UPlq/QoykHB4jhjlpfvLxT8jIpw5gUy+86
+sEObHKoPpuhHO28tzrHkCA4yyQ+rpi+aNAqQqf7THEurijn6mg9wG2PvroX6J7ff
+Mm5wq3yXyG9SNPeLHJOYk8tM8aEAyJASwc40DWVw+8qI39pBkbxFvV9AetXZY78t
+XwtTKRx4l61PIGDW82Gju6Ms/WYJBKtdvqRh+jAd0Ai2iu9TCr8XsZ1Cdvuj1fcF
+8zy3hffNCNh9iZHP8XnUtADaJkp3pw==
+=jdw1
+-----END PGP SIGNATURE-----
+
+--Sig_/x4+GA/H3iTCwCxkB3mEt39H--
