@@ -2,65 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CB2775CAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7ED775CD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233840AbjHIL3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 07:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41338 "EHLO
+        id S233878AbjHILbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 07:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233832AbjHIL3v (ORCPT
+        with ESMTP id S233873AbjHILbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 07:29:51 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F59DED;
-        Wed,  9 Aug 2023 04:29:50 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 378NlZZ8005941;
-        Wed, 9 Aug 2023 04:29:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=pfpt0220;
- bh=H12jWoQ9Yn+PT5Ld8R+chIyyliHNetnP35GmXz/m5F0=;
- b=cT+bCLcjO8q5CHjRMkMATg7VZXvi5FnYtXeyX44VR3EGFst2Enrq36r+tdo91KR6/nG9
- 2mkAW34CU4UoU3JZorFnFPJML0x9TSMa14IC+qTBl/S4iNnFi95704sKh2yIfVjxF2BH
- MZ/sJBha24ADC39ZFzSJYPNlTQDYD7mbzISwqyl+ATedHSmWEYlXeAD1fpdcN5jbgLCu
- sMeWxmf1+KNqeJO2K0hktIM/3G6RWmHAqxZ/9OtBd4qMYyeMmEF4LYpNQl7LQN5Z8S3F
- PXBlKOFfizAWSPGqOqZ32+f0nbjaMnjFfkvkvbmyfq3Q1Db5MTUdkYrfRoUdFqShqHtB vw== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3sbkntmhwh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 04:29:40 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 9 Aug
- 2023 04:29:38 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Wed, 9 Aug 2023 04:29:38 -0700
-Received: from setup-1.sclab.marvell.com (unknown [10.106.25.74])
-        by maili.marvell.com (Postfix) with ESMTP id 3DB475B6928;
-        Wed,  9 Aug 2023 04:29:38 -0700 (PDT)
-From:   Sathesh Edara <sedara@marvell.com>
-To:     <linux-kernel@vger.kernel.org>, <sburla@marvell.com>,
-        <vburru@marvell.com>, <davem@davemloft.net>, <edumazet@google.com>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <hgani@marvell.com>, <andrew@lunn.ch>
-CC:     <sedara@marvell.com>
-Subject: [net-next PATCH v3] octeon_ep: Add control plane host and firmware versions.
-Date:   Wed, 9 Aug 2023 04:29:33 -0700
-Message-ID: <20230809112933.716736-1-sedara@marvell.com>
-X-Mailer: git-send-email 2.37.3
+        Wed, 9 Aug 2023 07:31:14 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE53A1724;
+        Wed,  9 Aug 2023 04:31:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691580673; x=1723116673;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=gc/k12JdBABud9ZIDvGAhL+ZChT73bLO70lm7YLIVAk=;
+  b=hPWXF/noIesp9h075VOEuRMsZqXi/EC0w0g6rL96IdG8FXlD9Odbhxw4
+   cUHZPHKRQm+0IzIC6zZ3tvk8dEvanLMTjcGixZb6ZwL3I0hT1tswudaom
+   74MkfwR1RdWk2wsW9HAW5yDoFz8YC1A9XyDc3Z8YevklWldUbSlcZyJho
+   xEu/vqFRBzejnlmqHDhKZpUBf2KwaU5BcRUhoxKOlwNyGhcXmSdpa/JUX
+   fcSASyOCnMeAd6NHJ0I86llUQfTAc2Hl59LlFy2NtHUVXbeY2nk2t5GrE
+   eNeQmjhEBJaxxQKBIWEzqWP3aYgk5CtPIWejqz2eWOB9trEG0Um2KJYgR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="368553946"
+X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
+   d="scan'208";a="368553946"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 04:31:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="731771419"
+X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
+   d="scan'208";a="731771419"
+Received: from sjakoel-mobl1.ger.corp.intel.com (HELO [10.252.50.115]) ([10.252.50.115])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 04:31:09 -0700
+Message-ID: <ee9d2d01-96f7-2032-7b12-7e2748829bf9@linux.intel.com>
+Date:   Wed, 9 Aug 2023 14:31:07 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] x86/tsc: Add new BPF helper call bpf_rdtsc
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>
+References: <20230703105745.1314475-1-tero.kristo@linux.intel.com>
+ <20230703105745.1314475-2-tero.kristo@linux.intel.com>
+ <CAADnVQL2Tn+2rP0hVB3kdB0At12qVu+vJ_WbJzrkxqOJ5va2vQ@mail.gmail.com>
+ <64a64e46b7d5b_b20ce208de@john.notmuch>
+ <4b874e4c-4ad3-590d-3885-b4a3b894524e@linux.intel.com>
+ <CAADnVQK0rzHWxxx7LMFSTuBx18A+6H6AEkKFHNDkPwbPUbsk4Q@mail.gmail.com>
+ <64a7a597b1e9e_dddea208db@john.notmuch>
+ <6b0c67e9-e806-200c-3af4-cfdd2e5c47d3@linux.intel.com>
+ <CAADnVQ+bsKuio_wNQV-sk-ZHbS-+z686BLs5_5u7Uybbt5GU=Q@mail.gmail.com>
+Content-Language: en-US
+From:   Tero Kristo <tero.kristo@linux.intel.com>
+In-Reply-To: <CAADnVQ+bsKuio_wNQV-sk-ZHbS-+z686BLs5_5u7Uybbt5GU=Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: iz845MqLmRsInaTS4R0oFSwsvkiM94Nv
-X-Proofpoint-ORIG-GUID: iz845MqLmRsInaTS4R0oFSwsvkiM94Nv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-09_10,2023-08-09_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,238 +83,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement control plane mailbox versions for host and firmware.
-Versions are published in info area of control mailbox bar4
-memory structure.Firmware will publish minimum and maximum
-supported versions.Control plane mailbox apis will check for
-firmware version before sending any control commands to firmware.
-Notifications from firmware will similarly be checked for host
-version compatibility.
+Hi,
 
-Signed-off-by: Sathesh Edara <sedara@marvell.com>
----
-v3:
-  - Fixed below warnings from the patchwork.
-	../drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h:61:18: warning: ‘octep_ctrl_net_f2h_cmd_versions’ defined but not used [-Wunused-const-variable=]
-   61 | static const u32 octep_ctrl_net_f2h_cmd_versions[OCTEP_CTRL_NET_F2H_CMD_MAX] = {
- 
-	../drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h:48:18: warning: ‘octep_ctrl_net_h2f_cmd_versions’ defined but not used [-Wunused-const-variable=]
-   48 | static const u32 octep_ctrl_net_h2f_cmd_versions[OCTEP_CTRL_NET_H2F_CMD_MAX] = {
+Coming back to this bit late, I was on vacation for a few weeks.
 
-v2:
-  - Addressed review comments given by Andrew Lunn
-    1. Removed firmware version check
-    2. Fixed compilation error by adding missed header file
- .../marvell/octeon_ep/octep_cp_version.h      | 11 ++++++
- .../marvell/octeon_ep/octep_ctrl_mbox.c       |  9 ++++-
- .../marvell/octeon_ep/octep_ctrl_mbox.h       |  6 +++
- .../marvell/octeon_ep/octep_ctrl_net.c        | 37 ++++++++++++++++++-
- .../marvell/octeon_ep/octep_ctrl_net.h        |  4 ++
- 5 files changed, 64 insertions(+), 3 deletions(-)
- create mode 100644 drivers/net/ethernet/marvell/octeon_ep/octep_cp_version.h
+On 07/07/2023 17:42, Alexei Starovoitov wrote:
+> On Fri, Jul 7, 2023 at 1:28 AM Tero Kristo <tero.kristo@linux.intel.com> wrote:
+>>
+>> On 07/07/2023 08:41, John Fastabend wrote:
+>>> Alexei Starovoitov wrote:
+>>>> On Thu, Jul 6, 2023 at 4:59 AM Tero Kristo <tero.kristo@linux.intel.com> wrote:
+>>>>> On 06/07/2023 08:16, John Fastabend wrote:
+>>>>>> Alexei Starovoitov wrote:
+>>>>>>> On Mon, Jul 3, 2023 at 3:58 AM Tero Kristo <tero.kristo@linux.intel.com> wrote:
+>>>>>>>> Currently the raw TSC counter can be read within kernel via rdtsc_ordered()
+>>>>>>>> and friends, and additionally even userspace has access to it via the
+>>>>>>>> RDTSC assembly instruction. BPF programs on the other hand don't have
+>>>>>>>> direct access to the TSC counter, but alternatively must go through the
+>>>>>>>> performance subsystem (bpf_perf_event_read), which only provides relative
+>>>>>>>> value compared to the start point of the program, and is also much slower
+>>>>>>>> than the direct read. Add a new BPF helper definition for bpf_rdtsc() which
+>>>>>>>> can be used for any accurate profiling needs.
+>>>>>>>>
+>>>>>>>> A use-case for the new API is for example wakeup latency tracing via
+>>>>>>>> eBPF on Intel architecture, where it is extremely beneficial to be able
+>>>>>>>> to get raw TSC timestamps and compare these directly to the value
+>>>>>>>> programmed to the MSR_IA32_TSC_DEADLINE register. This way a direct
+>>>>>>>> latency value from the hardware interrupt to the execution of the
+>>>>>>>> interrupt handler can be calculated. Having the functionality within
+>>>>>>>> eBPF also has added benefits of allowing to filter any other relevant
+>>>>>>>> data like C-state residency values, and also to drop any irrelevant
+>>>>>>>> data points directly in the kernel context, without passing all the
+>>>>>>>> data to userspace for post-processing.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
+>>>>>>>> ---
+>>>>>>>>     arch/x86/include/asm/msr.h |  1 +
+>>>>>>>>     arch/x86/kernel/tsc.c      | 23 +++++++++++++++++++++++
+>>>>>>>>     2 files changed, 24 insertions(+)
+>>>>>>>>
+>>>>>>>> diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
+>>>>>>>> index 65ec1965cd28..3dde673cb563 100644
+>>>>>>>> --- a/arch/x86/include/asm/msr.h
+>>>>>>>> +++ b/arch/x86/include/asm/msr.h
+>>>>>>>> @@ -309,6 +309,7 @@ struct msr *msrs_alloc(void);
+>>>>>>>>     void msrs_free(struct msr *msrs);
+>>>>>>>>     int msr_set_bit(u32 msr, u8 bit);
+>>>>>>>>     int msr_clear_bit(u32 msr, u8 bit);
+>>>>>>>> +u64 bpf_rdtsc(void);
+>>>>>>>>
+>>>>>>>>     #ifdef CONFIG_SMP
+>>>>>>>>     int rdmsr_on_cpu(unsigned int cpu, u32 msr_no, u32 *l, u32 *h);
+>>>>>>>> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+>>>>>>>> index 344698852146..ded857abef81 100644
+>>>>>>>> --- a/arch/x86/kernel/tsc.c
+>>>>>>>> +++ b/arch/x86/kernel/tsc.c
+>>>>>>>> @@ -15,6 +15,8 @@
+>>>>>>>>     #include <linux/timex.h>
+>>>>>>>>     #include <linux/static_key.h>
+>>>>>>>>     #include <linux/static_call.h>
+>>>>>>>> +#include <linux/btf.h>
+>>>>>>>> +#include <linux/btf_ids.h>
+>>>>>>>>
+>>>>>>>>     #include <asm/hpet.h>
+>>>>>>>>     #include <asm/timer.h>
+>>>>>>>> @@ -29,6 +31,7 @@
+>>>>>>>>     #include <asm/intel-family.h>
+>>>>>>>>     #include <asm/i8259.h>
+>>>>>>>>     #include <asm/uv/uv.h>
+>>>>>>>> +#include <asm/tlbflush.h>
+>>>>>>>>
+>>>>>>>>     unsigned int __read_mostly cpu_khz;    /* TSC clocks / usec, not used here */
+>>>>>>>>     EXPORT_SYMBOL(cpu_khz);
+>>>>>>>> @@ -1551,6 +1554,24 @@ void __init tsc_early_init(void)
+>>>>>>>>            tsc_enable_sched_clock();
+>>>>>>>>     }
+>>>>>>>>
+>>>>>>>> +u64 bpf_rdtsc(void)
+>>>>>>>> +{
+>>>>>>>> +       /* Check if Time Stamp is enabled only in ring 0 */
+>>>>>>>> +       if (cr4_read_shadow() & X86_CR4_TSD)
+>>>>>>>> +               return 0;
+>>>>>>> Why check this? It's always enabled in the kernel, no?
+>>>>> It is always enabled, but there are certain syscalls that can be used to
+>>>>> disable the TSC access for oneself. prctl(PR_SET_TSC, ...) and
+>>>>> seccomp(SET_MODE_STRICT,...). Not having the check in place would in
+>>>>> theory allow a restricted BPF program to circumvent this (if there ever
+>>>>> was such a thing.) But yes, I do agree this part is a bit debatable
+>>>>> whether it should be there at all.
+>>>> What do you mean 'circumvent' ?
+>>>> It's a tracing bpf prog running in the kernel loaded by root
+>>>> and reading tsc for the purpose of the kernel.
+>>>> There is no unprivileged access to tsc here.
+>> This was based on some discussions with the security team at Intel, I
+>> don't pretend to know anything about security myself. But I can drop the
+>> check. It is probably not needed because of the fact that it is already
+>> possible to read the TSC counter with the approach I mention in the
+>> cover letter; via perf and bpf_core_read().
+>>>>>>>> +
+>>>>>>>> +       return rdtsc_ordered();
+>>>>>>> Why _ordered? Why not just rdtsc ?
+>>>>>>> Especially since you want to trace latency. Extra lfence will ruin
+>>>>>>> the measurements.
+>>>>>>>
+>>>>>> If we used it as a fast way to order events on multiple CPUs I
+>>>>>> guess we need the lfence? We use ktime_get_ns() now for things
+>>>>>> like this when we just need an order counter. We have also
+>>>>>> observed time going backwards with this and have heuristics
+>>>>>> to correct it but its rare.
+>>>>> Yeah, I think it is better to induce some extra latency instead of
+>>>>> having some weird ordering issues with the timestamps.
+>>>> lfence is not 'some extra latency'.
+>>>> I suspect rdtsc_ordered() will be slower than bpf_ktime_get_ns().
+>>>> What's the point of using it then?
+>>> I would only use it if its faster then bpf_ktime_get_ns() and
+>>> have already figured out how to handle rare unordered events
+>>> so I think its OK to relax somewhat strict ordering.
+>> I believe that on x86-arch using bpf_ktime_get_ns() also ends up calling
+>> rdtsc_odered() under the hood.
+>>
+>> I just did some measurements on an Intel(R) Xeon(R) Platinum 8360Y CPU @
+>> 2.40GHz, with a simple BPF code:
+>>
+>>           t1 = bpf_ktime_get_ns();
+>>
+>>           for (i = 0; i < NUM_CYC; i++) {
+>>                   bpf_rdtsc(); // or bpf_ktime_get_ns() here
+>>           }
+>>
+>>           t2 = bpf_ktime_get_ns();
+>>
+>> The results I got with the CPU locked at 2.4GHz (average execution times
+>> per a call within the loop, this with some 10M executions):
+>>
+>> bpf_rdtsc() ordered : 45ns
+>>
+>> bpf_rdtsc() un-ordered : 23ns
+>>
+>> bpf_ktime_get_ns() : 49ns
+> Thanks for crunching the numbers.
+> Based on them it's hard to justify adding the ordered variant.
+> We already have ktime_get_ns, ktime_get_boot_ns, ktime_get_coarse_ns,
+> ktime_get_tai_ns with pretty close performance and different time
+> constraints. rdtsc_ordered doesn't bring anything new to the table.
+> bpf_rdtsc() would be justified if it's significantly faster
+> than traditional ktime*() helpers.
 
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_cp_version.h b/drivers/net/ethernet/marvell/octeon_ep/octep_cp_version.h
-new file mode 100644
-index 000000000000..0c741e752db6
---- /dev/null
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_cp_version.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: BSD-3-Clause
-+ * Copyright (c) 2022 Marvell.
-+ */
-+#ifndef __OCTEP_CP_VERSION_H__
-+#define __OCTEP_CP_VERSION_H__
-+
-+#define OCTEP_CP_VERSION(a, b, c)	((((a) & 0xff) << 16) + \
-+					 (((b) & 0xff) << 8) + \
-+					  ((c) & 0xff))
-+
-+#endif /* __OCTEP_CP_VERSION_H__ */
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_mbox.c b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_mbox.c
-index dab61cc1acb5..9d53c1402cb4 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_mbox.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_mbox.c
-@@ -37,7 +37,9 @@
- 
- #define OCTEP_CTRL_MBOX_INFO_MAGIC_NUM(m)	(m)
- #define OCTEP_CTRL_MBOX_INFO_BARMEM_SZ(m)	((m) + 8)
-+#define OCTEP_CTRL_MBOX_INFO_HOST_VERSION(m)   ((m) + 16)
- #define OCTEP_CTRL_MBOX_INFO_HOST_STATUS(m)	((m) + 24)
-+#define OCTEP_CTRL_MBOX_INFO_FW_VERSION(m)     ((m) + 136)
- #define OCTEP_CTRL_MBOX_INFO_FW_STATUS(m)	((m) + 144)
- 
- #define OCTEP_CTRL_MBOX_H2FQ_INFO(m)	((m) + OCTEP_CTRL_MBOX_INFO_SZ)
-@@ -71,7 +73,7 @@ static u32 octep_ctrl_mbox_circq_depth(u32 pi, u32 ci, u32 sz)
- 
- int octep_ctrl_mbox_init(struct octep_ctrl_mbox *mbox)
- {
--	u64 magic_num, status;
-+	u64 magic_num, status, fw_versions;
- 
- 	if (!mbox)
- 		return -EINVAL;
-@@ -93,6 +95,9 @@ int octep_ctrl_mbox_init(struct octep_ctrl_mbox *mbox)
- 		return -EINVAL;
- 	}
- 
-+	fw_versions = readq(OCTEP_CTRL_MBOX_INFO_FW_VERSION(mbox->barmem));
-+	mbox->min_fw_version = ((fw_versions & 0xffffffff00000000ull) >> 32);
-+	mbox->max_fw_version = (fw_versions & 0xffffffff);
- 	mbox->barmem_sz = readl(OCTEP_CTRL_MBOX_INFO_BARMEM_SZ(mbox->barmem));
- 
- 	writeq(OCTEP_CTRL_MBOX_STATUS_INIT,
-@@ -113,6 +118,7 @@ int octep_ctrl_mbox_init(struct octep_ctrl_mbox *mbox)
- 			  OCTEP_CTRL_MBOX_TOTAL_INFO_SZ +
- 			  mbox->h2fq.sz;
- 
-+	writeq(mbox->version, OCTEP_CTRL_MBOX_INFO_HOST_VERSION(mbox->barmem));
- 	/* ensure ready state is seen after everything is initialized */
- 	wmb();
- 	writeq(OCTEP_CTRL_MBOX_STATUS_READY,
-@@ -258,6 +264,7 @@ int octep_ctrl_mbox_uninit(struct octep_ctrl_mbox *mbox)
- 	if (!mbox->barmem)
- 		return -EINVAL;
- 
-+	writeq(0, OCTEP_CTRL_MBOX_INFO_HOST_VERSION(mbox->barmem));
- 	writeq(OCTEP_CTRL_MBOX_STATUS_INVALID,
- 	       OCTEP_CTRL_MBOX_INFO_HOST_STATUS(mbox->barmem));
- 	/* ensure uninit state is written before uninitialization */
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_mbox.h b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_mbox.h
-index 9c4ff0fba6a0..7f8135788efc 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_mbox.h
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_mbox.h
-@@ -121,6 +121,8 @@ struct octep_ctrl_mbox_q {
- };
- 
- struct octep_ctrl_mbox {
-+	/* control plane version */
-+	u64 version;
- 	/* size of bar memory */
- 	u32 barmem_sz;
- 	/* pointer to BAR memory */
-@@ -133,6 +135,10 @@ struct octep_ctrl_mbox {
- 	struct mutex h2fq_lock;
- 	/* lock for f2hq */
- 	struct mutex f2hq_lock;
-+	/* Min control plane version supported by firmware */
-+	u32 min_fw_version;
-+	/* Max control plane version supported by firmware */
-+	u32 max_fw_version;
- };
- 
- /* Initialize control mbox.
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c
-index 1cc6af2feb38..4c6d91a8c83e 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c
-@@ -14,6 +14,9 @@
- #include "octep_main.h"
- #include "octep_ctrl_net.h"
- 
-+/* Control plane version */
-+#define OCTEP_CP_VERSION_CURRENT	OCTEP_CP_VERSION(1, 0, 0)
-+
- static const u32 req_hdr_sz = sizeof(union octep_ctrl_net_req_hdr);
- static const u32 mtu_sz = sizeof(struct octep_ctrl_net_h2f_req_cmd_mtu);
- static const u32 mac_sz = sizeof(struct octep_ctrl_net_h2f_req_cmd_mac);
-@@ -21,6 +24,18 @@ static const u32 state_sz = sizeof(struct octep_ctrl_net_h2f_req_cmd_state);
- static const u32 link_info_sz = sizeof(struct octep_ctrl_net_link_info);
- static atomic_t ctrl_net_msg_id;
- 
-+/* Control plane version in which OCTEP_CTRL_NET_H2F_CMD was added */
-+static const u32 octep_ctrl_net_h2f_cmd_versions[OCTEP_CTRL_NET_H2F_CMD_MAX] = {
-+	[OCTEP_CTRL_NET_H2F_CMD_INVALID ... OCTEP_CTRL_NET_H2F_CMD_LINK_INFO] =
-+	 OCTEP_CP_VERSION(1, 0, 0)
-+};
-+
-+/* Control plane version in which OCTEP_CTRL_NET_F2H_CMD was added */
-+static const u32 octep_ctrl_net_f2h_cmd_versions[OCTEP_CTRL_NET_F2H_CMD_MAX] = {
-+	[OCTEP_CTRL_NET_F2H_CMD_INVALID ... OCTEP_CTRL_NET_F2H_CMD_LINK_STATUS] =
-+	 OCTEP_CP_VERSION(1, 0, 0)
-+};
-+
- static void init_send_req(struct octep_ctrl_mbox_msg *msg, void *buf,
- 			  u16 sz, int vfid)
- {
-@@ -41,7 +56,13 @@ static int octep_send_mbox_req(struct octep_device *oct,
- 			       struct octep_ctrl_net_wait_data *d,
- 			       bool wait_for_response)
- {
--	int err, ret;
-+	int err, ret, cmd;
-+
-+	/* check if firmware is compatible for this request */
-+	cmd = d->data.req.hdr.s.cmd;
-+	if (octep_ctrl_net_h2f_cmd_versions[cmd] > oct->ctrl_mbox.max_fw_version ||
-+	    octep_ctrl_net_h2f_cmd_versions[cmd] < oct->ctrl_mbox.min_fw_version)
-+		return -EOPNOTSUPP;
- 
- 	err = octep_ctrl_mbox_send(&oct->ctrl_mbox, &d->msg);
- 	if (err < 0)
-@@ -84,12 +105,16 @@ int octep_ctrl_net_init(struct octep_device *oct)
- 
- 	/* Initialize control mbox */
- 	ctrl_mbox = &oct->ctrl_mbox;
-+	ctrl_mbox->version = OCTEP_CP_VERSION_CURRENT;
- 	ctrl_mbox->barmem = CFG_GET_CTRL_MBOX_MEM_ADDR(oct->conf);
- 	ret = octep_ctrl_mbox_init(ctrl_mbox);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to initialize control mbox\n");
- 		return ret;
- 	}
-+	dev_info(&pdev->dev, "Control plane versions host: %llx, firmware: %x:%x\n",
-+		 ctrl_mbox->version, ctrl_mbox->min_fw_version,
-+		 ctrl_mbox->max_fw_version);
- 	oct->ctrl_mbox_ifstats_offset = ctrl_mbox->barmem_sz;
- 
- 	return 0;
-@@ -273,9 +298,17 @@ static int process_mbox_notify(struct octep_device *oct,
- {
- 	struct net_device *netdev = oct->netdev;
- 	struct octep_ctrl_net_f2h_req *req;
-+	int cmd;
- 
- 	req = (struct octep_ctrl_net_f2h_req *)msg->sg_list[0].msg;
--	switch (req->hdr.s.cmd) {
-+	cmd = req->hdr.s.cmd;
-+
-+	/* check if we support this command */
-+	if (octep_ctrl_net_f2h_cmd_versions[cmd] > OCTEP_CP_VERSION_CURRENT ||
-+	    octep_ctrl_net_f2h_cmd_versions[cmd] < OCTEP_CP_VERSION_CURRENT)
-+		return -EOPNOTSUPP;
-+
-+	switch (cmd) {
- 	case OCTEP_CTRL_NET_F2H_CMD_LINK_STATUS:
- 		if (netif_running(netdev)) {
- 			if (req->link.state) {
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h
-index 37880dd79116..1c2ef4ee31d9 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h
-@@ -7,6 +7,8 @@
- #ifndef __OCTEP_CTRL_NET_H__
- #define __OCTEP_CTRL_NET_H__
- 
-+#include "octep_cp_version.h"
-+
- #define OCTEP_CTRL_NET_INVALID_VFID	(-1)
- 
- /* Supported commands */
-@@ -39,12 +41,14 @@ enum octep_ctrl_net_h2f_cmd {
- 	OCTEP_CTRL_NET_H2F_CMD_LINK_STATUS,
- 	OCTEP_CTRL_NET_H2F_CMD_RX_STATE,
- 	OCTEP_CTRL_NET_H2F_CMD_LINK_INFO,
-+	OCTEP_CTRL_NET_H2F_CMD_MAX
- };
- 
- /* Supported fw to host commands */
- enum octep_ctrl_net_f2h_cmd {
- 	OCTEP_CTRL_NET_F2H_CMD_INVALID = 0,
- 	OCTEP_CTRL_NET_F2H_CMD_LINK_STATUS,
-+	OCTEP_CTRL_NET_F2H_CMD_MAX
- };
- 
- union octep_ctrl_net_req_hdr {
--- 
-2.37.3
+The only other justification I can use here is that the TSC counter is 
+useful if you are dealing with any other counters that use TSC as a 
+reference; mainly the Intel power management residency counters use same 
+time base / resolution as TSC.
 
+Converting between the TSC / ktime can get cumbersome, and you would 
+need to get the magic conversion factors from somewhere.
+
+-Tero
+
+>
+>> Locking the CPU at 800MHz the results are:
+>>
+>> bpf_rdtsc() ordered : 55ns
+>>
+>> bpf_rdtsc() un-ordered : 33ns
+>>
+>> bpf_ktime_get_ns() : 71ns
+>>
+>> The bpf_rdtsc() in these results contains some extra latency caused by
+>> conditional execution, I added a flag to the call to select whether it
+>> should use _ordered() or not, and it also still contains the CR4_TSD
+>> check in place.
+>>
+>> -Tero
+>>
+>>>>> Also, things like the ftrace also use rdtsc_ordered() as its underlying
+>>>>> clock, if you use x86-tsc as the trace clock (see
+>>>>> arch/x86/kernel/trace_clock.c.)
+>>>>>
+>>>>> -Tero
+>>>>>
