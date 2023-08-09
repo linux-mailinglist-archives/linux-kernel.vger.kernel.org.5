@@ -2,95 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A33F775C53
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE4D775C6D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233716AbjHIL0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 07:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
+        id S233752AbjHIL1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 07:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233703AbjHIL0C (ORCPT
+        with ESMTP id S233746AbjHIL1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 07:26:02 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B5B1BFA;
-        Wed,  9 Aug 2023 04:26:00 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379BPmDJ030649;
-        Wed, 9 Aug 2023 06:25:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691580348;
-        bh=cWz4NGyNUy8El8zxWZq8xRMxA/ymzzfHRBdrRbIlWlc=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=Se1iRQczej6fZ8SJw31vlbm4qE/P3AxYtFliQOCX0r4jJSiNCgB1MVzmySuOF+EEu
-         jaU1Q2rOhEKa6QXJk8K1kQtIYtiVink0zFadSTuA+eCtAn0m9Fqq4UbDNrgHkfNmPQ
-         MNaSHfIif4UAda0JhF2sjUNUQVi3L/4oVRC4OLcU=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379BPmr4031434
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Aug 2023 06:25:48 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
- Aug 2023 06:25:48 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 9 Aug 2023 06:25:48 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379BPmGg116542;
-        Wed, 9 Aug 2023 06:25:48 -0500
-Date:   Wed, 9 Aug 2023 06:25:48 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Dhruva Gole <d-gole@ti.com>
-CC:     Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Tony Lindgren <tony@atomide.com>,
-        =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Vibhore Vardhan <vibhore@ti.com>, <linux-omap@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH V3 2/2] dt-bindings: cpufreq: Convert ti-cpufreq to json
- schema
-Message-ID: <20230809112548.cf5o7yxqeu3nfqdq@kobold>
-References: <20230809023045.1870410-1-nm@ti.com>
- <20230809023045.1870410-3-nm@ti.com>
- <20230809043012.gcsnn5bfr7j25ow7@dhruva>
+        Wed, 9 Aug 2023 07:27:16 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6692ED;
+        Wed,  9 Aug 2023 04:27:15 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id 4fb4d7f45d1cf-522a9e0e6e9so1875347a12.1;
+        Wed, 09 Aug 2023 04:27:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691580434; x=1692185234;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OqBHARz0gmz3J5h20e3FvkE1XWPr6CIGExbvAgbjDhw=;
+        b=QMvBMIJoXoZDSFdMVYCz4Y/73g0nVsWYDNzFfwl5ukY9NYx2lGqHBcO0qxUrfNbHlZ
+         AcBb4Rv69MLGqjY6VWJsnLISVkrVNLnUA4X/mSDz1oXVKx4STZPBNLjzBar96z/KPEd1
+         LQ/vgMX86vsdH7MUK5SXBw8oYUBb2aXE0Sc6a26t8VaEiQHqSpp0s0rc6URQGiPQAq+S
+         LfcIhymIaNuDNcdVi+XUSBCwJQcJAgprCfKGSpIHTlhz49nrtiiBPs/DAADLPQd+SNez
+         zns4MmOBQwA47xskgBR5n7CN4taDzIo0KzgIIcOqAVxMg3PnHiGMN6Sz4leRI6QdwTVa
+         iE0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691580434; x=1692185234;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OqBHARz0gmz3J5h20e3FvkE1XWPr6CIGExbvAgbjDhw=;
+        b=Li3GEaCxU+9/i5xxn6mDdIyCaNWIlj6Upm+xM77p9HxSXQOMm85MTC3oaKuMN9TJQv
+         kkxlm9ZaoAu4aEs9MrTdUSJG1RpBcOIctZoUMPHuUSTOfjBf0hnR8odEhsztbr4VAvP/
+         +JS/j/eUbGG/NascuedynOQg+dIwx6BvkNoPST3X69LsXLb6gFXG8RySiV2kGKmL8MDh
+         JsqIo2W4Hoo5iZGhbH/hDeiNaPyZlR1Ogov3nLExW1if/8vc/ZV+kVvK0raT2rrqJlHf
+         b58T1CRSUUeZSY1zjLof9umJuuhQkBsboKsUUbcrnojzOs3vy24EZr29xT/4NB5PChQy
+         dGpA==
+X-Gm-Message-State: AOJu0YxJHssg/lTW/QFaTlmhEh12aggjeV2yA2FKluTPmPLqR2em+yDd
+        2+sV1McrH9/VYO7S4HBfwYY0WnSxQNq4wjD+XYc=
+X-Google-Smtp-Source: AGHT+IFNEBxc0vNZCpirXKsSyotmsfBqrsBZzCqE/GSm3JN0+A761UZftrNN5lvKQMVdE+yfqfSiK8lQo3lEi/yunoQ=
+X-Received: by 2002:a17:906:25b:b0:997:d069:a880 with SMTP id
+ 27-20020a170906025b00b00997d069a880mr1797898ejl.1.1691580434108; Wed, 09 Aug
+ 2023 04:27:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230809043012.gcsnn5bfr7j25ow7@dhruva>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230807080726.7190-1-Wenhua.Lin@unisoc.com> <3554a99d-339f-39f9-111d-040025096f97@linux.alibaba.com>
+ <CAB9BWhdh8CXuWAQGir=9QqLPdVaN8hgmqii9Da=buSj=9BWJaw@mail.gmail.com> <f808a0c7-013d-9999-8c2d-435609f9fde4@linux.alibaba.com>
+In-Reply-To: <f808a0c7-013d-9999-8c2d-435609f9fde4@linux.alibaba.com>
+From:   wenhua lin <wenhua.lin1994@gmail.com>
+Date:   Wed, 9 Aug 2023 19:27:02 +0800
+Message-ID: <CAB9BWhf9e6cmLn6qHQqeM0-8kWf-mH7kWz2YvKvcpzXVkk2-=Q@mail.gmail.com>
+Subject: Re: [PATCH] serial: sprd: Support 12 uart ports
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10:00-20230809, Dhruva Gole wrote:
-[..]
+On Wed, Aug 9, 2023 at 2:27=E2=80=AFPM Baolin Wang
+<baolin.wang@linux.alibaba.com> wrote:
+>
+>
+>
+> On 8/9/2023 1:52 PM, wenhua lin wrote:
+> > The change of the max ports is to adapt to an new
+> > SPRD serial hardware,also is backward-compatibility with old hardware.
+>
+> Again, DO NOT top-posting! Thanks.
 
-> > +description:
-> > +  Certain TI SoCs, like those in the am335x, am437x, am57xx, am62x and dra7xx
-> > +  families support different OPPs depending on the silicon variant in use.
-> > +  The ti-cpufreq driver can use revision and an efuse value from the SoC to
-> 
-> Just learned about this yesterday, hence missed it in my earlier review.
-> Looks like the kernel docs [0] say that we DON'T refer to Linux or
-> "device driver" in bindings.
-> 
-> Bindings should be based on what the hardware has, not what an OS and
-> driver currently support.
+Thank you for your correction.
 
-Thanks for catching this. will fix in the next rev.
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
+>
+> >>
+> >> On 8/7/2023 4:07 PM, Wenhua Lin wrote:
+> >>> From: Wenhua Lin <wenhua.lin@unisoc.com>
+> >>>
+> >>> Support 12 uart ports, which can solve the problem
+> >>> of insufficient uart ports.
+> >>
+> >> This sounds incorrect to me.
+> >> If this is a software bug, please add a Fixes tag to backport for stab=
+le
+> >> kernels. If the change of the max ports is only avaliable on the new
+> >> SPRD serial hardware, you should ensure the change is
+> >> backward-compatibility with old hardware.
+>
+> This is not backward-compatibility. Please see 'sprd_uart_driver'
+> structure as below:
+>
+> static struct uart_driver sprd_uart_driver =3D {
+>         .owner =3D THIS_MODULE,
+>         .driver_name =3D "sprd_serial",
+>         .dev_name =3D SPRD_TTY_NAME,
+>         .major =3D 0,
+>         .minor =3D 0,
+>         .nr =3D UART_NR_MAX,
+>         .cons =3D SPRD_CONSOLE,
+> };
+>
+> That means you will still register 12 UART ports in the tty for old
+> serial hardwares which actually only support 8 UART ports, and if users
+> want to use another 4 ports which are not supported in the hardware,
+> then system crashes.
+>
+> So I think you should add a SoC data in 'serial_ids' to change the
+> number of UART port according to different SoC.
+>
+
+Thank you for your valuable comments, we should probably consider
+how to make changes based on your suggestions.
+
+> >>> Signed-off-by: Wenhua Lin <wenhua.lin@unisoc.com>
+> >>> ---
+> >>>    drivers/tty/serial/sprd_serial.c | 2 +-
+> >>>    1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/tty/serial/sprd_serial.c b/drivers/tty/serial/sp=
+rd_serial.c
+> >>> index b58f51296ace..2774df490899 100644
+> >>> --- a/drivers/tty/serial/sprd_serial.c
+> >>> +++ b/drivers/tty/serial/sprd_serial.c
+> >>> @@ -22,7 +22,7 @@
+> >>>    #include <linux/tty_flip.h>
+> >>>
+> >>>    /* device name */
+> >>> -#define UART_NR_MAX          8
+> >>> +#define UART_NR_MAX          12
+> >>>    #define SPRD_TTY_NAME               "ttyS"
+> >>>    #define SPRD_FIFO_SIZE              128
+> >>>    #define SPRD_DEF_RATE               26000000
