@@ -2,125 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0297C776935
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314FF77693B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbjHITts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49564 "EHLO
+        id S230117AbjHITxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234128AbjHITtc (ORCPT
+        with ESMTP id S229478AbjHITxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:49:32 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB03510DC
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 12:48:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=sFRRM464Bt6MEnb3WIeAuQysrD/M+qVRQwMUi036qMI=; b=THzT725cTZnBJWe0mx4wYStpmZ
-        J0qBz142+KC+QdO5jeLkEyt7Kd2v4Jbn/D18Wk7cv+oMMEGet5+BVxcawjNRhESMl5p3+yt2KUPuK
-        UtRS+Bn1SXMUMxWfPisaC0egopFfhrY7/ol+oUJ3epuZgckIMHcrIbU3PSHt34MQOSA7SjqPcG2Vy
-        9zInh+nuBX5OYIiUMy+YGVmEYXogXCy0ztdWPyc4Hd9T6jMvBtA1QrOFYfGo74+Pn3BQz7o+rFY3k
-        cu+eFmOyfRkcYtNcWz077Bt8IoxbtIO0f1ZTvZm5YL0Ob4V0VmKEPjND3v7PRF+Y4CEieeCnjlTuY
-        Pa8A40Hg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qTpAN-005s4m-1p;
-        Wed, 09 Aug 2023 19:48:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D7E4630026C;
-        Wed,  9 Aug 2023 21:48:22 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B49A220B32279; Wed,  9 Aug 2023 21:48:22 +0200 (CEST)
-Date:   Wed, 9 Aug 2023 21:48:22 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/9] sched: Simplify get_nohz_timer_target()
-Message-ID: <20230809194822.GV212435@hirez.programming.kicks-ass.net>
-References: <20230801204121.929256934@infradead.org>
- <20230801211811.828443100@infradead.org>
- <CAEXW_YSJ-G_zUKLzLgvCkxAY-dg_Zxo6n=bEXyeEmo9hEMcZpg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Wed, 9 Aug 2023 15:53:46 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386E8120;
+        Wed,  9 Aug 2023 12:53:43 -0700 (PDT)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 379Jgrgw015792;
+        Wed, 9 Aug 2023 19:53:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=F4kb9BtXh6O5K6bYFOt1XF3yfN9A5TwKydKl5x981y0=;
+ b=AkXlwPAILjPB5bCJKnBKSsEVvYkZJPwhlehNs2bRgF6+yQ7NjqNPNkm/ovSlFwz68zqR
+ 5SZPnRlpiuqj9RXV34lYAtCqeVeBF4aVwKOXkgsBGLWCPOBjxv1Sgbe1GCbl+a6ir2/5
+ Fd7J2eZOOSu8T3i6xFMpOks/FUydG209BzWRoxGRBKIl0YGc6NIQQUS4NQEA0F9ct7vL
+ 7IUd4zrPN2zuw8U9cug/Sq4xUF8kPHT78hjOwIK2Z8xqV8uaVLynWRwj68M6Y7+U7tlX
+ 4qvFnIeNjdzqANkFrExNK7jcOQvRgUz1Av0fK77M7J97KcCO4+JY8F9UfX7EWYvX3iAK SQ== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3scgyx8qrh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Aug 2023 19:53:33 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 379IrAU8007543;
+        Wed, 9 Aug 2023 19:53:33 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sa14ykjw6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Aug 2023 19:53:33 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 379JrUdw16777872
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Aug 2023 19:53:30 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E081020043;
+        Wed,  9 Aug 2023 19:53:29 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C20EE20040;
+        Wed,  9 Aug 2023 19:53:27 +0000 (GMT)
+Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.61.3.84])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  9 Aug 2023 19:53:27 +0000 (GMT)
+From:   Nayna Jain <nayna@linux.ibm.com>
+To:     linux-integrity@vger.kernel.org
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        Paul Moore <paul@paul-moore.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>
+Subject: [PATCH v2 0/6] Enable loading local and third party keys on PowerVM guest
+Date:   Wed,  9 Aug 2023 15:53:09 -0400
+Message-Id: <20230809195315.1085656-1-nayna@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Y8WDeppSpuZcMtLll-IX03fxB202HQy2
+X-Proofpoint-GUID: Y8WDeppSpuZcMtLll-IX03fxB202HQy2
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YSJ-G_zUKLzLgvCkxAY-dg_Zxo6n=bEXyeEmo9hEMcZpg@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-09_17,2023-08-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=879
+ impostorscore=0 mlxscore=0 spamscore=0 bulkscore=0 clxscore=1011
+ priorityscore=1501 suspectscore=0 malwarescore=0 adultscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308090171
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 06, 2023 at 05:39:24PM -0400, Joel Fernandes wrote:
-> On Sun, Aug 6, 2023 at 9:52 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > Use guards to reduce gotos and simplify control flow.
-> >
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > ---
-> >  kernel/sched/core.c |   15 ++++++---------
-> >  1 file changed, 6 insertions(+), 9 deletions(-)
-> >
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -1097,25 +1097,22 @@ int get_nohz_timer_target(void)
-> >
-> >         hk_mask = housekeeping_cpumask(HK_TYPE_TIMER);
-> >
-> > -       rcu_read_lock();
-> > +       guard(rcu)();
-> > +
-> >         for_each_domain(cpu, sd) {
-> >                 for_each_cpu_and(i, sched_domain_span(sd), hk_mask) {
-> >                         if (cpu == i)
-> >                                 continue;
-> >
-> > -                       if (!idle_cpu(i)) {
-> > -                               cpu = i;
-> > -                               goto unlock;
-> > -                       }
-> > +                       if (!idle_cpu(i))
-> > +                               return i;
-> >                 }
-> >         }
-> >
-> >         if (default_cpu == -1)
-> >                 default_cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
-> > -       cpu = default_cpu;
-> > -unlock:
-> > -       rcu_read_unlock();
-> > -       return cpu;
-> > +
-> > +       return default_cpu;
-> >  }
-> 
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> I haven't looked into the actual implementation of the guard stuff,
-> but rcu_read_lock_guarded() is less of an eyesore to me than
-> guard(rcu)(); TBH.
+On a secure boot enabled PowerVM guest, local and third party code signing
+keys are needed to verify signed applications, configuration files, and
+kernel modules.
 
-I readily admit it isn't the prettiest construct, my brain is warped by
-many years of C++ and I can read it as: guard<rcu>(), but I'm not sure
-that's actually better :-)
+Loading these keys onto either the .secondary_trusted_keys or .ima
+keyrings requires the certificates be signed by keys on the
+.builtin_trusted_keys, .machine or .secondary_trusted_keys keyrings.
 
-The advantage of all this is that you also get:
+Keys on the .builtin_trusted_keys keyring are trusted because of the chain
+of trust from secure boot up to and including the linux kernel.  Keys on
+the .machine keyring that derive their trust from an entity such as a
+security officer, administrator, system owner, or machine owner are said
+to have "imputed trust." The type of certificates and the mechanism for
+loading them onto the .machine keyring is platform dependent.
 
-	scoped_guard (rcu) {
-	}
+Userspace may load certificates onto the .secondary_trusted_keys or .ima
+keyrings. However, keys may also need to be loaded by the kernel if they
+are needed for verification in early boot time. On PowerVM guest, third
+party code signing keys are loaded from the moduledb variable in the
+Platform KeyStore(PKS) onto the .secondary_trusted_keys.
 
-for 'free'.
+The purpose of this patch set is to allow loading of local and third party
+code signing keys on PowerVM.
 
+Changelog:
+
+v2:
+
+* Patch 5/6: Update CA restriction to allow only key signing CA's.
+* Rebase on Jarkko's master tree - https://kernel.googlesource.com/pub/scm/linux/kernel/git/jarkko/linux-tpmdd
+* Tested after reverting cfa7522f280aa95 because of build failure due to
+this commit.
+
+Nayna Jain (6):
+  integrity: PowerVM support for loading CA keys on machine keyring
+  integrity: ignore keys failing CA restrictions on non-UEFI platform
+  integrity: remove global variable from machine_keyring.c
+  integrity: check whether imputed trust is enabled
+  integrity: PowerVM machine keyring enablement
+  integrity: PowerVM support for loading third party code signing keys
+
+ certs/system_keyring.c                        | 23 +++++++++++++
+ include/keys/system_keyring.h                 |  7 ++++
+ security/integrity/Kconfig                    |  4 ++-
+ security/integrity/digsig.c                   |  2 +-
+ security/integrity/integrity.h                |  6 ++--
+ .../platform_certs/keyring_handler.c          | 19 ++++++++++-
+ .../platform_certs/keyring_handler.h          | 10 ++++++
+ .../integrity/platform_certs/load_powerpc.c   | 33 +++++++++++++++++++
+ .../platform_certs/machine_keyring.c          | 22 ++++++++++---
+ 9 files changed, 117 insertions(+), 9 deletions(-)
+
+-- 
+2.31.1
