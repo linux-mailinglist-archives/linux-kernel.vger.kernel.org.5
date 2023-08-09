@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6979B776A77
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F679776A7E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbjHIUnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 16:43:51 -0400
+        id S234476AbjHIUn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 16:43:59 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234260AbjHIUnr (ORCPT
+        with ESMTP id S229658AbjHIUns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 16:43:47 -0400
+        Wed, 9 Aug 2023 16:43:48 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953C918E
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 13:43:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D64196
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 13:43:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=vDHS8Plr2cencdpiH/auo6E776oNoOhgYdcpKlgKc4Q=; b=QbqGE4Lx8gdWzy6RliqUTtWhkm
-        s5M9NXwGATxbMdMuUP26qF0Hre/8SjU0ApGKf15r8v2VPjRWFdlw3k4eUd7Q4llx6G4EJq09SkqRk
-        IfPXSYlNwRlIy1VCgvqSfJyIMczXqiB2kBcbYVKnplsexPUxCiOLFqka9jzJ80yUbZLjYroxuflHZ
-        IdJfF5EgkR6g7jKCrjPUAGJXEVlXEg4WLBI/C3zIQSRls6SLM51rFiRJot/r8Z+vIbV3utpSEh2+G
-        uhjN1idj5CU02HX+ZZKWY6/zUNOKDPAG2VLf2rUV4ogEp+lfG6zH5DaflXK8+3tb0f1g9By5HnZeI
-        Z5i/pLLA==;
+        bh=9sqy4wj1SuZG+E1ZOkNDiw8zR5F8T4bHRpYkByM8S6o=; b=nS7fhtU07WM4lf+9GY1jnt0WyU
+        JlGBQ/BiKLol5nqGk5z8qeenQ4mLmAK77ctDGsrQOk5L6gu1qUBv5+gGiwlrFiiE9486TOOUJiEhr
+        uRJy0pNKE+NMQ2PIZ7Bw6RKDtz3MYP4N4P0O4+nSmPgWEyiwjHOJoBL5BhV5q7CJUODfjuCPJ4sOQ
+        QiFWMm4eCkB4n2bzrPwFoC6c7Z4U2F0gNa+7v40ZGzYk8FWPRkntfdll5hUyv7KwBTOfCPh+5Qoyo
+        C9lbPEJn0Ps1CMfRJXozS8klhujcmLiZ87nsZvsEwZS0JDDZ8PLoAUvXJSYa4d+pwXv43JqCZyPYi
+        QOzmr+Pg==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qTq1m-005twJ-1n;
+        id 1qTq1m-005twI-2Q;
         Wed, 09 Aug 2023 20:43:34 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6F02B300487;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 73EC430049D;
         Wed,  9 Aug 2023 22:43:33 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 567BA2023CC01; Wed,  9 Aug 2023 22:43:33 +0200 (CEST)
-Message-ID: <20230809204200.241599953@infradead.org>
+        id 5BDC5200D83A5; Wed,  9 Aug 2023 22:43:33 +0200 (CEST)
+Message-ID: <20230809204200.310688520@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 09 Aug 2023 22:24:43 +0200
+Date:   Wed, 09 Aug 2023 22:24:44 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@redhat.com
 Cc:     peterz@infradead.org, juri.lelli@redhat.com,
@@ -47,7 +47,7 @@ Cc:     peterz@infradead.org, juri.lelli@redhat.com,
         rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
         bristot@redhat.com, vschneid@redhat.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/8] sched: Simplify sched_{set,get}affinity()
+Subject: [PATCH 4/8] sched: Simplify yield_to()
 References: <20230809202440.012625269@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -64,111 +64,98 @@ Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c |   53 +++++++++++++---------------------------------------
- 1 file changed, 14 insertions(+), 39 deletions(-)
+ kernel/sched/core.c |   73 ++++++++++++++++++++++------------------------------
+ 1 file changed, 32 insertions(+), 41 deletions(-)
 
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -8258,39 +8258,24 @@ long sched_setaffinity(pid_t pid, const
+@@ -8799,55 +8799,46 @@ int __sched yield_to(struct task_struct
  {
- 	struct affinity_context ac;
- 	struct cpumask *user_mask;
--	struct task_struct *p;
- 	int retval;
- 
--	rcu_read_lock();
--
--	p = find_process_by_pid(pid);
--	if (!p) {
--		rcu_read_unlock();
-+	CLASS(find_get_task, p)(pid);
-+	if (!p)
- 		return -ESRCH;
--	}
- 
--	/* Prevent p going away */
--	get_task_struct(p);
--	rcu_read_unlock();
--
--	if (p->flags & PF_NO_SETAFFINITY) {
--		retval = -EINVAL;
--		goto out_put_task;
--	}
-+	if (p->flags & PF_NO_SETAFFINITY)
-+		return -EINVAL;
- 
- 	if (!check_same_owner(p)) {
--		rcu_read_lock();
--		if (!ns_capable(__task_cred(p)->user_ns, CAP_SYS_NICE)) {
--			rcu_read_unlock();
--			retval = -EPERM;
--			goto out_put_task;
--		}
--		rcu_read_unlock();
-+		guard(rcu)();
-+		if (!ns_capable(__task_cred(p)->user_ns, CAP_SYS_NICE))
-+			return -EPERM;
- 	}
- 
- 	retval = security_task_setscheduler(p);
- 	if (retval)
--		goto out_put_task;
-+		return retval;
- 
- 	/*
- 	 * With non-SMP configs, user_cpus_ptr/user_mask isn't used and
-@@ -8300,8 +8285,7 @@ long sched_setaffinity(pid_t pid, const
- 	if (user_mask) {
- 		cpumask_copy(user_mask, in_mask);
- 	} else if (IS_ENABLED(CONFIG_SMP)) {
--		retval = -ENOMEM;
--		goto out_put_task;
-+		return -ENOMEM;
- 	}
- 
- 	ac = (struct affinity_context){
-@@ -8313,8 +8297,6 @@ long sched_setaffinity(pid_t pid, const
- 	retval = __sched_setaffinity(p, &ac);
- 	kfree(ac.user_mask);
- 
--out_put_task:
--	put_task_struct(p);
- 	return retval;
- }
- 
-@@ -8356,28 +8338,21 @@ SYSCALL_DEFINE3(sched_setaffinity, pid_t
- long sched_getaffinity(pid_t pid, struct cpumask *mask)
- {
- 	struct task_struct *p;
+ 	struct task_struct *curr = current;
+ 	struct rq *rq, *p_rq;
 -	unsigned long flags;
- 	int retval;
+ 	int yielded = 0;
  
--	rcu_read_lock();
+-	local_irq_save(flags);
+-	rq = this_rq();
++	scoped_guard (irqsave) {
++		rq = this_rq();
+ 
+ again:
+-	p_rq = task_rq(p);
+-	/*
+-	 * If we're the only runnable task on the rq and target rq also
+-	 * has only one task, there's absolutely no point in yielding.
+-	 */
+-	if (rq->nr_running == 1 && p_rq->nr_running == 1) {
+-		yielded = -ESRCH;
+-		goto out_irq;
+-	}
 -
--	retval = -ESRCH;
-+	guard(rcu)();
- 	p = find_process_by_pid(pid);
- 	if (!p)
+-	double_rq_lock(rq, p_rq);
+-	if (task_rq(p) != p_rq) {
+-		double_rq_unlock(rq, p_rq);
+-		goto again;
+-	}
+-
+-	if (!curr->sched_class->yield_to_task)
 -		goto out_unlock;
-+		return -ESRCH;
- 
- 	retval = security_task_getscheduler(p);
- 	if (retval)
+-
+-	if (curr->sched_class != p->sched_class)
 -		goto out_unlock;
-+		return retval;
- 
--	raw_spin_lock_irqsave(&p->pi_lock, flags);
-+	guard(raw_spinlock_irqsave)(&p->pi_lock);
- 	cpumask_and(mask, &p->cpus_mask, cpu_active_mask);
--	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+-
+-	if (task_on_cpu(p_rq, p) || !task_is_running(p))
+-		goto out_unlock;
+-
+-	yielded = curr->sched_class->yield_to_task(rq, p);
+-	if (yielded) {
+-		schedstat_inc(rq->yld_count);
++		p_rq = task_rq(p);
+ 		/*
+-		 * Make p's CPU reschedule; pick_next_entity takes care of
+-		 * fairness.
++		 * If we're the only runnable task on the rq and target rq also
++		 * has only one task, there's absolutely no point in yielding.
+ 		 */
+-		if (preempt && rq != p_rq)
+-			resched_curr(p_rq);
+-	}
++		if (rq->nr_running == 1 && p_rq->nr_running == 1)
++			return -ESRCH;
  
 -out_unlock:
--	rcu_read_unlock();
--
--	return retval;
-+	return 0;
- }
+-	double_rq_unlock(rq, p_rq);
+-out_irq:
+-	local_irq_restore(flags);
++		guard(double_rq_lock)(rq, p_rq);
++		if (task_rq(p) != p_rq)
++			goto again;
++
++		if (!curr->sched_class->yield_to_task)
++			return 0;
++
++		if (curr->sched_class != p->sched_class)
++			return 0;
++
++		if (task_on_cpu(p_rq, p) || !task_is_running(p))
++			return 0;
++
++		yielded = curr->sched_class->yield_to_task(rq, p);
++		if (yielded) {
++			schedstat_inc(rq->yld_count);
++			/*
++			 * Make p's CPU reschedule; pick_next_entity
++			 * takes care of fairness.
++			 */
++			if (preempt && rq != p_rq)
++				resched_curr(p_rq);
++		}
++	}
  
- /**
+-	if (yielded > 0)
++	if (yielded)
+ 		schedule();
+ 
+ 	return yielded;
 
 
