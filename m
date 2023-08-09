@@ -2,124 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 553A8775E97
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1AF775E9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbjHIMMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59382 "EHLO
+        id S230417AbjHIMMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232453AbjHIMMC (ORCPT
+        with ESMTP id S231331AbjHIMMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:12:02 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678311999;
-        Wed,  9 Aug 2023 05:12:01 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 379AqXL7014019;
-        Wed, 9 Aug 2023 12:11:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=wIwDEsDwmZWTIMj9zAhU0yuFWxfk5UetXJNBCBioavM=;
- b=Awgs9dStOxUkFcy8jbyz5UEai/6hNlm50mfXjUFoIo12xz1pA0DfEmzsWfndMQYEkFuS
- lasU1vyQN3f7PjD3LTHdtTP8dFmeZEt/t+Bymj6qg8aIaCM0WFywLYLznBN7czK/E9di
- BGUDvbmCVKgtUBwiS5nkQ9LX3WHEtaHcPvC623xZVKwphSDUeJTCXOjKABZHmJZR6BMn
- djkbKy/O1aB4ml9pMm38DcWSH48yu1sO52afJ0SXcnbdA3L2an7MaAP/9+5KiXSuiblR
- SZEVyQdo4iAhxhS2q/DN1iQokoMDeMbrUI7zEePBvKzdO2gscRPfYe8Ern8LDgH4CS+1 Eg== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sbpqs2gbg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 12:11:51 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 379CBlF9004603;
-        Wed, 9 Aug 2023 12:11:47 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3s9fgm2j6f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 09 Aug 2023 12:11:46 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 379CBkxH004597;
-        Wed, 9 Aug 2023 12:11:46 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-vnivarth-hyd.qualcomm.com [10.213.111.166])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 379CBkrQ004596;
-        Wed, 09 Aug 2023 12:11:46 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3994820)
-        id AA7184CFB; Wed,  9 Aug 2023 17:41:45 +0530 (+0530)
-From:   Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
-To:     agross@kernel.org, bjorn.andersson@kernel.org,
-        konrad.dybcio@linaro.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, bartosz.golaszewski@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     quic_msavaliy@quicinc.com, dianders@chromium.org, mka@chromium.org,
-        swboyd@chromium.org, quic_vtanuku@quicinc.com,
-        Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
-Subject: [PATCH RESEND] tty: serial: qcom-geni-serial: Poll primary sequencer irq status after cancel_tx
-Date:   Wed,  9 Aug 2023 17:41:40 +0530
-Message-Id: <1691583100-15689-1-git-send-email-quic_vnivarth@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: gZXX0T9TSdnwxcdjvq5X4_Ko-qhTSAYP
-X-Proofpoint-ORIG-GUID: gZXX0T9TSdnwxcdjvq5X4_Ko-qhTSAYP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-09_10,2023-08-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 adultscore=0 impostorscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 mlxlogscore=951 malwarescore=0
- clxscore=1011 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308090107
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 9 Aug 2023 08:12:19 -0400
+Received: from email.cn (m218-171.88.com [110.43.218.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A0A1982
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:12:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=Date:From:To; bh=YvdOL9C/iedM5DBNdd9VTjEevDzi7adrzeNuX
+        +/2TmA=; b=b7dINqkxcXM7J04e2Wedlkv4IDUK/dRcit0PJ+bQoA+RE6SncbErN
+        IPeNV5l8C0myTE0/U1HQxR14AH73x19jdYRzQTZqrSWGYOXjNSEQ38UlLlgLjw6/
+        9TcuwI9EI2dh6o/K6tIIUMaZtfhka/mNPZiBFIAK3RHjPpLib9C+xE=
+Received: from localhost (unknown [119.3.119.18])
+        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgDnC4KBgtNkuPUVAA--.50580S3;
+        Wed, 09 Aug 2023 20:11:46 +0800 (CST)
+Date:   Wed, 9 Aug 2023 20:11:45 +0800
+From:   Liang Li <liliang6@email.cn>
+To:     Yicong Yang <yangyicong@huawei.com>
+Cc:     Barry Song <21cnbao@gmail.com>, Liang Li <liliang6@email.cn>,
+        yangyicong@hisilicon.com, will@kernel.org, mark.rutland@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jonathan.cameron@huawei.com, linuxarm@huawei.com
+Subject: Re: [PATCH] perf/smmuv3: Add platform id table for module auto
+ loading
+Message-ID: <ZNOCgX8yniu+IuUG@localhost>
+Reply-To: Liang Li <liliang6@email.cn>
+References: <20230807122233.28563-1-yangyicong@huawei.com>
+ <ZNL9s92HjLy+MZTw@localhost>
+ <CAGsJ_4z5kYWOa2L+BHypM4S6W_UhUfUe3wo2rwiy0u7Hf1Q5pw@mail.gmail.com>
+ <23fe3d9a-cb4d-3479-0581-eefec193bc72@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <23fe3d9a-cb4d-3479-0581-eefec193bc72@huawei.com>
+X-CM-TRANSID: LCKnCgDnC4KBgtNkuPUVAA--.50580S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJrWUZF43XrW8CF43ZrWDurg_yoW8tw43pa
+        y8GFy3K3yDJw1rCr92vw47XF1jkws7JFZ5XFn8Jr12v3s09Fy2vry3KayYk34Duwn5C3Wj
+        vrWYqa4fG34FyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUka1xkIjI8I6I8E6xAIw20EY4v20xvaj40_JFC_Wr1l8cAvFVAK
+        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4
+        x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl
+        84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc
+        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_Cr1UJr1lOx8S6xCaFVCjc4AY
+        6r1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x0262
+        8vn2kIc2xKxwCY1x0264kExVAvwVAq07x20xyl42xK82IYc2Ij64vIr41l42xK82IY6x8E
+        rcxFaVAv8VWxJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr
+        1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JjrJ5rUUUUU=
+X-Originating-IP: [119.3.119.18]
+X-CM-SenderInfo: 5oloxttqjwqvhpdlzhdfq/
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TX is handled by primary sequencer. After cancelling primary command, poll
-primary sequencer's irq status instead of that of secondary.
-While at it, also remove a couple of redundant lines that read from IRQ_EN
-register and write back same.
+Hi Yicong,
 
-Fixes: 2aaa43c70778 ("tty: serial: qcom-geni-serial: add support for serial engine DMA")
-Signed-off-by: Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
----
- drivers/tty/serial/qcom_geni_serial.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+Thanks for your reply,
 
-diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-index 3ca5db2..b8aa4c1 100644
---- a/drivers/tty/serial/qcom_geni_serial.c
-+++ b/drivers/tty/serial/qcom_geni_serial.c
-@@ -591,7 +591,6 @@ static void qcom_geni_serial_stop_tx_dma(struct uart_port *uport)
- {
- 	struct qcom_geni_serial_port *port = to_dev_port(uport);
- 	bool done;
--	u32 m_irq_en;
- 
- 	if (!qcom_geni_serial_main_active(uport))
- 		return;
-@@ -603,12 +602,10 @@ static void qcom_geni_serial_stop_tx_dma(struct uart_port *uport)
- 		port->tx_remaining = 0;
- 	}
- 
--	m_irq_en = readl(uport->membase + SE_GENI_M_IRQ_EN);
--	writel(m_irq_en, uport->membase + SE_GENI_M_IRQ_EN);
- 	geni_se_cancel_m_cmd(&port->se);
- 
--	done = qcom_geni_serial_poll_bit(uport, SE_GENI_S_IRQ_STATUS,
--					 S_CMD_CANCEL_EN, true);
-+	done = qcom_geni_serial_poll_bit(uport, SE_GENI_M_IRQ_STATUS,
-+					 M_CMD_CANCEL_EN, true);
- 	if (!done) {
- 		geni_se_abort_m_cmd(&port->se);
- 		done = qcom_geni_serial_poll_bit(uport, SE_GENI_M_IRQ_STATUS,
--- 
-2.7.4
+On 2023-08-09 14:31, Yicong Yang <yangyicong@huawei.com> wrote:
+> Hi Barry, Liang,
+> 
+> On 2023/8/9 13:47, Barry Song wrote:
+> > On Wed, Aug 9, 2023 at 1:01 PM Liang Li <liliang6@email.cn> wrote:
+> >>
+> >> On 2023-08-07 20:22, Yicong Yang <yangyicong@huawei.com> wrote:
+> >>> From: Yicong Yang <yangyicong@hisilicon.com>
+> >>>
+> >>> On ACPI based system the device is probed by the name directly. If the
+> >>> driver is configured as module it can only be loaded manually. Add the
+> >>> platform id table as well as the module alias then the driver will be
+> >>> loaded automatically by the udev or others once the device added.
+> >>>
+> >>
+> >> Please consider revise the long log to clearly express the purpose of the
+> >> changes in this patch:
+> >>
+> >> - What's the exact issue the patch is addressing
+> >> - Why the changes in this patch can fix the issue or make something working
+> >> - Consider impact of the changes introduced by this patch
+> >>
+> >> These info may help reviewers and maintainers .. and yourself on code merge.
+> > 
+> > years ago, i found a good doc regarding this,
+> > https://wiki.archlinux.org/title/Modalias
+> > 
+> > guess it is because /lib/modules/$(uname -r)/modules.alias fails to contain smmu
+> > driver without the MODULE_DEVICE_TABLE, isn't it, yicong？
+> 
+> Yes I think it's the reason. I didn't find summary in kernel docs for the modalias
+> as well as the uevent mechanism. Arch wiki has a well illustration for the modalias
+> and suse[1] describes how this is used by the udev for module auto loading.
+> 
+> For my case I'm using a ACPI based arm64 server and after booting the arm_smmuv3_pmu.ko
+> is not auto loaded by the udevd since we aren't providing this information. In order
+> to support this we need to provide this MODULE_DEVICE_TABLE() when the smmu pmu added
+> as a platform device, then the userspace udev can know which module to load after the
+> device is added.
+>
+
+Then what's the purpose of the added '.id_table = ...' line in the previous
+patch ?
+<We lost the patch context in this thread.>
+
+Based on above clarification, the updated DEVICE_TABLE would update modalias
+as expected, right ?
+
+> [1] https://documentation.suse.com/sles/15-SP1/html/SLES-all/cha-udev.html#sec-udev-drivers
+> 
+> Thanks.
+
+Regards.
+Liang Li
 
