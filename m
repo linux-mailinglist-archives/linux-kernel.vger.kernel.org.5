@@ -2,100 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB1C7761EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C077761F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbjHIOBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51826 "EHLO
+        id S232979AbjHIOBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbjHIOBP (ORCPT
+        with ESMTP id S233068AbjHIOBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:01:15 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563BF1BF7
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:01:15 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 379BTo14016955;
-        Wed, 9 Aug 2023 09:01:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        PODMain02222019; bh=rJub7xq01svFRBd6CryZ0CGoKiUqapOdHmCAGbhMlMQ=; b=
-        VpbzHFYsxJXVCFOweACif9Z1GtsrogxizSlVh/M5Qp5iYzrqmfAU/RpC4z+asSBh
-        LItEMwtN2D9x5m/UOq64tzyymMfXdXHaVde0+UoA4WKE5umDUe4EO3DbYrY/+FRX
-        BLxn7TzWw1ABZTAk1Y+w2P9uqIDjV5RZCawOAdvWfXXVO7UVd/w3xjYiVbrCFKaI
-        tfr4tV5pEfls2lM518ok7ZlW77jL75sl79kKIzUrmTwQ6RXuX6llbdIGfz2voZMm
-        i9fhr0Q+hRclI15ARmKaNgvyW7NZka1JWF622mVfgimtHI40clSLHHmZ53TsEeFL
-        QlAyH1ES/Cl3gEHmuKxenA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sb7vtaggr-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 09:00:59 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 9 Aug
- 2023 15:00:56 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Wed, 9 Aug 2023 15:00:56 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.31])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A85533578;
-        Wed,  9 Aug 2023 14:00:56 +0000 (UTC)
-From:   Stefan Binding <sbinding@opensource.cirrus.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 2/2] ALSA: hda/realtek: Switch Dell Oasis models to use SPI
-Date:   Wed, 9 Aug 2023 15:00:48 +0100
-Message-ID: <20230809140048.669797-3-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230809140048.669797-1-sbinding@opensource.cirrus.com>
-References: <20230809140048.669797-1-sbinding@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 711t5X-5FuRQh1JlQmQO-Gp9hOudvt6a
-X-Proofpoint-ORIG-GUID: 711t5X-5FuRQh1JlQmQO-Gp9hOudvt6a
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 9 Aug 2023 10:01:35 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809EA212B;
+        Wed,  9 Aug 2023 07:01:29 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-40ddc558306so51160541cf.2;
+        Wed, 09 Aug 2023 07:01:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691589688; x=1692194488;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LLYgZQH2Ij3K3LoTdjXRfe+TJ6luenVkp0WNkFXycto=;
+        b=FEQ5IzQKBnixKZFMgNTz3T6J5SZSi+dgJ9hmE2UxqM+/bX12aVctBv9Y+gKGjjtsmP
+         7qsgv7xmPWhvveYZtadCCi1f4IanwffNIk1CKMIa+7kMkZH4Z5Jpn7YviFOvia0tRqhj
+         ly4gDughof+XQeRLB4K5olmTN0h+H9rfrfBJL3/TXoIE+N1bfVxPUZRxOMHVLJhV6MYf
+         rg1sZ8YR0IYRSb1NOSSLKJjSCUSu/ybtbE5ROA3t8cZAjpl8Ztkd65dZN4f9kmM+Lnd0
+         C/GJ/5jL3l9Ty2pXwPHMPWPUHOo7qdbvVQcTVo/3+RLMR6F3wVJi/WfbRvP/MDxQxIjz
+         zewg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691589688; x=1692194488;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=LLYgZQH2Ij3K3LoTdjXRfe+TJ6luenVkp0WNkFXycto=;
+        b=GyNKk5emUPI45SgBaKyTR1QrZlXxyEsppI2D+vLBVnsEQPU6zCkxJBv0MdArfYb/G/
+         G5rxj21pwwviDwaW0Mluj62EsqmIf0O+D5E1qabx9NPXpfyNHDudBIXI1tdpQzipPKFv
+         LqKvhwlwj9lrHaRZ6E8i+GSZvhiQt3efsQFwj2P5k/YwrkTZcjvmKnikV4L0zJdZEQ+s
+         PIy06WfCfFAvXBW6dMeVfZ2SwBW6KCThVBoXLUjxe6z/cLXs1ipyKi3LK5iCIFWbnkFU
+         ICaAFuKqj0wLbPG8zKO/Rr4kwgZ0s5uGyRSO0xPUVlQu4Tw64LFP8TkoeF2yif4c1Hjk
+         Gw8g==
+X-Gm-Message-State: AOJu0YzoYVadzlkQGbYLFaTafQ7fvNsJgsggzdQ74EZJ4v+lzFbjrrY0
+        uOZA5y/p3arEF3jZB/HXXpA=
+X-Google-Smtp-Source: AGHT+IFZo3I3XbMYg31QcvWH7Nq/rpn7umB+aovvba/yvvD70tFDc6X5txm0oye9CiI4S94wFJt7YA==
+X-Received: by 2002:a05:622a:552:b0:40e:2e60:e3e1 with SMTP id m18-20020a05622a055200b0040e2e60e3e1mr3601664qtx.33.1691589688281;
+        Wed, 09 Aug 2023 07:01:28 -0700 (PDT)
+Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
+        by smtp.gmail.com with ESMTPSA id h17-20020ac87451000000b00405d7c1a4b0sm4084889qtr.15.2023.08.09.07.01.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 07:01:27 -0700 (PDT)
+Date:   Wed, 09 Aug 2023 10:01:24 -0400
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     "Erdogan, Tahsin" <trdgn@amazon.com>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <64d39c34bbd92_26add629414@willemb.c.googlers.com.notmuch>
+In-Reply-To: <fc219fe5f8c8dec66a6fdff08f40acf714b8328b.camel@amazon.com>
+References: <20230808230920.1944738-1-trdgn@amazon.com>
+ <64d3921ed1f1a_267bde294f2@willemb.c.googlers.com.notmuch>
+ <fc219fe5f8c8dec66a6fdff08f40acf714b8328b.camel@amazon.com>
+Subject: Re: [PATCH v3] tun: avoid high-order page allocation for packet
+ header
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All I2C Dell Oasis models using CS35L41 have been changed to use SPI.
-In addition, System 10280cc5 is no longer required.
+Erdogan, Tahsin wrote:
+> On Wed, 2023-08-09 at 09:18 -0400, Willem de Bruijn wrote:
+> > Tun sendmsg is a special case, only used by vhost-net from inside the
+> > kernel. Arguably consistency with packet_snd/packet_alloc_skb would
+> > be
+> > more important. That said, this makes sense to me. I assume your
+> > configuring a device with very large MTU?
+> 
+> That's right. I am setting MTU to 9100 in my test.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/patch_realtek.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Makes sense. That's not even that large.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 2b7528cb17805..3bb76f8b96074 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9430,11 +9430,10 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0cbd, "Dell Oasis 13 CS MTL-U", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1028, 0x0cbe, "Dell Oasis 13 2-IN-1 MTL-U", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1028, 0x0cbf, "Dell Oasis 13 Low Weight MTU-L", ALC245_FIXUP_CS35L41_SPI_2),
--	SND_PCI_QUIRK(0x1028, 0x0cc1, "Dell Oasis 14 MTL-H/U", ALC287_FIXUP_CS35L41_I2C_2),
--	SND_PCI_QUIRK(0x1028, 0x0cc2, "Dell Oasis 14 2-in-1 MTL-H/U", ALC287_FIXUP_CS35L41_I2C_2),
--	SND_PCI_QUIRK(0x1028, 0x0cc3, "Dell Oasis 14 Low Weight MTL-U", ALC287_FIXUP_CS35L41_I2C_2),
--	SND_PCI_QUIRK(0x1028, 0x0cc4, "Dell Oasis 16 MTL-H/U", ALC287_FIXUP_CS35L41_I2C_2),
--	SND_PCI_QUIRK(0x1028, 0x0cc5, "Dell Oasis MLK 14 RPL-P", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x1028, 0x0cc1, "Dell Oasis 14 MTL-H/U", ALC245_FIXUP_CS35L41_SPI_2),
-+	SND_PCI_QUIRK(0x1028, 0x0cc2, "Dell Oasis 14 2-in-1 MTL-H/U", ALC245_FIXUP_CS35L41_SPI_2),
-+	SND_PCI_QUIRK(0x1028, 0x0cc3, "Dell Oasis 14 Low Weight MTL-U", ALC245_FIXUP_CS35L41_SPI_2),
-+	SND_PCI_QUIRK(0x1028, 0x0cc4, "Dell Oasis 16 MTL-H/U", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
--- 
-2.34.1
+Please address the commit message points about virtio_net_hdr.hdr_len
+and write() vs writev().
 
+A writev() specific solution could even take the first iov length as
+hint. Note that I'm not suggesting that. IFF_NAPI_FRAGS already does
+exactly that, plus the geometry of subsequent frags.
