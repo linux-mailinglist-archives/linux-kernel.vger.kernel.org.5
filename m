@@ -2,81 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD2277637E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE3977637F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233516AbjHIPOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46050 "EHLO
+        id S233523AbjHIPOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:14:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbjHIPOF (ORCPT
+        with ESMTP id S231211AbjHIPOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:14:05 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A63D1
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:14:04 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691594042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B3sTTqWWsmwFizADQvhTeeO1rumuAfcsA6LtTSkD/Q0=;
-        b=094M9fF6fSomx5tzy1KxSduSyJBCkBVrDD2dstrVRUE4ipHN/xvMBtEvkVTDrDz1yCLqEy
-        1GPARuTXNqMF46MfqMJwBF5BIm3UF82gmNbvC/pdsM6ZsRkPJ3uJu6Hu+sSmoLfcsU/kj5
-        9CLE+lIlaezSAln97GR5prwUyfhkJjD/ERC95/dHBNPdijZxfLKbEVn8Nbu2JXANVVG59p
-        BOLizWtHylGg2+1VDF/xPvFRml//WRPXofhaFgJ4VYUEosE63/x35l9yoExqrchmMm88mK
-        jWupuL0SAURnPNzODdtPNf68AP1bg3lFTUlc5HYFXz6wOFxQ7pQFqrFwJfFNjw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691594042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B3sTTqWWsmwFizADQvhTeeO1rumuAfcsA6LtTSkD/Q0=;
-        b=Diy1ew4OfmuJjHYBXsHc+HO9bpz0bNo7LOQHoO2YQsIzfX/UKlTG2tkiQwmAVVLt99rMFj
-        9zFR1Qmi7DHncABA==
-To:     "Zhang, Rui" <rui.zhang@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "Gross, Jurgen" <jgross@suse.com>,
-        "mikelley@microsoft.com" <mikelley@microsoft.com>,
-        "arjan@linux.intel.com" <arjan@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "ray.huang@amd.com" <ray.huang@amd.com>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "Sivanich, Dimitri" <dimitri.sivanich@hpe.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>
-Subject: Re: [patch V3 05/40] x86/cpu: Move cpu_die_id into topology info
-In-Reply-To: <94b826a0d260a4edcf0242b4c4d706bce5e6d0eb.camel@intel.com>
-References: <20230802101635.459108805@linutronix.de>
- <20230802101932.991285236@linutronix.de>
- <94b826a0d260a4edcf0242b4c4d706bce5e6d0eb.camel@intel.com>
-Date:   Wed, 09 Aug 2023 17:14:02 +0200
-Message-ID: <87il9ojlj9.ffs@tglx>
+        Wed, 9 Aug 2023 11:14:50 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5D124D1;
+        Wed,  9 Aug 2023 08:14:49 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4BAD9D75;
+        Wed,  9 Aug 2023 08:15:31 -0700 (PDT)
+Received: from [10.57.1.30] (unknown [10.57.1.30])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 893FD3F59C;
+        Wed,  9 Aug 2023 08:14:45 -0700 (PDT)
+Message-ID: <88350646-50c9-b7a6-9fe6-47b6b0a31f49@arm.com>
+Date:   Wed, 9 Aug 2023 16:14:44 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v4 5/6] perf vendor events arm64: Update stall_slot
+ workaround for N2 r0p3
+Content-Language: en-US
+To:     John Garry <john.g.garry@oracle.com>,
+        linux-perf-users@vger.kernel.org, irogers@google.com,
+        renyu.zj@linux.alibaba.com
+Cc:     Will Deacon <will@kernel.org>, Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Nick Forrington <nick.forrington@arm.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+References: <20230807142138.288713-1-james.clark@arm.com>
+ <20230807142138.288713-6-james.clark@arm.com>
+ <6b3d8f28-9a38-d544-e396-706022f2e5f5@oracle.com>
+ <a4b93320-cf5d-9622-77fe-f51e1ec7f75b@arm.com>
+ <80e089f6-12ab-b33c-d299-3f762e3a8d4f@oracle.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <80e089f6-12ab-b33c-d299-3f762e3a8d4f@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09 2023 at 14:32, Rui Zhang wrote:
->> @@ -55,7 +55,7 @@ AMD nomenclature for package is 'Node'.
->> =C2=A0
->> =C2=A0=C2=A0=C2=A0=C2=A0 The number of dies in a package. This informati=
-on is retrieved
->> via CPUID.
->> =C2=A0
->> -=C2=A0 - cpuinfo_x86.cpu_die_id:
->> +=C2=A0 - cpuinfo_x86.topo_die_id:
->
-> s/topo_die_id/topo.die_id
 
-Ooops. I surely fixed that up later and forgot to fold back.
+
+On 09/08/2023 14:54, John Garry wrote:
+> On 09/08/2023 14:06, James Clark wrote:
+>>> "MetricExpr": "(op_retired / op_spec) * (1 - (stall_slot if
+>>> (cpuid_less_than(410fd493)) else (stall_slot - cpu_cycles)) / (#slots *
+>>> cpu_cycles))"
+>>>
+>>> I'm currently figuring out how cpuid_less_than() would be implemented
+>>> (I'm no great python wrangler), but it would be along the lines of what
+>>> Ian added for "has_event" in
+>>> https://urldefense.com/v3/__https://lore.kernel.org/linux-perf-users/20230623151016.4193660-1-irogers@google.com/__;!!ACWV5N9M2RV99hQ!PlOppEWtIj9jDW2Zlon0zRZVpzPTzPvm5Ho5NnRIN0vD78iFcEzMEAtsrW_MrRPiW84XhWpbhc3seQcmLu-BfQ$ 
+>>> Thanks,
+>>> John
+>> Yeah it looks like it could be done that way. Also, the way I added it,
+>> it doesn't have access to the PMU type, it just does a generic
+>> pmu__find_core_pmu() so won't work very well for heterogeneous systems.
+> 
+> I haven't been keeping a close eye on the hybrid PMU support, but AFAIK
+> metrics for hybrid arm64 system, i.e. bL, aren't supported - maybe that
+> has changed. The gating for bL support was in pmu__find_core_pmu()
+> returning NULL for a hybrid system.
+> 
+
+Yes we're not currently publishing any metrics for hybrid systems, so in
+this case for N2 and V2 it's not needed. But it would be good to try to
+future proof it if possible. Although I don't know how the metrics
+currently react on hybrid systems, it's also something I have to take a
+look at.
+
+
+>>
+>> If we're going to do a deeper modification of the expression parser like
+>> with has_event() it might be possible to pass in the actual CPU ID that
+>> the metric is running on which would be better.
+>>
+>> I'll have a look.
+> 
+> Thanks. I was playing with this yesterday, but I was making slow
+> progress. I was essentially following the has_event example, but the
+> argument type causes an issue, in that has_event expected an event name,
+> while we want to pass a hex string.
+> 
+> If you could check this then that would be great.
+> 
+> Thanks,
+> John
+> 
