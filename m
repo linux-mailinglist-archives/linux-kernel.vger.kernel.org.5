@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1CD774FD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 02:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96717774FE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 02:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbjHIAb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 20:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
+        id S230281AbjHIAgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 20:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjHIAb0 (ORCPT
+        with ESMTP id S229651AbjHIAgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 20:31:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2FA1995
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 17:31:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691541085; x=1723077085;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=AywbTO27cVNl/fazmIprghWONbtmeCSn9y1uvPUIl/k=;
-  b=CrWvs1/DGrBYu4jtZoVVJBdoWIF5hvF66q9K7uR9/5dbpfwMdNZarQ39
-   xReqgL5E2X2OkhxtNiD+ovW/inAimwIw/MueV3t99p6oH0bhlp1Rqc5ai
-   rye0REj0oq9oumzUodKqPRa1ZxSQcR54N6B87mBiyhjWRBfQLc6yb/eVZ
-   iFxnw2s5kuVA95ONiEHxhlWrjJt8LZk0CTleDtctoG8JczecQQ5eseO2w
-   PdYgY70nLAFw6jsMqSDKOjxB5KBaJF2vmAQ0QS9dm2iHOyvIUvEiwLG7X
-   D9IA4QMc+/h9Cyo2PxTMA9T63CLcQTK9Ta0eGe6OrS0kSwzjOp2/R/RQG
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="437353070"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="437353070"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 17:31:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="725156738"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="725156738"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.169.46]) ([10.249.169.46])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 17:31:23 -0700
-Message-ID: <8ed60665-fb1c-cf94-ea24-5f43ce8c9903@linux.intel.com>
-Date:   Wed, 9 Aug 2023 08:31:20 +0800
+        Tue, 8 Aug 2023 20:36:36 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA97B1995;
+        Tue,  8 Aug 2023 17:36:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1691541393;
+        bh=6ettLlgLL+lNbJJyfC10IQ5aBlfsZGk/KbPDEESsreM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=okMGYQ047vUFeZphNjsDnfTDdQUDUptnl5PBICJ4BFtXkqXkCqHNwKgt5JiypgmHT
+         ilmye8lyqRdWZD7UNCAJy4prVtZp7Anj6GY4HErR4r1XAjYNMx9lEz1167gn/6BQBI
+         KYyYHCvXnJezfmx1FNHjw39PWkHEBs1d6LXySXnOxSJ8XJJ3d351cAi7qwXlnNy3qs
+         aiTj6qt9kqnzHN9kexD90SoEk/gczV40srC0QS80a4quUWjM99EPeF7yjxqqE2Gx5a
+         iEQ7VScmNvA2W+b4cCWU/LYdZE10hUKvClhsDmYOfZNEJaTjB8L0gT34f0Vt+LNyC7
+         F2LZoJo3Kc7NQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RLB272Y6sz4wxR;
+        Wed,  9 Aug 2023 10:36:30 +1000 (AEST)
+Date:   Wed, 9 Aug 2023 10:36:26 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Helge Deller <deller@gmx.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Fabio Estevam <festevam@denx.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: linux-next: manual merge of the fbdev tree with the drm-misc tree
+Message-ID: <20230809103626.782dd87d@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Cc:     baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
-        Michael Shavit <mshavit@google.com>, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] iommu: Add mm_get_pasid() helper function
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Tina Zhang <tina.zhang@intel.com>
-References: <20230808074944.7825-1-tina.zhang@intel.com>
- <20230808074944.7825-2-tina.zhang@intel.com> <ZNJY/9pwRxIkFEjD@ziepe.ca>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <ZNJY/9pwRxIkFEjD@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/uUTjO8dq1.Wer9rHpScu0yz";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/8 23:02, Jason Gunthorpe wrote:
-> On Tue, Aug 08, 2023 at 03:49:40PM +0800, Tina Zhang wrote:
->> mm_get_pasid() is for getting mm pasid value.
->>
->> The motivation is to replace mm->pasid with an iommu private data
->> structure that is introduced in a later patch.
-> Maybe we should start out by calling it what it actually is:
-> 
-> 'mm_get_enqcmd_pasid()'
-> 
-> We can't actually have multiple SVA domains with different PASIDs
-> until the places wrongly calling this are removed :\
-> 
-> eg, I would expect this series to also come with removing
-> 'pasid_private' from the Intel driver.
-> 
-> The mmu_notifier should be placed in the singular iommu_domain that is
-> the SVA domain for the mm. Drivers should not attempt to de-duplicate
-> this, the core code will do it like you are showing in this series.
+--Sig_/uUTjO8dq1.Wer9rHpScu0yz
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The two tasks mentioned above are part of our plan. They will be
-conducted in stages, which is more conducive to review and testing.
-This series is just the beginning.
+Hi all,
 
-Best regards,
-baolu
+Today's linux-next merge of the fbdev tree got a conflict in:
+
+  drivers/video/fbdev/Kconfig
+
+between commit:
+
+  8c47895b70a2 ("fbdev/mx3fb: Use fbdev I/O helpers")
+
+from the drm-misc tree and commit:
+
+  87ac8777d424 ("fbdev: mx3fb: Remove the driver")
+
+from the fbdev tree.
+
+I fixed it up (the latter removed the lines modified by the former,
+so I just used the latter) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/uUTjO8dq1.Wer9rHpScu0yz
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTS34sACgkQAVBC80lX
+0GzqZwf9G9a0aUJYQDBMvEb2vlFiUPD+t6Zy9Cpfrhpvuu36cFqeVgWcFzT+MQd1
+Zh2uVYaJ/TTEmJSJiaFH1W0j6QSzNmjTN9mm+HMPtipdG887FO4uwGGJQ0MrQ0Ob
+FqPL7NV9xkkqQisXzAgLUkhgGDnU8rbA2qbwHx3hjbptRiOf25lDLVxb7UmqzcTc
+T6Gm+sm3HB8yCS94G83Wn2r9NCiwZYkFvXeUXTK2aggIHoHFzh2bWH72yKjnubc7
+5PgF7rPPOMwgkeTGngB9D8A1cM9rEkIP5uliqgSTSE1e0CGxYWlscUk9ZB2Dq3cw
+EBLTOf61NvBrKOCjWadD7P7+E713qA==
+=mfCY
+-----END PGP SIGNATURE-----
+
+--Sig_/uUTjO8dq1.Wer9rHpScu0yz--
