@@ -2,191 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECD8775477
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EFF77547A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbjHIHyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 03:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56926 "EHLO
+        id S231438AbjHIHyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 03:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjHIHyC (ORCPT
+        with ESMTP id S229588AbjHIHyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 03:54:02 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4261BE1;
-        Wed,  9 Aug 2023 00:54:01 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4666A215EF;
-        Wed,  9 Aug 2023 07:54:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691567640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F7cBgJJOMTBnikneTaopTMOdBUlC11wMNMezteqJN0Y=;
-        b=BzWCyxUpSe2hAJccDD1PTABoCWJltEBF8n6vqwnFq++OUTA971RTdWT1/d5EGRZwcK4CDz
-        9+qScP50vAkXDcqH2wYzIu7h9eVYzxx4Q2ykJR+cUQZqAE74D+czZPB0XI7rZDPgtCTBEs
-        LwrmDb7g6I0VgefJ2996UnwwQTQCBDs=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 26DCD133B5;
-        Wed,  9 Aug 2023 07:54:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HIdoBhhG02QJYQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 09 Aug 2023 07:54:00 +0000
-Date:   Wed, 9 Aug 2023 09:53:59 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Chuyi Zhou <zhouchuyi@bytedance.com>, hannes@cmpxchg.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        muchun.song@linux.dev, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wuyun.abel@bytedance.com,
-        robin.lu@bytedance.com
-Subject: Re: [RFC PATCH 1/2] mm, oom: Introduce bpf_select_task
-Message-ID: <ZNNGFzwlv1dC866j@dhcp22.suse.cz>
-References: <20230804093804.47039-1-zhouchuyi@bytedance.com>
- <20230804093804.47039-2-zhouchuyi@bytedance.com>
- <ZMzhDFhvol2VQBE4@dhcp22.suse.cz>
- <dfbf05d1-daff-e855-f4fd-e802614b79c4@bytedance.com>
- <ZMz+aBHFvfcr0oIe@dhcp22.suse.cz>
- <866462cf-6045-6239-6e27-45a733aa7daa@bytedance.com>
- <ZNCXgsZL7bKsCEBM@dhcp22.suse.cz>
- <ZNEpsUFgKFIAAgrp@P9FQF9L96D.lan>
- <ZNH6X/2ZZ0quKSI6@dhcp22.suse.cz>
- <ZNK2fUmIfawlhuEY@P9FQF9L96D>
+        Wed, 9 Aug 2023 03:54:18 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7EA173A;
+        Wed,  9 Aug 2023 00:54:17 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 4985F5C0120;
+        Wed,  9 Aug 2023 03:54:17 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 09 Aug 2023 03:54:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1691567657; x=1691654057; bh=52
+        YpBI7Zd/RbEZj+xJYnJaKHk3vZ1CerWjYIvZGmtqY=; b=Pc87tZQ+Nu3WykEhh7
+        zKZWWB1BLYPnn/HyTYNqjOfJDtNAEZp/jWPuaJwXUgLZynpeGaVshmRHqYl2PJuL
+        ts1Yg/0cI35LL7RJ95x8Yl6SnBd6q32s8QByuvbvuimNe1idsfx82G553XnZECVO
+        TNDJWwTTMR2K2CJypWp8+eJcqt2YvR3qvT3mUcugiZSYDXLNg7uAueAm5il9bcRw
+        B4RT1OTPc4+/1Zuh9rAlYFEt7AdukTnrAnx4ZMJWjdKII+tjbH9xvt8YZG7oQLlP
+        f2M4yGqciqYM4Cu7YMMa7bt43igqc4ejRru8v0peui3iuCFyCy7y6S4SeTu/c160
+        H0lg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1691567657; x=1691654057; bh=52YpBI7Zd/RbE
+        Zj+xJYnJaKHk3vZ1CerWjYIvZGmtqY=; b=mek0K1ofVCJuwzfvL5iwpuP2NEz0G
+        tI3EG+AsIkFDFaLqo9PQnNWtYqEgXZsxH3Tbs4PD3Ytsbu9GrnIMG/So3P4egHaB
+        i+xsBvjhw7lnl/oozxuktqNDheN+715AWHGU6U8g+ukMgAld1kL+Kvl0ucc6auCY
+        2XX0EuHagwUHn8E1B3oBmdAdHDnpET6387JwAQXOSGlKWv9XYyDywzszIs7KSv92
+        JHFnZAaWJIXP7z+H7xj/Ngr20tzB6eCzG0EF1xV5V7GMiNwy1NVmFlGfu/VGVgJV
+        LOzvHZ5DYtgFL0Y3fEiIWM4/UjDy+1YE+y/h2onTnF2YWeokjU1HozuqA==
+X-ME-Sender: <xms:KEbTZIYoeBhL23nyHCGmt0eNSzPaHaqlsUEfROz7l2uIy9X81Pv13w>
+    <xme:KEbTZDbBDzceHe8kYx2-CEbDj9Lgs3q7oXZ9zt2oB8QrgAqwam-35vtMWD60IExPi
+    ZpRUZZQ2wio3A>
+X-ME-Received: <xmr:KEbTZC8gdIL_aa0EOvq84wUt2E2WS7O0cYWggwNasJunVlmoyqJTHS7GoG0l6JXqvjiSic2jXmIA3nxY3te75T-34iNDfqFijYSeKQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrleefgdduvdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
+    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:KEbTZCpak5LcR39cxYR8LX-_l_vS_p-msBC4zuDPE3yAnOOQH1Rtmw>
+    <xmx:KEbTZDrkupJO6x0Vpy0cQhRskmLKxOI-XUwzIDmnVKh7sGSYn6GVGg>
+    <xmx:KEbTZATl_ZQMrYY1a0T7Jjqj-QSENnSmWubcpNJD2a2Xp9uke2NtVA>
+    <xmx:KUbTZOAklyKxaqOWvqwHVzQXvlynJbUois8SAagDQU0dPiQ03Y1XzA>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 9 Aug 2023 03:54:16 -0400 (EDT)
+Date:   Wed, 9 Aug 2023 09:54:14 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Networking <netdev@vger.kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the tty tree with the net-next tree
+Message-ID: <2023080901-scabbed-trailside-3996@gregkh>
+References: <20230809133723.2ebeddd7@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZNK2fUmIfawlhuEY@P9FQF9L96D>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230809133723.2ebeddd7@canb.auug.org.au>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 08-08-23 14:41:17, Roman Gushchin wrote:
-> On Tue, Aug 08, 2023 at 10:18:39AM +0200, Michal Hocko wrote:
-> > On Mon 07-08-23 10:28:17, Roman Gushchin wrote:
-> > > On Mon, Aug 07, 2023 at 09:04:34AM +0200, Michal Hocko wrote:
-> > > > On Mon 07-08-23 10:21:09, Chuyi Zhou wrote:
-> > > > > 
-> > > > > 
-> > > > > 在 2023/8/4 21:34, Michal Hocko 写道:
-> > > > > > On Fri 04-08-23 21:15:57, Chuyi Zhou wrote:
-> > > > > > [...]
-> > > > > > > > +	switch (bpf_oom_evaluate_task(task, oc, &points)) {
-> > > > > > > > +		case -EOPNOTSUPP: break; /* No BPF policy */
-> > > > > > > > +		case -EBUSY: goto abort; /* abort search process */
-> > > > > > > > +		case 0: goto next; /* ignore process */
-> > > > > > > > +		default: goto select; /* note the task */
-> > > > > > > > +	}
-> > > 
-> > > To be honest, I can't say I like it. IMO it's not really using the full bpf
-> > > potential and is too attached to the current oom implementation.
-> > 
-> > TBH I am not sure we are able to come up with an interface that would
-> > ise the full BPF potential at this stage and I strongly believe that we
-> > should start by something that is good enough.
-> > 
-> > > First, I'm a bit concerned about implicit restrictions we apply to bpf programs
-> > > which will be executed potentially thousands times under a very heavy memory
-> > > pressure. We will need to make sure that they don't allocate (much) memory, don't
-> > > take any locks which might deadlock with other memory allocations etc.
-> > > It will potentially require hard restrictions on what these programs can and can't
-> > > do and this is something that the bpf community will have to maintain long-term.
-> > 
-> > Right, BPF callbacks operating under OOM situations will be really
-> > constrained but this is more or less by definition. Isn't it?
+On Wed, Aug 09, 2023 at 01:37:23PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> What do you mean?
-
-Callbacks cannot depend on any direct or indirect memory allocations.
-Dependencies on any sleeping locks (again directly or indirectly) is not
-allowed just to name the most important ones.
-
-> In general, the bpf community is trying to make it as generic as possible and
-> adding new and new features. Bpf programs are not as constrained as they were
-> when it's all started.
-
-Are the above ones somehow carved into BPF in general?
- 
-> > > Second, if we're introducing bpf here (which I'm not yet convinced),
-> > > IMO we should use it in a more generic and expressive way.
-> > > Instead of adding hooks into the existing oom killer implementation, we can call
-> > > a bpf program before invoking the in-kernel oom killer and let it do whatever
-> > > it takes to free some memory. E.g. we can provide it with an API to kill individual
-> > > tasks as well as all tasks in a cgroup.
-> > > This approach is more generic and will allow to solve certain problems which
-> > > can't be solved by the current oom killer, e.g. deleting files from a tmpfs
-> > > instead of killing tasks.
-> > 
-> > The aim of this proposal is to lift any heavy lifting steming from
-> > iterating tasks or cgroups which those BPF might need to make a
-> > decision. There are other ways of course and provide this iteration
-> > functionality as library functions but my BPF experience is very limited
-> > to say how easy is that.
-> > 
-> > > So I think the alternative approach is to provide some sort of an interface to
-> > > pre-select oom victims in advance. E.g. on memcg level it can look like:
-> > > 
-> > > echo PID >> memory.oom.victim_proc
-> > 
-> > this is just a terrible interface TBH. Pids are very volatile objects.
-> > At the time oom killer reads this pid it might be a completely different
-> > process.
+> Today's linux-next merge of the tty tree got a conflict in:
 > 
-> Well, we already have cgroup.procs interface, which works ok.
-> Obviously if the task is dead (or is actually killed in a result of oom),
-> it's pid is removed from the list.
-
-Right, but writing the pid into the file has an immediate effect and
-recycle pid issues would be rare unless the pid space is mostly
-depleted. You are proposing an interface where the pid would be consumed
-in potentially very distant future. Such an approach would only work if
-the pid is auto-removed and then you need a notification mechanism to
-replace it by something else.
- 
-> > > If the list is empty, the default oom killer is invoked.
-> > > If there are tasks, the first one is killed on OOM.
-> > > A similar interface can exist to choose between sibling cgroups:
-> > > 
-> > > echo CGROUP_NAME >> memory.oom.victim_cgroup
-> > 
-> > Slightly less volatile but not much better either.
-> > 
-> > > This is just a rough idea.
-> > 
-> > I am pretty sure that both policies could be implemetd by the proposed
-> > BPF interface though if you want something like that.
+>   arch/powerpc/sysdev/fsl_soc.c
 > 
-> As I said, I'm pretty concerned about how reliable (and effective) it will be.
-> I'm not convinced that executing a generic bpf program from the oom context
-> is safe (and we're talking about executing it potentially thousands of times).
-> If we're going this way, we need an explicit acknowledge from the bpf
-> community and a long-term agreement on how we'll keep thing safe.
+> between commit:
+> 
+>   62e106c802c5 ("net: fs_enet: Remove stale prototypes from fsl_soc.c")
+> 
+> from the net-next tree and commit:
+> 
+>   80a8f487b9ba ("serial: cpm_uart: Remove stale prototype in powerpc/fsl_soc.c")
+> 
+> from the tty tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-I do agree with that.
+Fix looks good to me, thanks!
 
-> It would be also nice to come up with some practical examples of bpf programs.
-> What are meaningful scenarios which can be covered with the proposed approach
-> and are not covered now with oom_score_adj.
-
-Agreed here as well. This RFC serves purpose of brainstorming on all of
-this.
-
-There is a fundamental question whether we need BPF for this task in the
-first place. Are there any huge advantages to export the callback and
-allow a kernel module to hook into it?
--- 
-Michal Hocko
-SUSE Labs
+greg k-h
