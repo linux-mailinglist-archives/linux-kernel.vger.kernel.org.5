@@ -2,967 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D13C775BE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B04775BED
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233574AbjHILVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 07:21:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49770 "EHLO
+        id S233595AbjHILWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 07:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231251AbjHILVq (ORCPT
+        with ESMTP id S233583AbjHILWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 07:21:46 -0400
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCF4ED
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 04:21:45 -0700 (PDT)
-Received: from eig-obgw-6004a.ext.cloudfilter.net ([10.0.30.197])
-        by cmsmtp with ESMTP
-        id TdvsqJtKVfaVXThG5q9GOi; Wed, 09 Aug 2023 11:21:45 +0000
-Received: from just2025.justhost.com ([173.254.28.237])
-        by cmsmtp with ESMTPS
-        id ThG4qMM8GGLm8ThG4qVDsY; Wed, 09 Aug 2023 11:21:44 +0000
-X-Authority-Analysis: v=2.4 cv=aJfjFJxm c=1 sm=1 tr=0 ts=64d376c8
- a=Jt2RHIFfQig1ELqEZVeWfA==:117 a=Jt2RHIFfQig1ELqEZVeWfA==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=UttIx32zK-AA:10 a=5SfhNeb3QxAA:10
- a=DgXrqYuCAAAA:8 a=94m4rE3IeXXSkDfEYFMA:9 a=NFkmT8Fa3oR8cXbSjPxL:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=singleboardsolutions.com; s=default; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
-        :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=RzYRlhyCOLgWcPjVKdxWZ0R+4QvgtpgUzTM7BHsMHfE=; b=q5lrq7LsTkPzmjBFxmuK/bvgLU
-        n/oBfsP2WwBv3wCTDXpnNY4pYj31BztcuoZIiOZAgI+UUjHcbIi8pLTQq0XcpgLftiGy0uapzpR6q
-        VUmsVw3h+XiCf5xfmr3K9vnSKwd3C2oZtG/da2C2pS/kcon4iEyR4I9vIf3/JcGH54LXoY9fGEsRT
-        UVERAn0bs5E51Jlyh+NUFETyaW/baUnQ025m/nGNdCoCfs9elKi900x19VrRyhcff66CIguRwkBMn
-        6vrplEd2I2wSHq2weDtlB/gUNdIeR3GZ1NOu3kQNT1MGNr42fl1zNY76mcGUz7msNSPJfdy9aTbme
-        ErveaL2g==;
-Received: from 097-084-242-070.res.spectrum.com ([97.84.242.70]:62810 helo=localhost.localdomain)
-        by just2025.justhost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <tmckahan@singleboardsolutions.com>)
-        id 1qThG3-003Jjq-1W;
-        Wed, 09 Aug 2023 05:21:43 -0600
-From:   Thomas McKahan <tmckahan@singleboardsolutions.com>
-To:     "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Heiko Stuebner" <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     Thomas McKahan <tmckahan@singleboardsolutions.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v2 2/2] arm64: dts: rockchip: Add NanoPC T6
-Date:   Wed,  9 Aug 2023 07:21:17 -0400
-Message-Id: <20230809112120.99-3-tmckahan@singleboardsolutions.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230809112120.99-1-tmckahan@singleboardsolutions.com>
-References: <20230809112120.99-1-tmckahan@singleboardsolutions.com>
+        Wed, 9 Aug 2023 07:22:15 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6067F2681
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 04:22:03 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fe4f5290daso10472865e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 04:22:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf.com; s=google; t=1691580121; x=1692184921;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NKzdgfdfuVj+XSmSmvvfmRlSIXkPZbyE/cWIrs+YHVY=;
+        b=lj48dMBPNJn5+m0MgFE4sM3lRHJ2qKVJR68lH0fu/wIRES7I39BUbDlu/MMDi2ftFZ
+         cPaxwkxfTOXIhQ0fP7ygUs7hFlNf1uYuW1mMNUt+jyvyMBP7vIDt9uvUNF06N4Eky3TC
+         ++zqXJzj97LLKz1D4HmkgfmtdcaZg1My/eDEfI6dvtSDrua0YPD6fvhuJWOOCrxqmvAs
+         T2oWuxtRksHxlSJNofjX0gtbB+Hn4fVDt/ZlWxPwTmAer5MC/GFjiHekYy5BDAERuw/V
+         Gnj88Ujm5d8hGd3XBLctC2nG0EQO4XyALXGhTsuXngfIs1QhhNSLIdSTkmowCxhdLuBI
+         QnRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691580121; x=1692184921;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NKzdgfdfuVj+XSmSmvvfmRlSIXkPZbyE/cWIrs+YHVY=;
+        b=b+LyrwLGLNLUxWvtKo5X93Pb4dywTDrW4+iC2SpQs5fU2YU+J75IVJbUwDOqJ0VrQF
+         iAr0yE7ztLfXsl521eQtS9giGOPkMYchLr4gxon8fD0liAzoSUefKoyEPN/62ddeBfKh
+         D++Goqs/9HhuxADVIeZ96g1HEevDTIorNBWw7pu0KL3MxaxJU3HEe101thFuwK8HZi13
+         DcX9vB06xPRzZa+A1M4YwiNU5JoEwODXMOxcUgSMeK0Yr1l5SkCzjatCEJcMmR+GDyVj
+         /N5IDw50FT5K5RnRf+y/+Lkpk3w+G5VOa91GwU54yCmcIGzCfU/KlKlqobtk17fwLxkX
+         kB2w==
+X-Gm-Message-State: AOJu0YxScL1AGsvNYc8IFZYEt+AfiyxOu9jF9yXhmg6eYwpn3i/AGqzq
+        SPgJKbNR23dBJ86XBV69+HrgHg==
+X-Google-Smtp-Source: AGHT+IHzlXbuU4mO9eU5VjDUQacowYKrGPFGV8XFQSH91qSAL4Ahwvmm/1iYmr8hrrrhQBY2qkIkKg==
+X-Received: by 2002:a19:ee17:0:b0:4fb:8771:e898 with SMTP id g23-20020a19ee17000000b004fb8771e898mr1556701lfb.15.1691580120986;
+        Wed, 09 Aug 2023 04:22:00 -0700 (PDT)
+Received: from [10.43.1.246] ([83.142.187.84])
+        by smtp.gmail.com with ESMTPSA id 4-20020ac24824000000b004f8675548ebsm2266606lft.20.2023.08.09.04.21.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 04:22:00 -0700 (PDT)
+Message-ID: <d2eaa3f8-cca6-2f51-ce98-30242c528b6f@semihalf.com>
+Date:   Wed, 9 Aug 2023 13:21:58 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 0/2] Add LSM access controls for io_uring_setup
+Content-Language: en-US
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Jeffrey Vander Stoep <jeffv@google.com>,
+        Gil Cukierman <cukie@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        Joel Granados <j.granados@samsung.com>,
+        Jeff Xu <jeffxu@google.com>,
+        Takaya Saeki <takayas@chromium.org>,
+        Tomasz Nowicki <tn@semihalf.com>,
+        Matteo Rizzo <matteorizzo@google.com>,
+        Andres Freund <andres@anarazel.de>
+References: <20221107205754.2635439-1-cukie@google.com>
+ <CAHC9VhTLBWkw2XzqdFx1LFVKDtaAL2pEfsmm+LEmS0OWM1mZgA@mail.gmail.com>
+ <CABXk95ChjusTneWJgj5a58CZceZv0Ay-P-FwBcH2o4rO0g2Ggw@mail.gmail.com>
+ <CAHC9VhRTWGuiMpJJiFrUpgsm7nQaNA-n1CYRMPS-24OLvzdA2A@mail.gmail.com>
+ <54c8fd9c-0edd-7fea-fd7a-5618859b0827@semihalf.com>
+ <CAHC9VhS9BXTUjcFy-URYhG=XSxBC+HsePbu01_xBGzM8sebCYQ@mail.gmail.com>
+From:   Dmytro Maluka <dmy@semihalf.com>
+In-Reply-To: <CAHC9VhS9BXTUjcFy-URYhG=XSxBC+HsePbu01_xBGzM8sebCYQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - just2025.justhost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - singleboardsolutions.com
-X-BWhitelist: no
-X-Source-IP: 97.84.242.70
-X-Source-L: No
-X-Exim-ID: 1qThG3-003Jjq-1W
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 097-084-242-070.res.spectrum.com (localhost.localdomain) [97.84.242.70]:62810
-X-Source-Auth: tmckahan@singleboardsolutions.com
-X-Email-Count: 18
-X-Org:  HG=bhshared_jh;ORG=bluehost;
-X-Source-Cap: ZWxlY3RyaTk7ZWxlY3RyaTk7anVzdDIwMjUuanVzdGhvc3QuY29t
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfLyO4HX4caAUzPGljqYQu6hZ9ihtnnICFVlzwYvPg22OPOF4Cm1lHnTuphpHq60XWpMXd9BZ9ZmJCOM4pBqc8t3vFkACjpnCl8Dsy1Zz8WX3OMm4f1aN
- Fzi8bQCBNuAtQbhFrlp6pakiNw3t/Q34ABXzyuKOkNDosyID6y/IX+Rn+ybXXV8LE6t05vODwsp0kz4pgzMaWoJweLZOWxDw6w1lanAFg9zWo4jK5ELiScEK
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_SOFTFAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the NanoPC T6, a single board computer from FriendlyElec based on
-the RK3588.
+On 8/9/23 02:31, Paul Moore wrote:
+> On Tue, Aug 8, 2023 at 4:40 PM Dmytro Maluka <dmy@semihalf.com> wrote:
+>> On 11/10/22 22:04, Paul Moore wrote:
+>>> On Thu, Nov 10, 2022 at 12:54 PM Jeffrey Vander Stoep <jeffv@google.com> wrote:
+>>>> On Mon, Nov 7, 2022 at 10:17 PM Paul Moore <paul@paul-moore.com> wrote:
+>>>>>
+>>>>> On Mon, Nov 7, 2022 at 3:58 PM Gil Cukierman <cukie@google.com> wrote:
+>>>>>>
+>>>>>> This patchset provides the changes required for controlling access to
+>>>>>> the io_uring_setup system call by LSMs. It does this by adding a new
+>>>>>> hook to io_uring. It also provides the SELinux implementation for a new
+>>>>>> permission, io_uring { setup }, using the new hook.
+>>>>>>
+>>>>>> This is important because existing io_uring hooks only support limiting
+>>>>>> the sharing of credentials and access to the sensitive uring_cmd file
+>>>>>> op. Users of LSMs may also want the ability to tightly control which
+>>>>>> callers can retrieve an io_uring capable fd from the kernel, which is
+>>>>>> needed for all subsequent io_uring operations.
+>>>>>
+>>>>> It isn't immediately obvious to me why simply obtaining a io_uring fd
+>>>>> from io_uring_setup() would present a problem, as the security
+>>>>> relevant operations that are possible with that io_uring fd *should*
+>>>>> still be controlled by other LSM hooks.  Can you help me understand
+>>>>> what security issue you are trying to resolve with this control?
+>>>>
+>>>> I think there are a few reasons why we want this particular hook.
+>>>>
+>>>> 1.  It aligns well with how other resources are managed by selinux
+>>>> where access to the resource is the first control point (e.g. "create"
+>>>> for files, sockets, or bpf_maps, "prog_load" for bpf programs, and
+>>>> "open" for perf_event) and then additional functionality or
+>>>> capabilities require additional permissions.
+>>>
+>>> [NOTE: there were two reply sections in your email, and while similar,
+>>> they were not identical; I've trimmed the other for the sake of
+>>> clarity]
+>>>
+>>> The resources you mention are all objects which contain some type of
+>>> information (either user data, configuration, or program
+>>> instructions), with the resulting fd being a handle to those objects.
+>>> In the case of io_uring the fd is a handle to the io_uring
+>>> interface/rings, which by itself does not contain any information
+>>> which is not already controlled by other permissions.
+>>>
+>>> I/O operations which transfer data between the io_uring buffers and
+>>> other system objects, e.g. IORING_OP_READV, are still subject to the
+>>> same file access controls as those done by the application using
+>>> syscalls.  Even the IORING_OP_OPENAT command goes through the standard
+>>> VFS code path which means it will trigger the same access control
+>>> checks as an open*() done by the application normally.
+>>>
+>>> The 'interesting' scenarios are those where the io_uring operation
+>>> servicing credentials, aka personalities, differ from the task
+>>> controlling the io_uring.  However in those cases we have the new
+>>> io_uring controls to gate these delegated operations.  Passing an
+>>> io_uring fd is subject to the fd/use permission like any other fd.
+>>>
+>>> Although perhaps the most relevant to your request is the fact that
+>>> the io_uring inode is created using the new(ish) secure anon inode
+>>> interface which ensures that the creating task has permission to
+>>> create an io_uring.  This io_uring inode label also comes into play
+>>> when a task attempts to mmap() the io_uring rings, a critical part of
+>>> the io_uring API.
+>>>
+>>> If I'm missing something you believe to be important, please share the details.
+>>>
+>>>> 2. It aligns well with how resources are managed on Android. We often
+>>>> do not grant direct access to resources (like memory buffers).
+>>>
+>>> Accessing the io_uring buffers requires a task to mmap() the io_uring
+>>> fd which is controlled by the normal SELinux mmap() access controls.
+>>>
+>>>> 3. Attack surface management. One of the primary uses of selinux on
+>>>> Android is to assess and limit attack surface (e.g.
+>>>> https://twitter.com/jeffvanderstoep/status/1422771606309335043) . As
+>>>> io_uring vulnerabilities have made their way through our vulnerability
+>>>> management system, it's become apparent that it's complicated to
+>>>> assess the impact. Is a use-after-free reachable? Creating
+>>>> proof-of-concept exploits takes a lot of time, and often functionality
+>>>> can be reached by multiple paths. How many of the known io_uring
+>>>> vulnerabilities would be gated by the existing checks? How many future
+>>>> ones will be gated by the existing checks? I don't know the answer to
+>>>> either of these questions and it's not obvious. This hook makes that
+>>>> initial assessment simple and effective.
+>>>
+>>> It should be possible to deny access to io_uring via the anonymous
+>>> inode labels, the mmap() controls, and the fd/use permission.  If you
+>>> find a way to do meaningful work with an io_uring fd that can't be
+>>> controlled via an existing permission check please let me know.
+>>
+>> Thank you a lot for this explanation. However, IMHO we should not
+>> confuse 2 somewhat different problems here:
+>>
+>> - protecting io_uring related resources (file descriptors, memory
+>>   buffers) against unauthorized access
+>>
+>> - protecting the entire system against potential vulnerabilities in
+>>   io_uring
+>>
+>> And while I agree that the existing permission checks should be already
+>> sufficient for the former, I'm not quite sure they are sufficient for
+>> the latter.
+> 
+> ...
+> 
+>> I already have a PoC patch [3] adding such LSM hook. But before I try to
+>> submit it for upstream, I'd like to know your opinion on the whole idea.
+> 
+> First please explain how the existing LSM/SELinux control points are
+> not sufficient for restricting io_uring operations.  I'm looking for a
+> real program flow that is able to "do meaningful work with an io_uring
+> fd that can't be controlled via an existing permission check".
 
-Initial device tree supports debug UART, SD, eMMC, PCIe 3, PMIC,
-and 40 pin GPIO assignments.
+As I said at the beginning of my reply, I agree with you that the
+existing LSM controls are sufficient for restricting io_uring I/O
+operations. That is not my concern here. The concern is: how to (and
+do we need to) restrict triggering execution of *any* io_uring code in
+kernel, *in addition to* restricting the actual io_uring operations.
 
-Signed-off-by: Thomas McKahan <tmckahan@singleboardsolutions.com>
----
- arch/arm64/boot/dts/rockchip/Makefile         |   1 +
- .../boot/dts/rockchip/rk3588-nanopc-t6.dts    | 842 ++++++++++++++++++
- 2 files changed, 843 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
+In other words, "a real program doing a meaningful work with io_uring"
+in this case would mean "an exploit for a real vulnerability in io_uring
+code (in the current or any older kernel) which does not require an
+access to io_uring operations to be exploited". I don't claim that such
+vulnerabilities exist or are likely to be introduced in future kernels.
+But I'm neither an io_uring expert nor, more importantly, a security
+expert, so I cannot tell with confidence that they are not and we have
+nothing to worry about here. So I'm interested in your and others'
+opinion on that.
 
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index 1ebbb3e9c2f9..e7728007fd1b 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -100,6 +100,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-rock-3a.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-edgeble-neu6a-io.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-edgeble-neu6b-io.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-evb1-v10.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-nanopc-t6.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-rock-5b.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-indiedroid-nova.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-khadas-edge2.dtb
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-new file mode 100644
-index 000000000000..58e9b0d8be33
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-@@ -0,0 +1,842 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
-+ * Copyright (c) 2023 Thomas McKahan
-+ *
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/pinctrl/rockchip.h>
-+#include <dt-bindings/usb/pd.h>
-+#include "rk3588.dtsi"
-+
-+/ {
-+	model = "FriendlyElec NanoPC-T6";
-+	compatible = "friendlyarm,nanopc-t6", "rockchip,rk3588";
-+
-+	aliases {
-+		mmc0 = &sdhci;
-+		mmc1 = &sdmmc;
-+		serial2 = &uart2;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial2:1500000n8";
-+	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&hp_det>;
-+
-+		simple-audio-card,name = "realtek,rt5616-codec";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,mclk-fs = <256>;
-+
-+		simple-audio-card,hp-det-gpio = <&gpio1 RK_PC4 GPIO_ACTIVE_LOW>;
-+		simple-audio-card,hp-pin-name = "Headphones";
-+
-+		simple-audio-card,widgets =
-+			"Headphone", "Headphones",
-+			"Microphone", "Microphone Jack";
-+		simple-audio-card,routing =
-+			"Headphones", "HPOL",
-+			"Headphones", "HPOR",
-+			"MIC1", "Microphone Jack",
-+			"Microphone Jack", "micbias1";
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s0_8ch>;
-+		};
-+		simple-audio-card,codec {
-+			sound-dai = <&rt5616>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		sys_led: led-0 {
-+			gpios = <&gpio2 RK_PB7 GPIO_ACTIVE_HIGH>;
-+			label = "system-led";
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&sys_led_pin>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		usr_led: led-1 {
-+			gpios = <&gpio2 RK_PC0 GPIO_ACTIVE_HIGH>;
-+			label = "user-led";
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&usr_led_pin>;
-+		};
-+	};
-+
-+	vcc12v_dcin: vcc12v-dcin-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc12v_dcin";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <12000000>;
-+		regulator-max-microvolt = <12000000>;
-+	};
-+
-+	/* vcc5v0_sys powers peripherals */
-+	vcc5v0_sys: vcc5v0-sys-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc5v0_sys";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&vcc12v_dcin>;
-+	};
-+
-+	/* vcc4v0_sys powers the RK806, RK860's */
-+	vcc4v0_sys: vcc4v0-sys-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc4v0_sys";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <4000000>;
-+		regulator-max-microvolt = <4000000>;
-+		vin-supply = <&vcc12v_dcin>;
-+	};
-+
-+	vcc_1v1_nldo_s3: vcc-1v1-nldo-s3-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc-1v1-nldo-s3";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <1100000>;
-+		regulator-max-microvolt = <1100000>;
-+		vin-supply = <&vcc4v0_sys>;
-+	};
-+
-+	vbus5v0_typec: vbus5v0-typec-regulator {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpio = <&gpio1 RK_PD2 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&typec5v_pwren>;
-+		regulator-name = "vbus5v0_typec";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&vcc5v0_sys>;
-+	};
-+
-+	vcc3v3_pcie30: vcc3v3-pcie30-regulator {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpios = <&gpio2 RK_PC5 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pcie_m2_0_pwren>;
-+		regulator-name = "vcc3v3_pcie30";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc5v0_sys>;
-+	};
-+};
-+
-+&cpu_l0 {
-+	cpu-supply = <&vdd_cpu_lit_s0>;
-+};
-+
-+&cpu_l1 {
-+	cpu-supply = <&vdd_cpu_lit_s0>;
-+};
-+
-+&cpu_l2 {
-+	cpu-supply = <&vdd_cpu_lit_s0>;
-+};
-+
-+&cpu_l3 {
-+	cpu-supply = <&vdd_cpu_lit_s0>;
-+};
-+
-+&cpu_b0{
-+	cpu-supply = <&vdd_cpu_big0_s0>;
-+};
-+
-+&cpu_b1{
-+	cpu-supply = <&vdd_cpu_big0_s0>;
-+};
-+
-+&cpu_b2{
-+	cpu-supply = <&vdd_cpu_big1_s0>;
-+};
-+
-+&cpu_b3{
-+	cpu-supply = <&vdd_cpu_big1_s0>;
-+};
-+
-+&gpio0 {
-+	gpio-line-names = /* GPIO0 A0-A7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO0 B0-B7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO0 C0-C7 */
-+			  "", "", "", "",
-+			  "HEADER_10", "HEADER_08", "HEADER_32", "",
-+			  /* GPIO0 D0-D7 */
-+			  "", "", "", "",
-+			  "", "", "", "";
-+};
-+
-+&gpio1 {
-+	gpio-line-names = /* GPIO1 A0-A7 */
-+			  "HEADER_27", "HEADER_28", "", "",
-+			  "", "", "", "HEADER_15",
-+			  /* GPIO1 B0-B7 */
-+			  "HEADER_26", "HEADER_21", "HEADER_19", "HEADER_23",
-+			  "HEADER_24", "HEADER_22", "", "",
-+			  /* GPIO1 C0-C7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO1 D0-D7 */
-+			  "", "", "", "",
-+			  "", "", "HEADER_05", "HEADER_03";
-+};
-+
-+&gpio2 {
-+	gpio-line-names = /* GPIO2 A0-A7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO2 B0-B7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO2 C0-C7 */
-+			  "", "CSI1_11", "CSI1_12", "",
-+			  "", "", "", "",
-+			  /* GPIO2 D0-D7 */
-+			  "", "", "", "",
-+			  "", "", "", "";
-+};
-+
-+&gpio3 {
-+	gpio-line-names = /* GPIO3 A0-A7 */
-+			  "HEADER_35", "HEADER_38", "HEADER_40", "HEADER_36",
-+			  "HEADER_37", "", "DSI0_12", "",
-+			  /* GPIO3 B0-B7 */
-+			  "HEADER_33", "DSI0_10", "HEADER_07", "HEADER_16",
-+			  "HEADER_18", "HEADER_29", "HEADER_31", "HEADER_12",
-+			  /* GPIO3 C0-C7 */
-+			  "DSI0_08", "DSI0_14", "HEADER_11", "HEADER_13",
-+			  "", "", "", "",
-+			  /* GPIO3 D0-D7 */
-+			  "", "", "", "",
-+			  "", "DSI1_10", "", "";
-+};
-+
-+&gpio4 {
-+	gpio-line-names = /* GPIO4 A0-A7 */
-+			  "DSI1_08", "DSI1_14", "", "DSI1_12",
-+			  "", "", "", "",
-+			  /* GPIO4 B0-B7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO4 C0-C7 */
-+			  "", "", "", "",
-+			  "CSI0_11", "CSI0_12", "", "",
-+			  /* GPIO4 D0-D7 */
-+			  "", "", "", "",
-+			  "", "", "", "";
-+};
-+
-+&i2c0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c0m2_xfer>;
-+	status = "okay";
-+
-+	vdd_cpu_big0_s0: regulator@42 {
-+		compatible = "rockchip,rk8602";
-+		reg = <0x42>;
-+		fcs,suspend-voltage-selector = <1>;
-+		regulator-name = "vdd_cpu_big0_s0";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <550000>;
-+		regulator-max-microvolt = <1050000>;
-+		regulator-ramp-delay = <2300>;
-+		vin-supply = <&vcc4v0_sys>;
-+
-+		regulator-state-mem {
-+			regulator-off-in-suspend;
-+		};
-+	};
-+
-+	vdd_cpu_big1_s0: regulator@43 {
-+		compatible = "rockchip,rk8603", "rockchip,rk8602";
-+		reg = <0x43>;
-+		fcs,suspend-voltage-selector = <1>;
-+		regulator-name = "vdd_cpu_big1_s0";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <550000>;
-+		regulator-max-microvolt = <1050000>;
-+		regulator-ramp-delay = <2300>;
-+		vin-supply = <&vcc4v0_sys>;
-+
-+		regulator-state-mem {
-+			regulator-off-in-suspend;
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+
-+	vdd_npu_s0: regulator@42 {
-+		compatible = "rockchip,rk8602";
-+		reg = <0x42>;
-+		rockchip,suspend-voltage-selector = <1>;
-+		regulator-name = "vdd_npu_s0";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <550000>;
-+		regulator-max-microvolt = <950000>;
-+		regulator-ramp-delay = <2300>;
-+		vin-supply = <&vcc4v0_sys>;
-+
-+		regulator-state-mem {
-+			regulator-off-in-suspend;
-+		};
-+	};
-+};
-+
-+&i2c6 {
-+	clock-frequency = <200000>;
-+	status = "okay";
-+
-+	fusb302: typec-portc@22 {
-+		compatible = "fcs,fusb302";
-+		reg = <0x22>;
-+		interrupt-parent = <&gpio0>;
-+		interrupts = <RK_PD3 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-0 = <&usbc0_int>;
-+		pinctrl-names = "default";
-+		vbus-supply = <&vbus5v0_typec>;
-+
-+		connector {
-+			compatible = "usb-c-connector";
-+			data-role = "dual";
-+			label = "USB-C";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 2000, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
-+			op-sink-microwatt = <1000000>;
-+		};
-+	};
-+
-+	hym8563: rtc@51 {
-+		compatible = "haoyu,hym8563";
-+		reg = <0x51>;
-+		#clock-cells = <0>;
-+		clock-output-names = "hym8563";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&hym8563_int>;
-+		interrupt-parent = <&gpio0>;
-+		interrupts = <RK_PB0 IRQ_TYPE_LEVEL_LOW>;
-+		wakeup-source;
-+	};
-+};
-+
-+&i2c7 {
-+	clock-frequency = <200000>;
-+	status = "okay";
-+
-+	rt5616: codec@1b {
-+		compatible = "realtek,rt5616";
-+		reg = <0x1b>;
-+		clocks = <&cru I2S0_8CH_MCLKOUT>;
-+		clock-names = "mclk";
-+		#sound-dai-cells = <0>;
-+		assigned-clocks = <&cru I2S0_8CH_MCLKOUT>;
-+		assigned-clock-rates = <12288000>;
-+
-+		port {
-+			rt5616_p0_0: endpoint {
-+				remote-endpoint = <&i2s0_8ch_p0_0>;
-+			};
-+		};
-+	};
-+
-+	/* connected with MIPI-CSI1 */
-+};
-+
-+&i2c8 {
-+	pinctrl-0 = <&i2c8m2_xfer>;
-+};
-+
-+&i2s0_8ch {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2s0_lrck
-+		     &i2s0_mclk
-+		     &i2s0_sclk
-+		     &i2s0_sdi0
-+		     &i2s0_sdo0>;
-+	status = "okay";
-+
-+	i2s0_8ch_p0: port {
-+		i2s0_8ch_p0_0: endpoint {
-+			dai-format = "i2s";
-+			mclk-fs = <256>;
-+			remote-endpoint = <&rt5616_p0_0>;
-+		};
-+	};
-+};
-+
-+&pcie30phy {
-+	status = "okay";
-+};
-+
-+&pcie3x4 {
-+	reset-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
-+	vpcie3v3-supply = <&vcc3v3_pcie30>;
-+	status = "okay";
-+};
-+
-+&pinctrl {
-+	gpio-leds {
-+		sys_led_pin: sys-led-pin {
-+			rockchip,pins = <2 RK_PB7 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		usr_led_pin: usr-led-pin {
-+			rockchip,pins = <2 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	headphone {
-+		hp_det: hp-det {
-+			rockchip,pins = <1 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	hym8563 {
-+		hym8563_int: hym8563-int {
-+			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
-+
-+	pcie {
-+		pcie_m2_0_pwren: pcie-m20-pwren {
-+			rockchip,pins = <2 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	usb {
-+		typec5v_pwren: typec5v-pwren {
-+			rockchip,pins = <1 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		usbc0_int: usbc0-int {
-+			rockchip,pins = <0 RK_PD3 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
-+};
-+
-+&pwm1 {
-+	pinctrl-0 = <&pwm1m1_pins>;
-+	status = "okay";
-+};
-+
-+&saradc {
-+	vref-supply = <&avcc_1v8_s0>;
-+	status = "okay";
-+};
-+
-+&sdhci {
-+	bus-width = <8>;
-+	no-sdio;
-+	no-sd;
-+	non-removable;
-+	max-frequency = <200000000>;
-+	mmc-hs400-1_8v;
-+	mmc-hs400-enhanced-strobe;
-+	status = "okay";
-+};
-+
-+&sdmmc {
-+	max-frequency = <200000000>;
-+	no-sdio;
-+	no-mmc;
-+	bus-width = <4>;
-+	cap-mmc-highspeed;
-+	cap-sd-highspeed;
-+	disable-wp;
-+	sd-uhs-sdr104;
-+	vmmc-supply = <&vcc_3v3_s3>;
-+	vqmmc-supply = <&vccio_sd_s0>;
-+	status = "okay";
-+};
-+
-+&spi2 {
-+	status = "okay";
-+	assigned-clocks = <&cru CLK_SPI2>;
-+	assigned-clock-rates = <200000000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&spi2m2_cs0 &spi2m2_pins>;
-+	num-cs = <1>;
-+
-+	pmic@0 {
-+		compatible = "rockchip,rk806";
-+		spi-max-frequency = <1000000>;
-+		reg = <0x0>;
-+
-+		interrupt-parent = <&gpio0>;
-+		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pmic_pins>, <&rk806_dvs1_null>,
-+			    <&rk806_dvs2_null>, <&rk806_dvs3_null>;
-+
-+		vcc1-supply = <&vcc4v0_sys>;
-+		vcc2-supply = <&vcc4v0_sys>;
-+		vcc3-supply = <&vcc4v0_sys>;
-+		vcc4-supply = <&vcc4v0_sys>;
-+		vcc5-supply = <&vcc4v0_sys>;
-+		vcc6-supply = <&vcc4v0_sys>;
-+		vcc7-supply = <&vcc4v0_sys>;
-+		vcc8-supply = <&vcc4v0_sys>;
-+		vcc9-supply = <&vcc4v0_sys>;
-+		vcc10-supply = <&vcc4v0_sys>;
-+		vcc11-supply = <&vcc_2v0_pldo_s3>;
-+		vcc12-supply = <&vcc4v0_sys>;
-+		vcc13-supply = <&vcc_1v1_nldo_s3>;
-+		vcc14-supply = <&vcc_1v1_nldo_s3>;
-+		vcca-supply = <&vcc4v0_sys>;
-+
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		rk806_dvs1_null: dvs1-null-pins {
-+			pins = "gpio_pwrctrl2";
-+			function = "pin_fun0";
-+		};
-+
-+		rk806_dvs2_null: dvs2-null-pins {
-+			pins = "gpio_pwrctrl2";
-+			function = "pin_fun0";
-+		};
-+
-+		rk806_dvs3_null: dvs3-null-pins {
-+			pins = "gpio_pwrctrl3";
-+			function = "pin_fun0";
-+		};
-+
-+		regulators {
-+			vdd_gpu_s0: vdd_gpu_mem_s0: dcdc-reg1 {
-+				regulator-boot-on;
-+				regulator-min-microvolt = <550000>;
-+				regulator-max-microvolt = <950000>;
-+				regulator-ramp-delay = <12500>;
-+				regulator-name = "vdd_gpu_s0";
-+				regulator-enable-ramp-delay = <400>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vdd_cpu_lit_s0: vdd_cpu_lit_mem_s0: dcdc-reg2 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <550000>;
-+				regulator-max-microvolt = <950000>;
-+				regulator-ramp-delay = <12500>;
-+				regulator-name = "vdd_cpu_lit_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vdd_log_s0: dcdc-reg3 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <675000>;
-+				regulator-max-microvolt = <750000>;
-+				regulator-ramp-delay = <12500>;
-+				regulator-name = "vdd_log_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+					regulator-suspend-microvolt = <750000>;
-+				};
-+			};
-+
-+			vdd_vdenc_s0: vdd_vdenc_mem_s0: dcdc-reg4 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <550000>;
-+				regulator-max-microvolt = <950000>;
-+				regulator-init-microvolt = <750000>;
-+				regulator-ramp-delay = <12500>;
-+				regulator-name = "vdd_vdenc_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vdd_ddr_s0: dcdc-reg5 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <675000>;
-+				regulator-max-microvolt = <900000>;
-+				regulator-ramp-delay = <12500>;
-+				regulator-name = "vdd_ddr_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+					regulator-suspend-microvolt = <850000>;
-+				};
-+			};
-+
-+			vdd2_ddr_s3: dcdc-reg6 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-name = "vdd2_ddr_s3";
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+				};
-+			};
-+
-+			vcc_2v0_pldo_s3: dcdc-reg7 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <2000000>;
-+				regulator-max-microvolt = <2000000>;
-+				regulator-ramp-delay = <12500>;
-+				regulator-name = "vdd_2v0_pldo_s3";
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <2000000>;
-+				};
-+			};
-+
-+			vcc_3v3_s3: dcdc-reg8 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-name = "vcc_3v3_s3";
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <3300000>;
-+				};
-+			};
-+
-+			vddq_ddr_s0: dcdc-reg9 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-name = "vddq_ddr_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vcc_1v8_s3: dcdc-reg10 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-name = "vcc_1v8_s3";
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <1800000>;
-+				};
-+			};
-+
-+			avcc_1v8_s0: pldo-reg1 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-name = "avcc_1v8_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vcc_1v8_s0: pldo-reg2 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-name = "vcc_1v8_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+					regulator-suspend-microvolt = <1800000>;
-+				};
-+			};
-+
-+			avdd_1v2_s0: pldo-reg3 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1200000>;
-+				regulator-max-microvolt = <1200000>;
-+				regulator-name = "avdd_1v2_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vcc_3v3_s0: pldo-reg4 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-ramp-delay = <12500>;
-+				regulator-name = "vcc_3v3_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vccio_sd_s0: pldo-reg5 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-ramp-delay = <12500>;
-+				regulator-name = "vccio_sd_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			pldo6_s3: pldo-reg6 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-name = "pldo6_s3";
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <1800000>;
-+				};
-+			};
-+
-+			vdd_0v75_s3: nldo-reg1 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <750000>;
-+				regulator-max-microvolt = <750000>;
-+				regulator-name = "vdd_0v75_s3";
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <750000>;
-+				};
-+			};
-+
-+			vdd_ddr_pll_s0: nldo-reg2 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <850000>;
-+				regulator-max-microvolt = <850000>;
-+				regulator-name = "vdd_ddr_pll_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+					regulator-suspend-microvolt = <850000>;
-+				};
-+			};
-+
-+			avdd_0v75_s0: nldo-reg3 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <750000>;
-+				regulator-max-microvolt = <750000>;
-+				regulator-name = "avdd_0v75_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vdd_0v85_s0: nldo-reg4 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <850000>;
-+				regulator-max-microvolt = <850000>;
-+				regulator-name = "vdd_0v85_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vdd_0v75_s0: nldo-reg5 {
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <750000>;
-+				regulator-max-microvolt = <750000>;
-+				regulator-name = "vdd_0v75_s0";
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&tsadc {
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	pinctrl-0 = <&uart2m0_xfer>;
-+	status = "okay";
-+};
-+
-+&u2phy2_host {
-+	status = "okay";
-+};
-+
-+&u2phy3_host {
-+	status = "okay";
-+};
-+
-+&u2phy2 {
-+	status = "okay";
-+};
-+
-+&u2phy3 {
-+	status = "okay";
-+};
-+
-+&usb_host0_ehci {
-+	status = "okay";
-+};
-+
-+&usb_host0_ohci {
-+	status = "okay";
-+};
-+
-+&usb_host1_ehci {
-+	status = "okay";
-+};
-+
-+&usb_host1_ohci {
-+	status = "okay";
-+};
--- 
-2.34.1
+As an example, IIUC the inode_init_security_anon LSM hook already allows
+us to prevent a process from obtaining a valid io_uring fd via
+io_uring_setup(). But what if the process passes an invalid (unrelated)
+fd to io_uring_register() or io_uring_enter()?
 
+It looks like all that happens is: it will quickly fail the
+io_is_uring_fops() check and return an error to userspace. So I suppose
+we may reasonably assume that this particular simple code path will
+remain bug-free and thus we don't need to worry about potential
+vulnerabilities in this case. Even if so, can we assume that any other
+code paths in io_uring that are reachable without passing the existing
+permission checks are similarly trivial?
