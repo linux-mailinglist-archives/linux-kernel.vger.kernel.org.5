@@ -2,73 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A6A77635A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A114E776361
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232809AbjHIPIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:08:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35032 "EHLO
+        id S233061AbjHIPJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbjHIPIp (ORCPT
+        with ESMTP id S229791AbjHIPJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:08:45 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2D7210A
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:08:44 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99c4923195dso985586466b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:08:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1691593722; x=1692198522;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5G6T3JCdCSjXcLmjmeNQXnmppiYdA5F1SZkXm/TxHpg=;
-        b=AFMi7qSe9xi1nXJyOmj9Pf1I24OUvRB/WMsnyk7ANa4EJu5x3ixtwGAQ2DQvaklQEi
-         CIIcnzvPZAvh0QFlqDA0IwQ+55nVG3EZQr4bWau7vG4fNJcPqbiYKGZWaqfAR4TrYoPm
-         431MaydlkDgq9WWasTwku0JG9/tar21OVpVXWuM+11NWgISrYsTwj0JXBMlL+QqxREOz
-         3dGOHQEXE9zzqEQubiZaY2AqyrBNwAQmd2ftY8WL2bQRboSI67n3l8r1wlEi8jj1tf/v
-         zFWq5migteLX095kdcYSVWVG4aDyfxNZv8Z9JVf1CNkhvvZwLI8o6dQ1YyyDUwxJ+rSK
-         DWsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691593722; x=1692198522;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5G6T3JCdCSjXcLmjmeNQXnmppiYdA5F1SZkXm/TxHpg=;
-        b=jeOjlJuZ3O570ka2UuJTBiuaCqxd3eIAg3fjUlYFWwotFp7sVsIscep7wN4aKm4zxw
-         K5HkcTv5U1xII7fYdmWm8nxsBSj+wd5duzg3qw1oLNlvBw900wCK1RE8moDVaYpfXCT4
-         qEofHluFO9KOHwJ47KCWj4DCU6xyLcTdPQhFXOxYdGREDWQiJL2QFg2GiGupovZUAeXQ
-         AT6gquQKfkw2LiN1rLm2FobpAartdoo9gV2ht+Wfkcuh38yF2ujKEXI2sI3lSrOPno7D
-         vMW7UHiS+fVyYhs6M3GBEEv7BalMfEMAXxxHPhEK60pWeq1xJBq4rGhDZdDiiwbE2HWc
-         EX5A==
-X-Gm-Message-State: AOJu0YydQGw1zpj3Nbf734l9duXo5h96cjgFthks7aM5q9zSamECKK9U
-        wIc0KxkJAC8YiAxanDOF8HaqrzU5OsAiv4G7r+wnSg==
-X-Google-Smtp-Source: AGHT+IFJOmQaBG1yOZ2H7dcbIP6G4WTdTLU+oF9E60L/N6jLeiWxT1AzWslITS72T1ET4Iya7sJGmqsIkWYyudCliX8=
-X-Received: by 2002:a17:907:a041:b0:993:f12a:39ce with SMTP id
- gz1-20020a170907a04100b00993f12a39cemr2327076ejc.15.1691593722582; Wed, 09
- Aug 2023 08:08:42 -0700 (PDT)
+        Wed, 9 Aug 2023 11:09:03 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C25A2111
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:09:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GXuDgIHyPhdy+gjJMcYr23QFt5bd2eQvo9Kj7fMeS04=; b=WHD2/X3liWNPwuNLkXMi5X3cHl
+        15lQQb5VeM3y9hGPi2xkTkf825a4qhvafUY1fPh8pJkv4wsq4f6Sgls7JaSzB3xiCVgX8nWBq24M6
+        ywHKcU/DTNu7xalIrIrcC6jEPlupienoFevO8xKvuKsuqF5nEzqPElErsy+EPPFFKIk60XbdjvcOT
+        tx+u4ywVENGxD+GH5UI8SxJJnG/9RoP+iy5WgEK8gjb09cNmW8b4Thj1jA3g2avWLFe/0N03RE42A
+        EoB5ulbPnyXVVsEEjlVQmwykWEJAUcg34rsJ1ipiwyb7I6FOXZ3sJnaMTAhwFyDzcDEtgU6e36MZI
+        uN1/5zLw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qTkns-005iwI-2z;
+        Wed, 09 Aug 2023 15:08:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7697F30003A;
+        Wed,  9 Aug 2023 17:08:52 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 58BC22023C23F; Wed,  9 Aug 2023 17:08:52 +0200 (CEST)
+Date:   Wed, 9 Aug 2023 17:08:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        Andrew.Cooper3@citrix.com, gregkh@linuxfoundation.org
+Subject: Re: [RFC][PATCH 06/17] x86/cpu: Add SRSO untrain to retbleed=
+Message-ID: <20230809150852.GS212435@hirez.programming.kicks-ass.net>
+References: <20230809071218.000335006@infradead.org>
+ <20230809072200.850338672@infradead.org>
+ <20230809134233.d7hlutglk2j3f4w3@treble>
+ <20230809140603.GO212435@hirez.programming.kicks-ass.net>
+ <20230809142847.3prfwo6cclbydfep@treble>
 MIME-Version: 1.0
-References: <20230809-bpf-next-v1-1-c1b80712e83b@isovalent.com> <6acbbf63-ba10-4a66-5e31-b9a499f79489@linux.dev>
-In-Reply-To: <6acbbf63-ba10-4a66-5e31-b9a499f79489@linux.dev>
-From:   Lorenz Bauer <lmb@isovalent.com>
-Date:   Wed, 9 Aug 2023 16:08:31 +0100
-Message-ID: <CAN+4W8hMpL3+vNOrBBRw01tD6OxQ-Yy8OWpq9nRtiyjm0GgE4g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] net: Fix slab-out-of-bounds in inet[6]_steal_sock
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809142847.3prfwo6cclbydfep@treble>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,124 +63,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 3:39=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.d=
-ev> wrote:
->
-> On 8/9/23 1:33 AM, Lorenz Bauer wrote:
-> > Kumar reported a KASAN splat in tcp_v6_rcv:
-> >
-> >    bash-5.2# ./test_progs -t btf_skc_cls_ingress
-> >    ...
-> >    [   51.810085] BUG: KASAN: slab-out-of-bounds in tcp_v6_rcv+0x2d7d/0=
-x3440
-> >    [   51.810458] Read of size 2 at addr ffff8881053f038c by task test_=
-progs/226
-> >
-> > The problem is that inet[6]_steal_sock accesses sk->sk_protocol without
-> > accounting for request sockets. I added the check to ensure that we onl=
-y
-> > every try to perform a reuseport lookup on a supported socket.
-> >
-> > It turns out that this isn't necessary at all. struct sock_common conta=
-ins
-> > a skc_reuseport flag which indicates whether a socket is part of a
->
-> Does it go back to the earlier discussion
-> (https://lore.kernel.org/bpf/7188429a-c380-14c8-57bb-9d05d3ba4e5e@linux.d=
-ev/)
-> that the sk->sk_reuseport is 1 from sk_clone for TCP_ESTABLISHED? It work=
-s
-> because there is sk->sk_reuseport"_cb" check going deeper into
-> reuseport_select_sock() but there is an extra inet6_ehashfn for all TCP_E=
-STABLISHED.
+On Wed, Aug 09, 2023 at 10:28:47AM -0400, Josh Poimboeuf wrote:
+> On Wed, Aug 09, 2023 at 04:06:03PM +0200, Peter Zijlstra wrote:
+> > On Wed, Aug 09, 2023 at 09:42:33AM -0400, Josh Poimboeuf wrote:
+> > > On Wed, Aug 09, 2023 at 09:12:24AM +0200, Peter Zijlstra wrote:
+> > > >  static enum retbleed_mitigation retbleed_mitigation __ro_after_init =
+> > > > @@ -796,6 +802,10 @@ static int __init retbleed_parse_cmdline
+> > > >  			retbleed_cmd = RETBLEED_CMD_AUTO;
+> > > >  		} else if (!strcmp(str, "unret")) {
+> > > >  			retbleed_cmd = RETBLEED_CMD_UNRET;
+> > > > +		} else if (!strcmp(str, "srso")) {
+> > > > +			retbleed_cmd = RETBLEED_CMD_UNRET_SRSO;
+> > > > +		} else if (!strcmp(str, "srso_alias")) {
+> > > > +			retbleed_cmd = RETBLEED_CMD_UNRET_SRSO_ALIAS;
+> > > 
+> > > It doesn't make sense for "srso_alias" to be a separate cmdline option,
+> > > as that option is a model-dependent variant of the SRSO mitigation.
+> > 
+> > so what I did with retbleed, and what should be fixed here too (I
+> > forgot) is run with:
+> > 
+> >   retbleed=force,unret
+> > 
+> > on any random machine (typically Intel, because I have a distinct lack
+> > of AMD machines :-() and look at the life kernel image to see if all the
+> > patching worked.
+> > 
+> > I suppose I should add:
+> > 
+> >   setup_force_cpu_bug(X86_BUG_SRSO);
+> > 
+> > to the 'force' option, then:
+> > 
+> >   retbleed=force,srso_alias
+> > 
+> > should function the same, irrespective of the hardware.
+> > 
+> > I'm also of the opinion that the kernel should do as told, even if it
+> > doesn't make sense. If you tell it nonsense, you get to keep the pieces.
+> > 
+> > So in that light, yes I think we should have separate options.
+> 
+> What if I want the SRSO mitigation regardless of CPU model?
 
-Sigh, I'd forgotten about this...
+You mean, you want to say 'any of the SRSO things, you pick the right
+version?'
 
-For the TPROXY TCP replacement use case we sk_assign the SYN to the
-listener, which creates the reqsk. We can let follow up packets pass
-without sk_assign since they will match the reqsk and convert to a
-fullsock via the usual route. At least that is what the test does. I'm
-not even sure what it means to redirect a random packet into an
-established TCP socket TBH. It'd probably be dropped?
+Which means the user has an AMD machine, but can't be arsed to figure
+out which and somehow doesn't want to use AUTO?
 
-For UDP, I'm not sure whether we even get into this situation? Doesn't
-seem like UDP sockets are cloned from each other, so we also shouldn't
-end up with a reuseport flag set erroneously.
 
-Things we could do if necessary:
-1. Reset the flag in inet_csk_clone_lock like we do for SOCK_RCU_FREE
-2. Duplicate the cb check into inet[6]_steal_sock
 
-Best
-Lorenz
 
->
-> > reuseport group. inet[6]_lookup_reuseport already check this flag,
-> > so we can't execute an erroneous reuseport lookup by definition.
-> >
-> > Remove the unnecessary assertions to fix the out of bounds access.
-> >
-> > Fixes: 9c02bec95954 ("bpf, net: Support SO_REUSEPORT sockets with bpf_s=
-k_assign")
-> > Reported-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
-> > ---
-> >   include/net/inet6_hashtables.h | 10 ----------
-> >   include/net/inet_hashtables.h  | 10 ----------
-> >   2 files changed, 20 deletions(-)
-> >
-> > diff --git a/include/net/inet6_hashtables.h b/include/net/inet6_hashtab=
-les.h
-> > index 284b5ce7205d..f9907ed36d54 100644
-> > --- a/include/net/inet6_hashtables.h
-> > +++ b/include/net/inet6_hashtables.h
-> > @@ -119,16 +119,6 @@ struct sock *inet6_steal_sock(struct net *net, str=
-uct sk_buff *skb, int doff,
-> >       if (!prefetched)
-> >               return sk;
-> >
-> > -     if (sk->sk_protocol =3D=3D IPPROTO_TCP) {
-> > -             if (sk->sk_state !=3D TCP_LISTEN)
-> > -                     return sk;
-> > -     } else if (sk->sk_protocol =3D=3D IPPROTO_UDP) {
-> > -             if (sk->sk_state !=3D TCP_CLOSE)
-> > -                     return sk;
-> > -     } else {
-> > -             return sk;
-> > -     }
-> > -
-> >       reuse_sk =3D inet6_lookup_reuseport(net, sk, skb, doff,
-> >                                         saddr, sport, daddr, ntohs(dpor=
-t),
-> >                                         ehashfn);
-> > diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtable=
-s.h
-> > index 1177effabed3..57a46993383a 100644
-> > --- a/include/net/inet_hashtables.h
-> > +++ b/include/net/inet_hashtables.h
-> > @@ -465,16 +465,6 @@ struct sock *inet_steal_sock(struct net *net, stru=
-ct sk_buff *skb, int doff,
-> >       if (!prefetched)
-> >               return sk;
-> >
-> > -     if (sk->sk_protocol =3D=3D IPPROTO_TCP) {
-> > -             if (sk->sk_state !=3D TCP_LISTEN)
-> > -                     return sk;
-> > -     } else if (sk->sk_protocol =3D=3D IPPROTO_UDP) {
-> > -             if (sk->sk_state !=3D TCP_CLOSE)
-> > -                     return sk;
-> > -     } else {
-> > -             return sk;
-> > -     }
-> > -
-> >       reuse_sk =3D inet_lookup_reuseport(net, sk, skb, doff,
-> >                                        saddr, sport, daddr, ntohs(dport=
-),
-> >                                        ehashfn);
-> >
-> > ---
-> > base-commit: eb62e6aef940fcb1879100130068369d4638088f
-> > change-id: 20230808-bpf-next-a442a095562b
-> >
-> > Best regards,
->
+> > They should, the discussions we had back then explained the Zen1/2
+> > retbleed case in quite some detail and the srso case matches that
+> > exactly with the movabs. A larger instruction is used because we need a
+> > larger embedded sequence of instructions, but otherwise it is identical.
+> > 
+> > The comments provided for srso_alias state the BTB is untrained using
+> > the explicit aliasing.
+> > 
+> > That is to say, AFAIU any of this, yes both srso options untrain the BTB
+> > and mitigate the earlier retbleed thing.
+> > 
+> > SRSO then goes one step further with the RAP/RSB clobber.
+> 
+> Ah, nice.  Please add that information somewhere (e.g., one of the
+> commit logs).
+
+The comment above zen_untrain_ret (or retbleed_untrain_ret as you've
+christened it) not clear enough?
+
+/*
+ * Safety details here pertain to the AMD Zen{1,2} microarchitecture:
+ * 1) The RET at retbleed_return_thunk must be on a 64 byte boundary, for
+ *    alignment within the BTB.
+ * 2) The instruction at retbleed_untrain_ret must contain, and not
+ *    end with, the 0xc3 byte of the RET.
+ * 3) STIBP must be enabled, or SMT disabled, to prevent the sibling thread
+ *    from re-poisioning the BTB prediction.
+ */
+
+
+Hmm, when compared to:
+
+	.align 64
+	.skip 64 - (srso_safe_ret - srso_untrain_ret), 0xcc
+SYM_START(srso_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
+ANNOTATE_NOENDBR
+	.byte 0x48, 0xb8
+
+SYM_INNER_LABEL(srso_safe_ret, SYM_L_GLOBAL)
+	add $8, %_ASM_SP
+	ret
+	int3
+	int3
+	int3
+	/* end of movabs */
+	lfence
+	jmp srso_return_thunk
+	int3
+SYM_CODE_END(srso_safe_ret)
+SYM_FUNC_END(srso_untrain_ret)
+
+Then we match 2, srso_safe_ret is strictly *inside* the movabs, that is,
+it is not the first nor the last byte of the outer instruction.
+
+However, we fail at 1, 'add $8, %rsp' sits at the boundary, not ret.
+
+Anybody, help ?
