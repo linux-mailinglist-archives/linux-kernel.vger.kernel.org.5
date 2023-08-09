@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 344B4775656
+	by mail.lfdr.de (Postfix) with ESMTP id 87977775657
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbjHIJ1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 05:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
+        id S229453AbjHIJ1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 05:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbjHIJ1e (ORCPT
+        with ESMTP id S230480AbjHIJ1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 05:27:34 -0400
+        Wed, 9 Aug 2023 05:27:38 -0400
 Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D1E1A19BC;
-        Wed,  9 Aug 2023 02:27:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4BA7A19BC;
+        Wed,  9 Aug 2023 02:27:37 -0700 (PDT)
 Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id B7E9B816A;
-        Wed,  9 Aug 2023 09:27:31 +0000 (UTC)
+        by muru.com (Postfix) with ESMTP id 315B6810A;
+        Wed,  9 Aug 2023 09:27:35 +0000 (UTC)
 From:   Tony Lindgren <tony@atomide.com>
 To:     linux-omap@vger.kernel.org
 Cc:     Dave Gerlach <d-gerlach@ti.com>, Dhruva Gole <d-gole@ti.com>,
@@ -26,9 +26,9 @@ Cc:     Dave Gerlach <d-gerlach@ti.com>, Dhruva Gole <d-gole@ti.com>,
         Keerthy <j-keerthy@ti.com>, Kevin Hilman <khilman@baylibre.com>,
         Nishanth Menon <nm@ti.com>, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 2/3] bus: ti-sysc: Build driver for TI K3 SoCs
-Date:   Wed,  9 Aug 2023 12:27:21 +0300
-Message-ID: <20230809092722.11000-2-tony@atomide.com>
+Subject: [PATCH v2 3/3] bus: ti-sysc: Configure uart quirks for k3 SoC
+Date:   Wed,  9 Aug 2023 12:27:22 +0300
+Message-ID: <20230809092722.11000-3-tony@atomide.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230809092722.11000-1-tony@atomide.com>
 References: <20230809092722.11000-1-tony@atomide.com>
@@ -43,31 +43,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow building ti-sysc also for K3 SoCs. This allows configuring the wkup
-domain devices for SYSCONFIG register wake-up events in a generic way.
+Enable the uart quirks similar to the earlier SoCs. Let's assume we are
+likely going to need a k3 specific quirk mask separate from the earlier
+SoCs, so let's not start changing the revision register mask at this point.
 
-As this is an interconnect level driver, default to built-in on K3 SoCs
-to probe the devices connected to the wkup domain like gpio, uart and
-timers.
+Note that SYSC_QUIRK_LEGACY_IDLE will be needed until we can remove the
+need for pm_runtime_irq_safe() from 8250_omap driver.
 
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
 Signed-off-by: Tony Lindgren <tony@atomide.com>
 ---
- drivers/bus/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/bus/ti-sysc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
---- a/drivers/bus/Kconfig
-+++ b/drivers/bus/Kconfig
-@@ -210,7 +210,8 @@ config  TI_PWMSS
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -1525,6 +1525,8 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
+ 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
+ 	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x47422e03, 0xffffffff,
+ 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
++	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x47424e03, 0xffffffff,
++		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
  
- config TI_SYSC
- 	bool "TI sysc interconnect target module driver"
--	depends on ARCH_OMAP2PLUS
-+	depends on ARCH_OMAP2PLUS || ARCH_K3
-+	default y
- 	help
- 	  Generic driver for Texas Instruments interconnect target module
- 	  found on many TI SoCs.
+ 	/* Quirks that need to be set based on the module address */
+ 	SYSC_QUIRK("mcpdm", 0x40132000, 0, 0x10, -ENODEV, 0x50000800, 0xffffffff,
 -- 
 2.41.0
