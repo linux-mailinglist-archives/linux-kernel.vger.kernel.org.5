@@ -2,255 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BFC77606C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE378776068
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232854AbjHINRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 09:17:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41536 "EHLO
+        id S232835AbjHINRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 09:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjHINRk (ORCPT
+        with ESMTP id S229560AbjHINRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 09:17:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A642DC1;
-        Wed,  9 Aug 2023 06:17:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691587059; x=1723123059;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=COM8b++zFSJJGlRL6RPS1+zGQht6x8MaZDgSA0FjnJk=;
-  b=h6xbxXml+Y2dgMqTpKhivxUsb3IzbUP2Jp9pNN67nHjsNZ5nbwAkUfVd
-   PGVwYYMBCII/D5KINjiVlaucAATOvanI4mAB6ECeG3Z14H7HOzl14otc6
-   G9ZiMhICote2IFB/OpZHaEEgBuJNPBdEIa5CBemU7vOjSV07E5g9e/kNx
-   AUry2cm4F1kzh1LfMmiJwtYoPSqWFRoN8xoAGVzpcSvs09gXSSbucrZuP
-   yvRneYAygGuLH9IdYrSYdeIQzhD21/UaxnacYbBlHumKVRwA1uHj3VX7b
-   QZS4I67dare8q3b1imAixANw31MqpdOLVakLsivDIBKhNqViXxHS5JV7J
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="373899903"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="373899903"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 06:17:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="708712550"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="708712550"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 09 Aug 2023 06:17:33 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qTj48-00067c-2b;
-        Wed, 09 Aug 2023 13:17:32 +0000
-Date:   Wed, 9 Aug 2023 21:16:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        maarten.lankhorst@linux.intel.com
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
-        daniel@ffwll.ch, sumit.semwal@linaro.org, christian.koenig@amd.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] drm: manager: Remove the unused variable prev
-Message-ID: <202308092135.95Kg6wDq-lkp@intel.com>
-References: <20230809065229.71300-1-jiapeng.chong@linux.alibaba.com>
+        Wed, 9 Aug 2023 09:17:12 -0400
+Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2081.outbound.protection.outlook.com [40.107.9.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783CBC1
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:17:05 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iAp2EW9xew88VQxwDLSvz8tlLWb8uO/3LlsQKjaagnNmFFncsmcgNLVUtF2YzR7tHlCCrcU7hkRon0zgA2axOSGF/tiZt4pTM6ZC4BY6z5+yA38IrmeDjTo0Jhn9eiJeWI51CqyVKzj4dGTrm8QFMdRLCHb73tjeca5hncb7D6DxQb6NBr9YIj7geiHXFftkjJu7alr/DweqklrbY/ywSxKO0OS+kYR1hom6SDnB+LYvz6Awg4pXdgHaTJF8xb+aeWXF9mQZ+fiWKrGLAp1uOclhCG0d3f65BJczBq9ovgFmxh/Y1MA9q93pYjQF7cYTTtpg8fnrA0aaoN24fUYwog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SCi4jmu62xrfgUo9jmzwDJQNyse4nR2WOya2N5YhEpg=;
+ b=ACfhKGZ0N7fETiAkm4t1BpUuU65hAsy7rBkK7glvlqqYRjv3u/Yt+XbaMvLPDz3ceXRpXrr/nSguLwUvKwYGgsEvqUPn2ZZndC0DwR/tRePe6QQ+Yt4vXlqst/6+/si4JlmpWdj3c1qWwfI+S3SnWRQLE+vHq3tYmeHjDQ437ibf7I0OO+IM1HUc+l1cWWX6hzJNmOWSgTJdBY4PnEpyHVqstYRzMRZDf2SYrChNRD9qwAHeBbE7yfk+ln2t2vHNkeVUNQYoeQffzWHTmxINQRUq7RXCFqvH+XcKqJMVNUsR6B9Dsa2+Mn3pf8+AAA63Dg6Y6/tvGJTcyaFzSNhoqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SCi4jmu62xrfgUo9jmzwDJQNyse4nR2WOya2N5YhEpg=;
+ b=ID0vCL4MkmBDprTP4ojTRXJjxgX+0JxOlxAqMPJ62AFF0gg+TTY4AUB3cW0qyrI50s0KpudrUDMtB3s3J4sjMM3Hfe6ubAAfl8DuvkuXHA2mPEU7Wj4/ZWhA2LyZgpbWlo9wm+JgEjX7BUJsXDYVfu8A5XlA/7z/g0ycxsnqyNehgTscZxcoy61dYdqMGM1kTl8LnH0vDXa2G+uE/6Gy77uUg4NS1TVwDF83DQpWj9ZWNMGOckTj1izskZ9ZZs8pjeBBHjWYrxVspUqgf9ZbrzeAts4HtUZNc+gvuBLc0W/HyNaHJ+JXWRAX517qZTALOephTWV8m79PARHYsEEvGQ==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PR1P264MB3389.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1a::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.28; Wed, 9 Aug
+ 2023 13:17:02 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e%6]) with mapi id 15.20.6652.028; Wed, 9 Aug 2023
+ 13:17:02 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+CC:     Arnd Bergmann <arnd@arndb.de>, Nicholas Piggin <npiggin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maninder Singh <maninder1.s@samsung.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] powerpc: mark more local variables as volatile
+Thread-Topic: [PATCH 1/2] powerpc: mark more local variables as volatile
+Thread-Index: AQHZysLik2jSorxJoEa1cRJ1fMiL+6/h8gsA
+Date:   Wed, 9 Aug 2023 13:17:02 +0000
+Message-ID: <66ca8677-6a8d-c2f6-f215-a49ae7248458@csgroup.eu>
+References: <20230809131024.2039647-1-arnd@kernel.org>
+In-Reply-To: <20230809131024.2039647-1-arnd@kernel.org>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR1P264MB3389:EE_
+x-ms-office365-filtering-correlation-id: e157a5e3-b9b4-49a7-2b11-08db98daeb91
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wEaS+CrIF5z1qCsBdt3vAyeuUC1FurM+KV7EldCPrXfwdA36cChX42bvQl5jK9OwToMZzXZ3AQzWQ5ucnYbKodQFgoXNZl6PjKFhikHScwjetZvYe1WXKjNGoEi4sdsbpcEbt0bp2P8XzWdPxmj4ha3sCEGN1GiD91BKCSotFWrh6A4FkZ+6BlroYTvFcWCOurZzgGH/4YNtU//Jti8TSvkaMM2LkJpN5JBlFntC4tRUBJP8Hux3CsYHzq6rWbm5x7y7eXDnWCDdXpu8M1MA3J2WWiN5Y9cuefOcvBYyEvIXeLha8BFLpf7EjxTq0XIsZJQyAh7I0Siuzf4dxVD/f95FeSfgpffBA92mDttuDCOyEvufYLputXkvvdoO/ppXlTxpEwfPbvcSFoU0sz0c/bcu5Uz+E+slTwnSKhJ5UNb8V/zB+1HucWwCaYjOBAKO6JJUt5auy1+1NxdjPPHBZZMZuZHTRJ/oTGLQL0jQfyJEBNB9dQ00EScZHq2+wIp+irS9a6+RqOjqEvsxN8hna7YENMc0z9UrMJMIXqDoDGTS7J98FTYNX/7/XNwPtMKeG4xndnIbdRfiYj1ePT2Ft7uLUDbog5C63cuTlNNDS0f27jnZRILOEf9Ky/Q6h6T7dm5vKD47Mpu75MKmRIj7WSLr8+oFSY0gfhtK7ygHK84=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(376002)(136003)(366004)(346002)(396003)(39850400004)(451199021)(1800799006)(186006)(316002)(31696002)(2616005)(31686004)(66574015)(71200400001)(41300700001)(2906002)(83380400001)(86362001)(38070700005)(5660300002)(8936002)(8676002)(6506007)(44832011)(26005)(7416002)(66476007)(91956017)(110136005)(966005)(6512007)(54906003)(6486002)(66946007)(122000001)(66556008)(64756008)(66446008)(76116006)(36756003)(38100700002)(478600001)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MXFUeFpxRVNINGVFMVE3VnFTbkxGS01XaDV2dXBhU2dUbkFTNThneWd3Wi9K?=
+ =?utf-8?B?L1FTSnBsWUl0MDVGa3VXWEJHU1lLR1ZpY1RMMWVXaEFFKzU5UTgybUY2bDQw?=
+ =?utf-8?B?OGx3Ny9GTVFacER4c0pYNUlKSTl0ZUlaZWE3N1dRUjgvT0NZYVE1YVpVRlVL?=
+ =?utf-8?B?L0Z2eityRlA4clA4QkRUeks0ZStNZlpXencvOFFCMThSNXE5ajd3S0lmQWFN?=
+ =?utf-8?B?Q3RlK1lqNDFPMUd2b3BYWVFBcEh1TkNSN041ejIxbkVnVTBQODByZytPZWZZ?=
+ =?utf-8?B?elVSUTZPWmVRaHN4WGl1YmU5b2l2WksxSGN1VHdpSmtXdHNtbGFvdzJXcGlz?=
+ =?utf-8?B?cFdYV1V5c1hpcVpQbFhIYzE3VWpGKzlxaTN6bWNmdWRCV3ZkWHhXam9VbEtW?=
+ =?utf-8?B?L3hLZFBqVjBJc1dYREVRWk1Fa0xxVDdRR0hHc1RTYkdwTUxCWDdZQmZPYjBr?=
+ =?utf-8?B?cDA2andQTUJTNjdLRjFCZERrNGJyNkwyZWpsQnF4d3Z1SXhpeXk2KzdhZjkz?=
+ =?utf-8?B?cndIRHV0WlcrU1hUQ2piTVNzeDc4Q2pYZVBWa21TdGhCV0hycEtRSWtLb01v?=
+ =?utf-8?B?V0FSV2wyV0ZJNHJNcVgvWGt1SEt5SHFKLzR1eXF0dHNTODJRRUQ1Kzg5WnBP?=
+ =?utf-8?B?VXRBVmNrZ0hNaGwxTzBqWk9HZExHL3h4dkJQalZnZlFHWE9wUXNpaHRWNGlN?=
+ =?utf-8?B?RFdhSGtNZnZSckZ0SnYrbHA1NStSOW14WDNxamM1cGtJNGthZ1JPZHpVSSto?=
+ =?utf-8?B?ZXNvZ0ZZVXNjMEgvUCtqeVJCUG5DeURJeUc5czFOUDB0WWZFL2pBM21HaWF0?=
+ =?utf-8?B?Sy9lOEhJM09ZSnMzVkJ1SkJYYS9aRThjVVYyLzlEdmVJS1BhRW1ROTJyemlF?=
+ =?utf-8?B?Mk9YWWl5ZkdmRVZod0VLWEtsVitGcTM3Z21PNy9KNUZiMzVKWEZWM0NHUjNj?=
+ =?utf-8?B?NlJXODNjbEZ6VjEweFBubnRGaStTeW5DVWZqQXY1SFN6MVA4M1p1ZHV3MllB?=
+ =?utf-8?B?QXJTOXpoekVjeFRtd0V1YTJRcXJZQ0Y0ckZQZE1LSkdQUzc1S2RVUWREakU4?=
+ =?utf-8?B?MVhoeng5Vk5abkJGNm42VGcwV1Njd2JmcXdabGwxUktMVllkQXMwNnRYdXl5?=
+ =?utf-8?B?TDdxb1BQcTZuZUZiOUJKQjRNZXNPM2NUUXhlcitoMElmUjZHSjlsU3M2L3Bz?=
+ =?utf-8?B?K2I3NmZEejVVSWRPZC8zWFZFTXYrVEQ4L0RqUnNzOFN4cG1oeGovTFlXRWRH?=
+ =?utf-8?B?UnlNOUN2NEZhcm50ei9mdVlsbXlYc3diaDY3ZXdvdGk1b1hLS0kyOEpiVm15?=
+ =?utf-8?B?V0dmd0p3MW4vWUdGTW5hS3A1MHhXSEdHUU5KQmNNZkdEcjQ1TjdlMVF0MHU1?=
+ =?utf-8?B?TTVIM29TVEs4NEQ1WUZYQk5xcis2K2l6Q2FEbGxHSnFKN3Q4K2Q1UGJjdzFJ?=
+ =?utf-8?B?V1Vzdi9hSEVsOWZGdWhUam93dXNEV3BzVklQcXRKa1VxeklEV0V2b0ljREx4?=
+ =?utf-8?B?UGdlUzh3NUV1bUZWV0ZtMURWdnQwZDNLSEdwWnpvL3Nhc1pTajVQUzh3Vjdx?=
+ =?utf-8?B?Zmtma1pwWTNpMzBUUVZHUHp0WWlCUVdienZ5azBVQUdNVytkUGpMU3lTODVJ?=
+ =?utf-8?B?YnpVK3ZyK2FUNVRxblBLTWRTaVZKdCtrdTBTZTlHVG1JYXZpUXllSmVUem9w?=
+ =?utf-8?B?YnNud013K2hRUDNucXhFUTBWcDY5KzJkUmI1U0x6b2ZiSHNIM0x4OEFLd2R2?=
+ =?utf-8?B?NmRoZDRRZ2EvTDd2bUFyZFdKSHM0M2VzSWhXbWZmTkVFZklIOTExQThIOU5H?=
+ =?utf-8?B?VDE4MldUaW1Zck5KamlpS3VFQUhPbUhQbzI0S1NrV0gwYUdJZ005ZTNXcmdu?=
+ =?utf-8?B?RHN1RDNVdlNkbjE4TGF4N1RpYVpuTjF5QjduWmhEVWNjT3oxMXFXaktsVitT?=
+ =?utf-8?B?b3ZEb2c3ci95SXFBcWp1MG41MzRnenBUWloyOEZxcTFiTFlRb1RIVEluY0N1?=
+ =?utf-8?B?ekM4bkl5NFVZZUhJL3kvK2lvNTZqMXczWFFjMHd2emNoUmhCeHRHdS9wZHAr?=
+ =?utf-8?B?dnpnZUxHb1hldVBRRjlOUVFXM0dIaTdQR0pxRmJqSUYxMXlOWURGd01qQ2xp?=
+ =?utf-8?B?TEtTa3RUNVo5NkhzNy9Tc1JvZVFWWHZvVnQzT0hVWGhNQ2FHVVNqZDNlZ0xo?=
+ =?utf-8?B?U0E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6B559D4EC90E404D965718AFC1B772E6@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809065229.71300-1-jiapeng.chong@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: e157a5e3-b9b4-49a7-2b11-08db98daeb91
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2023 13:17:02.5167
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 23XWn+R1eF9AglvZTyzNPxJbCP6rALS3H7KF5l/UdgO2ONbCjCgrxZiTozGK1H8mGhJ+wbhlkvnnOAfEVIQ/4TNjHJnx0xP83S7EyTmgSxs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB3389
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FORGED_SPF_HELO,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,T_SPF_TEMPERROR,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiapeng,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on drm-misc/drm-misc-next]
-[also build test WARNING on next-20230809]
-[cannot apply to linus/master v6.5-rc5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Jiapeng-Chong/drm-manager-Remove-the-unused-variable-prev/20230809-145348
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20230809065229.71300-1-jiapeng.chong%40linux.alibaba.com
-patch subject: [PATCH] drm: manager: Remove the unused variable prev
-config: riscv-randconfig-r042-20230809 (https://download.01.org/0day-ci/archive/20230809/202308092135.95Kg6wDq-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230809/202308092135.95Kg6wDq-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308092135.95Kg6wDq-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/gpu/drm/drm_gpuva_mgr.c:1209:2: warning: label at end of compound statement is a C2x extension [-Wc2x-extensions]
-           }
-           ^
-   1 warning generated.
-
-
-vim +1209 drivers/gpu/drm/drm_gpuva_mgr.c
-
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1072  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1073  static int
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1074  __drm_gpuva_sm_map(struct drm_gpuva_manager *mgr,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1075  		   const struct drm_gpuva_fn_ops *ops, void *priv,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1076  		   u64 req_addr, u64 req_range,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1077  		   struct drm_gem_object *req_obj, u64 req_offset)
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1078  {
-e927727c10be76 Jiapeng Chong    2023-08-09  1079  	struct drm_gpuva *va, *next = NULL;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1080  	u64 req_end = req_addr + req_range;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1081  	int ret;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1082  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1083  	if (unlikely(!drm_gpuva_range_valid(mgr, req_addr, req_range)))
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1084  		return -EINVAL;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1085  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1086  	drm_gpuva_for_each_va_range_safe(va, next, mgr, req_addr, req_end) {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1087  		struct drm_gem_object *obj = va->gem.obj;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1088  		u64 offset = va->gem.offset;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1089  		u64 addr = va->va.addr;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1090  		u64 range = va->va.range;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1091  		u64 end = addr + range;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1092  		bool merge = !!va->gem.obj;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1093  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1094  		if (addr == req_addr) {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1095  			merge &= obj == req_obj &&
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1096  				 offset == req_offset;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1097  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1098  			if (end == req_end) {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1099  				ret = op_unmap_cb(ops, priv, va, merge);
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1100  				if (ret)
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1101  					return ret;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1102  				break;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1103  			}
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1104  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1105  			if (end < req_end) {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1106  				ret = op_unmap_cb(ops, priv, va, merge);
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1107  				if (ret)
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1108  					return ret;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1109  				goto next;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1110  			}
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1111  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1112  			if (end > req_end) {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1113  				struct drm_gpuva_op_map n = {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1114  					.va.addr = req_end,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1115  					.va.range = range - req_range,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1116  					.gem.obj = obj,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1117  					.gem.offset = offset + req_range,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1118  				};
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1119  				struct drm_gpuva_op_unmap u = {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1120  					.va = va,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1121  					.keep = merge,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1122  				};
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1123  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1124  				ret = op_remap_cb(ops, priv, NULL, &n, &u);
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1125  				if (ret)
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1126  					return ret;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1127  				break;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1128  			}
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1129  		} else if (addr < req_addr) {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1130  			u64 ls_range = req_addr - addr;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1131  			struct drm_gpuva_op_map p = {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1132  				.va.addr = addr,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1133  				.va.range = ls_range,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1134  				.gem.obj = obj,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1135  				.gem.offset = offset,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1136  			};
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1137  			struct drm_gpuva_op_unmap u = { .va = va };
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1138  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1139  			merge &= obj == req_obj &&
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1140  				 offset + ls_range == req_offset;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1141  			u.keep = merge;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1142  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1143  			if (end == req_end) {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1144  				ret = op_remap_cb(ops, priv, &p, NULL, &u);
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1145  				if (ret)
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1146  					return ret;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1147  				break;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1148  			}
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1149  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1150  			if (end < req_end) {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1151  				ret = op_remap_cb(ops, priv, &p, NULL, &u);
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1152  				if (ret)
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1153  					return ret;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1154  				goto next;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1155  			}
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1156  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1157  			if (end > req_end) {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1158  				struct drm_gpuva_op_map n = {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1159  					.va.addr = req_end,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1160  					.va.range = end - req_end,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1161  					.gem.obj = obj,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1162  					.gem.offset = offset + ls_range +
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1163  						      req_range,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1164  				};
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1165  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1166  				ret = op_remap_cb(ops, priv, &p, &n, &u);
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1167  				if (ret)
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1168  					return ret;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1169  				break;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1170  			}
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1171  		} else if (addr > req_addr) {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1172  			merge &= obj == req_obj &&
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1173  				 offset == req_offset +
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1174  					   (addr - req_addr);
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1175  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1176  			if (end == req_end) {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1177  				ret = op_unmap_cb(ops, priv, va, merge);
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1178  				if (ret)
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1179  					return ret;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1180  				break;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1181  			}
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1182  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1183  			if (end < req_end) {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1184  				ret = op_unmap_cb(ops, priv, va, merge);
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1185  				if (ret)
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1186  					return ret;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1187  				goto next;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1188  			}
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1189  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1190  			if (end > req_end) {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1191  				struct drm_gpuva_op_map n = {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1192  					.va.addr = req_end,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1193  					.va.range = end - req_end,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1194  					.gem.obj = obj,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1195  					.gem.offset = offset + req_end - addr,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1196  				};
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1197  				struct drm_gpuva_op_unmap u = {
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1198  					.va = va,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1199  					.keep = merge,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1200  				};
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1201  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1202  				ret = op_remap_cb(ops, priv, NULL, &n, &u);
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1203  				if (ret)
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1204  					return ret;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1205  				break;
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1206  			}
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1207  		}
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1208  next:
-e6303f323b1ad9 Danilo Krummrich 2023-07-20 @1209  	}
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1210  
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1211  	return op_map_cb(ops, priv,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1212  			 req_addr, req_range,
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1213  			 req_obj, req_offset);
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1214  }
-e6303f323b1ad9 Danilo Krummrich 2023-07-20  1215  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+DQoNCkxlIDA5LzA4LzIwMjMgw6AgMTU6MTAsIEFybmQgQmVyZ21hbm4gYSDDqWNyaXTCoDoNCj4g
+RnJvbTogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4NCj4gDQo+IEEgd2hpbGUgYWdvIEkg
+Y3JlYXRlZCBhMjMwNWUzZGU4MTkzICgicG93ZXJwYzogbWFyayBsb2NhbCB2YXJpYWJsZXMNCj4g
+YXJvdW5kIGxvbmdqbXAgYXMgdm9sYXRpbGUiKSBpbiBvcmRlciB0byBhbGxvdyBidWlsZGluZyBw
+b3dlcnBjIHdpdGgNCj4gLVdleHRyYSBlbmFibGVkIG9uIGdjYy0xMS4NCg0KU2hvdWxkIHRoaXMg
+YmUgZXhwbGFpbmVkIGluIA0KaHR0cHM6Ly9kb2NzLmtlcm5lbC5vcmcvcHJvY2Vzcy92b2xhdGls
+ZS1jb25zaWRlcmVkLWhhcm1mdWwuaHRtbCA/DQoNCkNocmlzdG9waGUNCg0KDQo+IA0KPiBJIHRy
+aWVkIHRoaXMgYWdhaW4gd2l0aCBnY2MtMTMgYW5kIGZvdW5kIHR3byBtb3JlIG9mIHRoZSBzYW1l
+IGlzc3VlcywNCj4gcHJlc3VtYWJseSBiYXNlZCBvbiBzbGlnaHRseSBkaWZmZXJlbnQgb3B0aW1p
+emF0aW9uIHBhdGhzIGJlaW5nIHRha2VuDQo+IGhlcmU6DQo+IA0KPiBhcmNoL3Bvd2VycGMveG1v
+bi94bW9uLmM6MzMwNjoyNzogZXJyb3I6IHZhcmlhYmxlICdtbScgbWlnaHQgYmUgY2xvYmJlcmVk
+IGJ5ICdsb25nam1wJyBvciAndmZvcmsnIFstV2Vycm9yPWNsb2JiZXJlZF0NCj4gYXJjaC9wb3dl
+cnBjL2tleGVjL2NyYXNoLmM6MzUzOjIyOiBlcnJvcjogdmFyaWFibGUgJ2knIG1pZ2h0IGJlIGNs
+b2JiZXJlZCBieSAnbG9uZ2ptcCcgb3IgJ3Zmb3JrJyBbLVdlcnJvcj1jbG9iYmVyZWRdDQo+IA0K
+PiBJIGNoZWNrZWQgYSBidW5jaCBvZiByYW5kY29uZmlncyBhbmQgZm91bmQgb25seSB0aGVzZSB0
+d28sIHNvIGp1c3QNCj4gYWRkcmVzcyB0aGVtIHRoZSBzYW1lIHdheSBhcyB0aGUgb3RoZXJzLg0K
+PiANCj4gU2lnbmVkLW9mZi1ieTogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4NCj4gLS0t
+DQo+ICAgYXJjaC9wb3dlcnBjL2tleGVjL2NyYXNoLmMgfCAyICstDQo+ICAgYXJjaC9wb3dlcnBj
+L3htb24veG1vbi5jICAgfCAyICstDQo+ICAgMiBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMo
+KyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9wb3dlcnBjL2tleGVj
+L2NyYXNoLmMgYi9hcmNoL3Bvd2VycGMva2V4ZWMvY3Jhc2guYw0KPiBpbmRleCAyNTI3MjRlZDY2
+NmEzLi5lZjVjMmQyNWVjMzk3IDEwMDY0NA0KPiAtLS0gYS9hcmNoL3Bvd2VycGMva2V4ZWMvY3Jh
+c2guYw0KPiArKysgYi9hcmNoL3Bvd2VycGMva2V4ZWMvY3Jhc2guYw0KPiBAQCAtMzUwLDcgKzM1
+MCw3IEBAIEVYUE9SVF9TWU1CT0woY3Jhc2hfc2h1dGRvd25fdW5yZWdpc3Rlcik7DQo+ICAgDQo+
+ICAgdm9pZCBkZWZhdWx0X21hY2hpbmVfY3Jhc2hfc2h1dGRvd24oc3RydWN0IHB0X3JlZ3MgKnJl
+Z3MpDQo+ICAgew0KPiAtCXVuc2lnbmVkIGludCBpOw0KPiArCXZvbGF0aWxlIHVuc2lnbmVkIGlu
+dCBpOw0KPiAgIAlpbnQgKCpvbGRfaGFuZGxlcikoc3RydWN0IHB0X3JlZ3MgKnJlZ3MpOw0KPiAg
+IA0KPiAgIAlpZiAoVFJBUChyZWdzKSA9PSBJTlRFUlJVUFRfU1lTVEVNX1JFU0VUKQ0KPiBkaWZm
+IC0tZ2l0IGEvYXJjaC9wb3dlcnBjL3htb24veG1vbi5jIGIvYXJjaC9wb3dlcnBjL3htb24veG1v
+bi5jDQo+IGluZGV4IDNiNmY1MjRjNzkwZTMuLjllMTJiNzU4NTBkNzUgMTAwNjQ0DQo+IC0tLSBh
+L2FyY2gvcG93ZXJwYy94bW9uL3htb24uYw0KPiArKysgYi9hcmNoL3Bvd2VycGMveG1vbi94bW9u
+LmMNCj4gQEAgLTMzMDMsNyArMzMwMyw3IEBAIHN0YXRpYyB2b2lkIHNob3dfcHRlKHVuc2lnbmVk
+IGxvbmcgYWRkcikNCj4gICB7DQo+ICAgCXVuc2lnbmVkIGxvbmcgdHNrdiA9IDA7DQo+ICAgCXN0
+cnVjdCB0YXNrX3N0cnVjdCAqdm9sYXRpbGUgdHNrID0gTlVMTDsNCj4gLQlzdHJ1Y3QgbW1fc3Ry
+dWN0ICptbTsNCj4gKwlzdHJ1Y3QgbW1fc3RydWN0ICp2b2xhdGlsZSBtbTsNCj4gICAJcGdkX3Qg
+KnBnZHA7DQo+ICAgCXA0ZF90ICpwNGRwOw0KPiAgIAlwdWRfdCAqcHVkcDsNCg==
