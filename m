@@ -2,106 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9EB77752A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 08:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0CD7752A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 08:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbjHIGN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 02:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41496 "EHLO
+        id S230489AbjHIGON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 02:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjHIGNz (ORCPT
+        with ESMTP id S230500AbjHIGOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 02:13:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C061BF3
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 23:13:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691561634; x=1723097634;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=I89NpMm1BmDvQjFSjgEsliwddKY7luHiKWODVdUb6e0=;
-  b=ItX/UCo67oYGUSgSswNnJVSO30l8BRndluyYzHjNJmpZhSOvCQ7K5v3t
-   XzknT/tnjxXNnkIGYdq81w/72iKsFUxMg4Wm06IHrzvB92aYqfNWlf0JL
-   FwcUg5GXDquaVavgn71ECROTb454g01IdEYiSoiRQ2iihWH1xZwUwzeUX
-   X9zyBA1+ojNDWfSHOvp2XRofJ/IYQaaQDdRGAYXOKTaaqsQF4qP2bF+d8
-   3KS2rhaVcUeIRJ7TpEIcN3Nztsz1Ruz55OwTOj4v3LfYKGw8F7o007kKQ
-   mXT8YK6AWm/I8YPmmbPp0svQpoXyPqKyavnW6Sa/3eUaEC+UF2HGvvC2j
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="457410111"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="457410111"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 23:13:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="731680732"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="731680732"
-Received: from jmhendri-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.40.58])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 23:13:51 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id D9E2C10A11A; Wed,  9 Aug 2023 09:13:48 +0300 (+03)
-Date:   Wed, 9 Aug 2023 09:13:48 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/tdx: Mark TSC reliable
-Message-ID: <20230809061348.vhm5ie4uzystwfya@box.shutemov.name>
-References: <20230808162320.27297-1-kirill.shutemov@linux.intel.com>
- <ecc11d54-6aaa-f755-9436-ae15b94fb627@intel.com>
- <20230808200111.nz74tmschph435ri@box>
- <DM8PR11MB5750DEFF988068EFAFE28667E712A@DM8PR11MB5750.namprd11.prod.outlook.com>
+        Wed, 9 Aug 2023 02:14:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774631FCA;
+        Tue,  8 Aug 2023 23:14:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B774262678;
+        Wed,  9 Aug 2023 06:14:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C63CC433C8;
+        Wed,  9 Aug 2023 06:14:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691561650;
+        bh=0zMrZj0u6BSryzx0If7FWJOOBvNEMBrRU8O0nHWkQa0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hSPsTShNQ9GHvAEVs8hKcpm6fmM6ejKuGcT8cPhVoOFdg/gp05NZlaGum91T/UDvG
+         u4E77GJsxVig2VeHJkWYoJ3xOW/nYhpzs66uAFPlw9xd1SbNjUKCFJh85k3T7yg6a/
+         VTC7Jyh6sb9gHham9O3HsxFgeFucy2Ro/KANwREWNAHIYWQNyDJ/WmEPlBeW6Msodw
+         IoCcefDkd0hWjsvUrCWah9eIz/3VtIFdHqDZZVxMDTzYQTcJv49pKswkaWn8x+6SKB
+         NpYXUUuZOXa9HYVvmsOxiwNZ0s9mzC/5aAN1GreteOoT1CAl/hEanfW1DDfQwHEPBB
+         yXEiDDXmzsJLg==
+Date:   Wed, 9 Aug 2023 08:14:06 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] docs: vfs: clean up after the iterate() removal
+Message-ID: <20230809-apparat-eiszeit-a1d57a1a4155@brauner>
+References: <874jl945bv.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <DM8PR11MB5750DEFF988068EFAFE28667E712A@DM8PR11MB5750.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <874jl945bv.fsf@meer.lwn.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 05:44:37AM +0000, Reshetova, Elena wrote:
-> > 
-> > I don't know what the rules here. As far as I can see, all other clock
-> > sources relevant for TDX guest have lower rating. I guess we are fine?
+On Tue, Aug 08, 2023 at 03:00:52PM -0600, Jonathan Corbet wrote:
+> Commit 3e3271549670 ("vfs: get rid of old '->iterate' directory operation")
+> removed the iterate() file_operations member, but neglected to clean up the
+> associated documentation.  Get rid of the leftovers.
 > 
-> What about acpi_pm? 
-> See this:
-> https://github.com/intel/tdx/commit/045692772ab4ef75062a83cc6e4ffa22cab40226
+> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+> ---
+> If nobody objects (or beats me to it) I'll drop this into docs-next
+> shortly.
 
-clocksource_acpi_pm.rating is 200 while TSC is 300.
+Looks good to me and yes, feel free to take this through docs ofc,
+Reviewed-by: Christian Brauner <brauner@kernel.org>
 
-> > There's notable exception to the rating order is kvmclock which is higher
-> > than tsc. It has to be disabled, but it is not clear to me how. This topic
-> > is related to how we are going to filter allowed devices/drivers, so I
-> > would postpone the decision until we settle on wider filtering schema.
 > 
-> One option is to include "no-kvmclock" into kernel command line, which
-> is attested. Another option is to try to disable it explicitly, like we had
-> in past: 
-> https://github.com/intel/tdx/commit/6b0357f2115c1bdd158c0c8836f4f541517bf375
+>  Documentation/filesystems/locking.rst | 1 -
+>  Documentation/filesystems/vfs.rst     | 7 +------
+>  2 files changed, 1 insertion(+), 7 deletions(-)
 > 
-> The obvious issues with command line is that it is going to 1) grow 
-> considerably if we try to disable everything we can via command line
-> and 2) there is a high chance that in practice people will not use secure default
-> and/or forget to verify the correct status of cmd line. But this is to be
-> expected I guess for any security method that involves attestation unfortunately.
-
-I guess command line is fine, until we have coherent solution on
-filtering.
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+> diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
+> index 0ca479dbb1cd..aeed0a5a80eb 100644
+> --- a/Documentation/filesystems/locking.rst
+> +++ b/Documentation/filesystems/locking.rst
+> @@ -509,7 +509,6 @@ prototypes::
+>  	ssize_t (*read_iter) (struct kiocb *, struct iov_iter *);
+>  	ssize_t (*write_iter) (struct kiocb *, struct iov_iter *);
+>  	int (*iopoll) (struct kiocb *kiocb, bool spin);
+> -	int (*iterate) (struct file *, struct dir_context *);
+>  	int (*iterate_shared) (struct file *, struct dir_context *);
+>  	__poll_t (*poll) (struct file *, struct poll_table_struct *);
+>  	long (*unlocked_ioctl) (struct file *, unsigned int, unsigned long);
+> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+> index cb2a97e49872..a751f6d01eb2 100644
+> --- a/Documentation/filesystems/vfs.rst
+> +++ b/Documentation/filesystems/vfs.rst
+> @@ -1074,7 +1074,6 @@ This describes how the VFS can manipulate an open file.  As of kernel
+>  		ssize_t (*read_iter) (struct kiocb *, struct iov_iter *);
+>  		ssize_t (*write_iter) (struct kiocb *, struct iov_iter *);
+>  		int (*iopoll)(struct kiocb *kiocb, bool spin);
+> -		int (*iterate) (struct file *, struct dir_context *);
+>  		int (*iterate_shared) (struct file *, struct dir_context *);
+>  		__poll_t (*poll) (struct file *, struct poll_table_struct *);
+>  		long (*unlocked_ioctl) (struct file *, unsigned int, unsigned long);
+> @@ -1126,12 +1125,8 @@ otherwise noted.
+>  ``iopoll``
+>  	called when aio wants to poll for completions on HIPRI iocbs
+>  
+> -``iterate``
+> -	called when the VFS needs to read the directory contents
+> -
+>  ``iterate_shared``
+> -	called when the VFS needs to read the directory contents when
+> -	filesystem supports concurrent dir iterators
+> +	called when the VFS needs to read the directory contents
+>  
+>  ``poll``
+>  	called by the VFS when a process wants to check if there is
+> -- 
+> 2.41.0
+> 
