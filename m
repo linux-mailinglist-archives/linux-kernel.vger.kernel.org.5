@@ -2,65 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B92776C21
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 00:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B70776C24
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 00:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbjHIWZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 18:25:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45410 "EHLO
+        id S231426AbjHIWZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 18:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjHIWZY (ORCPT
+        with ESMTP id S229525AbjHIWZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 18:25:24 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DC2B2
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 15:25:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3GN7LGqdTr6CnPW49m5sqS19cT6QuH9Su23vIXkae5w=; b=5Fk7ox2QmkiMrKU0ZB8zJUPTYo
-        3WYsHKPT/uZuXI8/Y+uOeJxlN3kWfZLRXEI/kzk0VXO7aqmoGqjokWX2sTffmaKJ4gHYTWaBxoRr9
-        cyTz27W1C1FGj44jDUKLVBp2C4PiCry3ZlzmBOa4r4XIDl/Xahr/96c60GoNlYaXkrLr7byGjt0FO
-        /HZwh2zEirA+Olxz+Vl1bjIqZmYjUl22a/ILFZrNOZWAeEkZ5EvecldCNhv4YhZH6EBOlgmOviQnq
-        SQ85bIR5WlOpUlv4Jce0PLiDUgvPrslN2dMSdSLcJzq6odEXxDD8RnSUHX2TtcR82G4GhAmRodwXx
-        JDX8Xa8g==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qTrcF-005zKr-2x;
-        Wed, 09 Aug 2023 22:25:19 +0000
-Date:   Wed, 9 Aug 2023 15:25:19 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Dylan Jhong <dylan@andestech.com>
-Subject: Re: [PATCH -fixes] mm: Add a call to flush_cache_vmap() in vmap_pfn()
-Message-ID: <ZNQSTw4uoksSMYB5@infradead.org>
-References: <20230809164633.1556126-1-alexghiti@rivosinc.com>
+        Wed, 9 Aug 2023 18:25:33 -0400
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FF9B2;
+        Wed,  9 Aug 2023 15:25:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=//xuUqEbAoChMqlkpflQb6XFF+UhgSuCsR64Dz8oIOw=; b=RufX4PgdOl7/nn1WfR4xMKanOl
+        D8ramvykvo45vHnoc+ju2imszAJPNbvtFdVL0OAfTekgQwwA2HBM3O4RyiDQpaRRNM/2kqS4u4SmG
+        YwKohVEgznE3HYd0qC2ScNMZxaFBGA5NkQUwLMYG2eTgldeeOQHQlWYD98Ym40vjOQsny+efBjxpc
+        0P0JA7rgEa0usmHDtYv85YIiTyIQzg5ThDrQMn8xVUCCsF7KFw1AslC2RHbmnlzeh9t2ZgwSG2B9c
+        CsDCPXpSHkA9MheAvKSZSV/fFKyMjeyJHm+/VdJLiZKwvNgVK0zS633u+Cv7gN5lEt4OKitHigi+u
+        SmbFSjYQ==;
+Received: from [191.193.179.209] (helo=[192.168.1.111])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qTrcL-00GDvY-H2; Thu, 10 Aug 2023 00:25:25 +0200
+Message-ID: <071c02ae-a74d-46d8-990b-262264b62caf@igalia.com>
+Date:   Wed, 9 Aug 2023 19:25:19 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809164633.1556126-1-alexghiti@rivosinc.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 05/14] futex: Add sys_futex_wake()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
+        dvhart@infradead.org, dave@stgolabs.net, tglx@linutronix.de,
+        axboe@kernel.dk, Andrew Morton <akpm@linux-foundation.org>,
+        urezki@gmail.com, hch@infradead.org, lstoakes@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        malteskarupke@web.de, Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20230807121843.710612856@infradead.org>
+ <20230807123323.090897260@infradead.org>
+Content-Language: en-US
+From:   =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <20230807123323.090897260@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 06:46:33PM +0200, Alexandre Ghiti wrote:
-> flush_cache_vmap() must be called after new vmalloc mappings are
-> installed in the page table in order to allow architectures to make sure
-> the new mapping is visible.
+Hi Peter,
 
-Looks good.  I somehow vaguely remember seing a patch like this floating
-around before as part of a series, but if that didn't make it it
-certainly should now.
+Em 07/08/2023 09:18, Peter Zijlstra escreveu:
+> To complement sys_futex_waitv() add sys_futex_wake(). This syscall
+> implements what was previously known as FUTEX_WAKE_BITSET except it
+> uses 'unsigned long' for the bitmask and takes FUTEX2 flags.
+> 
+> The 'unsigned long' allows FUTEX2_SIZE_U64 on 64bit platforms.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+[...]
+
+> +/*
+> + * sys_futex_wake - Wake a number of futexes
+> + * @uaddr:	Address of the futex(es) to wake
+> + * @mask:	bitmask
+> + * @nr:		Number of the futexes to wake
+> + * @flags:	FUTEX2 flags
+> + *
+> + * Identical to the traditional FUTEX_WAKE_BITSET op, except it is part of the
+> + * futex2 family of calls.
+> + */
+> +
+> +SYSCALL_DEFINE4(futex_wake,
+> +		void __user *, uaddr,
+> +		unsigned long, mask,
+> +		int, nr,
+> +		unsigned int, flags)
+> +{
+
+Do you think we could have a
+
+	if (!nr)
+		return 0;
+
+here? Otherwise, calling futex_wake(&f, 0, flags) will wake 1 futex (if 
+available), which is a strange undocumented behavior in my opinion.
+
+> +	if (flags & ~FUTEX2_VALID_MASK)
+> +		return -EINVAL;
+> +
+> +	flags = futex2_to_flags(flags);
+> +	if (!futex_flags_valid(flags))
+> +		return -EINVAL;
+> +
+> +	if (!futex_validate_input(flags, mask))
+> +		return -EINVAL;
+> +
+> +	return futex_wake(uaddr, flags, nr, mask);
+> +}
+> +
+>   #ifdef CONFIG_COMPAT
+>   COMPAT_SYSCALL_DEFINE2(set_robust_list,
+>   		struct compat_robust_list_head __user *, head,
+> --- a/kernel/sys_ni.c
+> +++ b/kernel/sys_ni.c
+> @@ -87,6 +87,7 @@ COND_SYSCALL_COMPAT(set_robust_list);
+>   COND_SYSCALL(get_robust_list);
+>   COND_SYSCALL_COMPAT(get_robust_list);
+>   COND_SYSCALL(futex_waitv);
+> +COND_SYSCALL(futex_wake);
+>   COND_SYSCALL(kexec_load);
+>   COND_SYSCALL_COMPAT(kexec_load);
+>   COND_SYSCALL(init_module);
+> 
+> 
