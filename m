@@ -2,114 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9E6776416
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C80776458
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234559AbjHIPjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
+        id S232651AbjHIPsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234519AbjHIPjC (ORCPT
+        with ESMTP id S234009AbjHIPsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:39:02 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6832D6D
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:38:12 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3a7a180c3faso2217360b6e.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:38:12 -0700 (PDT)
+        Wed, 9 Aug 2023 11:48:01 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04917268D
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:38:44 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9a2033978so106897061fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:38:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691595491; x=1692200291;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Or+4Q7ioH1LO85WlhMl+Hf8sfqeAwfesSr6HY/tLZlg=;
-        b=dZcu+9OCCvDLKeSC8+efZ2t+vflJAufUebNBSxKiPMXcivRTCQnANXkWc+eUMIOfP5
-         niV3udOO9xEsykqD1etTNR21tWhoh0SdlANcSTLtFgIor0e+TCSi4toemI4fNBG24Tcs
-         mm9be/Lb7kIaAwrSUVBkeEXK+XV7nwreJY1i0=
+        d=linaro.org; s=google; t=1691595519; x=1692200319;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=r707B4tVygZaMVBucHiTCFygPxl557dnSQW/UZnC7uU=;
+        b=OfOOw7Ha21cX+SrmOxpMaIRauiUgty3GCDD5tHf3R//xmOQmpMk3DI7KnmCF/uATwX
+         WPS6+SIz7fGfnN/kVipZDGgZTRwfJoaYOzYyzvGF7TIbYNRY1QJCL8gGL/cYIk+xVv/T
+         dKFqxukjYgUZP//nnFvnK6HoSUL65xHxPiYhk8eVkk5zYYhLFYUb4hQ4eVGfMyfKC5z+
+         Ciy1KJlQF9FyedEKpvxdiPIpIi0t2thhWdG6G/DhlAfwrxNufHrsz5kwZLeIttDMH6hw
+         XbxqJYLA0Uu+q5PM5CXPiiuNE5B28LBrzQv3yzuZrLhVdF2Px9tCLglV81NNJZaAkPPY
+         j8KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691595491; x=1692200291;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Or+4Q7ioH1LO85WlhMl+Hf8sfqeAwfesSr6HY/tLZlg=;
-        b=R/n36r5zyx+m75iD0tbACGg5a9oWnpLPWEw8z/CEmb+ylu+JXeLFiR8dnIMtjzhacz
-         GqlsL/f9KrNEHmJw07C6Tm5TA8xmnKpdHbGn5iamWdFzN8F0H5F7cqoC74CX5Zm7pNHl
-         fDTjVnzjl197RcfgbgeiL/EWZZl73b3hjs8CR0X8qsAMOt3RFBdM9flqB4vHqvq+8Mrj
-         KvAVH7OKO+PdUI+d64Gp78vzAL/jQdNbZpg3fbk3cZzQldinRVS4sTGSW8xvlUkBAtQb
-         /T9K7DO684ShnXxsTYCW2vqzjlz2nf8PBkC1s0uQjX7ztpHEoe5mxFW1q2S2ROnpahNp
-         Xl9g==
-X-Gm-Message-State: AOJu0YyzOvCcrtV+qnD6kKB9Ywi0tQ16StiPgXZO8GvOI+l2cd0MjzL5
-        QYv5doL1Xdt2Iw5xF9wu+mEBgltzQYgaTgh0gIFI/A==
-X-Google-Smtp-Source: AGHT+IH+aYrEIoM4XMzeEh0db0LKZFpFauBuv8UFazpm8vaS77/zQP9gsRXuMtjL++12niCEpG3Eo4HXLokCZLkpirY=
-X-Received: by 2002:a05:6808:23c7:b0:3a7:8e1b:9d65 with SMTP id
- bq7-20020a05680823c700b003a78e1b9d65mr3596640oib.47.1691595491693; Wed, 09
- Aug 2023 08:38:11 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691595519; x=1692200319;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=r707B4tVygZaMVBucHiTCFygPxl557dnSQW/UZnC7uU=;
+        b=dYbbCC8RW9LK51Hjs9IO/B7gtQ2GaGGZNtP40xpbLbDHkg1OtdN69a/l8FTMlkD0t3
+         Sczz2kTMFiTHgq6TvTTq76G6Boj+QH7EBB1KsmDNVARzlY9/iCJ2b3DrXWgkMQU6vCds
+         OvJtz6BY7AeUYxkhzLUdDkpAYYUP6eOBcv/y3GKBMQyDj7UvH1ZcxcQunPQ3ySckvhZL
+         12mshzqHAHt7MihzIdsDGdDzPRYvDI9cqJ5uQQaYpLTwp5X6iNHKbl7NuWVUYlz/ck+e
+         WwClAy5jJyaYPAuuGUVjyXKAPZRCj9iMSehvZeyfNJnwrjw4djDx9zU0rZLPlXV4DETL
+         YG0A==
+X-Gm-Message-State: AOJu0Yxi3KObSA5qnjQkHM4CP6CjC90lZcqjGX7v/h05midSr7uQoVAR
+        vIew3XB0tdv0C78ntxSwN/+UiQ==
+X-Google-Smtp-Source: AGHT+IEwCkohKzjzb9m/9Gqa3Pcdu5zzc0ctCyzc48SRmLCFKPtbVms2jwuQZiO6czAxnYqiUKT8jg==
+X-Received: by 2002:a2e:6e18:0:b0:2b6:e2cd:20f5 with SMTP id j24-20020a2e6e18000000b002b6e2cd20f5mr2121599ljc.9.1691595519512;
+        Wed, 09 Aug 2023 08:38:39 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id h11-20020a170906854b00b0099cb1a2cab0sm6773292ejy.28.2023.08.09.08.38.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 08:38:39 -0700 (PDT)
+Message-ID: <18d2241a-98ab-6a57-1c4f-d961a4b37c6b@linaro.org>
+Date:   Wed, 9 Aug 2023 17:38:36 +0200
 MIME-Version: 1.0
-References: <169139090386.324433.6412259486776991296.stgit@devnote2>
- <169139095066.324433.15514499924371317690.stgit@devnote2> <CABRcYm+8-zYRGjKSPtWQ8_Vq2649=vi71fGvFx2aWM1tnOMYQQ@mail.gmail.com>
- <20230809234512.e3c39b8fffcc6297262f8fc8@kernel.org>
-In-Reply-To: <20230809234512.e3c39b8fffcc6297262f8fc8@kernel.org>
-From:   Florent Revest <revest@chromium.org>
-Date:   Wed, 9 Aug 2023 17:38:00 +0200
-Message-ID: <CABRcYm+24OLedwiLGj1RyvVg22R5NduORVsYZfXSA_OX5F+riA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 4/6] tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 3/4] clk: qcom: add clock controller driver for
+ qca8386/qca8084
+Content-Language: en-US
+To:     Luo Jie <quic_luoj@quicinc.com>, andersson@kernel.org,
+        agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com
+References: <20230809080047.19877-1-quic_luoj@quicinc.com>
+ <20230809080047.19877-4-quic_luoj@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230809080047.19877-4-quic_luoj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 4:45=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.or=
-g> wrote:
-> > > --- a/kernel/trace/trace_fprobe.c
-> > > +++ b/kernel/trace/trace_fprobe.c
-> > > @@ -132,25 +132,30 @@ static int
-> > >  process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
-> > >                    void *base)
-> > >  {
-> > > -       struct pt_regs *regs =3D rec;
-> > > -       unsigned long val;
-> > > +       struct ftrace_regs *fregs =3D rec;
-> > > +       unsigned long val, *stackp;
-> > >         int ret;
-> > >
-> > >  retry:
-> > >         /* 1st stage: get value from context */
-> > >         switch (code->op) {
-> > >         case FETCH_OP_STACK:
-> > > -               val =3D regs_get_kernel_stack_nth(regs, code->param);
-> > > +               stackp =3D (unsigned long *)ftrace_regs_get_stack_poi=
-nter(fregs);
-> > > +               if (((unsigned long)(stackp + code->param) & ~(THREAD=
-_SIZE - 1)) =3D=3D
-> > > +                   ((unsigned long)stackp & ~(THREAD_SIZE - 1)))
-> >
-> > Maybe it'd be worth extracting a local
-> > "ftrace_regs_get_kernel_stack_nth_addr" helper function and/or
-> > "ftrace_regs_within_kernel_stack" ?
->
-> Yeah, maybe we can make it a generic inline function in linux/ftrace.h.
+On 09/08/2023 10:00, Luo Jie wrote:
+> Add clock & reset controller driver for qca8386/qca8084.
+> 
+> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+> ---
+>  drivers/clk/qcom/Kconfig       |    8 +
+>  drivers/clk/qcom/Makefile      |    1 +
+>  drivers/clk/qcom/nsscc-qca8k.c | 2195 ++++++++++++++++++++++++++++++++
+>  3 files changed, 2204 insertions(+)
+>  create mode 100644 drivers/clk/qcom/nsscc-qca8k.c
+> 
+> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+> index 263e55d75e3f..d84705ff920d 100644
+> --- a/drivers/clk/qcom/Kconfig
+> +++ b/drivers/clk/qcom/Kconfig
+> @@ -195,6 +195,14 @@ config IPQ_GCC_9574
+>  	  i2c, USB, SD/eMMC, etc. Select this for the root clock
+>  	  of ipq9574.
+>  
+> +config IPQ_NSSCC_QCA8K
+> +	tristate "QCA8K(QCA8386 or QCA8084) NSS Clock Controller"
 
-Or even just above this function if there are low chances it would get
-used elsewhere :)
+Is it specific to some arch? We keep ARM or ARM64 for most of the entries.
+
+> +	help
+> +	  Support for NSS(Network SubSystem) clock controller on
+> +	  qca8386/qca8084 chip.
+> +	  Say Y if you want to use network features of switch or PHY
+> +	  device. Select this for the root clock of qca8k.
+> +
+>  config MSM_GCC_8660
+>  	tristate "MSM8660 Global Clock Controller"
+>  	depends on ARM || COMPILE_TEST
+
+...
+
+> +static int nss_cc_qca8k_probe(struct mdio_device *mdiodev)
+> +{
+> +	struct device *dev = &mdiodev->dev;
+> +	struct regmap *regmap;
+> +	struct qcom_reset_controller *reset;
+> +	struct qcom_cc_desc desc = nss_cc_qca8k_desc;
+> +	size_t num_clks = desc.num_clks;
+> +	struct clk_regmap **rclks = desc.clks;
+> +	struct qcom_cc *cc;
+> +	int ret, i;
+> +
+> +	cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
+> +	if (!cc)
+> +		return -ENOMEM;
+> +
+> +	cc->rclks = rclks;
+> +	cc->num_rclks = num_clks;
+> +	reset = &cc->reset;
+> +
+> +	regmap = devm_regmap_init(dev, NULL, mdiodev->bus, desc.config);
+> +
+
+Drop blank line.
+
+> +	if (IS_ERR(regmap)) {
+> +		dev_err(dev, "Failed to init MDIO regmap\n");
+
+All of error returns could be converted return dev_err_probe(), just to
+have smaller code. Not a requirement, though.
+
+> +		return PTR_ERR(regmap);
+> +	}
+> +
+> +	reset->rcdev.of_node = dev->of_node;
+> +	reset->rcdev.dev = dev;
+> +	reset->rcdev.ops = &qcom_reset_ops;
+> +	reset->rcdev.owner = dev->driver->owner;
+> +	reset->rcdev.nr_resets = desc.num_resets;
+> +	reset->regmap = regmap;
+> +	reset->reset_map = desc.resets;
+> +
+> +	ret = devm_reset_controller_register(dev, &reset->rcdev);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to register QCA8K reset controller: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	for (i = 0; i < num_clks; i++) {
+> +		if (!rclks[i])
+> +			continue;
+> +
+> +		ret = devm_clk_register_regmap(dev, rclks[i]);
+> +		if (ret) {
+> +			dev_err(dev, "Failed to regmap register for QCA8K clock: %d\n", ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	ret = devm_of_clk_add_hw_provider(dev, qcom_qca8k_clk_hw_get, cc);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to register provider for QCA8K clock: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	dev_info(dev, "Registered NSSCC QCA8K clocks\n");
+
+Drop the simple info for probe status. Kernel has other ways to do this.
+
+> +	return ret;
+> +}
+> +
+> +static const struct of_device_id nss_cc_qca8k_match_table[] = {
+> +	{ .compatible = "qcom,qca8085-nsscc" },
+> +	{ .compatible = "qcom,qca8084-nsscc" },
+> +	{ .compatible = "qcom,qca8082-nsscc" },
+> +	{ .compatible = "qcom,qca8386-nsscc" },
+> +	{ .compatible = "qcom,qca8385-nsscc" },
+> +	{ .compatible = "qcom,qca8384-nsscc" },
+
+You only need qca8084 here. Drop all other entries.
+
+> +	{ }
+> +};
+
+
+
+Best regards,
+Krzysztof
+
