@@ -2,153 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E327766FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0767766F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232117AbjHISIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 14:08:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
+        id S230168AbjHISIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 14:08:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjHISIi (ORCPT
+        with ESMTP id S229518AbjHISId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 14:08:38 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CC0171D
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 11:08:37 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d62bdd1a97dso49310276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 11:08:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691604516; x=1692209316;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BJzClEoz6IMsRxIOF5gI29NCybcSus5ECJlvXn3OVwQ=;
-        b=4V9m2O3VSW4giKGWZXkYqXUEfZ+ya+2PaBk+wpZ3LaTiq70AzqAVcqqq9Xot4dPyFR
-         XUCFXNcDUNrAn/yp8yfK4n6/O1J5O8AmwMr6VJhdcrcHZrGGcShjk8X2cIUQcXyuogmu
-         x7ZABjYw6lmSK/4PBnyzhQx0wfwH6HiCWW3Hpj/4DcZkayi+2k9et5vnSKuij4o7+O4o
-         2fCHjcNa06DY2WB8QnJTI2UfHKuQNPQXgPjjsJntyv1xH2QdzReGorxvfU9So9RGy1hl
-         a1U+Rl2qx1gkoe1sTYNs5RprdJcA/yXcgshkYJ7dofL2RATv76vF8Uw0p0rGrdC1Wafr
-         YhhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691604516; x=1692209316;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BJzClEoz6IMsRxIOF5gI29NCybcSus5ECJlvXn3OVwQ=;
-        b=dkYXdgzljPKe13ayCmVQnG+EmGSS/+bdIvx+WDuNHszb/qoWzkKK6lcbPrhhDSN9Rz
-         0R2VKBlQkl/IE6WWeFSMGoejNnTXw5tI150lQexMwV0PWzc7rnO1mGD5JlK9e1En7EOo
-         qpNlhDcmlrDD/2f7oSj/0xg7Y8eIJemyNIKutx9x5Oa/aALCH6jTjXCOCEJTOl5Q0Jgy
-         EFPxzeTJC0RFqHw1b4zH5DVBp4U8vP95pc/nAc6Uc0alAONCUaOl8z5MObc7HKPRykk2
-         tDYFAdBdZT7UAIy6GlokJa4HGcnUxOZNNc/YozxXtFKVi9iyXdJU/uQrrgFTpN85E16E
-         PqkA==
-X-Gm-Message-State: AOJu0YwfqwoIVHM+Lytb69kxMuVaqEAXgygtCN3i+Cq9TRnOlBh0dKV8
-        ywIuoPX2Jk43um3FfFTmW/uOZMmJbxiILZdpcJdc+g==
-X-Google-Smtp-Source: AGHT+IFwckYOOmT9AcClWHBNhiA8LoX6mDtqZnfW0TFz/V19ZZ3p3H3RQZcJf+Q66RNjX4BmzPPohsVY0tPM+d0txnc=
-X-Received: by 2002:a25:dbc8:0:b0:d63:645:1991 with SMTP id
- g191-20020a25dbc8000000b00d6306451991mr156266ybf.58.1691604516400; Wed, 09
- Aug 2023 11:08:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230630211957.1341547-1-surenb@google.com> <a34a418a-9a6c-9d9a-b7a3-bde8013bf86c@redhat.com>
- <CAJuCfpGCWekMdno=L=4m7ujWTYMr0Wv77oYzXWT5RXnx+fWe0w@mail.gmail.com>
- <CAJuCfpGMvYxu-g9kVH40UDGnpF2kxctH7AazhvmwhWWq1Rn1sA@mail.gmail.com>
- <CAJuCfpHA78vxOBcaB3m7S7=CoBLMXTzRWego+jZM7JvUm3rEaQ@mail.gmail.com> <0ab6524a-6917-efe2-de69-f07fb5cdd9d2@redhat.com>
-In-Reply-To: <0ab6524a-6917-efe2-de69-f07fb5cdd9d2@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 9 Aug 2023 11:08:23 -0700
-Message-ID: <CAJuCfpEs2k8mHM+9uq05vmcOYCfkNnOb4s3xPSoWheizPkcwLA@mail.gmail.com>
-Subject: Re: [PATCH v7 0/6] Per-VMA lock support for swap and userfaults
-To:     David Hildenbrand <david@redhat.com>
-Cc:     akpm@linux-foundation.org, willy@infradead.org, hannes@cmpxchg.org,
-        mhocko@suse.com, josef@toxicpanda.com, jack@suse.cz,
-        ldufour@linux.ibm.com, laurent.dufour@fr.ibm.com,
-        michel@lespinasse.org, liam.howlett@oracle.com, jglisse@google.com,
-        vbabka@suse.cz, minchan@google.com, dave@stgolabs.net,
-        punit.agrawal@bytedance.com, lstoakes@gmail.com, hdanton@sina.com,
-        apopple@nvidia.com, peterx@redhat.com, ying.huang@intel.com,
-        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        pasha.tatashin@soleen.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 9 Aug 2023 14:08:33 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F4510F5;
+        Wed,  9 Aug 2023 11:08:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2599F1F74B;
+        Wed,  9 Aug 2023 18:08:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691604512; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d/gq723QsA/6CknCjB/Fdzmk8CYhQn0zlWCC+cFAbBw=;
+        b=WPdfms4BLORKMfcHSyWfESgFCMclUG4v3nLk9UFXGlmbeD52x2nr1nscxRSznzz/2Zdd/I
+        Az8EXbi9ka3T4lA+vu9igWvJyNRAETjZ+rp9GHYA5AhbRxSskgOwJ+JvwJ81ohfkrRS2+7
+        alHr2UMv4U/LDsqvXplzShOvYZ6xiw4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691604512;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d/gq723QsA/6CknCjB/Fdzmk8CYhQn0zlWCC+cFAbBw=;
+        b=V7Mq+Gk1HCvqsIz/oD2NXNXV/cXmnvjKAscAFXE7mF6AAhSKuQ//xma2zYb2RBEwuoKAct
+        fI01ItuzYPJEWQDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E4DBE13251;
+        Wed,  9 Aug 2023 18:08:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id XNfuNh/W02QxEQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 09 Aug 2023 18:08:31 +0000
+Date:   Wed, 09 Aug 2023 20:08:30 +0200
+Message-ID: <87o7jgccm9.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Takashi Iwai <tiwai@suse.de>, Christoph Hellwig <hch@lst.de>,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org
+Subject: Re: [PATCH RFC] Introduce uniptr_t as a generic "universal" pointer
+In-Reply-To: <CAHk-=wh-mUL6mp4chAc6E_UjwpPLyCPRCJK+iB4ZMD2BqjwGHA@mail.gmail.com>
+References: <87edkce118.wl-tiwai@suse.de>
+        <20230809143801.GA693@lst.de>
+        <CAHk-=wiyWOaPtOJ1PTdERswXV9m7W_UkPV-HE0kbpr48mbnrEA@mail.gmail.com>
+        <87wmy4ciap.wl-tiwai@suse.de>
+        <CAHk-=wh-mUL6mp4chAc6E_UjwpPLyCPRCJK+iB4ZMD2BqjwGHA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 11:04=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> >>>> Which ends up being
-> >>>>
-> >>>> VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
-> >>>>
-> >>>> I did not check if this is also the case on mainline, and if this se=
-ries is responsible.
-> >>>
-> >>> Thanks for reporting! I'm checking it now.
-> >>
-> >> Hmm. From the code it's not obvious how lock_mm_and_find_vma() ends up
-> >> calling find_vma() without mmap_lock after successfully completing
-> >> get_mmap_lock_carefully(). lock_mm_and_find_vma+0x3f/0x270 points to
-> >> the first invocation of find_vma(), so this is not even the lock
-> >> upgrade path... I'll try to reproduce this issue and dig up more but
-> >> from the information I have so far this issue does not seem to be
-> >> related to this series.
->
-> I just checked on mainline and it does not fail there.
->
+On Wed, 09 Aug 2023 19:01:50 +0200,
+Linus Torvalds wrote:
+> 
+> On Wed, 9 Aug 2023 at 09:05, Takashi Iwai <tiwai@suse.de> wrote:
 > >
-> > This is really weird. I added mmap_assert_locked(mm) calls into
-> > get_mmap_lock_carefully() right after we acquire mmap_lock read lock
-> > and one of them triggers right after successful
-> > mmap_read_lock_killable(). Here is my modified version of
-> > get_mmap_lock_carefully():
-> >
-> > static inline bool get_mmap_lock_carefully(struct mm_struct *mm,
-> > struct pt_regs *regs) {
-> >       /* Even if this succeeds, make it clear we might have slept */
-> >       if (likely(mmap_read_trylock(mm))) {
-> >           might_sleep();
-> >           mmap_assert_locked(mm);
-> >           return true;
-> >       }
-> >       if (regs && !user_mode(regs)) {
-> >           unsigned long ip =3D instruction_pointer(regs);
-> >           if (!search_exception_tables(ip))
-> >               return false;
-> >       }
-> >       if (!mmap_read_lock_killable(mm)) {
-> >           mmap_assert_locked(mm);                     <---- generates a=
- BUG
-> >           return true;
-> >       }
-> >       return false;
-> > }
->
-> Ehm, that's indeed weird.
->
-> >
-> > AFAIKT conditions for mmap_read_trylock() and
-> > mmap_read_lock_killable() are checked correctly. Am I missing
-> > something?
->
-> Weirdly enough, it only triggers during that specific uffd test, right?
+> > OTOH, it simplifies the code well for us; as of now, we have two
+> > callbacks for copying PCM memory from/to the device, distinct for
+> > kernel and user pointers.  It's basically either copy_from_user() or
+> > memcpy() of the given size depending on the caller.  The sockptr_t or
+> > its variant would allow us to unify those to a single callback.
+> 
+> I didn't see the follow-up patches that use this, but...
+> 
+> > (And yeah, iov_iter is there, but it's definitely overkill for the
+> > purpose.)
+> 
+> You can actually use a "simplified form" of iov_iter, and it's not all that bad.
+> 
+> If the actual copying operation is just a memcpy, you're all set: just
+> do copy_to/from_iter(), and it's a really nice interface, and you
+> don't have to carry "ptr+size" things around.
+> 
+> And we now have a simple way to generate simple iov_iter's, so
+> *creating* the iter is trivial too:
+> 
+>         struct iov_iter iter;
+>         int ret = import_ubuf(ITER_SRC/DEST, uptr, len, &iter);
+> 
+>         if (unlikely(ret < 0))
+>                 return ret;
+> 
+> and you're all done. You can now pass '&iter' around, and it has a
+> nice user pointer and a range in it, and copying that thing is easy.
+> 
+> Perhaps somewhat strangely (*) we don't have the same for a simple
+> kernel buffer, but adding that wouldn't be hard. You either end up
+> using a 'kvec', or we could even add something like ITER_KBUF if it
+> really matters.
+> 
+> Right now the kernel buffer init is a *bit* more involved than the
+> above ubuf case:
+> 
+>         struct iov_iter iter;
+>         struct kvec kvec = { kptr, len};
+> 
+>         iov_iter_kvec(&iter, ITER_SRC/DEST, &kvec, 1, len);
+> 
+> and that's maybe a *bit* annoying, but we could maybe simplify this
+> with some helper macros even without ITER_KBUF.
+> 
+> So yes, iov_iter does have some abstraction overhead, but it really
+> isn't that bad. And it *does* allow you to do a lot of things, and can
+> actually simplify the users quite a bit, exactly because it allows you
+> to just pass that single iter pointer around, and you automatically
+> have not just the user/kernel distinction, you have the buffer size,
+> and you have a lot of helper functions to use it.
+> 
+> I really think that if you want a user-or-kernel buffer interface, you
+> should use these things.
+> 
+> Please? At least look into it.
 
-Yes, uffd-unit-tests. I even ran it separately to ensure it's not some
-fallback from a previous test and I'm able to reproduce this
-consistently.
+All sounds convincing, I'll take a look tomorrow.  Thanks!
 
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+
+Takashi
+
+> 
+>                  Linus
+> 
+> (*) Well, not so strange - we've just never needed it.
+> 
