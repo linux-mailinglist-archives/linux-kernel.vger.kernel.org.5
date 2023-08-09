@@ -2,162 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A99A775067
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 03:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3AD877506B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 03:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbjHIBfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 21:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49596 "EHLO
+        id S230232AbjHIBhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 21:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjHIBfJ (ORCPT
+        with ESMTP id S229493AbjHIBhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 21:35:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC21173F;
-        Tue,  8 Aug 2023 18:35:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691544908; x=1723080908;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=rtZoBZ3sPv2qJWkRBXbyiYigULB0tBQEU+69g1VKEbM=;
-  b=KvP2MWDHKzLMjJVnMY8Q9sZ+Vpa8tQr6NgH0inOLQzB0SYdfer3pkx1c
-   n1Qerh3TdNRU5GVqv63GmZl2ejAJvGFuxkJmLMHOP4HEvQOv2yQdpfMe4
-   pD3D3U+gNeV2zwx0nevIKe5Mmo4UOJLRA/iF87W++//ozrD+ULPOSD+Lo
-   PeR9L+7Va8VschYcyUZA1V233EG6pAEtp4SpEn4OOTu9cPtIKrwEM57Zq
-   Li4FGKZwxkMsJ9k+rkn3WaXx5criVrVi29HyqRcypbvk2Tw1CFW9JYFmT
-   Y5dXgNFo8Fzjpv4ExF8gj6uF57Yx/xDYtIZJk8/G1tndZnLpykIXFY9QS
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="351305109"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="351305109"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 18:35:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="761164196"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="761164196"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga008.jf.intel.com with ESMTP; 08 Aug 2023 18:35:07 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 8 Aug 2023 18:35:07 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Tue, 8 Aug 2023 18:35:07 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.174)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Tue, 8 Aug 2023 18:35:07 -0700
+        Tue, 8 Aug 2023 21:37:01 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F11173F;
+        Tue,  8 Aug 2023 18:37:01 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 378MiCFe018036;
+        Wed, 9 Aug 2023 01:36:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=jxWzLxKffn7izeZkC6bq4IBN+YIsT9RkqukGnwwr+HU=;
+ b=pnbp2v0A+eR+2HK3JNU9FV/2MQUGGu/BYg/ch7AzPLzI9jvKFAoNbQZyjhuhiopj1Wim
+ zWbhYZuXJTLFceIQYgvrbsuHiafLbNwh11ornkibTxIdvD5gmShhM4m+1uuqp7mCJJLq
+ afHz1xnyktR8EG7noHIbSs0lrjnArSV+C2cvO6mHHRXRE5aHKPLpia0PbEHyZ9ZvaYrn
+ NtVVUaEzyvgjqNFgkADzIr4O9sQSHPWji5Yy57mqimDIccSun34tslE4dJINHBwhUgEJ
+ peVfbcYXb8Q83JXeBz0nlshz3VbQPYoFbtEeSyej8zpVNzEZ3TTli0uSsJLjC6bzYmBu pg== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s9e1u735h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Aug 2023 01:36:47 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3790oLPD021450;
+        Wed, 9 Aug 2023 01:36:46 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2171.outbound.protection.outlook.com [104.47.59.171])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3s9cvdbq1u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Aug 2023 01:36:46 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JmFvkjqo+EKP0VARP0RpzVlR9BqWE2X4lvwIt0BZvSs47o7kMxl78NQOaJYLr6iYA7GTq6sBUE4fujWbd52ViLNPLUNqaMrX6sUXMENQRkcbUSsF0sel/BJ35zsgRdOmcgKIcj0vcnI1TQ/cHqV7D6RRTgxluByhuSA+HomxnxxLr55JtsBFTAyhbRtD59+jrmG2ORYPl2h1iLboNby3beiGkcEKU5w8aRi2FqUgHbvSuDqNv82OeEIvd6Uyl03xUFnb3ep6lfA+kli7keOWkAx7atK7UBnaedaHa70tTP0TMBLJmy6wYJDfZ63Uruo8wenaPmw4PQZ853Hft9y13w==
+ b=OR4Dfv3szYcMCFF/1w/YQuTyv8MXMYRU3A2SxefQCIpsrtaj251/0ZJ1DqrGuTeg2X0Fmkq4bdyCiX4kmmEYtb/l2zByDiPLIhfCP9LtbEU+eWLeRHQuy15kZy8ISatUdOX7D2jhru+xxAzmhifqzYypc4EE8lnRBye68TOtI8/jfJrO1Bx/H21/i7diB4GkqGrB+dKjWehAAeVZX7SybyH97C7XiMnVDeiFRCKacXFhKoKyDG+tTNO7x9uwuYOlCaIJYIg8K+kgeJCaYAYzf7yE/Wh+70VfDzc7INnAFzlS4gDaeS3WfzzCrZfZOczRFfXY1B8iGwjspdHrRuEjeQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rtZoBZ3sPv2qJWkRBXbyiYigULB0tBQEU+69g1VKEbM=;
- b=Kc1gYHJj73co+KrxkNBlypyyBttJI6HAYNsA0uSkpgkC2UnSf8kuFgFkkWF++hdBXqyUnOanV/UuQ57LICjWpdy4dCydAw8B/8UWVyOsZC3n7+0SSezZK6ye6xELcrLOuQPvbhQQGA7V1gNbaKvhG7mvjhi3wV6jTgeJ9RASj2v5PSCjnqdRSB5MQycGYng5dSppDDwGeYTc7SckcEgLCJgu7RWSh3cbEkHG5lplC+0JTJ3nEzlb3Hx7uypnYuJT6Bd3HW9SV0z9pEy06Z0YRlGHJCrUoYj0BsnZj8DKCix4GE3kWnx43BeSFuPhXY0bYwiafg8AlSXQd1Wh1p6Cag==
+ bh=jxWzLxKffn7izeZkC6bq4IBN+YIsT9RkqukGnwwr+HU=;
+ b=LVOlEcW84lDuN0+xzNAY0c8ErIFmgljNnK+6nRHLDG050nNHRDA8k6MAGv5sAqCoHtGrDjvrzaLI850/v5IbTiVgP8dzrmkQeiSs2rQf0WrOFNhqAXQpE5ktNZ+m0JNAjoGC3RiN3l4V/OHHozJRJfttPmmMhZKYc2nucOFlB30k1su18YqXHl2I9Wf7RAtkvjDOta+ElFU5ooFQrNlCYMU1wO1g4xahkbLIXLw+H9k6A4Jo89gK8ad6gi84k+PCvigZzKByIfdSMGB5UCK0n2yXLA25RL0LAuWlMmI7MCYdhiTv0j7slw8eaf271K5nE6WmAPL88uVtCAn8TPzzbQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ0PR11MB6622.namprd11.prod.outlook.com (2603:10b6:a03:478::6)
- by SA2PR11MB5131.namprd11.prod.outlook.com (2603:10b6:806:116::9) with
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jxWzLxKffn7izeZkC6bq4IBN+YIsT9RkqukGnwwr+HU=;
+ b=Zuo+FqC1Pf1LoMN6l8gwIotTF2t9G3iC+YMBFgUGjWExJcJMdYLhZ18Z1mlezxFRW0OOY2h4fliADdON+rYEFzYVavZMP+jyL1mZo0v48cmtTTeW8/h2zcNWTFPJf5QNm6TLy4Lr9DgI+FeEajPZyyud2Q+Y7B/oCSNGkb1/+0A=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by IA1PR10MB6244.namprd10.prod.outlook.com (2603:10b6:208:3a0::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Wed, 9 Aug
- 2023 01:35:04 +0000
-Received: from SJ0PR11MB6622.namprd11.prod.outlook.com
- ([fe80::a8a8:7f69:edc8:2d6b]) by SJ0PR11MB6622.namprd11.prod.outlook.com
- ([fe80::a8a8:7f69:edc8:2d6b%6]) with mapi id 15.20.6652.028; Wed, 9 Aug 2023
- 01:35:04 +0000
-From:   "Zhang, Rui" <rui.zhang@intel.com>
-To:     "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
-CC:     "srinivas.pandruvada@linux.intel.com" 
-        <srinivas.pandruvada@linux.intel.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] ACPI: thermal: Do not attach private data to ACPI
- handles
-Thread-Topic: [PATCH v1] ACPI: thermal: Do not attach private data to ACPI
- handles
-Thread-Index: AQHZyjUWYYFHY2DwO0G4zVsI9we5Hq/hLwOA
-Date:   Wed, 9 Aug 2023 01:35:04 +0000
-Message-ID: <174890f1ff566f229ece61b6fd47f26e9e57f9e5.camel@intel.com>
-References: <5703187.DvuYhMxLoT@kreacher>
-In-Reply-To: <5703187.DvuYhMxLoT@kreacher>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR11MB6622:EE_|SA2PR11MB5131:EE_
-x-ms-office365-filtering-correlation-id: 7185d1ff-3cb6-4ad7-7d04-08db9878db34
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Nxclhrgxy/2ooHLlsYyLRyAUDwJupe7cZhG9Ol0BEH4Ny8pstHDNmIWYx3O68GFEs+J11wGJLpXjN+6LC9iebrTenCKgvqgE/Fli9mb8pLsUeHeWlHrnYA4qU0zu4XTdSR7Sk19YBhjgH4RwPJcM98NcLrqlweUbrq3gAHRIrTcBYzvvf25TGdM21tcg6n6fJWBLDeHuoA0j7svU7ERxtvDJo0PHEz5UOLYx7F/PunyAPnCOMbDG0KKyPY8MTSlhaIdFyLk6QbY2FNHHYQviez6yfStgJ6vdvdN05wz8+QybvPnKVo4lmzQjOLLok34SjDu6A2uTDrcao7Jh79pMrgADBdqPHwxUhDYr0iusqGkhbCr9TinwBDhywKKDYnYaES60xfi6xbum5Ud0lw2pyx8rlZB8QoJyjrflKMv8hjTSkDRzg9IfTSYw0V6eMCP9jvJ21HCavMWxmwXrqCkSFhYiAdWtgatPsWJotYoIgjXmP3Og1KdiY9KyyumMFtHEsW7rU2w+qJlqpxKWPOxUyDakPjQxOZQ3zP43DC3Wf8TEd0B64RyhsXMt2OfIMFzqBDYOlZl908dZ5RKd4TDt70gchlFxXw3yFa/RLM2YNUQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB6622.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(376002)(136003)(39860400002)(396003)(366004)(186006)(1800799006)(451199021)(6506007)(2616005)(36756003)(26005)(6486002)(71200400001)(84970400001)(6512007)(122000001)(478600001)(82960400001)(38100700002)(110136005)(54906003)(91956017)(66556008)(66946007)(66476007)(76116006)(66446008)(4326008)(316002)(41300700001)(8676002)(5660300002)(38070700005)(8936002)(64756008)(2906002)(83380400001)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Ump4d1RGYnVvT2dGWlkzWFZ3OFc3OEFRbTVFaGJZakZ4TUdzdjZ0ZUdUZmRv?=
- =?utf-8?B?a3V0UlhxSTI4a3ZKaE5VdTh3ZnB2aTF3Y2FYTlBYcW9BR2h1NTVaNXo4VXFV?=
- =?utf-8?B?M2U5OE1CeHpPOGRXc1RoWGpkak9paXJ5MER4b1Y4U0xzSFR0NXFGaGt4REht?=
- =?utf-8?B?RE1Xc2VKVTRWTSsyWUhxMUwvQ1BwRmRJTmVmcnJjamdaYytYS1NQN3J0SjRm?=
- =?utf-8?B?VDNwbnl0WlNoanFWc1U2UGYvb3pEZ2tGQXpUdFFvRnAvZHJJMVlsenZ5OFBx?=
- =?utf-8?B?dktCNzJLTjVrVjJ5V2MvejNVRmlMMHgzRE9uL3NzcFNvbnRTNkZkVTB1VDZK?=
- =?utf-8?B?d0o0YWxVNnU0UXNKQU1aeE9LeHhEV0V4b24rNmRaT2xtRTBES2lXd2l4YnRh?=
- =?utf-8?B?NUpDV1JIbUdDckVmeFNKcjkyd1k5Q0xrNkNRSHBIekI2SGhqWHhnVXBzS1Fk?=
- =?utf-8?B?eG1lVm5VN0VtcW5wKzB2T1Z5VUZzcS8yTGhwQkNtTFRxQWRaTkdPWWN0QklK?=
- =?utf-8?B?QkxiejE2cXhWdUlGVmg5UDlYdXVBNkh5ekRBMjgwQlhXM2VVamhWTDJ2OFEw?=
- =?utf-8?B?UG42Y016RTZPbFpxNHdIZnB2RC9tc0RtUmtTRE16TFl5MjR5UmVqL2JTK3l1?=
- =?utf-8?B?WnVvc25INmNhZVhYa1NmUmJoc2thZS9mOUl2OG9ybXFpOGJDVER4SHQvcVov?=
- =?utf-8?B?dVhHeHJwYTVLZUJ3MlMrY0ZVVTRialhKTUk1KytOaEhKeVQ2S1BjSGlwai9k?=
- =?utf-8?B?N3RxeDRTays2VlREQmg4MDkrb0FmSG1sczhzS0hQWWxMVElkVXZKTVFGSkxi?=
- =?utf-8?B?anphWmJLSkVPTjhJMmhDT0F4VHJITUU0TkhBemFZTm1ZWVY2cXE1UytZMGNa?=
- =?utf-8?B?eTFTbjBoTVFPL0s3UCtXMzdmYktaS2pCZ2V2RXNQTzhJbnpCc1RYa2pMRVh6?=
- =?utf-8?B?aEt1cldaemozTjE0eHFPalBOczdMS1I0eXRCUGxIL08yL09NSWtYUVEyNlRh?=
- =?utf-8?B?WkVrWlNYT3ZhczN3OVdGM3lKdnpRQ2hQVHBvejBselFUUHRuTHVoa29HSEhN?=
- =?utf-8?B?bVNDVmtMRzdkTXpLUGNaeVoydys5QVNiMTEvUllFNUxrVTl6Rk1MMGxLKytU?=
- =?utf-8?B?ZVUrV1RvUU02TiswUlg3R3AwYmwyeHZmNTd3T3ZUUDlEU1pWMTRqREJicG8z?=
- =?utf-8?B?anpmcWNlbTRXTkpNMjF2L0pCTWJBVXlFcEZYUlZzYkVjZUdydnRkSFNIV1VZ?=
- =?utf-8?B?NzIyYjdyd1cvaWI3OGgrQVU1dGI3MnVYL1UyMzNMNnNJbHpyRkhoQldVTWFZ?=
- =?utf-8?B?TFdxSy9aenBYWVIya3BRdk5TTU5kMXl2b0I5VFFpRWxTZkpOSFhNb252ZDVn?=
- =?utf-8?B?SU1xRXplbWlDUjhscWRia2kyS0F2Z0h3VUxPVEQ2eGd2WU5XRzZUM1BLSTRZ?=
- =?utf-8?B?VWNPWjh3WlYxRFBVM25NNEtDUEFJcEEwUmgwUW9oakk0K3RTQ2t3am1uaUZ0?=
- =?utf-8?B?Uk1uVTFoRUZrVHQxbEc0RGNKV0VHemNwbW11aVgvVFh2VDVrcVdVWnlWd0Rs?=
- =?utf-8?B?SWY4VTRCSXk0bnNnQ3lHQkVXUThLUTAzLzQ2U0tIblFiakdvQWxaZTc0TVpn?=
- =?utf-8?B?bG9OOEMrc1QzVE1Pa09PYi95YW9YY3h2QzVVelJJekh0alp1TDNJcThGU3Jx?=
- =?utf-8?B?TUUxcDFkd0Uyd096RG5mTC9CbTRHM01aek5DSmt0ODBNYmdXRy81YTZ3V3ds?=
- =?utf-8?B?dk92d2RVeDZlVHQ4eTVKOUk0a01ldnlaUmQyZ29ja3RaS2JCcjE5TkZnWkdM?=
- =?utf-8?B?NmdXTTBwVk4zcEZDQ1hlSjliaHNSTFZZR2gzZVliVE5zNGc3dTNUWnZwbXps?=
- =?utf-8?B?bDVzS016L1B0ak5kekRqM1pacTNVNVZjWnpkR1VNZEI3MmtrVkYxdU8zWG1M?=
- =?utf-8?B?a20za0hYRVZiWk9CeXRXSlNsb3R6alVPYnptTk9WSnBIemMyUTA1Ullack9Z?=
- =?utf-8?B?Y0dpVGxzdXM0SzFsaWJhQm4zOTlZdXZKdTE5VmFBckN6RWs0Z1krbmZGbFRs?=
- =?utf-8?B?TDRzOVNoMnlHTFNJK3ZSc2ZBMWN6QzNwT1pQQUNRUVcvdDFjNlN5Y3FrMzNV?=
- =?utf-8?B?Z2hWU0c0TXFNeW91eXVkcHUwdk85NXFJMElObUpYekRrbFhwb1lhQ29PN3Vq?=
- =?utf-8?B?ZlE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E4300BFEBA29AF429C7732770A6E5439@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26; Wed, 9 Aug
+ 2023 01:36:43 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::59f3:b30d:a592:36be]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::59f3:b30d:a592:36be%6]) with mapi id 15.20.6652.026; Wed, 9 Aug 2023
+ 01:36:43 +0000
+To:     Jinyoung Choi <j-young.choi@samsung.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "kbusch@kernel.org" <kbusch@kernel.org>,
+        "chaitanya.kulkarni@wdc.com" <chaitanya.kulkarni@wdc.com>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
+Subject: Re: [PATCH v3 0/4] multi-page bvec configuration for integrity payload
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1zg31hubf.fsf@ca-mkp.ca.oracle.com>
+References: <CGME20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524@epcms2p4>
+        <20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524@epcms2p4>
+Date:   Tue, 08 Aug 2023 21:36:41 -0400
+In-Reply-To: <20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524@epcms2p4>
+        (Jinyoung Choi's message of "Thu, 03 Aug 2023 11:46:56 +0900")
+Content-Type: text/plain
+X-ClientProxiedBy: SA1P222CA0109.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:3c5::26) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|IA1PR10MB6244:EE_
+X-MS-Office365-Filtering-Correlation-Id: 118264b3-6f65-4481-56f7-08db98791612
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +glXoIZVktaZhBPSq7ELY4a8P0UEsp6QtXX4Bm9WCsHqi8whWi/MsdrlSRMgXKs0aAimsq/JADYgph+xxsppwVfK7eWSzURLO5HGoOW9FzlmR27BC0hygFUocQ+Lpa4Q0W7NCK1LpoL2wKnLx4ldkMAoX0lGUnqGGl1H0oOmbbarCNxyLKBkDI+U7ecpGpGT8iPsVh0q0QkMaJ6HE/yX0INNPKhwcOipO1ooIUDcfp/IY8tx8qIOnKCo5u6lBulhGsNwiRB4oXCEY5AoeujKnv6IR+oRJF16nBIMs+dOGCQuNFh0r1nCr1Ex/aFloIQ/zZkPeFL/7QMjMOCeZKb/89Rj0kbkNhKimWFNvdOG5TEJNoVSNKq+KPvJxlLxgPUXk9U6gW2T9WtLEgpCqzxtmRMbblCE40wCI1yGGsEPz+Ckc4ubt+ax4dh7jDVUYaGTLbgJRbF/NbMHRm6K+lBjzkAEta+5TNBM3y08nUVPuPVGucg5acKirLqmDerbReu5rFLLQmw1f8VtpWpKf/aaw+HITv7Cf48sm9PZeQ9hlLM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(136003)(39860400002)(366004)(376002)(396003)(451199021)(1800799006)(186006)(38100700002)(478600001)(6512007)(36916002)(86362001)(107886003)(26005)(6486002)(6506007)(5660300002)(66476007)(66946007)(8676002)(8936002)(4326008)(2906002)(316002)(54906003)(41300700001)(4744005)(6916009)(66556008)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E4Q7kLVFOkhgtLVr414VOme635/E3Vp2HdNRQWRAQHKpIoyaC40arZCrZC+A?=
+ =?us-ascii?Q?X6cDaCdcAyZ87IXu3CCxz75sQ1PJdH6t/7u5kSHo3ezvWsPsK5k5hQD9xAIO?=
+ =?us-ascii?Q?tzR/ASAPd9wqzmYZ+HAWWDrczYcwDdOW0YeE/zRPnXncZFxobKSmWhvfjMgE?=
+ =?us-ascii?Q?IgR7CEYw5SPX+RmxXKB9j3AKhfjaKBDgDbkZsyTmiFXoEmdyOw6ejLSQztRt?=
+ =?us-ascii?Q?FpEjgrtWKY59IWQk3CzPhdUqPKRjm3FCD+8gK5baw3BIAiHiE77Ufoy5jk4T?=
+ =?us-ascii?Q?rrUTBy79dBWvsp/pZmQEcL39vJY65hLHCKapwO4UG8Ybxtr6EXN5M+T9LSJj?=
+ =?us-ascii?Q?Er5XJIlaR7DyPApb87vt5/NDAsEQsMC5zLGTDcqQoc3GqS3LM4UWc73a9I5X?=
+ =?us-ascii?Q?MQYrZek8PqTsps3vrTSjyi/ZtT9/436Y08aR6sBulUbod/vFlfGB7hJPcSMz?=
+ =?us-ascii?Q?V4TrUflB3Wy6cxjBboDyQUdrmrcTXyo1bC5STlE5MZLQY8EtmICOTBWLDZ1x?=
+ =?us-ascii?Q?LndWAWkUg8m7NsV4gYv0Q+ycIxlC6WJW3U9GtpDaEPWyMrSw8KYuUnu35OsZ?=
+ =?us-ascii?Q?DfMLBJbIQGhrK2NmnRYqVwlr3t7zvgrNLT364ISJyhEwFwbwLbzzHoA6E/Fo?=
+ =?us-ascii?Q?zx7AI2/JrLNmfRtmvuA+KZg8IqwmGOt/lEMd1AV5IGY/Fl8T4YEVRsMMuSbl?=
+ =?us-ascii?Q?YaDhisXoqtpyEewY2nZ4QxOiXPLGsfXAdPmQjrPRZO7AYMM9qISo3IXPulu9?=
+ =?us-ascii?Q?WLGRX1Qp6O/fLc5yXf+nPrR/yz0WTTNiPVb0CDJlgCM+8SmyRTLCqY6QurC1?=
+ =?us-ascii?Q?7tE21DzXt9IEeaJg3BDrOVzYs3PhNOYt0kM9vDimVs5B6sOQVUqAbaJ/hdBj?=
+ =?us-ascii?Q?5ZypjaosrZ0JtGkbCa8dpZ7QgKJuUYzdXsm6Oic//tY8b7gbdCGVPmdRMaHI?=
+ =?us-ascii?Q?1MMvrCPzaEhmpe3VZ+xpkko4oFpsJTh3kO8UU2VkVAx6z3slsltWFtBaDh9p?=
+ =?us-ascii?Q?x7763Y/BaBizuyDA6B6VakVPvfLUxNiet642IeFeags0dHQ0O6GxCahAuIws?=
+ =?us-ascii?Q?N5EVtCHw2Sugvf5yp9geXPUTxptRXDnRgayTMUtNxX3ri4k85ubEZgEytSci?=
+ =?us-ascii?Q?hoENTVmWt7DG4tEbi31PVhz2jPK8aYfG6cSQP/fCeZ/nc8ebK1gvd9D3klg1?=
+ =?us-ascii?Q?WpzHOx7arT+MEZkxS45tcI3Ncaw4nU3PREERriuCX0sxmUwUh6m0KpMhkp/U?=
+ =?us-ascii?Q?wI1ibsvmggdx7nwt9YGrhqzk/EB0m3o+meze/y/8TrHY4Jy8o73oFvJcy9KH?=
+ =?us-ascii?Q?jvovvNvVmoTe2NExHVpPsJkwvUz17yU3DWTeRhJuJgg+FD9ODYlOGbctskD4?=
+ =?us-ascii?Q?LC4WZkY/tiA+djFdRrlQ0Y/UJDSNWjE9JxJiBTGaZSCxfB+hBLnvm5zd8MLB?=
+ =?us-ascii?Q?uuBJfGkU9Ry5ybJbVIAajOzpHM4f1NC0ZWDph5YGv0N/q3k6IEKmZI/SaGy7?=
+ =?us-ascii?Q?o0wj+yarq5Jtu/YYPhjLeJRJggl6dTd/lEYfqzSPhL/AfXC7EB2eSYgTOek4?=
+ =?us-ascii?Q?y2JIYMjojZM6f5Fvm6233HYZGqksYyEBCpTIfe1rdJW5H2SeOxZ+XXEMItAs?=
+ =?us-ascii?Q?iw=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?cD/hRz+uIiqj3RHhTQxIoYDNTWL8hsNm32KhTIxlx3ZNjt66SVowx009tPj5?=
+ =?us-ascii?Q?vsyYdMurcr22fYVo54b8jQg//Dqtj7I9hYlSZPlyjgc7vwzG5tQsGRQbuNSp?=
+ =?us-ascii?Q?bJaJROAxEHW/f33Bhu26V0XABUGkX3PN9LQCjdHk8xiZ4mQ23qeoaGiW6VvZ?=
+ =?us-ascii?Q?moLiUR6vTvpiFsThutDJLRtxJfsVgp7QSTPPV0IB/ZVX0nF0X4uWlfxjjj6p?=
+ =?us-ascii?Q?fKoUYQihdJgv9frJJVBGbtU3gUa7rZOB9DX0kQf6vnYd0cS6APbGADeJDosg?=
+ =?us-ascii?Q?odp+xIMp3zj6NRX+0ohebcV+CiOpMGUm+W5pn0Xk3LNjcBKQMNLXCS99TuRq?=
+ =?us-ascii?Q?rcX/eRhKPWbzfQTCVQksqDWp67Ahh+CT0eiEN+aYoalf9XtN6S0jIQa0H3ic?=
+ =?us-ascii?Q?SATgb6aBHKeHy9EC6A/VOO6gB36pWxHaVJo+xIfZ8TXU7PC+kuNfFgHhQQRE?=
+ =?us-ascii?Q?8TYWWivSbUpWfB0JTA0fzu1PS/IVecyQqd4aMBu+RqHHgLBaYsTG+eVDAHkU?=
+ =?us-ascii?Q?rdueCeJzovL+7JnjDqaiIt294v9oOPU1cccUJai5fej1EWU36b4twkniyBrh?=
+ =?us-ascii?Q?V0XSDJeOEk/FuclguRJHXTXKs6HbKIoy39aoMH0tuojw+Ci/zGEI+Vb9CXpI?=
+ =?us-ascii?Q?QnymNYhRHciQ8FU6p70I/fMOeq7osUyamzQV4JMtztXnxv3QiXMTNUhq6k07?=
+ =?us-ascii?Q?cB9i2NSryMl6kuGOn1G/xGg3CvWanyDImz7qY0Rv7gGhTJy+Q78W9Tjkxsl+?=
+ =?us-ascii?Q?21z2S76QkGxDIMoaTGhWmqaDcqr7lTYLtNvZBwshiOpc55udlbwcD/82Rb0i?=
+ =?us-ascii?Q?jRALQ0RECeZroJMr4JaA3t6jJaWDbiI2Tq9HMUnjbZ1I7tzSmBZ1FVYgd/Ys?=
+ =?us-ascii?Q?o7KCxG/QoBB7dUw29zwhlPv0dJxDyluOKJNT+UeJ0t9tflbu19E+ddNM4JOv?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 118264b3-6f65-4481-56f7-08db98791612
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB6622.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7185d1ff-3cb6-4ad7-7d04-08db9878db34
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2023 01:35:04.3648
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2023 01:36:43.3055
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AVKBp3LCn5S9z6GWNwW3xshauqJBZu4FenSzpYO6n6vRPHn87agXviwjlkjmPf9gLfxmTV+roIWW9DsRwhN4yw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5131
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nlNyVySxfGXOP38UX2UR6ZhEJ+xTxspqXHaDawmxVcGrH3HEWXhfG2hfrT3tBTBLKMaDAkR7E8f827QcFQHiRr3rjYZXkVBvphfH4Ma/jCA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB6244
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-08_24,2023-08-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
+ adultscore=0 mlxlogscore=986 bulkscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308090012
+X-Proofpoint-GUID: N9TuOfQHvLacdXMNYrRQQjGXBBXRmQpc
+X-Proofpoint-ORIG-GUID: N9TuOfQHvLacdXMNYrRQQjGXBBXRmQpc
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -165,55 +169,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIzLTA4LTA4IGF0IDIyOjE1ICswMjAwLCBSYWZhZWwgSi4gV3lzb2NraSB3cm90
-ZToKPiBGcm9tOiBSYWZhZWwgSi4gV3lzb2NraSA8cmFmYWVsLmoud3lzb2NraUBpbnRlbC5jb20+
-Cj4gCj4gVGhlIEFDUEkgdGhlcm1hbCBkcml2ZXIgdXNlcyBhY3BpX2J1c19hdHRhY2hfcHJpdmF0
-ZV9kYXRhKCkgdG8gYXR0YWNoCj4gdGhlIHRoZXJtYWwgem9uZSBvYmplY3QgdG8gdGhlIEFDUEkg
-aGFuZGxlIG9mIHRoZSB0aGVybWFsIHpvbmUgYW5kCj4gYWNwaV9idXNfZGV0YWNoX3ByaXZhdGVf
-ZGF0YSgpIHRvIGNsZWFuIHRoYXQgdXAsIGJ1dCBpdCBuZXZlciB1c2VzCj4gYWNwaV9idXNfZ2V0
-X3ByaXZhdGVfZGF0YSgpIHRvIHJldHJpZXZlIHRoYXQgb2JqZWN0Lgo+IAo+IERyb3AgdGhlIHVu
-bmVkZWQgYWNwaV9idXNfYXR0YWNoX3ByaXZhdGVfZGF0YSgpIGFuZAo+IGFjcGlfYnVzX2RldGFj
-aF9wcml2YXRlX2RhdGEoKSBjYWxscyBmcm9tIHRoZSBBQ1BJIHRoZXJtYWwgZHJpdmVyIGFuZAo+
-IGNsZWFuIHVwIHRoZSByZWxhdGVkIGNvZGUuCj4gCj4gTm8gaW50ZW50aW9uYWwgZnVuY3Rpb25h
-bCBpbXBhY3QuCj4gCj4gU2lnbmVkLW9mZi1ieTogUmFmYWVsIEouIFd5c29ja2kgPHJhZmFlbC5q
-Lnd5c29ja2lAaW50ZWwuY29tPgoKeWVhaCwgdGhlIGF0dGFjaGVkIHByaXZhdGUgZGF0YSBpcyB1
-c2VkIGJ5IHRoZSBpbnRlbF9tZW5sb3cgZHJpdmVyLCBhbmQKaXQgaXMgbm90IG5lZWRlZCBhbnkg
-bW9yZSBhZnRlciBpbnRlbF9tZW5sb3cgZHJpdmVyIHJlbW92ZWQuCgpJIGhhdmUgZXhhY3RseSB0
-aGUgc2FtZSBwYXRjaCB0aGF0IEkgcGxhbm5lZCB0byBzZW5kIGFmdGVyIHRoZSB0aGVybWFsCnRy
-aXAgcG9pbnQgcGF0Y2hlcyBtZXJnZWQsIHNvCgpSZXZpZXdlZC1ieTogWmhhbmcgUnVpIDxydWku
-emhhbmdAaW50ZWwuY29tPgoKdGhhbmtzLApydWkKCj4gLS0tCj4gwqBkcml2ZXJzL2FjcGkvdGhl
-cm1hbC5jIHzCoMKgIDEzICstLS0tLS0tLS0tLS0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAxIGluc2Vy
-dGlvbigrKSwgMTIgZGVsZXRpb25zKC0pCj4gCj4gSW5kZXg6IGxpbnV4LXBtL2RyaXZlcnMvYWNw
-aS90aGVybWFsLmMKPiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09Cj4gLS0tIGxpbnV4LXBtLm9yaWcvZHJpdmVycy9hY3Bp
-L3RoZXJtYWwuYwo+ICsrKyBsaW51eC1wbS9kcml2ZXJzL2FjcGkvdGhlcm1hbC5jCj4gQEAgLTc0
-Miw3ICs3NDIsNiBAQCBzdGF0aWMgaW50IGFjcGlfdGhlcm1hbF9yZWdpc3Rlcl90aGVybWFsCj4g
-wqB7Cj4gwqDCoMKgwqDCoMKgwqDCoGludCB0cmlwcyA9IDA7Cj4gwqDCoMKgwqDCoMKgwqDCoGlu
-dCByZXN1bHQ7Cj4gLcKgwqDCoMKgwqDCoMKgYWNwaV9zdGF0dXMgc3RhdHVzOwo+IMKgwqDCoMKg
-wqDCoMKgwqBpbnQgaTsKPiDCoAo+IMKgwqDCoMKgwqDCoMKgwqBpZiAodHotPnRyaXBzLmNyaXRp
-Y2FsLnZhbGlkKQo+IEBAIC03NzUsMjQgKzc3NCwxNSBAQCBzdGF0aWMgaW50IGFjcGlfdGhlcm1h
-bF9yZWdpc3Rlcl90aGVybWFsCj4gwqDCoMKgwqDCoMKgwqDCoGlmIChyZXN1bHQpCj4gwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBnb3RvIHVucmVnaXN0ZXJfdHpkOwo+IMKgCj4gLcKg
-wqDCoMKgwqDCoMKgc3RhdHVzID3CoCBhY3BpX2J1c19hdHRhY2hfcHJpdmF0ZV9kYXRhKHR6LT5k
-ZXZpY2UtPmhhbmRsZSwKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHR6LT50
-aGVybWFsX3pvbmUpOwo+IC3CoMKgwqDCoMKgwqDCoGlmIChBQ1BJX0ZBSUxVUkUoc3RhdHVzKSkg
-ewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXN1bHQgPSAtRU5PREVWOwo+IC3C
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBnb3RvIHJlbW92ZV9saW5rczsKPiAtwqDCoMKg
-wqDCoMKgwqB9Cj4gLQo+IMKgwqDCoMKgwqDCoMKgwqByZXN1bHQgPSB0aGVybWFsX3pvbmVfZGV2
-aWNlX2VuYWJsZSh0ei0+dGhlcm1hbF96b25lKTsKPiDCoMKgwqDCoMKgwqDCoMKgaWYgKHJlc3Vs
-dCkKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZ290byBhY3BpX2J1c19kZXRhY2g7
-Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gcmVtb3ZlX2xpbmtzOwo+IMKg
-Cj4gwqDCoMKgwqDCoMKgwqDCoGRldl9pbmZvKCZ0ei0+ZGV2aWNlLT5kZXYsICJyZWdpc3RlcmVk
-IGFzIHRoZXJtYWxfem9uZSVkXG4iLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHRoZXJtYWxfem9uZV9kZXZpY2VfaWQodHotPnRoZXJtYWxfem9uZSkpOwo+IMKgCj4gwqDCoMKg
-wqDCoMKgwqDCoHJldHVybiAwOwo+IMKgCj4gLWFjcGlfYnVzX2RldGFjaDoKPiAtwqDCoMKgwqDC
-oMKgwqBhY3BpX2J1c19kZXRhY2hfcHJpdmF0ZV9kYXRhKHR6LT5kZXZpY2UtPmhhbmRsZSk7Cj4g
-wqByZW1vdmVfbGlua3M6Cj4gwqDCoMKgwqDCoMKgwqDCoGFjcGlfdGhlcm1hbF96b25lX3N5c2Zz
-X3JlbW92ZSh0eik7Cj4gwqB1bnJlZ2lzdGVyX3R6ZDoKPiBAQCAtODA2LDcgKzc5Niw2IEBAIHN0
-YXRpYyB2b2lkIGFjcGlfdGhlcm1hbF91bnJlZ2lzdGVyX3RoZXIKPiDCoMKgwqDCoMKgwqDCoMKg
-YWNwaV90aGVybWFsX3pvbmVfc3lzZnNfcmVtb3ZlKHR6KTsKPiDCoMKgwqDCoMKgwqDCoMKgdGhl
-cm1hbF96b25lX2RldmljZV91bnJlZ2lzdGVyKHR6LT50aGVybWFsX3pvbmUpOwo+IMKgwqDCoMKg
-wqDCoMKgwqB0ei0+dGhlcm1hbF96b25lID0gTlVMTDsKPiAtwqDCoMKgwqDCoMKgwqBhY3BpX2J1
-c19kZXRhY2hfcHJpdmF0ZV9kYXRhKHR6LT5kZXZpY2UtPmhhbmRsZSk7Cj4gwqB9Cj4gwqAKPiDC
-oAo+IAo+IAo+IAoK
+
+Jinyoung,
+
+> In the case of NVMe, it has an integrity payload consisting of one
+> segment. So, rather than configuring SG_LIST, it was changed by direct
+> DMA mapping.
+>
+> The page-merge is not performed for the struct bio_vec when creating a
+> integrity payload in block. As a result, when creating an integrity
+> paylaod beyond one page, each struct bio_vec is generated, and its
+> bv_len does not exceed the PAGESIZE.
+>
+> To solve it, bio_integrity_add_page() should just add to the existing
+> bvec, similar to bio_add_page() and friends.
+
+This looks OK to me. I'll test on physical SCSI hardware tomorrow to
+make sure there are no regressions.
+
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
