@@ -2,206 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C227756D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096507756D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232163AbjHIKJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 06:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41750 "EHLO
+        id S231618AbjHIKJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 06:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbjHIKJM (ORCPT
+        with ESMTP id S229921AbjHIKJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 06:09:12 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326671BFB;
-        Wed,  9 Aug 2023 03:09:10 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RLQjS0X2JzmXh1;
-        Wed,  9 Aug 2023 18:07:56 +0800 (CST)
-Received: from localhost.localdomain (10.50.163.32) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 9 Aug 2023 18:09:07 +0800
-From:   Yicong Yang <yangyicong@huawei.com>
-To:     <will@kernel.org>, <catalin.marinas@arm.com>,
-        <lpieralisi@kernel.org>, <mark.rutland@arm.com>,
-        <robin.murphy@arm.com>, <guohanjun@huawei.com>, <corbet@lwn.net>,
-        <rafael@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-doc@vger.kernel.org>, <linux-acpi@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jonathan.cameron@huawei.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <hejunhao3@huawei.com>,
-        <linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
-        <yangyicong@hisilicon.com>, <zhurui3@huawei.com>
-Subject: [PATCH] perf/smmuv3: Enable HiSilicon Erratum 162001900 quirk for HIP08/09
-Date:   Wed, 9 Aug 2023 18:06:54 +0800
-Message-ID: <20230809100654.32036-1-yangyicong@huawei.com>
-X-Mailer: git-send-email 2.31.0
+        Wed, 9 Aug 2023 06:09:19 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CF61FD6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 03:09:18 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d44c2ca78ceso1082990276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 03:09:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691575758; x=1692180558;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kRBBB72Xo69T0OElGoYsRuiUCmdlEmov0FVADVHXFyg=;
+        b=JAxH3YPWYi4xNEfMyew1y0fJU6S3WH9fG3+i2rNMsoN+we0EEVQNsvxaBgioK1CMgW
+         nJ9K+JFDZx11FqBW0wU2q+BvQeZZvYrTnZFnibxca7Z+A3P6HoZrPSHGO93oPKSXcAdh
+         qyV8sDu5UFv6Zpc/bCHNXQ4Wj6QT8wOSMMcuDeM1g5ciPqI+vxle6bUjfSvEFLgEF+rL
+         kmKTis7EBkhx8y0Ylf/FlehJNm0yJSFFagZ80Z3ycj+6fbJOkBwcYvMg+hLtSCLv7Gcg
+         VPosQ9ajcvXetcMNqbXPa5utZBfQx1WhhH2LUepoh4Swgper3qy1CXSi3UaqPFKm8r/m
+         KVaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691575758; x=1692180558;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kRBBB72Xo69T0OElGoYsRuiUCmdlEmov0FVADVHXFyg=;
+        b=XHJx5oH6tqc1qoVTKn35eeq1Ynojv5Dl0KP5GkYve3GqOus6UeTZI4PGpzrfuODOan
+         mtFqo6kP0lDbUxpOeGZ3qDsbVW30F6S62Avwk/nNRVWGmPcb0o9u89IY/uxe2TRV8IVJ
+         gtBppjLx/igJsfNG50hSGhyZVFdpd+7imPthNQ/FKIs7V0vGLfoxqM3I2zFK6VPYcxdw
+         QAqe6OtsNqldRH2fyKkXC5jEtFOa3Pk4GA4gMYVhcAv01rWCEAvDVs9uXgY3D375RiYf
+         R/GzGxAT4QgIp6hA5sUpCZZZwMdhLWDARcT4U8PB4vQgNq5TV4AW9UNOKtYcaRkR6qoT
+         1dYw==
+X-Gm-Message-State: AOJu0YxQfC60ozdx+D7nkx9/j2irs3qZo/C1wSal7KwY/0O8wy0pk+6R
+        T/5Aqy3e0L7M00LtWoXQ5ufkp7r+SyuPLb/8rr4myQ==
+X-Google-Smtp-Source: AGHT+IHJSSi19qUsX44JVBSz7ym7Yn+t4tELB3+w2VWQHTlSXnat5hS/Z+XvN2H6ZVQI3H5/kyhYIx+Q9jGZxy351AY=
+X-Received: by 2002:a25:aca6:0:b0:d40:3069:b3b1 with SMTP id
+ x38-20020a25aca6000000b00d403069b3b1mr12852982ybi.17.1691575757838; Wed, 09
+ Aug 2023 03:09:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.50.163.32]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230809052952.323-1-wenchao.chen@unisoc.com>
+In-Reply-To: <20230809052952.323-1-wenchao.chen@unisoc.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 9 Aug 2023 12:08:41 +0200
+Message-ID: <CAPDyKFoykxdP70t2pjeiX0pkKuUCZ2AeFM4yT4-wfVijxB7OHw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: core: Add host specific tuning support for SD HS mode
+To:     Wenchao Chen <wenchao.chen@unisoc.com>
+Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wenchao.chen666@gmail.com,
+        zhenxiong.lai@unisoc.com, chunyan.zhang@unisoc.com,
+        yuelin.tang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yicong Yang <yangyicong@hisilicon.com>
+On Wed, 9 Aug 2023 at 07:30, Wenchao Chen <wenchao.chen@unisoc.com> wrote:
+>
+> Added .prepare_hs_tuning and .execute_hs_tuning host
+> callbacks to support host-specific tuning for SD high
+> speed mode.
 
-Some HiSilicon SMMU PMCG suffers the erratum 162001900 that the PMU
-disable control sometimes fail to disable the counters. This will lead
-to error or inaccurate data since before we enable the counters the
-counter's still counting for the event used in last perf session.
+This certainly needs to be clarified more. Especially why it's needed
+for the sdhci-sprd variant.
 
-This patch tries to fix this by hardening the global disable process.
-Before disable the PMU, writing an invalid event type (0xffff) to
-focibly stop the counters. Correspondingly restore each events on
-pmu::pmu_enable().
+>
+> Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+> ---
+>  drivers/mmc/core/sd.c         |  12 ++++
+>  drivers/mmc/host/sdhci-sprd.c | 124 ++++++++++++++++++++++++++++++++++
+>  include/linux/mmc/host.h      |   6 ++
+>  3 files changed, 142 insertions(+)
+>
+> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+> index 246ce027ae0a..ac2da8f2fbce 100644
+> --- a/drivers/mmc/core/sd.c
+> +++ b/drivers/mmc/core/sd.c
+> @@ -1518,6 +1518,12 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
+>                  */
+>                 mmc_set_clock(host, mmc_sd_get_max_clock(card));
+>
+> +               if (host->ops->prepare_hs_tuning) {
+> +                       err = host->ops->prepare_hs_tuning(host, card);
+> +                       if (err)
+> +                               goto free_card;
+> +               }
 
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
- Documentation/arch/arm64/silicon-errata.rst |  3 ++
- drivers/acpi/arm64/iort.c                   |  5 ++-
- drivers/perf/arm_smmuv3_pmu.c               | 49 ++++++++++++++++++++-
- include/linux/acpi_iort.h                   |  1 +
- 4 files changed, 56 insertions(+), 2 deletions(-)
+Adding a new callback for this is a bit questionable, I think.
 
-diff --git a/Documentation/arch/arm64/silicon-errata.rst b/Documentation/arch/arm64/silicon-errata.rst
-index 496cdca5cb99..d54626cfcbda 100644
---- a/Documentation/arch/arm64/silicon-errata.rst
-+++ b/Documentation/arch/arm64/silicon-errata.rst
-@@ -195,6 +195,9 @@ stable kernels.
- +----------------+-----------------+-----------------+-----------------------------+
- | Hisilicon      | Hip08 SMMU PMCG | #162001800      | N/A                         |
- +----------------+-----------------+-----------------+-----------------------------+
-+| Hisilicon      | Hip08 SMMU PMCG | #162001900      | N/A                         |
-+|                | Hip09 SMMU PMCG |                 |                             |
-++----------------+-----------------+-----------------+-----------------------------+
- +----------------+-----------------+-----------------+-----------------------------+
- | Qualcomm Tech. | Kryo/Falkor v1  | E1003           | QCOM_FALKOR_ERRATUM_1003    |
- +----------------+-----------------+-----------------+-----------------------------+
-diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-index 56d887323ae5..6496ff5a6ba2 100644
---- a/drivers/acpi/arm64/iort.c
-+++ b/drivers/acpi/arm64/iort.c
-@@ -1708,7 +1708,10 @@ static void __init arm_smmu_v3_pmcg_init_resources(struct resource *res,
- static struct acpi_platform_list pmcg_plat_info[] __initdata = {
- 	/* HiSilicon Hip08 Platform */
- 	{"HISI  ", "HIP08   ", 0, ACPI_SIG_IORT, greater_than_or_equal,
--	 "Erratum #162001800", IORT_SMMU_V3_PMCG_HISI_HIP08},
-+	 "Erratum #162001800, Erratum #162001900", IORT_SMMU_V3_PMCG_HISI_HIP08},
-+	/* HiSilicon Hip09 Platform */
-+	{"HISI  ", "HIP09   ", 0, ACPI_SIG_IORT, greater_than_or_equal,
-+	 "Erratum #162001900", IORT_SMMU_V3_PMCG_HISI_HIP09},
- 	{ }
- };
- 
-diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
-index 25a269d431e4..b854b67b81fc 100644
---- a/drivers/perf/arm_smmuv3_pmu.c
-+++ b/drivers/perf/arm_smmuv3_pmu.c
-@@ -115,6 +115,7 @@
- #define SMMU_PMCG_PA_SHIFT              12
- 
- #define SMMU_PMCG_EVCNTR_RDONLY         BIT(0)
-+#define SMMU_PMCG_HARDEN_DISABLE        BIT(1)
- 
- static int cpuhp_state_num;
- 
-@@ -150,6 +151,22 @@ SMMU_PMU_EVENT_ATTR_EXTRACTOR(filter_stream_id, config1, 0, 31);
- SMMU_PMU_EVENT_ATTR_EXTRACTOR(filter_span, config1, 32, 32);
- SMMU_PMU_EVENT_ATTR_EXTRACTOR(filter_enable, config1, 33, 33);
- 
-+static int smmu_pmu_apply_event_filter(struct smmu_pmu *smmu_pmu,
-+				       struct perf_event *event, int idx);
-+
-+static inline void smmu_pmu_enable_quirk_hip08_09(struct pmu *pmu)
-+{
-+	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
-+	unsigned int idx;
-+
-+	for_each_set_bit(idx, smmu_pmu->used_counters, smmu_pmu->num_counters)
-+		smmu_pmu_apply_event_filter(smmu_pmu, smmu_pmu->events[idx], idx);
-+
-+	writel(SMMU_PMCG_IRQ_CTRL_IRQEN,
-+	       smmu_pmu->reg_base + SMMU_PMCG_IRQ_CTRL);
-+	writel(SMMU_PMCG_CR_ENABLE, smmu_pmu->reg_base + SMMU_PMCG_CR);
-+}
-+
- static inline void smmu_pmu_enable(struct pmu *pmu)
- {
- 	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
-@@ -159,6 +176,23 @@ static inline void smmu_pmu_enable(struct pmu *pmu)
- 	writel(SMMU_PMCG_CR_ENABLE, smmu_pmu->reg_base + SMMU_PMCG_CR);
- }
- 
-+static inline void smmu_pmu_disable_quirk_hip08_09(struct pmu *pmu)
-+{
-+	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
-+	unsigned int idx;
-+
-+	/*
-+	 * The global disable of PMU sometimes fail to stop the counting.
-+	 * Harden this by writing an invalid event type to each used counter
-+	 * to forcibly stop counting.
-+	 */
-+	for_each_set_bit(idx, smmu_pmu->used_counters, smmu_pmu->num_counters)
-+		writel(0xffff, smmu_pmu->reg_base + SMMU_PMCG_EVTYPER(idx));
-+
-+	writel(0, smmu_pmu->reg_base + SMMU_PMCG_CR);
-+	writel(0, smmu_pmu->reg_base + SMMU_PMCG_IRQ_CTRL);
-+}
-+
- static inline void smmu_pmu_disable(struct pmu *pmu)
- {
- 	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
-@@ -765,7 +799,10 @@ static void smmu_pmu_get_acpi_options(struct smmu_pmu *smmu_pmu)
- 	switch (model) {
- 	case IORT_SMMU_V3_PMCG_HISI_HIP08:
- 		/* HiSilicon Erratum 162001800 */
--		smmu_pmu->options |= SMMU_PMCG_EVCNTR_RDONLY;
-+		smmu_pmu->options |= SMMU_PMCG_EVCNTR_RDONLY | SMMU_PMCG_HARDEN_DISABLE;
-+		break;
-+	case IORT_SMMU_V3_PMCG_HISI_HIP09:
-+		smmu_pmu->options |= SMMU_PMCG_HARDEN_DISABLE;
- 		break;
- 	}
- 
-@@ -890,6 +927,16 @@ static int smmu_pmu_probe(struct platform_device *pdev)
- 	if (!dev->of_node)
- 		smmu_pmu_get_acpi_options(smmu_pmu);
- 
-+	/*
-+	 * For platforms suffer this quirk, the PMU disable sometimes fails to
-+	 * stop the counters. This will leads to inaccurate or error counting.
-+	 * Forcibly disable the counters with these quirk handler.
-+	 */
-+	if (smmu_pmu->options & SMMU_PMCG_HARDEN_DISABLE) {
-+		smmu_pmu->pmu.pmu_enable = smmu_pmu_enable_quirk_hip08_09;
-+		smmu_pmu->pmu.pmu_disable = smmu_pmu_disable_quirk_hip08_09;
-+	}
-+
- 	/* Pick one CPU to be the preferred one to use */
- 	smmu_pmu->on_cpu = raw_smp_processor_id();
- 	WARN_ON(irq_set_affinity(smmu_pmu->irq, cpumask_of(smmu_pmu->on_cpu)));
-diff --git a/include/linux/acpi_iort.h b/include/linux/acpi_iort.h
-index ee7cb6aaff71..1cb65592c95d 100644
---- a/include/linux/acpi_iort.h
-+++ b/include/linux/acpi_iort.h
-@@ -21,6 +21,7 @@
-  */
- #define IORT_SMMU_V3_PMCG_GENERIC        0x00000000 /* Generic SMMUv3 PMCG */
- #define IORT_SMMU_V3_PMCG_HISI_HIP08     0x00000001 /* HiSilicon HIP08 PMCG */
-+#define IORT_SMMU_V3_PMCG_HISI_HIP09     0x00000002 /* HiSilicon HIP09 PMCG */
- 
- int iort_register_domain_token(int trans_id, phys_addr_t base,
- 			       struct fwnode_handle *fw_node);
--- 
-2.24.0
+In the ->set_ios() callback, we could instead check MMC_TIMING_SD_HS
+and when the clock is updated, then also run a tuning sequence, right?
 
+> +
+>                 /*
+>                  * Switch to wider bus (if supported).
+>                  */
+> @@ -1529,6 +1535,12 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
+>
+>                         mmc_set_bus_width(host, MMC_BUS_WIDTH_4);
+>                 }
+> +
+> +               if (host->ops->execute_hs_tuning) {
+> +                       err = host->ops->execute_hs_tuning(host, card);
+> +                       if (err)
+> +                               goto free_card;
+> +               }
+
+Similar to the above comment, in the ->set_ios() callback we could
+instead check MMC_TIMING_SD_HS when moving to MMC_BUS_WIDTH_4, then
+run a tuning sequence, right?
+
+>         }
+>  cont:
+>         if (!oldcard) {
+> diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+> index 7f4ee2e12735..5f365dcbb9c7 100644
+> --- a/drivers/mmc/host/sdhci-sprd.c
+> +++ b/drivers/mmc/host/sdhci-sprd.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/dma-mapping.h>
+>  #include <linux/highmem.h>
+>  #include <linux/iopoll.h>
+> +#include <linux/mmc/mmc.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> @@ -22,6 +23,9 @@
+>  #include "sdhci-pltfm.h"
+>  #include "mmc_hsq.h"
+>
+> +#include "../core/mmc_ops.h"
+> +#include "../core/sd_ops.h"
+
+No, this isn't how we include header files. Instead move the functions
+that you may need to include/linux/mmc/host.h.
+
+Also, please split up core changes from host driver changes.
+
+> +
+>  /* SDHCI_ARGUMENT2 register high 16bit */
+>  #define SDHCI_SPRD_ARG2_STUFF          GENMASK(31, 16)
+>
+> @@ -73,6 +77,11 @@
+>  #define SDHCI_SPRD_CLK_DEF_RATE                26000000
+>  #define SDHCI_SPRD_PHY_DLL_CLK         52000000
+>
+> +#define SDHCI_SPRD_MAX_PHASE           0xff
+> +#define SDHCI_SPRD_CMD_DLY_MASK                GENMASK(15, 8)
+> +#define SDHCI_SPRD_POSRD_DLY_MASK      GENMASK(23, 16)
+> +#define SDHCI_SPRD_CPST_EN             GENMASK(27, 24)
+> +
+>  struct sdhci_sprd_host {
+>         u32 version;
+>         struct clk *clk_sdio;
+> @@ -86,6 +95,11 @@ struct sdhci_sprd_host {
+>         u32 phy_delay[MMC_TIMING_MMC_HS400 + 2];
+>  };
+>
+> +enum sdhci_sprd_tuning_type {
+> +       SDHCI_SPRD_TUNING_SD_HS_CMD,
+> +       SDHCI_SPRD_TUNING_SD_HS_DATA,
+> +};
+> +
+>  struct sdhci_sprd_phy_cfg {
+>         const char *property;
+>         u8 timing;
+> @@ -533,6 +547,111 @@ static void sdhci_sprd_hs400_enhanced_strobe(struct mmc_host *mmc,
+>                      SDHCI_SPRD_REG_32_DLL_DLY);
+>  }
+>
+> +static int mmc_send_tuning_cmd(struct mmc_card *card)
+> +{
+> +       return mmc_send_status(card, NULL);
+> +}
+> +
+> +static int mmc_send_tuning_data(struct mmc_card *card)
+> +{
+> +       u8 status[64];
+
+We use kmalloc-ed data for data transfers.
+
+> +
+> +       return mmc_sd_switch(card, 0, 0, 0, status);
+> +}
+> +
+> +static int sdhci_sprd_tuning(struct mmc_host *mmc, struct mmc_card *card,
+> +                       enum sdhci_sprd_tuning_type type)
+> +{
+> +       struct sdhci_host *host = mmc_priv(mmc);
+> +       struct sdhci_sprd_host *sprd_host = TO_SPRD_HOST(host);
+> +       u32 *p = sprd_host->phy_delay;
+> +       int err = 0;
+> +       int i;
+> +       bool value;
+> +       int final_phase;
+> +       u32 dll_cfg, dll_dly;
+> +       int range_end = SDHCI_SPRD_MAX_PHASE;
+> +       int len = 0;
+> +       int count = 0;
+> +
+> +       sdhci_reset(host, SDHCI_RESET_CMD | SDHCI_RESET_DATA);
+> +
+> +       dll_cfg = sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_CFG);
+> +       dll_cfg &= ~SDHCI_SPRD_CPST_EN;
+> +       sdhci_writel(host, dll_cfg, SDHCI_SPRD_REG_32_DLL_CFG);
+> +
+> +       dll_dly = p[mmc->ios.timing];
+> +
+> +       for (i = 0; i <= SDHCI_SPRD_MAX_PHASE; i++) {
+> +               if (type == SDHCI_SPRD_TUNING_SD_HS_CMD) {
+> +                       dll_dly &= ~SDHCI_SPRD_CMD_DLY_MASK;
+> +                       dll_dly |= ((i << 8) & SDHCI_SPRD_CMD_DLY_MASK);
+> +               } else {
+> +                       dll_dly &= ~SDHCI_SPRD_POSRD_DLY_MASK;
+> +                       dll_dly |= ((i << 16) & SDHCI_SPRD_POSRD_DLY_MASK);
+> +               }
+> +
+> +               sdhci_writel(host, dll_dly, SDHCI_SPRD_REG_32_DLL_DLY);
+> +
+> +               if (type == SDHCI_SPRD_TUNING_SD_HS_CMD)
+> +                       value = !mmc_send_tuning_cmd(card);
+> +               else
+> +                       value = !mmc_send_tuning_data(card);
+> +
+> +               if (value) {
+> +                       dev_dbg(mmc_dev(host->mmc), "tuning ok: %d\n", i);
+> +                       count++;
+> +               } else {
+> +                       dev_dbg(mmc_dev(host->mmc), "tuning fail: %d\n", i);
+> +                       if (len < count) {
+> +                               len = count;
+> +                               range_end = i - 1;
+> +                               count = 0;
+> +                       }
+> +               }
+> +       }
+> +
+> +       if (!count) {
+> +               final_phase = 0;
+> +               dev_err(mmc_dev(host->mmc), "all tuning phase fail!\n");
+> +               err = -EIO;
+> +               goto out;
+> +       }
+> +
+> +       if (count > len) {
+> +               len = count;
+> +               range_end = i - 1;
+> +       }
+> +
+> +       final_phase = range_end - (len - 1) / 2;
+
+The whole len, count, range_end, final_phase things look rather messy.
+Please have a look and try to clean up that part a bit, I am sure it
+can be done, somehow.
+
+> +
+> +       if (type == SDHCI_SPRD_TUNING_SD_HS_CMD) {
+> +               p[mmc->ios.timing] &= ~SDHCI_SPRD_CMD_DLY_MASK;
+> +               p[mmc->ios.timing] |= ((final_phase << 8) & SDHCI_SPRD_CMD_DLY_MASK);
+> +       } else {
+> +               p[mmc->ios.timing] &= ~(SDHCI_SPRD_POSRD_DLY_MASK);
+> +               p[mmc->ios.timing] |= ((final_phase << 16) & SDHCI_SPRD_POSRD_DLY_MASK);
+> +       }
+> +
+> +       dev_info(mmc_dev(host->mmc), "the best step %d, phase 0x%02x, delay value 0x%08x\n",
+> +                       final_phase, final_phase, p[mmc->ios.timing]);
+
+Does this really deserve to be a dev_info? Looks like a dev_dbg to me, no?
+
+> +
+> +out:
+> +       sdhci_writel(host, p[mmc->ios.timing], SDHCI_SPRD_REG_32_DLL_DLY);
+> +
+> +       return err;
+> +}
+> +
+> +static int sdhci_sprd_prepare_hs_cmd_tuning(struct mmc_host *mmc, struct mmc_card *card)
+> +{
+> +       return sdhci_sprd_tuning(mmc, card, SDHCI_SPRD_TUNING_SD_HS_CMD);
+> +}
+> +
+> +static int sdhci_sprd_execute_hs_data_tuning(struct mmc_host *mmc, struct mmc_card *card)
+> +{
+> +       return sdhci_sprd_tuning(mmc, card, SDHCI_SPRD_TUNING_SD_HS_DATA);
+> +}
+> +
+>  static void sdhci_sprd_phy_param_parse(struct sdhci_sprd_host *sprd_host,
+>                                        struct device_node *np)
+>  {
+> @@ -577,6 +696,11 @@ static int sdhci_sprd_probe(struct platform_device *pdev)
+>         host->mmc_host_ops.request = sdhci_sprd_request;
+>         host->mmc_host_ops.hs400_enhanced_strobe =
+>                 sdhci_sprd_hs400_enhanced_strobe;
+> +       host->mmc_host_ops.prepare_hs_tuning =
+> +               sdhci_sprd_prepare_hs_cmd_tuning;
+> +       host->mmc_host_ops.execute_hs_tuning =
+> +               sdhci_sprd_execute_hs_data_tuning;
+> +
+>         /*
+>          * We can not use the standard ops to change and detect the voltage
+>          * signal for Spreadtrum SD host controller, since our voltage regulator
+> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+> index 461d1543893b..13cf894b9e3c 100644
+> --- a/include/linux/mmc/host.h
+> +++ b/include/linux/mmc/host.h
+> @@ -184,6 +184,12 @@ struct mmc_host_ops {
+>         /* Execute HS400 tuning depending host driver */
+>         int     (*execute_hs400_tuning)(struct mmc_host *host, struct mmc_card *card);
+>
+> +       /* Prepare HS tuning depending host driver */
+> +       int     (*prepare_hs_tuning)(struct mmc_host *host, struct mmc_card *card);
+> +
+> +       /* Execute HS tuning depending host driver */
+> +       int     (*execute_hs_tuning)(struct mmc_host *host, struct mmc_card *card);
+> +
+>         /* Prepare switch to DDR during the HS400 init sequence */
+>         int     (*hs400_prepare_ddr)(struct mmc_host *host);
+>
+
+Kind regards
+Uffe
