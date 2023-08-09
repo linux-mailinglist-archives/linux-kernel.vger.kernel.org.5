@@ -2,118 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9073F774FC0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 02:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E133B774FC2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 02:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbjHIASZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 20:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55958 "EHLO
+        id S230240AbjHIAUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 20:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbjHIASY (ORCPT
+        with ESMTP id S229564AbjHIAUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 20:18:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E64E10C8
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 17:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691540304; x=1723076304;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=HJlcHiHuNgv/7TraiPpo1NPMzUrumGGz0oolwOb/Hvs=;
-  b=GnbAb4/1jbgcwMBnL6Cw7CCnt6YhGsiK9zfWQ9q5xuOs2vs1QeTfvjki
-   CSUsC8KoFzVTFyqkTQNJmsdHzi+Rzeq8xdAa+Vk8FrKeEob6fBSKL4JHF
-   AHsNwH0pSx1QM0yJQVfgtonJYFxge8dEwAPxJv2IrFSCJBmM0Mx23pMWN
-   IlrccYTv7Cu2eZc2pmC//KLclyZJr8Rmo7zQmWRrFiXU+GLWPjUHmMsyT
-   vmq31sC2n/up13/gmEoHmJs+XHgVA/A+jmzege6Ep21sQampnScWhMFtV
-   est58TgJ657IFp04FUd0p5RIayg1qL4Ts2MlvkUiCofhX+Xwp+DiB7Z4g
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="373766058"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="373766058"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 17:18:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="978163637"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="978163637"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.169.46]) ([10.249.169.46])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 17:18:21 -0700
-Message-ID: <184044ad-880f-5452-727b-f7fd18330c22@linux.intel.com>
-Date:   Wed, 9 Aug 2023 08:18:18 +0800
+        Tue, 8 Aug 2023 20:20:09 -0400
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E05A1982
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 17:20:08 -0700 (PDT)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1bb9e6c2a90so54601925ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 17:20:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691540407; x=1692145207;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4zOSYuHnym2FwqD1we2DD5H7k4wgLaijhaz/3VHmzXc=;
+        b=AyqS8RwGVuMU7YkGmKGEZQsV5b0bzZYTq4XWlCaBbr52CiOoqkp22T0xMdZz2VAME6
+         sPlYEcNjSPtzBGAGGnZniNbDiTyRU/ywrXj/LqgcqgET2o1STQ9HSpfJiD7gJy1R7HnV
+         DKv+hOUKwaNlpENxQAIEI3KuqIc0J+emjBdVBvaofLIHR3WtOQNC9VQg2yPRhktmNORH
+         BD6mC39VawfWiNvRMdoRqP0zx3bP9/qdGToMc7naTRPU9vO37ULT0fXThhX9Xpp+LN8z
+         WkPB9yuhXOhbRYZG+CPiy+Vevc0Pcn4lSBD1mTw86r1xPuQUuIscf3qvZeiUvrsd0eAd
+         0v0w==
+X-Gm-Message-State: AOJu0Yz2XcRo9oELL5hG98J7CJW58qEnILc76I6r7cSUCq5KRyWQi3Ih
+        PN9TpuvPDSBvhBdILsvr8mhrAA==
+X-Google-Smtp-Source: AGHT+IE0L2cGA3Z91KiPpHf69xBPly0QCy8a7bmvASy2Wr9dCqLmRNKXCZLq1MOiXFVsZKwoILfE7g==
+X-Received: by 2002:a17:902:ce90:b0:1b9:e23a:f761 with SMTP id f16-20020a170902ce9000b001b9e23af761mr1184280plg.63.1691540407463;
+        Tue, 08 Aug 2023 17:20:07 -0700 (PDT)
+Received: from localhost ([75.172.135.98])
+        by smtp.gmail.com with ESMTPSA id a9-20020a170902ee8900b001b8a2edab6asm9600441pld.244.2023.08.08.17.20.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 17:20:06 -0700 (PDT)
+From:   Kevin Hilman <khilman@kernel.org>
+To:     Dhruva Gole <d-gole@ti.com>
+Cc:     Andrew Davis <afd@ti.com>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>,
+        Praneeth Bajjuri <praneeth@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Vibhore Vardhan <vibhore@ti.com>, Georgi Vlaev <g-vlaev@ti.com>
+Subject: Re: [PATCH V6 4/4] firmware: ti_sci: Introduce system suspend
+ resume support
+In-Reply-To: <20230808115403.dkz6ev5vc6bhcmzh@dhruva>
+References: <20230803064247.503036-1-d-gole@ti.com>
+ <20230803064247.503036-5-d-gole@ti.com>
+ <3882f0ac-b74c-6eb2-197c-34ca233cd7a3@ti.com>
+ <20230803155541.nwsfwobfkbpefoyw@dhruva>
+ <8c330bd9-5f4e-8cd0-ed02-c3a696d7473a@ti.com>
+ <20230803160815.yfpkdfssv75d4inf@dhruva> <7ho7jifrda.fsf@baylibre.com>
+ <20230808115403.dkz6ev5vc6bhcmzh@dhruva>
+Date:   Tue, 08 Aug 2023 17:20:06 -0700
+Message-ID: <7httt9dq2x.fsf@baylibre.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] Share sva domains with all devices bound to a mm
-Content-Language: en-US
-To:     Tina Zhang <tina.zhang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Michael Shavit <mshavit@google.com>
-References: <20230808074944.7825-1-tina.zhang@intel.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20230808074944.7825-1-tina.zhang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/8 15:49, Tina Zhang wrote:
-> A sva domain's lifetime begins with binding a device to a mm and ends
-> by releasing all the bound devices from that sva domain. Technically,
-> there could be more than one sva domain identified by the mm PASID for
-> the use of bound devices issuing DMA transactions.
-> 
-> To support mm PASID 1:n with sva domains, each mm needs to keep both a
-> reference list of allocated sva domains and the corresponding PASID.
-> However, currently, mm struct only has one pasid field for sva usage,
-> which is used to keep the info of an assigned PASID. That pasid field
-> cannot provide sufficient info to build up the 1:n mapping between PASID
-> and sva domains.
+Hi Dhruva,
 
-Is it more appropriate to have the same life cycle for sva domain and mm
-pasid? I feel that they represent the same thing, that is, the address
-space shared by mm to a device.
+Dhruva Gole <d-gole@ti.com> writes:
 
-Best regards,
-baolu
+> Kevin,
+>
+> Thanks for the suggestion. I have a rough proposal inline, please can
+> you take a look? I will test those changes and respin this series
+> accordingly
+>
+> On Aug 07, 2023 at 14:57:05 -0700, Kevin Hilman wrote:
+>> Dhruva Gole <d-gole@ti.com> writes:
+>> 
+>> > On Aug 03, 2023 at 11:00:11 -0500, Andrew Davis wrote:
+>> >> On 8/3/23 10:55 AM, Dhruva Gole wrote:
+>> >> > On Aug 03, 2023 at 10:26:32 -0500, Andrew Davis wrote:
+>> >> > > On 8/3/23 1:42 AM, Dhruva Gole wrote:
+>> >> > > > Introduce system suspend resume calls that will allow the ti_sci
+>> >> > > > driver to support deep sleep low power mode when the user space issues a
+>> >> > > > suspend to mem.
+>> >> > > > 
+>> >> > > > Also, write a ti_sci_prepare_system_suspend call to be used in the driver
+>> >> > > > suspend handler to allow the system to identify the low power mode being
+>> >> > > > entered and if necessary, send TISCI_MSG_PREPARE_SLEEP with information
+>> >> > > > about the mode is being entered and the address for allocated memory for
+>> >> > > > storing the context during Deep Sleep.
+>> >> > > > 
+>> >> > > > We're using "pm_suspend_target_state" to map the kernel's target suspend
+>> >> > > > state to SysFW low power mode. Make sure this is available only when
+>> >> > > > CONFIG_SUSPEND is enabled.
+>> >> > > > 
+>> >> > > > Co-developed-by: Dave Gerlach <d-gerlach@ti.com>
+>> >> > > > Signed-off-by: Dave Gerlach <d-gerlach@ti.com>
+>> >> > > > Signed-off-by: Vibhore Vardhan <vibhore@ti.com>
+>> >> > > > Signed-off-by: Georgi Vlaev <g-vlaev@ti.com>
+>> >> > > > Signed-off-by: Dhruva Gole <d-gole@ti.com>
+>> >> > > > ---
+>> >> > > >    drivers/firmware/ti_sci.c | 63 +++++++++++++++++++++++++++++++++++++++
+>> >> > > >    1 file changed, 63 insertions(+)
+>> >> > > > 
+>> >> > [..snip..]
+>> >> > > > +static int ti_sci_suspend(struct device *dev)
+>> >> > > > +{
+>> >> > > > +	struct ti_sci_info *info = dev_get_drvdata(dev);
+>> >> > > > +	int ret;
+>> >> > > > +
+>> >> > > > +	ret = ti_sci_cmd_set_io_isolation(&info->handle, TISCI_MSG_VALUE_IO_ENABLE);
+>> >> > > 
+>> >> > > After this the will the IOs be in isolation? Or does the firmware wait
+>> >> > > until power down begins later?
+>> >> > 
+>> >> >  From what I understand,
+>> >> > IOs will be in isolation immediately
+>> >> > 
+>> >> 
+>> >> That is what I understand too, so then any device that may need to do some
+>> >> external communication for its suspend will not function, this must be the
+>> >> last driver _suspend() the system calls, how do you enforce that?
+>> >
+>> > I will make use of .suspend_noirq callbacks in that case. Does that
+>> > sound better, or is there anything else I may not be aware of?
+>> 
+>> Using _noirq just moves the problem.  What if other drivers are also
+>> using _noirq callbacks and run after the SCI driver?  You still cannot
+>
+> True, this thought occurred to me as well which is why I was thinking
+> that moving it to ATF might be a better choice.
+>
+>> guarantee ordering.
+>> 
+>> It seems to me that the IO isolation stuff is a system-wide operation,
+>> and should probably be handled at the platform suspend_ops level
+>> (e.g. suspend_ops->prepare_late()).   This would ensure that it runs
+>
+> I must have missed this approach! Are you suggesting something like what
+> was done for am335?
+>
+> static const struct platform_suspend_ops am33xx_pm_ops
+>
+> have a similar code for tisci..?
+>
+> static const struct platform_suspend_ops tisci_pm_ops = {
+> 	.prepare_late = tisci_set_io_isolation
+> 	};
 
-> 
-> This patch-set fills the gap by adding an mm_iommu field[1], whose type is
-> mm_iommu_data struct, to replace the old pasid field. The introduced
-> mm_iommu_data struct keeps info of both a reference list of sva domains
-> and an assigned PASID.
-> 
-> 
-> [1]: https://lore.kernel.org/linux-iommu/ZIBxPd1%2FJCAle6yP@nvidia.com/
-> 
-> 
-> The RFC version of this patch-set is here:
-> https://lore.kernel.org/linux-iommu/20230707013441.365583-1-tina.zhang@intel.com/
-> 
-> Tina Zhang (5):
->    iommu: Add mm_get_pasid() helper function
->    iommu: Call helper function to get assigned pasid value
->    mm: Add structure to keep sva information
->    iommu: Support mm PASID 1:n with sva domains
->    mm: Deprecate pasid field
-> 
->   arch/x86/kernel/traps.c                       |  2 +-
->   .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   | 12 ++---
->   drivers/iommu/intel/svm.c                     |  8 +--
->   drivers/iommu/iommu-sva.c                     | 50 ++++++++++++-------
->   include/linux/iommu.h                         | 19 +++++--
->   include/linux/mm_types.h                      |  3 +-
->   kernel/fork.c                                 |  1 -
->   mm/init-mm.c                                  |  3 --
->   8 files changed, 58 insertions(+), 40 deletions(-)
-> 
+Yes, with the minor nit that I would make a tisci_prepare_late()
+function, which then calls _set_io_isolation(), since there may be some
+other things we want to do in the "late" prepare for other LPM modes.
+
+Also, for the additional LPM modes (more than DeepSleep), we're looking
+at using suspend-to-idle (s2idle) to manage those.  So in addition to
+platform_suspend_ops->prepare_late(), you should add this function to
+s2idle_ops->prepare_late() also.
+
+> And then while resuming we may want the pinctrl driver to scan for the
+> wk_evt bit[0] before the isolation is disabled, so we want the
+> tisci_resume/ remove isolation to be called later than that.
+>
+> So I a wondering if the code below makes sense?
+>
+> static const struct platform_suspend_ops tisci_pm_ops = {
+> 	.prepare_late = tisci_suspend // also includes set isolation
+> 	.end = tisci_resume 	// Disables isolation
+> 	};
+>
+> However a minor drawback here maybe that the serial logs on the resume
+> path may not appear when using a serial console for example. However
+> they should be able to easily access using dmesg.
+
+I'm not sure I fully understand this usecase, but using ->end() seems
+drastic.  If IO isolation is disabled that long, won't that cause
+problems for driver's ->resume callbacks that want to touch hardware?
+
+To me, it sounds like you might want to use ->resume_early() or maybe
+->resume_noirq() in the pinctrl driver for this so that IO isolation can
+be disabled sooner?
+
+>> *after* all the driver hooks (even driver _noirq hooks.) and right
+>> before the full suspend (or s2idle.)
+>> 
+>> Now, all that being said, I noticed that in v7, you didn't move this to
+>> _noirq, but instead suggested that this be handled by TF-A.  I suppose
+>> that's an option also, but my suggestion above should work also.
+>
+> Thanks for the pointer! I do believe it will make more sense to do it
+> from linux itself unless we have no way to do it in linux.
+>
+>> 
+>> Kevin
+>
+>
+> [0] Table 5-517. Description Of The Pad Configuration Register Bits
+> https://www.ti.com/lit/pdf/spruid7
+>
+> NOTE: The hardware works in such a way that as soon as the IO isolation
+> is disabled the wake_evt information is lost so the pinctrl-single
+> driver won't be able to know what pin woke it up if we disable io
+> isolation before it has the chance to look at the padconf registers
+
+Ah, OK.  So yeah, as I hinted at above, what about using
+->resume_noirq() in the pinctrl driver to get the wake_evt information,
+and then use the s2idle_ops->restore_early() to disable IO isolation,
+since this happens after all the driver's noirq hooks have run.
+
+Kevin
 
