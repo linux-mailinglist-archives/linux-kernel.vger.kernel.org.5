@@ -2,139 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 179327765FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59F2776605
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbjHIRCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 13:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
+        id S232321AbjHIRDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 13:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232437AbjHIRCO (ORCPT
+        with ESMTP id S232950AbjHIRDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 13:02:14 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDE9210D
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 10:02:10 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe28e4671dso11454788e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 10:02:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1691600529; x=1692205329;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bjIM/ijvSM8/MDaGJoo16Y0WNhCaEmIRqKMsiPBM2wM=;
-        b=T9ZQUjKWWfmPZqDf3wQWwhBnsSq5HwjyhNx06C/Qs/b28tTqhURb6KY/+OUCVNp/Kr
-         KzUuXVC7p/fUclfJcpjpvo81oHhy4+HJjBrSTAMzEvoAgIUvccLqdLKmzC63krToqn39
-         4SakwAuGj/80v9DUUFGzdqpfH8AcWRQD/7m/Q=
+        Wed, 9 Aug 2023 13:03:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B09A2689
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 10:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691600556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iBsxuYSh5nCvyR3EDZMX/GoLNC8vGSJmNwZKjotP104=;
+        b=apVNHLRRg067vqaXiq9LGyB490ikLKiPbJSZjpuVU/XRKSZafBCeRC54ZWGIN0nlh9+5J3
+        XA/eWJcoV4U4r9ISpDIMICnjWrubj/mbwAre4FvbIfpC/aS/5d8e33rxi6P4iDjKbM4Hmy
+        K/hq3xYSqN4yCgrH0diJ8E0v7lmYQfA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-434-LrzU9ZULN0CQB5CyWfpzlQ-1; Wed, 09 Aug 2023 13:02:35 -0400
+X-MC-Unique: LrzU9ZULN0CQB5CyWfpzlQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fe1bef4223so43271325e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 10:02:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691600529; x=1692205329;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bjIM/ijvSM8/MDaGJoo16Y0WNhCaEmIRqKMsiPBM2wM=;
-        b=CPZytMs8aKpTYTlR+bXpXseUUmTdSq398itfO1rZuo8lP/ZDvlZj6pzrhGwVcRPuFp
-         m3gvJZOrefo2RZnHyvkUzbBjy9prMdG6FZ6sSyUpb8Fz3tv1uxW6B5OffulUnk2prT9R
-         XaZyoJMf5xRFMfEDhY8D4+DYHwtkGIa35GSHPoKdVOeCCzqVACvhohbqLd+LPujB1ZuZ
-         dYi6eMLr3FPxl3g1IYi+CLSYRwi3VJ5srlu6wCKn+/qrEuuqWcspBPe8QuW4XrpmI4Ki
-         Rw7lmdaxo/5jY2kgyDnxBA7lH6BuBgtu4dblya1vWMKOJGsMFXLFNGvpuyBnbMy7nvG+
-         jXnQ==
-X-Gm-Message-State: AOJu0Ywdl3I8rFAEqu2YMuw0UQu3um7wiqKyp2SOq+aSL2gyRb9Vjdbq
-        kUmnV9ZQFuOGnHdKM5lcbSF3DLhj7CBprdv9JPpRWniF
-X-Google-Smtp-Source: AGHT+IHwW9c7bsAYiWoZftgXgtDNjAWOk0Cb4yJ5OUMW5dFusNom8UULJ2nH6DJ1TINyoVkHk3BzrA==
-X-Received: by 2002:a05:6512:3ec:b0:4fb:77d6:89c3 with SMTP id n12-20020a05651203ec00b004fb77d689c3mr2352023lfq.12.1691600528743;
-        Wed, 09 Aug 2023 10:02:08 -0700 (PDT)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id w1-20020a17090652c100b009927a49ba94sm8188120ejn.169.2023.08.09.10.02.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 10:02:08 -0700 (PDT)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-99c136ee106so11754166b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 10:02:08 -0700 (PDT)
-X-Received: by 2002:a17:906:7486:b0:99b:4bab:2844 with SMTP id
- e6-20020a170906748600b0099b4bab2844mr2356279ejl.55.1691600527705; Wed, 09 Aug
- 2023 10:02:07 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691600554; x=1692205354;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iBsxuYSh5nCvyR3EDZMX/GoLNC8vGSJmNwZKjotP104=;
+        b=H9ppIG7ngVwIWuDPKBoQ4Xn1rTwfX0JnKgqgCAfoWZ8tonXR5QBNzBRvOpJnCbXZwB
+         3RKnwh3JlIQlBavcMjMxfGajlcK0q42crXcko+48fpA3vrb1DtrtBZhJNtfmAE/wDFie
+         YGEzwFsdFXRh5/Io9Fys2mkGdS4bxG3inoEI185rZEb4m6f0wvngKEM+3+Hlot0pqXEU
+         pg6T+DdUArGrUHfVgSR7j5FNWhQLdvVBuOMqieHUCu7oFR6xeK81AQnp6DJqcwnLsZ0B
+         UYXArvEryRsVwrFaiyvMBXzV4zlxgio97PsxoLOdI9opod1oAck7dtqljTtu5lHn5Nr0
+         9u6Q==
+X-Gm-Message-State: AOJu0YwS5pJuUmGV96KT8W6xTtj6KUBi347U9Yzhf9qymLHC0vgucTWe
+        m0wNNMu3eplIHuKL6mJt3YLTIqYRgTJQGBKwR0xRsyHy4cyMVHSWwgGzPoOV2vOs9wEwpgWGOjw
+        MXmXgKVxzfVlj2MhzXnmt58sZ
+X-Received: by 2002:a05:600c:204b:b0:3fe:16f4:d865 with SMTP id p11-20020a05600c204b00b003fe16f4d865mr2542946wmg.23.1691600554087;
+        Wed, 09 Aug 2023 10:02:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEIgHp10Cy37KFuMxkg6Q8lraqrygcVUIRlfj8D2iI402kzJUIV27FmCS9jAnnaF/QZEmDB/Q==
+X-Received: by 2002:a05:600c:204b:b0:3fe:16f4:d865 with SMTP id p11-20020a05600c204b00b003fe16f4d865mr2542931wmg.23.1691600553761;
+        Wed, 09 Aug 2023 10:02:33 -0700 (PDT)
+Received: from vschneid.remote.csb ([93.186.150.163])
+        by smtp.gmail.com with ESMTPSA id f24-20020a7bcd18000000b003fba6709c68sm2494886wmj.47.2023.08.09.10.02.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 10:02:33 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Cc:     Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] sched/rt: Don't try push tasks if there are none.
+In-Reply-To: <20230801152648._y603AS_@linutronix.de>
+References: <20230801152648._y603AS_@linutronix.de>
+Date:   Wed, 09 Aug 2023 18:02:32 +0100
+Message-ID: <xhsmhv8dob13r.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-References: <87edkce118.wl-tiwai@suse.de> <20230809143801.GA693@lst.de>
- <CAHk-=wiyWOaPtOJ1PTdERswXV9m7W_UkPV-HE0kbpr48mbnrEA@mail.gmail.com> <87wmy4ciap.wl-tiwai@suse.de>
-In-Reply-To: <87wmy4ciap.wl-tiwai@suse.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 9 Aug 2023 10:01:50 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh-mUL6mp4chAc6E_UjwpPLyCPRCJK+iB4ZMD2BqjwGHA@mail.gmail.com>
-Message-ID: <CAHk-=wh-mUL6mp4chAc6E_UjwpPLyCPRCJK+iB4ZMD2BqjwGHA@mail.gmail.com>
-Subject: Re: [PATCH RFC] Introduce uniptr_t as a generic "universal" pointer
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Aug 2023 at 09:05, Takashi Iwai <tiwai@suse.de> wrote:
+On 01/08/23 17:26, Sebastian Andrzej Siewior wrote:
+> I have a RT task X at a high priority and cyclictest on each CPU with
+> lower priority than X's. If X is active and each CPU wakes their own
+> cylictest thread then it ends in a longer rto_push storm.
+> A random CPU determines via balance_rt() that the CPU on which X is
+> running needs to push tasks. X has the highest priority, cyclictest is
+> next in line so there is nothing that can be done since the task with
+> the higher priority is not touched.
 >
-> OTOH, it simplifies the code well for us; as of now, we have two
-> callbacks for copying PCM memory from/to the device, distinct for
-> kernel and user pointers.  It's basically either copy_from_user() or
-> memcpy() of the given size depending on the caller.  The sockptr_t or
-> its variant would allow us to unify those to a single callback.
+> tell_cpu_to_push() increments rto_loop_next and schedules
+> rto_push_irq_work_func() on X's CPU. The other CPUs also increment the
+> loop counter and do the same. Once rto_push_irq_work_func() is active it
+> does nothing because it has _no_ pushable tasks on its runqueue. Then
+> checks rto_next_cpu() and decides to queue irq_work on the local CPU
+> because another CPU requested a push by incrementing the counter.
+>
 
-I didn't see the follow-up patches that use this, but...
+For a CPU to be in the rto_mask, it needs:
 
-> (And yeah, iov_iter is there, but it's definitely overkill for the
-> purpose.)
+  rt_rq->rt_nr_migratory && rt_rq->rt_nr_total > 1
 
-You can actually use a "simplified form" of iov_iter, and it's not all that bad.
+But if that CPU has no pushable tasks, then that means only the current
+task has p->nr_cpus_allowed > 1.
 
-If the actual copying operation is just a memcpy, you're all set: just
-do copy_to/from_iter(), and it's a really nice interface, and you
-don't have to carry "ptr+size" things around.
+Should we change it so a CPU is only in the rto_mask iff it has pushable
+tasks? AFAICT that should not break the case where we push the current task
+away due to migration_disabled, as that still relies on the
+migration_disabled task to be in the pushable list.
 
-And we now have a simple way to generate simple iov_iter's, so
-*creating* the iter is trivial too:
-
-        struct iov_iter iter;
-        int ret = import_ubuf(ITER_SRC/DEST, uptr, len, &iter);
-
-        if (unlikely(ret < 0))
-                return ret;
-
-and you're all done. You can now pass '&iter' around, and it has a
-nice user pointer and a range in it, and copying that thing is easy.
-
-Perhaps somewhat strangely (*) we don't have the same for a simple
-kernel buffer, but adding that wouldn't be hard. You either end up
-using a 'kvec', or we could even add something like ITER_KBUF if it
-really matters.
-
-Right now the kernel buffer init is a *bit* more involved than the
-above ubuf case:
-
-        struct iov_iter iter;
-        struct kvec kvec = { kptr, len};
-
-        iov_iter_kvec(&iter, ITER_SRC/DEST, &kvec, 1, len);
-
-and that's maybe a *bit* annoying, but we could maybe simplify this
-with some helper macros even without ITER_KBUF.
-
-So yes, iov_iter does have some abstraction overhead, but it really
-isn't that bad. And it *does* allow you to do a lot of things, and can
-actually simplify the users quite a bit, exactly because it allows you
-to just pass that single iter pointer around, and you automatically
-have not just the user/kernel distinction, you have the buffer size,
-and you have a lot of helper functions to use it.
-
-I really think that if you want a user-or-kernel buffer interface, you
-should use these things.
-
-Please? At least look into it.
-
-                 Linus
-
-(*) Well, not so strange - we've just never needed it.
