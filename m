@@ -2,171 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7712D775702
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC27A775707
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231899AbjHIKW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 06:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
+        id S231916AbjHIKZK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Aug 2023 06:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbjHIKW0 (ORCPT
+        with ESMTP id S229795AbjHIKZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 06:22:26 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E1DC698;
-        Wed,  9 Aug 2023 03:22:25 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-        id 68B4B20FC3E4; Wed,  9 Aug 2023 03:22:25 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 68B4B20FC3E4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1691576545;
-        bh=s/Hd32b4XFC5qXe0hMfXzG8vSHV2xgLG+0kVH3hmJUk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kyOStzjyWsOPbM5+GPS6YfLyRyueAoJDuK/3FnslrQcYWOMx67IxnAqm9InYveCN0
-         N31+cX0/E8BFYKY20z9QN+dSOWKPYAmjZVsw0D3NXp9IQYlgDaHQQ7o2DDboLeAm++
-         reoj2X8SQKDn/sS5U0H0nmPTzAXXG+J+A7/S6GSI=
-From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     schakrabarti@microsoft.com,
-        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-        stable@vger.kernel.org
-Subject: [PATCH V8 net] net: mana: Fix MANA VF unload when hardware is unresponsive
-Date:   Wed,  9 Aug 2023 03:22:05 -0700
-Message-Id: <1691576525-24271-1-git-send-email-schakrabarti@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 9 Aug 2023 06:25:08 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D0B1BFB;
+        Wed,  9 Aug 2023 03:25:06 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 1CD4D8016;
+        Wed,  9 Aug 2023 18:24:58 +0800 (CST)
+Received: from EXMBX064.cuchost.com (172.16.6.64) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 9 Aug
+ 2023 18:24:58 +0800
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX064.cuchost.com
+ (172.16.6.64) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 9 Aug
+ 2023 18:24:57 +0800
+Received: from EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f]) by
+ EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f%17]) with mapi id
+ 15.00.1497.044; Wed, 9 Aug 2023 18:24:57 +0800
+From:   JeeHeng Sia <jeeheng.sia@starfivetech.com>
+To:     Conor Dooley <conor@kernel.org>
+CC:     Conor Dooley <conor.dooley@microchip.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+        Song Shuai <suagrfillet@gmail.com>,
+        Petr Tesarik <petrtesarik@huaweicloud.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [RFT 1/2] RISC-V: handle missing "no-map" properties for
+ OpenSBI's PMP protected regions
+Thread-Topic: [RFT 1/2] RISC-V: handle missing "no-map" properties for
+ OpenSBI's PMP protected regions
+Thread-Index: AQHZxTKPVELaCqW/WUK93+UXGxBdOK/eAqwggAHhD4CAAed1gA==
+Date:   Wed, 9 Aug 2023 10:24:57 +0000
+Message-ID: <3931cc7932e644bd88f9baf2beddd00d@EXMBX066.cuchost.com>
+References: <20230802-purse-hydrant-6f44f77364b0@wendy>
+ <20230802-detention-second-82ab2b53e07a@wendy>
+ <3e066032031e4552b4b7903755deb669@EXMBX066.cuchost.com>
+ <20230808-humility-rut-e1e46cf75708@spud>
+In-Reply-To: <20230808-humility-rut-e1e46cf75708@spud>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [210.186.215.22]
+x-yovoleruleagent: yovoleflag
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When unloading the MANA driver, mana_dealloc_queues() waits for the MANA
-hardware to complete any inflight packets and set the pending send count
-to zero. But if the hardware has failed, mana_dealloc_queues()
-could wait forever.
 
-Fix this by adding a timeout to the wait. Set the timeout to 120 seconds,
-which is a somewhat arbitrary value that is more than long enough for
-functional hardware to complete any sends.
 
-Cc: stable@vger.kernel.org
-Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
-Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
----
-V7 -> V8:
-* Replaced dev_consume_skb_any with dev_kfree_skb_any.
-* Added extra braces to use assignment as truth value.
-
-V6 -> V7:
-* Optimized the while loop for freeing skb.
-
-V5 -> V6:
-* Added pcie_flr to reset the pci after timeout.
-* Fixed the position of changelog.
-* Removed unused variable like cq.
-
-V4 -> V5:
-* Added fixes tag
-* Changed the usleep_range from static to incremental value.
-* Initialized timeout in the begining.
-
-V3 -> V4:
-* Removed the unnecessary braces from mana_dealloc_queues().
-
-V2 -> V3:
-* Removed the unnecessary braces from mana_dealloc_queues().
-
-V1 -> V2:
-* Added net branch
-* Removed the typecasting to (struct mana_context*) of void pointer
-* Repositioned timeout variable in mana_dealloc_queues()
-* Repositioned vf_unload_timeout in mana_context struct, to utilise the
- 6 bytes hole
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 37 +++++++++++++++++--
- 1 file changed, 33 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index a499e460594b..c2ad0921e893 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -8,6 +8,7 @@
- #include <linux/ethtool.h>
- #include <linux/filter.h>
- #include <linux/mm.h>
-+#include <linux/pci.h>
- 
- #include <net/checksum.h>
- #include <net/ip6_checksum.h>
-@@ -2345,9 +2346,12 @@ int mana_attach(struct net_device *ndev)
- static int mana_dealloc_queues(struct net_device *ndev)
- {
- 	struct mana_port_context *apc = netdev_priv(ndev);
-+	unsigned long timeout = jiffies + 120 * HZ;
- 	struct gdma_dev *gd = apc->ac->gdma_dev;
- 	struct mana_txq *txq;
-+	struct sk_buff *skb;
- 	int i, err;
-+	u32 tsleep;
- 
- 	if (apc->port_is_up)
- 		return -EINVAL;
-@@ -2363,15 +2367,40 @@ static int mana_dealloc_queues(struct net_device *ndev)
- 	 * to false, but it doesn't matter since mana_start_xmit() drops any
- 	 * new packets due to apc->port_is_up being false.
- 	 *
--	 * Drain all the in-flight TX packets
-+	 * Drain all the in-flight TX packets.
-+	 * A timeout of 120 seconds for all the queues is used.
-+	 * This will break the while loop when h/w is not responding.
-+	 * This value of 120 has been decided here considering max
-+	 * number of queues.
- 	 */
-+
- 	for (i = 0; i < apc->num_queues; i++) {
- 		txq = &apc->tx_qp[i].txq;
--
--		while (atomic_read(&txq->pending_sends) > 0)
--			usleep_range(1000, 2000);
-+		tsleep = 1000;
-+		while (atomic_read(&txq->pending_sends) > 0 &&
-+		       time_before(jiffies, timeout)) {
-+			usleep_range(tsleep, tsleep + 1000);
-+			tsleep <<= 1;
-+		}
-+		if (atomic_read(&txq->pending_sends)) {
-+			err = pcie_flr(to_pci_dev(gd->gdma_context->dev));
-+			if (err) {
-+				netdev_err(ndev, "flr failed %d with %d pkts pending in txq %u\n",
-+					   err, atomic_read(&txq->pending_sends),
-+					   txq->gdma_txq_id);
-+			}
-+			break;
-+		}
- 	}
- 
-+	for (i = 0; i < apc->num_queues; i++) {
-+		txq = &apc->tx_qp[i].txq;
-+		while ((skb = skb_dequeue(&txq->pending_skbs))) {
-+			mana_unmap_skb(skb, apc);
-+			dev_kfree_skb_any(skb);
-+		}
-+		atomic_set(&txq->pending_sends, 0);
-+	}
- 	/* We're 100% sure the queues can no longer be woken up, because
- 	 * we're sure now mana_poll_tx_cq() can't be running.
- 	 */
--- 
-2.34.1
-
+> -----Original Message-----
+> From: Conor Dooley <conor@kernel.org>
+> Sent: Tuesday, August 8, 2023 9:13 PM
+> To: JeeHeng Sia <jeeheng.sia@starfivetech.com>
+> Cc: Conor Dooley <conor.dooley@microchip.com>; palmer@dabbelt.com; Paul Walmsley <paul.walmsley@sifive.com>; Atish Patra
+> <atishp@rivosinc.com>; Anup Patel <apatel@ventanamicro.com>; Alexandre Ghiti <alexghiti@rivosinc.com>; Björn Töpel
+> <bjorn@rivosinc.com>; Song Shuai <suagrfillet@gmail.com>; Petr Tesarik <petrtesarik@huaweicloud.com>; linux-
+> riscv@lists.infradead.org; linux-kernel@vger.kernel.org; stable@vger.kernel.org
+> Subject: Re: [RFT 1/2] RISC-V: handle missing "no-map" properties for OpenSBI's PMP protected regions
+> 
+> On Mon, Aug 07, 2023 at 12:44:07AM +0000, JeeHeng Sia wrote:
+> 
+> > > +/* SBI implementation IDs */
+> > > +#define SBI_IMP_OPENSBI	1
+> > I would suggest to create an enum struct for the SBI Imp ID in
+> > the sbi.h file. What do you think?
+> 
+> I'm not really sure what the advantage of doing so is.
+The macro SBI_IMP_OPENSBI seems weird (I would read it as "SBI Implementation OpenSBI"). However, if we implement an enum struct for SBI_IMP_ID (There are numerous IDs available), the macro can be abbreviated to OpenSBI. By doing this, the conditional checking of the implementation ID would be more readable, as shown below:
+if (sbi_firmware_id != OPENSBI)
