@@ -2,190 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BEC27756DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C227756D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbjHIKKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 06:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46306 "EHLO
+        id S232163AbjHIKJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 06:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232274AbjHIKJ6 (ORCPT
+        with ESMTP id S229921AbjHIKJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 06:09:58 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2DAD1FDE;
-        Wed,  9 Aug 2023 03:09:53 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3799186D014764;
-        Wed, 9 Aug 2023 10:09:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=z2yF02mLh9q+VU+iy3eExmyCmx1czwO7eMFUd2ucPDc=;
- b=pQY++tQqDSjwRSA1Dcvu16qHKqpHLNdm8dqQPcf4mwhyZzpmYW9Z5S0aBQixE8ksMMGo
- DCuAkvgdhGGwLBA9+MP2UdtLXPDRx+PhudHuoGBkC8f6GQg2Gv8cWADaolqL+J6Ez8l7
- ZpeYNHEFDKmweVSOUqiBAkzIIYuklRLsf8T+hTTYdx+hSLHL0/4rBhVmDT8dGvOWhkQp
- iNITjczSI5TCsiyH+yv/Io3RXOSswbRqjsxlV5tf8Fid9ELh5WGuOIYAyQqd/LcnmPrM
- KGkSbhCx8WWwIPMwOz9AVD9olCgon1YZAufGMtuRRaDZI7dn4O6prd+GJE+4NDspyj1d DQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sc1ny0w89-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 10:09:46 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 379A9jfF023941
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 9 Aug 2023 10:09:45 GMT
-Received: from hu-ninanaik-blr.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 9 Aug 2023 03:09:40 -0700
-From:   Ninad Naik <quic_ninanaik@quicinc.com>
-To:     <andersson@kernel.org>, <agross@kernel.org>,
-        <konrad.dybcio@linaro.org>, <linus.walleij@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_ymg@quicinc.com>,
-        <bartosz.golaszewski@linaro.org>, <quic_psodagud@quicinc.com>,
-        <quic_ppareek@quicinc.com>, <quic_kprasan@quicinc.com>,
-        Ninad Naik <quic_ninanaik@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        "Bjorn Andersson" <quic_bjorande@quicinc.com>
-Subject: [PATCH v3] pinctrl: qcom: Add intr_target_width field to support increased number of interrupt targets
-Date:   Wed, 9 Aug 2023 15:36:34 +0530
-Message-ID: <20230809100634.3961-1-quic_ninanaik@quicinc.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 9 Aug 2023 06:09:12 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326671BFB;
+        Wed,  9 Aug 2023 03:09:10 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RLQjS0X2JzmXh1;
+        Wed,  9 Aug 2023 18:07:56 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 9 Aug 2023 18:09:07 +0800
+From:   Yicong Yang <yangyicong@huawei.com>
+To:     <will@kernel.org>, <catalin.marinas@arm.com>,
+        <lpieralisi@kernel.org>, <mark.rutland@arm.com>,
+        <robin.murphy@arm.com>, <guohanjun@huawei.com>, <corbet@lwn.net>,
+        <rafael@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-doc@vger.kernel.org>, <linux-acpi@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jonathan.cameron@huawei.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <hejunhao3@huawei.com>,
+        <linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
+        <yangyicong@hisilicon.com>, <zhurui3@huawei.com>
+Subject: [PATCH] perf/smmuv3: Enable HiSilicon Erratum 162001900 quirk for HIP08/09
+Date:   Wed, 9 Aug 2023 18:06:54 +0800
+Message-ID: <20230809100654.32036-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: JHSLxRF8f_EOr22amsYPpI_7O8mx1IM1
-X-Proofpoint-ORIG-GUID: JHSLxRF8f_EOr22amsYPpI_7O8mx1IM1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-09_09,2023-08-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
- spamscore=0 bulkscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
- impostorscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308090089
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.163.32]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SA8775 and newer target have added support for an increased number of
-interrupt targets. To implement this change, the intr_target field, which
-is used to configure the interrupt target in the interrupt configuration
-register is increased from 3 bits to 4 bits.
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-In accordance to these updates, a new intr_target_width member is
-introduced in msm_pingroup structure. This member stores the value of
-width of intr_target field in the interrupt configuration register. This
-value is used to dynamically calculate and generate mask for setting the
-intr_target field. By default, this mask is set to 3 bit wide, to ensure
-backward compatibility with the older targets.
+Some HiSilicon SMMU PMCG suffers the erratum 162001900 that the PMU
+disable control sometimes fail to disable the counters. This will lead
+to error or inaccurate data since before we enable the counters the
+counter's still counting for the event used in last perf session.
 
-Fixes: 4b6b18559927 ("pinctrl: qcom: add the tlmm driver sa8775p platforms")
+This patch tries to fix this by hardening the global disable process.
+Before disable the PMU, writing an invalid event type (0xffff) to
+focibly stop the counters. Correspondingly restore each events on
+pmu::pmu_enable().
 
-Tested-by: Andrew Halaney <ahalaney@redhat.com> # sa8775p-ride
-Signed-off-by: Ninad Naik <quic_ninanaik@quicinc.com>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 ---
-Changes in v3 :
-- Resend, by adding correct maintainers missed in v2.
-- v2 : https://lore.kernel.org/all/20230718064246.12429-1-quic_ninanaik@quicinc.com/ 
+ Documentation/arch/arm64/silicon-errata.rst |  3 ++
+ drivers/acpi/arm64/iort.c                   |  5 ++-
+ drivers/perf/arm_smmuv3_pmu.c               | 49 ++++++++++++++++++++-
+ include/linux/acpi_iort.h                   |  1 +
+ 4 files changed, 56 insertions(+), 2 deletions(-)
 
-Changes in v2 :
-- Changed initial definition of intr_target_mask variable to use GENMASK().
-- Update commit subject appropiately.
-- Add Fixes tag.
-- v1 : https://lore.kernel.org/all/20230714061010.15817-1-quic_ninanaik@quicinc.com/
-
- drivers/pinctrl/qcom/pinctrl-msm.c     | 9 ++++++---
- drivers/pinctrl/qcom/pinctrl-msm.h     | 2 ++
- drivers/pinctrl/qcom/pinctrl-sa8775p.c | 1 +
- 3 files changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-index 2585ef2b2793..115b83e2d8e6 100644
---- a/drivers/pinctrl/qcom/pinctrl-msm.c
-+++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-@@ -1038,6 +1038,7 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
- 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
- 	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
- 	const struct msm_pingroup *g;
-+	u32 intr_target_mask = GENMASK(2, 0);
- 	unsigned long flags;
- 	bool was_enabled;
- 	u32 val;
-@@ -1074,13 +1075,15 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
- 	 * With intr_target_use_scm interrupts are routed to
- 	 * application cpu using scm calls.
- 	 */
-+	if (g->intr_target_width)
-+		intr_target_mask = GENMASK(g->intr_target_width - 1, 0);
+diff --git a/Documentation/arch/arm64/silicon-errata.rst b/Documentation/arch/arm64/silicon-errata.rst
+index 496cdca5cb99..d54626cfcbda 100644
+--- a/Documentation/arch/arm64/silicon-errata.rst
++++ b/Documentation/arch/arm64/silicon-errata.rst
+@@ -195,6 +195,9 @@ stable kernels.
+ +----------------+-----------------+-----------------+-----------------------------+
+ | Hisilicon      | Hip08 SMMU PMCG | #162001800      | N/A                         |
+ +----------------+-----------------+-----------------+-----------------------------+
++| Hisilicon      | Hip08 SMMU PMCG | #162001900      | N/A                         |
++|                | Hip09 SMMU PMCG |                 |                             |
+++----------------+-----------------+-----------------+-----------------------------+
+ +----------------+-----------------+-----------------+-----------------------------+
+ | Qualcomm Tech. | Kryo/Falkor v1  | E1003           | QCOM_FALKOR_ERRATUM_1003    |
+ +----------------+-----------------+-----------------+-----------------------------+
+diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+index 56d887323ae5..6496ff5a6ba2 100644
+--- a/drivers/acpi/arm64/iort.c
++++ b/drivers/acpi/arm64/iort.c
+@@ -1708,7 +1708,10 @@ static void __init arm_smmu_v3_pmcg_init_resources(struct resource *res,
+ static struct acpi_platform_list pmcg_plat_info[] __initdata = {
+ 	/* HiSilicon Hip08 Platform */
+ 	{"HISI  ", "HIP08   ", 0, ACPI_SIG_IORT, greater_than_or_equal,
+-	 "Erratum #162001800", IORT_SMMU_V3_PMCG_HISI_HIP08},
++	 "Erratum #162001800, Erratum #162001900", IORT_SMMU_V3_PMCG_HISI_HIP08},
++	/* HiSilicon Hip09 Platform */
++	{"HISI  ", "HIP09   ", 0, ACPI_SIG_IORT, greater_than_or_equal,
++	 "Erratum #162001900", IORT_SMMU_V3_PMCG_HISI_HIP09},
+ 	{ }
+ };
+ 
+diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+index 25a269d431e4..b854b67b81fc 100644
+--- a/drivers/perf/arm_smmuv3_pmu.c
++++ b/drivers/perf/arm_smmuv3_pmu.c
+@@ -115,6 +115,7 @@
+ #define SMMU_PMCG_PA_SHIFT              12
+ 
+ #define SMMU_PMCG_EVCNTR_RDONLY         BIT(0)
++#define SMMU_PMCG_HARDEN_DISABLE        BIT(1)
+ 
+ static int cpuhp_state_num;
+ 
+@@ -150,6 +151,22 @@ SMMU_PMU_EVENT_ATTR_EXTRACTOR(filter_stream_id, config1, 0, 31);
+ SMMU_PMU_EVENT_ATTR_EXTRACTOR(filter_span, config1, 32, 32);
+ SMMU_PMU_EVENT_ATTR_EXTRACTOR(filter_enable, config1, 33, 33);
+ 
++static int smmu_pmu_apply_event_filter(struct smmu_pmu *smmu_pmu,
++				       struct perf_event *event, int idx);
 +
- 	if (pctrl->intr_target_use_scm) {
- 		u32 addr = pctrl->phys_base[0] + g->intr_target_reg;
- 		int ret;
++static inline void smmu_pmu_enable_quirk_hip08_09(struct pmu *pmu)
++{
++	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
++	unsigned int idx;
++
++	for_each_set_bit(idx, smmu_pmu->used_counters, smmu_pmu->num_counters)
++		smmu_pmu_apply_event_filter(smmu_pmu, smmu_pmu->events[idx], idx);
++
++	writel(SMMU_PMCG_IRQ_CTRL_IRQEN,
++	       smmu_pmu->reg_base + SMMU_PMCG_IRQ_CTRL);
++	writel(SMMU_PMCG_CR_ENABLE, smmu_pmu->reg_base + SMMU_PMCG_CR);
++}
++
+ static inline void smmu_pmu_enable(struct pmu *pmu)
+ {
+ 	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
+@@ -159,6 +176,23 @@ static inline void smmu_pmu_enable(struct pmu *pmu)
+ 	writel(SMMU_PMCG_CR_ENABLE, smmu_pmu->reg_base + SMMU_PMCG_CR);
+ }
  
- 		qcom_scm_io_readl(addr, &val);
--
--		val &= ~(7 << g->intr_target_bit);
-+		val &= ~(intr_target_mask << g->intr_target_bit);
- 		val |= g->intr_target_kpss_val << g->intr_target_bit;
- 
- 		ret = qcom_scm_io_writel(addr, val);
-@@ -1090,7 +1093,7 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
- 				d->hwirq);
- 	} else {
- 		val = msm_readl_intr_target(pctrl, g);
--		val &= ~(7 << g->intr_target_bit);
-+		val &= ~(intr_target_mask << g->intr_target_bit);
- 		val |= g->intr_target_kpss_val << g->intr_target_bit;
- 		msm_writel_intr_target(val, pctrl, g);
++static inline void smmu_pmu_disable_quirk_hip08_09(struct pmu *pmu)
++{
++	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
++	unsigned int idx;
++
++	/*
++	 * The global disable of PMU sometimes fail to stop the counting.
++	 * Harden this by writing an invalid event type to each used counter
++	 * to forcibly stop counting.
++	 */
++	for_each_set_bit(idx, smmu_pmu->used_counters, smmu_pmu->num_counters)
++		writel(0xffff, smmu_pmu->reg_base + SMMU_PMCG_EVTYPER(idx));
++
++	writel(0, smmu_pmu->reg_base + SMMU_PMCG_CR);
++	writel(0, smmu_pmu->reg_base + SMMU_PMCG_IRQ_CTRL);
++}
++
+ static inline void smmu_pmu_disable(struct pmu *pmu)
+ {
+ 	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
+@@ -765,7 +799,10 @@ static void smmu_pmu_get_acpi_options(struct smmu_pmu *smmu_pmu)
+ 	switch (model) {
+ 	case IORT_SMMU_V3_PMCG_HISI_HIP08:
+ 		/* HiSilicon Erratum 162001800 */
+-		smmu_pmu->options |= SMMU_PMCG_EVCNTR_RDONLY;
++		smmu_pmu->options |= SMMU_PMCG_EVCNTR_RDONLY | SMMU_PMCG_HARDEN_DISABLE;
++		break;
++	case IORT_SMMU_V3_PMCG_HISI_HIP09:
++		smmu_pmu->options |= SMMU_PMCG_HARDEN_DISABLE;
+ 		break;
  	}
-diff --git a/drivers/pinctrl/qcom/pinctrl-msm.h b/drivers/pinctrl/qcom/pinctrl-msm.h
-index 5e4410bed823..1d2f2e904da1 100644
---- a/drivers/pinctrl/qcom/pinctrl-msm.h
-+++ b/drivers/pinctrl/qcom/pinctrl-msm.h
-@@ -59,6 +59,7 @@ struct pinctrl_pin_desc;
-  * @intr_status_bit:      Offset in @intr_status_reg for reading and acking the interrupt
-  *                        status.
-  * @intr_target_bit:      Offset in @intr_target_reg for configuring the interrupt routing.
-+ * @intr_target_width:    Number of bits used for specifying interrupt routing target.
-  * @intr_target_kpss_val: Value in @intr_target_bit for specifying that the interrupt from
-  *                        this gpio should get routed to the KPSS processor.
-  * @intr_raw_status_bit:  Offset in @intr_cfg_reg for the raw status bit.
-@@ -100,6 +101,7 @@ struct msm_pingroup {
- 	unsigned intr_ack_high:1;
  
- 	unsigned intr_target_bit:5;
-+	unsigned intr_target_width:5;
- 	unsigned intr_target_kpss_val:5;
- 	unsigned intr_raw_status_bit:5;
- 	unsigned intr_polarity_bit:5;
-diff --git a/drivers/pinctrl/qcom/pinctrl-sa8775p.c b/drivers/pinctrl/qcom/pinctrl-sa8775p.c
-index 8a5cd15512b9..8fdea25d8d67 100644
---- a/drivers/pinctrl/qcom/pinctrl-sa8775p.c
-+++ b/drivers/pinctrl/qcom/pinctrl-sa8775p.c
-@@ -46,6 +46,7 @@
- 		.intr_enable_bit = 0,		\
- 		.intr_status_bit = 0,		\
- 		.intr_target_bit = 5,		\
-+		.intr_target_width = 4,		\
- 		.intr_target_kpss_val = 3,	\
- 		.intr_raw_status_bit = 4,	\
- 		.intr_polarity_bit = 1,		\
+@@ -890,6 +927,16 @@ static int smmu_pmu_probe(struct platform_device *pdev)
+ 	if (!dev->of_node)
+ 		smmu_pmu_get_acpi_options(smmu_pmu);
+ 
++	/*
++	 * For platforms suffer this quirk, the PMU disable sometimes fails to
++	 * stop the counters. This will leads to inaccurate or error counting.
++	 * Forcibly disable the counters with these quirk handler.
++	 */
++	if (smmu_pmu->options & SMMU_PMCG_HARDEN_DISABLE) {
++		smmu_pmu->pmu.pmu_enable = smmu_pmu_enable_quirk_hip08_09;
++		smmu_pmu->pmu.pmu_disable = smmu_pmu_disable_quirk_hip08_09;
++	}
++
+ 	/* Pick one CPU to be the preferred one to use */
+ 	smmu_pmu->on_cpu = raw_smp_processor_id();
+ 	WARN_ON(irq_set_affinity(smmu_pmu->irq, cpumask_of(smmu_pmu->on_cpu)));
+diff --git a/include/linux/acpi_iort.h b/include/linux/acpi_iort.h
+index ee7cb6aaff71..1cb65592c95d 100644
+--- a/include/linux/acpi_iort.h
++++ b/include/linux/acpi_iort.h
+@@ -21,6 +21,7 @@
+  */
+ #define IORT_SMMU_V3_PMCG_GENERIC        0x00000000 /* Generic SMMUv3 PMCG */
+ #define IORT_SMMU_V3_PMCG_HISI_HIP08     0x00000001 /* HiSilicon HIP08 PMCG */
++#define IORT_SMMU_V3_PMCG_HISI_HIP09     0x00000002 /* HiSilicon HIP09 PMCG */
+ 
+ int iort_register_domain_token(int trans_id, phys_addr_t base,
+ 			       struct fwnode_handle *fw_node);
 -- 
-2.41.0
+2.24.0
 
