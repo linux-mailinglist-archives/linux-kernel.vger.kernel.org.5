@@ -2,152 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD1B776962
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 448B6776963
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232373AbjHIUAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 16:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
+        id S232131AbjHIUBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 16:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232333AbjHIUAT (ORCPT
+        with ESMTP id S231481AbjHIUBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 16:00:19 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601AA1FFA
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 13:00:18 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9b904bb04so3384501fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 13:00:18 -0700 (PDT)
+        Wed, 9 Aug 2023 16:01:19 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4447DD2;
+        Wed,  9 Aug 2023 13:01:18 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bc411e9d17so2081745ad.0;
+        Wed, 09 Aug 2023 13:01:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691611216; x=1692216016;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eGLeYfZmvfVl2Lmvhg+3kVtmeLdGoOz6yJsVXypuz1E=;
-        b=OhaLoafP1sI9RSuCifcFeFpJK5HsyT0peOnm8ApvVUJdiRnP7VXNUVvix+AhTBXVjX
-         2xjJ6t+hSgWmzvDn9wR5KKINZTymIuLKdb6r9f4bIR8HEPjQVZHtUqiJ6Fovfdm+d4nY
-         OmdmJ65xhkVHMvZ3bsgmGI/QBuDuN4KafZrJEtvOTJrusSICGGsLwBDkL/MRfqp9pwar
-         BDirRx5J4Y8B1yL5RIbf53fpnOt610cCleVCzE/Ag1xl00zsrgafQ+UtPbpapcj9Z9ab
-         LBoua6NnfmMLYSE5BmQymiew99O5gi+tsHSoULyoDOkthXnPZ0tcBkYOw8OZzMnvlphx
-         vZMQ==
+        d=gmail.com; s=20221208; t=1691611278; x=1692216078;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HS88ftUTyzR3Q0GvZ4/QO9Y1ZAxs9zglfag3dq1XafI=;
+        b=nRoM0L2Wry6nncUwzn0RLyiuHAyBqiQXR9WzQBN1nEhLyTjwLvFMuL+TNsuascbDyN
+         PPCRUtsfD9CsabN0HGzyBzc7M2Dbs8tpceMQQZjMaA1nEKMuqZ0PUx4sUs7t4r6eNoER
+         097BItuKHgrE2F5z/16RatVM08Wl2mOcR/74MXd9q4JJjVApkGoDcWKempKrESOPm9iT
+         yI8adNsag3LqmsdIsd3nS0tJ1YBkn+F3WqOiOQ+2zCpabWZeC1eAQdh4B0An+DBHdPQ4
+         RQdSKu4OjWYQaxyFyagPrgtQDfI7ZleDfRUtRjq5VpIU5rolldDNmvY/bFOeHa9FG1jJ
+         5UdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691611216; x=1692216016;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eGLeYfZmvfVl2Lmvhg+3kVtmeLdGoOz6yJsVXypuz1E=;
-        b=BUTKiUwx2C3+Lg4Pf6FvFYNn2zPJ6ofPNTaq6hO9Zf+N3mI4bajIrWrm7f/zQUuQqj
-         6WPOEIgZNYjSo8/JoNz2aCQwd+jbkDk5fUCMoAihQ8ScCLP0F/2f2SNMRbVe1NjUMHBu
-         wE3ow6Mhqwg8AMilzYQsB0l2ev0MmnXMLSLL1LwH20qPqIEROYEjvzx/DshT21dJ/Z1w
-         gKJfxkkGEpjBOZrQtozFYbblxzaXFq14mTyp6kCHYNsRfRzcP1r/OHPhdO2CsFaD3Z3a
-         IJj45pSp4+marr5Skx8sU2N3u2rb+QIBKXwr9zyzMKaVmOlHJqRGzxiK2bqvUulT3B11
-         9t0A==
-X-Gm-Message-State: AOJu0Yw+hO62x/cMG60f//aFwU1PyDvDGm9YbklBushu2rM2A/ojEDcu
-        OJTwmurWU+ytCD1K50NKC7cqjA==
-X-Google-Smtp-Source: AGHT+IHJ+vT+QJQMzKYZKxsoo6ICD25DqFqDwUtHfl51WFyWyV1WBpAQinGAstwe0znrJem3yC1aGg==
-X-Received: by 2002:a2e:b60a:0:b0:2b9:c8fb:8df6 with SMTP id r10-20020a2eb60a000000b002b9c8fb8df6mr148623ljn.33.1691611216531;
-        Wed, 09 Aug 2023 13:00:16 -0700 (PDT)
-Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id c19-20020a05651c015300b002b9358f5088sm2876186ljd.53.2023.08.09.13.00.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 13:00:16 -0700 (PDT)
-Message-ID: <28452f19-be57-46db-bfc8-4ba8573de1d0@linaro.org>
-Date:   Wed, 9 Aug 2023 22:00:15 +0200
+        d=1e100.net; s=20221208; t=1691611278; x=1692216078;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HS88ftUTyzR3Q0GvZ4/QO9Y1ZAxs9zglfag3dq1XafI=;
+        b=hbqy3tIqGSc0d/f3nj9Pz6WtsKyXoSfPNcYPMW736aWloXPmFQTPbNk+stJHqrO/iT
+         KmscVjajmC2/8n5r+vZi4kf0louUPQ9ZaLpcdsF4jjl2TSdQCOnkX2vaaMpWadhcCPvq
+         gLqEVcDlQtPAu9BZFDpqP+oTcO4h4PvgmGyn97H6cg4SQ1kHSkC1pCOnpD99RmLEOb0g
+         WN29yn/9pqrTZQxALFQ6mZ9M+oUb/xjrcw8xYMgTCHdEXaEyuduRl+9kVYb8Echgz5QD
+         /RIhOwQiZp5zA9j8DnBZFmi6HKOB3fzur4mH85oBh9a31WXQxYKnmKbHd8KnZGs599HB
+         JGaQ==
+X-Gm-Message-State: AOJu0YySmj7CO2hMEvT3TJeB9xbXfgES+dsM4J/V0ZgnEu59rpagUzer
+        8xhBoXJdYKFJANs8oVlYem0=
+X-Google-Smtp-Source: AGHT+IFOG2krU+ld7Ezro95lU0nUAvoAI2MtWQ+5LGTblfUXkndK/rofRwJs99wk6TIFICPtVIU1BQ==
+X-Received: by 2002:a17:902:ea02:b0:1bc:382b:6897 with SMTP id s2-20020a170902ea0200b001bc382b6897mr114934plg.13.1691611277411;
+        Wed, 09 Aug 2023 13:01:17 -0700 (PDT)
+Received: from yoga ([2400:1f00:13:9c9a:9cd0:55ee:75bd:a5c5])
+        by smtp.gmail.com with ESMTPSA id a2-20020a1709027d8200b001bc39aa63ebsm11571085plm.121.2023.08.09.13.01.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 13:01:16 -0700 (PDT)
+From:   Anup Sharma <anupnewsmail@gmail.com>
+X-Google-Original-From: Anup Sharma <AnupSharma>
+Date:   Thu, 10 Aug 2023 01:31:09 +0530
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
+        anupnewsmail@gmail.com
+Subject: Re: [RFC] Adding Support for Firefox's Gecko Profile Format
+Message-ID: <ZNPwhctOgd0RdtwO@yoga>
+References: <ZIofrGKElc3nkNk0@yoga>
+ <CAP-5=fV9tXNpYHH9DW0cVbRoFLGvG9SNn-MUhuyKuVBRuDqjoA@mail.gmail.com>
+ <ZJyT8bt0LFLw6hKV@yoga>
+ <CAM9d7ch7TdagV+dzj6MCp4fY15Vc4oGJjKAoQDyc=BXqy7qi+A@mail.gmail.com>
+ <287bf3c8-fa0e-8c36-df14-7d728c63c265@intel.com>
+ <ZKQu00bJZwO+Fc6m@yoga>
+ <ZKRcTqAsKxF/Q3fQ@yoga>
+ <ZMFgIekihhoGFBpn@yoga>
+ <ZMFyi5S4JlFeZ/9c@kernel.org>
+ <ZMqnp1kBv1ACIiGS@yoga>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] arm64: dts: qcom: qdu1000: Add ECPRI clock controller
-Content-Language: en-US
-To:     Imran Shaik <quic_imrashai@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     Taniya Das <quic_tdas@quicinc.com>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ajit Pandey <quic_ajipan@quicinc.com>,
-        Jagadeesh Kona <quic_jkona@quicinc.com>
-References: <20230808051407.647395-1-quic_imrashai@quicinc.com>
- <20230808051407.647395-5-quic_imrashai@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230808051407.647395-5-quic_imrashai@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMqnp1kBv1ACIiGS@yoga>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8.08.2023 07:14, Imran Shaik wrote:
-> Add device node for ECPRI clock controller on qcom QDU1000
-> and QRU1000 SoCs.
+On Thu, Aug 03, 2023 at 12:29:51AM +0530, Anup Sharma wrote:
+> On Wed, Jul 26, 2023 at 04:22:51PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Wed, Jul 26, 2023 at 11:34:17PM +0530, Anup Sharma escreveu:
+> > > Dear all,
+> > > 
+> > > I want to share a recent development in our project that
+> > > I have been working on this week. I have successfully
+> > > implemented a new feature that allows users to directly
+> > > open the browser and visualize the output of perf.data
+> > > on Firefox Profiler.
+> > 
+> > Excellent news!
+> >  
+> > > To enhance user experience, I have made sure this option
+> > > is enabled by default. Additionally, I've also added a
+> > > handy command line argument, "--save-only," which allows
+> > > users to save the output file as needed. This enhancement
+> > > replaces the previous standard output method, providing a
+> > > much-improved experience.
+> > > 
+> > > Moreover, Everything is processed locally, and no data is
+> > > sent to any server.
+> > 
+> > That addresses the worry about sending possibly sensitive data over the
+> > network by default, great.
+> >  
+> > > During this implementation, I had the opportunity to delve
+> > > into several exciting topics, including threading, HTTP server,
+> > > and CORS mechanisms. The learning process has been both
+> > > challenging and rewarding.
+> > 
+> > Cool that you're so excited learning all this.
+> >  
+> > > Currently, I am in the process of performing some clean-up tasks.
+> > > Once that is complete, I will be sharing the next version of the
+> > > series, which includes this fantastic new feature, with all of
+> > > you very soon.
+> > > 
+> > > Thank you for your ongoing support and encouragement.
+> > 
+> > Keep it up!
 > 
-> Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/qdu1000.dtsi | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+> This week, I'm working on documenting the gecko converter for our wiki.
+> I've dedicated a significant amount of time to think about the content
+> and how to approach it. So far, I've written sections covering the
+> introduction to Firefox Profiler and the formatting guidelines(not
+> published yet).
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/qdu1000.dtsi b/arch/arm64/boot/dts/qcom/qdu1000.dtsi
-> index 1c0e5d271e91..63930f944b65 100644
-> --- a/arch/arm64/boot/dts/qcom/qdu1000.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/qdu1000.dtsi
-> @@ -381,6 +381,20 @@ gcc: clock-controller@80000 {
->  			#power-domain-cells = <1>;
->  		};
->  
-> +		ecpricc: clock-controller@280000 {
-> +			compatible = "qcom,qdu1000-ecpricc";
-> +			reg = <0x0 0x00280000 0x0 0x31c00>;
-> +			clocks = <&rpmhcc RPMH_CXO_CLK>,
-> +				<&gcc GCC_ECPRI_CC_GPLL0_CLK_SRC>,
-> +				<&gcc GCC_ECPRI_CC_GPLL1_EVEN_CLK_SRC>,
-> +				<&gcc GCC_ECPRI_CC_GPLL2_EVEN_CLK_SRC>,
-> +				<&gcc GCC_ECPRI_CC_GPLL3_CLK_SRC>,
-> +				<&gcc GCC_ECPRI_CC_GPLL4_CLK_SRC>,
-> +				<&gcc GCC_ECPRI_CC_GPLL5_EVEN_CLK_SRC>;
-Please align the entries with the first < (probably missing a single
-space in the front)
+> However, I've left the usage part blank because I'm uncertain about how
+> to enable gecko.py arguments when executing the "perf script gecko" command.
+> I've looked at examples like flamegraph-report and sctop-report, but I'm
+> still confused. I attempted to enable the script to take the gecko.py
+> command example "perf script report gecko --save-only=profiler.json,"
+> but this caused issues when running "perf script gecko -a sleep 3" again.
+> This has left me feeling rather puzzled, and I would appreciate discussing
+> this during our office hour, or any help here.
+> 
+> Due to this blocker, I haven't been able to send the updated patch
+> for test_gecko yet. However, I hope I'll find a solution soon and overcome
+> this obstacle.
 
-Konrad
+Hello All,
+As discussed during last office hour, I was little occupied this week, so
+I haven't been able to make much progress on my TODO list. Nonetheless,
+I've resent a server patch and test script patch for your review. If I can
+get it reviewed it would be great to make further progress.
+
+I'm also working on writing documentation for our wiki. I've already written a
+bit, and you can see it here: https://perf.wiki.kernel.org/index.php/Tutorial#Firefox_Profiler.
+If you have any thoughts or suggestions, I'd appreciate hearing them. I'll add
+more details once I've sorted out some issues I'm having with certain commands.
+
+This week, I do not have a specific agenda. Hence, if we opt to skip this week's
+office hour, it wouldn't pose any inconvenience. Nevertheless, I am available if
+there are matters you wish to discuss.
+
+Here's what I have in mind to work on next:
+
+1. Making sure that gecko script args work with commands, like
+(perf script gecko --save-only=profile.json) or (perf script gecko --kernel-color=green),which
+aren't working right now.
+
+2. Trying out "perf record -p firefox" or using it with a specific process ID to
+see if the current script supports these recording commands.
+
+3. Adding page fault and one more event in stackTable in gecko script.
+
+4. Making the documentation better.
+
+Thanks,
+Anup
+
+> > - Arnaldo
+> > 
+> > > Thanks,
+> > > Anup
+> > > 
+> > > > > Regards,
+> > > > > Anup
+> > > > > > > 
+> > > > > > >>
+> > > > > > >> The second challenge revolved around the usage of event hooks provided with the perf script
+> > > > > > >> python event handlers. I found myself deliberating between two approaches. The first
+> > > > > > >> approach involved creating custom functions that would be called using the event
+> > > > > > >> handlers. These functions would then save the data in an organized format within
+> > > > > > >> globally created data structures. The alternative approach was to write the entire
+> > > > > > >> logic inside the event handlers themselves.
+> > > > > > >>
+> > > > > > >> Additionally, I contemplated whether it would be more suitable to handle the creation of
+> > > > > > >> a Gecko format for JSON and the profile format within the same script or to separate
+> > > > > > >> them into different scripts.
+> > > > > > >>
+> > > > > > >> I will discuss this points during tomorrow's office hour.
+> > > > > > >>
+> > > > > > >> However, I have gained a deeper understanding of the problem at hand and will use this
+> > > > > > >> knowledge to make more informed decisions and progress more effectively in the coming weeks.
+> > > > > > > 
+> > > > > > > Sounds like you did a good amount of research on how perf script
+> > > > > > > works.  We can talk about the details in the meeting.
+> > > > > > > 
+> > > > > > > Thanks,
+> > > > > > > Namhyung
+> > > > > > 
+> > 
+> > -- 
+> > 
+> > - Arnaldo
