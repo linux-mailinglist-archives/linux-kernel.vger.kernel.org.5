@@ -2,53 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0CE776C92
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 01:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734E7776C91
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 01:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbjHIXF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 19:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
+        id S231177AbjHIXFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 19:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjHIXFX (ORCPT
+        with ESMTP id S229470AbjHIXFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Aug 2023 19:05:23 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337A5D1
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 16:05:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAA6E75;
+        Wed,  9 Aug 2023 16:05:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C78EB643E8
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 23:05:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99407C433C7;
-        Wed,  9 Aug 2023 23:05:18 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 68AE3646B1;
+        Wed,  9 Aug 2023 23:05:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A13FAC433C9;
+        Wed,  9 Aug 2023 23:05:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691622319;
-        bh=XFaiJ6avOsTBWBsdzJRuTwDyB4qodJIkgKELloezsqQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=O7JVYN4pARn+CN2OFra3AoP3IPt0GV3V2QhCHq2wT07/MP4izAJcB4Zn/JqXq1C/N
-         0d9ZmI3hXKl6Z3Bw8/1mdC2l9PWUQD1R4EmzmINjnsprtjNissqnscb+TFn4fXzRyf
-         XPsXWfGqK9ZH5ko1DCASVOGpoYXU6j8p2rqkMjx+YxvcGO4pMTSSAtqguLUe7YBJYg
-         vcHrCbPtfBfFMzOYqMa/ISXCH2pebWKCC+NltgTbPznHVl+TScVV9yjsXYwFxk5HdU
-         sru3NUNFMIa8ZvJ5qLbDDApF12tJsQb+oaVexJJjBfzY45bI47dowoG0+SLMenGXCY
-         uPuqax3Z3evqg==
-Date:   Wed, 9 Aug 2023 16:05:17 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Suman Ghosh <sumang@marvell.com>
-Cc:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lcherian@marvell.com>, <jerinj@marvell.com>
-Subject: Re: [net PATCH V2 1/4] octeontx2-pf: Update PFC configuration
-Message-ID: <20230809160517.7ff84c3b@kernel.org>
-In-Reply-To: <20230809070532.3252464-2-sumang@marvell.com>
-References: <20230809070532.3252464-1-sumang@marvell.com>
-        <20230809070532.3252464-2-sumang@marvell.com>
+        s=k20201202; t=1691622320;
+        bh=YHx+lf+dtplJr3oAdqzBjUhkDbSNun/kjg6ucBP6Y9w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=B85PEc4XOIQJLVeEYGrVbEEGEnX0kQVAY9OWcv82s0BpuQ7vkLyKItDkHVK4N1aor
+         bBa3NcV7L5X6lu6CVbTDN3Sn9T3ufADd6hCf8XHet6IshzunXqy7rzhl9uTbapwqNd
+         EzLnf50EZmcmVoJ6kQeW4AghThn1TAC3BF81vooC/O7pVGRcForhclTwGoszbfXN99
+         YNpIlcUoijPrSOwVlPTXYjyuqvNyG5uCPMT9QI3XSZKxB3/FK51VXBd8J2aSh3tzjZ
+         Tyby4ap2GwBA6PmPpXRmb7unLUHGVu+9RMwi7oqOnnsrJ8EkM1SX3dCE6OjYovoAwj
+         DwmBulKcGAAUg==
+Date:   Wed, 9 Aug 2023 18:05:18 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
+Cc:     lukas@wunner.de, sdonthineni@nvidia.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wllenyj@linux.alibaba.com, wutu.xq2@linux.alibaba.com,
+        gerry@linux.alibaba.com
+Subject: Re: [PATCH] PCI: Mark NVIDIA T4 GPUs to avoid bus reset
+Message-ID: <20230809230518.GA12130@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2dcebea53a6eb9bd212ec6d8974af2e5e0333ef6.1681129861.git.wuzongyong@linux.alibaba.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,12 +55,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Aug 2023 12:35:29 +0530 Suman Ghosh wrote:
-> +		otx2_stop(dev);
-> +		otx2_open(dev);
+On Mon, Apr 10, 2023 at 08:34:11PM +0800, Wu Zongyong wrote:
+> NVIDIA T4 GPUs do not work with SBR. This problem is found when the T4
+> card is direct attached to a Root Port only. So avoid bus reset by
+> marking T4 GPUs PCI_DEV_FLAGS_NO_BUS_RESET.
+> 
+> Fixes: 4c207e7121fa ("PCI: Mark some NVIDIA GPUs to avoid bus reset")
+> Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
 
-If there is any error in open() this will silently take the interface
-down. Can't you force a NAPI poll or some such, if the concern is a
-missed IRQ?
--- 
-pw-bot: cr
+Applied to pci/virtualization for v6.6, thanks!
+
+> ---
+>  drivers/pci/quirks.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index 44cab813bf95..be86b93b9e38 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -3618,7 +3618,7 @@ static void quirk_no_bus_reset(struct pci_dev *dev)
+>   */
+>  static void quirk_nvidia_no_bus_reset(struct pci_dev *dev)
+>  {
+> -	if ((dev->device & 0xffc0) == 0x2340)
+> +	if ((dev->device & 0xffc0) == 0x2340 || dev->device == 0x1eb8)
+>  		quirk_no_bus_reset(dev);
+>  }
+>  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID,
+> -- 
+> 2.34.3
+> 
