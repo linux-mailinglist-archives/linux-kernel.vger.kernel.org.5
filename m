@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F97C776C38
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 00:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31F5776C3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 00:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbjHIWfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 18:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
+        id S232416AbjHIWgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 18:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232243AbjHIWfe (ORCPT
+        with ESMTP id S229545AbjHIWgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 18:35:34 -0400
+        Wed, 9 Aug 2023 18:36:42 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C49DFE
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 15:35:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E904DA
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 15:36:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691620532; x=1723156532;
+  t=1691620601; x=1723156601;
   h=message-id:date:subject:to:cc:references:from:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=AEG4WBhRXR6+Yh4q/1UnQ3gSe5VuHH2yu065nKMleRQ=;
-  b=P044jVmwzpBMUOHZT+5P/jgdEb/b3flDyX+AxXSY+haoG/r9weOV3lWj
-   oyOld7Oy/PgLcicNKWSsFJ7F/OQ5htvTjvCDebFkIyKr3lZ6NkM/nhOk7
-   AtUUZrvZXGDhJ9goSyqMB+93SzdjhEb9onHKCu/wGVzYQFTR9C6f9QWnv
-   DGjK9JyJsOG4N1/mPakmgXANjw4vTXW9FNiKCbzx19OLp98BI2Ve/Lht/
-   JFZB30/mJbbMi2/SxU8C/7N5C8WX2mHcCkGZPYLB2Ca+guO7J/EpbvlfH
-   Yp3NtFPrSE9rYSxUp3YgPAplE4uIfj5hr1H7tug5Od5gby+wQ/18K/nFw
+  bh=gd9IYUwW2f1S/sq+2loSMJb8njF2RdlWrSkTXNLoj5g=;
+  b=MDRU2+Hl6LG4vIHB4Y5DxY5O920x3FvGuSqGXejIANPQ0pUmYZHzmiHC
+   w6tAiBxd8/ZARbIzemzM882akS+Rs6J5XTTbBngpJDFJWEoDfziLTJtak
+   cyHCQkpRJsfCTLe9TlPZ8Fkx9ZTP86A3z93KWiiados54pW/dblWZGD/5
+   +wFNOpwrl7kj6SjMSw2zuncxIcj4gupw+r5BnAa4yup6zpRlkZrzUuDgb
+   EHNfK+uYqqXgEB24lAPeUiIe4qZt8U8+mpy7aHQ4tcc2DwT1kp6CCUwNp
+   QruhgoUyRkGsp+CTkqELVVGvDYwwkUZG4ZyI8Msul3xCMEgDqcykIjm32
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="374961352"
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="374961494"
 X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
-   d="scan'208";a="374961352"
+   d="scan'208";a="374961494"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 15:35:31 -0700
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 15:36:40 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="875461244"
+   d="scan'208";a="875461456"
 Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga001.fm.intel.com with ESMTP; 09 Aug 2023 15:35:34 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 09 Aug 2023 15:36:42 -0700
 Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
  fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 9 Aug 2023 15:35:30 -0700
+ 15.1.2507.27; Wed, 9 Aug 2023 15:36:39 -0700
 Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
  fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Wed, 9 Aug 2023 15:35:30 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.176)
+ 15.1.2507.27 via Frontend Transport; Wed, 9 Aug 2023 15:36:39 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
  by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Wed, 9 Aug 2023 15:35:30 -0700
+ 15.1.2507.27; Wed, 9 Aug 2023 15:36:38 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KwHTtlvf6KOHUIyC1kWQsXcmGvDMW/xa9Ny2oKXYw7ovKiSpK13Jl6kIVavfVyvXbMTrON1Fgh6szJX7yahRepML6XQaoCqde7L/JHhb9c1uWF18Na/y/ggrqtuW/SyIxXmqH/gVwp5ukwbdLgZtcEY4Mnt98oX6LNqVUEBLzknbpWX+n+AjxDffPuT/KS+zb08Xb3uwKBOE6980Zyztw+IzCOTCGByjXS1xvODBJ0V1m0E7XcH889GNi5uJ2QxPHpmFr7iknWA6CkT2mifp/JztKmrpa217+a2cxdBftvYkIkAQ1Zr4QMRkVijNomOudTNLVB6lNdGMl8+sbqDKlg==
+ b=CGX5mt65I8hU4AsckxknFtk+Pb/dxwV6XF1X1zfdS8LjrqZPFTrKKyERPbWN/nWxcKzZqMTg2wV6a+0XjFTeSIj9ZJXmB0aLrDzK20XhkisOydQkRR0t+q1RFDTxwD895pXPHIupwZL96L71xJcC0W4/3g3CwClS9FE0YWSG36C5GALHHSFvaPpp124lMkiv9/FdQwALfM1A7Jpn5YSxI1DpeHQBuAtWJF2TCthvTOAdxtUqX6UXe43FcZNwKW3PYTFd+MqALcwlwD0CszwNtw88/UWz8XUWSalAz+F20Rm57V8iPoG4gJF8aV5fOm+OL/EgtRGnmFh8n7xNtosN+A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uf27/tDEBr/BRYYCwb1Hu3IPvcGX/9nw2Bv18RiwcJE=;
- b=j8j8sVZiLn2722DvMtmbg0oj6uds9bN/rLbxasPhuE8hmnbGmf2M69kAmQzAY8ZQpL+bnD22TPZSwhiULMY+jjxcO7mI4/8TiAj0hEQhw3mRdaaUi95JnYr0o4NkZ8IHqc22wfz17UK+rnlSXTuehlXRjL3hAcJuDKGis8H77cx10u3l2xPmi4Atd9Izpej3+LT3dGsmHTbDx6skJA+fiMAf2XnQWHAgRI2OTdTn8AiudSiSMIF6LVlMTCfW5pTLxRufUs6tWnldg2VQVTR6bVq6n+pYoVyEtlGws0K7LHNmZ7Yl7k2R2De2/mUTZiQdTe8URg2jSrFi21nL9dpuTg==
+ bh=VHVLdkvfXcldU0dD4dSATJ8FeBYy8qif2vwEIso+Lw8=;
+ b=LBoSQoeO+ZT03Aw/6PZolsg+Tr5C/FHopaLEXFu+TUQ5h9x//bpq2p10fZ3gDBq0MJv4UjFGtQ0u+hXr2k7phqgu5jQeqKxzt5S03/senrQmsJuYiTl5hr/kencFlWSblnK2otCBi5Hwc7V6P8Ny0l9osL3HzoBhGSYVL4lr0E7UjtZ/5G0ADUwp+QWjaymX/W4bdyyF6JESbCuG9JmW/bksKTLtxSVx3axF6+Lr7AlBcIVlBQSfv6qU49Cnh79RkHt3HNzI/2enT440m4dc6YM4UasA73bo6qcyrEDFIxUoIuJBXL+y8qnf8CH2DH01kc/AISf5E+WVSVkM11RN6Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
@@ -66,17 +66,17 @@ Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
  by SA3PR11MB7413.namprd11.prod.outlook.com (2603:10b6:806:31a::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Wed, 9 Aug
- 2023 22:35:28 +0000
+ 2023 22:36:31 +0000
 Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
  ([fe80::47e:3e1f:bef4:20e0]) by SJ2PR11MB7573.namprd11.prod.outlook.com
  ([fe80::47e:3e1f:bef4:20e0%3]) with mapi id 15.20.6652.028; Wed, 9 Aug 2023
- 22:35:28 +0000
-Message-ID: <192aa189-8b08-c8c1-15dc-722e196493f4@intel.com>
-Date:   Wed, 9 Aug 2023 15:35:25 -0700
+ 22:36:31 +0000
+Message-ID: <4a0f777e-5dec-296e-c326-61e3630c3608@intel.com>
+Date:   Wed, 9 Aug 2023 15:36:28 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.14.0
-Subject: Re: [PATCH v5 12/24] x86/resctrl: Make resctrl_arch_rmid_read() retry
- when it is interrupted
+Subject: Re: [PATCH v5 14/24] x86/resctrl: Allow resctrl_arch_rmid_read() to
+ sleep
 Content-Language: en-US
 To:     James Morse <james.morse@arm.com>, <x86@kernel.org>,
         <linux-kernel@vger.kernel.org>
@@ -94,70 +94,70 @@ CC:     Fenghua Yu <fenghua.yu@intel.com>,
         Xin Hao <xhao@linux.alibaba.com>, <peternewman@google.com>,
         <dfustini@baylibre.com>
 References: <20230728164254.27562-1-james.morse@arm.com>
- <20230728164254.27562-13-james.morse@arm.com>
+ <20230728164254.27562-15-james.morse@arm.com>
 From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20230728164254.27562-13-james.morse@arm.com>
+In-Reply-To: <20230728164254.27562-15-james.morse@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW2PR16CA0056.namprd16.prod.outlook.com
- (2603:10b6:907:1::33) To SJ2PR11MB7573.namprd11.prod.outlook.com
+X-ClientProxiedBy: MW4P220CA0014.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:303:115::19) To SJ2PR11MB7573.namprd11.prod.outlook.com
  (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SA3PR11MB7413:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9531e748-54d9-48e8-cc36-08db9928ee50
+X-MS-Office365-Filtering-Correlation-Id: 764ee859-c7a0-42d5-c03d-08db9929143d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hh/poRiTgsWC2DRv6pBjrqCY+qaqfWM4bQyqaOGqitL7e6geSy2r9ksOCytAfODLChyjxrFcjlt4zucnEgp1PfWWlrwNUFHaTwkeillC25v9FShV658dQQSQRin/tcznS1XznFbyZz3nIqhsP4vwc+qJGgIXVD8Dv8oXUf9Cpk4Nyxl0EyDQNV4yiIYzj5Dhi5c6JQ8J0ywHcj777WSFN2bo7i1Mv23HrP9htx6+xE8VpOTGEuZRhPBQD9sPUr5dQ2LEbSrSuElDNLCI3kbOPc72sQJW7QHj4UuNp/u27JEcukw0q1GiO9swQ26MQyU1TDV8ujZILCQoaTs94fHc4mZTGtppj1UIf6j4bGhCJqSg1/QzrNn3gpAjfuNDxAMGdicJdLrxx8Z1e/f6jmpdzdMsihgkEtuQWd97ZTPINOeiA3RPVDivB7oADuRrSRvO5Y5MlveHyBFAIUr7H++6NTUzHWdQ8cAaEq0HbMMkQvb68GATULnkuGaVfXMWLlNU2qAs6kYZWRwTZR1NIagVcKY/2vLyvet2ghXhnn0rXatl02ov97x9s78GxxPdMx5rofYtE8q7Tqq78GwOHq+1v9POVnh5VxzhhvItjuXamwAtbU7QZPY8HVeDnAMcJxrO/yypDBvzWVUHbUiyR7y6kA==
+X-Microsoft-Antispam-Message-Info: VcNmiqdV6Jc0FXOgtuur5vNeFzTg/stoiAma5ZOV5KUlnhY3goUHj+hS2Q+jhrbcgg9NXjh2QPhvzQg0GcGLQ81BUAMhB3u65kdXZyzBz2uR/bS8n2stpL4vOFBDLvtt5Fr9bVLsGndnqK+lIjddV6fJSPLmtNOLPNZ9uJA1hTBzBcnLxMgWQBeqTX3TQjr1sDL/T4yZkvWYypDlMlfGQPT28u/CTokyGIAmjDXxX/YRCe4Q6G9NIJb9UFq0dIxRLJKtpZd7qtdZr+silKsThe8t1nugmZh0iOA+w0G2QFzaah95Pb7g/xMas607hA+mGvm/be2m5x/j36ENwNqBcp9pasR0K12wl3XMiIcTwCLO2TzhZPoy4rTctWz5CXhDVQsEiDtRekLQ0bqOmxX0q1TpsijO7/geojUJFtNwgFoY7rgrsb27n0Hm/z+3tR68WScgxhobX7KMwJqUyF8SQIidPtbKJaninXSEa/FKmwKG+w5B5RYrGAafZyPCxJOAcXzsJ8/RF6ri17SVk2ITfASuUXwI/lOmmEoGX1zgTdc/WnLaFe2VJvenTFnbgvubAcAM4RnCTxpHGS75Akh4vj9MfDh3daFEmLK8RPg8YBS1Ej5WJpFfRauvlA0Z6Hu7y368SfSELO8Fe2UePQGOUg==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(346002)(39860400002)(396003)(366004)(136003)(186006)(1800799006)(451199021)(26005)(8936002)(41300700001)(2906002)(44832011)(5660300002)(31686004)(7416002)(83380400001)(8676002)(2616005)(38100700002)(316002)(53546011)(478600001)(31696002)(86362001)(66556008)(6506007)(6486002)(54906003)(82960400001)(66946007)(6666004)(66476007)(6512007)(4326008)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NmpmWnovelpFckVhaG53eW40M25GeE9lSXlMeWZ0eDhvS2VodmZJMkhSNWlr?=
- =?utf-8?B?TEZ5V1Y4VGtsQ0F1RWp3WWtjL1NoQzRYLytpb2hUQUhydys4aUlBWThmVkRz?=
- =?utf-8?B?K05TSHZpWUZMNUQzWXI0NGQ3czhrWTVoT091TUVOYm8wdWtyUTc3SEJWMVlV?=
- =?utf-8?B?aUlVUnYzcDUwMUZHNHV3QnZaVzZKZ2tCTDUwdGVsOHc0S2pidFF0cHN5OHV4?=
- =?utf-8?B?TjBwdHFMU3VSbllqNEhkR2ZVL29ZUUhKb0Rjb1IvTmI3RUJJZStlVmlYbUNK?=
- =?utf-8?B?QTl5WU04SFdpSDRhVjA2YjJPZDNNLzU2dVNSdmJ6TUtzUWE0czMxdmlIVHpm?=
- =?utf-8?B?UEsvMVF6WGljNlJ2K1ExQzNnVzErbjBTdVpTRGR2NzV5SVp6RjNGL2tGVzR4?=
- =?utf-8?B?T012M1BjUVJyQ3pSbmM0SmoyYmlFVEFNT2FIT1NMWEozUTJ0WWxaZnF0R1hU?=
- =?utf-8?B?MmlhTnIvNmNWZ0QxTjgwaW5BSmRPMWJWSCtCM0FmS255OUlDeTlJdzU5RkhO?=
- =?utf-8?B?bmVJcW9LNElIcWZmVjk0TmkyUXZiYjBDaG5rMFkwNm1YYkxYV3lDeFRWZmxm?=
- =?utf-8?B?QTNDODNudEJ4TUkwbEM4Y2VEMm5kTkd2VExlV1dVZ0ZCQ0lQZjRjdWRhL3FO?=
- =?utf-8?B?SjNuY0JzZGdVd2o5OU5RTWxQUWpZaUlQbU9aRU9RQXBXaUVqU1FUUVdzT1Y3?=
- =?utf-8?B?eU9lamw1T0FscmYwR2hxQ256SzQyNUFmVXp2Y1VKeFRuT0kyakQ1TnlmcTlx?=
- =?utf-8?B?b0l1NFRxUEI0VlRXM0RMSCtpV2JrN2M0czdPNDMvM0pkRmRzekFKOXdrM0sw?=
- =?utf-8?B?UjdxMmZCRUtsNXkxTyszcnFMTkhES1NDaFlrOTdqWkNnYk1VakozQzRPOW5E?=
- =?utf-8?B?NldMSi8rZ1FrUmNnSWliTFFWVXR5aUpUSVEyMk1UeE9BbnlaeTcyZFN2eFRa?=
- =?utf-8?B?NWRubTJPRXdxL2pjSlV3TEpYN09jWXpLOHBDZHFoUEpuRGlFUDNYVWpGVHNZ?=
- =?utf-8?B?Rm9XZE95ZTRmMUdMUjFQS0crYTZ3NWcwaXVTQU14bk5rN0Q4T0F5VFE3Q2xH?=
- =?utf-8?B?dFZ6eEMzeUNxNWhMWUtOaU1MM252NVhZK1RZYm1oUmc3VVUyQ1JyRnRWeHVO?=
- =?utf-8?B?YmYvYVpqcG1PSWo1Z3V4d202U04rMVhxMlVHSThkRFhzUjdBMmtMMTlTb21j?=
- =?utf-8?B?UnVJbnc1a2RZMFNWcFh3SVNNMCt5QjZGeGRrM1RMUk9oUithMlpRM3pQQjB2?=
- =?utf-8?B?T210NUwxeUdWOGZQRDMxNEVkdDdxNzUyWFBraytEN0c5clpTbFpwWHNnN0RW?=
- =?utf-8?B?VlZHcUFYblBLNWhKZFVhVVh1NmhZSlkvS05MOGN0MWhITW81a0RNQVZTWjNj?=
- =?utf-8?B?T1B6YnN6T0JuUUFwdW5KRTRiRnpqNWlicUdheXpXOHNkSy9TSjB4QU1DckVr?=
- =?utf-8?B?clMwKzd3M1FYUkM1bFF1cmIrUHV6UE13ZGVwMkxmcE9uT29jS0R5c0RDbHlz?=
- =?utf-8?B?V3pMU2ZpU0h3dW9hVHZYNDdSc1pmb0xlL0h6b0lrSld4by81OGM3ZGRMSjMx?=
- =?utf-8?B?bjRPaEtteWd1dmJWZm1WaGE0c0NFM25SU1NUdzlDSmRJb3F5VTBoSTBMM04x?=
- =?utf-8?B?SS9uekdYVW5kdFc1am9adTU2QmJ4SmNLNkVqMTB6MStNa2RNdlBMQm45UTBX?=
- =?utf-8?B?cGhkSy9TcE0valpPQXR1NEhjWWdoVXp5ai8xRCtBZDd4UlIzTkMwU3FkYWFi?=
- =?utf-8?B?MVNSSUFJMUd2bzIwTGYwRm5jaXExUHF6NnlvdkNXTjhZUE5mcG03cnpmekU5?=
- =?utf-8?B?Y3hMcDY0VEh4SlVIMHU5N2JLNEUxeWEyWStmQlFZZzBWWnVXZ3M5V3pMOVlL?=
- =?utf-8?B?Tk1GbmlFc1A4T2VVbVdtcGlLOTJRYi9jbnduWnhzNzJkM1ZtUFdIdmhhKzBy?=
- =?utf-8?B?ODl6WmhnVnJMenVrd1JrdHNWUUJhYWJqUFMycHMrTDhoazlLV3NyQ1ljUWJS?=
- =?utf-8?B?dDZSbmJGbFgxT0Y5QkY3SUI1VnE0Q21PMVg0V0JhUCt2cHh2Nk9wdS9FNjdR?=
- =?utf-8?B?OVh5akxXV3owZDkyd2w3Y3BPZ3lVYllDTkR1RmFUOStlRTdyRlFrUXB1SlJE?=
- =?utf-8?B?bDdSYkRrVGpxamUyOEF0UnlWTHNqakFSMmNrQUpEWWhaa05JWUhia0NrbEJy?=
- =?utf-8?B?dmc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9531e748-54d9-48e8-cc36-08db9928ee50
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RVJhNGozN2pHTUp3eEt3cU5TdzFUb3A0UnBBejBKNUg5V0hUS0dIK0c4TklS?=
+ =?utf-8?B?WlZyL2p2VFlHNElKdm05TTZuUDJpaUxDUytiSTRvakJNVjVDZWhscW9RcHVq?=
+ =?utf-8?B?SjZUSHJEWmNZVHI3WllpeFgvZ0V5UFF2QzRrY2lRWDdTckdaN0NWZk4zYzJv?=
+ =?utf-8?B?MFc2WjRIMTBlYXRUL2pDS0dJU3VoZHhaaTcwbXY0dGNMUmVpc2VPTFd2RUhJ?=
+ =?utf-8?B?V0dsUHdwWW1Fd0FzL2tlclI1Q3FsVnladjhsSUxhZG45bVMzeGpNT2Y4VWNC?=
+ =?utf-8?B?aTRNd1lDS3lZQnZSc1VJZlBmREV1dVpFQStNeHhwT015TTE2UWpXY3pUNkdH?=
+ =?utf-8?B?ajF5aFZteGd5VzA3TjRrMCtQOVQyeFE4U1pqZFZtTUpDdCt3NzdZMHAzQjNj?=
+ =?utf-8?B?TUMrSkY3SXVGYStaRm1DRUxUNGlibVByWFJzbVlMVUVXNGpwVWFkZWpiMXR5?=
+ =?utf-8?B?Zlh0bzQwUkJWWkgrRGMzMVpZRFMrejdrMnRldmdwQ0Zxak9odFRLNlBIWkMr?=
+ =?utf-8?B?bFRiMzlNOElUeTFYNXBSMEJwVVVXRUE0cjk4RldLV2J4blNnOXpVNlFERlFY?=
+ =?utf-8?B?ZGszNmFRRXNYbDVQZk1ZaDVqRi9hVkpqeGlsY1ZmakdvaDFxMVpWMTEvNVZt?=
+ =?utf-8?B?amxnK2huckF6cDF5WDkyWnFBN3Z2VXRiR0F1d0RqSCtTeXd6SE5qdFMzVjd2?=
+ =?utf-8?B?RzRRUkoyVXBqaDRWMmxzNEszbXZmdDFGcWMwNXR2Q2JOS21jR3RsR25oeVZ4?=
+ =?utf-8?B?REJjenJVeVBNZlpEVVdyRFg4OTQvRlBSWVlGRmJCUDFnZVZuNW84ZUVBd1VY?=
+ =?utf-8?B?NlRrUkpJOXVpUjdrYUJQWnQ3UU1BRDd0Ni9Hem1xc25tRzFIb2RiL1ZPWkNF?=
+ =?utf-8?B?TmFuQzRzSlpmS3ZjRG9XMGFHbkdnWWI5eUYrSm4xWE5FTU0xb3BMalFmMURR?=
+ =?utf-8?B?Z2Fud3lxWFA5REpJbnl1SWdrd09VcEVWRHJnNzJXZEZwZTF3NExJOEtTcWJK?=
+ =?utf-8?B?R3U4WldIVG4wcnltYThNR2FaWUVvUU11a21WNDd2T21TdWFvTlR1SUtRYVhT?=
+ =?utf-8?B?blRQREtqZER2bzlEWXN1UXNFWlhkRzU4WDUzT2JQVFVNYVVXb0xXc2pQeXp6?=
+ =?utf-8?B?Ukh5NHROTnE0T2UvOGJDc3l1ZTZtV2tNZlVQZ1g2RFFqN2xkc0ptc09vNkhX?=
+ =?utf-8?B?Q2VZVUVFQnFEYURrdWtRWnFqWStBRm9nditYQXdWY00xRlFRMFdqNjBGMjdy?=
+ =?utf-8?B?TVNhTHQvNkhZM1JhMnNBVlJvVE1uREJqRG9NTS9wVElWWllTWXM4dGdFOWV2?=
+ =?utf-8?B?eW1vTjYzV1RZYjBCMUo4bHJDU3M1TE4rbS9IZ1V2QWgzT1ozaVAzYTdGaGZ4?=
+ =?utf-8?B?WmlyS3M4SU50WVpjdVcxUXRxL0g0TERmclBzU1pLNktSQnJQQmM5c2xNSFMv?=
+ =?utf-8?B?SmdOTU1HYXQ1NnlSSVRoTnpiVUk2RG1HZHo2N1d5bHVxNDVLam1JdWNBWmlJ?=
+ =?utf-8?B?K3dhdUxYYVV4MDRGUUd4N0JnTHRjU24xMDVDeHl0Z3NQTDc5V253NUY5ZXhS?=
+ =?utf-8?B?VXlxV0RhTjYvdzdCR3JwRVNqK2IwT1JPbVFPeU1xMk5GNVpodHZlWE54MDZF?=
+ =?utf-8?B?L29pQnRsdU12RXZQT2dabG0rMGJWbzJlcDJlOW8wZktaMzNDZ3VMRUkyTmNU?=
+ =?utf-8?B?endsY21GUjFVM2UyWGJSS0wzaUkvczgyOWh5K3NrcUdYMWFnUWlaR3lPK0NC?=
+ =?utf-8?B?Q2JpWkVQSUdPTWd5L1JsM1NWWUZLanA2VkhzeS9NSUF1NFRtQlJHS2pqWEN4?=
+ =?utf-8?B?WHhlbzQ5cGR2bVFVMTMrMk5jOEZDOWpXcFZ0eWZQWWxHYmcvcFZGeTc0ZFBY?=
+ =?utf-8?B?eEFKWVAweFhCQkFJeEJaMlBBTnBuWElPTk9iMWVjeG43alZ0dmIwaW9ES3Fn?=
+ =?utf-8?B?TEZDZnhPVWJqSGRTN2QzZzlwSEhvYkxZVGVqb3haMXhEUVRYTHd5NWJvYlBy?=
+ =?utf-8?B?Y1ptRzFOaWlZS1pqOE5nb1J4OEFUZE54bnRiVVVGSkE0aGYrdlN5RUVtRzR2?=
+ =?utf-8?B?bU05djd5MmRqanV4OVJxTXYyY3RrNTc4MThCRGlDNUtRSlFQa1k2ZGRtN2VF?=
+ =?utf-8?B?ME1zSnJPUUJrNmFKZkRLVG9LcnVxSDl5L1kyT2ZGUmJ5MTFkQmpibmU5b0RI?=
+ =?utf-8?B?d2c9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 764ee859-c7a0-42d5-c03d-08db9929143d
 X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2023 22:35:28.0798
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2023 22:36:31.7022
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +oVce4bpNIt+XLEtPi7aK1TTUhWGTuDHOBxIVt3XVtEnkN1Bmo03UB/6HrrP1ow5UXduyTSECX0v3+0jRxaTQbutnjErd8mBVY8E1Ql5XDk=
+X-MS-Exchange-CrossTenant-UserPrincipalName: eHqjRma4Sen7882D6PJNPgtaYtSP3BjK9P3rpBAqhNUX97gLaZR/ltlCrS41ZL1BmkMcKwaU3BaxIJm5fYF8MW1+mOfxGLUhM7DqHSvmWbo=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB7413
 X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -173,177 +173,185 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hi James,
 
 On 7/28/2023 9:42 AM, James Morse wrote:
-> resctrl_arch_rmid_read() could be called by resctrl in process context,
-> and then called by the PMU driver from irq context on the same CPU.
-
-The changelog is written as a bug report of current behavior.
-This does not seem to describe current but instead planned future behavior.
-
-
-> This could cause struct arch_mbm_state's prev_msr value to go backwards,
-> leading to the chunks value being incremented multiple times.
+> MPAM's cache occupancy counters can take a little while to settle once
+> the monitor has been configured. The maximum settling time is described
+> to the driver via a firmware table. The value could be large enough
+> that it makes sense to sleep. To avoid exposing this to resctrl, it
+> should be hidden behind MPAM's resctrl_arch_rmid_read().
 > 
-> The struct arch_mbm_state holds both the previous msr value, and a count
-> of the number of chunks. These two fields need to be updated atomically.
-> Similarly __rmid_read() must write to one MSR and read from another,
-> this must be proteted from re-entrance.
-
-proteted -> protected
-
+> resctrl_arch_rmid_read() may be called via IPI meaning it is unable
+> to sleep. In this case resctrl_arch_rmid_read() should return an error
+> if it needs to sleep. This will only affect MPAM platforms where
+> the cache occupancy counter isn't available immediately, nohz_full is
+> in use, and there are there are no housekeeping CPUs in the necessary
+> domain.
 > 
-> Read the prev_msr before accessing the hardware, and cmpxchg() the value
-> back. If the value has changed, the whole thing is re-attempted. To protect
-> the MSR, __rmid_read() will retry reads for QM_CTR if QM_EVTSEL has changed
-> from the selected value.
-
-The latter part of the sentence does not seem to match with what the
-patch does.
-
+> There are three callers of resctrl_arch_rmid_read():
+> __mon_event_count() and __check_limbo() are both called from a
+> non-migrateable context. mon_event_read() invokes __mon_event_count()
+> using smp_call_on_cpu(), which adds work to the target CPUs workqueue.
+> rdtgroup_mutex() is held, meaning this cannot race with the resctrl
+> cpuhp callback. __check_limbo() is invoked via schedule_delayed_work_on()
+> also adds work to a per-cpu workqueue.
+> 
+> The remaining call is add_rmid_to_limbo() which is called in response
+> to a user-space syscall that frees an RMID. This opportunistically
+> reads the LLC occupancy counter on the current domain to see if the
+> RMID is over the dirty threshold. This has to disable preemption to
+> avoid reading the wrong domain's value. Disabling pre-emption here
+> prevents resctrl_arch_rmid_read() from sleeping.
+> 
+> add_rmid_to_limbo() walks each domain, but only reads the counter
+> on one domain. If the system has more than one domain, the RMID will
+> always be added to the limbo list. If the RMIDs usage was not over the
+> threshold, it will be removed from the list when __check_limbo() runs.
+> Make this the default behaviour. Free RMIDs are always added to the
+> limbo list for each domain.
+> 
+> The user visible effect of this is that a clean RMID is not available
+> for re-allocation immediately after 'rmdir()' completes, this behaviour
+> was never portable as it never happened on a machine with multiple
+> domains.
+> 
+> Removing this path allows resctrl_arch_rmid_read() to sleep if its called
+> with interrupts unmasked. Document this is the expected behaviour, and
+> add a might_sleep() annotation to catch changes that won't work on arm64.
 > 
 > Signed-off-by: James Morse <james.morse@arm.com>
-> 
 > ---
+> The previous version allowed resctrl_arch_rmid_read() to be called on the
+> wrong CPUs, but now that this needs to take nohz_full and housekeeping into
+> account, its too complex.
+> 
+> Changes since v3:
+>  * Removed error handling for smp_call_function_any(), this can't race
+>    with the cpuhp callbacks as both hold rdtgroup_mutex.
+>  * Switched to the alternative of removing the counter read, this simplifies
+>    things dramatically.
+> 
 > Changes since v4:
->  * Added retry loop in __rmid_read() to protect the CPU MSRs.
+>  * Messed with capitalisation.
+>  * Removed some dead code now that entry->busy will never be zero in
+>    add_rmid_to_limbo().
+>  * Rephrased the comment above resctrl_arch_rmid_read_context_check().
 > ---
->  arch/x86/kernel/cpu/resctrl/internal.h |  5 +--
->  arch/x86/kernel/cpu/resctrl/monitor.c  | 45 ++++++++++++++++++++------
->  2 files changed, 38 insertions(+), 12 deletions(-)
+>  arch/x86/kernel/cpu/resctrl/monitor.c | 24 +++++-------------------
+>  include/linux/resctrl.h               | 18 +++++++++++++++++-
+>  2 files changed, 22 insertions(+), 20 deletions(-)
 > 
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index a32d307292a1..7012f42a82ee 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -2,6 +2,7 @@
->  #ifndef _ASM_X86_RESCTRL_INTERNAL_H
->  #define _ASM_X86_RESCTRL_INTERNAL_H
->  
-> +#include <linux/atomic.h>
->  #include <linux/resctrl.h>
->  #include <linux/sched.h>
->  #include <linux/kernfs.h>
-> @@ -338,8 +339,8 @@ struct mbm_state {
->   *		find this struct.
->   */
->  struct arch_mbm_state {
-> -	u64	chunks;
-> -	u64	prev_msr;
-> +	atomic64_t	chunks;
-> +	atomic64_t	prev_msr;
->  };
->  
->  /**
 > diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-> index f0670795b446..62350bbd23e0 100644
+> index 32569354c4f1..08e3307863c3 100644
 > --- a/arch/x86/kernel/cpu/resctrl/monitor.c
 > +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-> @@ -16,6 +16,7 @@
->   */
+> @@ -283,6 +283,8 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
+>  	struct arch_mbm_state *am;
+>  	int ret = 0;
 >  
->  #include <linux/module.h>
-> +#include <linux/percpu.h>
->  #include <linux/sizes.h>
->  #include <linux/slab.h>
->  
-> @@ -24,6 +25,9 @@
->  
->  #include "internal.h"
->  
-> +/* Sequence number for writes to IA32 QM_EVTSEL */
-> +static DEFINE_PER_CPU(u64, qm_evtsel_seq);
+> +	resctrl_arch_rmid_read_context_check();
 > +
->  struct rmid_entry {
->  	/*
->  	 * Some architectures's resctrl_arch_rmid_read() needs the CLOSID value
-> @@ -178,7 +182,7 @@ static inline struct rmid_entry *__rmid_entry(u32 idx)
->  
->  static int __rmid_read(u32 rmid, enum resctrl_event_id eventid, u64 *val)
->  {
-> -	u64 msr_val;
-> +	u64 msr_val, seq;
->  
->  	/*
->  	 * As per the SDM, when IA32_QM_EVTSEL.EvtID (bits 7:0) is configured
-> @@ -187,9 +191,16 @@ static int __rmid_read(u32 rmid, enum resctrl_event_id eventid, u64 *val)
->  	 * IA32_QM_CTR.data (bits 61:0) reports the monitored data.
->  	 * IA32_QM_CTR.Error (bit 63) and IA32_QM_CTR.Unavailable (bit 62)
->  	 * are error bits.
-> +	 * A per-cpu sequence counter is incremented each time QM_EVTSEL is
-> +	 * written. This is used to detect if this function was interrupted by
-> +	 * another call without re-reading the MSRs. Retry the MSR read when
-> +	 * this happens as the QM_CTR value may belong to a different event.
->  	 */
-> -	wrmsr(MSR_IA32_QM_EVTSEL, eventid, rmid);
-> -	rdmsrl(MSR_IA32_QM_CTR, msr_val);
-> +	do {
-> +		seq = this_cpu_inc_return(qm_evtsel_seq);
-> +		wrmsr(MSR_IA32_QM_EVTSEL, eventid, rmid);
-> +		rdmsrl(MSR_IA32_QM_CTR, msr_val);
-> +	} while (seq != this_cpu_read(qm_evtsel_seq));
->  
->  	if (msr_val & RMID_VAL_ERROR)
->  		return -EIO;
-> @@ -225,13 +236,15 @@ void resctrl_arch_reset_rmid(struct rdt_resource *r, struct rdt_domain *d,
->  {
->  	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
->  	struct arch_mbm_state *am;
-> +	u64 msr_val;
->  
->  	am = get_arch_mbm_state(hw_dom, rmid, eventid);
->  	if (am) {
->  		memset(am, 0, sizeof(*am));
->  
->  		/* Record any initial, non-zero count value. */
-> -		__rmid_read(rmid, eventid, &am->prev_msr);
-> +		__rmid_read(rmid, eventid, &msr_val);
-> +		atomic64_set(&am->prev_msr, msr_val);
->  	}
->  }
->  
-> @@ -266,23 +279,35 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
->  {
->  	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
->  	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
-> +	u64 start_msr_val, old_msr_val, msr_val, chunks;
->  	struct arch_mbm_state *am;
-> -	u64 msr_val, chunks;
-> -	int ret;
-> +	int ret = 0;
->  
 >  	if (!cpumask_test_cpu(smp_processor_id(), &d->cpu_mask))
 >  		return -EINVAL;
 >  
-> +interrupted:
-> +	am = get_arch_mbm_state(hw_dom, rmid, eventid);
-> +	if (am)
-> +		start_msr_val = atomic64_read(&am->prev_msr);
-> +
->  	ret = __rmid_read(rmid, eventid, &msr_val);
->  	if (ret)
->  		return ret;
+> @@ -470,8 +472,6 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
+>  {
+>  	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
+>  	struct rdt_domain *d;
+> -	int cpu, err;
+> -	u64 val = 0;
+>  	u32 idx;
 >  
->  	am = get_arch_mbm_state(hw_dom, rmid, eventid);
->  	if (am) {
-> -		am->chunks += mbm_overflow_count(am->prev_msr, msr_val,
-> -						 hw_res->mbm_width);
-> -		chunks = get_corrected_mbm_count(rmid, am->chunks);
-> -		am->prev_msr = msr_val;
-> +		old_msr_val = atomic64_cmpxchg(&am->prev_msr, start_msr_val,
-> +					       msr_val);
-> +		if (old_msr_val != start_msr_val)
-> +			goto interrupted;
-> +
-
-hmmm ... what if interruption occurs here? 
-
-> +		chunks = mbm_overflow_count(start_msr_val, msr_val,
-> +					    hw_res->mbm_width);
-> +		atomic64_add(chunks, &am->chunks);
-> +
-> +		chunks = get_corrected_mbm_count(rmid,
-> +						 atomic64_read(&am->chunks));
->  	} else {
->  		chunks = msr_val;
+>  	lockdep_assert_held(&rdtgroup_mutex);
+> @@ -479,17 +479,7 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
+>  	idx = resctrl_arch_rmid_idx_encode(entry->closid, entry->rmid);
+>  
+>  	entry->busy = 0;
+> -	cpu = get_cpu();
+>  	list_for_each_entry(d, &r->domains, list) {
+> -		if (cpumask_test_cpu(cpu, &d->cpu_mask)) {
+> -			err = resctrl_arch_rmid_read(r, d, entry->closid,
+> -						     entry->rmid,
+> -						     QOS_L3_OCCUP_EVENT_ID,
+> -						     &val);
+> -			if (err || val <= resctrl_rmid_realloc_threshold)
+> -				continue;
+> -		}
+> -
+>  		/*
+>  		 * For the first limbo RMID in the domain,
+>  		 * setup up the limbo worker.
+> @@ -499,14 +489,10 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
+>  		set_bit(idx, d->rmid_busy_llc);
+>  		entry->busy++;
 >  	}
+> -	put_cpu();
+>  
+> -	if (entry->busy) {
+> -		rmid_limbo_count++;
+> -		if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID))
+> -			closid_num_dirty_rmid[entry->closid]++;
+> -	} else
+> -		list_add_tail(&entry->list, &rmid_free_lru);
+> +	rmid_limbo_count++;
+> +	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID))
+> +		closid_num_dirty_rmid[entry->closid]++;
+>  }
+>  
+>  void free_rmid(u32 closid, u32 rmid)
+> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+> index 660752406174..f7311102e94c 100644
+> --- a/include/linux/resctrl.h
+> +++ b/include/linux/resctrl.h
+> @@ -236,7 +236,12 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d);
+>   * @eventid:		eventid to read, e.g. L3 occupancy.
+>   * @val:		result of the counter read in bytes.
+>   *
+> - * Call from process context on a CPU that belongs to domain @d.
+> + * Some architectures need to sleep when first programming some of the counters.
+> + * (specifically: arm64's MPAM cache occupancy counters can return 'not ready'
+> + *  for a short period of time). Call from a non-migrateable process context on
+> + * a CPU that belongs to domain @d. e.g. use smp_call_on_cpu() or
+> + * schedule_work_on(). This function can be called with interrupts masked,
+> + * e.g. using smp_call_function_any(), but may consistently return an error.
+
+Considering that smp_call_function_any() explicitly disables preemption I
+would like to learn more about why did you chose to word as "interrupts masked" vs
+"preemption disabled"?
+
+>   *
+>   * Return:
+>   * 0 on success, or -EIO, -EINVAL etc on error.
+> @@ -245,6 +250,17 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
+>  			   u32 closid, u32 rmid, enum resctrl_event_id eventid,
+>  			   u64 *val);
+>  
+> +/**
+> + * resctrl_arch_rmid_read_context_check()  - warn about invalid contexts
+> + *
+> + * When built with CONFIG_DEBUG_ATOMIC_SLEEP generate a warning when
+> + * resctrl_arch_rmid_read() is called with preemption disabled.
+> + */
+> +static inline void resctrl_arch_rmid_read_context_check(void)
+> +{
+> +	if (!irqs_disabled())
+> +		might_sleep();
+> +}
+
+Apologies but even after rereading the patch as well as your response to
+the previous patch version several times I am not able to understand why the
+code is looking like above. If, like according to the comment above, a
+warning should be generated with preemption disabled, then should it not
+just be "might_sleep()" without the "!irqs_disabled()" check?
+
+I understand how for MPAM you want its code to be called in two different
+contexts so I assume that the MPAM code would have two different paths,
+one that can sleep and the other that cannot, both valid. It thus sounds
+as though you want the x86 code to have context checks so that any issues
+that could impact arm can be caught on x86? In that case, should the
+x86 code also rather have two paths (one unused and the other has the
+context check)?
+
+>  
+>  /**
+>   * resctrl_arch_reset_rmid() - Reset any private state associated with rmid
 
 Reinette
