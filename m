@@ -2,125 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFDE776624
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00AB776627
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232351AbjHIRJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 13:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59830 "EHLO
+        id S232450AbjHIRLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 13:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231649AbjHIRJx (ORCPT
+        with ESMTP id S230132AbjHIRLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 13:09:53 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B491FD4
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 10:09:53 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-407db3e9669so10391cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 10:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691600992; x=1692205792;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jtpCk/kHhj2S6pipOJUYP67g+bYAwvz2JrywuvS8YOQ=;
-        b=aNJkmQnJc9BMhQElymADNWR0bea0CfKbnPyRAbMOIsyX1O5SvhbT5XEBcr59UUQSY2
-         rtJQgNlr+3XX2e4IBleDAAsMgPaIXQLK9gJ5mrqP++BsLxTne0JBtTrM377YGNJHVtw7
-         7qwCfGdC3VxbMvpXVqINkG344YjRDZFrs/KJ/YqBVX4HgG5XxwGaOoUhY6XDYwyGObiw
-         F/lUkD3HnAfwPC57vNU1aLBeQrXBUjcbkMutG0I4FqWkHe3AqSnQ8c0gI5hInh5HFupd
-         QQyrDkRKWUZ4m30p/E+rbmWW+IkR6TI4unkqu41EeO3D9auij5NTGZXbtQuDdlLO5pLo
-         nc5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691600992; x=1692205792;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jtpCk/kHhj2S6pipOJUYP67g+bYAwvz2JrywuvS8YOQ=;
-        b=T4eNFa3YkVngENqAEWYTtfChrK6AI9oY/aL0f2RVVe78d3v0g3DkQCddT7KSZjnG/a
-         wSb+jBsk7kUfxDG/D8YvIp25JsntM4Mhi3OnF5j7Ldd+jY36bdRseydcWXLBrTUJ34bJ
-         uWxd/bKhdhdxEOPL4YKP3neAMjPMaF8Td9Tg9QT5qGRmtvtKI0IxQ/jJa3hyHm8XU8t0
-         DoaIL+/2HsSSCe4ajO/9ZNcE6b9qOQhwzrT8Lzjp2mkqs669wAADnXPM4wjceC6GPycq
-         Cj5nq1b9W7TGE7nMTBCVlb9g0yt0BYmA+b8lyLU1oewqqCSvi1ujCZOORbgW7irIR4AB
-         2NAg==
-X-Gm-Message-State: AOJu0YyqtMj9aB9razztK2UahsHBOz+W+4250bKAZjn0EFkQ7jm7GAVe
-        HMZ2FclaPzOLLzsDDe6GMp5iajj1nT9s4b9x4y6rC2ogy451kQrMD8LQug9R
-X-Google-Smtp-Source: AGHT+IG3KpWlEgRZKeJSH8IgCAin4Njba7/XEsLpalnm0FAG6d4NjQB5bA/B5TubP0zyNjJ1pjjco2FQoZ4A8eX95sk=
-X-Received: by 2002:ac8:5790:0:b0:3f2:1441:3c11 with SMTP id
- v16-20020ac85790000000b003f214413c11mr201381qta.2.1691600992091; Wed, 09 Aug
- 2023 10:09:52 -0700 (PDT)
+        Wed, 9 Aug 2023 13:11:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326691FF5;
+        Wed,  9 Aug 2023 10:11:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BB84B63657;
+        Wed,  9 Aug 2023 17:11:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA43FC433C7;
+        Wed,  9 Aug 2023 17:11:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691601109;
+        bh=wb/aJjQcHQqvQeMSkQlG7G2vrAUAWFYd4KCk6Zyjmtk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Lp0Olc0ozslFLkPuEHJvFAGRUumxQV9xdFuBa+ok4UNHZXrTs0ofCZ3TTUxpMqz50
+         /2O3IpkmLxg9v54AHlqD6nxtA/vm+g8UhDu+QjMeCLmmD2OtM/r04raGqMOpBlksnr
+         A8JiEkM8kCr8CyCu1VJofJcdZ1HlLV4uA4vLttY6ForVj/0+rlc5EVR/R6mk+ue7bc
+         2QjeyAQLN2hrJ9hFDRZw0AXpJbjky0PSsDUXhvLWst1U3SLp7eTBNhEr/mpyX7GJsy
+         odFOa3+o2UJ8S4jlP16TEtEaNzqrSPjZr8gkJF74AEMI5g+5z4xqBk6HUUm2kyXaiE
+         FgUWmUq5NtafA==
+From:   SeongJae Park <sj@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, damon@lists.linux.dev,
+        SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 6.4 000/165] 6.4.10-rc1 review
+Date:   Wed,  9 Aug 2023 17:11:46 +0000
+Message-Id: <20230809171146.90801-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230809103642.720851262@linuxfoundation.org>
+References: 
 MIME-Version: 1.0
-References: <1691568344-13475-1-git-send-email-quic_charante@quicinc.com>
- <9d109a43-78a3-dee4-5aaa-385bdfe4bcb3@redhat.com> <CAC_TJvckhxwz9TxXgMSaiihHddY+AnEGqjLxvO6qF0eqTb5U8Q@mail.gmail.com>
-In-Reply-To: <CAC_TJvckhxwz9TxXgMSaiihHddY+AnEGqjLxvO6qF0eqTb5U8Q@mail.gmail.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Wed, 9 Aug 2023 11:09:16 -0600
-Message-ID: <CAOUHufarW3utTCqk+tes-tbU7iRKCYa_GMZvSNxJrFRKWXMbWw@mail.gmail.com>
-Subject: Re: [PATCH] Multi-gen LRU: skip CMA pages when they are not eligible
-To:     Charan Teja Kalla <quic_charante@quicinc.com>
-Cc:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        zhaoyang.huang@unisoc.com, surenb@google.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 9:54=E2=80=AFAM Kalesh Singh <kaleshsingh@google.com=
-> wrote:
->
-> On Wed, Aug 9, 2023 at 7:00=E2=80=AFAM David Hildenbrand <david@redhat.co=
-m> wrote:
-> >
-> > On 09.08.23 10:05, Charan Teja Kalla wrote:
-> > > This patch is based on the commit 5da226dbfce3("mm: skip CMA pages wh=
-en
-> > > they are not available") which skips cma pages reclaim when they are =
-not
-> > > eligible for the current allocation context. In mglru, such pages are
-> > > added to the tail of the immediate generation to maintain better LRU
-> > > order, which is unlike the case of conventional LRU where such pages =
-are
-> > > directly added to the head of the LRU list(akin to adding to head of =
-the
-> > > youngest generation in mglru).
-> > >
-> > > No observable issue without this patch on MGLRU, but logically it mak=
-e
-> > > sense to skip the CMA page reclaim when those pages can't be satisfie=
-d
-> > > for the current allocation context.
-> > >
-> > > Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
->
-> Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
+Hello,
 
-Thanks, Charan! Do we need a "Fixes" tag?
+On 2023-08-09T12:38:51+02:00   Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-> > > ---
-> > >   mm/vmscan.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > > index b4329f9..6cbe921 100644
-> > > --- a/mm/vmscan.c
-> > > +++ b/mm/vmscan.c
-> > > @@ -4943,7 +4943,7 @@ static bool sort_folio(struct lruvec *lruvec, s=
-truct folio *folio, struct scan_c
-> > >       }
-> > >
-> > >       /* ineligible */
-> > > -     if (zone > sc->reclaim_idx) {
-> > > +     if (zone > sc->reclaim_idx || skip_cma(folio, sc)) {
-> > >               gen =3D folio_inc_gen(lruvec, folio, false);
-> > >               list_move_tail(&folio->lru, &lrugen->folios[gen][type][=
-zone]);
-> > >               return true;
-> >
-> > Makes sense to me.
+> This is the start of the stable review cycle for the 6.4.10 release.
+> There are 165 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.10-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
+
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
+
+Tested-by: SeongJae Park <sj@kernel.org>
+
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] 80226b49c77f ("Linux 6.4.10-rc1")
+
+
+Thanks,
+SJ
+
+[...]
+
+---
+
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: debugfs_rm_non_contexts.sh
+ok 8 selftests: damon: sysfs.sh
+ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
+ok 10 selftests: damon: reclaim.sh
+ok 11 selftests: damon: lru_sort.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_m68k.sh
+ok 12 selftests: damon-tests: build_arm64.sh
+ok 13 selftests: damon-tests: build_i386_idle_flag.sh
+ok 14 selftests: damon-tests: build_i386_highpte.sh
+ok 15 selftests: damon-tests: build_nomemcg.sh
+
+PASS
