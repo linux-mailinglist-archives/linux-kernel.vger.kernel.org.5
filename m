@@ -2,130 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6763775710
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E28775713
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbjHIK2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 06:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
+        id S231627AbjHIK2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 06:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbjHIK2g (ORCPT
+        with ESMTP id S230288AbjHIK2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 06:28:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944271FE2;
-        Wed,  9 Aug 2023 03:28:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691576912; x=1723112912;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PFuPyijB9xKozuDgb+d7nAiprMwBmljDI2nu1pstTcY=;
-  b=XGhtMBC7lbfNOlhiynFoapYhtWQk8VoS9nxFfEIsXeIcjImOBVWeDWB0
-   wm7v4l38JEny50v8l+scJgi90/4RkHUYh50ouvEdtdhQnWrfuZbBCqPz2
-   HTTus61JyI2xRBg627zPv7IrsdzQw524ltzeh8dWvHCqP48sbZvZLzK+K
-   9PjmiOVYV46/YozNkfoRlvZFHA6Eh0AC8ROVzjS8vR2zP1OznhDfOn+WO
-   b1K4pGUsrNmPd1YoXnYy7oKprKJv3ca6z8RHKGcNoEYpgLmUe5Jd8ExTN
-   5QoMUq3/9/Z1xZhdrWcuWVITkMD9TxPVW5kEziBqaRm3krffMS8YSwvbN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="373867964"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="373867964"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 03:28:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="875188411"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 09 Aug 2023 03:28:32 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qTgQW-00060k-1Z;
-        Wed, 09 Aug 2023 10:28:28 +0000
-Date:   Wed, 9 Aug 2023 18:27:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Breno Leitao <leitao@debian.org>, sdf@google.com, axboe@kernel.dk,
-        asml.silence@gmail.com, willemdebruijn.kernel@gmail.com
-Cc:     oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        io-uring@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com
-Subject: Re: [PATCH v2 2/8] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
-Message-ID: <202308091701.sGyLMOi2-lkp@intel.com>
-References: <20230808134049.1407498-3-leitao@debian.org>
+        Wed, 9 Aug 2023 06:28:52 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CC31FFA
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 03:28:50 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a7a180c3faso1970570b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 03:28:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1691576929; x=1692181729;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Q8MkAHQ4z//oNqFY2MVENDhG30E0OZjbLf49uqOaBk=;
+        b=crMbapozPwtjeNppbjAxpjpuLGNgFYD9emI6UusfTFZYXC/sp6pXc9xnok3zJTqSgr
+         D7E22VtBhnYZIMc5IeWUOTWbm3fQkafC00OZVVnU3trR9jrCtMSJTDkK/QZvMPqfD4jG
+         jb4tVCQ9nDPf6zKfQ/TGYPFEKZ9dTG78Ooeqo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691576929; x=1692181729;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0Q8MkAHQ4z//oNqFY2MVENDhG30E0OZjbLf49uqOaBk=;
+        b=Pjf8vFUTaFEXcc2Y990VzrPuY1+8KSfLPbjaw+ccLTaOi8fpSSF3B27P7aj3efjl2u
+         Re6cFYRwiYx7389B0IiJTnkfV9o8JxlOnYq2jL18WiVz1onWY9YnXWMD+z7vbFX9RySa
+         yIleTTNYI9FcQk92vCKFXW40AJb9E7TrCl4Xdi6k4v/h77Dc5YguehzdvVMtamLX56JP
+         KryRGHIAem6H7lfs2IaIbFx0/PooHfFcwtkMcq/pxS7S867HWgXgjA6htg4SXIrPES3K
+         E258gn490GmAaal5sq+fbfuvmwyEz+OFXY3+1f8nacACwCoCONzpdNXpJ5w7pY/A9x07
+         VUpw==
+X-Gm-Message-State: AOJu0YzrQEmrgRgGNp2iK8RcO3oI++jlUwea/VRH4WsI0KpBOFDF1vqE
+        nqSxsmD+PKBNkLmj9ViwEQrzF7z32rbFqe/HQvRAew==
+X-Google-Smtp-Source: AGHT+IEby5BA1Rb3TBNtuipAvYfV2qs3Uz9qjee9oiSSDipAwzSRR3crVDKQeJvAjzfmcMJMfmyvZreaIidOcz+N0dQ=
+X-Received: by 2002:a05:6808:23c7:b0:3a7:8e1b:9d65 with SMTP id
+ bq7-20020a05680823c700b003a78e1b9d65mr2647100oib.47.1691576929466; Wed, 09
+ Aug 2023 03:28:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230808134049.1407498-3-leitao@debian.org>
+References: <169139090386.324433.6412259486776991296.stgit@devnote2> <169139091575.324433.13168120610633669432.stgit@devnote2>
+In-Reply-To: <169139091575.324433.13168120610633669432.stgit@devnote2>
+From:   Florent Revest <revest@chromium.org>
+Date:   Wed, 9 Aug 2023 12:28:38 +0200
+Message-ID: <CABRcYmKRAbOuqNQm5mCwC9NWbtcz1JJDYL_h5x6dK77SJ5FRkA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/6] fprobe: Use fprobe_regs in fprobe entry handler
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Breno,
+On Mon, Aug 7, 2023 at 8:48=E2=80=AFAM Masami Hiramatsu (Google)
+<mhiramat@kernel.org> wrote:
+>
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
+> This allows fprobes to be available with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+> instead of CONFIG_DYNAMIC_FTRACE_WITH_REGS, then we can enable fprobe
+> on arm64.
 
-kernel test robot noticed the following build errors:
+This patch lets fprobe code build on configs WITH_ARGS and !WITH_REGS
+but fprobe wouldn't run on these builds because fprobe still registers
+to ftrace with FTRACE_OPS_FL_SAVE_REGS, which would fail on
+!WITH_REGS. Shouldn't we also let the fprobe_init callers decide
+whether they want REGS or not ?
 
-[auto build test ERROR on next-20230808]
-[cannot apply to bpf-next/master bpf/master net/main net-next/main linus/master horms-ipvs/master v6.5-rc5 v6.5-rc4 v6.5-rc3 v6.5-rc5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>  static int
+>  kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
+> -                         unsigned long ret_ip, struct pt_regs *regs,
+> +                         unsigned long ret_ip, struct ftrace_regs *fregs=
+,
+>                           void *data)
+>  {
+>         struct bpf_kprobe_multi_link *link;
+> +       struct pt_regs *regs =3D ftrace_get_regs(fregs);
+> +
+> +       if (!regs)
+> +               return 0;
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Breno-Leitao/net-expose-sock_use_custom_sol_socket/20230809-011901
-base:   next-20230808
-patch link:    https://lore.kernel.org/r/20230808134049.1407498-3-leitao%40debian.org
-patch subject: [PATCH v2 2/8] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
-config: m68k-randconfig-r036-20230809 (https://download.01.org/0day-ci/archive/20230809/202308091701.sGyLMOi2-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230809/202308091701.sGyLMOi2-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308091701.sGyLMOi2-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   m68k-linux-ld: io_uring/uring_cmd.o: in function `io_uring_cmd_sock':
->> io_uring/uring_cmd.c:183: undefined reference to `sk_getsockopt'
-
-
-vim +183 io_uring/uring_cmd.c
-
-   168	
-   169	static inline int io_uring_cmd_getsockopt(struct socket *sock,
-   170						  struct io_uring_cmd *cmd)
-   171	{
-   172		void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
-   173		int optname = READ_ONCE(cmd->sqe->optname);
-   174		int optlen = READ_ONCE(cmd->sqe->optlen);
-   175		int level = READ_ONCE(cmd->sqe->level);
-   176		int err;
-   177	
-   178		err = security_socket_getsockopt(sock, level, optname);
-   179		if (err)
-   180			return err;
-   181	
-   182		if (level == SOL_SOCKET) {
- > 183			err = sk_getsockopt(sock->sk, level, optname,
-   184					    USER_SOCKPTR(optval),
-   185					    KERNEL_SOCKPTR(&optlen));
-   186			if (err)
-   187				return err;
-   188	
-   189			return optlen;
-   190		}
-   191	
-   192		return -EOPNOTSUPP;
-   193	}
-   194	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+(with the above comment addressed) this means that BPF multi_kprobe
+would successfully attach on builds WITH_ARGS but the programs would
+never actually run because here regs would be 0. This is a confusing
+failure mode for the user. I think that if multi_kprobe won't work
+(because we don't have a pt_regs conversion path yet), the user should
+be notified at attachment time that they won't be getting any events.
+That's why I think kprobe_multi should inform fprobe_init that it
+wants FTRACE_OPS_FL_SAVE_REGS and fail if that's not possible (no
+trampoline for it for example)
