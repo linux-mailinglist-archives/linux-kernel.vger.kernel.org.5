@@ -2,64 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B23F8776261
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7EE776265
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbjHIOYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60562 "EHLO
+        id S230262AbjHIOZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbjHIOYX (ORCPT
+        with ESMTP id S230080AbjHIOZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:24:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDC01FD8;
-        Wed,  9 Aug 2023 07:24:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2042063A1D;
-        Wed,  9 Aug 2023 14:24:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEDFEC433CA;
-        Wed,  9 Aug 2023 14:24:16 +0000 (UTC)
-Date:   Wed, 9 Aug 2023 15:24:14 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 03/36] arm64/gcs: Document the ABI for Guarded Control
- Stacks
-Message-ID: <ZNOhjrYleGBR6Pbs@arm.com>
-References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
- <20230807-arm64-gcs-v4-3-68cfa37f9069@kernel.org>
+        Wed, 9 Aug 2023 10:25:03 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D654410F5;
+        Wed,  9 Aug 2023 07:25:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=cOZqaDWc3HsuU0Akcti+SHi//L0WYRljfoUAHEI5Mb4=; b=Qx9jDdZ8kaM/1t4qA31vsj3BF8
+        dJrmsjumeBsxCmbnQgrD4l+9TqTVj2NoRpg930BVIM4FPiFnDXrK3r0dE3c7aPB8z8i2YwInO7to9
+        ZmY4RWGF/oukSyMfAB3BtIUJ5a59AUfejt8ckDyqzRpvMTkoqIEH7NE4zEEW7++7Cy/EMtLYo9Pc3
+        4TUM8vxLJ1uHstQSOGAsS+ENaeA40kGzBDMDUeYTV9XnYR0ocbLYfozGNsP9hztOYLMxnVn/4L8Wh
+        sQORp47ZvgqIrwz5RNsjIYIqnbmiaXa5J9wWUmy6+XkP4b/3HWQ5XJyCA1lPZE1KEy5BCuRV63jGu
+        y4IOZS2w==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qTk72-0059dS-2X;
+        Wed, 09 Aug 2023 14:24:36 +0000
+Message-ID: <cc9417a3-ef86-bb46-9519-cf65b03b5f08@infradead.org>
+Date:   Wed, 9 Aug 2023 07:24:32 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807-arm64-gcs-v4-3-68cfa37f9069@kernel.org>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 21/28] net: wan: Add framer framework support
+Content-Language: en-US
+To:     Herve Codina <herve.codina@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        alsa-devel@alsa-project.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20230809132757.2470544-1-herve.codina@bootlin.com>
+ <20230809132757.2470544-22-herve.codina@bootlin.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230809132757.2470544-22-herve.codina@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,114 +76,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 11:00:08PM +0100, Mark Brown wrote:
-> +2.  Enabling and disabling Guarded Control Stacks
-> +-------------------------------------------------
+Hi,
+
+On 8/9/23 06:27, Herve Codina wrote:
+> diff --git a/drivers/net/wan/framer/Kconfig b/drivers/net/wan/framer/Kconfig
+> new file mode 100644
+> index 000000000000..96ef1e7ba8eb
+> --- /dev/null
+> +++ b/drivers/net/wan/framer/Kconfig
+> @@ -0,0 +1,19 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# FRAMER
+> +#
 > +
-> +* GCS is enabled and disabled for a thread via the PR_SET_SHADOW_STACK_STATUS
-> +  prctl(), this takes a single flags argument specifying which GCS features
-> +  should be used.
+> +menu "Framer Subsystem"
 > +
-> +* When set PR_SHADOW_STACK_ENABLE flag allocates a Guarded Control Stack for
+> +config GENERIC_FRAMER
+> +	bool "Framer Core"
 
-The 'for' at the end of the line above is not needed.
+Just curious: any reason that this cannot be tristate (i.e., a loadable module)?
+Thanks.
 
-> +  and enables GCS for the thread, enabling the functionality controlled by
-> +  GCSPRE0_EL1.{nTR, RVCHKEN, PCRSEL}.
-
-This should be GCSCRE0_EL1.
-
-> +* When set the PR_SHADOW_STACK_PUSH flag enables the functionality controlled
-> +  by GCSCRE0_EL1.PUSHMEn, allowing explicit GCS pushes.
+> +	help
+> +	  Generic Framer support.
 > +
-> +* When set the PR_SHADOW_STACK_WRITE flag enables the functionality controlled
-> +  by GCSCRE0_EL1.STREn, allowing explicit stores to the Guarded Control Stack.
+> +	  This framework is designed to provide a generic interface for framer
+> +	  devices present in the kernel. This layer will have the generic
+> +	  API by which framer drivers can create framer using the framer
+> +	  framework and framer users can obtain reference to the framer.
+> +	  All the users of this framework should select this config.
 > +
-> +* Any unknown flags will cause PR_SET_SHADOW_STACK_STATUS to return -EINVAL.
-> +
-> +* PR_LOCK_SHADOW_STACK_STATUS is passed a bitmask of features with the same
-> +  values as used for PR_SET_SHADOW_STACK_STATUS.  Any future changes to the
-> +  status of the specified GCS mode bits will be rejected.
-> +
-> +* PR_LOCK_SHADOW_STACK_STATUS allows any bit to be locked, this allows
-> +  userspace to prevent changes to any future features.
-
-I presume a new lock prctl() won't allow unlocking but can only extend
-the lock. I haven't looked at the patches yet but it may be worth
-spelling this out.
-
-> +* PR_SET_SHADOW_STACK_STATUS and PR_LOCK_SHADOW_STACK_STATUS affect only the
-> +  thread the called them, any other running threads will be unaffected.
-
-s/the called/that called/
-
-> +* New threads inherit the GCS configuration of the thread that created them.
-> +
-> +* GCS is disabled on exec().
-> +
-> +* The current GCS configuration for a thread may be read with the
-> +  PR_GET_SHADOW_STACK_STATUS prctl(), this returns the same flags that
-> +  are passed to PR_SET_SHADOW_STACK_STATUS.
-> +
-> +* If GCS is disabled for a thread after having previously been enabled then
-> +  the stack will remain allocated for the lifetime of the thread.
-
-Sorry if this has been discussed in other threads. What is the issue
-with unmapping/freeing of the shadow stack?
-
-> At present
-> +  any attempt to reenable GCS for the thread will be rejected, this may be
-> +  revisited in future.
-
-What's the rationale here? Is it that function returns won't work?
-
-> +3.  Allocation of Guarded Control Stacks
-> +----------------------------------------
-> +
-> +* When GCS is enabled for a thread a new Guarded Control Stack will be
-> +  allocated for it of size RLIMIT_STACK / 2 or 2 gigabytes, whichever is
-> +  smaller.
-
-Is this number based on the fact that a function call would only push
-the LR to GCS while standard function prologue pushes at least two
-registers?
-
-> +* When GCS is disabled for a thread the Guarded Control Stack initially
-> +  allocated for that thread will be freed.  Note carefully that if the
-> +  stack has been switched this may not be the stack currently in use by
-> +  the thread.
-
-Does this not contradict an earlier statement that the GCS is not freed
-for a thread when disabled?
-
-> +4.  Signal handling
-> +--------------------
-> +
-> +* A new signal frame record gcs_context encodes the current GCS mode and
-> +  pointer for the interrupted context on signal delivery.  This will always
-> +  be present on systems that support GCS.
-> +
-> +* The record contains a flag field which reports the current GCS configuration
-> +  for the interrupted context as PR_GET_SHADOW_STACK_STATUS would.
-> +
-> +* The signal handler is run with the same GCS configuration as the interrupted
-> +  context.
-> +
-> +* When GCS is enabled for the interrupted thread a signal handling specific
-> +  GCS cap token will be written to the GCS, this is an architectural GCS cap
-> +  token with bit 63 set.  The GCSPR_EL0 reported in the signal frame will
-> +  point to this cap token.
-
-I lost track of the GCS spec versions. Has the valid cap token format
-been updated? What I have in my spec (though most likely old) is:
-
-  An entry in the Guarded control stack is defined as a Valid cap entry,
-  if bits [63:12] of the value are same as bits [63:12] of the address
-  where the entry is stored and bits [11:0] contain a Valid cap token.
-
-
-The other bits in the code look fine to me so far but I haven't looked
-at the code yet.
+> +endmenu
 
 -- 
-Catalin
+~Randy
