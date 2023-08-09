@@ -2,105 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBED775523
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 10:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A65B775552
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 10:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbjHIIZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 04:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
+        id S231822AbjHIIag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 04:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjHIIZS (ORCPT
+        with ESMTP id S231582AbjHIIac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 04:25:18 -0400
-Received: from out-103.mta0.migadu.com (out-103.mta0.migadu.com [IPv6:2001:41d0:1004:224b::67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA171703
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 01:25:16 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 08:25:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691569514;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yImomCKPQTRiIKKVrT+JgQNcw1+Vd7AbyPQl4wHTuks=;
-        b=mFI5xz0M8wjVn59bTN51HUK3eQPqdXW7Qw4+KJiv4ABkiYig4iO0L8DrKdUsIG2OIF3CaL
-        WUKXvfrgclxQ+xfgp5UQ6J+Eln/w45qy04+gZDUNVzyoWa6iJTDu3kjANDsDSTCbiPyahz
-        DfurFvLnfWfyp0t9cYhvv8rZrn6VJfU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     Huang Shijie <shijie@os.amperecomputing.com>
-Cc:     maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org,
-        pbonzini@redhat.com, peterz@infradead.org, ingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, patches@amperecomputing.com,
-        zwang@amperecomputing.com
-Subject: Re: [PATCH] perf/core: fix the bug in the event multiplexing
-Message-ID: <ZNNNY3MlokEIj4y8@linux.dev>
-References: <20230809013953.7692-1-shijie@os.amperecomputing.com>
+        Wed, 9 Aug 2023 04:30:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99042106;
+        Wed,  9 Aug 2023 01:30:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A5AD62C65;
+        Wed,  9 Aug 2023 08:30:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 87BD8C433B8;
+        Wed,  9 Aug 2023 08:30:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691569821;
+        bh=4Mjj7h1enJcfJyIGcdaxo9qCNmWfFJ3uQOii3hhJbfk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=aZPhPpbsAqyX4EiN05taBBURVeytubl4IDJXJo8lqL08LGCBv+lbYa/sHAVFUG8EF
+         omMsp9Qa4XcrRhaphJdbdI0XyxYy87OgbXWJfMZGdp/TL6oC6u5lbMhvYEWfJcDxRy
+         SzCIm/L812oVQ3DcqnGlsqmYXspS5KwZa0esIKmf2SYOgrcrAjJaGo9wuHUtUFktkZ
+         8/2sArt1FQkHfLZOW6ZXpeKf1uPZCipKeXG/LTLlwLaeYe+FP27E+AUpCLy/PW4IYz
+         /PoSPaBurYVwZr+HuLDg3a9Y7L8sx4/7U/DWmvcsYcB0Hncq68q2YYVneIl4Bnty9A
+         84XZ56j3AS6Qg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 40E86E505D5;
+        Wed,  9 Aug 2023 08:30:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809013953.7692-1-shijie@os.amperecomputing.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 pci/net 0/3] Fix ENETC probing after 6fffbc7ae137 ("PCI:
+ Honor firmware's device disabled status")
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169156982125.20993.4597878185625596543.git-patchwork-notify@kernel.org>
+Date:   Wed, 09 Aug 2023 08:30:21 +0000
+References: <20230803135858.2724342-1-vladimir.oltean@nxp.com>
+In-Reply-To: <20230803135858.2724342-1-vladimir.oltean@nxp.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     linux-pci@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, bhelgaas@google.com, robh@kernel.org,
+        claudiu.manoil@nxp.com, michael@walle.cc,
+        linux-kernel@vger.kernel.org, lvjianmin@loongson.cn,
+        liupeibao@loongson.cn, zhoubinbin@loongson.cn,
+        chenhuacai@loongson.cn
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huang,
+Hello:
 
-On Wed, Aug 09, 2023 at 09:39:53AM +0800, Huang Shijie wrote:
-> 2.) Root cause.
-> 	There is only 7 counters in my arm64 platform:
-> 	  (one cycle counter) + (6 normal counters)
+This series was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Thu,  3 Aug 2023 16:58:55 +0300 you wrote:
+> I'm not sure who should take this patch set (net maintainers or PCI
+> maintainers). Everyone could pick up just their part, and that would
+> work (no compile time dependencies). However, the entire series needs
+> ACK from both sides and Rob for sure.
 > 
-> 	In 1.3 above, we will use 10 event counters.
-> 	Since we only have 7 counters, the perf core will trigger
->        	event multiplexing in hrtimer:
-> 	     merge_sched_in() -->perf_mux_hrtimer_restart() -->
-> 	     perf_rotate_context().
+> v1 at:
+> https://lore.kernel.org/netdev/20230521115141.2384444-1-vladimir.oltean@nxp.com/
 > 
->        In the perf_rotate_context(), it does not restore some PMU registers
->        as context_switch() does.  In context_switch():
->              kvm_sched_in()  --> kvm_vcpu_pmu_restore_guest()
->              kvm_sched_out() --> kvm_vcpu_pmu_restore_host()
-> 
->        So we got wrong result.
+> [...]
 
-This is a rather vague description of the problem. AFAICT, the
-issue here is on VHE systems we wind up getting the EL0 count
-enable/disable bits backwards when entering the guest, which is
-corroborated by the data you have below.
+Here is the summary with links:
+  - [v2,pci/net,1/3] PCI: move OF status = "disabled" detection to dev->match_driver
+    https://git.kernel.org/netdev/net/c/1a8c251cff20
+  - [v2,pci/net,2/3] net: enetc: reimplement RFS/RSS memory clearing as PCI quirk
+    https://git.kernel.org/netdev/net/c/f0168042a212
+  - [v2,pci/net,3/3] net: enetc: remove of_device_is_available() handling
+    https://git.kernel.org/netdev/net/c/bfce089ddd0e
 
-> +void arch_perf_rotate_pmu_set(void)
-> +{
-> +	if (is_guest())
-> +		kvm_vcpu_pmu_restore_guest(NULL);
-> +	else
-> +		kvm_vcpu_pmu_restore_host(NULL);
-> +}
-> +
-
-This sort of hook is rather nasty, and I'd strongly prefer a solution
-that's confined to KVM. I don't think the !is_guest() branch is
-necessary at all. Regardless of how the pmu context is changed, we need
-to go through vcpu_put() before getting back out to userspace.
-
-We can check for a running vCPU (ick) from kvm_set_pmu_events() and either
-do the EL0 bit flip there or make a request on the vCPU to call
-kvm_vcpu_pmu_restore_guest() immediately before reentering the guest.
-I'm slightly leaning towards the latter, unless anyone has a better idea
-here.
-
+You are awesome, thank you!
 -- 
-Thanks,
-Oliver
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
