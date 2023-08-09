@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59192775E74
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C60775E7C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbjHIMGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
+        id S230087AbjHIMIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbjHIMGI (ORCPT
+        with ESMTP id S230028AbjHIMIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:06:08 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 500A21729
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:06:07 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fe3b86cec1so10499984e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:06:07 -0700 (PDT)
+        Wed, 9 Aug 2023 08:08:15 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AE8170B
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:08:14 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fe4762173bso11155618e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:08:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691582765; x=1692187565;
+        d=linaro.org; s=google; t=1691582892; x=1692187692;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=KpfeP6ke2WO44ZDyhI7CO+XkyqQhOu2fn++jvazaiLE=;
-        b=T8Ew4HbpeSHjuhq1tHJi7MsnBq6uonaK7Ap0YpGjhGFSkZ/MKnYmHCZHflSf/1gKa9
-         nmI7FnFwfqYg0tNwCCct3Ajo8C0EePO/Sxom6Jd6PixhWTX611ahj8Rh+j6wrSJZ4rHE
-         kGQca2VJDo6U8WFBuYqz8d84cl7xNfAXlXP/4v9GNxzbx/VUjYFgfEcS7ValCxifrOn/
-         9TMwFLw/f+sGNX6QB9hgdJBI373fle6TwXW/vl66R9z7gE16Ekdbgl4Udzkyb8CQQmTH
-         aXT7ImUaNKjc4HXwmTV6H/jrv74jlwRV59QSU/K8eLBfbppELg2Wd6+c/j9AK4/p+e9Y
-         C8yg==
+        bh=T3xoqTaNdrJvF1psHosIgiaKCZGs6Lxu9BcVPkAe3ik=;
+        b=Rp+RuWxYAg9JIOPsfqxLnRFqrLDPvzhUVKTshPjHn05fVDVDkNFQ31n18tFq54qeIj
+         lzDqdB7V907nmPoY0htu8zmVoWu9+GmV/b3BGIbOpkyCbxP+W3lfSFDRKlPm+VUS1BUy
+         UJYDQ0k2gCmDVRIDeH8B9OcnMxqn5Mbi4ltpCBEOjTYW1cgpsGO7iWNG/JFzSVFUOE1h
+         7H+wGNtdfsh5+nggUwuS3kQ3nG0Z26jYcbZ4I7NdHHywzb/GikTxQbeuDz1LFYXjSaa1
+         /QBbN8UDHIyjFFVtYCgG/lMJ4mn8fucIjKEAkc9vABduaiWVmCnDFilzNZsJ+2ue4KBS
+         7cvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691582765; x=1692187565;
+        d=1e100.net; s=20221208; t=1691582892; x=1692187692;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KpfeP6ke2WO44ZDyhI7CO+XkyqQhOu2fn++jvazaiLE=;
-        b=kW7l/XhmRoUy6ATZHV0JPEwVORf3UYGmGgqfetMRrUzkksf4pz7AL9HsRAmyRDUO0H
-         t512874KW+KNf3I1qSAj/ZWhX2czPz0XOJRFy3SL5lsSx7nMVXH+vYc5xmWUeZq4WbJw
-         Wwg0qqH99yYRMv4CvsG8GR0hM7/aulGfbUAul6tWFGLwlPVyM44hHFVw77RipLYIvbEi
-         oAyViYh6Hu9ropow61/1t3u+Qdn2/vN8P8lz7B/qRWKME14PVs6FHPd5+OYVag8duTZY
-         qIC22w1yQgS0EGndZQ/YC1iigrSOJwOpf7paL93l5ur/+orphl9q4IjYUEvqmCQifJwe
-         5JzA==
-X-Gm-Message-State: AOJu0YyCkzkGzyFZsgsfggCBzH4A2J9TsHt3Z77Wuwq4EzLxfnLNsGor
-        ARMY6cu8wZFiWnh1BsRG60UTuQ==
-X-Google-Smtp-Source: AGHT+IGlPEoWQXB5IWbrFHZodK4i4UROjvg7Gl0dFVNkkRftggjg1/1ew0ibEySA8reminjHzf2AXQ==
-X-Received: by 2002:ac2:5b8f:0:b0:4fe:d9e:a47 with SMTP id o15-20020ac25b8f000000b004fe0d9e0a47mr1727944lfn.69.1691582765424;
-        Wed, 09 Aug 2023 05:06:05 -0700 (PDT)
+        bh=T3xoqTaNdrJvF1psHosIgiaKCZGs6Lxu9BcVPkAe3ik=;
+        b=bcPP3UH+erDe2DQ74oYmqrehTiuVO4MwAGiqpwWZjVKbu7H3eUcSbuyEnE2rvP6SBk
+         QjJfLr4aqvJpIlluCqIGriUNr6gA7bgZ163hMudu/ijpYB0/ynWfOi+hjrYNOA57/DQ0
+         DyPohokyLGAl29/hPgyuGiXV+UIPDOBYrDzito5xp86+vncoLmpk7eUcavD1abgfpWu0
+         5ADPErq8fl1myeqZwtv7B4IQur9aX66ve0M96kYDbSvyja/uLUyBG4g5ilgsklDpqFd3
+         9qdWl8/jCSdGVXDhQEqGCW4p0609bWVhCqOYGgtnwydwX0k6PVpSjD49j68GxBOVpIAc
+         AnEA==
+X-Gm-Message-State: AOJu0YyOBdnaeLhGvv0CiFbO8EJvw8G7APgIVSPULXMZGxQhDo9i5WXr
+        bLMG1p990BUe1DW7Ed1EtpkUQ+Z6uezEWHalG6k=
+X-Google-Smtp-Source: AGHT+IGAbjf6yTbZqwLEdKq9Rcv1eqJN79mkQHubPp88jozDJuAsA67ZOR8OvSCW9927Msjmrzh51A==
+X-Received: by 2002:ac2:58dc:0:b0:4f8:66e1:14e8 with SMTP id u28-20020ac258dc000000b004f866e114e8mr1630625lfo.69.1691582892561;
+        Wed, 09 Aug 2023 05:08:12 -0700 (PDT)
 Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id p20-20020ac246d4000000b004fe5608e412sm2292105lfo.170.2023.08.09.05.06.04
+        by smtp.gmail.com with ESMTPSA id c6-20020ac244a6000000b004fb8603f6e0sm2304491lfm.12.2023.08.09.05.08.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 05:06:04 -0700 (PDT)
-Message-ID: <e54fcd4f-f98e-4930-8941-b39f0504d585@linaro.org>
-Date:   Wed, 9 Aug 2023 14:06:03 +0200
+        Wed, 09 Aug 2023 05:08:12 -0700 (PDT)
+Message-ID: <ad6c15b5-4fad-4db6-8210-839cb1ca2f4b@linaro.org>
+Date:   Wed, 9 Aug 2023 14:08:10 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] arm64: dts: qcom: apq8016-sbc: Fix ov5640 regulator
- supply names
+Subject: Re: [PATCH 4/7] arm64: dts: qcom: apq8016-sbc: Rename ov5640
+ enable-gpios to powerdown-gpios
 Content-Language: en-US
 To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
         andersson@kernel.org, robh+dt@kernel.org,
@@ -64,7 +64,7 @@ To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20230809120432.1036405-1-bryan.odonoghue@linaro.org>
- <20230809120432.1036405-2-bryan.odonoghue@linaro.org>
+ <20230809120432.1036405-5-bryan.odonoghue@linaro.org>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -101,13 +101,13 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230809120432.1036405-2-bryan.odonoghue@linaro.org>
+In-Reply-To: <20230809120432.1036405-5-bryan.odonoghue@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -115,19 +115,20 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 9.08.2023 14:04, Bryan O'Donoghue wrote:
-> The ov5640 driver expects DOVDD, AVDD and DVDD as regulator supply names.
+> There are two control lines controlled by GPIO going into ov5640
 > 
-> The ov5640 has depended on these names since the driver was committed
-> upstream in 2017. Similarly apq8016-sbc.dtsi has had completely different
-> regulator names since its own initial commit in 2020.
+> - Reset
+> - Powerdown
 > 
-> Perhaps the regulators were left on in previous 410c bootloaders. In any
-> case today on 6.5 we won't switch on the ov5640 without correctly naming
-> the regulators.
+> The driver and yaml expect "reset-gpios" and "powerdown-gpios" there has
+> never been an "enable-gpios".
 > 
 > Fixes: 39e0ce6cd1bf ("arm64: dts: qcom: apq8016-sbc: Add CCI/Sensor nodes")
 > Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 > ---
+Assuming that the polarity is still correct (maybe the og commiter had
+different assumptions about what this pin did):
+
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
