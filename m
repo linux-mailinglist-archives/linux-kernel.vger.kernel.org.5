@@ -2,129 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8EAF775E8C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA311775E93
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbjHIMLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57716 "EHLO
+        id S232082AbjHIMLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjHIMLK (ORCPT
+        with ESMTP id S232004AbjHIMLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:11:10 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69131999
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:11:09 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe61ae020bso6750866e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:11:09 -0700 (PDT)
+        Wed, 9 Aug 2023 08:11:23 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5769E1FF6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:11:21 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5223910acf2so10331a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:11:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691583068; x=1692187868;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=m7Ry1wvi8+J9JTgKiYPmLWP0JVIew2LaXJPJcmj20s4=;
-        b=jjQGkbpI6JylvrPoA6Hp3df1w6TIn266pQYTbPNOrDViuok5D+/PLfTncfoAbejBZS
-         n0YyPwiTfxNY3WHVApYeEvnzFXncfv0dyJyf84lR6q+NVlpgv999WbcxwtF2bQLZjpOu
-         V5st7vyj8/e8WKFRINzeIcj3XiQIgwtY0Qjfaeko/wRyLQ2KNVUSBmFDYzz+d0Rcg26X
-         SJ4Iq9pBC+uNN4Bd6XSL9vcWbTa8W2qQYEjqiLCEePPBRi2CNjbTs6qUhxGTd5duQcey
-         f7/TG+Ake4I8SoYr9Asloeys/Rm2B7Y8nSKnT/QC9cg7bACH5R04ZrP8Gyp7w8bqrz7M
-         sJpQ==
+        d=google.com; s=20221208; t=1691583080; x=1692187880;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mR+tsewPnx9DvJyue3X/siIZ7+sG/u3ezFXe5dCL4sQ=;
+        b=KWej98vB/Dn005gtyDz6ZYkltfoJy928gDoSAKLPVVBA09GwsLC47A8eYQAnN7Ttte
+         6g/kYFSXnoQKK25T8N3emOi19+KjUokGc3xlk58rfwh1AAjiL11RQab0lZGKF8eVsWEh
+         LCuQCIBXhRN3kdIo8nvt/d4Af6y8y0x1BcuCrBRHBvQbMJVnAjoTCtnOUjuRggbw+VOb
+         nDPIHd4xBA9FU7Tq6REeO0t7YIPChkt0ZzsKnD+0LDkI/a6vFEZEYULqRjIS+lfONkje
+         SqPxvo+YDeRQAuYUmGSKmw2cMTOBr2bseGGCdNnNVy9Pz8Q6XIhKOpr37nJoMLKhoqr4
+         wepQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691583068; x=1692187868;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m7Ry1wvi8+J9JTgKiYPmLWP0JVIew2LaXJPJcmj20s4=;
-        b=anZVfLHQB3xdMJD4uSS3HblGGb713iqRTifT0GNkk0leCaNU6MkHZIfrvU4BWMZ0zn
-         kv/NPDJSaMeLD3N4Q6iswPznhWGrIk3toeziiMsgmDqhXgfs4Pgn8SnxwaAflFEtrh6c
-         Wh1ooil1qYzxNVY00Khz2cYWmZ3U5cHMGSuyTXUX3mfPQMnVj5Eqd3DlDGGsZo5yCJV6
-         Eal5ZDRMHOwSaoPPbFKEe+I2PFjv4EpBkOTz12//gIBa9+jVQVXZjjlk6u8c94BAJhW0
-         XCTdy+8rOZodAvavqeSjKy+E54JAtQQhtQU8udOzJdoNnBa0Vc+utqaPnHV2HYEMsl1h
-         UT5Q==
-X-Gm-Message-State: AOJu0YzFVVRTzAEby7MuvDjUV1pTwkixTDvFNp/91KL8Ri7hThDpvkVd
-        F/42HBD4B14ONqAhuldXGAm75zlnYZb6TwkSZRw=
-X-Google-Smtp-Source: AGHT+IFsKBycWfaF92XoOSq9ZeNyf2KrueJWYoVM+T7FgyDFCsf+5hrYEOMmJGk0EAf0Q/KD3vIfww==
-X-Received: by 2002:a05:6512:202c:b0:4fd:d538:b97b with SMTP id s12-20020a056512202c00b004fdd538b97bmr1517469lfs.29.1691583067870;
-        Wed, 09 Aug 2023 05:11:07 -0700 (PDT)
-Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id c6-20020ac244a6000000b004fb8603f6e0sm2304491lfm.12.2023.08.09.05.11.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 05:11:07 -0700 (PDT)
-Message-ID: <7f30b5a2-37d1-4b1c-8f8d-4a4782534b2f@linaro.org>
-Date:   Wed, 9 Aug 2023 14:11:06 +0200
+        d=1e100.net; s=20221208; t=1691583080; x=1692187880;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mR+tsewPnx9DvJyue3X/siIZ7+sG/u3ezFXe5dCL4sQ=;
+        b=P1s8Epz0KlDXwNBHXH1xkFeyBWxED56Laljf5YUYETffPusRRRtwmI+MDmdCYm1Xuf
+         +MlQWSOtl6Pn+Jvt8aJ7nch7XlGHPFPK14T6SL9fueuSLSBYyruRJDhwpM6vw8p5sUm7
+         wBvjV8R3E/fMv7I3i8u6slAizMTQvvF3kIfnpfIxKnpUZdW2K4S/ElYvRjwxKplmpa8Q
+         wQcuzTV2uL+Il5PXUHE63aUzANtFe+fhqt8ZKpsnHOu7PIhu4DSJhGnZhGcSINulHtfW
+         oXb09CS/tV7CMFD2aynqDy/LUVeNxuRgoxAWVVbd9AuVQzNZBTMVCa85d+HrNaftvAIy
+         in0A==
+X-Gm-Message-State: AOJu0YxgzaARCO76PvNo0CwKn1TVA22YPsykayw2YOMhby475vzzIl4z
+        aw7cCB7ujgxs7ZwDQqN4vizLVqIg9xYht90KmZdKE8t0COTjhYyzb20=
+X-Google-Smtp-Source: AGHT+IFcbI7+TVqi1QnX1WIMCPoGpECfn+hk9799z7A6XqTqdUccO7axr6bw5nL0cGOAfwBKJzTDnzKc+m00mnbmWf0=
+X-Received: by 2002:a50:cc9b:0:b0:523:193b:5587 with SMTP id
+ q27-20020a50cc9b000000b00523193b5587mr87413edi.6.1691583079849; Wed, 09 Aug
+ 2023 05:11:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 7/7] arm64: dts: qcom: apq8016-sbc: Enable camss for
- non-mezzanine cases
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        loic.poulain@linaro.org, rfoss@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230809120432.1036405-1-bryan.odonoghue@linaro.org>
- <20230809120432.1036405-8-bryan.odonoghue@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230809120432.1036405-8-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230808123529.4725-1-rf@opensource.cirrus.com>
+ <20230808123529.4725-3-rf@opensource.cirrus.com> <CA+GJov79EJLbdptX+hhTqa90C7A0aJ-wzjxF1LDn++jWHeNXFA@mail.gmail.com>
+ <371a6ba0-c076-8e44-ae2f-32429de507da@opensource.cirrus.com>
+In-Reply-To: <371a6ba0-c076-8e44-ae2f-32429de507da@opensource.cirrus.com>
+From:   David Gow <davidgow@google.com>
+Date:   Wed, 9 Aug 2023 20:11:08 +0800
+Message-ID: <CABVgOSmO3cH_oDN1sNWaNYRy8uLxHHUkWPhTevWhHgMjd4LQ5g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/6] kunit: kunit-test: Add test cases for extending
+ log buffer
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Rae Moar <rmoar@google.com>, brendan.higgins@linux.dev,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000099793206027c60e9"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9.08.2023 14:04, Bryan O'Donoghue wrote:
-> When we have no camera mezzanine attached it is still possible to run the
-> test-pattern generator of the CSID block.
-Wasn't it broken?
+--00000000000099793206027c60e9
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[...]
+On Wed, 9 Aug 2023 at 17:39, Richard Fitzgerald
+<rf@opensource.cirrus.com> wrote:
+>
+> On 8/8/23 22:16, Rae Moar wrote:
+> > On Tue, Aug 8, 2023 at 8:35=E2=80=AFAM Richard Fitzgerald
+> > <rf@opensource.cirrus.com> wrote:
+> >>
+> >> Add test cases for the dynamically-extending log buffer.
+> >>
+> >> kunit_log_extend_test_1() logs a series of numbered lines then tests
+> >> that the resulting log contains all the lines.
+> >>
+> >> kunit_log_extend_test_2() logs a large number of lines of varying leng=
+th
+> >> to create many fragments, then tests that all lines are present.
+> >>
+> >> kunit_log_frag_sized_line_test() logs a line that exactly fills a
+> >> fragment. This should not cause an extension of the log or truncation
+> >> of the line.
+> >>
+> >> kunit_log_newline_test() has a new test to append a line that is exact=
+ly
+> >> the length of the available space in the current fragment and check th=
+at
+> >> the resulting log has a trailing '\n'.
+> >>
+> >> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> >
+> > Hello!
+> >
+> > I am happy to see so many tests in this patch series. I've been
+> > working with these patches and the debugfs logs seem to be working
+> > well.
+> >
+> > However, when I ran the new kunit-log-test tests three of the tests
+> > failed: kunit_log_extend_test_1(), kunit_log_extend_test_2(), and
+> > kunit_log_newline_test().
+> >
+> > The diagnostic info for kunit_log_extend_test_1() reports:
+> >
+> > [20:55:27] # kunit_log_extend_test_1: EXPECTATION FAILED at
+> > lib/kunit/kunit-test.c:705
+> > [20:55:27] Expected p =3D=3D line, but
+> > [20:55:27]     p =3D=3D "xxxxxx=E2=80=A6xxxx12345678"
+> > [20:55:27]     line =3D=3D "The quick brown fox jumps over the lazy pen=
+guin 0"
+> > =E2=80=A6
+> > [20:55:27] # kunit_log_extend_test_1: EXPECTATION FAILED at
+> > lib/kunit/kunit-test.c:705
+> > [20:55:27] Expected p =3D=3D line, but
+> > [20:55:27]     p =3D=3D "The quick brown fox jumps over the lazy pengui=
+n 1"
+> > [20:55:27]     line =3D=3D "The quick brown fox jumps over the lazy pen=
+guin 4"
+> > [20:55:27] # kunit_log_extend_test_1: EXPECTATION FAILED at
+> > lib/kunit/kunit-test.c:705
+> > [20:55:27] Expected p =3D=3D line, but
+> > [20:55:27]     p =3D=3D "The quick brown fox jumps over the lazy pengui=
+n 2"
+> > [20:55:27]     line =3D=3D "The quick brown fox jumps over the lazy pen=
+guin 5"
+> > =E2=80=A6
+> > [20:55:27] # kunit_log_extend_test_1: EXPECTATION FAILED at
+> > lib/kunit/kunit-test.c:709
+> > [20:55:27] Expected i =3D=3D num_lines, but
+> > [20:55:27]     i =3D=3D 64 (0x40)
+> > [20:55:27]     num_lines =3D=3D 141 (0x8d)
+> >
+> > So it looks like the log contains a different number of lines than
+> > expected which is causing the difference of 3 between expected and
+> > what was obtained. Potentially the log is not getting cleared/freed
+> > properly in between test cases?
+> >
+> > The diagnostic info for kunit_log_extend_test_2() reports:
+> >
+> > [20:55:27]     # kunit_log_extend_test_2: EXPECTATION FAILED at
+> > lib/kunit/kunit-test.c:776
+> > [20:55:27]     Expected p =3D=3D &line[i], but
+> > [20:55:27]         p =3D=3D
+> > "xxxxx...xxxxx123456780123456789abcdef101112131415161718191a1b1c1d1e1f2=
+02122232425262728292a2b2c2d2e2f30313233343536373839"
+> > [20:55:27]         &line[i] =3D=3D
+> > "0123456789abcdef101112131415161718191a1b1c1d1e1f202122232425262728292a=
+2b2c2d2e2f30313233343536373839"
+> > [20:55:27]     # kunit_log_extend_test_2: EXPECTATION FAILED at
+> > lib/kunit/kunit-test.c:781
+> > [20:55:27]     Expected n =3D=3D num_lines, but
+> > [20:55:27]         n =3D=3D 147 (0x93)
+> > [20:55:27]         num_lines =3D=3D 155 (0x9b)
+> > [20:55:27] Not enough lines.
+> >
+> > Similar difference in the number of lines here.
+> >
+> > The diagnostic info for kunit_log_newline_test() reports that the test
+> > fails on this line:
+> >
+> > KUNIT_EXPECT_EQ(test, p[strlen(p) - 1], '\n');
+> >
+> > Let me know if you are seeing similar errors. I can post the full log
+> > if that would be helpful.
+> >
+> > -Rae
+> >
+>
+> Ah, I see a bug in get_concatenated_log().
+> Does this change fix it for you?
+>
+>         len++; /* for terminating '\0' */
+> -       p =3D kunit_kmalloc(test, len, GFP_KERNEL);
+> +       p =3D kunit_kzalloc(test, len, GFP_KERNEL);
 
->  
-> +&camss {
-> +	status = "okay";
-> +	ports {
-Again, please add a newline if there's gonna be a resend.
+This fixes what seems to be the same issue for me, under x86_64/qemu.
 
-Konrad
+Thanks,
+-- David
+
+--00000000000099793206027c60e9
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+9IGQSBx2i4m+hGXJpET+MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCRI3Z4cAidgFcv
+Usqdz765x6KMZSfg/WtFrYg8ewsP2NpCxVM2+EhPyyEQ0k0DhtzdtGoI/Ug+jdFDyCKB9P2+EPLh
+iMjMnFILp7Zs4r18ECHlvZuDZfH9m0BchXIxu5jLIuQyKUWrCRDZZEDNr510ZhhVfYSFPA8ms1nk
+jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
+jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
+FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBX
+7V3HU8N/FHUutyhL9Ibhg+KnWEjwhce6wMNyG2iECjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA4MDkxMjExMjBaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEANcUJnBizVUxVRZJn1PVZ
+vgeRsTNR9+erhk++q9s6PFpiulJEmYFATNiZvw40e0DQEvX+7k9gxVj2MzB0IUH8CDI+T1nQ3e40
+FOao9K36G/ZHlIXg5OQ2/LDrv++nC44sQ79F8UHaOamr5gHNIErzWOp/YTf7gu1n54zfeac0fw4j
+qZmH9AZM+9FaOsPjKPglkZfPzaxns1N47htzh0srVPqKryOonTO/oiX+fwi1aF+BeSZqHiohz7qt
+AUSef3T3CabNfpyJhwv236+8NMcFlcY4oUFd77BDa91ZLva9NvxEuDgodoSng5LlkDBtTU8Mskeu
+94+d26mgLxLaKKig9Q==
+--00000000000099793206027c60e9--
