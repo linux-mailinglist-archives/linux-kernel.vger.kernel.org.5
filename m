@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B697750CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 04:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE31E7750CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 04:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbjHICO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 22:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
+        id S230365AbjHICO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 22:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbjHICOw (ORCPT
+        with ESMTP id S230359AbjHICOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 22:14:52 -0400
+        Tue, 8 Aug 2023 22:14:54 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B0E1BCF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 19:14:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7C01BCD
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 19:14:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691547245;
+        s=mimecast20190719; t=1691547251;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=68droSgtD1yUeWujN9KsDS4jg7ssA0NCkb8PZ8Tb+SA=;
-        b=Hlj7cYC62XGhxBJoJ0YtfPFKlAuiW63TigiC/kyWTFkPKRvL6+ustHNXYvnb8auYlqBoPh
-        siP/j9Wjb4s+9LgK5bD01j+qm/SYF/yRr3DsZkuGBqVRXK5dpagmRavJoBavZVFKM1BNw3
-        EK50kPoBnv4Pl1qjxbLwQeKZ0gosoeI=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=UzQb2VuQCXwMdF/Rvu48wxhx8ntZSb1KliAOBLDDWgc=;
+        b=VTf0kHbf7syq69H4/SQEYMO9GkiNYyaTPxkSTZu+98gfHMc7u8FW4BPIxfYo1tKRp5P3Ah
+        MoH0q9QGqh0dhWyduypETmfPdlS0ewAek7a22/afqNGywudfH0TC/QFyZPwZsZZbL2Bqcj
+        gM8yJDNLy2kI7XZCOUm6LZGOsy8WhiM=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-635-81yYtrFvMh22bvAcvpLuhA-1; Tue, 08 Aug 2023 22:14:03 -0400
-X-MC-Unique: 81yYtrFvMh22bvAcvpLuhA-1
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-56c7404fafdso10497303eaf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 19:14:03 -0700 (PDT)
+ us-mta-59-CDIct0agM8-iaz0Gjnwp2g-1; Tue, 08 Aug 2023 22:14:09 -0400
+X-MC-Unique: CDIct0agM8-iaz0Gjnwp2g-1
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3a73fbef692so12356399b6e.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 19:14:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691547243; x=1692152043;
+        d=1e100.net; s=20221208; t=1691547249; x=1692152049;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=68droSgtD1yUeWujN9KsDS4jg7ssA0NCkb8PZ8Tb+SA=;
-        b=bhOny3s7e/3/RvwBMR7SgD2WFHZLgIuTsSv0UltWQdBukNDP39SHc80adaL8HwsTHy
-         YJFjUti1RswKto6DUAi2bP9kJx1z+VMpQLI0bmTNESW97/qBDmKoX6GvYR6yEOITJnW0
-         CUQ2E2y0PQYeFIuSYA6vCmTzZXByVhaowrJjl1XmTEmoLao/NWZUlhFm1DbaBs6uhYY+
-         eX+uCLQFdRYOX5GdR1azcAdllfU+trwNq3wWVgdBHP/40KzUwUFuUny//HDUJtbaRoQ6
-         Zdq3qfb1cOgHNzczhMYwdqYvyGrDDWxz/1ZGEh/zOULZye4eteSYc62fXVX+ok9HDypp
-         Glrg==
-X-Gm-Message-State: AOJu0YwYNDaZsKLVj9sWlSlbxZK9D8zeyuJvflRXXgJZfKfSkvG7GEeG
-        +eWCHMqMN96nIR4Hzo9O7tWu4ujcw0O8AfyO7xvPPYRzMG9+RNoiAKLpAYd2xk4+A/3zeS/+jS3
-        weDz1MCYpyQwv7oRwvBdy7pKf
-X-Received: by 2002:a4a:3005:0:b0:56c:aa7a:eaeb with SMTP id q5-20020a4a3005000000b0056caa7aeaebmr1376286oof.4.1691547243031;
-        Tue, 08 Aug 2023 19:14:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFRBi7ZrL7X8EpzKEKv574j/yN24o/CUG+jxNQTD3De3Bdux9OGGevu77kaKC1CyIqeEg4tkw==
-X-Received: by 2002:a4a:3005:0:b0:56c:aa7a:eaeb with SMTP id q5-20020a4a3005000000b0056caa7aeaebmr1376278oof.4.1691547242715;
-        Tue, 08 Aug 2023 19:14:02 -0700 (PDT)
+        bh=UzQb2VuQCXwMdF/Rvu48wxhx8ntZSb1KliAOBLDDWgc=;
+        b=LHXAc9nM6zHt59Gqpc09SlFcQ6zr4302QgGsqUh+NHYPLqec5IW3Vung9dR3yyiPZN
+         Wa2/0XDCI+p/pzPy65mFjN49uKhls8vFRJ24HVH0DQJhJJf8B3AD6UMScN8z5psXlTbX
+         +p6JsQDcDhkOaT3c6WTWwX/GGGDAyI3+HVzdQkbw9JuVDEo/SXAb44m7otbbBTvhAxSk
+         05Ik0BDqE7hR2MGJfzMKOvwD51JyLqOeKDwHpnukYIB4kLM76AtAEQ3yJE+TtmYnkTHT
+         qbSYLftnTi1M4bOWmydnke4+mXR3n2Vi/r6gly2QG8W+wwiPa97jTk5fFXXb73fjFwXd
+         QWjQ==
+X-Gm-Message-State: AOJu0YzjMoxFMm4U/HnbOLATkI5lCSRVDsAywgXj2xYFTsRN65huRs9Q
+        JsRXwKCvCNq/tqE3dKHC0c0364/sfFOHIAx//Tb/9o37DNbwE0jndow/keDlabPfqUoe7p2zd81
+        wqRfRdOjqfEEgWEA/3bztVuax
+X-Received: by 2002:a05:6870:c082:b0:1bf:74cc:c815 with SMTP id c2-20020a056870c08200b001bf74ccc815mr1491705oad.19.1691547248946;
+        Tue, 08 Aug 2023 19:14:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGzmTXNkLqFmS1q1/FR/HeyFRU6fl+VZuoTT+xk0Lf/Zu30HJE0YhZ23Lp17N5hlJIuru2Olg==
+X-Received: by 2002:a05:6870:c082:b0:1bf:74cc:c815 with SMTP id c2-20020a056870c08200b001bf74ccc815mr1491689oad.19.1691547248647;
+        Tue, 08 Aug 2023 19:14:08 -0700 (PDT)
 Received: from localhost.localdomain ([2804:431:c7ec:e667:6b7d:ed55:c363:a088])
-        by smtp.gmail.com with ESMTPSA id v10-20020a4a8c4a000000b0054fba751207sm6475518ooj.47.2023.08.08.19.13.57
+        by smtp.gmail.com with ESMTPSA id v10-20020a4a8c4a000000b0054fba751207sm6475518ooj.47.2023.08.08.19.14.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 19:14:02 -0700 (PDT)
+        Tue, 08 Aug 2023 19:14:08 -0700 (PDT)
 From:   Leonardo Bras <leobras@redhat.com>
 To:     Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -72,9 +72,9 @@ To:     Will Deacon <will@kernel.org>,
         Palmer Dabbelt <palmer@rivosinc.com>,
         Guo Ren <guoren@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [RFC PATCH v4 2/5] riscv/cmpxchg: Deduplicate cmpxchg() asm and macros
-Date:   Tue,  8 Aug 2023 23:13:07 -0300
-Message-ID: <20230809021311.1390578-4-leobras@redhat.com>
+Subject: [RFC PATCH v4 3/5] riscv/atomic.h : Deduplicate arch_atomic.*
+Date:   Tue,  8 Aug 2023 23:13:08 -0300
+Message-ID: <20230809021311.1390578-5-leobras@redhat.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230809021311.1390578-2-leobras@redhat.com>
 References: <20230809021311.1390578-2-leobras@redhat.com>
@@ -90,251 +90,254 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In this header every cmpxchg define (_relaxed, _acquire, _release,
-vanilla) contain it's own asm file, both for 4-byte variables an 8-byte
-variables, on a total of 8 versions of mostly the same asm.
+Some functions use mostly the same asm for 32-bit and 64-bit versions.
 
-This is usually bad, as it means any change may be done in up to 8
-different places.
-
-Unify those versions by creating a new define with enough parameters to
-generate any version of the previous 8.
-
-Then unify the result under a more general define, and simplify
-arch_cmpxchg* generation
+Make a macro that is generic enough and avoid code duplication.
 
 (This did not cause any change in generated asm)
 
 Signed-off-by: Leonardo Bras <leobras@redhat.com>
+Reviewed-by: Guo Ren <guoren@kernel.org>
 Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
 ---
- arch/riscv/include/asm/cmpxchg.h | 187 +++++--------------------------
- 1 file changed, 29 insertions(+), 158 deletions(-)
+ arch/riscv/include/asm/atomic.h | 164 +++++++++++++++-----------------
+ 1 file changed, 76 insertions(+), 88 deletions(-)
 
-diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
-index ec4ea4f3f908..5a07646fae65 100644
---- a/arch/riscv/include/asm/cmpxchg.h
-+++ b/arch/riscv/include/asm/cmpxchg.h
-@@ -71,127 +71,40 @@
-  * store NEW in MEM.  Return the initial value in MEM.  Success is
-  * indicated by comparing RETURN with OLD.
-  */
--#define __cmpxchg_relaxed(ptr, old, new, size)				\
--({									\
--	__typeof__(ptr) __ptr = (ptr);					\
--	__typeof__(*(ptr)) __old = (old);				\
--	__typeof__(*(ptr)) __new = (new);				\
--	__typeof__(*(ptr)) __ret;					\
--	register unsigned int __rc;					\
--	switch (size) {							\
--	case 4:								\
--		__asm__ __volatile__ (					\
--			"0:	lr.w %0, %2\n"				\
--			"	bne  %0, %z3, 1f\n"			\
--			"	sc.w %1, %z4, %2\n"			\
--			"	bnez %1, 0b\n"				\
--			"1:\n"						\
--			: "=&r" (__ret), "=&r" (__rc), "+A" (*__ptr)	\
--			: "rJ" ((long)__old), "rJ" (__new)		\
--			: "memory");					\
--		break;							\
--	case 8:								\
--		__asm__ __volatile__ (					\
--			"0:	lr.d %0, %2\n"				\
--			"	bne %0, %z3, 1f\n"			\
--			"	sc.d %1, %z4, %2\n"			\
--			"	bnez %1, 0b\n"				\
--			"1:\n"						\
--			: "=&r" (__ret), "=&r" (__rc), "+A" (*__ptr)	\
--			: "rJ" (__old), "rJ" (__new)			\
--			: "memory");					\
--		break;							\
--	default:							\
--		BUILD_BUG();						\
--	}								\
--	__ret;								\
--})
+diff --git a/arch/riscv/include/asm/atomic.h b/arch/riscv/include/asm/atomic.h
+index f5dfef6c2153..80cca7ac16fd 100644
+--- a/arch/riscv/include/asm/atomic.h
++++ b/arch/riscv/include/asm/atomic.h
+@@ -196,22 +196,28 @@ ATOMIC_OPS(xor, xor, i)
+ #undef ATOMIC_FETCH_OP
+ #undef ATOMIC_OP_RETURN
  
--#define arch_cmpxchg_relaxed(ptr, o, n)					\
--({									\
--	__typeof__(*(ptr)) _o_ = (o);					\
--	__typeof__(*(ptr)) _n_ = (n);					\
--	(__typeof__(*(ptr))) __cmpxchg_relaxed((ptr),			\
--					_o_, _n_, sizeof(*(ptr)));	\
--})
- 
--#define __cmpxchg_acquire(ptr, old, new, size)				\
-+#define __arch_cmpxchg(lr_sfx, sc_sfx, prepend, append, r, p, co, o, n)	\
- ({									\
--	__typeof__(ptr) __ptr = (ptr);					\
--	__typeof__(*(ptr)) __old = (old);				\
--	__typeof__(*(ptr)) __new = (new);				\
--	__typeof__(*(ptr)) __ret;					\
- 	register unsigned int __rc;					\
--	switch (size) {							\
--	case 4:								\
--		__asm__ __volatile__ (					\
--			"0:	lr.w %0, %2\n"				\
--			"	bne  %0, %z3, 1f\n"			\
--			"	sc.w %1, %z4, %2\n"			\
--			"	bnez %1, 0b\n"				\
--			RISCV_ACQUIRE_BARRIER				\
--			"1:\n"						\
--			: "=&r" (__ret), "=&r" (__rc), "+A" (*__ptr)	\
--			: "rJ" ((long)__old), "rJ" (__new)		\
--			: "memory");					\
--		break;							\
--	case 8:								\
--		__asm__ __volatile__ (					\
--			"0:	lr.d %0, %2\n"				\
--			"	bne %0, %z3, 1f\n"			\
--			"	sc.d %1, %z4, %2\n"			\
--			"	bnez %1, 0b\n"				\
--			RISCV_ACQUIRE_BARRIER				\
--			"1:\n"						\
--			: "=&r" (__ret), "=&r" (__rc), "+A" (*__ptr)	\
--			: "rJ" (__old), "rJ" (__new)			\
--			: "memory");					\
--		break;							\
--	default:							\
--		BUILD_BUG();						\
--	}								\
--	__ret;								\
--})
--
--#define arch_cmpxchg_acquire(ptr, o, n)					\
--({									\
--	__typeof__(*(ptr)) _o_ = (o);					\
--	__typeof__(*(ptr)) _n_ = (n);					\
--	(__typeof__(*(ptr))) __cmpxchg_acquire((ptr),			\
--					_o_, _n_, sizeof(*(ptr)));	\
-+									\
++#define _arch_atomic_fetch_add_unless(_prev, _rc, counter, _a, _u, sfx)	\
++({									\
 +	__asm__ __volatile__ (						\
-+		prepend							\
-+		"0:	lr" lr_sfx " %0, %2\n"				\
-+		"	bne  %0, %z3, 1f\n"				\
-+		"	sc" sc_sfx " %1, %z4, %2\n"			\
-+		"	bnez %1, 0b\n"					\
-+		append							\
++		"0:	lr." sfx "     %[p],  %[c]\n"			\
++		"	beq	       %[p],  %[u], 1f\n"		\
++		"	add            %[rc], %[p], %[a]\n"		\
++		"	sc." sfx ".rl  %[rc], %[rc], %[c]\n"		\
++		"	bnez           %[rc], 0b\n"			\
++		"	fence          rw, rw\n"			\
 +		"1:\n"							\
-+		: "=&r" (r), "=&r" (__rc), "+A" (*(p))			\
-+		: "rJ" (co o), "rJ" (n)					\
++		: [p]"=&r" (_prev), [rc]"=&r" (_rc), [c]"+A" (counter)	\
++		: [a]"r" (_a), [u]"r" (_u)				\
 +		: "memory");						\
- })
- 
--#define __cmpxchg_release(ptr, old, new, size)				\
-+#define _arch_cmpxchg(ptr, old, new, sc_sfx, prepend, append)		\
- ({									\
- 	__typeof__(ptr) __ptr = (ptr);					\
- 	__typeof__(*(ptr)) __old = (old);				\
- 	__typeof__(*(ptr)) __new = (new);				\
- 	__typeof__(*(ptr)) __ret;					\
--	register unsigned int __rc;					\
--	switch (size) {							\
-+									\
-+	switch (sizeof(*__ptr)) {					\
- 	case 4:								\
--		__asm__ __volatile__ (					\
--			RISCV_RELEASE_BARRIER				\
--			"0:	lr.w %0, %2\n"				\
--			"	bne  %0, %z3, 1f\n"			\
--			"	sc.w %1, %z4, %2\n"			\
--			"	bnez %1, 0b\n"				\
--			"1:\n"						\
--			: "=&r" (__ret), "=&r" (__rc), "+A" (*__ptr)	\
--			: "rJ" ((long)__old), "rJ" (__new)		\
--			: "memory");					\
-+		__arch_cmpxchg(".w", ".w" sc_sfx, prepend, append,	\
-+				__ret, __ptr, (long), __old, __new);	\
- 		break;							\
- 	case 8:								\
--		__asm__ __volatile__ (					\
--			RISCV_RELEASE_BARRIER				\
--			"0:	lr.d %0, %2\n"				\
--			"	bne %0, %z3, 1f\n"			\
--			"	sc.d %1, %z4, %2\n"			\
--			"	bnez %1, 0b\n"				\
--			"1:\n"						\
--			: "=&r" (__ret), "=&r" (__rc), "+A" (*__ptr)	\
--			: "rJ" (__old), "rJ" (__new)			\
--			: "memory");					\
-+		__arch_cmpxchg(".d", ".d" sc_sfx, prepend, append,	\
-+				__ret, __ptr, /**/, __old, __new);	\
- 		break;							\
- 	default:							\
- 		BUILD_BUG();						\
-@@ -199,62 +112,20 @@
- 	__ret;								\
- })
- 
--#define arch_cmpxchg_release(ptr, o, n)					\
--({									\
--	__typeof__(*(ptr)) _o_ = (o);					\
--	__typeof__(*(ptr)) _n_ = (n);					\
--	(__typeof__(*(ptr))) __cmpxchg_release((ptr),			\
--					_o_, _n_, sizeof(*(ptr)));	\
--})
-+#define arch_cmpxchg_relaxed(ptr, o, n)					\
-+	_arch_cmpxchg((ptr), (o), (n), "", "", "")
- 
--#define __cmpxchg(ptr, old, new, size)					\
--({									\
--	__typeof__(ptr) __ptr = (ptr);					\
--	__typeof__(*(ptr)) __old = (old);				\
--	__typeof__(*(ptr)) __new = (new);				\
--	__typeof__(*(ptr)) __ret;					\
--	register unsigned int __rc;					\
--	switch (size) {							\
--	case 4:								\
--		__asm__ __volatile__ (					\
--			"0:	lr.w %0, %2\n"				\
--			"	bne  %0, %z3, 1f\n"			\
--			"	sc.w.rl %1, %z4, %2\n"			\
--			"	bnez %1, 0b\n"				\
--			"	fence rw, rw\n"				\
--			"1:\n"						\
--			: "=&r" (__ret), "=&r" (__rc), "+A" (*__ptr)	\
--			: "rJ" ((long)__old), "rJ" (__new)		\
--			: "memory");					\
--		break;							\
--	case 8:								\
--		__asm__ __volatile__ (					\
--			"0:	lr.d %0, %2\n"				\
--			"	bne %0, %z3, 1f\n"			\
--			"	sc.d.rl %1, %z4, %2\n"			\
--			"	bnez %1, 0b\n"				\
--			"	fence rw, rw\n"				\
--			"1:\n"						\
--			: "=&r" (__ret), "=&r" (__rc), "+A" (*__ptr)	\
--			: "rJ" (__old), "rJ" (__new)			\
--			: "memory");					\
--		break;							\
--	default:							\
--		BUILD_BUG();						\
--	}								\
--	__ret;								\
--})
-+#define arch_cmpxchg_acquire(ptr, o, n)					\
-+	_arch_cmpxchg((ptr), (o), (n), "", "", RISCV_ACQUIRE_BARRIER)
++})
 +
-+#define arch_cmpxchg_release(ptr, o, n)					\
-+	_arch_cmpxchg((ptr), (o), (n), "", RISCV_RELEASE_BARRIER, "")
+ /* This is required to provide a full barrier on success. */
+ static __always_inline int arch_atomic_fetch_add_unless(atomic_t *v, int a, int u)
+ {
+        int prev, rc;
  
- #define arch_cmpxchg(ptr, o, n)						\
--({									\
--	__typeof__(*(ptr)) _o_ = (o);					\
--	__typeof__(*(ptr)) _n_ = (n);					\
--	(__typeof__(*(ptr))) __cmpxchg((ptr),				\
--				       _o_, _n_, sizeof(*(ptr)));	\
--})
-+	_arch_cmpxchg((ptr), (o), (n), ".rl", "", "	fence rw, rw\n")
+-	__asm__ __volatile__ (
+-		"0:	lr.w     %[p],  %[c]\n"
+-		"	beq      %[p],  %[u], 1f\n"
+-		"	add      %[rc], %[p], %[a]\n"
+-		"	sc.w.rl  %[rc], %[rc], %[c]\n"
+-		"	bnez     %[rc], 0b\n"
+-		"	fence    rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		: [a]"r" (a), [u]"r" (u)
+-		: "memory");
++	_arch_atomic_fetch_add_unless(prev, rc, v->counter, a, u, "w");
++
+ 	return prev;
+ }
+ #define arch_atomic_fetch_add_unless arch_atomic_fetch_add_unless
+@@ -222,77 +228,86 @@ static __always_inline s64 arch_atomic64_fetch_add_unless(atomic64_t *v, s64 a,
+        s64 prev;
+        long rc;
  
- #define arch_cmpxchg_local(ptr, o, n)					\
--	(__cmpxchg_relaxed((ptr), (o), (n), sizeof(*(ptr))))
-+	arch_cmpxchg_relaxed((ptr), (o), (n))
+-	__asm__ __volatile__ (
+-		"0:	lr.d     %[p],  %[c]\n"
+-		"	beq      %[p],  %[u], 1f\n"
+-		"	add      %[rc], %[p], %[a]\n"
+-		"	sc.d.rl  %[rc], %[rc], %[c]\n"
+-		"	bnez     %[rc], 0b\n"
+-		"	fence    rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		: [a]"r" (a), [u]"r" (u)
+-		: "memory");
++	_arch_atomic_fetch_add_unless(prev, rc, v->counter, a, u, "d");
++
+ 	return prev;
+ }
+ #define arch_atomic64_fetch_add_unless arch_atomic64_fetch_add_unless
+ #endif
  
- #define arch_cmpxchg64(ptr, o, n)					\
- ({									\
++#define _arch_atomic_inc_unless_negative(_prev, _rc, counter, sfx)	\
++({									\
++	__asm__ __volatile__ (						\
++		"0:	lr." sfx "      %[p],  %[c]\n"			\
++		"	bltz            %[p],  1f\n"			\
++		"	addi            %[rc], %[p], 1\n"		\
++		"	sc." sfx ".rl   %[rc], %[rc], %[c]\n"		\
++		"	bnez            %[rc], 0b\n"			\
++		"	fence           rw, rw\n"			\
++		"1:\n"							\
++		: [p]"=&r" (_prev), [rc]"=&r" (_rc), [c]"+A" (counter)	\
++		:							\
++		: "memory");						\
++})
++
+ static __always_inline bool arch_atomic_inc_unless_negative(atomic_t *v)
+ {
+ 	int prev, rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.w      %[p],  %[c]\n"
+-		"	bltz      %[p],  1f\n"
+-		"	addi      %[rc], %[p], 1\n"
+-		"	sc.w.rl   %[rc], %[rc], %[c]\n"
+-		"	bnez      %[rc], 0b\n"
+-		"	fence     rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		:
+-		: "memory");
++	_arch_atomic_inc_unless_negative(prev, rc, v->counter, "w");
++
+ 	return !(prev < 0);
+ }
+ 
+ #define arch_atomic_inc_unless_negative arch_atomic_inc_unless_negative
+ 
++#define _arch_atomic_dec_unless_positive(_prev, _rc, counter, sfx)	\
++({									\
++	__asm__ __volatile__ (						\
++		"0:	lr." sfx "      %[p],  %[c]\n"			\
++		"	bgtz            %[p],  1f\n"			\
++		"	addi            %[rc], %[p], -1\n"		\
++		"	sc." sfx ".rl   %[rc], %[rc], %[c]\n"		\
++		"	bnez            %[rc], 0b\n"			\
++		"	fence           rw, rw\n"			\
++		"1:\n"							\
++		: [p]"=&r" (_prev), [rc]"=&r" (_rc), [c]"+A" (counter)	\
++		:							\
++		: "memory");						\
++})
++
+ static __always_inline bool arch_atomic_dec_unless_positive(atomic_t *v)
+ {
+ 	int prev, rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.w      %[p],  %[c]\n"
+-		"	bgtz      %[p],  1f\n"
+-		"	addi      %[rc], %[p], -1\n"
+-		"	sc.w.rl   %[rc], %[rc], %[c]\n"
+-		"	bnez      %[rc], 0b\n"
+-		"	fence     rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		:
+-		: "memory");
++	_arch_atomic_dec_unless_positive(prev, rc, v->counter, "w");
++
+ 	return !(prev > 0);
+ }
+ 
+ #define arch_atomic_dec_unless_positive arch_atomic_dec_unless_positive
+ 
++#define _arch_atomic_dec_if_positive(_prev, _rc, counter, sfx)		\
++({									\
++	__asm__ __volatile__ (						\
++		"0:	lr." sfx "     %[p],  %[c]\n"			\
++		"	addi           %[rc], %[p], -1\n"		\
++		"	bltz           %[rc], 1f\n"			\
++		"	sc." sfx ".rl  %[rc], %[rc], %[c]\n"		\
++		"	bnez           %[rc], 0b\n"			\
++		"	fence          rw, rw\n"			\
++		"1:\n"							\
++		: [p]"=&r" (_prev), [rc]"=&r" (_rc), [c]"+A" (counter)	\
++		:							\
++		: "memory");						\
++})
++
+ static __always_inline int arch_atomic_dec_if_positive(atomic_t *v)
+ {
+        int prev, rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.w     %[p],  %[c]\n"
+-		"	addi     %[rc], %[p], -1\n"
+-		"	bltz     %[rc], 1f\n"
+-		"	sc.w.rl  %[rc], %[rc], %[c]\n"
+-		"	bnez     %[rc], 0b\n"
+-		"	fence    rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		:
+-		: "memory");
++	_arch_atomic_dec_if_positive(prev, rc, v->counter, "w");
++
+ 	return prev - 1;
+ }
+ 
+@@ -304,17 +319,8 @@ static __always_inline bool arch_atomic64_inc_unless_negative(atomic64_t *v)
+ 	s64 prev;
+ 	long rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.d      %[p],  %[c]\n"
+-		"	bltz      %[p],  1f\n"
+-		"	addi      %[rc], %[p], 1\n"
+-		"	sc.d.rl   %[rc], %[rc], %[c]\n"
+-		"	bnez      %[rc], 0b\n"
+-		"	fence     rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		:
+-		: "memory");
++	_arch_atomic_inc_unless_negative(prev, rc, v->counter, "d");
++
+ 	return !(prev < 0);
+ }
+ 
+@@ -325,17 +331,8 @@ static __always_inline bool arch_atomic64_dec_unless_positive(atomic64_t *v)
+ 	s64 prev;
+ 	long rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.d      %[p],  %[c]\n"
+-		"	bgtz      %[p],  1f\n"
+-		"	addi      %[rc], %[p], -1\n"
+-		"	sc.d.rl   %[rc], %[rc], %[c]\n"
+-		"	bnez      %[rc], 0b\n"
+-		"	fence     rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		:
+-		: "memory");
++	_arch_atomic_dec_unless_positive(prev, rc, v->counter, "d");
++
+ 	return !(prev > 0);
+ }
+ 
+@@ -346,17 +343,8 @@ static __always_inline s64 arch_atomic64_dec_if_positive(atomic64_t *v)
+        s64 prev;
+        long rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.d     %[p],  %[c]\n"
+-		"	addi      %[rc], %[p], -1\n"
+-		"	bltz     %[rc], 1f\n"
+-		"	sc.d.rl  %[rc], %[rc], %[c]\n"
+-		"	bnez     %[rc], 0b\n"
+-		"	fence    rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		:
+-		: "memory");
++	_arch_atomic_dec_if_positive(prev, rc, v->counter, "d");
++
+ 	return prev - 1;
+ }
+ 
 -- 
 2.41.0
 
