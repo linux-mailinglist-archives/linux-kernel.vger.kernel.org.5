@@ -2,228 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C39CD7762C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF4E7762CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233969AbjHIOoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
+        id S233941AbjHIOoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233941AbjHIOoJ (ORCPT
+        with ESMTP id S231697AbjHIOod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:44:09 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857002127;
-        Wed,  9 Aug 2023 07:44:03 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A9CE81BF203;
-        Wed,  9 Aug 2023 14:43:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691592242;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 9 Aug 2023 10:44:33 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517621FCC;
+        Wed,  9 Aug 2023 07:44:32 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 56F5A21878;
+        Wed,  9 Aug 2023 14:44:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691592265; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=FZxV3UFMeGyDsNdwjJumfIpW8uOR/MFWbZ/4b+SKd9g=;
-        b=jR7AlSufdFSWkDHzoPBOoaekD48cJ2XesAnJETdAziH/WLCjpfXnALcTGC6nPtoBAnpT4Q
-        CeSwpI8yllHZhRm5Wg0EcYgv7v4OytXOp4oT5/XJH2l7sC2DW6lS6q3Q7cpvLZ6fcQvK30
-        l3FZaJmIjp4JcJh7vs3co3kOUy9vAbDSXZ3Lgog1ljb6Yav+xDOjVeW+flCVXo60sNIaQi
-        X+Q6cABgfmdK1u6De5euoOXvK0dHi0pyoOWwwB0GEADlxfq3qCBf9qrDC1QZUQ4cgD8FGE
-        +CfDtniBC41XfeY71dckK3KO8RcXVNHzvqibAxz8XUcQRCjmLsWLcOQQvygOcA==
-Date:   Wed, 9 Aug 2023 16:43:59 +0200
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: Stateless Encoding uAPI Discussion and Proposal
-Message-ID: <ZNOmL_mZdYhmFsJI@aptenodytes>
-References: <ZK2NiQd1KnraAr20@aptenodytes>
- <c46d0c53b7e5dc8dcdf7925f3d892024390a8b2b.camel@collabora.com>
- <0b5717cb-8f30-c38c-f20e-e8a81d29423a@xs4all.nl>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="aWuj40h1KBiOheuV"
-Content-Disposition: inline
-In-Reply-To: <0b5717cb-8f30-c38c-f20e-e8a81d29423a@xs4all.nl>
-X-GND-Sasl: paul.kocialkowski@bootlin.com
+        bh=OwSY4kr16LY7LZGUOeApDYQYT7HNprfdzStod0Wm/tc=;
+        b=lw7cTIoLO1or5IHEnMQvxN1KTIzocFN/TX3MeezuSf8dM9GC2aMsWrbhP1kBScHjXBfK52
+        TApBqtkBZ+YMKrvvjTtTVqLkxFLXFLZW1stFDpR1Qt78LeUXjyT7U2dDio+BgfYC2w0X07
+        MA8QUDU1GQM9sxNWlbCKbGWRyVEMVJ0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691592265;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OwSY4kr16LY7LZGUOeApDYQYT7HNprfdzStod0Wm/tc=;
+        b=lCkPSCKwk/0/a/1PDpwL785WMCmQo/IbNbk9mh8TuGfKl8AcSo+ewmL1vOe6O8r1IGUtcD
+        U7/I6bVvlgnW4+Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 24B7C133B5;
+        Wed,  9 Aug 2023 14:44:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 64b8B0mm02RfNAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 09 Aug 2023 14:44:25 +0000
+Date:   Wed, 09 Aug 2023 16:44:24 +0200
+Message-ID: <87a5v0e0mv.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH RFC] Introduce uniptr_t as a generic "universal" pointer
+In-Reply-To: <20230809143801.GA693@lst.de>
+References: <87edkce118.wl-tiwai@suse.de>
+        <20230809143801.GA693@lst.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 09 Aug 2023 16:38:01 +0200,
+Christoph Hellwig wrote:
+> 
+> On Wed, Aug 09, 2023 at 04:35:47PM +0200, Takashi Iwai wrote:
+> > Although sockptr_t is used already in several places as a "universal"
+> > pointer, it's still too confusing to use it in other subsystems, since
+> > people see it always as if it were a network-related stuff.
+> > 
+> > This patch defines a more generic type, uniptr_t, that does exactly as
+> > same as sockptr_t for a wider use.  As of now, it's almost 1:1 copy
+> > with renames (just with comprehensive header file inclusions).
+> 
+> The original set_fs removal series did that as uptr_t, and Linus
+> hated it with passion.  I somehow doubt he's going to like it more now.
 
---aWuj40h1KBiOheuV
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah, good to know!
 
-Hi Hans,
+The remaining question is whether the use of sockptr_t for other
+subsystems as a generic pointer is a recommended / acceptable move...
 
-On Wed 26 Jul 23, 10:18, Hans Verkuil wrote:
-> On 11/07/2023 20:18, Nicolas Dufresne wrote:
-> > Le mardi 11 juillet 2023 =C3=A0 19:12 +0200, Paul Kocialkowski a =C3=A9=
-crit=C2=A0:
-> >> Hi everyone!
-> >>
-> >> After various discussions following Andrzej's talk at EOSS, feedback f=
-rom the
-> >> Media Summit (which I could not attend unfortunately) and various dire=
-ct
-> >> discussions, I have compiled some thoughts and ideas about stateless e=
-ncoders
-> >> support with various proposals. This is the result of a few years of i=
-nterest
-> >> in the topic, after working on a PoC for the Hantro H1 using the hantr=
-o driver,
-> >> which turned out to have numerous design issues.
-> >>
-> >> I am now working on a H.264 encoder driver for Allwinner platforms (cu=
-rrently
-> >> focusing on the V3/V3s), which already provides some usable bitstream =
-and will
-> >> be published soon.
-> >>
-> >> This is a very long email where I've tried to split things into distin=
-ct topics
-> >> and explain a few concepts to make sure everyone is on the same page.
-> >>
-> >> # Bitstream Headers
-> >>
-> >> Stateless encoders typically do not generate all the bitstream headers=
- and
-> >> sometimes no header at all (e.g. Allwinner encoder does not even produ=
-ce slice
-> >> headers). There's often some hardware block that makes bit-level writi=
-ng to the
-> >> destination buffer easier (deals with alignment, etc).
-> >>
-> >> The values of the bitstream headers must be in line with how the compr=
-essed
-> >> data bitstream is generated and generally follow the codec specificati=
-on.
-> >> Some encoders might allow configuring all the fields found in the head=
-ers,
-> >> others may only allow configuring a few or have specific constraints r=
-egarding
-> >> which values are allowed.
-> >>
-> >> As a result, we cannot expect that any given encoder is able to produc=
-e frames
-> >> for any set of headers. Reporting related constraints and limitations =
-(beyond
-> >> profile/level) seems quite difficult and error-prone.
-> >>
-> >> So it seems that keeping header generation in-kernel only (close to wh=
-ere the
-> >> hardware is actually configured) is the safest approach.
-> >=20
-> > This seems to match with what happened with the Hantro VP8 proof of con=
-cept. The
-> > encoder does not produce the frame header, but also, it produces 2 enco=
-ded
-> > buffers which cannot be made contiguous at the hardware level. This not=
-ion of
-> > plane in coded data wasn't something that blended well with the rest of=
- the API
-> > and we didn't want to copy in the kernel while the userspace would also=
- be
-> > forced to copy to align the headers. Our conclusion was that it was bes=
-t to
-> > generate the headers and copy both segment before delivering to userspa=
-ce. I
-> > suspect this type of situation will be quite common.
-> >=20
-> >>
-> >> # Codec Features
-> >>
-> >> Codecs have many variable features that can be enabled or not and spec=
-ific
-> >> configuration fields that can take various values. There is usually so=
-me
-> >> top-level indication of profile/level that restricts what can be used.
-> >>
-> >> This is a very similar situation to stateful encoding, where codec-spe=
-cific
-> >> controls are used to report and set profile/level and configure these =
-aspects.
-> >> A particularly nice thing about it is that we can reuse these existing=
- controls
-> >> and add new ones in the future for features that are not yet covered.
-> >>
-> >> This approach feels more flexible than designing new structures with a=
- selected
-> >> set of parameters (that could match the existing controls) for each co=
-dec.
-> >=20
-> > Though, reading more into this emails, we still have a fair amount of c=
-ontrols
-> > to design and add, probably some compound controls too ?
->=20
-> I expect that for stateless encoders support for read-only requests will =
-be needed:
->=20
-> https://patchwork.linuxtv.org/project/linux-media/list/?series=3D5647
->=20
-> I worked on that in the past together with dynamic control arrays. The dy=
-namic
-> array part was merged, but the read-only request part wasn't (there was n=
-ever a
-> driver that actually needed it).
->=20
-> I don't know if that series still applies, but if there is a need for it =
-then I
-> can rebase it and post an RFCv3.
 
-So if I understand this correctly (from a quick look), this would be to all=
-ow
-stateless encoder drivers to attach a particular control value to a specific
-returned frame?
+Takashi
 
-I guess this would be a good match to return statistics about the encoded f=
-rame.
-However that would probably be expressed in a hardware-specific way so it
-seems preferable to not expose this to userspace and handle it in-kernel
-instead.
-
-What's really important for userspace to know (in order to do user-side
-rate-control, which we definitely want to support) is the resulting bitstre=
-am
-size. This is already available with bytesused.
-
-So all in all I think we're good with the current status of request support.
-
-Cheers,
-
-Paul
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---aWuj40h1KBiOheuV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmTTpi8ACgkQ3cLmz3+f
-v9GEdAf/avLc1Cx2s9I2b1sF2Caqh/fuL4ef2D7gFNGzZzR0Uju4QiAOsAFbMD8K
-Zkd4Ti8lOCvlJOsZIthNnCoCkHGv05vkaES3yysF4MWg6SJgKvZ4m7gdi4u5Xid4
-8wqY4HjbccJGeMbdTU0M72euuT8kdTG4lFLBdLUGFmDefIKFisDY2hPBlgGO1uP+
-sYte2KySWBhL0Vc6+7KkO42uF4KjJ2kFOx6n+1T6poCnlDHFZ92zWEClMIIK7CdE
-cAMywTSrwhHekHkPoiTki0tufju6TjDENlsWHsAq1YNekKH8qc0L5zcSOGb1C8nE
-CUVjZx2+BXehlrDO8Uiwb+2thYODcw==
-=swV6
------END PGP SIGNATURE-----
-
---aWuj40h1KBiOheuV--
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > ---
+> > 
+> > This is a RFC patch, or rather a material for bikeshedding.
+> > 
+> > Initially the discussion started from the use of sockptr_t for the
+> > sound driver in Andy's patch:
+> >   https://lore.kernel.org/r/20230721100146.67293-1-andriy.shevchenko@linux.intel.com
+> > followed by a bigger series of patches by me:
+> >   https://lore.kernel.org/r/20230731154718.31048-1-tiwai@suse.de
+> > 
+> > The first reaction to the patches (including my own) were
+> > "why sockptr_t?"  Yes, it's just confusing.  So, here it is, a
+> > proposal of defining the new type for the very purpose as sockptr_t.
+> > 
+> > The name of uniptr_t is nothing but my random pick up, and we can
+> > endlessly discuss for a better name (genptr_t or whatever).
+> > I'm totally open for the name.
+> > 
+> > After this introduction, sockptr_t can be alias of uniptr_t,
+> > e.g. simply override with "#define sockptr_t uniptr_t" or such.
+> > How can it be is another open question.
+> > 
+> > Also, we can clean up the macro implementation along with it;
+> > there seem a few (rather minor) issues as suggested by Andy:
+> >   https://lore.kernel.org/r/ZMlGKy7ibjkQ6ii7@smile.fi.intel.com
+> > 
+> > Honestly speaking, I don't mind to keep using sockptr_t generically
+> > despite of the name, if people agree.  The rename might make sense,
+> > though, if it's more widely used in other subsystems in future.
+> > 
+> > 
+> > Takashi
+> > 
+> > ===
+> > 
+> >  include/linux/uniptr.h | 121 +++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 121 insertions(+)
+> >  create mode 100644 include/linux/uniptr.h
+> > 
+> > diff --git a/include/linux/uniptr.h b/include/linux/uniptr.h
+> > new file mode 100644
+> > index 000000000000..f7994d3a45eb
+> > --- /dev/null
+> > +++ b/include/linux/uniptr.h
+> > @@ -0,0 +1,121 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +/*
+> > + * Support for "universal" pointers that can point to either kernel or userspace
+> > + * memory.
+> > + *
+> > + * Original code from sockptr.h
+> > + *    Copyright (c) 2020 Christoph Hellwig
+> > + */
+> > +#ifndef _LINUX_UNIPTR_H
+> > +#define _LINUX_UNIPTR_H
+> > +
+> > +#include <linux/err.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/string.h>
+> > +#include <linux/types.h>
+> > +#include <linux/uaccess.h>
+> > +
+> > +typedef struct {
+> > +	union {
+> > +		void		*kernel;
+> > +		void __user	*user;
+> > +	};
+> > +	bool		is_kernel : 1;
+> > +} uniptr_t;
+> > +
+> > +static inline bool uniptr_is_kernel(uniptr_t uniptr)
+> > +{
+> > +	return uniptr.is_kernel;
+> > +}
+> > +
+> > +static inline uniptr_t KERNEL_UNIPTR(void *p)
+> > +{
+> > +	return (uniptr_t) { .kernel = p, .is_kernel = true };
+> > +}
+> > +
+> > +static inline uniptr_t USER_UNIPTR(void __user *p)
+> > +{
+> > +	return (uniptr_t) { .user = p };
+> > +}
+> > +
+> > +static inline bool uniptr_is_null(uniptr_t uniptr)
+> > +{
+> > +	if (uniptr_is_kernel(uniptr))
+> > +		return !uniptr.kernel;
+> > +	return !uniptr.user;
+> > +}
+> > +
+> > +static inline int copy_from_uniptr_offset(void *dst, uniptr_t src,
+> > +					  size_t offset, size_t size)
+> > +{
+> > +	if (!uniptr_is_kernel(src))
+> > +		return copy_from_user(dst, src.user + offset, size);
+> > +	memcpy(dst, src.kernel + offset, size);
+> > +	return 0;
+> > +}
+> > +
+> > +static inline int copy_from_uniptr(void *dst, uniptr_t src, size_t size)
+> > +{
+> > +	return copy_from_uniptr_offset(dst, src, 0, size);
+> > +}
+> > +
+> > +static inline int copy_to_uniptr_offset(uniptr_t dst, size_t offset,
+> > +					const void *src, size_t size)
+> > +{
+> > +	if (!uniptr_is_kernel(dst))
+> > +		return copy_to_user(dst.user + offset, src, size);
+> > +	memcpy(dst.kernel + offset, src, size);
+> > +	return 0;
+> > +}
+> > +
+> > +static inline int copy_to_uniptr(uniptr_t dst, const void *src, size_t size)
+> > +{
+> > +	return copy_to_uniptr_offset(dst, 0, src, size);
+> > +}
+> > +
+> > +static inline void *memdup_uniptr(uniptr_t src, size_t len)
+> > +{
+> > +	void *p = kmalloc_track_caller(len, GFP_USER | __GFP_NOWARN);
+> > +
+> > +	if (!p)
+> > +		return ERR_PTR(-ENOMEM);
+> > +	if (copy_from_uniptr(p, src, len)) {
+> > +		kfree(p);
+> > +		return ERR_PTR(-EFAULT);
+> > +	}
+> > +	return p;
+> > +}
+> > +
+> > +static inline void *memdup_uniptr_nul(uniptr_t src, size_t len)
+> > +{
+> > +	char *p = kmalloc_track_caller(len + 1, GFP_KERNEL);
+> > +
+> > +	if (!p)
+> > +		return ERR_PTR(-ENOMEM);
+> > +	if (copy_from_uniptr(p, src, len)) {
+> > +		kfree(p);
+> > +		return ERR_PTR(-EFAULT);
+> > +	}
+> > +	p[len] = '\0';
+> > +	return p;
+> > +}
+> > +
+> > +static inline long strncpy_from_uniptr(char *dst, uniptr_t src, size_t count)
+> > +{
+> > +	if (uniptr_is_kernel(src)) {
+> > +		size_t len = min(strnlen(src.kernel, count - 1) + 1, count);
+> > +
+> > +		memcpy(dst, src.kernel, len);
+> > +		return len;
+> > +	}
+> > +	return strncpy_from_user(dst, src.user, count);
+> > +}
+> > +
+> > +static inline int check_zeroed_uniptr(uniptr_t src, size_t offset, size_t size)
+> > +{
+> > +	if (!uniptr_is_kernel(src))
+> > +		return check_zeroed_user(src.user + offset, size);
+> > +	return memchr_inv(src.kernel + offset, 0, size) == NULL;
+> > +}
+> > +
+> > +#endif /* _LINUX_UNIPTR_H */
+> > -- 
+> > 2.35.3
+> ---end quoted text---
+> 
