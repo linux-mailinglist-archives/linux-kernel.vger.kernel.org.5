@@ -2,237 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A106E775F7E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CD9775F8F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231534AbjHIMpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
+        id S232579AbjHIMqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjHIMpD (ORCPT
+        with ESMTP id S229549AbjHIMqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:45:03 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6AB19A1
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:45:02 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 5D43A21836;
-        Wed,  9 Aug 2023 12:45:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691585101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pZ4GRECkCWju5X/MZmXzV9HITJy/PHZnpRNK78OYstQ=;
-        b=N8wWSeXsFs+e0qv40XfAahn3WbDBmrX/ehGsyduyG+vSSUglNROAXGVnrS+eSB4BECdkvz
-        gmN+eizo5mSuT/MZsI6T1+nztqIq11+r5sjn51UTxrx32Nau+JyPPXX3gTgc3SikQ7XmTl
-        YawxGFB+KDZvTm1WOQ4ZYkQHVk3ExwA=
-Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 2D7892C142;
-        Wed,  9 Aug 2023 12:45:00 +0000 (UTC)
-Date:   Wed, 9 Aug 2023 14:44:56 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: hostile takeover: Re: [PATCH printk v2 3/8] printk: nbcon: Add
- acquire/release logic
-Message-ID: <ZNOKSFAGPxYFeeJT@alley>
-References: <20230728000233.50887-1-john.ogness@linutronix.de>
- <20230728000233.50887-4-john.ogness@linutronix.de>
+        Wed, 9 Aug 2023 08:46:32 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 83F2F19A1;
+        Wed,  9 Aug 2023 05:46:31 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1112)
+        id D6FD120FC3FE; Wed,  9 Aug 2023 05:46:30 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D6FD120FC3FE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1691585190;
+        bh=G0gxRN5QnxTLEOIdIvEe864KwskWfmwxWJZYwvjDSlo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JvqfUwlrN8SFoQZfvoGT5ol8Tmiz9HmGGUsXNPJy28y9tdBKDtRIpIkaO0RTgvnGy
+         me82/2JlMkKOJ8nouwy+b6PR8sxGfLnSMkNPCxFctzUFbnJb3MMLT5naT+6xEjxA9q
+         sQa3F9+OJGboaWVu/aYlKhbXeWKFEEG9axlkdoYo=
+Date:   Wed, 9 Aug 2023 05:46:30 -0700
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        bp@alien8.de, vbabka@suse.cz, kirill@shutemov.name,
+        ak@linux.intel.com, tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        dgilbert@redhat.com, jarkko@kernel.org, ashish.kalra@amd.com,
+        nikunj.dadhania@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com
+Subject: Re: [PATCH RFC v9 19/51] x86/sev: Introduce snp leaked pages list
+Message-ID: <20230809124630.GA11150@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20230612042559.375660-1-michael.roth@amd.com>
+ <20230612042559.375660-20-michael.roth@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230728000233.50887-4-john.ogness@linutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230612042559.375660-20-michael.roth@amd.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have actually forgot one thing.
-
-On Fri 2023-07-28 02:08:28, John Ogness wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
+On Sun, Jun 11, 2023 at 11:25:27PM -0500, Michael Roth wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
 > 
-> Add per console acquire/release functionality. The console 'locked'
-> state is a combination of multiple state fields:
+> Pages are unsafe to be released back to the page-allocator, if they
+> have been transitioned to firmware/guest state and can't be reclaimed
+> or transitioned back to hypervisor/shared state. In this case add
+> them to an internal leaked pages list to ensure that they are not freed
+> or touched/accessed to cause fatal page faults.
 > 
->   - Hostile takeover
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> [mdr: relocate to arch/x86/coco/sev/host.c]
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> ---
+>  arch/x86/coco/sev/host.c        | 28 ++++++++++++++++++++++++++++
+>  arch/x86/include/asm/sev-host.h |  3 +++
+>  2 files changed, 31 insertions(+)
 > 
->       The new owner takes the console over without 'req_prio'
->       handshake.
-> 
->       This is required when friendly handovers are not possible,
->       i.e. the higher priority context interrupted the owning
->       context on the same CPU or the owning context is not able
->       to make progress on a remote CPU.
-
-I always expected that there would be only one hostile takeover.
-It would allow to take the lock a harsh way when the friendly
-way fails.
-
-> All other policy decisions have to be made at the call sites:
-> 
->   - What is marked as an unsafe section.
->   - Whether to spinwait if there is already an owner.
->   - Whether to attempt a hostile takeover when safe.
->   - Whether to attempt a hostile takeover when unsafe.
-
-But there seems to be actually two variants. How they are
-supposed to be used, please?
-
-I would expect that a higher priority context would always
-be able to takeover the lock when it is in a safe context.
-
-By other words, "hostile takeover when safe" would be
-the standard behavior for context with a higher priority.
-
-And if I get it correctly then nbcon_enter_unsafe() returns
-"false" when there is a pending request with a higher priority.
-And only requests with a higher priority are allowed.
-
-By other words, the difference between normal takeover and
-"hostile takeover when safe" is that the 1st one has to
-wait until the current owner calls nbcon_enter_unsafe().
-But the result is the same. The current owner might
-prematurely end after calling nbcon_enter_unsafe().
-
-
-Maybe, this another relic from the initial more generic approach?
-
-
-> --- a/include/linux/console.h
-> +++ b/include/linux/console.h
-> @@ -175,13 +175,28 @@ enum cons_flags {
->   * struct nbcon_state - console state for nbcon consoles
->   * @atom:	Compound of the state fields for atomic operations
->   *
-> + * @req_prio:		The priority of a handover request
-> + * @prio:		The priority of the current usage
-> + * @unsafe:		Console is busy in a non takeover region
-> + * @hostile_unsafe:	The @unsafe value before a hostile takeover
-> + * @cpu:		The CPU on which the owner runs
-> + *
->   * To be used for reading and preparing of the value stored in the nbcon
->   * state variable @console.nbcon_state.
-> + *
-> + * The @prio and @req_prio fields are particularly important to allow
-> + * spin-waiting to timeout and give up without the risk of a waiter being
-> + * assigned the lock after giving up.
->   */
->  struct nbcon_state {
->  	union {
->  		unsigned int	atom;
->  		struct {
-> +			unsigned int prio		:  2;
-> +			unsigned int req_prio		:  2;
-> +			unsigned int unsafe		:  1;
-> +			unsigned int hostile_unsafe	:  1;
-> +			unsigned int cpu		: 24;
->  		};
->  	};
->  };
-> @@ -194,6 +209,50 @@ struct nbcon_state {
->   */
->  static_assert(sizeof(struct nbcon_state) <= sizeof(int));
+> diff --git a/arch/x86/coco/sev/host.c b/arch/x86/coco/sev/host.c
+> index cd3b4c6a25bc..373e91f5a337 100644
+> --- a/arch/x86/coco/sev/host.c
+> +++ b/arch/x86/coco/sev/host.c
+> @@ -64,6 +64,12 @@ struct rmpentry {
+>  static unsigned long rmptable_start __ro_after_init;
+>  static unsigned long rmptable_end __ro_after_init;
 >  
-> +/**
-> + * nbcon_prio - console owner priority for nbcon consoles
-> + * @NBCON_PRIO_NONE:		Unused
-> + * @NBCON_PRIO_NORMAL:		Normal (non-emergency) usage
-> + * @NBCON_PRIO_EMERGENCY:	Emergency output (WARN/OOPS...)
-> + * @NBCON_PRIO_PANIC:		Panic output
-> + * @NBCON_PRIO_MAX:		The number of priority levels
-> + *
-> + * A context wanting to produce emergency output can carefully takeover the
-> + * console, even without consent of the owner. Ideally such a takeover is only
-> + * when @nbcon_state::unsafe is not set. However, a context wanting to produce
-> + * panic output can ignore the unsafe flag as a last resort. If panic output
-> + * is active, no takeover is possible until the panic output releases the
-> + * console.
-> + */
-> +enum nbcon_prio {
-> +	NBCON_PRIO_NONE = 0,
-> +	NBCON_PRIO_NORMAL,
-> +	NBCON_PRIO_EMERGENCY,
-> +	NBCON_PRIO_PANIC,
-> +	NBCON_PRIO_MAX,
-> +};
+> +/* list of pages which are leaked and cannot be reclaimed */
+> +static LIST_HEAD(snp_leaked_pages_list);
+> +static DEFINE_SPINLOCK(snp_leaked_pages_list_lock);
 > +
-> +struct console;
+> +static atomic_long_t snp_nr_leaked_pages = ATOMIC_LONG_INIT(0);
 > +
-> +/**
-> + * struct nbcon_context - Context for console acquire/release
-> + * @console:		The associated console
-> + * @spinwait_max_us:	Limit for spinwait acquire
-> + * @prio:		Priority of the context
-> + * @unsafe:		This context is in an unsafe section
+>  #undef pr_fmt
+>  #define pr_fmt(fmt)	"SEV-SNP: " fmt
+>  
+> @@ -494,3 +500,25 @@ int rmp_make_shared(u64 pfn, enum pg_level level)
+>  	return rmpupdate(pfn, &val);
+>  }
+>  EXPORT_SYMBOL_GPL(rmp_make_shared);
+> +
+> +void snp_leak_pages(unsigned long pfn, unsigned int npages)
+> +{
+> +	struct page *page = pfn_to_page(pfn);
+> +
+> +	WARN(1, "psc failed, pfn 0x%lx pages %d (marked offline)\n", pfn, npages);
+> +
+> +	spin_lock(&snp_leaked_pages_list_lock);
+> +	while (npages--) {
+> +		/*
+> +		 * Reuse the page's buddy list for chaining into the leaked
+> +		 * pages list. This page should not be on a free list currently
+> +		 * and is also unsafe to be added to a free list.
+> +		 */
+> +		list_add_tail(&page->buddy_list, &snp_leaked_pages_list);
+> +		sev_dump_rmpentry(pfn);
+> +		pfn++;
+> +	}
+> +	spin_unlock(&snp_leaked_pages_list_lock);
+> +	atomic_long_inc(&snp_nr_leaked_pages);
+> +}
+> +EXPORT_SYMBOL_GPL(snp_leak_pages);
+> diff --git a/arch/x86/include/asm/sev-host.h b/arch/x86/include/asm/sev-host.h
+> index 753e80d16433..bab3b226777a 100644
+> --- a/arch/x86/include/asm/sev-host.h
+> +++ b/arch/x86/include/asm/sev-host.h
+> @@ -19,6 +19,8 @@ void sev_dump_rmpentry(u64 pfn);
+>  int psmash(u64 pfn);
+>  int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int asid, bool immutable);
+>  int rmp_make_shared(u64 pfn, enum pg_level level);
+> +void snp_leak_pages(unsigned long pfn, unsigned int npages);
+> +
+>  #else
+>  static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return 0; }
+>  static inline void sev_dump_rmpentry(u64 pfn) {}
+> @@ -29,6 +31,7 @@ static inline int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int as
+>  	return -ENODEV;
+>  }
+>  static inline int rmp_make_shared(u64 pfn, enum pg_level level) { return -ENODEV; }
+> +void snp_leak_pages(unsigned long pfn, unsigned int npages) {}
 
-This seems to be an input value for try_acquire(). It is
-controversial.
+This needs to be 'static inline' or the build fails with multiple definition errors.
+I'm building a guest kernel with CONFIG_KVM_AMD_SEV disabled.
 
-I guess that it removes the need to call nbcon_enter_unsafe()
-right after try_acquire_console().
+Jeremi
 
-Hmm, this semantic is problematic:
-
-  1. The result would be non-paired enter_unsafe()/exit_unsafe()
-     calls.
-
-  2. I would personally expect that this is an output value
-     set by try_acquire() so that the context might know
-     how it got the lock.
-
-  3. Strictly speaking, as an input value, it would mean that
-     try_acquire() is called when the console is in "unsafe" state.
-     But the caller does not know in which state the console
-     is until it acquires the lock.
-
-
-> + * @hostile:		Acquire console by hostile takeover
-> + * @takeover_unsafe:	Acquire console by hostile takeover even if unsafe
-> + */
-> +struct nbcon_context {
-> +	/* members set by caller */
-> +	struct console		*console;
-> +	unsigned int		spinwait_max_us;
-> +	enum nbcon_prio		prio;
-> +	unsigned int		unsafe			: 1;
-> +	unsigned int		hostile			: 1;
-> +	unsigned int		takeover_unsafe		: 1;
-> +};
-
-The names make sense. But there are 4 names used struct nbcon_state
-and struct nbcon_context. One is used twice:
-
-   state.unsafe
-   state.hostile_unsafe
-
-   ctxt.unsafe
-   ctxt.hostile
-   ctxt.takeover_unsafe
-
-For me it is not easy to remember which permutation is used where ;-)
-It would be easier if we remove the "hostile when safe" variant.
-Then 3 variables might be enough. I suggest something like:
-
-  state.unsafe		 Console is busy and takeover is not safe.
-
-  state.unsafe_takeover  A hostile takeover in an unsafe state happened
-			 in the past. The console can't be safe until
-			 re-initialized.
-
-  ctxt.allow_unsafe_takeover Allow hostile takeover even if unsafe.
-			Can be used only with PANIC prio. Might cause
-			a system freeze when the console is used later.
-
-Best Regards,
-Petr
+>  #endif
+>  
+>  #endif
+> -- 
+> 2.25.1
+> 
