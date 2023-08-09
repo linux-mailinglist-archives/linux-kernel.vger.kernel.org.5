@@ -2,79 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B48857751FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 06:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFC2775202
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 06:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbjHIEfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 00:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        id S229726AbjHIEmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 00:42:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbjHIEfD (ORCPT
+        with ESMTP id S229450AbjHIEmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 00:35:03 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418151BF3;
-        Tue,  8 Aug 2023 21:34:55 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1bb782974f4so4946612fac.3;
-        Tue, 08 Aug 2023 21:34:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691555694; x=1692160494;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aNuO8maW3k3biYUipfRcSFSTTKrtXD3lVQL4G6LBK5w=;
-        b=HMNhAZoCzWrw2LiU0SnsgmGnnq7sUGxddlTDeiaWnkPApFKIO1YsxIGzTmlbQ1nhxU
-         d/1CUW2Hk88KQp5/6dsDIEqn1WplnEkG7ZCQ8hkHdOFOjwZvo9wvt4oWupSY1ynhANFY
-         HpW/pC4icZP7XTSTeUGIM53yvMMBLBW9EherLgpsT8QJQ89pqok75dXaHXE+mRLiwub4
-         pulu6FSvp7M0ndW0C2brOfYHRtFw+yk3UW6XX+Ce59ZgbxS9lIAAZurwJ8fEuTaIAU5k
-         VCl0n7RAeP8fYe8dhdKzpS1a13EZ4zstAUzcKum1zvHaDWoJosDlFjUB0RUuEKAMw+Yv
-         o99g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691555694; x=1692160494;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aNuO8maW3k3biYUipfRcSFSTTKrtXD3lVQL4G6LBK5w=;
-        b=BgRLw+PlAspGOU0Ov1kwXeOz12dTkUcJAQraZQBK4umfU8ijxEPyGToAuvHgm0GOaj
-         5Mag+UhMTCFGKLI+vT7lsQVI4L1zXbmcyTNh2RKz4RXmr/bPlThS+y6AyMHjebTnzoYm
-         Ao5mpYD+UMSaDcWpfcJ76vueWouh6EKt+r09Ovmc3RYzW/jYX4W9Anerz1iuLFcmDQXs
-         RsatIhWIKRJ9ZnX5n0OdrxF3CG9GVVgaMOPTOcdvub/L3EyMjF0l9lmgMOeNldKX6a56
-         lIN5hTnsqrC5HN7AMp8Zx/PboVZPDvS1RuKGodGudxp749CVUrT7DRgBTHhJZ26CFbDd
-         a4Iw==
-X-Gm-Message-State: AOJu0YzMTDpPYP1l+apjkSMGda7lD1utW3SOydCIumwR4gsiK0g/SQJF
-        b5/so5taFGX6M/YMuk6oBtE=
-X-Google-Smtp-Source: AGHT+IGWK0eChk1cvzdf8ALQcYWZ6DdPYFNWw7+Hs82Xlsp8oPp+UkPF+d/rvirOwA0Ro9ksVQ0YxA==
-X-Received: by 2002:a05:6871:1c6:b0:1bb:8483:a807 with SMTP id q6-20020a05687101c600b001bb8483a807mr1893306oad.44.1691555694018;
-        Tue, 08 Aug 2023 21:34:54 -0700 (PDT)
-Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id n26-20020a9d741a000000b006b87f593877sm6552031otk.37.2023.08.08.21.34.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 21:34:53 -0700 (PDT)
-Message-ID: <bee24ff5-444c-44f9-81c8-88ff310b401a@gmail.com>
-Date:   Wed, 9 Aug 2023 01:33:29 -0300
+        Wed, 9 Aug 2023 00:42:35 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B58811BCE;
+        Tue,  8 Aug 2023 21:42:32 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 930B111FB;
+        Tue,  8 Aug 2023 21:43:14 -0700 (PDT)
+Received: from [10.163.54.83] (unknown [10.163.54.83])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A03D3F6C4;
+        Tue,  8 Aug 2023 21:42:28 -0700 (PDT)
+Message-ID: <86fb0ae5-d840-5ff5-a2a7-fc635a53184a@arm.com>
+Date:   Wed, 9 Aug 2023 10:12:25 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 5/5] rust: file: add `DeferredFdCloser`
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] coresight: etm: Make cycle count threshold user
+ configurable
 Content-Language: en-US
-To:     Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev
-References: <20230720152820.3566078-1-aliceryhl@google.com>
- <20230720152820.3566078-6-aliceryhl@google.com>
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20230720152820.3566078-6-aliceryhl@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, Al.Grant@arm.com,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230808074533.380537-1-anshuman.khandual@arm.com>
+ <CAJ9a7Vgs6nP+KEPhjuj4BtWRZrRt-byz1xsa-JRzk3cFGJ+d8w@mail.gmail.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <CAJ9a7Vgs6nP+KEPhjuj4BtWRZrRt-byz1xsa-JRzk3cFGJ+d8w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,33 +50,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 12:28, Alice Ryhl wrote:
-> This adds a new type called `DeferredFdCloser` that can be used to close
-> files by their fd in a way that is safe even if the file is currently
-> held using `fdget`.
+
+
+On 8/8/23 15:49, Mike Leach wrote:
+> Hi Anshuman
 > 
-> This is done by grabbing an extra refcount to the file and dropping it
-> in a task work once we return to userspace.
+> On Tue, 8 Aug 2023 at 08:45, Anshuman Khandual
+> <anshuman.khandual@arm.com> wrote:
+>>
+>> Cycle counting is enabled, when requested and supported but with a default
+>> threshold value ETM_CYC_THRESHOLD_DEFAULT i.e 0x100 getting into TRCCCCTLR,
+>> representing the minimum interval between cycle count trace packets.
+>>
+>> This makes cycle threshold user configurable, from the user space via perf
+>> event attributes. Although it falls back using ETM_CYC_THRESHOLD_DEFAULT,
+>> in case no explicit request. As expected it creates a sysfs file as well.
+>>
+>> /sys/bus/event_source/devices/cs_etm/format/cc_threshold
+>>
+>> New 'cc_threshold' uses 'event->attr.config3' as no more space is available
+>> in 'event->attr.config1' or 'event->attr.config2'.
+>>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: James Clark <james.clark@arm.com>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Cc: coresight@lists.linaro.org
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-doc@vger.kernel.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>> Changes in V2:
+>>
 > 
-> See comments on `binder_do_fd_close` and commit `80cd795630d65` for
-> motivation.
+> Please ensure that the e-mail title reflects the "v2" nature of this.
+> e.g. [PATCH v2] ....
 
-Please provide links, at least for the doc comment.
+Right, missed that.
 
 > 
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> ---
-> [...]
->   
-> +/// Helper used for closing file descriptors in a way that is safe even if the file is currently
-> +/// held using `fdget`.
-> +///
-> +/// See comments on `binder_do_fd_close` and commit `80cd795630d65`.
+> 
+>> - s/treshhold/threshhold
+>>
+>> Changes in V1:
+>>
+>> https://lore.kernel.org/all/20230804044720.1478900-1-anshuman.khandual@arm.com/
+>>
+>>  Documentation/trace/coresight/coresight.rst        |  2 ++
+>>  drivers/hwtracing/coresight/coresight-etm-perf.c   |  2 ++
+>>  drivers/hwtracing/coresight/coresight-etm4x-core.c | 12 ++++++++++--
+>>  3 files changed, 14 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/trace/coresight/coresight.rst b/Documentation/trace/coresight/coresight.rst
+>> index 4a71ea6cb390..a698b07206b5 100644
+>> --- a/Documentation/trace/coresight/coresight.rst
+>> +++ b/Documentation/trace/coresight/coresight.rst
+>> @@ -624,6 +624,8 @@ They are also listed in the folder /sys/bus/event_source/devices/cs_etm/format/
+>>     * - timestamp
+>>       - Session local version of the system wide setting: :ref:`ETMv4_MODE_TIMESTAMP
+>>         <coresight-timestamp>`
+>> +   * - cc_threshold
+>> +     - Cycle count threshold value
+>>
+>>  How to use the STM module
+>>  -------------------------
+> 
+> The doc elements here need to be in a separate patch in the set and
+> additionally sent to doc list and maintainer
+> (linux-doc@vger.kernel.org and corbet@lwn.net) to be picked up.
 
-Ditto.
+Sure, will do that.
 
-> +pub struct DeferredFdCloser {
-> +    inner: Box<DeferredFdCloserInner>,
-> +}
-> +
-> [...]
+> 
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> index 5ca6278baff4..09f75dffae60 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> @@ -68,6 +68,7 @@ PMU_FORMAT_ATTR(preset,               "config:0-3");
+>>  PMU_FORMAT_ATTR(sinkid,                "config2:0-31");
+>>  /* config ID - set if a system configuration is selected */
+>>  PMU_FORMAT_ATTR(configid,      "config2:32-63");
+>> +PMU_FORMAT_ATTR(cc_threshold,  "config3:0-11");
+>>
+>>
+>>  /*
+>> @@ -101,6 +102,7 @@ static struct attribute *etm_config_formats_attr[] = {
+>>         &format_attr_preset.attr,
+>>         &format_attr_configid.attr,
+>>         &format_attr_branch_broadcast.attr,
+>> +       &format_attr_cc_threshold.attr,
+>>         NULL,
+>>  };
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> index 9d186af81ea0..a353c0784bab 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> @@ -644,7 +644,7 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
+>>         struct etmv4_config *config = &drvdata->config;
+>>         struct perf_event_attr *attr = &event->attr;
+>>         unsigned long cfg_hash;
+>> -       int preset;
+>> +       int preset, cc_threshold;
+>>
+>>         /* Clear configuration from previous run */
+>>         memset(config, 0, sizeof(struct etmv4_config));
+>> @@ -667,7 +667,15 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
+>>         if (attr->config & BIT(ETM_OPT_CYCACC)) {
+>>                 config->cfg |= TRCCONFIGR_CCI;
+>>                 /* TRM: Must program this for cycacc to work */
+>> -               config->ccctlr = ETM_CYC_THRESHOLD_DEFAULT;
+>> +               cc_threshold = attr->config3 & ETM_CYC_THRESHOLD_MASK;
+>> +               if (cc_threshold) {
+>> +                       if (cc_threshold < drvdata->ccitmin)
+>> +                               config->ccctlr = drvdata->ccitmin;
+>> +                       else
+>> +                               config->ccctlr = cc_threshold;
+>> +               } else {
+>> +                       config->ccctlr = ETM_CYC_THRESHOLD_DEFAULT;
+>> +               }
+>>         }
+>>         if (attr->config & BIT(ETM_OPT_TS)) {
+>>                 /*
+>> --
+>> 2.25.1
+>>
+> 
+> As we are using ccitmin - which I think we must - then we need an
+> additional patch in the set that implements the errata workaround
+> mentioned by Al, when setting ccitmin in etm4_init_arch_data().
+Agreed, I am working on that.
+
+> Perhaps a helper function called from there to read the ID reg unless
+> one of the errata cores in which case set to 0x4.
+Even on the errata cores, first will read the ID register TRCIDR3 to
+ascertain CCITMIN field to be 0x100 (256) before overriding with 0x4.
