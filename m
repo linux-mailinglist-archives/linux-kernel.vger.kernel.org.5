@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12612776AE4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0693776AE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbjHIVYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 17:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42658 "EHLO
+        id S230197AbjHIVYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 17:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbjHIVYG (ORCPT
+        with ESMTP id S229776AbjHIVYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 17:24:06 -0400
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629E11BCF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:24:05 -0700 (PDT)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1bb7a1c2fe5so193010fac.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 14:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google; t=1691616244; x=1692221044;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZpUiLjfSF0ntg9zJ9c/nIKTYsoCsGk3Y03Sx8JEa3Wo=;
-        b=SBPAuTkrM4/QFGj4tjjc+QMMT/Xu3BbudNY8pyMR6qhlDVqsLVcFjskL7jSRq2Hci7
-         6LhUC+oxziAP/SdQKu5z/cq3+ft/xPh2li7FDGlFwn3C/v2EKPBdtjGf5MqbtSxRGM7k
-         FhHNAeMBAl8T9yyWLkzD2xfdcaFD7dJBGIUyY=
+        Wed, 9 Aug 2023 17:24:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720A81724
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:24:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691616241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pab5T/wYPnPTPqi6VHLKDV5cGJ+aQFsll7X5AJmwYhg=;
+        b=AoRmKUYKbNmzxKASeWe9UjYkSZC18acVG3Gn08nzCZZGHrPE4rjPQzmUnTGhsaqmrBf5+K
+        ZBWCkIAJGg681rk95uiOmTbm0+zaicvmB2IZZsL1bmXznamAM4I059TSFJn6Kordiu26zY
+        CitXXi/8FaIVv2GH3hvbN2sHE16gPks=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-42-qa54dwonM86yNpSA1UNyuA-1; Wed, 09 Aug 2023 17:23:59 -0400
+X-MC-Unique: qa54dwonM86yNpSA1UNyuA-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-63f96fcb4ccso644116d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 14:23:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691616244; x=1692221044;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZpUiLjfSF0ntg9zJ9c/nIKTYsoCsGk3Y03Sx8JEa3Wo=;
-        b=hqjwuIOiTdO1LaD7T4+KhQZa5Vs+XKOQjb/dqk57tLeHCXO4O0vGty2/bfeAnUwWsR
-         AjySoDGWWIdvw8f2zePJeGn8hxB4ZtCBfKyJkJibJmZ9WEKt7kgEmXeFtW6ddP95a3Vy
-         lwzGy1IjlI2T/sdUE7J45v2mRWNLemXtfe8/8zla/J6E6vko9AvAc6jIuuitZacJZ4i3
-         jSMC4PJcHE8PEDyHV/twR/OPcEsn3RLNCQxUkqybnNBIVatqr3xCsEsJ19ozF66ghpWF
-         ii5zvnQFYvxfDGVXzBLFcnPGPAeAvT6+oFcepmU/ZVED1RTC0hI3vBhL90tAtkW52VeB
-         6Mnw==
-X-Gm-Message-State: AOJu0YzZ08IHzSESf9wxeKiIFGg9mAH0riPBZqQ/tfEBTmWkcuVIdxXs
-        N0NmT/la9uTPszetZznKR+oyYg==
-X-Google-Smtp-Source: AGHT+IE2dgo88ceePfEfmg5R+KM3syyyZFlGCJ8FWRKpA0R92ZW3miFGDVnwpa0G++Ej6fvOFDtgsA==
-X-Received: by 2002:a05:6870:9627:b0:1be:f383:2c3d with SMTP id d39-20020a056870962700b001bef3832c3dmr591330oaq.14.1691616244637;
-        Wed, 09 Aug 2023 14:24:04 -0700 (PDT)
-Received: from sunraycer.home ([2601:246:5d81:5e3b::100])
-        by smtp.gmail.com with ESMTPSA id w9-20020a0dd409000000b00586ba973bddsm3372473ywd.110.2023.08.09.14.24.04
+        d=1e100.net; s=20221208; t=1691616239; x=1692221039;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pab5T/wYPnPTPqi6VHLKDV5cGJ+aQFsll7X5AJmwYhg=;
+        b=HQde5Mtl4KtOzVEz4t37uTg7ZpZ/IYxsYZMS4YApqQFQx0yDZXAXv2tLy6tcQFSJ3p
+         gttdHkm03PkY5tzw8TadgblUhyAmoADNZNXbdCsclM8CtVPPzmsFygs8mEsqj6rpaPHJ
+         u/uy8ZmGLg5VJSjtYpzZOXmMCws/nIwD8xOAQYA7yNcRReRQoC6jjfjSwED3qBGjawVX
+         06HdJaDA0VK0QXJsywBP7NT0W3FiFDn6Pt7c4kmwYmJqL0yXZoX01DxNMqCghZdPzUwj
+         uu9hSNovh4AgrCmlJ7Z6YhZ57qlEqCNL9ccWtSbSNhf4qgDBTo8NqgvbpA7rL5tmBU7w
+         25HQ==
+X-Gm-Message-State: AOJu0Yyp6mgy9bNANCVYuyFDfTmxnaZmALE8XLyB2ec9D7vMxD3+ElgW
+        hLrBMn3oVOv+EjbM9YvkX0ssCnTGKzCXvDNonCldRyYTO1cx0h5goC3G/qlRPoLRhkNwI2lBD/K
+        1S5Kdes3+jF/HeYXCKi9nbGoA
+X-Received: by 2002:ad4:5f87:0:b0:63c:f852:aa3a with SMTP id jp7-20020ad45f87000000b0063cf852aa3amr422290qvb.4.1691616239118;
+        Wed, 09 Aug 2023 14:23:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFHi2kXqydousZJhJDvXoAPDN6/pIDbQYIYiwnoX8uPhzD3iHOwErPThsw+blPrDnInkOW/ZQ==
+X-Received: by 2002:ad4:5f87:0:b0:63c:f852:aa3a with SMTP id jp7-20020ad45f87000000b0063cf852aa3amr422283qvb.4.1691616238907;
+        Wed, 09 Aug 2023 14:23:58 -0700 (PDT)
+Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id p1-20020a0c8c81000000b0063f8025407bsm3518958qvb.66.2023.08.09.14.23.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 14:24:04 -0700 (PDT)
-Received: from puyallup.home (localhost [127.0.0.1])
-        by sunraycer.home (Postfix) with ESMTPA id 75E025C49F3;
-        Wed,  9 Aug 2023 16:24:03 -0500 (CDT)
-From:   Steve Magnani <magnani@ieee.org>
-To:     Nilesh Javali <njavali@marvell.com>,
-        Quinn Tran <qutran@marvell.com>
-Cc:     linux-kernel@vger.kernel.org,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        linux-scsi@vger.kernel.org, "Steven J. Magnani" <magnani@ieee.org>
-Subject: [PATCH] scsi: qla2xxx: Fix overrun of PLOGI ELS template
-Date:   Wed,  9 Aug 2023 16:23:40 -0500
-Message-Id: <20230809212340.25242-1-magnani@ieee.org>
-X-Mailer: git-send-email 2.34.1
+        Wed, 09 Aug 2023 14:23:58 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 17:23:46 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
+Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
+Message-ID: <ZNQD4pxo8svpGmvX@x1n>
+References: <20230809083256.699513-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230809083256.699513-1-david@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven J. Magnani" <magnani@ieee.org>
+Hi, David,
 
-The code to save off values retrieved from the card firmware copies one
-dword too many.
+Some pure questions below..
 
-This patch depends on reversion of b68710a8094:
-https://lore.kernel.org/linux-scsi/20230807120958.3730-10-njavali@marvell.com/
+On Wed, Aug 09, 2023 at 10:32:56AM +0200, David Hildenbrand wrote:
+> Let's track the total mapcount for all large folios in the first subpage.
+> 
+> The total mapcount is what we actually want to know in folio_mapcount()
+> and it is also sufficient for implementing folio_mapped(). This also
+> gets rid of any "raceiness" concerns as expressed in
+> folio_total_mapcount().
 
-Fixes: 44f5a37d1e3e ("scsi: qla2xxx: Fix buffer-buffer credit extraction error")
-Signed-off-by: "Steven J. Magnani" <magnani@ieee.org>
----
---- a/drivers/scsi/qla2xxx/qla_init.c	2023-08-07 03:46:21.727114453 -0500
-+++ b/drivers/scsi/qla2xxx/qla_init.c	2023-08-09 15:18:46.475286995 -0500
-@@ -5549,7 +5549,7 @@ qla_get_login_template(scsi_qla_host_t *vha)
- 	__be32 *q;
- 
- 	memset(ha->init_cb, 0, ha->init_cb_size);
--	sz = min_t(int, sizeof(struct fc_els_flogi), ha->init_cb_size);
-+	sz = min_t(int, LOGIN_TEMPLATE_SIZE, ha->init_cb_size);
- 	rval = qla24xx_get_port_login_templ(vha, ha->init_cb_dma,
- 					    ha->init_cb, sz);
- 	if (rval != QLA_SUCCESS) {
-------------------------------------------------------------------------
- Steven J. Magnani               "I claim this network for MARS!
-                                  Earthling, return my space modulator!"
- #include <standard.disclaimer>
+Any more information for that "raciness" described here?
+
+> 
+> With sub-PMD THP becoming more important and things looking promising
+> that we will soon get support for such anon THP, we want to avoid looping
+> over all pages of a folio just to calculate the total mapcount. Further,
+> we may soon want to use the total mapcount in other context more
+> frequently, so prepare for reading it efficiently and atomically.
+
+Any (perhaps existing) discussion on reduced loops vs added atomic
+field/ops?
+
+I had a feeling that there's some discussion behind the proposal of this
+patch, if that's the case it'll be great to attach the link in the commit
+log.
+
+Thanks,
+
+-- 
+Peter Xu
+
