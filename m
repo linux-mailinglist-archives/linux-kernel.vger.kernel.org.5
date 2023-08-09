@@ -2,141 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB4F775FFC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4873776000
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbjHIM5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38902 "EHLO
+        id S231208AbjHIM6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjHIM5s (ORCPT
+        with ESMTP id S229625AbjHIM6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:57:48 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633461FFA
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:57:47 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3175f17a7baso5102128f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:57:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691585866; x=1692190666;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k3HCAasWYNZ9LIAV78A4uCkjkoES5nhFv19HRBaFI6k=;
-        b=fX3JzYgvoKYGPBgcz0f+IYGmYExjSmBy3BOiiNf6s40id+N4R52jbkj181Dozf/GLc
-         wNsVfZOBJTjDahe2Ls2wsyzmQ6LjZIxtAwMGM0WdP8Lk71sziB3Ri5fhoirK/civ4c/a
-         m5EoiH1uQord24EXslz5SGXYNbuwJbTuZbRF/CgadyQ580EDQgzaVMNvHfW5U4ExtJ3F
-         OkC7UF1KGDcU69sDJxYihx0i72Iy6WpXt8z+IZPnh3V79YNfbRkBMKoTRqlRVQEOSNl7
-         WSLmb3aFcJncSprqNp+N5epGpECMQRca75BpiUd7y44DemZZPfJ5dMMBZcy5N1vV4Ovw
-         FFhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691585866; x=1692190666;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k3HCAasWYNZ9LIAV78A4uCkjkoES5nhFv19HRBaFI6k=;
-        b=HNwshZo4Tz16F2FGIoEflfPQIIgNST8mg/iNBGPoy1cjND3v1cRmVkaDkk8ZulB/UR
-         SRBrHGyYqTb6UXRgojw0H+Yjev8+4qnuZWfgGSOaXssrTpH0oo0u7McYr8Bmh1f/wkwj
-         EWuAguV5Sa2ly8+hTvRbESPyJSf5jbJlfA4wMiY+71z/9kfxkvhi3sqbSsVHi4bUbM3l
-         2FbJqFASuBq+Tfq2phqUXadOzl5b/eJ/AG9rdWIbGNW250Zuj4dpZ6pOOQJvJvo83dd8
-         +mqsnP7eagUdUzQivAgK89fBr11MkRfN4qjBNfnaAIArmGBXhM7Znyo2Kd29klHQ2UGC
-         LWQw==
-X-Gm-Message-State: AOJu0YzWTE+8Q1wB8iMRPXZ1JEGz+v4MUEnFgqsWRdfW+QOyCNTYZtgh
-        BKZyxafUDvX3ZfHYO1N1KmMhYQ==
-X-Google-Smtp-Source: AGHT+IHedHvibQt77m5n/KV7nE497zImStSAb9zFe5FDYuP7zTmHWVEJ7Tma3hVOXsTr0kchK2up7g==
-X-Received: by 2002:a5d:46ce:0:b0:317:6b92:26b5 with SMTP id g14-20020a5d46ce000000b003176b9226b5mr1723146wrs.23.1691585865844;
-        Wed, 09 Aug 2023 05:57:45 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id c17-20020adfe711000000b00317afc7949csm16574445wrm.50.2023.08.09.05.57.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 05:57:45 -0700 (PDT)
-Message-ID: <6807f8c8-0503-cf79-7ef0-653ebafc81e3@linaro.org>
-Date:   Wed, 9 Aug 2023 13:57:44 +0100
+        Wed, 9 Aug 2023 08:58:45 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F041FF5;
+        Wed,  9 Aug 2023 05:58:43 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 45D351F38C;
+        Wed,  9 Aug 2023 12:58:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1691585922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QVWr8XXVikYCh9tW7i2JMcKFQHyA2Ul51zZ7VG7gDMk=;
+        b=qQ/BYlEykYjWP3ve2rOyS1R2CVAD0zcH+XiaHYHXrTSyZBaOWu5MEx9YCNGQLo34CDGhiq
+        TlsnFjOvhVaRV6Y75dFlwrNBeMiX9QtdlVT24EHYvyYM2ig/6Y8uxc/G9h4IscJRDSrIhb
+        kQn1NeGt9IJHsLituqZTT0ZUKdtS8Fs=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1D65B13251;
+        Wed,  9 Aug 2023 12:58:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QxM9BIKN02QCfwAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 09 Aug 2023 12:58:42 +0000
+Date:   Wed, 9 Aug 2023 14:58:41 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
+Message-ID: <ZNONgeoytpkchHga@dhcp22.suse.cz>
+References: <20230809045810.1659356-1-yosryahmed@google.com>
+ <ZNNTgZVPZipTL/UM@dhcp22.suse.cz>
+ <CAJD7tkYhxbd2e+4HMZVKUfD4cx6oDauna3vLmttNPLCmFNtpgA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 1/6] media: dt-bindings: Document SC8280XP/SM8350 Venus
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230731-topic-8280_venus-v1-0-8c8bbe1983a5@linaro.org>
- <20230731-topic-8280_venus-v1-1-8c8bbe1983a5@linaro.org>
- <84ab9380-2fb2-76f9-2eb9-71d9202718cc@linaro.org>
- <659e30a7-80f7-4fd8-af58-45505213a2ef@linaro.org>
- <ba40de82-b308-67b1-5751-bb2d95f2b8a5@linaro.org>
- <fa5dc696-6c67-49d0-b158-f1e3398813e2@linaro.org>
- <816359f7-ad4d-659f-db39-c971e1b1cd9a@linaro.org>
- <0feda32e-5430-4f35-b18a-7afce63a970c@linaro.org>
- <d09df249-cc6d-9708-bfa6-ae5cc7929697@linaro.org>
- <4bd04709-155f-4750-8638-e73b653b1482@linaro.org>
- <0cba0158-8a9f-68b6-6bb3-dab0272a5ce0@linaro.org>
- <15b545a2-14be-47ba-a665-8ae986a7f9cd@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <15b545a2-14be-47ba-a665-8ae986a7f9cd@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <CAJD7tkYhxbd2e+4HMZVKUfD4cx6oDauna3vLmttNPLCmFNtpgA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/08/2023 13:15, Konrad Dybcio wrote:
->> Hmm.
->>
->> Well from earlier in the thread the question "why do we have these compat strings" is because we can have any combination of encoder/decoder assigned.
->>
->> If there's a cogent argument_still_  to be made to transition to some new way of assignment then fine so long as we don't break that basic flexibility.
->>
->> Though my own €0.02 is that a module parameter is more of a PITA than a compat string.
->>
->> OTOH I could make the argument, that the high probability is most people - probably all, just instantiate a single encoder and decoder and aren't aware of or using the inbuilt flexibility.
->>
->> @stan probably has the right idea what to do.
-> Actually..
+On Wed 09-08-23 05:31:04, Yosry Ahmed wrote:
+> On Wed, Aug 9, 2023 at 1:51 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Wed 09-08-23 04:58:10, Yosry Ahmed wrote:
+> > > Over time, the memcg code added multiple optimizations to the stats
+> > > flushing path that introduce a tradeoff between accuracy and
+> > > performance. In some contexts (e.g. dirty throttling, refaults, etc), a
+> > > full rstat flush of the stats in the tree can be too expensive. Such
+> > > optimizations include [1]:
+> > > (a) Introducing a periodic background flusher to keep the size of the
+> > > update tree from growing unbounded.
+> > > (b) Allowing only one thread to flush at a time, and other concurrent
+> > > flushers just skip the flush. This avoids a thundering herd problem
+> > > when multiple reclaim/refault threads attempt to flush the stats at
+> > > once.
+> > > (c) Only executing a flush if the magnitude of the stats updates exceeds
+> > > a certain threshold.
+> > >
+> > > These optimizations were necessary to make flushing feasible in
+> > > performance-critical paths, and they come at the cost of some accuracy
+> > > that we choose to live without. On the other hand, for flushes invoked
+> > > when userspace is reading the stats, the tradeoff is less appealing
+> > > This code path is not performance-critical, and the inaccuracies can
+> > > affect userspace behavior. For example, skipping flushing when there is
+> > > another ongoing flush is essentially a coin flip. We don't know if the
+> > > ongoing flush is done with the subtree of interest or not.
+> >
+> > I am not convinced by this much TBH. What kind of precision do you
+> > really need and how much off is what we provide?
+> >
+> > More expensive read of stats from userspace is quite easy to notice
+> > and usually reported as a regression. So you should have a convincing
+> > argument that an extra time spent is really worth it. AFAIK there are
+> > many monitoring (top like) tools which simply read those files regularly
+> > just to show numbers and they certainly do not need a high level of
+> > precision.
 > 
-> Has anybody tested this, ever, with the mainline driver?
-
-I assume Stan has.
-
-> Do we have anyone using this?
-Can't say.
-
-> Is anybody willing to maintain that, test for regressions and
-> fix them in a reasonable amount of time?
+> We used to spend this time before commit fd25a9e0e23b ("memcg: unify
+> memcg stat flushing") which generalized the "skip if ongoing flush"
+> for all stat flushing. As far I know, the problem was contention on
+> the flushing lock which also affected critical paths like refault.
 > 
+> The problem is that the current behavior is indeterministic, if cpu A
+> tries to flush stats and cpu B is already doing that, cpu A will just
+> skip. At that point, the cgroup(s) that cpu A cares about may have
+> been fully flushed, partially flushed (in terms of cpus), or not
+> flushed at all. We have no idea. We just know that someone else is
+> flushing something. IOW, in some cases the flush request will be
+> completely ignored and userspace will read stale stats (up to 2s + the
+> periodic flusher runtime).
+
+Yes, that is certainly true but why does that matter? Stats are always a
+snapshot of the past. Do we get an inconsistent image that would be
+actively harmful.
+
+> Some workloads need to read up-to-date stats as feedback to actions
+> (e.g. after proactive reclaim, or for userspace OOM killing purposes),
+> and reading such stale stats causes regressions or misbehavior by
+> userspace.
+
+Please tell us more about those and why should all others that do not
+require such a precision should page that price as well.
+
+> > [...]
+> > > @@ -639,17 +639,24 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+> > >       }
+> > >  }
+> > >
+> > > -static void do_flush_stats(void)
+> > > +static void do_flush_stats(bool full)
+> > >  {
+> > > +     if (!atomic_read(&stats_flush_ongoing) &&
+> > > +         !atomic_xchg(&stats_flush_ongoing, 1))
+> > > +             goto flush;
+> > > +
+> > >       /*
+> > > -      * We always flush the entire tree, so concurrent flushers can just
+> > > -      * skip. This avoids a thundering herd problem on the rstat global lock
+> > > -      * from memcg flushers (e.g. reclaim, refault, etc).
+> > > +      * We always flush the entire tree, so concurrent flushers can choose to
+> > > +      * skip if accuracy is not critical. Otherwise, wait for the ongoing
+> > > +      * flush to complete. This avoids a thundering herd problem on the rstat
+> > > +      * global lock from memcg flushers (e.g. reclaim, refault, etc).
+> > >        */
+> > > -     if (atomic_read(&stats_flush_ongoing) ||
+> > > -         atomic_xchg(&stats_flush_ongoing, 1))
+> > > -             return;
+> > > -
+> > > +     while (full && atomic_read(&stats_flush_ongoing) == 1) {
+> > > +             if (!cond_resched())
+> > > +                     cpu_relax();
+> >
+> > You are reinveting a mutex with spinning waiter. Why don't you simply
+> > make stats_flush_ongoing a real mutex and make use try_lock for !full
+> > flush and normal lock otherwise?
 > 
-> If we don't have at least 2x "yes" here, I don't think it makes sense
-> to worry about it..
+> So that was actually a spinlock at one point, when we used to skip if
+> try_lock failed.
 
-Hmm.
+AFAICS cgroup_rstat_flush is allowed to sleep so spinlocks are not
+really possible.
 
-We decide if we are encoding or decoding when we init a session and the 
-blocks are symmetrical. The hw blocks themselves are not bound to a 
-particular encode/decode mode.
+> We opted for an atomic because the lock was only used
+> in a try_lock fashion. The problem here is that the atomic is used to
+> ensure that only one thread actually attempts to flush at a time (and
+> others skip/wait), to avoid a thundering herd problem on
+> cgroup_rstat_lock.
+> 
+> Here, what I am trying to do is essentially equivalent to "wait until
+> the lock is available but don't grab it". If we make
+> stats_flush_ongoing a mutex, I am afraid the thundering herd problem
+> will be reintroduced for stats_flush_ongoing this time.
 
-Having two parallel encoders or decoders is exactly the same effort as 
-having a parallel encoder/decoder.
+You will have potentially many spinners for something that might take
+quite a lot of time (sleep) if there is nothing else to schedule. I do
+not think this is a proper behavior. Really, you shouldn't be busy
+waiting for a sleeper.
 
-We don't test parallel encoding/decoding but we should. I'd not be 
-surprised to find there are bugs but, that's not a reason to exclude 
-rather to find and fix bugs.
+> I am not sure if there's a cleaner way of doing this, but I am
+> certainly open for suggestions. I also don't like how the spinning
+> loop looks as of now.
 
----
-bod
+mutex_try_lock for non-critical flushers and mutex_lock of syncing ones.
+We can talk a custom locking scheme if that proves insufficient or
+problematic.
+-- 
+Michal Hocko
+SUSE Labs
