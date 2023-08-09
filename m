@@ -2,246 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88553774FC4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 02:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FAD774FC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 02:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbjHIAVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 20:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
+        id S229852AbjHIAYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 20:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbjHIAVn (ORCPT
+        with ESMTP id S229464AbjHIAYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 20:21:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B0810C8
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 17:21:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691540502; x=1723076502;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=pSnxsYD5ez1ZILtbpLadGfYWDNm7OAnwV//2jsi3Zmw=;
-  b=izWykr7MiIfXul5opU/kHyfVXL8KVKOAC6xQA26BwOqzFYc33CsoLDTZ
-   3bpsyp2mpRSVu+g7+5Dlnd9ixN9BylLYckKMsBaV1yCwYbJYq+/VjWMXB
-   yHXlzH0cU6hYmxCmei3KkNAUJk/iWHmE+KiJmaj0Cy4I3MNcY1XRLARuK
-   VwvC5JZNZkWROdm5U6j5K/lbGh9RFrw4mF/DzdqFY8HWyce+8HDJ/+HDD
-   UHhWLNzfYcKrzZdeGOSleL6R4gsRiuQsWFk3l9JBpLa0jkC3Fk5wRX2W0
-   yBD521ASGutoXrdZyFXSKog3zSnUQ4VGknMDBWSRqTOnPyzT/uqtP8Aa8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="457366963"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="457366963"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 17:21:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="708496406"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="708496406"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.169.46]) ([10.249.169.46])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 17:21:40 -0700
-Message-ID: <f3d8692e-b13d-97ee-2288-c2be1858dcfa@linux.intel.com>
-Date:   Wed, 9 Aug 2023 08:21:37 +0800
+        Tue, 8 Aug 2023 20:24:01 -0400
+Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541E31982;
+        Tue,  8 Aug 2023 17:24:00 -0700 (PDT)
+Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1bbf7f7b000so3719077fac.2;
+        Tue, 08 Aug 2023 17:24:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691540639; x=1692145439;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xoQh6qmcdY0t8o1dNUoYcbjZ4nnYnJlA1xateEndBZg=;
+        b=Qecb81asdsJY1AvZ+uK7mMjtMqsvPEWlUJK1b3zIqFUvDUaVkHj2u2bRYYKRhIDWir
+         51Ms8CfqCMoDHlbmpQQb14JsFt5PlP7QH52KciC+i/XMQ/ViS9dnEBpkmlvMvRB46TIZ
+         LAfMdkb5tbO5yuS6BJT1RF80/dcgorFIJSJc+VlZcrwk0vxp1a7DZFXPA82Dcjb+1O1X
+         Hh/+/fhngsf9qUKPJbnG0TpLYLFMyV2p+kbB1NVXLeJzzDxIXr25S/yLqUQvXdadOfj9
+         OYZcfxSjrw/UB0C0peItlE3EyZrgvt9YgWvAWYJfuvrizEjKz0z6xjMZAFuOx1kWV36l
+         nvmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691540639; x=1692145439;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xoQh6qmcdY0t8o1dNUoYcbjZ4nnYnJlA1xateEndBZg=;
+        b=btEZjKLyUSLdpUnsVO0JsXs7PB049dXUeLL37rxB0LWg9pe99z1gMcBZGlwpmKL0L8
+         1BgadU/bODtiaH1NSgTEgT85IbbIJy70tNni9CPaj+iSvE073ifl+9c3wL9o96bb4QKJ
+         Wy4Ajc4aItDAKjeo1zbkrAFrX83GdcH8eLy/ceZ5G5vvIiIsb/aZ+9IX9PXzUnTO8Iht
+         bgp6H9YOzfiqWcbQ9mb08Oe8vWhDDJnyi2Nt3aN300KHg8MkdRBc4EwXhMvG8qloUo6l
+         9tlhCGnPxEybNeRX+aZS07h16eIE2F4w1Epk9KKHF75qm3sD6sm1rbc/RWQckSRtAv4r
+         sCHg==
+X-Gm-Message-State: AOJu0Ywo+AISqUfsL6/tLQ87UUgGb4D/i6SLBIKuEHeiE2BgbY1g6Tk/
+        YXxOmCiP7E0TPPz8396T8+ayeqeVJVQaHFMx4EM=
+X-Google-Smtp-Source: AGHT+IFHzRvNBWRdltO1hUGEKMzEcw73o/dnWl8keenIydsNCFbD8sFAg/G8+ePBunH1s6LQYcvjENVzgZK7bDB6O5o=
+X-Received: by 2002:a05:6870:1682:b0:1be:fd4e:e369 with SMTP id
+ j2-20020a056870168200b001befd4ee369mr1307556oae.42.1691540639554; Tue, 08 Aug
+ 2023 17:23:59 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] iommu: Call helper function to get assigned pasid
- value
-Content-Language: en-US
-To:     Tina Zhang <tina.zhang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Michael Shavit <mshavit@google.com>
-References: <20230808074944.7825-1-tina.zhang@intel.com>
- <20230808074944.7825-3-tina.zhang@intel.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20230808074944.7825-3-tina.zhang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a8a:129a:0:b0:4f0:1250:dd51 with HTTP; Tue, 8 Aug 2023
+ 17:23:59 -0700 (PDT)
+In-Reply-To: <ZNLMpgrCOQXFQnDk@dread.disaster.area>
+References: <CAGudoHF_Y0shcU+AMRRdN5RQgs9L_HHvBH8D4K=7_0X72kYy2g@mail.gmail.com>
+ <ZNLMpgrCOQXFQnDk@dread.disaster.area>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Wed, 9 Aug 2023 02:23:59 +0200
+Message-ID: <CAGudoHG0Rp2Ku1mRRQnksDZFemUBzfhwyK3LJidEFgvmUfsfsQ@mail.gmail.com>
+Subject: Re: new_inode_pseudo vs locked inode->i_state = 0
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/8 15:49, Tina Zhang wrote:
-> Use the helper function mm_get_pasid() to get the mm assigned pasid
-> value.
+On 8/9/23, Dave Chinner <david@fromorbit.com> wrote:
+> On Tue, Aug 08, 2023 at 06:05:33PM +0200, Mateusz Guzik wrote:
+>> Hello,
+>>
+>> new_inode_pseudo is:
+>>         struct inode *inode = alloc_inode(sb);
+>>
+>> 	if (inode) {
+>> 		spin_lock(&inode->i_lock);
+>> 		inode->i_state = 0;
+>> 		spin_unlock(&inode->i_lock);
+>> 	}
+>>
+>> I'm trying to understand:
+>> 1. why is it zeroing i_state (as opposed to have it happen in
+>> inode_init_always)
+>> 2. why is zeroing taking place with i_lock held
+>>
+>> The inode is freshly allocated, not yet added to the hash -- I would
+>> expect that nobody else can see it.
+>
+> Maybe not at this point, but as soon as the function returns with
+> the new inode, it could be published in some list that can be
+> accessed concurrently and then the i_state visible on other CPUs
+> better be correct.
+>
+> I'll come back to this, because the answer lies in this code:
+>
+>> Moreover, another consumer of alloc_inode zeroes without bothering to
+>> lock -- see iget5_locked:
+>> [snip]
+>> 	struct inode *new = alloc_inode(sb);
+>>
+>> 		if (new) {
+>> 			new->i_state = 0;
+>> [/snip]
+>
+> Yes, that one is fine because the inode has not been published yet.
+> The actual i_state serialisation needed to publish the inode happens
+> in the function called in the very next line - inode_insert5().
+>
+> That does:
+>
+> 	spin_lock(&inode_hash_lock);
+>
+> 	.....
+>         /*
+>          * Return the locked inode with I_NEW set, the
+>          * caller is responsible for filling in the contents
+>          */
+>         spin_lock(&inode->i_lock);
+>         inode->i_state |= I_NEW;
+>         hlist_add_head_rcu(&inode->i_hash, head);
+>         spin_unlock(&inode->i_lock);
+> 	.....
+>
+> 	spin_unlock(&inode_hash_lock);
+>
+> The i_lock is held across the inode state initialisation and hash
+> list insert so that if anything finds the inode in the hash
+> immediately after insert, they should set an initialised value.
+>
+> Don't be fooled by the inode_hash_lock here. We have
+> find_inode_rcu() which walks hash lists without holding the hash
+> lock, hence if anything needs to do a state check on the found
+> inode, they are guaranteed to see I_NEW after grabbing the i_lock....
+>
+> Further, inode_insert5() adds the inode to the superblock inode
+> list, which means concurrent sb inode list walkers can also see this
+> inode whilst the inode_hash_lock is still held by inode_insert5().
+> Those inode list walkers *must* see I_NEW at this point, and they
+> are guaranteed to do so by taking i_lock before checking i_state....
+>
+> IOWs, the initialisation of inode->i_state for normal inodes must be
+> done under i_lock so that lookups that occur after hash/sb list
+> insert are guaranteed to see the correct value.
+>
+> If we now go back to new_inode_pseudo(), we see one of the callers
+> is new_inode(), and it does this:
+>
+> struct inode *new_inode(struct super_block *sb)
+> {
+>         struct inode *inode;
+>
+>         spin_lock_prefetch(&sb->s_inode_list_lock);
+>
+>         inode = new_inode_pseudo(sb);
+>         if (inode)
+>                 inode_sb_list_add(inode);
+>         return inode;
+> }
+>
+> IOWs, the inode is immediately published on the superblock inode
+> list, and so inode list walkers can see it immediately. As per
+> inode_insert5(), this requires the inode state to be fully
+> initialised and memory barriers in place such that any walker will
+> see the correct value of i_state. The simplest, safest way to do
+> this is to initialise i_state under the i_lock....
+>
 
-For internal iommu drivers, perhaps we should use another helper.
-Something like sva_domain_get_pasid()?
+Thanks for the detailed answer, I do think you have a valid point but
+I don't think it works with the given example. ;)
 
-Suppose that the iommu drivers should have no idea about the "mm".
+inode_sb_list_add is:
+        spin_lock(&inode->i_sb->s_inode_list_lock);
+        list_add(&inode->i_sb_list, &inode->i_sb->s_inodes);
+        spin_unlock(&inode->i_sb->s_inode_list_lock);
 
-Best regards,
-baolu
+... thus i_state is published by the time it unlocks.
 
-> 
-> Signed-off-by: Tina Zhang <tina.zhang@intel.com>
-> ---
->   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c | 12 ++++++------
->   drivers/iommu/intel/svm.c                       |  8 ++++----
->   drivers/iommu/iommu-sva.c                       | 14 +++++++-------
->   3 files changed, 17 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-> index a5a63b1c947e..0b455654d365 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-> @@ -204,7 +204,7 @@ static void arm_smmu_mm_invalidate_range(struct mmu_notifier *mn,
->   	if (!(smmu_domain->smmu->features & ARM_SMMU_FEAT_BTM))
->   		arm_smmu_tlb_inv_range_asid(start, size, smmu_mn->cd->asid,
->   					    PAGE_SIZE, false, smmu_domain);
-> -	arm_smmu_atc_inv_domain(smmu_domain, mm->pasid, start, size);
-> +	arm_smmu_atc_inv_domain(smmu_domain, mm_get_pasid(mm), start, size);
->   }
->   
->   static void arm_smmu_mm_release(struct mmu_notifier *mn, struct mm_struct *mm)
-> @@ -222,10 +222,10 @@ static void arm_smmu_mm_release(struct mmu_notifier *mn, struct mm_struct *mm)
->   	 * DMA may still be running. Keep the cd valid to avoid C_BAD_CD events,
->   	 * but disable translation.
->   	 */
-> -	arm_smmu_write_ctx_desc(smmu_domain, mm->pasid, &quiet_cd);
-> +	arm_smmu_write_ctx_desc(smmu_domain, mm_get_pasid(mm), &quiet_cd);
->   
->   	arm_smmu_tlb_inv_asid(smmu_domain->smmu, smmu_mn->cd->asid);
-> -	arm_smmu_atc_inv_domain(smmu_domain, mm->pasid, 0, 0);
-> +	arm_smmu_atc_inv_domain(smmu_domain, mm_get_pasid(mm), 0, 0);
->   
->   	smmu_mn->cleared = true;
->   	mutex_unlock(&sva_lock);
-> @@ -279,7 +279,7 @@ arm_smmu_mmu_notifier_get(struct arm_smmu_domain *smmu_domain,
->   		goto err_free_cd;
->   	}
->   
-> -	ret = arm_smmu_write_ctx_desc(smmu_domain, mm->pasid, cd);
-> +	ret = arm_smmu_write_ctx_desc(smmu_domain, mm_get_pasid(mm), cd);
->   	if (ret)
->   		goto err_put_notifier;
->   
-> @@ -304,7 +304,7 @@ static void arm_smmu_mmu_notifier_put(struct arm_smmu_mmu_notifier *smmu_mn)
->   		return;
->   
->   	list_del(&smmu_mn->list);
-> -	arm_smmu_write_ctx_desc(smmu_domain, mm->pasid, NULL);
-> +	arm_smmu_write_ctx_desc(smmu_domain, mm_get_pasid(mm), NULL);
->   
->   	/*
->   	 * If we went through clear(), we've already invalidated, and no
-> @@ -312,7 +312,7 @@ static void arm_smmu_mmu_notifier_put(struct arm_smmu_mmu_notifier *smmu_mn)
->   	 */
->   	if (!smmu_mn->cleared) {
->   		arm_smmu_tlb_inv_asid(smmu_domain->smmu, cd->asid);
-> -		arm_smmu_atc_inv_domain(smmu_domain, mm->pasid, 0, 0);
-> +		arm_smmu_atc_inv_domain(smmu_domain, mm_get_pasid(mm), 0, 0);
->   	}
->   
->   	/* Frees smmu_mn */
-> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-> index e95b339e9cdc..e6377cff6a93 100644
-> --- a/drivers/iommu/intel/svm.c
-> +++ b/drivers/iommu/intel/svm.c
-> @@ -306,13 +306,13 @@ static int intel_svm_bind_mm(struct intel_iommu *iommu, struct device *dev,
->   	unsigned long sflags;
->   	int ret = 0;
->   
-> -	svm = pasid_private_find(mm->pasid);
-> +	svm = pasid_private_find(mm_get_pasid(mm));
->   	if (!svm) {
->   		svm = kzalloc(sizeof(*svm), GFP_KERNEL);
->   		if (!svm)
->   			return -ENOMEM;
->   
-> -		svm->pasid = mm->pasid;
-> +		svm->pasid = mm_get_pasid(mm);
->   		svm->mm = mm;
->   		INIT_LIST_HEAD_RCU(&svm->devs);
->   
-> @@ -350,7 +350,7 @@ static int intel_svm_bind_mm(struct intel_iommu *iommu, struct device *dev,
->   
->   	/* Setup the pasid table: */
->   	sflags = cpu_feature_enabled(X86_FEATURE_LA57) ? PASID_FLAG_FL5LP : 0;
-> -	ret = intel_pasid_setup_first_level(iommu, dev, mm->pgd, mm->pasid,
-> +	ret = intel_pasid_setup_first_level(iommu, dev, mm->pgd, mm_get_pasid(mm),
->   					    FLPT_DEFAULT_DID, sflags);
->   	if (ret)
->   		goto free_sdev;
-> @@ -364,7 +364,7 @@ static int intel_svm_bind_mm(struct intel_iommu *iommu, struct device *dev,
->   free_svm:
->   	if (list_empty(&svm->devs)) {
->   		mmu_notifier_unregister(&svm->notifier, mm);
-> -		pasid_private_remove(mm->pasid);
-> +		pasid_private_remove(mm_get_pasid(mm));
->   		kfree(svm);
->   	}
->   
-> diff --git a/drivers/iommu/iommu-sva.c b/drivers/iommu/iommu-sva.c
-> index 05c0fb2acbc4..0a4a1ed40814 100644
-> --- a/drivers/iommu/iommu-sva.c
-> +++ b/drivers/iommu/iommu-sva.c
-> @@ -28,7 +28,7 @@ static int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t ma
->   	mutex_lock(&iommu_sva_lock);
->   	/* Is a PASID already associated with this mm? */
->   	if (mm_valid_pasid(mm)) {
-> -		if (mm->pasid < min || mm->pasid > max)
-> +		if (mm_get_pasid(mm) < min || mm_get_pasid(mm) > max)
->   			ret = -EOVERFLOW;
->   		goto out;
->   	}
-> @@ -71,7 +71,7 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm
->   	if (!max_pasids)
->   		return ERR_PTR(-EOPNOTSUPP);
->   
-> -	/* Allocate mm->pasid if necessary. */
-> +	/* Allocate pasid if necessary. */
->   	ret = iommu_sva_alloc_pasid(mm, 1, max_pasids - 1);
->   	if (ret)
->   		return ERR_PTR(ret);
-> @@ -82,7 +82,7 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm
->   
->   	mutex_lock(&iommu_sva_lock);
->   	/* Search for an existing domain. */
-> -	domain = iommu_get_domain_for_dev_pasid(dev, mm->pasid,
-> +	domain = iommu_get_domain_for_dev_pasid(dev, mm_get_pasid(mm),
->   						IOMMU_DOMAIN_SVA);
->   	if (IS_ERR(domain)) {
->   		ret = PTR_ERR(domain);
-> @@ -101,7 +101,7 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm
->   		goto out_unlock;
->   	}
->   
-> -	ret = iommu_attach_device_pasid(domain, dev, mm->pasid);
-> +	ret = iommu_attach_device_pasid(domain, dev, mm_get_pasid(mm));
->   	if (ret)
->   		goto out_free_domain;
->   	domain->users = 1;
-> @@ -133,7 +133,7 @@ EXPORT_SYMBOL_GPL(iommu_sva_bind_device);
->   void iommu_sva_unbind_device(struct iommu_sva *handle)
->   {
->   	struct iommu_domain *domain = handle->domain;
-> -	ioasid_t pasid = domain->mm->pasid;
-> +	ioasid_t pasid = mm_get_pasid(domain->mm);
->   	struct device *dev = handle->dev;
->   
->   	mutex_lock(&iommu_sva_lock);
-> @@ -150,7 +150,7 @@ u32 iommu_sva_get_pasid(struct iommu_sva *handle)
->   {
->   	struct iommu_domain *domain = handle->domain;
->   
-> -	return domain->mm->pasid;
-> +	return mm_get_pasid(domain->mm);
->   }
->   EXPORT_SYMBOL_GPL(iommu_sva_get_pasid);
->   
-> @@ -217,5 +217,5 @@ void mm_pasid_drop(struct mm_struct *mm)
->   	if (likely(!mm_valid_pasid(mm)))
->   		return;
->   
-> -	ida_free(&iommu_global_pasid_ida, mm->pasid);
-> +	ida_free(&iommu_global_pasid_ida, mm_get_pasid(mm));
->   }
+According to my grep all iterations over the list hold the
+s_inode_list_lock, thus they are guaranteed to see the update, making
+the release fence in new_inode_pseudo redundant for this case.
 
+With this in mind I'm assuming the fence was there as a safety
+measure, for consumers which would maybe need it.
+
+Then the code can:
+        struct inode *inode = alloc_inode(sb);
+
+        if (inode) {
+                inode->i_state = 0;
+                /* make sure i_state update will be visible before we insert
+                 * the inode anywhere */
+                smp_wmb();
+        }
+
+Upshots:
+- replaces 2 atomics with a mere release fence, which is way cheaper
+to do everywhere and virtually free on x86-64
+- people reading the code don't wonder who on earth are we locking against
+
+All that said, if the (possibly redundant) fence is literally the only
+reason for the lock trip, I would once more propose zeroing in
+inode_init_always:
+diff --git a/fs/inode.c b/fs/inode.c
+index 8fefb69e1f84..ce9664c4efe9 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -232,6 +232,13 @@ int inode_init_always(struct super_block *sb,
+struct inode *inode)
+                return -ENOMEM;
+        this_cpu_inc(nr_inodes);
+
++       inode->i_state = 0;
++       /*
++        * Make sure i_state update is visible before this inode gets inserted
++        * anywhere.
++        */
++       smp_wmb();
++
+        return 0;
+ }
+ EXPORT_SYMBOL(inode_init_always);
+
+This is more in the spirit of making sure everybody has published
+i_state = 0 and facilitates cleanup.
+- new_inode_pseudo is now just alloc_inode
+- confusing unlocked/unfenced i_state = 0 disappears from iget5_locked
+
+And probably some more tidyups.
+
+Now, I'm not going to flame with anyone over doing smp_wmb instead of
+the lock trip (looks like a no-brainer to me, but I got flamed for
+another one earlier today ;>).
+
+I am however going to /strongly suggest/ that a comment explaining
+what's going on is added there, if the current state is to remain.
+
+As far as I'm concerned *locking* when a mere smp_wmb would sufficne
+is heavily misleading and should be whacked if only for that reason.
+
+Cheers,
+-- 
+Mateusz Guzik <mjguzik gmail.com>
