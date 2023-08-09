@@ -2,75 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF67E775604
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A6E775607
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbjHIJBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 05:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53734 "EHLO
+        id S231358AbjHIJBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 05:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjHIJBI (ORCPT
+        with ESMTP id S229535AbjHIJBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 05:01:08 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138211BD9;
-        Wed,  9 Aug 2023 02:01:07 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d61b6fc3015so272847276.1;
-        Wed, 09 Aug 2023 02:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691571666; x=1692176466;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X8p6/0KX3fVxDGykNsAB8y9ONKtikHgYp/M2932Yhtg=;
-        b=a+Zu8NL83uIaY2kPK/hzZzHyi7vS7ZDBxBzBas0D7lsWImIDv7Qwd1BiEcv6FKTPP1
-         BdMSYMPzdND5JC7oC8v9M124xkp5LnmnJE5/klfgAzt2xAFxC8Ix/ATgHA73sGHIq6M5
-         8OrafZcJ9GdZPgCALz/hIhLavsI9b/Dr6TdEQlqt8LZqcG0yWZaerqRjYwnLJH58K7vt
-         JQ3+FbcofYPvCtDrlcpkILNmTu7Hd19Y/cUYPc+r6qC4noDNhfIpgilb6dDWBQ7jRR1L
-         /D8Jy5DP8f/9nxAZ93mmMJwTgohGO38fsuD20oMAYUxgObu8MmDLJJ/dTzqsykEe/tu+
-         mlnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691571666; x=1692176466;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X8p6/0KX3fVxDGykNsAB8y9ONKtikHgYp/M2932Yhtg=;
-        b=HJXhGOmI3l5QXFh6t7Ih1dvpLbJ13nGf8XVSbVJo9j3qQjyaVtryzhMZFzlOgllCr0
-         mne7FtunRTNTIb79gHFTXnj4C+x2FasA8iIp5iSnDEBkUdiv9PKVAlK3tlqSWJ9tF/FP
-         ezUaFpdQKRYJjjeYhXPp0wx3Mq/EfL2JA+fyYXlyT82fNQMjsIREdC9fkrEuqqYDIU+X
-         v0PJjFdrw12Ft5C41BpwEqb6FyVZBy6VgxXrMVGismkRh6gMyRlNM0jNT0i3t8ZpPTiq
-         vNNiMN2T3PaG5+75Nud0qltQinACazoWhJY6gHL6aEK0dlBhnn1wGvcrBjMdV1e4kPnE
-         aG7Q==
-X-Gm-Message-State: AOJu0YyOLEhc/9qn+6qeVV/o1HaAJC4em/cDfQj7NF5gEUVzI3r4+DhA
-        iZ/JS2/EpRElFPp+RBoPFvQduHwoj4CQFhmpPn4=
-X-Google-Smtp-Source: AGHT+IHuTiTRTDu7yLIKac8kPi++wFPcYqkZyXa6gABjSHv6p2rSzxLSrZKIX6NfdlXPlBCmD9m9fopnnqjOidvHgH4=
-X-Received: by 2002:a25:e704:0:b0:cad:347e:2c8f with SMTP id
- e4-20020a25e704000000b00cad347e2c8fmr1661550ybh.39.1691571666128; Wed, 09 Aug
- 2023 02:01:06 -0700 (PDT)
+        Wed, 9 Aug 2023 05:01:10 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30451BD9
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 02:01:09 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qTf3w-0001AB-Ib; Wed, 09 Aug 2023 11:01:04 +0200
+Received: from mfe by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qTf3t-0007CX-0k; Wed, 09 Aug 2023 11:01:01 +0200
+Date:   Wed, 9 Aug 2023 11:01:00 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Rob Herring <robh@kernel.org>
+Cc:     kernel@pengutronix.de, devicetree@vger.kernel.org,
+        conor+dt@kernel.org, mcoquelin.stm32@gmail.com,
+        netdev@vger.kernel.org, alexandre.torgue@foss.st.com,
+        linux-kernel@vger.kernel.org, edumazet@google.com,
+        joabreu@synopsys.com, krzysztof.kozlowski+dt@linaro.org,
+        peppe.cavallaro@st.com, kuba@kernel.org, pabeni@redhat.com,
+        davem@davemloft.net, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v4 1/3] dt-bindings: net: snps,dwmac: add
+ phy-supply support
+Message-ID: <20230809090100.pdtdidqk7mhvm4ks@pengutronix.de>
+References: <20230721110345.3925719-1-m.felsch@pengutronix.de>
+ <20230721142433.GA1012219-robh@kernel.org>
+ <20230724093953.h7vs6gzrpk3ieznv@pengutronix.de>
 MIME-Version: 1.0
-References: <20230720152820.3566078-1-aliceryhl@google.com>
- <20230720152820.3566078-6-aliceryhl@google.com> <bee24ff5-444c-44f9-81c8-88ff310b401a@gmail.com>
-In-Reply-To: <bee24ff5-444c-44f9-81c8-88ff310b401a@gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 9 Aug 2023 11:00:54 +0200
-Message-ID: <CANiq72mHU7n2jTPFsO=tjfqucrbe2ABSUYPUG6ctEerh4J+U_g@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 5/5] rust: file: add `DeferredFdCloser`
-To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Cc:     Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724093953.h7vs6gzrpk3ieznv@pengutronix.de>
+User-Agent: NeoMutt/20180716
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,17 +57,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 6:34=E2=80=AFAM Martin Rodriguez Reboredo
-<yakoyoku@gmail.com> wrote:
->
-> Please provide links, at least for the doc comment.
+Hi Rob,
 
-If you mean for the commit, then we should follow the kernel
-convention instead. Please see my reply to Alice above.
+On 23-07-24, Marco Felsch wrote:
+> Hi Rob,
+> 
+> On 23-07-21, Rob Herring wrote:
+> > On Fri, Jul 21, 2023 at 01:03:43PM +0200, Marco Felsch wrote:
+> > > Document the common phy-supply property to be able to specify a phy
+> > > regulator.
+> > 
+> > What common property? I don't see any such property in 
+> > ethernet-controller.yaml.
+> 
+> Not in ethernet-controller.yaml but there are at least a few user of
+> this binding:
+>  - allwinner,sun4i-a10-mdio.yaml
+>  - allwinner,sun7i-a20-gmac.yaml
+>  - allwinner,sun8i-a83t-emac.yaml
+>  - fsl,fec.yaml
+>  - rockchip-dwmac.yaml
+>  - rockchip,emac.yaml
+> 
+> Also there is no <vendor>,phy-supply nor <ip-vendor>,phy-supply,
+> therefore I thought this is common.
 
-> Ditto.
+any further comments else I would like to gentle ping this series.
 
-For code, we are also using the same convention.
+Regards,
+  Marco
 
-Cheers,
-Miguel
+> > > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+> > > Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > > ---
+> > > Changelog:
+> > > v4:
+> > > - no changes
+> > > v3:
+> > > - no changes
+> > > v2
+> > > - add ack-by
+> > > 
+> > >  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > > index ddf9522a5dc23..847ecb82b37ee 100644
+> > > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > > @@ -160,6 +160,9 @@ properties:
+> > >        can be passive (no SW requirement), and requires that the MAC operate
+> > >        in a different mode than the PHY in order to function.
+> > >  
+> > > +  phy-supply:
+> > > +    description: PHY regulator
+> > 
+> > Is this for an serdes, sgmii, etc. type phy or ethernet phy? Either way, 
+> > this property belongs in the PHY's node because it is the PHY that has 
+> > supply connection. I'm guessing you put this here for the latter case 
+> > because ethernet PHYs on MDIO are "discoverable" except for the small 
+> > problem that powering them on is not discoverable. 
+> 
+> All kind of ethernet phys connected to you etherent MAC which need to be
+> power controlled by software. You're right this sould belong to the PHY
+> node (as Krzysztof already mentioned) but this isn't the case yet. As
+> you can see there are at least 6 user of the exact same binding.
+> 
+> Regards,
+>   Marco
+> 
+> 
