@@ -2,100 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A709D7751CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 06:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCC17751DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 06:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbjHIELF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 00:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
+        id S229999AbjHIERS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 00:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjHIELD (ORCPT
+        with ESMTP id S229533AbjHIERQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 00:11:03 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98C01BC3
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 21:11:02 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bc8045e09dso10516225ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 21:11:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691554262; x=1692159062;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5dt4L8Eisj7VPGHsPUbVvR+t+KgnMwIP1KcG33bKmKA=;
-        b=WfaNPrDcrU8FlDCiViXO8W8BmLESLDTQ9aXTVaDeC2d34m4rZdw2gvyxFrMstwTe8B
-         Jv71ibRQHwFcJDomULkulYIjGVJueuebyH65m2LE1w6Mx3Lq17+24cChBSIs3HLwcz6m
-         2UQ3BjcAsXmNNq8DwAIv/7cn6of/sGuOYfn5Q=
+        Wed, 9 Aug 2023 00:17:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCCD19A1
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 21:16:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691554589;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jc2RrwZUDP/ZLfqGAQFdphKEXcWYocBgrdrh4msM7SQ=;
+        b=K9eNG+CYTd5SuigFYgwGKVHV8Uwl061ui1TGhszVDnfmDlOqDK+BOII1662i4UA7LfakG8
+        C/sPoW6ud7PzyDhEcvwjKwrHBo+nc8/VbvnsDWuGmBCnPoDcrJ5urZJwEBB+eIiAkkQtjp
+        HGa7tG5W+4dUoUbIdpd5OTDGR0f+nKI=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-633-4nHNnDFjPaSDQ8aHdl16Ww-1; Wed, 09 Aug 2023 00:16:27 -0400
+X-MC-Unique: 4nHNnDFjPaSDQ8aHdl16Ww-1
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5635233876bso4530351a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 21:16:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691554262; x=1692159062;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5dt4L8Eisj7VPGHsPUbVvR+t+KgnMwIP1KcG33bKmKA=;
-        b=NsyC1/zqj7jABLqj8diUVIqkVse24CXgus9smedCGQbUNObBgTjTK7v+588ed3aCrG
-         4VBBHYyxmBv9XDWsqcy8BVaJ+kNWe56GLUfyZFuEKOOkqAvXRUeImszTETFcBfiCyem7
-         NbGCT8Bx6AbpEd6FLEY7c2lToY0d4NytJ1VYN/OPu5jV41SnpvWp+jRNP4deFgM505Vb
-         sBu9teOZ46nKTJKGSHvPai3RDrEI8QbhFPI9zbr6/LS+Q7MiltpVGrzbLz4PHKT2pwoK
-         U1JWVZrOFWN2wVwTJs2HCASxW19oIO0Iwi7GutpShiPncZXKnL5S/H1lJE4HqxKJ0esx
-         RUKw==
-X-Gm-Message-State: AOJu0YzjOKPs4QzhUbbh9A1WplYzJB+fWcmhgDGPKKZtJor8U02lYrv3
-        Hfg83RWiDaO/Z8jo1gtLnlFIRmhSDzdvKKUANug=
-X-Google-Smtp-Source: AGHT+IH5whshNOeWJ/7rgwCTfz0nL6npNr89QNKM+we0MVxaYePX7iD/K1AG2auy9F8LoDGWcvjnWA==
-X-Received: by 2002:a17:902:c1c5:b0:1bb:bbda:70d9 with SMTP id c5-20020a170902c1c500b001bbbbda70d9mr1324646plc.63.1691554262272;
-        Tue, 08 Aug 2023 21:11:02 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:fdf2:7f85:e85a:4c61])
-        by smtp.gmail.com with ESMTPSA id t15-20020a1709027fcf00b001bb9d6b1baasm9999499plb.198.2023.08.08.21.11.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 21:11:01 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 13:10:57 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
-Subject: Re: [PATCH 2/2] hexdump: add a new dump prefix
- DUMP_PREFIX_ADDRESS_LOW16
-Message-ID: <20230809041057.GB681074@google.com>
-References: <20230805072116.1260-1-thunder.leizhen@huaweicloud.com>
- <20230805072116.1260-3-thunder.leizhen@huaweicloud.com>
- <20230807211409.750c17a5@gandalf.local.home>
- <73d10b7f-3cba-6897-0ff8-7759ef39a908@huaweicloud.com>
- <319df959-5be9-66c5-680f-4a5ae59019b9@huaweicloud.com>
+        d=1e100.net; s=20221208; t=1691554283; x=1692159083;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jc2RrwZUDP/ZLfqGAQFdphKEXcWYocBgrdrh4msM7SQ=;
+        b=QWw9/21XxDAWuY0zxGsawcn0vV48sPhUlVO85zjCYgZgToCrhC7Oj1TB25b45MA7Ap
+         xvtLM+LlMM8HDhwSpktIo6F/RHfupF6G8+t+VWFWs356xsDezeNLrk33x8NjkNxTorLt
+         Kz9CckOfFHF7/8jd8p+vVbjxnhHMeBEztu5MdBd62BEdBQAKDix/jqTlbQKH3QepBa93
+         f4Wqfa73cBVgbZxbd/1zwCKRV+IcbtWQcewPjBCKtWgrFFVLuK1bA7VN+GPF/MNL4g0c
+         2k/rc7KiPSq6gNFUOp9vQjbfrIbz8OglKLEmYEFwziBB2qMc8INhCNgp89fy9irYFJ8i
+         aTaw==
+X-Gm-Message-State: AOJu0YxYg4xhUn8kJ5T9GUTiJ4z/5rYdx8wZ7fXTJ1CzygueTUVcfpQ1
+        3nNWwcqKkW+vl6dCYJKQMlGsfLKVf7mfyffOElNVGFyG2tCyCf3Bzc7j473Q+Z+zPTJKqgSfVp5
+        9VOdDkEr26l82Viiw0poMnPbt
+X-Received: by 2002:a05:6a21:328b:b0:121:ca90:df01 with SMTP id yt11-20020a056a21328b00b00121ca90df01mr1394030pzb.40.1691554282928;
+        Tue, 08 Aug 2023 21:11:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFuTcKraAGNvme4rsh9nauIBvvaQvIf9BEXJr92oZnpUAljzMU4HrA4zieEd0juLoJJfRohRg==
+X-Received: by 2002:a05:6a21:328b:b0:121:ca90:df01 with SMTP id yt11-20020a056a21328b00b00121ca90df01mr1394005pzb.40.1691554282647;
+        Tue, 08 Aug 2023 21:11:22 -0700 (PDT)
+Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
+        by smtp.gmail.com with ESMTPSA id y9-20020a17090322c900b001b2069072ccsm9850474plg.18.2023.08.08.21.11.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 21:11:22 -0700 (PDT)
+Message-ID: <79b8548e-715a-85ee-aad6-cb0b97753df6@redhat.com>
+Date:   Wed, 9 Aug 2023 14:11:09 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <319df959-5be9-66c5-680f-4a5ae59019b9@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v8 04/14] KVM: Remove CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
+Content-Language: en-US
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Fuad Tabba <tabba@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Shaoqin Huang <shahuang@redhat.com>
+References: <20230808231330.3855936-1-rananta@google.com>
+ <20230808231330.3855936-5-rananta@google.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20230808231330.3855936-5-rananta@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/08/08 15:52), Leizhen (ThunderTown) wrote:
-> >> I find the "before" much easier to read than the "after".
+
+On 8/9/23 09:13, Raghavendra Rao Ananta wrote:
+> kvm_arch_flush_remote_tlbs() or CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
+> are two mechanisms to solve the same problem, allowing
+> architecture-specific code to provide a non-IPI implementation of
+> remote TLB flushing.
 > 
-> I added the boot option no_hash_pointers, so "before" can print the
-> address. Otherwise, just print the 32-bit hash value, as shown below:
-
-
-> [   14.872153] dump memory at sp=ffff800080903aa0:
-
-This line is not guaranteed to be printed. If you get
-"** N printk messages dropped **" instead then the
-ADDRESS_LOW16 math doesn't work.
-
-> Actually, I added DUMP_PREFIX_ADDRESS_LOW16 because of another scene:
-> slab kmalloc-512 start ffff3b3c0094e800 pointer offset 168 size 512
-> e888: 00400000 00000000 000f7704 00000000
-> e898: 000f7704 00000000 12345678 00000000
-> e8a8: 00000000 00000000 00000000 00000000
-> e8b8: 9abcdef0 00000000 00507dd0 00000000
+> Dropping CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL allows KVM to standardize
+> all architectures on kvm_arch_flush_remote_tlbs() instead of
+> maintaining two mechanisms.
 > 
-> Here, the start address ffff3b3c0094e800 of slab object is printed by %px,
-> the address of the error data is at p=ffff3b3c0094e8a8 = ffff3b3c0094e800 + offset 168.
-> To locate the problem, dump up to 64 bytes centered on 'p'.
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>   virt/kvm/Kconfig    | 3 ---
+>   virt/kvm/kvm_main.c | 2 --
+>   2 files changed, 5 deletions(-)
+> 
+
+Reviewed-by: Gavin Shan <gshan@redhat.com>
+
+> diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
+> index b74916de5183a..484d0873061ca 100644
+> --- a/virt/kvm/Kconfig
+> +++ b/virt/kvm/Kconfig
+> @@ -62,9 +62,6 @@ config HAVE_KVM_CPU_RELAX_INTERCEPT
+>   config KVM_VFIO
+>          bool
+>   
+> -config HAVE_KVM_ARCH_TLB_FLUSH_ALL
+> -       bool
+> -
+>   config HAVE_KVM_INVALID_WAKEUPS
+>          bool
+>   
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 70e5479797ac3..d6b0507861550 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -345,7 +345,6 @@ bool kvm_make_all_cpus_request(struct kvm *kvm, unsigned int req)
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_make_all_cpus_request);
+>   
+> -#ifndef CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
+>   void kvm_flush_remote_tlbs(struct kvm *kvm)
+>   {
+>   	++kvm->stat.generic.remote_tlb_flush_requests;
+> @@ -366,7 +365,6 @@ void kvm_flush_remote_tlbs(struct kvm *kvm)
+>   		++kvm->stat.generic.remote_tlb_flush;
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_flush_remote_tlbs);
+> -#endif
+>   
+>   static void kvm_flush_shadow_all(struct kvm *kvm)
+>   {
+
