@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FEB776371
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CAE77637A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbjHIPLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
+        id S232574AbjHIPMP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Aug 2023 11:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbjHIPLL (ORCPT
+        with ESMTP id S230296AbjHIPMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:11:11 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80562113
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:11:10 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6873f64a290so1808783b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:11:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691593870; x=1692198670;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0ujVnn+wclfDCoEdMFK52Z0Hg6LMOzkhQlsbYMDX7Zc=;
-        b=m98bJgTsUvdY0gdK8Ww0DZaadpiNKOS9cthH6HTVgjNHRjEmC/cPR3tpZWkIpHbb76
-         yBfTpOOvuxNCHjNkiRWAh6ymhQCJLD+B+XDX5uNJw8NkGZ6rDDQ8W6Hzrg+yk/mRPvXK
-         c0f6OA3PxxQ1vcWVMtoz1x1SGgMROg0yqw5D3J2lKLG9qrWtOnEElOkTD87LLCuqMw60
-         HMFg97/VJUtmrZLLtJTpXwgg4PBR6eCQzWI2prQbS/kxnyv0BlsJagBlF45hru+pkyyT
-         YjYtgCCTC61WiQ5bsAVv2upvLQuEwUPYe1PtE4ctflxGZ37iJlM6H+P/66y3ro3mBONT
-         9T8A==
+        Wed, 9 Aug 2023 11:12:13 -0400
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B4E210A;
+        Wed,  9 Aug 2023 08:12:11 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6874a386ec7so1297019b3a.1;
+        Wed, 09 Aug 2023 08:12:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691593870; x=1692198670;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0ujVnn+wclfDCoEdMFK52Z0Hg6LMOzkhQlsbYMDX7Zc=;
-        b=FImfCRu/FEAD7SNKkwYAFyvQCfpDrHW5PD6bU2+93ImVLRIc1R0Jy1WWUv10U5f94H
-         OYzsmtdsoLcK4sgfGanZqXHYCUDN37H3y1ph6uGTPFKttx73TuDfiNHKTW3qt77J9Iif
-         lBWqlO7O6y6031k4e3SgxvxbOUoflZEtSFdoaarQEF25aWXxXlTVo56AhFXAuVSzlowR
-         y3+g8Ezs7OAF9S7L3riJAQfdic+9+iyXZ5xSiMWj0ZM28ViR/mEZPxvrgceJZHpAcMLS
-         s5faGgW9Y2R79dr8a8WYamJ198761zZnebPxwByIDyqcSQVL6mxVCrTP9MOWbI9b+jbZ
-         Iutg==
-X-Gm-Message-State: AOJu0YwKFM1mwMHLX38c5I3f5T7Es6P0l90hleJWaBrUs1izwd01hkJl
-        U8MODGFvoo9lEMIU7qA0+OCo9g==
-X-Google-Smtp-Source: AGHT+IEnolU+PaPLfc3X68ZEQWVNLrFCP2l5eOMgcprs1MXtlRkSX9td0R6LnNvcEQ7WykbcKP1TuA==
-X-Received: by 2002:a05:6a00:d82:b0:677:3439:874a with SMTP id bf2-20020a056a000d8200b006773439874amr3196674pfb.3.1691593870154;
-        Wed, 09 Aug 2023 08:11:10 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id n5-20020aa79045000000b00686ec858fb0sm10084064pfo.190.2023.08.09.08.11.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 08:11:09 -0700 (PDT)
-Message-ID: <0201ff9b-357f-4391-ae83-5920f39d68c0@kernel.dk>
-Date:   Wed, 9 Aug 2023 09:11:07 -0600
+        d=1e100.net; s=20221208; t=1691593930; x=1692198730;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xgsj/seu3r4HTFrWkxtLjpgCvQlOKd3EjuoZhWDNEUk=;
+        b=iacHD1SCsLZdufm6qvGnJlcNDdfuZTgeQE0u4gTInPdIETUgJM+EYJq+O5yS1TZ7eZ
+         bg0krBhzaKkLE9NiZVUdRgUPPgalkEjCo91mutqWdTQXJlFJAG9dKeWUYsoQ7efLyK6O
+         WlbPszn8kngpzZ+Ij/G3bDOalrIJuFvAkWcMMwN553Xzo+huXlePJy1sSNQWxbaJivYe
+         G94fUKbn/V19YTJa8gCeUtiS68VZqZWeEgqC19w8Jh3FH7/scWK8wGlUCiB3IZ3Uk4I7
+         G00By2Kxyq7mc6GyjSlbxh2gy5LY/6F0EIIbnTa7h4+e/i/TpF8UcB9ZXNLczjT99Gzl
+         YG0w==
+X-Gm-Message-State: AOJu0YxO9fbdX6HebyDNV2R4D6peABXl49cOG54Ii8db6attxV7aID3d
+        SXycK3XfAuHonq6uSKNVmLa4O0tUQnJOQUmhj9w=
+X-Google-Smtp-Source: AGHT+IERHz78XVdGnNMPp/DyI0+M05NPJEcfYevRhupZqfPKgwSpKl0HQkNJwO1w3oAUubi7iQIlwp5hEP/pG8KwVig=
+X-Received: by 2002:a17:90a:764c:b0:25c:1ad3:a4a1 with SMTP id
+ s12-20020a17090a764c00b0025c1ad3a4a1mr2624607pjl.1.1691593930332; Wed, 09 Aug
+ 2023 08:12:10 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] io_uring: add IORING_OP_WAITID support
-Content-Language: en-US
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        arnd@arndb.de
-References: <20230802231442.275558-1-axboe@kernel.dk>
- <20230802231442.275558-6-axboe@kernel.dk>
- <20230809-ballkontakt-schule-bc15814d31e4@brauner>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230809-ballkontakt-schule-bc15814d31e4@brauner>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <5712331.DvuYhMxLoT@kreacher> <CAJZ5v0jTG-oqV+misnP-=W5aq0S9X631kW9EhKNEn1VJQqwL2g@mail.gmail.com>
+ <e3dc9417-626d-bae2-c016-36e14914c9b8@linutronix.de> <CAJZ5v0jX1_yTG6CxnPNVEMf8mMEKc33jpoWoHkreMDZLPK8UcA@mail.gmail.com>
+ <4c3ac295-41e-8644-4eed-2e5bcdaf302c@linutronix.de>
+In-Reply-To: <4c3ac295-41e-8644-4eed-2e5bcdaf302c@linutronix.de>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 9 Aug 2023 17:11:58 +0200
+Message-ID: <CAJZ5v0iDkUF+hkS-f+9_ZvahOMnEZi3nvGoE4ytfRwHg9vw=cw@mail.gmail.com>
+Subject: Re: [RFT][PATCH v2 0/3] cpuidle: teo: Do not check timers
+ unconditionally every time
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/23 5:27 AM, Christian Brauner wrote:
->> +int io_waitid(struct io_kiocb *req, unsigned int issue_flags)
->> +{
->> +	struct io_waitid *iw = io_kiocb_to_cmd(req, struct io_waitid);
->> +	struct io_ring_ctx *ctx = req->ctx;
->> +	struct io_waitid_async *iwa;
->> +	unsigned int f_flags = 0;
->> +	int ret;
->> +
->> +	if (io_alloc_async_data(req))
->> +		return -ENOMEM;
->> +
->> +	iwa = req->async_data;
->> +	iwa->req = req;
->> +
->> +	ret = kernel_waitid_prepare(&iwa->wo, iw->which, iw->upid, &iw->info,
->> +					iw->options, NULL, &f_flags);
-> 
-> It seems you're not really using @f_flags at all so I'd just not bother
-> exposing it in kernel_waitid_prepare(). I think the following (untested)
-> will let you avoid all this:
+On Wed, Aug 9, 2023 at 5:10 PM Anna-Maria Behnsen
+<anna-maria@linutronix.de> wrote:
+>
+> On Mon, 7 Aug 2023, Rafael J. Wysocki wrote:
+>
+> > On Mon, Aug 7, 2023 at 5:38 PM Anna-Maria Behnsen
+> > <anna-maria@linutronix.de> wrote:
+> > >
+> > > On Thu, 3 Aug 2023, Rafael J. Wysocki wrote:
+> > >
+> > > > On Thu, Aug 3, 2023 at 11:12 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> > > > >
+> > > > > Hi Folks,
+> > > > >
+> > > > > This is the second iteration of:
+> > > > >
+> > > > > https://lore.kernel.org/linux-pm/4511619.LvFx2qVVIh@kreacher/
+> > > > >
+> > > > > with an additional patch.
+> > > > >
+> > > > > There are some small modifications of patch [1/3] and the new
+> > > > > patch causes governor statistics to play a role in deciding whether
+> > > > > or not to stop the scheduler tick.
+> > > > >
+> > > > > Testing would be much appreciated!
+> > > >
+> > > > For convenience, this series is now available in the following git branch:
+> > > >
+> > > > git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+> > > >  pm-cpuidle-teo
+> > > >
+> > >
+> > > Gauthams tests and the distribution of idle time durations looks pretty
+> > > good. Also the prevention of calling tick_nohz_get_sleep_length() is very
+> > > nice (21477 calls of tick_nohz_next_event() and the tick was stopped 2670
+> > > times).
+> > >
+> > > Here is the deviation of idle time durations (based on your branch):
+> > >
+> > > Idle Total              2670    100.00%
+> > > x >= 4ms                2537    95.02%
+> > > 4ms> x >= 2ms           19      0.71%
+> > > 2ms > x >= 1ms          10      0.37%
+> > > 1ms > x >= 500us        7       0.26%
+> > > 500us > x >= 250us      6       0.22%
+> > > 250us > x >=100us       13      0.49%
+> > > 100us > x >= 50us       17      0.64%
+> > > 50us > x >= 25us        25      0.94%
+> > > 25us > x >= 10us        22      0.82%
+> > > 10us > x > 5us          9       0.34%
+> > > 5us > x                 5       0.19%
+> >
+> > Thanks a lot for the data!
+> >
+> > Can I add a Tested-by: tag from you to this series?
+> >
+>
+> Sure - sorry for the delay!
 
-That's a good idea, I'll update it to get rid of the f_flags. Thanks!
-
--- 
-Jens Axboe
-
+No worries, thanks!
