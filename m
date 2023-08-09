@@ -2,169 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD7C7756E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 285327756E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbjHIKLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 06:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
+        id S232190AbjHIKLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 06:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbjHIKLE (ORCPT
+        with ESMTP id S231359AbjHIKLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 06:11:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8AA1BFB;
-        Wed,  9 Aug 2023 03:11:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1BAEF630E8;
-        Wed,  9 Aug 2023 10:11:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CD92C433C7;
-        Wed,  9 Aug 2023 10:10:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691575861;
-        bh=3EDdk7dTfHs3Hy9RVE0ybDbynTaUkeq4N9itCD5SIYI=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=SLiD6EwBwAaKjaENOfNjWpIjgTZ7uN7B4ABF6+Bc5uUdhACL29f5ZDgIl8J0BIcLg
-         dmmWF/N3vxvPZnbf7qCfoiMntKQ5KpepxLV423OWizDLKnMdMdTqG2pBQ96c7iVI/q
-         6jxcOzT1tUDuUKredqtZ802zOA9COiRKKjMvkV8B5wrgxL3TdF/tBsrcopqwbxnBca
-         PDqh4/C6S52dVHwYp/5zmkTrm4IUk3O7TYiV8whC/vrlI1m9OAGJxPareUgxFZUC+2
-         I7slyRMFE6wXePxHgLcOI25zOvoPWown/lV3vive98S0wwvTwTzicYt9+73JrhgKdm
-         fHO15Q9CkD8KA==
-Message-ID: <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org>
-Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
-From:   Jeff Layton <jlayton@kernel.org>
-To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>,
-        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
+        Wed, 9 Aug 2023 06:11:13 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5191FDF;
+        Wed,  9 Aug 2023 03:11:12 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379AB3r4088696;
+        Wed, 9 Aug 2023 05:11:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691575863;
+        bh=YE4TUtWVU6h+x5owSlxhMP3LTchokS0hFcMMkG6Rf4E=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=KAbsoefyy3C6BroNHohJGttkDHKBT+qlt9Wj+Ul7NcvrBgSFOHOv15KX67ugVP/VU
+         uxbLI0qxTmP3TjsMhKyzJ7+5cUVt8qnAS0OSaCqxJ4A7V+m2EbuJ7jDJal6rNNwqJy
+         R3B7pmj1PZtJvA5MswBaC9KYB/FUmCrm6K+0y8WI=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379AB3FZ076354
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Aug 2023 05:11:03 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
+ Aug 2023 05:11:02 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 9 Aug 2023 05:11:03 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379AB2WV055234;
+        Wed, 9 Aug 2023 05:11:02 -0500
+Date:   Wed, 9 Aug 2023 15:41:01 +0530
+From:   Dhruva Gole <d-gole@ti.com>
+To:     Tony Lindgren <tony@atomide.com>
+CC:     <linux-omap@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Date:   Wed, 09 Aug 2023 06:10:53 -0400
-In-Reply-To: <87msz08vc7.fsf@mail.parknet.co.jp>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
-         <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
-         <87msz08vc7.fsf@mail.parknet.co.jp>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Keerthy <j-keerthy@ti.com>, Kevin Hilman <khilman@baylibre.com>,
+        Nishanth Menon <nm@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] bus: ti-sysc: Fix a build warning with W=1 for sysconfig
+Message-ID: <20230809101101.7pbe7fhrlfcblcqk@dhruva>
+References: <20230809095633.34025-1-tony@atomide.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230809095633.34025-1-tony@atomide.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-09 at 17:37 +0900, OGAWA Hirofumi wrote:
-> Jeff Layton <jlayton@kernel.org> writes:
->=20
-> > Also, it may be that things have changed by the time we get to calling
-> > fat_update_time after checking inode_needs_update_time. Ensure that we
-> > attempt the i_version bump if any of the S_* flags besides S_ATIME are
-> > set.
->=20
-> I'm not sure what it meaning though, this is from
-> generic_update_time(). Are you going to change generic_update_time()
-> too? If so, it doesn't break lazytime feature?
->=20
+On Aug 09, 2023 at 12:56:33 +0300, Tony Lindgren wrote:
+> Dhruva reported a build warning with W=1 for "Function parameter or member
+> 'sysconfig' not described in 'sysc'". Let's document sysconfig to fix this.
+> 
+> Reported-by: Dhruva Gole <d-gole@ti.com>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
 
-Yes. generic_update_time is also being changed in a similar fashion.
-This shouldn't break the lazytime feature: lazytime is all about how and
-when timestamps get written to disk. This work is all about which
-clocksource the timestamps originally come from.
+Probably best to include a Fixes: commit no?
 
-> Thanks.
->=20
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> >  fs/fat/misc.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/fs/fat/misc.c b/fs/fat/misc.c
-> > index 67006ea08db6..8cab87145d63 100644
-> > --- a/fs/fat/misc.c
-> > +++ b/fs/fat/misc.c
-> > @@ -347,14 +347,14 @@ int fat_update_time(struct inode *inode, struct t=
-imespec64 *now, int flags)
-> >  		return 0;
-> > =20
-> >  	if (flags & (S_ATIME | S_CTIME | S_MTIME)) {
-> > -		fat_truncate_time(inode, now, flags);
-> > +		fat_truncate_time(inode, NULL, flags);
-> >  		if (inode->i_sb->s_flags & SB_LAZYTIME)
-> >  			dirty_flags |=3D I_DIRTY_TIME;
-> >  		else
-> >  			dirty_flags |=3D I_DIRTY_SYNC;
-> >  	}
-> > =20
-> > -	if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
-> > +	if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && inode_maybe_inc_iversion=
-(inode, false))
-> >  		dirty_flags |=3D I_DIRTY_SYNC;
-> > =20
-> >  	__mark_inode_dirty(inode, dirty_flags);
->=20
+>  drivers/bus/ti-sysc.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+> --- a/drivers/bus/ti-sysc.c
+> +++ b/drivers/bus/ti-sysc.c
+> @@ -109,6 +109,7 @@ static const char * const clock_names[SYSC_MAX_CLOCKS] = {
+>   * @cookie: data used by legacy platform callbacks
+>   * @name: name if available
+>   * @revision: interconnect target module revision
+> + * @sysconfig: saved sysconfig register value
+>   * @reserved: target module is reserved and already in use
+>   * @enabled: sysc runtime enabled status
+>   * @needs_resume: runtime resume needed on resume from suspend
+> -- 
+> 2.41.0
 
---=20
-Jeff Layton <jlayton@kernel.org>
+-- 
+Best regards,
+Dhruva Gole <d-gole@ti.com>
