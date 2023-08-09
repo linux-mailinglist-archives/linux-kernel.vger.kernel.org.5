@@ -2,138 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BACA27764C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 18:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DFF7764C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 18:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbjHIQN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 12:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
+        id S229954AbjHIQNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 12:13:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHIQN1 (ORCPT
+        with ESMTP id S230120AbjHIQNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 12:13:27 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2069.outbound.protection.outlook.com [40.107.243.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C40BC
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 09:13:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S1HoFJpV7twRF51wvrNxypLb9UJnv3kkvbb+2CYn0E3+u7jd6dw4YCpCGy8Osr9Y5KDFKdSJZAcJY3H+zdTTUmH0bQmbPfBMfOLMyD7fA8Ir91xwb+Jz9PcOQjeT5vYPMLFPry8hS6nxqVXMS3BW/OTGojG7ukRwUn/L+c48/AHwjGAAERYcI2yEkexeEbZbitoQh0FEBahObXL8PxnAXe4BNuY6a4CxTR0Oxt1joWy4hItzZpvsgIQfr7ngofOc6wGfGrjuxavnovDbPozge4rwvCFHvxCL3Wy7qaLJ8mpQapMhzWUj3fbgXXInoZFXVDsuBDIIYHoRV63jZwh7GQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4+c5M1GBaTAFJcc1JDbIdSiilB4W2v/bnc/la3RqsoM=;
- b=EwVZBdwprTtECWnwGQBItizHvFyOlvtASEojVowRzAQHEinWTGqlVrTEwdNe9oxEieGuHGipJUcg1MsnKu78f3BRiSt+PlFpAkmvKChhpLzsx372vwhxgWFWRwf/+9M5NZtuui6KLzBrT9Vlxh8OHwniZDQ+eVk1YR6qwNQVLZ0UaYatAzfFccJtF7GXDO72lDNicjNEgd+Go+FjP000DScYhtodUSMo2n0RuCO4MKbes90F4m29lQp9cWONVk36Z9w6AVZT1cvevtCk2oRZFV7GQ74BdQreob5ArKYlNfb83LciMc1TflZx0TbjhcqE47EQUWWPGJG+NQhLP6tYkg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4+c5M1GBaTAFJcc1JDbIdSiilB4W2v/bnc/la3RqsoM=;
- b=AaTGRlKbeqQqLjQF+8iKlfH2ZgJNYxZ5ixGWwpH4upqob0ZdElS/rFCd6ukDkVuVwwn2FzcTZSR73abz6hjTYt+iKvlfSpdHgsMjYpkE5YYuCRd9A/zC93QQCFSck+IUAJ0cZv6HD57f8stsiC9HnONUPnwGOjoAQONSUbgwftM7TO/FoPWDmXSQQ7V774PnkKGIsV8XimnmRUtgU+HMmS/BKbLC32wI/pK5+8949vKSXFlLX+jV/JAUVkB4JKZ89i+tXluwXeh9SMTUbfAS1ukEsQjNALtRk29ucAKdFDUvi6JaF4MAyGErveUT5NL0MGJH5nwzBbaG9YhgQSV6Og==
-Received: from MN2PR12MB3902.namprd12.prod.outlook.com (2603:10b6:208:169::23)
- by CH3PR12MB7763.namprd12.prod.outlook.com (2603:10b6:610:145::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.28; Wed, 9 Aug
- 2023 16:13:23 +0000
-Received: from MN2PR12MB3902.namprd12.prod.outlook.com
- ([fe80::149d:ff18:9f37:af72]) by MN2PR12MB3902.namprd12.prod.outlook.com
- ([fe80::149d:ff18:9f37:af72%7]) with mapi id 15.20.6652.028; Wed, 9 Aug 2023
- 16:13:23 +0000
-From:   Asmaa Mnebhi <asmaa@nvidia.com>
-To:     Vadim Pasternak <vadimp@nvidia.com>,
-        "markgross@kernel.org" <markgross@kernel.org>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v1 1/2] mlxbf-bootctl: Support the large icmc write/read
-Thread-Topic: [PATCH v1 1/2] mlxbf-bootctl: Support the large icmc write/read
-Thread-Index: AQHZysv0JhhUdbnH7EimkizeivEMTK/iB3SAgAAbixA=
-Date:   Wed, 9 Aug 2023 16:13:23 +0000
-Message-ID: <MN2PR12MB39020C538F982DB0B1F0434CD712A@MN2PR12MB3902.namprd12.prod.outlook.com>
-References: <20230809141513.9058-1-asmaa@nvidia.com>
- <20230809141513.9058-2-asmaa@nvidia.com>
- <BN9PR12MB5381D4AB689C24165F3EE3A3AF12A@BN9PR12MB5381.namprd12.prod.outlook.com>
-In-Reply-To: <BN9PR12MB5381D4AB689C24165F3EE3A3AF12A@BN9PR12MB5381.namprd12.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN2PR12MB3902:EE_|CH3PR12MB7763:EE_
-x-ms-office365-filtering-correlation-id: 4f8010fe-903e-4aaf-58b0-08db98f38e6f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1gN3eXa+8DurOTCfxrUVP2AkiyxiXgDfQs8QpBNHd8eTxZjbpapC0ZLgWsNaUGs2sU9dt9Yfwsqw7dv6opJ1rzLd139DRdB5MFHdnRSvNcqUVxnqcNm0bqH26qGEVovhDDsg99k0xnglPc/t2CWcXPJlLukjLB8/0ZCI0yVF6huWcN3qB6yoUG615sylAWUZZ8oXw1M0cowm8x8IioqLNLUWYEWCOvwhbp0IqtjbdEeDw5+vf8HVz6zdkdYYPqC1mD7aDrMmjoZS+rpxZWR+3cFlnGlEMbm83WGYiicQOnheLIj/G3C2YI8dDfbLW+kEXjcg5ikO6srzcgJZD3usTtA/+t5Hov1hhkgvD0dt3I0oqiYcx/fvZVbUoDafxlmKfdAXX84nLr1L5/s9Mrp7sdQISyIUqxcpR+eAZCG6Ys1I3LBAH9tHhFNEDw0VstPfYgBsxYD5aaAJxny6uHGVZZ9WamPNKrsYL60r2oZfZW8PQJh1LM3xi/sgVEwRfN1q9rhUE+1TICLPQMvqubJmixnDlaDLAUn8krl2CiCZc293AgYvJMVwdV22vhHJrY8fwgR9mB7/8aN0l4oM8tU6IHCnc3oN5U4DxBszEtspoOFlXHjMb1ka+5hhqQnxPhgr
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3902.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(396003)(39860400002)(366004)(376002)(136003)(186006)(1800799006)(451199021)(8676002)(8936002)(5660300002)(52536014)(38070700005)(41300700001)(66946007)(76116006)(66476007)(66556008)(66446008)(64756008)(316002)(86362001)(33656002)(4744005)(2906002)(55016003)(71200400001)(9686003)(7696005)(6506007)(26005)(38100700002)(110136005)(122000001)(478600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QndIRXMwQmduL0JDZnJ5VmpPQjFySnRZMzVYNzYwME5ieXdRM0UwTVo3ZlR1?=
- =?utf-8?B?MndrcGhLWk1ET3hyZzBaM216RTNiRmFlN2tBWnBROGVCMW9GT2pUVjBrK2JD?=
- =?utf-8?B?WFd5aW9QS2lKOHFsRUI3SzUzY3lRVHIvNXZiVGloVVV3dHM4ZW1mWTNiS0U3?=
- =?utf-8?B?NGxCbGFhbzFnamVhRnVlT2NqWEMyYm92aitWaUtYT0dWTjFZZm1tSE5mdWwz?=
- =?utf-8?B?c0V4S0hMMmNwUGkySHFPc2pMS2pHb3VPOS9RcEdvR3NYY1QyaHZrcXhMZDNU?=
- =?utf-8?B?ZzYwOFpOcTN6VUxaMUZ1Yks0MVY3QzJJSTd0RWNqalNrNUZDcDNEYm9yOExV?=
- =?utf-8?B?VlFndXROYjUydEVYNWZNMi9lY3RRbVAzTlhrTGpDL1d4eEpaVEd3MGdxMGtE?=
- =?utf-8?B?SXYyVi8wZW1WZVE0a0tOQkNORms2K3hOVDVXcCtVbWdrWEw2N2o0NEhveGV4?=
- =?utf-8?B?RENoSVlicGhsNXAzSjJlQWk0a2tmeCtFbVF4MmE2VEpRUVFFSmhDUEM2K05x?=
- =?utf-8?B?dVJjSG9DRmJjQmZxT2dXV1VhelcwUGVIUWk2elhVSDhvd0VUK3pPT2J4SHQw?=
- =?utf-8?B?SW9mWGNmNmFMU2w3VkJsYWxYeXB6VXhoeVZubFdDRkNhck5ReHNha2czVEJD?=
- =?utf-8?B?bHlVNHEyeXNEQk9TNjd5YXJNcjNCVzM0NWZBN0JRSkJPdFdPcThpQlUweWgx?=
- =?utf-8?B?Qm1IVWRrYzRaZ0t1b3NoQi80QUdEU3ZhR1dmSkFwLzdDL2pqbGdvZG51Z0dT?=
- =?utf-8?B?ZHlyQkNHTFR6NWxzem4wcU42WFNjQUNMUFV3SHBUSWI3djZudVVXRmo4eHpx?=
- =?utf-8?B?YXZGWGVnaElPSnVlenJFcjN2ZTYrVjBoYUFWeHRhOGo3VWpjNlE4RGpRK2Ni?=
- =?utf-8?B?dVM2YUJRdFByS1B6cDVPM0REMWRKZm1uZlVhbHE4K3YxTWVwS3I0bDhxSTRR?=
- =?utf-8?B?VlV6bWpiUjg0REZmd2VLVnk3dzdPeGI5Z1UzblNRWWExUEowQ3JBUit5TkYz?=
- =?utf-8?B?bjQ1YStocm1DaE51NDhZbmI4Unl6N2FFSjRNVGZ0V3lSNTNoT2g3eWxkQ2RI?=
- =?utf-8?B?cWovd3ZrQU9RMjFoMmYwWG1wSitHZGJqNTR3d0JOdEhURzl2SEtIVnZFeSsy?=
- =?utf-8?B?NmVOZms4KzZnTWUzTmpsNG4yRFB3TDZpekViam1JaGxJWVRTSUwremt5RVkw?=
- =?utf-8?B?MXpoRnczOTM4NytyZ0ZCOW5pZmE0TDJxRCtNNWFRQ3Jmd0xNQitOcjRZRkJa?=
- =?utf-8?B?czdCMXIzSUtZZlJRYi94VXVjcEd2TGhQT1RTM1lvZVQrUU5KZ0JWcTBOR3Nn?=
- =?utf-8?B?OTBUV3VHR081ekNPSHVTdEpVOUFrSzhsemNMZWEzUzMrL0tpeCtDVmhLT1d0?=
- =?utf-8?B?d3RpWVBLMmxmcnVjVzVuOHM5SlVUcHB4Qi9yeTRMMFZMdWN2NFpUTEdqaDVw?=
- =?utf-8?B?QlAwc2dib0x3ZGVJUjlDcW9XQXdjZTd4WmM5dElBTEV1K3BCVUQ2RlUyczlJ?=
- =?utf-8?B?c2tFYUMwQ2I1aCt3WXBWZU0zcnFGVHM5SnFkdGJDRkY2MVBDZzF4L3B3K05Z?=
- =?utf-8?B?WUhKc2I4OVRKemMxYVZsbmt6amlCdXduT2tQL01XSVpVWnpuT3FJYmR3RkpM?=
- =?utf-8?B?ckZrM1VlT2VaU1Z1c29ucUxLOGlucm4ybW1wb3cvUE9DZXVvamVyMlpITDda?=
- =?utf-8?B?VkF1cHFtZit3QkliSGZaazdyeTZsTXR1eGZMZlhGTXlUWm9jMTZuR0NYUVJ3?=
- =?utf-8?B?eE5JenJWekdIRVlWMlRhVUV5b2EycW4xWWVoc0pQK0trMlh3L3RscUR1SVp4?=
- =?utf-8?B?NHh4d0I3Y2RycFBuY3BNbmp4NkJabWgrY2xnaGg3OHlXRVlOOUVtc0hMRndC?=
- =?utf-8?B?MTdHSnlTMDBhUHNvSzg1TWlwKy9LMzkzcjBIZ0VvN0NtZEQwSzJUNkNnUXZq?=
- =?utf-8?B?RXJCeXEwV2lvN2gwcWRhWUMrdlFIbGZ4YnpUNi94UnFLa0ZMNEVqa3ZHTXQv?=
- =?utf-8?B?SDAvQ2hkS2lWWUE0Q1B1TGtDTElnVU56U203USs3SmNsU1ZyT0VSTTNCOTE1?=
- =?utf-8?B?MWtOamF5amd0SUxNMG9TSGRrS1dTNEo3Y0tEWUhBTmtvRjhFK2FCa0hhV1V2?=
- =?utf-8?Q?ILp8=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 9 Aug 2023 12:13:35 -0400
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96FDB10D4
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 09:13:31 -0700 (PDT)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1bba7717d3bso5347730fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 09:13:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691597611; x=1692202411;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OgDFpldPgAGUwsz5nVjA6iwGleVqPZrR7mQ0AP3vWmo=;
+        b=cXhIiBiLM018GsufSGIcEDDIMzQlZEz4vliqbqvQAhaaysoska0pkc0i2y370nF5tK
+         sBntGdSuNZnBeLpMro/4md7WC9y34cCudI63VcmF3Q6wH5OvlVs/catHEJJYgQ7qzA7t
+         +p2nRlrQnNajbEb9zB1jmSNgp7Pc3I6xdpXIHZzs3bQvSPQ4OuP8dZNHBJygzyOlbfZ5
+         AF2HtrbOlKG2GnT8yBU0Y2rvbkLQevQkgJcEErQqyQF7qeQU0Dfg5AYpep0AiyLjv+2f
+         IGcXo4bk8s2fdSQONTO3v60f1VeVf1I0WzpWG124ST5+q49NRnD0uXC3yAf21QpdGdZx
+         zD8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691597611; x=1692202411;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OgDFpldPgAGUwsz5nVjA6iwGleVqPZrR7mQ0AP3vWmo=;
+        b=JnUp/Ex6dZEJYGyBKlOVUfBkHHEO3gQq2+GLALIFgYZpuUNR+jjsvAKChpV4PDrCK1
+         QiSP+W7lA655lg9yk5f1yuimnPhiGR+wPP4/bM5z6RNH3mcdOfzUyNun2zbo4Ip5Vu1A
+         uAYem9rfO/trhGcBWm2HwLrm5Ybt1FDYg+qTnKHqzoc0tSvlz/Xh8wP89toux2RB5VFY
+         rRWIr4fWqRvoXjkNR8fBHwyf+PKg63QD0loOXqSF2oK5xm5/bF7/kIkwkqQtrM/zDLKO
+         N+fmpz9k36/K/ODoQ+7cYXS6M99piNGtyuW830UiANJ4Ug6gTKb06ngqSMYrLaSh+WPE
+         vIFg==
+X-Gm-Message-State: AOJu0Yx849E+b7eoqRRgOQg11mr7FXrWzLtT/D8h3hdt/hSj9pmDE4rM
+        Zorz3ZAnBGvx+dMJkpMnSidBy+NQAB8=
+X-Google-Smtp-Source: AGHT+IGQOc7LJ63guOVnss4GJMRJFRHmnbH9p4lD+sJ+Md5W38pnvkNcCvDvPni2ZgeMSYNRrvd1tA==
+X-Received: by 2002:a05:6870:c082:b0:1bf:74cc:c815 with SMTP id c2-20020a056870c08200b001bf74ccc815mr3636754oad.19.1691597610814;
+        Wed, 09 Aug 2023 09:13:30 -0700 (PDT)
+Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
+        by smtp.gmail.com with ESMTPSA id o2-20020a056870a50200b001bf817a62fesm7329356oal.31.2023.08.09.09.13.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 09:13:30 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 13:13:25 -0300
+From:   Alexon Oliveira <alexondunkan@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH v3] staging: vme_user: fix alignment of open parenthesis
+ and deleted trailing spaces
+Message-ID: <ZNO7JRmwnMmaHtzf@alolivei-thinkpadt480s.gru.csb>
+References: <ZNJKTLZ62SZMM6D8@alolivei-thinkpadt480s.gru.csb>
+ <2023080902-cattle-disparate-6b82@gregkh>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3902.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f8010fe-903e-4aaf-58b0-08db98f38e6f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2023 16:13:23.7189
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UASOMNhCzxXiA7tJr/Rdecj+qkqH/U2nLb59L0wg25D9KJO+VTSHiC/9cGk0yW/s3AdFHzKeV8dC73YAKTRcTQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7763
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023080902-cattle-disparate-6b82@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+ICsJZXJyID0ga3N0cnRvdWwoYnVmLCAxNiwgJmljbV9kYXRhKTsNCj4gPiArCWlmIChlcnIp
-DQo+ID4gKwkJcmV0dXJuIGVycjsNCj4gDQo+IEkgc3VnZ2VzdCB1c2luZyBkZWZpbmUgaW5zdGVh
-ZCBvZiAxNi4NCkRvbmUuDQo+ID4gKw0KPiA+ICsJaWYgKCgoaWNtX2RhdGEgIT0gMCkgJiYgKGlj
-bV9kYXRhIDwgMHg4MCkpIHx8DQo+ID4gKwkgICAgKGljbV9kYXRhID4gMHgxMDAwMDApIHx8IChp
-Y21fZGF0YSAlIDEyOCkpDQo+ID4gKwkJcmV0dXJuIC1FUEVSTTsNCj4gDQo+IFlvdSBjYW4gcmVt
-b3ZlIHJlZHVjZSAnKCknIGFuZCBJIHN1Z2dlc3QgZm9yIHRvIHVzZSBmb3IgY29uc2lzdGVuY3kg
-MTI4Og0KPiBJbnN0ZWFkIG9mIDEyOCBhbmQgMHg4MA0KPiAJSWYgKChpY21fZGF0YSA+IDAgJiYg
-aWNtX2RhdGEgPCAxMjgpDQo+IA0KPiBQcm9iYWJseSBjb25zaWRlciB0byB1c2UgZGVmaW5lcyBh
-bHNvIGZvciB0aGUgYWJvdmUgbWFnaWMuDQpEb25lLg0KDQoNCg==
+On Wed, Aug 09, 2023 at 02:24:25PM +0200, Greg KH wrote:
+> On Tue, Aug 08, 2023 at 10:59:40AM -0300, Alexon Oliveira wrote:
+> > Fixed all CHECK: Alignment should match open parenthesis
+> > and deleted the trailing whitespaces as reported by
+> > checkpatch to adhere to the Linux kernel coding-style
+> > guidelines.
+> > 
+> > Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+> > ---
+> > 
+> > Changes in v3:
+> > - Rebased against staging.git and staging-next branch, noted by Greg KH
+> 
+> I don't think you did this as it still fails to apply for me :(
+> 
+> Can you go through the exact steps and try again?
+> 
+
+I'm pretty positive I did as you instructed me, but I think the problem
+seems to be another thing:
+
+$ git fetch origin
+
+remote: Enumerating objects: 46, done.
+remote: Counting objects: 100% (46/46), done.
+remote: Compressing objects: 100% (46/46), done.
+remote: Total 46 (delta 35), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (46/46), 33.97 KiB | 135.00 KiB/s, done.
+From git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging
+   1422b526fba9..c3bdcb94967d  staging-testing -> origin/staging-testing
+
+$ git rebase -i origin/staging-testing
+
+warning: skipped previously applied commit 7d5ce25fb4c3
+hint: use --reapply-cherry-picks to include skipped commits
+hint: Disable this message with "git config advice.skippedCherryPicks false"
+^[[AERROR: trailing whitespace
+#158: FILE: drivers/staging/vme_user/vme.c:566:
++^I^I   unsigned long long vme_base, unsigned long long size, $
+
+ERROR: trailing whitespace
+#180: FILE: drivers/staging/vme_user/vme.c:617:
++^I^I   unsigned long long *vme_base, unsigned long long *size, $
+
+ERROR: trailing whitespace
+#244: FILE: drivers/staging/vme_user/vme.c:1048:
++^I^I^I^I^I   u32 aspace, u32 cycle, $
+
+ERROR: trailing whitespace
+#311: FILE: drivers/staging/vme_user/vme.c:1844:
++^I^I^I^I     struct vme_bridge *bridge, $
+
+total: 4 errors, 0 warnings, 0 checks, 277 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
+
+NOTE: Whitespace errors detected.
+      You may wish to use scripts/cleanpatch or scripts/cleanfile
+
+"[PATCH] staging: vme_user: fix alignment of open parenthesis and" has style problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+total: 0 errors, 0 warnings, 0 checks, 32 lines checked
+
+"[PATCH] staging: vme_user: fix alignment of open parenthesis and" has no obvious style problems and is ready for submission.
+Successfully rebased and updated refs/heads/first-patch.
+
+$ git rebase -i origin/staging-testing
+Stopped at d13431f7a7ba...  staging: vme_user: fix alignment of open parenthesis and deleted trailing spaces
+You can amend the commit now, with
+
+  git commit --amend
+
+Once you are satisfied with your changes, run
+
+  git rebase --continue
+
+$ git commit --amend -s -v
+ERROR: trailing whitespace
+#158: FILE: drivers/staging/vme_user/vme.c:566:
++^I^I   unsigned long long vme_base, unsigned long long size, $
+
+ERROR: trailing whitespace
+#180: FILE: drivers/staging/vme_user/vme.c:617:
++^I^I   unsigned long long *vme_base, unsigned long long *size, $
+
+ERROR: trailing whitespace
+#244: FILE: drivers/staging/vme_user/vme.c:1048:
++^I^I^I^I^I   u32 aspace, u32 cycle, $
+
+ERROR: trailing whitespace
+#311: FILE: drivers/staging/vme_user/vme.c:1844:
++^I^I^I^I     struct vme_bridge *bridge, $
+
+total: 4 errors, 0 warnings, 0 checks, 277 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
+
+NOTE: Whitespace errors detected.
+      You may wish to use scripts/cleanpatch or scripts/cleanfile
+
+"[PATCH] staging: vme_user: fix alignment of open parenthesis and" has style problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+[detached HEAD 527a5480c032] staging: vme_user: fix alignment of open parenthesis and deleted trailing spaces
+ Date: Fri Aug 4 18:01:54 2023 -0300
+ 1 file changed, 43 insertions(+), 42 deletions(-)
+
+$ git rebase --continue
+total: 0 errors, 0 warnings, 0 checks, 32 lines checked
+
+"[PATCH] staging: vme_user: fix alignment of open parenthesis and" has no obvious style problems and is ready for submission.
+Successfully rebased and updated refs/heads/first-patch.
+
+$ git rebase -i origin/staging-testing
+Successfully rebased and updated refs/heads/first-patch.
+
+$ git rebase -i origin/staging-next
+Successfully rebased and updated refs/heads/first-patch.
+
+> thanks,
+> 
+> greg k-h
+
+Thank you.
+
+Alexon Oliveira
