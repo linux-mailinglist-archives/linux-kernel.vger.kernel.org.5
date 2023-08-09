@@ -2,116 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE38776421
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD76277642F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233466AbjHIPj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
+        id S232813AbjHIPkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234349AbjHIPjj (ORCPT
+        with ESMTP id S231611AbjHIPkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:39:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01EEE211C;
-        Wed,  9 Aug 2023 08:39:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BEBA63EE4;
-        Wed,  9 Aug 2023 15:39:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88C72C433C7;
-        Wed,  9 Aug 2023 15:39:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691595570;
-        bh=ZN+Ph02j0blvyY6VRiCcTlHg1lDxH5//uAa9haCbAn8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i0MzQOFzaKje3rSd1sMFSE1kApBZCzLB8I2z0MbQK+v/GUrlpsqiQjqi+xSnExklK
-         hQM+06ieQ+JBEv/MhCR02KZbqQPtc0jNLt+qnangDl1IihkMA4ymCsnS8lE1sia4eX
-         OFBqlgq/O2RGSgpaa8bGA0+pVDpm8wQQzStXZhSu63ZdO4N7OxTYIUajdURgwKXQv2
-         AMXeLFGwS192JLeKX1paG5pWcwrdKCTY50kF9iu9t/WZuc49OOE/eyex/soOi6Hs4D
-         RhtqbijCKALv6khgCE3zzk1D8roP8Mxms7RHmtWAbVu9JMdz69IjKL15wGn99BEDyw
-         84nb+hYMMvFxQ==
-Date:   Wed, 9 Aug 2023 16:39:25 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Yinbo Zhu <zhuyinbo@loongson.cn>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        loongson-kernel@lists.loongnix.cn
-Subject: Re: [PATCH v3 1/2] gpio: dt-bindings: add parsing of loongson gpio
- offset
-Message-ID: <20230809-circus-photo-6911d2e18f96@spud>
-References: <20230807074043.31288-1-zhuyinbo@loongson.cn>
- <20230807074043.31288-2-zhuyinbo@loongson.cn>
- <20230808-amount-urban-9a6eb09852ca@spud>
- <536a9062-65b2-5518-5c50-1a61e23870ee@loongson.cn>
+        Wed, 9 Aug 2023 11:40:35 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01AAB2113
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:40:33 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99bf3f59905so1007384966b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:40:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691595631; x=1692200431;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/yC5xase6smHlx6Uy5irliycOyGMEybwCUwk9LUBQXs=;
+        b=t/wqd7+FII8iINHlG1eDUtpIETF3crH/5YRfn29MT/3ap33OUQN2dEGYsBCsN3Z17k
+         g9R1pf0KoxuHWQrnAttp6GA6d8mUEaecC+rZN+jAn08N7/+7CIqca2FgQxGI7oB9jdI0
+         ju+RHOvg7VRJYBXq9/pGNrw9GtqU7CWGkH1eua8S3E3LVRqBfdb2eos1XCwGUWSyKnAc
+         Ux1gFGoS5hOhKKB0CQXtOdKRQcGHlFBLufrhLowjQGYR8UA0wtydQuuOO8HgLRwPAz0d
+         NKclJ9eNcgSkgxpVAmhMS3JARTiAq+B677MptiYX1nru4Jbd5V0b/QKBXN1G5aIU/tYV
+         nP3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691595631; x=1692200431;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/yC5xase6smHlx6Uy5irliycOyGMEybwCUwk9LUBQXs=;
+        b=T4b19v/VbtoRSga1WBoZA970rXlSlyCyWEwpxKER60CubG8WGnP7K3Ad3tDktw/+fJ
+         q/1L2vuMC7UzQtfUSOcRaLzAw6azE5NLOHaOklrq6YqKf/gH0EG4IupHuZlc64EWvPih
+         n20K0LA4CgHyo/u0/lEYoJtOXhSbPC96b8xJgr9hu2/w5A0h5manVlxc9uBfB3WJZ1b7
+         LeZK3nF4OR0wlEeAJa0NWFlR+e/rXrXqnqUmSSktOI+043vl+YLs8OUVDxjsJUQrI8NL
+         fzuI7U7VAdXbTeK8zqiqgiPoOri3s23uzGNBCYDfM3HHSWutMhlUwjWsCuO1+iYVG+EC
+         a6Eg==
+X-Gm-Message-State: AOJu0YyP01o57ML+1cmgudwr3oh8dQCTTaO1sAlRyzjDgrQVhlgrwp0i
+        3us49LLONrZj9E7Iu4VkXYL3iA==
+X-Google-Smtp-Source: AGHT+IF13UWe1MzHgutPF37GkytYBpFYpWtYYBuaRYhBQgtEtu8j0k3Zh1rX2Rf9+htNW51UD1J/9A==
+X-Received: by 2002:a17:907:2bf8:b0:99c:a2ca:4f54 with SMTP id gv56-20020a1709072bf800b0099ca2ca4f54mr2307609ejc.34.1691595631439;
+        Wed, 09 Aug 2023 08:40:31 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id fy2-20020a170906b7c200b00992eabc0ad8sm8074852ejb.42.2023.08.09.08.40.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 08:40:30 -0700 (PDT)
+Message-ID: <e42b0248-f7a7-5615-0c8a-8255c8a4548c@linaro.org>
+Date:   Wed, 9 Aug 2023 17:40:28 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="VXgqk7woHVK+3S1c"
-Content-Disposition: inline
-In-Reply-To: <536a9062-65b2-5518-5c50-1a61e23870ee@loongson.cn>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 4/4] arm64: defconfig: Enable qca8k nss clock
+ controller
+Content-Language: en-US
+To:     Luo Jie <quic_luoj@quicinc.com>, andersson@kernel.org,
+        agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com
+References: <20230809080047.19877-1-quic_luoj@quicinc.com>
+ <20230809080047.19877-5-quic_luoj@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230809080047.19877-5-quic_luoj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 09/08/2023 10:00, Luo Jie wrote:
+> Enable clock controller config for Qualcomm qca8386/qca8084 chip.
 
---VXgqk7woHVK+3S1c
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Which boards or products in upstream kernel use it? We do not enable
+drivers which are not used/needed.
 
-On Wed, Aug 09, 2023 at 03:47:55PM +0800, Yinbo Zhu wrote:
-> =E5=9C=A8 2023/8/8 =E4=B8=8B=E5=8D=888:05, Conor Dooley =E5=86=99=E9=81=
-=93:
-> > On Mon, Aug 07, 2023 at 03:40:42PM +0800, Yinbo Zhu wrote:
+Best regards,
+Krzysztof
 
-> > > +  loongson,gpio-ctrl-mode:
-> > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > +    description:
-> > > +      This option indicate this GPIO control mode, where '0' represe=
-nts
-> > > +      bit control mode and '1' represents byte control mode.
-> >=20
-> > How is one supposed to know which of these modes to use?
->=20
->=20
-> Byte mode is to access by byte, such as gpio3, the base address of the
-> gpio controller is offset by 3 bytes as the access address of gpio3.
->=20
-> The bit mode is the normal mode that like other platform gpio and it is
-> to access by bit.
->=20
-> If both modes are supported, it is recommended to prioritize using byte
-> mode that according to spec.
-
-So, sounds like this property should instead be a boolean that notes
-whether the hardware supports the mode or not, rather than the current
-enum used to determine software policy.
-
-However, from Krzysztof's comments & my own feeling, it really does seem
-like you should drop the do-everything compatible and introduce things
-that are soc-specific.
-
---VXgqk7woHVK+3S1c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNOzLQAKCRB4tDGHoIJi
-0gKZAPwMObBwfQu8x9fheCqfaLGcTVE9kP/GlXm+nZ+WkYpRAAEA/fvnRYxDaHud
-NkKpJyX9yzzr+jgHCWeKNA/w/9hz6QQ=
-=8LUU
------END PGP SIGNATURE-----
-
---VXgqk7woHVK+3S1c--
