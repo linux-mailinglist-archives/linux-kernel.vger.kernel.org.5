@@ -2,210 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 134FA776C81
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 00:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8395A776C88
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 01:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232755AbjHIW6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 18:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50092 "EHLO
+        id S233054AbjHIXA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 19:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbjHIW6i (ORCPT
+        with ESMTP id S231177AbjHIXAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 18:58:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65406E71;
-        Wed,  9 Aug 2023 15:58:37 -0700 (PDT)
+        Wed, 9 Aug 2023 19:00:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C10E76
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 16:00:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EFC2364A7D;
-        Wed,  9 Aug 2023 22:58:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8894DC433C8;
-        Wed,  9 Aug 2023 22:58:35 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D959262872
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 23:00:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 438B3C43395;
+        Wed,  9 Aug 2023 23:00:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691621916;
-        bh=qXAY5+ypBMRjazkxqMPSQk8aD3TC6Q1gvPIppZsbcKg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BbgfgXdsOE1QpeBsua+opVOLktDulOVKwrCaVnE+j/XlHuEqn9K5n88UcwTAUVVoo
-         zgTMn+okkEpKKSl1H69pYJOdDX/wQ9vbSY7IacbVHRfTOdAPT5LTyBGIR+3ApZPm9L
-         Q4/9B+zSKZWhRLNoy2P6/ah0vmGksUfy+jnyq5gBvzs8TgZGWyIEOkoj6ksJRL3TeK
-         1Tjn5N5Ry4ya7sJtVj+4DHPGpT5bBRbqiD0OEqy3kgFo002Y0r+3PNHgogA3sOBAm9
-         0/aIl3X9uaOoK02IgDHKgKkryfRnhcv6bhevTFS2Jq6cC2j+hKSm6iHjfl5i4QSSUq
-         a2ZeUbCL1tkgw==
-Received: (nullmailer pid 3162148 invoked by uid 1000);
-        Wed, 09 Aug 2023 22:58:34 -0000
-Date:   Wed, 9 Aug 2023 16:58:34 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/8] dt-bindings: mtd: add basic bindings for UBI
-Message-ID: <20230809225834.GA3144140-robh@kernel.org>
-References: <cover.1691510312.git.daniel@makrotopia.org>
- <094e68da59bbd9efea1469b122f34f5dcf156f0f.1691510312.git.daniel@makrotopia.org>
+        s=k20201202; t=1691622024;
+        bh=SC28URfATJ/48zq55kLBaKJ4jexX3dzrTDKzwwnOLDc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=W9rlgpJDHEMDOmZlpYkXRFJmV7mD4fSfy0yuGEem6gd3BThUduO4h+QFOdNB6ec4c
+         EohIwyW6oQ7Ox0Kk8Rge6Hdm1VH60dy1hmV51xivlK36zquJmbjyqxX8ngTV5SNFWr
+         efVZsgZG3S50EBhKkX9FiuZVt1QY8ZIlRINgbmIvjUJ4f+NveJlEJcbJZWV1uzjw2Z
+         GY206shRvfwsAHs4dPG9Ir31jWTCx7YTx+NHcSp6GbmH9a2mTo9Pbt52a/NlaHDq8Y
+         NTIXvT/YjLq3Pk2vTloVaCTBuyQeFaiBfLNzEy1of0LfMdmve1zxqNphhFH/IRINNJ
+         WdJ8kcNHD9gCw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 24041E33093;
+        Wed,  9 Aug 2023 23:00:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <094e68da59bbd9efea1469b122f34f5dcf156f0f.1691510312.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net/llc/llc_conn.c: fix 4 instances of
+ -Wmissing-variable-declarations
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169162202414.2325.16732635656228825555.git-patchwork-notify@kernel.org>
+Date:   Wed, 09 Aug 2023 23:00:24 +0000
+References: <20230808-llc_static-v1-1-c140c4c297e4@google.com>
+In-Reply-To: <20230808-llc_static-v1-1-c140c4c297e4@google.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, nathan@kernel.org, trix@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, lkp@intel.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 05:03:19PM +0100, Daniel Golle wrote:
-> Add basic bindings for UBI devices and volumes.
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 08 Aug 2023 09:43:09 -0700 you wrote:
+> I'm looking to enable -Wmissing-variable-declarations behind W=1. 0day
+> bot spotted the following instances:
 > 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
->  .../bindings/mtd/partitions/linux,ubi.yaml    | 65 +++++++++++++++++++
->  .../bindings/mtd/partitions/ubi-volume.yaml   | 35 ++++++++++
->  2 files changed, 100 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+>   net/llc/llc_conn.c:44:5: warning: no previous extern declaration for
+>   non-static variable 'sysctl_llc2_ack_timeout'
+>   [-Wmissing-variable-declarations]
+>   44 | int sysctl_llc2_ack_timeout = LLC2_ACK_TIME * HZ;
+>      |     ^
+>   net/llc/llc_conn.c:44:1: note: declare 'static' if the variable is not
+>   intended to be used outside of this translation unit
+>   44 | int sysctl_llc2_ack_timeout = LLC2_ACK_TIME * HZ;
+>      | ^
+>   net/llc/llc_conn.c:45:5: warning: no previous extern declaration for
+>   non-static variable 'sysctl_llc2_p_timeout'
+>   [-Wmissing-variable-declarations]
+>   45 | int sysctl_llc2_p_timeout = LLC2_P_TIME * HZ;
+>      |     ^
+>   net/llc/llc_conn.c:45:1: note: declare 'static' if the variable is not
+>   intended to be used outside of this translation unit
+>   45 | int sysctl_llc2_p_timeout = LLC2_P_TIME * HZ;
+>      | ^
+>   net/llc/llc_conn.c:46:5: warning: no previous extern declaration for
+>   non-static variable 'sysctl_llc2_rej_timeout'
+>   [-Wmissing-variable-declarations]
+>   46 | int sysctl_llc2_rej_timeout = LLC2_REJ_TIME * HZ;
+>      |     ^
+>   net/llc/llc_conn.c:46:1: note: declare 'static' if the variable is not
+>   intended to be used outside of this translation unit
+>   46 | int sysctl_llc2_rej_timeout = LLC2_REJ_TIME * HZ;
+>      | ^
+>   net/llc/llc_conn.c:47:5: warning: no previous extern declaration for
+>   non-static variable 'sysctl_llc2_busy_timeout'
+>   [-Wmissing-variable-declarations]
+>   47 | int sysctl_llc2_busy_timeout = LLC2_BUSY_TIME * HZ;
+>      |     ^
+>   net/llc/llc_conn.c:47:1: note: declare 'static' if the variable is not
+>   intended to be used outside of this translation unit
+>   47 | int sysctl_llc2_busy_timeout = LLC2_BUSY_TIME * HZ;
+>      | ^
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml b/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
-> new file mode 100644
-> index 0000000000000..79cfa0a3eaa7d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
-> @@ -0,0 +1,65 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/partitions/linux,ubi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Unsorted Block Images
-> +
-> +description: |
-> +  UBI ("Unsorted Block Images") is a volume management system for raw
-> +  flash devices which manages multiple logical volumes on a single
-> +  physical flash device and spreads the I/O load (i.e, wear-leveling)
-> +  across whole flash chip.
-> +
-> +maintainers:
-> +  - Daniel Golle <daniel@makrotopia.org>
-> +
-> +allOf:
-> +  - $ref: partition.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: linux,ubi
-> +
-> +  volumes:
-> +    type: object
-> +    description: UBI Volumes
-> +
-> +    patternProperties:
-> +      "^ubi-volume-.*$":
-> +        $ref: "/schemas/mtd/partitions/ubi-volume.yaml"
+> [...]
 
-Don't need quotes.
+Here is the summary with links:
+  - net/llc/llc_conn.c: fix 4 instances of -Wmissing-variable-declarations
+    https://git.kernel.org/netdev/net-next/c/fa1891aeb762
 
-> +
-> +    unevaluatedProperties: false
-> +
-> +required:
-> +  - compatible
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    partitions {
-> +        compatible = "fixed-partitions";
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +
-> +        partition@0 {
-> +            reg = <0x0 0x100000>;
-> +            label = "bootloader";
-> +            read-only;
-> +        };
-> +
-> +        partition@100000 {
-> +            reg = <0x100000 0x1ff00000>;
-> +            label = "ubi";
-> +            compatible = "linux,ubi";
-> +
-> +            volumes {
-> +                ubi-volume-caldata {
-> +                    volid = <2>;
-> +                    volname = "rf";
-> +                };
-> +            };
-> +        };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
-> new file mode 100644
-> index 0000000000000..c17d0caf07d97
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
-> @@ -0,0 +1,35 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/partitions/ubi-volume.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: UBI volume
-> +
-> +description: |
-> +  This binding describes a single UBI volume. Volumes can be matches either
-> +  by their ID or their name, or both.
-> +
-> +maintainers:
-> +  - Daniel Golle <daniel@makrotopia.org>
-> +
-> +properties:
-> +  volid:
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-volume-id or ubi-vol-id.
 
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-
-Drop quotes.
-
-> +    description:
-> +      Match UBI volume ID
-> +
-> +  volname:
-> +    $ref: "/schemas/types.yaml#/definitions/string"
-> +    description:
-> +      Match UBI volume ID
-
-ID? 
-
-> +
-> +anyOf:
-> +  - required:
-> +    - volid
-> +
-> +  - required:
-> +    - volname
-> +
-> +# This is a generic file other binding inherit from and extend
-> +additionalProperties: true
-
-Where do we restrict this? You referenced it, but didn't didn't restrict 
-it there (with unevaluatedProperties).
-
-What other properties would you expect? These nodes ultimately need a 
-single schema (can be multiple files with $ref's) containing all 
-possible properties. Otherwise, any random property can be added 
-unchecked.
-
-Rob
