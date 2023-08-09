@@ -2,122 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFB577524E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 07:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68205775253
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 07:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjHIFoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 01:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
+        id S229695AbjHIFou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 01:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbjHIFoC (ORCPT
+        with ESMTP id S230323AbjHIFos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 01:44:02 -0400
-X-Greylist: delayed 90 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Aug 2023 22:43:59 PDT
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8691BE5
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 22:43:59 -0700 (PDT)
-Received: from eig-obgw-6008a.ext.cloudfilter.net ([10.0.30.227])
-        by cmsmtp with ESMTP
-        id TQY0qMOEabK1VTbxkqPBrp; Wed, 09 Aug 2023 05:42:28 +0000
-Received: from just2025.justhost.com ([173.254.28.237])
-        by cmsmtp with ESMTPS
-        id TbxjqbDxX5XxGTbxjqzOyC; Wed, 09 Aug 2023 05:42:28 +0000
-X-Authority-Analysis: v=2.4 cv=U8OBsMnu c=1 sm=1 tr=0 ts=64d32744
- a=Jt2RHIFfQig1ELqEZVeWfA==:117 a=Jt2RHIFfQig1ELqEZVeWfA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=UttIx32zK-AA:10 a=5SfhNeb3QxAA:10 a=VwQbUJbxAAAA:8 a=QX4gbG5DAAAA:8
- a=DgXrqYuCAAAA:8 a=LN1DEILRDWMThqYPT54A:9 a=AjGcO6oz07-iQ99wixmX:22
- a=AbAUZ8qAyYyZVLSsDulk:22 a=NFkmT8Fa3oR8cXbSjPxL:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=singleboardsolutions.com; s=default; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=IRedR4a0UlTeO6ZLpW4sOxZ1W5NZ59F4Kr/32UOhOHI=; b=Fb+cNBMESaV3YERu24pAVhOYrS
-        yp+fmY1ZbPXQR6GjDOREBMv9ESiwIonrw7EPEoLtz+RGksXJMGliW0nQJjE5oKQ5zGgswNY5DZqNB
-        OErLhrdUGlA2AkGp8VdO1hwsDHYyLcZmrvA3V3Ug77CS+CEIveOG+c9B272FShakyuX3Y5IK0g6gd
-        iQonanpixIP7EHMyTLfO1Bvt9/n8eVbcIeTD429+F3jAx7uTI/BAMnJUP5f8PW3X+j/Tgyo3J32W2
-        DI3l9vMDLHA8g/+XG6Tq+L6II8O7s2CKVruUSu8p7ye+3vvTWP0Dn1Km2QeBqrKBkADbDFTCK4XGK
-        lw0ji2nw==;
-Received: from 097-084-242-070.res.spectrum.com ([97.84.242.70]:52104 helo=localhost.localdomain)
-        by just2025.justhost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <tmckahan@singleboardsolutions.com>)
-        id 1qTbxi-003yPQ-2S;
-        Tue, 08 Aug 2023 23:42:26 -0600
-From:   Thomas McKahan <tmckahan@singleboardsolutions.com>
-To:     "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Heiko Stuebner" <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     Thomas McKahan <tmckahan@singleboardsolutions.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/2] Add Support for the FriendlyElec NanoPC T6
-Date:   Wed,  9 Aug 2023 01:42:08 -0400
-Message-Id: <20230809054213.27447-1-tmckahan@singleboardsolutions.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 9 Aug 2023 01:44:48 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041151BF2
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 22:44:47 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b8b4748fe4so42760885ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 22:44:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1691559886; x=1692164686;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vxcldl12I3EwBgJQlvH4uhDdlUAS8X8H2ABb+awGB+s=;
+        b=bWGuxL1DOLIxUyEVzJG60PbAM1TTn29jgsmsdGFv9qt+PlkLpRdGCCJZGPoiRMfOYr
+         w9qFJTH5PT+r7p4FA5jao0vuTT90gasDkW6Bo1XxbbOWe/fhyXTmQUTE2pfQLsatgY0r
+         lX7gmoWKIwHD6LZwG2TlGOKagQrqaidNlUvAOGhXyV8pCSVZ/Lk0UmyWUdXrIu+T9Eh3
+         /Soqy/xjVjR1GiUStLrKv7rmXMRysXV7RIbStm8m+wr2i3F1i+UdIwa9g55kgvjwJrxx
+         DBO33rOID4saTHn/d3MhTY0k3X/iUrCb06S3/3JTmz6goyAyYFhB0CeGlH+nFXPQYBNd
+         TuBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691559886; x=1692164686;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vxcldl12I3EwBgJQlvH4uhDdlUAS8X8H2ABb+awGB+s=;
+        b=J9Fld3LnQxASIcZqyc755GOc1Eq2fOFkDBBkzK5cLPketoSs/9Yhj3zVsXi+jE73LZ
+         MXYOg7zfjUS00Scw8ONCoPwKwCOSGm0/KaKH0gsegZq9urXZRsE1hlUBADBrNpRPC1Fb
+         5HpABQIAMVT1SnXxZGgnT/sWIXx1SyQpPI0UKc93KBupnmJovhHztK+1Fkj7pFBXXdY7
+         eFb0Xt3RTRcZYQpM2F93KLtMk89oFqEZlyMMeFYVlI9b0Gz34aWDRRzI/IbEsAx139oG
+         BvlU+ln25LCtto4A8nvyR0gviXpT0hVFIpEZF9/H5/eHwKCrRTFKrwWPg8uHyUkDSIVO
+         YjZw==
+X-Gm-Message-State: AOJu0YznXvi7iUnE2PNH/pQFWbrtq/I2Q2jt6MCxSSBwvalHho0pR4Q4
+        behGlxUokT8JZ1PL7UEop0hz0w==
+X-Google-Smtp-Source: AGHT+IFQByYfqVXmufCi4ZexsDkSCJeetmAUHqrPdPKuKE7/AuT3eoLpHY4Ewpuc1qDtZMZN3aNTyA==
+X-Received: by 2002:a17:902:e88b:b0:1bb:dc48:644a with SMTP id w11-20020a170902e88b00b001bbdc48644amr1829426plg.49.1691559886467;
+        Tue, 08 Aug 2023 22:44:46 -0700 (PDT)
+Received: from sunil-laptop ([106.51.83.242])
+        by smtp.gmail.com with ESMTPSA id jw15-20020a170903278f00b001b8a54f99d1sm10040833plb.275.2023.08.08.22.44.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 22:44:46 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 11:14:36 +0530
+From:   Sunil V L <sunilvl@ventanamicro.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Anup Patel <anup@brainfault.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Haibo Xu <haibo1.xu@intel.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Atish Kumar Patra <atishp@rivosinc.com>,
+        Anup Patel <apatel@ventanamicro.com>
+Subject: Re: [RFC PATCH v1 11/21] swnode: Add support to create early during
+ boot
+Message-ID: <ZNMnxAVn6Vy337Eq@sunil-laptop>
+References: <20230803175916.3174453-1-sunilvl@ventanamicro.com>
+ <20230803175916.3174453-12-sunilvl@ventanamicro.com>
+ <ZMyWDDD6Lw8REd1r@smile.fi.intel.com>
+ <ZMyymUdV63g4eGaT@sunil-laptop>
+ <865y5phdwd.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - just2025.justhost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - singleboardsolutions.com
-X-BWhitelist: no
-X-Source-IP: 97.84.242.70
-X-Source-L: No
-X-Exim-ID: 1qTbxi-003yPQ-2S
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 097-084-242-070.res.spectrum.com (localhost.localdomain) [97.84.242.70]:52104
-X-Source-Auth: tmckahan@singleboardsolutions.com
-X-Email-Count: 1
-X-Org:  HG=bhshared_jh;ORG=bluehost;
-X-Source-Cap: ZWxlY3RyaTk7ZWxlY3RyaTk7anVzdDIwMjUuanVzdGhvc3QuY29t
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfAwqdBzMfFRUiFo6P0yB88iNGc7iXVDfp0swKFP6nloHnsyIBj37t7/zDpRAzbzm/a8lDC7gk9+TKPj698k7s3kls8yiaFkN6rNT8BTWevqjWD6nhmdC
- sK8WgW2tcxnjiF+w8aiE9kVHtX+q/Eu60/M7FSq1YSBCf+iXoaGp3po+oOiQzta8TZa6klWGnuu/3vC5EeMSlyJ2KE+o9eJ0pwUIhjLyzepDP8fl0KBfqKd8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <865y5phdwd.wl-maz@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Aug 08, 2023 at 02:17:22PM +0100, Marc Zyngier wrote:
+> On Fri, 04 Aug 2023 09:11:05 +0100,
+> Sunil V L <sunilvl@ventanamicro.com> wrote:
+> > 
+> > Hi Andy,
+> > 
+> > On Fri, Aug 04, 2023 at 09:09:16AM +0300, Andy Shevchenko wrote:
+> > > On Thu, Aug 03, 2023 at 11:29:06PM +0530, Sunil V L wrote:
+> > > > From: Anup Patel <apatel@ventanamicro.com>
+> > > > 
+> > > > swnode framework can be used to create fwnode for interrupt
+> > > > controllers.
+> > > 
+> > > Why? What is this for?
+> > > Can you elaborate? This commit message is poorly written...
+> > > 
+> > > And why firmware node is not enough for ACPI case?
+> > > I assume the fwnode in DT case is already provided by OF.
+> > > 
+> > Thanks a lot for the review!.
+> > 
+> > You are right, OF provides the fwnode for irqchip drivers. However, for
+> > ACPI case, it is typically created using irq_domain_alloc_named_fwnode
+> > or irq_domain_alloc_fwnode since these are not ACPI devices in the
+> > namespace but from MADT. The fwnode created using
+> > irq_domain_alloc_fwnode() is a simple one which doesn't support properties
+> > similar to the one created by OF framework or software node framework.
+> > Hence, lot of data from the MADT structures need to be cached as
+> > separate structures in the drivers and also would need several ifdefs to
+> > check for ACPI and some amount of code duplication is also required due
+> > to the way DT driver gets the information vs ACPI.
+> > 
+> > The beauty of software node framework is, it supports adding properties
+> > and also is a supported fwnode type in __irq_domain_create().
+> 
+> There is no beauty here. Only some extra bloat that we do not need.
+> 
+> DT and ACPI exposes very different attributes. One describe the HW,
+> the other one describe an OS abstraction. Pretending that you can
+> summon both into the same infrastructure is a fallacy. You'll just end
+> up with the cross product of both infrastructure, and pollute the rest
+> of the kernel with pointless cruft.
+> 
+Hi Marc,
 
-This adds support for the RK3588-based NanoPC T6 single board computer.
-Note this series is dependent on the PCIe 3 support [0] being
-upstreamed. The NanoPC T6 uses PCIe3x4 like the Rock 5B and EVB1.
+Thank you very much for the feedback!. Sure, let me revert this approach
+and do as you recommended in next version.
 
-[0] https://lore.kernel.org/all/20230717173512.65169-1-sebastian.reichel@collabora.com/
+> > So, if we
+> > can create the fwnode for these irqchip using software node, we can
+> > attach the same properties and the actual irqchip driver which uses the
+> > fwnode doesn't need to have any ACPI vs DT checks. Same driver will work
+> > seamlessly on both DT and ACPI platforms.  But the challenge is,
+> > currently swnode expects to be created with sysfs which won't be
+> > available during early boot when irqchip drivers need to be probed. So,
+> > adding support to create without dependency on sysfs help us to reuse
+> > the same framework for irqchip use case also.
+> 
+> That's another fallacy.
+> 
+> Most irqchips *DO NOT* need to be probed early. Only the root
+> irqchip. Given that this series is about *secondary* interrupt
+> controllers, they absolutely don't need to be probed early.
+>
+Since we created swnode for root irqchip also in this approach, we had
+to support early creation. With your feedback, this is no longer
+required.
 
-v2:
- - remove unnecessary "okay" status from sound 
- - add '-regulator' suffix on 2 regulators that were missing them
- - use generic node name for rtc
- - remove extra lines
- - fix alignment in I2S entry
- 
-v1: https://lore.kernel.org/all/20230802051441.3106-1-tmckahan@singleboardsolutions.com/
+> To be clear: I do not intend to merge anything that:
+> 
+> - invents yet another way to "abstract" firmware interfaces
+> 
+> - adds more "early probe" hacks for non-primary interrupt controllers
+> 
+> I have already said that in response to Anup's AIA series, and this
+> equally applies to this series.
+>
+In Anup's AIA v7 series, he has made non-primary controller drivers as
+platform drivers which are not probed early.
 
-Thomas McKahan (2):
-  dt-bindings: arm: rockchip: Add NanoPC T6
-  arm64: dts: rockchip: Add NanoPC T6
-
- .../devicetree/bindings/arm/rockchip.yaml     |   5 +
- arch/arm64/boot/dts/rockchip/Makefile         |   1 +
- .../boot/dts/rockchip/rk3588-nanopc-t6.dts    | 842 ++++++++++++++++++
- 3 files changed, 848 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-
--- 
-2.34.1
-
+Thanks,
+Sunil
