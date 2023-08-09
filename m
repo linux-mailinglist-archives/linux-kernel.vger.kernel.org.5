@@ -2,152 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B93CB7767F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A52E7767FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbjHITKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
+        id S231745AbjHITLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:11:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHITKS (ORCPT
+        with ESMTP id S229436AbjHITLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:10:18 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BAC010E7;
-        Wed,  9 Aug 2023 12:10:17 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379J9iRF077946;
-        Wed, 9 Aug 2023 14:09:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691608184;
-        bh=n8EqHLLIiKuqByJvrEsdeUk/ia1nskmW4zniSdjK4XQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=UTuthB7x0YwcqbWsiBaq6hudntjgCtJOseB2+NBPxY9wNqx2Hb5Zp22SExyU8ikqU
-         P9JNQf9UPT48sRyBJZn5iGDCjWyPLB0HsNNUysfAC/PiGmjDg9ufT8c4VMqvZNC5rv
-         pflX3B/+csIHIm6jWdUqv8vOtGsNT/zYxu5E6u+c=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379J9iud003769
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Aug 2023 14:09:44 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
- Aug 2023 14:09:44 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 9 Aug 2023 14:09:44 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379J9hkM018665;
-        Wed, 9 Aug 2023 14:09:43 -0500
-Date:   Wed, 9 Aug 2023 14:09:43 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Apurva Nandan <a-nandan@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
+        Wed, 9 Aug 2023 15:11:09 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F0910DC;
+        Wed,  9 Aug 2023 12:11:08 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 379IWpv3006052;
+        Wed, 9 Aug 2023 14:10:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=c
+        3UmN3W3hnAkVHfz+DpAEuGrW04DcJ3EBtovN9KSjfI=; b=LRfC4hx/yrgzyck74
+        FSeiZo1x8MQa+0oNaknPyW5dzAyF7eF8ChDmi5AgI8H+6QfcHLnCjDB4ypXUWbPX
+        Ghaa/bkOOENTZJvzNush3FWXmID+kyHMaKab7HQCUEQbRKvMigqS+T/ZjrpqQH7E
+        o77AteKTLXPqvGsqWIYS/BuIKPxIC9+sDeVjzwCPkQ9fKtC6FwKBFzc3nMNuRrgL
+        HQhihgYTyoc2h8NCNe/o3cgrt0Jl4oZ4HEDgvWVtvhqjwv/ZPOP7qUtT80RQZj2z
+        A6ar2aUap1LP1n+s19xwGAdrB0p+zYqskHbVZFN/NsD1vYZhcdYPCIzl53MZqPcI
+        4hiIA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhv39u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Aug 2023 14:10:36 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 9 Aug
+ 2023 20:10:35 +0100
+Received: from aus-sw-rshr002.ad.cirrus.com (141.131.215.158) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30 via Frontend Transport; Wed, 9 Aug 2023 20:10:34 +0100
+Received: by aus-sw-rshr002.ad.cirrus.com (Postfix, from userid 46936)
+        id D8B484C0CD1; Wed,  9 Aug 2023 19:10:33 +0000 (UTC)
+From:   James Ogletree <james.ogletree@cirrus.com>
+To:     <dmitry.torokhov@gmail.com>
+CC:     James Ogletree <james.ogletree@cirrus.com>,
+        Fred Treven <fred.treven@cirrus.com>,
+        Ben Bright <ben.bright@cirrus.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Rafael J Wysocki <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, Udit Kumar <u-kumar1@ti.com>,
-        Keerthy J <j-keerthy@ti.com>
-Subject: Re: [PATCH 2/3] arm64: dts: ti: k3-j7200: Add the supported
- frequencies for A72
-Message-ID: <20230809190943.unpcbrinyn5ppei7@hydrated>
-References: <20230809173905.1844132-1-a-nandan@ti.com>
- <20230809173905.1844132-3-a-nandan@ti.com>
+        "Lee Jones" <lee@kernel.org>,
+        Markus Schneider-Pargmann <msp@baylibre.com>,
+        "ChiYuan Huang" <cy_huang@richtek.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Jacky Bai <ping.bai@nxp.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Eddie James <eajames@linux.ibm.com>,
+        Jeff LaBundy <jeff@labundy.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        <patches@cirrus.com>, <linux-input@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/2] Add support for CS40L50
+Date:   Wed, 9 Aug 2023 19:10:26 +0000
+Message-ID: <20230809191032.820271-1-james.ogletree@cirrus.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230809173905.1844132-3-a-nandan@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: waT-EpVnCsdJxFO7wu69KbhCVnabLtRO
+X-Proofpoint-ORIG-GUID: waT-EpVnCsdJxFO7wu69KbhCVnabLtRO
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23:09-20230809, Apurva Nandan wrote:
-> From: Keerthy <j-keerthy@ti.com>
-> 
-> Add 750M, 1G, 1.5G & 2G as the supported frequencies for A72.
-> This enables support for Dynamic Frequency Scaling(DFS)
-> 
-> Signed-off-by: Keerthy <j-keerthy@ti.com>
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-j7200.dtsi | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200.dtsi b/arch/arm64/boot/dts/ti/k3-j7200.dtsi
-> index ef73e6d7e858..7222c453096f 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200.dtsi
-> @@ -48,6 +48,10 @@ cpu0: cpu@0 {
->  			d-cache-line-size = <64>;
->  			d-cache-sets = <256>;
->  			next-level-cache = <&L2_0>;
-> +			clocks = <&k3_clks 202 2>;
-> +			clock-names = "cpu";
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +			#cooling-cells = <2>; /* min followed by max */
->  		};
->  
->  		cpu1: cpu@1 {
-> @@ -62,6 +66,30 @@ cpu1: cpu@1 {
->  			d-cache-line-size = <64>;
->  			d-cache-sets = <256>;
->  			next-level-cache = <&L2_0>;
-> +			clocks = <&k3_clks 203 0>;
-> +			clock-names = "cpu";
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +			#cooling-cells = <2>; /* min followed by max */
-> +		};
-> +	};
-> +
-> +	cpu0_opp_table: opp-table {
-> +		compatible = "operating-points-v2";
-> +
-> +		opp4-2000000000 {
-> +			opp-hz = /bits/ 64 <2000000000>;
-> +		};
-> +
-> +		opp3-1500000000 {
-> +			opp-hz = /bits/ 64 <1500000000>;
-> +		};
-> +
-> +		opp2-1000000000 {
-> +			opp-hz = /bits/ 64 <1000000000>;
-> +		};
-> +
-> +		opp1-750000000 {
-> +			opp-hz = /bits/ 64 <750000000>;
->  		};
->  	};
->  
-> -- 
-> 2.34.1
-> 
+Changes in v2:
+- Fix checkpatch warnings
 
-Are you sure this is correct to enable all OPPs without efuse bit checks?
+Changes in v3:
+- YAML formatting corrections
+- Fix typo in MAINTAINERS
+- Use generic node name "haptic-driver"
+- Fix regulator error code path
+- Use sizeof(*)
+- Remove tree reference in MAINTAINERS
 
-https://www.ti.com/lit/ds/symlink/dra821u-q1.pdf
-7.5 Operating Performance Points
-DRA821xC operates only upto 750MHz
-DRA821xE at 1GHz
-DRA821xL upto 1.5GHz and
-DRA821xT upto 2GHz
+James Ogletree (2):
+  dt-bindings: input: cirrus,cs40l50: Support for CS40L50
+  Input: cs40l50 - Initial support for Cirrus Logic CS40L50
+
+ .../bindings/input/cirrus,cs40l50.yaml        |   77 ++
+ MAINTAINERS                                   |   10 +
+ drivers/input/misc/Kconfig                    |   33 +
+ drivers/input/misc/Makefile                   |    3 +
+ drivers/input/misc/cs40l50-i2c.c              |   67 ++
+ drivers/input/misc/cs40l50-spi.c              |   67 ++
+ drivers/input/misc/cs40l50.c                  | 1008 +++++++++++++++++
+ include/linux/input/cs40l50.h                 |  321 ++++++
+ 8 files changed, 1586 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/cirrus,cs40l50.yaml
+ create mode 100644 drivers/input/misc/cs40l50-i2c.c
+ create mode 100644 drivers/input/misc/cs40l50-spi.c
+ create mode 100644 drivers/input/misc/cs40l50.c
+ create mode 100644 include/linux/input/cs40l50.h
 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.25.1
+
