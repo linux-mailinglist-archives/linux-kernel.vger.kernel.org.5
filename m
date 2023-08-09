@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B054E7763B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E0E7763BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233573AbjHIPcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
+        id S231624AbjHIPcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233556AbjHIPck (ORCPT
+        with ESMTP id S233556AbjHIPcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:32:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EFE1BFF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691595158; x=1723131158;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=wDlNA9EG6Wnsc0Oqqa86qIcNKMf8+OzL6Q53mi6lOYs=;
-  b=JNAuydfF9dzoStRu59oai6kgAM1kdmCCRDq3oifG4MfHqcAcZbJXJDrM
-   WGn+Ai+OC6lw0NwL1dLfZhLE/gCQSfGT/P9+V+/mbGQhyq/EH7QVF+Cb4
-   /a6IVev4a0CwX2ERJIuI2OTtqMqgo0YUOd/BDYPr4JxYszxSiTyk8sqDx
-   tgwSMx7K3y6dpCBV4o8IHMYIjbU7iGkxuhW2ze23aO+fnW+NWer/QCdz6
-   haBCDtDw34GtiFUt1qkzMtKHCCF3JZ9n7fCRQmQhMvfqKWZDLj1iBxdr0
-   s9bMDQVI2onWDZ3wURn5/sAQoSsmSjTCUvSFMjerNuaYkY5PfUrfTqzqV
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="368614079"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="368614079"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 08:32:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="681726249"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="681726249"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 09 Aug 2023 08:32:36 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qTlAq-0006C0-02;
-        Wed, 09 Aug 2023 15:32:36 +0000
-Date:   Wed, 9 Aug 2023 23:32:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: vmlinux.o: warning: objtool: ni_read_frame() falls through to next
- function __checkpoint_and_complete_reqs.cold()
-Message-ID: <202308092358.23SZk0fW-lkp@intel.com>
+        Wed, 9 Aug 2023 11:32:45 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC13C1FEF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:32:44 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe7e67cc77so2350277e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:32:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691595163; x=1692199963;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=of8PeHK3YL/WoKhPTBQz3f9Tf32Jb+Ocz8BH4pAcyV8=;
+        b=wAisMeAqjk41+NlpjCaylrEy8ameEHJzhMU9SW6pMzWZeHYh6uxccs0vO6YCSKuJt4
+         2xeIjXGW4XCWrlZje+gMf/oPDccPsKY3iFIwfaqOPeeYhgdjC/Mn1+8HVzDK37TGklo4
+         GxFlf1SIbwGKRuMvbE/h/rG8qfizgMX21Ete0voDLcYriWq5FZK4DgUEI4LgoODIvTYi
+         gNXELS5y7g1wf5EOl0bbCMsYBwYFLYWuIBE6ABZ1+J8w8vwtZYX7W67I+6yawOjkrkL0
+         9giDOpLALx2sFx/WsGoD6skVIwWbCHaVsW47LE6CwMpK6OXdHfcx4fszso05TvLBBM3E
+         c1PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691595163; x=1692199963;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=of8PeHK3YL/WoKhPTBQz3f9Tf32Jb+Ocz8BH4pAcyV8=;
+        b=IZB4daAN8aCk324ywcupkfqwL4q8Eq4VCRuxhLXd7mhhzlFsVphu9a7wYpaLMirJFR
+         Ss80RW5IR9MgCaWvA4IoQuHRsLq0Xd02TeuZ8wj4QtkLftm6DE9Kfp2hKjy07pWNayJ1
+         TB/uKeHmE6B706Pkz/ET6a3byQDR6i/UxD86mg+ohd+PsKu7aTO3fvd0rgkOfAzlhzoj
+         B3lGxG3Lg622eoD8+IZFwhGSxjlbgy9V7mVy8xoB9lLunnkCqTRnBRGfgiB7b0iKeQpf
+         aXj1G5P9ZoXEvhzGfYhwFdZ1ggemvR5ZS4lOuCgMw/GOwIlIV6IZ9lR0lnGCJn6uJGGL
+         UkFw==
+X-Gm-Message-State: AOJu0YymcqubOXtfPHqo5dCKDRJ9cOEtARqP2CGMUdm2/Is9HZOzxVl3
+        P3i7RIxCaQMDuEW0aUz6oXlo4w==
+X-Google-Smtp-Source: AGHT+IGdPLcjvT5P7oRqrn07ThHzvblusAzppzOicvUAXH9HODXqv5YdYROBW3bRlsLwfkOcW2+N6w==
+X-Received: by 2002:a05:6512:2522:b0:4fd:d6ba:73ba with SMTP id be34-20020a056512252200b004fdd6ba73bamr2325938lfb.37.1691595162452;
+        Wed, 09 Aug 2023 08:32:42 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id bq1-20020a056402214100b005222c6fb512sm8230758edb.1.2023.08.09.08.32.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 08:32:41 -0700 (PDT)
+Message-ID: <0aa707b9-8fa0-be00-af8f-dd57828cd336@linaro.org>
+Date:   Wed, 9 Aug 2023 17:32:39 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 0/4] add clock controller of qca8386/qca8084
+Content-Language: en-US
+To:     Luo Jie <quic_luoj@quicinc.com>, andersson@kernel.org,
+        agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com
+References: <20230809080047.19877-1-quic_luoj@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230809080047.19877-1-quic_luoj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On 09/08/2023 10:00, Luo Jie wrote:
+> qca8xxx is 4 * 2.5GBaseT ports chip, working as switch mode
+> named by qca8386, or working as PHY mode named by qca8084,
+> clock hardware reigster is accessed by MDIO bus.
+> 
+> This patch series add the clock controller of qca8363/qca8084,
+> and add the clock ops clk_branch2_qca8k_ops to avoid spin lock
+> used during the clock operation of qca8k clock controller where
+> the sleep happens when accessing clock control register by MDIO
+> bus.
+> 
+> Changes in v1:
+> 	* remove clock flag CLK_ENABLE_MUTEX_LOCK.
+> 	* add clock ops clk_branch2_qca8k_ops.
+> 	* improve yaml file for fixing dtschema warnings.
+> 	* enable clock controller driver in defconfig.
 
-FYI, the error/warning still remains.
+So this is v2, not v1. Your next version, if happens, will be v3, please.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   13b9372068660fe4f7023f43081067376582ef3c
-commit: c27cd083cfb9d392f304657ed00fcde1136704e7 Compiler attributes: GCC cold function alignment workarounds
-date:   7 months ago
-config: x86_64-buildonly-randconfig-r001-20230809 (https://download.01.org/0day-ci/archive/20230809/202308092358.23SZk0fW-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230809/202308092358.23SZk0fW-lkp@intel.com/reproduce)
+Best regards,
+Krzysztof
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308092358.23SZk0fW-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> vmlinux.o: warning: objtool: ni_read_frame() falls through to next function __checkpoint_and_complete_reqs.cold()
-   vmlinux.o: warning: objtool: __rdgsbase_inactive+0x2f: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: __wrgsbase_inactive+0x33: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: fixup_bad_iret+0x8d: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: noist_exc_debug+0x37: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: exc_nmi+0xd6: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: poke_int3_handler+0x43: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: irqentry_nmi_enter+0x49: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: irqentry_nmi_exit+0x5d: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: enter_from_user_mode+0x31: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: syscall_enter_from_user_mode+0x38: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: syscall_enter_from_user_mode_prepare+0x31: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: irqentry_enter_from_user_mode+0x31: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: irqentry_exit+0x2c: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: ct_kernel_exit_state+0x2c: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: ct_kernel_enter_state+0x2e: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: ct_kernel_enter+0x1c: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: context_tracking_recursion_enter+0x2e: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: ct_kernel_exit+0x2b: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: ct_idle_enter+0x18: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: ct_idle_exit+0x32: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: __ct_user_enter+0x2d: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: ct_nmi_enter+0x1a: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: ct_irq_enter+0x33: call to ftrace_likely_update() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: ct_irq_exit+0x33: call to ftrace_likely_update() leaves .noinstr.text section
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
