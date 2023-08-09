@@ -2,113 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 437767756D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD7C7756E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232174AbjHIKJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 06:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35318 "EHLO
+        id S231774AbjHIKLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 06:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231273AbjHIKJi (ORCPT
+        with ESMTP id S231359AbjHIKLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 06:09:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6003210D
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 03:09:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691575774; x=1723111774;
-  h=date:from:to:cc:subject:message-id;
-  bh=rACa8DSwYOt/HzIlrk6AKTktz1J0jFVtV3Fc3lqHxb8=;
-  b=cLtfkN7f/FH9JMGjfEtyqaYoRkdVdurStWn2Gvx1PTKf0Ndu+wvJYCAu
-   H0UQSm92R1CW6HyoNnCzY0J1EWIO2oaxntrXo+7tRAU4b1sx0AUVGHCs2
-   ci4sy5al2DwDSafLzQTK1iaUSoGqlZKx+CqvuVZq7KxbB8v+WP9JmJXZD
-   V2OTQof6aSWapvjFEAGs6rF4rkzgrvFZo2wm21mmgltYQY8FP3Rx0dZsw
-   lY/Y/9OhxdAfPX/8ICTuARM+9bCRyMEunRNeFcy6dwPp8ORFjHXulmeVX
-   8alF2jzkdqowPi3D+RGaGZnohxplD0V3xS1W8UN/xyMTG9eu6cVESMCcj
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="373863621"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="373863621"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 03:09:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="797115509"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="797115509"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 09 Aug 2023 03:09:28 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qTg88-000600-08;
-        Wed, 09 Aug 2023 10:09:28 +0000
-Date:   Wed, 09 Aug 2023 18:09:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 7324f74d39531262b8e362f228b46512e6bee632
-Message-ID: <202308091825.lcWS1py2-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Wed, 9 Aug 2023 06:11:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8AA1BFB;
+        Wed,  9 Aug 2023 03:11:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1BAEF630E8;
+        Wed,  9 Aug 2023 10:11:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CD92C433C7;
+        Wed,  9 Aug 2023 10:10:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691575861;
+        bh=3EDdk7dTfHs3Hy9RVE0ybDbynTaUkeq4N9itCD5SIYI=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=SLiD6EwBwAaKjaENOfNjWpIjgTZ7uN7B4ABF6+Bc5uUdhACL29f5ZDgIl8J0BIcLg
+         dmmWF/N3vxvPZnbf7qCfoiMntKQ5KpepxLV423OWizDLKnMdMdTqG2pBQ96c7iVI/q
+         6jxcOzT1tUDuUKredqtZ802zOA9COiRKKjMvkV8B5wrgxL3TdF/tBsrcopqwbxnBca
+         PDqh4/C6S52dVHwYp/5zmkTrm4IUk3O7TYiV8whC/vrlI1m9OAGJxPareUgxFZUC+2
+         I7slyRMFE6wXePxHgLcOI25zOvoPWown/lV3vive98S0wwvTwTzicYt9+73JrhgKdm
+         fHO15Q9CkD8KA==
+Message-ID: <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org>
+Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
+From:   Jeff Layton <jlayton@kernel.org>
+To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>,
+        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date:   Wed, 09 Aug 2023 06:10:53 -0400
+In-Reply-To: <87msz08vc7.fsf@mail.parknet.co.jp>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+         <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
+         <87msz08vc7.fsf@mail.parknet.co.jp>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: 7324f74d39531262b8e362f228b46512e6bee632  x86/linkage: Fix typo of BUILD_VDSO in asm/linkage.h
+On Wed, 2023-08-09 at 17:37 +0900, OGAWA Hirofumi wrote:
+> Jeff Layton <jlayton@kernel.org> writes:
+>=20
+> > Also, it may be that things have changed by the time we get to calling
+> > fat_update_time after checking inode_needs_update_time. Ensure that we
+> > attempt the i_version bump if any of the S_* flags besides S_ATIME are
+> > set.
+>=20
+> I'm not sure what it meaning though, this is from
+> generic_update_time(). Are you going to change generic_update_time()
+> too? If so, it doesn't break lazytime feature?
+>=20
 
-elapsed time: 727m
+Yes. generic_update_time is also being changed in a similar fashion.
+This shouldn't break the lazytime feature: lazytime is all about how and
+when timestamps get written to disk. This work is all about which
+clocksource the timestamps originally come from.
 
-configs tested: 36
-configs skipped: 94
+> Thanks.
+>=20
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  fs/fat/misc.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/fs/fat/misc.c b/fs/fat/misc.c
+> > index 67006ea08db6..8cab87145d63 100644
+> > --- a/fs/fat/misc.c
+> > +++ b/fs/fat/misc.c
+> > @@ -347,14 +347,14 @@ int fat_update_time(struct inode *inode, struct t=
+imespec64 *now, int flags)
+> >  		return 0;
+> > =20
+> >  	if (flags & (S_ATIME | S_CTIME | S_MTIME)) {
+> > -		fat_truncate_time(inode, now, flags);
+> > +		fat_truncate_time(inode, NULL, flags);
+> >  		if (inode->i_sb->s_flags & SB_LAZYTIME)
+> >  			dirty_flags |=3D I_DIRTY_TIME;
+> >  		else
+> >  			dirty_flags |=3D I_DIRTY_SYNC;
+> >  	}
+> > =20
+> > -	if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
+> > +	if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && inode_maybe_inc_iversion=
+(inode, false))
+> >  		dirty_flags |=3D I_DIRTY_SYNC;
+> > =20
+> >  	__mark_inode_dirty(inode, dirty_flags);
+>=20
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230808   clang
-i386         buildonly-randconfig-r005-20230808   clang
-i386         buildonly-randconfig-r006-20230808   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230808   clang
-i386                 randconfig-i002-20230808   clang
-i386                 randconfig-i003-20230808   clang
-i386                 randconfig-i004-20230808   clang
-i386                 randconfig-i005-20230808   clang
-i386                 randconfig-i006-20230808   clang
-i386                 randconfig-i011-20230808   gcc  
-i386                 randconfig-i012-20230808   gcc  
-i386                 randconfig-i013-20230808   gcc  
-i386                 randconfig-i014-20230808   gcc  
-i386                 randconfig-i015-20230808   gcc  
-i386                 randconfig-i016-20230808   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230808   clang
-x86_64       buildonly-randconfig-r002-20230808   clang
-x86_64       buildonly-randconfig-r003-20230808   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230809   clang
-x86_64               randconfig-x003-20230809   clang
-x86_64               randconfig-x004-20230809   clang
-x86_64               randconfig-x006-20230809   clang
-x86_64               randconfig-x011-20230808   clang
-x86_64               randconfig-x012-20230808   clang
-x86_64               randconfig-x013-20230808   clang
-x86_64               randconfig-x014-20230808   clang
-x86_64               randconfig-x015-20230808   clang
-x86_64               randconfig-x016-20230808   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+Jeff Layton <jlayton@kernel.org>
