@@ -2,182 +2,429 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FB37750A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 04:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD017750A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 04:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjHICC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 22:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44172 "EHLO
+        id S229797AbjHICDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 22:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjHICC5 (ORCPT
+        with ESMTP id S229494AbjHICDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 22:02:57 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA9EF3;
-        Tue,  8 Aug 2023 19:02:57 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bcac140aaaso4940205a34.2;
-        Tue, 08 Aug 2023 19:02:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691546576; x=1692151376;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Axs5IugcYQGA7KHD1wIEp1iCvcichKmuTF1YhYLpm2s=;
-        b=IPmEF+Oc+Ymen9pbBQ1kQ8m7nBbjb4gHbbg5mwwR0AmavHfv0v/afWFmI45rIrXeJR
-         mYt3a3r1MH9dHxkBqWc0bzKhcaYSbV8sjI0S4ED/COMmjNegeZ4K8tmKZVgASKIo8OMc
-         UPKjfVGLLhljpEreQ6YVWiuZy8feXQwC6Jy5jRU/k+n1Lhi+byJCviv/mHU4MgYZOz8E
-         QNIe19Tf7PN6pWRhEe1s/N/di1l1KD6IkaNCWTiOyS+MpdqX/pDMsvp1i1iDCdY/M2Ua
-         XJrfKnVE60cmSSWKz/qBt1E4weGTXXtmWmrQi8j0F2RlvGuG+G9k9ZlxlsztSAq6NsPA
-         oLNA==
+        Tue, 8 Aug 2023 22:03:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7721D1BCD
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 19:03:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691546585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NeMEbtsmTQJEqu8hjilImTZbZ8hU9GSJMq+8qlXZ2jo=;
+        b=PxP3e36WQ5dg3d7so7PR3rSSl3M19v4on2/W5wqRM5vszDcLrkWyubgnHs6ACMMKJyPWaY
+        EqjfsnW7/TYLEEdpM5jAfhKBGCcie/dj0e+zKXMg0+GEqG32js1s5ZaAbu0dxIPaIBe4bl
+        mC6WYeJ69Bs17BjbR0V0pg9LW/Cwuso=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-596-7Exz50WtMGCkk8AgO4n8jA-1; Tue, 08 Aug 2023 22:03:04 -0400
+X-MC-Unique: 7Exz50WtMGCkk8AgO4n8jA-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-767564705f5so697924285a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 19:03:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691546576; x=1692151376;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Axs5IugcYQGA7KHD1wIEp1iCvcichKmuTF1YhYLpm2s=;
-        b=BvwsfhxEF+XA4eDMDGTi+Ui/ScSEIrcdovnlmVaDa59HxalzkZESrWerDZ2Mmi4Iwv
-         R/bfSEmlSbwZRj5IrmvmylGJzcVHfkM3LOVMR6RuygiPB2c5fCh//6BmlRzMKDVZ7Qm5
-         nKtvUMOx72cohlb63zUBEvE7YCOfGiaJik2wWNHr+frLvO8p1OHyoJ76+heFkUWCzrgP
-         iPq1kLMYgpU3UUHKKAZKw8P9Mng4FmpvTig6uvzNiAdoOg8+RkAcg99Umi+cA3U1G9fB
-         bDNh4Hguwo1bQ+qqWMq06i3Sxa4oeexXOcf9T/pFUYdO4EsOUlSifWCCVuOi5tyDVwWd
-         SlPg==
-X-Gm-Message-State: AOJu0Yx7HA2KZMk4+9fqxKGnnrovZHw1Kv1oWh5ehiq2ZcfQH2jJs0QJ
-        Wwrz2wU2lfO9YqR9Qzm0xWc=
-X-Google-Smtp-Source: AGHT+IHlgYgM84isX0Aajw5zqTgIYkCyQoIlFM65l9Iv7mC6XODNv+KRtcVU5ZT2+cB8K2U5tIwfAA==
-X-Received: by 2002:a05:6830:1e52:b0:6b9:f1d3:160 with SMTP id e18-20020a0568301e5200b006b9f1d30160mr1505440otj.11.1691546576354;
-        Tue, 08 Aug 2023 19:02:56 -0700 (PDT)
-Received: from localhost.localdomain ([198.211.45.220])
-        by smtp.googlemail.com with ESMTPSA id v19-20020aa78093000000b00672401787c6sm8726941pff.109.2023.08.08.19.02.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 19:02:55 -0700 (PDT)
-From:   Furong Xu <0x1207@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Joao Pinto <jpinto@synopsys.com>,
-        Simon Horman <horms@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        xfr@outlook.com, rock.xu@nio.com, Furong Xu <0x1207@gmail.com>
-Subject: [PATCH net-next v3 1/1] net: stmmac: xgmac: RX queue routing configuration
-Date:   Wed,  9 Aug 2023 10:02:38 +0800
-Message-Id: <20230809020238.1136732-1-0x1207@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20221208; t=1691546583; x=1692151383;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NeMEbtsmTQJEqu8hjilImTZbZ8hU9GSJMq+8qlXZ2jo=;
+        b=G8+41QhLBfa0c8EbE5e9eDP2fp464C7sBXsCwVXu1FsiQBX8LtMiD6VD8pkMKVn7Uw
+         8Nqz6PTRjjTr/uiZHIaXninhsUKMCfgLtWgHUu11BreX4gzz/s78IL5ptP9xwi4EIIY+
+         BCxybEpmfiKOFh3R1dFO4WyyZFitJ4KWvjgRA/e2dYWhnmrcRB6lswJNtPsyI7g3/f9z
+         1ZjmsGF8XctC4Bin9XvVaTG8MPQydXwbiA03L5GDPwkhGKQtNb13xGB8EN+GVGRqkfz7
+         F9VAZd2OJBGVMLnGgFWMXBLesfDsN8sTxF3t7JejWUOp8YSkNIL+8leHD4pB/Gutt3xw
+         sb+g==
+X-Gm-Message-State: AOJu0Yw/nh/JHx6JPBfC3yKwimGQWPFwq1vjbF7RtYjj2aKrZ1H4EAqc
+        OweVDSudrhbZy9468pdVGBxM+HeH6JG72pR35F3tI+hgm4JAYnXkuSrJrEjRI0r/HVY6AmG2eMx
+        SNYsD9aFg4WZy9qHz7Vt5Abr++ketspge5C9OiPCi
+X-Received: by 2002:a05:620a:460b:b0:765:6524:8458 with SMTP id br11-20020a05620a460b00b0076565248458mr1880589qkb.36.1691546583648;
+        Tue, 08 Aug 2023 19:03:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGKeCVH7M3AdEKWEf9CoiSo7C1Kxm/j/6sg9FjxxZufRgrqrkRgV6oBkrzi/1pOvO1C2IaHIjAOTof2OSCp8fY=
+X-Received: by 2002:a05:620a:460b:b0:765:6524:8458 with SMTP id
+ br11-20020a05620a460b00b0076565248458mr1880575qkb.36.1691546583354; Tue, 08
+ Aug 2023 19:03:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230804084900.1135660-2-leobras@redhat.com> <20230804084900.1135660-6-leobras@redhat.com>
+ <CAJF2gTTOT3_3K_cWNY9n_DgRoPhYEhBLno=bh57r9D--OavREQ@mail.gmail.com>
+ <CAJ6HWG4gy7HV11-cdoB0VAP2z1Zw-zyJhNRpJ1eDMmrkvnob3w@mail.gmail.com>
+ <CAJF2gTQY5RX87Zo8HcM1Og-Oc6vd5Vyj97KL-o6UcqMaT4oxng@mail.gmail.com> <CAJ6HWG4apf5D_H43Kf7+E9pA1UmcFe1mV6YGuvk0Q9SH_ZFDdw@mail.gmail.com>
+In-Reply-To: <CAJ6HWG4apf5D_H43Kf7+E9pA1UmcFe1mV6YGuvk0Q9SH_ZFDdw@mail.gmail.com>
+From:   Leonardo Bras Soares Passos <leobras@redhat.com>
+Date:   Tue, 8 Aug 2023 23:02:52 -0300
+Message-ID: <CAJ6HWG5mZTYsMAMVx9itUYNK2TOXZjAFOW=-Nzwi3q+yB2V3vQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 4/5] riscv/cmpxchg: Implement cmpxchg for variables
+ of size 1 and 2
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit abe80fdc6ee6 ("net: stmmac: RX queue routing configuration")
-introduced RX queue routing to DWMAC4 core.
-This patch extend the support to XGMAC2 core.
+Hello Guo Ren,
 
-Signed-off-by: Furong Xu <0x1207@gmail.com>
----
-Changes in v3:
-  - Clean unused defines
+On Mon, Aug 7, 2023 at 1:17=E2=80=AFPM Leonardo Bras Soares Passos
+<leobras@redhat.com> wrote:
+>
+> On Sat, Aug 5, 2023 at 1:24=E2=80=AFAM Guo Ren <guoren@kernel.org> wrote:
+> >
+> > On Sat, Aug 5, 2023 at 11:14=E2=80=AFAM Leonardo Bras Soares Passos
+> > <leobras@redhat.com> wrote:
+> > >
+> > > Hello Guo Ren, thanks for the feedback!
+> > >
+> > > On Fri, Aug 4, 2023 at 2:45=E2=80=AFPM Guo Ren <guoren@kernel.org> wr=
+ote:
+> > > >
+> > > > On Fri, Aug 4, 2023 at 4:49=E2=80=AFAM Leonardo Bras <leobras@redha=
+t.com> wrote:
+> > > > >
+> > > > > cmpxchg for variables of size 1-byte and 2-bytes is not yet avail=
+able for
+> > > > > riscv, even though its present in other architectures such as arm=
+64 and
+> > > > > x86. This could lead to not being able to implement some locking =
+mechanisms
+> > > > > or requiring some rework to make it work properly.
+> > > > >
+> > > > > Implement 1-byte and 2-bytes cmpxchg in order to achieve parity w=
+ith other
+> > > > > architectures.
+> > > > >
+> > > > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > > > > ---
+> > > > >  arch/riscv/include/asm/cmpxchg.h | 35 ++++++++++++++++++++++++++=
+++++++
+> > > > >  1 file changed, 35 insertions(+)
+> > > > >
+> > > > > diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/includ=
+e/asm/cmpxchg.h
+> > > > > index 5a07646fae65..dfb433ac544f 100644
+> > > > > --- a/arch/riscv/include/asm/cmpxchg.h
+> > > > > +++ b/arch/riscv/include/asm/cmpxchg.h
+> > > > > @@ -72,6 +72,36 @@
+> > > > >   * indicated by comparing RETURN with OLD.
+> > > > >   */
+> > > > >
+> > > > > +#define __arch_cmpxchg_mask(sc_sfx, prepend, append, r, p, o, n)=
+       \
+> > > > > +({                                                              =
+       \
+> > > > > +       /* Depends on 2-byte variables being 2-byte aligned */   =
+       \
+> > > > > +       ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;        =
+         \
+> > > > > +       ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) -=
+ 1, 0)   \
+> > > > > +                       << __s;                                  =
+       \
+> > > > > +       ulong __newx =3D (ulong)(n) << __s;                      =
+         \
+> > > > > +       ulong __oldx =3D (ulong)(o) << __s;                      =
+         \
+> > > > > +       ulong __retx;                                            =
+       \
+> > > > > +       register unsigned int __rc;                              =
+       \
+> > > > > +                                                                =
+       \
+> > > > > +       __asm__ __volatile__ (                                   =
+       \
+> > > > > +               prepend                                          =
+       \
+> > > > > +               "0:     lr.w %0, %2\n"                           =
+       \
 
-Changes in v2:
-  - Convert the shift ops to FIELD_PREP
----
- .../net/ethernet/stmicro/stmmac/dwxgmac2.h    | 12 +++++++
- .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 34 +++++++++++++++++--
- 2 files changed, 44 insertions(+), 2 deletions(-)
+      bne  %0, %z3, 1f\n"                             \
+> > >
+> > > > bug:
+> > > > -               "       and  %0, %0, %z5\n"                        =
+     \
+> > > > -               "       bne  %0, %z3, 1f\n"                        =
+     \
+> > > > +               "       and  %1, %0, %z5\n"                        =
+     \
+> > > > +               "       bne  %1, %z3, 1f\n"                        =
+     \
+> > > > Your code breaks the %0.
+> > >
+> > > What do you mean by breaks here?
+> > >
+> > > In the end of this macro, I intended  to have __retx =3D (*p & __mask=
+)
+> > > which means the value is clean to be rotated at the end of the macro
+> > > (no need to apply the mask again): r =3D __ret >> __s;
+> > >
+> > > Also, I assumed we are supposed to return the same variable type
+> > > as the pointer, so this is valid:
+> > > u8 a, *b, c;
+> > > a =3D xchg(b, c);
+> > >
+> > > Is this correct?
+> > I missed your removing "__ret & mask" at the end. So this may not the p=
+roblem.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-index 1913385df685..5f931afab9aa 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-@@ -74,8 +74,20 @@
- #define XGMAC_RXQEN(x)			GENMASK((x) * 2 + 1, (x) * 2)
- #define XGMAC_RXQEN_SHIFT(x)		((x) * 2)
- #define XGMAC_RXQ_CTRL1			0x000000a4
-+#define XGMAC_AVCPQ			GENMASK(31, 28)
-+#define XGMAC_AVCPQ_SHIFT		28
-+#define XGMAC_PTPQ			GENMASK(27, 24)
-+#define XGMAC_PTPQ_SHIFT		24
-+#define XGMAC_TACPQE			BIT(23)
-+#define XGMAC_DCBCPQ			GENMASK(19, 16)
-+#define XGMAC_DCBCPQ_SHIFT		16
-+#define XGMAC_MCBCQEN			BIT(15)
-+#define XGMAC_MCBCQ			GENMASK(11, 8)
-+#define XGMAC_MCBCQ_SHIFT		8
- #define XGMAC_RQ			GENMASK(7, 4)
- #define XGMAC_RQ_SHIFT			4
-+#define XGMAC_UPQ			GENMASK(3, 0)
-+#define XGMAC_UPQ_SHIFT			0
- #define XGMAC_RXQ_CTRL2			0x000000a8
- #define XGMAC_RXQ_CTRL3			0x000000ac
- #define XGMAC_PSRQ(x)			GENMASK((x) * 8 + 7, (x) * 8)
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-index a0c2ef8bb0ac..38782662ff98 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-@@ -127,6 +127,36 @@ static void dwxgmac2_tx_queue_prio(struct mac_device_info *hw, u32 prio,
- 	writel(value, ioaddr + reg);
- }
- 
-+static void dwxgmac2_rx_queue_routing(struct mac_device_info *hw,
-+				      u8 packet, u32 queue)
-+{
-+	void __iomem *ioaddr = hw->pcsr;
-+	u32 value;
-+
-+	static const struct stmmac_rx_routing dwxgmac2_route_possibilities[] = {
-+		{ XGMAC_AVCPQ, XGMAC_AVCPQ_SHIFT },
-+		{ XGMAC_PTPQ, XGMAC_PTPQ_SHIFT },
-+		{ XGMAC_DCBCPQ, XGMAC_DCBCPQ_SHIFT },
-+		{ XGMAC_UPQ, XGMAC_UPQ_SHIFT },
-+		{ XGMAC_MCBCQ, XGMAC_MCBCQ_SHIFT },
-+	};
-+
-+	value = readl(ioaddr + XGMAC_RXQ_CTRL1);
-+
-+	/* routing configuration */
-+	value &= ~dwxgmac2_route_possibilities[packet - 1].reg_mask;
-+	value |= (queue << dwxgmac2_route_possibilities[packet - 1].reg_shift) &
-+		 dwxgmac2_route_possibilities[packet - 1].reg_mask;
-+
-+	/* some packets require extra ops */
-+	if (packet == PACKET_AVCPQ)
-+		value |= FIELD_PREP(XGMAC_TACPQE, 1);
-+	else if (packet == PACKET_MCBCQ)
-+		value |= FIELD_PREP(XGMAC_MCBCQEN, 1);
-+
-+	writel(value, ioaddr + XGMAC_RXQ_CTRL1);
-+}
-+
- static void dwxgmac2_prog_mtl_rx_algorithms(struct mac_device_info *hw,
- 					    u32 rx_alg)
- {
-@@ -1463,7 +1493,7 @@ const struct stmmac_ops dwxgmac210_ops = {
- 	.rx_queue_enable = dwxgmac2_rx_queue_enable,
- 	.rx_queue_prio = dwxgmac2_rx_queue_prio,
- 	.tx_queue_prio = dwxgmac2_tx_queue_prio,
--	.rx_queue_routing = NULL,
-+	.rx_queue_routing = dwxgmac2_rx_queue_routing,
- 	.prog_mtl_rx_algorithms = dwxgmac2_prog_mtl_rx_algorithms,
- 	.prog_mtl_tx_algorithms = dwxgmac2_prog_mtl_tx_algorithms,
- 	.set_mtl_tx_queue_weight = dwxgmac2_set_mtl_tx_queue_weight,
-@@ -1524,7 +1554,7 @@ const struct stmmac_ops dwxlgmac2_ops = {
- 	.rx_queue_enable = dwxlgmac2_rx_queue_enable,
- 	.rx_queue_prio = dwxgmac2_rx_queue_prio,
- 	.tx_queue_prio = dwxgmac2_tx_queue_prio,
--	.rx_queue_routing = NULL,
-+	.rx_queue_routing = dwxgmac2_rx_queue_routing,
- 	.prog_mtl_rx_algorithms = dwxgmac2_prog_mtl_rx_algorithms,
- 	.prog_mtl_tx_algorithms = dwxgmac2_prog_mtl_tx_algorithms,
- 	.set_mtl_tx_queue_weight = dwxgmac2_set_mtl_tx_queue_weight,
--- 
-2.34.1
+It was actually the problem :)
+Even though I revised a lot, I was missing this which was made clear
+by test-running on a VM:
+
+        "0:    lr.w %0, %2\n"                    \
+        "    and  %0, %0, %z5\n"                \
+        "    bne  %0, %z3, 1f\n"                \
+        "    and  %1, %0, %z6\n"                \
+        "    or   %1, %1, %z4\n"                \
+        "    sc.w" sc_sfx " %1, %1, %2\n"            \
+        "    bnez %1, 0b\n"
+
+If I do "and %0, %0, %z5" there, the line  "and  %1, %0, %z6"  will
+output %1 =3D 0, which is not the intended.
+You were right! The above fix solves the issue, and I just have to
+mask it after.
+
+Sorry it took me a few days to realize this.
+
+
+> >
+> > Your patch can't boot. After chewing your code for several hours, I
+> > found a problem:
+> > diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/=
+cmpxchg.h
+> > index 943f094375c7..67bcce63b267 100644
+> > --- a/arch/riscv/include/asm/cmpxchg.h
+> > +++ b/arch/riscv/include/asm/cmpxchg.h
+> > @@ -14,6 +14,7 @@
+> >  #define __arch_xchg_mask(prepend, append, r, p, n)                    =
+ \
+> >  ({                                                                    =
+ \
+> >         /* Depends on 2-byte variables being 2-byte aligned */         =
+ \
+> > +       volatile ulong *__p =3D (ulong *)((ulong)(p) & ~0x3);          =
+   \
+>
+> Wow, I totally missed this one: I should not assume the processor
+> behavior on unaligned lr/sc.
+> Thanks for spotting this :)
+>
+> >         ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;              =
+   \
+> >         ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)=
+   \
+> >                         << __s;                                        =
+ \
+> > @@ -29,7 +30,7 @@
+> >                "        sc.w %1, %1, %2\n"                             =
+ \
+> >                "        bnez %1, 0b\n"                                 =
+ \
+> >                append                                                  =
+ \
+> > -              : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))         =
+     \
+> > +              : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(__p))       =
+     \
+> >                : "rJ" (__newx), "rJ" (~__mask)                         =
+ \
+> >                : "memory");                                            =
+ \
+> >                                                                        =
+ \
+> > @@ -106,6 +107,7 @@
+> >  #define __arch_cmpxchg_mask(sc_sfx, prepend, append, r, p, o, n)      =
+ \
+> >  ({                                                                    =
+ \
+> >         /* Depends on 2-byte variables being 2-byte aligned */         =
+ \
+> > +       volatile ulong *__p =3D (ulong *)((ulong)(p) & ~0x3);          =
+   \
+> >         ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;              =
+   \
+> >         ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)=
+   \
+> >                         << __s;                                        =
+ \
+> > @@ -125,7 +127,7 @@
+> >                 "       bnez %1, 0b\n"                                 =
+ \
+> >                 append                                                 =
+ \
+> >                 "1:\n"                                                 =
+ \
+> > -               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))        =
+     \
+> > +               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(__p))      =
+     \
+> >                 : "rJ" ((long)__oldx), "rJ" (__newx),                  =
+ \
+> >                   "rJ" (__mask), "rJ" (~__mask)                        =
+ \
+> >                 : "memory");                                           =
+ \
+> >
+> > But the lkvm-static still can't boot with paravirt_spinlock .... Are
+> > there any atomic tests in the Linux?
+>
+> I recall reading something about 'locktorture' or so, not sure if useful:
+>
+> https://docs.kernel.org/locking/locktorture.html
+>
+> >
+> > I found you use some "register int variables". Would it cause the probl=
+em?
+>
+> Honestly, not sure.
+> I will try inspecting the generated asm for any unexpected changes
+> compared to your version.
+
+changed type to ulong, no changes detected in asm
+
+>
+> >
+> > You can reference this file, and it has passed the lock torture test:
+> > https://github.com/guoren83/linux/blob/sg2042-master-qspinlock-64ilp32_=
+v4/arch/riscv/include/asm/cmpxchg.h
+> >
+> > I also merged your patches with the qspinlock series: (Use the above
+> > cmpxchg.h the lkvm would run normally.)
+> > https://github.com/guoren83/linux/tree/qspinlock_v11
+>
+> Thanks!
+>
+> I should reply as soon as I find anything.
+>
+
+Some changes found (for xchg16):
+- pointer alignment wrong (need mask with ~0x3) : solved. Doesn't seem
+to need to be volatile, though.
+
+- AND with 0x3 for getting shift: I was trusting 2-byte vars to be
+2-byte aligned , ie. p & 0x1 =3D=3D 0: may not be true. Solved (it's
+simple)
+
+- on your code, IIUC you also assume ptr & 0x1 =3D=3D 0, on
+        ulong *__ptr =3D (ulong *)((ulong)ptr & ~2);
+if it's not aligned, you may have __ptr =3D 0xYYYYYY01
+(Not saying it's wrong to assume this, just listing It differs on my code)
+
+- also verified your code generates addw and sllw on some points mine
+generates add and sll, don't see any issue there
+
+- There are extra sll and srl in my asm, because I end up casting to
+typeof(*ptr) at the end.
+
+changes found in cmpxchg (__cmpxchg_small_relaxed)
+- mostly the same as above,
+
+- the beginning of my function ends up being smaller, since I do my
+masking differently.
+
+I fixed the above issues, and  ran some userspace debugging tests on a
+VM, and all seems to be correct now.
+
+I then fetched your github repo, replaced my patches v3->v4 on your
+tree, added linux boot parameter "qspinlock" on my qemu cmdline
+(-machine virt): booting and working just fine.
+
+I will send a v4 soon, please give it a test when possible.
+
+Best regards,
+Leo
+
+
+
+> >
+> >
+> >
+> > >
+> > > > > +               append                                           =
+       \
+> > > > > +               "1:\n"                                           =
+       \
+> > > > > +               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))  =
+           \
+> > > > > +               : "rJ" ((long)__oldx), "rJ" (__newx),            =
+       \
+> > > > > +                 "rJ" (__mask), "rJ" (~__mask)                  =
+       \
+> > > > > +               : "memory");                                     =
+       \
+> > > > > +                                                                =
+       \
+> > > > > +       r =3D (__typeof__(*(p)))(__retx >> __s);                 =
+         \
+> > > > > +})
+> > > > > +
+> > > > >
+> > > > >  #define __arch_cmpxchg(lr_sfx, sc_sfx, prepend, append, r, p, co=
+, o, n)        \
+> > > > >  ({                                                              =
+       \
+> > > > > @@ -98,6 +128,11 @@
+> > > > >         __typeof__(*(ptr)) __ret;                                =
+       \
+> > > > >                                                                  =
+       \
+> > > > >         switch (sizeof(*__ptr)) {                                =
+       \
+> > > > > +       case 1:                                                  =
+       \
+> > > > > +       case 2:                                                  =
+       \
+> > > > > +               __arch_cmpxchg_mask(sc_sfx, prepend, append,     =
+       \
+> > > > > +                                       __ret, __ptr, __old, __ne=
+w);    \
+> > > > > +               break;                                           =
+       \
+> > > > >         case 4:                                                  =
+       \
+> > > > >                 __arch_cmpxchg(".w", ".w" sc_sfx, prepend, append=
+,      \
+> > > > >                                 __ret, __ptr, (long), __old, __ne=
+w);    \
+> > > > > --
+> > > > > 2.41.0
+> > > > >
+> > > >
+> > > >
+> > > > --
+> > > > Best Regards
+> > > >  Guo Ren
+> > > >
+> > >
+> >
+> >
+> > --
+> > Best Regards
+> >  Guo Ren
+> >
 
