@@ -2,167 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 015AE775455
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F45775456
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbjHIHl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 03:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
+        id S230390AbjHIHmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 03:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjHIHlX (ORCPT
+        with ESMTP id S229512AbjHIHmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 03:41:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EE41736
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 00:40:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691566835;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/LEhUIxJl/IFM00b8bM6YoXNVYz7YZZV5m6MYPcbPp8=;
-        b=PlhCqFwOVuw5Qj5f8dSkWlU+3ACNxTpIz8+F6MMC/GxFVCZch+l8BdPSHjDUgyOUarJQVi
-        yJ7bSfQ6dblycjqrv5HKwwee1zPZkE4JfSw2mC9DCOJS3BLVQryoZ2FnwLl4US2HeH8H/S
-        kG8ZpEUd9Z7+W50vCIWmIPEvFcsIA6k=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-42-zpfQrWH1PYy4hKOeeCWBVg-1; Wed, 09 Aug 2023 03:40:33 -0400
-X-MC-Unique: zpfQrWH1PYy4hKOeeCWBVg-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-4fe275023d4so6367002e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 00:40:33 -0700 (PDT)
+        Wed, 9 Aug 2023 03:42:50 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0D00172A
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 00:42:49 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-52327d63d7cso5534547a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 00:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691566968; x=1692171768;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PhWuye7WtnKHQ5EWBkx1THX5ai7IhNWbpzXM2iw1dpk=;
+        b=NnFLFFG4mH5u+fqqyqdLGuQFjqzUu9Y7OaXafnvW5qNyQikw92Qvis5gNmlzcxcd4d
+         Iyf4fkYm104bSKVAdHPcUiaAkyn8eZD9k2xcZH/BDYD/tlZQ4hc6DLQKc3n326hdQ/gh
+         z2Asn+/O4gXl+vROALbD9dWVTlVKie9kVwcbNEJy64HFzOcJlWbgPGMfC3m2C6Q8/QSn
+         /Xw31vfdd74wLFv1eFgYZDviwC7jBP9ZpbaySZPQxqAsKeKwoBOPiQgd1drm6MH6Rnwr
+         UX9J3Gyz1sCf1B+BWf/bAuE9vsmOVJa6kxyu1JUzxOq+tXmo66tLqO6pycHWRkSXhPHY
+         Y/eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691566832; x=1692171632;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/LEhUIxJl/IFM00b8bM6YoXNVYz7YZZV5m6MYPcbPp8=;
-        b=BDSNifVwoB6m+KevPNG4Doa/UE+G9w4vxXmET9l0BqoeHM2pfkNzpnpJxzmPHfSpMn
-         /Em7Daor2C63rq87NrZZ1ZipdhKNxePFf7tzMbU2eVxWNbIjSGxCTVOMQDi5HDWr3l5n
-         kQmR7CYBet/Rsm6I8FLPgQSOrIyPxMNTLp1ViEHjw4Tj0hGHyyxYCLK+qA/KZ3DiZd39
-         3/cdIQTox0ilN1bEPje/q6ET8DA/L6KEDt+Q4MOL7Ih+tTISIEdAZ5Q4evALsqXgCpn3
-         Mm7aUUkMpPPmD3ps/mATlX8PrC3WwBZw/nJQfdWgdC959fyIgNnds2oJ9RBeGmRnhuGf
-         3Onw==
-X-Gm-Message-State: AOJu0YzY4f0y1DMO8RLtCQyXo//mkJKyxDJYZi6QFYAjQnQR8KCF96wf
-        DcWeUajDsHhP5006UjUj1motSIVNFYSJvOAxpV9ew0gRwW9U/HzQv5SFMTfo3IOthK9ZaKmRtai
-        8xCxo5UqQX4bPAEQ12tLXz6Vf
-X-Received: by 2002:a05:6512:308b:b0:4fe:4e2c:8e52 with SMTP id z11-20020a056512308b00b004fe4e2c8e52mr1489199lfd.42.1691566832097;
-        Wed, 09 Aug 2023 00:40:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFqwaJvbsNipfh7mF2DC+yBtFdSuN+yQ+efavTgP0AkGl1wSMeLrq022vVlQQitzwa1YkE6Bw==
-X-Received: by 2002:a05:6512:308b:b0:4fe:4e2c:8e52 with SMTP id z11-20020a056512308b00b004fe4e2c8e52mr1489185lfd.42.1691566831740;
-        Wed, 09 Aug 2023 00:40:31 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70e:6800:9933:28db:f83a:ef5? (p200300cbc70e6800993328dbf83a0ef5.dip0.t-ipconnect.de. [2003:cb:c70e:6800:9933:28db:f83a:ef5])
-        by smtp.gmail.com with ESMTPSA id b13-20020a05600c11cd00b003fe1a96845bsm1093295wmi.2.2023.08.09.00.40.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 00:40:31 -0700 (PDT)
-Message-ID: <9be602c1-d627-6302-be1c-66c8068c7ecf@redhat.com>
-Date:   Wed, 9 Aug 2023 09:40:30 +0200
+        d=1e100.net; s=20221208; t=1691566968; x=1692171768;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PhWuye7WtnKHQ5EWBkx1THX5ai7IhNWbpzXM2iw1dpk=;
+        b=hkbqhRaIEy9Y/eHwzLLyAuoEs9JvJec11J+/nS59gRROxRH/DTGSSsPh1xxGHO0POR
+         f9h28ljzWjvhCxq6O9j2A+jJLhw9NjiC+cMZy1no0xkvm2SZWVp1OBT+IBTInT53o1gx
+         JLihKXe7xK5Bp7UiygF3kjQk/Ky8R5EkQkc6x9dNrnsyMeia0XC4KL8G2AhhcYztwwDX
+         50a3jnirQUIgTw+cmFKJEYkDAbe5G5GE2pNOW2AKfQN0GzrGcNpms/xaFbKn0LcQl73D
+         ZxExp0fOHCNeydJLTzTZWl0HNJ1A6WRsvQIt//Xm+MCWXqcDe6kbZgG9wzqUANdiTt9w
+         5zzg==
+X-Gm-Message-State: AOJu0YwoLxQqeba4Csv39oHu15UgwglQUyCTAYjfNIGnoYCaKy80WUEe
+        P9F+zBgB/xw+6gy40u+UGxxV0xvl8B9Tw38dOVU=
+X-Google-Smtp-Source: AGHT+IHJfwkK9RHkJwOOGqO3vtCLBioPrgFXfYIvFUA2dAdkVLRZjpM0YBuZ6DQw75l0m60lwHLIdl9f0Jo42+DSynk=
+X-Received: by 2002:a17:907:270d:b0:99d:101b:8403 with SMTP id
+ w13-20020a170907270d00b0099d101b8403mr801389ejk.36.1691566968172; Wed, 09 Aug
+ 2023 00:42:48 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] selftests/mm: FOLL_LONGTERM need to be updated to 0x100
-Content-Language: en-US
-To:     Ayush Jain <ayush.jain3@amd.com>, jglisse@redhat.com,
-        akpm@linux-foundation.org, shuah@kernel.org
-Cc:     linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bharata@amd.com,
-        kalpana.shetty@amd.com, santosh.shukla@amd.com,
-        Raghavendra K T <raghavendra.kt@amd.com>
-References: <20230808124347.79163-1-ayush.jain3@amd.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230808124347.79163-1-ayush.jain3@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230807121432.3970610-1-peng.fan@oss.nxp.com> <20230807121432.3970610-8-peng.fan@oss.nxp.com>
+In-Reply-To: <20230807121432.3970610-8-peng.fan@oss.nxp.com>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Wed, 9 Aug 2023 10:42:36 +0300
+Message-ID: <CAEnQRZBECPn+JC1PF6hvvroZZBzuVXTU2Zy+Kc_giKsFUFQxVA@mail.gmail.com>
+Subject: Re: [PATCH V6 7/8] firmware: imx: scu-irq: enlarge the IMX_SC_IRQ_NUM_GROUP
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, aisheng.dong@nxp.com,
+        alexander.stein@ew.tq-group.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.08.23 14:43, Ayush Jain wrote:
-> After commit 2c2241081f7d ("mm/gup: move private gup FOLL_ flags to internal.h")
-> FOLL_LONGTERM flag value got updated from 0x10000 to 0x100 at
-> include/linux/mm_types.h.
-> As hmm.hmm_device_private.hmm_gup_test uses FOLL_LONGTERM
-> Updating same here as well.
-> 
-> Before this change test goes in an infinite assert loop in
-> hmm.hmm_device_private.hmm_gup_test
-> ==========================================================
->   RUN           hmm.hmm_device_private.hmm_gup_test ...
-> hmm-tests.c:1962:hmm_gup_test:Expected HMM_DMIRROR_PROT_WRITE..
-> ..(2) == m[2] (34)
-> hmm-tests.c:157:hmm_gup_test:Expected ret (-1) == 0 (0)
-> hmm-tests.c:157:hmm_gup_test:Expected ret (-1) == 0 (0)
-> ...
-> ==========================================================
-> 
->   Call Trace:
->   <TASK>
->   ? sched_clock+0xd/0x20
->   ? __lock_acquire.constprop.0+0x120/0x6c0
->   ? ktime_get+0x2c/0xd0
->   ? sched_clock+0xd/0x20
->   ? local_clock+0x12/0xd0
->   ? lock_release+0x26e/0x3b0
->   pin_user_pages_fast+0x4c/0x70
->   gup_test_ioctl+0x4ff/0xbb0
->   ? gup_test_ioctl+0x68c/0xbb0
->   __x64_sys_ioctl+0x99/0xd0
->   do_syscall_64+0x60/0x90
->   ? syscall_exit_to_user_mode+0x2a/0x50
->   ? do_syscall_64+0x6d/0x90
->   ? syscall_exit_to_user_mode+0x2a/0x50
->   ? do_syscall_64+0x6d/0x90
->   ? irqentry_exit_to_user_mode+0xd/0x20
->   ? irqentry_exit+0x3f/0x50
->   ? exc_page_fault+0x96/0x200
->   entry_SYSCALL_64_after_hwframe+0x72/0xdc
->   RIP: 0033:0x7f6aaa31aaff
-> 
-> After this change test is able to pass successfully.
-> 
-> Signed-off-by: Ayush Jain <ayush.jain3@amd.com>
-> Reviewed-by: Raghavendra K T <raghavendra.kt@amd.com>
+On Mon, Aug 7, 2023 at 4:11=E2=80=AFPM Peng Fan (OSS) <peng.fan@oss.nxp.com=
+> wrote:
+>
+> From: Peng Fan <peng.fan@nxp.com>
+>
+> Per SCFW update, update the IMX_SC_IRQ_NUM_GROUP to 9.
+>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 > ---
->   tools/testing/selftests/mm/hmm-tests.c | 7 ++++++-
->   1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/mm/hmm-tests.c b/tools/testing/selftests/mm/hmm-tests.c
-> index 4adaad1b822f..20294553a5dd 100644
-> --- a/tools/testing/selftests/mm/hmm-tests.c
-> +++ b/tools/testing/selftests/mm/hmm-tests.c
-> @@ -57,9 +57,14 @@ enum {
->   
->   #define ALIGN(x, a) (((x) + (a - 1)) & (~((a) - 1)))
->   /* Just the flags we need, copied from mm.h: */
-> +
-> +#ifndef FOLL_WRITE
->   #define FOLL_WRITE	0x01	/* check pte is writable */
-> -#define FOLL_LONGTERM   0x10000 /* mapping lifetime is indefinite */
-> +#endif
->   
-> +#ifndef FOLL_LONGTERM
-> +#define FOLL_LONGTERM   0x100 /* mapping lifetime is indefinite */
-> +#endif
->   FIXTURE(hmm)
->   {
->   	int		fd;
+>  drivers/firmware/imx/imx-scu-irq.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/firmware/imx/imx-scu-irq.c b/drivers/firmware/imx/im=
+x-scu-irq.c
+> index 6549f3792a0f..8d902db1daf2 100644
+> --- a/drivers/firmware/imx/imx-scu-irq.c
+> +++ b/drivers/firmware/imx/imx-scu-irq.c
+> @@ -14,7 +14,7 @@
+>
+>  #define IMX_SC_IRQ_FUNC_ENABLE 1
+>  #define IMX_SC_IRQ_FUNC_STATUS 2
+> -#define IMX_SC_IRQ_NUM_GROUP   4
+> +#define IMX_SC_IRQ_NUM_GROUP   9
 
-Kind of suboptimal that we are passing in FOLL_ flags. mm/gup_test.c 
-should just have provided an abstraction for that.
-
-Acked-by: David Hildenbrand <david@redhat.com>
-
--- 
-Cheers,
-
-David / dhildenb
-
+This is tricky. Shouldn't we have some sort of versioning so that the user =
+knows
+that kernel and scfw are not compatible anymore?
