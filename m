@@ -2,105 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D25C776AFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BFD3776AFD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbjHIVcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 17:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
+        id S231737AbjHIVck convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Aug 2023 17:32:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbjHIVcw (ORCPT
+        with ESMTP id S229489AbjHIVcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 17:32:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9AB710DC
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:32:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691616772; x=1723152772;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YHb8Cp56jyZYNVtS3IY5otBMco1m0Bx1xThJXquC5qE=;
-  b=mHMxrDIuRjJWvB3yltZaW1bsVbS1c5xTtH+U/sYe3MSoBddMJHh4mo1L
-   2gSZlEJ6/D2KQRDpMxyxBEtX6kYSx0QSzzDzYRKDoNqlk14YnENReV9PF
-   VSgKvymRJOu1uBRFcu6HCWW8Ci7zgu80U0wlV5bPjRxnbbdbI1AaP7Vr3
-   FEXW4HKKUQ5RWBblvTusui+TbkkK50tzvi0uutSdsd1hZ4UktpmJkODHS
-   Kt1XUvZtDhVSOc9Oc7m/K4ghNh6dGRx2PFRoTlyDaGj6+QK32DdNLv69O
-   MwiuiU8d3FuBk6i5wUb+k1mul9huMIMFPGBjuJsDQ4oI0spGAVTaQw2Im
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="350814258"
-X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
-   d="scan'208";a="350814258"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 14:32:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="1062642092"
-X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
-   d="scan'208";a="1062642092"
-Received: from brentchi-mobl.amr.corp.intel.com (HELO desk) ([10.212.254.92])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 14:32:35 -0700
-Date:   Wed, 9 Aug 2023 14:32:14 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     X86 ML <x86@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 1/3] Documentation/hw-vuln: Unify filename specification
- in index
-Message-ID: <20230809213214.ns7t2enjrgnms2ee@desk>
-References: <20230809102700.29449-1-bp@alien8.de>
- <20230809102700.29449-2-bp@alien8.de>
+        Wed, 9 Aug 2023 17:32:39 -0400
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8790A10E0
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:32:38 -0700 (PDT)
+Received: from omf11.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay05.hostedemail.com (Postfix) with ESMTP id 3033540F39;
+        Wed,  9 Aug 2023 21:32:37 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id C7B7D2002F;
+        Wed,  9 Aug 2023 21:32:33 +0000 (UTC)
+Message-ID: <1f4f00799730ae53da67b48b0f4aea60e0d81a45.camel@perches.com>
+Subject: Re: get_maintainer, b4, and CC: stable
+From:   Joe Perches <joe@perches.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        "Kernel.org Tools" <tools@linux.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 09 Aug 2023 14:32:32 -0700
+In-Reply-To: <6dabeab8-d013-40fc-a705-d2d202510549@sirena.org.uk>
+References: <CAKwvOdmOVnhKws_6DdakK9SDxiCCCR1d6VJwvz94Ng_y3V8QCg@mail.gmail.com>
+         <6dabeab8-d013-40fc-a705-d2d202510549@sirena.org.uk>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809102700.29449-2-bp@alien8.de>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Stat-Signature: ros5iojdmbs9dhgybjpbuc41qbwrdh5y
+X-Rspamd-Server: rspamout04
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_NONE,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
         version=3.4.6
+X-Rspamd-Queue-Id: C7B7D2002F
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/GAX33WtLekNY3FtCoxzml/9XOuULYUJE=
+X-HE-Tag: 1691616753-354429
+X-HE-Meta: U2FsdGVkX1/dCbVfGFSPqx//Rs2O0b1z173ZDQr6AYLThdF8udEXg2MKFpG7QHhaDhAYncYOevebJmKtDuZYE5WM34t+swqtc430QBMaWYriEWsJhaRudjHJMupOOEHGHFYbZUBm38xw5i3nwzfwydHHH69kpqmCTULizTEy1rn4N/HufGb/g80uW12EEY/QZvqPhIvpuGhpWDdPu+VLPBjtYZB3ZVB6cg2XZ72rwu6AuisN1kxb1qrOWNS/wxN4FFBMyuzf7mFbKpOk3zlygsaRky4QuiDpzqqh4+FBZvlyJRyzK1a4TLs3GQ6Ue888
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 12:26:58PM +0200, Borislav Petkov wrote:
-> From: "Borislav Petkov (AMD)" <bp@alien8.de>
+On Wed, 2023-08-09 at 18:21 +0100, Mark Brown wrote:
+> On Wed, Aug 09, 2023 at 09:50:00AM -0700, Nick Desaulniers wrote:
 > 
-> Most of the index.rst files in Documentation/ refer to other rst files
-> without their file extension in the name. Do that here too.
+> > I suspect that either b4 or get_maintainer could see the Fixes tag and
+> > then suggest to Cc stable for me.
 > 
-> No functional changes.
+> > Should get_maintainer.pl make such recommendations?
 > 
-> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-> ---
->  Documentation/admin-guide/hw-vuln/index.rst | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/hw-vuln/index.rst b/Documentation/admin-guide/hw-vuln/index.rst
-> index a7d37e124831..aeee8bff5f82 100644
-> --- a/Documentation/admin-guide/hw-vuln/index.rst
-> +++ b/Documentation/admin-guide/hw-vuln/index.rst
-> @@ -13,11 +13,11 @@ are configurable at compile, boot or run time.
->     l1tf
->     mds
->     tsx_async_abort
-> -   multihit.rst
-> -   special-register-buffer-data-sampling.rst
-> -   core-scheduling.rst
-> -   l1d_flush.rst
-> -   processor_mmio_stale_data.rst
-> -   cross-thread-rsb.rst
-> +   multihit
-> +   special-register-buffer-data-sampling
-> +   core-scheduling
-> +   l1d_flush
-> +   processor_mmio_stale_data
-> +   cross-thread-rsb
->     srso
->     gather_data_sampling.rst
+> People use the Fixes tag all the time for bugs that never made it into a
+> release...
 
-While at it could you please also change this? Else, I will send another
-patch.
+
+As Nick suggests, likely not.  Many fixes do
+not belong in stable and are only commits
+that update the current rc.
+
+get_maintainer checks the "fixes:" tag and
+cc's the signers of the commit being fixed.
+
