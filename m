@@ -2,80 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC090776951
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E9B77694F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbjHIT5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
+        id S229788AbjHIT5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:57:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbjHIT5u (ORCPT
+        with ESMTP id S229639AbjHIT5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:57:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A27AE45
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 12:57:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691611023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lPHMyNLDaR02OzBYjtsZg32Ipz1ZGWqu3H9EpNDtpVY=;
-        b=AYaCDGENVhamJK6THYn3HFObFEzfRBtqBSfOcqgqe6oocy67kgiS3yB/lQ+dh3FjTeq3EV
-        oqdBXOKguPwr78zzFKffLqGIJ5Fqbyk454H79sjHZjairPdwbc8kUrunq7pXkC16k2ZsFK
-        oNLZGH3QK4St5ZwQcInlZRMcNgHZKXY=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-696-OufXsl7KOnKvPeJ5U-PtcQ-1; Wed, 09 Aug 2023 15:57:01 -0400
-X-MC-Unique: OufXsl7KOnKvPeJ5U-PtcQ-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-993831c639aso15229266b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 12:57:01 -0700 (PDT)
+        Wed, 9 Aug 2023 15:57:42 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9856910DC
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 12:57:41 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe1c285690so178977e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 12:57:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691611060; x=1692215860;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RBodoJrBHAgz/TzgDtibSZ9qk+u2fN1KDY0bxZS/Y3Q=;
+        b=OjW53ClTqhx/xyhNIydqITOGL5K+qYj6dDyIB6iexWUa9VE1g+2Tmq7CAaTl6ykYnT
+         XQc1gvuG4tIxSOQUhn0QHFWOkrVmKTRGz451J35EGRNyM9kRlW7V+N3iqu3MljcQG3+5
+         TQEwqWvMUKQiw73wwvs7lkAGEWEEMBRzx8vSyRgBFoxYT4kG6KNQtfjZh6TSyNb+CMMi
+         PvKt+ychU6PzxxNdZwbF+nJ8vrkMojrQXTe/mFstpsMne876Rshwy2x2z5fgODeKJdTX
+         n1MTmcPFiMLi++8QbVeWE+ByyU8vxEh4ygB6ObwDdMjcwITLtJ7m8XRB4FV77Zw5Q8JU
+         xVAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691611020; x=1692215820;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1691611060; x=1692215860;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lPHMyNLDaR02OzBYjtsZg32Ipz1ZGWqu3H9EpNDtpVY=;
-        b=cMrfKKaT+CRNh/GJqjns68mrt1hdimVKvhkGvU5LPi2cDT4DUG+Yl7fq/kp2f9pGKp
-         NepFuhPjX8HDOYqmUhUjfTDOYJho5UiNw4J/ESf+dh9AVqpbE8j5PAwsOp3fqPDddEJR
-         nEmUg6KUDpaTu8G2FWvtmOuWZ64LfStiQ/9kRa5aRxg3Bey7kvi49+IsYV+ovpxz1yQn
-         9jvfSZPgQx3rU3m5sU+ZOtvHpliJUnsy9MjLqKnB92xwf1OH4ZOm5cpvz4Vxk/3IsKeg
-         8/lnfwRsfbu0NLUgbgjfWvIbz5DaySo5tI6BrTEIl7Rq3zZUShiqP2hrNxEbBrJ6/Ild
-         5uKA==
-X-Gm-Message-State: AOJu0YyRIX4NNBEKvwpO/sdG8L6ToEPBbzirg27KmYPKrZOP6/A2k2i/
-        pyy67BqIHUjsIQMMLjg7gE44sG5tJg9GFaV+sonbo2Vo0NfMiWJzmVWKxePzkhpmJE5Psixyds/
-        arU/e+xy+SbQ132tYf+ABIW+h
-X-Received: by 2002:aa7:c687:0:b0:522:4cd7:efb0 with SMTP id n7-20020aa7c687000000b005224cd7efb0mr187058edq.17.1691611020248;
-        Wed, 09 Aug 2023 12:57:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEGaR9QteGG4w7+R1wWFEtO29lCW4h18/v7EOASdFBQBSeGo9W7bZNifqMJ8jVFEdUuyohnvA==
-X-Received: by 2002:aa7:c687:0:b0:522:4cd7:efb0 with SMTP id n7-20020aa7c687000000b005224cd7efb0mr187048edq.17.1691611019960;
-        Wed, 09 Aug 2023 12:56:59 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id z22-20020a170906715600b0098cf565d98asm8329947ejj.22.2023.08.09.12.56.58
+        bh=RBodoJrBHAgz/TzgDtibSZ9qk+u2fN1KDY0bxZS/Y3Q=;
+        b=NVMzVcVuaw7fJ8GWpB/VrqCDPk0nvy/sp7W/Y12fuqjmKW9xtEm3ime1NyvkACgzWT
+         BwP9l7QMUDwLFx/HDvwIrWnAVVnpxDJKGgbeYS8pGZ8e3wDv08T21S4d9h8tnnW38P2w
+         h+Mqo7rUhE1XRPXQVo5BED2zfZLPVHo8vxuWFBSJG+c1YS6nNfxFmeYzs6mIm5BHyq2s
+         u27+4fD2OkkWIE2FlcYko0rRQYE9dNKrdsTYqOM5LOD4f8ZrrUMgK/A451cpFM4rdn0h
+         swkAmdGlym+gv8ynq5ExbYVpBU/BciQ4W2Rq3xEEAOIYba4m+dZvQuELAcY8siEjVcv9
+         N4vg==
+X-Gm-Message-State: AOJu0YyDbb2FVyYQRgj2q8eiq2tMyIUdrzUQgbq2cbwSKFOmfaZCz6V8
+        rO8tKWhVV+rfzuHOIXSi3md6yIB05HXrB9GOhRo=
+X-Google-Smtp-Source: AGHT+IH0jp+tns6Qhe/MujFD3RwBs+BZQb4A+4Hk24LTkrmL2sjAulAvZW5dkSubYyxJiXZ+d6ILOQ==
+X-Received: by 2002:a19:770f:0:b0:4fb:820a:f87f with SMTP id s15-20020a19770f000000b004fb820af87fmr91778lfc.10.1691611059785;
+        Wed, 09 Aug 2023 12:57:39 -0700 (PDT)
+Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
+        by smtp.gmail.com with ESMTPSA id t12-20020ac243ac000000b004fe0c0235ddsm2445518lfl.143.2023.08.09.12.57.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 12:56:59 -0700 (PDT)
-Message-ID: <d10e5e17-920d-de61-b6a5-bfd8acb6fa04@redhat.com>
-Date:   Wed, 9 Aug 2023 21:56:58 +0200
+        Wed, 09 Aug 2023 12:57:39 -0700 (PDT)
+Message-ID: <98d0632c-7129-4e3a-aba7-e805e3281f91@linaro.org>
+Date:   Wed, 9 Aug 2023 21:57:37 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] platform/x86: dell-sysman: Fix reference leak
-Content-Language: en-US, nl
-To:     Armin Wolf <W_Armin@gmx.de>, prasanth.ksr@dell.com,
-        markgross@kernel.org
-Cc:     Dell.Client.Kernel@dell.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230805053610.7106-1-W_Armin@gmx.de>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230805053610.7106-1-W_Armin@gmx.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] clk: qcom: branch: Add mem ops support for branch2
+ clocks
+Content-Language: en-US
+To:     Imran Shaik <quic_imrashai@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     Taniya Das <quic_tdas@quicinc.com>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+References: <20230808051407.647395-1-quic_imrashai@quicinc.com>
+ <20230808051407.647395-3-quic_imrashai@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
+ BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
+ HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
+ TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
+ zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
+ MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
+ t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
+ UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
+ aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
+ kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
+ Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
+ R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
+ BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
+ yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
+ xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
+ 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
+ GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
+ mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
+ x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
+ BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
+ mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
+ Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
+ xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
+ AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
+ 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
+ jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
+ cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
+ jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
+ cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
+ bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
+ YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
+ bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
+ nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
+ izWDgYvmBE8=
+In-Reply-To: <20230808051407.647395-3-quic_imrashai@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,69 +121,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/5/23 07:36, Armin Wolf wrote:
-> If a duplicate attribute is found using kset_find_obj(),
-> a reference to that attribute is returned. This means
-> that we need to dispose it accordingly. Use kobject_put()
-> to dispose the duplicate attribute in such a case.
+On 8.08.2023 07:14, Imran Shaik wrote:
+> From: Taniya Das <quic_tdas@quicinc.com>
 > 
-> Compile-tested only.
+> Clock CBCRs with memories need an update for memory before enable/disable
+> of the clock. Add support for the mem ops to handle this sequence.
 > 
-> Fixes: e8a60aa7404b ("platform/x86: Introduce support for Systems Management Driver over WMI for Dell Systems")
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
+> Signed-off-by: Taniya Das <quic_tdas@quicinc.com>
+> Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
 > ---
->  drivers/platform/x86/dell/dell-wmi-sysman/sysman.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-> index b68dd11cb892..b929b4f82420 100644
-> --- a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-> +++ b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-> @@ -393,6 +393,7 @@ static int init_bios_attributes(int attr_type, const char *guid)
->  	struct kobject *attr_name_kobj; //individual attribute names
->  	union acpi_object *obj = NULL;
->  	union acpi_object *elements;
-> +	struct kobject *duplicate;
->  	struct kset *tmp_set;
->  	int min_elements;
-> 
-> @@ -451,9 +452,11 @@ static int init_bios_attributes(int attr_type, const char *guid)
->  		else
->  			tmp_set = wmi_priv.main_dir_kset;
-> 
-> -		if (kset_find_obj(tmp_set, elements[ATTR_NAME].string.pointer)) {
-> -			pr_debug("duplicate attribute name found - %s\n",
-> -				elements[ATTR_NAME].string.pointer);
-> +		duplicate = kset_find_obj(tmp_set, elements[ATTR_NAME].string.pointer);
-> +		if (duplicate) {
-> +			pr_debug("Duplicate attribute name found - %s\n",
-> +				 elements[ATTR_NAME].string.pointer);
-> +			kobject_put(duplicate);
->  			goto nextobj;
->  		}
-> 
-> --
-> 2.39.2
-> 
+Could you expand the commit message a bit? What does this clock
+memory do?
 
+[..]
+
+> +static int clk_branch2_mem_enable(struct clk_hw *hw)
+> +{
+> +	struct clk_branch *br = to_clk_branch(hw);
+> +	u32 val;
+> +	int count = 200;
+> +
+> +	regmap_update_bits(br->clkr.regmap, br->mem_enable_reg,
+> +			br->mem_enable_ack_bit, br->mem_enable_ack_bit);
+> +
+> +	regmap_read(br->clkr.regmap, br->mem_ack_reg, &val);
+> +
+> +	while (count-- > 0) {
+> +		if (val & br->mem_enable_ack_bit)
+> +			return clk_branch2_enable(hw);
+> +		udelay(1);
+> +		regmap_read(br->clkr.regmap, br->mem_ack_reg, &val);
+> +	}
+readl_poll_timeout?
+
+Konrad
