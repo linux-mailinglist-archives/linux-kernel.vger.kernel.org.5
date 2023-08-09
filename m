@@ -2,172 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D599775674
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D06E775689
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbjHIJb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 05:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38480 "EHLO
+        id S232072AbjHIJiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 05:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231338AbjHIJb2 (ORCPT
+        with ESMTP id S229489AbjHIJiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 05:31:28 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2071.outbound.protection.outlook.com [40.107.21.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CF51FD7
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 02:31:27 -0700 (PDT)
+        Wed, 9 Aug 2023 05:38:07 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2135.outbound.protection.outlook.com [40.107.93.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DD4E5F;
+        Wed,  9 Aug 2023 02:38:06 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jjAJL33ifBll+4vx42cqS2jJwH0wWtkft5p4vmiQvqHzepSviFm60qQPeiAzUnoMpALQQrJKNEeNj9MmAGc9M4nOvCQ58Qg7LQICKnK0vKPz6FnEckaJd6zj3V+7wpNDoHMbhxWAIOOC+ifvVD1M675ALwagTJsO7Caeky9UxlFI5BZ1XBZRBhgEoMOEwNojlnqtEjPHfqdP2nF+lMoQ7PumFC3wP+azSs+NWfUIz+UMRSbEB5Xu+il/CYo60eybZ9Cm0cfA1SzLyV8TC0/Z542EydOpd88PDOBcdXFMSrcQy4G8doUHFbHMZhxOkcpcz07WhdSoushaGFG1j8wSOg==
+ b=B5+bZH6drXII8/DsZP6c0AKJgB4UVrRtoNhsNEpmzmRpcCe/2DdP9XbeM13hxruXqygBzd+wc1uI0J8pfzexn43PUPFJUFBSxgt62ykf7NLg0LAND3gxrgguOA3rUmQveqp0vBRZUYlbwrdwfCrVo3J+E1wOlfNQRl18bFs7WffOBUzclL2l2Tcp7n0z2DrlvTDxT5RPquDAWxJxZdnc3jVtuIpyBAcTJ4dwyatAEZIcauPcRz94suJ2924OK+I3/kDmrfjOK09d6bDMLk5Xvaw4e4nebLS5AEZJu27vmiJJRz9LIR3BpHd87O3d9t9h/d/PiFT6z+eElFaLycZqPA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iJ7oQNXonMw30eGHqaC2INb8XNISsp59XXbIM4DBlAA=;
- b=nG/vpJP9Esg/qbwzSIhoF4dEIBwlV0vvVFAj7slLN7rIFrthFtE8r7VNCth4DA+qEA/LRRungYsUfxNzSMIt5SinuYBQKjp5+JG7TjUeaaoPLjVSpvD+oR1BXiBI7Bx/CcB/6hYAz+rKcQkh+KDVK+MVpuqHd3qNQaeqSENSIpWXpBQUaWSMMRkzZimInn6w4DKYgvkOlRaeVd6Uwjt1AXOtJSaJdBlWUSktI0m5f7HehQybD5b7gh9X26+lki3F3hAcZpHpqCICqczCMrdV7j/FjrXLgL8rJNB6vtBNSXDt4nRYxvdQdRCBbvEFLSD4Tj+jF87J6UlAhb9eDLnByQ==
+ bh=VO3A0T6YXPBiOJxaagHYwhcmBj+2fqcr1nAF4wNnPWw=;
+ b=i2GcHhH6ltptk9Dsxvt5ja6hZNtiQaiZxjP+YOtvlQgy9NHvNZo043JfAaHS4jANh5wmc+iiU9AHoJrBAGGRcKFMdoqGU2D2Ldzefy48tvJSpGJZLcyPTDnF+tl19quSOI2U6/5/c5mDrbl6unHtfHLT1nByEzHW7gCiG6zs0ILXO+pxb4OMQ9agPPMGBbYuRmVtBv98xYw6H4gl73ZFQ3segtYUM0taSUb+tupvhUVaJRgCpN6RhQ0VC2D5A5l95j8GfnAxlaNITP8/2S6AuFrMkglmCKxxCiD8ZqSuAo+Lvz/yiOxAnb2UzRniJ52yvto2IRQav4v56iW/c3ozgQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=amperemail.onmicrosoft.com; dkim=pass
+ header.d=amperemail.onmicrosoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iJ7oQNXonMw30eGHqaC2INb8XNISsp59XXbIM4DBlAA=;
- b=SfRi5nQPJpp6t+EfCdiEK7V74DFx3mrIvS1QnWVAKUfnnvi5pz6j3hAzPdvAWCfWLPj10usew9/c0+GvORsWWyiK/ekPh7gC5f9rWV6/upC3DpU42s2aG+ZNIUo8RHVBFw8Jz2N+CwmgVf336/ael6Gk9mOvSrRY4SEEo+ftYVu9D+qDNuBlTKQFzuVNL24e4I8TlMiZBx7V4vgmMZ1NYa3Pvid1qEbjFDE0kynwCeTZ23RdJgWjUAe+r7ShvDmDI3x10qx5xHlW/gVQfIKuigcS3XHzSASDv9Tyx+vELpyAAUnxwb2BW0bW57QF5uGXF4JDcRMkQKR+upTN0SNs5g==
+ bh=VO3A0T6YXPBiOJxaagHYwhcmBj+2fqcr1nAF4wNnPWw=;
+ b=C6tB1fOSg5oKmnueSAq+NMhlow1Q6UJKvrMP7feT2vUpExKULvgB+zlctCcgo7ibeMMhc4aXCbpdMkmL25Xs+cKDAX7vQgO2Fd7jFDHBb1js5+A45mb1NOohQ5svZryz2a7On4NaQWOidA/KXiPeE+Ip7zHwpE9qbG+6aidHf8I=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
- by AM8PR04MB7249.eurprd04.prod.outlook.com (2603:10a6:20b:1d0::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.28; Wed, 9 Aug
- 2023 09:31:24 +0000
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::274c:c30b:ac8c:2361]) by PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::274c:c30b:ac8c:2361%2]) with mapi id 15.20.6652.028; Wed, 9 Aug 2023
- 09:31:24 +0000
-Message-ID: <527ecc24-dc4e-2a64-5a66-d7d9cbdd3bb1@suse.com>
-Date:   Wed, 9 Aug 2023 12:31:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC][PATCH 01/17] x86/alternative: Unconditional custom return
- thunk
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
-        gregkh@linuxfoundation.org
-References: <20230809071218.000335006@infradead.org>
- <20230809072200.450404700@infradead.org>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <20230809072200.450404700@infradead.org>
+ header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
+Received: from DM8PR01MB6824.prod.exchangelabs.com (2603:10b6:8:23::24) by
+ PH0PR01MB6199.prod.exchangelabs.com (2603:10b6:510:1b::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6652.28; Wed, 9 Aug 2023 09:38:01 +0000
+Received: from DM8PR01MB6824.prod.exchangelabs.com
+ ([fe80::d62f:d774:15b0:4a40]) by DM8PR01MB6824.prod.exchangelabs.com
+ ([fe80::d62f:d774:15b0:4a40%4]) with mapi id 15.20.6652.026; Wed, 9 Aug 2023
+ 09:38:00 +0000
+Message-ID: <b57b1852-9245-d539-c254-28d1834a64dc@amperemail.onmicrosoft.com>
+Date:   Wed, 9 Aug 2023 17:37:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] perf/core: fix the bug in the event multiplexing
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Oliver Upton <oliver.upton@linux.dev>
+Cc:     Huang Shijie <shijie@os.amperecomputing.com>, maz@kernel.org,
+        james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        catalin.marinas@arm.com, will@kernel.org, pbonzini@redhat.com,
+        peterz@infradead.org, ingo@redhat.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, patches@amperecomputing.com,
+        zwang@amperecomputing.com
+References: <20230809013953.7692-1-shijie@os.amperecomputing.com>
+ <ZNNNY3MlokEIj4y8@linux.dev> <ZNNa0abhS53cMNcK@FVFF77S0Q05N>
+From:   Shijie Huang <shijie@amperemail.onmicrosoft.com>
+In-Reply-To: <ZNNa0abhS53cMNcK@FVFF77S0Q05N>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VI1PR0102CA0051.eurprd01.prod.exchangelabs.com
- (2603:10a6:803::28) To PA4PR04MB7790.eurprd04.prod.outlook.com
- (2603:10a6:102:cc::8)
+X-ClientProxiedBy: CH0PR13CA0048.namprd13.prod.outlook.com
+ (2603:10b6:610:b2::23) To DM8PR01MB6824.prod.exchangelabs.com
+ (2603:10b6:8:23::24)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|AM8PR04MB7249:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1dc9fe44-bd31-4c7e-0b44-08db98bb6647
+X-MS-TrafficTypeDiagnostic: DM8PR01MB6824:EE_|PH0PR01MB6199:EE_
+X-MS-Office365-Filtering-Correlation-Id: 160eee96-7ea7-4944-0634-08db98bc524f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cnA2mYagFwoqMDbUaB8NdKZMPn3FCnefvjD65GceAGx86z2ohvumZPkEC+jEFtvok64o7Lgok+YJHteGQVh5Q4TdFAw9Lk0pmxDwM4fuqW0w8Ijg4yT1GLEJO9zcDP5dQ00r2ShYHxtJ9X0Zw36vRkMlm+hMZLR4F+nkSdWwumk/0blpiru0BhdNR6DCc5NFn2Q5fJwWEbWgnhcc+Bza6nV8eC8B6owVVFYB33HNolwy6jJa5VETJV2ttW+TXw6vSbg6zzZfruiYMh9TBHTR0N2nLrVoOG1YAmumBTEsG4Pum+uK8GbqVp4TB1wGF+nGXn9b/V6LUcBf/G9khbZNlYzdhnC/j/pKoi8PfXPcPoTn7/zLsjOHXfLn61z6p3tA8BmKLJP0djmJhu/8/MmusuSv8J8VLv03cIc3FS+Kv8Z8x/PgCqwtwx2iQJafwsSk1aiX4ARvuFXpjkAn/EsThwj9W4qxutDsTzTDIsZn9aOhY7/z4O7kCrYFF1RTvdLweMujVdtw2iFWHUZdsacsNu2p+1sapKKLZp57P7cK3i9NnwjbM3xrP957HfGKBuMN4EI56Le0xJ3ZXy1BLTUCCdcwzvbHf67i+FJdbYihD9WSHKpCC3bNGeJ643mQ6/Om+41nlWwj/JbbjubN97Liqw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(39860400002)(346002)(376002)(136003)(396003)(186006)(451199021)(1800799006)(6506007)(26005)(31686004)(36756003)(6512007)(6666004)(86362001)(31696002)(6486002)(478600001)(2616005)(83380400001)(41300700001)(66946007)(66476007)(66556008)(316002)(4326008)(5660300002)(8936002)(38100700002)(8676002)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 9/O//dE58QJemE8K0ohmr9h7OwyEs5aM7sRoelgRNgwzm5cSwF0JRrEYrFU7j6znFcfWjnRG+wplCHA0ESkqKsAUq1SkUEaI7HxQo2lX/ypW2BVKZEQOl7jKl1peYPfX1PCBRxu6qIGwHdckbsOaUxfl01dLncy0MCzWmGJYGBh8q2b+hiTdsCfAV9z+YG+rxlxna6njQIlhwY+WhuL67fIcnPw/V/xCpwKQXQKot83bDqVmxemC8GHUCueNZN0CQVvaUa3m47RVuEwXeu6aA0IVfR0Q4XuZvV0rM+cbbbvEsXRnUcwrWzBj+jOVTN4CHdGrZl/NT3qd23rnUT6Ptx5gltdnrWXriYLqzUVuxxEHBYd234MRPNLWwLAhRdCZZYLXcc6M9GY/nFF1PncTl40lf2r613k6DQusBNg9ecUDF1c1EW0iumd8s8Hgqd2VSxHyKJFpRRgeqMtT3AKOVV14lNOJQykxxdubqbpmutnAICpoDf4d5l66fEK5OcpZmNoKVPLOSGwrt27Gj6xSHkQ9s5ixgbFh4MJQwUHkiD1pVlgDK0G6SoHRtw7QpLsAaevpODTcpbyCkpX6WIEu3eZmr7GkMoITYottDJNzqOHcn1b9k30OkCLt+lb8R6SC3019mlPhQ/aUtlZ3B21NRQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR01MB6824.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39850400004)(376002)(366004)(136003)(396003)(1800799006)(186006)(451199021)(110136005)(478600001)(4326008)(66946007)(66556008)(107886003)(66476007)(6506007)(26005)(6486002)(6666004)(6512007)(2906002)(8676002)(316002)(41300700001)(7416002)(5660300002)(83170400001)(8936002)(31696002)(38350700002)(38100700002)(2616005)(83380400001)(42882007)(52116002)(31686004)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WDh6amEvSVdnc05jWlhHUjFwUFUyTitaOENRQ044dktFRWRLa0xBdnpFWjU1?=
- =?utf-8?B?MUNuanFVT2tZdmJodmU2MkNrZzgxR1ovaERvSEFZWGVUQkxBK04xMndUVFpZ?=
- =?utf-8?B?dHgxbGovUE1UOGYwS2I0bS85TzlBNnRXWnZSUG9pZ3d5bGp5ZnUxVndsdTZN?=
- =?utf-8?B?QTBvb2ZzUmMvZzRUK3VhQ2FHSkZmajJlV3VSQW1RLy9mYldJQ2V3YWJUaytS?=
- =?utf-8?B?bGlLU29OTzFpSVFvcUVPL29LeGFNMFhMVzlua1l5ZzhsWWh5Z3pqZHpFOEpp?=
- =?utf-8?B?UTRHTG8rMVVzZ2JyNUNuMTVQc3lwSzZKWWdGa21EdDNRQnRZTVZMeGZTWDZP?=
- =?utf-8?B?RHcwdFB5UGZWdUN3UDdVQTlyalJqNnZIcjl6UGhxRWRmUXV1TDdVZ0JKdzVx?=
- =?utf-8?B?ckJvUjNYUHNZejNCcmYxeWsyVkhrOEs1V2Z1ekFMeS9SMmR0RXhFa2ZBbElj?=
- =?utf-8?B?aDNNZWViTG9Wb1NwT09NcXhSb3dhUTN1OXN4SlVxd2hoTDFTUFdkVXN4TDI1?=
- =?utf-8?B?RkkvRC8wNU5iZXZWRVZmb0FFd080NXVxSVVoUitsYkJWS1ArMGhwaDZOMjJs?=
- =?utf-8?B?dDhxcnV3MDhVSmJxWXU1bjZtL2sxVWdUZGpkbjA1YVZoZXdROGRYT1V2RUht?=
- =?utf-8?B?Sm1ySkVPQ0U1S2JabVlpeitiRHI3cWhjRVM2ZGZiejZqbFpDM0dGSVZ5SFh0?=
- =?utf-8?B?ajE3MVJ2UlhrdHYyQzlpbVVKRnZqMHJCSkU3VTdlVTBKQkludSszb0tvNWhY?=
- =?utf-8?B?VitQc0ZmR1FxTTd4aldaOHNQUEoxWS9GVFNMNlVnT0dvOUFYbjdJUUlZK0ty?=
- =?utf-8?B?MWFjTHdEZXpXQmNYd2l5K0I3cGhDVCt6Vi9jMHY1enJLeERHTytpTUJHcDd0?=
- =?utf-8?B?b2dFdTNVSDRQQXFPQlNXZkVudzV1bit3NTNBOWdqakJDdDdQUVNScnpwOU5D?=
- =?utf-8?B?aW1EdHZyKys4NmFtT3lKT0RRdUw2S1JSSEtlWUlBYzg2VCt2K2hzUVM3WThL?=
- =?utf-8?B?Nm5xK3VYVVBEb29lQkRzaENSbkZGRFE2ZUR1aVZHekU1RzZKS1FNZjNGUGYy?=
- =?utf-8?B?L0VuNDNiWHZxbCtrS3lVK254bEttR3RaR1c3ekVENHZ5eUR1MVpsTWlxTi9B?=
- =?utf-8?B?NHcwT2JyU0FMRkwycFQ1T3I4blV0TGhoRzhHSXFKd1B5S3hucEZiRWM1QnQw?=
- =?utf-8?B?Lzc1V2ZxcjdpL0dMOTRGWjVOZ0VJOWdkSWFJMkcvZEg1eEFqMTBEeHJISUJH?=
- =?utf-8?B?dE9oZGNRNU11YVBxRCtwK0VrQWtJVFlaQUJTWDZWTHhTSzRoejVIVGViYmUr?=
- =?utf-8?B?QTM2ckE5SVU2bHVMWTB6b2NPMDhWR3RiUkZ2cGs4NXc5MUVtL243cVFudk9O?=
- =?utf-8?B?WUVwWmtKN1lNSUZJTDV5VkE0bXplVGlsWkRYN0lHalFaTlNOdDZhLzljVmEv?=
- =?utf-8?B?Mk91bm1QZFloV04yL2tUYVhpNTdmWFhEd252b2YyeEk4S3U4MmxnRUZoWjZ5?=
- =?utf-8?B?SHFiYVhIakd0ZTZrUkJvMytKK0czd2tjemlpN3BpR1VPVUkwWFNSbkpqLzNa?=
- =?utf-8?B?OUZWT0JPaFR4aWpoRE9MdUFlcGloUVJCUDd2NS9YY2xpQXBiK25EVXZTVERR?=
- =?utf-8?B?bnBwR05vSjRzeHRZeGJveUNLTUlMaUQ3MG5mcWJwMElkc3hOOElzVkNzdk9k?=
- =?utf-8?B?dFQ3Y3NDZ2ZJYmE3TFF2Smpyb1hIbEUrV2N4QmJMaU5KQ1R0emZJNHhYenF4?=
- =?utf-8?B?ZmFiOHY4MGVsdmx5RXkyaVJpUFBOSlZYWmJIQ0FmTis2M3JhOWNkblJGTDBW?=
- =?utf-8?B?RnBzaFVuWkY0L0orZFJkNFg4dlFEVW15eWhPVkJGZmx2Z1Fqc2ZYM3VjTHQx?=
- =?utf-8?B?dTdJREdTdGdhckcxYzdETmdSdDc3UjFSck5KbUR1dHBWUTAzSVdwTEhVSTVI?=
- =?utf-8?B?OXFielFTVFNvenJ6Mm44bzJ0OElwK1FPMHc5KzhvbDAvbGNVdlBMbTBtcmZQ?=
- =?utf-8?B?SVQ5M0pRVGNzY1llbUVNSGl0Rmh1NzJxR29tdVdnZHFwTXFuYVdZTDFkTzhV?=
- =?utf-8?B?QnF3L1UrN25wcU9SMFg5SGozY1dIMnU1S3FXVElUbmUwRnFxZTY4OGFtUlVy?=
- =?utf-8?Q?wO/Rnufx0bvuHrgZqKqtAajyr?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1dc9fe44-bd31-4c7e-0b44-08db98bb6647
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R1V2UDNqbVFacEcxbFUxYVFQdnJXQnF0b1ZLSWhLYUVlSC9vVmZxVDZXa1FW?=
+ =?utf-8?B?R0xaN0tpbFJDU2xvckdaYkpyUjdaTFVoOEt6QmVwVEUrWng5QjhwSGt3SlZP?=
+ =?utf-8?B?cThpaGpBZUZoVVV3TVN4bnF6YjNkd1pReFJCdm9aNHJRYks2SW90YWMxZWZL?=
+ =?utf-8?B?cTFFaW9uc0xDL2ZWaGphWGplTTlObjJDLzZyT1NGVElvbDcyVkhKM3dib3pw?=
+ =?utf-8?B?TzZZZGgwdWVPVEdBSHNUSmlYUVpOa1R0ZTY0VUVROWZqYXlKbE5pMzExWHcy?=
+ =?utf-8?B?aGZBWkdjWm5NY0RUbUJpM2NlU3ZMU0k1TktjNFpFbDV2UDBldGtxT1p6VDZ0?=
+ =?utf-8?B?TDRHN2pNaEVqUmZqRG9XUXBuT2hOcWQyTHZwdHRYWWRlUzlqREQxYTM1eVVL?=
+ =?utf-8?B?T1E1bGozMlMxUHhGMkhiTm1pc2JrZEwwTVBMOWJPcnRrODA1Ym1FVm1xMHdz?=
+ =?utf-8?B?UDhEVll2WDJ2QU8zM1EyYTNmTUxteVR2Nm53TERDckIzTkVad3NqUUhYNFl4?=
+ =?utf-8?B?S01DL2VvSEdrR3hqSTRvMUZ5THl2NHZsbytmQ2ZxUEdycVQ5aythTXJaL0Q2?=
+ =?utf-8?B?QktzdmVrTHloazlmUFpTU05wcExtZ0ZkMlZJb3pNemlpc1VHYnY5Wk5TRjht?=
+ =?utf-8?B?dWJJTjFHbkFPd3FyNExYWHV4UEJyOVN3cklodmhGRnpDaW1mM2MvdmhkN1Rh?=
+ =?utf-8?B?UGFjVzA5dW1PenFaU1ZYRVJxenNqUmY4YVJoaDdhWjdZS3JBYXBpdHFBMlll?=
+ =?utf-8?B?YXZOUzVKNDA1SVVZMnNQK2dPK2daN2NId2MwZTI3OEYyR0VBNm8zOXExamQv?=
+ =?utf-8?B?OFFHNFFhbVFkdGxyVCtZRlRQeU9kVk9XditZdWhlT0RORkwzck1nR2ZwK016?=
+ =?utf-8?B?RmI2Yng5RlgyWTlvenNpQ3pwRE14RVlEUWFyTFdWMDB6Z0VPaUh6VmUzeW9Q?=
+ =?utf-8?B?bFR1TVZsOFhBNGZ5NmhkZngrMmhUWGxVcUR2WTY3VTVwUURQUnROQlVBWFNF?=
+ =?utf-8?B?ckx3ZVdBaW91dHFDYmwrQm1wVEFrZVp5YmhPbDBhalpOV2Q3WTNpWW1XcGtz?=
+ =?utf-8?B?aHRmWXNRYTBkeFVRYkVtYUFCTVBQNlMxUFcycndKeU93TE5sbnBLY3JGWVFH?=
+ =?utf-8?B?QlhjbUNuK0RHS2VoMVUrWFZmZXI3YmxGY3RLU1FEUEU4RDB1bFZYRGFjbFVE?=
+ =?utf-8?B?SS9ORnp3VUhzT3JEYW10QWEvNnA3K1dmK3k0cnNCUi94cmJEUFp6M0pzZWJP?=
+ =?utf-8?B?SysvZnBuNTBqcHQ0LzhBdnlrVlhYc3Q1NHBqeDVXMTlSbTljQXJQUVBZL3Zr?=
+ =?utf-8?B?ak1kaXFleXRQUHZyYVJiWHZIRmhlUWEwSGJSMVpYWng4eVB6T2hVeHd0SzJk?=
+ =?utf-8?B?MmFTdFVKNWJERkloYU01dCt1bFhCc3Zycm1wQkx1SHVSYnFld0c0cTAzSVBO?=
+ =?utf-8?B?Y253MG9lRk5McjVOWnhlbzFqL0l5WVZXWFFaNFdGdkp4N3RxT3h0ZCtRb1lH?=
+ =?utf-8?B?cE9BUnZHWnpyUmFzL0VQY21Yam9lVHBCWnVtREIvYlQxYUNHSXM1OW5qSkdC?=
+ =?utf-8?B?emFRSHdNcXdjNGYwYzMyMFI3OFFpdzFGVHcwMWhmS2RxSmx2OUU1SG0zOWQ2?=
+ =?utf-8?B?N0hlNHpjSVl3Y09vZnc1YmFiR1hpUTNFbTN3NU9Fc3lOcGdnaHJTc1NOQ1A3?=
+ =?utf-8?B?aUQzN0FRMzI4YVlvV3BYeXh5aFNGbW1ZeFUwNmIrbGZ6aFVnN3ArRk1TSkln?=
+ =?utf-8?B?V1VMT2FNclhYRkUrMitEQkdOQzN2YXNKcFZNTHVRR0wyMWVYMjZWRU5FSURB?=
+ =?utf-8?B?cjdIamNzWjN2UGYvbWVWZzcxREhnVEhsTkxOSzZnWE5rRUxPcW9NeGM1YUpU?=
+ =?utf-8?B?ZHRqdHFjN0FLcnBBUnVzNHRrYkFzQ3lFYjkyaE1VYkMydVh6cWdEalBEOFZo?=
+ =?utf-8?B?d0hYWmN6MW9zK2RDdTZSazZMOGpPSUZ0OEYwUnJ3RDk3a0NlYnBLZmpYRzNy?=
+ =?utf-8?B?S3lSWDB2T0E2UmZ6KzVYM3M2RXdFMmRxenY4Y296cWpMWW9mMFJJZ2VEN3J0?=
+ =?utf-8?B?RG9KS0EzV3RrZzVBZFhlcmRXZjdqalIrRStqQUJsa3J2NmhSamZ0cTI5RDRE?=
+ =?utf-8?B?NisyTm01QXN0WTlTSnlud2JpUnJvTlRVV3dGYkZiaVBmalh3TjVoUmMwZEY2?=
+ =?utf-8?Q?IFY7bs2mhnemDGYkWnf6JE8=3D?=
+X-OriginatorOrg: amperemail.onmicrosoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 160eee96-7ea7-4944-0634-08db98bc524f
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR01MB6824.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2023 09:31:24.7773
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2023 09:38:00.7271
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VoG9Pe8FqQDyddD4k4+fp0Gnrx7vQp2UtusnsZNS4aPQouJARc33ZEcZ+llucxLVzMp/c0WaYawWMEb960Tmdw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7249
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: PWm/LHbhhp+cCwYwrMubagV9SaUiGJztWI/S3oeiV9k8o+tqVUp3gZgoPTSgu4AEuhQcIi68dABXLhGNwIwlNbAM6fwmy3vdq4gI5u+nxJ/ydK9l5k9sm0rEhwBJMfyz
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6199
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mark,
+
+在 2023/8/9 17:22, Mark Rutland 写道:
+> On Wed, Aug 09, 2023 at 08:25:07AM +0000, Oliver Upton wrote:
+>> Hi Huang,
+>>
+>> On Wed, Aug 09, 2023 at 09:39:53AM +0800, Huang Shijie wrote:
+>>> 2.) Root cause.
+>>> 	There is only 7 counters in my arm64 platform:
+>>> 	  (one cycle counter) + (6 normal counters)
+>>>
+>>> 	In 1.3 above, we will use 10 event counters.
+>>> 	Since we only have 7 counters, the perf core will trigger
+>>>         	event multiplexing in hrtimer:
+>>> 	     merge_sched_in() -->perf_mux_hrtimer_restart() -->
+>>> 	     perf_rotate_context().
+>>>
+>>>         In the perf_rotate_context(), it does not restore some PMU registers
+>>>         as context_switch() does.  In context_switch():
+>>>               kvm_sched_in()  --> kvm_vcpu_pmu_restore_guest()
+>>>               kvm_sched_out() --> kvm_vcpu_pmu_restore_host()
+>>>
+>>>         So we got wrong result.
+>> This is a rather vague description of the problem. AFAICT, the
+>> issue here is on VHE systems we wind up getting the EL0 count
+>> enable/disable bits backwards when entering the guest, which is
+>> corroborated by the data you have below.
+> Yep; IIUC the issue here is that when we take an IRQ from a guest and reprogram
+> the PMU in the IRQ handler, the IRQ handler will program the PMU with
+> appropriate host/guest/user/etc filters for a *host* context, and then we'll
+> return back into the guest without reconfigurign the event filtering for a
+> *guest* context.
+Yes.
+>
+> That can happen for perf_rotate_context(), or when we install an event into a
+> running context, as that'll happen via an IPI.
+>
+>>> +void arch_perf_rotate_pmu_set(void)
+>>> +{
+>>> +	if (is_guest())
+>>> +		kvm_vcpu_pmu_restore_guest(NULL);
+>>> +	else
+>>> +		kvm_vcpu_pmu_restore_host(NULL);
+>>> +}
+>>> +
+>> This sort of hook is rather nasty, and I'd strongly prefer a solution
+>> that's confined to KVM. I don't think the !is_guest() branch is
+>> necessary at all. Regardless of how the pmu context is changed, we need
+>> to go through vcpu_put() before getting back out to userspace.
+>>
+>> We can check for a running vCPU (ick) from kvm_set_pmu_events() and either
+>> do the EL0 bit flip there or make a request on the vCPU to call
+>> kvm_vcpu_pmu_restore_guest() immediately before reentering the guest.
+>> I'm slightly leaning towards the latter, unless anyone has a better idea
+>> here.
+> The latter sounds reasonable to me.
+
+okay. I prefer the latter one now. :)
 
 
-On 9.08.23 г. 10:12 ч., Peter Zijlstra wrote:
-> There is infrastructure to rewrite return thunks to point to any
-> random thunk one desires, unwrap that from CALL_THUNKS, which up to
-> now was the sole user of that.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->   arch/x86/include/asm/nospec-branch.h |    4 ----
->   arch/x86/kernel/alternative.c        |    2 --
->   2 files changed, 6 deletions(-)
-> 
-> --- a/arch/x86/include/asm/nospec-branch.h
-> +++ b/arch/x86/include/asm/nospec-branch.h
-> @@ -347,11 +347,7 @@ extern void srso_untrain_ret(void);
->   extern void srso_untrain_ret_alias(void);
->   extern void entry_ibpb(void);
->   
-> -#ifdef CONFIG_CALL_THUNKS
->   extern void (*x86_return_thunk)(void);
-> -#else
-> -#define x86_return_thunk	(&__x86_return_thunk)
-> -#endif
->   
->   #ifdef CONFIG_CALL_DEPTH_TRACKING
->   extern void __x86_return_skl(void);
-> --- a/arch/x86/kernel/alternative.c
-> +++ b/arch/x86/kernel/alternative.c
-> @@ -698,9 +698,7 @@ void __init_or_module noinline apply_ret
->   
->   #ifdef CONFIG_RETHUNK
->   
-> -#ifdef CONFIG_CALL_THUNKS
->   void (*x86_return_thunk)(void) __ro_after_init = &__x86_return_thunk;
-> -#endif
->   
->   /*
->    * Rewrite the compiler generated return thunk tail-calls.
-> 
-> 
+Thanks
 
+Huang Shijie
 
-Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
+>
+> I suspect we need to take special care here to make sure we leave *all* events
+> in a good state when re-entering the guest or if we get to kvm_sched_out()
+> after *removing* an event via an IPI -- it'd be easy to mess either case up and
+> leave some events in a bad state.
+>
+> Thanks,
+> Mark.
