@@ -2,103 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3ACC77655D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 18:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16902776561
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 18:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbjHIQqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 12:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34904 "EHLO
+        id S230426AbjHIQsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 12:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbjHIQqi (ORCPT
+        with ESMTP id S229537AbjHIQsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 12:46:38 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507F61BFA
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 09:46:37 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe426b8583so61887105e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 09:46:37 -0700 (PDT)
+        Wed, 9 Aug 2023 12:48:02 -0400
+Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618AF1FCC;
+        Wed,  9 Aug 2023 09:48:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691599596; x=1692204396;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LCB6J9xjkovo4nsL5var8Yeba5WXNTY3HlVH4wMSnQo=;
-        b=ToePmrNnppd/Is0E7PAd+j29Nv5DFUjvi18bOflnM9U2nXEfSB4OmJTuUoQ+iE5SVW
-         fJUPqV1RGbk2gV9dolFc9ZA4vRjS7062kNecnkUCSYw5YOarLb2c591nRpZMWLUfzKhJ
-         tXlk/4tkJZN6qDfR9O6NFRsVPP3bms2MF3nF1rtBgVW8vsoWqXEPT4ohPmfp1CizLkbC
-         J8X+dsSG43psOtrhYnaPM0mpNlYW19TqZtbRr+o2Pam9vbKY+bNz1eh9hpmBAq6J73lH
-         db/hm3ocMgPBYXxSYtKUcaw0SmXAz2f+gZZ2XCjSYvjHtM2UdmX2qXVdNpIvKLmq7sbY
-         BqwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691599596; x=1692204396;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LCB6J9xjkovo4nsL5var8Yeba5WXNTY3HlVH4wMSnQo=;
-        b=O4zHZ12Iy1tSOo0zMv0Vy+s47WAzxwROA53gxmpI1Kr3q+aCUnIgEbJrkWbSut8fIL
-         vu7gUZ55yQOUa1GhcdezdL14ZTXgpORWacC8shEmbHOE2VCeC4IprqI1czTEqr0HR699
-         Lo4cQ4JiWxNP9IyCmXFp8+mP6v1tzHmMtgZkG2No/lhw6xvuqxR2BZF5adk11vkg0BfL
-         Lix8lK2QMm8fIdRDLCJSTYZ3330LZs0i3WysIyvs8x4a2aN8tzXA6fICmASvomxjaDwS
-         VdeYArGJCvachOfMszRJmz4OK+Zjk0NNe0FoBW18mND2poJFgNKSCdUAXSD4sQdvLveD
-         23xg==
-X-Gm-Message-State: AOJu0YxBjDVXbrd67zTEt5WXCFtE2qZ/ZS7Daxk9v3M/3ZvbRxd3WQZm
-        X24As/TvP7qL6bY7w5bLEKAgnw==
-X-Google-Smtp-Source: AGHT+IFBfy3CiF6uuHnwbQhdXVy+SfEPATMxJijXaIIO0WSpTUWJgGSbu4qQC+Iq/UGxZFGHXbgdmg==
-X-Received: by 2002:a1c:4c12:0:b0:3fb:a0fc:1ba1 with SMTP id z18-20020a1c4c12000000b003fba0fc1ba1mr2651739wmf.35.1691599595638;
-        Wed, 09 Aug 2023 09:46:35 -0700 (PDT)
-Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id p19-20020a05600c205300b003fe17901fcdsm2453431wmg.32.2023.08.09.09.46.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 09:46:34 -0700 (PDT)
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Dylan Jhong <dylan@andestech.com>
-Subject: [PATCH -fixes] mm: Add a call to flush_cache_vmap() in vmap_pfn()
-Date:   Wed,  9 Aug 2023 18:46:33 +0200
-Message-Id: <20230809164633.1556126-1-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.39.2
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1691599682; x=1723135682;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=RZ0TDIAWVWjKzQG/fNH2WZoDHlB8BqVrxrTKmYL0yWg=;
+  b=i4YqLRU+bm0mYYtMw0nAxEroCu+WZB/RppLKwPI7QaW9/bA61fBX/058
+   dxGrFD5vYwtPiNxF3WjU98p8tdahTc0S/QRO9B65FHRW6qd6Gv5/asp5U
+   ByQ3LTOOczDMYUUtxGBqMJAgvFBToxWBelkGm9p6Y/MxT7DoWNOcNhCv7
+   Q=;
+X-IronPort-AV: E=Sophos;i="6.01,159,1684800000"; 
+   d="scan'208";a="601118400"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-1197e3af.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 16:48:00 +0000
+Received: from EX19MTAUWC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2a-m6i4x-1197e3af.us-west-2.amazon.com (Postfix) with ESMTPS id BEB0D1040B3;
+        Wed,  9 Aug 2023 16:47:58 +0000 (UTC)
+Received: from EX19D019UWB001.ant.amazon.com (10.13.139.189) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 9 Aug 2023 16:47:57 +0000
+Received: from EX19MTAUEA001.ant.amazon.com (10.252.134.203) by
+ EX19D019UWB001.ant.amazon.com (10.13.139.189) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 9 Aug 2023 16:47:56 +0000
+Received: from u7187ce7291cc57.ant.amazon.com (10.135.199.88) by
+ mail-relay.amazon.com (10.252.134.102) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Wed, 9 Aug 2023 16:47:55 +0000
+From:   Tahsin Erdogan <trdgn@amazon.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+CC:     Tahsin Erdogan <trdgn@amazon.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4] tun: avoid high-order page allocation for packet header
+Date:   Wed, 9 Aug 2023 09:47:52 -0700
+Message-ID: <20230809164753.2247594-1-trdgn@amazon.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-flush_cache_vmap() must be called after new vmalloc mappings are
-installed in the page table in order to allow architectures to make sure
-the new mapping is visible.
+When gso.hdr_len is zero and a packet is transmitted via write() or
+writev(), all payload is treated as header which requires a contiguous
+memory allocation. This allocation request is harder to satisfy, and may
+even fail if there is enough fragmentation.
 
-Fixes: 3e9a9e256b1e ("mm: add a vmap_pfn function")
-Reported-by: Dylan Jhong <dylan@andestech.com>
-Closes: https://lore.kernel.org/linux-riscv/ZMytNY2J8iyjbPPy@atctrx.andestech.com/
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+Note that sendmsg() code path limits the linear copy length, so this change
+makes write()/writev() and sendmsg() paths more consistent.
+
+Signed-off-by: Tahsin Erdogan <trdgn@amazon.com>
 ---
- mm/vmalloc.c | 4 ++++
- 1 file changed, 4 insertions(+)
+v4: updated commit message address comments from Willem
+v3: rebase to latest net-next
+v2: replace linear == 0 with !linear
+v1: https://lore.kernel.org/all/20230726030936.1587269-1-trdgn@amazon.com/
+ drivers/net/tun.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 93cf99aba335..228a4a5312f2 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2979,6 +2979,10 @@ void *vmap_pfn(unsigned long *pfns, unsigned int count, pgprot_t prot)
- 		free_vm_area(area);
- 		return NULL;
- 	}
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 973b2fc74de3..62106464f1b9 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1523,7 +1523,7 @@ static struct sk_buff *tun_alloc_skb(struct tun_file *tfile,
+ 	int err;
+ 
+ 	/* Under a page?  Don't bother with paged skb. */
+-	if (prepad + len < PAGE_SIZE || !linear)
++	if (prepad + len < PAGE_SIZE)
+ 		linear = len;
+ 
+ 	if (len - linear > MAX_SKB_FRAGS * (PAGE_SIZE << PAGE_ALLOC_COSTLY_ORDER))
+@@ -1840,6 +1840,9 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
+ 			 */
+ 			zerocopy = false;
+ 		} else {
++			if (!linear)
++				linear = min_t(size_t, good_linear, copylen);
 +
-+	flush_cache_vmap((unsigned long)area->addr,
-+			 (unsigned long)area->addr + count * PAGE_SIZE);
-+
- 	return area->addr;
- }
- EXPORT_SYMBOL_GPL(vmap_pfn);
+ 			skb = tun_alloc_skb(tfile, align, copylen, linear,
+ 					    noblock);
+ 		}
 -- 
-2.39.2
+2.41.0
 
