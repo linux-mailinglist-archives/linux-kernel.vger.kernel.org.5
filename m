@@ -2,425 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1692776AC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D40776AD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbjHIVLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 17:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
+        id S230505AbjHIVRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 17:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232561AbjHIVLG (ORCPT
+        with ESMTP id S229478AbjHIVRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 17:11:06 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0078410CA
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:11:04 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe32ec7201so7795e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 14:11:04 -0700 (PDT)
+        Wed, 9 Aug 2023 17:17:05 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AA110CA;
+        Wed,  9 Aug 2023 14:17:01 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-790ca0ed6d3so6868139f.3;
+        Wed, 09 Aug 2023 14:17:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691615463; x=1692220263;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jGWwEk1CXGSfUHS6hHNB1416wO7EbVlYeuLxfEO0mho=;
-        b=pIP/Aq4RNHoSmXRTcfcMd0NreWN703bmAT9og27xLswzphuBji3M/nrY2IsOmTDBRL
-         PdOhJlUsvNcQYuZLeycozUmLq8/ebuu8635WAroMgxcYGuVS6XXqFaxqAAYy+qjCkDcr
-         NGFxwr4nZ6t+syK1B42UA9WtZ3jf2SGG0S7ld6cHSqoOwcsIqFiuQsWgmkff1pF014Pp
-         ZsgeeA0HnHJeBupZ2r7g8IFM9XpdWQvAmcsichS301wV07VTFwzeE2TBOim6bGA9ahQp
-         VK9wscobpwTOgIU7BL5yb9v/EoapybveYQ5m9YQwi14dAQWSxLuYtH5MiNXeW6HAgr6H
-         8sbw==
+        d=gmail.com; s=20221208; t=1691615821; x=1692220621;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=KVEgLwTnFL0wbRwfXbs4nUcy42ZilD8DRhTF/jpgAqw=;
+        b=HaA3v2uwdAP/fVnp8G4q7dRlwpEy8QEr66I+yPVf4qUrbqNnwoXqv3C8neuKlqgMOo
+         Di8P+XARxPcNBSig4nG48a7gPrQTT1GnVvuNRZUH1Q/xHdaLU/dz7qt48jWKtqf4CkDt
+         vMA6v5cRnue95BcU6VhftKuSxa1Oj1HhnWAfAPRFTJm8GBR0F+YLUFzVUjVzsQesLgAK
+         v2ZDcIwycWfOZdjD6JN4L8GgItsQj9cuNuw5AvZk0D9zOndJZ4vUNm0D8NWzJVIc1MxA
+         QM+f4B1hQeZMP6AXtkj/S9a6o4yccXetWi6WMk6K/Ym/S3JqEdOefzf40QaFHIpR9W8C
+         oxBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691615463; x=1692220263;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jGWwEk1CXGSfUHS6hHNB1416wO7EbVlYeuLxfEO0mho=;
-        b=Ge9PWieY0CHldYjPLLH8VGdy6+8tv222My4Plgs6TDg3WSkuYawGZdEGS5qHK1U0y4
-         vfvWIwohmWl4DBcvpgwxfvJrQyvG6ZIGAduVXD7wb0SauxNj+saW2pFO/dEJudDJYddT
-         7II9Rbd0uZBHL7sj2LZwX69ZY0Yf9rEb3IilQcyYrJMPolwcX9S31FNHcH3p0gUdbnL5
-         v0x47Tjt3N+2CpyismXcN/jkSy7ElgCqvLvQiCcFyzte77TVgO5aw7DU1duW21HJo53c
-         Qdq2eaiL4Tneb3BrCxObKkvNZafS+uIBFcUtslag/zfDE7ODIj64BA4p7Qi7Y5BPEllL
-         jEbg==
-X-Gm-Message-State: AOJu0YxhR/gn/2WPDwVN4xGdwiFQPERH+sFzwyz2WMkPOjebxWUcwn7u
-        RDApOVB+rYV6qPrgXVjfr3wlKiNrJlTNv5OgXxav1A==
-X-Google-Smtp-Source: AGHT+IE97Gt+uL0jUA/R8XqLl3m3pevtht6FglRL/lyPkRqv/MG/ueIdVfRd3VAuWgMlwyj8Vwe4cT4WOoz5XL100EY=
-X-Received: by 2002:a05:600c:c05:b0:3fe:5228:b7a2 with SMTP id
- fm5-20020a05600c0c0500b003fe5228b7a2mr153553wmb.5.1691615463245; Wed, 09 Aug
- 2023 14:11:03 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691615821; x=1692220621;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KVEgLwTnFL0wbRwfXbs4nUcy42ZilD8DRhTF/jpgAqw=;
+        b=dAMYgNLxdFpWKE6lS+IDvt1MIlUv30JJSdeN8rqp6zNVvsAFpW50/7UztzVPIYCMu7
+         vgQ4Zj/wTG1Kp1OgzA0qsFHXeyKYiSjPiWN1tUfZ4XKiE/z5Snd5Q9qh8iMCSVWORSRb
+         4rRTYl3lITuytWYkSjulhKnaDpW/QwDMrTs4FyLJZUoW15wpId5UFWlpJKi7/VexfunF
+         qaLwQLH+Xj1BX5DmgTBKKhQ/XkrOKnlQyknUlG7oPKEbgkhGfTV3J934afErhi+REWln
+         5zLdCrWaBoCZrVpGod4I2BcdiQocyr6Q7pgSrz3vsn2yvrx1dV7yXIaV7Jm0Cje7+AjF
+         R+MQ==
+X-Gm-Message-State: AOJu0Yxs1Kr4sCj/bNbNqH5Wy/G2Xo0kn2KZEMXLeq8o7GBkVJydoean
+        y/fstPG/l5h6DnlXt9J3bTQ=
+X-Google-Smtp-Source: AGHT+IH9aG2b/NYz0H3DjhuHWwv5USpb7h4j8e717s69mav6viJxUAtiYNHHKIAiYM5cBe3iyeJ6SA==
+X-Received: by 2002:a05:6e02:12a8:b0:348:ec07:9dfa with SMTP id f8-20020a056e0212a800b00348ec079dfamr274670ilr.14.1691615820725;
+        Wed, 09 Aug 2023 14:17:00 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r7-20020a028807000000b0042b56b57a50sm3949245jai.171.2023.08.09.14.16.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 14:17:00 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <d883dd8b-1858-7204-32f6-09f1ef9ec326@roeck-us.net>
+Date:   Wed, 9 Aug 2023 14:16:57 -0700
 MIME-Version: 1.0
-References: <20230809155438.22470-1-rf@opensource.cirrus.com> <20230809155438.22470-3-rf@opensource.cirrus.com>
-In-Reply-To: <20230809155438.22470-3-rf@opensource.cirrus.com>
-From:   Rae Moar <rmoar@google.com>
-Date:   Wed, 9 Aug 2023 17:10:51 -0400
-Message-ID: <CA+GJov5Txxq=V2_N8LNM3gHtP6sjS5CKhj-pzpYqN8mVm-a3ww@mail.gmail.com>
-Subject: Re: [PATCH v3 2/7] kunit: kunit-test: Add test cases for extending
- log buffer
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     brendan.higgins@linux.dev, davidgow@google.com,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] serial: core: Revert port_id use
+Content-Language: en-US
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Guenter Roeck <groeck7@gmail.com>
+References: <20230806062052.47737-1-tony@atomide.com>
+ <b8829d4b-d221-49ce-b0cd-e82dc79be719@roeck-us.net>
+ <20230809052650.GT14799@atomide.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230809052650.GT14799@atomide.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 11:54=E2=80=AFAM Richard Fitzgerald
-<rf@opensource.cirrus.com> wrote:
->
-> Add test cases for the dynamically-extending log buffer.
->
-> kunit_log_init_frag_test() tests that kunit_init_log_frag() correctly
-> initializes new struct kunit_log_frag.
->
-> kunit_log_extend_test_1() logs a series of numbered lines then tests
-> that the resulting log contains all the lines.
->
-> kunit_log_extend_test_2() logs a large number of lines of varying length
-> to create many fragments, then tests that all lines are present.
->
-> kunit_log_newline_test() has a new test to append a line that is exactly
-> the length of the available space in the current fragment and check that
-> the resulting log has a trailing '\n'.
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+On 8/8/23 22:26, Tony Lindgren wrote:
+> Hi,
+> 
+> * Guenter Roeck <linux@roeck-us.net> [230806 13:19]:
+>> On Sun, Aug 06, 2023 at 09:20:50AM +0300, Tony Lindgren wrote:
+>>> Guenter reports boot issues with duplicate sysfs entries for multiport
+>>> drivers. Let's go back to using port->line for now to fix the regression.
+>>>
+>>> With this change, the serial core port device names are not correct for the
+>>> hardware specific 8250 single port drivers, but that's a cosmetic issue for
+>>> now.
+>>>
+>>> Fixes: d962de6ae51f ("serial: core: Fix serial core port id to not use port->line")
+>>> Reported-by: Guenter Roeck <groeck7@gmail.com>
+>>> Signed-off-by: Tony Lindgren <tony@atomide.com>
+>>
+>> Tested-by: Guenter Roeck <linux@roeck-us.net>
+> 
+> Thanks for testing.
+> 
+> Guenter, care to also test the patch below on top of this fix and
+> see if things still behave for you?
+> 
+> I'll send a proper patch assuming things test fine.
+> 
 
-Hello!
+Patch below works for me.
 
-These tests now pass for me. Thanks!
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-I do have a few comments below mostly regarding comments and a few
-clarifying questions.
+Guenter
 
--Rae
-
-> ---
->  lib/kunit/kunit-test.c | 182 +++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 174 insertions(+), 8 deletions(-)
->
-> diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
-> index a199f83bac67..c0ee33a8031e 100644
-> --- a/lib/kunit/kunit-test.c
-> +++ b/lib/kunit/kunit-test.c
-> @@ -7,6 +7,7 @@
->   */
->  #include <kunit/test.h>
->  #include <kunit/test-bug.h>
-> +#include <linux/prandom.h>
->
->  #include "try-catch-impl.h"
->
-> @@ -530,10 +531,12 @@ static struct kunit_suite kunit_resource_test_suite=
- =3D {
->         .test_cases =3D kunit_resource_test_cases,
->  };
->
-> -static char *get_concatenated_log(struct kunit *test, const struct list_=
-head *log)
-> +static char *get_concatenated_log(struct kunit *test, const struct list_=
-head *log,
-> +                                 int *num_frags)
->  {
->         struct kunit_log_frag *frag;
->         size_t len =3D 0;
-> +       int frag_count =3D 0;
->         char *p;
->
->         list_for_each_entry(frag, log, list)
-> @@ -542,24 +545,42 @@ static char *get_concatenated_log(struct kunit *tes=
-t, const struct list_head *lo
->         len++; /* for terminating '\0' */
->         p =3D kunit_kzalloc(test, len, GFP_KERNEL);
->
-> -       list_for_each_entry(frag, log, list)
-> +       list_for_each_entry(frag, log, list) {
->                 strlcat(p, frag->buf, len);
-> +               ++frag_count;
-> +       }
+> Regagrds,
+> 
+> Tony
+> 
+> 8< --------------------
+> diff --git a/drivers/tty/serial/serial_base.h b/drivers/tty/serial/serial_base.h
+> --- a/drivers/tty/serial/serial_base.h
+> +++ b/drivers/tty/serial/serial_base.h
+> @@ -16,6 +16,7 @@ struct device;
+>   
+>   struct serial_ctrl_device {
+>   	struct device dev;
+> +	struct ida ida;
+>   };
+>   
+>   struct serial_port_device {
+> diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
+> --- a/drivers/tty/serial/serial_base_bus.c
+> +++ b/drivers/tty/serial/serial_base_bus.c
+> @@ -10,6 +10,7 @@
+>   
+>   #include <linux/container_of.h>
+>   #include <linux/device.h>
+> +#include <linux/idr.h>
+>   #include <linux/module.h>
+>   #include <linux/serial_core.h>
+>   #include <linux/slab.h>
+> @@ -112,6 +113,8 @@ struct serial_ctrl_device *serial_base_ctrl_add(struct uart_port *port,
+>   	if (!ctrl_dev)
+>   		return ERR_PTR(-ENOMEM);
+>   
+> +	ida_init(&ctrl_dev->ida);
 > +
-> +       if (num_frags)
-> +               *num_frags =3D frag_count;
->
->         return p;
->  }
->
-> -static void kunit_log_test(struct kunit *test)
-> +static void kunit_log_init_frag_test(struct kunit *test)
->  {
-> -       struct kunit_suite suite;
->         struct kunit_log_frag *frag;
->
-> -       suite.log =3D kunit_kzalloc(test, sizeof(*suite.log), GFP_KERNEL)=
-;
-> -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, suite.log);
-> -       INIT_LIST_HEAD(suite.log);
->         frag =3D kunit_kmalloc(test, sizeof(*frag), GFP_KERNEL);
->         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, frag);
-> +       memset(frag, 0x5a, sizeof(*frag));
+>   	err = serial_base_device_init(port, &ctrl_dev->dev,
+>   				      parent, &serial_ctrl_type,
+>   				      serial_base_ctrl_release,
+> @@ -142,16 +145,31 @@ struct serial_port_device *serial_base_port_add(struct uart_port *port,
+>   						struct serial_ctrl_device *ctrl_dev)
+>   {
+>   	struct serial_port_device *port_dev;
+> +	unsigned int min = 0, max = ~0U;
+>   	int err;
+>   
+>   	port_dev = kzalloc(sizeof(*port_dev), GFP_KERNEL);
+>   	if (!port_dev)
+>   		return ERR_PTR(-ENOMEM);
+>   
+> +	/* Device driver specified port_id vs automatic assignment? */
+> +	if (port->port_id) {
+> +		min = port->port_id;
+> +		max = port->port_id;
+> +	}
 > +
-
-Why is the fragment getting filled here with memset? Should this be
-tested? Feel free to let me know, I'm just uncertain.
-
->         kunit_init_log_frag(frag);
->         KUNIT_EXPECT_EQ(test, frag->buf[0], '\0');
-> +       KUNIT_EXPECT_TRUE(test, list_is_first(&frag->list, &frag->list));
-> +       KUNIT_EXPECT_TRUE(test, list_is_last(&frag->list, &frag->list));
-> +}
+> +	err = ida_alloc_range(&ctrl_dev->ida, min, max, GFP_KERNEL);
+> +	if (err < 0) {
+> +		kfree(port_dev);
+> +		return ERR_PTR(err);
+> +	}
 > +
-> +static void kunit_log_test(struct kunit *test)
-> +{
-> +       struct kunit_suite suite;
-> +       struct kunit_log_frag *frag;
+> +	port->port_id = err;
 > +
-> +       suite.log =3D kunit_kzalloc(test, sizeof(*suite.log), GFP_KERNEL)=
-;
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, suite.log);
-> +       INIT_LIST_HEAD(suite.log);
-> +       frag =3D kunit_kzalloc(test, sizeof(*frag), GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, frag);
-> +       kunit_init_log_frag(frag);
->         list_add_tail(&frag->list, suite.log);
->
->         kunit_log(KERN_INFO, test, "put this in log.");
-> @@ -586,23 +607,168 @@ static void kunit_log_test(struct kunit *test)
->
->  static void kunit_log_newline_test(struct kunit *test)
->  {
-> +       struct kunit_suite suite;
->         struct kunit_log_frag *frag;
-> +       char *p;
-
-Similar to last email, could we change p to be a more descriptive name
-such as concat_log?
-
->
->         kunit_info(test, "Add newline\n");
->         if (test->log) {
->                 frag =3D list_first_entry(test->log, struct kunit_log_fra=
-g, list);
->                 KUNIT_ASSERT_NOT_NULL_MSG(test, strstr(frag->buf, "Add ne=
-wline\n"),
->                         "Missing log line, full log:\n%s",
-> -                       get_concatenated_log(test, test->log));
-> +                       get_concatenated_log(test, test->log, NULL));
->                 KUNIT_EXPECT_NULL(test, strstr(frag->buf, "Add newline\n\=
-n"));
+>   	err = serial_base_device_init(port, &port_dev->dev,
+>   				      &ctrl_dev->dev, &serial_port_type,
+>   				      serial_base_port_release,
+> -				      port->ctrl_id, port->line);
+> +				      port->ctrl_id, port->port_id);
+>   	if (err)
+>   		goto err_put_device;
+>   
+> @@ -165,16 +183,24 @@ struct serial_port_device *serial_base_port_add(struct uart_port *port,
+>   
+>   err_put_device:
+>   	put_device(&port_dev->dev);
+> +	ida_free(&ctrl_dev->ida, port->port_id);
+>   
+>   	return ERR_PTR(err);
+>   }
+>   
+>   void serial_base_port_device_remove(struct serial_port_device *port_dev)
+>   {
+> +	struct serial_ctrl_device *ctrl_dev;
+> +	struct device *parent;
 > +
-
-Should this section of kunit_log_newline_test be separated into a new
-test? This test seems a bit long and seems to have two distinct
-sections?
-
-> +               suite.log =3D kunit_kzalloc(test, sizeof(*suite.log), GFP=
-_KERNEL);
-> +               KUNIT_ASSERT_NOT_ERR_OR_NULL(test, suite.log);
-> +               INIT_LIST_HEAD(suite.log);
-
-I would love to see a comment here to explain and break up this
-section similar to the comment from the previous email.
-
-> +               frag =3D kunit_kzalloc(test, sizeof(*frag), GFP_KERNEL);
-> +               KUNIT_ASSERT_NOT_ERR_OR_NULL(test, frag);
-> +               kunit_init_log_frag(frag);
-> +               list_add_tail(&frag->list, suite.log);
+>   	if (!port_dev)
+>   		return;
+>   
+> +	parent = port_dev->dev.parent;
+> +	ctrl_dev = to_serial_base_ctrl_device(parent);
 > +
-> +               /* String that exactly fills fragment leaving no room for=
- \n */
-> +               memset(frag->buf, 0, sizeof(frag->buf));
-> +               memset(frag->buf, 'x', sizeof(frag->buf) - 9);
-> +               kunit_log_append(suite.log, "12345678");
-> +               p =3D get_concatenated_log(test, suite.log, NULL);
-> +               KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p);
-> +               KUNIT_EXPECT_NOT_NULL_MSG(test, strstr(p, "x12345678\n"),
-> +                       "Newline not appended when fragment is full. Log =
-is:\n'%s'", p);
->         } else {
->                 kunit_skip(test, "only useful when debugfs is enabled");
->         }
->  }
->
-> +static void kunit_log_extend_test_1(struct kunit *test)
+>   	device_del(&port_dev->dev);
+> +	ida_free(&ctrl_dev->ida, port_dev->port->port_id);
+>   	put_device(&port_dev->dev);
+>   }
+>   
 
-In general, I would really like to see more comments in the next two
-tests describing the test behavior. I would prefer a comment for each
-of the while/do-while loops below. I just found the behavior to be
-slightly confusing to understand without comments (although I do
-appreciate the comments that are in kunit_log_extend_test_2).
-
-Also, I really appreciate how detailed these tests are.
-
-Another potential idea is to rename these two tests to be
-kunit_log_extend_test() and kunit_log_rand_extend_test() instead to be
-more descriptive?
-
-> +{
-> +#ifdef CONFIG_KUNIT_DEBUGFS
-> +       struct kunit_suite suite;
-> +       struct kunit_log_frag *frag;
-> +       char line[60];
-> +       char *p, *pn;
-
-Similar to before, could we change p and pn to be slightly more
-descriptive names? Maybe concat_log and newline_ptr or newline_log or
-newline_char?
-
-> +       size_t len, n;
-> +       int num_lines, num_frags, i;
-> +
-> +       suite.log =3D kunit_kzalloc(test, sizeof(*suite.log), GFP_KERNEL)=
-;
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, suite.log);
-> +       INIT_LIST_HEAD(suite.log);
-> +       frag =3D kunit_kzalloc(test, sizeof(*frag), GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, frag);
-> +       kunit_init_log_frag(frag);
-> +       list_add_tail(&frag->list, suite.log);
-> +
-> +       i =3D 0;
-> +       len =3D 0;
-> +       do {
-> +               n =3D snprintf(line, sizeof(line),
-> +                            "The quick brown fox jumps over the lazy pen=
-guin %d\n", i);
-> +               KUNIT_ASSERT_LT(test, n, sizeof(line));
-> +               kunit_log_append(suite.log, line);
-> +               ++i;
-> +               len +=3D n;
-> +       }  while (len < (sizeof(frag->buf) * 30));
-
-Are we trying to restrict the num_frags to less than 30? And then we
-could check that with a KUNIT_EXPECT? Currently, the num_frags are
-just above 30. That is ok too. I just was wondering if this was
-intentional? (Same as kunit_log_extend_test_2)
-
-> +       num_lines =3D i;
-> +
-> +       p =3D get_concatenated_log(test, suite.log, &num_frags);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p);
-> +       KUNIT_EXPECT_GT(test, num_frags, 1);
-> +
-> +       kunit_info(test, "num lines:%d num_frags:%d total len:%zu\n",
-> +                  num_lines, num_frags, strlen(p));
-> +
-> +       i =3D 0;
-> +       while ((pn =3D strchr(p, '\n')) !=3D NULL) {
-> +               *pn =3D '\0';
-> +               snprintf(line, sizeof(line),
-> +                        "The quick brown fox jumps over the lazy penguin=
- %d", i);
-> +               KUNIT_EXPECT_STREQ(test, p, line);
-> +               p =3D pn + 1;
-> +               ++i;
-> +       }
-> +       KUNIT_EXPECT_EQ(test, i, num_lines);
-> +#else
-> +       kunit_skip(test, "only useful when debugfs is enabled");
-> +#endif
-> +}
-> +
-> +static void kunit_log_extend_test_2(struct kunit *test)
-> +{
-> +#ifdef CONFIG_KUNIT_DEBUGFS
-> +       struct kunit_suite suite;
-> +       struct kunit_log_frag *frag;
-> +       struct rnd_state rnd;
-> +       char line[101];
-> +       char *p, *pn;
-
-Similar to above, could p and pn be renamed to be more descriptive?
-
-> +       size_t len;
-> +       int num_lines, num_frags, n, i;
-> +
-> +       suite.log =3D kunit_kzalloc(test, sizeof(*suite.log), GFP_KERNEL)=
-;
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, suite.log);
-> +       INIT_LIST_HEAD(suite.log);
-> +       frag =3D kunit_kzalloc(test, sizeof(*frag), GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, frag);
-> +       kunit_init_log_frag(frag);
-> +       list_add_tail(&frag->list, suite.log);
-> +
-> +       /* Build log line of varying content */
-> +       line[0] =3D '\0';
-> +       i =3D 0;
-> +       do {
-> +               char tmp[9];
-> +
-> +               snprintf(tmp, sizeof(tmp), "%x", i++);
-> +               len =3D strlcat(line, tmp, sizeof(line));
-> +       } while (len < sizeof(line) - 1);
-
-Could there be an expectation statement here to check the line has
-been properly filled. Maybe checking the length?
-
-> +
-> +       /*
-> +        * Log lines of different lengths until we have created
-> +        * many fragments.
-> +        * The "randomness" must be repeatable.
-> +        */
-> +       prandom_seed_state(&rnd, 3141592653589793238ULL);
-> +       i =3D 0;
-> +       len =3D 0;
-> +       num_lines =3D 0;
-> +       do {
-> +               kunit_log_append(suite.log, "%s\n", &line[i]);
-> +               len +=3D sizeof(line) - i;
-> +               num_lines++;
-> +               i =3D prandom_u32_state(&rnd) % (sizeof(line) - 1);
-> +       } while (len < (sizeof(frag->buf) * 30));
-> +
-> +       /* There must be more than one buffer fragment now */
-> +       KUNIT_EXPECT_FALSE(test, list_is_singular(suite.log));
-> +
-> +       p =3D get_concatenated_log(test, suite.log, &num_frags);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p);
-> +       KUNIT_EXPECT_GT(test, num_frags, 1);
-> +
-> +       kunit_info(test, "num lines:%d num_frags:%d total len:%zu\n",
-> +                  num_lines, num_frags, strlen(p));
-> +
-> +       prandom_seed_state(&rnd, 3141592653589793238ULL);
-> +       i =3D 0;
-> +       n =3D 0;
-> +       while ((pn =3D strchr(p, '\n')) !=3D NULL) {
-> +               *pn =3D '\0';
-> +               KUNIT_EXPECT_STREQ(test, p, &line[i]);
-> +               p =3D pn + 1;
-> +               n++;
-> +               i =3D prandom_u32_state(&rnd) % (sizeof(line) - 1);
-> +       }
-> +       KUNIT_EXPECT_EQ_MSG(test, n, num_lines, "Not enough lines.");
-
-Is it possible for this to be too many lines instead? Should this
-comment instead be "Unexpected number of lines". Also could we have a
-similar message for the test above for this expectation regarding the
-number of lines.
-
-
-> +#else
-> +       kunit_skip(test, "only useful when debugfs is enabled");
-> +#endif
-> +}
-> +
->  static struct kunit_case kunit_log_test_cases[] =3D {
-> +       KUNIT_CASE(kunit_log_init_frag_test),
->         KUNIT_CASE(kunit_log_test),
->         KUNIT_CASE(kunit_log_newline_test),
-> +       KUNIT_CASE(kunit_log_extend_test_1),
-> +       KUNIT_CASE(kunit_log_extend_test_2),
->         {}
->  };
->
-> --
-> 2.30.2
->
