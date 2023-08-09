@@ -2,216 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A11E2776253
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F4B776254
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbjHIOXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:23:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60132 "EHLO
+        id S232688AbjHIOXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbjHIOXE (ORCPT
+        with ESMTP id S232477AbjHIOXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:23:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A5210F5;
-        Wed,  9 Aug 2023 07:23:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 9 Aug 2023 10:23:07 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D04BDE
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:23:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YCzp2X/WfYiCqh+EX1R3WdoKCA2GK4xS3lcXZ8xjKxM=; b=jwIQauff3k9YP3RStytJYaF47n
+        D5247tFWUeC0+fjcFOdf3rhR9lq5/anpoLnbzsyGzgjUC/xbXuBLX2tit1pG2H9EiHC34833vgTY3
+        zvOMZOr2zNkqfH+SfKdbBEGAR52/ah7wfKXQBav/IG3rAxewm84A06BlZ29i3zJ0xcPRmigQqak2l
+        315fazhW7jk78OQV9aEQRlAacPuiJYbHzEv66EbBjeifDqSp4MtSjGn4crpegwoDz0wc3xwhKYGoW
+        cp3SsrCFROtaj3Bj5T5v79pCO8rNfmx0LrJP4VRX1NcwGX9tVU0wmRmS2dDJWa4pRMz5HrcVE0y2r
+        iV31ek0w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qTk5P-005hGX-2L;
+        Wed, 09 Aug 2023 14:22:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7EAEF62D6B;
-        Wed,  9 Aug 2023 14:23:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D2D2C433C7;
-        Wed,  9 Aug 2023 14:22:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691590982;
-        bh=LgXOvH2tCTHIjBx4H7FiUs60LQPWskUEsq2zDenCRXk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=d3tvC2K0q9zmSKovb3MCz70OZ0zDUfwQjvtmqpayy/+0zTCRnvBnhoitfla9mzpYS
-         6/IQTcAliZ/qw+jQL6ikoz6PNYzqJ5V/AqPdhloBtpJ7o+04K1HJBA1CLTORrD2v+D
-         7LM1T9XMRPVFf25JkonEGd6tPIqFqFkNRPbUkBuWrkC1zyTV3QcmWREwMXrZwRBWOf
-         qlZSX+5xrbt2rURYBov8h1oSuPFEc5pUfvutsD/+H96L3ykp7YO0AtG9js4MbdLlC5
-         xVqrAhV0e5CphxqERFiIWxatm9vmAPUWZveD51138XqFFJM1+SpLi461h67PgiJAZz
-         6pxgp2dPf4+Bg==
-Message-ID: <7edc9239f73022b9c2a1d3f4f946153f85f94739.camel@kernel.org>
-Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
-From:   Jeff Layton <jlayton@kernel.org>
-To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>,
-        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Date:   Wed, 09 Aug 2023 10:22:54 -0400
-In-Reply-To: <878rak8hia.fsf@mail.parknet.co.jp>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
-         <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
-         <87msz08vc7.fsf@mail.parknet.co.jp>
-         <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org>
-         <878rak8hia.fsf@mail.parknet.co.jp>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4E14830003A;
+        Wed,  9 Aug 2023 16:22:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2CCAE201D1379; Wed,  9 Aug 2023 16:22:55 +0200 (CEST)
+Date:   Wed, 9 Aug 2023 16:22:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        Andrew.Cooper3@citrix.com, gregkh@linuxfoundation.org
+Subject: Re: [RFC][PATCH 12/17] x86/cpu: Rename original retbleed return thunk
+Message-ID: <20230809142255.GQ212435@hirez.programming.kicks-ass.net>
+References: <20230809071218.000335006@infradead.org>
+ <20230809072201.259675763@infradead.org>
+ <20230809142031.jkj4pa2mhccrdmmd@treble>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809142031.jkj4pa2mhccrdmmd@treble>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-09 at 22:36 +0900, OGAWA Hirofumi wrote:
-> Jeff Layton <jlayton@kernel.org> writes:
->=20
-> > On Wed, 2023-08-09 at 17:37 +0900, OGAWA Hirofumi wrote:
-> > > Jeff Layton <jlayton@kernel.org> writes:
-> > >=20
-> > > > Also, it may be that things have changed by the time we get to call=
-ing
-> > > > fat_update_time after checking inode_needs_update_time. Ensure that=
- we
-> > > > attempt the i_version bump if any of the S_* flags besides S_ATIME =
-are
-> > > > set.
-> > >=20
-> > > I'm not sure what it meaning though, this is from
-> > > generic_update_time(). Are you going to change generic_update_time()
-> > > too? If so, it doesn't break lazytime feature?
-> > >=20
-> >=20
-> > Yes. generic_update_time is also being changed in a similar fashion.
-> > This shouldn't break the lazytime feature: lazytime is all about how an=
-d
-> > when timestamps get written to disk. This work is all about which
-> > clocksource the timestamps originally come from.
->=20
-> I can only find the following update in this series, another series
-> updates generic_update_time()? The patch updates only if S_VERSION is
-> set.
->=20
-> Your fat patch sets I_DIRTY_SYNC always instead of I_DIRTY_TIME. When I
-> last time checked lazytime, and it was depending on I_DIRTY_TIME.
->=20
-> Are you sure it doesn't break lazytime? I'm totally confusing, and
-> really similar with generic_update_time()?
->=20
+On Wed, Aug 09, 2023 at 10:20:31AM -0400, Josh Poimboeuf wrote:
+> On Wed, Aug 09, 2023 at 09:12:30AM +0200, Peter Zijlstra wrote:
+> > +++ b/tools/objtool/check.c
+> > @@ -455,7 +455,12 @@ static int decode_instructions(struct ob
+> >  				return -1;
+> >  			}
+> >  
+> > -			if (func->return_thunk || !strcmp(func->name, "srso_safe_ret") || func->alias != func)
+> > +			/*
+> > +			 * Both zen_return_thunk() and srso_safe_ret() are embedded inside
+> > +			 * another instruction and objtool doesn't grok that. Skip validating them.
+> > +			 */
+> > +			if (!strcmp(func->name, "zen_return_thunk") ||
+> > +			    !strcmp(func->name, "srso_safe_ret") || func->alias != func)
+> 
+> Hm, speaking of renaming they should probably be called
+> retbleed_return_thunk() and srso_return_thunk().
 
-I'm a little confused too. Why do you believe this will break
--o relatime handling? This patch changes two things:
-
-1/ it has fat_update_time fetch its own timestamp (and ignore the "now"
-parameter). This is in line with the changes in patch #3 of this series,
-which explains the rationale for this in more detail.
-
-2/ it changes fat_update_time to also update the i_version if any of
-S_CTIME|S_MTIME|S_VERSION are set. relatime is all about the S_ATIME,
-and it is specifically excluded from that set.
-
-The rationale for the second change is is also in patch #3, but
-basically, we can't guarantee that current_time hasn't changed since we
-last checked for inode_needs_update_time, so if any of
-S_CTIME/S_MTIME/S_VERSION have changed, then we need to assume that any
-of them may need to be changed and attempt to update all 3.
-
-That said, I think the logic in fat_update_time isn't quite right. I
-think want something like this on top of this patch to ensure that the
-S_CTIME and S_MTIME get updated, even if the flags only have S_VERSION
-set.
-
-Thoughts?
-
----------------------8<-----------------------
-
-diff --git a/fs/fat/misc.c b/fs/fat/misc.c
-index 080a5035483f..313eef02f45c 100644
---- a/fs/fat/misc.c
-+++ b/fs/fat/misc.c
-@@ -346,15 +346,21 @@ int fat_update_time(struct inode *inode, int flags)
-        if (inode->i_ino =3D=3D MSDOS_ROOT_INO)
-                return 0;
-=20
--       if (flags & (S_ATIME | S_CTIME | S_MTIME)) {
--               fat_truncate_time(inode, NULL, flags);
--               if (inode->i_sb->s_flags & SB_LAZYTIME)
--                       dirty_flags |=3D I_DIRTY_TIME;
--               else
--                       dirty_flags |=3D I_DIRTY_SYNC;
--       }
-+       /*
-+        * If any of the flags indicate an expicit change to the file, then=
- we
-+        * need to ensure that we attempt to update all of 3. We do not do
-+        * this in the case of an S_ATIME-only update.
-+        */
-+       if (flags & (S_CTIME | S_MTIME | S_VERSION))
-+               flags |=3D S_CTIME | S_MTIME | S_VERSION;
-+
-+       fat_truncate_time(inode, NULL, flags);
-+       if (inode->i_sb->s_flags & SB_LAZYTIME)
-+               dirty_flags |=3D I_DIRTY_TIME;
-+       else
-+               dirty_flags |=3D I_DIRTY_SYNC;
-=20
--       if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && inode_maybe_inc_iversi=
-on(inode, false))
-+       if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
-                dirty_flags |=3D I_DIRTY_SYNC;
-
+Yes, clearly naming is better in daylight. Let me regex that.
