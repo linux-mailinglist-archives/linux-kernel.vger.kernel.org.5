@@ -2,128 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAD9775E23
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24166775E3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbjHILt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 07:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
+        id S230075AbjHILvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 07:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbjHILtY (ORCPT
+        with ESMTP id S231476AbjHILvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 07:49:24 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1436C10C;
-        Wed,  9 Aug 2023 04:49:24 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379BnDox102401;
-        Wed, 9 Aug 2023 06:49:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691581753;
-        bh=NHaMV8AQ458hXfrujPP7b8dUqu4ww4eGJkczmu6Nivg=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=G4Dq5pM+rVVvdmIHaDyd04wFiCgC/U7fP21ZTNxhToV8d+2vHDXSY/Twcr9/DiPMd
-         QRG+6FJVAEXajoyUYtW1eFwrxQOLBvBUVdsDMU3eXnE+Kq84Tn/bXwnjgjU2QOrIAO
-         UDEWJjb4khJ95kPOnKheDsFHfFJwNG495QO5mS58=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379BnDDL014024
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Aug 2023 06:49:13 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
- Aug 2023 06:49:13 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 9 Aug 2023 06:49:13 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379BnDAx013045;
-        Wed, 9 Aug 2023 06:49:13 -0500
-Date:   Wed, 9 Aug 2023 06:49:13 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Dhruva Gole <d-gole@ti.com>
-CC:     Tony Lindgren <tony@atomide.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>
-Subject: Re: [PATCH 0/2] pinctrl-single: introduce am654-padconf compatible
-Message-ID: <20230809114913.xr6cvz4h2zsobwou@kobold>
-References: <20230808102207.130177-1-d-gole@ti.com>
+        Wed, 9 Aug 2023 07:51:39 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE6D268C
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 04:51:19 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe1fc8768aso64601035e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 04:51:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691581863; x=1692186663;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YoLJg3uyNcm/pmOxJC3Fq4ZGphQKyXSORQ4ZI59PwTw=;
+        b=Shh2Zd48mx3fxiY+RfLxt9LreMcopPayjdhzWCsQ0aOlpMt+DEgm7CHOogbnMTpiNF
+         rGU7UN4wv5Z5VNhAfuSu9kHzWnySIEP3QJPByVXvQr2SpfzPSuEkGcan2U3ecsSyY/+F
+         FxrPDUtGFcdf0BFe5a6+B6It4wpEtLNxmW9qLtlVgx2aaljsUAbhQ27IpXqiEpi6xA7H
+         wZ87wojZDTPqd7DQK9dTg6PU/ox8Y8RTDmTquySxABH9B0ZFCT/GrbHFNcIuEXvDPnQz
+         KNLVxuiC6KFf6mTP2hAFrvz2frKZXifRphR1NbQ5FfcKOt2Y7rt3phELOHpAkiABes82
+         zmPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691581863; x=1692186663;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YoLJg3uyNcm/pmOxJC3Fq4ZGphQKyXSORQ4ZI59PwTw=;
+        b=BX5OvdFkVhxu0n9B8DovX1lGPBHu7eQ759xyPnCtjnEA/krPqiPoDniEBgjLItuFG9
+         kYjUpGyME1JGnudDYfC0oPfVn5hYrv9P4lSXlUlrCG0nEFA36cOx/FootEpLqz/WN4eJ
+         ml/+jDYHslnHvWHlzXemNB8n5J2/+YhMTGsAsrkF3cGchSXNvAjhXgQ/fcjl66RkBjDY
+         otxE3czSlDKH8C0Ng/Ptz5+j3qnass8LUDP/TkdCl03dr8gnuyYRtoJ7FehtIGU9/Oyq
+         DCaMmK6KU1xiJbyY2x3qz/ASksZxo/iVIM9lCxRdXV+x5UDdPDM2taMm2cM7ICEfMRSZ
+         cp+Q==
+X-Gm-Message-State: AOJu0YxDyB1CFvObdWQ/YWsE/SekDFGbNepu3QUw8dqQRzJ6AddZ2R/S
+        uudKl4RgcTUXpSqccMkkJwoVGA==
+X-Google-Smtp-Source: AGHT+IGU6k4Sf3I3QTFLY+ZsNUrN7WVbqQSddAG5CXHZrLzSx0iHlwACOjWrAI/vNBghQwK9k8bQWA==
+X-Received: by 2002:adf:dccf:0:b0:314:3740:7f69 with SMTP id x15-20020adfdccf000000b0031437407f69mr1671678wrm.37.1691581862922;
+        Wed, 09 Aug 2023 04:51:02 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id r15-20020adfdc8f000000b00317909f9985sm16547116wrj.113.2023.08.09.04.51.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 04:51:02 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 14:51:00 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+        tonyhuang.sunplus@gmail.com, lhjeff911@gmail.com, arnd@arndb.de,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        error27@gmail.com, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH next v2 2/2] mmc: sunplus: Fix platform_get_irq() error
+ checking
+Message-ID: <9c7a69b1-9ee3-4676-8d3e-9f12e39b37af@kadam.mountain>
+References: <20230809071812.547229-1-harshit.m.mogalapalli@oracle.com>
+ <20230809071812.547229-2-harshit.m.mogalapalli@oracle.com>
+ <CAPDyKFqHnHCpsi+GBAQ2vmESf17rDMGyUK+EtZbhJT5AngvmBg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230808102207.130177-1-d-gole@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAPDyKFqHnHCpsi+GBAQ2vmESf17rDMGyUK+EtZbhJT5AngvmBg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15:52-20230808, Dhruva Gole wrote:
-> The K3 family of SOCs use certain bits of the padconfig registers like
-> WKUP_EVT and WKUP_EN to enable daisychain wakeups.
+On Wed, Aug 09, 2023 at 01:33:51PM +0200, Ulf Hansson wrote:
+> On Wed, 9 Aug 2023 at 09:19, Harshit Mogalapalli
+> <harshit.m.mogalapalli@oracle.com> wrote:
+> >
+> > The platform_get_irq() function returns negative error codes on failure.
+> >
+> > Fixes: 4e268fed8b18 ("mmc: Add mmc driver for Sunplus SP7021")
+> > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > Closes: https://lore.kernel.org/all/a3829ed3-d827-4b9d-827e-9cc24a3ec3bc@moroto.mountain/
+> > Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 > 
-> For example, these bits are described in the AM654 TRM [0] under
-> "Table 5-517. Description Of The Pad Configuration Register Bits"
-> 
-> This series adds the DT binding changes for adding the compatible and
-> also the driver changes which make use of this compatible.
-> 
-> NOTE: Some K3 SoCs may have these bits marked as reserved which means
-> that they don't support IO daisychain. Such SOCs are not expected to use
-> this compatible.
-> 
-> The general expected usage is when the device is in a suspended state like Deep
-> Sleep or Suspend to RAM, and any IO activity on configured pads can
-> trigger a wakeup.
-> 
-> Link to complete series:
-> https://lore.kernel.org/all/20230808102207.130177-1-d-gole@ti.com
-> 
-> Base commit:
-> 71cd4fc492ec (tag: next-20230808, linux-next/master) Add linux-next specific files for 20230808
-> 
-> depends on:
-> https://lore.kernel.org/r/20230721082654.27036-1-tony@atomide.com
-> 
-> which has been picked up by Linus Walleij in his tree here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git/commit/?h=devel&id=677a62482bd6e584f83d0342e78735e3cd449ba4
-> 
-> However, it hasn't reflected in -next yet so specifying the depends on
-> above.
+> Applied for fixes and by adding a stable tag, thanks!
 
-next-20230809 has it today - so just a day or two of sync.. no biggie.
+It's not really a fix.  The platform_get_irq() function can't actually
+return zero.
 
-> 
-> [0] https://www.ti.com/lit/pdf/spruid7
-> 
-> Cc: Nishanth Menon <nm@ti.com>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: Tony Lindgren <tony@atomide.com>
-> Cc: Conor Dooley <conor.dooley@microchip.com>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Haojian Zhuang <haojian.zhuang@linaro.org>
+I asked Arnd about this and he said that there were some arches where
+zero was a valid IRQ but they're not in the upstream kernel any more and
+we're hopefully not going to do that again.
 
-For the series:
+regards,
+dan carpenter
 
-Reviewed-by: Nishanth Menon <nm@ti.com>
-
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
