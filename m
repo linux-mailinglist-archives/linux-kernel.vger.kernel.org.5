@@ -2,201 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA987768B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B817768BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbjHITZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
+        id S234074AbjHIT0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233979AbjHITZZ (ORCPT
+        with ESMTP id S233658AbjHIT0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:25:25 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E7F3C0B;
-        Wed,  9 Aug 2023 12:24:22 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbea147034so981065e9.0;
-        Wed, 09 Aug 2023 12:24:22 -0700 (PDT)
+        Wed, 9 Aug 2023 15:26:38 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D5B423B;
+        Wed,  9 Aug 2023 12:25:51 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bb84194bf3so1669395ad.3;
+        Wed, 09 Aug 2023 12:25:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691609061; x=1692213861;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pwigRAFAXBRS5qA8koF+a3Bv4bIxzklMHFE/MHDH5ok=;
-        b=eve8xWI6YnHpUf/J5yzVBAv9L32VRTQu2RRy55ESICy3heLY5wjsRCBsUTwOV3DU5S
-         RuCionFHq2S5hlamn5nk6ivk3p0gmVeJ+eCiq+Xqw7QaNzDlrYseRS9kV/CMGJj0NxFi
-         sbdZfU7tnEQJeXq10+Gdoo2VA/PqCsQcWRKfWM42VjSwhxIHTIIVYQPCmxnMpVB87b8Y
-         kCeVz9UkLYW5mE8Q6sDwY3Yarv0X9Nv6frMTlyQfQH0DwfK7d2c5WpiX3LFQyZGnWWOT
-         SZW4itQ8mKpbTItkwF2hiWAD3pjZF/Dl96mgbqt4oPYTJhFU++j3nNXv4pI9+OknbFwN
-         3JfA==
+        d=gmail.com; s=20221208; t=1691609151; x=1692213951;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hgrUzHI5vFElj1uMt+qwY4hut4/wXqPQ3/5aob6WtDY=;
+        b=Kgvir7UVgpNjhSrYZFSoy1mODLGrKeUEYseirWcnkmy3rHAEhIA5pM3idDM3N+9Zb9
+         UPQ7/KBPwc7nHh6M9OFVyyiFs8Fzeafy0nfWlMrQJEc71zpvNG/0jT6k961KcB0dOZG2
+         zQgUDnjjotgDHR0FE0YPNvg9WAlpEN0o1BvVLs/wmJ4sSe7xV6T+axgaeo/RwVwPO7Zm
+         UZYzazpGcprfmLvmZSgFsgm4GoirUADu96kla+AqGVkdBAz2MeSxfmb/wo2Da5eocYxW
+         2V3W50HmdJqHhntJWPehd1tk3UXYtiyEg92pDnwWzLklaUtxukW4jucS/2knlVOIhqJd
+         iznw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691609061; x=1692213861;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pwigRAFAXBRS5qA8koF+a3Bv4bIxzklMHFE/MHDH5ok=;
-        b=iTCml0erA9YB7UZgHTupKSQHYt86tAM17z/9sgSIhZSzIfRuUD4pO/dpXToXEdr6XL
-         bDT+6Hh/7LrtSGDvWlaHdKw4p/faRt+V2025NwRxCYcs8FfmLXxz5Qe3XSHIcnjHuhVS
-         0rGkxnBCzhlaggWm0xKpvv3oEtbKLTRVDB0hBizuwg3QxNdBRM5D+ycmFOqMY+lp70AQ
-         sPa7dB5DLrb7q48uWirL+Nplipwer7A16oYolN2wyuEbwiVdRKuB0T43SNHg498OlteL
-         ct3j5ONnXBvFpC5k2T8SGHB5g+YAGS5UpIbCkX2eTrvs02+ok/D1eT5Rp1gc6Ox2N1Rc
-         ypmw==
-X-Gm-Message-State: AOJu0YxVmmPpHDPqJDNcLqOecG5WhZaVF6lcmys3mJjfWOQo53ZO1L02
-        /F6ie9dlUvTKGe72hTysNa4=
-X-Google-Smtp-Source: AGHT+IH4yai+QveqDBLSuuppf6HAOS+JBSMVsO4zEnvYLlgX2iVgvxEkWco9vicnXKSN1lV+MYcEdg==
-X-Received: by 2002:a1c:7c0b:0:b0:3fd:e86b:f095 with SMTP id x11-20020a1c7c0b000000b003fde86bf095mr44652wmc.13.1691609060920;
-        Wed, 09 Aug 2023 12:24:20 -0700 (PDT)
-Received: from [127.0.1.1] ([91.230.2.244])
-        by smtp.gmail.com with ESMTPSA id y9-20020a7bcd89000000b003fba6a0c881sm2776208wmj.43.2023.08.09.12.24.20
+        d=1e100.net; s=20221208; t=1691609151; x=1692213951;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hgrUzHI5vFElj1uMt+qwY4hut4/wXqPQ3/5aob6WtDY=;
+        b=MRusd+mtrRU/+KUSVF7BMBEYJ0F+JlViK9Kq2he6rbLA9ukwL4dk+FVx8Pu+ezTZlq
+         PB2Cut5NBVJNDk/om6SDv4ES/UgS8YfZvVndiRDVWn93Re4ITshRnbOTvQc/ZwBLOsq1
+         uhSfeR97XMoA7F2xKjZak0vRmKKZ5cMiGUhSzlLVDljSTU9YjZhkPLV7Xd2APggbrQMp
+         YvaW9f4q67sdC0y+NCIYnp1P8T9qzgsfmoVO2yAGrXYaux4JKiLzGEv9seTJvs68d6xh
+         qppAGdixF+K+YU+N2y+SGb+PfE9epoAJs4/3l808x+uxQO5pZQtRY++Xy6A0k29qYLlL
+         v+OQ==
+X-Gm-Message-State: AOJu0Yyh6F9p+l2TXRnmabtwyP6VjsUMZD0bwclrvEEBRcRCVqLBdvZ4
+        aIuj/3dLJ+VAHPNGfRDwH/s=
+X-Google-Smtp-Source: AGHT+IHCh9SaVL8ALKEXvvWwpKGE+QAlwNjwOJ6Afmx2DRcPEM9bCfL4/fWZMM2jxGVdnuDUtJq0sg==
+X-Received: by 2002:a17:902:868e:b0:1bb:3a7:6af7 with SMTP id g14-20020a170902868e00b001bb03a76af7mr46302plo.23.1691609150905;
+        Wed, 09 Aug 2023 12:25:50 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i12-20020a170902eb4c00b001b8ad8382a4sm11472198pli.216.2023.08.09.12.25.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 12:24:20 -0700 (PDT)
-From:   Benjamin Bara <bbara93@gmail.com>
-Date:   Wed, 09 Aug 2023 21:24:08 +0200
-Subject: [PATCH v2 6/6] regulator: pca9450: register restart handlers
+        Wed, 09 Aug 2023 12:25:50 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 9 Aug 2023 12:25:48 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        paulmck@kernel.org
+Subject: Re: [PATCH 5.15 00/92] 5.15.126-rc1 review
+Message-ID: <35e4b770-2ead-4a19-ad01-fa75996adef4@roeck-us.net>
+References: <20230809103633.485906560@linuxfoundation.org>
+ <20230809135326.GE3031656@google.com>
+ <f47340c6-3c41-1f91-d0f9-fe0b59a23aac@roeck-us.net>
+ <CAEXW_YQ4GqPwvUF8=8CWmdj=cD56v_eEVK-EirsObQXyBDFVpg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230809-pca9450-reboot-v2-6-b98b4f8139d5@skidata.com>
-References: <20230809-pca9450-reboot-v2-0-b98b4f8139d5@skidata.com>
-In-Reply-To: <20230809-pca9450-reboot-v2-0-b98b4f8139d5@skidata.com>
-To:     Lee Jones <lee@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        peng.fan@oss.nxp.com, rafael.j.wysocki@intel.com,
-        Jerome Neanne <jneanne@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Benjamin Bara <benjamin.bara@skidata.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YQ4GqPwvUF8=8CWmdj=cD56v_eEVK-EirsObQXyBDFVpg@mail.gmail.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Bara <benjamin.bara@skidata.com>
+On Wed, Aug 09, 2023 at 02:35:59PM -0400, Joel Fernandes wrote:
+> On Wed, Aug 9, 2023 at 12:18 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > On 8/9/23 06:53, Joel Fernandes wrote:
+> > > On Wed, Aug 09, 2023 at 12:40:36PM +0200, Greg Kroah-Hartman wrote:
+> > >> This is the start of the stable review cycle for the 5.15.126 release.
+> > >> There are 92 patches in this series, all will be posted as a response
+> > >> to this one.  If anyone has any issues with these being applied, please
+> > >> let me know.
+> > >>
+> > >> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
+> > >> Anything received after that time might be too late.
+> > >>
+> > >> The whole patch series can be found in one patch at:
+> > >>      https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.126-rc1.gz
+> > >> or in the git tree and branch at:
+> > >>      git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > >> and the diffstat can be found below.
+> > >
+> > > Not necesscarily new with 5.15 stable but 3 of the 19 rcutorture scenarios
+> > > hang with this -rc: TREE04, TREE07, TASKS03.
+> > >
+> > > 5.15 has a known stop machine issue where it hangs after 1.5 hours with cpu
+> > > hotplug rcutorture testing. Me and tglx are continuing to debug this. The
+> > > issue does not show up on anything but 5.15 stable kernels and neither on
+> > > mainline.
+> > >
+> >
+> > Do you by any have a crash pattern that we could possibly use to find the crash
+> > in ChromeOS crash logs ? No idea if that would help, but it could provide some
+> > additional data points.
+> 
+> The pattern shows as a hard hang, the system is unresponsive and all CPUs
+> are stuck in stop_machine. Sometimes it recovers on its own from the
+> hang and then RCU immediately gives stall warnings. It takes 1.5 hour
+> to reproduce and sometimes never happens for several hours.
+> 
+> It appears related to CPU hotplug since gdb showed me most of the CPUs
+> are spinning in multi_cpu_stop() / stop machine after the hang.
+> 
 
-The PCA9450 supports both, a warm and a cold reset. Implement both and
-register the respective handlers.
+Hmm, we do see lots of soft lockups with multi_cpu_stop() in the backtrace,
+but not with v5.15.y but with v5.4.y. The actual hang is in stop_machine_yield().
+Example:
 
-Acked-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
----
- drivers/regulator/pca9450-regulator.c | 59 +++++++++++++++++++++++++++++++++++
- include/linux/regulator/pca9450.h     |  7 +++++
- 2 files changed, 66 insertions(+)
+<0>[63298.624328] watchdog: BUG: soft lockup - CPU#0 stuck for 11s! [migration/0:11]
+<4>[63298.624331] Modules linked in: 8021q ccm snd_seq_dummy snd_seq snd_seq_device bridge stp llc tun nf_nat_tftp nf_conntrack_tftp nf_nat_ftp nf_conntrack_ftp esp6 ah6 ip6t_REJECT ip6t_ipv6header vhost_vsock vhost vmw_vsock_virtio_transport_common vsock veth rfcomm xt_cgroup cmac algif_hash algif_skcipher af_alg xt_MASQUERADE uinput iwlmvm snd_soc_skl_ssp_clk iwl7000_mac80211 btusb snd_soc_kbl_da7219_max98357a btrtl btintel snd_soc_hdac_hdmi btbcm bluetooth snd_soc_dmic snd_soc_skl ecdh_generic ecc snd_soc_sst_ipc snd_soc_sst_dsp snd_soc_hdac_hda uvcvideo snd_soc_acpi_intel_match snd_soc_acpi snd_hda_ext_core videobuf2_vmalloc videobuf2_v4l2 videobuf2_common snd_intel_dspcfg videobuf2_memops snd_hda_codec snd_hwdep snd_hda_core iwlwifi snd_soc_da7219 snd_soc_max98357a fuse ip6table_nat cfg80211 lzo_rle lzo_compress zram joydev
+<4>[63298.624357] CPU: 0 PID: 11 Comm: migration/0 Tainted: G     U  W         5.4.180-17902-g44152654f29b #1
+<4>[63298.624358] Hardware name: Google Nami/Nami, BIOS Google_Nami.10775.145.0 09/19/2019
+<4>[63298.624363] RIP: 0010:stop_machine_yield+0xb/0xd
+<4>[63298.624366] Code: ff 74 b6 f0 ff 0f 75 b1 48 83 c7 08 e8 1f cb f9 ff eb a6 e8 a0 20 e3 ff eb bc e8 50 4b f5 ff 0f 1f 44 00 00 55 48 89 e5 f3 90 <5d> c3 0f 1f 44 00 00 55 48 89 e5 41 57 41 56 41 55 41 54 53 48 81
+<4>[63298.624368] RSP: 0000:ffffbaf90006fe38 EFLAGS: 00000293 ORIG_RAX: ffffffffffffff13
+<4>[63298.624370] RAX: 0000000000000000 RBX: ffffbaf90300bca8 RCX: 0000000000000000
+<4>[63298.624371] RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffffffffb0d46920
+<4>[63298.624373] RBP: ffffbaf90006fe38 R08: 0000000000000002 R09: 0000398ecf9a0ac5
+<4>[63298.624374] R10: 0000000000000171 R11: ffffffffaf9cfb11 R12: 0000000000000001
+<4>[63298.624376] R13: ffff9b09baa22201 R14: ffffffffb0d46920 R15: 0000000000000001
+<4>[63298.624377] FS:  0000000000000000(0000) GS:ffff9b09baa00000(0000) knlGS:0000000000000000
+<4>[63298.624379] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+<4>[63298.624380] CR2: 0000153c00724820 CR3: 0000000171ab8005 CR4: 00000000003606f0
+<4>[63298.624382] Call Trace:
+<4>[63298.624386]  multi_cpu_stop+0x89/0x119
+<4>[63298.624389]  ? stop_two_cpus+0x24d/0x24d
+<4>[63298.624391]  cpu_stopper_thread+0x8f/0x111
+<4>[63298.624394]  smpboot_thread_fn+0x174/0x212
+<4>[63298.624397]  kthread+0x147/0x156
+<4>[63298.624399]  ? cpu_report_death+0x43/0x43
+<4>[63298.624401]  ? kthread_blkcg+0x2e/0x2e
+<4>[63298.624404]  ret_from_fork+0x35/0x40
+<0>[63298.624407] Kernel panic - not syncing: softlockup: hung tasks
 
-diff --git a/drivers/regulator/pca9450-regulator.c b/drivers/regulator/pca9450-regulator.c
-index 2ab365d2749f..86903d677bf6 100644
---- a/drivers/regulator/pca9450-regulator.c
-+++ b/drivers/regulator/pca9450-regulator.c
-@@ -38,6 +38,11 @@ struct pca9450 {
- 	int irq;
- };
- 
-+static inline struct pca9450 *dev_to_pca9450(struct device *dev)
-+{
-+	return dev_get_drvdata(dev);
-+}
-+
- static const struct regmap_range pca9450_status_range = {
- 	.range_min = PCA9450_REG_INT1,
- 	.range_max = PCA9450_REG_PWRON_STAT,
-@@ -219,6 +224,42 @@ static int pca9450_set_dvs_levels(struct device_node *np,
- 	return ret;
- }
- 
-+static int pca9450_cold_reset(struct pca9450 *pca9450)
-+{
-+	int ret;
-+
-+	ret = regmap_write(pca9450->regmap, PCA9450_REG_SWRST,
-+			   SWRST_RESET_COLD_LDO12);
-+	if (ret)
-+		return ret;
-+
-+	/* t_RESTART is 250 ms. */
-+	mdelay(500);
-+	return -ETIME;
-+}
-+
-+static int pca9450_warm_reset(struct pca9450 *pca9450)
-+{
-+	int ret;
-+
-+	ret = regmap_write(pca9450->regmap, PCA9450_REG_SWRST,
-+			   SWRST_RESET_WARM);
-+	if (ret)
-+		return ret;
-+
-+	/* t_RESET is 20 ms. */
-+	mdelay(50);
-+	return -ETIME;
-+}
-+
-+static int pca9450_restart_handler(struct sys_off_data *data)
-+{
-+	int (*handler)(struct pca9450 *) = data->cb_data;
-+	struct pca9450 *pca9450 = dev_to_pca9450(data->dev);
-+
-+	return handler(pca9450);
-+}
-+
- static const struct pca9450_regulator_desc pca9450a_regulators[] = {
- 	{
- 		.desc = {
-@@ -845,6 +886,24 @@ static int pca9450_i2c_probe(struct i2c_client *i2c)
- 		return PTR_ERR(pca9450->sd_vsel_gpio);
- 	}
- 
-+	ret = devm_register_cold_restart_handler(pca9450->dev,
-+						 pca9450_restart_handler,
-+						 pca9450_cold_reset);
-+	if (ret) {
-+		dev_err(&i2c->dev, "register cold restart handler failed: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	ret = devm_register_warm_restart_handler(pca9450->dev,
-+						 pca9450_restart_handler,
-+						 pca9450_warm_reset);
-+	if (ret) {
-+		dev_err(&i2c->dev, "register warm restart handler failed: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
- 	dev_info(&i2c->dev, "%s probed.\n",
- 		type == PCA9450_TYPE_PCA9450A ? "pca9450a" : "pca9450bc");
- 
-diff --git a/include/linux/regulator/pca9450.h b/include/linux/regulator/pca9450.h
-index 505c908dbb81..a72fd4942d5f 100644
---- a/include/linux/regulator/pca9450.h
-+++ b/include/linux/regulator/pca9450.h
-@@ -93,6 +93,13 @@ enum {
- 	PCA9450_MAX_REGISTER	    = 0x2F,
- };
- 
-+/* PCA9450 SW_RST bits */
-+#define SWRST_NOACTION			0x00
-+#define SWRST_RESET_REGS		0x05
-+#define SWRST_RESET_COLD_LDO12		0x14
-+#define SWRST_RESET_WARM		0x35
-+#define SWRST_RESET_COLD		0x64
-+
- /* PCA9450 BUCK ENMODE bits */
- #define BUCK_ENMODE_OFF			0x00
- #define BUCK_ENMODE_ONREQ		0x01
+I guess that is something different ?
 
--- 
-2.34.1
-
+Guenter
