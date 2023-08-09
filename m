@@ -2,123 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30168775E7D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B6F775E6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbjHIMIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
+        id S232390AbjHIMEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbjHIMIV (ORCPT
+        with ESMTP id S232288AbjHIMEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:08:21 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E41FDF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:08:21 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 379Bx5C6027338;
-        Wed, 9 Aug 2023 12:08:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=cjvj7wettouj98grKd+w/rGibdES+jbkVOMsKs2jBMs=;
- b=Nt7kzGIVlDBVXMVfXTdT76U7OgP6qGN9gF4dsa0AtkoT9S5OVA8x3nPpsDkWqM/aHY8j
- 8WTUz/p7Z3S3O3fS4bFiuL9yLV6+1f2yA0MKPgpIHilr1fFLtJ9VCNUY+l0g2GbkSxPi
- kSLIYiKBAWkRZMsrwNubHJ+PsbcucQzxdgO9yKX/m8Bwe4MyWiyd0WtWgXfIfXPzzGsV
- gvGeFAgRa3tCXXTVRChPgir5OJGumODDNCe9cJC7PwX6oRexW9Y6uFLPtPhlSQbcqsx3
- oK7zvlKiKCjZJgviQ/9aVK3mL9BHxp1G9P0NKS9Eyn/ZPV9Yw1cTxaFHVulFy35uW9fS Pg== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3scad9rebw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 12:08:18 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 379AvjwO030348;
-        Wed, 9 Aug 2023 12:02:46 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sa1rnfxkc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 12:02:46 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 379C2ipd27460248
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Aug 2023 12:02:44 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0336E20043;
-        Wed,  9 Aug 2023 12:02:44 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E6E9A20040;
-        Wed,  9 Aug 2023 12:02:43 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed,  9 Aug 2023 12:02:43 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
-        id 981C6E0331; Wed,  9 Aug 2023 14:02:43 +0200 (CEST)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] tracing/synthetic: allocate one additional element for size
-Date:   Wed,  9 Aug 2023 14:02:33 +0200
-Message-Id: <20230809120233.890987-2-svens@linux.ibm.com>
+        Wed, 9 Aug 2023 08:04:39 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C4E1999
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:04:38 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbea147034so56964815e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:04:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691582677; x=1692187477;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ii80EE7pa0mhgMQ0s5xe4195LlHu5IHrEtcB3OBraLk=;
+        b=BiQRm6QArOt0reA0XzmNOrqDq54h8G/aseka0XWXgzwpSmPA1oUSMjgN0/uGnKnO4E
+         j1ssv6TlN4OmhP0QJ2FhraFta2kpehRPgbQRq1VdA/J5seN8HiZ2ea5BpDEX6SN427nC
+         72+g2J43mYKQNotZuShuG8x/LmtW+o91kYHr4+2/AOKh1fnel/5SECLq9r64TaQuxmoU
+         iKNknvjqa769930fTyXb9UMAVEm/QyWsTT08Hdo/kFMB5oMArfXBktNIHnZhhuuGyzlQ
+         n+tjDafiW7p85wN8yYlyYh1fe8mu5Qcbxsc5NT/3r+wE3peyAkNO5DAPrZG3k321QZ1I
+         ruow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691582677; x=1692187477;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ii80EE7pa0mhgMQ0s5xe4195LlHu5IHrEtcB3OBraLk=;
+        b=ajhs+ZgJ/YCreOyCQGws6HPBHcEbrc5CAQD+xCzNkkDo+vqpuWroaCUNiaDKrrDn+P
+         phzhnNl1SwhBootiB5+TwV7bcHxI+nxLEPekAKEPVUbkWBNus6BJMv3aI1p8EaZSFDq5
+         7Q8gW26NuZpxZrdu6iOfVS1f6DOJVPo9CWx+EKbZ2gqKIwnCM8v7IKEDvIHodMm/LUa4
+         p0u1RYzjLjjz1WGHJlUASuW2XSrI0vkPFvJtbIyKVQB/22kNYfI8wgDOD87C8yzABRMo
+         WM8LekdCgFdQm1QNt9oyBIVmNwdca7tSW2iwnkFg6L64wYJtIN4JsPhggvsNsKPqXkHW
+         dWYw==
+X-Gm-Message-State: AOJu0Yx8nMDJUuV8zBjR/Mnl241oqbSIsIejXRmkWo51P1rs9iWGGrJa
+        TdkoiCgiN2rbgI1j1GK7h/HpsQ==
+X-Google-Smtp-Source: AGHT+IETu73lrm/5LQfyHK8qjp9vNvK9TX06/BiTcJ2LLYm+UUDVhJQnkevBzFGzrc8K8etxRZyRjg==
+X-Received: by 2002:a05:600c:234a:b0:3f5:878:c0c2 with SMTP id 10-20020a05600c234a00b003f50878c0c2mr2047031wmq.3.1691582677091;
+        Wed, 09 Aug 2023 05:04:37 -0700 (PDT)
+Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id b13-20020a05600c11cd00b003fe1a96845bsm1808573wmi.2.2023.08.09.05.04.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 05:04:36 -0700 (PDT)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, loic.poulain@linaro.org, rfoss@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bryan.odonoghue@linaro.org
+Subject: [PATCH 1/7] arm64: dts: qcom: apq8016-sbc: Fix ov5640 regulator supply names
+Date:   Wed,  9 Aug 2023 13:04:26 +0100
+Message-Id: <20230809120432.1036405-2-bryan.odonoghue@linaro.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230809120233.890987-1-svens@linux.ibm.com>
-References: <20230809120233.890987-1-svens@linux.ibm.com>
+In-Reply-To: <20230809120432.1036405-1-bryan.odonoghue@linaro.org>
+References: <20230809120432.1036405-1-bryan.odonoghue@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rhDL3YZNrF5FIFtqNSgosWY5TSNpN9ss
-X-Proofpoint-ORIG-GUID: rhDL3YZNrF5FIFtqNSgosWY5TSNpN9ss
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-09_10,2023-08-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- suspectscore=0 phishscore=0 malwarescore=0 priorityscore=1501
- impostorscore=0 clxscore=1015 adultscore=0 spamscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308090106
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While debugging another issue i noticed that the stack trace contains
-one invalid entry at the end:
+The ov5640 driver expects DOVDD, AVDD and DVDD as regulator supply names.
 
-<idle>-0       [008] d..4.    26.484201: wake_lat: pid=0 delta=2629976084 000000009cc24024 stack=STACK:
-=> __schedule+0xac6/0x1a98
-=> schedule+0x126/0x2c0
-=> schedule_timeout+0x150/0x2c0
-=> kcompactd+0x9ca/0xc20
-=> kthread+0x2f6/0x3d8
-=> __ret_from_fork+0x8a/0xe8
-=> 0x6b6b6b6b6b6b6b6b
+The ov5640 has depended on these names since the driver was committed
+upstream in 2017. Similarly apq8016-sbc.dtsi has had completely different
+regulator names since its own initial commit in 2020.
 
-This is because the code failed to add the one element containing the
-number of entries to field_size.
+Perhaps the regulators were left on in previous 410c bootloaders. In any
+case today on 6.5 we won't switch on the ov5640 without correctly naming
+the regulators.
 
-Fixes: 00cf3d672a9d ("tracing: Allow synthetic events to pass around stacktraces")
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+Fixes: 39e0ce6cd1bf ("arm64: dts: qcom: apq8016-sbc: Add CCI/Sensor nodes")
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 ---
- kernel/trace/trace_events_synth.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/apq8016-sbc.dts | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index cf5d0e352810..780ac934058c 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -528,7 +528,8 @@ static notrace void trace_event_raw_event_synth(void *__data,
- 		str_val = (char *)(long)var_ref_vals[val_idx];
+diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dts b/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
+index f6eeb25988465..75b4e5ff7c95c 100644
+--- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
++++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
+@@ -282,9 +282,9 @@ camera_rear@3b {
+ 		clock-names = "xclk";
+ 		clock-frequency = <23880000>;
  
- 		if (event->dynamic_fields[i]->is_stack) {
--			len = *((unsigned long *)str_val);
-+			/* reserve one extra element for size */
-+			len = *((unsigned long *)str_val) + 1;
- 			len *= sizeof(unsigned long);
- 		} else {
- 			len = fetch_store_strlen((unsigned long)str_val);
+-		vdddo-supply = <&camera_vdddo_1v8>;
+-		vdda-supply = <&camera_vdda_2v8>;
+-		vddd-supply = <&camera_vddd_1v5>;
++		DOVDD-supply = <&camera_vdddo_1v8>;
++		AVDD-supply = <&camera_vdda_2v8>;
++		DVDD-supply = <&camera_vddd_1v5>;
+ 
+ 		/* No camera mezzanine by default */
+ 		status = "disabled";
 -- 
 2.39.2
 
