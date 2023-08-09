@@ -2,236 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4918D7750D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 04:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 223417750DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 04:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbjHICPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 22:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38412 "EHLO
+        id S229636AbjHICTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 22:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbjHICPh (ORCPT
+        with ESMTP id S229480AbjHICTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 22:15:37 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A391FF5;
-        Tue,  8 Aug 2023 19:15:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1691547314;
-        bh=WwhPpUPIIJ1F0bzlOpEW0k9XGC15BGNZygV8v9njSAE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=FzAQ4+AeQxDY6ihN3HVgV1vJKNN6sy3W7x/3QDDV8wpqpi8jgllQsMvLvBmQAuOXX
-         /Wkt3zh+fv1tgX4QVNPMlQaHoUhFSE9WcTpe+wsweOi8gQR6MNT4Ebv77U7Ewt0q9n
-         X/JXDfMIzIY5+7JHmkNz6YtZSvsC/i8kPx6CMoZizupybRpS4fGP5CZZrllajw2fQ/
-         a0EEWiBbh8NBswd4rESwQ4R1+EUv5HdTOcSKLjHjg1qVVACYLOcT/vhCnH02fhw9N6
-         e+grgUiMeBE6RTinHaA1TJemgHTolPP7Mob2Ck94o2ajtL1t4a9HVKxLFT68KcZQ9I
-         t3W6eoxsn2nBg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RLDD069zFz4wqX;
-        Wed,  9 Aug 2023 12:15:12 +1000 (AEST)
-Date:   Wed, 9 Aug 2023 12:15:11 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Petr Pavlu <petr.pavlu@suse.com>
-Subject: linux-next: manual merge of the tip tree with Linus' tree
-Message-ID: <20230809121511.683222bc@canb.auug.org.au>
+        Tue, 8 Aug 2023 22:19:48 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009C81BD3;
+        Tue,  8 Aug 2023 19:19:46 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 378Nnvv0008226;
+        Tue, 8 Aug 2023 19:19:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=Duo3bRbVvb6/txE8EhkDQ9IknuBjLsomUlWEgOddVpM=;
+ b=NJysyXkrFzaIIQ/dbkmLujz3zrJrlipBPrOz/oNr9Zglz35p0H/+0/U7KljxD51F9EME
+ ZtwBmFLGrYy13Xo8dLC/OuxK6QQhrwtt4DwPTpPUeILj9yHJwdH9fjF2kvudyKbTmx+f
+ bWaJA55+nPNbYZt1KzxWVo8OY8egbkWA+kzIdrCwxEOKq8BYfoCdV2webHXcbOt6egA+
+ Eyc+CuXK4U/txoQQSIWD8QI5oqHWkDgs75cpGvHCkddAe2f3m2qzjHpQBbkZOSfPDa/u
+ 5zS6WReC5Pl6NMbuGkUENSEicE8JsVIXEhSS2ky5X59W3/tfrwFTKo0iChTrbtryWMf3 2A== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3sbkntk304-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 08 Aug 2023 19:19:28 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 8 Aug
+ 2023 19:19:26 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Tue, 8 Aug 2023 19:19:26 -0700
+Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
+        by maili.marvell.com (Postfix) with ESMTP id 55D8A5B6929;
+        Tue,  8 Aug 2023 19:19:22 -0700 (PDT)
+From:   Ratheesh Kannoth <rkannoth@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <hawk@kernel.org>,
+        <alexander.duyck@gmail.com>, <ilias.apalodimas@linaro.org>,
+        <linyunsheng@huawei.com>, Ratheesh Kannoth <rkannoth@marvell.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>
+Subject: [PATCH net-next] page_pool: Set page pool size.
+Date:   Wed, 9 Aug 2023 07:49:20 +0530
+Message-ID: <20230809021920.913324-1-rkannoth@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/x4+GA/H3iTCwCxkB3mEt39H";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: SWsvK7huo-gMo5qfYeC52ab8k7UmSiF6
+X-Proofpoint-ORIG-GUID: SWsvK7huo-gMo5qfYeC52ab8k7UmSiF6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-08_24,2023-08-08_01,2023-05-22_02
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/x4+GA/H3iTCwCxkB3mEt39H
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+https://lore.kernel.org/netdev/
+	15d32b22-22b0-64e3-a49e-88d780c24616@kernel.org/T/
 
-Hi all,
+Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Today's linux-next merge of the tip tree got conflicts in:
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index 8336cea16aff..2986e238104e 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -1434,7 +1434,8 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
+ 	}
+ 
+ 	pp_params.flags = PP_FLAG_PAGE_FRAG | PP_FLAG_DMA_MAP;
+-	pp_params.pool_size = numptrs;
++#define OTX2_PAGE_POOL_SIZE 2048
++	pp_params.pool_size = OTX2_PAGE_POOL_SIZE;
+ 	pp_params.nid = NUMA_NO_NODE;
+ 	pp_params.dev = pfvf->dev;
+ 	pp_params.dma_dir = DMA_FROM_DEVICE;
+-- 
+2.25.1
 
-  arch/x86/include/asm/processor.h
-  arch/x86/kernel/vmlinux.lds.S
-  arch/x86/lib/retpoline.S
-
-between commits:
-
-  fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
-  3bbbe97ad83d ("x86/srso: Add a forgotten NOENDBR annotation")
-
-from Linus' tree and commits:
-
-  566ffa3ae964 ("x86/cpu: Fix amd_check_microcode() declaration")
-  973ab2d61f33 ("x86/retpoline,kprobes: Fix position of thunk sections with=
- CONFIG_LTO_CLANG")
-  029239c5b0e6 ("x86/retpoline,kprobes: Skip optprobe check for indirect ju=
-mps with retpolines and IBT")
-
-from the tip tree.
-
-I fixed it up (I think - see below) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/x86/include/asm/processor.h
-index 7c67db7c9f53,36d52075fdad..000000000000
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@@ -682,11 -682,11 +682,13 @@@ extern u16 get_llc_id(unsigned int cpu)
-  #ifdef CONFIG_CPU_SUP_AMD
-  extern u32 amd_get_nodes_per_socket(void);
-  extern u32 amd_get_highest_perf(void);
- +extern bool cpu_has_ibpb_brtype_microcode(void);
-+ extern void amd_check_microcode(void);
-  #else
-  static inline u32 amd_get_nodes_per_socket(void)	{ return 0; }
-  static inline u32 amd_get_highest_perf(void)		{ return 0; }
- +static inline bool cpu_has_ibpb_brtype_microcode(void)	{ return false; }
-+ static inline void amd_check_microcode(void)		{ }
-  #endif
- =20
-  extern unsigned long arch_align_stack(unsigned long sp);
-diff --cc arch/x86/kernel/vmlinux.lds.S
-index e76813230192,dd5b0a68cf84..000000000000
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@@ -133,28 -133,12 +133,26 @@@ SECTION
-  		KPROBES_TEXT
-  		SOFTIRQENTRY_TEXT
-  #ifdef CONFIG_RETPOLINE
-- 		__indirect_thunk_start =3D .;
-- 		*(.text.__x86.indirect_thunk)
-- 		*(.text.__x86.return_thunk)
-- 		__indirect_thunk_end =3D .;
- -		*(.text..__x86.*)
-++		*(.text..__x86.indirect_thunk)
-++		*(.text..__x86.return_thunk)
-  #endif
-  		STATIC_CALL_TEXT
- =20
-  		ALIGN_ENTRY_TEXT_BEGIN
- +#ifdef CONFIG_CPU_SRSO
-- 		*(.text.__x86.rethunk_untrain)
-++		*(.text..__x86.rethunk_untrain)
- +#endif
- +
-  		ENTRY_TEXT
- +
- +#ifdef CONFIG_CPU_SRSO
- +		/*
- +		 * See the comment above srso_untrain_ret_alias()'s
- +		 * definition.
- +		 */
- +		. =3D srso_untrain_ret_alias | (1 << 2) | (1 << 8) | (1 << 14) | (1 << =
-20);
-- 		*(.text.__x86.rethunk_safe)
-++		*(.text..__x86.rethunk_safe)
- +#endif
-  		ALIGN_ENTRY_TEXT_END
-  		*(.gnu.warning)
- =20
-diff --cc arch/x86/lib/retpoline.S
-index 2cff585f22f2,3bea96341d00..000000000000
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@@ -11,9 -11,8 +11,9 @@@
-  #include <asm/unwind_hints.h>
-  #include <asm/percpu.h>
-  #include <asm/frame.h>
- +#include <asm/nops.h>
- =20
-- 	.section .text.__x86.indirect_thunk
-+ 	.section .text..__x86.indirect_thunk
- =20
- =20
-  .macro POLINE reg
-@@@ -132,47 -131,7 +132,47 @@@ SYM_CODE_END(__x86_indirect_jump_thunk_
-   */
-  #ifdef CONFIG_RETHUNK
- =20
- +/*
- + * srso_untrain_ret_alias() and srso_safe_ret_alias() are placed at
- + * special addresses:
- + *
- + * - srso_untrain_ret_alias() is 2M aligned
- + * - srso_safe_ret_alias() is also in the same 2M page but bits 2, 8, 14
- + * and 20 in its virtual address are set (while those bits in the
- + * srso_untrain_ret_alias() function are cleared).
- + *
- + * This guarantees that those two addresses will alias in the branch
- + * target buffer of Zen3/4 generations, leading to any potential
- + * poisoned entries at that BTB slot to get evicted.
- + *
- + * As a result, srso_safe_ret_alias() becomes a safe return.
- + */
- +#ifdef CONFIG_CPU_SRSO
-- 	.section .text.__x86.rethunk_untrain
-++	.section .text..__x86.rethunk_untrain
- +
- +SYM_START(srso_untrain_ret_alias, SYM_L_GLOBAL, SYM_A_NONE)
- +	ANNOTATE_NOENDBR
- +	ASM_NOP2
- +	lfence
- +	jmp __x86_return_thunk
- +SYM_FUNC_END(srso_untrain_ret_alias)
- +__EXPORT_THUNK(srso_untrain_ret_alias)
- +
-- 	.section .text.__x86.rethunk_safe
-++	.section .text..__x86.rethunk_safe
- +#endif
- +
- +/* Needs a definition for the __x86_return_thunk alternative below. */
- +SYM_START(srso_safe_ret_alias, SYM_L_GLOBAL, SYM_A_NONE)
- +#ifdef CONFIG_CPU_SRSO
- +	add $8, %_ASM_SP
- +	UNWIND_HINT_FUNC
- +#endif
- +	ANNOTATE_UNRET_SAFE
- +	ret
- +	int3
- +SYM_FUNC_END(srso_safe_ret_alias)
- +
-- 	.section .text.__x86.return_thunk
-+ 	.section .text..__x86.return_thunk
- =20
-  /*
-   * Safety details here pertain to the AMD Zen{1,2} microarchitecture:
-
---Sig_/x4+GA/H3iTCwCxkB3mEt39H
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTS9q8ACgkQAVBC80lX
-0GzdOwf/X9HFMeVhGA7dhzn2I8yOdafOMdBkjuyBInYjUNuHzKCPxn7pjk3DH/aj
-QrxNuxMhd5Nwn1tiPjZsvXDpH5TNf2UPlq/QoykHB4jhjlpfvLxT8jIpw5gUy+86
-sEObHKoPpuhHO28tzrHkCA4yyQ+rpi+aNAqQqf7THEurijn6mg9wG2PvroX6J7ff
-Mm5wq3yXyG9SNPeLHJOYk8tM8aEAyJASwc40DWVw+8qI39pBkbxFvV9AetXZY78t
-XwtTKRx4l61PIGDW82Gju6Ms/WYJBKtdvqRh+jAd0Ai2iu9TCr8XsZ1Cdvuj1fcF
-8zy3hffNCNh9iZHP8XnUtADaJkp3pw==
-=jdw1
------END PGP SIGNATURE-----
-
---Sig_/x4+GA/H3iTCwCxkB3mEt39H--
