@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73765775219
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 06:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9739E77521D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 07:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbjHIE6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 00:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43538 "EHLO
+        id S230211AbjHIFBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 01:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjHIE6O (ORCPT
+        with ESMTP id S229823AbjHIFBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 00:58:14 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDEE9172C
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 21:58:13 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5637a108d02so4025982a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 21:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691557093; x=1692161893;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OYG5lfEUc9Di0uttH2eztXJ8fv3suEABmVSMtUffIT0=;
-        b=quGljRI4w1RP9FtvOGqFbpKn287sq8n8yZxrVoBE8wYYqcAnuV/TkVeOTn+wchwE3e
-         SA1f2P2LImZukMa8s5iU0UG7r/m+VsFAhDaPuxOBo5H44wylZPOCSmJJdmS6ZEwAkh7/
-         jtHAbR0qSA8Wob2+ggf6h8hpDEhUh3u4eGFPmDb/IOVbX9xuUcq7EC6ZVjShiepu1hoW
-         07R9B8SdYm2fi/uW3sOuASuXA70UXL8GWT79a/55rkSb0DuEdo7MP7i9j37geWuXJNJV
-         1x3tT+mEB5XmgsUnZmx4RN2R1qZDAJ3tUB2y22gEJq6H3iE26Oi58NHGVuPHKganuZDL
-         Zs5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691557093; x=1692161893;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OYG5lfEUc9Di0uttH2eztXJ8fv3suEABmVSMtUffIT0=;
-        b=NuyHHRGV1LEWgbJanl3EduUpg/FQCBOG6/1+auIgUYNbgShpCs5PQKn1gvM32vGnVx
-         4Zlx46KkufM0rP8G0jcIO6cbieMOgwmP1k2MABw1m34Ws59N+xN3RklGG522CFiM6OOj
-         oELpxvXYlTupL2rq6y2eHKs4HLuUudQC2wPnrOq5PvgAyItULIBN3t8vjBTO382gnUmX
-         h6JogEWR3pYpGNi5QW12YMz3eE1c6R0uwra1tkTfwwG/QC7GOCIgg7mcvWSSkdVqQPwp
-         ZRWRN38wGuH3CKshHFk7KfWqFb7xe90tVyzrv2tx02llUYmvEVeHBGO0KvQffsQNxVUS
-         /u5Q==
-X-Gm-Message-State: AOJu0YzjAKmL4mfEHWZuwTuL/TY464iv4RUwEsPkO9aULqwfu7PGXoQk
-        wf/hxI+5nQJU7332SfF5ymS6psTn9Q9grAa9
-X-Google-Smtp-Source: AGHT+IHV+BEGRzksFj4rWRexYZy18kZxUIGbke/J1tUZG9BpzC9NszNaMqLp5jtlDBUuvrtC3RKXEW6jSuRbBnpK
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a63:3f0c:0:b0:563:8767:d83f with SMTP
- id m12-20020a633f0c000000b005638767d83fmr24521pga.7.1691557093131; Tue, 08
- Aug 2023 21:58:13 -0700 (PDT)
-Date:   Wed,  9 Aug 2023 04:58:10 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-Message-ID: <20230809045810.1659356-1-yosryahmed@google.com>
-Subject: [PATCH] mm: memcg: provide accurate stats for userspace reads
-From:   Yosry Ahmed <yosryahmed@google.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Wed, 9 Aug 2023 01:01:33 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FAB1BCD;
+        Tue,  8 Aug 2023 22:01:32 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37951MQD012725;
+        Wed, 9 Aug 2023 00:01:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691557282;
+        bh=8Tgm8JzVuI22rjMAGpHS/few0V4uWe2pc9jf8XOsZgY=;
+        h=From:To:CC:Subject:Date;
+        b=XW7gxuPLUtymLBBqz5g0EXxbGtYc3EruM8142MAYD/qfs0iWTQCFDBpNQx/J6g4Hz
+         9z2uxI5mlYwjEdWfXuCmS2P/ZFuoPYT333gGp3/g5HRpMW2GHye5PI5rvAA7jy9Uxj
+         94oKWmELCSReKXtTfqrV4NaCKmIO2h2slOgARoYY=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37951MHD028231
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Aug 2023 00:01:22 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
+ Aug 2023 00:01:22 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 9 Aug 2023 00:01:22 -0500
+Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37951Igf009482;
+        Wed, 9 Aug 2023 00:01:18 -0500
+From:   Udit Kumar <u-kumar1@ti.com>
+To:     <nm@ti.com>, <vigneshr@ti.com>, <t-konduru@ti.com>,
+        <vaishnav.a@ti.com>, <b-kapoor@ti.com>
+CC:     <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Udit Kumar <u-kumar1@ti.com>
+Subject: [PATCH] arm64: dts: ti: k3-j784s4-evm: Correct Pin mux offset for ADC
+Date:   Wed, 9 Aug 2023 10:31:08 +0530
+Message-ID: <20230809050108.751164-1-u-kumar1@ti.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,170 +66,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Over time, the memcg code added multiple optimizations to the stats
-flushing path that introduce a tradeoff between accuracy and
-performance. In some contexts (e.g. dirty throttling, refaults, etc), a
-full rstat flush of the stats in the tree can be too expensive. Such
-optimizations include [1]:
-(a) Introducing a periodic background flusher to keep the size of the
-update tree from growing unbounded.
-(b) Allowing only one thread to flush at a time, and other concurrent
-flushers just skip the flush. This avoids a thundering herd problem
-when multiple reclaim/refault threads attempt to flush the stats at
-once.
-(c) Only executing a flush if the magnitude of the stats updates exceeds
-a certain threshold.
+After splitting wkup_pmx pin mux for J784S4 into four regions.
+Pin mux offset for ADC nodes were not updated to align with new
+regions, due to this while probing ADC driver out of range
+error was seen.
 
-These optimizations were necessary to make flushing feasible in
-performance-critical paths, and they come at the cost of some accuracy
-that we choose to live without. On the other hand, for flushes invoked
-when userspace is reading the stats, the tradeoff is less appealing
-This code path is not performance-critical, and the inaccuracies can
-affect userspace behavior. For example, skipping flushing when there is
-another ongoing flush is essentially a coin flip. We don't know if the
-ongoing flush is done with the subtree of interest or not.
+Pin mux offsets for ADC nodes are corrected in this patch.
 
-If userspace asks for stats, let's give it accurate stats. Without this
-patch, we see regressions in userspace workloads due to stats inaccuracy
-in some cases.
-
-Rework the do_flush_stats() helper to accept a "full" boolean argument.
-For a "full" flush, if there is an ongoing flush, do not skip. Instead
-wait for the flush to complete. Introduce a new
-mem_cgroup_flush_stats_full() interface that use this full flush, and
-also does not check if the magnitude of the updates exceeds the
-threshold. Use mem_cgroup_flush_stats_full() in code paths where stats
-are flushed due to a userspace read. This essentially undos optimzations
-(b) and (c) above for flushes triggered by userspace reads.
-
-[1] https://lore.kernel.org/lkml/20210716212137.1391164-2-shakeelb@google.com/
-
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Fixes: 14462bd0b247 ("arm64: dts: ti: k3-j784s4: Fix wakeup pinmux range and pinctrl node offsets")
+Signed-off-by: Udit Kumar <u-kumar1@ti.com>
 ---
+Reviewed pin mux for J784S4-EVM, AM69, J721S2-EVM and AM68
+ADC seems to be last one to be fixed.
 
-I want to argue that this is what we should be doing for all flushing
-contexts, not just userspace reads (i.e all flushes should be "full").
-Skipping if a flush is ongoing is too brittle. There is a significant
-chance that the stats of the cgroup we care about is not fully flushed.
-Waiting for an ongoing flush to finish ensures correctness while still
-avoiding the thundering herd problem on the rstat flush lock.
+In order to test this patch
+following drivers were built in as part of kernel
+CONFIG_MFD_TI_AM335X_TSCADC=y
+CONFIG_TI_AM335X_ADC=y
 
-Having said that, there is a higher chance of regression if we add the
-wait in more critical paths (e.g. reclaim, refaults), so I opt-ed to do
-this for userspace reads for now. We have complaints about inaccuracy in
-userspace reads, but no complaints about inaccuracy in other paths so
-far (although it would be really difficult to tie a reclaim/refault
-problem to a partial stats flush anyway).
+dtbs_check is done after applying
+https://lore.kernel.org/all/20230721082654.27036-1-tony@atomide.com/
 
----
- mm/memcontrol.c | 42 +++++++++++++++++++++++++++---------------
- 1 file changed, 27 insertions(+), 15 deletions(-)
+logs with patch
+https://gist.github.com/uditkumarti/54db4d5e49467442e1698e5af82d787b#file-with_patch
+(line 1128 and 1130)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e041ba827e59..38e227f7127d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -630,7 +630,7 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
- 		/*
- 		 * If stats_flush_threshold exceeds the threshold
- 		 * (>num_online_cpus()), cgroup stats update will be triggered
--		 * in __mem_cgroup_flush_stats(). Increasing this var further
-+		 * in mem_cgroup_flush_stats(). Increasing this var further
- 		 * is redundant and simply adds overhead in atomic update.
- 		 */
- 		if (atomic_read(&stats_flush_threshold) <= num_online_cpus())
-@@ -639,17 +639,24 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
- 	}
- }
+Original logs
+https://gist.github.com/uditkumarti/54db4d5e49467442e1698e5af82d787b#file-original_logs
+(line 942 and 946)
+
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 32 ++++++++++++------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+index edc1009b2d1e..b4ffa720209c 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+@@ -340,27 +340,27 @@ J784S4_WKUP_IOPAD(0x030, PIN_INPUT, 0) /* (B35) MCU_MDIO0_MDIO */
  
--static void do_flush_stats(void)
-+static void do_flush_stats(bool full)
- {
-+	if (!atomic_read(&stats_flush_ongoing) &&
-+	    !atomic_xchg(&stats_flush_ongoing, 1))
-+		goto flush;
-+
- 	/*
--	 * We always flush the entire tree, so concurrent flushers can just
--	 * skip. This avoids a thundering herd problem on the rstat global lock
--	 * from memcg flushers (e.g. reclaim, refault, etc).
-+	 * We always flush the entire tree, so concurrent flushers can choose to
-+	 * skip if accuracy is not critical. Otherwise, wait for the ongoing
-+	 * flush to complete. This avoids a thundering herd problem on the rstat
-+	 * global lock from memcg flushers (e.g. reclaim, refault, etc).
- 	 */
--	if (atomic_read(&stats_flush_ongoing) ||
--	    atomic_xchg(&stats_flush_ongoing, 1))
--		return;
--
-+	while (full && atomic_read(&stats_flush_ongoing) == 1) {
-+		if (!cond_resched())
-+			cpu_relax();
-+	}
-+	return;
-+flush:
- 	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
+ 	mcu_adc0_pins_default: mcu-adc0-default-pins {
+ 		pinctrl-single,pins = <
+-			J784S4_WKUP_IOPAD(0x134, PIN_INPUT, 0) /* (P36) MCU_ADC0_AIN0 */
+-			J784S4_WKUP_IOPAD(0x138, PIN_INPUT, 0) /* (V36) MCU_ADC0_AIN1 */
+-			J784S4_WKUP_IOPAD(0x13c, PIN_INPUT, 0) /* (T34) MCU_ADC0_AIN2 */
+-			J784S4_WKUP_IOPAD(0x140, PIN_INPUT, 0) /* (T36) MCU_ADC0_AIN3 */
+-			J784S4_WKUP_IOPAD(0x144, PIN_INPUT, 0) /* (P34) MCU_ADC0_AIN4 */
+-			J784S4_WKUP_IOPAD(0x148, PIN_INPUT, 0) /* (R37) MCU_ADC0_AIN5 */
+-			J784S4_WKUP_IOPAD(0x14c, PIN_INPUT, 0) /* (R33) MCU_ADC0_AIN6 */
+-			J784S4_WKUP_IOPAD(0x150, PIN_INPUT, 0) /* (V38) MCU_ADC0_AIN7 */
++			J784S4_WKUP_IOPAD(0x0cc, PIN_INPUT, 0) /* (P36) MCU_ADC0_AIN0 */
++			J784S4_WKUP_IOPAD(0x0d0, PIN_INPUT, 0) /* (V36) MCU_ADC0_AIN1 */
++			J784S4_WKUP_IOPAD(0x0d4, PIN_INPUT, 0) /* (T34) MCU_ADC0_AIN2 */
++			J784S4_WKUP_IOPAD(0x0d8, PIN_INPUT, 0) /* (T36) MCU_ADC0_AIN3 */
++			J784S4_WKUP_IOPAD(0x0dc, PIN_INPUT, 0) /* (P34) MCU_ADC0_AIN4 */
++			J784S4_WKUP_IOPAD(0x0e0, PIN_INPUT, 0) /* (R37) MCU_ADC0_AIN5 */
++			J784S4_WKUP_IOPAD(0x0e4, PIN_INPUT, 0) /* (R33) MCU_ADC0_AIN6 */
++			J784S4_WKUP_IOPAD(0x0e8, PIN_INPUT, 0) /* (V38) MCU_ADC0_AIN7 */
+ 		>;
+ 	};
  
- 	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
-@@ -661,7 +668,12 @@ static void do_flush_stats(void)
- void mem_cgroup_flush_stats(void)
- {
- 	if (atomic_read(&stats_flush_threshold) > num_online_cpus())
--		do_flush_stats();
-+		do_flush_stats(false);
-+}
-+
-+static void mem_cgroup_flush_stats_full(void)
-+{
-+	do_flush_stats(true);
- }
- 
- void mem_cgroup_flush_stats_ratelimited(void)
-@@ -676,7 +688,7 @@ static void flush_memcg_stats_dwork(struct work_struct *w)
- 	 * Always flush here so that flushing in latency-sensitive paths is
- 	 * as cheap as possible.
- 	 */
--	do_flush_stats();
-+	do_flush_stats(false);
- 	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, FLUSH_TIME);
- }
- 
-@@ -1576,7 +1588,7 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 	 *
- 	 * Current memory state:
- 	 */
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats_full();
- 
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		u64 size;
-@@ -4018,7 +4030,7 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
- 	int nid;
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats_full();
- 
- 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
- 		seq_printf(m, "%s=%lu", stat->name,
-@@ -4093,7 +4105,7 @@ static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 
- 	BUILD_BUG_ON(ARRAY_SIZE(memcg1_stat_names) != ARRAY_SIZE(memcg1_stats));
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats_full();
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
- 		unsigned long nr;
-@@ -6610,7 +6622,7 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
- 	int i;
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats_full();
- 
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		int nid;
+ 	mcu_adc1_pins_default: mcu-adc1-default-pins {
+ 		pinctrl-single,pins = <
+-			J784S4_WKUP_IOPAD(0x154, PIN_INPUT, 0) /* (Y38) MCU_ADC1_AIN0 */
+-			J784S4_WKUP_IOPAD(0x158, PIN_INPUT, 0) /* (Y34) MCU_ADC1_AIN1 */
+-			J784S4_WKUP_IOPAD(0x15c, PIN_INPUT, 0) /* (V34) MCU_ADC1_AIN2 */
+-			J784S4_WKUP_IOPAD(0x160, PIN_INPUT, 0) /* (W37) MCU_ADC1_AIN3 */
+-			J784S4_WKUP_IOPAD(0x164, PIN_INPUT, 0) /* (AA37) MCU_ADC1_AIN4 */
+-			J784S4_WKUP_IOPAD(0x168, PIN_INPUT, 0) /* (W33) MCU_ADC1_AIN5 */
+-			J784S4_WKUP_IOPAD(0x16c, PIN_INPUT, 0) /* (U33) MCU_ADC1_AIN6 */
+-			J784S4_WKUP_IOPAD(0x170, PIN_INPUT, 0) /* (Y36) MCU_ADC1_AIN7 */
++			J784S4_WKUP_IOPAD(0x0ec, PIN_INPUT, 0) /* (Y38) MCU_ADC1_AIN0 */
++			J784S4_WKUP_IOPAD(0x0f0, PIN_INPUT, 0) /* (Y34) MCU_ADC1_AIN1 */
++			J784S4_WKUP_IOPAD(0x0f4, PIN_INPUT, 0) /* (V34) MCU_ADC1_AIN2 */
++			J784S4_WKUP_IOPAD(0x0f8, PIN_INPUT, 0) /* (W37) MCU_ADC1_AIN3 */
++			J784S4_WKUP_IOPAD(0x0fc, PIN_INPUT, 0) /* (AA37) MCU_ADC1_AIN4 */
++			J784S4_WKUP_IOPAD(0x100, PIN_INPUT, 0) /* (W33) MCU_ADC1_AIN5 */
++			J784S4_WKUP_IOPAD(0x104, PIN_INPUT, 0) /* (U33) MCU_ADC1_AIN6 */
++			J784S4_WKUP_IOPAD(0x108, PIN_INPUT, 0) /* (Y36) MCU_ADC1_AIN7 */
+ 		>;
+ 	};
+ };
 -- 
-2.41.0.640.ga95def55d0-goog
+2.34.1
 
