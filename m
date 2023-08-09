@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE707763E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FC47763E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234326AbjHIPez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57148 "EHLO
+        id S232876AbjHIPet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233918AbjHIPeV (ORCPT
+        with ESMTP id S233752AbjHIPeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:34:21 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D062123;
-        Wed,  9 Aug 2023 08:34:19 -0700 (PDT)
+        Wed, 9 Aug 2023 11:34:20 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E1B211D;
+        Wed,  9 Aug 2023 08:34:18 -0700 (PDT)
 Date:   Wed, 09 Aug 2023 15:34:17 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691595258;
+        s=2020; t=1691595257;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=7WLjK7Yg9wW5u1AyXcR+mCr1djAbYnFeTAfl83mdAAg=;
-        b=tM0s10kHRdClLa2hqDylLoGIdkKH6GkQfghA2jIA8O5tnO+3iY7IeHywaj0L5RMTJ3Bq43
-        kTTJMjeNpTSFjtA7B3WS2OfbH8hxYGh5CAG3CsqdomRa2rGl3iWhXHAfUwOcDdagmCD03f
-        b/SCe4/fHgYj99kVm7vgF3MkYzjKNsqKkatS7tk57OPT4Au5W+I6wNy0XVGUvykrJxlifS
-        rW6byhD6Pn7OvmwqYzoGaJcgmFGcmmbFHEP3kQrDFu3ovj4GdlF3p0YoqMVzo+5Alk16aU
-        6mMxp5uTFTyonSGxsrBtm7jOwGach5emuXB8TJX+Fppr/vFeZ6HWhUzL6PEMPA==
+        bh=mJUalfXmmuS3Ix1bNQa+ZrYSWXYqpK3Lh6Ul5vfqPn8=;
+        b=hY5+O797ibRgXADceIn99CIZ+YavvjJTkraSt+rANCdH3dXyYa0Os4oHmjhlzu31qFFkPC
+        1uuYrhK/EZyGPOorpAVV3Qtk3JQL//Cs6cx3zaLQ5oA56Ldrnnv+Ab2Qs5I5pDE6voUona
+        1Wv6ODwkcEGUrs+FWbnp9sFFQnLFiuE1eYx+07jMEUT+vTFRm+vZAprKvlQd7Lkl+bAleV
+        BaBuWvMeiQ6VSTE+FwK8+U/JSVAa0f710iokO5mMDgSmKpL6JO3T3ZxbT7CYepZ199VltL
+        eVuj3xd1/SZebATHO4c5+A+EGW4GqVwdPgTV5H68bRxB56qhyPz5vzHo49zVDg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691595258;
+        s=2020e; t=1691595257;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=7WLjK7Yg9wW5u1AyXcR+mCr1djAbYnFeTAfl83mdAAg=;
-        b=kGs80ltmFe2JfnROTNG7GHFe2sSTxwaJyC55qcDrT9CbEInGoR5hBW7G/o5HJaP32XSb3X
-        RqVReGUjcuzXdbDg==
+        bh=mJUalfXmmuS3Ix1bNQa+ZrYSWXYqpK3Lh6Ul5vfqPn8=;
+        b=BtFbGvBX063DOO5pctniGFaGGpZGByRyWHWk1b4d8QMHYo0pjT5ceZzVPJDoxQcQOCFZ9f
+        cBwY7YNX4oT1IJBg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/apic: Nuke unused apic::inquire_remote_apic()
+Subject: [tip: x86/apic] x86/apic: Consolidate boot_cpu_physical_apicid
+ initialization sites
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169159525741.27769.16927967118711564659.tip-bot2@tip-bot2>
+Message-ID: <169159525703.27769.10958575069174244184.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,258 +63,234 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/apic branch of tip:
 
-Commit-ID:     66feb6e02108223623fd28307102d5a575e2c036
-Gitweb:        https://git.kernel.org/tip/66feb6e02108223623fd28307102d5a575e2c036
+Commit-ID:     7dd7c05387955235a56016271851030c558ae0f8
+Gitweb:        https://git.kernel.org/tip/7dd7c05387955235a56016271851030c558ae0f8
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 08 Aug 2023 15:03:44 -07:00
+AuthorDate:    Tue, 08 Aug 2023 15:03:45 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Wed, 09 Aug 2023 08:10:10 -07:00
+CommitterDate: Wed, 09 Aug 2023 08:10:11 -07:00
 
-x86/apic: Nuke unused apic::inquire_remote_apic()
+x86/apic: Consolidate boot_cpu_physical_apicid initialization sites
 
-Put it to the other historical leftovers.
+boot_cpu_physical_apicid is written in random places and in the last
+consequence filled with the APIC ID read from the local APIC. That causes
+it to have inconsistent state when the MPTABLE is broken. As a consequence
+tons of moronic checks are sprinkled all over the place.
+
+Consolidate the code and read it exactly once when either X2APIC mode is
+detected early or when the APIC mapping is established.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/apic.h           | 16 +-----------
- arch/x86/kernel/apic/apic_flat_64.c   |  4 +---
- arch/x86/kernel/apic/apic_noop.c      |  2 +-
- arch/x86/kernel/apic/apic_numachip.c  |  2 +-
- arch/x86/kernel/apic/bigsmp_32.c      |  2 +-
- arch/x86/kernel/apic/probe_32.c       |  2 +-
- arch/x86/kernel/apic/x2apic_cluster.c |  2 +-
- arch/x86/kernel/apic/x2apic_phys.c    |  2 +-
- arch/x86/kernel/apic/x2apic_uv_x.c    |  1 +-
- arch/x86/kernel/smpboot.c             | 38 +--------------------------
- arch/x86/xen/apic.c                   |  7 +-----
- 11 files changed, 78 deletions(-)
+ arch/x86/include/asm/apic.h |   2 +-
+ arch/x86/kernel/apic/apic.c | 102 ++++++++++-------------------------
+ arch/x86/kernel/mpparse.c   |   4 +-
+ 3 files changed, 34 insertions(+), 74 deletions(-)
 
 diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-index b591040..47bedb8 100644
+index 47bedb8..108fdc2 100644
 --- a/arch/x86/include/asm/apic.h
 +++ b/arch/x86/include/asm/apic.h
-@@ -66,20 +66,6 @@ enum apic_intr_mode_id {
- 	APIC_SYMMETRIC_IO_NO_ROUTING
- };
- 
--#ifdef CONFIG_SMP
--extern void __inquire_remote_apic(int apicid);
--#else /* CONFIG_SMP */
--static inline void __inquire_remote_apic(int apicid)
--{
--}
--#endif /* CONFIG_SMP */
+@@ -247,7 +247,7 @@ static inline int x2apic_enabled(void)
+ #else /* !CONFIG_X86_X2APIC */
+ static inline void x2apic_setup(void) { }
+ static inline int x2apic_enabled(void) { return 0; }
 -
--static inline void default_inquire_remote_apic(int apicid)
--{
--	if (apic_verbosity >= APIC_DEBUG)
--		__inquire_remote_apic(apicid);
--}
--
- /*
-  * With 82489DX we can't rely on apic feature bit
-  * retrieved via cpuid but still have to deal with
-@@ -330,8 +316,6 @@ struct apic {
- 	/* wakeup secondary CPU using 64-bit wakeup point */
- 	int	(*wakeup_secondary_cpu_64)(int apicid, unsigned long start_eip);
- 
--	void	(*inquire_remote_apic)(int apicid);
--
- #ifdef CONFIG_X86_32
- 	/*
- 	 * Called very early during boot from get_smp_config().  It should
-diff --git a/arch/x86/kernel/apic/apic_flat_64.c b/arch/x86/kernel/apic/apic_flat_64.c
-index 8f72b43..35cd1cb 100644
---- a/arch/x86/kernel/apic/apic_flat_64.c
-+++ b/arch/x86/kernel/apic/apic_flat_64.c
-@@ -139,8 +139,6 @@ static struct apic apic_flat __ro_after_init = {
- 	.send_IPI_all			= default_send_IPI_all,
- 	.send_IPI_self			= default_send_IPI_self,
- 
--	.inquire_remote_apic		= default_inquire_remote_apic,
--
- 	.read				= native_apic_mem_read,
- 	.write				= native_apic_mem_write,
- 	.eoi_write			= native_apic_mem_write,
-@@ -230,8 +228,6 @@ static struct apic apic_physflat __ro_after_init = {
- 	.send_IPI_all			= default_send_IPI_all,
- 	.send_IPI_self			= default_send_IPI_self,
- 
--	.inquire_remote_apic		= default_inquire_remote_apic,
--
- 	.read				= native_apic_mem_read,
- 	.write				= native_apic_mem_write,
- 	.eoi_write			= native_apic_mem_write,
-diff --git a/arch/x86/kernel/apic/apic_noop.c b/arch/x86/kernel/apic/apic_noop.c
-index f310dc2..90bf11e 100644
---- a/arch/x86/kernel/apic/apic_noop.c
-+++ b/arch/x86/kernel/apic/apic_noop.c
-@@ -125,8 +125,6 @@ struct apic apic_noop __ro_after_init = {
- 
- 	.wakeup_secondary_cpu		= noop_wakeup_secondary_cpu,
- 
--	.inquire_remote_apic		= NULL,
--
- 	.read				= noop_apic_read,
- 	.write				= noop_apic_write,
- 	.eoi_write			= noop_apic_write,
-diff --git a/arch/x86/kernel/apic/apic_numachip.c b/arch/x86/kernel/apic/apic_numachip.c
-index a54d817..b6bbd7d 100644
---- a/arch/x86/kernel/apic/apic_numachip.c
-+++ b/arch/x86/kernel/apic/apic_numachip.c
-@@ -273,7 +273,6 @@ static const struct apic apic_numachip1 __refconst = {
- 	.send_IPI_self			= numachip_send_IPI_self,
- 
- 	.wakeup_secondary_cpu		= numachip_wakeup_secondary,
--	.inquire_remote_apic		= NULL, /* REMRD not supported */
- 
- 	.read				= native_apic_mem_read,
- 	.write				= native_apic_mem_write,
-@@ -320,7 +319,6 @@ static const struct apic apic_numachip2 __refconst = {
- 	.send_IPI_self			= numachip_send_IPI_self,
- 
- 	.wakeup_secondary_cpu		= numachip_wakeup_secondary,
--	.inquire_remote_apic		= NULL, /* REMRD not supported */
- 
- 	.read				= native_apic_mem_read,
- 	.write				= native_apic_mem_write,
-diff --git a/arch/x86/kernel/apic/bigsmp_32.c b/arch/x86/kernel/apic/bigsmp_32.c
-index 628b008..9e254dc 100644
---- a/arch/x86/kernel/apic/bigsmp_32.c
-+++ b/arch/x86/kernel/apic/bigsmp_32.c
-@@ -153,8 +153,6 @@ static struct apic apic_bigsmp __ro_after_init = {
- 	.send_IPI_all			= bigsmp_send_IPI_all,
- 	.send_IPI_self			= default_send_IPI_self,
- 
--	.inquire_remote_apic		= default_inquire_remote_apic,
--
- 	.read				= native_apic_mem_read,
- 	.write				= native_apic_mem_write,
- 	.eoi_write			= native_apic_mem_write,
-diff --git a/arch/x86/kernel/apic/probe_32.c b/arch/x86/kernel/apic/probe_32.c
-index a61f642..8d1e456 100644
---- a/arch/x86/kernel/apic/probe_32.c
-+++ b/arch/x86/kernel/apic/probe_32.c
-@@ -95,8 +95,6 @@ static struct apic apic_default __ro_after_init = {
- 	.send_IPI_all			= default_send_IPI_all,
- 	.send_IPI_self			= default_send_IPI_self,
- 
--	.inquire_remote_apic		= default_inquire_remote_apic,
--
- 	.read				= native_apic_mem_read,
- 	.write				= native_apic_mem_write,
- 	.eoi_write			= native_apic_mem_write,
-diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
-index b2b2b7f..ce1021c 100644
---- a/arch/x86/kernel/apic/x2apic_cluster.c
-+++ b/arch/x86/kernel/apic/x2apic_cluster.c
-@@ -265,8 +265,6 @@ static struct apic apic_x2apic_cluster __ro_after_init = {
- 	.send_IPI_all			= x2apic_send_IPI_all,
- 	.send_IPI_self			= x2apic_send_IPI_self,
- 
--	.inquire_remote_apic		= NULL,
--
- 	.read				= native_apic_msr_read,
- 	.write				= native_apic_msr_write,
- 	.eoi_write			= native_apic_msr_eoi_write,
-diff --git a/arch/x86/kernel/apic/x2apic_phys.c b/arch/x86/kernel/apic/x2apic_phys.c
-index 896bc41..07bddaa 100644
---- a/arch/x86/kernel/apic/x2apic_phys.c
-+++ b/arch/x86/kernel/apic/x2apic_phys.c
-@@ -189,8 +189,6 @@ static struct apic apic_x2apic_phys __ro_after_init = {
- 	.send_IPI_all			= x2apic_send_IPI_all,
- 	.send_IPI_self			= x2apic_send_IPI_self,
- 
--	.inquire_remote_apic		= NULL,
--
- 	.read				= native_apic_msr_read,
- 	.write				= native_apic_msr_write,
- 	.eoi_write			= native_apic_msr_eoi_write,
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index d9384d5..0e23e41 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -862,7 +862,6 @@ static struct apic apic_x2apic_uv_x __ro_after_init = {
- 	.send_IPI_self			= uv_send_IPI_self,
- 
- 	.wakeup_secondary_cpu		= uv_wakeup_secondary,
--	.inquire_remote_apic		= NULL,
- 
- 	.read				= native_apic_msr_read,
- 	.write				= native_apic_msr_write,
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 8229f41..a33fc50 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -774,44 +774,6 @@ static void impress_friends(void)
- 	pr_debug("Before bogocount - setting activated=1\n");
- }
- 
--void __inquire_remote_apic(int apicid)
--{
--	unsigned i, regs[] = { APIC_ID >> 4, APIC_LVR >> 4, APIC_SPIV >> 4 };
--	const char * const names[] = { "ID", "VERSION", "SPIV" };
--	int timeout;
--	u32 status;
--
--	pr_info("Inquiring remote APIC 0x%x...\n", apicid);
--
--	for (i = 0; i < ARRAY_SIZE(regs); i++) {
--		pr_info("... APIC 0x%x %s: ", apicid, names[i]);
--
--		/*
--		 * Wait for idle.
--		 */
--		status = safe_apic_wait_icr_idle();
--		if (status)
--			pr_cont("a previous APIC delivery may have failed\n");
--
--		apic_icr_write(APIC_DM_REMRD | regs[i], apicid);
--
--		timeout = 0;
--		do {
--			udelay(100);
--			status = apic_read(APIC_ICR) & APIC_ICR_RR_MASK;
--		} while (status == APIC_ICR_RR_INPROG && timeout++ < 1000);
--
--		switch (status) {
--		case APIC_ICR_RR_VALID:
--			status = apic_read(APIC_RRR);
--			pr_cont("%08x\n", status);
--			break;
--		default:
--			pr_cont("failed\n");
--		}
--	}
--}
--
- /*
-  * The Multiprocessor Specification 1.4 (1997) example code suggests
-  * that there should be a 10ms delay between the BSP asserting INIT
-diff --git a/arch/x86/xen/apic.c b/arch/x86/xen/apic.c
-index 62d34b6..a5428d9 100644
---- a/arch/x86/xen/apic.c
-+++ b/arch/x86/xen/apic.c
-@@ -129,10 +129,6 @@ static void xen_noop(void)
- {
- }
- 
--static void xen_silent_inquire(int apicid)
--{
--}
--
- static int xen_cpu_present_to_apicid(int cpu)
- {
- 	if (cpu_present(cpu))
-@@ -173,9 +169,6 @@ static struct apic xen_pv_apic = {
- 	.send_IPI_all 			= xen_send_IPI_all,
- 	.send_IPI_self 			= xen_send_IPI_self,
++static inline u32 native_apic_msr_read(u32 reg) { BUG(); }
+ #define x2apic_mode		(0)
+ #define	x2apic_supported()	(0)
+ #endif /* !CONFIG_X86_X2APIC */
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index d6b5059..e26447a 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -1318,8 +1318,7 @@ static int __init __apic_intr_mode_select(void)
+ 	if (!boot_cpu_has(X86_FEATURE_APIC) &&
+ 		APIC_INTEGRATED(boot_cpu_apic_version)) {
+ 		apic_is_disabled = true;
+-		pr_err(FW_BUG "Local APIC %d not detected, force emulation\n",
+-				       boot_cpu_physical_apicid);
++		pr_err(FW_BUG "Local APIC not detected, force emulation\n");
+ 		return APIC_PIC;
+ 	}
  #endif
--	/* .wait_for_init_deassert- used  by AP bootup - smp_callin which we don't use */
--	.inquire_remote_apic		= xen_silent_inquire,
+@@ -1340,12 +1339,6 @@ static int __init __apic_intr_mode_select(void)
+ 		pr_info("APIC: SMP mode deactivated\n");
+ 		return APIC_SYMMETRIC_IO_NO_ROUTING;
+ 	}
 -
- 	.read				= xen_apic_read,
- 	.write				= xen_apic_write,
- 	.eoi_write			= xen_apic_write,
+-	if (read_apic_id() != boot_cpu_physical_apicid) {
+-		panic("Boot APIC ID in local APIC unexpected (%d vs %d)",
+-		     read_apic_id(), boot_cpu_physical_apicid);
+-		/* Or can we switch back to PIC here? */
+-	}
+ #endif
+ 
+ 	return APIC_SYMMETRIC_IO;
+@@ -1741,6 +1734,23 @@ void apic_ap_setup(void)
+ 	end_local_APIC_setup();
+ }
+ 
++static __init void apic_read_boot_cpu_id(bool x2apic)
++{
++	/*
++	 * This can be invoked from check_x2apic() before the APIC has been
++	 * selected. But that code knows for sure that the BIOS enabled
++	 * X2APIC.
++	 */
++	if (x2apic) {
++		boot_cpu_physical_apicid = native_apic_msr_read(APIC_ID);
++		boot_cpu_apic_version = GET_APIC_VERSION(native_apic_msr_read(APIC_LVR));
++	} else {
++		boot_cpu_physical_apicid = read_apic_id();
++		boot_cpu_apic_version = GET_APIC_VERSION(apic_read(APIC_LVR));
++	}
++}
++
++
+ #ifdef CONFIG_X86_X2APIC
+ int x2apic_mode;
+ EXPORT_SYMBOL_GPL(x2apic_mode);
+@@ -1921,6 +1931,7 @@ void __init check_x2apic(void)
+ 			x2apic_state = X2APIC_ON_LOCKED;
+ 		else
+ 			x2apic_state = X2APIC_ON;
++		apic_read_boot_cpu_id(true);
+ 	} else if (!boot_cpu_has(X86_FEATURE_X2APIC)) {
+ 		x2apic_state = X2APIC_DISABLED;
+ 	}
+@@ -2109,15 +2120,11 @@ no_apic:
+  */
+ void __init init_apic_mappings(void)
+ {
+-	unsigned int new_apicid;
+-
+ 	if (apic_validate_deadline_timer())
+ 		pr_info("TSC deadline timer available\n");
+ 
+-	if (x2apic_mode) {
+-		boot_cpu_physical_apicid = read_apic_id();
++	if (x2apic_mode)
+ 		return;
+-	}
+ 
+ 	/* If no local APIC can be found return early */
+ 	if (!smp_found_config && detect_init_APIC()) {
+@@ -2134,39 +2141,19 @@ void __init init_apic_mappings(void)
+ 		if (!acpi_lapic && !smp_found_config)
+ 			register_lapic_address(apic_phys);
+ 	}
+-
+-	/*
+-	 * Fetch the APIC ID of the BSP in case we have a
+-	 * default configuration (or the MP table is broken).
+-	 */
+-	new_apicid = read_apic_id();
+-	if (boot_cpu_physical_apicid != new_apicid) {
+-		boot_cpu_physical_apicid = new_apicid;
+-		/*
+-		 * yeah -- we lie about apic_version
+-		 * in case if apic was disabled via boot option
+-		 * but it's not a problem for SMP compiled kernel
+-		 * since apic_intr_mode_select is prepared for such
+-		 * a case and disable smp mode
+-		 */
+-		boot_cpu_apic_version = GET_APIC_VERSION(apic_read(APIC_LVR));
+-	}
+ }
+ 
+ void __init register_lapic_address(unsigned long address)
+ {
+ 	mp_lapic_addr = address;
+ 
+-	if (!x2apic_mode) {
+-		set_fixmap_nocache(FIX_APIC_BASE, address);
+-		apic_mmio_base = APIC_BASE;
+-		apic_printk(APIC_VERBOSE, "mapped APIC to %16lx (%16lx)\n",
+-			    APIC_BASE, address);
+-	}
+-	if (boot_cpu_physical_apicid == -1U) {
+-		boot_cpu_physical_apicid  = read_apic_id();
+-		boot_cpu_apic_version = GET_APIC_VERSION(apic_read(APIC_LVR));
+-	}
++	if (x2apic_mode)
++		return;
++
++	set_fixmap_nocache(FIX_APIC_BASE, address);
++	apic_mmio_base = APIC_BASE;
++	apic_printk(APIC_VERBOSE, "mapped APIC to %16lx (%16lx)\n", APIC_BASE, address);
++	apic_read_boot_cpu_id(false);
+ }
+ 
+ /*
+@@ -2446,31 +2433,15 @@ int generic_processor_info(int apicid, int version)
+ 				phys_cpu_present_map);
+ 
+ 	/*
+-	 * boot_cpu_physical_apicid is designed to have the apicid
+-	 * returned by read_apic_id(), i.e, the apicid of the
+-	 * currently booting-up processor. However, on some platforms,
+-	 * it is temporarily modified by the apicid reported as BSP
+-	 * through MP table. Concretely:
+-	 *
+-	 * - arch/x86/kernel/mpparse.c: MP_processor_info()
+-	 * - arch/x86/mm/amdtopology.c: amd_numa_init()
+-	 *
+-	 * This function is executed with the modified
+-	 * boot_cpu_physical_apicid. So, disabled_cpu_apicid kernel
+-	 * parameter doesn't work to disable APs on kdump 2nd kernel.
+-	 *
+-	 * Since fixing handling of boot_cpu_physical_apicid requires
+-	 * another discussion and tests on each platform, we leave it
+-	 * for now and here we use read_apic_id() directly in this
+-	 * function, generic_processor_info().
++	 * boot_cpu_physical_apicid is guaranteed to contain the boot CPU
++	 * APIC ID read from the local APIC when this function is invoked.
+ 	 */
+-	if (disabled_cpu_apicid != BAD_APICID &&
+-	    disabled_cpu_apicid != read_apic_id() &&
++	if (disabled_cpu_apicid != boot_cpu_physical_apicid &&
+ 	    disabled_cpu_apicid == apicid) {
+ 		int thiscpu = num_processors + disabled_cpus;
+ 
+-		pr_warn("APIC: Disabling requested cpu."
+-			" Processor %d/0x%x ignored.\n", thiscpu, apicid);
++		pr_warn("APIC: Disabling requested cpu. Processor %d/0x%x ignored.\n",
++			thiscpu, apicid);
+ 
+ 		disabled_cpus++;
+ 		return -ENODEV;
+@@ -2626,15 +2597,6 @@ static void __init apic_bsp_up_setup(void)
+ {
+ #ifdef CONFIG_X86_64
+ 	apic_write(APIC_ID, apic->set_apic_id(boot_cpu_physical_apicid));
+-#else
+-	/*
+-	 * Hack: In case of kdump, after a crash, kernel might be booting
+-	 * on a cpu with non-zero lapic id. But boot_cpu_physical_apicid
+-	 * might be zero if read from MP tables. Get it from LAPIC.
+-	 */
+-# ifdef CONFIG_CRASH_DUMP
+-	boot_cpu_physical_apicid = read_apic_id();
+-# endif
+ #endif
+ 	physid_set_mask_of_physid(boot_cpu_physical_apicid, &phys_cpu_present_map);
+ }
+diff --git a/arch/x86/kernel/mpparse.c b/arch/x86/kernel/mpparse.c
+index fed721f..fe9a7f6 100644
+--- a/arch/x86/kernel/mpparse.c
++++ b/arch/x86/kernel/mpparse.c
+@@ -58,10 +58,8 @@ static void __init MP_processor_info(struct mpc_cpu *m)
+ 
+ 	apicid = m->apicid;
+ 
+-	if (m->cpuflag & CPU_BOOTPROCESSOR) {
++	if (m->cpuflag & CPU_BOOTPROCESSOR)
+ 		bootup_cpu = " (Bootup-CPU)";
+-		boot_cpu_physical_apicid = m->apicid;
+-	}
+ 
+ 	pr_info("Processor #%d%s\n", m->apicid, bootup_cpu);
+ 	generic_processor_info(apicid, m->apicver);
