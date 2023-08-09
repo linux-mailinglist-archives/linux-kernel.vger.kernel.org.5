@@ -2,139 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0EE4776248
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A11E2776253
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbjHIOW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59488 "EHLO
+        id S232476AbjHIOXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233265AbjHIOW1 (ORCPT
+        with ESMTP id S230191AbjHIOXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:22:27 -0400
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445C31FDE
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:22:26 -0700 (PDT)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-564364d11adso4714719a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 07:22:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691590946; x=1692195746;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3mukwG1V/FIQiy6R5EBTSVQrZAqBmTIXdSIWdGLQeLQ=;
-        b=d+GgdIiIkkw8m9eraGxrt1zUlsGO51tRujc0MOkcm6AlPLIwRNlyl30YblM87E45L+
-         QImKekJzfp1HxQEp6F5hu8A4/83UFvEndHiPXMoHdPPq4eaBkQibNezLmH7K5O0aeN/b
-         QDK56szl0PQDsKIy0tabLxcXDI3Q39QBXEf5B1voYYranhPKPoxD0Z+Zj0HnP7QQPY1E
-         1oiTgoQwGUXQ+g/N5hgOAsXGyTo+oWlPl4o9Sar5K4aRyvMBAulwI20oKVzBYGccTr5p
-         AfjQrRREaGE8yVS0/AyOTU+HiZWTGCV0w0GIIyPUV2siFHOAIF/mhNW6I7L05n0Ij2yb
-         qwdA==
-X-Gm-Message-State: AOJu0YyfFzTZIQ4+wreJhLX57Bgc/vwDahyz8udb6N1KVVVKC6VX5JI4
-        6QjPEaeHwKMbDWVUPvfXNwYB7HRMhhjCgQGtpiqUSxcncsUa
-X-Google-Smtp-Source: AGHT+IEeKgIEwOADJyXbgtPz2H6/g6Vqz1b4GNRCd4d3ObVXKpR8XPFjPOOLVS6tX70d/+QE2xaq4ukfT2U/W7LAVXqC20SllTbS
+        Wed, 9 Aug 2023 10:23:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A5210F5;
+        Wed,  9 Aug 2023 07:23:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7EAEF62D6B;
+        Wed,  9 Aug 2023 14:23:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D2D2C433C7;
+        Wed,  9 Aug 2023 14:22:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691590982;
+        bh=LgXOvH2tCTHIjBx4H7FiUs60LQPWskUEsq2zDenCRXk=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=d3tvC2K0q9zmSKovb3MCz70OZ0zDUfwQjvtmqpayy/+0zTCRnvBnhoitfla9mzpYS
+         6/IQTcAliZ/qw+jQL6ikoz6PNYzqJ5V/AqPdhloBtpJ7o+04K1HJBA1CLTORrD2v+D
+         7LM1T9XMRPVFf25JkonEGd6tPIqFqFkNRPbUkBuWrkC1zyTV3QcmWREwMXrZwRBWOf
+         qlZSX+5xrbt2rURYBov8h1oSuPFEc5pUfvutsD/+H96L3ykp7YO0AtG9js4MbdLlC5
+         xVqrAhV0e5CphxqERFiIWxatm9vmAPUWZveD51138XqFFJM1+SpLi461h67PgiJAZz
+         6pxgp2dPf4+Bg==
+Message-ID: <7edc9239f73022b9c2a1d3f4f946153f85f94739.camel@kernel.org>
+Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
+From:   Jeff Layton <jlayton@kernel.org>
+To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>,
+        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date:   Wed, 09 Aug 2023 10:22:54 -0400
+In-Reply-To: <878rak8hia.fsf@mail.parknet.co.jp>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+         <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
+         <87msz08vc7.fsf@mail.parknet.co.jp>
+         <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org>
+         <878rak8hia.fsf@mail.parknet.co.jp>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-Received: by 2002:a63:3852:0:b0:563:fa95:3baf with SMTP id
- h18-20020a633852000000b00563fa953bafmr193155pgn.2.1691590945788; Wed, 09 Aug
- 2023 07:22:25 -0700 (PDT)
-Date:   Wed, 09 Aug 2023 07:22:25 -0700
-In-Reply-To: <20230809110318.2110-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006ddae806027e35c8@google.com>
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in btrfs_open_devices
-From:   syzbot <syzbot+26860029a4d562566231@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, 2023-08-09 at 22:36 +0900, OGAWA Hirofumi wrote:
+> Jeff Layton <jlayton@kernel.org> writes:
+>=20
+> > On Wed, 2023-08-09 at 17:37 +0900, OGAWA Hirofumi wrote:
+> > > Jeff Layton <jlayton@kernel.org> writes:
+> > >=20
+> > > > Also, it may be that things have changed by the time we get to call=
+ing
+> > > > fat_update_time after checking inode_needs_update_time. Ensure that=
+ we
+> > > > attempt the i_version bump if any of the S_* flags besides S_ATIME =
+are
+> > > > set.
+> > >=20
+> > > I'm not sure what it meaning though, this is from
+> > > generic_update_time(). Are you going to change generic_update_time()
+> > > too? If so, it doesn't break lazytime feature?
+> > >=20
+> >=20
+> > Yes. generic_update_time is also being changed in a similar fashion.
+> > This shouldn't break the lazytime feature: lazytime is all about how an=
+d
+> > when timestamps get written to disk. This work is all about which
+> > clocksource the timestamps originally come from.
+>=20
+> I can only find the following update in this series, another series
+> updates generic_update_time()? The patch updates only if S_VERSION is
+> set.
+>=20
+> Your fat patch sets I_DIRTY_SYNC always instead of I_DIRTY_TIME. When I
+> last time checked lazytime, and it was depending on I_DIRTY_TIME.
+>=20
+> Are you sure it doesn't break lazytime? I'm totally confusing, and
+> really similar with generic_update_time()?
+>=20
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-BUG: corrupted list in btrfs_close_devices
+I'm a little confused too. Why do you believe this will break
+-o relatime handling? This patch changes two things:
 
-list_del corruption, ffff88801bc63020->next is LIST_POISON1 (dead000000000100)
-------------[ cut here ]------------
-kernel BUG at lib/list_debug.c:53!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 5637 Comm: syz-executor.5 Not tainted 6.5.0-rc5-next-20230807-syzkaller-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:__list_del_entry_valid+0xfd/0x1b0 lib/list_debug.c:53
-Code: 18 c3 48 c7 c7 80 8f c8 8a e8 5f 71 43 fd 0f 0b 48 c7 c7 e0 8f c8 8a e8 51 71 43 fd 0f 0b 48 c7 c7 40 90 c8 8a e8 43 71 43 fd <0f> 0b 48 89 ca 48 c7 c7 a0 90 c8 8a e8 32 71 43 fd 0f 0b 48 89 c2
-RSP: 0018:ffffc9000558f8d0 EFLAGS: 00010282
-RAX: 000000000000004e RBX: ffff88801bc63000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff816a9732 RDI: 0000000000000005
-RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000001 R12: ffff88801bc63130
-R13: ffffc9000558f928 R14: ffff88801bc63020 R15: ffff88801bc63028
-FS:  00007fe3739386c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000560da64aa048 CR3: 000000006a4e0000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __list_del_entry include/linux/list.h:134 [inline]
- list_del include/linux/list.h:148 [inline]
- btrfs_close_devices+0x460/0x790 fs/btrfs/volumes.c:1208
- btrfs_mount_root+0x6a0/0xe70 fs/btrfs/super.c:1542
- legacy_get_tree+0x109/0x220 fs/fs_context.c:611
- vfs_get_tree+0x88/0x350 fs/super.c:1544
- fc_mount fs/namespace.c:1112 [inline]
- vfs_kern_mount.part.0+0xcb/0x170 fs/namespace.c:1142
- vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
- btrfs_mount+0x292/0xb10 fs/btrfs/super.c:1588
- legacy_get_tree+0x109/0x220 fs/fs_context.c:611
- vfs_get_tree+0x88/0x350 fs/super.c:1544
- do_new_mount fs/namespace.c:3335 [inline]
- path_mount+0x1492/0x1ed0 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount fs/namespace.c:3861 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fe372c7e1ea
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fe373937ee8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fe373937f80 RCX: 00007fe372c7e1ea
-RDX: 00000000200051c0 RSI: 0000000020005200 RDI: 00007fe373937f40
-RBP: 00000000200051c0 R08: 00007fe373937f80 R09: 0000000001000008
-R10: 0000000001000008 R11: 0000000000000246 R12: 0000000020005200
-R13: 00007fe373937f40 R14: 00000000000051ab R15: 0000000020000280
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__list_del_entry_valid+0xfd/0x1b0 lib/list_debug.c:53
-Code: 18 c3 48 c7 c7 80 8f c8 8a e8 5f 71 43 fd 0f 0b 48 c7 c7 e0 8f c8 8a e8 51 71 43 fd 0f 0b 48 c7 c7 40 90 c8 8a e8 43 71 43 fd <0f> 0b 48 89 ca 48 c7 c7 a0 90 c8 8a e8 32 71 43 fd 0f 0b 48 89 c2
-RSP: 0018:ffffc9000558f8d0 EFLAGS: 00010282
-RAX: 000000000000004e RBX: ffff88801bc63000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff816a9732 RDI: 0000000000000005
-RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000001 R12: ffff88801bc63130
-R13: ffffc9000558f928 R14: ffff88801bc63020 R15: ffff88801bc63028
-FS:  00007fe3739386c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2d90255290 CR3: 000000006a4e0000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+1/ it has fat_update_time fetch its own timestamp (and ignore the "now"
+parameter). This is in line with the changes in patch #3 of this series,
+which explains the rationale for this in more detail.
 
+2/ it changes fat_update_time to also update the i_version if any of
+S_CTIME|S_MTIME|S_VERSION are set. relatime is all about the S_ATIME,
+and it is specifically excluded from that set.
 
-Tested on:
+The rationale for the second change is is also in patch #3, but
+basically, we can't guarantee that current_time hasn't changed since we
+last checked for inode_needs_update_time, so if any of
+S_CTIME/S_MTIME/S_VERSION have changed, then we need to assume that any
+of them may need to be changed and attempt to update all 3.
 
-commit:         f7dc24b3 Add linux-next specific files for 20230807
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1292aea5a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d7847c9dca13d6c5
-dashboard link: https://syzkaller.appspot.com/bug?extid=26860029a4d562566231
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1230fea5a80000
+That said, I think the logic in fat_update_time isn't quite right. I
+think want something like this on top of this patch to ensure that the
+S_CTIME and S_MTIME get updated, even if the flags only have S_VERSION
+set.
+
+Thoughts?
+
+---------------------8<-----------------------
+
+diff --git a/fs/fat/misc.c b/fs/fat/misc.c
+index 080a5035483f..313eef02f45c 100644
+--- a/fs/fat/misc.c
++++ b/fs/fat/misc.c
+@@ -346,15 +346,21 @@ int fat_update_time(struct inode *inode, int flags)
+        if (inode->i_ino =3D=3D MSDOS_ROOT_INO)
+                return 0;
+=20
+-       if (flags & (S_ATIME | S_CTIME | S_MTIME)) {
+-               fat_truncate_time(inode, NULL, flags);
+-               if (inode->i_sb->s_flags & SB_LAZYTIME)
+-                       dirty_flags |=3D I_DIRTY_TIME;
+-               else
+-                       dirty_flags |=3D I_DIRTY_SYNC;
+-       }
++       /*
++        * If any of the flags indicate an expicit change to the file, then=
+ we
++        * need to ensure that we attempt to update all of 3. We do not do
++        * this in the case of an S_ATIME-only update.
++        */
++       if (flags & (S_CTIME | S_MTIME | S_VERSION))
++               flags |=3D S_CTIME | S_MTIME | S_VERSION;
++
++       fat_truncate_time(inode, NULL, flags);
++       if (inode->i_sb->s_flags & SB_LAZYTIME)
++               dirty_flags |=3D I_DIRTY_TIME;
++       else
++               dirty_flags |=3D I_DIRTY_SYNC;
+=20
+-       if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && inode_maybe_inc_iversi=
+on(inode, false))
++       if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
+                dirty_flags |=3D I_DIRTY_SYNC;
 
