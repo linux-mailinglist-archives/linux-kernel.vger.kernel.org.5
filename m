@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D35775417
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 641C877540E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbjHIH1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 03:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
+        id S231728AbjHIH1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 03:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbjHIH1D (ORCPT
+        with ESMTP id S231637AbjHIH05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 03:27:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCC7172A
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 00:27:02 -0700 (PDT)
+        Wed, 9 Aug 2023 03:26:57 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9399A1FCE
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 00:26:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=8xFU9MBBRCXYqcJsEM5lvzkq5hInOlKwoKgeAy28v10=; b=EajMsa8j7ET1nFWY7bCbGtfEDw
-        0CBpeSECh8MfbWfhOl9u4tWKKqlAqaQkwaXaSa1d6nFKLOeo6R5eMjB4OXYavYxt7Q3Js7SD1MY9m
-        5qZJ6H/JlRh/SScwrpc8/e9cFA2D7PC4gqGn5Tf8QxbATfPY9YCbil4gclo7Z+QtyNP6pDsXvCjVn
-        S3Z7Vfehk9s1ovI/9a8+eLbe9NUzLgb6/AdkARaAmq4pqdNGnfImI67g3b1UWQAfQKf69gD0uHEHL
-        cMlWyBC5VFpxxyteSUvl0AQco39jlY/g8muU9AmEbiw6vEN40+c38fJiRFR6Lwt2ExUzJv4oC9BZW
-        c0N8Zxdw==;
+        bh=0cNzgV7QfF46H9skhOZymYevXO8FDyoZfdqutENZD+0=; b=IDjEIVnf8hRG/Z1COZptTFJDgk
+        yTNNSXbhsucrRkTJ4rywIoG5OwS2e1MtwoycB5kudj4iWShgGyOU+7aYU/2t1d+fMAnv7POuC+3Le
+        +6PwihufK3A+GNeMiyrk7qw21Y/dwhWyr7rmZRXAToPF3gVdCZ0i7Zg6SM37IYjlQhdxfUbeTic2u
+        spKNe+54j68MRpBwGH84T7o/De1YfYXI5zpWvNbfThUpl85Tt/7vdTmEmS9x9NaA7XL2dn5gTWAgi
+        xMsDgu1WTUHDUBV+nhfpqXMYGQKMwtg6DXaNNSGEUvSLv2iaXK9k6Kcj84XEd+aNwYD/lPwMA9DM0
+        q9dIiqNQ==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qTdag-004olT-3p; Wed, 09 Aug 2023 07:26:46 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qTdaf-005TeN-2L;
+        Wed, 09 Aug 2023 07:26:46 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 96AF430067B;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 96CAF301188;
         Wed,  9 Aug 2023 09:26:44 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 5FAC82CEC71E0; Wed,  9 Aug 2023 09:26:44 +0200 (CEST)
-Message-ID: <20230809072200.922634286@infradead.org>
+        id 6475F2CEBEB0D; Wed,  9 Aug 2023 09:26:44 +0200 (CEST)
+Message-ID: <20230809072200.990061113@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 09 Aug 2023 09:12:25 +0200
+Date:   Wed, 09 Aug 2023 09:12:26 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         David.Kaplan@amd.com, Andrew.Cooper3@citrix.com,
         jpoimboe@kernel.org, gregkh@linuxfoundation.org
-Subject: [RFC][PATCH 07/17] x86/cpu/kvm: Provide UNTRAIN_RET_VM
+Subject: [RFC][PATCH 08/17] x86/cpu: Add IBPB on VMEXIT to retbleed=
 References: <20230809071218.000335006@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,60 +58,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the difference being that UNTRAIN_RET_VM uses
-X86_FEATURE_IBPB_ON_VMEXIT instead of X86_FEATURE_ENTRY_IBPB.
-
-This cures VMEXIT doing potentially unret+IBPB or double IBPB.
+Since IBPB-on-VMEXIT is an obvious variant of retbleed=ibpb, add it as
+an such.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/nospec-branch.h |   11 +++++++++++
- arch/x86/kernel/cpu/bugs.c           |   17 ++++++++++++++++-
- arch/x86/kvm/svm/vmenter.S           |    7 ++-----
- 3 files changed, 29 insertions(+), 6 deletions(-)
+ arch/x86/kernel/cpu/bugs.c |   17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -299,6 +299,17 @@
- #endif
- .endm
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -751,6 +751,7 @@ enum retbleed_mitigation {
+ 	RETBLEED_MITIGATION_UNRET_SRSO,
+ 	RETBLEED_MITIGATION_UNRET_SRSO_ALIAS,
+ 	RETBLEED_MITIGATION_IBPB,
++	RETBLEED_MITIGATION_IBPB_VMEXIT,
+ 	RETBLEED_MITIGATION_IBRS,
+ 	RETBLEED_MITIGATION_EIBRS,
+ 	RETBLEED_MITIGATION_STUFF,
+@@ -763,6 +764,7 @@ enum retbleed_mitigation_cmd {
+ 	RETBLEED_CMD_UNRET_SRSO,
+ 	RETBLEED_CMD_UNRET_SRSO_ALIAS,
+ 	RETBLEED_CMD_IBPB,
++	RETBLEED_CMD_IBPB_VMEXIT,
+ 	RETBLEED_CMD_STUFF,
+ };
  
-+.macro UNTRAIN_RET_VM
-+#if defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_IBPB_ENTRY) || \
-+	defined(CONFIG_CALL_DEPTH_TRACKING) || defined(CONFIG_CPU_SRSO)
-+	VALIDATE_UNRET_END
-+	ALTERNATIVE_3 "",						\
-+		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
-+		      "call entry_ibpb", X86_FEATURE_IBPB_ON_VMEXIT,	\
-+		      __stringify(RESET_CALL_DEPTH), X86_FEATURE_CALL_DEPTH
-+#endif
-+.endm
+@@ -772,6 +774,7 @@ static const char * const retbleed_strin
+ 	[RETBLEED_MITIGATION_UNRET_SRSO]	= "Mitigation: srso untrained return thunk",
+ 	[RETBLEED_MITIGATION_UNRET_SRSO_ALIAS]	= "Mitigation: srso alias untrained return thunk",
+ 	[RETBLEED_MITIGATION_IBPB]		= "Mitigation: IBPB",
++	[RETBLEED_MITIGATION_IBPB_VMEXIT]	= "Mitigation: IBPB on VMEXIT only",
+ 	[RETBLEED_MITIGATION_IBRS]		= "Mitigation: IBRS",
+ 	[RETBLEED_MITIGATION_EIBRS]		= "Mitigation: Enhanced IBRS",
+ 	[RETBLEED_MITIGATION_STUFF]		= "Mitigation: Stuffing",
+@@ -808,6 +811,8 @@ static int __init retbleed_parse_cmdline
+ 			retbleed_cmd = RETBLEED_CMD_UNRET_SRSO_ALIAS;
+ 		} else if (!strcmp(str, "ibpb")) {
+ 			retbleed_cmd = RETBLEED_CMD_IBPB;
++		} else if (!strcmp(str, "ibpb_vmexit")) {
++			retbleed_cmd = RETBLEED_CMD_IBPB_VMEXIT;
+ 		} else if (!strcmp(str, "stuff")) {
+ 			retbleed_cmd = RETBLEED_CMD_STUFF;
+ 		} else if (!strcmp(str, "nosmt")) {
+@@ -881,13 +886,17 @@ static void __init retbleed_select_mitig
+ 		break;
+ 
+ 	case RETBLEED_CMD_IBPB:
++	case RETBLEED_CMD_IBPB_VMEXIT:
+ 		if (!boot_cpu_has(X86_FEATURE_IBPB)) {
+ 			pr_err("WARNING: CPU does not support IBPB.\n");
+ 			goto do_cmd_auto;
+ 		} else if (IS_ENABLED(CONFIG_CPU_IBPB_ENTRY)) {
+ 			if (boot_cpu_has_bug(X86_BUG_SRSO) && !has_microcode)
+ 				pr_err("IBPB-extending microcode not applied; SRSO NOT mitigated\n");
+-			retbleed_mitigation = RETBLEED_MITIGATION_IBPB;
++			if (retbleed_cmd == RETBLEED_CMD_IBPB)
++				retbleed_mitigation = RETBLEED_MITIGATION_IBPB;
++			if (retbleed_cmd == RETBLEED_CMD_IBPB_VMEXIT)
++				retbleed_mitigation = RETBLEED_MITIGATION_IBPB_VMEXIT;
+ 		} else {
+ 			pr_err("WARNING: kernel not compiled with CPU_IBPB_ENTRY.\n");
+ 			goto do_cmd_auto;
+@@ -961,6 +970,12 @@ static void __init retbleed_select_mitig
+ 
+ 	case RETBLEED_MITIGATION_IBPB:
+ 		setup_force_cpu_cap(X86_FEATURE_ENTRY_IBPB);
++		setup_force_cpu_cap(X86_FEATURE_IBPB_ON_VMEXIT);
++		mitigate_smt = true;
++		break;
 +
- .macro UNTRAIN_RET_FROM_CALL
- #if defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_IBPB_ENTRY) || \
- 	defined(CONFIG_CALL_DEPTH_TRACKING)
---- a/arch/x86/kvm/svm/vmenter.S
-+++ b/arch/x86/kvm/svm/vmenter.S
-@@ -222,10 +222,7 @@ SYM_FUNC_START(__svm_vcpu_run)
- 	 * because interrupt handlers won't sanitize 'ret' if the return is
- 	 * from the kernel.
- 	 */
--	UNTRAIN_RET
--
--	/* SRSO */
--	ALTERNATIVE "", "call entry_ibpb", X86_FEATURE_IBPB_ON_VMEXIT
-+	UNTRAIN_RET_VM
++	case RETBLEED_MITIGATION_IBPB_VMEXIT:
++		setup_force_cpu_cap(X86_FEATURE_IBPB_ON_VMEXIT);
+ 		mitigate_smt = true;
+ 		break;
  
- 	/*
- 	 * Clear all general purpose registers except RSP and RAX to prevent
-@@ -362,7 +359,7 @@ SYM_FUNC_START(__svm_sev_es_vcpu_run)
- 	 * because interrupt handlers won't sanitize RET if the return is
- 	 * from the kernel.
- 	 */
--	UNTRAIN_RET
-+	UNTRAIN_RET_VM
- 
- 	/* "Pop" @spec_ctrl_intercepted.  */
- 	pop %_ASM_BX
 
 
