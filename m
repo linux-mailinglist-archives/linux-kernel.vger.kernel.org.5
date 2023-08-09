@@ -2,103 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C19FE7763FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6D67763FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbjHIPge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56374 "EHLO
+        id S234324AbjHIPgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:36:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234483AbjHIPgU (ORCPT
+        with ESMTP id S230340AbjHIPgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:36:20 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3CE30E5;
-        Wed,  9 Aug 2023 08:35:40 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379FYxAK087176;
-        Wed, 9 Aug 2023 10:34:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691595299;
-        bh=JiQZC2FZs9C/E86dwYL/boTsnw7Kx4vcl3knrFhrQ8w=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=sVIo2GrBGCOXUdFI0EEtry+iH5TVwpK+Y/ZM25FLB0JisdygtGrZ+8xK3OMfTm4LG
-         qCAD3t1heu7pRusvxBk2mpqNasP5Y4cYaKMkXkELyv9MxetbeUjfb9g6Zaks5yiWHc
-         wABja+p9E73a9OF1UVBeidG3tJGi4hpO60+T8Kss=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379FYxlu006583
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Aug 2023 10:34:59 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
- Aug 2023 10:34:59 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 9 Aug 2023 10:34:58 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379FYwMI091148;
-        Wed, 9 Aug 2023 10:34:58 -0500
-Date:   Wed, 9 Aug 2023 10:34:58 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Jai Luthra <j-luthra@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Esteban Blanc <eblanc@baylibre.com>, <jneanne@baylibre.com>,
-        <aseketeli@baylibre.com>, <jpanis@baylibre.com>, <u-kumar1@ti.com>
-Subject: Re: [PATCH v5 0/6] Add TPS6594 PMIC support on several boards
-Message-ID: <20230809153458.lbenzo74u5zuzwet@showgirl>
-References: <20230809-tps6594-v5-0-485fd3d63670@ti.com>
+        Wed, 9 Aug 2023 11:36:38 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61DD635AE;
+        Wed,  9 Aug 2023 08:36:06 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-686efa1804eso5078445b3a.3;
+        Wed, 09 Aug 2023 08:36:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691595329; x=1692200129;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IvGzFVP5SQwSC9rGu9WLVcEiDDZIn4yvZiZN1ERf4Ug=;
+        b=FoHqy7RkWcAoLCzcl9xmRGPvWfsrJK8FWyXmnpbSA53y4WapOColhNjTmv+rbtvMYD
+         paTn3K3IFBktLPu4XQy9OzoqtXn6ucYa0+m2wOBo76GlfecgmYBlZMs4oGJ47e5Qo15z
+         +2yAiXkpjecu0sQzZwJgQSLtYrAbYtk9RVNT61WdS2lmQTGx1OcsQJIWMWH72bz0mtwe
+         J2VcJTNLvE50pwL4UIbQ1QlMqP9xPzSgPl66rC9k8CSgV2KBB+LxeR20Ms3TwG63JToA
+         NLeMgBbouWrr7RoT1zKv7e0/6/uXdpM/s62fm+/P2hyJxpKSR55DbLehjqrLv/J6K6E2
+         F8xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691595329; x=1692200129;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IvGzFVP5SQwSC9rGu9WLVcEiDDZIn4yvZiZN1ERf4Ug=;
+        b=K5vLgQnHl2qdex8H72R6lNIA5k2Y8S6IvE0Qy3ftv+5dZ0oExnUo56MN9BM6bAeOVb
+         4XU2XTCu53Taki01AlV4R2rNIbr+CVuAHGI9/4n/+VbXDvk6qqK2JVkXGYjR5oNqq7EF
+         mT5wQHBNSHFSldQ2o8Y7QXEWCmmN4musdJ27eSvgxYI9Hk2RwDsFH5JkjNcWlQZML0yT
+         r6CfrT/KUpwGDW+LlOrhtOQ9o6nZSPBI7fCOeRuJ0tyxSiQOZKaA5utTDoclidthtOuL
+         lJX0r2V9WxUw84qBFrDz9GA8dPKrVo5eJ8hsjr8sggMLw9CxYXI/HVzG6SSFSQqB7Or4
+         Xphg==
+X-Gm-Message-State: AOJu0YwfmMtehxKQwQsvRqXtTVXdjz6UK6B6/OR+9IkzaYzP0PyPZKiU
+        J5Y3Da7rz3vh4pQvkaUND2Q=
+X-Google-Smtp-Source: AGHT+IETM3lKazpfiLZKLqnU7PJtHu54GpTMBDuhpz3YmKRR/s6WiFe8fxlNhSRNxlufq+NiQSO3tw==
+X-Received: by 2002:a17:903:1cd:b0:1b8:41d4:89f with SMTP id e13-20020a17090301cd00b001b841d4089fmr2943008plh.4.1691595329075;
+        Wed, 09 Aug 2023 08:35:29 -0700 (PDT)
+Received: from ?IPV6:2600:8802:b00:4a48:3c29:7d43:1531:9375? ([2600:8802:b00:4a48:3c29:7d43:1531:9375])
+        by smtp.gmail.com with ESMTPSA id v3-20020a170902d68300b001b86dd825e7sm11370829ply.108.2023.08.09.08.35.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 08:35:28 -0700 (PDT)
+Message-ID: <50f0b253-8eae-a4bd-0c5d-d23b020ce8df@gmail.com>
+Date:   Wed, 9 Aug 2023 08:35:24 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230809-tps6594-v5-0-485fd3d63670@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] net: phy: Don't disable irqs on shutdown if WoL is
+ enabled
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Ioana Ciornei <ciorneiioana@gmail.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Andre Edich <andre.edich@microchip.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Divya Koppera <Divya.Koppera@microchip.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Mathias Kresin <dev@kresin.me>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Michael Walle <michael@walle.cc>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Nisar Sayed <Nisar.Sayed@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Willy Liu <willy.liu@realtek.com>,
+        Yuiko Oshino <yuiko.oshino@microchip.com>
+References: <20230809135702.4dencx4ikij7d33y@skbuf>
+Content-Language: en-US
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20230809135702.4dencx4ikij7d33y@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20:17-20230809, Jai Luthra wrote:
-> TPS6594 is a Power Management IC which provides regulators and others
-> features like GPIOs, RTC, watchdog, ESMs (Error Signal Monitor), and
-> PFSM (Pre-configurable Finite State Machine). The SoC and the PMIC can
-> communicate through the I2C or SPI interfaces.
-> TPS6594 is the super-set device while TPS6593 and LP8764 are derivatives.
+
+
+On 8/9/2023 6:58 AM, Vladimir Oltean wrote:
+> Hi Uwe,
 > 
-> This serie adds device tree nodes for TI TPS6594 PMICs found in the
-> following boards:
-> - J721EXSOMXEVM:
->   Link: https://www.ti.com/tool/J721EXSOMXEVM
-> - J721S2XSOMXEVM:
->   Link: https://www.ti.com/tool/J721S2XSOMXEVM
-> - J7200XSOMXEVM:
->   Link: https://www.ti.com/tool/J7200XSOMXEVM
-> - AM62A-SKEVM:
->   Link: https://www.ti.com/tool/SK-AM62A-LP
-> - J784S4XEVM
->   Link: https://www.ti.com/tool/J784S4XEVM
+> (I hope the threading won't be broken)
+> 
+> On Fri, Aug 04, 2023 at 09:17:57AM +0200, Uwe Kleine-König wrote:
+>> Most PHYs signal WoL using an interrupt. So disabling interrupts breaks
+>> WoL at least on PHYs covered by the marvell driver. So skip disabling
+>> irqs on shutdown if WoL is enabled.
+>>
+>> While at it also explain the motivation that irqs are disabled at all.
+>>
+>> Fixes: e2f016cf7751 ("net: phy: add a shutdown procedure")
+>> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+>> ---
+>> Hello,
+>>
+>> while I'm not sure that disabling interrupts is a good idea in general,
+>> this change at least should fix the WoL case. Note that this change is
+>> only compile tested as next doesn't boot on my test machine (because of
+>> https://git.kernel.org/linus/b3574f579ece24439c90e9a179742c61205fbcfa)
+>> and 6.1 (which is the other kernel I have running) doesn't know about
+>> .wol_enabled. I don't want to delay this fix until I bisected this new
+>> issue.
+>>
+>> Assuming this patch is eligible for backporting to stable, maybe point
+>> out that it depends on v6.5-rc1~163^2~286^2~2 ("net: phy: Allow drivers
+>> to always call into ->suspend()"). Didn't try to backport that.
+>>
+>> Best regards
+>> Uwe
+>>
+>>   drivers/net/phy/phy_device.c | 9 +++++++++
+>>   1 file changed, 9 insertions(+)
+>>
+>> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+>> index 61921d4dbb13..6d1526bdd1d7 100644
+>> --- a/drivers/net/phy/phy_device.c
+>> +++ b/drivers/net/phy/phy_device.c
+>> @@ -3340,6 +3340,15 @@ static void phy_shutdown(struct device *dev)
+>>   	if (phydev->state == PHY_READY || !phydev->attached_dev)
+>>   		return;
+>>   
+>> +	/* Most phys signal WoL via the irq line. So for these irqs shouldn't be
+>> +	 * disabled.
+>> +	 */
+>> +	if (phydev->wol_enabled)
+>> +		return;
+>> +
+>> +	/* On shutdown disable irqs to prevent an irq storm on systems where the
+>> +	 * irq line is shared by several devices.
+>> +	 */
+>>   	phy_disable_interrupts(phydev);
+>>   }
+>>   
+>> -- 
+>> 2.40.1
+>>
+>>
+> 
+> I think the idea is not bad and something along these lines might be the
+> way to go, but I don't think it works (as currently implemented, and
+> tested by me, prints below).
+> 
+> Upon a quick search, phydev->wol_enabled is only set from phy_suspend(),
+> and phy_suspend() isn't invoked from the ethnl_set_wol() call stack.
 
+You are right, this was an ill advised suggestion from my side here. In 
+principle however we need to have something like this in the shutdown 
+routine to have this patch work:
 
-In the refresh, could you roll in
-https://lore.kernel.org/linux-arm-kernel/22e92c94-b3ee-3505-57d3-a3243e8671d8@ti.com/
-into this series rather than with Audio series?
+        struct ethtool_wolinfo wol = { .cmd = ETHTOOL_GWOL };
+        struct net_device *netdev = phydev->attached_dev;
+        int ret;
 
-Please also see if any other PMIC defconfig needs to be enabled while at
-it.
+        phy_ethtool_get_wol(phydev, &wol);
+        phydev->wol_enabled = wol.wolopts || (netdev && 
+netdev->wol_enabled);
 
+	if (!phydev->wol_enabled)
+		return;
+
+this does make me wonder whether Uwe tested with a prior system 
+suspend/resume cycle before shutting down?
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Florian
