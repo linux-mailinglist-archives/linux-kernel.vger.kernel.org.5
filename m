@@ -2,85 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 630EB77560F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABC8775612
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbjHIJDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 05:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34062 "EHLO
+        id S231527AbjHIJDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 05:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbjHIJDQ (ORCPT
+        with ESMTP id S231856AbjHIJDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 05:03:16 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF231FDE
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 02:03:13 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mtapsc-3-E2PvGH_dN_qFLXu5QR-fLA-1; Wed, 09 Aug 2023 10:03:09 +0100
-X-MC-Unique: E2PvGH_dN_qFLXu5QR-fLA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 9 Aug
- 2023 10:03:05 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 9 Aug 2023 10:03:05 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>
-CC:     Mateusz Guzik <mjguzik@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: RE: [PATCH v2 (kindof)] fs: use __fput_sync in close(2)
-Thread-Topic: [PATCH v2 (kindof)] fs: use __fput_sync in close(2)
-Thread-Index: AQHZyjf9/+BpaDZOA0md/r6gL7olr6/hq0VA
-Date:   Wed, 9 Aug 2023 09:03:05 +0000
-Message-ID: <760ee963ce814021ab64e1ec9fee6477@AcuMS.aculab.com>
-References: <20230806230627.1394689-1-mjguzik@gmail.com>
- <87o7jidqlg.fsf@email.froward.int.ebiederm.org>
- <20230808-eingaben-lumpen-e3d227386e23@brauner>
- <CAGudoHF=cEvXy3v96dN_ruXHnPv33BA6fA+dCWCm-9L3xgMPNQ@mail.gmail.com>
- <20230808-unsensibel-scham-c61a71622ae7@brauner>
- <CAGudoHEQ6Tq=88VKqurypjHqOzfU2eBmPts4+H8C7iNu96MRKQ@mail.gmail.com>
- <CAGudoHGqRr_WNz86pmgK9Kmnwsox+_XXqqbp+rLW53e5t8higg@mail.gmail.com>
- <20230808-lebst-vorgibt-75c3010b4e54@brauner>
- <CAHk-=wiyeMKrvU5GdjekSF65KS=i3hKzfJ1qe2Xja42K+qOd2w@mail.gmail.com>
-In-Reply-To: <CAHk-=wiyeMKrvU5GdjekSF65KS=i3hKzfJ1qe2Xja42K+qOd2w@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 9 Aug 2023 05:03:35 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661D81FD8;
+        Wed,  9 Aug 2023 02:03:32 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8A1D360004;
+        Wed,  9 Aug 2023 09:03:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+        t=1691571809;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TY7idmXtzOR/PC5YeEKZEVA/A054NNzndr9Zg5TyDl4=;
+        b=ge+WpLQZNVsCKJKDx/vwzWayO2FvINhQEq8GhHxjzdo/DfKr/2hRqOPfwtXMG8OMcE2Tg1
+        AuX7PyccTx+wm59x51mOX+H4WcElmKLObWyA00wdHHwvgRPhgPgBMYXerA3hiY8mXKze12
+        X36t7wJRAW8IiHBXp+3dXk0ICC64z2ip93xRDwAipHSE6vmMKhdtg5NqUGuHlZ+HrFiQdJ
+        BUX8OiUlC/1mUmXxDmuGGp6bTyAHV8x2FK8LT7dG8DmHpv4pEAvYc+SaD2s3qV0og9Djp0
+        RMU95gASBhcLH12b/T/WKziGHsTog8GaBVkmRIpbnqoLyDVBLUqmYOti9Hn9YQ==
+Message-ID: <44fde617-1159-4961-84c4-372fe265fbd8@arinc9.com>
+Date:   Wed, 9 Aug 2023 12:03:19 +0300
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla Thunderbird
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Subject: Re: [PATCH RESEND net-next 2/2] dt-bindings: net: dsa:
+ mediatek,mt7530: document MDIO-bus
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Daniel Golle <daniel@makrotopia.org>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <6eb1b7b8dbc3a4b14becad15f0707d4f624ee18b.1691246461.git.daniel@makrotopia.org>
+ <9aec0fe0cb676b76132c388bb3ead46f596a6e6e.1691246461.git.daniel@makrotopia.org>
+ <dcb981b9-b435-c0e5-8e47-d66add207fdc@arinc9.com>
+ <20230808121707.chona7hakapp6whe@skbuf>
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230808121707.chona7hakapp6whe@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMDggQXVndXN0IDIwMjMgMTg6MDUNCi4uLg0K
-PiAgICAgICAgIHJldHVybiBfX2ZpbHBfY2xvc2UoZmlscCwgaWQsIHRydWUpOw0KPiANCj4gYW5k
-IHRoZXJlIGlzIHplcm8gY2x1ZSBhYm91dCB3aGF0IHRoZSBoZWNrICd0cnVlJyBtZWFucy4NCj4g
-DQo+IEF0IGxlYXN0IHRoZW4gdGhlICJiZWhhdmlvciBmbGFncyIgYXJlIG5hbWVkIGJpdG1hc2tz
-LCB0aGluZ3MgbWFrZQ0KPiAqc2Vuc2UqLiBCdXQgd2UgaGF2ZSB0b28gbWFueSBvZiB0aGVzZSBi
-b29sZWFuIGFyZ3VtZW50cy4NCg0KQW5kIG1ha2UgdGhlIHVzdWFsIGNhc2UgMC4NCg0KSSB3YXMg
-Y2hhc2luZyB0aHJvdWdoIHNvbWUgY29kZSB0aGF0IGhhcyBhIGZsYWcgZm9yIGENCmNvbmRpdGlv
-bmFsIGxvY2suDQpIb3dldmVyIGlzIHdhcyAnTkVFRF9UT19MT0NLJyBub3QgJ0FMUkVBRFlfTE9D
-S0VEJy4NCihicGYgY2FsbGluZyBpbiB3aXRoIHRoZSBzb2NrZXQgbG9ja2VkKS4NCg0KQXMgd2Vs
-bCBhcyBtYWtpbmcgdGhlIGNvZGUgaGFyZGVyIHRvIHJlYWQgaXQgaXMgYW4gYWNjaWRlbnQNCmp1
-c3Qgd2FpdGluZyB0byBoYXBwZW4uDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3Mg
-TGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQ
-VCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On 8.08.2023 15:17, Vladimir Oltean wrote:
+> On Sat, Aug 05, 2023 at 11:15:15PM +0300, Arınç ÜNAL wrote:
+>> I don't see a reason to resubmit this without addressing the requested
+>> change.
+>>
+>>>> Wouldn't we just skip the whole issue by documenting the need for defining all PHYs
+>>>> used on the switch when defining the MDIO bus?
+>>>
+>>> Good idea, please do that.
+>>
+>> https://lore.kernel.org/netdev/0f501bb6-18a0-1713-b08c-6ad244c022ec@arinc9.com/
+>>
+>> Arınç
+> 
+> Arınç, where do you see that comment being added? AFAIU, it is a
+> characteristic of the generic __of_mdiobus_register() code to set
+> mdio->phy_mask = ~0, and nothing specific to the mt7530.
 
+What I believe is specific to DSA is, 1:1 mapping of the port reg to the
+PHY reg on the mdio bus is disabled if the mdio bus is defined. Therefore,
+I believe a notice like below fits mediatek,mt7530.yaml.
+
+diff --git a/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml b/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
+index e532c6b795f4..c59d58252cd5 100644
+--- a/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
+@@ -128,6 +128,15 @@ properties:
+        See Documentation/devicetree/bindings/regulator/mt6323-regulator.txt for
+        details for the regulator setup on these boards.
+  
++  mdio:
++    $ref: /schemas/net/mdio.yaml#
++    unevaluatedProperties: false
++    description:
++      Node for the internal MDIO bus connected to the embedded ethernet-PHYs.
++      For every port defined under the "^(ethernet-)?ports$" node, a PHY must be
++      defined under here and a phy-handle property must be defined under the
++      port node to point to the PHY node.
++
+    mediatek,mcm:
+      type: boolean
+      description:
+
+Arınç
