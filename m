@@ -2,150 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FBB776A66
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E3A776A83
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbjHIUkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 16:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48278 "EHLO
+        id S230365AbjHIUrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 16:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234811AbjHIUj4 (ORCPT
+        with ESMTP id S229950AbjHIUrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 16:39:56 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F382129
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 13:39:40 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9d3dacb33so3604211fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 13:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1691613578; x=1692218378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0TSYHDp/bGdSV83cYMojLR3N70tOMtA0XRESFOp2abM=;
-        b=U1tdU+M/xgMilj8lcoHb5Sun+oVgQywgVRPPUdjM1j3Kk4ftceez2F8OryRkqKuAzR
-         Zcq3rwP0m4jxoY/CtDmBK002Z/crYWRYtlEvNHl+MjlHFQUt2Hasmy6xO76Pj5Bw6Nuj
-         RuH7/ax7BE8Fx8M6TPcGlvbGK5p3jAJR45sl4=
+        Wed, 9 Aug 2023 16:47:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67D618E
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 13:46:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691614007;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=85iBUVX8eS0NmdKzdH/Axj5AnNYS26psyU6bLHIwJdo=;
+        b=XLra2P8QellNuOJ3MH4x2QIUfUkT3FihSfqci6NmXvqWYyGEcv8e3Cz+M93ygecKO6+aY0
+        5khbiHaOpLmOLJ5riL6iAaG+0vkyt0ECBb4vkoJ3H2+xVDiG+uE6aTS0jxWGnDQWQCxh+w
+        js2vIW3MnO8WikbXWErofjjScQc9B1E=
+Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com
+ [209.85.160.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-629-EKscTOp9NzWYpOOAyNRQ7Q-1; Wed, 09 Aug 2023 16:46:45 -0400
+X-MC-Unique: EKscTOp9NzWYpOOAyNRQ7Q-1
+Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1bb691357d8so201705fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 13:46:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691613578; x=1692218378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0TSYHDp/bGdSV83cYMojLR3N70tOMtA0XRESFOp2abM=;
-        b=Q2a37wkDfFNm66TujRJv5P391gQsaZoIWS4zThCtOhCszSbBiimLjlJy37utc68WJu
-         iBAeYLp2LJgwFGiQ2Q5ELpxvAR+Jiiyd1LR8NfnsycbbFTHj7v937ducMc6K6mRpuNfn
-         xXYHjDfGTlGrZ20Jqsq6uwhyxKVp31Ac8erkccIrVisbqR0KCsO5tNWdNQFi/asFiiAu
-         xoeOrpPTZVq6mTPBfmcPb/bKfXHQxiN4Ibn4juqvTHEGqz8lUkWsOKZN/MQPz3cjOby9
-         pEzVUGQxEkElNqzEXq9sTv/9OQEyN8CgqORDSp/lnjazgN2TNgQtho2fLibtqd2tm3E3
-         YtAw==
-X-Gm-Message-State: AOJu0YwWgvP1xCUV3pCnKeRximTUmczvQMneDT2vg81cV/9h8YwL/4ud
-        Tz8DYSfpEzc1blpkSKp1wMgeC4K0eJPtY6W7LVS0RQbn9CSdkrf1u3g=
-X-Google-Smtp-Source: AGHT+IFhr2UBSAua/2aL1dFLqsuIdLLwE7M0o8NS9ZIohgmDqTjZWGSzXSxQxhLLo8IwCL8P6Zt0X74T9yetTzgYa5c=
-X-Received: by 2002:a2e:9084:0:b0:2b9:e230:25d0 with SMTP id
- l4-20020a2e9084000000b002b9e23025d0mr242971ljg.14.1691613578096; Wed, 09 Aug
- 2023 13:39:38 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691614004; x=1692218804;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=85iBUVX8eS0NmdKzdH/Axj5AnNYS26psyU6bLHIwJdo=;
+        b=Jhj/rorg4BN4kbsot1z9aRBdq/2PwaFciHzVXNtHkv+u5y9bzxcnyVO3GdTuTVvG9K
+         1wgOzQl9VAakvlgA44p9njcbIxi3sR+JuKE+qzCdJuDV2tPwIvDkXO8eoUJ6gTjt0A/q
+         rYOnBIjxZA+rE5mBnuFSnYxMeKJWYf0DpI2/g0uv0/+mavDxT7r3JVNyuklnz70V2AJu
+         U94sCzUYNblR+GK3bZnROWkJPd7RMylFauuh1MohpVwVPIf9aFE4NFw+3ctLFk4ik/Oi
+         5z9RMD7pjrge6Nk7J8Dy8THLHnC/G1JSyRa8rnnEJ3ZZnV/EyKVzm9YUvvZIEOxf8MSS
+         fsew==
+X-Gm-Message-State: AOJu0YyZicFnR6KhTePgqpO35wxiBJwLNDKF9btg6HeA5/H6bYAE69Jn
+        5cswyCaUDaYTuodSLnw+u/XOQePP/8l3ye29QI9JaG9n18203NDck7EHH8cIDT26kMq8QUcA2tE
+        ixjxAMc1QoAycFzS1K1JQw/Zu
+X-Received: by 2002:a05:6870:5582:b0:1bf:d05f:f77 with SMTP id n2-20020a056870558200b001bfd05f0f77mr409989oao.48.1691614004597;
+        Wed, 09 Aug 2023 13:46:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFTQI8VRZ5ZtLNFhgexiawYP5A6CmaRJ60ckOfjRSba4+LVLgx2G+xZX97LXEEFCJ6PqJ2IWA==
+X-Received: by 2002:a05:6870:5582:b0:1bf:d05f:f77 with SMTP id n2-20020a056870558200b001bfd05f0f77mr409962oao.48.1691614004283;
+        Wed, 09 Aug 2023 13:46:44 -0700 (PDT)
+Received: from localhost (pool-71-184-142-128.bstnma.fios.verizon.net. [71.184.142.128])
+        by smtp.gmail.com with ESMTPSA id d8-20020a0ce448000000b0063d26033b74sm4733922qvm.39.2023.08.09.13.46.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 13:46:43 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 16:46:43 -0400
+From:   Eric Chanudet <echanude@redhat.com>
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Caleb Connolly <caleb.connolly@linaro.org>
+Subject: Re: [PATCH v2] arm64: dts: qcom: sa8540p-ride: enable rtc
+Message-ID: <xraquthrzcadd7aucxym4e4x72barlq6dbmbsbxcn7pbr2yehv@amyzztu3xmcg>
+References: <20230718145105.3464105-1-echanude@redhat.com>
+ <dtussvqzf7x5p633pxt3julkffhzt5rxwp3aghs4ocj5odq4la@ed6jhcv76hbk>
+ <20230808213646.GK1428172@hu-bjorande-lv.qualcomm.com>
 MIME-Version: 1.0
-References: <20230809103633.485906560@linuxfoundation.org> <20230809135326.GE3031656@google.com>
- <f47340c6-3c41-1f91-d0f9-fe0b59a23aac@roeck-us.net> <CAEXW_YQ4GqPwvUF8=8CWmdj=cD56v_eEVK-EirsObQXyBDFVpg@mail.gmail.com>
- <35e4b770-2ead-4a19-ad01-fa75996adef4@roeck-us.net> <20230809201413.GA3374446@google.com>
- <6b05a082-41a7-f0cf-c0a4-1cced8d5a230@roeck-us.net>
-In-Reply-To: <6b05a082-41a7-f0cf-c0a4-1cced8d5a230@roeck-us.net>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 9 Aug 2023 16:39:27 -0400
-Message-ID: <CAEXW_YT-7epvu4uUS19aDAcM0X63j9_L2aa-XGGFGSLceLu8bA@mail.gmail.com>
-Subject: Re: [PATCH 5.15 00/92] 5.15.126-rc1 review
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        paulmck@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230808213646.GK1428172@hu-bjorande-lv.qualcomm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 4:38=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> w=
-rote:
->
-> On 8/9/23 13:14, Joel Fernandes wrote:
-> > On Wed, Aug 09, 2023 at 12:25:48PM -0700, Guenter Roeck wrote:
-> >> On Wed, Aug 09, 2023 at 02:35:59PM -0400, Joel Fernandes wrote:
-> >>> On Wed, Aug 9, 2023 at 12:18=E2=80=AFPM Guenter Roeck <linux@roeck-us=
-.net> wrote:
-> >>>>
-> >>>> On 8/9/23 06:53, Joel Fernandes wrote:
-> >>>>> On Wed, Aug 09, 2023 at 12:40:36PM +0200, Greg Kroah-Hartman wrote:
-> >>>>>> This is the start of the stable review cycle for the 5.15.126 rele=
-ase.
-> >>>>>> There are 92 patches in this series, all will be posted as a respo=
-nse
-> >>>>>> to this one.  If anyone has any issues with these being applied, p=
-lease
-> >>>>>> let me know.
-> >>>>>>
-> >>>>>> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
-> >>>>>> Anything received after that time might be too late.
-> >>>>>>
-> >>>>>> The whole patch series can be found in one patch at:
-> >>>>>>       https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/p=
-atch-5.15.126-rc1.gz
-> >>>>>> or in the git tree and branch at:
-> >>>>>>       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-s=
-table-rc.git linux-5.15.y
-> >>>>>> and the diffstat can be found below.
-> >>>>>
-> >>>>> Not necesscarily new with 5.15 stable but 3 of the 19 rcutorture sc=
-enarios
-> >>>>> hang with this -rc: TREE04, TREE07, TASKS03.
-> >>>>>
-> >>>>> 5.15 has a known stop machine issue where it hangs after 1.5 hours =
-with cpu
-> >>>>> hotplug rcutorture testing. Me and tglx are continuing to debug thi=
-s. The
-> >>>>> issue does not show up on anything but 5.15 stable kernels and neit=
-her on
-> >>>>> mainline.
-> >>>>>
-> >>>>
-> >>>> Do you by any have a crash pattern that we could possibly use to fin=
-d the crash
-> >>>> in ChromeOS crash logs ? No idea if that would help, but it could pr=
-ovide some
-> >>>> additional data points.
-> >>>
-> >>> The pattern shows as a hard hang, the system is unresponsive and all =
-CPUs
-> >>> are stuck in stop_machine. Sometimes it recovers on its own from the
-> >>> hang and then RCU immediately gives stall warnings. It takes 1.5 hour
-> >>> to reproduce and sometimes never happens for several hours.
-> >>>
-> >>> It appears related to CPU hotplug since gdb showed me most of the CPU=
-s
-> >>> are spinning in multi_cpu_stop() / stop machine after the hang.
-> >>>
-> >>
-> >> Hmm, we do see lots of soft lockups with multi_cpu_stop() in the backt=
-race,
-> >> but not with v5.15.y but with v5.4.y. The actual hang is in stop_machi=
-ne_yield().
-> >
-> > Interesting. It looks similar as far as the stack dump in gdb goes, her=
-e are
-> > the stacks I dumped with the hang I referred to:
-> > https://paste.debian.net/1288308/
-> >
->
-> That link gives me "Entry not found".
+On Tue, Aug 08, 2023 at 02:36:46PM -0700, Bjorn Andersson wrote:
+> On Fri, Jul 21, 2023 at 08:59:30PM -0700, Bjorn Andersson wrote:
+> > On Tue, Jul 18, 2023 at 10:46:10AM -0400, Eric Chanudet wrote:
+> > > diff --git a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> > [..]
+> > > +&pmm8540a_sdam_7 {
+> > > +	status = "okay";
+> > > +
+> > > +	rtc_offset: rtc-offset@ac {
+> > > +		reg = <0xac 0x4>;
+> > 
+> > I'm still trying to get confirmation that this is a good choice.
+> > 
+> 
+> I'm recommended that you use 0xa0 from SDAM2, "preferably in the second
+> PMM8540", instead.
+> 
+> Can you please give this a try, Eric?
 
-Yeah that was weird. Here it is again: https://pastebin.com/raw/L3nv1kH2
+That worked, the offset was saved and read back upon rebooting from the
+system. I did get a defer on some tests waiting for the second pmic,
+which I presume is not surprising:
+[    0.257064] spmi spmi-0: PMIC arbiter version v5 (0x50020000)
+[    8.340386] platform c440000.spmi:pmic@0:rtc@6000: error -EPROBE_DEFER: wait for supplier /soc@0/spmi@c440000/pmic@4/nvram@b110/rtc-offset@a0
+[    8.393201] platform c440000.spmi:pmic@0:rtc@6000: error -EPROBE_DEFER: wait for supplier /soc@0/spmi@c440000/pmic@4/nvram@b110/rtc-offset@a0
+[    8.465407] rtc-pm8xxx c440000.spmi:pmic@0:rtc@6000: registered as rtc0
+[    8.479612] rtc-pm8xxx c440000.spmi:pmic@0:rtc@6000: setting system clock to 2023-08-09T19:16:08 UTC (1691608568)
+
+Here is the v3 with the changes:
+    https://lore.kernel.org/linux-arm-msm/20230809203506.1833205-1-echanude@redhat.com
+
+Thank you again for the feedback.
+
+-- 
+Eric Chanudet
+
