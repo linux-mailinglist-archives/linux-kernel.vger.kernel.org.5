@@ -2,170 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBA0776492
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A7577649A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233314AbjHIP57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38966 "EHLO
+        id S231902AbjHIP7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230407AbjHIP56 (ORCPT
+        with ESMTP id S229706AbjHIP7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:57:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55BBE5B;
-        Wed,  9 Aug 2023 08:57:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6575B63FB8;
-        Wed,  9 Aug 2023 15:57:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEE8CC433C8;
-        Wed,  9 Aug 2023 15:57:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691596676;
-        bh=BLJ8BG9cjda67FtOFMSOw2lof21Rwgd62y3h6CJUJXI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AFE0tJAC1VN3lHwsywzTvQMCtTkKwH+fzaHay423Nn8U4BvgbFPhFlDGPhv+CSPLy
-         dFQ0xVpMhQ3C2M5foD/fbgkNjIR7VMHxas0FwdgXCZ4RBZmNRoRBLtdmPfwP64p4CR
-         L1KLFjlwnPyYmvJ9g5BmRhxInIEwBnrizZouBo3g6eX8F8ZAnH1hnfnSPD6lrGk5TK
-         9rNGMty4rm4EuDy1vedzHwVAPS2NqLbaLW0knF3RHZVQHqjJb96V1TtEusFyVz0K14
-         VuLDs1Rym4oqY/gmU++wX3w7TKa1AFDz9Dgv9eLPqBx47m/DAmODVEOpJWGSAeViqX
-         g//bmjx4l6oPA==
-Date:   Wed, 9 Aug 2023 08:57:56 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 07/13] xfs: have xfs_vn_update_time gets its own
- timestamp
-Message-ID: <20230809155756.GV11352@frogsfrogsfrogs>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-7-d1dec143a704@kernel.org>
+        Wed, 9 Aug 2023 11:59:49 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7966B1FD8
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:59:40 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-991c786369cso3300466b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:59:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1691596779; x=1692201579;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pKgMv/zwB6Y77QMgXunD2xiaajtdokS/KsQJJ/MXzU4=;
+        b=OmBebYbe7hv/gEeawP8PcRY/on45Yjtob4z+tFNFAxSTxM74jgchB58wPNTdDxitDr
+         Z8EtPWG++LumdreGGgQDO0SV+UTULp5L81gPus7scKWW6u+fqTfDF7OGGiHrhjY2NdKt
+         nAtli2KRF24vM9+9RMXES5hDWhb3i2CD6/CT4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691596779; x=1692201579;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pKgMv/zwB6Y77QMgXunD2xiaajtdokS/KsQJJ/MXzU4=;
+        b=awXkYJvTNlPl0XJ6EzEMCpsaE8wMBIQlSHtujzCMkD9B8K+7WjRdz4qldEnFDn/2Mq
+         UO+yBOZIsKG2IylXAcYJ5FZ4LqtEzFPMdggD10vhMnSb6RlCR/NG//ySbSf+ukiVMBqG
+         Ehz0OQP+bcYezNOSrv3mVlq0nvB7ypHCLO7RFtBXjNYO5B6s8wHl+tCLsj3k7SMkh2Pb
+         pnJWZRga09iJW/5KHY90dUPmQjkPqpee0mHiaF90tcwyc9hM6hHslwklzVxBDMES1HrB
+         GuU9mwnSXSpNuxDmpuUzieTEIAFyLSgqY8EDX5eCajRm2GGVANRqKJitFd3eQ3OxOWjo
+         C9eg==
+X-Gm-Message-State: AOJu0YwyY0mHZ/wd6q6JK0CABV0LJZ6TMJFVKIFqthT3MRMmANoRuBlG
+        yG9Ion3s2s4C9qorPc6aLtCCaONUMK502CH+9ytAuRsv
+X-Google-Smtp-Source: AGHT+IHjmPnX27zU9pjsBZjYBynIIiN1WHVoqAnG6zKKEo+/dshfN0k3/YS5gC+vzNiE5k2ctEfOxQ==
+X-Received: by 2002:a17:906:53d1:b0:99c:7134:4f95 with SMTP id p17-20020a17090653d100b0099c71344f95mr2321557ejo.32.1691596778863;
+        Wed, 09 Aug 2023 08:59:38 -0700 (PDT)
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
+        by smtp.gmail.com with ESMTPSA id l22-20020a170906079600b009934b1eb577sm8241026ejc.77.2023.08.09.08.59.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 08:59:38 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-991c786369cso3296266b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:59:37 -0700 (PDT)
+X-Received: by 2002:a17:906:5350:b0:992:d013:1131 with SMTP id
+ j16-20020a170906535000b00992d0131131mr2505461ejo.52.1691596777526; Wed, 09
+ Aug 2023 08:59:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807-mgctime-v7-7-d1dec143a704@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <87edkce118.wl-tiwai@suse.de> <20230809143801.GA693@lst.de> <87a5v0e0mv.wl-tiwai@suse.de>
+In-Reply-To: <87a5v0e0mv.wl-tiwai@suse.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 9 Aug 2023 08:59:20 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgGV61xrG=gO0=dXH64o2TDWWrXn1mx-CX885JZ7h84Og@mail.gmail.com>
+Message-ID: <CAHk-=wgGV61xrG=gO0=dXH64o2TDWWrXn1mx-CX885JZ7h84Og@mail.gmail.com>
+Subject: Re: [PATCH RFC] Introduce uniptr_t as a generic "universal" pointer
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 03:38:38PM -0400, Jeff Layton wrote:
-> In later patches we're going to drop the "now" parameter from the
-> update_time operation. Prepare XFS for this by reworking how it fetches
-> timestamps and sets them in the inode. Ensure that we update the ctime
-> even if only S_MTIME is set.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/xfs/xfs_iops.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> index 731f45391baa..72d18e7840f5 100644
-> --- a/fs/xfs/xfs_iops.c
-> +++ b/fs/xfs/xfs_iops.c
-> @@ -1037,6 +1037,7 @@ xfs_vn_update_time(
->  	int			log_flags = XFS_ILOG_TIMESTAMP;
->  	struct xfs_trans	*tp;
->  	int			error;
-> +	struct timespec64	now = current_time(inode);
->  
->  	trace_xfs_update_time(ip);
->  
-> @@ -1056,12 +1057,15 @@ xfs_vn_update_time(
->  		return error;
->  
->  	xfs_ilock(ip, XFS_ILOCK_EXCL);
-> -	if (flags & S_CTIME)
-> -		inode_set_ctime_to_ts(inode, *now);
-> +	if (flags & (S_CTIME|S_MTIME))
+On Wed, 9 Aug 2023 at 07:44, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> The remaining question is whether the use of sockptr_t for other
+> subsystems as a generic pointer is a recommended / acceptable move...
 
-Minor nit: spaces around    ^ the operator.
+Very much not recommended. sockptr_t is horrible too, but it was (part
+of) what made it possible to fix an even worse horrible historical
+mistake (ie getting rid of set_fs()).
 
-Otherwise looks ok to me...
-Acked-by: Darrick J. Wong <djwong@kernel.org>
+So I detest sockptr_t. It's garbage. At the very minimum it should
+have had the length associated with it, not passed separately.
 
---D
+But it's garbage exactly because it allowed for conversion of some
+much much horrid legacy code with fairly minimal impact.
 
-> +		now = inode_set_ctime_current(inode);
-> +	else
-> +		now = current_time(inode);
-> +
->  	if (flags & S_MTIME)
-> -		inode->i_mtime = *now;
-> +		inode->i_mtime = now;
->  	if (flags & S_ATIME)
-> -		inode->i_atime = *now;
-> +		inode->i_atime = now;
->  
->  	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
->  	xfs_trans_log_inode(tp, ip, log_flags);
-> 
-> -- 
-> 2.41.0
-> 
+New code does *not* have that excuse.
+
+DO NOT MIX USER AND KERNEL POINTERS. And don't add interfaces that
+think such mixing is ok. Pointers should be statically clearly of one
+type or the other, and never lied about.
+
+Or you go all the way, and do that whole iterator thing, and make it
+very clear that you're doing something truly generic that can be
+passed fairly widely along across subsystem boundaries.
+
+             Linus
