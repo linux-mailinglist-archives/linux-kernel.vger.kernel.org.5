@@ -2,137 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 198AD77636B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A1777636D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232287AbjHIPJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
+        id S233497AbjHIPKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbjHIPJ4 (ORCPT
+        with ESMTP id S229914AbjHIPJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:09:56 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB3F1999;
-        Wed,  9 Aug 2023 08:09:51 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9E4DE5C00CC;
-        Wed,  9 Aug 2023 11:09:48 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 09 Aug 2023 11:09:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1691593788; x=1691680188; bh=m7
-        Yanb/vvsE/fqlIS6281qF7gWWLaghgUEnS3kHEVy0=; b=neG4KZuWdFoqjpt55G
-        C6BGZC3xc91iYe1axORYvayX3EjKpNORwPe96Hp2IJNRde99sVDwBklTgLnTtQZm
-        AwU5Xyc2SixBeufC5gQLYj7NIiPqrfmTBAPAYB/8vftniCos59B0MLMI5fVayp/B
-        EYYUVE0Zvu0pA7ANtUV8HaMwjEyQVz3WyJ6RNWbu7t0hEHEhQCHvOYlEy33QH7+s
-        eWs1PnsXlczGMXM3bQBYJEFSmU+kbM29yDUzYRQiduz/61ONTLAsXzXHfBfNPXIB
-        kZCWKqCdBOGaGDTUHSasGCtRsYFdC9L+ER2SFGdrt7DE0escJ8v+L8kuimvnri4G
-        mqgg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1691593788; x=1691680188; bh=m7Yanb/vvsE/f
-        qlIS6281qF7gWWLaghgUEnS3kHEVy0=; b=0wYJnG2jecIE88IDHNK4B3wtDn+tI
-        ZMIk3gtRQPlcr+yG0x8DLWJyCTubvrstivux2twxPOsirVL9fxyc+eyd/mVmMpMe
-        RqHcEUCk/17MLe/a3dQGe8hOVB9zDfZ1FZLMBrJ9B5C198T3LX7HQDS4c+/ZFBuj
-        EweSfjMsDr+FaDHpIywVLqhWpp1dGkzrLqH3m40tlavpXbOP33VCa7LVPItT6n06
-        +SUy7l56t1WQQvRMP9KeaIb0KUnB4Am5xW5t8SLXiNbGtmWcUxMV83R6hP3c7Syp
-        c2Uj3jTNMufW2nPHMOS9ken//385ThRZ2Z83w6MbHrdcL0lx7MgvAaUqQ==
-X-ME-Sender: <xms:O6zTZABPODP7SAzfEtWb8fvevVdAJzmxgjbADHkM6a6jA74R_hHwWQ>
-    <xme:O6zTZCi_6YHumSuxXikBRqLE7flX_KGmsLfL1U5UwpFg3OMLCnnjhFB6mnoZojKdW
-    aWA9g-iKAnmuQTEQw>
-X-ME-Received: <xmr:O6zTZDmshDLvhCyTpCC_LtXlTC3Bv1p-GNR3PL586crbN6kEtEfV-lcPtAJ-rJW_T5MRoCfkXXJqXzh3WROjfuojsuJpKWBp2ozXZORCMr9TvmhUrCWdvOUYjzCk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrleeggdekfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhgurhgv
-    shcuhfhrvghunhguuceorghnughrvghssegrnhgrrhgriigvlhdruggvqeenucggtffrrg
-    htthgvrhhnpedvffefvefhteevffegieetfefhtddvffejvefhueetgeeludehteevudei
-    tedtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvshesrghnrghrrgiivghlrdguvg
-X-ME-Proxy: <xmx:O6zTZGz2pyx1aZJXdPyjZU1sGSbBV33WvmJrdfF307Xo5cMEopOaCg>
-    <xmx:O6zTZFS4vPpX6S6IJfRLhsZLpHewPWgoaGIdxdDkxk1ycQP1vtkBZA>
-    <xmx:O6zTZBaQTJagVRrc0WK-erBsE6sSKlU3H-_vUtrFm0IFchzVAfFhQw>
-    <xmx:PKzTZGKL_39ndypR66zDr36gTnF3d3mHbE3L4hIzWKUnOIHySJGJ7A>
-Feedback-ID: id4a34324:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 9 Aug 2023 11:09:47 -0400 (EDT)
-Date:   Wed, 9 Aug 2023 08:09:45 -0700
-From:   Andres Freund <andres@anarazel.de>
-To:     Jeff Moyer <jmoyer@redhat.com>
-Cc:     Matteo Rizzo <matteorizzo@google.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        axboe@kernel.dk, asml.silence@gmail.com, corbet@lwn.net,
-        akpm@linux-foundation.org, keescook@chromium.org,
-        ribalda@chromium.org, rostedt@goodmis.org, jannh@google.com,
-        chenhuacai@kernel.org, gpiccoli@igalia.com, ldufour@linux.ibm.com,
-        evn@google.com, poprdi@google.com, jordyzomer@google.com,
-        krisman@suse.de
-Subject: Re: [PATCH v3 1/1] io_uring: add a sysctl to disable io_uring
- system-wide
-Message-ID: <20230809150945.abp755qafjhxbmx6@awork3.anarazel.de>
-References: <20230630151003.3622786-1-matteorizzo@google.com>
- <20230630151003.3622786-2-matteorizzo@google.com>
- <20230726174549.cg4jgx2d33fom4rb@awork3.anarazel.de>
- <x49fs5awiel.fsf@segfault.boston.devel.redhat.com>
+        Wed, 9 Aug 2023 11:09:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D3D2111;
+        Wed,  9 Aug 2023 08:09:59 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 17:09:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691593797;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JzvczgdPFkQouUUGz3L2TyNkAFNFPUxSgmQh306doSQ=;
+        b=dqk0Vrob09v4eVCKdRgp7Dz+zrDUV6Svtj2hPXdCR277r234aY5cC0KgVzMcY3eRfSVrjJ
+        rdBuU7e2HTNgtG+6JmmQjL5PqkaEpCsJuYH9wbaZP+kHzRY16XE+g/Vrvi+dEcDo/0+r5Q
+        AylWFzuNWLAOSFTnlx0IWpDG0MBq3bdj8zNYBPZHiltNWd2e6I1JPWw0q/AE/Z8qQyuIrh
+        rizrT8U57pZBzWYSUvuUGt2Ox7z5EOg4VYrwDumznOrXblNfRKPl6+O8OYqCENLTX2It8u
+        /cdmVLBTQm64Llou09gHT8X2BOIV6d2iGTCX9rAyAJu92Vhmp34BtBW7X1nAug==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691593797;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JzvczgdPFkQouUUGz3L2TyNkAFNFPUxSgmQh306doSQ=;
+        b=numuI4/zZaEyNESL/RbqbDFOzWaxizntZXcYYE+xrPVqmpuSjkHZlEaOFHEDNUQMtRusJ+
+        5q3zm3+mCVvIhSBg==
+From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [RFT][PATCH v2 0/3] cpuidle: teo: Do not check timers unconditionally
+ every time
+In-Reply-To: <CAJZ5v0jX1_yTG6CxnPNVEMf8mMEKc33jpoWoHkreMDZLPK8UcA@mail.gmail.com>
+Message-ID: <4c3ac295-41e-8644-4eed-2e5bcdaf302c@linutronix.de>
+References: <5712331.DvuYhMxLoT@kreacher> <CAJZ5v0jTG-oqV+misnP-=W5aq0S9X631kW9EhKNEn1VJQqwL2g@mail.gmail.com> <e3dc9417-626d-bae2-c016-36e14914c9b8@linutronix.de> <CAJZ5v0jX1_yTG6CxnPNVEMf8mMEKc33jpoWoHkreMDZLPK8UcA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <x49fs5awiel.fsf@segfault.boston.devel.redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1702551645-1691593797=:19513"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Sorry for the delayed response, EINBOXOVERFLOW.
+--8323329-1702551645-1691593797=:19513
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-On 2023-07-26 16:02:26 -0400, Jeff Moyer wrote:
-> Andres Freund <andres@anarazel.de> writes:
-> 
-> > Hi,
+On Mon, 7 Aug 2023, Rafael J. Wysocki wrote:
+
+> On Mon, Aug 7, 2023 at 5:38 PM Anna-Maria Behnsen
+> <anna-maria@linutronix.de> wrote:
 > >
-> > On 2023-06-30 15:10:03 +0000, Matteo Rizzo wrote:
-> >> Introduce a new sysctl (io_uring_disabled) which can be either 0, 1,
-> >> or 2. When 0 (the default), all processes are allowed to create io_uring
-> >> instances, which is the current behavior. When 1, all calls to
-> >> io_uring_setup fail with -EPERM unless the calling process has
-> >> CAP_SYS_ADMIN. When 2, calls to io_uring_setup fail with -EPERM
-> >> regardless of privilege.
+> > On Thu, 3 Aug 2023, Rafael J. Wysocki wrote:
 > >
-> > Hm, is there a chance that instead of requiring CAP_SYS_ADMIN, a certain group
-> > could be required (similar to hugetlb_shm_group)? Requiring CAP_SYS_ADMIN
-> > could have the unintended consequence of io_uring requiring tasks being run
-> > with more privileges than needed... Or some other more granular way of
-> > granting the right to use io_uring?
+> > > On Thu, Aug 3, 2023 at 11:12 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> > > >
+> > > > Hi Folks,
+> > > >
+> > > > This is the second iteration of:
+> > > >
+> > > > https://lore.kernel.org/linux-pm/4511619.LvFx2qVVIh@kreacher/
+> > > >
+> > > > with an additional patch.
+> > > >
+> > > > There are some small modifications of patch [1/3] and the new
+> > > > patch causes governor statistics to play a role in deciding whether
+> > > > or not to stop the scheduler tick.
+> > > >
+> > > > Testing would be much appreciated!
+> > >
+> > > For convenience, this series is now available in the following git branch:
+> > >
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+> > >  pm-cpuidle-teo
+> > >
+> >
+> > Gauthams tests and the distribution of idle time durations looks pretty
+> > good. Also the prevention of calling tick_nohz_get_sleep_length() is very
+> > nice (21477 calls of tick_nohz_next_event() and the tick was stopped 2670
+> > times).
+> >
+> > Here is the deviation of idle time durations (based on your branch):
+> >
+> > Idle Total              2670    100.00%
+> > x >= 4ms                2537    95.02%
+> > 4ms> x >= 2ms           19      0.71%
+> > 2ms > x >= 1ms          10      0.37%
+> > 1ms > x >= 500us        7       0.26%
+> > 500us > x >= 250us      6       0.22%
+> > 250us > x >=100us       13      0.49%
+> > 100us > x >= 50us       17      0.64%
+> > 50us > x >= 25us        25      0.94%
+> > 25us > x >= 10us        22      0.82%
+> > 10us > x > 5us          9       0.34%
+> > 5us > x                 5       0.19%
 > 
-> That's fine with me, so long as there is still an option to completely
-> disable io_uring.
-
-Makes sense.
-
-
-> > ISTM that it'd be nice if e.g. a systemd service specification could allow
-> > some services to use io_uring, without allowing it for everyone, or requiring
-> > to run services effectively as root.
+> Thanks a lot for the data!
 > 
-> Do you have a proposal for how that would work?
+> Can I add a Tested-by: tag from you to this series?
+> 
 
-I think group based permissions would allow for it, even if perhaps not in the
-most beautiful manner. Systemd can configure additional groups for a service
-with SupplementaryGroups, so adding a "io_uring" group or such should work.
-
-Greetings,
-
-Andres Freund
+Sure - sorry for the delay!
+--8323329-1702551645-1691593797=:19513--
