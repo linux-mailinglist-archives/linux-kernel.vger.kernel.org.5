@@ -2,160 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5AC7761A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2617761AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbjHINud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 09:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
+        id S229625AbjHINvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 09:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbjHINuc (ORCPT
+        with ESMTP id S229966AbjHINvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 09:50:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9BD1982
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:50:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B42E461260
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 13:50:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93292C433CA;
-        Wed,  9 Aug 2023 13:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691589030;
-        bh=Ttd/GCX5wRwkEEojWI8vGi9iFAE5AgRVud/qLF/aTj0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cQYhiZ4zfQt35rRYlT6nQITMz8qubxI0lUV2X7d2J8IqZIK2wyTROCAzjEhUStMI/
-         pVHNF8XaepzYEmib0IzCOq+uFKVNdeJcJeMdp8v4+cIyPkbRifzRLyT3hZjOidGWwu
-         uLyStbavPg+g5T7c64Ht6gvqjOE6sWW6MHnSy9IdtAYAKI3mYchHKsbKzeZfd8NdbB
-         Q62Xm02yu/2o1eWw6AL3ZEd5R2SWTyyk7AHZkXvmNXC7rkgyvukE4xwh00FBwsxKrX
-         iS2Xt1Osorq8s5Dccxiw32V/kIZy44eh0i1hOPIzQ9KfCfuEb0og7qrnI0dAHW/pfj
-         R2pyL9F/CDduA==
-Date:   Wed, 9 Aug 2023 14:50:25 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Michael Shavit <mshavit@google.com>
-Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, robin.murphy@arm.com,
-        nicolinc@nvidia.com, jgg@nvidia.com, jean-philippe@linaro.org
-Subject: Re: [PATCH v5 6/9] iommu/arm-smmu-v3: Move CD table to
- arm_smmu_master
-Message-ID: <20230809135024.GD4226@willie-the-truck>
-References: <20230808171446.2187795-1-mshavit@google.com>
- <20230809011204.v5.6.Ice063dcf87d1b777a72e008d9e3406d2bcf6d876@changeid>
+        Wed, 9 Aug 2023 09:51:09 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B83842110
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:51:04 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-2681223aaacso704807a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 06:51:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1691589064; x=1692193864;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XZSZbnMxGCAQaiOpSsvGGxA9SQHJTADmzlPQy3XEacw=;
+        b=gRYaeUtIwG7Vsj6K1gs1mw8g0NKm027QxgPMpJN3XS83Of3CN0gDtXTRiqfP2LUnTS
+         MpezfI1H7RLZHUXUCJYiYNKU1Iv/CPcbmf5GD5ql/EjLssB/yM4Diz7haopmI4H4we1/
+         E58q0yyDy8Y9M/ByN8h3EoEfOwpnlYyJH8YoLZorF6Q/dH+e4LmW4D6L0l0ld3Z3MuUi
+         dVk/l2hAXWz1lmEzr3Ps2R4yAcqOIWdmRQk2sFSig8h/PH5M3j7GsZiZbgcAOgG9LpaY
+         SBwV/De7DUvsQ1MtQ8MoH3lkmF88u7NaLVDtd97+0GG1h++3hPmyiHR1rwAGBrXxGSaj
+         +GmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691589064; x=1692193864;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XZSZbnMxGCAQaiOpSsvGGxA9SQHJTADmzlPQy3XEacw=;
+        b=l0sgB5mzxJptmy7H4XuEUT93vrTnxk1ExCTkgyF2vDE/+98feSLS4MO7P2kjJt2qD7
+         ZDorXvl7d9KBgHAJK6UTBW+EbSHGnNMdfLAowcymYGnCDORztfXVjLFIlsq9bCB7HmQj
+         xFl+vZ6SH7HF6+H+yf+MZ/Pr8CeUCbdqfw8avVE2HG6bddlqraa9HnUc76lz1Fqr2C2w
+         rm9DMHyhewkU5K9CRtsJQbw7ydaM++pGcK4aJMzvsKfcgVC5xYu4wVlWq+qe6QWjRWqQ
+         fZpmI3OH61aIOyAGEY9lGYX/L/l/F41rdaX8TqB2RzYDbwN80cB0HAwCkK8ZBHceyZra
+         6fpw==
+X-Gm-Message-State: AOJu0YxwtB7zzp1416N82v5CLEVmVHTEGPNfo3OtGX365Ia6D/pN2LSo
+        xsV+XiKCjGG4UG+dqAI/wcmuNQ==
+X-Google-Smtp-Source: AGHT+IGyRd7WJudjB3NASLPZ4tgpVvTHKIUwDcteCrieyWhPuWEJw66UxEJgD77KWtV9WrOp4w7wbg==
+X-Received: by 2002:a17:90a:6e43:b0:267:f1d7:ed68 with SMTP id s3-20020a17090a6e4300b00267f1d7ed68mr3848999pjm.14.1691589064187;
+        Wed, 09 Aug 2023 06:51:04 -0700 (PDT)
+Received: from work.. (1-161-169-231.dynamic-ip.hinet.net. [1.161.169.231])
+        by smtp.gmail.com with ESMTPSA id p12-20020a17090a284c00b00262ca945cecsm1542677pjf.54.2023.08.09.06.51.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 06:51:03 -0700 (PDT)
+From:   Nick Hu <nick.hu@sifive.com>
+To:     nick.hu@sifive.com, zong.li@sifive.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH v2 0/1] Add Sifive uart suspend and resume
+Date:   Wed,  9 Aug 2023 21:50:41 +0800
+Message-Id: <20230809135042.2443350-1-nick.hu@sifive.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809011204.v5.6.Ice063dcf87d1b777a72e008d9e3406d2bcf6d876@changeid>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 01:12:02AM +0800, Michael Shavit wrote:
-> @@ -2203,7 +2186,7 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
->  		ias = min_t(unsigned long, ias, VA_BITS);
->  		oas = smmu->ias;
->  		fmt = ARM_64_LPAE_S1;
-> -		finalise_stage_fn = arm_smmu_domain_finalise_s1;
-> +		finalise_stage_fn = arm_smmu_domain_finalise_cd;
+Add Sifive uart suspend and resume functions for system suspend.
 
-Why is this a better name? Now we have inconsistency with
-arm_smmu_domain_finalise_s2().
+Changes in v2:
+- Change Signed-off-by: Ben Dooks to Reviewed-by: Ben Dooks
+- Remove the unnecessary check
 
->  		break;
->  	case ARM_SMMU_DOMAIN_NESTED:
->  	case ARM_SMMU_DOMAIN_S2:
-> @@ -2402,6 +2385,16 @@ static void arm_smmu_detach_dev(struct arm_smmu_master *master)
->  	master->domain = NULL;
->  	master->ats_enabled = false;
->  	arm_smmu_install_ste_for_dev(master);
-> +	/*
-> +	 * The table is uninstalled before clearing the CD to prevent an
-> +	 * unnecessary sync in arm_smmu_write_ctx_desc. Although clearing the
-> +	 * CD entry isn't strictly required to detach the domain since the
-> +	 * table is uninstalled anyway, it's more proper and helps avoid
-> +	 * confusion in the call to arm_smmu_write_ctx_desc on the next attach
+Nick Hu (1):
+  serial: sifive: Add suspend and resume operations
 
-You can remove the "it's more proper" part.
+ drivers/tty/serial/sifive.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-> +	 * (which expects the entry to be empty).
-> +	 */
-> +	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1 && master->cd_table.cdtab)
-> +		arm_smmu_write_ctx_desc(master, 0, NULL);
->  }
->  
->  static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
-> @@ -2436,22 +2429,14 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
->  	if (!smmu_domain->smmu) {
->  		smmu_domain->smmu = smmu;
->  		ret = arm_smmu_domain_finalise(domain, master);
-> -		if (ret) {
-> +		if (ret)
->  			smmu_domain->smmu = NULL;
-> -			goto out_unlock;
-> -		}
-> -	} else if (smmu_domain->smmu != smmu) {
-> -		ret = -EINVAL;
-> -		goto out_unlock;
-> -	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1 &&
-> -		   master->ssid_bits != smmu_domain->cd_table.max_cds_bits) {
-> +	} else if (smmu_domain->smmu != smmu)
->  		ret = -EINVAL;
-> -		goto out_unlock;
-> -	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1 &&
-> -		   smmu_domain->cd_table.stall_enabled != master->stall_enabled) {
-> -		ret = -EINVAL;
-> -		goto out_unlock;
-> -	}
+-- 
+2.34.1
 
-Removing these checks on the domain is pretty nice.
-
-> @@ -2465,6 +2450,22 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
->  	if (smmu_domain->stage != ARM_SMMU_DOMAIN_BYPASS)
->  		master->ats_enabled = arm_smmu_ats_supported(master);
->  
-> +	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
-> +		if (!master->cd_table.cdtab) {
-> +			ret = arm_smmu_alloc_cd_tables(master);
-> +			if (ret) {
-> +				master->domain = NULL;
-> +				return ret;
-> +			}
-> +		}
-> +
-> +		ret = arm_smmu_write_ctx_desc(master, 0, &smmu_domain->cd);
-> +		if (ret) {
-> +			master->domain = NULL;
-> +			return ret;
-
-Can you leak the cd tables here if you just allocated them?
-
-> @@ -2472,10 +2473,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
->  	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
->  
->  	arm_smmu_enable_ats(master);
-> -
-> -out_unlock:
-> -	mutex_unlock(&smmu_domain->init_mutex);
-> -	return ret;
-> +	return 0;
->  }
->  
->  static int arm_smmu_map_pages(struct iommu_domain *domain, unsigned long iova,
-> @@ -2719,6 +2717,8 @@ static void arm_smmu_release_device(struct device *dev)
->  	arm_smmu_detach_dev(master);
->  	arm_smmu_disable_pasid(master);
->  	arm_smmu_remove_master(master);
-> +	if (master->cd_table.cdtab_dma)
-
-Why are you checking 'cdtab_dma' here instead of just 'cdtab'?
-
-Will
