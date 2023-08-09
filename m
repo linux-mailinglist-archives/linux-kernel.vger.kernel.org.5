@@ -2,178 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0381D776667
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0577E77666D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbjHIRYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 13:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44436 "EHLO
+        id S231140AbjHIR1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 13:27:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjHIRYI (ORCPT
+        with ESMTP id S230474AbjHIR1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 13:24:08 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DA383;
-        Wed,  9 Aug 2023 10:24:07 -0700 (PDT)
-Received: from [192.168.0.192] (unknown [194.146.248.75])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: andrzej.p)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D62816607200;
-        Wed,  9 Aug 2023 18:24:05 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691601846;
-        bh=JXOLgWKc1lM3VooaPNt+PgNHBWggL7AKGCZQCKh4MTA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=O7brZRAYETEa/tj1UTjpKUUugbmb82ujhmDXnYCgHgQEDmZgjnvtdvbCfTnGe+eIC
-         +UsArPZLlvUNMoE2LRFH/SxqYMlaO8CGejtXnT6wzKiS8zTxB87P1vnaZCp3sDVgrc
-         CKFj+On86+FcYgpigb04wA/xci3iVu1d1ge3mp4/xWXqHnGg3u8DxbjACrSuK5nlQ/
-         t/b7vzn2cXLJBONWq1e+8RcgrA75vYT6YXAfGtoy//bl8pqIm+DQNzSypKy82ZB45w
-         WoWMRM20jYD+XwTBNnTlHkZMiGUVRAsHSG16SvBQeWAkTbYaRkohuGu0BRwrH8sa7G
-         MHRHB2H0zdIQg==
-Message-ID: <ad5d3fe5-8985-1eef-74dd-8c9bfbceb19e@collabora.com>
-Date:   Wed, 9 Aug 2023 19:24:03 +0200
+        Wed, 9 Aug 2023 13:27:04 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5DB8E
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 10:27:03 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99c1f6f3884so17163066b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 10:27:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gateworks-com.20221208.gappssmtp.com; s=20221208; t=1691602022; x=1692206822;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=locXRAZShx/Ip09/WBeCOmXx0r2GGenxopdxoXszxv4=;
+        b=y3JdGKp6XUwqjk5BTCCcWOSzYHLli0AanC7EjSVi+9o0f+WfR+lqztQvdzDIAL9L/e
+         0I0VAp5tOdVvxELYy6mxepOWpK+uSajeU12W2WDZGEX8sVKJcruxVBs/oqNHY5aFewca
+         WO0DcYG524ZrsJiD5IQlU/R+C4JwtWMlzB6NunHWMbHcCRESKtfc+gg4WRVlJgF9SvUB
+         9e6xSq/W+30fyz2Ae4aPIbvi5O/lPTrzk3iTRzDjTcRAh9+Wld7mhzZvEIvJpIOGAB3L
+         69Z41NR4qctOqsuv7VkdtCbSLynNkWqE+byOeGGog+kqYbkpoLWsjFPlwcOvZ/XDWe25
+         CcNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691602022; x=1692206822;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=locXRAZShx/Ip09/WBeCOmXx0r2GGenxopdxoXszxv4=;
+        b=XY9oH5gkZJ3sfC/kUn7l8NSMhiRaZYrtJ9h4F3JIY4cDjcBz7EVOeF9CtVI4rRJeAa
+         WAlHEYkHzgy8LECWNh7XUNJLLJ2C4sYwFEVv4i6G01DR+0gFDkaPf/t9neh9Yae5viJc
+         kebfCAuUe1zwVBD8PHZ89fL5TVKiinnkHVhw76MhunCFwVFZtiVoHR3NbtkwhvmhEZkx
+         5hwtY6yw/xT4dMcxSXMnV+DAuoZJ0gA7tTurxNfUJdhsbcHmIdbbypxhkpoZEP3FaQnp
+         KmaWjXsBvm7H3UqkIpXr4IJI4n5q4R8B53NVcqzzfrslitgbSkqoqdTj0x8Kubm2XYDK
+         tReA==
+X-Gm-Message-State: AOJu0YxbRGYm6DKAJElVCoIwPQaUg3IAdwvjDzMXRs+fOn4d3h3tI12a
+        HI6mbj2HSRfVyA3G+94nS2LLkSTSTTdud3KRUht2wQ==
+X-Google-Smtp-Source: AGHT+IHtrMogMIA6OZzL5wgc+r5NnSaIuZnZRBEHDfchxWZ56RmJp/KfgGoxAx8j/5a373SPm/bsc/EoQEvJQeZRbI4=
+X-Received: by 2002:a17:906:76d4:b0:99c:581f:7f51 with SMTP id
+ q20-20020a17090676d400b0099c581f7f51mr2651367ejn.54.1691602022140; Wed, 09
+ Aug 2023 10:27:02 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Stateless Encoding uAPI Discussion and Proposal
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <ZK2NiQd1KnraAr20@aptenodytes>
- <c46d0c53b7e5dc8dcdf7925f3d892024390a8b2b.camel@collabora.com>
- <0b5717cb-8f30-c38c-f20e-e8a81d29423a@xs4all.nl>
- <ZNOmL_mZdYhmFsJI@aptenodytes>
-Content-Language: en-US
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-In-Reply-To: <ZNOmL_mZdYhmFsJI@aptenodytes>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230806233333.815702-1-festevam@gmail.com> <CAJ+vNU0cDTGHoqJMDdwea48RSaETyvsg2NXCcEE3FBNr4-ckvg@mail.gmail.com>
+ <3bbd635f-85a6-9031-3264-e5209f8bc44f@linaro.org>
+In-Reply-To: <3bbd635f-85a6-9031-3264-e5209f8bc44f@linaro.org>
+From:   Tim Harvey <tharvey@gateworks.com>
+Date:   Wed, 9 Aug 2023 10:26:50 -0700
+Message-ID: <CAJ+vNU3UERhaODKE_Btzei-HYEkvNK=roBh5i9Z0GQP-9dryBw@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: imx8m-venice: Pass "brcm,bcm4329-fmac"
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Fabio Estevam <festevam@gmail.com>
+Cc:     shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@denx.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul & Hans,
+On Tue, Aug 8, 2023 at 11:33=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 09/08/2023 01:52, Tim Harvey wrote:
+> > On Sun, Aug 6, 2023 at 4:33=E2=80=AFPM Fabio Estevam <festevam@gmail.co=
+m> wrote:
+> >>
+> >> From: Fabio Estevam <festevam@denx.de>
+> >>
+> >> Pass "brcm,bcm4329-fmac" to fix the following schema warnings:
+> >>
+> >> imx8mp-venice-gw74xx.dtb: wifi@0: compatible: 'oneOf' conditional fail=
+ed, one must be fixed:
+> >>         ['cypress,cyw4373-fmac'] is too short
+> >>         'cypress,cyw4373-fmac' is not one of ['brcm,bcm4329-fmac', 'pc=
+i14e4,43dc', 'pci14e4,4464', 'pci14e4,4488', 'pci14e4,4425', 'pci14e4,4433'=
+]
+> >>         from schema $id: http://devicetree.org/schemas/net/wireless/br=
+cm,bcm4329-fmac.yaml#
+> >>
+> >> imx8mn-venice-gw7902.dtb: wifi@0: compatible: 'oneOf' conditional fail=
+ed, one must be fixed:
+> >>         ['brcm,bcm43455-fmac'] is too short
+> >>         'brcm,bcm43455-fmac' is not one of ['brcm,bcm4329-fmac', 'pci1=
+4e4,43dc', 'pci14e4,4464', 'pci14e4,4488', 'pci14e4,4425', 'pci14e4,4433']
+> >>         from schema $id: http://devicetree.org/schemas/net/wireless/br=
+cm,bcm4329-fmac.yaml#
+> >>
+> >> Signed-off-by: Fabio Estevam <festevam@denx.de>
+> >> ---
+> >>  arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts | 2 +-
+> >>  arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts | 2 +-
+> >>  arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts | 2 +-
+> >>  arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts | 2 +-
+> >>  4 files changed, 4 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts b/=
+arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+> >> index 21d7b16d6f84..cde29aa1a0a2 100644
+> >> --- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+> >> +++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+> >> @@ -801,7 +801,7 @@ &usdhc1 {
+> >>         status =3D "okay";
+> >>
+> >>         wifi@0 {
+> >> -               compatible =3D "brcm,bcm43455-fmac";
+> >> +               compatible =3D "brcm,bcm43455-fmac", "brcm,bcm4329-fma=
+c";
+> >>                 reg =3D <0>;
+> >>         };
+> >>  };
+> >> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts b/=
+arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
+> >> index 964cc4fc2ddf..0bff7a6fdca6 100644
+> >> --- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
+> >> +++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
+> >> @@ -726,7 +726,7 @@ &usdhc2 {
+> >>         status =3D "okay";
+> >>
+> >>         wifi@0 {
+> >> -               compatible =3D "brcm,bcm43455-fmac";
+> >> +               compatible =3D "brcm,bcm43455-fmac", "brcm,bcm4329-fma=
+c";
+> >>                 reg =3D <0>;
+> >>         };
+> >>  };
+> >> diff --git a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts b/=
+arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+> >> index 3ac011bbc025..9a36edc60394 100644
+> >> --- a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+> >> +++ b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+> >> @@ -679,7 +679,7 @@ &usdhc2 {
+> >>         status =3D "okay";
+> >>
+> >>         wifi@0 {
+> >> -               compatible =3D "brcm,bcm43455-fmac";
+> >> +               compatible =3D "brcm,bcm43455-fmac", "brcm,bcm4329-fma=
+c";
+> >>                 reg =3D <0>;
+> >>         };
+> >>  };
+> >> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts b/=
+arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
+> >> index 3473423ac939..faa370a5885f 100644
+> >> --- a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
+> >> +++ b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
+> >> @@ -737,7 +737,7 @@ &usdhc1 {
+> >>         status =3D "okay";
+> >>
+> >>         wifi@0 {
+> >> -               compatible =3D "cypress,cyw4373-fmac";
+> >> +               compatible =3D "cypress,cyw4373-fmac", "brcm,bcm4329-f=
+mac";
+> >>                 reg =3D <0>;
+> >>         };
+> >>  };
+> >> --
+> >> 2.34.1
+> >>
+> >
+> > Fabio,
+> >
+> > Thank you for your continued efforts to squash out all these
+> > dt-binding warnings/issues.
+> >
+> > Can you explain what the difference is in the dt-binding yaml between
+> > compatible/oneOf/items/{enum,const} and compatible/oneOf/enum? The
+>
+> items defines a list. items with enum and const, defines a list of two
+> items, where first is an enum (so oneOf few) and second is fixed.
+>
+> compatible/oneOf/enum is not a list. Or you could look at it as
+> one-element-list.
+>
+>
+> > first list for Documentation/devicetree/bindings/net/wireless/brcm,bcm4=
+329-fmac.yaml
+> > has a much larger set of enums including the bcm43455 on these boards
+> > but the second set of enums has a much more limited set.
+>
+> What's the question here? Both define different things. One defines
+> compatible devices with some model, second defines just some devices.
+>
+>
+> > There is no
+> > driver code to look at for this because it is bound via SDIO device
+> > id's instead of the dt compatible property.
+> >
+> > Best regards,
+> >
+> > Tim
+>
 
-W dniu 9.08.2023 o 16:43, Paul Kocialkowski pisze:
-> Hi Hans,
-> 
-> On Wed 26 Jul 23, 10:18, Hans Verkuil wrote:
->> On 11/07/2023 20:18, Nicolas Dufresne wrote:
->>> Le mardi 11 juillet 2023 à 19:12 +0200, Paul Kocialkowski a écrit :
->>>> Hi everyone!
->>>>
->>>> After various discussions following Andrzej's talk at EOSS, feedback from the
->>>> Media Summit (which I could not attend unfortunately) and various direct
->>>> discussions, I have compiled some thoughts and ideas about stateless encoders
->>>> support with various proposals. This is the result of a few years of interest
->>>> in the topic, after working on a PoC for the Hantro H1 using the hantro driver,
->>>> which turned out to have numerous design issues.
->>>>
->>>> I am now working on a H.264 encoder driver for Allwinner platforms (currently
->>>> focusing on the V3/V3s), which already provides some usable bitstream and will
->>>> be published soon.
->>>>
->>>> This is a very long email where I've tried to split things into distinct topics
->>>> and explain a few concepts to make sure everyone is on the same page.
->>>>
->>>> # Bitstream Headers
->>>>
->>>> Stateless encoders typically do not generate all the bitstream headers and
->>>> sometimes no header at all (e.g. Allwinner encoder does not even produce slice
->>>> headers). There's often some hardware block that makes bit-level writing to the
->>>> destination buffer easier (deals with alignment, etc).
->>>>
->>>> The values of the bitstream headers must be in line with how the compressed
->>>> data bitstream is generated and generally follow the codec specification.
->>>> Some encoders might allow configuring all the fields found in the headers,
->>>> others may only allow configuring a few or have specific constraints regarding
->>>> which values are allowed.
->>>>
->>>> As a result, we cannot expect that any given encoder is able to produce frames
->>>> for any set of headers. Reporting related constraints and limitations (beyond
->>>> profile/level) seems quite difficult and error-prone.
->>>>
->>>> So it seems that keeping header generation in-kernel only (close to where the
->>>> hardware is actually configured) is the safest approach.
->>>
->>> This seems to match with what happened with the Hantro VP8 proof of concept. The
->>> encoder does not produce the frame header, but also, it produces 2 encoded
->>> buffers which cannot be made contiguous at the hardware level. This notion of
->>> plane in coded data wasn't something that blended well with the rest of the API
->>> and we didn't want to copy in the kernel while the userspace would also be
->>> forced to copy to align the headers. Our conclusion was that it was best to
->>> generate the headers and copy both segment before delivering to userspace. I
->>> suspect this type of situation will be quite common.
->>>
->>>>
->>>> # Codec Features
->>>>
->>>> Codecs have many variable features that can be enabled or not and specific
->>>> configuration fields that can take various values. There is usually some
->>>> top-level indication of profile/level that restricts what can be used.
->>>>
->>>> This is a very similar situation to stateful encoding, where codec-specific
->>>> controls are used to report and set profile/level and configure these aspects.
->>>> A particularly nice thing about it is that we can reuse these existing controls
->>>> and add new ones in the future for features that are not yet covered.
->>>>
->>>> This approach feels more flexible than designing new structures with a selected
->>>> set of parameters (that could match the existing controls) for each codec.
->>>
->>> Though, reading more into this emails, we still have a fair amount of controls
->>> to design and add, probably some compound controls too ?
->>
->> I expect that for stateless encoders support for read-only requests will be needed:
->>
->> https://patchwork.linuxtv.org/project/linux-media/list/?series=5647
->>
->> I worked on that in the past together with dynamic control arrays. The dynamic
->> array part was merged, but the read-only request part wasn't (there was never a
->> driver that actually needed it).
->>
->> I don't know if that series still applies, but if there is a need for it then I
->> can rebase it and post an RFCv3.
-> 
-> So if I understand this correctly (from a quick look), this would be to allow
-> stateless encoder drivers to attach a particular control value to a specific
-> returned frame?
-> 
-> I guess this would be a good match to return statistics about the encoded frame.
-> However that would probably be expressed in a hardware-specific way so it
-> seems preferable to not expose this to userspace and handle it in-kernel
-> instead.
-> 
-> What's really important for userspace to know (in order to do user-side
-> rate-control, which we definitely want to support) is the resulting bitstream
-> size. This is already available with bytesused.
-> 
-> So all in all I think we're good with the current status of request support.
+Krzysztof,
 
-Yup. I agree. Initially, while working on VP8 encoding we introduced (read-only)
-requests on the capture queue, but they turned out not to be useful in this
-context and we removed them.
+Thanks for the explanation. I see now that if I want to specify
+anything other than the enums in the second item (brcm,bcm4329-fmac,
+and the pci14e4*), per the first item I must follow it with
+'brcm,bcm4329-fmac'.
 
-Regards.
+Acked-by: Tim Harvey <tharvey@gateworks.com>
 
-Andrzej
+best regards,
 
-> 
-> Cheers,
-> 
-> Paul
-> 
-
+Tim
