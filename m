@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D523F77645A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8584477645D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232625AbjHIPse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51248 "EHLO
+        id S233693AbjHIPsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232756AbjHIPsd (ORCPT
+        with ESMTP id S232908AbjHIPsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:48:33 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED0F1FF7
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:48:31 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2ba0f27a4c2so103345161fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:48:31 -0700 (PDT)
+        Wed, 9 Aug 2023 11:48:35 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66CC1FEF;
+        Wed,  9 Aug 2023 08:48:34 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe4cdb727cso49059855e9.0;
+        Wed, 09 Aug 2023 08:48:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1691596110; x=1692200910;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=E1r9SEbY/6BeSSvbVtRdbVSYPWqzFDwd0F7d6h1DkFU=;
-        b=gIQZNr9zucdDpiDYxZAbnSd8p+eXyRJwgBN2PAmxVDna8ceKNJtFeXf7HTwR1SVrIq
-         XMYqqlFBKE09cOyG0eoO6o3XAIff8kErBdLGucfq2Q4c3e2Ujajt9Ybroo+jDb/DVd87
-         iSdZjDH5wfyPOcr+0if2kWXr20MjD3dJUWkvk=
+        d=gmail.com; s=20221208; t=1691596113; x=1692200913;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FNAUmWM3JtAR5Xew43AJylljCyPA085c+UJjgn20Ff0=;
+        b=gJc1PuCJ9nZ3KJbXveQg/jHhaY4wMbzpez59erprqt6jsCW8e09eL94FmjSLwcjpg+
+         5Ev+MWraTPfz5JUXbm2bx/R+m4F9Uh8EZnRm5+mGMkb9ynxBb/7DiKPoa1u5SXeY+vyR
+         i4D0sB3KdRSDJ1774jN4bzh92GTpem+n3VEVBcmACOssC+I/WPXUFKbsjSHr0464nSJx
+         KyJXlvArXI4ziCAA1djMX+ZT1G63uxvu1uIvP6UN8dABiP+mjDktH9KvD6BrDidutZKC
+         kd2+E+Yk1lHg38QwW+30MpGhhT8unVJAIQMsR+jyH1CvYXlqateStkpDfnNqSa5xOuVS
+         MUvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691596110; x=1692200910;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1691596113; x=1692200913;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=E1r9SEbY/6BeSSvbVtRdbVSYPWqzFDwd0F7d6h1DkFU=;
-        b=DjuKlQnh/TaCOtjUc6EGT0vEuCX31c9YX1JidNLdCzkb/dg0MndQcEsMorx04An4sJ
-         ipFYdLj3dUdLFq1Rfj/1HPIooyS012KiicZXd1HffHFYBG2r1+4r9JBObEHkEyMfgPos
-         Jfhe53/wKoeMag1VRXrf44xPxeZus4/pXxDj6A18DB1JobrfglSrTUdmi3ec2F5BXxwM
-         7KdIWPlATU4GwcR7C9DnMf87NEcwGqgKXOZCnZ7B1Dch7dGGYZ6asSKFY/h45nKnl3qo
-         JY7xApLsV83B0yG23ICZXd5g5vj0gZPJSik0RcXrygpwr92TQLG7nMwVcnmIpVmUIHub
-         TxJA==
-X-Gm-Message-State: AOJu0YxXBptG0jwU6z62LlTM4YpLgs4PO/mQ6OLkEVu9uiL7DzJ8zK+V
-        nVDEsVFW9UqHJvOsON5Xgf63avPGWKnQIrYtFgUhrm7P
-X-Google-Smtp-Source: AGHT+IEYjVC7nTlVEEsmvsWTB7N6Q1RiVZW/DSuQWqwawuNqwFLYaT8Ajxx2BJ25uYvvr9T69caZjg==
-X-Received: by 2002:a2e:b6d1:0:b0:2b9:d71c:b4a4 with SMTP id m17-20020a2eb6d1000000b002b9d71cb4a4mr2276607ljo.12.1691596109929;
-        Wed, 09 Aug 2023 08:48:29 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id z27-20020a05651c023b00b002b83dbc71c9sm2771287ljn.54.2023.08.09.08.48.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 08:48:29 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-4fe7e1ef45dso2463437e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:48:29 -0700 (PDT)
-X-Received: by 2002:ac2:5bca:0:b0:4fb:89ad:6651 with SMTP id
- u10-20020ac25bca000000b004fb89ad6651mr1974250lfn.28.1691596108621; Wed, 09
- Aug 2023 08:48:28 -0700 (PDT)
+        bh=FNAUmWM3JtAR5Xew43AJylljCyPA085c+UJjgn20Ff0=;
+        b=YDyxpO/Qd2ZLjEF60pFTvO/jCzQOvOnufdGGrjQtsFdrRJy5XkyUg7Yd3u2s3rXaAR
+         bZm966H0PuvmyMA7ikaC/+FCLTJ9z8Sb0oFsdQ5HXS/XFv6WBiDJyaS7m6p9bMWg2o+o
+         /SasMencU5DvYYsUh9RTBcBVwili3zrX5kNkQafOdl3vcLVCmfRET/s2/PizC0r4sh15
+         l1uz0/v+S+4ijS9P5y80GEm6JsO+P42vGN/QLd0IERjtRoBCd1QGa8dUHNu8GwjiMFu4
+         VfHadMBGCmOhRnRSdbLtXpc58/ujyivhR/J9cq830psI6hSIttSjSiADgI/7ZQ4DSgo/
+         97kw==
+X-Gm-Message-State: AOJu0Yy+rgBaF1ThOiUo8dtm4eG8SeVPzVCuKukZUcQy30NwJ16ei9U8
+        sCZTrTSmdbfELX62iYUWUYbTmVHyUVm2Vw==
+X-Google-Smtp-Source: AGHT+IGkxOkZaTOhnw8brA33PBkFL5ObnWyNyyI7poJwX7Ye2KMDU+ApM9qS2/XT8Dwzw6RAah+HsA==
+X-Received: by 2002:a05:600c:2197:b0:3fe:63ca:ccf6 with SMTP id e23-20020a05600c219700b003fe63caccf6mr2435578wme.16.1691596112921;
+        Wed, 09 Aug 2023 08:48:32 -0700 (PDT)
+Received: from localhost.localdomain ([92.85.190.61])
+        by smtp.gmail.com with ESMTPSA id y9-20020a1c4b09000000b003fe215e4492sm2312396wma.4.2023.08.09.08.48.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 08:48:32 -0700 (PDT)
+From:   Andrei Coardos <aboutphysycs@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+Cc:     florian.fainelli@broadcom.com, rui.zhang@intel.com,
+        amitk@kernel.org, daniel.lezcano@linaro.org, rafael@kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, mmayer@broadcom.com,
+        alex@shruggie.ro, Andrei Coardos <aboutphysycs@gmail.com>
+Subject: [PATCH] thermal: broadcom: brcstb_thermal: removed unneeded platform_set_drvdata()
+Date:   Wed,  9 Aug 2023 18:48:13 +0300
+Message-Id: <20230809154813.16033-1-aboutphysycs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <87edkce118.wl-tiwai@suse.de> <20230809143801.GA693@lst.de>
-In-Reply-To: <20230809143801.GA693@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 9 Aug 2023 08:48:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiyWOaPtOJ1PTdERswXV9m7W_UkPV-HE0kbpr48mbnrEA@mail.gmail.com>
-Message-ID: <CAHk-=wiyWOaPtOJ1PTdERswXV9m7W_UkPV-HE0kbpr48mbnrEA@mail.gmail.com>
-Subject: Re: [PATCH RFC] Introduce uniptr_t as a generic "universal" pointer
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,41 +72,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Aug 2023 at 07:38, Christoph Hellwig <hch@lst.de> wrote:
->
-> The original set_fs removal series did that as uptr_t, and Linus
-> hated it with passion.  I somehow doubt he's going to like it more now.
+This function call was found to be unnecessary as there is no equivalent
+platform_get_drvdata() call to access the private data of the driver. Also,
+the private data is defined in this driver, so there is no risk of it being
+accessed outside of this driver file.
 
-Christoph is right. I do hate this. The whole "pass a pointer that is
-either user or kernel" concept is wrong.
+Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+---
+ drivers/thermal/broadcom/brcmstb_thermal.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Now, if it was some kind of extended pointer that also included the
-length of the area and had a way to deal with updating the pointer
-sanely, maybe that would be a different thing.
+diff --git a/drivers/thermal/broadcom/brcmstb_thermal.c b/drivers/thermal/broadcom/brcmstb_thermal.c
+index 72d1dbe60b8f..2997c589ac7d 100644
+--- a/drivers/thermal/broadcom/brcmstb_thermal.c
++++ b/drivers/thermal/broadcom/brcmstb_thermal.c
+@@ -334,7 +334,6 @@ static int brcmstb_thermal_probe(struct platform_device *pdev)
+ 		return PTR_ERR(priv->tmon_base);
+ 
+ 	priv->dev = &pdev->dev;
+-	platform_set_drvdata(pdev, priv);
+ 	of_ops = priv->temp_params->of_ops;
+ 
+ 	thermal = devm_thermal_of_zone_register(&pdev->dev, 0, priv,
+-- 
+2.34.1
 
-And it should guarantee that in the case of a user pointer it had gone
-through access_ok().
-
-And it also allowed the other common cases like having a raw page
-array, along with a unified interface to copy and update this kind of
-pointer either as a source or a destination, that would be a different
-thing.
-
-But this kind of "if (uniptr_is_kernel(src))" special case thing is
-just garbage and *not* acceptable.
-
-And oh, btw, we already *have* that extended kind of unipointer thing.
-
-It's called "struct iov_iter".
-
-And yes, it's a very complicated thing, exactly because it handles way
-more cases than that uniptr_t. It's a *real* unified pointer of many
-different types.
-
-Those iov_iter things are often so complicated that you really don't
-want to use them, but if you really want a uniptr, that is what you
-should do. It comes with a real cost, but it does come with real
-advantages, one of which is "this is extensively tested
-nfrastructure".
-
-                  Linus
