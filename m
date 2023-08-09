@@ -2,162 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A008776687
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92F377668E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbjHIRip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 13:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
+        id S232715AbjHIRjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 13:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbjHIRio (ORCPT
+        with ESMTP id S229829AbjHIRjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 13:38:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8F7E71;
-        Wed,  9 Aug 2023 10:38:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 43DF264311;
-        Wed,  9 Aug 2023 17:38:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AF67C433C7;
-        Wed,  9 Aug 2023 17:38:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691602721;
-        bh=JEJkyDA9mNcPNMW2BuJGF6PgKkgkGalfSfXFkQWZKhM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tq1eoIkfdHy3ArOqTDn4u16YGaskMie+zV/Px2pdMO+p7mwSk2jIcXc84UbQ3naLy
-         AZL/dX+Xl1TrhwZLNDXZbzjQgkouCcptFeZQlqWaIYf+4HY0hgy0PqKYxONzT3JbvU
-         1YRJbD1aqnZZ/1vN97f7npFMQjU8q4HCvZfeLB38+JHNub2soLcZ+cnTuS0muSkMSA
-         U5zu5gNFUdIx+ghF0n8KC7XLYXAT4xHnKhyFqB8gxeWJl9S/yD8YBTVzj6KGq8p1Xn
-         TXJtNajuj2YmQ2342YfUNUZ/8RFSooDTJImjgBtyd0Z1MVGJEXXHdlZtriKkmMZPDx
-         0j0mY4L9sRysQ==
-Date:   Wed, 9 Aug 2023 18:38:36 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        Wed, 9 Aug 2023 13:39:31 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F48E71;
+        Wed,  9 Aug 2023 10:39:31 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379HdCZw058014;
+        Wed, 9 Aug 2023 12:39:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691602752;
+        bh=DW02Hdws2cTgi1idHFvVaz8VmWVCgengNghKzecN+S8=;
+        h=From:To:Subject:Date;
+        b=RaA5ZPuttkZ2kC8EEl8F6MlIGEEMvA1BPGRR6RB/IC5y+kC5lu2IWgn8psRWTb+hE
+         rdjMi/AMKD9WO5/L2JqA+Iv0g5LITo5enI/xFAmGk/M8/XyWzxw1Fja0F3MbYrEJQK
+         bySdT/g6mqrA7QApovmKBn0d/EW1cFir5M15fIpQ=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379HdCFM097117
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Aug 2023 12:39:12 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
+ Aug 2023 12:39:10 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 9 Aug 2023 12:39:10 -0500
+Received: from TI.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379Hd6ga077353;
+        Wed, 9 Aug 2023 12:39:06 -0500
+From:   Apurva Nandan <a-nandan@ti.com>
+To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next v3 09/10] dt-bindings: net: snps,dwmac: add per
- channel irq support
-Message-ID: <20230809-scabby-cobweb-bb825dffb309@spud>
-References: <20230809165007.1439-1-jszhang@kernel.org>
- <20230809165007.1439-10-jszhang@kernel.org>
+        Rafael J Wysocki <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, Udit Kumar <u-kumar1@ti.com>,
+        Keerthy J <j-keerthy@ti.com>
+Subject: [PATCH 0/3] Add support for thermal mitigation for K3 J7200 SoC
+Date:   Wed, 9 Aug 2023 23:09:02 +0530
+Message-ID: <20230809173905.1844132-1-a-nandan@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xjvlQWsUfSJ189eD"
-Content-Disposition: inline
-In-Reply-To: <20230809165007.1439-10-jszhang@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add support for thermal mitigation using the CPUFREQ for K3 J7200 SoC.
+K3 J7200 SoC supports Dynamic Frequency Scaling(DFS) for A72 & this can
+be used to drop the cpu frequency using cpufreq to produce a cooling
+effect in the SoC.
 
---xjvlQWsUfSJ189eD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Keerthy (3):
+  thermal: k3_j72xx_bandgap: Add cooling device support
+  arm64: dts: ti: k3-j7200: Add the supported frequencies for A72
+  arm64: dts: ti: k3-j7200-thermal: Add cooling maps and cpu_alert trip
+    at 75C
 
-On Thu, Aug 10, 2023 at 12:50:06AM +0800, Jisheng Zhang wrote:
-> The IP supports per channel interrupt, add support for this usage case.
->=20
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+ arch/arm64/boot/dts/ti/k3-j7200-thermal.dtsi |  14 +++
+ arch/arm64/boot/dts/ti/k3-j7200.dtsi         |  28 +++++
+ drivers/thermal/k3_j72xx_bandgap.c           | 121 +++++++++++++++++++
+ 3 files changed, 163 insertions(+)
 
-I do not see a response to
-<https://lore.kernel.org/all/20230808-clapper-corncob-0af7afa65752@spud/>
-in my mailbox or on lore, nor is there any changes in v3 on this front.
+-- 
+2.34.1
 
-Thanks,
-Conor.
-
-> ---
->  .../devicetree/bindings/net/snps,dwmac.yaml   | 33 +++++++++++++++++++
->  1 file changed, 33 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Docu=
-mentation/devicetree/bindings/net/snps,dwmac.yaml
-> index 5d81042f5634..5a63302ad200 100644
-> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> @@ -109,6 +109,7 @@ properties:
->        - description: The interrupt that occurs when Rx exits the LPI sta=
-te
->        - description: The interrupt that occurs when Safety Feature Corre=
-ctible Errors happen
->        - description: The interrupt that occurs when Safety Feature Uncor=
-rectible Errors happen
-> +      - description: All of the rx/tx per-channel interrupts
-> =20
->    interrupt-names:
->      minItems: 1
-> @@ -118,6 +119,38 @@ properties:
->        - const: eth_lpi
->        - const: sfty_ce
->        - const: sfty_ue
-> +      - const: rx0
-> +      - const: rx1
-> +      - const: rx2
-> +      - const: rx3
-> +      - const: rx4
-> +      - const: rx5
-> +      - const: rx6
-> +      - const: rx7
-> +      - const: rx8
-> +      - const: rx9
-> +      - const: rx10
-> +      - const: rx11
-> +      - const: rx12
-> +      - const: rx13
-> +      - const: rx14
-> +      - const: rx15
-> +      - const: tx0
-> +      - const: tx1
-> +      - const: tx2
-> +      - const: tx3
-> +      - const: tx4
-> +      - const: tx5
-> +      - const: tx6
-> +      - const: tx7
-> +      - const: tx8
-> +      - const: tx9
-> +      - const: tx10
-> +      - const: tx11
-> +      - const: tx12
-> +      - const: tx13
-> +      - const: tx14
-> +      - const: tx15
-> =20
->    clocks:
->      minItems: 1
-> --=20
-> 2.40.1
->=20
-
---xjvlQWsUfSJ189eD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNPPHAAKCRB4tDGHoIJi
-0uDFAP4qH8Xnk1lWdOwlIW0fWCJyaXgG1F8zPUQ2Gsb4MgpJXAD/aFtaJoIkYfZ/
-21lPuNeab/ZdCafUEILwlmTgvCUFsw0=
-=r6X8
------END PGP SIGNATURE-----
-
---xjvlQWsUfSJ189eD--
