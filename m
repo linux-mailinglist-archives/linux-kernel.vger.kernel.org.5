@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E437754C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 10:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508357754C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 10:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231828AbjHIIG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 04:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38482 "EHLO
+        id S229839AbjHIIHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 04:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbjHIIGz (ORCPT
+        with ESMTP id S229485AbjHIIHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 04:06:55 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94E31736
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 01:06:53 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3795Ol5i019476;
-        Wed, 9 Aug 2023 08:06:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=n6oO/Zyg5u9mi3NEeRs+7NvOb9/aJP4ApSLJNLlmAck=;
- b=AlYueKLla5tihr7t6p7d3NlYQXOUkzYj+1hE6DfRD3LyHHG2eivtW6b+LinWtZmJzTOR
- bOWHdQXSxhaYTcuL+AJu6j/x9jCmTUvueIrEucfLvnKx8vZa3ednxtOm7eRa4Z8sJM6w
- LbZCCWuYDlXNqiq94sp7IrYbp+kgZKPVU4J3k+L3lneYWVetmMRDD6ughWw4HbS0DQEH
- x3wqycwkntt1rl06dZIQ4ht8OhBq7+MRt9xY2NoN98LLeM9pyaTbhB2iPt2p6ND/obHq
- tFKSgu2BMuPz/tVDzDtxGDHwvgftzrmOQbDPFx/TGNwty0tGsKkKtghEwwerfip+PX3K 3g== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sbcacu5bt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 08:06:30 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37986Tba019764
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 9 Aug 2023 08:06:29 GMT
-Received: from hu-charante-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 9 Aug 2023 01:06:26 -0700
-From:   Charan Teja Kalla <quic_charante@quicinc.com>
-To:     <akpm@linux-foundation.org>, <zhaoyang.huang@unisoc.com>,
-        <yuzhao@google.com>, <surenb@google.com>, <kaleshsingh@google.com>,
-        <david@redhat.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Charan Teja Kalla <quic_charante@quicinc.com>
-Subject: [PATCH] Multi-gen LRU: skip CMA pages when they are not eligible
-Date:   Wed, 9 Aug 2023 13:35:44 +0530
-Message-ID: <1691568344-13475-1-git-send-email-quic_charante@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Wed, 9 Aug 2023 04:07:19 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742991986
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 01:07:17 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9bee2d320so100608361fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 01:07:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691568435; x=1692173235;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=F+NIjwwFDQKW7cnGd92fTyoQN2mHu5pGGy6SwJYxvEU=;
+        b=wA899vmOt6e40iwvnorBqfLDYE08uOLR6PH4e5kaatohOekCUlhLvGrZE1o84ycknv
+         1kaSi1GvGEPy1KKVk4av4CUBGKvaQ+Q+KFxE7/beDo87Dbewi7g0gqCKCClCRNsJUmC/
+         sHaKhSBRTNVOj+EWnhA3ROP67Klp8gHxAfbDHnuLCNy8bUAA450yvCiRVpyvq0t2lLK6
+         d/xxQFoT09NpZGjCqfI48xZX9QesWLdGZd7rdm+0QwqTFViWfQ1+h+mtSSWW9Ru09gqX
+         alGWxzj3P15ermRNJhYgmhHUL8FhqKG4trPmoY0XQKs7maIlFHvYqR7LDkWycXWrhIJ/
+         5+mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691568435; x=1692173235;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=F+NIjwwFDQKW7cnGd92fTyoQN2mHu5pGGy6SwJYxvEU=;
+        b=Hbn9D+oaPAF5F5qZUKjcbrWA3CIZBg+t9VJh57cdgALn12EDhCD6zJDIWyWYFrU+w6
+         mVRDByWawWhPp1YaPtdE0PekfRisB3Cb6dCswaGyjnEWFEIbM5tVX887D5RWHMTg+Wvn
+         WYzFmKOLDITIr96ie9SMWwPaQ0/5RfiSIrxVBf9F1eGZu3V21tcvGFHpaht3lZ8+7EFO
+         V/wNe1xSGA7Z0SE3o8ks8K8hTpxlfS7xhuBnW17xsoWcl/K5XaZN7v110J8T/t/TBsxA
+         QkldtbtMXsOlMP9iifi3da6PIob4D+g1XX59eCHwiDky1PyWjXmpEENaT1NlMJj2mxk5
+         3QYQ==
+X-Gm-Message-State: AOJu0YzkWs0LvxLFseWPt8glxnA6HUbNcxjyxnScJkl+Yn2ZtwCQs9QQ
+        Rf2WNtD35AhDUo5nA17DFikSBeRxPJBtmcDgjB4=
+X-Google-Smtp-Source: AGHT+IEFu4/11ozUGErDMUCugM0LP0KohOO+cT+uy9VvXZaFXuAyAWMhTBeYIjzaDKLc4dx2smTJKw==
+X-Received: by 2002:a2e:98c9:0:b0:2b6:f21a:3dae with SMTP id s9-20020a2e98c9000000b002b6f21a3daemr1226601ljj.44.1691568435645;
+        Wed, 09 Aug 2023 01:07:15 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id y16-20020a05651c021000b002b9415597d0sm2612450ljn.78.2023.08.09.01.07.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 01:07:15 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 09 Aug 2023 10:07:13 +0200
+Subject: [PATCH] powerpc: Make virt_to_pfn() a static inline
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: jDrU7E3CGU_j3ij3oL6NkCrYo3gwc6hq
-X-Proofpoint-ORIG-GUID: jDrU7E3CGU_j3ij3oL6NkCrYo3gwc6hq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-09_06,2023-08-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
- priorityscore=1501 impostorscore=0 mlxscore=0 adultscore=0 malwarescore=0
- mlxlogscore=956 bulkscore=0 lowpriorityscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308090070
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230809-virt-to-phys-powerpc-v1-1-12e912a7d439@linaro.org>
+X-B4-Tracking: v=1; b=H4sIADBJ02QC/x3MPQqAMAxA4atIZgPVin9XEYdSo2axJS1VEe9uc
+ fyG9x4IJEwBxuIBocSB3ZFRlQXY3RwbIS/ZUKtaq171mFgiRod+vwN6d5J4i61u7NoZu+jBQE6
+ 90MrXv53m9/0Auuia32YAAAA=
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -75,36 +75,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is based on the commit 5da226dbfce3("mm: skip CMA pages when
-they are not available") which skips cma pages reclaim when they are not
-eligible for the current allocation context. In mglru, such pages are
-added to the tail of the immediate generation to maintain better LRU
-order, which is unlike the case of conventional LRU where such pages are
-directly added to the head of the LRU list(akin to adding to head of the
-youngest generation in mglru).
+Making virt_to_pfn() a static inline taking a strongly typed
+(const void *) makes the contract of a passing a pointer of that
+type to the function explicit and exposes any misuse of the
+macro virt_to_pfn() acting polymorphic and accepting many types
+such as (void *), (unitptr_t) or (unsigned long) as arguments
+without warnings.
 
-No observable issue without this patch on MGLRU, but logically it make
-sense to skip the CMA page reclaim when those pages can't be satisfied
-for the current allocation context.
+Move the virt_to_pfn() and related functions below the
+declaration of __pa() so it compiles.
 
-Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
+For symmetry do the same with pfn_to_kaddr().
+
+As the file is included right into the linker file, we need
+to surround the functions with ifndef __ASSEMBLY__ so we
+don't cause compilation errors.
+
+The conversion moreover exposes the fact that pmd_page_vaddr()
+was returning an unsigned long rather than a const void * as
+could be expected, so all the sites defining pmd_page_vaddr()
+had to be augmented as well.
+
+Finally the KVM code in book3s_64_mmu_hv.c was passing an
+unsigned int to virt_to_phys() so fix that up with a cast so the
+result compiles.
+
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- mm/vmscan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/include/asm/nohash/32/pgtable.h |  2 +-
+ arch/powerpc/include/asm/nohash/64/pgtable.h |  2 +-
+ arch/powerpc/include/asm/page.h              | 30 ++++++++++++++++++----------
+ arch/powerpc/include/asm/pgtable.h           |  4 ++--
+ arch/powerpc/kvm/book3s_64_mmu_hv.c          |  2 +-
+ 5 files changed, 25 insertions(+), 15 deletions(-)
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b4329f9..6cbe921 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -4943,7 +4943,7 @@ static bool sort_folio(struct lruvec *lruvec, struct folio *folio, struct scan_c
- 	}
+diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
+index fec56d965f00..d6201b5096b8 100644
+--- a/arch/powerpc/include/asm/nohash/32/pgtable.h
++++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
+@@ -355,7 +355,7 @@ static inline int pte_young(pte_t pte)
+ #define pmd_pfn(pmd)		(pmd_val(pmd) >> PAGE_SHIFT)
+ #else
+ #define pmd_page_vaddr(pmd)	\
+-	((unsigned long)(pmd_val(pmd) & ~(PTE_TABLE_SIZE - 1)))
++	((const void *)(pmd_val(pmd) & ~(PTE_TABLE_SIZE - 1)))
+ #define pmd_pfn(pmd)		(__pa(pmd_val(pmd)) >> PAGE_SHIFT)
+ #endif
  
- 	/* ineligible */
--	if (zone > sc->reclaim_idx) {
-+	if (zone > sc->reclaim_idx || skip_cma(folio, sc)) {
- 		gen = folio_inc_gen(lruvec, folio, false);
- 		list_move_tail(&folio->lru, &lrugen->folios[gen][type][zone]);
- 		return true;
+diff --git a/arch/powerpc/include/asm/nohash/64/pgtable.h b/arch/powerpc/include/asm/nohash/64/pgtable.h
+index 287e25864ffa..81c801880933 100644
+--- a/arch/powerpc/include/asm/nohash/64/pgtable.h
++++ b/arch/powerpc/include/asm/nohash/64/pgtable.h
+@@ -127,7 +127,7 @@ static inline pte_t pmd_pte(pmd_t pmd)
+ #define	pmd_bad(pmd)		(!is_kernel_addr(pmd_val(pmd)) \
+ 				 || (pmd_val(pmd) & PMD_BAD_BITS))
+ #define	pmd_present(pmd)	(!pmd_none(pmd))
+-#define pmd_page_vaddr(pmd)	(pmd_val(pmd) & ~PMD_MASKED_BITS)
++#define pmd_page_vaddr(pmd)	((const void *)(pmd_val(pmd) & ~PMD_MASKED_BITS))
+ extern struct page *pmd_page(pmd_t pmd);
+ #define pmd_pfn(pmd)		(page_to_pfn(pmd_page(pmd)))
+ 
+diff --git a/arch/powerpc/include/asm/page.h b/arch/powerpc/include/asm/page.h
+index f2b6bf5687d0..9ee4b6d4a82a 100644
+--- a/arch/powerpc/include/asm/page.h
++++ b/arch/powerpc/include/asm/page.h
+@@ -9,6 +9,7 @@
+ #ifndef __ASSEMBLY__
+ #include <linux/types.h>
+ #include <linux/kernel.h>
++#include <linux/bug.h>
+ #else
+ #include <asm/types.h>
+ #endif
+@@ -119,16 +120,6 @@ extern long long virt_phys_offset;
+ #define ARCH_PFN_OFFSET		((unsigned long)(MEMORY_START >> PAGE_SHIFT))
+ #endif
+ 
+-#define virt_to_pfn(kaddr)	(__pa(kaddr) >> PAGE_SHIFT)
+-#define virt_to_page(kaddr)	pfn_to_page(virt_to_pfn(kaddr))
+-#define pfn_to_kaddr(pfn)	__va((pfn) << PAGE_SHIFT)
+-
+-#define virt_addr_valid(vaddr)	({					\
+-	unsigned long _addr = (unsigned long)vaddr;			\
+-	_addr >= PAGE_OFFSET && _addr < (unsigned long)high_memory &&	\
+-	pfn_valid(virt_to_pfn(_addr));					\
+-})
+-
+ /*
+  * On Book-E parts we need __va to parse the device tree and we can't
+  * determine MEMORY_START until then.  However we can determine PHYSICAL_START
+@@ -233,6 +224,25 @@ extern long long virt_phys_offset;
+ #endif
+ #endif
+ 
++#ifndef __ASSEMBLY__
++static inline unsigned long virt_to_pfn(const void *kaddr)
++{
++	return __pa(kaddr) >> PAGE_SHIFT;
++}
++
++static inline const void *pfn_to_kaddr(unsigned long pfn)
++{
++	return (const void *)(((unsigned long)__va(pfn)) << PAGE_SHIFT);
++}
++#endif
++
++#define virt_to_page(kaddr)	pfn_to_page(virt_to_pfn(kaddr))
++#define virt_addr_valid(vaddr)	({					\
++	unsigned long _addr = (unsigned long)vaddr;			\
++	_addr >= PAGE_OFFSET && _addr < (unsigned long)high_memory &&	\
++	pfn_valid(virt_to_pfn((void *)_addr));				\
++})
++
+ /*
+  * Unfortunately the PLT is in the BSS in the PPC32 ELF ABI,
+  * and needs to be executable.  This means the whole heap ends
+diff --git a/arch/powerpc/include/asm/pgtable.h b/arch/powerpc/include/asm/pgtable.h
+index 6a88bfdaa69b..a9515d3d7831 100644
+--- a/arch/powerpc/include/asm/pgtable.h
++++ b/arch/powerpc/include/asm/pgtable.h
+@@ -60,9 +60,9 @@ static inline pgprot_t pte_pgprot(pte_t pte)
+ }
+ 
+ #ifndef pmd_page_vaddr
+-static inline unsigned long pmd_page_vaddr(pmd_t pmd)
++static inline const void *pmd_page_vaddr(pmd_t pmd)
+ {
+-	return ((unsigned long)__va(pmd_val(pmd) & ~PMD_MASKED_BITS));
++	return (const void *)((unsigned long)__va(pmd_val(pmd) & ~PMD_MASKED_BITS));
+ }
+ #define pmd_page_vaddr pmd_page_vaddr
+ #endif
+diff --git a/arch/powerpc/kvm/book3s_64_mmu_hv.c b/arch/powerpc/kvm/book3s_64_mmu_hv.c
+index 7f765d5ad436..efd0ebf70a5e 100644
+--- a/arch/powerpc/kvm/book3s_64_mmu_hv.c
++++ b/arch/powerpc/kvm/book3s_64_mmu_hv.c
+@@ -182,7 +182,7 @@ void kvmppc_free_hpt(struct kvm_hpt_info *info)
+ 	vfree(info->rev);
+ 	info->rev = NULL;
+ 	if (info->cma)
+-		kvm_free_hpt_cma(virt_to_page(info->virt),
++		kvm_free_hpt_cma(virt_to_page((void *)info->virt),
+ 				 1 << (info->order - PAGE_SHIFT));
+ 	else if (info->virt)
+ 		free_pages(info->virt, info->order - PAGE_SHIFT);
+
+---
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+change-id: 20230808-virt-to-phys-powerpc-634cf7acd39a
+
+Best regards,
 -- 
-2.7.4
+Linus Walleij <linus.walleij@linaro.org>
 
