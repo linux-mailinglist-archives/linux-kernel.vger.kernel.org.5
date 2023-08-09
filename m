@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4769776001
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E063776010
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231787AbjHIM7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46576 "EHLO
+        id S231982AbjHIM77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231368AbjHIM7I (ORCPT
+        with ESMTP id S231392AbjHIM76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:59:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 372ED1FF5;
-        Wed,  9 Aug 2023 05:59:07 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 316F8D75;
-        Wed,  9 Aug 2023 05:59:49 -0700 (PDT)
-Received: from [10.57.1.30] (unknown [10.57.1.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B7773F6C4;
-        Wed,  9 Aug 2023 05:59:03 -0700 (PDT)
-Message-ID: <a4e55994-aa8e-572a-edb2-ac91046e5d08@arm.com>
-Date:   Wed, 9 Aug 2023 13:59:01 +0100
+        Wed, 9 Aug 2023 08:59:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5081FF6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:59:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 42ABB639E8
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 12:59:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37995C433CB;
+        Wed,  9 Aug 2023 12:59:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691585996;
+        bh=Kjv7BSip4U2Z76k+hApURRKL4hnouy3m/W2QpYLKPo0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iuvplUmmZ1qTGk7obsCf7HGiIbt84kz89KMj6mvs5v/+GanHGU1RtChVxT8efOgtk
+         8hiIfTVQIeTv8orz5OihFkQV9+5M5V3jXJVpS/S4cO/5nO2DWIwDB7OhPpQlKh7lzt
+         quPlOgcWfab/fApuBTWEQWMFXP1uVgjSYyvAB09xdLI0Q7EhuoTe31W8iH7dHk1cJx
+         Bqz8N6o/F6XcHQHEwmBS4ahEf7xuSw772NleWQUwA9Owx+ZKQB86wur6kb0WVnlV1X
+         xIhx1GkBVTEJVnPJAZ5kyH7RppmjqxIeSgNjWfM4CUPcdoZ6/OmfCX5M3x+GBiFhGW
+         rPJGbVo0hS6nw==
+Date:   Wed, 9 Aug 2023 14:59:51 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        kernel test robot <lkp@intel.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>
+Subject: Re: [PATCH] net/llc/llc_conn.c: fix 4 instances of
+ -Wmissing-variable-declarations
+Message-ID: <ZNONx8N1/NFqmP6b@vergenet.net>
+References: <20230808-llc_static-v1-1-c140c4c297e4@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v4 4/6] perf vendor events arm64: Update scale units and
- descriptions of common topdown metrics
-To:     John Garry <john.g.garry@oracle.com>,
-        linux-perf-users@vger.kernel.org, irogers@google.com,
-        renyu.zj@linux.alibaba.com
-Cc:     Will Deacon <will@kernel.org>, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Nick Forrington <nick.forrington@arm.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-References: <20230807142138.288713-1-james.clark@arm.com>
- <20230807142138.288713-5-james.clark@arm.com>
- <6c8c46f0-b567-68c8-2ce7-3d1a8a21569b@oracle.com>
-Content-Language: en-US
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <6c8c46f0-b567-68c8-2ce7-3d1a8a21569b@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230808-llc_static-v1-1-c140c4c297e4@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,45 +63,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++ Kuniyuki Iwashima
 
-
-On 08/08/2023 09:46, John Garry wrote:
-> On 07/08/2023 15:20, James Clark wrote:
->> Metrics will be published here [1] going forwards, but they have
->> slightly different scale units. To allow autogenerated metrics to be
->> added more easily, update the scale units to match.
->>
->> The more detailed descriptions have also been taken and added to the
->> common file.
+On Tue, Aug 08, 2023 at 09:43:09AM -0700, Nick Desaulniers wrote:
+> I'm looking to enable -Wmissing-variable-declarations behind W=1. 0day
+> bot spotted the following instances:
 > 
-> It's unfortunate that we can't have a concise description - like which
-> we have now - and a full description.
+>   net/llc/llc_conn.c:44:5: warning: no previous extern declaration for
+>   non-static variable 'sysctl_llc2_ack_timeout'
+>   [-Wmissing-variable-declarations]
+>   44 | int sysctl_llc2_ack_timeout = LLC2_ACK_TIME * HZ;
+>      |     ^
+>   net/llc/llc_conn.c:44:1: note: declare 'static' if the variable is not
+>   intended to be used outside of this translation unit
+>   44 | int sysctl_llc2_ack_timeout = LLC2_ACK_TIME * HZ;
+>      | ^
+>   net/llc/llc_conn.c:45:5: warning: no previous extern declaration for
+>   non-static variable 'sysctl_llc2_p_timeout'
+>   [-Wmissing-variable-declarations]
+>   45 | int sysctl_llc2_p_timeout = LLC2_P_TIME * HZ;
+>      |     ^
+>   net/llc/llc_conn.c:45:1: note: declare 'static' if the variable is not
+>   intended to be used outside of this translation unit
+>   45 | int sysctl_llc2_p_timeout = LLC2_P_TIME * HZ;
+>      | ^
+>   net/llc/llc_conn.c:46:5: warning: no previous extern declaration for
+>   non-static variable 'sysctl_llc2_rej_timeout'
+>   [-Wmissing-variable-declarations]
+>   46 | int sysctl_llc2_rej_timeout = LLC2_REJ_TIME * HZ;
+>      |     ^
+>   net/llc/llc_conn.c:46:1: note: declare 'static' if the variable is not
+>   intended to be used outside of this translation unit
+>   46 | int sysctl_llc2_rej_timeout = LLC2_REJ_TIME * HZ;
+>      | ^
+>   net/llc/llc_conn.c:47:5: warning: no previous extern declaration for
+>   non-static variable 'sysctl_llc2_busy_timeout'
+>   [-Wmissing-variable-declarations]
+>   47 | int sysctl_llc2_busy_timeout = LLC2_BUSY_TIME * HZ;
+>      |     ^
+>   net/llc/llc_conn.c:47:1: note: declare 'static' if the variable is not
+>   intended to be used outside of this translation unit
+>   47 | int sysctl_llc2_busy_timeout = LLC2_BUSY_TIME * HZ;
+>      | ^
 > 
->>
+> These symbols are referenced by more than one translation unit, so make
+> include the correct header for their declarations. Finally, sort the
+> list of includes to help keep them tidy.
 > 
-> Anyway,
-> Reviewed-by: John Garry <john.g.garry@oracle.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/llvm/202308081000.tTL1ElTr-lkp@intel.com/
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Reviewed-by: Simon Horman <horms@kernel.org>
+
+> ---
+>  net/llc/llc_conn.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
 > 
-
-Yes unfortunately in the source data the metric short description
-("title") pretty much just matches the metric name but without
-underscores. For that reason we chose not to use it for Perf's short
-description otherwise the list command showed a lot of duplication.
-
-  "frontend_bound": {
-    "title": "Frontend Bound",
-    "description": "This metric is the percentage of...
-
-The PMU events on the other hand do have a short description in the
-title field rather than just repeating the name:
-
-  ITLB_WALK": {
-    "code": "0x0035",
-    "title": "Instruction TLB access with at least one translation table
-walk",
-    "description": "Counts instruction memory translation table walks
-caused by a miss in the L2...
-
-I can raise this internally as it does seem to be a bit of an inconsistency.
-
-James
+> diff --git a/net/llc/llc_conn.c b/net/llc/llc_conn.c
+> index d037009ee10f..0a3f5e0bec00 100644
+> --- a/net/llc/llc_conn.c
+> +++ b/net/llc/llc_conn.c
+> @@ -14,14 +14,15 @@
+>  
+>  #include <linux/init.h>
+>  #include <linux/slab.h>
+> -#include <net/llc_sap.h>
+> -#include <net/llc_conn.h>
+> -#include <net/sock.h>
+> -#include <net/tcp_states.h>
+> -#include <net/llc_c_ev.h>
+> +#include <net/llc.h>
+>  #include <net/llc_c_ac.h>
+> +#include <net/llc_c_ev.h>
+>  #include <net/llc_c_st.h>
+> +#include <net/llc_conn.h>
+>  #include <net/llc_pdu.h>
+> +#include <net/llc_sap.h>
+> +#include <net/sock.h>
+> +#include <net/tcp_states.h>
+>  
+>  #if 0
+>  #define dprintk(args...) printk(KERN_DEBUG args)
+> 
+> ---
+> base-commit: 14f9643dc90adea074a0ffb7a17d337eafc6a5cc
+> change-id: 20230808-llc_static-de4dddcc64b4
+> 
+> Best regards,
+> -- 
+> Nick Desaulniers <ndesaulniers@google.com>
+> 
+> 
