@@ -2,151 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A1D775B87
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6D6775BDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233462AbjHILSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 07:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
+        id S233565AbjHILVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 07:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233459AbjHILSS (ORCPT
+        with ESMTP id S233549AbjHILVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 07:18:18 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273F4172A
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 04:18:17 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-586b78aa26eso52856067b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 04:18:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691579896; x=1692184696;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Qd5Q30zi0GR+tG5MZxvetxiAiJ73IWmx5JKTPRK8+M=;
-        b=PsPJSySrL4AnBphkJ34Jv0ktjJiWLoGrA/sq7XyP/aocCNnNVVapqD/jVC/jT/SHv6
-         W3+QIbDL0CQjvcuhZrpDMe6qBZ6eTm1hRW2HEf8ddNI8dO02GYGBjaBNI9zh+cjOIKlU
-         gluh3SYeSfB3YE5OEhw5vpVXhPaavrWUpNTPUbfSFKTEXWF7p2U/Jt1Zt9k7pKwPrAcv
-         pewodTa76tgUEZ+dAMEtkF55dIcZrnVcR2rm3f3vfgtORR+FZ1X6stjY3+wEvdogxRfH
-         MZpnYDQbp+5U3n8oWDYzUnpfFIe2H9zkPE8gC8z9qsIHLPGOuOetOVgOOwvuQcNK0W7B
-         wE0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691579896; x=1692184696;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/Qd5Q30zi0GR+tG5MZxvetxiAiJ73IWmx5JKTPRK8+M=;
-        b=F44EVjicthNUxkoZlRsIiX9A4mpuR5r77zjtAoX9PEExakYGcV7J/t/i44XZvq+f6D
-         CTysRBcODVMXnOc7Gz7RSVuRUmuDnl3h6pImEvOTADmghMJtSGPI+m23vvHC/qgy09Cu
-         si68dkRzZ6rvqHjSC32fDUlMuUvyheEfBI/dViBpVHhp3NIGoNkIbooQtdPcm4SoEGPX
-         q1D275bnpCa4JWcG+fzfRrCvM+dWgnOH+3/Tv9QiAKZpabiG5a9iPXjJI8Boebud4Dhf
-         dXrVbH29uHkljeAiwsKtVANVKypSSMhRt4F4Y27DSb5sxVcqpSVvjpYLUpNRv6/RGD22
-         KQGg==
-X-Gm-Message-State: AOJu0YyTQ7ADIrPX2RW+587zgj0CNEs2N4x3U/ELIZOQUIwgbtteE1jg
-        ezf8G2Wf8MV15Z/Kg59/xZbO8CRlCqjV2ZVL6l34vg==
-X-Google-Smtp-Source: AGHT+IGAaVsRhtlJf29BE/0dFe7Ba9IqEoZUBqhXJlyuRFQA3EvdRL6X3Q95U5uzJiFBoAXWRka9wV1+2kxpgDrzp7Q=
-X-Received: by 2002:a81:c311:0:b0:589:8b55:f7f4 with SMTP id
- r17-20020a81c311000000b005898b55f7f4mr2160229ywk.33.1691579896376; Wed, 09
- Aug 2023 04:18:16 -0700 (PDT)
+        Wed, 9 Aug 2023 07:21:37 -0400
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C39FA
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 04:21:36 -0700 (PDT)
+Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
+        by cmsmtp with ESMTP
+        id TQb1qy01kEoVsThFwqxI9f; Wed, 09 Aug 2023 11:21:36 +0000
+Received: from just2025.justhost.com ([173.254.28.237])
+        by cmsmtp with ESMTPS
+        id ThFvq1IyfhLhEThFvqhr2r; Wed, 09 Aug 2023 11:21:35 +0000
+X-Authority-Analysis: v=2.4 cv=JKYoDuGb c=1 sm=1 tr=0 ts=64d376bf
+ a=Jt2RHIFfQig1ELqEZVeWfA==:117 a=Jt2RHIFfQig1ELqEZVeWfA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=UttIx32zK-AA:10 a=5SfhNeb3QxAA:10 a=VwQbUJbxAAAA:8 a=QX4gbG5DAAAA:8
+ a=DgXrqYuCAAAA:8 a=LN1DEILRDWMThqYPT54A:9 a=AjGcO6oz07-iQ99wixmX:22
+ a=AbAUZ8qAyYyZVLSsDulk:22 a=NFkmT8Fa3oR8cXbSjPxL:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=singleboardsolutions.com; s=default; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=IRedR4a0UlTeO6ZLpW4sOxZ1W5NZ59F4Kr/32UOhOHI=; b=S90OJCD9XNMVR6z9gcTVHfx0w8
+        NSmikuUCei/ID16IxoqO3sm94eN39kaasf+L0mA7C51j6nyBbdcNY5ORT33HenC3VmEcY7nKqtagA
+        PpdFpg3dEf+F367SbfTYo8FOE712CRKTZ9QsugRLmA6e6fT42R6+07XcBhYYLW0FxSzfpz6wxjlWC
+        T8mqAiCPF+vBz6NQCCEKz4J3Y0NBtQBllx/KUglWYdLiCs7KNcZUcfZmzQ+apFpAPN1TdHVEnwSs8
+        d4I5Czitxc8mMsrqc3SvP41NlAl9lKsZa/CFxygdtOa9qAph2ikzrLFJdPpK12wN8nbLQYxOm/hhu
+        fEIJsb/Q==;
+Received: from 097-084-242-070.res.spectrum.com ([97.84.242.70]:62810 helo=localhost.localdomain)
+        by just2025.justhost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <tmckahan@singleboardsolutions.com>)
+        id 1qThFu-003Jjq-2K;
+        Wed, 09 Aug 2023 05:21:34 -0600
+From:   Thomas McKahan <tmckahan@singleboardsolutions.com>
+To:     "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Heiko Stuebner" <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org
+Cc:     Thomas McKahan <tmckahan@singleboardsolutions.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v2 0/2] Add Support for the FriendlyElec NanoPC T6
+Date:   Wed,  9 Aug 2023 07:21:15 -0400
+Message-Id: <20230809112120.99-1-tmckahan@singleboardsolutions.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230809071812.547229-1-harshit.m.mogalapalli@oracle.com> <CAPDyKFrstv47OdXeFvSArKwAh40Lq=JXLYfbd8LNCOwAT=b5Cw@mail.gmail.com>
-In-Reply-To: <CAPDyKFrstv47OdXeFvSArKwAh40Lq=JXLYfbd8LNCOwAT=b5Cw@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 9 Aug 2023 13:17:40 +0200
-Message-ID: <CAPDyKFonen0YSAHqX8MMaYfQPUDFrHUY4DUWkNrc4kxzyUWfUg@mail.gmail.com>
-Subject: Re: [PATCH next v2 1/2] mmc: sunplus: Fix error handling in spmmc_drv_probe()
-To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc:     tonyhuang.sunplus@gmail.com, lhjeff911@gmail.com,
-        dan.carpenter@linaro.org, arnd@arndb.de, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, error27@gmail.com,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - just2025.justhost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - singleboardsolutions.com
+X-BWhitelist: no
+X-Source-IP: 97.84.242.70
+X-Source-L: No
+X-Exim-ID: 1qThFu-003Jjq-2K
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 097-084-242-070.res.spectrum.com (localhost.localdomain) [97.84.242.70]:62810
+X-Source-Auth: tmckahan@singleboardsolutions.com
+X-Email-Count: 1
+X-Org:  HG=bhshared_jh;ORG=bluehost;
+X-Source-Cap: ZWxlY3RyaTk7ZWxlY3RyaTk7anVzdDIwMjUuanVzdGhvc3QuY29t
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfD+m3rYAEsYrkeC4FYMyHJnEpZHbuHke4wajMo/DEVIMWE33Qkchz1Hdapm2HIE2kGF8w6wJkVJ6yJj2d08zl0L0oY0yux8NgBHlMUl8BZEIJoREtk6D
+ Npqb7fyMeB9ndACcbah+skEceLF03fmZ8PgBif1LGdZ3ZoBGyXcP0KmAbkN1Na0rSReWNmYljKvJP4C4aS3IJsod2qRhXSsZh1qI8v/b9Q/uxi3pCFlsMYu5
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_SOFTFAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Aug 2023 at 13:08, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Wed, 9 Aug 2023 at 09:18, Harshit Mogalapalli
-> <harshit.m.mogalapalli@oracle.com> wrote:
-> >
-> > When mmc allocation succeeds, the error paths are not freeing mmc.
-> >
-> > Fix the above issue by changing mmc_alloc_host() to devm_mmc_alloc_host()
-> > to simplify the error handling. Remove label 'probe_free_host' as devm_*
-> > api takes care of freeing, also remove mmc_free_host() from remove
-> > function as devm_* takes care of freeing.
-> >
-> > Fixes: 4e268fed8b18 ("mmc: Add mmc driver for Sunplus SP7021")
-> > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > Closes: https://lore.kernel.org/all/a3829ed3-d827-4b9d-827e-9cc24a3ec3bc@moroto.mountain/
-> > Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
->
-> This doesn't apply on my next branch, please rebase it.
->
-> Moreover, it looks like you should replace a few more "goto
-> probe_free_host;" with "return ret;". Please have a closer look.
+Hello,
 
-Oh, my bad, please ignore the above!
+This adds support for the RK3588-based NanoPC T6 single board computer.
+Note this series is dependent on the PCIe 3 support [0] being
+upstreamed. The NanoPC T6 uses PCIe3x4 like the Rock 5B and EVB1.
 
-I had another fix for the sunplus driver queued on my next branch. I
-have moved that patch to fixes and applied your patch on top, thanks!
+[0] https://lore.kernel.org/all/20230717173512.65169-1-sebastian.reichel@collabora.com/
 
-Kind regards
-Uffe
+v2:
+ - remove unnecessary "okay" status from sound 
+ - add '-regulator' suffix on 2 regulators that were missing them
+ - use generic node name for rtc
+ - remove extra lines
+ - fix alignment in I2S entry
+ 
+v1: https://lore.kernel.org/all/20230802051441.3106-1-tmckahan@singleboardsolutions.com/
 
-> > ---
-> > This is based on static analysis with smatch, only compile tested.
-> >
-> > v1->v2: Simplify code by using devm_mmc_alloc_host() instead of
-> > mmc_alloc_host() (Ulf Hansson's suggestion)
-> > ---
-> >  drivers/mmc/host/sunplus-mmc.c | 14 +++-----------
-> >  1 file changed, 3 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/drivers/mmc/host/sunplus-mmc.c b/drivers/mmc/host/sunplus-mmc.c
-> > index a55a87f64d2a..2bdebeb1f8e4 100644
-> > --- a/drivers/mmc/host/sunplus-mmc.c
-> > +++ b/drivers/mmc/host/sunplus-mmc.c
-> > @@ -863,11 +863,9 @@ static int spmmc_drv_probe(struct platform_device *pdev)
-> >         struct spmmc_host *host;
-> >         int ret = 0;
-> >
-> > -       mmc = mmc_alloc_host(sizeof(*host), &pdev->dev);
-> > -       if (!mmc) {
-> > -               ret = -ENOMEM;
-> > -               goto probe_free_host;
-> > -       }
-> > +       mmc = devm_mmc_alloc_host(&pdev->dev, sizeof(struct spmmc_host));
-> > +       if (!mmc)
-> > +               return -ENOMEM;
-> >
-> >         host = mmc_priv(mmc);
-> >         host->mmc = mmc;
-> > @@ -938,11 +936,6 @@ static int spmmc_drv_probe(struct platform_device *pdev)
-> >
-> >  clk_disable:
-> >         clk_disable_unprepare(host->clk);
-> > -
-> > -probe_free_host:
-> > -       if (mmc)
-> > -               mmc_free_host(mmc);
-> > -
-> >         return ret;
-> >  }
-> >
-> > @@ -956,7 +949,6 @@ static int spmmc_drv_remove(struct platform_device *dev)
-> >         pm_runtime_put_noidle(&dev->dev);
-> >         pm_runtime_disable(&dev->dev);
-> >         platform_set_drvdata(dev, NULL);
-> > -       mmc_free_host(host->mmc);
-> >
-> >         return 0;
-> >  }
-> > --
-> > 2.39.3
-> >
+Thomas McKahan (2):
+  dt-bindings: arm: rockchip: Add NanoPC T6
+  arm64: dts: rockchip: Add NanoPC T6
+
+ .../devicetree/bindings/arm/rockchip.yaml     |   5 +
+ arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+ .../boot/dts/rockchip/rk3588-nanopc-t6.dts    | 842 ++++++++++++++++++
+ 3 files changed, 848 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
+
+-- 
+2.34.1
+
