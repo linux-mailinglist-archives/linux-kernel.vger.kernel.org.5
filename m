@@ -2,102 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FB4775007
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 03:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB3C77500B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 03:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbjHIBDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 21:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44240 "EHLO
+        id S230226AbjHIBFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 21:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjHIBDj (ORCPT
+        with ESMTP id S229463AbjHIBFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 21:03:39 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403D9FB;
-        Tue,  8 Aug 2023 18:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1691543017;
-        bh=Y16kprpEo00MEaWjNLS2gHaHCAM9o2k8HgEOxN1xh/c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dqKimCA8yokk4TbYyRrBpsodT7q2zEU9jso/N0R085o8U6p9UXITnGKlmfGg9wOzh
-         FGuRnOQH7eMzGV+lRRo7bjQbIOs1qse6rBgUzDV/Ziq0/BTOVR0KqNSsuMLAfdlGvb
-         pE7Tdf0cH6XeePkUX9e/oYu3bLMJvpdyVGpE8irU+SR7oHT3tXbgGEBD76oHhLfX87
-         y/lYovKYeTpChUGX45OKTEOI8NMtzNLFbwg3yymlel8jqAEYClNrXaDSlv2k/ebXdG
-         ZMplR+1led/7sxOBMAMILx51nTHUgdfbcm9NjXPAb9mKj3XM9CKTajD/G+HXTX483V
-         1g8GyrkOVERYg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RLBdN2XyZz4wqX;
-        Wed,  9 Aug 2023 11:03:35 +1000 (AEST)
-Date:   Wed, 9 Aug 2023 11:03:34 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>, Chuck Lever <chuck.lever@oracle.com>
-Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the block tree with the nfsd tree
-Message-ID: <20230809110334.63b7c566@canb.auug.org.au>
+        Tue, 8 Aug 2023 21:05:40 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31997FB
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 18:05:39 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-267fc1d776eso3555114a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 18:05:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691543138; x=1692147938;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sUsRmY1Xcm7ykK1suZsMHzelnTN7LprhzE12kZ8tIlw=;
+        b=qEPdQN5/ZsibsJ6Ek13P2srY5X3spB6dVg4KnKybNiazDj5Iebdbp+Aa9/CL+72tDw
+         6KHAGRh+sOJrFr8wYK+a8mMmGDqrBI4dr9jnKvbkpzZ0+ZMREBXoSspnBSLhbNHY+95x
+         JaclkyIXapqhKBraR+aZQMw4hm0aOPn0vKKGmpJVuvbQwmRD8gdzbZdqTuQsBCOklpOx
+         NQL2uAPdZsAWxdIb4wWeuidFBQ+7DcAvRtyMjdUdklxwtKVU0KnynrNnf3ZakQzFgu31
+         FwDK11crbEjCmOGRGGBeZiFS21Dq+IpX9f0KWvhj7tAKFq+R2TR78JOjG/u/819aQm5d
+         9Vkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691543138; x=1692147938;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sUsRmY1Xcm7ykK1suZsMHzelnTN7LprhzE12kZ8tIlw=;
+        b=GLYvMP9CGpLznRF7MTL7HaIV0UmXJu8IC7H9ZmSiQKNfDPcAwmBhjtmlUyBQPGCzn4
+         FD02Ymdys35yEK2H6TaHonSlPQ9CksvIxOmoQBYLAxAxAM605ft4Mz5pxcGDnJ42DM3E
+         EvrmM4tw/hbpIXPAkz7lCYNJTHGFBiiB8W6aX4asw0kuZRT8R/nj/fzf8FmWBEDBKqYQ
+         hPdkVvZHzs2PefxL+Mg6/7vblD5AJe1f8hXibmQIDLSVWW2C06q0hHM/UNcGEVSUta+S
+         0Vlolh7ugBXU5p/r3gI/ZpQufB4lO26eEd/uoSny25vXMK9KEwlGN+QTD4LDURjf2dCj
+         e6mA==
+X-Gm-Message-State: AOJu0YwVqMzM1SqbJ5Ev66wbOpq/Ghm9rQ6ApuPNyRXkQ2RcWfWcY2E9
+        0TH8fonfva/LPs0jmBP6uEjo2UPNFVjP7xjIw/E=
+X-Google-Smtp-Source: AGHT+IHTG2Or7nHex78SXgFtLnlCCknVmk+JqbSPUpPVeu1LWA3NvZlbOygXREgny3gbuBb8VrRdkQ==
+X-Received: by 2002:a17:90b:3613:b0:268:522a:e31 with SMTP id ml19-20020a17090b361300b00268522a0e31mr866650pjb.42.1691543138656;
+        Tue, 08 Aug 2023 18:05:38 -0700 (PDT)
+Received: from ghost ([50.221.140.188])
+        by smtp.gmail.com with ESMTPSA id e15-20020a17090a280f00b00267eead2f16sm179426pjd.36.2023.08.08.18.05.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 18:05:38 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 18:05:35 -0700
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Nam Cao <namcaov@gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] riscv: kprobes: simulate c.j instruction
+Message-ID: <ZNLmX1wXu3ZivilA@ghost>
+References: <cover.1690704360.git.namcaov@gmail.com>
+ <6ef76cd9984b8015826649d13f870f8ac45a2d0d.1690704360.git.namcaov@gmail.com>
+ <ZNLZxIRM5iIjmdcD@ghost>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/jBABNubXVx_rOnM0DH/5UmW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNLZxIRM5iIjmdcD@ghost>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/jBABNubXVx_rOnM0DH/5UmW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Aug 08, 2023 at 05:11:48PM -0700, Charlie Jenkins wrote:
+> On Sun, Jul 30, 2023 at 10:27:07AM +0200, Nam Cao wrote:
+> > kprobes currently rejects c.j instruction. Implement it.
+> > 
+> > Signed-off-by: Nam Cao <namcaov@gmail.com>
+> > ---
+> >  arch/riscv/kernel/probes/decode-insn.c   |  3 ++-
+> >  arch/riscv/kernel/probes/simulate-insn.c | 24 ++++++++++++++++++++++++
+> >  arch/riscv/kernel/probes/simulate-insn.h |  1 +
+> >  3 files changed, 27 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/riscv/kernel/probes/decode-insn.c b/arch/riscv/kernel/probes/decode-insn.c
+> > index 64f6183b4717..39adb07a342d 100644
+> > --- a/arch/riscv/kernel/probes/decode-insn.c
+> > +++ b/arch/riscv/kernel/probes/decode-insn.c
+> > @@ -29,13 +29,14 @@ riscv_probe_decode_insn(probe_opcode_t *addr, struct arch_probe_insn *api)
+> >  	 * TODO: the REJECTED ones below need to be implemented
+> >  	 */
+> >  #ifdef CONFIG_RISCV_ISA_C
+> > -	RISCV_INSN_REJECTED(c_j,		insn);
+> >  	RISCV_INSN_REJECTED(c_jr,		insn);
+> >  	RISCV_INSN_REJECTED(c_jal,		insn);
+> >  	RISCV_INSN_REJECTED(c_jalr,		insn);
+> >  	RISCV_INSN_REJECTED(c_beqz,		insn);
+> >  	RISCV_INSN_REJECTED(c_bnez,		insn);
+> >  	RISCV_INSN_REJECTED(c_ebreak,		insn);
+> > +
+> > +	RISCV_INSN_SET_SIMULATE(c_j,		insn);
+> >  #endif
+> >  
+> >  	RISCV_INSN_SET_SIMULATE(jal,		insn);
+> > diff --git a/arch/riscv/kernel/probes/simulate-insn.c b/arch/riscv/kernel/probes/simulate-insn.c
+> > index 7441ac8a6843..3ba45c612cd8 100644
+> > --- a/arch/riscv/kernel/probes/simulate-insn.c
+> > +++ b/arch/riscv/kernel/probes/simulate-insn.c
+> > @@ -188,3 +188,27 @@ bool __kprobes simulate_branch(u32 opcode, unsigned long addr, struct pt_regs *r
+> >  
+> >  	return true;
+> >  }
+> > +
+> > +bool __kprobes simulate_c_j(u32 opcode, unsigned long addr, struct pt_regs *regs)
+> > +{
+> > +	/*
+> > +	 *  15    13 12                            2 1      0
+> > +	 * | funct3 | offset[11|4|9:8|10|6|7|3:1|5] | opcode |
+> > +	 *     3                   11                    2
+> > +	 */
+> > +
+> > +	s32 offset;
+> > +
+> > +	offset  = ((opcode >> 3)  & 0x7) << 1;
+> > +	offset |= ((opcode >> 11) & 0x1) << 4;
+> > +	offset |= ((opcode >> 2)  & 0x1) << 5;
+> > +	offset |= ((opcode >> 7)  & 0x1) << 6;
+> > +	offset |= ((opcode >> 6)  & 0x1) << 7;
+> > +	offset |= ((opcode >> 9)  & 0x3) << 8;
+> > +	offset |= ((opcode >> 8)  & 0x1) << 10;
+> > +	offset |= ((opcode >> 12) & 0x1) << 11;
+> > +
+> > +	instruction_pointer_set(regs, addr + sign_extend32(offset, 11));
+> Can you use riscv_insn_insert_jtype_imm() from insn.h since it is
+> already created? It will also sign extend for you. Don't worry about
+> creating a similar function for the branches, I am in the process of
+> refactoring the insn.h file.
+> > +
+> > +	return true;
+> > +}
+> > diff --git a/arch/riscv/kernel/probes/simulate-insn.h b/arch/riscv/kernel/probes/simulate-insn.h
+> > index 61e35db31001..4bd6c266e7d3 100644
+> > --- a/arch/riscv/kernel/probes/simulate-insn.h
+> > +++ b/arch/riscv/kernel/probes/simulate-insn.h
+> > @@ -24,5 +24,6 @@ bool simulate_auipc(u32 opcode, unsigned long addr, struct pt_regs *regs);
+> >  bool simulate_branch(u32 opcode, unsigned long addr, struct pt_regs *regs);
+> >  bool simulate_jal(u32 opcode, unsigned long addr, struct pt_regs *regs);
+> >  bool simulate_jalr(u32 opcode, unsigned long addr, struct pt_regs *regs);
+> > +bool simulate_c_j(u32 opcode, unsigned long addr, struct pt_regs *regs);
+> >  
+> >  #endif /* _RISCV_KERNEL_PROBES_SIMULATE_INSN_H */
+> > -- 
+> > 2.34.1
+> > 
+> > 
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> Thanks,
+> Charlie
+Oh sorry, I forgot this was compressed. You can ignore the last message.
+The changes look good. You can add:
 
-Hi all,
-
-Today's linux-next merge of the block tree got a conflict in:
-
-  block/blk-flush.c
-
-between commit:
-
-  bed5a600c6b0 ("block: Revert 615939a2ae73")
-
-from the nfsd tree and commits:
-
-  28b241237470 ("blk-flush: fix rq->flush.seq for post-flush requests")
-  b175c86739d3 ("blk-flush: count inflight flush_data requests")
-
-from the block tree.
-
-I fixed it up (I used the former, though I wonder if 28b241237470 fixes
-what the revert is trying to work around) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/jBABNubXVx_rOnM0DH/5UmW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTS5eYACgkQAVBC80lX
-0Gx0mQf+IbSq2UQwNmusD+Hs+m2WQO1qtnfEBLLDFnytqO1vK12mTsFwlUVoQRZz
-BGnLdBrKQSFwCeTFo1UGdOBnAu+47mHB6sref7/LHZB6cuEiVf2qlajocCgWU6cS
-7LezpqLn6JrGMn7nKI7GtdgjSkr9fRqqrgkTPNWREIpGosOUZUsuzlpV7AomAjXM
-qnilHK+17zKxTI86XyYCoO0Gug163WpJTt6FQxurt+LCahUk6at+/5a8kXwxOHGg
-0G4bgYsRAxRfAIhbGUtgut+dI1ORpp+Vv4YwKI8YwnYHpYmtgh7W6xSBOubcGrv3
-rm4ypFDYvLXEwa/v9GK1K9Bizc6bNg==
-=nJqu
------END PGP SIGNATURE-----
-
---Sig_/jBABNubXVx_rOnM0DH/5UmW--
+Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
