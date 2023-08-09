@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD70E7768D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 759FA7768D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbjHITfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
+        id S233574AbjHITfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:35:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbjHITfA (ORCPT
+        with ESMTP id S231685AbjHITfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Aug 2023 15:35:00 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1C910EC;
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43DEC6;
         Wed,  9 Aug 2023 12:34:59 -0700 (PDT)
 Date:   Wed, 09 Aug 2023 19:34:57 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=M5+5UtRrIxn3jRSLl4kFwCzs3C2Jy/YlqVtMo7BDAa0=;
-        b=GKLf7UfYGLOYOzYVhC7XMOxJFtFM1Gd7K31QGQez4TxIdRq/r4inidj/QF+P8r+nO5SR7Z
-        sV9uUGN/7tzLtwSZWGQikuCiS+14N6SliznuvxRrsyaW3W4MPmkBs/6ljmZVe3/xyQEZTG
-        6ck9rTzMUxZOmPGZPaB8fMjEhzzWpnCI447qD4YXbGxatDImwADc2VXyMVmVELMH0+tStm
-        GfT/lA5qgFGFdNVmuBV/wfmRngAvgY4pEPdCPyipctrFFKnjhGy11CCQQBZFLaPJATb5tm
-        v7yNhqpBThBdBg8Ot/R+drNviSzMgN8tHDvMkpRv/0FJ4lZL2dds+S+fg7pQfw==
+        bh=OaN2WQvKSAOTqCbHsFrBwMGt9Wk6Yf6DrRMppzjalyE=;
+        b=yhvYJIkymYOJ0XeoX+y4G6GBGyYFUMGNaKUuOR8/sKnGPktt14DQhSAZLjnlVifNwHF41e
+        lzPf0o8HfbJX5yzsMIZmWrRZPjc76fRkVbre2QuYSDv9Z6cBcJW2Aq0jLUR1gm3s+kVQQk
+        2YS6EGWjZYk1xAC07HU+e7sOKueBOP5htf/5HC/pmG/8eAtY9Rb/7v0252Hj+7kql6+Oho
+        rzI2+iqdRpLreiEic/HhN80UYPElKk0cd1DIz1Y0gScGf0jxaJxnxbjFTHBTePzbssOitF
+        eRdz59yivNb0rjEcWEv/B/Vw+VSA5EIfk/ZSjVl6YDXNgIH1IJeRsyoVgO9sRg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1691609698;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +36,23 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=M5+5UtRrIxn3jRSLl4kFwCzs3C2Jy/YlqVtMo7BDAa0=;
-        b=n5CIhLDKBN9sb0zNwNstN1mqiejGghogVXC+5JlzKGdHyQ23BjGp8dlY33+Apa5Oz9dhka
-        w9I6enpGcsMAmuAQ==
-From:   "tip-bot2 for Johannes Weiner" <tip-bot2@linutronix.de>
+        bh=OaN2WQvKSAOTqCbHsFrBwMGt9Wk6Yf6DrRMppzjalyE=;
+        b=vIk+Amrsp72K8tCePAJMP9OV4J2KWbcvcfazQLc34tJF+3k2vlL3oveHz6Z/+KyGsyAK8A
+        i+OyenFsi0gw2/Bg==
+From:   "tip-bot2 for Randy Dunlap" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] MAINTAINERS: Add Peter explicitly to the psi section
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: sched/core] sched/psi: Select KERNFS as needed
+Cc:     kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230801133235.GA1766885@cmpxchg.org>
-References: <20230801133235.GA1766885@cmpxchg.org>
+In-Reply-To: <202307310732.r65EQFY0-lkp@intel.com>
+References: <202307310732.r65EQFY0-lkp@intel.com>
 MIME-Version: 1.0
-Message-ID: <169160969747.27769.17107965601991518052.tip-bot2@tip-bot2>
+Message-ID: <169160969796.27769.8398357124658941325.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,40 +69,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     113d0a6b3954b57907d1a6e3209f4174f504e0ae
-Gitweb:        https://git.kernel.org/tip/113d0a6b3954b57907d1a6e3209f4174f504e0ae
-Author:        Johannes Weiner <hannes@cmpxchg.org>
-AuthorDate:    Tue, 01 Aug 2023 09:18:21 -04:00
+Commit-ID:     98dfdd9ee93995a408192dbbf3dd219ba23e3738
+Gitweb:        https://git.kernel.org/tip/98dfdd9ee93995a408192dbbf3dd219ba23e3738
+Author:        Randy Dunlap <rdunlap@infradead.org>
+AuthorDate:    Sun, 30 Jul 2023 20:07:40 -07:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Wed, 02 Aug 2023 16:19:25 +02:00
 
-MAINTAINERS: Add Peter explicitly to the psi section
+sched/psi: Select KERNFS as needed
 
-Peter is kind enough to route the low-volume psi patches through the
-scheduler tree, but he is frequently not CC'd on them.
+Users of KERNFS should select it to enforce its being built, so
+do this to prevent a build error.
 
-While he is matched through the SCHEDULER maintainers and reviewers on
-kern/sched/*, that list is long, and mostly not applicable to psi
-code. Thus, patch submitters often just CC the explicit PSI entries.
+In file included from ../kernel/sched/build_utility.c:97:
+../kernel/sched/psi.c: In function 'psi_trigger_poll':
+../kernel/sched/psi.c:1479:17: error: implicit declaration of function 'kernfs_generic_poll' [-Werror=implicit-function-declaration]
+ 1479 |                 kernfs_generic_poll(t->of, wait);
 
-Add him to that section, to make sure he gets those patches.
-
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Fixes: aff037078eca ("sched/psi: use kernfs polling functions for PSI trigger polling")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20230801133235.GA1766885@cmpxchg.org
+Acked-by: Suren Baghdasaryan <surenb@google.com>
+Link: lore.kernel.org/r/202307310732.r65EQFY0-lkp@intel.com
 ---
- MAINTAINERS | 1 +
+ init/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aee3406..f017dc6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17047,6 +17047,7 @@ F:	drivers/net/ppp/pptp.c
- PRESSURE STALL INFORMATION (PSI)
- M:	Johannes Weiner <hannes@cmpxchg.org>
- M:	Suren Baghdasaryan <surenb@google.com>
-+R:	Peter Ziljstra <peterz@infradead.org>
- S:	Maintained
- F:	include/linux/psi*
- F:	kernel/sched/psi.c
+diff --git a/init/Kconfig b/init/Kconfig
+index f7f65af..5e7d488 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -629,6 +629,7 @@ config TASK_IO_ACCOUNTING
+ 
+ config PSI
+ 	bool "Pressure stall information tracking"
++	select KERNFS
+ 	help
+ 	  Collect metrics that indicate how overcommitted the CPU, memory,
+ 	  and IO capacity are in the system.
