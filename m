@@ -2,212 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B4D776ADF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE68A776AE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbjHIVUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 17:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
+        id S230200AbjHIVWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 17:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230501AbjHIVUq (ORCPT
+        with ESMTP id S229906AbjHIVWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 17:20:46 -0400
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5551724;
-        Wed,  9 Aug 2023 14:20:45 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 5DF4E218;
-        Wed,  9 Aug 2023 21:20:44 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5DF4E218
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1691616044; bh=D3OCzS/TjQzlx859sDe4uhCo8ItizHSPamS05kU7M/E=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=NXwT7fNZt30FAE6/rsWNAIxKfZAnHdE0QNzpPAfTcuuLXJv/8sSeNpRi/YYa5NjJC
-         JPc/pZIj2m1/iKfmCA6z6g2y88sFf4ZH/bH/4XDB2qcRK5jWAwzLmabxM5iXzuAYwc
-         gdH4oIFqQIHil75Is17wCUwIlXkrwODoldc2N5n5BFNAkaN5JRNZKvsISIklyJvP2F
-         4+b3s2bgvKX3Qdk1NsvqoUWqBFM5kFpduA+bStZQdIeCWxvmzzb6PeCz24WoTHyNsu
-         hckvkWe4mo+JyUGpbBEyCK3lFgQYmdeewhQkWR1ZSjYdvGexm2T+wCrOys5KDkkoTp
-         DAFJ4ZWqDCc4Q==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Petr Tesarik <petrtesarik@huaweicloud.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        James Seo <james@equiv.tech>,
-        James Clark <james.clark@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "moderated list:XEN HYPERVISOR ARM" <xen-devel@lists.xenproject.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "open list:XEN SWIOTLB SUBSYSTEM" <iommu@lists.linux.dev>,
-        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
-Subject: Re: [PATCH v7 9/9] swiotlb: search the software IO TLB only if the
- device makes use of it
-In-Reply-To: <adea71bd1fa8660d4c3157a562431ad8127016d4.1690871004.git.petr.tesarik.ext@huawei.com>
-References: <cover.1690871004.git.petr.tesarik.ext@huawei.com>
- <adea71bd1fa8660d4c3157a562431ad8127016d4.1690871004.git.petr.tesarik.ext@huawei.com>
-Date:   Wed, 09 Aug 2023 15:20:43 -0600
-Message-ID: <87a5uz3ob8.fsf@meer.lwn.net>
+        Wed, 9 Aug 2023 17:22:42 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 713D91724
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:22:41 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fe32ec7201so9265e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 14:22:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691616160; x=1692220960;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OzDUu1hDm/ATiZnfZV5ckNUxU989e7rnsufB9B73ynU=;
+        b=45JFkSEfRo/3zF5ZBKajbQu58vncVRAXgsXnR20SR1i7M37MN7xPRj3J9CFsBOmVkW
+         1v0+QL7pGJjiQjREGXvrw2oQYlXFdFbH4frzGia+82I3fiKtd7BcKEQDpejcMeuOPKBh
+         7A7YFETwRa9MdVSxsK79ZFmKJe/d11S+P4dY40XlJWc4XGxos5+xfHTF4fJ3HUOc5yzC
+         PI4cWFoQ7oXI7ZwGpEFFyZaOTTEflW6q6t7nyU/GxvCl7ZBJxWH8k0Ej5VOnwDEJY5KE
+         IKofP1UXUHv43uL7NBCso9lgoKqa7LbDrKFJ5SG/0+gwCeQc3wj0v9UziVZglupNRbnU
+         53YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691616160; x=1692220960;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OzDUu1hDm/ATiZnfZV5ckNUxU989e7rnsufB9B73ynU=;
+        b=KFYHorIC5c9tuJkYbCWBpmOnT32mtnKWCYteFDOaoEN4FJzWKp4ssO1VNtqZwWfdgn
+         rqx4UsDr+/0wc+Lfj10WUyCBgy/9NTXpms+6DYOC7q/S6/U/MlBpoX/2LmEvFe09HOno
+         s3geQ0kC3qOdWo00P+9OihkoLXfGT+6MpsGJvaTGNJtzbWfJKRoSceuOtM5lvdm8G8bj
+         +dVCChTaEPAH/YiRFatHYZJeJ6ZHfe3Qe3DRe954k/PxQq6/AHhPtn1BnyP2cJAAs9jc
+         lyqe2wnrDYVplSm2N5AX3MjFx7801/os+ATZt9sc0od88e3oPBWSPBb0QdkfVzEJGPF/
+         Nleg==
+X-Gm-Message-State: AOJu0YwFBdep7v+iIz87WUmWhq+YPChbjOxNr2lwvmOM9aXwPY7t0xcT
+        lqiPJ/bnM+C0JnN2LJa+stBmKkTs85ZxkEKmP+GdFg==
+X-Google-Smtp-Source: AGHT+IEK6i69InzMFREQBEsiskrQ2aeVsQRHKZX4y+J+bXQTGTKiO4c48LF8jE3FeufO9pukJwNIfu9pX0MxmOW7bO0=
+X-Received: by 2002:a05:600c:500c:b0:3f6:f4b:d4a6 with SMTP id
+ n12-20020a05600c500c00b003f60f4bd4a6mr154162wmr.7.1691616159907; Wed, 09 Aug
+ 2023 14:22:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230809155438.22470-1-rf@opensource.cirrus.com> <20230809155438.22470-5-rf@opensource.cirrus.com>
+In-Reply-To: <20230809155438.22470-5-rf@opensource.cirrus.com>
+From:   Rae Moar <rmoar@google.com>
+Date:   Wed, 9 Aug 2023 17:22:28 -0400
+Message-ID: <CA+GJov5tw2kCmy=Qrnw4EK9Dr91MXAsOmai0XFz-2tfgZ724vg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/7] kunit: kunit-test: Test logging a line that
+ exactly fills a fragment
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     brendan.higgins@linux.dev, davidgow@google.com,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Petr Tesarik <petrtesarik@huaweicloud.com> writes:
+On Wed, Aug 9, 2023 at 11:54=E2=80=AFAM Richard Fitzgerald
+<rf@opensource.cirrus.com> wrote:
+>
+> If a log string is the exact length of a log fragment buffer
+> kunit_log_append() should now exactly fill that fragment without
+> extending the log.
+>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-> From: Petr Tesarik <petr.tesarik.ext@huawei.com>
->
-> Skip searching the software IO TLB if a device has never used it, making
-> sure these devices are not affected by the introduction of multiple IO TLB
-> memory pools.
->
-> Additional memory barrier is required to ensure that the new value of the
-> flag is visible to other CPUs after mapping a new bounce buffer. For
-> efficiency, the flag check should be inlined, and then the memory barrier
-> must be moved to is_swiotlb_buffer(). However, it can replace the existing
-> barrier in swiotlb_find_pool(), because all callers use is_swiotlb_buffer()
-> first to verify that the buffer address belongs to the software IO TLB.
->
-> Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+Hello!
+
+This test looks good to me. I have tested it and it seems to be working wel=
+l.
+
+I appreciate all of the assert and expect statements. I do have one
+comment below.
+
+Although, I would be happy to set this as reviewed by me after that
+comment is responded to.
+
+Thanks!
+-Rae
+
 > ---
-
-Excuse me if this is a silly question, but I'm not able to figure it out
-on my own...
-
->  include/linux/device.h  |  2 ++
->  include/linux/swiotlb.h |  7 ++++++-
->  kernel/dma/swiotlb.c    | 14 ++++++--------
->  3 files changed, 14 insertions(+), 9 deletions(-)
+>  lib/kunit/kunit-test.c | 37 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
 >
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index 5fd89c9d005c..6fc808d22bfd 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -628,6 +628,7 @@ struct device_physical_location {
->   * @dma_io_tlb_mem: Software IO TLB allocator.  Not for driver use.
->   * @dma_io_tlb_pools:	List of transient swiotlb memory pools.
->   * @dma_io_tlb_lock:	Protects changes to the list of active pools.
-> + * @dma_uses_io_tlb: %true if device has used the software IO TLB.
->   * @archdata:	For arch-specific additions.
->   * @of_node:	Associated device tree node.
->   * @fwnode:	Associated device node supplied by platform firmware.
-> @@ -737,6 +738,7 @@ struct device {
->  #ifdef CONFIG_SWIOTLB_DYNAMIC
->  	struct list_head dma_io_tlb_pools;
->  	spinlock_t dma_io_tlb_lock;
-> +	bool dma_uses_io_tlb;
-
-You add this new member here, fine...
-
->  #endif
->  	/* arch specific additions */
->  	struct dev_archdata	archdata;
-> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> index 8371c92a0271..b4536626f8ff 100644
-> --- a/include/linux/swiotlb.h
-> +++ b/include/linux/swiotlb.h
-> @@ -172,8 +172,13 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
->  	if (!mem)
->  		return false;
->  
-> -	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC))
-> +	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC)) {
-> +		/* Pairs with smp_wmb() in swiotlb_find_slots() and
-> +		 * swiotlb_dyn_alloc(), which modify the RCU lists.
-> +		 */
-> +		smp_rmb();
->  		return swiotlb_find_pool(dev, paddr);
-> +	}
->  	return paddr >= mem->defpool.start && paddr < mem->defpool.end;
->  }
->  
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index adf80dec42d7..d7eac84f975b 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -730,7 +730,7 @@ static void swiotlb_dyn_alloc(struct work_struct *work)
->  
->  	add_mem_pool(mem, pool);
->  
-> -	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
-> +	/* Pairs with smp_rmb() in is_swiotlb_buffer(). */
->  	smp_wmb();
->  }
->  
-> @@ -764,11 +764,6 @@ struct io_tlb_pool *swiotlb_find_pool(struct device *dev, phys_addr_t paddr)
->  	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
->  	struct io_tlb_pool *pool;
->  
-> -	/* Pairs with smp_wmb() in swiotlb_find_slots() and
-> -	 * swiotlb_dyn_alloc(), which modify the RCU lists.
-> -	 */
-> -	smp_rmb();
-> -
->  	rcu_read_lock();
->  	list_for_each_entry_rcu(pool, &mem->pools, node) {
->  		if (paddr >= pool->start && paddr < pool->end)
-> @@ -813,6 +808,7 @@ void swiotlb_dev_init(struct device *dev)
->  #ifdef CONFIG_SWIOTLB_DYNAMIC
->  	INIT_LIST_HEAD(&dev->dma_io_tlb_pools);
->  	spin_lock_init(&dev->dma_io_tlb_lock);
-> +	dev->dma_uses_io_tlb = false;
-
-...here you initialize it, fine...
-
+> diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
+> index c0ee33a8031e..9ac81828d018 100644
+> --- a/lib/kunit/kunit-test.c
+> +++ b/lib/kunit/kunit-test.c
+> @@ -763,12 +763,49 @@ static void kunit_log_extend_test_2(struct kunit *t=
+est)
 >  #endif
 >  }
->  
-> @@ -1157,9 +1153,11 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
->  	list_add_rcu(&pool->node, &dev->dma_io_tlb_pools);
->  	spin_unlock_irqrestore(&dev->dma_io_tlb_lock, flags);
->  
-> -	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
-> -	smp_wmb();
->  found:
-> +	dev->dma_uses_io_tlb = true;
-> +	/* Pairs with smp_rmb() in is_swiotlb_buffer() */
-> +	smp_wmb();
+>
+> +static void kunit_log_frag_sized_line_test(struct kunit *test)
+> +{
+> +#ifdef CONFIG_KUNIT_DEBUGFS
+> +       struct kunit_suite suite;
+> +       struct kunit_log_frag *frag, *src;
 > +
+> +       suite.log =3D kunit_kzalloc(test, sizeof(*suite.log), GFP_KERNEL)=
+;
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, suite.log);
+> +       INIT_LIST_HEAD(suite.log);
+> +       frag =3D kunit_kzalloc(test, sizeof(*frag), GFP_KERNEL);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, frag);
+> +       kunit_init_log_frag(frag);
+> +       list_add_tail(&frag->list, suite.log);
+> +
+> +       src =3D kunit_kzalloc(test, sizeof(*src), GFP_KERNEL);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, src);
+> +       memset(src->buf, 'x', sizeof(src->buf) - 2);
+> +       KUNIT_ASSERT_EQ(test, strlen(src->buf), sizeof(src->buf) - 2);
 
-...and here you set it if swiotlb is used.
+Should this be an EXPECT instead? It doesn't seem like the test needs
+to fail immediately if this fails. Let me know what you think.
 
-But, as far as I can tell, you don't actually *use* this field anywhere.
-What am I missing?
-
-Thanks,
-
-jon
+> +
+> +       /* Log a string that exactly fills the fragment */
+> +       kunit_log_append(suite.log, "%s\n", src->buf);
+> +       KUNIT_EXPECT_TRUE(test, list_is_singular(suite.log));
+> +       KUNIT_EXPECT_EQ(test, strlen(frag->buf), sizeof(frag->buf) - 1);
+> +       strlcat(src->buf, "\n", sizeof(src->buf));
+> +       KUNIT_EXPECT_STREQ(test, frag->buf, src->buf);
+> +
+> +       /* Logging another string should extend the log */
+> +       kunit_log_append(suite.log, "Next\n");
+> +       KUNIT_EXPECT_EQ(test, list_count_nodes(suite.log), 2);
+> +       frag =3D list_last_entry(suite.log, struct kunit_log_frag, list);
+> +       KUNIT_EXPECT_STREQ(test, frag->buf, "Next\n");
+> +#else
+> +       kunit_skip(test, "only useful when debugfs is enabled");
+> +#endif
+> +}
+> +
+>  static struct kunit_case kunit_log_test_cases[] =3D {
+>         KUNIT_CASE(kunit_log_init_frag_test),
+>         KUNIT_CASE(kunit_log_test),
+>         KUNIT_CASE(kunit_log_newline_test),
+>         KUNIT_CASE(kunit_log_extend_test_1),
+>         KUNIT_CASE(kunit_log_extend_test_2),
+> +       KUNIT_CASE(kunit_log_frag_sized_line_test),
+>         {}
+>  };
+>
+> --
+> 2.30.2
+>
