@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADB47765EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B2577658E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 18:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232403AbjHIRCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 13:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51950 "EHLO
+        id S231269AbjHIQvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 12:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232355AbjHIRB5 (ORCPT
+        with ESMTP id S231981AbjHIQu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 13:01:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D072100;
-        Wed,  9 Aug 2023 10:01:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A473641BB;
-        Wed,  9 Aug 2023 17:01:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC994C43395;
-        Wed,  9 Aug 2023 17:01:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691600514;
-        bh=xPpxwJzBLsCaca6qQZWRTcviG5VQc7YuCxtBnfOO0Sc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ftjeWrM2vszKk0pjhd+iTUqKRNmgdY1xZjDlMzt5r946dcWZeTuzXpMXhTWepbwms
-         FEyiMj65e6ZxDlJsDTz6TLJHsZUq/TGnRIy8xcd0VxzDf92xW/rZSjSvAb3scYb/od
-         rzqe5DdkB81Dg+uPVTqCgeOzEoGH1+1J2JDsKgsDhpVf6nLCCbHivao/q9iuIKc1wr
-         EEk77jrxEbC7B5sn6dFiQAGCRNC8XnAhX8hpGw3o0qWlY+3nqumnfRojn4UISfTW9m
-         fOx+ywo9pD1aFXWEc6YK/OnGP/5bslpHQyanjdby3W++CMvpCH3lJVTf8sGOQWpIsx
-         nOcbFtlOD+6IA==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH net-next v3 02/10] net: stmmac: xgmac: add more feature parsing from hw cap
-Date:   Thu, 10 Aug 2023 00:49:59 +0800
-Message-Id: <20230809165007.1439-3-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230809165007.1439-1-jszhang@kernel.org>
-References: <20230809165007.1439-1-jszhang@kernel.org>
+        Wed, 9 Aug 2023 12:50:57 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA713A81
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 09:50:20 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a3df1ee4a3so4155906b6e.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 09:50:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691599811; x=1692204611;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=He4IvUcYyIKK2RGPWRy7aXvjheVu5viAkGNtt/+Ke8E=;
+        b=xBTpEF3zpYUq+bjikeX7zSzA/ywa4MrIaUSU74cTEQVvb2kfDdc2Ur+agpsIOxiWnj
+         vchYSEhe6u1Fuz6izzgZMbW99gKgXEwyq5FyeO81G5FstwNSDtsIlRr0cW8u53yTCYwj
+         gDDBlqWllJddw+qUmhbo06Ia6R3LJDrTZ2hJiWt7recqMyTPuyrgxExNLV4ZosVQS0M+
+         wLTdbz7Qt3XFpRXR2d+vg/tuU6O6K7koKTaManMKKYaQS0uSfohiaHAhrzG95P+n3bQv
+         9hBg5FJCA6VmKfBIRWtr8p1CEDhtmlGIbquKvfs1gGzha1NJ2oRv0fU4CxrHFE1r0nal
+         VzeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691599811; x=1692204611;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=He4IvUcYyIKK2RGPWRy7aXvjheVu5viAkGNtt/+Ke8E=;
+        b=KU5vD0GSKGdcrga3H3tEzrhVY0Hjxe7viEs9c7q58ZHbUIj1kSA/5whFmIsyt9kF/1
+         9d3ST6evRD5h5PARJSpm1WH51TsJS9ix2alzrFAp5ZnxL+cWPVYt86lZX0R6MtH2ALfu
+         INVkGTwhvioY5PgUiWDpPf81bbteWeCSyBmEkMmey75fqzA54jgP27saBjKt+IzBdhYt
+         Q1O+dn1PIzGzPaRNDiQrmT/K0G6Z6tyjkSg4+zLMzWz74vZgYgI6AovebklLnHh1Q+fz
+         cdjLui4yyk7+keDL8XOXiofZWnUreofS1oqB1w9bBb1WNBrxwUqcNbTgLa8ebYQu/kL5
+         7wgQ==
+X-Gm-Message-State: AOJu0YzgCf53iTXukMWF59thLp31Wqf9EmFHeUoTenje6wyn2/PHFpx8
+        wiR8Tmas4s9L5IVwhCtMm9gDXkIdpO/GYpfTlCLpBA==
+X-Google-Smtp-Source: AGHT+IH3CHHnMNfpdOqa4g0/dtp+71gOteaQ08Cs0j+UAFIHskfWfZjHpskTSdvYCFsDCMkWf9ptsh2Hp7Wba1RmRpg=
+X-Received: by 2002:a05:6808:3a97:b0:3a7:7bea:d3cc with SMTP id
+ fb23-20020a0568083a9700b003a77bead3ccmr3417956oib.0.1691599811381; Wed, 09
+ Aug 2023 09:50:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 9 Aug 2023 09:50:00 -0700
+Message-ID: <CAKwvOdmOVnhKws_6DdakK9SDxiCCCR1d6VJwvz94Ng_y3V8QCg@mail.gmail.com>
+Subject: get_maintainer, b4, and CC: stable
+To:     Joe Perches <joe@perches.com>
+Cc:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        "Kernel.org Tools" <tools@linux.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,58 +67,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The XGMAC_HWFEAT_GMIISEL bit also indicates whether support 10/100Mbps
-or not.
-The XGMAC_HWFEAT_HDSEL bit indicates whether support half duplex or
-not.
-The XGMAC_HWFEAT_ADDMACADRSEL bit indicates whether support Multiple
-MAC address registers or not.
-The XGMAC_HWFEAT_SMASEL bit indicates whether support SMA (MDIO)
-Interface or not.
+Hi Joe,
+A recent mistake I made when using b4 was that I added a fixes tag,
+but forgot to Cc: stable in the commit message.
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h     | 3 +++
- drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c | 4 ++++
- 2 files changed, 7 insertions(+)
+Speaking with Konstantine, it seems that b4 may just be importing the
+recommendations from get_maintainer.pl.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-index 153321fe42c3..81cbb13a101d 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-@@ -111,6 +111,7 @@
- #define XGMAC_LPI_TIMER_CTRL		0x000000d4
- #define XGMAC_HW_FEATURE0		0x0000011c
- #define XGMAC_HWFEAT_SAVLANINS		BIT(27)
-+#define XGMAC_HWFEAT_ADDMACADRSEL	GENMASK(22, 18)
- #define XGMAC_HWFEAT_RXCOESEL		BIT(16)
- #define XGMAC_HWFEAT_TXCOESEL		BIT(14)
- #define XGMAC_HWFEAT_EEESEL		BIT(13)
-@@ -121,7 +122,9 @@
- #define XGMAC_HWFEAT_MMCSEL		BIT(8)
- #define XGMAC_HWFEAT_MGKSEL		BIT(7)
- #define XGMAC_HWFEAT_RWKSEL		BIT(6)
-+#define XGMAC_HWFEAT_SMASEL		BIT(5)
- #define XGMAC_HWFEAT_VLHASH		BIT(4)
-+#define XGMAC_HWFEAT_HDSEL		BIT(3)
- #define XGMAC_HWFEAT_GMIISEL		BIT(1)
- #define XGMAC_HW_FEATURE1		0x00000120
- #define XGMAC_HWFEAT_L3L4FNUM		GENMASK(30, 27)
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-index b09395f5edcb..b5ba4e0cca55 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-@@ -406,6 +406,10 @@ static int dwxgmac2_get_hw_feature(void __iomem *ioaddr,
- 	dma_cap->pmt_remote_wake_up = (hw_cap & XGMAC_HWFEAT_RWKSEL) >> 6;
- 	dma_cap->vlhash = (hw_cap & XGMAC_HWFEAT_VLHASH) >> 4;
- 	dma_cap->mbps_1000 = (hw_cap & XGMAC_HWFEAT_GMIISEL) >> 1;
-+	dma_cap->mbps_10_100 = (hw_cap & XGMAC_HWFEAT_GMIISEL) >> 1;
-+	dma_cap->half_duplex = (hw_cap & XGMAC_HWFEAT_HDSEL) >> 3;
-+	dma_cap->multi_addr = (hw_cap & XGMAC_HWFEAT_ADDMACADRSEL) >> 18;
-+	dma_cap->sma_mdio = (hw_cap & XGMAC_HWFEAT_SMASEL) >> 5;
- 
- 	/* MAC HW feature 1 */
- 	hw_cap = readl(ioaddr + XGMAC_HW_FEATURE1);
+I suspect that either b4 or get_maintainer could see the Fixes tag and
+then suggest to Cc stable for me.
+
+Should get_maintainer.pl make such recommendations?
 -- 
-2.40.1
-
+Thanks,
+~Nick Desaulniers
