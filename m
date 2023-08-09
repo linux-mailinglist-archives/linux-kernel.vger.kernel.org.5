@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF5277619E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86E377619F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbjHINtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 09:49:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53208 "EHLO
+        id S231478AbjHINuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 09:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbjHINts (ORCPT
+        with ESMTP id S231190AbjHINuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 09:49:48 -0400
+        Wed, 9 Aug 2023 09:50:06 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC161982
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:49:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEFC61BF0
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:50:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 411C9616BE
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 13:49:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26F9AC433C8;
-        Wed,  9 Aug 2023 13:49:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 838F9615F6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 13:50:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E572C433C8;
+        Wed,  9 Aug 2023 13:50:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691588986;
-        bh=ar0mMRXsv0Rx7tGOFJWybZSLLq+jCQO+XeZZeG+0cTo=;
+        s=k20201202; t=1691589005;
+        bh=Vfzf3DcTQNARPIgieTdLo0FAmtPjuxVwHbX9fj9y1UI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NbSn1mREKJOAex9EGksy+mD7WRbdRuqsQfOkFvKlS4cPFZ40AS9D+ras9eOCo+uDc
-         Dtl4dgc6kpLPufZKbQLxLn1guTiWQU2FBF38OiwRh69MTlE7WUpP/FURbhxsx34Ja3
-         BI5PZBMcDqSv58hfWI9gkGYig8s2x1G8pimrVOn2HNmGsMaU2PScWL3bkmeM7dacpJ
-         jAqrEc2+zr+lNjvnpxht2Q9hPdXcEcT4oLLPtB3q71xn3Y8yhokRQUmWM8tNYEar/X
-         S3eyM9HPEEHpsUTaEqTgLN8nOvTt/kyTuSysMAMmWNNbB6ceQE9Nni8E6pX38qKzVg
-         1D+7HnbxqobYA==
-Date:   Wed, 9 Aug 2023 14:49:41 +0100
+        b=LAgIavLaAKCZSAOHzytGHHIp2PZc4sqkDzxhiubWoGPybVffCRNJ92r5bt18raD+l
+         WQ2fTGwdrUy8SuMe/vn95QhqhJNBfg7DMDVzpubuFhhgXtQm+OUv65ywezyA3mye1X
+         wbUBkLH/V7L6rQSqZEZa+mj/6ys8AZlO8F+DwQjlpLlNaX4QUxc/rGg3ZbouF5l7lj
+         7ZYZ5wo5yKaHVfTQIoKYfjUi60Ca43tAisXibrGNrrL/lIMoByxsEonJXjavCyQpEA
+         8gSoCn01Qr4aPzssj6LWW1o7KzD5BVHArlcpPoECSUnVduYLw6oZL1yboMH8xl08FG
+         g/a3wPquAJVYg==
+Date:   Wed, 9 Aug 2023 14:50:00 +0100
 From:   Will Deacon <will@kernel.org>
 To:     Michael Shavit <mshavit@google.com>
 Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, robin.murphy@arm.com,
         nicolinc@nvidia.com, jgg@nvidia.com, jean-philippe@linaro.org
-Subject: Re: [PATCH v5 2/9] iommu/arm-smmu-v3: Replace s1_cfg with cdtab_cfg
-Message-ID: <20230809134941.GA4226@willie-the-truck>
+Subject: Re: [PATCH v5 5/9] iommu/arm-smmu-v3: Refactor write_ctx_desc
+Message-ID: <20230809134959.GB4226@willie-the-truck>
 References: <20230808171446.2187795-1-mshavit@google.com>
- <20230809011204.v5.2.I1ef1ed19d7786c8176a0d05820c869e650c8d68f@changeid>
+ <20230809011204.v5.5.I219054a6cf538df5bb22f4ada2d9933155d6058c@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230809011204.v5.2.I1ef1ed19d7786c8176a0d05820c869e650c8d68f@changeid>
+In-Reply-To: <20230809011204.v5.5.I219054a6cf538df5bb22f4ada2d9933155d6058c@changeid>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -58,83 +58,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 01:11:58AM +0800, Michael Shavit wrote:
-> Remove struct arm_smmu_s1_cfg. This is really just a CD table with a
-> bit of extra information. Enhance the existing CD table structure,
-> struct arm_smmu_ctx_desc_cfg, with max_cds_bits and replace all usages
-> of arm_smmu_s1_cfg with arm_smmu_ctx_desc_cfg.
-> 
-> Compute the other values that were stored in s1cfg directly from
-> existing arm_smmu_ctx_desc_cfg.
-> 
-> For clarity, use the name "cd_table" for the variables pointing to
-> arm_smmu_ctx_desc_cfg in the new code instead of cdcfg. A later patch
-> will make this fully consistent.
-> 
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Reviewed-by: Nicolin Chen <nicolinc@nvidia.com>
-> Signed-off-by: Michael Shavit <mshavit@google.com>
-> ---
-
-Sorry, but I'm having a hard time seeing some of the benefits of this
-particular change. Most of the rest of the series looks good, but see
-below:
-
-> @@ -1071,7 +1071,7 @@ int arm_smmu_write_ctx_desc(struct arm_smmu_domain *smmu_domain, int ssid,
->  	bool cd_live;
->  	__le64 *cdptr;
+On Wed, Aug 09, 2023 at 01:12:01AM +0800, Michael Shavit wrote:
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+> index 968559d625c40..e3992a0c16377 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+> @@ -37,6 +37,24 @@ struct arm_smmu_bond {
 >  
-> -	if (WARN_ON(ssid >= (1 << smmu_domain->s1_cfg.s1cdmax)))
-> +	if (WARN_ON(ssid >= (1 << smmu_domain->cd_table.max_cds_bits)))
->  		return -E2BIG;
-
-S1CDMAX is architectural terminology -- it's the name given to bits 63:59
-of the STE structure. Why is "max_cds_bits" better?
-
->  	cdptr = arm_smmu_get_cd_ptr(smmu_domain, ssid);
-> @@ -1138,19 +1138,16 @@ static int arm_smmu_alloc_cd_tables(struct arm_smmu_domain *smmu_domain)
->  	size_t l1size;
->  	size_t max_contexts;
->  	struct arm_smmu_device *smmu = smmu_domain->smmu;
-> -	struct arm_smmu_s1_cfg *cfg = &smmu_domain->s1_cfg;
-> -	struct arm_smmu_ctx_desc_cfg *cdcfg = &cfg->cdcfg;
-> +	struct arm_smmu_ctx_desc_cfg *cdcfg = &smmu_domain->cd_table;
+>  static DEFINE_MUTEX(sva_lock);
 >  
-> -	max_contexts = 1 << cfg->s1cdmax;
-> +	max_contexts = 1 << cdcfg->max_cds_bits;
+> +static int arm_smmu_write_ctx_desc_devices(struct arm_smmu_domain *smmu_domain,
+> +					    int ssid,
+> +					    struct arm_smmu_ctx_desc *cd)
+> +{
+> +	struct arm_smmu_master *master;
+> +	unsigned long flags;
+> +	int ret;
+> +
+> +	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
+> +	list_for_each_entry(master, &smmu_domain->devices, domain_head) {
+> +		ret = arm_smmu_write_ctx_desc(master, ssid, cd);
+> +		if (ret)
+> +			break;
+> +	}
+> +	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
+> +	return ret;
+> +}
+> +
+>  /*
+>   * Check if the CPU ASID is available on the SMMU side. If a private context
+>   * descriptor is using it, try to replace it.
+> @@ -80,7 +98,7 @@ arm_smmu_share_asid(struct mm_struct *mm, u16 asid)
+>  	 * be some overlap between use of both ASIDs, until we invalidate the
+>  	 * TLB.
+>  	 */
+> -	arm_smmu_write_ctx_desc(smmu_domain, 0, cd);
+> +	arm_smmu_write_ctx_desc_devices(smmu_domain, 0, cd);
 >  
->  	if (!(smmu->features & ARM_SMMU_FEAT_2_LVL_CDTAB) ||
->  	    max_contexts <= CTXDESC_L2_ENTRIES) {
-> -		cfg->s1fmt = STRTAB_STE_0_S1FMT_LINEAR;
->  		cdcfg->num_l1_ents = max_contexts;
+>  	/* Invalidate TLB entries previously associated with that context */
+>  	arm_smmu_tlb_inv_asid(smmu, asid);
+> @@ -222,7 +240,7 @@ static void arm_smmu_mm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+>  	 * DMA may still be running. Keep the cd valid to avoid C_BAD_CD events,
+>  	 * but disable translation.
+>  	 */
+> -	arm_smmu_write_ctx_desc(smmu_domain, mm->pasid, &quiet_cd);
+> +	arm_smmu_write_ctx_desc_devices(smmu_domain, mm->pasid, &quiet_cd);
 >  
->  		l1size = max_contexts * (CTXDESC_CD_DWORDS << 3);
->  	} else {
-> -		cfg->s1fmt = STRTAB_STE_0_S1FMT_64K_L2;
-
-And here we're dropping the S1FMT setting from the code allocating the
-CD tables (i.e. the only code which should be aware of it's configuration)
-and now having the low-level STE writing logic here:
-
-> @@ -1360,10 +1357,14 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
->  		    !master->stall_enabled)
->  			dst[1] |= cpu_to_le64(STRTAB_STE_1_S1STALLD);
+>  	arm_smmu_tlb_inv_asid(smmu_domain->smmu, smmu_mn->cd->asid);
+>  	arm_smmu_atc_inv_domain(smmu_domain, mm->pasid, 0, 0);
+> @@ -279,9 +297,11 @@ arm_smmu_mmu_notifier_get(struct arm_smmu_domain *smmu_domain,
+>  		goto err_free_cd;
+>  	}
 >  
-> -		val |= (s1_cfg->cdcfg.cdtab_dma & STRTAB_STE_0_S1CTXPTR_MASK) |
-> -			FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_S1_TRANS) |
-> -			FIELD_PREP(STRTAB_STE_0_S1CDMAX, s1_cfg->s1cdmax) |
-> -			FIELD_PREP(STRTAB_STE_0_S1FMT, s1_cfg->s1fmt);
-> +		val |= (cd_table->cdtab_dma & STRTAB_STE_0_S1CTXPTR_MASK) |
-> +		       FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_S1_TRANS) |
-> +		       FIELD_PREP(STRTAB_STE_0_S1CDMAX,
-> +				  cd_table->max_cds_bits) |
-> +		       FIELD_PREP(STRTAB_STE_0_S1FMT,
-> +				  cd_table->l1_desc ?
-> +					  STRTAB_STE_0_S1FMT_64K_L2 :
-> +					  STRTAB_STE_0_S1FMT_LINEAR);
+> -	ret = arm_smmu_write_ctx_desc(smmu_domain, mm->pasid, cd);
+> -	if (ret)
+> +	ret = arm_smmu_write_ctx_desc_devices(smmu_domain, mm->pasid, cd);
+> +	if (ret) {
+> +		arm_smmu_write_ctx_desc_devices(smmu_domain, mm->pasid, NULL);
 
-magically know that we're using 64k tables.
+Why is it safe to drop the lock between these two calls?
 
-Why is this an improvement to the driver?
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index c01023404c26c..34bd7815aeb8e 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -971,14 +971,12 @@ void arm_smmu_tlb_inv_asid(struct arm_smmu_device *smmu, u16 asid)
+>  	arm_smmu_cmdq_issue_cmd_with_sync(smmu, &cmd);
+>  }
+>  
+> -static void arm_smmu_sync_cd(struct arm_smmu_domain *smmu_domain,
+> +static void arm_smmu_sync_cd(struct arm_smmu_master *master,
+>  			     int ssid, bool leaf)
+>  {
+>  	size_t i;
+> -	unsigned long flags;
+> -	struct arm_smmu_master *master;
+>  	struct arm_smmu_cmdq_batch cmds;
+> -	struct arm_smmu_device *smmu = smmu_domain->smmu;
+> +	struct arm_smmu_device *smmu = master->smmu;
+>  	struct arm_smmu_cmdq_ent cmd = {
+>  		.opcode	= CMDQ_OP_CFGI_CD,
+>  		.cfgi	= {
+> @@ -988,15 +986,10 @@ static void arm_smmu_sync_cd(struct arm_smmu_domain *smmu_domain,
+>  	};
+>  
+>  	cmds.num = 0;
+> -
+> -	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
+
+Since you're dropping this and relying on the lock being taken higher up
+callstack, can we add a lockdep assertion that we do actually hold the
+devices_lock, please?
 
 Will
