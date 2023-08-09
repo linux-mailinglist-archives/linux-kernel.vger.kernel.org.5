@@ -2,184 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E977766EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23E97766FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbjHISEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 14:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
+        id S230440AbjHISIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 14:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjHISEg (ORCPT
+        with ESMTP id S229518AbjHISIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 14:04:36 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75ABA171D;
-        Wed,  9 Aug 2023 11:04:35 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3B3131F74B;
-        Wed,  9 Aug 2023 18:04:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1691604274; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AO7oR/TuDgAue/fs6C3qS+7YNyq+qT7GS9MtqGPmkhE=;
-        b=Aeq0QFmMguDxo395uqqBp+NGRQd2H0RXE5EndS/WhV9B1RpKfrriBiGGhNB7oQBq4ozL+B
-        B7aenQze7zdcGwBOuouhoSYZcfmOTFIh9duncvB6EtEEe1s4+wY/KsBWywvZsokt8YspE2
-        D2G+W5GDAI8/e7k29Uzue2XtQEEIbWA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1691604274;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AO7oR/TuDgAue/fs6C3qS+7YNyq+qT7GS9MtqGPmkhE=;
-        b=PGj97HLDZNK2k3Av7tDdL+n4UfOzA+Q439IbXJD3FbLIxHZ1EclbLFTLqFEWcnSSDnk+LU
-        yAXvStsS4bzEOPDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 056BD13251;
-        Wed,  9 Aug 2023 18:04:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yqNyNzHV02TSDwAAMHmgww
-        (envelope-from <krisman@suse.de>); Wed, 09 Aug 2023 18:04:33 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, andres@anarazel.de, tglx@linutronix.de
-Subject: Re: [PATCH 03/12] futex: Flag conversion
-In-Reply-To: <20230728164235.1318118-4-axboe@kernel.dk> (Jens Axboe's message
-        of "Fri, 28 Jul 2023 10:42:26 -0600")
-References: <20230728164235.1318118-1-axboe@kernel.dk>
-        <20230728164235.1318118-4-axboe@kernel.dk>
-Date:   Wed, 09 Aug 2023 14:04:32 -0400
-Message-ID: <87sf8s6qj3.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Wed, 9 Aug 2023 14:08:36 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F127210F5
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 11:08:35 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 379I1SeW009386;
+        Wed, 9 Aug 2023 18:08:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=8qGuDNGJVKuGDnU/yhmu80z32ACGSZoOoL3arqIjno8=;
+ b=oW5HEZ1aY/woTANUqKt0EBf5RlyVAViNAJS4V2WgDz5+5pvQa6J6O8720JvtSiMNFH3G
+ KJqgWcxKEboUVroDcRBuknboQA0SqzNaFmQS42Zxfu8p0v4HSbZRSVGFzU1MXGg2f3Er
+ UNRLEi55xI9/09FyiNkSrctQH4JxjqRsUAHVUYtoS9WGIvVLM5zWTxBdTZMPPpFQdCCu
+ iF9Q5f8p0sSVI1uiKOgooVS4nKvixgPj+aUCsdt8zRGT8N7qsIfIIy2x5U+tMc8J4V+5
+ vqt4ot8dG6oBW/atbyx0+8tiGGfqFdPMa2xwHQuU+5iUl43aBxVawXV3zQMvwWyIjM3L vA== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3scfq50cxg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Aug 2023 18:08:20 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 379HOcp1030353;
+        Wed, 9 Aug 2023 18:08:19 GMT
+Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sa1rnjgxu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Aug 2023 18:08:19 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+        by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 379I8Ijx4260578
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Aug 2023 18:08:18 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 50C235805E;
+        Wed,  9 Aug 2023 18:08:18 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0E7CE5805D;
+        Wed,  9 Aug 2023 18:08:18 +0000 (GMT)
+Received: from slate16.aus.stglabs.ibm.com (unknown [9.61.73.158])
+        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  9 Aug 2023 18:08:17 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-fsi@lists.ozlabs.org
+Cc:     joel@jms.id.au, linux-kernel@vger.kernel.org,
+        alistair@popple.id.au, k@ozlabs.org,
+        Eddie James <eajames@linux.ibm.com>
+Subject: [PATCH 0/2] fsi: Improve master indexing
+Date:   Wed,  9 Aug 2023 13:08:12 -0500
+Message-Id: <20230809180814.151984-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: IEYtS56APnqo89FpfhqS9S7S_mOTUeFp
+X-Proofpoint-ORIG-GUID: IEYtS56APnqo89FpfhqS9S7S_mOTUeFp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-09_16,2023-08-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=667 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 clxscore=1011 impostorscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308090158
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens Axboe <axboe@kernel.dk> writes:
+Fix some issues with FSI scanning and device registration.
 
-> From: Peter Zijlstra <peterz@infradead.org>
->
-> Futex has 3 sets of flags:
->
->  - legacy futex op bits
->  - futex2 flags
->  - internal flags
->
-> Add a few helpers to convert from the API flags into the internal
-> flags.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> ---
->  kernel/futex/futex.h    | 64 +++++++++++++++++++++++++++++++++++++++--
->  kernel/futex/syscalls.c | 24 ++++++----------
->  kernel/futex/waitwake.c |  4 +--
->  3 files changed, 72 insertions(+), 20 deletions(-)
->
-> diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
-> index b5379c0e6d6d..c0e04599904a 100644
-> --- a/kernel/futex/futex.h
-> +++ b/kernel/futex/futex.h
-> @@ -5,6 +5,7 @@
->  #include <linux/futex.h>
->  #include <linux/rtmutex.h>
->  #include <linux/sched/wake_q.h>
-> +#include <linux/compat.h>
->  
->  #ifdef CONFIG_PREEMPT_RT
->  #include <linux/rcuwait.h>
-> @@ -16,8 +17,15 @@
->   * Futex flags used to encode options to functions and preserve them across
->   * restarts.
->   */
-> +#define FLAGS_SIZE_8		0x00
-> +#define FLAGS_SIZE_16		0x01
-> +#define FLAGS_SIZE_32		0x02
-> +#define FLAGS_SIZE_64		0x03
-> +
-> +#define FLAGS_SIZE_MASK		0x03
-> +
->  #ifdef CONFIG_MMU
-> -# define FLAGS_SHARED		0x01
-> +# define FLAGS_SHARED		0x10
->  #else
->  /*
->   * NOMMU does not have per process address space. Let the compiler optimize
-> @@ -25,8 +33,58 @@
->   */
->  # define FLAGS_SHARED		0x00
->  #endif
-> -#define FLAGS_CLOCKRT		0x02
-> -#define FLAGS_HAS_TIMEOUT	0x04
-> +#define FLAGS_CLOCKRT		0x20
-> +#define FLAGS_HAS_TIMEOUT	0x40
-> +#define FLAGS_NUMA		0x80
-> +
-> +/* FUTEX_ to FLAGS_ */
-> +static inline unsigned int futex_to_flags(unsigned int op)
-> +{
-> +	unsigned int flags = FLAGS_SIZE_32;
-> +
-> +	if (!(op & FUTEX_PRIVATE_FLAG))
-> +		flags |= FLAGS_SHARED;
-> +
-> +	if (op & FUTEX_CLOCK_REALTIME)
-> +		flags |= FLAGS_CLOCKRT;
-> +
-> +	return flags;
-> +}
-> +
-> +/* FUTEX2_ to FLAGS_ */
-> +static inline unsigned int futex2_to_flags(unsigned int flags2)
-> +{
-> +	unsigned int flags = flags2 & FUTEX2_64;
+Eddie James (2):
+  fsi: Improve master indexing
+  fsi: Lock mutex for master device registration
 
-FUTEX2_64 -> FLAGS_SIZE_MASK
-
-> +
-> +	if (!(flags2 & FUTEX2_PRIVATE))
-> +		flags |= FLAGS_SHARED;
-> +
-> +	if (flags2 & FUTEX2_NUMA)
-> +		flags |= FLAGS_NUMA;
-> +
-> +	return flags;
-> +}
-> +
-> +static inline bool futex_flags_valid(unsigned int flags)
-> +{
-> +	/* Only 64bit futexes for 64bit code */
-> +	if (!IS_ENABLED(CONFIG_64BIT) || in_compat_syscall()) {
-> +		if ((flags & FLAGS_SIZE_MASK) == FLAGS_SIZE_64)
-> +			return false;
-> +	}
-
-I read the comment above as '64bit code can only have 64bit futexes',
-which is obviously wrong and not what the code is checking.
-Something like this would be better:
-
-/* Reject 64bit futexes on !64bit code. */
-
-Or Perhaps make it generic:
-
-/* Don't allow futexes larger than the word size */
-  if (futex_size(flags) > (__WORDSIZE/8) || in_compat_syscall())
+ drivers/fsi/fsi-core.c        | 40 +++++++++++++++++++----------------
+ drivers/fsi/fsi-master-i2cr.c |  4 +---
+ drivers/fsi/fsi-master-i2cr.h |  9 ++++++++
+ drivers/fsi/fsi-master.h      |  1 -
+ drivers/fsi/i2cr-scom.c       |  2 +-
+ 5 files changed, 33 insertions(+), 23 deletions(-)
 
 -- 
-Gabriel Krisman Bertazi
+2.39.3
+
