@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3572B776070
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C88776073
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232859AbjHINR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 09:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42584 "EHLO
+        id S232853AbjHINS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 09:18:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232849AbjHINR4 (ORCPT
+        with ESMTP id S230449AbjHINSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 09:17:56 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DA51B6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:17:55 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-977e0fbd742so935675466b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 06:17:55 -0700 (PDT)
+        Wed, 9 Aug 2023 09:18:25 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71155128;
+        Wed,  9 Aug 2023 06:18:24 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-76c845dc5beso419793185a.1;
+        Wed, 09 Aug 2023 06:18:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691587074; x=1692191874;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=r7GQah3LR29pNwUlAFsHmzB3/MgA9amRpVJYquX5jX0=;
-        b=j2xSiU48lAhLr6GSJ/DFJP5FmUuUSjaBQhgGtPkSEPls0F47OUNh8TIbrSr5UMunMZ
-         uM2ZUT0AV6Yl9Qlwub03wbHBRZjf4OaV9YYJm/YEXekUy4vO6Sjeybnabl5D10LLVSjn
-         swU57o/MSbPRGeE+ljLde+9aziPyf0+7ZdSzgtsDh6skzxrYO/yjzQ+Pj0y2dU1pdUdr
-         2y6VTAnLM4T3A1v5je6mTuQx7nD+wKUg0/0kJJk3EZnC32WVXkdj0Q0Sk5PC/EHZ4xgU
-         8lISujnCVovjWP5Jh+CduFXCDAJVx2O+ylOXE2UnEchucJ2qS+wwVmDkpuWz7YVTBaqW
-         /Pxw==
+        d=gmail.com; s=20221208; t=1691587103; x=1692191903;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Sjj2pw55OpJ9Ml+mCR1r9Is3y7on0GgaaZp6IQhtWX0=;
+        b=a7r2lNNuJIBtJEaovPO2UiEXZq7Fe93jgoypAriBtz3Zmbvj70/Oga3pRlXe8EnZJY
+         olTfyYpNTUWK/aOyR81kCyCBEQChIZFYpGJ9uP8TUDm5ZJEMPsZOnWOU+IgGbuKcZNrj
+         3MimVN64leU7M/6pNYP/iGImJUgK7FizDl9wZifQIjPuCmB2sESu1913SLkNWOFKcxY+
+         BczeCXx1hYiMv1u5Ru5b5bX8G6q+x57jCIBcKQchR1HDS7ntQMumaMHOC/vlJp6CmdYP
+         RrHUX7KW0WMdfP+sblRN2zNHu3h8GWgIYlcc2r/1w17Kr+QbjTkboCOVD9xmCO5/odW4
+         H4Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691587074; x=1692191874;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=r7GQah3LR29pNwUlAFsHmzB3/MgA9amRpVJYquX5jX0=;
-        b=H7Tuptr5n3t+IY1KcVVGY67f0LFiTF9cy/mUtmk+sS2s+SCbqhuJDLt0BXB2/Iqpvm
-         cRIxIcJIIzt2GuawimQR5h7rX7/la7SZGPaiRLEPGqHyI2hEuSIxI1nhv9sA6/Q6AF+5
-         dqh9dBtyndJJixOuReltHXZrdMVAokaTEpK9Qn7pkbmP5zeCqV/I6/H7Fb1Qknp4a9Wy
-         JWp+kZ2T8iRdemAu6/5MaksLZ1sL5s+FnyFKdYpYxbt+Spv/rWzvhHIABM4MH8a8lKS5
-         6Qu8X0F1wk/qDF3fng+sbrkwrGmXJw/TDRoomxwMjy7Viii0aKstAR2z3nC/CzMvU9UX
-         7PvQ==
-X-Gm-Message-State: AOJu0Yxgj6lHiBwTvK0UiPclBf0Wtft1B772K9qBxSn+zaywLz5FBZvS
-        4xWoVIipJpYK4vYX2UBn0mkWpyoJUvNm02MehBSskg==
-X-Google-Smtp-Source: AGHT+IGIzc/TMK7NNoqOzdlb2frVhrYUSFPRNGS6tLA/DRsJVToruJ1YAinbznO7/6EkrahVfqFaeMRaWmgFTbKkw9M=
-X-Received: by 2002:a17:906:220e:b0:99b:f3d1:7735 with SMTP id
- s14-20020a170906220e00b0099bf3d17735mr2206402ejs.29.1691587074277; Wed, 09
- Aug 2023 06:17:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230809045810.1659356-1-yosryahmed@google.com>
- <ZNNTgZVPZipTL/UM@dhcp22.suse.cz> <CAJD7tkYhxbd2e+4HMZVKUfD4cx6oDauna3vLmttNPLCmFNtpgA@mail.gmail.com>
- <ZNONgeoytpkchHga@dhcp22.suse.cz>
-In-Reply-To: <ZNONgeoytpkchHga@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 9 Aug 2023 06:17:18 -0700
-Message-ID: <CAJD7tkaPPcMsq-pbu26H332xBJP-m=v1aBbU_NJQQn+7motX9g@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        d=1e100.net; s=20221208; t=1691587103; x=1692191903;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Sjj2pw55OpJ9Ml+mCR1r9Is3y7on0GgaaZp6IQhtWX0=;
+        b=OiIX/J4N0EXuu2iKeBfydzlVXK1/30fOyBjp7PbRw5Pi0p3IET6mQ2jRe43lT7BKxB
+         cuVi5E126iGRD1AIOVctDxjyiIhxaZ5SFTIZYSZoKvrPUzGfpf0pOlKenhVHK71i2WnK
+         EwOuOJy1YjVH3gvLr39vZRrpVAHtAwLTpenrHWpIvg7gjnRgwdKiYwO0N/uXML8ztkwI
+         Smc5yfAOVyyDsVy3jpIlWZI+PX69qL/FpbWUchV0MCYXVMejQ70WKzAc1wJz7E4bqyK6
+         PN4rCbSr7bLcQVepb0pRjqlTIVHTiSRmJELKIyzoTeoWu+bXuHwqtQLbyjs1CbbiPh6x
+         uQQw==
+X-Gm-Message-State: AOJu0Ywxlr3WcQZDiArWRio7HG5pdRrTI5z2kiRpUYYEx1IZ0saoZruJ
+        2y2MqZ4f/uHakubzZQM6kN8=
+X-Google-Smtp-Source: AGHT+IEwKr/W7DJtj36rnSo26cXkG4CoslGWkhDlFQwvy2D21EJ9wyl/mAei8MbMDmbV5R2inhvM9Q==
+X-Received: by 2002:a05:620a:d45:b0:76d:264c:a89e with SMTP id o5-20020a05620a0d4500b0076d264ca89emr684548qkl.76.1691587103519;
+        Wed, 09 Aug 2023 06:18:23 -0700 (PDT)
+Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
+        by smtp.gmail.com with ESMTPSA id h20-20020a05620a10b400b00766fbeb3e7csm3940349qkk.132.2023.08.09.06.18.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 06:18:23 -0700 (PDT)
+Date:   Wed, 09 Aug 2023 09:18:22 -0400
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     Tahsin Erdogan <trdgn@amazon.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Tahsin Erdogan <trdgn@amazon.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <64d3921ed1f1a_267bde294f2@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20230808230920.1944738-1-trdgn@amazon.com>
+References: <20230808230920.1944738-1-trdgn@amazon.com>
+Subject: RE: [PATCH v3] tun: avoid high-order page allocation for packet
+ header
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,79 +81,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<snip>
-> > > [...]
-> > > > @@ -639,17 +639,24 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
-> > > >       }
-> > > >  }
-> > > >
-> > > > -static void do_flush_stats(void)
-> > > > +static void do_flush_stats(bool full)
-> > > >  {
-> > > > +     if (!atomic_read(&stats_flush_ongoing) &&
-> > > > +         !atomic_xchg(&stats_flush_ongoing, 1))
-> > > > +             goto flush;
-> > > > +
-> > > >       /*
-> > > > -      * We always flush the entire tree, so concurrent flushers can just
-> > > > -      * skip. This avoids a thundering herd problem on the rstat global lock
-> > > > -      * from memcg flushers (e.g. reclaim, refault, etc).
-> > > > +      * We always flush the entire tree, so concurrent flushers can choose to
-> > > > +      * skip if accuracy is not critical. Otherwise, wait for the ongoing
-> > > > +      * flush to complete. This avoids a thundering herd problem on the rstat
-> > > > +      * global lock from memcg flushers (e.g. reclaim, refault, etc).
-> > > >        */
-> > > > -     if (atomic_read(&stats_flush_ongoing) ||
-> > > > -         atomic_xchg(&stats_flush_ongoing, 1))
-> > > > -             return;
-> > > > -
-> > > > +     while (full && atomic_read(&stats_flush_ongoing) == 1) {
-> > > > +             if (!cond_resched())
-> > > > +                     cpu_relax();
-> > >
-> > > You are reinveting a mutex with spinning waiter. Why don't you simply
-> > > make stats_flush_ongoing a real mutex and make use try_lock for !full
-> > > flush and normal lock otherwise?
-> >
-> > So that was actually a spinlock at one point, when we used to skip if
-> > try_lock failed.
->
-> AFAICS cgroup_rstat_flush is allowed to sleep so spinlocks are not
-> really possible.
+Tahsin Erdogan wrote:
+> When GSO is not enabled
 
-Sorry I hit the send button too early, didn't get to this part.
+Not GSO, but gso.hdr_len, which is a feature of IFF_VNET_HDR.
 
-We were able to use a spinlock because we used to disable sleeping
-when flushing the stats then, which opened another can of worms :)
+VIRTIO_NET_HDR_GSO_* does not need to be enabled to use the
+header length field.
 
->
-> > We opted for an atomic because the lock was only used
-> > in a try_lock fashion. The problem here is that the atomic is used to
-> > ensure that only one thread actually attempts to flush at a time (and
-> > others skip/wait), to avoid a thundering herd problem on
-> > cgroup_rstat_lock.
-> >
-> > Here, what I am trying to do is essentially equivalent to "wait until
-> > the lock is available but don't grab it". If we make
-> > stats_flush_ongoing a mutex, I am afraid the thundering herd problem
-> > will be reintroduced for stats_flush_ongoing this time.
->
-> You will have potentially many spinners for something that might take
-> quite a lot of time (sleep) if there is nothing else to schedule. I do
-> not think this is a proper behavior. Really, you shouldn't be busy
-> waiting for a sleeper.
->
-> > I am not sure if there's a cleaner way of doing this, but I am
-> > certainly open for suggestions. I also don't like how the spinning
-> > loop looks as of now.
->
-> mutex_try_lock for non-critical flushers and mutex_lock of syncing ones.
-> We can talk a custom locking scheme if that proves insufficient or
-> problematic.
+> and a packet is transmitted via writev(), all
+> payload is treated as header which requires a contiguous memory allocation.
+> This allocation request is harder to satisfy, and may even fail if there is
+> enough fragmentation.
+> 
+> Note that sendmsg() code path limits the linear copy length, so this change
+> makes writev() and sendmsg() more consistent.
 
-I have no problem with this. I can send a v2 following this scheme,
-once we agree on the importance of this patch :)
+This is not specific to writev(), equally to more common write().
 
-> --
-> Michal Hocko
-> SUSE Labs
+Tun sendmsg is a special case, only used by vhost-net from inside the
+kernel. Arguably consistency with packet_snd/packet_alloc_skb would be
+more important. That said, this makes sense to me. I assume your
+configuring a device with very large MTU?
+
+ 
+> Signed-off-by: Tahsin Erdogan <trdgn@amazon.com>
+> ---
+> v3: rebase to latest net-next
+> v2: replace linear == 0 with !linear
+> v1: https://lore.kernel.org/all/20230726030936.1587269-1-trdgn@amazon.com/
+>  drivers/net/tun.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index 5beb6b5dd7e5..53d19c958a20 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -1523,7 +1523,7 @@ static struct sk_buff *tun_alloc_skb(struct tun_file *tfile,
+>  	int err;
+>  
+>  	/* Under a page?  Don't bother with paged skb. */
+> -	if (prepad + len < PAGE_SIZE || !linear)
+> +	if (prepad + len < PAGE_SIZE)
+>  		linear = len;
+>  
+>  	if (len - linear > MAX_SKB_FRAGS * (PAGE_SIZE << PAGE_ALLOC_COSTLY_ORDER))
+> @@ -1913,6 +1913,9 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
+>  			 */
+>  			zerocopy = false;
+>  		} else {
+> +			if (!linear)
+> +				linear = min_t(size_t, good_linear, copylen);
+> +
+>  			skb = tun_alloc_skb(tfile, align, copylen, linear,
+>  					    noblock);
+>  		}
+> -- 
+> 2.41.0
+> 
+
+
