@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7448F775FC4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C22775FD3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbjHIMvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:51:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35884 "EHLO
+        id S232016AbjHIMxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:53:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232771AbjHIMv2 (ORCPT
+        with ESMTP id S230516AbjHIMxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:51:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BBD213F
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:51:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Wed, 9 Aug 2023 08:53:41 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A811FF6;
+        Wed,  9 Aug 2023 05:53:40 -0700 (PDT)
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A8A66393D
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 12:51:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48FEDC433C8;
-        Wed,  9 Aug 2023 12:51:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691585465;
-        bh=T48WHjFLhEm2vnv/v96J9aS+qVl+eNSnEiw9tCjz1as=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=udgSnQdlyTumAcwM4KtsmCSL3TBAHAAyztt7yjLCZywoeMpd1klrstmzIqNoedo5L
-         0fr3aE/XPOl4/iMt9HjLC+I69zAByapY3PCgoCzBNonqPrb8GErAEUoWCFX+OAh4b/
-         B8mz9xvpcjqrm0cs4LU/mKhUvADOOmGNOZHsjQ0E3dTJiyOPFUKk/OdGmIfp/AsEAv
-         sM0s840JToj7t/4x6NXY+4z4l2vTxrXD+zlY0KsP0Y49wdbs3b/1+TgUai7vnUWhl0
-         V1kELtE8exjg3CahJb3O7qYd16kV2fHBogZsba+ZO5C+4JlOW76rpYAqUhTC/vK2F4
-         jDC6AMoreAyPQ==
-Date:   Wed, 9 Aug 2023 08:51:01 -0400
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        Andrew.Cooper3@citrix.com, gregkh@linuxfoundation.org
-Subject: Re: [RFC][PATCH 05/17] x86/cpu: Cleanup the untrain mess
-Message-ID: <20230809125101.xxwhuipfvj7kbasn@treble>
-References: <20230809071218.000335006@infradead.org>
- <20230809072200.782716727@infradead.org>
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 152ED8675B;
+        Wed,  9 Aug 2023 14:53:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1691585619;
+        bh=hw4RzyctmlzANozqK6Bkc7KRJ5UeoA5H+3nKatGwGc4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=eG0nhmKGeIcfqHKL61L0dN5+ZAaEywiZszF1HcDhgx15LbZSoQODOS4qdcOG95SEx
+         QcSQs25D/mekzkI4adxNEYJ4xLtOF4LO6C0Fdyw4cqJSt7P7fahcZW+lpq6SV9iPW/
+         pfSvjUYmBHMDrTcKa4N10PG4qnNQjaSTyMVo0SBs+yoclYFMjM12h+PRzzkDWFwlBe
+         AqwUj+ryjajDjULVMa6UGI1dD5Yem3mxa9UrNpmlqhyqKYtdBUX3ssq4SnKeM1nfic
+         lq8h2BCNCiXzrJmXh5UfMR1jQ01NkaKNv8zB9W8CEVy962ISPXT6CzRQKe/wGsvX0V
+         7i+wXVd1Hm9kA==
+Message-ID: <85118937-c5fe-8f5c-5033-285f67087f64@denx.de>
+Date:   Wed, 9 Aug 2023 14:53:38 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230809072200.782716727@infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: linux-next: build failure after merge of the leds-lj tree
+Content-Language: en-US
+To:     Stephen Rothwell <sfr@canb.auug.org.au>, Lee Jones <lee@kernel.org>
+Cc:     Isai Gaspar <isaiezequiel.gaspar@nxp.com>, #@denx.de,
+        Basically@denx.de, rewrite@denx.de, the@denx.de, driver@denx.de,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20230809131733.67238c8a@canb.auug.org.au>
+From:   Marek Vasut <marex@denx.de>
+In-Reply-To: <20230809131733.67238c8a@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 09:12:23AM +0200, Peter Zijlstra wrote:
-> Since there can only be one active return_thunk, there only needs be
-> one (matching) untrain_ret. It fundamentally doesn't make sense to
-> allow multiple untrain_ret at the same time.
+On 8/9/23 05:17, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Fold all the 3 different untrain methods into a single (temporary)
-> helper stub.
+> After merging the leds-lj tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/x86/include/asm/nospec-branch.h |   19 +++++--------------
->  arch/x86/lib/retpoline.S             |    7 +++++++
->  2 files changed, 12 insertions(+), 14 deletions(-)
+> FATAL: modpost: drivers/leds/leds-pca995x: sizeof(struct i2c_device_id)=32 is not a modulo of the size of section __mod_i2c__<identifier>_device_table=600.
+> Fix definition of struct i2c_device_id in mod_devicetable.h
 > 
-> --- a/arch/x86/include/asm/nospec-branch.h
-> +++ b/arch/x86/include/asm/nospec-branch.h
-> @@ -272,9 +272,9 @@
->  .endm
->  
->  #ifdef CONFIG_CPU_UNRET_ENTRY
-> -#define CALL_ZEN_UNTRAIN_RET	"call zen_untrain_ret"
-> +#define CALL_UNTRAIN_RET	"call entry_untrain_ret"
->  #else
-> -#define CALL_ZEN_UNTRAIN_RET	""
-> +#define CALL_UNTRAIN_RET	""
->  #endif
->  
->  /*
-> @@ -293,15 +293,10 @@
->  	defined(CONFIG_CALL_DEPTH_TRACKING) || defined(CONFIG_CPU_SRSO)
->  	VALIDATE_UNRET_END
->  	ALTERNATIVE_3 "",						\
-> -		      CALL_ZEN_UNTRAIN_RET, X86_FEATURE_UNRET,		\
-> +		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
+> Presumably caused by commit
+> 
+>    ee4e80b2962e ("leds: pca995x: Add support for PCA995X chips")
+> 
+> I have reverted that commit for today.
 
-SRSO doesn't have X86_FEATURE_UNRET set.
+Ah doh, the fix is trivial, proper patch is coming in a bit.
 
--- 
-Josh
+diff --git a/drivers/leds/leds-pca995x.c b/drivers/leds/leds-pca995x.c
+index 3ac99a433fcd2..78215dff14997 100644
+--- a/drivers/leds/leds-pca995x.c
++++ b/drivers/leds/leds-pca995x.c
+@@ -187,7 +187,7 @@ static const struct of_device_id pca995x_of_match[] = {
+         { .compatible = "nxp,pca9955b", .data = (void *)PCA995X_TYPE_B },
+         {},
+  };
+-MODULE_DEVICE_TABLE(i2c, pca995x_of_match);
++MODULE_DEVICE_TABLE(of, pca995x_of_match);
+
+  static struct i2c_driver pca995x_driver = {
+         .driver = {
+
