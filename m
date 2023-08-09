@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 552E77767CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBFF7767D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbjHITAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58106 "EHLO
+        id S230433AbjHITEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjHITAl (ORCPT
+        with ESMTP id S229641AbjHITEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:00:41 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3DC3E72;
-        Wed,  9 Aug 2023 12:00:40 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379J09L7071677;
-        Wed, 9 Aug 2023 14:00:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691607609;
-        bh=Q46d8+LLC/blTQTQ+yNedyYOj0K8/lNhA0yjGNott8E=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=JfRP4+uF5nCebfT/KXxt1Oy4oc5lcMoqHDpiVviVSqCW2DDS96RdPcov5eyVAdlhH
-         /KMbgImoNh1vl3qlnpT3+QCJaZPXg8F0Z6Uce20DVAFsGa2suPb3+6ndvgtRha+UJ5
-         XoHAtHePEArrzDNPDUHOt3I/YCiETIncck8S0AhI=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379J09j8043482
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Aug 2023 14:00:09 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
- Aug 2023 14:00:09 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 9 Aug 2023 14:00:08 -0500
-Received: from [10.249.132.69] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379J048X013940;
-        Wed, 9 Aug 2023 14:00:05 -0500
-Message-ID: <90e34ca5-3380-8a66-1041-efea85838236@ti.com>
-Date:   Thu, 10 Aug 2023 00:30:03 +0530
+        Wed, 9 Aug 2023 15:04:22 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D212C10DC
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 12:04:20 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so2340151fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 12:04:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1691607859; x=1692212659;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZoIERmiBBLKkASybWOp4oJC+EW2j6JMye2Kl5N+XUR0=;
+        b=VLT0qvyqjtSurIhfdjo4yMyPCJM+MS69Re4nEISv9Jv3SDZ/zNH8KUhkHdlgJTZ0O+
+         Y+vyD+AnoJon212RIUQAzYQIjMeN6s8DJhdilY4b1xQDJDu6TFyD0nx/qCg6bUCFrNRD
+         8uPgmvS157KGcKk2PFBnaK7gdPUQkI/42+gDUVWu+LFDBhNr+0X5jn/NEpc7MxnMpbMd
+         qpVtXud28EKPgtZDW6EFoawt+0h8kztN/WrcjKF9d42Jy30IKcgMCtP+OdBVXyk7PDAK
+         /mUiu0Tz3Z75EeRRwsWg9de7YEO5mbX8dfkNEPgkEIi8RyjCLcI2vYGyv/d67MIiaopy
+         nZMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691607859; x=1692212659;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZoIERmiBBLKkASybWOp4oJC+EW2j6JMye2Kl5N+XUR0=;
+        b=IVZ6qqfNNtiHoJe01ml7Sx47t9Vu5xdtnrxGxkSMIovIJEFy3bWIjZEeRWcQVqX9az
+         cCb+6qJtEozmSxNkl90RH7ydG4zE1YVFPbMr1gjKYF81u3Q0+31xWMn47zMK/d0HWi/d
+         84SpCItWdk4sKVii5vHEn3CDjIjg/9y4ZNSd4xl2ptXLQAsucc/bMDDs3z0kWTldd3JG
+         eZ9nE+albECFQvdwtzJ3MrC/crbThMLLRpBvceApnDyqsppVlaSNTjZaGvINXAgP+U+p
+         GgvjxXB+k5lug6uFSo/HoS2T530mbsKcr9GfsbhIOukRumfWBIdIT6vD5qE4rWMSZWK3
+         zrBg==
+X-Gm-Message-State: AOJu0YxOyZodvDFLnJswxbNKp9LQRPMh+tc5pzcs2dah0W158fb8bs2X
+        qbuZFBL88ZvHeNLxzMbA5qalLQ==
+X-Google-Smtp-Source: AGHT+IG2BVjl6md9gBXu/8Udjjji60YXFadktZhjTPRa0AfT6MvE0TkrbXE6PslMt3D7ePw9a5TXJg==
+X-Received: by 2002:a05:651c:238:b0:2b9:5eae:814f with SMTP id z24-20020a05651c023800b002b95eae814fmr54552ljn.50.1691607858808;
+        Wed, 09 Aug 2023 12:04:18 -0700 (PDT)
+Received: from localhost ([79.142.230.34])
+        by smtp.gmail.com with ESMTPSA id g13-20020a170906394d00b009931a3adf64sm8588962eje.17.2023.08.09.12.04.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 12:04:18 -0700 (PDT)
+References: <20230808025404.2053471-1-changxian.cqs@antgroup.com>
+User-agent: mu4e 1.10.5; emacs 28.2.50
+From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+To:     Qingsong Chen <changxian.cqs@antgroup.com>
+Cc:     linux-kernel@vger.kernel.org,
+        =?utf-8?B?55Sw5rSq5Lqu?= <tate.thl@antgroup.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Sergio =?utf-8?Q?Gonz=C3=A1lez?= Collado 
+        <sergio.collado@gmail.com>, rust-for-linux@vger.kernel.org
+Subject: Re: [PATCH v3] rust: macros: vtable: fix `HAS_*` redefinition
+ (`gen_const_name`)
+Date:   Wed, 09 Aug 2023 21:03:08 +0200
+In-reply-to: <20230808025404.2053471-1-changxian.cqs@antgroup.com>
+Message-ID: <87bkfgghqm.fsf@metaspace.dk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] dt-bindings: mfd: syscon: Add ti,dss-oldi-io-ctrl
- compatible
-Content-Language: en-US
-To:     Andrew Davis <afd@ti.com>, Lee Jones <lee@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230809165752.46133-1-afd@ti.com>
- <28cf3fa3-c9ea-aba1-2e45-94142a818849@ti.com>
- <1ec72d58-de81-d367-3dc6-900a00b6dac4@ti.com>
-From:   Aradhya Bhatia <a-bhatia1@ti.com>
-In-Reply-To: <1ec72d58-de81-d367-3dc6-900a00b6dac4@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -76,84 +80,47 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+"Qingsong Chen" <changxian.cqs@antgroup.com> writes:
 
-On 09-Aug-23 23:29, Andrew Davis wrote:
-> On 8/9/23 12:39 PM, Aradhya Bhatia wrote:
->> Hi Andrew,
->>
->> Thank you for quickly whipping up these patches! =)
->>
->> On 09-Aug-23 22:27, Andrew Davis wrote:
->>> Add TI DSS OLDI-IO control registers compatible. This is a region of 5
->>> 32bit registers found in the TI AM65 CTRL_MMR0 register space[0]. They
->>> are used to control the characteristics of the OLDI DATA/CLK IO as
->>> needed
->>> by the DSS display controller node.
->>
->> As long as the driver takes care of it, we can reuse the same compatible
->> even when OLDI IO Ctrl registers change from SoC to SoC, (in this case,
->> AM65 to AM62), right?
->>
-> 
-> That depends, is the register space still "compatible" with the AM65
-> version of this space? If not then we would want to qualify these
-> with their SoC versions.
+> If we define the same function name twice in a trait (using `#[cfg]`),
+> the `vtable` macro will redefine its `gen_const_name`, e.g. this will
+> define `HAS_BAR` twice:
+>
+>     #[vtable]
+>     pub trait Foo {
+>         #[cfg(CONFIG_X)]
+>         fn bar();
+>
+>         #[cfg(not(CONFIG_X))]
+>         fn bar(x: usize);
+>     }
+>
+> Fixes: b44becc5ee80 ("rust: macros: add `#[vtable]` proc macro")
+> Signed-off-by: Qingsong Chen <changxian.cqs@antgroup.com>
 
-It is certainly not compatible. More on this below.
+Reviewed-by: Andreas Hindborg <a.hindborg@samsung.com>
 
-> 
-> A quick check of the documentation shows the register space is still
-> 5 registers, 4 DATA and 1 CLK. The contents are different though, but
-> since this compatible string is not used to match with a driver that
-> would care (that is handled by the DSS node which does have different
-> compatibles for each device), I'm actually not sure. Guess we can leave
-> that decision to the DT binding maintainers..
-
-Exactly. The DSS driver in our, as you like to call, evil-vendor-tree
-uses the compatible information to decide which register offsets to
-write to, and what to write.
-
-
-On the register compatibility situation...
-
-AM62 OLDI IO Ctrl has, in total, 12 registers (as opposed to 5 in AM65).
-
-There are 4 Data and 1 Clk registers (per OLDI). And there are 2 OLDI
-transmitters in AM62. However, their contents are different as you
-noted.
-
-There are 2 more registers in AM62 (unlike AM65), that control
-power-down and loop-back. And it is the power-down register, that will
-be primarily used by the driver.
-
-Regards
-Aradhya
-
-
-> 
-> Andrew
-> 
->> Regards
->> Aradhya
->>
->>>
->>> [0] https://www.ti.com/lit/pdf/spruid7
->>>
->>> Signed-off-by: Andrew Davis <afd@ti.com>
->>> ---
->>>   Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
->>>   1 file changed, 1 insertion(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml
->>> b/Documentation/devicetree/bindings/mfd/syscon.yaml
->>> index 8103154bbb529..5029abd6d6411 100644
->>> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
->>> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
->>> @@ -69,6 +69,7 @@ properties:
->>>                 - rockchip,rk3588-qos
->>>                 - rockchip,rv1126-qos
->>>                 - starfive,jh7100-sysmain
->>> +              - ti,dss-oldi-io-ctrl
->>>               - const: syscon
->>>   
+> ---
+> v1 -> v2:
+> - Use `BTreeSet` and existing `consts` as suggested by Alice and Gary.
+> - Reword commit messages as suggested by Miguel.
+> v2 -> v3:
+> - No need to replace `HashSet` with `BTreeSet`, since `consts` is never
+>   iterated on.
+>
+>  rust/macros/vtable.rs | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/rust/macros/vtable.rs b/rust/macros/vtable.rs
+> index 34d5e7fb5768..ee06044fcd4f 100644
+> --- a/rust/macros/vtable.rs
+> +++ b/rust/macros/vtable.rs
+> @@ -74,6 +74,7 @@ pub(crate) fn vtable(_attr: TokenStream, ts: TokenStream) -> TokenStream {
+>                  const {gen_const_name}: bool = false;",
+>              )
+>              .unwrap();
+> +            consts.insert(gen_const_name);
+>          }
+>      } else {
+>          const_items = "const USE_VTABLE_ATTR: () = ();".to_owned();
 
