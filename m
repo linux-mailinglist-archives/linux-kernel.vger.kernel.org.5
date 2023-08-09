@@ -2,280 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD36C775213
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 06:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14BA9775215
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 06:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbjHIExq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 00:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43726 "EHLO
+        id S230124AbjHIEyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 00:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjHIExo (ORCPT
+        with ESMTP id S229450AbjHIEyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 00:53:44 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33884172A;
-        Tue,  8 Aug 2023 21:53:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1691556816;
-        bh=aLsuRyNueNps0bFQ4pQb+x6W7rQ/5KpaQNJlP45Vnz8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LGr9OY/jEncvFqrh4bN3YngPbbY6UMSB/5i7iiUYiPbvG6+WiNFx+K7CwBw2NE7lp
-         u9TTY+nix45g9gOnaE6aSEnboMZCbwtxjhKYARtIhHeGmeLHtnbhmOdad8TflI0iWP
-         elMG5jF+slADeve+tHaiLRvgCfwVG9SSeumz9sOaMpxLVKCbrzNvbzeoj7HGzGuzLW
-         diWUSHj+rMUGK2/F+rLLDW17hxVoLkEA6DRP1Xp3SVImNVeyjLgq03j3UJwEeCIud4
-         LE3WQRqX/uAHh5XTYH+j7HJ50ysbubFCoCFUmJFTlyhRDCdKfgDNgvKR4J61NBjK1w
-         kqyr/aJTQKc/Q==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RLHkl1q0Mz4wy0;
-        Wed,  9 Aug 2023 14:53:35 +1000 (AEST)
-Date:   Wed, 9 Aug 2023 14:53:33 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Yury Norov <yury.norov@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maher Sanalla <msanalla@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: linux-next: manual merge of the bitmap tree with the net-next tree
-Message-ID: <20230809145333.03f31309@canb.auug.org.au>
+        Wed, 9 Aug 2023 00:54:53 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 607A6172A;
+        Tue,  8 Aug 2023 21:54:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=hB8XQbYFdb0Z9/ylbFbqW6q07ipxUwcAY2KZjsOchlU=; b=uRGY4KTxrPxI7ASoL8Fo2YvHIS
+        CDgeMBt54w4wPVl99ab7UP3U9SlJbuxxh1FAstcJf6ApVf2RdSEfBig/vMN+qRKAAhKRW1wxP5a4H
+        WVVBMB8vGN8tKRK8iVqejZe+74Qr4tvTTmc7blHtTrmyjsDUrmp0QkMWlgqkhjPdqT5asqyIIqyUj
+        eJo4sDZisIdxqx8jEQbHB8xL6ffZN+h+8eAspCVypHV98asKH8oNbpVOmH+GA3Mx+8MJ3KUi6Iqcv
+        0Nm1fuiYpOtCsZc907FNWMo82O6/1B3YnKhT0cbCBH2D9EqA/l6q9FeL7O1BxwdhLl3TNnHH4uqKR
+        nvZxTlWA==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qTbDd-0042b2-0z;
+        Wed, 09 Aug 2023 04:54:49 +0000
+Message-ID: <aac7b4bf-e961-6d3f-a4d3-01d56a19613d@infradead.org>
+Date:   Tue, 8 Aug 2023 21:54:48 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/IJJROMl7gUlfPHMeKnbCfDf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] Documentation: RCU: fix section numbers after adding
+ Section 7 in whatisRCU.rst
+Content-Language: en-US
+To:     Wei Zhang <zhangweilst@gmail.com>, corbet@lwn.net,
+        paulmck@kernel.org, rostedt@goodmis.org
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230808155811.550575-1-zhangweilst@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230808155811.550575-1-zhangweilst@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/IJJROMl7gUlfPHMeKnbCfDf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the bitmap tree got a conflict in:
+On 8/8/23 08:58, Wei Zhang wrote:
+> Signed-off-by: Wei Zhang <zhangweilst@gmail.com>
 
-  drivers/net/ethernet/mellanox/mlx5/core/eq.c
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Thanks.
 
-between commits:
+> ---
+>  Documentation/RCU/whatisRCU.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
+> index e488c8e557a9..60ce02475142 100644
+> --- a/Documentation/RCU/whatisRCU.rst
+> +++ b/Documentation/RCU/whatisRCU.rst
+> @@ -59,8 +59,8 @@ experiment with should focus on Section 2.  People who prefer to start
+>  with example uses should focus on Sections 3 and 4.  People who need to
+>  understand the RCU implementation should focus on Section 5, then dive
+>  into the kernel source code.  People who reason best by analogy should
+> -focus on Section 6.  Section 7 serves as an index to the docbook API
+> -documentation, and Section 8 is the traditional answer key.
+> +focus on Section 6 and 7.  Section 8 serves as an index to the docbook
+> +API documentation, and Section 9 is the traditional answer key.
+>  
+>  So, start with the section that makes the most sense to you and your
+>  preferred method of learning.  If you need to know everything about
+> 
+> base-commit: 14f9643dc90adea074a0ffb7a17d337eafc6a5cc
 
-  54b2cf41b853 ("net/mlx5: Refactor completion IRQ request/release handlers=
- in EQ layer")
-  ddd2c79da020 ("net/mlx5: Introduce mlx5_cpumask_default_spread")
-
-from the net-next tree and commit:
-
-  a4be5fa84bb2 ("net: mlx5: switch comp_irqs_request() to using for_each_nu=
-ma_cpu")
-
-from the bitmap tree.
-
-I fixed it up (I think - see below) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/net/ethernet/mellanox/mlx5/core/eq.c
-index ea0405e0a43f,7c8dc0443d6a..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-@@@ -815,112 -803,82 +815,105 @@@ void mlx5_eq_update_ci(struct mlx5_eq *
-  }
-  EXPORT_SYMBOL(mlx5_eq_update_ci);
- =20
- -static void comp_irqs_release_pci(struct mlx5_core_dev *dev)
- +static void comp_irq_release_pci(struct mlx5_core_dev *dev, u16 vecidx)
-  {
-  	struct mlx5_eq_table *table =3D dev->priv.eq_table;
- +	struct mlx5_irq *irq;
- =20
- -	mlx5_irqs_release_vectors(table->comp_irqs, table->num_comp_eqs);
- +	irq =3D xa_load(&table->comp_irqs, vecidx);
- +	if (!irq)
- +		return;
- +
- +	xa_erase(&table->comp_irqs, vecidx);
- +	mlx5_irq_release_vector(irq);
-  }
- =20
- -static int comp_irqs_request_pci(struct mlx5_core_dev *dev)
- +static int mlx5_cpumask_default_spread(int numa_node, int index)
-  {
-- 	const struct cpumask *prev =3D cpu_none_mask;
-- 	const struct cpumask *mask;
- -	struct mlx5_eq_table *table =3D dev->priv.eq_table;
- -	int ncomp_eqs;
- -	u16 *cpus;
- -	int ret;
- +	int found_cpu =3D 0;
- +	int i =3D 0;
-- 	int cpu;
-+ 	int cpu, hop;
- -	int i;
- =20
- -	ncomp_eqs =3D table->num_comp_eqs;
- -	cpus =3D kcalloc(ncomp_eqs, sizeof(*cpus), GFP_KERNEL);
- -	if (!cpus)
- -		return -ENOMEM;
- -
- -	i =3D 0;
-  	rcu_read_lock();
-- 	for_each_numa_hop_mask(mask, numa_node) {
-- 		for_each_cpu_andnot(cpu, mask, prev) {
-- 			if (i++ =3D=3D index) {
-- 				found_cpu =3D cpu;
-- 				goto spread_done;
-- 			}
- -	for_each_numa_online_cpu(cpu, hop, dev->priv.numa_node) {
- -		cpus[i] =3D cpu;
- -		if (++i =3D=3D ncomp_eqs)
-++	for_each_numa_online_cpu(cpu, hop, numa_node) {
-++		if (i++ =3D=3D index) {
-++			found_cpu =3D cpu;
-+ 			break;
- +		}
-- 		prev =3D mask;
-  	}
--=20
-- spread_done:
-  	rcu_read_unlock();
- -	ret =3D mlx5_irqs_request_vectors(dev, cpus, ncomp_eqs, table->comp_irqs=
-, &table->rmap);
- -	kfree(cpus);
- -	return ret;
- +	return found_cpu;
-  }
- =20
- -static void comp_irqs_release_sf(struct mlx5_core_dev *dev)
- +static struct cpu_rmap *mlx5_eq_table_get_pci_rmap(struct mlx5_core_dev *=
-dev)
-  {
- -	struct mlx5_eq_table *table =3D dev->priv.eq_table;
- -
- -	mlx5_irq_affinity_irqs_release(dev, table->comp_irqs, table->num_comp_eq=
-s);
- +#ifdef CONFIG_RFS_ACCEL
- +#ifdef CONFIG_MLX5_SF
- +	if (mlx5_core_is_sf(dev))
- +		return dev->priv.parent_mdev->priv.eq_table->rmap;
- +#endif
- +	return dev->priv.eq_table->rmap;
- +#else
- +	return NULL;
- +#endif
-  }
- =20
- -static int comp_irqs_request_sf(struct mlx5_core_dev *dev)
- +static int comp_irq_request_pci(struct mlx5_core_dev *dev, u16 vecidx)
-  {
-  	struct mlx5_eq_table *table =3D dev->priv.eq_table;
- -	int ncomp_eqs =3D table->num_comp_eqs;
- +	struct cpu_rmap *rmap;
- +	struct mlx5_irq *irq;
- +	int cpu;
- =20
- -	return mlx5_irq_affinity_irqs_request_auto(dev, ncomp_eqs, table->comp_i=
-rqs);
- +	rmap =3D mlx5_eq_table_get_pci_rmap(dev);
- +	cpu =3D mlx5_cpumask_default_spread(dev->priv.numa_node, vecidx);
- +	irq =3D mlx5_irq_request_vector(dev, cpu, vecidx, &rmap);
- +	if (IS_ERR(irq))
- +		return PTR_ERR(irq);
- +
- +	return xa_err(xa_store(&table->comp_irqs, vecidx, irq, GFP_KERNEL));
-  }
- =20
- -static void comp_irqs_release(struct mlx5_core_dev *dev)
- +static void comp_irq_release_sf(struct mlx5_core_dev *dev, u16 vecidx)
-  {
-  	struct mlx5_eq_table *table =3D dev->priv.eq_table;
- +	struct mlx5_irq *irq;
- =20
- -	mlx5_core_is_sf(dev) ? comp_irqs_release_sf(dev) :
- -			       comp_irqs_release_pci(dev);
- +	irq =3D xa_load(&table->comp_irqs, vecidx);
- +	if (!irq)
- +		return;
- =20
- -	kfree(table->comp_irqs);
- +	xa_erase(&table->comp_irqs, vecidx);
- +	mlx5_irq_affinity_irq_release(dev, irq);
-  }
- =20
- -static int comp_irqs_request(struct mlx5_core_dev *dev)
- +static int comp_irq_request_sf(struct mlx5_core_dev *dev, u16 vecidx)
-  {
-  	struct mlx5_eq_table *table =3D dev->priv.eq_table;
- -	int ncomp_eqs;
- -	int ret;
- +	struct mlx5_irq *irq;
- =20
- -	ncomp_eqs =3D table->num_comp_eqs;
- -	table->comp_irqs =3D kcalloc(ncomp_eqs, sizeof(*table->comp_irqs), GFP_K=
-ERNEL);
- -	if (!table->comp_irqs)
- -		return -ENOMEM;
- +	irq =3D mlx5_irq_affinity_irq_request_auto(dev, &table->used_cpus, vecid=
-x);
- +	if (IS_ERR(irq)) {
- +		/* In case SF irq pool does not exist, fallback to the PF irqs*/
- +		if (PTR_ERR(irq) =3D=3D -ENOENT)
- +			return comp_irq_request_pci(dev, vecidx);
- =20
- -	ret =3D mlx5_core_is_sf(dev) ? comp_irqs_request_sf(dev) :
- -				     comp_irqs_request_pci(dev);
- -	if (ret < 0)
- -		kfree(table->comp_irqs);
- +		return PTR_ERR(irq);
- +	}
- =20
- -	return ret;
- +	return xa_err(xa_store(&table->comp_irqs, vecidx, irq, GFP_KERNEL));
- +}
- +
- +static void comp_irq_release(struct mlx5_core_dev *dev, u16 vecidx)
- +{
- +	mlx5_core_is_sf(dev) ? comp_irq_release_sf(dev, vecidx) :
- +			       comp_irq_release_pci(dev, vecidx);
- +}
- +
- +static int comp_irq_request(struct mlx5_core_dev *dev, u16 vecidx)
- +{
- +	return mlx5_core_is_sf(dev) ? comp_irq_request_sf(dev, vecidx) :
- +				      comp_irq_request_pci(dev, vecidx);
-  }
- =20
-  #ifdef CONFIG_RFS_ACCEL
-
---Sig_/IJJROMl7gUlfPHMeKnbCfDf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTTG80ACgkQAVBC80lX
-0Gw9Lgf9FHT6ewnyAYc/pVrsLcMfSpVkP3c53BUUIh6pYfrTP52zhIjSvYKMe5fI
-KO00kqFC096QqNqLJWZVK6GgJMC7O3SlGpNokEd5MNbfEOsGWFvpWChjX7D9aWd9
-gu8iemW3FTiwUI9K65/BjZYy4tH2vigoLyvWyWtbroISYlHvC5NnYEd5rsn9WUud
-9BeErfdHjdp+WvO5AUouix/5OaFvFJCDhYojqBzW0/0t6lZqOyuUdP6Gm/QelI60
-0cCMHURdjqQNWSIBZGf3z6/bsfxdfmvTNOk0ieqE3r0ZMa7ua6SZb8HyoEOpNWcn
-BfRTZtOGcKkWLjIwrJ7WTKhqzNkneQ==
-=vqHv
------END PGP SIGNATURE-----
-
---Sig_/IJJROMl7gUlfPHMeKnbCfDf--
+-- 
+~Randy
