@@ -2,139 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB59776787
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 939F17767D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbjHISjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 14:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41198 "EHLO
+        id S231224AbjHITCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbjHISju (ORCPT
+        with ESMTP id S229653AbjHITCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 14:39:50 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E3F1FCC
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 11:39:50 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9cbaee7a9so2240421fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 11:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1691606388; x=1692211188;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dDpA3TPjDsZcyNcQJPSOOqubO7M5Cub0rju0uQ99gSw=;
-        b=LwmKPiVmagqAvTmHyRR6iNihTxZ8WFw1TuBD9eHe/S9oW77gDGU4rsUsDp45syIWQI
-         iHqotEDovHPa7TbhdbK7rFblT/16jvSVdb+YG8BcVObg6IrHUUOat/l4DF7aVeyKhGOj
-         OszzGdb3wgh2Yh4X/bx29AJZeej+t53bs+iWY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691606388; x=1692211188;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dDpA3TPjDsZcyNcQJPSOOqubO7M5Cub0rju0uQ99gSw=;
-        b=IGHccKjRF1TfvjMJyCEQFWdXkc3Yv4fP/bcWZNT3RR3Qmru+BaOviUovw5HvfuyAYg
-         PtoawHNXEkubLdeyj6qwL+g2wo/O7f9hrdOMABiCZi6a3/HwT5Zg0xnHspS6aEwWNZ2Q
-         aR0/pxyG3e8cXRmM23RDGBSxC8hcJyS9bpFmaBWVKkcgpnN4IC77mBTer4Ed0AMVmhkN
-         p1H7piMx4PxsjWf/6qr17YPPJXip1mZnMCiCF16EdwkpUCcHeqpiUDvnx4luuPHEi8WX
-         aR8zbl+QEFPYOIu7e85S8Uv6uzy4+Ek8xgh5gfJlUvyxk9H0xdqqiIpeN/g7iRrKsZ9g
-         oNkQ==
-X-Gm-Message-State: AOJu0YzUmORBArgiipPpQbpikOydoCtTwGag9Za+flnjAhPDQS9ivg8O
-        mWXEi2pZzDBEokmu2fUfz4kmmZftR16dOMmVjJ1/8nclcKPlqGqN
-X-Google-Smtp-Source: AGHT+IHy3NEU9UgVEMkbuYmFBQcXwFYdHQ+pPGMERBY1aNbem7Yi1XcUSDdMcYqv/Jz6BYR9ylR30raLmShqEYuZZbY=
-X-Received: by 2002:a05:651c:151:b0:2b7:2ea:33c3 with SMTP id
- c17-20020a05651c015100b002b702ea33c3mr37988ljd.22.1691606388320; Wed, 09 Aug
- 2023 11:39:48 -0700 (PDT)
+        Wed, 9 Aug 2023 15:02:31 -0400
+X-Greylist: delayed 1319 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Aug 2023 12:02:29 PDT
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A56BE71;
+        Wed,  9 Aug 2023 12:02:28 -0700 (PDT)
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1qTo6a-0004tp-11; Wed, 09 Aug 2023 20:40:24 +0200
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>
+Cc:     Jake Oshins <jakeo@microsoft.com>, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Drivers: hv: vmbus: Don't dereference ACPI root object handle
+Date:   Wed,  9 Aug 2023 20:40:18 +0200
+Message-ID: <fd8e64ceeecfd1d95ff49021080cf699e88dbbde.1691606267.git.maciej.szmigiero@oracle.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230809103633.485906560@linuxfoundation.org> <20230809135326.GE3031656@google.com>
- <f47340c6-3c41-1f91-d0f9-fe0b59a23aac@roeck-us.net> <CAEXW_YQ4GqPwvUF8=8CWmdj=cD56v_eEVK-EirsObQXyBDFVpg@mail.gmail.com>
-In-Reply-To: <CAEXW_YQ4GqPwvUF8=8CWmdj=cD56v_eEVK-EirsObQXyBDFVpg@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 9 Aug 2023 14:39:37 -0400
-Message-ID: <CAEXW_YRi8cW+jHad8Dm_XTL+-OX7-S0X9TbZOyeOL=Tu9sV_4Q@mail.gmail.com>
-Subject: Re: [PATCH 5.15 00/92] 5.15.126-rc1 review
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        paulmck@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 2:35=E2=80=AFPM Joel Fernandes <joel@joelfernandes.o=
-rg> wrote:
->
-> On Wed, Aug 9, 2023 at 12:18=E2=80=AFPM Guenter Roeck <linux@roeck-us.net=
-> wrote:
-> >
-> > On 8/9/23 06:53, Joel Fernandes wrote:
-> > > On Wed, Aug 09, 2023 at 12:40:36PM +0200, Greg Kroah-Hartman wrote:
-> > >> This is the start of the stable review cycle for the 5.15.126 releas=
-e.
-> > >> There are 92 patches in this series, all will be posted as a respons=
-e
-> > >> to this one.  If anyone has any issues with these being applied, ple=
-ase
-> > >> let me know.
-> > >>
-> > >> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
-> > >> Anything received after that time might be too late.
-> > >>
-> > >> The whole patch series can be found in one patch at:
-> > >>      https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patc=
-h-5.15.126-rc1.gz
-> > >> or in the git tree and branch at:
-> > >>      git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git linux-5.15.y
-> > >> and the diffstat can be found below.
-> > >
-> > > Not necesscarily new with 5.15 stable but 3 of the 19 rcutorture scen=
-arios
-> > > hang with this -rc: TREE04, TREE07, TASKS03.
-> > >
-> > > 5.15 has a known stop machine issue where it hangs after 1.5 hours wi=
-th cpu
-> > > hotplug rcutorture testing. Me and tglx are continuing to debug this.=
- The
-> > > issue does not show up on anything but 5.15 stable kernels and neithe=
-r on
-> > > mainline.
-> > >
-> >
-> > Do you by any have a crash pattern that we could possibly use to find t=
-he crash
-> > in ChromeOS crash logs ? No idea if that would help, but it could provi=
-de some
-> > additional data points.
->
-> The pattern shows as a hard hang, the system is unresponsive and all CPUs
-> are stuck in stop_machine. Sometimes it recovers on its own from the
-> hang and then RCU immediately gives stall warnings. It takes 1.5 hour
-> to reproduce and sometimes never happens for several hours.
->
-> It appears related to CPU hotplug since gdb showed me most of the CPUs
-> are spinning in multi_cpu_stop() / stop machine after the hang.
->
+From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 
-Adding to this, it appears one of the CPUs is constantly firing and
-reprogramming hrtimer events for some reason every few 100
-microseconds (I see this in gdb). My debug angle right now is to
-figure out why it does that but collecting a trace is hard as it
-appears even trace collection may not be happening once hung and the
-only traces I am getting are the ones after the hang recovers, not
-during the hang.  I am also trying to see if multi_cpu_stop() can
-panic the kernel if it sits there too long.
+Since the commit referenced in the Fixes: tag below the VMBus client driver
+is walking the ACPI namespace up from the VMBus ACPI device to the ACPI
+namespace root object trying to find Hyper-V MMIO ranges.
 
- - Joel
+However, if it is not able to find them it ends trying to walk resources of
+the ACPI namespace root object itself.
+This object has all-ones handle, which causes a NULL pointer dereference
+in the ACPI code (from dereferencing this pointer with an offset).
+
+This in turn causes an oops on boot with VMBus host implementations that do
+not provide Hyper-V MMIO ranges in their VMBus ACPI device or its
+ancestors.
+The QEMU VMBus implementation is an example of such implementation.
+
+I guess providing these ranges is optional, since all tested Windows
+versions seem to be able to use VMBus devices without them.
+
+Fix this by explicitly terminating the lookup at the ACPI namespace root
+object.
+
+Note that Linux guests under KVM/QEMU do not use the Hyper-V PV interface
+by default - they only do so if the KVM PV interface is missing or
+disabled.
+
+Example stack trace of such oops:
+[ 3.710827] ? __die+0x1f/0x60
+[ 3.715030] ? page_fault_oops+0x159/0x460
+[ 3.716008] ? exc_page_fault+0x73/0x170
+[ 3.716959] ? asm_exc_page_fault+0x22/0x30
+[ 3.717957] ? acpi_ns_lookup+0x7a/0x4b0
+[ 3.718898] ? acpi_ns_internalize_name+0x79/0xc0
+[ 3.720018] acpi_ns_get_node_unlocked+0xb5/0xe0
+[ 3.721120] ? acpi_ns_check_object_type+0xfe/0x200
+[ 3.722285] ? acpi_rs_convert_aml_to_resource+0x37/0x6e0
+[ 3.723559] ? down_timeout+0x3a/0x60
+[ 3.724455] ? acpi_ns_get_node+0x3a/0x60
+[ 3.725412] acpi_ns_get_node+0x3a/0x60
+[ 3.726335] acpi_ns_evaluate+0x1c3/0x2c0
+[ 3.727295] acpi_ut_evaluate_object+0x64/0x1b0
+[ 3.728400] acpi_rs_get_method_data+0x2b/0x70
+[ 3.729476] ? vmbus_platform_driver_probe+0x1d0/0x1d0 [hv_vmbus]
+[ 3.730940] ? vmbus_platform_driver_probe+0x1d0/0x1d0 [hv_vmbus]
+[ 3.732411] acpi_walk_resources+0x78/0xd0
+[ 3.733398] vmbus_platform_driver_probe+0x9f/0x1d0 [hv_vmbus]
+[ 3.734802] platform_probe+0x3d/0x90
+[ 3.735684] really_probe+0x19b/0x400
+[ 3.736570] ? __device_attach_driver+0x100/0x100
+[ 3.737697] __driver_probe_device+0x78/0x160
+[ 3.738746] driver_probe_device+0x1f/0x90
+[ 3.739743] __driver_attach+0xc2/0x1b0
+[ 3.740671] bus_for_each_dev+0x70/0xc0
+[ 3.741601] bus_add_driver+0x10e/0x210
+[ 3.742527] driver_register+0x55/0xf0
+[ 3.744412] ? 0xffffffffc039a000
+[ 3.745207] hv_acpi_init+0x3c/0x1000 [hv_vmbus]
+
+Fixes: 7f163a6fd957 ("drivers:hv: Modify hv_vmbus to search for all MMIO ranges available.")
+Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+---
+ drivers/hv/vmbus_drv.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+index 67f95a29aeca..edbb38f6956b 100644
+--- a/drivers/hv/vmbus_drv.c
++++ b/drivers/hv/vmbus_drv.c
+@@ -2287,7 +2287,8 @@ static int vmbus_acpi_add(struct platform_device *pdev)
+ 	 * Some ancestor of the vmbus acpi device (Gen1 or Gen2
+ 	 * firmware) is the VMOD that has the mmio ranges. Get that.
+ 	 */
+-	for (ancestor = acpi_dev_parent(device); ancestor;
++	for (ancestor = acpi_dev_parent(device);
++	     ancestor && ancestor->handle != ACPI_ROOT_OBJECT;
+ 	     ancestor = acpi_dev_parent(ancestor)) {
+ 		result = acpi_walk_resources(ancestor->handle, METHOD_NAME__CRS,
+ 					     vmbus_walk_resources, NULL);
