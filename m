@@ -2,90 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70126775F25
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE18775F2D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232531AbjHIMeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58790 "EHLO
+        id S232536AbjHIMfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232427AbjHIMeA (ORCPT
+        with ESMTP id S231754AbjHIMfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:34:00 -0400
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CE11FCA
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:33:58 -0700 (PDT)
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1bbb34b091dso48663105ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:33:58 -0700 (PDT)
+        Wed, 9 Aug 2023 08:35:06 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A636F10F3
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:35:05 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6bd0a0a675dso1282945a34.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:35:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1691584505; x=1692189305;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=D1vlk426yx9I7RvL78AONvP5VHRKVeaBopr8pvsM2ew=;
+        b=kZqvQo7QPz15n/1fXXXDdFKSI0e4A/DXzZVaQfaTr7UjANpLuMN3SzY5NxH7MwzQou
+         FsNvDyhGFtnBkr34Jr3/ehvKXZ7FKv+3efLEWkVBKZqVsxsZwHLk9+NuV9pYNSDQAttt
+         FVreMUaoInrkupaNoigWXu7tLt8LU4K8IL8ZsX9HSuR2iM7+Wwmu1hfOsdVBFPpNh4m0
+         asP6tXW7QTlzIOErn16fFZ8FrcUBTYRzMThlg9BT3rb4h51TIXX98ai9eaS7lKWzJkKj
+         eEZ7S8/BOrUG55+UoAVm1UcV993ktA0o6xFys38oDvqmcNiRisb4+X9vvSlkuobUELjn
+         Um1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691584438; x=1692189238;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GS5yL+T8aD2jHNBozahJ7byO3Ae03UHDEOMA4UMJMo8=;
-        b=OmCdWzZ+BbC7zZyjKHHDJK0OigewwpmL99/qB+M/HXHpoUNuW9aBZ8I/7upjEshVUF
-         W3PmJzv7eyB6vgyIwd6aSPSou6jlxQAmYES1gkyJ02BK3eQyQn8c6CFLCej51cVy3hzg
-         m9A+TJV51WaKywinNV0NpHQmpx4X98VrSWegrH0nBuPiJ2rOJeHBHo53chdyEa+4Ft5h
-         Ynky0D8/YlSpg3BFwMLrVEc4tpwKXtXliELbBoi76DKfZkxc//+CLqLxg4eOE4lA5zv4
-         wl87thtBtkDnSM7HyNAGwwOz3PWggkFnVYtq7nE75bNy1joNtXa39tJ7Yyo3m/xnUaZs
-         Ltog==
-X-Gm-Message-State: AOJu0Yyb+Ac5oWGpWZkhTnaMfAWnCIA+m1b39H9uto3lplLOAiIBv9az
-        W+0DCKyUZk4SGsvNuZTIHw2TQX8kQvvfhQnq6ga1HqB+nfsK
-X-Google-Smtp-Source: AGHT+IGITw4dGMJn1Xo0MSeJc2h7kpMvFxWOmemJIDH+W89ELiON54RHZRO/bGV8N3JyMp+WNpHH1rACz+GBJtHAttk46gTZx6Xd
+        d=1e100.net; s=20221208; t=1691584505; x=1692189305;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D1vlk426yx9I7RvL78AONvP5VHRKVeaBopr8pvsM2ew=;
+        b=cPmlBZyMb1biCa1peU9ybDAIFU8gxXOkiA1V+JjRyHf9LZnxYAidqBJKHWnn2h2WOr
+         PoovewjPwLLwzaRt/4GJHdwUkZH4MjZibI7+Up7R+vq30VD31hn2XNB0n40mn8R2peK0
+         ONNvP9bADqoJRXUX6D1IkwVZ7yq2T6GDPIgLm2DP9SFfughhJl21j1kuRIcacjnTdLjp
+         TKDxpLePISjHzhNdkdxcSP37/O9/ccg0SWu4V9y+pQJwRwtt0joV2PMZaFFMcqo8rJLZ
+         +YjQ+NQYDYwzFTXNdfl1Q11u5cch/fIPPkyQsFMZ7lN0Wd3/kpsW07NGvhO/D83mCIIT
+         OAYg==
+X-Gm-Message-State: AOJu0YxLmH0h3jwuoEd2IKVcfKT65QIpps2V/33KOH/AXVH0acNwRZCp
+        hE3pP9HA/UWQvi2KISr1bzrDLg==
+X-Google-Smtp-Source: AGHT+IFXJv4SSKywPDvp9X/J5cU2mrSKT+Vbk1TAqRv+ipibzkD6pTEls1NDEePZUTv1nQ0uFw/t3g==
+X-Received: by 2002:a05:6358:428c:b0:135:b4c:a490 with SMTP id s12-20020a056358428c00b001350b4ca490mr2799558rwc.10.1691584503427;
+        Wed, 09 Aug 2023 05:35:03 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id b17-20020ac86bd1000000b0040ff25d8712sm4030373qtt.18.2023.08.09.05.35.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 05:35:02 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qTiP0-0051O0-Ef;
+        Wed, 09 Aug 2023 09:35:02 -0300
+Date:   Wed, 9 Aug 2023 09:35:02 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Baolu Lu <baolu.lu@linux.intel.com>,
+        "Zhang, Tina" <tina.zhang@intel.com>,
+        Michael Shavit <mshavit@google.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/5] iommu: Call helper function to get assigned pasid
+ value
+Message-ID: <ZNOH9lPdTnltb9JZ@ziepe.ca>
+References: <20230808074944.7825-1-tina.zhang@intel.com>
+ <20230808074944.7825-3-tina.zhang@intel.com>
+ <f3d8692e-b13d-97ee-2288-c2be1858dcfa@linux.intel.com>
+ <BN9PR11MB52767F29A6C11157659D375B8C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:d483:b0:1bb:a78c:7a3e with SMTP id
- c3-20020a170902d48300b001bba78c7a3emr166180plg.3.1691584438324; Wed, 09 Aug
- 2023 05:33:58 -0700 (PDT)
-Date:   Wed, 09 Aug 2023 05:33:58 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008dd5f506027cb146@google.com>
-Subject: [syzbot] Monthly v9fs report (Aug 2023)
-From:   syzbot <syzbot+list3095adb18b67ff406bcb@syzkaller.appspotmail.com>
-To:     asmadeus@codewreck.org, ericvh@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lucho@ionkov.net, syzkaller-bugs@googlegroups.com,
-        v9fs@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB52767F29A6C11157659D375B8C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello v9fs maintainers/developers,
+On Wed, Aug 09, 2023 at 09:49:16AM +0000, Tian, Kevin wrote:
+> > From: Baolu Lu <baolu.lu@linux.intel.com>
+> > Sent: Wednesday, August 9, 2023 8:22 AM
+> > 
+> > On 2023/8/8 15:49, Tina Zhang wrote:
+> > > Use the helper function mm_get_pasid() to get the mm assigned pasid
+> > > value.
+> > 
+> > For internal iommu drivers, perhaps we should use another helper.
+> > Something like sva_domain_get_pasid()?
+> > 
+> > Suppose that the iommu drivers should have no idea about the "mm".
+> > 
+> 
+> Aren't all touched functions accept a struct mm_struct pointer?
 
-This is a 31-day syzbot report for the v9fs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/v9fs
+It is wrong for the driver to even ask this question.
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 5 issues are still open and 27 have been fixed so far.
+Domains, regardless of what they are, get attached to PASIDs. Maybe
+many PASIDs, driver doesn't get to care. SVA isn't special. Stop
+making it special.
 
-Some of the still happening issues:
+The driver should rely on there being exactly one iommu_domain for SVA
+per mm so it can hang the mm_notifier off the iommu_domain
 
-Ref Crashes Repro Title
-<1> 622     Yes   WARNING in v9fs_fid_get_acl
-                  https://syzkaller.appspot.com/bug?extid=a83dc51a78f0f4cf20da
-<2> 557     Yes   WARNING in inc_nlink (3)
-                  https://syzkaller.appspot.com/bug?extid=2b3af42c0644df1e4da9
-<3> 193     Yes   BUG: corrupted list in p9_fd_cancelled (2)
-                  https://syzkaller.appspot.com/bug?extid=1d26c4ed77bc6c5ed5e6
-<4> 8       No    WARNING: refcount bug in p9_req_put (2)
-                  https://syzkaller.appspot.com/bug?extid=3ba8f2097df93bc26d2f
+But otherwise invalidation for a SVA domain should be *exactly the
+same flow* as invalidation for a paging domain. It iterates over the
+attachments and generates the correct list of PASIDs and ATCs.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Jason
