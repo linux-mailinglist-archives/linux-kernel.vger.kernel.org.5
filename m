@@ -2,88 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AD37766E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7997766EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbjHISC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 14:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58388 "EHLO
+        id S233201AbjHISDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 14:03:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232245AbjHISCp (ORCPT
+        with ESMTP id S233074AbjHISDK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 14:02:45 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8FE2E19A1;
-        Wed,  9 Aug 2023 11:02:43 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1052)
-        id F276320FC4C4; Wed,  9 Aug 2023 11:02:42 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F276320FC4C4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1691604163;
-        bh=2BAEPHZjC1csVSUp5YiA21kHWYMQI2muR+jIz+ByF+4=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=V0JoJpg23L/peNkCEvzn4viDNmOHVq322EXzMIkHlzswJAG/7x2U+HK9aVOM+hySz
-         mbJuWfMNHkSfC5A/dOjdMfskmaecJosfCzIgyyFlwjv23+hsdZtd9zVTW2hG2gpZGJ
-         y6qnuS91reyXsJjl52Mc922yNssoBNVK4a9tvzQs=
-Date:   Wed, 9 Aug 2023 11:02:42 -0700
-From:   Fan Wu <wufan@linux.microsoft.com>
-To:     Paul Moore <paul@paul-moore.com>,
-        Mike Snitzer <snitzer@kernel.org>, corbet@lwn.net,
-        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
-        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
-        agk@redhat.com, eparis@redhat.com, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, audit@vger.kernel.org,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [RFC PATCH v10 11/17] dm-verity: consume root hash digest and
- signature data via LSM hook
-Message-ID: <20230809180242.GA23396@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1687986571-16823-1-git-send-email-wufan@linux.microsoft.com>
- <1687986571-16823-12-git-send-email-wufan@linux.microsoft.com>
- <ZKgm+ffQbdDTxrg9@redhat.com>
- <20230712034319.GA17642@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <CAHC9VhQFxqcfgR0acgdiXKP9LT1KLgGjZd-QHs6O1dEex31HEQ@mail.gmail.com>
- <20230808224503.GA20095@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20230808234023.GC120054@agk-cloud1.hosts.prod.upshift.rdu2.redhat.com>
+        Wed, 9 Aug 2023 14:03:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8802111;
+        Wed,  9 Aug 2023 11:03:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 55D20643B0;
+        Wed,  9 Aug 2023 18:03:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27B6EC433C9;
+        Wed,  9 Aug 2023 18:02:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691604182;
+        bh=rPL3CLW5XuFRA39bX+QGXMYR05A+1pGnImddf5wGUCE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BBVzXWQHKu1WI7BUZSyUq4RygUDDCn2Ynwrw/QQ4B6iSmvfMMvCmZNQGKWvt9WWXk
+         TXhNXYQ97qc/qgVsNns+eO0xxDrsGM+l+cnwEWlkANhqOOWT9b5W+/MzBKM3re5UIH
+         w2/5uecoFeYuoQYwHJu/IqLtoA9McZPQXxnGdT026XdOqYctlg6ISQBt+JRcwHBntT
+         DNt0F4zG3BGdiJavlJs47IOb3rnWoFFrK3PieDkSTGCd6zCKZanOhLFbYhcHsVox2I
+         bmWGCvR6ElObEHmCmF5cXoiznRdLgeNFsYX3gT/iqewhVn1dMxKIlAnFrKXdKZNgCT
+         k2QV2n/L7KVkg==
+Date:   Wed, 9 Aug 2023 19:02:57 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Marcus Folkesson <marcus.folkesson@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gustavsson <kent@minoris.se>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Cosmin Tanislav <demonsingur@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Ramona Bolboaca <ramona.bolboaca@analog.com>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 4/4] iio: adc: mcp3911: add support for the whole
+ MCP39xx family
+Message-ID: <20230809190257.67602e55@jic23-huawei>
+In-Reply-To: <ZNM1AYMB3RGRWp7C@gmail.com>
+References: <20230808110432.240773-1-marcus.folkesson@gmail.com>
+        <20230808110432.240773-4-marcus.folkesson@gmail.com>
+        <ZNJP6xpOvRJigtMx@smile.fi.intel.com>
+        <ZNM1AYMB3RGRWp7C@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230808234023.GC120054@agk-cloud1.hosts.prod.upshift.rdu2.redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 12:40:23AM +0100, Alasdair G Kergon wrote:
-> On Tue, Aug 08, 2023 at 03:45:03PM -0700, Fan Wu wrote:
-> > On Tue, Jul 25, 2023 at 04:43:48PM -0400, Paul Moore wrote:
-> > > Where would the finalize() hook be called?
+On Wed, 9 Aug 2023 08:41:05 +0200
+Marcus Folkesson <marcus.folkesson@gmail.com> wrote:
+
+> > ...
+> >   
+> > > +#define MCP3910_OFFCAL(x)		(MCP3910_REG_OFFCAL_CH0 + x * 6)  
 > > 
-> > It is in the __bind function in drivers/md/dm.c, calling just before 
-> > rcu_assign_pointer(md->map, (void *)t) which activates the inactive table.
->  
-> That would be after the existing commit point, meaning the table swap
-> cannot be cancelled there, so is the finalize() you are proposing void()
-> i.e. designed so it always succeeds?
+> > Inconsistent macro implementation, i.e. you need to use (x).  
 > 
-> Alasdair
+> Sorry, I do not get you
+> 
+> 
+> [...]
+> 
+> > > +static int mcp3910_get_osr(struct mcp3911 *adc, int *val)
+> > > +{
+> > > +	int ret, osr;  
+> > 
+> > Strictly speaking osr can't be negative, otherwise it's a UB below.
+> > 
+> > 	u32 osr = FIELD_GET(MCP3910_CONFIG0_OSR, *val);
+> > 	int ret;
+> > 
+> > and why val is int?  
+> 
+> I will change val to u32 for *_get_osr(), *_set_osr() and *_set_scale().
+> 
+> [...]
+> 
+> > > +	if (device_property_read_bool(&adc->spi->dev, "microchip,data-ready-hiz"))  
+> > 
+> > This also becomes shorter.
+> > 
+> > One trick to make it even shorter:
+> > 
+> > 	if (device_property_present(dev, "microchip,data-ready-hiz"))  
+> 
+> Thank you, I wasn't aware of device_property_present().
 
-Thanks for the input.
+I know the read_bool function is direct equivalent of this but where a property
+is a flag, it feels more natural to me to check it with that one.
+read_present() feels more appropriate for where you want to know a more
+complex property is present.
 
-Actually, no, the hook can be failed. I noticed the existing call before rcu_assign_pointer(md->map, (void *)t);
-(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/md/dm.c#n2255)
-can also be failed so I was following the same pattern.
+Doesn't matter that much either way however so up to you.
 
-Could you explain a bit more about the "commit point"? It sounds like it might be better to move
-the hook call just before the commit point instead.
+> 
+> [...]
+> 
+> >   
+> > > +	dev_dbg(&spi->dev, "use device address %i\n", adc->dev_addr);  
+> > 
+> > Is it useful?  
+> 
+> Yes, I think so.
+> 
+> > 
+> > -- 
+> > With Best Regards,
+> > Andy Shevchenko
+> > 
+> >   
+> 
+> Best regards,
+> Marcus Folkesson
 
--Fan
