@@ -2,154 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F553776600
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15806776590
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 18:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232483AbjHIRCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 13:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47818 "EHLO
+        id S231400AbjHIQwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 12:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232609AbjHIRCf (ORCPT
+        with ESMTP id S230489AbjHIQwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 13:02:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241DD26AA;
-        Wed,  9 Aug 2023 10:02:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ADF55641F5;
-        Wed,  9 Aug 2023 17:02:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79766C433C9;
-        Wed,  9 Aug 2023 17:02:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691600539;
-        bh=V902vE1qSD2W3x2PVyeCERNpVhnCPf/lW+x8V8GU3+c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WMhObEz5TS7bF/kYtzmy4aPzQwZnwrQiIUPdi+fZLiNzwNXpknALfGhoph6tHbTiG
-         BZMzORKMJsl/ZkjiBKT1hrT9wLy0SxIuNk8kyuQZHCaYuBQaM+QPIwX9RrrcKs1MT4
-         3ZbDQqBlAV9u9UxQD/3W/uRN/mvfPIBKWPZ2etvp5VozRvGepNB4tCXX5aA71VNXDv
-         6hd7C2M/s9dOrNPRciF6y+GRo6sTTkCulpdXObeNmR8ZN9p+eC28ayEkVpnOTJajS8
-         COXV4YcfTMFVTsZr9bXWXU1cVs9ydrLcLPrgJCT9TmuYXD7FviPsaNwwNjnQIi2iQy
-         GHGT5DXoFKqsg==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH net-next v3 10/10] net: stmmac: platform: support parsing per channel irq from DT
-Date:   Thu, 10 Aug 2023 00:50:07 +0800
-Message-Id: <20230809165007.1439-11-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230809165007.1439-1-jszhang@kernel.org>
-References: <20230809165007.1439-1-jszhang@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 9 Aug 2023 12:52:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3684A26A0
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 09:51:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691599904; x=1723135904;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references;
+  bh=aoFne1pAw3kXuSG8g/9ufy7FABQ/5KM6WvVu/TzXZ5A=;
+  b=ONbe3D3jiQYs/d0juh8tPdQfHBcPEhHWBQiNW02gfRodhzrVqvC9Ui6q
+   SljTMprvnN2WJeu/JuakqCOCKnTjm3LI4MCNg9ig1AKMEmYQoPLpwJ+1n
+   64t0OhaeULlWV9W9X9QD5BNq78qOUpBDwGB4CoQNMmZtWOu+b6ajHpm8W
+   GinnlHAM5t0mnPYlQSV1VN1YBOuLdN7Ca8UUi8Oa9OIN0oumgdTvcGaxm
+   0eHQZ+qjVUU/UQyTNY5a/wse29Sv68NKTKSjPnfNQTK9tClNAnhFVeh55
+   i5H9gMHEzxhyGwsJKkA5AUttgLNV7K0nA7dMTuyIqJ0Gc6kfD28EjBw0R
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="368633261"
+X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
+   d="scan'208";a="368633261"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 09:50:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="875333111"
+Received: from qiuxu-clx.sh.intel.com ([10.239.53.109])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 09:50:33 -0700
+From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+To:     sohil.mehta@intel.com
+Cc:     andrew.cooper3@citrix.com, andy@infradead.org,
+        arjan@linux.intel.com, dimitri.sivanich@hpe.com,
+        feng.tang@intel.com, jgross@suse.com, kan.liang@linux.intel.com,
+        kprateek.nayak@amd.com, linux-kernel@vger.kernel.org,
+        mikelley@microsoft.com, paulmck@kernel.org, peterz@infradead.org,
+        ray.huang@amd.com, rui.zhang@intel.com, tglx@linutronix.de,
+        thomas.lendacky@amd.com, x86@kernel.org, qiuxu.zhuo@intel.com
+Subject: Re: [patch 00/53] x86/topology: The final installment
+Date:   Thu, 10 Aug 2023 00:50:19 +0800
+Message-Id: <20230809165019.85611-1-qiuxu.zhuo@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <ee7ee03c-43b0-a891-e94e-4a2eb7c5da64@intel.com>
+References: <ee7ee03c-43b0-a891-e94e-4a2eb7c5da64@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The snps dwmac IP may support per channel interrupt. Add support to
-parse the per channel irq from DT.
+Hi Sohil,
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 10 ++++----
- .../ethernet/stmicro/stmmac/stmmac_platform.c | 23 +++++++++++++++++++
- 2 files changed, 29 insertions(+), 4 deletions(-)
+> From: Sohil Mehta <sohil.mehta@intel.com>
+> ...
+> Subject: Re: [patch 00/53] x86/topology: The final installment
+> ...
+> Debugfs
+> -------
+> # cat /sys/kernel/debug/x86/topo/cpus/39
+> online:              1
+> initial_apicid:      39
+> apicid:              39
+> ...
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 4ed5c976c7a3..245eeb7d3e83 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3612,7 +3612,7 @@ static int stmmac_request_irq_multi(struct net_device *dev)
- 	for (i = 0; i < priv->plat->rx_queues_to_use; i++) {
- 		if (i >= MTL_MAX_RX_QUEUES)
- 			break;
--		if (priv->rx_irq[i] == 0)
-+		if (priv->rx_irq[i] <= 0)
- 			continue;
- 
- 		int_name = priv->int_name_rx_irq[i];
-@@ -3637,7 +3637,7 @@ static int stmmac_request_irq_multi(struct net_device *dev)
- 	for (i = 0; i < priv->plat->tx_queues_to_use; i++) {
- 		if (i >= MTL_MAX_TX_QUEUES)
- 			break;
--		if (priv->tx_irq[i] == 0)
-+		if (priv->tx_irq[i] <= 0)
- 			continue;
- 
- 		int_name = priv->int_name_tx_irq[i];
-@@ -7278,8 +7278,10 @@ int stmmac_dvr_probe(struct device *device,
- 	priv->plat = plat_dat;
- 	priv->ioaddr = res->addr;
- 	priv->dev->base_addr = (unsigned long)res->addr;
--	priv->plat->dma_cfg->perch_irq_en =
--		(priv->plat->flags & STMMAC_FLAG_PERCH_IRQ_EN);
-+	if (res->rx_irq[0] > 0 && res->tx_irq[0] > 0) {
-+		priv->plat->flags |= STMMAC_FLAG_PERCH_IRQ_EN;
-+		priv->plat->dma_cfg->perch_irq_en = true;
-+	}
- 
- 	priv->dev->irq = res->irq;
- 	priv->wol_irq = res->wol_irq;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 29145682b57b..9b46775b41ab 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -705,6 +705,9 @@ EXPORT_SYMBOL_GPL(stmmac_remove_config_dt);
- int stmmac_get_platform_resources(struct platform_device *pdev,
- 				  struct stmmac_resources *stmmac_res)
- {
-+	char irq_name[8];
-+	int i;
-+
- 	memset(stmmac_res, 0, sizeof(*stmmac_res));
- 
- 	/* Get IRQ information early to have an ability to ask for deferred
-@@ -738,6 +741,26 @@ int stmmac_get_platform_resources(struct platform_device *pdev,
- 		dev_info(&pdev->dev, "IRQ eth_lpi not found\n");
- 	}
- 
-+	for (i = 0; i < MTL_MAX_RX_QUEUES; i++) {
-+		snprintf(irq_name, sizeof(irq_name), "rx%i", i);
-+		stmmac_res->rx_irq[i] = platform_get_irq_byname_optional(pdev, irq_name);
-+		if (stmmac_res->rx_irq[i] < 0) {
-+			if (stmmac_res->rx_irq[i] == -EPROBE_DEFER)
-+				return -EPROBE_DEFER;
-+			break;
-+		}
-+	}
-+
-+	for (i = 0; i < MTL_MAX_TX_QUEUES; i++) {
-+		snprintf(irq_name, sizeof(irq_name), "tx%i", i);
-+		stmmac_res->tx_irq[i] = platform_get_irq_byname_optional(pdev, irq_name);
-+		if (stmmac_res->tx_irq[i] < 0) {
-+			if (stmmac_res->tx_irq[i] == -EPROBE_DEFER)
-+				return -EPROBE_DEFER;
-+			break;
-+		}
-+	}
-+
- 	stmmac_res->sfty_ce_irq = platform_get_irq_byname_optional(pdev, "sfty_ce");
- 	if (stmmac_res->sfty_ce_irq < 0) {
- 		if (stmmac_res->sfty_ce_irq == -EPROBE_DEFER)
--- 
-2.40.1
+Did you convert the output formats of 'initial_apicid' and 'apicid'
+from hexadecimal to decimal in your testing? It was really coincidental
+that if the output values were '39' in hexadecimal for the CPU '39'
+in decimal :-).
 
+I noticed they were represented in hexadecimal format in
+arch/x86/kernel/cpu/debugfs.c:
+
+    seq_printf(m, "initial_apicid:      %x\n", c->topo.initial_apicid);
+    seq_printf(m, "apicid:              %x\n", c->topo.apicid);
+
+Thanks!
+-Qiuxu
