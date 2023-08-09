@@ -2,119 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA8F775DF9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97A3775DE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbjHILms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 07:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37898 "EHLO
+        id S234265AbjHILmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 07:42:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234291AbjHILmq (ORCPT
+        with ESMTP id S234257AbjHILmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 07:42:46 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709721FD8;
-        Wed,  9 Aug 2023 04:42:44 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fe4a89e8c4so41039105e9.3;
-        Wed, 09 Aug 2023 04:42:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691581363; x=1692186163;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7b0FNEltUgJre7QUi/LlASENLPDFiW1RiJtPuEPcdsk=;
-        b=H8bxlFuEJAgtd/W8tH75enhERPJK8n1rNmG7P1oaBuUdwMEbeVDeV8AFbviUIsf0mH
-         L79na/TmkmFu1gjUUH/sP0SO9j8XQgOew6Z5h6lX7S+NBciQ7/gtGkCqB7U7GnJbSbLU
-         JX0V+S4/Vi/pmNYsA+UYUns4yF6HK/6ur3f/YSJaCNPeb0rICJhAoFbMVr8nFXdF8+b7
-         4Zrpng/iX6JbBvRzpVXE33vXPPaUkp92fxJmqaesWhXDHRYQZsfIWz5+LpKvTbnUonTG
-         LxudexIvdvdxUUgNJMeLVtk0I4MGi0sxootYT7F96hgSLWBFws8YM5Psla7H88O4YARw
-         JtJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691581363; x=1692186163;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7b0FNEltUgJre7QUi/LlASENLPDFiW1RiJtPuEPcdsk=;
-        b=bNAUyb/h/kDGRX+J3+NJZCXJe5NcQzTxzq7G0DjLxlYgu/Z6nxaj1Buihmgctz2SSL
-         BGsSMpIe/BPTVtagZgLwjIqUnqiecAbUClSb6S2hvK3YrQB54mHTzsyDTq3P+FmJGqgr
-         p3HNj8CPIHOP1v7Yy/3O6H430FjBAzPTDbaXemjd0/HuO3EqnsCIQJEONOY0rJwpbsdx
-         C9ItNYhrYCuZl/73Jn29AKPcmbNDMrnKvo3qeaRIYVMj1O/hXmjFCkKGtRUTW89YBrxK
-         i47Hv77DVT50c18LfIiyWJexztALrTl8TirOJklrM+oNtbhdmiSxc9VsUdayNaufJV/C
-         z/tA==
-X-Gm-Message-State: AOJu0Yw/J2iA/U/tFMwjxbGdlz4jmiY+OtC4uokuDvS36EyASVprAu1S
-        lB4i3a5ZQvUa9bAtI+yJh6w=
-X-Google-Smtp-Source: AGHT+IEPX6iqfJAofbYRgtwhfoVTbBfQv99Q0SLYNlvol7nryGa7eR81jSaBuhS6K5USsGMESw/AOQ==
-X-Received: by 2002:a1c:7213:0:b0:3fe:179d:d42e with SMTP id n19-20020a1c7213000000b003fe179dd42emr1932458wmc.23.1691581362742;
-        Wed, 09 Aug 2023 04:42:42 -0700 (PDT)
-Received: from tablet.my.domain (ip-5-172-235-199.multi.internet.cyfrowypolsat.pl. [5.172.235.199])
-        by smtp.gmail.com with ESMTPSA id z4-20020a1c4c04000000b003fe11148055sm1727938wmf.27.2023.08.09.04.42.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 04:42:42 -0700 (PDT)
-From:   Artur Weber <aweber.kernel@gmail.com>
-To:     Lee Jones <lee@kernel.org>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Artur Weber <aweber.kernel@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: [PATCH] backlight: lp855x: Drop ret variable in brightness change function
-Date:   Wed,  9 Aug 2023 13:42:16 +0200
-Message-ID: <20230809114216.4078-1-aweber.kernel@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 9 Aug 2023 07:42:22 -0400
+Received: from codesynthesis.com (codesynthesis.com [188.40.148.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5BA1FD7;
+        Wed,  9 Aug 2023 04:42:20 -0700 (PDT)
+Received: from brak.codesynthesis.com (unknown [105.186.254.141])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by codesynthesis.com (Postfix) with ESMTPSA id F300D60A1A;
+        Wed,  9 Aug 2023 11:42:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codesynthesis.com;
+        s=mail1; t=1691581339;
+        bh=mNlyqB5yts1AOpAZia1Vu/YeLCc1TDFTbjdAqP8a2Kk=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version:From;
+        b=Xb//GZcHGqYeS0Loid3wM0yE+43W70N6amIP/rDBFCdGlU7paZszTbaV6sY87rJ6f
+         iUQ9P3F+LXRYqa5J/zjhaROdx/BiyuUirwk1TnA2nE48scxEwlsDtN6nwwu/SJjxnd
+         YwWOZydA3k84gljcQMcLWltnVeCA9NJlKrJrr0nCsma2ED8KD0FnsKJGF4m7hK0bJe
+         b0UPZJh08//cg70gjQ9eOHR7b257GD0l/BrYKEkdmTfTS50FkqlEAsNusDi6mhsrzH
+         92XPeI/Gk/xBK8hp8hX4gA3W/A2DhxQLHTg9s21KqrZA412NCVy5+3J4uHdrfHuj/j
+         jzroqN2pH9zwQ==
+Received: by brak.codesynthesis.com (Postfix, from userid 1000)
+        id 58A2B145D38; Wed,  9 Aug 2023 13:42:50 +0200 (SAST)
+From:   Boris Kolpackov <boris@codesynthesis.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Boris Kolpackov <boris@codesynthesis.com>
+Subject: [PATCH v3 0/1] kconfig: port qconf to work with Qt6 in addition to Qt5
+Date:   Wed,  9 Aug 2023 13:42:30 +0200
+Message-Id: <20230809114231.2533523-1-boris@codesynthesis.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following warning:
+This patch ports qconf to work with Qt6 in addition to latest Qt5. Tested
+with Qt5 5.15 and Qt6 6.4. Note that earlier versions of Qt5 are no longer
+guaranteed to work.
 
-drivers/video/backlight/lp855x_bl.c:252:7: warning: variable 'ret' is used
-uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+Compared to the v1 patch version, v2 also changes qconf-cfg.sh to first look
+for Qt6 and fallback to Qt5.
 
-Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
-Fixes: 5145531be5fb ("backlight: lp855x: Catch errors when changing brightness")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202308091728.NEJhgUPP-lkp@intel.com/
----
- drivers/video/backlight/lp855x_bl.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Compared to the v2 patch version, v3 forces C++17 in qconf-cfg.sh for Qt6.
 
-diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
-index 61a7f45bfad8..da1f124db69c 100644
---- a/drivers/video/backlight/lp855x_bl.c
-+++ b/drivers/video/backlight/lp855x_bl.c
-@@ -241,19 +241,17 @@ static int lp855x_bl_update_status(struct backlight_device *bl)
- {
- 	struct lp855x *lp = bl_get_data(bl);
- 	int brightness = bl->props.brightness;
--	int ret;
- 
- 	if (bl->props.state & (BL_CORE_SUSPENDED | BL_CORE_FBBLANK))
- 		brightness = 0;
- 
- 	if (lp->mode == PWM_BASED)
--		ret = lp855x_pwm_ctrl(lp, brightness,
-+		return lp855x_pwm_ctrl(lp, brightness,
- 				      bl->props.max_brightness);
- 	else if (lp->mode == REGISTER_BASED)
--		ret = lp855x_write_byte(lp, lp->cfg->reg_brightness,
-+		return lp855x_write_byte(lp, lp->cfg->reg_brightness,
- 					(u8)brightness);
--
--	return ret;
-+	return -EINVAL;
- }
- 
- static const struct backlight_ops lp855x_bl_ops = {
+Signed-off-by: Boris Kolpackov <boris@codesynthesis.com>
 
-base-commit: 21ef7b1e17d039053edaeaf41142423810572741
--- 
-2.41.0
+Boris Kolpackov (1):
+  kconfig: port qconf to work with Qt6 in addition to Qt5
 
+ scripts/kconfig/qconf-cfg.sh | 25 +++++++++++++++-------
+ scripts/kconfig/qconf.cc     | 40 +++++++++++++++++++++++-------------
+ 2 files changed, 44 insertions(+), 21 deletions(-)
+
+--
+2.40.1
