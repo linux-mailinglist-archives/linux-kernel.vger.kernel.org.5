@@ -2,50 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB1E775412
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53C177540C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbjHIH1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 03:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48152 "EHLO
+        id S231724AbjHIH1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 03:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231641AbjHIH05 (ORCPT
+        with ESMTP id S231638AbjHIH05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Aug 2023 03:26:57 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61F21BFE
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 00:26:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AB91FD0
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 00:26:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Subject:Cc:To:From:Date:Message-ID:
-        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=0df22T3q5S+wbDzDb9AuwCbUzUEW5/RXUQzh/Xw92mw=; b=AoNLHpfoAA3auVrHf+bkjugOwB
-        HVy35wfIUOKK6UGj9e9yyfE1vujCiot7a2TxmyNw+HNM579jY0OQlB3xtXi8i0aVhmk2qzbXEqDjG
-        o1YuYU8jNuStcizJuL9U0yqFgnS5+m0Wbq4RnRmcZpKYOTrZvoNQ3jHYxjvaZR2COmE8CQxwBUQE7
-        YYkTAkIG5rsS8+2IoTHGkUQAPZzWhsdYsqSazO1pNbLGs0L8BcNuzIp217tzELOtdoHoGTAKnZDUP
-        IceFrFgS06xW4Rp82Rtz7sYK/kNhYZ6majElpg8IocrtYDhJwn56rEEtbMNk21i48zxiAGDwX4yIp
-        aQpYL76A==;
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=zoLAuzkIHX55kt02j2vg7TbXefeLx4iSw6mLX1oYzJs=; b=YZqtjwI+Hd9FoxVBeKsgNySyrk
+        JY490/rHu/X/6Afnwrs9mppQHBC7PW08qJTWbNWwyOY9dNn5C4W5T6vPyjtsFFpN70LLUJ4ch4tZp
+        m0M3xOFXXpiWNYOxCt92fWSWt1koaziy8eHmNUISBXezJISLcmt80jRVV8qbRk1C9nKrIcty9j+Gv
+        S9BZb5WGSjzgA0ETeGL0T+Xecc2G9fohhTFrry9k0ugPotFg2kUkcRyBkTBcA0WJCWkf3+NbWyJJy
+        H3+b5gQAQ6UZ0LjK1DyyXjQohLMUdn31C7FZQER8c/SixE0ZiyYoj/XJgiUbWYdec8bH59nWT5GXQ
+        b20f6u9A==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qTdae-005TeI-2p;
+        id 1qTdae-005TeH-2m;
         Wed, 09 Aug 2023 07:26:45 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4D9F630014A;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A91E300346;
         Wed,  9 Aug 2023 09:26:44 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 394AC201A5786; Wed,  9 Aug 2023 09:26:44 +0200 (CEST)
-Message-ID: <20230809071218.000335006@infradead.org>
+        id 3DD012C865678; Wed,  9 Aug 2023 09:26:44 +0200 (CEST)
+Message-ID: <20230809072200.450404700@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 09 Aug 2023 09:12:18 +0200
+Date:   Wed, 09 Aug 2023 09:12:19 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         David.Kaplan@amd.com, Andrew.Cooper3@citrix.com,
         jpoimboe@kernel.org, gregkh@linuxfoundation.org
-Subject: [RFC][PATCH 00/17] Fix up the recent SRSO patches
+Subject: [RFC][PATCH 01/17] x86/alternative: Unconditional custom return thunk
+References: <20230809071218.000335006@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
@@ -55,24 +58,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since I wasn't invited to the party (even though I did retbleed), I get to
-clean things up afterwards :/
+There is infrastructure to rewrite return thunks to point to any
+random thunk one desires, unwrap that from CALL_THUNKS, which up to
+now was the sole user of that.
 
-Anyway, this here overhauls the SRSO patches in a big way.
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/include/asm/nospec-branch.h |    4 ----
+ arch/x86/kernel/alternative.c        |    2 --
+ 2 files changed, 6 deletions(-)
 
-I claim that AMD retbleed (also called Speculative-Type-Confusion -- not to be
-confused with Intel retbleed, which is an entirely different bug) is
-fundamentally the same as this SRSO -- which is also caused by STC. And the
-mitigations are so similar they should all be controlled from a single spot and
-not conflated like they are now.
-
-As such, at the end of the ride the new kernel command line and srso sysfs
-files are no more and all we're left with is a few extra retbleed options.
-
-Aside of that; this deals with a few implementation issues -- but not all known
-issues. Josh and Andrew are telling me there's a problem when running inside
-virt due to how this checks the microcode. I'm hoping either of those two gents
-will add a patch to address this.
-
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -347,11 +347,7 @@ extern void srso_untrain_ret(void);
+ extern void srso_untrain_ret_alias(void);
+ extern void entry_ibpb(void);
+ 
+-#ifdef CONFIG_CALL_THUNKS
+ extern void (*x86_return_thunk)(void);
+-#else
+-#define x86_return_thunk	(&__x86_return_thunk)
+-#endif
+ 
+ #ifdef CONFIG_CALL_DEPTH_TRACKING
+ extern void __x86_return_skl(void);
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -698,9 +698,7 @@ void __init_or_module noinline apply_ret
+ 
+ #ifdef CONFIG_RETHUNK
+ 
+-#ifdef CONFIG_CALL_THUNKS
+ void (*x86_return_thunk)(void) __ro_after_init = &__x86_return_thunk;
+-#endif
+ 
+ /*
+  * Rewrite the compiler generated return thunk tail-calls.
 
 
