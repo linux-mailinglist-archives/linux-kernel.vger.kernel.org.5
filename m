@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F97776A57
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BE2776A58
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234730AbjHIUh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 16:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51552 "EHLO
+        id S234843AbjHIUh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 16:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234670AbjHIUgg (ORCPT
+        with ESMTP id S234665AbjHIUgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 16:36:36 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96D526B6;
+        Wed, 9 Aug 2023 16:36:35 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C5526B5;
         Wed,  9 Aug 2023 13:36:19 -0700 (PDT)
 Date:   Wed, 09 Aug 2023 20:36:17 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -21,25 +21,25 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=2/aaiJDJF2FjIihCljTYyzG6+yo8oWmp+toKiVvIyBY=;
-        b=fL0esAf7FYgUdHsIh92dgCcMy4MYFvG6MqW372FLNISLmJp/k0EN8AaFD5gzn1rG5fy7lh
-        C4rlenhvZYQsX3wEJUyse7w3RIM/FbA0TaWuzTAd+ddX3OnzsC2ifyj24UU2/c/TUfEX88
-        YA+0bQq4h0bG6rjjid6yb4hCkf2k7nTcQ54EkNfpcgbvCRU2mppe8lwVWQ8npS6yA2FY7T
-        kVftk/spIUKNW5MgQqvNRPtenomVsOrSzBYI3aUllcv1ez3TApn0ATV6De1CgqLF/fLZse
-        sniEkCnd/Lkd1Od753xunodJEmquJQsUfYio9x9V+zJdgiBG2rZa1SzsCmbjNg==
+        bh=nPI3kt2lKsd9NMUIHnIbzY84qBy8vH+CCa2JzlMF7LA=;
+        b=xlUamKAx+vs2DD0IpcSdHAXHXvxYd/R5r0A16tG5FtTS6pbNUPg3zHDMjUm+Z9AdGcIPa+
+        JjIq5O+ytQYUMmEUCBTmq6KctACFhZMIFWbBRHEhoSggwLzH6BovjVfwk5x6gJ5dY/p5zo
+        wWAdXomDf4ByZ09ncSB2gCYfxk6NXBgFnkzfPcHPjki/GNMphE5oFyytTl54VFpLJ5/ind
+        xSJBs90BvKWtuHUsvAfuKV+ATqXaAjRZ19cSbvulHGTl1L5m/DSbEt8XtUo75/vPJfb0uR
+        cMmulJeDZ6DcLxNoxMNqj29W5IvEcqx2KthsNd1Q2XEzHP8ccr20Gv+h5Zm+bw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1691613378;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=2/aaiJDJF2FjIihCljTYyzG6+yo8oWmp+toKiVvIyBY=;
-        b=qQmsQeLflfnm8nKIEh7oUWce9OawvTRSxkSKiIeznvQb2gOLv33oBHlvnw1VEjLA5i7sZ1
-        Dcdi0f7gdWnCUnDg==
+        bh=nPI3kt2lKsd9NMUIHnIbzY84qBy8vH+CCa2JzlMF7LA=;
+        b=tRQSy6dzNSiZ40QV69GzDtDcLtyu+P6u6fJpInwQkZoJoo1GEvRCw+905GsfsrXan5ZFU5
+        DOHQAdVgw37Wc5AQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/apic: Mop up *setup_apic_routing()
+Subject: [tip: x86/apic] x86/apic: Mop up apic::apic_id_registered()
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
@@ -48,7 +48,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Juergen Gross <jgross@suse.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169161337792.27769.10215888355750154127.tip-bot2@tip-bot2>
+Message-ID: <169161337745.27769.15189641981598455727.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -65,21 +65,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/apic branch of tip:
 
-Commit-ID:     9d87f5b67e100f253aed995a31fedff2983b7639
-Gitweb:        https://git.kernel.org/tip/9d87f5b67e100f253aed995a31fedff2983b7639
+Commit-ID:     5a3a46bd161d76f117b030ece0eb0de0dfe3ba59
+Gitweb:        https://git.kernel.org/tip/5a3a46bd161d76f117b030ece0eb0de0dfe3ba59
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 08 Aug 2023 15:04:01 -07:00
+AuthorDate:    Tue, 08 Aug 2023 15:04:02 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Wed, 09 Aug 2023 11:58:26 -07:00
+CommitterDate: Wed, 09 Aug 2023 11:58:27 -07:00
 
-x86/apic: Mop up *setup_apic_routing()
+x86/apic: Mop up apic::apic_id_registered()
 
-default_setup_apic_routing() is a complete misnomer. On 64bit it does the
-actual APIC probing and on 32bit it is used to force select the bigsmp APIC
-and to emit a redundant message in the apic::setup_apic_routing() callback.
-
-Rename the 64bit and 32bit function so they reflect what they are doing and
-remove the useless APIC callback.
+Really not a hotpath and again no reason for having a gazillion of empty
+callbacks returning 1. Make it return bool and provide one shared
+implementation for the remaining users.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
@@ -88,289 +85,311 @@ Tested-by: Michael Kelley <mikelley@microsoft.com>
 Tested-by: Sohil Mehta <sohil.mehta@intel.com>
 Tested-by: Juergen Gross <jgross@suse.com> # Xen PV (dom0 and unpriv. guest)
 ---
- arch/x86/include/asm/apic.h           | 10 ++++------
- arch/x86/kernel/apic/apic.c           |  4 +++-
- arch/x86/kernel/apic/apic_flat_64.c   |  2 --
- arch/x86/kernel/apic/apic_noop.c      |  1 -
- arch/x86/kernel/apic/apic_numachip.c  |  2 --
- arch/x86/kernel/apic/bigsmp_32.c      |  8 --------
- arch/x86/kernel/apic/local.h          |  2 ++
- arch/x86/kernel/apic/probe_32.c       | 17 ++---------------
- arch/x86/kernel/apic/probe_64.c       |  2 +-
+ arch/x86/include/asm/apic.h           |  2 +-
+ arch/x86/kernel/apic/apic.c           |  7 ++-----
+ arch/x86/kernel/apic/apic_common.c    |  5 +++++
+ arch/x86/kernel/apic/apic_flat_64.c   | 14 ++------------
+ arch/x86/kernel/apic/apic_noop.c      | 12 ------------
+ arch/x86/kernel/apic/apic_numachip.c  |  7 -------
+ arch/x86/kernel/apic/bigsmp_32.c      |  6 ------
+ arch/x86/kernel/apic/local.h          |  3 ++-
+ arch/x86/kernel/apic/probe_32.c       |  5 -----
  arch/x86/kernel/apic/x2apic_cluster.c |  1 -
- arch/x86/kernel/apic/x2apic_phys.c    |  1 -
- arch/x86/kernel/apic/x2apic_uv_x.c    |  1 -
- arch/x86/kernel/setup.c               |  2 +-
- arch/x86/xen/apic.c                   |  1 -
- 14 files changed, 13 insertions(+), 41 deletions(-)
+ arch/x86/kernel/apic/x2apic_phys.c    |  6 ------
+ arch/x86/kernel/apic/x2apic_uv_x.c    |  6 ------
+ arch/x86/xen/apic.c                   |  6 ------
+ 13 files changed, 12 insertions(+), 68 deletions(-)
 
 diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-index 3932089..83ecea3 100644
+index 83ecea3..4fb71b7 100644
 --- a/arch/x86/include/asm/apic.h
 +++ b/arch/x86/include/asm/apic.h
-@@ -40,11 +40,9 @@
+@@ -295,7 +295,7 @@ struct apic {
+ 	int	(*probe)(void);
+ 	int	(*acpi_madt_oem_check)(char *oem_id, char *oem_table_id);
+ 	int	(*apic_id_valid)(u32 apicid);
+-	int	(*apic_id_registered)(void);
++	bool	(*apic_id_registered)(void);
  
- 
- #if defined(CONFIG_X86_LOCAL_APIC) && defined(CONFIG_X86_32)
--extern void generic_apic_probe(void);
-+extern void x86_32_probe_apic(void);
- #else
--static inline void generic_apic_probe(void)
--{
--}
-+static inline void x86_32_probe_apic(void) { }
- #endif
- 
- #ifdef CONFIG_X86_LOCAL_APIC
-@@ -302,7 +300,6 @@ struct apic {
  	bool	(*check_apicid_used)(physid_mask_t *map, int apicid);
  	void	(*init_apic_ldr)(void);
- 	void	(*ioapic_phys_id_map)(physid_mask_t *phys_map, physid_mask_t *retmap);
--	void	(*setup_apic_routing)(void);
- 	int	(*cpu_present_to_apicid)(int mps_cpu);
- 	int	(*phys_pkg_id)(int cpuid_apic, int index_msb);
- 
-@@ -457,12 +454,13 @@ static inline unsigned int read_apic_id(void)
- typedef int (*wakeup_cpu_handler)(int apicid, unsigned long start_eip);
- extern void acpi_wake_cpu_handler_update(wakeup_cpu_handler handler);
- extern int default_acpi_madt_oem_check(char *, char *);
-+extern void x86_64_probe_apic(void);
- #else
- static inline int default_acpi_madt_oem_check(char *a, char *b) { return 0; }
-+static inline void x86_64_probe_apic(void) { }
- #endif
- 
- extern int default_apic_id_valid(u32 apicid);
--extern void default_setup_apic_routing(void);
- 
- extern u32 apic_default_calc_apicid(unsigned int cpu);
- extern u32 apic_flat_calc_apicid(unsigned int cpu);
 diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 622dd60..c2656a3 100644
+index c2656a3..4ee95cb 100644
 --- a/arch/x86/kernel/apic/apic.c
 +++ b/arch/x86/kernel/apic/apic.c
-@@ -1419,7 +1419,9 @@ void __init apic_intr_mode_init(void)
- 		break;
+@@ -1571,11 +1571,8 @@ static void setup_local_APIC(void)
+ 		apic_write(APIC_ESR, 0);
  	}
+ #endif
+-	/*
+-	 * Double-check whether this APIC is really registered.
+-	 * This is meaningless in clustered apic mode, so we skip it.
+-	 */
+-	BUG_ON(!apic->apic_id_registered());
++	/* Validate that the APIC is registered if required */
++	BUG_ON(apic->apic_id_registered && !apic->apic_id_registered());
  
--	default_setup_apic_routing();
-+	x86_64_probe_apic();
+ 	/*
+ 	 * Intel recommends to set DFR, LDR and TPR before enabling
+diff --git a/arch/x86/kernel/apic/apic_common.c b/arch/x86/kernel/apic/apic_common.c
+index d55fdb3..bbb5d5a 100644
+--- a/arch/x86/kernel/apic/apic_common.c
++++ b/arch/x86/kernel/apic/apic_common.c
+@@ -42,6 +42,11 @@ int default_apic_id_valid(u32 apicid)
+ 	return (apicid < 255);
+ }
+ 
++bool default_apic_id_registered(void)
++{
++	return physid_isset(read_apic_id(), phys_cpu_present_map);
++}
 +
-+	x86_32_install_bigsmp();
- 
- 	if (x86_platform.apic_post_init)
- 		x86_platform.apic_post_init();
+ /*
+  * Set up the logical destination ID when the APIC operates in logical
+  * destination mode.
 diff --git a/arch/x86/kernel/apic/apic_flat_64.c b/arch/x86/kernel/apic/apic_flat_64.c
-index 803cf01..83e02b5 100644
+index 83e02b5..a0c875d 100644
 --- a/arch/x86/kernel/apic/apic_flat_64.c
 +++ b/arch/x86/kernel/apic/apic_flat_64.c
-@@ -101,7 +101,6 @@ static struct apic apic_flat __ro_after_init = {
- 	.check_apicid_used		= NULL,
- 	.init_apic_ldr			= default_init_apic_ldr,
- 	.ioapic_phys_id_map		= NULL,
--	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= flat_phys_pkg_id,
+@@ -66,16 +66,6 @@ static u32 set_apic_id(unsigned int id)
+ 	return (id & 0xFF) << 24;
+ }
  
-@@ -178,7 +177,6 @@ static struct apic apic_physflat __ro_after_init = {
+-static unsigned int read_xapic_id(void)
+-{
+-	return flat_get_apic_id(apic_read(APIC_ID));
+-}
+-
+-static int flat_apic_id_registered(void)
+-{
+-	return physid_isset(read_xapic_id(), phys_cpu_present_map);
+-}
+-
+ static int flat_phys_pkg_id(int initial_apic_id, int index_msb)
+ {
+ 	return initial_apic_id >> index_msb;
+@@ -91,7 +81,7 @@ static struct apic apic_flat __ro_after_init = {
+ 	.probe				= flat_probe,
+ 	.acpi_madt_oem_check		= flat_acpi_madt_oem_check,
+ 	.apic_id_valid			= default_apic_id_valid,
+-	.apic_id_registered		= flat_apic_id_registered,
++	.apic_id_registered		= default_apic_id_registered,
  
- 	.check_apicid_used		= NULL,
- 	.ioapic_phys_id_map		= NULL,
--	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= flat_phys_pkg_id,
+ 	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
+ 	.dest_mode_logical		= true,
+@@ -168,7 +158,7 @@ static struct apic apic_physflat __ro_after_init = {
+ 	.probe				= physflat_probe,
+ 	.acpi_madt_oem_check		= physflat_acpi_madt_oem_check,
+ 	.apic_id_valid			= default_apic_id_valid,
+-	.apic_id_registered		= flat_apic_id_registered,
++	.apic_id_registered		= default_apic_id_registered,
  
+ 	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
+ 	.dest_mode_logical		= false,
 diff --git a/arch/x86/kernel/apic/apic_noop.c b/arch/x86/kernel/apic/apic_noop.c
-index 8cab632..e7309fd 100644
+index e7309fd..c73a7a8 100644
 --- a/arch/x86/kernel/apic/apic_noop.c
 +++ b/arch/x86/kernel/apic/apic_noop.c
-@@ -94,7 +94,6 @@ struct apic apic_noop __ro_after_init = {
+@@ -57,17 +57,6 @@ static int noop_probe(void)
+ 	return 0;
+ }
  
- 	.check_apicid_used		= default_check_apicid_used,
- 	.ioapic_phys_id_map		= default_ioapic_phys_id_map,
--	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+-static int noop_apic_id_registered(void)
+-{
+-	/*
+-	 * if we would be really "pedantic"
+-	 * we should pass read_apic_id() here
+-	 * but since NOOP suppose APIC ID = 0
+-	 * lets save a few cycles
+-	 */
+-	return physid_isset(0, phys_cpu_present_map);
+-}
+-
+ static u32 noop_apic_read(u32 reg)
+ {
+ 	WARN_ON_ONCE(boot_cpu_has(X86_FEATURE_APIC) && !apic_is_disabled);
+@@ -85,7 +74,6 @@ struct apic apic_noop __ro_after_init = {
+ 	.acpi_madt_oem_check		= NULL,
  
- 	.phys_pkg_id			= noop_phys_pkg_id,
+ 	.apic_id_valid			= default_apic_id_valid,
+-	.apic_id_registered		= noop_apic_id_registered,
+ 
+ 	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
+ 	.dest_mode_logical		= true,
 diff --git a/arch/x86/kernel/apic/apic_numachip.c b/arch/x86/kernel/apic/apic_numachip.c
-index 8f57155..b0d5a6e 100644
+index b0d5a6e..e8e13d7 100644
 --- a/arch/x86/kernel/apic/apic_numachip.c
 +++ b/arch/x86/kernel/apic/apic_numachip.c
-@@ -253,7 +253,6 @@ static const struct apic apic_numachip1 __refconst = {
+@@ -62,11 +62,6 @@ static int numachip_apic_id_valid(u32 apicid)
+ 	return 1;
+ }
  
- 	.check_apicid_used		= NULL,
- 	.ioapic_phys_id_map		= NULL,
--	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= numachip_phys_pkg_id,
+-static int numachip_apic_id_registered(void)
+-{
+-	return 1;
+-}
+-
+ static int numachip_phys_pkg_id(int initial_apic_id, int index_msb)
+ {
+ 	return initial_apic_id >> index_msb;
+@@ -244,7 +239,6 @@ static const struct apic apic_numachip1 __refconst = {
+ 	.probe				= numachip1_probe,
+ 	.acpi_madt_oem_check		= numachip1_acpi_madt_oem_check,
+ 	.apic_id_valid			= numachip_apic_id_valid,
+-	.apic_id_registered		= numachip_apic_id_registered,
  
-@@ -296,7 +295,6 @@ static const struct apic apic_numachip2 __refconst = {
+ 	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
+ 	.dest_mode_logical		= false,
+@@ -286,7 +280,6 @@ static const struct apic apic_numachip2 __refconst = {
+ 	.probe				= numachip2_probe,
+ 	.acpi_madt_oem_check		= numachip2_acpi_madt_oem_check,
+ 	.apic_id_valid			= numachip_apic_id_valid,
+-	.apic_id_registered		= numachip_apic_id_registered,
  
- 	.check_apicid_used		= NULL,
- 	.ioapic_phys_id_map		= NULL,
--	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= numachip_phys_pkg_id,
- 
+ 	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
+ 	.dest_mode_logical		= false,
 diff --git a/arch/x86/kernel/apic/bigsmp_32.c b/arch/x86/kernel/apic/bigsmp_32.c
-index 099611e..9bbdd40 100644
+index 9bbdd40..ffff294 100644
 --- a/arch/x86/kernel/apic/bigsmp_32.c
 +++ b/arch/x86/kernel/apic/bigsmp_32.c
-@@ -28,13 +28,6 @@ static bool bigsmp_check_apicid_used(physid_mask_t *map, int apicid)
- 	return false;
+@@ -18,11 +18,6 @@ static unsigned bigsmp_get_apic_id(unsigned long x)
+ 	return (x >> 24) & 0xFF;
  }
  
--static void bigsmp_setup_apic_routing(void)
+-static int bigsmp_apic_id_registered(void)
 -{
--	printk(KERN_INFO
--		"Enabling APIC mode:  Physflat.  Using %d I/O APICs\n",
--		nr_ioapics);
+-	return 1;
 -}
 -
- static void bigsmp_ioapic_phys_id_map(physid_mask_t *phys_map, physid_mask_t *retmap)
+ static bool bigsmp_check_apicid_used(physid_mask_t *map, int apicid)
  {
- 	/* For clustered we don't have a good way to do this yet - hack */
-@@ -101,7 +94,6 @@ static struct apic apic_bigsmp __ro_after_init = {
+ 	return false;
+@@ -85,7 +80,6 @@ static struct apic apic_bigsmp __ro_after_init = {
+ 	.name				= "bigsmp",
+ 	.probe				= probe_bigsmp,
+ 	.apic_id_valid			= default_apic_id_valid,
+-	.apic_id_registered		= bigsmp_apic_id_registered,
  
- 	.check_apicid_used		= bigsmp_check_apicid_used,
- 	.ioapic_phys_id_map		= bigsmp_ioapic_phys_id_map,
--	.setup_apic_routing		= bigsmp_setup_apic_routing,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= bigsmp_phys_pkg_id,
- 
+ 	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
+ 	.dest_mode_logical		= false,
 diff --git a/arch/x86/kernel/apic/local.h b/arch/x86/kernel/apic/local.h
-index c146741..345acde 100644
+index 345acde..0c47711 100644
 --- a/arch/x86/kernel/apic/local.h
 +++ b/arch/x86/kernel/apic/local.h
-@@ -66,8 +66,10 @@ void default_send_IPI_mask_sequence_logical(const struct cpumask *mask, int vect
- void default_send_IPI_mask_allbutself_logical(const struct cpumask *mask, int vector);
- void default_send_IPI_mask_logical(const struct cpumask *mask, int vector);
- void x86_32_probe_bigsmp_early(void);
-+void x86_32_install_bigsmp(void);
- #else
- static inline void x86_32_probe_bigsmp_early(void) { }
-+static inline void x86_32_install_bigsmp(void) { }
- #endif
+@@ -15,7 +15,6 @@
  
- #ifdef CONFIG_X86_BIGSMP
+ /* X2APIC */
+ int x2apic_apic_id_valid(u32 apicid);
+-int x2apic_apic_id_registered(void);
+ void __x2apic_send_IPI_dest(unsigned int apicid, int vector, unsigned int dest);
+ unsigned int x2apic_get_apic_id(unsigned long id);
+ u32 x2apic_set_apic_id(unsigned int id);
+@@ -61,6 +60,8 @@ void default_send_IPI_allbutself(int vector);
+ void default_send_IPI_all(int vector);
+ void default_send_IPI_self(int vector);
+ 
++bool default_apic_id_registered(void);
++
+ #ifdef CONFIG_X86_32
+ void default_send_IPI_mask_sequence_logical(const struct cpumask *mask, int vector);
+ void default_send_IPI_mask_allbutself_logical(const struct cpumask *mask, int vector);
 diff --git a/arch/x86/kernel/apic/probe_32.c b/arch/x86/kernel/apic/probe_32.c
-index c6c3a4b..3f717f4 100644
+index 3f717f4..81c69d7 100644
 --- a/arch/x86/kernel/apic/probe_32.c
 +++ b/arch/x86/kernel/apic/probe_32.c
-@@ -18,15 +18,6 @@
+@@ -18,11 +18,6 @@
  
  #include "local.h"
  
--static void setup_apic_flat_routing(void)
+-static int default_apic_id_registered(void)
 -{
--#ifdef CONFIG_X86_IO_APIC
--	printk(KERN_INFO
--		"Enabling APIC mode:  Flat.  Using %d I/O APICs\n",
--		nr_ioapics);
--#endif
+-	return physid_isset(read_apic_id(), phys_cpu_present_map);
 -}
 -
- static int default_apic_id_registered(void)
+ static int default_phys_pkg_id(int cpuid_apic, int index_msb)
  {
- 	return physid_isset(read_apic_id(), phys_cpu_present_map);
-@@ -58,7 +49,6 @@ static struct apic apic_default __ro_after_init = {
- 	.check_apicid_used		= default_check_apicid_used,
- 	.init_apic_ldr			= default_init_apic_ldr,
- 	.ioapic_phys_id_map		= default_ioapic_phys_id_map,
--	.setup_apic_routing		= setup_apic_flat_routing,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= default_phys_pkg_id,
- 
-@@ -132,16 +122,13 @@ void __init x86_32_probe_bigsmp_early(void)
- 	set_nr_cpu_ids(8);
- }
- 
--void __init default_setup_apic_routing(void)
-+void __init x86_32_install_bigsmp(void)
- {
- 	if (nr_cpu_ids > 8 && !xen_pv_domain())
- 		apic_bigsmp_force();
--
--	if (apic->setup_apic_routing)
--		apic->setup_apic_routing();
- }
- 
--void __init generic_apic_probe(void)
-+void __init x86_32_probe_apic(void)
- {
- 	if (!cmdline_apic) {
- 		struct apic **drv;
-diff --git a/arch/x86/kernel/apic/probe_64.c b/arch/x86/kernel/apic/probe_64.c
-index 3c0c8d3..7c9f1a8 100644
---- a/arch/x86/kernel/apic/probe_64.c
-+++ b/arch/x86/kernel/apic/probe_64.c
-@@ -14,7 +14,7 @@
- #include "local.h"
- 
- /* Select the appropriate APIC driver */
--void __init default_setup_apic_routing(void)
-+void __init x86_64_probe_apic(void)
- {
- 	struct apic **drv;
- 
+ 	return cpuid_apic >> index_msb;
 diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
-index a8e7a8f..52d4be1 100644
+index 52d4be1..705b33d 100644
 --- a/arch/x86/kernel/apic/x2apic_cluster.c
 +++ b/arch/x86/kernel/apic/x2apic_cluster.c
-@@ -247,7 +247,6 @@ static struct apic apic_x2apic_cluster __ro_after_init = {
- 	.check_apicid_used		= NULL,
- 	.init_apic_ldr			= init_x2apic_ldr,
- 	.ioapic_phys_id_map		= NULL,
--	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= x2apic_phys_pkg_id,
+@@ -237,7 +237,6 @@ static struct apic apic_x2apic_cluster __ro_after_init = {
+ 	.probe				= x2apic_cluster_probe,
+ 	.acpi_madt_oem_check		= x2apic_acpi_madt_oem_check,
+ 	.apic_id_valid			= x2apic_apic_id_valid,
+-	.apic_id_registered		= x2apic_apic_id_registered,
  
+ 	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
+ 	.dest_mode_logical		= true,
 diff --git a/arch/x86/kernel/apic/x2apic_phys.c b/arch/x86/kernel/apic/x2apic_phys.c
-index 5ac2129..c57b5c8 100644
+index c57b5c8..e0fdbf5 100644
 --- a/arch/x86/kernel/apic/x2apic_phys.c
 +++ b/arch/x86/kernel/apic/x2apic_phys.c
-@@ -166,7 +166,6 @@ static struct apic apic_x2apic_phys __ro_after_init = {
+@@ -111,11 +111,6 @@ int x2apic_apic_id_valid(u32 apicid)
+ 	return 1;
+ }
  
- 	.check_apicid_used		= NULL,
- 	.ioapic_phys_id_map		= NULL,
--	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= x2apic_phys_pkg_id,
+-int x2apic_apic_id_registered(void)
+-{
+-	return 1;
+-}
+-
+ void __x2apic_send_IPI_dest(unsigned int apicid, int vector, unsigned int dest)
+ {
+ 	unsigned long cfg = __prepare_ICR(0, vector, dest);
+@@ -157,7 +152,6 @@ static struct apic apic_x2apic_phys __ro_after_init = {
+ 	.probe				= x2apic_phys_probe,
+ 	.acpi_madt_oem_check		= x2apic_acpi_madt_oem_check,
+ 	.apic_id_valid			= x2apic_apic_id_valid,
+-	.apic_id_registered		= x2apic_apic_id_registered,
  
+ 	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
+ 	.dest_mode_logical		= false,
 diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index d6b98bc..a8caff1 100644
+index a8caff1..9e25e30 100644
 --- a/arch/x86/kernel/apic/x2apic_uv_x.c
 +++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -838,7 +838,6 @@ static struct apic apic_x2apic_uv_x __ro_after_init = {
+@@ -783,11 +783,6 @@ static int uv_apic_id_valid(u32 apicid)
+ 	return 1;
+ }
  
- 	.check_apicid_used		= NULL,
- 	.ioapic_phys_id_map		= NULL,
--	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= uv_phys_pkg_id,
+-static int uv_apic_id_registered(void)
+-{
+-	return 1;
+-}
+-
+ static u32 apic_uv_calc_apicid(unsigned int cpu)
+ {
+ 	return apic_default_calc_apicid(cpu);
+@@ -829,7 +824,6 @@ static struct apic apic_x2apic_uv_x __ro_after_init = {
+ 	.probe				= uv_probe,
+ 	.acpi_madt_oem_check		= uv_acpi_madt_oem_check,
+ 	.apic_id_valid			= uv_apic_id_valid,
+-	.apic_id_registered		= uv_apic_id_registered,
  
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 779477d..f83d02b 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -1252,7 +1252,7 @@ void __init setup_arch(char **cmdline_p)
- 
- 	map_vsyscall();
- 
--	generic_apic_probe();
-+	x86_32_probe_apic();
- 
- 	early_quirks();
- 
+ 	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
+ 	.dest_mode_logical		= false,
 diff --git a/arch/x86/xen/apic.c b/arch/x86/xen/apic.c
-index 426f4a0..4a27f92 100644
+index 4a27f92..f1cd7f2 100644
 --- a/arch/x86/xen/apic.c
 +++ b/arch/x86/xen/apic.c
-@@ -150,7 +150,6 @@ static struct apic xen_pv_apic = {
+@@ -115,11 +115,6 @@ static int xen_id_always_valid(u32 apicid)
+ 	return 1;
+ }
  
- 	.check_apicid_used		= default_check_apicid_used, /* Used on 32-bit */
- 	.ioapic_phys_id_map		= default_ioapic_phys_id_map, /* Used on 32-bit */
--	.setup_apic_routing		= NULL,
- 	.cpu_present_to_apicid		= xen_cpu_present_to_apicid,
- 	.phys_pkg_id			= xen_phys_pkg_id, /* detect_ht */
+-static int xen_id_always_registered(void)
+-{
+-	return 1;
+-}
+-
+ static int xen_phys_pkg_id(int initial_apic_id, int index_msb)
+ {
+ 	return initial_apic_id >> index_msb;
+@@ -142,7 +137,6 @@ static struct apic xen_pv_apic = {
+ 	.probe 				= xen_apic_probe_pv,
+ 	.acpi_madt_oem_check		= xen_madt_oem_check,
+ 	.apic_id_valid 			= xen_id_always_valid,
+-	.apic_id_registered 		= xen_id_always_registered,
+ 
+ 	/* .delivery_mode and .dest_mode_logical not used by XENPV */
  
