@@ -2,444 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD874776983
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B272B77699A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbjHIUKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 16:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
+        id S233562AbjHIUOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 16:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233163AbjHIUKC (ORCPT
+        with ESMTP id S233461AbjHIUOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 16:10:02 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7A12106
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 13:10:00 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe389d6f19so188999e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 13:10:00 -0700 (PDT)
+        Wed, 9 Aug 2023 16:14:17 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0095310D4
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 13:14:14 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-3498795048aso841925ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 13:14:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691611799; x=1692216599;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=V6XLoKrNgsmk7viP+YC7H/buNRrtbWmWLQbvsiyzw8s=;
-        b=SWw8OjNw3SwTMTbDbAdjStjekRnYIGbTxaLFqj7VZ8YRRHs+LysmN+7XVw8kda/PtO
-         rdC5HziWhvDaH5qW4shzQ3dHjNkF8CUKFfWYFJW6xlS327hdaxDl2710wM10z9yEl2mB
-         A/deqeCRvh9RnjTisET8RpzPexrbAo5hanJpNqj1Ey+j3pVYF090U0eD3vAuVwzppRVk
-         ccwN9vPzWeoUToZQmbWUTRICbTQxOwX/EDX7IaamJvtsv/nZsTwmeEvQPeQB7AjEv9G9
-         sLfmLlpB4jnPJlyRnr5oNBcLqgcVFjGWB9ymK9BrpNnvKsF+9sm31p2zdRLfemsFaSHy
-         dOIQ==
+        d=joelfernandes.org; s=google; t=1691612054; x=1692216854;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=guZ5vpqqJqA9daPfYYnKXLU14D1mpOwdXtcKs7C1O6E=;
+        b=teRQ96U/IkC6y31VwU1NjtwjZdh80fpd032mGixaFIjCCO+6DahLSaWhjFgwyX+D0s
+         7xRN+Sng3LnCEh0nCfXyr3x+CDQfV8BGwj/0ILM/ErxHnOnPzHOafQSHWHEo2t26Z43A
+         vLYFxhySi1w09JWBgEBF0tV1pLt8s+pU8wCZQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691611799; x=1692216599;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V6XLoKrNgsmk7viP+YC7H/buNRrtbWmWLQbvsiyzw8s=;
-        b=GtW5WFJiUKzsq+0A8EH8vLzHANKgCys8uMdtq0fUEM+nFGZ0Q3qfHd/f+Tk/MRolSg
-         yZv7J655awwVMFA+XR4JMMzgYZJPN7DNmpqIQOkbwaOGx41OhICtjWlZZXpOW2QPgThX
-         7eHDaPlc47xpjHKOgAYLkNpw+zSLqs2JmjNPYvQq73WYVv+r2LV+tmP3dkYArqDDGccc
-         lQMvecmPCGE/XT9qsXZqnu23QrIW5HcxQcDU9w0F55NA6rYvaTDUF17Zc+xylM7JpQHt
-         ZMI4J773DJ7Yl5iQ7pA/FmKZP23ya4dpTP2zOBD/kcpLC85PMNxtbgCT5f5026W6fM3Y
-         r7CQ==
-X-Gm-Message-State: AOJu0YxIegJyyj7eM4i4g2xrsKGYcDKtjDhRCGe7Ohftwj6GCzNDscSJ
-        4bn6fCUctdL/XcznImuY8Y5hUA==
-X-Google-Smtp-Source: AGHT+IF08/jyxQ5gzR560y3uAW97Bxj0LaAmp3w5Urt8jwoTQWN4Z96Gu6Aw1SQJqPEenrTb+JlBng==
-X-Received: by 2002:a05:6512:3c89:b0:4fe:3e89:fcb2 with SMTP id h9-20020a0565123c8900b004fe3e89fcb2mr148854lfv.34.1691611798990;
-        Wed, 09 Aug 2023 13:09:58 -0700 (PDT)
-Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id q7-20020a19a407000000b004fb7848bacbsm2413405lfc.46.2023.08.09.13.09.57
+        d=1e100.net; s=20221208; t=1691612054; x=1692216854;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=guZ5vpqqJqA9daPfYYnKXLU14D1mpOwdXtcKs7C1O6E=;
+        b=PHXJKroXRtyRxVMtEBAz7K0O2sEJBoOzpjpXgmz/wLRMiPvJyGdIHDq+A0tsVPJzzW
+         D4JXwdgMIPj1gh6krP2UZ26j3L+ae48QuQ7ekOSkZWZ+zlI+rTE3te/vDK4joT9x0io4
+         8kTg038cJl2jXm+J2zIHn6xPX29B1aeNe6nv3q9oedME/lau3+WwQYhVaZRXkPxGmSic
+         iPyHABvPiKWmArTg1bEqZUIwiuxWZJ7C+1Lce3WcgKznvEekKQu3CiqXOH4ja+0f3vvQ
+         xDq8LLqiuKXRGr+uDUIxpC2gB+bT0dAy6qWiYaZkOfXFl86zVQiEFPcEnW5d43v4BSZr
+         k6ig==
+X-Gm-Message-State: AOJu0Yx7iwKLEdsFi99e4H5BfaqcqMovjncwSTDSlFONXXwL89RGLxwq
+        9mO2yfnhW3WvDcEWOQaBa5oAIg==
+X-Google-Smtp-Source: AGHT+IHFssVCaalC7OaCchaWhg7XXfx3K1aZGh4DfLLnCZfW44BE6qugHkyqKK6ivgJmigJ1V78RCA==
+X-Received: by 2002:a05:6e02:20c8:b0:347:693a:a52b with SMTP id 8-20020a056e0220c800b00347693aa52bmr199791ilq.6.1691612054245;
+        Wed, 09 Aug 2023 13:14:14 -0700 (PDT)
+Received: from localhost (254.82.172.34.bc.googleusercontent.com. [34.172.82.254])
+        by smtp.gmail.com with ESMTPSA id j10-20020a02cb0a000000b0042b8566a982sm4189018jap.41.2023.08.09.13.14.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 13:09:58 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Wed, 09 Aug 2023 22:09:48 +0200
-Subject: [PATCH RFC DNM] perf: Add support for Qualcomm Last-Level Cache
- Controller PMU
+        Wed, 09 Aug 2023 13:14:13 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 20:14:13 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        paulmck@kernel.org
+Subject: Re: [PATCH 5.15 00/92] 5.15.126-rc1 review
+Message-ID: <20230809201413.GA3374446@google.com>
+References: <20230809103633.485906560@linuxfoundation.org>
+ <20230809135326.GE3031656@google.com>
+ <f47340c6-3c41-1f91-d0f9-fe0b59a23aac@roeck-us.net>
+ <CAEXW_YQ4GqPwvUF8=8CWmdj=cD56v_eEVK-EirsObQXyBDFVpg@mail.gmail.com>
+ <35e4b770-2ead-4a19-ad01-fa75996adef4@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230809-topic-llcc_pmu-v1-1-dd27bd1f44c9@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAIvy02QC/x2N0QqDMAwAf0XyvECtINNfERltjDNQa2nnEMR/N
- /h4B8edUDgLF+irEzL/pcgWFepXBbS4+GWUSRmssY15mw5/WxLCEIg+ad2RWu4mT03rawsaeVc
- YfXaRFs3iHoLKlHmW47kM43Xdyo44kXUAAAA=
-To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691611797; l=10142;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=IzGgwLJxOKyAxkA8Yg1aDkGbo/ZbfTkcq54Y5dHJP0s=;
- b=cE7QfOpiF3356UHbu2pxSFkILkOv+GWOUHFGJiRq1PViCKFM994930wpcSrvmHWXF3U1Nc5uW
- CIdSSLOw1bCBfN7eacHd/VKEzxmraxGsFnbPK3J/FQlDl5l1TENlhjr
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <35e4b770-2ead-4a19-ad01-fa75996adef4@roeck-us.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the Qualcomm LLCC (Last-Level Cache Controller) PMU,
-which provides a single event, expressing cache read misses.
+On Wed, Aug 09, 2023 at 12:25:48PM -0700, Guenter Roeck wrote:
+> On Wed, Aug 09, 2023 at 02:35:59PM -0400, Joel Fernandes wrote:
+> > On Wed, Aug 9, 2023 at 12:18 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > >
+> > > On 8/9/23 06:53, Joel Fernandes wrote:
+> > > > On Wed, Aug 09, 2023 at 12:40:36PM +0200, Greg Kroah-Hartman wrote:
+> > > >> This is the start of the stable review cycle for the 5.15.126 release.
+> > > >> There are 92 patches in this series, all will be posted as a response
+> > > >> to this one.  If anyone has any issues with these being applied, please
+> > > >> let me know.
+> > > >>
+> > > >> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
+> > > >> Anything received after that time might be too late.
+> > > >>
+> > > >> The whole patch series can be found in one patch at:
+> > > >>      https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.126-rc1.gz
+> > > >> or in the git tree and branch at:
+> > > >>      git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > > >> and the diffstat can be found below.
+> > > >
+> > > > Not necesscarily new with 5.15 stable but 3 of the 19 rcutorture scenarios
+> > > > hang with this -rc: TREE04, TREE07, TASKS03.
+> > > >
+> > > > 5.15 has a known stop machine issue where it hangs after 1.5 hours with cpu
+> > > > hotplug rcutorture testing. Me and tglx are continuing to debug this. The
+> > > > issue does not show up on anything but 5.15 stable kernels and neither on
+> > > > mainline.
+> > > >
+> > >
+> > > Do you by any have a crash pattern that we could possibly use to find the crash
+> > > in ChromeOS crash logs ? No idea if that would help, but it could provide some
+> > > additional data points.
+> > 
+> > The pattern shows as a hard hang, the system is unresponsive and all CPUs
+> > are stuck in stop_machine. Sometimes it recovers on its own from the
+> > hang and then RCU immediately gives stall warnings. It takes 1.5 hour
+> > to reproduce and sometimes never happens for several hours.
+> > 
+> > It appears related to CPU hotplug since gdb showed me most of the CPUs
+> > are spinning in multi_cpu_stop() / stop machine after the hang.
+> > 
+> 
+> Hmm, we do see lots of soft lockups with multi_cpu_stop() in the backtrace,
+> but not with v5.15.y but with v5.4.y. The actual hang is in stop_machine_yield().
 
-Based on the vendor driver found in the msm-5.10 downstream kernel.
+Interesting. It looks similar as far as the stack dump in gdb goes, here are
+the stacks I dumped with the hang I referred to:
+https://paste.debian.net/1288308/
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
-Hi, I've been trying to get this driver going upstream by cleaning it
-up and adding the necessary perf boilerplate (the original Qualcomm one
-only pokes at the PMU from within the kernel itself) to use the
-userspace tool.
+But in dmesg, it prints nothing for about 20-30 mins before recovering, then
+I get RCU stalls. It looks like this:
 
-I can not however get it to cooperate.. in this iteration I get a PMU
-event registered (though with only a "raw" name - no "x OR y" like with
-other PMUs on the system) as:
+[  682.721962] kvm-clock: cpu 7, msr 199981c1, secondary cpu clock
+[  682.736830] kvm-guest: stealtime: cpu 7, msr 1f5db140
+[  684.445875] smpboot: Booting Node 0 Processor 5 APIC 0x5
+[  684.467831] kvm-clock: cpu 5, msr 19998141, secondary cpu clock
+[  684.555766] kvm-guest: stealtime: cpu 5, msr 1f55b140
+[  687.356637] smpboot: Booting Node 0 Processor 4 APIC 0x4
+[  687.377214] kvm-clock: cpu 4, msr 19998101, secondary cpu clock
+[ 2885.473742] kvm-guest: stealtime: cpu 4, msr 1f51b140
+[ 2886.456408] rcu: INFO: rcu_sched self-detected stall on CPU
+[ 2886.457590] rcu_torture_fwd_prog_nr: Duration 15423 cver 170 gps 337
+[ 2886.464934] rcu: 0-...!: (2 ticks this GP) idle=7eb/0/0x1 softirq=118271/118271 fqs=0 last_accelerate: e3cd/71c0 dyntick_enabled: 1
+[ 2886.490837] (t=2199034 jiffies g=185489 q=4)
+[ 2886.497297] rcu: rcu_sched kthread timer wakeup didn't happen for 2199031 jiffies! g185489 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+[ 2886.514201] rcu: Possible timer handling issue on cpu=0 timer-softirq=441616
+[ 2886.524593] rcu: rcu_sched kthread starved for 2199034 jiffies! g185489 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=0
+[ 2886.540067] rcu: Unless rcu_sched kthread gets sufficient CPU time, OOM is now expected behavior.
+[ 2886.551967] rcu: RCU grace-period kthread stack dump:
+[ 2886.558644] task:rcu_sched       state:I stack:14896 pid:   15 ppid:     2 flags:0x00004000
+[ 2886.569640] Call Trace:
+[ 2886.572940]  <TASK>
+[ 2886.575902]  __schedule+0x284/0x6e0
+[ 2886.580969]  schedule+0x53/0xa0
+[ 2886.585231]  schedule_timeout+0x8f/0x130
 
-llcc_pmu/read_miss/                                [Kernel PMU event]
+In that huge gap, I connect gdb and dumped those stacks in above link.
 
-but the .read callback is never called when I run:
+On 5.15 stable you could repro it in about an hour and a half most of the time by running something like:
+tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 48 --duration 60 --configs TREE04
 
-sudo perf stat -C 0 -a -e llcc_pmu/read_miss/ stress-ng -C 8 -c 8 -m 10
+Let me know if you saw anything like this. I am currently trying to panic the
+kernel when the hang happens so I can get better traces.
 
-which always returns 0
+thanks,
 
-if I add --always-kernel I get:
-<not supported>      llcc_pmu/read_miss/
-
-So, here's me asking for some help. It's probably missing some small
-detail, as per usual..
----
- drivers/perf/Kconfig         |   8 ++
- drivers/perf/Makefile        |   1 +
- drivers/perf/qcom_llcc_pmu.c | 277 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 286 insertions(+)
-
-diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
-index 273d67ecf6d2..31d848c88d8a 100644
---- a/drivers/perf/Kconfig
-+++ b/drivers/perf/Kconfig
-@@ -155,6 +155,14 @@ config QCOM_L3_PMU
- 	   Adds the L3 cache PMU into the perf events subsystem for
- 	   monitoring L3 cache events.
- 
-+config QCOM_LLCC_PMU
-+	tristate "Qualcomm Technologies LLCC PMU"
-+	depends on ARCH_QCOM || COMPILE_TEST
-+	depends on OF
-+	help
-+	  Support for the last-level cache performance monitor unit found
-+	  on some Qualcomm Snapdragon SoCs.
-+
- config THUNDERX2_PMU
- 	tristate "Cavium ThunderX2 SoC PMU UNCORE"
- 	depends on ARCH_THUNDER2 || COMPILE_TEST
-diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
-index 16b3ec4db916..eb02574780b5 100644
---- a/drivers/perf/Makefile
-+++ b/drivers/perf/Makefile
-@@ -12,6 +12,7 @@ obj-$(CONFIG_FSL_IMX9_DDR_PMU) += fsl_imx9_ddr_perf.o
- obj-$(CONFIG_HISI_PMU) += hisilicon/
- obj-$(CONFIG_QCOM_L2_PMU)	+= qcom_l2_pmu.o
- obj-$(CONFIG_QCOM_L3_PMU) += qcom_l3_pmu.o
-+obj-$(CONFIG_QCOM_LLCC_PMU) += qcom_llcc_pmu.o
- obj-$(CONFIG_RISCV_PMU) += riscv_pmu.o
- obj-$(CONFIG_RISCV_PMU_LEGACY) += riscv_pmu_legacy.o
- obj-$(CONFIG_RISCV_PMU_SBI) += riscv_pmu_sbi.o
-diff --git a/drivers/perf/qcom_llcc_pmu.c b/drivers/perf/qcom_llcc_pmu.c
-new file mode 100644
-index 000000000000..db290ae141a7
---- /dev/null
-+++ b/drivers/perf/qcom_llcc_pmu.c
-@@ -0,0 +1,277 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2023, Linaro Limited
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/perf_event.h>
-+#include <linux/platform_device.h>
-+#include <linux/spinlock.h>
-+
-+struct llcc_pmu {
-+	struct pmu		pmu;
-+	struct hlist_node	node;
-+	void __iomem		*base;
-+	struct perf_event	event;
-+	raw_spinlock_t		lock;
-+	u64			*llcc_stats;
-+};
-+#define to_llcc_pmu(p) (container_of(p, struct llcc_pmu, pmu))
-+
-+#define LLCC_READ_MISS_EV 	0x1000
-+
-+#define CNT_SCALING_FACTOR	0x3
-+
-+#define MAX_NUM_CPUS		16
-+
-+#define MON_CFG(m)		((m)->base + 0x200)
-+ #define MON_CFG_ENABLE(cpu)	BIT(cpu)
-+ #define MON_CFG_CLEARn(cpu)	BIT(16 + cpu)
-+
-+#define MON_CNT(m)		((m)->base + 0x220)
-+ #define MON_CNT_VAL		GENMASK(23, 0)
-+#define MON_CNTn(m, cpu)	(MON_CNT(m) + 0x4 * cpu)
-+
-+static DEFINE_PER_CPU(unsigned int, users_alive);
-+
-+static void mon_enable(struct llcc_pmu *llcc_pmu, int cpu)
-+{
-+	u32 val;
-+
-+	val = readl_relaxed(MON_CFG(llcc_pmu));
-+	val |= MON_CFG_ENABLE(cpu);
-+	writel_relaxed(val, MON_CFG(llcc_pmu));
-+}
-+
-+static void mon_disable(struct llcc_pmu *llcc_pmu, int cpu)
-+{
-+	u32 val;
-+
-+	val = readl_relaxed(MON_CFG(llcc_pmu));
-+	val &= ~MON_CFG_ENABLE(cpu);
-+	writel_relaxed(val, MON_CFG(llcc_pmu));
-+}
-+
-+static void mon_clear(struct llcc_pmu *llcc_pmu, int cpu)
-+{
-+	u32 val;
-+
-+	val = readl_relaxed(MON_CFG(llcc_pmu));
-+
-+	val |= MON_CFG_CLEARn(cpu);
-+	writel_relaxed(val, MON_CFG(llcc_pmu));
-+
-+	val &= ~MON_CFG_CLEARn(cpu);
-+	writel_relaxed(val, MON_CFG(llcc_pmu));
-+}
-+
-+static int qcom_llcc_event_init(struct perf_event *event)
-+{
-+	struct llcc_pmu *llcc_pmu = to_llcc_pmu(event->pmu);
-+
-+	if (event->attr.type != event->pmu->type)
-+		return -ENOENT;
-+
-+	if (event->attach_state & PERF_ATTACH_TASK)
-+		return -EINVAL;
-+
-+	if (is_sampling_event(event)) {
-+		dev_dbg(llcc_pmu->pmu.dev, "Per-task counters are unsupported\n");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (has_branch_stack(event)) {
-+		dev_dbg(llcc_pmu->pmu.dev, "Filtering is unsupported\n");
-+		return -EINVAL;
-+	}
-+
-+	if (event->cpu < 0) {
-+		dev_warn(llcc_pmu->pmu.dev, "Can't provide per-task data!\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static void qcom_llcc_event_read(struct perf_event *event)
-+{
-+	struct llcc_pmu *llcc_pmu = to_llcc_pmu(event->pmu);
-+	unsigned long irq_flags;
-+	int cpu = event->cpu;
-+	u64 readout;
-+
-+	raw_spin_lock_irqsave(&llcc_pmu->lock, irq_flags);
-+
-+	mon_disable(llcc_pmu, cpu);
-+
-+	readout = FIELD_GET(MON_CNT_VAL, readl_relaxed(MON_CNTn(llcc_pmu, cpu)));
-+	readout <<= CNT_SCALING_FACTOR;
-+
-+	llcc_pmu->llcc_stats[cpu] += readout;
-+
-+	mon_clear(llcc_pmu, cpu);
-+	mon_enable(llcc_pmu, cpu);
-+
-+	if (!(event->hw.state & PERF_HES_STOPPED))
-+		local64_set(&event->count, llcc_pmu->llcc_stats[cpu]);
-+
-+	raw_spin_unlock_irqrestore(&llcc_pmu->lock, irq_flags);
-+}
-+
-+static void qcom_llcc_pmu_start(struct perf_event *event, int flags)
-+{
-+	if (flags & PERF_EF_RELOAD)
-+		WARN_ON(!(event->hw.state & PERF_HES_UPTODATE));
-+
-+	event->hw.state = 0;
-+}
-+
-+static void qcom_llcc_event_stop(struct perf_event *event, int flags)
-+{
-+	qcom_llcc_event_read(event);
-+	event->hw.state |= PERF_HES_STOPPED | PERF_HES_UPTODATE;
-+}
-+
-+static int qcom_llcc_event_add(struct perf_event *event, int flags)
-+{
-+	struct llcc_pmu *llcc_pmu = to_llcc_pmu(event->pmu);
-+	unsigned int cpu_users;
-+
-+	raw_spin_lock(&llcc_pmu->lock);
-+
-+	cpu_users = per_cpu(users_alive, event->cpu);
-+	if (!cpu_users)
-+		mon_enable(llcc_pmu, event->cpu);
-+
-+	cpu_users++;
-+	per_cpu(users_alive, event->cpu) = cpu_users;
-+
-+	raw_spin_unlock(&llcc_pmu->lock);
-+
-+	event->hw.state = PERF_HES_STOPPED | PERF_HES_UPTODATE;
-+
-+	if (flags & PERF_EF_START)
-+		qcom_llcc_pmu_start(event, PERF_EF_RELOAD);
-+
-+	return 0;
-+}
-+
-+static void qcom_llcc_event_del(struct perf_event *event, int flags)
-+{
-+	struct llcc_pmu *llcc_pmu = to_llcc_pmu(event->pmu);
-+	unsigned int cpu_users;
-+
-+	raw_spin_lock(&llcc_pmu->lock);
-+
-+	cpu_users = per_cpu(users_alive, event->cpu);
-+	cpu_users--;
-+	if (!cpu_users)
-+		mon_disable(llcc_pmu, event->cpu);
-+
-+	per_cpu(users_alive, event->cpu) = cpu_users;
-+
-+	raw_spin_unlock(&llcc_pmu->lock);
-+}
-+
-+static ssize_t llcc_pmu_event_show(struct device *dev, struct device_attribute *attr, char *page)
-+{
-+	struct perf_pmu_events_attr *pmu_attr;
-+
-+	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
-+
-+	return sysfs_emit(page, "event=0x%04llx\n", pmu_attr->id);
-+}
-+
-+static struct attribute *qcom_llcc_pmu_events[] = {
-+	PMU_EVENT_ATTR_ID(read_miss, llcc_pmu_event_show, LLCC_READ_MISS_EV),
-+	NULL,
-+};
-+
-+static const struct attribute_group qcom_llcc_pmu_events_group = {
-+	.name = "events",
-+	.attrs = qcom_llcc_pmu_events,
-+};
-+
-+PMU_FORMAT_ATTR(event, "config:0-15");
-+static struct attribute *qcom_llcc_pmu_format_attrs[] = {
-+	&format_attr_event.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group qcom_llcc_pmu_format_group = {
-+	.name = "format",
-+	.attrs = qcom_llcc_pmu_format_attrs,
-+};
-+
-+static const struct attribute_group *qcom_llcc_pmu_attr_groups[] = {
-+	&qcom_llcc_pmu_format_group,
-+	&qcom_llcc_pmu_events_group,
-+	NULL,
-+};
-+
-+static int qcom_llcc_pmu_probe(struct platform_device *pdev)
-+{
-+	static struct llcc_pmu *llcc_pmu;
-+	int ret;
-+
-+	if (num_possible_cpus() > MAX_NUM_CPUS)
-+		return dev_err_probe(&pdev->dev, -EINVAL,
-+				     "LLCC PMU only supports <=%u CPUs\n",
-+				     MAX_NUM_CPUS);
-+
-+	llcc_pmu = devm_kzalloc(&pdev->dev, sizeof(*llcc_pmu), GFP_KERNEL);
-+	if (!llcc_pmu)
-+		return -ENOMEM;
-+
-+	llcc_pmu->llcc_stats = devm_kcalloc(&pdev->dev, num_possible_cpus(),
-+					    sizeof(*llcc_pmu->llcc_stats), GFP_KERNEL);
-+
-+	llcc_pmu->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(llcc_pmu->base))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(llcc_pmu->base),
-+				     "Failed to register LLCC PMU\n");
-+
-+	llcc_pmu->pmu = (struct pmu) {
-+		.event_init	= qcom_llcc_event_init,
-+		.add		= qcom_llcc_event_add,
-+		.del		= qcom_llcc_event_del,
-+		.start		= qcom_llcc_pmu_start,
-+		.stop		= qcom_llcc_event_stop,
-+		.read		= qcom_llcc_event_read,
-+
-+		.attr_groups	= qcom_llcc_pmu_attr_groups,
-+		.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
-+		.task_ctx_nr	= perf_invalid_context,
-+
-+		.module		= THIS_MODULE,
-+	};
-+
-+	raw_spin_lock_init(&llcc_pmu->lock);
-+
-+	ret = perf_pmu_register(&llcc_pmu->pmu, "llcc_pmu", -1);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret, "Failed to register LLCC PMU\n");
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id qcom_llcc_pmu_match_table[] = {
-+	{ .compatible = "qcom,llcc-pmu-v2" },
-+	{ }
-+};
-+
-+static struct platform_driver qcom_llcc_pmu_driver = {
-+	.probe = qcom_llcc_pmu_probe,
-+	.driver = {
-+		.name = "qcom-llcc-pmu",
-+		.of_match_table = qcom_llcc_pmu_match_table,
-+		.suppress_bind_attrs = true,
-+	},
-+};
-+module_platform_driver(qcom_llcc_pmu_driver);
-+
-+MODULE_DEVICE_TABLE(of, qcom_llcc_pmu_match_table);
-+MODULE_DESCRIPTION("QCOM LLCC PMU");
-+MODULE_LICENSE("GPL");
-
----
-base-commit: 21ef7b1e17d039053edaeaf41142423810572741
-change-id: 20230809-topic-llcc_pmu-c6e9dbc36b12
-
-Best regards,
--- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
+ - Joel
 
