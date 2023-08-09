@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB77775F99
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CD7775FB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbjHIMrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54474 "EHLO
+        id S230155AbjHIMu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231976AbjHIMr2 (ORCPT
+        with ESMTP id S229737AbjHIMuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:47:28 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C241BDA
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:47:28 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3a5ad4477a7so5120256b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:47:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691585247; x=1692190047;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vgLnNTyUqxgdIBRnXZkONE83fOCISV+cZafhjFByJ6s=;
-        b=UgkCM4qxu+uMbk49jGT/byouHYOa4cv4oHh73ITQPbDuXUdoDmlxBEMDj8GE4XxWU5
-         sWqqNVVkYn3vTMSbAgGvUVEMtW1e80xAlbTr72znfkhB7sbdhiOOogTDq7ZYyUYaPNfp
-         JYEPqSAB/Dkf5C6ek+iVp3OhlCkb2ZCCGxpjL8DiOGVeSgcPBOnox1XED6TDreA7jpgl
-         RYwP3ANO53FUuVDzdCsLw3m4DdntADVXHtPU3nW8jyi0bP2JInk6kG+FZWY9EqRGPdYE
-         HMbO1VmckcHWj69SyMxpiY0YpcAa85VCi95nzAOZaX6o7WUCooNk/nLMnjrgRDtaoj2t
-         Dfkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691585247; x=1692190047;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vgLnNTyUqxgdIBRnXZkONE83fOCISV+cZafhjFByJ6s=;
-        b=MCijVCx5Cz7KufcR2/rqh6SpMTGNOn4TpBH4LQRmqEHho+AbzgBDw/k4NyVgzrp3Sw
-         tsJP78x5Qjt5Y4lFQ4jWc3LfGU3i4Mfka2Sitn2QRuj7VD7ZXFppXgCGWQakwXsTixxZ
-         vAQRhRgVdhkLDyOUOzO8IGwPjIuk+1MyCGtQjWql0WNCpcVbAl6kexFPR183M96wBmjD
-         8rC5StFtW2Jdm/ZNXvukx3p8fX+GCVGd/9T2DkpRRs24Gj14yx+Of8IgUq/wx3Ptazok
-         p08lTfwlmrgN8YDwClE9CShILveaM1BOXjK0x6rwLZvrc3zf/77grErHXMaC/ebt9AOA
-         hxcg==
-X-Gm-Message-State: AOJu0YytMLYtBMchzK9t9XNmRTnst7Zzr9Y8XfeQ/jura1SS7Cfk0nMX
-        1yRHL/A2vjQUN5sVCg084K7UBrSMI8Q=
-X-Google-Smtp-Source: AGHT+IEJxQd9Oqcd4G67bDzrVNJX78gVSfE3k+NxBSuyqs7fZY5a8noxIH7dI7lmZgLO86KsDGskUA==
-X-Received: by 2002:aca:220b:0:b0:3a7:4cf6:f0cb with SMTP id b11-20020aca220b000000b003a74cf6f0cbmr2540164oic.21.1691585247611;
-        Wed, 09 Aug 2023 05:47:27 -0700 (PDT)
-Received: from ubuntu.myguest.virtualbox.org ([122.173.206.194])
-        by smtp.gmail.com with ESMTPSA id b8-20020a17090a7ac800b0025023726fc4sm1362860pjl.26.2023.08.09.05.47.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 05:47:27 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 18:17:22 +0530
-From:   Pavan Bobba <opensource206@gmail.com>
-To:     Forest Bond <forest@alittletooquiet.net>,
-        Michael Straube <straube.linux@gmail.com>,
-        Philipp Hortmann <philipp.g.hortmann@gmail.com>,
-        outreachy@lists.linux.dev
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] staging: vt6655: replace camel case by snake case
-Message-ID: <ZNOK2u1sJoRAxhIC@ubuntu.myguest.virtualbox.org>
+        Wed, 9 Aug 2023 08:50:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44F81BFF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:50:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691585424; x=1723121424;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rILMLf+tn+A62NOPg8CdxcaaGELEWihPPF22lpcqp3E=;
+  b=Y5afsCBi/4VEqw1BfkzToktAHsYc6ebXgiCVfbTb/5NjopvO8oqm14cd
+   CDjVq5eUIVQByeJzqQCTzv9fLBh31gAGLUPuEwPalu7RYKmdR7d7ld3VJ
+   3/xP3wtdpAhR5FPkB1GjeWzzsicZQWYDtwabYwuh24jISLihnojrcSfwL
+   nJJ5SfECGgeMVo7tu/lpT39wamjC9MAYZHhe/AfhY5nBC9KmP7+OiEdwX
+   Y1tDkGSfrcM/XP2GT6V78Qm7/+JN7AAPpYoYHE84qWrZWdb+LpeIWgzeX
+   selTHgr7XC2Xgogm4sirwTOQDpJg+6sV2OcZvINmBnq/VNR5deqx5cW/G
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="374821659"
+X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
+   d="scan'208";a="374821659"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 05:50:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="855521641"
+X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
+   d="scan'208";a="855521641"
+Received: from allen-box.sh.intel.com ([10.239.159.127])
+  by orsmga004.jf.intel.com with ESMTP; 09 Aug 2023 05:50:22 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     YueHaibing <yuehaibing@huawei.com>,
+        Yanfei Xu <yanfei.xu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/13] [PULL REQUEST] Intel IOMMU updates for Linux v6.6
+Date:   Wed,  9 Aug 2023 20:47:53 +0800
+Message-Id: <20230809124806.45516-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace array name of camel case by snake case. Issue found
-by checkpatch
+Hi Joerg,
 
-Signed-off-by: Pavan Bobba <opensource206@gmail.com>
----
- v1 -> v2: 1. array name renamed from byVT3253B0_RFMD to by_vt3253b0_rfmd
-           2. typo in the subject line "small case" corrected with the
-              proper word "snake case"
+This includes patches queued for v6.6. They aim to:
 
-Signed-off-by: Pavan Bobba <opensource206@gmail.com>
----
- drivers/staging/vt6655/baseband.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ - Enable idxd device DMA with pasid through iommu dma ops.
+ - Lift RESV_DIRECT check from VT-d driver to core.
+ - Miscellaneous cleanups and fixes.
 
-diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
-index 0e135af8316b..cc8793256661 100644
---- a/drivers/staging/vt6655/baseband.c
-+++ b/drivers/staging/vt6655/baseband.c
-@@ -499,7 +499,7 @@ static const unsigned char by_vt3253_init_tab_rfmd[CB_VT3253_INIT_FOR_RFMD][2] =
- };
- 
- #define CB_VT3253B0_INIT_FOR_RFMD 256
--static const unsigned char byVT3253B0_RFMD[CB_VT3253B0_INIT_FOR_RFMD][2] = {
-+static const unsigned char by_vt3253b0_rfmd[CB_VT3253B0_INIT_FOR_RFMD][2] = {
- 	{0x00, 0x31},
- 	{0x01, 0x00},
- 	{0x02, 0x00},
-@@ -2005,8 +2005,8 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 		} else {
- 			for (ii = 0; ii < CB_VT3253B0_INIT_FOR_RFMD; ii++)
- 				result &= bb_write_embedded(priv,
--					byVT3253B0_RFMD[ii][0],
--					byVT3253B0_RFMD[ii][1]);
-+					by_vt3253b0_rfmd[ii][0],
-+					by_vt3253b0_rfmd[ii][1]);
- 
- 			for (ii = 0; ii < CB_VT3253B0_AGC_FOR_RFMD2959; ii++)
- 				result &= bb_write_embedded(priv,
+All patches are based on top of the next branch and vt-d patches can
+apply to v6.5-rc5 as well.
+
+The series is also available at:
+https://github.com/LuBaolu/intel-iommu/commits/vtd-update-for-v6.6
+
+Please consider them for v6.6-rc1.
+
+Best regards,
+Baolu
+
+Jacob Pan (3):
+  iommu: Generalize PASID 0 for normal DMA w/o PASID
+  iommu: Move global PASID allocation from SVA to core
+  dmaengine/idxd: Re-enable kernel workqueue under DMA API
+
+Lu Baolu (7):
+  iommu/vt-d: Add domain_flush_pasid_iotlb()
+  iommu/vt-d: Remove pasid_mutex
+  iommu/vt-d: Make prq draining code generic
+  iommu/vt-d: Prepare for set_dev_pasid callback
+  iommu/vt-d: Add set_dev_pasid callback for dma domain
+  iommu: Prevent RESV_DIRECT devices from blocking domains
+  iommu/vt-d: Remove rmrr check in domain attaching device path
+
+Yanfei Xu (2):
+  iommu/vt-d: Fix to flush cache of PASID directory table
+  iommu/vt-d: Fix to convert mm pfn to dma pfn
+
+YueHaibing (1):
+  iommu/vt-d: Remove unused extern declaration dmar_parse_dev_scope()
+
+ include/linux/dmar.h                          |   2 -
+ include/linux/iommu.h                         |  13 +
+ drivers/dma/idxd/idxd.h                       |   9 +
+ drivers/iommu/intel/iommu.h                   |   9 +
+ drivers/iommu/intel/pasid.h                   |   2 -
+ drivers/dma/idxd/device.c                     |  39 ++-
+ drivers/dma/idxd/dma.c                        |   5 +-
+ drivers/dma/idxd/init.c                       |  54 +++-
+ drivers/dma/idxd/sysfs.c                      |   7 -
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |   2 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |  16 +-
+ drivers/iommu/intel/iommu.c                   | 237 +++++++++++-------
+ drivers/iommu/intel/pasid.c                   |   4 +-
+ drivers/iommu/intel/svm.c                     |  62 +----
+ drivers/iommu/iommu-sva.c                     |  29 +--
+ drivers/iommu/iommu.c                         |  65 ++++-
+ 16 files changed, 330 insertions(+), 225 deletions(-)
+
 -- 
 2.34.1
 
