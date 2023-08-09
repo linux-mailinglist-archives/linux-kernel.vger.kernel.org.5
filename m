@@ -2,429 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD017750A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 04:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041E7775085
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 03:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbjHICDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 22:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60680 "EHLO
+        id S231136AbjHIBtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 21:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbjHICDx (ORCPT
+        with ESMTP id S230405AbjHIBtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 22:03:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7721D1BCD
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 19:03:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691546585;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NeMEbtsmTQJEqu8hjilImTZbZ8hU9GSJMq+8qlXZ2jo=;
-        b=PxP3e36WQ5dg3d7so7PR3rSSl3M19v4on2/W5wqRM5vszDcLrkWyubgnHs6ACMMKJyPWaY
-        EqjfsnW7/TYLEEdpM5jAfhKBGCcie/dj0e+zKXMg0+GEqG32js1s5ZaAbu0dxIPaIBe4bl
-        mC6WYeJ69Bs17BjbR0V0pg9LW/Cwuso=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-596-7Exz50WtMGCkk8AgO4n8jA-1; Tue, 08 Aug 2023 22:03:04 -0400
-X-MC-Unique: 7Exz50WtMGCkk8AgO4n8jA-1
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-767564705f5so697924285a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 19:03:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691546583; x=1692151383;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NeMEbtsmTQJEqu8hjilImTZbZ8hU9GSJMq+8qlXZ2jo=;
-        b=G8+41QhLBfa0c8EbE5e9eDP2fp464C7sBXsCwVXu1FsiQBX8LtMiD6VD8pkMKVn7Uw
-         8Nqz6PTRjjTr/uiZHIaXninhsUKMCfgLtWgHUu11BreX4gzz/s78IL5ptP9xwi4EIIY+
-         BCxybEpmfiKOFh3R1dFO4WyyZFitJ4KWvjgRA/e2dYWhnmrcRB6lswJNtPsyI7g3/f9z
-         1ZjmsGF8XctC4Bin9XvVaTG8MPQydXwbiA03L5GDPwkhGKQtNb13xGB8EN+GVGRqkfz7
-         F9VAZd2OJBGVMLnGgFWMXBLesfDsN8sTxF3t7JejWUOp8YSkNIL+8leHD4pB/Gutt3xw
-         sb+g==
-X-Gm-Message-State: AOJu0Yw/nh/JHx6JPBfC3yKwimGQWPFwq1vjbF7RtYjj2aKrZ1H4EAqc
-        OweVDSudrhbZy9468pdVGBxM+HeH6JG72pR35F3tI+hgm4JAYnXkuSrJrEjRI0r/HVY6AmG2eMx
-        SNYsD9aFg4WZy9qHz7Vt5Abr++ketspge5C9OiPCi
-X-Received: by 2002:a05:620a:460b:b0:765:6524:8458 with SMTP id br11-20020a05620a460b00b0076565248458mr1880589qkb.36.1691546583648;
-        Tue, 08 Aug 2023 19:03:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGKeCVH7M3AdEKWEf9CoiSo7C1Kxm/j/6sg9FjxxZufRgrqrkRgV6oBkrzi/1pOvO1C2IaHIjAOTof2OSCp8fY=
-X-Received: by 2002:a05:620a:460b:b0:765:6524:8458 with SMTP id
- br11-20020a05620a460b00b0076565248458mr1880575qkb.36.1691546583354; Tue, 08
- Aug 2023 19:03:03 -0700 (PDT)
+        Tue, 8 Aug 2023 21:49:05 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2409FF3
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 18:49:05 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RLCdl1Yycz4f3pqr
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 09:48:59 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP2 (Coremail) with SMTP id Syh0CgDnCW6M8NJk7QYSAQ--.39503S2;
+        Wed, 09 Aug 2023 09:49:01 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
+        mgorman@techsingularity.net, david@redhat.com, willy@infradead.org
+Cc:     shikemeng@huaweicloud.com
+Subject: [PATCH] mm/compaction: remove unused parameter pgdata of fragmentation_score_wmark
+Date:   Wed,  9 Aug 2023 17:49:10 +0800
+Message-Id: <20230809094910.3092446-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20230804084900.1135660-2-leobras@redhat.com> <20230804084900.1135660-6-leobras@redhat.com>
- <CAJF2gTTOT3_3K_cWNY9n_DgRoPhYEhBLno=bh57r9D--OavREQ@mail.gmail.com>
- <CAJ6HWG4gy7HV11-cdoB0VAP2z1Zw-zyJhNRpJ1eDMmrkvnob3w@mail.gmail.com>
- <CAJF2gTQY5RX87Zo8HcM1Og-Oc6vd5Vyj97KL-o6UcqMaT4oxng@mail.gmail.com> <CAJ6HWG4apf5D_H43Kf7+E9pA1UmcFe1mV6YGuvk0Q9SH_ZFDdw@mail.gmail.com>
-In-Reply-To: <CAJ6HWG4apf5D_H43Kf7+E9pA1UmcFe1mV6YGuvk0Q9SH_ZFDdw@mail.gmail.com>
-From:   Leonardo Bras Soares Passos <leobras@redhat.com>
-Date:   Tue, 8 Aug 2023 23:02:52 -0300
-Message-ID: <CAJ6HWG5mZTYsMAMVx9itUYNK2TOXZjAFOW=-Nzwi3q+yB2V3vQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 4/5] riscv/cmpxchg: Implement cmpxchg for variables
- of size 1 and 2
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgDnCW6M8NJk7QYSAQ--.39503S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tryfGw18Zw43WFW7urWxWFg_yoW8Gryrpw
+        10qFWFq3WYq3W5GryFvw4IgayrAF4Iqay7Xw4qqrZ7JF15KanYvFy7try293y8X34jgryx
+        ta9Fga45Jay7AFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+        YI8I648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7sRi
+        Pl1DUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Guo Ren,
+Parameter pgdat is not used in fragmentation_score_wmark. Just remove it.
 
-On Mon, Aug 7, 2023 at 1:17=E2=80=AFPM Leonardo Bras Soares Passos
-<leobras@redhat.com> wrote:
->
-> On Sat, Aug 5, 2023 at 1:24=E2=80=AFAM Guo Ren <guoren@kernel.org> wrote:
-> >
-> > On Sat, Aug 5, 2023 at 11:14=E2=80=AFAM Leonardo Bras Soares Passos
-> > <leobras@redhat.com> wrote:
-> > >
-> > > Hello Guo Ren, thanks for the feedback!
-> > >
-> > > On Fri, Aug 4, 2023 at 2:45=E2=80=AFPM Guo Ren <guoren@kernel.org> wr=
-ote:
-> > > >
-> > > > On Fri, Aug 4, 2023 at 4:49=E2=80=AFAM Leonardo Bras <leobras@redha=
-t.com> wrote:
-> > > > >
-> > > > > cmpxchg for variables of size 1-byte and 2-bytes is not yet avail=
-able for
-> > > > > riscv, even though its present in other architectures such as arm=
-64 and
-> > > > > x86. This could lead to not being able to implement some locking =
-mechanisms
-> > > > > or requiring some rework to make it work properly.
-> > > > >
-> > > > > Implement 1-byte and 2-bytes cmpxchg in order to achieve parity w=
-ith other
-> > > > > architectures.
-> > > > >
-> > > > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> > > > > ---
-> > > > >  arch/riscv/include/asm/cmpxchg.h | 35 ++++++++++++++++++++++++++=
-++++++
-> > > > >  1 file changed, 35 insertions(+)
-> > > > >
-> > > > > diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/includ=
-e/asm/cmpxchg.h
-> > > > > index 5a07646fae65..dfb433ac544f 100644
-> > > > > --- a/arch/riscv/include/asm/cmpxchg.h
-> > > > > +++ b/arch/riscv/include/asm/cmpxchg.h
-> > > > > @@ -72,6 +72,36 @@
-> > > > >   * indicated by comparing RETURN with OLD.
-> > > > >   */
-> > > > >
-> > > > > +#define __arch_cmpxchg_mask(sc_sfx, prepend, append, r, p, o, n)=
-       \
-> > > > > +({                                                              =
-       \
-> > > > > +       /* Depends on 2-byte variables being 2-byte aligned */   =
-       \
-> > > > > +       ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;        =
-         \
-> > > > > +       ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) -=
- 1, 0)   \
-> > > > > +                       << __s;                                  =
-       \
-> > > > > +       ulong __newx =3D (ulong)(n) << __s;                      =
-         \
-> > > > > +       ulong __oldx =3D (ulong)(o) << __s;                      =
-         \
-> > > > > +       ulong __retx;                                            =
-       \
-> > > > > +       register unsigned int __rc;                              =
-       \
-> > > > > +                                                                =
-       \
-> > > > > +       __asm__ __volatile__ (                                   =
-       \
-> > > > > +               prepend                                          =
-       \
-> > > > > +               "0:     lr.w %0, %2\n"                           =
-       \
+Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+---
+ mm/compaction.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-      bne  %0, %z3, 1f\n"                             \
-> > >
-> > > > bug:
-> > > > -               "       and  %0, %0, %z5\n"                        =
-     \
-> > > > -               "       bne  %0, %z3, 1f\n"                        =
-     \
-> > > > +               "       and  %1, %0, %z5\n"                        =
-     \
-> > > > +               "       bne  %1, %z3, 1f\n"                        =
-     \
-> > > > Your code breaks the %0.
-> > >
-> > > What do you mean by breaks here?
-> > >
-> > > In the end of this macro, I intended  to have __retx =3D (*p & __mask=
-)
-> > > which means the value is clean to be rotated at the end of the macro
-> > > (no need to apply the mask again): r =3D __ret >> __s;
-> > >
-> > > Also, I assumed we are supposed to return the same variable type
-> > > as the pointer, so this is valid:
-> > > u8 a, *b, c;
-> > > a =3D xchg(b, c);
-> > >
-> > > Is this correct?
-> > I missed your removing "__ret & mask" at the end. So this may not the p=
-roblem.
-
-It was actually the problem :)
-Even though I revised a lot, I was missing this which was made clear
-by test-running on a VM:
-
-        "0:    lr.w %0, %2\n"                    \
-        "    and  %0, %0, %z5\n"                \
-        "    bne  %0, %z3, 1f\n"                \
-        "    and  %1, %0, %z6\n"                \
-        "    or   %1, %1, %z4\n"                \
-        "    sc.w" sc_sfx " %1, %1, %2\n"            \
-        "    bnez %1, 0b\n"
-
-If I do "and %0, %0, %z5" there, the line  "and  %1, %0, %z6"  will
-output %1 =3D 0, which is not the intended.
-You were right! The above fix solves the issue, and I just have to
-mask it after.
-
-Sorry it took me a few days to realize this.
-
-
-> >
-> > Your patch can't boot. After chewing your code for several hours, I
-> > found a problem:
-> > diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/=
-cmpxchg.h
-> > index 943f094375c7..67bcce63b267 100644
-> > --- a/arch/riscv/include/asm/cmpxchg.h
-> > +++ b/arch/riscv/include/asm/cmpxchg.h
-> > @@ -14,6 +14,7 @@
-> >  #define __arch_xchg_mask(prepend, append, r, p, n)                    =
- \
-> >  ({                                                                    =
- \
-> >         /* Depends on 2-byte variables being 2-byte aligned */         =
- \
-> > +       volatile ulong *__p =3D (ulong *)((ulong)(p) & ~0x3);          =
-   \
->
-> Wow, I totally missed this one: I should not assume the processor
-> behavior on unaligned lr/sc.
-> Thanks for spotting this :)
->
-> >         ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;              =
-   \
-> >         ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)=
-   \
-> >                         << __s;                                        =
- \
-> > @@ -29,7 +30,7 @@
-> >                "        sc.w %1, %1, %2\n"                             =
- \
-> >                "        bnez %1, 0b\n"                                 =
- \
-> >                append                                                  =
- \
-> > -              : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))         =
-     \
-> > +              : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(__p))       =
-     \
-> >                : "rJ" (__newx), "rJ" (~__mask)                         =
- \
-> >                : "memory");                                            =
- \
-> >                                                                        =
- \
-> > @@ -106,6 +107,7 @@
-> >  #define __arch_cmpxchg_mask(sc_sfx, prepend, append, r, p, o, n)      =
- \
-> >  ({                                                                    =
- \
-> >         /* Depends on 2-byte variables being 2-byte aligned */         =
- \
-> > +       volatile ulong *__p =3D (ulong *)((ulong)(p) & ~0x3);          =
-   \
-> >         ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;              =
-   \
-> >         ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)=
-   \
-> >                         << __s;                                        =
- \
-> > @@ -125,7 +127,7 @@
-> >                 "       bnez %1, 0b\n"                                 =
- \
-> >                 append                                                 =
- \
-> >                 "1:\n"                                                 =
- \
-> > -               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))        =
-     \
-> > +               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(__p))      =
-     \
-> >                 : "rJ" ((long)__oldx), "rJ" (__newx),                  =
- \
-> >                   "rJ" (__mask), "rJ" (~__mask)                        =
- \
-> >                 : "memory");                                           =
- \
-> >
-> > But the lkvm-static still can't boot with paravirt_spinlock .... Are
-> > there any atomic tests in the Linux?
->
-> I recall reading something about 'locktorture' or so, not sure if useful:
->
-> https://docs.kernel.org/locking/locktorture.html
->
-> >
-> > I found you use some "register int variables". Would it cause the probl=
-em?
->
-> Honestly, not sure.
-> I will try inspecting the generated asm for any unexpected changes
-> compared to your version.
-
-changed type to ulong, no changes detected in asm
-
->
-> >
-> > You can reference this file, and it has passed the lock torture test:
-> > https://github.com/guoren83/linux/blob/sg2042-master-qspinlock-64ilp32_=
-v4/arch/riscv/include/asm/cmpxchg.h
-> >
-> > I also merged your patches with the qspinlock series: (Use the above
-> > cmpxchg.h the lkvm would run normally.)
-> > https://github.com/guoren83/linux/tree/qspinlock_v11
->
-> Thanks!
->
-> I should reply as soon as I find anything.
->
-
-Some changes found (for xchg16):
-- pointer alignment wrong (need mask with ~0x3) : solved. Doesn't seem
-to need to be volatile, though.
-
-- AND with 0x3 for getting shift: I was trusting 2-byte vars to be
-2-byte aligned , ie. p & 0x1 =3D=3D 0: may not be true. Solved (it's
-simple)
-
-- on your code, IIUC you also assume ptr & 0x1 =3D=3D 0, on
-        ulong *__ptr =3D (ulong *)((ulong)ptr & ~2);
-if it's not aligned, you may have __ptr =3D 0xYYYYYY01
-(Not saying it's wrong to assume this, just listing It differs on my code)
-
-- also verified your code generates addw and sllw on some points mine
-generates add and sll, don't see any issue there
-
-- There are extra sll and srl in my asm, because I end up casting to
-typeof(*ptr) at the end.
-
-changes found in cmpxchg (__cmpxchg_small_relaxed)
-- mostly the same as above,
-
-- the beginning of my function ends up being smaller, since I do my
-masking differently.
-
-I fixed the above issues, and  ran some userspace debugging tests on a
-VM, and all seems to be correct now.
-
-I then fetched your github repo, replaced my patches v3->v4 on your
-tree, added linux boot parameter "qspinlock" on my qemu cmdline
-(-machine virt): booting and working just fine.
-
-I will send a v4 soon, please give it a test when possible.
-
-Best regards,
-Leo
-
-
-
-> >
-> >
-> >
-> > >
-> > > > > +               append                                           =
-       \
-> > > > > +               "1:\n"                                           =
-       \
-> > > > > +               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))  =
-           \
-> > > > > +               : "rJ" ((long)__oldx), "rJ" (__newx),            =
-       \
-> > > > > +                 "rJ" (__mask), "rJ" (~__mask)                  =
-       \
-> > > > > +               : "memory");                                     =
-       \
-> > > > > +                                                                =
-       \
-> > > > > +       r =3D (__typeof__(*(p)))(__retx >> __s);                 =
-         \
-> > > > > +})
-> > > > > +
-> > > > >
-> > > > >  #define __arch_cmpxchg(lr_sfx, sc_sfx, prepend, append, r, p, co=
-, o, n)        \
-> > > > >  ({                                                              =
-       \
-> > > > > @@ -98,6 +128,11 @@
-> > > > >         __typeof__(*(ptr)) __ret;                                =
-       \
-> > > > >                                                                  =
-       \
-> > > > >         switch (sizeof(*__ptr)) {                                =
-       \
-> > > > > +       case 1:                                                  =
-       \
-> > > > > +       case 2:                                                  =
-       \
-> > > > > +               __arch_cmpxchg_mask(sc_sfx, prepend, append,     =
-       \
-> > > > > +                                       __ret, __ptr, __old, __ne=
-w);    \
-> > > > > +               break;                                           =
-       \
-> > > > >         case 4:                                                  =
-       \
-> > > > >                 __arch_cmpxchg(".w", ".w" sc_sfx, prepend, append=
-,      \
-> > > > >                                 __ret, __ptr, (long), __old, __ne=
-w);    \
-> > > > > --
-> > > > > 2.41.0
-> > > > >
-> > > >
-> > > >
-> > > > --
-> > > > Best Regards
-> > > >  Guo Ren
-> > > >
-> > >
-> >
-> >
-> > --
-> > Best Regards
-> >  Guo Ren
-> >
+diff --git a/mm/compaction.c b/mm/compaction.c
+index ea61922a1619..38c8d216c6a3 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -2142,7 +2142,7 @@ static unsigned int fragmentation_score_node(pg_data_t *pgdat)
+ 	return score;
+ }
+ 
+-static unsigned int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
++static unsigned int fragmentation_score_wmark(bool low)
+ {
+ 	unsigned int wmark_low;
+ 
+@@ -2162,7 +2162,7 @@ static bool should_proactive_compact_node(pg_data_t *pgdat)
+ 	if (!sysctl_compaction_proactiveness || kswapd_is_running(pgdat))
+ 		return false;
+ 
+-	wmark_high = fragmentation_score_wmark(pgdat, false);
++	wmark_high = fragmentation_score_wmark(false);
+ 	return fragmentation_score_node(pgdat) > wmark_high;
+ }
+ 
+@@ -2201,7 +2201,7 @@ static enum compact_result __compact_finished(struct compact_control *cc)
+ 			return COMPACT_PARTIAL_SKIPPED;
+ 
+ 		score = fragmentation_score_zone(cc->zone);
+-		wmark_low = fragmentation_score_wmark(pgdat, true);
++		wmark_low = fragmentation_score_wmark(true);
+ 
+ 		if (score > wmark_low)
+ 			ret = COMPACT_CONTINUE;
+-- 
+2.30.0
 
