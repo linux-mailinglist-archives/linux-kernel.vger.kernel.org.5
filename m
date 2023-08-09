@@ -2,132 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA59776BF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 00:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C836E776BFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 00:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbjHIWJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 18:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
+        id S230458AbjHIWMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 18:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjHIWJt (ORCPT
+        with ESMTP id S231518AbjHIWL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 18:09:49 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEA9B9
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 15:09:48 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6b9c9944da8so271898a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 15:09:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691618988; x=1692223788;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5wgDVu8p3LAXBRMLjZ335uEuofYsZ1H4TbcKoyLUoLo=;
-        b=pBH+yh35EtrJKvrb5fnLJvRLVaPCRGUT+7HvV1ZWoRkfAESNpFgDP7h54DHz9p4/r6
-         a42WOpxmxSXlV07+ptDJs5MVekWkF+X5zFZqlIHm6lJYfFo8GxvjhGOCojqzOzy0nI34
-         iYFp/PT+g1fAF95MVMeBHGOHnj/AZ3xZfKljJVBalSsAU0LqTCfPVKsnOwegpZY2VS9F
-         2CgpUwUTP71Ex2B71oEmlOWAN4IfsVCFDXOJK2dIdpC7B/xgDoFoLDd8/m+fXTj4k99o
-         ene6pQH7hMtdKATN1DDzHcdbmLD59ChvMCA1GUJDcKV8IOW5u0/iLIuykZGxayGiaaLH
-         4h8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691618988; x=1692223788;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5wgDVu8p3LAXBRMLjZ335uEuofYsZ1H4TbcKoyLUoLo=;
-        b=SunvrlfmwdcUf7YqDZt9EpFxVy6YTb1cEXkwIfMJVePN6gHNT9AsbNwc7H5TRnyaPM
-         si/5RQZjU6pXztyGCKvNS5VBEnu2iaTioUPnD7PLqUBMWFIq2LROQt5rO7pZNv8b/TBE
-         rYpzWLA+6lUid3B5N6tGwUbqSCBCO3YJc0ClLzWiYEy7H9IbuqHll8qEQJJ2z5Wyx/NE
-         UaN2abLrwp89gBhjSq0rbaPH3FDr7DtjZXrjD1Juk27M6vXj0FaW2r339ofdp25IWvYC
-         5AcqKPCBSGewn0LMPNK1og7DLHYKigT1IEPvF+r7zi+uuYp6hw/FP9akCSg6XTx3bn2H
-         0hag==
-X-Gm-Message-State: AOJu0YxdJHl4oSAoEQuSL97P+dvAU++nXlfBmXkNu2HDetkgc0FTm9rr
-        DLnnC1ThWREpJrPu1PRbV/7twownqvWFPPg1nx0=
-X-Google-Smtp-Source: AGHT+IGaFK09aQLRrcthM3O+uleFc4gf7oGBkgSQRy/BXP3AlJBxiNZU18R3ecPf1q5NWrORzYwZ8vWUHy/MM9WtzuY=
-X-Received: by 2002:a05:6870:970e:b0:1bb:b025:3e87 with SMTP id
- n14-20020a056870970e00b001bbb0253e87mr688950oaq.58.1691618987999; Wed, 09 Aug
- 2023 15:09:47 -0700 (PDT)
+        Wed, 9 Aug 2023 18:11:57 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B043FE;
+        Wed,  9 Aug 2023 15:11:56 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 379LGPEQ007338;
+        Wed, 9 Aug 2023 22:11:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=jQlTOVhoAlsUv+sIX6BAvnsZfsGmAq6GCgb5EX7v4F4=;
+ b=mwIMturxGsxRj4yzorpj9fU3Rzl5jDdCE3BZ9ThzpsyRZO2iW9uLLip9favkbqLUF63N
+ ecRVgk2g86p19wHRvEIpZGSuejeVTdtKkwp5dkpDBvh5DHas9/REMMf5NS9aXhqxA998
+ rYtERRMB3SYNfRFSoDoN9j479uxRX5414Cp7+zzaSGoVvl41kwpJyPoYVwqAn24QSo3+
+ fEoGV3xexXa7K8PYklGU9Vama2cTUhKLbxCVPLIugoWo2nJhWUwXrqMPY3YtnL5KQF8e
+ FbmN48RmTcUAdy0SsjpueBYJn5OsReWX/tjqy4EQQPPH2F5gskPDNY6fqvLLFJ3/+xOn DQ== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3scbcgh1nk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Aug 2023 22:11:43 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 379MBghS027580
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 9 Aug 2023 22:11:42 GMT
+Received: from [192.168.143.77] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 9 Aug
+ 2023 15:11:40 -0700
+Message-ID: <bdeedd8a-c417-4265-374d-09747e60d1d0@quicinc.com>
+Date:   Wed, 9 Aug 2023 15:11:40 -0700
 MIME-Version: 1.0
-References: <20230703150135.5784-1-ubizjak@gmail.com>
-In-Reply-To: <20230703150135.5784-1-ubizjak@gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 9 Aug 2023 18:09:36 -0400
-Message-ID: <CADnq5_MCquO_Sh0RUVYATbLwS1+h2UrLHoUkCXYeF7=R4kZmDg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: Use local64_try_cmpxchg in amdgpu_perf_read
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v2 2/2] scsi: ufs: host: convert to dev_err_probe() in
+ pltfrm_init
+Content-Language: en-US
+To:     Brian Masney <bmasney@redhat.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <bvanassche@acm.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <hugo@hugovil.com>
+References: <20230809191054.2197963-1-bmasney@redhat.com>
+ <20230809191054.2197963-3-bmasney@redhat.com>
+From:   "Bao D. Nguyen" <quic_nguyenb@quicinc.com>
+In-Reply-To: <20230809191054.2197963-3-bmasney@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: HDN95-r0SIug4zXLL5k4nx_ukD_1YRXv
+X-Proofpoint-ORIG-GUID: HDN95-r0SIug4zXLL5k4nx_ukD_1YRXv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-09_19,2023-08-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ adultscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ priorityscore=1501 suspectscore=0 impostorscore=0 clxscore=1011
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308090191
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
-
-Alex
-
-On Mon, Jul 3, 2023 at 7:16=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com> wrot=
-e:
->
-> Use local64_try_cmpxchg instead of local64_cmpxchg (*ptr, old, new) =3D=
-=3D old
-> in amdgpu_perf_read.  x86 CMPXCHG instruction returns success in ZF flag,
-> so this change saves a compare after cmpxchg (and related move instructio=
-n
-> in front of cmpxchg).
->
-> Also, try_cmpxchg implicitly assigns old *ptr value to "old" when cmpxchg
-> fails. There is no need to re-read the value in the loop.
->
-> No functional change intended.
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-> Cc: David Airlie <airlied@gmail.com>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+On 8/9/2023 12:10 PM, Brian Masney wrote:
+> Convert ufshcd_pltfrm_init() over to use dev_err_probe() to avoid
+> the following log message on bootup due to an -EPROBE_DEFER return
+> code:
+> 
+>      ufshcd-qcom 1d84000.ufs: Initialization failed
+> 
+> Signed-off-by: Brian Masney <bmasney@redhat.com>
 > ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c b/drivers/gpu/drm/am=
-d/amdgpu/amdgpu_pmu.c
-> index 71ee361d0972..6e91ea1de5aa 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c
-> @@ -276,9 +276,8 @@ static void amdgpu_perf_read(struct perf_event *event=
-)
->             (!pe->adev->df.funcs->pmc_get_count))
->                 return;
->
-> +       prev =3D local64_read(&hwc->prev_count);
->         do {
-> -               prev =3D local64_read(&hwc->prev_count);
-> -
->                 switch (hwc->config_base) {
->                 case AMDGPU_PMU_EVENT_CONFIG_TYPE_DF:
->                 case AMDGPU_PMU_EVENT_CONFIG_TYPE_XGMI:
-> @@ -289,7 +288,7 @@ static void amdgpu_perf_read(struct perf_event *event=
-)
->                         count =3D 0;
->                         break;
->                 }
-> -       } while (local64_cmpxchg(&hwc->prev_count, prev, count) !=3D prev=
-);
-> +       } while (!local64_try_cmpxchg(&hwc->prev_count, &prev, count));
->
->         local64_add(count - prev, &event->count);
->  }
-> --
-> 2.41.0
->
+> No changes since v1
+> 
+>   drivers/ufs/host/ufshcd-pltfrm.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ufs/host/ufshcd-pltfrm.c b/drivers/ufs/host/ufshcd-pltfrm.c
+> index 0b7430033047..f2c50b78efbf 100644
+> --- a/drivers/ufs/host/ufshcd-pltfrm.c
+> +++ b/drivers/ufs/host/ufshcd-pltfrm.c
+> @@ -373,7 +373,7 @@ int ufshcd_pltfrm_init(struct platform_device *pdev,
+>   
+>   	err = ufshcd_init(hba, mmio_base, irq);
+>   	if (err) {
+> -		dev_err(dev, "Initialization failed\n");
+> +		dev_err_probe(dev, err, "Initialization failed\n");
+Hi Brian,
+Can you pls add the error code to the print?
+
+>   		goto dealloc_host;
+>   	}
+>   
+
