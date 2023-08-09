@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F259877684E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CFB776861
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbjHITOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41394 "EHLO
+        id S231371AbjHITPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233251AbjHITNf (ORCPT
+        with ESMTP id S232532AbjHITPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:13:35 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5210C30C4;
-        Wed,  9 Aug 2023 12:12:49 -0700 (PDT)
-Date:   Wed, 09 Aug 2023 19:12:30 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691608350;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=1cUqiEDAgeCw92CMVlQ/zNT4kJTvWs/WU4VOY5Qybpg=;
-        b=YfatK3kKRrpGsliGr1a9CJ4ei8G6b2MMHSjdNklPImzqyUud2y16Qv4qqYWvXV+PwU1HUZ
-        ZqC///RlFqE8eXM9C3TNylV8MjqsWcd+Xm0vxCa+PGc+xItcQg4T7AWQiID70kH5/uDMae
-        2eJQKV+IFCeBEENVDlXR/FHh8Rx9a0GhPDLO1/zr5ovA9nzepEzOSCE0QioAn8pl0TrLBQ
-        4N+uIrXZQ191jIuiQHiV0OtEp9pMY5wuvpEKBvJWQOQqzdGYOk3Z+lohSAVoP5qJpZcZ/C
-        kxSxJhgxGRBFxU9z8Vj4RkpjHEVymfKz87eq1X4w4rRhsPVHAE1UQC0wqbNFcA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691608350;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=1cUqiEDAgeCw92CMVlQ/zNT4kJTvWs/WU4VOY5Qybpg=;
-        b=DAz4BsgPCESSlx0Vrl1e8HKmQ9FDUCzweBxW5qv82sJSh0r36DaweQvlAClUh2EhSHbsA0
-        OvNtXgY8ObOasiBA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/cpu: Make identify_boot_cpu() static
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Juergen Gross <jgross@suse.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Wed, 9 Aug 2023 15:15:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C65E423C;
+        Wed,  9 Aug 2023 12:13:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 40B346456F;
+        Wed,  9 Aug 2023 19:13:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0B1DC433C8;
+        Wed,  9 Aug 2023 19:13:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691608394;
+        bh=LeVB41u38/bhZJrLFYAIuDBKlGLS2oWJkoZGthUq6Jo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=foNa56/Lvq4BCC02Q0ZTTK/jrSpYteAeDNQMdVNsyuFpsa9NA9veVhr1OryMX+6Y1
+         5eo69vm1HvoiTG/+RFjyCQUESdxy1N0V+PJuoo1I77HXUdV3RoOcJFCZST144usBxk
+         UqEJUWXAf0J7zQ9DhyHWd2jZwqL+H5iiHiKzAPlCHjXM+t4Kc8ZU3QdqHoA9saStRU
+         Pnz4Y7aXVJn7GLkEWc2VbOhGhLklgpJvPd9SppbWmrEeCxXm3cUUU3eFiZoNv7QEqV
+         x4aWcmFpjm9Wc5o5cBSbEX5yduts81Vog3ta1qctnKYw0yuKy+UFvwlpdkybvwANvG
+         8jGt+6GCg8oFw==
+Date:   Wed, 9 Aug 2023 21:13:10 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, llvm@lists.linux.dev,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] i2c/busses: fix -Wmissing-variable-declarations
+Message-ID: <20230809191310.atpqztlpgdbdvc5m@intel.intel>
+References: <20230808-i2c-amd_static-v1-1-1902f608bba1@google.com>
 MIME-Version: 1.0
-Message-ID: <169160835036.27769.1119660617648651890.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230808-i2c-amd_static-v1-1-1902f608bba1@google.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/apic branch of tip:
+Hi Nick,
 
-Commit-ID:     3ba3fdfe2c3f28b9976f0c07eb7736080cb7d4a9
-Gitweb:        https://git.kernel.org/tip/3ba3fdfe2c3f28b9976f0c07eb7736080cb7d4a9
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 08 Aug 2023 15:03:39 -07:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Wed, 09 Aug 2023 11:58:15 -07:00
+On Tue, Aug 08, 2023 at 09:56:16AM -0700, Nick Desaulniers wrote:
+> I'm looking to enable -Wmissing-variable-declarations behind W=1. 0day
+> bot spotted the following instance:
+> 
+>   drivers/i2c/busses/i2c-amd756.c:286:20: warning: no previous extern
+>   declaration for non-static variable 'amd756_smbus'
+>   [-Wmissing-variable-declarations]
+>   286 | struct i2c_adapter amd756_smbus = {
+>       |                    ^
+>   drivers/i2c/busses/i2c-amd756.c:286:1: note: declare 'static' if the
+>   variable is not intended to be used outside of this translation unit
+>   286 | struct i2c_adapter amd756_smbus = {
+>       | ^
+> 
+> This symbol is referenced by more than one translation unit, so create
+> then include the correct header for their declarations.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/llvm/202308081000.tTL1ElTr-lkp@intel.com/
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-x86/cpu: Make identify_boot_cpu() static
+You might want to have a Fixes tag here and
 
-It's not longer used outside the source file.
+Cc: Jean Delvare <jdelvare@suse.com>
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Michael Kelley <mikelley@microsoft.com>
-Tested-by: Sohil Mehta <sohil.mehta@intel.com>
-Tested-by: Juergen Gross <jgross@suse.com> # Xen PV (dom0 and unpriv. guest)
----
- arch/x86/include/asm/processor.h | 1 -
- arch/x86/kernel/cpu/common.c     | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
+[...]
 
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index d46300e..923ca0a 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -190,7 +190,6 @@ static inline unsigned long long l1tf_pfn_limit(void)
- }
- 
- extern void early_cpu_init(void);
--extern void identify_boot_cpu(void);
- extern void identify_secondary_cpu(struct cpuinfo_x86 *);
- extern void print_cpu_info(struct cpuinfo_x86 *);
- void print_cpu_msr(struct cpuinfo_x86 *);
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 0ba1067..b156187 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1937,7 +1937,7 @@ void enable_sep_cpu(void)
- }
- #endif
- 
--void __init identify_boot_cpu(void)
-+static __init void identify_boot_cpu(void)
- {
- 	identify_cpu(&boot_cpu_data);
- 	if (HAS_KERNEL_IBT && cpu_feature_enabled(X86_FEATURE_IBT))
+> --- /dev/null
+> +++ b/drivers/i2c/busses/i2c-amd756.h
+> @@ -0,0 +1,3 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+
+Please, leave a space here.
+
+And you might also want to have something like:
+
+#ifndef __I2C_AMD_756_H__
+#define __I2C_AMD_756_H__
+
+> +#include <linux/i2c.h>
+
+space here.
+
+> +extern struct i2c_adapter amd756_smbus;
+
+#endif /* __I2C_AMD_756_H__ */
+
+Jean, any opinion on this patch, I don't really know this driver,
+but is there a way to avoid this extern declaration.
+
+Thanks,
+Andi
