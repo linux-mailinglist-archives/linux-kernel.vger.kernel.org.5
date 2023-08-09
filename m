@@ -2,99 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E77DF7768F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566E67768FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233406AbjHITkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49058 "EHLO
+        id S230426AbjHITnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbjHITkL (ORCPT
+        with ESMTP id S229625AbjHITnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:40:11 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BE42130
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 12:40:03 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe4b95c371so862475e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 12:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691610002; x=1692214802;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a0MWZFCqfx/bjsXZM126ESB1rX8vz7btWukyZvMmYhE=;
-        b=bU/x6GLlXAyQ4Gaf+J4l4ZL7IP9cLCP8vrQypkDa+MQq4V8AVozvS1yCQ1SbD4Cecs
-         /O0AJ9rtwEvpZxcickiEctbAIL7IbIXfwl1qcGFYr2tz3DqUtNqjsfIi694ZggDSJQjK
-         56BwH4fos0NoYx/wWTXY9OPOv9BLZsRCY0p3iGWIxVODeEEHYkf+KKdEajfber/EaXdP
-         +aiahjGvuMSw/EkEqVFmUa3w7x5C+xZ5Vio+j6f1LwkNCh5+qVSXM+2V311GYPDJQveE
-         dtlBfoG48CAh4xSFC8Jb+OX47SAgDYKEpRXuNFeomWeojrlw3nYob/4JJbTLm4TQX7cM
-         t1fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691610002; x=1692214802;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a0MWZFCqfx/bjsXZM126ESB1rX8vz7btWukyZvMmYhE=;
-        b=FZTQar2PCqyIePv7E/QiE4r/5IlrLpf7QKu4bHfpfdUhtOB/cmfa1Nmp28yVdOvlI0
-         Iq1VdZEdGAXH8u8Ne8/AAzvfqsAydRAyi1SrXSuyekZ4rwa0SY2Gt/6nuk+oNL9bi5PH
-         QlFMDBaD6960wgKR72yONVzPd26H6pHC82TSN3LucHpXwKjhTPyEd7892ZjFr96vFG7y
-         8cjQ1Wz8/WFNIHBvQhMdLIDYC28W6kviMAkJ8sRuPzYJw/osFUkBNGgXzPc5td9tEULl
-         jWkW/qj0ihD4oMZdHLM2Bf5o3Tn/YFzCjw6lP8TXMzNU939JtDO//FbSLhZiF6pkfSS1
-         zrAQ==
-X-Gm-Message-State: AOJu0YxdRE24khTAsRwtBLXYRWtgzVt4Zk0NqjaseQx4YLblCTchrp+B
-        idRsAr1Wh4ASiDVRuJNJdWIdlg==
-X-Google-Smtp-Source: AGHT+IFzxETQwp3zarbyF6opul9wAOg3gyCVMzKze6pDmDH12Tn4tuRyHeXKvy+JB7RhOor/Zi8Ifg==
-X-Received: by 2002:a05:600c:3d08:b0:3f7:ecdf:ab2d with SMTP id bh8-20020a05600c3d0800b003f7ecdfab2dmr310815wmb.20.1691610001729;
-        Wed, 09 Aug 2023 12:40:01 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id z1-20020a05600c220100b003fc01f7b415sm2798855wml.39.2023.08.09.12.40.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 12:40:01 -0700 (PDT)
-Message-ID: <e3b3b347-88b5-ab58-b7d4-3963e2c3b726@linaro.org>
-Date:   Wed, 9 Aug 2023 20:40:00 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH RESEND] tty: serial: qcom-geni-serial: Poll primary
- sequencer irq status after cancel_tx
-Content-Language: en-US
-To:     Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>,
-        agross@kernel.org, bjorn.andersson@kernel.org,
-        konrad.dybcio@linaro.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, bartosz.golaszewski@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     quic_msavaliy@quicinc.com, dianders@chromium.org, mka@chromium.org,
-        swboyd@chromium.org, quic_vtanuku@quicinc.com
-References: <1691583100-15689-1-git-send-email-quic_vnivarth@quicinc.com>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <1691583100-15689-1-git-send-email-quic_vnivarth@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Wed, 9 Aug 2023 15:43:09 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2747E10DA;
+        Wed,  9 Aug 2023 12:43:08 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 087FA5C0162;
+        Wed,  9 Aug 2023 15:43:05 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Wed, 09 Aug 2023 15:43:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1691610185; x=1691696585; bh=YE
+        cqCFxUYGUWqz2IlUXTkb/oxp7H5kGX1NNGYfEDwAs=; b=p7liFpTRJPzvF2BL27
+        OlPSzhK21VYRzNUOB0VVBTrnKUZhBazHP52H57yOOQd/W+3FdD3JS8bIHuxsDWbg
+        CF+L1lkaHCEORvwW5LUnEGWXoymXM4OMPCHjKrZS6wuOMHibomIrRWgzzXEv2Wzm
+        krVJVAEnL1SERZgeBJDXMmu+otenrkvdee8s1Rb+lBxS3CGsrQS0VOdHD7htb6gZ
+        Iq1azx08g+Y/lLywwt5xD4fiDxkT5fCXjparzlXkWhx5zLUOSoKrymZ62e+N8Eer
+        tu17nWp7GGnTdz0r9SoL0Cpa54frxDLqGIFZM+iOro9t1eZ6H4y2jwgqG9iq80em
+        pAHg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1691610185; x=1691696585; bh=YEcqCFxUYGUWq
+        z2IlUXTkb/oxp7H5kGX1NNGYfEDwAs=; b=m5Yc5lz4i6fwIMRmI5ZnP6GYL5Ysn
+        LkcO8LVeq+K96zVRDH493c0uZ7bKbWFhfU4yfpqashCrSJ3L33sYjdek6MVtI729
+        obyxAiqu6kd5DLMs4JIlJC2LCSSNLSZUPJ8aRnIWduzIMZ0Yo6vFs2cKpDcmjJcb
+        2ow4fZPidM0mUXH8LjN1pPv02dXAL+Y22J7TdolASeDD1Q//Hgj71qE3fuNGf5yi
+        MmDbzy2MZkVvARtlq8psjR96yxoOEEb+lRyAvFxgHB/zS4a6wt4ZhUAOkCMA/Plw
+        vsYGxh3NjNpirAIdfxrEdafzZ0HKjw+fASOY+USpGoLJUD4lwl5MV/xew==
+X-ME-Sender: <xms:SOzTZKc6uFlLfvp1ADRFGg4asBYDtGuCjvrB7GNGjGWENC0isHdSQg>
+    <xme:SOzTZEMfDeQccRxW5z8IRvyNB1R-SmM4hkFky05k4yKaajBmRgTe8dLFCvi6NZAqh
+    PevEozcJ4GS_xsAba8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrleeggddufeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepkeelfeefvddtkeffudegffffjeffjeeugefftddtteevffdvueetgfejjeel
+    tdfhnecuffhomhgrihhnpehkvghrnhgvlhgtihdrohhrghdpkhgvrhhnvghlrdhorhhgne
+    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgu
+    segrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:SOzTZLjZ0MZ6unn_rsVS2kRYZPJ9RHW_4tAxiljoqlN-9gH1ewxncg>
+    <xmx:SOzTZH9vC9WJS6a0Uc4dHsEks1mEpCMl1Fv-9BzlioEHO-zTNj1KWA>
+    <xmx:SOzTZGtXYiPyi3nGVg7xQ2Bs2SkRCPUVCA6uL88Qh2zh3dOB-WVePA>
+    <xmx:SezTZAJuZ3FACDh2GQioWN8yudaMQJOrWDT-R5nEI8qxf_t0PzMtWA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 3C093B6008D; Wed,  9 Aug 2023 15:43:04 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
+Mime-Version: 1.0
+Message-Id: <b0871ecb-a26b-4223-a4f5-28e1c8d468e4@app.fastmail.com>
+In-Reply-To: <202308031551.034F346@keescook>
+References: <20210726141141.2839385-1-arnd@kernel.org>
+ <20210726141141.2839385-5-arnd@kernel.org> <202308031551.034F346@keescook>
+Date:   Wed, 09 Aug 2023 21:42:43 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Kees Cook" <keescook@chromium.org>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "Lecopzer Chen" <lecopzer.chen@mediatek.com>
+Cc:     "Russell King" <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Linux-Arch <linux-arch@vger.kernel.org>, linux-mm@kvack.org,
+        "Alexander Viro" <viro@zeniv.linux.org.uk>,
+        "Linus Walleij" <linus.walleij@linaro.org>, yj.chiang@mediatek.com,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v5 04/10] ARM: syscall: always store thread_info->abi_syscall
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/08/2023 13:11, Vijaya Krishna Nivarthi wrote:
-> While at it, also remove a couple of redundant lines that read from IRQ_EN
-> register and write back same.
-> 
-> Fixes: 2aaa43c70778 ("tty: serial: qcom-geni-serial: add support for serial engine DMA")
-> Signed-off-by: Vijaya Krishna Nivarthi<quic_vnivarth@quicinc.com>
+On Fri, Aug 4, 2023, at 01:17, Kees Cook wrote:
+> On Mon, Jul 26, 2021 at 04:11:35PM +0200, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> The system call number is used in a a couple of places, in particular
+>> ptrace, seccomp and /proc/<pid>/syscall.
+>
+> *thread necromancy*
+>
+> Hi!
+>
+> So, it seems like the seccomp selftests broke in a few places due to
+> this change (back in v5.15). I really thought kernelci.org was running
+> the seccomp tests, but it seems like the coverage is spotty.
+>
+> Specifically, the syscall_restart selftest fails, as well as syscall_errno
+> and syscall_faked (both via seccomp and PTRACE), starting with this patch.
 
-The "while at it" should be put into a separate patch.
+Thanks for tracking this down!
 
-I wonder if the read/write cycle is there to ensure an io-completion ?
+>> The last one apparently never worked reliably on ARM for tasks that are
+>> not currently getting traced.
+>> 
+>> Storing the syscall number in the normal entry path makes it work,
+>> as well as allowing us to see if the current system call is for OABI
+>> compat mode, which is the next thing I want to hook into.
+>> 
+>> Since the thread_info->syscall field is not just the number any more, it
+>> is now renamed to abi_syscall. In kernels that enable both OABI and EABI,
+>> the upper bits of this field encode 0x900000 (__NR_OABI_SYSCALL_BASE)
+>> for OABI tasks, while normal EABI tasks do not set the upper bits. This
+>> makes it possible to implement the in_oabi_syscall() helper later.
+>> 
+>> All other users of thread_info->syscall go through the syscall_get_nr()
+>> helper, which in turn filters out the ABI bits.
+>
+> While I've reproducing the bisect done by mediatek, I'm still poking
+> around in here to figure out what's gone wrong. There was a recent patch
+> to fix this, but it looks like it's not complete:
+> https://lore.kernel.org/all/20230724121655.7894-1-lecopzer.chen@mediatek.com/
+>
+> With the above applied, syscall_errno and syscall_faked start working
+> again, but not the syscall_restart test.
 
-Either way please break this up into two individual patches. One thing 
-changing where you poll and the other removing the read/write cycle, so 
-the changes may be evaluated individually.
+Right, I also see you addressed this better in your follow-up patch,
+I'll comment there.
 
----
-bod
+>> Note that the ABI information is lost with PTRACE_SET_SYSCALL, so one
+>> cannot set the internal number to a particular version, but this was
+>> already the case. We could change it to let gdb encode the ABI type along
+>> with the syscall in a CONFIG_OABI_COMPAT-enabled kernel, but that itself
+>> would be a (backwards-compatible) ABI change, so I don't do it here.
+>> 
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Another issue of note, which may just be "by design" for arm32, is that
+> an invalid syscall (or, at least, a negative syscall) results in SIGILL,
+> rather than a errno=ENOSYS failure. This seems to have been true at least
+> as far back as v5.8 (where this was cleaned up for at least arm64 and
+> s390). There was a seccomp test added for it in v5.9, but it has been
+> failing for arm32 since then. :(
+>
+> I mention this because the behavior of the syscall_restart test looks
+> like an invalid syscall: on restart a SIGILL is caught instead of the
+> syscall correctly continuing.
+
+
+The odd arm behavior came up on IRC recently, and I saw that this
+was what arm has always done, but I could not figure out why this
+is done. I tried to see where s390 and arm64 changed the behavior
+but can't find it. Do you have the commit IDs?
+
+      Arnd
