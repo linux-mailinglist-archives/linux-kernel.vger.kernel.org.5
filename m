@@ -2,105 +2,400 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C86A67754AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 10:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4547754B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 10:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbjHIIBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 04:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58196 "EHLO
+        id S231794AbjHIICW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 04:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231715AbjHIIBh (ORCPT
+        with ESMTP id S230451AbjHIICJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 04:01:37 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778701BFF;
-        Wed,  9 Aug 2023 01:01:37 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3795piZq024099;
-        Wed, 9 Aug 2023 08:01:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=70SZTvO4eDdQJlq3XrzHQEoTE1pLe0Iq86lajdoq0jc=;
- b=f5PMqvfyZUNIrhxgcXCNi5DKus8WEftA7+gKRaEs7CL7tKZvv0SB7JkIgg6utfeeYhC0
- M0BP2k6sYZfPMtl5dbKpFZV9gqGHLzJvdwnqr7FzXeQQ5/4MhXY6zIo/mWsfQYZb2iq0
- m/IV3w1uZVcNyMkr6faQ6Key6X9a4oTBZpsOKg67P7GqvFqc+uX11avOg8o5tr8LJHWv
- Dw9OwJnV2m29cygpO+elG0dVW91CaH06qag4Re/DrWnZFuIUI2SZb4XVd1XIEKDVw0iW
- hGvSj0PGQDLu3pwKTRDSnj7WVOUISv/2mvEEzbDTeNHDH3EVTVFEWGZWiF2b/ma+mLDf Mw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sbpqs1yje-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 08:01:24 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37981NfS001180
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 9 Aug 2023 08:01:23 GMT
-Received: from akronite-sh-dev02.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 9 Aug 2023 01:01:19 -0700
-From:   Luo Jie <quic_luoj@quicinc.com>
-To:     <andersson@kernel.org>, <agross@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <p.zabel@pengutronix.de>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>, Luo Jie <quic_luoj@quicinc.com>
-Subject: [PATCH v1 4/4] arm64: defconfig: Enable qca8k nss clock controller
-Date:   Wed, 9 Aug 2023 16:00:47 +0800
-Message-ID: <20230809080047.19877-5-quic_luoj@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230809080047.19877-1-quic_luoj@quicinc.com>
-References: <20230809080047.19877-1-quic_luoj@quicinc.com>
+        Wed, 9 Aug 2023 04:02:09 -0400
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDBC1FD0
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 01:02:04 -0700 (PDT)
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4RLMwC5KMGz9srx;
+        Wed,  9 Aug 2023 10:02:03 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jZ-lLv-6tlX0; Wed,  9 Aug 2023 10:02:03 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4RLMwC4f56z9srj;
+        Wed,  9 Aug 2023 10:02:03 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9BEC18B76C;
+        Wed,  9 Aug 2023 10:02:03 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 21PfbvjQUeuT; Wed,  9 Aug 2023 10:02:03 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7B7518B763;
+        Wed,  9 Aug 2023 10:02:03 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 379822Hb1471517
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Wed, 9 Aug 2023 10:02:02 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 3798214G1471508;
+        Wed, 9 Aug 2023 10:02:01 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] powerpc/radix: Move some functions into #ifdef CONFIG_KVM_BOOK3S_HV_POSSIBLE
+Date:   Wed,  9 Aug 2023 10:01:43 +0200
+Message-ID: <3d72efd39f986ee939d068af69fdce28bd600766.1691568093.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: iIzuF0l81Nkq7Ok1dImNotKR1jBOr-C2
-X-Proofpoint-ORIG-GUID: iIzuF0l81Nkq7Ok1dImNotKR1jBOr-C2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-09_06,2023-08-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 adultscore=0 impostorscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 mlxlogscore=684 malwarescore=0
- clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308090070
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691568102; l=11264; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=oJDAkrXbo4dtPcABi+32As/6Db4/i1QfIXRL7mdHxvM=; b=eDMdq5+enFzHISsk2mQaE1enewh/RzZhQo1kz0qyHIM/HxzZzV6ce2PzamWiAqk1jJq6zFIhu yEJ8ma8wfrMAAYNqKKbARuBpkOiViC6m6/CFnf2Ige69gdr9xfQ8r+L
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable clock controller config for Qualcomm qca8386/qca8084 chip.
+With skiboot_defconfig, Clang reports:
 
-Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+  CC      arch/powerpc/mm/book3s64/radix_tlb.o
+arch/powerpc/mm/book3s64/radix_tlb.c:419:20: error: unused function '_tlbie_pid_lpid' [-Werror,-Wunused-function]
+static inline void _tlbie_pid_lpid(unsigned long pid, unsigned long lpid,
+                   ^
+arch/powerpc/mm/book3s64/radix_tlb.c:663:20: error: unused function '_tlbie_va_range_lpid' [-Werror,-Wunused-function]
+static inline void _tlbie_va_range_lpid(unsigned long start, unsigned long end,
+                   ^
+
+This is because those functions are only called from functions
+enclosed in a #ifdef CONFIG_KVM_BOOK3S_HV_POSSIBLE
+
+Move below functions inside that #ifdef
+* __tlbie_pid_lpid(unsigned long pid,
+* __tlbie_va_lpid(unsigned long va, unsigned long pid,
+* fixup_tlbie_pid_lpid(unsigned long pid, unsigned long lpid)
+* _tlbie_pid_lpid(unsigned long pid, unsigned long lpid,
+* fixup_tlbie_va_range_lpid(unsigned long va,
+* __tlbie_va_range_lpid(unsigned long start, unsigned long end,
+* _tlbie_va_range_lpid(unsigned long start, unsigned long end,
+
+Fixes: f0c6fbbb9050 ("KVM: PPC: Book3S HV: Add support for H_RPT_INVALIDATE")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202307260802.Mjr99P5O-lkp@intel.com/
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/mm/book3s64/radix_tlb.c | 240 ++++++++++++++-------------
+ 1 file changed, 121 insertions(+), 119 deletions(-)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index a25d783dfb95..23801799bb0d 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1180,6 +1180,7 @@ CONFIG_IPQ_GCC_5332=y
- CONFIG_IPQ_GCC_6018=y
- CONFIG_IPQ_GCC_8074=y
- CONFIG_IPQ_GCC_9574=y
-+CONFIG_IPQ_NSSCC_QCA8K=y
- CONFIG_MSM_GCC_8916=y
- CONFIG_MSM_GCC_8994=y
- CONFIG_MSM_MMCC_8994=m
+diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
+index ce804b7bf84e..867ce8c463ee 100644
+--- a/arch/powerpc/mm/book3s64/radix_tlb.c
++++ b/arch/powerpc/mm/book3s64/radix_tlb.c
+@@ -127,21 +127,6 @@ static __always_inline void __tlbie_pid(unsigned long pid, unsigned long ric)
+ 	trace_tlbie(0, 0, rb, rs, ric, prs, r);
+ }
+ 
+-static __always_inline void __tlbie_pid_lpid(unsigned long pid,
+-					     unsigned long lpid,
+-					     unsigned long ric)
+-{
+-	unsigned long rb, rs, prs, r;
+-
+-	rb = PPC_BIT(53); /* IS = 1 */
+-	rs = (pid << PPC_BITLSHIFT(31)) | (lpid & ~(PPC_BITMASK(0, 31)));
+-	prs = 1; /* process scoped */
+-	r = 1;   /* radix format */
+-
+-	asm volatile(PPC_TLBIE_5(%0, %4, %3, %2, %1)
+-		     : : "r"(rb), "i"(r), "i"(prs), "i"(ric), "r"(rs) : "memory");
+-	trace_tlbie(0, 0, rb, rs, ric, prs, r);
+-}
+ static __always_inline void __tlbie_lpid(unsigned long lpid, unsigned long ric)
+ {
+ 	unsigned long rb,rs,prs,r;
+@@ -202,23 +187,6 @@ static __always_inline void __tlbie_va(unsigned long va, unsigned long pid,
+ 	trace_tlbie(0, 0, rb, rs, ric, prs, r);
+ }
+ 
+-static __always_inline void __tlbie_va_lpid(unsigned long va, unsigned long pid,
+-					    unsigned long lpid,
+-					    unsigned long ap, unsigned long ric)
+-{
+-	unsigned long rb, rs, prs, r;
+-
+-	rb = va & ~(PPC_BITMASK(52, 63));
+-	rb |= ap << PPC_BITLSHIFT(58);
+-	rs = (pid << PPC_BITLSHIFT(31)) | (lpid & ~(PPC_BITMASK(0, 31)));
+-	prs = 1; /* process scoped */
+-	r = 1;   /* radix format */
+-
+-	asm volatile(PPC_TLBIE_5(%0, %4, %3, %2, %1)
+-		     : : "r"(rb), "i"(r), "i"(prs), "i"(ric), "r"(rs) : "memory");
+-	trace_tlbie(0, 0, rb, rs, ric, prs, r);
+-}
+-
+ static __always_inline void __tlbie_lpid_va(unsigned long va, unsigned long lpid,
+ 					    unsigned long ap, unsigned long ric)
+ {
+@@ -264,22 +232,6 @@ static inline void fixup_tlbie_va_range(unsigned long va, unsigned long pid,
+ 	}
+ }
+ 
+-static inline void fixup_tlbie_va_range_lpid(unsigned long va,
+-					     unsigned long pid,
+-					     unsigned long lpid,
+-					     unsigned long ap)
+-{
+-	if (cpu_has_feature(CPU_FTR_P9_TLBIE_ERAT_BUG)) {
+-		asm volatile("ptesync" : : : "memory");
+-		__tlbie_pid_lpid(0, lpid, RIC_FLUSH_TLB);
+-	}
+-
+-	if (cpu_has_feature(CPU_FTR_P9_TLBIE_STQ_BUG)) {
+-		asm volatile("ptesync" : : : "memory");
+-		__tlbie_va_lpid(va, pid, lpid, ap, RIC_FLUSH_TLB);
+-	}
+-}
+-
+ static inline void fixup_tlbie_pid(unsigned long pid)
+ {
+ 	/*
+@@ -299,26 +251,6 @@ static inline void fixup_tlbie_pid(unsigned long pid)
+ 	}
+ }
+ 
+-static inline void fixup_tlbie_pid_lpid(unsigned long pid, unsigned long lpid)
+-{
+-	/*
+-	 * We can use any address for the invalidation, pick one which is
+-	 * probably unused as an optimisation.
+-	 */
+-	unsigned long va = ((1UL << 52) - 1);
+-
+-	if (cpu_has_feature(CPU_FTR_P9_TLBIE_ERAT_BUG)) {
+-		asm volatile("ptesync" : : : "memory");
+-		__tlbie_pid_lpid(0, lpid, RIC_FLUSH_TLB);
+-	}
+-
+-	if (cpu_has_feature(CPU_FTR_P9_TLBIE_STQ_BUG)) {
+-		asm volatile("ptesync" : : : "memory");
+-		__tlbie_va_lpid(va, pid, lpid, mmu_get_ap(MMU_PAGE_64K),
+-				RIC_FLUSH_TLB);
+-	}
+-}
+-
+ static inline void fixup_tlbie_lpid_va(unsigned long va, unsigned long lpid,
+ 				       unsigned long ap)
+ {
+@@ -416,31 +348,6 @@ static inline void _tlbie_pid(unsigned long pid, unsigned long ric)
+ 	asm volatile("eieio; tlbsync; ptesync": : :"memory");
+ }
+ 
+-static inline void _tlbie_pid_lpid(unsigned long pid, unsigned long lpid,
+-				   unsigned long ric)
+-{
+-	asm volatile("ptesync" : : : "memory");
+-
+-	/*
+-	 * Workaround the fact that the "ric" argument to __tlbie_pid
+-	 * must be a compile-time contraint to match the "i" constraint
+-	 * in the asm statement.
+-	 */
+-	switch (ric) {
+-	case RIC_FLUSH_TLB:
+-		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_TLB);
+-		fixup_tlbie_pid_lpid(pid, lpid);
+-		break;
+-	case RIC_FLUSH_PWC:
+-		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_PWC);
+-		break;
+-	case RIC_FLUSH_ALL:
+-	default:
+-		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_ALL);
+-		fixup_tlbie_pid_lpid(pid, lpid);
+-	}
+-	asm volatile("eieio; tlbsync; ptesync" : : : "memory");
+-}
+ struct tlbiel_pid {
+ 	unsigned long pid;
+ 	unsigned long ric;
+@@ -566,20 +473,6 @@ static inline void __tlbie_va_range(unsigned long start, unsigned long end,
+ 	fixup_tlbie_va_range(addr - page_size, pid, ap);
+ }
+ 
+-static inline void __tlbie_va_range_lpid(unsigned long start, unsigned long end,
+-					 unsigned long pid, unsigned long lpid,
+-					 unsigned long page_size,
+-					 unsigned long psize)
+-{
+-	unsigned long addr;
+-	unsigned long ap = mmu_get_ap(psize);
+-
+-	for (addr = start; addr < end; addr += page_size)
+-		__tlbie_va_lpid(addr, pid, lpid, ap, RIC_FLUSH_TLB);
+-
+-	fixup_tlbie_va_range_lpid(addr - page_size, pid, lpid, ap);
+-}
+-
+ static __always_inline void _tlbie_va(unsigned long va, unsigned long pid,
+ 				      unsigned long psize, unsigned long ric)
+ {
+@@ -660,18 +553,6 @@ static inline void _tlbie_va_range(unsigned long start, unsigned long end,
+ 	asm volatile("eieio; tlbsync; ptesync": : :"memory");
+ }
+ 
+-static inline void _tlbie_va_range_lpid(unsigned long start, unsigned long end,
+-					unsigned long pid, unsigned long lpid,
+-					unsigned long page_size,
+-					unsigned long psize, bool also_pwc)
+-{
+-	asm volatile("ptesync" : : : "memory");
+-	if (also_pwc)
+-		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_PWC);
+-	__tlbie_va_range_lpid(start, end, pid, lpid, page_size, psize);
+-	asm volatile("eieio; tlbsync; ptesync" : : : "memory");
+-}
+-
+ static inline void _tlbiel_va_range_multicast(struct mm_struct *mm,
+ 				unsigned long start, unsigned long end,
+ 				unsigned long pid, unsigned long page_size,
+@@ -1478,6 +1359,127 @@ void radix__flush_tlb_all(void)
+ }
+ 
+ #ifdef CONFIG_KVM_BOOK3S_HV_POSSIBLE
++static __always_inline void __tlbie_pid_lpid(unsigned long pid,
++					     unsigned long lpid,
++					     unsigned long ric)
++{
++	unsigned long rb, rs, prs, r;
++
++	rb = PPC_BIT(53); /* IS = 1 */
++	rs = (pid << PPC_BITLSHIFT(31)) | (lpid & ~(PPC_BITMASK(0, 31)));
++	prs = 1; /* process scoped */
++	r = 1;   /* radix format */
++
++	asm volatile(PPC_TLBIE_5(%0, %4, %3, %2, %1)
++		     : : "r"(rb), "i"(r), "i"(prs), "i"(ric), "r"(rs) : "memory");
++	trace_tlbie(0, 0, rb, rs, ric, prs, r);
++}
++
++static __always_inline void __tlbie_va_lpid(unsigned long va, unsigned long pid,
++					    unsigned long lpid,
++					    unsigned long ap, unsigned long ric)
++{
++	unsigned long rb, rs, prs, r;
++
++	rb = va & ~(PPC_BITMASK(52, 63));
++	rb |= ap << PPC_BITLSHIFT(58);
++	rs = (pid << PPC_BITLSHIFT(31)) | (lpid & ~(PPC_BITMASK(0, 31)));
++	prs = 1; /* process scoped */
++	r = 1;   /* radix format */
++
++	asm volatile(PPC_TLBIE_5(%0, %4, %3, %2, %1)
++		     : : "r"(rb), "i"(r), "i"(prs), "i"(ric), "r"(rs) : "memory");
++	trace_tlbie(0, 0, rb, rs, ric, prs, r);
++}
++
++static inline void fixup_tlbie_pid_lpid(unsigned long pid, unsigned long lpid)
++{
++	/*
++	 * We can use any address for the invalidation, pick one which is
++	 * probably unused as an optimisation.
++	 */
++	unsigned long va = ((1UL << 52) - 1);
++
++	if (cpu_has_feature(CPU_FTR_P9_TLBIE_ERAT_BUG)) {
++		asm volatile("ptesync" : : : "memory");
++		__tlbie_pid_lpid(0, lpid, RIC_FLUSH_TLB);
++	}
++
++	if (cpu_has_feature(CPU_FTR_P9_TLBIE_STQ_BUG)) {
++		asm volatile("ptesync" : : : "memory");
++		__tlbie_va_lpid(va, pid, lpid, mmu_get_ap(MMU_PAGE_64K),
++				RIC_FLUSH_TLB);
++	}
++}
++
++static inline void _tlbie_pid_lpid(unsigned long pid, unsigned long lpid,
++				   unsigned long ric)
++{
++	asm volatile("ptesync" : : : "memory");
++
++	/*
++	 * Workaround the fact that the "ric" argument to __tlbie_pid
++	 * must be a compile-time contraint to match the "i" constraint
++	 * in the asm statement.
++	 */
++	switch (ric) {
++	case RIC_FLUSH_TLB:
++		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_TLB);
++		fixup_tlbie_pid_lpid(pid, lpid);
++		break;
++	case RIC_FLUSH_PWC:
++		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_PWC);
++		break;
++	case RIC_FLUSH_ALL:
++	default:
++		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_ALL);
++		fixup_tlbie_pid_lpid(pid, lpid);
++	}
++	asm volatile("eieio; tlbsync; ptesync" : : : "memory");
++}
++
++static inline void fixup_tlbie_va_range_lpid(unsigned long va,
++					     unsigned long pid,
++					     unsigned long lpid,
++					     unsigned long ap)
++{
++	if (cpu_has_feature(CPU_FTR_P9_TLBIE_ERAT_BUG)) {
++		asm volatile("ptesync" : : : "memory");
++		__tlbie_pid_lpid(0, lpid, RIC_FLUSH_TLB);
++	}
++
++	if (cpu_has_feature(CPU_FTR_P9_TLBIE_STQ_BUG)) {
++		asm volatile("ptesync" : : : "memory");
++		__tlbie_va_lpid(va, pid, lpid, ap, RIC_FLUSH_TLB);
++	}
++}
++
++static inline void __tlbie_va_range_lpid(unsigned long start, unsigned long end,
++					 unsigned long pid, unsigned long lpid,
++					 unsigned long page_size,
++					 unsigned long psize)
++{
++	unsigned long addr;
++	unsigned long ap = mmu_get_ap(psize);
++
++	for (addr = start; addr < end; addr += page_size)
++		__tlbie_va_lpid(addr, pid, lpid, ap, RIC_FLUSH_TLB);
++
++	fixup_tlbie_va_range_lpid(addr - page_size, pid, lpid, ap);
++}
++
++static inline void _tlbie_va_range_lpid(unsigned long start, unsigned long end,
++					unsigned long pid, unsigned long lpid,
++					unsigned long page_size,
++					unsigned long psize, bool also_pwc)
++{
++	asm volatile("ptesync" : : : "memory");
++	if (also_pwc)
++		__tlbie_pid_lpid(pid, lpid, RIC_FLUSH_PWC);
++	__tlbie_va_range_lpid(start, end, pid, lpid, page_size, psize);
++	asm volatile("eieio; tlbsync; ptesync" : : : "memory");
++}
++
+ /*
+  * Performs process-scoped invalidations for a given LPID
+  * as part of H_RPT_INVALIDATE hcall.
 -- 
-2.17.1
+2.41.0
 
