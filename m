@@ -2,224 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E34F17762A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9727762A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbjHIOiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
+        id S229740AbjHIOiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjHIOiF (ORCPT
+        with ESMTP id S229820AbjHIOiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:38:05 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD68D1FCC;
-        Wed,  9 Aug 2023 07:38:04 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 498816732D; Wed,  9 Aug 2023 16:38:01 +0200 (CEST)
-Date:   Wed, 9 Aug 2023 16:38:01 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, netdev@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH RFC] Introduce uniptr_t as a generic "universal" pointer
-Message-ID: <20230809143801.GA693@lst.de>
-References: <87edkce118.wl-tiwai@suse.de>
+        Wed, 9 Aug 2023 10:38:24 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E732103
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:38:23 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4f14865fcc0so2848e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 07:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691591902; x=1692196702;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VIYHqN573i4m0xBR4po1MavQBRxO9IhPxpT2FqODpvA=;
+        b=TvniPABn8pq1qp5Ziy5FMSj67rVRNehgZsdJglTihNL2JllM6eyFRmS5CjOBWPXTOB
+         iWjwQNY6oO3eCKwYXcWHCEWsXuMxiWNPeuDed8byUdtgd+DpRHISnFqPxI7H/FGbUjzC
+         OOpQI6YAA4GZJ1L16gFtEN9GM/b7z8IdQccUX2Wc8au+Y/Pwi7lUvy9LefrZrH4UrLgn
+         MCwHAeCEeqmYKFWavS0jkQqdPNeaYcsBwCZ32S49VM6oddxv37c2EXLik19idhScY5ef
+         KrcjfN3jdq4mpBW9AAG3REhIyCiFA3Kc3sY0ZVZAfiALbtJn87VO9dhzGSiAoigYnkrb
+         xQZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691591902; x=1692196702;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VIYHqN573i4m0xBR4po1MavQBRxO9IhPxpT2FqODpvA=;
+        b=GsZYAN0S9DRkwdlEamvMvtMbnURoLdLUyocWXH/KJVwCOPnJ1/+aGv8uVNmGZIAPW2
+         m8RTc3ojqy6lqnoIArasz4tNI1dB0wWkp2yqsgEQ7uxIZwfS024ZKqw33I3ndOkADXWf
+         l0Iww6txGYMH/DTUW6QCd8yycJMciaqv0mUcZ1luLOxBBUCgfuLk/hSKI78kb9hC8tPc
+         UtHaL2uCAduw/jUIdHew3UXlDionpypKqNLDE3Y/AL+YCVO3mIvt9K9MNhxkr/MUpgyQ
+         6uWBDjT7sF6kGllf4uVRZUDQA61bl/0XxNrTpF616+rg4KzhX0A2LEZ8kfJLp1bb4dMG
+         w3RQ==
+X-Gm-Message-State: AOJu0YyKK/XNsWeSPNzEya1IsoXqLe8xmpOELklx/HZRntvSJJA+6XJh
+        spcnWQ3OBQEYYeHOPettCa6hfbJwdJ+HdPa7QOW0Rg==
+X-Google-Smtp-Source: AGHT+IF/wLdtHYiJ9OpNc0jnow3dqSyojhrw6+Cg5U6//Gq1PUEtxaEvCYQ4uJsAIGmxUuhxA12LNl+dmOJbKj17Sno=
+X-Received: by 2002:ac2:54a9:0:b0:4fd:d759:a47 with SMTP id
+ w9-20020ac254a9000000b004fdd7590a47mr46277lfk.3.1691591901743; Wed, 09 Aug
+ 2023 07:38:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87edkce118.wl-tiwai@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230804173355.51753-1-pbonzini@redhat.com>
+In-Reply-To: <20230804173355.51753-1-pbonzini@redhat.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Wed, 9 Aug 2023 08:38:10 -0600
+Message-ID: <CAMkAt6o1OGCXb1ET5qduLX=211f9SRs+CFyM86kHXZPZRN_KCg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] KVM: SEV: only access GHCB fields once
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        seanjc@google.com, theflow@google.com, vkuznets@redhat.com,
+        thomas.lendacky@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 04:35:47PM +0200, Takashi Iwai wrote:
-> Although sockptr_t is used already in several places as a "universal"
-> pointer, it's still too confusing to use it in other subsystems, since
-> people see it always as if it were a network-related stuff.
-> 
-> This patch defines a more generic type, uniptr_t, that does exactly as
-> same as sockptr_t for a wider use.  As of now, it's almost 1:1 copy
-> with renames (just with comprehensive header file inclusions).
+On Fri, Aug 4, 2023 at 11:34=E2=80=AFAM Paolo Bonzini <pbonzini@redhat.com>=
+ wrote:
+>
+> The VMGEXIT handler has a time-of-check/time-of-use vulnerability; due
+> to a double fetch, the guest can exploit a race condition to invoke
+> the VMGEXIT handler recursively.  It is extremely difficult to
+> reliably win the race ~100 consecutive times in order to cause an
+> overflow, and the impact is usually mitigated by CONFIG_VMAP_STACK,
+> but it ought to be fixed anyway.
+>
+> One way to do so could be to snapshot the whole GHCB, but this is
+> relatively expensive.  Instead, because the VMGEXIT handler already
+> syncs the GHCB to internal KVM state, this series makes sure that the
+> GHCB is not read outside sev_es_sync_from_ghcb().
+>
+> Patch 1 adds caching for fields that currently are not snapshotted
+> in host memory; patch 2 ensures that the cached fields are always used,
+> thus fixing the race.  Finally patch 3 removes some local variables
+> that are prone to incorrect use, to avoid reintroducing the race in
+> other places.
+>
+> Please review!
+>
 
-The original set_fs removal series did that as uptr_t, and Linus
-hated it with passion.  I somehow doubt he's going to like it more now.
+Tested-by: Peter Gonda <pgonda@google.com>
 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
-> 
-> This is a RFC patch, or rather a material for bikeshedding.
-> 
-> Initially the discussion started from the use of sockptr_t for the
-> sound driver in Andy's patch:
->   https://lore.kernel.org/r/20230721100146.67293-1-andriy.shevchenko@linux.intel.com
-> followed by a bigger series of patches by me:
->   https://lore.kernel.org/r/20230731154718.31048-1-tiwai@suse.de
-> 
-> The first reaction to the patches (including my own) were
-> "why sockptr_t?"  Yes, it's just confusing.  So, here it is, a
-> proposal of defining the new type for the very purpose as sockptr_t.
-> 
-> The name of uniptr_t is nothing but my random pick up, and we can
-> endlessly discuss for a better name (genptr_t or whatever).
-> I'm totally open for the name.
-> 
-> After this introduction, sockptr_t can be alias of uniptr_t,
-> e.g. simply override with "#define sockptr_t uniptr_t" or such.
-> How can it be is another open question.
-> 
-> Also, we can clean up the macro implementation along with it;
-> there seem a few (rather minor) issues as suggested by Andy:
->   https://lore.kernel.org/r/ZMlGKy7ibjkQ6ii7@smile.fi.intel.com
-> 
-> Honestly speaking, I don't mind to keep using sockptr_t generically
-> despite of the name, if people agree.  The rename might make sense,
-> though, if it's more widely used in other subsystems in future.
-> 
-> 
-> Takashi
-> 
-> ===
-> 
->  include/linux/uniptr.h | 121 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 121 insertions(+)
->  create mode 100644 include/linux/uniptr.h
-> 
-> diff --git a/include/linux/uniptr.h b/include/linux/uniptr.h
-> new file mode 100644
-> index 000000000000..f7994d3a45eb
-> --- /dev/null
-> +++ b/include/linux/uniptr.h
-> @@ -0,0 +1,121 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Support for "universal" pointers that can point to either kernel or userspace
-> + * memory.
-> + *
-> + * Original code from sockptr.h
-> + *    Copyright (c) 2020 Christoph Hellwig
-> + */
-> +#ifndef _LINUX_UNIPTR_H
-> +#define _LINUX_UNIPTR_H
-> +
-> +#include <linux/err.h>
-> +#include <linux/slab.h>
-> +#include <linux/string.h>
-> +#include <linux/types.h>
-> +#include <linux/uaccess.h>
-> +
-> +typedef struct {
-> +	union {
-> +		void		*kernel;
-> +		void __user	*user;
-> +	};
-> +	bool		is_kernel : 1;
-> +} uniptr_t;
-> +
-> +static inline bool uniptr_is_kernel(uniptr_t uniptr)
-> +{
-> +	return uniptr.is_kernel;
-> +}
-> +
-> +static inline uniptr_t KERNEL_UNIPTR(void *p)
-> +{
-> +	return (uniptr_t) { .kernel = p, .is_kernel = true };
-> +}
-> +
-> +static inline uniptr_t USER_UNIPTR(void __user *p)
-> +{
-> +	return (uniptr_t) { .user = p };
-> +}
-> +
-> +static inline bool uniptr_is_null(uniptr_t uniptr)
-> +{
-> +	if (uniptr_is_kernel(uniptr))
-> +		return !uniptr.kernel;
-> +	return !uniptr.user;
-> +}
-> +
-> +static inline int copy_from_uniptr_offset(void *dst, uniptr_t src,
-> +					  size_t offset, size_t size)
-> +{
-> +	if (!uniptr_is_kernel(src))
-> +		return copy_from_user(dst, src.user + offset, size);
-> +	memcpy(dst, src.kernel + offset, size);
-> +	return 0;
-> +}
-> +
-> +static inline int copy_from_uniptr(void *dst, uniptr_t src, size_t size)
-> +{
-> +	return copy_from_uniptr_offset(dst, src, 0, size);
-> +}
-> +
-> +static inline int copy_to_uniptr_offset(uniptr_t dst, size_t offset,
-> +					const void *src, size_t size)
-> +{
-> +	if (!uniptr_is_kernel(dst))
-> +		return copy_to_user(dst.user + offset, src, size);
-> +	memcpy(dst.kernel + offset, src, size);
-> +	return 0;
-> +}
-> +
-> +static inline int copy_to_uniptr(uniptr_t dst, const void *src, size_t size)
-> +{
-> +	return copy_to_uniptr_offset(dst, 0, src, size);
-> +}
-> +
-> +static inline void *memdup_uniptr(uniptr_t src, size_t len)
-> +{
-> +	void *p = kmalloc_track_caller(len, GFP_USER | __GFP_NOWARN);
-> +
-> +	if (!p)
-> +		return ERR_PTR(-ENOMEM);
-> +	if (copy_from_uniptr(p, src, len)) {
-> +		kfree(p);
-> +		return ERR_PTR(-EFAULT);
-> +	}
-> +	return p;
-> +}
-> +
-> +static inline void *memdup_uniptr_nul(uniptr_t src, size_t len)
-> +{
-> +	char *p = kmalloc_track_caller(len + 1, GFP_KERNEL);
-> +
-> +	if (!p)
-> +		return ERR_PTR(-ENOMEM);
-> +	if (copy_from_uniptr(p, src, len)) {
-> +		kfree(p);
-> +		return ERR_PTR(-EFAULT);
-> +	}
-> +	p[len] = '\0';
-> +	return p;
-> +}
-> +
-> +static inline long strncpy_from_uniptr(char *dst, uniptr_t src, size_t count)
-> +{
-> +	if (uniptr_is_kernel(src)) {
-> +		size_t len = min(strnlen(src.kernel, count - 1) + 1, count);
-> +
-> +		memcpy(dst, src.kernel, len);
-> +		return len;
-> +	}
-> +	return strncpy_from_user(dst, src.user, count);
-> +}
-> +
-> +static inline int check_zeroed_uniptr(uniptr_t src, size_t offset, size_t size)
-> +{
-> +	if (!uniptr_is_kernel(src))
-> +		return check_zeroed_user(src.user + offset, size);
-> +	return memchr_inv(src.kernel + offset, 0, size) == NULL;
-> +}
-> +
-> +#endif /* _LINUX_UNIPTR_H */
-> -- 
-> 2.35.3
----end quoted text---
+I booted an Ubuntu guest and ran our internal GHCB correctness test
+with these patches.
