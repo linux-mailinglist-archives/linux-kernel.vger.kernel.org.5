@@ -2,160 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3705776C09
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 00:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22742776C0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 00:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbjHIWOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 18:14:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
+        id S230327AbjHIWOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 18:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbjHIWOG (ORCPT
+        with ESMTP id S229815AbjHIWOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 18:14:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA9F2699;
-        Wed,  9 Aug 2023 15:13:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E13C64B46;
-        Wed,  9 Aug 2023 22:13:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E473C433C7;
-        Wed,  9 Aug 2023 22:13:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691619216;
-        bh=0SR9DPqseRHiCXQ+j6+0+QSN4Sn6OOxeM42Im3uazes=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aEUC8hu248uC08A4L5iDh0a+W+mlid8cOQvoZghQ0ePtWWP3/01VWwKlMokaVoStR
-         +yoxh3hV/rweR2hv0YPrigzI8RzRzYptpjK3gStXmzsm7ruL2sM0U5XfHLKjGZwE/p
-         pPnKJU08RLf12NVdtwlhoJtHISSFK48EM8lzMEeky31FVgscBf/BbjBOyTX3DDJa/1
-         9yluawRZ/bHdkUJj6boWBctDa3g1Vsy5Gsc4oWziBVg1b2Sl73ejFosS3ymDeil0+B
-         zNBNk3AE/+0fKDSQpKeEy3+xPOyc5EoeY5lkfeuOrf0gbEEiNgUrfkC99fJV+kpsxX
-         jY6X4ZUgLojRA==
-Date:   Thu, 10 Aug 2023 07:13:30 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Florent Revest <revest@chromium.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Wed, 9 Aug 2023 18:14:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0FC2704
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 15:14:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691619254; x=1723155254;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=W3IB25k2Co18Z7vs9YCum1Rliyq4Rp5Ep/oX7D69sSk=;
+  b=jXPy1vQNrWY5h3zvFhE6yYBmv56f8Zo/0Wdp6hZbTZp8Fwl3sES3LyK+
+   Qjl0DGPHJ0bf3uaVys7baO7jEKea1Q7jn7f3g2sDZGrMBQ7qbdimhFgRq
+   H3gGT+zCkyT5ounhPfWW0l+jEzfwqQk6C2SR5Ap2SQWy1brwOikLBYpVw
+   SPf2vtNPR+hM2uR01yq/0eU/RvmoGhXfZhyoiF7ZAlMrNLQEUIMXnfJqE
+   wSug4RC81R+93sOXV1qz28sCNJnbXdocnuL49JgOkSbsKxv9LK6W13EDU
+   pwKrOsvr1iKQrxXOn4yo3X2EXW9V2cZh5btpBKeKJ7s1qG1Py3Fkx62mM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="437600058"
+X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
+   d="scan'208";a="437600058"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 15:13:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="731975171"
+X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
+   d="scan'208";a="731975171"
+Received: from ridwanfa-mobl1.amr.corp.intel.com (HELO [10.252.128.201]) ([10.252.128.201])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 15:13:59 -0700
+Message-ID: <4442b44b-9680-90c0-c47f-b96c51cf284e@intel.com>
+Date:   Wed, 9 Aug 2023 15:13:58 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] x86/speculation: add cpu_show_gds() prototype
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [RFC PATCH v2 1/6] fprobe: Use fprobe_regs in fprobe entry
- handler
-Message-Id: <20230810071330.d41a728f996f76e3243f469e@kernel.org>
-In-Reply-To: <CABRcYmLHfQsjwf7dk+A0Q96iANhj60M0g_xRjVyMUY9LJPybNg@mail.gmail.com>
-References: <169139090386.324433.6412259486776991296.stgit@devnote2>
-        <169139091575.324433.13168120610633669432.stgit@devnote2>
-        <CABRcYmKRAbOuqNQm5mCwC9NWbtcz1JJDYL_h5x6dK77SJ5FRkA@mail.gmail.com>
-        <20230809231011.b125bd68887a5659db59905e@kernel.org>
-        <CABRcYmKEd=zmriE8VUnSTvybwA962r60+QaRJZK=KNqYixd_eg@mail.gmail.com>
-        <CABRcYmLHfQsjwf7dk+A0Q96iANhj60M0g_xRjVyMUY9LJPybNg@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+References: <20230809130530.1913368-1-arnd@kernel.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <20230809130530.1913368-1-arnd@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Aug 2023 18:17:47 +0200
-Florent Revest <revest@chromium.org> wrote:
-
-> On Wed, Aug 9, 2023 at 6:09 PM Florent Revest <revest@chromium.org> wrote:
-> >
-> > On Wed, Aug 9, 2023 at 4:10 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > >
-> > > Hi Florent,
-> > >
-> > > On Wed, 9 Aug 2023 12:28:38 +0200
-> > > Florent Revest <revest@chromium.org> wrote:
-> > >
-> > > > On Mon, Aug 7, 2023 at 8:48 AM Masami Hiramatsu (Google)
-> > > > <mhiramat@kernel.org> wrote:
-> > > > >
-> > > > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > >
-> > > > > This allows fprobes to be available with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
-> > > > > instead of CONFIG_DYNAMIC_FTRACE_WITH_REGS, then we can enable fprobe
-> > > > > on arm64.
-> > > >
-> > > > This patch lets fprobe code build on configs WITH_ARGS and !WITH_REGS
-> > > > but fprobe wouldn't run on these builds because fprobe still registers
-> > > > to ftrace with FTRACE_OPS_FL_SAVE_REGS, which would fail on
-> > > > !WITH_REGS. Shouldn't we also let the fprobe_init callers decide
-> > > > whether they want REGS or not ?
-> > >
-> > > Ah, I think you meant FPROBE_EVENTS? Yes I forgot to add the dependency
-> > > on it. But fprobe itself can work because fprobe just pass the ftrace_regs
-> > > to the handlers. (Note that exit callback may not work until next patch)
-> >
-> > No, I mean that fprobe still registers its ftrace ops with the
-> > FTRACE_OPS_FL_SAVE_REGS flag:
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/tree/kernel/trace/fprobe.c?h=topic/fprobe-ftrace-regs&id=2ca022b2753ae0d2a2513c95f7ed5b5b727fb2c4#n185
-> >
-> > Which means that __register_ftrace_function will return -EINVAL on
-> > builds !WITH_REGS:
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/tree/kernel/trace/ftrace.c?h=topic/fprobe-ftrace-regs&id=2ca022b2753ae0d2a2513c95f7ed5b5b727fb2c4#n338
-> >
-> > As documented here:
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/tree/include/linux/ftrace.h?h=topic/fprobe-ftrace-regs&id=2ca022b2753ae0d2a2513c95f7ed5b5b727fb2c4#n188
-> >
-> > There are two parts to using sparse pt_regs. One is "static": having
-> > WITH_ARGS in the config, the second one is "dynamic": a ftrace ops
-> > needs to specify that it doesn't want to go through the ftrace
-> > trampoline that saves a full pt_regs, by not giving
-> > FTRACE_OPS_FL_SAVE_REGS. If we want fprobe to work on builds
-> > !WITH_REGS then we should both remove Kconfig dependencies to
-> > WITH_REGS (like you've done) but also stop passing this ftrace ops
-> > flag.
+On 8/9/23 06:04, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Said in a different way: there are arches that support both WITH_ARGS
-> and WITH_REGS (like x86 actually). They have two ftrace trampolines
-> compiled in: ftrace_caller and ftrace_regs_caller, one for each
-> usecase. If you register to ftrace with the FTRACE_OPS_FL_SAVE_REGS
-> flag you are telling it that what you want is a pt_regs. If you are
-> trying to move away from pt_regs and support ftrace_regs in the more
-> general case (meaning, in the case where it can contain a sparse
-> pt_regs) then you should stop passing that flag so you go through the
-> lighter, faster trampoline and test your code in the circumstances
-> where ftrace_regs isn't just a regular pt_regs but an actually sparse
-> or light data structure.
-> 
-> I hope that makes my thoughts clearer? It's a hairy topic ahah
+> The newly added function has two definitions but no prototypes:
 
-Ah, I see your point.
+Thanks for these, Arnd.  We'll get these up to Linus, probably alongside
+some of the other fixes for the other hardware issues that got mitigated
+this week.
 
-static void fprobe_init(struct fprobe *fp)
-{
-        fp->nmissed = 0;
-        if (fprobe_shared_with_kprobes(fp))
-                fp->ops.func = fprobe_kprobe_handler;
-        else
-                fp->ops.func = fprobe_handler;
-        fp->ops.flags |= FTRACE_OPS_FL_SAVE_REGS; <---- This flag!
-}
 
-So it should be FTRACE_OPS_FL_ARGS. Let me fix that.
-
-Thank you!
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
