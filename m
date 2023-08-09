@@ -2,254 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D31C6774FF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 02:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F084775005
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 03:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbjHIAob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 20:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
+        id S230282AbjHIBAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 21:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbjHIAoa (ORCPT
+        with ESMTP id S229463AbjHIBAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 20:44:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18EC719BC
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 17:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691541830;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jizyyG8X51pJXGrlZD5zJb2wq4dRwaS8Ul6gRWnN1dA=;
-        b=g8UB8bltCE/EalbYv12n/HBJo1hv2m0uCaKnspN3GU8kIO7g8/X8q4gm9+J5uWXBJa59km
-        YdBzCRiuHGnL4/GIfI5cwN9GuJUHsrsHZA34c2+zkg59yp70PYXmo0OMHyG1vmCKlXKcMS
-        3BWBd7MSvDV0j24VzbbDBFV4cONRQss=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-201-BTyW7vxTMfagZweW9uh0vQ-1; Tue, 08 Aug 2023 20:43:48 -0400
-X-MC-Unique: BTyW7vxTMfagZweW9uh0vQ-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-26865f7ac50so4202968a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 17:43:48 -0700 (PDT)
+        Tue, 8 Aug 2023 21:00:31 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C22B19BC;
+        Tue,  8 Aug 2023 18:00:30 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1bc479cc815so4968674fac.1;
+        Tue, 08 Aug 2023 18:00:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691542829; x=1692147629;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=L5M+lYtROvgUoWpbGnjkc7x1tnRI6kO1H9ccD3HBAeI=;
+        b=OESYakfXXhBWhZq/CdLUYYDc6Gxpj/srrIFnKTO3wN0LIK5EBPGmaOb1HTrJmokmKB
+         /kKLCCBWTnG5B1P02M1idT/hkYWtaQyjbo9tKqVcKftAtqBRc6d1u4QYt0YOS7nbatTU
+         dJeQTkn6MuoAkSz7q88PI/+aa0A4dsKpRG/KGCbc1z6YtRMB6BzrNWbdQDHBJiVmhLLy
+         1wXqJFuLUoJKqtMpfMRi5k0NPzjOVFUU3nwXvrkFvS//8sVeSKYlQpJOVpx0A7V+Siqc
+         DgT7HQrHyGNgb9QZhaBiluGihhrYqAFX84W9arIxuHQD6pTPi12RjwcONmTUBpZWbanJ
+         PZRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691541828; x=1692146628;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1691542829; x=1692147629;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jizyyG8X51pJXGrlZD5zJb2wq4dRwaS8Ul6gRWnN1dA=;
-        b=Iv6A/Fg4ycdVTfSeY8CxToEOH5WKS1j7/9riXTuFSK1buQekD4z64C4XqMzLLcNQfo
-         MfolUrV6hyBX652n2grjDXsORpjRwa2ZFLm8yfuj3PCuuW42rHt9JsuJZC0SOBwbw11u
-         nw2Yd8xtUsU6a61rO3TrbjM+uo/w23Kgv5xk3WkC7KPgzzXZmsZNonR8t/nQFJcWnOnc
-         MeBPYzR3X76xFZupZWNbJxy5fyKGtUoPCva41TUp4Tk+vjX8zu7M9MzGzpfO5lNQqvKC
-         NLxdTYC9n8EEAYKUXyqJ3TCZNwGTiEOLgNcf4WvRO28NwOF6J7bPDL79z/PDG+/WgcZr
-         grng==
-X-Gm-Message-State: AOJu0YxH8PMFTJloe7DVLkMECOr1qiDUwP+bCw/CYE+vloDGptmkqCIz
-        /ttKLSfMQJkVNV4evPlXHM15S6lJSCUA7fiRDVbCCl3Sug/gwDtqt2ZtpwEy94RoBX5YvqSeJDJ
-        LhUlrUzVcIjq789HAxLwNONoc
-X-Received: by 2002:a17:90a:ee4b:b0:268:1be1:745a with SMTP id bu11-20020a17090aee4b00b002681be1745amr914601pjb.29.1691541827886;
-        Tue, 08 Aug 2023 17:43:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFOkNHr4X4e2p1BNafJKfvBPrzVOhISnpyvOROx5cQmHSocXH3G84QM166U747bUBEWGO+ujg==
-X-Received: by 2002:a17:90a:ee4b:b0:268:1be1:745a with SMTP id bu11-20020a17090aee4b00b002681be1745amr914584pjb.29.1691541827568;
-        Tue, 08 Aug 2023 17:43:47 -0700 (PDT)
-Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
-        by smtp.gmail.com with ESMTPSA id go20-20020a17090b03d400b002680ef05c40sm136876pjb.55.2023.08.08.17.43.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 17:43:47 -0700 (PDT)
-Message-ID: <dc61cbed-2300-d1f5-dc41-4e761d6a6808@redhat.com>
-Date:   Wed, 9 Aug 2023 10:43:37 +1000
+        bh=L5M+lYtROvgUoWpbGnjkc7x1tnRI6kO1H9ccD3HBAeI=;
+        b=Xkoj9/vQtHk/P8CXH2S7CsLzV4FJP2sMHoQIwocDRZVlMw22uDF5xydQzt2OfCKMQG
+         +eDeI98mx+q4PlogBJ/EjmXs4dp2PnfSLEwNglVeIHSucq3FDmHNwVyqcO2uqUJKD3GJ
+         DiI4VIwEZRGAlz9oZtZYbg4BWFXGN6ABxcUJCrZhhuLQNA49zoQeAuWzGKGsolP3OHiU
+         afkkP1kxchaJ6fTlvOUl90qqh+cTkCas6wyVwjuOxQEjeI2zhR5KB5FXk4Q1Au3rdDjG
+         GoEnfZX9ME1RGyLH4o6mH58VOs7MckW6vzyqz+vNZ91UPEBC9ZqVoBwhZBN0TXTcNwKg
+         dKBg==
+X-Gm-Message-State: AOJu0YxFFYR2IDrukXSaxCV3Rnl5Z3bI3vwOyopWXT+EJSW8rOIHmihZ
+        YrNTTO+VarJpMoKSmDl+qJs=
+X-Google-Smtp-Source: AGHT+IF9gn38jHrTQ0aE784M7bc7GflQ+ZLBScqkHsW00p/Wd7BGhV1cZczcnCiZLDO50SwFw/rrZw==
+X-Received: by 2002:a05:6870:ac24:b0:1bf:df47:7b5e with SMTP id kw36-20020a056870ac2400b001bfdf477b5emr1744824oab.16.1691542829670;
+        Tue, 08 Aug 2023 18:00:29 -0700 (PDT)
+Received: from madhu-kernel (99-145-207-128.lightspeed.austtx.sbcglobal.net. [99.145.207.128])
+        by smtp.gmail.com with ESMTPSA id f10-20020a056830204a00b006b8c277be12sm6445879otp.8.2023.08.08.18.00.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 18:00:29 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 20:00:26 -0500
+From:   Madhumitha Prabakaran <madhumithabiw@gmail.com>
+To:     hverkuil-cisco@xs4all.nl, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     skhan@linuxfoundation.org, ivan.orlov0322@gmail.com,
+        madhumithabiw@gmail.com
+Subject: [PATCH] media: usb: go7007: Fix warning: passing freed memory 'fw'
+Message-ID: <20230809010026.GA4770@madhu-kernel>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v8 09/14] KVM: arm64: Implement
- __kvm_tlb_flush_vmid_range()
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Fuad Tabba <tabba@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20230808231330.3855936-1-rananta@google.com>
- <20230808231330.3855936-10-rananta@google.com>
-From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <20230808231330.3855936-10-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/23 09:13, Raghavendra Rao Ananta wrote:
-> Define  __kvm_tlb_flush_vmid_range() (for VHE and nVHE)
-> to flush a range of stage-2 page-tables using IPA in one go.
-> If the system supports FEAT_TLBIRANGE, the following patches
-> would conviniently replace global TLBI such as vmalls12e1is
-         ^^^^^^^^^^^^
-         conveniently
+Fix smatch warning - go7007_loader_probe() warn: passing freed memory 'fw'
 
-Spotted by scripts/checkpatch.pl --codespell
+The 'fw' pointer is released using release_firmware(fw) and then being used
+again in another request_firmware() call without being reassigned to a new
+memory allocation. To resolve it, use separate variables for each request.
 
-> in the map, unmap, and dirty-logging paths with ripas2e1is
-> instead.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> ---
->   arch/arm64/include/asm/kvm_asm.h   |  3 +++
->   arch/arm64/kvm/hyp/nvhe/hyp-main.c | 11 +++++++++++
->   arch/arm64/kvm/hyp/nvhe/tlb.c      | 30 ++++++++++++++++++++++++++++++
->   arch/arm64/kvm/hyp/vhe/tlb.c       | 28 ++++++++++++++++++++++++++++
->   4 files changed, 72 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
-> index 7d170aaa2db41..2c27cb8cf442d 100644
-> --- a/arch/arm64/include/asm/kvm_asm.h
-> +++ b/arch/arm64/include/asm/kvm_asm.h
-> @@ -70,6 +70,7 @@ enum __kvm_host_smccc_func {
->   	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_ipa,
->   	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_ipa_nsh,
->   	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid,
-> +	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_range,
->   	__KVM_HOST_SMCCC_FUNC___kvm_flush_cpu_context,
->   	__KVM_HOST_SMCCC_FUNC___kvm_timer_set_cntvoff,
->   	__KVM_HOST_SMCCC_FUNC___vgic_v3_read_vmcr,
-> @@ -229,6 +230,8 @@ extern void __kvm_tlb_flush_vmid_ipa(struct kvm_s2_mmu *mmu, phys_addr_t ipa,
->   extern void __kvm_tlb_flush_vmid_ipa_nsh(struct kvm_s2_mmu *mmu,
->   					 phys_addr_t ipa,
->   					 int level);
-> +extern void __kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
-> +					phys_addr_t start, unsigned long pages);
->   extern void __kvm_tlb_flush_vmid(struct kvm_s2_mmu *mmu);
->   
->   extern void __kvm_timer_set_cntvoff(u64 cntvoff);
-> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> index a169c619db60b..857d9bc04fd48 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> @@ -135,6 +135,16 @@ static void handle___kvm_tlb_flush_vmid_ipa_nsh(struct kvm_cpu_context *host_ctx
->   	__kvm_tlb_flush_vmid_ipa_nsh(kern_hyp_va(mmu), ipa, level);
->   }
->   
-> +static void
-> +handle___kvm_tlb_flush_vmid_range(struct kvm_cpu_context *host_ctxt)
-> +{
-> +	DECLARE_REG(struct kvm_s2_mmu *, mmu, host_ctxt, 1);
-> +	DECLARE_REG(phys_addr_t, start, host_ctxt, 2);
-> +	DECLARE_REG(unsigned long, pages, host_ctxt, 3);
-> +
-> +	__kvm_tlb_flush_vmid_range(kern_hyp_va(mmu), start, pages);
-> +}
-> +
->   static void handle___kvm_tlb_flush_vmid(struct kvm_cpu_context *host_ctxt)
->   {
->   	DECLARE_REG(struct kvm_s2_mmu *, mmu, host_ctxt, 1);
-> @@ -327,6 +337,7 @@ static const hcall_t host_hcall[] = {
->   	HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa),
->   	HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa_nsh),
->   	HANDLE_FUNC(__kvm_tlb_flush_vmid),
-> +	HANDLE_FUNC(__kvm_tlb_flush_vmid_range),
->   	HANDLE_FUNC(__kvm_flush_cpu_context),
->   	HANDLE_FUNC(__kvm_timer_set_cntvoff),
->   	HANDLE_FUNC(__vgic_v3_read_vmcr),
-> diff --git a/arch/arm64/kvm/hyp/nvhe/tlb.c b/arch/arm64/kvm/hyp/nvhe/tlb.c
-> index b9991bbd8e3fd..1b265713d6bed 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/tlb.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/tlb.c
-> @@ -182,6 +182,36 @@ void __kvm_tlb_flush_vmid_ipa_nsh(struct kvm_s2_mmu *mmu,
->   	__tlb_switch_to_host(&cxt);
->   }
->   
-> +void __kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
-> +				phys_addr_t start, unsigned long pages)
-> +{
-> +	struct tlb_inv_context cxt;
-> +	unsigned long stride;
-> +
-> +	/*
-> +	 * Since the range of addresses may not be mapped at
-> +	 * the same level, assume the worst case as PAGE_SIZE
-> +	 */
-> +	stride = PAGE_SIZE;
-> +	start = round_down(start, stride);
-> +
-> +	/* Switch to requested VMID */
-> +	__tlb_switch_to_guest(mmu, &cxt, false);
-> +
-> +	__flush_s2_tlb_range_op(ipas2e1is, start, pages, stride, 0);
-> +
-> +	dsb(ish);
-> +	__tlbi(vmalle1is);
-> +	dsb(ish);
-> +	isb();
-> +
-> +	/* See the comment in __kvm_tlb_flush_vmid_ipa() */
-> +	if (icache_is_vpipt())
-> +		icache_inval_all_pou();
-> +
-> +	__tlb_switch_to_host(&cxt);
-> +}
-> +
->   void __kvm_tlb_flush_vmid(struct kvm_s2_mmu *mmu)
->   {
->   	struct tlb_inv_context cxt;
-> diff --git a/arch/arm64/kvm/hyp/vhe/tlb.c b/arch/arm64/kvm/hyp/vhe/tlb.c
-> index e69da550cdc5b..46bd43f61d76f 100644
-> --- a/arch/arm64/kvm/hyp/vhe/tlb.c
-> +++ b/arch/arm64/kvm/hyp/vhe/tlb.c
-> @@ -143,6 +143,34 @@ void __kvm_tlb_flush_vmid_ipa_nsh(struct kvm_s2_mmu *mmu,
->   	__tlb_switch_to_host(&cxt);
->   }
->   
-> +void __kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
-> +				phys_addr_t start, unsigned long pages)
-> +{
-> +	struct tlb_inv_context cxt;
-> +	unsigned long stride;
-> +
-> +	/*
-> +	 * Since the range of addresses may not be mapped at
-> +	 * the same level, assume the worst case as PAGE_SIZE
-> +	 */
-> +	stride = PAGE_SIZE;
-> +	start = round_down(start, stride);
-> +
-> +	dsb(ishst);
-> +
-> +	/* Switch to requested VMID */
-> +	__tlb_switch_to_guest(mmu, &cxt);
-> +
-> +	__flush_s2_tlb_range_op(ipas2e1is, start, pages, stride, 0);
-> +
-> +	dsb(ish);
-> +	__tlbi(vmalle1is);
-> +	dsb(ish);
-> +	isb();
-> +
-> +	__tlb_switch_to_host(&cxt);
-> +}
-> +
->   void __kvm_tlb_flush_vmid(struct kvm_s2_mmu *mmu)
->   {
->   	struct tlb_inv_context cxt;
+Signed-off-by: Madhumitha Prabakaran <madhumithabiw@gmail.com>
+---
+ drivers/media/usb/go7007/go7007-loader.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/media/usb/go7007/go7007-loader.c b/drivers/media/usb/go7007/go7007-loader.c
+index 243aa0ad074c..5f5c425f4d45 100644
+--- a/drivers/media/usb/go7007/go7007-loader.c
++++ b/drivers/media/usb/go7007/go7007-loader.c
+@@ -35,7 +35,7 @@ static int go7007_loader_probe(struct usb_interface *interface,
+ 				const struct usb_device_id *id)
+ {
+ 	struct usb_device *usbdev;
+-	const struct firmware *fw;
++	const struct firmware *fw_1, *fw_2;
+ 	u16 vendor, product;
+ 	const char *fw1, *fw2;
+ 	int ret;
+@@ -67,13 +67,13 @@ static int go7007_loader_probe(struct usb_interface *interface,
+ 
+ 	dev_info(&interface->dev, "loading firmware %s\n", fw1);
+ 
+-	if (request_firmware(&fw, fw1, &usbdev->dev)) {
++	if (request_firmware(&fw_1, fw1, &usbdev->dev)) {
+ 		dev_err(&interface->dev,
+ 			"unable to load firmware from file \"%s\"\n", fw1);
+ 		goto failed2;
+ 	}
+-	ret = cypress_load_firmware(usbdev, fw, CYPRESS_FX2);
+-	release_firmware(fw);
++	ret = cypress_load_firmware(usbdev, fw_1, CYPRESS_FX2);
++	release_firmware(fw_1);
+ 	if (0 != ret) {
+ 		dev_err(&interface->dev, "loader download failed\n");
+ 		goto failed2;
+@@ -82,13 +82,13 @@ static int go7007_loader_probe(struct usb_interface *interface,
+ 	if (fw2 == NULL)
+ 		return 0;
+ 
+-	if (request_firmware(&fw, fw2, &usbdev->dev)) {
++	if (request_firmware(&fw_2, fw2, &usbdev->dev)) {
+ 		dev_err(&interface->dev,
+ 			"unable to load firmware from file \"%s\"\n", fw2);
+ 		goto failed2;
+ 	}
+-	ret = cypress_load_firmware(usbdev, fw, CYPRESS_FX2);
+-	release_firmware(fw);
++	ret = cypress_load_firmware(usbdev, fw_2, CYPRESS_FX2);
++	release_firmware(fw_2);
+ 	if (0 != ret) {
+ 		dev_err(&interface->dev, "firmware download failed\n");
+ 		goto failed2;
+-- 
+2.25.1
 
