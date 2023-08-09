@@ -2,187 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1B777632D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B840977633A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233482AbjHIPAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
+        id S233480AbjHIPBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233040AbjHIPAn (ORCPT
+        with ESMTP id S231468AbjHIPBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:00:43 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61B41FF5;
-        Wed,  9 Aug 2023 08:00:42 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A40162183F;
-        Wed,  9 Aug 2023 15:00:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691593241; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T9pM1doI1agk+X2MmwPKol+CkTUFgsM83Ac97tdZe88=;
-        b=PhVUi/uOUAMtA9N5d0/Cfyd7ajz4cp2kJoUJhaQu6DDg/4ZBR2ulD5NnnIutb+RvTgOhZu
-        va3jLTw2VLniHCcL7mPa8wCZF+q+F4znEx4s9wuxLkAbwAMW1TTsE6/P2XRHAKC2zla6BB
-        rR1DtgPeT6Q9ikUt3HY3IlDOz+sGSpQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691593241;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T9pM1doI1agk+X2MmwPKol+CkTUFgsM83Ac97tdZe88=;
-        b=cqqb6K6iG6a7Y6ZZq2rzMwz1c5y090ilDlyL/8hMS5IblOhw3I1NrjIjlnRdaQl5+/nifI
-        AlcMBSfF0kUhaGAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 858EE13251;
-        Wed,  9 Aug 2023 15:00:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id TWyOIBmq02RvPAAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 09 Aug 2023 15:00:41 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 1BAC9A0769; Wed,  9 Aug 2023 17:00:41 +0200 (CEST)
-Date:   Wed, 9 Aug 2023 17:00:41 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>,
-        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
-Message-ID: <20230809150041.452w7gucjmvjnvbg@quack3>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
- <87msz08vc7.fsf@mail.parknet.co.jp>
- <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org>
- <878rak8hia.fsf@mail.parknet.co.jp>
+        Wed, 9 Aug 2023 11:01:35 -0400
+Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919511FF5;
+        Wed,  9 Aug 2023 08:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1691593294; x=1723129294;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=DiprBMaw8ZeBX/+k+AGZEjaYfi/yNQo5mvz8MWBt2/E=;
+  b=rNNfJR+KqrOWYlZ5OyHNkiwLwflIp/2nM/cX62HT2bo2/wMVBYZIj8Wh
+   nsnF+bpTNcYUwzYJQVIx0Y6qX9BmtwIutVwSdTCfiCSzTRI1Ii4u4nnLd
+   66vDhwMbYWrdTO4Z7lu1tUmRV48bpG0SAAXetzMPLJH7cuM5M1K1WT7oN
+   U=;
+X-IronPort-AV: E=Sophos;i="6.01,159,1684800000"; 
+   d="scan'208";a="597746206"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-d47337e0.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 15:01:33 +0000
+Received: from EX19MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-pdx-2a-m6i4x-d47337e0.us-west-2.amazon.com (Postfix) with ESMTPS id 388AD60B08;
+        Wed,  9 Aug 2023 15:01:32 +0000 (UTC)
+Received: from EX19D019UWA003.ant.amazon.com (10.13.139.116) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 9 Aug 2023 15:01:31 +0000
+Received: from EX19D019UWA004.ant.amazon.com (10.13.139.126) by
+ EX19D019UWA003.ant.amazon.com (10.13.139.116) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 9 Aug 2023 15:01:31 +0000
+Received: from EX19D019UWA004.ant.amazon.com ([fe80::445f:a79:89eb:e469]) by
+ EX19D019UWA004.ant.amazon.com ([fe80::445f:a79:89eb:e469%5]) with mapi id
+ 15.02.1118.030; Wed, 9 Aug 2023 15:01:31 +0000
+From:   "Erdogan, Tahsin" <trdgn@amazon.com>
+To:     "pabeni@redhat.com" <pabeni@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] tun: avoid high-order page allocation for packet
+ header
+Thread-Topic: [PATCH v3] tun: avoid high-order page allocation for packet
+ header
+Thread-Index: AQHZytJhxeluFQL13EmDwC1q708mvA==
+Date:   Wed, 9 Aug 2023 15:01:31 +0000
+Message-ID: <a257dfa6333fea0d220d51b17b0512327e115060.camel@amazon.com>
+References: <20230808230920.1944738-1-trdgn@amazon.com>
+         <64d3921ed1f1a_267bde294f2@willemb.c.googlers.com.notmuch>
+         <fc219fe5f8c8dec66a6fdff08f40acf714b8328b.camel@amazon.com>
+         <64d39c34bbd92_26add629414@willemb.c.googlers.com.notmuch>
+In-Reply-To: <64d39c34bbd92_26add629414@willemb.c.googlers.com.notmuch>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.135.199.88]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A1E832B2176F4A4C989E28E2D288B45E@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878rak8hia.fsf@mail.parknet.co.jp>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 09-08-23 22:36:29, OGAWA Hirofumi wrote:
-> Jeff Layton <jlayton@kernel.org> writes:
-> 
-> > On Wed, 2023-08-09 at 17:37 +0900, OGAWA Hirofumi wrote:
-> >> Jeff Layton <jlayton@kernel.org> writes:
-> >> 
-> >> > Also, it may be that things have changed by the time we get to calling
-> >> > fat_update_time after checking inode_needs_update_time. Ensure that we
-> >> > attempt the i_version bump if any of the S_* flags besides S_ATIME are
-> >> > set.
-> >> 
-> >> I'm not sure what it meaning though, this is from
-> >> generic_update_time(). Are you going to change generic_update_time()
-> >> too? If so, it doesn't break lazytime feature?
-> >> 
-> >
-> > Yes. generic_update_time is also being changed in a similar fashion.
-> > This shouldn't break the lazytime feature: lazytime is all about how and
-> > when timestamps get written to disk. This work is all about which
-> > clocksource the timestamps originally come from.
-> 
-> I can only find the following update in this series, another series
-> updates generic_update_time()? The patch updates only if S_VERSION is
-> set.
-> 
-> Your fat patch sets I_DIRTY_SYNC always instead of I_DIRTY_TIME. When I
-> last time checked lazytime, and it was depending on I_DIRTY_TIME.
-> 
-> Are you sure it doesn't break lazytime? I'm totally confusing, and
-> really similar with generic_update_time()?
-
-Since you are talking past one another with Jeff let me chime in here :). I
-think you are worried about this hunk:
-
--	if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
-+	if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && inode_maybe_inc_iversion(inode, false))
- 		dirty_flags |= I_DIRTY_SYNC;
-
-which makes the 'flags' test pass even if we just modified ctime or mtime.
-But do note the second part of the if - inode_maybe_inc_iversion() - so we
-are going to mark the inode dirty with I_DIRTY_SYNC only if someone queried
-iversion since the last time we have incremented it.
-
-So this hunk is not really changing how inode is marked dirty, it only
-changes how often we check whether iversion needs increment and that should
-be fine (and desirable). Hence lazytime isn't really broken by this in any
-way.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+T24gV2VkLCAyMDIzLTA4LTA5IGF0IDEwOjAxIC0wNDAwLCBXaWxsZW0gZGUgQnJ1aWpuIHdyb3Rl
+Og0KPiBFcmRvZ2FuLCBUYWhzaW4gd3JvdGU6DQo+ID4gT24gV2VkLCAyMDIzLTA4LTA5IGF0IDA5
+OjE4IC0wNDAwLCBXaWxsZW0gZGUgQnJ1aWpuIHdyb3RlOg0KPiA+ID4gVHVuIHNlbmRtc2cgaXMg
+YSBzcGVjaWFsIGNhc2UsIG9ubHkgdXNlZCBieSB2aG9zdC1uZXQgZnJvbSBpbnNpZGUNCj4gPiA+
+IHRoZQ0KPiA+ID4ga2VybmVsLiBBcmd1YWJseSBjb25zaXN0ZW5jeSB3aXRoIHBhY2tldF9zbmQv
+cGFja2V0X2FsbG9jX3NrYg0KPiA+ID4gd291bGQNCj4gPiA+IGJlDQo+ID4gPiBtb3JlIGltcG9y
+dGFudC4gVGhhdCBzYWlkLCB0aGlzIG1ha2VzIHNlbnNlIHRvIG1lLiBJIGFzc3VtZSB5b3VyDQo+
+ID4gPiBjb25maWd1cmluZyBhIGRldmljZSB3aXRoIHZlcnkgbGFyZ2UgTVRVPw0KPiA+IA0KPiA+
+IFRoYXQncyByaWdodC4gSSBhbSBzZXR0aW5nIE1UVSB0byA5MTAwIGluIG15IHRlc3QuDQo+IA0K
+PiBNYWtlcyBzZW5zZS4gVGhhdCdzIG5vdCBldmVuIHRoYXQgbGFyZ2UuDQo+IA0KPiBQbGVhc2Ug
+YWRkcmVzcyB0aGUgY29tbWl0IG1lc3NhZ2UgcG9pbnRzIGFib3V0IHZpcnRpb19uZXRfaGRyLmhk
+cl9sZW4NCj4gYW5kIHdyaXRlKCkgdnMgd3JpdGV2KCkuDQoNClllcywgSSB3aWxsIHVwZGF0ZSBj
+b21taXQgbWVzc2FnZSBpbiB2NC4gdGhhbmsgeW91Lg0K
