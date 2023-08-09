@@ -2,218 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D40776AD9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBBC776ADD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbjHIVRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 17:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
+        id S231915AbjHIVUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 17:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjHIVRF (ORCPT
+        with ESMTP id S229737AbjHIVUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 17:17:05 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AA110CA;
-        Wed,  9 Aug 2023 14:17:01 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-790ca0ed6d3so6868139f.3;
-        Wed, 09 Aug 2023 14:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691615821; x=1692220621;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=KVEgLwTnFL0wbRwfXbs4nUcy42ZilD8DRhTF/jpgAqw=;
-        b=HaA3v2uwdAP/fVnp8G4q7dRlwpEy8QEr66I+yPVf4qUrbqNnwoXqv3C8neuKlqgMOo
-         Di8P+XARxPcNBSig4nG48a7gPrQTT1GnVvuNRZUH1Q/xHdaLU/dz7qt48jWKtqf4CkDt
-         vMA6v5cRnue95BcU6VhftKuSxa1Oj1HhnWAfAPRFTJm8GBR0F+YLUFzVUjVzsQesLgAK
-         v2ZDcIwycWfOZdjD6JN4L8GgItsQj9cuNuw5AvZk0D9zOndJZ4vUNm0D8NWzJVIc1MxA
-         QM+f4B1hQeZMP6AXtkj/S9a6o4yccXetWi6WMk6K/Ym/S3JqEdOefzf40QaFHIpR9W8C
-         oxBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691615821; x=1692220621;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KVEgLwTnFL0wbRwfXbs4nUcy42ZilD8DRhTF/jpgAqw=;
-        b=dAMYgNLxdFpWKE6lS+IDvt1MIlUv30JJSdeN8rqp6zNVvsAFpW50/7UztzVPIYCMu7
-         vgQ4Zj/wTG1Kp1OgzA0qsFHXeyKYiSjPiWN1tUfZ4XKiE/z5Snd5Q9qh8iMCSVWORSRb
-         4rRTYl3lITuytWYkSjulhKnaDpW/QwDMrTs4FyLJZUoW15wpId5UFWlpJKi7/VexfunF
-         qaLwQLH+Xj1BX5DmgTBKKhQ/XkrOKnlQyknUlG7oPKEbgkhGfTV3J934afErhi+REWln
-         5zLdCrWaBoCZrVpGod4I2BcdiQocyr6Q7pgSrz3vsn2yvrx1dV7yXIaV7Jm0Cje7+AjF
-         R+MQ==
-X-Gm-Message-State: AOJu0Yxs1Kr4sCj/bNbNqH5Wy/G2Xo0kn2KZEMXLeq8o7GBkVJydoean
-        y/fstPG/l5h6DnlXt9J3bTQ=
-X-Google-Smtp-Source: AGHT+IH9aG2b/NYz0H3DjhuHWwv5USpb7h4j8e717s69mav6viJxUAtiYNHHKIAiYM5cBe3iyeJ6SA==
-X-Received: by 2002:a05:6e02:12a8:b0:348:ec07:9dfa with SMTP id f8-20020a056e0212a800b00348ec079dfamr274670ilr.14.1691615820725;
-        Wed, 09 Aug 2023 14:17:00 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r7-20020a028807000000b0042b56b57a50sm3949245jai.171.2023.08.09.14.16.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 14:17:00 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <d883dd8b-1858-7204-32f6-09f1ef9ec326@roeck-us.net>
-Date:   Wed, 9 Aug 2023 14:16:57 -0700
+        Wed, 9 Aug 2023 17:20:21 -0400
+Received: from progateway7-pub.mail.pro1.eigbox.com (gproxy5-pub.mail.unifiedlayer.com [67.222.38.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF3010DC
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:20:20 -0700 (PDT)
+Received: from cmgw13.mail.unifiedlayer.com (unknown [10.0.90.128])
+        by progateway7.mail.pro1.eigbox.com (Postfix) with ESMTP id 27BDF10044427
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 21:20:18 +0000 (UTC)
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTP
+        id TqbKqBzz0sBigTqbKqUhBl; Wed, 09 Aug 2023 21:20:18 +0000
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.4 cv=Ub+U9IeN c=1 sm=1 tr=0 ts=64d40312
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10:nop_charset_1 a=UttIx32zK-AA:10:nop_rcvd_month_year
+ a=-Ou01B_BuAIA:10:endurance_base64_authed_username_1 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10:nop_charset_2
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=OmflWR9Rs/Kj5bBm24+p4pzVYIwYRLMaHAWgfu4vcFw=; b=lMioxHZmL8MnCd4xQGm6CWpjJh
+        6GWJU3zvG4xnIcVZqL8PiVc9RYPdb4kPNZZ1mrr/i9kIyyAheVEJv2790Vi8J9qaPmQPEISgjoxVk
+        rU1qQ3RW5es3NoKgkK1oEjCBJNM+NijzICGStMsoMa4PjWxXhe+RIH063dE2ifk7pKsdcszQlLM70
+        fmI1G0Fl5RkO+boWCs1vhet1IuvMzW8PdYCqvcmfn4pXzJdrgP6R0EW4l3a81t8XYK8LkFT8AXUOS
+        eydO17FycC7qmHDpX6r2oJw6wyW2w35BKkR9BQN6c45JTrOWpoP9vdJ8towchLQDod4EjgmpJpfRu
+        f6mWfF5A==;
+Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:51250 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <re@w6rz.net>)
+        id 1qTqbJ-000lRu-0y;
+        Wed, 09 Aug 2023 15:20:17 -0600
+Subject: Re: [PATCH 6.4 000/165] 6.4.10-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230809103642.720851262@linuxfoundation.org>
+In-Reply-To: <20230809103642.720851262@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <0d356b19-37b0-8bd5-1119-6b0d53b0e644@w6rz.net>
+Date:   Wed, 9 Aug 2023 14:20:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] serial: core: Revert port_id use
-Content-Language: en-US
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Guenter Roeck <groeck7@gmail.com>
-References: <20230806062052.47737-1-tony@atomide.com>
- <b8829d4b-d221-49ce-b0cd-e82dc79be719@roeck-us.net>
- <20230809052650.GT14799@atomide.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230809052650.GT14799@atomide.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 73.162.232.9
+X-Source-L: No
+X-Exim-ID: 1qTqbJ-000lRu-0y
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:51250
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/23 22:26, Tony Lindgren wrote:
-> Hi,
-> 
-> * Guenter Roeck <linux@roeck-us.net> [230806 13:19]:
->> On Sun, Aug 06, 2023 at 09:20:50AM +0300, Tony Lindgren wrote:
->>> Guenter reports boot issues with duplicate sysfs entries for multiport
->>> drivers. Let's go back to using port->line for now to fix the regression.
->>>
->>> With this change, the serial core port device names are not correct for the
->>> hardware specific 8250 single port drivers, but that's a cosmetic issue for
->>> now.
->>>
->>> Fixes: d962de6ae51f ("serial: core: Fix serial core port id to not use port->line")
->>> Reported-by: Guenter Roeck <groeck7@gmail.com>
->>> Signed-off-by: Tony Lindgren <tony@atomide.com>
->>
->> Tested-by: Guenter Roeck <linux@roeck-us.net>
-> 
-> Thanks for testing.
-> 
-> Guenter, care to also test the patch below on top of this fix and
-> see if things still behave for you?
-> 
-> I'll send a proper patch assuming things test fine.
-> 
+On 8/9/23 3:38 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.10 release.
+> There are 165 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.10-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Patch below works for me.
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
-
-> Regagrds,
-> 
-> Tony
-> 
-> 8< --------------------
-> diff --git a/drivers/tty/serial/serial_base.h b/drivers/tty/serial/serial_base.h
-> --- a/drivers/tty/serial/serial_base.h
-> +++ b/drivers/tty/serial/serial_base.h
-> @@ -16,6 +16,7 @@ struct device;
->   
->   struct serial_ctrl_device {
->   	struct device dev;
-> +	struct ida ida;
->   };
->   
->   struct serial_port_device {
-> diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
-> --- a/drivers/tty/serial/serial_base_bus.c
-> +++ b/drivers/tty/serial/serial_base_bus.c
-> @@ -10,6 +10,7 @@
->   
->   #include <linux/container_of.h>
->   #include <linux/device.h>
-> +#include <linux/idr.h>
->   #include <linux/module.h>
->   #include <linux/serial_core.h>
->   #include <linux/slab.h>
-> @@ -112,6 +113,8 @@ struct serial_ctrl_device *serial_base_ctrl_add(struct uart_port *port,
->   	if (!ctrl_dev)
->   		return ERR_PTR(-ENOMEM);
->   
-> +	ida_init(&ctrl_dev->ida);
-> +
->   	err = serial_base_device_init(port, &ctrl_dev->dev,
->   				      parent, &serial_ctrl_type,
->   				      serial_base_ctrl_release,
-> @@ -142,16 +145,31 @@ struct serial_port_device *serial_base_port_add(struct uart_port *port,
->   						struct serial_ctrl_device *ctrl_dev)
->   {
->   	struct serial_port_device *port_dev;
-> +	unsigned int min = 0, max = ~0U;
->   	int err;
->   
->   	port_dev = kzalloc(sizeof(*port_dev), GFP_KERNEL);
->   	if (!port_dev)
->   		return ERR_PTR(-ENOMEM);
->   
-> +	/* Device driver specified port_id vs automatic assignment? */
-> +	if (port->port_id) {
-> +		min = port->port_id;
-> +		max = port->port_id;
-> +	}
-> +
-> +	err = ida_alloc_range(&ctrl_dev->ida, min, max, GFP_KERNEL);
-> +	if (err < 0) {
-> +		kfree(port_dev);
-> +		return ERR_PTR(err);
-> +	}
-> +
-> +	port->port_id = err;
-> +
->   	err = serial_base_device_init(port, &port_dev->dev,
->   				      &ctrl_dev->dev, &serial_port_type,
->   				      serial_base_port_release,
-> -				      port->ctrl_id, port->line);
-> +				      port->ctrl_id, port->port_id);
->   	if (err)
->   		goto err_put_device;
->   
-> @@ -165,16 +183,24 @@ struct serial_port_device *serial_base_port_add(struct uart_port *port,
->   
->   err_put_device:
->   	put_device(&port_dev->dev);
-> +	ida_free(&ctrl_dev->ida, port->port_id);
->   
->   	return ERR_PTR(err);
->   }
->   
->   void serial_base_port_device_remove(struct serial_port_device *port_dev)
->   {
-> +	struct serial_ctrl_device *ctrl_dev;
-> +	struct device *parent;
-> +
->   	if (!port_dev)
->   		return;
->   
-> +	parent = port_dev->dev.parent;
-> +	ctrl_dev = to_serial_base_ctrl_device(parent);
-> +
->   	device_del(&port_dev->dev);
-> +	ida_free(&ctrl_dev->ida, port_dev->port->port_id);
->   	put_device(&port_dev->dev);
->   }
->   
+Tested-by: Ron Economos <re@w6rz.net>
 
