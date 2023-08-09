@@ -2,82 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F56775647
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993CF775643
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231994AbjHIJWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 05:22:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45464 "EHLO
+        id S231902AbjHIJVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 05:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231990AbjHIJV4 (ORCPT
+        with ESMTP id S229620AbjHIJVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 05:21:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6446A1FD7
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 02:21:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691572871;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 9 Aug 2023 05:21:47 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962B51FD4
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 02:21:45 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 51FB921863;
+        Wed,  9 Aug 2023 09:21:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691572904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=o9xAGqf9aiDwwi/u0vKlka2Lj7rHzO4Um01b3PUOfJQ=;
-        b=ddV/RTya703L8AyprRhsba44Rf/9WYQ8WG6HdvtEtm7/vX4DGFwwRLRyxd1hJlxeLAD02k
-        8hHUJ+SKzlO0qR+XAVvdD0sY3LrxajSi8s2mU+kyl7ejoUdq+DcOYqP7ZonmidlFykK69j
-        +QxwMNBhLROLc32imWv1uIVdy5OtyLA=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-209-usLijEO6MaKdTtPV_uurDw-1; Wed, 09 Aug 2023 05:21:10 -0400
-X-MC-Unique: usLijEO6MaKdTtPV_uurDw-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-94a34d3e5ebso428506166b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 02:21:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691572869; x=1692177669;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o9xAGqf9aiDwwi/u0vKlka2Lj7rHzO4Um01b3PUOfJQ=;
-        b=hJl456dnuEegh/Ol8eTxpJQL7BwyveqA0ofKLy6hEJsrikDE52PEi2zC9bmgHI5D0y
-         ScQNFLIqwO4CoILr/FJqR58FA9Fv/ZJ1kTTWGkxFjXfTPwpdYUE+Ek4l59mLhbWAFKC/
-         HHksvzGI3vWUAWAZb38gFDsOyfpgvPm98qoWm+PmORPDFDls05czZvjYDQARtQDsHJKl
-         mVVS+EMiJJk+YTQNVE2w7i1TzXl2GyTzkGdEhgqLK4aT96/7q3Al8EOizfM4t0i73JaB
-         86bkW8Np9K4DVVl7v3vtD/XL8WreY0Ny76IxrndF8WYjLBq8JVKWrKjYpl7qWTuUKrkK
-         r0Eg==
-X-Gm-Message-State: AOJu0Yw/UbpnrRrGOobL5eA6y1L0cWNjEF087jGgvUEo7aycGb23I9fR
-        VRuAxy6Q39sAmFqlRYAxN5KswWXwKxvkPDRy/WtAy4Ai9pNin/zaWTOt7eCL3vc/RKUASHiLItQ
-        bqMRMVrHwV2qaJQOlBzFgNMZa
-X-Received: by 2002:a17:907:75c5:b0:994:54fd:31aa with SMTP id jl5-20020a17090775c500b0099454fd31aamr1571698ejc.15.1691572869251;
-        Wed, 09 Aug 2023 02:21:09 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGjMru6Ex1xwpeLF0h6uvHaiAkp+bnWoayPqR275tiN7vTEidyY8087BcbPeOuSOFcLnbduKw==
-X-Received: by 2002:a17:907:75c5:b0:994:54fd:31aa with SMTP id jl5-20020a17090775c500b0099454fd31aamr1571683ejc.15.1691572868957;
-        Wed, 09 Aug 2023 02:21:08 -0700 (PDT)
-Received: from imammedo.users.ipa.redhat.com (nat-pool-brq-t.redhat.com. [213.175.37.10])
-        by smtp.gmail.com with ESMTPSA id c24-20020a170906155800b00993004239a4sm7696669ejd.215.2023.08.09.02.21.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 02:21:08 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 11:21:07 +0200
-From:   Igor Mammedov <imammedo@redhat.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Woody Suwalski <terraluna977@gmail.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH] PCI: acpiphp: Log more slot and notification details
-Message-ID: <20230809112107.2b692b67@imammedo.users.ipa.redhat.com>
-In-Reply-To: <20230808192713.329414-1-helgaas@kernel.org>
-References: <20230808192713.329414-1-helgaas@kernel.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        bh=/2BaukZBs1178DJasYBeYZOhbgk+EesmxE+CXX4UvPI=;
+        b=nlVDsn/kpPQ343kqv/c7rPUp54pkAYq5LxDpA4hLjjeTapzLQTDdphL+0+f4S6pbhOAJKL
+        +hwa3KixukHJVfo9uQsiYvtFPscEvpdpAITQsLBGAX4jPRHp8IITCUU9K9FdvNT7hd/E67
+        TJ8zp7anC9NI/cu+G8kIYrNDISXLhB4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691572904;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/2BaukZBs1178DJasYBeYZOhbgk+EesmxE+CXX4UvPI=;
+        b=mVYYnl0+G7GmGDhAAc+4kGm8HzDkoS3ANlb6tqPAHS5C7Vsnay71GOGJsSeio97QQSJGjb
+        bKjvidC5tB+tNCAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 13437133B5;
+        Wed,  9 Aug 2023 09:21:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Xf6xA6ha02TNDgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 09 Aug 2023 09:21:44 +0000
+Date:   Wed, 09 Aug 2023 11:21:43 +0200
+Message-ID: <87fs4sfu54.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Karol Herbst <kherbst@redhat.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Ben Skeggs <bskeggs@redhat.com>,
+        regressions@leemhuis.info, Lyude Paul <lyude@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: 2b5d1c29f6c4 ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not PMGR AUX interrupts")
+In-Reply-To: <CACO55tvWuSdwdirj7S3Dk-r4NAw8jC8g5RHKFd62WXi43iQP-w@mail.gmail.com>
+References: <20230806213107.GFZNARG6moWpFuSJ9W@fat_crate.local>
+        <CACO55tvZD5U4J8DawFTRVnV-dLYLngfhuqO29_sWNEGofKfnBg@mail.gmail.com>
+        <20230807150521.GGZNEIMQ9rsyCmkpoA@fat_crate.local>
+        <CACO55tvWuSdwdirj7S3Dk-r4NAw8jC8g5RHKFd62WXi43iQP-w@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,160 +79,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  8 Aug 2023 14:27:13 -0500
-Bjorn Helgaas <helgaas@kernel.org> wrote:
-
-> From: Bjorn Helgaas <bhelgaas@google.com>
+On Tue, 08 Aug 2023 12:39:32 +0200,
+Karol Herbst wrote:
 > 
-> When registering an acpiphp slot, log the slot name in the same style as
-> pciehp and include the PCI bus/device and whether a device is present or
-> the slot is empty.
+> On Mon, Aug 7, 2023 at 5:05 PM Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Mon, Aug 07, 2023 at 01:49:42PM +0200, Karol Herbst wrote:
+> > > in what way does it stop? Just not progressing? That would be kinda
+> > > concerning. Mind tracing with what arguments `nvkm_uevent_add` is
+> > > called with and without that patch?
+> >
+> > Well, me dumping those args I guess made the box not freeze before
+> > catching a #PF over serial. Does that help?
+> >
+> > ....
+> > [    3.410135] Unpacking initramfs...
+> > [    3.416319] software IO TLB: mapped [mem 0x00000000a877d000-0x00000000ac77d000] (64MB)
+> > [    3.418227] Initialise system trusted keyrings
+> > [    3.432273] workingset: timestamp_bits=56 max_order=22 bucket_order=0
+> > [    3.439006] ntfs: driver 2.1.32 [Flags: R/W].
+> > [    3.443368] fuse: init (API version 7.38)
+> > [    3.447601] 9p: Installing v9fs 9p2000 file system support
+> > [    3.453223] Key type asymmetric registered
+> > [    3.457332] Asymmetric key parser 'x509' registered
+> > [    3.462236] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 250)
+> > [    3.475865] efifb: probing for efifb
+> > [    3.479458] efifb: framebuffer at 0xf9000000, using 1920k, total 1920k
+> > [    3.485969] efifb: mode is 800x600x32, linelength=3200, pages=1
+> > [    3.491872] efifb: scrolling: redraw
+> > [    3.495438] efifb: Truecolor: size=8:8:8:8, shift=24:16:8:0
+> > [    3.502349] Console: switching to colour frame buffer device 100x37
+> > [    3.509564] fb0: EFI VGA frame buffer device
+> > [    3.514013] ACPI: \_PR_.CP00: Found 4 idle states
+> > [    3.518850] ACPI: \_PR_.CP01: Found 4 idle states
+> > [    3.523687] ACPI: \_PR_.CP02: Found 4 idle states
+> > [    3.528515] ACPI: \_PR_.CP03: Found 4 idle states
+> > [    3.533346] ACPI: \_PR_.CP04: Found 4 idle states
+> > [    3.538173] ACPI: \_PR_.CP05: Found 4 idle states
+> > [    3.543003] ACPI: \_PR_.CP06: Found 4 idle states
+> > [    3.544219] Freeing initrd memory: 8196K
+> > [    3.547844] ACPI: \_PR_.CP07: Found 4 idle states
+> > [    3.609542] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+> > [    3.616224] 00:05: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+> > [    3.625552] serial 0000:00:16.3: enabling device (0000 -> 0003)
+> > [    3.633034] 0000:00:16.3: ttyS1 at I/O 0xf0a0 (irq = 17, base_baud = 115200) is a 16550A
+> > [    3.642451] Linux agpgart interface v0.103
+> > [    3.647141] ACPI: bus type drm_connector registered
+> > [    3.653261] Console: switching to colour dummy device 80x25
+> > [    3.659092] nouveau 0000:03:00.0: vgaarb: deactivate vga console
+> > [    3.665174] nouveau 0000:03:00.0: NVIDIA GT218 (0a8c00b1)
+> > [    3.784585] nouveau 0000:03:00.0: bios: version 70.18.83.00.08
+> > [    3.792244] nouveau 0000:03:00.0: fb: 512 MiB DDR3
+> > [    3.948786] nouveau 0000:03:00.0: DRM: VRAM: 512 MiB
+> > [    3.953755] nouveau 0000:03:00.0: DRM: GART: 1048576 MiB
+> > [    3.959073] nouveau 0000:03:00.0: DRM: TMDS table version 2.0
+> > [    3.964808] nouveau 0000:03:00.0: DRM: DCB version 4.0
+> > [    3.969938] nouveau 0000:03:00.0: DRM: DCB outp 00: 02000360 00000000
+> > [    3.976367] nouveau 0000:03:00.0: DRM: DCB outp 01: 02000362 00020010
+> > [    3.982792] nouveau 0000:03:00.0: DRM: DCB outp 02: 028003a6 0f220010
+> > [    3.989223] nouveau 0000:03:00.0: DRM: DCB outp 03: 01011380 00000000
+> > [    3.995647] nouveau 0000:03:00.0: DRM: DCB outp 04: 08011382 00020010
+> > [    4.002076] nouveau 0000:03:00.0: DRM: DCB outp 05: 088113c6 0f220010
+> > [    4.008511] nouveau 0000:03:00.0: DRM: DCB conn 00: 00101064
+> > [    4.014151] nouveau 0000:03:00.0: DRM: DCB conn 01: 00202165
+> > [    4.021710] nvkm_uevent_add: uevent: 0xffff888100242100, event: 0xffff8881022de1a0, id: 0x0, bits: 0x1, func: 0x0000000000000000
+> > [    4.033680] nvkm_uevent_add: uevent: 0xffff888100242300, event: 0xffff8881022de1a0, id: 0x0, bits: 0x1, func: 0x0000000000000000
+> > [    4.045429] nouveau 0000:03:00.0: DRM: MM: using COPY for buffer copies
+> > [    4.052059] stackdepot: allocating hash table of 1048576 entries via kvcalloc
+> > [    4.067191] nvkm_uevent_add: uevent: 0xffff888100242800, event: 0xffff888104b3e260, id: 0x0, bits: 0x1, func: 0x0000000000000000
+> > [    4.078936] nvkm_uevent_add: uevent: 0xffff888100242900, event: 0xffff888104b3e260, id: 0x1, bits: 0x1, func: 0x0000000000000000
+> > [    4.090514] nvkm_uevent_add: uevent: 0xffff888100242a00, event: 0xffff888102091f28, id: 0x1, bits: 0x3, func: 0xffffffff8177b700
+> > [    4.102118] tsc: Refined TSC clocksource calibration: 3591.345 MHz
+> > [    4.108342] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x33c4635c383, max_idle_ns: 440795314831 ns
+> > [    4.108401] nvkm_uevent_add: uevent: 0xffff8881020b6000, event: 0xffff888102091f28, id: 0xf, bits: 0x3, func: 0xffffffff8177b700
+> > [    4.129864] clocksource: Switched to clocksource tsc
+> > [    4.131478] [drm] Initialized nouveau 1.3.1 20120801 for 0000:03:00.0 on minor 0
+> > [    4.143806] BUG: kernel NULL pointer dereference, address: 0000000000000020
 > 
-> When handling an ACPI notification, log the PCI bus/device and notification
-> type.
-> 
-> Sample dmesg log diff:
-> 
->     ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
->   - acpiphp: Slot [3] registered
->   - acpiphp: Slot [4] registered
->     PCI host bridge to bus 0000:00
->     pci 0000:00:03.0: [8086:100e] type 00 class 0x020000
->     <ACPI Device Check notification>
+> ahh, that would have been good to know :) Mind figuring out what's
+> exactly NULL inside nvif_object_mthd? Or rather what line
+> `nvif_object_mthd+0x136` belongs to, then it should be easy to figure
+> out what's wrong here.
 
-Having ACPI node name/path here that received notification would be helpfull  
+FWIW, we've hit the bug on openSUSE Tumbleweed 6.4.8 kernel:
+  https://bugzilla.suse.com/show_bug.cgi?id=1214073
+Confirmed that reverting the patch cured the issue.
 
->     pci 0000:00:04.0: [8086:100e] type 00 class 0x020000
-> 
->     ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
->   + acpiphp: pci 0000:00:03 Slot(3) registered (enabled)
->   + acpiphp: pci 0000:00:04 Slot(4) registered (empty)
->     PCI host bridge to bus 0000:00
->     pci 0000:00:03.0: [8086:100e] type 00 class 0x020000
->     <ACPI Device Check notification>
->   + acpiphp: pci 0000:00:04 Slot(4) Device Check
->     pci 0000:00:04.0: [8086:100e] type 00 class 0x020000
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
->  drivers/pci/hotplug/acpiphp_core.c |  4 ----
->  drivers/pci/hotplug/acpiphp_glue.c | 23 +++++++++++++++++++++--
->  2 files changed, 21 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/pci/hotplug/acpiphp_core.c b/drivers/pci/hotplug/acpiphp_core.c
-> index c02257f4b61c..19d47607d009 100644
-> --- a/drivers/pci/hotplug/acpiphp_core.c
-> +++ b/drivers/pci/hotplug/acpiphp_core.c
-> @@ -282,8 +282,6 @@ int acpiphp_register_hotplug_slot(struct acpiphp_slot *acpiphp_slot,
->  		goto error_slot;
->  	}
->  
-> -	pr_info("Slot [%s] registered\n", slot_name(slot));
-> -
->  	return 0;
->  error_slot:
->  	kfree(slot);
-> @@ -296,8 +294,6 @@ void acpiphp_unregister_hotplug_slot(struct acpiphp_slot *acpiphp_slot)
->  {
->  	struct slot *slot = acpiphp_slot->slot;
->  
-> -	pr_info("Slot [%s] unregistered\n", slot_name(slot));
-> -
->  	pci_hp_deregister(&slot->hotplug_slot);
->  	kfree(slot);
->  }
-> diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
-> index 328d1e416014..eeca2753a5c7 100644
-> --- a/drivers/pci/hotplug/acpiphp_glue.c
-> +++ b/drivers/pci/hotplug/acpiphp_glue.c
-> @@ -25,7 +25,7 @@
->   *    bus. It loses the refcount when the driver unloads.
->   */
->  
-> -#define pr_fmt(fmt) "acpiphp_glue: " fmt
-> +#define pr_fmt(fmt) "acpiphp: " fmt
->  
->  #include <linux/module.h>
->  
-> @@ -333,6 +333,12 @@ static acpi_status acpiphp_add_context(acpi_handle handle, u32 lvl, void *data,
->  				       &val, 60*1000))
->  		slot->flags |= SLOT_ENABLED;
->  
-> +	if (slot->slot)
-> +		pr_info("pci %04x:%02x:%02x Slot(%s) registered (%s)\n",
-> +			pci_domain_nr(slot->bus), slot->bus->number,
-> +			slot->device, slot_name(slot->slot),
-> +			slot->flags & SLOT_ENABLED ? "enabled" : "empty");
-> +
->  	return AE_OK;
->  }
->  
-> @@ -351,8 +357,13 @@ static void cleanup_bridge(struct acpiphp_bridge *bridge)
->  			acpi_unlock_hp_context();
->  		}
->  		slot->flags |= SLOT_IS_GOING_AWAY;
-> -		if (slot->slot)
-> +		if (slot->slot) {
-> +			pr_info("pci %04x:%02x:%02x Slot(%s) unregistered\n",
-> +				pci_domain_nr(slot->bus), slot->bus->number,
-> +				slot->device, slot_name(slot->slot));
-> +
->  			acpiphp_unregister_hotplug_slot(slot);
-> +		}
->  	}
->  
->  	mutex_lock(&bridge_mutex);
-> @@ -793,6 +804,14 @@ static void hotplug_event(u32 type, struct acpiphp_context *context)
->  
->  	pci_lock_rescan_remove();
->  
-> +	pr_info("pci %04x:%02x:%02x Slot(%s) %s\n",
-> +		pci_domain_nr(slot->bus), slot->bus->number,
-> +		slot->device, slot_name(slot->slot),
-I had similar issue with logging patches that I've asked Woody to run.
+FWIW, loading nouveau showed a refcount_t warning just before the NULL
+dereference:
 
-it crashes here with buscheck on non existing device
+[  163.237655] ACPI Warning: \_SB.PCI0.IXVE.IGPU._DSM: Argument #4 type mismatch - Found [Buffer], ACPI requires [Package] (20230331/nsarguments-61)
+[  163.237700] ACPI: \_SB_.PCI0.IXVE.IGPU: failed to evaluate _DSM
+[  163.237755] nouveau 0000:02:00.0: enabling device (0002 -> 0003)
+[  163.238089] ACPI: \_SB_.PCI0.LGPU: Enabled at IRQ 20
+[  163.249419] Console: switching to colour dummy device 80x25
+[  163.266174] nouveau 0000:02:00.0: vgaarb: deactivate vga console
+[  163.266307] nouveau 0000:02:00.0: NVIDIA MCP79/MCP7A (0ac180b1)
+[  163.287303] nouveau 0000:02:00.0: bios: version 62.79.40.00.01
+[  163.309529] nouveau 0000:02:00.0: fb: 256 MiB stolen system memory
+[  163.383121] nouveau 0000:02:00.0: DRM: VRAM: 256 MiB
+[  163.383132] nouveau 0000:02:00.0: DRM: GART: 1048576 MiB
+[  163.383138] nouveau 0000:02:00.0: DRM: TMDS table version 2.0
+[  163.383142] nouveau 0000:02:00.0: DRM: DCB version 4.0
+[  163.383145] nouveau 0000:02:00.0: DRM: DCB outp 00: 01000123 00010014
+[  163.383150] nouveau 0000:02:00.0: DRM: DCB outp 01: 02021232 00000010
+[  163.383154] nouveau 0000:02:00.0: DRM: DCB outp 02: 02021286 0f220010
+[  163.383158] nouveau 0000:02:00.0: DRM: DCB conn 00: 00000040
+[  163.383162] nouveau 0000:02:00.0: DRM: DCB conn 01: 0000a146
+[  163.385635] nouveau 0000:02:00.0: DRM: MM: using M2MF for buffer copies
+[  163.417977] ------------[ cut here ]------------
+[  163.417988] refcount_t: saturated; leaking memory.
+[  163.418012] WARNING: CPU: 1 PID: 2873 at lib/refcount.c:19 refcount_warn_saturate+0x9b/0x110
+[  163.418022] Modules linked in: nouveau(+) button mxm_wmi i2c_algo_bit drm_display_helper drm_ttm_helper xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink xfrm_user xfrm_algo iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xt_addrtype iptable_filter bpfilter br_netfilter bridge stp llc overlay ccm af_packet bnep btusb btrtl btbcm btintel btmtk bluetooth ecdh_generic uvcvideo rtl8xxxu videobuf2_vmalloc mac80211 uvc videobuf2_memops videobuf2_v4l2 videodev libarc4 videobuf2_common mc cfg80211 hid_appleir hid_apple bcm5974 apple_mfi_fastcharge iscsi_ibft iscsi_boot_sysfs joydev rfkill qrtr z3fold snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio coretemp snd_hda_intel snd_intel_dspcfg snd_intel_sdw_acpi snd_hda_codec kvm_intel snd_hda_core applesmc snd_hwdep kvm snd_pcm irqbypass pcspkr acpi_cpufreq snd_timer binfmt_misc snd forcedeth soundcore squashfs nls_iso8859_1 loop nls_cp437 vfat fat i2c_nforce2 acpi_als industrialio_triggered_buffer kfifo_buf indu
+ strialio sbs sbshc apple_bl ac
+[  163.418129]  tiny_power_button fuse efi_pstore configfs dmi_sysfs ip_tables x_tables hid_generic usbhid ttm video wmi cec ohci_pci ohci_hcd ehci_pci rc_core sr_mod ehci_hcd sha512_ssse3 cdrom usbcore nv_tco btrfs blake2b_generic libcrc32c xor raid6_pq sg dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua msr efivarfs [last unloaded: button]
+[  163.418177] CPU: 1 PID: 2873 Comm: modprobe Not tainted 6.4.8-1-default #1 openSUSE Tumbleweed 5f0d78911475bf45bbeef64510275b9fba2542b1
+[  163.418183] Hardware name: Apple Inc. MacBook5,1/Mac-F42D89C8, BIOS     MB51.88Z.007D.B03.0904271443 04/27/09
+[  163.418187] RIP: 0010:refcount_warn_saturate+0x9b/0x110
+[  163.418192] Code: 01 01 e8 68 7b aa ff 0f 0b c3 cc cc cc cc 80 3d e6 e1 a8 01 00 75 a8 48 c7 c7 d0 ed 05 a4 c6 05 d6 e1 a8 01 01 e8 45 7b aa ff <0f> 0b c3 cc cc cc cc 80 3d c0 e1 a8 01 00 75 85 48 c7 c7 28 ee 05
+[  163.418196] RSP: 0018:ffffbae941613aa0 EFLAGS: 00010086
+[  163.418200] RAX: 0000000000000000 RBX: ffff951bc88c2000 RCX: 0000000000000027
+[  163.418204] RDX: ffff951cf81274c8 RSI: 0000000000000001 RDI: ffff951cf81274c0
+[  163.418207] RBP: 0000000000000246 R08: 0000000000000000 R09: ffffbae941613948
+[  163.418210] R10: 0000000000000003 R11: ffffffffa4958d48 R12: ffff951be0df3a58
+[  163.418213] R13: ffffbae941613ad8 R14: ffff951be0df3800 R15: 0000000000000000
+[  163.418216] FS:  00007f81c0247740(0000) GS:ffff951cf8100000(0000) knlGS:0000000000000000
+[  163.418220] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  163.418223] CR2: 00005653d818cd64 CR3: 000000012c72a000 CR4: 00000000000006e0
+[  163.418226] Call Trace:
+[  163.418231]  <TASK>
+[  163.418234]  ? refcount_warn_saturate+0x9b/0x110
+[  163.418238]  ? __warn+0x81/0x130
+[  163.418248]  ? refcount_warn_saturate+0x9b/0x110
+[  163.418252]  ? report_bug+0x171/0x1a0
+[  163.418259]  ? handle_bug+0x3c/0x80
+[  163.418264]  ? exc_invalid_op+0x17/0x70
+[  163.418268]  ? asm_exc_invalid_op+0x1a/0x20
+[  163.418275]  ? refcount_warn_saturate+0x9b/0x110
+[  163.418279]  drm_connector_list_iter_next+0x97/0xc0
+[  163.418289]  drm_connector_register_all+0x3d/0xf0
+[  163.418296]  drm_modeset_register_all+0x5f/0x80
+[  163.418302]  drm_dev_register+0x114/0x240
+[  163.418307]  nouveau_drm_probe+0x16a/0x280 [nouveau 7f21e95875a4a0137564007ae3277f6b641e9279]
+[  163.418713]  local_pci_probe+0x45/0xa0
+[  163.418719]  pci_device_probe+0xc7/0x230
+[  163.418726]  really_probe+0x19e/0x3e0
+[  163.418730]  ? __pfx___driver_attach+0x10/0x10
+[  163.418734]  __driver_probe_device+0x78/0x160
+[  163.418737]  driver_probe_device+0x1f/0x90
+[  163.418741]  __driver_attach+0xd2/0x1c0
+[  163.418745]  bus_for_each_dev+0x77/0xc0
+[  163.418751]  bus_add_driver+0x116/0x220
+[  163.418757]  driver_register+0x59/0x100
+[  163.418762]  ? __pfx_nouveau_drm_init+0x10/0x10 [nouveau 7f21e95875a4a0137564007ae3277f6b641e9279]
+[  163.418999]  do_one_initcall+0x4a/0x220
+[  163.418999]  ? kmalloc_trace+0x2a/0xa0
+[  163.418999]  do_init_module+0x60/0x240
+[  163.418999]  __do_sys_init_module+0x17f/0x1b0
+[  163.418999]  do_syscall_64+0x60/0x90
+[  163.418999]  ? syscall_exit_to_user_mode+0x1b/0x40
+[  163.418999]  ? do_syscall_64+0x6c/0x90
+[  163.418999]  ? count_memcg_events.constprop.0+0x1a/0x30
+[  163.418999]  ? handle_mm_fault+0x9e/0x350
+[  163.418999]  ? do_user_addr_fault+0x179/0x640
+[  163.418999]  ? exc_page_fault+0x71/0x160
+[  163.418999]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+[  163.418999] RIP: 0033:0x7f81bfb19a5e
+[  163.418999] Code: c3 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 66 90 49 89 ca b8 af 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 7a 03 0d 00 f7 d8 64 89 01 48
+[  163.418999] RSP: 002b:00007ffddb1760c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000af
+[  163.418999] RAX: ffffffffffffffda RBX: 0000560bc842df00 RCX: 00007f81bfb19a5e
+[  163.418999] RDX: 0000560bc8432900 RSI: 00000000006aef9b RDI: 00007f81bea94010
+[  163.418999] RBP: 0000560bc8432900 R08: 0000560bc8432c20 R09: 0000000000000000
+[  163.418999] R10: 0000000000012b71 R11: 0000000000000246 R12: 0000000000040000
+[  163.418999] R13: 0000000000000000 R14: 0000000000000009 R15: 0000560bc842d7b0
+[  163.418999]  </TASK>
+[  163.418999] ---[ end trace 0000000000000000 ]---
 
-Call Trace:
- <TASK>
- ? __die_body+0x19/0x60
- ? page_fault_oops+0x158/0x430
- ? fixup_exception+0x21/0x330
- ? exc_page_fault+0x6b/0x150
- ? asm_exc_page_fault+0x26/0x30
- ? acpiphp_hotplug_notify+0x13d/0x2f0
- ? __pfx_acpiphp_hotplug_notify+0x10/0x10
- acpi_device_hotplug+0xc2/0x4f0
- acpi_hotplug_work_fn+0x19/0x30
- process_one_work+0x1f8/0x3e0
- worker_thread+0x29/0x3b0
- ? __pfx_worker_thread+0x10/0x10
- kthread+0xf2/0x120
- ? __pfx_kthread+0x10/0x10
- ret_from_fork+0x2f/0x40
- ? __pfx_kthread+0x10/0x10
- ret_from_fork_asm+0
-
-(gdb) p *slot
-$2 = {node = {next = 0xffff8881003287c0, prev = 0xffff888100887730}, bus = 0xffff8881003de800,
- funcs = {next = 0xffff8881008877b0, prev = 0xffff888100887a50}, slot = 0x0 <fixed_percpu_data>,
-                                                                 ^^^ likely culprit
- device = 0x0, flags = 0x1}
+The full dmesg is found in
+  https://bugzilla.suse.com/attachment.cgi?id=868688
 
 
-reproducer hack: https://gitlab.com/imammedo/qemu/-/tree/acpiphp_buscheck_on_missing_device?ref_type=heads
+thanks,
 
- ./qemu-system-x86_64 -M q35 -cpu host -smp 4 -enable-kvm  -m 6G  -kernel ~/builds/linux-2.6/arch/x86/boot/bzImage -append 'nokaslr root=/dev/sda1 console=ttyS0' -snapshot rhel9.img  -device pcie-root-port,id=rp1,bus=pcie.0,chassis=0,addr=8 -monitor stdio -serial file:/tmp/s -s
-
-then once booted to trigger buscheck issue at monitor prompt:
-(qemu) device_add e1000e,bus=rp1
-
-> +		type == ACPI_NOTIFY_BUS_CHECK ? "Bus Check" :
-> +		type == ACPI_NOTIFY_DEVICE_CHECK ? "Device Check" :
-> +		type == ACPI_NOTIFY_EJECT_REQUEST ? "Eject Request" :
-> +		"Notification");
-> +
->  	switch (type) {
->  	case ACPI_NOTIFY_BUS_CHECK:
->  		/* bus re-enumerate */
-
+Takashi
