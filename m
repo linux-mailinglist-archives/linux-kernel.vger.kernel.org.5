@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8C8775D2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC9D775D8F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234016AbjHILea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 07:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40814 "EHLO
+        id S234148AbjHILiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 07:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234008AbjHILe2 (ORCPT
+        with ESMTP id S234136AbjHILiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 07:34:28 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EFE1BFE
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 04:34:28 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-585fd99ed8bso11502197b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 04:34:28 -0700 (PDT)
+        Wed, 9 Aug 2023 07:38:51 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E24D9173A;
+        Wed,  9 Aug 2023 04:38:50 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9dc1bff38so103237821fa.1;
+        Wed, 09 Aug 2023 04:38:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691580867; x=1692185667;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zrCQCNTr7PmrFVQwXDBalv2S/rUXoounsLWJzHy5nZs=;
-        b=MoHKr8BUDiCxVsI9iHGBgaZxbG8dCYCsEslVfJbIA3n1/7siRMzKno5Cc1zHSeSzad
-         2ol9dYCh7bJj7YmpSthOWoqueqNbPgP/i146CnufGBj93bFfvCPNDVbxFVE04ga63NLD
-         LlqGl68OCDz+JHbHYoAbRUPPemYYanf7+/XpgmMh0Ems9vkm1HG/3mV3LTL86iPcOski
-         Bzo2z4PFJanjigjp9TPiDZetakq6wUCW7FS8AjmA9CuekSDfsJpUxqdQqtame9mFwA1m
-         VFK/bJV5GhMP29twYqsdsuOPGWsTQYsvOKvnbjW/Go0+Jo8XqxNwIfPoc3KBIUb+VBhI
-         EMRw==
+        d=gmail.com; s=20221208; t=1691581129; x=1692185929;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s7DrOKAHS+IzGe6Euc/6VVFYgmpVEV80Jtoz/MTSBFQ=;
+        b=Gm/8NAZjsKmy9PT4/K+kSbGr/vK2pMKUNFHetyKqvHXPm+05PM/Ds2AOjy+qiyurV5
+         ocIkbfi+xjvVYgxA36cLGVC8qt/A2O+Bjr8R24qRz7D2MfaVScUMxaM2VNm0n9n75ueI
+         /g6i2AKR96BiqQnGwcfxXDjFONzfVlzbRG73JlKFly0YFs6naculhKZjXwvOBPUAYZFx
+         noyMApGhGRjqMAUr4S2d3sN1TpqhasHkQHJPR8KuY3+LuQilvSMhnd8d2nOyw09FdKVR
+         h+c0a4T0NpFSSas1acIIcCoWz8pDniBSiaeMtGet9jlRbadvOlFutEOJ5Lr2jupd0QnV
+         oGLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691580867; x=1692185667;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1691581129; x=1692185929;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zrCQCNTr7PmrFVQwXDBalv2S/rUXoounsLWJzHy5nZs=;
-        b=RUISD6KBVGJBLQYjFLSArfzLMOKHh/NyfoYn/QTuY4On/XkqdA49roGQpO9SVVm7y6
-         W4lrIbpkZFV6bLOyDEqxVLYC0JXb1pxowJFoVIfzO6TEbv5I532QJHDt1kOuyJCZ/LDS
-         hTtRBe+i6SfUIMaff0KlqTcxv/ySYxqLX33dcywnlJPQ7mC8PLNeDEbaZ9zXEz5xHKEB
-         SvT5EpXpQCBl1opXqCkXJCDHkUsSQUZRJ4u1CRb3bicmXfXt+Nl+Q7zOWc4jYU3QzHsw
-         tj2BIy2XzuFoptJq4EhZfDnpRFunapM8hKmHQliY3Dp3w35gwtpqsGRTharx6hGZSKDn
-         QrXA==
-X-Gm-Message-State: AOJu0Yyy8sDLipyFScc2sVKMTjUPCQK8ri5tinRHbRGPjA2pu4duToAN
-        7SvCv4nFQAFXfQ4y5jWDR5KVnsUmWIGZqnId6oA/uA==
-X-Google-Smtp-Source: AGHT+IFBt+QKwu19ghXHub6TTlceqXVlnEQR3xuUMmLYBp9ZlvijQF3zUnRUNo5RnpNcOMkCVm3WNHD3MWIQBUJ2OWo=
-X-Received: by 2002:a81:6c4f:0:b0:583:4f67:d5bd with SMTP id
- h76-20020a816c4f000000b005834f67d5bdmr2020845ywc.20.1691580867398; Wed, 09
- Aug 2023 04:34:27 -0700 (PDT)
+        bh=s7DrOKAHS+IzGe6Euc/6VVFYgmpVEV80Jtoz/MTSBFQ=;
+        b=igdq+5eqzoJYLHgWlTeOs094pyv7G7iJBINUpj/k6s/aNBeTXhr3jr0Jjm08N2eO22
+         JJzssEqjcgBhVSE6ceU0Ka9b/75/7a0gwH8s9baCp549XRzznh0D2xoKNXKUJpeqDbrO
+         IxkNMdqpgh80brm4RF3FThqUc1dfmzKXoC5KNxiagQ4FVueiGuUfiw5JZqB4qVFNfxkQ
+         S5qfnr9rVtHUURPECctMk7D1o/dBSN6d91cwbPJ8UMVXkQsEp20OTl4WUcZpcnI8ru1S
+         eUDg/K3+Z+TOJkeUbMc4UhSQVbYqRoWCtoQW3FFtS6J8YMhAnJf/Vb/vlsOtkO2qn2Nw
+         Fdwg==
+X-Gm-Message-State: AOJu0YwcL3RtRxI8PftJIMqzJz2e63m5fdLlg8Cn/y05uVz/hG+yhCPn
+        5A1/E3BRQHaaBBOC6GHevxg=
+X-Google-Smtp-Source: AGHT+IGLShGmCh8oBgIY9+OvWpu9UGXPzRkS67bVBWAe094J6ah+N/S9BXEuhbDN+uK5dpT0+v02+A==
+X-Received: by 2002:a2e:8609:0:b0:2b7:15d:24 with SMTP id a9-20020a2e8609000000b002b7015d0024mr1685409lji.41.1691581128850;
+        Wed, 09 Aug 2023 04:38:48 -0700 (PDT)
+Received: from localhost ([185.241.208.206])
+        by smtp.gmail.com with ESMTPSA id a15-20020a05651c010f00b002b9f642fbe6sm2652489ljb.111.2023.08.09.04.38.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 04:38:48 -0700 (PDT)
+From:   Maxim Mikityanskiy <maxtram95@gmail.com>
+To:     =?UTF-8?q?Filipe=20La=C3=ADns?= <lains@riseup.net>,
+        Bastien Nocera <hadess@hadess.net>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxim Mikityanskiy <maxtram95@gmail.com>
+Subject: [PATCH] HID: logitech-hidpp: Add support for Logitech MX Anywhere 3 mouse
+Date:   Wed,  9 Aug 2023 14:38:32 +0300
+Message-ID: <20230809113832.123667-1-maxtram95@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230809071812.547229-1-harshit.m.mogalapalli@oracle.com> <20230809071812.547229-2-harshit.m.mogalapalli@oracle.com>
-In-Reply-To: <20230809071812.547229-2-harshit.m.mogalapalli@oracle.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 9 Aug 2023 13:33:51 +0200
-Message-ID: <CAPDyKFqHnHCpsi+GBAQ2vmESf17rDMGyUK+EtZbhJT5AngvmBg@mail.gmail.com>
-Subject: Re: [PATCH next v2 2/2] mmc: sunplus: Fix platform_get_irq() error checking
-To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc:     tonyhuang.sunplus@gmail.com, lhjeff911@gmail.com,
-        dan.carpenter@linaro.org, arnd@arndb.de, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, error27@gmail.com,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Aug 2023 at 09:19, Harshit Mogalapalli
-<harshit.m.mogalapalli@oracle.com> wrote:
->
-> The platform_get_irq() function returns negative error codes on failure.
->
-> Fixes: 4e268fed8b18 ("mmc: Add mmc driver for Sunplus SP7021")
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Closes: https://lore.kernel.org/all/a3829ed3-d827-4b9d-827e-9cc24a3ec3bc@moroto.mountain/
-> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Add Logitech MX Anywhere 3 connected over Bluetooth to the device table
+to get hidpi scroll supported. USB connection over the Unifying receiver
+is already supported by the wildcard entry LDJ_DEVICE(HID_ANY_ID).
 
-Applied for fixes and by adding a stable tag, thanks!
+Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+---
+ drivers/hid/hid-logitech-hidpp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Kind regards
-Uffe
+diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+index 129b01be488d..61d68c96581a 100644
+--- a/drivers/hid/hid-logitech-hidpp.c
++++ b/drivers/hid/hid-logitech-hidpp.c
+@@ -4647,6 +4647,8 @@ static const struct hid_device_id hidpp_devices[] = {
+ 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb02a) },
+ 	{ /* MX Master 3 mouse over Bluetooth */
+ 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb023) },
++	{ /* MX Anywhere 3 mouse over Bluetooth */
++	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb025) },
+ 	{ /* MX Master 3S mouse over Bluetooth */
+ 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb034) },
+ 	{}
+-- 
+2.41.0
 
-
-> ---
-> v1->v2: Split into two patches as they are doing different things.
->
-> This is based on static analysis with smatch, only compile tested.
-> ---
->  drivers/mmc/host/sunplus-mmc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/sunplus-mmc.c b/drivers/mmc/host/sunplus-mmc.c
-> index 2bdebeb1f8e4..e9cb1a57cb75 100644
-> --- a/drivers/mmc/host/sunplus-mmc.c
-> +++ b/drivers/mmc/host/sunplus-mmc.c
-> @@ -885,7 +885,7 @@ static int spmmc_drv_probe(struct platform_device *pdev)
->                 return dev_err_probe(&pdev->dev, PTR_ERR(host->rstc), "rst get fail\n");
->
->         host->irq = platform_get_irq(pdev, 0);
-> -       if (host->irq <= 0)
-> +       if (host->irq < 0)
->                 return host->irq;
->
->         ret = devm_request_threaded_irq(&pdev->dev, host->irq,
-> --
-> 2.39.3
->
