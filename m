@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BEAE776C00
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 00:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10117776C02
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 00:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbjHIWMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 18:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54334 "EHLO
+        id S232243AbjHIWM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 18:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjHIWMu (ORCPT
+        with ESMTP id S231582AbjHIWMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 18:12:50 -0400
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F42C6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 15:12:50 -0700 (PDT)
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-56d6dfa8b52so254996eaf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 15:12:50 -0700 (PDT)
+        Wed, 9 Aug 2023 18:12:52 -0400
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97ED110C0
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 15:12:51 -0700 (PDT)
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-76c93abeb83so26200185a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 15:12:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691619169; x=1692223969;
+        d=1e100.net; s=20221208; t=1691619170; x=1692223970;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zP5NLcx+M4QmYU6meO9mqo2/zqcH6UWPGLNVDd2SvCk=;
-        b=Bd9Cb3SOblK0Z4bDjNX08/vUeDhBcQ7VW7bbMF3JhsbQ+CoHKi8qGicEgX1PXHQwcy
-         vxFyOtT+SZztv1CLMlmJurl9RlGPB3a1hBsqRw/aNCibsJ5btVnwoPaubEDo/uSjby42
-         6DQZzYABUphMy/+Mao8pWd2yLPnQVC517vSvHl5qWz6L9nwC6ludFX/3Px79bIrBe0bE
-         Md53He0lnexok8BLabaLdDyKfDih9XzJaQDIptz9vnvgahlqL8VMIGaNgzbAI0pwK9lM
-         0VsD7NJyDgcqF0/ijHeJsI0TAjY/FwarB8J7hxMQyTNz16+w/bcdiJFtjibWkP9MDds4
-         qArw==
-X-Gm-Message-State: AOJu0YygySZyC8xmQrUjDff+9FNzVA85UmNe0+n/TZGAUdICaWlXkigt
-        2o4LdZp+c5ysXkl2RBF/Tt/KXKmPG0jeaD2X
-X-Google-Smtp-Source: AGHT+IGBe8mP0Qj6kg8ZMDbIJtGNYttRZE0a2Koi5oC5ID5yZCW805PtwupDPEYN0rNHsxq+Qan/Ww==
-X-Received: by 2002:a05:6808:1488:b0:3a7:b47a:9fb with SMTP id e8-20020a056808148800b003a7b47a09fbmr869999oiw.46.1691619169037;
-        Wed, 09 Aug 2023 15:12:49 -0700 (PDT)
+        bh=Z5L7WYMeUuybF9PWhouTMr+CEGasjomO6XX645WEqJo=;
+        b=gCNjP9t6BPHLXf2ca8GtXqhY40IobM5d353Y7DI3oNdXMzn/Mh89JEOL+fs6S/B3EL
+         Tzc3+LInX51SQggamAAmUddsLTioKhYLYj7Tqvd/fDpv9eomQnwbZdTzGJooG3/2iPV9
+         6Bvxc7jqUlxeQcro1idHnztpE3FMuJNrtCkEyv11e1KbG94l+75nkbputA8ld3zp7183
+         94yJxtSP7js602U31Bfy0LAbVUVMOJ+i3sJNKxy67BKym0QIL9Y9uqiqKfe+noeSlPtB
+         sdbc53GWzokxr31eSRwCLcgbfeASd2Eh1dhVKPJCxFy/JP6DINNe4yTaUXoeaT0GMkAd
+         0F7A==
+X-Gm-Message-State: AOJu0YyjPzmuBQHEHDz+5/pcyWBhHPIxBUOIk8LHu6M1dqBP5b6zBsP8
+        2zTDnpBmg3maBsf9tboQ+ozsTI92dX0x7tj0
+X-Google-Smtp-Source: AGHT+IG07CI5T3uhYvISE0ht1PBikgdQajxdOSf7nHHVwQJ1esEsJ3ICkwB4SFrTmbgc0GV1M5KIEg==
+X-Received: by 2002:a05:620a:4690:b0:76c:d6eb:df89 with SMTP id bq16-20020a05620a469000b0076cd6ebdf89mr386609qkb.28.1691619170349;
+        Wed, 09 Aug 2023 15:12:50 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:400::5:ed08])
-        by smtp.gmail.com with ESMTPSA id o10-20020a0c8c4a000000b0063f7cf13c56sm3706775qvb.107.2023.08.09.15.12.48
+        by smtp.gmail.com with ESMTPSA id c7-20020a05620a11a700b0076827ce13f6sm23034qkk.10.2023.08.09.15.12.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 15:12:48 -0700 (PDT)
+        Wed, 09 Aug 2023 15:12:49 -0700 (PDT)
 From:   David Vernet <void@manifault.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
@@ -47,9 +47,9 @@ Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
         roman.gushchin@linux.dev, gautham.shenoy@amd.com,
         kprateek.nayak@amd.com, aaron.lu@intel.com,
         wuyun.abel@bytedance.com, kernel-team@meta.com
-Subject: [PATCH v3 1/7] sched: Expose move_queued_task() from core.c
-Date:   Wed,  9 Aug 2023 17:12:12 -0500
-Message-ID: <20230809221218.163894-2-void@manifault.com>
+Subject: [PATCH v3 2/7] sched: Move is_cpu_allowed() into sched.h
+Date:   Wed,  9 Aug 2023 17:12:13 -0500
+Message-ID: <20230809221218.163894-3-void@manifault.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230809221218.163894-1-void@manifault.com>
 References: <20230809221218.163894-1-void@manifault.com>
@@ -57,64 +57,125 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The migrate_task_to() function exposed from kernel/sched/core.c migrates
-the current task, which is silently assumed to also be its first
-argument, to the specified CPU. The function uses stop_one_cpu() to
-migrate the task to the target CPU, which won't work if @p is not the
-current task as the stop_one_cpu() callback isn't invoked on remote
-CPUs.
+is_cpu_allowed() exists as a static inline function in core.c. The
+functionality offered by is_cpu_allowed() is useful to scheduling
+policies as well, e.g. to determine whether a runnable task can be
+migrated to another core that would otherwise go idle.
 
-While this operation is useful for task_numa_migrate() in fair.c, it
-would be useful if move_queued_task() in core.c was given external
-linkage, as it actually can be used to migrate any task to a CPU.
+Let's move it to sched.h.
 
-A follow-on patch will call move_queued_task() from fair.c when
-migrating a task in a shared runqueue to a remote CPU.
-
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: David Vernet <void@manifault.com>
 ---
- kernel/sched/core.c  | 4 ++--
- kernel/sched/sched.h | 3 +++
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ kernel/sched/core.c  | 31 -------------------------------
+ kernel/sched/sched.h | 31 +++++++++++++++++++++++++++++++
+ 2 files changed, 31 insertions(+), 31 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 614271a75525..394e216b9d37 100644
+index 394e216b9d37..dd6412a49263 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -2519,8 +2519,8 @@ static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
-  *
-  * Returns (locked) new rq. Old rq's lock is released.
-  */
--static struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
--				   struct task_struct *p, int new_cpu)
-+struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
-+			    struct task_struct *p, int new_cpu)
- {
- 	lockdep_assert_rq_held(rq);
+@@ -48,7 +48,6 @@
+ #include <linux/kcov.h>
+ #include <linux/kprobes.h>
+ #include <linux/llist_api.h>
+-#include <linux/mmu_context.h>
+ #include <linux/mmzone.h>
+ #include <linux/mutex_api.h>
+ #include <linux/nmi.h>
+@@ -2470,36 +2469,6 @@ static inline bool rq_has_pinned_tasks(struct rq *rq)
+ 	return rq->nr_pinned;
+ }
  
+-/*
+- * Per-CPU kthreads are allowed to run on !active && online CPUs, see
+- * __set_cpus_allowed_ptr() and select_fallback_rq().
+- */
+-static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
+-{
+-	/* When not in the task's cpumask, no point in looking further. */
+-	if (!cpumask_test_cpu(cpu, p->cpus_ptr))
+-		return false;
+-
+-	/* migrate_disabled() must be allowed to finish. */
+-	if (is_migration_disabled(p))
+-		return cpu_online(cpu);
+-
+-	/* Non kernel threads are not allowed during either online or offline. */
+-	if (!(p->flags & PF_KTHREAD))
+-		return cpu_active(cpu) && task_cpu_possible(cpu, p);
+-
+-	/* KTHREAD_IS_PER_CPU is always allowed. */
+-	if (kthread_is_per_cpu(p))
+-		return cpu_online(cpu);
+-
+-	/* Regular kernel threads don't get to stay during offline. */
+-	if (cpu_dying(cpu))
+-		return false;
+-
+-	/* But are allowed during online. */
+-	return cpu_online(cpu);
+-}
+-
+ /*
+  * This is how migration works:
+  *
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 19af1766df2d..69b100267fd0 100644
+index 69b100267fd0..88cca7cc00cf 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -1763,6 +1763,9 @@ init_numa_balancing(unsigned long clone_flags, struct task_struct *p)
+@@ -44,6 +44,7 @@
+ #include <linux/lockdep.h>
+ #include <linux/minmax.h>
+ #include <linux/mm.h>
++#include <linux/mmu_context.h>
+ #include <linux/module.h>
+ #include <linux/mutex_api.h>
+ #include <linux/plist.h>
+@@ -1203,6 +1204,36 @@ static inline bool is_migration_disabled(struct task_struct *p)
+ #endif
+ }
  
- #ifdef CONFIG_SMP
- 
++/*
++ * Per-CPU kthreads are allowed to run on !active && online CPUs, see
++ * __set_cpus_allowed_ptr() and select_fallback_rq().
++ */
++static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
++{
++	/* When not in the task's cpumask, no point in looking further. */
++	if (!cpumask_test_cpu(cpu, p->cpus_ptr))
++		return false;
 +
-+extern struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
-+				   struct task_struct *p, int new_cpu);
- static inline void
- queue_balance_callback(struct rq *rq,
- 		       struct balance_callback *head,
++	/* migrate_disabled() must be allowed to finish. */
++	if (is_migration_disabled(p))
++		return cpu_online(cpu);
++
++	/* Non kernel threads are not allowed during either online or offline. */
++	if (!(p->flags & PF_KTHREAD))
++		return cpu_active(cpu) && task_cpu_possible(cpu, p);
++
++	/* KTHREAD_IS_PER_CPU is always allowed. */
++	if (kthread_is_per_cpu(p))
++		return cpu_online(cpu);
++
++	/* Regular kernel threads don't get to stay during offline. */
++	if (cpu_dying(cpu))
++		return false;
++
++	/* But are allowed during online. */
++	return cpu_online(cpu);
++}
++
+ DECLARE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+ 
+ #define cpu_rq(cpu)		(&per_cpu(runqueues, (cpu)))
 -- 
 2.41.0
 
