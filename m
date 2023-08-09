@@ -2,540 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D14AC77569A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16C777569D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbjHIJmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 05:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56138 "EHLO
+        id S231550AbjHIJoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 05:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbjHIJmx (ORCPT
+        with ESMTP id S229459AbjHIJoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 05:42:53 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F59E5F;
-        Wed,  9 Aug 2023 02:42:52 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37991Vh4023148;
-        Wed, 9 Aug 2023 09:42:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=gAlmMSajNxGiqRP/5zj4/uLsFVR+F11R41QkqU+VSy0=;
- b=nu0Ggx2a2PjTtVmuh4QPufVlEqq48uwdh/0572vSWcHiVbqtR9cWckvkBTyLFyC6Ql1a
- WlGKWgb2jbOsAWVEZH12h45r8iCIm0ud8KSMZFXXLKnJ00ZZygHNIHD8/aIbmGY4VKSN
- kWYETYSwgvXhbhRUTdmHmD1tX68T7Qnu9vs8vEWci3yqQXTSx2Q2czW74hpkRqOfnhyd
- 9/ZI+a30UqB+DLkZo0+IsnQoDC3Q5qTCvCrtQbnlD6Oo+ZBnlXsgliY/Pdk8yJdomhP0
- SYoYm2Gk5i4VVeAMq04VKixFb3+s92356vDRINVpBe3DVm6QGONKenE32MQjByL5S++2 SA== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sbpqs266u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 09:42:35 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3799gZRV000643
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 9 Aug 2023 09:42:35 GMT
-Received: from [192.168.143.77] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 9 Aug
- 2023 02:42:34 -0700
-Message-ID: <de939daa-70be-8a21-0d86-3fdc59bc5979@quicinc.com>
-Date:   Wed, 9 Aug 2023 02:42:34 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH V2] scsi: ufs: qcom: Align programming sequence as per HW
- spec
+        Wed, 9 Aug 2023 05:44:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9705ED
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 02:44:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691574255; x=1723110255;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=lwdAvYM6M0iKdMXPYKficsfvketYxU8sM1G5iUi/3Fg=;
+  b=C9o5gflfgp2frk9Nna6gAkjX0B+nl/1brauzy7/RCR8JxV1x2HHRGs33
+   mPROECY4r6xYxIPpTkP4N5W3lVFCQxAUZe5yuRtJwrk1nn3vD2D8kIaKW
+   cnwtL1xoKzRXt9R29j2esuy3GfHCkVJ+ms8K+lJXRe5rxcqw+ODgNiT5d
+   DHtnvpRsl9NvAIj2mZgri2fR5hjcl3b40RHM1wXfZIpEHQwiz/JRBv69Y
+   cnSXfdDt63HwyXUt90W5XTsBLshkyvDsjB+6hcdszwVf/4xWP4LGp3bSc
+   QCH/kJoet3/Mv+c2JWY2wCSr6ptZQIrBQO2Oafc3MWyy1lgCbyajNIK8U
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="350662497"
+X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
+   d="scan'208";a="350662497"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 02:44:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="725306375"
+X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
+   d="scan'208";a="725306375"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga007.jf.intel.com with ESMTP; 09 Aug 2023 02:44:15 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 9 Aug 2023 02:44:14 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 9 Aug 2023 02:44:14 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 9 Aug 2023 02:44:14 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 9 Aug 2023 02:44:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dmTA+vfe6mS1NJ3LnoJbZlG6DTVrjV0IswDIjC0L/d7XA+k+oCdWt4OmZu42/AKPUe1JChsRBW2YRidtKeaEJQ8Y7MIfr4Ea2u5gsCrdCCyN5uLiCDqP+zNhjg99kjtVixhlHOCFQJcsCiU4eye6WjjJe9m/01m11iYvs0ET0B8wD9Xw7CHJhYHRwvkno4OhVXuMXbP+QhNaSZS7GxbDp82SezTvu8Y9h8rQw5CifXqG7P24SMrFUyIJF4jj1RQZD6XdXaOIMPCo0AMWHoj9OyiQq2jaHZy+CqkUVemo36OpMKjW0xAxgsvmUYRBhmb+1cb0Q47XZiYtze+FXYnBZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lwdAvYM6M0iKdMXPYKficsfvketYxU8sM1G5iUi/3Fg=;
+ b=H/ogsEZJhgS6eKr/EzGS9Hs3UhRKxEVDBCobQf4khEB78f5n2f++bUvrVqsJ+RLQOS/LKyurExWC8MYVf5tO4D5Wq7czQEZiWNS/q3l0STjam4gRMMLYemK+0QhkQpN1uMBlZIPAXmJyy97djD5fFpF7JQUO6tFU+V4kcMQROnPkj2nyWpDc07NJ+9+NIyF5PJoeFB3lfW7qPwRxHCGER7C1XDX3jBZgCjfby7k8PL/Q0OOI+pTbHFpUAo4NmESVUtB8AARWq9gmxpoq97DqnwWf1SLWVTVJ+Ur2KGah33TF2Z6Fer4QczRfvjrOJWAo6TO99guMTgTMTnIcoUxRAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by PH7PR11MB6379.namprd11.prod.outlook.com (2603:10b6:510:1f9::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.28; Wed, 9 Aug
+ 2023 09:44:12 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6652.028; Wed, 9 Aug 2023
+ 09:44:12 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Baolu Lu <baolu.lu@linux.intel.com>,
+        "Zhang, Tina" <tina.zhang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Michael Shavit <mshavit@google.com>
+CC:     "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 0/5] Share sva domains with all devices bound to a mm
+Thread-Topic: [PATCH 0/5] Share sva domains with all devices bound to a mm
+Thread-Index: AQHZyczwIC26PTEzeEyQLUQIHK3R/q/hGmQAgACdUTA=
+Date:   Wed, 9 Aug 2023 09:44:11 +0000
+Message-ID: <BN9PR11MB52766D5CF4F959D58E60C9238C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20230808074944.7825-1-tina.zhang@intel.com>
+ <184044ad-880f-5452-727b-f7fd18330c22@linux.intel.com>
+In-Reply-To: <184044ad-880f-5452-727b-f7fd18330c22@linux.intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Nitin Rawat <quic_nitirawa@quicinc.com>, <mani@kernel.org>,
-        <quic_cang@quicinc.com>, <quic_asutoshd@quicinc.com>,
-        <avri.altman@wdc.com>, <martin.petersen@oracle.com>,
-        <beanhuo@micron.com>
-CC:     <bvanassche@acm.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <jejb@linux.ibm.com>, <linux-arm-msm@vger.kernel.org>,
-        <quic_ziqichen@quicinc.com>,
-        "Naveen Kumar Goud Arepalli" <quic_narepall@quicinc.com>
-References: <20230808150438.13523-1-quic_nitirawa@quicinc.com>
-From:   "Bao D. Nguyen" <quic_nguyenb@quicinc.com>
-In-Reply-To: <20230808150438.13523-1-quic_nitirawa@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: qzNneTJsgckBZjE4QWk9-sk-bJB1ztgE
-X-Proofpoint-ORIG-GUID: qzNneTJsgckBZjE4QWk9-sk-bJB1ztgE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-09_08,2023-08-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 adultscore=0 impostorscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
- clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308090085
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH7PR11MB6379:EE_
+x-ms-office365-filtering-correlation-id: c6b8f469-eb57-408d-13c5-08db98bd2fc3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: eWwUbN5B7foJlDn0ueb8OxMtwGJyirMpKNkiqahNeheLKFxSgUdbppRpHRHGs5babM3406hc+z4wsT7zu8uXceYK7A+9YWTJLav3WO80/fmiqzVeWpDOk1frGH44ho9qmNuQecxgYTjv5fmuzv7qU+uzKmDPVBMiGt5+y4owe1Ac1pcZ9SDByD0tSapm2l311vLzLfFzAvGkh5pCBmfq0Lc9An6lLexsf6NpEnXZd7H1QUj3xPy5tmO3Y13C/GwEYAZ5YOrnTJ2ip34WnrXGq1OBO27omAzN0U0TXmR2qIZ2OwKtehZtEvtDirCih66yiSa/BlxcB3jEB6kWfQvJ5kRU5d48J/oQpM08LgaMRsVLBLJtqJZBL2EFDaFj7CIDLd5UFagDfic7q2P86NiHGqMovTxdPjObH8VcEFcSTGF8VQ9NsDIpe7eBw8F2MPsankevz8/jZVWecs7B5XuJ9HrP4ijR+U2z4+MUOseeulJ1EnrBepeuoq336fFplYNJxCT/xNOkr12Q0vriqIDG6kvvr7J0H9Y2UsEiwCxhiu/dM61Nj3Un9P4i587z0hFuqS97p/9AvL0k7td8PzUsK5hJf2BgyrtVxsoQPmZGyXEZ0Es08T340hBZAaH22+4U
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(376002)(39860400002)(396003)(346002)(136003)(451199021)(1800799006)(186006)(76116006)(66946007)(4326008)(64756008)(66446008)(66476007)(66556008)(2906002)(33656002)(52536014)(71200400001)(54906003)(110136005)(316002)(478600001)(8936002)(8676002)(82960400001)(55016003)(5660300002)(7696005)(9686003)(41300700001)(86362001)(53546011)(38070700005)(26005)(6506007)(38100700002)(122000001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eVZlZDBNU2ZRa0tBMXdsRXhidEtDL1FtL2h6Zm4yNUg1K1RYNENwcjI5bG1p?=
+ =?utf-8?B?ZEg2aGdFcDVSVEIwRHMvSHFnRFQ4a290UWdzV0xMbytJa0VibjdXNm42T1k1?=
+ =?utf-8?B?RlRMTnUzZTdDbjVITm9URnBXdTRJejZhWWVZRXhGRXdwMHdyMjM4N0gweFV5?=
+ =?utf-8?B?WGdCNFA5WGwrTTl0dEZLazBlZ3ZmQktCZHp3NVBmTzN6THo1S3k1ZU5KaG9z?=
+ =?utf-8?B?QytUTXMxRkpDSFB3bFVBRlNtM0x3Zm54ZERwTnFFbmhYMnEvTkhzWkgzSXds?=
+ =?utf-8?B?MlhUSEM3N01NSUMzcmtOdDZmWTN6ZGhZWlEram9WV3dlTG1LdnZ6ODJKQjRB?=
+ =?utf-8?B?dkN5bGJDK005NHk1blg4L2FiOEh3R0lCN2xiL3RYaVNkRHBJV1RSaWVyZE9n?=
+ =?utf-8?B?M1J3UGF0ZlQvWTlxbDZ0aG01SU0wSlBrWE8zK2M3dTJVcndqWlFnVWlMZklM?=
+ =?utf-8?B?cVhwRGtlbDROSzhXQ0NNbE9pZUtkU2psQkZLb01yeVRxa1pJZ3NheVI1Z050?=
+ =?utf-8?B?RUNKeUFTVzBJMjRPVk5jMmlGUjAyaDIwSE16SHRmM05ma2FORUJtbWQxRUV2?=
+ =?utf-8?B?d2hMMEhyRDNYU291QXc5WHdWbzN2WTZCM2ZrYUNZcWlwY3hLc0RGejZhUmR5?=
+ =?utf-8?B?WWlJUlJST0owRmdvZ0dzVUJzMVlncHg3K0VVUEZ5MlNaUjRkWnR6YzhEalpr?=
+ =?utf-8?B?ejB5WlZKbWdDM0FxdVM0aDBQczVTZ3VZaXZ0R0JIZlAvVy96Mnhsb1VrVlhr?=
+ =?utf-8?B?cThYTHBjbGlSRkQrNDJsU0s3eDVqbnQyVkJzUXdnd1VLa054OTNHY3VmNUFN?=
+ =?utf-8?B?SkRhM3IwM29DcnpkcHh0NFpKUUJqSlpMWUtkRGVOalFlSHpCVXlXaHM2RlBB?=
+ =?utf-8?B?NWJKV25zY2ViNjhaY1kwTEFlTGwyWERXdkxZcTY1Z1hXbmtmcmx0NThNaEFU?=
+ =?utf-8?B?WW1BcWl6M2FFSy8xeXlEaUI2WUtHM0tkaWZkSTFhSkE1N015UzNkbkxlZlhs?=
+ =?utf-8?B?cVo0Y2Mrb3F2cE43ajdhN3dKbEZmSHhtS0ZXMzVXN2dFbmJhZENrYzJYMnp6?=
+ =?utf-8?B?Y0FDdVBXTFR5L3Z4VHVkR2hSUU1mQm9hNHppUkw1ckV6QXpwa005K1lMOWNt?=
+ =?utf-8?B?YVNOTFh1YVZCdFY4NEdWNWJLVTRBUDJSblltMHlSclNPa3BDaVE3MjhzeVFI?=
+ =?utf-8?B?M2lISWl0WHFOM1ZKMHhkNGF6NXJCU09yWnd6K3E2eFdGMTBQUEI5VktGSTBy?=
+ =?utf-8?B?R1dyMHAvQkVkbmEwWmFIcnA4QyszcWlXdFZOclVDMjFyWmMzY2lrZ1VudUl6?=
+ =?utf-8?B?SW9yS3UxWEhrWGdUc2tOMDgwVzdMZzI3R2VpWVZRTU8zcEgwQWFxb3FzNmJH?=
+ =?utf-8?B?WDhMZHk3Y1liTWVZZEtkZmJtMm0zNFBBc25YcWQzYmxnclJVUmZOUklyZkpK?=
+ =?utf-8?B?ckV3ZytZaHRqeDdCcFRrOE9NWE03NUpwbUNFTkg2MEZ4QmswNTZydGxLSlRw?=
+ =?utf-8?B?YXZVK085SUVQcUo2QlVWL2NNeHlGWS9NblRYL21WVmo1WEI1K1p0Y0twVWh2?=
+ =?utf-8?B?ZDIzNVNZMXU3WTRSYkFCWFMvUk0ydDBqdENYSzVpNlpWdTB5dlpMak4rMzhL?=
+ =?utf-8?B?QWYvdHlMaGxxUzR3TC9Ob0N3YWhLRE8rWEhSdjk1RUhYSCtvU2lPd0NuR1ky?=
+ =?utf-8?B?ZWIwVTM0Zk9mWWRFeDR2TUhtL3VDUzdRWm5rYitBZjhxclBQYWJWSU4rWGtT?=
+ =?utf-8?B?N2dqL1U2QkMrT1dOWE5TUDYwako1QzkwKzVkaTVuVDAwT3Z5ay9YbkJHSGY2?=
+ =?utf-8?B?N3QzRmp0OFE3TjFMekM3aWNRUSt3cmQ0WmFqZTBLTnlBT2dtSTRRa1plZHN5?=
+ =?utf-8?B?a0FZMEtzU0hWdVU3cjlidm5DN0FoU1FZakJjd2hFWGNRQk1pTjlGczhMbkpt?=
+ =?utf-8?B?ZGdjVDJUY2lOd3ZiZ2NyZ0pnM1loSE1rM2pVVnJxTUZDL2lESm51M2dvaWU0?=
+ =?utf-8?B?MkNLMURNQm1JaElCbFFWNG44ejd3dnRFWDFabjJ2NTl3NHVVTk5tQzFqbVFD?=
+ =?utf-8?B?aFdFTGZmTnBOVDZjSDNmbUc5MHN6U2xXcVdxZG8yQitqejRCeWR5cTBscDFW?=
+ =?utf-8?Q?oQmiI1norpwHUeEsgTfIYu6OJ?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6b8f469-eb57-408d-13c5-08db98bd2fc3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2023 09:44:12.0095
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vL8RDqnktozy35dvpPlHcsq2quSt3ZHPMEq3nt3hzXj9Nif5h0syo8dIhGHyyCyXDV/tTaeS7xScXLiB+I45uw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6379
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/2023 8:04 AM, Nitin Rawat wrote:
-> Align clock configuration as per Qualcomm UFS controller
-> hardware specification.
-> 
-> This change updates UFS_SYS1CLK_1US, CORE_CLK_1US_CYCLES,
-> PA_VS_CORE_CLK_40NS_CYCLES timer configuration for Qunipro
-> and UTP to align with Qualcomm UFS HW specification.
-> 
-> Co-developed-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-> Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-> ---
-> 
-> Changes from v1:
-> - Addressed bao comment, removed wrapper function
-> - Tab alignment
-> ---
->   drivers/ufs/host/ufs-qcom.c | 259 +++++++++++++++++++++++++++---------
->   drivers/ufs/host/ufs-qcom.h |  20 ++-
->   2 files changed, 210 insertions(+), 69 deletions(-)
-> 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index e7164ce7336b..1b6904f28163 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -91,10 +91,7 @@ struct __ufs_qcom_bw_table {
->   };
-> 
->   static struct ufs_qcom_host *ufs_qcom_hosts[MAX_UFS_QCOM_HOSTS];
-> -
->   static void ufs_qcom_get_default_testbus_cfg(struct ufs_qcom_host *host);
-> -static int ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(struct ufs_hba *hba,
-> -						       u32 clk_cycles);
-> 
->   static struct ufs_qcom_host *rcdev_to_ufs_host(struct reset_controller_dev *rcd)
->   {
-> @@ -532,7 +529,8 @@ static int ufs_qcom_hce_enable_notify(struct ufs_hba *hba,
->    * Return: zero for success and non-zero in case of a failure.
->    */
->   static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
-> -			       u32 hs, u32 rate, bool update_link_startup_timer)
-> +				 u32 hs, u32 rate, bool link_startup,
-> +				 bool is_pre_scale_up)
->   {
->   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->   	struct ufs_clk_info *clki;
-> @@ -563,11 +561,16 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
->   	/*
->   	 * The Qunipro controller does not use following registers:
->   	 * SYS1CLK_1US_REG, TX_SYMBOL_CLK_1US_REG, CLK_NS_REG &
-> -	 * UFS_REG_PA_LINK_STARTUP_TIMER
-> -	 * But UTP controller uses SYS1CLK_1US_REG register for Interrupt
-> -	 * Aggregation logic.
-> -	*/
-> -	if (ufs_qcom_cap_qunipro(host) && !ufshcd_is_intr_aggr_allowed(hba))
-> +	 * UFS_REG_PA_LINK_STARTUP_TIMER.
-> +	 * However UTP controller uses SYS1CLK_1US_REG register for Interrupt
-> +	 * Aggregation logic and Auto hibern8 logic.
-> +	 * It is mandatory to write SYS1CLK_1US_REG register on UFS host
-> +	 * controller V4.0.0 onwards.
-> +	 */
-> +	if (ufs_qcom_cap_qunipro(host) &&
-> +	    !(ufshcd_is_intr_aggr_allowed(hba) ||
-> +	    ufshcd_is_auto_hibern8_supported(hba) ||
-> +	    host->hw_ver.major >= 4))
->   		return 0;
-> 
->   	if (gear == 0) {
-> @@ -576,8 +579,14 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
->   	}
-> 
->   	list_for_each_entry(clki, &hba->clk_list_head, list) {
-> -		if (!strcmp(clki->name, "core_clk"))
-> -			core_clk_rate = clk_get_rate(clki->clk);
-> +		if (!strcmp(clki->name, "core_clk")) {
-> +			if (is_pre_scale_up)
-> +				core_clk_rate = clki->max_freq;
-> +			else
-> +				core_clk_rate = clk_get_rate(clki->clk);
-> +			break;
-> +		}
-> +
->   	}
-> 
->   	/* If frequency is smaller than 1MHz, set to 1MHz */
-> @@ -657,7 +666,7 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
->   		mb();
->   	}
-> 
-> -	if (update_link_startup_timer && host->hw_ver.major != 0x5) {
-> +	if (link_startup && host->hw_ver.major != 0x5) {
->   		ufshcd_writel(hba, ((core_clk_rate / MSEC_PER_SEC) * 100),
->   			      REG_UFS_CFG0);
->   		/*
-> @@ -670,6 +679,107 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
->   	return 0;
->   }
-> 
-> +static int ufs_qcom_set_core_clk_ctrl(struct ufs_hba *hba,
-> +				      u32 clk_1us_cycles,
-> +				      u32 clk_40ns_cycles,
-> +				      bool scale_up)
-> +{
-> +	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> +	u32 mask = MAX_CORE_CLK_1US_CYCLES_MASK;
-> +	u32 offset = 0;
-> +	u32 reg;
-> +	int err;
-> +
-> +	/* Bit mask and offset changed on UFS host controller V4.0.0 onwards */
-> +	if (host->hw_ver.major >= 4) {
-> +		mask = MAX_CORE_CLK_1US_CYCLES_MASK_V4;
-> +		offset = MAX_CORE_CLK_1US_CYCLES_OFFSET_V4;
-> +	}
-> +
-> +	if (clk_1us_cycles > mask)
-> +		return -EINVAL;
-> +
-> +	err = ufshcd_dme_get(hba, UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL), &reg);
-> +	if (err)
-> +		return err;
-> +
-> +	reg &= ~(mask << offset);
-> +	reg |= clk_1us_cycles << offset;
-Do you need the offset? the mask could have included the offset, and 
-avoid the left shift operation here.
-
-> +
-> +	if (scale_up)
-> +		reg |= CORE_CLK_DIV_EN_BIT;
-> +	else
-> +		reg &= ~CORE_CLK_DIV_EN_BIT;
-In the scale down case, the CORE_CLK_DIV_EN_BIT is already cleared by 
-the ufs_qcom_clk_scale_down_pre_change(). Clearing this bit again here 
-seems unnecessary.
-
-> +
-> +	err = ufshcd_dme_set(hba, UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL), reg);
-> +	if (err)
-> +		return err;
-> +
-> +	/*
-> +	 * UFS host controller V4.0.0 onwards needs to program
-> +	 * PA_VS_CORE_CLK_40NS_CYCLES attribute per programmed
-> +	 * frequency of unipro core clk of UFS host controller.
-> +	 */
-> +	if (host->hw_ver.major >= 4) {
-> +		if (clk_40ns_cycles > PA_VS_CORE_CLK_40NS_CYCLES_MASK)
-> +			return -EINVAL;
-> +
-> +		err = ufshcd_dme_get(hba,
-> +				     UIC_ARG_MIB(PA_VS_CORE_CLK_40NS_CYCLES),
-> +				     &reg);
-> +		if (err)
-> +			return err;
-> +
-> +		reg &= ~PA_VS_CORE_CLK_40NS_CYCLES_MASK;
-> +		reg |= clk_40ns_cycles;
-> +
-> +		err = ufshcd_dme_set(hba,
-> +				     UIC_ARG_MIB(PA_VS_CORE_CLK_40NS_CYCLES),
-> +				     reg);
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> +static int ufs_qcom_cfg_core_clk_ctrl(struct ufs_hba *hba)
-> +{
-> +	struct list_head *head = &hba->clk_list_head;
-> +	struct ufs_clk_info *clki;
-> +	u32 max_freq = 0;
-> +	int err;
-> +
-> +	list_for_each_entry(clki, head, list) {
-> +		if (!IS_ERR_OR_NULL(clki->clk) &&
-> +		    (!strcmp(clki->name, "core_clk_unipro"))) {
-> +			max_freq = clki->max_freq;
-> +			break;
-> +		}
-> +	}
-> +
-> +	switch (max_freq) {
-> +	case MHZ_403:
-> +		err = ufs_qcom_set_core_clk_ctrl(hba, 403, 16, true);
-> +		break;
-> +	case MHZ_300:
-> +		err = ufs_qcom_set_core_clk_ctrl(hba, 300, 12, true);
-> +		break;
-> +	case MHZ_201_5:
-> +		err = ufs_qcom_set_core_clk_ctrl(hba, 202, 8, true);
-> +		break;
-> +	case MHZ_150:
-> +		err = ufs_qcom_set_core_clk_ctrl(hba, 150, 6, true);
-> +		break;
-> +	case MHZ_100:
-> +		err = ufs_qcom_set_core_clk_ctrl(hba, 100, 4, true);
-> +		break;
-> +	default:
-> +		dev_err(hba->dev, "unipro max_freq=%u entry missing\n", max_freq);
-> +		err = -EINVAL;
-> +		break;
-> +	}
-> +
-> +	return err;
-> +}
->   static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
->   					enum ufs_notify_change_status status)
->   {
-> @@ -679,19 +789,21 @@ static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
->   	switch (status) {
->   	case PRE_CHANGE:
->   		if (ufs_qcom_cfg_timers(hba, UFS_PWM_G1, SLOWAUTO_MODE,
-> -					0, true)) {
-> +					0, true, false)) {
->   			dev_err(hba->dev, "%s: ufs_qcom_cfg_timers() failed\n",
->   				__func__);
->   			return -EINVAL;
->   		}
-> 
-> -		if (ufs_qcom_cap_qunipro(host))
-> -			/*
-> -			 * set unipro core clock cycles to 150 & clear clock
-> -			 * divider
-> -			 */
-> -			err = ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(hba,
-> -									  150);
-> +		if (ufs_qcom_cap_qunipro(host)) {
-> +			err = ufs_qcom_cfg_core_clk_ctrl(hba);
-> +			if (err) {
-> +				dev_err(hba->dev,
-> +					"%s cfg core clk ctrl failed\n",
-> +					__func__);
-> +				return err;
-> +			}
-> +		}
-> 
->   		/*
->   		 * Some UFS devices (and may be host) have issues if LCC is
-> @@ -926,7 +1038,7 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
->   	case POST_CHANGE:
->   		if (ufs_qcom_cfg_timers(hba, dev_req_params->gear_rx,
->   					dev_req_params->pwr_rx,
-> -					dev_req_params->hs_rate, false)) {
-> +					dev_req_params->hs_rate, false, false)) {
->   			dev_err(hba->dev, "%s: ufs_qcom_cfg_timers() failed\n",
->   				__func__);
->   			/*
-> @@ -1296,69 +1408,52 @@ static void ufs_qcom_exit(struct ufs_hba *hba)
->   	phy_exit(host->generic_phy);
->   }
-> 
-> -static int ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(struct ufs_hba *hba,
-> -						       u32 clk_cycles)
-> +static int ufs_qcom_clk_scale_up_pre_change(struct ufs_hba *hba)
->   {
-> -	int err;
-> -	u32 core_clk_ctrl_reg;
-> -
-> -	if (clk_cycles > DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK)
-> -		return -EINVAL;
-> -
-> -	err = ufshcd_dme_get(hba,
-> -			    UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL),
-> -			    &core_clk_ctrl_reg);
-> -	if (err)
-> -		return err;
-> -
-> -	core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK;
-> -	core_clk_ctrl_reg |= clk_cycles;
-> -
-> -	/* Clear CORE_CLK_DIV_EN */
-> -	core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT;
-> +	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> +	struct ufs_pa_layer_attr *attr = &host->dev_req_params;
-> +	int err = 0;
-> 
-> -	return ufshcd_dme_set(hba,
-> -			    UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL),
-> -			    core_clk_ctrl_reg);
-> -}
-> +	if (!ufs_qcom_cap_qunipro(host))
-> +		goto out;
-> 
-> -static int ufs_qcom_clk_scale_up_pre_change(struct ufs_hba *hba)
-> -{
-> -	/* nothing to do as of now */
-> -	return 0;
-> +	if (attr) {
-> +		err = ufs_qcom_cfg_timers(hba, attr->gear_rx,
-> +					    attr->pwr_rx, attr->hs_rate,
-> +					    false, true);
-In the clock scaling up case, the ufs_qcom_cfg_timers() is called here 
-which is fine.
-Later in the ufs_qcom_clk_scale_notify(POST_CHANGE), the 
-ufs_qcom_cfg_timers() is called again. Therefore it appears that for the 
-clock scaling up path, the ufs_qcom_cfg_timers() is called twice.
-
-> +		if (err)
-> +			dev_err(hba->dev, "%s ufs cfg timer failed\n",
-> +					  __func__);
-> +	}
-> +	err = ufs_qcom_cfg_core_clk_ctrl(hba);
-> +out:
-> +	return err;
->   }
-> 
->   static int ufs_qcom_clk_scale_up_post_change(struct ufs_hba *hba)
->   {
-> -	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> -
-> -	if (!ufs_qcom_cap_qunipro(host))
-> -		return 0;
-> -
-> -	/* set unipro core clock cycles to 150 and clear clock divider */
-> -	return ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(hba, 150);
-> +	return 0;
->   }
-> 
->   static int ufs_qcom_clk_scale_down_pre_change(struct ufs_hba *hba)
->   {
->   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->   	int err;
-> -	u32 core_clk_ctrl_reg;
-> +	u32 reg;
-> 
->   	if (!ufs_qcom_cap_qunipro(host))
->   		return 0;
-> 
-> -	err = ufshcd_dme_get(hba,
-> -			    UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL),
-> -			    &core_clk_ctrl_reg);
-> +	err = ufshcd_dme_get(hba, UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL), &reg);
-> +	if (err)
-> +		return err;
-> 
->   	/* make sure CORE_CLK_DIV_EN is cleared */
-> -	if (!err &&
-> -	    (core_clk_ctrl_reg & DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT)) {
-> -		core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT;
-> +	if (reg & CORE_CLK_DIV_EN_BIT) {
-> +		reg &= ~CORE_CLK_DIV_EN_BIT;
->   		err = ufshcd_dme_set(hba,
->   				    UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL),
-> -				    core_clk_ctrl_reg);
-> +				    reg);
->   	}
-> 
->   	return err;
-> @@ -1367,12 +1462,44 @@ static int ufs_qcom_clk_scale_down_pre_change(struct ufs_hba *hba)
->   static int ufs_qcom_clk_scale_down_post_change(struct ufs_hba *hba)
->   {
->   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> +	struct ufs_pa_layer_attr *attr = &host->dev_req_params;
-> +	struct list_head *head = &hba->clk_list_head;
-> +	struct ufs_clk_info *clki;
-> +	u32 curr_freq = 0;
-> +	int err;
-> 
->   	if (!ufs_qcom_cap_qunipro(host))
->   		return 0;
-> 
-> -	/* set unipro core clock cycles to 75 and clear clock divider */
-> -	return ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(hba, 75);
-> +	if (attr)
-> +		ufs_qcom_cfg_timers(hba, attr->gear_rx, attr->pwr_rx, > +				    attr->hs_rate, false, false);
-In the clock scaling down case, the ufs_qcom_cfg_timers() is called here 
-which is fine.
-Later, in the ufs_qcom_clk_scale_notify(POST_CHANGE), 
-ufs_qcom_cfg_timers() is called again. Therefore it appears that for the 
-clock scaling down path, the ufs_qcom_cfg_timers() is also called twice.
-
-> +
-> +	list_for_each_entry(clki, head, list) {
-> +		if (!IS_ERR_OR_NULL(clki->clk) &&
-> +		    (!strcmp(clki->name, "core_clk_unipro"))) {
-> +			curr_freq = clk_get_rate(clki->clk);
-> +			break;
-> +		}
-> +	}
-> +
-> +	switch (curr_freq) {
-> +	case MHZ_37_5:
-> +		err = ufs_qcom_set_core_clk_ctrl(hba, 38, 2, false);
-> +		break;
-> +	case MHZ_75:
-> +		err = ufs_qcom_set_core_clk_ctrl(hba, 75, 3, false);
-> +		break;
-> +	case MHZ_100:
-> +		err = ufs_qcom_set_core_clk_ctrl(hba, 100, 4, false);
-> +		break;
-> +	default:
-> +		err = -EINVAL;
-> +		dev_err(hba->dev, "unipro curr_freq=%u entry missing\n", curr_freq);
-> +		break;
-> +	}
-> +
-> +	return err;
->   }
-> 
->   static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
-> @@ -1409,7 +1536,7 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
->   				    dev_req_params->gear_rx,
->   				    dev_req_params->pwr_rx,
->   				    dev_req_params->hs_rate,
-> -				    false);
-> +				    false, false);
->   		ufs_qcom_icc_update_bw(host);
->   		ufshcd_uic_hibern8_exit(hba);
->   	}
-> diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
-> index d6f8e74bd538..d10234f6280b 100644
-> --- a/drivers/ufs/host/ufs-qcom.h
-> +++ b/drivers/ufs/host/ufs-qcom.h
-> @@ -79,6 +79,17 @@ enum {
->   	UFS_MEM_CQIS_VS		= 0x8,
->   };
-> 
-> +
-> +/* QCOM UFS host controller core clk frequencies */
-> +#define MHZ_37_5	37500000
-> +#define MHZ_50		50000000
-> +#define MHZ_75		75000000
-> +#define MHZ_100		100000000
-> +#define MHZ_150		150000000
-> +#define MHZ_300		300000000
-> +#define MHZ_201_5	201500000
-> +#define MHZ_403		403000000
-> +
->   #define UFS_CNTLR_2_x_x_VEN_REGS_OFFSET(x)	(0x000 + x)
->   #define UFS_CNTLR_3_x_x_VEN_REGS_OFFSET(x)	(0x400 + x)
-> 
-> @@ -129,9 +140,12 @@ enum {
->   #define PA_VS_CONFIG_REG1	0x9000
->   #define DME_VS_CORE_CLK_CTRL	0xD002
->   /* bit and mask definitions for DME_VS_CORE_CLK_CTRL attribute */
-> -#define DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT		BIT(8)
-> -#define DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK	0xFF
-> -
-> +#define MAX_CORE_CLK_1US_CYCLES_MASK_V4		0xFFF
-> +#define MAX_CORE_CLK_1US_CYCLES_OFFSET_V4	0x10
-> +#define MAX_CORE_CLK_1US_CYCLES_MASK		0xFF
-> +#define CORE_CLK_DIV_EN_BIT			BIT(8)
-> +#define PA_VS_CORE_CLK_40NS_CYCLES		0x9007
-> +#define PA_VS_CORE_CLK_40NS_CYCLES_MASK		0x3F
->   static inline void
->   ufs_qcom_get_controller_revision(struct ufs_hba *hba,
->   				 u8 *major, u16 *minor, u16 *step)
-> --
-> 2.17.1
-> 
-
+PiBGcm9tOiBCYW9sdSBMdSA8YmFvbHUubHVAbGludXguaW50ZWwuY29tPg0KPiBTZW50OiBXZWRu
+ZXNkYXksIEF1Z3VzdCA5LCAyMDIzIDg6MTggQU0NCj4gDQo+IE9uIDIwMjMvOC84IDE1OjQ5LCBU
+aW5hIFpoYW5nIHdyb3RlOg0KPiA+IEEgc3ZhIGRvbWFpbidzIGxpZmV0aW1lIGJlZ2lucyB3aXRo
+IGJpbmRpbmcgYSBkZXZpY2UgdG8gYSBtbSBhbmQgZW5kcw0KPiA+IGJ5IHJlbGVhc2luZyBhbGwg
+dGhlIGJvdW5kIGRldmljZXMgZnJvbSB0aGF0IHN2YSBkb21haW4uIFRlY2huaWNhbGx5LA0KPiA+
+IHRoZXJlIGNvdWxkIGJlIG1vcmUgdGhhbiBvbmUgc3ZhIGRvbWFpbiBpZGVudGlmaWVkIGJ5IHRo
+ZSBtbSBQQVNJRCBmb3INCj4gPiB0aGUgdXNlIG9mIGJvdW5kIGRldmljZXMgaXNzdWluZyBETUEg
+dHJhbnNhY3Rpb25zLg0KPiA+DQo+ID4gVG8gc3VwcG9ydCBtbSBQQVNJRCAxOm4gd2l0aCBzdmEg
+ZG9tYWlucywgZWFjaCBtbSBuZWVkcyB0byBrZWVwIGJvdGgNCj4gYQ0KPiA+IHJlZmVyZW5jZSBs
+aXN0IG9mIGFsbG9jYXRlZCBzdmEgZG9tYWlucyBhbmQgdGhlIGNvcnJlc3BvbmRpbmcgUEFTSUQu
+DQo+ID4gSG93ZXZlciwgY3VycmVudGx5LCBtbSBzdHJ1Y3Qgb25seSBoYXMgb25lIHBhc2lkIGZp
+ZWxkIGZvciBzdmEgdXNhZ2UsDQo+ID4gd2hpY2ggaXMgdXNlZCB0byBrZWVwIHRoZSBpbmZvIG9m
+IGFuIGFzc2lnbmVkIFBBU0lELiBUaGF0IHBhc2lkIGZpZWxkDQo+ID4gY2Fubm90IHByb3ZpZGUg
+c3VmZmljaWVudCBpbmZvIHRvIGJ1aWxkIHVwIHRoZSAxOm4gbWFwcGluZyBiZXR3ZWVuIFBBU0lE
+DQo+ID4gYW5kIHN2YSBkb21haW5zLg0KPiANCj4gSXMgaXQgbW9yZSBhcHByb3ByaWF0ZSB0byBo
+YXZlIHRoZSBzYW1lIGxpZmUgY3ljbGUgZm9yIHN2YSBkb21haW4gYW5kIG1tDQo+IHBhc2lkPyBJ
+IGZlZWwgdGhhdCB0aGV5IHJlcHJlc2VudCB0aGUgc2FtZSB0aGluZywgdGhhdCBpcywgdGhlIGFk
+ZHJlc3MNCj4gc3BhY2Ugc2hhcmVkIGJ5IG1tIHRvIGEgZGV2aWNlLg0KPiANCg0KaWlyYyBpdCdz
+IGEgc2ltcGxpZmljYXRpb24gdG8gZnJlZSBtbSBwYXNpZCBhdCBfX21tZHJvcCgpIG90aGVyd2lz
+ZSB0aGUNCmltcGxlbWVudGF0aW9uIGlzIHRyaWNreSwgYnV0IEkgZG9uJ3QgcmVtZW1iZXIgYWxs
+IHRoZSBkZXRhaWwuLi4NCg==
