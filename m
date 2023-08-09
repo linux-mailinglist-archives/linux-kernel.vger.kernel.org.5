@@ -2,167 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D6377515B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 05:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41645775162
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 05:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbjHID0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 23:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41830 "EHLO
+        id S230451AbjHID04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 23:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjHID0e (ORCPT
+        with ESMTP id S230247AbjHID0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 23:26:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149BB1999;
-        Tue,  8 Aug 2023 20:26:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691551594; x=1723087594;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xAd/kJ56EpFtJhQIEshMgdLpGVfeYcAheNB3lv9FRGs=;
-  b=GoVGJfjPrRBQR09KgzJhB6N8Qq71RRfstyOoA6aWQIXXcZBdyGBa2XGC
-   pLAUX/79NZnrrhaLGqNCWE+kiPgfzpb1s1hmgrByjo32HzSch5KUY4ero
-   czvScJaj62PMH42LuB/3KO5RlCeyQttpstqmWkt7X5LsUypum7391D3YM
-   NA/aoCuPuB3hiXmC58yMr6CPZgYirIzYkTtyAMKKS+hu9PGeOy5bNbHK6
-   chVEhJ8qh/EWkefhC9GcIm8dRw+f3+gIlf2tdOJtr6Jup5bGEomQuAQn1
-   Gh/dv+uMIifo42iWalL1ejNbQh37R6OmNdq/slq+wO2hKiwLm5/ITfVew
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="374720054"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="374720054"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 20:26:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="708537411"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="708537411"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 08 Aug 2023 20:26:21 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qTZq0-0005m8-0u;
-        Wed, 09 Aug 2023 03:26:20 +0000
-Date:   Wed, 9 Aug 2023 11:26:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Gustavo Luiz Duarte <gustavold@gmail.com>, netdev@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Breno Leitao <leitao@debian.org>,
-        Willem de Bruijn <willemb@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: ipmr: Call ipmr_ioctl() directly from
- ipmr_sk_ioctl()
-Message-ID: <202308091122.z4eVvCI5-lkp@intel.com>
-References: <20230731145713.178509-1-gustavold@gmail.com>
+        Tue, 8 Aug 2023 23:26:51 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D2C1BF7;
+        Tue,  8 Aug 2023 20:26:50 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe1489ced6so10518207e87.0;
+        Tue, 08 Aug 2023 20:26:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691551609; x=1692156409;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bDtqmE5WaBwuWbcG5niee6vR0Dh8gvhaHzvoiNOQiws=;
+        b=owAHMA78RpdKw7tQgsXJuS/elEyAp7vSGAzfHHJ5z4MmckA+NQrtCeJ+W8B7PUvc2D
+         I/WpHW66G3aWUjJpuletY1j0z6aKy1xgec4upQFXMpwU9ycs+tCk/ePKYCi6Nbx+Tq5H
+         Qy6MPyf/gtpxrwP1m2i9XoznQjE+jLj5ZwBSTijY/98bVmFXY24MFJCymc8ScA3Nxj2n
+         fSOujTjvaaQVXxt/vcJYEAVtUVvyYiN2uWpHFHiII9KFwlpZWIDhDRw8t4Y/QmWWdq4T
+         tB+UNi3v3GnHUI0r44M6p5HgP9APdJozCrZvNY2C87aDLO+gxiwTpgoEZWh+gs2IkgG7
+         f6hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691551609; x=1692156409;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bDtqmE5WaBwuWbcG5niee6vR0Dh8gvhaHzvoiNOQiws=;
+        b=YAPzH0E9wW5eOLhFONLzj3NjuA1GbLh8coHraIWzzmI8MN6XdCVgDphPv7esgF2cuX
+         xeIHHiOf5HRX84sEUpmrw9PoZwm6AKyJxiyCKrRsCNPriz8iY/yIB1l8vHjTK5jCbCbU
+         eXmY6qoh5vvyeW8yAVigzPZBbw41yJx3jFhho/PSnbS439fBPmHPYU+uOy/esBNDDUMc
+         bseUIhDKWgw7i1NRg42zp60EM2poC723KCSr2yRB2sDA1tMpViboL7rx2MpDrtbJnqEK
+         bLYxy9y2GNoksKI5WSYb072TZLyeMAMjnM9dXAtk5EMdurmyf4BDFgvjzira/HrWOteu
+         OhJQ==
+X-Gm-Message-State: AOJu0Yz36D/G9SLz91zSBk7JIu7GUwTJ/QZugUz5+3R/CaJvtQFtA2Bb
+        FXLaeEO+goUqBDpIy5yI0aL/7Qx+F6cLe2+P51g=
+X-Google-Smtp-Source: AGHT+IH2bKTSsX7/6xPrKfrQgho5P8O/hWC3nUT0gNKKQQAzMu/0fuX80th8S70Ytqj3VHXYwT6+ychP6EtQ0Fkfu08=
+X-Received: by 2002:a2e:a16e:0:b0:2b5:9d78:213e with SMTP id
+ u14-20020a2ea16e000000b002b59d78213emr935818ljl.22.1691551608635; Tue, 08 Aug
+ 2023 20:26:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731145713.178509-1-gustavold@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1690273969.git.haibo1.xu@intel.com> <CAAhSdy0yug=J0nxnnPoLYL=0MiT0w6qgPYOcv0QwMRe+fsQn8Q@mail.gmail.com>
+ <87y1ilpz3m.wl-maz@kernel.org>
+In-Reply-To: <87y1ilpz3m.wl-maz@kernel.org>
+From:   Haibo Xu <xiaobo55x@gmail.com>
+Date:   Wed, 9 Aug 2023 11:26:36 +0800
+Message-ID: <CAJve8onZuOHkAUVY3=QeBPMx5n2F1fGgn57rPp7MB1Q5=vXasA@mail.gmail.com>
+Subject: Re: [PATCH v6 00/13] RISCV: Add KVM_GET_REG_LIST API
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Anup Patel <anup@brainfault.org>, oliver.upton@linux.dev,
+        ajones@ventanamicro.com, seanjc@google.com,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Shuah Khan <shuah@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Like Xu <likexu@tencent.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Colton Lewis <coltonlewis@google.com>, kvm@vger.kernel.org,
+        Haibo Xu <haibo1.xu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gustavo,
+On Tue, Aug 8, 2023 at 7:12=E2=80=AFPM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Mon, 07 Aug 2023 04:48:33 +0100,
+> Anup Patel <anup@brainfault.org> wrote:
+> >
+> > Hi Marc, Hi Oliver,
+> >
+> > On Tue, Jul 25, 2023 at 2:05=E2=80=AFPM Haibo Xu <haibo1.xu@intel.com> =
+wrote:
+> > >
+> > > KVM_GET_REG_LIST will dump all register IDs that are available to
+> > > KVM_GET/SET_ONE_REG and It's very useful to identify some platform
+> > > regression issue during VM migration.
+> > >
+> > > Patch 1-7 re-structured the get-reg-list test in aarch64 to make some
+> > > of the code as common test framework that can be shared by riscv.
+> > >
+> > > Patch 8 move reject_set check logic to a function so as to check for
+> > > different errno for different registers.
+> > > Patch 9 move finalize_vcpu back to run_test so that riscv can impleme=
+nt
+> > > its specific operation.
+> > > Patch 10 change to do the get/set operation only on present-blessed l=
+ist.
+> > > Patch 11 add the skip_set facilities so that riscv can skip set opera=
+tion
+> > > on some registers.
+> > > Patch 12 enabled the KVM_GET_REG_LIST API in riscv.
+> > > patch 13 added the corresponding kselftest for checking possible
+> > > register regressions.
+> > >
+> > > The get-reg-list kvm selftest was ported from aarch64 and tested with
+> > > Linux v6.5-rc3 on a Qemu riscv64 virt machine.
+> > >
+> > > ---
+> > > Changed since v5:
+> > >   * Rebase to v6.5-rc3
+> > >   * Minor fix for Andrew's comments
+> > >
+> > > Andrew Jones (7):
+> > >   KVM: arm64: selftests: Replace str_with_index with strdup_printf
+> > >   KVM: arm64: selftests: Drop SVE cap check in print_reg
+> > >   KVM: arm64: selftests: Remove print_reg's dependency on vcpu_config
+> > >   KVM: arm64: selftests: Rename vcpu_config and add to kvm_util.h
+> > >   KVM: arm64: selftests: Delete core_reg_fixup
+> > >   KVM: arm64: selftests: Split get-reg-list test code
+> > >   KVM: arm64: selftests: Finish generalizing get-reg-list
+> > >
+> > > Haibo Xu (6):
+> > >   KVM: arm64: selftests: Move reject_set check logic to a function
+> > >   KVM: arm64: selftests: Move finalize_vcpu back to run_test
+> > >   KVM: selftests: Only do get/set tests on present blessed list
+> > >   KVM: selftests: Add skip_set facility to get_reg_list test
+> > >   KVM: riscv: Add KVM_GET_REG_LIST API support
+> > >   KVM: riscv: selftests: Add get-reg-list test
+> >
+> > Are you okay for this series to go through the KVM RISC-V tree ?
+>
+> Sure, seems fine from my point of view. But please put it on an
+> immutable topic branch so that we can also merge it in the arm64 tree,
+> should we need to resolve any conflicts.
+>
 
-kernel test robot noticed the following build errors:
+Hi Marc,
 
-[auto build test ERROR on net/main]
-[also build test ERROR on net-next/main linus/master v6.5-rc5 next-20230808]
-[cannot apply to horms-ipvs/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks for your review!
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Gustavo-Luiz-Duarte/net-ipmr-Call-ipmr_ioctl-directly-from-ipmr_sk_ioctl/20230731-225918
-base:   net/main
-patch link:    https://lore.kernel.org/r/20230731145713.178509-1-gustavold%40gmail.com
-patch subject: [PATCH] net: ipmr: Call ipmr_ioctl() directly from ipmr_sk_ioctl()
-config: x86_64-randconfig-x054-20230808 (https://download.01.org/0day-ci/archive/20230809/202308091122.z4eVvCI5-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230809/202308091122.z4eVvCI5-lkp@intel.com/reproduce)
+Which topic branch do you prefer or suggest to use?
+I can do a rebase on it and fix any potential conflicts.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308091122.z4eVvCI5-lkp@intel.com/
+Regards,
+Haibo
 
-All errors (new ones prefixed by >>):
-
-   ld: net/core/sock.o: in function `ip6mr_sk_ioctl':
->> include/linux/mroute6.h:115: undefined reference to `ip6mr_ioctl'
->> ld: include/linux/mroute6.h:130: undefined reference to `ip6mr_ioctl'
-
-
-vim +115 include/linux/mroute6.h
-
-    95	
-    96	struct rtmsg;
-    97	extern int ip6mr_get_route(struct net *net, struct sk_buff *skb,
-    98				   struct rtmsg *rtm, u32 portid);
-    99	
-   100	#ifdef CONFIG_IPV6_MROUTE
-   101	bool mroute6_is_socket(struct net *net, struct sk_buff *skb);
-   102	extern int ip6mr_sk_done(struct sock *sk);
-   103	static inline int ip6mr_sk_ioctl(struct sock *sk, unsigned int cmd,
-   104					 void __user *arg)
-   105	{
-   106		int ret;
-   107	
-   108		switch (cmd) {
-   109		case SIOCGETMIFCNT_IN6: {
-   110			struct sioc_mif_req6 karg;
-   111	
-   112			if (copy_from_user(&karg, arg, sizeof(karg)))
-   113				return -EFAULT;
-   114	
- > 115			ret = ip6mr_ioctl(sk, cmd, &karg);
-   116			if (ret)
-   117				return ret;
-   118	
-   119			if (copy_to_user(arg, &karg, sizeof(karg)))
-   120				return -EFAULT;
-   121	
-   122			return 0;
-   123			}
-   124		case SIOCGETSGCNT_IN6: {
-   125			struct sioc_sg_req6 karg;
-   126	
-   127			if (copy_from_user(&karg, arg, sizeof(karg)))
-   128				return -EFAULT;
-   129	
- > 130			ret = ip6mr_ioctl(sk, cmd, &karg);
-   131			if (ret)
-   132				return ret;
-   133	
-   134			if (copy_to_user(arg, &karg, sizeof(karg)))
-   135				return -EFAULT;
-   136	
-   137			return 0;
-   138			}
-   139		}
-   140	
-   141		return 1;
-   142	}
-   143	#else
-   144	static inline bool mroute6_is_socket(struct net *net, struct sk_buff *skb)
-   145	{
-   146		return false;
-   147	}
-   148	static inline int ip6mr_sk_done(struct sock *sk)
-   149	{
-   150		return 0;
-   151	}
-   152	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Thanks,
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
