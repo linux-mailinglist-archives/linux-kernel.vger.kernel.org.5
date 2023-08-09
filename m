@@ -2,252 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FCB77528D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 08:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C8D775290
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 08:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbjHIGJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 02:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38064 "EHLO
+        id S230429AbjHIGKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 02:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjHIGJC (ORCPT
+        with ESMTP id S229453AbjHIGKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 02:09:02 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0F0E61;
-        Tue,  8 Aug 2023 23:09:01 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id 4fb4d7f45d1cf-5221bd8f62eso2012131a12.1;
-        Tue, 08 Aug 2023 23:09:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691561339; x=1692166139;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cwXXHFU3z7b4p7pSwEJV5qOMc5cSwj3eTpJphQxUhLQ=;
-        b=d/gN0o19EpEHAWeVeLzdsEgWtqimSwwJOnA45ak75MESlsJDM4dS4V+Qsl+SwbP23/
-         6i13MRTTytmwgGkKdneHk+gNsVtCw1MzG4yzuo3SHvJbUYZSt7foBZp3KmR+YxLMWOEo
-         C/v1zQ4t3AACp2AWJptkF+Umri0w1rLwH1elAC7KyEkK75v+Rj8Udo+Sfy7UahGy4VEA
-         gojWtZrwY+c99nzKb+eyETWiTx5nz8AEvqFZUQy5nERp/YmTNTfcIbmBRQ5THcwRO8IS
-         yyYWb3j7Vl29oKsriPghPyITGV54O+kerV3agCIlA60L0f+dJTGAI2fUx+7+5oQfJ1XO
-         tbcw==
+        Wed, 9 Aug 2023 02:10:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1D612D
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 23:09:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691561368;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gjOdGDWIQkT0phMReVz2eflzO/ETttLoRuiht6Bh+vs=;
+        b=Ed9vRJ8uLWLmm4uWaIW/w4+TgxMNGICHw9C3jAXwK2rZLZ3UwlRIBmIypRA8N7hpLUoJFQ
+        lEHi24Swr2+tCzU56GdtzOeaRR/bxfZOQvtmyC4mgEOwCCXfiMe33MKWCoqjao3Eb6qprh
+        XFKlIxL+sWncEuA7baLosqdATP0IbUQ=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-609-ziSmT54ANKCBeyM8s053gQ-1; Wed, 09 Aug 2023 02:09:27 -0400
+X-MC-Unique: ziSmT54ANKCBeyM8s053gQ-1
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3a5aa4a8fd6so12013020b6e.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 23:09:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691561339; x=1692166139;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cwXXHFU3z7b4p7pSwEJV5qOMc5cSwj3eTpJphQxUhLQ=;
-        b=cCdjh1k2u0ZsoK/LD0gpWOnnBUrkojUrU4PawHbBmtXbSWre0HWcuyu91WMBXytB0P
-         AJOoklzxyy2EasCoYx3Uo3GDcw8oIRRfI5TeopokITjTS1OpS+KSbq2iLwbbQT6cTPYK
-         XJAVvdzMGMwaGWYLb4d48oJCGyReWk0J/u8LtGiLUDv+6ll34ACkLogmMm7SI4LEBw+Y
-         WUKhAUxS57rJPVxgUTlgr0LHZLyyK9o0kcu9afI1OhVOfg22vXdeGlyiyw70wxGm1ogJ
-         +NLkftJYn7I3aUg5T15rSAf3/X9kCBU/v/8I3Ukrky7/q+h5YkQoA6DEczE0j3EEYxFS
-         97WA==
-X-Gm-Message-State: AOJu0YwqffeUtMzcJ/L3S/hKO2WyGOIeLImwZ5nW7ekcrGTTC9uCWypn
-        6DkG+A5ded9etKnMVcy0k2WnbPczSgGGGo0Gw+urOb+HavU4wQ==
-X-Google-Smtp-Source: AGHT+IG3fVy3p2Hays25fiftM84u4+aTKMWkl3nlyPKPyeLkA/h2K3zJm4UEzNdjVJqoPH3YU4SRlbQEThj0j1po4Xc=
-X-Received: by 2002:a17:906:7486:b0:99c:d9cc:9667 with SMTP id
- e6-20020a170906748600b0099cd9cc9667mr1156249ejl.7.1691561339293; Tue, 08 Aug
- 2023 23:08:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691561366; x=1692166166;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gjOdGDWIQkT0phMReVz2eflzO/ETttLoRuiht6Bh+vs=;
+        b=GM05SoYKT8w5MiyragS7sdasfLbuqEbqErBgq3Pg3axNaHqB/Z4FkNXfxChHcWttke
+         v7vJskHx8SDE/76ASA+D7czXw5Ms10MihR6eU+/0Ae0sY5KqbL0OtY4tXNivRhO3LguZ
+         sD12VHbDbw4g4oEiCJD9bwSuVrtiwgTtsVJWx28ITkQtIE0Zy+Mxak09QWxDb+NlsJ/B
+         Ycb/vXyEBijtQYa530U+U9caMw1UQpQJZSymtaaaRYvbuQAgwrNauZTNL6nmwlVNMpIc
+         ucU3V/ClBSqRjsjrurW1PtLRew3WS/B/lPVPdvRByRjCwImisYfh9JZM5d4qv91Eb6hp
+         cprw==
+X-Gm-Message-State: AOJu0Yy6tZhFcyOKByhDMV4rOrf+TwWoKxF8aGViKuLqpNkLFP8hbVp2
+        8r6oD3Y+7FSinS97WeYhlTybQeqqpVMvEf8qJu5HaX+7dYEWQCW/cK6JHHBMcQtksqP3dQf/L/D
+        DCsGbQCu/NYJcMB3ix8BAr0Aa
+X-Received: by 2002:a05:6808:193:b0:3a6:f7d7:4cfe with SMTP id w19-20020a056808019300b003a6f7d74cfemr1751343oic.50.1691561366664;
+        Tue, 08 Aug 2023 23:09:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IESJGy9tTZJCmzlL28vXdcHkH4ZB7FxhBPbIFweRaehSBbS0wZP4I9BPTRIjsuacKEsONJhQQ==
+X-Received: by 2002:a05:6808:193:b0:3a6:f7d7:4cfe with SMTP id w19-20020a056808019300b003a6f7d74cfemr1751333oic.50.1691561366353;
+        Tue, 08 Aug 2023 23:09:26 -0700 (PDT)
+Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
+        by smtp.gmail.com with ESMTPSA id 30-20020a17090a001e00b002630bfd35b0sm621062pja.7.2023.08.08.23.09.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 23:09:25 -0700 (PDT)
+Message-ID: <15975205-6161-d54b-fe40-805a16b0cb27@redhat.com>
+Date:   Wed, 9 Aug 2023 16:09:15 +1000
 MIME-Version: 1.0
-References: <20230808033106.2174-1-Wenhua.Lin@unisoc.com> <0ac280ab-08f1-b031-e21b-49390182f090@linux.alibaba.com>
-In-Reply-To: <0ac280ab-08f1-b031-e21b-49390182f090@linux.alibaba.com>
-From:   wenhua lin <wenhua.lin1994@gmail.com>
-Date:   Wed, 9 Aug 2023 14:08:47 +0800
-Message-ID: <CAB9BWhfRHSqWrBbeisoGLqeBYXc9Pc_uGH0GxnfedXROpU_0-A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] gpio: sprd: Modify the calculation method of eic number
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v8 05/14] KVM: Allow range-based TLB invalidation from
+ common code
+Content-Language: en-US
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Fuad Tabba <tabba@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Shaoqin Huang <shahuang@redhat.com>
+References: <20230808231330.3855936-1-rananta@google.com>
+ <20230808231330.3855936-6-rananta@google.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20230808231330.3855936-6-rananta@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi baolin:
-1.Please describe the problem in detail, not only what you did.
+On 8/9/23 09:13, Raghavendra Rao Ananta wrote:
+> From: David Matlack <dmatlack@google.com>
+> 
+> Make kvm_flush_remote_tlbs_range() visible in common code and create a
+> default implementation that just invalidates the whole TLB.
+> 
+> This paves the way for several future features/cleanups:
+> 
+>   - Introduction of range-based TLBI on ARM.
+>   - Eliminating kvm_arch_flush_remote_tlbs_memslot()
+>   - Moving the KVM/x86 TDP MMU to common code.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: David Matlack <dmatlack@google.com>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+> ---
+>   arch/x86/include/asm/kvm_host.h |  2 ++
+>   arch/x86/kvm/mmu/mmu.c          |  8 ++++----
+>   arch/x86/kvm/mmu/mmu_internal.h |  3 ---
+>   include/linux/kvm_host.h        | 12 ++++++++++++
+>   virt/kvm/kvm_main.c             | 13 +++++++++++++
+>   5 files changed, 31 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index a2d3cfc2eb75c..b547d17c58f63 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1804,6 +1804,8 @@ static inline int kvm_arch_flush_remote_tlbs(struct kvm *kvm)
+>   		return -ENOTSUPP;
+>   }
+>   
+> +#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS_RANGE
+> +
+>   #define kvm_arch_pmi_in_guest(vcpu) \
+>   	((vcpu) && (vcpu)->arch.handling_intr_from_guest)
+>   
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index ec169f5c7dce2..6adbe6c870982 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -278,16 +278,16 @@ static inline bool kvm_available_flush_remote_tlbs_range(void)
+>   	return kvm_x86_ops.flush_remote_tlbs_range;
+>   }
+>   
+> -void kvm_flush_remote_tlbs_range(struct kvm *kvm, gfn_t start_gfn,
+> -				 gfn_t nr_pages)
+> +int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm, gfn_t start_gfn,
+> +				      u64 nr_pages)
+>   {
+>   	int ret = -EOPNOTSUPP;
+>   
+>   	if (kvm_x86_ops.flush_remote_tlbs_range)
+>   		ret = static_call(kvm_x86_flush_remote_tlbs_range)(kvm, start_gfn,
+>   								   nr_pages);
+> -	if (ret)
+> -		kvm_flush_remote_tlbs(kvm);
+> +
+> +	return ret;
+>   }
+>   
 
-We will describe the reason for the modification by supplementing the
-commit message.
+I guess @start_gfn can be renamed to @gfn, to be consistent with its declaration
+in include/linux/kvm_host.h and struct kvm_x86_ops::flush_remote_tlbs_range()
 
-2.Can you explicit on which controller can support 8 banks in the commit
-log? And you did not change all the related comments in this file.
+>   static gfn_t kvm_mmu_page_get_gfn(struct kvm_mmu_page *sp, int index);
+> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+> index d39af5639ce97..86cb83bb34804 100644
+> --- a/arch/x86/kvm/mmu/mmu_internal.h
+> +++ b/arch/x86/kvm/mmu/mmu_internal.h
+> @@ -170,9 +170,6 @@ bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
+>   				    struct kvm_memory_slot *slot, u64 gfn,
+>   				    int min_level);
+>   
+> -void kvm_flush_remote_tlbs_range(struct kvm *kvm, gfn_t start_gfn,
+> -				 gfn_t nr_pages);
+> -
+>   /* Flush the given page (huge or not) of guest memory. */
+>   static inline void kvm_flush_remote_tlbs_gfn(struct kvm *kvm, gfn_t gfn, int level)
+>   {
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index ade5d4500c2ce..f0be5d9c37dd1 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -1359,6 +1359,7 @@ int kvm_vcpu_yield_to(struct kvm_vcpu *target);
+>   void kvm_vcpu_on_spin(struct kvm_vcpu *vcpu, bool yield_to_kernel_mode);
+>   
+>   void kvm_flush_remote_tlbs(struct kvm *kvm);
+> +void kvm_flush_remote_tlbs_range(struct kvm *kvm, gfn_t gfn, u64 nr_pages);
+>   
+>   #ifdef KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE
+>   int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min);
+> @@ -1488,6 +1489,17 @@ static inline int kvm_arch_flush_remote_tlbs(struct kvm *kvm)
+>   int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
+>   #endif
+>   
+> +#ifndef __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS_RANGE
+> +static inline int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm,
+> +						    gfn_t gfn, u64 nr_pages)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +#else
+> +int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm,
+> +				      gfn_t gfn, u64 nr_pages);
+> +#endif
+> +
+>   #ifdef __KVM_HAVE_ARCH_NONCOHERENT_DMA
+>   void kvm_arch_register_noncoherent_dma(struct kvm *kvm);
+>   void kvm_arch_unregister_noncoherent_dma(struct kvm *kvm);
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index d6b0507861550..26e91000f579d 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -366,6 +366,19 @@ void kvm_flush_remote_tlbs(struct kvm *kvm)
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_flush_remote_tlbs);
+>   
+> +void kvm_flush_remote_tlbs_range(struct kvm *kvm, gfn_t gfn, u64 nr_pages)
+> +{
+> +	if (!kvm_arch_flush_remote_tlbs_range(kvm, gfn, nr_pages))
+> +		return;
+> +
+> +	/*
+> +	 * Fall back to a flushing entire TLBs if the architecture range-based
+> +	 * TLB invalidation is unsupported or can't be performed for whatever
+> +	 * reason.
+> +	 */
+> +	kvm_flush_remote_tlbs(kvm);
+> +}
+> +
+>   static void kvm_flush_shadow_all(struct kvm *kvm)
+>   {
+>   	kvm_arch_flush_shadow_all(kvm);
 
-The old project EIC controller can support maximum 3 banks,
-now our new project eic controller can support maximum 8 banks=EF=BC=8C
-and each bank contains 8 EICs.
-We will modify the comment in this file.
+Thanks,
+Gavin
 
-3.If you want to introduce a readable macro, that's fine, but it should be
-split into a separate patch.
-4.This change looks good to me, and this seems a software bug in the
-original driver. So I think this change should be moved into a separate
-patch with a suitable Fixes tag.
-5.Do not add unreated changes that you did not mentioned in the commit log.
-
-We will re-split the patch submission and explain our reasons for
-modification in the submission information, thank you very much for
-your review.
-
-Baolin Wang <baolin.wang@linux.alibaba.com> =E4=BA=8E2023=E5=B9=B48=E6=9C=
-=889=E6=97=A5=E5=91=A8=E4=B8=89 09:24=E5=86=99=E9=81=93=EF=BC=9A
->
->
->
-> On 8/8/2023 11:31 AM, Wenhua Lin wrote:
-> > Automatic calculation through matching nodes,
-> > subsequent projects can avoid modifying driver files.
->
-> Please describe the problem in detail, not only what you did.
->
-> > Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> > ---
-> >   drivers/gpio/gpio-eic-sprd.c | 49 +++++++++++++++++++----------------=
--
-> >   1 file changed, 26 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.=
-c
-> > index 84352a6f4973..0d85d9e80848 100644
-> > --- a/drivers/gpio/gpio-eic-sprd.c
-> > +++ b/drivers/gpio/gpio-eic-sprd.c
-> > @@ -50,10 +50,10 @@
-> >   #define SPRD_EIC_SYNC_DATA          0x1c
-> >
-> >   /*
-> > - * The digital-chip EIC controller can support maximum 3 banks, and ea=
-ch bank
-> > + * The digital-chip EIC controller can support maximum 8 banks, and ea=
-ch bank
->
-> Can you explicit on which controller can support 8 banks in the commit
-> log? And you did not change all the related comments in this file.
->
-> >    * contains 8 EICs.
-> >    */
-> > -#define SPRD_EIC_MAX_BANK            3
-> > +#define SPRD_EIC_MAX_BANK            8
-> >   #define SPRD_EIC_PER_BANK_NR                8
-> >   #define SPRD_EIC_DATA_MASK          GENMASK(7, 0)
-> >   #define SPRD_EIC_BIT(x)                     ((x) & (SPRD_EIC_PER_BANK=
-_NR - 1))
-> > @@ -99,33 +99,32 @@ struct sprd_eic {
-> >
-> >   struct sprd_eic_variant_data {
-> >       enum sprd_eic_type type;
-> > -     u32 num_eics;
-> >   };
-> >
-> > +#define SPRD_EIC_VAR_DATA(soc_name)                          \
-> > +static const struct sprd_eic_variant_data soc_name##_eic_dbnc_data =3D=
- {       \
-> > +     .type =3D SPRD_EIC_DEBOUNCE,                                     =
- \
-> > +};                                                                   \
-> > +                                                                     \
-> > +static const struct sprd_eic_variant_data soc_name##_eic_latch_data =
-=3D {      \
-> > +     .type =3D SPRD_EIC_LATCH,                                        =
- \
-> > +};                                                                   \
-> > +                                                                     \
-> > +static const struct sprd_eic_variant_data soc_name##_eic_async_data =
-=3D {      \
-> > +     .type =3D SPRD_EIC_ASYNC,                                        =
- \
-> > +};                                                                   \
-> > +                                                                     \
-> > +static const struct sprd_eic_variant_data soc_name##_eic_sync_data =3D=
- {       \
-> > +     .type =3D SPRD_EIC_SYNC,                                         =
- \
-> > +}
-> > +
-> > +SPRD_EIC_VAR_DATA(sc9860);
-> > +
-> >   static const char *sprd_eic_label_name[SPRD_EIC_MAX] =3D {
-> >       "eic-debounce", "eic-latch", "eic-async",
-> >       "eic-sync",
-> >   };
-> >
-> > -static const struct sprd_eic_variant_data sc9860_eic_dbnc_data =3D {
-> > -     .type =3D SPRD_EIC_DEBOUNCE,
-> > -     .num_eics =3D 8,
-> > -};
-> > -
-> > -static const struct sprd_eic_variant_data sc9860_eic_latch_data =3D {
-> > -     .type =3D SPRD_EIC_LATCH,
-> > -     .num_eics =3D 8,
-> > -};
-> > -
-> > -static const struct sprd_eic_variant_data sc9860_eic_async_data =3D {
-> > -     .type =3D SPRD_EIC_ASYNC,
-> > -     .num_eics =3D 8,
-> > -};
-> > -
-> > -static const struct sprd_eic_variant_data sc9860_eic_sync_data =3D {
-> > -     .type =3D SPRD_EIC_SYNC,
-> > -     .num_eics =3D 8,
-> > -};
->
-> If you want to introduce a readable macro, that's fine, but it should be
-> split into a separate patch.
->
-> >   static inline void __iomem *sprd_eic_offset_base(struct sprd_eic *spr=
-d_eic,
-> >                                                unsigned int bank)
-> > @@ -583,6 +582,7 @@ static int sprd_eic_probe(struct platform_device *p=
-dev)
-> >       struct sprd_eic *sprd_eic;
-> >       struct resource *res;
-> >       int ret, i;
-> > +     u16 num_banks =3D 0;
-> >
-> >       pdata =3D of_device_get_match_data(&pdev->dev);
-> >       if (!pdata) {
-> > @@ -613,12 +613,13 @@ static int sprd_eic_probe(struct platform_device =
-*pdev)
-> >                       break;
-> >
-> >               sprd_eic->base[i] =3D devm_ioremap_resource(&pdev->dev, r=
-es);
-> > +             num_banks++;
-> >               if (IS_ERR(sprd_eic->base[i]))
-> >                       return PTR_ERR(sprd_eic->base[i]);
-> >       }
-> >
-> >       sprd_eic->chip.label =3D sprd_eic_label_name[sprd_eic->type];
-> > -     sprd_eic->chip.ngpio =3D pdata->num_eics;
-> > +     sprd_eic->chip.ngpio =3D num_banks * SPRD_EIC_PER_BANK_NR;
->
-> This change looks good to me, and this seems a software bug in the
-> original driver. So I think this change should be moved into a separate
-> patch with a suitable Fixes tag.
->
-> >       sprd_eic->chip.base =3D -1;
-> >       sprd_eic->chip.parent =3D &pdev->dev;
-> >       sprd_eic->chip.direction_input =3D sprd_eic_direction_input;
-> > @@ -630,10 +631,12 @@ static int sprd_eic_probe(struct platform_device =
-*pdev)
-> >               sprd_eic->chip.set =3D sprd_eic_set;
-> >               fallthrough;
-> >       case SPRD_EIC_ASYNC:
-> > +             fallthrough;
-> >       case SPRD_EIC_SYNC:
-> >               sprd_eic->chip.get =3D sprd_eic_get;
-> >               break;
-> >       case SPRD_EIC_LATCH:
-> > +             fallthrough;
->
-> Do not add unreated changes that you did not mentioned in the commit log.
