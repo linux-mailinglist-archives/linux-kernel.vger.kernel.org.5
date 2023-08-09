@@ -2,117 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA76776A06
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F042C776974
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbjHIU3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 16:29:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47678 "EHLO
+        id S232413AbjHIUFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 16:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbjHIU3C (ORCPT
+        with ESMTP id S229803AbjHIUFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 16:29:02 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4582103;
-        Wed,  9 Aug 2023 13:29:02 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 379JgK1K017455;
-        Wed, 9 Aug 2023 19:53:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=Kv1uBofxfFr4XcBPYMsOnENGVuvDK07nAxIIE/b0PFY=;
- b=XxBDzNTkJDcmdalegweZtTMOM4htEooZ6hxNBOK0c4bBvTw22bAVoyu/gP1CvZJtmzhE
- zuIFhGtYobYxNybtUnim2TDsXgsbvRkDVPvfwV2Svvg2VIpiUT1dyunqIUB8kNloAwKD
- oT7yVCOENwxkkKT/l3N22cxcBjROVHzGYD6Y/XOA7O4FhTAbM8LNmZUOoLiOmAh/MIb2
- Aab4ZFUr/1bb1CRd8e+m1nM44AZ6a0t2ZE+1RpyU7/MoW5Xv8TcHTrr8yybS+Ba3Z0OX
- MUUZdJ/NJg9V+wAONPhPvr+mbJjMO1f0yiVym6XDR3buXrjsWmBacJ7O/1piMXVa0WBU 2Q== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sch088e4v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 19:53:45 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 379IbUcY006656;
-        Wed, 9 Aug 2023 19:53:45 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sa0rtbmyn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 19:53:44 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 379JrgqJ44892626
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Aug 2023 19:53:42 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 37DC320043;
-        Wed,  9 Aug 2023 19:53:42 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 31CF820040;
-        Wed,  9 Aug 2023 19:53:40 +0000 (GMT)
-Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.61.3.84])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Aug 2023 19:53:40 +0000 (GMT)
-From:   Nayna Jain <nayna@linux.ibm.com>
-To:     linux-integrity@vger.kernel.org
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        Paul Moore <paul@paul-moore.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>
-Subject: [PATCH v2 5/6] integrity: PowerVM machine keyring enablement
-Date:   Wed,  9 Aug 2023 15:53:14 -0400
-Message-Id: <20230809195315.1085656-6-nayna@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20230809195315.1085656-1-nayna@linux.ibm.com>
-References: <20230809195315.1085656-1-nayna@linux.ibm.com>
+        Wed, 9 Aug 2023 16:05:02 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77C910CF;
+        Wed,  9 Aug 2023 13:05:01 -0700 (PDT)
+Date:   Wed, 09 Aug 2023 20:04:59 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691611500;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=da2DVPK32kMqv/V4/F8umhzZV/X97UbiTtN0tntwD5Q=;
+        b=DMY32+IcBW/vl+9uQvJjU9hmELWpoWvDREN9axe8vrGtm5ep+sk4NmVdTU5Lb1eyxhgJEy
+        x0FF0Kqj6q9E2nUULJ1JfS8JAhIdvVYAFhjOPpKdkCzttliwUSxkEWbWULHsQ5Zn1I1hZo
+        c0nkmf8v1RiqiT0RR4CqT9L+xsjO73+9B3N2cT1Yc0gTFjrQuOy2dRPzWZ2vASNVBEWumW
+        tgrq/rIbWhyF9DSx2d0Eg6vTqe+hHmsvNrr3+17XvzzJiYIN/0UqHTQCRGn7QZOPjOERkK
+        rQv9B53tTFBRnFXwey03HxxIGJPj9ny4UW+LfadM840AMre8AZE8NB5nYbJpnQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691611500;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=da2DVPK32kMqv/V4/F8umhzZV/X97UbiTtN0tntwD5Q=;
+        b=YMrvXELrKVug/xbpRguQsFvTU/7nkAWaHKbQ04dpgoP6puK17br7yJG1aawQDOJ3cn684G
+        A55Zw0dY96UzdUBw==
+From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/intel: Add Crestmont PMU
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230522113040.2329924-1-kan.liang@linux.intel.com>
+References: <20230522113040.2329924-1-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: TJKR4hG43C0SpmTNZdd8EJi9U5ntwOTC
-X-Proofpoint-GUID: TJKR4hG43C0SpmTNZdd8EJi9U5ntwOTC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-09_17,2023-08-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0 adultscore=0
- impostorscore=0 mlxlogscore=805 priorityscore=1501 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308090171
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169161149918.27769.7106324049621373893.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update Kconfig to enable machine keyring and limit to CA certificates
-on PowerVM. Only key signing CA keys are allowed.
+The following commit has been merged into the perf/core branch of tip:
 
-Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
-Reviewed-and-tested-by: Mimi Zohar <zohar@linux.ibm.com>
+Commit-ID:     a430021faad6b4fa86c820fc3e7f8dbfc2f14fb4
+Gitweb:        https://git.kernel.org/tip/a430021faad6b4fa86c820fc3e7f8dbfc2f14fb4
+Author:        Kan Liang <kan.liang@linux.intel.com>
+AuthorDate:    Mon, 22 May 2023 04:30:35 -07:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 09 Aug 2023 21:51:07 +02:00
 
+perf/x86/intel: Add Crestmont PMU
+
+The Grand Ridge and Sierra Forest are successors to Snow Ridge. They
+both have Crestmont core. From the core PMU's perspective, they are
+similar to the e-core of MTL. The only difference is the LBR event
+logging feature, which will be implemented in the following patches.
+
+Create a non-hybrid PMU setup for Grand Ridge and Sierra Forest.
+
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Link: https://lore.kernel.org/r/20230522113040.2329924-1-kan.liang@linux.intel.com
 ---
- security/integrity/Kconfig | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/x86/events/intel/core.c | 52 ++++++++++++++++++++++++++++++++++-
+ arch/x86/events/intel/ds.c   |  9 ++++--
+ arch/x86/events/perf_event.h |  2 +-
+ 3 files changed, 60 insertions(+), 3 deletions(-)
 
-diff --git a/security/integrity/Kconfig b/security/integrity/Kconfig
-index ec6e0d789da1..232191ee09e3 100644
---- a/security/integrity/Kconfig
-+++ b/security/integrity/Kconfig
-@@ -67,7 +67,9 @@ config INTEGRITY_MACHINE_KEYRING
- 	depends on SECONDARY_TRUSTED_KEYRING
- 	depends on INTEGRITY_ASYMMETRIC_KEYS
- 	depends on SYSTEM_BLACKLIST_KEYRING
--	depends on LOAD_UEFI_KEYS
-+	depends on LOAD_UEFI_KEYS || LOAD_PPC_KEYS
-+	select INTEGRITY_CA_MACHINE_KEYRING if LOAD_PPC_KEYS
-+	select INTEGRITY_CA_MACHINE_KEYRING_MAX if LOAD_PPC_KEYS
- 	help
- 	 If set, provide a keyring to which Machine Owner Keys (MOK) may
- 	 be added. This keyring shall contain just MOK keys.  Unlike keys
--- 
-2.31.1
-
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index c7e7ed6..64a3533 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -2129,6 +2129,17 @@ static struct extra_reg intel_grt_extra_regs[] __read_mostly = {
+ 	EVENT_EXTRA_END
+ };
+ 
++EVENT_ATTR_STR(topdown-retiring,       td_retiring_cmt,        "event=0x72,umask=0x0");
++EVENT_ATTR_STR(topdown-bad-spec,       td_bad_spec_cmt,        "event=0x73,umask=0x0");
++
++static struct attribute *cmt_events_attrs[] = {
++	EVENT_PTR(td_fe_bound_tnt),
++	EVENT_PTR(td_retiring_cmt),
++	EVENT_PTR(td_bad_spec_cmt),
++	EVENT_PTR(td_be_bound_tnt),
++	NULL
++};
++
+ static struct extra_reg intel_cmt_extra_regs[] __read_mostly = {
+ 	/* must define OFFCORE_RSP_X first, see intel_fixup_er() */
+ 	INTEL_UEVENT_EXTRA_REG(0x01b7, MSR_OFFCORE_RSP_0, 0x800ff3ffffffffffull, RSP_0),
+@@ -4840,6 +4851,8 @@ PMU_FORMAT_ATTR(ldlat, "config1:0-15");
+ 
+ PMU_FORMAT_ATTR(frontend, "config1:0-23");
+ 
++PMU_FORMAT_ATTR(snoop_rsp, "config1:0-63");
++
+ static struct attribute *intel_arch3_formats_attr[] = {
+ 	&format_attr_event.attr,
+ 	&format_attr_umask.attr,
+@@ -4870,6 +4883,13 @@ static struct attribute *slm_format_attr[] = {
+ 	NULL
+ };
+ 
++static struct attribute *cmt_format_attr[] = {
++	&format_attr_offcore_rsp.attr,
++	&format_attr_ldlat.attr,
++	&format_attr_snoop_rsp.attr,
++	NULL
++};
++
+ static struct attribute *skl_format_attr[] = {
+ 	&format_attr_frontend.attr,
+ 	NULL,
+@@ -5649,7 +5669,6 @@ static struct attribute *adl_hybrid_extra_attr[] = {
+ 	NULL
+ };
+ 
+-PMU_FORMAT_ATTR_SHOW(snoop_rsp, "config1:0-63");
+ FORMAT_ATTR_HYBRID(snoop_rsp,	hybrid_small);
+ 
+ static struct attribute *mtl_hybrid_extra_attr_rtm[] = {
+@@ -6197,6 +6216,37 @@ __init int intel_pmu_init(void)
+ 		name = "gracemont";
+ 		break;
+ 
++	case INTEL_FAM6_ATOM_CRESTMONT:
++	case INTEL_FAM6_ATOM_CRESTMONT_X:
++		x86_pmu.mid_ack = true;
++		memcpy(hw_cache_event_ids, glp_hw_cache_event_ids,
++		       sizeof(hw_cache_event_ids));
++		memcpy(hw_cache_extra_regs, tnt_hw_cache_extra_regs,
++		       sizeof(hw_cache_extra_regs));
++		hw_cache_event_ids[C(ITLB)][C(OP_READ)][C(RESULT_ACCESS)] = -1;
++
++		x86_pmu.event_constraints = intel_slm_event_constraints;
++		x86_pmu.pebs_constraints = intel_grt_pebs_event_constraints;
++		x86_pmu.extra_regs = intel_cmt_extra_regs;
++
++		x86_pmu.pebs_aliases = NULL;
++		x86_pmu.pebs_prec_dist = true;
++		x86_pmu.lbr_pt_coexist = true;
++		x86_pmu.pebs_block = true;
++		x86_pmu.flags |= PMU_FL_HAS_RSP_1;
++		x86_pmu.flags |= PMU_FL_INSTR_LATENCY;
++
++		intel_pmu_pebs_data_source_cmt();
++		x86_pmu.pebs_latency_data = mtl_latency_data_small;
++		x86_pmu.get_event_constraints = cmt_get_event_constraints;
++		x86_pmu.limit_period = spr_limit_period;
++		td_attr = cmt_events_attrs;
++		mem_attr = grt_mem_attrs;
++		extra_attr = cmt_format_attr;
++		pr_cont("Crestmont events, ");
++		name = "crestmont";
++		break;
++
+ 	case INTEL_FAM6_WESTMERE:
+ 	case INTEL_FAM6_WESTMERE_EP:
+ 	case INTEL_FAM6_WESTMERE_EX:
+diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+index df88576..eb8dd8b 100644
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -144,7 +144,7 @@ void __init intel_pmu_pebs_data_source_adl(void)
+ 	__intel_pmu_pebs_data_source_grt(data_source);
+ }
+ 
+-static void __init intel_pmu_pebs_data_source_cmt(u64 *data_source)
++static void __init __intel_pmu_pebs_data_source_cmt(u64 *data_source)
+ {
+ 	data_source[0x07] = OP_LH | P(LVL, L3) | LEVEL(L3) | P(SNOOPX, FWD);
+ 	data_source[0x08] = OP_LH | P(LVL, L3) | LEVEL(L3) | P(SNOOP, HITM);
+@@ -164,7 +164,12 @@ void __init intel_pmu_pebs_data_source_mtl(void)
+ 
+ 	data_source = x86_pmu.hybrid_pmu[X86_HYBRID_PMU_ATOM_IDX].pebs_data_source;
+ 	memcpy(data_source, pebs_data_source, sizeof(pebs_data_source));
+-	intel_pmu_pebs_data_source_cmt(data_source);
++	__intel_pmu_pebs_data_source_cmt(data_source);
++}
++
++void __init intel_pmu_pebs_data_source_cmt(void)
++{
++	__intel_pmu_pebs_data_source_cmt(pebs_data_source);
+ }
+ 
+ static u64 precise_store_data(u64 status)
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index d6de448..c8ba2be 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -1606,6 +1606,8 @@ void intel_pmu_pebs_data_source_grt(void);
+ 
+ void intel_pmu_pebs_data_source_mtl(void);
+ 
++void intel_pmu_pebs_data_source_cmt(void);
++
+ int intel_pmu_setup_lbr_filter(struct perf_event *event);
+ 
+ void intel_pt_interrupt(void);
