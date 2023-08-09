@@ -2,76 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D32D8775579
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 10:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8AE977558D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 10:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231191AbjHIIeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 04:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55530 "EHLO
+        id S231377AbjHIIhi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Aug 2023 04:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbjHIIeI (ORCPT
+        with ESMTP id S229652AbjHIIhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 04:34:08 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23804171E
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 01:34:07 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3175f17a7baso4921605f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 01:34:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1691570045; x=1692174845;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5ijl35yrvHWnvdny00wRBt92qHHEETnO1JDAe0OV9Zc=;
-        b=QvpE0x2vl2KZ+J77E6ZL7iKIhDYwoMzehXAqmhr23czml3bymEGg9WyG1kMOT6amED
-         0aYrBzccOgXGG7EGEbsPTxoH4n7yHDZJrysioSiQHyqU2UwcBFJ9XNLm3ZEn8xLIQU/D
-         4/Chc7o7jZ2M2pBfOTzkEvLQgTB5vFoNc5CPPl4DIo5ztyPMVlK7lSIvw9wTjPkYTs7V
-         DVN72sKlrNP1qG/CacssU7hOrOD6OB0O0YHAJwTGpy0s9Bt1YbzQNh0QdTdkJjGi5oAt
-         JQJ+53nHnUDXX8XdCwDoIwnCGHiR88SCnWAjuZfz0HPmHU0v66Gy4aCT8tMoVAqw0BHQ
-         C84g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691570045; x=1692174845;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5ijl35yrvHWnvdny00wRBt92qHHEETnO1JDAe0OV9Zc=;
-        b=b1GwZwamMuFgQSjnaIjAJDU8+WjYLaQc4IkME6zUFP9X6/v6/PsgeZj+zBDNO0Ne79
-         anagk3oQNPr/AI7SJ/zzjRoh/bUCZpkEWXG5CSX1zhtbkebZcH65JMC8It8SzDD+dCT3
-         YF87lsZ71RW42D6Xpg+cP3Qd7d6iuB+vj8HWfSnVaV0Saa0t8LUMDjxj2WofEoUwprKw
-         HRP7YnesI8g1MqoNZktVNXYfx6nofzexxStK7iSPKY/O2fVItg3QpSCQ1bXS7tT6nLla
-         2IyojauhEu0mOvOa4GSx4Wfrt15WMJDcn7cNu2DhGWMG52I3ZksDgQixm5/nZUMgLLBn
-         60zQ==
-X-Gm-Message-State: AOJu0YzRiFUAi/i7bpm4kEETKiNHkgkdiBVk8+398uf9w5NKT2fj8P6E
-        nKiw4sWNKPuEXEGD4ic6wwxuZvcEA2gUWS4BoR8uZg==
-X-Google-Smtp-Source: AGHT+IEX8b+FaTW/xo6PDQ7HnhpJyaPs9/eQmthsjoiDN0/xgiRvlbSwvTVE5u3wGRnD5Ywx1k9iPQ==
-X-Received: by 2002:a5d:4c87:0:b0:30f:bb83:e6f4 with SMTP id z7-20020a5d4c87000000b0030fbb83e6f4mr1254847wrs.0.1691570045535;
-        Wed, 09 Aug 2023 01:34:05 -0700 (PDT)
-Received: from [192.168.1.193] (f.c.7.0.0.0.0.0.0.0.0.0.0.0.0.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff::7cf])
-        by smtp.gmail.com with ESMTPSA id a14-20020a056000100e00b00317f29ad113sm6387613wrx.32.2023.08.09.01.34.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 01:34:05 -0700 (PDT)
-From:   Lorenz Bauer <lmb@isovalent.com>
-Date:   Wed, 09 Aug 2023 09:33:53 +0100
-Subject: [PATCH bpf-next] net: Fix slab-out-of-bounds in inet[6]_steal_sock
+        Wed, 9 Aug 2023 04:37:34 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC62C170B;
+        Wed,  9 Aug 2023 01:37:33 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RLNct5KHJz6J7mD;
+        Wed,  9 Aug 2023 16:33:50 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 9 Aug
+ 2023 09:37:30 +0100
+Date:   Wed, 9 Aug 2023 09:37:29 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+CC:     "GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Waqar Hameed <waqar.hameed@axis.com>,
+        Kees Cook <keescook@chromium.org>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
+        Wang Weiyang <wangweiyang2@huawei.com>,
+        Xiu Jianfeng <xiujianfeng@huawei.com>, <gongruiqi1@huawei.com>
+Subject: Re: [PATCH RFC] iio: irsd200: fix -Warray-bounds bug in
+ irsd200_trigger_handler
+Message-ID: <20230809093729.00000a1d@Huawei.com>
+In-Reply-To: <ZNIijIoh/famqTDl@work>
+References: <20230808083719.280777-1-gongruiqi@huaweicloud.com>
+        <ZNIijIoh/famqTDl@work>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230809-bpf-next-v1-1-c1b80712e83b@isovalent.com>
-X-B4-Tracking: v=1; b=H4sIAHBP02QC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDCwML3aSCNN281IoS3UQTE6NEA0tTUzOjJCWg8oKi1LTMCrBR0UowVUq
- xtbUA4YTnsGQAAAA=
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Lorenz Bauer <lmb@isovalent.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,80 +58,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kumar reported a KASAN splat in tcp_v6_rcv:
+On Tue, 8 Aug 2023 05:10:04 -0600
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-  bash-5.2# ./test_progs -t btf_skc_cls_ingress
-  ...
-  [   51.810085] BUG: KASAN: slab-out-of-bounds in tcp_v6_rcv+0x2d7d/0x3440
-  [   51.810458] Read of size 2 at addr ffff8881053f038c by task test_progs/226
+> On Tue, Aug 08, 2023 at 04:37:19PM +0800, GONG, Ruiqi wrote:
+> > From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+> > 
+> > When compiling with gcc 13 with -Warray-bounds enabled:
+> > 
+> > In file included from drivers/iio/proximity/irsd200.c:15:
+> > In function ‘iio_push_to_buffers_with_timestamp’,
+> >     inlined from ‘irsd200_trigger_handler’ at drivers/iio/proximity/irsd200.c:770:2:
+> > ./include/linux/iio/buffer.h:42:46: error: array subscript ‘int64_t {aka long long int}[0]’
+> > is partly outside array bounds of ‘s16[1]’ {aka ‘short int[1]’} [-Werror=array-bounds=]
+> >    42 |                 ((int64_t *)data)[ts_offset] = timestamp;
+> >       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+> > drivers/iio/proximity/irsd200.c: In function ‘irsd200_trigger_handler’:
+> > drivers/iio/proximity/irsd200.c:763:13: note: object ‘buf’ of size 2
+> >   763 |         s16 buf = 0;
+> >       |             ^~~
+> > 
+> > The problem seems to be that irsd200_trigger_handler() is taking a s16
+> > variable as an int64_t buffer. Fix it by extending the buffer to 64 bits.  
+> 
+> Thanks for working on this!
+> 
+> > 
+> > Link: https://github.com/KSPP/linux/issues/331
+> > Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>  
+> 
+> Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-The problem is that inet[6]_steal_sock accesses sk->sk_protocol without
-accounting for request sockets. I added the check to ensure that we only
-every try to perform a reuseport lookup on a supported socket.
+Good find on the bug, but the fix is wrong even if it squashes the error.
 
-It turns out that this isn't necessary at all. struct sock_common contains
-a skc_reuseport flag which indicates whether a socket is part of a
-reuseport group. inet[6]_lookup_reuseport already check this flag,
-so we can't execute an erroneous reuseport lookup by definition.
+> 
+> --
+> Gustavo
+> 
+> > ---
+> > 
+> > RFC: It's a preliminary patch since I'm not familiar with this hardware.
+> > Further comments/reviews are needed about whether this fix is correct,
+> > or we should use iio_push_to_buffers() instead of the *_with_timestamp()
+> > version.
+> > 
+> >  drivers/iio/proximity/irsd200.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/iio/proximity/irsd200.c b/drivers/iio/proximity/irsd200.c
+> > index 5bd791b46d98..34c479881bdf 100644
+> > --- a/drivers/iio/proximity/irsd200.c
+> > +++ b/drivers/iio/proximity/irsd200.c
+> > @@ -759,10 +759,10 @@ static irqreturn_t irsd200_trigger_handler(int irq, void *pollf)
+> >  {
+> >  	struct iio_dev *indio_dev = ((struct iio_poll_func *)pollf)->indio_dev;
+> >  	struct irsd200_data *data = iio_priv(indio_dev);
+> > -	s16 buf = 0;
+> > +	int64_t buf = 0;
 
-Remove the unnecessary assertions to fix the out of bounds access.
+s64 as internal kernel type.
+More importantly needs to be at least s64 buf[2]; as the offset
+https://elixir.bootlin.com/linux/latest/source/include/linux/iio/buffer.h#L41
+will be 1 due to this filling the timestamp in at first 8 byte aligned location
+after the data that is already in the buffer.
 
-Fixes: 9c02bec95954 ("bpf, net: Support SO_REUSEPORT sockets with bpf_sk_assign")
-Reported-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
----
- include/net/inet6_hashtables.h | 10 ----------
- include/net/inet_hashtables.h  | 10 ----------
- 2 files changed, 20 deletions(-)
+With hindsight was a bad decision a long time ago not to force people to also
+pass the size into this function so we could detect this at runtime at least.
+Hard to repair now give very large number of drivers using this and the fact
+that it's not always easy to work out that size.  Unfortunately occasionally
+one of these slips through review :(
 
-diff --git a/include/net/inet6_hashtables.h b/include/net/inet6_hashtables.h
-index 284b5ce7205d..f9907ed36d54 100644
---- a/include/net/inet6_hashtables.h
-+++ b/include/net/inet6_hashtables.h
-@@ -119,16 +119,6 @@ struct sock *inet6_steal_sock(struct net *net, struct sk_buff *skb, int doff,
- 	if (!prefetched)
- 		return sk;
- 
--	if (sk->sk_protocol == IPPROTO_TCP) {
--		if (sk->sk_state != TCP_LISTEN)
--			return sk;
--	} else if (sk->sk_protocol == IPPROTO_UDP) {
--		if (sk->sk_state != TCP_CLOSE)
--			return sk;
--	} else {
--		return sk;
--	}
--
- 	reuse_sk = inet6_lookup_reuseport(net, sk, skb, doff,
- 					  saddr, sport, daddr, ntohs(dport),
- 					  ehashfn);
-diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
-index 1177effabed3..57a46993383a 100644
---- a/include/net/inet_hashtables.h
-+++ b/include/net/inet_hashtables.h
-@@ -465,16 +465,6 @@ struct sock *inet_steal_sock(struct net *net, struct sk_buff *skb, int doff,
- 	if (!prefetched)
- 		return sk;
- 
--	if (sk->sk_protocol == IPPROTO_TCP) {
--		if (sk->sk_state != TCP_LISTEN)
--			return sk;
--	} else if (sk->sk_protocol == IPPROTO_UDP) {
--		if (sk->sk_state != TCP_CLOSE)
--			return sk;
--	} else {
--		return sk;
--	}
--
- 	reuse_sk = inet_lookup_reuseport(net, sk, skb, doff,
- 					 saddr, sport, daddr, ntohs(dport),
- 					 ehashfn);
+I suppose we could, in some cases check if the buffer was at least 16 bytes which
+would get us some of the way.
 
----
-base-commit: eb62e6aef940fcb1879100130068369d4638088f
-change-id: 20230808-bpf-next-a442a095562b
+Jonathan
 
-Best regards,
--- 
-Lorenz Bauer <lmb@isovalent.com>
+> >  	int ret;
+> >  
+> > -	ret = irsd200_read_data(data, &buf);
+> > +	ret = irsd200_read_data(data, (s16 *)&buf);
+> >  	if (ret)
+> >  		goto end;
+> >  
+> > -- 
+> > 2.41.0
+> >   
 
