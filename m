@@ -2,145 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E759776482
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DECEE776488
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbjHIPzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
+        id S231779AbjHIP42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234244AbjHIPzC (ORCPT
+        with ESMTP id S231299AbjHIP40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:55:02 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C221FF9;
-        Wed,  9 Aug 2023 08:55:02 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 379CrDUe002197;
-        Wed, 9 Aug 2023 10:54:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        PODMain02222019; bh=EkcWozHmMlEsGAMvpqTB6x4BhQ+VCXW9AKlqr4C/ae0=; b=
-        QUwF7ePHeVV7H0l2vQRS4JY92j3wj/W1O7Xe3tEdSzIIm15kxPQuwXGEs7tnCZan
-        RozNdNAZFcuB3YvbSB2jb0ESmoEYM9xwmKFyXnEUzqCwhQbgpFda7JloNbH7cNlD
-        TuuCqTbe3CSTZwN1yjlcvoEGAnvwkvktbnoV/Jr88QBuMq0/rnh9z+DluI8Q7df5
-        dQd8oXqUYLYxMdpy7yBXbYxOduinSDXacFiIv2pe9pbyHAzcP6/jeq8zlTQyRU1S
-        T/xZQpg96BOqh6HzVvp6A1+3lgLn2m589oSxcjNHVlBuLjcR463Fjik0w1Etj/G8
-        t1n4YAvd6v+geH5f6haSzw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sb7vtanrr-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 10:54:51 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 9 Aug
- 2023 16:54:48 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Wed, 9 Aug 2023 16:54:48 +0100
-Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.64.220])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 68A0245D;
-        Wed,  9 Aug 2023 15:54:48 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <brendan.higgins@linux.dev>, <davidgow@google.com>,
-        <rmoar@google.com>
-CC:     <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH v3 7/7] kunit: Don't waste first attempt to format string in kunit_log_append()
-Date:   Wed, 9 Aug 2023 16:54:38 +0100
-Message-ID: <20230809155438.22470-8-rf@opensource.cirrus.com>
+        Wed, 9 Aug 2023 11:56:26 -0400
+Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4402D2698;
+        Wed,  9 Aug 2023 08:56:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1691596567; x=1723132567;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=SsgNs8WP7Va7/HPmzzpveitPd422Cl33ClfKs6muCY8=;
+  b=DHFk60Fga6jL5POkjcp2KhSALBJofqV3R2ze8tdgMKXbCLLsRwLEsdGh
+   OFEQyS7RqIhFeEWNAq3m54u3wJ/2ck1dEw3KjPnJwLEmLnCP4GUlJwAz5
+   Zg6F17GaIglCDcCIXtbDTDhB3XYCSBsNeR3YO577gbFUCSAWNJFX/z5Br
+   s=;
+X-IronPort-AV: E=Sophos;i="6.01,159,1684800000"; 
+   d="scan'208";a="597758339"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-153b24bc.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 15:56:04 +0000
+Received: from EX19MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-iad-1d-m6i4x-153b24bc.us-east-1.amazon.com (Postfix) with ESMTPS id 400C7C1540;
+        Wed,  9 Aug 2023 15:55:59 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 9 Aug 2023 15:55:50 +0000
+Received: from 88665a182662.ant.amazon.com (10.106.100.32) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.30;
+ Wed, 9 Aug 2023 15:55:46 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <lmb@isovalent.com>
+CC:     <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <kuniyu@amazon.com>, <linux-kernel@vger.kernel.org>,
+        <martin.lau@kernel.org>, <martin.lau@linux.dev>,
+        <memxor@gmail.com>, <netdev@vger.kernel.org>, <pabeni@redhat.com>
+Subject: Re: [PATCH bpf-next] net: Fix slab-out-of-bounds in inet[6]_steal_sock
+Date:   Wed, 9 Aug 2023 08:55:38 -0700
+Message-ID: <20230809155538.67000-1-kuniyu@amazon.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230809155438.22470-1-rf@opensource.cirrus.com>
-References: <20230809155438.22470-1-rf@opensource.cirrus.com>
+In-Reply-To: <CAN+4W8hMpL3+vNOrBBRw01tD6OxQ-Yy8OWpq9nRtiyjm0GgE4g@mail.gmail.com>
+References: <CAN+4W8hMpL3+vNOrBBRw01tD6OxQ-Yy8OWpq9nRtiyjm0GgE4g@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: YESuJiL3msWuAJAE0qtyL58LJfr7ndi-
-X-Proofpoint-ORIG-GUID: YESuJiL3msWuAJAE0qtyL58LJfr7ndi-
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.106.100.32]
+X-ClientProxiedBy: EX19D036UWB004.ant.amazon.com (10.13.139.170) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's wasteful to call vsnprintf() only to figure out the length of the
-string. The string might fit in the available buffer space but we have to
-vsnprintf() again to do that.
+From: Lorenz Bauer <lmb@isovalent.com>
+Date: Wed, 9 Aug 2023 16:08:31 +0100
+> On Wed, Aug 9, 2023 at 3:39 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+> >
+> > On 8/9/23 1:33 AM, Lorenz Bauer wrote:
+> > > Kumar reported a KASAN splat in tcp_v6_rcv:
+> > >
+> > >    bash-5.2# ./test_progs -t btf_skc_cls_ingress
+> > >    ...
+> > >    [   51.810085] BUG: KASAN: slab-out-of-bounds in tcp_v6_rcv+0x2d7d/0x3440
+> > >    [   51.810458] Read of size 2 at addr ffff8881053f038c by task test_progs/226
+> > >
+> > > The problem is that inet[6]_steal_sock accesses sk->sk_protocol without
+> > > accounting for request sockets. I added the check to ensure that we only
+> > > every try to perform a reuseport lookup on a supported socket.
+> > >
+> > > It turns out that this isn't necessary at all. struct sock_common contains
+> > > a skc_reuseport flag which indicates whether a socket is part of a
+> >
+> > Does it go back to the earlier discussion
+> > (https://lore.kernel.org/bpf/7188429a-c380-14c8-57bb-9d05d3ba4e5e@linux.dev/)
+> > that the sk->sk_reuseport is 1 from sk_clone for TCP_ESTABLISHED? It works
+> > because there is sk->sk_reuseport"_cb" check going deeper into
+> > reuseport_select_sock() but there is an extra inet6_ehashfn for all TCP_ESTABLISHED.
+> 
+> Sigh, I'd forgotten about this...
+> 
+> For the TPROXY TCP replacement use case we sk_assign the SYN to the
+> listener, which creates the reqsk. We can let follow up packets pass
+> without sk_assign since they will match the reqsk and convert to a
+> fullsock via the usual route. At least that is what the test does. I'm
+> not even sure what it means to redirect a random packet into an
+> established TCP socket TBH. It'd probably be dropped?
+> 
+> For UDP, I'm not sure whether we even get into this situation? Doesn't
+> seem like UDP sockets are cloned from each other, so we also shouldn't
+> end up with a reuseport flag set erroneously.
+> 
+> Things we could do if necessary:
+> 1. Reset the flag in inet_csk_clone_lock like we do for SOCK_RCU_FREE
 
-Instead, attempt to format the string to the available buffer at the same
-time as finding the string length. Only if the string didn't fit the
-available space is it necessary to extend the log and format the string
-again to a new fragment buffer.
+I think we can't do this as sk_reuseport is inherited to twsk and used
+in inet_bind_conflict().
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- lib/kunit/test.c | 33 +++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
 
-diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-index 28d0048d6171..230ec5e9824f 100644
---- a/lib/kunit/test.c
-+++ b/lib/kunit/test.c
-@@ -196,11 +196,21 @@ void kunit_log_append(struct list_head *log, const char *fmt, ...)
- 	if (!log)
- 		return;
- 
--	/* Evaluate length of line to add to log */
-+	frag = list_last_entry(log, struct kunit_log_frag, list);
-+	log_len = strlen(frag->buf);
-+	len_left = sizeof(frag->buf) - log_len - 1;
-+
-+	/* Attempt to print formatted line to current fragment */
- 	va_start(args, fmt);
--	len = vsnprintf(NULL, 0, fmt, args) + 1;
-+	len = vsnprintf(frag->buf + log_len, len_left, fmt, args) + 1;
- 	va_end(args);
- 
-+	if (len <= len_left)
-+		goto out_newline;
-+
-+	/* Abandon the truncated result of vsnprintf */
-+	frag->buf[log_len] = '\0';
-+
- 	if (len > sizeof(frag->buf) - 1) {
- 		va_start(args, fmt);
- 		tmp = kvasprintf(GFP_KERNEL, fmt, args);
-@@ -212,24 +222,15 @@ void kunit_log_append(struct list_head *log, const char *fmt, ...)
- 		return;
- 	}
- 
--	frag = list_last_entry(log, struct kunit_log_frag, list);
--	log_len = strlen(frag->buf);
--	len_left = sizeof(frag->buf) - log_len - 1;
--
--	if (len > len_left) {
--		frag = kunit_log_extend(log);
--		if (!frag)
--			return;
--
--		len_left = sizeof(frag->buf) - 1;
--		log_len = 0;
--	}
-+	frag = kunit_log_extend(log);
-+	if (!frag)
-+		return;
- 
- 	/* Print formatted line to the log */
- 	va_start(args, fmt);
--	vsnprintf(frag->buf + log_len, min(len, len_left), fmt, args);
-+	vsnprintf(frag->buf, sizeof(frag->buf) - 1, fmt, args);
- 	va_end(args);
--
-+out_newline:
- 	/* Add newline to end of log if not already present. */
- 	kunit_log_newline(frag);
- }
--- 
-2.30.2
+> 2. Duplicate the cb check into inet[6]_steal_sock
 
+or 3. Add sk_fullsock() test ?
