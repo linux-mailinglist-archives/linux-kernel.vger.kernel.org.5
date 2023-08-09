@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53AF0776912
+	by mail.lfdr.de (Postfix) with ESMTP id 09FCE776911
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233992AbjHITrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
+        id S233946AbjHITrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232647AbjHITrL (ORCPT
+        with ESMTP id S232296AbjHITrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Aug 2023 15:47:11 -0400
 Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEED2106;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9442103;
         Wed,  9 Aug 2023 12:47:09 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379Jl1fT086082;
-        Wed, 9 Aug 2023 14:47:01 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379Jl3Vi086091;
+        Wed, 9 Aug 2023 14:47:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691610421;
-        bh=BYl4jJDg+IGtJlaRNFfsbCRVFe+QoB6JeXudogyJCag=;
+        s=ti-com-17Q1; t=1691610423;
+        bh=6fIXIj7qWgkDWfpcBuKTTLH04m4gxyfxt/eZ75zcXrg=;
         h=From:Date:Subject:References:In-Reply-To:To:CC;
-        b=SgjUWYfeZ++YAzDEcTRzeC+Wqb3G3B7I8C+fieLXUSz3u4Jr/fQb4rJ22kpSK7cll
-         ZEIZPvPaVJn9pvltvttNxUAjwLO3XVeCn+Fuw13qcK5ttlD6AYsiQErjOZdbdbPegR
-         147S42aXDYGR6C+4vG36UkwqDBwXe34JUG0N8gWw=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379Jl1mu032236
+        b=x6slZVut+O71P8sAAzHLLSRiOlpyzUCUCsDhStBOs6IZCUFIo2xphTs9OFJaZgRPl
+         OrKSk+5tPEaZj/h9nRUHu620hsDSSZSAhh7r7yjeikl2aoC1iWVEDRE1PeBN/EhmgW
+         xOTGoa5ALVBQDTXZlgquvmO9S3xPEMTxlG3XP9ck=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379Jl2UJ039608
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Aug 2023 14:47:01 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 9 Aug 2023 14:47:02 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
- Aug 2023 14:47:01 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2023 14:47:02 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 9 Aug 2023 14:47:01 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379Jl0Uk065166;
-        Wed, 9 Aug 2023 14:47:00 -0500
+ Frontend Transport; Wed, 9 Aug 2023 14:47:02 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379Jl1GB051008;
+        Wed, 9 Aug 2023 14:47:02 -0500
 From:   Jai Luthra <j-luthra@ti.com>
-Date:   Thu, 10 Aug 2023 01:16:22 +0530
-Subject: [PATCH v6 4/7] arm64: dts: ti: k3-j784s4: Fix interrupt ranges for
- wkup & main gpio
+Date:   Thu, 10 Aug 2023 01:16:23 +0530
+Subject: [PATCH v6 5/7] arm64: dts: ti: k3-j784s4-evm: Add support for
+ TPS6594 PMIC
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20230810-tps6594-v6-4-2b2e2399e2ef@ti.com>
+Message-ID: <20230810-tps6594-v6-5-2b2e2399e2ef@ti.com>
 References: <20230810-tps6594-v6-0-2b2e2399e2ef@ti.com>
 In-Reply-To: <20230810-tps6594-v6-0-2b2e2399e2ef@ti.com>
 To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -63,20 +63,20 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         <j-luthra@ti.com>, Vaishnav Achath <vaishnav.a@ti.com>,
         Hari Nagalla <hnagalla@ti.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1749; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=pmr8txSe1Pu1GvCkSBqddn+aqWc9cRutSnhOiL2s9iw=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBk0+0weAntwJxXUXg42ifMuN5WYbCqgiJkj0SzQ
- OmI5lKfXl+JAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZNPtMAAKCRBD3pH5JJpx
- RRFQD/wMaIfpOdrXHlhQjBqNBdY8rCYcxRaaCOUb1hrQWXLh1Qbm0J2lT1eH6dak6F6KyH94Cj7
- 0YLfHHV4Dx6TDZrL/mkGDiEE4WthEvUggj2pFcihjU+semYUskCdRq6XXkCKprw9b607p4LLRnd
- smcUGAqdFLH0969LLPBvRs3IJwmXsoLFbm0n5K+d01YC6UqFQBC1ivLi0TvhHOlu6NBeCAabiFG
- uduf9J9AZgh9/1Z72eGMs7Ae0hvmoB0MO8Ye1EArhpKSoIqbRifI8qThrwPAwhzG9WUW60tzlNC
- 4MuxWtUXYSs4xWXFJYzezRg1TpOzrRy3VEvpfmt5PmvOMdzrwgNBb9/PVFDX6XUECofDhjZVEKa
- ZUvP5ws0g/tUWCx6tj66+NJynbgqLdXQu9weAcBogv2J3jnuRZhMF2Mh7ARZTAe5FKtFjKTQSZ7
- mxhk94UYNSZBkmutq88Ku247CSMijhpcKNn3ByHfSu+7u0hv2eo2WTglr5DzcbfDnenmF/Gs6df
- y4tyOgvc8RZScZLOM/6Zu/qIYqo2yBH7eWTlbegNKdmPjWB+4uaBpRv7KgmYZDUF97tWJxKP2i9
- bxxfa1NlDg6fw0okBJ2eJnOajzqBUXqpAEigieY8Ka2k5PQh7+uguMQ8puDCHG4OTg8/srdeqWK
- WpVDrDLnZQwyK1Q==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3881; i=j-luthra@ti.com;
+ h=from:subject:message-id; bh=RMpsPB4XdwxaSFr7ajZF4M8Jg1mgkdClDXv9BHS97K0=;
+ b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBk0+0yI0b0V64Pkg7YYv/gAU0gb8IRHMFa0mWxX
+ KjoqPLaiwmJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZNPtMgAKCRBD3pH5JJpx
+ RSpoEACJTY929b3uE2+v6J/JZe+VgZ2SHWYi/QYDjqXUFiXmQn3hJ/c+WDtk+F3x6hQXpfUFnOH
+ 4x+9JYMZSCii+pQIhuk9VJykEaZXrS3Hshxl/1hSOU/gEdUuUR50W6rwbWJqJh2LV24VbW3ALw9
+ bsOwmGvmHjUS2HgyCye+O+54V2weUAK6t7HdZrpYq8BOA+e9HBWxnxUBBhtrCAnXZCyVcpYYm8q
+ mcO/qo01AAhEb82kYu3kfoNej524uL+h71TNFF36cHOJX2ncK3wMkl09zuf8APgFUJer5OZEDEH
+ 1yBlvInzYDLN8S736EIEKsEyyq+TxddKsOgXmMcFp8vzMYKdRJpyuUz1gq8hCbxCpWrsfhSURgo
+ Lvlaed8/odknKnlZ8RaHRqitFdckXoQV65n74yNEWFmuomaylvMdYQRqflD4D2qZKIvvpavkbBw
+ w3lNZGSuO+8UwLmFucSka6BMUZWZEUSywt9mye1E8AXrsaLqhzrvJr5FxAms7/WZV5twlM/nIWi
+ AkJrbTQf/r0EYCU3TcYHhAENLG+8Uq6ON2XMZLvpFYpHVRITx34kiLUDtv0sIUXV+kRlEPB6n3M
+ MRtdPAm29Sr8QqOyhiO3AEr1CzRej4iVYFDFe5o0rhDb7pYp6YyvIw/KdQsAP8woS/gmQc0Emwg
+ PapBPTnmjNlvTIw==
 X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
  fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
@@ -90,48 +90,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Apelete Seketeli <aseketeli@baylibre.com>
+From: Jerome Neanne <jneanne@baylibre.com>
 
-This patch fixes the interrupt range for wakeup and main domain gpio
-interrupt routers. They were wrongly subtracted by 32 instead of
-following what is defined in the interrupt map in the TRM (Table 9-35).
+This patch adds support for TPS6593 PMIC on wkup I2C0 bus.
+This device provides regulators (bucks and LDOs), but also
+GPIOs, a RTC, a watchdog, an ESM (Error Signal Monitor)
+which monitors the SoC error output signal, and a PFSM
+(Pre-configurable Finite State Machine) which manages the
+operational modes of the PMIC.
 
-Fixes: 4664ebd8346a ("arm64: dts: ti: Add initial support for J784S4 SoC")
-Link: https://www.ti.com/lit/ug/spruj52c/spruj52c.pdf
-Signed-off-by: Apelete Seketeli <aseketeli@baylibre.com>
+Signed-off-by: Jerome Neanne <jneanne@baylibre.com>
 Signed-off-by: Esteban Blanc <eblanc@baylibre.com>
 Signed-off-by: Jai Luthra <j-luthra@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi       | 2 +-
- arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 104 +++++++++++++++++++++++++++++++
+ 1 file changed, 104 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-index a04c44708a09..013cf4ed98d8 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-@@ -60,7 +60,7 @@ main_gpio_intr: interrupt-controller@a00000 {
- 		#interrupt-cells = <1>;
- 		ti,sci = <&sms>;
- 		ti,sci-dev-id = <10>;
--		ti,interrupt-ranges = <8 360 56>;
-+		ti,interrupt-ranges = <8 392 56>;
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+index edc1009b2d1e..29202ef40f78 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+@@ -251,6 +251,10 @@ vdd_sd_dv: regulator-TLV71033 {
  	};
+ };
  
- 	main_pmx0: pinctrl@11c000 {
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-index 740ee794d7b9..77a45f97e28b 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-@@ -107,7 +107,7 @@ wkup_gpio_intr: interrupt-controller@42200000 {
- 		#interrupt-cells = <1>;
- 		ti,sci = <&sms>;
- 		ti,sci-dev-id = <177>;
--		ti,interrupt-ranges = <16 928 16>;
-+		ti,interrupt-ranges = <16 960 16>;
++&wkup_gpio0 {
++	status = "okay";
++};
++
+ &main_pmx0 {
+ 	main_uart8_pins_default: main-uart8-default-pins {
+ 		pinctrl-single,pins = <
+@@ -365,6 +369,17 @@ J784S4_WKUP_IOPAD(0x170, PIN_INPUT, 0) /* (Y36) MCU_ADC1_AIN7 */
  	};
+ };
  
- 	/* MCU_TIMERIO pad input CTRLMMR_MCU_TIMER*_CTRL registers */
++&wkup_pmx1 {
++	status = "okay";
++
++	pmic_irq_pins_default: pmic-irq-default-pins {
++		pinctrl-single,pins = <
++			/* (G33) MCU_OSPI1_CSn1.WKUP_GPIO0_39 */
++			J784S4_WKUP_IOPAD(0x028, PIN_INPUT, 7)
++		>;
++	};
++};
++
+ &wkup_pmx0 {
+ 	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-default-pins {
+ 		pinctrl-single,pins = <
+@@ -423,6 +438,95 @@ eeprom@50 {
+ 		compatible = "atmel,24c256";
+ 		reg = <0x50>;
+ 	};
++
++	tps659413: pmic@48 {
++		compatible = "ti,tps6594-q1";
++		reg = <0x48>;
++		system-power-controller;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pmic_irq_pins_default>;
++		interrupt-parent = <&wkup_gpio0>;
++		interrupts = <39 IRQ_TYPE_EDGE_FALLING>;
++		ti,primary-pmic;
++
++		gpio-controller;
++		#gpio-cells = <2>;
++
++		buck12-supply = <&vsys_3v3>;
++		buck3-supply = <&vsys_3v3>;
++		buck4-supply = <&vsys_3v3>;
++		buck5-supply = <&vsys_3v3>;
++		ldo1-supply = <&vsys_3v3>;
++		ldo2-supply = <&vsys_3v3>;
++		ldo3-supply = <&vsys_3v3>;
++		ldo4-supply = <&vsys_3v3>;
++
++		regulators {
++			bucka12: buck12 {
++				regulator-name = "vdd_ddr_1v1";
++				regulator-min-microvolt = <1100000>;
++				regulator-max-microvolt = <1100000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			bucka3: buck3 {
++				regulator-name = "vdd_ram_0v85";
++				regulator-min-microvolt = <850000>;
++				regulator-max-microvolt = <850000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			bucka4: buck4 {
++				regulator-name = "vdd_io_1v8";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			bucka5: buck5 {
++				regulator-name = "vdd_mcu_0v85";
++				regulator-min-microvolt = <850000>;
++				regulator-max-microvolt = <850000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldoa1: ldo1 {
++				regulator-name = "vdd_mcuio_1v8";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldoa2: ldo2 {
++				regulator-name = "vdd_mcuio_3v3";
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldoa3: ldo3 {
++				regulator-name = "vds_dll_0v8";
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <800000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldoa4: ldo4 {
++				regulator-name = "vda_mcu_1v8";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++		};
++	};
+ };
+ 
+ &mcu_uart0 {
 
 -- 
 2.41.0
