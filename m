@@ -2,251 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36295776057
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34151776051
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232789AbjHINNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 09:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40764 "EHLO
+        id S232704AbjHINN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 09:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232779AbjHINNq (ORCPT
+        with ESMTP id S232583AbjHINN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 09:13:46 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB4F212F
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:13:43 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-5234b80e9b6so2144756a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 06:13:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691586822; x=1692191622;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q3q+oF8DcCXzUb0+o6vnkiFGnNZXUzpVlmsAZC2SnCA=;
-        b=KFIXC5UzyX9KW1ybbG2szF/GuAnirPt07l/xnJN/LhE7O4xCzhvLsPdgbXKD6E7eMf
-         ikIIgzUrA1n/ViVW3Urjqgdo+1QxEiaoyTDPJsg4Jv+ew18M/dXHl3khl255ksGu8tOf
-         8MTylTWyWWQsUM+BnJbn2tRySwouFHGc9g4KetOxMFCSVqbU0idDTrNrDig3npuOVsiT
-         HswwwIkV7SidVYYiyLMNHTHaXS7/dkUGCZwPT+0E2JO79uhkU2thz6DQpT25eCGt197J
-         hY0cZbi+0h5xrfLsyRvIpGFdVz4rUeEd+GPZBGq2menxW0y9J1duxc/Obw5yZdFqn2LY
-         Mp+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691586822; x=1692191622;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q3q+oF8DcCXzUb0+o6vnkiFGnNZXUzpVlmsAZC2SnCA=;
-        b=IlegXPgjdgjqHVaBB+egVUs1Nl3Oi5KEYcLMLZglp6w4wFJxtI0t9Q/isZyCnxJX4j
-         omMilVDPORxEHy7BuJ1a/cVLYzEZPkWblICLK1h5JhO/ncAhNDfwA53pNr0yTn0WtfEG
-         7qxXYHX4nwABC6yTAJ0kuYR2q04j6Uf7ogrQW1Wn4CZyJJ2hzE3AzldjH83PW6tnV5vt
-         GQMujUHP4bh2MEalgC0y4mr+bUIVrqXZQCTlNMXXyXXr5F9qamoRC8eAml1ocoF+6TkJ
-         wjE5ZhG2kKGgx00JP9vSrwLRQZLeSNWFGtJjR+atedaAtlvb/6NR3DshF9lwxBtozsrr
-         0myQ==
-X-Gm-Message-State: AOJu0Yxz/LoCJ6GN8z7d10OwVkytPQG2n5un7yDAOUA2acg8Wo8Zmwzz
-        uOwh2KGDuqw9xvxiobP5RtX0Cc5P80pUydx2idMCFQ==
-X-Google-Smtp-Source: AGHT+IGEB9EVX/XItxVQk5492ynxBiXJbmSMOAf0p28E04IRCS29Zhz82+d3IYv2qzx3ltff4HX5X12ylLOSuA7OeSM=
-X-Received: by 2002:a17:906:54:b0:99c:1b9a:b09e with SMTP id
- 20-20020a170906005400b0099c1b9ab09emr2112215ejg.75.1691586822187; Wed, 09 Aug
- 2023 06:13:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230809045810.1659356-1-yosryahmed@google.com>
- <ZNNTgZVPZipTL/UM@dhcp22.suse.cz> <CAJD7tkYhxbd2e+4HMZVKUfD4cx6oDauna3vLmttNPLCmFNtpgA@mail.gmail.com>
- <ZNONgeoytpkchHga@dhcp22.suse.cz>
-In-Reply-To: <ZNONgeoytpkchHga@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 9 Aug 2023 06:13:05 -0700
-Message-ID: <CAJD7tkb9C77UUxAykw_uMQvkzGyaZOZhM0nwWn_kcPjV0umyuA@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 9 Aug 2023 09:13:26 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D57FC1
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:13:25 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B7F8321860;
+        Wed,  9 Aug 2023 13:13:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691586803; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jZTQ6DivAxQuB9lOx+zjipgpMW3w22NgxGhx8jY21V8=;
+        b=jWM5V1hNWgc8PmJGsRfjeWJilEevAHEtjbea7athz1zIfUM9Y5pWw/UuKK9ns7rDgrjvJq
+        NAupz3ZiX+tPjcnz5MRrVs3lr8sNKYrNyynDIk1fIw0LFvRcwyIJCxYclIuo0XqNPMx81g
+        XfsJ5xrMro07zPd04PMjgLnIR8oK9go=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691586803;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jZTQ6DivAxQuB9lOx+zjipgpMW3w22NgxGhx8jY21V8=;
+        b=TA3AC3lKlQ7a1L98S1Fs9GmOJap9RTbCqimhnSCcHLl+3vCIRUUji/Rv0uOJo7fAJPTWeo
+        GbbM78+ZkVhHKABA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 845D713251;
+        Wed,  9 Aug 2023 13:13:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id xSZsH/OQ02T/BwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 09 Aug 2023 13:13:23 +0000
+Date:   Wed, 09 Aug 2023 15:13:23 +0200
+Message-ID: <87wmy4e4uk.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Karol Herbst <kherbst@redhat.com>
+Cc:     Takashi Iwai <tiwai@suse.de>, nouveau@lists.freedesktop.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org, regressions@leemhuis.info,
+        Borislav Petkov <bp@alien8.de>, Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: 2b5d1c29f6c4 ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not PMGR AUX interrupts")
+In-Reply-To: <CACO55ts9YWF7nLi3Zs4xKySpdHyUFgf4r566cKx3FwNTCaz0Sg@mail.gmail.com>
+References: <20230806213107.GFZNARG6moWpFuSJ9W@fat_crate.local>
+        <CACO55tvZD5U4J8DawFTRVnV-dLYLngfhuqO29_sWNEGofKfnBg@mail.gmail.com>
+        <20230807150521.GGZNEIMQ9rsyCmkpoA@fat_crate.local>
+        <CACO55tvWuSdwdirj7S3Dk-r4NAw8jC8g5RHKFd62WXi43iQP-w@mail.gmail.com>
+        <87fs4sfu54.wl-tiwai@suse.de>
+        <CACO55tszwFEgt=8xn4auAE7KJVs3ybGG68OzL9HJt19XGVhhHQ@mail.gmail.com>
+        <874jl8fngo.wl-tiwai@suse.de>
+        <CACO55ts9YWF7nLi3Zs4xKySpdHyUFgf4r566cKx3FwNTCaz0Sg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 5:58=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
-:
->
-> On Wed 09-08-23 05:31:04, Yosry Ahmed wrote:
-> > On Wed, Aug 9, 2023 at 1:51=E2=80=AFAM Michal Hocko <mhocko@suse.com> w=
-rote:
+On Wed, 09 Aug 2023 14:19:23 +0200,
+Karol Herbst wrote:
+> 
+> On Wed, Aug 9, 2023 at 1:46 PM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > On Wed, 09 Aug 2023 13:42:09 +0200,
+> > Karol Herbst wrote:
 > > >
-> > > On Wed 09-08-23 04:58:10, Yosry Ahmed wrote:
-> > > > Over time, the memcg code added multiple optimizations to the stats
-> > > > flushing path that introduce a tradeoff between accuracy and
-> > > > performance. In some contexts (e.g. dirty throttling, refaults, etc=
-), a
-> > > > full rstat flush of the stats in the tree can be too expensive. Suc=
-h
-> > > > optimizations include [1]:
-> > > > (a) Introducing a periodic background flusher to keep the size of t=
-he
-> > > > update tree from growing unbounded.
-> > > > (b) Allowing only one thread to flush at a time, and other concurre=
-nt
-> > > > flushers just skip the flush. This avoids a thundering herd problem
-> > > > when multiple reclaim/refault threads attempt to flush the stats at
-> > > > once.
-> > > > (c) Only executing a flush if the magnitude of the stats updates ex=
-ceeds
-> > > > a certain threshold.
+> > > On Wed, Aug 9, 2023 at 11:22 AM Takashi Iwai <tiwai@suse.de> wrote:
 > > > >
-> > > > These optimizations were necessary to make flushing feasible in
-> > > > performance-critical paths, and they come at the cost of some accur=
-acy
-> > > > that we choose to live without. On the other hand, for flushes invo=
-ked
-> > > > when userspace is reading the stats, the tradeoff is less appealing
-> > > > This code path is not performance-critical, and the inaccuracies ca=
-n
-> > > > affect userspace behavior. For example, skipping flushing when ther=
-e is
-> > > > another ongoing flush is essentially a coin flip. We don't know if =
-the
-> > > > ongoing flush is done with the subtree of interest or not.
-> > >
-> > > I am not convinced by this much TBH. What kind of precision do you
-> > > really need and how much off is what we provide?
-> > >
-> > > More expensive read of stats from userspace is quite easy to notice
-> > > and usually reported as a regression. So you should have a convincing
-> > > argument that an extra time spent is really worth it. AFAIK there are
-> > > many monitoring (top like) tools which simply read those files regula=
-rly
-> > > just to show numbers and they certainly do not need a high level of
-> > > precision.
-> >
-> > We used to spend this time before commit fd25a9e0e23b ("memcg: unify
-> > memcg stat flushing") which generalized the "skip if ongoing flush"
-> > for all stat flushing. As far I know, the problem was contention on
-> > the flushing lock which also affected critical paths like refault.
-> >
-> > The problem is that the current behavior is indeterministic, if cpu A
-> > tries to flush stats and cpu B is already doing that, cpu A will just
-> > skip. At that point, the cgroup(s) that cpu A cares about may have
-> > been fully flushed, partially flushed (in terms of cpus), or not
-> > flushed at all. We have no idea. We just know that someone else is
-> > flushing something. IOW, in some cases the flush request will be
-> > completely ignored and userspace will read stale stats (up to 2s + the
-> > periodic flusher runtime).
->
-> Yes, that is certainly true but why does that matter? Stats are always a
-> snapshot of the past. Do we get an inconsistent image that would be
-> actively harmful.
-
-That can very well be the case because we may be in a state where some
-cpus are flushed and some aren't. Also sometimes a few seconds is too
-old. We have some workloads that read the stats every 1-2 seconds to
-keep a fresh state, and they certainly do not expect stats to be 2+
-seconds old when they read them.
-
->
-> > Some workloads need to read up-to-date stats as feedback to actions
-> > (e.g. after proactive reclaim, or for userspace OOM killing purposes),
-> > and reading such stale stats causes regressions or misbehavior by
-> > userspace.
->
-> Please tell us more about those and why should all others that do not
-> require such a precision should page that price as well.
-
-Everyone used to pay this price though and no one used to complain.
-Even before rstat, we used to iterate the entire hierarchy when
-userspace reads the stats. rstat came in and made this much more
-efficient by only iterating the subtrees that actually have updates.
-
-The "skip if someone else is flushing" behavior was introduced for
-flushers in critical paths (e.g. refault), and hurting the accuracy
-for userspace readers was a side effect of it. This patch is trying to
-remedy this side effect by restoring the old behavior for userspace
-reads.
-
-One other side effect is testing. Some tests started becoming flaky
-because a test performs an action and expects the state of the system
-to change in a certain way deterministically. In some cases the
-flushing race leads to false negatives.
-
->
-> > > [...]
-> > > > @@ -639,17 +639,24 @@ static inline void memcg_rstat_updated(struct=
- mem_cgroup *memcg, int val)
-> > > >       }
-> > > >  }
+> > > > On Tue, 08 Aug 2023 12:39:32 +0200,
+> > > > Karol Herbst wrote:
+> > > > >
+> > > > > On Mon, Aug 7, 2023 at 5:05 PM Borislav Petkov <bp@alien8.de> wrote:
+> > > > > >
+> > > > > > On Mon, Aug 07, 2023 at 01:49:42PM +0200, Karol Herbst wrote:
+> > > > > > > in what way does it stop? Just not progressing? That would be kinda
+> > > > > > > concerning. Mind tracing with what arguments `nvkm_uevent_add` is
+> > > > > > > called with and without that patch?
+> > > > > >
+> > > > > > Well, me dumping those args I guess made the box not freeze before
+> > > > > > catching a #PF over serial. Does that help?
+> > > > > >
+> > > > > > ....
+> > > > > > [    3.410135] Unpacking initramfs...
+> > > > > > [    3.416319] software IO TLB: mapped [mem 0x00000000a877d000-0x00000000ac77d000] (64MB)
+> > > > > > [    3.418227] Initialise system trusted keyrings
+> > > > > > [    3.432273] workingset: timestamp_bits=56 max_order=22 bucket_order=0
+> > > > > > [    3.439006] ntfs: driver 2.1.32 [Flags: R/W].
+> > > > > > [    3.443368] fuse: init (API version 7.38)
+> > > > > > [    3.447601] 9p: Installing v9fs 9p2000 file system support
+> > > > > > [    3.453223] Key type asymmetric registered
+> > > > > > [    3.457332] Asymmetric key parser 'x509' registered
+> > > > > > [    3.462236] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 250)
+> > > > > > [    3.475865] efifb: probing for efifb
+> > > > > > [    3.479458] efifb: framebuffer at 0xf9000000, using 1920k, total 1920k
+> > > > > > [    3.485969] efifb: mode is 800x600x32, linelength=3200, pages=1
+> > > > > > [    3.491872] efifb: scrolling: redraw
+> > > > > > [    3.495438] efifb: Truecolor: size=8:8:8:8, shift=24:16:8:0
+> > > > > > [    3.502349] Console: switching to colour frame buffer device 100x37
+> > > > > > [    3.509564] fb0: EFI VGA frame buffer device
+> > > > > > [    3.514013] ACPI: \_PR_.CP00: Found 4 idle states
+> > > > > > [    3.518850] ACPI: \_PR_.CP01: Found 4 idle states
+> > > > > > [    3.523687] ACPI: \_PR_.CP02: Found 4 idle states
+> > > > > > [    3.528515] ACPI: \_PR_.CP03: Found 4 idle states
+> > > > > > [    3.533346] ACPI: \_PR_.CP04: Found 4 idle states
+> > > > > > [    3.538173] ACPI: \_PR_.CP05: Found 4 idle states
+> > > > > > [    3.543003] ACPI: \_PR_.CP06: Found 4 idle states
+> > > > > > [    3.544219] Freeing initrd memory: 8196K
+> > > > > > [    3.547844] ACPI: \_PR_.CP07: Found 4 idle states
+> > > > > > [    3.609542] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+> > > > > > [    3.616224] 00:05: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+> > > > > > [    3.625552] serial 0000:00:16.3: enabling device (0000 -> 0003)
+> > > > > > [    3.633034] 0000:00:16.3: ttyS1 at I/O 0xf0a0 (irq = 17, base_baud = 115200) is a 16550A
+> > > > > > [    3.642451] Linux agpgart interface v0.103
+> > > > > > [    3.647141] ACPI: bus type drm_connector registered
+> > > > > > [    3.653261] Console: switching to colour dummy device 80x25
+> > > > > > [    3.659092] nouveau 0000:03:00.0: vgaarb: deactivate vga console
+> > > > > > [    3.665174] nouveau 0000:03:00.0: NVIDIA GT218 (0a8c00b1)
+> > > > > > [    3.784585] nouveau 0000:03:00.0: bios: version 70.18.83.00.08
+> > > > > > [    3.792244] nouveau 0000:03:00.0: fb: 512 MiB DDR3
+> > > > > > [    3.948786] nouveau 0000:03:00.0: DRM: VRAM: 512 MiB
+> > > > > > [    3.953755] nouveau 0000:03:00.0: DRM: GART: 1048576 MiB
+> > > > > > [    3.959073] nouveau 0000:03:00.0: DRM: TMDS table version 2.0
+> > > > > > [    3.964808] nouveau 0000:03:00.0: DRM: DCB version 4.0
+> > > > > > [    3.969938] nouveau 0000:03:00.0: DRM: DCB outp 00: 02000360 00000000
+> > > > > > [    3.976367] nouveau 0000:03:00.0: DRM: DCB outp 01: 02000362 00020010
+> > > > > > [    3.982792] nouveau 0000:03:00.0: DRM: DCB outp 02: 028003a6 0f220010
+> > > > > > [    3.989223] nouveau 0000:03:00.0: DRM: DCB outp 03: 01011380 00000000
+> > > > > > [    3.995647] nouveau 0000:03:00.0: DRM: DCB outp 04: 08011382 00020010
+> > > > > > [    4.002076] nouveau 0000:03:00.0: DRM: DCB outp 05: 088113c6 0f220010
+> > > > > > [    4.008511] nouveau 0000:03:00.0: DRM: DCB conn 00: 00101064
+> > > > > > [    4.014151] nouveau 0000:03:00.0: DRM: DCB conn 01: 00202165
+> > > > > > [    4.021710] nvkm_uevent_add: uevent: 0xffff888100242100, event: 0xffff8881022de1a0, id: 0x0, bits: 0x1, func: 0x0000000000000000
+> > > > > > [    4.033680] nvkm_uevent_add: uevent: 0xffff888100242300, event: 0xffff8881022de1a0, id: 0x0, bits: 0x1, func: 0x0000000000000000
+> > > > > > [    4.045429] nouveau 0000:03:00.0: DRM: MM: using COPY for buffer copies
+> > > > > > [    4.052059] stackdepot: allocating hash table of 1048576 entries via kvcalloc
+> > > > > > [    4.067191] nvkm_uevent_add: uevent: 0xffff888100242800, event: 0xffff888104b3e260, id: 0x0, bits: 0x1, func: 0x0000000000000000
+> > > > > > [    4.078936] nvkm_uevent_add: uevent: 0xffff888100242900, event: 0xffff888104b3e260, id: 0x1, bits: 0x1, func: 0x0000000000000000
+> > > > > > [    4.090514] nvkm_uevent_add: uevent: 0xffff888100242a00, event: 0xffff888102091f28, id: 0x1, bits: 0x3, func: 0xffffffff8177b700
+> > > > > > [    4.102118] tsc: Refined TSC clocksource calibration: 3591.345 MHz
+> > > > > > [    4.108342] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x33c4635c383, max_idle_ns: 440795314831 ns
+> > > > > > [    4.108401] nvkm_uevent_add: uevent: 0xffff8881020b6000, event: 0xffff888102091f28, id: 0xf, bits: 0x3, func: 0xffffffff8177b700
+> > > > > > [    4.129864] clocksource: Switched to clocksource tsc
+> > > > > > [    4.131478] [drm] Initialized nouveau 1.3.1 20120801 for 0000:03:00.0 on minor 0
+> > > > > > [    4.143806] BUG: kernel NULL pointer dereference, address: 0000000000000020
+> > > > >
+> > > > > ahh, that would have been good to know :) Mind figuring out what's
+> > > > > exactly NULL inside nvif_object_mthd? Or rather what line
+> > > > > `nvif_object_mthd+0x136` belongs to, then it should be easy to figure
+> > > > > out what's wrong here.
 > > > >
-> > > > -static void do_flush_stats(void)
-> > > > +static void do_flush_stats(bool full)
-> > > >  {
-> > > > +     if (!atomic_read(&stats_flush_ongoing) &&
-> > > > +         !atomic_xchg(&stats_flush_ongoing, 1))
-> > > > +             goto flush;
-> > > > +
-> > > >       /*
-> > > > -      * We always flush the entire tree, so concurrent flushers ca=
-n just
-> > > > -      * skip. This avoids a thundering herd problem on the rstat g=
-lobal lock
-> > > > -      * from memcg flushers (e.g. reclaim, refault, etc).
-> > > > +      * We always flush the entire tree, so concurrent flushers ca=
-n choose to
-> > > > +      * skip if accuracy is not critical. Otherwise, wait for the =
-ongoing
-> > > > +      * flush to complete. This avoids a thundering herd problem o=
-n the rstat
-> > > > +      * global lock from memcg flushers (e.g. reclaim, refault, et=
-c).
-> > > >        */
-> > > > -     if (atomic_read(&stats_flush_ongoing) ||
-> > > > -         atomic_xchg(&stats_flush_ongoing, 1))
-> > > > -             return;
-> > > > -
-> > > > +     while (full && atomic_read(&stats_flush_ongoing) =3D=3D 1) {
-> > > > +             if (!cond_resched())
-> > > > +                     cpu_relax();
+> > > > FWIW, we've hit the bug on openSUSE Tumbleweed 6.4.8 kernel:
+> > > >   https://bugzilla.suse.com/show_bug.cgi?id=1214073
+> > > > Confirmed that reverting the patch cured the issue.
+> > > >
+> > > > FWIW, loading nouveau showed a refcount_t warning just before the NULL
+> > > > dereference:
+> > > >
 > > >
-> > > You are reinveting a mutex with spinning waiter. Why don't you simply
-> > > make stats_flush_ongoing a real mutex and make use try_lock for !full
-> > > flush and normal lock otherwise?
+> > > mh, I wonder if one of those `return -EINVAL;` branches is hit where
+> > > it wasn't before. Could some of you check if `nvkm_uconn_uevent`
+> > > returns -EINVAL with that patch where it didn't before? I wonder if
+> > > it's the `if (&outp->head == &conn->disp->outps) return -EINVAL;` and
+> > > if remove that fixes the crash?
 > >
-> > So that was actually a spinlock at one point, when we used to skip if
-> > try_lock failed.
->
-> AFAICS cgroup_rstat_flush is allowed to sleep so spinlocks are not
-> really possible.
->
-> > We opted for an atomic because the lock was only used
-> > in a try_lock fashion. The problem here is that the atomic is used to
-> > ensure that only one thread actually attempts to flush at a time (and
-> > others skip/wait), to avoid a thundering herd problem on
-> > cgroup_rstat_lock.
+> > Please give a patch, then I can build a kernel and let the reporter
+> > testing it :)
 > >
-> > Here, what I am trying to do is essentially equivalent to "wait until
-> > the lock is available but don't grab it". If we make
-> > stats_flush_ongoing a mutex, I am afraid the thundering herd problem
-> > will be reintroduced for stats_flush_ongoing this time.
->
-> You will have potentially many spinners for something that might take
-> quite a lot of time (sleep) if there is nothing else to schedule. I do
-> not think this is a proper behavior. Really, you shouldn't be busy
-> waiting for a sleeper.
->
-> > I am not sure if there's a cleaner way of doing this, but I am
-> > certainly open for suggestions. I also don't like how the spinning
-> > loop looks as of now.
->
-> mutex_try_lock for non-critical flushers and mutex_lock of syncing ones.
-> We can talk a custom locking scheme if that proves insufficient or
-> problematic.
-> --
-> Michal Hocko
-> SUSE Labs
+> 
+> attached a patch.
+
+Thanks.  Now I'm building a test kernel and asked the reporter for
+testing it.
+
+> Anyway, I'll be on PTO for the rest of the week and I kinda wished
+> somebody else would have time to figure out what's going wrong there,
+> or at least simply figuring out what the difference is. Not having
+> direct access to such a GPU also makes it a bit harder. Once I'm back
+> I'll check with all my GPUs if there is one hitting a difference here,
+> but the ones I've tested it with so far were all fine sadly.
+
+If this can't be fixed quickly, I suppose it's safer to revert it from
+6.4.y for now.  6.5 is still being cooked, but 6.4.x is already in
+wide deployment, hence the regression has to be addressed quickly.
+
+
+Takashi
+
+> 
+> >
+> > thanks,
+> >
+> > Takashi
+> >
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
+> index 46b057fe1412e..3666dfb7ecbf4 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
+> @@ -85,8 +85,8 @@ nvkm_uconn_uevent(struct nvkm_object *object, void *argv, u32 argc, struct nvkm_
+>  			break;
+>  	}
+>  
+> -	if (&outp->head == &conn->disp->outps)
+> -		return -EINVAL;
+> +//	if (&outp->head == &conn->disp->outps)
+> +//		return -EINVAL;
+>  
+>  	if (outp->dp.aux && !outp->info.location) {
+>  		if (args->v0.types & NVIF_CONN_EVENT_V0_PLUG  ) bits |= NVKM_I2C_PLUG;
