@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C69BB775FB8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C010775FB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232655AbjHIMui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53018 "EHLO
+        id S232700AbjHIMuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232596AbjHIMuc (ORCPT
+        with ESMTP id S232623AbjHIMuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:50:32 -0400
+        Wed, 9 Aug 2023 08:50:35 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB271FD4
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:50:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC67E2108
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:50:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691585432; x=1723121432;
+  t=1691585433; x=1723121433;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=DYxnh/kP9R8JBvFnqsi/X/T1RmcQV+dkPJCY2p+HqgM=;
-  b=IY1PsioQTbd2OM5Pk/Pbong5lEIn5vBxaOoMJ0LTUI7EG851z+JNiptk
-   9XP3NkP0bRoPcRY/FBNTmKPQBKDJcG5xyJu/sDc9vP8tCYUUTEVS/27ke
-   vGhfVEZkaeVi6g/aC27CMHyy4vl6cQE3OtEWC2zuQt/QIRPdBJog73hPm
-   hHKwrlUV0TUl1lWIUkKIu9dY1SQVRJ9K7hnWbPqdUtrMfvqljzcFx+y9C
-   URIS1yFlc8Y/8/F5XXiy+L7tq/gsJNH9+INenEHu7Uxqx5P8mSt4Cqbas
-   +2ALMJ0MBSB+kmBLqndeTN+mb71raffW59JCDEMP1TA0P9RavvNzgK4mG
+  bh=Q97WzXCK6i2hC49d5NozMEhqvYe2vprBvZi0/iS7G6U=;
+  b=Uj/+5GH/YULMRrUtnvRpJex4o3zv8oE45FgDtvDdKwYkuaydV+4ygLFj
+   Le7R1QMg70D9XX1ZIk/VmY/Od1tw7XES4mMHXm6Vi2NefeAPx9zPlfaE7
+   d2CIXgfpZXCklvmq8NGPcdbvxRDvijPuMpzLlX4ZM904HBPimORtUL8vj
+   F1cBIEodd1rVKWyussDvNTRQ4tIGr0dlpi+9V9JVXI1ywU3LWCftFx7ph
+   myrrNjFrFisk/plAb6j2dqFCflmzUNdsX3pEoW/SEwExDDcjJTg4ukhQe
+   hygpJC7tQ83IPLRMCsyTrNl28C0ZkRyddpoYYcHbzBrPk5Ee1QUuhH7U2
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="374821699"
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="374821709"
 X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="374821699"
+   d="scan'208";a="374821709"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 05:50:31 -0700
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 05:50:33 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="855521711"
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="855521729"
 X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="855521711"
+   d="scan'208";a="855521729"
 Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by orsmga004.jf.intel.com with ESMTP; 09 Aug 2023 05:50:30 -0700
+  by orsmga004.jf.intel.com with ESMTP; 09 Aug 2023 05:50:32 -0700
 From:   Lu Baolu <baolu.lu@linux.intel.com>
 To:     Joerg Roedel <joro@8bytes.org>
 Cc:     YueHaibing <yuehaibing@huawei.com>,
         Yanfei Xu <yanfei.xu@intel.com>,
         Jacob Pan <jacob.jun.pan@linux.intel.com>,
         iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 04/13] iommu/vt-d: Remove pasid_mutex
-Date:   Wed,  9 Aug 2023 20:47:57 +0800
-Message-Id: <20230809124806.45516-5-baolu.lu@linux.intel.com>
+Subject: [PATCH 05/13] iommu/vt-d: Make prq draining code generic
+Date:   Wed,  9 Aug 2023 20:47:58 +0800
+Message-Id: <20230809124806.45516-6-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230809124806.45516-1-baolu.lu@linux.intel.com>
 References: <20230809124806.45516-1-baolu.lu@linux.intel.com>
@@ -63,125 +63,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pasid_mutex was used to protect the paths of set/remove_dev_pasid().
-It's duplicate with iommu_sva_lock. Remove it to avoid duplicate code.
+Currently draining page requests and responses for a pasid is part of SVA
+implementation. This is because the driver only supports attaching an SVA
+domain to a device pasid. As we are about to support attaching other types
+of domains to a device pasid, the prq draining code becomes generic.
 
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-Link: https://lore.kernel.org/r/20230802212427.1497170-5-jacob.jun.pan@linux.intel.com
+Link: https://lore.kernel.org/r/20230802212427.1497170-6-jacob.jun.pan@linux.intel.com
 ---
- drivers/iommu/intel/svm.c | 45 +++++----------------------------------
- 1 file changed, 5 insertions(+), 40 deletions(-)
+ drivers/iommu/intel/iommu.h |  2 ++
+ drivers/iommu/intel/iommu.c | 30 +++++++++++++++++++-----------
+ drivers/iommu/intel/svm.c   | 17 ++---------------
+ 3 files changed, 23 insertions(+), 26 deletions(-)
 
+diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
+index 1c5e1d88862b..6d94a29f5d52 100644
+--- a/drivers/iommu/intel/iommu.h
++++ b/drivers/iommu/intel/iommu.h
+@@ -844,6 +844,7 @@ int intel_svm_page_response(struct device *dev, struct iommu_fault_event *evt,
+ 			    struct iommu_page_response *msg);
+ struct iommu_domain *intel_svm_domain_alloc(void);
+ void intel_svm_remove_dev_pasid(struct device *dev, ioasid_t pasid);
++void intel_drain_pasid_prq(struct device *dev, u32 pasid);
+ 
+ struct intel_svm_dev {
+ 	struct list_head list;
+@@ -862,6 +863,7 @@ struct intel_svm {
+ };
+ #else
+ static inline void intel_svm_check(struct intel_iommu *iommu) {}
++static inline void intel_drain_pasid_prq(struct device *dev, u32 pasid) {}
+ static inline struct iommu_domain *intel_svm_domain_alloc(void)
+ {
+ 	return NULL;
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index bb8316fec1aa..bdde38a5e43a 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -4720,21 +4720,29 @@ static void intel_iommu_remove_dev_pasid(struct device *dev, ioasid_t pasid)
+ 	struct intel_iommu *iommu = device_to_iommu(dev, NULL, NULL);
+ 	struct iommu_domain *domain;
+ 
+-	/* Domain type specific cleanup: */
+ 	domain = iommu_get_domain_for_dev_pasid(dev, pasid, 0);
+-	if (domain) {
+-		switch (domain->type) {
+-		case IOMMU_DOMAIN_SVA:
+-			intel_svm_remove_dev_pasid(dev, pasid);
+-			break;
+-		default:
+-			/* should never reach here */
+-			WARN_ON(1);
+-			break;
+-		}
++	if (WARN_ON_ONCE(!domain))
++		goto out_tear_down;
++
++	/*
++	 * The SVA implementation needs to handle its own stuffs like the mm
++	 * notification. Before consolidating that code into iommu core, let
++	 * the intel sva code handle it.
++	 */
++	if (domain->type == IOMMU_DOMAIN_SVA) {
++		intel_svm_remove_dev_pasid(dev, pasid);
++		goto out_tear_down;
+ 	}
+ 
++	/*
++	 * Should never reach here until we add support for attaching
++	 * non-SVA domain to a pasid.
++	 */
++	WARN_ON(1);
++
++out_tear_down:
+ 	intel_pasid_tear_down_entry(iommu, dev, pasid, false);
++	intel_drain_pasid_prq(dev, pasid);
+ }
+ 
+ const struct iommu_ops intel_iommu_ops = {
 diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index e95b339e9cdc..2a82864e9d57 100644
+index 2a82864e9d57..9fbae9af6615 100644
 --- a/drivers/iommu/intel/svm.c
 +++ b/drivers/iommu/intel/svm.c
-@@ -259,8 +259,6 @@ static const struct mmu_notifier_ops intel_mmuops = {
- 	.invalidate_range = intel_invalidate_range,
- };
+@@ -26,8 +26,6 @@
+ #include "trace.h"
  
--static DEFINE_MUTEX(pasid_mutex);
--
- static int pasid_to_svm_sdev(struct device *dev, unsigned int pasid,
- 			     struct intel_svm **rsvm,
- 			     struct intel_svm_dev **rsdev)
-@@ -268,10 +266,6 @@ static int pasid_to_svm_sdev(struct device *dev, unsigned int pasid,
- 	struct intel_svm_dev *sdev = NULL;
- 	struct intel_svm *svm;
+ static irqreturn_t prq_event_thread(int irq, void *d);
+-static void intel_svm_drain_prq(struct device *dev, u32 pasid);
+-#define to_intel_svm_dev(handle) container_of(handle, struct intel_svm_dev, sva)
  
--	/* The caller should hold the pasid_mutex lock */
--	if (WARN_ON(!mutex_is_locked(&pasid_mutex)))
--		return -EINVAL;
--
- 	if (pasid == IOMMU_PASID_INVALID || pasid >= PASID_MAX)
- 		return -EINVAL;
- 
-@@ -371,22 +365,19 @@ static int intel_svm_bind_mm(struct intel_iommu *iommu, struct device *dev,
- 	return ret;
- }
- 
--/* Caller must hold pasid_mutex */
--static int intel_svm_unbind_mm(struct device *dev, u32 pasid)
-+void intel_svm_remove_dev_pasid(struct device *dev, u32 pasid)
- {
- 	struct intel_svm_dev *sdev;
- 	struct intel_iommu *iommu;
- 	struct intel_svm *svm;
- 	struct mm_struct *mm;
--	int ret = -EINVAL;
- 
- 	iommu = device_to_iommu(dev, NULL, NULL);
- 	if (!iommu)
--		goto out;
-+		return;
- 
--	ret = pasid_to_svm_sdev(dev, pasid, &svm, &sdev);
--	if (ret)
--		goto out;
-+	if (pasid_to_svm_sdev(dev, pasid, &svm, &sdev))
-+		return;
- 	mm = svm->mm;
+ static DEFINE_XARRAY_ALLOC(pasid_private_array);
+ static int pasid_private_add(ioasid_t pasid, void *priv)
+@@ -382,17 +380,6 @@ void intel_svm_remove_dev_pasid(struct device *dev, u32 pasid)
  
  	if (sdev) {
-@@ -418,8 +409,6 @@ static int intel_svm_unbind_mm(struct device *dev, u32 pasid)
- 			kfree(svm);
- 		}
- 	}
--out:
--	return ret;
+ 		list_del_rcu(&sdev->list);
+-		/*
+-		 * Flush the PASID cache and IOTLB for this device.
+-		 * Note that we do depend on the hardware *not* using
+-		 * the PASID any more. Just as we depend on other
+-		 * devices never using PASIDs that they have no right
+-		 * to use. We have a *shared* PASID table, because it's
+-		 * large and has to be physically contiguous. So it's
+-		 * hard to be as defensive as we might like.
+-		 */
+-		intel_pasid_tear_down_entry(iommu, dev, svm->pasid, false);
+-		intel_svm_drain_prq(dev, svm->pasid);
+ 		kfree_rcu(sdev, rcu);
+ 
+ 		if (list_empty(&svm->devs)) {
+@@ -449,7 +436,7 @@ static bool is_canonical_address(u64 addr)
  }
  
- /* Page request queue descriptor */
-@@ -520,19 +509,7 @@ static void intel_svm_drain_prq(struct device *dev, u32 pasid)
- 		goto prq_retry;
- 	}
- 
--	/*
--	 * A work in IO page fault workqueue may try to lock pasid_mutex now.
--	 * Holding pasid_mutex while waiting in iopf_queue_flush_dev() for
--	 * all works in the workqueue to finish may cause deadlock.
--	 *
--	 * It's unnecessary to hold pasid_mutex in iopf_queue_flush_dev().
--	 * Unlock it to allow the works to be handled while waiting for
--	 * them to finish.
--	 */
--	lockdep_assert_held(&pasid_mutex);
--	mutex_unlock(&pasid_mutex);
- 	iopf_queue_flush_dev(dev);
--	mutex_lock(&pasid_mutex);
- 
- 	/*
- 	 * Perform steps described in VT-d spec CH7.10 to drain page
-@@ -827,26 +804,14 @@ int intel_svm_page_response(struct device *dev,
- 	return ret;
- }
- 
--void intel_svm_remove_dev_pasid(struct device *dev, ioasid_t pasid)
--{
--	mutex_lock(&pasid_mutex);
--	intel_svm_unbind_mm(dev, pasid);
--	mutex_unlock(&pasid_mutex);
--}
--
- static int intel_svm_set_dev_pasid(struct iommu_domain *domain,
- 				   struct device *dev, ioasid_t pasid)
+ /**
+- * intel_svm_drain_prq - Drain page requests and responses for a pasid
++ * intel_drain_pasid_prq - Drain page requests and responses for a pasid
+  * @dev: target device
+  * @pasid: pasid for draining
+  *
+@@ -463,7 +450,7 @@ static bool is_canonical_address(u64 addr)
+  * described in VT-d spec CH7.10 to drain all page requests and page
+  * responses pending in the hardware.
+  */
+-static void intel_svm_drain_prq(struct device *dev, u32 pasid)
++void intel_drain_pasid_prq(struct device *dev, u32 pasid)
  {
- 	struct device_domain_info *info = dev_iommu_priv_get(dev);
- 	struct intel_iommu *iommu = info->iommu;
- 	struct mm_struct *mm = domain->mm;
--	int ret;
- 
--	mutex_lock(&pasid_mutex);
--	ret = intel_svm_bind_mm(iommu, dev, mm);
--	mutex_unlock(&pasid_mutex);
--
--	return ret;
-+	return intel_svm_bind_mm(iommu, dev, mm);
- }
- 
- static void intel_svm_domain_free(struct iommu_domain *domain)
+ 	struct device_domain_info *info;
+ 	struct dmar_domain *domain;
 -- 
 2.34.1
 
