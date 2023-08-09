@@ -2,103 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D2C7751DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 06:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EC37751D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 06:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbjHIESE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 00:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40892 "EHLO
+        id S229908AbjHIELR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 00:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjHIESD (ORCPT
+        with ESMTP id S229783AbjHIELP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 00:18:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A062419A1;
-        Tue,  8 Aug 2023 21:18:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691554683; x=1723090683;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BiBLxiXXW0roMyU9uVFtT4aTm3ZZI6IWHSqR6mmpuy8=;
-  b=UpEhekEqiTEcFezXjUXhZ37Jaqj7pIwnumnX6Wy7Ck7+iC6SPEMtJNRB
-   tMvTKi6Of9kWotp4A+cZmrVjdZIQAYYdQxauXqGCRjAihkOrK9BUfxblh
-   lTbKq6wEuNrOWt+R2L9azyQCB91pLfIbe29shsJ1+CGGCDhhqsHWHVGJE
-   En67uX8e15HQKcN51L3jX/hLNh73yTf2ZmdmLVQfeCRIn9NLHs8xmrtdx
-   bv3qTtF/xAHMHXB678yGDmuuPkJ6kt2gQUsMQJtCAMJE5HzZj4y/pUIMW
-   Qfbh32a0oshuYKjiN5shm8Tj71xOHSbuvVWK4FOIOEcjSImeQp8+Jhi3F
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="361140114"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="361140114"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 21:08:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="978220412"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="978220412"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 08 Aug 2023 21:08:22 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qTaUf-0005na-0d;
-        Wed, 09 Aug 2023 04:08:21 +0000
-Date:   Wed, 9 Aug 2023 12:07:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Breno Leitao <leitao@debian.org>, sdf@google.com, axboe@kernel.dk,
-        asml.silence@gmail.com, willemdebruijn.kernel@gmail.com
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org, kuba@kernel.org,
-        pabeni@redhat.com
-Subject: Re: [PATCH v2 2/8] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
-Message-ID: <202308091103.ylvbuCww-lkp@intel.com>
-References: <20230808134049.1407498-3-leitao@debian.org>
+        Wed, 9 Aug 2023 00:11:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED95198A
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 21:10:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691554228;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tiZt5qkV373iiZscCJbcFROPFCou/fOb43yGS5e3+0c=;
+        b=OkBpJ4hjb4XeaPhRFCc9NGg1ldWTUzHvjxvWCDdKLNaRinp2X73RgxzCBcGpAtUOl5HLh7
+        cEsQDo9nZ271hbPwuSkPUgAqEHTVHgn5UjZepE4mTHaZcrYVG/jTINy9RKu8pI8Evb2j+v
+        xQw+/fnr7bIOCatNhho+6EGg7/nMNvY=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-274-d8u96XdpM2W7GcwgocmQUQ-1; Wed, 09 Aug 2023 00:10:26 -0400
+X-MC-Unique: d8u96XdpM2W7GcwgocmQUQ-1
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-686bc3f11feso479310b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 21:10:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691554223; x=1692159023;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tiZt5qkV373iiZscCJbcFROPFCou/fOb43yGS5e3+0c=;
+        b=fQYmWpE+P+k5cC+cV7Qu8FLUOXD+0DfUD6yzN9j3aVex+FIw1rmRt8XRLxLkNh3EIY
+         0yfnEUsR5slDE4+rAqdg9PR+n92pZUvo1iewC+C0jTGbs5R/gOP4vyh9teiBZSSeNZ0x
+         Vydagps+AawQotzH5vdMy5nmqlmQNg23EF6xtP3Q7GoCOs4EVdq+jzlI0nREHc5GhqxE
+         AA/D1URtIVata1Jtp3eOOzkli0vHFq0n5DurWJN6YYklwbCCgffbC/XTlGwuPhgMqbuv
+         k/YoRCy155RHblupDltfdlDxa9IJvVPjvLHhyMYB7G28eB5vUyIpyVnox1f4QvditjM9
+         cuXg==
+X-Gm-Message-State: AOJu0Yz5Zr3bR1lmXWwZvEnrlRsg2GL75hrw2gVvMf685P7TMlf+uJMD
+        V8k6JGcRsbAzjFIqQSOOdjf6JjD0cV15JDO8cNkQiih0Mm2Imn9+jTqI/SXJKrNsLCrdojZLxRV
+        c8PdV6C/1qu6y9hZPhUkXRbeL
+X-Received: by 2002:a05:6a00:1487:b0:666:eaaf:a2af with SMTP id v7-20020a056a00148700b00666eaafa2afmr2263680pfu.14.1691554222963;
+        Tue, 08 Aug 2023 21:10:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE4mKNqTgX+EsfCEP/MYW99W9JIOB5kHuLZbEs18DPRnq1dfDRhMLd6YmPemv3TlybaLWWmcQ==
+X-Received: by 2002:a05:6a00:1487:b0:666:eaaf:a2af with SMTP id v7-20020a056a00148700b00666eaafa2afmr2263648pfu.14.1691554222702;
+        Tue, 08 Aug 2023 21:10:22 -0700 (PDT)
+Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
+        by smtp.gmail.com with ESMTPSA id p26-20020a62ab1a000000b006871fdde2c7sm8840727pff.110.2023.08.08.21.10.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 21:10:22 -0700 (PDT)
+Message-ID: <b91d1869-3a1d-d9eb-27b0-0aac94cca8e0@redhat.com>
+Date:   Wed, 9 Aug 2023 14:10:12 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230808134049.1407498-3-leitao@debian.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v8 03/14] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
+Content-Language: en-US
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Fuad Tabba <tabba@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Shaoqin Huang <shahuang@redhat.com>
+References: <20230808231330.3855936-1-rananta@google.com>
+ <20230808231330.3855936-4-rananta@google.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20230808231330.3855936-4-rananta@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Breno,
 
-kernel test robot noticed the following build errors:
+On 8/9/23 09:13, Raghavendra Rao Ananta wrote:
+> Stop depending on CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL and opt to
+> standardize on kvm_arch_flush_remote_tlbs() since it avoids
+> duplicating the generic TLB stats across architectures that implement
+> their own remote TLB flush.
+> 
+> This adds an extra function call to the ARM64 kvm_flush_remote_tlbs()
+> path, but that is a small cost in comparison to flushing remote TLBs.
+> 
+> In addition, instead of just incrementing remote_tlb_flush_requests
+> stat, the generic interface would also increment the
+> remote_tlb_flush stat.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>   arch/arm64/include/asm/kvm_host.h | 2 ++
+>   arch/arm64/kvm/Kconfig            | 1 -
+>   arch/arm64/kvm/mmu.c              | 6 +++---
+>   3 files changed, 5 insertions(+), 4 deletions(-)
+> 
 
-[auto build test ERROR on next-20230808]
-[cannot apply to bpf-next/master bpf/master net/main net-next/main linus/master horms-ipvs/master v6.5-rc5 v6.5-rc4 v6.5-rc3 v6.5-rc5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Breno-Leitao/net-expose-sock_use_custom_sol_socket/20230809-011901
-base:   next-20230808
-patch link:    https://lore.kernel.org/r/20230808134049.1407498-3-leitao%40debian.org
-patch subject: [PATCH v2 2/8] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
-config: hexagon-randconfig-r041-20230808 (https://download.01.org/0day-ci/archive/20230809/202308091103.ylvbuCww-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230809/202308091103.ylvbuCww-lkp@intel.com/reproduce)
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 8b6096753740c..20f2ba149c70c 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -1111,6 +1111,8 @@ int __init kvm_set_ipa_limit(void);
+>   #define __KVM_HAVE_ARCH_VM_ALLOC
+>   struct kvm *kvm_arch_alloc_vm(void);
+>   
+> +#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
+> +
+>   static inline bool kvm_vm_is_protected(struct kvm *kvm)
+>   {
+>   	return false;
+> diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
+> index f531da6b362e9..6b730fcfee379 100644
+> --- a/arch/arm64/kvm/Kconfig
+> +++ b/arch/arm64/kvm/Kconfig
+> @@ -25,7 +25,6 @@ menuconfig KVM
+>   	select MMU_NOTIFIER
+>   	select PREEMPT_NOTIFIERS
+>   	select HAVE_KVM_CPU_RELAX_INTERCEPT
+> -	select HAVE_KVM_ARCH_TLB_FLUSH_ALL
+>   	select KVM_MMIO
+>   	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
+>   	select KVM_XFER_TO_GUEST_WORK
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 6db9ef288ec38..0ac721fa27f18 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -161,15 +161,15 @@ static bool memslot_is_logging(struct kvm_memory_slot *memslot)
+>   }
+>   
+>   /**
+> - * kvm_flush_remote_tlbs() - flush all VM TLB entries for v7/8
+> + * kvm_arch_flush_remote_tlbs() - flush all VM TLB entries for v7/8
+>    * @kvm:	pointer to kvm structure.
+>    *
+>    * Interface to HYP function to flush all VM TLB entries
+>    */
+> -void kvm_flush_remote_tlbs(struct kvm *kvm)
+> +int kvm_arch_flush_remote_tlbs(struct kvm *kvm)
+>   {
+> -	++kvm->stat.generic.remote_tlb_flush_requests;
+>   	kvm_call_hyp(__kvm_tlb_flush_vmid, &kvm->arch.mmu);
+> +	return 0;
+>   }
+>   
+>   static bool kvm_is_device_pfn(unsigned long pfn)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308091103.ylvbuCww-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> ld.lld: error: undefined symbol: sk_getsockopt
-   >>> referenced by uring_cmd.c
-   >>>               io_uring/uring_cmd.o:(io_uring_cmd_sock) in archive vmlinux.a
-   >>> referenced by uring_cmd.c
-   >>>               io_uring/uring_cmd.o:(io_uring_cmd_sock) in archive vmlinux.a
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
