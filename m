@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F49775135
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 05:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A662C775140
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 05:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbjHIDG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 23:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
+        id S229871AbjHIDL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 23:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbjHIDGY (ORCPT
+        with ESMTP id S229621AbjHIDL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 23:06:24 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8401A1BEF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 20:06:23 -0700 (PDT)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RLFH058THztS6p;
-        Wed,  9 Aug 2023 11:02:52 +0800 (CST)
-Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
- (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 9 Aug
- 2023 11:06:21 +0800
-From:   Yue Haibing <yuehaibing@huawei.com>
-To:     <agk@redhat.com>, <snitzer@kernel.org>, <dm-devel@redhat.com>,
-        <heinzm@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <yuehaibing@huawei.com>,
-        <hugo@hugovil.com>
-Subject: [PATCH v2 -next] dm: Remove unused declaration dm_get_rq_mapinfo()
-Date:   Wed, 9 Aug 2023 11:06:08 +0800
-Message-ID: <20230809030608.9528-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Tue, 8 Aug 2023 23:11:26 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4088A10F7
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 20:11:22 -0700 (PDT)
+X-QQ-mid: bizesmtpipv601t1691550655tu60
+Received: from localhost.localdomain ( [255.156.107.10])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 09 Aug 2023 11:10:46 +0800 (CST)
+X-QQ-SSF: 01200000000000B0B000000A0000000
+X-QQ-FEAT: w8KaQ9l6q4grTOwgxeVA4itTHPKxUqvpEz73M6tPxHUQ8KoVfsJ5neYQsaOtB
+        sKqbSt0Iy2eW9k9FsiD844IrMgJ6pC+H0KApXrbpjfoxoyHhD35EO7ouoASe2znGodHCFVf
+        UAwDL5dASfiiZxI5FnhQRWZ1g61ZbXpLDwsrex2j3aWka30tdkqaKs5FdfFnkjaj9wZZM22
+        PCmQjIaCFnhR8mDxc0PtsInUuntMT0xezfQqv26+OppI5TpjpUZsb8KRXoplJG3em2ScNQB
+        vNUpGg5wt/667B0u/ysaCSVGdKH3wQIkGve6QetD4LlfpG23M3tgbCUcPFKZzc8qHYMH9OG
+        o9XfejTFv5tfMrmZQ0=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 9490210224257605777
+From:   Song Shuai <songshuaishuai@tinylab.org>
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, ajones@ventanamicro.com,
+        alexghiti@rivosinc.com, anup@brainfault.org, guoren@kernel.org,
+        samuel@sholland.org, rppt@kernel.org, suagrfillet@gmail.com,
+        panqinglin2020@iscas.ac.cn
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: mm: Update the comment of CONFIG_PAGE_OFFSET
+Date:   Wed,  9 Aug 2023 11:10:23 +0800
+Message-Id: <20230809031023.3575407-1-songshuaishuai@tinylab.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpipv:tinylab.org:qybglogicsvrsz:qybglogicsvrsz4a-0
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_ILLEGAL_IP,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit ae6ad75e5c3c ("dm: remove unused dm_get_rq_mapinfo()")
-removed the implementation but not the declaration.
+From: Song Shuai <suagrfillet@gmail.com>
 
-Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
----
-v2: revise commit log
----
- include/linux/device-mapper.h | 1 -
- 1 file changed, 1 deletion(-)
+Since the commit 011f09d12052 set sv57 as default for CONFIG_64BIT,
+the comment of CONFIG_PAGE_OFFSET should be updated too.
 
-diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
-index 69d0435c7ebb..5bc69c6a64e0 100644
---- a/include/linux/device-mapper.h
-+++ b/include/linux/device-mapper.h
-@@ -502,7 +502,6 @@ int dm_post_suspending(struct dm_target *ti);
- int dm_noflush_suspending(struct dm_target *ti);
- void dm_accept_partial_bio(struct bio *bio, unsigned int n_sectors);
- void dm_submit_bio_remap(struct bio *clone, struct bio *tgt_clone);
--union map_info *dm_get_rq_mapinfo(struct request *rq);
- 
- #ifdef CONFIG_BLK_DEV_ZONED
- struct dm_report_zones_args {
+Fixes: 011f09d12052 ("riscv: mm: Set sv57 on defaultly")
+Signed-off-by: Song Shuai <suagrfillet@gmail.com>
+---
+ arch/riscv/include/asm/page.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+index b55ba20903ec..53c00164c042 100644
+--- a/arch/riscv/include/asm/page.h
++++ b/arch/riscv/include/asm/page.h
+@@ -33,8 +33,8 @@
+ #define PAGE_OFFSET		_AC(CONFIG_PAGE_OFFSET, UL)
+ #endif
+ /*
+- * By default, CONFIG_PAGE_OFFSET value corresponds to SV48 address space so
+- * define the PAGE_OFFSET value for SV39.
++ * By default, CONFIG_PAGE_OFFSET value corresponds to SV57 address space so
++ * define the PAGE_OFFSET value for SV48 and SV39.
+  */
+ #define PAGE_OFFSET_L4		_AC(0xffffaf8000000000, UL)
+ #define PAGE_OFFSET_L3		_AC(0xffffffd800000000, UL)
 -- 
-2.34.1
+2.20.1
 
