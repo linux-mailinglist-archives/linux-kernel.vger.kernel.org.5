@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F679776A7E
+	by mail.lfdr.de (Postfix) with ESMTP id C332F776A7F
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234476AbjHIUn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 16:43:59 -0400
+        id S234729AbjHIUny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 16:43:54 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjHIUns (ORCPT
+        with ESMTP id S234476AbjHIUnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 16:43:48 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D64196
+        Wed, 9 Aug 2023 16:43:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B0E100
         for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 13:43:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=9sqy4wj1SuZG+E1ZOkNDiw8zR5F8T4bHRpYkByM8S6o=; b=nS7fhtU07WM4lf+9GY1jnt0WyU
-        JlGBQ/BiKLol5nqGk5z8qeenQ4mLmAK77ctDGsrQOk5L6gu1qUBv5+gGiwlrFiiE9486TOOUJiEhr
-        uRJy0pNKE+NMQ2PIZ7Bw6RKDtz3MYP4N4P0O4+nSmPgWEyiwjHOJoBL5BhV5q7CJUODfjuCPJ4sOQ
-        QiFWMm4eCkB4n2bzrPwFoC6c7Z4U2F0gNa+7v40ZGzYk8FWPRkntfdll5hUyv7KwBTOfCPh+5Qoyo
-        C9lbPEJn0Ps1CMfRJXozS8klhujcmLiZ87nsZvsEwZS0JDDZ8PLoAUvXJSYa4d+pwXv43JqCZyPYi
-        QOzmr+Pg==;
+        bh=8IwM37e642EshGkaM591nsICKeU24b96IU4dYucK72I=; b=kDEI41ex5Qh1PMu+3DWS1pMzNz
+        Rv/FhSgsDqJmwVpzh91ZxD+ZHqMLjogyP4nUNOaqVK0JHb7V37r6yi8buTfyryfZXc01wbWpRWjnX
+        Fz4qvaigovDAa9B1tInSSU1K9kYgwuYSxDUrDvM+JQ+ERiEM8gzDaUMdRv8lBFbKqxZA+NQRt34di
+        7j/S0xrZIaqtb2CVchdhrg+4NPxNVju4LGDdurNwebasCDohKc5rKzaryYfwfzDt5626MefDu/ODo
+        8/Z1uUS/a+9EfVCihNOCQoGHw4pGO7vkD6UD95jEM4lw0k7hQjQBbwc5h17fXKGK81IMac2SFSBdY
+        YV75oCrA==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qTq1m-005twI-2Q;
-        Wed, 09 Aug 2023 20:43:34 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qTq1n-008LN8-Cb; Wed, 09 Aug 2023 20:43:35 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 73EC430049D;
-        Wed,  9 Aug 2023 22:43:33 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1411630058D;
+        Wed,  9 Aug 2023 22:43:34 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 5BDC5200D83A5; Wed,  9 Aug 2023 22:43:33 +0200 (CEST)
-Message-ID: <20230809204200.310688520@infradead.org>
+        id 5E715206EC339; Wed,  9 Aug 2023 22:43:33 +0200 (CEST)
+Message-ID: <20230809204200.378325194@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 09 Aug 2023 22:24:44 +0200
+Date:   Wed, 09 Aug 2023 22:24:45 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@redhat.com
 Cc:     peterz@infradead.org, juri.lelli@redhat.com,
@@ -47,13 +46,14 @@ Cc:     peterz@infradead.org, juri.lelli@redhat.com,
         rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
         bristot@redhat.com, vschneid@redhat.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 4/8] sched: Simplify yield_to()
+Subject: [PATCH 5/8] sched: Simplify sched_rr_get_interval()
 References: <20230809202440.012625269@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -64,98 +64,65 @@ Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c |   73 ++++++++++++++++++++++------------------------------
- 1 file changed, 32 insertions(+), 41 deletions(-)
+ kernel/sched/core.c |   40 ++++++++++++++++------------------------
+ 1 file changed, 16 insertions(+), 24 deletions(-)
 
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -8799,55 +8799,46 @@ int __sched yield_to(struct task_struct
+@@ -8941,38 +8941,30 @@ SYSCALL_DEFINE1(sched_get_priority_min,
+ 
+ static int sched_rr_get_interval(pid_t pid, struct timespec64 *t)
  {
- 	struct task_struct *curr = current;
- 	struct rq *rq, *p_rq;
--	unsigned long flags;
- 	int yielded = 0;
+-	struct task_struct *p;
+-	unsigned int time_slice;
+-	struct rq_flags rf;
+-	struct rq *rq;
++	unsigned int time_slice = 0;
+ 	int retval;
  
--	local_irq_save(flags);
--	rq = this_rq();
-+	scoped_guard (irqsave) {
-+		rq = this_rq();
+ 	if (pid < 0)
+ 		return -EINVAL;
  
- again:
--	p_rq = task_rq(p);
--	/*
--	 * If we're the only runnable task on the rq and target rq also
--	 * has only one task, there's absolutely no point in yielding.
--	 */
--	if (rq->nr_running == 1 && p_rq->nr_running == 1) {
--		yielded = -ESRCH;
--		goto out_irq;
--	}
--
--	double_rq_lock(rq, p_rq);
--	if (task_rq(p) != p_rq) {
--		double_rq_unlock(rq, p_rq);
--		goto again;
--	}
--
--	if (!curr->sched_class->yield_to_task)
+-	retval = -ESRCH;
+-	rcu_read_lock();
+-	p = find_process_by_pid(pid);
+-	if (!p)
 -		goto out_unlock;
 -
--	if (curr->sched_class != p->sched_class)
+-	retval = security_task_getscheduler(p);
+-	if (retval)
 -		goto out_unlock;
 -
--	if (task_on_cpu(p_rq, p) || !task_is_running(p))
--		goto out_unlock;
--
--	yielded = curr->sched_class->yield_to_task(rq, p);
--	if (yielded) {
--		schedstat_inc(rq->yld_count);
-+		p_rq = task_rq(p);
- 		/*
--		 * Make p's CPU reschedule; pick_next_entity takes care of
--		 * fairness.
-+		 * If we're the only runnable task on the rq and target rq also
-+		 * has only one task, there's absolutely no point in yielding.
- 		 */
--		if (preempt && rq != p_rq)
--			resched_curr(p_rq);
--	}
-+		if (rq->nr_running == 1 && p_rq->nr_running == 1)
+-	rq = task_rq_lock(p, &rf);
+-	time_slice = 0;
+-	if (p->sched_class->get_rr_interval)
+-		time_slice = p->sched_class->get_rr_interval(rq, p);
+-	task_rq_unlock(rq, p, &rf);
++	scoped_guard (rcu) {
++		struct task_struct *p = find_process_by_pid(pid);
++		if (!p)
 +			return -ESRCH;
- 
--out_unlock:
--	double_rq_unlock(rq, p_rq);
--out_irq:
--	local_irq_restore(flags);
-+		guard(double_rq_lock)(rq, p_rq);
-+		if (task_rq(p) != p_rq)
-+			goto again;
 +
-+		if (!curr->sched_class->yield_to_task)
-+			return 0;
++		retval = security_task_getscheduler(p);
++		if (retval)
++			return retval;
 +
-+		if (curr->sched_class != p->sched_class)
-+			return 0;
-+
-+		if (task_on_cpu(p_rq, p) || !task_is_running(p))
-+			return 0;
-+
-+		yielded = curr->sched_class->yield_to_task(rq, p);
-+		if (yielded) {
-+			schedstat_inc(rq->yld_count);
-+			/*
-+			 * Make p's CPU reschedule; pick_next_entity
-+			 * takes care of fairness.
-+			 */
-+			if (preempt && rq != p_rq)
-+				resched_curr(p_rq);
++		scoped_guard (task_rq_lock, p) {
++			struct rq *rq = scope.rq;
++			if (p->sched_class->get_rr_interval)
++				time_slice = p->sched_class->get_rr_interval(rq, p);
 +		}
 +	}
  
--	if (yielded > 0)
-+	if (yielded)
- 		schedule();
+-	rcu_read_unlock();
+ 	jiffies_to_timespec64(time_slice, t);
+ 	return 0;
+-
+-out_unlock:
+-	rcu_read_unlock();
+-	return retval;
+ }
  
- 	return yielded;
+ /**
 
 
