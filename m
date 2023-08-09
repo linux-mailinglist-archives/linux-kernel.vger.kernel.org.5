@@ -2,172 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D856B77568F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98136775691
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbjHIJjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 05:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
+        id S231963AbjHIJlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 05:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjHIJjr (ORCPT
+        with ESMTP id S231284AbjHIJlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 05:39:47 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF61CE5F;
-        Wed,  9 Aug 2023 02:39:46 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3799QrUN006884;
-        Wed, 9 Aug 2023 04:39:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        PODMain02222019; bh=tL17/6iyipsOU59e0c5UNfl2W0eyYBu+2pEFX/ofQYc=; b=
-        XasJT4v0Wsi59u4hY4lqtUfmhpW3wquLI/89RtVTzdfewFtHYSSrMTTqeLQaTNg5
-        BFG6/ms9Q2ByxPufh6Q4cDeWlvA+3AhqV4Q6JMtMrUCEURyri0kOLoogMSbWHBrt
-        1aHn7MuBMB5SafWql42rppxM0Ps5NfydD4c5uOEjfY5pHGQxuCleJbfraT8323At
-        PEGl0BDW3l/R5xQBDx/cLeLHuJUAM5i8iz6PN5jbxYgiEBKeLI03pB/dJ9oV8G2+
-        6dDEmhqew/w1cgjk6QwqjTOFYzxm+muV3m6ZSQu2+osS8ji19a/pedbTXLRP1MOO
-        r4blrHJnoSvVb/QLQ55LQA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhuhgj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 04:39:41 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 9 Aug
- 2023 10:39:40 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Wed, 9 Aug 2023 10:39:40 +0100
-Received: from [198.61.64.220] (EDIN4L06LR3.ad.cirrus.com [198.61.64.220])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AE239475;
-        Wed,  9 Aug 2023 09:39:39 +0000 (UTC)
-Message-ID: <371a6ba0-c076-8e44-ae2f-32429de507da@opensource.cirrus.com>
-Date:   Wed, 9 Aug 2023 10:39:39 +0100
+        Wed, 9 Aug 2023 05:41:08 -0400
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B788A1FDF;
+        Wed,  9 Aug 2023 02:41:03 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-99c10ba30afso149166266b.1;
+        Wed, 09 Aug 2023 02:41:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691574062; x=1692178862;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=POZx1Czjl+EpbVC1OkzexxsQSbMIz0qrEmbKh1sujrs=;
+        b=B4a39S9KTbq8bLxQqLKVJXrN+p/wwuQ66aRgmEm5JgM5w4yyrmKMaUsByr7pdjkmOC
+         M+L4ZWD9Sywag1fHuQanISDLGszoPoq/af39OPswTyG4a+jd233euOJrqK0LRmbqRSH4
+         UWvuurdobJ901n0WZX8TeRI7eyiQWC+8oFpV4HVUQY41KMivkfwd6WZ+1WFijnK/XDwO
+         L857iEvCGQkfYHfPWBi8Lo3jDEXCGB/1x4pBt5M0RObUOhL7KAlbRZK8T+O/eqc/JGYu
+         0ggUUexnEXVPAVKLhcBLht4nswiDMln1W18Pt6PoEN3fT3ahaHiezSpKVyztIXYnmyhE
+         3VLg==
+X-Gm-Message-State: AOJu0YxZ94hLwN0z8xPQVc/u/rYBDotxoR1W4HU3EZeD0RYQ9oInKNPb
+        UvAmv/g9zhQgIhrbnwv4o5Y=
+X-Google-Smtp-Source: AGHT+IEMjS663ej8XAL1oDFmpG+FblomrzyFQBwSCqa4M2JYBvIf84H9BGmB0T1n+xQB6I9ZJpVg+w==
+X-Received: by 2002:a17:906:3298:b0:99c:7300:94b8 with SMTP id 24-20020a170906329800b0099c730094b8mr2601281ejw.10.1691574061783;
+        Wed, 09 Aug 2023 02:41:01 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-118.fbsv.net. [2a03:2880:31ff:76::face:b00c])
+        by smtp.gmail.com with ESMTPSA id a1-20020a1709063a4100b0099275c59bc9sm7788999ejf.33.2023.08.09.02.41.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 02:41:01 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 02:40:59 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        io-uring@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com
+Subject: Re: [PATCH v2 0/8] io_uring: Initial support for {s,g}etsockopt
+ commands
+Message-ID: <ZNNfK5e+lc0tsjj/@gmail.com>
+References: <20230808134049.1407498-1-leitao@debian.org>
+ <ZNJ8zGcYClv/VCwG@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 2/6] kunit: kunit-test: Add test cases for extending
- log buffer
-To:     Rae Moar <rmoar@google.com>
-CC:     <brendan.higgins@linux.dev>, <davidgow@google.com>,
-        <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-References: <20230808123529.4725-1-rf@opensource.cirrus.com>
- <20230808123529.4725-3-rf@opensource.cirrus.com>
- <CA+GJov79EJLbdptX+hhTqa90C7A0aJ-wzjxF1LDn++jWHeNXFA@mail.gmail.com>
-Content-Language: en-US
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <CA+GJov79EJLbdptX+hhTqa90C7A0aJ-wzjxF1LDn++jWHeNXFA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: 8gc6zDVdOhxj4Nv9tbtffi6NqOn_-TiD
-X-Proofpoint-ORIG-GUID: 8gc6zDVdOhxj4Nv9tbtffi6NqOn_-TiD
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNJ8zGcYClv/VCwG@google.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/23 22:16, Rae Moar wrote:
-> On Tue, Aug 8, 2023 at 8:35 AM Richard Fitzgerald
-> <rf@opensource.cirrus.com> wrote:
->>
->> Add test cases for the dynamically-extending log buffer.
->>
->> kunit_log_extend_test_1() logs a series of numbered lines then tests
->> that the resulting log contains all the lines.
->>
->> kunit_log_extend_test_2() logs a large number of lines of varying length
->> to create many fragments, then tests that all lines are present.
->>
->> kunit_log_frag_sized_line_test() logs a line that exactly fills a
->> fragment. This should not cause an extension of the log or truncation
->> of the line.
->>
->> kunit_log_newline_test() has a new test to append a line that is exactly
->> the length of the available space in the current fragment and check that
->> the resulting log has a trailing '\n'.
->>
->> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+On Tue, Aug 08, 2023 at 10:35:08AM -0700, Stanislav Fomichev wrote:
+> On 08/08, Breno Leitao wrote:
+> > This patchset adds support for getsockopt (SOCKET_URING_OP_GETSOCKOPT)
+> > and setsockopt (SOCKET_URING_OP_SETSOCKOPT) in io_uring commands.
+> > SOCKET_URING_OP_SETSOCKOPT implements generic case, covering all levels
+> > nad optnames. On the other hand, SOCKET_URING_OP_GETSOCKOPT just
+> > implements level SOL_SOCKET case, which seems to be the
+> > most common level parameter for get/setsockopt(2).
+> > 
+> > struct proto_ops->setsockopt() uses sockptr instead of userspace
+> > pointers, which makes it easy to bind to io_uring. Unfortunately
+> > proto_ops->getsockopt() callback uses userspace pointers, except for
+> > SOL_SOCKET, which is handled by sk_getsockopt(). Thus, this patchset
+> > leverages sk_getsockopt() to imlpement the SOCKET_URING_OP_GETSOCKOPT
+> > case.
+> > 
+> > In order to support BPF hooks, I modified the hooks to use  sockptr, so,
+> > it is flexible enough to accept user or kernel pointers for
+> > optval/optlen.
+> > 
+> > PS1: For getsockopt command, the optlen field is not a userspace
+> > pointers, but an absolute value, so this is slightly different from
+> > getsockopt(2) behaviour. The new optlen value is returned in cqe->res.
+> > 
+> > PS2: The userspace pointers need to be alive until the operation is
+> > completed.
+> > 
+> > These changes were tested with a new test[1] in liburing. On the BPF
+> > side, I tested that no regression was introduced by running "test_progs"
+> > self test using "sockopt" test case.
+> > 
+> > [1] Link: https://github.com/leitao/liburing/blob/getsock/test/socket-getsetsock-cmd.c
+> > 
+> > RFC -> V1:
+> > 	* Copy user memory at io_uring subsystem, and call proto_ops
+> > 	  callbacks using kernel memory
+> > 	* Implement all the cases for SOCKET_URING_OP_SETSOCKOPT
 > 
-> Hello!
+> I did a quick pass, will take a close look later today. So far everything makes
+> sense to me.
 > 
-> I am happy to see so many tests in this patch series. I've been
-> working with these patches and the debugfs logs seem to be working
-> well.
-> 
-> However, when I ran the new kunit-log-test tests three of the tests
-> failed: kunit_log_extend_test_1(), kunit_log_extend_test_2(), and
-> kunit_log_newline_test().
-> 
-> The diagnostic info for kunit_log_extend_test_1() reports:
-> 
-> [20:55:27] # kunit_log_extend_test_1: EXPECTATION FAILED at
-> lib/kunit/kunit-test.c:705
-> [20:55:27] Expected p == line, but
-> [20:55:27]     p == "xxxxxx…xxxx12345678"
-> [20:55:27]     line == "The quick brown fox jumps over the lazy penguin 0"
-> …
-> [20:55:27] # kunit_log_extend_test_1: EXPECTATION FAILED at
-> lib/kunit/kunit-test.c:705
-> [20:55:27] Expected p == line, but
-> [20:55:27]     p == "The quick brown fox jumps over the lazy penguin 1"
-> [20:55:27]     line == "The quick brown fox jumps over the lazy penguin 4"
-> [20:55:27] # kunit_log_extend_test_1: EXPECTATION FAILED at
-> lib/kunit/kunit-test.c:705
-> [20:55:27] Expected p == line, but
-> [20:55:27]     p == "The quick brown fox jumps over the lazy penguin 2"
-> [20:55:27]     line == "The quick brown fox jumps over the lazy penguin 5"
-> …
-> [20:55:27] # kunit_log_extend_test_1: EXPECTATION FAILED at
-> lib/kunit/kunit-test.c:709
-> [20:55:27] Expected i == num_lines, but
-> [20:55:27]     i == 64 (0x40)
-> [20:55:27]     num_lines == 141 (0x8d)
-> 
-> So it looks like the log contains a different number of lines than
-> expected which is causing the difference of 3 between expected and
-> what was obtained. Potentially the log is not getting cleared/freed
-> properly in between test cases?
-> 
-> The diagnostic info for kunit_log_extend_test_2() reports:
-> 
-> [20:55:27]     # kunit_log_extend_test_2: EXPECTATION FAILED at
-> lib/kunit/kunit-test.c:776
-> [20:55:27]     Expected p == &line[i], but
-> [20:55:27]         p ==
-> "xxxxx...xxxxx123456780123456789abcdef101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f30313233343536373839"
-> [20:55:27]         &line[i] ==
-> "0123456789abcdef101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f30313233343536373839"
-> [20:55:27]     # kunit_log_extend_test_2: EXPECTATION FAILED at
-> lib/kunit/kunit-test.c:781
-> [20:55:27]     Expected n == num_lines, but
-> [20:55:27]         n == 147 (0x93)
-> [20:55:27]         num_lines == 155 (0x9b)
-> [20:55:27] Not enough lines.
-> 
-> Similar difference in the number of lines here.
-> 
-> The diagnostic info for kunit_log_newline_test() reports that the test
-> fails on this line:
-> 
-> KUNIT_EXPECT_EQ(test, p[strlen(p) - 1], '\n');
-> 
-> Let me know if you are seeing similar errors. I can post the full log
-> if that would be helpful.
-> 
-> -Rae
-> 
+> Should we properly test it as well?
+> We have tools/testing/selftests/bpf/prog_tests/sockopt.c which does
+> most of the sanity checks, but it uses regular socket/{g,s}etsockopt
+> syscalls.
 
-Ah, I see a bug in get_concatenated_log().
-Does this change fix it for you?
+Right, that is what I've been using to test the changes.
 
-	len++; /* for terminating '\0' */
--	p = kunit_kmalloc(test, len, GFP_KERNEL);
-+	p = kunit_kzalloc(test, len, GFP_KERNEL);
+> Seems like it should be pretty easy to extend this with
+> io_uring path? tools/testing/selftests/net/io_uring_zerocopy_tx.c
+> already implements minimal wrappers which we can most likely borrow.
+
+Sure, I can definitely do it. Do you want to see the new tests in this
+patchset, or, in a following patches?
