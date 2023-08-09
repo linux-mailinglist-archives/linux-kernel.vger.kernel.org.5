@@ -2,74 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD0B776764
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A66FF776766
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjHISeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 14:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36354 "EHLO
+        id S231143AbjHISfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 14:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjHISeA (ORCPT
+        with ESMTP id S229582AbjHISfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 14:34:00 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F92211F
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 11:33:59 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bcfe28909so20891066b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 11:33:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691606037; x=1692210837;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JaE8vTgm15S5OByYW+XUkI/MkeV3wuuWhPqIWbgVDQE=;
-        b=WNF1X5U4jOMHyI8W6ltu6Z04RuAisvnmgoktD3wvifyLvBlv0XOZFeLd4+TIzrWtcQ
-         StqKYa/POP9KRbmIRthRWU+qJjcy8t752olo68JdVuEFw3azvJWkONePfJi3uZoK2v/V
-         +TzophUCFNtwYkOFipyYWBPL2MqjF/7dq5lAyuesUpEAmmK6jTrqrS9ky2wlg57mFJ+5
-         f3UgBtIFVgScs/0X+cYJQx/KmG08KhXxydZiCcdSJwpecBoL+3ThodANSKCmhEGtzW4i
-         VqJkcjFbJ+5jGzY7BNQD+wHkLGNx/Av8OmwB6gyBc+g7W4p691oJvJMrewnmC/NW4eUX
-         42Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691606037; x=1692210837;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JaE8vTgm15S5OByYW+XUkI/MkeV3wuuWhPqIWbgVDQE=;
-        b=E6liG3xdZ/Lmy/6TO39rF4CmuX7JalRrxUshvjr29Ut4k05zjGRvQFDfmLoXGfGCO4
-         Un6HAMwKx3o7pSwA5jcYAXw5rdwU8Qxa7x8HB47qFDoYPu4R5/UDFSKkgqC/6lQafxkN
-         V65CdkmBW4HwGqkGo+2YoYkKGHeMysHtDWtZbBJ20+x7Nws/bcJUn8zN0fRfSdFqmAiH
-         s/F2+StnJOJ30+lkLRdB/Z/JfhykJS+oB2LWt25VI5gkG6iPgkKd7TrMZCDUbuTzNPYC
-         qy2//zSN3A6daeuYsy2S54EDc+arGeqfglpgX9w72v110yvOVSyLOnlPgHLUfQ6HB9lA
-         70Ig==
-X-Gm-Message-State: AOJu0YwWqu5RSogAe0cNe9mPQPfrRRjvVxfrpLs0xxkc/L3AicTw81B2
-        I9icHLJuFgn6xf8ObZlOUIb+eQWMV95Hm+X8AHmZUg==
-X-Google-Smtp-Source: AGHT+IHfrLGYQvltJstIvNbfrCaf/nU00HrTPIRJ8QIqbCQxaQJJunP1nLCNtd415h0qSnTfeXV42dNrgLwMBHNXSJc=
-X-Received: by 2002:a17:906:73c8:b0:988:9ec1:a8c5 with SMTP id
- n8-20020a17090673c800b009889ec1a8c5mr2755470ejl.55.1691606037346; Wed, 09 Aug
- 2023 11:33:57 -0700 (PDT)
+        Wed, 9 Aug 2023 14:35:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98411FCC;
+        Wed,  9 Aug 2023 11:35:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F3B66437F;
+        Wed,  9 Aug 2023 18:35:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FE32C433C7;
+        Wed,  9 Aug 2023 18:35:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691606102;
+        bh=eWIcFJcIOce9R+MiShzB4DBQliucalbMzrHgeEI0yNM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=TRmbA+tv8/5zaarlgznVkhEEdWGtXA3HDVkEqUfiSuKPWBpA4vPxpH8os9hr2wKXB
+         SDZOmFaNQ3mjQQSrWR065s4lbKtwUf0co3Do476+Zw8KSspML8IREvBC99j+AHhMg7
+         l7zX5j+9e4RtzFBkh+x9c4zI0xrCZWhAK9Czrtm2rw0nNLTiV3lqMUuCPppQVZ/mDl
+         XEkCR2M2rHd3GtGDzkrSOEb+1q2Mkbjle3KgpGJFSYE22cgfVbiPbIvbG1nTFQle23
+         Bvy926toJrX3HLOGfz8a/k8hdf4UGZjJ583UAg3MXigLTv7OqFSI1hYbFt5ycvbkhO
+         LErp1mIecGPRw==
+Message-ID: <d6fc0b52-7f0f-ebfb-b4cf-8e4b28f8ee86@kernel.org>
+Date:   Wed, 9 Aug 2023 20:34:57 +0200
 MIME-Version: 1.0
-References: <20230809045810.1659356-1-yosryahmed@google.com>
- <ZNNTgZVPZipTL/UM@dhcp22.suse.cz> <CAJD7tkYhxbd2e+4HMZVKUfD4cx6oDauna3vLmttNPLCmFNtpgA@mail.gmail.com>
- <ZNONgeoytpkchHga@dhcp22.suse.cz> <CAJD7tkb9C77UUxAykw_uMQvkzGyaZOZhM0nwWn_kcPjV0umyuA@mail.gmail.com>
- <ZNOVS0Smp2PHUIuq@dhcp22.suse.cz>
-In-Reply-To: <ZNOVS0Smp2PHUIuq@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 9 Aug 2023 11:33:20 -0700
-Message-ID: <CAJD7tkZFxbjas=VfhYSGU84Y5vyjuqHqGsRjiDEOSDWh2BxNAg@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 2/2] dt-bindings: leds: add mp3326
+Content-Language: en-US
+To:     "Yuxi (Yuxi) Wang" <Yuxi.Wang@monolithicpower.com>,
+        "pavel@ucw.cz" <pavel@ucw.cz>, "lee@kernel.org" <lee@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "wyx137120466@gmail.com" <wyx137120466@gmail.com>,
+        "Leal (Long) Li" <Leal.Li@monolithicpower.com>
+References: <fb09088db71f45169739addbaae770be@monolithicpower.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <fb09088db71f45169739addbaae770be@monolithicpower.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,132 +61,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 6:32=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
-:
->
-> On Wed 09-08-23 06:13:05, Yosry Ahmed wrote:
-> > On Wed, Aug 9, 2023 at 5:58=E2=80=AFAM Michal Hocko <mhocko@suse.com> w=
-rote:
-> > >
-> > > On Wed 09-08-23 05:31:04, Yosry Ahmed wrote:
-> > > > On Wed, Aug 9, 2023 at 1:51=E2=80=AFAM Michal Hocko <mhocko@suse.co=
-m> wrote:
-> > > > >
-> > > > > On Wed 09-08-23 04:58:10, Yosry Ahmed wrote:
-> > > > > > Over time, the memcg code added multiple optimizations to the s=
-tats
-> > > > > > flushing path that introduce a tradeoff between accuracy and
-> > > > > > performance. In some contexts (e.g. dirty throttling, refaults,=
- etc), a
-> > > > > > full rstat flush of the stats in the tree can be too expensive.=
- Such
-> > > > > > optimizations include [1]:
-> > > > > > (a) Introducing a periodic background flusher to keep the size =
-of the
-> > > > > > update tree from growing unbounded.
-> > > > > > (b) Allowing only one thread to flush at a time, and other conc=
-urrent
-> > > > > > flushers just skip the flush. This avoids a thundering herd pro=
-blem
-> > > > > > when multiple reclaim/refault threads attempt to flush the stat=
-s at
-> > > > > > once.
-> > > > > > (c) Only executing a flush if the magnitude of the stats update=
-s exceeds
-> > > > > > a certain threshold.
-> > > > > >
-> > > > > > These optimizations were necessary to make flushing feasible in
-> > > > > > performance-critical paths, and they come at the cost of some a=
-ccuracy
-> > > > > > that we choose to live without. On the other hand, for flushes =
-invoked
-> > > > > > when userspace is reading the stats, the tradeoff is less appea=
-ling
-> > > > > > This code path is not performance-critical, and the inaccuracie=
-s can
-> > > > > > affect userspace behavior. For example, skipping flushing when =
-there is
-> > > > > > another ongoing flush is essentially a coin flip. We don't know=
- if the
-> > > > > > ongoing flush is done with the subtree of interest or not.
-> > > > >
-> > > > > I am not convinced by this much TBH. What kind of precision do yo=
-u
-> > > > > really need and how much off is what we provide?
-> > > > >
-> > > > > More expensive read of stats from userspace is quite easy to noti=
-ce
-> > > > > and usually reported as a regression. So you should have a convin=
-cing
-> > > > > argument that an extra time spent is really worth it. AFAIK there=
- are
-> > > > > many monitoring (top like) tools which simply read those files re=
-gularly
-> > > > > just to show numbers and they certainly do not need a high level =
-of
-> > > > > precision.
-> > > >
-> > > > We used to spend this time before commit fd25a9e0e23b ("memcg: unif=
-y
-> > > > memcg stat flushing") which generalized the "skip if ongoing flush"
-> > > > for all stat flushing. As far I know, the problem was contention on
-> > > > the flushing lock which also affected critical paths like refault.
-> > > >
-> > > > The problem is that the current behavior is indeterministic, if cpu=
- A
-> > > > tries to flush stats and cpu B is already doing that, cpu A will ju=
-st
-> > > > skip. At that point, the cgroup(s) that cpu A cares about may have
-> > > > been fully flushed, partially flushed (in terms of cpus), or not
-> > > > flushed at all. We have no idea. We just know that someone else is
-> > > > flushing something. IOW, in some cases the flush request will be
-> > > > completely ignored and userspace will read stale stats (up to 2s + =
-the
-> > > > periodic flusher runtime).
-> > >
-> > > Yes, that is certainly true but why does that matter? Stats are alway=
-s a
-> > > snapshot of the past. Do we get an inconsistent image that would be
-> > > actively harmful.
-> >
-> > That can very well be the case because we may be in a state where some
-> > cpus are flushed and some aren't. Also sometimes a few seconds is too
-> > old. We have some workloads that read the stats every 1-2 seconds to
-> > keep a fresh state, and they certainly do not expect stats to be 2+
-> > seconds old when they read them.
->
-> I hate to repeat myself but please be more specific. This all sounds
-> just too wavy to me.
+On 09/08/2023 08:39, Yuxi (Yuxi) Wang wrote:
+> Add dt-bindings for Monolithic Power System MP3326.
+> 
+> Signed-off-by: Yuxi Wang <Yuxi.Wang@monolithicpower.com>
 
-Sorry I didn't have the full story in mind, I had to do my homework.
-One example is userspace OOM killing. Our userspace OOM killer makes
-decisions based on some stats from memory.stat, and stale stats (a few
-seconds in this case) can result in an unrightful OOM kill, which can
-easily cascade.
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
 
-A simplified example of that is when a hierarchy has a parent cgroup
-with multiple related children. In this case, there are usually
-file-backed resources that are shared between those children, and OOM
-killing one of them will not free those resources. Hence, the OOM
-killer only considers their anonymous usage to be reap-able when a
-memcg is nuked. For that we use the "anon" stat (or "rss" in cgroup
-v1) in memory.stat.
+You missed at least DT list (maybe more), so this won't be tested by
+automated tooling. Performing review on untested code might be a waste
+of time, thus I will skip this patch entirely till you follow the
+process allowing the patch to be tested.
 
->
-> > > > Some workloads need to read up-to-date stats as feedback to actions
-> > > > (e.g. after proactive reclaim, or for userspace OOM killing purpose=
-s),
-> > > > and reading such stale stats causes regressions or misbehavior by
-> > > > userspace.
-> > >
-> > > Please tell us more about those and why should all others that do not
-> > > require such a precision should page that price as well.
-> >
-> > Everyone used to pay this price though and no one used to complain.
->
-> Right, and then the overhead has been reduced and now you want to bring
-> it back and that will be seen as a regression. It doesn't really matter
-> what used to be the overhead. People always care when something gets
-> slower.
+Please kindly resend and include all necessary To/Cc entries.
 
-People also care when something gets less accurate :)
+> ---
+>  .../devicetree/bindings/leds/leds-mp3326.yaml | 99 +++++++++++++++++++
+>  1 file changed, 99 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-mp3326.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/leds-mp3326.yaml b/Documentation/devicetree/bindings/leds/leds-mp3326.yaml
+> new file mode 100644
+> index 000000000000..3a059340b902
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-mp3326.yaml
+> @@ -0,0 +1,99 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-mp3326.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: LED driver for MP3326 from Monolithic Power Systems.
+
+Drop final dot.
+
+> +
+> +maintainers:
+> +  - Yuxi Wang <Yuxi.Wang@monolithicpower.com>
+> +
+> +description: |
+> +  Bindings for the Monolithic Power Systems MP3326 LED Drivers.
+
+Drop "Bindings for"
+
+> +
+> +  For more product information please see the link below:
+> +    https://www.monolithicpower.com/en/products/mp3326.html
+
+Missing blank line.
+
+> +properties:
+> +  compatible:
+> +    const: MPS,MP3326
+
+Do you see anywhere, absolutely anywhere capital letters in compatibles?
+
+> +
+> +  reg:
+> +    description: I2C slave address of the controller.
+
+Drop description, obvious.
+
+> +    maxItems: 1
+> +
+> +  led-protect:
+> +    description: LED short protection threshold.
+
+Does not look like common property... missing vendor prefix. Use common
+unit suffix, so "-microvolt"
+
+> +    enum:
+> +      - 0 #2V
+> +      - 1 #3V
+> +      - 2 #4V
+> +      - 3 #5V
+> +
+> +  switch_status:
+> +    description: Master switch for all channels.
+> +    enum:
+> +      - 0 #close all channels
+> +      - 1 #open all channels
+
+This is so bad that actually disappointing...
+
+1. Missing vendor prefix
+2. No underscores in properties
+3. Missing type/ref
+4. And does not look at all as hardware property. Drop.
+
+
+> +
+> +patternProperties:
+> +  "^rgb(-[0-9a-f]+)?$":
+
+Aren't these called "led"?
+
+> +    description: RGB group.
+> +    type: object
+> +    unevaluatedProperties: false
+
+Missing ref to proper LED schema.
+
+> +    properties:
+> +      rgb_r:
+
+Nope, nope.
+
+> +        description: Red light of the RGB group.
+> +        maxItems: 16
+> +        minItems: 1
+> +      rgb_g:
+> +        description: Green light of the RGB group.
+> +        maxItems: 16
+> +        minItems: 1
+> +      rgb_b:
+> +        description: Blue light of the RGB group.
+> +        maxItems: 16
+> +        minItems: 1
+> +      brightness:
+> +        description: Brightness of the RGB group.
+> +        maxItems: 63
+> +        minItems: 0
+> +      required:
+> +        - rgb_r
+> +        - rgb_g
+> +        - rgb_b
+> +        - brightness
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +examples:
+> +  - |
+> +    #include <dt-bindings/leds/common.h>
+> +    MP3326@30 {
+
+No, this is neither DTS nor proper bindings. Remove all this. Start FROM
+SCRATCH from example-schema.yaml. Entirely from scratch.
+
+> +        compatible = "mps,MP3326";
+> +        reg = <0x30>;
+> +        led-protect =<3>;
+> +        switch_status=<1>;
+> +
+> +        /*RGB group 1*/
+> +        rgb1@0{
+> +            rgb_r=<1>;
+
+This is not even coding style for DTS...
+
+
+Best regards,
+Krzysztof
+
