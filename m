@@ -2,141 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7997766EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520D67766F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbjHISDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 14:03:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
+        id S230017AbjHISE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 14:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233074AbjHISDK (ORCPT
+        with ESMTP id S229539AbjHISEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 14:03:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8802111;
-        Wed,  9 Aug 2023 11:03:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 55D20643B0;
-        Wed,  9 Aug 2023 18:03:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27B6EC433C9;
-        Wed,  9 Aug 2023 18:02:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691604182;
-        bh=rPL3CLW5XuFRA39bX+QGXMYR05A+1pGnImddf5wGUCE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BBVzXWQHKu1WI7BUZSyUq4RygUDDCn2Ynwrw/QQ4B6iSmvfMMvCmZNQGKWvt9WWXk
-         TXhNXYQ97qc/qgVsNns+eO0xxDrsGM+l+cnwEWlkANhqOOWT9b5W+/MzBKM3re5UIH
-         w2/5uecoFeYuoQYwHJu/IqLtoA9McZPQXxnGdT026XdOqYctlg6ISQBt+JRcwHBntT
-         DNt0F4zG3BGdiJavlJs47IOb3rnWoFFrK3PieDkSTGCd6zCKZanOhLFbYhcHsVox2I
-         bmWGCvR6ElObEHmCmF5cXoiznRdLgeNFsYX3gT/iqewhVn1dMxKIlAnFrKXdKZNgCT
-         k2QV2n/L7KVkg==
-Date:   Wed, 9 Aug 2023 19:02:57 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Marcus Folkesson <marcus.folkesson@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gustavsson <kent@minoris.se>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        William Breathitt Gray <william.gray@linaro.org>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] iio: adc: mcp3911: add support for the whole
- MCP39xx family
-Message-ID: <20230809190257.67602e55@jic23-huawei>
-In-Reply-To: <ZNM1AYMB3RGRWp7C@gmail.com>
-References: <20230808110432.240773-1-marcus.folkesson@gmail.com>
-        <20230808110432.240773-4-marcus.folkesson@gmail.com>
-        <ZNJP6xpOvRJigtMx@smile.fi.intel.com>
-        <ZNM1AYMB3RGRWp7C@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Wed, 9 Aug 2023 14:04:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0EB1987
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 11:04:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691604249;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HbwBg4GAxGJiE0CMpJJ3jphUu511OGFmYHEDw/DnWsE=;
+        b=eMeCD4+bD/sdaL5oMhXEj5y7dIEe+Ws7DnDjzf0I86pZkBD6zicHtynQIv++kcL8K7piWN
+        dEXh2SXjRucZMEh0uYP4x4x9g9fc7hjNDvG7Hrz2d6HrI6OkBx6C11sUMJ8pkvV249qyvf
+        alllChrqhIKDsruzKd0tjiRCICnzn5Y=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-78-cvZldN7tPAWs8weivAnntA-1; Wed, 09 Aug 2023 14:04:08 -0400
+X-MC-Unique: cvZldN7tPAWs8weivAnntA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3176fe7b67bso80644f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 11:04:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691604247; x=1692209047;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HbwBg4GAxGJiE0CMpJJ3jphUu511OGFmYHEDw/DnWsE=;
+        b=PES1F3MtrkXNY8pgt+bk3GJ8v+0NqAGEFJWnGQa1pCqz5bVCfs4Xx0cjMTXXOy8LRM
+         RS9N9ontJVcvKAXcnkreay6szHsJqATdkTXCah8z4kBKiaXKpMnOXmjWhlYHlCobeQIg
+         oz4O9ulMtP729K/FG96rK9TTOphJ81IBuKxZdDjjifzfRG0MQJma5UHkS8ZhWaeeLrx3
+         u3Dtgio2VilnTYXbv3npXbzNG8pP0i1D3mTpi7nH+p+og1/U5Ifk4PCLCyZN1y/G/wo3
+         wY/4e98w4KOihGnnDHwxJxDhbVIzDz6NqoVu4aHHPcFaKFk/z/267miLrPx8wHhXVeGa
+         7FLg==
+X-Gm-Message-State: AOJu0Yyvzgy4edSF0oQbaJRNVyOsx9BVKMIcfNsPeDD+NNNr3u2yqzQj
+        tf23IDSnX+PC6JegNPco6zXFV4ZhXkkFpy0Qn+54k9vjMVKhqwWk2BN6ejvayiMsPnEnsOXNhoz
+        4KzKv2LaPDkcVcSoh4sv6JBdf
+X-Received: by 2002:adf:e70d:0:b0:317:5c36:913b with SMTP id c13-20020adfe70d000000b003175c36913bmr90563wrm.48.1691604247087;
+        Wed, 09 Aug 2023 11:04:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHWxK24GMlKeGao4+91vvwu97P2OD3dJYC6y1xibxixrcmAbm4WRZuRM1zvrtrq7ym1tGAGzg==
+X-Received: by 2002:adf:e70d:0:b0:317:5c36:913b with SMTP id c13-20020adfe70d000000b003175c36913bmr90532wrm.48.1691604246713;
+        Wed, 09 Aug 2023 11:04:06 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70e:6800:9933:28db:f83a:ef5? (p200300cbc70e6800993328dbf83a0ef5.dip0.t-ipconnect.de. [2003:cb:c70e:6800:9933:28db:f83a:ef5])
+        by smtp.gmail.com with ESMTPSA id u16-20020adfdb90000000b003175a994555sm17817887wri.6.2023.08.09.11.04.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 11:04:06 -0700 (PDT)
+Message-ID: <0ab6524a-6917-efe2-de69-f07fb5cdd9d2@redhat.com>
+Date:   Wed, 9 Aug 2023 20:04:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v7 0/6] Per-VMA lock support for swap and userfaults
+Content-Language: en-US
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, willy@infradead.org, hannes@cmpxchg.org,
+        mhocko@suse.com, josef@toxicpanda.com, jack@suse.cz,
+        ldufour@linux.ibm.com, laurent.dufour@fr.ibm.com,
+        michel@lespinasse.org, liam.howlett@oracle.com, jglisse@google.com,
+        vbabka@suse.cz, minchan@google.com, dave@stgolabs.net,
+        punit.agrawal@bytedance.com, lstoakes@gmail.com, hdanton@sina.com,
+        apopple@nvidia.com, peterx@redhat.com, ying.huang@intel.com,
+        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        pasha.tatashin@soleen.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+References: <20230630211957.1341547-1-surenb@google.com>
+ <a34a418a-9a6c-9d9a-b7a3-bde8013bf86c@redhat.com>
+ <CAJuCfpGCWekMdno=L=4m7ujWTYMr0Wv77oYzXWT5RXnx+fWe0w@mail.gmail.com>
+ <CAJuCfpGMvYxu-g9kVH40UDGnpF2kxctH7AazhvmwhWWq1Rn1sA@mail.gmail.com>
+ <CAJuCfpHA78vxOBcaB3m7S7=CoBLMXTzRWego+jZM7JvUm3rEaQ@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <CAJuCfpHA78vxOBcaB3m7S7=CoBLMXTzRWego+jZM7JvUm3rEaQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Aug 2023 08:41:05 +0200
-Marcus Folkesson <marcus.folkesson@gmail.com> wrote:
+>>>> Which ends up being
+>>>>
+>>>> VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
+>>>>
+>>>> I did not check if this is also the case on mainline, and if this series is responsible.
+>>>
+>>> Thanks for reporting! I'm checking it now.
+>>
+>> Hmm. From the code it's not obvious how lock_mm_and_find_vma() ends up
+>> calling find_vma() without mmap_lock after successfully completing
+>> get_mmap_lock_carefully(). lock_mm_and_find_vma+0x3f/0x270 points to
+>> the first invocation of find_vma(), so this is not even the lock
+>> upgrade path... I'll try to reproduce this issue and dig up more but
+>> from the information I have so far this issue does not seem to be
+>> related to this series.
 
-> > ...
-> >   
-> > > +#define MCP3910_OFFCAL(x)		(MCP3910_REG_OFFCAL_CH0 + x * 6)  
-> > 
-> > Inconsistent macro implementation, i.e. you need to use (x).  
-> 
-> Sorry, I do not get you
-> 
-> 
-> [...]
-> 
-> > > +static int mcp3910_get_osr(struct mcp3911 *adc, int *val)
-> > > +{
-> > > +	int ret, osr;  
-> > 
-> > Strictly speaking osr can't be negative, otherwise it's a UB below.
-> > 
-> > 	u32 osr = FIELD_GET(MCP3910_CONFIG0_OSR, *val);
-> > 	int ret;
-> > 
-> > and why val is int?  
-> 
-> I will change val to u32 for *_get_osr(), *_set_osr() and *_set_scale().
-> 
-> [...]
-> 
-> > > +	if (device_property_read_bool(&adc->spi->dev, "microchip,data-ready-hiz"))  
-> > 
-> > This also becomes shorter.
-> > 
-> > One trick to make it even shorter:
-> > 
-> > 	if (device_property_present(dev, "microchip,data-ready-hiz"))  
-> 
-> Thank you, I wasn't aware of device_property_present().
-
-I know the read_bool function is direct equivalent of this but where a property
-is a flag, it feels more natural to me to check it with that one.
-read_present() feels more appropriate for where you want to know a more
-complex property is present.
-
-Doesn't matter that much either way however so up to you.
+I just checked on mainline and it does not fail there.
 
 > 
-> [...]
+> This is really weird. I added mmap_assert_locked(mm) calls into
+> get_mmap_lock_carefully() right after we acquire mmap_lock read lock
+> and one of them triggers right after successful
+> mmap_read_lock_killable(). Here is my modified version of
+> get_mmap_lock_carefully():
 > 
-> >   
-> > > +	dev_dbg(&spi->dev, "use device address %i\n", adc->dev_addr);  
-> > 
-> > Is it useful?  
+> static inline bool get_mmap_lock_carefully(struct mm_struct *mm,
+> struct pt_regs *regs) {
+>       /* Even if this succeeds, make it clear we might have slept */
+>       if (likely(mmap_read_trylock(mm))) {
+>           might_sleep();
+>           mmap_assert_locked(mm);
+>           return true;
+>       }
+>       if (regs && !user_mode(regs)) {
+>           unsigned long ip = instruction_pointer(regs);
+>           if (!search_exception_tables(ip))
+>               return false;
+>       }
+>       if (!mmap_read_lock_killable(mm)) {
+>           mmap_assert_locked(mm);                     <---- generates a BUG
+>           return true;
+>       }
+>       return false;
+> }
+
+Ehm, that's indeed weird.
+
 > 
-> Yes, I think so.
-> 
-> > 
-> > -- 
-> > With Best Regards,
-> > Andy Shevchenko
-> > 
-> >   
-> 
-> Best regards,
-> Marcus Folkesson
+> AFAIKT conditions for mmap_read_trylock() and
+> mmap_read_lock_killable() are checked correctly. Am I missing
+> something?
+
+Weirdly enough, it only triggers during that specific uffd test, right?
+
+-- 
+Cheers,
+
+David / dhildenb
 
