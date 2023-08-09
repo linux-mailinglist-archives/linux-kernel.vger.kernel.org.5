@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2656C776831
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE3877682D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233243AbjHITM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41408 "EHLO
+        id S233536AbjHITNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbjHITMe (ORCPT
+        with ESMTP id S233401AbjHITMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:12:34 -0400
+        Wed, 9 Aug 2023 15:12:38 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136D62718;
-        Wed,  9 Aug 2023 12:12:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DC1272C;
+        Wed,  9 Aug 2023 12:12:26 -0700 (PDT)
 Date:   Wed, 09 Aug 2023 19:12:20 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691608340;
+        s=2020; t=1691608341;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ePpxdb54UK1w0dW/aOACxgPueYpJk/5MQbAXokeoOik=;
-        b=IpgwJJIZbEC5wSbbiRbn/KNdZhihTac2Yba+t5gaOwpJa4ZcN/ez/lri/i6wPfubh8kd+t
-        qHKdiEOjQZcLDRNF9s7ArsKKvK0+5RnsQaleLPWNc07EnB+v2s3Jw5NErp7ViSZhn7HHiT
-        dK2zt93RF0dpy0dIn3ekjOvhIx6sMK+l0mwTzqiQ4tNhccrvZKzwYVgFz2LrxLzcfnzwpX
-        W9VlKFg3hQqxXQQEPxJkvTjFMFfNxUczuNEMsYg+3O/WUIHF4hX9z1CQAMlJaYmVXf4TBq
-        6qX5XZBgVSgU0ldUEhpD3erkcz38zr9geZxLnn1nPJ0vBNooawhgIYp26gn0HA==
+        bh=PJqeJXikns1KR6uJtixWA67LN+IB+RT8ZPG5mf8wZAA=;
+        b=Yf3UacNyYxyNKR45uiq2ZmaRMdpfzOv1C0CAighoLNABwdb7XbHpw5zbxxNRybcdW/JdKX
+        nkuhCRC8OjjPV6wUcDWGus/72hbEYdobI5PxF3O2bpfVlkm+msCR/LtXFeWTk9vWxs3K1P
+        CHJyQ42+Z5d6RlncyzVGVLkCIIgCLmLT/PxdjRTB1dy7lV9IsW1jfOY8YTpjyRjoY0rnAP
+        4uxnwrJx+ULognYXDwFUDHM6JgLkL/TvP+O8n++YCn3v+tWWG0/z7qbV3Ko98m7TuNozMB
+        sPCLn478236/GtBZHn9UPpsScar/l5f1bghIFeFWgtJHg+MSZNiVibIZT4VJgA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691608340;
+        s=2020e; t=1691608341;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ePpxdb54UK1w0dW/aOACxgPueYpJk/5MQbAXokeoOik=;
-        b=E5h8WbS6BmrP1KupnMEWHiruGuAewEsq1N4R9g15wU+3ovKy4xN8F6o+I/PBlqFPyK6Y5x
-        5xBqn42mhgU33pDA==
+        bh=PJqeJXikns1KR6uJtixWA67LN+IB+RT8ZPG5mf8wZAA=;
+        b=vRuDF9K0WaPub08SLWwuXgoRpiznM6cjX7By0p5hZZczAXspVHcK2Wi4XeHmUbqoOpkf7E
+        MgWMIlywWxhnrWBg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/apic: Mop up early_per_cpu() abuse
+Subject: [tip: x86/apic] x86/apic/ipi: Code cleanup
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
@@ -48,7 +48,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Juergen Gross <jgross@suse.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169160834035.27769.6808573188622126756.tip-bot2@tip-bot2>
+Message-ID: <169160834077.27769.5491452485090273783.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -65,22 +65,17 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/apic branch of tip:
 
-Commit-ID:     e3243ed0142bb438bbd284c8c04f4c8e0c2ff498
-Gitweb:        https://git.kernel.org/tip/e3243ed0142bb438bbd284c8c04f4c8e0c2ff498
+Commit-ID:     ec9fb3c5f4a4fc96bd523061b43d1e2ec6cb24b1
+Gitweb:        https://git.kernel.org/tip/ec9fb3c5f4a4fc96bd523061b43d1e2ec6cb24b1
 Author:        Thomas Gleixner <tglx@linutronix.de>
 AuthorDate:    Tue, 08 Aug 2023 15:03:54 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Wed, 09 Aug 2023 11:58:24 -07:00
+CommitterDate: Wed, 09 Aug 2023 11:58:23 -07:00
 
-x86/apic: Mop up early_per_cpu() abuse
+x86/apic/ipi: Code cleanup
 
-UV X2APIC uses the per CPU variable from:
-
-  native_smp_prepare_cpus()
-    uv_system_init()
-      uv_system_init_hub()
-
-which is long after the per CPU areas have been set up.
+Remove completely useless and mindlessly copied comments and tidy up the
+code which causes eye bleed when looking at it.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
@@ -89,19 +84,63 @@ Tested-by: Michael Kelley <mikelley@microsoft.com>
 Tested-by: Sohil Mehta <sohil.mehta@intel.com>
 Tested-by: Juergen Gross <jgross@suse.com> # Xen PV (dom0 and unpriv. guest)
 ---
- arch/x86/kernel/apic/x2apic_uv_x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/apic/ipi.c | 23 +++++++----------------
+ 1 file changed, 7 insertions(+), 16 deletions(-)
 
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index 0d812fd..8b14451 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -1843,7 +1843,7 @@ static void __init uv_system_init_hub(void)
+diff --git a/arch/x86/kernel/apic/ipi.c b/arch/x86/kernel/apic/ipi.c
+index aa51e16..2ff9cf9 100644
+--- a/arch/x86/kernel/apic/ipi.c
++++ b/arch/x86/kernel/apic/ipi.c
+@@ -184,18 +184,13 @@ void default_send_IPI_single_phys(int cpu, int vector)
  
- 	/* Initialize per CPU info: */
- 	for_each_possible_cpu(cpu) {
--		int apicid = early_per_cpu(x86_cpu_to_apicid, cpu);
-+		int apicid = per_cpu(x86_cpu_to_apicid, cpu);
- 		unsigned short bid;
- 		unsigned short pnode;
+ void default_send_IPI_mask_sequence_phys(const struct cpumask *mask, int vector)
+ {
+-	unsigned long query_cpu;
+ 	unsigned long flags;
++	unsigned long cpu;
  
+-	/*
+-	 * Hack. The clustered APIC addressing mode doesn't allow us to send
+-	 * to an arbitrary mask, so I do a unicast to each CPU instead.
+-	 * - mbligh
+-	 */
+ 	local_irq_save(flags);
+-	for_each_cpu(query_cpu, mask) {
++	for_each_cpu(cpu, mask) {
+ 		__default_send_IPI_dest_field(per_cpu(x86_cpu_to_apicid,
+-				query_cpu), vector, APIC_DEST_PHYSICAL);
++				cpu), vector, APIC_DEST_PHYSICAL);
+ 	}
+ 	local_irq_restore(flags);
+ }
+@@ -203,18 +198,15 @@ void default_send_IPI_mask_sequence_phys(const struct cpumask *mask, int vector)
+ void default_send_IPI_mask_allbutself_phys(const struct cpumask *mask,
+ 						 int vector)
+ {
+-	unsigned int this_cpu = smp_processor_id();
+-	unsigned int query_cpu;
++	unsigned int cpu, this_cpu = smp_processor_id();
+ 	unsigned long flags;
+ 
+-	/* See Hack comment above */
+-
+ 	local_irq_save(flags);
+-	for_each_cpu(query_cpu, mask) {
+-		if (query_cpu == this_cpu)
++	for_each_cpu(cpu, mask) {
++		if (cpu == this_cpu)
+ 			continue;
+ 		__default_send_IPI_dest_field(per_cpu(x86_cpu_to_apicid,
+-				 query_cpu), vector, APIC_DEST_PHYSICAL);
++				 cpu), vector, APIC_DEST_PHYSICAL);
+ 	}
+ 	local_irq_restore(flags);
+ }
+@@ -283,7 +275,6 @@ void default_send_IPI_mask_logical(const struct cpumask *cpumask, int vector)
+ 	local_irq_restore(flags);
+ }
+ 
+-/* must come after the send_IPI functions above for inlining */
+ static int convert_apicid_to_cpu(int apic_id)
+ {
+ 	int i;
