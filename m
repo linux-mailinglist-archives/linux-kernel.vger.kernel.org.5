@@ -2,145 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8AE977558D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 10:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6A277566B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 11:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbjHIIhi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Aug 2023 04:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54180 "EHLO
+        id S232021AbjHIJam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 05:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbjHIIhe (ORCPT
+        with ESMTP id S229450AbjHIJaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 04:37:34 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC62C170B;
-        Wed,  9 Aug 2023 01:37:33 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RLNct5KHJz6J7mD;
-        Wed,  9 Aug 2023 16:33:50 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 9 Aug
- 2023 09:37:30 +0100
-Date:   Wed, 9 Aug 2023 09:37:29 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-CC:     "GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Waqar Hameed <waqar.hameed@axis.com>,
-        Kees Cook <keescook@chromium.org>, <linux-iio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        Xiu Jianfeng <xiujianfeng@huawei.com>, <gongruiqi1@huawei.com>
-Subject: Re: [PATCH RFC] iio: irsd200: fix -Warray-bounds bug in
- irsd200_trigger_handler
-Message-ID: <20230809093729.00000a1d@Huawei.com>
-In-Reply-To: <ZNIijIoh/famqTDl@work>
-References: <20230808083719.280777-1-gongruiqi@huaweicloud.com>
-        <ZNIijIoh/famqTDl@work>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Wed, 9 Aug 2023 05:30:39 -0400
+X-Greylist: delayed 1500 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Aug 2023 02:30:37 PDT
+Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 750221FD8;
+        Wed,  9 Aug 2023 02:30:37 -0700 (PDT)
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+        by mail.parknet.co.jp (Postfix) with ESMTPSA id 5F6A22055F9C;
+        Wed,  9 Aug 2023 17:37:57 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+        by ibmpc.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 3798btR4208465
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Wed, 9 Aug 2023 17:37:56 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+        by devron.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 3798btTt140448
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Wed, 9 Aug 2023 17:37:55 +0900
+Received: (from hirofumi@localhost)
+        by devron.myhome.or.jp (8.17.2/8.17.2/Submit) id 3798biDW140435;
+        Wed, 9 Aug 2023 17:37:44 +0900
+From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>,
+        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
+In-Reply-To: <20230807-mgctime-v7-5-d1dec143a704@kernel.org> (Jeff Layton's
+        message of "Mon, 07 Aug 2023 15:38:36 -0400")
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+        <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
+Date:   Wed, 09 Aug 2023 17:37:44 +0900
+Message-ID: <87msz08vc7.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Aug 2023 05:10:04 -0600
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+Jeff Layton <jlayton@kernel.org> writes:
 
-> On Tue, Aug 08, 2023 at 04:37:19PM +0800, GONG, Ruiqi wrote:
-> > From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
-> > 
-> > When compiling with gcc 13 with -Warray-bounds enabled:
-> > 
-> > In file included from drivers/iio/proximity/irsd200.c:15:
-> > In function ‘iio_push_to_buffers_with_timestamp’,
-> >     inlined from ‘irsd200_trigger_handler’ at drivers/iio/proximity/irsd200.c:770:2:
-> > ./include/linux/iio/buffer.h:42:46: error: array subscript ‘int64_t {aka long long int}[0]’
-> > is partly outside array bounds of ‘s16[1]’ {aka ‘short int[1]’} [-Werror=array-bounds=]
-> >    42 |                 ((int64_t *)data)[ts_offset] = timestamp;
-> >       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
-> > drivers/iio/proximity/irsd200.c: In function ‘irsd200_trigger_handler’:
-> > drivers/iio/proximity/irsd200.c:763:13: note: object ‘buf’ of size 2
-> >   763 |         s16 buf = 0;
-> >       |             ^~~
-> > 
-> > The problem seems to be that irsd200_trigger_handler() is taking a s16
-> > variable as an int64_t buffer. Fix it by extending the buffer to 64 bits.  
-> 
-> Thanks for working on this!
-> 
-> > 
-> > Link: https://github.com/KSPP/linux/issues/331
-> > Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>  
-> 
-> Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Also, it may be that things have changed by the time we get to calling
+> fat_update_time after checking inode_needs_update_time. Ensure that we
+> attempt the i_version bump if any of the S_* flags besides S_ATIME are
+> set.
 
-Good find on the bug, but the fix is wrong even if it squashes the error.
+I'm not sure what it meaning though, this is from
+generic_update_time(). Are you going to change generic_update_time()
+too? If so, it doesn't break lazytime feature?
 
-> 
-> --
-> Gustavo
-> 
-> > ---
-> > 
-> > RFC: It's a preliminary patch since I'm not familiar with this hardware.
-> > Further comments/reviews are needed about whether this fix is correct,
-> > or we should use iio_push_to_buffers() instead of the *_with_timestamp()
-> > version.
-> > 
-> >  drivers/iio/proximity/irsd200.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/iio/proximity/irsd200.c b/drivers/iio/proximity/irsd200.c
-> > index 5bd791b46d98..34c479881bdf 100644
-> > --- a/drivers/iio/proximity/irsd200.c
-> > +++ b/drivers/iio/proximity/irsd200.c
-> > @@ -759,10 +759,10 @@ static irqreturn_t irsd200_trigger_handler(int irq, void *pollf)
-> >  {
-> >  	struct iio_dev *indio_dev = ((struct iio_poll_func *)pollf)->indio_dev;
-> >  	struct irsd200_data *data = iio_priv(indio_dev);
-> > -	s16 buf = 0;
-> > +	int64_t buf = 0;
+Thanks.
 
-s64 as internal kernel type.
-More importantly needs to be at least s64 buf[2]; as the offset
-https://elixir.bootlin.com/linux/latest/source/include/linux/iio/buffer.h#L41
-will be 1 due to this filling the timestamp in at first 8 byte aligned location
-after the data that is already in the buffer.
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/fat/misc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/fat/misc.c b/fs/fat/misc.c
+> index 67006ea08db6..8cab87145d63 100644
+> --- a/fs/fat/misc.c
+> +++ b/fs/fat/misc.c
+> @@ -347,14 +347,14 @@ int fat_update_time(struct inode *inode, struct timespec64 *now, int flags)
+>  		return 0;
+>  
+>  	if (flags & (S_ATIME | S_CTIME | S_MTIME)) {
+> -		fat_truncate_time(inode, now, flags);
+> +		fat_truncate_time(inode, NULL, flags);
+>  		if (inode->i_sb->s_flags & SB_LAZYTIME)
+>  			dirty_flags |= I_DIRTY_TIME;
+>  		else
+>  			dirty_flags |= I_DIRTY_SYNC;
+>  	}
+>  
+> -	if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
+> +	if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && inode_maybe_inc_iversion(inode, false))
+>  		dirty_flags |= I_DIRTY_SYNC;
+>  
+>  	__mark_inode_dirty(inode, dirty_flags);
 
-With hindsight was a bad decision a long time ago not to force people to also
-pass the size into this function so we could detect this at runtime at least.
-Hard to repair now give very large number of drivers using this and the fact
-that it's not always easy to work out that size.  Unfortunately occasionally
-one of these slips through review :(
-
-I suppose we could, in some cases check if the buffer was at least 16 bytes which
-would get us some of the way.
-
-Jonathan
-
-> >  	int ret;
-> >  
-> > -	ret = irsd200_read_data(data, &buf);
-> > +	ret = irsd200_read_data(data, (s16 *)&buf);
-> >  	if (ret)
-> >  		goto end;
-> >  
-> > -- 
-> > 2.41.0
-> >   
-
+-- 
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
