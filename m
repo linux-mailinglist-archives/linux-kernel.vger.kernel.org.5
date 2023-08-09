@@ -2,127 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9091277646E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B05776471
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbjHIPxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:53:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
+        id S233705AbjHIPyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231646AbjHIPxf (ORCPT
+        with ESMTP id S229547AbjHIPyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:53:35 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16801FF9
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:53:34 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-565331f1c9eso15519a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:53:34 -0700 (PDT)
+        Wed, 9 Aug 2023 11:54:37 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15341BD9
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:54:36 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so13023a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:54:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691596414; x=1692201214;
+        d=google.com; s=20221208; t=1691596475; x=1692201275;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RIwKDuY4Cird/U1Q4TEwDWgypIViAxxEznjv74enuWE=;
-        b=YK0mzmoUhg1/WVZtS6i8IvR/ir3WbY3Rml52xGJOadNilW86RJYMM2B1S9qtS+mNV8
-         02EqKkCgXbRPt5+IpTJAr2MJn/YLBb3P2HkVGUczy/s7EtkXYOCUyVH57NhCvoeG9/Ck
-         +xY9zswP8Z/VRCt3kljF3dnGZyZi8QXKvdLrc=
+        bh=kdmr0eHwzB3gy4lSLkjDEf6JX0g8QfGgY6ypL8PteMk=;
+        b=5sCJRA0xk2bFTWzmVh9KanEzPTQGLI7BhMV5unfFun8KBoGmOGWZOT1RteY/6cqQcv
+         xCNRRiSBeHuWgQnzZNjBb5W4u3d2M0AfO5rEueLDUCbfyQ1ta/dd2T0uBgTWQw7/aF1D
+         uz2vJ/1N1bAsiG/PWCVPspArYVRAfjeotfMmC6zEODCb/7VssMb/x3MND7nS36J2szUL
+         /E4X+Twg44bE3O90GTcxJu/tRFj7sfLgosABiFtiRLjRVYQ3fHKhJwUGowg1lQzTNgpt
+         djXEO7aciJ2w5PCVk0J37eFnoxSUn0RGJi0MFotLnZQ3iZCJ7iYgD0IltBCojV/0icLS
+         W2DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691596414; x=1692201214;
+        d=1e100.net; s=20221208; t=1691596475; x=1692201275;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RIwKDuY4Cird/U1Q4TEwDWgypIViAxxEznjv74enuWE=;
-        b=iSFIRKXU1vRQe76Z56133FyG4jhXDZwL1UgKReURPozthbCx8zhS7Ta5HRqBwID1w+
-         H36doWL5WSOBcJ3fmVdP8GfGCRPgskAHlvh5pA/+PK8oDRa/+Ap0GfrvGdUw5usbq1qG
-         kuJwHTxWrEDtIRyeIjEHaTm08P6VwCywois30BzXZ6swoMwIRUz1ltygXRFMmN0+3IMK
-         5AgEY3sKBZ4AQbGuFrtpQHdxfFa3YiequhZUNHBqSot5eWu4Re9C1pjivHYJQ7nniN1t
-         LPV98OdW9SKDnx1dJbE32pA0yzb1zmOPAh8e0/aMig01luxLK1k57XuvbhMYHE6p5taH
-         ICgw==
-X-Gm-Message-State: AOJu0YyIKWysc+FWImpmQ68f8ZhVVp2/cSUGKp9XII2i298e1I/ZtzZP
-        9LcVP+2qw/wlwvq0yXiy28xYkNXw8QY6feD7Inl5sg==
-X-Google-Smtp-Source: AGHT+IEt0SjbBNE/0A3+xFiamsHpiZ+DozfqOsjQmlYXrs6lu/425svIyeL6FcV0FsKSoHWBUid1vMOwONcyHbRTk8I=
-X-Received: by 2002:a17:90b:2281:b0:269:621e:a673 with SMTP id
- kx1-20020a17090b228100b00269621ea673mr2333395pjb.1.1691596414341; Wed, 09 Aug
- 2023 08:53:34 -0700 (PDT)
+        bh=kdmr0eHwzB3gy4lSLkjDEf6JX0g8QfGgY6ypL8PteMk=;
+        b=k8RdvWnrj2YPRk6E9+7bhoQ2ef2y4exEXzkKjBuDWLivUUDNRK7rvzkfP/HdMHM89L
+         q8JSnJ0N9xxQY6nyZTknVyeQEoxfwFPs/QCTCrVQ9G3IkHYFnGQ0xzvku5JZPI9EGbU3
+         xzam+EWYJkX1grCe7MMfVZE1LtE6TFyipmeDa1DB/GnKmdg3Rk4cjT+Z0rhIow01KTLk
+         prE15o8/B4BBv+vaO+DzkrdbmA2m/8J161YPeWf/pSkMw96UZlBS5xUiv+yoCNKwGye5
+         n3Xxw9TTLpaAJDEj+8VghPx2fMgLJXrZteiAOGe8CIGbhBT2kCer9CGSIic5n1dEy+nu
+         YUDw==
+X-Gm-Message-State: AOJu0Yx8lkwihloLw24QcZFD1Kn916ISSvG56qJ7AaR/Egq/Brsa3dQ+
+        9+bCTYCU5vMoBQ/Fb+azk2BfMVPBkX0Ix2/KveugtQ==
+X-Google-Smtp-Source: AGHT+IG24u9n4GEFcr1pL3uOsvjjN7DlSKmSu6n2isxk0z3q/ypHFWVcnYyMQB6rFBS1AmV3jvDTR/T11GCrS8SWh1Y=
+X-Received: by 2002:a50:9f4f:0:b0:523:ee1:8d27 with SMTP id
+ b73-20020a509f4f000000b005230ee18d27mr101997edf.1.1691596475039; Wed, 09 Aug
+ 2023 08:54:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <169139090386.324433.6412259486776991296.stgit@devnote2>
- <169139092722.324433.16681957760325391475.stgit@devnote2> <CABRcYmJpA7tWk7pNxMy-44aoT9fFByQY3kGiEfKDbOe9WPkmNg@mail.gmail.com>
- <20230809231607.0c5c75e7c3b69fcc96d82cb4@kernel.org>
-In-Reply-To: <20230809231607.0c5c75e7c3b69fcc96d82cb4@kernel.org>
-From:   Florent Revest <revest@chromium.org>
-Date:   Wed, 9 Aug 2023 17:53:23 +0200
-Message-ID: <CABRcYmJGPLAA+HKFA0CZkEZJ0j5GvXBDDAVA7i8Wv5PDMvYQrA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/6] tracing: Expose ftrace_regs regardless of CONFIG_FUNCTION_TRACER
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
+References: <1691568344-13475-1-git-send-email-quic_charante@quicinc.com> <9d109a43-78a3-dee4-5aaa-385bdfe4bcb3@redhat.com>
+In-Reply-To: <9d109a43-78a3-dee4-5aaa-385bdfe4bcb3@redhat.com>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Wed, 9 Aug 2023 08:54:23 -0700
+Message-ID: <CAC_TJvckhxwz9TxXgMSaiihHddY+AnEGqjLxvO6qF0eqTb5U8Q@mail.gmail.com>
+Subject: Re: [PATCH] Multi-gen LRU: skip CMA pages when they are not eligible
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Charan Teja Kalla <quic_charante@quicinc.com>,
+        akpm@linux-foundation.org, zhaoyang.huang@unisoc.com,
+        yuzhao@google.com, surenb@google.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 4:16=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.or=
-g> wrote:
+On Wed, Aug 9, 2023 at 7:00=E2=80=AFAM David Hildenbrand <david@redhat.com>=
+ wrote:
 >
-> On Wed, 9 Aug 2023 12:29:13 +0200
-> Florent Revest <revest@chromium.org> wrote:
-> > > + * tracer, define the default(pt_regs compatible) ftrace_regs.
-> > > + */
-> > > +#if !defined(CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS) || !defined(CONFI=
-G_FUNCTION_TRACER)
+> On 09.08.23 10:05, Charan Teja Kalla wrote:
+> > This patch is based on the commit 5da226dbfce3("mm: skip CMA pages when
+> > they are not available") which skips cma pages reclaim when they are no=
+t
+> > eligible for the current allocation context. In mglru, such pages are
+> > added to the tail of the immediate generation to maintain better LRU
+> > order, which is unlike the case of conventional LRU where such pages ar=
+e
+> > directly added to the head of the LRU list(akin to adding to head of th=
+e
+> > youngest generation in mglru).
 > >
-> > I wonder if we should make things simpler with:
+> > No observable issue without this patch on MGLRU, but logically it make
+> > sense to skip the CMA page reclaim when those pages can't be satisfied
+> > for the current allocation context.
 > >
-> > #if defined(HAVE_PT_REGS_COMPAT_FTRACE_REGS) || !defined(CONFIG_FUNCTIO=
-N_TRACER)
+> > Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
+
+Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
+
+Thanks,
+Kalesh
+
+> > ---
+> >   mm/vmscan.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
 > >
-> > And remove the ftrace_regs definitions that are copy-pastes of this
-> > block in arch specific headers. Then we can enforce in a single point
-> > that HAVE_PT_REGS_COMPAT_FTRACE_REGS holds.
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index b4329f9..6cbe921 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -4943,7 +4943,7 @@ static bool sort_folio(struct lruvec *lruvec, str=
+uct folio *folio, struct scan_c
+> >       }
+> >
+> >       /* ineligible */
+> > -     if (zone > sc->reclaim_idx) {
+> > +     if (zone > sc->reclaim_idx || skip_cma(folio, sc)) {
+> >               gen =3D folio_inc_gen(lruvec, folio, false);
+> >               list_move_tail(&folio->lru, &lrugen->folios[gen][type][zo=
+ne]);
+> >               return true;
 >
-> Here, the "HAVE_PT_REGS_COMPAT_FTRACE_REGS" does not mean that the
-> ftrace_regs is completely compatible with pt_regs, but on the memory
-> it wraps struct pt_regs (thus we can just cast the type).
-
-But in practice I think that all architectures that chose to wrap a
-pt_regs in their ftrace_regs also do:
-
-+#define ftrace_regs_get_instruction_pointer(fregs) \
-+       instruction_pointer(ftrace_get_regs(fregs))
-+#define ftrace_regs_get_argument(fregs, n) \
-+       regs_get_kernel_argument(ftrace_get_regs(fregs), n)
-+#define ftrace_regs_get_stack_pointer(fregs) \
-+       kernel_stack_pointer(ftrace_get_regs(fregs))
-+#define ftrace_regs_return_value(fregs) \
-+       regs_return_value(ftrace_get_regs(fregs))
-+#define ftrace_regs_set_return_value(fregs, ret) \
-+       regs_set_return_value(ftrace_get_regs(fregs), ret)
-+#define ftrace_override_function_with_return(fregs) \
-+       override_function_with_return(ftrace_get_regs(fregs))
-+#define ftrace_regs_query_register_offset(name) \
-+       regs_query_register_offset(name)
-
-And are just careful to populate the fields that let these macros
-work. So maybe these could be factorized... But anyway, I'm not
-particularly a super fan of the idea and I don't think it should
-necessarily fit in that series. It's just something that crossed my
-mind, if you're not a fan then we should probably not do it ;)
+> Makes sense to me.
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
