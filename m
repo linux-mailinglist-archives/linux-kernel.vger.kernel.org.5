@@ -2,199 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 625957751D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 06:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FBE7751D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 06:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbjHIEND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 00:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
+        id S230018AbjHIEPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 00:15:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjHIENB (ORCPT
+        with ESMTP id S229560AbjHIEPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 00:13:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9AAA19A1;
-        Tue,  8 Aug 2023 21:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691554380; x=1723090380;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=GMg5ahPTFglmzuyVTFDW2m8EjnV5r2+WSguPMMfDpVc=;
-  b=jHnrSiuFT+ARm+CjmQ5CZ5GQOgYTs36QcdVWie8BKyI/KHfs7Xloh4vi
-   /z/mKtBR7TNcaHQd58jhkkA7VVJTG1vV6jyLBzEXORLrmk+NMz7x+NivU
-   h7waffCp+kLbUzIHTr5K8RAYtP5UETVi3qjDQxpdtzFgUlhKVRMmTUEq1
-   dQyDqJhpKEXMtplwRN/UmMQBftgOIpWjLalu53cdSAfGskaxX/AODTCzM
-   +xpXlYm3cxNPAyOESIue8Kek2TW2ze7ypOrE75NuODjLGe4sDsx6e1yhL
-   UyZEkpKlO9Hz575oVZokhl4+ELQriE8a6hnpYYVGpTf7J9uXB4TnCnNnI
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="401983510"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="401983510"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 21:13:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="845771347"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="845771347"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga002.fm.intel.com with ESMTP; 08 Aug 2023 21:13:00 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 8 Aug 2023 21:12:59 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Tue, 8 Aug 2023 21:12:59 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Tue, 8 Aug 2023 21:12:59 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iXb3qn4twZpGPiLjCCUKv2+RVieJ/uijHhZ+7ehhIxnFGxRCcE0KIWtG91+NWZJjCfBCg3Fb4eDjrs87oGUS3XYZLtgCorpuCRYH3WBLRjcJePDPI0dVhablw8+3JW1aY4tOG1SOERZQg3S01aYRSQTn51fTwRWMAusveth2e1agNZUD8UFN2ce9I/jIsUraSl1kx8a5LsULEvrO5jJU3Z8I98/9fBIsiOdP+nOjWoVqPXDGcUXPcQvXXuByzb8i9veJcBAYNLIvUs10Yx4F55y6F2dzERb5sZpgIU2XW14U56mtw6keSXjc/MDnVNO88pHXmxayO6fvG/dyj6ZaJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1J6225uqjP5nEmPYDM9Uf8+9U3XOYJyB3NycDzXopD0=;
- b=VIuI9qNbiHOwiEaxMTE/nUpo7Ma6dTqsRBT0Cz7L64u3uVqvxW2FnQjJH4Mc4WgUrRo3kJ1IcRmxxcG/SFTuDyN+WVPD7RciWcGYLNLBUz94t8HLa+V3Znvi9hmcd0ssCsNBmsbcUdZAnoSa/b7Olha5kJ2Ax5bJChSSQJQmCo6ON/fuK7j3zCZhHwwFDlq7JrDvLeTtMLoypVnKtfTdOiK1lkl6Dz7FOrGewdW3HDet3V92778eaPGMFBtkxXQZFH1SpJknGLKQuG2o4D3Y2OijImbRL1WRoQuLNsfsZb+Cdc9ug5uwz7JZy4T4xX+UDJX54x7D3F7ed62HvvlOMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by SJ0PR11MB4944.namprd11.prod.outlook.com (2603:10b6:a03:2ae::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Wed, 9 Aug
- 2023 04:12:57 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6652.026; Wed, 9 Aug 2023
- 04:12:57 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] vfio: align capability structures
-Thread-Topic: [PATCH v2] vfio: align capability structures
-Thread-Index: AQHZyhPRoQtbrQtb3ka03fvc/lDEIa/hWtrw
-Date:   Wed, 9 Aug 2023 04:12:57 +0000
-Message-ID: <BN9PR11MB527635149A3E117E6D56C09A8C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230808144216.2656505-1-stefanha@redhat.com>
-In-Reply-To: <20230808144216.2656505-1-stefanha@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SJ0PR11MB4944:EE_
-x-ms-office365-filtering-correlation-id: 1785c89b-7fac-4133-1f20-08db988ee98b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qOei5NcX+eTta9PX99P3JnKwiWtFv8nfL+CrSil5nd9sF7L1uWXSW2+UA5wp+jUxwsufgPmFDMft1+EgEFk6+SW2NCmRwPsg8W1IztzwrPN2PY+pNouDofHfh07txOiPZPGa6WjF2PUxS9SpM2tbvV5038JgL6CMBkeUX/VDwcfvqHn3QREkIoZ+qUHwAvNxmds6DutfbK0SGxrLWWKT8z7vEA+PQMso6VN/C0rCCIpq7YLiXnWHtTsMhxccgK3vZ3oDXr8bexd9WioeGH2okTjK7iOTTKK8Kwp/ZiwEuKBRpRZ7dCY5Ps9AYjW6ff7na/uJv3wlNRM+scFyD2JsGTTTmPUwzuTjLxOPu4dxxXRhtfU88rW+jkPKXRiK0aCr9Elr9xjbj1AI0nxDQ89GxjtWpKyJUEPZ9/Au6z/eYYtrzHm/2vZMACqXddKfXWAkiyzpTqApbqv+gOowUf3vdg1li7++YIHnwIicQsUTzyP5U1RdNt4bLrbObYdTxq+NWoBiOg7+/Ud/yMUXNmXzIltISVnxC+WfcOEbO7h7FVC7bzlammBENQsRaSfmECykPAnKH1ej5ROgBI6Q5jGQ3utN69pS0AfAt2Qgqe6IrdlDcT0i+1v4jHTvCWt/lryO
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(376002)(366004)(136003)(396003)(39860400002)(451199021)(186006)(1800799006)(55016003)(316002)(83380400001)(2906002)(122000001)(82960400001)(26005)(66476007)(38100700002)(52536014)(7696005)(5660300002)(41300700001)(76116006)(66946007)(66446008)(64756008)(4326008)(6506007)(66556008)(8936002)(478600001)(110136005)(54906003)(86362001)(9686003)(71200400001)(38070700005)(33656002)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?lJfEyK/zwgSIPrjmQN5h4GLwHD+HspP4Ejs6oUVvpfj+DLEClGtyWCFKwdM5?=
- =?us-ascii?Q?a0Zkq5W5Xg99i7ZWVof0WPk4xzR5T/aY3o/nK4YbMuls75DIPY0J/nbThKlb?=
- =?us-ascii?Q?N80WU9CNbu6S128sXd93XVO5Tj8kumn5A9UnhOJAZCRe/sO1jbUlcffD6FTe?=
- =?us-ascii?Q?wjfmGYQVaU1sNxJlV1ckuNkyvPWb4VErtEDYwSl4esjFXY7px2y7WEYY8igJ?=
- =?us-ascii?Q?jCFNUz6eoaP3qcx3I0KxxzHYWRzpCfAvVRKymbQGZUmMMMQJrcE1fEksmHlm?=
- =?us-ascii?Q?ywqd3i5oai+48CzybukNZzW6+rFZAJfS+jnE7DcEOvy+kDsvSuSyWTAAQ9rZ?=
- =?us-ascii?Q?l3B3zlgvJQU26LlKXs3utOLpgCte7PdbNhisBLtJEDC08n4+0zxlfm4pMOiC?=
- =?us-ascii?Q?NwTgfrZzYoJUMMfQt7SERCCbBhtflH9Nmfc5YyXN3IELwaHDZpHvzVma5c2h?=
- =?us-ascii?Q?Xt122PDt1c1Ra3dKCy5jP3/z7uoRxJmSkeCivERaCJKmal/6jzSwPYyrwNkc?=
- =?us-ascii?Q?UlQGmls3cBeIhzGGfrAU/IqMXKdiSflg/Y3R+8PyOcL8LjDsbqi59U6nVLh+?=
- =?us-ascii?Q?M+8N3Csd48/E/Ea0n9+HqhhA9OK9dGwTxNxHL6x6vTr/y6Qb9TgwTPlac1Zu?=
- =?us-ascii?Q?CatWstnC0NbiEGjcE2kuPuKqS+H0VsDumO2zbSh2TXO0cHi407P9T+RHicaY?=
- =?us-ascii?Q?sqxosu2gjcR6IHFyd1E4HtBatWcE4VnO90hRvzvExfXReBGQk5KgoP45k4H7?=
- =?us-ascii?Q?xGoKA2t/b634Ds4w/E7MtSMqUfRXhSlObHKVud4YQAQO8RV/VAHvZpgimt5G?=
- =?us-ascii?Q?YXZthbCxbZsOvKUlyzx9v8aVm0bJDxFd62BfrcRHTrBGYCIClQKOOPlkyn14?=
- =?us-ascii?Q?a6Ux7w1T3xS6cwfeqYBmXFA7uhSPJA2geevEpHqAaXYyZSG7i8veH8bl17O0?=
- =?us-ascii?Q?QdhSkk/CeBRBlo8PUI1miXQF49R7Sx0wRnw2K+elLPEcQfW/6tsvlLZ0eBP1?=
- =?us-ascii?Q?ZnOQd7ml2UQLW1e94Ym9d6iZ3BAek5p8fZL8tDIDGwNJAe1kUQH1T+mEWStK?=
- =?us-ascii?Q?5QEVqZej/NsxyC4KsfFSB2UgUG42PorVAHB9GOHRR1/8pKjg/elwHrTywKHb?=
- =?us-ascii?Q?ue4MVZcZTIasZOGqdqjipxzaKn3qmg4ZkTOzaYg0/e6UIhnSO1G4TF/0V6py?=
- =?us-ascii?Q?NYL7d8R5Z9DilQRQoVBHD+u2dB4CFuyjxhY/ess5l8Z28lqMlrcpk8prmge0?=
- =?us-ascii?Q?QyXHpKYd+3Ch0xwP7wKcKZHQ+Dme78bMu3d9Q0S0fV0dkHotNAo2AkqruNUR?=
- =?us-ascii?Q?4QYDagUWl1bE3MKiNSjeE9nPC1T5n8gF9j+ZG/P426HGJv+V7iuiPuN+yVjv?=
- =?us-ascii?Q?MUkaOjzDkO+c+cW+9zcHVPnP3WlP3N3i8zEUtd74/CMJ1IwMSGXU5HaigC4j?=
- =?us-ascii?Q?3UdaMU0oeztbvknKAppuKf0sbZsM8ywF/blVfFz6+Y/JmhsYAVnnb8xYM5J0?=
- =?us-ascii?Q?cjXREWkynZ0KsEehA/5I2iZkrMBlcpuj7ZGCLl5OXn2Im5kE4N4k+OQC25OV?=
- =?us-ascii?Q?b7DECVjrT8pj/wZd1faYz51w9oVEEb8OcGH3Snic?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 9 Aug 2023 00:15:03 -0400
+Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54D11BD9
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 21:15:01 -0700 (PDT)
+Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3a1c2d69709so11316693b6e.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 21:15:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691554501; x=1692159301;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FoC+ZHK/Ul0zUz/gPO+LgSvXGBeamDhZjMv6kjqJlv0=;
+        b=IOXcgUq4b33pXZcGRZl6bUcJZkXW99X7y6aAzl6mTeqxXxYurrM47nswZbQUTvtm8+
+         Y1s+LcBjE61iqa/aev+2Oj4EKw5hO2NBIybxb1fK7Hy9hcRcV2uWB7zyMXkk7IechKRG
+         JSEelo3a+9SYGBuryDSzGf8s9HGnAHFGDTJm+IWOA9b5lRedNK4eANkg1q/O0THCZsu7
+         6neXkWmuCBwBaeFZ+sSx4JF+z4P0mQoJ+p7GlG3oo2zjBwuE69Us2ynLW6GNqpTokXmI
+         OaaRSSKEn5jFaWTMCcOXTBQwIXm9z0HCcjyIQxAOlpuPhAlB/4Xag1onfhr7eV1WrAXr
+         Vdfw==
+X-Gm-Message-State: AOJu0YwGgE58GDDyzA8wY4J3Hv75Ia6eQylFm7+QIPnDPhHklFAM5sV7
+        UsdLWSsTi/WxP/Y91P5g0RvOZHC4BbFsWSbsal+r/a3Aogln
+X-Google-Smtp-Source: AGHT+IE6SQO4Zp8MUQQnAcglW5Mq2oa+Ullg76DaCVffi2y85gWpT/v/GiHVg1+24DczZ8vpPW4iyIwgLsSUbKaq7ubMxnU8aQwm
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1785c89b-7fac-4133-1f20-08db988ee98b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2023 04:12:57.3804
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: P0knRTzfCxSTdrVtf7gLdvj+ixPfFYly93cvXabGVxEjedHb9z5ufupKcu8OY4STbzA8ORejo4aU1aQc5ee2ng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4944
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6808:1292:b0:3a7:4878:233d with SMTP id
+ a18-20020a056808129200b003a74878233dmr1014400oiw.0.1691554501128; Tue, 08 Aug
+ 2023 21:15:01 -0700 (PDT)
+Date:   Tue, 08 Aug 2023 21:15:01 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000287928060275b914@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in update_inline_extent_backref
+From:   syzbot <syzbot+c128866d4c63fd09a097@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Stefan Hajnoczi <stefanha@redhat.com>
-> Sent: Tuesday, August 8, 2023 10:42 PM
->=20
-> The VFIO_DEVICE_GET_INFO, VFIO_DEVICE_GET_REGION_INFO, and
-> VFIO_IOMMU_GET_INFO ioctls fill in an info struct followed by capability
-> structs:
->=20
->   +------+---------+---------+-----+
->   | info | caps[0] | caps[1] | ... |
->   +------+---------+---------+-----+
->=20
-> Both the info and capability struct sizes are not always multiples of
-> sizeof(u64), leaving u64 fields in later capability structs misaligned.
->=20
-> Userspace applications currently need to handle misalignment manually in
-> order to support CPU architectures and programming languages with strict
-> alignment requirements.
->=20
-> Make life easier for userspace by ensuring alignment in the kernel. This
-> is done by padding info struct definitions and by copying out zeroes
-> after capability structs that are not aligned.
->=20
-> The new layout is as follows:
->=20
->   +------+---------+---+---------+-----+
->   | info | caps[0] | 0 | caps[1] | ... |
->   +------+---------+---+---------+-----+
->=20
-> In this example caps[0] has a size that is not multiples of sizeof(u64),
-> so zero padding is added to align the subsequent structure.
->=20
-> Adding zero padding between structs does not break the uapi. The memory
-> layout is specified by the info.cap_offset and caps[i].next fields
-> filled in by the kernel. Applications use these field values to locate
-> structs and are therefore unaffected by the addition of zero padding.
->=20
-> Note that code that copies out info structs with padding is updated to
-> always zero the struct and copy out as many bytes as userspace
-> requested. This makes the code shorter and avoids potential information
-> leaks by ensuring padding is initialized.
->=20
-> Originally-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+Hello,
 
-As Jason suggested let's also fix vfio_compat in iommufd.
+syzbot found the following issue on:
 
-otherwise,
+HEAD commit:    e6fda526d9db Merge tag 'arm64-fixes' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13056635a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1e3d5175079af5a4
+dashboard link: https://syzkaller.appspot.com/bug?extid=c128866d4c63fd09a097
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/97a696eca453/disk-e6fda526.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d4053dfcc8c4/vmlinux-e6fda526.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5e22f1544aca/bzImage-e6fda526.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c128866d4c63fd09a097@syzkaller.appspotmail.com
+
+   btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
+   vfs_ioctl fs/ioctl.c:51 [inline]
+   __do_sys_ioctl fs/ioctl.c:870 [inline]
+   __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/extent-tree.c:1125!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 21577 Comm: syz-executor.3 Not tainted 6.5.0-rc4-syzkaller-00211-ge6fda526d9db #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+RIP: 0010:update_inline_extent_backref+0x530/0x5d0 fs/btrfs/extent-tree.c:1125
+Code: a7 5d fe e9 9e fc ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 11 ff ff ff 48 89 df e8 6a a7 5d fe e9 04 ff ff ff e8 30 da 04 fe <0f> 0b e8 29 da 04 fe 4c 89 e7 e8 71 80 00 00 4c 89 e3 49 8d 7c 24
+RSP: 0018:ffffc9000bee6fc8 EFLAGS: 00010246
+RAX: ffffffff8386cd50 RBX: 0000000000000002 RCX: 0000000000040000
+RDX: ffffc900113d3000 RSI: 000000000003ffff RDI: 0000000000040000
+RBP: 00000000000000b2 R08: ffffffff8386cb53 R09: ffffffff8386ca4a
+R10: 0000000000000004 R11: ffff88803763bb80 R12: 00000000fffffffe
+R13: 0000000000000001 R14: ffff88801e544000 R15: 0000000000000f3e
+FS:  00007ffb6820e6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8f6ded71e5 CR3: 000000003561e000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ remove_extent_backref fs/btrfs/extent-tree.c:1193 [inline]
+ __btrfs_free_extent+0x1329/0x3250 fs/btrfs/extent-tree.c:3116
+ run_delayed_data_ref fs/btrfs/extent-tree.c:1532 [inline]
+ run_one_delayed_ref fs/btrfs/extent-tree.c:1706 [inline]
+ btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:1948 [inline]
+ __btrfs_run_delayed_refs+0x108d/0x3f90 fs/btrfs/extent-tree.c:2009
+ btrfs_run_delayed_refs+0x140/0x480 fs/btrfs/extent-tree.c:2121
+ btrfs_commit_transaction+0x495/0x2ff0 fs/btrfs/transaction.c:2163
+ relocate_block_group+0xb7d/0xcd0 fs/btrfs/relocation.c:3763
+ btrfs_relocate_block_group+0x7ab/0xd70 fs/btrfs/relocation.c:4087
+ btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3283
+ __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4018
+ btrfs_balance+0xbd8/0x10d0 fs/btrfs/volumes.c:4395
+ btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7ffb6747cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffb6820e0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffb6759c1f0 RCX: 00007ffb6747cae9
+RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000009
+RBP: 00007ffb674c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007ffb6759c1f0 R15: 00007ffeafbe6508
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:update_inline_extent_backref+0x530/0x5d0 fs/btrfs/extent-tree.c:1125
+Code: a7 5d fe e9 9e fc ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 11 ff ff ff 48 89 df e8 6a a7 5d fe e9 04 ff ff ff e8 30 da 04 fe <0f> 0b e8 29 da 04 fe 4c 89 e7 e8 71 80 00 00 4c 89 e3 49 8d 7c 24
+RSP: 0018:ffffc9000bee6fc8 EFLAGS: 00010246
+RAX: ffffffff8386cd50 RBX: 0000000000000002 RCX: 0000000000040000
+RDX: ffffc900113d3000 RSI: 000000000003ffff RDI: 0000000000040000
+RBP: 00000000000000b2 R08: ffffffff8386cb53 R09: ffffffff8386ca4a
+R10: 0000000000000004 R11: ffff88803763bb80 R12: 00000000fffffffe
+R13: 0000000000000001 R14: ffff88801e544000 R15: 0000000000000f3e
+FS:  00007ffb6820e6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8f6ded71e5 CR3: 000000003561e000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
