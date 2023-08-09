@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1919377665E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB1B77665F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbjHIRWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 13:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60680 "EHLO
+        id S233051AbjHIRWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 13:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233002AbjHIRWZ (ORCPT
+        with ESMTP id S233059AbjHIRWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 13:22:25 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5542123;
-        Wed,  9 Aug 2023 10:22:24 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-267fc1d776eso8281a91.2;
-        Wed, 09 Aug 2023 10:22:24 -0700 (PDT)
+        Wed, 9 Aug 2023 13:22:31 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDFB2136;
+        Wed,  9 Aug 2023 10:22:26 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-565439b6b3fso74368a12.2;
+        Wed, 09 Aug 2023 10:22:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691601744; x=1692206544;
+        d=gmail.com; s=20221208; t=1691601745; x=1692206545;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ig5W7IVmZukpubm43ufz7bJD8pT18xKkNxAjQ1Pkr0Y=;
-        b=QizvGZTBUXTBDgn8psZ99xw+SOkhsWL32LWp3Fu9kLUd1sEognyZa9cqDH9ED44Iyh
-         IjkyWhEYosGuDsyYz3k9XnSXk9MOXTW+XiYXdaAa2UI7H1ByiMpWeNpv2D/rrDQEXCwE
-         W5zOGC4U4x2G72i7sh2W1JXKu7T9mTmtX0TSSKYl2DtHm0iW4BuXW8Lprf8yHA1ijNDv
-         g5zh3h0E8mO6Yx2nKR92SPDub8eieH7adRpRefv0TKf7z5sxRHlOm9GHMweSIg8LT+rS
-         nl+Pmi4SROWjEPycOfUhcqVII2FJTvxYslGZRfN+pQzLFhrUKfYVJe35ERVyFu7w7TkB
-         jejQ==
+        bh=21IzbhQ2qjGtr356saQ9/OyLk1G9ny5Nf5RhalLfvY4=;
+        b=a6zpV1t5R1NQADr/jZIw4xflFyUDDEs4/PrW1oOsEYv66hRh/k422x3led/2UR7kxh
+         6K9+LUccbmYVxgXAI9F+Q2b5Wyikw40lGuE3a7ozGyclMa72Nw6WxgC17xt24EhVGiQm
+         +s0S+Y8dzcjQHFV66lZZ7SlY4EH2R5b+d55/WKXpPcwt6iJnHid5bGa1HXv5LGn5zIpM
+         XHMwzwI/Oaxmz2jOy0VnHcLMD0BziK8hBhxK7dqGdevnwWUP0mjwWstRrxO7dFrRel+Z
+         tsChzASA/kUArYAVVmQ2L9o7zdVu/RHzPQB7Zv1nGjMpKd+p+woWXZwUL+r2jJCASrP+
+         dnJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691601744; x=1692206544;
+        d=1e100.net; s=20221208; t=1691601745; x=1692206545;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ig5W7IVmZukpubm43ufz7bJD8pT18xKkNxAjQ1Pkr0Y=;
-        b=By0lx8lj//4w6boV5Pg/x1FIqm5jnqawpVSPDIGM2rtAfKEVmSmJVtkEALpqoxoaGc
-         dpF0d7BUNq9G/1cvdFdqjAbKsnQyj1GnrpH0gQJeL6ZHf+AooSinxt+v1DbyhePVqb82
-         mOjUPLegq0pKTBXqeHLm602RgxTBvsWCUocL8ETM3zg3wJXhcrDj6RrxR+ShjCva+6xT
-         oexkwQma2Ekkn3QeW9IFav40p51lCPendIhSxJ/h4qmTgqclTI549m4MgZ0EA97ta8T1
-         J01ArOTYHZ+0VRZW3Q34k9ta4Q9aFjA2ZIGtan5YLghQfJmLGKZahck/7SkZ9kla8YxA
-         6OSg==
-X-Gm-Message-State: AOJu0YyG4vVHDRLWWxlFFMgBl3DKvQTMx1FBbFCKyywihZEH2/A8UvOl
-        nNYLVlx/0aDGxahelmBpw0U=
-X-Google-Smtp-Source: AGHT+IHF2dM6O+3RGI/MhpbY8TsHJ9rMgshnsXOJNM6RF/bnsrz4PjFvxpkpEow4A/lJJULyvYL88A==
-X-Received: by 2002:a17:90a:c7d2:b0:268:1e95:4e25 with SMTP id gf18-20020a17090ac7d200b002681e954e25mr2680890pjb.17.1691601743953;
-        Wed, 09 Aug 2023 10:22:23 -0700 (PDT)
+        bh=21IzbhQ2qjGtr356saQ9/OyLk1G9ny5Nf5RhalLfvY4=;
+        b=dfcBRyGtEle7NPq5X8GKa8jOVjlg6L+DQZnOdE61mdcDsCUnOxP3aiMKKR5M3Ib0Ud
+         fKML143C6DbG8hWcwRMTruGTuJU1c9Y159ngYGUmG2W1jnti1rU5gsZgW5QnSAC6kDzZ
+         6KaBNH1n/+2VA/ngxb7IPtHJ2Jy89L9s9XAMdLX9DHtGmWb+2LzVlIhU5tPj7kErXr0o
+         uHvx7/gdHjbowEjfGOmpVmknWpWqMplPB0K+NYGQ5sVb/dIAYSm7CKftfIOk4wIstSlQ
+         /rEONIuyg93iqSVMB9aIARJrx69J8eAM5uzgQkjUS7vERgr87RGLY2oQ42qcePVS+hdZ
+         hsPg==
+X-Gm-Message-State: AOJu0Yw167hzKVXcXGHqeQU3Vp2idfdUT9egRU/DNFMPStcSR9p6aEr/
+        69a/ed/CuGwZDARkpefcZ7dz8e4ivY4FvA==
+X-Google-Smtp-Source: AGHT+IHvBwUV6GQxEpE9JPR10Mb4LwY+GRArhzuhC4WOHp0TymnHuJVTiQ83Tuxq8mT2NGFQiZWbOQ==
+X-Received: by 2002:a17:90b:224b:b0:269:228b:ef6 with SMTP id hk11-20020a17090b224b00b00269228b0ef6mr2609891pjb.32.1691601745560;
+        Wed, 09 Aug 2023 10:22:25 -0700 (PDT)
 Received: from f38.eng.vmware.com ([66.170.99.1])
-        by smtp.googlemail.com with ESMTPSA id a1-20020a17090abe0100b00268040bbc6asm1739080pjs.4.2023.08.09.10.22.22
+        by smtp.googlemail.com with ESMTPSA id a1-20020a17090abe0100b00268040bbc6asm1739080pjs.4.2023.08.09.10.22.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 10:22:23 -0700 (PDT)
+        Wed, 09 Aug 2023 10:22:25 -0700 (PDT)
 From:   Shreenidhi Shedi <yesshedi@gmail.com>
 To:     dhowells@redhat.com, dwmw2@infradead.org,
         gregkh@linuxfoundation.org, masahiroy@kernel.org,
         nathan@kernel.org, ndesaulniers@google.com, nicolas@fjasle.eu
 Cc:     yesshedi@gmail.com, linux-kernel@vger.kernel.org,
         sshedi@vmware.com, linux-kbuild@vger.kernel.org
-Subject: [PATCH v9 5/7] sign-file: improve help message
-Date:   Wed,  9 Aug 2023 22:52:08 +0530
-Message-ID: <20230809172211.343677-6-yesshedi@gmail.com>
+Subject: [PATCH v9 6/7] sign-file: use const with a global string constant
+Date:   Wed,  9 Aug 2023 22:52:09 +0530
+Message-ID: <20230809172211.343677-7-yesshedi@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230809172211.343677-1-yesshedi@gmail.com>
 References: <20230809172211.343677-1-yesshedi@gmail.com>
@@ -66,7 +66,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,94 +74,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a proper help message with examples on how to use this tool.
+Reported by checkpatch.
 
 Signed-off-by: Shreenidhi Shedi <yesshedi@gmail.com>
 ---
- scripts/sign-file.c | 48 ++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 41 insertions(+), 7 deletions(-)
+ scripts/sign-file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/scripts/sign-file.c b/scripts/sign-file.c
-index 0a275256ca16..d3abc5721a7e 100644
+index d3abc5721a7e..e8dfbdd3eea3 100644
 --- a/scripts/sign-file.c
 +++ b/scripts/sign-file.c
-@@ -74,12 +74,43 @@ struct module_signature {
- static char magic_number[] = "~Module signature appended~\n";
+@@ -71,7 +71,7 @@ struct module_signature {
+ 
+ #define PKEY_ID_PKCS7 2
+ 
+-static char magic_number[] = "~Module signature appended~\n";
++static const char magic_number[] = "~Module signature appended~\n";
  
  static __attribute__((noreturn))
--void format(void)
-+void print_usage(void)
- {
--	fprintf(stderr,
--		"Usage: scripts/sign-file [-dp] <hash algo> <key> <x509> <module> [<dest>]\n");
--	fprintf(stderr,
--		"       scripts/sign-file -s <raw sig> <hash algo> <x509> <module> [<dest>]\n");
-+	fprintf(stderr, "Usage: scripts/sign-file [OPTIONS]... [MODULE]...\n");
-+	fprintf(stderr, "Available options:\n");
-+	fprintf(stderr, "-h, --help             Print this help message and exit\n");
-+
-+	fprintf(stderr, "\nOptional args:\n");
-+	fprintf(stderr, "-s, --rawsig <sig>     Raw signature\n");
-+	fprintf(stderr, "-p, --savesig          Save signature\n");
-+	fprintf(stderr, "-d, --signonly         Sign only\n");
-+#ifndef USE_PKCS7
-+	fprintf(stderr, "-k, --usekeyid         Use key ID\n");
-+#endif
-+	fprintf(stderr, "-b, --bulksign         Sign modules in bulk\n");
-+	fprintf(stderr, "-r, --replaceorig      Replace original\n");
-+	fprintf(stderr, "-t, --dest <dest>      Destination path ");
-+	fprintf(stderr, "(Exclusive with bulk option)\n");
-+
-+	fprintf(stderr, "\nMandatory args:\n");
-+	fprintf(stderr, "-i, --privkey <key>    Private key\n");
-+	fprintf(stderr, "-a, --hashalgo <alg>   Hash algorithm\n");
-+	fprintf(stderr, "-x, --x509 <x509>      X509\n");
-+
-+	fprintf(stderr, "\nExamples:\n");
-+
-+	fprintf(stderr, "\n    Regular signing:\n");
-+	fprintf(stderr, "     scripts/sign-file -a sha512 -i certs/signing_key.pem ");
-+	fprintf(stderr, "-x certs/signing_key.x509 <module>\n");
-+
-+	fprintf(stderr, "\n    Signing with destination path:\n");
-+	fprintf(stderr, "     scripts/sign-file -a sha512 -i certs/signing_key.pem ");
-+	fprintf(stderr, "-x certs/signing_key.x509 <module> -t <path>\n");
-+
-+	fprintf(stderr, "\n    Signing modules in bulk:\n");
-+	fprintf(stderr, "     scripts/sign-file -a sha512 -i certs/signing_key.pem ");
-+	fprintf(stderr, "-x certs/signing_key.x509 -b <module1> <module2> ...\n");
-+
- 	exit(2);
- }
- 
-@@ -281,7 +312,7 @@ static void parse_args(int argc, char **argv, struct cmd_opts *opts)
- #endif
- 
- 		case 'h':
--			format();
-+			print_usage();
- 			break;
- 
- 		case 'i':
-@@ -312,7 +343,7 @@ static void parse_args(int argc, char **argv, struct cmd_opts *opts)
- 			break;
- 
- 		default:
--			format();
-+			print_usage();
- 			break;
- 		}
- 	} while (opt != -1);
-@@ -472,6 +503,9 @@ int main(int argc, char **argv)
- 	argc -= optind;
- 	argv += optind;
- 
-+	if ((opts.bulk_sign && opts.dest_name) || (!opts.bulk_sign && argc != 1))
-+		print_usage();
-+
- 	OpenSSL_add_all_algorithms();
- 	ERR_load_crypto_strings();
- 	ERR_clear_error();
+ void print_usage(void)
 -- 
 2.41.0
 
