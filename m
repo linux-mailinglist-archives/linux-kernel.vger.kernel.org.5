@@ -2,114 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E023177517F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 05:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284D17751A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 05:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbjHIDoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 23:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41148 "EHLO
+        id S229615AbjHIDs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 23:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbjHIDoB (ORCPT
+        with ESMTP id S229445AbjHIDsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 23:44:01 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A0D1BC3
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 20:43:59 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-686ba29ccb1so364188b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 20:43:59 -0700 (PDT)
+        Tue, 8 Aug 2023 23:48:25 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADAD10DC
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 20:48:24 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52256241c66so1001837a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 20:48:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691552638; x=1692157438;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9oG4d/I8ir4/ruptehuylR56CYQvHC70jqVbzmkpk3I=;
-        b=m0M9ESztIHd3k/4YAEahMQomo6yS3F+Z9cnYY9pM75iWtstE5bi9Po13NS3EXiM21r
-         m4pY71hARK8luqnGo58LY6/hxXAVNtN58gy1tW5UBmG5vCJHq1FArK6iULv7VFqzRdiL
-         QSgHmTtAvJANKMWjYGv0kTKGMtSpjSMVQYb40=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691552638; x=1692157438;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=brainfault-org.20221208.gappssmtp.com; s=20221208; t=1691552903; x=1692157703;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9oG4d/I8ir4/ruptehuylR56CYQvHC70jqVbzmkpk3I=;
-        b=bRRKjfMWeAM71VFsswdgKOJYdiC6XlrTeTx5IsUB1myM/vrPpxYRl+8z1nHyLdfIUQ
-         4JcVq8wDSqjQ/+OcN44O+SbLks+6K1/EGXHyytubWZqxEcpxDUmG5CA+Es49fSlj2hF0
-         YkSCKn2IGK93X/niyKd30weJ9SPAJISuPB7cP+pk/zEPPnaflY64Mya5plU6vZRuro7u
-         XouGuA2zNSu+hNmUUu0OGqHsYylYK1L5D2FS/SbH8d85yzMrJ39PQ5jpxj9N6El5fkvI
-         Tt4eKiAC+UowYPR6pc3VudKV2+XFSXmcBcHzCTMBbCG6pfdFD9zvKaNftVVwpzgZfGeA
-         Y3/A==
-X-Gm-Message-State: AOJu0YxEHO9x6WKVLJBV7ZaRriaBk7vgVFmcXBBIa2dakB4mGF/V9+Dr
-        TPLKUr2aSof1SjNdMZuscvV/7w==
-X-Google-Smtp-Source: AGHT+IFHhyziILszxrpiAnFzHo8VltBiti0umAg2qsyWqMRc7sZaS1IAqOQed/uisVP/DuAKoVJv7w==
-X-Received: by 2002:a05:6a00:2347:b0:684:bb4a:b86e with SMTP id j7-20020a056a00234700b00684bb4ab86emr2217159pfj.1.1691552638606;
-        Tue, 08 Aug 2023 20:43:58 -0700 (PDT)
-Received: from google.com ([2401:fa00:1:10:eed6:5c4f:9687:371])
-        by smtp.gmail.com with ESMTPSA id h3-20020a633843000000b00564aee22f33sm7217056pgn.14.2023.08.08.20.43.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 20:43:58 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 11:43:55 +0800
-From:   Chen-Yu Tsai <wenst@chromium.org>
-To:     Wei Chen <harperchen1110@gmail.com>
-Cc:     tiffany.lin@mediatek.com, andrew-ct.chen@mediatek.com,
-        yunfei.dong@mediatek.com, mchehab@kernel.org,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] media: vcodec: Fix potential array out-of-bounds in
- vb2ops_venc_queue_setup
-Message-ID: <20230809034355.GA589411@google.com>
-References: <20230328092608.523933-1-harperchen1110@gmail.com>
+        bh=wcsclxtm27Oz1sDHzPRuy+Izl0iwle6aRoNm7chV/mE=;
+        b=EAu5utSgSArNbjdpW2PWgXWxU171HGHts/s7dBkm0zVj5aCYmQgRY1eVDfdx5vr8cA
+         uGKn7OVjBlH4x+6LdBhrQT6Lg9LhLj1yy1RH2qqx1h5mvCbwLwDTmi/MZ0ikszErkW7A
+         c2wgoyYGmr5Xx1SM2v4R30bMVFeofVKHtC6o0RiWqEd1AY94fkLRImRdySpiVfKzCHyP
+         2nptFLeLbD+hH2/FAjLldDdYM1xVC0YQevFNuibuhkBMw35KddsaCG7bR1RVsurPGN57
+         4zXG/WD6m3xLx9dq37bTRRVaAPx+TLrhm8T5caUwPW3f4koGnwh0i2q7yp3JZqW5SBBb
+         uphQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691552903; x=1692157703;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wcsclxtm27Oz1sDHzPRuy+Izl0iwle6aRoNm7chV/mE=;
+        b=gpHyOUXwgpKYyhyywltN+8YAow87lgyeWOU1KZPw2tUU24NnPEl8PsQP3Cc/PF50Ms
+         x1ww5Ogc3gPDXpdFXdlLe8W9cbPRAtxXYYemXQPOZP+GflGEhjXQBKpTsyr8IGlujcBW
+         XsM74IqlPFRzWl7Ltw1yF1WzcoOhgiRWkeL+WsvPkxLo/K1B9LWEt+4rV1RU3fvMgBpZ
+         5D2WDEiT80ylAUXOpFWP+E+V1ecWv199IQpZKnnWaPPC68YJyajPwZLdkHiGbIPhI6np
+         cPxYgOvpGbO/mG5k48Wg9p/bkxQ6jgAjdoAS7AQN+/aw/0UG5kdydE/JJn9+hshq9toH
+         Dajg==
+X-Gm-Message-State: AOJu0Yz/NsX9KJ5yZY6An3b9YsWZa0n/rHzWNzh04sXJxr+ZvcdW+oSu
+        MmJYMPrR3JE4lHUOD0Bh82M/tgYSNT2W2gtiWHw4ng==
+X-Google-Smtp-Source: AGHT+IFauvweysXXn8GP5MBQlVkSnEFT74it4SwljMy29zvw5obroURdfY0qKL+rjI6eMwJTbfFGGEzPUIYTUHgx/6I=
+X-Received: by 2002:a05:6402:3587:b0:51f:ef58:da87 with SMTP id
+ y7-20020a056402358700b0051fef58da87mr14581549edc.2.1691552902500; Tue, 08 Aug
+ 2023 20:48:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230328092608.523933-1-harperchen1110@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <cover.1690273969.git.haibo1.xu@intel.com> <CAAhSdy0yug=J0nxnnPoLYL=0MiT0w6qgPYOcv0QwMRe+fsQn8Q@mail.gmail.com>
+ <87y1ilpz3m.wl-maz@kernel.org> <CAJve8onZuOHkAUVY3=QeBPMx5n2F1fGgn57rPp7MB1Q5=vXasA@mail.gmail.com>
+In-Reply-To: <CAJve8onZuOHkAUVY3=QeBPMx5n2F1fGgn57rPp7MB1Q5=vXasA@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 9 Aug 2023 09:18:09 +0530
+Message-ID: <CAAhSdy277PEBZ4wyUHxQPyN2TugGfhBmC5jUoFTAqMU8vwbt5w@mail.gmail.com>
+Subject: Re: [PATCH v6 00/13] RISCV: Add KVM_GET_REG_LIST API
+To:     Haibo Xu <xiaobo55x@gmail.com>
+Cc:     Marc Zyngier <maz@kernel.org>, oliver.upton@linux.dev,
+        ajones@ventanamicro.com, seanjc@google.com,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Shuah Khan <shuah@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Like Xu <likexu@tencent.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Colton Lewis <coltonlewis@google.com>, kvm@vger.kernel.org,
+        Haibo Xu <haibo1.xu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 09:26:08AM +0000, Wei Chen wrote:
-> variable *nplanes is provided by user via system call argument. The
-> possible value of q_data->fmt->num_planes is 1-3, while the value
-> of *nplanes can be 1-8. The array access by index i can cause array
-> out-of-bounds.
-> 
-> Fix this bug by checking *nplanes against the array size.
+On Wed, Aug 9, 2023 at 8:56=E2=80=AFAM Haibo Xu <xiaobo55x@gmail.com> wrote=
+:
+>
+> On Tue, Aug 8, 2023 at 7:12=E2=80=AFPM Marc Zyngier <maz@kernel.org> wrot=
+e:
+> >
+> > On Mon, 07 Aug 2023 04:48:33 +0100,
+> > Anup Patel <anup@brainfault.org> wrote:
+> > >
+> > > Hi Marc, Hi Oliver,
+> > >
+> > > On Tue, Jul 25, 2023 at 2:05=E2=80=AFPM Haibo Xu <haibo1.xu@intel.com=
+> wrote:
+> > > >
+> > > > KVM_GET_REG_LIST will dump all register IDs that are available to
+> > > > KVM_GET/SET_ONE_REG and It's very useful to identify some platform
+> > > > regression issue during VM migration.
+> > > >
+> > > > Patch 1-7 re-structured the get-reg-list test in aarch64 to make so=
+me
+> > > > of the code as common test framework that can be shared by riscv.
+> > > >
+> > > > Patch 8 move reject_set check logic to a function so as to check fo=
+r
+> > > > different errno for different registers.
+> > > > Patch 9 move finalize_vcpu back to run_test so that riscv can imple=
+ment
+> > > > its specific operation.
+> > > > Patch 10 change to do the get/set operation only on present-blessed=
+ list.
+> > > > Patch 11 add the skip_set facilities so that riscv can skip set ope=
+ration
+> > > > on some registers.
+> > > > Patch 12 enabled the KVM_GET_REG_LIST API in riscv.
+> > > > patch 13 added the corresponding kselftest for checking possible
+> > > > register regressions.
+> > > >
+> > > > The get-reg-list kvm selftest was ported from aarch64 and tested wi=
+th
+> > > > Linux v6.5-rc3 on a Qemu riscv64 virt machine.
+> > > >
+> > > > ---
+> > > > Changed since v5:
+> > > >   * Rebase to v6.5-rc3
+> > > >   * Minor fix for Andrew's comments
+> > > >
+> > > > Andrew Jones (7):
+> > > >   KVM: arm64: selftests: Replace str_with_index with strdup_printf
+> > > >   KVM: arm64: selftests: Drop SVE cap check in print_reg
+> > > >   KVM: arm64: selftests: Remove print_reg's dependency on vcpu_conf=
+ig
+> > > >   KVM: arm64: selftests: Rename vcpu_config and add to kvm_util.h
+> > > >   KVM: arm64: selftests: Delete core_reg_fixup
+> > > >   KVM: arm64: selftests: Split get-reg-list test code
+> > > >   KVM: arm64: selftests: Finish generalizing get-reg-list
+> > > >
+> > > > Haibo Xu (6):
+> > > >   KVM: arm64: selftests: Move reject_set check logic to a function
+> > > >   KVM: arm64: selftests: Move finalize_vcpu back to run_test
+> > > >   KVM: selftests: Only do get/set tests on present blessed list
+> > > >   KVM: selftests: Add skip_set facility to get_reg_list test
+> > > >   KVM: riscv: Add KVM_GET_REG_LIST API support
+> > > >   KVM: riscv: selftests: Add get-reg-list test
+> > >
+> > > Are you okay for this series to go through the KVM RISC-V tree ?
+> >
+> > Sure, seems fine from my point of view. But please put it on an
+> > immutable topic branch so that we can also merge it in the arm64 tree,
+> > should we need to resolve any conflicts.
+> >
+>
+> Hi Marc,
+>
+> Thanks for your review!
+>
+> Which topic branch do you prefer or suggest to use?
+> I can do a rebase on it and fix any potential conflicts.
 
-This should have a fixes tag:
+I will share a branch with a stable commit history.
+I have already resolved conflicts at my end.
 
-Fixes: 4e855a6efa54 ("[media] vcodec: mediatek: Add Mediatek V4L2 Video Encoder Driver")
+Regards,
+Anup
 
-And also CC the stable list:
-
-Cc: stable@vger.kernel.org
-
-> Signed-off-by: Wei Chen <harperchen1110@gmail.com>
-
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
-
-> ---
->  drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
-> index d65800a3b89d..1ea02f9136f6 100644
-> --- a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
-> +++ b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
-> @@ -821,6 +821,8 @@ static int vb2ops_venc_queue_setup(struct vb2_queue *vq,
->  		return -EINVAL;
->  
->  	if (*nplanes) {
-> +		if (*nplanes != q_data->fmt->num_planes)
-> +			return -EINVAL;
->  		for (i = 0; i < *nplanes; i++)
->  			if (sizes[i] < q_data->sizeimage[i])
->  				return -EINVAL;
-> -- 
-> 2.25.1
-> 
+>
+> Regards,
+> Haibo
+>
+> > Thanks,
+> >
+> >         M.
+> >
+> > --
+> > Without deviation from the norm, progress is not possible.
