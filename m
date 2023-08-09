@@ -2,121 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FE4775232
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 07:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A748B775237
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 07:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbjHIF1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 01:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
+        id S230261AbjHIFaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 01:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbjHIF1t (ORCPT
+        with ESMTP id S229667AbjHIFaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 01:27:49 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A871BF3
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 22:27:48 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6873a30d02eso4385023b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 22:27:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691558868; x=1692163668;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bhL+GxxZwosDcbr2JYGeROiUQ9hern+seiOFs9BotUA=;
-        b=FpHstVBIBNa9DWGPBaFDWK4OED+TplT0ysD5F18BYQTdlL7RrHzYGP08KJNSYNkYko
-         +xyVHq4Kzkc5uuXYetntwbaGLOH/kknYAyTSBnjnF/G5MoAWGAqku+CkJkBENO9XZ2HU
-         6qQcLAMM5JxCHwrZt9vsMQJNIceqCXpwhEwST/6fq3dnp5g7DLCu3Q/3P9f7+XhZ1xb+
-         cHQq0tbkuCkNBYXK/FV3Lb8DeQ3OzrzzfOcnlyQxs2bsjhdC5ONMRS0s7JTI0V5rKAZk
-         /6FlJjH7DsIZDpt5dtjkMgXc7fmx5EJC6HnWSZCSxso05YqTjPcShmYrtpfhHbxbX6Ps
-         asqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691558868; x=1692163668;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bhL+GxxZwosDcbr2JYGeROiUQ9hern+seiOFs9BotUA=;
-        b=lidbou+3NH9kh3SZBS6VXR7bkoPvNTiF02vTbNfDGOyBnJzrsY5e5whOaBHYRfHAhA
-         Z9UtRuqT/zwZy0io5Tn4RQA1iObKGf7urdj9hgDcUVRrQu+HEFj4n2j2BF8RrvOM3ZV5
-         xUrdz1nDtTu11627miNtFgSWZ6dLWu/eEnlpUL5Cas/JB9tyjRuhRqJ92NeGWSmjy6MM
-         011WQRCzLlGu1LDT6kM97OHDkWsO/FWARn5FXPfkjcJ3TbLo+Yms6EIK3fb7i997lc3u
-         lBhJESCrewZ1bpoWFV4gBte+o2Q5seH87MSA/Daw1LjmCkEOPof8MR6tUSYtWUgV6dcO
-         /w8w==
-X-Gm-Message-State: AOJu0YwrKFw8m4YqJviWMa+IoEkL9WymvrKOA8SMEeM5BIagVsYUV1JF
-        Q0vzz+fXNvHQfqG7p737unymLg==
-X-Google-Smtp-Source: AGHT+IE0e9qLHd0eWNh5zZHugB+X99G5gvGqpAbe1AF4HkM2/Udm4HQCZgqNIzpuigcyCJyEnnRtUQ==
-X-Received: by 2002:a05:6a20:1590:b0:13b:b4bb:8b18 with SMTP id h16-20020a056a20159000b0013bb4bb8b18mr1841936pzj.1.1691558867948;
-        Tue, 08 Aug 2023 22:27:47 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id fk3-20020a056a003a8300b0062e0515f020sm9001226pfb.162.2023.08.08.22.27.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 22:27:47 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 10:57:43 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: blocklist more Qualcomm platforms in
- cpufreq-dt-platdev
-Message-ID: <20230809052743.hp2vvq2rr25hqine@vireshk-i7>
-References: <20230809-topic-cpufreq_qcom_block-v1-1-624acbcefa5c@linaro.org>
+        Wed, 9 Aug 2023 01:30:20 -0400
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C232B19BC;
+        Tue,  8 Aug 2023 22:30:18 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 3795U12R023810;
+        Wed, 9 Aug 2023 13:30:01 +0800 (+08)
+        (envelope-from Wenchao.Chen@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx06.spreadtrum.com [10.0.1.11])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RLJVY3vShz2PD4gy;
+        Wed,  9 Aug 2023 13:28:05 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx06.spreadtrum.com
+ (10.0.1.11) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Wed, 9 Aug 2023
+ 13:30:00 +0800
+From:   Wenchao Chen <wenchao.chen@unisoc.com>
+To:     <ulf.hansson@linaro.org>, <adrian.hunter@intel.com>
+CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wenchao.chen666@gmail.com>, <zhenxiong.lai@unisoc.com>,
+        <chunyan.zhang@unisoc.com>, <yuelin.tang@unisoc.com>,
+        Wenchao Chen <wenchao.chen@unisoc.com>
+Subject: [PATCH] mmc: core: Add host specific tuning support for SD HS mode
+Date:   Wed, 9 Aug 2023 13:29:52 +0800
+Message-ID: <20230809052952.323-1-wenchao.chen@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809-topic-cpufreq_qcom_block-v1-1-624acbcefa5c@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx06.spreadtrum.com (10.0.1.11)
+X-MAIL: SHSQR01.spreadtrum.com 3795U12R023810
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-08-23, 02:07, Konrad Dybcio wrote:
-> All Qualcomm platforms utilizing the qcom-cpufreq-hw driver have no
-> business in using cpufreq-dt. Prevent that from happening.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  drivers/cpufreq/cpufreq-dt-platdev.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-> index adb3579a1fee..fb2875ce1fdd 100644
-> --- a/drivers/cpufreq/cpufreq-dt-platdev.c
-> +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-> @@ -144,14 +144,18 @@ static const struct of_device_id blocklist[] __initconst = {
->  	{ .compatible = "qcom,apq8096", },
->  	{ .compatible = "qcom,msm8996", },
->  	{ .compatible = "qcom,msm8998", },
-> +	{ .compatible = "qcom,qcm2290", },
->  	{ .compatible = "qcom,qcs404", },
-> +	{ .compatible = "qcom,qdu1000", },
->  	{ .compatible = "qcom,sa8155p" },
->  	{ .compatible = "qcom,sa8540p" },
-> +	{ .compatible = "qcom,sa8775p" },
->  	{ .compatible = "qcom,sc7180", },
->  	{ .compatible = "qcom,sc7280", },
->  	{ .compatible = "qcom,sc8180x", },
->  	{ .compatible = "qcom,sc8280xp", },
->  	{ .compatible = "qcom,sdm845", },
-> +	{ .compatible = "qcom,sdx75", },
->  	{ .compatible = "qcom,sm6115", },
->  	{ .compatible = "qcom,sm6350", },
->  	{ .compatible = "qcom,sm6375", },
-> @@ -159,6 +163,8 @@ static const struct of_device_id blocklist[] __initconst = {
->  	{ .compatible = "qcom,sm8150", },
->  	{ .compatible = "qcom,sm8250", },
->  	{ .compatible = "qcom,sm8350", },
-> +	{ .compatible = "qcom,sm8450", },
-> +	{ .compatible = "qcom,sm8550", },
->  
->  	{ .compatible = "st,stih407", },
->  	{ .compatible = "st,stih410", },
+Added .prepare_hs_tuning and .execute_hs_tuning host
+callbacks to support host-specific tuning for SD high
+speed mode.
 
-Applied. Thanks.
+Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+---
+ drivers/mmc/core/sd.c         |  12 ++++
+ drivers/mmc/host/sdhci-sprd.c | 124 ++++++++++++++++++++++++++++++++++
+ include/linux/mmc/host.h      |   6 ++
+ 3 files changed, 142 insertions(+)
 
+diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+index 246ce027ae0a..ac2da8f2fbce 100644
+--- a/drivers/mmc/core/sd.c
++++ b/drivers/mmc/core/sd.c
+@@ -1518,6 +1518,12 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
+ 		 */
+ 		mmc_set_clock(host, mmc_sd_get_max_clock(card));
+ 
++		if (host->ops->prepare_hs_tuning) {
++			err = host->ops->prepare_hs_tuning(host, card);
++			if (err)
++				goto free_card;
++		}
++
+ 		/*
+ 		 * Switch to wider bus (if supported).
+ 		 */
+@@ -1529,6 +1535,12 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
+ 
+ 			mmc_set_bus_width(host, MMC_BUS_WIDTH_4);
+ 		}
++
++		if (host->ops->execute_hs_tuning) {
++			err = host->ops->execute_hs_tuning(host, card);
++			if (err)
++				goto free_card;
++		}
+ 	}
+ cont:
+ 	if (!oldcard) {
+diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+index 7f4ee2e12735..5f365dcbb9c7 100644
+--- a/drivers/mmc/host/sdhci-sprd.c
++++ b/drivers/mmc/host/sdhci-sprd.c
+@@ -9,6 +9,7 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/highmem.h>
+ #include <linux/iopoll.h>
++#include <linux/mmc/mmc.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+@@ -22,6 +23,9 @@
+ #include "sdhci-pltfm.h"
+ #include "mmc_hsq.h"
+ 
++#include "../core/mmc_ops.h"
++#include "../core/sd_ops.h"
++
+ /* SDHCI_ARGUMENT2 register high 16bit */
+ #define SDHCI_SPRD_ARG2_STUFF		GENMASK(31, 16)
+ 
+@@ -73,6 +77,11 @@
+ #define SDHCI_SPRD_CLK_DEF_RATE		26000000
+ #define SDHCI_SPRD_PHY_DLL_CLK		52000000
+ 
++#define SDHCI_SPRD_MAX_PHASE		0xff
++#define SDHCI_SPRD_CMD_DLY_MASK		GENMASK(15, 8)
++#define SDHCI_SPRD_POSRD_DLY_MASK	GENMASK(23, 16)
++#define SDHCI_SPRD_CPST_EN		GENMASK(27, 24)
++
+ struct sdhci_sprd_host {
+ 	u32 version;
+ 	struct clk *clk_sdio;
+@@ -86,6 +95,11 @@ struct sdhci_sprd_host {
+ 	u32 phy_delay[MMC_TIMING_MMC_HS400 + 2];
+ };
+ 
++enum sdhci_sprd_tuning_type {
++	SDHCI_SPRD_TUNING_SD_HS_CMD,
++	SDHCI_SPRD_TUNING_SD_HS_DATA,
++};
++
+ struct sdhci_sprd_phy_cfg {
+ 	const char *property;
+ 	u8 timing;
+@@ -533,6 +547,111 @@ static void sdhci_sprd_hs400_enhanced_strobe(struct mmc_host *mmc,
+ 		     SDHCI_SPRD_REG_32_DLL_DLY);
+ }
+ 
++static int mmc_send_tuning_cmd(struct mmc_card *card)
++{
++	return mmc_send_status(card, NULL);
++}
++
++static int mmc_send_tuning_data(struct mmc_card *card)
++{
++	u8 status[64];
++
++	return mmc_sd_switch(card, 0, 0, 0, status);
++}
++
++static int sdhci_sprd_tuning(struct mmc_host *mmc, struct mmc_card *card,
++			enum sdhci_sprd_tuning_type type)
++{
++	struct sdhci_host *host = mmc_priv(mmc);
++	struct sdhci_sprd_host *sprd_host = TO_SPRD_HOST(host);
++	u32 *p = sprd_host->phy_delay;
++	int err = 0;
++	int i;
++	bool value;
++	int final_phase;
++	u32 dll_cfg, dll_dly;
++	int range_end = SDHCI_SPRD_MAX_PHASE;
++	int len = 0;
++	int count = 0;
++
++	sdhci_reset(host, SDHCI_RESET_CMD | SDHCI_RESET_DATA);
++
++	dll_cfg = sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_CFG);
++	dll_cfg &= ~SDHCI_SPRD_CPST_EN;
++	sdhci_writel(host, dll_cfg, SDHCI_SPRD_REG_32_DLL_CFG);
++
++	dll_dly = p[mmc->ios.timing];
++
++	for (i = 0; i <= SDHCI_SPRD_MAX_PHASE; i++) {
++		if (type == SDHCI_SPRD_TUNING_SD_HS_CMD) {
++			dll_dly &= ~SDHCI_SPRD_CMD_DLY_MASK;
++			dll_dly |= ((i << 8) & SDHCI_SPRD_CMD_DLY_MASK);
++		} else {
++			dll_dly &= ~SDHCI_SPRD_POSRD_DLY_MASK;
++			dll_dly |= ((i << 16) & SDHCI_SPRD_POSRD_DLY_MASK);
++		}
++
++		sdhci_writel(host, dll_dly, SDHCI_SPRD_REG_32_DLL_DLY);
++
++		if (type == SDHCI_SPRD_TUNING_SD_HS_CMD)
++			value = !mmc_send_tuning_cmd(card);
++		else
++			value = !mmc_send_tuning_data(card);
++
++		if (value) {
++			dev_dbg(mmc_dev(host->mmc), "tuning ok: %d\n", i);
++			count++;
++		} else {
++			dev_dbg(mmc_dev(host->mmc), "tuning fail: %d\n", i);
++			if (len < count) {
++				len = count;
++				range_end = i - 1;
++				count = 0;
++			}
++		}
++	}
++
++	if (!count) {
++		final_phase = 0;
++		dev_err(mmc_dev(host->mmc), "all tuning phase fail!\n");
++		err = -EIO;
++		goto out;
++	}
++
++	if (count > len) {
++		len = count;
++		range_end = i - 1;
++	}
++
++	final_phase = range_end - (len - 1) / 2;
++
++	if (type == SDHCI_SPRD_TUNING_SD_HS_CMD) {
++		p[mmc->ios.timing] &= ~SDHCI_SPRD_CMD_DLY_MASK;
++		p[mmc->ios.timing] |= ((final_phase << 8) & SDHCI_SPRD_CMD_DLY_MASK);
++	} else {
++		p[mmc->ios.timing] &= ~(SDHCI_SPRD_POSRD_DLY_MASK);
++		p[mmc->ios.timing] |= ((final_phase << 16) & SDHCI_SPRD_POSRD_DLY_MASK);
++	}
++
++	dev_info(mmc_dev(host->mmc), "the best step %d, phase 0x%02x, delay value 0x%08x\n",
++			final_phase, final_phase, p[mmc->ios.timing]);
++
++out:
++	sdhci_writel(host, p[mmc->ios.timing], SDHCI_SPRD_REG_32_DLL_DLY);
++
++	return err;
++}
++
++static int sdhci_sprd_prepare_hs_cmd_tuning(struct mmc_host *mmc, struct mmc_card *card)
++{
++	return sdhci_sprd_tuning(mmc, card, SDHCI_SPRD_TUNING_SD_HS_CMD);
++}
++
++static int sdhci_sprd_execute_hs_data_tuning(struct mmc_host *mmc, struct mmc_card *card)
++{
++	return sdhci_sprd_tuning(mmc, card, SDHCI_SPRD_TUNING_SD_HS_DATA);
++}
++
+ static void sdhci_sprd_phy_param_parse(struct sdhci_sprd_host *sprd_host,
+ 				       struct device_node *np)
+ {
+@@ -577,6 +696,11 @@ static int sdhci_sprd_probe(struct platform_device *pdev)
+ 	host->mmc_host_ops.request = sdhci_sprd_request;
+ 	host->mmc_host_ops.hs400_enhanced_strobe =
+ 		sdhci_sprd_hs400_enhanced_strobe;
++	host->mmc_host_ops.prepare_hs_tuning =
++		sdhci_sprd_prepare_hs_cmd_tuning;
++	host->mmc_host_ops.execute_hs_tuning =
++		sdhci_sprd_execute_hs_data_tuning;
++
+ 	/*
+ 	 * We can not use the standard ops to change and detect the voltage
+ 	 * signal for Spreadtrum SD host controller, since our voltage regulator
+diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+index 461d1543893b..13cf894b9e3c 100644
+--- a/include/linux/mmc/host.h
++++ b/include/linux/mmc/host.h
+@@ -184,6 +184,12 @@ struct mmc_host_ops {
+ 	/* Execute HS400 tuning depending host driver */
+ 	int	(*execute_hs400_tuning)(struct mmc_host *host, struct mmc_card *card);
+ 
++	/* Prepare HS tuning depending host driver */
++	int	(*prepare_hs_tuning)(struct mmc_host *host, struct mmc_card *card);
++
++	/* Execute HS tuning depending host driver */
++	int	(*execute_hs_tuning)(struct mmc_host *host, struct mmc_card *card);
++
+ 	/* Prepare switch to DDR during the HS400 init sequence */
+ 	int	(*hs400_prepare_ddr)(struct mmc_host *host);
+ 
 -- 
-viresh
+2.17.1
+
