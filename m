@@ -2,121 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDE1776918
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09E2776934
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233905AbjHITr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:47:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
+        id S234291AbjHITtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbjHITrL (ORCPT
+        with ESMTP id S234128AbjHITtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:47:11 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809042109;
-        Wed,  9 Aug 2023 12:47:11 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379Jl5Yu082664;
-        Wed, 9 Aug 2023 14:47:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691610425;
-        bh=FbAbSqwRAV98u35zcv0xFNhxf2gVaiT10GEUTg0GYws=;
-        h=From:Date:Subject:References:In-Reply-To:To:CC;
-        b=ZovuTH6TuMLeFOC58Dx5PWbSWe055s2QXfHmtkzggX23S1m9TmeNI/fYn4xzMwgqf
-         7t8ZMJsnAfCN/7962OK1Z/f58DZbAHP9dsLt5la/4k+VulVqESkDrK6Q1/Sn2OvU+t
-         bdkOu7Bc8fyhqxco+SY1BpASgOs7Hxgqc16GSzvY=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379Jl5qL032343
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Aug 2023 14:47:05 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
- Aug 2023 14:47:05 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 9 Aug 2023 14:47:05 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379Jl49g051091;
-        Wed, 9 Aug 2023 14:47:05 -0500
-From:   Jai Luthra <j-luthra@ti.com>
-Date:   Thu, 10 Aug 2023 01:16:25 +0530
-Subject: [PATCH v6 7/7] arm64: defconfig: Enable TPS6593 PMIC for SK-AM62A
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230810-tps6594-v6-7-2b2e2399e2ef@ti.com>
-References: <20230810-tps6594-v6-0-2b2e2399e2ef@ti.com>
-In-Reply-To: <20230810-tps6594-v6-0-2b2e2399e2ef@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Apurva Nandan <a-nandan@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Esteban Blanc <eblanc@baylibre.com>, <jneanne@baylibre.com>,
-        <aseketeli@baylibre.com>, <jpanis@baylibre.com>, <u-kumar1@ti.com>,
-        <j-luthra@ti.com>, Vaishnav Achath <vaishnav.a@ti.com>,
-        Hari Nagalla <hnagalla@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=867; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=hroXKt4UiC2VoiKH6paD4EdlOF8Nc0+Xt9cB4nm60x4=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBk0+00JaLbfPIxMLpqeSZF0hLU3vHBruDLjjEPv
- dNSRY9aJ4WJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZNPtNAAKCRBD3pH5JJpx
- RS3CEACLETmwIr+wlznCO3XXAWR0N+fpcJLXE9Soj2+E6mZ1/Fy4yuc1Jcl2PLIJN/kP0JqQpfP
- 5JeuF3TkHXQDSuvJNeg01B15CSlY/6D6GlI7caJoVbMamHsXucz38zRsngIYoW+p5XLIxIFp9jR
- lXma/sByjD2XJE+Urzfq8LKmfVmimbNT2tg/xbp8ZfFqIEKa7A2sDlG/crpEKrp6CF8c7EMvrdh
- xfDfaktkJ8NfuvPoWM8eypT4GdgPgXu/1U0dV5gNhLhgUOLxpCdrrWQSM+AQwbD8faXdJAiRI8i
- RzECa3qEUr2PN99OxH0kXGqaQ/whgBeZBGNtM1ja00R7nEHHwubgAiuLzdN/T/tKjpmN+DgUNey
- D2D6j28uMKSy5Id4c7kCej3m+h3e2kLKEV6mMESOXljp7AMvXDC+W96aJ4sNUxo/7Yf0c2e7z7T
- oyooX+ueRpK3XUTxIchHDair7NpMc08I1ghC7H5LoCvilQNlEha4+WloMdrZGUo/ql7d6JhfsFK
- ELWYv9+LsNada+k3vJnYGWTRHdlQySVvcXnKcFBjn+kkccVXmSb3XLZO/Vs4JqiZWYAWHjsT5Uz
- CMbHIHfBksoBOyWYoVoV1j20o3DO+GaCrs1OlnrREDRKdTkk8jymIn69g1ML/Bn3Ja2DLpOald0
- b4vF0mEcVf4pIVA==
-X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
- fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Wed, 9 Aug 2023 15:49:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4140B26B2
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 12:48:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 704F96473F
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 19:47:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E093C433CB;
+        Wed,  9 Aug 2023 19:47:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691610476;
+        bh=LVWmFLNlFsqLy7e1BUA70TvOsNkzKB2qYX+hUuhwmhQ=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=Aql09T/KU4U45nTZhmqhdMaNcjh9oYupox8RIjC0j2HKj6VcUL/JKYKrTToqtwuzX
+         /wmxcvc+q49SQY+CuLOBjIDq5KBgD1n6l3QDzfgqwhbsfSAU0M9olFW5mRcMpTiwNa
+         hjIqNvgYC9KNhP+ZV4bsKAGFLuxi08lHd65SZ3WDKqDi/wm1lQFNOIEJyV+nVym9pF
+         UYb8jEN7yJDNskTonLLk185U1ugsB95X5oSD3QMqzuTqsBIdZS0f/LeQylZxUVk0Tl
+         VPPRxoQQHiSXQkMobs5JRKxasIZR3n0LAg9O4104oBRHV+rSZP8wgsctQxZuubEhjI
+         2bDDgSzSk9MIg==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 764B227C0054;
+        Wed,  9 Aug 2023 15:47:55 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Wed, 09 Aug 2023 15:47:55 -0400
+X-ME-Sender: <xms:a-3TZOm1Uxec4_9VGuKDD5_9jJ4XLVJmLTgiG8oz8hEfbsD8wkLPgA>
+    <xme:a-3TZF3m1SxZvgPZYXSjRSw8Buoq02EKI-5IaNx7G1rdbrQZHTtYx8VeIaLDVoldL
+    1EnbFsyXmp74--QOis>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrleeggddufeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
+    grthhtvghrnhepkedvlefghfehtdekudeggfethfegleetkeffveefgefgiefgkeefleet
+    ueejkeetnecuffhomhgrihhnpegvnhhtrhihqdgtohhmmhhonhdrshgsnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhguodhmvghsmhht
+    phgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedtvdegqddvkeejtddtvdeige
+    dqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:a-3TZMr7Jj-Rnzb4k6-56Tu4t9NdYTL94gTRUmqw04AhSBCfftwM2g>
+    <xmx:a-3TZCkd7HinSA0wKXYkxoe2iTW45oDQ6pV25bz5koTkpAcRCAJdbg>
+    <xmx:a-3TZM0Ey0o9qEkgA6TuDYOxtQuqwI2CzBkJipb9MhqQ8zLLtFaO0A>
+    <xmx:a-3TZNnBqUIICmz2LOdUzzUgZgqMv2Sl-Y3OdhCIekUXoaMPjNCxpA>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 213DEB60089; Wed,  9 Aug 2023 15:47:55 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
+Mime-Version: 1.0
+Message-Id: <f34c11eb-89b5-48a5-bd24-c215083575a5@app.fastmail.com>
+In-Reply-To: <20230804071045.never.134-kees@kernel.org>
+References: <20230804071045.never.134-kees@kernel.org>
+Date:   Wed, 09 Aug 2023 21:47:24 +0200
+From:   "Arnd Bergmann" <arnd@kernel.org>
+To:     "Kees Cook" <keescook@chromium.org>,
+        "Russell King" <linux@armlinux.org.uk>
+Cc:     "Lecopzer Chen" <lecopzer.chen@mediatek.com>,
+        "Oleg Nesterov" <oleg@redhat.com>,
+        linux-arm-kernel@lists.infradead.org,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Russell King" <rmk+kernel@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] ARM: ptrace: Restore syscall skipping and restart while tracing
+Content-Type: text/plain
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SK-AM62A-LP uses TPS6593x PMIC (interfaced over I2C) to power the SoC
-and various other peripherals on the board [1].
+On Fri, Aug 4, 2023, at 09:10, Kees Cook wrote:
+> Since commit 4e57a4ddf6b0 ("ARM: 9107/1: syscall: always store
+> thread_info->abi_syscall"), the seccomp selftests "syscall_errno",
+> "syscall_faked", and "syscall_restart" have been broken. This was
+> related to two issues:
 
-Specifically, the audio codec (TLV320AIC3106) on the board relies on the
-PMIC for the DVDD (1.8V) supply.
+While it looks like my patch introduced both problems, it might
+be better to split your fix into two bits.
 
-[1]: https://www.ti.com/lit/zip/sprr459
+> - seccomp and PTRACE depend on using the special value of "-1" for
+>   skipping syscalls. This value wasn't working because it was getting
+>   masked by __NR_SYSCALL_MASK in both PTRACE_SET_SYSCALL and
+>   get_syscall_nr().
 
-Reviewed-by: Devarsh Thakkar <devarsht@ti.com>
-Signed-off-by: Jai Luthra <j-luthra@ti.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+> Explicitly test for -1 in PTRACE_SET_SYSCALL and get_syscall_nr(),
+> leaving it exposed when present, allowing tracers to skip syscalls
+> again.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index bf13d5c46578..9f7697caa5ca 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -719,6 +719,7 @@ CONFIG_MFD_SEC_CORE=y
- CONFIG_MFD_SL28CPLD=y
- CONFIG_RZ_MTU3=y
- CONFIG_MFD_TPS65219=y
-+CONFIG_MFD_TPS6594_I2C=m
- CONFIG_MFD_TI_AM335X_TSCADC=m
- CONFIG_MFD_ROHM_BD718XX=y
- CONFIG_MFD_WCD934X=m
+This part looks good to me, at least it seems to be one of multiple
+ways of doing this, depending on how we want to encode the
+syscall skipping in the variable.
 
--- 
-2.41.0
+> - the syscall entry label "local_restart" is used for resuming syscalls
+>   interrupted by signals, but the updated syscall number (in scno) was
+>   not being stored in current_thread_info()->abi_syscall, causing traced
+>   syscall restarting to fail.
+>
+> Move the AEABI-only assignment of current_thread_info()->abi_syscall
+> after the "local_restart" label to allow tracers to survive syscall
+> restarting.
 
+I'm not following exactly what you are doing here yet, but I suspect
+this part is wrong:
+
+> diff --git a/arch/arm/kernel/entry-common.S b/arch/arm/kernel/entry-common.S
+> index bcc4c9ec3aa4..08bd624e4c6f 100644
+> --- a/arch/arm/kernel/entry-common.S
+> +++ b/arch/arm/kernel/entry-common.S
+> @@ -246,8 +246,6 @@ ENTRY(vector_swi)
+>  	bic	scno, scno, #0xff000000		@ mask off SWI op-code
+>  	str	scno, [tsk, #TI_ABI_SYSCALL]
+>  	eor	scno, scno, #__NR_SYSCALL_BASE	@ check OS number
+> -#else
+> -	str	scno, [tsk, #TI_ABI_SYSCALL]
+>  #endif
+>  	/*
+>  	 * Reload the registers that may have been corrupted on entry to
+> @@ -256,6 +254,9 @@ ENTRY(vector_swi)
+>   TRACE(	ldmia	sp, {r0 - r3}		)
+> 
+>  local_restart:
+> +#if defined(CONFIG_AEABI) && !defined(CONFIG_OABI_COMPAT)
+> +	str	scno, [tsk, #TI_ABI_SYSCALL]	@ store scno for syscall restart
+> +#endif
+>  	ldr	r10, [tsk, #TI_FLAGS]		@ check for syscall tracing
+>  	stmdb	sp!, {r4, r5}			@ push fifth and sixth args
+> 
+
+If the local_restart code has to store the syscall number
+for an EABI-only kernel, wouldn't it have to also do this
+for a kernel with OABI-only or OABI_COMPAT support?
+
+      Arnd
