@@ -2,204 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9695F775FE4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB4F775FFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232658AbjHIMzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52176 "EHLO
+        id S230335AbjHIM5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232009AbjHIMzB (ORCPT
+        with ESMTP id S229625AbjHIM5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:55:01 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CFC241FFE
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:54:59 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4E3DBD75;
-        Wed,  9 Aug 2023 05:55:41 -0700 (PDT)
-Received: from [10.57.90.239] (unknown [10.57.90.239])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 123383F6C4;
-        Wed,  9 Aug 2023 05:54:56 -0700 (PDT)
-Message-ID: <c2448e06-b46f-8a6d-163d-32364954fc23@arm.com>
-Date:   Wed, 9 Aug 2023 13:54:55 +0100
+        Wed, 9 Aug 2023 08:57:48 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633461FFA
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:57:47 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3175f17a7baso5102128f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:57:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691585866; x=1692190666;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k3HCAasWYNZ9LIAV78A4uCkjkoES5nhFv19HRBaFI6k=;
+        b=fX3JzYgvoKYGPBgcz0f+IYGmYExjSmBy3BOiiNf6s40id+N4R52jbkj181Dozf/GLc
+         wNsVfZOBJTjDahe2Ls2wsyzmQ6LjZIxtAwMGM0WdP8Lk71sziB3Ri5fhoirK/civ4c/a
+         m5EoiH1uQord24EXslz5SGXYNbuwJbTuZbRF/CgadyQ580EDQgzaVMNvHfW5U4ExtJ3F
+         OkC7UF1KGDcU69sDJxYihx0i72Iy6WpXt8z+IZPnh3V79YNfbRkBMKoTRqlRVQEOSNl7
+         WSLmb3aFcJncSprqNp+N5epGpECMQRca75BpiUd7y44DemZZPfJ5dMMBZcy5N1vV4Ovw
+         FFhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691585866; x=1692190666;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k3HCAasWYNZ9LIAV78A4uCkjkoES5nhFv19HRBaFI6k=;
+        b=HNwshZo4Tz16F2FGIoEflfPQIIgNST8mg/iNBGPoy1cjND3v1cRmVkaDkk8ZulB/UR
+         SRBrHGyYqTb6UXRgojw0H+Yjev8+4qnuZWfgGSOaXssrTpH0oo0u7McYr8Bmh1f/wkwj
+         EWuAguV5Sa2ly8+hTvRbESPyJSf5jbJlfA4wMiY+71z/9kfxkvhi3sqbSsVHi4bUbM3l
+         2FbJqFASuBq+Tfq2phqUXadOzl5b/eJ/AG9rdWIbGNW250Zuj4dpZ6pOOQJvJvo83dd8
+         +mqsnP7eagUdUzQivAgK89fBr11MkRfN4qjBNfnaAIArmGBXhM7Znyo2Kd29klHQ2UGC
+         LWQw==
+X-Gm-Message-State: AOJu0YzWTE+8Q1wB8iMRPXZ1JEGz+v4MUEnFgqsWRdfW+QOyCNTYZtgh
+        BKZyxafUDvX3ZfHYO1N1KmMhYQ==
+X-Google-Smtp-Source: AGHT+IHedHvibQt77m5n/KV7nE497zImStSAb9zFe5FDYuP7zTmHWVEJ7Tma3hVOXsTr0kchK2up7g==
+X-Received: by 2002:a5d:46ce:0:b0:317:6b92:26b5 with SMTP id g14-20020a5d46ce000000b003176b9226b5mr1723146wrs.23.1691585865844;
+        Wed, 09 Aug 2023 05:57:45 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id c17-20020adfe711000000b00317afc7949csm16574445wrm.50.2023.08.09.05.57.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 05:57:45 -0700 (PDT)
+Message-ID: <6807f8c8-0503-cf79-7ef0-653ebafc81e3@linaro.org>
+Date:   Wed, 9 Aug 2023 13:57:44 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH V4 1/4] arm_pmu: acpi: Refactor
- arm_spe_acpi_register_device()
-To:     Will Deacon <will@kernel.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, yangyicong@huawei.com,
-        Sami Mujawar <sami.mujawar@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-References: <20230808082247.383405-1-anshuman.khandual@arm.com>
- <20230808082247.383405-2-anshuman.khandual@arm.com>
- <8bef9c5a-eede-f78f-4418-da10c99a5bef@arm.com>
- <20230808131634.GA2369@willie-the-truck>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20230808131634.GA2369@willie-the-truck>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH 1/6] media: dt-bindings: Document SC8280XP/SM8350 Venus
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230731-topic-8280_venus-v1-0-8c8bbe1983a5@linaro.org>
+ <20230731-topic-8280_venus-v1-1-8c8bbe1983a5@linaro.org>
+ <84ab9380-2fb2-76f9-2eb9-71d9202718cc@linaro.org>
+ <659e30a7-80f7-4fd8-af58-45505213a2ef@linaro.org>
+ <ba40de82-b308-67b1-5751-bb2d95f2b8a5@linaro.org>
+ <fa5dc696-6c67-49d0-b158-f1e3398813e2@linaro.org>
+ <816359f7-ad4d-659f-db39-c971e1b1cd9a@linaro.org>
+ <0feda32e-5430-4f35-b18a-7afce63a970c@linaro.org>
+ <d09df249-cc6d-9708-bfa6-ae5cc7929697@linaro.org>
+ <4bd04709-155f-4750-8638-e73b653b1482@linaro.org>
+ <0cba0158-8a9f-68b6-6bb3-dab0272a5ce0@linaro.org>
+ <15b545a2-14be-47ba-a665-8ae986a7f9cd@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <15b545a2-14be-47ba-a665-8ae986a7f9cd@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/2023 14:16, Will Deacon wrote:
-> On Tue, Aug 08, 2023 at 09:48:16AM +0100, Suzuki K Poulose wrote:
->> On 08/08/2023 09:22, Anshuman Khandual wrote:
->>> Sanity checking all the GICC tables for same interrupt number, and ensuring
->>> a homogeneous ACPI based machine, could be used for other platform devices
->>> as well. Hence this refactors arm_spe_acpi_register_device() into a common
->>> helper arm_acpi_register_pmu_device().
->>>
->>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>> Cc: Will Deacon <will@kernel.org>
->>> Cc: Mark Rutland <mark.rutland@arm.com>
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Co-developed-by: Will Deacon <will@kernel.org>
->>> Signed-off-by: Will Deacon <will@kernel.org>
->>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>> ---
->>>    drivers/perf/arm_pmu_acpi.c | 105 ++++++++++++++++++++++--------------
->>>    1 file changed, 65 insertions(+), 40 deletions(-)
->>>
->>> diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
->>> index 90815ad762eb..72454bef2a70 100644
->>> --- a/drivers/perf/arm_pmu_acpi.c
->>> +++ b/drivers/perf/arm_pmu_acpi.c
->>> @@ -69,6 +69,63 @@ static void arm_pmu_acpi_unregister_irq(int cpu)
->>>    		acpi_unregister_gsi(gsi);
->>>    }
->>> +static int __maybe_unused
->>> +arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
->>> +			     u16 (*parse_gsi)(struct acpi_madt_generic_interrupt *))
->>> +{
->>> +	int cpu, this_hetid, hetid, irq, ret;
->>> +	u16 this_gsi, gsi = 0;
->>> +
->>> +	/*
->>> +	 * Ensure that platform device must have IORESOURCE_IRQ
->>> +	 * resource to hold gsi interrupt.
->>> +	 */
->>> +	if (pdev->num_resources != 1)
->>> +		return -ENXIO;
->>> +
->>> +	if (pdev->resource[0].flags != IORESOURCE_IRQ)
->>> +		return -ENXIO;
->>> +
->>> +	/*
->>> +	 * Sanity check all the GICC tables for the same interrupt
->>> +	 * number. For now, only support homogeneous ACPI machines.
->>> +	 */
->>> +	for_each_possible_cpu(cpu) {
->>> +		struct acpi_madt_generic_interrupt *gicc;
->>> +
->>> +		gicc = acpi_cpu_get_madt_gicc(cpu);
->>> +		if (gicc->header.length < len)
->>> +			return gsi ? -ENXIO : 0;
->>> +
->>> +		this_gsi = parse_gsi(gicc);
->>> +		if (!this_gsi)
->>> +			return gsi ? -ENXIO : 0;
->>> +
->>> +		this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
->>> +		if (!gsi) {
->>> +			hetid = this_hetid;
->>> +			gsi = this_gsi;
->>> +		} else if (hetid != this_hetid || gsi != this_gsi) {
->>> +			pr_warn("ACPI: %s: must be homogeneous\n", pdev->name);
->>> +			return -ENXIO;
->>> +		}
->>> +	}
->>> +
->>> +	irq = acpi_register_gsi(NULL, gsi, ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_HIGH);
->>> +	if (irq < 0) {
->>> +		pr_warn("ACPI: %s Unable to register interrupt: %d\n", pdev->name, gsi);
->>> +		return -ENXIO;
->>> +	}
->>> +
->>> +	pdev->resource[0].start = irq;
->>> +	ret = platform_device_register(pdev);
->>> +	if (ret < 0) {
->>> +		pr_warn("ACPI: %s: Unable to register device\n", pdev->name);
->>> +		acpi_unregister_gsi(gsi);
->>> +	}
->>> +	return ret;
+On 09/08/2023 13:15, Konrad Dybcio wrote:
+>> Hmm.
 >>
->> A postivie return value here could confuse the caller. Also, with my comment
->> below, we don't really need to return something from here.
-> 
-> How does this return a positive value?
-
-Right now, there aren't. My point is this function returns a "return 
-value" of another function. And the caller of this function doesn't
-really follow the "check" it needs.  e.g.:
-
-ret = foo();
-if (ret < 0)
-	error;
-return ret;
-
-
-
-And the caller only checks for
-
-if (ret)
-	error;
-
-This seems fragile.
-
-> 
->>> +	int ret = arm_acpi_register_pmu_device(&spe_dev, ACPI_MADT_GICC_SPE,
->>> +					       arm_spe_parse_gsi);
->>> +	if (ret)
->>>    		pr_warn("ACPI: SPE: Unable to register device\n");
+>> Well from earlier in the thread the question "why do we have these compat strings" is because we can have any combination of encoder/decoder assigned.
 >>
->> With this change, a system without SPE interrupt description always
->> generates the above message. Is this intended ?
+>> If there's a cogent argument_still_  to be made to transition to some new way of assignment then fine so long as we don't break that basic flexibility.
+>>
+>> Though my own €0.02 is that a module parameter is more of a PITA than a compat string.
+>>
+>> OTOH I could make the argument, that the high probability is most people - probably all, just instantiate a single encoder and decoder and aren't aware of or using the inbuilt flexibility.
+>>
+>> @stan probably has the right idea what to do.
+> Actually..
 > 
-> If there are no irqs, why doesn't this return 0?
+> Has anybody tested this, ever, with the mainline driver?
 
-Apologies, I missed that.
+I assume Stan has.
 
-> arm_acpi_register_pmu_device() should only fail if either:
+> Do we have anyone using this?
+Can't say.
+
+> Is anybody willing to maintain that, test for regressions and
+> fix them in a reasonable amount of time?
 > 
->    - The static resources passed in are broken
->    - The tables are not homogeneous
->    - We fail to register the interrupt
 > 
-> so something is amiss.
+> If we don't have at least 2x "yes" here, I don't think it makes sense
+> to worry about it..
 
-Agreed. We don't need duplicate messages about an error ?
-i.e., one in arm_acpi_register_pmu_device() and another
-one in the caller ? (Of course adding any missing error msgs).
+Hmm.
 
+We decide if we are encoding or decoding when we init a session and the 
+blocks are symmetrical. The hw blocks themselves are not bound to a 
+particular encode/decode mode.
 
-> 
->> Could we not drop the above message as all the other possible error
->> scenarios are reported. We could simply make the above helper void, see my
->> comment above.
-> 
-> I disagree. If the ACPI tables are borked, we should print a message saying
-> so.
+Having two parallel encoders or decoders is exactly the same effort as 
+having a parallel encoder/decoder.
 
-Ok, fair point.
+We don't test parallel encoding/decoding but we should. I'd not be 
+surprised to find there are bugs but, that's not a reason to exclude 
+rather to find and fix bugs.
 
-Suzuki
-
-> 
-> Will
-
+---
+bod
