@@ -2,81 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48711776762
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD0B776764
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbjHIScL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 14:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
+        id S229746AbjHISeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 14:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjHIScK (ORCPT
+        with ESMTP id S229582AbjHISeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 14:32:10 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6571FEF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 11:32:07 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d6349472de6so56130276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 11:32:07 -0700 (PDT)
+        Wed, 9 Aug 2023 14:34:00 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F92211F
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 11:33:59 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bcfe28909so20891066b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 11:33:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691605927; x=1692210727;
+        d=google.com; s=20221208; t=1691606037; x=1692210837;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RHnmTAuuBkyhoSRjvMGvUMrCpJOQs8BtVZXDTIE3D1s=;
-        b=rywljwLIMkcUe/YouOhrAjqUwmYZFHGlRvJkNcRn5ctb15/YefUGojXuTwdE1uTPfy
-         z7+DRg3M0BP6u9lbezVX9xsRVVMfvwtxWBIyXU6yq/vJ6PqMNX2H+ooCyWhrrBhAJTjj
-         doVQpEDnLLMdWmcDIW+Bmg7sGsL5tsXTb1SuL9HNqqP3+b4ZvQA2tUsQPOYF0FKAb7VW
-         2b3QswTGoJm3Bt17FOhWNpGmRLp4i2i70OVatE8klenARqBCv7Vah7om/ivHOYcBLHEo
-         IZWGu4gxXg3hE04YAUSMnd9WqZscfLlOwR34jn/RSlMuqj4bEFpB14Kwi6AV1Y79r9YA
-         M27Q==
+        bh=JaE8vTgm15S5OByYW+XUkI/MkeV3wuuWhPqIWbgVDQE=;
+        b=WNF1X5U4jOMHyI8W6ltu6Z04RuAisvnmgoktD3wvifyLvBlv0XOZFeLd4+TIzrWtcQ
+         StqKYa/POP9KRbmIRthRWU+qJjcy8t752olo68JdVuEFw3azvJWkONePfJi3uZoK2v/V
+         +TzophUCFNtwYkOFipyYWBPL2MqjF/7dq5lAyuesUpEAmmK6jTrqrS9ky2wlg57mFJ+5
+         f3UgBtIFVgScs/0X+cYJQx/KmG08KhXxydZiCcdSJwpecBoL+3ThodANSKCmhEGtzW4i
+         VqJkcjFbJ+5jGzY7BNQD+wHkLGNx/Av8OmwB6gyBc+g7W4p691oJvJMrewnmC/NW4eUX
+         42Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691605927; x=1692210727;
+        d=1e100.net; s=20221208; t=1691606037; x=1692210837;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RHnmTAuuBkyhoSRjvMGvUMrCpJOQs8BtVZXDTIE3D1s=;
-        b=SmC605oKfE2A/skTei1gYww2ReHzYoiV2tU2Xe0FZDN+rDu7Ramuiphs7l85zc8qI2
-         f1nmTfqCBQ2CUSTSKzMTQ56Ae8YXXpSFPblZbFeMGdc9yFPLgosYzUj1rJOXqF4GqHaP
-         F8a+jKlrAyNDNE7iye/JmHPu6P9v9J5C5w+0owVWsGPJMjNqwRT/RVyOQhmJfll3SgSU
-         NIkZyHO9tYPPeM4HRrTBPq0UOKabKT3OmYdQc3EaH0QoJD3qie5qR0YFIdeKyi3ZyKd4
-         +P3mWdi5A4uT/rrf20LoD0tYpnRQanaBYlj5vq8K79rQ4ps8BOU3gyY+33LdVHD0tSUa
-         axnQ==
-X-Gm-Message-State: AOJu0YzBZ/hk2n7thu2UwU3fEsohFCiZDswBGsnL1mHPSTqU5DYKaaHs
-        ITi4QeFFfbmChUcWt5gLUPA6ydUm/m8QJMwK6X+9YA==
-X-Google-Smtp-Source: AGHT+IHK3Dcqy/WID1j0pyzQGlfiiQHINDsBbv4x+B/a8SreFNWZoniInr0UtM8vfLTJTv4ZPWpC0P1nvbhvVKlVIK8=
-X-Received: by 2002:a25:d304:0:b0:d44:3ad2:42e5 with SMTP id
- e4-20020a25d304000000b00d443ad242e5mr275771ybf.4.1691605926873; Wed, 09 Aug
- 2023 11:32:06 -0700 (PDT)
+        bh=JaE8vTgm15S5OByYW+XUkI/MkeV3wuuWhPqIWbgVDQE=;
+        b=E6liG3xdZ/Lmy/6TO39rF4CmuX7JalRrxUshvjr29Ut4k05zjGRvQFDfmLoXGfGCO4
+         Un6HAMwKx3o7pSwA5jcYAXw5rdwU8Qxa7x8HB47qFDoYPu4R5/UDFSKkgqC/6lQafxkN
+         V65CdkmBW4HwGqkGo+2YoYkKGHeMysHtDWtZbBJ20+x7Nws/bcJUn8zN0fRfSdFqmAiH
+         s/F2+StnJOJ30+lkLRdB/Z/JfhykJS+oB2LWt25VI5gkG6iPgkKd7TrMZCDUbuTzNPYC
+         qy2//zSN3A6daeuYsy2S54EDc+arGeqfglpgX9w72v110yvOVSyLOnlPgHLUfQ6HB9lA
+         70Ig==
+X-Gm-Message-State: AOJu0YwWqu5RSogAe0cNe9mPQPfrRRjvVxfrpLs0xxkc/L3AicTw81B2
+        I9icHLJuFgn6xf8ObZlOUIb+eQWMV95Hm+X8AHmZUg==
+X-Google-Smtp-Source: AGHT+IHfrLGYQvltJstIvNbfrCaf/nU00HrTPIRJ8QIqbCQxaQJJunP1nLCNtd415h0qSnTfeXV42dNrgLwMBHNXSJc=
+X-Received: by 2002:a17:906:73c8:b0:988:9ec1:a8c5 with SMTP id
+ n8-20020a17090673c800b009889ec1a8c5mr2755470ejl.55.1691606037346; Wed, 09 Aug
+ 2023 11:33:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230630211957.1341547-1-surenb@google.com> <a34a418a-9a6c-9d9a-b7a3-bde8013bf86c@redhat.com>
- <CAJuCfpGCWekMdno=L=4m7ujWTYMr0Wv77oYzXWT5RXnx+fWe0w@mail.gmail.com>
- <CAJuCfpGMvYxu-g9kVH40UDGnpF2kxctH7AazhvmwhWWq1Rn1sA@mail.gmail.com>
- <CAJuCfpHA78vxOBcaB3m7S7=CoBLMXTzRWego+jZM7JvUm3rEaQ@mail.gmail.com>
- <0ab6524a-6917-efe2-de69-f07fb5cdd9d2@redhat.com> <CAJuCfpEs2k8mHM+9uq05vmcOYCfkNnOb4s3xPSoWheizPkcwLA@mail.gmail.com>
-In-Reply-To: <CAJuCfpEs2k8mHM+9uq05vmcOYCfkNnOb4s3xPSoWheizPkcwLA@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 9 Aug 2023 11:31:54 -0700
-Message-ID: <CAJuCfpERuCx6QvfejUkS-ysMxbzp3mFfhCbH=rDtt2UGzbwtyg@mail.gmail.com>
-Subject: Re: [PATCH v7 0/6] Per-VMA lock support for swap and userfaults
-To:     David Hildenbrand <david@redhat.com>
-Cc:     akpm@linux-foundation.org, willy@infradead.org, hannes@cmpxchg.org,
-        mhocko@suse.com, josef@toxicpanda.com, jack@suse.cz,
-        ldufour@linux.ibm.com, laurent.dufour@fr.ibm.com,
-        michel@lespinasse.org, liam.howlett@oracle.com, jglisse@google.com,
-        vbabka@suse.cz, minchan@google.com, dave@stgolabs.net,
-        punit.agrawal@bytedance.com, lstoakes@gmail.com, hdanton@sina.com,
-        apopple@nvidia.com, peterx@redhat.com, ying.huang@intel.com,
-        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        pasha.tatashin@soleen.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
+References: <20230809045810.1659356-1-yosryahmed@google.com>
+ <ZNNTgZVPZipTL/UM@dhcp22.suse.cz> <CAJD7tkYhxbd2e+4HMZVKUfD4cx6oDauna3vLmttNPLCmFNtpgA@mail.gmail.com>
+ <ZNONgeoytpkchHga@dhcp22.suse.cz> <CAJD7tkb9C77UUxAykw_uMQvkzGyaZOZhM0nwWn_kcPjV0umyuA@mail.gmail.com>
+ <ZNOVS0Smp2PHUIuq@dhcp22.suse.cz>
+In-Reply-To: <ZNOVS0Smp2PHUIuq@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 9 Aug 2023 11:33:20 -0700
+Message-ID: <CAJD7tkZFxbjas=VfhYSGU84Y5vyjuqHqGsRjiDEOSDWh2BxNAg@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,81 +77,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 11:08=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
+On Wed, Aug 9, 2023 at 6:32=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
+:
 >
-> On Wed, Aug 9, 2023 at 11:04=E2=80=AFAM David Hildenbrand <david@redhat.c=
-om> wrote:
+> On Wed 09-08-23 06:13:05, Yosry Ahmed wrote:
+> > On Wed, Aug 9, 2023 at 5:58=E2=80=AFAM Michal Hocko <mhocko@suse.com> w=
+rote:
+> > >
+> > > On Wed 09-08-23 05:31:04, Yosry Ahmed wrote:
+> > > > On Wed, Aug 9, 2023 at 1:51=E2=80=AFAM Michal Hocko <mhocko@suse.co=
+m> wrote:
+> > > > >
+> > > > > On Wed 09-08-23 04:58:10, Yosry Ahmed wrote:
+> > > > > > Over time, the memcg code added multiple optimizations to the s=
+tats
+> > > > > > flushing path that introduce a tradeoff between accuracy and
+> > > > > > performance. In some contexts (e.g. dirty throttling, refaults,=
+ etc), a
+> > > > > > full rstat flush of the stats in the tree can be too expensive.=
+ Such
+> > > > > > optimizations include [1]:
+> > > > > > (a) Introducing a periodic background flusher to keep the size =
+of the
+> > > > > > update tree from growing unbounded.
+> > > > > > (b) Allowing only one thread to flush at a time, and other conc=
+urrent
+> > > > > > flushers just skip the flush. This avoids a thundering herd pro=
+blem
+> > > > > > when multiple reclaim/refault threads attempt to flush the stat=
+s at
+> > > > > > once.
+> > > > > > (c) Only executing a flush if the magnitude of the stats update=
+s exceeds
+> > > > > > a certain threshold.
+> > > > > >
+> > > > > > These optimizations were necessary to make flushing feasible in
+> > > > > > performance-critical paths, and they come at the cost of some a=
+ccuracy
+> > > > > > that we choose to live without. On the other hand, for flushes =
+invoked
+> > > > > > when userspace is reading the stats, the tradeoff is less appea=
+ling
+> > > > > > This code path is not performance-critical, and the inaccuracie=
+s can
+> > > > > > affect userspace behavior. For example, skipping flushing when =
+there is
+> > > > > > another ongoing flush is essentially a coin flip. We don't know=
+ if the
+> > > > > > ongoing flush is done with the subtree of interest or not.
+> > > > >
+> > > > > I am not convinced by this much TBH. What kind of precision do yo=
+u
+> > > > > really need and how much off is what we provide?
+> > > > >
+> > > > > More expensive read of stats from userspace is quite easy to noti=
+ce
+> > > > > and usually reported as a regression. So you should have a convin=
+cing
+> > > > > argument that an extra time spent is really worth it. AFAIK there=
+ are
+> > > > > many monitoring (top like) tools which simply read those files re=
+gularly
+> > > > > just to show numbers and they certainly do not need a high level =
+of
+> > > > > precision.
+> > > >
+> > > > We used to spend this time before commit fd25a9e0e23b ("memcg: unif=
+y
+> > > > memcg stat flushing") which generalized the "skip if ongoing flush"
+> > > > for all stat flushing. As far I know, the problem was contention on
+> > > > the flushing lock which also affected critical paths like refault.
+> > > >
+> > > > The problem is that the current behavior is indeterministic, if cpu=
+ A
+> > > > tries to flush stats and cpu B is already doing that, cpu A will ju=
+st
+> > > > skip. At that point, the cgroup(s) that cpu A cares about may have
+> > > > been fully flushed, partially flushed (in terms of cpus), or not
+> > > > flushed at all. We have no idea. We just know that someone else is
+> > > > flushing something. IOW, in some cases the flush request will be
+> > > > completely ignored and userspace will read stale stats (up to 2s + =
+the
+> > > > periodic flusher runtime).
+> > >
+> > > Yes, that is certainly true but why does that matter? Stats are alway=
+s a
+> > > snapshot of the past. Do we get an inconsistent image that would be
+> > > actively harmful.
 > >
-> > >>>> Which ends up being
-> > >>>>
-> > >>>> VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
-> > >>>>
-> > >>>> I did not check if this is also the case on mainline, and if this =
-series is responsible.
-> > >>>
-> > >>> Thanks for reporting! I'm checking it now.
-> > >>
-> > >> Hmm. From the code it's not obvious how lock_mm_and_find_vma() ends =
-up
-> > >> calling find_vma() without mmap_lock after successfully completing
-> > >> get_mmap_lock_carefully(). lock_mm_and_find_vma+0x3f/0x270 points to
-> > >> the first invocation of find_vma(), so this is not even the lock
-> > >> upgrade path... I'll try to reproduce this issue and dig up more but
-> > >> from the information I have so far this issue does not seem to be
-> > >> related to this series.
-> >
-> > I just checked on mainline and it does not fail there.
+> > That can very well be the case because we may be in a state where some
+> > cpus are flushed and some aren't. Also sometimes a few seconds is too
+> > old. We have some workloads that read the stats every 1-2 seconds to
+> > keep a fresh state, and they certainly do not expect stats to be 2+
+> > seconds old when they read them.
+>
+> I hate to repeat myself but please be more specific. This all sounds
+> just too wavy to me.
 
-Thanks. Just to eliminate the possibility, I'll try reverting my
-patchset in mm-unstable and will try the test again. Will do that in
-the evening once I'm home.
+Sorry I didn't have the full story in mind, I had to do my homework.
+One example is userspace OOM killing. Our userspace OOM killer makes
+decisions based on some stats from memory.stat, and stale stats (a few
+seconds in this case) can result in an unrightful OOM kill, which can
+easily cascade.
 
-> >
-> > >
-> > > This is really weird. I added mmap_assert_locked(mm) calls into
-> > > get_mmap_lock_carefully() right after we acquire mmap_lock read lock
-> > > and one of them triggers right after successful
-> > > mmap_read_lock_killable(). Here is my modified version of
-> > > get_mmap_lock_carefully():
-> > >
-> > > static inline bool get_mmap_lock_carefully(struct mm_struct *mm,
-> > > struct pt_regs *regs) {
-> > >       /* Even if this succeeds, make it clear we might have slept */
-> > >       if (likely(mmap_read_trylock(mm))) {
-> > >           might_sleep();
-> > >           mmap_assert_locked(mm);
-> > >           return true;
-> > >       }
-> > >       if (regs && !user_mode(regs)) {
-> > >           unsigned long ip =3D instruction_pointer(regs);
-> > >           if (!search_exception_tables(ip))
-> > >               return false;
-> > >       }
-> > >       if (!mmap_read_lock_killable(mm)) {
-> > >           mmap_assert_locked(mm);                     <---- generates=
- a BUG
-> > >           return true;
-> > >       }
-> > >       return false;
-> > > }
-> >
-> > Ehm, that's indeed weird.
-> >
-> > >
-> > > AFAIKT conditions for mmap_read_trylock() and
-> > > mmap_read_lock_killable() are checked correctly. Am I missing
-> > > something?
-> >
-> > Weirdly enough, it only triggers during that specific uffd test, right?
+A simplified example of that is when a hierarchy has a parent cgroup
+with multiple related children. In this case, there are usually
+file-backed resources that are shared between those children, and OOM
+killing one of them will not free those resources. Hence, the OOM
+killer only considers their anonymous usage to be reap-able when a
+memcg is nuked. For that we use the "anon" stat (or "rss" in cgroup
+v1) in memory.stat.
+
 >
-> Yes, uffd-unit-tests. I even ran it separately to ensure it's not some
-> fallback from a previous test and I'm able to reproduce this
-> consistently.
+> > > > Some workloads need to read up-to-date stats as feedback to actions
+> > > > (e.g. after proactive reclaim, or for userspace OOM killing purpose=
+s),
+> > > > and reading such stale stats causes regressions or misbehavior by
+> > > > userspace.
+> > >
+> > > Please tell us more about those and why should all others that do not
+> > > require such a precision should page that price as well.
+> >
+> > Everyone used to pay this price though and no one used to complain.
 >
-> >
-> > --
-> > Cheers,
-> >
-> > David / dhildenb
-> >
+> Right, and then the overhead has been reduced and now you want to bring
+> it back and that will be seen as a regression. It doesn't really matter
+> what used to be the overhead. People always care when something gets
+> slower.
+
+People also care when something gets less accurate :)
