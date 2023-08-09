@@ -2,103 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E0E7763BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79147763BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbjHIPcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
+        id S233556AbjHIPeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:34:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233556AbjHIPcp (ORCPT
+        with ESMTP id S230234AbjHIPeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:32:45 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC13C1FEF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:32:44 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe7e67cc77so2350277e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:32:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691595163; x=1692199963;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=of8PeHK3YL/WoKhPTBQz3f9Tf32Jb+Ocz8BH4pAcyV8=;
-        b=wAisMeAqjk41+NlpjCaylrEy8ameEHJzhMU9SW6pMzWZeHYh6uxccs0vO6YCSKuJt4
-         2xeIjXGW4XCWrlZje+gMf/oPDccPsKY3iFIwfaqOPeeYhgdjC/Mn1+8HVzDK37TGklo4
-         GxFlf1SIbwGKRuMvbE/h/rG8qfizgMX21Ete0voDLcYriWq5FZK4DgUEI4LgoODIvTYi
-         gNXELS5y7g1wf5EOl0bbCMsYBwYFLYWuIBE6ABZ1+J8w8vwtZYX7W67I+6yawOjkrkL0
-         9giDOpLALx2sFx/WsGoD6skVIwWbCHaVsW47LE6CwMpK6OXdHfcx4fszso05TvLBBM3E
-         c1PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691595163; x=1692199963;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=of8PeHK3YL/WoKhPTBQz3f9Tf32Jb+Ocz8BH4pAcyV8=;
-        b=IZB4daAN8aCk324ywcupkfqwL4q8Eq4VCRuxhLXd7mhhzlFsVphu9a7wYpaLMirJFR
-         Ss80RW5IR9MgCaWvA4IoQuHRsLq0Xd02TeuZ8wj4QtkLftm6DE9Kfp2hKjy07pWNayJ1
-         TB/uKeHmE6B706Pkz/ET6a3byQDR6i/UxD86mg+ohd+PsKu7aTO3fvd0rgkOfAzlhzoj
-         B3lGxG3Lg622eoD8+IZFwhGSxjlbgy9V7mVy8xoB9lLunnkCqTRnBRGfgiB7b0iKeQpf
-         aXj1G5P9ZoXEvhzGfYhwFdZ1ggemvR5ZS4lOuCgMw/GOwIlIV6IZ9lR0lnGCJn6uJGGL
-         UkFw==
-X-Gm-Message-State: AOJu0YymcqubOXtfPHqo5dCKDRJ9cOEtARqP2CGMUdm2/Is9HZOzxVl3
-        P3i7RIxCaQMDuEW0aUz6oXlo4w==
-X-Google-Smtp-Source: AGHT+IGdPLcjvT5P7oRqrn07ThHzvblusAzppzOicvUAXH9HODXqv5YdYROBW3bRlsLwfkOcW2+N6w==
-X-Received: by 2002:a05:6512:2522:b0:4fd:d6ba:73ba with SMTP id be34-20020a056512252200b004fdd6ba73bamr2325938lfb.37.1691595162452;
-        Wed, 09 Aug 2023 08:32:42 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id bq1-20020a056402214100b005222c6fb512sm8230758edb.1.2023.08.09.08.32.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 08:32:41 -0700 (PDT)
-Message-ID: <0aa707b9-8fa0-be00-af8f-dd57828cd336@linaro.org>
-Date:   Wed, 9 Aug 2023 17:32:39 +0200
+        Wed, 9 Aug 2023 11:34:01 -0400
+Received: from dvalin.narfation.org (dvalin.narfation.org [IPv6:2a00:17d8:100::8b1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E99E7F;
+        Wed,  9 Aug 2023 08:33:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+        s=20121; t=1691595231;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IUjvc0hCBrzREs+fZbNzsO+5+uaKgJCIeVukgQ8i7+A=;
+        b=cKfZCdNKT+zUlLJDSNainIts3G762q4FHCKWv0eLr8bs4hwYSlWpHoN7Dz95Shd2dcZOXc
+        KQEn1hkpHvqmakvqqH1xgHX2K9IHD7OYlrtJYTsjx6crBMCpx1VDYtaZuoUSgPvtYzQWMq
+        MkjSbrAmj8zDN7r/k6ZCxMdP7aUhZ80=
+From:   Sven Eckelmann <sven@narfation.org>
+To:     Marek Lindner <mareklindner@neomailbox.ch>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Antonio Quartulli <a@unstable.cc>,
+        Remi Pommarel <repk@triplefau.lt>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Remi Pommarel <repk@triplefau.lt>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH net] batman-adv: Fix batadv_v_ogm_aggr_send memory leak
+Date:   Wed, 09 Aug 2023 17:33:49 +0200
+Message-ID: <1951515.yKVeVyVuyW@ripper>
+In-Reply-To: <20230809152913.27218-1-repk@triplefau.lt>
+References: <20230809152913.27218-1-repk@triplefau.lt>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v1 0/4] add clock controller of qca8386/qca8084
-Content-Language: en-US
-To:     Luo Jie <quic_luoj@quicinc.com>, andersson@kernel.org,
-        agross@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_srichara@quicinc.com
-References: <20230809080047.19877-1-quic_luoj@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230809080047.19877-1-quic_luoj@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="nextPart2119410.OBFZWjSADL";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/08/2023 10:00, Luo Jie wrote:
-> qca8xxx is 4 * 2.5GBaseT ports chip, working as switch mode
-> named by qca8386, or working as PHY mode named by qca8084,
-> clock hardware reigster is accessed by MDIO bus.
-> 
-> This patch series add the clock controller of qca8363/qca8084,
-> and add the clock ops clk_branch2_qca8k_ops to avoid spin lock
-> used during the clock operation of qca8k clock controller where
-> the sleep happens when accessing clock control register by MDIO
-> bus.
-> 
-> Changes in v1:
-> 	* remove clock flag CLK_ENABLE_MUTEX_LOCK.
-> 	* add clock ops clk_branch2_qca8k_ops.
-> 	* improve yaml file for fixing dtschema warnings.
-> 	* enable clock controller driver in defconfig.
+--nextPart2119410.OBFZWjSADL
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Sven Eckelmann <sven@narfation.org>
+Date: Wed, 09 Aug 2023 17:33:49 +0200
+Message-ID: <1951515.yKVeVyVuyW@ripper>
+In-Reply-To: <20230809152913.27218-1-repk@triplefau.lt>
+References: <20230809152913.27218-1-repk@triplefau.lt>
+MIME-Version: 1.0
 
-So this is v2, not v1. Your next version, if happens, will be v3, please.
+On Wed, 09 Aug 2023 17:29:13 +0200, Remi Pommarel wrote:
+> When batadv_v_ogm_aggr_send is called for an inactive interface, the skb
+> is silently dropped by batadv_v_ogm_send_to_if() but never freed causing
+> the following memory leak:
+> 
+>   unreferenced object 0xffff00000c164800 (size 512):
+>     comm "kworker/u8:1", pid 2648, jiffies 4295122303 (age 97.656s)
+>     hex dump (first 32 bytes):
+>       00 80 af 09 00 00 ff ff e1 09 00 00 75 01 60 83  ............u.`.
+>       1f 00 00 00 b8 00 00 00 15 00 05 00 da e3 d3 64  ...............d
+>     backtrace:
+>       [<0000000007ad20f6>] __kmalloc_track_caller+0x1a8/0x310
+>       [<00000000d1029e55>] kmalloc_reserve.constprop.0+0x70/0x13c
+>       [<000000008b9d4183>] __alloc_skb+0xec/0x1fc
+>       [<00000000c7af5051>] __netdev_alloc_skb+0x48/0x23c
+>       [<00000000642ee5f5>] batadv_v_ogm_aggr_send+0x50/0x36c
+>       [<0000000088660bd7>] batadv_v_ogm_aggr_work+0x24/0x40
+>       [<0000000042fc2606>] process_one_work+0x3b0/0x610
+>       [<000000002f2a0b1c>] worker_thread+0xa0/0x690
+>       [<0000000059fae5d4>] kthread+0x1fc/0x210
+>       [<000000000c587d3a>] ret_from_fork+0x10/0x20
+> 
+> [...]
+
+Applied, thanks!
+
+[1/1] batman-adv: Fix batadv_v_ogm_aggr_send memory leak
+      commit: 421d467dc2d483175bad4fb76a31b9e5a3d744cf
 
 Best regards,
-Krzysztof
+-- 
+Sven Eckelmann <sven@narfation.org>
+--nextPart2119410.OBFZWjSADL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmTTsd0ACgkQXYcKB8Em
+e0avDw/+MF/kddOKnCxKk9v0V/vSIk/U0uEOmlH7zC7YPuyOGgFZVxIF65zdp5N5
+hSaVC4pM2qY2BM3W4ooN8OZOvaNzWIURKWG1Dy6Wv8OCfqGNPYDsg5K/c13pMbBo
+ovHZzZDGaM9aQgTkstHsgX2f05HkCDsTZlwlmH5A4XE4HJhiMWcD6q939UWnMLrW
+lEXmm3nQ4M0ZCiRWg9dwLv92h0POfi3G1Svg0CZ+82+rrrde3Rtjsuo3qP+D2yk2
+aNI6z10VOlh6e0CG/hGAwJ5r521aYyozEMv9NRwCycTMupA9gP/VGbvhHe12cVOF
+67lG5E7D1L9t9lqNeUWrAq99IW4GSQsITaUlOg+aWDw8BahBe1ltfsW3pI63nisG
+pUvwhvv6fEVpnJHblV37JvVxNkc/rusWdGcxPP5oLFQ2kS3U0DD9xU07UhTrt0ei
+R95iwjNw7UxXY4T/nWpeIKoBSq9tVwjsw3A39lMaF7viD7aBl2WHtOMc11H12qSG
+U1L5TrgQUn/YNBeIbqq7FYIr1XHmpSN0fS3AIwvWlySGmvr/NM2ycQM+Ceq0878D
+dHFQ8l3FpuXop+3/OtaWzO/ix13MA6eYsggfez0xSQgWVJg1So7Na46rO5ijoLEJ
+++o3GT8ruQOz4PerpQo1Ib6kNSeMPcM4DYWjBN1BdBXB3IfJFxg=
+=ARQj
+-----END PGP SIGNATURE-----
+
+--nextPart2119410.OBFZWjSADL--
+
+
 
