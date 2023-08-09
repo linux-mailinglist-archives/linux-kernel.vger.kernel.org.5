@@ -2,98 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A386776CBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 01:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E166776CC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 01:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbjHIXVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 19:21:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33532 "EHLO
+        id S231733AbjHIXYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 19:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbjHIXVy (ORCPT
+        with ESMTP id S231136AbjHIXYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 19:21:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F1F4E5B;
-        Wed,  9 Aug 2023 16:21:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F3C1164C55;
-        Wed,  9 Aug 2023 23:21:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 489BAC433C7;
-        Wed,  9 Aug 2023 23:21:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691623312;
-        bh=USqhI4biVjQf9mLtB0Gt5vcC0I3am7Ah63j8X0xD5/c=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=fVQ4RhlTZ1mE48I0JR0BsvFE8xh3saTwun0k7uP9RFr4CYOBrTHbNcZf6teey9EBy
-         NMQC0lRTVWC7/ZOjxasN0Gd+XlaW4DucpO0IEvTY7Z7uJaHdp8BvPwwu+kctZkmRtp
-         8Wx/P2Gdibgfrjk5m+NNTWRrVLZiCMXAj0T5vd90oGc+GDSgJdtrZRpbo4iJamT1jp
-         R0/KB4/NcUy1QhYOsP+DY/QEUWmveJb1kUyzHRrjL3hFrytK7amMNxIC8XthtTm/Nu
-         Q5h9udHmF1UkGdglSW+XYjGtYLc/yqt0Dy+XH2zluz26ZhHnMKJI/tkAAzMoiJl4qo
-         ceSrI94DH84DA==
-Message-ID: <088cc246369820d5a426bc8823c85c8e.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+        Wed, 9 Aug 2023 19:24:23 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA1710EC
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 16:24:21 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bc73a2b0easo3510515ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 16:24:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691623461; x=1692228261;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=E8p58LaqwOO5/ryDFldME9XzaZs3YH0sEVcGA0akbb4=;
+        b=4uH4uUlE2xAaY7umOQx+lAB4pjHab4NR0rLyooYYTvaojxHoTJRIyzeyPysMLlOFjT
+         FuWa/Ta3xZBNpqk6gIYdVLCOBj2ZH4vVvdXeM35aKaheH4pjDk0IHj7u9amuqZqeP3GS
+         HlATLPmsxaOkny4mEM/N4Vlp6kVWLtuaB+0ShdcMcoQ7cRqUhOoljaQ5ZiejA9+572wC
+         rwH7mn9AVdHsHV0BzWCeXxrc2E/qHJm6SkSFC7Q955SApUeNaerG1WDOnSEgcYV+BvCG
+         8WuiYD1/xas2rQKxwU4xMEJ2Yybia07rR7vd+sLVWztI074scG3BBh1aDAkq+/8u7ur5
+         nSmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691623461; x=1692228261;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E8p58LaqwOO5/ryDFldME9XzaZs3YH0sEVcGA0akbb4=;
+        b=FNydoriDTmXansRqFXTgzL9QKd7djERNEjrl7meMjakk1MlDrc6oI6+Tz53jVr1HBc
+         42SSBC6fwJsbKjI/rhRChXNZxHb/QkVuFEbvCrDQ8fqmmTgsElDz/lCvXPUAwsONF2di
+         SsbOfDLdjmU3riqnBNcF11XgZmiAcEd35SGvbOItf/XoScdYB4f0d8+EWGdmMPLvLUX8
+         ngKnytyDPYTPZHWt9pCNW6RBI1dfKEk2XwKJo8pmf19gl11sh8telKabkMbQtYRuQCnj
+         ZmfnnZ73Vffp71HSLKcLMVcurf4pJepbTSejPi6SFROFcibnDOV3vR/PB+73+4zy9Pmv
+         KPnQ==
+X-Gm-Message-State: AOJu0YyVp0i9WiIEZy9Nh51qZPJFFv3N3r6oOx7ABO6FvrL3Q4QY5QCQ
+        1sJ2BWJcgPbiMBiudfASiDSDnw==
+X-Google-Smtp-Source: AGHT+IE1fGW+XmCV+CY5PBYWciXsspEbmsKGDkSe/osIjCyGdMaRaYBOeNCrMXuf1vRXYhEruWBSbA==
+X-Received: by 2002:a17:902:a407:b0:1b5:561a:5c9a with SMTP id p7-20020a170902a40700b001b5561a5c9amr544010plq.39.1691623461301;
+        Wed, 09 Aug 2023 16:24:21 -0700 (PDT)
+Received: from charlie.ba.rivosinc.com ([66.220.2.162])
+        by smtp.gmail.com with ESMTPSA id l18-20020a170902d35200b001b54d064a4bsm82765plk.259.2023.08.09.16.24.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 16:24:20 -0700 (PDT)
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     charlie@rivosinc.com, conor@kernel.org, paul.walmsley@sifive.com,
+        palmer@rivosinc.com, aou@eecs.berkeley.edu, anup@brainfault.org,
+        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org,
+        alexghiti@rivosinc.com
+Subject: [PATCH v10 0/4] RISC-V: mm: Make SV48 the default address space
+Date:   Wed,  9 Aug 2023 16:22:00 -0700
+Message-ID: <20230809232218.849726-1-charlie@rivosinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230721-clk-fix-kunit-lockdep-v1-0-32cdba4c8fc1@kernel.org>
-References: <20230721-clk-fix-kunit-lockdep-v1-0-32cdba4c8fc1@kernel.org>
-Subject: Re: [PATCH 0/2] clk: kunit: Fix the lockdep warnings
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        kernel test robot <yujie.liu@intel.com>,
-        kunit-dev@googlegroups.com
-To:     Maxime Ripard <mripard@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Date:   Wed, 09 Aug 2023 16:21:50 -0700
-User-Agent: alot/0.10
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+kunit-dev
+Make sv48 the default address space for mmap as some applications
+currently depend on this assumption. Users can now select a
+desired address space using a non-zero hint address to mmap. Previously,
+requesting the default address space from mmap by passing zero as the hint
+address would result in using the largest address space possible. Some
+applications depend on empty bits in the virtual address space, like Go and
+Java, so this patch provides more flexibility for application developers.
 
-Quoting Maxime Ripard (2023-07-21 00:09:31)
-> Hi,
->=20
-> Here's a small series to address the lockdep warning we have when
-> running the clk kunit tests with lockdep enabled.
->=20
-> For the record, it can be tested with:
->=20
-> $ ./tools/testing/kunit/kunit.py run \
->     --kunitconfig=3Ddrivers/clk \
->     --cross_compile aarch64-linux-gnu- --arch arm64 \
->     --kconfig_add CONFIG_DEBUG_KERNEL=3Dy \
->     --kconfig_add CONFIG_PROVE_LOCKING=3Dy
->=20
-> Let me know what you think,
+-Charlie
 
-Thanks for doing this. I want to roll these helpers into the clk_kunit.c
-file that I had created for some other clk tests[1]. That's mostly
-because clk.c is already super long and adding kunit code there makes
-that problem worse. I'll try to take that patch out of the rest of the
-series and then add this series on top and resend.
+---
+v10:
+- Move pgtable.h defintions into a no __ASSEMBLY__ region to resolve compilation
+  conflicts (pointed out by Conor)
+- Will now compile with allmodconfig
 
-I don't know what to do about the case where CONFIG_KUNIT=3Dm though. We
-have to export clk_prepare_lock/unlock()? I really don't want to do that
-even if kunit is enabled (see EXPORT_SYMBOL_IF_KUNIT). Maybe if there
-was a GPL version of that, so proprietary modules can't get at kernel
-internals on kunit enabled kernels.
+v9:
+- Raise the mmap_end default to STACK_TOP_MAX to allow the address space to grow
+  beyond the default of sv48 on sv57 machines as suggested by Alexandre
+- Some of the mmap macros had unnecessary conditionals that I have removed
 
-But I also like the approach taken here of adding a small stub around
-the call to make sure a test is running. Maybe I'll make a kunit
-namespaced exported gpl symbol that bails if a test isn't running and
-calls the clk_prepare_lock/unlock functions inside clk.c and then move
-the rest of the code to clk_kunit.c to get something more strict.
+v8:
+- Fix RV32 and the RV32 compat mode of RV64 (suggested by Conor)
+- Extract out addr and base from the mmap macros (suggested by Alexandre)
 
-[1] https://lore.kernel.org/all/20230327222159.3509818-9-sboyd@kernel.org/
+v7:
+- Changing RLIMIT_STACK inside of an executing program does not trigger
+  arch_pick_mmap_layout(), so rewrite tests to change RLIMIT_STACK from a
+  script before executing tests. RLIMIT_STACK of infinity forces bottomup
+  mmap allocation.
+- Make arch_get_mmap_base macro more readible by extracting out the rnd
+  calculation.
+- Use MMAP_MIN_VA_BITS in TASK_UNMAPPED_BASE to support case when mmap
+  attempts to allocate address smaller than DEFAULT_MAP_WINDOW.
+- Fix incorrect wording in documentation.
+
+v6:
+- Rebase onto the correct base
+
+v5:
+- Minor wording change in documentation
+- Change some parenthesis in arch_get_mmap_ macros
+- Added case for addr==0 in arch_get_mmap_ because without this, programs would
+  crash if RLIMIT_STACK was modified before executing the program. This was
+  tested using the libhugetlbfs tests. 
+
+v4:
+- Split testcases/document patch into test cases, in-code documentation, and
+  formal documentation patches
+- Modified the mmap_base macro to be more legible and better represent memory
+  layout
+- Fixed documentation to better reflect the implmentation
+- Renamed DEFAULT_VA_BITS to MMAP_VA_BITS
+- Added additional test case for rlimit changes
+---
+
+
+Charlie Jenkins (4):
+  RISC-V: mm: Restrict address space for sv39,sv48,sv57
+  RISC-V: mm: Add tests for RISC-V mm
+  RISC-V: mm: Update pgtable comment documentation
+  RISC-V: mm: Document mmap changes
+
+ Documentation/riscv/vm-layout.rst             | 22 +++++++
+ arch/riscv/include/asm/elf.h                  |  2 +-
+ arch/riscv/include/asm/pgtable.h              | 33 ++++++++--
+ arch/riscv/include/asm/processor.h            | 52 +++++++++++++--
+ tools/testing/selftests/riscv/Makefile        |  2 +-
+ tools/testing/selftests/riscv/mm/.gitignore   |  2 +
+ tools/testing/selftests/riscv/mm/Makefile     | 15 +++++
+ .../riscv/mm/testcases/mmap_bottomup.c        | 35 ++++++++++
+ .../riscv/mm/testcases/mmap_default.c         | 35 ++++++++++
+ .../selftests/riscv/mm/testcases/mmap_test.h  | 64 +++++++++++++++++++
+ .../selftests/riscv/mm/testcases/run_mmap.sh  | 12 ++++
+ 11 files changed, 261 insertions(+), 13 deletions(-)
+ create mode 100644 tools/testing/selftests/riscv/mm/.gitignore
+ create mode 100644 tools/testing/selftests/riscv/mm/Makefile
+ create mode 100644 tools/testing/selftests/riscv/mm/testcases/mmap_bottomup.c
+ create mode 100644 tools/testing/selftests/riscv/mm/testcases/mmap_default.c
+ create mode 100644 tools/testing/selftests/riscv/mm/testcases/mmap_test.h
+ create mode 100755 tools/testing/selftests/riscv/mm/testcases/run_mmap.sh
+
+-- 
+2.34.1
+
