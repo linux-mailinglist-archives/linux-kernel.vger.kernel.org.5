@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 842B777683F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC1A776846
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233462AbjHITNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42152 "EHLO
+        id S233028AbjHITNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233379AbjHITM7 (ORCPT
+        with ESMTP id S233493AbjHITM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Aug 2023 15:12:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A0B2D5D;
-        Wed,  9 Aug 2023 12:12:35 -0700 (PDT)
-Date:   Wed, 09 Aug 2023 19:12:24 -0000
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA838212C;
+        Wed,  9 Aug 2023 12:12:37 -0700 (PDT)
+Date:   Wed, 09 Aug 2023 19:12:25 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1691608345;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=4YEWXcifivVg86UmH2c6Xpd661pLlI0IsER53UddTuk=;
-        b=QvduAGBgkSz0ceDN27YYH35/C5aGCnaVNA2h2/mvslUHOJUyEeQs2eVNEIW8yocSmT4+Eg
-        pci15o45OyM9wyMoWv97zi89mS+ljKZ0nBVRg9hEXaaEuew+OdTzBGjyX1vk5ldosHCeTs
-        5RtHH9GoylO9ZW0PT5LdDkIJIBwga6TGIfmH/PKTdITGdF3JfJ/zUDwWQEgWNuAnIZWus0
-        dJKopS25EQowAwnZYzhvAA2x6dgB6hjpTk57kpMDfBqzpFsUjaLT7rDKDogYV3/RhFxsso
-        wXVLd4RzxkT8HUlVqK3PxQ8PXBKthamRXlqvIYJX+y3RlLb/fmYanmrNtGBdFw==
+        bh=fJ0OYFuKv7/VhR4WNvEypz1rwyj+na07BQdaWK7QByc=;
+        b=wZqZt38HrOeSeGWUag0tFZNGvEaFKr11dYxYgkDW3l5+dPSFocuKtLmRoVEoGMzFQXqtkb
+        h2+Nk3JKTEZXJw52o9fpeMPb1OdqPSr94jXdLw5c/ERRm4sHgY/p0nxxkskVK9qcMzex1c
+        6n8HtRbFbFZuWlcgoCVW9aEh6zVBuyOdhfwvSysCF5NPIM5GPf/fQnvZcy0znYrB1xpWwF
+        iSThwOD7fa0VMsygU70hyOZItOTQckwCvJcDsjOL4wc0xp8HVRLcnq8kctA/3XFAUKbXB0
+        3z5OGSaCC9dgp3/HFe9afTySyeu+fzT5vOiCznYUYCHuBbsUyFL4QSlJl1Dpyg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1691608345;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=4YEWXcifivVg86UmH2c6Xpd661pLlI0IsER53UddTuk=;
-        b=59bLDVV0nrsyhvdKlFv6fvE1fGyjWZlqEwq6ZZK6v8FtNHre3ot+IJlcLaXIKQoAARWrZM
-        BHnH0rTq7v4kZhDA==
+        bh=fJ0OYFuKv7/VhR4WNvEypz1rwyj+na07BQdaWK7QByc=;
+        b=bjqEwHqqo1MPh81fzV3Ptv3A7Kj1o68QqO7ogPwpn+lbLpxypT7ClFGepWeawoJ+qfpe8N
+        9FHaGmA+bLl17oCQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/apic: Split register_apic_address()
+Subject: [tip: x86/apic] x86/of: Fix the APIC address registration
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
@@ -48,7 +48,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Juergen Gross <jgross@suse.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169160834444.27769.11587842002054923417.tip-bot2@tip-bot2>
+Message-ID: <169160834528.27769.7010023693541059077.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -65,21 +65,23 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/apic branch of tip:
 
-Commit-ID:     5a88f354dcd8f19436bbda52f075276a5c70424f
-Gitweb:        https://git.kernel.org/tip/5a88f354dcd8f19436bbda52f075276a5c70424f
+Commit-ID:     2906a67ac83b06b874b32bf6413a8d5e186fc33e
+Gitweb:        https://git.kernel.org/tip/2906a67ac83b06b874b32bf6413a8d5e186fc33e
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 08 Aug 2023 15:03:48 -07:00
+AuthorDate:    Tue, 08 Aug 2023 15:03:47 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Wed, 09 Aug 2023 11:58:20 -07:00
+CommitterDate: Wed, 09 Aug 2023 11:58:19 -07:00
 
-x86/apic: Split register_apic_address()
+x86/of: Fix the APIC address registration
 
-Split the fixmap setup out of register_lapic_address() and reuse it when
-the X2APIC is disabled during setup.
+The device tree APIC parser tries to force-enable the local APIC when it is
+not set in CPUID. apic_force_enable() registers the boot CPU apic on
+success.
 
-This avoids registering the APIC ID (setting 'mp_lapic_addr') twice.
+If that succeeds then dtb_lapic_setup() registers the local APIC again
+eventually with a different address.
 
-[ dhansen: changelog wording tweak ]
+Rewrite the code so that it only registers it once.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
@@ -88,57 +90,35 @@ Tested-by: Michael Kelley <mikelley@microsoft.com>
 Tested-by: Sohil Mehta <sohil.mehta@intel.com>
 Tested-by: Juergen Gross <jgross@suse.com> # Xen PV (dom0 and unpriv. guest)
 ---
- arch/x86/kernel/apic/apic.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ arch/x86/kernel/devicetree.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index d0f4cca..45ae178 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -1852,6 +1852,8 @@ void x2apic_setup(void)
- 	__x2apic_enable();
- }
+diff --git a/arch/x86/kernel/devicetree.c b/arch/x86/kernel/devicetree.c
+index 56f6d59..8f94eb6 100644
+--- a/arch/x86/kernel/devicetree.c
++++ b/arch/x86/kernel/devicetree.c
+@@ -157,19 +157,15 @@ static void __init dtb_lapic_setup(void)
  
-+static __init void apic_set_fixmap(void);
-+
- static __init void x2apic_disable(void)
- {
- 	u32 x2apic_id, state = x2apic_state;
-@@ -1872,7 +1874,7 @@ static __init void x2apic_disable(void)
+ 	/* Did the boot loader setup the local APIC ? */
+ 	if (!boot_cpu_has(X86_FEATURE_APIC)) {
++		/* Try force enabling, which registers the APIC address */
+ 		if (apic_force_enable(lapic_addr))
+ 			return;
+-	}
+-	smp_found_config = 1;
+-	if (of_property_read_bool(dn, "intel,virtual-wire-mode")) {
+-		pr_info("Virtual Wire compatibility mode.\n");
+-		pic_mode = 0;
+ 	} else {
+-		pr_info("IMCR and PIC compatibility mode.\n");
+-		pic_mode = 1;
++		register_lapic_address(lapic_addr);
  	}
- 
- 	__x2apic_disable();
--	register_lapic_address(mp_lapic_addr);
-+	apic_set_fixmap();
- }
- 
- static __init void x2apic_enable(void)
-@@ -2145,17 +2147,21 @@ void __init init_apic_mappings(void)
- 	}
- }
- 
-+static __init void apic_set_fixmap(void)
-+{
-+	set_fixmap_nocache(FIX_APIC_BASE, mp_lapic_addr);
-+	apic_mmio_base = APIC_BASE;
-+	apic_printk(APIC_VERBOSE, "mapped APIC to %16lx (%16lx)\n",
-+		    apic_mmio_base, mp_lapic_addr);
-+	apic_read_boot_cpu_id(false);
-+}
-+
- void __init register_lapic_address(unsigned long address)
- {
- 	mp_lapic_addr = address;
- 
--	if (x2apic_mode)
--		return;
 -
--	set_fixmap_nocache(FIX_APIC_BASE, address);
--	apic_mmio_base = APIC_BASE;
--	apic_printk(APIC_VERBOSE, "mapped APIC to %16lx (%16lx)\n", APIC_BASE, address);
--	apic_read_boot_cpu_id(false);
-+	if (!x2apic_mode)
-+		apic_set_fixmap();
+-	register_lapic_address(lapic_addr);
++	smp_found_config = 1;
++	pic_mode = !of_property_read_bool(dn, "intel,virtual-wire-mode");
++	pr_info("%s compatibility mode.\n", pic_mode ? "IMCR and PIC" : "Virtual Wire");
  }
  
- /*
+ #endif /* CONFIG_X86_LOCAL_APIC */
