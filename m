@@ -2,208 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0558775234
+	by mail.lfdr.de (Postfix) with ESMTP id 02FE4775232
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 07:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbjHIF1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 01:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
+        id S229929AbjHIF1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 01:27:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbjHIF1s (ORCPT
+        with ESMTP id S229897AbjHIF1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 01:27:48 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C823A1BFB
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 22:27:46 -0700 (PDT)
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id EF03944496
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:27:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1691558864;
-        bh=peTqRYjSDavpbcFsnXWNHqx4GHBTnLZGnwi7ZOE5E/E=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=uadb1klPfTxl3hv0XbAjf+Xq5DsWvzKyZSrBS/mhiQRvcbdq/wiPmxFWWX+0683Pe
-         1YVWENWT53EJ3ZsyEEh00I/r/hXryL7N8x9LKWKQFnSH5hw2NIrwFwBcXUJXJuIuSz
-         N3deL8clrebDzP5DvZVKRoeeVe+SDmvI4ItraixyLDoS2oWWpw1XcJopGXiohNaXWi
-         FHiy1SXJ+lXtGSU2Tee+MuiQ2pRP/hvUjKwLxGBhtdTxHE7avFgevVPDS/pACwyxe0
-         IDdFDAsG/4cXRH/wxJFpfp5/Cwy+6qeDNCR6YGkjeNe8SsWnAGOIjb2eGnR8P+1JS4
-         we+Qyt50T7c0w==
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-40ff67467c9so66055371cf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 22:27:44 -0700 (PDT)
+        Wed, 9 Aug 2023 01:27:49 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A871BF3
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 22:27:48 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6873a30d02eso4385023b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 22:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691558868; x=1692163668;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bhL+GxxZwosDcbr2JYGeROiUQ9hern+seiOFs9BotUA=;
+        b=FpHstVBIBNa9DWGPBaFDWK4OED+TplT0ysD5F18BYQTdlL7RrHzYGP08KJNSYNkYko
+         +xyVHq4Kzkc5uuXYetntwbaGLOH/kknYAyTSBnjnF/G5MoAWGAqku+CkJkBENO9XZ2HU
+         6qQcLAMM5JxCHwrZt9vsMQJNIceqCXpwhEwST/6fq3dnp5g7DLCu3Q/3P9f7+XhZ1xb+
+         cHQq0tbkuCkNBYXK/FV3Lb8DeQ3OzrzzfOcnlyQxs2bsjhdC5ONMRS0s7JTI0V5rKAZk
+         /6FlJjH7DsIZDpt5dtjkMgXc7fmx5EJC6HnWSZCSxso05YqTjPcShmYrtpfhHbxbX6Ps
+         asqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691558863; x=1692163663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=peTqRYjSDavpbcFsnXWNHqx4GHBTnLZGnwi7ZOE5E/E=;
-        b=Me4EYvrkOetQBduwTIGlAe5FSNQ+VxHvXOD5R5JJmodL/FP7OVOVmhX+/p0N1bx8S1
-         KAd8YBIad+3VBRDJpHJoXqOzOH9W3WhMbs8klb6IhNYpNFVhU0tLjIAizqLGOu7k5ZEi
-         bQcll0cVi5fCRQNmEk0DEOlmc196JWqWA9psCgqJis3+wd6W1w1ltb4pyeE5PrUWGVhf
-         gTW0D83OAVQ3rmX/jCzZf6FAue3zv38Npp6O4mHkmPcTSzPYnmyibAZlIbv/gMHhWKEn
-         uSbtwn3cnzU+9kdWW+txwjfEQrzS1Vj2FAasgk/DsYXh/ynYmQ6NvE/oZfEqY1W4HOn5
-         LY+Q==
-X-Gm-Message-State: AOJu0Yzx4jrPSC/guz+hyMAZ69/AN5M4QfT3da7iHyXUrHxcAdvks/6Y
-        Q4uRDDfKeMVfqHbsJfl/94X22dnluyRHByQnfY96FvwVmg55zEXhoNOhg/h9c2WiO277dyDOvIg
-        MlpG1qB2THrOSL5tXknfiOU6NF1vWpYElYiI6uQ8yTJeJE9Nh0ysjk2g/5A==
-X-Received: by 2002:a05:622a:11c1:b0:3fb:42cb:aa9 with SMTP id n1-20020a05622a11c100b003fb42cb0aa9mr2718324qtk.45.1691558863718;
-        Tue, 08 Aug 2023 22:27:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF9g/gnVBCzUhuSlDB+/aiLzLLlM41Q7Jkfkb1MkwSdlek2Jh+LrgosRiAQ7l1kU79JzGuecMBwAu2knwmTAj8=
-X-Received: by 2002:a05:622a:11c1:b0:3fb:42cb:aa9 with SMTP id
- n1-20020a05622a11c100b003fb42cb0aa9mr2718308qtk.45.1691558863469; Tue, 08 Aug
- 2023 22:27:43 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691558868; x=1692163668;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bhL+GxxZwosDcbr2JYGeROiUQ9hern+seiOFs9BotUA=;
+        b=lidbou+3NH9kh3SZBS6VXR7bkoPvNTiF02vTbNfDGOyBnJzrsY5e5whOaBHYRfHAhA
+         Z9UtRuqT/zwZy0io5Tn4RQA1iObKGf7urdj9hgDcUVRrQu+HEFj4n2j2BF8RrvOM3ZV5
+         xUrdz1nDtTu11627miNtFgSWZ6dLWu/eEnlpUL5Cas/JB9tyjRuhRqJ92NeGWSmjy6MM
+         011WQRCzLlGu1LDT6kM97OHDkWsO/FWARn5FXPfkjcJ3TbLo+Yms6EIK3fb7i997lc3u
+         lBhJESCrewZ1bpoWFV4gBte+o2Q5seH87MSA/Daw1LjmCkEOPof8MR6tUSYtWUgV6dcO
+         /w8w==
+X-Gm-Message-State: AOJu0YwrKFw8m4YqJviWMa+IoEkL9WymvrKOA8SMEeM5BIagVsYUV1JF
+        Q0vzz+fXNvHQfqG7p737unymLg==
+X-Google-Smtp-Source: AGHT+IE0e9qLHd0eWNh5zZHugB+X99G5gvGqpAbe1AF4HkM2/Udm4HQCZgqNIzpuigcyCJyEnnRtUQ==
+X-Received: by 2002:a05:6a20:1590:b0:13b:b4bb:8b18 with SMTP id h16-20020a056a20159000b0013bb4bb8b18mr1841936pzj.1.1691558867948;
+        Tue, 08 Aug 2023 22:27:47 -0700 (PDT)
+Received: from localhost ([122.172.87.195])
+        by smtp.gmail.com with ESMTPSA id fk3-20020a056a003a8300b0062e0515f020sm9001226pfb.162.2023.08.08.22.27.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 22:27:47 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 10:57:43 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: blocklist more Qualcomm platforms in
+ cpufreq-dt-platdev
+Message-ID: <20230809052743.hp2vvq2rr25hqine@vireshk-i7>
+References: <20230809-topic-cpufreq_qcom_block-v1-1-624acbcefa5c@linaro.org>
 MIME-Version: 1.0
-References: <20230512000014.118942-2-kai.heng.feng@canonical.com>
- <20230718111702.GA354713@bhelgaas> <CAAd53p7RfVcZjw+ShtkTmhCAA4zpegRZOzwiXgmanthx_KMjxA@mail.gmail.com>
-In-Reply-To: <CAAd53p7RfVcZjw+ShtkTmhCAA4zpegRZOzwiXgmanthx_KMjxA@mail.gmail.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Wed, 9 Aug 2023 13:27:31 +0800
-Message-ID: <CAAd53p5WkzydfLAkMa6Dgt5vS0w5FHATfoDj3f=YkK-hPgJ+vQ@mail.gmail.com>
-Subject: Re: [PATCH v6 2/3] PCI/AER: Disable AER interrupt on suspend
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-        linuxppc-dev@lists.ozlabs.org,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, koba.ko@canonical.com,
-        "Oliver O'Halloran" <oohall@gmail.com>, linux-pci@vger.kernel.org,
-        mika.westerberg@linux.intel.com,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809-topic-cpufreq_qcom_block-v1-1-624acbcefa5c@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 11:58=E2=80=AFAM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> On Tue, Jul 18, 2023 at 7:17=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org=
-> wrote:
-> >
-> > [+cc Rafael]
-> >
-> > On Fri, May 12, 2023 at 08:00:13AM +0800, Kai-Heng Feng wrote:
-> > > PCIe services that share an IRQ with PME, such as AER or DPC, may cau=
-se a
-> > > spurious wakeup on system suspend. To prevent this, disable the AER i=
-nterrupt
-> > > notification during the system suspend process.
-> >
-> > I see that in this particular BZ dmesg log, PME, AER, and DPC do share
-> > the same IRQ, but I don't think this is true in general.
-> >
-> > Root Ports usually use MSI or MSI-X.  PME and hotplug events use the
-> > Interrupt Message Number in the PCIe Capability, but AER uses the one
-> > in the AER Root Error Status register, and DPC uses the one in the DPC
-> > Capability register.  Those potentially correspond to three distinct
-> > MSI/MSI-X vectors.
-> >
-> > I think this probably has nothing to do with the IRQ being *shared*,
-> > but just that putting the downstream component into D3cold, where the
-> > link state is L3, may cause the upstream component to log and signal a
-> > link-related error as the link goes completely down.
->
-> That's quite likely a better explanation than my wording.
-> Assuming AER IRQ and PME IRQ are not shared, does system get woken up
-> by AER IRQ?
->
-> >
-> > I don't think D0-D3hot should be relevant here because in all those
-> > states, the link should be active because the downstream config space
-> > remains accessible.  So I'm not sure if it's possible, but I wonder if
-> > there's a more targeted place we could do this, e.g., in the path that
-> > puts downstream devices in D3cold.
->
-> Let me try to work on this.
+On 09-08-23, 02:07, Konrad Dybcio wrote:
+> All Qualcomm platforms utilizing the qcom-cpufreq-hw driver have no
+> business in using cpufreq-dt. Prevent that from happening.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  drivers/cpufreq/cpufreq-dt-platdev.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
+> index adb3579a1fee..fb2875ce1fdd 100644
+> --- a/drivers/cpufreq/cpufreq-dt-platdev.c
+> +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+> @@ -144,14 +144,18 @@ static const struct of_device_id blocklist[] __initconst = {
+>  	{ .compatible = "qcom,apq8096", },
+>  	{ .compatible = "qcom,msm8996", },
+>  	{ .compatible = "qcom,msm8998", },
+> +	{ .compatible = "qcom,qcm2290", },
+>  	{ .compatible = "qcom,qcs404", },
+> +	{ .compatible = "qcom,qdu1000", },
+>  	{ .compatible = "qcom,sa8155p" },
+>  	{ .compatible = "qcom,sa8540p" },
+> +	{ .compatible = "qcom,sa8775p" },
+>  	{ .compatible = "qcom,sc7180", },
+>  	{ .compatible = "qcom,sc7280", },
+>  	{ .compatible = "qcom,sc8180x", },
+>  	{ .compatible = "qcom,sc8280xp", },
+>  	{ .compatible = "qcom,sdm845", },
+> +	{ .compatible = "qcom,sdx75", },
+>  	{ .compatible = "qcom,sm6115", },
+>  	{ .compatible = "qcom,sm6350", },
+>  	{ .compatible = "qcom,sm6375", },
+> @@ -159,6 +163,8 @@ static const struct of_device_id blocklist[] __initconst = {
+>  	{ .compatible = "qcom,sm8150", },
+>  	{ .compatible = "qcom,sm8250", },
+>  	{ .compatible = "qcom,sm8350", },
+> +	{ .compatible = "qcom,sm8450", },
+> +	{ .compatible = "qcom,sm8550", },
+>  
+>  	{ .compatible = "st,stih407", },
+>  	{ .compatible = "st,stih410", },
 
-We are seeing another case where the issue happens on D3hot [0].
-So I wonder if it's possible to disable AER unconditionally?
+Applied. Thanks.
 
-[0] https://bugzilla.kernel.org/show_bug.cgi?id=3D216295#c3
-
->
-> Kai-Heng
->
-> >
-> > > As Per PCIe Base Spec 5.0, section 5.2, titled "Link State Power Mana=
-gement",
-> > > TLP and DLLP transmission are disabled for a Link in L2/L3 Ready (D3h=
-ot), L2
-> > > (D3cold with aux power) and L3 (D3cold) states. So disabling the AER
-> > > notification during suspend and re-enabling them during the resume pr=
-ocess
-> > > should not affect the basic functionality.
-> > >
-> > > Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D216295
-> > > Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > ---
-> > > v6:
-> > > v5:
-> > >  - Wording.
-> > >
-> > > v4:
-> > > v3:
-> > >  - No change.
-> > >
-> > > v2:
-> > >  - Only disable AER IRQ.
-> > >  - No more check on PME IRQ#.
-> > >  - Use helper.
-> > >
-> > >  drivers/pci/pcie/aer.c | 22 ++++++++++++++++++++++
-> > >  1 file changed, 22 insertions(+)
-> > >
-> > > diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> > > index 1420e1f27105..9c07fdbeb52d 100644
-> > > --- a/drivers/pci/pcie/aer.c
-> > > +++ b/drivers/pci/pcie/aer.c
-> > > @@ -1356,6 +1356,26 @@ static int aer_probe(struct pcie_device *dev)
-> > >       return 0;
-> > >  }
-> > >
-> > > +static int aer_suspend(struct pcie_device *dev)
-> > > +{
-> > > +     struct aer_rpc *rpc =3D get_service_data(dev);
-> > > +     struct pci_dev *pdev =3D rpc->rpd;
-> > > +
-> > > +     aer_disable_irq(pdev);
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static int aer_resume(struct pcie_device *dev)
-> > > +{
-> > > +     struct aer_rpc *rpc =3D get_service_data(dev);
-> > > +     struct pci_dev *pdev =3D rpc->rpd;
-> > > +
-> > > +     aer_enable_irq(pdev);
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > >  /**
-> > >   * aer_root_reset - reset Root Port hierarchy, RCEC, or RCiEP
-> > >   * @dev: pointer to Root Port, RCEC, or RCiEP
-> > > @@ -1420,6 +1440,8 @@ static struct pcie_port_service_driver aerdrive=
-r =3D {
-> > >       .service        =3D PCIE_PORT_SERVICE_AER,
-> > >
-> > >       .probe          =3D aer_probe,
-> > > +     .suspend        =3D aer_suspend,
-> > > +     .resume         =3D aer_resume,
-> > >       .remove         =3D aer_remove,
-> > >  };
-> > >
-> > > --
-> > > 2.34.1
-> > >
+-- 
+viresh
