@@ -2,78 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B287765DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179327765FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbjHIRBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 13:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51918 "EHLO
+        id S232560AbjHIRCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 13:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjHIRBr (ORCPT
+        with ESMTP id S232437AbjHIRCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 13:01:47 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BC01FF5;
-        Wed,  9 Aug 2023 10:01:46 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379H1TWY049907;
-        Wed, 9 Aug 2023 12:01:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691600489;
-        bh=hrW18xO5OkjdMaVc1gdU03bndSOI85gH6mHuacYnApE=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=ofM+f0kRpqCiJowEwY61vjZBAEh6oq4/uniCA51fufa3+HrQ4czDJKRMVH2XvTvvj
-         zENQGIVDvY4Y9Ms0sfJgCQB2xqJa0savaYPDq43Nefv0s3xMXOUOWUjR1KsU6N6wm+
-         OLr/EcfmFKAa+1JlD3+msfV6Cpoc/FyWbZiydLts=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379H1Tvl055631
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Aug 2023 12:01:29 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
- Aug 2023 12:01:29 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 9 Aug 2023 12:01:29 -0500
-Received: from [10.250.38.120] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379H1R5U028607;
-        Wed, 9 Aug 2023 12:01:28 -0500
-Message-ID: <c0798225-3d99-4c45-5637-55bfbf7b0c8b@ti.com>
-Date:   Wed, 9 Aug 2023 12:01:27 -0500
+        Wed, 9 Aug 2023 13:02:14 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDE9210D
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 10:02:10 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe28e4671dso11454788e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 10:02:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1691600529; x=1692205329;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bjIM/ijvSM8/MDaGJoo16Y0WNhCaEmIRqKMsiPBM2wM=;
+        b=T9ZQUjKWWfmPZqDf3wQWwhBnsSq5HwjyhNx06C/Qs/b28tTqhURb6KY/+OUCVNp/Kr
+         KzUuXVC7p/fUclfJcpjpvo81oHhy4+HJjBrSTAMzEvoAgIUvccLqdLKmzC63krToqn39
+         4SakwAuGj/80v9DUUFGzdqpfH8AcWRQD/7m/Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691600529; x=1692205329;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bjIM/ijvSM8/MDaGJoo16Y0WNhCaEmIRqKMsiPBM2wM=;
+        b=CPZytMs8aKpTYTlR+bXpXseUUmTdSq398itfO1rZuo8lP/ZDvlZj6pzrhGwVcRPuFp
+         m3gvJZOrefo2RZnHyvkUzbBjy9prMdG6FZ6sSyUpb8Fz3tv1uxW6B5OffulUnk2prT9R
+         XaZyoJMf5xRFMfEDhY8D4+DYHwtkGIa35GSHPoKdVOeCCzqVACvhohbqLd+LPujB1ZuZ
+         dYi6eMLr3FPxl3g1IYi+CLSYRwi3VJ5srlu6wCKn+/qrEuuqWcspBPe8QuW4XrpmI4Ki
+         Rw7lmdaxo/5jY2kgyDnxBA7lH6BuBgtu4dblya1vWMKOJGsMFXLFNGvpuyBnbMy7nvG+
+         jXnQ==
+X-Gm-Message-State: AOJu0Ywdl3I8rFAEqu2YMuw0UQu3um7wiqKyp2SOq+aSL2gyRb9Vjdbq
+        kUmnV9ZQFuOGnHdKM5lcbSF3DLhj7CBprdv9JPpRWniF
+X-Google-Smtp-Source: AGHT+IHwW9c7bsAYiWoZftgXgtDNjAWOk0Cb4yJ5OUMW5dFusNom8UULJ2nH6DJ1TINyoVkHk3BzrA==
+X-Received: by 2002:a05:6512:3ec:b0:4fb:77d6:89c3 with SMTP id n12-20020a05651203ec00b004fb77d689c3mr2352023lfq.12.1691600528743;
+        Wed, 09 Aug 2023 10:02:08 -0700 (PDT)
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
+        by smtp.gmail.com with ESMTPSA id w1-20020a17090652c100b009927a49ba94sm8188120ejn.169.2023.08.09.10.02.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 10:02:08 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-99c136ee106so11754166b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 10:02:08 -0700 (PDT)
+X-Received: by 2002:a17:906:7486:b0:99b:4bab:2844 with SMTP id
+ e6-20020a170906748600b0099b4bab2844mr2356279ejl.55.1691600527705; Wed, 09 Aug
+ 2023 10:02:07 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 0/6] arm64: ti: k3-am62: Add display support
-Content-Language: en-US
-To:     Nishanth Menon <nm@ti.com>, Aradhya Bhatia <a-bhatia1@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Francesco Dolcini <francesco@dolcini.it>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Rahul T R <r-ravikumar@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jai Luthra <j-luthra@ti.com>,
-        Jayesh Choudhary <j-choudhary@ti.com>
-References: <20230809084559.17322-1-a-bhatia1@ti.com>
- <20230809144005.n3uq5yjusrrtjhqz@churn>
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <20230809144005.n3uq5yjusrrtjhqz@churn>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+References: <87edkce118.wl-tiwai@suse.de> <20230809143801.GA693@lst.de>
+ <CAHk-=wiyWOaPtOJ1PTdERswXV9m7W_UkPV-HE0kbpr48mbnrEA@mail.gmail.com> <87wmy4ciap.wl-tiwai@suse.de>
+In-Reply-To: <87wmy4ciap.wl-tiwai@suse.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 9 Aug 2023 10:01:50 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh-mUL6mp4chAc6E_UjwpPLyCPRCJK+iB4ZMD2BqjwGHA@mail.gmail.com>
+Message-ID: <CAHk-=wh-mUL6mp4chAc6E_UjwpPLyCPRCJK+iB4ZMD2BqjwGHA@mail.gmail.com>
+Subject: Re: [PATCH RFC] Introduce uniptr_t as a generic "universal" pointer
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,118 +76,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/23 9:40 AM, Nishanth Menon wrote:
-> On 14:15-20230809, Aradhya Bhatia wrote:
->> Hi all,
->>
->> The patch series adds DT nodes for Display SubSystem (DSS) and other
->> peripherals required to enable the HDMI audio and video on the AM625 SK,
->> AM62-LP SK, as well as the AM625 based Beagle-Play platforms. An HDMI
->> monitor can be connected to the boards for the audio/video outputs.
->>
->> The series adding the compatible and basic driver support[0] is in the
->> drm-misc-next and linux-next queues and is expected to be in the
->> mainline by v6.6-rc1. Patch 5/6 also requires Nishanth Menon's patch[1]
->> that introduces debounce select mux macros. This patch too is not in
->> v6.5-rc1 but has been picked up in ti-next[2] and hence, is present in
->> linux-next.
->>
->> Patches 4 and 5 have been picked up from TI's vendor tree[3] based off
->> linux-kernel v6.1.
->>
->> Regards
->> Aradhya
->>
->> Change Log:
->> V4 -> V5:
->>    - Cosmetic changes as suggested by Jayesh.
->>    - Fixed the mis-represented DSS VP1 clock, and added a
->>      fixed-factor-clock.
->>
->> V3 -> V4:
->>    - Added "Fixes" tag for patch 1/6.
->>    - Rebased to linux-next.
->>    - Enabled display at board level and disabled at SoC level.
->>    - Dropped OLDI pinmux configuration as OLDI output comes directly from
->>      the SoC and muxing is not required.
->>    - Squashed DSS pinmux patches into their platform specific HDMI
->>      support patches, because it did not make sense to have only one set
->>      of pinmux config separated in a patch.
->>
->> V2 -> V3:
->>    - Updated the compatible from "ti,am65x-dss" to "ti,am625-dss".
->>    - Peripheral nodes like HDMI TX, HDMI connector are now added to
->>      k3-am62x-sk-common.dtsi instead of k3-am625-sk.dts, in order to
->>      support AM62-LP SK-EVM as well.
->>    - Dropped the HDMI master clock node as it is not connected on the
->>      EVM, and should not have been added in the first place.
->>    - Re-worded and Re-ordered commits.
->>    - Dropped Rahul Ravikumar's R-bs because of the changes.
->>    - Added AM625 based Beagle-Play for HDMI support.
->>    - Added HDMI audio support as well.
->>
->> V1 -> V2:
->>   - Removed repetitive data in dss_ports
->>
->> V4: https://lore.kernel.org/all/20230807153307.22174-1-a-bhatia1@ti.com/
->> V3: https://lore.kernel.org/all/20230728173438.12995-1-a-bhatia1@ti.com/
->> V2: https://lore.kernel.org/all/20220505134303.23208-1-a-bhatia1@ti.com/
->> V1: https://lore.kernel.org/all/20220427090850.32280-1-a-bhatia1@ti.com/
->>
->> [0]: https://lore.kernel.org/all/20230616150900.6617-1-a-bhatia1@ti.com/
->> [1]: https://lore.kernel.org/all/20230619131620.3286650-1-nm@ti.com/
->> [2]: https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git/commit/?id=0bec3d7ecc7493b0e530f6f34539841ef6779006
->> [3]: https://git.ti.com/cgit/ti-linux-kernel/ti-linux-kernel/log/?h=ti-linux-6.1.y-cicd
->>
->>
->> Aradhya Bhatia (4):
->>    arm64: dts: ti: k3-am62x-sk-common: Update main-i2c1 frequency
->>    arm64: dts: ti: k3-am62-main: Add node for DSS
->>    arm64: dts: ti: k3-am62x-sk-common: Add HDMI support
->>    arm64: defconfig: Enable ITE_IT66121 HDMI transmitter
->>
->> Jai Luthra (1):
->>    arm64: dts: ti: am62x-sk: Add overlay for HDMI audio
->>
->> Nishanth Menon (1):
->>    arm64: dts: ti: k3-am625-beagleplay: Add HDMI support
->>
->>   arch/arm64/boot/dts/ti/Makefile               |   3 +
->>   arch/arm64/boot/dts/ti/k3-am62-main.dtsi      |  25 +++
->>   arch/arm64/boot/dts/ti/k3-am62.dtsi           |   8 +
->>   .../arm64/boot/dts/ti/k3-am625-beagleplay.dts | 150 ++++++++++++++++++
->>   .../arm64/boot/dts/ti/k3-am62x-sk-common.dtsi |  93 ++++++++++-
->>   .../boot/dts/ti/k3-am62x-sk-hdmi-audio.dtso   |  40 +++++
->>   arch/arm64/configs/defconfig                  |   1 +
->>   7 files changed, 319 insertions(+), 1 deletion(-)
->>   create mode 100644 arch/arm64/boot/dts/ti/k3-am62x-sk-hdmi-audio.dtso
->>
->>
->> base-commit: 71cd4fc492ec41e4acd85e98bbf7a13753fc1e03
->> -- 
->> 2.40.1
->>
-> 
-> Can you help cleanup the following before we start introducing new oldi
-> and dss support? I am not sure if these were introduced due to yaml
-> updates or something pre-existing.
+On Wed, 9 Aug 2023 at 09:05, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> OTOH, it simplifies the code well for us; as of now, we have two
+> callbacks for copying PCM memory from/to the device, distinct for
+> kernel and user pointers.  It's basically either copy_from_user() or
+> memcpy() of the given size depending on the caller.  The sockptr_t or
+> its variant would allow us to unify those to a single callback.
 
-This is a pre-existing issue. Lets not fault Aradhya nor hold back this
-series for an issue we caused way back when initially adding AM65 support.
+I didn't see the follow-up patches that use this, but...
 
-Just to help this along, I've gone and added the fix for these warnings
-here[0][1].
+> (And yeah, iov_iter is there, but it's definitely overkill for the
+> purpose.)
 
-Andrew
+You can actually use a "simplified form" of iov_iter, and it's not all that bad.
 
-[0] https://lkml.org/lkml/2023/8/9/889
-[1] https://lkml.org/lkml/2023/8/9/888
+If the actual copying operation is just a memcpy, you're all set: just
+do copy_to/from_iter(), and it's a really nice interface, and you
+don't have to carry "ptr+size" things around.
 
-> 
-> linux/build/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-m2.dtb: dss-oldi-io-ctrl@41e0: compatible: 'anyOf' conditional failed, one must be fixed:
-> linux/build/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dtb: dss-oldi-io-ctrl@41e0: compatible: 'anyOf' conditional failed, one must be fixed:
-> linux/build/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dtb: dss-oldi-io-ctrl@41e0: compatible: 'anyOf' conditional failed, one must be fixed:
-> linux/build/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dtb: dss-oldi-io-ctrl@41e0: compatible: 'anyOf' conditional failed, one must be fixed:
-> linux/build/arch/arm64/boot/dts/ti/k3-am654-base-board.dtb: dss-oldi-io-ctrl@41e0: compatible: 'anyOf' conditional failed, one must be fixed:
-> linux/build/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dtb: dss-oldi-io-ctrl@41e0: compatible: 'anyOf' conditional failed, one must be fixed:
-> 
+And we now have a simple way to generate simple iov_iter's, so
+*creating* the iter is trivial too:
+
+        struct iov_iter iter;
+        int ret = import_ubuf(ITER_SRC/DEST, uptr, len, &iter);
+
+        if (unlikely(ret < 0))
+                return ret;
+
+and you're all done. You can now pass '&iter' around, and it has a
+nice user pointer and a range in it, and copying that thing is easy.
+
+Perhaps somewhat strangely (*) we don't have the same for a simple
+kernel buffer, but adding that wouldn't be hard. You either end up
+using a 'kvec', or we could even add something like ITER_KBUF if it
+really matters.
+
+Right now the kernel buffer init is a *bit* more involved than the
+above ubuf case:
+
+        struct iov_iter iter;
+        struct kvec kvec = { kptr, len};
+
+        iov_iter_kvec(&iter, ITER_SRC/DEST, &kvec, 1, len);
+
+and that's maybe a *bit* annoying, but we could maybe simplify this
+with some helper macros even without ITER_KBUF.
+
+So yes, iov_iter does have some abstraction overhead, but it really
+isn't that bad. And it *does* allow you to do a lot of things, and can
+actually simplify the users quite a bit, exactly because it allows you
+to just pass that single iter pointer around, and you automatically
+have not just the user/kernel distinction, you have the buffer size,
+and you have a lot of helper functions to use it.
+
+I really think that if you want a user-or-kernel buffer interface, you
+should use these things.
+
+Please? At least look into it.
+
+                 Linus
+
+(*) Well, not so strange - we've just never needed it.
