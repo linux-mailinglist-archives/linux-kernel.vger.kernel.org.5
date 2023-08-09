@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC27A775707
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE488775708
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbjHIKZK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Aug 2023 06:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
+        id S231608AbjHIK1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 06:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbjHIKZI (ORCPT
+        with ESMTP id S229615AbjHIK13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 06:25:08 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D0B1BFB;
-        Wed,  9 Aug 2023 03:25:06 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 1CD4D8016;
-        Wed,  9 Aug 2023 18:24:58 +0800 (CST)
-Received: from EXMBX064.cuchost.com (172.16.6.64) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 9 Aug
- 2023 18:24:58 +0800
-Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX064.cuchost.com
- (172.16.6.64) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 9 Aug
- 2023 18:24:57 +0800
-Received: from EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f]) by
- EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f%17]) with mapi id
- 15.00.1497.044; Wed, 9 Aug 2023 18:24:57 +0800
-From:   JeeHeng Sia <jeeheng.sia@starfivetech.com>
-To:     Conor Dooley <conor@kernel.org>
-CC:     Conor Dooley <conor.dooley@microchip.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-        Song Shuai <suagrfillet@gmail.com>,
-        Petr Tesarik <petrtesarik@huaweicloud.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [RFT 1/2] RISC-V: handle missing "no-map" properties for
- OpenSBI's PMP protected regions
-Thread-Topic: [RFT 1/2] RISC-V: handle missing "no-map" properties for
- OpenSBI's PMP protected regions
-Thread-Index: AQHZxTKPVELaCqW/WUK93+UXGxBdOK/eAqwggAHhD4CAAed1gA==
-Date:   Wed, 9 Aug 2023 10:24:57 +0000
-Message-ID: <3931cc7932e644bd88f9baf2beddd00d@EXMBX066.cuchost.com>
-References: <20230802-purse-hydrant-6f44f77364b0@wendy>
- <20230802-detention-second-82ab2b53e07a@wendy>
- <3e066032031e4552b4b7903755deb669@EXMBX066.cuchost.com>
- <20230808-humility-rut-e1e46cf75708@spud>
-In-Reply-To: <20230808-humility-rut-e1e46cf75708@spud>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [210.186.215.22]
-x-yovoleruleagent: yovoleflag
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        Wed, 9 Aug 2023 06:27:29 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F031BFB
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 03:27:27 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 532CC40E01A2;
+        Wed,  9 Aug 2023 10:27:25 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+        reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id atR8U43Jhv0V; Wed,  9 Aug 2023 10:27:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1691576842; bh=Gi8XwvZynD55Z7D1kmvLGz4KuMxRH6qe4bgPLVQU8TE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KTxUVqu7jxL1XaTzF++uyKQGdv5L/YS7LFhZC+eNS5TBVQDq+QoCBHHxIoa65jihe
+         Rdqi3PpRHcovm8iquWQdtiCuxwg4eirDZxBaB0+2sIKZJXdBnIu872q56pPJX83Gsy
+         Yj9ShjdWQmPc/ZkkibcqxF4RBLj+ByMXEMMeUgHH5+tYvGZshhvrX8SeCayc03f9Gc
+         20DTezR0Q30FLDDvFVJQL7lh/pC5bEYEX1KASfFLuNjnD5VlU/z0DvBh8HqT1cpjWG
+         7Vh1QgbZnfztbcd+bWLuoKIdyjYTvbZDQX4qt2gMMyPi2EIUlAMfZhHUmWx6kgj4Ws
+         pZiQvgqLNgREYv5ezsHGQ7Md9rnycOS9mxnWMk4H0MGwlPM19U9U6S7TOA+HM+zxcc
+         gqn+EgH59h2nkNTA6q0mo2YDRTkxHGW7zFKu1u8pQ2JdRBtn1Rr9IDR2ODGy25WPiq
+         Q1JTcIrfMhx9VbGpXDYqWYHk3TuqZyusejdMeD2U3IEpzpy71YZOmSHtAg3U49FWjl
+         JKYIx4iL+I/imFMKwKXqrv/cvKVNwWvykb9jMsx7g8392H6T95NV1tSn/QoAJNpFTK
+         IsGXn6fj0NOfg5qNn93T1qmkEqDohjc+biVVuk3nv5mZ4D3UWHHkBwUyaa6ua2xlTB
+         14dacK+quy3yeYzRhBZNEDdw=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7F9C440E0140;
+        Wed,  9 Aug 2023 10:27:19 +0000 (UTC)
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/3] x86/bugs: Some SRSO fixes
+Date:   Wed,  9 Aug 2023 12:26:57 +0200
+Message-ID: <20230809102700.29449-1-bp@alien8.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
 
+Hi all,
 
-> -----Original Message-----
-> From: Conor Dooley <conor@kernel.org>
-> Sent: Tuesday, August 8, 2023 9:13 PM
-> To: JeeHeng Sia <jeeheng.sia@starfivetech.com>
-> Cc: Conor Dooley <conor.dooley@microchip.com>; palmer@dabbelt.com; Paul Walmsley <paul.walmsley@sifive.com>; Atish Patra
-> <atishp@rivosinc.com>; Anup Patel <apatel@ventanamicro.com>; Alexandre Ghiti <alexghiti@rivosinc.com>; Björn Töpel
-> <bjorn@rivosinc.com>; Song Shuai <suagrfillet@gmail.com>; Petr Tesarik <petrtesarik@huaweicloud.com>; linux-
-> riscv@lists.infradead.org; linux-kernel@vger.kernel.org; stable@vger.kernel.org
-> Subject: Re: [RFT 1/2] RISC-V: handle missing "no-map" properties for OpenSBI's PMP protected regions
-> 
-> On Mon, Aug 07, 2023 at 12:44:07AM +0000, JeeHeng Sia wrote:
-> 
-> > > +/* SBI implementation IDs */
-> > > +#define SBI_IMP_OPENSBI	1
-> > I would suggest to create an enum struct for the SBI Imp ID in
-> > the sbi.h file. What do you think?
-> 
-> I'm not really sure what the advantage of doing so is.
-The macro SBI_IMP_OPENSBI seems weird (I would read it as "SBI Implementation OpenSBI"). However, if we implement an enum struct for SBI_IMP_ID (There are numerous IDs available), the macro can be abbreviated to OpenSBI. By doing this, the conditional checking of the implementation ID would be more readable, as shown below:
-if (sbi_firmware_id != OPENSBI)
+those are the leftover smaller fixes which can go after the release
+date. I'll queue them next week.
+
+Thx.
+
+Borislav Petkov (AMD) (3):
+  Documentation/hw-vuln: Unify filename specification in index
+  driver core: cpu: Unify redundant silly stubs
+  Documentation/srso: Document IBPB aspect and fix formatting
+
+ Documentation/admin-guide/hw-vuln/index.rst | 12 +--
+ Documentation/admin-guide/hw-vuln/srso.rst  | 71 ++++++++++-------
+ drivers/base/cpu.c                          | 86 +++++----------------
+ 3 files changed, 68 insertions(+), 101 deletions(-)
+
+--=20
+2.41.0
+
