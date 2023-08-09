@@ -2,262 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E0C776CB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 01:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CDDC776CB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 01:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbjHIXQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 19:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45696 "EHLO
+        id S230206AbjHIXUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 19:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjHIXQx (ORCPT
+        with ESMTP id S230080AbjHIXUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 19:16:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6947BE72
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 16:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691623012; x=1723159012;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=HNKBP666DL6t8y3TnABE3cOca4ZFuvZyz5JOpviaUTM=;
-  b=XDD2pXjnWWSD+egXYGxM0KzIZaRhCdriCZbhs3ibAEeIQBSn42/MhPl2
-   Mkx2smRqAu1+G0CY7pufyKKAwXFVcGjqdQjGwCSvdUn9WYR+fm0SuyTof
-   gBSHO48TprhpMVUDcun9EBc/+oytlEHohqAPy1M+hD9yXDEflGKgchJm+
-   xBgkmW6kRcpq9Gd0iC/87hPFEwXGy6rJTs430a9SsuzzljlsE7wgXKv8I
-   xyzyKEXyrlYc88mAV4N6TrYnag+yOlgJHvwqkZLluFdk5QSD1+xsTTMrk
-   NnqSODrQ9mNwP2NM4gJsMJBy+RguCy+U43V3Sn15t8Rfk4tSxHCvg9P+w
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="356218415"
-X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
-   d="scan'208";a="356218415"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 16:16:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="725570181"
-X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
-   d="scan'208";a="725570181"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 09 Aug 2023 16:16:49 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qTsQ4-0006Tq-1G;
-        Wed, 09 Aug 2023 23:16:48 +0000
-Date:   Thu, 10 Aug 2023 07:16:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: drivers/net/arcnet/com20020.c:74:7: warning: performing pointer
- arithmetic on a null pointer has undefined behavior
-Message-ID: <202308100724.x7jQq1ty-lkp@intel.com>
+        Wed, 9 Aug 2023 19:20:03 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2BAE5B;
+        Wed,  9 Aug 2023 16:20:01 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6bcae8c4072so301562a34.1;
+        Wed, 09 Aug 2023 16:20:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691623201; x=1692228001;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/lRhXpkftV5WprBOjenlPu4RlVRZWyTjLExmBLK+zSg=;
+        b=mVTrbEAuawdJx3ElwaKv58oDRhAx1j/Zgd20JP5iECUNCndAK5bBHxQ/M7Gzcy/AIC
+         bEp9t4cWhfYj9qPehf0Q4kbHHfAjGPzFHt24SP2Goq4jQqCresNBZV1fDQh02mzPNuRA
+         Z4hYxarDm4ZraeNrXzUZK2Br9B7SDN7pA/gbIzxhfaYHrAZMawdtZNdye1UoE/MH5nG0
+         tbqT4ccCdMG9Z8Fb4OTYOonV2jtfeFvYPjyboY+sdn3mdF59FuqLG0af8O/bLx2pclzt
+         kEXFGSCtHQRPdvRwcCHRgjW7hm447xc99gn2drGw/Gb21XM1TWHqGjatO2T5/bmiYhSP
+         5+SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691623201; x=1692228001;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/lRhXpkftV5WprBOjenlPu4RlVRZWyTjLExmBLK+zSg=;
+        b=LfnqIGII479S3RRfJq5bRrjQ9BtGg46QCgjp17+xWH6HD0WvOW7/6LFjt2kMD2ew66
+         BEK2NlVKqJ+3GSsQs7YUMeUwWnUzCwq3qpdQ8efjDFG6sVvPy7+I3Z8aPw82qQKtFUtc
+         5gRYN6n4xfmhe5zsXmE8DZHIq2cMIE0I0lGccjPDEWYlkyuYKn6HKAL+sXsKuX9GuQwf
+         JLqiehoqPdEm85qKIZnY/WE5D8O3E/z6mcXQehxUFKhjoxSnTYO3tuUslzdXPPAHwxkh
+         rQ1wH3ZRWE3bi/sNWctxQCryo1O0JBaqfxM2RA07dNwlUam3cLOHUKxFrXtoZW6bzIQ6
+         QiAA==
+X-Gm-Message-State: AOJu0YyW5U9EmI+g+gAMUcXj2hCKtmpXimtkD+f9qIGW3M2rATGnfBPd
+        KxOHhazW2UpkgMXer45IuuTPxDXfoOMCEinjAxs=
+X-Google-Smtp-Source: AGHT+IFVwAsHAc1I/f4r+kqoInQuxwLB7X/eKeE4VB/eVwqAdhRIKHNUJUJZUxVvn1vl2e7UmaDNzTGKAMl7IyEv1YI=
+X-Received: by 2002:a05:6358:89f:b0:134:c771:bffa with SMTP id
+ m31-20020a056358089f00b00134c771bffamr651523rwj.6.1691623200560; Wed, 09 Aug
+ 2023 16:20:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230718054426.1048583-1-ojeda@kernel.org>
+In-Reply-To: <20230718054426.1048583-1-ojeda@kernel.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 10 Aug 2023 01:19:49 +0200
+Message-ID: <CANiq72k_tEaWO1MCb7mfoJPzAEFhCdSpiezvENSf0A1+mfHB8A@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: add Andreas Hindborg as Rust reviewer
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maciej,
+On Tue, Jul 18, 2023 at 7:44=E2=80=AFAM Miguel Ojeda <ojeda@kernel.org> wro=
+te:
+>
+> Andreas has been involved with the Rust for Linux project for more than
+> a year now. He has been primarily working on the Rust NVMe driver [1],
+> presenting it in several places (such as LPC [2][3] and Kangrejos [4]).
+>
+> In addition, he recently submitted the Rust null block driver [5] and
+> has been reviewing patches in the mailing list for some months.
+>
+> Thus add him to the `RUST` entry as reviewer.
+>
+> Link: https://rust-for-linux.com/nvme-driver [1]
+> Link: https://lpc.events/event/16/contributions/1180/attachments/1017/196=
+1/deck.pdf [2]
+> Link: https://www.youtube.com/watch?v=3DBwywU1MqW38 [3]
+> Link: https://kangrejos.com/A%20Linux%20(PCI)%20NVMe%20Driver%20in%20Rust=
+.pdf [4]
+> Link: https://lore.kernel.org/rust-for-linux/20230503090708.2524310-1-nmi=
+@metaspace.dk/ [5]
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-FYI, the error/warning still remains.
+Applied to `rust-next` -- thanks & welcome!
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   cacc6e22932f373a91d7be55a9b992dc77f4c59b
-commit: 9cc205e3c17d5716da7ebb7fa0c985555e95d009 RISC-V: Make port I/O string accessors actually work
-date:   10 months ago
-config: riscv-randconfig-r012-20230810 (https://download.01.org/0day-ci/archive/20230810/202308100724.x7jQq1ty-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230810/202308100724.x7jQq1ty-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308100724.x7jQq1ty-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/linux/highmem.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:751:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           insw(addr, buffer, count);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:105:53: note: expanded from macro 'insw'
-   #define insw(addr, buffer, count) __insw(PCI_IOBASE + (addr), buffer, count)
-                                            ~~~~~~~~~~ ^
-   In file included from drivers/net/arcnet/com20020.c:37:
-   In file included from include/linux/netdevice.h:38:
-   In file included from include/net/net_namespace.h:43:
-   In file included from include/linux/skbuff.h:17:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:759:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           insl(addr, buffer, count);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:106:53: note: expanded from macro 'insl'
-   #define insl(addr, buffer, count) __insl(PCI_IOBASE + (addr), buffer, count)
-                                            ~~~~~~~~~~ ^
-   In file included from drivers/net/arcnet/com20020.c:37:
-   In file included from include/linux/netdevice.h:38:
-   In file included from include/net/net_namespace.h:43:
-   In file included from include/linux/skbuff.h:17:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:768:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           outsb(addr, buffer, count);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:118:55: note: expanded from macro 'outsb'
-   #define outsb(addr, buffer, count) __outsb(PCI_IOBASE + (addr), buffer, count)
-                                              ~~~~~~~~~~ ^
-   In file included from drivers/net/arcnet/com20020.c:37:
-   In file included from include/linux/netdevice.h:38:
-   In file included from include/net/net_namespace.h:43:
-   In file included from include/linux/skbuff.h:17:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:777:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           outsw(addr, buffer, count);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:119:55: note: expanded from macro 'outsw'
-   #define outsw(addr, buffer, count) __outsw(PCI_IOBASE + (addr), buffer, count)
-                                              ~~~~~~~~~~ ^
-   In file included from drivers/net/arcnet/com20020.c:37:
-   In file included from include/linux/netdevice.h:38:
-   In file included from include/net/net_namespace.h:43:
-   In file included from include/linux/skbuff.h:17:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:786:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           outsl(addr, buffer, count);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:120:55: note: expanded from macro 'outsl'
-   #define outsl(addr, buffer, count) __outsl(PCI_IOBASE + (addr), buffer, count)
-                                              ~~~~~~~~~~ ^
-   In file included from drivers/net/arcnet/com20020.c:37:
-   In file included from include/linux/netdevice.h:38:
-   In file included from include/net/net_namespace.h:43:
-   In file included from include/linux/skbuff.h:17:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:1134:55: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
-                                                     ~~~~~~~~~~ ^
->> drivers/net/arcnet/com20020.c:74:7: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-                arcnet_insb(ioaddr, COM20020_REG_RW_MEMDATA, buf, count));
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/arcnet/arcdevice.h:389:2: note: expanded from macro 'arcnet_insb'
-           insb((addr) + BUS_ALIGN * (offset), buffer, count)
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:104:53: note: expanded from macro 'insb'
-   #define insb(addr, buffer, count) __insb(PCI_IOBASE + (addr), buffer, count)
-                                            ~~~~~~~~~~ ^
-   drivers/net/arcnet/arcdevice.h:103:3: note: expanded from macro 'TIME'
-                   call;                                                   \
-                   ^~~~
->> drivers/net/arcnet/com20020.c:74:7: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-                arcnet_insb(ioaddr, COM20020_REG_RW_MEMDATA, buf, count));
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/arcnet/arcdevice.h:389:2: note: expanded from macro 'arcnet_insb'
-           insb((addr) + BUS_ALIGN * (offset), buffer, count)
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:104:53: note: expanded from macro 'insb'
-   #define insb(addr, buffer, count) __insb(PCI_IOBASE + (addr), buffer, count)
-                                            ~~~~~~~~~~ ^
-   drivers/net/arcnet/arcdevice.h:110:3: note: expanded from macro 'TIME'
-                   call;                                                   \
-                   ^~~~
-   drivers/net/arcnet/com20020.c:88:7: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-                arcnet_outsb(ioaddr, COM20020_REG_RW_MEMDATA, buf, count));
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/arcnet/arcdevice.h:391:2: note: expanded from macro 'arcnet_outsb'
-           outsb((addr) + BUS_ALIGN * (offset), buffer, count)
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:118:55: note: expanded from macro 'outsb'
-   #define outsb(addr, buffer, count) __outsb(PCI_IOBASE + (addr), buffer, count)
-                                              ~~~~~~~~~~ ^
-   drivers/net/arcnet/arcdevice.h:103:3: note: expanded from macro 'TIME'
-                   call;                                                   \
-                   ^~~~
-   drivers/net/arcnet/com20020.c:88:7: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-                arcnet_outsb(ioaddr, COM20020_REG_RW_MEMDATA, buf, count));
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/arcnet/arcdevice.h:391:2: note: expanded from macro 'arcnet_outsb'
-           outsb((addr) + BUS_ALIGN * (offset), buffer, count)
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:118:55: note: expanded from macro 'outsb'
-   #define outsb(addr, buffer, count) __outsb(PCI_IOBASE + (addr), buffer, count)
-                                              ~~~~~~~~~~ ^
-   drivers/net/arcnet/arcdevice.h:110:3: note: expanded from macro 'TIME'
-                   call;                                                   \
-                   ^~~~
-   17 warnings generated.
-
-
-vim +74 drivers/net/arcnet/com20020.c
-
-^1da177e4c3f41 Linus Torvalds 2005-04-16  61  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  62  static void com20020_copy_from_card(struct net_device *dev, int bufnum,
-^1da177e4c3f41 Linus Torvalds 2005-04-16  63  				    int offset, void *buf, int count)
-^1da177e4c3f41 Linus Torvalds 2005-04-16  64  {
-^1da177e4c3f41 Linus Torvalds 2005-04-16  65  	int ioaddr = dev->base_addr, ofs = 512 * bufnum + offset;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  66  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  67  	/* set up the address register */
-0fec65130b9f11 Joe Perches    2015-05-05  68  	arcnet_outb((ofs >> 8) | RDDATAflag | AUTOINCflag,
-0fec65130b9f11 Joe Perches    2015-05-05  69  		    ioaddr, COM20020_REG_W_ADDR_HI);
-0fec65130b9f11 Joe Perches    2015-05-05  70  	arcnet_outb(ofs & 0xff, ioaddr, COM20020_REG_W_ADDR_LO);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  71  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  72  	/* copy the data */
-0fec65130b9f11 Joe Perches    2015-05-05  73  	TIME(dev, "insb", count,
-0fec65130b9f11 Joe Perches    2015-05-05 @74  	     arcnet_insb(ioaddr, COM20020_REG_RW_MEMDATA, buf, count));
-^1da177e4c3f41 Linus Torvalds 2005-04-16  75  }
-^1da177e4c3f41 Linus Torvalds 2005-04-16  76  
-
-:::::: The code at line 74 was first introduced by commit
-:::::: 0fec65130b9f11a73d74f47025491f97f82ba070 arcnet: com20020: Use arcnet_<I/O> routines
-
-:::::: TO: Joe Perches <joe@perches.com>
-:::::: CC: Michael Grzeschik <m.grzeschik@pengutronix.de>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+Miguel
