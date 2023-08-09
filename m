@@ -2,234 +2,464 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1204776020
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1833776026
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbjHINC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 09:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
+        id S232113AbjHINDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 09:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbjHINC0 (ORCPT
+        with ESMTP id S230226AbjHINDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 09:02:26 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BDF1FF5;
-        Wed,  9 Aug 2023 06:02:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=QC1VVPzSdAsZ5rA5wFmq3mpl9ZpfWlBmZwa270d1LM0=; b=pdKrcUTt0NEvOi4G2Ul6Ic5LUa
-        PNIW/IQNfVjdvKvpqFoS3pxUOt8muhZ2sFPTi64KQ724Cive4VkxN4sVQ4f9aIEY25SScHr8RNB1p
-        m6THSMI+IcY49uGKXLNqW6dd8uvkfUZopp4PVf/AY85N746wk3kSP9iYirZYhxG/EqHE=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:56076 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qTipH-0001Mp-NM; Wed, 09 Aug 2023 09:02:12 -0400
-Date:   Wed, 9 Aug 2023 09:02:11 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     wenhua lin <wenhua.lin1994@gmail.com>
-Cc:     Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Wenhua Lin <Wenhua.Lin@unisoc.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Message-Id: <20230809090211.1820e9dce666485b00e1f170@hugovil.com>
-In-Reply-To: <CAB9BWhfRHSqWrBbeisoGLqeBYXc9Pc_uGH0GxnfedXROpU_0-A@mail.gmail.com>
-References: <20230808033106.2174-1-Wenhua.Lin@unisoc.com>
-        <0ac280ab-08f1-b031-e21b-49390182f090@linux.alibaba.com>
-        <CAB9BWhfRHSqWrBbeisoGLqeBYXc9Pc_uGH0GxnfedXROpU_0-A@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Wed, 9 Aug 2023 09:03:50 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D5A181FF6;
+        Wed,  9 Aug 2023 06:03:48 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1112)
+        id 4F30C20FC445; Wed,  9 Aug 2023 06:03:48 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4F30C20FC445
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1691586228;
+        bh=ZOg04T6leFYaxYoAwcGJOglGojik2RqT8goiz+dSQms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m06ecmMP9oif+Mcm9fNOh1b1Wrcv9y3jxKVZSKgol5FB4rI72/8jroAGzELcLgte7
+         YPjNtHh9x19m5vplrg+CB802eoDyZL+VQWLyZy4PjFwqE6xtOvoQQ9cl14Wn2y4jcU
+         jsepLOwpcalspU2LUC+wOOvs5wQUjsVCoiV1frQs=
+Date:   Wed, 9 Aug 2023 06:03:48 -0700
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        bp@alien8.de, vbabka@suse.cz, kirill@shutemov.name,
+        ak@linux.intel.com, tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        dgilbert@redhat.com, jarkko@kernel.org, ashish.kalra@amd.com,
+        nikunj.dadhania@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH RFC v9 07/51] x86/sev: Add the host SEV-SNP
+ initialization support
+Message-ID: <20230809130348.GA12884@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20230612042559.375660-1-michael.roth@amd.com>
+ <20230612042559.375660-8-michael.roth@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230612042559.375660-8-michael.roth@amd.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH 1/3] gpio: sprd: Modify the calculation method of eic
- number
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Aug 2023 14:08:47 +0800
-wenhua lin <wenhua.lin1994@gmail.com> wrote:
-
-> Hi baolin:
-> 1.Please describe the problem in detail, not only what you did.
+On Sun, Jun 11, 2023 at 11:25:15PM -0500, Michael Roth wrote:
+> From: Brijesh Singh <brijesh.singh@amd.com>
 > 
-> We will describe the reason for the modification by supplementing the
-> commit message.
+> The memory integrity guarantees of SEV-SNP are enforced through a new
+> structure called the Reverse Map Table (RMP). The RMP is a single data
+> structure shared across the system that contains one entry for every 4K
+> page of DRAM that may be used by SEV-SNP VMs. APM2 section 15.36 details
+> a number of steps needed to detect/enable SEV-SNP and RMP table support
+> on the host:
 > 
-> 2.Can you explicit on which controller can support 8 banks in the commit
-> log? And you did not change all the related comments in this file.
+>  - Detect SEV-SNP support based on CPUID bit
+>  - Initialize the RMP table memory reported by the RMP base/end MSR
+>    registers and configure IOMMU to be compatible with RMP access
+>    restrictions
+>  - Set the MtrrFixDramModEn bit in SYSCFG MSR
+>  - Set the SecureNestedPagingEn and VMPLEn bits in the SYSCFG MSR
+>  - Configure IOMMU
 > 
-> The old project EIC controller can support maximum 3 banks,
-> now our new project eic controller can support maximum 8 banks，
-> and each bank contains 8 EICs.
-> We will modify the comment in this file.
+> RMP table entry format is non-architectural and it can vary by
+> processor. It is defined by the PPR. Restrict SNP support to CPU
+> models/families which are compatible with the current RMP table entry
+> format to guard against any undefined behavior when running on other
+> system types. Future models/support will handle this through an
+> architectural mechanism to allow for broader compatibility.
 > 
-> 3.If you want to introduce a readable macro, that's fine, but it should be
-> split into a separate patch.
-> 4.This change looks good to me, and this seems a software bug in the
-> original driver. So I think this change should be moved into a separate
-> patch with a suitable Fixes tag.
-> 5.Do not add unreated changes that you did not mentioned in the commit log.
+> SNP host code depends on CONFIG_KVM_AMD_SEV config flag, which may be
+> enabled even when CONFIG_AMD_MEM_ENCRYPT isn't set, so update the
+> SNP-specific IOMMU helpers used here to rely on CONFIG_KVM_AMD_SEV
+> instead of CONFIG_AMD_MEM_ENCRYPT.
 > 
-> We will re-split the patch submission and explain our reasons for
-> modification in the submission information, thank you very much for
-> your review.
+> Co-developed-by: Ashish Kalra <ashish.kalra@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> Co-developed-by: Tom Lendacky <thomas.lendacky@amd.com>
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> [mdr: rework commit message to be clearer about what patch does, squash
+>       in early_rmptable_check() handling from Tom]
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> ---
+>  arch/x86/coco/Makefile                   |   1 +
+>  arch/x86/coco/sev/Makefile               |   3 +
+>  arch/x86/coco/sev/host.c                 | 212 +++++++++++++++++++++++
+>  arch/x86/include/asm/disabled-features.h |   8 +-
+>  arch/x86/include/asm/msr-index.h         |  11 +-
+>  arch/x86/include/asm/sev.h               |   2 +
+>  arch/x86/kernel/cpu/amd.c                |  19 ++
+>  drivers/iommu/amd/init.c                 |   2 +-
+>  include/linux/amd-iommu.h                |   2 +-
+>  9 files changed, 256 insertions(+), 4 deletions(-)
+>  create mode 100644 arch/x86/coco/sev/Makefile
+>  create mode 100644 arch/x86/coco/sev/host.c
+> 
+> diff --git a/arch/x86/coco/Makefile b/arch/x86/coco/Makefile
+> index 6aa52e719bf5..6a7d876130e2 100644
+> --- a/arch/x86/coco/Makefile
+> +++ b/arch/x86/coco/Makefile
+> @@ -6,3 +6,4 @@ CFLAGS_core.o		+= -fno-stack-protector
+>  obj-$(CONFIG_ARCH_HAS_CC_PLATFORM) += core.o
+>  
+>  obj-$(CONFIG_INTEL_TDX_GUEST)	+= tdx/
+> +obj-$(CONFIG_KVM_AMD_SEV)	+= sev/
+> diff --git a/arch/x86/coco/sev/Makefile b/arch/x86/coco/sev/Makefile
+> new file mode 100644
+> index 000000000000..27c0500d75c8
+> --- /dev/null
+> +++ b/arch/x86/coco/sev/Makefile
+> @@ -0,0 +1,3 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +obj-y += host.o
+> diff --git a/arch/x86/coco/sev/host.c b/arch/x86/coco/sev/host.c
+> new file mode 100644
+> index 000000000000..6907ce887b23
+> --- /dev/null
+> +++ b/arch/x86/coco/sev/host.c
+> @@ -0,0 +1,212 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * AMD SVM-SEV Host Support.
+> + *
+> + * Copyright (C) 2023 Advanced Micro Devices, Inc.
+> + *
+> + * Author: Ashish Kalra <ashish.kalra@amd.com>
+> + *
+> + */
+> +
+> +#include <linux/cc_platform.h>
+> +#include <linux/printk.h>
+> +#include <linux/mm_types.h>
+> +#include <linux/set_memory.h>
+> +#include <linux/memblock.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mm.h>
+> +#include <linux/cpumask.h>
+> +#include <linux/iommu.h>
+> +#include <linux/amd-iommu.h>
+> +
+> +#include <asm/sev.h>
+> +#include <asm/processor.h>
+> +#include <asm/setup.h>
+> +#include <asm/svm.h>
+> +#include <asm/smp.h>
+> +#include <asm/cpu.h>
+> +#include <asm/apic.h>
+> +#include <asm/cpuid.h>
+> +#include <asm/cmdline.h>
+> +#include <asm/iommu.h>
+> +
+> +/*
+> + * The first 16KB from the RMP_BASE is used by the processor for the
+> + * bookkeeping, the range needs to be added during the RMP entry lookup.
+> + */
+> +#define RMPTABLE_CPU_BOOKKEEPING_SZ	0x4000
+> +
+> +static unsigned long rmptable_start __ro_after_init;
+> +static unsigned long rmptable_end __ro_after_init;
+> +
+> +#undef pr_fmt
+> +#define pr_fmt(fmt)	"SEV-SNP: " fmt
+> +
+> +static int __mfd_enable(unsigned int cpu)
+> +{
+> +	u64 val;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +		return 0;
+> +
+> +	rdmsrl(MSR_AMD64_SYSCFG, val);
+> +
+> +	val |= MSR_AMD64_SYSCFG_MFDM;
+> +
+> +	wrmsrl(MSR_AMD64_SYSCFG, val);
+> +
+> +	return 0;
+> +}
+> +
+> +static __init void mfd_enable(void *arg)
+> +{
+> +	__mfd_enable(smp_processor_id());
+> +}
+> +
+> +static int __snp_enable(unsigned int cpu)
+> +{
+> +	u64 val;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +		return 0;
+> +
+> +	rdmsrl(MSR_AMD64_SYSCFG, val);
+> +
+> +	val |= MSR_AMD64_SYSCFG_SNP_EN;
+> +	val |= MSR_AMD64_SYSCFG_SNP_VMPL_EN;
+> +
+> +	wrmsrl(MSR_AMD64_SYSCFG, val);
+> +
+> +	return 0;
+> +}
+> +
+> +static __init void snp_enable(void *arg)
+> +{
+> +	__snp_enable(smp_processor_id());
+> +}
+> +
+> +bool snp_get_rmptable_info(u64 *start, u64 *len)
+> +{
+> +	u64 max_rmp_pfn, calc_rmp_sz, rmp_sz, rmp_base, rmp_end;
+> +
+> +	rdmsrl(MSR_AMD64_RMP_BASE, rmp_base);
+> +	rdmsrl(MSR_AMD64_RMP_END, rmp_end);
+> +
+> +	if (!rmp_base || !rmp_end) {
+> +		pr_err("Memory for the RMP table has not been reserved by BIOS\n");
+> +		return false;
+> +	}
+> +
+> +	rmp_sz = rmp_end - rmp_base + 1;
+> +
+> +	/*
+> +	 * Calculate the amount the memory that must be reserved by the BIOS to
+> +	 * address the whole RAM, including the bookkeeping area. The RMP itself
+> +	 * must also be covered.
+> +	 */
+> +	max_rmp_pfn = max_pfn;
+> +	if (PHYS_PFN(rmp_end) > max_pfn)
+> +		max_rmp_pfn = PHYS_PFN(rmp_end);
+> +
+> +	calc_rmp_sz = (max_rmp_pfn << 4) + RMPTABLE_CPU_BOOKKEEPING_SZ;
+> +
+> +	if (calc_rmp_sz > rmp_sz) {
+> +		pr_err("Memory reserved for the RMP table does not cover full system RAM (expected 0x%llx got 0x%llx)\n",
+> +		       calc_rmp_sz, rmp_sz);
+> +		return false;
+> +	}
+> +
+> +	*start = rmp_base;
+> +	*len = rmp_sz;
+> +
+> +	return true;
+> +}
+> +
+> +static __init int __snp_rmptable_init(void)
+> +{
+> +	u64 rmp_base, sz;
+> +	void *start;
+> +	u64 val;
+> +
+> +	if (!snp_get_rmptable_info(&rmp_base, &sz))
+> +		return 1;
+> +
+> +	pr_info("RMP table physical address [0x%016llx - 0x%016llx]\n",
+> +		rmp_base, rmp_base + sz - 1);
+> +
+> +	start = memremap(rmp_base, sz, MEMREMAP_WB);
+> +	if (!start) {
+> +		pr_err("Failed to map RMP table addr 0x%llx size 0x%llx\n", rmp_base, sz);
+> +		return 1;
+> +	}
+> +
+> +	/*
+> +	 * Check if SEV-SNP is already enabled, this can happen in case of
+> +	 * kexec boot.
+> +	 */
+> +	rdmsrl(MSR_AMD64_SYSCFG, val);
+> +	if (val & MSR_AMD64_SYSCFG_SNP_EN)
+> +		goto skip_enable;
+> +
+> +	/* Initialize the RMP table to zero */
+> +	memset(start, 0, sz);
+> +
+> +	/* Flush the caches to ensure that data is written before SNP is enabled. */
+> +	wbinvd_on_all_cpus();
+> +
+> +	/* MFDM must be enabled on all the CPUs prior to enabling SNP. */
+> +	on_each_cpu(mfd_enable, NULL, 1);
+> +
+> +	/* Enable SNP on all CPUs. */
+> +	on_each_cpu(snp_enable, NULL, 1);
+> +
+> +skip_enable:
+> +	rmptable_start = (unsigned long)start;
+> +	rmptable_end = rmptable_start + sz - 1;
+> +
+> +	return 0;
+> +}
+> +
+> +static int __init snp_rmptable_init(void)
+> +{
+> +	int family, model;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +		return 0;
+> +
+> +	family = boot_cpu_data.x86;
+> +	model  = boot_cpu_data.x86_model;
+> +
+> +	/*
+> +	 * RMP table entry format is not architectural and it can vary by processor and
+> +	 * is defined by the per-processor PPR. Restrict SNP support on the known CPU
+> +	 * model and family for which the RMP table entry format is currently defined for.
+> +	 */
+> +	if (!(family == 0x19 && model <= 0xaf) && !(family == 0x1a && model <= 0xf))
+> +		goto nosnp;
+> +
+> +	if (amd_iommu_snp_enable())
+> +		goto nosnp;
+> +
+> +	if (__snp_rmptable_init())
+> +		goto nosnp;
+> +
+> +	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "x86/rmptable_init:online", __snp_enable, NULL);
+> +
+> +	return 0;
+> +
+> +nosnp:
+> +	setup_clear_cpu_cap(X86_FEATURE_SEV_SNP);
+> +	return -ENOSYS;
+> +}
+> +
+> +/*
+> + * This must be called after the PCI subsystem. This is because amd_iommu_snp_enable()
+> + * is called to ensure the IOMMU supports the SEV-SNP feature, which can only be
+> + * called after subsys_initcall().
+> + *
+> + * NOTE: IOMMU is enforced by SNP to ensure that hypervisor cannot program DMA
+> + * directly into guest private memory. In case of SNP, the IOMMU ensures that
+> + * the page(s) used for DMA are hypervisor owned.
+> + */
+> +fs_initcall(snp_rmptable_init);
+> diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
+> index 5dfa4fb76f4b..0a9938aea305 100644
+> --- a/arch/x86/include/asm/disabled-features.h
+> +++ b/arch/x86/include/asm/disabled-features.h
+> @@ -99,6 +99,12 @@
+>  # define DISABLE_TDX_GUEST	(1 << (X86_FEATURE_TDX_GUEST & 31))
+>  #endif
+>  
+> +#ifdef CONFIG_KVM_AMD_SEV
+> +# define DISABLE_SEV_SNP	0
+> +#else
+> +# define DISABLE_SEV_SNP	(1 << (X86_FEATURE_SEV_SNP & 31))
+> +#endif
+> +
+>  /*
+>   * Make sure to add features to the correct mask
+>   */
+> @@ -123,7 +129,7 @@
+>  			 DISABLE_ENQCMD)
+>  #define DISABLED_MASK17	0
+>  #define DISABLED_MASK18	0
+> -#define DISABLED_MASK19	0
+> +#define DISABLED_MASK19	(DISABLE_SEV_SNP)
+>  #define DISABLED_MASK20	0
+>  #define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 21)
+>  
+> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+> index ad35355ee43e..db0f3a041930 100644
+> --- a/arch/x86/include/asm/msr-index.h
+> +++ b/arch/x86/include/asm/msr-index.h
+> @@ -574,6 +574,8 @@
+>  #define MSR_AMD64_SEV_ENABLED		BIT_ULL(MSR_AMD64_SEV_ENABLED_BIT)
+>  #define MSR_AMD64_SEV_ES_ENABLED	BIT_ULL(MSR_AMD64_SEV_ES_ENABLED_BIT)
+>  #define MSR_AMD64_SEV_SNP_ENABLED	BIT_ULL(MSR_AMD64_SEV_SNP_ENABLED_BIT)
+> +#define MSR_AMD64_RMP_BASE		0xc0010132
+> +#define MSR_AMD64_RMP_END		0xc0010133
+>  
+>  /* SNP feature bits enabled by the hypervisor */
+>  #define MSR_AMD64_SNP_VTOM			BIT_ULL(3)
+> @@ -675,7 +677,14 @@
+>  #define MSR_K8_TOP_MEM2			0xc001001d
+>  #define MSR_AMD64_SYSCFG		0xc0010010
+>  #define MSR_AMD64_SYSCFG_MEM_ENCRYPT_BIT	23
+> -#define MSR_AMD64_SYSCFG_MEM_ENCRYPT	BIT_ULL(MSR_AMD64_SYSCFG_MEM_ENCRYPT_BIT)
+> +#define MSR_AMD64_SYSCFG_MEM_ENCRYPT		BIT_ULL(MSR_AMD64_SYSCFG_MEM_ENCRYPT_BIT)
+> +#define MSR_AMD64_SYSCFG_SNP_EN_BIT		24
+> +#define MSR_AMD64_SYSCFG_SNP_EN		BIT_ULL(MSR_AMD64_SYSCFG_SNP_EN_BIT)
+> +#define MSR_AMD64_SYSCFG_SNP_VMPL_EN_BIT	25
+> +#define MSR_AMD64_SYSCFG_SNP_VMPL_EN		BIT_ULL(MSR_AMD64_SYSCFG_SNP_VMPL_EN_BIT)
+> +#define MSR_AMD64_SYSCFG_MFDM_BIT		19
+> +#define MSR_AMD64_SYSCFG_MFDM			BIT_ULL(MSR_AMD64_SYSCFG_MFDM_BIT)
+> +
+>  #define MSR_K8_INT_PENDING_MSG		0xc0010055
+>  /* C1E active bits in int pending message */
+>  #define K8_INTP_C1E_ACTIVE_MASK		0x18000000
+> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+> index ebc271bb6d8e..d34c46db7dd1 100644
+> --- a/arch/x86/include/asm/sev.h
+> +++ b/arch/x86/include/asm/sev.h
+> @@ -197,6 +197,7 @@ void snp_set_wakeup_secondary_cpu(void);
+>  bool snp_init(struct boot_params *bp);
+>  void __init __noreturn snp_abort(void);
+>  int snp_issue_guest_request(u64 exit_code, struct snp_req_data *input, unsigned long *fw_err);
+> +bool snp_get_rmptable_info(u64 *start, u64 *len);
+>  #else
+>  static inline void sev_es_ist_enter(struct pt_regs *regs) { }
+>  static inline void sev_es_ist_exit(void) { }
+> @@ -221,6 +222,7 @@ static inline int snp_issue_guest_request(u64 exit_code, struct snp_req_data *in
+>  {
+>  	return -ENOTTY;
+>  }
+> +static inline bool snp_get_rmptable_info(u64 *start, u64 *len) { return false; }
+>  #endif
+>  
+>  #endif
+> diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+> index a79774181f22..1493ddf89fdf 100644
+> --- a/arch/x86/kernel/cpu/amd.c
+> +++ b/arch/x86/kernel/cpu/amd.c
+> @@ -20,6 +20,7 @@
+>  #include <asm/delay.h>
+>  #include <asm/debugreg.h>
+>  #include <asm/resctrl.h>
+> +#include <asm/sev.h>
+>  
+>  #ifdef CONFIG_X86_64
+>  # include <asm/mmconfig.h>
+> @@ -546,6 +547,20 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
+>  	resctrl_cpu_detect(c);
+>  }
+>  
+> +static bool early_rmptable_check(void)
+> +{
+> +	u64 rmp_base, rmp_size;
+> +
+> +	/*
+> +	 * For early BSP initialization, max_pfn won't be set up yet, wait until
+> +	 * it is set before performing the RMP table calculations.
+> +	 */
+> +	if (!max_pfn)
+> +		return true;
+> +
+> +	return snp_get_rmptable_info(&rmp_base, &rmp_size);
+> +}
+> +
 
-Hi,
-please do not top-post and insert your answers in-line to make it
-easier to read. There is good advice here:
+When CONFIG_AMD_MEM_ENCRYPT=y && CONFIG_KVM=n (=> CONFIG_KVM_AMD_SEV=n) this
+results in an undefined reference to snp_get_rmptable_info when linking this
+file. The header provides a stub when AMD_MEM_ENCRYPT=n but the definition is
+only compiled in when KVM_AMD_SEV=y
 
-https://docs.kernel.org/process/submitting-patches.html#use-trimmed-interleaved-replies-in-email-discussions
-
-Thank you,
-Hugo Villeneuve
-
-
-> Baolin Wang <baolin.wang@linux.alibaba.com> 于2023年8月9日周三 09:24写道：
-> >
-> >
-> >
-> > On 8/8/2023 11:31 AM, Wenhua Lin wrote:
-> > > Automatic calculation through matching nodes,
-> > > subsequent projects can avoid modifying driver files.
-> >
-> > Please describe the problem in detail, not only what you did.
-> >
-> > > Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> > > ---
-> > >   drivers/gpio/gpio-eic-sprd.c | 49 +++++++++++++++++++-----------------
-> > >   1 file changed, 26 insertions(+), 23 deletions(-)
-> > >
-> > > diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
-> > > index 84352a6f4973..0d85d9e80848 100644
-> > > --- a/drivers/gpio/gpio-eic-sprd.c
-> > > +++ b/drivers/gpio/gpio-eic-sprd.c
-> > > @@ -50,10 +50,10 @@
-> > >   #define SPRD_EIC_SYNC_DATA          0x1c
-> > >
-> > >   /*
-> > > - * The digital-chip EIC controller can support maximum 3 banks, and each bank
-> > > + * The digital-chip EIC controller can support maximum 8 banks, and each bank
-> >
-> > Can you explicit on which controller can support 8 banks in the commit
-> > log? And you did not change all the related comments in this file.
-> >
-> > >    * contains 8 EICs.
-> > >    */
-> > > -#define SPRD_EIC_MAX_BANK            3
-> > > +#define SPRD_EIC_MAX_BANK            8
-> > >   #define SPRD_EIC_PER_BANK_NR                8
-> > >   #define SPRD_EIC_DATA_MASK          GENMASK(7, 0)
-> > >   #define SPRD_EIC_BIT(x)                     ((x) & (SPRD_EIC_PER_BANK_NR - 1))
-> > > @@ -99,33 +99,32 @@ struct sprd_eic {
-> > >
-> > >   struct sprd_eic_variant_data {
-> > >       enum sprd_eic_type type;
-> > > -     u32 num_eics;
-> > >   };
-> > >
-> > > +#define SPRD_EIC_VAR_DATA(soc_name)                          \
-> > > +static const struct sprd_eic_variant_data soc_name##_eic_dbnc_data = {       \
-> > > +     .type = SPRD_EIC_DEBOUNCE,                                      \
-> > > +};                                                                   \
-> > > +                                                                     \
-> > > +static const struct sprd_eic_variant_data soc_name##_eic_latch_data = {      \
-> > > +     .type = SPRD_EIC_LATCH,                                         \
-> > > +};                                                                   \
-> > > +                                                                     \
-> > > +static const struct sprd_eic_variant_data soc_name##_eic_async_data = {      \
-> > > +     .type = SPRD_EIC_ASYNC,                                         \
-> > > +};                                                                   \
-> > > +                                                                     \
-> > > +static const struct sprd_eic_variant_data soc_name##_eic_sync_data = {       \
-> > > +     .type = SPRD_EIC_SYNC,                                          \
-> > > +}
-> > > +
-> > > +SPRD_EIC_VAR_DATA(sc9860);
-> > > +
-> > >   static const char *sprd_eic_label_name[SPRD_EIC_MAX] = {
-> > >       "eic-debounce", "eic-latch", "eic-async",
-> > >       "eic-sync",
-> > >   };
-> > >
-> > > -static const struct sprd_eic_variant_data sc9860_eic_dbnc_data = {
-> > > -     .type = SPRD_EIC_DEBOUNCE,
-> > > -     .num_eics = 8,
-> > > -};
-> > > -
-> > > -static const struct sprd_eic_variant_data sc9860_eic_latch_data = {
-> > > -     .type = SPRD_EIC_LATCH,
-> > > -     .num_eics = 8,
-> > > -};
-> > > -
-> > > -static const struct sprd_eic_variant_data sc9860_eic_async_data = {
-> > > -     .type = SPRD_EIC_ASYNC,
-> > > -     .num_eics = 8,
-> > > -};
-> > > -
-> > > -static const struct sprd_eic_variant_data sc9860_eic_sync_data = {
-> > > -     .type = SPRD_EIC_SYNC,
-> > > -     .num_eics = 8,
-> > > -};
-> >
-> > If you want to introduce a readable macro, that's fine, but it should be
-> > split into a separate patch.
-> >
-> > >   static inline void __iomem *sprd_eic_offset_base(struct sprd_eic *sprd_eic,
-> > >                                                unsigned int bank)
-> > > @@ -583,6 +582,7 @@ static int sprd_eic_probe(struct platform_device *pdev)
-> > >       struct sprd_eic *sprd_eic;
-> > >       struct resource *res;
-> > >       int ret, i;
-> > > +     u16 num_banks = 0;
-> > >
-> > >       pdata = of_device_get_match_data(&pdev->dev);
-> > >       if (!pdata) {
-> > > @@ -613,12 +613,13 @@ static int sprd_eic_probe(struct platform_device *pdev)
-> > >                       break;
-> > >
-> > >               sprd_eic->base[i] = devm_ioremap_resource(&pdev->dev, res);
-> > > +             num_banks++;
-> > >               if (IS_ERR(sprd_eic->base[i]))
-> > >                       return PTR_ERR(sprd_eic->base[i]);
-> > >       }
-> > >
-> > >       sprd_eic->chip.label = sprd_eic_label_name[sprd_eic->type];
-> > > -     sprd_eic->chip.ngpio = pdata->num_eics;
-> > > +     sprd_eic->chip.ngpio = num_banks * SPRD_EIC_PER_BANK_NR;
-> >
-> > This change looks good to me, and this seems a software bug in the
-> > original driver. So I think this change should be moved into a separate
-> > patch with a suitable Fixes tag.
-> >
-> > >       sprd_eic->chip.base = -1;
-> > >       sprd_eic->chip.parent = &pdev->dev;
-> > >       sprd_eic->chip.direction_input = sprd_eic_direction_input;
-> > > @@ -630,10 +631,12 @@ static int sprd_eic_probe(struct platform_device *pdev)
-> > >               sprd_eic->chip.set = sprd_eic_set;
-> > >               fallthrough;
-> > >       case SPRD_EIC_ASYNC:
-> > > +             fallthrough;
-> > >       case SPRD_EIC_SYNC:
-> > >               sprd_eic->chip.get = sprd_eic_get;
-> > >               break;
-> > >       case SPRD_EIC_LATCH:
-> > > +             fallthrough;
-> >
-> > Do not add unreated changes that you did not mentioned in the commit log.
+Jeremi
