@@ -2,274 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE8D776675
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD1C776679
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbjHIR2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 13:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
+        id S231955AbjHIR2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 13:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231775AbjHIR2c (ORCPT
+        with ESMTP id S231775AbjHIR2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 13:28:32 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2183DA
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 10:28:29 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe4762173bso11731483e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 10:28:29 -0700 (PDT)
+        Wed, 9 Aug 2023 13:28:45 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB771703
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 10:28:42 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-583d63ca1e9so1703527b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 10:28:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1691602108; x=1692206908;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yw22Rug4OEXyPMn54DIvL6wFU6vMQ8oGwoG/iSU6CIc=;
-        b=KIbY2LyyTl/AnYXTkkb6pgPDIwlxFzi/gU1TOXHFBIULY9+bxRCqT0/5PbrBQZr65u
-         8ThZm7mo/+9F5dlunFcUes8zmBpOi4GsUlCOLcfKT8uAkLUulHD92tPA2i1ve2IBJIUZ
-         D/NL9+3lSH9g3jwpXQ9hc2hG37wgUM9SNAYuMLmU0pp4prRKrCiKVdtYeHuVIdo7p8zk
-         WTL1Capi6iCC69SDt+EVndrPPpbesmWQcHbMOSX/evqo9RJAWI0TlSiSjqmCkpWYvNrY
-         IdkFfg2hyXY2jFG1qswWzSBv/aaeQaDhiVhK8ptuomf4MZWDnBdlCZCxWHh8NqcU7jEq
-         5mJA==
+        d=ieee.org; s=google; t=1691602122; x=1692206922;
+        h=content-transfer-encoding:message-id:references:in-reply-to:subject
+         :cc:to:from:date:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w5GHkqllOrwa7dKjTHTMacksa/BCngUM75YVKngzb84=;
+        b=e5LzrZn59/0i0VBuG6353Wmc/jFvdaVaQytmwbjSxYDCk34yEp8PDkhT2vGcnrcFnJ
+         /b6ENtHApcz7MsGLKPoya22WAvN1w13LWZolIBeE2F7GqawZkdj00o8qBK2EDpu06hca
+         N3EoRMrltIHmMZsx+Kvs+Us8njn5MwOXvvyBE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691602108; x=1692206908;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yw22Rug4OEXyPMn54DIvL6wFU6vMQ8oGwoG/iSU6CIc=;
-        b=DoDfE6zyd3FgYB8wng8OyjlOWCw/LLRvwAt5Nt8RG4ahHblJNOux5FZ6YQ7YAPrZ/9
-         oPTX15qHN7KidAx59XkwoAH9GUl9T3zPmCY11+4bI4W4x1d2hu+nqeFGA68THAR45NDK
-         c992nOAM9T/jcVvQNNb3gIOe57VeTzt9xFZFiLUCa/geUIqejlq5YKeJTD0Ta8t7L0m/
-         l2MkWRWhVAmYzNTBNaQNXXmopdfiKfdCtNkaIkVXfVTiO0Ukk/ZMZuruqKoxs7mDW5VX
-         W1wvIOBCCwFYuMhtg9bq2ExqQKupCJdR4LG5NSMBtW266uJmxwuk7Nm+L/qmJRUgO4fg
-         jngw==
-X-Gm-Message-State: AOJu0YwMfvvosaymlcfNseo24mbkAIuhwNgXSqoja7Z4miq6O4T1oX+x
-        Upb+3krcBHUcd9DdVgZhBGP0SA==
-X-Google-Smtp-Source: AGHT+IFGU6DlsIDGan/Ed64LTo5h4x9cjw5aWImDy8ojY1Rnld19e+Tgnw2G60Ovk+FaCUg8I76/yg==
-X-Received: by 2002:a19:8c54:0:b0:4fe:676:8c0b with SMTP id i20-20020a198c54000000b004fe06768c0bmr2411269lfj.11.1691602107522;
-        Wed, 09 Aug 2023 10:28:27 -0700 (PDT)
-Received: from [10.43.1.246] ([83.142.187.84])
-        by smtp.gmail.com with ESMTPSA id p3-20020a19f003000000b004fcddf3671dsm2388034lfc.177.2023.08.09.10.28.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 10:28:26 -0700 (PDT)
-Message-ID: <dc055b47-b868-7f5d-98bf-51e27df6b2d8@semihalf.com>
-Date:   Wed, 9 Aug 2023 19:28:25 +0200
+        d=1e100.net; s=20221208; t=1691602122; x=1692206922;
+        h=content-transfer-encoding:message-id:references:in-reply-to:subject
+         :cc:to:from:date:mime-version:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=w5GHkqllOrwa7dKjTHTMacksa/BCngUM75YVKngzb84=;
+        b=lmj41cMF4XhXeu9rsWQjdAD1YgbWZ/3rM4vc3av/KMfUWEiSNWuFVcvs7BuXRqqgBC
+         +/MpiSaLgO+IfAtMvPeCB2Jc8BRKvFTMbzCJo6MsKN4bX+p4uy9C4L2xEhgsVzWFnzLw
+         nSHUvXk6dmchdlZVyyGxKCnYll1pbqoy7CI/j97v7sHflvNr55RhdXntd02GzKYdKAxl
+         T7O+Tz5+LY4UjsCzY7NKLY7/hLTpt5fbm9x+4OuBWzkriOTNyfkie65zXMdgKO6qTQOO
+         p5iMoCRNQ7xv6wZt9XJeLwUMBzEZvWZX3spDIeC4IrYZV1/+J5OxETB0Ix6lvRQobcCF
+         dDWA==
+X-Gm-Message-State: AOJu0Yy5f/RYnemiV389nfcO5oycbNvauuLdTTKtFyzK0Gn6GaNtDLJt
+        PCwHnPWNX6boq0pHZ5/aXOYQKA==
+X-Google-Smtp-Source: AGHT+IHnuIrs3PweL9xunsuqoCKY17H82lE7cx9iaHFpRDYegJH258vHKi0V/9LAgF/GQyHIiowhsw==
+X-Received: by 2002:a81:9282:0:b0:585:5fbf:1bf1 with SMTP id j124-20020a819282000000b005855fbf1bf1mr3438208ywg.48.1691602121836;
+        Wed, 09 Aug 2023 10:28:41 -0700 (PDT)
+Received: from sunraycer.home ([2601:246:5d81:5e3b::100])
+        by smtp.gmail.com with ESMTPSA id u123-20020a818481000000b00559f1cb8444sm4066142ywf.70.2023.08.09.10.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 10:28:41 -0700 (PDT)
+Received: from 10.10.2.100 (sunraycer [10.10.2.100])
+        by sunraycer.home (Postfix) with ESMTPSA id E94F55C406E;
+        Wed,  9 Aug 2023 12:28:40 -0500 (CDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 0/2] Add LSM access controls for io_uring_setup
-Content-Language: en-US
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Jeffrey Vander Stoep <jeffv@google.com>,
-        Gil Cukierman <cukie@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        Joel Granados <j.granados@samsung.com>,
-        Jeff Xu <jeffxu@google.com>,
-        Takaya Saeki <takayas@chromium.org>,
-        Tomasz Nowicki <tn@semihalf.com>,
-        Matteo Rizzo <matteorizzo@google.com>,
-        Andres Freund <andres@anarazel.de>
-References: <20221107205754.2635439-1-cukie@google.com>
- <CAHC9VhTLBWkw2XzqdFx1LFVKDtaAL2pEfsmm+LEmS0OWM1mZgA@mail.gmail.com>
- <CABXk95ChjusTneWJgj5a58CZceZv0Ay-P-FwBcH2o4rO0g2Ggw@mail.gmail.com>
- <CAHC9VhRTWGuiMpJJiFrUpgsm7nQaNA-n1CYRMPS-24OLvzdA2A@mail.gmail.com>
- <54c8fd9c-0edd-7fea-fd7a-5618859b0827@semihalf.com>
- <CAHC9VhS9BXTUjcFy-URYhG=XSxBC+HsePbu01_xBGzM8sebCYQ@mail.gmail.com>
- <d2eaa3f8-cca6-2f51-ce98-30242c528b6f@semihalf.com>
- <CAHC9VhQDAM8X-MV9ONckc2NBWDZrsMteanDo9_NS4SirdQAx=w@mail.gmail.com>
-From:   Dmytro Maluka <dmy@semihalf.com>
-In-Reply-To: <CAHC9VhQDAM8X-MV9ONckc2NBWDZrsMteanDo9_NS4SirdQAx=w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Date:   Wed, 09 Aug 2023 12:28:40 -0500
+From:   steve <magnani@ieee.org>
+To:     Steve Magnani <magnani@ieee.org>
+Cc:     Quinn Tran <qutran@marvell.com>, linux-kernel@vger.kernel.org,
+        Nilesh Javali <njavali@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH] scsi: qla2xxx: Prevent firmware rejection of
+ MBC_GET_RNID_PARAMS
+In-Reply-To: <20230809141059.10790-1-magnani@ieee.org>
+References: <20230809141059.10790-1-magnani@ieee.org>
+Message-ID: <2f4214c089c0269786abe1695fe7adec@sunraycer.home>
+X-Sender: steve@sunraycer.home
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/23 16:49, Paul Moore wrote:
-> On Wed, Aug 9, 2023 at 7:22 AM Dmytro Maluka <dmy@semihalf.com> wrote:
->> On 8/9/23 02:31, Paul Moore wrote:
->>> On Tue, Aug 8, 2023 at 4:40 PM Dmytro Maluka <dmy@semihalf.com> wrote:
->>>> On 11/10/22 22:04, Paul Moore wrote:
->>>>> On Thu, Nov 10, 2022 at 12:54 PM Jeffrey Vander Stoep <jeffv@google.com> wrote:
->>>>>> On Mon, Nov 7, 2022 at 10:17 PM Paul Moore <paul@paul-moore.com> wrote:
->>>>>>>
->>>>>>> On Mon, Nov 7, 2022 at 3:58 PM Gil Cukierman <cukie@google.com> wrote:
->>>>>>>>
->>>>>>>> This patchset provides the changes required for controlling access to
->>>>>>>> the io_uring_setup system call by LSMs. It does this by adding a new
->>>>>>>> hook to io_uring. It also provides the SELinux implementation for a new
->>>>>>>> permission, io_uring { setup }, using the new hook.
->>>>>>>>
->>>>>>>> This is important because existing io_uring hooks only support limiting
->>>>>>>> the sharing of credentials and access to the sensitive uring_cmd file
->>>>>>>> op. Users of LSMs may also want the ability to tightly control which
->>>>>>>> callers can retrieve an io_uring capable fd from the kernel, which is
->>>>>>>> needed for all subsequent io_uring operations.
->>>>>>>
->>>>>>> It isn't immediately obvious to me why simply obtaining a io_uring fd
->>>>>>> from io_uring_setup() would present a problem, as the security
->>>>>>> relevant operations that are possible with that io_uring fd *should*
->>>>>>> still be controlled by other LSM hooks.  Can you help me understand
->>>>>>> what security issue you are trying to resolve with this control?
->>>>>>
->>>>>> I think there are a few reasons why we want this particular hook.
->>>>>>
->>>>>> 1.  It aligns well with how other resources are managed by selinux
->>>>>> where access to the resource is the first control point (e.g. "create"
->>>>>> for files, sockets, or bpf_maps, "prog_load" for bpf programs, and
->>>>>> "open" for perf_event) and then additional functionality or
->>>>>> capabilities require additional permissions.
->>>>>
->>>>> [NOTE: there were two reply sections in your email, and while similar,
->>>>> they were not identical; I've trimmed the other for the sake of
->>>>> clarity]
->>>>>
->>>>> The resources you mention are all objects which contain some type of
->>>>> information (either user data, configuration, or program
->>>>> instructions), with the resulting fd being a handle to those objects.
->>>>> In the case of io_uring the fd is a handle to the io_uring
->>>>> interface/rings, which by itself does not contain any information
->>>>> which is not already controlled by other permissions.
->>>>>
->>>>> I/O operations which transfer data between the io_uring buffers and
->>>>> other system objects, e.g. IORING_OP_READV, are still subject to the
->>>>> same file access controls as those done by the application using
->>>>> syscalls.  Even the IORING_OP_OPENAT command goes through the standard
->>>>> VFS code path which means it will trigger the same access control
->>>>> checks as an open*() done by the application normally.
->>>>>
->>>>> The 'interesting' scenarios are those where the io_uring operation
->>>>> servicing credentials, aka personalities, differ from the task
->>>>> controlling the io_uring.  However in those cases we have the new
->>>>> io_uring controls to gate these delegated operations.  Passing an
->>>>> io_uring fd is subject to the fd/use permission like any other fd.
->>>>>
->>>>> Although perhaps the most relevant to your request is the fact that
->>>>> the io_uring inode is created using the new(ish) secure anon inode
->>>>> interface which ensures that the creating task has permission to
->>>>> create an io_uring.  This io_uring inode label also comes into play
->>>>> when a task attempts to mmap() the io_uring rings, a critical part of
->>>>> the io_uring API.
->>>>>
->>>>> If I'm missing something you believe to be important, please share the details.
->>>>>
->>>>>> 2. It aligns well with how resources are managed on Android. We often
->>>>>> do not grant direct access to resources (like memory buffers).
->>>>>
->>>>> Accessing the io_uring buffers requires a task to mmap() the io_uring
->>>>> fd which is controlled by the normal SELinux mmap() access controls.
->>>>>
->>>>>> 3. Attack surface management. One of the primary uses of selinux on
->>>>>> Android is to assess and limit attack surface (e.g.
->>>>>> https://twitter.com/jeffvanderstoep/status/1422771606309335043) . As
->>>>>> io_uring vulnerabilities have made their way through our vulnerability
->>>>>> management system, it's become apparent that it's complicated to
->>>>>> assess the impact. Is a use-after-free reachable? Creating
->>>>>> proof-of-concept exploits takes a lot of time, and often functionality
->>>>>> can be reached by multiple paths. How many of the known io_uring
->>>>>> vulnerabilities would be gated by the existing checks? How many future
->>>>>> ones will be gated by the existing checks? I don't know the answer to
->>>>>> either of these questions and it's not obvious. This hook makes that
->>>>>> initial assessment simple and effective.
->>>>>
->>>>> It should be possible to deny access to io_uring via the anonymous
->>>>> inode labels, the mmap() controls, and the fd/use permission.  If you
->>>>> find a way to do meaningful work with an io_uring fd that can't be
->>>>> controlled via an existing permission check please let me know.
->>>>
->>>> Thank you a lot for this explanation. However, IMHO we should not
->>>> confuse 2 somewhat different problems here:
->>>>
->>>> - protecting io_uring related resources (file descriptors, memory
->>>>   buffers) against unauthorized access
->>>>
->>>> - protecting the entire system against potential vulnerabilities in
->>>>   io_uring
->>>>
->>>> And while I agree that the existing permission checks should be already
->>>> sufficient for the former, I'm not quite sure they are sufficient for
->>>> the latter.
->>>
->>> ...
->>>
->>>> I already have a PoC patch [3] adding such LSM hook. But before I try to
->>>> submit it for upstream, I'd like to know your opinion on the whole idea.
->>>
->>> First please explain how the existing LSM/SELinux control points are
->>> not sufficient for restricting io_uring operations.  I'm looking for a
->>> real program flow that is able to "do meaningful work with an io_uring
->>> fd that can't be controlled via an existing permission check".
->>
->> As I said at the beginning of my reply, I agree with you that the
->> existing LSM controls are sufficient for restricting io_uring I/O
->> operations. That is not my concern here. The concern is: how to (and
->> do we need to) restrict triggering execution of *any* io_uring code in
->> kernel, *in addition to* restricting the actual io_uring operations.
+Please disregard. It looks like the original patch b68710a8094f reduced 
+the amount of data copied off so much that port logins are broken even 
+though with my patch the firmware now processes GET_RNID_PARAMS. The 
+breakage has been introduced during 6.5 (and propagated into 5.x stable 
+branches) so there is some urgency to getting a proper fix.
+
+I will send a short series to revert b68710a8094f and replace it with 
+what I think is the correct overrun fix. AFAICT the overrun is only a 
+single dword.
+
+
+--Steve
+
+
+On 2023-08-09 09:10, Steve Magnani wrote:
+> At least some firmware (for example, QLE2692 FW 8.08.231 (d0d5)) 
+> returns
+> MBS_COMMAND_PARAMETER_ERROR when 
+> MBC_GET_RNID_PARAMS(RNID_TYPE_PORT_LOGIN)
+> is issued with a transfer length of 4 (DWords). Correct the overrun fix 
+> to
+> issue a "normal" transfer length and instead limit copy-out of desired
+> PLOGI data to the space available for it.
 > 
-> If your concern is preventing *any* io_uring code from being executed,
-> I would suggest simply not enabling io_uring at build time.  If you
-> need to selectively enable io_uring for some subset of processes, you
-> will need to make use of one of the options you discussed previously,
-> e.g. a LSM, seccomp, etc.
+> Fixes: b68710a8094f ("scsi: qla2xxx: Fix buffer overrun")
+> Signed-off-by: "Steven J. Magnani" <magnani@ieee.org>
+> ---
+> --- a/drivers/scsi/qla2xxx/qla_init.c	2023-08-01 03:46:21.727114453 
+> -0500
+> +++ b/drivers/scsi/qla2xxx/qla_init.c	2023-08-08 23:18:46.475286995 
+> -0500
+> @@ -5549,7 +5549,8 @@ static void qla_get_login_template(scsi_
+>  	__be32 *q;
 > 
-> From a LSM perspective, I don't believe we want to be in the business
-> of blocking entire kernel subsystems from execution, rather we want to
-> provide control points so that admins and users can have better, or
-> more granular control over the security relevant operations that take
-> place within the different kernel subsystems.
+>  	memset(ha->init_cb, 0, ha->init_cb_size);
+> -	sz = min_t(int, sizeof(struct fc_els_csp), ha->init_cb_size);
+> +	/* At least some firmware requires sz > sizeof(fc_els_csp) */
+> +	sz = min_t(int, sizeof(struct fc_els_flogi), ha->init_cb_size);
+>  	rval = qla24xx_get_port_login_templ(vha, ha->init_cb_dma,
+>  					    ha->init_cb, sz);
+>  	if (rval != QLA_SUCCESS) {
+> @@ -5560,6 +5561,7 @@ static void qla_get_login_template(scsi_
+>  	q = (__be32 *)&ha->plogi_els_payld.fl_csp;
 > 
->> In other words, "a real program doing a meaningful work with io_uring"
->> in this case would mean "an exploit for a real vulnerability in io_uring
->> code (in the current or any older kernel) which does not require an
->> access to io_uring operations to be exploited". I don't claim that such
->> vulnerabilities exist or are likely to be introduced in future kernels.
->> But I'm neither an io_uring expert nor, more importantly, a security
->> expert, so I cannot tell with confidence that they are not and we have
->> nothing to worry about here. So I'm interested in your and others'
->> opinion on that.
-> 
-> Once again, if you have serious concerns about the security or safety
-> of an individual kernel subsystem, your best option is to simply build
-> a kernel without that subsystem enabled.
-
-Thanks for the answer. Yeah, disabling a problematic kernel subsystem at
-build time is surely the safest option (and that is what we are already
-doing in ChromeOS for io_uring, for that matter), and if we still want
-to enable it for a limited subset of processes, it seems the cleanest
-option is to use seccomp, rather than to add new ad-hoc LSM hooks for
-blocking a specific subsystem.
-
-One of the angles I'm coming from is actually the following:
-
-- Android currently enables io_uring but limits its use to a few
-  processes. But the way Android does that is by relying on the existing
-  SELinux access controls for io_uring resources [1][2], rather than by
-  preventing execution of any io_uring code via seccomp or other means.
-
-  I guess the reason why Android doesn't use seccomp for that is the
-  downsides of seccomp which I mentioned previously: in short, seccomp
-  is well-suited for selectively denying syscalls for specific
-  processes, but not so well-suited for selectively allowing them.
-
-  So one of the questions I'm wondering about is: if Android implemented
-  preventing execution of any io_uring code by non-trusted processes
-  (via seccomp or any other way), how much would it help to reduce the
-  risk of attacks, compared to its current SELinux based solution?
-
-- ChromeOS currently completely disables io_uring in kernel, but we do
-  want to allow it for a limited set of processes similarly to Android,
-  and we are exploring ways to do it securely. Thus the above
-  considerations for Android apply to ChromeOS as well.
-
-[1] https://android-review.git.corp.google.com/c/platform/system/sepolicy/+/2302679
-[2] https://android-review.git.corp.google.com/c/platform/system/sepolicy/+/2302679/6/public/te_macros
+>  	bp = (uint32_t *)ha->init_cb;
+> +	sz = min_t(u32, sizeof(struct fc_els_csp), sz);
+>  	cpu_to_be32_array(q, bp, sz / 4);
+>  	ha->flags.plogi_template_valid = 1;
+>  }
