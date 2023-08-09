@@ -2,200 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 129C2776542
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 18:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0652877653F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 18:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbjHIQmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 12:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
+        id S230125AbjHIQmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 12:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjHIQmb (ORCPT
+        with ESMTP id S230218AbjHIQl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 12:42:31 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6B21982;
-        Wed,  9 Aug 2023 09:42:31 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 379EvsIQ002928;
-        Wed, 9 Aug 2023 11:42:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:references:in-reply-to
-        :content-type:content-id:content-transfer-encoding:mime-version;
-         s=PODMain02222019; bh=RsxAKHSVqUeG/X72iR6erAo0YEGAJsEzg5b5fV+QQ
-        lM=; b=gqIK+lbzwY7srwgVF8UuKukkX840ymnLmayaz1D5GgMWE0QMpyxpK/DhU
-        9k2A8NGq4D8epFKdg0PKnMK/CQDXnZpyFBgp8Rm6DvFZtFCVkC9t19XR+FjvqLFs
-        u0y0xa2RAxlOLJDA2uDCCXyNg+c/Do7W2WH8U2psO1GSN21wGs/Xke7vKfRJkhAp
-        n1Q5DS0khRGRoMf83LwZPP28XgmaK1Lkpae5ujEpzExj0nRWCqL1OLJz/NXa0Deo
-        WApi4dK5H+e2R2oVtF8PhpUPWabW/4nPRUYJZOD4WlDyTiO31I8Sdk8Z9f/pll1K
-        pI3KJVn24RxF5I3fnADTS59gNDNSg==
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhuxf9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 11:42:04 -0500 (CDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OukE5+XGm0QTfLHJAvs8B0UIFlEl8d1du0yeT4wKJ7B0ceileWBHVoYokFoQZpA0IXtQuybEkcpv0imbrgAfHBckHlrdGlKZ4NkO3FFZxEhCZ0LbSY3W8ThjrjA1PsKVJ4K5UaHCIN6A/Oo2BbxT8qkb2HloM0g1oHAT9/9ndU1ZIm4yR7lBC7HCPbdoJlBxAsPwyiMdwFzO6iVRePPn+dNcM2naLgdvmRyKeUeUqarsfbONsIRyK/CVN3hzcwqeKZ40yYpbvnj4N9nLFwd1DUxmVqCnttADD63ftWyLibtn/HcycVADmDSN2KCGZa6EHgAivdK8dDcW6dxC7UD9ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RsxAKHSVqUeG/X72iR6erAo0YEGAJsEzg5b5fV+QQlM=;
- b=c+eMRfid+ws0NJHbsNcwIart+R6qWnD5Ka+F0UriFuZy3wIlS1G6HNvmkQR6UqFNjVLjoJdQrMX9js2T/ibVg7dTl7fAXNC6D2qq4tjcnejjmoWvFVTv/4y95eUKPbIAIw9UpLUDV3Yx5VM0ZJlWXTU+Z49GQrq4bYgdUk0q+HfgZGz+C2q2FD/c0HMPK1ReL9v34WOjZOrPmgkLjKi7h0crqJDezRc2t6+gfxao5FlE8gxYDF7ool/6/YIEWdhjjQVf9DYq1LvzhLcI1lc3M1Gtt9HTHJ1u8HSY0RsbY2ckRlivxUmF+dac94lc5FrkGzmP8F18Feh0bPW84N9JNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cirrus.com; dmarc=pass action=none header.from=cirrus.com;
- dkim=pass header.d=cirrus.com; arc=none
+        Wed, 9 Aug 2023 12:41:58 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB93C1B2
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 09:41:57 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40a47e8e38dso309731cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 09:41:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cirrus4.onmicrosoft.com; s=selector2-cirrus4-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RsxAKHSVqUeG/X72iR6erAo0YEGAJsEzg5b5fV+QQlM=;
- b=sXFrw2xAPvRpNOmg/U56RsSufw5bxYSKuRLXqqBU4hsY1CdCV0WiVDGGW/ng9F3PbAJOd0CVEx/GqsY0hGMe+zC5xbBTdZHn1j4Hp0ZK+WYdraqJRwUVgbVpjHLr0Xfl0VacuzNDbdCK8Gz/LcVNMetueuG/BTsvA2TioO47DGU=
-Received: from BN8PR19MB3057.namprd19.prod.outlook.com (2603:10b6:408:95::13)
- by MN2PR19MB3904.namprd19.prod.outlook.com (2603:10b6:208:1ef::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Wed, 9 Aug
- 2023 16:41:29 +0000
-Received: from BN8PR19MB3057.namprd19.prod.outlook.com
- ([fe80::7a8e:a98c:421a:c1a8]) by BN8PR19MB3057.namprd19.prod.outlook.com
- ([fe80::7a8e:a98c:421a:c1a8%6]) with mapi id 15.20.6652.028; Wed, 9 Aug 2023
- 16:41:28 +0000
-From:   James Ogletree <James.Ogletree@cirrus.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Fred Treven <Fred.Treven@cirrus.com>,
-        Ben Bright <Ben.Bright@cirrus.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jeff LaBundy <jeff@labundy.com>, Peng Fan <peng.fan@nxp.com>,
-        Eddie James <eajames@linux.ibm.com>,
-        Jean Delvare <jdelvare@suse.de>, Arnd Bergmann <arnd@arndb.de>,
-        Markus Schneider-Pargmann <msp@baylibre.com>,
-        Jacky Bai <ping.bai@nxp.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "patches@cirrus.com" <patches@cirrus.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: input: cirrus,cs40l50: Support for
- CS40L50
-Thread-Topic: [PATCH 1/2] dt-bindings: input: cirrus,cs40l50: Support for
- CS40L50
-Thread-Index: AQHZyh7JXcj7PWZYh0aNSmkcGd15UK/hhUSAgACnIYA=
-Date:   Wed, 9 Aug 2023 16:41:28 +0000
-Message-ID: <2D6A6A19-5EA2-4D2A-A15B-894DA154D616@cirrus.com>
-References: <20230808172511.665787-1-james.ogletree@cirrus.com>
- <9a85bc7f-8f20-6241-beba-6d705f62e071@linaro.org>
-In-Reply-To: <9a85bc7f-8f20-6241-beba-6d705f62e071@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN8PR19MB3057:EE_|MN2PR19MB3904:EE_
-x-ms-office365-filtering-correlation-id: 470d2b20-7a7a-4237-0f72-08db98f77a68
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2nYh98Jhl0MofowEAI2DLeVolIQZglF+LKA6AldRZJR+ixszu8a97aZIpaUbM+DyAoE59dmPKZ/vvAZX8sEUqo6+c3sWztWsn0ZG/ip2TNYjkGtB/+26hRBcbT5PVt8iq7w5snJRXsbc6QnuI50YiseKb7vepGLRCd2IVXjlHB1vlSUf8TUpcc1z1mB9y6FzTHxuvWKGO4Smsu5pAdo1aFj1+fd2vblcr0MYbAPr+ctQQHwOAVQ2P75VEO5oLZ4acXeljZ2TIP9DzOqM4lc8gWBk5Mi1+FoAORsDCGjoi5nvHIEzdlC3/XIIylfWqauP5YHZeSBCCN+0Gq7vbEUFlb2OIj2tXtBpEkTYdrO26PL4+oH1Gj7YrJ/nObUbS6sktySZYu0C0zEgn5hE6INAyKuvfJtL8lm6XOlbnYVAra8G6RBHsqkSyQj3S+DVqwa0HLZkqzk/KkCIP0ECg9vkbg6HbpBiwNWRZJEMBUbKEe78FPzj1j8KUKqg9GG9dDl0YCxWP7tcL70gd0JgccFjjilG4bhhFioda82MutX6rSnML12pM87ktAWU//aKeQ5C91joQLhwLMXi3PTLy0QnbxSSiiKQThS8H9HtD4CXiBX5KaHCuToUr1gnR3YKYDqsEQkDwL4jhbOBbjLU+TVF1A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR19MB3057.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(39850400004)(396003)(346002)(376002)(186006)(451199021)(1800799006)(2616005)(71200400001)(54906003)(6916009)(4326008)(66946007)(7416002)(8936002)(8676002)(5660300002)(316002)(38070700005)(2906002)(66556008)(91956017)(66446008)(66476007)(38100700002)(76116006)(64756008)(86362001)(6512007)(478600001)(122000001)(966005)(6486002)(33656002)(41300700001)(36756003)(53546011)(26005)(6506007)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TkYzM3IrYnFnNmNWMVNtUmJFN0Zlb1BRSkdrVUdhRmtadTRkNXhQbFp4ajVv?=
- =?utf-8?B?bjdZSlB4ek1qaFJBeldzYWlDYklCV2Y0RVduV3JKcldRVDZLeWRoam5lTCt2?=
- =?utf-8?B?YnJ3MkJ3cjFlbDdoRkVRU3U1UUJLVmpBdVB4a2JTbk11bENmS1FXeHNwMG1E?=
- =?utf-8?B?WS9sV3IzUzJjYTVCMk5xRmZzMmdEeTVkN0szdGd2Q2J3bXJhOUpqWEZLS2JL?=
- =?utf-8?B?aERTQWd4YytnZGZXMVhZZ0x3QmZRRmRQVEpYbEk2YWJKVDlRK0ErNkFFS0Nr?=
- =?utf-8?B?UlRYUFlHd2NuQjRoM2VPcXQ1bjAwQmxmMGJ4Nnd3VXppMUlUakhJUHd5QWVO?=
- =?utf-8?B?bEZISVRjTHFuZ29lL0REeUZTZHNRWGhnM2xGUlpOK1RxOEM2K214ZXREdkNS?=
- =?utf-8?B?cVRON1lQaHZpVDBKa0cxOXpnOHJDQjNmUkpUQnZwcS9aeVBEVExMZnpDdVc5?=
- =?utf-8?B?L2drVXVZV1RSTTdWZkhjS1JjQVYwVUxLTEpoVFA1UGs2VDdHWEdQcGVzWHVo?=
- =?utf-8?B?N1pDSm1TY0l4UzNRRDMxZitBd0lSbVk5YzVIbGpTdlV4UFRlWU82VUhQT214?=
- =?utf-8?B?VDE2NVNvZVM1RmwwTENkajRHUnQ3THJnTkFRRkxFSXhlUkE4dFROWnloTC9p?=
- =?utf-8?B?Z1NMT0huQkYvakRtVWxzRGVEdEsyYldNdk5qcHd2M1hKRk1vSWJ0WWR0UlNG?=
- =?utf-8?B?cnZjNk9ONTMvMktFTzdOWjJNaWN1NXRoZU1ZR1krZ2RSNDJNMDJiRXUyT2dP?=
- =?utf-8?B?UzBWQzhTdUN1a2FCM2RzTzZOMkJZTnBjQzU2azcrN1VMcDFRMXNRNjhHVHFH?=
- =?utf-8?B?S2M2UGRESmpEWVdwUE5HVTVBSS9zQWZLci9yd09UWjJpOXNQcjl1ck5WL0J4?=
- =?utf-8?B?anlzQ3Z0Z05OUWdiVGhKQ2tGUmZWVTE4UGZ6eXdlZk91TTAzWkhmdVo0WlpC?=
- =?utf-8?B?WHQxYW1JQTR6d3FPbDhVakl0TTJpRG5YVkhDMDJNV2N1ZEd4Uzg2eVEzRXBU?=
- =?utf-8?B?QVEwVTJnQWtBUEFuenkycjFVU1RHMEdxSVdMRWcwQzI3NTZ5UUdVYVllOGJs?=
- =?utf-8?B?cHB3UjV2NThUTkdzQWRBM0Jsb3UwL3MrTDdaWm12czlLSjFEeXE3NnBkVlFm?=
- =?utf-8?B?QitqUDlQRUdGbmE0WkFKRFhwRGM5SEpDbU9PbW9NeFVyM0VuYWdRS2wydmhN?=
- =?utf-8?B?czZiRnRQbnRNNGRMU1JORFFsTjQxRld6YXV4ZjBXNUdsS0FBZkE4UDRlNzhJ?=
- =?utf-8?B?OHdkbTVCL0xsNjAzWVdOSkJqNWtGWTRlNlZkK0hldzh0MFdyR3RmNFpyL3Ro?=
- =?utf-8?B?SVpHNWNBTldlVUdVZ0RoeDBsMHJUd3RIRHBTWnVrT1p1NWhqTnRHUWg0NEtX?=
- =?utf-8?B?L0tlNXo4eXFEcEQvRThHTHRVQ0NmQUV6M2M0TXJ5OG1YcHlSSFFNVFgrSXZT?=
- =?utf-8?B?VXUrMjdrbTFIYkY2cWV1TjRNVUVnRlhQN1hXQk03N3ExZ1U0VTJCYisvSzMy?=
- =?utf-8?B?UWhwWm4zQ3poU2UvODB1ZEVLVHdURHo4emUvZy9mbTFzMmdUblpFOHpPYVdu?=
- =?utf-8?B?eVVYRkh1VmZmdnpxZTBMUmhtT2N4YXZlMlZvbEhOdjZLRmpxL0tNc0dNbUNB?=
- =?utf-8?B?Zi9aWkZsVHNVbldpWTJhaDNHdi80WFRWckpWNUw3ODJiczlCWUJBa0h6ZWdS?=
- =?utf-8?B?U0RLb05STnRGOS91WmJIN0xLelUxbWNac1lZVVY1QXRvaHh5ZHFLSGxuZHZ5?=
- =?utf-8?B?UHNTMTRhN1VrU1QrRGxoQ3hEa01ZTWpaZlRXSm54M20zZHc0N2tyTW85RUlL?=
- =?utf-8?B?ZjMyQlJ4MnBSc3loODBXZmFUcTBrS0w4eVEwNTl2bE0yYVlwdGdBM1JyLzcy?=
- =?utf-8?B?ZEhUSjc0U1ViYW5DdXBWeU4xZGhMTHk3Sk9jekpUZjFUQ3MwbEViZC9SRVQr?=
- =?utf-8?B?dksxekdYd2czam9qYXlQL3RXUzBIVnlXZHB5K0Z5RVZ0cE0xMERvaWtvTVJn?=
- =?utf-8?B?RDJUNFF5bDVtRVFpekZFaGFBMUxvSkNBL3BjbDBzdDR0R0VCamJENlp1bGh4?=
- =?utf-8?B?ZUNFNFBaV2YycmN2b2t5LzF3UGljQk5ReG8yNG9zTlNWY0xxYngrWjl5dGNG?=
- =?utf-8?B?L1ZzSWluSkd2K3NCbWdBMUxjRHQwYXBBbDl5cFNsVTdxZ1FJWjZlRzVicCsz?=
- =?utf-8?B?Znc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3A64FE3526AE9049B02190ABDBF0A1C5@namprd19.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=google.com; s=20221208; t=1691599317; x=1692204117;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lPf4XGOX6Yz3caGFLI4HNiFX/4urner6v/ltX/ESS/0=;
+        b=M8NqHm95x4nGnCdrVnscaqRXS4zv1xJk+mKi6qhzpoV0xAgedW8xKK1WrktthW+/qX
+         b79Rjw1HWdoTj0bfrzxyYngD13WhEXYtTDNUTB4Nwp3syn4yn8vOXHVKklDeZcJZpc9o
+         GDICgnZbUUQ4VwPvxkozg6ZrzrsWy820TbFiNBjvXSnVlLga3PusimdxiUHWSrjmgq9M
+         YMKKBcxudeH5NygCy+Ei5czOibqi8SOG3nDIHx+h0cIT0Z9F1Ff0QOjnl3TwU7bKPVG3
+         fESF+gvCoCtyd47weuYbH5uFlwg9LfCAVKAGmtq8i8np6ERRNhFQ4wt4KpNnlYCunDKT
+         NTyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691599317; x=1692204117;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lPf4XGOX6Yz3caGFLI4HNiFX/4urner6v/ltX/ESS/0=;
+        b=BFAEOz/LDV4eGEF+9wXBlitfQu2PtTVqIOTZTRnlZy66yaSJBBCTNEAdUHgA+P6eDd
+         /uix1YWjCvgHtQAjg8Sf5ibPKx3SlY94DmNi6nmvuVwTW1K6eQhNxA8HBeDT2fcNZJYr
+         r5ocN7KgFG6J613M7hQ1ekgpU5MpjPMFZDukbeCFbMNtu9e7huxUbXIBUv2FsSGRvpyz
+         DUBfkY2Te9VK1Zw/S/z8n67Q1+M2nkevn9JhsDqJxAcbfOZJm4dRkxA+2YUhvlrTyvWt
+         VAgIkkNeSWprn9UrZJPmQdBqH6WxSKN9fRE2fawoHZUYCc6Xur1eW0fllhK9Z533aw9o
+         9c7Q==
+X-Gm-Message-State: AOJu0YwTlSPGSJCoFqAWvNaNRR+Yl5gaMzvG3E5Pg2rqB9R1dp/a2ogb
+        oyvZzCLBZnt13P5niDQIYrJsTBcUhX8iumm55Ma4dA==
+X-Google-Smtp-Source: AGHT+IEasKjYjirTCPg/lhza9bQPF4rYp5ejx4/QKjY7XilhifZ9KFaFlpeH95SrDC1XV+HGwPF+ASFIZPAlqAB/AME=
+X-Received: by 2002:ac8:5dc9:0:b0:3f5:2006:50f1 with SMTP id
+ e9-20020ac85dc9000000b003f5200650f1mr133814qtx.12.1691599316808; Wed, 09 Aug
+ 2023 09:41:56 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: cirrus.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR19MB3057.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 470d2b20-7a7a-4237-0f72-08db98f77a68
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2023 16:41:28.0531
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: bec09025-e5bc-40d1-a355-8e955c307de8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KtXN0/hVbMaXj8vCBbrAJwFc2N7NSc9aVwLRJF63AgbjZq4W0cf4GqPlC2TWVKBOc8PJysJiBNoDMbIvSTL/B80AK8EPxV6Cv0fldWWB/WA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR19MB3904
-X-Proofpoint-GUID: NVDZmlG5KXZRk6WQbCYelRQlaj0hOGU9
-X-Proofpoint-ORIG-GUID: NVDZmlG5KXZRk6WQbCYelRQlaj0hOGU9
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230808231330.3855936-1-rananta@google.com> <20230808231330.3855936-6-rananta@google.com>
+ <15975205-6161-d54b-fe40-805a16b0cb27@redhat.com>
+In-Reply-To: <15975205-6161-d54b-fe40-805a16b0cb27@redhat.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Wed, 9 Aug 2023 09:41:44 -0700
+Message-ID: <CAJHc60xk1ZAw-44FG7CDbAGPMUSnAmZ3LxMPGcQ0RPBcenHrig@mail.gmail.com>
+Subject: Re: [PATCH v8 05/14] KVM: Allow range-based TLB invalidation from
+ common code
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Fuad Tabba <tabba@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Shaoqin Huang <shahuang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IE9uIEF1ZyA5LCAyMDIzLCBhdCAxOjQzIEFNLCBLcnp5c3p0b2YgS296bG93c2tpIDxrcnp5
-c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+IHdyb3RlOg0KPiANCj4gT24gMDgvMDgvMjAyMyAx
-OToyNSwgSmFtZXMgT2dsZXRyZWUgd3JvdGU6DQo+IA0KPj4gU2lnbmVkLW9mZi1ieTogSmFtZXMg
-T2dsZXRyZWUgPGphbWVzLm9nbGV0cmVlQGNpcnJ1cy5jb20+DQo+PiAtLS0NCj4+IC4uLi9iaW5k
-aW5ncy9pbnB1dC9jaXJydXMsY3M0MGw1MC55YW1sICAgICAgICB8IDc3ICsrKysrKysrKysrKysr
-KysrKysNCj4+IE1BSU5UQUlORVJTICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
-ICA5ICsrKw0KPj4gMiBmaWxlcyBjaGFuZ2VkLCA4NiBpbnNlcnRpb25zKCspDQo+PiBjcmVhdGUg
-bW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2lucHV0L2NpcnJ1
-cyxjczQwbDUwLnlhbWwNCj4+IA0KPj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9pbnB1dC9jaXJydXMsY3M0MGw1MC55YW1sIGIvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL2lucHV0L2NpcnJ1cyxjczQwbDUwLnlhbWwNCj4+IG5ldyBmaWxl
-IG1vZGUgMTAwNjQ0DQo+PiBpbmRleCAwMDAwMDAwMDAwMDAuLjU0MzdjNmJlYjFiMw0KPj4gLS0t
-IC9kZXYvbnVsbA0KPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2lu
-cHV0L2NpcnJ1cyxjczQwbDUwLnlhbWwNCj4+IEBAIC0wLDAgKzEsNzcgQEANCj4+ICsjIFNQRFgt
-TGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlDQo+PiArJVlB
-TUwgMS4yDQo+PiArLS0tDQo+PiArJGlkOiBodHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0
-cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvaW5wdXQvY2lycnVzLGNzNDBsNTAueWFtbCpfXztJ
-dyEhRFEzS2Z3SSEyaW9IaEkyaWczYXhWUkQtN01ZcXFUMUxGX2JpdFdlMWwtQi1GUURKZlVYX0Vh
-VExyTG1VbnF0eUR0RVhDVkUyY05vemo3T0RBRjdmMDlKZHdtalM5YXZ5SHMxM0hpdyQgDQo+PiAr
-JHNjaGVtYTogaHR0cHM6Ly91cmxkZWZlbnNlLmNvbS92My9fX2h0dHA6Ly9kZXZpY2V0cmVlLm9y
-Zy9tZXRhLXNjaGVtYXMvY29yZS55YW1sKl9fO0l3ISFEUTNLZndJITJpb0hoSTJpZzNheFZSRC03
-TVlxcVQxTEZfYml0V2UxbC1CLUZRREpmVVhfRWFUTHJMbVVucXR5RHRFWENWRTJjTm96ajdPREFG
-N2YwOUpkd21qUzlhdnllRHhSdW5BJCANCj4+ICsNCj4+ICt0aXRsZTogQ2lycnVzIExvZ2ljIENT
-NDBMNTAgQWR2YW5jZWQgSGFwdGljIERyaXZlcg0KPiANCj4gRHJpdmVyIGFzICJtb3RvciI/IElm
-IHllcywgdGhlbiBvay4gSWYgIkxpbnV4IERyaXZlciIgdGhlbiBub3QuDQoNClRoZSBmb3JtZXIs
-IHNvIGtlZXBpbmcgYXMtaXMuDQoNCj4gDQo+PiArDQo+PiArICBjaXJydXMsZXh0ZXJuYWwtYm9v
-c3Q6DQo+PiArICAgIGRlc2NyaXB0aW9uOg0KPj4gKyAgICAgIEJ5cGFzcyB0aGUgQ1M0MEw1MCBi
-b29zdCBjb252ZXJ0ZXIuDQo+PiArDQo+PiArICAgICAgVGhlIGFtcGxpZmllciBvbiBDUzQwTDUw
-IGNhbiBiZSBwb3dlcmVkIGludGVybmFsbHkgdGhyb3VnaCB0aGUgYm9vc3QNCj4+ICsgICAgICBj
-b252ZXJ0ZXIsIG9yIGVsc2UgY2FuIGJlIHBvd2VyZWQgdXNpbmcgYW4gZXh0ZXJuYWwgc3VwcGx5
-LiBJZiBhbg0KPj4gKyAgICAgIGV4dGVybmFsIFZBIHN1cHBseSBpcyB1c2VkLCB0aGUgYm9vc3Qg
-Y29udmVydGVyIG11c3QgYmUgYnlwYXNzZWQuDQo+PiArICAgIHR5cGU6IGJvb2xlYW4NCj4gDQo+
-IElzbid0IHRoaXMgcHJvcGVydHkgdGhlbiBjb25mbGljdGluZyB3aXRoIHZhLXN1cHBseT8NCg0K
-4oCcVkEiIHdhcyBpbnRlbmRlZCB0byBtZWFuIGFtcGxpZmllciB2b2x0YWdlLCBub3QgYW5hbG9n
-IHZvbHRhZ2UuIEkgd2lsbCByZW1vdmUg4oCcVkEiIHRvIGZpeCB0aGUgYW1iaWd1aXR5LiANCg0K
-QmVzdCwNCg0KSmFtZXMgT2dsZXRyZWUNCg0KDQo=
+On Tue, Aug 8, 2023 at 11:09=E2=80=AFPM Gavin Shan <gshan@redhat.com> wrote=
+:
+>
+> On 8/9/23 09:13, Raghavendra Rao Ananta wrote:
+> > From: David Matlack <dmatlack@google.com>
+> >
+> > Make kvm_flush_remote_tlbs_range() visible in common code and create a
+> > default implementation that just invalidates the whole TLB.
+> >
+> > This paves the way for several future features/cleanups:
+> >
+> >   - Introduction of range-based TLBI on ARM.
+> >   - Eliminating kvm_arch_flush_remote_tlbs_memslot()
+> >   - Moving the KVM/x86 TDP MMU to common code.
+> >
+> > No functional change intended.
+> >
+> > Signed-off-by: David Matlack <dmatlack@google.com>
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > Reviewed-by: Gavin Shan <gshan@redhat.com>
+> > Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> > Reviewed-by: Anup Patel <anup@brainfault.org>
+> > ---
+> >   arch/x86/include/asm/kvm_host.h |  2 ++
+> >   arch/x86/kvm/mmu/mmu.c          |  8 ++++----
+> >   arch/x86/kvm/mmu/mmu_internal.h |  3 ---
+> >   include/linux/kvm_host.h        | 12 ++++++++++++
+> >   virt/kvm/kvm_main.c             | 13 +++++++++++++
+> >   5 files changed, 31 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm=
+_host.h
+> > index a2d3cfc2eb75c..b547d17c58f63 100644
+> > --- a/arch/x86/include/asm/kvm_host.h
+> > +++ b/arch/x86/include/asm/kvm_host.h
+> > @@ -1804,6 +1804,8 @@ static inline int kvm_arch_flush_remote_tlbs(stru=
+ct kvm *kvm)
+> >               return -ENOTSUPP;
+> >   }
+> >
+> > +#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS_RANGE
+> > +
+> >   #define kvm_arch_pmi_in_guest(vcpu) \
+> >       ((vcpu) && (vcpu)->arch.handling_intr_from_guest)
+> >
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index ec169f5c7dce2..6adbe6c870982 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -278,16 +278,16 @@ static inline bool kvm_available_flush_remote_tlb=
+s_range(void)
+> >       return kvm_x86_ops.flush_remote_tlbs_range;
+> >   }
+> >
+> > -void kvm_flush_remote_tlbs_range(struct kvm *kvm, gfn_t start_gfn,
+> > -                              gfn_t nr_pages)
+> > +int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm, gfn_t start_gfn,
+> > +                                   u64 nr_pages)
+> >   {
+> >       int ret =3D -EOPNOTSUPP;
+> >
+> >       if (kvm_x86_ops.flush_remote_tlbs_range)
+> >               ret =3D static_call(kvm_x86_flush_remote_tlbs_range)(kvm,=
+ start_gfn,
+> >                                                                  nr_pag=
+es);
+> > -     if (ret)
+> > -             kvm_flush_remote_tlbs(kvm);
+> > +
+> > +     return ret;
+> >   }
+> >
+>
+> I guess @start_gfn can be renamed to @gfn, to be consistent with its decl=
+aration
+> in include/linux/kvm_host.h and struct kvm_x86_ops::flush_remote_tlbs_ran=
+ge()
+>
+Oh, yes. I'll consider this change for v9 (if there are enough changes
+and we plan to push one).
+
+Thank you.
+Raghavendra
+
+> >   static gfn_t kvm_mmu_page_get_gfn(struct kvm_mmu_page *sp, int index)=
+;
+> > diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_int=
+ernal.h
+> > index d39af5639ce97..86cb83bb34804 100644
+> > --- a/arch/x86/kvm/mmu/mmu_internal.h
+> > +++ b/arch/x86/kvm/mmu/mmu_internal.h
+> > @@ -170,9 +170,6 @@ bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm=
+,
+> >                                   struct kvm_memory_slot *slot, u64 gfn=
+,
+> >                                   int min_level);
+> >
+> > -void kvm_flush_remote_tlbs_range(struct kvm *kvm, gfn_t start_gfn,
+> > -                              gfn_t nr_pages);
+> > -
+> >   /* Flush the given page (huge or not) of guest memory. */
+> >   static inline void kvm_flush_remote_tlbs_gfn(struct kvm *kvm, gfn_t g=
+fn, int level)
+> >   {
+> > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> > index ade5d4500c2ce..f0be5d9c37dd1 100644
+> > --- a/include/linux/kvm_host.h
+> > +++ b/include/linux/kvm_host.h
+> > @@ -1359,6 +1359,7 @@ int kvm_vcpu_yield_to(struct kvm_vcpu *target);
+> >   void kvm_vcpu_on_spin(struct kvm_vcpu *vcpu, bool yield_to_kernel_mod=
+e);
+> >
+> >   void kvm_flush_remote_tlbs(struct kvm *kvm);
+> > +void kvm_flush_remote_tlbs_range(struct kvm *kvm, gfn_t gfn, u64 nr_pa=
+ges);
+> >
+> >   #ifdef KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE
+> >   int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int m=
+in);
+> > @@ -1488,6 +1489,17 @@ static inline int kvm_arch_flush_remote_tlbs(str=
+uct kvm *kvm)
+> >   int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
+> >   #endif
+> >
+> > +#ifndef __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS_RANGE
+> > +static inline int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm,
+> > +                                                 gfn_t gfn, u64 nr_pag=
+es)
+> > +{
+> > +     return -EOPNOTSUPP;
+> > +}
+> > +#else
+> > +int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm,
+> > +                                   gfn_t gfn, u64 nr_pages);
+> > +#endif
+> > +
+> >   #ifdef __KVM_HAVE_ARCH_NONCOHERENT_DMA
+> >   void kvm_arch_register_noncoherent_dma(struct kvm *kvm);
+> >   void kvm_arch_unregister_noncoherent_dma(struct kvm *kvm);
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index d6b0507861550..26e91000f579d 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -366,6 +366,19 @@ void kvm_flush_remote_tlbs(struct kvm *kvm)
+> >   }
+> >   EXPORT_SYMBOL_GPL(kvm_flush_remote_tlbs);
+> >
+> > +void kvm_flush_remote_tlbs_range(struct kvm *kvm, gfn_t gfn, u64 nr_pa=
+ges)
+> > +{
+> > +     if (!kvm_arch_flush_remote_tlbs_range(kvm, gfn, nr_pages))
+> > +             return;
+> > +
+> > +     /*
+> > +      * Fall back to a flushing entire TLBs if the architecture range-=
+based
+> > +      * TLB invalidation is unsupported or can't be performed for what=
+ever
+> > +      * reason.
+> > +      */
+> > +     kvm_flush_remote_tlbs(kvm);
+> > +}
+> > +
+> >   static void kvm_flush_shadow_all(struct kvm *kvm)
+> >   {
+> >       kvm_arch_flush_shadow_all(kvm);
+>
+> Thanks,
+> Gavin
+>
