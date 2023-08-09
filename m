@@ -2,68 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D48E776312
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B16776316
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbjHIOwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
+        id S233454AbjHIOxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbjHIOwe (ORCPT
+        with ESMTP id S231138AbjHIOxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:52:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE371FF5;
-        Wed,  9 Aug 2023 07:52:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 9 Aug 2023 10:53:36 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D918DC;
+        Wed,  9 Aug 2023 07:53:34 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 3ac8deb2c7e4b6a8; Wed, 9 Aug 2023 16:53:32 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C85FB63CA6;
-        Wed,  9 Aug 2023 14:52:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAA84C433C8;
-        Wed,  9 Aug 2023 14:52:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691592752;
-        bh=di6NBnwSgy7sy24SlTR04GfQ8U9w41UQmbmsgl8CO9w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BLSLUpc6Gst0cnZcdo/R85Y77iobKXbzNgjcvhNyo5OwbewuMqQNlCrR3HuuNf5N8
-         xFZNTpUlqfLpVYRJPoenB9Mx12RSMfJ8XEXCbRmkA7AbTDAtdGBJgvKCRoV0TQcvJN
-         PpUxwl7w7E5qzbpmSybglU9uEBGWH90tBT9PB/CyHfn1764Go43D7uIWjACtquukUQ
-         VzZNfKWZQouQZxejpPC4qBzJltQx0qfKQuPuHTQebR/Nxz7yr3C1lsy5XYTqdla0fG
-         RKUcXxnZA6MMSaKV35vMocgrHv4Li3ew7lf/frR7Lajf60nUA2sSA3Euh+t/EYG6Xw
-         Ig+CNghJtGYuA==
-Date:   Wed, 9 Aug 2023 23:52:26 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Florent Revest <revest@chromium.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org,
+        by v370.home.net.pl (Postfix) with ESMTPSA id 155F46625DB;
+        Wed,  9 Aug 2023 16:53:32 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [RFC PATCH v2 5/6] ftrace: Add ftrace_partial_regs() for
- converting ftrace_regs to pt_regs
-Message-Id: <20230809235226.92ca501403a1e7ad533b869d@kernel.org>
-In-Reply-To: <CABRcYmLFwSrfsod6y8-K1memLUZiJeb2so6pD4XaFUpwbLD9AQ@mail.gmail.com>
-References: <169139090386.324433.6412259486776991296.stgit@devnote2>
-        <169139096244.324433.7237290521765120297.stgit@devnote2>
-        <CABRcYmLFwSrfsod6y8-K1memLUZiJeb2so6pD4XaFUpwbLD9AQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Frederic Weisbecker <frederic@kernel.org>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [RFT] [PATCH v1] cpuidle: menu: Skip tick_nohz_get_sleep_length() call in some cases
+Date:   Wed, 09 Aug 2023 16:53:31 +0200
+Message-ID: <5708364.DvuYhMxLoT@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrleeggdektdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeegfffhudejlefhtdegffekteduhfethffhieettefhkeevgfdvgfefieekiefgheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhhnrgdqmhgrrhhirgeslhhinhhuthhrohhnihigrdguvgdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgv
+ lhdrohhrghdprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgrjhgvthgrnhdrphhutghhrghlshhkihesrghrmhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,95 +57,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Aug 2023 12:31:27 +0200
-Florent Revest <revest@chromium.org> wrote:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> On Mon, Aug 7, 2023 at 8:49 AM Masami Hiramatsu (Google)
-> <mhiramat@kernel.org> wrote:
-> >
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> >
-> > Add ftrace_partial_regs() which converts the ftrace_regas to pt_regs.
-> 
-> ftrace_regs*
+Because the cost of calling tick_nohz_get_sleep_length() may increase
+in the future, reorder the code in menu_select() so it first uses the
+statistics to determine the expected idle duration.  If that value is
+higher than RESIDENCY_THRESHOLD_NS, tick_nohz_get_sleep_length() will
+be called to obtain the time till the closest timer and refine the
+idle duration prediction if necessary.
 
-Oops, thanks.
+This causes the governor to always take the full overhead of
+get_typical_interval() with the assumption that the cost will be
+amortized by skipping the tick_nohz_get_sleep_length() call in the
+cases when the predicted idle duration is relatively very small.
 
-> 
-> > If the architecture defines its own ftrace_regs, this copies partial
-> > registers to pt_regs and returns it. If not, ftrace_regs is the same as
-> > pt_regs and ftrace_partial_regs() will return ftrace_regs::regs.
-> >
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > ---
-> >  arch/arm64/include/asm/ftrace.h |   11 +++++++++++
-> >  include/linux/ftrace.h          |   11 +++++++++++
-> >  2 files changed, 22 insertions(+)
-> >
-> > diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
-> > index ab158196480c..b108cd6718cf 100644
-> > --- a/arch/arm64/include/asm/ftrace.h
-> > +++ b/arch/arm64/include/asm/ftrace.h
-> > @@ -137,6 +137,17 @@ ftrace_override_function_with_return(struct ftrace_regs *fregs)
-> >         fregs->pc = fregs->lr;
-> >  }
-> >
-> > +static __always_inline struct pt_regs *
-> > +ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs *regs)
-> > +{
-> > +       memcpy(regs->regs, fregs->regs, sizeof(u64) * 10);
-> 
-> Are you intentionally copying that tenth value (fregs.direct_tramp)
-> into pt_regs.regs[9] ? This seems wrong and it looks like it will bite
-> us back one day. Isn't it one of these cases where we can simply use
-> sizeof(fregs->regs) ?
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-Ah, sorry, it was my mistake. It should be "sizeof(u64) * 9".
-I would like to know how can I handle the 'direct_tramp' thing?
-Can I just ignore it?
+This is a counterpart of the following two teo commits:
 
-> 
-> > +       regs->sp = fregs->sp;
-> > +       regs->pc = fregs->pc;
-> > +       regs->x[29] = fregs->fp;
-> > +       regs->x[30] = fregs->lr;
-> > +       return regs;
-> > +}
-> > +
-> >  int ftrace_regs_query_register_offset(const char *name);
-> >
-> >  int ftrace_init_nop(struct module *mod, struct dyn_ftrace *rec);
-> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> > index 3fb94a1a2461..7f45654441b7 100644
-> > --- a/include/linux/ftrace.h
-> > +++ b/include/linux/ftrace.h
-> > @@ -155,6 +155,17 @@ static __always_inline struct pt_regs *ftrace_get_regs(struct ftrace_regs *fregs
-> >         return arch_ftrace_get_regs(fregs);
-> >  }
-> >
-> > +#if !defined(CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS) || \
-> > +       defined(CONFIG_HAVE_PT_REGS_COMPAT_FTRACE_REGS)
-> > +
-> > +static __always_inline struct pt_regs *
-> > +ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs *regs)
-> > +{
-> > +       return arch_ftrace_get_regs((struct ftrace_regs *)fregs);
-> > +}
-> 
-> I don't think this works. Suppose you are on x86, WITH_ARGS, and with
-> HAVE_PT_REGS_COMPAT_FTRACE_REGS. If you register to ftrace without
-> FTRACE_OPS_FL_SAVE_REGS you will receive a ftrace_regs from the light
-> ftrace pre-trampoline that has a CS register equal to 0 and
-> arch_ftrace_get_regs will return NULL here, which should never happen.
+https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/commit/?h=pm-cpuidle-teo&id=06b80d45d3f94b1bbd3ee02bf3e007f55ed3e120
+https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/commit/?h=pm-cpuidle-teo&id=57c51179c203de17cf17e357d0e56c04f5e2494a
 
-Yes, Jiri also pointed it. So I simply made it (also remove 'const' from fregs)
+and it is based on top of
 
-return &fregs->regs;
+https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/commit/?h=pm-cpuidle-teo&id=9ebff7f2e77dc1cf7a143f6eee2852b6380096e5
 
-Thank you,
+Later today I will expose a git branch with all of the recent cpuidle governor
+changes related to the tick_nohz_get_sleep_length() avoidance.
 
-> 
-> Have you tested your series without registering as FTRACE_OPS_FL_SAVE_REGS ?
+---
+ drivers/cpuidle/governors/gov.h  |   14 ++++++++
+ drivers/cpuidle/governors/menu.c |   66 +++++++++++++++++++++------------------
+ drivers/cpuidle/governors/teo.c  |    2 +
+ 3 files changed, 53 insertions(+), 29 deletions(-)
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Index: linux-pm/drivers/cpuidle/governors/menu.c
+===================================================================
+--- linux-pm.orig/drivers/cpuidle/governors/menu.c
++++ linux-pm/drivers/cpuidle/governors/menu.c
+@@ -19,6 +19,8 @@
+ #include <linux/sched/stat.h>
+ #include <linux/math64.h>
+ 
++#include "gov.h"
++
+ #define BUCKETS 12
+ #define INTERVAL_SHIFT 3
+ #define INTERVALS (1UL << INTERVAL_SHIFT)
+@@ -166,8 +168,7 @@ static void menu_update(struct cpuidle_d
+  * of points is below a threshold. If it is... then use the
+  * average of these 8 points as the estimated value.
+  */
+-static unsigned int get_typical_interval(struct menu_device *data,
+-					 unsigned int predicted_us)
++static unsigned int get_typical_interval(struct menu_device *data)
+ {
+ 	int i, divisor;
+ 	unsigned int min, max, thresh, avg;
+@@ -195,13 +196,6 @@ again:
+ 		}
+ 	}
+ 
+-	/*
+-	 * If the result of the computation is going to be discarded anyway,
+-	 * avoid the computation altogether.
+-	 */
+-	if (min >= predicted_us)
+-		return UINT_MAX;
+-
+ 	if (divisor == INTERVALS)
+ 		avg = sum >> INTERVAL_SHIFT;
+ 	else
+@@ -267,7 +261,6 @@ static int menu_select(struct cpuidle_dr
+ {
+ 	struct menu_device *data = this_cpu_ptr(&menu_devices);
+ 	s64 latency_req = cpuidle_governor_latency_req(dev->cpu);
+-	unsigned int predicted_us;
+ 	u64 predicted_ns;
+ 	u64 interactivity_req;
+ 	unsigned int nr_iowaiters;
+@@ -279,16 +272,41 @@ static int menu_select(struct cpuidle_dr
+ 		data->needs_update = 0;
+ 	}
+ 
+-	/* determine the expected residency time, round up */
+-	delta = tick_nohz_get_sleep_length(&delta_tick);
+-	if (unlikely(delta < 0)) {
+-		delta = 0;
+-		delta_tick = 0;
+-	}
+-	data->next_timer_ns = delta;
+-
+ 	nr_iowaiters = nr_iowait_cpu(dev->cpu);
+-	data->bucket = which_bucket(data->next_timer_ns, nr_iowaiters);
++
++	/* Find the shortest expected idle interval. */
++	predicted_ns = get_typical_interval(data) * NSEC_PER_USEC;
++	if (predicted_ns > RESIDENCY_THRESHOLD_NS) {
++		unsigned int timer_us;
++
++		/* Determine the time till the closest timer. */
++		delta = tick_nohz_get_sleep_length(&delta_tick);
++		if (unlikely(delta < 0)) {
++			delta = 0;
++			delta_tick = 0;
++		}
++
++		data->next_timer_ns = delta;
++		data->bucket = which_bucket(data->next_timer_ns, nr_iowaiters);
++
++		/* Round up the result for half microseconds. */
++		timer_us = div_u64((RESOLUTION * DECAY * NSEC_PER_USEC) / 2 +
++					data->next_timer_ns *
++						data->correction_factor[data->bucket],
++				   RESOLUTION * DECAY * NSEC_PER_USEC);
++		/* Use the lowest expected idle interval to pick the idle state. */
++		predicted_ns = min((u64)timer_us * NSEC_PER_USEC, predicted_ns);
++	} else {
++		/*
++		 * Because the next timer event is not going to be determined
++		 * in this case, assume that without the tick the closest timer
++		 * will be in distant future and that the closest tick will occur
++		 * after 1/2 of the tick period.
++		 */
++		data->next_timer_ns = KTIME_MAX;
++		delta_tick = TICK_NSEC / 2;
++		data->bucket = which_bucket(KTIME_MAX, nr_iowaiters);
++	}
+ 
+ 	if (unlikely(drv->state_count <= 1 || latency_req == 0) ||
+ 	    ((data->next_timer_ns < drv->states[1].target_residency_ns ||
+@@ -303,16 +321,6 @@ static int menu_select(struct cpuidle_dr
+ 		return 0;
+ 	}
+ 
+-	/* Round up the result for half microseconds. */
+-	predicted_us = div_u64(data->next_timer_ns *
+-			       data->correction_factor[data->bucket] +
+-			       (RESOLUTION * DECAY * NSEC_PER_USEC) / 2,
+-			       RESOLUTION * DECAY * NSEC_PER_USEC);
+-	/* Use the lowest expected idle interval to pick the idle state. */
+-	predicted_ns = (u64)min(predicted_us,
+-				get_typical_interval(data, predicted_us)) *
+-				NSEC_PER_USEC;
+-
+ 	if (tick_nohz_tick_stopped()) {
+ 		/*
+ 		 * If the tick is already stopped, the cost of possible short
+Index: linux-pm/drivers/cpuidle/governors/teo.c
+===================================================================
+--- linux-pm.orig/drivers/cpuidle/governors/teo.c
++++ linux-pm/drivers/cpuidle/governors/teo.c
+@@ -140,6 +140,8 @@
+ #include <linux/sched/topology.h>
+ #include <linux/tick.h>
+ 
++#include "gov.h"
++
+ /*
+  * The number of bits to shift the CPU's capacity by in order to determine
+  * the utilized threshold.
+Index: linux-pm/drivers/cpuidle/governors/gov.h
+===================================================================
+--- /dev/null
++++ linux-pm/drivers/cpuidle/governors/gov.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++/* Common definitions for cpuidle governors. */
++
++#ifndef __CPUIDLE_GOVERNOR_H
++#define __CPUIDLE_GOVERNOR_H
++
++/*
++ * Idle state target residency threshold used for deciding whether or not to
++ * check the time till the closest expected timer event.
++ */
++#define RESIDENCY_THRESHOLD_NS	(15 * NSEC_PER_USEC)
++
++#endif /* __CPUIDLE_GOVERNOR_H */
+
+
+
