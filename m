@@ -2,145 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C32775A0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C727775A56
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233065AbjHILFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 07:05:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54494 "EHLO
+        id S233147AbjHILH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 07:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233056AbjHILFC (ORCPT
+        with ESMTP id S233133AbjHILH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 07:05:02 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762A910F3;
-        Wed,  9 Aug 2023 04:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1691579102; x=1723115102;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=p4FORBjsEVC++BkkUwWMyRT93MEizkm2MWw3FwdJmlM=;
-  b=MPnK12+r7pE9s3a/7CNNgdacB1T6t79JtWA3z5Otc5jRvrhK9CLkd4IX
-   r9bHVKPUniZxu0Ps+N+cjy5fiaWOTaM6wwCjXpu9k6NWqVRZwFZ/fYBPM
-   rYNMs1BAipaZh2AhMotNZKewHbz2I0Y/tKILaaWMCjMCT62b5oO1bHOPK
-   x/QhyO0yCV8I2w5E/IMw5Bo19nHSGs0hJaL7CDZakvvZ7vzK2ORTWez5/
-   kAGWM4Bh3vT+Z2WEgs/hySkyXUe9ENVrWepY2he7ue656xuaG3b5t1w3t
-   +/NmOXzyzTXAD74BlijCvrd7S8Dn9MScPlcw2PvVcl9M2I8IONibGvQSU
-   A==;
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="asc'?scan'208";a="228848708"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Aug 2023 04:05:01 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 9 Aug 2023 04:04:54 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Wed, 9 Aug 2023 04:04:51 -0700
-Date:   Wed, 9 Aug 2023 12:04:14 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     JeeHeng Sia <jeeheng.sia@starfivetech.com>
-CC:     Conor Dooley <conor@kernel.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-        Song Shuai <suagrfillet@gmail.com>,
-        Petr Tesarik <petrtesarik@huaweicloud.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [RFT 1/2] RISC-V: handle missing "no-map" properties for
- OpenSBI's PMP protected regions
-Message-ID: <20230809-eastcoast-glimmer-a16985ff08f0@wendy>
-References: <20230802-purse-hydrant-6f44f77364b0@wendy>
- <20230802-detention-second-82ab2b53e07a@wendy>
- <3e066032031e4552b4b7903755deb669@EXMBX066.cuchost.com>
- <20230808-humility-rut-e1e46cf75708@spud>
- <3931cc7932e644bd88f9baf2beddd00d@EXMBX066.cuchost.com>
+        Wed, 9 Aug 2023 07:07:27 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B04ED;
+        Wed,  9 Aug 2023 04:07:25 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 9f9b59aa6d185479; Wed, 9 Aug 2023 13:07:23 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 63595662543;
+        Wed,  9 Aug 2023 13:07:23 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH v5.1 08/11] ACPI: thermal: Use trip point table to register thermal zones
+Date:   Wed, 09 Aug 2023 13:07:23 +0200
+Message-ID: <5707372.DvuYhMxLoT@kreacher>
+In-Reply-To: <3178745.5fSG56mABF@kreacher>
+References: <13318886.uLZWGnKmhe@kreacher> <4503814.LvFx2qVVIh@kreacher> <3178745.5fSG56mABF@kreacher>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="D7xFCxRFk6Od56Zz"
-Content-Disposition: inline
-In-Reply-To: <3931cc7932e644bd88f9baf2beddd00d@EXMBX066.cuchost.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrleeggdefhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphht
+ thhopehmihgthhgrlhdrfihilhgtiiihnhhskhhisehinhhtvghlrdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---D7xFCxRFk6Od56Zz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-On Wed, Aug 09, 2023 at 10:24:57AM +0000, JeeHeng Sia wrote:
->=20
->=20
-> > -----Original Message-----
-> > From: Conor Dooley <conor@kernel.org>
-> > Sent: Tuesday, August 8, 2023 9:13 PM
-> > To: JeeHeng Sia <jeeheng.sia@starfivetech.com>
-> > Cc: Conor Dooley <conor.dooley@microchip.com>; palmer@dabbelt.com; Paul=
- Walmsley <paul.walmsley@sifive.com>; Atish Patra
-> > <atishp@rivosinc.com>; Anup Patel <apatel@ventanamicro.com>; Alexandre =
-Ghiti <alexghiti@rivosinc.com>; Bj=F6rn T=F6pel
-> > <bjorn@rivosinc.com>; Song Shuai <suagrfillet@gmail.com>; Petr Tesarik =
-<petrtesarik@huaweicloud.com>; linux-
-> > riscv@lists.infradead.org; linux-kernel@vger.kernel.org; stable@vger.ke=
-rnel.org
-> > Subject: Re: [RFT 1/2] RISC-V: handle missing "no-map" properties for O=
-penSBI's PMP protected regions
-> >=20
-> > On Mon, Aug 07, 2023 at 12:44:07AM +0000, JeeHeng Sia wrote:
-> >=20
-> > > > +/* SBI implementation IDs */
-> > > > +#define SBI_IMP_OPENSBI	1
-> > > I would suggest to create an enum struct for the SBI Imp ID in
-> > > the sbi.h file. What do you think?
-> >=20
-> > I'm not really sure what the advantage of doing so is.
-> The macro SBI_IMP_OPENSBI seems weird (I would read it as "SBI Implementa=
-tion OpenSBI").
+Make the ACPI thermal driver use thermal_zone_device_register_with_trips()
+to register its thermal zones.
 
-That is what it is though, so I don't see what's weird about that.
+For this purpose, make it create a trip point table that will be passed to
+thermal_zone_device_register_with_trips() as an argument.
 
-> However, if we implement an enum struct for SBI_IMP_ID
+Also use the thermal_zone_update_trip_temp() helper introduced
+previously to update temperatures of the passive and active trip
+points after a trip points change notification from the platform
+firmware.
 
-> (There are numerous IDs available),
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-Ohh I know, but I didn't see the point adding those when I was only
-focusing on a single implementation.
+This is a bug fix update of just this patch that doesn't affect any other
+patches in the series, which is why it is sent separately.
 
-> the macro can be abbreviated to OpenSBI. By doing this, the conditional
-> checking of the implementation ID would be more readable, as shown below:
-> if (sbi_firmware_id !=3D OPENSBI)
+v5 -> v5.1:
+   * Terminate the loop over active trip points in
+     acpi_thermal_register_thermal_zone() on the first invalid one to
+     avoid reaching out of array bounds.
+   * Use acpi_trip instead of computing its value from scratch in two
+     places.
+   * Fix up white space.
 
-I don't see that it can become that simple, it'd still need to be
-prefixed with SBI_ to be consistent with any other SBI related enum, and
-at that point adding the extra IMP_ makes little odds.
+v4 -> v5:
+   * Use for_each_thermal_trip() introduced previously to update trip
+     temperatures with the help of a new trip callback function.
+   * Drop a function that has no users after the above change.
+   * Rebase on top of patch [07/11].
 
---D7xFCxRFk6Od56Zz
-Content-Type: application/pgp-signature; name="signature.asc"
+v3 -> v4:
+   * Rework to use thermal_zone_update_trip_temp() for updating trip point
+     temperatures.
+   * Rebase on top of the new version of the previous patch.
 
------BEGIN PGP SIGNATURE-----
+v2 -> v3:
+   * Fix error code path memory leak in acpi_thermal_register_thermal_zone().
+   * Notice that the critical and hot trips never change after initialization,
+     so don't add struct thermal_trip_ref to any of them.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNNyrgAKCRB4tDGHoIJi
-0rvGAP0SyeQqm6UAvnXOLJzlnblTo0HwOabHKj0s86xTLkhOfwD/YaRKdWFfgbVn
-VGwGKCt34I07EXIAbaW33QoCY9kxkQk=
-=SRBE
------END PGP SIGNATURE-----
+v1 -> v2:
+   * Use thermal_zone_device_lock()/thermal_zone_device_unlock() in
+     acpi_thermal_check_fn() explicitly and call __thermal_zone_device_update()
+     from there without unlocking the thermal zone.
+   * Export __thermal_zone_device_update() to modules (so it can be called by
+     the ACPI thermal code).
 
---D7xFCxRFk6Od56Zz--
+---
+ drivers/acpi/thermal.c |   93 +++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 86 insertions(+), 7 deletions(-)
+
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -125,6 +125,7 @@ struct acpi_thermal {
+ 	unsigned long polling_frequency;
+ 	volatile u8 zombie;
+ 	struct acpi_thermal_trips trips;
++	struct thermal_trip *trip_table;
+ 	struct acpi_handle_list devices;
+ 	struct thermal_zone_device *thermal_zone;
+ 	int kelvin_offset;	/* in millidegrees */
+@@ -178,6 +179,15 @@ static int acpi_thermal_get_polling_freq
+ 	return 0;
+ }
+ 
++static int acpi_thermal_temp(struct acpi_thermal *tz, int temp_deci_k)
++{
++	if (temp_deci_k == THERMAL_TEMP_INVALID)
++		return THERMAL_TEMP_INVALID;
++
++	return deci_kelvin_to_millicelsius_with_offset(temp_deci_k,
++						       tz->kelvin_offset);
++}
++
+ static void __acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
+ {
+ 	acpi_status status;
+@@ -389,10 +399,30 @@ static void __acpi_thermal_trips_update(
+ 	}
+ }
+ 
++static int acpi_thermal_adjust_trip(struct thermal_trip *trip, void *data)
++{
++	struct acpi_thermal_trip *acpi_trip = trip->priv;
++	struct acpi_thermal *tz = data;
++
++	if (!acpi_trip)
++		return 0;
++
++	if (acpi_trip->valid)
++		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temperature);
++	else
++		trip->temperature = THERMAL_TEMP_INVALID;
++
++	return 0;
++}
++
+ static void acpi_thermal_adjust_thermal_zone(struct thermal_zone_device *thermal,
+ 					     unsigned long data)
+ {
+-	__acpi_thermal_trips_update(thermal_zone_device_priv(thermal), data);
++	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
++
++	__acpi_thermal_trips_update(tz, data);
++
++	for_each_thermal_trip(tz->thermal_zone, acpi_thermal_adjust_trip, tz);
+ }
+ 
+ static void acpi_queue_thermal_check(struct acpi_thermal *tz)
+@@ -757,6 +787,8 @@ static void acpi_thermal_zone_sysfs_remo
+ 
+ static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz)
+ {
++	struct acpi_thermal_trip *acpi_trip;
++	struct thermal_trip *trip;
+ 	int passive_delay = 0;
+ 	int trip_count = 0;
+ 	int result;
+@@ -776,12 +808,56 @@ static int acpi_thermal_register_thermal
+ 	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].trip.valid; i++)
+ 		trip_count++;
+ 
+-	tz->thermal_zone = thermal_zone_device_register("acpitz", trip_count, 0,
+-							tz, &acpi_thermal_zone_ops,
+-							NULL, passive_delay,
+-							tz->polling_frequency * 100);
+-	if (IS_ERR(tz->thermal_zone))
+-		return -ENODEV;
++	trip = kcalloc(trip_count, sizeof(*trip), GFP_KERNEL);
++	if (!trip)
++		return -ENOMEM;
++
++	tz->trip_table = trip;
++
++	if (tz->trips.critical.valid) {
++		trip->type = THERMAL_TRIP_CRITICAL;
++		trip->temperature = acpi_thermal_temp(tz, tz->trips.critical.temperature);
++		trip++;
++	}
++
++	if (tz->trips.hot.valid) {
++		trip->type = THERMAL_TRIP_HOT;
++		trip->temperature = acpi_thermal_temp(tz, tz->trips.hot.temperature);
++		trip++;
++	}
++
++	acpi_trip = &tz->trips.passive.trip;
++	if (acpi_trip->valid) {
++		trip->type = THERMAL_TRIP_PASSIVE;
++		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temperature);
++		trip->priv = acpi_trip;
++		trip++;
++	}
++
++	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
++		acpi_trip = &tz->trips.active[i].trip;
++
++		if (!acpi_trip->valid)
++			break;
++
++		trip->type = THERMAL_TRIP_ACTIVE;
++		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temperature);
++		trip->priv = acpi_trip;
++		trip++;
++	}
++
++	tz->thermal_zone = thermal_zone_device_register_with_trips("acpitz",
++								   tz->trip_table,
++								   trip_count,
++								   0, tz,
++								   &acpi_thermal_zone_ops,
++								   NULL,
++								   passive_delay,
++								   tz->polling_frequency * 100);
++	if (IS_ERR(tz->thermal_zone)) {
++		result = PTR_ERR(tz->thermal_zone);
++		goto free_trip_table;
++	}
+ 
+ 	result = acpi_thermal_zone_sysfs_add(tz);
+ 	if (result)
+@@ -800,6 +876,8 @@ remove_links:
+ 	acpi_thermal_zone_sysfs_remove(tz);
+ unregister_tzd:
+ 	thermal_zone_device_unregister(tz->thermal_zone);
++free_trip_table:
++	kfree(tz->trip_table);
+ 
+ 	return result;
+ }
+@@ -808,6 +886,7 @@ static void acpi_thermal_unregister_ther
+ {
+ 	acpi_thermal_zone_sysfs_remove(tz);
+ 	thermal_zone_device_unregister(tz->thermal_zone);
++	kfree(tz->trip_table);
+ 	tz->thermal_zone = NULL;
+ }
+ 
+
+
+
