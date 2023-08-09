@@ -2,77 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C57EC7762F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D61776301
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234311AbjHIOso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
+        id S233948AbjHIOuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233923AbjHIOsm (ORCPT
+        with ESMTP id S233427AbjHIOuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:48:42 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09A52704
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:48:30 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-63cffc0f95eso34946016d6.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 07:48:30 -0700 (PDT)
+        Wed, 9 Aug 2023 10:50:00 -0400
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD7F1FCC
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:49:59 -0700 (PDT)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5841be7d15eso78805037b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 07:49:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1691592505; x=1692197305;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=m4bISbA3t+yh3hAsX3GX16FfloCmjYYwoOgy/YO987g=;
-        b=hQyQFawRvch/vrwsE1c4VcH8/I/37cjfRv53xh3z+C3J10ieZX2v/VwO3tZpFABOaM
-         v5TOpGidPc7LPAr+vIBVlHx3ii9jMKu97ZCWLbrc4khP5xymRspT9XsE2mP2YndlQnbv
-         QGyEAVLApPpT3nFaHk178DUyBaZOudxpbciJOH4XvfE7IwBBp6QCRDzweEX1Ttc1/rus
-         Dd9oVW25SC9k5IWoRxW5mQ86wpxFV2ik0O7LwEf3ZhuQL5EIDRZ6HRvE/22u0CHwFf4y
-         KB7MRNS7+IOayj1ck8GYw4o6sFaQS+W2oRAAcbzDTU2bbLxP8f7xBSpwnHagMv9hj2al
-         UIaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691592505; x=1692197305;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=paul-moore.com; s=google; t=1691592598; x=1692197398;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m4bISbA3t+yh3hAsX3GX16FfloCmjYYwoOgy/YO987g=;
-        b=TyH7Rm3b5IbCFh+pH0Eon269aYlY157OkuaJdJCp+fZHTd7s6MQuIARZSLp/SFId6F
-         +2ei13+M5nhnlLs0Xxs//sqb2pIp3iEN+gr5Px1JaT9i6UglknyFY9PIwT2sDhjw2FBp
-         lmh3W1JLtny2AEZRes/O0OyU9wQWojoy5/aHjCwsVpIrLyztlUyQJVV1yPFwdp7chvsH
-         SOpWE/uVkkIrjTGmfZ/Ji1ZMjXkI/jcpmxj7u7fE+vB8cafplDcXhxcGXWSDzDZ26+lG
-         eMWzRx325DZIlO/vsscoBPncijqcfea12YSMMIy8DSLaSDcp/miteMBfs6YZFepiBdhw
-         ahkw==
-X-Gm-Message-State: AOJu0YxeLTA/23IuUDyU0sKGn4MqIDu1XtnJP8S17TmnAL9oxju9Dzh2
-        s+ynCtUsDwBIEVks4wAFDVg07g==
-X-Google-Smtp-Source: AGHT+IFgpbmLdpjQ1gAKEz+zkG6hBf1mGwlCmh/weIzumrbnKNHa8HANKleEhFnF76ZwV/rj6sLhbQ==
-X-Received: by 2002:ad4:4047:0:b0:63f:78bc:85de with SMTP id r7-20020ad44047000000b0063f78bc85demr2462304qvp.56.1691592505716;
-        Wed, 09 Aug 2023 07:48:25 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id pc41-20020a05620a842900b0076cc0a6e127sm4019495qkn.116.2023.08.09.07.48.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 07:48:25 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qTkU4-0053aa-MQ;
-        Wed, 09 Aug 2023 11:48:24 -0300
-Date:   Wed, 9 Aug 2023 11:48:24 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Baolu Lu <baolu.lu@linux.intel.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Zhang, Tina" <tina.zhang@intel.com>,
-        Michael Shavit <mshavit@google.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/5] iommu: Call helper function to get assigned pasid
- value
-Message-ID: <ZNOnOGTfpXzrrRTz@ziepe.ca>
-References: <20230808074944.7825-1-tina.zhang@intel.com>
- <20230808074944.7825-3-tina.zhang@intel.com>
- <f3d8692e-b13d-97ee-2288-c2be1858dcfa@linux.intel.com>
- <BN9PR11MB52767F29A6C11157659D375B8C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <c0e94e88-94b8-69de-69c8-ed132ae28951@linux.intel.com>
+        bh=CukD5gEv7v0vB/IpZcOsjBs6ZrQwHEdAXjUTqz1JxfU=;
+        b=GZK3D/kdN5vwzK4nuaJmWVlmd3Vc0V+amg3bQLmnhAevhct8FDevPi8AHZMs5M11Se
+         yKfb4wNDEC6NImhiWdYifr/LtaiB7fQOopFcEdzYJ8GKKZEr3BwrU59aGxzaBG9t7UgI
+         IypqqfLDeovNtkQJAqlQlyW+hgmpWnrjixOaV3q/oZsev5Sv+WgX5Q70wltEiDAZVK2G
+         J730GyVeQyf1rVhfiV+pBNt/+qwFZuPfHp6I4MRuFA4RwE0QPWIf1+O3bPVQbuxHhEWR
+         7P/XxqtNIxp+BjYe27nLo2nszNbWuJT4KczpXdgTUNT+1uaAXAoA3XEZ+t/8OKK5tMZC
+         JSXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691592598; x=1692197398;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CukD5gEv7v0vB/IpZcOsjBs6ZrQwHEdAXjUTqz1JxfU=;
+        b=cM1nwtioxmmK8dLGzodKmdG0rZpojj3ZfCkrVB0EVNwmILwOJuTxQFYrcz7FvBTYfW
+         PKW4d+xoE6nIlXYuTsBl+oA+cIby1pFoXM2f8aS0dwM41kOnUCUFAhvs4wggSM6JBCLW
+         PqqtCIDcnvChRdABY2PEgY63JlBYIV5ECcdqSiE/7zhVC4O+Kj4gpvx0OiB0xXuCUK3h
+         KaeVunxmnYoztEmvq0FYhV3FRMfMVor8KtllLvfxizld8VHWKeGS4ywFTR18WkMK/Ix9
+         rVTgw1qjL5Kx3j9R5zH//1KSDpHo2TrONE5rahl0sPtBVjXNo2cKNcQYFsFO5sfKZBYW
+         eZcA==
+X-Gm-Message-State: AOJu0YzCmVqrY7ijFcvAZNnXAv3B2Q7Ko8Kkkgyj70sZSZe2PlVQ+IsS
+        XdDpuBWMvSKM7wkddZ53zTeHFbT2kNwYomojwM5t
+X-Google-Smtp-Source: AGHT+IH7hCb8h0oClaW9sIOSnHDNdPlIZHza4ZeYJg9Tf5MPGHsreOC8337g1w3nu2yMm1U4RKLa193R9rsQ8FlSWGs=
+X-Received: by 2002:a0d:f942:0:b0:586:a199:91f1 with SMTP id
+ j63-20020a0df942000000b00586a19991f1mr3329846ywf.24.1691592598300; Wed, 09
+ Aug 2023 07:49:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c0e94e88-94b8-69de-69c8-ed132ae28951@linux.intel.com>
+References: <20221107205754.2635439-1-cukie@google.com> <CAHC9VhTLBWkw2XzqdFx1LFVKDtaAL2pEfsmm+LEmS0OWM1mZgA@mail.gmail.com>
+ <CABXk95ChjusTneWJgj5a58CZceZv0Ay-P-FwBcH2o4rO0g2Ggw@mail.gmail.com>
+ <CAHC9VhRTWGuiMpJJiFrUpgsm7nQaNA-n1CYRMPS-24OLvzdA2A@mail.gmail.com>
+ <54c8fd9c-0edd-7fea-fd7a-5618859b0827@semihalf.com> <CAHC9VhS9BXTUjcFy-URYhG=XSxBC+HsePbu01_xBGzM8sebCYQ@mail.gmail.com>
+ <d2eaa3f8-cca6-2f51-ce98-30242c528b6f@semihalf.com>
+In-Reply-To: <d2eaa3f8-cca6-2f51-ce98-30242c528b6f@semihalf.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 9 Aug 2023 10:49:47 -0400
+Message-ID: <CAHC9VhQDAM8X-MV9ONckc2NBWDZrsMteanDo9_NS4SirdQAx=w@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] Add LSM access controls for io_uring_setup
+To:     Dmytro Maluka <dmy@semihalf.com>
+Cc:     Jeffrey Vander Stoep <jeffv@google.com>,
+        Gil Cukierman <cukie@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        Joel Granados <j.granados@samsung.com>,
+        Jeff Xu <jeffxu@google.com>,
+        Takaya Saeki <takayas@chromium.org>,
+        Tomasz Nowicki <tn@semihalf.com>,
+        Matteo Rizzo <matteorizzo@google.com>,
+        Andres Freund <andres@anarazel.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -83,40 +86,177 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 06:58:15PM +0800, Baolu Lu wrote:
-> On 2023/8/9 17:49, Tian, Kevin wrote:
-> > > From: Baolu Lu <baolu.lu@linux.intel.com>
-> > > Sent: Wednesday, August 9, 2023 8:22 AM
-> > > 
-> > > On 2023/8/8 15:49, Tina Zhang wrote:
-> > > > Use the helper function mm_get_pasid() to get the mm assigned pasid
-> > > > value.
-> > > 
-> > > For internal iommu drivers, perhaps we should use another helper.
-> > > Something like sva_domain_get_pasid()?
-> > > 
-> > > Suppose that the iommu drivers should have no idea about the "mm".
-> > > 
-> > 
-> > Aren't all touched functions accept a struct mm_struct pointer?
-> 
-> In the end we should remove all mm reference in the individual drivers.
-> The drivers only need to know what they need to know. All mm-aware code
-> should eventually be moved to the core.
-> 
-> For now, at least we should avoid using mm in the set/remove_dev_pasid
-> code path. Later, once we complete consolidating mm notification in the
-> core, drivers will have no need to use "mm" anymore.
+On Wed, Aug 9, 2023 at 7:22=E2=80=AFAM Dmytro Maluka <dmy@semihalf.com> wro=
+te:
+> On 8/9/23 02:31, Paul Moore wrote:
+> > On Tue, Aug 8, 2023 at 4:40=E2=80=AFPM Dmytro Maluka <dmy@semihalf.com>=
+ wrote:
+> >> On 11/10/22 22:04, Paul Moore wrote:
+> >>> On Thu, Nov 10, 2022 at 12:54 PM Jeffrey Vander Stoep <jeffv@google.c=
+om> wrote:
+> >>>> On Mon, Nov 7, 2022 at 10:17 PM Paul Moore <paul@paul-moore.com> wro=
+te:
+> >>>>>
+> >>>>> On Mon, Nov 7, 2022 at 3:58 PM Gil Cukierman <cukie@google.com> wro=
+te:
+> >>>>>>
+> >>>>>> This patchset provides the changes required for controlling access=
+ to
+> >>>>>> the io_uring_setup system call by LSMs. It does this by adding a n=
+ew
+> >>>>>> hook to io_uring. It also provides the SELinux implementation for =
+a new
+> >>>>>> permission, io_uring { setup }, using the new hook.
+> >>>>>>
+> >>>>>> This is important because existing io_uring hooks only support lim=
+iting
+> >>>>>> the sharing of credentials and access to the sensitive uring_cmd f=
+ile
+> >>>>>> op. Users of LSMs may also want the ability to tightly control whi=
+ch
+> >>>>>> callers can retrieve an io_uring capable fd from the kernel, which=
+ is
+> >>>>>> needed for all subsequent io_uring operations.
+> >>>>>
+> >>>>> It isn't immediately obvious to me why simply obtaining a io_uring =
+fd
+> >>>>> from io_uring_setup() would present a problem, as the security
+> >>>>> relevant operations that are possible with that io_uring fd *should=
+*
+> >>>>> still be controlled by other LSM hooks.  Can you help me understand
+> >>>>> what security issue you are trying to resolve with this control?
+> >>>>
+> >>>> I think there are a few reasons why we want this particular hook.
+> >>>>
+> >>>> 1.  It aligns well with how other resources are managed by selinux
+> >>>> where access to the resource is the first control point (e.g. "creat=
+e"
+> >>>> for files, sockets, or bpf_maps, "prog_load" for bpf programs, and
+> >>>> "open" for perf_event) and then additional functionality or
+> >>>> capabilities require additional permissions.
+> >>>
+> >>> [NOTE: there were two reply sections in your email, and while similar=
+,
+> >>> they were not identical; I've trimmed the other for the sake of
+> >>> clarity]
+> >>>
+> >>> The resources you mention are all objects which contain some type of
+> >>> information (either user data, configuration, or program
+> >>> instructions), with the resulting fd being a handle to those objects.
+> >>> In the case of io_uring the fd is a handle to the io_uring
+> >>> interface/rings, which by itself does not contain any information
+> >>> which is not already controlled by other permissions.
+> >>>
+> >>> I/O operations which transfer data between the io_uring buffers and
+> >>> other system objects, e.g. IORING_OP_READV, are still subject to the
+> >>> same file access controls as those done by the application using
+> >>> syscalls.  Even the IORING_OP_OPENAT command goes through the standar=
+d
+> >>> VFS code path which means it will trigger the same access control
+> >>> checks as an open*() done by the application normally.
+> >>>
+> >>> The 'interesting' scenarios are those where the io_uring operation
+> >>> servicing credentials, aka personalities, differ from the task
+> >>> controlling the io_uring.  However in those cases we have the new
+> >>> io_uring controls to gate these delegated operations.  Passing an
+> >>> io_uring fd is subject to the fd/use permission like any other fd.
+> >>>
+> >>> Although perhaps the most relevant to your request is the fact that
+> >>> the io_uring inode is created using the new(ish) secure anon inode
+> >>> interface which ensures that the creating task has permission to
+> >>> create an io_uring.  This io_uring inode label also comes into play
+> >>> when a task attempts to mmap() the io_uring rings, a critical part of
+> >>> the io_uring API.
+> >>>
+> >>> If I'm missing something you believe to be important, please share th=
+e details.
+> >>>
+> >>>> 2. It aligns well with how resources are managed on Android. We ofte=
+n
+> >>>> do not grant direct access to resources (like memory buffers).
+> >>>
+> >>> Accessing the io_uring buffers requires a task to mmap() the io_uring
+> >>> fd which is controlled by the normal SELinux mmap() access controls.
+> >>>
+> >>>> 3. Attack surface management. One of the primary uses of selinux on
+> >>>> Android is to assess and limit attack surface (e.g.
+> >>>> https://twitter.com/jeffvanderstoep/status/1422771606309335043) . As
+> >>>> io_uring vulnerabilities have made their way through our vulnerabili=
+ty
+> >>>> management system, it's become apparent that it's complicated to
+> >>>> assess the impact. Is a use-after-free reachable? Creating
+> >>>> proof-of-concept exploits takes a lot of time, and often functionali=
+ty
+> >>>> can be reached by multiple paths. How many of the known io_uring
+> >>>> vulnerabilities would be gated by the existing checks? How many futu=
+re
+> >>>> ones will be gated by the existing checks? I don't know the answer t=
+o
+> >>>> either of these questions and it's not obvious. This hook makes that
+> >>>> initial assessment simple and effective.
+> >>>
+> >>> It should be possible to deny access to io_uring via the anonymous
+> >>> inode labels, the mmap() controls, and the fd/use permission.  If you
+> >>> find a way to do meaningful work with an io_uring fd that can't be
+> >>> controlled via an existing permission check please let me know.
+> >>
+> >> Thank you a lot for this explanation. However, IMHO we should not
+> >> confuse 2 somewhat different problems here:
+> >>
+> >> - protecting io_uring related resources (file descriptors, memory
+> >>   buffers) against unauthorized access
+> >>
+> >> - protecting the entire system against potential vulnerabilities in
+> >>   io_uring
+> >>
+> >> And while I agree that the existing permission checks should be alread=
+y
+> >> sufficient for the former, I'm not quite sure they are sufficient for
+> >> the latter.
+> >
+> > ...
+> >
+> >> I already have a PoC patch [3] adding such LSM hook. But before I try =
+to
+> >> submit it for upstream, I'd like to know your opinion on the whole ide=
+a.
+> >
+> > First please explain how the existing LSM/SELinux control points are
+> > not sufficient for restricting io_uring operations.  I'm looking for a
+> > real program flow that is able to "do meaningful work with an io_uring
+> > fd that can't be controlled via an existing permission check".
+>
+> As I said at the beginning of my reply, I agree with you that the
+> existing LSM controls are sufficient for restricting io_uring I/O
+> operations. That is not my concern here. The concern is: how to (and
+> do we need to) restrict triggering execution of *any* io_uring code in
+> kernel, *in addition to* restricting the actual io_uring operations.
 
-I'm not sure how this will play out...
+If your concern is preventing *any* io_uring code from being executed,
+I would suggest simply not enabling io_uring at build time.  If you
+need to selectively enable io_uring for some subset of processes, you
+will need to make use of one of the options you discussed previously,
+e.g. a LSM, seccomp, etc.
 
-We don't want extra function indirections here so ultimately the
-driver needs to hook the arch_invalidate_range() in the mm_notifier
-with its own function.
+From a LSM perspective, I don't believe we want to be in the business
+of blocking entire kernel subsystems from execution, rather we want to
+provide control points so that admins and users can have better, or
+more granular control over the security relevant operations that take
+place within the different kernel subsystems.
 
-The core could put the mm_notifier in a common iommu_domain_sva struct
-and it could stick in the driver's invalidate ops, that would be a
-nice simplification (and discourage drivers from doing the crazy
-things they are currently doing)
+> In other words, "a real program doing a meaningful work with io_uring"
+> in this case would mean "an exploit for a real vulnerability in io_uring
+> code (in the current or any older kernel) which does not require an
+> access to io_uring operations to be exploited". I don't claim that such
+> vulnerabilities exist or are likely to be introduced in future kernels.
+> But I'm neither an io_uring expert nor, more importantly, a security
+> expert, so I cannot tell with confidence that they are not and we have
+> nothing to worry about here. So I'm interested in your and others'
+> opinion on that.
 
-Jason
+Once again, if you have serious concerns about the security or safety
+of an individual kernel subsystem, your best option is to simply build
+a kernel without that subsystem enabled.
+
+--=20
+paul-moore.com
