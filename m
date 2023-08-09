@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEDF7766F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E327766FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbjHISIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 14:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34684 "EHLO
+        id S232117AbjHISIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 14:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbjHISIg (ORCPT
+        with ESMTP id S229642AbjHISIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 14:08:36 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA8F171D
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 11:08:36 -0700 (PDT)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 379HrJNB005981;
-        Wed, 9 Aug 2023 18:08:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=gYVoYXJeTSjHj2ebbtZoiLo5JrPxgiu6wu4sayq6J4s=;
- b=nfJ+8Mw/05eiYAjXGNE3X4MOzsXAWBACaAyDXBm1dP1k8ycxIAc1BR2qp9dcbc+kmyH7
- i81HQEec7VDbNTRAvOYgRKL6xanhkIKNwscBCAwyQ6N3gXDrfbcXPK03b0y3jHm8DC+6
- f9AHOilnI2iNAPLmJ5081UtxHHNM7iVOGiVqhXgUZGNB2va2kXC0GH6d1TuG6zuYbH0m
- iE7oNiszdD0A7xUUuRtD9bsPxZxRgc/oe0iRfifeDYJ98uQpHDnT5dXamplTvZOSHmbB
- v+jNtvrCSLsS0a4FZ6tP5W22Jyb6mHt3l0JT9ytc4bN+Y04dQsoScSxHsO5l+Y79Xx+A KQ== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3scfkjrfgj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 18:08:21 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 379HppuY000402;
-        Wed, 9 Aug 2023 18:08:20 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sa28ktc3y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 18:08:20 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 379I8KR035324514
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Aug 2023 18:08:20 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E6F0B5805E;
-        Wed,  9 Aug 2023 18:08:19 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B258D58043;
-        Wed,  9 Aug 2023 18:08:19 +0000 (GMT)
-Received: from slate16.aus.stglabs.ibm.com (unknown [9.61.73.158])
-        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Aug 2023 18:08:19 +0000 (GMT)
-From:   Eddie James <eajames@linux.ibm.com>
-To:     linux-fsi@lists.ozlabs.org
-Cc:     joel@jms.id.au, linux-kernel@vger.kernel.org,
-        alistair@popple.id.au, k@ozlabs.org,
-        Eddie James <eajames@linux.ibm.com>
-Subject: [PATCH 2/2] fsi: Lock mutex for master device registration
-Date:   Wed,  9 Aug 2023 13:08:14 -0500
-Message-Id: <20230809180814.151984-3-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20230809180814.151984-1-eajames@linux.ibm.com>
-References: <20230809180814.151984-1-eajames@linux.ibm.com>
+        Wed, 9 Aug 2023 14:08:38 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CC0171D
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 11:08:37 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d62bdd1a97dso49310276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 11:08:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691604516; x=1692209316;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BJzClEoz6IMsRxIOF5gI29NCybcSus5ECJlvXn3OVwQ=;
+        b=4V9m2O3VSW4giKGWZXkYqXUEfZ+ya+2PaBk+wpZ3LaTiq70AzqAVcqqq9Xot4dPyFR
+         XUCFXNcDUNrAn/yp8yfK4n6/O1J5O8AmwMr6VJhdcrcHZrGGcShjk8X2cIUQcXyuogmu
+         x7ZABjYw6lmSK/4PBnyzhQx0wfwH6HiCWW3Hpj/4DcZkayi+2k9et5vnSKuij4o7+O4o
+         2fCHjcNa06DY2WB8QnJTI2UfHKuQNPQXgPjjsJntyv1xH2QdzReGorxvfU9So9RGy1hl
+         a1U+Rl2qx1gkoe1sTYNs5RprdJcA/yXcgshkYJ7dofL2RATv76vF8Uw0p0rGrdC1Wafr
+         YhhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691604516; x=1692209316;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BJzClEoz6IMsRxIOF5gI29NCybcSus5ECJlvXn3OVwQ=;
+        b=dkYXdgzljPKe13ayCmVQnG+EmGSS/+bdIvx+WDuNHszb/qoWzkKK6lcbPrhhDSN9Rz
+         0R2VKBlQkl/IE6WWeFSMGoejNnTXw5tI150lQexMwV0PWzc7rnO1mGD5JlK9e1En7EOo
+         qpNlhDcmlrDD/2f7oSj/0xg7Y8eIJemyNIKutx9x5Oa/aALCH6jTjXCOCEJTOl5Q0Jgy
+         EFPxzeTJC0RFqHw1b4zH5DVBp4U8vP95pc/nAc6Uc0alAONCUaOl8z5MObc7HKPRykk2
+         tDYFAdBdZT7UAIy6GlokJa4HGcnUxOZNNc/YozxXtFKVi9iyXdJU/uQrrgFTpN85E16E
+         PqkA==
+X-Gm-Message-State: AOJu0YwfqwoIVHM+Lytb69kxMuVaqEAXgygtCN3i+Cq9TRnOlBh0dKV8
+        ywIuoPX2Jk43um3FfFTmW/uOZMmJbxiILZdpcJdc+g==
+X-Google-Smtp-Source: AGHT+IFwckYOOmT9AcClWHBNhiA8LoX6mDtqZnfW0TFz/V19ZZ3p3H3RQZcJf+Q66RNjX4BmzPPohsVY0tPM+d0txnc=
+X-Received: by 2002:a25:dbc8:0:b0:d63:645:1991 with SMTP id
+ g191-20020a25dbc8000000b00d6306451991mr156266ybf.58.1691604516400; Wed, 09
+ Aug 2023 11:08:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: SJKGVzOt3AZRUtcAJOd732wB2lZi7At6
-X-Proofpoint-ORIG-GUID: SJKGVzOt3AZRUtcAJOd732wB2lZi7At6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-09_16,2023-08-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 suspectscore=0 spamscore=0 impostorscore=0 mlxlogscore=999
- bulkscore=0 malwarescore=0 clxscore=1015 adultscore=0 lowpriorityscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308090158
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230630211957.1341547-1-surenb@google.com> <a34a418a-9a6c-9d9a-b7a3-bde8013bf86c@redhat.com>
+ <CAJuCfpGCWekMdno=L=4m7ujWTYMr0Wv77oYzXWT5RXnx+fWe0w@mail.gmail.com>
+ <CAJuCfpGMvYxu-g9kVH40UDGnpF2kxctH7AazhvmwhWWq1Rn1sA@mail.gmail.com>
+ <CAJuCfpHA78vxOBcaB3m7S7=CoBLMXTzRWego+jZM7JvUm3rEaQ@mail.gmail.com> <0ab6524a-6917-efe2-de69-f07fb5cdd9d2@redhat.com>
+In-Reply-To: <0ab6524a-6917-efe2-de69-f07fb5cdd9d2@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 9 Aug 2023 11:08:23 -0700
+Message-ID: <CAJuCfpEs2k8mHM+9uq05vmcOYCfkNnOb4s3xPSoWheizPkcwLA@mail.gmail.com>
+Subject: Re: [PATCH v7 0/6] Per-VMA lock support for swap and userfaults
+To:     David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, willy@infradead.org, hannes@cmpxchg.org,
+        mhocko@suse.com, josef@toxicpanda.com, jack@suse.cz,
+        ldufour@linux.ibm.com, laurent.dufour@fr.ibm.com,
+        michel@lespinasse.org, liam.howlett@oracle.com, jglisse@google.com,
+        vbabka@suse.cz, minchan@google.com, dave@stgolabs.net,
+        punit.agrawal@bytedance.com, lstoakes@gmail.com, hdanton@sina.com,
+        apopple@nvidia.com, peterx@redhat.com, ying.huang@intel.com,
+        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        pasha.tatashin@soleen.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,55 +83,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because master device registration may cause hub master scans, or
-user scans may begin before device registration has ended, so the
-master scan lock must be held while registering the device.
+On Wed, Aug 9, 2023 at 11:04=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> >>>> Which ends up being
+> >>>>
+> >>>> VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
+> >>>>
+> >>>> I did not check if this is also the case on mainline, and if this se=
+ries is responsible.
+> >>>
+> >>> Thanks for reporting! I'm checking it now.
+> >>
+> >> Hmm. From the code it's not obvious how lock_mm_and_find_vma() ends up
+> >> calling find_vma() without mmap_lock after successfully completing
+> >> get_mmap_lock_carefully(). lock_mm_and_find_vma+0x3f/0x270 points to
+> >> the first invocation of find_vma(), so this is not even the lock
+> >> upgrade path... I'll try to reproduce this issue and dig up more but
+> >> from the information I have so far this issue does not seem to be
+> >> related to this series.
+>
+> I just checked on mainline and it does not fail there.
+>
+> >
+> > This is really weird. I added mmap_assert_locked(mm) calls into
+> > get_mmap_lock_carefully() right after we acquire mmap_lock read lock
+> > and one of them triggers right after successful
+> > mmap_read_lock_killable(). Here is my modified version of
+> > get_mmap_lock_carefully():
+> >
+> > static inline bool get_mmap_lock_carefully(struct mm_struct *mm,
+> > struct pt_regs *regs) {
+> >       /* Even if this succeeds, make it clear we might have slept */
+> >       if (likely(mmap_read_trylock(mm))) {
+> >           might_sleep();
+> >           mmap_assert_locked(mm);
+> >           return true;
+> >       }
+> >       if (regs && !user_mode(regs)) {
+> >           unsigned long ip =3D instruction_pointer(regs);
+> >           if (!search_exception_tables(ip))
+> >               return false;
+> >       }
+> >       if (!mmap_read_lock_killable(mm)) {
+> >           mmap_assert_locked(mm);                     <---- generates a=
+ BUG
+> >           return true;
+> >       }
+> >       return false;
+> > }
+>
+> Ehm, that's indeed weird.
+>
+> >
+> > AFAIKT conditions for mmap_read_trylock() and
+> > mmap_read_lock_killable() are checked correctly. Am I missing
+> > something?
+>
+> Weirdly enough, it only triggers during that specific uffd test, right?
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
----
- drivers/fsi/fsi-core.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+Yes, uffd-unit-tests. I even ran it separately to ensure it's not some
+fallback from a previous test and I'm able to reproduce this
+consistently.
 
-diff --git a/drivers/fsi/fsi-core.c b/drivers/fsi/fsi-core.c
-index c7a002076292..ad50cdaf8421 100644
---- a/drivers/fsi/fsi-core.c
-+++ b/drivers/fsi/fsi-core.c
-@@ -1306,7 +1306,6 @@ static struct class fsi_master_class = {
- int fsi_master_register(struct fsi_master *master)
- {
- 	int rc;
--	struct device_node *np;
- 
- 	mutex_init(&master->scan_lock);
- 
-@@ -1326,20 +1325,19 @@ int fsi_master_register(struct fsi_master *master)
- 
- 	master->dev.class = &fsi_master_class;
- 
-+	mutex_lock(&master->scan_lock);
- 	rc = device_register(&master->dev);
- 	if (rc) {
- 		ida_free(&master_ida, master->idx);
--		return rc;
--	}
-+	} else {
-+		struct device_node *np = dev_of_node(&master->dev);
- 
--	np = dev_of_node(&master->dev);
--	if (!of_property_read_bool(np, "no-scan-on-init")) {
--		mutex_lock(&master->scan_lock);
--		fsi_master_scan(master);
--		mutex_unlock(&master->scan_lock);
-+		if (!of_property_read_bool(np, "no-scan-on-init"))
-+			fsi_master_scan(master);
- 	}
- 
--	return 0;
-+	mutex_unlock(&master->scan_lock);
-+	return rc;
- }
- EXPORT_SYMBOL_GPL(fsi_master_register);
- 
--- 
-2.39.3
-
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
