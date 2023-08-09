@@ -2,85 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA782775441
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B5077544F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbjHIHgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 03:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46154 "EHLO
+        id S230209AbjHIHkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 03:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbjHIHgK (ORCPT
+        with ESMTP id S229835AbjHIHkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 03:36:10 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC6D1172A
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 00:36:07 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe4cdb72b9so36253535e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 00:36:07 -0700 (PDT)
+        Wed, 9 Aug 2023 03:40:37 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3146C1981
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 00:40:36 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fe1d9a8ec6so3134865e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 00:40:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691566566; x=1692171366;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9g6zXd3UY6FR9mRGo0YLbshWp2Mg0VfIdE8xLRYTWgY=;
-        b=P1SYKGJXzgRZvbTDBewiHnTDquAXRziX7UWB26is7h3/LiMwXhLXRCePcZ3BDl0Sdj
-         fGD27F0jvYX2V3fWhgm1uCi12Ht843Bi32gcSGtXanIH5Hx5/pexhNmOSzgbpLWi4B7m
-         /4hLuvXBj4TEiOHNyQZwWu/AVVFiKdfUXkSu7SNllyLWulMGPQg9OE5dIggbyXyCk09q
-         bpQKrrWKWejpp32CDgXVZ7+1vppAq+IKuCSWsE+FVd61SVP0/wF9DO/zFGxrJCeBHPZF
-         rKQmmGEeST4P24Ouz360dDEJmLUdlYaDL3MrtkgZfo4m7py3CJALHORTe/3Iag5hWYOg
-         CbiQ==
+        d=linaro.org; s=google; t=1691566834; x=1692171634;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fYypbR2BOr8zET8GaPdSoOCjpxsQd82de6in9KdA03c=;
+        b=UXJHIiWTBam0bGvsriQfntFFLIdoxWBcq4eh8xBIkyzRfhil6eZW+iIpaqq8jaggbC
+         FxEnJRmj9H7pwLfwaUTp0QLVbvP0nUu36hid5c7v3xhDZzddCC3qkyYxenFSv1FLKLSY
+         xj1uGW4TBrABTTPaxdA98pUBdOuz58/IN/95oMc5bndPIfy9fTkAeQhe4bloxGjOHvR8
+         pzVKIitpBaILvRi9Mgo36GwJvqu096bAJ947klQ3uKnxwWzlO2+pyLYwFmLxPVAMvq9k
+         rjChBWJnaiqSc+BtEbJ3Q02z/CYpZynYkwnFn4ta/lOIgOGFsQ4geJbEameWORSITokA
+         ztjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691566566; x=1692171366;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9g6zXd3UY6FR9mRGo0YLbshWp2Mg0VfIdE8xLRYTWgY=;
-        b=ZetDSUVFV5Lb/6JsUQr+yfSq0Vv7PTdofIFbm6LZ0jyp9G9KazFZTvvK06U8254QkS
-         jW5jUe7zp9IdYHUQMFkiGVAyP6Q42k7gpjMckDMioT2cx3J9fzrJ2faKbf+dbY7sANmU
-         FZF4V480E4aNKzbUVqXfMlzxXT6z9pqEeUkfLnvS+Gy/pxVbFoA3JwcTURUVxcZZdFvk
-         40S0cN7Na18MDkH6UKpZF2kobjlC81/359aSEMzQw1U9CqTbFVA9oAkAa6rS4lvsKn8v
-         faPWzHKdfGVFgDfuoOQyCJvzBm2EMvqj/1RCtEVe8r5e2T+7ftXH9dD6ip7x3wzMfGFr
-         GbOA==
-X-Gm-Message-State: AOJu0YwIPf5G9cEp0AnDOl3iN97O5+pCaV5N0SjJ6GRVwOic+pIWjA92
-        uVaQ1mOkl98mgSupGBU71XuPSOo5i3e/o0hrinth5A==
-X-Google-Smtp-Source: AGHT+IFLVn1NeZhNSR4e0f4XwgaZlOp0UJWCsTWtrzAtLWAsvsgQTICHpp1h8SPYP0VKCEaRvXTAkpih5U8qZmKLx5g=
-X-Received: by 2002:a05:600c:ac4:b0:3f9:c0f2:e1a4 with SMTP id
- c4-20020a05600c0ac400b003f9c0f2e1a4mr1498745wmr.34.1691566566341; Wed, 09 Aug
- 2023 00:36:06 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691566834; x=1692171634;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fYypbR2BOr8zET8GaPdSoOCjpxsQd82de6in9KdA03c=;
+        b=XMi2iZJqGUkEA1Nl/7C6WBrqT25hGhytr04aLo5UEv7Rkm/vrxAzqkRfcFgWjUN2eC
+         XYOV+3WkFS2MlWh6haUtz4S6W/6UEoKKMix2Un+2UwfZ0DjSZsEXoWjJVfGKmiX4Bh+1
+         6o/0SLBWnNDXN1C1Bblgd6Yv/Hef37W2xkSYa41NaTbhA32f0WNV9vwHOxFce3xF45rB
+         9HWYz7UCx2fUKP80nnhr4ANhtxX9nnThV4wKjhVqc/kGFW4LvwtGBqYr5xCeDmXDTU9d
+         zGnpRH/PLqQVO2VHvxhT49J8nVg920w3I7jWvxtlh3+ZcOKgZLUHSV1GWjestJVTnkd4
+         yR3w==
+X-Gm-Message-State: AOJu0YxXrQdFOxmLDKBnl/pTumS0/gHQLLyzpLAtvO51XuFINqtkWYBf
+        DL/yyxrh2jWBDFGaJ2U1D6WWoQ==
+X-Google-Smtp-Source: AGHT+IGYAehkRoFOJds1BXJD9VgTewrLVWujc0R3IWoUImvJckfERYsfBHnUNMLnme6MWTwTT9pcAw==
+X-Received: by 2002:a05:600c:1da2:b0:3fe:4c29:e626 with SMTP id p34-20020a05600c1da200b003fe4c29e626mr9532320wms.13.1691566834728;
+        Wed, 09 Aug 2023 00:40:34 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id x26-20020a1c7c1a000000b003fe24da493dsm1087148wmc.41.2023.08.09.00.40.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 00:40:34 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 10:40:30 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc:     tonyhuang.sunplus@gmail.com, lhjeff911@gmail.com,
+        ulf.hansson@linaro.org, arnd@arndb.de, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, error27@gmail.com,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH next v2 1/2] mmc: sunplus: Fix error handling in
+ spmmc_drv_probe()
+Message-ID: <d4eb3558-c270-4aea-94a8-b24b8d3a1987@kadam.mountain>
+References: <20230809071812.547229-1-harshit.m.mogalapalli@oracle.com>
 MIME-Version: 1.0
-References: <20230808102049.465864-1-elver@google.com> <20230808102049.465864-3-elver@google.com>
- <202308081424.1DC7AA4AE3@keescook>
-In-Reply-To: <202308081424.1DC7AA4AE3@keescook>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 9 Aug 2023 09:35:29 +0200
-Message-ID: <CANpmjNM3rc8ih7wvFc2GLuMDLpWcdA8uWfut-5tOajqtVG952A@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] list_debug: Introduce CONFIG_DEBUG_LIST_MINIMAL
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809071812.547229-1-harshit.m.mogalapalli@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,46 +74,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Aug 2023 at 23:27, Kees Cook <keescook@chromium.org> wrote:
->
-> On Tue, Aug 08, 2023 at 12:17:27PM +0200, Marco Elver wrote:
-> > Numerous production kernel configs (see [1, 2]) are choosing to enable
-> > CONFIG_DEBUG_LIST, which is also being recommended by KSPP for hardened
-> > configs [3]. The feature has never been designed with performance in
-> > mind, yet common list manipulation is happening across hot paths all
-> > over the kernel.
-> >
-> > Introduce CONFIG_DEBUG_LIST_MINIMAL, which performs list pointer
-> > checking inline, and only upon list corruption delegates to the
-> > reporting slow path.
->
-> I'd really like to get away from calling this "DEBUG", since it's used
-> more for hardening (CONFIG_LIST_HARDENED?). Will Deacon spent some time
-> making this better a while back, but the series never landed. Do you
-> have a bit of time to look through it?
->
-> https://github.com/KSPP/linux/issues/10
-> https://lore.kernel.org/lkml/20200324153643.15527-1-will@kernel.org/
+On Wed, Aug 09, 2023 at 12:18:11AM -0700, Harshit Mogalapalli wrote:
+> When mmc allocation succeeds, the error paths are not freeing mmc.
+> 
+> Fix the above issue by changing mmc_alloc_host() to devm_mmc_alloc_host()
+> to simplify the error handling. Remove label 'probe_free_host' as devm_*
+> api takes care of freeing, also remove mmc_free_host() from remove
+> function as devm_* takes care of freeing.
+> 
+> Fixes: 4e268fed8b18 ("mmc: Add mmc driver for Sunplus SP7021")
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/all/a3829ed3-d827-4b9d-827e-9cc24a3ec3bc@moroto.mountain/
+> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> ---
+> This is based on static analysis with smatch, only compile tested.
+> 
+> v1->v2: Simplify code by using devm_mmc_alloc_host() instead of
+> mmc_alloc_host() (Ulf Hansson's suggestion)
 
-I'm fine renaming this one. But there are other issues that Will's
-series solves, which I don't want this series to depend on. We can try
-to sort them out separately.
+Nice.
 
-The main problem here is that DEBUG_LIST has been designed to be
-friendly for debugging (incl. checking poison values and NULL). Some
-kernel devs may still want that, but for production use is pointless
-and wasteful.
+Both patches look good to me.
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-So what I can propose is to introduce CONFIG_LIST_HARDENED that
-doesn't depend on CONFIG_DEBUG_LIST, but instead selects it, because
-we still use that code to produce a report.
+regards,
+dan carpenter
 
-If there are other list types that have similar debug checks, but
-where we can optimize performance by eliding some and moving them
-inline, we can do the same (CONFIG_*_HARDENED). If the checks are
-already optimized, we could just rename it to CONFIG_*_HARDENED and
-remove the DEBUG-name.
-
-I'm not a big fan of the 2 modes either, but that's what we get if we
-want to support the debugging and hardening usecases. Inlining the
-full set of checks does not work for performance and size.
