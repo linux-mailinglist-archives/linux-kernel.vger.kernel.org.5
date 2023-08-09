@@ -2,104 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BA6776275
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44213776270
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbjHIO3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
+        id S232354AbjHIO1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233279AbjHIO3T (ORCPT
+        with ESMTP id S232299AbjHIO1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:29:19 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25981FCC;
-        Wed,  9 Aug 2023 07:29:17 -0700 (PDT)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RLXQy0FFXz9tH4;
-        Wed,  9 Aug 2023 22:25:46 +0800 (CST)
-Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
- (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 9 Aug
- 2023 22:29:14 +0800
-From:   Yue Haibing <yuehaibing@huawei.com>
-To:     <jgg@ziepe.ca>, <leon@kernel.org>, <yuehaibing@huawei.com>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] rdma: Remove unused function declarations
-Date:   Wed, 9 Aug 2023 22:27:18 +0800
-Message-ID: <20230809142718.42316-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Wed, 9 Aug 2023 10:27:52 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD9D2108
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:27:50 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe4a89e8c4so42616645e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 07:27:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691591269; x=1692196069;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RIeum1LY6S9oOWjrA1Hz1M/iI/HQL9yzxT92jLmRvy4=;
+        b=HKuEWv2S3p0ryCE+P2Er85fOrWyumOVzBMb6xINWCp41dK3t68nBKR+B+iMKIGJ5Eo
+         MEOJ+9XXbMmls/NfkWrvFnUIshwXEa4bsYJ9jWwYLUyxLz/v7JISdtz6FD1lZD8vww+i
+         ZesbgngH8DiqPthHakl1RDVSv7tLru+r9Uo7VBJESjkzZhIVR40WLXuYlEDi5+n22XE5
+         4TFyGe/QrdLsldg8veJ4ibTPeqBTQLaoVCrwXbVMQ0xnY7vjUbW3JJGsChLjeZ7k+AdL
+         S8Pn29LRLWRPT3bEUSAyKbT1bReWDgsKYIfEsSXUAFsaZNQLGkTkEKdNfE2qL90hEKHF
+         grBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691591269; x=1692196069;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RIeum1LY6S9oOWjrA1Hz1M/iI/HQL9yzxT92jLmRvy4=;
+        b=g3cklyjMDwDeEsmuUeFLS2VIuhWgx7bGPf3WDl6Uhs9nCkz8Zpg1TDnuhgn173fsmL
+         5YWiNRkpeSGPQYnhwYRuk5/aLQA570aHmbcCwwNiyCzhg0ebVznp0cOia2Ryz8Gwm2+K
+         vN/I6iBW8rT4bIy4NXlKmXDjdjbv+0d2Z71CmVDDPDwQ6sZXn/H97dH+W9QXTKE/wqap
+         qH+onwp2I+4o2EyWtRuw9c1JD73zifco1l4PEunvWa96+P9VYbrGBrG7zqFVt01BTXrY
+         O39GTdEf6P8WiRVYd+kMI9z9lQdRSWVaedIIvRkHSapxneNpwTJEFb0p4u2Z4pXEQAzy
+         Ja/A==
+X-Gm-Message-State: AOJu0Yx2SUNEHdlFTpMQp2dd2DbV7FSqozJ/h7oIbGwC2QIKmZEAU/Ww
+        W/bKqCbCTmV+tYL7LFRI4InYHQ==
+X-Google-Smtp-Source: AGHT+IFcvrF/0+48M5rEwvbGq8wkuT4jgAfdSLYdgNQCBWGh9/ZxwvF01V2txrU3jt8NvdClblnr4w==
+X-Received: by 2002:a05:600c:219:b0:3fe:1deb:82 with SMTP id 25-20020a05600c021900b003fe1deb0082mr2306960wmi.7.1691591269368;
+        Wed, 09 Aug 2023 07:27:49 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id 24-20020a05600c029800b003fe2397c17fsm2124090wmk.17.2023.08.09.07.27.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 07:27:48 -0700 (PDT)
+Message-ID: <893c3f40-3094-1939-833b-2edcd935c83c@linaro.org>
+Date:   Wed, 9 Aug 2023 16:27:46 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 1/2] dt-bindings: rtc: nuvoton: Add DT compatible
+Content-Language: en-US
+To:     Mia Lin <mimi05633@gmail.com>, avifishman70@gmail.com,
+        tmaimon77@gmail.com, tali.perry1@gmail.com, venture@google.com,
+        yuenn@google.com, benjaminfair@google.com, a.zummo@towertech.it,
+        alexandre.belloni@bootlin.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        KWLIU@nuvoton.com, JJLIU0@nuvoton.com, KFLIN@nuvoton.com,
+        mylin1@nuvoton.com
+Cc:     openbmc@lists.ozlabs.org, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230809095112.2836-1-mimi05633@gmail.com>
+ <20230809095112.2836-2-mimi05633@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230809095112.2836-2-mimi05633@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c2261dd76b54 ("RDMA/device: Add ib_device_set_netdev() as an alternative to get_netdev")
-declared but never implemented ib_device_netdev(), remove it.
-Commit 922a8e9fb2e0 ("RDMA: iWARP Connection Manager.") declared but never implemented
-iw_cm_unbind_qp() and iw_cm_get_qp().
+On 09/08/2023 11:51, Mia Lin wrote:
+> Add DT compatible "nuvoton,nct3015y" to select
+> 
+> Signed-off-by: Mia Lin <mimi05633@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/rtc/nuvoton,nct3018y.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/nuvoton,nct3018y.yaml b/Documentation/devicetree/bindings/rtc/nuvoton,nct3018y.yaml
+> index 4f9b5604acd9..67fc60fd395c 100644
+> --- a/Documentation/devicetree/bindings/rtc/nuvoton,nct3018y.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/nuvoton,nct3018y.yaml
+> @@ -15,7 +15,9 @@ maintainers:
+>  
+>  properties:
+>    compatible:
+> -    const: nuvoton,nct3018y
+> +    enum:
+> +      - nuvoton,nct3018y
+> +      - nuvoton,nct3015y
 
-Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
----
- include/rdma/ib_verbs.h |  2 --
- include/rdma/iw_cm.h    | 21 ---------------------
- 2 files changed, 23 deletions(-)
+Responding here, but based on your changelog and driver:
+Why? Why do you need compatibles to verify the reported ID? Verifying ID
+does not make sense. At all.
 
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 1e7774ac808f..533ab92684d8 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -4440,8 +4440,6 @@ struct net_device *ib_get_net_dev_by_params(struct ib_device *dev, u32 port,
- 					    const struct sockaddr *addr);
- int ib_device_set_netdev(struct ib_device *ib_dev, struct net_device *ndev,
- 			 unsigned int port);
--struct net_device *ib_device_netdev(struct ib_device *dev, u32 port);
--
- struct ib_wq *ib_create_wq(struct ib_pd *pd,
- 			   struct ib_wq_init_attr *init_attr);
- int ib_destroy_wq_user(struct ib_wq *wq, struct ib_udata *udata);
-diff --git a/include/rdma/iw_cm.h b/include/rdma/iw_cm.h
-index 03abd30e6c8c..2b22f153ef63 100644
---- a/include/rdma/iw_cm.h
-+++ b/include/rdma/iw_cm.h
-@@ -114,27 +114,6 @@ struct iw_cm_id *iw_create_cm_id(struct ib_device *device,
-  */
- void iw_destroy_cm_id(struct iw_cm_id *cm_id);
- 
--/**
-- * iw_cm_bind_qp - Unbind the specified IW CM identifier and QP
-- *
-- * @cm_id: The IW CM idenfier to unbind from the QP.
-- * @qp: The QP
-- *
-- * This is called by the provider when destroying the QP to ensure
-- * that any references held by the IWCM are released. It may also
-- * be called by the IWCM when destroying a CM_ID to that any
-- * references held by the provider are released.
-- */
--void iw_cm_unbind_qp(struct iw_cm_id *cm_id, struct ib_qp *qp);
--
--/**
-- * iw_cm_get_qp - Return the ib_qp associated with a QPN
-- *
-- * @ib_device: The IB device
-- * @qpn: The queue pair number
-- */
--struct ib_qp *iw_cm_get_qp(struct ib_device *device, int qpn);
--
- /**
-  * iw_cm_listen - Listen for incoming connection requests on the
-  * specified IW CM id.
--- 
-2.34.1
+These are compatible devices, so you could have one more compatible
+using old one as fallback. And no new entry in the driver.
+
+Best regards,
+Krzysztof
 
