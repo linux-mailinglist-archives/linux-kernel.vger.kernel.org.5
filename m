@@ -2,142 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C88776073
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1417D77607D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbjHINS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 09:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55762 "EHLO
+        id S231390AbjHINTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 09:19:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbjHINSZ (ORCPT
+        with ESMTP id S229453AbjHINTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 09:18:25 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71155128;
-        Wed,  9 Aug 2023 06:18:24 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-76c845dc5beso419793185a.1;
-        Wed, 09 Aug 2023 06:18:24 -0700 (PDT)
+        Wed, 9 Aug 2023 09:19:35 -0400
+Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1A2C1;
+        Wed,  9 Aug 2023 06:19:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691587103; x=1692191903;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sjj2pw55OpJ9Ml+mCR1r9Is3y7on0GgaaZp6IQhtWX0=;
-        b=a7r2lNNuJIBtJEaovPO2UiEXZq7Fe93jgoypAriBtz3Zmbvj70/Oga3pRlXe8EnZJY
-         olTfyYpNTUWK/aOyR81kCyCBEQChIZFYpGJ9uP8TUDm5ZJEMPsZOnWOU+IgGbuKcZNrj
-         3MimVN64leU7M/6pNYP/iGImJUgK7FizDl9wZifQIjPuCmB2sESu1913SLkNWOFKcxY+
-         BczeCXx1hYiMv1u5Ru5b5bX8G6q+x57jCIBcKQchR1HDS7ntQMumaMHOC/vlJp6CmdYP
-         RrHUX7KW0WMdfP+sblRN2zNHu3h8GWgIYlcc2r/1w17Kr+QbjTkboCOVD9xmCO5/odW4
-         H4Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691587103; x=1692191903;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Sjj2pw55OpJ9Ml+mCR1r9Is3y7on0GgaaZp6IQhtWX0=;
-        b=OiIX/J4N0EXuu2iKeBfydzlVXK1/30fOyBjp7PbRw5Pi0p3IET6mQ2jRe43lT7BKxB
-         cuVi5E126iGRD1AIOVctDxjyiIhxaZ5SFTIZYSZoKvrPUzGfpf0pOlKenhVHK71i2WnK
-         EwOuOJy1YjVH3gvLr39vZRrpVAHtAwLTpenrHWpIvg7gjnRgwdKiYwO0N/uXML8ztkwI
-         Smc5yfAOVyyDsVy3jpIlWZI+PX69qL/FpbWUchV0MCYXVMejQ70WKzAc1wJz7E4bqyK6
-         PN4rCbSr7bLcQVepb0pRjqlTIVHTiSRmJELKIyzoTeoWu+bXuHwqtQLbyjs1CbbiPh6x
-         uQQw==
-X-Gm-Message-State: AOJu0Ywxlr3WcQZDiArWRio7HG5pdRrTI5z2kiRpUYYEx1IZ0saoZruJ
-        2y2MqZ4f/uHakubzZQM6kN8=
-X-Google-Smtp-Source: AGHT+IEwKr/W7DJtj36rnSo26cXkG4CoslGWkhDlFQwvy2D21EJ9wyl/mAei8MbMDmbV5R2inhvM9Q==
-X-Received: by 2002:a05:620a:d45:b0:76d:264c:a89e with SMTP id o5-20020a05620a0d4500b0076d264ca89emr684548qkl.76.1691587103519;
-        Wed, 09 Aug 2023 06:18:23 -0700 (PDT)
-Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id h20-20020a05620a10b400b00766fbeb3e7csm3940349qkk.132.2023.08.09.06.18.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 06:18:23 -0700 (PDT)
-Date:   Wed, 09 Aug 2023 09:18:22 -0400
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     Tahsin Erdogan <trdgn@amazon.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Tahsin Erdogan <trdgn@amazon.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-ID: <64d3921ed1f1a_267bde294f2@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20230808230920.1944738-1-trdgn@amazon.com>
-References: <20230808230920.1944738-1-trdgn@amazon.com>
-Subject: RE: [PATCH v3] tun: avoid high-order page allocation for packet
- header
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+  d=axis.com; q=dns/txt; s=axis-central1; t=1691587175;
+  x=1723123175;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=WXFlV4I7SADXiSgWdW2XHqolRiqvSTrR54BxtWYUzJ8=;
+  b=jzj9b3vpD9YVgFWHuY4Pc6npXNUeNkOqYwTg+vSnGBkBoBDdEyI15XVt
+   1bJJ11NMN/66CPa4aBskXUXw0BMX+fAhP4FdlLP+zsbgaVX0kV9mQQCCw
+   3E+lucLw9FmMPdJ9WNNRuxXdkT2h+3RXUfuKCIN61fCa7e753Xb2rGGmm
+   tmM8R+DcQR9GaQrkN4XNrCE+9uFOg/tCbW5SRFEEZm9XITCGWkW3Fh2ZN
+   QOCiYRrbt0PenQhmzRsVLKy4b5wB7dXu9kWzhMvVw2DtWYWgBwu1T79FL
+   YX88YsKxesssyYnVTNNIpNKE8sI7mfFADUmZHj1N36/7ByHF7AFdtaHBQ
+   Q==;
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dfXQBMN3dvoAAOu7pv7cSKTVCO0T0x159iK1r8DKgpDBRHLVhW1K1YukLIIoMx5nSuYyErhx4+tYYIig4CnBdF3eIlLIFvDDSlc3uP2Sta7w0aDiKd/FF168DvLdjTb1CsxYCcfDPGXGLij1NvhHTMIyKeKKM6p5x+khdGcYaK84BZmm7x5rDb36i9/BaNCF/avHnUhWW0q1edmq8XTChofFsIUVrBay9y/ebrrw6ZVbZQ8c/lq2d5urOxWPXN09NyGgk7sLBR50JvW8s22hGGV+DgChe7M2VPiDAvP/77IH3Mkdkq+nnTJPfeSGABmbsUly/Tyka+On1Dk9xwviIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WXFlV4I7SADXiSgWdW2XHqolRiqvSTrR54BxtWYUzJ8=;
+ b=VhCMcosoEEaznYEIKCEGB9CxFjGGZtZ1XQZa0Jsnrv5qXQaEcWpPEh4NJapRFybnFoTYviGie0tjs4BvXjxOVGb+cijU7tweHQAShvFKiszHQmol9WfwmfZ96ScOwfj4KlSH5pdHXqRktX80abm7+IijpJKFKFETqyvLRf8Ni6bzKs7EZqhFgj6X5lLqvqI3rE46YrIXfo+zvLhSpOw7cqf5fkxUoqSAlC6ltGBSobr4dCjxsJahWJYll1v5oyrQ8BjqGL7F2gbr8oEG5pw7YqlE6G3oxwjE0nrz97gzDiSAbpzi2P7LWBqUJgyj/fI6sgHFqakwIeloIOR83ENOBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axis.com; dmarc=pass action=none header.from=axis.com;
+ dkim=pass header.d=axis.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis365.onmicrosoft.com; s=selector2-axis365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WXFlV4I7SADXiSgWdW2XHqolRiqvSTrR54BxtWYUzJ8=;
+ b=V2XIOQO2EtHRbRYoOm0IP8/TialO0bA04X55WbtDmxZL81r/uW0wATuwm1qnOwUZyNypVbqkBgDN7Th4LJsfDGHIFrSRC4LRo/vLulEl2LGQhJ2F31MYAIEtnK9JuI6UOiD9h6nPOUZUp5AwvVQb5XztXpWh8Qpw9tkKeJ3NUT8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=axis.com;
+Message-ID: <01a3c57a-bef4-9a9e-3f8b-0231653232a8@axis.com>
+Date:   Wed, 9 Aug 2023 15:19:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] tty: serial: samsung: Set missing PM ops for hibernation
+ support
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@axis.com>
+References: <20230803-samsung_tty_pm_ops-v1-1-1ea7be72194d@axis.com>
+ <9967fa81-f3f4-04c4-a837-d507a19989cc@linaro.org>
+Content-Language: en-GB
+From:   Anton Eliasson <anton.eliasson@axis.com>
+In-Reply-To: <9967fa81-f3f4-04c4-a837-d507a19989cc@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: MM0P280CA0051.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:190:b::35) To AS1PR02MB10348.eurprd02.prod.outlook.com
+ (2603:10a6:20b:473::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS1PR02MB10348:EE_|PAVPR02MB10009:EE_
+X-MS-Office365-Filtering-Correlation-Id: 365b516d-c897-458b-b189-08db98db4339
+X-LD-Processed: 78703d3c-b907-432f-b066-88f7af9ca3af,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7YSY0D2gMfox+TdkK8YfxKyIk5MjyaoibMaAVNK1zo0QiaUgKMwspWLRbIno3WX8B2Co6vCpEl4Z8uP9Rr+FnicyNoktk7nLvgQi/XeeZSMh7AKuZ7t/iW2NYI9J5r/Oa+ixbE073xTG3atvxBR4ujHC+5RyQ9pAvK/qgWCDwbbtv3+PdUJQakePA1oz6J2gVWs+kpCgDPXu/s5lJz7Lj0JeTZM9YREoUjGdRjTHzeVG4PMFmU9XM1kW9Rxiacni2IlLQ+mB+PwGRffOVfb9m9eLlKmlQODvDJMnCifZ3i7e9JxcS1eHAyzq2eMCDgmYGuOgN/HHcku7cjuIlFBC5XlCsmCElcgle0VhWMz/d5ft6h0XYeuvR+l7VBl/zwok4YwCZm7g8vtMVuFIFLx24PG6oX8f9WPGuFVvqh0ksI1Px6LzAC9yX09f1s+1ZzJFm2EIVt1QbIiFIoeIh66GiXEAmopCSzomMl6ioN7PzSU6gshda1QYqm0eIJuNmrpRBM4VlDJRzVSEs6TPR+umwj3APu3CFOiIQHJJxFmNUPizbXmXB4QbP4LEoGUKTs1N0y0RJAklx7VFC+Sru03TRwkCb6h08bTUUWo/7ZL+DoSVqbHvKatNeB79j4LWwGB2yJpfGNE7SjMWLYS6aqBslw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS1PR02MB10348.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(39860400002)(136003)(366004)(346002)(376002)(1800799006)(186006)(451199021)(86362001)(31696002)(31686004)(44832011)(5660300002)(2906002)(4744005)(41300700001)(8936002)(66476007)(66556008)(8676002)(316002)(38100700002)(110136005)(83380400001)(36756003)(2616005)(478600001)(4326008)(66946007)(53546011)(6506007)(26005)(6486002)(6512007)(107886003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MENLQzJaYVhabmxYVysxUXF6eTVzT2p5Tzl5WUFvVllwYS9XTkhlSFNtWThT?=
+ =?utf-8?B?OUFWSXBGOHAyZ3QvZElheVo5b1dvbXhFcUw3Y1RpL1ZlNUQ1VDdkUjJNanBh?=
+ =?utf-8?B?YVFaUURRc2YzVGFZQ1hKb0g4Q1RLcG9EYnhWeTdGYzRJSTdQOXpaWndLd3Q3?=
+ =?utf-8?B?bVFUcFpSYXF6c2NLUTd1ZVVIRlVWSFMyaXZpRTdWVVEzNjVWRERNdCtpYTNO?=
+ =?utf-8?B?QU9vcTdSaFp1QWlMMEFZNi9XODZTM3E5RmhMZ0pWVXc4dUZWbnBvZ2hMVDNI?=
+ =?utf-8?B?Z2JEbnlqTFM1RWg3VXBwakZ0NisrVkQ3cTlwUXNDUVZrNnZ0WEVnQXZoaysx?=
+ =?utf-8?B?SHMxUmhPTDJ2ZjdQWE5hVHBZdXFIY2pjeiszczNHVVl3YnFPd2RKL05xM1o5?=
+ =?utf-8?B?dC9URFl4WmM0SnpoZys3R0V6SDBNdGhIOC9Mbyt5L0tIYnJQMEw4WTVBeWZ3?=
+ =?utf-8?B?Vjc3SGt0WHNRQ2hxenZ3TjNkaUR2Rzc2aXlQOU9ocHNEQzR0a2xGeDd4WkRo?=
+ =?utf-8?B?blJkSWN1dXhiK0dTb1lvMzhrNE9Ca2tIVFNiVnBnV3RmUStoSllzQmE1RkxI?=
+ =?utf-8?B?RksrL1BrRVlwa0R4cFNQREtLWXNWc2xhUXp3ZE1ULzliaEJMRGVzbmlpYXBv?=
+ =?utf-8?B?cW1TVGFaRjcyNm0wSFhhYXlCblc5R3UrN3lmNFZXdXFMVVJ5UzRpMVVldjJy?=
+ =?utf-8?B?QXMyRlNPelFUc3JPZUhzNmZqRGk2R0NKbEpabWpQRS9aaEFIR2VuTVhDNTN1?=
+ =?utf-8?B?K0FSZkIwdUh3cWo1bDFCR2RZV1ZDVHdzNUlpOFhJZ0lQYmdLOTQ3bmZFOWJr?=
+ =?utf-8?B?T2VtVytKMG56VkNyZ3ZPb3pucXdkdGdaSnFhallIWkhPSlN5T2gxVlJ4N0gx?=
+ =?utf-8?B?Nmw5WFV3RmJwS0pWYXVOWm8ydnpBWG84WE1CaUZWYjBXeUJ1N1ZlbGRNUTN6?=
+ =?utf-8?B?RUFwcVhTL1F5QlNOR0k4dUN0Z0hEQVE1UEpvelh0MUV1SFgzUFlkcmUrL3lI?=
+ =?utf-8?B?VDJkY1hYTFIrWnc3NDlmcGdUbk4xV2IxL2JRRitzMVo3QUpoVVQwTTZEL1JI?=
+ =?utf-8?B?dzZNbzlnRkZ5am1mUTlVaW5lUEtBSXlkUzZ6ZDM2ZDlNbHh1bWtGSjVta2VV?=
+ =?utf-8?B?SmxCTDZqRlpzaEx6YmxDa0NTNXVpdXNzQ0tsSjl0ZnNCWlYvQkpIbXQvd1JZ?=
+ =?utf-8?B?c1J5SWVELy9LYThXVHpMQmNNdzJUSTJyeFNQaWZadUVwOUNMTVhXaTBYZW5q?=
+ =?utf-8?B?dWUwMlBpN2RBT1hwUG5ONVl5ZWpBQy9NVTFFRlZtcVovaUpGSURKcWoyNktZ?=
+ =?utf-8?B?M3BxeGJNVjJxUGxFK1BZZEVKNFBpNG9seklMenZXcTNsaGVPak8wWThoZ05j?=
+ =?utf-8?B?UWFOcWJFRFA1SFpyRC9HcjFBcjZScGEwdUFINURsREVrdmJuV2tNbGx0VDE4?=
+ =?utf-8?B?dWM5ZHRTc003N3E0anh3UU1UZDN5cEhxQTYvWWE2enF1T0UyN0xSZXdIVEZD?=
+ =?utf-8?B?dGZpZW9BQ1Q5elJiVWFJd2ZhVUduL251anhjbGlIOFdBc0o5MXcvNWwrekd6?=
+ =?utf-8?B?VzJMWW9WajNxdzM4Wm16UTVxS0c3QzBacTZHOGNCMFVVVGIvb2trZVJQbXpV?=
+ =?utf-8?B?UVFiTGs3Z2drQ3RPU1JySEtDczZkWkdjaHpTUElySk5vMW0zTlBBVjJJMDYw?=
+ =?utf-8?B?R0c1eHRhRzN6TUpFUUxscEEvRUtZODg0WVJZQjM5eTFUOS9BcW1jdmJoUmYv?=
+ =?utf-8?B?SkNoTTE0S0RwcWNPaCs5S1hTcHdCaVlVMXNoUFVhS2QyT2Z3YnU4S2I5bHZM?=
+ =?utf-8?B?c1N0YllkeVdhUXhYSWVBM2NmbmJZcVc2ZHhKQkNzQzFHcE1ZdjlCcGJQVGdM?=
+ =?utf-8?B?Wk10ZGJYNjQ5MXJmZk5Xd1V4VnZuNUhIUXNFTWlJNnlsTndveTV4Um9zQWRN?=
+ =?utf-8?B?NjZZcmE2K1lWQVpHVVJxNGFRWStHdUU2cXJVbFhBdUlxem9HK2cvTjZTVCtD?=
+ =?utf-8?B?S0YrdUhyUmsyaG9KQ05BSE1VM3dpTmZmcDNWcXFPbnE4Q3R5UnpTU1grY0pX?=
+ =?utf-8?B?ZnRGQ0FiRldpaEJoTXUrNE11YXFMWGZ1Q3VLN0tIMnB1UEpramwxTTZBK2sy?=
+ =?utf-8?Q?vsTc=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 365b516d-c897-458b-b189-08db98db4339
+X-MS-Exchange-CrossTenant-AuthSource: AS1PR02MB10348.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2023 13:19:29.7367
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lkYY0BYsQDOwbglbbnm6A/YklOmoEPpmnE8tmNcvq8up2JwdkOE7YB5NNZ1FWe6X
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAVPR02MB10009
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tahsin Erdogan wrote:
-> When GSO is not enabled
+On 07/08/2023 15.50, Krzysztof Kozlowski wrote:
+> On 03/08/2023 13:26, Anton Eliasson wrote:
+>> At least freeze, restore and thaw need to be set in order for the driver
+>> to support system hibernation. The existing suspend/resume functions can
+>> be reused since those functions don't touch the device's power state or
+>> wakeup capability. Use the helper macros SET_SYSTEM_SLEEP_PM_OPS and
+>> SET_NOIRQ_SYSTEM_SLEEP_PM_OPS for symmetry with similar drivers.
+>>
+> Looks sensible, although you should also test the other sleep methods,
+> e.g. suspend to idle.
+>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>
+> Best regards,
+> Krzysztof
+>
+Yes, s2idle still works. Standby / Power-On Suspend and s2ram we don't 
+have support for so I can't test it. Thanks for the review!
 
-Not GSO, but gso.hdr_len, which is a feature of IFF_VNET_HDR.
 
-VIRTIO_NET_HDR_GSO_* does not need to be enabled to use the
-header length field.
-
-> and a packet is transmitted via writev(), all
-> payload is treated as header which requires a contiguous memory allocation.
-> This allocation request is harder to satisfy, and may even fail if there is
-> enough fragmentation.
-> 
-> Note that sendmsg() code path limits the linear copy length, so this change
-> makes writev() and sendmsg() more consistent.
-
-This is not specific to writev(), equally to more common write().
-
-Tun sendmsg is a special case, only used by vhost-net from inside the
-kernel. Arguably consistency with packet_snd/packet_alloc_skb would be
-more important. That said, this makes sense to me. I assume your
-configuring a device with very large MTU?
-
- 
-> Signed-off-by: Tahsin Erdogan <trdgn@amazon.com>
-> ---
-> v3: rebase to latest net-next
-> v2: replace linear == 0 with !linear
-> v1: https://lore.kernel.org/all/20230726030936.1587269-1-trdgn@amazon.com/
->  drivers/net/tun.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> index 5beb6b5dd7e5..53d19c958a20 100644
-> --- a/drivers/net/tun.c
-> +++ b/drivers/net/tun.c
-> @@ -1523,7 +1523,7 @@ static struct sk_buff *tun_alloc_skb(struct tun_file *tfile,
->  	int err;
->  
->  	/* Under a page?  Don't bother with paged skb. */
-> -	if (prepad + len < PAGE_SIZE || !linear)
-> +	if (prepad + len < PAGE_SIZE)
->  		linear = len;
->  
->  	if (len - linear > MAX_SKB_FRAGS * (PAGE_SIZE << PAGE_ALLOC_COSTLY_ORDER))
-> @@ -1913,6 +1913,9 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
->  			 */
->  			zerocopy = false;
->  		} else {
-> +			if (!linear)
-> +				linear = min_t(size_t, good_linear, copylen);
-> +
->  			skb = tun_alloc_skb(tfile, align, copylen, linear,
->  					    noblock);
->  		}
-> -- 
-> 2.41.0
-> 
-
+Anton Eliasson
 
