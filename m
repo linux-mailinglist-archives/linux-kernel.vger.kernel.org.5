@@ -2,233 +2,413 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F04BF77529A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 08:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FAC7752A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 08:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbjHIGLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 02:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
+        id S230471AbjHIGOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 02:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbjHIGLb (ORCPT
+        with ESMTP id S230495AbjHIGOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 02:11:31 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE21E61;
-        Tue,  8 Aug 2023 23:11:30 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id a640c23a62f3a-94ea38c90ccso165802366b.1;
-        Tue, 08 Aug 2023 23:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691561489; x=1692166289;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s+GprpEYaWKSIBz3lNF0rHXfz5G4zWTRgIo6CIukXOs=;
-        b=dnisEdRnrIJchTHxIMrhNDkguZRPzCt9B/4Cf+cd5/0Yfl73fh6DiodUad0URAMbxZ
-         jQ9GzsCW1jsLdJjBaQGAs8A+Dn1Ee7JTBG9DCWKBR4PON3tSWoyQc4OHGECV/uMpyUVA
-         HlDFm0BRopDqYg7gWa1WRujuEv++HLcX8rkgPJzAzWcPXYing6Qqa94S6udQ56nag23Z
-         kjoE4JABZ+LNAPqIPEKzKwksvz5u8reMIlyLzXfGHaJu6MuN05P15aXC7ByIxzUpjbUY
-         36hAE118gfg1pZReKzZsLwwJzIXhOMRrasdWocjWisjkNUN72Z8++hLHZgDOHzD/d6rp
-         SZwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691561489; x=1692166289;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s+GprpEYaWKSIBz3lNF0rHXfz5G4zWTRgIo6CIukXOs=;
-        b=KFfm2SjWipNzd0+9tPSswt0en39eMUmHDBxBSRYSb5FUaBcU+yHN/RQlZl8PMsrI9K
-         FOUM2D4IVshdb8XP4k2K+XJAxT+4P+1GK7wLTOmXI9ih3Zzq+ekStG+XhBNIiqMwe1rj
-         9fg/kfRdtZ8yBvjmBoikWZ66k1iNe6TLq/8d8LrzjVp/1qeAWYLOClau5AFSEcTDQtst
-         58XXwHe5XsOlncAHbx6LuBrCNEQzvUvJzr2Muv0UYE4VNEHuxVPpPhHvw8VvQNvC6GhY
-         OOg7CZJUlWUD/ow6L9HRnyK0stzuvLl1BVGsyyalVt3ozhizK66PXbo+hispLE+CUsYl
-         R8Aw==
-X-Gm-Message-State: AOJu0YzJTgXnvC1W6yUa8sH07jotUzAQ5ZbVDtOCEOYoEtQ7+yDR6Rok
-        yfjTSMDYUMz47eWEjbf8NAs6mdVFnZEsxvLKHBSpbbYULYy04A==
-X-Google-Smtp-Source: AGHT+IEhNfeIaqOgU2Z4nHn5r7cWIj7seZfQvuXYfR9BPPNljofoqTvdY5xLqoSAiw7dlOzjepxAtst+AQo9el3AgMU=
-X-Received: by 2002:a17:906:10c9:b0:99c:c178:cef9 with SMTP id
- v9-20020a17090610c900b0099cc178cef9mr1176187ejv.2.1691561488616; Tue, 08 Aug
- 2023 23:11:28 -0700 (PDT)
+        Wed, 9 Aug 2023 02:14:05 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DDEE61;
+        Tue,  8 Aug 2023 23:14:02 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3794nLKc001612;
+        Wed, 9 Aug 2023 06:13:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=htZctuxXKE0y8Ds3Ks+eU1tAjDk4CgKGP/R4V1+yxO4=;
+ b=T0AfwYm18ypbbDcQpL+yOttf3g3Yi5CEA9ZwbFbyBoLY1zELvfBUaOuFc6fuW5tedD5x
+ 8WIQ5pq8j0fShyQk6yePmWN4kUxS/tn98tjIm/G1pK+6oUqzlXkl5Z01kThKnwn1cPuy
+ syque3llcSgZBusgXFn1uNSutAJ49PTLNMS1i7Wk1x5iayMlxyW1++xqD41PD0Etor0y
+ I3miNQGDnVr1h0fvyV+2ZtkzuQSyyccapWpWufUOfKv6AaQqkFz0ZKIVH73KtPI76lG9
+ BRbT8ZFCagOssUCdyUiWqknIo3lKjNXSktKkLkLffRt31ufKLZWGMo7QcDgIgmXpEuvy 3Q== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sba0qu4rp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Aug 2023 06:13:36 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3796DZoQ003709
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 9 Aug 2023 06:13:35 GMT
+Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 8 Aug
+ 2023 23:13:31 -0700
+Message-ID: <639c64d6-7e43-8d54-92c3-87d12ba0cbd4@quicinc.com>
+Date:   Wed, 9 Aug 2023 14:13:28 +0800
 MIME-Version: 1.0
-References: <20230808033106.2174-1-Wenhua.Lin@unisoc.com> <20230808134442.75bb6f04b5612c07d3b7d731@hugovil.com>
-In-Reply-To: <20230808134442.75bb6f04b5612c07d3b7d731@hugovil.com>
-From:   wenhua lin <wenhua.lin1994@gmail.com>
-Date:   Wed, 9 Aug 2023 14:11:17 +0800
-Message-ID: <CAB9BWhcvVj-J-NyqQE6NBW_fNvMvbg9ZMkkMD26QnQexawbU0Q@mail.gmail.com>
-Subject: Re: [PATCH 1/3] gpio: sprd: Modify the calculation method of eic number
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v7 04/13] coresight-tpda: Add DSB dataset support
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC:     Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <andersson@kernel.org>
+References: <1690269353-10829-1-git-send-email-quic_taozha@quicinc.com>
+ <1690269353-10829-5-git-send-email-quic_taozha@quicinc.com>
+ <94b9ae0f-b6ed-1d72-f86a-d33842527681@arm.com>
+Content-Language: en-US
+From:   Tao Zhang <quic_taozha@quicinc.com>
+In-Reply-To: <94b9ae0f-b6ed-1d72-f86a-d33842527681@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 1y1UuZeizDXLp0Bl5rdYefsFjvBUnv5f
+X-Proofpoint-ORIG-GUID: 1y1UuZeizDXLp0Bl5rdYefsFjvBUnv5f
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-09_04,2023-08-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 mlxscore=0 bulkscore=0
+ adultscore=0 lowpriorityscore=0 impostorscore=0 clxscore=1011
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308090055
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hugo:
-We will re-split the patch submission and explain our reasons for
-modification in the submission information, thank you very much for
-your review.
+Hi Suzuki,
 
-Hugo Villeneuve <hugo@hugovil.com> =E4=BA=8E2023=E5=B9=B48=E6=9C=889=E6=97=
-=A5=E5=91=A8=E4=B8=89 01:44=E5=86=99=E9=81=93=EF=BC=9A
+On 8/4/2023 11:02 PM, Suzuki K Poulose wrote:
+> On 25/07/2023 08:15, Tao Zhang wrote:
+>> Read the DSB element size from the device tree. Set the register
+>> bit that controls the DSB element size of the corresponding port.
+>>
+>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-tpda.c | 96 
+>> +++++++++++++++++++++++++---
+>>   drivers/hwtracing/coresight/coresight-tpda.h |  4 ++
+>>   2 files changed, 90 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-tpda.c 
+>> b/drivers/hwtracing/coresight/coresight-tpda.c
+>> index 8d2b9d2..7c71342 100644
+>> --- a/drivers/hwtracing/coresight/coresight-tpda.c
+>> +++ b/drivers/hwtracing/coresight/coresight-tpda.c
+>> @@ -21,6 +21,58 @@
+>>     DEFINE_CORESIGHT_DEVLIST(tpda_devs, "tpda");
+>>   +/* Search and read element data size from the TPDM node in
 >
-> On Tue, 8 Aug 2023 11:31:06 +0800
-> Wenhua Lin <Wenhua.Lin@unisoc.com> wrote:
+> minor nit:
 >
-> > Automatic calculation through matching nodes,
-> > subsequent projects can avoid modifying driver files.
-> >
-> > Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> > ---
-> >  drivers/gpio/gpio-eic-sprd.c | 49 +++++++++++++++++++-----------------
-> >  1 file changed, 26 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.=
-c
-> > index 84352a6f4973..0d85d9e80848 100644
-> > --- a/drivers/gpio/gpio-eic-sprd.c
-> > +++ b/drivers/gpio/gpio-eic-sprd.c
-> > @@ -50,10 +50,10 @@
-> >  #define SPRD_EIC_SYNC_DATA           0x1c
-> >
-> >  /*
-> > - * The digital-chip EIC controller can support maximum 3 banks, and ea=
-ch bank
-> > + * The digital-chip EIC controller can support maximum 8 banks, and ea=
-ch bank
-> >   * contains 8 EICs.
-> >   */
-> > -#define SPRD_EIC_MAX_BANK            3
-> > +#define SPRD_EIC_MAX_BANK            8
-> >  #define SPRD_EIC_PER_BANK_NR         8
-> >  #define SPRD_EIC_DATA_MASK           GENMASK(7, 0)
-> >  #define SPRD_EIC_BIT(x)                      ((x) & (SPRD_EIC_PER_BANK=
-_NR - 1))
-> > @@ -99,33 +99,32 @@ struct sprd_eic {
-> >
-> >  struct sprd_eic_variant_data {
-> >       enum sprd_eic_type type;
-> > -     u32 num_eics;
-> >  };
-> >
-> > +#define SPRD_EIC_VAR_DATA(soc_name)                          \
-> > +static const struct sprd_eic_variant_data soc_name##_eic_dbnc_data =3D=
- {       \
-> > +     .type =3D SPRD_EIC_DEBOUNCE,                                     =
- \
-> > +};                                                                   \
-> > +                                                                     \
-> > +static const struct sprd_eic_variant_data soc_name##_eic_latch_data =
-=3D {      \
-> > +     .type =3D SPRD_EIC_LATCH,                                        =
- \
-> > +};                                                                   \
-> > +                                                                     \
-> > +static const struct sprd_eic_variant_data soc_name##_eic_async_data =
-=3D {      \
-> > +     .type =3D SPRD_EIC_ASYNC,                                        =
- \
-> > +};                                                                   \
-> > +                                                                     \
-> > +static const struct sprd_eic_variant_data soc_name##_eic_sync_data =3D=
- {       \
-> > +     .type =3D SPRD_EIC_SYNC,                                         =
- \
-> > +}
-> > +
-> > +SPRD_EIC_VAR_DATA(sc9860);
-> > +
-> >  static const char *sprd_eic_label_name[SPRD_EIC_MAX] =3D {
-> >       "eic-debounce", "eic-latch", "eic-async",
-> >       "eic-sync",
-> >  };
-> >
-> > -static const struct sprd_eic_variant_data sc9860_eic_dbnc_data =3D {
-> > -     .type =3D SPRD_EIC_DEBOUNCE,
-> > -     .num_eics =3D 8,
-> > -};
-> > -
-> > -static const struct sprd_eic_variant_data sc9860_eic_latch_data =3D {
-> > -     .type =3D SPRD_EIC_LATCH,
-> > -     .num_eics =3D 8,
-> > -};
-> > -
-> > -static const struct sprd_eic_variant_data sc9860_eic_async_data =3D {
-> > -     .type =3D SPRD_EIC_ASYNC,
-> > -     .num_eics =3D 8,
-> > -};
-> > -
-> > -static const struct sprd_eic_variant_data sc9860_eic_sync_data =3D {
-> > -     .type =3D SPRD_EIC_SYNC,
-> > -     .num_eics =3D 8,
-> > -};
-> >
-> >  static inline void __iomem *sprd_eic_offset_base(struct sprd_eic *sprd=
-_eic,
-> >                                                unsigned int bank)
-> > @@ -583,6 +582,7 @@ static int sprd_eic_probe(struct platform_device *p=
-dev)
-> >       struct sprd_eic *sprd_eic;
-> >       struct resource *res;
-> >       int ret, i;
-> > +     u16 num_banks =3D 0;
-> >
-> >       pdata =3D of_device_get_match_data(&pdev->dev);
-> >       if (!pdata) {
-> > @@ -613,12 +613,13 @@ static int sprd_eic_probe(struct platform_device =
-*pdev)
-> >                       break;
-> >
-> >               sprd_eic->base[i] =3D devm_ioremap_resource(&pdev->dev, r=
-es);
-> > +             num_banks++;
-> >               if (IS_ERR(sprd_eic->base[i]))
-> >                       return PTR_ERR(sprd_eic->base[i]);
-> >       }
-> >
-> >       sprd_eic->chip.label =3D sprd_eic_label_name[sprd_eic->type];
-> > -     sprd_eic->chip.ngpio =3D pdata->num_eics;
-> > +     sprd_eic->chip.ngpio =3D num_banks * SPRD_EIC_PER_BANK_NR;
-> >       sprd_eic->chip.base =3D -1;
-> >       sprd_eic->chip.parent =3D &pdev->dev;
-> >       sprd_eic->chip.direction_input =3D sprd_eic_direction_input;
-> > @@ -630,10 +631,12 @@ static int sprd_eic_probe(struct platform_device =
-*pdev)
-> >               sprd_eic->chip.set =3D sprd_eic_set;
-> >               fallthrough;
-> >       case SPRD_EIC_ASYNC:
-> > +             fallthrough;
+> /*
+>  * Search ...
+I will update this in the next patch series.
 >
-> Hi,
-> this probably should go in a separate patch as a fix or an
-> improvement with proper comments explaining the reason?
+>> + * the devicetree. Each input port of TPDA is connected to
+>> + * a TPDM. Different TPDM supports different types of dataset,
+>> + * and some may support more than one type of dataset.
+>> + * Parameter "inport" is used to pass in the input port number
+>> + * of TPDA, and it is set to 0 in the recursize call.
 >
-> >       case SPRD_EIC_SYNC:
-> >               sprd_eic->chip.get =3D sprd_eic_get;
-> >               break;
-> >       case SPRD_EIC_LATCH:
-> > +             fallthrough;
+>> + * Parameter "parent" is used to pass in the original call.
 >
-> ditto.
+> Please remove references to the past and describe "match_inport"
+I will update this in the next patch series.
 >
-> Hugo Villeneuve
+>> + */
+>> +static int tpda_set_element_size(struct tpda_drvdata *drvdata,
+>> +               struct coresight_device *csdev, int inport, bool 
+>> match_inport)
+>
+> May be we could switch the order of the parameters:
+>
+> match_inport, int port
+>
+> Or even inport < 0, implies, port wont be matched.
+>
+> i.e.,
+>
+> tpda_set_element_size(drvdata, child, inport)
+I will update this in the next patch series.
+>
+>> +{
+>> +    static int nr_inport;
+>> +    int i;
+>> +    static bool tpdm_found;
+>> +    struct coresight_device *in_csdev;
+>> +
+>> +    if (inport > (TPDA_MAX_INPORTS - 1))
+>> +        return -EINVAL;
+>> +
+>> +    if (match_inport) {
+>> +        nr_inport = inport;
+>> +        tpdm_found = false;
+>> +    }
+>
+> Could we not avoid the static variables and this dance by making the 
+> function return the dsb_size ? See further down.
+>
+I will update this in the next patch series.
+>
+>> +
+>> +    for (i = 0; i < csdev->pdata->nr_inconns; i++) {
+>> +        in_csdev = csdev->pdata->in_conns[i]->src_dev;
+>> +        if (!in_csdev)
+>> +            break;
+>         continue ?
+I will update this in the next patch series.
+>> +
+>> +        if (match_inport)
+>> +            if (csdev->pdata->in_conns[i]->dest_port != inport)
+>> +                continue;
+>> +
+>> +        if ((in_csdev->type == CORESIGHT_DEV_TYPE_SOURCE) &&
+>> +                (in_csdev->subtype.source_subtype
+>> +                == CORESIGHT_DEV_SUBTYPE_SOURCE_TPDM)) {
+>
+> Please provide a helper :
+>
+> static bool coresight_device_is_tpdm(csdev) {
+>     return
+>      (csdev->type == CORESIGHT_DEV_TYPE_SOURCE) &&
+>      (in_csdev->subtype.source_subtype ==
+>         CORESIGHT_DEV_SUBTYPE_SOURCE_TPDM);
+> }
+>
+I will update this in the next patch series.
 >
 >
-> >       default:
-> >               break;
-> >       }
-> > --
-> > 2.17.1
-> >
+>> + of_property_read_u8(in_csdev->dev.parent->of_node,
+>> +                    "qcom,dsb-element-size", 
+>> &drvdata->dsb_esize[nr_inport]);
+>
+>
+>
+>> +            if (!tpdm_found)
+>> +                tpdm_found = true;
+>> +            else
+>> +                dev_warn(drvdata->dev,
+>> +                    "More than one TPDM is mapped to the TPDA input 
+>> port %d.\n",
+>> +                    nr_inport);
+>> +            continue;
+>> +        }
+>> +        tpda_set_element_size(drvdata, in_csdev, 0, false);
+>> +    }
+>> +
+>
+> /*
+>  * Read the DSB element size from the TPDM device
+>  * Returns
+>  *    the size read from the firmware if available.
+>  *    0 - Otherwise, with a Warning once.
+>  */
+> static int tpdm_read_dsb_element_size(struct coresight_device *csdev)
+> {
+>     int rc, size = 0;
+>
+>     rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
+>                      "qcom,dsb-element-size", &size);
+>     if (rc)
+>         dev_warn_once(&in->dev, "Failed to read TPDM DSB Element size: 
+> %d\n",
+>         rc);
+>     return size;
+> }
+>
+> static int tpda_get_element_size(struct coresight_device *csdev,
+>                  int inport)
+> {
+>     int dsb_size = -ENOENT;
+>
+>     for (i = 0; i < csdev->pdata->nr_inconns; i++) {
+>         in = csdev->pdata->in_conns[i]->src_dev;
+>         if (!in)
+>             continue;
+>         if (coresight_device_is_tpdm(in)) {
+>             /* Ignore the TPDMs that do not match port */
+>             if (inport > 0 &&
+>                 (csdev->pdata->in_conns[i]->dest_port !=
+>                 inport))
+>                 continue;
+>             size = tpdm_read_dsb_element_size(csdev);
+>         } else {
+>             /* Recurse down the path */
+>             size = tpda_set_element_size(in, -1);
+>         }
+>
+>         if (size < 0)
+>             return size;
+>         /* We have found a size, save it. */
+>         if (dsb_size < 0) {
+>             dsb_size = size;
+>         } else {
+>             /* We have duplicate TPDMs */
+>             return -EEXIST;
+>         }
+>     }
+>     return dsb_size;
+> }
+>
+I will update this in the next patch series.
+>
+>
+>
+>> +    return 0;
+>> +}
+>> +
+>>   /* Settings pre enabling port control register */
+>>   static void tpda_enable_pre_port(struct tpda_drvdata *drvdata)
+>>   {
+>> @@ -32,26 +84,43 @@ static void tpda_enable_pre_port(struct 
+>> tpda_drvdata *drvdata)
+>>       writel_relaxed(val, drvdata->base + TPDA_CR);
+>>   }
+>>   -static void tpda_enable_port(struct tpda_drvdata *drvdata, int port)
+>> +static int tpda_enable_port(struct tpda_drvdata *drvdata, int port)
+>>   {
+>>       u32 val;
+>>         val = readl_relaxed(drvdata->base + TPDA_Pn_CR(port));
+>> +    /*
+>> +     * Configure aggregator port n DSB data set element size
+>> +     * Set the bit to 0 if the size is 32
+>> +     * Set the bit to 1 if the size is 64
+>> +     */
+>> +    if (drvdata->dsb_esize[port] == 32)
+>> +        val &= ~TPDA_Pn_CR_DSBSIZE;
+>> +    else if (drvdata->dsb_esize[port] == 64)
+>> +        val |= TPDA_Pn_CR_DSBSIZE;
+>
+> Couldn't this be detected via tpda_get_element_size()? see below.
+I will update this in the next patch series.
+>
+>> +    else
+>> +        return -EINVAL;
+>> +
+>>       /* Enable the port */
+>>       val |= TPDA_Pn_CR_ENA;
+>>       writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
+>> +
+>> +    return 0;
+>>   }
+>>   -static void __tpda_enable(struct tpda_drvdata *drvdata, int port)
+>> +static int __tpda_enable(struct tpda_drvdata *drvdata, int port)
+>>   {
+>> +    int ret;
+>> +
+>>       CS_UNLOCK(drvdata->base);
+>>         if (!drvdata->csdev->enable)
+>>           tpda_enable_pre_port(drvdata);
+>>   -    tpda_enable_port(drvdata, port);
+>> -
+>> +    ret = tpda_enable_port(drvdata, port);
+>>       CS_LOCK(drvdata->base);
+>> +
+>> +    return ret;
+>>   }
+>>     static int tpda_enable(struct coresight_device *csdev,
+>> @@ -59,16 +128,23 @@ static int tpda_enable(struct coresight_device 
+>> *csdev,
+>>                  struct coresight_connection *out)
+>>   {
+>>       struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+>> +    int ret;
+>> +
+>> +    ret = tpda_set_element_size(drvdata, csdev, in->dest_port, true);
+>
+>     size  = tpda_get_element_size(csdev, in->dest_port);
+>     switch (size) {
+>     case 32:
+>     case 64:
+>         break;
+>     case -EEXIST:
+>         dev_warn_once("Detected multiple TPDMs on port %d", ..)
+>         fallthrough;
+>     default:
+>         return size;
+>     }
+>
+>     drvdata->dsb_esize[in->dest_port] = size;
+
+I will update this in the next patch series.
+
+
+Best,
+
+Tao
+
+>
+> Suzuki
+>
+>
+>
+>> +    if (ret)
+>> +        return ret;
+>>         spin_lock(&drvdata->spinlock);
+>> -    if (atomic_read(&in->dest_refcnt) == 0)
+>> -        __tpda_enable(drvdata, in->dest_port);
+>> +    if (atomic_read(&in->dest_refcnt) == 0) {
+>> +        ret = __tpda_enable(drvdata, in->dest_port);
+>> +        if (!ret) {
+>> +            atomic_inc(&in->dest_refcnt);
+>> +            dev_dbg(drvdata->dev, "TPDA inport %d enabled.\n", 
+>> in->dest_port);
+>> +        }
+>> +    }
+>>   -    atomic_inc(&in->dest_refcnt);
+>>       spin_unlock(&drvdata->spinlock);
+>> -
+>> -    dev_dbg(drvdata->dev, "TPDA inport %d enabled.\n", in->dest_port);
+>> -    return 0;
+>> +    return ret;
+>>   }
+>>     static void __tpda_disable(struct tpda_drvdata *drvdata, int port)
+>> diff --git a/drivers/hwtracing/coresight/coresight-tpda.h 
+>> b/drivers/hwtracing/coresight/coresight-tpda.h
+>> index 0399678..12a1472 100644
+>> --- a/drivers/hwtracing/coresight/coresight-tpda.h
+>> +++ b/drivers/hwtracing/coresight/coresight-tpda.h
+>> @@ -10,6 +10,8 @@
+>>   #define TPDA_Pn_CR(n)        (0x004 + (n * 4))
+>>   /* Aggregator port enable bit */
+>>   #define TPDA_Pn_CR_ENA        BIT(0)
+>> +/* Aggregator port DSB data set element size bit */
+>> +#define TPDA_Pn_CR_DSBSIZE        BIT(8)
+>>     #define TPDA_MAX_INPORTS    32
+>>   @@ -23,6 +25,7 @@
+>>    * @csdev:      component vitals needed by the framework.
+>>    * @spinlock:   lock for the drvdata value.
+>>    * @enable:     enable status of the component.
+>> + * @dsb_esize:  DSB element size for each inport, it must be 32 or 64.
+>>    */
+>>   struct tpda_drvdata {
+>>       void __iomem        *base;
+>> @@ -30,6 +33,7 @@ struct tpda_drvdata {
+>>       struct coresight_device    *csdev;
+>>       spinlock_t        spinlock;
+>>       u8            atid;
+>> +    u8            dsb_esize[TPDA_MAX_INPORTS];
+>>   };
+>>     #endif  /* _CORESIGHT_CORESIGHT_TPDA_H */
+>
