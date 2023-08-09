@@ -2,163 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A007767EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54097767F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbjHITFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55982 "EHLO
+        id S230297AbjHITGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHITFb (ORCPT
+        with ESMTP id S229436AbjHITGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:05:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DE7E71;
-        Wed,  9 Aug 2023 12:05:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B6A964095;
-        Wed,  9 Aug 2023 19:05:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F5CFC433C8;
-        Wed,  9 Aug 2023 19:05:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691607929;
-        bh=4GKDaia1VeW/OijfJXE9UHIufNesebWNQDy9LU2whYI=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=gEyeaJZ4RUWChIryvRrKWbHk6CbM8eHu0rqtHvzvba6SSDpBpPtag+D6BMw4GFw2n
-         hFXK4OEbm0L9R1B4K8eNiaiBDtquinDOVTFyiDIMSP6pKYqwvVgkMBHyc14BMMGMP8
-         zAV3KdTeX3lKcSKjE5oKnAjO29eKsnCAgTvUvEsF/+3xUpWxGZvbyls48Ed9vXaSwV
-         DcuV4QvGf703nsP6BpmM4kVysUgEr6LDinf8/zizcxdQ20sie+EHfzuPrXj/APOCtH
-         91Mo4Dg4M0l0SApVPB8n1GBtVl5sn3TKwCbUSa9ZQiDyJiArJw0iRB7MWozIYejid0
-         q+2d4Xd9I1nbw==
-Message-ID: <cbc98eb171d6ccacb24213af7d0ae91094d39780.camel@kernel.org>
-Subject: Re: [PATCH v7 08/13] fs: drop the timespec64 argument from
- update_time
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Mike Marshall <hubcap@omnibond.com>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Date:   Wed, 09 Aug 2023 15:05:21 -0400
-In-Reply-To: <CAOg9mST=WFAjEwS9eNi_huoUpBvPy3R3fbFVTLUeFZAv6BJEEQ@mail.gmail.com>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
-         <20230807-mgctime-v7-8-d1dec143a704@kernel.org>
-         <20230809-segeln-pflaumen-460b81bd2d3a@brauner>
-         <CAOg9mST=WFAjEwS9eNi_huoUpBvPy3R3fbFVTLUeFZAv6BJEEQ@mail.gmail.com>
+        Wed, 9 Aug 2023 15:06:07 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A07E71;
+        Wed,  9 Aug 2023 12:06:07 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-522ab557632so100678a12.0;
+        Wed, 09 Aug 2023 12:06:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691607965; x=1692212765;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jFNiyh/RpFmVAG/0/kBc/iL4rv2i1vWkHIfgKRABBw4=;
+        b=ICspo8jmziYqbUxbj9Mb3lOhkP7bdXLJGNeJcDIaXMQne/T1M7pYu+H80MSiBemwf8
+         3SNQ3DNnPEVoDbzolaINQPr4DWm6+k6b+pNngBbQcaZ8+PFdiDQJFWEyz/dbOztpvzoM
+         Cw8LCfitzSxqKZDddQX7FeOKyqxNIm4CTvvOBXmg8UrkgO/zZlCmfNafk7EQHZsKEDuv
+         5FuOz3OlANC0BnaUUvEGMeV95ILAQlqzF8gKd+X0UvzV+DapFZMjhPeBAO/RYrMoZP7C
+         lBXJK79j+lpf1JFCcJ809qtNobKTeRthhtW+6NmcKIjnwyqRHVtjZdZmuilBrYPjwxtf
+         G6Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691607965; x=1692212765;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jFNiyh/RpFmVAG/0/kBc/iL4rv2i1vWkHIfgKRABBw4=;
+        b=a7okqUz+gGMBSjS+FcAYW3NoQpbrAHZbUYJdl+cf3TjGQIhmI7VWQTAXIAvwSkVqtU
+         YwtTvvcT4GyvDHQG9IlYlp/RS80k4kaYspg/B9Qn2D7MhKNm1EoLgoeK8PDimG9heYrd
+         W6ht1tXmQBKoYegm7J5Oiwlyp6OTOFfEcuOmjOj40JoD7VRZK8ajN0zA0vrImBqM68Iy
+         Sj3/5oJIWKfYvWdEsYW/6VbMW9X8nURSO5V6IVFC3X7ehNhRfx1RxJmmSrSmb+DcUaoM
+         2yWtNtbHCXWy/Me6VBcVhlYofMFxrpyiBeOmLgRilvInhuyl1A9K9ZCuatHGSq2yW5w4
+         hs9Q==
+X-Gm-Message-State: AOJu0YwqTfKzZ2SSADII8TLj4mWs0QM2O3tL+V+ABF2GGdj0AJUeNRja
+        HwL/S5vRTS2N2iUsljbl8I78Uy5A7w+dLeCDS4A=
+X-Google-Smtp-Source: AGHT+IF2BpiajTE1qLjpXUXsxPx0tt9ixa6upXqc5Cn9ZheALEopErCYfLd0unzpinLEDNS7e7Npidp5X3VNM4XdC+4=
+X-Received: by 2002:aa7:c751:0:b0:522:38cb:d8cb with SMTP id
+ c17-20020aa7c751000000b0052238cbd8cbmr80622eds.20.1691607965256; Wed, 09 Aug
+ 2023 12:06:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230808025404.2053471-1-changxian.cqs@antgroup.com>
+In-Reply-To: <20230808025404.2053471-1-changxian.cqs@antgroup.com>
+From:   =?UTF-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>
+Date:   Wed, 9 Aug 2023 21:05:29 +0200
+Message-ID: <CAA76j91MN6OKKoKmwfJ7WW7qhccf0EorpO0HBZYg1Ho5c5Ty8w@mail.gmail.com>
+Subject: Re: [PATCH v3] rust: macros: vtable: fix `HAS_*` redefinition (`gen_const_name`)
+To:     Qingsong Chen <changxian.cqs@antgroup.com>
+Cc:     linux-kernel@vger.kernel.org,
+        =?UTF-8?B?55Sw5rSq5Lqu?= <tate.thl@antgroup.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        rust-for-linux@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes. It's in Christian's vfs.ctime branch:
+On Tue, 8 Aug 2023 at 04:54, Qingsong Chen <changxian.cqs@antgroup.com> wro=
+te:
+>
+> If we define the same function name twice in a trait (using `#[cfg]`),
+> the `vtable` macro will redefine its `gen_const_name`, e.g. this will
+> define `HAS_BAR` twice:
+>
+>     #[vtable]
+>     pub trait Foo {
+>         #[cfg(CONFIG_X)]
+>         fn bar();
+>
+>         #[cfg(not(CONFIG_X))]
+>         fn bar(x: usize);
+>     }
+>
+> Fixes: b44becc5ee80 ("rust: macros: add `#[vtable]` proc macro")
+> Signed-off-by: Qingsong Chen <changxian.cqs@antgroup.com>
 
-https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/log/?h=3Dvfs.ct=
-ime
+Reviewed-by: Sergio Gonz=C3=A1lez Collado<sergio.collado@gmail.com>
 
-On Wed, 2023-08-09 at 14:38 -0400, Mike Marshall wrote:
-> I've been following this patch on fsdevel... is there a
-> remote I could fetch with a branch that has this in it?
->=20
-> -Mike
->=20
-> On Wed, Aug 9, 2023 at 8:32=E2=80=AFAM Christian Brauner <brauner@kernel.=
-org> wrote:
-> >=20
-> > On Mon, Aug 07, 2023 at 03:38:39PM -0400, Jeff Layton wrote:
-> > > Now that all of the update_time operations are prepared for it, we ca=
-n
-> > > drop the timespec64 argument from the update_time operation. Do that =
-and
-> > > remove it from some associated functions like inode_update_time and
-> > > inode_needs_update_time.
-> > >=20
-> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > ---
-> > >  fs/bad_inode.c           |  3 +--
-> > >  fs/btrfs/inode.c         |  3 +--
-> > >  fs/btrfs/volumes.c       |  4 +---
-> > >  fs/fat/fat.h             |  3 +--
-> > >  fs/fat/misc.c            |  2 +-
-> > >  fs/gfs2/inode.c          |  3 +--
-> > >  fs/inode.c               | 30 +++++++++++++-----------------
-> > >  fs/overlayfs/inode.c     |  2 +-
-> > >  fs/overlayfs/overlayfs.h |  2 +-
-> > >  fs/ubifs/file.c          |  3 +--
-> > >  fs/ubifs/ubifs.h         |  2 +-
-> > >  fs/xfs/xfs_iops.c        |  1 -
-> > >  include/linux/fs.h       |  4 ++--
-> >=20
-> > This was missing the conversion of fs/orangefs orangefs_update_time()
-> > causing the build to fail. So at some point kbuild will yell here.
-> > Fwiw, I've fixed that up in-tree.
-
-Cheers,
---=20
-Jeff Layton <jlayton@kernel.org>
+> ---
+> v1 -> v2:
+> - Use `BTreeSet` and existing `consts` as suggested by Alice and Gary.
+> - Reword commit messages as suggested by Miguel.
+> v2 -> v3:
+> - No need to replace `HashSet` with `BTreeSet`, since `consts` is never
+>   iterated on.
+>
+>  rust/macros/vtable.rs | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/rust/macros/vtable.rs b/rust/macros/vtable.rs
+> index 34d5e7fb5768..ee06044fcd4f 100644
+> --- a/rust/macros/vtable.rs
+> +++ b/rust/macros/vtable.rs
+> @@ -74,6 +74,7 @@ pub(crate) fn vtable(_attr: TokenStream, ts: TokenStrea=
+m) -> TokenStream {
+>                  const {gen_const_name}: bool =3D false;",
+>              )
+>              .unwrap();
+> +            consts.insert(gen_const_name);
+>          }
+>      } else {
+>          const_items =3D "const USE_VTABLE_ATTR: () =3D ();".to_owned();
+> --
+> 2.40.1
+>
+>
