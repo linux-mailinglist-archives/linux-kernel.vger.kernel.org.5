@@ -2,245 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBA0775952
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 12:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D45A7759DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbjHIK72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 06:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53228 "EHLO
+        id S233015AbjHILD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 07:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbjHIK7Z (ORCPT
+        with ESMTP id S233077AbjHILDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 06:59:25 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB1DED
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 03:59:24 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-585fd99ed8bso11075317b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 03:59:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691578764; x=1692183564;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=iaYB/Ipn2a2m2D4N0I3VurARbvsG5OxcIS7VBhxmako=;
-        b=d4VL+01TABHXmsF/sknTHW8Rix2EH/NZaxjVqxatJUJtf08r7M+zh6yn+PA1us+AzV
-         z3awp9BTZ2SGvAVHohC08w9xi18NAqlf+RppMRyqUQK0mLFwDujbuBKRT0tgpXbVWIke
-         aq848fTgmA1SRmqy3cqqq14DDujIjW1G1iBJYQV53M0VYtgCxQNpMG+07HJCgi7gvKgS
-         Kj/yC+kHVl8mfSdUD8fMH6jZMGo0/Qw4Z8dGgDVkeUoKILysPjl5CydscQykfuKaTwrL
-         Ighftu4Ff/D7o+4a/6brj1dWeuOz5Csxqp1h3BZ0aOmOEM8fg8RHIt1RvZbXwNpit3tQ
-         rOPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691578764; x=1692183564;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iaYB/Ipn2a2m2D4N0I3VurARbvsG5OxcIS7VBhxmako=;
-        b=Sn3EKqDfn3CPI7GoA+DfyTpFMkdPxI/syK7HE7qAZo4uGGWWDezq0k6R3RBGrUxeJ2
-         09ixEcH0dbJOist51iY1kMi538Kjb3bX3l20Kn1cr5gjhjN5oXbbwSYCr1rQHKzpB4JP
-         9GQTKdlEUd7y8Wy647udfc0tTpIRdz9T39q9oVCieee9IG7GCvgzn5LRqn22EGBgUsZR
-         AmRngJgyHiTM4eW5W1eQXvlSUE/hYv0UFQoq3eQFjsRSPPBIcwSn7m5CeEGItdH0jAIS
-         FtQwvGvr7ZcQAnBl4af4hMybEQgpCEko4FBLc1A79vEEzNnq6c0kjg42/dw/Ency/MHj
-         QDyg==
-X-Gm-Message-State: AOJu0YzkawTQJ4J/hvbvy7gRmlrd3i01zsevLfrL1a4XloupKLMK1hwu
-        ZHiNsdB/iCLrzK1nTMBFR0AWTx9x4TB+TZF8R9ciQw==
-X-Google-Smtp-Source: AGHT+IGf9KnfBxey/rY1ABAA/l9zjpo/dhTHXbZOjXu+o3ulWFuAqa5B3FD+/+ICLarj2DWZ2/xD4E0zUqP8mxA+PW4=
-X-Received: by 2002:a0d:cb52:0:b0:577:186c:2a3c with SMTP id
- n79-20020a0dcb52000000b00577186c2a3cmr11621366ywd.19.1691578763825; Wed, 09
- Aug 2023 03:59:23 -0700 (PDT)
+        Wed, 9 Aug 2023 07:03:11 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AEE1FFE
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 04:03:04 -0700 (PDT)
+Received: from fsav411.sakura.ne.jp (fsav411.sakura.ne.jp [133.242.250.110])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 379B31Ur074373;
+        Wed, 9 Aug 2023 20:03:01 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav411.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp);
+ Wed, 09 Aug 2023 20:03:01 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 379B30sR074366
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 9 Aug 2023 20:03:01 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <6cc13636-eda6-6a95-6564-db1c9ae76bb6@I-love.SAKURA.ne.jp>
+Date:   Wed, 9 Aug 2023 20:03:00 +0900
 MIME-Version: 1.0
-References: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
- <20230804233015.173957-1-limings@nvidia.com>
-In-Reply-To: <20230804233015.173957-1-limings@nvidia.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 9 Aug 2023 12:58:47 +0200
-Message-ID: <CAPDyKFo0TYw-8Mq8eUasvh0bVM1NLcWR+QZvt-=S2Jb+S7rYBA@mail.gmail.com>
-Subject: Re: [PATCH v6] mmc: sdhci-of-dwcmshc: Add runtime PM operations
-To:     Liming Sun <limings@nvidia.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        David Thompson <davthompson@nvidia.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Content-Language: en-US
+To:     Michal Hocko <mhocko@suse.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Petr Mladek <pmladek@suse.com>, linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH v2] mm/page_alloc: don't check zonelist_update_seq from atomic
+ allocations
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 5 Aug 2023 at 01:30, Liming Sun <limings@nvidia.com> wrote:
->
-> This commit implements the runtime PM operations to disable eMMC
-> card clock when idle.
->
-> Reviewed-by: David Thompson <davthompson@nvidia.com>
-> Signed-off-by: Liming Sun <limings@nvidia.com>
-> ---
-> v5->v6:
->     - Address Adrian's more comments and add coordination between
->       runtime PM and system PM;
-> v4->v5:
->     - Address Adrian's comment to move the pm_enable to the end to
->       avoid race;
-> v3->v4:
->     - Fix compiling reported by 'kernel test robot';
-> v2->v3:
->     - Revise the commit message;
-> v1->v2:
->     Updates for comments from Ulf:
->     - Make the runtime PM logic generic for sdhci-of-dwcmshc;
-> v1: Initial version.
-> ---
->  drivers/mmc/host/sdhci-of-dwcmshc.c | 72 ++++++++++++++++++++++++++++-
->  1 file changed, 70 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> index e68cd87998c8..aaf66358f626 100644
-> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> @@ -15,6 +15,7 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/reset.h>
->  #include <linux/sizes.h>
->
-> @@ -548,9 +549,13 @@ static int dwcmshc_probe(struct platform_device *pdev)
->
->         host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
->
-> +       pm_runtime_get_noresume(dev);
-> +       pm_runtime_set_active(dev);
-> +       pm_runtime_enable(dev);
-> +
->         err = sdhci_setup_host(host);
->         if (err)
-> -               goto err_clk;
-> +               goto err_rpm;
->
->         if (rk_priv)
->                 dwcmshc_rk35xx_postinit(host, priv);
-> @@ -559,10 +564,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
->         if (err)
->                 goto err_setup_host;
->
-> +       pm_runtime_put_sync(dev);
-> +
->         return 0;
->
->  err_setup_host:
->         sdhci_cleanup_host(host);
-> +err_rpm:
-> +       pm_runtime_disable(dev);
-> +       pm_runtime_put_noidle(dev);
->  err_clk:
->         clk_disable_unprepare(pltfm_host->clk);
->         clk_disable_unprepare(priv->bus_clk);
-> @@ -606,6 +616,12 @@ static int dwcmshc_suspend(struct device *dev)
->         if (ret)
->                 return ret;
->
+Sebastian Andrzej Siewior reported that commit 1007843a9190
+("mm/page_alloc: fix potential deadlock on zonelist_update_seq seqlock")
+is problematic for CONFIG_PREEMPT_RT=y case, for PREEMPT_RT kernels do not
+allow holding spinlocks with interrupts disabled because PREEMPT_RT kernels
+manage priority by making the spinlock sleepable.
 
-sdhci_suspend_host() is called a few lines above, which requires the
-host to be runtime resumed when called. This may not be the case here.
+Commit 3d36424b3b58 ("mm/page_alloc: fix race condition between
+build_all_zonelists and page allocation") was obviously wrong that
+that commit introduced a spinlock into !__GFP_DIRECT_RECLAIM allocations
+without understanding the reality that we cannot figure out all possible
+locking dependency. Like commit 726ccdba1521 ("kasan,kmsan: remove
+__GFP_KSWAPD_RECLAIM usage from kasan/kmsan") says, !__GFP_DIRECT_RECLAIM
+allocations might happen with arbitrary locks held. But the page allocator
+does not offer a gfp flag that opts out from holding zonelist_update_seq
+seqlock. Under such situations, the safer approach is not to opt in to
+holding zonelist_update_seq seqlock if sleeping is not permitted.
 
-To fix this there are in principle two options:
+This is an updated and optimized version of [1]. This patch eliminates
 
-1) Call a pm_runtime_get_sync() around here and a corresponding
-pm_runtime_put_noidle() somewhere after you have called
-pm_runtime_force_suspend().
+     while ((__seq = seqprop_sequence(s)) & 1)
+     	   cpu_relax();
 
-2) Move away from using sdhci_suspend|resume_host(), but use
-sdhci_runtime_suspend|resume_host() instead. This requires some
-additional changes, but with the benefit that we can avoid runtime
-resuming the device upfront. In this case,
-sdhci_runtime_suspend|resume_host() should be called from
-dwcmshc_runtime_suspend|resume(). Moreover, we either need to move the
-entire clock mgmt from dwcmshc_suspend|resume() into the
-dwcmshc_runtime_suspend|resume() or call pm_runtime_get_noresume()
-before calling pm_runtime_force_suspend() and pm_runtime_put_noidle()
-just after it.
+path from zonelist_iter_begin() which is always called as long as
+__alloc_pages_slowpath() is called. There is no need to wait for
+completion of rebuilding zonelists, for rebuilding zonelists being in
+flight does not mean that allocation never succeeds. When allocation did
+not fail, this "while" loop becomes nothing but a waste of CPU time.
+And it is very likely that rebuilding zonelists being not in flight from
+the beginning.
 
-> +       ret = pm_runtime_force_suspend(dev);
-> +       if (ret) {
-> +               sdhci_resume_host(host);
-> +               return ret;
-> +       }
-> +
->         clk_disable_unprepare(pltfm_host->clk);
->         if (!IS_ERR(priv->bus_clk))
->                 clk_disable_unprepare(priv->bus_clk);
-> @@ -625,6 +641,10 @@ static int dwcmshc_resume(struct device *dev)
->         struct rk35xx_priv *rk_priv = priv->priv;
->         int ret;
->
-> +       ret = pm_runtime_force_resume(dev);
-> +       if (ret)
-> +               return ret;
-> +
->         ret = clk_prepare_enable(pltfm_host->clk);
->         if (ret)
->                 return ret;
-> @@ -646,7 +666,55 @@ static int dwcmshc_resume(struct device *dev)
->  }
->  #endif
->
-> -static SIMPLE_DEV_PM_OPS(dwcmshc_pmops, dwcmshc_suspend, dwcmshc_resume);
-> +#ifdef CONFIG_PM
-> +
-> +static void dwcmshc_enable_card_clk(struct sdhci_host *host)
-> +{
-> +       u16 ctrl;
-> +
-> +       ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> +       if ((ctrl & SDHCI_CLOCK_INT_EN) && !(ctrl & SDHCI_CLOCK_CARD_EN)) {
-> +               ctrl |= SDHCI_CLOCK_CARD_EN;
-> +               sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
-> +       }
-> +}
-> +
-> +static void dwcmshc_disable_card_clk(struct sdhci_host *host)
-> +{
-> +       u16 ctrl;
-> +
-> +       ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> +       if (ctrl & SDHCI_CLOCK_CARD_EN) {
-> +               ctrl &= ~SDHCI_CLOCK_CARD_EN;
-> +               sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
-> +       }
-> +}
-> +
-> +static int dwcmshc_runtime_suspend(struct device *dev)
-> +{
-> +       struct sdhci_host *host = dev_get_drvdata(dev);
-> +
-> +       dwcmshc_disable_card_clk(host);
-> +
-> +       return 0;
-> +}
-> +
-> +static int dwcmshc_runtime_resume(struct device *dev)
-> +{
-> +       struct sdhci_host *host = dev_get_drvdata(dev);
-> +
-> +       dwcmshc_enable_card_clk(host);
-> +
-> +       return 0;
-> +}
-> +
-> +#endif
-> +
-> +static const struct dev_pm_ops dwcmshc_pmops = {
-> +       SET_SYSTEM_SLEEP_PM_OPS(dwcmshc_suspend, dwcmshc_resume)
-> +       SET_RUNTIME_PM_OPS(dwcmshc_runtime_suspend,
-> +                          dwcmshc_runtime_resume, NULL)
-> +};
->
->  static struct platform_driver sdhci_dwcmshc_driver = {
->         .driver = {
+This patch not only avoids possibility of deadlock, but also makes
+zonelist_iter_begin() faster and simpler. This change is an improvement
+even without considering printk() and lockdep/KCSAN related problems.
 
-Kind regards
-Uffe
+Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Closes: https://lkml.kernel.org/r/20230621104034.HT6QnNkQ@linutronix.de
+Link: https://lkml.kernel.org/r/dfdb9da6-ca8f-7a81-bfdd-d74b4c401f11@I-love.SAKURA.ne.jp [1]
+Fixes: 1007843a9190 ("mm/page_alloc: fix potential deadlock on zonelist_update_seq seqlock")
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+This patch replaces "mm/page_alloc: use write_seqlock_irqsave() instead
+write_seqlock() + local_irq_save()." in linux-next.git tree.
+
+ mm/page_alloc.c | 73 ++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 45 insertions(+), 28 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 7d3460c7a480..5557d9a2ff2c 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3638,26 +3638,44 @@ EXPORT_SYMBOL_GPL(fs_reclaim_release);
+ 
+ /*
+  * Zonelists may change due to hotplug during allocation. Detect when zonelists
+- * have been rebuilt so allocation retries. Reader side does not lock and
+- * retries the allocation if zonelist changes. Writer side is protected by the
+- * embedded spin_lock.
++ * have been rebuilt so __GFP_DIRECT_RECLAIM allocation retries. Writer side
++ * makes this sequence odd before rebuilding zonelists and makes this sequence
++ * even after rebuilding zonelists. Sine writer side disables context switching
++ * when rebuilding zonelists, and !__GFP_DIRECT_RECLAIM allocation will not
++ * retry when zonelists changed, reader side does not need to hold a lock (but
++ * needs to use data_race() annotation), making locking dependency simpler.
+  */
+-static DEFINE_SEQLOCK(zonelist_update_seq);
++static unsigned int zonelist_update_seq;
+ 
+ static unsigned int zonelist_iter_begin(void)
+ {
+ 	if (IS_ENABLED(CONFIG_MEMORY_HOTREMOVE))
+-		return read_seqbegin(&zonelist_update_seq);
++		/* See comment above. */
++		return data_race(READ_ONCE(zonelist_update_seq));
+ 
+ 	return 0;
+ }
+ 
+-static unsigned int check_retry_zonelist(unsigned int seq)
++static unsigned int check_retry_zonelist(gfp_t gfp, unsigned int seq)
+ {
+-	if (IS_ENABLED(CONFIG_MEMORY_HOTREMOVE))
+-		return read_seqretry(&zonelist_update_seq, seq);
++	if (IS_ENABLED(CONFIG_MEMORY_HOTREMOVE) && (gfp & __GFP_DIRECT_RECLAIM)) {
++		/* See comment above. */
++		unsigned int seq2 = data_race(READ_ONCE(zonelist_update_seq));
+ 
+-	return seq;
++		/*
++		 * "seq != seq2" indicates that __build_all_zonelists() has
++		 * started or has finished rebuilding zonelists, hence retry.
++		 * "seq == seq2 && (seq2 & 1)" indicates that
++		 * __build_all_zonelists() is still rebuilding zonelists
++		 * with context switching disabled, hence retry.
++		 * "seq == seq2 && !(seq2 & 1)" indicates that
++		 * __build_all_zonelists() did not rebuild zonelists, hence
++		 * no retry.
++		 */
++		return unlikely(seq != seq2 || (seq2 & 1));
++	}
++
++	return 0;
+ }
+ 
+ /* Perform direct synchronous page reclaim */
+@@ -4146,7 +4164,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+ 	 * a unnecessary OOM kill.
+ 	 */
+ 	if (check_retry_cpuset(cpuset_mems_cookie, ac) ||
+-	    check_retry_zonelist(zonelist_iter_cookie))
++	    check_retry_zonelist(gfp_mask, zonelist_iter_cookie))
+ 		goto restart;
+ 
+ 	/* Reclaim has failed us, start killing things */
+@@ -4172,7 +4190,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+ 	 * a unnecessary OOM kill.
+ 	 */
+ 	if (check_retry_cpuset(cpuset_mems_cookie, ac) ||
+-	    check_retry_zonelist(zonelist_iter_cookie))
++	    check_retry_zonelist(gfp_mask, zonelist_iter_cookie))
+ 		goto restart;
+ 
+ 	/*
+@@ -5136,22 +5154,17 @@ static void __build_all_zonelists(void *data)
+ 	int nid;
+ 	int __maybe_unused cpu;
+ 	pg_data_t *self = data;
++	static DEFINE_SPINLOCK(lock);
+ 	unsigned long flags;
+ 
+-	/*
+-	 * Explicitly disable this CPU's interrupts before taking seqlock
+-	 * to prevent any IRQ handler from calling into the page allocator
+-	 * (e.g. GFP_ATOMIC) that could hit zonelist_iter_begin and livelock.
+-	 */
+-	local_irq_save(flags);
+-	/*
+-	 * Explicitly disable this CPU's synchronous printk() before taking
+-	 * seqlock to prevent any printk() from trying to hold port->lock, for
+-	 * tty_insert_flip_string_and_push_buffer() on other CPU might be
+-	 * calling kmalloc(GFP_ATOMIC | __GFP_NOWARN) with port->lock held.
+-	 */
+-	printk_deferred_enter();
+-	write_seqlock(&zonelist_update_seq);
++#ifdef CONFIG_PREEMPT_RT
++	migrate_disable()
++#endif
++	/* Serialize increments of zonelist_update_seq. */
++	spin_lock_irqsave(&lock, flags);
++	zonelist_update_seq++;
++	/* Tell check_retry_zonelist() that we started rebuilding zonelists. */
++	smp_wmb();
+ 
+ #ifdef CONFIG_NUMA
+ 	memset(node_load, 0, sizeof(node_load));
+@@ -5188,9 +5201,13 @@ static void __build_all_zonelists(void *data)
+ #endif
+ 	}
+ 
+-	write_sequnlock(&zonelist_update_seq);
+-	printk_deferred_exit();
+-	local_irq_restore(flags);
++	/* Tell check_retry_zonelist() that we finished rebuilding zonelists. */
++	smp_wmb();
++	zonelist_update_seq++;
++	spin_unlock_irqrestore(&lock, flags);
++#ifdef CONFIG_PREEMPT_RT
++	migrate_enable()
++#endif
+ }
+ 
+ static noinline void __init
+-- 
+2.18.4
