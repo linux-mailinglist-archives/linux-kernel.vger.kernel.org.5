@@ -2,126 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EB7776202
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83799776203
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbjHIOFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34260 "EHLO
+        id S231497AbjHIOFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbjHIOFL (ORCPT
+        with ESMTP id S229722AbjHIOFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:05:11 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B874E7E
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:05:10 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-40398ccdaeeso35189931cf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 07:05:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1691589909; x=1692194709;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Os5sLDeFoJgDXLzdefgu9SaTWkLJ6QLGY9rFMdBUmEE=;
-        b=Xu6bR3LQqWohb3H3pLYSmoX1OTdMouJycfbvXiceZMoEJm13T4C5o9HrtpwtJuUsak
-         9jd8egMjXygRZvye5u9t8lF+ZjmvY3VTDV5EbbMo1A0WhFH9IX96K8EL0xR+YYfMqA4D
-         VjrKUANVKJIrwz0iYUycCoRbqLZbAbMJpictaxGWvBpxMH0l7WjnMzgQFecDJwrDjdGl
-         ODuZAyPidZ4iphNfjMkoy31dJQvHQKQlxB7q9DEIY1okH95rZQHIQS9JW7erjHLkAcbQ
-         PxJy29aNSrntCqvmLc+xvwGrrgzzKcBTAFFDIto0PD3jTBN6qfZiQRLI7113zkOuJ4UG
-         uehg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691589909; x=1692194709;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Os5sLDeFoJgDXLzdefgu9SaTWkLJ6QLGY9rFMdBUmEE=;
-        b=ZeoC8odFa0S96t9gHOyA9H4OiavwfoQFshf+7LLFVvwc+qrltSfpC8Ly3UAvBsPssA
-         OlAmBxS2ULk3i5uDFfldCzNGDWtPIcnfoMD9uFbe/tEGf0CLIlfq1NEQtY8U9105xvme
-         aPcuOYj1OBsp65ysJzALZCNznVqJC24x8ohtcJW2vWsBiIB6+RhO2PoLSc1pqSvfgK/v
-         hQJ5H0muI6ixWluWYAWpkiKPVREWub06jwV6J/wTs4zEeT4gZDrFuK0CdLxDKEcXb4Ql
-         aoZu2/bmPi6YHuxLHefCiU74ldjamxe54f76dsFuHTnFBwtCz8R3/lc+JVItbq8ndoTQ
-         UhnA==
-X-Gm-Message-State: AOJu0YwRsDrKDMY0voonf68oA7vCzDuWNVfDhLW+Avh5TgF06snwu8xX
-        ugp/aR92EjILDqmHINRgaVI3Hg==
-X-Google-Smtp-Source: AGHT+IGvZOcp4bb27HKnCKu89Ds+xRbiF6jalvoHqbvWWI2i+kDh/U0gDO/IhAxknKds9cNT60ju6g==
-X-Received: by 2002:ac8:7f81:0:b0:400:a2b8:1c97 with SMTP id z1-20020ac87f81000000b00400a2b81c97mr3666633qtj.17.1691589909295;
-        Wed, 09 Aug 2023 07:05:09 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id e7-20020ac84147000000b00403c82c609asm4136670qtm.14.2023.08.09.07.05.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 07:05:07 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qTjoA-0052Z0-Ku;
-        Wed, 09 Aug 2023 11:05:06 -0300
-Date:   Wed, 9 Aug 2023 11:05:06 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Baolu Lu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 03/12] iommu: Remove unrecoverable fault data
-Message-ID: <ZNOdEtbMaHg9Vmmq@ziepe.ca>
-References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
- <20230727054837.147050-4-baolu.lu@linux.intel.com>
- <BN9PR11MB52767976314CC61A0F8BEFD08C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <faad1948-5096-c9d3-616a-cd0f0a4b5876@linux.intel.com>
- <BN9PR11MB527614E61BC257FE113EFE358C09A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZNKL6hGRZT9qfV1K@ziepe.ca>
- <BN9PR11MB5276DA9E6474567FAFE9424B8C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
+        Wed, 9 Aug 2023 10:05:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E5C1FCC
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:05:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BBD1A62FDC
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:05:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E4AEC433C8;
+        Wed,  9 Aug 2023 14:05:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691589934;
+        bh=C4vGr9VtQ1uJZ1AEXz3WxHMpY3hLIOJDo+mTGMKQeJg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IRS+cZPwvkKV+8bca4C1LLK2tmCojpzDB4Ip4t7A+qZ7wDMplRv3TwyfY5WwIvaj+
+         lAwpzLlufCQJnGT4z46peHy1lfbCICNv+XikWaeYHxPD37O+DS272hxGqDwvJU/PnE
+         L7XpmjAqvHO+RBMfq85PFJTzRw1iYmm5TjYYdoGO33bb4PhUunjvdCoWsCggEueplE
+         cP7M0i7blFe4I3hrYEJWLnpambzQSxZikkGu+HWs16wmaG3TpBmeQ5+E2DhaT4LQoQ
+         SZTjqE4IlXmp55z13/PxqId91Rfyoz53Av+T66B2yCylXcXlnM4WtuqcPGdwQm8m6i
+         H6FJNgDwovy8Q==
+Date:   Wed, 9 Aug 2023 10:05:30 -0400
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        Andrew.Cooper3@citrix.com, gregkh@linuxfoundation.org
+Subject: Re: [RFC][PATCH 11/17] x86/cpu: Remove all SRSO interface nonsense
+Message-ID: <20230809140530.bijq3asl26d2pu7u@treble>
+References: <20230809071218.000335006@infradead.org>
+ <20230809072201.192502969@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5276DA9E6474567FAFE9424B8C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230809072201.192502969@infradead.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 12:01:52AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@ziepe.ca>
-> > Sent: Wednesday, August 9, 2023 2:40 AM
-> > 
-> > On Fri, Aug 04, 2023 at 03:51:30AM +0000, Tian, Kevin wrote:
-> > > > From: Baolu Lu <baolu.lu@linux.intel.com>
-> > > > Sent: Friday, August 4, 2023 10:59 AM
-> > > >
-> > > > On 2023/8/3 15:54, Tian, Kevin wrote:
-> > > > >> From: Lu Baolu<baolu.lu@linux.intel.com>
-> > > > >> Sent: Thursday, July 27, 2023 1:48 PM
-> > > > >>
-> > > > >>   struct iommu_fault {
-> > > > >>   	__u32	type;
-> > > > >> -	__u32	padding;
-> > > > > this padding should be kept.
-> > > > >
-> > > >
-> > > > To keep above 64-bit aligned, right?
-> > > >
-> > >
-> > > yes
-> > 
-> > If it is not uapi we should not explicitly document padding (and __u32
-> > should be u32). The compiler will add it if it is necessary.
-> > 
-> > If the compiler isn't right for some reason then something else has
-> > gone wrong.
-> > 
-> 
-> I thought this will be used as uAPI later. I'm fine to leave it be and
-> add the padding when the uAPI is introduced.
+On Wed, Aug 09, 2023 at 09:12:29AM +0200, Peter Zijlstra wrote:
+> @@ -2607,26 +2447,26 @@ static ssize_t srbds_show_state(char *bu
+>  static ssize_t retbleed_show_state(char *buf)
+>  {
+>  	if (retbleed_mitigation == RETBLEED_MITIGATION_UNRET ||
+> +	    retbleed_mitigation == RETBLEED_MITIGATION_UNRET_SRSO ||
+> +	    retbleed_mitigation == RETBLEED_MITIGATION_UNRET_SRSO_ALIAS ||
+>  	    retbleed_mitigation == RETBLEED_MITIGATION_IBPB) {
 
-Yes
+These retbleed_show_state() changes probably belong in that other patch
+which adds the retbleed= cmdline options.
 
-Jason
+> +
+>  		if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD &&
+>  		    boot_cpu_data.x86_vendor != X86_VENDOR_HYGON)
+>  			return sysfs_emit(buf, "Vulnerable: untrained return thunk / IBPB on non-AMD based uarch\n");
+>  
+> -		return sysfs_emit(buf, "%s; SMT %s\n", retbleed_strings[retbleed_mitigation],
+> +		return sysfs_emit(buf, "%s; SMT %s%s\n", retbleed_strings[retbleed_mitigation],
+>  				  !sched_smt_active() ? "disabled" :
+>  				  spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+>  				  spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED ?
+> -				  "enabled with STIBP protection" : "vulnerable");
+> -	}
+> +				  "enabled with STIBP protection" : "vulnerable",
+> +				  cpu_has_ibpb_brtype_microcode() ? "" : ", no SRSO microcode");
+
+Hm?  What does missing microcode have to do with SMT?
+
+-- 
+Josh
