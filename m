@@ -2,381 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC7C774FA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 02:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538E5774FA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 02:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbjHIABC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 20:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54796 "EHLO
+        id S231220AbjHIACL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 20:02:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbjHIABB (ORCPT
+        with ESMTP id S230504AbjHIACK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 20:01:01 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2098.outbound.protection.outlook.com [40.107.93.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9ECAA1;
-        Tue,  8 Aug 2023 17:00:59 -0700 (PDT)
+        Tue, 8 Aug 2023 20:02:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F03A1;
+        Tue,  8 Aug 2023 17:02:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691539328; x=1723075328;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=M5z4qsgxY2letyLvUgNJbpYlfYRxCOqedMRHzQgBbZk=;
+  b=WOkTdvM/F8L7E26FkYtU2OJmyq8JpDn0mn8Be6aB12gpcmXr87UD3lK1
+   80GPEQkaGf+mJcz0ROf+7J1HC/NlFgYLTlbpewxQpdDGtFE5hwkc7d7Zh
+   GajnwyV3X7W5TfcQLuvzzM6EwiqcsKUsLEYyUAZ+wN1dJLg72t9pxqgs3
+   FWinyGiIfKpsfOXZIlRbCxfDnYg2iV+enktVXxkSdTWBQ4R+IeSP8o2ab
+   rv5TLfuWbVZnPdh4tFifeu8KjSOedIRHCNM6kBGJrUZcmJNXZuEn3IqPE
+   CIA+3en3bShfSSR02saDsvbCb3SKMkS7DIdtSGGwP1OCM+BweHHFZ9nab
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="370976534"
+X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
+   d="scan'208";a="370976534"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 17:01:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="761130308"
+X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
+   d="scan'208";a="761130308"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga008.jf.intel.com with ESMTP; 08 Aug 2023 17:01:55 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 8 Aug 2023 17:01:54 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 8 Aug 2023 17:01:54 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 8 Aug 2023 17:01:54 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.109)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 8 Aug 2023 17:01:54 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gDd2Og7PAVRS4sw61Y5+ykHOHqDWMpXLPG5PvqmvePJBaUTV3Nh4mMZXGT/GNcJcLtT6fmkTBbFsy2t7b8x+PZ9pC9Vn2MVEAK6qOMGj36WxroGUEnihboBA9L701SPc7hpDNxFTzhJtk5BRWa5jhFTHW/Z0IWIwlJQZaa4S15ut6Fj2yuJWQqwktsTbYkoJkI/OS/BUVWtuZ2uAPOUjH8H3Z/OBlAQWUvX8pouQ4kcLy8+BOa6gYdRw1g67BLxtLh6Lc1n+4pNdGQFwdsrsVW0N8wvhfCeOszBs8j6xZxI0YxA6d1UmGD6octB62axqrbsPWTtRp4LAKkUe3pyovg==
+ b=ZhAbyAYWP12sMaHhPhTnX8wl1JzRqkjY/bhRNgwfMP8lrrjlFGRaMuaLRVnW4n2gkRzyF9iIDMjeu9oS5Un6XmJjAG5tSs/AbaayqUqkcl+6mcpw0wlXhKF0ofrx5v+IzdYo7dOxB2+0jjpBFHYL2trWnEXe80EHA0do6UI1aWyyVh5Cdt7wwE1sVom6CYyMpnTajIFaPYLLiakgcJIzg7u4vfKVz5WqSkw04T6iamjNV1cAbO4HbwqkjkGwN4rf3BgCC4/L1/2G+60ys3Q+8YuWqmWzOAzgZqMFMp05BbQPOvsbSceoy6H3vZbhR/tekhzDoHqwgQoz7lzE8/V+Rw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zE5i8YDPH78q79boaiIB9TCa/dbSPbr9lQMssaXToHs=;
- b=R1K299VAstb02ZMSBWKlqH4UfcItRkwT/9x0NZMECMVKz3eRUtDXhpBUFgRlF2NSeUIlVQfv4F06r+IjOs0UGZKC3PlLWV14dGHYtIQymrjqWNxZCz5ONyzNruWPV9JXxZDJISxETNRLyI4KtvkmxLOUZ0EjA0bioMaIBY3B75jhlxPCmoCsYF6xRs+zD/ZxQLKLQ+flIauG/HrdIfjgp9ALQ5uaGDp/r1pfe7nKVRZBF85z0UB7GEu5LhiDUnfUXHrczhamAXw1uqlFSOelU9RgdI6eb0/90gmQrI0d9nyfOgUUiYsPwAeHN1le/lYzKGGdwRbIUJ6Y70Fswjz4Gw==
+ bh=PC5RxCLw5VPTEsbjU0KB8AyRAeHObBDcVguUnWbylWQ=;
+ b=ORSiFXUcK+JQjpmyoXJ2AAr6akyRNUsZaviH9RDtKZI/9gMw2aZ7gKPzQYpLiFXg142x6iKm2MykKDo2LZbbY93WkV50N6FZhIl6b2Lh9thgbiX/jQd363/evC3ZJyAg0Ho7quuDLIFAR5no2pBx112f5K0qjSj5+qCz4qxHXFtnfeivXRikdwcpaBOOr8nMGSQwSPXfe8/xLBmNyC9wdK/+XAkyzE8yorMpP6i3aOb4dEzL3eW2tReBbMonAu4FX/LAiVvFPRPgEru39vrOpSb0m4eRj5anmjM0sHj5qeFR2/MygE4HB7JbEUWYzq9WMVr36u6ZXXPCuitExEWx1Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zE5i8YDPH78q79boaiIB9TCa/dbSPbr9lQMssaXToHs=;
- b=um81hC10eVWsagSmk/Wa+F01xaNKWFlKF1Hpgt7rY3/cR/kVy3Sh7aw1vjjaqf3dKmHKylShg/QTc6KhcN14ZE2Qr5UADw6NYhScbbo1HjBZckOi7u0zVsH5SFo6CPyRgChTQpd1qFTE3UdMD1KVpVb75XW8STYaHsq1H7kixEA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
- SA1PR01MB6624.prod.exchangelabs.com (2603:10b6:806:1a3::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6652.27; Wed, 9 Aug 2023 00:00:56 +0000
-Received: from DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::4e0f:49b:ee39:f08e]) by DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::4e0f:49b:ee39:f08e%6]) with mapi id 15.20.6652.026; Wed, 9 Aug 2023
- 00:00:53 +0000
-Date:   Tue, 8 Aug 2023 17:00:41 -0700 (PDT)
-From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
-To:     John Garry <john.g.garry@oracle.com>
-cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Ian Rogers <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org,
-        Dave Kleikamp <dave.kleikamp@oracle.com>
-Subject: Re: [PATCH 3/4] perf vendor events arm64: Add AmpereOne metrics
-In-Reply-To: <90c18a64-4de6-a251-13d2-e6671a04c398@oracle.com>
-Message-ID: <fe49313-add2-a3a7-49f0-54dcf0dd8c84@os.amperecomputing.com>
-References: <20230803211331.140553-1-ilkka@os.amperecomputing.com> <20230803211331.140553-4-ilkka@os.amperecomputing.com> <ccce391b-da5e-584c-9c56-1de754df8362@oracle.com> <e5879193-515b-662c-8597-ca8ea8e3fb4@os.amperecomputing.com>
- <90c18a64-4de6-a251-13d2-e6671a04c398@oracle.com>
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-ClientProxiedBy: CH2PR05CA0037.namprd05.prod.outlook.com
- (2603:10b6:610:38::14) To DM5PR0102MB3590.prod.exchangelabs.com
- (2603:10b6:4:a4::25)
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by SA2PR11MB4873.namprd11.prod.outlook.com (2603:10b6:806:113::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Wed, 9 Aug
+ 2023 00:01:52 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6652.026; Wed, 9 Aug 2023
+ 00:01:52 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Baolu Lu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Will Deacon" <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 03/12] iommu: Remove unrecoverable fault data
+Thread-Topic: [PATCH v2 03/12] iommu: Remove unrecoverable fault data
+Thread-Index: AQHZwE5XwmTCizFL9kGoEloX5eLFx6/YPsPQgAE/24CAAA6WQIAHQY4AgABZl1A=
+Date:   Wed, 9 Aug 2023 00:01:52 +0000
+Message-ID: <BN9PR11MB5276DA9E6474567FAFE9424B8C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-4-baolu.lu@linux.intel.com>
+ <BN9PR11MB52767976314CC61A0F8BEFD08C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <faad1948-5096-c9d3-616a-cd0f0a4b5876@linux.intel.com>
+ <BN9PR11MB527614E61BC257FE113EFE358C09A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZNKL6hGRZT9qfV1K@ziepe.ca>
+In-Reply-To: <ZNKL6hGRZT9qfV1K@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SA2PR11MB4873:EE_
+x-ms-office365-filtering-correlation-id: 3b14effe-01a8-4f71-a97b-08db986bd63c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Ft8BnhbvTQOFUQB8kN7xCCQtC2WL0dmqFyUt6bpnWxRE1k/StgMM+YaNC6kxCPGO1koNtE1yLiOKhRtfW7UX2zslnhcSkI+qGKb/vORtPYkCQjClyeb2erPWwLMZEf6qd0Rfd/hR744bZtABBiKjedEXGlmqCrSRzxIqNHVeqKT4Th4KMY0WWJB8nVkBbg7cFo1sF8m6rVaMlscSbxl2rMF/33KnpZlVJZYsLH4GBW+QlwHJghPFtR6XgNNd8HVmy2VH4L1aEIy/CnmXYqC9ZySa6DwlHKCok7rZjz88pKdUR9hYlOnloXaFDzEWn6t4XElsPHBrgxN1JAFv3iPGWGPrtd+9s0eMdDfUwmrOB/uiANZD2ttjopGEj3J1l6heNPmhFtkGXwgWv2E56oyV+gQPA1Kir9i8dMF8wyBP3lazoYHwXe5Xuf77avZhoLKS/Jzi+xit4EjfZUwilGcKgw+XQSUUdbaTHlRMS/0DwHeGl3qgBF10T3nTlobrJTcbi2wEFjUJv+DwDNogOMIZH9cYegswAsTqqhimGOEwEnxrsAO4nLd804TlB8Kc+e+7m2i1oKcqOCErSvwq2HAl+H8IFN81hiOqiUJF6jorBSUwin0NGMfTq+9u1j+JyvF8
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(346002)(136003)(376002)(396003)(39860400002)(451199021)(1800799006)(186006)(55016003)(38070700005)(33656002)(71200400001)(86362001)(53546011)(26005)(6506007)(82960400001)(38100700002)(122000001)(478600001)(2906002)(4744005)(9686003)(7696005)(54906003)(52536014)(76116006)(5660300002)(66476007)(66446008)(64756008)(66946007)(66556008)(8676002)(7416002)(8936002)(41300700001)(4326008)(316002)(6916009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?oop466vHNNVs/tZH9eLssW1SAL4V5+iez5Pcn7SExyC2NffM+ZKiWm/ix+Wf?=
+ =?us-ascii?Q?TifZfQu0bJODadce7FQRXn+4fF+AQgT3UJ0I6W9lT5g4A4YPHT4JrmrP35+U?=
+ =?us-ascii?Q?jQDoBIcqwOiwQcELZhGk5cMZogH1d60PrfZzA+86AX7EwOW5zmz3a0q0dc/f?=
+ =?us-ascii?Q?qrrTHHXcYkvCeUphu7cgtkHOJ+D10BlyQ2J+X47eBXz3r4rJ0tbUoSmJE5YK?=
+ =?us-ascii?Q?lICvHgfoHwLLjgKin6DjUQ4/g0pLL44zZNj36cwzoFQaci2SP8U2b3OjY9dl?=
+ =?us-ascii?Q?8Q7+aOVToRSDh7q5q6Q6OPcTGVK8bV/F1AUebGCyY93lGwqoi/tAW3HstsEk?=
+ =?us-ascii?Q?B/mhrMsBQnSx4f0XP0BfzG//LsGZgyDCRcLNfoI9TpB1Qlq9nzG1HmYJJw62?=
+ =?us-ascii?Q?jPUHU3ORA0KMRsETJnQeiPInU1hQvQe6FSm1kIkJHNE12dhJT6WyMEtwpB2k?=
+ =?us-ascii?Q?UuEW77KA/p9lAaVpztl0xi3kGs84ydgwrKv7qSoYaj+6Q8FJA2I0dgNZ9sPN?=
+ =?us-ascii?Q?KdtTKVXZ0HZz/iJgtbDTRjXHugUw9tmiyhoUlKh1nsHfExUnAfCPBO54DTjY?=
+ =?us-ascii?Q?2G4XiRVskgIpyKfMTRkYz5pRO1BmFTchRyrcusCehq9KSLm8G44cAxuHYHnq?=
+ =?us-ascii?Q?mvrK7cqjgvYhhOf0JH53Kyfdtcx3y9ewvdsYCKW6NlSHuHyP64BpBWHnYvSL?=
+ =?us-ascii?Q?UhcGYGwmwWIsd5lyZ2DeivkK0S2VnKlzJfreKeFJpmdzRcpxYYwcZp1R8Dke?=
+ =?us-ascii?Q?VskTtw2t2IAZNZoCQh5k5WCo4Qn/K+yxIapFtf3ewTrwC9JO8hRleOIqov50?=
+ =?us-ascii?Q?fRWkIjgfqfsd1+Gd2ErgVuk4QPcFurpDbyxEhX05ty4D849J7+L0Qsc91+Vv?=
+ =?us-ascii?Q?T1AA/RDXx2zv6lsZTU9DX4pw6V8UouLIEzsx1YLkn9BUwAe5DgYYzJvn/IpL?=
+ =?us-ascii?Q?lqwk7RmYabCyHDFh4rbl6em1cpntsiF4jmtVm9yT4y+/sKsiqG63Ak6J3PNa?=
+ =?us-ascii?Q?u28kmntb8KBoCbzToaIo+6Q0kcnFa/2b9vYrIla9rktei65674Yifqvbpdjm?=
+ =?us-ascii?Q?Csxc4LgFrzpmDAQrwNmNGKMy7h6hi6253PH+bTfTmt6fKOtC6goGEE8kbm98?=
+ =?us-ascii?Q?65jx6iWfVqyJ3cKuw36zuOEbjMpk8MMt5wfFmWAaWsrbcM2HI1UsoNYP/zpm?=
+ =?us-ascii?Q?Y6Z+jK6+6gdMb6aaOn5CpHKFZ6hG949bAomzfqhobZ5tBNfhB/vXTS/bXPz/?=
+ =?us-ascii?Q?3gKYn+ILsUGz+C9vsQQr3ikCwzmpiRmQi/jS9QNMIljHrxaGQynCDrBSXY8J?=
+ =?us-ascii?Q?KYonoxi8xLba7nJMaQszcVFf9zDHwJf5d+e2hj8asGMOT92GvFG9kW9WQSVa?=
+ =?us-ascii?Q?fRkkbIMAWxrYekTA2baA9Gzsov/lw11UdvCG/ZJ8f/LAvq1APvSm+nmrYwve?=
+ =?us-ascii?Q?iZx00k6zySZh7/kPLwkL5EG0hJJpQXRNTlQxzTkpGYpU2g9BJWWM3sofZMYW?=
+ =?us-ascii?Q?G/Dwhr4aK1s7LZeT7g86TAOXiwFHXgOnzCwnDNl5BmYlS71qRjU+oivnt8ia?=
+ =?us-ascii?Q?9cOaOse5bXprntW5Vyj++tiHkmcD2dwztmyFe7wW?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|SA1PR01MB6624:EE_
-X-MS-Office365-Filtering-Correlation-Id: 636b01fd-73cd-4218-77de-08db986bb283
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: R4xMJUbkhfCT6KREO/Rid/vfGBIIJnd/KL+2yNEcXL+17U5t6kvDMc3Wesix8Mo17hgYz2b9pDE5zeZEKrtXyX3OAyA++r+nI2vKc9MMUojRdPW5jwxl9NB/uX21SFoWLLdlbs5HRUWjCpPffMX398CvnLKAuY1wxbh5YxiKG+I+4hlW+QNujenNFSks99l/I+uFVy3D6IlTfNtawh0yeHqp7QOa4hE/qnFrdd3wcjSysCItNQ9f9SJ0lKk5P/3tidCqWdUTGtSVoEz9+3gcFTyJ3xYiCBSMd15gkvxqDRGxRpf7qyiJbiNifLbeJf3ydasVVIz+sKy3qHAaSvrcV5BKAbU4NtEjFWaHvOB2l1uWGeQ9uBLeWTG0vRNJVEL+uNgwl57ZB+R7wlHKjf1+roN3nc8U8G1XZiMT/UvEKg5Zxj5jzg05EhC/Sd9qcb6dx9ghROKrUL0ILLt9+osU9GKatnKd/yiRJ0gWejV66XagKzgoyKnqs0Zhk986mA+vosUTsCk4zLpqQkrpfR1k8cb11msWAf7079QKfC8fGRA1oW6r04VdKaW3iC4vB9jSzm+lXFIx8sNNHHdBufSkXaAz7OLmVBVCa1yVrhJ/JyHuiB/T/AkmySrppQFKQrxs
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(39850400004)(346002)(396003)(136003)(366004)(1800799006)(451199021)(186006)(7416002)(8676002)(5660300002)(8936002)(4326008)(41300700001)(316002)(83380400001)(86362001)(2906002)(6916009)(6512007)(6666004)(6486002)(52116002)(53546011)(26005)(6506007)(2616005)(66946007)(66556008)(66476007)(478600001)(54906003)(38350700002)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tv6WP/9eacMRCDdny/wCElH8acZErP7mxxsv0CoTx/0SesJB6MNK4ikkbbLV?=
- =?us-ascii?Q?2rCBBKxe7cPZFXHezWk3lV1Y5iziR1rxSiJ3CQg4ZMkQVFKH3U8kufNwc1jl?=
- =?us-ascii?Q?7GmM2AT2Hu2D8axk1rQh/f78pbawW8JpKIFDYbokr9WlVlopxmVZnDlW7Avg?=
- =?us-ascii?Q?PvhVt3W678oV4GVHKqm+4q0dBwQ0QAmpC5ROOE/ZtNTzUSVewssgDBvaU9Ty?=
- =?us-ascii?Q?wUDEG2YdlXo728fMl4L8Re1sZwwb9AhYizBdaz4qCrs8Z9iglrMAW6zMYuRA?=
- =?us-ascii?Q?Wu3fCBCIaCLy0CP9J3/nw6DFugn/p/VG+LcSNSXJa5QBg9y6Q3/jocn8j4da?=
- =?us-ascii?Q?64A314I5QmFif1RtdD9gE2tGN/blRZq7zEJvKffyD9xNeSihleXgePwfwol8?=
- =?us-ascii?Q?cQchowwH/RzXE2atSLlSJUwcat5v/xWX1OpBcHWNyMq5F0QB9A1FRNq3Wm6y?=
- =?us-ascii?Q?SHmqHEmH3YJil2NMlQHe+fCEoeb5jRoZMoTcT3oUOb/zRNCMg9n5nevLwjVm?=
- =?us-ascii?Q?n2Weg6jQkzGt4hLkKSYeihBXGjyGqc0L8K3+HJ3SbZd9k6PBDln9Gh7Y1jpo?=
- =?us-ascii?Q?53Gq0rJibNVOPGUPpWM0ewrZsJaqXS8U5GTnnDwJ5c+w1ayRKTlO5FpxEErE?=
- =?us-ascii?Q?Vq22Xqs7mEIKpiGIMWMHFj9Gw5R4F/xqql7nGOi7GUAGTqtOT71K7KTtMvea?=
- =?us-ascii?Q?7lFmqr+l/cYmwvZvaKRWgz+W9H9FukpGErUnasSpjE9LxsWPs+Ca8de/2GAz?=
- =?us-ascii?Q?mq90949ZGgDD0+Gi1ovPi8TpJHiNt7Ri3FtcgMS0XzeZ7OtWGAv3ltht4SS6?=
- =?us-ascii?Q?bFH4E7a8ZQpi94vCDtzOXsFw5Ka+IhAxX7jInE6irV9kubQ43kaTuS+5whpA?=
- =?us-ascii?Q?Px45bZoEZp8gcdZpkawruw/zNnMkvPB4GgNQ96zS3aREEEorsPQvSH614X3X?=
- =?us-ascii?Q?mczaUoOMHt2/QiLQ4VohuS4q4Rae8gTf3oS3Z2wHaQZ+zGzcbMdBhdu9SYlQ?=
- =?us-ascii?Q?2VkGdWY5HzKegUhV35uS02jroY/IMhrxtcQPEruar6rIysVoYbz1Y6N+iMBW?=
- =?us-ascii?Q?gsN4EuL+vn/rovXQtvLeuaM0wo6vWVRr4vWcShsU0EMaL8KvCAgSYQD+nRd7?=
- =?us-ascii?Q?Q/6QtgjXPwjChkxW6ry/DMQAzzSzNKbI461uRc29MQ3KERdVKrISngaH4Wop?=
- =?us-ascii?Q?wbOUKFjQ0ilIfI3Xdogu+qxY/s33dS0++TOR74BIbVeIeJomvF57FuiIrEv3?=
- =?us-ascii?Q?91YFtgyIDXuttTMxuLP9HP05Lpr03X3DBUAFRDqeyiqLYjQBWrTjIpSXS7GZ?=
- =?us-ascii?Q?ossTU8T40OuhxQPudFzI1zVGX9yXvW8VlPC0DO5XyFsGMguI0pOOfrv4/QVf?=
- =?us-ascii?Q?CzDgQh6rIGGQv7YbilVzT08NmBtP0+QE79pQdXWsKoVMzZE4aq5wbGFmb8Ms?=
- =?us-ascii?Q?mAEAa4mDi9Fx8FimrYzzIAFga2bGjSrMgF7WAfi+thvT+ymcEyKUMywX+wHX?=
- =?us-ascii?Q?qXNwqIa4ztuVAPfyCcKQ6wJuZMysL22L0qzADxCGuC/40fqLRQDJTeS9ne85?=
- =?us-ascii?Q?4h5Bu6QFOJ/HVMYBJBGRQdpcE+Am1QHAqni+oiyQXN9GyjX6LSZeqb7ikqir?=
- =?us-ascii?Q?UQsTeYWIuKKyl6ybApxJyJA=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 636b01fd-73cd-4218-77de-08db986bb283
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2023 00:00:53.1506
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b14effe-01a8-4f71-a97b-08db986bd63c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2023 00:01:52.5857
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iG+chQzGWwuXHbqD7ZOIH4LOavDcJ2dey4F5I3AkpY36Pa3kB2bzSM4DeUYjazEFzzGKxyvCjyGexHQj5gonQ5+9/OUDsrFnM2lBeus2S21wm7Bs8VoG4xtcsFn9Yq38
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR01MB6624
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jUIe7vHFrRGNggPVtG+xJACn5AnSej87tBC9P/9Twgc6Rv6SZuiPG7/k1L8jok8hG2Ni7hj/YSDyf+N98TEUzQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4873
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Wednesday, August 9, 2023 2:40 AM
+>=20
+> On Fri, Aug 04, 2023 at 03:51:30AM +0000, Tian, Kevin wrote:
+> > > From: Baolu Lu <baolu.lu@linux.intel.com>
+> > > Sent: Friday, August 4, 2023 10:59 AM
+> > >
+> > > On 2023/8/3 15:54, Tian, Kevin wrote:
+> > > >> From: Lu Baolu<baolu.lu@linux.intel.com>
+> > > >> Sent: Thursday, July 27, 2023 1:48 PM
+> > > >>
+> > > >>   struct iommu_fault {
+> > > >>   	__u32	type;
+> > > >> -	__u32	padding;
+> > > > this padding should be kept.
+> > > >
+> > >
+> > > To keep above 64-bit aligned, right?
+> > >
+> >
+> > yes
+>=20
+> If it is not uapi we should not explicitly document padding (and __u32
+> should be u32). The compiler will add it if it is necessary.
+>=20
+> If the compiler isn't right for some reason then something else has
+> gone wrong.
+>=20
 
-
-On Mon, 7 Aug 2023, John Garry wrote:
-> On 04/08/2023 20:59, Ilkka Koskinen wrote:
->> 
->> Hi John
->> 
->> On Fri, 4 Aug 2023, John Garry wrote:
->>> On 03/08/2023 22:13, Ilkka Koskinen wrote:
->>>> This patch adds AmpereOne metrics. The metrics also work around
->>>> the issue related to some of the events.
->
-> Would these events be any metrics added which are not a "Topdown"? I guess 
-> no, since there are many, but I just don't know.
->
->>> 
->>> Just curious, are these events/metrics described in some 
->>> publically-available document?
->> 
->> I quickly checked that and there are a spreadsheet and a document 
->> available, which list the supported PMUs, their events and metrics in the 
->> customer connect website but that requires registering.
->> 
->
-> OK, thanks for the info. I ask is it always worthwhile mentioning a link in 
-> the changelog if publicly available.
-
-I can certainly add a comment that the events are available at the 
-customer connect website.
-
->
->
-> Just a few minor comments:
->
-> On 03/08/2023 22:13, Ilkka Koskinen wrote:
->> This patch adds AmpereOne metrics. The metrics also work around
->> the issue related to some of the events.
->>
->> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
->> ---
->>   .../arch/arm64/ampere/ampereone/metrics.json  | 362 ++++++++++++++++++
->>   1 file changed, 362 insertions(+)
->>
->
-> ...
->
->> +    {
->> +	"MetricExpr": "CRYPTO_SPEC / OP_SPEC",
->> +	"BriefDescription": "Proportion of crypto data processing 
-> operations",
->> +	"MetricGroup": "Instruction",
->> +	"MetricName": "Crypto mix"
->> +    },
->> +    {
->> +	"MetricExpr": "VFP_SPEC / (duration_time *1000000000)",
->> +	"BriefDescription": "Giga-floating point operations per second",
->> +	"MetricGroup": "Instruction",
->> +	"MetricName": "GFLOPS_ISSUED"
->> +    },
->> +    {
->> +	"MetricExpr": "DP_SPEC / OP_SPEC",
->> +	"BriefDescription": "Proportion of integer data processing 
-> operations",
->> +	"MetricGroup": "Instruction",
->> +	"MetricName": "Integer mix"
->> +    },
->> +    {
->> +	"MetricExpr": "INST_RETIRED / CPU_CYCLES",
->> +	"BriefDescription": "Instructions per cycle",
->> +	"MetricGroup": "Instruction",
->> +	"MetricName": "IPC"
->> +    },
->> +    {
->> +	"MetricExpr": "LD_SPEC / OP_SPEC",
->> +	"BriefDescription": "Proportion of load operations",
->> +	"MetricGroup": "Instruction",
->> +	"MetricName": "Load mix"
->> +    },
->> +    {
->> +	"MetricExpr": "LDST_SPEC/ OP_SPEC",
->
-> mega nit: missing whitespace before '/'
-
-I'll fix it.
-
->
->> +	"BriefDescription": "Proportion of load & store operations",
->> +	"MetricGroup": "Instruction",
->> +	"MetricName": "Load-store mix"
->> +    },
->> +    {
->> +	"MetricExpr": "INST_RETIRED / (duration_time * 1000000)",
->
-> I think that we may use 1e6 here for shorthand - it helps avoid mistakes with 
-> too few or many '0's :)
-
-Oh, that's great. I don't think anyone needed to use those in arm64 and I 
-guess I didn't realize to take a look at other architectures. I'll change 
-all the numbers.
-
->
->> +	"BriefDescription": "Millions of instructions per second",
->> +	"MetricGroup": "Instruction",
->> +	"MetricName": "MIPS_RETIRED"
->> +    },
->> +    {
->> +	"MetricExpr": "INST_SPEC / (duration_time * 1000000)",
->> +	"BriefDescription": "Millions of instructions per second",
->> +	"MetricGroup": "Instruction",
->> +	"MetricName": "MIPS_UTILIZATION"
->> +    },
->> +    {
->> +	"MetricExpr": "PC_WRITE_SPEC / OP_SPEC",
->> +	"BriefDescription": "Proportion of software change of PC operations",
->> +	"MetricGroup": "Instruction",
->> +	"MetricName": "PC write mix"
->> +    },
->> +    {
->> +	"MetricExpr": "ST_SPEC / OP_SPEC",
->> +	"BriefDescription": "Proportion of store operations",
->> +	"MetricGroup": "Instruction",
->> +	"MetricName": "Store mix"
->> +    },
->> +    {
->> +	"MetricExpr": "VFP_SPEC / OP_SPEC",
->> +	"BriefDescription": "Proportion of FP operations",
->> +	"MetricGroup": "Instruction",
->> +	"MetricName": "VFP mix"
->> +    },
->> +    {
->> +	"MetricExpr": "1 - (OP_RETIRED/ (CPU_CYCLES * 4))",
->> +	"BriefDescription": "Proportion of slots lost",
->> +	"MetricGroup": "Speculation / TDA",
->> +	"MetricName": "CPU lost"
->> +    },
->> +    {
->> +	"MetricExpr": "OP_RETIRED/ (CPU_CYCLES * 4)",
->> +	"BriefDescription": "Proportion of slots retiring",
->> +	"MetricGroup": "Speculation / TDA",
->> +	"MetricName": "CPU utilization"
->> +    },
->> +    {
->> +	"MetricExpr": "OP_RETIRED - OP_SPEC",
->> +	"BriefDescription": "Operations lost due to misspeculation",
->> +	"MetricGroup": "Speculation / TDA",
->> +	"MetricName": "Operations lost"
->> +    },
->> +    {
->> +	"MetricExpr": "1 - (OP_RETIRED / OP_SPEC)",
->> +	"BriefDescription": "Proportion of operations lost",
->> +	"MetricGroup": "Speculation / TDA",
->> +	"MetricName": "Operations lost (ratio)"
->> +    },
->> +    {
->> +	"MetricExpr": "OP_RETIRED / OP_SPEC",
->> +	"BriefDescription": "Proportion of operations retired",
->> +	"MetricGroup": "Speculation / TDA",
->> +	"MetricName": "Operations retired"
->> +    },
->> +    {
->> +	"MetricExpr": "STALL_BACKEND_CACHE / CPU_CYCLES",
->> +	"BriefDescription": "Proportion of cycles stalled and no operations 
-> issued to backend and cache miss",
->> +	"MetricGroup": "Stall",
->> +	"MetricName": "Stall backend cache cycles"
->> +    },
->> +    {
->> +	"MetricExpr": "STALL_BACKEND_RESOURCE / CPU_CYCLES",
->> +	"BriefDescription": "Proportion of cycles stalled and no operations 
-> issued to backend and resource full",
->> +	"MetricGroup": "Stall",
->> +	"MetricName": "Stall backend resource cycles"
->> +    },
->> +    {
->> +	"MetricExpr": "STALL_BACKEND_TLB / CPU_CYCLES",
->> +	"BriefDescription": "Proportion of cycles stalled and no operations 
-> issued to backend and TLB miss",
->> +	"MetricGroup": "Stall",
->> +	"MetricName": "Stall backend tlb cycles"
->> +    },
->> +    {
->> +	"MetricExpr": "STALL_FRONTEND_CACHE / CPU_CYCLES",
->> +	"BriefDescription": "Proportion of cycles stalled and no ops 
-> delivered from frontend and cache miss",
->> +	"MetricGroup": "Stall",
->> +	"MetricName": "Stall frontend cache cycles"
->> +    },
->> +    {
->> +	"MetricExpr": "STALL_FRONTEND_TLB / CPU_CYCLES",
->> +	"BriefDescription": "Proportion of cycles stalled and no ops 
-> delivered from frontend and TLB miss",
->> +	"MetricGroup": "Stall",
->> +	"MetricName": "Stall frontend tlb cycles"
->> +    },
->> +    {
->> +	"MetricExpr": "DTLB_WALK / L1D_TLB",
->> +	"BriefDescription": "D-side walk per d-side translation request",
->> +	"MetricGroup": "TLB",
->> +	"MetricName": "DTLB walks"
->> +    },
->> +    {
->> +	"MetricExpr": "ITLB_WALK / L1I_TLB",
->> +	"BriefDescription": "I-side walk per i-side translation request",
->> +	"MetricGroup": "TLB",
->> +	"MetricName": "ITLB walks"
->> +    },
->> +    {
->> +        "MetricExpr": "STALL_SLOT_BACKEND / (CPU_CYCLES * 4)",
->> +        "BriefDescription": "Fraction of slots backend bound",
->> +        "MetricGroup": "TopDownL1",
->
-> @Ian, should this be "Default;TopDownL1"?
->
->> +        "MetricName": "backend"
->
-> How about use consistent names with other other archs and arm64 platforms, 
-> like "backend_bound"? I did not check all names, but please consider this.
->
-> If 'perf topdown' is ever supported for arm64, we would prob rely on 
-> metricgroups, so would need use a fixed standard name here. Note that x86 
-> uses custom kernel events for this instead.
-
-That's an excellent point. I'll reach out to our architect and we'll 
-change the names and groups in the patch and the document to be more 
-consistent to the existing ones.
-
->> +    },
->> +    {
->> +        "MetricExpr": "1 - (retiring + lost + backend)",
->> +        "BriefDescription": "Fraction of slots frontend bound",
->> +        "MetricGroup": "TopDownL1",
->> +        "MetricName": "frontend"
->
-> As above, it would be "frontend_bound"
-
-I'll fix it.
-
-Cheers, Ilkka
-
->
->> +    },
->> +    {
->> +        "MetricExpr": "((OP_SPEC - OP_RETIRED) / (CPU_CYCLES * 4))",
->> +        "BriefDescription": "Fraction of slots lost due to 
-> misspeculation",
->> +        "MetricGroup": "TopDownL1",
->> +        "MetricName": "lost"
->> +    },
->> +    {
->
->
+I thought this will be used as uAPI later. I'm fine to leave it be and
+add the padding when the uAPI is introduced.
