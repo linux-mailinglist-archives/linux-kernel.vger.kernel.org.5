@@ -2,184 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 284D17751A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 05:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AED67751B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 05:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjHIDs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 23:48:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
+        id S229756AbjHIDxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 23:53:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHIDsZ (ORCPT
+        with ESMTP id S229501AbjHIDxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 23:48:25 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADAD10DC
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 20:48:24 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52256241c66so1001837a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 20:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20221208.gappssmtp.com; s=20221208; t=1691552903; x=1692157703;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wcsclxtm27Oz1sDHzPRuy+Izl0iwle6aRoNm7chV/mE=;
-        b=EAu5utSgSArNbjdpW2PWgXWxU171HGHts/s7dBkm0zVj5aCYmQgRY1eVDfdx5vr8cA
-         uGKn7OVjBlH4x+6LdBhrQT6Lg9LhLj1yy1RH2qqx1h5mvCbwLwDTmi/MZ0ikszErkW7A
-         c2wgoyYGmr5Xx1SM2v4R30bMVFeofVKHtC6o0RiWqEd1AY94fkLRImRdySpiVfKzCHyP
-         2nptFLeLbD+hH2/FAjLldDdYM1xVC0YQevFNuibuhkBMw35KddsaCG7bR1RVsurPGN57
-         4zXG/WD6m3xLx9dq37bTRRVaAPx+TLrhm8T5caUwPW3f4koGnwh0i2q7yp3JZqW5SBBb
-         uphQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691552903; x=1692157703;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wcsclxtm27Oz1sDHzPRuy+Izl0iwle6aRoNm7chV/mE=;
-        b=gpHyOUXwgpKYyhyywltN+8YAow87lgyeWOU1KZPw2tUU24NnPEl8PsQP3Cc/PF50Ms
-         x1ww5Ogc3gPDXpdFXdlLe8W9cbPRAtxXYYemXQPOZP+GflGEhjXQBKpTsyr8IGlujcBW
-         XsM74IqlPFRzWl7Ltw1yF1WzcoOhgiRWkeL+WsvPkxLo/K1B9LWEt+4rV1RU3fvMgBpZ
-         5D2WDEiT80ylAUXOpFWP+E+V1ecWv199IQpZKnnWaPPC68YJyajPwZLdkHiGbIPhI6np
-         cPxYgOvpGbO/mG5k48Wg9p/bkxQ6jgAjdoAS7AQN+/aw/0UG5kdydE/JJn9+hshq9toH
-         Dajg==
-X-Gm-Message-State: AOJu0Yz/NsX9KJ5yZY6An3b9YsWZa0n/rHzWNzh04sXJxr+ZvcdW+oSu
-        MmJYMPrR3JE4lHUOD0Bh82M/tgYSNT2W2gtiWHw4ng==
-X-Google-Smtp-Source: AGHT+IFauvweysXXn8GP5MBQlVkSnEFT74it4SwljMy29zvw5obroURdfY0qKL+rjI6eMwJTbfFGGEzPUIYTUHgx/6I=
-X-Received: by 2002:a05:6402:3587:b0:51f:ef58:da87 with SMTP id
- y7-20020a056402358700b0051fef58da87mr14581549edc.2.1691552902500; Tue, 08 Aug
- 2023 20:48:22 -0700 (PDT)
+        Tue, 8 Aug 2023 23:53:11 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2048.outbound.protection.outlook.com [40.107.94.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D18E5E;
+        Tue,  8 Aug 2023 20:52:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JPi+kzQJdfZ8zTzZ0zhgG8mwoshMH4+0JYiBZQbjheBf59byMhHGiqVZOt44fhXPPmZ28W0r57AWe/FvOH7r/bP5Vlk8VAs8PX8prrtfmLt6hoPS9uRtBapT9NuLJXyZVS3sMLDYZ5WcXLSpf1lo/E0Lsq4ra/TfoIQGGqt+QM3pIKWFY/WOsJayY1rdKCI9MjSyfV5K87/vu4gTBgpWQkkpo8sTvXsmr83ny00rPMUqAECafK1zgj+J8ZaqUlwMY0aN/TGJZrAHklYNU8Svj5Z7swv34i+mDSbKKSFCH2MbMRVIKQgthcPV1rOsr8sQHr9S4DzuApsb7NrQGJxidQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Kt89GBAjQMxAUZp/UaCUDoyTJrSMSEYzLJywOInBXsQ=;
+ b=K8Z/bPJboW6KNHCWcsfdPUrznyLeUbF0M/MaxJLlDzsaMUdXjYQ+fki7NH14z9e26uPCcppKH7n2c/oDfnxvdqbmtVJBjLi3cagWDzEvXNWZPz4ZIoi7g+PIPnLXLUiZhPZJontjuBTJcnoaPYX+mUqa/+iEmNJuTTycdnvEwqy+QPMXuP5ZILkl6h3F5sclhmE3nhjZWj3Cn4006P7raAD2CHx3ddZrZwGlGn1aLLCCe0wkQCYRDzpXKGIsYOgl+SImBB4hp8lDjRys762Kc3S9gnBMlK5hz0t3AITes+SIwO8fM1baTXHiO45zDWcV9xLN0ndnuAGV4VvMwgQL1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Kt89GBAjQMxAUZp/UaCUDoyTJrSMSEYzLJywOInBXsQ=;
+ b=POsoWkvuW/jZOf2fNQRTU6gsvDbhk/ITlEoXkM+RPBcuueFgyd4RFeN8nSg7nwbcXjNeB4eeDeDTjt5x7UE7vr9GazK0Ba/yze1K5fMr67DnpzS/9bJwmXXWud4m9bkJJIaVn4nhQf56tPsal1R4+jfVeuyD6hLNJlJplHGo5z0=
+Received: from SN7PR04CA0039.namprd04.prod.outlook.com (2603:10b6:806:120::14)
+ by MW4PR12MB7439.namprd12.prod.outlook.com (2603:10b6:303:22b::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Wed, 9 Aug
+ 2023 03:52:51 +0000
+Received: from SA2PEPF00001508.namprd04.prod.outlook.com
+ (2603:10b6:806:120:cafe::e9) by SN7PR04CA0039.outlook.office365.com
+ (2603:10b6:806:120::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27 via Frontend
+ Transport; Wed, 9 Aug 2023 03:52:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SA2PEPF00001508.mail.protection.outlook.com (10.167.242.40) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6652.20 via Frontend Transport; Wed, 9 Aug 2023 03:52:51 +0000
+Received: from titanite-d354host.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 8 Aug 2023 22:52:50 -0500
+From:   Avadhut Naik <avadhut.naik@amd.com>
+To:     <bp@alien8.de>, <x86@kernel.org>, <linux-edac@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <mario.limonciello@amd.com>,
+        <yazen.ghannam@amd.com>, <linux@roeck-us.net>,
+        <linux-hwmon@vger.kernel.org>, <avadnaik@amd.com>
+Subject: [PATCH v2 0/3] Updates for AMD Family 1Ah-based Models
+Date:   Tue, 8 Aug 2023 22:52:41 -0500
+Message-ID: <20230809035244.2722455-1-avadhut.naik@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <cover.1690273969.git.haibo1.xu@intel.com> <CAAhSdy0yug=J0nxnnPoLYL=0MiT0w6qgPYOcv0QwMRe+fsQn8Q@mail.gmail.com>
- <87y1ilpz3m.wl-maz@kernel.org> <CAJve8onZuOHkAUVY3=QeBPMx5n2F1fGgn57rPp7MB1Q5=vXasA@mail.gmail.com>
-In-Reply-To: <CAJve8onZuOHkAUVY3=QeBPMx5n2F1fGgn57rPp7MB1Q5=vXasA@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 9 Aug 2023 09:18:09 +0530
-Message-ID: <CAAhSdy277PEBZ4wyUHxQPyN2TugGfhBmC5jUoFTAqMU8vwbt5w@mail.gmail.com>
-Subject: Re: [PATCH v6 00/13] RISCV: Add KVM_GET_REG_LIST API
-To:     Haibo Xu <xiaobo55x@gmail.com>
-Cc:     Marc Zyngier <maz@kernel.org>, oliver.upton@linux.dev,
-        ajones@ventanamicro.com, seanjc@google.com,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Atish Patra <atishp@atishpatra.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Like Xu <likexu@tencent.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Colton Lewis <coltonlewis@google.com>, kvm@vger.kernel.org,
-        Haibo Xu <haibo1.xu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF00001508:EE_|MW4PR12MB7439:EE_
+X-MS-Office365-Filtering-Correlation-Id: ad2091e0-36f2-4d92-5d72-08db988c1a9d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 67GW8sIiFOR7/G0ptZGVk5sn9eIDx4mGMT9uXU44pDvIhSRF1NkrC/cKD/lyMb1CaGGXe24r8GuxQKs8d/uaY/Jt6OuOSO3ymjwvgP/gDMFAFWK0h1zgdc1mz2ehru0nNzDwcZLkpZWOggjDxrUbD5ljFgB6UtOwsPiH4pkH4i7IXpJz9Iphca+8AzB2Ie81sJmOO6+oSr668aYhEdO53oPwxE2W+Rp/AZb+0HT+1pXPsW3wSuxdIYhlofrIGK7+vSvlF4YnmTSw1tGznxCzy0GVlTxj7pJV6JxwMuEXxCa8kWqWKi9RXGwX6NM5RpKSFrJb19R8+HHCNapmRqW89TSJTkrUc9EgOAR3lNLoYwNqlO/8AM3ijIAqMr7P0P+426WzbzA5CdDTrRbtqEljuvOvS0uQa8tc14Fu0PZX+WsT99dctxTC3Lp+AJv38+YNkowvrsGJzIhxax1SjqnZY5AB7eAe37HmXHoNkZd7/2wkL+nCf3CfYKQWQM4whmnkTywZMdGBCb8pvAj6TO5NDpY7HhiaNjmge4zLPZCOgYlMHxGYwBvh8ZGD/MmBFQ52+0UKMo7g9gf4/Q0/z/BLSCWzztk9RFBjmMEIHjGBEqVGt5HQLaDgojBz+VjKpuT0Wk9lR7nSgkE7RRh3AXCzJfdxdJ/saGpfzYfnYNHjtBjNi8pEU2DdFhwiXFGa6lfmkANR+pgMX+pvV49t1B0ShyFUdBAgoTDnNdCWEmk0Eb2kiCILxmfsfU8ykumCV3wr2v5YXM01YEE5kcLZoRcyI/MffvF9TzgT/Ll8dsducBQ=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(376002)(396003)(346002)(82310400008)(186006)(1800799006)(451199021)(36840700001)(40470700004)(46966006)(26005)(1076003)(16526019)(2616005)(36756003)(7696005)(336012)(966005)(6666004)(478600001)(82740400003)(81166007)(356005)(110136005)(54906003)(70586007)(70206006)(4326008)(426003)(41300700001)(316002)(8676002)(5660300002)(8936002)(44832011)(40460700003)(15650500001)(4744005)(2906002)(36860700001)(83380400001)(47076005)(86362001)(40480700001)(170073001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2023 03:52:51.1796
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad2091e0-36f2-4d92-5d72-08db988c1a9d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF00001508.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7439
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 8:56=E2=80=AFAM Haibo Xu <xiaobo55x@gmail.com> wrote=
-:
->
-> On Tue, Aug 8, 2023 at 7:12=E2=80=AFPM Marc Zyngier <maz@kernel.org> wrot=
-e:
-> >
-> > On Mon, 07 Aug 2023 04:48:33 +0100,
-> > Anup Patel <anup@brainfault.org> wrote:
-> > >
-> > > Hi Marc, Hi Oliver,
-> > >
-> > > On Tue, Jul 25, 2023 at 2:05=E2=80=AFPM Haibo Xu <haibo1.xu@intel.com=
-> wrote:
-> > > >
-> > > > KVM_GET_REG_LIST will dump all register IDs that are available to
-> > > > KVM_GET/SET_ONE_REG and It's very useful to identify some platform
-> > > > regression issue during VM migration.
-> > > >
-> > > > Patch 1-7 re-structured the get-reg-list test in aarch64 to make so=
-me
-> > > > of the code as common test framework that can be shared by riscv.
-> > > >
-> > > > Patch 8 move reject_set check logic to a function so as to check fo=
-r
-> > > > different errno for different registers.
-> > > > Patch 9 move finalize_vcpu back to run_test so that riscv can imple=
-ment
-> > > > its specific operation.
-> > > > Patch 10 change to do the get/set operation only on present-blessed=
- list.
-> > > > Patch 11 add the skip_set facilities so that riscv can skip set ope=
-ration
-> > > > on some registers.
-> > > > Patch 12 enabled the KVM_GET_REG_LIST API in riscv.
-> > > > patch 13 added the corresponding kselftest for checking possible
-> > > > register regressions.
-> > > >
-> > > > The get-reg-list kvm selftest was ported from aarch64 and tested wi=
-th
-> > > > Linux v6.5-rc3 on a Qemu riscv64 virt machine.
-> > > >
-> > > > ---
-> > > > Changed since v5:
-> > > >   * Rebase to v6.5-rc3
-> > > >   * Minor fix for Andrew's comments
-> > > >
-> > > > Andrew Jones (7):
-> > > >   KVM: arm64: selftests: Replace str_with_index with strdup_printf
-> > > >   KVM: arm64: selftests: Drop SVE cap check in print_reg
-> > > >   KVM: arm64: selftests: Remove print_reg's dependency on vcpu_conf=
-ig
-> > > >   KVM: arm64: selftests: Rename vcpu_config and add to kvm_util.h
-> > > >   KVM: arm64: selftests: Delete core_reg_fixup
-> > > >   KVM: arm64: selftests: Split get-reg-list test code
-> > > >   KVM: arm64: selftests: Finish generalizing get-reg-list
-> > > >
-> > > > Haibo Xu (6):
-> > > >   KVM: arm64: selftests: Move reject_set check logic to a function
-> > > >   KVM: arm64: selftests: Move finalize_vcpu back to run_test
-> > > >   KVM: selftests: Only do get/set tests on present blessed list
-> > > >   KVM: selftests: Add skip_set facility to get_reg_list test
-> > > >   KVM: riscv: Add KVM_GET_REG_LIST API support
-> > > >   KVM: riscv: selftests: Add get-reg-list test
-> > >
-> > > Are you okay for this series to go through the KVM RISC-V tree ?
-> >
-> > Sure, seems fine from my point of view. But please put it on an
-> > immutable topic branch so that we can also merge it in the arm64 tree,
-> > should we need to resolve any conflicts.
-> >
->
-> Hi Marc,
->
-> Thanks for your review!
->
-> Which topic branch do you prefer or suggest to use?
-> I can do a rebase on it and fix any potential conflicts.
+This patchset adds support for amd64_edac module and temperature monitoring,
+through k10temp driver, on AMD's Family 1Ah-based models.
 
-I will share a branch with a stable commit history.
-I have already resolved conflicts at my end.
+The first patch adds the required PCI IDs for models 00h-1Fh, 20h and
+40h-4Fh.
 
-Regards,
-Anup
+The second patch adds the required support in k10temp driver for AMD's
+Family 1Ah-based models.
 
->
-> Regards,
-> Haibo
->
-> > Thanks,
-> >
-> >         M.
-> >
-> > --
-> > Without deviation from the norm, progress is not possible.
+The third patch adds support in amd64_edac module for models 00h-1Fh and
+40h-4Fh.
+
+Changes in v2:
+ - Modify commit message of the first patch according to the feedback
+received.
+
+v1: https://lore.kernel.org/linux-edac/20230706171323.3722900-1-avadhut.naik@amd.com/T/#t
+
+Avadhut Naik (3):
+  x86/amd_nb: Add PCI IDs for AMD Family 1Ah-based models
+  hwmon: (k10temp) Add thermal support for AMD Family 1Ah-based models
+  EDAC/amd64: Add support for AMD Family 1Ah Models 00h-1Fh and 40h-4Fh
+
+ arch/x86/kernel/amd_nb.c  |  8 ++++++++
+ drivers/edac/amd64_edac.c | 15 +++++++++++++++
+ drivers/hwmon/k10temp.c   |  8 +++++++-
+ include/linux/pci_ids.h   |  2 ++
+ 4 files changed, 32 insertions(+), 1 deletion(-)
+
+-- 
+2.34.1
+
