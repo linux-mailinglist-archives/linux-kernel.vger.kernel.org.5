@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFBC7766DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB3E7766DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbjHISB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 14:01:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49580 "EHLO
+        id S233108AbjHISCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 14:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHISBy (ORCPT
+        with ESMTP id S233074AbjHISCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 14:01:54 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F01B19A1;
-        Wed,  9 Aug 2023 11:01:54 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379I1mhX120401;
-        Wed, 9 Aug 2023 13:01:48 -0500
+        Wed, 9 Aug 2023 14:02:00 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B0C1736;
+        Wed,  9 Aug 2023 11:01:57 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379I1nRS062917;
+        Wed, 9 Aug 2023 13:01:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691604108;
-        bh=2usZmKyVgW1mdRa5QRVK5RY6Nv02Qnm4mTipu25bUuU=;
+        s=ti-com-17Q1; t=1691604109;
+        bh=5XC7IHqNeHF88ET4FV2U6UheHdVvXt6Qi6ZuCGWeDVQ=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=SS1LjWUAH+mcm1ZWDNy8IOMNsC4jtzFdu0TcPXW90T6IbMCGSN6c4a8poOwdUJyND
-         EJ/dY/eoztdkGk6QiBq9YEbLGqz8PjHA4X99ahj1ow06XifOOvs4jAK05aUr8PJesq
-         llI2JPApFzTobgZoOV/7q7nYIZslY0BnRXFbCFf4=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379I1mXg111371
+        b=gEPnebiTchlKxzx4rG0tb+1sgQWWsbdBlivo+25wLUpmf+wjPJxIKzaNkDqAJVdTU
+         Gj28pRgXEq6Ow1iaz4zWohfrH92cAimmK4aeAGLczvLH7n7ry3fTjUyjV47vN5gNp8
+         gkTj9c/zVZm3ehdzp2gL4lnYjwooyRoPuHb4UdTY=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379I1n7s012097
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Aug 2023 13:01:48 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 9 Aug 2023 13:01:49 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
  Aug 2023 13:01:48 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Wed, 9 Aug 2023 13:01:48 -0500
 Received: from fllv0040.itg.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379I1k57103030;
-        Wed, 9 Aug 2023 13:01:47 -0500
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379I1k58103030;
+        Wed, 9 Aug 2023 13:01:48 -0500
 From:   Andrew Davis <afd@ti.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -49,9 +49,9 @@ To:     Rob Herring <robh+dt@kernel.org>,
 CC:     <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH 2/3] arm64: dts: ti: k3-j784s4: Enable C7x DSP nodes at the board level
-Date:   Wed, 9 Aug 2023 13:01:44 -0500
-Message-ID: <20230809180145.53158-2-afd@ti.com>
+Subject: [PATCH 3/3] arm64: dts: ti: k3-j721e: Enable C6x DSP nodes at the board level
+Date:   Wed, 9 Aug 2023 13:01:45 -0500
+Message-ID: <20230809180145.53158-3-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230809180145.53158-1-afd@ti.com>
 References: <20230809180145.53158-1-afd@ti.com>
@@ -69,56 +69,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-C7x DSP nodes defined in the top-level J784s4 SoC dtsi files are incomplete
+C6x DSP nodes defined in the top-level J721e SoC dtsi files are incomplete
 and will not be functional unless they are extended with both mboxes and
 memory-region information.
 
 As theses only known about at the board integration level, these nodes
 should only be enabled when provided with this information.
 
-Disable the C7x DSP nodes in the dtsi files and only enable the ones that
+Disable the C6x DSP nodes in the dtsi files and only enable the ones that
 are given the required mboxes and memory-region on a given board.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm64/boot/dts/ti/k3-j721e-beagleboneai64.dts | 2 ++
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi          | 2 ++
+ arch/arm64/boot/dts/ti/k3-j721e-sk.dts             | 2 ++
+ arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi        | 2 ++
+ 4 files changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-index a04c44708a09a..c2e505f3affcc 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-@@ -1524,6 +1524,7 @@ c71_0: dsp@64800000 {
- 		ti,sci-proc-ids = <0x30 0xff>;
- 		resets = <&k3_reset 30 1>;
- 		firmware-name = "j784s4-c71_0-fw";
-+		status = "disabled";
- 	};
- 
- 	c71_1: dsp@65800000 {
-@@ -1536,6 +1537,7 @@ c71_1: dsp@65800000 {
- 		ti,sci-proc-ids = <0x31 0xff>;
- 		resets = <&k3_reset 33 1>;
- 		firmware-name = "j784s4-c71_1-fw";
-+		status = "disabled";
- 	};
- 
- 	c71_2: dsp@66800000 {
-@@ -1548,6 +1550,7 @@ c71_2: dsp@66800000 {
- 		ti,sci-proc-ids = <0x32 0xff>;
- 		resets = <&k3_reset 37 1>;
- 		firmware-name = "j784s4-c71_2-fw";
-+		status = "disabled";
- 	};
- 
- 	c71_3: dsp@67800000 {
-@@ -1560,5 +1563,6 @@ c71_3: dsp@67800000 {
- 		ti,sci-proc-ids = <0x33 0xff>;
- 		resets = <&k3_reset 40 1>;
- 		firmware-name = "j784s4-c71_3-fw";
-+		status = "disabled";
- 	};
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-beagleboneai64.dts b/arch/arm64/boot/dts/ti/k3-j721e-beagleboneai64.dts
+index d1235e7c786d6..f6516a36f9039 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-beagleboneai64.dts
++++ b/arch/arm64/boot/dts/ti/k3-j721e-beagleboneai64.dts
+@@ -1012,12 +1012,14 @@ &main_r5fss1_core1 {
  };
+ 
+ &c66_0 {
++	status = "okay";
+ 	mboxes = <&mailbox0_cluster3>, <&mbox_c66_0>;
+ 	memory-region = <&c66_0_dma_memory_region>,
+ 			<&c66_0_memory_region>;
+ };
+ 
+ &c66_1 {
++	status = "okay";
+ 	mboxes = <&mailbox0_cluster3>, <&mbox_c66_1>;
+ 	memory-region = <&c66_1_dma_memory_region>,
+ 			<&c66_1_memory_region>;
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+index 1aeb97b42b34b..5da86921b1779 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+@@ -2109,6 +2109,7 @@ c66_0: dsp@4d80800000 {
+ 		ti,sci-proc-ids = <0x03 0xff>;
+ 		resets = <&k3_reset 142 1>;
+ 		firmware-name = "j7-c66_0-fw";
++		status = "disabled";
+ 	};
+ 
+ 	c66_1: dsp@4d81800000 {
+@@ -2122,6 +2123,7 @@ c66_1: dsp@4d81800000 {
+ 		ti,sci-proc-ids = <0x04 0xff>;
+ 		resets = <&k3_reset 143 1>;
+ 		firmware-name = "j7-c66_1-fw";
++		status = "disabled";
+ 	};
+ 
+ 	c71_0: dsp@64800000 {
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
+index 377588ba30998..cce25f13cf8af 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
+@@ -1098,12 +1098,14 @@ &main_r5fss1_core1 {
+ };
+ 
+ &c66_0 {
++	status = "okay";
+ 	mboxes = <&mailbox0_cluster3>, <&mbox_c66_0>;
+ 	memory-region = <&c66_0_dma_memory_region>,
+ 			<&c66_0_memory_region>;
+ };
+ 
+ &c66_1 {
++	status = "okay";
+ 	mboxes = <&mailbox0_cluster3>, <&mbox_c66_1>;
+ 	memory-region = <&c66_1_dma_memory_region>,
+ 			<&c66_1_memory_region>;
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi
+index 3c31ab57e959c..eaf9e4564d032 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi
+@@ -424,12 +424,14 @@ &main_r5fss1_core1 {
+ };
+ 
+ &c66_0 {
++	status = "okay";
+ 	mboxes = <&mailbox0_cluster3>, <&mbox_c66_0>;
+ 	memory-region = <&c66_0_dma_memory_region>,
+ 			<&c66_0_memory_region>;
+ };
+ 
+ &c66_1 {
++	status = "okay";
+ 	mboxes = <&mailbox0_cluster3>, <&mbox_c66_1>;
+ 	memory-region = <&c66_1_dma_memory_region>,
+ 			<&c66_1_memory_region>;
 -- 
 2.39.2
 
