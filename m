@@ -2,77 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCB57761FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80140776200
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbjHIOEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
+        id S233062AbjHIOEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjHIOET (ORCPT
+        with ESMTP id S229946AbjHIOEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:04:19 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04ABC137
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:04:15 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qTjnE-00010I-D5; Wed, 09 Aug 2023 16:04:08 +0200
-Message-ID: <60ef0646-b0ab-b4e0-9eaa-a2c431c5d682@leemhuis.info>
-Date:   Wed, 9 Aug 2023 16:04:07 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: 2b5d1c29f6c4 ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not
- PMGR AUX interrupts")
-Content-Language: en-US, de-DE
-To:     Takashi Iwai <tiwai@suse.de>, Karol Herbst <kherbst@redhat.com>
-Cc:     nouveau@lists.freedesktop.org, lkml <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org, Borislav Petkov <bp@alien8.de>,
-        Ben Skeggs <bskeggs@redhat.com>
-References: <20230806213107.GFZNARG6moWpFuSJ9W@fat_crate.local>
- <CACO55tvZD5U4J8DawFTRVnV-dLYLngfhuqO29_sWNEGofKfnBg@mail.gmail.com>
- <20230807150521.GGZNEIMQ9rsyCmkpoA@fat_crate.local>
- <CACO55tvWuSdwdirj7S3Dk-r4NAw8jC8g5RHKFd62WXi43iQP-w@mail.gmail.com>
- <87fs4sfu54.wl-tiwai@suse.de>
- <CACO55tszwFEgt=8xn4auAE7KJVs3ybGG68OzL9HJt19XGVhhHQ@mail.gmail.com>
- <874jl8fngo.wl-tiwai@suse.de>
- <CACO55ts9YWF7nLi3Zs4xKySpdHyUFgf4r566cKx3FwNTCaz0Sg@mail.gmail.com>
- <87wmy4e4uk.wl-tiwai@suse.de>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <87wmy4e4uk.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691589856;a95f3b79;
-X-HE-SMSGID: 1qTjnE-00010I-D5
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 9 Aug 2023 10:04:32 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 681F01FC2
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:04:32 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1F8CB1F38C;
+        Wed,  9 Aug 2023 14:04:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691589871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gpRhv21nUll8M2hRktXD7evPQXpiruatUOPPJP4LeL8=;
+        b=ZMeQ6ydvPgWCFJcH59qjzT3rj0RGqRDHzQcMkSWmrfKFg4OChnAKwxySGy2eEZJtiOmQdc
+        ZmVCsz/0bXzLUZFi1CO3AbpSUCN8p+po8rp1LcezB+2ULvzFnmIrdOa4tNumKRutLUpZKR
+        stLkoDUu1hyF3+1c0rEpkY4ExlbDGIY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691589871;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gpRhv21nUll8M2hRktXD7evPQXpiruatUOPPJP4LeL8=;
+        b=/5Js4drN+VsXFNNBv3AS30Kt/VXnVyS6QViipEoehoejC8mU4yk2D6oe0Z56wIPMw+Wjga
+        UWmffNeo6phXTTCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E41D2133B5;
+        Wed,  9 Aug 2023 14:04:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id w/+yNu6c02Q+IQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 09 Aug 2023 14:04:30 +0000
+Date:   Wed, 09 Aug 2023 16:04:30 +0200
+Message-ID: <87leeke2hd.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Stefan Binding <sbinding@opensource.cirrus.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
+Subject: Re: [PATCH v1 0/2] Add HP G11 Quirks and update Dell Oasis Quirks
+In-Reply-To: <20230809140048.669797-1-sbinding@opensource.cirrus.com>
+References: <20230809140048.669797-1-sbinding@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.08.23 15:13, Takashi Iwai wrote:
+On Wed, 09 Aug 2023 16:00:46 +0200,
+Stefan Binding wrote:
 > 
-> If this can't be fixed quickly, I suppose it's safer to revert it from
-> 6.4.y for now.  6.5 is still being cooked, but 6.4.x is already in
-> wide deployment, hence the regression has to be addressed quickly.
+> Add quirks to support HP G11 using CS35l41 HDA, using both SPI and I2C.
+> One older HP laptop has an SSID removed.
+> In addition, all Dell Oasis laptops using CS35L41 have been switch to
+> use SPI, with one SSID removed.
+> 
+> Stefan Binding (2):
+>   ALSA: hda/realtek: Add quirks for HP G11 Laptops
+>   ALSA: hda/realtek: Switch Dell Oasis models to use SPI
 
-Good luck with that. To quote
-https://docs.kernel.org/process/handling-regressions.html :
+Both look like correction of the existing quirks.
+Could you put the corresponding Fixes tags?
 
-```
-Regarding stable and longterm kernels:
 
-[...]
+thanks,
 
-* Whenever you want to swiftly resolve a regression that recently also
-made it into a proper mainline, stable, or longterm release, fix it
-quickly in mainline; when appropriate thus involve Linus to fast-track
-the fix (see above). That's because the stable team normally does
-neither revert nor fix any changes that cause the same problems in mainline.
-```
-
-Note the "normally" in there, so there is a chance.
-
-Ciao, Thorsten
+Takashi
