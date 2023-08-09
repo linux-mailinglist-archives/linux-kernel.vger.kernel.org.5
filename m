@@ -2,126 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B05776471
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F9F776473
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233705AbjHIPyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
+        id S233713AbjHIPy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjHIPyh (ORCPT
+        with ESMTP id S229547AbjHIPy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:54:37 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15341BD9
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:54:36 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so13023a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 08:54:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691596475; x=1692201275;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kdmr0eHwzB3gy4lSLkjDEf6JX0g8QfGgY6ypL8PteMk=;
-        b=5sCJRA0xk2bFTWzmVh9KanEzPTQGLI7BhMV5unfFun8KBoGmOGWZOT1RteY/6cqQcv
-         xCNRRiSBeHuWgQnzZNjBb5W4u3d2M0AfO5rEueLDUCbfyQ1ta/dd2T0uBgTWQw7/aF1D
-         uz2vJ/1N1bAsiG/PWCVPspArYVRAfjeotfMmC6zEODCb/7VssMb/x3MND7nS36J2szUL
-         /E4X+Twg44bE3O90GTcxJu/tRFj7sfLgosABiFtiRLjRVYQ3fHKhJwUGowg1lQzTNgpt
-         djXEO7aciJ2w5PCVk0J37eFnoxSUn0RGJi0MFotLnZQ3iZCJ7iYgD0IltBCojV/0icLS
-         W2DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691596475; x=1692201275;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kdmr0eHwzB3gy4lSLkjDEf6JX0g8QfGgY6ypL8PteMk=;
-        b=k8RdvWnrj2YPRk6E9+7bhoQ2ef2y4exEXzkKjBuDWLivUUDNRK7rvzkfP/HdMHM89L
-         q8JSnJ0N9xxQY6nyZTknVyeQEoxfwFPs/QCTCrVQ9G3IkHYFnGQ0xzvku5JZPI9EGbU3
-         xzam+EWYJkX1grCe7MMfVZE1LtE6TFyipmeDa1DB/GnKmdg3Rk4cjT+Z0rhIow01KTLk
-         prE15o8/B4BBv+vaO+DzkrdbmA2m/8J161YPeWf/pSkMw96UZlBS5xUiv+yoCNKwGye5
-         n3Xxw9TTLpaAJDEj+8VghPx2fMgLJXrZteiAOGe8CIGbhBT2kCer9CGSIic5n1dEy+nu
-         YUDw==
-X-Gm-Message-State: AOJu0Yx8lkwihloLw24QcZFD1Kn916ISSvG56qJ7AaR/Egq/Brsa3dQ+
-        9+bCTYCU5vMoBQ/Fb+azk2BfMVPBkX0Ix2/KveugtQ==
-X-Google-Smtp-Source: AGHT+IG24u9n4GEFcr1pL3uOsvjjN7DlSKmSu6n2isxk0z3q/ypHFWVcnYyMQB6rFBS1AmV3jvDTR/T11GCrS8SWh1Y=
-X-Received: by 2002:a50:9f4f:0:b0:523:ee1:8d27 with SMTP id
- b73-20020a509f4f000000b005230ee18d27mr101997edf.1.1691596475039; Wed, 09 Aug
- 2023 08:54:35 -0700 (PDT)
+        Wed, 9 Aug 2023 11:54:57 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8A01729;
+        Wed,  9 Aug 2023 08:54:56 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 379EvsGJ002928;
+        Wed, 9 Aug 2023 10:54:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=Z
+        kHLOZxL/zUPQBtzRZ/2aFe1CQ5Jd2Dy1yhV/zJ7Hmc=; b=Q6HJWnFnruMMnKLJR
+        yKwQKMR8mw+7hlCHMyfisCNTz3Ixfrfx2DRbqbrNx9pP96OzPK2GCZ41D3HhKF1J
+        SY0yjnrBH4xXH7PPikPOltTqfxMM/3VWjLC8Vitsxwf42+Iz0spOaDT96GOLkELp
+        19C0kXeHQiDr8RNz5ihtRWKuNcxi+a/LWRrqr6p2Ej4Qrssvh1/zzeGm3WOzY+me
+        P83ocp8eoMHXstRzox2sJzPOC76+1KgwP9SmXT6hep9YR+nwkMyeY6uyvWC+sPzG
+        WoJRz8WvBCwMmyOfzoBy377zf8YH36glV6vsycjL2vbrk9l7bqThgcweFOtiQCNZ
+        WPlDw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhuvg6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Aug 2023 10:54:47 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 9 Aug
+ 2023 16:54:45 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Wed, 9 Aug 2023 16:54:45 +0100
+Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.64.220])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2DFEA45D;
+        Wed,  9 Aug 2023 15:54:45 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <brendan.higgins@linux.dev>, <davidgow@google.com>,
+        <rmoar@google.com>
+CC:     <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v3 0/7] kunit: Add dynamically-extending log
+Date:   Wed, 9 Aug 2023 16:54:31 +0100
+Message-ID: <20230809155438.22470-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <1691568344-13475-1-git-send-email-quic_charante@quicinc.com> <9d109a43-78a3-dee4-5aaa-385bdfe4bcb3@redhat.com>
-In-Reply-To: <9d109a43-78a3-dee4-5aaa-385bdfe4bcb3@redhat.com>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Wed, 9 Aug 2023 08:54:23 -0700
-Message-ID: <CAC_TJvckhxwz9TxXgMSaiihHddY+AnEGqjLxvO6qF0eqTb5U8Q@mail.gmail.com>
-Subject: Re: [PATCH] Multi-gen LRU: skip CMA pages when they are not eligible
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Charan Teja Kalla <quic_charante@quicinc.com>,
-        akpm@linux-foundation.org, zhaoyang.huang@unisoc.com,
-        yuzhao@google.com, surenb@google.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: UHPPCzpg6K0WlTYlIn4MYqd5wjRRPUcl
+X-Proofpoint-ORIG-GUID: UHPPCzpg6K0WlTYlIn4MYqd5wjRRPUcl
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 7:00=E2=80=AFAM David Hildenbrand <david@redhat.com>=
- wrote:
->
-> On 09.08.23 10:05, Charan Teja Kalla wrote:
-> > This patch is based on the commit 5da226dbfce3("mm: skip CMA pages when
-> > they are not available") which skips cma pages reclaim when they are no=
-t
-> > eligible for the current allocation context. In mglru, such pages are
-> > added to the tail of the immediate generation to maintain better LRU
-> > order, which is unlike the case of conventional LRU where such pages ar=
-e
-> > directly added to the head of the LRU list(akin to adding to head of th=
-e
-> > youngest generation in mglru).
-> >
-> > No observable issue without this patch on MGLRU, but logically it make
-> > sense to skip the CMA page reclaim when those pages can't be satisfied
-> > for the current allocation context.
-> >
-> > Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
+Replace the original fixed-size log buffer with a dynamically-
+extending log.
 
-Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
+Patch 1 provides the basic implementation. The following patches
+add test cases, support for logging long strings, and an optimization
+to the string formatting that is now more thoroughly testable.
 
-Thanks,
-Kalesh
+Changes since v2:
+- Fixed uninitialized string bug in get_concatenated_log().
+- Moved get_concatenated_log() into first patch so that
+  kunit_log_newline_test() dumps the entire log on error.
+- Moved kunit_log_frag_sized_line_test() to the correct point in
+  the chain, after the change that it depends on. Also log another
+  line after the long line to test that the log extends correctly.
+- Added kunit_log_init_frag_test() to test kunit_init_log_frag()
+  instead of testing it as part of every other test.
 
-> > ---
-> >   mm/vmscan.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index b4329f9..6cbe921 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -4943,7 +4943,7 @@ static bool sort_folio(struct lruvec *lruvec, str=
-uct folio *folio, struct scan_c
-> >       }
-> >
-> >       /* ineligible */
-> > -     if (zone > sc->reclaim_idx) {
-> > +     if (zone > sc->reclaim_idx || skip_cma(folio, sc)) {
-> >               gen =3D folio_inc_gen(lruvec, folio, false);
-> >               list_move_tail(&folio->lru, &lrugen->folios[gen][type][zo=
-ne]);
-> >               return true;
->
-> Makes sense to me.
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+Richard Fitzgerald (7):
+  kunit: Replace fixed-size log with dynamically-extending buffer
+  kunit: kunit-test: Add test cases for extending log buffer
+  kunit: Handle logging of lines longer than the fragment buffer size
+  kunit: kunit-test: Test logging a line that exactly fills a fragment
+  kunit: kunit-test: Add test cases for logging very long lines
+  kunit: kunit-test: Add test of logging only a newline
+  kunit: Don't waste first attempt to format string in
+    kunit_log_append()
+
+ include/kunit/test.h   |  25 ++-
+ lib/kunit/debugfs.c    |  65 ++++++--
+ lib/kunit/kunit-test.c | 339 ++++++++++++++++++++++++++++++++++++++++-
+ lib/kunit/test.c       | 127 ++++++++++++---
+ 4 files changed, 507 insertions(+), 49 deletions(-)
+
+-- 
+2.30.2
