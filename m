@@ -2,221 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A66FF776766
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAEA77676A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbjHISfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 14:35:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34488 "EHLO
+        id S231591AbjHISgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 14:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjHISfE (ORCPT
+        with ESMTP id S229969AbjHISgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 14:35:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98411FCC;
-        Wed,  9 Aug 2023 11:35:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F3B66437F;
-        Wed,  9 Aug 2023 18:35:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FE32C433C7;
-        Wed,  9 Aug 2023 18:35:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691606102;
-        bh=eWIcFJcIOce9R+MiShzB4DBQliucalbMzrHgeEI0yNM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=TRmbA+tv8/5zaarlgznVkhEEdWGtXA3HDVkEqUfiSuKPWBpA4vPxpH8os9hr2wKXB
-         SDZOmFaNQ3mjQQSrWR065s4lbKtwUf0co3Do476+Zw8KSspML8IREvBC99j+AHhMg7
-         l7zX5j+9e4RtzFBkh+x9c4zI0xrCZWhAK9Czrtm2rw0nNLTiV3lqMUuCPppQVZ/mDl
-         XEkCR2M2rHd3GtGDzkrSOEb+1q2Mkbjle3KgpGJFSYE22cgfVbiPbIvbG1nTFQle23
-         Bvy926toJrX3HLOGfz8a/k8hdf4UGZjJ583UAg3MXigLTv7OqFSI1hYbFt5ycvbkhO
-         LErp1mIecGPRw==
-Message-ID: <d6fc0b52-7f0f-ebfb-b4cf-8e4b28f8ee86@kernel.org>
-Date:   Wed, 9 Aug 2023 20:34:57 +0200
+        Wed, 9 Aug 2023 14:36:13 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B421FF5
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 11:36:12 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9ba3d6157so1785611fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 11:36:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1691606170; x=1692210970;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+6XaNRnADYL6BfmJLMU8ikF4TaveyP0VMAvN6HyDdfo=;
+        b=GeRukGKRMYqxQYoav5mEmzDg+GExj0GSr+1C/1RoPEhsTSXLyseE7R2epxSK1/Y4zN
+         E/sJBIyGDRyvFBjYKD/37CaZCASI1CtGIHVkBYgyOltBO9Na3JhLqMmbr1jyzNUocvjD
+         ECK9HXlhJzvI6HfYlIW756LDYJKkKgg9i7eIE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691606170; x=1692210970;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+6XaNRnADYL6BfmJLMU8ikF4TaveyP0VMAvN6HyDdfo=;
+        b=Z1wM4Pg9ot5pjLtgyz0TgDq1w2d356RW19KKVOQZuL+S6WOqQrOmLrSTycRR3vb9sS
+         F8k8nBKdDWlYRmyqNx2JtirVvCNShy+Nh7ErzuMB9gLqEDVNGg7L3ULCCGW6QfpV62Cu
+         qJd2xO/nbcGJCsPbHHezkxPMtq4tuUBxPQnyONAx4w8PBpYOuBODzn0DiRGQFPG4phM/
+         VADrUeo36sIiJHkJhn64XS3N3Rcd/UsiUTtzB2K16/GC9ZRzNHZREIHPx981myVzA3k5
+         MN2IEKmas0ymt6w5WNF5YpLTOTvwQ64cOEguDSdx5oU823tijpgKvF448KPVGG96NEeY
+         23xg==
+X-Gm-Message-State: AOJu0Ywi5bHE1qpLIBIkmL4fBCk65EDAoRNojphu0mE2g+bqTnt/PhpA
+        1Dy51Jh2bW4MURo/Ng2AhwEI2G60Pgp87Q+pB9svH3IIBa3ZMrpk
+X-Google-Smtp-Source: AGHT+IGXygtLz02FQtSpXeyHUyBXzsYrmeSt8NX1zrHnO3+oXSuKYWIrjbSoiWc3YJoJ3FlTnX7RlCDbOcgTVrnmCf8=
+X-Received: by 2002:a2e:804e:0:b0:2b9:ea17:5580 with SMTP id
+ p14-20020a2e804e000000b002b9ea175580mr26304ljg.17.1691606170530; Wed, 09 Aug
+ 2023 11:36:10 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 2/2] dt-bindings: leds: add mp3326
-Content-Language: en-US
-To:     "Yuxi (Yuxi) Wang" <Yuxi.Wang@monolithicpower.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>, "lee@kernel.org" <lee@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "wyx137120466@gmail.com" <wyx137120466@gmail.com>,
-        "Leal (Long) Li" <Leal.Li@monolithicpower.com>
-References: <fb09088db71f45169739addbaae770be@monolithicpower.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <fb09088db71f45169739addbaae770be@monolithicpower.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230809103633.485906560@linuxfoundation.org> <20230809135326.GE3031656@google.com>
+ <f47340c6-3c41-1f91-d0f9-fe0b59a23aac@roeck-us.net>
+In-Reply-To: <f47340c6-3c41-1f91-d0f9-fe0b59a23aac@roeck-us.net>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 9 Aug 2023 14:35:59 -0400
+Message-ID: <CAEXW_YQ4GqPwvUF8=8CWmdj=cD56v_eEVK-EirsObQXyBDFVpg@mail.gmail.com>
+Subject: Re: [PATCH 5.15 00/92] 5.15.126-rc1 review
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        paulmck@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/08/2023 08:39, Yuxi (Yuxi) Wang wrote:
-> Add dt-bindings for Monolithic Power System MP3326.
-> 
-> Signed-off-by: Yuxi Wang <Yuxi.Wang@monolithicpower.com>
+On Wed, Aug 9, 2023 at 12:18=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> =
+wrote:
+>
+> On 8/9/23 06:53, Joel Fernandes wrote:
+> > On Wed, Aug 09, 2023 at 12:40:36PM +0200, Greg Kroah-Hartman wrote:
+> >> This is the start of the stable review cycle for the 5.15.126 release.
+> >> There are 92 patches in this series, all will be posted as a response
+> >> to this one.  If anyone has any issues with these being applied, pleas=
+e
+> >> let me know.
+> >>
+> >> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
+> >> Anything received after that time might be too late.
+> >>
+> >> The whole patch series can be found in one patch at:
+> >>      https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.15.126-rc1.gz
+> >> or in the git tree and branch at:
+> >>      git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.15.y
+> >> and the diffstat can be found below.
+> >
+> > Not necesscarily new with 5.15 stable but 3 of the 19 rcutorture scenar=
+ios
+> > hang with this -rc: TREE04, TREE07, TASKS03.
+> >
+> > 5.15 has a known stop machine issue where it hangs after 1.5 hours with=
+ cpu
+> > hotplug rcutorture testing. Me and tglx are continuing to debug this. T=
+he
+> > issue does not show up on anything but 5.15 stable kernels and neither =
+on
+> > mainline.
+> >
+>
+> Do you by any have a crash pattern that we could possibly use to find the=
+ crash
+> in ChromeOS crash logs ? No idea if that would help, but it could provide=
+ some
+> additional data points.
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC. It might happen, that command when run on an older
-kernel, gives you outdated entries. Therefore please be sure you base
-your patches on recent Linux kernel.
+The pattern shows as a hard hang, the system is unresponsive and all CPUs
+are stuck in stop_machine. Sometimes it recovers on its own from the
+hang and then RCU immediately gives stall warnings. It takes 1.5 hour
+to reproduce and sometimes never happens for several hours.
 
-You missed at least DT list (maybe more), so this won't be tested by
-automated tooling. Performing review on untested code might be a waste
-of time, thus I will skip this patch entirely till you follow the
-process allowing the patch to be tested.
+It appears related to CPU hotplug since gdb showed me most of the CPUs
+are spinning in multi_cpu_stop() / stop machine after the hang.
 
-Please kindly resend and include all necessary To/Cc entries.
+thanks,
 
-> ---
->  .../devicetree/bindings/leds/leds-mp3326.yaml | 99 +++++++++++++++++++
->  1 file changed, 99 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/leds/leds-mp3326.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/leds-mp3326.yaml b/Documentation/devicetree/bindings/leds/leds-mp3326.yaml
-> new file mode 100644
-> index 000000000000..3a059340b902
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-mp3326.yaml
-> @@ -0,0 +1,99 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/leds-mp3326.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: LED driver for MP3326 from Monolithic Power Systems.
-
-Drop final dot.
-
-> +
-> +maintainers:
-> +  - Yuxi Wang <Yuxi.Wang@monolithicpower.com>
-> +
-> +description: |
-> +  Bindings for the Monolithic Power Systems MP3326 LED Drivers.
-
-Drop "Bindings for"
-
-> +
-> +  For more product information please see the link below:
-> +    https://www.monolithicpower.com/en/products/mp3326.html
-
-Missing blank line.
-
-> +properties:
-> +  compatible:
-> +    const: MPS,MP3326
-
-Do you see anywhere, absolutely anywhere capital letters in compatibles?
-
-> +
-> +  reg:
-> +    description: I2C slave address of the controller.
-
-Drop description, obvious.
-
-> +    maxItems: 1
-> +
-> +  led-protect:
-> +    description: LED short protection threshold.
-
-Does not look like common property... missing vendor prefix. Use common
-unit suffix, so "-microvolt"
-
-> +    enum:
-> +      - 0 #2V
-> +      - 1 #3V
-> +      - 2 #4V
-> +      - 3 #5V
-> +
-> +  switch_status:
-> +    description: Master switch for all channels.
-> +    enum:
-> +      - 0 #close all channels
-> +      - 1 #open all channels
-
-This is so bad that actually disappointing...
-
-1. Missing vendor prefix
-2. No underscores in properties
-3. Missing type/ref
-4. And does not look at all as hardware property. Drop.
-
-
-> +
-> +patternProperties:
-> +  "^rgb(-[0-9a-f]+)?$":
-
-Aren't these called "led"?
-
-> +    description: RGB group.
-> +    type: object
-> +    unevaluatedProperties: false
-
-Missing ref to proper LED schema.
-
-> +    properties:
-> +      rgb_r:
-
-Nope, nope.
-
-> +        description: Red light of the RGB group.
-> +        maxItems: 16
-> +        minItems: 1
-> +      rgb_g:
-> +        description: Green light of the RGB group.
-> +        maxItems: 16
-> +        minItems: 1
-> +      rgb_b:
-> +        description: Blue light of the RGB group.
-> +        maxItems: 16
-> +        minItems: 1
-> +      brightness:
-> +        description: Brightness of the RGB group.
-> +        maxItems: 63
-> +        minItems: 0
-> +      required:
-> +        - rgb_r
-> +        - rgb_g
-> +        - rgb_b
-> +        - brightness
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +examples:
-> +  - |
-> +    #include <dt-bindings/leds/common.h>
-> +    MP3326@30 {
-
-No, this is neither DTS nor proper bindings. Remove all this. Start FROM
-SCRATCH from example-schema.yaml. Entirely from scratch.
-
-> +        compatible = "mps,MP3326";
-> +        reg = <0x30>;
-> +        led-protect =<3>;
-> +        switch_status=<1>;
-> +
-> +        /*RGB group 1*/
-> +        rgb1@0{
-> +            rgb_r=<1>;
-
-This is not even coding style for DTS...
-
-
-Best regards,
-Krzysztof
-
+ - Joel
