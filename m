@@ -2,138 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6287764E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 18:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16C77764E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 18:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbjHIQSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 12:18:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
+        id S230194AbjHIQTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 12:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHIQSr (ORCPT
+        with ESMTP id S229480AbjHIQTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 12:18:47 -0400
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702BE1982
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 09:18:45 -0700 (PDT)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1bf7eb259d5so721026fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 09:18:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691597925; x=1692202725;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ti5YpVJETeixuCpoZ0ZGTbW0aEvrY5dl5mp0PqcF+V8=;
-        b=ceKIciqrukI/00ca1jssImFg3oAqLm/cE3tjjF6cgD8FiPZe3vRSDzcykHMEXCv37j
-         D4pU6Fd8uLOHmgjNuMRxoth+sXIcx17ulWLub9i/XONASsRC57RU4im/ix3q5vAAH4ja
-         xci0E1+fvRsJSMdWdkQcbh2MXViWsRRQsgHBhRnPsar0SFMvAsLCderlYdrOsvAgVO8F
-         684V3rUcjJ2d69wQOpwYlM2xYWkpMPfc7tVK2dqyy+giH8506zFfI6d6j3gQnSBTkorS
-         rox6PHwddACVmLn9qESep6JCgPDszCeTNjilFYmcSHAG7wXaMPhk5r3Cp5CsPeqBcq3I
-         NUiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691597925; x=1692202725;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ti5YpVJETeixuCpoZ0ZGTbW0aEvrY5dl5mp0PqcF+V8=;
-        b=NovdpAeFIZ5mzdTCfdI52GORjBcoiFav1s+9U8Br7iIgPzo7GZWlcA8Mqr5SimdHaU
-         TwG6MIbvMPdg6lqmGRlWM5ihiItord2dA9pTf1GRlGcVITeKn3MDd39OQvWWfvBpgAf1
-         d4m9/FE3zYa56e1zjEFsCce0N00seqeRYtKNdHzcvvEtVgnOk+2Vzynct0gGSQyu/5kK
-         jEp2RX+ni6juOUi1KQZBE+cE5WvfANCUXX7wQLvGHYRaXXJ27X4lFs5Klj2JwR7cE/Ol
-         kyBwj+7srO07IxXlP96TtrIWDNcOhMaPg/oXyhagNtWQFfWArtKkuvWN0w+wzo/VnNMu
-         1QeQ==
-X-Gm-Message-State: AOJu0YxST5XGDopRt3oifbcT+UJPN7RsR0iUfCsggpFReHlbYNr4iaZk
-        zx1fRrEjTZooQJ6CWpnJ1FN6F/dvri4=
-X-Google-Smtp-Source: AGHT+IE3mYF8NBLvPfFZJAlmgPoKDX1p00mZmHw4Ov1A71c7/UXf/pDlVx94W+4hr52Gy3ipZTD/7g==
-X-Received: by 2002:a05:6870:171b:b0:1b0:3821:f09b with SMTP id h27-20020a056870171b00b001b03821f09bmr2323177oae.13.1691597924625;
-        Wed, 09 Aug 2023 09:18:44 -0700 (PDT)
-Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
-        by smtp.gmail.com with ESMTPSA id cc4-20020a056871e18400b001a9eb707366sm7282513oac.15.2023.08.09.09.18.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 09:18:44 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 13:18:38 -0300
-From:   Alexon Oliveira <alexondunkan@gmail.com>
-To:     Nam Cao <namcaov@gmail.com>
-Cc:     gregkh@linuxfoundation.org, martyn@welchs.me.uk,
-        manohar.vanga@gmail.com, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v3] staging: vme_user: fix alignment of open parenthesis
- and deleted trailing spaces
-Message-ID: <ZNO8XmOpylyE0AWS@alolivei-thinkpadt480s.gru.csb>
-References: <ZNJKTLZ62SZMM6D8@alolivei-thinkpadt480s.gru.csb>
- <ZNOizFnDXojT4s85@nam-dell>
+        Wed, 9 Aug 2023 12:19:30 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19A1ED;
+        Wed,  9 Aug 2023 09:19:29 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 379GJJQ2035445;
+        Wed, 9 Aug 2023 11:19:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691597959;
+        bh=4L4w9V2E0ffBRn9NIuGgpaaT1kiu+Z6Kt/BJvvSXl3k=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=rKv2s8RMUWJUiw7vuWCdZNRILAFteeIY7PeXYXaC6dSn322Jr/KmPSOAQg5jiGH4Q
+         A50DsuiI/Tb3IFVOoPAAFYSg5V7R/0WHTS7H5XoVS+mQpBD3J8YX8ANANOGJ8klLXr
+         k6vBkEKxtJ37/FwkppAlEhMblGrdj6KJrw/nwMx0=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 379GJJtW046202
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Aug 2023 11:19:19 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
+ Aug 2023 11:19:18 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 9 Aug 2023 11:19:18 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 379GJIok002502;
+        Wed, 9 Aug 2023 11:19:18 -0500
+Date:   Wed, 9 Aug 2023 11:19:18 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Jai Luthra <j-luthra@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Esteban Blanc <eblanc@baylibre.com>, <jneanne@baylibre.com>,
+        <aseketeli@baylibre.com>, <jpanis@baylibre.com>, <u-kumar1@ti.com>
+Subject: Re: [PATCH v5 1/6] arm64: dts: ti: k3-j7200-som-p0: Add TP6594
+ family PMICs
+Message-ID: <20230809161918.ckqfnkaov5jdysca@random>
+References: <20230809-tps6594-v5-0-485fd3d63670@ti.com>
+ <20230809-tps6594-v5-1-485fd3d63670@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <ZNOizFnDXojT4s85@nam-dell>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230809-tps6594-v5-1-485fd3d63670@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 04:29:32PM +0200, Nam Cao wrote:
-> On Tue, Aug 08, 2023 at 10:59:40AM -0300, Alexon Oliveira wrote:
-> > Fixed all CHECK: Alignment should match open parenthesis
-> > and deleted the trailing whitespaces as reported by
-> > checkpatch to adhere to the Linux kernel coding-style
-> > guidelines.
-> > 
-> > Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
-> > ---
-> > 
-> > Changes in v3:
-> > - Rebased against staging.git and staging-next branch, noted by Greg KH
-> > 
-> > Changes in v2:
-> > - Fixed changelog, noted by Greg KH
-> > 
-> >  drivers/staging/vme_user/vme.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
-> > index 977c81e2f3c7..741593d75a63 100644
-> > --- a/drivers/staging/vme_user/vme.c
-> > +++ b/drivers/staging/vme_user/vme.c
-> > @@ -563,7 +563,7 @@ EXPORT_SYMBOL(vme_master_request);
-> >   *         returned.
-> >   */
-> >  int vme_master_set(struct vme_resource *resource, int enabled,
-> > -		   unsigned long long vme_base, unsigned long long size, 
-> > +		   unsigned long long vme_base, unsigned long long size,
-> >  		   u32 aspace, u32 cycle, u32 dwidth)
+On 20:17-20230809, Jai Luthra wrote:
+> From: Esteban Blanc <eblanc@baylibre.com>
 > 
-> As Greg said, it doesn't look like this in staging tree, so your patch doesn't apply.
+> This patch adds support for TPS6594 PMIC family on wakup I2C0 bus.
+> Theses devices provides regulators (bucks and LDOs), but also
+> GPIOs, a RTC, a watchdog, an ESM (Error Signal Monitor)
+> which monitors the SoC error output signal, and a PFSM
+> (Pre-configurable Finite State Machine) which manages the
+> operational modes of the PMIC.
+> 
+> Signed-off-by: Esteban Blanc <eblanc@baylibre.com>
+> Signed-off-by: Jai Luthra <j-luthra@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi | 157 ++++++++++++++++++++++++++++
+>  1 file changed, 157 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+> index b37f4f88ece4..fbbd8bfa368c 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+> @@ -127,6 +127,14 @@ J721E_WKUP_IOPAD(0x9c, PIN_INPUT_PULLUP, 0) /* (H21) WKUP_I2C0_SDA */
+>  	};
+>  };
+>  
+> +&wkup_pmx3 {
+> +	pmic_irq_pins_default: pmic-irq-pins-default {
+
+This fails dtbs_check on next-20230809:
+	pmic-irq-default-pins
+
+
+> +		pinctrl-single,pins = <
+> +			J721E_WKUP_IOPAD(0x01c, PIN_INPUT, 7) /* (E18) WKUP_GPIO0_84 */
+> +		>;
+> +	};
+> +};
+> +
+>  &main_pmx0 {
+>  	main_i2c0_pins_default: main-i2c0-default-pins {
+>  		pinctrl-single,pins = <
+> @@ -264,6 +272,155 @@ eeprom@50 {
+>  		compatible = "atmel,24c256";
+>  		reg = <0x50>;
+>  	};
+> +
+> +	tps659414: pmic@48 {
+> +		compatible = "ti,tps6594-q1";
+> +		reg = <0x48>;
+> +		ti,primary-pmic;
+> +		system-power-controller;
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pmic_irq_pins_default>;
+> +		interrupt-parent = <&wkup_gpio0>;
+> +		interrupts = <84 IRQ_TYPE_EDGE_FALLING>;
+> +
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +
+> +		buck1-supply = <&vsys_3v3>;
+> +		buck2-supply = <&vsys_3v3>;
+> +		buck3-supply = <&vsys_3v3>;
+> +		buck4-supply = <&vsys_3v3>;
+> +		buck5-supply = <&vsys_3v3>;
+> +		ldo1-supply = <&vsys_3v3>;
+> +		ldo2-supply = <&vsys_3v3>;
+> +		ldo3-supply = <&vsys_3v3>;
+> +		ldo4-supply = <&vsys_3v3>;
+> +
+> +		regulators {
+> +			bucka1: buck1 {
+> +				regulator-name = "vda_mcu_1v8";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +
+> +			bucka2: buck2 {
+> +				regulator-name = "vdd_mcuio_1v8";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +
+> +			bucka3: buck3 {
+> +				regulator-name = "vdd_mcu_0v85";
+> +				regulator-min-microvolt = <850000>;
+> +				regulator-max-microvolt = <850000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +
+> +			bucka4: buck4 {
+> +				regulator-name = "vdd_ddr_1v1";
+> +				regulator-min-microvolt = <1100000>;
+> +				regulator-max-microvolt = <1100000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +
+> +			bucka5: buck5 {
+> +				regulator-name = "vdd_phyio_1v8";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +
+> +			ldoa1: ldo1 {
+> +				regulator-name = "vdd1_lpddr4_1v8";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +
+> +			ldoa2: ldo2 {
+> +				regulator-name = "vda_dll_0v8";
+> +				regulator-min-microvolt = <800000>;
+> +				regulator-max-microvolt = <800000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +
+> +			ldoa3: ldo3 {
+> +				regulator-name = "vdd_wk_0v8";
+> +				regulator-min-microvolt = <800000>;
+> +				regulator-max-microvolt = <800000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +
+> +			ldoa4: ldo4 {
+> +				regulator-name = "vda_pll_1v8";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +		};
+> +	};
+> +
+> +	lp876441: pmic@4c {
+> +		compatible = "ti,lp8764-q1";
+> +		reg = <0x4c>;
+> +		system-power-controller;
+> +		interrupt-parent = <&wkup_gpio0>;
+> +		interrupts = <84 IRQ_TYPE_EDGE_FALLING>;
+> +
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +
+> +		buck1-supply = <&vsys_3v3>;
+> +		buck2-supply = <&vsys_3v3>;
+> +		buck3-supply = <&vsys_3v3>;
+> +		buck4-supply = <&vsys_3v3>;
+> +
+> +		regulators: regulators {
+> +			buckb1: buck1 {
+> +				regulator-name = "vdd_cpu_avs";
+> +				regulator-min-microvolt = <600000>;
+> +				regulator-max-microvolt = <900000>;
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +			};
+> +
+> +			buckb2: buck2 {
+> +				regulator-name = "vdd_ram_0v85";
+> +				regulator-min-microvolt = <850000>;
+> +				regulator-max-microvolt = <850000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +
+> +			buckb3: buck3 {
+> +				regulator-name = "vdd_core_0v85";
+> +				regulator-min-microvolt = <850000>;
+> +				regulator-max-microvolt = <850000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +
+> +			buckb4: buck4 {
+> +				regulator-name = "vdd_io_1v8";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +		};
+> +	};
+>  };
+>  
+>  &ospi0 {
+> 
+> -- 
+> 2.41.0
 > 
 
-Hi Nam,
-
-I did all the steps to have my branch updated with the origin/main
-branch, but I've found out that was something more.
-
-> However I look it up and the last change to this line was 12 years ago, so I doubt
-> that it is because you didn't rebase to Greg's tree. I think the more likely
-> possibility is that you have a commit to this line yourself (by mistake perhaps?),
-> and this patch is on top of that.
-> 
-
-Thank you for poiting that out. You're right. I found that was indeed an issue on my
-side thanks to your input.
-
-> Make sure you don't have any accident commit that modifies this line in your tree.
-> 
-
-There was indeed and accident commit modifying more than one line in my
-tree, hence the "trailing whitespaces" messages in one of the commits.
-So, to clean evertyhing up, I decided to drop these commits and start
-all over again, from scratch. That way I'm sure I'm not messing up
-anything else. I just sent a fresh patch in another thread.
-
-> Best regards,
-> Nam
-
-Thank you.
-
-Alexon Oliveira
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
