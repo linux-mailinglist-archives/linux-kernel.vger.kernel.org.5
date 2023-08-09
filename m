@@ -2,90 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B7E776064
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93995776067
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbjHINQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 09:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
+        id S232820AbjHINRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 09:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbjHINQG (ORCPT
+        with ESMTP id S229560AbjHINRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 09:16:06 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D8332103
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:16:03 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-63cf6b21035so43107946d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 06:16:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1691586962; x=1692191762;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pUFD+zARLBoD9VgfQ9i6E9H3evhSNHaQhIu9d2QM1Sk=;
-        b=49DGZzAi0lv9R4YUMmmyRsTaKTI24MrnipFt1c85HJH1J8TAsoBZdDM9BkmJIMRaET
-         Az6MNfDAIf4iKebPZ86C5koKjZhQIkq4wDkOy56mqH1F/ztPtJuxFFZVDKCx/2DUXTFX
-         5K4mQ9NnaruKl1Z5E4M0G0TGVWWclb2yrZGNBv9Tf3SqNVFYF2he1YxXXM4JaB2BT13n
-         2m5VN0Kb554n/8gHrivnx7P9aXKT6tsFHvTlG1p1ckJwWeLdSC1IuLV1zUqVYcOdUeSN
-         pZjul2ODl7JoaAe+ZsQgBtX8eWJDPj5R1sijKMmbYtKy+xKFG0zOMNO8NiIHnEY+bRCu
-         H48g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691586962; x=1692191762;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pUFD+zARLBoD9VgfQ9i6E9H3evhSNHaQhIu9d2QM1Sk=;
-        b=CVmhoBE/t/ZDThdtM0jYSAZyeAlFwGE9CxYNeNaNhEfsPKSA/pymvb6qxAjCg0IlDr
-         BVycoDjdtR+TYEmjGSX2fVRlORvlj/EGHiLC+lwg5O/SqvOA4KluEiZzBZ5dxk9IJwCC
-         Jv6oHZwYuFYuDRjUBR+o+8FIA4CK2OSwgDG0evkR2WstezAok0Gs3bPPEjt2jKT/nf6t
-         7EOPQrLaE8W17S+a3EX7LZsBqBiSvEdDH4v9OgW42tCHMYNXRYd9NNZHWxjsccN3Pjbn
-         3+qc87LZyxNsulZAgQZpFEgctbg1OBp7oXko0HeRq3tbGuG5EXsQC9wgnUTPiI5a1Uvn
-         F6DA==
-X-Gm-Message-State: AOJu0YwX+NXkn9zfpMLNo497g4dlP+v3aXmDDrYPdvzq0hVCDqe/R2Rf
-        ulC7f/6xvhwxG/quV4OVnCuV/g==
-X-Google-Smtp-Source: AGHT+IEa09oBu/MB/OEEfjZ4vZbDQ+KCNXPdyFD/E3NQZ42iO9BeMWBS6KhnCOOaufCRh2MqCYdSPQ==
-X-Received: by 2002:a05:6214:390c:b0:63c:ea63:4717 with SMTP id nh12-20020a056214390c00b0063cea634717mr2509361qvb.43.1691586962165;
-        Wed, 09 Aug 2023 06:16:02 -0700 (PDT)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id a2-20020a0c8bc2000000b0063d06946b2bsm4428701qvc.100.2023.08.09.06.16.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 06:16:01 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 09:16:00 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     xiaoshoukui <xiaoshoukui@gmail.com>
-Cc:     dsterba@suse.cz, clm@fb.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xiaoshoukui@ruijie.com.cn
-Subject: Re: [PATCH] btrfs: fix race between balance and cancel/pause
-Message-ID: <20230809131600.GB2515439@perftesting>
-References: <9cdf58c2f045863e98a52d7f9d5102ba12b87f07.1687496547.git.josef@toxicpanda.com>
- <20230808024748.20530-1-xiaoshoukui@gmail.com>
+        Wed, 9 Aug 2023 09:17:10 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B945128
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:17:10 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 379CH6jf003576;
+        Wed, 9 Aug 2023 13:17:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=wqiKosW8sF+2lO6oeFYvAFaiESETnfkgoeH2ctKPazA=;
+ b=GVyMCY3DVRLmWcqV9THB8vNZWWTJEhfNJj+3cftvXKzR2toh4QioDIYJZ/TXCeVDWk39
+ Z/Gb7ujyn+0HgHu75yLx0ArUlSzFRN7HNP8wqVG4fbwstNzGu1OY+p09GaDH+TYfKm8u
+ rxvXELiPmbquBnWCdAUZ+o60R6Uhkk6U+8Y98wfreKqHZ2yWmpYEJVSrvRFKP8ICwxMY
+ tX9B2LyVBEHd+uOExjzaz+ECGDr98CPKcZ1BtMhNsSzUpdeHOFDB9GDNtXlC45E8LMCa
+ 43g4j9nYrDD/31joLvvSIlIMC1n0wYFlV6zimp5mznPJbjirL2AVnYsiXmeBXyESPHEq hg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sc0051epq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Aug 2023 13:17:01 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 379DH0s5025420
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 9 Aug 2023 13:17:00 GMT
+Received: from hyd-lablnx450.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 9 Aug 2023 06:16:58 -0700
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_charante@quicinc.com>,
+        Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Subject: [PATCH v2] cma: introduce CMA_ALLOC_DEBUG config
+Date:   Wed, 9 Aug 2023 18:46:40 +0530
+Message-ID: <20230809131640.18791-1-quic_bibekkum@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230808024748.20530-1-xiaoshoukui@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: MgpH7odurn7fcTmOimzhzs8mDBhptik9
+X-Proofpoint-GUID: MgpH7odurn7fcTmOimzhzs8mDBhptik9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-09_10,2023-08-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ malwarescore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
+ bulkscore=0 mlxscore=0 adultscore=0 phishscore=0 clxscore=1011
+ mlxlogscore=975 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308090117
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 10:47:48PM -0400, xiaoshoukui wrote:
-> I think this patch does not fully fix the issue.
-> 
-> This patch just fix assertion panic, but in the race situation, the ioctl pause 
-> request still returns an incorrect value 0 to the user which mislead the user the
-> pause request finished successfully. In fact, the balance request has not been paused.
-> 
-> Test results and analysis are as follows:
-> https://lore.kernel.org/linux-btrfs/20230726030617.109018-1-xiaoshoukui@gmail.com/T/#me125d17fa59e9e671149cc76d410ced747f488b1
+Currently enabling CONFIG_CMA_DEBUG enables DEBUG preprocessor macro.
+If DEBUG is defined, it's equivalent to a printk with KERN_DEBUG loglevel
+flooding the dmesg buffer with pr_debug prints from mm/cma driver and from
+included files as well. This results in excessive amount of CMA logging and
+also might distract the debug teams with unrelated KERN_DEBUG prints.One of
+the ways engineers currently tackle this problem is by passing loglevel=N
+though commandline to suppress KERN_DEBUG messages. This approach can
+sometimes become tiresome due to its repetitive nature.
+This patch proposes an alternative approach by introducing a simple new
+config CONFIG_CMA_ALLOC_DEBUG which only shows the cma bit allocation
+status in case of cma failure and do not enable DEBUG preprocessor macro
+from CONFIG_CMA_DEBUG avoiding excessive CMA logging from pr_debug.
+Engineers and tech teams seeking only for bitmap status in case of cma
+failure can use this simple config instead of worrying about changing
+the loglevel or trying other similar workarounds.
 
-They're just two different issues.  My patch is concerned with the panic, yours
-is concerned with getting the correct return value out to the user.
+Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+---
+ mm/Kconfig | 11 +++++++++++
+ mm/cma.c   |  2 +-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-Rebase your patch ontop of Sterba's tree with my fix and send it along, getting
-an accurate errno out to the user is a reasonable goal.  Thanks,
+diff --git a/mm/Kconfig b/mm/Kconfig
+index 09130434e30d..ad2a20576a65 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -891,12 +891,23 @@ config CMA
+ config CMA_DEBUG
+ 	bool "CMA debug messages (DEVELOPMENT)"
+ 	depends on DEBUG_KERNEL && CMA
++	select CMA_ALLOC_DEBUG
+ 	help
+ 	  Turns on debug messages in CMA.  This produces KERN_DEBUG
+ 	  messages for every CMA call as well as various messages while
+ 	  processing calls such as dma_alloc_from_contiguous().
+ 	  This option does not affect warning and error messages.
 
-Josef
++config CMA_ALLOC_DEBUG
++	bool "CMA bitmap status upon failure"
++	depends on CMA
++	help
++	  Turns on bitmap dump in case of cma failures. This prints
++	  current status of CMA bit upon failures and will appear
++	  when cma_alloc() return no_warn argument as false and won't
++	  flood the dmesg buffer with unrelated KERN_DEBUG prints. No
++	  need to explicitly enable this if CMA_DEBUG is enabled.
++
+ config CMA_DEBUGFS
+ 	bool "CMA debugfs interface"
+ 	depends on CMA && DEBUG_FS
+diff --git a/mm/cma.c b/mm/cma.c
+index a4cfe995e11e..0ead392769b3 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -383,7 +383,7 @@ int __init cma_declare_contiguous_nid(phys_addr_t base,
+ 	return ret;
+ }
+
+-#ifdef CONFIG_CMA_DEBUG
++#ifdef CONFIG_CMA_ALLOC_DEBUG
+ static void cma_debug_show_areas(struct cma *cma)
+ {
+ 	unsigned long next_zero_bit, next_set_bit, nr_zero;
+--
+2.17.1
+
