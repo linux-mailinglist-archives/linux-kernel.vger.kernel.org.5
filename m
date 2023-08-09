@@ -2,105 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD04776452
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CA7776454
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbjHIPqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37932 "EHLO
+        id S232674AbjHIPr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbjHIPqt (ORCPT
+        with ESMTP id S231598AbjHIPr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:46:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78202111
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:46:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691596008; x=1723132008;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ujARW7+TwgnCssPWqb49cF4kWewzTeUeqmp0ikcWG6s=;
-  b=YW6Ug1OwM5/SRv3Vr7smq9DBcbP85UBUeN/ShLHIQNtwJrq50IgcKy1q
-   isQKkuOgqy+7idToV7QMa2zDsPkUR22bVk0C6ZQq014/tvCt2z/fAOYvb
-   HX4w0N8hBarkqSROMi6LVMQuedyybCPAdCF9CHoxqaIkIsoIkGdc91Ak0
-   pCJve3AEtFgaT0tfM4VigE8NesIZ/VfG+ueIDLnq82tjv1nmw8MZ3rEIX
-   N0dLocYZfXNAZH7bb+DNBqF7r0vtkyBfYrN1h1VSYHtu+KYyHptVerJkV
-   PM0w3oT7FlJrlc27Yahq6PltI0r8n0BnS0dQqRWQT0xfOyLZ9/nj/WwDj
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="371145344"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="371145344"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 08:46:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="761443446"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="761443446"
-Received: from sajohns2-mobl.amr.corp.intel.com (HELO [10.213.185.172]) ([10.213.185.172])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 08:46:47 -0700
-Message-ID: <a54d1613-7163-ceb5-3c9a-dead97801db7@linux.intel.com>
-Date:   Wed, 9 Aug 2023 08:46:19 -0700
+        Wed, 9 Aug 2023 11:47:26 -0400
+Received: from mail.8bytes.org (mail.8bytes.org [IPv6:2a01:238:42d9:3f00:e505:6202:4f0c:f051])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 81E992111
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 08:47:25 -0700 (PDT)
+Received: from 8bytes.org (pd9fe94eb.dip0.t-ipconnect.de [217.254.148.235])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.8bytes.org (Postfix) with ESMTPSA id 49BEF280529;
+        Wed,  9 Aug 2023 17:47:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+        s=default; t=1691596044;
+        bh=c9q4+LkZCmEYpPrz6nZsIMTUQoOd94ugzaMoSeUMz0s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KdwpCAptFG7WCj5g6w/Aze4sgRW/QgYuuOgC5A9jOijeWFmRTeXeaGH8aYy6Tmhos
+         hYzYMuaAyseXYSZEGnBWm5iSHJwzSU6Cd5RHdRr+xIh0ZhgMWHckoGjhPx9pnp3iwR
+         KYGc4QrOmGoBM1WJNDHmH7lUslVuLVK0HzOIkAWbIOHaFJJhPXGQm2QKOEfSdm9/h8
+         1Jw8Gm6S/Gd1wkySXLNi8TYWWWrvh40G2Ge+GQcCFLERXFGD5FvgPoVhC+pGMBK6l/
+         mYp/ldrmnKIhQOfijSMKBb/hPSHEAVKWIH/OJMtlfe+LqKW3U85/sYsAJhwOJS5YPf
+         VWa6fogpE3kLQ==
+Date:   Wed, 9 Aug 2023 17:47:22 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     YueHaibing <yuehaibing@huawei.com>,
+        Yanfei Xu <yanfei.xu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/13] [PULL REQUEST] Intel IOMMU updates for Linux v6.6
+Message-ID: <ZNO1Cp2rmsxYhsPG@8bytes.org>
+References: <20230809124806.45516-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 1/2] x86/speculation: add cpu_show_gds() prototype
-To:     Arnd Bergmann <arnd@kernel.org>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-References: <20230809130530.1913368-1-arnd@kernel.org>
-Content-Language: en-US
-From:   Daniel Sneddon <daniel.sneddon@linux.intel.com>
-In-Reply-To: <20230809130530.1913368-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809124806.45516-1-baolu.lu@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/23 06:04, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Aug 09, 2023 at 08:47:53PM +0800, Lu Baolu wrote:
+> This includes patches queued for v6.6. They aim to:
 > 
-> The newly added function has two definitions but no prototypes:
+>  - Enable idxd device DMA with pasid through iommu dma ops.
+>  - Lift RESV_DIRECT check from VT-d driver to core.
+>  - Miscellaneous cleanups and fixes.
 > 
-> drivers/base/cpu.c:605:16: error: no previous prototype for 'cpu_show_gds' [-Werror=missing-prototypes]
-> 
-> Add a declaration next to the other ones for this file to avoid the
-> warning.
-> 
-> Fixes: 8974eb588283b ("x86/speculation: Add Gather Data Sampling mitigation")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/linux/cpu.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-> index 9d43b734170d6..0abd60a7987b6 100644
-> --- a/include/linux/cpu.h
-> +++ b/include/linux/cpu.h
-> @@ -73,6 +73,8 @@ extern ssize_t cpu_show_retbleed(struct device *dev,
->  				 struct device_attribute *attr, char *buf);
->  extern ssize_t cpu_show_spec_rstack_overflow(struct device *dev,
->  					     struct device_attribute *attr, char *buf);
-> +extern ssize_t cpu_show_gds(struct device *dev,
-> +			    struct device_attribute *attr, char *buf);
->  
->  extern __printf(4, 5)
->  struct device *cpu_device_create(struct device *parent, void *drvdata,
+> All patches are based on top of the next branch and vt-d patches can
+> apply to v6.5-rc5 as well.
 
-Sorry I missed that. Shouldn't stable be CC'd here as well?
+Pulled, thanks Baolu. There was a minor conflict with the differences
+between next and v6.5-rc5, but I resolved that.
 
-Thanks,
-Dan
 
+Joerg
 
