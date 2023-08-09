@@ -2,209 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE34877654A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 18:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC13877654C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 18:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbjHIQou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 12:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33236 "EHLO
+        id S231138AbjHIQpK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Aug 2023 12:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbjHIQot (ORCPT
+        with ESMTP id S230514AbjHIQpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 12:44:49 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A041BFE;
-        Wed,  9 Aug 2023 09:44:48 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 84B7A2187E;
-        Wed,  9 Aug 2023 16:44:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691599487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nDhLE3ZT6vGy7jFyOFpA8ZS/b+W0KeOHURtugtULW3g=;
-        b=dfLcv7/AijRLKHjL1t1noAK9Qk5iKSFINL4VURbX3V9BPdMkLGdsFnao+maJUgXRq8FzHA
-        ampedrAG6ab+ku3msmXGKGC50qGzvzpq1uFfrkN4bpx5ePJf7RBuXFD1UZW1zZJf/ZoseJ
-        NK9IGgKfeS2AVFS48lEAsqJgWhNBWag=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691599487;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nDhLE3ZT6vGy7jFyOFpA8ZS/b+W0KeOHURtugtULW3g=;
-        b=IC1FePROY468GiaL9M2rWyaAYV2g2X93uqoziugzeEp2uSvcA4TmqRA0ZiA/wR/ocuihXL
-        TD4pMgaSKCACQrAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6F4F8133B5;
-        Wed,  9 Aug 2023 16:44:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id pbEbG3/C02S1awAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 09 Aug 2023 16:44:47 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id F112CA0769; Wed,  9 Aug 2023 18:44:46 +0200 (CEST)
-Date:   Wed, 9 Aug 2023 18:44:46 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Haibo Li <haibo.li@mediatek.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, xiaoming.yu@mediatek.com
-Subject: Re: [PATCH] mm/filemap.c:fix update prev_pos after one read request
- done
-Message-ID: <20230809164446.uwxryhrfbjka2lio@quack3>
-References: <20230628110220.120134-1-haibo.li@mediatek.com>
+        Wed, 9 Aug 2023 12:45:08 -0400
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58121BFE;
+        Wed,  9 Aug 2023 09:45:07 -0700 (PDT)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-565f2567422so19530eaf.2;
+        Wed, 09 Aug 2023 09:45:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691599506; x=1692204306;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=C/ppIpNykOtbP/6R4ynNuZ5RP4Dl5BB7MG8fQ5sVPJQ=;
+        b=dug6ehjpYFw/6LBU3X5wozNz4kGI1f1ZrDCceFL/DNDpnc0myiLAB81CgegcXRZDAK
+         Le5Aosiw2otd1LSybeJiRNtbPnemCcsHXCh3HyYPTNeHfZ2qeexvk7Edsapdzpi10Uq/
+         GVKHlSmc4rbzRPWA9UtmVP+2MYR/UdZhI4h/hBBQlvJKt9zcjhUgWkWFQLCaYM804uRd
+         h3UVHugeG/yoWqGV426LNR3UYsaJ8Pmf50AN0HtTrG7FTxhkHQa/Ytn/HN7rdJBWgQ9o
+         Y7ECzQlPOLZuWB+RH/MVdxlWjfnaTMRx8zbmseI/Dw9xrf8N3wbw/6bsFCGvjJwqj3h7
+         M3eQ==
+X-Gm-Message-State: AOJu0Yz4hu50TnUaZXTkPupVMurc6erlhdwQJR7OxEgNGGTA+0znAiTn
+        9oI5P1ev26ii2+Q8wGF47fPR46WQ8IoJiA==
+X-Google-Smtp-Source: AGHT+IGNqsYa4+7n1LqxxsnyecPYWwI5n++J5zwxUYCg7QRfLlne634IYMmgvC1EBm+Ts8m9Ubb0YA==
+X-Received: by 2002:a54:4018:0:b0:3a7:2f1d:ea4e with SMTP id x24-20020a544018000000b003a72f1dea4emr3224540oie.41.1691599506378;
+        Wed, 09 Aug 2023 09:45:06 -0700 (PDT)
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com. [209.85.161.45])
+        by smtp.gmail.com with ESMTPSA id o8-20020a0568080f8800b003a1d29f0549sm7219108oiw.15.2023.08.09.09.45.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 09:45:05 -0700 (PDT)
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-56d6dfa8b52so18411eaf.3;
+        Wed, 09 Aug 2023 09:45:05 -0700 (PDT)
+X-Received: by 2002:a05:6808:211e:b0:3a3:ffb7:1dd4 with SMTP id
+ r30-20020a056808211e00b003a3ffb71dd4mr3716240oiw.6.1691599505466; Wed, 09 Aug
+ 2023 09:45:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230628110220.120134-1-haibo.li@mediatek.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230807-pll-mipi_set_rate_parent-v6-0-f173239a4b59@oltmanns.dev>
+In-Reply-To: <20230807-pll-mipi_set_rate_parent-v6-0-f173239a4b59@oltmanns.dev>
+Reply-To: wens@csie.org
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Thu, 10 Aug 2023 00:44:53 +0800
+X-Gmail-Original-Message-ID: <CAGb2v66dU2Ao9hBiwgu32i7_svqMT+Pz=BVnN0ZvmLhFm+jy6A@mail.gmail.com>
+Message-ID: <CAGb2v66dU2Ao9hBiwgu32i7_svqMT+Pz=BVnN0ZvmLhFm+jy6A@mail.gmail.com>
+Subject: Re: [PATCH v6 00/11] clk: sunxi-ng: Consider alternative parent rates
+ when determining NKM clock rate
+To:     Frank Oltmanns <frank@oltmanns.dev>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Roman Beranek <me@crly.cz>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 28-06-23 19:02:20, Haibo Li wrote:
-> ra->prev_pos tracks the last visited byte in the previous read request.
-> It is used to check whether it is sequential read in
-> ondemand_readahead and thus affects the readahead window.
-> 
-> From commit 06c0444290ce ("mm/filemap.c: generic_file_buffered_read()
-> now uses find_get_pages_contig"),update logic of prev_pos is changed.
-> It updates prev_pos after each returns from filemap_get_pages.
-> But the read request from user may be not fully completed
-> at this point.
-> The updated prev_pos impacts the subsequent readahead window.
-> 
-> The real problem is performance drop of fsck_msdos between linux-5.4
-> and linux-5.15(also linux-6.4).
-> Comparing to linux-5.4,It spends about 110% time and read 140% pages.
-> The read pattern of fsck_msdos is not fully sequential.
-> 
-> Simplified read pattern of fsck_msdos likes below:
-> 1.read at page offset 0xa,size 0x1000
-> 2.read at other page offset like 0x20,size 0x1000
-> 3.read at page offset 0xa,size 0x4000
-> 4.read at page offset 0xe,size 0x1000
-> 
-> Here is the read status on linux-6.4:
-> 1.after read at page offset 0xa,size 0x1000
->     ->page ofs 0xa go into pagecache
-> 2.after read at page offset 0x20,size 0x1000
->     ->page ofs 0x20 go into pagecache
-> 3.read at page offset 0xa,size 0x4000
->     ->filemap_get_pages read ofs 0xa from pagecache and returns
->     ->prev_pos is updated to 0xb and goto next loop
->     ->filemap_get_pages tends to read ofs 0xb,size 0x3000
->     ->initial_readahead case in ondemand_readahead since prev_pos is
->       the same as request ofs.
->     ->read 8 pages while async size is 5 pages
->       (PageReadahead flag at page 0xe)
-> 4.read at page offset 0xe,size 0x1000
->     ->hit page 0xe with PageReadahead flag set,double the ra_size.
->       read 16 pages while async size is 16 pages
-> Now it reads 24 pages while actually uses 5 pages
-> 
-> on linux-5.4:
-> 1.the same as 6.4
-> 2.the same as 6.4
-> 3.read at page offset 0xa,size 0x4000
->     ->read ofs 0xa from pagecache
->     ->read ofs 0xb,size 0x3000 using page_cache_sync_readahead
->       read 3 pages
->     ->prev_pos is updated to 0xd before generic_file_buffered_read
->       returns
-> 4.read at page offset 0xe,size 0x1000
->     ->initial_readahead case in ondemand_readahead since
->       request ofs-prev_pos==1
->     ->read 4 pages while async size is 3 pages
-> 
-> Now it reads 7 pages while actually uses 5 pages.
-> 
-> In above demo,the initial_readahead case is triggered by offset
-> of user request on linux-5.4.
-> While it may be triggered by update logic of prev_pos on linux-6.4.
-> 
-> To fix the performance drop,update prev_pos after finishing one read
-> request.
-> 
-> Signed-off-by: Haibo Li <haibo.li@mediatek.com>
-
-Sorry for the delayed reply. This seems to have fallen through the cracks.
-So if I understand your analysis right, you are complaining that random
-read larger than 1 page gets misdetected as sequential read and so "larger
-than necessary" readahead happens. I tend to agree with your opinion and your
-solution looks good to me. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-Willy, any opinion? Andrew, can you pickup the patch if Willy doesn't
-object?
-
-								Honza
-
+On Mon, Aug 7, 2023 at 8:44 PM Frank Oltmanns <frank@oltmanns.dev> wrote:
+>
+> This patchset enables NKM clocks to consider alternative parent rates
+> and utilize this new feature to adjust the pll-video0 clock on Allwinner
+> A64.
+>
+> Furthermore, with this patchset pll-video0 considers rates that are
+> higher than the requested rate when finding the closest rate. In
+> consequence, higher rates are also considered by pll-video0's
+> descandents. In total, after applying this patchset, finding the closest
+> rate is supported by:
+>   - ccu_nm
+>   - ccu_nkm
+>   - ccu_mux
+>   - ccu_div
+>
+> This allows us to achieve an optimal rate for driving the board's panel.
+>
+> To provide some context, the clock structure involved in this process is
+> as follows:
+>     clock                       clock type
+>     --------------------------------------
+>     pll-video0                  ccu_nm
+>        pll-mipi                 ccu_nkm
+>           tcon0                 ccu_mux
+>              tcon-data-clock    sun4i_dclk
+>
+> The divider between tcon0 and tcon-data-clock is fixed at 4. Therefore,
+> in order to achieve a rate that closely matches the desired rate of the
+> panel, pll-mipi needs to operate at a specific rate.
+>
+> Tests
+> =====
+> So far, this has been successfully tested on the A64-based Pinephone
+> using three different panel rates:
+>
+>  1. A panel rate that can be matched exactly by pll-video0.
+>  2. A panel rate that requires pll-video0 to undershoot to get the
+>     closest rate.
+>  3. A panel rate that requires pll-video0 to overshoot to get the
+>     closest rate.
+>
+> Test records:
+>
+> Re 1:
+> -----
+> Panel requests tcon-data-clock of 103500000 Hz, i.e., pll-mipi needs to
+> run at 414000000 Hz. This results in the following clock rates:
+>    clock                            rate
+>    -------------------------------------
+>     pll-video0                 207000000
+>        hdmi-phy-clk             51750000
+>        hdmi                    207000000
+>        tcon1                   207000000
+>        pll-mipi                414000000
+>           tcon0                414000000
+>              tcon-data-clock   103500000
+>
+> The results of the find_best calls:
+> ccu_nkm_find_best_with_parent_adj: rate=414000000, best_rate=414000000, best_parent_rate=207000000, n=1, k=2, m=1
+> ccu_nkm_find_best_with_parent_adj: rate=414000000, best_rate=414000000, best_parent_rate=207000000, n=1, k=2, m=1
+> ccu_nkm_find_best_with_parent_adj: rate=414000000, best_rate=414000000, best_parent_rate=207000000, n=1, k=2, m=1
+> ccu_nkm_find_best_with_parent_adj: rate=414000000, best_rate=414000000, best_parent_rate=207000000, n=1, k=2, m=1
+> ccu_nkm_find_best: rate=414000000, best_rate=414000000, parent_rate=207000000, n=1, k=2, m=1
+>
+> Re 2:
+> -----
+> Panel requests tcon-data-clock of 103650000 Hz, i.e., pll-mipi needs to
+> run at 414600000 Hz. This results in the following clock rates:
+>    clock                            rate
+>    -------------------------------------
+>     pll-video0                 282666666
+>        hdmi-phy-clk             70666666
+>        hdmi                    282666666
+>        tcon1                   282666666
+>        pll-mipi                414577776
+>           tcon0                414577776
+>              tcon-data-clock   103644444
+>
+> The results of the find_best calls:
+> ccu_nkm_find_best_with_parent_adj: rate=414600000, best_rate=414577776, best_parent_rate=282666666, n=11, k=2, m=15
+> ccu_nkm_find_best_with_parent_adj: rate=414600000, best_rate=414577776, best_parent_rate=282666666, n=11, k=2, m=15
+> ccu_nkm_find_best_with_parent_adj: rate=414577776, best_rate=414577776, best_parent_rate=282666666, n=11, k=2, m=15
+> ccu_nkm_find_best_with_parent_adj: rate=414577776, best_rate=414577776, best_parent_rate=282666666, n=11, k=2, m=15
+> ccu_nkm_find_best: rate=414577776, best_rate=414577776, parent_rate=282666666, n=11, k=2, m=15
+>
+> Re 3:
+> -----
+> Panel requests tcon-data-clock of 112266000 Hz, i.e., pll-mipi needs to
+> run at 449064000 Hz. This results in the following clock rates:
+>    clock                            rate
+>    -------------------------------------
+>     pll-video0                 207272727
+>        hdmi-phy-clk             51818181
+>        hdmi                    207272727
+>        tcon1                   207272727
+>        pll-mipi                449090908
+>           tcon0                449090908
+>              tcon-data-clock   112272727
+>
+> The results of the find_best calls:
+> ccu_nkm_find_best_with_parent_adj: rate=449064000, best_rate=449090908, best_parent_rate=207272727, n=13, k=2, m=12
+> ccu_nkm_find_best_with_parent_adj: rate=449064000, best_rate=449090908, best_parent_rate=207272727, n=13, k=2, m=12
+> ccu_nkm_find_best_with_parent_adj: rate=449090908, best_rate=449090908, best_parent_rate=207272727, n=13, k=2, m=12
+> ccu_nkm_find_best_with_parent_adj: rate=449090908, best_rate=449090908, best_parent_rate=207272727, n=13, k=2, m=12
+> ccu_nkm_find_best: rate=449090908, best_rate=449090908, parent_rate=207272727, n=13, k=2, m=12
+>
+> Changelog:
+> ----------
+> Changes in v6:
+>  - Removed unnecessary #include from ccu_nkm.c
+>  - Link to v5: https://lore.kernel.org/r/20230806-pll-mipi_set_rate_parent-v5-0-db4f5ca33fc3@oltmanns.dev
+>
+> Changes in v5:
+>  - Remove the dedicated function for calculating the optimal parent rate
+>    for nkm clocks that was introduced in v2 and again in v4. Instead use
+>    a simple calculation and require the parent clock to select the
+>    closest rate to achieve optimal results.
+>  - Change the order of parameters of nkm_best_rate and
+>    nkm_best_rate_with_parent_adj as requested my Maxime Ripard.
+>  - Prefer to not reset the rate of the nkm clock's parent if the ideal
+>    rate can be reached using the parent's current rate, copying the
+>    behavior of ccu_mp.
+>  - Link to v4: https://lore.kernel.org/r/20230717-pll-mipi_set_rate_parent-v4-0-04acf1d39765@oltmanns.dev
+>
+> Changes in v4:
+>  - Re-introduce a dedicated function for calculating the optimal parent
+>    rate for nkm clocks that was introduced in v2 and removed in v3. It
+>    turned out that not having this functionality introduces a bug when
+>    the parent does not support finding the closest rate:
+>    https://lore.kernel.org/all/87pm4xg2ub.fsf@oltmanns.dev/
+>  - Incorporate review remarks:
+>     - Correcting the parameter name for ccu_nkm_round_rate()'s parent HW
+>       is now in a separate patch.
+>     - Use correct parameter order in ccu_nkm_find_best_with_parent_adj.
+>     - Add ccu_is_better_rate() and use it for determining the best rate
+>       for nm and nkm, as well as ccu_mux_helper_determine_rate.
+>     - Consistently introduce new macros for clock variants that support
+>       finding the closest rate instead of updating existing macros.
+>     - Use wrapper function for determining a ccu_mux's rate in order to
+>       support finding the closest rate.
+>  - Link to v3: https://lore.kernel.org/r/20230702-pll-mipi_set_rate_parent-v3-0-46dcb8aa9cbc@oltmanns.dev
+>
+> Changes in v3:
+>  - Use dedicated function for finding the best rate in cases where an
+>    nkm clock supports setting its parent's rate, streamlining it with
+>    the structure that is used in other sunxi-ng ccus such as ccu_mp
+>    (PATCH 1).
+>  - Therefore, remove the now obsolete comments that were introduced in
+>    v2 (PATCH 1).
+>  - Remove the dedicated function for calculating the optimal parent rate
+>    for nkm clocks that was introduced in v2. Instead use a simple
+>    calculation and require the parent clock to select the closest rate to
+>    achieve optimal results (PATCH 1).
+>  - Therefore, add support to set the closest rate for nm clocks (because
+>    pll-mipi's parent pll-video0 is an nm clock) and all clock types that
+>    are descendants of a64's pll-video0, i.e., nkm, mux, and div (PATCH 3
+>    et. seq.).
+>  - Link to v2: https://lore.kernel.org/all/20230611090143.132257-1-frank@oltmanns.dev/
+>
+> Changes in V2:
+>  - Move optimal parent rate calculation to dedicated function
+>  - Choose a parent rate that does not to overshoot requested rate
+>  - Add comments to ccu_nkm_find_best
+>  - Make sure that best_parent_rate stays at original parent rate in the unlikely
+>    case that all combinations overshoot.
+>
+> Link to V1:
+> https://lore.kernel.org/lkml/20230605190745.366882-1-frank@oltmanns.dev/
+>
 > ---
->  mm/filemap.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 83dda76d1fc3..16b2054eee71 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2670,6 +2670,7 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
->  	int i, error = 0;
->  	bool writably_mapped;
->  	loff_t isize, end_offset;
-> +	loff_t last_pos = ra->prev_pos;
->  
->  	if (unlikely(iocb->ki_pos >= inode->i_sb->s_maxbytes))
->  		return 0;
-> @@ -2721,8 +2722,8 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
->  		 * When a read accesses the same folio several times, only
->  		 * mark it as accessed the first time.
->  		 */
-> -		if (!pos_same_folio(iocb->ki_pos, ra->prev_pos - 1,
-> -							fbatch.folios[0]))
-> +		if (!pos_same_folio(iocb->ki_pos, last_pos - 1,
-> +				    fbatch.folios[0]))
->  			folio_mark_accessed(fbatch.folios[0]);
->  
->  		for (i = 0; i < folio_batch_count(&fbatch); i++) {
-> @@ -2749,7 +2750,7 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
->  
->  			already_read += copied;
->  			iocb->ki_pos += copied;
-> -			ra->prev_pos = iocb->ki_pos;
-> +			last_pos = iocb->ki_pos;
->  
->  			if (copied < bytes) {
->  				error = -EFAULT;
-> @@ -2763,7 +2764,7 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
->  	} while (iov_iter_count(iter) && iocb->ki_pos < isize && !error);
->  
->  	file_accessed(filp);
-> -
-> +	ra->prev_pos = last_pos;
->  	return already_read ? already_read : error;
->  }
->  EXPORT_SYMBOL_GPL(filemap_read);
-> -- 
-> 2.25.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Frank Oltmanns (11):
+>       clk: sunxi-ng: nkm: Use correct parameter name for parent HW
+>       clk: sunxi-ng: nkm: consider alternative parent rates when determining rate
+>       clk: sunxi-ng: a64: allow pll-mipi to set parent's rate
+>       clk: sunxi-ng: Add feature to find closest rate
+>       clk: sunxi-ng: Add helper function to find closest rate
+>       clk: sunxi-ng: nm: Support finding closest rate
+>       clk: sunxi-ng: nkm: Support finding closest rate
+>       clk: sunxi-ng: mux: Support finding closest rate
+>       clk: sunxi-ng: div: Support finding closest rate
+>       clk: sunxi-ng: a64: select closest rate for pll-video0
+>       clk: sunxi-ng: nkm: Prefer current parent rate
+
+Whole series applied. There were some conflicts on patch 10 I had to
+fix up. I also took the liberty of realigning some of the lines.
+Please check if things are correct:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/sunxi/linux.git/commit/?h=sunxi/clk-for-6.6&id=bf8eb12f52c49e10ca1d86564bfa096e09c51c38
+
+ChenYu
+
+>  drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 36 ++++++++++-------------
+>  drivers/clk/sunxi-ng/ccu_common.c     | 12 ++++++++
+>  drivers/clk/sunxi-ng/ccu_common.h     |  6 ++++
+>  drivers/clk/sunxi-ng/ccu_div.h        | 30 +++++++++++++++++++
+>  drivers/clk/sunxi-ng/ccu_mux.c        | 15 ++++++++--
+>  drivers/clk/sunxi-ng/ccu_mux.h        | 38 +++++++++++++++++-------
+>  drivers/clk/sunxi-ng/ccu_nkm.c        | 55 ++++++++++++++++++++++++++++++-----
+>  drivers/clk/sunxi-ng/ccu_nm.c         | 13 ++++-----
+>  drivers/clk/sunxi-ng/ccu_nm.h         | 48 ++++++++++++++++++++++++++++--
+>  9 files changed, 202 insertions(+), 51 deletions(-)
+> ---
+> base-commit: 6995e2de6891c724bfeb2db33d7b87775f913ad1
+> change-id: 20230626-pll-mipi_set_rate_parent-3363fc0d6e6f
+>
+> Best regards,
+> --
+> Frank Oltmanns <frank@oltmanns.dev>
+>
