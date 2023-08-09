@@ -2,69 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FAD774FC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 02:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08380774FDC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 02:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbjHIAYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 20:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
+        id S230491AbjHIAcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 20:32:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjHIAYB (ORCPT
+        with ESMTP id S231445AbjHIAb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 20:24:01 -0400
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541E31982;
-        Tue,  8 Aug 2023 17:24:00 -0700 (PDT)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1bbf7f7b000so3719077fac.2;
-        Tue, 08 Aug 2023 17:24:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691540639; x=1692145439;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xoQh6qmcdY0t8o1dNUoYcbjZ4nnYnJlA1xateEndBZg=;
-        b=Qecb81asdsJY1AvZ+uK7mMjtMqsvPEWlUJK1b3zIqFUvDUaVkHj2u2bRYYKRhIDWir
-         51Ms8CfqCMoDHlbmpQQb14JsFt5PlP7QH52KciC+i/XMQ/ViS9dnEBpkmlvMvRB46TIZ
-         LAfMdkb5tbO5yuS6BJT1RF80/dcgorFIJSJc+VlZcrwk0vxp1a7DZFXPA82Dcjb+1O1X
-         Hh/+/fhngsf9qUKPJbnG0TpLYLFMyV2p+kbB1NVXLeJzzDxIXr25S/yLqUQvXdadOfj9
-         OYZcfxSjrw/UB0C0peItlE3EyZrgvt9YgWvAWYJfuvrizEjKz0z6xjMZAFuOx1kWV36l
-         nvmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691540639; x=1692145439;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xoQh6qmcdY0t8o1dNUoYcbjZ4nnYnJlA1xateEndBZg=;
-        b=btEZjKLyUSLdpUnsVO0JsXs7PB049dXUeLL37rxB0LWg9pe99z1gMcBZGlwpmKL0L8
-         1BgadU/bODtiaH1NSgTEgT85IbbIJy70tNni9CPaj+iSvE073ifl+9c3wL9o96bb4QKJ
-         Wy4Ajc4aItDAKjeo1zbkrAFrX83GdcH8eLy/ceZ5G5vvIiIsb/aZ+9IX9PXzUnTO8Iht
-         bgp6H9YOzfiqWcbQ9mb08Oe8vWhDDJnyi2Nt3aN300KHg8MkdRBc4EwXhMvG8qloUo6l
-         9tlhCGnPxEybNeRX+aZS07h16eIE2F4w1Epk9KKHF75qm3sD6sm1rbc/RWQckSRtAv4r
-         sCHg==
-X-Gm-Message-State: AOJu0Ywo+AISqUfsL6/tLQ87UUgGb4D/i6SLBIKuEHeiE2BgbY1g6Tk/
-        YXxOmCiP7E0TPPz8396T8+ayeqeVJVQaHFMx4EM=
-X-Google-Smtp-Source: AGHT+IFHzRvNBWRdltO1hUGEKMzEcw73o/dnWl8keenIydsNCFbD8sFAg/G8+ePBunH1s6LQYcvjENVzgZK7bDB6O5o=
-X-Received: by 2002:a05:6870:1682:b0:1be:fd4e:e369 with SMTP id
- j2-20020a056870168200b001befd4ee369mr1307556oae.42.1691540639554; Tue, 08 Aug
- 2023 17:23:59 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a8a:129a:0:b0:4f0:1250:dd51 with HTTP; Tue, 8 Aug 2023
- 17:23:59 -0700 (PDT)
-In-Reply-To: <ZNLMpgrCOQXFQnDk@dread.disaster.area>
-References: <CAGudoHF_Y0shcU+AMRRdN5RQgs9L_HHvBH8D4K=7_0X72kYy2g@mail.gmail.com>
- <ZNLMpgrCOQXFQnDk@dread.disaster.area>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Wed, 9 Aug 2023 02:23:59 +0200
-Message-ID: <CAGudoHG0Rp2Ku1mRRQnksDZFemUBzfhwyK3LJidEFgvmUfsfsQ@mail.gmail.com>
-Subject: Re: new_inode_pseudo vs locked inode->i_state = 0
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Tue, 8 Aug 2023 20:31:59 -0400
+X-Greylist: delayed 421 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Aug 2023 17:31:53 PDT
+Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9AF1BCF;
+        Tue,  8 Aug 2023 17:31:53 -0700 (PDT)
+Received: from localhost.localdomain (unknown [124.16.141.245])
+        by APP-01 (Coremail) with SMTP id qwCowACXngbI3NJkKH5NAg--.27121S2;
+        Wed, 09 Aug 2023 08:24:41 +0800 (CST)
+From:   sunying@nj.iscas.ac.cn
+To:     masahiroy@kernel.org
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ying Sun <sunying@nj.iscas.ac.cn>,
+        Siyuan Guo <zy21df106@buaa.edu.cn>
+Subject: [PATCH] kconfig: add dependency warning print about invalid values in verbose mode
+Date:   Wed,  9 Aug 2023 08:24:36 +0800
+Message-Id: <20230809002436.18079-1-sunying@nj.iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowACXngbI3NJkKH5NAg--.27121S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jr4DJw1UWry5Ww4kCryrtFb_yoWDJr1fpa
+        yUCay7ArsrZF1ayasrKF48Cw1rGas2vr40krs3Cw4UAFy3tws7XrWxGr15tw45Cry8Aw15
+        Ca1Y9FWrCFs7GaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkI14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
+        6r4UM28EF7xvwVC2z280aVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r1j6r
+        4UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4kE6xkIj40Ew7xC0wCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUjRVbDUUUUU==
+X-Originating-IP: [124.16.141.245]
+X-CM-SenderInfo: 5vxq5xdqj60y4olvutnvoduhdfq/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,178 +55,327 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/23, Dave Chinner <david@fromorbit.com> wrote:
-> On Tue, Aug 08, 2023 at 06:05:33PM +0200, Mateusz Guzik wrote:
->> Hello,
->>
->> new_inode_pseudo is:
->>         struct inode *inode = alloc_inode(sb);
->>
->> 	if (inode) {
->> 		spin_lock(&inode->i_lock);
->> 		inode->i_state = 0;
->> 		spin_unlock(&inode->i_lock);
->> 	}
->>
->> I'm trying to understand:
->> 1. why is it zeroing i_state (as opposed to have it happen in
->> inode_init_always)
->> 2. why is zeroing taking place with i_lock held
->>
->> The inode is freshly allocated, not yet added to the hash -- I would
->> expect that nobody else can see it.
->
-> Maybe not at this point, but as soon as the function returns with
-> the new inode, it could be published in some list that can be
-> accessed concurrently and then the i_state visible on other CPUs
-> better be correct.
->
-> I'll come back to this, because the answer lies in this code:
->
->> Moreover, another consumer of alloc_inode zeroes without bothering to
->> lock -- see iget5_locked:
->> [snip]
->> 	struct inode *new = alloc_inode(sb);
->>
->> 		if (new) {
->> 			new->i_state = 0;
->> [/snip]
->
-> Yes, that one is fine because the inode has not been published yet.
-> The actual i_state serialisation needed to publish the inode happens
-> in the function called in the very next line - inode_insert5().
->
-> That does:
->
-> 	spin_lock(&inode_hash_lock);
->
-> 	.....
->         /*
->          * Return the locked inode with I_NEW set, the
->          * caller is responsible for filling in the contents
->          */
->         spin_lock(&inode->i_lock);
->         inode->i_state |= I_NEW;
->         hlist_add_head_rcu(&inode->i_hash, head);
->         spin_unlock(&inode->i_lock);
-> 	.....
->
-> 	spin_unlock(&inode_hash_lock);
->
-> The i_lock is held across the inode state initialisation and hash
-> list insert so that if anything finds the inode in the hash
-> immediately after insert, they should set an initialised value.
->
-> Don't be fooled by the inode_hash_lock here. We have
-> find_inode_rcu() which walks hash lists without holding the hash
-> lock, hence if anything needs to do a state check on the found
-> inode, they are guaranteed to see I_NEW after grabbing the i_lock....
->
-> Further, inode_insert5() adds the inode to the superblock inode
-> list, which means concurrent sb inode list walkers can also see this
-> inode whilst the inode_hash_lock is still held by inode_insert5().
-> Those inode list walkers *must* see I_NEW at this point, and they
-> are guaranteed to do so by taking i_lock before checking i_state....
->
-> IOWs, the initialisation of inode->i_state for normal inodes must be
-> done under i_lock so that lookups that occur after hash/sb list
-> insert are guaranteed to see the correct value.
->
-> If we now go back to new_inode_pseudo(), we see one of the callers
-> is new_inode(), and it does this:
->
-> struct inode *new_inode(struct super_block *sb)
-> {
->         struct inode *inode;
->
->         spin_lock_prefetch(&sb->s_inode_list_lock);
->
->         inode = new_inode_pseudo(sb);
->         if (inode)
->                 inode_sb_list_add(inode);
->         return inode;
-> }
->
-> IOWs, the inode is immediately published on the superblock inode
-> list, and so inode list walkers can see it immediately. As per
-> inode_insert5(), this requires the inode state to be fully
-> initialised and memory barriers in place such that any walker will
-> see the correct value of i_state. The simplest, safest way to do
-> this is to initialise i_state under the i_lock....
->
+From: Ying Sun <sunying@nj.iscas.ac.cn>
 
-Thanks for the detailed answer, I do think you have a valid point but
-I don't think it works with the given example. ;)
+Add warning about the configuration option's invalid value in verbose mode,
+ including error causes, mismatch dependency, old and new values,
+ to help users correct them.
 
-inode_sb_list_add is:
-        spin_lock(&inode->i_sb->s_inode_list_lock);
-        list_add(&inode->i_sb_list, &inode->i_sb->s_inodes);
-        spin_unlock(&inode->i_sb->s_inode_list_lock);
+Detailed error messages are printed only when the environment variable
+ is set like "KCONFIG_VERBOSE=1".
+By default, the current behavior is not changed.
 
-... thus i_state is published by the time it unlocks.
+Signed-off-by: Siyuan Guo <zy21df106@buaa.edu.cn>
+Signed-off-by: Ying Sun <sunying@nj.iscas.ac.cn>
+---
+ scripts/kconfig/confdata.c | 121 +++++++++++++++++++++++++++++++++++--
+ scripts/kconfig/lkc.h      |   3 +
+ scripts/kconfig/symbol.c   |  82 +++++++++++++++++++++++--
+ 3 files changed, 195 insertions(+), 11 deletions(-)
 
-According to my grep all iterations over the list hold the
-s_inode_list_lock, thus they are guaranteed to see the update, making
-the release fence in new_inode_pseudo redundant for this case.
-
-With this in mind I'm assuming the fence was there as a safety
-measure, for consumers which would maybe need it.
-
-Then the code can:
-        struct inode *inode = alloc_inode(sb);
-
-        if (inode) {
-                inode->i_state = 0;
-                /* make sure i_state update will be visible before we insert
-                 * the inode anywhere */
-                smp_wmb();
-        }
-
-Upshots:
-- replaces 2 atomics with a mere release fence, which is way cheaper
-to do everywhere and virtually free on x86-64
-- people reading the code don't wonder who on earth are we locking against
-
-All that said, if the (possibly redundant) fence is literally the only
-reason for the lock trip, I would once more propose zeroing in
-inode_init_always:
-diff --git a/fs/inode.c b/fs/inode.c
-index 8fefb69e1f84..ce9664c4efe9 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -232,6 +232,13 @@ int inode_init_always(struct super_block *sb,
-struct inode *inode)
-                return -ENOMEM;
-        this_cpu_inc(nr_inodes);
-
-+       inode->i_state = 0;
-+       /*
-+        * Make sure i_state update is visible before this inode gets inserted
-+        * anywhere.
-+        */
-+       smp_wmb();
+diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+index 992575f1e976..fa2ae6f63352 100644
+--- a/scripts/kconfig/confdata.c
++++ b/scripts/kconfig/confdata.c
+@@ -154,6 +154,7 @@ static void conf_message(const char *fmt, ...)
+ 
+ static const char *conf_filename;
+ static int conf_lineno, conf_warnings;
++const char *verbose;
+ 
+ static void conf_warning(const char *fmt, ...)
+ {
+@@ -226,7 +227,7 @@ static const char *conf_get_rustccfg_name(void)
+ static int conf_set_sym_val(struct symbol *sym, int def, int def_flags, char *p)
+ {
+ 	char *p2;
+-
++	static const char * const type[] = {"unknown", "bool", "tristate", "int", "hex", "string"};
+ 	switch (sym->type) {
+ 	case S_TRISTATE:
+ 		if (p[0] == 'm') {
+@@ -246,9 +247,14 @@ static int conf_set_sym_val(struct symbol *sym, int def, int def_flags, char *p)
+ 			sym->flags |= def_flags;
+ 			break;
+ 		}
+-		if (def != S_DEF_AUTO)
+-			conf_warning("symbol value '%s' invalid for %s",
++		if (def != S_DEF_AUTO) {
++			if (verbose)
++				conf_warning("symbol value '%s' invalid for %s\n due to its type is %s",
++				     p, sym->name, type[sym->type]);
++			else
++				conf_warning("symbol value '%s' invalid for %s",
+ 				     p, sym->name);
++		}
+ 		return 1;
+ 	case S_STRING:
+ 		/* No escaping for S_DEF_AUTO (include/config/auto.conf) */
+@@ -274,9 +280,14 @@ static int conf_set_sym_val(struct symbol *sym, int def, int def_flags, char *p)
+ 			sym->def[def].val = xstrdup(p);
+ 			sym->flags |= def_flags;
+ 		} else {
+-			if (def != S_DEF_AUTO)
+-				conf_warning("symbol value '%s' invalid for %s",
+-					     p, sym->name);
++			if (def != S_DEF_AUTO) {
++				if (verbose)
++					conf_warning("symbol value '%s' invalid for %s\n due to its type is %s",
++						p, sym->name, type[sym->type]);
++				else
++					conf_warning("symbol value '%s' invalid for %s",
++						p, sym->name);
++			}
+ 			return 1;
+ 		}
+ 		break;
+@@ -528,6 +539,7 @@ int conf_read(const char *name)
+ 	int conf_unsaved = 0;
+ 	int i;
+ 
++	verbose = getenv("KCONFIG_VERBOSE");
+ 	conf_set_changed(false);
+ 
+ 	if (conf_read_simple(name, S_DEF_USER)) {
+@@ -559,6 +571,103 @@ int conf_read(const char *name)
+ 			continue;
+ 		conf_unsaved++;
+ 		/* maybe print value in verbose mode... */
++		if (verbose) {
++			if (sym_is_choice_value(sym)) {
++				struct property *prop = sym_get_choice_prop(sym);
++				struct symbol *defsym = prop_get_symbol(prop)->curr.val;
 +
-        return 0;
++				if (defsym && defsym != sym) {
++					struct gstr gs = str_new();
++
++					str_printf(&gs,
++						"\nERROR : %s[%c => %c] value is invalid\n",
++						sym->name,
++						tristate2char[sym->def[S_DEF_USER].tri],
++						tristate2char[sym->curr.tri]);
++					str_printf(&gs,
++						" due to its not the choice default symbol\n");
++					str_printf(&gs,
++						" the default symbol is %s\n",
++						defsym->name);
++					fputs(str_get(&gs), stderr);
++				}
++			} else {
++				switch (sym->type) {
++				case S_BOOLEAN:
++				case S_TRISTATE:
++					if (sym->dir_dep.tri == no &&
++						sym->def[S_DEF_USER].tri != no) {
++						struct gstr gs = str_new();
++
++						str_printf(&gs,
++							"\nERROR: unmet direct dependencies detected for %s[%c => %c]\n",
++							sym->name,
++							tristate2char[sym->def[S_DEF_USER].tri],
++							tristate2char[sym->curr.tri]);
++						str_printf(&gs,
++							"  Depends on [%c]: ",
++							sym->dir_dep.tri == mod ? 'm' : 'n');
++						expr_gstr_print(sym->dir_dep.expr, &gs);
++						str_printf(&gs, "\n");
++						fputs(str_get(&gs), stderr);
++					} else if (sym->rev_dep.tri != no) {
++						struct gstr gs = str_new();
++
++						str_printf(&gs,
++							"\nERROR : %s[%c => %c] value is invalid\n",
++							sym->name,
++							tristate2char[sym->def[S_DEF_USER].tri],
++							tristate2char[sym->curr.tri]);
++						str_printf(&gs,
++							" due to its invisible and it is selected\n");
++						expr_gstr_print_revdep(sym->rev_dep.expr, &gs, yes,
++									"  Selected by [y]:\n");
++						expr_gstr_print_revdep(sym->rev_dep.expr, &gs, mod,
++									"  Selected by [m]:\n");
++						fputs(str_get(&gs), stderr);
++					} else {
++						sym_validate_default(sym);
++					}
++					break;
++				case S_INT:
++				case S_HEX:
++					if (sym->dir_dep.tri == no &&
++					strcmp((char *)(sym->def[S_DEF_USER].val), "") != 0) {
++						struct gstr gs = str_new();
++
++						str_printf(&gs,
++							"\nERROR: unmet direct dependencies detected for %s\n",
++							sym->name);
++						str_printf(&gs,
++							"  Depends on [%c]: ",
++							sym->dir_dep.tri == mod ? 'm' : 'n');
++						expr_gstr_print(sym->dir_dep.expr, &gs);
++						str_printf(&gs, "\n");
++						fputs(str_get(&gs), stderr);
++					} else {
++						sym_validate_default(sym);
++					}
++					break;
++				case S_STRING:
++					if (sym->dir_dep.tri == no &&
++					strcmp((char *)(sym->def[S_DEF_USER].val), "") != 0) {
++						struct gstr gs = str_new();
++
++						str_printf(&gs,
++							"\nERROR: unmet direct dependencies detected for %s\n",
++							sym->name);
++						str_printf(&gs,
++							"  Depends on [%c]: ",
++							sym->dir_dep.tri == mod ? 'm' : 'n');
++						expr_gstr_print(sym->dir_dep.expr, &gs);
++						str_printf(&gs, "\n");
++						fputs(str_get(&gs), stderr);
++					}
++				default:
++					break;
++				}
++			}
++		}
+ 	}
+ 
+ 	for_all_symbols(i, sym) {
+diff --git a/scripts/kconfig/lkc.h b/scripts/kconfig/lkc.h
+index 471a59acecec..820a47fb4968 100644
+--- a/scripts/kconfig/lkc.h
++++ b/scripts/kconfig/lkc.h
+@@ -38,6 +38,8 @@ void zconf_initscan(const char *name);
+ void zconf_nextfile(const char *name);
+ int zconf_lineno(void);
+ const char *zconf_curname(void);
++extern const char *verbose;
++static const char tristate2char[3] = {'n', 'm', 'y'};
+ 
+ /* confdata.c */
+ const char *conf_get_configname(void);
+@@ -112,6 +114,7 @@ struct property *sym_get_range_prop(struct symbol *sym);
+ const char *sym_get_string_default(struct symbol *sym);
+ struct symbol *sym_check_deps(struct symbol *sym);
+ struct symbol *prop_get_symbol(struct property *prop);
++void sym_validate_default(struct symbol *sym);
+ 
+ static inline tristate sym_get_tristate_value(struct symbol *sym)
+ {
+diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
+index 0572330bf8a7..8b11d6ea1d30 100644
+--- a/scripts/kconfig/symbol.c
++++ b/scripts/kconfig/symbol.c
+@@ -91,6 +91,53 @@ static struct property *sym_get_default_prop(struct symbol *sym)
+ 	return NULL;
  }
- EXPORT_SYMBOL(inode_init_always);
-
-This is more in the spirit of making sure everybody has published
-i_state = 0 and facilitates cleanup.
-- new_inode_pseudo is now just alloc_inode
-- confusing unlocked/unfenced i_state = 0 disappears from iget5_locked
-
-And probably some more tidyups.
-
-Now, I'm not going to flame with anyone over doing smp_wmb instead of
-the lock trip (looks like a no-brainer to me, but I got flamed for
-another one earlier today ;>).
-
-I am however going to /strongly suggest/ that a comment explaining
-what's going on is added there, if the current state is to remain.
-
-As far as I'm concerned *locking* when a mere smp_wmb would sufficne
-is heavily misleading and should be whacked if only for that reason.
-
-Cheers,
+ 
++void sym_validate_default(struct symbol *sym)
++{
++	if (sym->visible == no) {
++		struct gstr gs = str_new();
++		const char *value = sym_get_string_default(sym);
++
++		switch (sym->type) {
++		case S_BOOLEAN:
++		case S_TRISTATE:
++			if (strcmp(value, "n") != 0) {
++				str_printf(&gs,
++					"\nERROR : %s[%c => %c] value is invalid\n due to it has default value\n",
++					sym->name,
++					tristate2char[sym->def[S_DEF_USER].tri],
++					tristate2char[sym->curr.tri]);
++			} else if (sym->implied.tri != no) {
++				str_printf(&gs,
++					"\nERROR : %s[%c => %c] value is invalid\n due to its invisible and has imply value\n",
++					sym->name,
++					tristate2char[sym->def[S_DEF_USER].tri],
++					tristate2char[sym->curr.tri]);
++				str_printf(&gs,
++					" Imply : ");
++				expr_gstr_print(sym->implied.expr, &gs);
++				str_printf(&gs, "\n");
++			}
++			break;
++		case S_STRING:
++		case S_INT:
++		case S_HEX:
++			if (strcmp(value, "") != 0) {
++				str_printf(&gs,
++					"\nERROR : %s[%s => %s] value is invalid\n",
++					sym->name,
++					(char *)(sym->def[S_DEF_USER].val),
++					(char *)(sym->curr.val));
++				str_printf(&gs,
++					" due to it has default value\n");
++			}
++			break;
++		default:
++			break;
++		}
++		fputs(str_get(&gs), stderr);
++	}
++}
++
+ struct property *sym_get_range_prop(struct symbol *sym)
+ {
+ 	struct property *prop;
+@@ -600,7 +647,8 @@ bool sym_string_valid(struct symbol *sym, const char *str)
+ bool sym_string_within_range(struct symbol *sym, const char *str)
+ {
+ 	struct property *prop;
+-	long long val;
++	long long val, left, right;
++	struct gstr gs = str_new();
+ 
+ 	switch (sym->type) {
+ 	case S_STRING:
+@@ -612,8 +660,20 @@ bool sym_string_within_range(struct symbol *sym, const char *str)
+ 		if (!prop)
+ 			return true;
+ 		val = strtoll(str, NULL, 10);
+-		return val >= sym_get_range_val(prop->expr->left.sym, 10) &&
+-		       val <= sym_get_range_val(prop->expr->right.sym, 10);
++		left = sym_get_range_val(prop->expr->left.sym, 10);
++		right = sym_get_range_val(prop->expr->right.sym, 10);
++		if (val >= left && val <= right)
++			return true;
++		if (verbose) {
++			str_printf(&gs,
++				"\nERROR: unmet range detected for %s\n",
++				sym->name);
++			str_printf(&gs,
++				" symbol value is %lld, the range is (%lld %lld)\n",
++				val, left, right);
++			fputs(str_get(&gs), stderr);
++		}
++		return false;
+ 	case S_HEX:
+ 		if (!sym_string_valid(sym, str))
+ 			return false;
+@@ -621,8 +681,20 @@ bool sym_string_within_range(struct symbol *sym, const char *str)
+ 		if (!prop)
+ 			return true;
+ 		val = strtoll(str, NULL, 16);
+-		return val >= sym_get_range_val(prop->expr->left.sym, 16) &&
+-		       val <= sym_get_range_val(prop->expr->right.sym, 16);
++		left = sym_get_range_val(prop->expr->left.sym, 16);
++		right = sym_get_range_val(prop->expr->right.sym, 16);
++		if (val >= left && val <= right)
++			return true;
++		if (verbose) {
++			str_printf(&gs,
++				"\nERROR: unmet range detected for %s\n",
++				sym->name);
++			str_printf(&gs,
++				" symbol value is 0x%llx, the range is (0x%llx 0x%llx)\n",
++				val, left, right);
++			fputs(str_get(&gs), stderr);
++		}
++		return false;
+ 	case S_BOOLEAN:
+ 	case S_TRISTATE:
+ 		switch (str[0]) {
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+2.17.1
+
