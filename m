@@ -2,102 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D45C5775EEF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3058E775F04
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbjHIM2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
+        id S232346AbjHIMbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232297AbjHIM2m (ORCPT
+        with ESMTP id S229547AbjHIMbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:28:42 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0ADC1FEF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:28:41 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9bee2d320so104140401fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:28:41 -0700 (PDT)
+        Wed, 9 Aug 2023 08:31:43 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043A110F3
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:31:42 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-52256241c50so9644415a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:31:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google; t=1691584120; x=1692188920;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QsLyX7zpGoNmiJX8dl6thb9GIjDmEzzddzjEZFA1Qso=;
-        b=Cjd0U2oFb1GobPQLzDCPQXG5BeoEuRTwVIb8fkOBoRfnBfDYBRmUf79JhV9RMk4Lw4
-         kI/9xJckpRWCIMurcyuGLalgMRfbiy42XN/JU7SocIKLNQT5+9MkbhWMJJdoE2MPNIXd
-         CSuCkskSqlTf4iNfEDSApK7h/6+A0w06xcqjU=
+        d=google.com; s=20221208; t=1691584300; x=1692189100;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ovz1LQ6CtkIwOn2X9qPamiwiMkn0NFocCNlrpAkV6FE=;
+        b=z87ipBGX3qL/8LN9fCqtHDrLvXwt7S+tuWniA0tiSN+CNh6VbxxtBmQyhlh+HSLCWN
+         MokZhrhhkDyQWUhh9ddK3revJvWDVvj2sxHC4KXjeDpHTshiyAuc70hwHoBgd0D3IuBu
+         5k9b808R7uSlBLTvoexBmRyAkLz6yt2iieSuBEiwwYnarzGFdq2UbjWDrhJYDGYDKrzU
+         Ngn0OvDY/ASZZNoBb+Po1N546t3BYGJ/Kndgkbj6cNDyIWWYTuWeiikDfIujTd9k81IP
+         ioqXYMTlg8TrKl0DP1iGK/J5PrbeS+eADjISSm/JLbcsqPhfWZABOt3x9Ej67B+2ocPB
+         8qXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691584120; x=1692188920;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QsLyX7zpGoNmiJX8dl6thb9GIjDmEzzddzjEZFA1Qso=;
-        b=bodaocS/491HK9mnzB5C/uT0609F16+71HrPL5HNlaWhRh5xgA+tN/PuDSsw4jM5H4
-         GMrJNjMRsPwRj/H3NEN6rGfZnzSo2IxrlZRjnFnX1iMxhi+xKpKWHR7/oEnvLjHKTtPJ
-         IPN2w2TN5iIBme9EKtoChyKXLIxdf6/nyCzpmzCPz4+JOqffd4Ea5EL9a0luCwzeny2O
-         6BHNXs3MSAd2aN2XjU2tHlAHD9NedFLd34nYrz+bakqTXLES3g5eMX3mgivLJO9iwMbV
-         nrh1Eh446sKjcshbeXCXKsTwXN4/ywFL1JvnP2Lr1zVfyilebIjeQxQYveL/c4RlwuKZ
-         iOHw==
-X-Gm-Message-State: AOJu0YzUqH4n4QvDusfORiiMHi5Gbq/Fim60WWTVAOKvxkJeWXYnz/Lo
-        mJdBB0VjHVyhrk8Se/3uo+oQnQ==
-X-Google-Smtp-Source: AGHT+IFIoENCbS7ckSJPRqpa05I5EQB2dMmW/aNQcjOSGEfuuUz3J0Pp1IcZpn8XpabyAJjiWrtUfQ==
-X-Received: by 2002:a2e:b2d0:0:b0:2b6:e7c7:b039 with SMTP id 16-20020a2eb2d0000000b002b6e7c7b039mr1575109ljz.28.1691584119953;
-        Wed, 09 Aug 2023 05:28:39 -0700 (PDT)
-Received: from [172.21.2.62] ([87.54.42.112])
-        by smtp.gmail.com with ESMTPSA id q24-20020a2e8758000000b002b6fe751b6esm2719978ljj.124.2023.08.09.05.28.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 05:28:39 -0700 (PDT)
-Message-ID: <79572bac-dfdc-ce32-2148-6fa3bf698267@rasmusvillemoes.dk>
-Date:   Wed, 9 Aug 2023 14:28:38 +0200
+        d=1e100.net; s=20221208; t=1691584300; x=1692189100;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ovz1LQ6CtkIwOn2X9qPamiwiMkn0NFocCNlrpAkV6FE=;
+        b=gxwJq/2EYXMHXZjLJ8d/KIaoXFWALqB8iZIeyMXxyyWp0J6i71jTL5Fx/U3wDUWhkW
+         RNaVa88z4XawltuD8b9Qz5f/RMz6XLJARPslgLfee7siI5AbVV+tzeZgQYW6mrGz6NwA
+         57XRmz0My3wb3QzcU0Edj82++6hYRK8/C3Z6YF9pMTeCM9mHJ6Zz7DNU/yJ/AKKhTG44
+         I6pBxqnTQi30aOYGPW46eywOOXjG044wW9d18wtkQLZMFHnO8SWSYqTWd+4EmXZAHW9Z
+         hZjbIiSUcUI0WsCC9rhcZ1ZBVTEGKOEHKHeCzS/IOnZet+E2PSVTr3xY/HjZX9DENS3F
+         7tkA==
+X-Gm-Message-State: AOJu0YzNYRkh22ys1MtBkOmy3pwx587twXV3GlVeuctQ+J8U0wnBIqmQ
+        Lv8J1EsJ/4mHzuH90MQs59DeEAWJNjN6LDzjG5cU3w==
+X-Google-Smtp-Source: AGHT+IF/mGXH5UfrJX6nELy6/81vEx+XhPbo08yywYMlK/WQ2uPYFAWUssEQqHCxlyDePoNGc3wEnaAzdkQ+vNM8KCw=
+X-Received: by 2002:a17:906:738d:b0:99c:ac84:663b with SMTP id
+ f13-20020a170906738d00b0099cac84663bmr2069551ejl.65.1691584300324; Wed, 09
+ Aug 2023 05:31:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 0/8] rtc: isl12022: battery backup voltage and clock
- support
-Content-Language: en-US, da
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230612113059.247275-1-linux@rasmusvillemoes.dk>
- <20230615105826.411953-1-linux@rasmusvillemoes.dk>
- <55c19de0-2465-cc4a-6ec7-fd524816fd2b@prevas.dk>
- <739f81db-4ec2-fe07-a6df-5c1f42588653@rasmusvillemoes.dk>
-In-Reply-To: <739f81db-4ec2-fe07-a6df-5c1f42588653@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230809045810.1659356-1-yosryahmed@google.com> <ZNNTgZVPZipTL/UM@dhcp22.suse.cz>
+In-Reply-To: <ZNNTgZVPZipTL/UM@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 9 Aug 2023 05:31:04 -0700
+Message-ID: <CAJD7tkYhxbd2e+4HMZVKUfD4cx6oDauna3vLmttNPLCmFNtpgA@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2023 08.45, Rasmus Villemoes wrote:
-> On 28/07/2023 16.31, Rasmus Villemoes wrote:
->> On 15/06/2023 12.58, Rasmus Villemoes wrote:
->>> The current handling of the low-battery bits in the status register is
->>> wrong. The first six patches fix that and implement proper support for
->>> RTC_VL_READ.
->>>
->>> The last two patches allow describing the isl12022 as a clock
->>> provider, for now just as a fixed 32kHz clock. They are also
->>> tangentially related to the backup battery, in that when the isl12022
->>> is not used as a clock source, one can save some power consumption in
->>> battery mode by setting the FOx bits to 0.
->>
->> Ping. Any chance these could be picked up so they make it for v6.6?
-> 
-> Ping^2.
+On Wed, Aug 9, 2023 at 1:51=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Wed 09-08-23 04:58:10, Yosry Ahmed wrote:
+> > Over time, the memcg code added multiple optimizations to the stats
+> > flushing path that introduce a tradeoff between accuracy and
+> > performance. In some contexts (e.g. dirty throttling, refaults, etc), a
+> > full rstat flush of the stats in the tree can be too expensive. Such
+> > optimizations include [1]:
+> > (a) Introducing a periodic background flusher to keep the size of the
+> > update tree from growing unbounded.
+> > (b) Allowing only one thread to flush at a time, and other concurrent
+> > flushers just skip the flush. This avoids a thundering herd problem
+> > when multiple reclaim/refault threads attempt to flush the stats at
+> > once.
+> > (c) Only executing a flush if the magnitude of the stats updates exceed=
+s
+> > a certain threshold.
+> >
+> > These optimizations were necessary to make flushing feasible in
+> > performance-critical paths, and they come at the cost of some accuracy
+> > that we choose to live without. On the other hand, for flushes invoked
+> > when userspace is reading the stats, the tradeoff is less appealing
+> > This code path is not performance-critical, and the inaccuracies can
+> > affect userspace behavior. For example, skipping flushing when there is
+> > another ongoing flush is essentially a coin flip. We don't know if the
+> > ongoing flush is done with the subtree of interest or not.
+>
+> I am not convinced by this much TBH. What kind of precision do you
+> really need and how much off is what we provide?
+>
+> More expensive read of stats from userspace is quite easy to notice
+> and usually reported as a regression. So you should have a convincing
+> argument that an extra time spent is really worth it. AFAIK there are
+> many monitoring (top like) tools which simply read those files regularly
+> just to show numbers and they certainly do not need a high level of
+> precision.
 
-Ping^3.
+We used to spend this time before commit fd25a9e0e23b ("memcg: unify
+memcg stat flushing") which generalized the "skip if ongoing flush"
+for all stat flushing. As far I know, the problem was contention on
+the flushing lock which also affected critical paths like refault.
 
-Rasmus
+The problem is that the current behavior is indeterministic, if cpu A
+tries to flush stats and cpu B is already doing that, cpu A will just
+skip. At that point, the cgroup(s) that cpu A cares about may have
+been fully flushed, partially flushed (in terms of cpus), or not
+flushed at all. We have no idea. We just know that someone else is
+flushing something. IOW, in some cases the flush request will be
+completely ignored and userspace will read stale stats (up to 2s + the
+periodic flusher runtime).
 
+Some workloads need to read up-to-date stats as feedback to actions
+(e.g. after proactive reclaim, or for userspace OOM killing purposes),
+and reading such stale stats causes regressions or misbehavior by
+userspace.
+
+>
+> [...]
+> > @@ -639,17 +639,24 @@ static inline void memcg_rstat_updated(struct mem=
+_cgroup *memcg, int val)
+> >       }
+> >  }
+> >
+> > -static void do_flush_stats(void)
+> > +static void do_flush_stats(bool full)
+> >  {
+> > +     if (!atomic_read(&stats_flush_ongoing) &&
+> > +         !atomic_xchg(&stats_flush_ongoing, 1))
+> > +             goto flush;
+> > +
+> >       /*
+> > -      * We always flush the entire tree, so concurrent flushers can ju=
+st
+> > -      * skip. This avoids a thundering herd problem on the rstat globa=
+l lock
+> > -      * from memcg flushers (e.g. reclaim, refault, etc).
+> > +      * We always flush the entire tree, so concurrent flushers can ch=
+oose to
+> > +      * skip if accuracy is not critical. Otherwise, wait for the ongo=
+ing
+> > +      * flush to complete. This avoids a thundering herd problem on th=
+e rstat
+> > +      * global lock from memcg flushers (e.g. reclaim, refault, etc).
+> >        */
+> > -     if (atomic_read(&stats_flush_ongoing) ||
+> > -         atomic_xchg(&stats_flush_ongoing, 1))
+> > -             return;
+> > -
+> > +     while (full && atomic_read(&stats_flush_ongoing) =3D=3D 1) {
+> > +             if (!cond_resched())
+> > +                     cpu_relax();
+>
+> You are reinveting a mutex with spinning waiter. Why don't you simply
+> make stats_flush_ongoing a real mutex and make use try_lock for !full
+> flush and normal lock otherwise?
+
+So that was actually a spinlock at one point, when we used to skip if
+try_lock failed. We opted for an atomic because the lock was only used
+in a try_lock fashion. The problem here is that the atomic is used to
+ensure that only one thread actually attempts to flush at a time (and
+others skip/wait), to avoid a thundering herd problem on
+cgroup_rstat_lock.
+
+Here, what I am trying to do is essentially equivalent to "wait until
+the lock is available but don't grab it". If we make
+stats_flush_ongoing a mutex, I am afraid the thundering herd problem
+will be reintroduced for stats_flush_ongoing this time.
+
+I am not sure if there's a cleaner way of doing this, but I am
+certainly open for suggestions. I also don't like how the spinning
+loop looks as of now.
