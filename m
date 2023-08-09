@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC490776A52
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7864776A49
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbjHIUg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 16:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
+        id S234620AbjHIUhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 16:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234599AbjHIUgT (ORCPT
+        with ESMTP id S234597AbjHIUgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Aug 2023 16:36:19 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D142213F;
-        Wed,  9 Aug 2023 13:36:14 -0700 (PDT)
-Date:   Wed, 09 Aug 2023 20:36:12 -0000
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C8AC2683;
+        Wed,  9 Aug 2023 13:36:15 -0700 (PDT)
+Date:   Wed, 09 Aug 2023 20:36:13 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691613373;
+        s=2020; t=1691613374;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=Pri/xAfFEOv7afiT8ifOWeBxfCrRsuTPLyFOHIFshE8=;
-        b=zK/zCKnZ/SbHv16UlBU/YvKxAtMfugHWMLd+gQcJXdXrlqKRy4EmtlKzlW6VmWSpqrmeVF
-        OmOsZ7VWjGD9LUE5i5VZUStNS8RIxs2ZIerp1sAu6DbqNiROxgMVosF0Nwn2Apndaz+KPC
-        fRLzBZVBXJE2zDnHOn1HWoCJqklagK8HIFHqTvqgDcqAnJK4vmfaL+aXtv/iMZULQJNrDy
-        ChDAxu2ZM5EvlgqrvoL+BQuwupWeo0+Dl2Mi+Yp173PW3x1ll8tCGekNuzIw2BcKWXCouN
-        01VdncfasGvR5lx5miBZHIUw3TDraC51lK6iIE7no1VQBswMNzfmgO7CfN1vvA==
+        bh=SQaraEsbSixXoPnRx04X9hn4T2+ucJufNUse7jO/W+Y=;
+        b=LZmdt7FzPYPnopC6gEt3PjRGca4XrEo7YKDpx4SyVeLZ2ZBWDUshY8HhoRWZ3BL+woJZDq
+        zmtATF2IqkJPgIsZuANwrpOPbktJ6MvLiV5JeL4T1ta55nkJ/Fd1f+u6mFdF5r7uW6lufR
+        F3Cg4YDEFq2tkuMAmlf62vOWnnMnRdyYWGpA3EZquaQSlkkqwxIRZgsFqSW+FG5ATn1bTm
+        VWrxjjI5F/5uQhJvOWxLpUpCqMQlsLgpP/FL2jCNfXIUIBt2N3t79JEEKQVZU3jr5rEIjZ
+        2P+8oV+YoKhOyzxH8GI1kqPomfYHh5UT4/rgvtRs1CsYm44ZoHnih4X4PLf49Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691613373;
+        s=2020e; t=1691613374;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=Pri/xAfFEOv7afiT8ifOWeBxfCrRsuTPLyFOHIFshE8=;
-        b=XAlHzB77G9yknc40FN/DUY5wFDZiA2BqioYE4hQuUDWeJ+R8kpbnHa/MLv1Oca6dAiqrME
-        iHXhicTIv+HIibAQ==
+        bh=SQaraEsbSixXoPnRx04X9hn4T2+ucJufNUse7jO/W+Y=;
+        b=vewH+6vINzIaRQr16xr+LNA1e3zCfDlvlF+cD04mO4c+7K5zrARgOjt7rfHR49yaokU04P
+        r0O4q433T8PjKTDA==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/apic: Wrap APIC ID validation into an inline
+Subject: [tip: x86/apic] x86/apic/x2apic: Share all common IPI functions
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
@@ -48,7 +48,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Juergen Gross <jgross@suse.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169161337277.27769.12491244937778127318.tip-bot2@tip-bot2>
+Message-ID: <169161337366.27769.13093753809701907931.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -65,17 +65,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/apic branch of tip:
 
-Commit-ID:     9132d720eb8a40be5eaa539ed940beaf2bd2e421
-Gitweb:        https://git.kernel.org/tip/9132d720eb8a40be5eaa539ed940beaf2bd2e421
+Commit-ID:     96ae35c75bdd8a327c686cf39030d8ed7f82f558
+Gitweb:        https://git.kernel.org/tip/96ae35c75bdd8a327c686cf39030d8ed7f82f558
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 08 Aug 2023 15:04:09 -07:00
+AuthorDate:    Tue, 08 Aug 2023 15:04:07 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Wed, 09 Aug 2023 11:58:30 -07:00
+CommitterDate: Wed, 09 Aug 2023 11:58:29 -07:00
 
-x86/apic: Wrap APIC ID validation into an inline
+x86/apic/x2apic: Share all common IPI functions
 
-Prepare for removing the callback and making this as simple comparison to
-an upper limit, which is the obvious solution to do for limit checks...
+Yet more copy and pasta gone.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
@@ -84,84 +83,169 @@ Tested-by: Michael Kelley <mikelley@microsoft.com>
 Tested-by: Sohil Mehta <sohil.mehta@intel.com>
 Tested-by: Juergen Gross <jgross@suse.com> # Xen PV (dom0 and unpriv. guest)
 ---
- arch/x86/include/asm/apic.h   | 5 +++++
- arch/x86/kernel/acpi/boot.c   | 2 +-
- arch/x86/kernel/apic/vector.c | 2 +-
- arch/x86/kernel/smpboot.c     | 5 ++---
- arch/x86/mm/srat.c            | 5 ++---
- 5 files changed, 11 insertions(+), 8 deletions(-)
+ arch/x86/kernel/apic/local.h          |  4 +-
+ arch/x86/kernel/apic/x2apic_cluster.c | 10 +------
+ arch/x86/kernel/apic/x2apic_phys.c    | 44 +++++++++++++-------------
+ arch/x86/kernel/apic/x2apic_uv_x.c    | 14 +-------
+ 4 files changed, 28 insertions(+), 44 deletions(-)
 
-diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-index 49b6c7e..5a01d51 100644
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -372,6 +372,11 @@ static inline u32 safe_apic_wait_icr_idle(void)
- 	return apic->safe_wait_icr_idle ? apic->safe_wait_icr_idle() : 0;
+diff --git a/arch/x86/kernel/apic/local.h b/arch/x86/kernel/apic/local.h
+index 98cfe78..a250675 100644
+--- a/arch/x86/kernel/apic/local.h
++++ b/arch/x86/kernel/apic/local.h
+@@ -19,8 +19,10 @@ void __x2apic_send_IPI_dest(unsigned int apicid, int vector, unsigned int dest);
+ unsigned int x2apic_get_apic_id(unsigned long id);
+ u32 x2apic_set_apic_id(unsigned int id);
+ int x2apic_phys_pkg_id(int initial_apicid, int index_msb);
++
++void x2apic_send_IPI_all(int vector);
++void x2apic_send_IPI_allbutself(int vector);
+ void x2apic_send_IPI_self(int vector);
+-void __x2apic_send_IPI_shorthand(int vector, u32 which);
+ 
+ /* IPI */
+ 
+diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
+index 355da47..afd2676 100644
+--- a/arch/x86/kernel/apic/x2apic_cluster.c
++++ b/arch/x86/kernel/apic/x2apic_cluster.c
+@@ -83,16 +83,6 @@ x2apic_send_IPI_mask_allbutself(const struct cpumask *mask, int vector)
+ 	__x2apic_send_IPI_mask(mask, vector, APIC_DEST_ALLBUT);
  }
  
-+static inline bool apic_id_valid(u32 apic_id)
+-static void x2apic_send_IPI_allbutself(int vector)
+-{
+-	__x2apic_send_IPI_shorthand(vector, APIC_DEST_ALLBUT);
+-}
+-
+-static void x2apic_send_IPI_all(int vector)
+-{
+-	__x2apic_send_IPI_shorthand(vector, APIC_DEST_ALLINC);
+-}
+-
+ static u32 x2apic_calc_apicid(unsigned int cpu)
+ {
+ 	return x86_cpu_to_logical_apicid[cpu];
+diff --git a/arch/x86/kernel/apic/x2apic_phys.c b/arch/x86/kernel/apic/x2apic_phys.c
+index 2c9a884..c40d19b 100644
+--- a/arch/x86/kernel/apic/x2apic_phys.c
++++ b/arch/x86/kernel/apic/x2apic_phys.c
+@@ -81,16 +81,36 @@ static void
+ 	__x2apic_send_IPI_mask(mask, vector, APIC_DEST_ALLBUT);
+ }
+ 
+-static void x2apic_send_IPI_allbutself(int vector)
++static void __x2apic_send_IPI_shorthand(int vector, u32 which)
 +{
-+	return apic->apic_id_valid(apic_id);
++	unsigned long cfg = __prepare_ICR(which, vector, 0);
++
++	/* x2apic MSRs are special and need a special fence: */
++	weak_wrmsr_fence();
++	native_x2apic_icr_write(cfg, 0);
 +}
 +
- extern void __init apic_set_eoi_write(void (*eoi_write)(u32 reg, u32 v));
++void x2apic_send_IPI_allbutself(int vector)
+ {
+ 	__x2apic_send_IPI_shorthand(vector, APIC_DEST_ALLBUT);
+ }
  
- #else /* CONFIG_X86_LOCAL_APIC */
-diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-index cca1a07..7f5b257 100644
---- a/arch/x86/kernel/acpi/boot.c
-+++ b/arch/x86/kernel/acpi/boot.c
-@@ -235,7 +235,7 @@ acpi_parse_x2apic(union acpi_subtable_headers *header, const unsigned long end)
- 	 * to not preallocating memory for all NR_CPUS
- 	 * when we use CPU hotplug.
- 	 */
--	if (!apic->apic_id_valid(apic_id)) {
-+	if (!apic_id_valid(apic_id)) {
- 		if (enabled)
- 			pr_warn("x2apic entry ignored\n");
- 		return 0;
-diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
-index 71feae7..2ee3f5a 100644
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -691,7 +691,7 @@ static int x86_vector_select(struct irq_domain *d, struct irq_fwspec *fwspec,
- 	 * if IRQ remapping is enabled. APIC IDs above 15 bits are
- 	 * only permitted if IRQ remapping is enabled, so check that.
- 	 */
--	if (apic->apic_id_valid(32768))
-+	if (apic_id_valid(32768))
- 		return 0;
+-static void x2apic_send_IPI_all(int vector)
++void x2apic_send_IPI_all(int vector)
+ {
+ 	__x2apic_send_IPI_shorthand(vector, APIC_DEST_ALLINC);
+ }
  
- 	return x86_fwspec_is_ioapic(fwspec) || x86_fwspec_is_hpet(fwspec);
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index df1c5f0..7349974 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1064,9 +1064,8 @@ int native_kick_ap(unsigned int cpu, struct task_struct *tidle)
++void x2apic_send_IPI_self(int vector)
++{
++	apic_write(APIC_SELF_IPI, vector);
++}
++
++void __x2apic_send_IPI_dest(unsigned int apicid, int vector, unsigned int dest)
++{
++	unsigned long cfg = __prepare_ICR(0, vector, dest);
++	native_x2apic_icr_write(cfg, apicid);
++}
++
+ static int x2apic_phys_probe(void)
+ {
+ 	if (!x2apic_mode)
+@@ -111,21 +131,6 @@ int x2apic_apic_id_valid(u32 apicid)
+ 	return 1;
+ }
  
- 	pr_debug("++++++++++++++++++++=_---CPU UP  %u\n", cpu);
+-void __x2apic_send_IPI_dest(unsigned int apicid, int vector, unsigned int dest)
+-{
+-	unsigned long cfg = __prepare_ICR(0, vector, dest);
+-	native_x2apic_icr_write(cfg, apicid);
+-}
+-
+-void __x2apic_send_IPI_shorthand(int vector, u32 which)
+-{
+-	unsigned long cfg = __prepare_ICR(which, vector, 0);
+-
+-	/* x2apic MSRs are special and need a special fence: */
+-	weak_wrmsr_fence();
+-	native_x2apic_icr_write(cfg, 0);
+-}
+-
+ unsigned int x2apic_get_apic_id(unsigned long id)
+ {
+ 	return id;
+@@ -141,11 +146,6 @@ int x2apic_phys_pkg_id(int initial_apicid, int index_msb)
+ 	return initial_apicid >> index_msb;
+ }
  
--	if (apicid == BAD_APICID ||
--	    !physid_isset(apicid, phys_cpu_present_map) ||
--	    !apic->apic_id_valid(apicid)) {
-+	if (apicid == BAD_APICID || !physid_isset(apicid, phys_cpu_present_map) ||
-+	    !apic_id_valid(apicid)) {
- 		pr_err("%s: bad cpu %d\n", __func__, cpu);
- 		return -EINVAL;
- 	}
-diff --git a/arch/x86/mm/srat.c b/arch/x86/mm/srat.c
-index dac07e4..9c52a95 100644
---- a/arch/x86/mm/srat.c
-+++ b/arch/x86/mm/srat.c
-@@ -40,9 +40,8 @@ acpi_numa_x2apic_affinity_init(struct acpi_srat_x2apic_cpu_affinity *pa)
- 		return;
- 	pxm = pa->proximity_domain;
- 	apic_id = pa->apic_id;
--	if (!apic->apic_id_valid(apic_id)) {
--		printk(KERN_INFO "SRAT: PXM %u -> X2APIC 0x%04x ignored\n",
--			 pxm, apic_id);
-+	if (!apic_id_valid(apic_id)) {
-+		pr_info("SRAT: PXM %u -> X2APIC 0x%04x ignored\n", pxm, apic_id);
- 		return;
- 	}
- 	node = acpi_map_pxm_to_node(pxm);
+-void x2apic_send_IPI_self(int vector)
+-{
+-	apic_write(APIC_SELF_IPI, vector);
+-}
+-
+ static struct apic apic_x2apic_phys __ro_after_init = {
+ 
+ 	.name				= "physical x2apic",
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index f0580a6..a8ed237 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -25,6 +25,8 @@
+ #include <asm/uv/uv.h>
+ #include <asm/apic.h>
+ 
++#include "local.h"
++
+ static enum uv_system_type	uv_system_type;
+ static int			uv_hubbed_system;
+ static int			uv_hubless_system;
+@@ -783,11 +785,6 @@ static int uv_apic_id_valid(u32 apicid)
+ 	return 1;
+ }
+ 
+-static unsigned int x2apic_get_apic_id(unsigned long id)
+-{
+-	return id;
+-}
+-
+ static u32 set_apic_id(unsigned int id)
+ {
+ 	return id;
+@@ -803,11 +800,6 @@ static int uv_phys_pkg_id(int initial_apicid, int index_msb)
+ 	return uv_read_apic_id() >> index_msb;
+ }
+ 
+-static void uv_send_IPI_self(int vector)
+-{
+-	apic_write(APIC_SELF_IPI, vector);
+-}
+-
+ static int uv_probe(void)
+ {
+ 	return apic == &apic_x2apic_uv_x;
+@@ -840,7 +832,7 @@ static struct apic apic_x2apic_uv_x __ro_after_init = {
+ 	.send_IPI_mask_allbutself	= uv_send_IPI_mask_allbutself,
+ 	.send_IPI_allbutself		= uv_send_IPI_allbutself,
+ 	.send_IPI_all			= uv_send_IPI_all,
+-	.send_IPI_self			= uv_send_IPI_self,
++	.send_IPI_self			= x2apic_send_IPI_self,
+ 
+ 	.wakeup_secondary_cpu		= uv_wakeup_secondary,
+ 
