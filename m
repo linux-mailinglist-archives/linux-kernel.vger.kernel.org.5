@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FCC776C95
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 01:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D40776C97
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 01:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbjHIXHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 19:07:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42590 "EHLO
+        id S232905AbjHIXHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 19:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjHIXHU (ORCPT
+        with ESMTP id S229803AbjHIXHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 19:07:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23992D1;
-        Wed,  9 Aug 2023 16:07:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A5A6B64C11;
-        Wed,  9 Aug 2023 23:07:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06029C433C7;
-        Wed,  9 Aug 2023 23:07:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691622439;
-        bh=+dEkcrkOf/6DcgjLocwePkEkWflhZSGJZZSQWzBYHGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tSILKFd8wS38f4oavtvjQ501JfhIpp5IY8YiqwpIe3vNWWZ08fgrD3X4Xfci6uwtr
-         kMbEfKDegKeeSmHH6Yvfv/CDRFe7fjTZ52gWWxMoCUw5JbXEr2f0aTuKOZRgQj18Bt
-         ZHjAVbcPoXk5wIDMwn3qq4PTXaBS2kkH+5IOlSt6dlrOmcuCKUZ+guEGkg50b3y9rx
-         mEG7UOX56dGTRkST1iQaCam1DJGE/6LH5evYbSRi7XvaRHk6UL2rnjO8D5wC9S2vmn
-         jo/SI1ihD5LMR50r6zClX0VBmWaOJlhlhZZorMWl9uozgeMLUjiEzd/zKvHG/XoFkn
-         RrabOl7AWSTcQ==
-Date:   Thu, 10 Aug 2023 00:07:13 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        paul.walmsley@sifive.com, palmer@rivosinc.com,
-        aou@eecs.berkeley.edu, anup@brainfault.org,
-        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org,
-        alexghiti@rivosinc.com
-Subject: Re: [PATCH v9 0/4] RISC-V: mm: Make SV48 the default address space
-Message-ID: <20230810-endanger-motive-83096266ab26@spud>
-References: <20230809015110.3290774-1-charlie@rivosinc.com>
- <20230809-bobbing-unleaded-c3d5e1c57d96@wendy>
- <ZNQXC+UQ+a0s69Bs@ghost>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xYlUSbAm7YzipPhu"
-Content-Disposition: inline
-In-Reply-To: <ZNQXC+UQ+a0s69Bs@ghost>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 9 Aug 2023 19:07:43 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84324E72
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 16:07:42 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40849e69eb5so1627301cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 16:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1691622461; x=1692227261;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ftckZL31GeKECcX0U6jMawLvlmm2ONkMUEDYz+ycfxA=;
+        b=Cwnb7SxfXEHNI8OHrEMZHuifuhEFHRSr+NFN9uS6HJda3ZvcH6QSP4Ri3ytH91wych
+         X0sU/uVjx46iWmdlqX9zOkrLQc02UpLw15UZdKMnMq06V/ASDu8eFCoYLe8dndKHsLWm
+         AnxI6svOOnfeDaK3fCYjFygbBf+caGhTzepbg905VPZJuBYLb/MCbaHOfbgIOd8QJK7p
+         qsqPYHNnwYMM67gOYxg+Vp6uCP00BqSdnEnRhURJv45n0/qHHZ/oadzcko4nlT0AErZ8
+         eUzwsfyWxOk2eQ+Ipyvm+A7WNBwhuWt7aiWvW4Ze6InoG7GKXKdiHql74mtH96fdQn+R
+         4rLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691622461; x=1692227261;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ftckZL31GeKECcX0U6jMawLvlmm2ONkMUEDYz+ycfxA=;
+        b=fMIjY20ezwdb93KJQ8VX9WqWTcRdCXBiioG35qJmPIVyyGjHIPS50qgFaYO+qLDDDv
+         4lBXQgm4sn1AUeZd769SSHEuSXcTY3tailbdeaqAKxT+PHZfF1DzWbZrRF7GtONZIjx2
+         JXEVNOpJPPY+0Bwr3d4Nq2vTgXXWsdoicLLs9HDW3J5jBiN/RcM88KKzxj9iEtJu+kJH
+         4qgWnwcF0uyrC65b7avhF4XSdAYtopEZ0cRQPDRyBRxjbsVfMNxK/Sd9tl1mTc+22+d7
+         +g1wDFCDxMaA1BjEzS9nr80S5PMs3LHOtSKf63SUuoxJOCt+oKag/P9s/rF4nIUw9uKU
+         OxnA==
+X-Gm-Message-State: AOJu0YxtYs7up29YneC+Mk4gMYZL6PQCb14taNANg0tN9caKhiZZ+VU4
+        ZYu50rub5Q+eNpSY6mNqeNXJ
+X-Google-Smtp-Source: AGHT+IFQGQI0zvmK54Wk9FNpHspX8SYcUm9mLvtc9S9BqAL0j2OhVljJ1pF0HGZckJweLqa9r5d4Fw==
+X-Received: by 2002:ac8:5b0d:0:b0:3f9:a6ad:e734 with SMTP id m13-20020ac85b0d000000b003f9a6ade734mr1127980qtw.3.1691622461689;
+        Wed, 09 Aug 2023 16:07:41 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id jj6-20020a05622a740600b0040c72cae9f9sm64964qtb.93.2023.08.09.16.07.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 16:07:41 -0700 (PDT)
+Date:   Wed, 09 Aug 2023 19:07:40 -0400
+Message-ID: <685c8157bd45fa7dbdadd8583d882489.paul@paul-moore.com>
+From:   Paul Moore <paul@paul-moore.com>
+To:     =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
+        selinux@vger.kernel.org
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/7] selinux: avoid implicit conversions in avtab code
+References: <20230807171143.208481-7-cgzones@googlemail.com>
+In-Reply-To: <20230807171143.208481-7-cgzones@googlemail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PP_MIME_FAKE_ASCII_TEXT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Aug  7, 2023 =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com> wrote:
+> 
+> Return u32 from avtab_hash() instead of int, since the hashing is done
+> on u32 and the result is used as an index on the hash array.
+> 
+> Use the type of the limit in for loops.
+> 
+> Avoid signed to unsigned conversion of multiplication result in
+> avtab_hash_eval() and perform multiplication in destination type.
+> 
+> Use unsigned loop iterator for index operations, to avoid sign
+> extension.
+> 
+> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+> ---
+> v3:
+>   - use fixed sized counters in avtab_hash_eval()
+>   - perform multiplication in avtab_hash_eval() in destination type
+> v2: avoid declarations in init-clauses of for loops
+> ---
+>  security/selinux/ss/avtab.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
 
---xYlUSbAm7YzipPhu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Merged into selinux/next, thanks.
 
-On Wed, Aug 09, 2023 at 03:45:31PM -0700, Charlie Jenkins wrote:
-> On Wed, Aug 09, 2023 at 08:42:58AM +0100, Conor Dooley wrote:
-> > On Tue, Aug 08, 2023 at 06:51:06PM -0700, Charlie Jenkins wrote:
-> > > Make sv48 the default address space for mmap as some applications
-> > > currently depend on this assumption. Users can now select a
-> > > desired address space using a non-zero hint address to mmap. Previous=
-ly,
-> > > requesting the default address space from mmap by passing zero as the=
- hint
-> > > address would result in using the largest address space possible. Some
-> > > applications depend on empty bits in the virtual address space, like =
-Go and
-> > > Java, so this patch provides more flexibility for application develop=
-ers.
-> >=20
-> > This still does not build:
-> > ../fs/binfmt_flat.c:900:30: error: call to undeclared function 'is_comp=
-at_task'; ISO C99 and later do not support implicit function declarations [=
--Wimplicit-function-declaration]
-> >=20
-> > Reproduceable with allmodconfig.
-> >=20
-> There is some weird interaction with compat.h. Moving the definitions
-> in pgtable.h into the #ifndef __ASSEMBLY__ guarded section resolves=20
-> the compile error. I will send out another version with this change.
-
-Just be sure to run an allmodconfig build this time before doing so ;)
-
---xYlUSbAm7YzipPhu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNQcIQAKCRB4tDGHoIJi
-0gh4AP0ZHirwBgSAjTZzsYgQWx0puWLpButSxiuoRHlyGjJHRwD8C6jANtDOeMif
-IiUgQCa5S8zKtEanNEt/wf4f6auvfgY=
-=E3pw
------END PGP SIGNATURE-----
-
---xYlUSbAm7YzipPhu--
+--
+paul-moore.com
