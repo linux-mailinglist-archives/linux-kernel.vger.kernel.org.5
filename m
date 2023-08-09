@@ -2,114 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B59F2776605
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADE577660A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232321AbjHIRDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 13:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
+        id S231611AbjHIREj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 13:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232950AbjHIRDo (ORCPT
+        with ESMTP id S229545AbjHIREi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 13:03:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B09A2689
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 10:02:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691600556;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iBsxuYSh5nCvyR3EDZMX/GoLNC8vGSJmNwZKjotP104=;
-        b=apVNHLRRg067vqaXiq9LGyB490ikLKiPbJSZjpuVU/XRKSZafBCeRC54ZWGIN0nlh9+5J3
-        XA/eWJcoV4U4r9ISpDIMICnjWrubj/mbwAre4FvbIfpC/aS/5d8e33rxi6P4iDjKbM4Hmy
-        K/hq3xYSqN4yCgrH0diJ8E0v7lmYQfA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-434-LrzU9ZULN0CQB5CyWfpzlQ-1; Wed, 09 Aug 2023 13:02:35 -0400
-X-MC-Unique: LrzU9ZULN0CQB5CyWfpzlQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fe1bef4223so43271325e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 10:02:34 -0700 (PDT)
+        Wed, 9 Aug 2023 13:04:38 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD52E1FEF;
+        Wed,  9 Aug 2023 10:04:37 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-40fee14093dso38662321cf.1;
+        Wed, 09 Aug 2023 10:04:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691600677; x=1692205477;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=n3UWBOsGLjI41oeY0NYoiaxrTVRQ6EjTLgyJWihJ3T8=;
+        b=mW/SxvXyACkMxyAJE2RTpm/hGd8MnuayDfhD2QjX6HHFx+RqU7oaIFZaUe9W+DBR+y
+         VGskiRsO+tzcEeILVlVgRM58uIDNE2NXmAIzmT/4tM0djVEBTYdlklkazc7ogfuSTFDF
+         NCslOinalTDH464Oxr4DM2skba8I5fpqqZIaeBQ4B27vcy02PS3p2Qp8kn4qTM19tTcx
+         kPYNt7T8apBwjvXnwbxov2IoO/7kKjc05yHpn6e1nQgCKFus2L/Sf/iCdsWOkd2e2feK
+         tboSPkK4TDKb6qRgOd6Fpn7hVBmuU25K0/Sg22U3nI7UriIiIoiS2PNrMBH3xJfLDA2Z
+         /xBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691600554; x=1692205354;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iBsxuYSh5nCvyR3EDZMX/GoLNC8vGSJmNwZKjotP104=;
-        b=H9ppIG7ngVwIWuDPKBoQ4Xn1rTwfX0JnKgqgCAfoWZ8tonXR5QBNzBRvOpJnCbXZwB
-         3RKnwh3JlIQlBavcMjMxfGajlcK0q42crXcko+48fpA3vrb1DtrtBZhJNtfmAE/wDFie
-         YGEzwFsdFXRh5/Io9Fys2mkGdS4bxG3inoEI185rZEb4m6f0wvngKEM+3+Hlot0pqXEU
-         pg6T+DdUArGrUHfVgSR7j5FNWhQLdvVBuOMqieHUCu7oFR6xeK81AQnp6DJqcwnLsZ0B
-         UYXArvEryRsVwrFaiyvMBXzV4zlxgio97PsxoLOdI9opod1oAck7dtqljTtu5lHn5Nr0
-         9u6Q==
-X-Gm-Message-State: AOJu0YwS5pJuUmGV96KT8W6xTtj6KUBi347U9Yzhf9qymLHC0vgucTWe
-        m0wNNMu3eplIHuKL6mJt3YLTIqYRgTJQGBKwR0xRsyHy4cyMVHSWwgGzPoOV2vOs9wEwpgWGOjw
-        MXmXgKVxzfVlj2MhzXnmt58sZ
-X-Received: by 2002:a05:600c:204b:b0:3fe:16f4:d865 with SMTP id p11-20020a05600c204b00b003fe16f4d865mr2542946wmg.23.1691600554087;
-        Wed, 09 Aug 2023 10:02:34 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEIgHp10Cy37KFuMxkg6Q8lraqrygcVUIRlfj8D2iI402kzJUIV27FmCS9jAnnaF/QZEmDB/Q==
-X-Received: by 2002:a05:600c:204b:b0:3fe:16f4:d865 with SMTP id p11-20020a05600c204b00b003fe16f4d865mr2542931wmg.23.1691600553761;
-        Wed, 09 Aug 2023 10:02:33 -0700 (PDT)
-Received: from vschneid.remote.csb ([93.186.150.163])
-        by smtp.gmail.com with ESMTPSA id f24-20020a7bcd18000000b003fba6709c68sm2494886wmj.47.2023.08.09.10.02.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 10:02:33 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Cc:     Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] sched/rt: Don't try push tasks if there are none.
-In-Reply-To: <20230801152648._y603AS_@linutronix.de>
-References: <20230801152648._y603AS_@linutronix.de>
-Date:   Wed, 09 Aug 2023 18:02:32 +0100
-Message-ID: <xhsmhv8dob13r.mognet@vschneid.remote.csb>
+        d=1e100.net; s=20221208; t=1691600677; x=1692205477;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n3UWBOsGLjI41oeY0NYoiaxrTVRQ6EjTLgyJWihJ3T8=;
+        b=LJ5oeeQQgiH3hNZo35np7aiKI9moldnbC5CmrOHf6tw/vC8lLmyZe0eLkr021sBJur
+         rvAMCj6/EP5BupLMDQk23BfnPro3nJsNDgyoOyUfpwXz4h/jSouRXyZK/xLiIY+RSMiu
+         4gTELMFzwv42kNJeyhsvkbwvbxLR4btbO8hcd7qhMsJNsc7S/sFeU9XyLGqY/QhPCzEg
+         nl5fnZZyhe2MvjhP+/Fxuczi9xTrZqIH9lNGv26ppRxfL46vdt7qOZur7s9gN2gcZitj
+         rQModvA5kyGabSPc4RnImJ+n6pi9+mFLnhVIhXu0OEghAVnSRl8BYY1Sp8EpMa1Xycpj
+         tHNg==
+X-Gm-Message-State: AOJu0YwhNypoX1AhBA8W3OkXuktPBL/WpvJ4A6sAm4Kv5azs+lgFjFjS
+        6U8efteDKaMmeX/J1GB7eZwS4eWlHrxTtg==
+X-Google-Smtp-Source: AGHT+IGAeXb4ZgkK7l+R6nu4sgacHQYZZae+nIrQPIs23AiK8H4wMKvqbe8cxUkP0BHB0GV2U1hZ3g==
+X-Received: by 2002:a05:622a:d2:b0:403:ecfe:2452 with SMTP id p18-20020a05622a00d200b00403ecfe2452mr3765299qtw.54.1691600676663;
+        Wed, 09 Aug 2023 10:04:36 -0700 (PDT)
+Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
+        by smtp.gmail.com with ESMTPSA id c29-20020ac86e9d000000b003ef2db16e72sm4164552qtv.94.2023.08.09.10.04.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 10:04:35 -0700 (PDT)
+Message-ID: <6b738510-bda4-1517-20aa-135566bb98be@gmail.com>
+Date:   Wed, 9 Aug 2023 10:04:31 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] net: phy: Don't disable irqs on shutdown if WoL is
+ enabled
+Content-Language: en-US
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        =?UTF-8?B?VXdlIEtsZWluZS1L4pScw4JuaWc=?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ioana Ciornei <ciorneiioana@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andre Edich <andre.edich@microchip.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Divya Koppera <Divya.Koppera@microchip.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Mathias Kresin <dev@kresin.me>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Michael Walle <michael@walle.cc>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Nisar Sayed <Nisar.Sayed@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Willy Liu <willy.liu@realtek.com>,
+        Yuiko Oshino <yuiko.oshino@microchip.com>
+References: <20230804071757.383971-1-u.kleine-koenig@pengutronix.de>
+ <20230808145325.343c5098@kernel.org>
+ <1e438a02-6964-ce65-5584-e8ea57a694bb@gmail.com>
+ <ZNLIOEBXNgPOnFSf@shell.armlinux.org.uk>
+ <20230809142155.4dtmnmmecaycbtum@LXL00007.wbi.nxp.com>
+ <ZNOivVJ+G/sRiwai@shell.armlinux.org.uk>
+ <20230809154418.hjkf43ndwfzretiy@LXL00007.wbi.nxp.com>
+ <ZNO4RwYzZYUTu1uk@shell.armlinux.org.uk>
+ <2f717c52-0ae5-4702-ab34-7ce0bffe8c86@lunn.ch>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <2f717c52-0ae5-4702-ab34-7ce0bffe8c86@lunn.ch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/08/23 17:26, Sebastian Andrzej Siewior wrote:
-> I have a RT task X at a high priority and cyclictest on each CPU with
-> lower priority than X's. If X is active and each CPU wakes their own
-> cylictest thread then it ends in a longer rto_push storm.
-> A random CPU determines via balance_rt() that the CPU on which X is
-> running needs to push tasks. X has the highest priority, cyclictest is
-> next in line so there is nothing that can be done since the task with
-> the higher priority is not touched.
->
-> tell_cpu_to_push() increments rto_loop_next and schedules
-> rto_push_irq_work_func() on X's CPU. The other CPUs also increment the
-> loop counter and do the same. Once rto_push_irq_work_func() is active it
-> does nothing because it has _no_ pushable tasks on its runqueue. Then
-> checks rto_next_cpu() and decides to queue irq_work on the local CPU
-> because another CPU requested a push by incrementing the counter.
->
 
-For a CPU to be in the rto_mask, it needs:
 
-  rt_rq->rt_nr_migratory && rt_rq->rt_nr_total > 1
+On 8/9/2023 9:21 AM, Andrew Lunn wrote:
+>> Thinking about this, I wonder whether we could solve your issue by
+>> disabling interrupts when the PHY is probed, rather than disabling
+>> them on shutdown - something like this? (not build tested)
+>>
+>> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+>> index 3e9909b30938..4d1a37487923 100644
+>> --- a/drivers/net/phy/phy_device.c
+>> +++ b/drivers/net/phy/phy_device.c
+>> @@ -3216,6 +3216,8 @@ static int phy_probe(struct device *dev)
+>>   			goto out;
+>>   	}
+>>   
+>> +        phy_disable_interrupts(phydev);
+>> +
+>>   	/* Start out supporting everything. Eventually,
+>>   	 * a controller will attach, and may modify one
+>>   	 * or both of these values
+> 
+> At some point, the interrupt is going to be enabled again. And then
+> the WoL interrupt will fire. I think some PHY drivers actually need to
+> see that WoL interrupt. e.g. the marvell driver has this comment:
+> 
+> static int m88e1318_set_wol(struct phy_device *phydev,
+>                              struct ethtool_wolinfo *wol)
+> {
+> ....
+>                  /* If WOL event happened once, the LED[2] interrupt pin
+>                   * will not be cleared unless we reading the interrupt status
+>                   * register. If interrupts are in use, the normal interrupt
+>                   * handling will clear the WOL event. Clear the WOL event
+>                   * before enabling it if !phy_interrupt_is_valid()
+>                   */
+> 
+> So it seems like just probing the marvell PHY is not enough to clear
+> the WoL interrupt.
+> 
+> Can we be sure that the other PHY has reached a state it can handle
+> and clear an interrupt when we come to enable the interrupt? I think
+> not, especially in cases like NFS root, where the interface will be
+> put into use as soon as it exists, maybe before the other interface
+> has probed.
 
-But if that CPU has no pushable tasks, then that means only the current
-task has p->nr_cpus_allowed > 1.
-
-Should we change it so a CPU is only in the rto_mask iff it has pushable
-tasks? AFAICT that should not break the case where we push the current task
-away due to migration_disabled, as that still relies on the
-migration_disabled task to be in the pushable list.
-
+Does it really make sense to have the PHY be interrupt driven for this 
+specific board configuration if this causes so much hassle?
+-- 
+Florian
