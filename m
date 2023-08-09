@@ -2,68 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F75775EC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDF0775ECE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbjHIMVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36846 "EHLO
+        id S232258AbjHIMWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbjHIMV3 (ORCPT
+        with ESMTP id S232248AbjHIMV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:21:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6F31BF7
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:21:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1141363814
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 12:21:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23921C433C8;
-        Wed,  9 Aug 2023 12:21:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691583688;
-        bh=lxZkcW9VfEj3r2MbCwShiHqYNarVQxG41BuXDQ8GgCU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nz30+GzhOTK9fL0ZJ4cTrBOZFLpZ3sdqUgow83Xco/6qcAjpScI44oujP/EGDCoOK
-         XmpeKrDlZl9R9qbM4g+JiMlU4HuoWQ8mAj007vCUnbmbLznXwt6xJgqlSiqyzh7f9g
-         VZD0jKqzQwv+NRSVcmaTbh1CdgVFCcONJiiTS8dM=
-Date:   Wed, 9 Aug 2023 14:21:25 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     philipp.g.hortmann@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8192e: prefer strscpy over strncpy
-Message-ID: <2023080952-maroon-waviness-9621@gregkh>
-References: <20230805075114.15186-1-straube.linux@gmail.com>
+        Wed, 9 Aug 2023 08:21:57 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8811FD4
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:21:55 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52307552b03so9235111a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20221208.gappssmtp.com; s=20221208; t=1691583714; x=1692188514;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gse4lQ89R/swNYJYWFRKmfEvRYWCgDAQeQk+i+FC3Qc=;
+        b=z4Z49MED7B2iO1P22Sflcd12HqFoBF5yfCPEmSnPuw92T8YnUDH2KmdmqK/zmm3Hsv
+         Y1A4Myz/vjPMCMyAiAMJtrC215szsuavogK4ztLxqkGSQO7aPAZzUkD1Ozkyv7H3dSaL
+         qsE22vwvMjFkqhjUQQdHhf2t+Y2yF2VZL5Bid1o6X2mZ0zwKa1F0dMm02EOtwX7YI8oZ
+         kQr4IP0wXNHwqQREssTv7kAUZWMAwp8PYn9E03Y7mqOyy+xa2JAZIQ2g56zk0jeEXZhW
+         kRD0s2bF7FjY+mFqcKXFd8fyuF9dqKo3ka5wJ+o55aO6bmVU6NblI+YE2iiYmI3rXl30
+         +XNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691583714; x=1692188514;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gse4lQ89R/swNYJYWFRKmfEvRYWCgDAQeQk+i+FC3Qc=;
+        b=DnEvNccW5NIJUior0onpAlPFyiQd+moNd5WamL6bJjigaXazTmW2dCCdQipuO8DQhj
+         yFHAZrHIiu3gWG0He5jSvLnYKAk0MnUVx4ZrGjtibd/wF6DvnVVf5fO1cX5sUI0AaXyG
+         N+qKADaVCgIlgFMSoy6x/eKXLG/g+2PdJDukjUByCBj6iG8e7L9Hqp+p7uPv3l4X9XJK
+         8L5TSqDtMKsqUbOagCxJG/sJOTiQ7NDT6W75vVMJMiHVnM6/t/xBio57stxI9rMle1dy
+         hRM0LthKDdO7w7p6b7c5q1flq1aKHQNA0xFETmhyIhupHB3vHu9E2NefpMdXP4Y5LPSp
+         j/Cw==
+X-Gm-Message-State: AOJu0Yzt+XzeaJtlGgsh5p5i545VN6m97cFzBGo8RpxSjJiOPTs0ftZC
+        kWjNVDoMgEoKMHxlO+LlOFFUMelu+Vi7OQPalMrU0w==
+X-Google-Smtp-Source: AGHT+IEllS//Vo5DIeilEm06so+oXBAZVZjqk1bluFXrO7jOq/QKmFdOTXQUqzX5tkMzooCga5rA10uXjLIWp+wEMZQ=
+X-Received: by 2002:aa7:d912:0:b0:522:1e2f:99db with SMTP id
+ a18-20020aa7d912000000b005221e2f99dbmr2557441edr.5.1691583713714; Wed, 09 Aug
+ 2023 05:21:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230805075114.15186-1-straube.linux@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <cover.1690273969.git.haibo1.xu@intel.com> <CAAhSdy0yug=J0nxnnPoLYL=0MiT0w6qgPYOcv0QwMRe+fsQn8Q@mail.gmail.com>
+ <87y1ilpz3m.wl-maz@kernel.org>
+In-Reply-To: <87y1ilpz3m.wl-maz@kernel.org>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 9 Aug 2023 17:51:41 +0530
+Message-ID: <CAAhSdy3f9cyh_b9Z9ah9QOdqWUMzhMV39hxUqVCStOc2FWRYDQ@mail.gmail.com>
+Subject: Re: [PATCH v6 00/13] RISCV: Add KVM_GET_REG_LIST API
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     oliver.upton@linux.dev, xiaobo55x@gmail.com,
+        ajones@ventanamicro.com, seanjc@google.com,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Shuah Khan <shuah@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Like Xu <likexu@tencent.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Colton Lewis <coltonlewis@google.com>, kvm@vger.kernel.org,
+        Haibo Xu <haibo1.xu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 05, 2023 at 09:51:14AM +0200, Michael Straube wrote:
-> Replace strncpy with strscpy in two places where the destination buffer
-> should be NUL-terminated. Found by checkpatch.
-> 
-> WARNING: Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see: https://github.com/KSPP/linux/issues/90
+Hi Marc,
 
-If a global search/replace could be done, it would have happend a long
-time ago.
+On Tue, Aug 8, 2023 at 4:42=E2=80=AFPM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Mon, 07 Aug 2023 04:48:33 +0100,
+> Anup Patel <anup@brainfault.org> wrote:
+> >
+> > Hi Marc, Hi Oliver,
+> >
+> > On Tue, Jul 25, 2023 at 2:05=E2=80=AFPM Haibo Xu <haibo1.xu@intel.com> =
+wrote:
+> > >
+> > > KVM_GET_REG_LIST will dump all register IDs that are available to
+> > > KVM_GET/SET_ONE_REG and It's very useful to identify some platform
+> > > regression issue during VM migration.
+> > >
+> > > Patch 1-7 re-structured the get-reg-list test in aarch64 to make some
+> > > of the code as common test framework that can be shared by riscv.
+> > >
+> > > Patch 8 move reject_set check logic to a function so as to check for
+> > > different errno for different registers.
+> > > Patch 9 move finalize_vcpu back to run_test so that riscv can impleme=
+nt
+> > > its specific operation.
+> > > Patch 10 change to do the get/set operation only on present-blessed l=
+ist.
+> > > Patch 11 add the skip_set facilities so that riscv can skip set opera=
+tion
+> > > on some registers.
+> > > Patch 12 enabled the KVM_GET_REG_LIST API in riscv.
+> > > patch 13 added the corresponding kselftest for checking possible
+> > > register regressions.
+> > >
+> > > The get-reg-list kvm selftest was ported from aarch64 and tested with
+> > > Linux v6.5-rc3 on a Qemu riscv64 virt machine.
+> > >
+> > > ---
+> > > Changed since v5:
+> > >   * Rebase to v6.5-rc3
+> > >   * Minor fix for Andrew's comments
+> > >
+> > > Andrew Jones (7):
+> > >   KVM: arm64: selftests: Replace str_with_index with strdup_printf
+> > >   KVM: arm64: selftests: Drop SVE cap check in print_reg
+> > >   KVM: arm64: selftests: Remove print_reg's dependency on vcpu_config
+> > >   KVM: arm64: selftests: Rename vcpu_config and add to kvm_util.h
+> > >   KVM: arm64: selftests: Delete core_reg_fixup
+> > >   KVM: arm64: selftests: Split get-reg-list test code
+> > >   KVM: arm64: selftests: Finish generalizing get-reg-list
+> > >
+> > > Haibo Xu (6):
+> > >   KVM: arm64: selftests: Move reject_set check logic to a function
+> > >   KVM: arm64: selftests: Move finalize_vcpu back to run_test
+> > >   KVM: selftests: Only do get/set tests on present blessed list
+> > >   KVM: selftests: Add skip_set facility to get_reg_list test
+> > >   KVM: riscv: Add KVM_GET_REG_LIST API support
+> > >   KVM: riscv: selftests: Add get-reg-list test
+> >
+> > Are you okay for this series to go through the KVM RISC-V tree ?
+>
+> Sure, seems fine from my point of view. But please put it on an
+> immutable topic branch so that we can also merge it in the arm64 tree,
+> should we need to resolve any conflicts.
 
-How was this tested?  The functions work differently, are you sure there
-is no change in functionality here?
+I have created topic branch riscv_kvm_get_reg_list in the KVM RISC-V
+repo https://github.com/kvm-riscv/linux.git.
 
-thanks,
+This branch is based upon Linux-6.5-rc5 and also merged into the
+riscv_kvm_next branch for the upcoming merge window.
 
-greg k-h
+Regards,
+Anup
