@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDB07761EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB1C7761EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232967AbjHIOBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51818 "EHLO
+        id S232912AbjHIOBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbjHIOBP (ORCPT
+        with ESMTP id S230129AbjHIOBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Aug 2023 10:01:15 -0400
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4978FA8
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563BF1BF7
         for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:01:15 -0700 (PDT)
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 379CrDNW002197;
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 379BTo14016955;
         Wed, 9 Aug 2023 09:01:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-transfer-encoding:content-type; s=
-        PODMain02222019; bh=J/GsvtorO8Yi6Xk/NdeZLQtjnY5q3BhG7aUXQ4DLDdE=; b=
-        QcGT3ls4doh/Gc6f+GdK4CAlqSovgVdK3S04FgYR/3yooz7MXbMHxltvs/kMcLfT
-        +2ZJrA0dwRE0Sq9beOCrJS4bYi6C4qKbOIlWN5AwfnVumFc2D/QKFihfvMeC/5MP
-        95UIdR9iJ1gE0UKCjUg/BDMHPk0NYiD6d1wFNWymAYKtTpylbjPaAdZ5ifBZn9eT
-        Eh7hYYAJWLRDdECdvxj6vUNsdzMQC0+nSYk0cfTp3Jnn+fluyHqLj8we7KQU8wG1
-        O/DdvKm8KHMb9WZeuLXwbVC7eD/Kf31vlHQitFM1QCJtZDBr9VJ8Aw7NntzGoeLN
-        LfHuQxBN18LKy900HIzRSg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sb7vtaggs-1
+        PODMain02222019; bh=rJub7xq01svFRBd6CryZ0CGoKiUqapOdHmCAGbhMlMQ=; b=
+        VpbzHFYsxJXVCFOweACif9Z1GtsrogxizSlVh/M5Qp5iYzrqmfAU/RpC4z+asSBh
+        LItEMwtN2D9x5m/UOq64tzyymMfXdXHaVde0+UoA4WKE5umDUe4EO3DbYrY/+FRX
+        BLxn7TzWw1ABZTAk1Y+w2P9uqIDjV5RZCawOAdvWfXXVO7UVd/w3xjYiVbrCFKaI
+        tfr4tV5pEfls2lM518ok7ZlW77jL75sl79kKIzUrmTwQ6RXuX6llbdIGfz2voZMm
+        i9fhr0Q+hRclI15ARmKaNgvyW7NZka1JWF622mVfgimtHI40clSLHHmZ53TsEeFL
+        QlAyH1ES/Cl3gEHmuKxenA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sb7vtaggr-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 09:00:58 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 09 Aug 2023 09:00:59 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 9 Aug
  2023 15:00:56 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
  Transport; Wed, 9 Aug 2023 15:00:56 +0100
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.31])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 76CB8475;
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A85533578;
         Wed,  9 Aug 2023 14:00:56 +0000 (UTC)
 From:   Stefan Binding <sbinding@opensource.cirrus.com>
 To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
         Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 1/2] ALSA: hda/realtek: Add quirks for HP G11 Laptops
-Date:   Wed, 9 Aug 2023 15:00:47 +0100
-Message-ID: <20230809140048.669797-2-sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 2/2] ALSA: hda/realtek: Switch Dell Oasis models to use SPI
+Date:   Wed, 9 Aug 2023 15:00:48 +0100
+Message-ID: <20230809140048.669797-3-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230809140048.669797-1-sbinding@opensource.cirrus.com>
 References: <20230809140048.669797-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: A8H362owVl18-d2D4uN9o2fsyqeHkY5M
-X-Proofpoint-ORIG-GUID: A8H362owVl18-d2D4uN9o2fsyqeHkY5M
+X-Proofpoint-GUID: 711t5X-5FuRQh1JlQmQO-Gp9hOudvt6a
+X-Proofpoint-ORIG-GUID: 711t5X-5FuRQh1JlQmQO-Gp9hOudvt6a
 X-Proofpoint-Spam-Reason: safe
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
@@ -68,36 +68,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These HP G11 laptops use Realtek HDA codec combined with
-2xCS35L41 Amplifiers using SPI or I2C with External Boost.
-
-Laptop 103c8c26 has been removed as this has been replaced
-by this new series of laptops.
+All I2C Dell Oasis models using CS35L41 have been changed to use SPI.
+In addition, System 10280cc5 is no longer required.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- sound/pci/hda/patch_realtek.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index dff92679ae726..2b7528cb17805 100644
+index 2b7528cb17805..3bb76f8b96074 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -9625,7 +9625,13 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8b96, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x8b97, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x8bf0, "HP", ALC236_FIXUP_HP_GPIO_LED),
--	SND_PCI_QUIRK(0x103c, 0x8c26, "HP HP EliteBook 800G11", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8c46, "HP EliteBook 830 G11", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8c47, "HP EliteBook 840 G11", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8c48, "HP EliteBook 860 G11", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8c49, "HP Elite x360 830 2-in-1 G11", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8c70, "HP EliteBook 835 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8c71, "HP EliteBook 845 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8c72, "HP EliteBook 865 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
- 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+@@ -9430,11 +9430,10 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0cbd, "Dell Oasis 13 CS MTL-U", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1028, 0x0cbe, "Dell Oasis 13 2-IN-1 MTL-U", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1028, 0x0cbf, "Dell Oasis 13 Low Weight MTU-L", ALC245_FIXUP_CS35L41_SPI_2),
+-	SND_PCI_QUIRK(0x1028, 0x0cc1, "Dell Oasis 14 MTL-H/U", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x1028, 0x0cc2, "Dell Oasis 14 2-in-1 MTL-H/U", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x1028, 0x0cc3, "Dell Oasis 14 Low Weight MTL-U", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x1028, 0x0cc4, "Dell Oasis 16 MTL-H/U", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x1028, 0x0cc5, "Dell Oasis MLK 14 RPL-P", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x1028, 0x0cc1, "Dell Oasis 14 MTL-H/U", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x1028, 0x0cc2, "Dell Oasis 14 2-in-1 MTL-H/U", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x1028, 0x0cc3, "Dell Oasis 14 Low Weight MTL-U", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x1028, 0x0cc4, "Dell Oasis 16 MTL-H/U", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
 -- 
 2.34.1
 
