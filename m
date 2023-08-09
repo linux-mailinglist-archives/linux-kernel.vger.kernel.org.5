@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 742C5775408
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7711F77540A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbjHIH1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 03:27:08 -0400
+        id S231685AbjHIH1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 03:27:14 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjHIH0z (ORCPT
+        with ESMTP id S231351AbjHIH04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 03:26:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D021BCF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 00:26:52 -0700 (PDT)
+        Wed, 9 Aug 2023 03:26:56 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7681FCA
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 00:26:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=0h4UtQHS5lmkLTQkMktH8D/oH/01AwN6dSYfEgrTw0Y=; b=IH8pj/0D3Ddi0Wcd/NTGob2SGX
-        iuch/2+LNkDLXh8B/8zIZqVriLUoaNXe4Oz8Az9AbzcpxWIdaq5IhJhJ8Rc59z6G5cbf+uoOapWeJ
-        1ZqKeCOOHEAA9mkFK6jH7C3G+32eQ8JGT0dB10U0XhQGb5RbJumJAh8NYptPdAh+o3c98yBVayeCo
-        IeETdUBFtZCmIhllN+wuDKn3j/yRm86qrjtC03JjFoKbisVDFATnQpXMcvN3RyRozlfoU6XohkwfI
-        dEimeZMuvBpNT9MJNIoKeU600fBA58s5kv2Oe+jhAad++M9GpGo2FHlmeYCsO7l6Uau+LWIHlQpcY
-        gbMA1afw==;
+        bh=pZlFEkDaUQE0a6aJzDwSVKlXzpcaHKgkUuhdNWjjfj0=; b=SSxoAVSLSJu81heACQEUBDZxxQ
+        1LTcopPjqD2ruLSsqdmy8ELCfMW6SwibNFJdNKEMx0ZSF8IiQ+SbZA4IithXcXi0+PyV3DcnoYGfi
+        z/zhqPQis+oFgotAoUaQWgrbV94KHL7FGZcJGabSBRsIJ3ADN8SjztzrmQv6d8lvviiaIfpmCVNy1
+        WmMHyh1ApJyePDwzfy5kaAs/8c6YlbgiGp0J4IHyFeaBptvd+PO8a7Vu0fx/69q6YOHaZ8t7F5wlc
+        jEqd7OWBRnpkoqEvvkA0Q+XmqYdBvjHGB8wF9E5B6q7vP5/n2KbN83PtGOVx38E7w1uC2FmZQwT0p
+        4KpAD/qg==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qTdae-004olL-Rp; Wed, 09 Aug 2023 07:26:45 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qTdaf-005TeM-2H;
+        Wed, 09 Aug 2023 07:26:46 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 66F7530049D;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 96B6A3006F1;
         Wed,  9 Aug 2023 09:26:44 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 4E49D2C1E85AC; Wed,  9 Aug 2023 09:26:44 +0200 (CEST)
-Message-ID: <20230809072200.715361518@infradead.org>
+        id 538EC2C865687; Wed,  9 Aug 2023 09:26:44 +0200 (CEST)
+Message-ID: <20230809072200.782716727@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 09 Aug 2023 09:12:22 +0200
+Date:   Wed, 09 Aug 2023 09:12:23 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         David.Kaplan@amd.com, Andrew.Cooper3@citrix.com,
         jpoimboe@kernel.org, gregkh@linuxfoundation.org
-Subject: [RFC][PATCH 04/17] objtool/x86: Fix SRSO mess
+Subject: [RFC][PATCH 05/17] x86/cpu: Cleanup the untrain mess
 References: <20230809071218.000335006@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,44 +58,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arch_is_rethunk() indicates those functions that will be considered
-equivalent to INSN_RETURN and any callsite will be added to the
-.return_sites section.
+Since there can only be one active return_thunk, there only needs be
+one (matching) untrain_ret. It fundamentally doesn't make sense to
+allow multiple untrain_ret at the same time.
 
-Notably: srso_untrain_ret, srso_safe_ret and __ret do not qualify.
-
-The only thing that needs consideration is srso_safe_ret(), since that
-is, like __x86_return_thunk, inside another instruction. Skip
-validating that.
+Fold all the 3 different untrain methods into a single (temporary)
+helper stub.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- tools/objtool/arch/x86/decode.c |    5 +----
- tools/objtool/check.c           |    2 +-
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/nospec-branch.h |   19 +++++--------------
+ arch/x86/lib/retpoline.S             |    7 +++++++
+ 2 files changed, 12 insertions(+), 14 deletions(-)
 
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -824,8 +824,5 @@ bool arch_is_retpoline(struct symbol *sy
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -272,9 +272,9 @@
+ .endm
  
- bool arch_is_rethunk(struct symbol *sym)
- {
--	return !strcmp(sym->name, "__x86_return_thunk") ||
--	       !strcmp(sym->name, "srso_untrain_ret") ||
--	       !strcmp(sym->name, "srso_safe_ret") ||
--	       !strcmp(sym->name, "__ret");
-+	return !strcmp(sym->name, "__x86_return_thunk");
- }
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -455,7 +455,7 @@ static int decode_instructions(struct ob
- 				return -1;
- 			}
+ #ifdef CONFIG_CPU_UNRET_ENTRY
+-#define CALL_ZEN_UNTRAIN_RET	"call zen_untrain_ret"
++#define CALL_UNTRAIN_RET	"call entry_untrain_ret"
+ #else
+-#define CALL_ZEN_UNTRAIN_RET	""
++#define CALL_UNTRAIN_RET	""
+ #endif
  
--			if (func->return_thunk || func->alias != func)
-+			if (func->return_thunk || !strcmp(func->name, "srso_safe_ret") || func->alias != func)
- 				continue;
+ /*
+@@ -293,15 +293,10 @@
+ 	defined(CONFIG_CALL_DEPTH_TRACKING) || defined(CONFIG_CPU_SRSO)
+ 	VALIDATE_UNRET_END
+ 	ALTERNATIVE_3 "",						\
+-		      CALL_ZEN_UNTRAIN_RET, X86_FEATURE_UNRET,		\
++		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
+ 		      "call entry_ibpb", X86_FEATURE_ENTRY_IBPB,	\
+ 		      __stringify(RESET_CALL_DEPTH), X86_FEATURE_CALL_DEPTH
+ #endif
+-
+-#ifdef CONFIG_CPU_SRSO
+-	ALTERNATIVE_2 "", "call srso_untrain_ret", X86_FEATURE_SRSO, \
+-			  "call srso_untrain_ret_alias", X86_FEATURE_SRSO_ALIAS
+-#endif
+ .endm
  
- 			if (!find_insn(file, sec, func->offset)) {
+ .macro UNTRAIN_RET_FROM_CALL
+@@ -309,15 +304,10 @@
+ 	defined(CONFIG_CALL_DEPTH_TRACKING)
+ 	VALIDATE_UNRET_END
+ 	ALTERNATIVE_3 "",						\
+-		      CALL_ZEN_UNTRAIN_RET, X86_FEATURE_UNRET,		\
++		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
+ 		      "call entry_ibpb", X86_FEATURE_ENTRY_IBPB,	\
+ 		      __stringify(RESET_CALL_DEPTH_FROM_CALL), X86_FEATURE_CALL_DEPTH
+ #endif
+-
+-#ifdef CONFIG_CPU_SRSO
+-	ALTERNATIVE_2 "", "call srso_untrain_ret", X86_FEATURE_SRSO, \
+-			  "call srso_untrain_ret_alias", X86_FEATURE_SRSO_ALIAS
+-#endif
+ .endm
+ 
+ 
+@@ -349,6 +339,7 @@ extern void zen_untrain_ret(void);
+ extern void srso_untrain_ret(void);
+ extern void srso_untrain_ret_alias(void);
+ 
++extern void entry_untrain_ret(void);
+ extern void entry_ibpb(void);
+ 
+ extern void (*x86_return_thunk)(void);
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -268,6 +268,13 @@ SYM_CODE_END(srso_safe_ret)
+ SYM_FUNC_END(srso_untrain_ret)
+ __EXPORT_THUNK(srso_untrain_ret)
+ 
++SYM_FUNC_START(entry_untrain_ret)
++	ALTERNATIVE_2 "jmp zen_untrain_ret", \
++		      "jmp srso_untrain_ret", X86_FEATURE_SRSO, \
++		      "jmp srso_untrain_ret_alias", X86_FEATURE_SRSO_ALIAS
++SYM_FUNC_END(entry_untrain_ret)
++__EXPORT_THUNK(entry_untrain_ret)
++
+ /*
+  * Both these do an unbalanced CALL to mess up the RSB, terminate with UD2
+  * to indicate noreturn.
 
 
