@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ADA776842
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 842B777683F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbjHITNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41212 "EHLO
+        id S233462AbjHITNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:13:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232152AbjHITM7 (ORCPT
+        with ESMTP id S233379AbjHITM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Aug 2023 15:12:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58F5210B;
-        Wed,  9 Aug 2023 12:12:36 -0700 (PDT)
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A0B2D5D;
+        Wed,  9 Aug 2023 12:12:35 -0700 (PDT)
 Date:   Wed, 09 Aug 2023 19:12:24 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1691608345;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ZOOnlytwjdniYUrv8HLfKwwBshoQq0BLjDC3lVUi74U=;
-        b=aM8go1BW0LBb2/TPETRHj/3sN/Az2fBDIIJ8NIg3mQvLg0XVSGLqIu9pZcV6e7Pf8hJpNo
-        4SP0VjTB3vKcr2aNdax/pLjMTqMG9K2SzpqnNgMFXOsHLG7GhnS4VJ4f/v898WTgqHLj90
-        /tmkacAKkrKW3yUSbdw3XaMiK/oa6Qqgin0tJQuNusINWBhuUpEWtMfDdXuIESh3uJ+c7j
-        h+VBTBQFut0auN4ndodihoULfcuOKuid4rVFkIPPFJYgTGMQXXfl7lSKFzlTRkBSiRywal
-        Gxh/qIKESVoSHQ7p1gbIyUmZnOaeCsS8VZRQn15B3o9Oxc4088wGy+4GuLxtKA==
+        bh=4YEWXcifivVg86UmH2c6Xpd661pLlI0IsER53UddTuk=;
+        b=QvduAGBgkSz0ceDN27YYH35/C5aGCnaVNA2h2/mvslUHOJUyEeQs2eVNEIW8yocSmT4+Eg
+        pci15o45OyM9wyMoWv97zi89mS+ljKZ0nBVRg9hEXaaEuew+OdTzBGjyX1vk5ldosHCeTs
+        5RtHH9GoylO9ZW0PT5LdDkIJIBwga6TGIfmH/PKTdITGdF3JfJ/zUDwWQEgWNuAnIZWus0
+        dJKopS25EQowAwnZYzhvAA2x6dgB6hjpTk57kpMDfBqzpFsUjaLT7rDKDogYV3/RhFxsso
+        wXVLd4RzxkT8HUlVqK3PxQ8PXBKthamRXlqvIYJX+y3RlLb/fmYanmrNtGBdFw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1691608345;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ZOOnlytwjdniYUrv8HLfKwwBshoQq0BLjDC3lVUi74U=;
-        b=XnLhBDbIbJE2aj+MS6VHOZHIKmUfeWPrBbuEtpzn+pgJa8Q9Q6wUWTnI+KiT/8+GFi7ktY
-        UatcB0R9hknw6KAQ==
+        bh=4YEWXcifivVg86UmH2c6Xpd661pLlI0IsER53UddTuk=;
+        b=59bLDVV0nrsyhvdKlFv6fvE1fGyjWZlqEwq6ZZK6v8FtNHre3ot+IJlcLaXIKQoAARWrZM
+        BHnH0rTq7v4kZhDA==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/apic: Make some APIC init functions bool
+Subject: [tip: x86/apic] x86/apic: Split register_apic_address()
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
@@ -48,7 +48,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Juergen Gross <jgross@suse.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169160834490.27769.7553485649731661081.tip-bot2@tip-bot2>
+Message-ID: <169160834444.27769.11587842002054923417.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -65,19 +65,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/apic branch of tip:
 
-Commit-ID:     1751adedbd601d6a9da35de0c1e2592ac980fdfe
-Gitweb:        https://git.kernel.org/tip/1751adedbd601d6a9da35de0c1e2592ac980fdfe
+Commit-ID:     5a88f354dcd8f19436bbda52f075276a5c70424f
+Gitweb:        https://git.kernel.org/tip/5a88f354dcd8f19436bbda52f075276a5c70424f
 Author:        Thomas Gleixner <tglx@linutronix.de>
 AuthorDate:    Tue, 08 Aug 2023 15:03:48 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
 CommitterDate: Wed, 09 Aug 2023 11:58:20 -07:00
 
-x86/apic: Make some APIC init functions bool
+x86/apic: Split register_apic_address()
 
-Quite some APIC init functions are pure boolean, but use the success = 0,
-fail < 0 model. That's confusing as hell when reading through the code.
+Split the fixmap setup out of register_lapic_address() and reuse it when
+the X2APIC is disabled during setup.
 
-Convert them to boolean.
+This avoids registering the APIC ID (setting 'mp_lapic_addr') twice.
+
+[ dhansen: changelog wording tweak ]
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
@@ -86,150 +88,57 @@ Tested-by: Michael Kelley <mikelley@microsoft.com>
 Tested-by: Sohil Mehta <sohil.mehta@intel.com>
 Tested-by: Juergen Gross <jgross@suse.com> # Xen PV (dom0 and unpriv. guest)
 ---
- arch/x86/include/asm/apic.h  |  6 +++---
- arch/x86/kernel/apic/apic.c  | 36 +++++++++++++++++------------------
- arch/x86/kernel/devicetree.c |  2 +-
- 3 files changed, 22 insertions(+), 22 deletions(-)
+ arch/x86/kernel/apic/apic.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-index 108fdc2..35d236b 100644
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -135,12 +135,12 @@ extern void setup_secondary_APIC_clock(void);
- extern void lapic_update_tsc_freq(void);
- 
- #ifdef CONFIG_X86_64
--static inline int apic_force_enable(unsigned long addr)
-+static inline bool apic_force_enable(unsigned long addr)
- {
--	return -1;
-+	return false;
- }
- #else
--extern int apic_force_enable(unsigned long addr);
-+extern bool apic_force_enable(unsigned long addr);
- #endif
- 
- extern void apic_ap_setup(void);
 diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 32275ca..d0f4cca 100644
+index d0f4cca..45ae178 100644
 --- a/arch/x86/kernel/apic/apic.c
 +++ b/arch/x86/kernel/apic/apic.c
-@@ -2000,19 +2000,19 @@ void __init enable_IR_x2apic(void)
-  * On AMD64 we trust the BIOS - if it says no APIC it is likely
-  * not correctly set up (usually the APIC timer won't work etc.)
-  */
--static int __init detect_init_APIC(void)
-+static bool __init detect_init_APIC(void)
- {
- 	if (!boot_cpu_has(X86_FEATURE_APIC)) {
- 		pr_info("No local APIC present\n");
--		return -1;
-+		return false;
- 	}
- 
- 	mp_lapic_addr = APIC_DEFAULT_PHYS_BASE;
--	return 0;
-+	return true;
- }
- #else
- 
--static int __init apic_verify(void)
-+static bool __init apic_verify(void)
- {
- 	u32 features, h, l;
- 
-@@ -2023,7 +2023,7 @@ static int __init apic_verify(void)
- 	features = cpuid_edx(1);
- 	if (!(features & (1 << X86_FEATURE_APIC))) {
- 		pr_warn("Could not enable APIC!\n");
--		return -1;
-+		return false;
- 	}
- 	set_cpu_cap(&boot_cpu_data, X86_FEATURE_APIC);
- 	mp_lapic_addr = APIC_DEFAULT_PHYS_BASE;
-@@ -2036,15 +2036,15 @@ static int __init apic_verify(void)
- 	}
- 
- 	pr_info("Found and enabled local APIC!\n");
--	return 0;
-+	return true;
+@@ -1852,6 +1852,8 @@ void x2apic_setup(void)
+ 	__x2apic_enable();
  }
  
--int __init apic_force_enable(unsigned long addr)
-+bool __init apic_force_enable(unsigned long addr)
++static __init void apic_set_fixmap(void);
++
+ static __init void x2apic_disable(void)
  {
- 	u32 h, l;
+ 	u32 x2apic_id, state = x2apic_state;
+@@ -1872,7 +1874,7 @@ static __init void x2apic_disable(void)
+ 	}
  
- 	if (apic_is_disabled)
--		return -1;
-+		return false;
+ 	__x2apic_disable();
+-	register_lapic_address(mp_lapic_addr);
++	apic_set_fixmap();
+ }
  
- 	/*
- 	 * Some BIOSes disable the local APIC in the APIC_BASE
-@@ -2067,11 +2067,11 @@ int __init apic_force_enable(unsigned long addr)
+ static __init void x2apic_enable(void)
+@@ -2145,17 +2147,21 @@ void __init init_apic_mappings(void)
+ 	}
+ }
+ 
++static __init void apic_set_fixmap(void)
++{
++	set_fixmap_nocache(FIX_APIC_BASE, mp_lapic_addr);
++	apic_mmio_base = APIC_BASE;
++	apic_printk(APIC_VERBOSE, "mapped APIC to %16lx (%16lx)\n",
++		    apic_mmio_base, mp_lapic_addr);
++	apic_read_boot_cpu_id(false);
++}
++
+ void __init register_lapic_address(unsigned long address)
+ {
+ 	mp_lapic_addr = address;
+ 
+-	if (x2apic_mode)
+-		return;
+-
+-	set_fixmap_nocache(FIX_APIC_BASE, address);
+-	apic_mmio_base = APIC_BASE;
+-	apic_printk(APIC_VERBOSE, "mapped APIC to %16lx (%16lx)\n", APIC_BASE, address);
+-	apic_read_boot_cpu_id(false);
++	if (!x2apic_mode)
++		apic_set_fixmap();
+ }
+ 
  /*
-  * Detect and initialize APIC
-  */
--static int __init detect_init_APIC(void)
-+static bool __init detect_init_APIC(void)
- {
- 	/* Disabled by kernel option? */
- 	if (apic_is_disabled)
--		return -1;
-+		return false;
- 
- 	switch (boot_cpu_data.x86_vendor) {
- 	case X86_VENDOR_AMD:
-@@ -2098,22 +2098,22 @@ static int __init detect_init_APIC(void)
- 		if (!force_enable_local_apic) {
- 			pr_info("Local APIC disabled by BIOS -- "
- 				"you can enable it with \"lapic\"\n");
--			return -1;
-+			return false;
- 		}
--		if (apic_force_enable(APIC_DEFAULT_PHYS_BASE))
--			return -1;
-+		if (!apic_force_enable(APIC_DEFAULT_PHYS_BASE))
-+			return false;
- 	} else {
--		if (apic_verify())
--			return -1;
-+		if (!apic_verify())
-+			return false;
- 	}
- 
- 	apic_pm_activate();
- 
--	return 0;
-+	return true;
- 
- no_apic:
- 	pr_info("No local APIC present or hardware disabled\n");
--	return -1;
-+	return false;
- }
- #endif
- 
-@@ -2129,7 +2129,7 @@ void __init init_apic_mappings(void)
- 		return;
- 
- 	/* If no local APIC can be found return early */
--	if (!smp_found_config && detect_init_APIC()) {
-+	if (!smp_found_config && !detect_init_APIC()) {
- 		/* lets NOP'ify apic operations */
- 		pr_info("APIC: disable apic facility\n");
- 		apic_disable();
-diff --git a/arch/x86/kernel/devicetree.c b/arch/x86/kernel/devicetree.c
-index 8f94eb6..87d38f1 100644
---- a/arch/x86/kernel/devicetree.c
-+++ b/arch/x86/kernel/devicetree.c
-@@ -158,7 +158,7 @@ static void __init dtb_lapic_setup(void)
- 	/* Did the boot loader setup the local APIC ? */
- 	if (!boot_cpu_has(X86_FEATURE_APIC)) {
- 		/* Try force enabling, which registers the APIC address */
--		if (apic_force_enable(lapic_addr))
-+		if (!apic_force_enable(lapic_addr))
- 			return;
- 	} else {
- 		register_lapic_address(lapic_addr);
