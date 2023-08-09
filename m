@@ -2,210 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 058C7776054
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36295776057
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 15:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232774AbjHINNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 09:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40690 "EHLO
+        id S232789AbjHINNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 09:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232710AbjHINNf (ORCPT
+        with ESMTP id S232779AbjHINNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 09:13:35 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9A52103
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:13:34 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RLVqX6BFYz4f3mHm
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 21:13:28 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgAXp6n1kNNkTII5AQ--.15907S6;
-        Wed, 09 Aug 2023 21:13:29 +0800 (CST)
-From:   thunder.leizhen@huaweicloud.com
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Tanmay Jagdale <tanmay@marvell.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Subject: [PATCH v2 2/2] iommu/arm-smmu-v3: Ensure that a set of associated commands are inserted in the same ECMDQ
-Date:   Wed,  9 Aug 2023 21:13:03 +0800
-Message-Id: <20230809131303.1355-3-thunder.leizhen@huaweicloud.com>
-X-Mailer: git-send-email 2.37.3.windows.1
-In-Reply-To: <20230809131303.1355-1-thunder.leizhen@huaweicloud.com>
-References: <20230809131303.1355-1-thunder.leizhen@huaweicloud.com>
+        Wed, 9 Aug 2023 09:13:46 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB4F212F
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 06:13:43 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-5234b80e9b6so2144756a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 06:13:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691586822; x=1692191622;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q3q+oF8DcCXzUb0+o6vnkiFGnNZXUzpVlmsAZC2SnCA=;
+        b=KFIXC5UzyX9KW1ybbG2szF/GuAnirPt07l/xnJN/LhE7O4xCzhvLsPdgbXKD6E7eMf
+         ikIIgzUrA1n/ViVW3Urjqgdo+1QxEiaoyTDPJsg4Jv+ew18M/dXHl3khl255ksGu8tOf
+         8MTylTWyWWQsUM+BnJbn2tRySwouFHGc9g4KetOxMFCSVqbU0idDTrNrDig3npuOVsiT
+         HswwwIkV7SidVYYiyLMNHTHaXS7/dkUGCZwPT+0E2JO79uhkU2thz6DQpT25eCGt197J
+         hY0cZbi+0h5xrfLsyRvIpGFdVz4rUeEd+GPZBGq2menxW0y9J1duxc/Obw5yZdFqn2LY
+         Mp+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691586822; x=1692191622;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q3q+oF8DcCXzUb0+o6vnkiFGnNZXUzpVlmsAZC2SnCA=;
+        b=IlegXPgjdgjqHVaBB+egVUs1Nl3Oi5KEYcLMLZglp6w4wFJxtI0t9Q/isZyCnxJX4j
+         omMilVDPORxEHy7BuJ1a/cVLYzEZPkWblICLK1h5JhO/ncAhNDfwA53pNr0yTn0WtfEG
+         7qxXYHX4nwABC6yTAJ0kuYR2q04j6Uf7ogrQW1Wn4CZyJJ2hzE3AzldjH83PW6tnV5vt
+         GQMujUHP4bh2MEalgC0y4mr+bUIVrqXZQCTlNMXXyXXr5F9qamoRC8eAml1ocoF+6TkJ
+         wjE5ZhG2kKGgx00JP9vSrwLRQZLeSNWFGtJjR+atedaAtlvb/6NR3DshF9lwxBtozsrr
+         0myQ==
+X-Gm-Message-State: AOJu0Yxz/LoCJ6GN8z7d10OwVkytPQG2n5un7yDAOUA2acg8Wo8Zmwzz
+        uOwh2KGDuqw9xvxiobP5RtX0Cc5P80pUydx2idMCFQ==
+X-Google-Smtp-Source: AGHT+IGEB9EVX/XItxVQk5492ynxBiXJbmSMOAf0p28E04IRCS29Zhz82+d3IYv2qzx3ltff4HX5X12ylLOSuA7OeSM=
+X-Received: by 2002:a17:906:54:b0:99c:1b9a:b09e with SMTP id
+ 20-20020a170906005400b0099c1b9ab09emr2112215ejg.75.1691586822187; Wed, 09 Aug
+ 2023 06:13:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXp6n1kNNkTII5AQ--.15907S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxCFyUKw1kur47uw4fWr4kZwb_yoW7JrWDpa
-        17u39YyF45XF1IkrW3Zr4Yqr9rXFyY9a4DtrWUWa4Dtr1UtryrWr1Fk3WFkrykurykZr4f
-        Cr9Fqr4Uur1UtFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9vb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lw4CEc2x0rVAKj4xxMxAIw28IcxkI7VAKI48JMxC20s
-        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-        JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
-        j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
-        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8y89tUUUUU==
-X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230809045810.1659356-1-yosryahmed@google.com>
+ <ZNNTgZVPZipTL/UM@dhcp22.suse.cz> <CAJD7tkYhxbd2e+4HMZVKUfD4cx6oDauna3vLmttNPLCmFNtpgA@mail.gmail.com>
+ <ZNONgeoytpkchHga@dhcp22.suse.cz>
+In-Reply-To: <ZNONgeoytpkchHga@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 9 Aug 2023 06:13:05 -0700
+Message-ID: <CAJD7tkb9C77UUxAykw_uMQvkzGyaZOZhM0nwWn_kcPjV0umyuA@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+On Wed, Aug 9, 2023 at 5:58=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Wed 09-08-23 05:31:04, Yosry Ahmed wrote:
+> > On Wed, Aug 9, 2023 at 1:51=E2=80=AFAM Michal Hocko <mhocko@suse.com> w=
+rote:
+> > >
+> > > On Wed 09-08-23 04:58:10, Yosry Ahmed wrote:
+> > > > Over time, the memcg code added multiple optimizations to the stats
+> > > > flushing path that introduce a tradeoff between accuracy and
+> > > > performance. In some contexts (e.g. dirty throttling, refaults, etc=
+), a
+> > > > full rstat flush of the stats in the tree can be too expensive. Suc=
+h
+> > > > optimizations include [1]:
+> > > > (a) Introducing a periodic background flusher to keep the size of t=
+he
+> > > > update tree from growing unbounded.
+> > > > (b) Allowing only one thread to flush at a time, and other concurre=
+nt
+> > > > flushers just skip the flush. This avoids a thundering herd problem
+> > > > when multiple reclaim/refault threads attempt to flush the stats at
+> > > > once.
+> > > > (c) Only executing a flush if the magnitude of the stats updates ex=
+ceeds
+> > > > a certain threshold.
+> > > >
+> > > > These optimizations were necessary to make flushing feasible in
+> > > > performance-critical paths, and they come at the cost of some accur=
+acy
+> > > > that we choose to live without. On the other hand, for flushes invo=
+ked
+> > > > when userspace is reading the stats, the tradeoff is less appealing
+> > > > This code path is not performance-critical, and the inaccuracies ca=
+n
+> > > > affect userspace behavior. For example, skipping flushing when ther=
+e is
+> > > > another ongoing flush is essentially a coin flip. We don't know if =
+the
+> > > > ongoing flush is done with the subtree of interest or not.
+> > >
+> > > I am not convinced by this much TBH. What kind of precision do you
+> > > really need and how much off is what we provide?
+> > >
+> > > More expensive read of stats from userspace is quite easy to notice
+> > > and usually reported as a regression. So you should have a convincing
+> > > argument that an extra time spent is really worth it. AFAIK there are
+> > > many monitoring (top like) tools which simply read those files regula=
+rly
+> > > just to show numbers and they certainly do not need a high level of
+> > > precision.
+> >
+> > We used to spend this time before commit fd25a9e0e23b ("memcg: unify
+> > memcg stat flushing") which generalized the "skip if ongoing flush"
+> > for all stat flushing. As far I know, the problem was contention on
+> > the flushing lock which also affected critical paths like refault.
+> >
+> > The problem is that the current behavior is indeterministic, if cpu A
+> > tries to flush stats and cpu B is already doing that, cpu A will just
+> > skip. At that point, the cgroup(s) that cpu A cares about may have
+> > been fully flushed, partially flushed (in terms of cpus), or not
+> > flushed at all. We have no idea. We just know that someone else is
+> > flushing something. IOW, in some cases the flush request will be
+> > completely ignored and userspace will read stale stats (up to 2s + the
+> > periodic flusher runtime).
+>
+> Yes, that is certainly true but why does that matter? Stats are always a
+> snapshot of the past. Do we get an inconsistent image that would be
+> actively harmful.
 
-The SYNC command only ensures that the command that precedes it in the
-same ECMDQ must be executed, but cannot synchronize the commands in other
-ECMDQs. If an unmap involves multiple commands, some commands are executed
-on one core, and the other commands are executed on another core. In this
-case, after the SYNC execution is complete, the execution of all preceded
-commands can not be ensured.
+That can very well be the case because we may be in a state where some
+cpus are flushed and some aren't. Also sometimes a few seconds is too
+old. We have some workloads that read the stats every 1-2 seconds to
+keep a fresh state, and they certainly do not expect stats to be 2+
+seconds old when they read them.
 
-Prevent the process that performs a set of associated commands insertion
-from being migrated to other cores ensures that all commands are inserted
-into the same ECMDQ.
+>
+> > Some workloads need to read up-to-date stats as feedback to actions
+> > (e.g. after proactive reclaim, or for userspace OOM killing purposes),
+> > and reading such stale stats causes regressions or misbehavior by
+> > userspace.
+>
+> Please tell us more about those and why should all others that do not
+> require such a precision should page that price as well.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 41 +++++++++++++++++----
- 1 file changed, 34 insertions(+), 7 deletions(-)
+Everyone used to pay this price though and no one used to complain.
+Even before rstat, we used to iterate the entire hierarchy when
+userspace reads the stats. rstat came in and made this much more
+efficient by only iterating the subtrees that actually have updates.
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index c64b34be8eb9181..0244f0647745a72 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -243,6 +243,18 @@ static int queue_remove_raw(struct arm_smmu_queue *q, u64 *ent)
- 	return 0;
- }
- 
-+static void arm_smmu_preempt_disable(struct arm_smmu_device *smmu)
-+{
-+	if (smmu->ecmdq_enabled)
-+		preempt_disable();
-+}
-+
-+static void arm_smmu_preempt_enable(struct arm_smmu_device *smmu)
-+{
-+	if (smmu->ecmdq_enabled)
-+		preempt_enable();
-+}
-+
- /* High-level queue accessors */
- static int arm_smmu_cmdq_build_cmd(u64 *cmd, struct arm_smmu_cmdq_ent *ent)
- {
-@@ -1037,6 +1049,7 @@ static void arm_smmu_sync_cd(struct arm_smmu_domain *smmu_domain,
- 
- 	cmds.num = 0;
- 
-+	arm_smmu_preempt_disable(smmu);
- 	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
- 	list_for_each_entry(master, &smmu_domain->devices, domain_head) {
- 		for (i = 0; i < master->num_streams; i++) {
-@@ -1047,6 +1060,7 @@ static void arm_smmu_sync_cd(struct arm_smmu_domain *smmu_domain,
- 	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
- 
- 	arm_smmu_cmdq_batch_submit(smmu, &cmds);
-+	arm_smmu_preempt_enable(smmu);
- }
- 
- static int arm_smmu_alloc_cd_leaf_table(struct arm_smmu_device *smmu,
-@@ -1842,31 +1856,38 @@ arm_smmu_atc_inv_to_cmd(int ssid, unsigned long iova, size_t size,
- 
- static int arm_smmu_atc_inv_master(struct arm_smmu_master *master)
- {
--	int i;
-+	int i, ret;
- 	struct arm_smmu_cmdq_ent cmd;
- 	struct arm_smmu_cmdq_batch cmds;
-+	struct arm_smmu_device *smmu = master->smmu;
- 
- 	arm_smmu_atc_inv_to_cmd(0, 0, 0, &cmd);
- 
- 	cmds.num = 0;
-+
-+	arm_smmu_preempt_disable(smmu);
- 	for (i = 0; i < master->num_streams; i++) {
- 		cmd.atc.sid = master->streams[i].id;
--		arm_smmu_cmdq_batch_add(master->smmu, &cmds, &cmd);
-+		arm_smmu_cmdq_batch_add(smmu, &cmds, &cmd);
- 	}
- 
--	return arm_smmu_cmdq_batch_submit(master->smmu, &cmds);
-+	ret = arm_smmu_cmdq_batch_submit(smmu, &cmds);
-+	arm_smmu_preempt_enable(smmu);
-+
-+	return ret;
- }
- 
- int arm_smmu_atc_inv_domain(struct arm_smmu_domain *smmu_domain, int ssid,
- 			    unsigned long iova, size_t size)
- {
--	int i;
-+	int i, ret;
- 	unsigned long flags;
- 	struct arm_smmu_cmdq_ent cmd;
- 	struct arm_smmu_master *master;
- 	struct arm_smmu_cmdq_batch cmds;
-+	struct arm_smmu_device *smmu = smmu_domain->smmu;
- 
--	if (!(smmu_domain->smmu->features & ARM_SMMU_FEAT_ATS))
-+	if (!(smmu->features & ARM_SMMU_FEAT_ATS))
- 		return 0;
- 
- 	/*
-@@ -1890,6 +1911,7 @@ int arm_smmu_atc_inv_domain(struct arm_smmu_domain *smmu_domain, int ssid,
- 
- 	cmds.num = 0;
- 
-+	arm_smmu_preempt_disable(smmu);
- 	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
- 	list_for_each_entry(master, &smmu_domain->devices, domain_head) {
- 		if (!master->ats_enabled)
-@@ -1897,12 +1919,15 @@ int arm_smmu_atc_inv_domain(struct arm_smmu_domain *smmu_domain, int ssid,
- 
- 		for (i = 0; i < master->num_streams; i++) {
- 			cmd.atc.sid = master->streams[i].id;
--			arm_smmu_cmdq_batch_add(smmu_domain->smmu, &cmds, &cmd);
-+			arm_smmu_cmdq_batch_add(smmu, &cmds, &cmd);
- 		}
- 	}
- 	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
- 
--	return arm_smmu_cmdq_batch_submit(smmu_domain->smmu, &cmds);
-+	ret = arm_smmu_cmdq_batch_submit(smmu, &cmds);
-+	arm_smmu_preempt_enable(smmu);
-+
-+	return ret;
- }
- 
- /* IO_PGTABLE API */
-@@ -1962,6 +1987,7 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
- 
- 	cmds.num = 0;
- 
-+	arm_smmu_preempt_disable(smmu);
- 	while (iova < end) {
- 		if (smmu->features & ARM_SMMU_FEAT_RANGE_INV) {
- 			/*
-@@ -1993,6 +2019,7 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
- 		iova += inv_range;
- 	}
- 	arm_smmu_cmdq_batch_submit(smmu, &cmds);
-+	arm_smmu_preempt_enable(smmu);
- }
- 
- static void arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t size,
--- 
-2.34.1
+The "skip if someone else is flushing" behavior was introduced for
+flushers in critical paths (e.g. refault), and hurting the accuracy
+for userspace readers was a side effect of it. This patch is trying to
+remedy this side effect by restoring the old behavior for userspace
+reads.
 
+One other side effect is testing. Some tests started becoming flaky
+because a test performs an action and expects the state of the system
+to change in a certain way deterministically. In some cases the
+flushing race leads to false negatives.
+
+>
+> > > [...]
+> > > > @@ -639,17 +639,24 @@ static inline void memcg_rstat_updated(struct=
+ mem_cgroup *memcg, int val)
+> > > >       }
+> > > >  }
+> > > >
+> > > > -static void do_flush_stats(void)
+> > > > +static void do_flush_stats(bool full)
+> > > >  {
+> > > > +     if (!atomic_read(&stats_flush_ongoing) &&
+> > > > +         !atomic_xchg(&stats_flush_ongoing, 1))
+> > > > +             goto flush;
+> > > > +
+> > > >       /*
+> > > > -      * We always flush the entire tree, so concurrent flushers ca=
+n just
+> > > > -      * skip. This avoids a thundering herd problem on the rstat g=
+lobal lock
+> > > > -      * from memcg flushers (e.g. reclaim, refault, etc).
+> > > > +      * We always flush the entire tree, so concurrent flushers ca=
+n choose to
+> > > > +      * skip if accuracy is not critical. Otherwise, wait for the =
+ongoing
+> > > > +      * flush to complete. This avoids a thundering herd problem o=
+n the rstat
+> > > > +      * global lock from memcg flushers (e.g. reclaim, refault, et=
+c).
+> > > >        */
+> > > > -     if (atomic_read(&stats_flush_ongoing) ||
+> > > > -         atomic_xchg(&stats_flush_ongoing, 1))
+> > > > -             return;
+> > > > -
+> > > > +     while (full && atomic_read(&stats_flush_ongoing) =3D=3D 1) {
+> > > > +             if (!cond_resched())
+> > > > +                     cpu_relax();
+> > >
+> > > You are reinveting a mutex with spinning waiter. Why don't you simply
+> > > make stats_flush_ongoing a real mutex and make use try_lock for !full
+> > > flush and normal lock otherwise?
+> >
+> > So that was actually a spinlock at one point, when we used to skip if
+> > try_lock failed.
+>
+> AFAICS cgroup_rstat_flush is allowed to sleep so spinlocks are not
+> really possible.
+>
+> > We opted for an atomic because the lock was only used
+> > in a try_lock fashion. The problem here is that the atomic is used to
+> > ensure that only one thread actually attempts to flush at a time (and
+> > others skip/wait), to avoid a thundering herd problem on
+> > cgroup_rstat_lock.
+> >
+> > Here, what I am trying to do is essentially equivalent to "wait until
+> > the lock is available but don't grab it". If we make
+> > stats_flush_ongoing a mutex, I am afraid the thundering herd problem
+> > will be reintroduced for stats_flush_ongoing this time.
+>
+> You will have potentially many spinners for something that might take
+> quite a lot of time (sleep) if there is nothing else to schedule. I do
+> not think this is a proper behavior. Really, you shouldn't be busy
+> waiting for a sleeper.
+>
+> > I am not sure if there's a cleaner way of doing this, but I am
+> > certainly open for suggestions. I also don't like how the spinning
+> > loop looks as of now.
+>
+> mutex_try_lock for non-critical flushers and mutex_lock of syncing ones.
+> We can talk a custom locking scheme if that proves insufficient or
+> problematic.
+> --
+> Michal Hocko
+> SUSE Labs
