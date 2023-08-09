@@ -2,174 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E94E775055
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 03:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A137775053
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 03:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbjHIB1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 21:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49820 "EHLO
+        id S230018AbjHIB1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 21:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjHIB1u (ORCPT
+        with ESMTP id S229527AbjHIB1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 21:27:50 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424FD19A8
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 18:27:49 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c93638322so86219466b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 18:27:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1691544467; x=1692149267;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=O6VpqXFhriUJuQ+K1KbAMi5ftxncBbuJpQzUZ//b884=;
-        b=fkBC2tD1a4FFYAdyI2wWfyo2XjP3sMHi4dcQrzq6JB1zFk7WdcAurxTKjCLltWnDvc
-         O1/+9Nzw/6uC04Wz3DjMri5kJgkWEx6KEo+ArZAkEjqpakXQKRcPBGauk36tF7xzzs+C
-         8Lk1Z20Ley/qJjY9savka2Ur4MsortHQgT5L0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691544467; x=1692149267;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=O6VpqXFhriUJuQ+K1KbAMi5ftxncBbuJpQzUZ//b884=;
-        b=Pmi8mcS6OfrHIteaqJjIOKLZjEgIinQ8D+Qe4NGAndiXdVA2q8JZOFvLC4fPzxE6yb
-         SfCsb+dtQlmbx0dYDMwCwNtYnRqQAOHj10JvMAZlo+sqv5hn1AsRatsayyKoZjDe4WF5
-         aWTd4ZWDdIBh1PCbs8+G/R57Pm2NXabFLjAhwdGka/IkYXf1S+y5c/f3FyrgJzOUBmOe
-         mwXD1YpEGnEETZGVhGBbkQx4Grxb90mKNejBvTQFhoWPJ/WTq+hxV+pebqHrzkGIe11z
-         46Sh6pO7DGQRNi6EE6n/dRaM256tt+Z1dfbmQchk3gMegs73NL6BFtdePczll8BNP0bb
-         O1Pw==
-X-Gm-Message-State: AOJu0YwlPuv4u4HkdgOX7gF13+OreEbHCt2o4F3EumXy2t3afaQbw9EJ
-        x5o9SRq5qjtZ8l9jpzMsCsROjYvpucfBabhOjTOOIghO
-X-Google-Smtp-Source: AGHT+IGv3tCqEPbHXxzrgN+QTbH2F2kzS9jEiYs4N6owMGnzuQOk8XNqeWjMMtSJJQm0ajGmt9wJrA==
-X-Received: by 2002:a17:906:5197:b0:99b:cb59:79b3 with SMTP id y23-20020a170906519700b0099bcb5979b3mr1953470ejk.1.1691544467652;
-        Tue, 08 Aug 2023 18:27:47 -0700 (PDT)
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
-        by smtp.gmail.com with ESMTPSA id s5-20020a170906168500b00999bb1e01dfsm7275297ejd.52.2023.08.08.18.27.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 18:27:46 -0700 (PDT)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-99c10ba30afso84588866b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Aug 2023 18:27:46 -0700 (PDT)
-X-Received: by 2002:a17:907:168a:b0:99b:f42d:b3f6 with SMTP id
- hc10-20020a170907168a00b0099bf42db3f6mr14125951ejc.32.1691544466349; Tue, 08
- Aug 2023 18:27:46 -0700 (PDT)
+        Tue, 8 Aug 2023 21:27:45 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2072.outbound.protection.outlook.com [40.107.6.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD09119A8;
+        Tue,  8 Aug 2023 18:27:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MxoM/F1LWaJMLGPh/3qrqmt7U8phfTXDRP/eh/L7lGTDW1q8lFwiPZeiEVJP1c5noraVExIvfrLxtiYSJiiVBso4npAZdTDaPCh9FDj+5koByVv3PEipNNiN7ZoPdj4GG3PPtBaKn5m4To5QvzVlEij3yQBLxGOKSD+Mz0sMz/N8tOro0elFknfDF3jKwNQbcG95JrCYn0R0UuntG3ikd6DtctPPMxvqvxa9Yfm3SZ0pXxngHQroWm+p41GuXSrYptwcRx2xmmx7EW2hVUT5EnAa6453V3DO5O49J9PLxnLpK7QpAuu/+SKl7tuteeNTeO3fnbSE2/KB+u/mIfTC8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jA0C54Bi5GahVfCLmdguJPVdbQGUBFxHn9x41fZnGq4=;
+ b=T+LB/H1eSv5eFq47SrfI7+k+xiNd2A3jYsHFa6fMU+8W/TMOjbZ3ZE8OSajRcfFhLJw3WbmTrPQ9IWsK5pxIeUny9zt9fz56OMIB0MfFohxhNaGMIYuQHwSLzMqN1X1uh0UGKlzrM0LU/tTUjvTE8EcmQzgDNFNmLZ7Opin0F4Tpzhy9Xr6BogdLMziilDWTIZV/sLvjtfgVJDvBpMJ6nsOrUwdiY0ZVVi1H2AgWlj1CggWo1hyQ2/gIGADf4ya2SkgNZsdRUiBEv6NUpH/jgLJ9ebUVZveozioQX4c9RZZRYVC8/NFVt31lq8dENPSjC/qRUgwD/uWtJexyXwFd+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jA0C54Bi5GahVfCLmdguJPVdbQGUBFxHn9x41fZnGq4=;
+ b=spjkdkwpjXVqJOTyfrzSm6aW0AA/0rOz4e1IHKe21JUaEGSYiRfgtS3atnr+DqgX3nDDsSAo4VLHxzgXTQ7my6kcKFZxKHXMc9O5VNxhxm1sLj9uQ0+qkkMDgaAFmLIF1+2C7LuqvFRaHyPDkPajMIJQy1vFshKVyczto5E8r88=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AS8PR04MB8296.eurprd04.prod.outlook.com (2603:10a6:20b:3f2::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.28; Wed, 9 Aug
+ 2023 01:27:42 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::5d6a:ec53:f2a8:5b97]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::5d6a:ec53:f2a8:5b97%6]) with mapi id 15.20.6652.025; Wed, 9 Aug 2023
+ 01:27:41 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>
+CC:     "amitk@kernel.org" <amitk@kernel.org>,
+        "rui.zhang@intel.com" <rui.zhang@intel.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH V2 0/2] thermal: fix two coverity reported issues
+Thread-Topic: [PATCH V2 0/2] thermal: fix two coverity reported issues
+Thread-Index: AQHZvf4jbwqPDJU9yUGPQivCwIGMgK/hRT1Q
+Date:   Wed, 9 Aug 2023 01:27:41 +0000
+Message-ID: <DU0PR04MB9417E1F81E036117D733D61D8812A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20230724071646.2744900-1-peng.fan@oss.nxp.com>
+In-Reply-To: <20230724071646.2744900-1-peng.fan@oss.nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AS8PR04MB8296:EE_
+x-ms-office365-filtering-correlation-id: 9af6106b-9243-471a-de64-08db9877d334
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nakA142/CnF+I3taIEVWerO3NQTaZvfo1NIvHOo6frY0dgZgGERBN6dn1jiTHPZGhJagYUhl9jBXjCmKiukauz4oUNn7NGVK0ASDdqI6v1VNfF++sA68AlyKwYdTlYGZAIzPMjWWxk5IzLHwuBYYcdqi+suSdaVPksP1abzCTyvsYWoLtJZTCAcI/Kpohn/YwZQ4QVdJoSE/Zxt+zrPm/j176aQwTXOPxREST/GUvEIbe1OKOJ88Mmxeexf4q3PWSVtGAD8OkswCPyetUiIgKVjMPxw7XxTyUq7HWFGSjcR6/B1LifmVFkO2ud0tCl4FvKbWptfrhyil6ERE2SkgYHJ8cTviN0gelwb72D3hCkqTgx+v1q/0JyYNDoqWhO/5VoOzIolWMo1A0sW1Ez42R3Opi4qCSQze2hbijoum0GJFyC8SPJ6tMQs5nUVUFNc9isgkYX2k4gsXx9Yc7hSLTk6yfoCS8z5vnAg5bdT1egqe02fcceaKsas/mHXVugPCTnC05tPHb1LrslID+6T24s19Zc9aN5+HiI41JpTcu3cjiKy4WaZbg8URjoa7wigYVpsY4f7Q1a4wQi7S2+tYMFkH7VVM+Ep652el9AWvVNVMn1Pa+c7ASKV3zMn/YRxx
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39860400002)(396003)(346002)(136003)(376002)(451199021)(1800799006)(186006)(7696005)(9686003)(41300700001)(83380400001)(8936002)(8676002)(86362001)(38070700005)(52536014)(38100700002)(5660300002)(64756008)(4326008)(66946007)(316002)(66556008)(66476007)(76116006)(66446008)(122000001)(44832011)(71200400001)(26005)(6506007)(55016003)(2906002)(33656002)(4744005)(110136005)(54906003)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?fEe8t7+ZLeBSGYkR2DQ2+f5OhJ/KATYT6pQFeePUEyVrki195zKIYWqL62BJ?=
+ =?us-ascii?Q?uuwjPuh+jj+El8vvhmquZUkKe5wkc/Mk8x1P46laB+9pnGFtLl38/5vlOyok?=
+ =?us-ascii?Q?gk8U5hMHidkkam3o711yOwD24snXcan3l1XRzVsuZW9x3I7kTz2vtd3NfU7R?=
+ =?us-ascii?Q?m1SjD2zAlToxQeMbGIaAvMEQMo7isjtaO5Y0rV7rRkkXlU20UJWpf3CmKehP?=
+ =?us-ascii?Q?vC0uy3tYPg2RrDI8dwKH3L9MePawxtTFk3QzIeGGcDWOKOaQsf6eh5JLX+Sp?=
+ =?us-ascii?Q?oWwvL5QjaDAvNroBsO2MtA6hmDxg4KJ80LMfaZ2BYGm2clltP8bItEZ7I15q?=
+ =?us-ascii?Q?ao80/0mPyqrKcjcyRq07hgCQRWn9ZJnT4WNmN9eYGgO6bLJY4oIa32ufeReC?=
+ =?us-ascii?Q?V+MtbfLHbu4doB474/1piWFwj23OWlUe1MQrmGNIsdx1wqZ892oPtinynL8B?=
+ =?us-ascii?Q?b9ztWuTeZWq5nILiK6L8tzdRx+jbw8WTNaUN8k8saJHavrzoGGGbhyfI83i/?=
+ =?us-ascii?Q?yNlpYrrEbWcp40/O4wsl6/ebGWQBqj55rcbr4hgNFEJNjckPnH1zFpBNtw1N?=
+ =?us-ascii?Q?Ck7SViF3Yl26v3F7JajqsIEAdXN51HscKtU8fi9hzFVd93bIQlOAoLd3vZ3y?=
+ =?us-ascii?Q?q05m6q7Op+W58fM7NDYxtJAoGGO8dnxfXnyjR2c8Bhm02TGfujx1lsGXbWtc?=
+ =?us-ascii?Q?NeekS7wBt3CBKooJO5O308QjHDQ+YMoojCPMwXThmqQAXf5tUzw9Zb1JH8bx?=
+ =?us-ascii?Q?if12PRbO6ewzm+AIfi0lH/8X7eMg4ZpubHF7jnM198aj8QLoPQuhgy14KDtC?=
+ =?us-ascii?Q?fkd3ELWKE+wvhkpDyEfoM+pWZgF+Xx/yEBM48uj9vDF7/TIDgjhDKOQCo4VP?=
+ =?us-ascii?Q?bUYmsJDc225fqLZnvoH/44RKj86Z/l/fXdj/aD1rTQ9tjftjY4NKY4frFotA?=
+ =?us-ascii?Q?hfeWkOjNBlO526LTtaPKa6ktm+EF4IhG5LNkck/rHhRZcsKlZzfNYNMNLn/z?=
+ =?us-ascii?Q?O4wIx8s9QpnLD6SKuRSVm6RCz1qJEHvujOi46WNF/6ftUoNYl7fJIqMjlpRk?=
+ =?us-ascii?Q?RDhVmpnRWonAo7vZeTroGvwk7SE5mnTdZ83KYAmjf5OUzWv5lf38mtXvWUC3?=
+ =?us-ascii?Q?ylzA/XNUDwtOpYF0c6nlIKOjwL0BgHnP0o+32qn0Vg235MPowJjKrCQpLqrx?=
+ =?us-ascii?Q?3h/NOgeFjNnaPVIqH0K26CSijRNTWvCQrKgcB/aj/KDVxR13wbfKUyrlgLVW?=
+ =?us-ascii?Q?KsIkMV9TsPSRfGyPVKN0xxu8253RFvMyhkKfExTxXHK8qvShFySqRyJQxiRp?=
+ =?us-ascii?Q?AMj25+Cp/+AfgZGLRp6TftL5qFHqArD2ibV2sLPSfgH41aePXSosE8M7SvEe?=
+ =?us-ascii?Q?Dypv0CLk6lOvwVOPBYP0rfmh61zCS8eiVATBBwuJzLPyM29xqzhAYeE3lBwa?=
+ =?us-ascii?Q?vyW1Cl/UiB4lO1LNEPHavPMw/IVLrm+z0ah/quTUmxmuHAWvaJGRMgB37HNj?=
+ =?us-ascii?Q?TFBe2JkkDRUwf30nx2E1r/mjaqRnAVZfKEwSk2ow6Zrgdeqvhod5RN6oUJSG?=
+ =?us-ascii?Q?dRiiszWTwsYJfQgt/NA=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <20230706155602.mnhsylo3pnief2of@moria.home.lan> <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
-In-Reply-To: <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 8 Aug 2023 18:27:29 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
-Message-ID: <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, djwong@kernel.org,
-        dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
-        josef@toxicpanda.com, tytso@mit.edu, bfoster@redhat.com,
-        jack@suse.cz, andreas.gruenbacher@gmail.com, brauner@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        dhowells@redhat.com, snitzer@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9af6106b-9243-471a-de64-08db9877d334
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2023 01:27:41.4817
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mjIQA1gQ72vD5FG/JMpRGIOGgCum1HAPlCnZxCVRJ32wUeDmBTKkOVtpPvrZQ7PwE1SY8WuLJZ+4PAVUi7/Qww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8296
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ *Finally* getting back to this, I wanted to start reviewing the
-changes immediately after the merge window, but something else always
-kept coming up .. ]
+Any comments?
 
-On Tue, 11 Jul 2023 at 19:55, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> So: looks like we missed the merge window. Boo :)
+> Subject: [PATCH V2 0/2] thermal: fix two coverity reported issues
+>=20
+> From: Peng Fan <peng.fan@nxp.com>
+>=20
+>  Fix two thermal issues reported by coverity.
+>=20
+> V2:
+>  Add cover letter
+>  Add Fixes Tag
+>=20
+> Peng Fan (2):
+>   thermal/core: fix potential memory leak
+>   thermal/of: accessing potential uninitialized value
+>=20
+>  drivers/thermal/thermal_core.c | 3 +++
+>  drivers/thermal/thermal_of.c   | 8 ++++----
+>  2 files changed, 7 insertions(+), 4 deletions(-)
+>=20
+> --
+> 2.37.1
+Thanks,
+Peng.
 
-Well, looking at the latest 'bcachefs-for-upstream' state I see, I'm
-happy to see the pre-requisites outside bcachefs being much smaller.
-
-The six locks are now contained within bcachefs, and I like what I see
-more now that it doesn't play games with 'u64' and lots of bitfields.
-
-I'm still not actually convinced the locks *work* correctly, but I'm
-not seeing huge red flags. I do suspect there are memory ordering
-issues in there that would all be hidden on x86, and some of it looks
-strange, but not necessarily unfixable.
-
-Example of oddity:
-
-                barrier();
-                w->lock_acquired = true;
-
-which really smells like it should be
-
-                smp_store_release(&w->lock_acquired, true);
-
-(and the reader side in six_lock_slowpath() should be a
-smp_load_acquire()) because otherwise the preceding __list_del()
-writes would seem to possibly by re-ordered by the CPU to past the
-lock_acquired write, causing all kinds of problems.
-
-On x86, you'd never see that as an issue, since all writes are
-releases, so the 'barrier()' compiler ordering ends up forcing the
-right magic.
-
-Some of the other oddity is around the this_cpu ops, but I suspect
-that is at least partly then because we don't have acquire/release
-versions of the local cpu ops that the code looks like it would want.
-
-I did *not* look at any of the internal bcachefs code itself (apart
-from the locking, obviously). I'm not that much of a low-level
-filesystem person (outside of the vfs itself), so I just don't care
-deeply. I care that it's maintained and that people who *are*
-filesystem people are at least not hugely against it.
-
-That said, I do think that the prerequisites should go in first and
-independently, and through maintainers.
-
-And there clearly is something very strange going on with superblock
-handling and the whole crazy discussion about fput being delayed. It
-is what it is, and the patches I saw in this thread to not delay them
-were bad.
-
-As to the actual prereqs:
-
-I'm not sure why 'd_mark_tmpfile()' didn't do the d_instantiate() that
-everybody seems to want, but it looks fine to me. Maybe just because
-Kent wanted the "mark" semantics for the naming. Fine.
-
-The bio stuff should preferably go through Jens, or at least at a
-minimum be acked.
-
-The '.faults_disabled_mapping' thing is a bit odd, but I don't hate
-it, and I could imagine that other filesystems could possibly use that
-approach instead of the current 'pagefault_disable/enable' games and
-->nofault games to avoid the whole "use mmap to have the source and
-the destination of a write be the same page" thing.
-
-So as things stand now, the stuff outside bcachefs itself I don't find
-objectionable.
-
-The stuff _inside_ bcachefs I care about only in the sense that I
-really *really* would like a locking person to look at the six locks,
-but at the same time as long as it's purely internal to bcachefs and
-doesn't possibly affect anything else, I'm not *too* worried about
-what I see.
-
-The thing that actually bothers me most about this all is the personal
-arguments I saw.  That I don't know what to do about. I don't actually
-want to merge this over the objections of Christian, now that we have
-a responsible vfs maintainer.
-
-So those kinds of arguments do kind of have to be resolved, even aside
-from the "I think the prerequisites should go in separately or at
-least be clearly acked" issues.
-
-Sorry for the delay, I really did want to get these comments out
-directly after the merge window closed, but this just ended up always
-being the "next thing"..
-
-                  Linus
