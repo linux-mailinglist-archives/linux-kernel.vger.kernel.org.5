@@ -2,246 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B21775EDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8BA775EDF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232049AbjHIMZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
+        id S231674AbjHIM1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjHIMZd (ORCPT
+        with ESMTP id S229549AbjHIM1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:25:33 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563351BDA;
-        Wed,  9 Aug 2023 05:25:31 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BE3DE1F390;
-        Wed,  9 Aug 2023 12:25:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691583929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k9r2dWqCJrzW8agwsL3JhJja3wWFARaF1A7ujRcWAKQ=;
-        b=jJV/lYTFKOjafF4ayGtLUKmHLfmNxkHTo0VVLVJwv2LvFeOxxOJbgcVYQWrQoklCmwOEFx
-        GPKaF+T3vwo3h7y7aHzHhdxCoufVygdQQ2Tq7DHxnyBtgE7zEzDyTMA06dhffDlsm6Ju54
-        L1/FIjZyCc6i2o+Nu1um+mbW8pnr5BE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691583929;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k9r2dWqCJrzW8agwsL3JhJja3wWFARaF1A7ujRcWAKQ=;
-        b=MgKjUSaKD1ckj9OpasHrwgueBuzqqaxHpzHeA9Hx+HsIvWUTFvbDgp5eM96rA8PpKny//Q
-        ncoNlzVZwjHBrsDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B07A7133B5;
-        Wed,  9 Aug 2023 12:25:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id b4QKK7mF02RVbQAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 09 Aug 2023 12:25:29 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 44E42A0769; Wed,  9 Aug 2023 14:25:29 +0200 (CEST)
-Date:   Wed, 9 Aug 2023 14:25:29 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Liu Song <liusong@linux.alibaba.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: do not mark inode dirty which is already dirtied
- under append-write scenario
-Message-ID: <20230809122529.vy5xcx4f6cghvcsu@quack3>
-References: <20230711034256.72651-1-liusong@linux.alibaba.com>
+        Wed, 9 Aug 2023 08:27:33 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD541FC2
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:27:30 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99bdf08860dso185962066b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 05:27:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691584049; x=1692188849;
+        h=content-transfer-encoding:in-reply-to:disposition-notification-to
+         :content-language:references:cc:to:subject:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+8ywn3mV6e+GJCfiiUtxI+ObwntWBtkLOtVXVTHY2kc=;
+        b=o4HnDm0Rf40dlIzqHVdliEJs6BGofFUWEc82DCjJwpJKRMkyQQPvSPwCi67feDU0CJ
+         i1QDPMUNWG2C8tI/5cAL+Q15LjM7vhcp5xCTshDElGI/j0Gzahw3vjkwn6T/vz26KpzM
+         h8O3SeCLNpCj+woksb4E/vebTtxdM9z8j9izj8ic7RfEPudZQfnzt5GO72wLqh1iZJM/
+         EimHohqFfRXFxBOidGmfG1nJwhfxRMdc1FKuu/8H6vvDeODVG8igaYUTw82zs28EkTn5
+         8YNGPB34YMNEEMRLjIY7eLdZ/ZP0FLNXsjcZCRCt96PnDrBRi7PrQ06N/5a/ZxB7vENC
+         rWkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691584049; x=1692188849;
+        h=content-transfer-encoding:in-reply-to:disposition-notification-to
+         :content-language:references:cc:to:subject:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+8ywn3mV6e+GJCfiiUtxI+ObwntWBtkLOtVXVTHY2kc=;
+        b=T9zpgBL5vl7WDQ9hoT4p5DbiWym5Dn+zs/D+D38xfN5BNuI8bNBVlQp2ySwYq1Efy9
+         FOeDlPTlXSMQppAIP/fgy+4lOflH45rz9CVZYTlN3JfjxY/6Kxz8xUgr3wGucDsluvpK
+         L3K3QgFiU2XzDiVPSLifwZaq3UeU7y2M3B4VLbZiSijpFI1uQ+bmqfWdPK507CW0Gw8P
+         G5nza9o1gtuChvUK8ORvmybZwCByVDH91WAAHFPkVl9F17IuU45WoButjwp4HxzcXWBr
+         LCjsnA+zWQKisayY+RnYJlFekqA15EO2kSQxRHIhzZUzNbAmAW8cwonM1CW+SRpu1Sy5
+         EBkw==
+X-Gm-Message-State: AOJu0YwjWsIT4BOrZ9OqmD7kJORTCDV/RBdQtd1n3Qgd0o7n5/Vaamtn
+        i0/Eg104hnfCyJepMTBj2Ts=
+X-Google-Smtp-Source: AGHT+IFvDc9ngRHx4OdJfWD379IErdsU4/Et0nRr9jv0pDhSgIcyjdOjFh7oOXwvdAKUDchoLk6szQ==
+X-Received: by 2002:a17:907:3f93:b0:99b:cadd:c2ee with SMTP id hr19-20020a1709073f9300b0099bcaddc2eemr15882096ejc.29.1691584049076;
+        Wed, 09 Aug 2023 05:27:29 -0700 (PDT)
+Received: from ?IPV6:2001:1ae9:2f0:fa00:546f:93fc:49cd:cae3? (2001-1ae9-2f0-fa00-546f-93fc-49cd-cae3.ip6.tmcz.cz. [2001:1ae9:2f0:fa00:546f:93fc:49cd:cae3])
+        by smtp.gmail.com with ESMTPSA id la4-20020a170906ad8400b0099bd682f317sm7807491ejb.206.2023.08.09.05.27.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 05:27:28 -0700 (PDT)
+Message-ID: <d2d508b7-f267-0fe6-1b56-4292c95355a7@gmail.com>
+Date:   Wed, 9 Aug 2023 14:27:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230711034256.72651-1-liusong@linux.alibaba.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Petr Skocik <pskocik@gmail.com>
+Subject: Re: [PATCH 0/1] *** Fix kill(-1,s) returning 0 on 0 kills ***
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org
+References: <20221122161240.137570-1-pskocik@gmail.com>
+ <202211220913.AF86992@keescook>
+Content-Language: en-US
+In-Reply-To: <202211220913.AF86992@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        GB_FREEMAIL_DISPTO,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 11-07-23 11:42:56, Liu Song wrote:
-> In the append-write scenario, after ensuring that the dirty inode can be
-> seen by the writeback process, there is no need to execute
-> "mark_inode_dirty" for every write. Instead, we can rely on
-> "ext4_mark_inode_dirty" executed when updating i_disksize in
-> "mpage_map_and_submit_extent" to ensure data consistency, which can
-> significantly improve performance in high-frequency append-write
-> scenarios.
-> 
-> In test scenarios of Kafka version 2.6.2, using packet size of 2K
-> resulted in a 10% performance improvement.
-> 
-> Signed-off-by: Liu Song <liusong@linux.alibaba.com>
+Hi.
 
-Overall the benefit looks interesting. Nice work.
+Is there anything else I can do to help get this (or some other 
+equivalent change that results in kill(-1,s) returning -ESRCH when it 
+has nothing to kill (like it does on the BSDs),
+as opposed to the current return value of 0 in that case) incorporated 
+into mainline Linux?
 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 9d9f414f99fe..d1aa775c9936 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3128,6 +3128,57 @@ static int ext4_da_should_update_i_disksize(struct page *page,
->  	return 1;
->  }
->  
-> +/*
-> + * Copy from generic_write_end, add conditions to execute mark_inode_dirty
-> + * to avoid additional overhead caused by frequent dirty inode operations
-> + */
-> +static int ext4_da_generic_write_end(struct file *file, struct address_space *mapping,
-> +			loff_t pos, unsigned len, unsigned copied, bool need_dirty,
-> +			struct page *page, void *fsdata)
-> +{
-> +	struct inode *inode = mapping->host;
-> +	loff_t old_size = inode->i_size;
-> +	bool i_size_changed = false;
-> +	int was_dirty;
-> +
-> +	copied = block_write_end(file, mapping, pos, len, copied, page, fsdata);
-> +
-> +	/*
-> +	 * No need to use i_size_read() here, the i_size cannot change under us
-> +	 * because we hold i_rwsem.
-> +	 *
-> +	 * But it's important to update i_size while still holding page lock:
-> +	 * page writeout could otherwise come in and zero beyond i_size.
-> +	 */
-> +	if (pos + copied > inode->i_size) {
-> +		i_size_write(inode, pos + copied);
-> +		i_size_changed = true;
-> +	}
-> +
-> +	unlock_page(page);
-> +	put_page(page);
-> +
-> +	if (old_size < pos)
-> +		pagecache_isize_extended(inode, old_size, pos);
-> +
+It would rather help some of the user software I'm developing, and the 
+slightly new semantics are IMO definitely reasonable (BSDs have them).
 
-I dislike the duplication of generic_write_end() but exporting a variant of
-generic_write_end() not doing the dirtying (and additionally returning the
-i_size_changed value) doesn't look appealing either. So I guess I'll just
-live with this...
+Basically, the current code:
+         int retval = 0, count = 0;
+         struct task_struct * p;
 
-> +	/*
-> +	 * In the append-write scenario, if the inode is marked as dirty,
-> +	 * it is ensured that the inode will be seen by the writeback process.
-> +	 * In the ext4_writepages process, when updating i_disksize,
-> +	 * corresponding metadata updates are also performed.
-> +	 * Therefore, it is unnecessary to repeatedly execute mark_inode_dirty
-> +	 * to improve performance.
-> +	 */
+         for_each_process(p) {
+             if (task_pid_vnr(p) > 1 &&
+                     !same_thread_group(p, current)) {
+                 int err = group_send_sig_info(sig, info, p,
+                                   PIDTYPE_MAX);
+                 ++count;
+                 if (err != -EPERM)
+                     retval = err;
+             }
+         }
+         ret = count ? retval : -ESRCH;
 
-Note that block_write_end() will mark the inode as dirty with I_DIRTY_PAGES
-flag (which all that's needed to trigger page writeback). Since i_size is
-never really written to disk by ext4, there's simply never a need to mark
-inode dirty because of that. Also if inode timestamps were updated inode
-was already properly marked dirty. Hence we can just mostly drop the code
-below.
+counts kill attempts at non-1, other-process pids  and sets hardcoded 
+-ESRCH only if no such attempts are made, which will almost never happen
 
-> +	if (i_size_changed) {
-> +		spin_lock(&inode->i_lock);
-> +		was_dirty = inode->i_state & I_DIRTY;
-> +		spin_unlock(&inode->i_lock);
-> +		if (!was_dirty || need_dirty)
-> +			mark_inode_dirty(inode);
-> +	}
-> +	return copied;
-> +}
-> +
->  static int ext4_da_write_end(struct file *file,
->  			     struct address_space *mapping,
->  			     loff_t pos, unsigned len, unsigned copied,
-> @@ -3137,6 +3188,7 @@ static int ext4_da_write_end(struct file *file,
->  	loff_t new_i_size;
->  	unsigned long start, end;
->  	int write_mode = (int)(unsigned long)fsdata;
-> +	bool need_dirty = false;
->  
->  	if (write_mode == FALL_BACK_TO_NONDELALLOC)
->  		return ext4_write_end(file, mapping, pos,
-> @@ -3169,10 +3221,12 @@ static int ext4_da_write_end(struct file *file,
->  	 */
->  	new_i_size = pos + copied;
->  	if (copied && new_i_size > inode->i_size &&
-> -	    ext4_da_should_update_i_disksize(page, end))
-> +	    ext4_da_should_update_i_disksize(page, end)) {
->  		ext4_update_i_disksize(inode, new_i_size);
-> +		need_dirty = true;
-> +	}
+for a nonroot EUID, because there will typically be non-pid-1 processes 
+unkillable by the nonroot EUID, but the code will still count those kill 
+attempts, and thus not return the hardcoded -ESRCH even if ALL of those 
+kill attemtpts return -EPERM, in which case -ESRCH would be in order 
+too, because there were no processes that the current EUID had 
+permission to kill (BDSs indeed return ESRCH in such a case).
 
-So when we create our own new helper function anyway I'd just move all this
-logic for delalloc write end there. Something like:
+(The kernel shouldn't need to concern itself with possible racy creation 
+of new EUID-killable processes during the kill(-1,s) walk. Either the 
+system can be known not to have running superuser code that could racily 
+create such EUID-killable processes and then such a kill-returned -ESRCH 
+would be useful, or it cannot be known not to have such running 
+superuser code, in which case the -ESRCH is transient and should be 
+droped by the user).
 
-static int ext4_da_do_write_end(struct address_space *mapping,
-			loff_t pos, unsigned len, unsigned copied,
-			struct page *page)
-{
-	struct inode *inode = mapping->host;
-	loff_t old_size = inode->i_size;
-	bool disksize_changed = false;
-	loff_t new_i_size;
+The current code also implicitly assumes either all non-EPERM kill 
+attempts return -EINVAL (invalid signal) or they
+all return 0 (success). This assumption should be valid because either 
+the signal number is invalid and stays invalid, or it is valid and
+the only possible error is -EPERM (this isn't sigqueue so the kill 
+shouldn't ever fail with -ENOMEM). If the assumption were not valid,
+then the current code could overshadow a previous failed attempt with a 
+later succesful one, returning success even if there were some non-EPERM 
+failures.
 
-	copied = block_write_end(NULL, mapping, pos, len, copied, page, NULL);
+My change proposes:
 
-	new_i_size = pos + copied;
-	/*
-	 * It's important to update i_size while still holding page lock:
-	 * page writeout could otherwise come in and zero beyond i_size.
-	 *
-	 * Since we are holding inode lock, we are sure i_disksize <=
-	 * i_size. We also know that if i_disksize < i_size, there are
-	 * delalloc writes pending in the range upto i_size. If the end of
-	 * the current write is <= i_size, there's no need to touch
-	 * i_disksize since writeback will push i_disksize upto i_size
-	 * eventually. If the end of the current write is > i_size and
-	 * inside an allocated block (ext4_da_should_update_i_disksize()
-	 * check), we need to update i_disksize here as certain
-	 * ext4_writepages() paths not allocating blocks update i_disksize.
-	 */
-	if (new_i_size > inode->i_size) {
-		unsigned long end;
+         struct task_struct * p;
 
-		i_size_write(inode, new_i_size);
-		end = (new_i_size - 1) & (PAGE_SIZE - 1);
-		if (copied && ext4_da_should_update_i_disksize(folio, end)) {
-			ext4_update_i_disksize(inode, new_i_size);
-			disksize_changed = true;
-		}
-	}
+         ret = -ESRCH;
+         for_each_process(p) {
+             if (task_pid_vnr(p) > 1 &&
+                     !same_thread_group(p, current)) {
+                 int err = group_send_sig_info(sig, info, p,
+                                   PIDTYPE_MAX);
+                 if (err != -EPERM)
+                     ret = err; /*either all 0 or all -EINVAL*/
+             }
+         }
 
-	unlock_page(page);
-	put_page(page);
+i.e., start with -ESRCH (nothing to kill) and any non-EPERM kill 
+attempts change it to the last return value
+--either all 0 or all -EINVAL as per the implicit assumption of the 
+original code.
 
-	if (old_size < pos)
-		pagecache_isize_extended(inode, old_size, pos);
+It passes the tests put forth by Kees Cook.
 
-	if (disksize_changed) {
-		handle_t *handle;
-
-		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
-		if (IS_ERR(handle))
-			return PTR_ERR(handle);
-		ext4_mark_inode_dirty(handle, inode);
-		ext4_journal_stop(handle);
-	}
-
-	return copied;
-}
+More defensively, the implicit assumption of the original code could be 
+made explicit:
 
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+         struct task_struct * p;
+         int has_last_err = 0;
+
+         ret = -ESRCH;
+         for_each_process(p) {
+             if (task_pid_vnr(p) > 1 &&
+                     !same_thread_group(p, current)) {
+                 int err = group_send_sig_info(sig, info, p,
+                                   PIDTYPE_MAX);
+                 if (err != -EPERM){
+                     if (has_last_err)
+                         BUG_ON(ret != err); /*either all 0 or all -EINVAL*/
+                     has_last_err = 1;
+                     ret = err;
+                 }
+             }
+         }
+
+or dropped;
+
+         struct task_struct * p;
+         int has_last_err = 0;
+
+         ret = -ESRCH;
+         for_each_process(p) {
+             if (task_pid_vnr(p) > 1 &&
+                     !same_thread_group(p, current)) {
+                 int err = group_send_sig_info(sig, info, p,
+                                   PIDTYPE_MAX);
+                 if (err != -EPERM){
+                     if (has_last_err){
+                         if (err >= 0)
+                             continue; /*don't mask previous failure 
+with later success*/
+                     }
+                     has_last_err = 1;
+                     ret = err;
+                 }
+             }
+         }
+
+Thanks again for consideration. Criticism welcome.
+
+Regards,
+Petr Skocik
+
+
+On 11/22/22 18:15, Kees Cook wrote:
+> On Tue, Nov 22, 2022 at 05:12:40PM +0100, Petr Skocik wrote:
+>> Hi. I've never sent a kernel patch before but this one seemed trivial,
+>> so I thought I'd give it a shot.
+>>
+>> My issue: kill(-1,s) on Linux doesn't return -ESCHR when it has nothing
+>> to kill.
+> It looks like LTP already tests for this, and gets -ESRCH?
+> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/containers/pidns/pidns10.c
+>
+> Does it still pass with your change?
+>
+
