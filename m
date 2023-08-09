@@ -2,98 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 170C1776682
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A008776687
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 19:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbjHIRhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 13:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
+        id S232299AbjHIRip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 13:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbjHIRhT (ORCPT
+        with ESMTP id S229829AbjHIRio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 13:37:19 -0400
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015C410C0
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 10:37:19 -0700 (PDT)
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6873a30d02eso2986b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 10:37:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691602638; x=1692207438;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9yArT/awXRkYrPki92Zws/80hTWdY4r8NmlN6iV95PI=;
-        b=jks9I40Mu3hsgme1eY9fqX8Uv4oV5A1l/I2D3q9XMC3+KCQDRaUE8TnTIkE+jQMa94
-         F7a0p4U9TpkQswhPv9XyYLPxEVxRgZ7do8nadjop7mj1XvqxpY4ZEjm8ZAdKP6OgqYuM
-         58s5eVTGm7lAJpqm17dKwyWkmraaNT2ENxfpBkRHbk1+OLG4X3vImO8bfS+rQJ4UlKxa
-         V3llXeutWD/cKJa0pOYBCW3a0U5iaD8qeNOrRlRPlxrBsxwzDHVpsEW1efRFDRxBUEdo
-         akXENIoMn69KesjUvSULvrihK/C4pvEM6y6O1eMQ4Ad+JMqMC8S6HSXVsuUqi1w0UP17
-         rreA==
-X-Gm-Message-State: AOJu0YxPIDnnz9aZrqGJuuDqkqfV6sXg/HBJKJb5yfRbtiey3jECiJyR
-        aN6DCLb/7rkWzHnbuaE1T6aYIQ==
-X-Google-Smtp-Source: AGHT+IEOe/X404gAnI9Qj8z0UDy2WHWR3jxWz9myYIGG/dCeUzQac/1bjO6kMws5dZZ6Ia4S1Lp7Bw==
-X-Received: by 2002:a05:6a20:428a:b0:140:a25:1c1d with SMTP id o10-20020a056a20428a00b001400a251c1dmr3891567pzj.51.1691602638385;
-        Wed, 09 Aug 2023 10:37:18 -0700 (PDT)
-Received: from localhost ([75.172.135.98])
-        by smtp.gmail.com with ESMTPSA id j21-20020a62b615000000b00687375d9135sm10158999pff.4.2023.08.09.10.37.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 10:37:17 -0700 (PDT)
-From:   Kevin Hilman <khilman@kernel.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Dhruva Gole <d-gole@ti.com>, Andrew Davis <afd@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>,
-        Praneeth Bajjuri <praneeth@ti.com>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Vibhore Vardhan <vibhore@ti.com>, Georgi Vlaev <g-vlaev@ti.com>
-Subject: Re: [PATCH V6 4/4] firmware: ti_sci: Introduce system suspend
- resume support
-In-Reply-To: <20230809072330.GB11676@atomide.com>
-References: <20230803064247.503036-1-d-gole@ti.com>
- <20230803064247.503036-5-d-gole@ti.com>
- <3882f0ac-b74c-6eb2-197c-34ca233cd7a3@ti.com>
- <20230803155541.nwsfwobfkbpefoyw@dhruva>
- <8c330bd9-5f4e-8cd0-ed02-c3a696d7473a@ti.com>
- <20230803160815.yfpkdfssv75d4inf@dhruva> <7ho7jifrda.fsf@baylibre.com>
- <20230808115403.dkz6ev5vc6bhcmzh@dhruva> <7httt9dq2x.fsf@baylibre.com>
- <20230809072330.GB11676@atomide.com>
-Date:   Wed, 09 Aug 2023 10:37:17 -0700
-Message-ID: <7ho7jgdsmq.fsf@baylibre.com>
+        Wed, 9 Aug 2023 13:38:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8F7E71;
+        Wed,  9 Aug 2023 10:38:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 43DF264311;
+        Wed,  9 Aug 2023 17:38:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AF67C433C7;
+        Wed,  9 Aug 2023 17:38:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691602721;
+        bh=JEJkyDA9mNcPNMW2BuJGF6PgKkgkGalfSfXFkQWZKhM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tq1eoIkfdHy3ArOqTDn4u16YGaskMie+zV/Px2pdMO+p7mwSk2jIcXc84UbQ3naLy
+         AZL/dX+Xl1TrhwZLNDXZbzjQgkouCcptFeZQlqWaIYf+4HY0hgy0PqKYxONzT3JbvU
+         1YRJbD1aqnZZ/1vN97f7npFMQjU8q4HCvZfeLB38+JHNub2soLcZ+cnTuS0muSkMSA
+         U5zu5gNFUdIx+ghF0n8KC7XLYXAT4xHnKhyFqB8gxeWJl9S/yD8YBTVzj6KGq8p1Xn
+         TXJtNajuj2YmQ2342YfUNUZ/8RFSooDTJImjgBtyd0Z1MVGJEXXHdlZtriKkmMZPDx
+         0j0mY4L9sRysQ==
+Date:   Wed, 9 Aug 2023 18:38:36 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v3 09/10] dt-bindings: net: snps,dwmac: add per
+ channel irq support
+Message-ID: <20230809-scabby-cobweb-bb825dffb309@spud>
+References: <20230809165007.1439-1-jszhang@kernel.org>
+ <20230809165007.1439-10-jszhang@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xjvlQWsUfSJ189eD"
+Content-Disposition: inline
+In-Reply-To: <20230809165007.1439-10-jszhang@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tony Lindgren <tony@atomide.com> writes:
 
-> * Kevin Hilman <khilman@kernel.org> [230809 00:20]:
->> To me, it sounds like you might want to use ->resume_early() or maybe
->> ->resume_noirq() in the pinctrl driver for this so that IO isolation can
->> be disabled sooner?
->
-> For calls that need to happen just before the SoC is disabled or first
-> thing on resume path, cpu_cluster_pm_enter() and cpu_cluster_pm_exit()
-> notifiers work nice and allow distributing the code across the related
-> SoC specific code and device drivers. See for example the usage in
-> drivers/irqchip/irq-gic.c for CPU_CLUSTER_PM_ENTER.
+--xjvlQWsUfSJ189eD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Indeed, this is an option too, but for things that already have "full"
-drivers (e.g. not an irqchip), they already have a full range of PM
-callbacks, and adding another set of callbacks/notifiers for cpu_pm_* is
-a bit clunky IMO.
+On Thu, Aug 10, 2023 at 12:50:06AM +0800, Jisheng Zhang wrote:
+> The IP supports per channel interrupt, add support for this usage case.
+>=20
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 
-That being said, for things like this IO isolation stuff that is
-system-wide, and needs to happen very late in suspend (and/or very early
-in suspend), cpu_pm_ is worth considering if the same cannot be done
-with the normal PM callbacks.
+I do not see a response to
+<https://lore.kernel.org/all/20230808-clapper-corncob-0af7afa65752@spud/>
+in my mailbox or on lore, nor is there any changes in v3 on this front.
 
-Kevin
+Thanks,
+Conor.
 
+> ---
+>  .../devicetree/bindings/net/snps,dwmac.yaml   | 33 +++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Docu=
+mentation/devicetree/bindings/net/snps,dwmac.yaml
+> index 5d81042f5634..5a63302ad200 100644
+> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> @@ -109,6 +109,7 @@ properties:
+>        - description: The interrupt that occurs when Rx exits the LPI sta=
+te
+>        - description: The interrupt that occurs when Safety Feature Corre=
+ctible Errors happen
+>        - description: The interrupt that occurs when Safety Feature Uncor=
+rectible Errors happen
+> +      - description: All of the rx/tx per-channel interrupts
+> =20
+>    interrupt-names:
+>      minItems: 1
+> @@ -118,6 +119,38 @@ properties:
+>        - const: eth_lpi
+>        - const: sfty_ce
+>        - const: sfty_ue
+> +      - const: rx0
+> +      - const: rx1
+> +      - const: rx2
+> +      - const: rx3
+> +      - const: rx4
+> +      - const: rx5
+> +      - const: rx6
+> +      - const: rx7
+> +      - const: rx8
+> +      - const: rx9
+> +      - const: rx10
+> +      - const: rx11
+> +      - const: rx12
+> +      - const: rx13
+> +      - const: rx14
+> +      - const: rx15
+> +      - const: tx0
+> +      - const: tx1
+> +      - const: tx2
+> +      - const: tx3
+> +      - const: tx4
+> +      - const: tx5
+> +      - const: tx6
+> +      - const: tx7
+> +      - const: tx8
+> +      - const: tx9
+> +      - const: tx10
+> +      - const: tx11
+> +      - const: tx12
+> +      - const: tx13
+> +      - const: tx14
+> +      - const: tx15
+> =20
+>    clocks:
+>      minItems: 1
+> --=20
+> 2.40.1
+>=20
+
+--xjvlQWsUfSJ189eD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNPPHAAKCRB4tDGHoIJi
+0uDFAP4qH8Xnk1lWdOwlIW0fWCJyaXgG1F8zPUQ2Gsb4MgpJXAD/aFtaJoIkYfZ/
+21lPuNeab/ZdCafUEILwlmTgvCUFsw0=
+=r6X8
+-----END PGP SIGNATURE-----
+
+--xjvlQWsUfSJ189eD--
