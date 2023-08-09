@@ -2,140 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F14775F11
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D2E775F18
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 14:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232449AbjHIMcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 08:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        id S232224AbjHIMcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 08:32:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjHIMcG (ORCPT
+        with ESMTP id S232492AbjHIMcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 08:32:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6B21BDA;
-        Wed,  9 Aug 2023 05:32:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 98E676389E;
-        Wed,  9 Aug 2023 12:32:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4887C433C8;
-        Wed,  9 Aug 2023 12:31:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691584325;
-        bh=/49df41xVNblH0My6Rm524Eu9/9yj5IuCd5Ahg49nqY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xo6zqoH4tLtpgIRXDvauxCrT9KsgoYcbpb7Q39OdqNhaxst2+pfymQmNTOiDSdYxZ
-         W4BcOUyM7UH4fU7RUavDiPiPYka0t2THfLgZ/sPqj91yNfPhrZU50FqUyuH9VVZDN8
-         UNseWaM1PhSJla0ABVoW32qrrE3Fj/MBlpMY6czSB3W+5SSM8Xhf7kREP8isSlgAPq
-         mRtsepkXMEWgN2zHA9V6nGaEGA60y563M3sOwdLemWTAc2vf9fjCoUS3ya4haU8KNM
-         Rum+AKrje1glVe09hvcM4W9V4PhuNU1t94pbtKl8Th3CMBiN3Fjj5ODwwQE2LnUyec
-         5payJ6yoVc//Q==
-Date:   Wed, 9 Aug 2023 14:31:48 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 08/13] fs: drop the timespec64 argument from
- update_time
-Message-ID: <20230809-segeln-pflaumen-460b81bd2d3a@brauner>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-8-d1dec143a704@kernel.org>
+        Wed, 9 Aug 2023 08:32:10 -0400
+Received: from smtpdh18-1.aruba.it (smtpdh18-1.aruba.it [62.149.155.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3171BF7
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 05:32:08 -0700 (PDT)
+Received: from [192.168.1.56] ([79.0.204.227])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id TiM9qzlPdRGumTiM9qrAiE; Wed, 09 Aug 2023 14:32:05 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1691584325; bh=oPP7E+kojgmjKyIpQ8sukDlf8aNPe96/5zs01WZNpeE=;
+        h=Date:MIME-Version:Subject:To:From:Content-Type;
+        b=K07229leQiW2t1Mv7TrkQVHftqre1qhEKnPvUs/4BZ5/c4AkBwDO/ZFfTtrijwIpu
+         UJZYNg9Y9j343AUmIyZu5bGwjxX4WzLX1781SClbeIoRPOOOrSaAvGgo1A8jiH5thc
+         IAPqFG3BQExWtQnMR5assSe9URh+ovRW6UXReWMqsGNnhJCY0H33MgcFiI6nicWpDM
+         a0dYG7Iqm4pOU6mLc/tegvS3axmlUfhBPijC3w+mkaekq1Cv3ScTGUzy4mSi9t9Lzu
+         IyBIB/dBb/EfFkVRDUNbTqNunH6UUZKviHJHONi2nYhYMwwrrbNtLxSkIB5adUKUbw
+         NGAwOGhosubcg==
+Message-ID: <525f8fd4-1d1f-ef46-289e-632865d0684b@enneenne.com>
+Date:   Wed, 9 Aug 2023 14:32:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230807-mgctime-v7-8-d1dec143a704@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] dt-bindings: pps: pps-gpio: Convert to yaml
+Content-Language: en-US
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@denx.de>
+References: <20230809110812.2058428-1-festevam@gmail.com>
+From:   Rodolfo Giometti <giometti@enneenne.com>
+In-Reply-To: <20230809110812.2058428-1-festevam@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfCjZ4teLqZjh2U/woo2fkhpxLNIo2foVM9Lz/b8Q0PkwOlmSnjR5PNecuYXJ07JflUfJgt2h2eXMpEcs93R/2Qj6dYgiHANRSMcT8CN2Ko4gFJwHzsrl
+ r/JvQbvdnWIpvt8ovNgEiO/l2YAHMXizVHHDeRD6E2Wj3VTgK3TH8dpeeeiDVQWMUs0gqJ2Lui7ZX2gR7QA00HRBn37dqIBMmW7N8WWlcA57JdaITSq2e3/L
+ FDynGhjekHAv4fnNr7od9kmiZGIqV5kr1bftRB0WSLfQS7LV7fOWQ8gShQ7dNOIMbBiqtedP4qm8xQp8SZuhrCND0a9AmFpp6TrjTCkwIQgZvZ9hcl2QE0H3
+ hERpj8itu1PY+MVI4WtNyYFaKax+FJy2HwwKB+Fcpr3QYfYI8rs=
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 03:38:39PM -0400, Jeff Layton wrote:
-> Now that all of the update_time operations are prepared for it, we can
-> drop the timespec64 argument from the update_time operation. Do that and
-> remove it from some associated functions like inode_update_time and
-> inode_needs_update_time.
+On 09/08/23 13:08, Fabio Estevam wrote:
+> From: Fabio Estevam <festevam@denx.de>
 > 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/bad_inode.c           |  3 +--
->  fs/btrfs/inode.c         |  3 +--
->  fs/btrfs/volumes.c       |  4 +---
->  fs/fat/fat.h             |  3 +--
->  fs/fat/misc.c            |  2 +-
->  fs/gfs2/inode.c          |  3 +--
->  fs/inode.c               | 30 +++++++++++++-----------------
->  fs/overlayfs/inode.c     |  2 +-
->  fs/overlayfs/overlayfs.h |  2 +-
->  fs/ubifs/file.c          |  3 +--
->  fs/ubifs/ubifs.h         |  2 +-
->  fs/xfs/xfs_iops.c        |  1 -
->  include/linux/fs.h       |  4 ++--
+> Convert from pps-gpio.txt to pps-gpio.yaml to allow schema validation.
+> 
+> Signed-off-by: Fabio Estevam <festevam@denx.de>
 
-This was missing the conversion of fs/orangefs orangefs_update_time()
-causing the build to fail. So at some point kbuild will yell here.
-Fwiw, I've fixed that up in-tree.
+Acked-by: Rodolfo Giometti <giometti@enneenne.com>
+
+> ---
+>   .../devicetree/bindings/pps/pps-gpio.txt      | 30 ------------
+>   .../devicetree/bindings/pps/pps-gpio.yaml     | 46 +++++++++++++++++++
+>   2 files changed, 46 insertions(+), 30 deletions(-)
+>   delete mode 100644 Documentation/devicetree/bindings/pps/pps-gpio.txt
+>   create mode 100644 Documentation/devicetree/bindings/pps/pps-gpio.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pps/pps-gpio.txt b/Documentation/devicetree/bindings/pps/pps-gpio.txt
+> deleted file mode 100644
+> index 9012a2a02e14..000000000000
+> --- a/Documentation/devicetree/bindings/pps/pps-gpio.txt
+> +++ /dev/null
+> @@ -1,30 +0,0 @@
+> -Device-Tree Bindings for a PPS Signal on GPIO
+> -
+> -These properties describe a PPS (pulse-per-second) signal connected to
+> -a GPIO pin.
+> -
+> -Required properties:
+> -- compatible: should be "pps-gpio"
+> -- gpios: one PPS GPIO in the format described by ../gpio/gpio.txt
+> -
+> -Additional required properties for the PPS ECHO functionality:
+> -- echo-gpios: one PPS ECHO GPIO in the format described by ../gpio/gpio.txt
+> -- echo-active-ms: duration in ms of the active portion of the echo pulse
+> -
+> -Optional properties:
+> -- assert-falling-edge: when present, assert is indicated by a falling edge
+> -                       (instead of by a rising edge)
+> -
+> -Example:
+> -	pps {
+> -		pinctrl-names = "default";
+> -		pinctrl-0 = <&pinctrl_pps>;
+> -
+> -		gpios = <&gpio1 26 GPIO_ACTIVE_HIGH>;
+> -		assert-falling-edge;
+> -
+> -		echo-gpios = <&gpio1 27 GPIO_ACTIVE_HIGH>;
+> -		echo-active-ms = <100>;
+> -
+> -		compatible = "pps-gpio";
+> -	};
+> diff --git a/Documentation/devicetree/bindings/pps/pps-gpio.yaml b/Documentation/devicetree/bindings/pps/pps-gpio.yaml
+> new file mode 100644
+> index 000000000000..801fd2720080
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pps/pps-gpio.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pps/pps-gpio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: PPS Signal via GPIO
+> +
+> +maintainers:
+> +  - Fabio Estevam <festevam@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: pps-gpio
+> +
+> +  gpios:
+> +    description: The GPIO that provides the PPS signal.
+> +
+> +  echo-gpios:
+> +    description: The GPIO that provides the PPS ECHO signal.
+> +
+> +  echo-active-ms:
+> +    description: Duration in ms of the active portion of the echo pulse.
+> +
+> +  assert-falling-edge:
+> +    description: Indicates a falling edge assert, when present. Rising edge if absent.
+> +
+> +required:
+> +  - compatible
+> +  - gpios
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +      #include <dt-bindings/gpio/gpio.h>
+> +
+> +      pps {
+> +          compatible = "pps-gpio";
+> +          pinctrl-names = "default";
+> +          pinctrl-0 = <&pinctrl_pps>;
+> +          gpios = <&gpio1 26 GPIO_ACTIVE_HIGH>;
+> +          assert-falling-edge;
+> +          echo-gpios = <&gpio1 27 GPIO_ACTIVE_HIGH>;
+> +          echo-active-ms = <100>;
+> +      };
+
+-- 
+GNU/Linux Solutions                  e-mail: giometti@enneenne.com
+Linux Device Driver                          giometti@linux.it
+Embedded Systems                     phone:  +39 349 2432127
+UNIX programming                     skype:  rodolfo.giometti
+
