@@ -2,133 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4537768C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0034A7768C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233724AbjHIT1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46500 "EHLO
+        id S233399AbjHIT1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233934AbjHIT1d (ORCPT
+        with ESMTP id S234317AbjHIT1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:27:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69462706
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 12:26:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691609175;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k6xf89mSS43Mh9qXicJVyXd+LHrtdJLi91ztEImliwY=;
-        b=LTbHLjltYnGm25OKkgk7EjCmRKmiSDCDqkIZB/hlRxNUsDFTG90ZQ56vgzKQTAAcPzBPFF
-        H8myRhbJVrgOwbD7lHAJ7iklQoli2EdPXm3bc8PEPFXN0RahQTSmlDR9z2Wiy+aY52o+Oe
-        hl0TT4mPIDysCP5uKfzQbuqwWpqBhZ4=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-201-uAUZH_XAOVCWrKUtsF1jzg-1; Wed, 09 Aug 2023 15:26:13 -0400
-X-MC-Unique: uAUZH_XAOVCWrKUtsF1jzg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-315af0252c2so139199f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 12:26:13 -0700 (PDT)
+        Wed, 9 Aug 2023 15:27:09 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BBF2D74;
+        Wed,  9 Aug 2023 12:26:52 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b9c5e07c1bso1987065ad.2;
+        Wed, 09 Aug 2023 12:26:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691609212; x=1692214012;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Mp3uEDyfXmrCSL8LBR6NSzwNML9RW1w6O8NC3O9DjI8=;
+        b=F5ATueIUEMYE20nCvRE05ITMZUXkXWp+VbSKL8MXamIOd+EqVfY6MMdBS9FbvlQTt+
+         sM/UezZt4XvVVmKpo2fjmFpWLYKbJdXkEqOjXebn1tfCrxMNlzOb48SEsBZqTBbkZXcP
+         ZTayF2qB2e0iMTV6iRkjU0a8lhO6vwBRneHjRt81ZnChk9EbSvMO0m4KNl0TKB2JlYBo
+         zpfWl5+7ieUHMj1aczUn6dvMRHHTYGOWsgHdISjTx45CnNxPrHQWDfPnVh5RabgQq0/W
+         9VT0e5xgqdDxwbCn4UUeJJuxao43NQyniklBUN6AkTOcZzmtP/S18Dhq6iN1Uv+uAmPq
+         OvAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691609172; x=1692213972;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k6xf89mSS43Mh9qXicJVyXd+LHrtdJLi91ztEImliwY=;
-        b=Er137L1ZLMi6dLH5GVEj8oufjUvgGNpQbwgbPSMPOhqdmJzgIGocQIuguBistTL+Yn
-         DXWxnngDX/4HgdgZpuoZZLlPhnyHCFQp6VW8j19ymjDrgVfKziEGsE4UTrW2uHUmKNyU
-         NqRcodFZ6OFZll7fc8D2NTp4Pf4TJ5yxpNBULQNzrhgLW2XEC8lNDby/556nGeJkXVZ6
-         ZbjVJxkLq3/Ij86fkaQzPIfKtUGKWjPvqq1H3eP9NDznzVcMLG/+3ldLiV42elz8N5KV
-         /x80W1j2UqUjPIclh03KiN8ERMwJJSaC3V4j0rofpBdThhoIPfHNCdBX+mq6iWK8X/9K
-         pzXQ==
-X-Gm-Message-State: AOJu0YyIvG0HNDimC+avRjr+n4Xp83UJVI1dk+pQ5KBks8WxjWs7FPiO
-        2Ml2JvinlDq/JbFxcBKQ3s1T7GipJ0XXbriAA2ZIacqdT4fJgI8ssy8lKjMa2tJwxW3ttObXCVj
-        4p3JegClGjM3euaWIDnUQVFs8BAT5iJCe
-X-Received: by 2002:a5d:6a4f:0:b0:314:3a3d:5d1f with SMTP id t15-20020a5d6a4f000000b003143a3d5d1fmr255542wrw.19.1691609172341;
-        Wed, 09 Aug 2023 12:26:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHLr5aiR3cnajcrFVMZx6P2KRMnVfsFfQxdftvyDgCbC8w/PiBJh4hK24vB5ITRl/jtTOUovA==
-X-Received: by 2002:a5d:6a4f:0:b0:314:3a3d:5d1f with SMTP id t15-20020a5d6a4f000000b003143a3d5d1fmr255527wrw.19.1691609171991;
-        Wed, 09 Aug 2023 12:26:11 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70e:6800:9933:28db:f83a:ef5? (p200300cbc70e6800993328dbf83a0ef5.dip0.t-ipconnect.de. [2003:cb:c70e:6800:9933:28db:f83a:ef5])
-        by smtp.gmail.com with ESMTPSA id h5-20020a05600004c500b003143aa0ca8asm17747899wri.13.2023.08.09.12.26.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 12:26:11 -0700 (PDT)
-Message-ID: <703bb7de-aba7-ee4b-c2fb-3562318072a5@redhat.com>
-Date:   Wed, 9 Aug 2023 21:26:10 +0200
+        d=1e100.net; s=20221208; t=1691609212; x=1692214012;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mp3uEDyfXmrCSL8LBR6NSzwNML9RW1w6O8NC3O9DjI8=;
+        b=GOOXq2Ra/FryCyBRIsSV32ffdntuHwjeT32/NWgveNfNe+RHki5EKZBk+q+MIvsoqw
+         xKkC4O42jc+lFc9uZfHk4eBkU3EBjf1IAB7jNP9Swo+DIWqIeMQCHXbPYL6jcED4dzyK
+         W4JuQcFxOgCWQyE6ukzl6HXxjHvMF6WzbBarbmUnMdcf+YYSn7XVoSlwNpSY4ky6jX0c
+         27Mj7KR2Yli+FFMtd3uw6TYSC7ShxmVpmm0xdlhQCpoZs1i6qHZQThEzJdbsv3pbe3eN
+         smCwP/jMDKlTqT158GnwkpbfafbYUeRrwsRDZ9zz5ds2mTfCFluijNFa21mq7MoHat/5
+         ohfw==
+X-Gm-Message-State: AOJu0YwI1Nr6ShP+1B/oNja1xYijnU+lQP51wChV59AQSMpfFkOcEr3f
+        eBNU2DTW6zWdY0OJW3A1fBo=
+X-Google-Smtp-Source: AGHT+IGBSAfHB2sNFjCXbKyP5IlIzvHeVlwcfK01fXj/8trrUZW4sqd/GX3pNjA/QArr+ABEeBFWaA==
+X-Received: by 2002:a17:902:a710:b0:1b8:36a8:faf9 with SMTP id w16-20020a170902a71000b001b836a8faf9mr36128plq.38.1691609211782;
+        Wed, 09 Aug 2023 12:26:51 -0700 (PDT)
+Received: from yoga ([202.131.132.149])
+        by smtp.gmail.com with ESMTPSA id ij23-20020a170902ab5700b001b8baa83639sm11664910plb.200.2023.08.09.12.26.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 12:26:51 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 00:56:43 +0530
+From:   Anup Sharma <anupnewsmail@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Anup Sharma <anupnewsmail@gmail.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf test: Add support for testing gecko script
+Message-ID: <ZNPocw1rC6d/v5RV@yoga>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Ryan Roberts <ryan.roberts@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
-References: <20230809083256.699513-1-david@redhat.com>
- <181fcc79-b1c6-412f-9ca1-d1f21ef33e32@arm.com>
- <ZNPnLGNCnt5lfdy8@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZNPnLGNCnt5lfdy8@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.08.23 21:21, Matthew Wilcox wrote:
-> On Wed, Aug 09, 2023 at 08:07:43PM +0100, Ryan Roberts wrote:
->>> +++ b/mm/hugetlb.c
->>> @@ -1479,7 +1479,7 @@ static void __destroy_compound_gigantic_folio(struct folio *folio,
->>>   	struct page *p;
->>>   
->>>   	atomic_set(&folio->_entire_mapcount, 0);
->>> -	atomic_set(&folio->_nr_pages_mapped, 0);
->>> +	atomic_set(&folio->_total_mapcount, 0);
->>
->> Just checking this is definitely what you intended? _total_mapcount is -1 when
->> it means "no pages mapped", so 0 means 1 page mapped?
-> 
-> We're destroying the page here, so rather than setting the meaning of
-> this, we're setting the contents of this memory to 0.
-> 
-> 
-> Other thoughts that ran through my mind ... can we wrap?  I don't think
-> we can; we always increment total_mapcount by 1, no matter whether we're
-> incrementing entire_mapcount or an individual page's mapcount, and we
-> always call folio_get() first, so we can't increment total_mapcount
-> past 2^32 because folio_get() will die first.  We might be able to
-> wrap past 2^31, but I don't think so.
+This commit add support for testing gecko script. The test checks
+for the presence of required sections such as "meta," "threads,"
+"samples," "frameTable," "stackTable," "stringTable," and
+"pausedRanges" which are few essential parameter to be present
+in output file. Also it verifies the validity of the JSON format
+using Python's JSON library if available.
 
- From my understanding, if we wrap the total mapcount, we already 
-wrapped the refcount -- as you say, grabbing a reference ahead of time 
-for each mapping is mandatory. Both are 31bit values. We could treat the 
-total mapcount as an unsigned int, but that's rather future work.
+Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
+---
+ tools/perf/tests/shell/test_gecko.sh | 131 +++++++++++++++++++++++++++
+ 1 file changed, 131 insertions(+)
+ create mode 100644 tools/perf/tests/shell/test_gecko.sh
 
-Also, even folio_mapcount() and total_mapcount() return an "int" as of now.
-
-But yes, I also thought about that. In the future we might want (at 
-least) for bigger folios refcount+total_mapcount to be 64bit. Or we 
-manage to decouple both and only have the total_mapcount be 64bit only.
-
+diff --git a/tools/perf/tests/shell/test_gecko.sh b/tools/perf/tests/shell/test_gecko.sh
+new file mode 100644
+index 000000000000..457c85474a62
+--- /dev/null
++++ b/tools/perf/tests/shell/test_gecko.sh
+@@ -0,0 +1,131 @@
++#!/bin/bash
++# perf script gecko test
++# SPDX-License-Identifier: GPL-2.0
++
++err=0
++
++cleanup() {
++  rm -rf gecko_profile.json
++  trap - exit term int
++}
++
++trap_cleanup() {
++  cleanup
++  exit 1
++}
++trap trap_cleanup exit term int
++
++report() {
++    if [ "$1" = 0 ]; then
++        echo "PASS: \"$2\""
++    else
++        echo "FAIL: \"$2\" Error message: \"$3\""
++        err=1
++    fi
++}
++
++find_str_or_fail() {
++    grep -q "$1" <<< "$2"
++    if [ "$?" != 0 ]; then
++        report 1 "$3" "Failed to find required string:'${1}'."
++    else
++        report 0 "$3"
++    fi
++}
++
++# To validate the json format, check if python is installed
++if [ "$PYTHON" = "" ] ; then
++	if which python3 > /dev/null ; then
++		PYTHON=python3
++	elif which python > /dev/null ; then
++		PYTHON=python
++	else
++		echo Skipping JSON format check, python not detected please set environment variable PYTHON.
++		PYTHON_NOT_AVAILABLE=1
++	fi
++fi
++
++# Check execution of perf script gecko command
++test_gecko_command() {
++    echo "Testing Gecko Command"
++    perf script gecko -a sleep 0.5
++	# Store the content of the file in the 'out' variable
++    out=$(< "gecko_profile.json")
++	# Get the length of the gecko_profile.json output in 'out'
++	length=${#out}
++	if [ "$length" -gt 0 ]; then
++        echo "PASS: \"Gecko Command\""
++    else
++        echo "FAIL: \"Gecko Command\""
++        err=1
++        exit
++    fi
++}
++
++# with the help of python json libary validate the json output
++if [ "$PYTHON_NOT_AVAILABLE" != "0" ]; then
++	validate_json_format()
++	{
++		if [ "$out" ] ; then
++			if [ "$PYTHON -c import json; json.load($out)" ]; then
++				echo "PASS: \"The file contains valid JSON format\""
++			else
++				echo "FAIL: \"The file does not contain valid JSON format\""
++				err=1
++				exit
++			fi
++		else
++			echo "FAIL: \"File not found\""
++			err=2
++			exit
++		fi
++	}
++fi
++
++# validate output for the presence of "meta".
++test_meta() {
++    find_str_or_fail "meta" "$out" "${FUNCNAME[0]}"
++}
++
++# validate output for the presence of "threads".
++test_threads() {
++	find_str_or_fail "threads" "$out" "${FUNCNAME[0]}"
++}
++
++# validate output for the presence of "samples".
++test_samples() {
++	find_str_or_fail "samples" "$out" "${FUNCNAME[0]}"
++}
++
++# validate output for the presence of "frameTable".
++test_frametable() {
++	find_str_or_fail "frameTable" "$out" "${FUNCNAME[0]}"
++}
++
++# validate output for the presence of "stackTable".
++test_stacktable() {
++	find_str_or_fail "stackTable" "$out" "${FUNCNAME[0]}"
++}
++
++# validate output for the presence of "stringTable"
++test_stringtable() {
++	find_str_or_fail "stringTable" "$out" "${FUNCNAME[0]}"
++}
++
++# validate output for the presence of "pausedRanges".
++test_pauseranges(){
++	find_str_or_fail "pausedRanges" "$out" "${FUNCNAME[0]}"
++}
++
++prepare_perf_data
++test_gecko_command
++validate_json_format
++test_meta
++test_threads
++test_samples
++test_frametable
++test_stacktable
++test_stringtable
++test_pauseranges
++cleanup
++exit $err
 -- 
-Cheers,
-
-David / dhildenb
+2.34.1
 
