@@ -2,125 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 032FF775592
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 10:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D7D7755BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 10:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbjHIIik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 04:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
+        id S229971AbjHIIqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 04:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjHIIih (ORCPT
+        with ESMTP id S229587AbjHIIqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 04:38:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5841BD9;
-        Wed,  9 Aug 2023 01:38:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691570315; x=1723106315;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tziAmXkAYaSE5qwVJW6lzgz/AleIpw8ZRRXgZDA5K74=;
-  b=TSrw+8Vq9I3wg7rQagXRF6r3XXRm6DCQK5Iys1FF8DFiDLBJA584NQi4
-   VZZICvCZgk86Ul8Svk+sJAjmDUEyQV0NCTRGurV2BoCBhr9wZSOKjmW3C
-   EVHpRhwBiRqJLtFeVNQSjRq61io0YXfPZuz04MQPlNEFPRVHQe9+p/hjV
-   7c3nLkJkXlBhgv4j0cwcTEOhEMG3cEYwmj6ATvPHoSxWQmN2WwSfmXqcl
-   jeRYGKbHr8UsEOWPZz5jFjoY1oAY3SbCbO9J0j3/sHC/vzDuv9TrS3qB1
-   9v89+fBzxF/1EFusymusCSBIpfGWFUgJd2p9j/5WTJGdW/Zj+E7uo3WnN
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="351372949"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="351372949"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 01:38:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="797089523"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="797089523"
-Received: from dmi-pnp-i7.sh.intel.com (HELO localhost) ([10.239.159.155])
-  by fmsmga008.fm.intel.com with ESMTP; 09 Aug 2023 01:38:27 -0700
-Date:   Wed, 9 Aug 2023 16:44:53 +0800
-From:   Dapeng Mi <dapeng1.mi@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <likexu@tencent.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Lv Zhiyuan <zhiyuan.lv@intel.com>,
-        Yang Weijiang <weijiang.yang@intel.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>, Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH RFV v2 05/13] perf/core: Add function
- perf_event_create_group_kernel_counters()
-Message-ID: <ZNNSBZIQERc/nZXQ@dmi-pnp-i7>
-References: <20230808063111.1870070-1-dapeng1.mi@linux.intel.com>
- <20230808063111.1870070-6-dapeng1.mi@linux.intel.com>
- <20230808102127.GZ212435@hirez.programming.kicks-ass.net>
+        Wed, 9 Aug 2023 04:46:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18B61FC2
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 01:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691570717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=25xn04LBqXZpHWYq1GCyF/s06Zr82F97gBHsG00KrhE=;
+        b=RNmh6rbXLC78aJ71t3yOI854mQRbzBWml5geoF/uY27ChSMT/RgT1Stn758YijcnqPtkca
+        xsaDZH8mB7277gs30JRAUMUWNTsVz3AGEblhHOgCD3IHB7BMbjWZysmNZ0qjukbI8pVrFg
+        VTQm96RgRktYKNtCkPL8zH+vtnXXGhU=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-261-hDkieobINle-e12zKqTgsw-1; Wed, 09 Aug 2023 04:45:15 -0400
+X-MC-Unique: hDkieobINle-e12zKqTgsw-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-4fe0f24e801so6432069e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 01:45:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691570714; x=1692175514;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=25xn04LBqXZpHWYq1GCyF/s06Zr82F97gBHsG00KrhE=;
+        b=eW4/ajMR7wNMsGkDsEsXlR5zRc7coUlTfpLSISh1V5tI8zEmTIXvFcKyIRqSgaloQ/
+         P8mB8qzT+TqXyTKbUOcMkq/TxsFgHnpAg6xwcbLBiP2Ibc2TdRqcJyyT4nopDlgW1rEM
+         r2IDffGrKHeV5DROhqcqjMihyfmSRbzbE1PaVlPwmVIQvKPfLKkBup8WejEKRdtk3thM
+         LheZvNOasFjkSPM86Ussd2B21OJ1atDPczLabIOH/7cL1CdIgzmOW9qoZ9g+Y7qqbW9m
+         bZQ2yz8tsn4cjknWcLYwgek/x0nSPn3Em9+/w9lDCmxI6NYf3ig4wrxw9se+PoKRbftD
+         Q/DQ==
+X-Gm-Message-State: AOJu0YxBtLB0Gbznluc8kPT3Rx93kq25IUrlziS92Tkj1lZ82hmq3vXF
+        SiZ9vE2VbYvf2uxt3jEYfyxYt4caZiGbXdjEU0gNesPvaiMWelMpoPff6kOcPhkbT+PGa2BXfWQ
+        VXDdPWVxmeP+QyZ3Tb5MDIpgIwz+Oj4oU
+X-Received: by 2002:a2e:98d1:0:b0:2ba:18e5:106d with SMTP id s17-20020a2e98d1000000b002ba18e5106dmr1225119ljj.1.1691570714400;
+        Wed, 09 Aug 2023 01:45:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFrBjsWYV/sqaAv48pc5EhuM1T8uSpnL+4lUdPGd//OkNBiz2K3XtGjh//OSr3+g8r4ELpQmQ==
+X-Received: by 2002:a2e:98d1:0:b0:2ba:18e5:106d with SMTP id s17-20020a2e98d1000000b002ba18e5106dmr1225107ljj.1.1691570713996;
+        Wed, 09 Aug 2023 01:45:13 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70e:6800:9933:28db:f83a:ef5? (p200300cbc70e6800993328dbf83a0ef5.dip0.t-ipconnect.de. [2003:cb:c70e:6800:9933:28db:f83a:ef5])
+        by smtp.gmail.com with ESMTPSA id s10-20020a05600c044a00b003fbc9d178a8sm1289112wmb.4.2023.08.09.01.45.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 01:45:13 -0700 (PDT)
+Message-ID: <f1241306-f527-2a21-02d8-ff63167aa698@redhat.com>
+Date:   Wed, 9 Aug 2023 10:45:12 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230808102127.GZ212435@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] mm/compaction: remove unused parameter pgdata of
+ fragmentation_score_wmark
+Content-Language: en-US
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        baolin.wang@linux.alibaba.com, mgorman@techsingularity.net,
+        willy@infradead.org
+References: <20230809094910.3092446-1-shikemeng@huaweicloud.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230809094910.3092446-1-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 12:21:27PM +0200, Peter Zijlstra wrote:
-> Date: Tue, 8 Aug 2023 12:21:27 +0200
-> From: Peter Zijlstra <peterz@infradead.org>
-> Subject: Re: [PATCH RFV v2 05/13] perf/core: Add function
->  perf_event_create_group_kernel_counters()
+On 09.08.23 11:49, Kemeng Shi wrote:
+> Parameter pgdat is not used in fragmentation_score_wmark. Just remove it.
 > 
-> On Tue, Aug 08, 2023 at 02:31:03PM +0800, Dapeng Mi wrote:
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index 15eb82d1a010..1877171e9590 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -12762,11 +12762,34 @@ perf_event_create_kernel_counter(struct perf_event_attr *attr, int cpu,
-> >  				 struct task_struct *task,
-> >  				 perf_overflow_handler_t overflow_handler,
-> >  				 void *context)
-> > +{
-> > +	return perf_event_create_group_kernel_counters(attr, cpu, task,
-> > +			NULL, overflow_handler, context);
-> > +}
-> > +EXPORT_SYMBOL_GPL(perf_event_create_kernel_counter);
-> > +
-> > +/**
-> > + * perf_event_create_group_kernel_counters
-> > + *
-> > + * @attr: attributes of the counter to create
-> > + * @cpu: cpu in which the counter is bound
-> > + * @task: task to profile (NULL for percpu)
-> > + * @group_leader: the group leader event of the created event
-> > + * @overflow_handler: callback to trigger when we hit the event
-> > + * @context: context data could be used in overflow_handler callback
-> > + */
-> > +struct perf_event *
-> > +perf_event_create_group_kernel_counters(struct perf_event_attr *attr,
-> > +					int cpu, struct task_struct *task,
-> > +					struct perf_event *group_leader,
-> > +					perf_overflow_handler_t overflow_handler,
-> > +					void *context)
-> 
-> I would much prefer if you just add the argument to
-> perf_event_create_kernel_counter(), there aren't *that* many users.
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
 
-Sure. Thanks.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-Thanks,
-Dapeng Mi
+Cheers,
+
+David / dhildenb
+
