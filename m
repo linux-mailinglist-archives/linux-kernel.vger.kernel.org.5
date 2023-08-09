@@ -2,167 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3C1776752
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D8577675D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 20:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232225AbjHISbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 14:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
+        id S231980AbjHISbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 14:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231980AbjHISbW (ORCPT
+        with ESMTP id S232245AbjHISbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 14:31:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A281BCF;
-        Wed,  9 Aug 2023 11:31:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BFB0D61485;
-        Wed,  9 Aug 2023 18:31:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25B3BC433C7;
-        Wed,  9 Aug 2023 18:31:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691605881;
-        bh=mNZ+YunKlSq1QXLl6rJgFDv+juRcDVmioVraKPgpXSg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=LK+YekbEFlkG5rN+a30HzQ0o58dL2PvyMebXLvYWij67I1ISo6yXPJwD2WWvv5NPu
-         pzn4aFXn4uv42gpp6auB/SVu1z7VPkQPCeePlRSssoNI00IFynjPNaft1ydnuSzVI/
-         +DxgNv56ALMxqHV09Xhox1L6J8taBOYc2a1B8T/TeM6oi20PS/QrnMd1rKS5zgsBBd
-         P24AeV5/30JDv4Cmsa+beoCpifw17GYvRUH1WFRpwv1ZD22VruKYeCly/VhMPUHcq9
-         itMdTRP/C+HNCmm3Pr+iO+kZP/+ezxIEa/SU1h9bzOjGkjNBXitMwAUjpxh9mkRgrF
-         BYUQ4SXTBo6Cg==
-Message-ID: <3f17d903-20c4-59ac-f52b-ed108fe9475f@kernel.org>
-Date:   Wed, 9 Aug 2023 20:31:14 +0200
+        Wed, 9 Aug 2023 14:31:43 -0400
+Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6F5CE1FEF;
+        Wed,  9 Aug 2023 11:31:42 -0700 (PDT)
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+        by mail.parknet.co.jp (Postfix) with ESMTPSA id 929122055FA6;
+        Thu, 10 Aug 2023 03:31:41 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+        by ibmpc.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379IVe0p224267
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 03:31:41 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+        by devron.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379IVeNg228005
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 03:31:40 +0900
+Received: (from hirofumi@localhost)
+        by devron.myhome.or.jp (8.17.2/8.17.2/Submit) id 379IVaAM227997;
+        Thu, 10 Aug 2023 03:31:36 +0900
+From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>,
+        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
+In-Reply-To: <ccffe6ca3397c8374352b002fe01d55b09d84ef4.camel@kernel.org> (Jeff
+        Layton's message of "Wed, 09 Aug 2023 13:59:26 -0400")
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+        <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
+        <87msz08vc7.fsf@mail.parknet.co.jp>
+        <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org>
+        <878rak8hia.fsf@mail.parknet.co.jp>
+        <20230809150041.452w7gucjmvjnvbg@quack3>
+        <87v8do6y8q.fsf@mail.parknet.co.jp>
+        <2cb998ff14ace352a9dd553e82cfa0aa92ec09ce.camel@kernel.org>
+        <87leek6rh1.fsf@mail.parknet.co.jp>
+        <ccffe6ca3397c8374352b002fe01d55b09d84ef4.camel@kernel.org>
+Date:   Thu, 10 Aug 2023 03:31:36 +0900
+Message-ID: <87h6p86p9z.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] devicetree: bindings: Add keypad driver ducumentation
-Content-Language: en-US
-To:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Nuno_S=c3=a1?= <nuno.sa@analog.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Samuel Holland <samuel@sholland.org>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wenhua lin <wenhua.lin1994@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-References: <20230808072252.3229-1-Wenhua.Lin@unisoc.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <20230808072252.3229-1-Wenhua.Lin@unisoc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/08/2023 09:22, Wenhua Lin wrote:
-> Add keypad driver ducumentation.
+Jeff Layton <jlayton@kernel.org> writes:
 
-1. Please use scripts/get_maintainers.pl to get a list of necessary
-people and lists to CC. It might happen, that command when run on an
-older kernel, gives you outdated entries. Therefore please be sure you
-base your patches on recent Linux kernel.
+> On Thu, 2023-08-10 at 02:44 +0900, OGAWA Hirofumi wrote:
+>> Jeff Layton <jlayton@kernel.org> writes:
+>> 
+> That would be wrong. The problem is that we're changing how update_time
+> works:
+>
+> Previously, update_time was given a timestamp and a set of S_* flags to
+> indicate which fields should be updated. Now, update_time is not given a
+> timestamp. It needs to fetch it itself, but that subtly changes the
+> meaning of the flags field.
+>
+> It now means "these fields needed to be updated when I last checked".
+> The timestamp and i_version may now be different from when the flags
+> field was set. This means that if any of S_CTIME/S_MTIME/S_VERSION were
+> set that we need to attempt to update all 3 of them. They may now be
+> different from the timestamp or version that we ultimately end up with.
+>
+> The above may look to you like it would always cause I_DIRTY_SYNC to be
+> set on any ctime or mtime update, but inode_maybe_inc_iversion only
+> returns true if it actually updated i_version, and it only does that if
+> someone issued a ->getattr against the file since the last time it was
+> updated.
+>
+> So, this shouldn't generate any more DIRTY_SYNC updates than it did
+> before.
 
-You missed at least DT list (maybe more), so this won't be tested by
-automated tooling. Performing review on untested code might be a waste
-of time, thus I will skip this patch entirely till you follow the
-process allowing the patch to be tested.
+Again, if you claim so, why generic_update_time() doesn't work same? Why
+only FAT does?
 
-Please kindly resend and include all necessary To/Cc entries.
+Or I'm misreading generic_update_time() patch?
 
-
-2. Please use subject prefixes matching the subsystem. You can get them
-for example with `git log --oneline -- DIRECTORY_OR_FILE` on the
-directory your patch is touching.
-
-
-Limited review follows:
-
-> 
-> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> ---
->  .../bindings/input/sprd-keypad.yaml           | 76 +++++++++++++++++++
->  1 file changed, 76 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/sprd-keypad.yaml
-
-Filename matching compatible, so sprd,block-name-etc.yaml
-
-> 
-> diff --git a/Documentation/devicetree/bindings/input/sprd-keypad.yaml b/Documentation/devicetree/bindings/input/sprd-keypad.yaml
-> new file mode 100644
-> index 000000000000..51710e1eb389
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/input/sprd-keypad.yaml
-> @@ -0,0 +1,76 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright 2023 Unisoc Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/input/sprd-keypad.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Device-Tree bindings for GPIO attached keys
-
-This should not work and you should see warnings... which means:
-
-It does not look like you tested the bindings, at least after quick
-look. Please run `make dt_binding_check` (see
-Documentation/devicetree/bindings/writing-schema.rst for instructions).
-Maybe you need to update your dtschema and yamllint.
-
-so drop "Device-tree bindings".
-
-Title also says nothing about the hardware - it is entirely unrelated.
-Describe the hardware.
-
-
-> +
-> +maintainers:
-> +  - Orson Zhai <orsonzhai@gmail.com>
-> +  - Baolin Wang <baolin.wang7@gmail.com>
-> +  - Chunyan Zhang <zhang.lyra@gmail.com>
-> +
-> +description: |
-> +    Keypad controller is used to interface a SoC with a matrix-keypad device.
-
-Mention which SoC.
-
-> +    The keypad controller supports multiple row and column lines.
-> +    A key can be placed at each intersection of a unique row and a unique column.
-> +    The keypad controller can sense a key-press and key-release and report the
-> +    event using a interrupt to the cpu.
-> +
-> +properties:
-> +    compatible:
-> +    const: sprd,sc9860-keypad
-> +
-> +    reg:
-> +        maxItems: 1
-
-OK, so this was for 100% not tested and won't work. No need to waste our
-time on this. Test before sending:
-
-It does not look like you tested the bindings, at least after quick
-look. Please run `make dt_binding_check` (see
-Documentation/devicetree/bindings/writing-schema.rst for instructions).
-Maybe you need to update your dtschema and yamllint.
-
-Best regards,
-Krzysztof
-
+Thanks.
+-- 
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
