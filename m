@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B0E776278
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A554577627A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbjHIO3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41706 "EHLO
+        id S233311AbjHIO3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233302AbjHIO3d (ORCPT
+        with ESMTP id S233302AbjHIO3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:29:33 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3286B1FD7;
-        Wed,  9 Aug 2023 07:29:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=VsQpNZtjoKgsOWGOTa+TCccq2DgrQ3Hi+Jy0cIt7CSE=; b=SGt+RXuTmpITjw2x/CpmDR5Ai2
-        33bQyol969D2IgbgufuDyFBYb64UH5HQ6XxX5rIpLrd5ZMo0n38D/sh3PkiWC/GqTYLu6wSec4FIe
-        uDXtiLimd8rYpUkUnVXfcK44XhknFev0WdlMnqcVHtCgtpDO8K5gD2mUziHu9C6lD6ziqMKvYztaY
-        nwJCld1Sl+CqCsXCgDqOfC/art1f+wo2fi1H0wXkgcDA2ekFnOFOFqKjdquZ2F6amdxNLvHacxa2r
-        0vhZzF3GlzVgbC8ntYJMDi/vPMisbPU9dfGJDoqo1YK1tILToE8GCCFWwFVjqC6mq1KcWaWRMYgaY
-        3fThzPRg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:60740)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qTkBd-0002dz-3D;
-        Wed, 09 Aug 2023 15:29:22 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qTkBZ-0000ng-LV; Wed, 09 Aug 2023 15:29:17 +0100
-Date:   Wed, 9 Aug 2023 15:29:17 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Ioana Ciornei <ioana.ciornei@nxp.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Ioana Ciornei <ciorneiioana@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Andre Edich <andre.edich@microchip.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Divya Koppera <Divya.Koppera@microchip.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Marek Vasut <marex@denx.de>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Mathias Kresin <dev@kresin.me>,
-        Maxim Kochetkov <fido_max@inbox.ru>,
-        Michael Walle <michael@walle.cc>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Nisar Sayed <Nisar.Sayed@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Willy Liu <willy.liu@realtek.com>,
-        Yuiko Oshino <yuiko.oshino@microchip.com>
-Subject: Re: [PATCH] net: phy: Don't disable irqs on shutdown if WoL is
- enabled
-Message-ID: <ZNOivVJ+G/sRiwai@shell.armlinux.org.uk>
-References: <20230804071757.383971-1-u.kleine-koenig@pengutronix.de>
- <20230808145325.343c5098@kernel.org>
- <1e438a02-6964-ce65-5584-e8ea57a694bb@gmail.com>
- <ZNLIOEBXNgPOnFSf@shell.armlinux.org.uk>
- <20230809142155.4dtmnmmecaycbtum@LXL00007.wbi.nxp.com>
+        Wed, 9 Aug 2023 10:29:36 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34791FD7
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:29:35 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so107899571fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 07:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691591374; x=1692196174;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=W8FitPhYl1bw/RbzqKoKTQcV3ylIG1k/12INyc5DHZ8=;
+        b=DV2B5uOxm0xt7UyOES30f0HxFNx+7J7iBW6mvXOlUTaVfhDY3ZJfUIMIAasBloG4fz
+         9lvBGnbWWSDdEOvRkLRYdRoix0+UV9YbGEULfea/4wKelbVYFuLfOt7i+b0tC088AYUJ
+         IqGdzYUjar3PLnEEqFh88ynZfHPLo5SxBWVJdxcW6D0M04XXY7+9GVB07/vRQ8cwlJ65
+         qztX+MBHVWmFZb6Z/2jwuJh4b+XbGzKJT/ZiyTpBVbd4MI6dcJElEIZcOdewAF8B0eGx
+         M1yrYYdifX0YMkh/4B4avzvfkoFrn6PiXCHbIkK4ZglSg/yly3sSV/48JeivOiscumi/
+         T5wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691591374; x=1692196174;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W8FitPhYl1bw/RbzqKoKTQcV3ylIG1k/12INyc5DHZ8=;
+        b=fssjpFqhVlWJMbl3EAgswyqOBD+iq1J9sXLoZyBxAO8G0qeGuZn5QKJgo8WsxMiwlx
+         p0O0SvaZAei3Dj67Y5G8azm7fqFJUzc9wsDfaOhottBVSa2Me4ptVe5gkgDFnOhLpMvX
+         YRIPAOTBK/eEAUDEMSZBhSKwm5Ff4a1QZGmFfY3BrZQ3karvzUi7l2qFXbUcclyWaK64
+         J78Tj9kg99KhwREtyNrD/WVHf3Ygbh9AIasm5y0FcRWhFxLscKGD66upKmtvFMWGcILN
+         gVZl8m4bVhNxlxmAXdNUzqjHwX1wD2dlnREMyru4bSY2U0B/YcXxcoEmt3J+S1q2iSkd
+         mCkw==
+X-Gm-Message-State: AOJu0Yz3yXeorKTd1cLKcK6vaOHnG7OFc5uMEGo9LwBZd0FdWsZkF8KG
+        lyoI2pUXy/6EDqCo8w9Fqr46YUDNEIKgWQ==
+X-Google-Smtp-Source: AGHT+IH5rkstwyUYASBosdCGaItnG09JoYLdgtEi5/UoDU+8EBPkBlpWWYECaN+yeFMdiryAYsnqtg==
+X-Received: by 2002:a2e:9195:0:b0:2b9:acad:b4b2 with SMTP id f21-20020a2e9195000000b002b9acadb4b2mr2206921ljg.6.1691591373921;
+        Wed, 09 Aug 2023 07:29:33 -0700 (PDT)
+Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
+        by smtp.gmail.com with ESMTPSA id gw1-20020a170906f14100b0099b8234a9fesm8186866ejb.1.2023.08.09.07.29.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 07:29:33 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 16:29:32 +0200
+From:   Nam Cao <namcaov@gmail.com>
+To:     Alexon Oliveira <alexondunkan@gmail.com>
+Cc:     gregkh@linuxfoundation.org, martyn@welchs.me.uk,
+        manohar.vanga@gmail.com, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v3] staging: vme_user: fix alignment of open parenthesis
+ and deleted trailing spaces
+Message-ID: <ZNOizFnDXojT4s85@nam-dell>
+References: <ZNJKTLZ62SZMM6D8@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230809142155.4dtmnmmecaycbtum@LXL00007.wbi.nxp.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <ZNJKTLZ62SZMM6D8@alolivei-thinkpadt480s.gru.csb>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 05:21:55PM +0300, Ioana Ciornei wrote:
-> That's a perfect summary of the problem that I was trying to fix.
+On Tue, Aug 08, 2023 at 10:59:40AM -0300, Alexon Oliveira wrote:
+> Fixed all CHECK: Alignment should match open parenthesis
+> and deleted the trailing whitespaces as reported by
+> checkpatch to adhere to the Linux kernel coding-style
+> guidelines.
 > 
-> The board in question is a LS1021ATSN which has two AR8031 PHYs that
-> share an interrupt line. In case only one of the PHYs is probed and
-> there are pending interrupts on the PHY#2 an IRQ storm will happen
-> since there is no entity to clear the interrupt from PHY#2's registers.
-> PHY#1's driver will get stuck in .handle_interrupt() indefinitely.
+> Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+> ---
+> 
+> Changes in v3:
+> - Rebased against staging.git and staging-next branch, noted by Greg KH
+> 
+> Changes in v2:
+> - Fixed changelog, noted by Greg KH
+> 
+>  drivers/staging/vme_user/vme.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
+> index 977c81e2f3c7..741593d75a63 100644
+> --- a/drivers/staging/vme_user/vme.c
+> +++ b/drivers/staging/vme_user/vme.c
+> @@ -563,7 +563,7 @@ EXPORT_SYMBOL(vme_master_request);
+>   *         returned.
+>   */
+>  int vme_master_set(struct vme_resource *resource, int enabled,
+> -		   unsigned long long vme_base, unsigned long long size, 
+> +		   unsigned long long vme_base, unsigned long long size,
+>  		   u32 aspace, u32 cycle, u32 dwidth)
 
-So I have two further questions:
-1. Is WoL able to be supported on this hardware?
-2. AR8031 has a seperate WOL_INT signal that can be used to wake up the
-   system. Is this used in the hardware design?
+As Greg said, it doesn't look like this in staging tree, so your patch doesn't apply.
 
-Thanks.
+However I look it up and the last change to this line was 12 years ago, so I doubt
+that it is because you didn't rebase to Greg's tree. I think the more likely
+possibility is that you have a commit to this line yourself (by mistake perhaps?),
+and this patch is on top of that.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Make sure you don't have any accident commit that modifies this line in your tree.
+
+Best regards,
+Nam
