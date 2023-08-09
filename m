@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3774D775E4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7288D775E48
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 13:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231785AbjHIL7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 07:59:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34938 "EHLO
+        id S231483AbjHIL6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 07:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbjHIL66 (ORCPT
+        with ESMTP id S229541AbjHIL6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 07:58:58 -0400
-Received: from xry111.site (xry111.site [89.208.246.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D82F2107
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 04:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-        s=default; t=1691582337;
-        bh=swOtItoGXcio+rkfCJirv3aPyWeCVIZY3EQMvLjH/08=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=KZyjv/NYdyOILFPhqqmcuZeTpQfn+QjhnJtpxkjS+pEYj0IpLVgOOtukYWosIrf8w
-         2V5U8VzLszMWqYg5/6gdujsHbA1MMnCZyETTndlFumc9J0f2k+NAi7cMQtMFWiTYa9
-         3mIuybI6KVqlvxNs3W0EEEIXsFDzzLCtXXraZXBk=
-Received: from [IPv6:2409:8a0c:2a4:2170:40dc:a500:81f0:2] (unknown [IPv6:2409:8a0c:2a4:2170:40dc:a500:81f0:2])
+        Wed, 9 Aug 2023 07:58:45 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982301705
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 04:58:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=eC5yEoncpeJzLB6mZHh/IwgDr8tRdWlT0gUX8xRHqHs=; b=UOIiGz0o1XWWbd7Mqcqn0MSvo4
+        Vag/LTPsznQWOfEy974XvovjDjjlY9KrpFkKEBFSebzjl7SsU0BZ0hm3rVgIdTPhKJQ71aALpqHDY
+        vRUmG8AqeQGSsjkpbUBuq14BOtg3mLQR25ToDAOUUE/WHbsX9LxTJx1YosW3XEz61qV5Nmzn3gVyg
+        Pb12fd0k48k3uWhqsQe6om3dzY1qscHkmaC29/ZU0/eaJZwDCFOOYB2fe5hzVmRxUcq7znyidxl68
+        wqknBMrchaYFHMkp4guJTb5WsCZDIWPg7P7L82enz+Bhyw8suAhF0Q+BJb6DwGRZgNiYcbEsYVRRu
+        VusNgpeQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qThpe-005cXm-1p;
+        Wed, 09 Aug 2023 11:58:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        (Authenticated sender: xry111@xry111.site)
-        by xry111.site (Postfix) with ESMTPSA id 9E02D659AD;
-        Wed,  9 Aug 2023 07:58:53 -0400 (EDT)
-Message-ID: <0d491d44407051993e5b68b6f9ef67d4060db6c4.camel@xry111.site>
-Subject: Re: [PATCH v1 5/6] objtool: Add skipped member in struct reloc
-From:   Xi Ruoyao <xry111@xry111.site>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-Date:   Wed, 09 Aug 2023 19:58:20 +0800
-In-Reply-To: <b6b596a1311d9a26e19ee831a2f8161c175c4ad6.camel@xry111.site>
-References: <1690272910-11869-1-git-send-email-yangtiezhu@loongson.cn>
-         <1690272910-11869-6-git-send-email-yangtiezhu@loongson.cn>
-         <20230725115959.GE3765278@hirez.programming.kicks-ass.net>
-         <b111cb87-3f30-860a-640b-2f7264a16838@loongson.cn>
-         <20230803121103.GE214207@hirez.programming.kicks-ass.net>
-         <b6b596a1311d9a26e19ee831a2f8161c175c4ad6.camel@xry111.site>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D7F2D300235;
+        Wed,  9 Aug 2023 13:58:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B7194206DF88B; Wed,  9 Aug 2023 13:58:29 +0200 (CEST)
+Date:   Wed, 9 Aug 2023 13:58:29 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andrew.Cooper3@citrix.com
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        jpoimboe@kernel.org, gregkh@linuxfoundation.org
+Subject: Re: [RFC][PATCH 00/17] Fix up the recent SRSO patches
+Message-ID: <20230809115829.GJ212435@hirez.programming.kicks-ass.net>
+References: <20230809071218.000335006@infradead.org>
+ <341a47de-2c12-43a3-2d5d-d9727a1e7420@citrix.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <341a47de-2c12-43a3-2d5d-d9727a1e7420@citrix.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,48 +61,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-09 at 19:51 +0800, Xi Ruoyao wrote:
-> On Thu, 2023-08-03 at 14:11 +0200, Peter Zijlstra wrote:
-> > On Thu, Aug 03, 2023 at 07:36:24PM +0800, Tiezhu Yang wrote:
-> >=20
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0".long " __stringify_label(c) "b - .\n\t"=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 \
-> >=20
-> > > I discussed offline with the engineers who are familiar with gnu
-> > > assembler of LoongArch, maybe it can modify the gnu assembler
-> > > to use R_LARCH_32_PCREL to replace a pair of R_LARCH_ADD32 and
-> > > R_LARCH_SUB32, then I will test it again and drop this change if
-> > > possible.
->=20
-> Hmm, but I don't like the idea to disallow users having GAS <=3D 2.41 fro=
-m
-> using ORC unwinder.
->=20
-> Can we emit the R_LARCH_32_PCREL reloc with an explicit .reloc
-> directive?
+On Wed, Aug 09, 2023 at 11:04:15AM +0100, Andrew.Cooper3@citrix.com wrote:
+> On 09/08/2023 8:12 am, Peter Zijlstra wrote:
+> > Since I wasn't invited to the party (even though I did retbleed), I get to
+> > clean things up afterwards :/
+> >
+> > Anyway, this here overhauls the SRSO patches in a big way.
+> >
+> > I claim that AMD retbleed (also called Speculative-Type-Confusion
+> 
+> Branch Type Confusion.
 
-Answering myself: "maybe", I've written a simple PoC:
+Durr, I shoud've double checked, and yes, too damn many different things
+and not enough sleep.
 
-$ cat t.s
-.global main
-main:
-  la.pcrel $t0, f
-  ld.w     $t1, $t0, 0
-  ldx.d    $a0, $t1, $t0
-  jr       $ra
+> >  -- not to be
+> > confused with Intel retbleed, which is an entirely different bug) is
+> > fundamentally the same as this SRSO -- which is also caused by STC. And the
+> > mitigations are so similar they should all be controlled from a single spot and
+> > not conflated like they are now.
+> 
+> BTC and SRSO are certainly related, but they're not the same.
+> 
+> With BTC, an attacker poisons a branch type prediction to say "that
+> thing (which isn't actually a ret) is a ret".
+> 
+> With SRSO, an attacker leaves a poisoned infinite-call-loop prediction. 
+> Later, a real function (that is architecturally correct execution and
+> will retire) trips over the predicted infinite loop, which overflows the
+> RSB/RAS/RAP replacing the correct prediction on the top with the
+> attackers choice of value.
+> 
+> So while branch type confusion is used to poison the top-of-RSB value,
+> the ret that actually goes wrong needs a correct type=ret prediction for
+> the SRSO attack to succeed.
 
-t:
-  .dword   42
-  .zero    64
-
-f:
-  .reloc   f, R_LARCH_32_PCREL, t
-  .word    0
-$ ./a.out
-$ echo $?
-42
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+Yes, this is what I meant, and I clearly failed to express myself
+better. The point was that branch-type-confusion is involved with both,
+just in different ways.
