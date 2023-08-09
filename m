@@ -2,133 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF0D775476
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECD8775477
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 09:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbjHIHxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 03:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
+        id S231416AbjHIHyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 03:54:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjHIHxj (ORCPT
+        with ESMTP id S229588AbjHIHyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 03:53:39 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE161736;
-        Wed,  9 Aug 2023 00:53:38 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RLMkQ4Q7Nz4f3q3W;
-        Wed,  9 Aug 2023 15:53:34 +0800 (CST)
-Received: from vm-fedora-38.huawei.com (unknown [10.67.174.164])
-        by APP4 (Coremail) with SMTP id gCh0CgAX9Kb2RdNkvuInAQ--.27870S2;
-        Wed, 09 Aug 2023 15:53:33 +0800 (CST)
-From:   "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
-Subject: [PATCH] netfilter: ebtables: replace zero-length array members
-Date:   Wed,  9 Aug 2023 15:51:36 +0800
-Message-ID: <20230809075136.1323302-1-gongruiqi@huaweicloud.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 9 Aug 2023 03:54:02 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4261BE1;
+        Wed,  9 Aug 2023 00:54:01 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4666A215EF;
+        Wed,  9 Aug 2023 07:54:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1691567640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F7cBgJJOMTBnikneTaopTMOdBUlC11wMNMezteqJN0Y=;
+        b=BzWCyxUpSe2hAJccDD1PTABoCWJltEBF8n6vqwnFq++OUTA971RTdWT1/d5EGRZwcK4CDz
+        9+qScP50vAkXDcqH2wYzIu7h9eVYzxx4Q2ykJR+cUQZqAE74D+czZPB0XI7rZDPgtCTBEs
+        LwrmDb7g6I0VgefJ2996UnwwQTQCBDs=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 26DCD133B5;
+        Wed,  9 Aug 2023 07:54:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id HIdoBhhG02QJYQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 09 Aug 2023 07:54:00 +0000
+Date:   Wed, 9 Aug 2023 09:53:59 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Chuyi Zhou <zhouchuyi@bytedance.com>, hannes@cmpxchg.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        muchun.song@linux.dev, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wuyun.abel@bytedance.com,
+        robin.lu@bytedance.com
+Subject: Re: [RFC PATCH 1/2] mm, oom: Introduce bpf_select_task
+Message-ID: <ZNNGFzwlv1dC866j@dhcp22.suse.cz>
+References: <20230804093804.47039-1-zhouchuyi@bytedance.com>
+ <20230804093804.47039-2-zhouchuyi@bytedance.com>
+ <ZMzhDFhvol2VQBE4@dhcp22.suse.cz>
+ <dfbf05d1-daff-e855-f4fd-e802614b79c4@bytedance.com>
+ <ZMz+aBHFvfcr0oIe@dhcp22.suse.cz>
+ <866462cf-6045-6239-6e27-45a733aa7daa@bytedance.com>
+ <ZNCXgsZL7bKsCEBM@dhcp22.suse.cz>
+ <ZNEpsUFgKFIAAgrp@P9FQF9L96D.lan>
+ <ZNH6X/2ZZ0quKSI6@dhcp22.suse.cz>
+ <ZNK2fUmIfawlhuEY@P9FQF9L96D>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAX9Kb2RdNkvuInAQ--.27870S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7trWxAw4DCF47uF1fZryfCrg_yoW5Jry5pF
-        yjka4qyrWUtay2grW7tay7ZF4avws8Gr17JrWxG34FyF90yay7WrWxKry5KFyqvrZ5uanx
-        ArWftry0gFZ7taUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbPEf5UUUUU==
-X-CM-SenderInfo: pjrqw2pxltxq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZNK2fUmIfawlhuEY@P9FQF9L96D>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+On Tue 08-08-23 14:41:17, Roman Gushchin wrote:
+> On Tue, Aug 08, 2023 at 10:18:39AM +0200, Michal Hocko wrote:
+> > On Mon 07-08-23 10:28:17, Roman Gushchin wrote:
+> > > On Mon, Aug 07, 2023 at 09:04:34AM +0200, Michal Hocko wrote:
+> > > > On Mon 07-08-23 10:21:09, Chuyi Zhou wrote:
+> > > > > 
+> > > > > 
+> > > > > 在 2023/8/4 21:34, Michal Hocko 写道:
+> > > > > > On Fri 04-08-23 21:15:57, Chuyi Zhou wrote:
+> > > > > > [...]
+> > > > > > > > +	switch (bpf_oom_evaluate_task(task, oc, &points)) {
+> > > > > > > > +		case -EOPNOTSUPP: break; /* No BPF policy */
+> > > > > > > > +		case -EBUSY: goto abort; /* abort search process */
+> > > > > > > > +		case 0: goto next; /* ignore process */
+> > > > > > > > +		default: goto select; /* note the task */
+> > > > > > > > +	}
+> > > 
+> > > To be honest, I can't say I like it. IMO it's not really using the full bpf
+> > > potential and is too attached to the current oom implementation.
+> > 
+> > TBH I am not sure we are able to come up with an interface that would
+> > ise the full BPF potential at this stage and I strongly believe that we
+> > should start by something that is good enough.
+> > 
+> > > First, I'm a bit concerned about implicit restrictions we apply to bpf programs
+> > > which will be executed potentially thousands times under a very heavy memory
+> > > pressure. We will need to make sure that they don't allocate (much) memory, don't
+> > > take any locks which might deadlock with other memory allocations etc.
+> > > It will potentially require hard restrictions on what these programs can and can't
+> > > do and this is something that the bpf community will have to maintain long-term.
+> > 
+> > Right, BPF callbacks operating under OOM situations will be really
+> > constrained but this is more or less by definition. Isn't it?
+> 
+> What do you mean?
 
-As suggested by Kees[1], replace the old-style 0-element array members
-of multiple structs in ebtables.h with modern C99 flexible array.
+Callbacks cannot depend on any direct or indirect memory allocations.
+Dependencies on any sleeping locks (again directly or indirectly) is not
+allowed just to name the most important ones.
 
-[1]: https://lore.kernel.org/all/5E8E0F9C-EE3F-4B0D-B827-DC47397E2A4A@kernel.org/
+> In general, the bpf community is trying to make it as generic as possible and
+> adding new and new features. Bpf programs are not as constrained as they were
+> when it's all started.
 
-Link: https://github.com/KSPP/linux/issues/21
-Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
----
- include/uapi/linux/netfilter_bridge/ebtables.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Are the above ones somehow carved into BPF in general?
+ 
+> > > Second, if we're introducing bpf here (which I'm not yet convinced),
+> > > IMO we should use it in a more generic and expressive way.
+> > > Instead of adding hooks into the existing oom killer implementation, we can call
+> > > a bpf program before invoking the in-kernel oom killer and let it do whatever
+> > > it takes to free some memory. E.g. we can provide it with an API to kill individual
+> > > tasks as well as all tasks in a cgroup.
+> > > This approach is more generic and will allow to solve certain problems which
+> > > can't be solved by the current oom killer, e.g. deleting files from a tmpfs
+> > > instead of killing tasks.
+> > 
+> > The aim of this proposal is to lift any heavy lifting steming from
+> > iterating tasks or cgroups which those BPF might need to make a
+> > decision. There are other ways of course and provide this iteration
+> > functionality as library functions but my BPF experience is very limited
+> > to say how easy is that.
+> > 
+> > > So I think the alternative approach is to provide some sort of an interface to
+> > > pre-select oom victims in advance. E.g. on memcg level it can look like:
+> > > 
+> > > echo PID >> memory.oom.victim_proc
+> > 
+> > this is just a terrible interface TBH. Pids are very volatile objects.
+> > At the time oom killer reads this pid it might be a completely different
+> > process.
+> 
+> Well, we already have cgroup.procs interface, which works ok.
+> Obviously if the task is dead (or is actually killed in a result of oom),
+> it's pid is removed from the list.
 
-diff --git a/include/uapi/linux/netfilter_bridge/ebtables.h b/include/uapi/linux/netfilter_bridge/ebtables.h
-index b0caad82b693..673b00df162c 100644
---- a/include/uapi/linux/netfilter_bridge/ebtables.h
-+++ b/include/uapi/linux/netfilter_bridge/ebtables.h
-@@ -87,7 +87,7 @@ struct ebt_entries {
- 	/* nr. of entries */
- 	unsigned int nentries;
- 	/* entry list */
--	char data[0] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
-+	char data[] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
- };
+Right, but writing the pid into the file has an immediate effect and
+recycle pid issues would be rare unless the pid space is mostly
+depleted. You are proposing an interface where the pid would be consumed
+in potentially very distant future. Such an approach would only work if
+the pid is auto-removed and then you need a notification mechanism to
+replace it by something else.
  
- /* used for the bitmask of struct ebt_entry */
-@@ -129,7 +129,7 @@ struct ebt_entry_match {
- 	} u;
- 	/* size of data */
- 	unsigned int match_size;
--	unsigned char data[0] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
-+	unsigned char data[] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
- };
- 
- struct ebt_entry_watcher {
-@@ -142,7 +142,7 @@ struct ebt_entry_watcher {
- 	} u;
- 	/* size of data */
- 	unsigned int watcher_size;
--	unsigned char data[0] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
-+	unsigned char data[] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
- };
- 
- struct ebt_entry_target {
-@@ -155,7 +155,7 @@ struct ebt_entry_target {
- 	} u;
- 	/* size of data */
- 	unsigned int target_size;
--	unsigned char data[0] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
-+	unsigned char data[] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
- };
- 
- #define EBT_STANDARD_TARGET "standard"
-@@ -190,7 +190,7 @@ struct ebt_entry {
- 		/* sizeof ebt_entry + matches + watchers + target */
- 		unsigned int next_offset;
- 	);
--	unsigned char elems[0] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
-+	unsigned char elems[] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
- };
- 
- static __inline__ struct ebt_entry_target *
+> > > If the list is empty, the default oom killer is invoked.
+> > > If there are tasks, the first one is killed on OOM.
+> > > A similar interface can exist to choose between sibling cgroups:
+> > > 
+> > > echo CGROUP_NAME >> memory.oom.victim_cgroup
+> > 
+> > Slightly less volatile but not much better either.
+> > 
+> > > This is just a rough idea.
+> > 
+> > I am pretty sure that both policies could be implemetd by the proposed
+> > BPF interface though if you want something like that.
+> 
+> As I said, I'm pretty concerned about how reliable (and effective) it will be.
+> I'm not convinced that executing a generic bpf program from the oom context
+> is safe (and we're talking about executing it potentially thousands of times).
+> If we're going this way, we need an explicit acknowledge from the bpf
+> community and a long-term agreement on how we'll keep thing safe.
+
+I do agree with that.
+
+> It would be also nice to come up with some practical examples of bpf programs.
+> What are meaningful scenarios which can be covered with the proposed approach
+> and are not covered now with oom_score_adj.
+
+Agreed here as well. This RFC serves purpose of brainstorming on all of
+this.
+
+There is a fundamental question whether we need BPF for this task in the
+first place. Are there any huge advantages to export the callback and
+allow a kernel module to hook into it?
 -- 
-2.41.0
-
+Michal Hocko
+SUSE Labs
