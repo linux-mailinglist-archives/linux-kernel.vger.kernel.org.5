@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E53776828
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE2477682A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 21:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232630AbjHITMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 15:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41244 "EHLO
+        id S232907AbjHITNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 15:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbjHITMd (ORCPT
+        with ESMTP id S233374AbjHITMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 15:12:33 -0400
+        Wed, 9 Aug 2023 15:12:35 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78BFD26B3;
-        Wed,  9 Aug 2023 12:12:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D50B2717;
+        Wed,  9 Aug 2023 12:12:25 -0700 (PDT)
 Date:   Wed, 09 Aug 2023 19:12:19 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1691608340;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=0voAEnyqqNcB037cLDazQXy6UiUKYafkjrBo9a6P1lQ=;
-        b=WE8n5MbdMEbHb/e1idCJadJU+CR38XrRIom0j9HU2PZIMOuDfNHEO7kyo/qg66G42Mcpq6
-        4f2aYPwEzu0QRUpJrdZbmGR3yX4xJlgMmBHGykilyAA0HGKj87GIUvgh4tRgtoUJgL2Y3a
-        E32e0zMeiSms8oy3S+khHTsvHX5wdXM4Glc2NOEmfkfvRWP97OsxVL9ur+vmKDUAMlDCoo
-        fJg4sNcTuiDXrwyPz1e48K/J/LTCayiciSvXF+UGYyWNW7H8e/7wof+v3KZK6FzaygtlTc
-        la8IQ5OY5b9NbfxTTcOv6lnpgOLsjSia2TJ6az+yGA0sssOepD3kgEWyQqw9xg==
+        bh=fzti2xQUly3b/kP3Xg8CC36cxRJZCss877lxRX7bCuk=;
+        b=rnmi5GGXTCuNkEGUNd2uThVt9ywtUlHrILRYVR30cr/jy3gAJGXVmif6/+v5VlcDF64c++
+        OESD9PQn51H6GtGIxE0JIDMz5x3zRypuRKwn3T6mcRtD+9K1/63m55Z+YHG+5E6wVJLwCV
+        d7QajkJqeC2QkTdDkiJckrzJzwy3ZXfaR3OfjH69uT7v74eLIh9YKlr4/SOzjA54R9J0lW
+        5RZ8Wdum5xATi843xx/VhWB05+HRxhm9SL2kCR5g+yPeOa43ai7fbFFY844cELH7XCD/2H
+        +yNtec51WbXgJpuGDQ11tHoXkTZyvXuPnJUNTONEn7MRuEwlwE6C55NtzBppXw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1691608340;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=0voAEnyqqNcB037cLDazQXy6UiUKYafkjrBo9a6P1lQ=;
-        b=ehYwzGGyL0yobgHyvWqDDnML3Vm9d7ZAe6FP/uk01TNvC1qU0NZtPhH+aEThjlMmKJtEMl
-        VOiHF5yiSaQ1eSAA==
+        bh=fzti2xQUly3b/kP3Xg8CC36cxRJZCss877lxRX7bCuk=;
+        b=tB8WQ9584Anm9izw/CeiGCFQBMzRe7a8sqCFPSySDP3I9LMo/zI0VBKElKHndqjPRXc1fp
+        UAZyqv2iCE+1qgBQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/apic/32: Decrapify the def_bigsmp mechanism
+Subject: [tip: x86/apic] x86/apic/32: Remove pointless default_acpi_madt_oem_check()
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
@@ -48,7 +48,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Juergen Gross <jgross@suse.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169160833951.27769.17362699614639635999.tip-bot2@tip-bot2>
+Message-ID: <169160833993.27769.566734109101233603.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -65,47 +65,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/apic branch of tip:
 
-Commit-ID:     79c9a17c16e95e3c9e8646cf869fabea53bf283f
-Gitweb:        https://git.kernel.org/tip/79c9a17c16e95e3c9e8646cf869fabea53bf283f
+Commit-ID:     d75baa260c850b3d184b1e3cceeff450d65e5603
+Gitweb:        https://git.kernel.org/tip/d75baa260c850b3d184b1e3cceeff450d65e5603
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 08 Aug 2023 15:03:56 -07:00
+AuthorDate:    Tue, 08 Aug 2023 15:03:55 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Wed, 09 Aug 2023 11:58:25 -07:00
+CommitterDate: Wed, 09 Aug 2023 11:58:24 -07:00
 
-x86/apic/32: Decrapify the def_bigsmp mechanism
+x86/apic/32: Remove pointless default_acpi_madt_oem_check()
 
-If the system has more than 8 CPUs then XAPIC and the bigsmp APIC driver is
-required. This is ensured via:
+On 32bit there is no APIC implementing the acpi_madt_oem_check() except XEN
+PV, but that does not matter at all.
 
-  1) Enumerating all possible CPUs up to NR_CPUS
+generic_apic_probe() runs before ACPI tables are parsed. This selects the
+XEN APIC if there is no command line override because the XEN APIC driver
+is the first to be probed.
 
-  2) Checking at boot CPU APIC setup time whether the system has more than
-     8 CPUs and has an XAPIC.
+If there is a command line override then the XEN PV driver won't be
+selected in the MADT OEM check either.
 
-     If that's the case then it's attempted to install the bigsmp APIC
-     driver and a magic variable 'def_to_bigsmp' is set to one.
-
-  3) If that magic variable is set and CONFIG_X86_BIGSMP=n and the system
-     has more than 8 CPUs smp_sanity_check() removes all CPUs >= #8 from
-     the present and possible mask in the most convoluted way.
-
-This logic is completely broken for the case where the bigsmp driver is
-enabled, but not selected due to a command line option specifying the
-default APIC. In that case the system boots with default APIC in logical
-destination mode and fails to reduce the number of CPUs.
-
-That aside the above which is sprinkled over 3 different places is yet
-another piece of art.
-
-It would have been too obvious to check the requirements upfront and limit
-nr_cpu_ids _before_ enumerating tons of CPUs and then removing them again.
-
-Implement exactly this. Check the bigsmp requirement when the boot APIC is
-registered which happens _before_ ACPI/MPTABLE parsing and limit the number
-of CPUs to 8 if it can't be used. Switch it over when the boot CPU apic is
-set up if necessary.
-
-[ dhansen: fix nr_cpu_ids off-by-one in default_setup_apic_routing() ]
+As there is no other MADT check implemented for 32bit APICs, this whole
+excercise is a NOOP and can be removed.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
@@ -114,240 +94,75 @@ Tested-by: Michael Kelley <mikelley@microsoft.com>
 Tested-by: Sohil Mehta <sohil.mehta@intel.com>
 Tested-by: Juergen Gross <jgross@suse.com> # Xen PV (dom0 and unpriv. guest)
 ---
- arch/x86/include/asm/mpspec.h    |  2 +--
- arch/x86/kernel/apic/apic.c      |  3 +++-
- arch/x86/kernel/apic/bigsmp_32.c | 22 ++++++++----------
- arch/x86/kernel/apic/local.h     | 11 +++++++++-
- arch/x86/kernel/apic/probe_32.c  | 35 ++++++++++++++---------------
- arch/x86/kernel/setup.c          |  1 +-
- arch/x86/kernel/smpboot.c        | 37 +-------------------------------
- 7 files changed, 41 insertions(+), 70 deletions(-)
+ arch/x86/include/asm/apic.h      |  4 +++-
+ arch/x86/kernel/apic/bigsmp_32.c |  1 -
+ arch/x86/kernel/apic/probe_32.c  | 22 ----------------------
+ 3 files changed, 3 insertions(+), 24 deletions(-)
 
-diff --git a/arch/x86/include/asm/mpspec.h b/arch/x86/include/asm/mpspec.h
-index 5d01bde..f46df83 100644
---- a/arch/x86/include/asm/mpspec.h
-+++ b/arch/x86/include/asm/mpspec.h
-@@ -23,8 +23,6 @@ extern int pic_mode;
+diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
+index daef681..f6541a2 100644
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -459,10 +459,12 @@ static inline unsigned int read_apic_id(void)
+ #ifdef CONFIG_X86_64
+ typedef int (*wakeup_cpu_handler)(int apicid, unsigned long start_eip);
+ extern void acpi_wake_cpu_handler_update(wakeup_cpu_handler handler);
++extern int default_acpi_madt_oem_check(char *, char *);
++#else
++static inline int default_acpi_madt_oem_check(char *a, char *b) { return 0; }
+ #endif
  
- #define MAX_IRQ_SOURCES		256
+ extern int default_apic_id_valid(u32 apicid);
+-extern int default_acpi_madt_oem_check(char *, char *);
+ extern void default_setup_apic_routing(void);
  
--extern unsigned int def_to_bigsmp;
--
- #else /* CONFIG_X86_64: */
- 
- #define MAX_MP_BUSSES		256
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 224dff4..24912b2 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -63,6 +63,8 @@
- #include <asm/irq_regs.h>
- #include <asm/cpu.h>
- 
-+#include "local.h"
-+
- unsigned int num_processors;
- 
- unsigned disabled_cpus;
-@@ -2420,6 +2422,7 @@ static __init void cpu_set_boot_apic(void)
- {
- 	cpuid_to_apicid[0] = boot_cpu_physical_apicid;
- 	cpu_update_apic(0, boot_cpu_physical_apicid);
-+	x86_32_probe_bigsmp_early();
- }
- 
- int generic_processor_info(int apicid)
+ extern u32 apic_default_calc_apicid(unsigned int cpu);
 diff --git a/arch/x86/kernel/apic/bigsmp_32.c b/arch/x86/kernel/apic/bigsmp_32.c
-index d19dcf9..a26cb46 100644
+index b649048..d19dcf9 100644
 --- a/arch/x86/kernel/apic/bigsmp_32.c
 +++ b/arch/x86/kernel/apic/bigsmp_32.c
-@@ -100,12 +100,7 @@ static const struct dmi_system_id bigsmp_dmi_table[] = {
+@@ -112,7 +112,6 @@ static struct apic apic_bigsmp __ro_after_init = {
  
- static int probe_bigsmp(void)
- {
--	if (def_to_bigsmp)
--		dmi_bigsmp = 1;
--	else
--		dmi_check_system(bigsmp_dmi_table);
--
--	return dmi_bigsmp;
-+	return dmi_check_system(bigsmp_dmi_table);
- }
+ 	.name				= "bigsmp",
+ 	.probe				= probe_bigsmp,
+-	.acpi_madt_oem_check		= NULL,
+ 	.apic_id_valid			= default_apic_id_valid,
+ 	.apic_id_registered		= bigsmp_apic_id_registered,
  
- static struct apic apic_bigsmp __ro_after_init = {
-@@ -149,14 +144,17 @@ static struct apic apic_bigsmp __ro_after_init = {
- 	.safe_wait_icr_idle		= native_safe_apic_wait_icr_idle,
- };
- 
--void __init generic_bigsmp_probe(void)
-+bool __init apic_bigsmp_possible(bool cmdline_override)
- {
--	if (!probe_bigsmp())
--		return;
--
--	apic = &apic_bigsmp;
-+	return apic == &apic_bigsmp || !cmdline_override;
-+}
- 
--	pr_info("Overriding APIC driver with %s\n", apic_bigsmp.name);
-+void __init apic_bigsmp_force(void)
-+{
-+	if (apic != &apic_bigsmp) {
-+		apic = &apic_bigsmp;
-+		pr_info("Overriding APIC driver with bigsmp\n");
-+	}
- }
- 
- apic_driver(apic_bigsmp);
-diff --git a/arch/x86/kernel/apic/local.h b/arch/x86/kernel/apic/local.h
-index a997d84..ad96c1a 100644
---- a/arch/x86/kernel/apic/local.h
-+++ b/arch/x86/kernel/apic/local.h
-@@ -66,4 +66,15 @@ void default_send_IPI_self(int vector);
- void default_send_IPI_mask_sequence_logical(const struct cpumask *mask, int vector);
- void default_send_IPI_mask_allbutself_logical(const struct cpumask *mask, int vector);
- void default_send_IPI_mask_logical(const struct cpumask *mask, int vector);
-+void x86_32_probe_bigsmp_early(void);
-+#else
-+static inline void x86_32_probe_bigsmp_early(void) { }
-+#endif
-+
-+#ifdef CONFIG_X86_BIGSMP
-+bool apic_bigsmp_possible(bool cmdline_selected);
-+void apic_bigsmp_force(void);
-+#else
-+static inline bool apic_bigsmp_possible(bool cmdline_selected) { return false; };
-+static inline void apic_bigsmp_force(void) { }
- #endif
 diff --git a/arch/x86/kernel/apic/probe_32.c b/arch/x86/kernel/apic/probe_32.c
-index 20d7f57..706a844 100644
+index 3ee0211..20d7f57 100644
 --- a/arch/x86/kernel/apic/probe_32.c
 +++ b/arch/x86/kernel/apic/probe_32.c
-@@ -10,6 +10,8 @@
- #include <linux/errno.h>
- #include <linux/smp.h>
+@@ -60,7 +60,6 @@ static struct apic apic_default __ro_after_init = {
  
-+#include <xen/xen.h>
-+
- #include <asm/io_apic.h>
- #include <asm/apic.h>
- #include <asm/acpi.h>
-@@ -123,36 +125,33 @@ static int __init parse_apic(char *arg)
- }
- early_param("apic", parse_apic);
+ 	.name				= "default",
+ 	.probe				= probe_default,
+-	.acpi_madt_oem_check		= NULL,
+ 	.apic_id_valid			= default_apic_id_valid,
+ 	.apic_id_registered		= default_apic_id_registered,
  
--void __init default_setup_apic_routing(void)
-+void __init x86_32_probe_bigsmp_early(void)
- {
--	int version = boot_cpu_apic_version;
-+	if (nr_cpu_ids <= 8 || xen_pv_domain())
-+		return;
- 
--	if (num_possible_cpus() > 8) {
-+	if (IS_ENABLED(CONFIG_X86_BIGSMP)) {
- 		switch (boot_cpu_data.x86_vendor) {
- 		case X86_VENDOR_INTEL:
--			if (!APIC_XAPIC(version)) {
--				def_to_bigsmp = 0;
-+			if (!APIC_XAPIC(boot_cpu_apic_version))
- 				break;
--			}
- 			/* P4 and above */
- 			fallthrough;
- 		case X86_VENDOR_HYGON:
- 		case X86_VENDOR_AMD:
--			def_to_bigsmp = 1;
-+			if (apic_bigsmp_possible(cmdline_apic))
-+				return;
-+			break;
- 		}
+@@ -176,24 +175,3 @@ void __init generic_apic_probe(void)
  	}
-+	pr_info("Limiting to 8 possible CPUs\n");
-+	set_nr_cpu_ids(8);
-+}
- 
--#ifdef CONFIG_X86_BIGSMP
--	/*
--	 * This is used to switch to bigsmp mode when
--	 * - There is no apic= option specified by the user
--	 * - generic_apic_probe() has chosen apic_default as the sub_arch
--	 * - we find more than 8 CPUs in acpi LAPIC listing with xAPIC support
--	 */
--
--	if (!cmdline_apic && apic == &apic_default)
--		generic_bigsmp_probe();
--#endif
-+void __init default_setup_apic_routing(void)
-+{
-+	if (nr_cpu_ids > 8 && !xen_pv_domain())
-+		apic_bigsmp_force();
- 
- 	if (apic->setup_apic_routing)
- 		apic->setup_apic_routing();
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index a5ef400..779477d 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -114,7 +114,6 @@ static struct resource bss_resource = {
- #ifdef CONFIG_X86_32
- /* CPU data as detected by the assembly code in head_32.S */
- struct cpuinfo_x86 new_cpu_data;
--unsigned int def_to_bigsmp;
- 
- struct apm_info apm_info;
- EXPORT_SYMBOL(apm_info);
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index da795f7..df1c5f0 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1149,41 +1149,6 @@ static __init void disable_smp(void)
- 	cpumask_set_cpu(0, topology_die_cpumask(0));
+ 	printk(KERN_INFO "Using APIC driver %s\n", apic->name);
  }
- 
--/*
-- * Various sanity checks.
-- */
--static void __init smp_sanity_check(void)
+-
+-/* This function can switch the APIC even after the initial ->probe() */
+-int __init default_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
 -{
--	preempt_disable();
+-	struct apic **drv;
 -
--#if !defined(CONFIG_X86_BIGSMP) && defined(CONFIG_X86_32)
--	if (def_to_bigsmp && nr_cpu_ids > 8) {
--		unsigned int cpu;
--		unsigned nr;
+-	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++) {
+-		if (!(*drv)->acpi_madt_oem_check)
+-			continue;
+-		if (!(*drv)->acpi_madt_oem_check(oem_id, oem_table_id))
+-			continue;
 -
--		pr_warn("More than 8 CPUs detected - skipping them\n"
--			"Use CONFIG_X86_BIGSMP\n");
--
--		nr = 0;
--		for_each_present_cpu(cpu) {
--			if (nr >= 8)
--				set_cpu_present(cpu, false);
--			nr++;
+-		if (!cmdline_apic) {
+-			apic = *drv;
+-			printk(KERN_INFO "Switched to APIC driver `%s'.\n",
+-			       apic->name);
 -		}
--
--		nr = 0;
--		for_each_possible_cpu(cpu) {
--			if (nr >= 8)
--				set_cpu_possible(cpu, false);
--			nr++;
--		}
--
--		set_nr_cpu_ids(8);
+-		return 1;
 -	}
--#endif
--	preempt_enable();
+-	return 0;
 -}
--
- static void __init smp_cpu_index_default(void)
- {
- 	int i;
-@@ -1243,8 +1208,6 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
- {
- 	smp_prepare_cpus_common();
- 
--	smp_sanity_check();
--
- 	switch (apic_intr_mode) {
- 	case APIC_PIC:
- 	case APIC_VIRTUAL_WIRE_NO_CONFIG:
