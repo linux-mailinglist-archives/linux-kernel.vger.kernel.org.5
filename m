@@ -2,119 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DECEE776488
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBA0776492
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 17:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231779AbjHIP42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 11:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
+        id S233314AbjHIP57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 11:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbjHIP40 (ORCPT
+        with ESMTP id S230407AbjHIP56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 11:56:26 -0400
-Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4402D2698;
-        Wed,  9 Aug 2023 08:56:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1691596567; x=1723132567;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=SsgNs8WP7Va7/HPmzzpveitPd422Cl33ClfKs6muCY8=;
-  b=DHFk60Fga6jL5POkjcp2KhSALBJofqV3R2ze8tdgMKXbCLLsRwLEsdGh
-   OFEQyS7RqIhFeEWNAq3m54u3wJ/2ck1dEw3KjPnJwLEmLnCP4GUlJwAz5
-   Zg6F17GaIglCDcCIXtbDTDhB3XYCSBsNeR3YO577gbFUCSAWNJFX/z5Br
-   s=;
-X-IronPort-AV: E=Sophos;i="6.01,159,1684800000"; 
-   d="scan'208";a="597758339"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-153b24bc.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 15:56:04 +0000
-Received: from EX19MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1d-m6i4x-153b24bc.us-east-1.amazon.com (Postfix) with ESMTPS id 400C7C1540;
-        Wed,  9 Aug 2023 15:55:59 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 9 Aug 2023 15:55:50 +0000
-Received: from 88665a182662.ant.amazon.com (10.106.100.32) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.30;
- Wed, 9 Aug 2023 15:55:46 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.com>
-To:     <lmb@isovalent.com>
-CC:     <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <kuniyu@amazon.com>, <linux-kernel@vger.kernel.org>,
-        <martin.lau@kernel.org>, <martin.lau@linux.dev>,
-        <memxor@gmail.com>, <netdev@vger.kernel.org>, <pabeni@redhat.com>
-Subject: Re: [PATCH bpf-next] net: Fix slab-out-of-bounds in inet[6]_steal_sock
-Date:   Wed, 9 Aug 2023 08:55:38 -0700
-Message-ID: <20230809155538.67000-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CAN+4W8hMpL3+vNOrBBRw01tD6OxQ-Yy8OWpq9nRtiyjm0GgE4g@mail.gmail.com>
-References: <CAN+4W8hMpL3+vNOrBBRw01tD6OxQ-Yy8OWpq9nRtiyjm0GgE4g@mail.gmail.com>
+        Wed, 9 Aug 2023 11:57:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55BBE5B;
+        Wed,  9 Aug 2023 08:57:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6575B63FB8;
+        Wed,  9 Aug 2023 15:57:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEE8CC433C8;
+        Wed,  9 Aug 2023 15:57:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691596676;
+        bh=BLJ8BG9cjda67FtOFMSOw2lof21Rwgd62y3h6CJUJXI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AFE0tJAC1VN3lHwsywzTvQMCtTkKwH+fzaHay423Nn8U4BvgbFPhFlDGPhv+CSPLy
+         dFQ0xVpMhQ3C2M5foD/fbgkNjIR7VMHxas0FwdgXCZ4RBZmNRoRBLtdmPfwP64p4CR
+         L1KLFjlwnPyYmvJ9g5BmRhxInIEwBnrizZouBo3g6eX8F8ZAnH1hnfnSPD6lrGk5TK
+         9rNGMty4rm4EuDy1vedzHwVAPS2NqLbaLW0knF3RHZVQHqjJb96V1TtEusFyVz0K14
+         VuLDs1Rym4oqY/gmU++wX3w7TKa1AFDz9Dgv9eLPqBx47m/DAmODVEOpJWGSAeViqX
+         g//bmjx4l6oPA==
+Date:   Wed, 9 Aug 2023 08:57:56 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 07/13] xfs: have xfs_vn_update_time gets its own
+ timestamp
+Message-ID: <20230809155756.GV11352@frogsfrogsfrogs>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+ <20230807-mgctime-v7-7-d1dec143a704@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.106.100.32]
-X-ClientProxiedBy: EX19D036UWB004.ant.amazon.com (10.13.139.170) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807-mgctime-v7-7-d1dec143a704@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Wed, 9 Aug 2023 16:08:31 +0100
-> On Wed, Aug 9, 2023 at 3:39 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
-> >
-> > On 8/9/23 1:33 AM, Lorenz Bauer wrote:
-> > > Kumar reported a KASAN splat in tcp_v6_rcv:
-> > >
-> > >    bash-5.2# ./test_progs -t btf_skc_cls_ingress
-> > >    ...
-> > >    [   51.810085] BUG: KASAN: slab-out-of-bounds in tcp_v6_rcv+0x2d7d/0x3440
-> > >    [   51.810458] Read of size 2 at addr ffff8881053f038c by task test_progs/226
-> > >
-> > > The problem is that inet[6]_steal_sock accesses sk->sk_protocol without
-> > > accounting for request sockets. I added the check to ensure that we only
-> > > every try to perform a reuseport lookup on a supported socket.
-> > >
-> > > It turns out that this isn't necessary at all. struct sock_common contains
-> > > a skc_reuseport flag which indicates whether a socket is part of a
-> >
-> > Does it go back to the earlier discussion
-> > (https://lore.kernel.org/bpf/7188429a-c380-14c8-57bb-9d05d3ba4e5e@linux.dev/)
-> > that the sk->sk_reuseport is 1 from sk_clone for TCP_ESTABLISHED? It works
-> > because there is sk->sk_reuseport"_cb" check going deeper into
-> > reuseport_select_sock() but there is an extra inet6_ehashfn for all TCP_ESTABLISHED.
+On Mon, Aug 07, 2023 at 03:38:38PM -0400, Jeff Layton wrote:
+> In later patches we're going to drop the "now" parameter from the
+> update_time operation. Prepare XFS for this by reworking how it fetches
+> timestamps and sets them in the inode. Ensure that we update the ctime
+> even if only S_MTIME is set.
 > 
-> Sigh, I'd forgotten about this...
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/xfs/xfs_iops.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
 > 
-> For the TPROXY TCP replacement use case we sk_assign the SYN to the
-> listener, which creates the reqsk. We can let follow up packets pass
-> without sk_assign since they will match the reqsk and convert to a
-> fullsock via the usual route. At least that is what the test does. I'm
-> not even sure what it means to redirect a random packet into an
-> established TCP socket TBH. It'd probably be dropped?
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index 731f45391baa..72d18e7840f5 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -1037,6 +1037,7 @@ xfs_vn_update_time(
+>  	int			log_flags = XFS_ILOG_TIMESTAMP;
+>  	struct xfs_trans	*tp;
+>  	int			error;
+> +	struct timespec64	now = current_time(inode);
+>  
+>  	trace_xfs_update_time(ip);
+>  
+> @@ -1056,12 +1057,15 @@ xfs_vn_update_time(
+>  		return error;
+>  
+>  	xfs_ilock(ip, XFS_ILOCK_EXCL);
+> -	if (flags & S_CTIME)
+> -		inode_set_ctime_to_ts(inode, *now);
+> +	if (flags & (S_CTIME|S_MTIME))
+
+Minor nit: spaces around    ^ the operator.
+
+Otherwise looks ok to me...
+Acked-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+> +		now = inode_set_ctime_current(inode);
+> +	else
+> +		now = current_time(inode);
+> +
+>  	if (flags & S_MTIME)
+> -		inode->i_mtime = *now;
+> +		inode->i_mtime = now;
+>  	if (flags & S_ATIME)
+> -		inode->i_atime = *now;
+> +		inode->i_atime = now;
+>  
+>  	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
+>  	xfs_trans_log_inode(tp, ip, log_flags);
 > 
-> For UDP, I'm not sure whether we even get into this situation? Doesn't
-> seem like UDP sockets are cloned from each other, so we also shouldn't
-> end up with a reuseport flag set erroneously.
+> -- 
+> 2.41.0
 > 
-> Things we could do if necessary:
-> 1. Reset the flag in inet_csk_clone_lock like we do for SOCK_RCU_FREE
-
-I think we can't do this as sk_reuseport is inherited to twsk and used
-in inet_bind_conflict().
-
-
-> 2. Duplicate the cb check into inet[6]_steal_sock
-
-or 3. Add sk_fullsock() test ?
