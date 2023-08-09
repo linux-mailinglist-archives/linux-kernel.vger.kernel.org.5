@@ -2,126 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DE5776B01
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8178C776AFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbjHIVdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 17:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
+        id S231592AbjHIVb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 17:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231251AbjHIVdh (ORCPT
+        with ESMTP id S229489AbjHIVb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 17:33:37 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECEF1BD9
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:33:35 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fe2d152f62so334897e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 14:33:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=libre.computer; s=google; t=1691616814; x=1692221614;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nHhxE/dJDA6clbO9u01O1/s/eHxwxfI5ttey2qrEI7Y=;
-        b=lOEq3UiLppEvzFQ+XytrfD/OLqlj+o2lGGJ2iLdVlf9NZ4HjVkiVf87RBQMqy//Xdj
-         VOtjEkVw6I5hTl8fjCTdzz4Zr2W9AlHkxzp0OyYs5pukC1ePGvWhlT3An1SQhg63uie4
-         p23kTFFbUEzmr5al2aWfVctMdFlN9iqmJmyz8Ej2RJWxnjVhK8p9+fZiFOszWmKwFMXQ
-         zuaDyExqGHbzAD87dN9VYVazNOfM53tOex/XTc9VJJ6FpWSmzsR+y2l+cOq0helpBptI
-         FtIpytHR9FuhE1fCxdEXJ4i0lyJjhrTrnYs3qjOBTisR++lA3QbB9VOhT6/6S0A2j+XN
-         IjtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691616814; x=1692221614;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nHhxE/dJDA6clbO9u01O1/s/eHxwxfI5ttey2qrEI7Y=;
-        b=AlodTl/PUv5M6caAR65g6ARKkJ8aN9zy7wXpOBzIDTr/Sc/Oqo3YFriVasedxOWsfN
-         SLeoC1j/mZP4klx5+r/n+ucA0qX4BSHxbN/gFH8P8sQH0wULr3lUmv2H7a4rg6ODDHN7
-         oJGduGb0N2TGpi6Lun3Fc7dfld0JzQtud9GSneQ9Jp4IQkwDHlSgrmM5vqJQPyrY90Sp
-         xFO6XN7T/Y2dvFTY4Gx2Y+ioj1r7wPP4qHs0IVdWwI31LDtkI3O1r9eyt4QqDQY5oBjI
-         J9+SPwctNi8hJo4lFVc+Uz+xZ8N/u2DtDFzkGyrauretClVK7S8+HlYQaXTxf25nL8xm
-         fwlw==
-X-Gm-Message-State: AOJu0YwCAaEf3BbyiwrQYazdVDOM1Sz456ZJXxqD9GYxGzPcyqEYK9IH
-        mIGrU7yWUNeRbY/1BrC9VIbtIw==
-X-Google-Smtp-Source: AGHT+IFF1nfi6ptRW3iihGsy7dhGfDFYH+hxDzqxsKBwEmZmm7zQoFcXeraSGoiglsNibHtSGD+FVw==
-X-Received: by 2002:a05:6512:3baa:b0:4fb:8f81:4fe8 with SMTP id g42-20020a0565123baa00b004fb8f814fe8mr258735lfv.46.1691616813958;
-        Wed, 09 Aug 2023 14:33:33 -0700 (PDT)
-Received: from bear.local ([69.165.74.129])
-        by smtp.gmail.com with ESMTPSA id q2-20020ac25282000000b004f864690901sm2450645lfm.244.2023.08.09.14.33.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 14:33:33 -0700 (PDT)
-From:   Luke Lu <luke.lu@libre.computer>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-usb@vger.kernel.org, linux-amlogic@lists.infradead.org
-Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Da Xue <da@libre.computer>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Luke Lu <luke.lu@libre.computer>, stable@vger.kernel.org
-Subject: [PATCH v2] usb: dwc3: meson-g12a: do post init to fix broken usb after resumption
-Date:   Wed,  9 Aug 2023 21:29:11 +0000
-Message-Id: <20230809212911.18903-1-luke.lu@libre.computer>
-X-Mailer: git-send-email 2.40.1
+        Wed, 9 Aug 2023 17:31:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B8510DC;
+        Wed,  9 Aug 2023 14:31:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 56BFB6425F;
+        Wed,  9 Aug 2023 21:31:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B95FC433C8;
+        Wed,  9 Aug 2023 21:31:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691616684;
+        bh=eWvluBXpvacYU7SWRx3U7+YdX4o4iOBGL2WgtTPQ5Vc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZFredjg3pqzvUlwqfbjLgf8p5I99gCUWJJgf94yUKMDhgac6rREaLlV3Zovdtm26G
+         +Gxhd5VBeE7qjkJs1YnGxzqJbBBB8iCSyAxKUpEigBfyNu3m/wuZLlO/1MKKlwOdYB
+         987uKGAOUN21RvuW51xUS5VpK+9S9vtKK29qpHTqbpURoFDnhqcxJp74G+AmSYlvA2
+         aM1qEcKsmtFe2SvgGkZAP90JP3jef3Ajyxw9cy6XFOUlEYDybUe9DPVtw45+2tAkyw
+         u7hWu6rYPEasnmQJ0qELDjTJ5x5DVL3dq0rMSk/tEOK3YXjZa2WLHuAV50K0/6uvF0
+         MlLu6Ce65sqSg==
+Date:   Wed, 9 Aug 2023 22:31:19 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Aradhya Bhatia <a-bhatia1@ti.com>
+Cc:     Andrew Davis <afd@ti.com>, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: mfd: syscon: Add ti,dss-oldi-io-ctrl
+ compatible
+Message-ID: <20230809-boxing-unsoiled-0ca242cac892@spud>
+References: <20230809165752.46133-1-afd@ti.com>
+ <28cf3fa3-c9ea-aba1-2e45-94142a818849@ti.com>
+ <1ec72d58-de81-d367-3dc6-900a00b6dac4@ti.com>
+ <90e34ca5-3380-8a66-1041-efea85838236@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="FOGGleyvWUr454OO"
+Content-Disposition: inline
+In-Reply-To: <90e34ca5-3380-8a66-1041-efea85838236@ti.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Device connected to usb otg port of GXL-based boards can not be
-recognised after resumption, doesn't recover even if disconnect and
-reconnect the device. dmesg shows it disconnects during resumption.
 
-[   41.492911] usb 1-2: USB disconnect, device number 3
-[   41.499346] usb 1-2: unregistering device
-[   41.511939] usb 1-2: unregistering interface 1-2:1.0
+--FOGGleyvWUr454OO
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Calling usb_post_init() will fix this issue, and it's tested and
-verified on libretech's aml-s905x-cc board.
+On Thu, Aug 10, 2023 at 12:30:03AM +0530, Aradhya Bhatia wrote:
+>=20
+>=20
+> On 09-Aug-23 23:29, Andrew Davis wrote:
+> > On 8/9/23 12:39 PM, Aradhya Bhatia wrote:
+> >> Hi Andrew,
+> >>
+> >> Thank you for quickly whipping up these patches! =3D)
+> >>
+> >> On 09-Aug-23 22:27, Andrew Davis wrote:
+> >>> Add TI DSS OLDI-IO control registers compatible. This is a region of 5
+> >>> 32bit registers found in the TI AM65 CTRL_MMR0 register space[0]. They
+> >>> are used to control the characteristics of the OLDI DATA/CLK IO as
+> >>> needed
+> >>> by the DSS display controller node.
+> >>
+> >> As long as the driver takes care of it, we can reuse the same compatib=
+le
+> >> even when OLDI IO Ctrl registers change from SoC to SoC, (in this case,
+> >> AM65 to AM62), right?
+> >>
+> >=20
+> > That depends, is the register space still "compatible" with the AM65
+> > version of this space? If not then we would want to qualify these
+> > with their SoC versions.
 
-Cc: stable@vger.kernel.org # v5.8+
-Fixes: c99993376f72 ("usb: dwc3: Add Amlogic G12A DWC3 glue")
-Signed-off-by: Luke Lu <luke.lu@libre.computer>
+Even if they are compatible, having soc-specific compatibles with a
+fallback to the common oldi compatible string would be ideal.
 
----
-Note here, the commmit of Fixes tag is the first patch which bring
-suspend/resume function, so let's use it as the fix tag.
+> It is certainly not compatible. More on this below.
 
-As commit 5b0ba0caaf3a: (usb: dwc3: meson-g12a: refactor usb init)"
-introduced the use_post_init() function, and this patch will explicitly
-depend on it, so let's set kernel version higher or equal to v5.8.
+But as they're not compatible, that's kinda moot anyway.
 
-Changes since v1:
- - add Fixes tag and Cc stable tree
----
- drivers/usb/dwc3/dwc3-meson-g12a.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+> > A quick check of the documentation shows the register space is still
+> > 5 registers, 4 DATA and 1 CLK. The contents are different though, but
+> > since this compatible string is not used to match with a driver that
+> > would care (that is handled by the DSS node which does have different
+> > compatibles for each device), I'm actually not sure.
 
-diff --git a/drivers/usb/dwc3/dwc3-meson-g12a.c b/drivers/usb/dwc3/dwc3-meson-g12a.c
-index e99c7489dba0..2c07c038b584 100644
---- a/drivers/usb/dwc3/dwc3-meson-g12a.c
-+++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
-@@ -926,6 +926,12 @@ static int __maybe_unused dwc3_meson_g12a_resume(struct device *dev)
- 			return ret;
- 	}
- 
-+	if (priv->drvdata->usb_post_init) {
-+		ret = priv->drvdata->usb_post_init(priv);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.40.1
+> > Guess we can leave
+> > that decision to the DT binding maintainers..
 
+I'm not 100% sure what this decision actually is. Could you elaborate?
+
+
+> Exactly. The DSS driver in our, as you like to call, evil-vendor-tree
+> uses the compatible information to decide which register offsets to
+> write to, and what to write.
+>=20
+>=20
+> On the register compatibility situation...
+>=20
+> AM62 OLDI IO Ctrl has, in total, 12 registers (as opposed to 5 in AM65).
+>=20
+> There are 4 Data and 1 Clk registers (per OLDI). And there are 2 OLDI
+> transmitters in AM62. However, their contents are different as you
+> noted.
+>=20
+> There are 2 more registers in AM62 (unlike AM65), that control
+> power-down and loop-back. And it is the power-down register, that will
+> be primarily used by the driver.
+
+> >>> [0] https://www.ti.com/lit/pdf/spruid7
+> >>>
+> >>> Signed-off-by: Andrew Davis <afd@ti.com>
+> >>> ---
+> >>> =A0 Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
+> >>> =A0 1 file changed, 1 insertion(+)
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml
+> >>> b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> >>> index 8103154bbb529..5029abd6d6411 100644
+> >>> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
+> >>> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> >>> @@ -69,6 +69,7 @@ properties:
+> >>> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 - rockchip,rk3588-qos
+> >>> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 - rockchip,rv1126-qos
+> >>> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 - starfive,jh7100-sysma=
+in
+> >>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 - ti,dss-oldi-io-ctrl
+
+So it sounds like this compatible, that appears to be generic, should
+instead be soc-specific as the register layout is different between
+SoCs?
+
+Apologies if I have misunderstood.
+
+Thanks,
+Conor.
+
+> >>> =A0 =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 - const: syscon
+> >>> =A0=20
+>=20
+
+--FOGGleyvWUr454OO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNQFpwAKCRB4tDGHoIJi
+0tclAP90Wuo72E0qvJdSqzNOjqOkqtc6imA1gDU41FSk5uC+0wEAjgjCSSKCgPX9
+OLFlmVBZeUhh/fmbQaRp20VoSfaEjQY=
+=jJaz
+-----END PGP SIGNATURE-----
+
+--FOGGleyvWUr454OO--
