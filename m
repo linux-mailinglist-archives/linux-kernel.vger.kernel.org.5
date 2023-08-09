@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C03776CA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 01:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32515776CAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 01:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbjHIXKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 19:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
+        id S230225AbjHIXLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 19:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjHIXK3 (ORCPT
+        with ESMTP id S229582AbjHIXLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 19:10:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E074E75
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 16:10:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D4CB6417B
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 23:10:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A382AC433C8;
-        Wed,  9 Aug 2023 23:10:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691622627;
-        bh=GBjuHFL646u1lkFK2JAMT4bXgcXxV4RlWdIPaFhWsoY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=UBNPRxzIdXsxTCndxX/ZUJuzq+IuL1fEZFx0Oba0f77z1jZzjnbQNUBNnhgS5q1/T
-         NFlIE2qDMh3NBa6bEfi+5FPDsdPIjLbJVzJRQ5C2F8rb/a4lYs9B/Lmidy/B1V5wHB
-         3PXiMk404NZrRDx/48hiAi5tGZ+B78QWxLaOUnQheX9g4TjURdawJWzUNM4SCjkCGy
-         W6ydK/MAFGQPe7iFmJn2xaEbvIZ2/HauMj/wyMjfeAs3EVFSp1KcyjBzpGHVEkt1vC
-         JvRjc83drygXihs70F1RfI9lO+ZvFhrjERjfUTJjMBcT9XFf4zv6kGzNVbXrdwg+S0
-         adg14QcfswWig==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 87E4BE3308F;
-        Wed,  9 Aug 2023 23:10:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 9 Aug 2023 19:11:21 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25201D1;
+        Wed,  9 Aug 2023 16:11:21 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b9ba3d6157so4957111fa.3;
+        Wed, 09 Aug 2023 16:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691622679; x=1692227479;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qvaA2dr27xwLbhrsEkqVsKRPGUbqoqs8Cc6VxoCBRhY=;
+        b=npDadkHPMFJnWf4isIAZ8VLDu9cORyOZFLOjD1RcXHMUv+RiU7JlXgasZ9g0FexOq7
+         KOpG/4Shf/Mbmd5yGc+wvnqW3H9Jy1yp679xMRLx3lMHkTDyke+lAnhY+KdHGtnGevOb
+         pWZnnfoNdBXJi1pKpecm/7f0Hx8own+r/YnQ+abqDzHOtCk09LyXAd1qXZWM2/5ElOfi
+         gYIv/zMY9lXETu+MMb5JeUfoTyEVbq7iiXK2QVCiHWOs1fZk5ihG3PVDOftDkDuADH72
+         zrf2LgebLtTe09zgvQOytRQnqgy2nxWdcw8hHHZC9rpLEEUXHrZ2siOU1Ty3kyWRSBK8
+         CW9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691622679; x=1692227479;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qvaA2dr27xwLbhrsEkqVsKRPGUbqoqs8Cc6VxoCBRhY=;
+        b=BDrZjWEml7aMcsOJOBePS610BMBDAJHwCGZQZ0sIDL+B2En0sdsjFWr3AIRJmthKUm
+         TwbWbswJJwLkzo60KpxsPdqyxmQGVxNyxfcLpbf1Y+E5smQsd6a8doqy0UIbV8elDndB
+         3JU6qghzHpy0PlnwKkKqqa+SwBGO3Aps/Qf527VTBvsNjKOJdpqW8KQ0cAijPv91+ibz
+         8/FmAs1kJDhQSsXDaix5SitPVFSAMjqFe5zhGawI+wlzXI18z5SdBcBzmV/XSEbttzo5
+         vhTUKiDaEUM5DSyofwAZX2ISi/cODDXO5bR6VAFmk16r+DRFy7H7GYf5mM1ahXGb9apW
+         rhnA==
+X-Gm-Message-State: AOJu0Yywx2KRPpM2GA7wztNSRofoz15sgjm2otHjwnjCWpXvFbhXmk8i
+        tddoN5IB05+7HqotP+ULhB+eIezRFg0l03h5HUh40Egl+iUjJfFC
+X-Google-Smtp-Source: AGHT+IH7zFRhQ8K0QTnS4GWmvelHzEanqe4bpcjccWQbl6SkEDRUz8XbLevSBqgLPNnO2Cvs9RpgvpsZ1HiKdRQemVM=
+X-Received: by 2002:a2e:9b51:0:b0:2b9:dd96:5340 with SMTP id
+ o17-20020a2e9b51000000b002b9dd965340mr418676ljj.50.1691622679027; Wed, 09 Aug
+ 2023 16:11:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 net-next 00/11] Improve the taprio qdisc's relationship
- with its children
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169162262755.8257.7127331416998395436.git-patchwork-notify@kernel.org>
-Date:   Wed, 09 Aug 2023 23:10:27 +0000
-References: <20230807193324.4128292-1-vladimir.oltean@nxp.com>
-In-Reply-To: <20230807193324.4128292-1-vladimir.oltean@nxp.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        vinicius.gomes@intel.com, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org,
-        muhammad.husaini.zulkifli@intel.com, yepeilin.cs@gmail.com,
-        pctammela@mojatatu.com, richardcochran@gmail.com,
-        shaozhengchao@huawei.com, glipus@gmail.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Steve French <smfrench@gmail.com>
+Date:   Wed, 9 Aug 2023 18:11:07 -0500
+Message-ID: <CAH2r5mv+Sy5mrZThrQUf1na-mg-B9DiLd5fkYs9sPo97GWirCA@mail.gmail.com>
+Subject: [GIT PULL] ksmbd server fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Please pull the following changes since commit
+5d0c230f1de8c7515b6567d9afba1f196fb4e2f4:
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+  Linux 6.5-rc4 (2023-07-30 13:23:47 -0700)
 
-On Mon,  7 Aug 2023 22:33:13 +0300 you wrote:
-> Changes in v4:
-> - Clean up some leftovers in the ptp_mock driver.
-> - Add CONFIG_PTP_1588_CLOCK_MOCK to tools/testing/selftests/tc-testing/config
-> - Wait for taprio schedule to become operational in the selftests
-> 
-> Changes in v3:
-> Fix ptp_mock compilation as module, fix small mistakes in selftests.
-> 
-> [...]
+are available in the Git repository at:
 
-Here is the summary with links:
-  - [v4,net-next,01/11] net/sched: taprio: don't access q->qdiscs[] in unoffloaded mode during attach()
-    https://git.kernel.org/netdev/net-next/c/09e0c3bbde90
-  - [v4,net-next,02/11] net/sched: taprio: keep child Qdisc refcount elevated at 2 in offload mode
-    https://git.kernel.org/netdev/net-next/c/25b0d4e4e41f
-  - [v4,net-next,03/11] net/sched: taprio: try again to report q->qdiscs[] to qdisc_leaf()
-    https://git.kernel.org/netdev/net-next/c/98766add2d55
-  - [v4,net-next,04/11] net/sched: taprio: delete misleading comment about preallocating child qdiscs
-    https://git.kernel.org/netdev/net-next/c/6e0ec800c174
-  - [v4,net-next,05/11] net/sched: taprio: dump class stats for the actual q->qdiscs[]
-    https://git.kernel.org/netdev/net-next/c/665338b2a7a0
-  - [v4,net-next,06/11] net: ptp: create a mock-up PTP Hardware Clock driver
-    https://git.kernel.org/netdev/net-next/c/40b0425f8ba1
-  - [v4,net-next,07/11] net: netdevsim: use mock PHC driver
-    https://git.kernel.org/netdev/net-next/c/b63e78fca889
-  - [v4,net-next,08/11] net: netdevsim: mimic tc-taprio offload
-    https://git.kernel.org/netdev/net-next/c/35da47fe1c47
-  - [v4,net-next,09/11] selftests/tc-testing: add ptp_mock Kconfig dependency
-    https://git.kernel.org/netdev/net-next/c/355adce3010b
-  - [v4,net-next,10/11] selftests/tc-testing: test that taprio can only be attached as root
-    https://git.kernel.org/netdev/net-next/c/1890cf08bd99
-  - [v4,net-next,11/11] selftests/tc-testing: verify that a qdisc can be grafted onto a taprio class
-    https://git.kernel.org/netdev/net-next/c/29c298d2bc82
+  git://git.samba.org/ksmbd.git tags/6.5-rc5-ksmbd-server
 
-You are awesome, thank you!
+for you to fetch changes up to 79ed288cef201f1f212dfb934bcaac75572fb8f6:
+
+  ksmbd: fix wrong next length validation of ea buffer in
+smb2_set_ea() (2023-08-05 20:57:00 -0500)
+
+----------------------------------------------------------------
+Two ksmbd server fixes, both also for stable
+- improve buffer validation when multiple EAs returned
+- missing check for command payload size
+----------------------------------------------------------------
+Long Li (1):
+      ksmbd: validate command request size
+
+Namjae Jeon (1):
+      ksmbd: fix wrong next length validation of ea buffer in smb2_set_ea()
+
+ fs/smb/server/smb2misc.c | 10 +++++-----
+ fs/smb/server/smb2pdu.c  |  9 ++++++++-
+ 2 files changed, 13 insertions(+), 6 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Thanks,
 
-
+Steve
