@@ -2,262 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D14776272
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3089A776273
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 16:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233277AbjHIO2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 10:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35186 "EHLO
+        id S233287AbjHIO2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 10:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbjHIO2d (ORCPT
+        with ESMTP id S233279AbjHIO2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 10:28:33 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F5E10F5
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:28:32 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d62bdd1a97dso59411276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 07:28:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691591311; x=1692196111;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1ihaVpeAqx9qHCMNV38aMOWE/2Pmk5R446JB7Tpkugo=;
-        b=N37uvbqxY4sXiYPIKnctNFNTXMZQNHXwWM0PprUuzC+0Yu7nXi/5lc5ZpgtZvOOoyH
-         21eXvILkgW06zU+kVkD6VetCrriUXWM0kdkvfFWxQVlTSDk69TpMOKZIXn9AFhjVrSMe
-         ZuSdF8g4Vxxugee/77jz233pDrQG5UWM/1akZEXfw97ZSiwvJXuwB8MYa8wRcOSmBFG+
-         jw2yB7Npq5GyIWUrHQS+v1xo6CqICGW9biInI4uXUqkG+nPNbDgLada1zB57qBTAaMPP
-         6KRQsbzHEK1oxmgt4ve48QsHhD5pXmlygCIyjaD3sD1NBUAkuIJoi59uAgSNacv9iaT7
-         DBpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691591311; x=1692196111;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1ihaVpeAqx9qHCMNV38aMOWE/2Pmk5R446JB7Tpkugo=;
-        b=Iz5AMHUxWPOVhh29J3x6Mt22364/x1ALz5zKZtJn8llyLTwyJkWqehIhMsCgWEeb8u
-         TlbT8MLu5pR69syQ4Kx3x65t09aqLYS6H7RN5Ewq4PSYS0QO7cVan8qAbyLqRRlce255
-         0XpPp6/gU+YxGanYCm6beLfj10Wy7Ja/8A8RDT9p17tJXywE4mGenltK2alpeZ5KVZaj
-         aAMlwrlK9WDg/UzWMXcwpDHGESnxDoHcMtfGly/sdOsZvHuO7rpWBdFObDPFO4tXmRlk
-         7q6+MtrW9yQe6+LHu3+9QL60diwyFN3NGjM7E7NUNB+D7QV4kNO3DtmnGE6gabe5Vimb
-         JZrg==
-X-Gm-Message-State: AOJu0YwZKGud6LfyZdyuy0dh+zxooQfxpaTjwvS090a+baJO4G47mBpA
-        AJ3//AB11P0bR0CdHcwQlQTUF4D3FEjx08YZpAuy+w==
-X-Google-Smtp-Source: AGHT+IGDwS7yl4rbDfBORmhy0kNzmOzKe/dKZTCGIxWNy1WrQ4Ry3xK9vMoGM1JlzArUgDRvV5br78D5suFMcDDdj88=
-X-Received: by 2002:a5b:bc7:0:b0:c1a:5904:fe8e with SMTP id
- c7-20020a5b0bc7000000b00c1a5904fe8emr2648434ybr.34.1691591311035; Wed, 09 Aug
- 2023 07:28:31 -0700 (PDT)
+        Wed, 9 Aug 2023 10:28:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A00170B
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 07:28:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9624063422
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:28:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A51EC433C7;
+        Wed,  9 Aug 2023 14:28:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691591331;
+        bh=sTMZ5ww1qIGz1lhvEVOD4pr1bzYqs6NfWACJ2GRhEfQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W750R2F1rsrsUrhTtXPBO82gX2Mmt3nBZg9Kv/mKmn2y1b1BsmhDBGe+uG8sawudT
+         /IA01sk7ecutdzHSyo6Wmtf392324G/Lr/GWD5JxvfNEyhqT5cQs6pvAto/tGnjHYY
+         PLZ9dZrkG3/TbS3utzpDH7UyRGfVcjXdcHctBCRqc14Yhr59V5yY4eb83P52ZNtaPz
+         KGChIHY7c25n328GRaacVodfHeWbo7tTInGNVkorVrzuv38psxrgRnrK3ZoH3e5kL5
+         XaBr///W2556fhT/TVily1YM2/D1zUUmGgoWCgtW3Fwmyp/HlmnF9RbhOKrurcAZLJ
+         cVEYzTy4vR9mA==
+Date:   Wed, 9 Aug 2023 10:28:47 -0400
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        Andrew.Cooper3@citrix.com, gregkh@linuxfoundation.org
+Subject: Re: [RFC][PATCH 06/17] x86/cpu: Add SRSO untrain to retbleed=
+Message-ID: <20230809142847.3prfwo6cclbydfep@treble>
+References: <20230809071218.000335006@infradead.org>
+ <20230809072200.850338672@infradead.org>
+ <20230809134233.d7hlutglk2j3f4w3@treble>
+ <20230809140603.GO212435@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20230630211957.1341547-1-surenb@google.com> <a34a418a-9a6c-9d9a-b7a3-bde8013bf86c@redhat.com>
-In-Reply-To: <a34a418a-9a6c-9d9a-b7a3-bde8013bf86c@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 9 Aug 2023 07:28:17 -0700
-Message-ID: <CAJuCfpGCWekMdno=L=4m7ujWTYMr0Wv77oYzXWT5RXnx+fWe0w@mail.gmail.com>
-Subject: Re: [PATCH v7 0/6] Per-VMA lock support for swap and userfaults
-To:     David Hildenbrand <david@redhat.com>
-Cc:     akpm@linux-foundation.org, willy@infradead.org, hannes@cmpxchg.org,
-        mhocko@suse.com, josef@toxicpanda.com, jack@suse.cz,
-        ldufour@linux.ibm.com, laurent.dufour@fr.ibm.com,
-        michel@lespinasse.org, liam.howlett@oracle.com, jglisse@google.com,
-        vbabka@suse.cz, minchan@google.com, dave@stgolabs.net,
-        punit.agrawal@bytedance.com, lstoakes@gmail.com, hdanton@sina.com,
-        apopple@nvidia.com, peterx@redhat.com, ying.huang@intel.com,
-        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        pasha.tatashin@soleen.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230809140603.GO212435@hirez.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 12:49=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> On 30.06.23 23:19, Suren Baghdasaryan wrote:
-> > When per-VMA locks were introduced in [1] several types of page faults
-> > would still fall back to mmap_lock to keep the patchset simple. Among t=
-hem
-> > are swap and userfault pages. The main reason for skipping those cases =
-was
-> > the fact that mmap_lock could be dropped while handling these faults an=
-d
-> > that required additional logic to be implemented.
-> > Implement the mechanism to allow per-VMA locks to be dropped for these
-> > cases.
-> > First, change handle_mm_fault to drop per-VMA locks when returning
-> > VM_FAULT_RETRY or VM_FAULT_COMPLETED to be consistent with the way
-> > mmap_lock is handled. Then change folio_lock_or_retry to accept vm_faul=
-t
-> > and return vm_fault_t which simplifies later patches. Finally allow swa=
-p
-> > and uffd page faults to be handled under per-VMA locks by dropping per-=
-VMA
-> > and retrying, the same way it's done under mmap_lock.
-> > Naturally, once VMA lock is dropped that VMA should be assumed unstable
-> > and can't be used.
-> >
-> > Changes since v6 posted at [2]
-> > - 4/6 replaced the ternary operation in folio_lock_or_retry,
-> > per Matthew Wilcox
-> > - 4/6 changed return code description for __folio_lock_or_retry
-> > per Matthew Wilcox
-> >
-> > Note: patch 3/6 will cause a trivial merge conflict in arch/arm64/mm/fa=
-ult.c
-> > when applied over mm-unstable branch due to a patch from ARM64 tree [3]
-> > which is missing in mm-unstable.
-> >
-> > [1] https://lore.kernel.org/all/20230227173632.3292573-1-surenb@google.=
-com/
-> > [2] https://lore.kernel.org/all/20230630020436.1066016-1-surenb@google.=
-com/
-> > [3] https://lore.kernel.org/all/20230524131305.2808-1-jszhang@kernel.or=
-g/
-> >
-> > Suren Baghdasaryan (6):
-> >    swap: remove remnants of polling from read_swap_cache_async
-> >    mm: add missing VM_FAULT_RESULT_TRACE name for VM_FAULT_COMPLETED
-> >    mm: drop per-VMA lock when returning VM_FAULT_RETRY or
-> >      VM_FAULT_COMPLETED
-> >    mm: change folio_lock_or_retry to use vm_fault directly
-> >    mm: handle swap page faults under per-VMA lock
-> >    mm: handle userfaults under VMA lock
->
-> On mm/mm-unstable I get running the selftests:
->
-> Testing sigbus-wp on shmem... [  383.215804] mm ffff9666078e5280 task_siz=
-e 140737488351232
-> [  383.215804] get_unmapped_area ffffffffad03b980
-> [  383.215804] mmap_base 140378441285632 mmap_legacy_base 47254353883136
-> [  383.215804] pgd ffff966608960000 mm_users 1 mm_count 6 pgtables_bytes =
-126976 map_count 28
-> [  383.215804] hiwater_rss 6183 hiwater_vm 8aa7 total_vm 8aa7 locked_vm 0
-> [  383.215804] pinned_vm 0 data_vm 844 exec_vm 1a4 stack_vm 21
-> [  383.215804] start_code 402000 end_code 408f09 start_data 40ce10 end_da=
-ta 40d500
-> [  383.215804] start_brk 17fe000 brk 1830000 start_stack 7ffecbbe08e0
-> [  383.215804] arg_start 7ffecbbe1c6f arg_end 7ffecbbe1c81 env_start 7ffe=
-cbbe1c81 env_end 7ffecbbe1fe6
-> [  383.215804] binfmt ffffffffaf3efe40 flags 80000cd
-> [  383.215804] ioctx_table 0000000000000000
-> [  383.215804] owner ffff96660d4a4000 exe_file ffff966285501a00
-> [  383.215804] notifier_subscriptions 0000000000000000
-> [  383.215804] numa_next_scan 4295050919 numa_scan_offset 0 numa_scan_seq=
- 0
-> [  383.215804] tlb_flush_pending 0
-> [  383.215804] def_flags: 0x0()
-> [  383.236255] ------------[ cut here ]------------
-> [  383.237537] kernel BUG at include/linux/mmap_lock.h:66!
-> [  383.238897] invalid opcode: 0000 [#1] PREEMPT SMP PTI
-> [  383.240114] CPU: 37 PID: 1482 Comm: uffd-unit-tests Not tainted 6.5.0-=
-rc4+ #68
-> [  383.242513] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1=
-.16.2-1.fc38 04/01/2014
-> [  383.244936] RIP: 0010:find_vma+0x3a/0x40
-> [  383.246200] Code: 48 89 34 24 48 85 c0 74 1c 48 83 c7 40 48 c7 c2 ff f=
-f ff ff 48 89 e6 e8 a4 29 ba 00
-> [  383.251084] RSP: 0000:ffffae3745b6beb0 EFLAGS: 00010282
-> [  383.252781] RAX: 0000000000000314 RBX: ffff9666078e5280 RCX: 000000000=
-0000000
-> [  383.255073] RDX: 0000000000000001 RSI: ffffffffae8f69c3 RDI: 00000000f=
-fffffff
-> [  383.257352] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffae374=
-5b6bc48
-> [  383.259369] R10: 0000000000000003 R11: ffff9669fff46fe8 R12: 000000004=
-4401028
-> [  383.261570] R13: ffff9666078e5338 R14: ffffae3745b6bf58 R15: 000000000=
-0000400
-> [  383.263499] FS:  00007fac671c5740(0000) GS:ffff9669efbc0000(0000) knlG=
-S:0000000000000000
-> [  383.265483] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  383.266847] CR2: 0000000044401028 CR3: 0000000488960006 CR4: 000000000=
-0770ee0
-> [  383.268532] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000000=
-0000000
-> [  383.270206] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000000000=
-0000400
-> [  383.271905] PKRU: 55555554
-> [  383.272593] Call Trace:
-> [  383.273215]  <TASK>
-> [  383.273774]  ? die+0x32/0x80
-> [  383.274510]  ? do_trap+0xd6/0x100
-> [  383.275326]  ? find_vma+0x3a/0x40
-> [  383.276152]  ? do_error_trap+0x6a/0x90
-> [  383.277072]  ? find_vma+0x3a/0x40
-> [  383.277899]  ? exc_invalid_op+0x4c/0x60
-> [  383.278846]  ? find_vma+0x3a/0x40
-> [  383.279675]  ? asm_exc_invalid_op+0x16/0x20
-> [  383.280698]  ? find_vma+0x3a/0x40
-> [  383.281527]  lock_mm_and_find_vma+0x3f/0x270
-> [  383.282570]  do_user_addr_fault+0x1e4/0x660
-> [  383.283591]  exc_page_fault+0x73/0x170
-> [  383.284509]  asm_exc_page_fault+0x22/0x30
-> [  383.285486] RIP: 0033:0x404428
-> [  383.286265] Code: 48 89 85 18 ff ff ff e9 dc 00 00 00 48 8b 15 9f 92 0=
-0 00 48 8b 05 80 92 00 00 48 03
-> [  383.290566] RSP: 002b:00007ffecbbe05c0 EFLAGS: 00010206
-> [  383.291814] RAX: 0000000044401028 RBX: 00007ffecbbe08e8 RCX: 00007fac6=
-6e93c18
-> [  383.293502] RDX: 0000000044400000 RSI: 0000000000000001 RDI: 000000000=
-0000000
-> [  383.295175] RBP: 00007ffecbbe06c0 R08: 00007ffecbbe05c0 R09: 00007ffec=
-bbe06c0
-> [  383.296857] R10: 0000000000000008 R11: 0000000000000246 R12: 000000000=
-0000000
-> [  383.298533] R13: 00007ffecbbe08f8 R14: 000000000040ce18 R15: 00007fac6=
-7206000
-> [  383.300203]  </TASK>
-> [  383.300775] Modules linked in: rfkill intel_rapl_msr intel_rapl_common=
- intel_uncore_frequency_commong
-> [  383.309661] ---[ end trace 0000000000000000 ]---
-> [  383.310795] RIP: 0010:find_vma+0x3a/0x40
-> [  383.311771] Code: 48 89 34 24 48 85 c0 74 1c 48 83 c7 40 48 c7 c2 ff f=
-f ff ff 48 89 e6 e8 a4 29 ba 00
-> [  383.316081] RSP: 0000:ffffae3745b6beb0 EFLAGS: 00010282
-> [  383.317346] RAX: 0000000000000314 RBX: ffff9666078e5280 RCX: 000000000=
-0000000
-> [  383.319050] RDX: 0000000000000001 RSI: ffffffffae8f69c3 RDI: 00000000f=
-fffffff
-> [  383.320767] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffae374=
-5b6bc48
-> [  383.322468] R10: 0000000000000003 R11: ffff9669fff46fe8 R12: 000000004=
-4401028
-> [  383.324164] R13: ffff9666078e5338 R14: ffffae3745b6bf58 R15: 000000000=
-0000400
-> [  383.325870] FS:  00007fac671c5740(0000) GS:ffff9669efbc0000(0000) knlG=
-S:0000000000000000
-> [  383.327795] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  383.329177] CR2: 0000000044401028 CR3: 0000000488960006 CR4: 000000000=
-0770ee0
-> [  383.330885] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000000=
-0000000
-> [  383.332592] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000000000=
-0000400
-> [  383.334287] PKRU: 55555554
->
->
-> Which ends up being
->
-> VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
->
-> I did not check if this is also the case on mainline, and if this series =
-is responsible.
+On Wed, Aug 09, 2023 at 04:06:03PM +0200, Peter Zijlstra wrote:
+> On Wed, Aug 09, 2023 at 09:42:33AM -0400, Josh Poimboeuf wrote:
+> > On Wed, Aug 09, 2023 at 09:12:24AM +0200, Peter Zijlstra wrote:
+> > >  static enum retbleed_mitigation retbleed_mitigation __ro_after_init =
+> > > @@ -796,6 +802,10 @@ static int __init retbleed_parse_cmdline
+> > >  			retbleed_cmd = RETBLEED_CMD_AUTO;
+> > >  		} else if (!strcmp(str, "unret")) {
+> > >  			retbleed_cmd = RETBLEED_CMD_UNRET;
+> > > +		} else if (!strcmp(str, "srso")) {
+> > > +			retbleed_cmd = RETBLEED_CMD_UNRET_SRSO;
+> > > +		} else if (!strcmp(str, "srso_alias")) {
+> > > +			retbleed_cmd = RETBLEED_CMD_UNRET_SRSO_ALIAS;
+> > 
+> > It doesn't make sense for "srso_alias" to be a separate cmdline option,
+> > as that option is a model-dependent variant of the SRSO mitigation.
+> 
+> so what I did with retbleed, and what should be fixed here too (I
+> forgot) is run with:
+> 
+>   retbleed=force,unret
+> 
+> on any random machine (typically Intel, because I have a distinct lack
+> of AMD machines :-() and look at the life kernel image to see if all the
+> patching worked.
+> 
+> I suppose I should add:
+> 
+>   setup_force_cpu_bug(X86_BUG_SRSO);
+> 
+> to the 'force' option, then:
+> 
+>   retbleed=force,srso_alias
+> 
+> should function the same, irrespective of the hardware.
+> 
+> I'm also of the opinion that the kernel should do as told, even if it
+> doesn't make sense. If you tell it nonsense, you get to keep the pieces.
+> 
+> So in that light, yes I think we should have separate options.
 
-Thanks for reporting! I'm checking it now.
+What if I want the SRSO mitigation regardless of CPU model?
 
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+> > > @@ -870,8 +915,17 @@ static void __init retbleed_select_mitig
+> > >  	default:
+> > >  		if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD ||
+> > >  		    boot_cpu_data.x86_vendor == X86_VENDOR_HYGON) {
+> > > -			if (IS_ENABLED(CONFIG_CPU_UNRET_ENTRY))
+> > > -				retbleed_mitigation = RETBLEED_MITIGATION_UNRET;
+> > > +			if (IS_ENABLED(CONFIG_CPU_UNRET_ENTRY)) {
+> > > +				if (boot_cpu_has_bug(X86_BUG_RETBLEED))
+> > > +					retbleed_mitigation = RETBLEED_MITIGATION_UNRET;
+> > > +
+> > > +				if (boot_cpu_has_bug(X86_BUG_SRSO) && !boot_cpu_has(X86_FEATURE_SRSO_NO)) {
+> > > +					if (boot_cpu_data.x86 == 0x19)
+> > > +						retbleed_mitigation = RETBLEED_MITIGATION_UNRET_SRSO_ALIAS;
+> > > +					else
+> > > +						retbleed_mitigation = RETBLEED_MITIGATION_UNRET_SRSO;
+> > 
+> > It would be great to get confirmation from somebody at AMD that the SRSO
+> > mitigations supersede the Retbleed one, i.e., that the SRSO mitigations
+> > also fix Retbleed.
+> 
+> They should, the discussions we had back then explained the Zen1/2
+> retbleed case in quite some detail and the srso case matches that
+> exactly with the movabs. A larger instruction is used because we need a
+> larger embedded sequence of instructions, but otherwise it is identical.
+> 
+> The comments provided for srso_alias state the BTB is untrained using
+> the explicit aliasing.
+> 
+> That is to say, AFAIU any of this, yes both srso options untrain the BTB
+> and mitigate the earlier retbleed thing.
+> 
+> SRSO then goes one step further with the RAP/RSB clobber.
+
+Ah, nice.  Please add that information somewhere (e.g., one of the
+commit logs).
+
+> > > +				}
+> > > +			}
+> > >  			else if (IS_ENABLED(CONFIG_CPU_IBPB_ENTRY) && boot_cpu_has(X86_FEATURE_IBPB))
+> > >  				retbleed_mitigation = RETBLEED_MITIGATION_IBPB;
+> > 
+> > Here should have the microcode check too:
+> > 
+> > 				if (boot_cpu_has_bug(X86_BUG_SRSO) && !has_microcode)
+> > 					pr_err("IBPB-extending microcode not applied; SRSO NOT mitigated\n");
+> 
+> That earlier printk is unconditional of the selected mitigation, you
+> really want it printed again?
+
+Hm, if you don't want it printed twice then remove it from the
+RETBLEED_CMD_IBPB case too.
+
+-- 
+Josh
