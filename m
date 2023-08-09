@@ -2,190 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8089777529F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 08:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04BF77529A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 08:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbjHIGNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 02:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34398 "EHLO
+        id S230452AbjHIGLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 02:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230461AbjHIGNN (ORCPT
+        with ESMTP id S230449AbjHIGLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 02:13:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC5B1FC2
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 23:13:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691561592; x=1723097592;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=LGJZorJ3E6t3J456VFnC+I2HIJq1tAE/jnA+v0QWpWc=;
-  b=Hr2JpL1caYU705SMZJSn6bm/iZhOlO5AAPLcbuD9xr8OjXbu1EDWlpOa
-   AIhx26qSfqQb7ymCNu2QitQOD7DuJ5ahaNVNAQmQWeuL3vsdRJG6GK8oY
-   GStsYhvXugcLtMGkWpc3FLRLEVHC9juAVCGeSoa4aqipIzoyegtYHODAx
-   Fxi/1rEu/QHs2y0svmyO4UgMxotEmf31pcGTrcb9mqyK2ryQFqJ8WUXIz
-   teoIIg+2RBhczlBhDXZJfflyK06A759GI38W83KIRRFCidq7QBHJiV7KY
-   mp5hECwR1JV6xy9EWIkIBH42w0QD9zC22PTrgDQulZve8zQnBj31iuNh7
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="457410065"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="457410065"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 23:13:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="731680634"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="731680634"
-Received: from fyin-dev.sh.intel.com ([10.239.159.32])
-  by orsmga002.jf.intel.com with ESMTP; 08 Aug 2023 23:13:08 -0700
-From:   Yin Fengwei <fengwei.yin@intel.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, yuzhao@google.com, willy@infradead.org,
-        hughd@google.com, yosryahmed@google.com, ryan.roberts@arm.com,
-        david@redhat.com, shy828301@gmail.com
-Cc:     fengwei.yin@intel.com
-Subject: [PATCH v2 3/3] mm: mlock: update mlock_pte_range to handle large folio
-Date:   Wed,  9 Aug 2023 14:11:05 +0800
-Message-Id: <20230809061105.3369958-4-fengwei.yin@intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230809061105.3369958-1-fengwei.yin@intel.com>
-References: <20230809061105.3369958-1-fengwei.yin@intel.com>
+        Wed, 9 Aug 2023 02:11:31 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE21E61;
+        Tue,  8 Aug 2023 23:11:30 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id a640c23a62f3a-94ea38c90ccso165802366b.1;
+        Tue, 08 Aug 2023 23:11:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691561489; x=1692166289;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s+GprpEYaWKSIBz3lNF0rHXfz5G4zWTRgIo6CIukXOs=;
+        b=dnisEdRnrIJchTHxIMrhNDkguZRPzCt9B/4Cf+cd5/0Yfl73fh6DiodUad0URAMbxZ
+         jQ9GzsCW1jsLdJjBaQGAs8A+Dn1Ee7JTBG9DCWKBR4PON3tSWoyQc4OHGECV/uMpyUVA
+         HlDFm0BRopDqYg7gWa1WRujuEv++HLcX8rkgPJzAzWcPXYing6Qqa94S6udQ56nag23Z
+         kjoE4JABZ+LNAPqIPEKzKwksvz5u8reMIlyLzXfGHaJu6MuN05P15aXC7ByIxzUpjbUY
+         36hAE118gfg1pZReKzZsLwwJzIXhOMRrasdWocjWisjkNUN72Z8++hLHZgDOHzD/d6rp
+         SZwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691561489; x=1692166289;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s+GprpEYaWKSIBz3lNF0rHXfz5G4zWTRgIo6CIukXOs=;
+        b=KFfm2SjWipNzd0+9tPSswt0en39eMUmHDBxBSRYSb5FUaBcU+yHN/RQlZl8PMsrI9K
+         FOUM2D4IVshdb8XP4k2K+XJAxT+4P+1GK7wLTOmXI9ih3Zzq+ekStG+XhBNIiqMwe1rj
+         9fg/kfRdtZ8yBvjmBoikWZ66k1iNe6TLq/8d8LrzjVp/1qeAWYLOClau5AFSEcTDQtst
+         58XXwHe5XsOlncAHbx6LuBrCNEQzvUvJzr2Muv0UYE4VNEHuxVPpPhHvw8VvQNvC6GhY
+         OOg7CZJUlWUD/ow6L9HRnyK0stzuvLl1BVGsyyalVt3ozhizK66PXbo+hispLE+CUsYl
+         R8Aw==
+X-Gm-Message-State: AOJu0YzJTgXnvC1W6yUa8sH07jotUzAQ5ZbVDtOCEOYoEtQ7+yDR6Rok
+        yfjTSMDYUMz47eWEjbf8NAs6mdVFnZEsxvLKHBSpbbYULYy04A==
+X-Google-Smtp-Source: AGHT+IEhNfeIaqOgU2Z4nHn5r7cWIj7seZfQvuXYfR9BPPNljofoqTvdY5xLqoSAiw7dlOzjepxAtst+AQo9el3AgMU=
+X-Received: by 2002:a17:906:10c9:b0:99c:c178:cef9 with SMTP id
+ v9-20020a17090610c900b0099cc178cef9mr1176187ejv.2.1691561488616; Tue, 08 Aug
+ 2023 23:11:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230808033106.2174-1-Wenhua.Lin@unisoc.com> <20230808134442.75bb6f04b5612c07d3b7d731@hugovil.com>
+In-Reply-To: <20230808134442.75bb6f04b5612c07d3b7d731@hugovil.com>
+From:   wenhua lin <wenhua.lin1994@gmail.com>
+Date:   Wed, 9 Aug 2023 14:11:17 +0800
+Message-ID: <CAB9BWhcvVj-J-NyqQE6NBW_fNvMvbg9ZMkkMD26QnQexawbU0Q@mail.gmail.com>
+Subject: Re: [PATCH 1/3] gpio: sprd: Modify the calculation method of eic number
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current kernel only lock base size folio during mlock syscall.
-Add large folio support with following rules:
-  - Only mlock large folio when it's in VM_LOCKED VMA range
-    and fully mapped to page table.
+Hi Hugo:
+We will re-split the patch submission and explain our reasons for
+modification in the submission information, thank you very much for
+your review.
 
-    fully mapped folio is required as if folio is not fully
-    mapped to a VM_LOCKED VMA, if system is in memory pressure,
-    page reclaim is allowed to pick up this folio, split it
-    and reclaim the pages which are not in VM_LOCKED VMA.
-
-  - munlock will apply to the large folio which is in VMA range
-    or cross the VMA boundary.
-
-    This is required to handle the case that the large folio is
-    mlocked, later the VMA is split in the middle of large folio.
-
-Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
----
- mm/mlock.c | 66 ++++++++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 64 insertions(+), 2 deletions(-)
-
-diff --git a/mm/mlock.c b/mm/mlock.c
-index 06bdfab83b58..1da1996745e7 100644
---- a/mm/mlock.c
-+++ b/mm/mlock.c
-@@ -305,6 +305,58 @@ void munlock_folio(struct folio *folio)
- 	local_unlock(&mlock_fbatch.lock);
- }
- 
-+static inline unsigned int folio_mlock_step(struct folio *folio,
-+		pte_t *pte, unsigned long addr, unsigned long end)
-+{
-+	unsigned int count, i, nr = folio_nr_pages(folio);
-+	unsigned long pfn = folio_pfn(folio);
-+	pte_t ptent = ptep_get(pte);
-+
-+	if (!folio_test_large(folio))
-+		return 1;
-+
-+	count = pfn + nr - pte_pfn(ptent);
-+	count = min_t(unsigned int, count, (end - addr) >> PAGE_SHIFT);
-+
-+	for (i = 0; i < count; i++, pte++) {
-+		pte_t entry = ptep_get(pte);
-+
-+		if (!pte_present(entry))
-+			break;
-+		if (pte_pfn(entry) - pfn >= nr)
-+			break;
-+	}
-+
-+	return i;
-+}
-+
-+static inline bool allow_mlock_munlock(struct folio *folio,
-+		struct vm_area_struct *vma, unsigned long start,
-+		unsigned long end, unsigned int step)
-+{
-+	/*
-+	 * For unlock, allow munlock large folio which is partially
-+	 * mapped to VMA. As it's possible that large folio is
-+	 * mlocked and VMA is split later.
-+	 *
-+	 * During memory pressure, such kind of large folio can
-+	 * be split. And the pages are not in VM_LOCKed VMA
-+	 * can be reclaimed.
-+	 */
-+	if (!(vma->vm_flags & VM_LOCKED))
-+		return true;
-+
-+	/* folio not in range [start, end), skip mlock */
-+	if (!folio_in_range(folio, vma, start, end))
-+		return false;
-+
-+	/* folio is not fully mapped, skip mlock */
-+	if (step != folio_nr_pages(folio))
-+		return false;
-+
-+	return true;
-+}
-+
- static int mlock_pte_range(pmd_t *pmd, unsigned long addr,
- 			   unsigned long end, struct mm_walk *walk)
- 
-@@ -314,6 +366,8 @@ static int mlock_pte_range(pmd_t *pmd, unsigned long addr,
- 	pte_t *start_pte, *pte;
- 	pte_t ptent;
- 	struct folio *folio;
-+	unsigned int step = 1;
-+	unsigned long start = addr;
- 
- 	ptl = pmd_trans_huge_lock(pmd, vma);
- 	if (ptl) {
-@@ -334,6 +388,7 @@ static int mlock_pte_range(pmd_t *pmd, unsigned long addr,
- 		walk->action = ACTION_AGAIN;
- 		return 0;
- 	}
-+
- 	for (pte = start_pte; addr != end; pte++, addr += PAGE_SIZE) {
- 		ptent = ptep_get(pte);
- 		if (!pte_present(ptent))
-@@ -341,12 +396,19 @@ static int mlock_pte_range(pmd_t *pmd, unsigned long addr,
- 		folio = vm_normal_folio(vma, addr, ptent);
- 		if (!folio || folio_is_zone_device(folio))
- 			continue;
--		if (folio_test_large(folio))
--			continue;
-+
-+		step = folio_mlock_step(folio, pte, addr, end);
-+		if (!allow_mlock_munlock(folio, vma, start, end, step))
-+			goto next_entry;
-+
- 		if (vma->vm_flags & VM_LOCKED)
- 			mlock_folio(folio);
- 		else
- 			munlock_folio(folio);
-+
-+next_entry:
-+		pte += step - 1;
-+		addr += (step - 1) << PAGE_SHIFT;
- 	}
- 	pte_unmap(start_pte);
- out:
--- 
-2.39.2
-
+Hugo Villeneuve <hugo@hugovil.com> =E4=BA=8E2023=E5=B9=B48=E6=9C=889=E6=97=
+=A5=E5=91=A8=E4=B8=89 01:44=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Tue, 8 Aug 2023 11:31:06 +0800
+> Wenhua Lin <Wenhua.Lin@unisoc.com> wrote:
+>
+> > Automatic calculation through matching nodes,
+> > subsequent projects can avoid modifying driver files.
+> >
+> > Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
+> > ---
+> >  drivers/gpio/gpio-eic-sprd.c | 49 +++++++++++++++++++-----------------
+> >  1 file changed, 26 insertions(+), 23 deletions(-)
+> >
+> > diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.=
+c
+> > index 84352a6f4973..0d85d9e80848 100644
+> > --- a/drivers/gpio/gpio-eic-sprd.c
+> > +++ b/drivers/gpio/gpio-eic-sprd.c
+> > @@ -50,10 +50,10 @@
+> >  #define SPRD_EIC_SYNC_DATA           0x1c
+> >
+> >  /*
+> > - * The digital-chip EIC controller can support maximum 3 banks, and ea=
+ch bank
+> > + * The digital-chip EIC controller can support maximum 8 banks, and ea=
+ch bank
+> >   * contains 8 EICs.
+> >   */
+> > -#define SPRD_EIC_MAX_BANK            3
+> > +#define SPRD_EIC_MAX_BANK            8
+> >  #define SPRD_EIC_PER_BANK_NR         8
+> >  #define SPRD_EIC_DATA_MASK           GENMASK(7, 0)
+> >  #define SPRD_EIC_BIT(x)                      ((x) & (SPRD_EIC_PER_BANK=
+_NR - 1))
+> > @@ -99,33 +99,32 @@ struct sprd_eic {
+> >
+> >  struct sprd_eic_variant_data {
+> >       enum sprd_eic_type type;
+> > -     u32 num_eics;
+> >  };
+> >
+> > +#define SPRD_EIC_VAR_DATA(soc_name)                          \
+> > +static const struct sprd_eic_variant_data soc_name##_eic_dbnc_data =3D=
+ {       \
+> > +     .type =3D SPRD_EIC_DEBOUNCE,                                     =
+ \
+> > +};                                                                   \
+> > +                                                                     \
+> > +static const struct sprd_eic_variant_data soc_name##_eic_latch_data =
+=3D {      \
+> > +     .type =3D SPRD_EIC_LATCH,                                        =
+ \
+> > +};                                                                   \
+> > +                                                                     \
+> > +static const struct sprd_eic_variant_data soc_name##_eic_async_data =
+=3D {      \
+> > +     .type =3D SPRD_EIC_ASYNC,                                        =
+ \
+> > +};                                                                   \
+> > +                                                                     \
+> > +static const struct sprd_eic_variant_data soc_name##_eic_sync_data =3D=
+ {       \
+> > +     .type =3D SPRD_EIC_SYNC,                                         =
+ \
+> > +}
+> > +
+> > +SPRD_EIC_VAR_DATA(sc9860);
+> > +
+> >  static const char *sprd_eic_label_name[SPRD_EIC_MAX] =3D {
+> >       "eic-debounce", "eic-latch", "eic-async",
+> >       "eic-sync",
+> >  };
+> >
+> > -static const struct sprd_eic_variant_data sc9860_eic_dbnc_data =3D {
+> > -     .type =3D SPRD_EIC_DEBOUNCE,
+> > -     .num_eics =3D 8,
+> > -};
+> > -
+> > -static const struct sprd_eic_variant_data sc9860_eic_latch_data =3D {
+> > -     .type =3D SPRD_EIC_LATCH,
+> > -     .num_eics =3D 8,
+> > -};
+> > -
+> > -static const struct sprd_eic_variant_data sc9860_eic_async_data =3D {
+> > -     .type =3D SPRD_EIC_ASYNC,
+> > -     .num_eics =3D 8,
+> > -};
+> > -
+> > -static const struct sprd_eic_variant_data sc9860_eic_sync_data =3D {
+> > -     .type =3D SPRD_EIC_SYNC,
+> > -     .num_eics =3D 8,
+> > -};
+> >
+> >  static inline void __iomem *sprd_eic_offset_base(struct sprd_eic *sprd=
+_eic,
+> >                                                unsigned int bank)
+> > @@ -583,6 +582,7 @@ static int sprd_eic_probe(struct platform_device *p=
+dev)
+> >       struct sprd_eic *sprd_eic;
+> >       struct resource *res;
+> >       int ret, i;
+> > +     u16 num_banks =3D 0;
+> >
+> >       pdata =3D of_device_get_match_data(&pdev->dev);
+> >       if (!pdata) {
+> > @@ -613,12 +613,13 @@ static int sprd_eic_probe(struct platform_device =
+*pdev)
+> >                       break;
+> >
+> >               sprd_eic->base[i] =3D devm_ioremap_resource(&pdev->dev, r=
+es);
+> > +             num_banks++;
+> >               if (IS_ERR(sprd_eic->base[i]))
+> >                       return PTR_ERR(sprd_eic->base[i]);
+> >       }
+> >
+> >       sprd_eic->chip.label =3D sprd_eic_label_name[sprd_eic->type];
+> > -     sprd_eic->chip.ngpio =3D pdata->num_eics;
+> > +     sprd_eic->chip.ngpio =3D num_banks * SPRD_EIC_PER_BANK_NR;
+> >       sprd_eic->chip.base =3D -1;
+> >       sprd_eic->chip.parent =3D &pdev->dev;
+> >       sprd_eic->chip.direction_input =3D sprd_eic_direction_input;
+> > @@ -630,10 +631,12 @@ static int sprd_eic_probe(struct platform_device =
+*pdev)
+> >               sprd_eic->chip.set =3D sprd_eic_set;
+> >               fallthrough;
+> >       case SPRD_EIC_ASYNC:
+> > +             fallthrough;
+>
+> Hi,
+> this probably should go in a separate patch as a fix or an
+> improvement with proper comments explaining the reason?
+>
+> >       case SPRD_EIC_SYNC:
+> >               sprd_eic->chip.get =3D sprd_eic_get;
+> >               break;
+> >       case SPRD_EIC_LATCH:
+> > +             fallthrough;
+>
+> ditto.
+>
+> Hugo Villeneuve
+>
+>
+> >       default:
+> >               break;
+> >       }
+> > --
+> > 2.17.1
+> >
