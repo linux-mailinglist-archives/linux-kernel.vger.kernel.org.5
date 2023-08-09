@@ -2,169 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B272B77699A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3A67769A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 22:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233562AbjHIUOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 16:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
+        id S233620AbjHIUOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 16:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233461AbjHIUOR (ORCPT
+        with ESMTP id S233619AbjHIUOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 16:14:17 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0095310D4
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 13:14:14 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-3498795048aso841925ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 13:14:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1691612054; x=1692216854;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=guZ5vpqqJqA9daPfYYnKXLU14D1mpOwdXtcKs7C1O6E=;
-        b=teRQ96U/IkC6y31VwU1NjtwjZdh80fpd032mGixaFIjCCO+6DahLSaWhjFgwyX+D0s
-         7xRN+Sng3LnCEh0nCfXyr3x+CDQfV8BGwj/0ILM/ErxHnOnPzHOafQSHWHEo2t26Z43A
-         vLYFxhySi1w09JWBgEBF0tV1pLt8s+pU8wCZQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691612054; x=1692216854;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=guZ5vpqqJqA9daPfYYnKXLU14D1mpOwdXtcKs7C1O6E=;
-        b=PHXJKroXRtyRxVMtEBAz7K0O2sEJBoOzpjpXgmz/wLRMiPvJyGdIHDq+A0tsVPJzzW
-         D4JXwdgMIPj1gh6krP2UZ26j3L+ae48QuQ7ekOSkZWZ+zlI+rTE3te/vDK4joT9x0io4
-         8kTg038cJl2jXm+J2zIHn6xPX29B1aeNe6nv3q9oedME/lau3+WwQYhVaZRXkPxGmSic
-         iPyHABvPiKWmArTg1bEqZUIwiuxWZJ7C+1Lce3WcgKznvEekKQu3CiqXOH4ja+0f3vvQ
-         xDq8LLqiuKXRGr+uDUIxpC2gB+bT0dAy6qWiYaZkOfXFl86zVQiEFPcEnW5d43v4BSZr
-         k6ig==
-X-Gm-Message-State: AOJu0Yx7iwKLEdsFi99e4H5BfaqcqMovjncwSTDSlFONXXwL89RGLxwq
-        9mO2yfnhW3WvDcEWOQaBa5oAIg==
-X-Google-Smtp-Source: AGHT+IHFssVCaalC7OaCchaWhg7XXfx3K1aZGh4DfLLnCZfW44BE6qugHkyqKK6ivgJmigJ1V78RCA==
-X-Received: by 2002:a05:6e02:20c8:b0:347:693a:a52b with SMTP id 8-20020a056e0220c800b00347693aa52bmr199791ilq.6.1691612054245;
-        Wed, 09 Aug 2023 13:14:14 -0700 (PDT)
-Received: from localhost (254.82.172.34.bc.googleusercontent.com. [34.172.82.254])
-        by smtp.gmail.com with ESMTPSA id j10-20020a02cb0a000000b0042b8566a982sm4189018jap.41.2023.08.09.13.14.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 13:14:13 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 20:14:13 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        paulmck@kernel.org
-Subject: Re: [PATCH 5.15 00/92] 5.15.126-rc1 review
-Message-ID: <20230809201413.GA3374446@google.com>
-References: <20230809103633.485906560@linuxfoundation.org>
- <20230809135326.GE3031656@google.com>
- <f47340c6-3c41-1f91-d0f9-fe0b59a23aac@roeck-us.net>
- <CAEXW_YQ4GqPwvUF8=8CWmdj=cD56v_eEVK-EirsObQXyBDFVpg@mail.gmail.com>
- <35e4b770-2ead-4a19-ad01-fa75996adef4@roeck-us.net>
+        Wed, 9 Aug 2023 16:14:38 -0400
+Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F33A410CF;
+        Wed,  9 Aug 2023 13:14:36 -0700 (PDT)
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+        by mail.parknet.co.jp (Postfix) with ESMTPSA id 0B7972055FA7;
+        Thu, 10 Aug 2023 05:14:36 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+        by ibmpc.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379KEYfO226784
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 05:14:35 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+        by devron.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379KEYHK237230
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 05:14:34 +0900
+Received: (from hirofumi@localhost)
+        by devron.myhome.or.jp (8.17.2/8.17.2/Submit) id 379KESDU237221;
+        Thu, 10 Aug 2023 05:14:28 +0900
+From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>,
+        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
+In-Reply-To: <edf8e8ca3b38e56f30e0d24ac7293f848ffee371.camel@kernel.org> (Jeff
+        Layton's message of "Wed, 09 Aug 2023 15:04:42 -0400")
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+        <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
+        <87msz08vc7.fsf@mail.parknet.co.jp>
+        <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org>
+        <878rak8hia.fsf@mail.parknet.co.jp>
+        <20230809150041.452w7gucjmvjnvbg@quack3>
+        <87v8do6y8q.fsf@mail.parknet.co.jp>
+        <2cb998ff14ace352a9dd553e82cfa0aa92ec09ce.camel@kernel.org>
+        <87leek6rh1.fsf@mail.parknet.co.jp>
+        <ccffe6ca3397c8374352b002fe01d55b09d84ef4.camel@kernel.org>
+        <87h6p86p9z.fsf@mail.parknet.co.jp>
+        <edf8e8ca3b38e56f30e0d24ac7293f848ffee371.camel@kernel.org>
+Date:   Thu, 10 Aug 2023 05:14:28 +0900
+Message-ID: <87a5v06kij.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <35e4b770-2ead-4a19-ad01-fa75996adef4@roeck-us.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 12:25:48PM -0700, Guenter Roeck wrote:
-> On Wed, Aug 09, 2023 at 02:35:59PM -0400, Joel Fernandes wrote:
-> > On Wed, Aug 9, 2023 at 12:18 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > >
-> > > On 8/9/23 06:53, Joel Fernandes wrote:
-> > > > On Wed, Aug 09, 2023 at 12:40:36PM +0200, Greg Kroah-Hartman wrote:
-> > > >> This is the start of the stable review cycle for the 5.15.126 release.
-> > > >> There are 92 patches in this series, all will be posted as a response
-> > > >> to this one.  If anyone has any issues with these being applied, please
-> > > >> let me know.
-> > > >>
-> > > >> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
-> > > >> Anything received after that time might be too late.
-> > > >>
-> > > >> The whole patch series can be found in one patch at:
-> > > >>      https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.126-rc1.gz
-> > > >> or in the git tree and branch at:
-> > > >>      git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> > > >> and the diffstat can be found below.
-> > > >
-> > > > Not necesscarily new with 5.15 stable but 3 of the 19 rcutorture scenarios
-> > > > hang with this -rc: TREE04, TREE07, TASKS03.
-> > > >
-> > > > 5.15 has a known stop machine issue where it hangs after 1.5 hours with cpu
-> > > > hotplug rcutorture testing. Me and tglx are continuing to debug this. The
-> > > > issue does not show up on anything but 5.15 stable kernels and neither on
-> > > > mainline.
-> > > >
-> > >
-> > > Do you by any have a crash pattern that we could possibly use to find the crash
-> > > in ChromeOS crash logs ? No idea if that would help, but it could provide some
-> > > additional data points.
-> > 
-> > The pattern shows as a hard hang, the system is unresponsive and all CPUs
-> > are stuck in stop_machine. Sometimes it recovers on its own from the
-> > hang and then RCU immediately gives stall warnings. It takes 1.5 hour
-> > to reproduce and sometimes never happens for several hours.
-> > 
-> > It appears related to CPU hotplug since gdb showed me most of the CPUs
-> > are spinning in multi_cpu_stop() / stop machine after the hang.
-> > 
-> 
-> Hmm, we do see lots of soft lockups with multi_cpu_stop() in the backtrace,
-> but not with v5.15.y but with v5.4.y. The actual hang is in stop_machine_yield().
+Jeff Layton <jlayton@kernel.org> writes:
 
-Interesting. It looks similar as far as the stack dump in gdb goes, here are
-the stacks I dumped with the hang I referred to:
-https://paste.debian.net/1288308/
+> When you say it "doesn't work the same", what do you mean, specifically?
+> I had to make some allowances for the fact that FAT is substantially
+> different in its timestamp handling, and I tried to preserve existing
+> behavior as best I could.
 
-But in dmesg, it prints nothing for about 20-30 mins before recovering, then
-I get RCU stalls. It looks like this:
+Ah, ok. I was misreading some.
 
-[  682.721962] kvm-clock: cpu 7, msr 199981c1, secondary cpu clock
-[  682.736830] kvm-guest: stealtime: cpu 7, msr 1f5db140
-[  684.445875] smpboot: Booting Node 0 Processor 5 APIC 0x5
-[  684.467831] kvm-clock: cpu 5, msr 19998141, secondary cpu clock
-[  684.555766] kvm-guest: stealtime: cpu 5, msr 1f55b140
-[  687.356637] smpboot: Booting Node 0 Processor 4 APIC 0x4
-[  687.377214] kvm-clock: cpu 4, msr 19998101, secondary cpu clock
-[ 2885.473742] kvm-guest: stealtime: cpu 4, msr 1f51b140
-[ 2886.456408] rcu: INFO: rcu_sched self-detected stall on CPU
-[ 2886.457590] rcu_torture_fwd_prog_nr: Duration 15423 cver 170 gps 337
-[ 2886.464934] rcu: 0-...!: (2 ticks this GP) idle=7eb/0/0x1 softirq=118271/118271 fqs=0 last_accelerate: e3cd/71c0 dyntick_enabled: 1
-[ 2886.490837] (t=2199034 jiffies g=185489 q=4)
-[ 2886.497297] rcu: rcu_sched kthread timer wakeup didn't happen for 2199031 jiffies! g185489 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
-[ 2886.514201] rcu: Possible timer handling issue on cpu=0 timer-softirq=441616
-[ 2886.524593] rcu: rcu_sched kthread starved for 2199034 jiffies! g185489 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=0
-[ 2886.540067] rcu: Unless rcu_sched kthread gets sufficient CPU time, OOM is now expected behavior.
-[ 2886.551967] rcu: RCU grace-period kthread stack dump:
-[ 2886.558644] task:rcu_sched       state:I stack:14896 pid:   15 ppid:     2 flags:0x00004000
-[ 2886.569640] Call Trace:
-[ 2886.572940]  <TASK>
-[ 2886.575902]  __schedule+0x284/0x6e0
-[ 2886.580969]  schedule+0x53/0xa0
-[ 2886.585231]  schedule_timeout+0x8f/0x130
+inode_update_timestamps() checks IS_I_VERSION() now, not S_VERSION.  So,
+if adding the check of IS_I_VERSION() and (S_MTIME|S_CTIME|S_VERSION) to
+FAT?
 
-In that huge gap, I connect gdb and dumped those stacks in above link.
+With it, IS_I_VERSION() would be false on FAT, and I'm fine.
 
-On 5.15 stable you could repro it in about an hour and a half most of the time by running something like:
-tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 48 --duration 60 --configs TREE04
+I.e. something like
 
-Let me know if you saw anything like this. I am currently trying to panic the
-kernel when the hang happens so I can get better traces.
+	if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && IS_I_VERSION(inode)
+	    && inode_maybe_inc_iversion(inode, false))
+  		dirty_flags |= I_DIRTY_SYNC;
 
-thanks,
-
- - Joel
-
+Thanks.
+-- 
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
