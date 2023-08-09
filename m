@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F77776B27
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4191776B34
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 23:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbjHIVln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 17:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
+        id S232690AbjHIVpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 17:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232447AbjHIVll (ORCPT
+        with ESMTP id S230422AbjHIVps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 17:41:41 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BEA1BD9
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:41:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1691617298; x=1692222098; i=toralf.foerster@gmx.de;
- bh=cwSe+WBA5H0XhlY3bhmd2dg9cqpyzUft1setqAtjoWs=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=dnl0ks3bknx0qfMujdp1+lWghRQwqVfOzINrxe8ew64YYL8b1XsaGIH9Izo0qqc3WNaLfwj
- b5rVXzPEnKEZKMFIIBMu61ftWl7SR1djJ4Guq+cR4ziKbt8HXiiB0sjUJfbxODWBKT2u4vRTE
- pntWWu8riGztnfFIBOyMjuQqsHlGQ1+Fr3GlxzTOGOl3yQukazYCdNqQ2T+hpE2Ko500x/rBo
- VqD7TR8847E2M66fPPePm/F3+350DAgYwD+o8qkGIUX0jzt2WnJM5bG/gKpAF8hk08v2HyL2s
- m8ePnIbqaH9KWYIC3gYkftHekhEKpRaJ9w2wgDTXDLhsAym3y57w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.178.31] ([95.112.75.254]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M8QWA-1qPTDG0kQC-004UPc; Wed, 09
- Aug 2023 23:41:38 +0200
-Message-ID: <aa25aa16-a99c-6b92-b15a-403eaf62f811@gmx.de>
-Date:   Wed, 9 Aug 2023 23:41:37 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: few dozen pollfress.t segfaults messages in system log
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <thomas@t-8ch.de>
-Cc:     Linux Kernel <linux-kernel@vger.kernel.org>
-References: <5890bdee-ead3-a5c9-46e0-7abb7de1fb15@gmx.de>
- <0072e883-1c09-4a8d-86f8-a3de26b18b1e@t-8ch.de>
-From:   =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>
-In-Reply-To: <0072e883-1c09-4a8d-86f8-a3de26b18b1e@t-8ch.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7lgbiU85O+v8B42ggqrgqgTBTUEVrcS8VVEeG3iXBecIxc5wr1s
- u5OVXs47btK/Owq82F8mVeJkf1blNowrLHgxptjvjvF9bmlY6rVq6eKaT3XHsep1P6/Z76d
- V/4QC/Skmhtc93YLyx5vtVmAAp91YzloW6IrLLSx8OSLDGA/PnuI2RSx4Du+RE3qHIJI6Xk
- +2lRUQYG33jNuVhgb5gNw==
-UI-OutboundReport: notjunk:1;M01:P0:BHUBTdjNCHg=;q0P63uWLAeFi30Qniy4yjse06H8
- 9qN6NJCyoaKdVPC8YPLzd5+waUJLcWAJEve5x4TG+IHhw8svbLW+Ab71ENszoKsNPAyKo9HuZ
- UKnc6QTOJ9aotCQ80oicDlIHQeseLmYvWWtDojq88eVUJGO8v/gE/xDWL9sMkWjCxHNMiQNES
- SoXJwNnHU1uI1LFnFlOtcyrLwfACZh8Idj+GpIYmbyluAZza8RMEhDd6whEizlT0kN6IYuO49
- QuAtlu5yxlMkg3dybfyP2DDkdPjjYMhFxYbrAIMtCG002Yf6Vb6y4eOmEcnrg7GrLZVG4eVxI
- 2gIr0jZecXe7QS0ngP54mmY60owUuQvb5IMx0gpCXFNtB6YEI466X4xSXyWJjXsG0pLcSoqgW
- nbYjWiFENgbvKzs8BH3uqUJkPL1wAA86b/AS+z3jhYcX++gAvmT4d/pXzy6PjyROpVKy84lBK
- HyRaPnVFG38HCoHfOaWF+J75CpT1kDqJhEbeJ5r+gPWuvt4K6LBBgyEBw3BxKxD39RA9TaZjq
- lhvPMjEU+fOSAhtLVVYLuN6TwzATyrvVk8MICfD0LuWAOxH4G5vy4QSr9SOx0ddWwQoxlUDkn
- TzgaCZA9X1WikT94R8utjUYGhHpxw5I9qELyvVw1fJmUiZs5oJjgiZWZkNkilgpjkjA/24IHu
- /USgRKWRnP7vZbM6W9MtCBMx1Gev896SNruQWeKMFgE1xNObwVppA5tm9CSc3BBAZ9EryOodu
- bxacWdSXH1ATAoDAbWeBUjK2PSrX0tRRK42EXF1bOGnw24OEfQh0aSELTenpwO3vBecjdSm7u
- KdIFnOB8Ck3FWBAUI7VIdeJHD/jqlRVEvItGvFf/0cObheQnFWZ8rrMDdwebfI8nt/4f/S/lK
- 17zgDggU6xfr8LaxxWDf+243GEI8pPNoxiF+X9HHZr/A5Uz9Q7mtS6NtV3vAURv5+s735+Kzb
- jngysfXlOLQb9Q4j832CnrilMUI=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 9 Aug 2023 17:45:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC15C1702
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 14:45:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691617547; x=1723153547;
+  h=date:from:to:cc:subject:message-id;
+  bh=MefQFRFEiCEHrNh/1g24wRm/IK6xh2ldc734UBsJUHc=;
+  b=ca1Z5KYpdggIgYXsjvsoHe9o3RklZatDANHphBv8apRFLq1TWPjc4HBE
+   WpiQKuDAN68DJ036X4SzvGGHsvYEVMq6H7Qs0jm33JRpfNs2Sej347E4S
+   sUduNB2b3Ekbf/cCFgXUEEp6NMh4Kibk1Qj4GfPHGQkH6+8owM4lamg1h
+   73lylGnHHl9EBcIjXiMR9uYAd8b9JifZL/GNkTsqv+s43PwleHbPbgH7i
+   GuZQ3SJ9/SK2fDURV9YCfKizBCaf6MEE68Ke0OorOV6k0AlJJwFLIzdCs
+   eRLJlDIFLRQKVonC1LeRrefDS/rJW6DzSGndG2D9nZe/VIHtY7w69SPFM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="350817103"
+X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
+   d="scan'208";a="350817103"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 14:45:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="1062649518"
+X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
+   d="scan'208";a="1062649518"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 09 Aug 2023 14:45:46 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qTqzx-0006Qm-1j;
+        Wed, 09 Aug 2023 21:45:45 +0000
+Date:   Thu, 10 Aug 2023 05:44:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 04ce3638e18fbbedc4ac84a5f46736800c144a17
+Message-ID: <202308100548.FmJ4GZld-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/23 23:07, Thomas Wei=C3=9Fschuh wrote:
-> Probably from the "pollfree" test of liburing [0].
->
-> Thomas
->
-> [0]https://github.com/axboe/liburing/blob/master/test/pollfree.c
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 04ce3638e18fbbedc4ac84a5f46736800c144a17  Merge branch into tip/master: 'x86/microcode'
 
-Indeed, matches this:
+elapsed time: 731m
 
-/home/tinderbox/run/17.1_desktop_gnome_test-20230807-075536/var/log/emerge=
-.log
-2023-08-09T02:12:59 >>> sys-libs/liburing-2.4: 1 minute, 46 seconds
+configs tested: 39
+configs skipped: 93
 
-=2D-
-Toralf
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230809   gcc  
+i386         buildonly-randconfig-r005-20230809   gcc  
+i386         buildonly-randconfig-r006-20230809   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230809   gcc  
+i386                 randconfig-i002-20230809   gcc  
+i386                 randconfig-i003-20230809   gcc  
+i386                 randconfig-i004-20230809   gcc  
+i386                 randconfig-i005-20230809   gcc  
+i386                 randconfig-i006-20230809   gcc  
+i386                 randconfig-i011-20230809   clang
+i386                 randconfig-i012-20230809   clang
+i386                 randconfig-i013-20230809   clang
+i386                 randconfig-i014-20230809   clang
+i386                 randconfig-i015-20230809   clang
+i386                 randconfig-i016-20230809   clang
+i386                 randconfig-r001-20230809   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230809   gcc  
+x86_64       buildonly-randconfig-r002-20230809   gcc  
+x86_64       buildonly-randconfig-r003-20230809   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230809   clang
+x86_64               randconfig-x002-20230809   clang
+x86_64               randconfig-x003-20230809   clang
+x86_64               randconfig-x004-20230809   clang
+x86_64               randconfig-x005-20230809   clang
+x86_64               randconfig-x006-20230809   clang
+x86_64               randconfig-x011-20230809   gcc  
+x86_64               randconfig-x012-20230809   gcc  
+x86_64               randconfig-x013-20230809   gcc  
+x86_64               randconfig-x014-20230809   gcc  
+x86_64               randconfig-x015-20230809   gcc  
+x86_64               randconfig-x016-20230809   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
