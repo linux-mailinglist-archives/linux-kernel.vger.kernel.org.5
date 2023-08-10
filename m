@@ -2,192 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8C6777172
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B80177719C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233872AbjHJHi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
+        id S233096AbjHJHkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:40:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjHJHi1 (ORCPT
+        with ESMTP id S233943AbjHJHko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:38:27 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE4B1703;
-        Thu, 10 Aug 2023 00:38:26 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id 4fb4d7f45d1cf-522a9e0e6e9so123172a12.1;
-        Thu, 10 Aug 2023 00:38:26 -0700 (PDT)
+        Thu, 10 Aug 2023 03:40:44 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1512680
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:40:32 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9cbaee7a9so9335191fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:40:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691653105; x=1692257905;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NdMfMM/SdqNtHwQ1XO5GF4QV/3ikuZOysoKPc/8ygig=;
-        b=bK2Pkjbr+hS5Z9CKmwOeUuA1ugtA4ICZBt4F/DEwBtq4bdZbvU/Mi90oivC8P7vz7i
-         iGQi8SylOF1I3V4ISIPv9VBhlzaxq+HKaFVTWmHE3BwzhsaukKEcAZSuUG1pqxnc8gJY
-         3A1Q0QmS9zLX/pD5hDvl3bQU4oNBrBNoVUzAeLjzwa2HjKvnI9q7KjW1CGByfWXy43iJ
-         FxyfIuwVVZzk/YoMxtg5cWhu9WavHmej+3d5fXFNebte+7q2AJQ3fRccwglW2Y43NX50
-         DZ0poxQ22FonYi6MUjyIJuH4eSc3bN7PlCmV/QXvcA1YOntIt0mAihjmzoabAymOwO4Z
-         /K+w==
+        d=linaro.org; s=google; t=1691653231; x=1692258031;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JofiBfwzy3kjUFhKUXLWtoVye53MuyuBLLBCjo+WoM4=;
+        b=hVft4joyMLn4SOCV/gtcK0uGplfoX/ab/N0cUYfJMXp0BuUvhnB+C7Es+DxTERT8YM
+         sTab+94QLh4XkVOPFt9+WZcH3GSTvaafD/UTR/XdqyXdp7ouQMxcdlMxafmNE7yC+veY
+         eYZjZ495+Ebk7od3VMGnHXe0V99K1WAGHKBKYYxDGsoBx2QpHVyN5XoUQo07xv7CfN4F
+         z1AA0a947XMRdz+iXTM2I2W6J4sop9DIEI0mhpAA8qRXWz7/qd7GceCKzn0o33K1f9pW
+         qYFzHuvTXx9dChjEZyHpAJTcRidkPDl5tnY+TEWjo5vsSI8eZExn3/tjNjXYPUP7StVS
+         TPYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691653105; x=1692257905;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NdMfMM/SdqNtHwQ1XO5GF4QV/3ikuZOysoKPc/8ygig=;
-        b=PvddJG+YAk3nRoluTEvPU4ACMcxePx6p9XIbBZ3bkDR/mlygSUaCONxmmcO+Py2GeC
-         y/GuVzEMKygHBYgO1yPkcCmgmcAsRFBLiFw4l45VCQnFU4FRWmvjSpq9eIheseQQWl3/
-         +bFzOARMA8IfQBjyxufNGcMdFHsmi85irabgkSFsq/s3Tg4T24rGGAAdMT8S479oqMBA
-         iB1ARkGccwXDBdAcXN1bZdW2J/abj8FqoIXxGX2jU1SbzapU9YRUudwpnERLzdrwazdS
-         18ee0LUebf08UByN0OXos9uL9nDcx2MKfAOONPl/U/6u8IJ6PFe1EoXtKvruMVDiy5Mx
-         1dSA==
-X-Gm-Message-State: AOJu0Yw6Fo6wA+pd/JGP6aMqkep9DWPuX1L04c4AxDqfcfU85Q4FVFfm
-        Ymg/KsyBg62InikkmcXuGvgQnBNYDtdd/013pYw=
-X-Google-Smtp-Source: AGHT+IH+G5fT48hn52GpYPJrTghk6ssBz+EOYR3ZtcNPduVnatcJ4JATNjYsXBpPu+xLgJOsGJdu7VNLIXh9fl5sYQU=
-X-Received: by 2002:a17:906:7487:b0:997:d069:a880 with SMTP id
- e7-20020a170906748700b00997d069a880mr1374549ejl.1.1691653104939; Thu, 10 Aug
- 2023 00:38:24 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691653231; x=1692258031;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JofiBfwzy3kjUFhKUXLWtoVye53MuyuBLLBCjo+WoM4=;
+        b=DFvItBHbyzsudtuTkBS+4f7avVuMtZhTZhEeT6pWDPgjoR9bK33AFQGRM8PtUS+TZY
+         QZQayFnC5vfnqqkATUQgaREReThQI6FSuReqqERHaC/6GMSsAH6YThuYSM2+EnMZCwI5
+         vMcKsnzGE+sxA1r8KZZlwac+2yCrnkISvpAmtIUiajbx6eOdegB+xjwimdIL/CW3ne+z
+         keQ78K3PCUJKVO48KjmKN/glVCnIzOlAJ8XtaTcWM4Iuqmn9XEKBo+WbZAhHBrtSkTBK
+         8g326wDRP0geNBLkUQgYpJ7fdY6jljwYd/o0WoJYWMajrom3sodvBJrq67ckqD4e/R/6
+         n3mg==
+X-Gm-Message-State: AOJu0YwWMZHMZ+RzQxqeDv1JHXFNJVun9cvrybI1WPR/hintso+z1Ute
+        r8pludhq0NGyB0+9tJoKR6MKWw==
+X-Google-Smtp-Source: AGHT+IHhuZtE2A2+8TNudV6c2QBTvCPnsZWQI9CBK0LmA4TtloLakTlHFgWjUJXu6Nbo4q2taImjKQ==
+X-Received: by 2002:a2e:9b16:0:b0:2b6:9afe:191c with SMTP id u22-20020a2e9b16000000b002b69afe191cmr1386270lji.7.1691653231072;
+        Thu, 10 Aug 2023 00:40:31 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id e4-20020a2e9844000000b002b9ff8450aesm234500ljj.91.2023.08.10.00.40.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 00:40:30 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v3 0/2] csky: Convert memory accessors to static inlines
+Date:   Thu, 10 Aug 2023 09:40:29 +0200
+Message-Id: <20230810-csky-virt-to-phys-v3-0-f443cd2fc050@linaro.org>
 MIME-Version: 1.0
-References: <20230808072252.3229-1-Wenhua.Lin@unisoc.com> <3f17d903-20c4-59ac-f52b-ed108fe9475f@kernel.org>
-In-Reply-To: <3f17d903-20c4-59ac-f52b-ed108fe9475f@kernel.org>
-From:   wenhua lin <wenhua.lin1994@gmail.com>
-Date:   Thu, 10 Aug 2023 15:38:13 +0800
-Message-ID: <CAB9BWhcNG4yt_07LmLk8YjFFzbVCqcrDO5e8DYE7e_wSsevWaA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] devicetree: bindings: Add keypad driver ducumentation
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Samuel Holland <samuel@sholland.org>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAG2U1GQC/33NQQrDIBCF4asE152iI0TtqvcoXQSjydASg4o0h
+ Ny9JqsWSpf/g/lmZclFcoldmpVFVyhRmGrIU8Ps2E2DA+prM+QoueYabHosUChmyAHmcUkge82
+ tUCiEN6zezdF5eh3m7V57pJRDXI4XRezrP60I4NBZhcrr3nn01ydNXQznEAe2cwU/CfOLwEpga
+ 5Q10rfcfhPbtr0BEUIZXPYAAAA=
+To:     Vineet Gupta <vgupta@kernel.org>, Guo Ren <guoren@kernel.org>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 2:31=E2=80=AFAM Krzysztof Kozlowski <krzk@kernel.or=
-g> wrote:
->
-> On 08/08/2023 09:22, Wenhua Lin wrote:
-> > Add keypad driver ducumentation.
->
-> 1. Please use scripts/get_maintainers.pl to get a list of necessary
-> people and lists to CC. It might happen, that command when run on an
-> older kernel, gives you outdated entries. Therefore please be sure you
-> base your patches on recent Linux kernel.
->
-> You missed at least DT list (maybe more), so this won't be tested by
-> automated tooling. Performing review on untested code might be a waste
-> of time, thus I will skip this patch entirely till you follow the
-> process allowing the patch to be tested.
->
-> Please kindly resend and include all necessary To/Cc entries.
->
->
-> 2. Please use subject prefixes matching the subsystem. You can get them
-> for example with `git log --oneline -- DIRECTORY_OR_FILE` on the
-> directory your patch is touching.
->
->
-> Limited review follows:
->
-> >
-> > Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> > ---
-> >  .../bindings/input/sprd-keypad.yaml           | 76 +++++++++++++++++++
-> >  1 file changed, 76 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/input/sprd-keypad=
-.yaml
->
-> Filename matching compatible, so sprd,block-name-etc.yaml
->
-> >
-> > diff --git a/Documentation/devicetree/bindings/input/sprd-keypad.yaml b=
-/Documentation/devicetree/bindings/input/sprd-keypad.yaml
-> > new file mode 100644
-> > index 000000000000..51710e1eb389
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/input/sprd-keypad.yaml
-> > @@ -0,0 +1,76 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +# Copyright 2023 Unisoc Inc.
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/input/sprd-keypad.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Device-Tree bindings for GPIO attached keys
->
-> This should not work and you should see warnings... which means:
->
-> It does not look like you tested the bindings, at least after quick
-> look. Please run `make dt_binding_check` (see
-> Documentation/devicetree/bindings/writing-schema.rst for instructions).
-> Maybe you need to update your dtschema and yamllint.
->
-> so drop "Device-tree bindings".
->
-> Title also says nothing about the hardware - it is entirely unrelated.
-> Describe the hardware.
->
->
-> > +
-> > +maintainers:
-> > +  - Orson Zhai <orsonzhai@gmail.com>
-> > +  - Baolin Wang <baolin.wang7@gmail.com>
-> > +  - Chunyan Zhang <zhang.lyra@gmail.com>
-> > +
-> > +description: |
-> > +    Keypad controller is used to interface a SoC with a matrix-keypad =
-device.
->
-> Mention which SoC.
->
-> > +    The keypad controller supports multiple row and column lines.
-> > +    A key can be placed at each intersection of a unique row and a uni=
-que column.
-> > +    The keypad controller can sense a key-press and key-release and re=
-port the
-> > +    event using a interrupt to the cpu.
-> > +
-> > +properties:
-> > +    compatible:
-> > +    const: sprd,sc9860-keypad
-> > +
-> > +    reg:
-> > +        maxItems: 1
->
-> OK, so this was for 100% not tested and won't work. No need to waste our
-> time on this. Test before sending:
->
-> It does not look like you tested the bindings, at least after quick
-> look. Please run `make dt_binding_check` (see
-> Documentation/devicetree/bindings/writing-schema.rst for instructions).
-> Maybe you need to update your dtschema and yamllint.
->
-> Best regards,
-> Krzysztof
->
+This converts the virt_to_pfn and pfn_to_virt macros
+into static inlines so we get proper type checking on
+the pointers passed in.
 
-Hi Krzysztof:
-   This is a mistake of ours, sorry for wasting your precious time.
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Changes in v3:
+- Do not return const void * from pfn_to_virt(), return
+  void * so we don't case a mess.
+- Link to v2: https://lore.kernel.org/r/20230809-csky-virt-to-phys-v2-0-2697c93f60cf@linaro.org
 
-Thanks
-Wenhua.Lin
+Changes in v2:
+- Fix compilation error on pfn_to_virt() by more casting.
+- Return const void * rather than just void * from pfn_to_virt()
+- Link to v1: https://lore.kernel.org/r/20230808-csky-virt-to-phys-v1-0-ac727f8def2f@linaro.org
+
+---
+Linus Walleij (2):
+      csky: Cast argument to virt_to_pfn() to (void *)
+      csky: Make pfn accessors static inlines
+
+ arch/arc/include/asm/page.h  |  2 +-
+ arch/csky/include/asm/page.h | 13 ++++++++++---
+ 2 files changed, 11 insertions(+), 4 deletions(-)
+---
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+change-id: 20230808-csky-virt-to-phys-3d80c17211f9
+
+Best regards,
+-- 
+Linus Walleij <linus.walleij@linaro.org>
+
