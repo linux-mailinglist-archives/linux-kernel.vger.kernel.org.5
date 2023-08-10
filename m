@@ -2,184 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB1A7770E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740637770E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233243AbjHJHDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53292 "EHLO
+        id S229730AbjHJHDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbjHJHD1 (ORCPT
+        with ESMTP id S233647AbjHJHDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:03:27 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49A9AC
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:03:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xpzm1qEDqJILJTrY0eHFJ2F4v7aGPBzIZkV32dU1P7hcDX35x1DqJTbkRPywDxDI7rgxAdS56KSinsJH1LU6oBHxvmGZY3FaLuv7OZDJ406OOva8/B/xlDoU8fd9/+zNJ70JDewuwAn5rxQSOJ9tbw5gDi16sMPoqeR+go5Lv6J/b62F+YSXx9bdlMRreA2nDbo67MGz/0CNnOK++gxb6a7cHm6JRn+Gb3pqksWKk3njL53R1sB+bTr3tP8Vf96hrycUZVn0ruN/aFuFFRgm9OXbxfmxUAThKtAObPVHB7BGQH5x5JBt3bNanS4ZyUvbT7Mc1rvWU+AnoQ+wbOcZAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/HDykQZIAm9O/d7+JDZmRKqCtSD8Z2d/TPB+dNzmHpQ=;
- b=XtsJuW9d2XGhR55EtREdzbjml7jUAfz/cQNmHO+M43jl3nnzSXQn0FpzrLDnj3LmOPrFUuCgB0eBWV1atArN9rtYMAXBEoexzDr6YOzuq/QHvnoO3C1flGqiIeI4Aco+Zj5WE74yjly5wu46ISBCnPYBgWjkDSkvj+YB8VbaEQDmE61Ud7Xjc+Y7PCaSTCg7KIyaU35cdKVQMxpzPLLIsu+pHovXxU5H9HiBdhWnQyQwOfxE+xdFSVMpx6MUKnd9gqOqxtYNRIoQC+oH8CDxamPJp+RidfTiUo8HpBSG6M3iygXjOuYSZjpUI8rs6ojN1rz0pPAkK1lPwxJbHP0aSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/HDykQZIAm9O/d7+JDZmRKqCtSD8Z2d/TPB+dNzmHpQ=;
- b=OYo2OJDTFlM2bwpt9RlFJYmdm0RJHrj9KfODR6ksMBSrIUPYwI/WhClNce3DAncpTte8thYFE8yDnWcT0ulY+Y/rl95LJJmgn5n8NgKXBNlnPcb1XFdU2SNvB47LMjnUsuawtmT4oKZ0goIrU7efV3M0GcOyBh+F6GLMjmg0rFw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by PH7PR12MB6763.namprd12.prod.outlook.com (2603:10b6:510:1ad::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.28; Thu, 10 Aug
- 2023 07:03:21 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6652.028; Thu, 10 Aug 2023
- 07:03:20 +0000
-Message-ID: <37a235d0-3da1-85c3-766d-29fd31d8a797@amd.com>
-Date:   Thu, 10 Aug 2023 09:03:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH drm-misc-next] drm/test: drm_exec: fix memory leak on
- object prepare
-Content-Language: en-US
-To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, alexander.deucher@amd.com, arthurgrillo@riseup.net
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230809225034.8803-1-dakr@redhat.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20230809225034.8803-1-dakr@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR2P281CA0088.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:9b::13) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        Thu, 10 Aug 2023 03:03:36 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EBC1BCF;
+        Thu, 10 Aug 2023 00:03:35 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id a640c23a62f3a-94ea38c90ccso15101666b.1;
+        Thu, 10 Aug 2023 00:03:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691651014; x=1692255814;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nZOoGUy+M48dRvTuWKMo+NT+ma4Ps8H2dN2+7+Y41ec=;
+        b=jBxiPDUwFzvy3lK1UWszcHDZyf/+fRtuEfekp2QxAOKGOH7UuDNFsb3A1IN7dgLcE8
+         VmJBwAulQVeY6kBgro5SCFZhq8ZPfaOaDQTCTPZk5eVQIehNnqV7H4sxcB22+PXtul78
+         U/ySswk0/V0mQ5K3uIKH69De7tYGlcNAyD/llBExcp0J1a0Z44XgKm2rsKJZnh9UMBd/
+         2nQYEcOke4A+woa6sSQVeX0y7w7IbE6G1+5wa/Lp/gyPIiCi1SD8biEof6p6ILrfkMBD
+         LGNoxeQmV8rKKzRSOGU8mMlKr58Gw4URlsywSH+0h4h0Qfq1Xr2GVhlqdSF7Lm1+yOTK
+         Vxgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691651014; x=1692255814;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nZOoGUy+M48dRvTuWKMo+NT+ma4Ps8H2dN2+7+Y41ec=;
+        b=Dajl0XzNtuBKSin3fkUtvZRJJ/HX7j69InxVOM/cH6YUE0EHsw+wOb/Iw7T5fwgBGE
+         MptnZpN9uCftX51TH6NXH2dmGcAWKDXssNwMvkqTptFcKjuvN+ccwMqA1NuxQibaSR4h
+         ODk/fipw9ObonD5ShTbM1cLnj60/sXwuANZFkfqddfeh4iRSjBo4f/VxV4StdHo693gf
+         itcUjnnOYihSjIPgLcj2S5yPOeLZItyl5iUvWxW2oV0KgsKt/ybMYrkWUpHV5rhddalK
+         pZy+y0qz5YGNtNXHioItfTSpjghPYLSrRQPX5WE2fWY31ikSzMCkCP7bCvEilZ8okSCE
+         FSrg==
+X-Gm-Message-State: AOJu0YxEWDMhOyLsTx6dYxu/JS13eR1mULUKVlsO3qx1Y7fOxm2m/vLX
+        CQ/UZGEYa+D5S8TFk6bBfb3WnUWaBmWv+7bhqz8=
+X-Google-Smtp-Source: AGHT+IGY44kQ48crfNMp2RcsiBQGyOQwIkuRiZDemi3AexWGTSJDDtIP0LB3xWehL5/bE46BNZswGnA2Bh7Ix/cMzRY=
+X-Received: by 2002:a17:906:209e:b0:993:d90e:3101 with SMTP id
+ 30-20020a170906209e00b00993d90e3101mr1081927ejq.1.1691651013620; Thu, 10 Aug
+ 2023 00:03:33 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|PH7PR12MB6763:EE_
-X-MS-Office365-Filtering-Correlation-Id: 19d5ee40-489e-4a41-b0e7-08db996fe155
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Vmt0BhIq2xRKiBwwSGAscuHLmLiSqYC9fOND58XaJZ//52yI2X+c5R26bpZcHv35JOE6pWVLXMXKZP+osjfQLmRqe6pC1uQAmdmXu+RzAOF+VqveKp4TgCAixbZVxAF3Y7JKc2uEcB2nMF9kZDoWkIZneL9Q8ECse06OdXC13od5bH+EyydpVQnHeXcbYSUfGL+2TJCIFiDK987sv/gDOJ8/mR5nq1F62a1n1R1j+sdbPNS8ECdG+uTAQYzVsXzBtC/46RiJYPg3Z2XabZ0cXmgGSVXXNfK6ylP4JRpHxCN0Znd8TlA3RJCNEqrp8RDg2kiMdpbpGyNGArxlimBx4uzaPm2u8TGAWmtThOznkcafUUjqTUw6PUefe3pvdtthk3NKQFxk8Ipbd8eWyww9xluMceHjLNpY0nNe9ZqNYfwFbuyqCDFM5W9Zlqku1DnHOAYylM0eBNFJOEFoK+u7MitZU2A/JB4aJ2P+dq8ZEblBJHbKJFlh3AzxYzkBPgeGWHywOr6jNCG/yE/wt+Uz8nrLGgv1OWx4ctBSAacB7CM0Rki6VDO8rrLlzLelwjdRgLwZ3+I13nvIikNtFUR4kMCeDLshSFfgV8yxvCSiiLFrC+kYrZPJO2LGxFKCvsH3jxomVb0gLuRhAk3tCItwGw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(396003)(346002)(366004)(376002)(186006)(1800799006)(451199021)(41300700001)(6486002)(6512007)(6506007)(2616005)(38100700002)(83380400001)(6666004)(316002)(2906002)(31696002)(478600001)(86362001)(66946007)(66476007)(4326008)(66556008)(36756003)(31686004)(8936002)(8676002)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SkFCb3RXQ3hJZXduTnJJR1NHT3IyUkJ3MXJNbm5WZzY1bnhCL0VqaTlscExF?=
- =?utf-8?B?LzZzZVRNM1BJRWJGSS9qdk5rVEdhYXVSK0tyclVBVUlKOS9BVUV0VTNSTFZs?=
- =?utf-8?B?ZkpmbDlBNU5OT0JqWkVTa3ZRaUVxT3JSTm4vM01ZemM4K1dvMmFLaU1OOG15?=
- =?utf-8?B?RmdhMHd5UVZDZVRUQjc0aUhiZS9KOGFrOHh4T3lBdEdjQjFXU1ZUby83cndi?=
- =?utf-8?B?NFFXQ3R1VGZiL25HUXZqcXBSS0UyVEs1bTFyaVp4SEowamVSQkcyblJiRkZz?=
- =?utf-8?B?S2tqOTVlWFBMTlZ4ck1ESUNLaExKaERqV0dEY2lhNi9RQmJwSk5lMzQxSzdj?=
- =?utf-8?B?ZEdyRERkbFZsMnJoaTJ1amdvTFFpQlZ0REhmeDlMeXBXdE9LTys1enJuN3ls?=
- =?utf-8?B?RzBVc2VMbTg5OGpDTzc4ampDR2xyRDNsWHRhNWJmQlFld081Um5PKzB0dytI?=
- =?utf-8?B?TVdqdHh4eWpqdlVQekhmYldjZlhmZ0RMRjQ3VVltalR1TGpWSWtlY20wbGxr?=
- =?utf-8?B?ODN5cVp2YWpFdE9XUHNpM3pHdTF1TXFsOUllbUYyRUJ3d04zK1RBZHdiNjdy?=
- =?utf-8?B?U3lVTHZFdmZjUnI2OXpJU0t2NUNnUzVVak5RbU8ycE90RWhkazNRSUI5MUJM?=
- =?utf-8?B?MUk1ak44VVdQTmdSSmZwNWUvWHd4ZTMvSVNHLzdNMGhmWTg5d3NRRlJNR092?=
- =?utf-8?B?ZEJxWVhUS2ZOZ0lnMXB1aDlWTkZ1V25ZSVlNMU1naE5XOWFqSVltOWpNby9F?=
- =?utf-8?B?WEVtRTV3RVhZOWhCOFcySHMrSGxFS05neG5SWUx5blFrVFU1QVVPL21FVTRE?=
- =?utf-8?B?ZkNyRTROSW9yREZZWDl4OTRIOFk1UlFlcHV2VU8zdHp4QklPc1hBeFlNVlQy?=
- =?utf-8?B?SitwZGFTaXhCTXBvSkc4THhoUThhMmQxblZNK3o1eG5SeEpTWitUeThMUWYr?=
- =?utf-8?B?aG9UMzBienNwNU1KZU1tNHVQVXNaOHFmTGJPMTQ0aWE3dm55d1R6VzVxNUhV?=
- =?utf-8?B?RmJrazY5UEhKU3o2c3hnRlo5MEVUQ1NDMmxMZjI2TE14cFN6RHJxR1EydGtw?=
- =?utf-8?B?T3BYVDI4SW5kUDU5Ty9YZjRKQVZxMTlWRzFkU09DazNhZkdTUFMzbGRTclNh?=
- =?utf-8?B?WkMzTlFUYnlrOFk2YWdSSnR1cWlMWStuUWIxMWlqVnozeHd5alYxNHdJeWZq?=
- =?utf-8?B?K3UzdnBOK2Jwb0IxemVVcitJaXFtaSs1MFB5VmVJWUQzVm5HNVdYTzJUVHY0?=
- =?utf-8?B?ZmZFUkl2WVdjSHlXWWV0Rk9vNDZIdHhzQTlKTnVEWTYyM1lHV1IvdzRmdFFp?=
- =?utf-8?B?QU8yUzFFVU4xdXFUWkM4MjV5R2t0eXpHZGtVUEJNdW9mSHkwK3VRQjRvNnFF?=
- =?utf-8?B?Y3dDTE1rSTZETStnOHBTQ3Z6cFhJUkEvclcrMVBZMFpjRHliODJnaTdTRXJB?=
- =?utf-8?B?UjN4eGlBSytwZ3JsNllBT0srWmNVQks3TExFOXJYV0czSDlia0UrSkMrN1c4?=
- =?utf-8?B?TUxtN1ZDUWxBQWUxQTd2SnZnSHlRWklhSlpxWWxNTTVodFlub2VSa0dCdHVm?=
- =?utf-8?B?TncxWXJOZFBmSzVmaWx1V3JJZVBGejEzekJVU1NsVUhpcUVJTXhhTi9mbDFM?=
- =?utf-8?B?TExZMHNHdmhoOHd4dVpVUGdBSml5WkZOUUxYbFRreXp6aHJZSFZBek5VM3d5?=
- =?utf-8?B?bDk1N0VqVjV4ckdrWmxqWVZqV0xBbVk3VjFGbnhJZ1NwYVZPYU9WZlpiZ3hR?=
- =?utf-8?B?MlpGRWJ6cGorR0JDcE1mZGtjRHo0eEdURXFZNHhSNU10eTU2dzg3b3BoYXk4?=
- =?utf-8?B?cXBpaHBNN3lBZG9Wd2pua0hQbk9QSmZ0am5JckxxdS9lS0ZzNGJZTmxHeFFR?=
- =?utf-8?B?YUdNR2lmbENyNEN2WG1uTzFqOHFvRUFjZkM0Y08zWHl4R0NYUmxHOFYzZ3NL?=
- =?utf-8?B?SnVCQU1nRzBjZ255RUhmRFFHeVp3VnY4WXJHSnFmblA4cDhZVVltWEx0djJK?=
- =?utf-8?B?OXFab3BRZmM3bzNLVTVmMkFaa0FXTkVnckJWMmVQZi90MFNrdHhJM0kwK0o5?=
- =?utf-8?B?RjlyWXpRb3N4TWV4SU9tbW91R3A1V3ZlQXM2dnVsUDQzdUVWWWxiOUNWa3BU?=
- =?utf-8?B?bXJNRUxRUStFdUxpYkc5NTA4cE9VODUrbTNRbFFWM3ROVTJLZUR0b3BrS2FF?=
- =?utf-8?Q?w6iir4wx01K+Z3n8ejKjmBviVUINprC7zxOD8s+qwur1?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19d5ee40-489e-4a41-b0e7-08db996fe155
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 07:03:20.7015
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EgpSnkdxBy00RF97itzob8GcWic4exRDAyTWsK7HxTWTRbAE1qOGbo851YfCz67p
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6763
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230808033130.2226-1-Wenhua.Lin@unisoc.com> <ZNJBrnKGVGXaFAtc@smile.fi.intel.com>
+In-Reply-To: <ZNJBrnKGVGXaFAtc@smile.fi.intel.com>
+From:   wenhua lin <wenhua.lin1994@gmail.com>
+Date:   Thu, 10 Aug 2023 15:03:21 +0800
+Message-ID: <CAB9BWhdYUcnkwqFQz+e8dK-_Vv6on=Poo8QmKrk55c+zrQ4-mw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] gpio: sprd: In the sleep state, the eic dbnc clk must
+ be forced open
+To:     Andy Shevchenko <andy@kernel.org>
+Cc:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 10.08.23 um 00:50 schrieb Danilo Krummrich:
-> drm_exec_prepare_obj() and drm_exec_prepare_array() both reserve
-> dma-fence slots and hence a dma_resv_list without ever freeing it.
+On Tue, Aug 8, 2023 at 9:23=E2=80=AFPM Andy Shevchenko <andy@kernel.org> wr=
+ote:
 >
-> Make sure to call drm_gem_private_object_fini() for each GEM object
-> passed to drm_exec_prepare_obj()/drm_exec_prepare_array() throughout the
-> test to fix this up.
+> On Tue, Aug 08, 2023 at 11:31:30AM +0800, Wenhua Lin wrote:
+> > In the sleep state, Eic dbnc has no clock and the clk enable
 >
-> While at it, remove some trailing empty lines.
->
-> Fixes: 9710631cc8f3 ("drm: add drm_exec selftests v4")
-> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+> Comma is not needed here.
 
-Reviewed and pushed to drm-misc-next.
+Hi Andy:
+We will make changes in patch v2.
 
-Thanks,
-Christian.
+Thanks
+Wernhua.Lin
 
-> ---
->   drivers/gpu/drm/tests/drm_exec_test.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/tests/drm_exec_test.c b/drivers/gpu/drm/tests/drm_exec_test.c
-> index f79c9f0359aa..9ccf0dd9ca89 100644
-> --- a/drivers/gpu/drm/tests/drm_exec_test.c
-> +++ b/drivers/gpu/drm/tests/drm_exec_test.c
-> @@ -125,8 +125,6 @@ static void test_duplicates(struct kunit *test)
->   	drm_exec_fini(&exec);
->   }
->   
-> -
-> -
->   static void test_prepare(struct kunit *test)
->   {
->   	struct drm_exec_priv *priv = test->priv;
-> @@ -145,6 +143,8 @@ static void test_prepare(struct kunit *test)
->   			break;
->   	}
->   	drm_exec_fini(&exec);
-> +
-> +	drm_gem_private_object_fini(&gobj);
->   }
->   
->   static void test_prepare_array(struct kunit *test)
-> @@ -165,6 +165,9 @@ static void test_prepare_array(struct kunit *test)
->   					     1);
->   	KUNIT_EXPECT_EQ(test, ret, 0);
->   	drm_exec_fini(&exec);
-> +
-> +	drm_gem_private_object_fini(&gobj1);
-> +	drm_gem_private_object_fini(&gobj2);
->   }
->   
->   static struct kunit_case drm_exec_tests[] = {
+> > of dbnc needs to be forced open, so that eic can wake up normally.
 >
-> base-commit: e05f3938c5a7896d09736e3381675a57ffee7a0a
+> ...
+>
+> > +#define SPRD_EIC_DBNC_FORCE_CLK              0x8000
+>
+> BIT(15) ?
 
+Hi Andy:
+Yes, The bit15 is clock of dbnc forced open
+
+Thanks
+Wernhua.Lin
+
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
