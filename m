@@ -2,113 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F3C7774D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 301217774DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbjHJJo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:44:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46694 "EHLO
+        id S234803AbjHJJpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233837AbjHJJo1 (ORCPT
+        with ESMTP id S229994AbjHJJpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:44:27 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841901BCF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:44:26 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-63fbfc0b817so2683306d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:44:26 -0700 (PDT)
+        Thu, 10 Aug 2023 05:45:41 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2A81BD9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:45:40 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-407db3e9669so168301cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:45:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20221208.gappssmtp.com; s=20221208; t=1691660665; x=1692265465;
-        h=message-id:date:content-transfer-encoding:mime-version:references
-         :in-reply-to:subject:cc:from:sender:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1691660740; x=1692265540;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=u8N5qvppFagZ3/tTB5uDHm2P4arYErRxqlmJ6dmhhhE=;
-        b=xN6cFEhFHyEsngG5emJdOap4+V+nE6gFuMUzdro7EScDcVOWsmda4a5Yw6aRYSrt8n
-         jm6Qhipnw5nThRxhfFbcBO1m2y5tY2Ujx3HgkIjezxPQVeIv1v9hHy1pHLyfoDsAnXGj
-         /Ylx9F9FHNKWVrZBMKqTl26kNfACgEs9xzcd5TJ4orblhIamQjkHYgTfnXWo1XhtIBmj
-         y1VFqUqNVnZLVgbDuZbbxpiacez7Vyr+rjFYdLFRKFbS0UnsgVHbOGIHGLNOgQnVTd/Q
-         UL3HE11PZFFHeTizd0aJPaX5X2DsdjBvoj1OOfHioowZCvCVBUbZ5sR5HHbzdGe+8wFu
-         o7GQ==
+        bh=Pgn4/qIV7fxvKZzxqSyuDtxTvEtyWVBr/gC+RKJiMZ0=;
+        b=Rl4LWFZSxmP0VkxHciD8VhjO8/5h/FGy+WWDDjSPkV1/KQ7gP/QeOi1plC5N32mwqV
+         h4S1Qp28dCmmXe8/p1G1BMd1AcF95bf2635ohTrRogPkfsEK4ghPJoSJl0Waobhjp/if
+         v5ooebxurbyrTUt6s9ePt4iAXz/zZilY+pMDvz1b8E1Ntvd2pImDQGkgU9eXgT4loKNd
+         YoQTVuChJwP1utUbTyadI7n7v2/N8TQNFQ9yhyb/49obm4e/k6M927cCXxFNQL2qCxyX
+         PPjvhcnZpJZW/R6OdvE+RWYzrjhDlugSVEg+cvqYsLR/Egt2VSttP6kHKrEpPHqFIiqt
+         QZVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691660665; x=1692265465;
-        h=message-id:date:content-transfer-encoding:mime-version:references
-         :in-reply-to:subject:cc:from:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691660740; x=1692265540;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=u8N5qvppFagZ3/tTB5uDHm2P4arYErRxqlmJ6dmhhhE=;
-        b=kw3w6uHZ19fWm5/UFxLaEA32GHjegSqarCU8DqzIW0UTxfuBGkQS8c50Q22Iu1BZDB
-         oJMe0fMkMpHYjP63oToMHEzaLkV91J0478v/DSBEZSSHVjYC2eHkk7KRcVq03ND2fzAZ
-         TvBBJcF0gh97ceonIwaDOzIxH4upQ/Mxq+6iuuIqlcNCqZfmNtJr4Rfg5YlNhPxXMBbp
-         Xd1uNn8Rw0lQwhMa0oOesLy8CwsJj5OCV5rA3pm3rFZ4NEemTab05MZ6f4FFm6cb7Suz
-         D+092b7TXTnJySSHgmPluEqT0IGRaSHBI2HgjxJFyqcTI7tC5eEM23ZC7KhvaabMLWjy
-         lIig==
-X-Gm-Message-State: AOJu0YzTr8RKZ2XtYKV7nmK3Rcie/M62RIfFVUn/DRHb+6SAxr4iENc4
-        Odg8ropx3sdqb2DAHZe75Cjons3lS5RQIlzr+7w=
-X-Google-Smtp-Source: AGHT+IEESh4xDID3zF+wAoEy9DnzJiY8LmKtY7N2rL3KylyDhQ2C7CAYIv8R76yPbkgFvDGO0D11aA==
-X-Received: by 2002:a0c:edc7:0:b0:636:60c6:2034 with SMTP id i7-20020a0cedc7000000b0063660c62034mr1813651qvr.38.1691660665704;
-        Thu, 10 Aug 2023 02:44:25 -0700 (PDT)
-Received: from turing-police (c-174-179-75-62.hsd1.va.comcast.net. [174.179.75.62])
-        by smtp.gmail.com with ESMTPSA id x6-20020a0cda06000000b00631f02c2279sm352804qvj.90.2023.08.10.02.44.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 02:44:25 -0700 (PDT)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.10.0-pre 07/05/2021 with nmh-1.8+dev
-Cc:     Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: next-20230726 and later - crash in radeon module during init
-In-Reply-To: <129403.1691660102@turing-police>
-References: <129403.1691660102@turing-police>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1691660664_2972P";
-         micalg=pgp-sha256; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 10 Aug 2023 05:44:24 -0400
-Message-ID: <130185.1691660664@turing-police>
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,MISSING_HEADERS,PP_MIME_FAKE_ASCII_TEXT,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        bh=Pgn4/qIV7fxvKZzxqSyuDtxTvEtyWVBr/gC+RKJiMZ0=;
+        b=EJrZcoWegUVpgl2n9tJAgRBITAwoIh/UW+VCkSQg/VHl2QCy2sY0X3dDqhMerzuTNt
+         UgzNtCO34oh5cryfwGhqH+NyeyxQDgMJVDBX206kR0KTvUSsCMN/ZdP46b8oQfkV+Mn1
+         J3FgcUXXteS1RH/c9TM6O6c4zTY/IaBeU+B/njCjs2W2cbDPHJ9S5JmJbYG7W/AsQjFW
+         uIWb3Osc8QJJBzCTnT2DkPrmpSjbBlBO6gzIHgPO/zZK+qnH2yDQWQELwa6EKp+gj4CP
+         eiV3kPs/q5MCIfzNynDZqsNeuDUk3zxwFLRU5HkGym901BbRLsTGViXvDw7VI62UDN64
+         VMIA==
+X-Gm-Message-State: AOJu0Ywu+Ph6+f7wLxbaeJ6hj/i5eNnSMrLvtgPuLpalzarShYWtqg4j
+        6Z6UVH0uA49dqYHEseooszE8f2PlrzHLTWRAIadAmg==
+X-Google-Smtp-Source: AGHT+IHYqi+XITMAC6nlqBrd8lUaSmvP6Ltp/H+mOIvB+jI0bmh1wykyAMSbPruSInfIOKj8aBor1Ra/apMk+Ehc9QQ=
+X-Received: by 2002:ac8:58d1:0:b0:3f2:2c89:f1ef with SMTP id
+ u17-20020ac858d1000000b003f22c89f1efmr402291qta.5.1691660739834; Thu, 10 Aug
+ 2023 02:45:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230808171446.2187795-1-mshavit@google.com> <20230809011204.v5.6.Ice063dcf87d1b777a72e008d9e3406d2bcf6d876@changeid>
+ <20230809135024.GD4226@willie-the-truck>
+In-Reply-To: <20230809135024.GD4226@willie-the-truck>
+From:   Michael Shavit <mshavit@google.com>
+Date:   Thu, 10 Aug 2023 17:45:03 +0800
+Message-ID: <CAKHBV27uY3TK3bWX8q1VHPo-ejeNmY53RAVNH_VqyYwZASKsNg@mail.gmail.com>
+Subject: Re: [PATCH v5 6/9] iommu/arm-smmu-v3: Move CD table to arm_smmu_master
+To:     Will Deacon <will@kernel.org>
+Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, robin.murphy@arm.com,
+        nicolinc@nvidia.com, jgg@nvidia.com, jean-philippe@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1691660664_2972P
-Content-Type: text/plain; charset=us-ascii
-
-On Thu, 10 Aug 2023 05:35:02 -0400, "Valdis Klētnieks" said:
-
-> I am seeing the following consistent crash at boot:
-
-> Some quick digging indicates the most likely culprit is:
+On Wed, Aug 9, 2023 at 9:50=E2=80=AFPM Will Deacon <will@kernel.org> wrote:
 >
-> commit cbd0606e6a776bf2ba10d4a6957bb7628c0da947
-> Author: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-> Date:   Thu Jul 20 15:39:24 2023 +0530
+> On Wed, Aug 09, 2023 at 01:12:02AM +0800, Michael Shavit wrote:
+> > @@ -2203,7 +2186,7 @@ static int arm_smmu_domain_finalise(struct iommu_=
+domain *domain,
+> >               ias =3D min_t(unsigned long, ias, VA_BITS);
+> >               oas =3D smmu->ias;
+> >               fmt =3D ARM_64_LPAE_S1;
+> > -             finalise_stage_fn =3D arm_smmu_domain_finalise_s1;
+> > +             finalise_stage_fn =3D arm_smmu_domain_finalise_cd;
 >
->     drm/radeon: Prefer dev_* variant over printk
+> Why is this a better name? Now we have inconsistency with
+> arm_smmu_domain_finalise_s2().
 
-Nevermind - I see it was already reverted...
-
---==_Exmh_1691660664_2972P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
-
-iQEcBAEBCAAGBQJk1LF4AAoJEI0DS38y7CIcCQMH/0Z74jwPSDcxxmLstOYKJ7lY
-ApFXhH94MxeGEa7o0qtmysWn54I7/MmPHQMOZ3ZZWHHOF0QqpgahtO9Dm7XpFG9j
-jwlFr+vODziew8p4dBjJ4BEZk9TpVoE8BOA2yUMpSylOGmw5t8uz3fUjEVGhtG8a
-x/i+mZ/adPxymbtZ0h0NnhLabGXMYF5VZ2R2ZAbBwKOYR82UcNMEzm/IIWUOtapw
-sa0+tgnGXe4PasXSXvx/TOaGJVIsPLLy2DwMu8EKwLT/KelLDS+cTPYlwZ06A1pg
-CmYDOTTaB7cl0UxTmSfOduHo9o+Twx5ziyAuBfJ2540A2LXa2zDlgU//mb28jA4=
-=kY7M
------END PGP SIGNATURE-----
-
---==_Exmh_1691660664_2972P--
+There was a time where s1cfg represented the entire STE and carried
+the entire cd table. We've gotten rid of s1cfg, and now only store
+arm_smmu_ctx_desc in the arm_smmu_domain for stage 1 domains.
+arm_smmu_domain_finalise_cd is IMO more clear, especially given the
+historical baggage around `s1`.
