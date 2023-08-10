@@ -2,127 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 767807776AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308197776B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbjHJLQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:16:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
+        id S233496AbjHJLRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231330AbjHJLQL (ORCPT
+        with ESMTP id S231330AbjHJLRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:16:11 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B5F2715
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:15:54 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b9f0b7af65so11921621fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:15:54 -0700 (PDT)
+        Thu, 10 Aug 2023 07:17:22 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAFE2684
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:17:22 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d5d64d2961aso689174276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:17:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691666148; x=1692270948;
-        h=content-transfer-encoding:cc:subject:message-id:date:from
+        d=linaro.org; s=google; t=1691666241; x=1692271041;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cC+LXUiYC58zzcubzCZtUERtYtEd9dOgwmivIxJQNMw=;
-        b=d6z/M/dVtyWLcck32LHscjnJVsPgOoDMTTIyZlBTYPBPYrAA3P9Za7bCPEUAL8GpVj
-         CVoE3j4HbJwUtNxlm1YmlqeYlUUu0kUwlbCpxib5NdXLYzLGKHzd22Ne6cO7nNlm0wUZ
-         S/1ueAWgcAkkqXUS6Eq3o2+sdtDFLVga0TqcQQIi0fJqrozfqlB/l6DZVTdo/tZ93IgQ
-         zeRwhTAOJBESj3gR6gVuUI/MHJgSg+0InX476e6lBIw7y1sTA33S3eFsnOGSUeV0cBnK
-         dPZaIaZxVkXIxIKYnInBUfkJNZBoQ5SHBcW8ERHAC16kUKBstN+odoUzeZaHnojM4X2i
-         gkjA==
+        bh=ADRnTf+HtriZ7mqwDU3wWvmXrT7FB+Ztxvgw7H2KXeU=;
+        b=QFhKu9tkFZ+fkU1lcY4zVfF0dk/FWoUgZD0eH36Sz7H5E6vylleVAxrx4pnTaXqwhk
+         0+gy/gZj3JZk12Km6iz/EZoWzKbi128l5ProuMk6rD8PXzxfQdAWHaHfYFH+hT3tRM5T
+         JhuEe8IlHx2uTiKvZWsgQrv6fkFqrBx0+2vETEZCqjNX/pWDMRwL/0BRd5MvDHtFVvKa
+         BM/Lp+D9Uqm7WCUrVCer3WiE1OLLbVSPYEz4lyAydeXxxun5B/2ka3EMFk7a+ErH42db
+         gw2/aA6IBStBu2S2LDjrdyts3q5jk/zxoySCSTATECPSlKOeat6hCKBGV6ZorzoWY9HV
+         DN/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691666148; x=1692270948;
-        h=content-transfer-encoding:cc:subject:message-id:date:from
+        d=1e100.net; s=20221208; t=1691666241; x=1692271041;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cC+LXUiYC58zzcubzCZtUERtYtEd9dOgwmivIxJQNMw=;
-        b=TZhlkgwLegdkMZn5G1CyC/alTJI9V0NkHZ1Z/qCjK726q5Yy2Z0KZelFpOYXgrjA8F
-         JrKLyqVc/m3Ra02oBUMqVaTCRwGyEPNaJuFUhukntpxmAPmFH6IrO0/KSHeElcu6jjIM
-         x4sRF1RNl4EtUwLTJwiPl0FxUXjRQ1BNRpZA4ZNyxULgb8En/Xh3rJKW5cvYcNl+vrlf
-         gzlE4mVDkNh8oCJb172+vxDUEzRthnsTOcBVN/Ys4gOejUvCNVhuCFZ1Ria5orJFmDek
-         a6As1xDIp+brqta92Ca2CoREY1XIh43O2MyELhB1e7GI7b2y38Tfi+HDf3T9xA4A75D3
-         xNKA==
-X-Gm-Message-State: AOJu0YwaEE06KQNOpGOykFt7lG+CBkpVjXfq5aKFVq3FAImiqBPULqt6
-        RyK6tdKN9wxOjLN4FJSh0Hd1r68uwUP9s+CpGVw=
-X-Received: by 2002:a2e:9dd0:0:b0:2b6:e651:8591 with SMTP id
- x16-20020a2e9dd0000000b002b6e6518591mt1184103ljj.37.1691666147455; Thu, 10
- Aug 2023 04:15:47 -0700 (PDT)
+        bh=ADRnTf+HtriZ7mqwDU3wWvmXrT7FB+Ztxvgw7H2KXeU=;
+        b=kQZa1uOl6xVAmR1MeF4HwTe8PeZGLwOqhJijq4K5Dmc4ouDDxv3upJU1Y3s5mWXsIP
+         jsNLJSx5ejGd318lbs9b+UqikqpQC7EWXSWiFn0+Z5H5Wo2B81Kxr2U47teWt0rlERp0
+         EdoApFa5+KihItZjgIpaQS3k2T1WXZlhCyHOW1ZACcXrdbhRbvtIXZTJ/aqFyTniNjXT
+         ogKWD2gn7XWxzTWqOxUQIuETuyKmCZMDUbtVGUPd6BWKSI7TErkXXtoM600gX5DKnfpz
+         hbWICctsAfj7VeLjd2xeW5+e1Vtq4Gmp/iSWPOS+tKzYZPiWmNGvlfP5N2f5lVDtUHB/
+         TX8Q==
+X-Gm-Message-State: AOJu0YwBklj/rZGvFCnn01gAZoqRMGs2PdVAh6otGv+d8UpjVVSucrma
+        R7b+4bgLN3E7KIpavrfwXRu30HWbgjJsnssz/6w5Jg==
+X-Google-Smtp-Source: AGHT+IG0cc60EKwg6aO/Vl/FWx+h3xKBM7qpk0WTUOrKZYJlTlQ3xEW/05G+n7KdFt0H+qP3lFIXHa3H2q7KcJby2j8=
+X-Received: by 2002:a25:250f:0:b0:cea:6760:d2c6 with SMTP id
+ l15-20020a25250f000000b00cea6760d2c6mr2046852ybl.41.1691666241474; Thu, 10
+ Aug 2023 04:17:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230810110405.25558-1-yin31149@gmail.com>
-In-Reply-To: <20230810110405.25558-1-yin31149@gmail.com>
-From:   Hawkins Jiawei <yin31149@gmail.com>
-Date:   Thu, 10 Aug 2023 19:15:35 +0800
-Message-ID: <CAKrof1NrDq7WoFSMXt0_XuAOBKBSwdKusmSG3Vrr4yNUuPW5tA@mail.gmail.com>
-Subject: Re: [PATCH v2] virtio-net: Zero max_tx_vq field for
- VIRTIO_NET_CTRL_MQ_HASH_CONFIG case
-Cc:     eperezma@redhat.com, 18801353760@163.com,
-        Andrew Melnychenko <andrew@daynix.com>, stable@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        linux-kernel@vger.kernel.org
+References: <20230809132757.2470544-1-herve.codina@bootlin.com> <20230809132757.2470544-22-herve.codina@bootlin.com>
+In-Reply-To: <20230809132757.2470544-22-herve.codina@bootlin.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 10 Aug 2023 13:17:09 +0200
+Message-ID: <CACRpkdZQ9_f6+9CseV1L_wGphHujFPAYXMjJfjUrzSZRakOBzg@mail.gmail.com>
+Subject: Re: [PATCH v3 21/28] net: wan: Add framer framework support
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_GMAIL_RCVD,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,MISSING_HEADERS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/10 19:04, Hawkins Jiawei wrote:
-> Kernel uses `struct virtio_net_ctrl_rss` to save command-specific-data
-> for both the VIRTIO_NET_CTRL_MQ_HASH_CONFIG and
-> VIRTIO_NET_CTRL_MQ_RSS_CONFIG commands.
->
-> According to the VirtIO standard, "Field reserved MUST contain zeroes.
-> It is defined to make the structure to match the layout of
-> virtio_net_rss_config structure, defined in 5.1.6.5.7.".
->
-> Yet for the VIRTIO_NET_CTRL_MQ_HASH_CONFIG command case, the `max_tx_vq`
-> field in struct virtio_net_ctrl_rss, which corresponds to the
-> `reserved` field in struct virtio_net_hash_config, is not zeroed,
-> thereby violating the VirtIO standard.
->
-> This patch solves this problem by zeroing this field in
-> virtnet_init_default_rss().
->
-> Cc: Andrew Melnychenko <andrew@daynix.com>
-> Cc: stable@vger.kernel.org
-> Fixes: c7114b1249fa ("drivers/net/virtio_net: Added basic RSS support.")
-> Signed-off-by: Hawkins Jiawei <yin31149@gmail.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
-> Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
+Hi Herve,
 
-Sorry for missing the ChangeLog here.
+On Wed, Aug 9, 2023 at 3:28=E2=80=AFPM Herve Codina <herve.codina@bootlin.c=
+om> wrote:
 
-v2:
-   - Add the missing tags, no code changes.
-
-v1: https://lore.kernel.org/all/20230810031557.135557-1-yin31149@gmail.com/
-
-Thanks!
-
-
->   drivers/net/virtio_net.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> A framer is a component in charge of an E1/T1 line interface.
+> Connected usually to a TDM bus, it converts TDM frames to/from E1/T1
+> frames. It also provides information related to the E1/T1 line.
 >
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 1270c8d23463..8db38634ae82 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -2761,7 +2761,7 @@ static void virtnet_init_default_rss(struct virtnet=
-_info *vi)
->               vi->ctrl->rss.indirection_table[i] =3D indir_val;
->       }
+> The framer framework provides a set of APIs for the framer drivers
+> (framer provider) to create/destroy a framer and APIs for the framer
+> users (framer consumer) to obtain a reference to the framer, and
+> use the framer.
 >
-> -     vi->ctrl->rss.max_tx_vq =3D vi->curr_queue_pairs;
-> +     vi->ctrl->rss.max_tx_vq =3D vi->has_rss ? vi->curr_queue_pairs : 0;
->       vi->ctrl->rss.hash_key_length =3D vi->rss_key_size;
+> This basic implementation provides a framer abstraction for:
+>  - power on/off the framer
+>  - get the framer status (line state)
+>  - be notified on framer status changes
+>  - get/set the framer configuration
 >
->       netdev_rss_key_fill(vi->ctrl->rss.key, vi->rss_key_size);
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+
+I love it, very clear commit message telling us what it is all
+about.
+
+The placement in the WAN subsystem also hints that this has
+something to do with long distance links (relative to something)
+so maybe mention that?
+
+> +menu "Framer Subsystem"
+> +
+> +config GENERIC_FRAMER
+> +       bool "Framer Core"
+> +       help
+> +         Generic Framer support.
+> +
+> +         This framework is designed to provide a generic interface for f=
+ramer
+> +         devices present in the kernel. This layer will have the generic
+> +         API by which framer drivers can create framer using the framer
+> +         framework and framer users can obtain reference to the framer.
+> +         All the users of this framework should select this config.
+
+But this description just says this is a framing framer that frames frames =
+;)
+
+So please copy some of the nice description from the commit message
+into this Kconfig helptext.
+
+Is "long distance link time division multiplexing (TDM) framer" more
+to the point for example? Or is the ambition to frame other multiplexing
+techniques as well with this subsystem? Such as FDM? Then mention
+that.
+
+Yours,
+Linus Walleij
