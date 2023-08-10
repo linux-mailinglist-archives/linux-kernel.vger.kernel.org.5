@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 025BB777987
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E16B777989
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235021AbjHJN0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 09:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
+        id S230446AbjHJN0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 09:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233952AbjHJN0g (ORCPT
+        with ESMTP id S232369AbjHJN0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 09:26:36 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CA3C7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:26:36 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so1347777e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:26:36 -0700 (PDT)
+        Thu, 10 Aug 2023 09:26:45 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46C026AE
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:26:44 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so1373319e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:26:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691673994; x=1692278794;
+        d=linaro.org; s=google; t=1691674003; x=1692278803;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=rh3ntjuJiL8gvbIjeXRIgcdbsWhGebp7qL5EIN/PMCc=;
-        b=dYLOJegwFRiYldA191vTjts56o+UbbryeM6fx7R1IazqZnQZm4tdAU+5CRfUGvHnNE
-         J/Ffms2AU2AR7qiXumDknLPzghQJTMauLajJkjPbLvjWq7OYre8Es5rU6lc+UcvT64bH
-         o0W/oIbzddH4HEccF2/jXsEF80DSYXjbOiqllSXxnrBTK0FdByHofkY6UcgupwzupZ54
-         jwbOEFSDDUoajA7p0KRj6ifDujz43XW3K2DIOiuCqjS+Pg+L52f+1cOt0AA/IERKRAdV
-         WP1koT9/OmWa8XyGEeH7h3FobB6qpA33bceGiFNgta+PU6zCaFeKzGcMcphtBsAP45/i
-         jS2w==
+        bh=6wb5HdAy3B1A4DS1S7ptcBX1i942zjCRrK4D+1uBmbM=;
+        b=b/of1N1zxw+wNkhyMEvsz160aiNNM//6pFFIzoF5iDr6XcXNPnp9qIRyDPL7AjfAZu
+         9ziw39B2TodaGYePjsLTR25HG0RCoqjrwkZlEqivzmEagkheVserPi48rjbOuduk7+Mw
+         7j2naGRYmHfj4rrM/W+tz73GIahh4APT47olsUleGpZ0x+gbCGd57BkZj4T2VJZ/+FaD
+         y9ApG5cdWwvOpBgOxAeraSxiRUuHZhAreobGyaju7168TjaXrquAT6cg3fsxq0o2usfu
+         WljF84LDJMIVxkDJlxUFJzp72s9vNgxQO/ayvMM4LzAQ/4U+XCi0t3w1tPCA7CGVkEsC
+         a17A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691673994; x=1692278794;
+        d=1e100.net; s=20221208; t=1691674003; x=1692278803;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rh3ntjuJiL8gvbIjeXRIgcdbsWhGebp7qL5EIN/PMCc=;
-        b=OrsIGYUZvw6ukRXN41DEZFH/p1D+i/Ff7SdyIcC9XPsiOX57oQLbkD1g6yrhYkx4aU
-         S4nvZTUojVoQzDPSjoDRDO9DpPtXB0GL0WE1hVONJWSeTkdVyDeKYAgrMFapyB4QyeQ7
-         o+RHYX9IQYyB4yo5EsZm0L6kI0gT3BvYzBPi8Ehf6skytVJUeyVhrecLJFPe4MI2FQqc
-         rKEa50sku8H2GAASU+9ZU2LL9pWpN0OxOH2gYWjrf8D5PdMfXEmFycsPsWVceWMZ77LN
-         jcoNyvvpLdbOhEKi7CcUFhwk4milTIvMUQy5FAlejIlb/rbJ0knEgTXjn23Vc8X0ZOVT
-         baUg==
-X-Gm-Message-State: AOJu0Yx6dNjSQe5p8kM2rec3v0yDEQLiaiRVTmvY/KktZfgPIm/CNvfX
-        iNIY5wdQvK/tnubWsVysyJzbAlRtHDL2Y8/8ij0=
-X-Google-Smtp-Source: AGHT+IHD1nJireRnw86bmmFeRAJKPt+F4pAvg1U1FkLD9w0LKXU50J/4cyFfLT4joHK2r41fuNDMEw==
-X-Received: by 2002:a05:6512:20c6:b0:4f8:74b5:b4ec with SMTP id u6-20020a05651220c600b004f874b5b4ecmr2067339lfr.41.1691673994352;
-        Thu, 10 Aug 2023 06:26:34 -0700 (PDT)
+        bh=6wb5HdAy3B1A4DS1S7ptcBX1i942zjCRrK4D+1uBmbM=;
+        b=ZZAJqA0M5WS7DogrHW1Xdj4hOYIWFZvlxyLfLw3rkouJolZFUydGUk1J+K46osljeR
+         LfUR3WoTtB+6ZA9iR5oRJhCmUJKHzda/sxzIaI7CKra6RzByKHwtJ4bWEK81G/Tjw7FH
+         xfkuzq6fNy/4F9DmF7xNKdCzAkxPPgIbqDCwficErOuzCZd083ThcDUG7kzgsUIo2WP0
+         ZuYNCJf/pW74kJ2m1TVsBvd+uxDtHI1JPEfoyacmSaeuSMsbKruai0sTs0hByV3HkEsY
+         MHGXphR19zp1LeCl5o6QRknqy7s9oKqUTJkI9qJKUUaeIHZYHfNjzgbMx6Bz0Cup1ZAX
+         F7BA==
+X-Gm-Message-State: AOJu0YzX2Ve9FXzbN5WDQ3JW2s/jZYY5HuVVwsvcZoSDPO3wlOqiqN/h
+        TU4hxbb8gTVbsWC4qXDZ6jRuMg==
+X-Google-Smtp-Source: AGHT+IFLYlOzxWGLHVSCOn8/VI4OXXnRJ6DyJbr7mR4GINIrSdeU4OnzS3BRpBwOIifmsZEb2+lzSQ==
+X-Received: by 2002:a05:6512:3995:b0:4fb:893a:d322 with SMTP id j21-20020a056512399500b004fb893ad322mr1965704lfu.68.1691674003052;
+        Thu, 10 Aug 2023 06:26:43 -0700 (PDT)
 Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id c27-20020ac244bb000000b004fb85ffc82csm286637lfm.10.2023.08.10.06.26.33
+        by smtp.gmail.com with ESMTPSA id c27-20020ac244bb000000b004fb85ffc82csm286637lfm.10.2023.08.10.06.26.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 06:26:33 -0700 (PDT)
-Message-ID: <b5b0dafe-7864-4b00-ba2a-9a82de04f44b@linaro.org>
-Date:   Thu, 10 Aug 2023 15:26:27 +0200
+        Thu, 10 Aug 2023 06:26:42 -0700 (PDT)
+Message-ID: <ad4c10fd-2a71-4c83-91ef-3fba1a0bae0e@linaro.org>
+Date:   Thu, 10 Aug 2023 15:26:41 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 7/9] arm64: dts: qcom: sa8775p-ride: sort aliases
- alphabetically
+Subject: Re: [PATCH v3 8/9] arm64: dts: qcom: sa8775p-ride: add an alias for
+ ethernet0
 Content-Language: en-US
 To:     Bartosz Golaszewski <brgl@bgdev.pl>,
         Andy Gross <agross@kernel.org>,
@@ -70,7 +70,7 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 References: <20230810080909.6259-1-brgl@bgdev.pl>
- <20230810080909.6259-8-brgl@bgdev.pl>
+ <20230810080909.6259-9-brgl@bgdev.pl>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -107,12 +107,13 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230810080909.6259-8-brgl@bgdev.pl>
+In-Reply-To: <20230810080909.6259-9-brgl@bgdev.pl>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -122,11 +123,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 10.08.2023 10:09, Bartosz Golaszewski wrote:
 > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> For improved readability order the aliases alphabetically for
-> sa8775p-ride.
+> Once we add a second ethernet node, the MDIO bus names will conflict
+> unless we provide aliases. Add one for the existing ethernet node.
 > 
 > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> Suggested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
