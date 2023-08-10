@@ -2,193 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6359A7776EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2177776F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234518AbjHJL1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
+        id S234035AbjHJL2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjHJL1Q (ORCPT
+        with ESMTP id S232242AbjHJL2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:27:16 -0400
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A5C2696
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:27:16 -0700 (PDT)
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230810112714epoutp04f5f65e27be80d1ae7dfe98bdf7c8805f~6AgXh7Yui1241312413epoutp04-
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:27:14 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230810112714epoutp04f5f65e27be80d1ae7dfe98bdf7c8805f~6AgXh7Yui1241312413epoutp04-
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1691666834;
-        bh=ZHapb8gslJs/CBhAQb2fM9fKay/7+IzUS29GF359B6g=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=SowB7rQHOOGBISf7pH1CFf+ULFkCGh1pxQ2banP1JoVCMAVnLWfW40vQ2+8KIvWAa
-         kcnRgYqwVuoZ4w5AiNEOH6I3M3gO4Ir1a14EPD4KDdp6qSHI4D6Sl18d8LXuv7IQCh
-         VkSa5eugkJgGW4XSlZVxs3mwWMdx39TBHFg/J89w=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20230810112713epcas5p1ee1e078efecedbc60231f65c687a1e7d~6AgW2A-6M2904929049epcas5p1J;
-        Thu, 10 Aug 2023 11:27:13 +0000 (GMT)
-Received: from epsmges5p1new.samsung.com (unknown [182.195.38.175]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4RM4QS2XSfz4x9Q0; Thu, 10 Aug
-        2023 11:27:12 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        98.90.55522.099C4D46; Thu, 10 Aug 2023 20:27:12 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20230810112711epcas5p37ff084dd3ff3f1fbf8ef3077b2533571~6AgVPoqXO0931709317epcas5p3-;
-        Thu, 10 Aug 2023 11:27:11 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230810112711epsmtrp171c75f95cbc83bd6aca5ccdd9ac10db4~6AgVO1yBE0816508165epsmtrp1T;
-        Thu, 10 Aug 2023 11:27:11 +0000 (GMT)
-X-AuditID: b6c32a49-419ff7000000d8e2-bd-64d4c99044d3
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BB.EA.30535.F89C4D46; Thu, 10 Aug 2023 20:27:11 +0900 (KST)
-Received: from alimakhtar04 (unknown [107.122.12.5]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20230810112709epsmtip11a4b6e5a60ea344a33dfe0bb211d35f1~6AgTIA9K43190131901epsmtip1W;
-        Thu, 10 Aug 2023 11:27:09 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
-        "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
-        "'Tomasz Figa'" <tomasz.figa@gmail.com>,
-        "'Chanwoo Choi'" <cw00.choi@samsung.com>,
-        "'Michael Turquette'" <mturquette@baylibre.com>,
-        "'Stephen Boyd'" <sboyd@kernel.org>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-In-Reply-To: <20230808082738.122804-6-krzysztof.kozlowski@linaro.org>
-Subject: RE: [PATCH 05/11] clk: samsung: exynos5410: do not define number of
- clocks in bindings
-Date:   Thu, 10 Aug 2023 16:57:08 +0530
-Message-ID: <004801d9cb7d$9af02440$d0d06cc0$@samsung.com>
+        Thu, 10 Aug 2023 07:28:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5E3268E
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:27:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691666834;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I2OjAiQnSuJM6TSFJoQJwHA6tLVGrg/ayWUjxPCTLSk=;
+        b=AV6uBVNyhkC/nIjlUYDEoPdY0E98FjVBdxC2nVAArsxiSqCPLh6WSmUcSSJTOpWz0d12ts
+        JFrruvIPPn9S96R7+bnexjSkIAAVWm1XGORTfiBP/OH03gOjslrGTlRi5FZWojRRY6gVfI
+        /FmybGkHpVQIFoeqhoRnCTWhn4cJS/s=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-213-G3CCnl9JPu6gShIPOwyYUA-1; Thu, 10 Aug 2023 07:27:13 -0400
+X-MC-Unique: G3CCnl9JPu6gShIPOwyYUA-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fe15547164so5514435e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:27:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691666832; x=1692271632;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I2OjAiQnSuJM6TSFJoQJwHA6tLVGrg/ayWUjxPCTLSk=;
+        b=ehaBW1eIKNLT6H8IIZNhmpfI6H+qWBfP8HW43mxaYn21nEpkE5Eh/Y4CEInZAbw1AB
+         9nWe/HMTdVpqfGEtIlzhpxFqom95TWTYC21UmWg/fBzOcdSY5N9BsG4QcWSVHq3FkJr+
+         m9QS/DjeRzWYIPLaMxy8OC5UBUQU1B/JrJBFQAbL0E0djSFkNvGa7pxrTWqvJjyPMHzm
+         /WIPL+ZSNck884i8pN6QgmmKl0F+ctt8M5rQGOYjAdwlvDwyccEKoadbJKKHNGNSpy1P
+         s0cVNIKf0aI16EBMFgFqg+R6mPiG/sQlNxxkKhlIDSv2i1HPecZRpEzN1nWNSPqErfK2
+         jQxQ==
+X-Gm-Message-State: AOJu0Ywaw46F+Uoxh6Yk1nMHBfPcpS6LY7v9e9ux2IqUNO++0nel/fYw
+        PH9vbnB0IDrgrPajExUZCWgHF4UsODmhU6ZCCaiF/45rw66dPDBB6cKulcsDOZFV7e6lNRzdoRA
+        wTyZ2JUJThe5R/0G/HaR9ktA1
+X-Received: by 2002:a1c:7408:0:b0:3fc:80a:cf63 with SMTP id p8-20020a1c7408000000b003fc080acf63mr1846130wmc.38.1691666832383;
+        Thu, 10 Aug 2023 04:27:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE2WJdZfFdUEZJQtqF9CK6w/8jN28ZFc4IFZpYmMX7/vVskOkzrD85FlZkCqxOvtfloTGT42g==
+X-Received: by 2002:a1c:7408:0:b0:3fc:80a:cf63 with SMTP id p8-20020a1c7408000000b003fc080acf63mr1846110wmc.38.1691666831896;
+        Thu, 10 Aug 2023 04:27:11 -0700 (PDT)
+Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
+        by smtp.gmail.com with ESMTPSA id m8-20020a7bca48000000b003fa96fe2bd9sm4826821wml.22.2023.08.10.04.27.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 04:27:11 -0700 (PDT)
+Message-ID: <d7b22c25-3ddf-d442-e798-deeb096de29a@redhat.com>
+Date:   Thu, 10 Aug 2023 13:27:10 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+To:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
+References: <20230809083256.699513-1-david@redhat.com>
+ <181fcc79-b1c6-412f-9ca1-d1f21ef33e32@arm.com>
+ <60b5b2a2-1d1d-661c-d61e-855178fff44d@redhat.com>
+ <ae63d396-b4a4-4579-bfd2-e99a0350bbf0@redhat.com>
+Organization: Red Hat
+In-Reply-To: <ae63d396-b4a4-4579-bfd2-e99a0350bbf0@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKdkXeLsq2DobfMxxfuGwY9MCDG5gH4wWnRAhrydSOuOzqXgA==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPJsWRmVeSWpSXmKPExsWy7bCmlu6Ek1dSDE5eELRYs/cck8X1L89Z
-        LeYfOcdqsff1VnaLTY+vsVp87LnHanF51xw2ixnn9zFZXDzlatG69wi7xeE37awW/65tZLFY
-        tesPowOvx/sbreweO2fdZffYtKqTzePOtT1sHpuX1Hv0bVnF6PF5k1wAe1S2TUZqYkpqkUJq
-        XnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QsUoKZYk5pUChgMTiYiV9
-        O5ui/NKSVIWM/OISW6XUgpScApMCveLE3OLSvHS9vNQSK0MDAyNToMKE7IyJ3c9YC6YIVny8
-        OIG1gXEFXxcjB4eEgInE/mVlXYxcHEICuxklXl6axQbhfGKUmHalhwXC+cYo0Xu9m72LkROs
-        4+WCG4wQib2MEkvm7WYBSQgJvGSUeH7XFcRmE9CV2LG4DWyUiMAsFonfh1czgiQ4BVwlnu1/
-        wQRiCwskSuxb8RhsKouAqsSL3uusIDavgKXE0/f9zBC2oMTJmU/AFjALyEtsfzuHGeIKBYmf
-        T5exgvwgIuAkMWkFN0SJuMTLo0fYQfZKCJzhkHj3u5ERot5F4v2WmWwQtrDEq+NboL6RknjZ
-        38YOCQsPiUV/pCDCGRJvl6+HarWXOHBlDgtICbOApsT6XfoQq/gken8/YYLo5JXoaBOCqFaV
-        aH53lQXClpaY2N3NCmF7SLz7d4UVEmyXGSWOdvSxTmBUmIXkyVlInpyF5JtZCJsXMLKsYpRM
-        LSjOTU8tNi0wzEsth0d3cn7uJkZwStby3MF498EHvUOMTByMhxglOJiVRHhtgy+lCPGmJFZW
-        pRblxxeV5qQWH2I0BYb8RGYp0eR8YFbIK4k3NLE0MDEzMzOxNDYzVBLnfd06N0VIID2xJDU7
-        NbUgtQimj4mDU6qBqbpz/TKZAy0Zc6UvvdwSry7BrLXzXf/6NqWolfumODrv6fL7GbPkEVc8
-        k7HbvBivXSLGzOGH3J/Xsu818r6xJtRc6uKp2kuHC+XulP9UWal4Lu1n7uR5M2ulC8wnXuSN
-        DH/0Xvbt/Ig/Klbnfj0LmssrlBxQpT2z7cnSKdMapn/d8jL32st3d6dMlN/hpC2YUnb29oH7
-        uiebSkRVUk792ffoUdemAu31L9i2TEjt4VESOFZUX+u3r/Zah8bqU9OqY4UidszcsOWtlan4
-        aw377vJvP7frr3nytK5fccWGqBVFgY8MFXoDLBTb9M7Mm+L37eMZcXtedQt/g7Rc2zVdDkpL
-        Ngnb/60zmrx4xp7pv5RYijMSDbWYi4oTAXb7JwBSBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDIsWRmVeSWpSXmKPExsWy7bCSnG7/ySspBsvv6lus2XuOyeL6l+es
-        FvOPnGO12Pt6K7vFpsfXWC0+9txjtbi8aw6bxYzz+5gsLp5ytWjde4Td4vCbdlaLf9c2slis
-        2vWH0YHX4/2NVnaPnbPusntsWtXJ5nHn2h42j81L6j36tqxi9Pi8SS6APYrLJiU1J7MstUjf
-        LoErY2L3M9aCKYIVHy9OYG1gXMHXxcjJISFgIvFywQ3GLkYuDiGB3YwSey6/Y4RISEtc3ziB
-        HcIWllj57zk7RNFzRolVn8+xgCTYBHQldixuYwNJiAgsYZE493gbM0TVeUaJU9c6WEGqOAVc
-        JZ7tf8EEYgsLxEss/NMMNpZFQFXiRe91sBpeAUuJp+/7mSFsQYmTM58AbeDgYBbQk2jbCHYR
-        s4C8xPa3c5ghLlKQ+Pl0GStIiYiAk8SkFdwQJeISL48eYZ/AKDQLyaBZCINmIRk0C0nHAkaW
-        VYySqQXFuem5xYYFRnmp5XrFibnFpXnpesn5uZsYwRGopbWDcc+qD3qHGJk4GA8xSnAwK4nw
-        2gZfShHiTUmsrEotyo8vKs1JLT7EKM3BoiTO++11b4qQQHpiSWp2ampBahFMlomDU6qB6aLR
-        p7MsV88qb58pumbuvKjIhQF79ZJLv1QV2Od4Zc054fGV5f06y/qTR05zbHl0VDg+2lBlutDB
-        fz/vy6vGVRW9CXQ5JXTl8o+T2VynlNdkX3OasyDjovd/jYzfvCuuHtR9/9KDw+Djeb6bEcuc
-        dPRvvlh/PvKXBetbb30228s5XW+6o2Rnr+2fE75FeNVijgUrOJpXKDGslHpatkxhasXDK00X
-        p5+QOdalealKmYd1qbLGr43H6k3enXj4QKHEUGKtReHzsy8Db/ttOXZgXRXX9PKwA5dDThy9
-        de7I0oAF8kyWdoL/Dtq9urv09umi5f6fRVhnqsW8+v1iWiwjc3REW+OGM4mLleV3JcpOFihT
-        YinOSDTUYi4qTgQAcpLKJC8DAAA=
-X-CMS-MailID: 20230810112711epcas5p37ff084dd3ff3f1fbf8ef3077b2533571
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230808082756epcas5p2bdb8e972e300abeda5a484b56810236a
-References: <20230808082738.122804-1-krzysztof.kozlowski@linaro.org>
-        <CGME20230808082756epcas5p2bdb8e972e300abeda5a484b56810236a@epcas5p2.samsung.com>
-        <20230808082738.122804-6-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10.08.23 13:14, David Hildenbrand wrote:
+> On 09.08.23 21:17, David Hildenbrand wrote:
+>> On 09.08.23 21:07, Ryan Roberts wrote:
+>>> On 09/08/2023 09:32, David Hildenbrand wrote:
+>>>> Let's track the total mapcount for all large folios in the first subpage.
+>>>>
+>>>> The total mapcount is what we actually want to know in folio_mapcount()
+>>>> and it is also sufficient for implementing folio_mapped(). This also
+>>>> gets rid of any "raceiness" concerns as expressed in
+>>>> folio_total_mapcount().
+>>>>
+>>>> With sub-PMD THP becoming more important and things looking promising
+>>>> that we will soon get support for such anon THP, we want to avoid looping
+>>>> over all pages of a folio just to calculate the total mapcount. Further,
+>>>> we may soon want to use the total mapcount in other context more
+>>>> frequently, so prepare for reading it efficiently and atomically.
+>>>>
+>>>> Make room for the total mapcount in page[1] of the folio by moving
+>>>> _nr_pages_mapped to page[2] of the folio: it is not applicable to hugetlb
+>>>> -- and with the total mapcount in place probably also not desirable even
+>>>> if PMD-mappable hugetlb pages could get PTE-mapped at some point -- so we
+>>>> can overlay the hugetlb fields.
+>>>>
+>>>> Note that we currently don't expect any order-1 compound pages / THP in
+>>>> rmap code, and that such support is not planned. If ever desired, we could
+>>>> move the compound mapcount to another page, because it only applies to
+>>>> PMD-mappable folios that are definitely larger. Let's avoid consuming
+>>>> more space elsewhere for now -- we might need more space for a different
+>>>> purpose in some subpages soon.
+>>>>
+>>>> Maintain the total mapcount also for hugetlb pages. Use the total mapcount
+>>>> to implement folio_mapcount(), total_mapcount(), folio_mapped() and
+>>>> page_mapped().
+>>>>
+>>>> We can now get rid of folio_total_mapcount() and
+>>>> folio_large_is_mapped(), by just inlining reading of the total mapcount.
+>>>>
+>>>> _nr_pages_mapped is now only used in rmap code, so not accidentially
+>>>> externally where it might be used on arbitrary order-1 pages. The remaining
+>>>> usage is:
+>>>>
+>>>> (1) Detect how to adjust stats: NR_ANON_MAPPED and NR_FILE_MAPPED
+>>>>     -> If we would account the total folio as mapped when mapping a
+>>>>        page (based on the total mapcount), we could remove that usage.
+>>>>
+>>>> (2) Detect when to add a folio to the deferred split queue
+>>>>     -> If we would apply a different heuristic, or scan using the rmap on
+>>>>        the memory reclaim path for partially mapped anon folios to
+>>>>        split them, we could remove that usage as well.
+>>>>
+>>>> So maybe, we can simplify things in the future and remove
+>>>> _nr_pages_mapped. For now, leave these things as they are, they need more
+>>>> thought. Hugh really did a nice job implementing that precise tracking
+>>>> after all.
+>>>>
+>>>> Note: Not adding order-1 sanity checks to the file_rmap functions for
+>>>>          now. For anon pages, they are certainly not required right now.
+>>>>
+>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>>> Cc: Jonathan Corbet <corbet@lwn.net>
+>>>> Cc: Mike Kravetz <mike.kravetz@oracle.com>
+>>>> Cc: Hugh Dickins <hughd@google.com>
+>>>> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+>>>> Cc: Ryan Roberts <ryan.roberts@arm.com>
+>>>> Cc: Yin Fengwei <fengwei.yin@intel.com>
+>>>> Cc: Yang Shi <shy828301@gmail.com>
+>>>> Cc: Zi Yan <ziy@nvidia.com>
+>>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>>
+>>> Other than the nits and query on zeroing _total_mapcount below, LGTM. If zeroing
+>>> is correct:
+>>>
+>>> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+>>
+>> Thanks for the review!
+>>
+>> [...]
+>>
+>>>>     
+>>>>     static inline int total_mapcount(struct page *page)
+>>>
+>>> nit: couldn't total_mapcount() just be implemented as a wrapper around
+>>> folio_mapcount()? What's the benefit of PageCompound() check instead of just
+>>> getting the folio and checking if it's large? i.e:
+>>
+>> Good point, let me take a look tomorrow if the compiler can optimize in
+>> both cases equally well.
+> 
+> I checked by adjusting total_mapcount():
+> 
+> Before:
+> 
+>           if (PageTransHuge(page) && total_mapcount(page) > 1)
+> ffffffff81411931:       4c 89 e7                mov    %r12,%rdi
+> ffffffff81411934:       e8 f7 b1 ff ff          call   ffffffff8140cb30 <PageTransHuge>
+> ffffffff81411939:       85 c0                   test   %eax,%eax
+> ffffffff8141193b:       74 29                   je     ffffffff81411966 <migrate_misplaced_page+0x166>
+> ffffffff8141193d:       49 8b 04 24             mov    (%r12),%rax
+>           return test_bit(PG_head, &page->flags) ||
+> ffffffff81411941:       a9 00 00 01 00          test   $0x10000,%eax
+> ffffffff81411946:       0f 85 1f 01 00 00       jne    ffffffff81411a6b <migrate_misplaced_page+0x26b>
+>                  READ_ONCE(page->compound_head) & 1;
+> ffffffff8141194c:       49 8b 44 24 08          mov    0x8(%r12),%rax
+>           return test_bit(PG_head, &page->flags) ||
+> ffffffff81411951:       a8 01                   test   $0x1,%al
+> ffffffff81411953:       0f 85 12 01 00 00       jne    ffffffff81411a6b <migrate_misplaced_page+0x26b>
+> ffffffff81411959:       41 8b 44 24 30          mov    0x30(%r12),%eax
+>                   return atomic_read(&page->_mapcount) + 1;
+> ffffffff8141195e:       83 c0 01                add    $0x1,%eax
+> ffffffff81411961:       83 f8 01                cmp    $0x1,%eax
+> ffffffff81411964:       7f 77                   jg     ffffffff814119dd <migrate_misplaced_page+0x1dd>
+> 
+> So a total of 10 instructions after handling the mov/call/test/je for PageTransHuge().
+> 
+> After:
+> 
+>           if (PageTransHuge(page) && total_mapcount(page) > 1)
+> ffffffff81411931:       4c 89 e7                mov    %r12,%rdi
+> ffffffff81411934:       e8 f7 b1 ff ff          call   ffffffff8140cb30 <PageTransHuge>
+> ffffffff81411939:       85 c0                   test   %eax,%eax
+> ffffffff8141193b:       74 2f                   je     ffffffff8141196c <migrate_misplaced_page+0x16c>
+>           unsigned long head = READ_ONCE(page->compound_head);
+> ffffffff8141193d:       49 8b 44 24 08          mov    0x8(%r12),%rax
+>           if (unlikely(head & 1))
+> ffffffff81411942:       a8 01                   test   $0x1,%al
+> ffffffff81411944:       0f 85 fc 05 00 00       jne    ffffffff81411f46 <migrate_misplaced_page+0x746>
+> ffffffff8141194a:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+>                   return page;
+> ffffffff8141194f:       4c 89 e0                mov    %r12,%rax
+> ffffffff81411952:       48 8b 10                mov    (%rax),%rdx
+>           if (likely(!folio_test_large(folio)))
+> ffffffff81411955:       f7 c2 00 00 01 00       test   $0x10000,%edx
+> ffffffff8141195b:       0f 85 da 05 00 00       jne    ffffffff81411f3b <migrate_misplaced_page+0x73b>
+> ffffffff81411961:       8b 40 30                mov    0x30(%rax),%eax
+>                   return atomic_read(&folio->_mapcount) + 1;
+> ffffffff81411964:       83 c0 01                add    $0x1,%eax
+> ffffffff81411967:       83 f8 01                cmp    $0x1,%eax
+> ffffffff8141196a:       7f 77                   jg     ffffffff814119e3 <migrate_misplaced_page+0x1e3>
+> 
+> So a total of 11 (+ 1 NOP) instructions after handling the mov/call/test/je for PageTransHuge().
+> 
+> Essentially one more MOV instruction.
+> 
+> I guess nobody really cares :)
+> 
 
+Also, let's simply do:
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Sent: Tuesday, August 8, 2023 1:58 PM
-> To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>; Sylwester
-> Nawrocki <s.nawrocki@samsung.com>; Tomasz Figa
-> <tomasz.figa@gmail.com>; Chanwoo Choi <cw00.choi@samsung.com>; Alim
-> Akhtar <alim.akhtar@samsung.com>; Michael Turquette
-> <mturquette@baylibre.com>; Stephen Boyd <sboyd@kernel.org>; Rob
-> Herring <robh+dt@kernel.org>; Conor Dooley <conor+dt@kernel.org>;
-> linux-samsung-soc@vger.kernel.org; linux-clk@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> devicetree@vger.kernel.org
-> Subject: [PATCH 05/11] clk: samsung: exynos5410: do not define number of
-> clocks in bindings
-> 
-> Number of clocks supported by Linux drivers might vary - sometimes we add
-> new clocks, not exposed previously.  Therefore this number of clocks
-should
-> not be in the bindings, because otherwise we should not change it.
-> 
-> Define number of clocks per each clock controller inside the driver
-directly.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
+static inline bool folio_mapped(struct folio *folio)
+{
+	folio_mapcount(folio) > 1;
+}
 
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+So this all cleans up quite a bit.
 
->  drivers/clk/samsung/clk-exynos5410.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clk/samsung/clk-exynos5410.c
-b/drivers/clk/samsung/clk-
-> exynos5410.c
-> index d67d67a519a4..2654077211e7 100644
-> --- a/drivers/clk/samsung/clk-exynos5410.c
-> +++ b/drivers/clk/samsung/clk-exynos5410.c
-> @@ -56,6 +56,9 @@
->  #define SRC_KFC			0x28200
->  #define DIV_KFC0		0x28500
-> 
-> +/* NOTE: Must be equal to the last clock ID increased by one */
-> +#define CLKS_NR			512
-> +
->  /* list of PLLs */
->  enum exynos5410_plls {
->  	apll, cpll, epll, mpll,
-> @@ -260,7 +263,7 @@ static const struct samsung_cmu_info cmu __initconst
-> = {
->  	.nr_div_clks	= ARRAY_SIZE(exynos5410_div_clks),
->  	.gate_clks	= exynos5410_gate_clks,
->  	.nr_gate_clks	= ARRAY_SIZE(exynos5410_gate_clks),
-> -	.nr_clk_ids	= CLK_NR_CLKS,
-> +	.nr_clk_ids	= CLKS_NR,
->  };
-> 
->  /* register exynos5410 clocks */
-> --
-> 2.34.1
+-- 
+Cheers,
 
+David / dhildenb
 
