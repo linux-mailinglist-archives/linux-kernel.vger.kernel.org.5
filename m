@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CCF777471
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD6C777445
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234993AbjHJJ2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        id S229503AbjHJJTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234225AbjHJJ2T (ORCPT
+        with ESMTP id S234691AbjHJJSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:28:19 -0400
+        Thu, 10 Aug 2023 05:18:18 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF8C30ED;
-        Thu, 10 Aug 2023 02:16:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B5147DA;
+        Thu, 10 Aug 2023 02:16:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 21FE1654F0;
-        Thu, 10 Aug 2023 09:16:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4906EC433C7;
-        Thu, 10 Aug 2023 09:16:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CC61C654D7;
+        Thu, 10 Aug 2023 09:16:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 035AEC433C8;
+        Thu, 10 Aug 2023 09:16:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691658995;
-        bh=bnrsoGhE7/8YdxUdBJXDpgeuttOq6uFT0CqwRjobkl4=;
+        s=k20201202; t=1691658997;
+        bh=zJE0WmFdaYb7Ti2ERniP+fEDjSx1UljWS7VoaTirjiQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RtluJmJKgw6ivpn9rt46wrl+aWeLC7cBrbo9lS1FHLIj7ZXKX+JsBJPEDoXM66hd8
-         +aH/Aq/r2ipMzOauyx8npaqyRhwxC+XKz1dZdxGUBQCH+7kvTkPSHiTLQZeBLeWqvN
-         G/3zJ06OuHMbnWrEgF2UdeonT9BtgG7iAEUcyoC83cNSbOP14Zqa2PQM/e42Ma7/Z7
-         +SJlqoBNfC5iVyH5lCAAljzGC9C4bcvkVy10U/vPuHVpDIDFO18jgQ9a63o65yYKYg
-         Y6l/2iuNBT6/Tq38EhqLk6VKZriPxaXkCAycv4ETjAfcllKmVwPCxe5C9I6ziUhh1+
-         xOER9mB65lGSw==
+        b=epDptasYtf71uksmyF3AyJX63Xz++gBvXiLYpnCHLr3ySfJSc4lWoArFMZ5py/yI+
+         IqzOEkIdZ1EyZysLGkHNohXRtxY6+GmvKCUOv15KzxMZok4lb34U+SND0eGyuyVCw6
+         EXR+zxw/u1ayr97tNfHhzIYjkpqryYE6j5cSVk3cho4GGU/LHLF57ukLbUKL3w2kWZ
+         5JwIVKnqfjekzsqRrWA/EAZVj9LUUg+zKCaMd8Te5QbRmzEylq+QtCIundpXjg8W7D
+         Nq1kI5zvMwtVQkxeY2O2hXEK87OLU5GKMP0IO7Bg1t7cSB6UPwdlvkON8qVeql4K87
+         LuGeI+7lS2SYA==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 33/36] tty: vcc: convert counts to size_t
-Date:   Thu, 10 Aug 2023 11:15:07 +0200
-Message-ID: <20230810091510.13006-34-jirislaby@kernel.org>
+        linux-staging@lists.linux.dev
+Subject: [PATCH 34/36] tty: gdm724x: convert counts to size_t
+Date:   Thu, 10 Aug 2023 11:15:08 +0200
+Message-ID: <20230810091510.13006-35-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230810091510.13006-1-jirislaby@kernel.org>
 References: <20230810091510.13006-1-jirislaby@kernel.org>
@@ -59,80 +59,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Unify the type of tty_operations::write() counters with the 'count'
 parameter. I.e. use size_t for them.
 
-This includes changing vcc_port::chars_in_buffer to size_t to keep min()
-and avoid min_t().
+This includes changing constants to UL to keep min() and avoid min_t().
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
+Cc: linux-staging@lists.linux.dev
 ---
- arch/sparc/include/asm/vio.h |  2 +-
- drivers/tty/vcc.c            | 12 ++++++------
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ drivers/staging/gdm724x/gdm_tty.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/arch/sparc/include/asm/vio.h b/arch/sparc/include/asm/vio.h
-index 8a0c3c11c9ce..587fb7841096 100644
---- a/arch/sparc/include/asm/vio.h
-+++ b/arch/sparc/include/asm/vio.h
-@@ -284,7 +284,7 @@ struct vio_dring_state {
- 	struct ldc_trans_cookie	cookies[VIO_MAX_RING_COOKIES];
- };
+diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
+index b31f2afb0286..cbaaa8fa7474 100644
+--- a/drivers/staging/gdm724x/gdm_tty.c
++++ b/drivers/staging/gdm724x/gdm_tty.c
+@@ -17,9 +17,9 @@
+ #define GDM_TTY_MAJOR 0
+ #define GDM_TTY_MINOR 32
  
--#define VIO_TAG_SIZE		((int)sizeof(struct vio_msg_tag))
-+#define VIO_TAG_SIZE		(sizeof(struct vio_msg_tag))
- #define VIO_VCC_MTU_SIZE	(LDC_PACKET_SIZE - VIO_TAG_SIZE)
+-#define WRITE_SIZE 2048
++#define WRITE_SIZE 2048UL
  
- struct vio_vcc {
-diff --git a/drivers/tty/vcc.c b/drivers/tty/vcc.c
-index 9cc569174c83..a39ed981bfd3 100644
---- a/drivers/tty/vcc.c
-+++ b/drivers/tty/vcc.c
-@@ -36,7 +36,7 @@ struct vcc_port {
- 	 * and guarantee that any characters that the driver accepts will
- 	 * be eventually sent, either immediately or later.
- 	 */
--	int chars_in_buffer;
-+	size_t chars_in_buffer;
- 	struct vio_vcc buffer;
+-#define MUX_TX_MAX_SIZE 2048
++#define MUX_TX_MAX_SIZE 2048UL
  
- 	struct timer_list rx_timer;
-@@ -385,7 +385,7 @@ static void vcc_tx_timer(struct timer_list *t)
- 	struct vcc_port *port = from_timer(port, t, tx_timer);
- 	struct vio_vcc *pkt;
- 	unsigned long flags;
--	int tosend = 0;
-+	size_t tosend = 0;
- 	int rv;
+ static inline bool gdm_tty_ready(struct gdm *gdm)
+ {
+@@ -152,9 +152,8 @@ static void gdm_tty_send_complete(void *arg)
+ static ssize_t gdm_tty_write(struct tty_struct *tty, const u8 *buf, size_t len)
+ {
+ 	struct gdm *gdm = tty->driver_data;
+-	int remain = len;
+-	int sent_len = 0;
+-	int sending_len = 0;
++	size_t remain = len;
++	size_t sent_len = 0;
  
- 	spin_lock_irqsave(&port->lock, flags);
-@@ -809,8 +809,8 @@ static ssize_t vcc_write(struct tty_struct *tty, const u8 *buf, size_t count)
- 	struct vcc_port *port;
- 	struct vio_vcc *pkt;
- 	unsigned long flags;
--	int total_sent = 0;
--	int tosend = 0;
-+	size_t total_sent = 0;
-+	size_t tosend = 0;
- 	int rv = -EINVAL;
+ 	if (!gdm_tty_ready(gdm))
+ 		return -ENODEV;
+@@ -163,7 +162,7 @@ static ssize_t gdm_tty_write(struct tty_struct *tty, const u8 *buf, size_t len)
+ 		return 0;
  
- 	port = vcc_get_ne(tty->index);
-@@ -847,7 +847,7 @@ static ssize_t vcc_write(struct tty_struct *tty, const u8 *buf, size_t count)
- 		 * hypervisor actually took it because we have it buffered.
- 		 */
- 		rv = ldc_write(port->vio.lp, pkt, (VIO_TAG_SIZE + tosend));
--		vccdbg("VCC: write: ldc_write(%d)=%d\n",
-+		vccdbg("VCC: write: ldc_write(%zu)=%d\n",
- 		       (VIO_TAG_SIZE + tosend), rv);
- 
- 		total_sent += tosend;
-@@ -864,7 +864,7 @@ static ssize_t vcc_write(struct tty_struct *tty, const u8 *buf, size_t count)
- 
- 	vcc_put(port, false);
- 
--	vccdbg("VCC: write: total=%d rv=%d", total_sent, rv);
-+	vccdbg("VCC: write: total=%zu rv=%d", total_sent, rv);
- 
- 	return total_sent ? total_sent : rv;
- }
+ 	while (1) {
+-		sending_len = min(MUX_TX_MAX_SIZE, remain);
++		size_t sending_len = min(MUX_TX_MAX_SIZE, remain);
+ 		gdm->tty_dev->send_func(gdm->tty_dev->priv_dev,
+ 					(void *)(buf + sent_len),
+ 					sending_len,
 -- 
 2.41.0
 
