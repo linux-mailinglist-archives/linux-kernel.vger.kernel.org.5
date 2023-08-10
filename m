@@ -2,182 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7930C777246
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A722777253
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233983AbjHJIJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
+        id S232383AbjHJILG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233976AbjHJIJ2 (ORCPT
+        with ESMTP id S230478AbjHJILE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:09:28 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A60B26AA
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:09:24 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fe167d4a18so5687245e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:09:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691654963; x=1692259763;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5XnXEHTpcZwsLX4QNNcVLRlqnkdUgZEa6wcYgGVtY88=;
-        b=KHxobwMmJ5xLuQ3fTqWbKzB6qgqvAQdnuSJxNgr8p3NLWm51+bi9KztXc/Nn3jKmBQ
-         /znodQXxIzxDNtXb62bMYgIR4q5VIXgRjdEt9TlcM2Ge/V2PVRicEt8B91KIdIxIB8I3
-         o2ygAkhRR5mE+tO56OrSQormCUMSUVslpOF2yCabPGeHuwEYFeisK27aj4qjDhDbFhAG
-         CF0pwVxYjxHLE+WGC/Zc+dLbfOsNVuXytzniNciQ0AF2oyVg7cfnK41Eq2xUluLtbTw3
-         xy+rl9k9YOvAB9YDtV2uvbqqYyAx/YhIeUzrfjB8OFMO4ynncy9HfMohXrBr+9ghvcTw
-         gPBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691654963; x=1692259763;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5XnXEHTpcZwsLX4QNNcVLRlqnkdUgZEa6wcYgGVtY88=;
-        b=Ifi5jSGhWuWbBKlLqYQPVEFjy9vYdUXFf9Whcg28g9Iw1VS8guhYDpSQinNMirCLa1
-         wWWNPH3MVcEQRpUfMESQP6A0MOVNnaQaWXyENnwZJpthLnXXTeEffyuSAe1GQb3DtZIy
-         HqEHb2+6E7FylBWRtMb+9diJHNH5NayEYIkRLvjrO9BG3V4hCL6LvmwenzYQqG2YVLWh
-         L/0zLaFl9i5v5HPrV+YxU0xPKPRXKSbqAXN5BzGoZh0bOUu774wBuojzKWMUNkPInDs5
-         phOSCusxByJY5dnEr7rNVHqzKLhYYD+/DG3Zxfmfkmi95Ez11qG9no6SAZZiKIb23yvK
-         MuFg==
-X-Gm-Message-State: AOJu0YxMqnGhBnLqyEI/9fflpaYoKUIojJFCbqRccvWoa4jl6EJX6GC9
-        nL5/Vk2SnRlafyzdTyRiyUygVQ==
-X-Google-Smtp-Source: AGHT+IGuwA9g6Dv+9oaRLjpG3wLqlI4/PqOEjOrVytYMFrFOB7GDlqo/TdgkN3fFponJHiXh3bKVaQ==
-X-Received: by 2002:a05:600c:b4e:b0:3fe:19cf:93ca with SMTP id k14-20020a05600c0b4e00b003fe19cf93camr1278555wmr.8.1691654962976;
-        Thu, 10 Aug 2023 01:09:22 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:74d3:226a:31b3:454c])
-        by smtp.gmail.com with ESMTPSA id y10-20020a1c4b0a000000b003fe2f3a89d4sm1321790wma.7.2023.08.10.01.09.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 01:09:22 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Andrew Halaney <ahalaney@redhat.com>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v3 9/9] arm64: dts: qcom: sa8775p-ride: enable EMAC1
-Date:   Thu, 10 Aug 2023 10:09:09 +0200
-Message-Id: <20230810080909.6259-10-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230810080909.6259-1-brgl@bgdev.pl>
-References: <20230810080909.6259-1-brgl@bgdev.pl>
+        Thu, 10 Aug 2023 04:11:04 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2BB212F
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:10:51 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CC32C40E01A1;
+        Thu, 10 Aug 2023 08:10:49 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id h27nG88cpW48; Thu, 10 Aug 2023 08:10:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1691655047; bh=bklXF/DHbuGo30BuaQq22d3Ct4ocEDegyFq07OjfRNI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BbpcOwFBCMPFh6N/JYHIoE4iXyVyngmQpcRJJh5SjIrD+xwCRMn50nuKFcu2xa0i9
+         2OkQ3YJ2j/t2XROPHK8D+pFDoh+NtwcdNAPiZnvD6OdxGAmtUFChL6WhZcvHJgUUwr
+         Xir9m5raYtaa6AGOnDWysiHByQzecL71wLzaSu8XgkuyF/+ltGZfjHqXx1l5IV0TKp
+         80wVp9EffQIMJ89jN8lCZZESzxA4vqiHjp5EYlmjeJEGFLQ9uZhD+gHSNz+eWzkYDK
+         8o6Kf8fIfYlBeItKunfD2BeI2fJh8HRzUdD4Tfw1O2E47DKzn/ALjT7iHAv8X1iR6B
+         rQivLGXjXmoXnaWl6hdQfhI11zZZx8IBSMURYcYfNj+M+bVLHSPkvftSDE4VMa9Kig
+         3QCXFq7B8cH5xjy34vMKg1Flz9/UWlngRJlmZeNblsLzbU9mxBCdUIfuebYg7gfNkE
+         bviY56l6gq9szlR6eq07T0gVuzU1/by69w3IobXKOCOpb3MsIQ8iBs8v0pF2Z2FF3b
+         eVEiZOhk5+tXkvW3oYmuSnimHxILry8xNiD1e+PnnrRfSzhPo+Tv5gdcvFzGGCFetr
+         KM7piDeWGq3OSZiB96PiHd5CINzHeE5EvlJes6hxgzS8vDneF0lvITJmxWGdTMMb/9
+         lHUphj6FY8fav2y0t1tJ7XA0=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 85E8E40E0140;
+        Thu, 10 Aug 2023 08:10:43 +0000 (UTC)
+Date:   Thu, 10 Aug 2023 10:10:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: Hang when booting guest kernels compiled with clang after SRSO
+ mitigations
+Message-ID: <20230810081038.GAZNSbftb6DOgg/U7e@fat_crate.local>
+References: <20230810013334.GA5354@dev-arch.thelio-3990X>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230810013334.GA5354@dev-arch.thelio-3990X>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Wed, Aug 09, 2023 at 06:33:34PM -0700, Nathan Chancellor wrote:
+> Hi Boris,
+> 
+> I updated my AMD 3990X workstation to a version of mainline that
+> contains the SRSO mitigations and I am now seeing a hang when booting
+> guest kernels built with clang in QEMU/KVM with an '-smp' value greater
+> than one (I am just testing 'ARCH=x86_64 defconfig', nothing fancy). The
+> host's kernel is built with GCC 13.2.0, in case that is relevant. The
+> issue happens with all versions of clang that the kernel supports
+> (11.x+). I do not see the issue with guest kernels built with GCC nor do
+> I see the issue with '-smp 1', so it could be something that clang has
+> done to the guest kernel that causes this but I figured I would report
+> it early anyways.
+> 
+> With '-smp 4' (for example), I see
+> 
+>   [    0.102817] smpboot: CPU0: AMD Ryzen Threadripper 3990X 64-Core Processor (family: 0x17, model: 0x31, stepping: 0x0)
+>   ...
+>   [    0.109778] smp: Bringing up secondary CPUs ...
+>   [    0.110559] smpboot: x86: Booting SMP configuration:
 
-Enable the second MAC on sa8775p-ride.
+I can repro this here with Debian clang version 14.0.6-2 even with -smp
+2.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- arch/arm64/boot/dts/qcom/sa8775p-ride.dts | 71 +++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+Lemme poke at this a bit.
 
-diff --git a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
-index 48119266c6fd..81a7eeb9cfcd 100644
---- a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
-+++ b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
-@@ -17,6 +17,7 @@ / {
- 
- 	aliases {
- 		ethernet0 = &ethernet0;
-+		ethernet1 = &ethernet1;
- 		i2c11 = &i2c11;
- 		i2c18 = &i2c18;
- 		serial0 = &uart10;
-@@ -359,6 +360,76 @@ queue3 {
- 	};
- };
- 
-+&ethernet1 {
-+	phy-mode = "sgmii";
-+	phy-handle = <&sgmii_phy1>;
-+
-+	snps,mtl-rx-config = <&mtl_rx_setup1>;
-+	snps,mtl-tx-config = <&mtl_tx_setup1>;
-+	snps,ps-speed = <1000>;
-+
-+	status = "okay";
-+
-+	mtl_rx_setup1: rx-queues-config {
-+		snps,rx-queues-to-use = <4>;
-+		snps,rx-sched-sp;
-+
-+		queue0 {
-+			snps,dcb-algorithm;
-+			snps,map-to-dma-channel = <0x0>;
-+			snps,route-up;
-+			snps,priority = <0x1>;
-+		};
-+
-+		queue1 {
-+			snps,dcb-algorithm;
-+			snps,map-to-dma-channel = <0x1>;
-+			snps,route-ptp;
-+		};
-+
-+		queue2 {
-+			snps,avb-algorithm;
-+			snps,map-to-dma-channel = <0x2>;
-+			snps,route-avcp;
-+		};
-+
-+		queue3 {
-+			snps,avb-algorithm;
-+			snps,map-to-dma-channel = <0x3>;
-+			snps,priority = <0xc>;
-+		};
-+	};
-+
-+	mtl_tx_setup1: tx-queues-config {
-+		snps,tx-queues-to-use = <4>;
-+		snps,tx-sched-sp;
-+
-+		queue0 {
-+			snps,dcb-algorithm;
-+		};
-+
-+		queue1 {
-+			snps,dcb-algorithm;
-+		};
-+
-+		queue2 {
-+			snps,avb-algorithm;
-+			snps,send_slope = <0x1000>;
-+			snps,idle_slope = <0x1000>;
-+			snps,high_credit = <0x3e800>;
-+			snps,low_credit = <0xffc18000>;
-+		};
-+
-+		queue3 {
-+			snps,avb-algorithm;
-+			snps,send_slope = <0x1000>;
-+			snps,idle_slope = <0x1000>;
-+			snps,high_credit = <0x3e800>;
-+			snps,low_credit = <0xffc18000>;
-+		};
-+	};
-+};
-+
- &i2c11 {
- 	clock-frequency = <400000>;
- 	pinctrl-0 = <&qup_i2c11_default>;
+Thx.
+
+
 -- 
-2.39.2
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
