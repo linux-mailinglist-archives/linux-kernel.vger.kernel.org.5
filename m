@@ -2,77 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF41777381
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF37977745D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234169AbjHJI4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44336 "EHLO
+        id S232388AbjHJJXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:23:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234222AbjHJI4m (ORCPT
+        with ESMTP id S229709AbjHJJXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:56:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B8B2123;
-        Thu, 10 Aug 2023 01:56:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0501860B7D;
-        Thu, 10 Aug 2023 08:56:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD84BC433C8;
-        Thu, 10 Aug 2023 08:56:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691657795;
-        bh=JnhEH4wMc8AeDCC0VFoQzQrj+iXNdjqhUQZWI00aVz4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Rr8FrM0ZIPljqAf/YtTP0nPqKVf0SAWcJYosFK7Q2LQ+ppagF7NZsocOKvKfWW8Iv
-         tOcB+r+K6DXD4L5lCrPuff4QCziSJERHeTikodP0HTpOD/bXibzsloh9hziKLqC7c3
-         r6so+GeqiVHXchJPSJ5b2diWokVjVvkYHEbSSQUrfFe4WgAHFuJcDA8gM2FSKercB5
-         6Yx7rg5ZQmO2uPu73ODAdx1gchqSnOzzoxs17BUMrfEqcUOV+NKYP1cLbIV4qtQr48
-         SkZ7r50kj9j3QHeeuRJEHBgoFHEHqE2Y5lz4RT294C8Y8Z9vYMsA47Ne6KJqBVh8sz
-         vRP4RsDiE8sKQ==
-Date:   Thu, 10 Aug 2023 10:56:32 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH 1/2] i2c: i2c-bcm-iproc: fix -Wvoid-pointer-to-enum-cast
- warning
-Message-ID: <20230810085632.xzonkmse27mu4yew@intel.intel>
-References: <20230809-cbl-1903-v1-0-df9d66a3ba3e@google.com>
- <20230809-cbl-1903-v1-1-df9d66a3ba3e@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809-cbl-1903-v1-1-df9d66a3ba3e@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 05:23:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBC31704;
+        Thu, 10 Aug 2023 02:23:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691659414; x=1723195414;
+  h=from:to:cc:subject:date:message-id;
+  bh=gfW6MuZeHTt533K3UHwW/pOHp5AwnMiWdNZRUvGivNY=;
+  b=AEiVB1CcAEAQbPqTR9gK9lAKt1PADBhjGFeSJBxEIYcoHPB/gmRSVViZ
+   wDJvQULKrYL/tDOqoKX+bsBg1zJhNSotWpJuHzTVg4aq0KBpRiMFdgpa0
+   O5SaKd+4O16Yom+8cGHdBzEA4lDVIFXXcbzZfNF9KxEfkbJ3GcGDO0k3x
+   MiEzvKkl2qYuZZpjcYQV/blCrkRX3lUvZjjn0bISa8V9gt6Ev3wFo4ZeX
+   CFQbHORkNxNzuHe2kA2UqKosKYVJ2+6iPuvjJ1mkNbd47nzLgE+xztBZE
+   sVv1YufoFPciAWr+4jsjqOxfl6n5EUttJ0jr6Jg//xBleFnvcfZ+DQJzI
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="435245958"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="435245958"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 02:23:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="802128926"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="802128926"
+Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 02:23:30 -0700
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     pbonzini@redhat.com, seanjc@google.com, mike.kravetz@oracle.com,
+        apopple@nvidia.com, jgg@nvidia.com, rppt@kernel.org,
+        akpm@linux-foundation.org, kevin.tian@intel.com, david@redhat.com,
+        Yan Zhao <yan.y.zhao@intel.com>
+Subject: [RFC PATCH v2 0/5] Reduce NUMA balance caused TLB-shootdowns in a VM
+Date:   Thu, 10 Aug 2023 16:56:36 +0800
+Message-Id: <20230810085636.25914-1-yan.y.zhao@intel.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Justin,
+This is an RFC series trying to fix the issue of unnecessary NUMA
+protection and TLB-shootdowns found in VMs with assigned devices or VFIO
+mediated devices during NUMA balance.
 
-> @@ -1036,7 +1036,7 @@ static int bcm_iproc_i2c_probe(struct platform_device *pdev)
->  	platform_set_drvdata(pdev, iproc_i2c);
->  	iproc_i2c->device = &pdev->dev;
->  	iproc_i2c->type =
-> -		(enum bcm_iproc_i2c_type)of_device_get_match_data(&pdev->dev);
-> +		(unsigned long) of_device_get_match_data(&pdev->dev);
+For VMs with assigned devices or VFIO mediated devices, all or part of
+guest memory are pinned for long-term.
 
-I think this should be uintptr_t, as defined in types.h:
+Auto NUMA balancing will periodically selects VMAs of a process and change
+protections to PROT_NONE even though some or all pages in the selected
+ranges are long-term pinned for DMAs, which is true for VMs with assigned
+devices or VFIO mediated devices.
 
-    typedef unsigned long uintptr_t;
+Though this will not cause real problem because NUMA migration will
+ultimately reject migration of those kind of pages and restore those
+PROT_NONE PTEs, it causes KVM's secondary MMU to be zapped periodically
+with equal SPTEs finally faulted back, wasting CPU cycles and generating
+unnecessary TLB-shootdowns.
 
-(I'm a bit puzzled to see a void *data cast to a 0/1 value.)
+This series first introduces a new flag MMU_NOTIFIER_RANGE_NUMA in patch 1
+to work with mmu notifier event type MMU_NOTIFY_PROTECTION_VMA, so that
+the subscriber (e.g.KVM) of the mmu notifier can know that an invalidation
+event is sent for NUMA migration purpose in specific.
 
-Andi
+Patch 2 skips setting PROT_NONE to long-term pinned pages in the primary
+MMU to avoid NUMA protection introduced page faults and restoration of old
+huge PMDs/PTEs in primary MMU.
+
+Patch 3 introduces a new mmu notifier callback .numa_protect(), which
+will be called in patch 4 when a page is ensured to be PROT_NONE protected.
+
+Then in patch 5, KVM can recognize a .invalidate_range_start() notification
+is for NUMA balancing specific and do not do the page unmap in secondary
+MMU until .numa_protect() comes.
+
+
+Changelog:
+RFC v1 --> v2:
+1. added patch 3-4 to introduce a new callback .numa_protect()
+2. Rather than have KVM duplicate logic to check if a page is pinned for
+long-term, let KVM depend on the new callback .numa_protect() to do the
+page unmap in secondary MMU for NUMA migration purpose.
+
+RFC v1:
+https://lore.kernel.org/all/20230808071329.19995-1-yan.y.zhao@intel.com/ 
+
+Yan Zhao (5):
+  mm/mmu_notifier: introduce a new mmu notifier flag
+    MMU_NOTIFIER_RANGE_NUMA
+  mm: don't set PROT_NONE to maybe-dma-pinned pages for NUMA-migrate
+    purpose
+  mm/mmu_notifier: introduce a new callback .numa_protect
+  mm/autonuma: call .numa_protect() when page is protected for NUMA
+    migrate
+  KVM: Unmap pages only when it's indeed protected for NUMA migration
+
+ include/linux/mmu_notifier.h | 16 ++++++++++++++++
+ mm/huge_memory.c             |  6 ++++++
+ mm/mmu_notifier.c            | 18 ++++++++++++++++++
+ mm/mprotect.c                | 10 +++++++++-
+ virt/kvm/kvm_main.c          | 25 ++++++++++++++++++++++---
+ 5 files changed, 71 insertions(+), 4 deletions(-)
+
+-- 
+2.17.1
+
